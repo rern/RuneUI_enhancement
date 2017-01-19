@@ -37,7 +37,7 @@ function volmargin() {
 }
 
 $('#barleft').click( function() {
-	if ($('#volume-knob').length && $(window).width() <= 568) {
+	if ($('#volume-knob').length && $(window).width() < 568) {
 		if ($('#play-group').is(':visible')) {
 			$('#share-group, #coverart').slideToggle(volmargin);
 		} else {
