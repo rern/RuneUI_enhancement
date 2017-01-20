@@ -12,7 +12,8 @@ Try it - [**Demo**](https://rern.github.io/RuneUI_GPIO/)
 - Get lyrics
 - [**RuneUI GPIO**](https://github.com/rern/RuneUI_GPIO) for GPIO connected devices control (add-on install).
 
-![layoutP](https://github.com/rern/Assets/blob/master/RuneUI_enhancement/iPhoneP.gif)
+![mid](https://github.com/rern/Assets/blob/master/RuneUI_enhancement/mid.gif)
+![midL](https://github.com/rern/Assets/blob/master/RuneUI_enhancement/midL.gif)
 
 Install
 ---
@@ -28,7 +29,8 @@ Uninstall
 ```    
 _(Uninstalling will restore files to originals and delete all added ones. It should be fine to install-uninstall again and again.)_
 
-![layoutL](https://github.com/rern/Assets/blob/master/RuneUI_enhancement/iPhoneL.gif)
+![small](https://github.com/rern/Assets/blob/master/RuneUI_enhancement/small.gif)
+![smallL](https://github.com/rern/Assets/blob/master/RuneUI_enhancement/smallL.gif)
 
 Functional:
 ---
