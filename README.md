@@ -10,7 +10,12 @@ Try it - [**Demo**](https://rern.github.io/RuneUI_GPIO/)
 - Fit all in one phone screen (with 'Add to Home Screen')
 - Swipeable
 - Get lyrics
-- [**RuneUI GPIO**](https://github.com/rern/RuneUI_GPIO) for GPIO connected devices control (add-on install).
+- [**RuneUI GPIO**](https://github.com/rern/RuneUI_GPIO) for GPIO connected devices control (add-on install).  
+
+>[Install](#install)  
+>[Uninstall](#uninstall)  
+>[Functional](#functional)  
+>[Visual](#visual)  
 
 ![mid](https://github.com/rern/Assets/blob/master/RuneUI_enhancement/mid.gif)
 ![midL](https://github.com/rern/Assets/blob/master/RuneUI_enhancement/midL.gif)
@@ -32,7 +37,7 @@ _(Uninstalling will restore files to originals and delete all added ones. It sho
 ![small](https://github.com/rern/Assets/blob/master/RuneUI_enhancement/small.gif)
 ![smallL](https://github.com/rern/Assets/blob/master/RuneUI_enhancement/smallL.gif)
 
-Functional:
+Functional
 ---
 
 - Tap `song` = get lyrics
@@ -47,7 +52,7 @@ Functional:
 
 ![layout](https://github.com/rern/Assets/blob/master/RuneUI_enhancement/RuneUImod1.gif)
 
-Visual:
+Visual
 ---
 
 **Top Bar:**
