@@ -36,13 +36,13 @@
                 <div id="coverart">
                     <img id="cover-art" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="transparent-square">
                 </div>
-                <?php endif ?>
                 <div id="share-group">
                     <div class="btn-group">
                         <button id="overlay-social-open" class="btn btn-default btn-lg" type="button" title="Share this track"><i class="fa fa-share-alt"></i></button>
                     <!--<a href="#" id="overlay-playsource-open" class="btn btn-default" title="Play source">MPD</a>-->
                     </div>
                 </div>
+                <?php endif ?>
                 <?php if (!preg_match('/mixer_type[\s]+"disabled"/', file_get_contents('/etc/mpd.conf'))):?>
                 <div id="volume-knob" class="<?=$this->volume['divclass'] ?>">
 					<?php // fix smaller volume knob size in mobile

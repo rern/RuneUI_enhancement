@@ -13,7 +13,9 @@
 	<?php if (preg_match('/mixer_type[\s]+"disabled"/', file_get_contents('/etc/mpd.conf'))): ?>
 		<link rel="stylesheet" href="<?=$this->asset('/css/customvoloff.css')?>">
 	<?php endif ?>
-	
+	<?php if ($this->coverart == 0): ?>
+		<link rel="stylesheet" href="<?=$this->asset('/css/customcoveroff.css')?>">
+	<?php endif ?>
     <?php if (is_localhost()): ?>
         <link rel="stylesheet" href="<?=$this->asset('/css/onScreenKeyboard.css')?>">
     <?php endif ?>
@@ -81,6 +83,7 @@
 <div id="menu-top">
     <img class="logo" src="<?=$this->asset('/img/runelogo.svg')?>" alt="RuneAudio" href="/">
 	<a id="clock-display"></a>
+	<button id="gpio" class="btn-default"><i class="fa fa-volume-off"></i></button>
     <div class="playback-controls">
         <button id="previous" class="btn btn-default btn-cmd" title="Previous" data-cmd="previous"><i class="fa fa-step-backward"></i></button>
         <button id="stop" class="btn btn-default btn-cmd" title="Stop" data-cmd="stop"><i class="fa fa-stop"></i></button>
@@ -98,6 +101,7 @@
             <li class="<?=$this->uri(1, 'debug', 'active')?>"><a href="/debug/"><i class="fa fa-bug"></i> Debug</a></li>
             <li class="<?=$this->uri(1, 'credits', 'active')?>"><a href="/credits/"><i class="fa fa-trophy"></i> Credits</a></li>
             <li class="<?=$this->uri(1, 'dev', 'active')?>"><a href="/dev/"><i class="fa fa-code"></i> Development</a></li>
+			<li><a href="/gpiosettings.php" target="_blank"><i class="fa fa-volume-off"></i> GPIO</a></li>
             <li><a href="#poweroff-modal" data-toggle="modal"><i class="fa fa-power-off"></i> Turn off</a></li>
         </ul>
     </div>    

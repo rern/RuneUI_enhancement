@@ -12,7 +12,7 @@ function topbottom() {
 }
 
 $('#barleft').click( function() {
-	if (!$('#volume-knob').length || $(window).width() >= 640) {
+	if (!$('#coverart').length || !$('#volume-knob').length || $(window).width() >= 640) {
 		topbottom();
 	} else {
 		$('#coverart').slideToggle(function() {
