@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# remove install file
 # install.sh - RuneUI enhancement
 # https://github.com/rern/RuneUI_enhancement
 
@@ -12,12 +13,14 @@
 #		get tar.xz
 #		backup files
 #		extract
+#		remove install tar.xz
 #		restart nginx
 #		clear opcache
 #		restart midori
 # success (skip if install with gpioinstall.sh)
 #		info
-# remove install files
+
+rm install.sh
 
 arg=$#
 
@@ -88,6 +91,7 @@ cp -v $file $file'.bak'
 
 title "Install files ..."
 tar -Jxvf RuneUI_enhancement.tar.xz -C /
+rm RuneUI_enhancement.tar.xz
 
 systemctl restart nginx # for added svg format
 
@@ -124,6 +128,3 @@ if [ $arg -eq 0 ]; then # skip if run from gpioinstall.sh - install.sh <arg>
 	echo $info 'Refresh browser to start using' $runeenh'.'
 	titleend "To uninstall:   ./uninstall.sh"
 fi
-
-rm RuneUI_enhancement.tar.xz
-rm install.sh
