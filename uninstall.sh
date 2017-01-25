@@ -112,10 +112,12 @@ if [ $arg -eq 0 ]; then # skip if reinstall - uninstall.sh <arg>
 	curl '127.0.0.1/clear'
 	echo
 
-	killall midori
-	sleep 1
-	startx  > /dev/null 2>&1 &
-	echo -e '\nLocal browser restarted.\n'
+	if pgrep midori > /dev/null; then
+		killall midori
+		sleep 1
+		startx  > /dev/null 2>&1 &
+		echo -e '\nLocal browser restarted.\n'
+	fi
 	
 	(( $both == 1 )) && unboth="$runegpio and " || unboth=""
 	title2 "$unboth$runeenh successfully uninstalled."
