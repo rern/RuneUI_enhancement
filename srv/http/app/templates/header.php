@@ -83,7 +83,6 @@
 <div id="menu-top">
     <img class="logo" src="<?=$this->asset('/img/runelogo.svg')?>" alt="RuneAudio" href="/">
 	<a id="clock-display"></a>
-	<button id="gpio" class="btn-default"><i class="fa fa-volume-off"></i></button>
     <div class="playback-controls">
         <button id="previous" class="btn btn-default btn-cmd" title="Previous" data-cmd="previous"><i class="fa fa-step-backward"></i></button>
         <button id="stop" class="btn btn-default btn-cmd" title="Stop" data-cmd="stop"><i class="fa fa-stop"></i></button>
