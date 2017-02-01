@@ -155,6 +155,16 @@ $('#currentalbum').click(function(){
 	if (album.slice(0, 3) != '[no')
 		window.open('http://www.last.fm/music/'+ artist +'/'+ album);
 });
+// observe song change for lyrics
+var observer = new MutationObserver(function(mutations) {
+    if (!$('#lyricfade').hasClass('hide')) {
+		PNotify.removeAll();
+		$('#currentsong').click();
+	}
+});
+var target = document.getElementById('currentsong');
+var options = {childList: true};
+observer.observe(target, options);
 
 // swipe
 if ($('#playback').is(':visible')) {
