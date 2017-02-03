@@ -207,11 +207,6 @@ function refreshState() {
 	scrolltext();
 	
     var state = GUI.state;
-	if (GUI.stream === 'radio') {
-		$('#time-knob').hide();
-	} else {
-		$('#time-knob').show();
-	}
     if (state === 'play') {
         $('#play').addClass('btn-primary');
         $('i', '#play').removeClass('fa fa-pause').addClass('fa fa-play');
@@ -234,7 +229,11 @@ function refreshState() {
         $('li', '#playlist-entries').removeClass('active');
     }
     if (state !== 'stop') {
-        if (GUI.stream !== 'radio') $('#total').html((GUI.json.time !== undefined)? timeConvert(GUI.json.time) : '00:00');
+        if (GUI.stream !== 'radio') {
+			$('#total').html((GUI.json.time !== undefined) ? timeConvert(GUI.json.time) : '00:00');
+		} else {
+			$('#total').html('');
+		}
 // ****************************************************************************************
 // improve song info
 		if (GUI.json.fileext != false) {
@@ -253,7 +252,11 @@ function refreshState() {
 				bitrate = bitdepth * sampling * 2;
 			}
 			sampling = (bitdepth != 1) ? sampling +' kHz ' : sampling +' - ';
-			var fileinfo = '<a id="dot0" style="color:#ffffff"> &#8226; </a>' + channel + bitdepth +' bit '+ sampling + bitrate +' kbps<a style="color:#ffffff"> &#8226; </a>' + ext;
+			if (GUI.stream !== 'radio') {
+				var fileinfo = '<a id="dot0" style="color:#ffffff"> &#8226; </a>' + channel + bitdepth +' bit '+ sampling + bitrate +' kbps<a style="color:#ffffff"> &#8226; </a>' + ext;
+			} else {
+				var fileinfo = '<a id="dot0" style="color:#ffffff"> &#8226; </a>' + channel + bitdepth +' bit '+ sampling + bitrate +' kbps';
+			}
 		} else {
 			var fileinfo = '';
 		}
