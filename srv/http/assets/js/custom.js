@@ -54,7 +54,7 @@ $('#barright').click( function() {
 	} else {
 		$('#share-group').hide();
 	}
-	if (window.innerHeight < 500) {
+	if (window.innerHeight < 414) {
 		if ($('#play-group').is(':visible')) {
 			$('#divalbum, #sampling').hide();
 			$('#play-group, #share-group, #vol-group').css('margin-top', '10px');
