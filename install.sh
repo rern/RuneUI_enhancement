@@ -95,7 +95,7 @@ sed -i 's/(js|css|png|jpg|jpeg|gif|ico)/(js|css|png|jpg|jpeg|gif|ico|svg)/' /etc
 systemctl restart nginx
 
 # for installed RuneUI password #######################################
-if ! grep -qs 'logout.php' /srv/http/app/templates/header.php.bak; then
+if grep -qs 'logout.php' /srv/http/app/templates/header.php.bak; then
 	sed -i '/poweroff-modal/a \
 				<li><a href="/logout.php"><i class="fa fa-sign-out"></i> Logout</a></li>
 	' /srv/http/app/templates/header.php
