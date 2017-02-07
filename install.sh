@@ -33,7 +33,6 @@ info=$( echo $(tput setab 6; tput setaf 0) i $(tput setab 0; tput setaf 7) )
 runeenh=$( echo $(tput setaf 6)RuneUI Enhancement$(tput setaf 7) )
 
 # functions #######################################
-
 title2() {
 		echo -e "\n$line2\n"
 		echo -e "$bar $1"
@@ -50,7 +49,6 @@ titleend() {
 }
 
 # check already installed #######################################
-
 if grep -qs 'RuneUIe' /srv/http/app/templates/header.php; then
 	title "$info $runeenh already installed."
 	echo 'Reinstall' $runeenh':'
@@ -69,7 +67,6 @@ if grep -qs 'RuneUIe' /srv/http/app/templates/header.php; then
 fi
 
 # install RuneUI enhancement #######################################
-
 title2 "Install $runeenh ..."
 title "Get files ..."
 wget -q --show-progress -O RuneUI_enhancement.tar.xz "https://github.com/rern/RuneUI_enhancement/blob/master/_repo/RuneUI_enhancement.tar.xz?raw=1"
@@ -93,10 +90,18 @@ title "Install files ..."
 tar -Jxvf RuneUI_enhancement.tar.xz -C /
 rm RuneUI_enhancement.tar.xz
 
-systemctl restart nginx # for added svg format
+# for nginx svg support #######################################
+sed -i 's/(js|css|png|jpg|jpeg|gif|ico)/(js|css|png|jpg|jpeg|gif|ico|svg)/' /etc/nginx/nginx.conf
+systemctl restart nginx
+
+# for installed RuneUI password #######################################
+if ! grep -qs 'logout.php' /srv/http/app/templates/header.php.bak; then
+	sed -i '/poweroff-modal/a \
+				<li><a href="/logout.php"><i class="fa fa-sign-out"></i> Logout</a></li>
+	' /srv/http/app/templates/header.php
+fi
 
 # local display zoom #######################################
-
 title "$info Select local browser screen size:"
 echo 'Set zoom level for display directly connect to RPi.'
 echo
