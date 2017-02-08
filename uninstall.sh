@@ -95,10 +95,6 @@ rm -v $path'js/vendor/hammer.min.js'
 rm -v $path'js/vendor/pnotify3.custom.min.js'
 
 title "Restore backup files ..."
-file='/etc/nginx/nginx.conf'
-mv -v $file'.bak' $file
-file='/root/.config/midori/config'
-mv -v $file'.bak' $file
 path='/srv/http/app/templates/'
 file=$path'footer.php'
 mv -v $file'.bak' $file
@@ -106,6 +102,11 @@ file=$path'header.php'
 mv -v $file'.bak' $file
 file=$path'playback.php'
 mv -v $file'.bak' $file
+
+if ! grep -qs 'logout.php' /srv/http/app/templates/header.php; then
+	sed -i 's/(js|css|png|jpg|jpeg|gif|ico|svg)/(js|css|png|jpg|jpeg|gif|ico)/' /etc/nginx/nginx.conf
+fi
+sed -i '/user-agent/a user-stylesheet-uri=file:///root/.local/share/midori/styles/local-styles.css' /root/.config/midori/config
 
 if [ $arg -eq 0 ]; then # skip if reinstall - uninstall.sh <arg>
 	title "Clear PHP OPcache ..."
