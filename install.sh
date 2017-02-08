@@ -69,7 +69,7 @@ fi
 # install RuneUI enhancement #######################################
 title2 "Install $runeenh ..."
 title "Get files ..."
-wget -q --show-progress -O RuneUI_enhancement.tar.xz "https://github.com/rern/RuneUI_enhancement/blob/master/_repo/RuneUI_enhancement.tar.xz?raw=1"
+wget -q --show-progress -O srv.tar.xz "https://github.com/rern/RuneUI_enhancement/blob/master/_repo/srv.tar.xz?raw=1"
 wget -q --show-progress -O uninstall.sh "https://github.com/rern/RuneUI_enhancement/blob/master/uninstall.sh?raw=1"
 chmod +x uninstall.sh
 
@@ -83,8 +83,8 @@ file=$path'playback.php'
 cp -v $file $file'.bak'
 
 title "Install files ..."
-tar -Jxvf RuneUI_enhancement.tar.xz -C /
-rm RuneUI_enhancement.tar.xz
+tar -Jxvf srv.tar.xz -C /
+rm srv.tar.xz
 
 # for nginx svg support #######################################
 sed -i 's/(js|css|png|jpg|jpeg|gif|ico)/(js|css|png|jpg|jpeg|gif|ico|svg)/' /etc/nginx/nginx.conf
