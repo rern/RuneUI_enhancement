@@ -74,10 +74,6 @@ wget -q --show-progress -O uninstall.sh "https://github.com/rern/RuneUI_enhancem
 chmod +x uninstall.sh
 
 title "Backup existing files ..."
-file='/etc/nginx/nginx.conf'
-cp -v $file $file'.bak'
-file='/root/.config/midori/config'
-cp -v $file $file'.bak'
 path='/srv/http/app/templates/'
 file=$path'footer.php'
 cp -v $file $file'.bak'
@@ -92,6 +88,7 @@ rm RuneUI_enhancement.tar.xz
 
 # for nginx svg support #######################################
 sed -i 's/(js|css|png|jpg|jpeg|gif|ico)/(js|css|png|jpg|jpeg|gif|ico|svg)/' /etc/nginx/nginx.conf
+sed -i '/user-stylesheet-uri/d' /root/.config/midori/config
 systemctl restart nginx
 
 # for installed RuneUI password #######################################
