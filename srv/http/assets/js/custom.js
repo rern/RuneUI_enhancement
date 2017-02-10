@@ -223,7 +223,12 @@ function refreshState() {
         if ($('#section-index').length) {
             $('#countdown-display').countdown('destroy');
         }
-        if (GUI.stream !== 'radio') $('#total').html('00:00');
+// ****************************************************************************************
+        if (GUI.stream !== 'radio') {
+        	$('#total').html('00:00');
+        } else {
+        	$('#total').html('');
+        }
         $('#time').val(0, false).trigger('update');
         $('#format-bitrate').html('&nbsp;');
         $('li', '#playlist-entries').removeClass('active');
@@ -234,7 +239,6 @@ function refreshState() {
 		} else {
 			$('#total').html('');
 		}
-// ****************************************************************************************
 // improve song info
 		if (GUI.json.fileext != false) {
 			var dot = '<a style="color:#ffffff"> &#8226; </a>';
