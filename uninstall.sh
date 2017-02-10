@@ -84,6 +84,7 @@ title "Remove files ..."
 rm -v /srv/http/lyrics.php
 path='/srv/http/assets/'
 rm -v $path'css/custom.css'
+rm -v $path'css/customcoveroff.css'
 rm -v $path'css/customvoloff.css'
 rm -v $path'css/pnotify.css'
 
