@@ -80,6 +80,7 @@
 -->
 <div id="barleft"></div>
 <div id="barright"></div>
+<div id="lyricfade" class="hide"></div>
 <div id="menu-top">
     <img class="logo" src="<?=$this->asset('/img/runelogo.svg')?>" alt="RuneAudio" href="/">
 	<a id="clock-display"></a>
@@ -110,6 +111,4 @@
         <li id="open-playback"<?=$this->uri(1, '', ' class="active"')?>><a href="/#playback" <?=$this->uri(1, '', ' data-toggle="tab"')?>><i class="fa fa-music"></i></a></li>
         <li id="open-panel-dx"><a href="/#panel-dx"<?=$this->uri(1, '', ' class="open-panel-dx" data-toggle="tab"')?>><i class="fa fa-list"></i></a></li>
     </ul>
-</div>
-<div id="lyricfade" class="hide">
 </div>
