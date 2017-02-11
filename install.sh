@@ -61,7 +61,6 @@ if grep -qs 'RuneUIe' /srv/http/app/templates/header.php; then
 		1 ) ./uninstall.sh re;; # with any argument to skip success message
 		* ) echo
 			titleend "$runeenh reinstall cancelled."
-			rm install.sh
 			exit;;	
 	esac
 fi
