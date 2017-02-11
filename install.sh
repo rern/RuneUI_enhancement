@@ -84,13 +84,13 @@ rm srv.tar.xz
 # modified files #######################################
 sed -i -e 's/<title>RuneAudio - RuneUI<\/title>/<title>RuneAudio - RuneUIe<\/title>/
 ' -e '/runeui.css/a \
-    <link rel="stylesheet" href="<?=$this->asset('/css/pnotify.css')?>">\
-    <link rel="stylesheet" href="<?=$this->asset('/css/custom.css')?>">\
-    <?php if (preg_match('/mixer_type[\s]+"disabled"/', file_get_contents('/etc/mpd.conf'))): ?>\
-    <link rel="stylesheet" href="<?=$this->asset('/css/customvoloff.css')?>">\
+    <link rel="stylesheet" href="<?=$this->asset(\'/css/pnotify.css\')?>">\
+    <link rel="stylesheet" href="<?=$this->asset(\'/css/custom.css\')?>">\
+    <?php if (preg_match(\'/mixer_type[\s]+"disabled"/\', file_get_contents(\'/etc/mpd.conf\'))): ?>\
+    <link rel="stylesheet" href="<?=$this->asset(\'/css/customvoloff.css\')?>">\
     <?php endif ?>\
     <?php if ($this->coverart == 0): ?>\
-    <link rel="stylesheet" href="<?=$this->asset('/css/customcoveroff.css')?>">\
+    <link rel="stylesheet" href="<?=$this->asset(\'/css/customcoveroff.css\')?>">\
     <?php endif ?>\
 ' -e '/menu-top/i \
 <div id="barleft"></div>\
