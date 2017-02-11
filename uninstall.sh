@@ -102,7 +102,7 @@ mv -v $file'.bak' $file
 # restore modified files #######################################
 sed -i -e 's/<title>RuneAudio - RuneUIe<\/title>/<title>RuneAudio - RuneUI<\/title>/
 ' -e '/pnotify.css/,/^\s*$/{d}
-' -e '/barleft/,/barright/{d}
+' -e '/barleft/,/lyricfade/{d}
 ' -e 's/runelogo.svg/logo.png/
 ' -e '/<i class="fa fa-code"><\/i> Development<\/a>/d
 ' /srv/http/app/templates/header.php
