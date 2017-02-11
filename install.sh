@@ -100,7 +100,7 @@ sed -i -e 's/<title>RuneAudio - RuneUI<\/title>/<title>RuneAudio - RuneUIe<\/tit
             <li class="<?=$this->uri(1, 'dev', 'active')?>"><a href="/dev/"><i class="fa fa-code"></i> Development</a></li>
 ' /srv/http/app/templates/header.php
 
-echo $'<script src="<?=$this->asset(\'/js/vendor/pnotify3.custom.min.js\')?>"></script>
+echo $'\n<script src="<?=$this->asset(\'/js/vendor/pnotify3.custom.min.js\')?>"></script>
 <script src="<?=$this->asset(\'/js/custom.js\')?>"></script>
 <script src="<?=$this->asset(\'/js/vendor/hammer.min.js\')?>"></script>
 ' >> /srv/http/app/templates/footer.php
