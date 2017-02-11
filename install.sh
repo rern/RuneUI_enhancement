@@ -83,7 +83,7 @@ rm srv.tar.xz
 
 # modified files #######################################
 sed -i -e 's/<title>RuneAudio - RuneUI<\/title>/<title>RuneAudio - RuneUIe<\/title>/
-' -e '/runeui.css/a \
+' -e $'/runeui.css/a \
     <link rel="stylesheet" href="<?=$this->asset(\'/css/pnotify.css\')?>">\
     <link rel="stylesheet" href="<?=$this->asset(\'/css/custom.css\')?>">\
     <?php if (preg_match(\'/mixer_type[\s]+"disabled"/\', file_get_contents(\'/etc/mpd.conf\'))): ?>\
@@ -95,6 +95,7 @@ sed -i -e 's/<title>RuneAudio - RuneUI<\/title>/<title>RuneAudio - RuneUIe<\/tit
 ' -e '/menu-top/i \
 <div id="barleft"></div>\
 <div id="barright"></div>
+<div id="lyricfade" class="hide"></div>\
 ' -e 's/logo.png/runelogo.svg/
 ' -e '/poweroff-modal/i \
             <li class="<?=$this->uri(1, 'dev', 'active')?>"><a href="/dev/"><i class="fa fa-code"></i> Development</a></li>
