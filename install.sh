@@ -94,8 +94,8 @@ sed -i -e 's/<title>RuneAudio - RuneUI<\/title>/<title>RuneAudio - RuneUIe<\/tit
     <?php endif ?>\
 ' -e '/menu-top/i \
 <div id="barleft"></div>\
-<div id="barright"></div>
-<div id="lyricfade" class="hide"></div>\
+<div id="barright"></div>\
+<div id="lyricfade" class="hide"></div>
 ' -e 's/logo.png/runelogo.svg/
 ' -e '/poweroff-modal/i \
             <li class="<?=$this->uri(1, 'dev', 'active')?>"><a href="/dev/"><i class="fa fa-code"></i> Development</a></li>
