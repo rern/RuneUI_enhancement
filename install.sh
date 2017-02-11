@@ -91,7 +91,7 @@ echo $'<script src="<?=$this->asset(\'/js/vendor/pnotify3.custom.min.js\')?>"></
 <script src="<?=$this->asset(\'/js/vendor/hammer.min.js\')?>"></script>' >> $file
 
 # for nginx svg support #######################################
-if ! grep -qs 'ico|svg' /etc/nginx/nginx.conf; then
+if ! grep 'ico' /etc/nginx/nginx.conf | grep -q 'svg'; then
 	sed -i 's/(js|css|png|jpg|jpeg|gif|ico)/(js|css|png|jpg|jpeg|gif|ico|svg)/' /etc/nginx/nginx.conf
 	systemctl restart nginx
 fi
