@@ -95,18 +95,13 @@ rm -v $path'js/custom.js'
 rm -v $path'js/vendor/hammer.min.js'
 rm -v $path'js/vendor/pnotify3.custom.min.js'
 
-title "Restore backup file ..."
+title "Restore backup files ..."
+file='/srv/http/app/templates/header.php'
+mv -v $file'.bak' $file
 file='/srv/http/app/templates/playback.php'
 mv -v $file'.bak' $file
 
 # restore modified files #######################################
-sed -i -e 's/<title>RuneAudio - RuneUIe<\/title>/<title>RuneAudio - RuneUI<\/title>/
-' -e '/pnotify.css/,/^\s*$/{d}
-' -e '/barleft/,/lyricfade/{d}
-' -e 's/runelogo.svg/logo.png/
-' -e '/<i class="fa fa-code"><\/i> Development<\/a>/d
-' /srv/http/app/templates/header.php
-
 sed -i -e '/pnotify3.custom.min.js/,/hammer.min.js/{d}' /srv/http/app/templates/footer.php
 
 if ! grep -qs 'logout.php' /srv/http/app/templates/header.php; then
