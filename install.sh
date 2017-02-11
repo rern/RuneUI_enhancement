@@ -73,7 +73,9 @@ wget -q --show-progress -O srv.tar.xz "https://github.com/rern/RuneUI_enhancemen
 wget -q --show-progress -O uninstall.sh "https://github.com/rern/RuneUI_enhancement/blob/master/uninstall.sh?raw=1"
 chmod +x uninstall.sh
 
-title "Backup existing file ..."
+title "Backup existing files ..."
+file='/srv/http/app/templates/header.php'
+cp -v $file $file'.bak'
 file='/srv/http/app/templates/playback.php'
 cp -v $file $file'.bak'
 
