@@ -83,10 +83,13 @@ title "Install files ..."
 tar -Jxvf srv.tar.xz -C /
 rm srv.tar.xz
 
-# modified files #######################################
-echo $'\n<script src="<?=$this->asset(\'/js/vendor/pnotify3.custom.min.js\')?>"></script>
+# modified file #######################################
+file='/srv/http/app/templates/footer.php'
+# if eof not \n, add one
+[[ $(tail -c1 $file) ]] && echo '' >> $file
+echo $'<script src="<?=$this->asset(\'/js/vendor/pnotify3.custom.min.js\')?>"></script>
 <script src="<?=$this->asset(\'/js/custom.js\')?>"></script>
-<script src="<?=$this->asset(\'/js/vendor/hammer.min.js\')?>"></script>' >> /srv/http/app/templates/footer.php
+<script src="<?=$this->asset(\'/js/vendor/hammer.min.js\')?>"></script>' >> $file
 
 # for nginx svg support #######################################
 sed -i 's/(js|css|png|jpg|jpeg|gif|ico)/(js|css|png|jpg|jpeg|gif|ico|svg)/' /etc/nginx/nginx.conf
