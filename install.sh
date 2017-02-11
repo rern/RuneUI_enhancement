@@ -91,9 +91,12 @@ echo $'<script src="<?=$this->asset(\'/js/vendor/pnotify3.custom.min.js\')?>"></
 <script src="<?=$this->asset(\'/js/vendor/hammer.min.js\')?>"></script>' >> $file
 
 # for nginx svg support #######################################
-sed -i 's/(js|css|png|jpg|jpeg|gif|ico)/(js|css|png|jpg|jpeg|gif|ico|svg)/' /etc/nginx/nginx.conf
+if ! grep -qs 'ico|svg' /etc/nginx/nginx.conf; then
+	sed -i 's/(js|css|png|jpg|jpeg|gif|ico)/(js|css|png|jpg|jpeg|gif|ico|svg)/' /etc/nginx/nginx.conf
+	systemctl restart nginx
+fi
+
 sed -i '/user-stylesheet-uri/d' /root/.config/midori/config
-systemctl restart nginx
 
 # for installed RuneUI password #######################################
 if grep -qs 'logout.php' /srv/http/app/templates/header.php.bak; then
