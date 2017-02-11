@@ -73,18 +73,37 @@ wget -q --show-progress -O srv.tar.xz "https://github.com/rern/RuneUI_enhancemen
 wget -q --show-progress -O uninstall.sh "https://github.com/rern/RuneUI_enhancement/blob/master/uninstall.sh?raw=1"
 chmod +x uninstall.sh
 
-title "Backup existing files ..."
-path='/srv/http/app/templates/'
-file=$path'footer.php'
-cp -v $file $file'.bak'
-file=$path'header.php'
-cp -v $file $file'.bak'
-file=$path'playback.php'
+title "Backup existing file ..."
+file='/srv/http/app/templates/playback.php'
 cp -v $file $file'.bak'
 
 title "Install files ..."
 tar -Jxvf srv.tar.xz -C /
 rm srv.tar.xz
+
+# modified files #######################################
+sed -i -e 's/<title>RuneAudio - RuneUI<\/title>/<title>RuneAudio - RuneUIe<\/title>/
+' -e '/runeui.css/a \
+    <link rel="stylesheet" href="<?=$this->asset('/css/pnotify.css')?>">\
+    <link rel="stylesheet" href="<?=$this->asset('/css/custom.css')?>">\
+    <?php if (preg_match('/mixer_type[\s]+"disabled"/', file_get_contents('/etc/mpd.conf'))): ?>\
+    <link rel="stylesheet" href="<?=$this->asset('/css/customvoloff.css')?>">\
+    <?php endif ?>\
+    <?php if ($this->coverart == 0): ?>\
+    <link rel="stylesheet" href="<?=$this->asset('/css/customcoveroff.css')?>">\
+    <?php endif ?>\
+' -e '/menu-top/i \
+<div id="barleft"></div>\
+<div id="barright"></div>
+' -e 's/logo.png/runelogo.svg/
+' -e '/poweroff-modal/i \
+            <li class="<?=$this->uri(1, 'dev', 'active')?>"><a href="/dev/"><i class="fa fa-code"></i> Development</a></li>
+' /srv/http/app/templates/header.php
+
+echo $'<script src="<?=$this->asset(\'/js/vendor/pnotify3.custom.min.js\')?>"></script>
+<script src="<?=$this->asset(\'/js/custom.js\')?>"></script>
+<script src="<?=$this->asset(\'/js/vendor/hammer.min.js\')?>"></script>
+' >> /srv/http/app/templates/footer.php
 
 # for nginx svg support #######################################
 sed -i 's/(js|css|png|jpg|jpeg|gif|ico)/(js|css|png|jpg|jpeg|gif|ico|svg)/' /etc/nginx/nginx.conf
