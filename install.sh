@@ -72,9 +72,7 @@ wget -q --show-progress -O srv.tar.xz "https://github.com/rern/RuneUI_enhancemen
 wget -q --show-progress -O uninstall.sh "https://github.com/rern/RuneUI_enhancement/blob/master/uninstall.sh?raw=1"
 chmod +x uninstall.sh
 
-title "Backup existing files ..."
-file='/srv/http/app/templates/header.php'
-cp -v $file $file'.bak'
+title "Backup existing file ..."
 file='/srv/http/app/templates/playback.php'
 cp -v $file $file'.bak'
 
@@ -83,6 +81,38 @@ tar -Jxvf srv.tar.xz -C /
 rm srv.tar.xz
 
 # modified file #######################################
+sed -i -e 's/<title>RuneAudio - RuneUI<\/title>/<title>RuneAudio - RuneUIe<\/title>/
+' -e $'/runeui.css/a \
+    <link rel="stylesheet" href="<?=$this->asset(\'/css/pnotify.css\')?>">\
+    <link rel="stylesheet" href="<?=$this->asset(\'/css/custom.css\')?>">\
+    <?php if (preg_match(\'/mixer_type[\\\s]+"disabled"/\', file_get_contents(\'/etc/mpd.conf\'))): ?>\
+        <link rel="stylesheet" href="<?=$this->asset(\'/css/customvoloff.css\')?>">\
+    <?php endif ?>\
+    <?php if ($this->coverart == 0): ?>\
+        <link rel="stylesheet" href="<?=$this->asset(\'/css/customcoveroff.css\')?>">\
+    <?php endif ?> <!-- enhancement -->
+' -e '/menu-top/i \
+<div id="barleft"></div>\
+<div id="barright"></div>\
+<div id="lyricfade" class="hide"></div>
+' -e $'/menu-top/a \
+    <img class="logo" src="<?=$this->asset(\'/img/runelogo.svg\')?>" alt="RuneAudio" href="/">
+' -e 's/MENU <i class="fa fa-bars dx">/<i class="fa fa-gear">/
+' -e '/dropdown-menu/a \
+            <li id="dropdownbg"></li> <!-- box-shadow -->
+' -e 's|<a id="menu-settings" class="dropdown-toggle"|<button id="menu-settings" class="btn-default dropdown-toggle"|
+' -e 's|href="#"><i class="fa fa-gear"></i></a>|href="#"><i class="fa fa-gear"></i></button>|
+' -e $'s|<li class="<?=$this->uri(1, \'\'|<?php /\*<li class="<?=$this->uri(1, \'\'|
+' -e $'s|href="/"><i class="fa fa-play"></i> Playback</a></li>|href="/"><i class="fa fa-play"></i> Playback</a></li>\*/?>|
+' -e $'/poweroff-modal/i \
+            <li class="<?=$this->uri(1, \'dev\', \'active\')?>"><a href="/dev/"><i class="fa fa-code"></i> Development</a></li>
+' -e 's|<a class="home"|<?php /*<a class="home"|
+' -e 's|"logo" alt="RuneAudio"></a>|"logo" alt="RuneAudio"></a>*/?>|
+' -e 's|"fa fa-music"></i> Library|"fa fa-folder-open"></i>|
+' -e $'s|"tab"\')?>><i class="fa fa-play"></i> Playback|"tab"\')?>><i class="fa fa-play"></i>|
+' -e 's|"fa fa-list"></i> Queue|"fa fa-list"></i>|
+' /srv/http/app/templates/header.php
+
 file='/srv/http/app/templates/footer.php'
 # if eof not \n, add one
 [[ $(tail -c1 $file) ]] && echo '' >> $file
@@ -91,16 +121,12 @@ echo $'<script src="<?=$this->asset(\'/js/vendor/pnotify3.custom.min.js\')?>"></
 <script src="<?=$this->asset(\'/js/vendor/hammer.min.js\')?>"></script>' >> $file
 
 # for nginx svg support #######################################
-sed -i 's/(js|css|png|jpg|jpeg|gif|ico)/(js|css|png|jpg|jpeg|gif|ico|svg)/' /etc/nginx/nginx.conf
-sed -i '/user-stylesheet-uri/d' /root/.config/midori/config
-systemctl restart nginx
-
-# for installed RuneUI password #######################################
-if grep -qs 'logout.php' /srv/http/app/templates/header.php.bak; then
-	sed -i '/poweroff-modal/a \
-				<li><a href="/logout.php"><i class="fa fa-sign-out"></i> Logout</a></li>
-	' /srv/http/app/templates/header.php
+if ! grep 'ico' /etc/nginx/nginx.conf | grep -q 'svg'; then
+	sed -i 's/|ico/&|svg/' /etc/nginx/nginx.conf
+	systemctl restart nginx
 fi
+
+sed -i '/user-stylesheet-uri/d' /root/.config/midori/config
 
 # local display zoom #######################################
 title "$info Select local browser screen size:"

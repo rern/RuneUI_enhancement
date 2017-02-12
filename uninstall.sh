@@ -95,17 +95,33 @@ rm -v $path'js/custom.js'
 rm -v $path'js/vendor/hammer.min.js'
 rm -v $path'js/vendor/pnotify3.custom.min.js'
 
-title "Restore backup files ..."
-file='/srv/http/app/templates/header.php'
-mv -v $file'.bak' $file
+title "Restore backup file ..."
 file='/srv/http/app/templates/playback.php'
 mv -v $file'.bak' $file
 
 # restore modified files #######################################
+sed -i -e 's/<title>RuneAudio - RuneUIe<\/title>/<title>RuneAudio - RuneUI<\/title>/
+' -e '/pnotify.css/,/<!-- enhancement -->/{d}
+' -e '/barleft/,/lyricfade/{d}
+' -e '/runelogo.svg/d
+' -e 's/<i class="fa fa-gear">/MENU <i class="fa fa-bars dx">/
+' -e '/dropdownbg/d
+' -e 's|<button id="menu-settings" class="btn-default dropdown-toggle"|<a id="menu-settings" class="dropdown-toggle"|
+' -e 's|href="#"><i class="fa fa-gear"></i></button>|href="#"><i class="fa fa-gear"></i></a>|
+' -e $'s|<?php /\*<li class="<?=$this->uri(1, \'\'|<li class="<?=$this->uri(1, \'\'|
+' -e $'s|href="/"><i class="fa fa-play"></i> Playback</a></li>\*/?>|href="/"><i class="fa fa-play"></i> Playback</a></li>|
+' -e '/"fa fa-code"><\/i> Development<\/a>/d
+' -e 's|<?php /\*<a class="home"|<a class="home"|
+' -e 's|"logo" alt="RuneAudio"></a>\*/?>|"logo" alt="RuneAudio"></a>|
+' -e $'s|"tab"\')?>><i class="fa fa-folder-open"></i></a>|"tab"\')?>><i class="fa fa-music"></i> Library</a>|
+' -e $'s|"tab"\')?>><i class="fa fa-play"></i>|"tab"\')?>><i class="fa fa-play"></i> Playback|
+' -e 's|"fa fa-list"></i></a>|"fa fa-list"></i> Queue</a>|
+' /srv/http/app/templates/header.php
+
 sed -i -e '/pnotify3.custom.min.js/,/hammer.min.js/{d}' /srv/http/app/templates/footer.php
 
 if ! grep -qs 'logout.php' /srv/http/app/templates/header.php; then
-	sed -i 's/(js|css|png|jpg|jpeg|gif|ico|svg)/(js|css|png|jpg|jpeg|gif|ico)/' /etc/nginx/nginx.conf
+	sed -i 's/|ico|svg/|ico/' /etc/nginx/nginx.conf
 fi
 sed -i '/user-agent/a user-stylesheet-uri=file:///root/.local/share/midori/styles/local-styles.css' /root/.config/midori/config
 
