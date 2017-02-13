@@ -142,7 +142,7 @@ case $answer in
 	3 ) zoom=1.5;;
 	* ) zoom=0.7;;
 esac
-sed -i 's/zoom-level=1.5/zoom-level='$zoom'/' /root/.config/midori/config
+sed -i 's/zoom-level=0.7/zoom-level='$zoom'/' /root/.config/midori/config
 
 if [ $arg -eq 0 ]; then # skip if run from gpioinstall.sh - install.sh <arg>
 	title "Clear PHP OPcache ..."
