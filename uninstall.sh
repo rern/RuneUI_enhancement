@@ -101,15 +101,15 @@ mv -v $file'.bak' $file
 
 # restore modified files #######################################
 sed -i -e 's/<title>RuneAudio - RuneUIe<\/title>/<title>RuneAudio - RuneUI<\/title>/
-' -e '/pnotify.css/,/<!-- enhancement -->/{d}
-' -e '/barleft/,/lyricfade/{d}
-' -e '/runelogo.svg/d
+' -e '/pnotify.css/,/<!-- enhancement -->/ d
+' -e '/barleft/,/lyricfade/ d
+' -e '/runelogo.svg/ d
 ' -e 's/<i class="fa fa-gear">/MENU <i class="fa fa-bars dx">/
-' -e '/dropdownbg/d
+' -e '/dropdownbg/ d
 ' -e 's|<button id="menu-settings" class="btn-default dropdown-toggle"|<a id="menu-settings" class="dropdown-toggle"|
 ' -e 's|href="#"><i class="fa fa-gear"></i></button>|href="#"><i class="fa fa-gear"></i></a>|
 ' -e '\|href="/"><i class="fa fa-play"| s|^<?php /\*||; \|href="/"><i class="fa fa-play"| s|\*/?>$||
-' -e '/"fa fa-code"><\/i> Development<\/a>/d
+' -e '/"fa fa-code"><\/i> Development<\/a>/ d
 ' -e '\|logo.png| s|^<?php /\*||; \|logo.png| s|\*/?>$||
 ' -e $'s|"tab"\')?>><i class="fa fa-folder-open"></i></a>|"tab"\')?>><i class="fa fa-music"></i> Library</a>|
 ' -e $'s|"tab"\')?>><i class="fa fa-play"></i>|"tab"\')?>><i class="fa fa-play"></i> Playback|
