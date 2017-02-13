@@ -123,7 +123,7 @@ if ! grep -qs 'logout.php' /srv/http/app/templates/header.php; then
 fi
 
 sed -i -e 's|zoom-level=...|zoom-level=0.7|
-'\|user-stylesheet-uri| s|^\#||
+' -e '\|user-stylesheet-uri| s|^#||
 ' /root/.config/midori/config
 
 if [ $arg -eq 0 ]; then # skip if reinstall - uninstall.sh <arg>
