@@ -97,11 +97,10 @@ sed -i -e 's|<title>RuneAudio - RuneUI</title>|<title>RuneAudio - RuneUIe</title
 <div id="lyricfade" class="hide"></div>
 ' -e $'\|menu-top| a\
     <img class="logo" src="<?=$this->asset(\'/img/runelogo.svg\')?>" alt="RuneAudio" href="/">
-' -e 's|MENU <i class="fa fa-bars dx">|<i class="fa fa-gear">|
 ' -e '\|dropdown-menu| a\
             <li id="dropdownbg"></li> <!-- box-shadow -->
 ' -e 's|<a id="menu-settings" class="dropdown-toggle"|<button id="menu-settings" class="btn-default dropdown-toggle"|
-' -e 's|href="#"><i class="fa fa-gear"></i></a>|href="#"><i class="fa fa-gear"></i></button>|
+' -e 's|href="#">MENU <i class="fa fa-bars dx"></i></a>|href="#"><i class="fa fa-gear"></i></button>|
 ' -e '\|href="/"><i class="fa fa-play"| s|^|<?php /\*|; \|href="/"><i class="fa fa-play"| s|$|\*/?>|
 ' -e $'\|poweroff-modal| i\
             <li class="<?=$this->uri(1, \'dev\', \'active\')?>"><a href="/dev/"><i class="fa fa-code"></i> Development</a></li>
