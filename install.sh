@@ -81,8 +81,14 @@ tar -Jxvf srv.tar.xz -C /
 rm srv.tar.xz
 
 # modified file #######################################
-sed -i -e 's/<title>RuneAudio - RuneUI<\/title>/<title>RuneAudio - RuneUIe<\/title>/
-' -e $'/runeui.css/a \
+    # s| : substitute delimiter can be any symbol / character (single byte)
+    # $ : for escaped 'single quote'
+    # \| : (left one only) escaped line search delimiter other than '/'
+    # a\ : append line
+    # i\ : insert(prepend) line
+    # ...\ : escaped newline
+sed -i -e 's|<title>RuneAudio - RuneUI</title>|<title>RuneAudio - RuneUIe</title>|
+' -e $'\|runeui.css| a\
     <link rel="stylesheet" href="<?=$this->asset(\'/css/pnotify.css\')?>">\
     <link rel="stylesheet" href="<?=$this->asset(\'/css/custom.css\')?>">\
     <?php if (preg_match(\'/mixer_type[\\\s]+"disabled"/\', file_get_contents(\'/etc/mpd.conf\'))): ?>\
@@ -91,23 +97,21 @@ sed -i -e 's/<title>RuneAudio - RuneUI<\/title>/<title>RuneAudio - RuneUIe<\/tit
     <?php if ($this->coverart == 0): ?>\
         <link rel="stylesheet" href="<?=$this->asset(\'/css/customcoveroff.css\')?>">\
     <?php endif ?> <!-- enhancement -->
-' -e '/menu-top/i \
+' -e '\|menu-top| i\
 <div id="barleft"></div>\
 <div id="barright"></div>\
 <div id="lyricfade" class="hide"></div>
-' -e $'/menu-top/a \
+' -e $'\|menu-top| a\
     <img class="logo" src="<?=$this->asset(\'/img/runelogo.svg\')?>" alt="RuneAudio" href="/">
-' -e 's/MENU <i class="fa fa-bars dx">/<i class="fa fa-gear">/
-' -e '/dropdown-menu/a \
+' -e 's|MENU <i class="fa fa-bars dx">|<i class="fa fa-gear">|
+' -e '\|dropdown-menu| a\
             <li id="dropdownbg"></li> <!-- box-shadow -->
 ' -e 's|<a id="menu-settings" class="dropdown-toggle"|<button id="menu-settings" class="btn-default dropdown-toggle"|
 ' -e 's|href="#"><i class="fa fa-gear"></i></a>|href="#"><i class="fa fa-gear"></i></button>|
-' -e $'s|<li class="<?=$this->uri(1, \'\'|<?php /\*<li class="<?=$this->uri(1, \'\'|
-' -e $'s|href="/"><i class="fa fa-play"></i> Playback</a></li>|href="/"><i class="fa fa-play"></i> Playback</a></li>\*/?>|
-' -e $'/poweroff-modal/i \
+' -e '\|href="/"><i class="fa fa-play"| s|^|<?php /\*|; \|href="/"><i class="fa fa-play"| s|$|\*/?>|
+' -e $'\|poweroff-modal| i\
             <li class="<?=$this->uri(1, \'dev\', \'active\')?>"><a href="/dev/"><i class="fa fa-code"></i> Development</a></li>
-' -e 's|<a class="home"|<?php /*<a class="home"|
-' -e 's|"logo" alt="RuneAudio"></a>|"logo" alt="RuneAudio"></a>*/?>|
+' -e '\|logo.png| s|^|<?php /\*|; \|logo.png| s|$|\*/?>|
 ' -e 's|"fa fa-music"></i> Library|"fa fa-folder-open"></i>|
 ' -e $'s|"tab"\')?>><i class="fa fa-play"></i> Playback|"tab"\')?>><i class="fa fa-play"></i>|
 ' -e 's|"fa fa-list"></i> Queue|"fa fa-list"></i>|
