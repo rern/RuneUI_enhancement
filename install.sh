@@ -81,12 +81,6 @@ tar -Jxvf srv.tar.xz -C /
 rm srv.tar.xz
 
 # modified file #######################################
-    # s| : substitute delimiter can be any symbol / character (single byte)
-    # $ : for escaped 'single quote'
-    # \| : (left one only) escaped line search delimiter other than '/'
-    # a\ : append line
-    # i\ : insert(prepend) line
-    # ...\ : escaped newline
 sed -i -e 's|<title>RuneAudio - RuneUI</title>|<title>RuneAudio - RuneUIe</title>|
 ' -e $'\|runeui.css| a\
     <link rel="stylesheet" href="<?=$this->asset(\'/css/pnotify.css\')?>">\
