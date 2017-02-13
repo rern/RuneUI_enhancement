@@ -108,11 +108,9 @@ sed -i -e 's/<title>RuneAudio - RuneUIe<\/title>/<title>RuneAudio - RuneUI<\/tit
 ' -e '/dropdownbg/d
 ' -e 's|<button id="menu-settings" class="btn-default dropdown-toggle"|<a id="menu-settings" class="dropdown-toggle"|
 ' -e 's|href="#"><i class="fa fa-gear"></i></button>|href="#"><i class="fa fa-gear"></i></a>|
-' -e $'s|<?php /\*<li class="<?=$this->uri(1, \'\'|<li class="<?=$this->uri(1, \'\'|
-' -e $'s|href="/"><i class="fa fa-play"></i> Playback</a></li>\*/?>|href="/"><i class="fa fa-play"></i> Playback</a></li>|
+' -e '\|href="/"><i class="fa fa-play"| s|^<?php /\*||; \|href="/"><i class="fa fa-play"| s|\*/?>$||
 ' -e '/"fa fa-code"><\/i> Development<\/a>/d
-' -e 's|<?php /\*<a class="home"|<a class="home"|
-' -e 's|"logo" alt="RuneAudio"></a>\*/?>|"logo" alt="RuneAudio"></a>|
+' -e '\|logo.png| s|^<?php /\*||; \|logo.png| s|\*/?>$||
 ' -e $'s|"tab"\')?>><i class="fa fa-folder-open"></i></a>|"tab"\')?>><i class="fa fa-music"></i> Library</a>|
 ' -e $'s|"tab"\')?>><i class="fa fa-play"></i>|"tab"\')?>><i class="fa fa-play"></i> Playback|
 ' -e 's|"fa fa-list"></i></a>|"fa fa-list"></i> Queue</a>|
