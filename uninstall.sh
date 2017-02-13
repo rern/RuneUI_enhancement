@@ -121,7 +121,10 @@ sed -i -e '\|pnotify3.custom.min.js|,\|hammer.min.js| d' /srv/http/app/templates
 if ! grep -qs 'logout.php' /srv/http/app/templates/header.php; then
 	sed -i 's/|ico|svg/|ico/' /etc/nginx/nginx.conf
 fi
-sed -i '\|user-stylesheet-uri| s|^#||' /root/.config/midori/config
+
+sed -i -e 's|zoom-level=...|zoom-level=0.7|
+'\|user-stylesheet-uri| s|^#||
+' /root/.config/midori/config
 
 if [ $arg -eq 0 ]; then # skip if reinstall - uninstall.sh <arg>
 	title "Clear PHP OPcache ..."
