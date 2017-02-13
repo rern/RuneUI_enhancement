@@ -114,7 +114,7 @@ echo $'<script src="<?=$this->asset(\'/js/vendor/pnotify3.custom.min.js\')?>"></
 <script src="<?=$this->asset(\'/js/custom.js\')?>"></script>
 <script src="<?=$this->asset(\'/js/vendor/hammer.min.js\')?>"></script>' >> $file
 
-sed -i -e '\|<div class="tab-content" id="content">| i\<?php /\* enh
+sed -i -e '\|<div class="tab-content">| i\<?php /\* enh
 ' -e '\|<!-- LIBRARY PANEL -->| i\enh \*/?>
 ' /srv/http/app/templates/playback.php
 sed -i -e '\|enh \*/?>| r /srv/http/app/templates/playbackinsert.php

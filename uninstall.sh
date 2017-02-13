@@ -116,7 +116,7 @@ sed -i -e '\|pnotify3.custom.min.js|,\|hammer.min.js| d' /srv/http/app/templates
 
 sed -i -e '\|<?php /\* enh| d
 ' -e '\|enh \*/?>| d
-' -e '\|<div class="tab-content">|,\|</div><!-- enh -->| d' /srv/http/app/templates/playback.php
+' -e '\|<div class="tab-content" id="content">|,\|</div><!-- enh -->| d' /srv/http/app/templates/playback.php
 
 if ! grep -qs 'logout.php' /srv/http/app/templates/header.php; then
 	sed -i 's/|ico|svg/|ico/' /etc/nginx/nginx.conf
