@@ -124,7 +124,7 @@ if ! grep 'ico' /etc/nginx/nginx.conf | grep -q 'svg'; then
 	systemctl restart nginx
 fi
 
-sed -i '|user-stylesheet-uri| s|^|#|' /root/.config/midori/config
+sed -i '\|user-stylesheet-uri| s|^|#|' /root/.config/midori/config
 
 # local display zoom #######################################
 title "$info Select local browser screen size:"
