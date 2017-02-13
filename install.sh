@@ -72,6 +72,10 @@ wget -q --show-progress -O srv.tar.xz "https://github.com/rern/RuneUI_enhancemen
 wget -q --show-progress -O uninstall.sh "https://github.com/rern/RuneUI_enhancement/blob/master/uninstall.sh?raw=1"
 chmod +x uninstall.sh
 
+title "Backup existing file ..."
+file='/srv/http/app/templates/playback.php'
+cp -v $file $file'.bak'
+
 title "Install files ..."
 tar -Jxvf srv.tar.xz -C /
 rm srv.tar.xz
@@ -93,10 +97,11 @@ sed -i -e 's|<title>RuneAudio - RuneUI</title>|<title>RuneAudio - RuneUIe</title
 <div id="lyricfade" class="hide"></div>
 ' -e $'\|menu-top| a\
     <img class="logo" src="<?=$this->asset(\'/img/runelogo.svg\')?>" alt="RuneAudio" href="/">
+' -e 's|MENU <i class="fa fa-bars dx">|<i class="fa fa-gear">|
 ' -e '\|dropdown-menu| a\
             <li id="dropdownbg"></li> <!-- box-shadow -->
 ' -e 's|<a id="menu-settings" class="dropdown-toggle"|<button id="menu-settings" class="btn-default dropdown-toggle"|
-' -e 's|MENU <i class="fa fa-bars dx"></i></a>|<i class="fa fa-gear"></i></a>|
+' -e 's|href="#"><i class="fa fa-gear"></i></a>|href="#"><i class="fa fa-gear"></i></button>|
 ' -e '\|href="/"><i class="fa fa-play"| s|^|<?php /\*|; \|href="/"><i class="fa fa-play"| s|$|\*/?>|
 ' -e $'\|poweroff-modal| i\
             <li class="<?=$this->uri(1, \'dev\', \'active\')?>"><a href="/dev/"><i class="fa fa-code"></i> Development</a></li>
@@ -112,13 +117,6 @@ file='/srv/http/app/templates/footer.php'
 echo $'<script src="<?=$this->asset(\'/js/vendor/pnotify3.custom.min.js\')?>"></script>
 <script src="<?=$this->asset(\'/js/custom.js\')?>"></script>
 <script src="<?=$this->asset(\'/js/vendor/hammer.min.js\')?>"></script>' >> $file
-
-sed -i -e '\|<div class="tab-content" id="content">| i\<?php /\* enh
-' -e '\|<!-- LIBRARY PANEL -->| i\enh \*/?>
-' /srv/http/app/templates/playback.php
- -e '\|enh \*/?>| r /srv/http/app/templates/playbackinsert.php
-' /srv/http/app/templates/playback.php
-rm /srv/http/app/templates/playbackinsert.php
 
 # for nginx svg support #######################################
 if ! grep 'ico' /etc/nginx/nginx.conf | grep -q 'svg'; then
