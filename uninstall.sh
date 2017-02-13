@@ -95,10 +95,6 @@ rm -v $path'js/custom.js'
 rm -v $path'js/vendor/hammer.min.js'
 rm -v $path'js/vendor/pnotify3.custom.min.js'
 
-title "Restore backup file ..."
-file='/srv/http/app/templates/playback.php'
-mv -v $file'.bak' $file
-
 # restore modified files #######################################
 sed -i -e 's|<title>RuneAudio - RuneUIe<\/title>|<title>RuneAudio - RuneUI<\/title>|
 ' -e '\|pnotify.css|,\|<!-- enhancement -->| d
@@ -117,6 +113,10 @@ sed -i -e 's|<title>RuneAudio - RuneUIe<\/title>|<title>RuneAudio - RuneUI<\/tit
 ' /srv/http/app/templates/header.php
 
 sed -i -e '\|pnotify3.custom.min.js|,\|hammer.min.js| d' /srv/http/app/templates/footer.php
+
+sed -i -e '\|<?php /\* enh| d
+' -e '\|enh \*/?>| d
+' -e '\|<div class="tab-content">|,\|</div><!-- enh -->| d' /srv/http/app/templates/playback.php
 
 if ! grep -qs 'logout.php' /srv/http/app/templates/header.php; then
 	sed -i 's/|ico|svg/|ico/' /etc/nginx/nginx.conf

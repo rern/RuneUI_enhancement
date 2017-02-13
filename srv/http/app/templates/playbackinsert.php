@@ -1,3 +1,4 @@
+<div class="tab-content">
     <!-- enh PLAYBACK PANEL -->
     <div id="playback" class="tab-pane active">
         <div id="container-playback">
