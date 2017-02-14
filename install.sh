@@ -72,10 +72,6 @@ wget -q --show-progress -O srv.tar.xz "https://github.com/rern/RuneUI_enhancemen
 wget -q --show-progress -O uninstall.sh "https://github.com/rern/RuneUI_enhancement/blob/master/uninstall.sh?raw=1"
 chmod +x uninstall.sh
 
-title "Backup existing file ..."
-file='/srv/http/app/templates/playback.php'
-cp -v $file $file'.bak'
-
 title "Install files ..."
 tar -Jxvf srv.tar.xz -C /
 rm srv.tar.xz
@@ -116,6 +112,12 @@ file='/srv/http/app/templates/footer.php'
 echo $'<script src="<?=$this->asset(\'/js/vendor/pnotify3.custom.min.js\')?>"></script>
 <script src="<?=$this->asset(\'/js/custom.js\')?>"></script>
 <script src="<?=$this->asset(\'/js/vendor/hammer.min.js\')?>"></script>' >> $file
+
+sed -i -e '\|<div class="tab-content">| i\
+<?php include "playbackcustom.php";\
+/\*
+' -e '\|<!-- LIBRARY PANEL -->| i\enh \*/?>
+' /srv/http/app/templates/playback.php
 
 # for nginx svg support #######################################
 if ! grep 'ico' /etc/nginx/nginx.conf | grep -q 'svg'; then
