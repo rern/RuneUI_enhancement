@@ -125,8 +125,6 @@ if ! grep 'ico' /etc/nginx/nginx.conf | grep -q 'svg'; then
 	systemctl restart nginx
 fi
 
-sed -i '\|user-stylesheet-uri| s|^|#|' /root/.config/midori/config
-
 # local display zoom #######################################
 title "$info Select local browser screen size:"
 echo 'Set zoom level for display directly connect to RPi.'
@@ -148,7 +146,11 @@ case $answer in
 		read ans 
 	        zoom=$ans;;
 esac
-sed -i 's/zoom-level=*/zoom-level='$zoom'/' /root/.config/midori/config
+sed -i -e 's|zoom-level|#zoom-level|
+' -e "\|zoom-level| i\
+zoom-level=$zoom
+" -e 's|user-stylesheet-uri|#user-stylesheet-uri|
+' /root/.config/midori/config
 
 if [ $arg -eq 0 ]; then # skip if run from gpioinstall.sh - install.sh <arg>
 	title "Clear PHP OPcache ..."
