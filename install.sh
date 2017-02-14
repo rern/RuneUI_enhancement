@@ -134,16 +134,21 @@ echo
 echo 'Screen size:'
 echo -e '  \e[0;36m1\e[m Small     ( 0.7 : width less than 800px )'
 echo -e '  \e[0;36m2\e[m Medium    ( 1.2 : HD - 1280px )'
-echo -e '  \e[0;36m3\e[m Large     ( 1.5 : Full HD - 1920px)'
+echo -e '  \e[0;36m3\e[m Large     ( 1.5 : Full HD - 1920px )'
+echo -e '  \e[0;36m4\e[m Custom    ( user define )'
 echo
-echo -e '\e[0;36m1\e[m / 2 / 3 ? '
+echo -e '\e[0;36m1\e[m / 2 / 3 / 4 ? '
 read -n 1 answer
 case $answer in
+	* ) zoom=0.7;;
 	2 ) zoom=1.2;;
 	3 ) zoom=1.5;;
-	* ) zoom=0.7;;
+	4 ) echo
+	        echo 'Custom scale:'
+		read ans 
+	        zoom=$ans;;
 esac
-sed -i 's/zoom-level=0.7/zoom-level='$zoom'/' /root/.config/midori/config
+sed -i 's/zoom-level=*/zoom-level='$zoom'/' /root/.config/midori/config
 
 if [ $arg -eq 0 ]; then # skip if run from gpioinstall.sh - install.sh <arg>
 	title "Clear PHP OPcache ..."
