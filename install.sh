@@ -138,19 +138,20 @@ echo
 echo -e '\e[0;36m1\e[m / 2 / 3 / 4 ? '
 read -n 1 answer
 case $answer in
-	* ) zoom=0.7;;
 	2 ) zoom=1.2;;
 	3 ) zoom=1.5;;
 	4 ) echo
-	        echo 'Custom scale:'
+		echo 'Custom scale:'
 		read ans 
-	        zoom=$ans;;
+		zoom=$ans;;
+	* ) zoom=0.7;;
 esac
 sed -i -e 's|zoom-level|#zoom-level|
 ' -e "\|zoom-level| i\
 zoom-level=$zoom
 " -e 's|user-stylesheet-uri|#user-stylesheet-uri|
 ' /root/.config/midori/config
+
 
 if [ $arg -eq 0 ]; then # skip if run from gpioinstall.sh - install.sh <arg>
 	title "Clear PHP OPcache ..."
