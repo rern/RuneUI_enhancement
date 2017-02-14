@@ -121,8 +121,9 @@ if ! grep -qs 'logout.php' /srv/http/app/templates/header.php; then
 	sed -i 's/|ico|svg/|ico/' /etc/nginx/nginx.conf
 fi
 
-sed -i -e 's|zoom-level=...|zoom-level=0.7|
-' -e '\|user-stylesheet-uri| s|^#||
+sed -i -e '0, \|zoom-level| {\|zoom-level| d}
+' -e 's|#zoom-level|zoom-level|
+' -e 's|#user-stylesheet-uri|user-stylesheet-uri|
 ' /root/.config/midori/config
 
 if [ $arg -eq 0 ]; then # skip if reinstall - uninstall.sh <arg>
