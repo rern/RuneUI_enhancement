@@ -94,13 +94,6 @@ sed -i -e '/playbackcustom.php/, /\/\*/ d
 ' -e '/enh \*\/?>/ d
 ' /srv/http/app/templates/playback.php
 
-# no RuneUI password
-nginx='/etc/nginx/nginx.conf'
-if ! grep -qs 'logout.php' $header; then
-	echo $enginx
-	sed -i 's/|ico|svg/|ico/' $nginx
-fi
-
 midori='/root/.config/midori/config'
 echo $midori
 sed -i -e '0, /zoom-level/ {// d}
