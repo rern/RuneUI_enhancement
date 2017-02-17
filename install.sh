@@ -4,6 +4,7 @@
 # install.sh - RuneUI enhancement
 # https://github.com/rern/RuneUI_enhancement
 
+# remove install.sh
 # already installed
 #		reinstall ?
 #			exit
@@ -11,18 +12,16 @@
 # install
 #		get uninstall.sh
 #		get tar.xz
-#		backup files
+#		modify files
 #		extract
-#		remove install tar.xz
+#		remove tar.xz
 #		restart nginx
 #		clear opcache
-#		restart midori
-# success (skip if install with gpioinstall.sh)
+#		restart local browser
+# success
 #		info
 
 rm install.sh
-
-arg=$#
 
 linered='\e[0;31m---------------------------------------------------------\e[m'
 line2='\e[0;36m=========================================================\e[m'
@@ -49,7 +48,7 @@ titleend() {
 }
 
 # check already installed #######################################
-if grep -qs 'RuneUIe' /srv/http/app/templates/header.php; then
+if [ -e /srv/http/assets/css/custom.css ]; then
 	title "$info $runeenh already installed."
 	echo 'Reinstall' $runeenh':'
 	echo -e '  \e[0;36m0\e[m No'
@@ -58,7 +57,7 @@ if grep -qs 'RuneUIe' /srv/http/app/templates/header.php; then
 	echo -e '\e[0;36m0\e[m / 1 ? '
 	read -n 1 answer
 	case $answer in
-		1 ) ./uninstall.sh re;; # with any argument to skip success message
+		1 ) ./uninstall.sh;;
 		* ) echo
 			titleend "$runeenh reinstall cancelled."
 			exit;;	
@@ -72,14 +71,15 @@ wget -q --show-progress -O srv.tar.xz "https://github.com/rern/RuneUI_enhancemen
 wget -q --show-progress -O uninstall.sh "https://github.com/rern/RuneUI_enhancement/blob/master/uninstall.sh?raw=1"
 chmod +x uninstall.sh
 
-title "Install files ..."
+# extract files #######################################
+title "Install new files ..."
 tar -Jxvf srv.tar.xz -C /
 rm srv.tar.xz
 
-# modified file #######################################
-sed -i -e 's|<title>RuneAudio - RuneUI</title>|<title>RuneAudio - RuneUIe</title>|
-' -e $'\|runeui.css| a\
-    <link rel="stylesheet" href="<?=$this->asset(\'/css/pnotify.css\')?>">\
+# modify files #######################################
+title "Modify files ..."
+header='/srv/http/app/templates/header.php'
+sed -i -e $'/runeui.css/ a\
     <link rel="stylesheet" href="<?=$this->asset(\'/css/custom.css\')?>">\
     <?php if (preg_match(\'/mixer_type[\\\s]+"disabled"/\', file_get_contents(\'/etc/mpd.conf\'))): ?>\
         <link rel="stylesheet" href="<?=$this->asset(\'/css/customvoloff.css\')?>">\
@@ -87,40 +87,47 @@ sed -i -e 's|<title>RuneAudio - RuneUI</title>|<title>RuneAudio - RuneUIe</title
     <?php if ($this->coverart == 0): ?>\
         <link rel="stylesheet" href="<?=$this->asset(\'/css/customcoveroff.css\')?>">\
     <?php endif ?> <!-- enhancement -->
-' -e '\|menu-top| i\
+' -e '/menu-top/ i\
 <div id="barleft"></div>\
 <div id="barright"></div>\
 <div id="lyricfade" class="hide"></div>
-' -e $'\|menu-top| a\
+' -e $'/class="home"/ i\
     <img class="logo" src="<?=$this->asset(\'/img/runelogo.svg\')?>" alt="RuneAudio" href="/">
-' -e '\|dropdown-menu| a\
+' -e '/dropdown-menu/ a\
             <li id="dropdownbg"></li> <!-- box-shadow -->
-' -e 's|<a id="menu-settings" class="dropdown-toggle"|<button id="menu-settings" class="btn-default dropdown-toggle"|
+' -e 's/<a id="menu-settings" class="dropdown-toggle"/<button id="menu-settings" class="btn-default dropdown-toggle"/
 ' -e 's|href="#">MENU <i class="fa fa-bars dx"></i></a>|href="#"><i class="fa fa-gear"></i></button>|
 ' -e '\|href="/"><i class="fa fa-play"| s|^|<?php /\*|; \|href="/"><i class="fa fa-play"| s|$|\*/?>|
-' -e $'\|poweroff-modal| i\
+' -e $'/poweroff-modal/ i\
             <li class="<?=$this->uri(1, \'dev\', \'active\')?>"><a href="/dev/"><i class="fa fa-code"></i> Development</a></li>
-' -e '\|logo.png| s|^|<?php /\*|; \|logo.png| s|$|\*/?>|
+' -e '/logo.png/ s|^|<?php /\*|; /logo.png/ s|$|\*/?>|
 ' -e 's|"fa fa-music"></i> Library|"fa fa-folder-open"></i>|
 ' -e $'s|"tab"\')?>><i class="fa fa-play"></i> Playback|"tab"\')?>><i class="fa fa-play"></i>|
 ' -e 's|"fa fa-list"></i> Queue|"fa fa-list"></i>|
-' /srv/http/app/templates/header.php
+' $header
+# no RuneUI GPIO
+! grep -q 'pnotify.css' $header &&
+	sed -i $'/runeui.css/ a\    <link rel="stylesheet" href="<?=$this->asset(\'/css/pnotify.css\')?>">' $header
 
-file='/srv/http/app/templates/footer.php'
-# if eof not \n, add one
-[[ $(tail -c1 $file) ]] && echo '' >> $file
-echo $'<script src="<?=$this->asset(\'/js/vendor/pnotify3.custom.min.js\')?>"></script>
-<script src="<?=$this->asset(\'/js/custom.js\')?>"></script>
-<script src="<?=$this->asset(\'/js/vendor/hammer.min.js\')?>"></script>' >> $file
+footer='/srv/http/app/templates/footer.php'
+sed -i $'$ a\
+<script src="<?=$this->asset(\'/js/custom.js\')?>"></script>\
+<script src="<?=$this->asset(\'/js/vendor/hammer.min.js\')?>"></script>
+' $footer
+# no RuneUI GPIO
+! grep -q 'pnotify3.custom.min.js' $footer &&
+	sed -i $'$ a\
+	<script src="<?=$this->asset(\'/js/vendor/pnotify3.custom.min.js\')?>"></script>
+	' $footer
 
-sed -i -e '\|<div class="tab-content">| i\
+sed -i -e '/<div class="tab-content">/ i\
 <?php include "playbackcustom.php";\
 /\*
-' -e '\|<!-- LIBRARY PANEL -->| i\enh \*/?>
+' -e '/<!-- LIBRARY PANEL -->/ i\enh \*/?>
 ' /srv/http/app/templates/playback.php
 
-# for nginx svg support #######################################
-if ! grep 'ico' /etc/nginx/nginx.conf | grep -q 'svg'; then
+# for nginx svg support
+if ! grep '|ico' /etc/nginx/nginx.conf | grep -q 'svg'; then
 	sed -i 's/|ico/&|svg/' /etc/nginx/nginx.conf
 	systemctl restart nginx
 fi
@@ -146,26 +153,24 @@ case $answer in
 		zoom=$ans;;
 	* ) zoom=0.7;;
 esac
-sed -i -e 's|zoom-level|#zoom-level|
-' -e "\|zoom-level| i\
+sed -i -e '/zoom-level/ s/^/#/
+' -e "/zoom-level/ i\
 zoom-level=$zoom
-" -e 's|user-stylesheet-uri|#user-stylesheet-uri|
+" -e '/user-stylesheet-uri/ s/^/#/
 ' /root/.config/midori/config
 
+# refresh #######################################
+title "Clear PHP OPcache ..."
+curl '127.0.0.1/clear'
+echo
 
-if [ $arg -eq 0 ]; then # skip if run from gpioinstall.sh - install.sh <arg>
-	title "Clear PHP OPcache ..."
-	curl '127.0.0.1/clear'
-	echo
-
-	if pgrep midori > /dev/null; then
-		killall midori
-		sleep 1
-		startx  > /dev/null 2>&1 &
-		echo -e '\nLocal browser restarted.\n'
-	fi
-
-	title2 "$runeenh successfully installed."
-	echo $info 'Refresh browser to start using' $runeenh'.'
-	titleend "To uninstall:   ./uninstall.sh"
+if pgrep midori > /dev/null; then
+	killall midori
+	sleep 1
+	startx  > /dev/null 2>&1 &
+	echo -e '\nLocal browser restarted.\n'
 fi
+
+title2 "$runeenh successfully installed."
+echo $info 'Refresh browser to start.'
+titleend "To uninstall:   ./uninstall.sh"

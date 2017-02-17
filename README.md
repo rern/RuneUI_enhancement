@@ -10,7 +10,7 @@ Try it - [**Demo**](https://rern.github.io/RuneUI_GPIO/)
 - Fit all in one phone screen (with 'Add to Home Screen')
 - Swipeable
 - Get lyrics
-- [**RuneUI GPIO**](https://github.com/rern/RuneUI_GPIO) for GPIO connected devices control (add-on install).  
+- [**RuneUI GPIO**](https://github.com/rern/RuneUI_GPIO) for GPIO connected devices control.  
 
 >[Install](#install)  
 >[Uninstall](#uninstall)  
