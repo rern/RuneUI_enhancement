@@ -45,8 +45,8 @@ if [ ! -e /srv/http/assets/css/custom.css ]; then
 	exit
 fi
 
-# uninstall #######################################
 title2 "Uninstall $runeenh ..."
+# remove files #######################################
 title "Remove files ..."
 rm -v /srv/http/lyrics.php
 path='/srv/http/assets/'
