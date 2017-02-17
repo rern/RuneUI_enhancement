@@ -79,6 +79,7 @@ rm srv.tar.xz
 # modify files #######################################
 title "Modify files ..."
 header='/srv/http/app/templates/header.php'
+echo $header '...'
 sed -i -e $'/runeui.css/ a\
     <link rel="stylesheet" href="<?=$this->asset(\'/css/custom.css\')?>">\
     <?php if (preg_match(\'/mixer_type[\\\s]+"disabled"/\', file_get_contents(\'/etc/mpd.conf\'))): ?>\
@@ -110,6 +111,7 @@ sed -i -e $'/runeui.css/ a\
 	sed -i $'/runeui.css/ a\    <link rel="stylesheet" href="<?=$this->asset(\'/css/pnotify.css\')?>">' $header
 
 footer='/srv/http/app/templates/footer.php'
+echo $footer '...'
 sed -i $'$ a\
 <script src="<?=$this->asset(\'/js/custom.js\')?>"></script>\
 <script src="<?=$this->asset(\'/js/vendor/hammer.min.js\')?>"></script>
@@ -120,15 +122,19 @@ sed -i $'$ a\
 	<script src="<?=$this->asset(\'/js/vendor/pnotify3.custom.min.js\')?>"></script>
 	' $footer
 
+playback='/srv/http/app/templates/playback.php'
+echo $playback '...'
 sed -i -e '/<div class="tab-content">/ i\
 <?php include "playbackcustom.php";\
 /\*
 ' -e '/<!-- LIBRARY PANEL -->/ i\enh \*/?>
-' /srv/http/app/templates/playback.php
+' $playback
 
 # for nginx svg support
-if ! grep '|ico' /etc/nginx/nginx.conf | grep -q 'svg'; then
-	sed -i 's/|ico/&|svg/' /etc/nginx/nginx.conf
+nginx='/etc/nginx/nginx.conf'
+if ! grep '|ico' $nginx | grep -q 'svg'; then
+	echo $enginx '...'
+	sed -i 's/|ico/&|svg/' $nginx
 	systemctl restart nginx
 fi
 
