@@ -79,7 +79,7 @@ rm srv.tar.xz
 # modify files #######################################
 title "Modify files ..."
 header='/srv/http/app/templates/header.php'
-echo $header '...'
+echo $header
 sed -i -e $'/runeui.css/ a\
     <link rel="stylesheet" href="<?=$this->asset(\'/css/custom.css\')?>">\
     <?php if (preg_match(\'/mixer_type[\\\s]+"disabled"/\', file_get_contents(\'/etc/mpd.conf\'))): ?>\
@@ -111,7 +111,7 @@ sed -i -e $'/runeui.css/ a\
 	sed -i $'/runeui.css/ a\    <link rel="stylesheet" href="<?=$this->asset(\'/css/pnotify.css\')?>">' $header
 
 footer='/srv/http/app/templates/footer.php'
-echo $footer '...'
+echo $footer
 sed -i $'$ a\
 <script src="<?=$this->asset(\'/js/custom.js\')?>"></script>\
 <script src="<?=$this->asset(\'/js/vendor/hammer.min.js\')?>"></script>
@@ -123,7 +123,7 @@ sed -i $'$ a\
 	' $footer
 
 playback='/srv/http/app/templates/playback.php'
-echo $playback '...'
+echo $playback
 sed -i -e '/<div class="tab-content">/ i\
 <?php include "playbackcustom.php";\
 /\*
@@ -133,7 +133,7 @@ sed -i -e '/<div class="tab-content">/ i\
 # for nginx svg support
 nginx='/etc/nginx/nginx.conf'
 if ! grep '|ico' $nginx | grep -q 'svg'; then
-	echo $enginx '...'
+	echo $enginx
 	sed -i 's/|ico/&|svg/' $nginx
 	systemctl restart nginx
 fi

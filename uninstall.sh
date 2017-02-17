@@ -67,7 +67,7 @@ fi
 # restore modified files #######################################
 title "Restore modified files ..."
 header='/srv/http/app/templates/header.php'
-echo $header '...'
+echo $header
 sed -i -e '/custom.css/, /<!-- enhancement -->/ d
 ' -e '/barleft/, /lyricfade/ d
 ' -e '/runelogo.svg/ d
@@ -85,7 +85,7 @@ sed -i -e '/custom.css/, /<!-- enhancement -->/ d
 ! $gpio && sed -i -e '/pnotify.css/ d' $header
 
 footer='/srv/http/app/templates/footer.php'
-echo $footer '...'
+echo $footer
 sed -i -e '/custom.js/, /hammer.min.js/ d' $footer
 # no RuneUI GPIO
 ! $gpio && sed -i -e '/pnotify3.custom.min.js/ d' $footer
@@ -97,12 +97,12 @@ sed -i -e '/playbackcustom.php/, /\/\*/ d
 # no RuneUI password
 nginx='/etc/nginx/nginx.conf'
 if ! grep -qs 'logout.php' $header; then
-	echo $enginx '...'
+	echo $enginx
 	sed -i 's/|ico|svg/|ico/' $nginx
 fi
 
 midori='/root/.config/midori/config'
-echo $midori '...'
+echo $midori
 sed -i -e '0, /zoom-level/ {// d}
 ' -e '/zoom-level/ s/^#//
 ' -e '/user-stylesheet-uri/ s/^#//
