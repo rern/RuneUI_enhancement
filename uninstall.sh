@@ -97,8 +97,8 @@ sed -i -e '/playbackcustom.php/, /\/\*/ d
 midori='/root/.config/midori/config'
 echo $midori
 sed -i -e '/^zoom-level/ d
-' -e '/zoom-level/ s/^#//
-' -e '/user-stylesheet-uri/ s/^#//
+' -e '/#zoom-level/ s/^#//
+' -e '/#user-stylesheet-uri/ s/^#//
 ' $midori
 
 # refresh #######################################
