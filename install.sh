@@ -177,6 +177,7 @@ if pgrep midori > /dev/null; then
 #	echo -e '\nLocal browser restarted.\n'
 	export DISPLAY=:0
 	midori -p -e Fullscreen http://localhost > /dev/null &
+	echo -e '\nLocal browser refreshed.\n'
 fi
 
 title2 "$runeenh successfully installed."
