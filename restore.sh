@@ -4,7 +4,6 @@
 # for restoring files midified by RuneUI enhancement
 # in case of uninstall.sh cannot completely restore them to their originals
 
-linered='\e[0;31m---------------------------------------------------------\e[m'
 line2='\e[0;36m=========================================================\e[m'
 line='\e[0;36m---------------------------------------------------------\e[m'
 bar=$( echo -e "$(tput setab 6)   $(tput setab 0)" )
@@ -40,27 +39,22 @@ title "Restore files ..."
 
 original='/tmp/original/header.php'
 file='/srv/http/app/templates/header.php'
-echo $file
 cp -v $original $file
 
 original='/tmp/original/footer.php'
 file='/srv/http/app/templates/footer.php'
-echo $file
 cp -v $original $file
 
 original='/tmp/original/playback.php'
 file='/srv/http/app/templates/playback.php'
-echo $file
 cp -v $original $file
 
 original='/tmp/original/nginx.conf'
 file='/etc/nginx/nginx.conf'
-echo $file
 cp -v $original $file
 
 original='/tmp/original/config'
 file='/root/.config/midori/config'
-echo $file
 cp -v $original $file
 
 rm -fr /tmp/original
