@@ -84,3 +84,12 @@ Visual
 - Change icons and remove text labels
 - Enlarge icons
 - Add box shadow for layer depth
+
+Restore original files
+---
+Only if something not normal occured after uninstall that might happen from:  
+- Unsuccessful install or uninstall
+- Inconsistency between revisions
+```sh
+wget -q --show-progress -O restore.sh "https://github.com/rern/RuneUI_enhancement/blob/master/restore.sh?raw=1"; chmod +x restore.sh; ./restore.sh
+```
