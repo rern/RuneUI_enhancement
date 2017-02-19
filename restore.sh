@@ -64,6 +64,8 @@ rm -fr /tmp/original
 
 # clean up #######################################
 title "Clean up files ..."
+file='/root/uninstall.sh'
+[ -e $file ] && rm -v $file
 file='/srv/http/lyrics.php'
 [ -e $file ] && rm -v $file
 path='/srv/http/assets/'
