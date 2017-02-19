@@ -59,6 +59,28 @@ cp -v $original $file
 
 rm -fr /tmp/original
 
+# clean up #######################################
+title "Clean up files ..."
+file='/srv/http/lyrics.php'
+[ -e $file ] && rm -v $file
+path='/srv/http/assets/'
+file=$path'css/custom.css'
+[ -e $file ] && rm -v $file
+file=$path'css/customcoveroff.css'
+[ -e $file ] && rm -v $file
+file=$path'css/customvoloff.css'
+[ -e $file ] && rm -v $file
+file=$path'img/runelogo.svg'
+[ -e $file ] && rm -v $file
+file=$path'js/custom.js'
+[ -e $file ] && rm -v $file
+file=$path'js/vendor/hammer.min.js'
+[ -e $file ] && rm -v $file
+file=$path'css/pnotify.css'
+[ -e $file ] && rm -v $file
+file=$path'js/vendor/pnotify3.custom.min.js'
+[ -e $file ] && rm -v $file
+
 # refresh #######################################
 title "Clear PHP OPcache ..."
 curl '127.0.0.1/clear'
