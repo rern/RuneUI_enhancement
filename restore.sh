@@ -32,27 +32,32 @@ mkdir /tmp/original
 tar -Jxvf original.tar.xz -C /tmp/original
 rm original.tar.xz
 
-title "Compare files ..."
+title "Restore files ..."
 
 original='/tmp/original/header.php'
 file='/srv/http/app/templates/header.php'
-cp -v original file
+echo $file
+cp -v $original $file
 
 original='/tmp/original/footer.php'
 file='/srv/http/app/templates/footer.php'
-cp -v original file
+echo $file
+cp -v $original $file
 
 original='/tmp/original/playback.php'
 file='/srv/http/app/templates/playback.php'
-cp -v original file
+echo $file
+cp -v $original $file
 
 original='/tmp/original/nginx.conf'
 file='/etc/nginx/nginx.conf'
-cp -v original file
+echo $file
+cp -v $original $file
 
 original='/tmp/original/config'
 file='/root/.config/midori/config'
-cp -v original file
+echo $file
+cp -v $original $file
 
 rm -frv /tmp/original
 
@@ -64,6 +69,7 @@ echo
 if pgrep midori > /dev/null; then
 	export DISPLAY=:0
 	midori -p -e Fullscreen http://localhost > /dev/null &
+	echo '\nLocal browser refreshed.\n'
 fi
 
 title2 "RuneUI files successfully restored."
