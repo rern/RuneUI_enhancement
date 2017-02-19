@@ -101,6 +101,9 @@ sed -i -e '/^zoom-level/ d
 ' -e '/#user-stylesheet-uri/ s/^#//
 ' $midori
 
+# skip if reinstall - uninstall.sh re (any argument)
+[ $# -ne 0 ] && exit
+
 # refresh #######################################
 title "Clear PHP OPcache ..."
 curl '127.0.0.1/clear'
