@@ -57,7 +57,7 @@ if [ -e /srv/http/assets/css/custom.css ]; then
 	echo -e '\e[0;36m0\e[m / 1 ? '
 	read -n 1 answer
 	case $answer in
-		1 ) ./uninstall.sh;;
+		1 ) ./uninstall.sh re;;
 		* ) echo
 			titleend "$runeenh reinstall cancelled."
 			exit;;	
