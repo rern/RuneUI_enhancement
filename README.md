@@ -91,7 +91,14 @@ Restore original files
 Only if something not normal occured after uninstall that might happen from:  
 - Unsuccessful install or uninstall
 - Inconsistency between revisions  
-**Warning** - Any custom modification in these files will be gone.
 ```sh
 wget -q --show-progress -O restore.sh "https://github.com/rern/RuneUI_enhancement/blob/master/restore.sh?raw=1"; chmod +x restore.sh; ./restore.sh
+```
+**Warning** - Any custom modification in these files will be gone:  
+```sh
+/etc/nginx/nginx.conf
+/root/.config/midori/config
+/srv/http/app/templates/footer.php
+/srv/http/app/templates/header.php
+/srv/http/app/templates/playback.php
 ```
