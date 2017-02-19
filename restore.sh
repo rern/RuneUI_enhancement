@@ -63,7 +63,7 @@ file='/root/.config/midori/config'
 echo $file
 cp -v $original $file
 
-rm -frv /tmp/original
+rm -fr /tmp/original
 
 # refresh #######################################
 title "Clear PHP OPcache ..."
