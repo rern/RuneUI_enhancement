@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# restore.sh
+# for restoring files midified by RuneUI enhancement
+# in case of uninstall.sh cannot completely restore them to their originals
+
 linered='\e[0;31m---------------------------------------------------------\e[m'
 line2='\e[0;36m=========================================================\e[m'
 line='\e[0;36m---------------------------------------------------------\e[m'
