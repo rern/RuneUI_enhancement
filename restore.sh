@@ -40,6 +40,9 @@ title "Restore files ..."
 original='/tmp/original/header.php'
 file='/srv/http/app/templates/header.php'
 cp -v $original $file
+if grep -qs 'clock-display' /srv/http/assets/js/runeui.js; then
+	sed -i 's/a class="home"/a id="clock-display" class="home"/' $file
+fi
 
 original='/tmp/original/footer.php'
 file='/srv/http/app/templates/footer.php'
