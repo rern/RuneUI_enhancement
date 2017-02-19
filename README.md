@@ -11,6 +11,7 @@ Try it - [**Demo**](https://rern.github.io/RuneUI_GPIO/)
 - Swipeable
 - Get lyrics
 - [**RuneUI GPIO**](https://github.com/rern/RuneUI_GPIO) for GPIO connected devices control.  
+- No file replaced. Any modifications will be there after install / uninstall.
 
 >[Install](#install)  
 >[Uninstall](#uninstall)  
@@ -89,7 +90,8 @@ Restore original files
 ---
 Only if something not normal occured after uninstall that might happen from:  
 - Unsuccessful install or uninstall
-- Inconsistency between revisions
+- Inconsistency between revisions  
+**Warning** - Any custom modification in these files will be gone.
 ```sh
 wget -q --show-progress -O restore.sh "https://github.com/rern/RuneUI_enhancement/blob/master/restore.sh?raw=1"; chmod +x restore.sh; ./restore.sh
 ```
