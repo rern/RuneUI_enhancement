@@ -36,23 +36,25 @@ title "Compare files ..."
 
 original='/tmp/original/header.php'
 file='/srv/http/app/templates/header.php'
-[ ! cmp -s original file ] && cp -v original file
+cp -v original file
 
 original='/tmp/original/footer.php'
 file='/srv/http/app/templates/footer.php'
-[ ! cmp -s original file ] && cp -v original file
+cp -v original file
 
 original='/tmp/original/playback.php'
 file='/srv/http/app/templates/playback.php'
-[ ! cmp -s original file ] && cp -v original file
+cp -v original file
 
 original='/tmp/original/nginx.conf'
 file='/etc/nginx/nginx.conf'
-[ ! cmp -s original file ] && cp -v original file
+cp -v original file
 
 original='/tmp/original/config'
 file='/root/.config/midori/config'
-[ ! cmp -s original file ] && cp -v original file
+cp -v original file
+
+rm -frv /tmp/original
 
 # refresh #######################################
 title "Clear PHP OPcache ..."
