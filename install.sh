@@ -139,7 +139,7 @@ if ! grep '|ico' $nginx | grep -q 'svg'; then
 fi
 
 # local display zoom #######################################
-zoom=$(grep -Po '(?<=^zoom-level=).*' /root/.config/midori/config)
+zoom=$(sed -n '/^zoom-level/ s/zoom-level=//p' /root/.config/midori/config)
 if [ $(redis-cli get local_browser) -eq '1' ]; then
 	title "$info Select local browser screen size:"
 	echo 'Set zoom level for display directly connect to RPi.'
