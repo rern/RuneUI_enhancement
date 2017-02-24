@@ -139,6 +139,7 @@ if ! grep '|ico' $nginx | grep -q 'svg'; then
 fi
 
 # local display zoom #######################################
+if [ $(redis-cli get local_browser) -eq '1' ]; then
 title "$info Select local browser screen size:"
 echo 'Set zoom level for display directly connect to RPi.'
 echo
@@ -147,8 +148,9 @@ echo -e '  \e[0;36m1\e[m Small     ( 0.7 : width less than 800px )'
 echo -e '  \e[0;36m2\e[m Medium    ( 1.2 : HD - 1280px )'
 echo -e '  \e[0;36m3\e[m Large     ( 1.5 : Full HD - 1920px )'
 echo -e '  \e[0;36m4\e[m Custom    ( user define )'
+echo -e '  \e[0;36m5\e[m Text only ( command line console )'
 echo
-echo -e '\e[0;36m1\e[m / 2 / 3 / 4 ? '
+echo -e '\e[0;36m1\e[m / 2 / 3 / 4 / 5 ? '
 read -n 1 answer
 case $answer in
 	2 ) zoom=1.2;;
@@ -157,6 +159,9 @@ case $answer in
 		echo 'Custom scale:'
 		read ans 
 		zoom=$ans;;
+	5 ) zoom=0.7
+		redis-cli set local_browser 0
+		killall midori;;
 	* ) zoom=0.7;;
 esac
 sed -i -e '/zoom-level/ s/^/#/
@@ -164,6 +169,7 @@ sed -i -e '/zoom-level/ s/^/#/
 zoom-level=$zoom
 " -e '/user-stylesheet-uri/ s/^/#/
 ' /root/.config/midori/config
+fi
 
 # refresh #######################################
 title "Clear PHP OPcache ..."
