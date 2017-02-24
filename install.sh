@@ -167,7 +167,7 @@ if [ $(redis-cli get local_browser) -eq '1' ]; then
 		* ) echo;;
 	esac
 fi
-sed -i -e '/^zoom-level/ s/^/#/
+sed -i -e '/zoom-level/ s/^/#/
 ' -e "/zoom-level/ i\
 zoom-level=$zoom
 " -e '/user-stylesheet-uri/ s/^/#/
