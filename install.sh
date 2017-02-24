@@ -162,8 +162,8 @@ if [ $(redis-cli get local_browser) -eq '1' ]; then
 			zoom=$ans;;
 		5 ) redis-cli set local_browser 0 > /dev/null
 			killall midori
-			echo 'Local browser disabled.'
-			echo 'Re-enable: Menu > Settings > Local browser';;
+			echo -e '\nLocal browser disabled.'
+			echo -e 'Re-enable: Menu > Settings > Local browser\n';;
 		* ) echo;;
 	esac
 fi
