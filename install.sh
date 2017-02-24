@@ -168,7 +168,7 @@ if [ $(redis-cli get local_browser) -eq '1' ]; then
 	esac
 fi
 sed -i -e '/zoom-level/ s/^/#/
-' -e "/zoom-level/ i\
+' -e "/settings/ a\
 zoom-level=$zoom
 " -e '/user-stylesheet-uri/ s/^/#/
 ' /root/.config/midori/config
