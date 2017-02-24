@@ -101,6 +101,21 @@ sed -i -e '/^zoom-level/ d
 ' -e '/#user-stylesheet-uri/ s/^#//
 ' $midori
 
+if [ $(redis-cli get local_browser) -eq '0' ]; then
+	title "$info Local browser was disabled."
+	echo 'Re-enable:'
+	echo -e '  \e[0;36m0\e[m No'
+	echo -e '  \e[0;36m1\e[m Yes'
+	echo
+	echo -e '\e[0;36m0\e[m / 1 ? '
+	read -n 1 answer
+	case $answer in
+		1 ) redis-cli set local_browser 1 > /dev/null
+			xinit > /dev/null 2>&1 &;;
+		* ) echo;;	
+	esac
+fi
+	
 # skip if reinstall - uninstall.sh re (any argument)
 [ $# -ne 0 ] && exit
 
