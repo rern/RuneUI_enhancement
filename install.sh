@@ -139,6 +139,7 @@ if ! grep '|ico' $nginx | grep -q 'svg'; then
 fi
 
 # local display zoom #######################################
+zoom=0.7
 if [ $(redis-cli get local_browser) -eq '1' ]; then
 	title "$info Select local browser screen size:"
 	echo 'Set zoom level for display directly connect to RPi.'
@@ -161,9 +162,8 @@ if [ $(redis-cli get local_browser) -eq '1' ]; then
 			zoom=$ans;;
 		5 ) redis-cli set local_browser 0 > /dev/null
 			killall midori
-			echo 'Local browser disabled.'
-			zoom=0.7;;
-		* ) zoom=0.7;;
+			echo 'Local browser disabled.';;
+		* ) echo;;
 	esac
 fi
 sed -i -e '/zoom-level/ s/^/#/
