@@ -149,7 +149,7 @@ if [ $(redis-cli get local_browser) -eq '1' ]; then
 	echo -e '  \e[0;36m2\e[m Medium    ( 1.2 : HD - 1280px )'
 	echo -e '  \e[0;36m3\e[m Large     ( 1.5 : Full HD - 1920px )'
 	echo -e '  \e[0;36m4\e[m Custom    ( user define )'
-	echo -e '  \e[0;36m5\e[m Text only ( command line console )'
+	echo -e '  \e[0;36m5\e[m Text only ( save some cpu cycles )'
 	echo
 	echo -e '\e[0;36m1\e[m / 2 / 3 / 4 / 5 ? '
 	read -n 1 answer
@@ -162,7 +162,8 @@ if [ $(redis-cli get local_browser) -eq '1' ]; then
 			zoom=$ans;;
 		5 ) redis-cli set local_browser 0 > /dev/null
 			killall midori
-			echo 'Local browser disabled.';;
+			echo 'Local browser disabled.'
+			echo 'Re-enable: Menu > Settings > Local browser';;
 		* ) echo;;
 	esac
 fi
