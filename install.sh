@@ -166,13 +166,11 @@ if [ $(redis-cli get local_browser) -eq '1' ]; then
 		* ) zoom=0.7;;
 	esac
 fi
-if [ $zoom != 0.7 ]; then
-	sed -i -e '/zoom-level/ s/^/#/
-	' -e "/zoom-level/ i\
-	zoom-level=$zoom
-	" /root/.config/midori/config
-fi
-sed -i '/user-stylesheet-uri/ s/^/#/' /root/.config/midori/config
+sed -i -e '/zoom-level/ s/^/#/
+' -e "/zoom-level/ i\
+zoom-level=$zoom
+" -e '/user-stylesheet-uri/ s/^/#/
+' /root/.config/midori/config
 
 # refresh #######################################
 title "Clear PHP OPcache ..."
