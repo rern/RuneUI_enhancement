@@ -129,7 +129,8 @@ if [ $(redis-cli get local_browser) -eq '0' ]; then
 	read -n 1 answer
 	case $answer in
 		1 ) redis-cli set local_browser 1 > /dev/null
-			xinit > /dev/null 2>&1 &;;
+			xinit > /dev/null 2>&1 &
+			echo 'Local browser started.';;
 		* ) echo;;	
 	esac
 fi
