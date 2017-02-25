@@ -179,10 +179,6 @@ curl '127.0.0.1/clear'
 echo
 
 if pgrep midori > /dev/null; then
-#	killall midori
-#	sleep 1
-#	xinit > /dev/null 2>&1 &
-#	echo -e '\nLocal browser restarted.\n'
 	export DISPLAY=:0
 	midori -p -e Fullscreen http://localhost > /dev/null &
 	echo -e '\nLocal browser refreshed.\n'
