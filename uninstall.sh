@@ -109,17 +109,11 @@ title "Clear PHP OPcache ..."
 curl '127.0.0.1/clear'
 echo
 
-if pgrep midori > /dev/null; then
-#	killall midori
-#	sleep 1
-#	startx  > /dev/null 2>&1 &
-#	echo -e '\nLocal browser restarted.\n'
+if [ $(redis-cli get local_browser) -eq '1' ]; then
 	export DISPLAY=:0
 	midori -p -e Fullscreen http://localhost > /dev/null &
 	echo -e '\nLocal browser refreshed.\n'
-fi
-
-if [ $(redis-cli get local_browser) -eq '0' ]; then
+else
 	title "$info Local browser was disabled."
 	echo 'Re-enable:'
 	echo -e '  \e[0;36m0\e[m No'
