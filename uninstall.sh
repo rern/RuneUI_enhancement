@@ -40,7 +40,7 @@ titleend() {
 }
 
 # check installed #######################################
-if [ ! -e /srv/http/assets/css/custom.css ]; then
+if [[ ! -e /srv/http/assets/css/custom.css ]]; then
 	title "$info $runeenh not found."
 	exit
 fi
@@ -58,7 +58,7 @@ rm -v $path'js/custom.js'
 rm -v $path'js/vendor/hammer.min.js'
 
 # no RuneUI GPIO
-[ -e /srv/http/assets/css/gpiosettings.css ] && gpio=true || gpio=false
+[[ -e /srv/http/assets/css/gpiosettings.css ]] && gpio=true || gpio=false
 if ! $gpio; then
 	rm -v $path'css/pnotify.css'
 	rm -v $path'js/vendor/pnotify3.custom.min.js'
@@ -102,14 +102,14 @@ sed -i -e '/^zoom-level/ d
 ' $midori
 	
 # skip if reinstall - uninstall.sh re (any argument)
-[ $# -ne 0 ] && exit
+(( $# != 0 )) && exit
 
 # refresh #######################################
 title "Clear PHP OPcache ..."
 curl '127.0.0.1/clear'
 echo
 
-if [ $(redis-cli get local_browser) -eq '1' ]; then
+if [[ $(redis-cli get local_browser) -eq '1' ]]; then
 	killall midori
 	sleep 1
 	xinit > /dev/null 2>&1 &
