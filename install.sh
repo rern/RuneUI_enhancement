@@ -48,7 +48,7 @@ titleend() {
 }
 
 # check already installed #######################################
-if [ -e /srv/http/assets/css/custom.css ]; then
+if [[ -e /srv/http/assets/css/custom.css ]]; then
 	title "$info $runeenh already installed."
 	echo 'Reinstall' $runeenh':'
 	echo -e '  \e[0;36m0\e[m No'
@@ -140,7 +140,7 @@ fi
 
 # local display zoom #######################################
 zoom=$(sed -n '/^zoom-level/ s/zoom-level=//p' /root/.config/midori/config)
-if [ $(redis-cli get local_browser) -eq '1' ]; then
+if [[ $(redis-cli get local_browser) -eq '1' ]]; then
 	title "$info Select local browser screen size:"
 	echo 'Set zoom level for display directly connect to RPi.'
 	echo
