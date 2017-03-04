@@ -138,7 +138,7 @@ if ! grep '|ico' $nginx | grep -q 'svg'; then
 	systemctl restart nginx
 fi
 
-# local display zoom #######################################
+# local display zoom, encoding, css #######################################
 zoom=$(sed -n '/^zoom-level/ s/zoom-level=//p' /root/.config/midori/config)
 if [[ $(redis-cli get local_browser) -eq '1' ]]; then
 	title "$info Select local browser screen size:"
@@ -169,10 +169,12 @@ if [[ $(redis-cli get local_browser) -eq '1' ]]; then
 	esac
 fi
 sed -i -e '/zoom-level/ s/^/#/
+' -e '/default-encoding/ s/^/#/
+' -e '/user-stylesheet-uri/ s/^/#/
 ' -e "/settings/ a\
-zoom-level=$zoom
-" -e '/user-stylesheet-uri/ s/^/#/
-' /root/.config/midori/config
+zoom-level=$zoom\\
+default-encoding=UTF-8
+" /root/.config/midori/config
 
 # refresh #######################################
 title "Clear PHP OPcache ..."
