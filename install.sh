@@ -168,13 +168,18 @@ if [[ $(redis-cli get local_browser) -eq '1' ]]; then
 		* ) echo;;
 	esac
 fi
+midori='/root/.config/midori/config'
 sed -i -e '/zoom-level/ s/^/#/
-' -e '/default-encoding/ s/^/#/
 ' -e '/user-stylesheet-uri/ s/^/#/
 ' -e "/settings/ a\
-zoom-level=$zoom\\
-default-encoding=UTF-8
-" /root/.config/midori/config
+zoom-level=$zoom
+" $midori
+if ! grep 'default-encoding=UTF-8' $midori; then
+	sed -i -e ' -e '/default-encoding/ s/^/#/
+	' -e '/settings/ a\
+	default-encoding=UTF-8
+	' $midori
+fi
 
 # refresh #######################################
 title "Clear PHP OPcache ..."
