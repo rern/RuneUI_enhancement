@@ -128,9 +128,6 @@ else
 	read -n 1 answer
 	case $answer in
 		1 ) redis-cli set local_browser 1 > /dev/null
-			#killall xbindkeys
-			#systemctl disable xbindkeys
-			#rm /usr/lib/systemd/system/xbindkeys.service
 			xinit > /dev/null 2>&1 &
 			echo -e '\nLocal browser started.\n';;
 		* ) echo;;	
