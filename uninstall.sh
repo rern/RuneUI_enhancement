@@ -97,12 +97,14 @@ sed -i -e '/playbackcustom.php/, /\/\*/ d
 midori='/root/.config/midori/config'
 echo $midori
 sed -i -e '/^zoom-level/ d
-' -e '/^default-encoding/ d
 ' -e '/#zoom-level/ s/^#//
-' -e '/#default-encoding/ s/^#//
 ' -e '/#user-stylesheet-uri/ s/^#//
 ' $midori
-	
+if grep '#default-encoding=ISO-8859-1' $midori; then
+	sed -i -e '/^default-encoding/ d
+	' -e '/#default-encoding/ s/^#//
+	' $midori
+fi
 # skip if reinstall - uninstall.sh re (any argument)
 (( $# != 0 )) && exit
 
