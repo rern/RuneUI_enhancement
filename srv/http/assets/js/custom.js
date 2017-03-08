@@ -240,6 +240,7 @@ function refreshState() {
 			$('#total').html('');
 		}
 // improve song info
+	if ($('#overlay-playsource-open button').text() === 'MPD') {
 		if (GUI.json.fileext != false) {
 			var dot = '<a style="color:#ffffff"> &#8226; </a>';
 			var channel = (GUI.json.audio_channels == 'Stereo') ? '' : GUI.json.audio_channels +' ';
@@ -264,6 +265,9 @@ function refreshState() {
 		} else {
 			var fileinfo = '';
 		}
+	} else {
+		var fileinfo = (GUI.json.audio_channels && GUI.json.audio_sample_depth && GUI.json.audio_sample_rate) ? (GUI.json.audio_channels + ', ' + GUI.json.audio_sample_depth + ' bit, ' + GUI.json.audio_sample_rate +' kHz, '+GUI.json.bitrate+' kbps') : '&nbsp;';
+	}
 // ****************************************************************************************
         $('#format-bitrate').html(fileinfo);
         $('li', '#playlist-entries').removeClass('active');
