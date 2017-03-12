@@ -173,7 +173,7 @@ sed -i -e '/zoom-level/ s/^/#/
 ' -e "/settings/ a\
 zoom-level=$zoom
 " $midori
-if ! grep 'default-encoding=UTF-8' $midori; then
+if ! grep -q 'default-encoding=UTF-8' $midori; then
 	sed -i -e '/default-encoding/ s/^/#/
 	' -e '/settings/ a\default-encoding=UTF-8
 	' $midori
