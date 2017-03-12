@@ -100,7 +100,7 @@ sed -i -e '/^zoom-level/ d
 ' -e '/#zoom-level/ s/^#//
 ' -e '/#user-stylesheet-uri/ s/^#//
 ' $midori
-if grep '#default-encoding' $midori; then
+if grep -q '#default-encoding' $midori; then
 	sed -i -e '/^default-encoding/ d
 	' -e '/#default-encoding/ s/^#//
 	' $midori
