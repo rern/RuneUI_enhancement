@@ -140,7 +140,7 @@ fi
 
 # local display zoom, encoding, css #######################################
 zoom=$(sed -n '/^zoom-level/ s/zoom-level=//p' /root/.config/midori/config)
-if [[ $(redis-cli get local_browser) -eq '1' ]]; then
+#if [[ $(redis-cli get local_browser) -eq '1' ]]; then
 	title "$info Select local browser screen size:"
 	echo 'Set zoom level for display directly connect to RPi.'
 	echo
@@ -166,7 +166,7 @@ if [[ $(redis-cli get local_browser) -eq '1' ]]; then
 			echo -e 'Re-enable: Menu > Settings > Local browser\n';;
 		* ) echo;;
 	esac
-fi
+#fi
 midori='/root/.config/midori/config'
 sed -i -e '/zoom-level/ s/^/#/
 ' -e '/user-stylesheet-uri/ s/^/#/
