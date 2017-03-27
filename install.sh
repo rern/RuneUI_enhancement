@@ -6,20 +6,20 @@
 
 # remove install.sh
 # already installed
-#		reinstall ?
-#			exit
-#			uninstall
+#	reinstall ?
+#		exit
+#		uninstall
 # install
-#		get uninstall.sh
-#		get tar.xz
-#		modify files
-#		extract
-#		remove tar.xz
-#		restart nginx
-#		clear opcache
-#		restart local browser
+#	get uninstall.sh
+#	get tar.xz
+#	modify files
+#	extract
+#	remove tar.xz
+#	restart nginx
+#	clear opcache
+#	restart local browser
 # success
-#		info
+#	info
 
 rm install.sh
 
@@ -33,18 +33,18 @@ runeenh=$( echo $(tput setaf 6)RuneUI Enhancement$(tput setaf 7) )
 
 # functions #######################################
 title2() {
-		echo -e "\n$line2\n"
-		echo -e "$bar $1"
-		echo -e "\n$line2\n"
+	echo -e "\n$line2\n"
+	echo -e "$bar $1"
+	echo -e "\n$line2\n"
 }
 title() {
-		echo -e "\n$line"
-		echo $1
-		echo -e "$line\n"
+	echo -e "\n$line"
+	echo $1
+	echo -e "$line\n"
 }
 titleend() {
-		echo -e "\n$1"
-		echo -e "\n$line\n"
+	echo -e "\n$1"
+	echo -e "\n$line\n"
 }
 
 # check already installed #######################################
