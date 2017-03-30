@@ -31,7 +31,7 @@ Refresh browser (clear history if nothing changed)
 Uninstall
 ---
 ```sh
-./uninstall.sh
+./uninstall_enha.sh
 ```    
 _(Uninstalling will restore files to originals and delete all added ones. It should be fine to install-uninstall again and again.)_
 
