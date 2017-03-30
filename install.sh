@@ -68,8 +68,8 @@ fi
 title2 "Install $runeenh ..."
 title "Get files ..."
 wget -q --show-progress -O srv.tar.xz "https://github.com/rern/RuneUI_enhancement/blob/master/_repo/srv.tar.xz?raw=1"
-wget -q --show-progress -O uninstall.sh "https://github.com/rern/RuneUI_enhancement/blob/master/uninstall.sh?raw=1"
-chmod +x uninstall.sh
+wget -q --show-progress -O uninstall_enha.sh "https://github.com/rern/RuneUI_enhancement/blob/master/uninstall_enha.sh?raw=1"
+chmod +x uninstall_enha.sh
 
 # extract files #######################################
 title "Install new files ..."
@@ -192,5 +192,5 @@ if pgrep midori > /dev/null; then
 fi
 
 title2 "$runeenh successfully installed."
-echo $info 'Refresh browser to start.'
-titleend "To uninstall:   ./uninstall.sh"
+echo "Uninstall:   ./uninstall_enha.sh"
+titleend $info 'Refresh browser to start.'
