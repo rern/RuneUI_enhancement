@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# uninstall.sh - RuneUI enhancement
+# uninstall_enha.sh - RuneUI enhancement
 # https://github.com/rern/RuneUI_enhancement
 
 # not installed
@@ -12,7 +12,7 @@
 #	restart local browser
 # success
 #	info
-# remove uninstall.sh
+# remove uninstall_enha.sh
 
 linered='\e[0;31m---------------------------------------------------------\e[m'
 line2='\e[0;36m=========================================================\e[m'
@@ -137,4 +137,4 @@ fi
 title2 "$runeenh successfully uninstalled."
 titleend "$info Refresh browser for default RuneUI."
 
-rm uninstall.sh
+rm uninstall_enha.sh
