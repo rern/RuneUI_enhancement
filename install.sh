@@ -73,7 +73,7 @@ chmod +x uninstall_enha.sh
 
 # extract files #######################################
 title "Install new files ..."
-tar -Jxvf srv.tar.xz -C /
+bsdtar -xvf srv.tar.xz -C /
 rm srv.tar.xz
 
 # modify files #######################################
