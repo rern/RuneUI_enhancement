@@ -193,4 +193,4 @@ fi
 
 title2 "$runeenh successfully installed."
 echo "Uninstall:   ./uninstall_enha.sh"
-titleend $info 'Refresh browser to start.'
+titleend "$info Refresh browser to start."
