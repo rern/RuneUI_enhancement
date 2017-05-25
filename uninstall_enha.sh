@@ -116,7 +116,7 @@ echo
 if [[ $(redis-cli get local_browser) -eq '1' ]]; then
 	killall midori
 	sleep 1
-	xinit > /dev/null 2>&1 &
+	xinit &>/dev/null &
 	echo -e '\nLocal browser restarted.\n'
 else
 	title "$info Local browser was disabled."
@@ -127,8 +127,8 @@ else
 	echo -e '\e[0;36m0\e[m / 1 ? '
 	read -n 1 answer
 	case $answer in
-		1 ) redis-cli set local_browser 1 > /dev/null
-			xinit > /dev/null 2>&1 &
+		1 ) redis-cli set local_browser 1 >/dev/null
+			xinit &>/dev/null &
 			echo -e '\nLocal browser started.\n';;
 		* ) echo;;	
 	esac
