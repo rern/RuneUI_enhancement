@@ -160,7 +160,7 @@ fi
 			echo 'Custom scale:'
 			read ans 
 			zoom=$ans;;
-		5 ) redis-cli set local_browser 0 > /dev/null
+		5 ) redis-cli set local_browser 0 >/dev/null
 			killall midori
 			echo -e '\nLocal browser disabled.'
 			echo -e 'Re-enable: Menu > Settings > Local browser\n';;
@@ -184,10 +184,10 @@ title "Clear PHP OPcache ..."
 curl '127.0.0.1/clear'
 echo
 
-if pgrep midori > /dev/null; then
+if pgrep midori >/dev/null; then
 	killall midori
 	sleep 1
-	xinit > /dev/null 2>&1 &
+	xinit &>/dev/null &
 	echo -e '\nLocal browser restarted.\n'
 fi
 
