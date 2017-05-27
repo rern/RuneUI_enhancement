@@ -30,7 +30,7 @@ titleend() {
 title2 "Restore original files for RuneUI ..."
 
 title "Get files ..."
-wget -q --show-progress -O original.tar.xz "https://github.com/rern/RuneUI_enhancement/blob/master/_repo/original.tar.xz?raw=1"
+wget -q --show-progress https://github.com/rern/RuneUI_enhancement/blob/master/_repo/original.tar.xz
 mkdir /tmp/original
 tar -Jxvf original.tar.xz -C /tmp/original
 rm original.tar.xz
