@@ -67,8 +67,8 @@ fi
 # install RuneUI enhancement #######################################
 title2 "Install $runeenh ..."
 title "Get files ..."
-wget -q --show-progress https://github.com/rern/RuneUI_enhancement/raw/master/_repo/srv.tar.xz
-wget -q --show-progress https://github.com/rern/RuneUI_enhancement/raw/master/uninstall_enha.sh
+wget -qN --show-progress https://github.com/rern/RuneUI_enhancement/raw/master/_repo/srv.tar.xz
+wget -qN --show-progress https://github.com/rern/RuneUI_enhancement/raw/master/uninstall_enha.sh
 chmod +x uninstall_enha.sh
 
 # extract files #######################################
