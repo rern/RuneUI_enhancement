@@ -244,7 +244,7 @@ function refreshState() {
 		if (GUI.json.fileext != false) {
 			var dot = '<a style="color:#ffffff"> &#8226; </a>';
 			var channel = (GUI.json.audio_channels == 'Stereo') ? '' : GUI.json.audio_channels +' ';
-			var ext = GUI.json.fileext.toUpperCase();
+			var ext = (GUI.stream === 'radio') ? 'RADIO' : GUI.json.fileext.toUpperCase();
 			var bitdepth = Number(GUI.json.audio_sample_depth);
 			var sampling = Number(GUI.json.audio_sample_rate);
 			var bitrate = Number(GUI.json.bitrate);
@@ -257,11 +257,7 @@ function refreshState() {
 				bitrate = bitdepth * sampling * 2;
 			}
 			sampling = (bitdepth != 1) ? sampling +' kHz ' : sampling +' - ';
-			if (GUI.stream !== 'radio') {
-				var fileinfo = '<a id="dot0" style="color:#ffffff"> &#8226; </a>' + channel + bitdepth +' bit '+ sampling + bitrate +' kbps<a style="color:#ffffff"> &#8226; </a>' + ext;
-			} else {
-				var fileinfo = '<a id="dot0" style="color:#ffffff"> &#8226; </a>' + channel + bitdepth +' bit '+ sampling + bitrate +' kbps';
-			}
+			var fileinfo = '<a id="dot0" style="color:#ffffff"> &#8226; </a>' + channel + bitdepth +' bit '+ sampling + bitrate +' kbps<a style="color:#ffffff"> &#8226; </a>' + ext;
 		} else {
 			var fileinfo = '';
 		}
@@ -318,9 +314,12 @@ function updateGUI() {
             $('#currentsong').html((currentsong === null || currentsong === undefined || currentsong === '') ? '<span class="notag">[no title]</span>' : currentsong);
             $('#currentalbum').html((currentalbum === null || currentalbum === undefined || currentalbum === '') ? '<span class="notag">[no album]</span>' : currentalbum);
         } else {
-            $('#currentartist').html((currentartist === null || currentartist === undefined || currentartist === '') ? radioname : currentartist);
-            $('#currentsong').html((currentsong === null || currentsong === undefined || currentsong === '') ? radioname : currentsong);
-            $('#currentalbum').html('<span class="notag">streaming</span>');
+        	var artistsong = currentsong.split(/ - (.+)/);
+			var artist = artistsong[0];
+			var song = artistsong[1];
+            $('#currentartist').html((currentartist === null || currentartist === undefined || currentartist === '') ? artist : currentartist);
+            $('#currentsong').html(artistsong.length > 1 ? song : currentsong);
+            $('#currentalbum').html(radioname);
         }
         if (GUI.json.repeat === '1') {
             $('#repeat').addClass('btn-primary');
