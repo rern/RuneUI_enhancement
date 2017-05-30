@@ -237,7 +237,7 @@ function refreshState() {
         if (GUI.stream !== 'radio') {
 			$('#total').html((GUI.json.time !== undefined) ? timeConvert(GUI.json.time) : '00:00');
 		} else {
-			$('#total').html('');
+			$('#total').html('<a style="color: #587ca0;">streaming</a>');
 		}
 // improve song info
 	if ($('#overlay-playsource-open button').text() === 'MPD') {
