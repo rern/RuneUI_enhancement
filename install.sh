@@ -71,6 +71,10 @@ wget -qN --show-progress https://github.com/rern/RuneUI_enhancement/raw/master/_
 wget -qN --show-progress https://github.com/rern/RuneUI_enhancement/raw/master/uninstall_enha.sh
 chmod +x uninstall_enha.sh
 
+# backup fonts
+mkdir /srv/http/assets/fonts/backup
+cp /srv/http/assets/fonts/* /srv/http/assets/fonts/backup &>/dev/null
+
 # extract files #######################################
 title "Install new files ..."
 bsdtar -xvf srv.tar.xz -C /
