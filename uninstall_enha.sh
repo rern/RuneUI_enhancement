@@ -64,6 +64,10 @@ if ! $gpio; then
 	rm -v $path'js/vendor/pnotify3.custom.min.js'
 fi
 
+# restore fonts
+cp -f /srv/http/assets/fonts/backup/* /srv/http/assets/fonts &>/dev/null
+rm -rf /srv/http/assets/fonts/backup
+
 # restore modified files #######################################
 title "Restore modified files ..."
 header='/srv/http/app/templates/header.php'
