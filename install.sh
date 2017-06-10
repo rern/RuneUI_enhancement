@@ -107,7 +107,7 @@ sed -i -e $'/runeui.css/ a\
             <li class="<?=$this->uri(1, \'dev\', \'active\')?>"><a href="/dev/"><i class="fa fa-code"></i> Development</a></li>
 ' -e '/logo.png/ s|^|<?php /\*|; /logo.png/ s|$|\*/?>|
 ' -e 's|"fa fa-music"></i> Library|"fa fa-folder-open"></i>|
-' -e $'s|"tab"\')?>><i class="fa fa-play"></i> Playback|"tab"\')?>><i class="fa fa-play"></i>|
+' -e $'s|"tab"\')?>><i class="fa fa-play"></i> Playback|"tab"\')?>><i class="fa fa-play-circle"></i>|
 ' -e 's|"fa fa-list"></i> Queue|"fa fa-list"></i>|
 ' $header
 # no RuneUI GPIO
