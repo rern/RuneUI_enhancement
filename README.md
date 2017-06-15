@@ -23,14 +23,14 @@ Try it - [**Demo**](https://rern.github.io/RuneUI_GPIO/)
 
 Install
 ---
-```sh
+```
 wget -qN --show-progress https://github.com/rern/RuneUI_enhancement/raw/master/install.sh; chmod +x install.sh; ./install.sh
 ```
 Refresh browser (clear history if nothing changed)
 
 Uninstall
 ---
-```sh
+```
 ./uninstall_enha.sh
 ```    
 _(Uninstalling will restore files to originals and delete all added ones. It should be fine to install-uninstall again and again.)_
@@ -91,11 +91,11 @@ Restore original files
 Only if something not normal occured after uninstall that might happen from:  
 - Unsuccessful install or uninstall
 - Inconsistency between revisions  
-```sh
+```
 wget -qN --show-progress https://github.com/rern/RuneUI_enhancement/raw/master/restore.sh; chmod +x restore.sh; ./restore.sh
 ```
 
 **Extended charactors** for Cyrillic, Greek and IPA phonetics need font files replacement.  
-```sh
+```
 wget -qN --show-progress https://github.com/rern/RuneUI_enhancement/raw/master/_repo/lato.tar.xz; tar -Jxvf lato.tar.xz -C /srv/http/assets/fonts/lato
 ```
