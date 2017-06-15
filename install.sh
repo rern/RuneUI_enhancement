@@ -47,6 +47,8 @@ titleend() {
 	echo -e "\n$line\n"
 }
 
+gitpath=https://github.com/rern/RuneUI_enhancement/raw/master
+
 # check already installed #######################################
 if [[ -e /srv/http/assets/css/custom.css ]]; then
 	title "$info $runeenh already installed."
@@ -67,8 +69,8 @@ fi
 # install RuneUI enhancement #######################################
 title2 "Install $runeenh ..."
 title "Get files ..."
-wget -qN --show-progress https://github.com/rern/RuneUI_enhancement/raw/master/_repo/srv.tar.xz
-wget -qN --show-progress https://github.com/rern/RuneUI_enhancement/raw/master/uninstall_enha.sh
+wget -qN --show-progress $gitpath/_repo/srv.tar.xz
+wget -qN --show-progress $gitpath/uninstall_enha.sh
 chmod +x uninstall_enha.sh
 
 # backup fonts
