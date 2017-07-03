@@ -87,7 +87,7 @@ if (( $# == 0 )); then
 		read anszoomcustom
 	fi
 else
-	anszoom=$1
+	(( $1 < 6 )) && anszoom=$1 || anszoom=1
 fi
 
 # install #######################################
