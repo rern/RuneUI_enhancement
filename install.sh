@@ -68,18 +68,27 @@ if [[ -e /srv/http/assets/css/custom.css ]]; then
 fi
 
 # user inputs
-title "$info Select local browser screen size:"
-echo 'Set zoom level for display directly connect to RPi.'
-echo
-echo 'Screen size:'
-echo -e '  \e[0;36m1\e[m Small     ( 0.7 : width less than 800px )'
-echo -e '  \e[0;36m2\e[m Medium    ( 1.2 : HD - 1280px )'
-echo -e '  \e[0;36m3\e[m Large     ( 1.5 : Full HD - 1920px )'
-echo -e '  \e[0;36m4\e[m Custom    ( user define )'
-echo -e '  \e[0;36m5\e[m Text only ( save some cpu cycles )'
-echo
-echo -e '\e[0;36m1\e[m / 2 / 3 / 4 / 5 ? '
-read -n 1 anszoom
+if (( $# == 0 )); then
+	title "$info Select local browser screen size:"
+	echo 'Set zoom level for display directly connect to RPi.'
+	echo
+	echo 'Screen size:'
+	echo -e '  \e[0;36m1\e[m Small     ( 0.7 : width less than 800px )'
+	echo -e '  \e[0;36m2\e[m Medium    ( 1.2 : HD - 1280px )'
+	echo -e '  \e[0;36m3\e[m Large     ( 1.5 : Full HD - 1920px )'
+	echo -e '  \e[0;36m4\e[m Custom    ( user define )'
+	echo -e '  \e[0;36m5\e[m Text only ( save some cpu cycles )'
+	echo
+	echo -e '\e[0;36m1\e[m / 2 / 3 / 4 / 5 ? '
+	read -n 1 anszoom
+	if [[ $anszoom == 4 ]]; then
+		echo
+		echo 'Custom scale:'
+		read anszoomcustom
+	fi
+else
+	anszoom=$1
+fi
 
 # install #######################################
 title2 "Install $runeenh ..."
@@ -163,10 +172,7 @@ fi
 case $anszoom in
 	2 ) zoom=1.2;;
 	3 ) zoom=1.5;;
-	4 ) echo
-		echo 'Custom scale:'
-		read ans 
-		zoom=$ans;;
+	4 ) zoom=$anszoomcustom;;
 	5 ) redis-cli set local_browser 0 >/dev/null
 		killall midori
 		echo -e '\nLocal browser disabled.'
