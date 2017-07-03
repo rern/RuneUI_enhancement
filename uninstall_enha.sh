@@ -130,15 +130,14 @@ else
 	echo
 	echo -e '\e[0;36m0\e[m / 1 ? '
 	read -n 1 answer
-	case $answer in
-		1 ) redis-cli set local_browser 1 >/dev/null
-			xinit &>/dev/null &
-			echo -e '\nLocal browser started.\n';;
-		* ) echo;;	
-	esac
+	if [[ $answer == 1 ]]; then
+		redis-cli set local_browser 1 >/dev/null
+		xinit &>/dev/null &
+		echo -e '\nLocal browser started.\n';;	
+	fi
 fi
 
-title2 "$runeenh successfully uninstalled."
+title2 "$runeenh uninstalled successfully."
 titleend "$info Refresh browser for default RuneUI."
 
 rm uninstall_enha.sh
