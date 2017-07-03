@@ -204,6 +204,6 @@ if pgrep midori >/dev/null; then
 	echo -e '\nLocal browser restarted.\n'
 fi
 
-title2 "$runeenh successfully installed."
+title2 "$runeenh installed successfully."
 echo "Uninstall:   ./uninstall_enha.sh"
 titleend "$info Refresh browser to start."
