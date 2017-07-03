@@ -57,16 +57,31 @@ if [[ -e /srv/http/assets/css/custom.css ]]; then
 	echo -e '  \e[0;36m1\e[m Yes'
 	echo
 	echo -e '\e[0;36m0\e[m / 1 ? '
-	read -n 1 answer
-	case $answer in
-		1 ) ./uninstall.sh re;;
-		* ) echo
-			titleend "$runeenh reinstall cancelled."
-			exit;;	
-	esac
+	read -n 1 ansre
+	if [[ $answre == 1 ]]; then
+		./uninstall.sh re
+	else
+		echo
+		titleend "$runeenh reinstall cancelled."
+		exit	
+	fi
 fi
 
-# install RuneUI enhancement #######################################
+# user inputs
+title "$info Select local browser screen size:"
+echo 'Set zoom level for display directly connect to RPi.'
+echo
+echo 'Screen size:'
+echo -e '  \e[0;36m1\e[m Small     ( 0.7 : width less than 800px )'
+echo -e '  \e[0;36m2\e[m Medium    ( 1.2 : HD - 1280px )'
+echo -e '  \e[0;36m3\e[m Large     ( 1.5 : Full HD - 1920px )'
+echo -e '  \e[0;36m4\e[m Custom    ( user define )'
+echo -e '  \e[0;36m5\e[m Text only ( save some cpu cycles )'
+echo
+echo -e '\e[0;36m1\e[m / 2 / 3 / 4 / 5 ? '
+read -n 1 anszoom
+
+# install #######################################
 title2 "Install $runeenh ..."
 title "Get files ..."
 wget -qN --show-progress $gitpath/_repo/srv.tar.xz
@@ -145,34 +160,20 @@ if ! grep '|ico' $nginx | grep -q 'svg'; then
 fi
 
 # local display zoom, encoding, css #######################################
-#zoom=$(sed -n '/^zoom-level/ s/zoom-level=//p' /root/.config/midori/config)
-#if [[ $(redis-cli get local_browser) -eq '1' ]]; then
-	title "$info Select local browser screen size:"
-	echo 'Set zoom level for display directly connect to RPi.'
-	echo
-	echo 'Screen size:'
-	echo -e '  \e[0;36m1\e[m Small     ( 0.7 : width less than 800px )'
-	echo -e '  \e[0;36m2\e[m Medium    ( 1.2 : HD - 1280px )'
-	echo -e '  \e[0;36m3\e[m Large     ( 1.5 : Full HD - 1920px )'
-	echo -e '  \e[0;36m4\e[m Custom    ( user define )'
-	echo -e '  \e[0;36m5\e[m Text only ( save some cpu cycles )'
-	echo
-	echo -e '\e[0;36m1\e[m / 2 / 3 / 4 / 5 ? '
-	read -n 1 answer
-	case $answer in
-		2 ) zoom=1.2;;
-		3 ) zoom=1.5;;
-		4 ) echo
-			echo 'Custom scale:'
-			read ans 
-			zoom=$ans;;
-		5 ) redis-cli set local_browser 0 >/dev/null
-			killall midori
-			echo -e '\nLocal browser disabled.'
-			echo -e 'Re-enable: Menu > Settings > Local browser\n';;
-		* ) zoom=0.7;;
-	esac
-#fi
+case $anszoom in
+	2 ) zoom=1.2;;
+	3 ) zoom=1.5;;
+	4 ) echo
+		echo 'Custom scale:'
+		read ans 
+		zoom=$ans;;
+	5 ) redis-cli set local_browser 0 >/dev/null
+		killall midori
+		echo -e '\nLocal browser disabled.'
+		echo -e 'Re-enable: Menu > Settings > Local browser\n';;
+	* ) zoom=0.7;;
+esac
+
 midori='/root/.config/midori/config'
 sed -i -e '/zoom-level/ s/^/#/
 ' -e '/user-stylesheet-uri/ s/^/#/
