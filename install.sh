@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# remove install file
-# install.sh - RuneUI enhancement
+# install.sh [screen resolution]
+
 # https://github.com/rern/RuneUI_enhancement
 
 # remove install.sh
