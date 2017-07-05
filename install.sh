@@ -27,6 +27,7 @@ chmod +x f_heading.sh
 . f_heading.sh
 rm install.sh f_heading.sh
 
+runeenh=$( textcolor "RuneUI Enhancement" 6 )
 gitpath=https://github.com/rern/RuneUI_enhancement/raw/master
 
 # check already installed #######################################
