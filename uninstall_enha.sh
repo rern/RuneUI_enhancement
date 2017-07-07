@@ -29,7 +29,7 @@ title2 "Uninstall $runeenh ..."
 # remove files #######################################
 title "Remove files ..."
 rm -v /srv/http/lyrics.php
-path='/srv/http/assets/'
+path=/srv/http/assets/
 rm -v $path'css/custom.css'
 rm -v $path'css/customcoveroff.css'
 rm -v $path'css/customvoloff.css'
@@ -50,7 +50,7 @@ rm -rf /srv/http/assets/fonts/backup
 
 # restore modified files #######################################
 title "Restore modified files ..."
-header='/srv/http/app/templates/header.php'
+header=/srv/http/app/templates/header.php
 echo $header
 sed -i -e '/custom.css/, /<!-- enhancement -->/ d
 ' -e '/barleft/, /lyricfade/ d
@@ -68,7 +68,7 @@ sed -i -e '/custom.css/, /<!-- enhancement -->/ d
 # no RuneUI GPIO
 ! $gpio && sed -i -e '/pnotify.css/ d' $header
 
-footer='/srv/http/app/templates/footer.php'
+footer=/srv/http/app/templates/footer.php
 echo $footer
 sed -i -e '/custom.js/, /hammer.min.js/ d' $footer
 # no RuneUI GPIO
@@ -78,7 +78,7 @@ sed -i -e '/playbackcustom.php/, /\/\*/ d
 ' -e '/enh \*\/?>/ d
 ' /srv/http/app/templates/playback.php
 
-midori='/root/.config/midori/config'
+midori=/root/.config/midori/config
 echo $midori
 sed -i -e '/^zoom-level/ d
 ' -e '/#zoom-level/ s/^#//
