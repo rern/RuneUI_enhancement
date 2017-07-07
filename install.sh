@@ -88,7 +88,7 @@ rm srv.tar.xz
 
 # modify files #######################################
 title "Modify files ..."
-header='/srv/http/app/templates/header.php'
+header=/srv/http/app/templates/header.php
 echo $header
 sed -i -e $'/runeui.css/ a\
     <link rel="stylesheet" href="<?=$this->asset(\'/css/custom.css\')?>">\
@@ -120,7 +120,7 @@ sed -i -e $'/runeui.css/ a\
 ! grep -q 'pnotify.css' $header &&
 	sed -i $'/runeui.css/ a\    <link rel="stylesheet" href="<?=$this->asset(\'/css/pnotify.css\')?>">' $header
 
-footer='/srv/http/app/templates/footer.php'
+footer=/srv/http/app/templates/footer.php
 echo $footer
 sed -i $'$ a\
 <script src="<?=$this->asset(\'/js/custom.js\')?>"></script>\
@@ -132,7 +132,7 @@ sed -i $'$ a\
 	<script src="<?=$this->asset(\'/js/vendor/pnotify3.custom.min.js\')?>"></script>
 	' $footer
 
-playback='/srv/http/app/templates/playback.php'
+playback=/srv/http/app/templates/playback.php
 echo $playback
 sed -i -e '/<div class="tab-content">/ i\
 <?php include "playbackcustom.php";\
@@ -141,7 +141,7 @@ sed -i -e '/<div class="tab-content">/ i\
 ' $playback
 
 # for nginx svg support
-nginx='/etc/nginx/nginx.conf'
+nginx=/etc/nginx/nginx.conf
 if ! grep '|ico' $nginx | grep -q 'svg'; then
 	echo $enginx
 	sed -i 's/|ico/&|svg/' $nginx
@@ -160,7 +160,7 @@ case $anszoom in
 	* ) zoom=0.7;;
 esac
 
-midori='/root/.config/midori/config'
+midori=/root/.config/midori/config
 sed -i -e '/zoom-level/ s/^/#/
 ' -e '/user-stylesheet-uri/ s/^/#/
 ' -e "/settings/ a\
