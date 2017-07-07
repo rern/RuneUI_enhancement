@@ -32,7 +32,7 @@ gitpath=https://github.com/rern/RuneUI_enhancement/raw/master
 # check already installed #######################################
 if [[ -e /srv/http/assets/css/custom.css ]]; then
 	title "$info $runeenh already installed."
-	echo 'Reinstall' $runeenh':'
+	echo Reinstall $runeenh:
 	echo -e '  \e[0;36m0\e[m No'
 	echo -e '  \e[0;36m1\e[m Yes'
 	echo
@@ -50,9 +50,9 @@ fi
 # user inputs
 if (( $# == 0 )); then
 	title "$info Select local browser screen size:"
-	echo 'Set zoom level for display directly connect to RPi.'
+	echo Set zoom level for display directly connect to RPi.
 	echo
-	echo 'Screen size:'
+	echo Screen size:
 	echo -e '  \e[0;36m1\e[m Small     ( 0.7 : width less than 800px )'
 	echo -e '  \e[0;36m2\e[m Medium    ( 1.2 : HD - 1280px )'
 	echo -e '  \e[0;36m3\e[m Large     ( 1.5 : Full HD - 1920px )'
@@ -63,7 +63,7 @@ if (( $# == 0 )); then
 	read -n 1 anszoom
 	if [[ $anszoom == 4 ]]; then
 		echo
-		echo 'Custom scale:'
+		echo Custom scale:
 		read anszoomcustom
 	fi
 else
@@ -185,5 +185,5 @@ if pgrep midori >/dev/null; then
 fi
 
 title2 "$runeenh installed successfully."
-echo "Uninstall:   ./uninstall_enha.sh"
+echo Uninstall: ./uninstall_enha.sh
 titleend "$info Refresh browser to start."
