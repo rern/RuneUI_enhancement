@@ -173,7 +173,7 @@ if ! grep -q 'default-encoding=UTF-8' $midori; then
 fi
 
 # correct version number
-redis-cli set release 0.3 &> /dev/null
+[[ $( redis-cli get buildversion ) == 'beta-20160313' ]] && redis-cli set release 0.3 &> /dev/null
 
 # refresh #######################################
 title "Clear PHP OPcache ..."
