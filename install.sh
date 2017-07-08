@@ -31,7 +31,7 @@ gitpath=https://github.com/rern/RuneUI_enhancement/raw/master
 
 # check already installed #######################################
 if [[ -e /srv/http/assets/css/custom.css ]]; then
-	title "$info $runeenh already installed."
+	titleinfo "$runeenh already installed."
 	echo Reinstall $runeenh:
 	echo -e '  \e[0;36m0\e[m No'
 	echo -e '  \e[0;36m1\e[m Yes'
@@ -49,7 +49,7 @@ fi
 
 # user inputs
 if (( $# == 0 )); then
-	title "$info Select local browser screen size:"
+	titleinfo "Select local browser screen size:"
 	echo Set zoom level for display directly connect to RPi.
 	echo
 	echo Screen size:
