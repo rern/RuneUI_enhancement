@@ -172,6 +172,9 @@ if ! grep -q 'default-encoding=UTF-8' $midori; then
 	' $midori
 fi
 
+# correct version number
+redis-cli set release 0.3 &> /dev/null
+
 # refresh #######################################
 title "Clear PHP OPcache ..."
 curl '127.0.0.1/clear'
