@@ -15,19 +15,18 @@
 # remove uninstall_enha.sh
 
 # import heading function
-wget -qN https://github.com/rern/tips/raw/master/bash/f_heading.sh; . f_heading.sh; rm f_heading.sh
-
-runeenh=$( textcolor "RuneUI Enhancement" 6 )
+wget -qN https://github.com/rern/title_script/raw/master/title.sh; . title.sh; rm title.sh
+runeenh=$( textcolor "RuneUI Enhancement" )
 
 # check installed #######################################
 if [[ ! -e /srv/http/assets/css/custom.css ]]; then
-	title "$info $runeenh not found."
+	title $info $runeenh not found.
 	exit
 fi
 
-title2 "Uninstall $runeenh ..."
+title -l = $bar Uninstall $runeenh ...
 # remove files #######################################
-title "Remove files ..."
+title Remove files ...
 rm -v /srv/http/lyrics.php
 path=/srv/http/assets/
 rm -v $path'css/custom.css'
@@ -49,7 +48,7 @@ cp -f /srv/http/assets/fonts/backup/* /srv/http/assets/fonts &>/dev/null
 rm -rf /srv/http/assets/fonts/backup
 
 # restore modified files #######################################
-title "Restore modified files ..."
+title Restore modified files ...
 header=/srv/http/app/templates/header.php
 echo $header
 sed -i -e '/custom.css/, /<!-- enhancement -->/ d
@@ -93,7 +92,7 @@ fi
 (( $# != 0 )) && exit
 
 # refresh #######################################
-title "Clear PHP OPcache ..."
+title Clear PHP OPcache ...
 curl '127.0.0.1/clear'
 echo
 
@@ -103,7 +102,7 @@ if [[ $(redis-cli get local_browser) -eq '1' ]]; then
 	xinit &>/dev/null &
 	echo -e '\nLocal browser restarted.\n'
 else
-	title "$info Local browser was disabled."
+	title $info Local browser was disabled.
 	echo 'Re-enable:'
 	echo -e '  \e[0;36m0\e[m No'
 	echo -e '  \e[0;36m1\e[m Yes'
@@ -117,7 +116,7 @@ else
 	fi
 fi
 
-title2 "$runeenh uninstalled successfully."
-titleend "$info Refresh browser for default RuneUI."
+title -l = $bar $runeenh uninstalled successfully.
+title -nt $info Refresh browser for default RuneUI.
 
 rm uninstall_enha.sh
