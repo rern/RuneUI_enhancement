@@ -22,16 +22,16 @@
 #	info
 
 # import heading function
-wget -qN https://github.com/rern/tips/raw/master/bash/f_heading.sh; . f_heading.sh; rm f_heading.sh
+wget -qN https://github.com/rern/title_script/raw/master/title.sh; . title.sh; rm title.sh
+runeenh=$( textcolor "RuneUI Enhancement" )
 
 rm install.sh
 
-runeenh=$( textcolor "RuneUI Enhancement" 6 )
 gitpath=https://github.com/rern/RuneUI_enhancement/raw/master
 
 # check already installed #######################################
 if [[ -e /srv/http/assets/css/custom.css ]]; then
-	titleinfo "$runeenh already installed."
+	title $info $runeenh already installed.
 	echo "Reinstall $runeenh:"
 	echo -e '  \e[0;36m0\e[m No'
 	echo -e '  \e[0;36m1\e[m Yes'
@@ -42,14 +42,14 @@ if [[ -e /srv/http/assets/css/custom.css ]]; then
 		./uninstall.sh re
 	else
 		echo
-		titleend "$runeenh reinstall cancelled."
+		title -nt $runeenh reinstall cancelled.
 		exit	
 	fi
 fi
 
 # user inputs
 if (( $# == 0 )); then
-	titleinfo "Select local browser screen size:"
+	title $info Select local browser screen size:
 	echo 'Set zoom level to display directly connect to RPi.'
 	echo
 	echo 'Screen size:'
@@ -71,8 +71,8 @@ else
 fi
 
 # install #######################################
-title2 "Install $runeenh ..."
-title "Get files ..."
+title -l = $bar Install $runeenh ...
+title Get files ...
 wget -qN --show-progress $gitpath/_repo/srv.tar.xz
 wget -qN --show-progress $gitpath/uninstall_enha.sh
 chmod +x uninstall_enha.sh
@@ -82,12 +82,12 @@ mkdir /srv/http/assets/fonts/backup
 cp /srv/http/assets/fonts/* /srv/http/assets/fonts/backup &>/dev/null
 
 # extract files #######################################
-title "Install new files ..."
+title Install new files ...
 bsdtar -xvf srv.tar.xz -C /
 rm srv.tar.xz
 
 # modify files #######################################
-title "Modify files ..."
+title Modify files ...
 header=/srv/http/app/templates/header.php
 echo $header
 sed -i -e $'/runeui.css/ a\
@@ -176,7 +176,7 @@ fi
 [[ $( redis-cli get buildversion ) == 'beta-20160313' ]] && redis-cli set release 0.3 &> /dev/null
 
 # refresh #######################################
-title "Clear PHP OPcache ..."
+title Clear PHP OPcache ...
 curl '127.0.0.1/clear'
 echo
 
@@ -187,6 +187,6 @@ if pgrep midori >/dev/null; then
 	echo -e '\nLocal browser restarted.\n'
 fi
 
-title2 "$runeenh installed successfully."
+title -l = $bar $runeenh installed successfully.
 echo 'Uninstall: ./uninstall_enha.sh'
-titleend "$info Refresh browser to start."
+title -nt $info Refresh browser to start.
