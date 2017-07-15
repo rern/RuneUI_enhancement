@@ -16,17 +16,17 @@
 
 # import heading function
 wget -qN https://github.com/rern/title_script/raw/master/title.sh; . title.sh; rm title.sh
-runeenh=$( textcolor "RuneUI Enhancement" )
+runeenh=$( tcolor "RuneUI Enhancement" )
 
 # check installed #######################################
 if [[ ! -e /srv/http/assets/css/custom.css ]]; then
-	title $info $runeenh not found.
+	title "$info $runeenh not found."
 	exit
 fi
 
 title -l = $bar Uninstall $runeenh ...
 # remove files #######################################
-title Remove files ...
+title "Remove files ..."
 rm -v /srv/http/lyrics.php
 path=/srv/http/assets/
 rm -v $path'css/custom.css'
@@ -48,7 +48,7 @@ cp -f /srv/http/assets/fonts/backup/* /srv/http/assets/fonts &>/dev/null
 rm -rf /srv/http/assets/fonts/backup
 
 # restore modified files #######################################
-title Restore modified files ...
+title "Restore modified files ..."
 header=/srv/http/app/templates/header.php
 echo $header
 sed -i -e '/custom.css/, /<!-- enhancement -->/ d
@@ -92,7 +92,7 @@ fi
 (( $# != 0 )) && exit
 
 # refresh #######################################
-title Clear PHP OPcache ...
+title "Clear PHP OPcache ..."
 curl '127.0.0.1/clear'
 echo
 
@@ -116,7 +116,7 @@ else
 	fi
 fi
 
-title -l = $bar $runeenh uninstalled successfully.
-title -nt $info Refresh browser for default RuneUI.
+title -l = "$bar $runeenh uninstalled successfully."
+title -nt "$info Refresh browser for default RuneUI."
 
 rm uninstall_enha.sh
