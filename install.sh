@@ -21,11 +21,11 @@
 # success
 #	info
 
+rm $0
+
 # import heading function
 wget -qN https://github.com/rern/title_script/raw/master/title.sh; . title.sh; rm title.sh
 runeenh=$( tcolor "RuneUI Enhancement" )
-
-rm install.sh
 
 gitpath=https://github.com/rern/RuneUI_enhancement/raw/master
 
