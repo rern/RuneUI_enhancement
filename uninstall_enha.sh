@@ -119,4 +119,4 @@ fi
 title -l = "$bar $runeenh uninstalled successfully."
 title -nt "$info Refresh browser for default RuneUI."
 
-rm uninstall_enha.sh
+rm $0
