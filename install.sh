@@ -61,6 +61,7 @@ if (( $# == 0 )); then
 	echo
 	echo -e '\e[0;36m1\e[m / 2 / 3 / 4 / 5 ? '
 	read -n 1 anszoom
+	echo
 	if [[ $anszoom == 4 ]]; then
 		echo
 		echo 'Custom scale:'
