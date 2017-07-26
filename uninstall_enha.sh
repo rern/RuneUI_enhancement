@@ -112,7 +112,7 @@ else
 	if [[ $answer == 1 ]]; then
 		redis-cli set local_browser 1 >/dev/null
 		xinit &>/dev/null &
-		echo -e '\nLocal browser started.\n';;	
+		echo -e '\nLocal browser started.\n'	
 	fi
 fi
 
