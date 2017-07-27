@@ -25,6 +25,8 @@ rm $0
 
 # import heading function
 wget -qN https://github.com/rern/title_script/raw/master/title.sh; . title.sh; rm title.sh
+timestart
+
 runeenh=$( tcolor "RuneUI Enhancement" )
 
 gitpath=https://github.com/rern/RuneUI_enhancement/raw/master
@@ -188,6 +190,7 @@ if pgrep midori >/dev/null; then
 	echo -e '\nLocal browser restarted.\n'
 fi
 
+timestop
 title -l = "$bar $runeenh installed successfully."
 echo 'Uninstall: ./uninstall_enha.sh'
 title -nt "$info Refresh browser to start."
