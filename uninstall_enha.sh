@@ -20,13 +20,13 @@ runeenh=$( tcolor "RuneUI Enhancement" )
 
 # check installed #######################################
 if [[ ! -e /srv/http/assets/css/custom.css ]]; then
-	title "$info $runeenh not found."
+	echo -e "$info $runeenh not found."
 	exit
 fi
 
 title -l = $bar Uninstall $runeenh ...
 # remove files #######################################
-title "Remove files ..."
+echo -e "$bar Remove files ..."
 rm -v /srv/http/lyrics.php
 path=/srv/http/assets/
 rm -v $path'css/custom.css'
@@ -48,7 +48,7 @@ cp -f /srv/http/assets/fonts/backup/* /srv/http/assets/fonts &>/dev/null
 rm -rf /srv/http/assets/fonts/backup
 
 # restore modified files #######################################
-title "Restore modified files ..."
+echo -e "$bar Restore modified files ..."
 header=/srv/http/app/templates/header.php
 echo $header
 sed -i -e '/custom.css/, /<!-- enhancement -->/ d
@@ -92,7 +92,7 @@ fi
 (( $# != 0 )) && exit
 
 # refresh #######################################
-title "Clear PHP OPcache ..."
+echo -e "$bar Clear PHP OPcache ..."
 curl '127.0.0.1/clear'
 echo
 
@@ -102,13 +102,8 @@ if [[ $(redis-cli get local_browser) -eq '1' ]]; then
 	xinit &>/dev/null &
 	echo -e '\nLocal browser restarted.\n'
 else
-	title $info Local browser was disabled.
-	echo 'Re-enable:'
-	echo -e '  \e[0;36m0\e[m No'
-	echo -e '  \e[0;36m1\e[m Yes'
-	echo
-	echo -e '\e[0;36m0\e[m / 1 ? '
-	read -n 1 answer
+	echo -e "$info Local browser was disabled."
+	yesno "Re-enable:" answer
 	if [[ $answer == 1 ]]; then
 		redis-cli set local_browser 1 >/dev/null
 		xinit &>/dev/null &
