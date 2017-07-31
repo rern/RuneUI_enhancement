@@ -33,25 +33,19 @@ gitpath=https://github.com/rern/RuneUI_enhancement/raw/master
 
 # check already installed #######################################
 if [[ -e /srv/http/assets/css/custom.css ]]; then
-	title "$info $runeenh already installed."
-	echo "Reinstall $runeenh:"
-	echo -e '  \e[0;36m0\e[m No'
-	echo -e '  \e[0;36m1\e[m Yes'
-	echo
-	echo -e '\e[0;36m0\e[m / 1 ? '
-	read -n 1 ansre
+	echo -e "$info $runeenh already installed."
+	yesno "Reinstall $runeenh:" ansre
 	if [[ $answre == 1 ]]; then
 		./uninstall.sh re
 	else
-		echo
-		title -nt "$runeenh reinstall cancelled."
+		echo -e "$bar $runeenh reinstall cancelled."
 		exit	
 	fi
 fi
 
 # user inputs
 if (( $# == 0 )); then
-	title "$info Select local browser screen size:"
+	echo -e "$info Select local browser screen size:"
 	echo 'Set zoom level to display directly connect to RPi.'
 	echo
 	echo 'Screen size:'
@@ -75,7 +69,7 @@ fi
 
 # install #######################################
 title -l = "$bar Install $runeenh ..."
-title "Get files ..."
+echo -e "$bar Get files ..."
 wget -qN --show-progress $gitpath/_repo/srv.tar.xz
 wget -qN --show-progress $gitpath/uninstall_enha.sh
 chmod +x uninstall_enha.sh
@@ -85,12 +79,12 @@ mkdir /srv/http/assets/fonts/backup
 cp /srv/http/assets/fonts/* /srv/http/assets/fonts/backup &>/dev/null
 
 # extract files #######################################
-title "Install new files ..."
+echo -e "$bar Install new files ..."
 bsdtar -xvf srv.tar.xz -C /
 rm srv.tar.xz
 
 # modify files #######################################
-title "Modify files ..."
+echo -e "$bar Modify files ..."
 header=/srv/http/app/templates/header.php
 echo $header
 sed -i -e $'/runeui.css/ a\
@@ -179,7 +173,7 @@ fi
 [[ $( redis-cli get buildversion ) == 'beta-20160313' ]] && redis-cli set release 0.3 &> /dev/null
 
 # refresh #######################################
-title "Clear PHP OPcache ..."
+echo -e "$bar Clear PHP OPcache ..."
 curl '127.0.0.1/clear'
 echo
 
