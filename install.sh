@@ -24,12 +24,12 @@
 rm $0
 
 # import heading function
-wget -qN https://github.com/rern/title_script/raw/master/title.sh; . title.sh; rm title.sh
+wget -qN https://raw.githubusercontent.com/rern/title_script/master/title.sh; . title.sh; rm title.sh
 timestart
 
 runeenh=$( tcolor "RuneUI Enhancement" )
 
-gitpath=https://github.com/rern/RuneUI_enhancement/raw/master
+gitpath=https://raw.githubusercontent.com/rern/RuneUI_enhancement/master
 
 # check already installed #######################################
 if [[ -e /srv/http/assets/css/custom.css ]]; then
