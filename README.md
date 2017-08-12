@@ -77,6 +77,7 @@ Visual
 - Hide `volume` on disabled
 - Enlarge icons
 - Move `play source` inside `time`
+- Fix Webradio sorting
 
 ![lyrics](https://github.com/rern/RuneUI_enhancement/blob/master/_repo/lyrics.jpg)
 
@@ -85,15 +86,6 @@ Visual
 - Change icons and remove text labels
 - Enlarge icons
 - Add box shadow for layer depth
-
-Restore original files
----
-Only if something not normal occured after uninstall that might happen from:  
-- Unsuccessful install or uninstall
-- Inconsistency between revisions  
-```sh
-wget -qN --show-progress https://github.com/rern/RuneUI_enhancement/raw/master/restore.sh; chmod +x restore.sh; ./restore.sh
-```
 
 **Extended charactors** for Cyrillic, Greek and IPA phonetics need font files replacement.  
 ```sh
