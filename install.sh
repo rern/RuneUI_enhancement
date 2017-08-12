@@ -132,6 +132,18 @@ sed -i -e '/<div class="tab-content">/ i\
 /\*
 ' -e '/<!-- LIBRARY PANEL -->/ i\enh \*/?>
 ' $playback
+# fix sort webradio
+runeui=/srv/http/assets/js/runeui.js
+line=$(( $( sed -n '/id="webradio-add"/=' $file ) - 9 ))
+sed -i $line' i\
+            data.sort(function(a, b){\
+                if (a.playlist < b.playlist)\
+                    return -1;\
+                if (a.playlist > b.playlist)\
+                    return 1;\
+                return 0;\
+            });
+' $runeui
 
 # for nginx svg support
 nginx=/etc/nginx/nginx.conf
