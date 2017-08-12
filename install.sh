@@ -134,7 +134,7 @@ sed -i -e '/<div class="tab-content">/ i\
 ' $playback
 # fix sort webradio
 runeui=/srv/http/assets/js/runeui.js
-line=$(( $( sed -n '/id="webradio-add"/=' $file ) - 9 ))
+line=$(( $( sed -n '/id="webradio-add"/=' $runeui ) - 9 ))
 sed -i $line' i\
             data.sort(function(a, b){\
                 if (a.playlist < b.playlist)\
