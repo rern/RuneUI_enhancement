@@ -10,6 +10,18 @@ function topbottom() {
 		$('#menu-bottom').css('bottom', '-40px');
 	}
 }
+function scrolltext() {
+// scrolling text
+	setTimeout(function() {
+		$('#divartist, #divsong, #divalbum').each(function() {
+			if ($(this).find('span').width() > Math.floor(window.innerWidth * 0.975)) {
+				$(this).addClass('scroll-left');
+			} else {
+				$(this).removeClass('scroll-left');
+			}
+		});
+	}, 50);
+}
 
 $('#barleft').click( function() {
 	if (!$('#coverart').length || !$('#volume-knob').length || $(window).width() >= 640) {
@@ -187,177 +199,3 @@ if ($('#playback').is(':visible')) {
 }
 // document ready end *********************************************************************
 });
-
-
-function scrolltext() {
-// scrolling text
-	setTimeout(function() {
-		$('#divartist, #divsong, #divalbum').each(function() {
-			if ($(this).find('span').width() > Math.floor(window.innerWidth * 0.975)) {
-				$(this).addClass('scroll-left');
-			} else {
-				$(this).removeClass('scroll-left');
-			}
-		});
-	}, 50);
-}
-
-// replace functions in main runeui.js file
-function refreshState() {
-	scrolltext();
-	
-    var state = GUI.state;
-    if (state === 'play') {
-        $('#play').addClass('btn-primary');
-        $('i', '#play').removeClass('fa fa-pause').addClass('fa fa-play');
-        $('#stop').removeClass('btn-primary');
-    } else if (state === 'pause') {
-        $('#playlist-position span').html('Not playing');
-        $('#play').addClass('btn-primary');
-        $('i', '#play').removeClass('fa fa-play').addClass('fa fa-pause');
-        $('#stop').removeClass('btn-primary');
-    } else if (state === 'stop') {
-        $('#play').removeClass('btn-primary');
-        $('i', '#play').removeClass('fa fa-pause').addClass('fa fa-play');
-        $('#stop').addClass('btn-primary');
-        if ($('#section-index').length) {
-            $('#countdown-display').countdown('destroy');
-        }
-// ****************************************************************************************
-        if (GUI.stream !== 'radio') {
-        	$('#total').html('00:00');
-        } else {
-        	$('#total').html('');
-        }
-        $('#time').val(0, false).trigger('update');
-        $('#format-bitrate').html('&nbsp;');
-        $('li', '#playlist-entries').removeClass('active');
-    }
-    if (state !== 'stop') {
-        if (GUI.stream !== 'radio') {
-			$('#total').html((GUI.json.time !== undefined) ? timeConvert(GUI.json.time) : '00:00');
-		} else {
-			$('#total').html('<a style="color: #587ca0;">streaming</a>');
-		}
-// improve song info
-	if ($('#overlay-playsource-open button').text() === 'MPD') {
-		if (GUI.json.fileext != false) {
-			var dot = '<a style="color:#ffffff"> &#8226; </a>';
-			var channel = (GUI.json.audio_channels == 'Stereo') ? '' : GUI.json.audio_channels +' ';
-			var ext = (GUI.stream === 'radio') ? 'RADIO' : GUI.json.fileext.toUpperCase();
-			var bitdepth = Number(GUI.json.audio_sample_depth);
-			var sampling = Number(GUI.json.audio_sample_rate);
-			var bitrate = Number(GUI.json.bitrate);
-			if (ext == 'DSF' || ext == 'DFF') {
-				bitdepth = 1;
-				sampling = GUI.json.audio.split(':')[0] / 5512.5;
-				bitrate = sampling * 44.1;
-				sampling = 'DSD'+ sampling;
-			} else if (ext == 'FLAC' || ext == 'WAV' || ext == 'ALAC') {
-				bitrate = bitdepth * sampling * 2;
-			}
-			sampling = (bitdepth != 1) ? sampling +' kHz ' : sampling +' - ';
-			var fileinfo = '<a id="dot0" style="color:#ffffff"> &#8226; </a>' + channel + bitdepth +' bit '+ sampling + bitrate +' kbps<a style="color:#ffffff"> &#8226; </a>' + ext;
-		} else {
-			var fileinfo = '';
-		}
-	} else {
-		var fileinfo = (GUI.json.audio_channels && GUI.json.audio_sample_depth && GUI.json.audio_sample_rate) ? (GUI.json.audio_channels + ', ' + GUI.json.audio_sample_depth + ' bit, ' + GUI.json.audio_sample_rate +' kHz, '+GUI.json.bitrate+' kbps') : '&nbsp;';
-	}
-// ****************************************************************************************
-        $('#format-bitrate').html(fileinfo);
-        $('li', '#playlist-entries').removeClass('active');
-        var current = parseInt(GUI.json.song);
-        $('#playlist-entries').find('li').eq(current).addClass('active');
-    }
-    if (GUI.json.playlistlength && GUI.json.playlistlength !== '0') {
-        if (GUI.json.song) {
-            $('#playlist-position span').html((parseInt(GUI.json.song) + 1) + '/' + GUI.json.playlistlength);
-        } else {
-            $('#playlist-position span').html('1/' + GUI.json.playlistlength);
-        }
-    } else {
-        $('#playlist-position span').html('Empty queue, add some music!');
-    }
-    if (GUI.json.updating_db !== undefined) {
-        $('a', '#open-panel-sx').html('<i class="fa fa-refresh fa-spin"></i>');
-    } else {
-        $('a', '#open-panel-sx').html('<i class="fa fa-folder-open"></i>');
-    }
-}
-
-function updateGUI() {
-    var volume = GUI.json.volume;
-    var radioname = GUI.json.radioname;
-    var currentartist = GUI.json.currentartist;
-    var currentsong = GUI.json.currentsong;
-    var currentalbum = GUI.json.currentalbum;
-    // set radio mode if stream is present
-    GUI.stream = ((radioname !== null && radioname !== undefined && radioname !== '') ? 'radio' : '');
-    // check MPD status and refresh the UI info
-    refreshState();
-    if ($('#section-index').length) {
-        // check song update
-        // console.log('A = ', GUI.json.currentsong); console.log('B = ', GUI.currentsong);
-        if (GUI.currentsong !== GUI.json.currentsong) {
-            countdownRestart(0);
-            if ($('#panel-dx').hasClass('active')) {
-                var current = parseInt(GUI.json.song);
-                customScroll('pl', current);
-            }
-        }
-        // common actions
-        $('#volume').val((volume === '-1') ? 100 : volume, false).trigger('update');
-        // console.log('currentartist = ', GUI.json.currentartist);
-        if (GUI.stream !== 'radio') {
-            $('#currentartist').html((currentartist === null || currentartist === undefined || currentartist === '') ? '<span class="notag">[no artist]</span>' : currentartist);
-            $('#currentsong').html((currentsong === null || currentsong === undefined || currentsong === '') ? '<span class="notag">[no title]</span>' : currentsong);
-            $('#currentalbum').html((currentalbum === null || currentalbum === undefined || currentalbum === '') ? '<span class="notag">[no album]</span>' : currentalbum);
-        } else {
-        	var artistsong = currentsong.split(/ - (.+)/);
-			var artist = artistsong[0];
-			var song = artistsong[1];
-            $('#currentartist').html((currentartist === null || currentartist === undefined || currentartist === '') ? artist : currentartist);
-            $('#currentsong').html(artistsong.length > 1 ? song : currentsong);
-            $('#currentalbum').html(radioname);
-        }
-        if (GUI.json.repeat === '1') {
-            $('#repeat').addClass('btn-primary');
-        } else {
-            $('#repeat').removeClass('btn-primary');
-        }
-        if (GUI.json.random === '1') {
-            $('#random').addClass('btn-primary');
-        } else {
-            $('#random').removeClass('btn-primary');
-        }
-        if (GUI.json.consume === '1') {
-            $('#consume').addClass('btn-primary');
-        } else {
-            $('#consume').removeClass('btn-primary');
-        }
-        if (GUI.json.single === '1') {
-            $('#single').addClass('btn-primary');
-        } else {
-            $('#single').removeClass('btn-primary');
-        }
-        GUI.currentsong = currentsong;
-        var currentalbumstring = currentartist + ' - ' + currentalbum;
-        if (GUI.currentalbum !== currentalbumstring) {
-            if (radioname === null || radioname === undefined || radioname === '') {
-                var covercachenum = Math.floor(Math.random()*1001);
-                $('#cover-art').css('background-image','url("/coverart/?v=' + covercachenum + '")');
-            } else {
-                $('#cover-art').css('background-image','url("assets/img/cover-radio.jpg")');
-            }
-        }
-        GUI.currentalbum = currentalbumstring;
-    }
-// ****************************************************************************************
-// observe song change for lyrics
-	if (!$('#lyricfade').hasClass('hide') && $('#currentsong').text() != $('h4.ui-pnotify-title').text()) {
-		PNotify.removeAll();
-		$('#currentsong').click();
-	}
-// ****************************************************************************************
- }
