@@ -139,7 +139,7 @@ if ! grep -q 'append(elems)' $runeui; then
             var elems = $("#database-entries li").detach().sort(function (a, b) {\
                 return $(a).text().toLowerCase().localeCompare(\$(b).text().toLowerCase());\
             });\
-            $('#database-entries').append(elems);
+            $("#database-entries").append(elems);
 	' $runeui
 	
 	sed -i 's/var u=$("span","#db-currentpath")/var elems=$("#database-entries li").detach().sort(function(e,t){return $(e).text().toLowerCase().localeCompare($(t).text().toLowerCase())});$("#database-entries").append(elems);var u=$("span","#db-currentpath")/
