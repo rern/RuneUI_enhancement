@@ -135,15 +135,15 @@ sed -i -e '/<div class="tab-content">/ i\
 # fix sort webradio
 runeui=/srv/http/assets/js/runeui.js
 if ! grep -q 'append(elems)' $runeui; then
-	sed -i '/highlighted entry/ a\
+    sed -i '/highlighted entry/ a\
             var elems = $("#database-entries li").detach().sort(function (a, b) {\
                 return $(a).text().toLowerCase().localeCompare(\$(b).text().toLowerCase());\
             });\
             $("#database-entries").append(elems);
-	' $runeui
-	
-	sed -i 's/var u=$("span","#db-currentpath")/var elems=$("#database-entries li").detach().sort(function(e,t){return $(e).text().toLowerCase().localeCompare($(t).text().toLowerCase())});$("#database-entries").append(elems);var u=$("span","#db-currentpath")/
-	' /srv/http/assets/js/runeui.min.js
+    ' $runeui
+    
+    sed -i 's/var u=$("span","#db-currentpath")/var elems=$("#database-entries li").detach().sort(function(e,t){return $(e).text().toLowerCase().localeCompare($(t).text().toLowerCase())});$("#database-entries").append(elems);var u=$("span","#db-currentpath")/
+    ' /srv/http/assets/js/runeui.min.js
 fi
 
 # for nginx svg support
