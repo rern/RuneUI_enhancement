@@ -143,7 +143,7 @@ if ! grep -q 'append(elems)' $runeui; then
     ' $runeui
     
     sed -i 's/var u=$("span","#db-currentpath")/var elems=$("#database-entries li").detach().sort(function(e,t){return $(e).text().toLowerCase().localeCompare($(t).text().toLowerCase())});$("#database-entries").append(elems);var u=$("span","#db-currentpath")/
-    ' /srv/http/assets/js/runeui.min.js
+    ' ${runeui/.js/.min.js}
 fi
 
 # for nginx svg support
