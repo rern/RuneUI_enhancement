@@ -146,24 +146,6 @@ if ! grep -q 'append(elems)' $runeui; then
     sed -i 's/var u=$("span","#db-currentpath")/var elems=$("#database-entries li").detach().sort(function(e,t){return $(e).text().toLowerCase().localeCompare($(t).text().toLowerCase())});$("#database-entries").append(elems);var u=$("span","#db-currentpath")/
     ' ${runeui/.js/.min.js}
 fi
-# library browsing
-sed -i -e $'/(\'#open-panel-sx\').hasClass/{n
-s|^|//|
-a\                renderLibraryHome()
-}
-' -e $'/Genres\/\' + path/{n;n;n
-s|^|//|
-a\
-var folderSlash = folderHref = "";\
-var folder = path.split("/");\
-for (i = 0; i < folder.length; i++) \{\
-folderSlash += (i == 0) ? "" : "/";\
-folderSlash += folder[i].replace("'", "\\\\'");  // escapes single quote in getDB param\
-folderHref += (i == 0) ? "" : " / ";\
-\
-breadcrumb.html(folderHref);
-}
-' $runeui
 
 # for nginx svg support
 nginx=/etc/nginx/nginx.conf
