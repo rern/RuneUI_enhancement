@@ -1,4 +1,6 @@
 # library browsing
+# source from: http://www.runeaudio.com/forum/mod-master-list-of-all-waves-mods-t3690.html
+
 sed -i -e $'/(\'#open-panel-sx\').hasClass/{n
 s|^|//|
 a\
