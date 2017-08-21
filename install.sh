@@ -133,13 +133,13 @@ sed -i -e '/<div class="tab-content">/ i\
 ' -e '/<!-- LIBRARY PANEL -->/ i\enh \*/?>
 ' $playback
 
- # fix sort webradio, add usb breadcrumb
+# fix sort webradio, add usb breadcrumb
 runeui=/srv/http/assets/js/runeui.js
 if ! grep -q 'append(elems)' $runeui; then
     cat > /tmp/herefile <<HEREDOC
+        var folder = path.split('/');
         var folderPath = '';
         var folderHref = ''
-        var folder = path.split('/');
         for (i = 0; i < folder.length; i++) {
             folderPath += (i == 0) ? '' : '/';
             folderPath += folder[i].replace("'", "\'");  // escapes ' in getDB param
