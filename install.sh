@@ -139,7 +139,7 @@ if ! grep -q 'append(elems)' $runeui; then
     cat > /tmp/herefile <<HEREDOC
         var folder = path.split('/');
         var folderPath = '';
-        var folderHref = ''
+        var folderHref = '';
         for (i = 0; i < folder.length; i++) {
             folderPath += (i == 0) ? '' : '/';
             folderPath += folder[i].replace("'", "\'");  // escapes ' in getDB param
