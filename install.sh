@@ -133,14 +133,30 @@ sed -i -e '/<div class="tab-content">/ i\
 ' -e '/<!-- LIBRARY PANEL -->/ i\enh \*/?>
 ' $playback
 
+ # fix sort webradio, add usb breadcrumb
 runeui=/srv/http/assets/js/runeui.js
-# fix sort webradio
 if ! grep -q 'append(elems)' $runeui; then
-    sed -i '/highlighted entry/ a\
+	cat > /tmp/herefile <<HEREDOC
+        var folder = path.split('/');
+        for (i = 0; i < folder.length; i++) {
+            folderPath += (i == 0) ? '' : '/';
+            folderPath += folder[i].replace("'", "\'");  // escapes ' in getDB param
+            folderHref += (i == 0) ? '' : ' / ';
+            folderHref += "<a href='javascript:getDB({path : \""+ folderPath +"\"});'>"+ folder[i] +'</a>';
+        }
+        breadcrumb.html(folderHref);
+	HEREDOC
+	line=$( sed -n $'/\'Genres\/\' + path/ =' $runeui )
+
+    sed -i -e '/highlighted entry/ a\
             var elems = $("#database-entries li").detach().sort(function (a, b) {\
                 return $(a).text().toLowerCase().localeCompare(\$(b).text().toLowerCase());\
             });\
             $("#database-entries").append(elems);
+	' -e $(( line + 3 ))' {
+        s|^|//|
+        r /tmp/herefile
+        }
     ' $runeui
     
     sed -i 's/var u=$("span","#db-currentpath")/var elems=$("#database-entries li").detach().sort(function(e,t){return $(e).text().toLowerCase().localeCompare($(t).text().toLowerCase())});$("#database-entries").append(elems);var u=$("span","#db-currentpath")/
