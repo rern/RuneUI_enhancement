@@ -136,7 +136,9 @@ sed -i -e '/<div class="tab-content">/ i\
  # fix sort webradio, add usb breadcrumb
 runeui=/srv/http/assets/js/runeui.js
 if ! grep -q 'append(elems)' $runeui; then
-	cat > /tmp/herefile <<HEREDOC
+    cat > /tmp/herefile <<HEREDOC
+        var folderPath = '';
+        var folderHref = ''
         var folder = path.split('/');
         for (i = 0; i < folder.length; i++) {
             folderPath += (i == 0) ? '' : '/';
@@ -145,15 +147,14 @@ if ! grep -q 'append(elems)' $runeui; then
             folderHref += "<a href='javascript:getDB({path : \""+ folderPath +"\"});'>"+ folder[i] +'</a>';
         }
         breadcrumb.html(folderHref);
-	HEREDOC
-	line=$( sed -n $'/\'Genres\/\' + path/ =' $runeui )
-
+HEREDOC
+    line=$( sed -n $'/\'Genres\/\' + path/ =' $runeui )
     sed -i -e '/highlighted entry/ a\
             var elems = $("#database-entries li").detach().sort(function (a, b) {\
                 return $(a).text().toLowerCase().localeCompare(\$(b).text().toLowerCase());\
             });\
             $("#database-entries").append(elems);
-	' -e $(( line + 3 ))' {
+    ' -e $(( line + 3 ))' {
         s|^|//|
         r /tmp/herefile
         }
