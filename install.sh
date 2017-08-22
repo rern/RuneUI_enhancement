@@ -130,7 +130,7 @@ echo $playback
 sed -i -e '/<div class="tab-content">/ i\
 <?php include "playbackcustom.php";\
 /\*
-' -e '/<!-- LIBRARY PANEL -->/ i\enh \*/?>
+' -e '/<!-- QUEUE PANEL -->/ i\enh \*/?>
 ' $playback
 
 # for nginx svg support
