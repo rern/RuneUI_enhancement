@@ -87,8 +87,9 @@ Visual
 - Enlarge icons
 - Add box shadow for layer depth
 
-**Library browsing**  
-- USB directory path link
+**Library**  
+- Replace top `Back` with directory path
+- Make directory path linked (breadcrumb)
 - Webradio sorting
 
 **Extended charactors** for Cyrillic, Greek and IPA phonetics need font files replacement.  
