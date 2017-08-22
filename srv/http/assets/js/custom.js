@@ -185,6 +185,15 @@ if ($('#playback').is(':visible')) {
 	$('#menu-bottom').css('bottom', 0);
 	$('#barleft, #barright').hide();
 }
+	
+// usb directory path link
+$('#db-currentpath i').click(function() {
+	renderLibraryHome();
+});
+$('#db-currentpath').on('click', 'a', function() {
+	getDB({path: $(this).attr('data-path')});
+});
+
 // document ready end *********************************************************************
 });
 
@@ -512,17 +521,17 @@ function populateDB(options){
         }
     } else {
 // ****************************************************************************************
-// add usb breadcrumb
+// add usb directory path link
         var folder = path.split('/');
         var folderPath = '';
-        var folderHref = '';
+        var folderCrumb = '';
         for (i = 0; i < folder.length; i++) {
             folderPath += (i == 0) ? '' : '/';
-            folderPath += folder[i].replace("'", "\'");  // escapes ' in getDB param
-            folderHref += (i == 0) ? '' : ' / ';
-            folderHref += "<a href='javascript:getDB({path : \""+ folderPath +"\"});'>"+ folder[i] +'</a>';
+            folderPath += folder[i];
+            folderCrumb += (i == 0) ? '' : ' / ';
+            folderCrumb += '<a data-path="'+ folderPath +'">'+ folder[i] +'</a>';
         }
-        breadcrumb.html(folderHref);
+        breadcrumb.html(folderCrumb);
 // ****************************************************************************************
     }
     $('#db-homeSetup').addClass('hide');
