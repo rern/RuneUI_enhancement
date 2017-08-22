@@ -276,6 +276,11 @@
 	width: calc(100vw - 510px);
 }
 
+#db-currentpath a,
+#db-currentpath i {
+	cursor: pointer;
+}
+
 /* ---------------------- lyrics custom pnotify ----------------------*/
 .pnotify_lyric div.ui-pnotify-container {
 	width: 510px !important;
