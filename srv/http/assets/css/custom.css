@@ -280,6 +280,11 @@
 #db-currentpath i {
 	cursor: pointer;
 }
+#db-currentpath i {
+	vertical-align: middle;
+	margin: 0 10px;
+	font-size: 28px;
+}
 
 /* ---------------------- lyrics custom pnotify ----------------------*/
 .pnotify_lyric div.ui-pnotify-container {
