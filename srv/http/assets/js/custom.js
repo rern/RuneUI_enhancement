@@ -526,9 +526,11 @@ function populateDB(options){
         var folderPath = '';
         var folderCrumb = '';
         for (i = 0; i < folder.length; i++) {
-            folderPath += (i == 0) ? '' : '/';
+            if (i != 0) {
+            	folderPath += '/';
+            	folderCrumb += ' / ';
+            }
             folderPath += folder[i];
-            folderCrumb += (i == 0) ? '' : ' / ';
             folderCrumb += '<a data-path="'+ folderPath +'">'+ folder[i] +'</a>';
         }
         breadcrumb.html(folderCrumb);
