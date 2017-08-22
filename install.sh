@@ -130,7 +130,16 @@ echo $playback
 sed -i -e '/<div class="tab-content">/ i\
 <?php include "playbackcustom.php";\
 /\*
-' -e '/<!-- QUEUE PANEL -->/ i\enh \*/?>
+' -e '/<!-- LIBRARY PANEL -->/ i\enh \*/?>
+' -e '/id="db-level-up"/ {
+s/^/<!--/
+s/$/-->/
+i\
+            <div id="db-currentpath">\
+                <i class="fa fa-folder-open"></i> <span>Home</span>\
+            </div>
+}
+' -e '/db-currentpath/ {N;N; s/^/<!--/; s/$/-->/}
 ' $playback
 
 # for nginx svg support
