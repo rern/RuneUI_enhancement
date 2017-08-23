@@ -77,7 +77,7 @@ sed -i -e '/playbackcustom.php/, /\/\*/ d
 ' -e '/enh \*\/?>/ d
 ' -e '/db-level-up/ s/^<!--//;s/-->$//
 ' -e '/^\s\+<div id="db-currentpath">/,/<\/div>/ d
-' -e '/^<!--.\+db-currentpath/ {N;N; s/^<!--//; s/-->$//}
+' -e '/^<!--.\+db-currentpath/,/<\/div>/ s/^<!--//; s/-->$//
 ' /srv/http/app/templates/playback.php
 
 midori=/root/.config/midori/config
