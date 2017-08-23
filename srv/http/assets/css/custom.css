@@ -277,7 +277,7 @@
 }
 
 #db-currentpath {
-	width: calc(100% - 200px);
+	width: calc(100% - 220px);
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -292,8 +292,8 @@
 	font-size: 28px;
 }
 #db-up {
-	float: right;
-	margin-right: 10px;
+	position: absolute;
+	right: 200px;
 }
 
 
