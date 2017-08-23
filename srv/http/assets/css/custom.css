@@ -277,7 +277,10 @@
 }
 
 #db-currentpath {
-	width: calc(100vw - 220px;
+	width: calc(100% - 200px);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 #db-currentpath a,
 #db-currentpath i {
