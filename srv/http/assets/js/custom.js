@@ -187,11 +187,16 @@ if ($('#playback').is(':visible')) {
 }
 	
 // usb directory path link
-$('#db-currentpath i').click(function() {
+$('#db-home').click(function() {
 	renderLibraryHome();
+	$('#db-currentpath').addClass('hide');
 });
 $('#db-currentpath').on('click', 'a', function() {
 	getDB({path: $(this).attr('data-path')});
+});
+$('#db-up').click(function() {
+	var $2ndLast = $('#db-currentpath a:nth-last-child(2)');
+	$2ndLast.length ? $2ndLast.click() : $('#db-home').click();
 });
 
 // document ready end *********************************************************************
