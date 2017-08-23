@@ -70,18 +70,13 @@ cp /srv/http/assets/fonts/* /srv/http/assets/fonts/backup &>/dev/null
 # install #######################################
 title -l = "$bar Install $runeenh ..."
 echo -e "$bar Get files ..."
-wget -qN --show-progress https://codeload.github.com/rern/RuneUI_enhancement/zip/master -O master.zip
+wget -qN --show-progress $gitpath/_repo/srv.tar.xz
+wget -qN --show-progress $gitpath/uninstall_enha.sh
+chmod +x uninstall_enha.sh
 
 echo -e "$bar Install new files ..."
-mkdir -p /tmp/install
-bsdtar -xvf master.zip --strip 1 --exclude '_repo/' -C /tmp/install
-rm master.zip /tmp/install/{.*,*.md,install.sh} &> /dev/null
-
-mv /tmp/install/uninstall*.sh ./
-chmod +x *.sh
-
-chown -R http:http /tmp/install
-mv /tmp/install/* /
+bsdtar -xvf srv.tar.xz -C /
+rm srv.tar.xz
 
 # modify files #######################################
 echo -e "$bar Modify files ..."
