@@ -276,6 +276,9 @@
 	width: calc(100vw - 510px);
 }
 
+#db-currentpath {
+	width: calc(100vw - 220px;
+}
 #db-currentpath a,
 #db-currentpath i {
 	cursor: pointer;
