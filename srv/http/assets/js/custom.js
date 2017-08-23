@@ -539,8 +539,9 @@ function populateDB(options){
             folderCrumb += '<a data-path="'+ folderPath +'">'+ folder[i] +'</a>';
         }
         breadcrumb.html(folderCrumb);
-// ****************************************************************************************
     }
+	$('#db-currentpath').removeClass('hide');
+// ****************************************************************************************
     $('#db-homeSetup').addClass('hide');
     if (uplevel) {
         var position = GUI.currentDBpos[GUI.currentDBpos[10]];
