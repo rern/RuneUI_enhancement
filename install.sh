@@ -77,10 +77,11 @@ mkdir -p /tmp/install
 bsdtar -xf master.zip --strip 1 --exclude '_repo/' -C /tmp/install
 rm master.zip /tmp/install/{.*,*.md,install.sh} &> /dev/null
 
-mv /tmp/install/uninstall*.sh ./
-chmod +x *.sh
+chown -R root:root /tmp/install
+chown -R http:http /tmp/install/srv/http
+chmod -R 644 /tmp/install
+chmod 755 /tmp/install/root/*
 
-chown -R http:http /tmp/install
 cp -r /tmp/install/* /
 rm -r /tmp/install
 
