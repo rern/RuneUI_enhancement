@@ -63,21 +63,25 @@ else
 	(( $1 < 6 )) && anszoom=$1 || anszoom=1
 fi
 
-# install #######################################
-title -l = "$bar Install $runeenh ..."
-echo -e "$bar Get files ..."
-wget -qN --show-progress $gitpath/_repo/srv.tar.xz
-wget -qN --show-progress $gitpath/uninstall_enha.sh
-chmod +x uninstall_enha.sh
-
 # backup fonts
 mkdir /srv/http/assets/fonts/backup
 cp /srv/http/assets/fonts/* /srv/http/assets/fonts/backup &>/dev/null
 
-# extract files #######################################
+# install #######################################
+title -l = "$bar Install $runeenh ..."
+echo -e "$bar Get files ..."
+wget -qN --show-progress https://codeload.github.com/rern/RuneUI_enhancement/zip/master -O master.zip
+
 echo -e "$bar Install new files ..."
-bsdtar -xvf srv.tar.xz -C /
-rm srv.tar.xz
+mkdir -p /tmp/install
+bsdtar -xvf master.zip --strip 1 --exclude '_repo/' -C /tmp/install
+rm master.zip /tmp/install/{.*,*.md,install.sh} &> /dev/null
+
+mv /tmp/install/uninstall*.sh ./
+chmod +x *.sh
+
+chown -R http:http /tmp/install
+mv /tmp/install/* /
 
 # modify files #######################################
 echo -e "$bar Modify files ..."
