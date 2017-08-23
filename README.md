@@ -88,7 +88,7 @@ Visual
 - Add box shadow for layer depth
 
 **Library**  
-- Replace top `Back` with directory path
+- Move directory path up to replace 'Back' button
 - Make directory path linked (breadcrumb)
 - Webradio sorting
 
