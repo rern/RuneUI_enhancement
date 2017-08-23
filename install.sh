@@ -135,8 +135,9 @@ sed -i -e '/<div class="tab-content">/ i\
 s/^/<!--/
 s/$/-->/
 i\
-            <div id="db-currentpath">\
-                <i class="fa fa-folder-open"></i> <span>Home</span>\
+            <div id="db-currentpath" class="hide">
+                <i id="db-home" class="fa fa-folder-open"></i> <span>Home</span>
+				<i id="db-up" class="fa fa-arrow-left"></i>
             </div>
 }
 ' -e '/db-currentpath/ {N;N; s/^/<!--/; s/$/-->/}
