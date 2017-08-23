@@ -287,10 +287,15 @@
 	cursor: pointer;
 }
 #db-currentpath i {
-	vertical-align: middle;
-	margin: 0 10px;
+	margin-top: 5px;
+	padding: 0;
 	font-size: 28px;
 }
+#db-up {
+	float: right;
+	margin-right: 10px;
+}
+
 
 /* ---------------------- lyrics custom pnotify ----------------------*/
 .pnotify_lyric div.ui-pnotify-container {
