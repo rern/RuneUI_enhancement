@@ -75,9 +75,8 @@ sed -i -e '/custom.js/, /hammer.min.js/ d' $footer
 
 sed -i -e '/playbackcustom.php/, /\/\*/ d
 ' -e '/enh \*\/?>/ d
-' -e '/id="db-level-up"/ s/^<!--//;s/-->$//
-' -e '/^\s\+<div id="db-currentpath">/,/<\/div>/ d
-' -e '/^<!--.\+<div id="db-currentpath">/,/<\/div>/ s/^<!--//; s/-->$//
+' -e '/^\s\+<div id="db-currentpath"/,/<\/div>/ d
+' -e 's/<!--enh\|enh-->//g
 ' /srv/http/app/templates/playback.php
 
 midori=/root/.config/midori/config
