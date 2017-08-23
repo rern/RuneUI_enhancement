@@ -132,15 +132,15 @@ sed -i -e '/<div class="tab-content">/ i\
 /\*
 ' -e '/<!-- LIBRARY PANEL -->/ i\enh \*/?>
 ' -e '/id="db-level-up"/ {
-s/^/<!--/
-s/$/-->/
+s/^/<!--enh/
+s/$/enh-->/
 i\
             <div id="db-currentpath" class="hide">\
                 <i id="db-home" class="fa fa-folder-open"></i> <span>Home</span>\
                 <i id="db-up" class="fa fa-arrow-left"></i>\
             </div>
 }
-' -e '/db-currentpath/ {N;N; s/^/<!--/; s/$/-->/}
+' -e '/db-currentpath/ {N;N; s/^/<!--enh/; s/$/enh-->/}
 ' $playback
 
 # for nginx svg support
