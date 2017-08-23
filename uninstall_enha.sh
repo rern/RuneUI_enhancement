@@ -27,6 +27,7 @@ fi
 title -l = $bar Uninstall $runeenh ...
 # remove files #######################################
 echo -e "$bar Remove files ..."
+rm -v /srv/http/app/templates/playbackcustom.php
 rm -v /srv/http/lyrics.php
 path=/srv/http/assets/
 rm -v $path'css/custom.css'
