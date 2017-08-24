@@ -24,7 +24,7 @@ Try it - [**Demo**](https://rern.github.io/RuneUI_GPIO/)
 Install
 ---
 ```sh
-wget -qN --show-progress https://raw.githubusercontent.com/rern/RuneUI_enhancement/master/install.sh; chmod +x install.sh; ./install.sh
+wget -qN --show-progress --no-check-certificate https://raw.githubusercontent.com/rern/RuneUI_enhancement/master/install.sh; chmod +x install.sh; ./install.sh
 ```
 Refresh browser (clear history if nothing changed)
 
