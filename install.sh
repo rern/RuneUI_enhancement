@@ -24,7 +24,7 @@
 rm $0
 
 # import heading function
-wget -qN https://raw.githubusercontent.com/rern/title_script/master/title.sh; . title.sh; rm title.sh
+wget -qN --no-check-certificate https://raw.githubusercontent.com/rern/title_script/master/title.sh; . title.sh; rm title.sh
 timestart
 
 runeenh=$( tcolor "RuneUI Enhancement" )
@@ -70,7 +70,7 @@ cp /srv/http/assets/fonts/* /srv/http/assets/fonts/backup &>/dev/null
 # install #######################################
 title -l = "$bar Install $runeenh ..."
 echo -e "$bar Get files ..."
-wget -qN --show-progress https://codeload.github.com/rern/RuneUI_enhancement/zip/master -O master.zip
+wget -qN --show-progress --no-check-certificate https://codeload.github.com/rern/RuneUI_enhancement/zip/master -O master.zip
 
 echo -e "$bar Install new files ..."
 mkdir -p /tmp/install
