@@ -18,8 +18,8 @@ Try it - [**Demo**](https://rern.github.io/RuneUI_GPIO/)
 >[Functional](#functional)  
 >[Visual](#visual)  
 
-![mid](https://github.com/rern/_assets/RuneUI_enhancement/blob/master/mid.gif)
-![midL](https://github.com/rern/_assets/RuneUI_enhancement/blob/master/midL.gif)
+![mid](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/RuneUImod1.gif)
+![midL](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/midL.gif)
 
 Install
 ---
@@ -35,8 +35,8 @@ Uninstall
 ```    
 _(Uninstalling will restore files to originals and delete all added ones. It should be fine to install-uninstall again and again.)_
 
-![small](https://github.com/rern/_assets/RuneUI_enhancement/blob/master/small.gif)
-![smallL](https://github.com/rern/_assets/RuneUI_enhancement/blob/master/smallL.gif)
+![small](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/small.gif)
+![smallL](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/smallL.gif)
 
 Functional
 ---
@@ -51,7 +51,7 @@ Functional
 - Tap `playlist item` also go back to playback page
 - Tap `playback controls` on other pages also go back to playback page
 
-![layout](https://github.com/rern/_assets/RuneUI_enhancement/blob/master/RuneUImod1.gif)
+![layout](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/RuneUImod1.gif)
 
 Visual
 ---
@@ -65,7 +65,7 @@ Visual
 - Add box shadow for layer depth
 - Add `Development` to `Settings` menu
 
-![shadow](https://github.com/rern/_assets/RuneUI_enhancement/blob/master/shadow.jpg)
+![shadow](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/shadow.jpg)
 
 **Middle:**
 - Rearrange all to more efficient and responsive layout
@@ -79,7 +79,7 @@ Visual
 - Move `play source` inside `time`
 - Fix Webradio sorting
 
-![lyrics](https://github.com/rern/_assets/RuneUI_enhancement/blob/master/lyrics.jpg)
+![lyrics](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/lyrics.jpg)
 
 **Bottom Bar:**
 - Hide on height < 500px
