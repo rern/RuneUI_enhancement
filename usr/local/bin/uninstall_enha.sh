@@ -98,7 +98,7 @@ redis-cli hset addons enha 0 &> /dev/null
 
 # refresh #######################################
 echo -e "$bar Clear PHP OPcache ..."
-curl '127.0.0.1/clear'
+systemctl reload php-fpm
 echo
 
 if [[ $(redis-cli get local_browser) -eq '1' ]]; then
