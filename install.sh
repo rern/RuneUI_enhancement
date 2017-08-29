@@ -74,7 +74,7 @@ wgetnc https://github.com/rern/RuneUI_enhancement/archive/master.zip
 
 echo -e "$bar Install new files ..."
 mkdir -p /tmp/install
-bsdtar -xf master.zip --strip 1 --exclude '_repo/' -C /tmp/install
+bsdtar -xf master.zip --strip 1 -C /tmp/install
 rm master.zip /tmp/install/{.*,*.md,install.sh} &> /dev/null
 
 chown -R root:root /tmp/install
