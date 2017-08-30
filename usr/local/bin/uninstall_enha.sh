@@ -45,7 +45,7 @@ if ! $gpio; then
 fi
 
 # restore fonts
-cp -f /srv/http/assets/fonts/backup/* /srv/http/assets/fonts &>/dev/null
+cp -f /srv/http/assets/fonts/backup/* /srv/http/assets/fonts &> /dev/null
 rm -rf /srv/http/assets/fonts/backup
 
 # restore modified files #######################################
@@ -104,14 +104,14 @@ echo
 if [[ $(redis-cli get local_browser) -eq '1' ]]; then
 	killall midori
 	sleep 1
-	xinit &>/dev/null &
+	xinit &> /dev/null &
 	echo -e '\nLocal browser restarted.\n'
 else
 	echo -e "$info Local browser was disabled."
 	yesno "Re-enable:" answer
 	if [[ $answer == 1 ]]; then
-		redis-cli set local_browser 1 >/dev/null
-		xinit &>/dev/null &
+		redis-cli set local_browser 1 > /dev/null
+		xinit &> /dev/null &
 		echo -e '\nLocal browser started.\n'	
 	fi
 fi
