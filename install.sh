@@ -65,7 +65,7 @@ fi
 
 # backup fonts
 mkdir /srv/http/assets/fonts/backup
-cp /srv/http/assets/fonts/* /srv/http/assets/fonts/backup &>/dev/null
+cp /srv/http/assets/fonts/* /srv/http/assets/fonts/backup &> /dev/null
 
 # install #######################################
 title -l = "$bar Install $runeenh ..."
@@ -191,10 +191,10 @@ echo -e "$bar Clear PHP OPcache ..."
 systemctl reload php-fpm
 echo
 
-if pgrep midori >/dev/null; then
+if pgrep midori > /dev/null; then
 	killall midori
 	sleep 1
-	xinit &>/dev/null &
+	xinit &> /dev/null &
 	echo 'Local browser restarted.'
 fi
 
