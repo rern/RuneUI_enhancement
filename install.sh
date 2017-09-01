@@ -1,5 +1,7 @@
 #!/bin/bash
 
+version=20170901
+
 # install.sh [screen resolution]
 
 # https://github.com/rern/RuneUI_enhancement
