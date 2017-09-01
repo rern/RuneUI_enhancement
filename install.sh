@@ -185,7 +185,7 @@ fi
 
 # correct version number
 [[ $( redis-cli get buildversion ) == 'beta-20160313' ]] && redis-cli set release 0.3 &> /dev/null
-redis-cli hset addons enha 1 &> /dev/null
+redis-cli hset addons enha $version &> /dev/null
 
 # refresh #######################################
 echo -e "$bar Clear PHP OPcache ..."
