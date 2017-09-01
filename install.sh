@@ -60,7 +60,7 @@ if (( $# == 0 )); then
 		read anszoomcustom
 	fi
 else
-	(( $1 < 6 )) && anszoom=$1 || anszoom=1
+	(( $1 > 0 && $1 < 6 )) && anszoom=$1 || anszoom=1
 fi
 
 # backup fonts
