@@ -187,17 +187,17 @@ fi
 [[ $( redis-cli get buildversion ) == 'beta-20160313' ]] && redis-cli set release 0.3 &> /dev/null
 redis-cli hset addons enha $version &> /dev/null
 
+timestop
+title -l = "$bar $runeenh installed successfully."
+echo 'Uninstall: uninstall_enha.sh'
+title -nt "$info Refresh browser to start."
+
+# clear opcache and restart local browser #######################################
+systemctl reload php-fpm
+
 if pgrep midori > /dev/null; then
 	killall midori
 	sleep 1
 	xinit &> /dev/null &
 	echo 'Local browser restarted.'
 fi
-
-timestop
-title -l = "$bar $runeenh installed successfully."
-echo 'Uninstall: uninstall_enha.sh'
-title -nt "$info Refresh browser to start."
-
-# clear opcache #######################################
-systemctl reload php-fpm
