@@ -62,7 +62,7 @@ sed -i -e '/custom.css/, /<!-- enhancement -->/ d
 ' -e '\|"fa fa-code"></i> Development</a>| d
 ' -e '/logo.png/ s|^<?php /\*||; /logo.png/ s|\*/?>$||
 ' -e $'s|"tab"\')?>><i class="fa fa-folder-open"></i></a>|"tab"\')?>><i class="fa fa-music"></i> Library</a>|
-' -e $'s|"tab"\')?>><i class="fa fa-play"></i>|"tab"\')?>><i class="fa fa-play"></i> Playback|
+' -e $'s|"tab"\')?>><i class="fa fa-play-circle"></i>|"tab"\')?>><i class="fa fa-play"></i> Playback|
 ' -e 's|"fa fa-list"></i></a>|"fa fa-list"></i> Queue</a>|
 ' $header
 # no RuneUI GPIO
