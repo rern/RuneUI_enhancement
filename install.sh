@@ -187,11 +187,6 @@ fi
 [[ $( redis-cli get buildversion ) == 'beta-20160313' ]] && redis-cli set release 0.3 &> /dev/null
 redis-cli hset addons enha $version &> /dev/null
 
-# refresh #######################################
-echo -e "$bar Clear PHP OPcache ..."
-systemctl reload php-fpm
-echo
-
 if pgrep midori > /dev/null; then
 	killall midori
 	sleep 1
@@ -203,3 +198,6 @@ timestop
 title -l = "$bar $runeenh installed successfully."
 echo 'Uninstall: uninstall_enha.sh'
 title -nt "$info Refresh browser to start."
+
+# clear opcache #######################################
+systemctl reload php-fpm
