@@ -170,7 +170,9 @@ if (( $# == 0 )); then
     	* ) zoom=0.7;;
     esac
 else
-    (( $1 > 0 && $1 < 2 )) && zoom=$1 || zoom=1
+	zoom=$1
+	zoom=$( echo $zoom | awk '{if ($1 < 0.5) print 0.5; else print $1}' )
+	zoom=$( echo $zoom | awk '{if ($1 > 2) print 2; else print $1}' )
 fi
 
 midori=/root/.config/midori/config
