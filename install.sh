@@ -61,8 +61,6 @@ if (( $# == 0 )); then
 		echo 'Custom scale:'
 		read anszoomcustom
 	fi
-else
-	(( $1 > 0 && $1 < 6 )) && anszoom=$1 || anszoom=1
 fi
 
 # backup fonts
@@ -160,16 +158,20 @@ if ! grep '|ico' $nginx | grep -q 'svg'; then
 fi
 
 # local display zoom, encoding, css #######################################
-case $anszoom in
-	2 ) zoom=1.2;;
-	3 ) zoom=1.5;;
-	4 ) zoom=$anszoomcustom;;
-	5 ) redis-cli set local_browser 0 >/dev/null
-		killall midori
-		echo -e '\nLocal browser disabled.'
-		echo -e 'Re-enable: Menu > Settings > Local browser\n';;
-	* ) zoom=0.7;;
-esac
+if (( $# == 0 )); then
+    case $anszoom in
+	    2 ) zoom=1.2;;
+    	3 ) zoom=1.5;;
+	    4 ) zoom=$anszoomcustom;;
+	    5 ) redis-cli set local_browser 0 >/dev/null
+	    	killall midori
+	    	echo -e '\nLocal browser disabled.'
+	    	echo -e 'Re-enable: Menu > Settings > Local browser\n';;
+    	* ) zoom=0.7;;
+    esac
+else
+    (( $1 > 0 && $1 < 2 )) && zoom=$1 || zoom=1
+fi
 
 midori=/root/.config/midori/config
 sed -i -e '/zoom-level/ s/^/#/
