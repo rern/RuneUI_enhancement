@@ -96,27 +96,16 @@ redis-cli hset addons enha 0 &> /dev/null
 # skip if reinstall - uninstall.sh re (any argument)
 (( $# != 0 )) && exit
 
-# refresh #######################################
-echo -e "$bar Clear PHP OPcache ..."
-systemctl reload php-fpm
-echo
+title -l = "$bar $runeenh uninstalled successfully."
+title -nt "$info Refresh browser for default RuneUI."
 
-if [[ $(redis-cli get local_browser) -eq '1' ]]; then
+# clear opcache and restart local browser #######################################
+systemctl reload php-fpm
+
+if pgrep midori > /dev/null; then
 	killall midori
 	sleep 1
 	xinit &> /dev/null &
-	echo -e '\nLocal browser restarted.\n'
-else
-	echo -e "$info Local browser was disabled."
-	yesno "Re-enable:" answer
-	if [[ $answer == 1 ]]; then
-		redis-cli set local_browser 1 > /dev/null
-		xinit &> /dev/null &
-		echo -e '\nLocal browser started.\n'	
-	fi
 fi
-
-title -l = "$bar $runeenh uninstalled successfully."
-title -nt "$info Refresh browser for default RuneUI."
 
 rm $0
