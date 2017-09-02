@@ -92,7 +92,7 @@ if grep -q '#default-encoding' $midori; then
 	' $midori
 fi
 
-redis-cli hset addons enha 0 &> /dev/null
+redis-cli hdel addons enha &> /dev/null
 # skip if reinstall - uninstall.sh re (any argument)
 (( $# != 0 )) && exit
 
