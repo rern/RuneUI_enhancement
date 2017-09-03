@@ -129,9 +129,9 @@ sed -i $'$ a\
 ' $footer
 # no RuneUI GPIO
 ! grep -q 'pnotify3.custom.min.js' $footer &&
-	sed -i $'$ a\
-	<script src="<?=$this->asset(\'/js/vendor/pnotify3.custom.min.js\')?>"></script>
-	' $footer
+sed -i $'$ a\
+<script src="<?=$this->asset(\'/js/vendor/pnotify3.custom.min.js\')?>"></script>
+' $footer
 
 playback=/srv/http/app/templates/playback.php
 echo $playback
