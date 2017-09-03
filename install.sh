@@ -82,7 +82,6 @@ rm master.zip /tmp/install/{.*,*.md,install.sh} &> /dev/null
 chown -R root:root /tmp/install
 chown -R http:http /tmp/install/srv
 chmod -R 755 /tmp/install
-chmod 755 /tmp/install/usr/local/bin/uninstall*
 
 cp -rp /tmp/install/* /
 rm -r /tmp/install
