@@ -27,7 +27,6 @@ rm $0
 
 # import heading function
 wget -qN https://github.com/rern/title_script/raw/master/title.sh; . title.sh; rm title.sh
-timestart
 
 runeenh=$( tcolor "RuneUI Enhancement" )
 
@@ -193,7 +192,6 @@ fi
 [[ $( redis-cli get buildversion ) == 'beta-20160313' ]] && redis-cli set release 0.3 &> /dev/null
 redis-cli hset addons enha $version &> /dev/null
 
-timestop
 title -l = "$bar $runeenh installed successfully."
 echo 'Uninstall: uninstall_enha.sh'
 title -nt "$info Refresh browser to start."
