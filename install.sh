@@ -36,13 +36,10 @@ gitpath=https://github.com/rern/RuneUI_enhancement/raw/master
 # check already installed #######################################
 if [[ -e /srv/http/assets/css/custom.css ]]; then
 	echo -e "$info $runeenh already installed."
-	if (( $# == 0 )); then
-		yesno "Reinstall $runeenh:" ansre
-		[[ $answre != 1 ]] && exit
-		./uninstall.sh re
-	else
-		exit
-	fi
+	(( $# != 0 )) && exit
+	yesno "Reinstall $runeenh:" ansre
+	[[ $answre != 1 ]] && exit
+	./uninstall.sh re
 fi
 
 # user inputs
