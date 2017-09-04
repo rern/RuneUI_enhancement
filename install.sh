@@ -155,7 +155,6 @@ nginx=/etc/nginx/nginx.conf
 if ! grep '|ico' $nginx | grep -q 'svg'; then
 	echo $enginx
 	sed -i 's/|ico/&|svg/' $nginx
-	systemctl restart nginx
 fi
 
 # local display zoom, encoding, css #######################################
@@ -205,3 +204,6 @@ if pgrep midori > /dev/null; then
 	sleep 1
 	xinit &> /dev/null &
 fi
+
+# refresh svg support last for webui installation
+systemctl restart nginx
