@@ -196,6 +196,9 @@ title -l = "$bar $runeenh installed successfully."
 echo 'Uninstall: uninstall_enha.sh'
 title -nt "$info Refresh browser to start."
 
+# clear opcache if run from terminal #######################################
+[[ -t 1 ]] && systemctl reload php-fpm
+
 # restart local browser #######################################
 if pgrep midori > /dev/null; then
 	killall midori
