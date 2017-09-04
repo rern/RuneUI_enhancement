@@ -99,7 +99,7 @@ redis-cli hdel addons enha &> /dev/null
 title -l = "$bar $runeenh uninstalled successfully."
 title -nt "$info Refresh browser for default RuneUI."
 
-# clear opcache on terminal #######################################
+# clear opcache if run from terminal #######################################
 [[ -t 1 ]] && systemctl reload php-fpm
 
 # restart local browser #######################################
