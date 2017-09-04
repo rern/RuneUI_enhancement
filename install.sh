@@ -197,7 +197,7 @@ echo 'Uninstall: uninstall_enha.sh'
 title -nt "$info Refresh browser to start."
 
 # clear opcache and restart local browser #######################################
-systemctl reload php-fpm
+#systemctl reload php-fpm
 
 if pgrep midori > /dev/null; then
 	killall midori
