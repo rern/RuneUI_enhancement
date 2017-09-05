@@ -192,7 +192,7 @@ fi
 redis-cli hset addons enha $version &> /dev/null
 
 title -l = "$bar $runeenh installed successfully."
-echo 'Uninstall: uninstall_enha.sh'
+[[ -t 1 ]] && echo 'Uninstall: uninstall_enha.sh'
 title -nt "$info Refresh browser to start."
 
 # clear opcache if run from terminal #######################################
