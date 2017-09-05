@@ -206,4 +206,4 @@ if pgrep midori > /dev/null; then
 fi
 
 # refresh svg support last for webui installation
-systemctl restart nginx
+systemctl reload nginx
