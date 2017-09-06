@@ -60,6 +60,8 @@ sed -i -e '/custom.css/, /<!-- enhancement -->/ d
 ' -e 's|href="#"><i class="fa fa-gear"></i></button>|href="#">MENU <i class="fa fa-bars dx"></i></a>|
 ' -e '\|href="/"><i class="fa fa-play"| s|^<?php /\*||; \|href="/"><i class="fa fa-play"| s|\*/?>$||
 ' -e '\|"fa fa-code"></i> Development</a>| d
+' -e '\|REQUEST_URI| d
+' -e 's|<?=$path;?>|/#playback|
 ' -e '/logo.png/ s|^<?php /\*||; /logo.png/ s|\*/?>$||
 ' -e $'s|"tab"\')?>><i class="fa fa-folder-open"></i></a>|"tab"\')?>><i class="fa fa-music"></i> Library</a>|
 ' -e $'s|"tab"\')?>><i class="fa fa-play-circle"></i>|"tab"\')?>><i class="fa fa-play"></i> Playback|
