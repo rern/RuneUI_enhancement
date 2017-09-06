@@ -103,7 +103,7 @@ sed -i -e $'/runeui.css/ a\
 <div id="barright"></div>\
 <div id="lyricfade" class="hide"></div>
 ' -e $'/class="home"/ i\
-    <img class="logo" src="<?=$this->asset(\'/img/runelogo.svg\')?>" alt="RuneAudio" href="/">
+    <img class="logo" src="<?=$this->asset(\'/img/runelogo.svg\')?>" alt="RuneAudio" href="/">\
 	<?php $path = $_SERVER["REQUEST_URI"] == "/" ? "/#playback" : "/";?>
 ' -e 's|/#playback|<?=$path;?>|
 ' -e '/dropdown-menu/ a\
