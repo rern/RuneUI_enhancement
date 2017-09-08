@@ -21,7 +21,7 @@ runeenh=$( tcolor "RuneUI Enhancement" )
 # check installed #######################################
 if [[ ! -e /srv/http/assets/css/custom.css ]]; then
 	echo -e "$info $runeenh not found."
-	exit
+	exit 1
 fi
 
 title -l = $bar Uninstall $runeenh ...
