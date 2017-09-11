@@ -41,8 +41,8 @@ if [[ -e /srv/http/assets/css/custom.css ]]; then
 	./uninstall.sh re
 fi
 
-$type=installed
-[[ ${@:$#} == -u ]] && update=1; $type=updated
+type=installed
+[[ ${@:$#} == -u ]] && update=1; type=updated
 
 # user inputs
 if (( $# == 0 )); then
