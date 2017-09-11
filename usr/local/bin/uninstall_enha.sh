@@ -14,6 +14,14 @@
 #	info
 # remove uninstall_enha.sh
 
+if [[ ${@:$#} == -u ]]; then
+	shift
+	update=1
+	type=Update
+else
+	type=Uninstall
+fi
+
 # import heading function
 wget -qN https://github.com/rern/title_script/raw/master/title.sh; . title.sh; rm title.sh
 runeenh=$( tcolor "RuneUI Enhancement" )
@@ -23,9 +31,6 @@ if [[ ! -e /srv/http/assets/css/custom.css ]]; then
 	echo -e "$info $runeenh not found."
 	exit 1
 fi
-
-type=Uninstall
-[[ ${@:$#} == -u ]] && update=1; type=Update
 
 title -l = $bar $type $runeenh ...
 # remove files #######################################
