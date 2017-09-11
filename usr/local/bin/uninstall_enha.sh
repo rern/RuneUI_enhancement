@@ -24,8 +24,8 @@ if [[ ! -e /srv/http/assets/css/custom.css ]]; then
 	exit 1
 fi
 
-$type=Uninstall
-[[ ${@:$#} == -u ]] && update=1; $type=Update
+type=Uninstall
+[[ ${@:$#} == -u ]] && update=1; type=Update
 
 title -l = $bar $type $runeenh ...
 # remove files #######################################
