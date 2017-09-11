@@ -198,7 +198,7 @@ redis-cli hset addons enha $version &> /dev/null
 
 title -l = "$bar $runeenh $type successfully."
 [[ -t 1 ]] && echo 'Uninstall: uninstall_enha.sh'
-[[ ! update ]] && title -nt "$info Refresh browser to start."
+[[ ! $update ]] && title -nt "$info Refresh browser to start."
 
 # clear opcache if run from terminal #######################################
 [[ -t 1 ]] && systemctl reload php-fpm
