@@ -41,6 +41,9 @@ if [[ -e /srv/http/assets/css/custom.css ]]; then
 	./uninstall.sh re
 fi
 
+$type=installed
+[[ ${@:$#} == -u ]] && update=1; $type=updated
+
 # user inputs
 if (( $# == 0 )); then
 	echo -e "$info Select local browser screen size:"
@@ -193,9 +196,9 @@ fi
 [[ $( redis-cli get buildversion ) == 'beta-20160313' ]] && redis-cli set release 0.3 &> /dev/null
 redis-cli hset addons enha $version &> /dev/null
 
-title -l = "$bar $runeenh installed successfully."
+title -l = "$bar $runeenh $type successfully."
 [[ -t 1 ]] && echo 'Uninstall: uninstall_enha.sh'
-title -nt "$info Refresh browser to start."
+[[ ! update ]] && title -nt "$info Refresh browser to start."
 
 # clear opcache if run from terminal #######################################
 [[ -t 1 ]] && systemctl reload php-fpm
