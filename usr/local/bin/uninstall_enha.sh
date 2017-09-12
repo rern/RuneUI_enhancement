@@ -24,7 +24,15 @@ if [[ ! -e /srv/http/assets/css/custom.css ]]; then
 	exit 1
 fi
 
-[[ $1 != u ]] && type=Uninstall || type=Update
+if [[ $1 != u ]]; then
+	type=Uninstall
+else
+	echo -e "$bar Save settings ..."
+	type=Update
+	zoom=$( grep '^zoom' /root/.config/midori/config | cut -d '=' -f 2 )
+	redis-cli set enhazoom $zoom &> /dev/null
+fi
+
 title -l = $bar $type $runeenh ...
 # remove files #######################################
 echo -e "$bar Remove files ..."
