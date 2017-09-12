@@ -68,19 +68,12 @@
 .dropdown {
     margin-right: 0 !important;
 }
-.dropdown-menu li {
-    cursor: pointer;
-}
 #dropdownbg { /* fix dropdown box-shadow */
     position: absolute;
     width: 160px;
     height: 328px;
     box-shadow: -4px 4px 10px #000000;
     z-index: -100;
-}
-#gpiosettings i {
-	width: 18px !important;
-    font-size: 20px !important;	
 }
 .modal-dialog {
     margin-top: 50px;
