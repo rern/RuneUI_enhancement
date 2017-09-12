@@ -25,14 +25,6 @@ version=20170901
 
 rm $0
 
-if [[ ${@:$#} == -u ]]; then
-	shift
-	update=1
-	type=updated
-else
-	type=installed
-fi
-
 # import heading function
 wget -qN https://github.com/rern/title_script/raw/master/title.sh; . title.sh; rm title.sh
 
@@ -76,7 +68,7 @@ mkdir /srv/http/assets/fonts/backup
 cp /srv/http/assets/fonts/* /srv/http/assets/fonts/backup &> /dev/null
 
 # install #######################################
-title -l = "$bar Install $runeenh ..."
+[[ $1 != u ]] && title -l = "$bar Install $runeenh ..."
 echo -e "$bar Get files ..."
 wgetnc https://github.com/rern/RuneUI_enhancement/archive/master.zip
 
@@ -180,10 +172,16 @@ if (( $# == 0 )); then
     	* ) zoom=0.7;;
     esac
 else
-	zoom=$1
+	if [[ $1 != u ]]; then
+		zoom=$1;
+	else
+		zoom=$( redis-cli get enhazoom &> /dev/null )
+		redis-cli del enhazoom &> /dev/null
+	fi
 	zoom=$( echo $zoom | awk '{if ($1 < 0.5) print 0.5; else print $1}' )
 	zoom=$( echo $zoom | awk '{if ($1 > 2) print 2; else print $1}' )
 fi
+
 
 midori=/root/.config/midori/config
 sed -i -e '/zoom-level/ s/^/#/
@@ -191,6 +189,7 @@ sed -i -e '/zoom-level/ s/^/#/
 ' -e "/settings/ a\
 zoom-level=$zoom
 " $midori
+	
 if ! grep -q 'default-encoding=UTF-8' $midori; then
 	sed -i -e '/default-encoding/ s/^/#/
 	' -e '/settings/ a\default-encoding=UTF-8
@@ -201,9 +200,13 @@ fi
 [[ $( redis-cli get buildversion ) == 'beta-20160313' ]] && redis-cli set release 0.3 &> /dev/null
 redis-cli hset addons enha $version &> /dev/null
 
-title -l = "$bar $runeenh $type successfully."
-[[ -t 1 ]] && echo 'Uninstall: uninstall_enha.sh'
-[[ ! $update ]] && title -nt "$info Refresh browser to start."
+if [[ $1 != u ]]; then
+	title -l = "$bar $runeenh installed successfully."
+	[[ -t 1 ]] && echo 'Uninstall: uninstall_enha.sh'
+	title -nt "$info Refresh browser to start."
+else
+	title -l = "$bar $runeenh updated successfully."
+fi
 
 # clear opcache if run from terminal #######################################
 [[ -t 1 ]] && systemctl reload php-fpm
