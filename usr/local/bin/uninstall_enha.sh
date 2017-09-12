@@ -14,14 +14,6 @@
 #	info
 # remove uninstall_enha.sh
 
-if [[ ${@:$#} == -u ]]; then
-	shift
-	update=1
-	type=Update
-else
-	type=Uninstall
-fi
-
 # import heading function
 wget -qN https://github.com/rern/title_script/raw/master/title.sh; . title.sh; rm title.sh
 runeenh=$( tcolor "RuneUI Enhancement" )
@@ -32,6 +24,7 @@ if [[ ! -e /srv/http/assets/css/custom.css ]]; then
 	exit 1
 fi
 
+[[ $1 != u ]] && type=Uninstall || type=Update
 title -l = $bar $type $runeenh ...
 # remove files #######################################
 echo -e "$bar Remove files ..."
@@ -103,11 +96,11 @@ if grep -q '#default-encoding' $midori; then
 fi
 
 redis-cli hdel addons enha &> /dev/null
-# skip if reinstall - uninstall.sh re (any argument)
-(( $# != 0 )) && exit
 
-title -l = "$bar $runeenh uninstalled successfully."
-[[ ! $update ]] && title -nt "$info Refresh browser for default RuneUI."
+if [[ $1 != u ]]; then
+	title -l = "$bar $runeenh uninstalled successfully."
+	title -nt "$info Refresh browser for default RuneUI."
+fi
 
 # clear opcache if run from terminal #######################################
 [[ -t 1 ]] && systemctl reload php-fpm
