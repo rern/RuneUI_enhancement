@@ -1,39 +1,18 @@
 #!/bin/bash
 
-# uninstall_enha.sh - RuneUI enhancement
-# https://github.com/rern/RuneUI_enhancement
-
-# not installed
-#	exit
-# uninstall
-#	remove files
-#	restore files
-#	clear opcache
-#	restart local browser
-# success
-#	info
-# remove uninstall_enha.sh
+# required variables
+alias=enha
 
 # import heading function
 wget -qN https://github.com/rern/title_script/raw/master/title.sh; . title.sh; rm title.sh
-runeenh=$( tcolor "RuneUI Enhancement" )
 
-# check installed #######################################
-if [[ ! -e /usr/local/bin/uninstall_enha.sh ]]; then
-	echo -e "$info $runeenh not found."
-	exit 1
-fi
+uninstallstart $1
 
-if [[ $1 != u ]]; then
-	type=Uninstall
-else
-	echo -e "$bar Save settings ..."
-	type=Update
+if [[ $1 == u ]]; then
 	zoom=$( grep '^zoom' /root/.config/midori/config | cut -d '=' -f 2 )
 	redis-cli set enhazoom $zoom &> /dev/null
 fi
 
-title -l = $bar $type $runeenh ...
 # remove files #######################################
 echo -e "$bar Remove files ..."
 rm -v /srv/http/app/templates/playbackcustom.php
@@ -103,21 +82,8 @@ if grep -q '#default-encoding' $midori; then
 	' $midori
 fi
 
-redis-cli hdel addons enha &> /dev/null
+uninstallfinish $1
 
-if [[ $1 != u ]]; then
-	title -l = "$bar $runeenh uninstalled successfully."
-	title -nt "$info Refresh browser for default RuneUI."
-fi
+title -nt "$info Refresh browser for default RuneUI."
 
-# clear opcache if run from terminal #######################################
-[[ -t 1 ]] && systemctl reload php-fpm
-
-# restart local browser #######################################
-if pgrep midori > /dev/null; then
-	killall midori
-	sleep 1
-	xinit &> /dev/null &
-fi
-
-rm $0
+[[ -t 1 ]] && clearcache
