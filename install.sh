@@ -1,45 +1,12 @@
 #!/bin/bash
 
-version=20170901
-
-# install.sh [screen resolution]
-
-# https://github.com/rern/RuneUI_enhancement
-
-# remove install.sh
-# already installed
-#	reinstall ?
-#		exit
-#		uninstall
-# install
-#	get uninstall.sh
-#	get tar.xz
-#	modify files
-#	extract
-#	remove tar.xz
-#	restart nginx
-#	clear opcache
-#	restart local browser
-# success
-#	info
-
-rm $0
+# required variables
+alias=enha
 
 # import heading function
 wget -qN https://github.com/rern/title_script/raw/master/title.sh; . title.sh; rm title.sh
 
-runeenh=$( tcolor "RuneUI Enhancement" )
-
 gitpath=https://github.com/rern/RuneUI_enhancement/raw/master
-
-# check already installed #######################################
-if [[ -e /usr/local/bin/uninstall_enha.sh ]]; then
-	echo -e "$info $runeenh already installed."
-	[[ ! -t 1 ]] && exit
-	yesno "Reinstall $runeenh:" ansre
-	[[ $answre != 1 ]] && exit
-	./uninstall.sh re
-fi
 
 # user inputs
 if (( $# == 0 )); then
@@ -63,12 +30,12 @@ if (( $# == 0 )); then
 	fi
 fi
 
+installstart $1
+
 # backup fonts
 mkdir /srv/http/assets/fonts/backup
 cp /srv/http/assets/fonts/* /srv/http/assets/fonts/backup &> /dev/null
 
-# install #######################################
-[[ $1 != u ]] && title -l = "$bar Install $runeenh ..."
 echo -e "$bar Get files ..."
 wgetnc https://github.com/rern/RuneUI_enhancement/archive/master.zip
 
@@ -200,23 +167,11 @@ fi
 [[ $( redis-cli get buildversion ) == 'beta-20160313' ]] && redis-cli set release 0.3 &> /dev/null
 redis-cli hset addons enha $version &> /dev/null
 
-if [[ $1 != u ]]; then
-	title -l = "$bar $runeenh installed successfully."
-	[[ -t 1 ]] && echo 'Uninstall: uninstall_enha.sh'
-	title -nt "$info Refresh browser to start."
-else
-	title -l = "$bar $runeenh updated successfully."
-fi
+installfinish $1
 
-# clear opcache if run from terminal #######################################
-[[ -t 1 ]] && systemctl reload php-fpm
+title -nt "$info Refresh browser to start using."
 
-# restart local browser #######################################
-if pgrep midori > /dev/null; then
-	killall midori
-	sleep 1
-	xinit &> /dev/null &
-fi
+[[ -t 1 ]] && clearcache
 
 # refresh svg support last for webui installation
 systemctl reload nginx
