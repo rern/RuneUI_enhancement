@@ -33,7 +33,7 @@ runeenh=$( tcolor "RuneUI Enhancement" )
 gitpath=https://github.com/rern/RuneUI_enhancement/raw/master
 
 # check already installed #######################################
-if [[ -e /srv/http/assets/css/custom.css ]]; then
+if [[ -e /usr/local/bin/uninstall_enha.sh ]]; then
 	echo -e "$info $runeenh already installed."
 	[[ ! -t 1 ]] && exit
 	yesno "Reinstall $runeenh:" ansre
