@@ -19,7 +19,7 @@ wget -qN https://github.com/rern/title_script/raw/master/title.sh; . title.sh; r
 runeenh=$( tcolor "RuneUI Enhancement" )
 
 # check installed #######################################
-if [[ ! -e /srv/http/assets/css/custom.css ]]; then
+if [[ ! -e /usr/local/bin/uninstall_enha.sh ]]; then
 	echo -e "$info $runeenh not found."
 	exit 1
 fi
