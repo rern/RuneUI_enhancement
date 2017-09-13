@@ -165,7 +165,6 @@ fi
 
 # correct version number
 [[ $( redis-cli get buildversion ) == 'beta-20160313' ]] && redis-cli set release 0.3 &> /dev/null
-redis-cli hset addons enha $version &> /dev/null
 
 installfinish $1
 
