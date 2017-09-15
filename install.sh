@@ -1,9 +1,12 @@
 #!/bin/bash
 
+# change version number in RuneAudio_Addons/srv/http/addonslist.php
+
 alias=enha
 
 # import heading function
 wget -qN https://github.com/rern/RuneAudio_Addons/raw/master/title.sh; . title.sh; rm title.sh
+[[ ! -e /srv/http/addonslist.php ]] && wgetnc https://github.com/rern/RuneAudio_Addons/raw/master/srv/http/addonslist.php -P /srv/http
 
 gitpath=https://github.com/rern/RuneUI_enhancement/raw/master
 
