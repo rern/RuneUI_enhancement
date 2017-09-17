@@ -23,6 +23,9 @@ Try it - [**Demo**](https://rern.github.io/RuneUI_GPIO/)
 
 Install
 ---
+from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)  
+
+or from SSH terminal
 ```sh
 wget -qN --show-progress https://github.com/rern/RuneUI_enhancement/raw/master/install.sh; chmod +x install.sh; ./install.sh
 ```
