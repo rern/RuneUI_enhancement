@@ -94,15 +94,12 @@ sed -i -e $'/runeui.css/ a\
 
 footer=/srv/http/app/templates/footer.php
 echo $footer
-sed -i $'$ a\
-<script src="<?=$this->asset(\'/js/custom.js\')?>"></script>\
-<script src="<?=$this->asset(\'/js/vendor/hammer.min.js\')?>"></script>
-' $footer
+echo '<script src="<?=$this->asset('"'"'/js/custom.js'"'"')?>"></script>' >> $footer
+! grep -q 'hammer.min.js' $footer && 
+echo '<script src="<?=$this->asset('"'"'/js/vendor/hammer.min.js'"'"')?>"></script>' >> $footer
 # no RuneUI GPIO
 ! grep -q 'pnotify3.custom.min.js' $footer &&
-sed -i $'$ a\
-<script src="<?=$this->asset(\'/js/vendor/pnotify3.custom.min.js\')?>"></script>
-' $footer
+echo '<script src="<?=$this->asset('"'"'/js/vendor/pnotify3.custom.min.js'"'"')?>"></script>' >> $footer
 
 playback=/srv/http/app/templates/playback.php
 echo $playback
