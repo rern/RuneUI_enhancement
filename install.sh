@@ -149,7 +149,7 @@ else
 	zoom=$( echo $zoom | awk '{if ($1 > 2) print 2; else print $1}' )
 fi
 
-if [[ $anszoom != 5 || $zoom != 0.7 ]]; then
+if [[ $anszoom != 5 && $zoom != 0.7 ]]; then
 	midori=/root/.config/midori/config
 	sed -i -e '/zoom-level/ s/^/#/
 	' -e '/user-stylesheet-uri/ s/^/#/
