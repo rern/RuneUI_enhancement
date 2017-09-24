@@ -70,10 +70,12 @@ sed -i -e '/playbackcustom.php/, /\/\*/ d
 
 midori=/root/.config/midori/config
 echo $midori
-sed -i -e '/^zoom-level/ d
-' -e '/#zoom-level/ s/^#//
-' -e '/#user-stylesheet-uri/ s/^#//
-' $midori
+if ! grep -q '^zoom-level=0.7'; then
+	sed -i -e '/^zoom-level/ d
+	' -e '/#zoom-level/ s/^#//
+	' $midori
+fi
+sed -i '/#user-stylesheet-uri/ s/^#//' $midori
 if grep -q '#default-encoding' $midori; then
 	sed -i -e '/^default-encoding/ d
 	' -e '/#default-encoding/ s/^#//
