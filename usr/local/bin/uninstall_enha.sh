@@ -21,7 +21,7 @@ rm -v $path'css/customcoveroff.css'
 rm -v $path'css/customvoloff.css'
 rm -v $path'img/runelogo.svg'
 rm -v $path'js/custom.js'
-rm -v $path'js/vendor/hammer.min.js'
+[[ ! -e /usr/local/bin/uninstall_addo.sh ]] && rm -v $path'js/vendor/hammer.min.js'
 
 # no RuneUI GPIO
 [[ -e /srv/http/assets/css/gpiosettings.css ]] && gpio=true || gpio=false
