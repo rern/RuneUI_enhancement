@@ -158,11 +158,7 @@ if [[ $anszoom != 5 && $zoom != 0.7 ]]; then
 	" $midori
 fi
 	
-if ! grep -q 'default-encoding=UTF-8' $midori; then
-	sed -i -e '/default-encoding/ s/^/#/
-	' -e '/settings/ a\default-encoding=UTF-8
-	' $midori
-fi
+sed -i 's/==UTF-8/=UTF-8/' $midori
 
 # correct version number
 [[ $( redis-cli get buildversion ) == 'beta-20160313' ]] && redis-cli set release 0.3 &> /dev/null
