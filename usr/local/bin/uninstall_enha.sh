@@ -76,11 +76,6 @@ if ! grep -q '^zoom-level=0.7' $midori; then
 	' $midori
 fi
 sed -i '/#user-stylesheet-uri/ s/^#//' $midori
-if grep -q '#default-encoding' $midori; then
-	sed -i -e '/^default-encoding/ d
-	' -e '/#default-encoding/ s/^#//
-	' $midori
-fi
 
 uninstallfinish $1
 
