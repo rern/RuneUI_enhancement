@@ -15,19 +15,19 @@ fi
 echo -e "$bar Remove files ..."
 rm -v /srv/http/app/templates/playbackcustom.php
 rm -v /srv/http/lyrics.php
-path=/srv/http/assets/
-rm -v $path'css/custom.css'
-rm -v $path'css/customcoveroff.css'
-rm -v $path'css/customvoloff.css'
-rm -v $path'img/runelogo.svg'
-rm -v $path'js/custom.js'
-[[ ! -e /usr/local/bin/uninstall_addo.sh ]] && rm -v $path'js/vendor/hammer.min.js'
+path=/srv/http/assets
+rm -v $path/css/custom.css
+rm -v $path/css/customcoveroff.css
+rm -v $path/css/customvoloff.css
+rm -v $path/img/runelogo.svg
+rm -v $path/js/custom.js
+[[ ! -e /usr/local/bin/uninstall_addo.sh ]] && rm -v $path/js/vendor/hammer*
 
 # no RuneUI GPIO
 [[ -e /srv/http/assets/css/gpiosettings.css ]] && gpio=true || gpio=false
 if ! $gpio; then
-	rm -v $path'css/pnotify.css'
-	rm -v $path'js/vendor/pnotify3.custom.min.js'
+	rm -v $path/css/pnotify.css
+	rm -v $path/js/vendor/pnotify3.custom.min.js
 fi
 
 # restore fonts
