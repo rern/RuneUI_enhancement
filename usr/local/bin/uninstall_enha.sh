@@ -70,7 +70,7 @@ sed -i -e '/playbackcustom.php/, /\/\*/ d
 
 midori=/root/.config/midori/config
 echo $midori
-if ! grep -q '^zoom-level=0.7'; then
+if ! grep -q '^zoom-level=0.7' $midori; then
 	sed -i -e '/^zoom-level/ d
 	' -e '/#zoom-level/ s/^#//
 	' $midori
