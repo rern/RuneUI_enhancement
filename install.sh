@@ -149,13 +149,14 @@ else
 	zoom=$( echo $zoom | awk '{if ($1 > 2) print 2; else print $1}' )
 fi
 
-
-midori=/root/.config/midori/config
-sed -i -e '/zoom-level/ s/^/#/
-' -e '/user-stylesheet-uri/ s/^/#/
-' -e "/settings/ a\
-zoom-level=$zoom
-" $midori
+if [[ $anszoom != 5 ]]; then
+	midori=/root/.config/midori/config
+	sed -i -e '/zoom-level/ s/^/#/
+	' -e '/user-stylesheet-uri/ s/^/#/
+	' -e "/settings/ a\
+	zoom-level=$zoom
+	" $midori
+fi
 	
 if ! grep -q 'default-encoding=UTF-8' $midori; then
 	sed -i -e '/default-encoding/ s/^/#/
