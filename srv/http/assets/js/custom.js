@@ -492,9 +492,6 @@ function populateDB(options){
                     inpath: path
                 });
             }
-            if (path === 'Webradio') {
-                content += '<li id="webradio-add" class="db-webradio-add"><i class="fa fa-plus-circle db-icon"></i><span class="sn"><em>add new</em></span><span class="bl">add a webradio to your library</span></li>';
-            }
             document.getElementById('database-entries').innerHTML = content;
 // ****************************************************************************************
 // fix sort webradio
