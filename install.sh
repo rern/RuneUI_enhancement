@@ -4,10 +4,7 @@
 
 alias=enha
 
-# import heading function
-[[ ! -e /srv/http/addonstitle.sh ]] && wget -q https://github.com/rern/RuneAudio_Addons/raw/master/srv/http/addonstitle.sh -P /srv/http
 . /srv/http/addonstitle.sh
-[[ ! -e /srv/http/addonslist.php ]] && wgetnc https://github.com/rern/RuneAudio_Addons/raw/master/srv/http/addonslist.php -P /srv/http
 
 gitpath=https://github.com/rern/RuneUI_enhancement/raw/master
 
@@ -166,8 +163,6 @@ sed -i 's/==UTF-8/=UTF-8/' $midori
 installfinish $1
 
 title -nt "$info Refresh browser to start using."
-
-[[ -t 1 ]] && clearcache
 
 # refresh svg support last for webui installation
 systemctl reload nginx
