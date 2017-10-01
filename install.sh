@@ -162,5 +162,10 @@ sed -i 's/==UTF-8/=UTF-8/' $midori
 
 installfinish $1
 
+if [[ -t 1 ]]; then
+	title -nt "$info Refresh browser to start using."
+	clearcache
+fi
+
 # refresh svg support last for webui installation
 systemctl reload nginx
