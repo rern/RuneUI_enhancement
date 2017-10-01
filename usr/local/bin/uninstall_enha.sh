@@ -78,7 +78,3 @@ fi
 sed -i '/#user-stylesheet-uri/ s/^#//' $midori
 
 uninstallfinish $1
-
-title -nt "$info Refresh browser for default RuneUI."
-
-[[ -t 1 ]] && clearcache
