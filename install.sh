@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# $1-zoom
 # change version number in RuneAudio_Addons/srv/http/addonslist.php
 
 alias=enha
@@ -7,28 +8,6 @@ alias=enha
 . /srv/http/addonstitle.sh
 
 gitpath=https://github.com/rern/RuneUI_enhancement/raw/master
-
-# user inputs
-if (( $# == 0 )); then
-	echo -e "$info Select local browser screen size:"
-	echo 'Set zoom level to display directly connect to RPi.'
-	echo
-	echo 'Screen size:'
-	echo -e '  \e[0;36m1\e[m Small     ( 0.7 : width less than 800px )'
-	echo -e '  \e[0;36m2\e[m Medium    ( 1.2 : HD - 1280px )'
-	echo -e '  \e[0;36m3\e[m Large     ( 1.5 : Full HD - 1920px )'
-	echo -e '  \e[0;36m4\e[m Custom    ( user define )'
-	echo -e '  \e[0;36m5\e[m Text only ( save some cpu cycles )'
-	echo
-	echo -e '\e[0;36m1\e[m / 2 / 3 / 4 / 5 ? '
-	read -n 1 anszoom
-	echo
-	if [[ $anszoom == 4 ]]; then
-		echo
-		echo 'Custom scale:'
-		read anszoomcustom
-	fi
-fi
 
 installstart $1
 
@@ -124,29 +103,16 @@ if ! grep '|ico' $nginx | grep -q 'svg'; then
 fi
 
 # local display zoom, encoding, css #######################################
-if (( $# == 0 )); then
-    case $anszoom in
-	    2 ) zoom=1.2;;
-    	3 ) zoom=1.5;;
-	    4 ) zoom=$anszoomcustom;;
-	    5 ) redis-cli set local_browser 0 >/dev/null
-	    	killall midori
-	    	echo -e '\nLocal browser disabled.'
-	    	echo -e 'Re-enable: Menu > Settings > Local browser\n';;
-    	* ) zoom=0.7;;
-    esac
-else
-	if [[ $1 != u ]]; then
-		zoom=$1;
-	else
-		zoom=$( redis-cli get enhazoom &> /dev/null )
-		redis-cli del enhazoom &> /dev/null
-	fi
+if [[ $1 != u ]]; then
+	zoom=$1;
 	zoom=$( echo $zoom | awk '{if ($1 < 0.5) print 0.5; else print $1}' )
 	zoom=$( echo $zoom | awk '{if ($1 > 2) print 2; else print $1}' )
+else
+	zoom=$( redis-cli get enhazoom &> /dev/null )
+	redis-cli del enhazoom &> /dev/null
 fi
 
-if [[ $anszoom != 5 && $zoom != 0.7 ]]; then
+if [[ $zoom != 0.7 ]]; then
 	midori=/root/.config/midori/config
 	sed -i -e '/zoom-level/ s/^/#/
 	' -e '/user-stylesheet-uri/ s/^/#/
@@ -161,11 +127,6 @@ sed -i 's/==UTF-8/=UTF-8/' $midori
 [[ $( redis-cli get buildversion ) == 'beta-20160313' ]] && redis-cli set release 0.3 &> /dev/null
 
 installfinish $1
-
-if [[ -t 1 ]]; then
-	title -nt "$info Refresh browser to start using."
-	clearcache
-fi
 
 # refresh svg support last for webui installation
 systemctl reload nginx
