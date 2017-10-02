@@ -34,8 +34,8 @@ echo
 
 # modify files #######################################
 echo -e "$bar Modify files ..."
-header=/srv/http/app/templates/header.php
-echo $header
+file=/srv/http/app/templates/header.php
+echo $file
 sed -i -e $'/runeui.css/ a\
     <link rel="stylesheet" href="<?=$this->asset(\'/css/custom.css\')?>">\
     <?php if (preg_match(\'/mixer_type[\\\s]+"disabled"/\', file_get_contents(\'/etc/mpd.conf\'))): ?>\
@@ -63,22 +63,22 @@ sed -i -e $'/runeui.css/ a\
 ' -e 's|"fa fa-music"></i> Library|"fa fa-folder-open"></i>|
 ' -e $'s|"tab"\')?>><i class="fa fa-play"></i> Playback|"tab"\')?>><i class="fa fa-play-circle"></i>|
 ' -e 's|"fa fa-list"></i> Queue|"fa fa-list"></i>|
-' $header
+' $file
 # no RuneUI GPIO
-! grep -q 'pnotify.css' $header &&
-	sed -i $'/runeui.css/ a\    <link rel="stylesheet" href="<?=$this->asset(\'/css/pnotify.css\')?>">' $header
+! grep -q 'pnotify.css' $file &&
+	sed -i $'/runeui.css/ a\    <link rel="stylesheet" href="<?=$this->asset(\'/css/pnotify.css\')?>">' $file
 
-footer=/srv/http/app/templates/footer.php
-echo $footer
-echo '<script src="<?=$this->asset('"'"'/js/custom.js'"'"')?>"></script>' >> $footer
-! grep -q 'hammer.min.js' $footer && 
-echo '<script src="<?=$this->asset('"'"'/js/vendor/hammer.min.js'"'"')?>"></script>' >> $footer
+file=/srv/http/app/templates/footer.php
+echo $file
+echo '<script src="<?=$this->asset('"'"'/js/custom.js'"'"')?>"></script>' >> $file
+! grep -q 'hammer.min.js' $file && 
+echo '<script src="<?=$this->asset('"'"'/js/vendor/hammer.min.js'"'"')?>"></script>' >> $file
 # no RuneUI GPIO
-! grep -q 'pnotify3.custom.min.js' $footer &&
-echo '<script src="<?=$this->asset('"'"'/js/vendor/pnotify3.custom.min.js'"'"')?>"></script>' >> $footer
+! grep -q 'pnotify3.custom.min.js' $file &&
+echo '<script src="<?=$this->asset('"'"'/js/vendor/pnotify3.custom.min.js'"'"')?>"></script>' >> $file
 
-playback=/srv/http/app/templates/playback.php
-echo $playback
+file=/srv/http/app/templates/playback.php
+echo $file
 sed -i -e '/<div class="tab-content">/ i\
 <?php include "playbackcustom.php";\
 /\*
@@ -93,13 +93,13 @@ i\
             </div>
 }
 ' -e '/db-currentpath/ {N;N; s/^/<!--enh/; s/$/enh-->/}
-' $playback
+' $file
 
 # for nginx svg support
-nginx=/etc/nginx/nginx.conf
+file=/etc/nginx/nginx.conf
 if ! grep '|ico' $nginx | grep -q 'svg'; then
-	echo $enginx
-	sed -i 's/|ico/&|svg/' $nginx
+	echo $file
+	sed -i 's/|ico/&|svg/' $file
 fi
 
 # local display zoom, encoding, css #######################################
