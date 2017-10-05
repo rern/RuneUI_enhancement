@@ -28,7 +28,7 @@ chown -R root:root /tmp/install
 chown -R http:http /tmp/install/srv
 chmod -R 755 /tmp/install
 
-cp -rpf /tmp/install/* /
+cp -rfp /tmp/install/* /
 rm -rf /tmp/install
 echo
 
