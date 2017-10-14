@@ -25,18 +25,6 @@ Install
 ---
 from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)  
 
-or from SSH terminal
-```sh
-wget -qN --show-progress https://github.com/rern/RuneUI_enhancement/raw/master/install.sh; chmod +x install.sh; ./install.sh
-```
-Refresh browser (clear history if nothing changed)
-
-Uninstall
----
-```sh
-./uninstall_enha.sh
-```    
-_(Uninstalling will restore files to originals and delete all added ones. It should be fine to install-uninstall again and again.)_
 
 ![small](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/small.gif)
 ![smallL](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/smallL.gif)
