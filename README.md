@@ -14,7 +14,6 @@ Try it - [**Demo**](https://rern.github.io/RuneUI_GPIO/)
 - No file replaced. Any modifications will be there after install / uninstall.
 
 >[Install](#install)  
->[Uninstall](#uninstall)  
 >[Functional](#functional)  
 >[Visual](#visual)  
 
