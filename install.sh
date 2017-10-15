@@ -57,7 +57,7 @@ sed -i -e $'/runeui.css/ a\
 ' -e 's/<a id="menu-settings" class="dropdown-toggle"/<button id="menu-settings" class="btn-default dropdown-toggle"/
 ' -e 's|href="#">MENU <i class="fa fa-bars dx"></i></a>|href="#"><i class="fa fa-gear"></i></button>|
 ' -e '\|href="/"><i class="fa fa-play"| s|^|<?php /\*|; \|href="/"><i class="fa fa-play"| s|$|\*/?>|
-' -e $'/poweroff-modal/ i\
+' -e $'/Credits/ a\
             <li class="<?=$this->uri(1, \'dev\', \'active\')?>"><a href="/dev/"><i class="fa fa-code"></i> Development</a></li>
 ' -e '/logo.png/ s|^|<?php /\*|; /logo.png/ s|$|\*/?>|
 ' -e 's|"fa fa-music"></i> Library|"fa fa-folder-open"></i>|
