@@ -1,7 +1,6 @@
 #RuneUI enhancement
 
-_For RuneAudio beta-20160313. Playback page only._  
-_Tested on desktop, iPad, iPhone 1080x1920, Android - 480x800, 800x1280, 1080x1920_  
+_Tested on RuneAudio 0.3 and 0.4b_   
 
 Try it - [**Demo**](https://rern.github.io/RuneUI_GPIO/)  
 
