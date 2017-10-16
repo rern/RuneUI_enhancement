@@ -39,7 +39,7 @@ echo -e "$bar Restore modified files ..."
 header=/srv/http/app/templates/header.php
 echo $header
 sed -i -e '/custom.css/, /<!-- enhancement -->/ d
-' -e '/barleft/, /lyricfade/ d
+' -e '/barleft/, /lyricsfade/ d
 ' -e '/runelogo.svg/ d
 ' -e '/dropdownbg/ d
 ' -e 's/<button id="menu-settings" class="btn-default dropdown-toggle"/<a id="menu-settings" class="dropdown-toggle"/
