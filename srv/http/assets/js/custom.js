@@ -90,11 +90,11 @@ $( '#playlist ul' ).click( function( e ) {
 $( '#playsource' ).click( function() {
 	$( '#overlay-playsource-open' ).click();
 } );
-// menus click remove lyric
+// menus click remove lyrics
 $( '#playsource, #menu-settings, #open-panel-sx, #open-panel-dx' ).click( function() {
 	PNotify.removeAll();
-	$( '#lyricfade' ).addClass( 'hide' );
-	$( '#menu-bottom' ).removeClass( 'lyric-menu-bottom' );
+	$( '#lyricsfade' ).addClass( 'hide' );
+	$( '#menu-bottom' ).removeClass( 'lyrics-menu-bottom' );
 } );
 // additional play/pause by click
 $( '#coverart' ).click( function() {
@@ -112,38 +112,39 @@ $( '#currentsong' ).click( function() {
 	var song = $( this ).text();
 	if ( song.slice( 0, 3 ) != '[no' ) {
 		new PNotify( {
-			icon: 'fa fa-refresh fa-spin fa-lg',
-			title: 'Lyrics',
-			text: 'Fetching ...',
-			addclass: 'pnotify_custom',
+			  icon    : 'fa fa-refresh fa-spin fa-lg'
+			, title   : 'Lyrics'
+			, text    : 'Fetching ...'
+			, hide    : false
+			, addclass: 'pnotify_custom'
 		} );
 		$.get( 'lyrics.php',   
 			{ artist: artist, song: song },
-			function( lyric ) {
-				//var lyric = $(lyric).find('Lyric').text();
-				//var cover = $(lyric).find('LyricCovertArtUrl').text();
-				lyric = lyric ? lyric.replace( /&amp;quot;/g, '&quot;' ).replace( /&amp;lt;/g, '&lt;' ).replace( /&amp;gt;/g, '&gt;' ) : '(Lyrics unavailable)';
+			function( lyrics ) {
+				//var lyrics = $( lyrics ).find( 'lyrics' ).text();
+				//var cover = $( lyrics ).find( 'LyricCovertArtUrl' ).text();
+				lyrics = lyrics ? lyrics.replace( /&amp;quot;/g, '&quot;' ).replace( /&amp;lt;/g, '&lt;' ).replace( /&amp;gt;/g, '&gt;' ) : '(Lyrics unavailable)';
 				PNotify.removeAll();
 				// need new 'pnotify.custom.min.js' with 'button', confirm', 'callback', 'css'
-					new PNotify( {
-					icon: false,
-					title: song,
-					text: lyric +'\n\n&#8226;&#8226;&#8226;\n\n\n\n\n\n\n\n',
-					hide: false,
-					addclass: 'pnotify_lyric pnotify_custom',
-					buttons: {
-						closer_hover: false,
-						sticker: false
-					},
-					before_open: function() {
-						$( '#lyricfade' ).removeClass( 'hide' );
-						$( '#menu-bottom' ).addClass( 'lyric-menu-bottom' );
-					},
-					after_close: function() {
-						$( '#lyricfade' ).addClass( 'hide' );
-						$( '#menu-bottom' ).removeClass( 'lyric-menu-bottom' );
+				new PNotify( {
+					  icon    : false
+					, title   : song
+					, text    : lyrics +'\n\n&#8226;&#8226;&#8226;\n\n\n\n\n\n\n\n'
+					, hide    : false
+					, addclass: 'pnotify_lyrics pnotify_custom'
+					, buttons : {
+						  closer_hover: false
+						, sticker     : false
+					}
+					, before_open: function() {
+						$( '#lyricsfade' ).removeClass( 'hide' );
+						$( '#menu-bottom' ).addClass( 'lyrics-menu-bottom' );
+					}
+					, after_close: function() {
+						$( '#lyricsfade' ).addClass( 'hide' );
+						$( '#menu-bottom' ).removeClass( 'lyrics-menu-bottom' );
 						$( '.ui-pnotify' ).remove();
-					},
+					}
 				} );
 			}
 		);
@@ -371,7 +372,7 @@ function updateGUI() {
     }
 // ****************************************************************************************
 // observe song change for lyrics
-	if ( !$( '#lyricfade' ).hasClass( 'hide' ) && $( '#currentsong' ).text() != $( 'h4.ui-pnotify-title' ).text() ) {
+	if ( !$( '#lyricsfade' ).hasClass( 'hide' ) && $( '#currentsong' ).text() != $( 'h4.ui-pnotify-title' ).text() ) {
 		PNotify.removeAll();
 		$( '#currentsong' ).click();
 	}

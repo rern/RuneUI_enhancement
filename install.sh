@@ -47,7 +47,7 @@ sed -i -e $'/runeui.css/ a\
 ' -e '/menu-top/ i\
 <div id="barleft"></div>\
 <div id="barright"></div>\
-<div id="lyricfade" class="hide"></div>
+<div id="lyricsfade" class="hide"></div>
 ' -e $'/class="home"/ i\
     <img class="logo" src="<?=$this->asset(\'/img/runelogo.svg\')?>" alt="RuneAudio" href="/">\
 	<?php $path = $_SERVER["REQUEST_URI"] == "/" ? "/#playback" : "/";?>

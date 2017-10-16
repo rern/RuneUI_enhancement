@@ -259,7 +259,7 @@
     font-size:20px;
 }
 /* ---------------------- lyrics ----------------------*/
-#lyricfade { /* faded bottom */
+#lyricsfade { /* faded bottom */
 	position: fixed;
 	bottom: 0;
 	left: 0;
@@ -271,7 +271,7 @@
 	background: -webkit-linear-gradient(top,  transparent,#000000);
 	background: linear-gradient(to bottom,  transparent,#000000);
 }
-.lyric-menu-bottom {
+.lyrics-menu-bottom {
 	margin-left: 510px;
 	width: calc(100vw - 510px);
 }
@@ -298,7 +298,7 @@
 
 
 /* ---------------------- lyrics custom pnotify ----------------------*/
-.pnotify_lyric div.ui-pnotify-container {
+.pnotify_lyrics div.ui-pnotify-container {
 	width: 510px !important;
 	max-width: 100vw !important;
 	height: calc(100vh - 50px) !important;
@@ -308,7 +308,7 @@
 	background: #34495e;
 	box-shadow: 4px 0px 10px #000000;
 }
-.pnotify_lyric .ui-pnotify-title {
+.pnotify_lyrics .ui-pnotify-title {
 	position: fixed;
 	top: 50px;
 	left: 0;
@@ -321,12 +321,12 @@
 	overflow: hidden;
 	text-overflow: ellipsis !important;
 }
-.pnotify_lyric .alert h4 { /* title font */
+.pnotify_lyrics .alert h4 { /* title font */
 	font-size: 24px !important;
 	font-weight:  400 !important;
 	text-transform: none !important;
 }
-.pnotify_lyric .ui-pnotify-closer {
+.pnotify_lyrics .ui-pnotify-closer {
 	position: fixed;
 	top: 50px;
 	left: 470px;
@@ -338,10 +338,10 @@
 	background: #0095d8;
 	font-size: 24px;
 }
-.pnotify_lyric .ui-pnotify-closer:hover {
+.pnotify_lyrics .ui-pnotify-closer:hover {
 	background: #0072a5;
 }
-.pnotify_lyric .ui-pnotify-text {
+.pnotify_lyrics .ui-pnotify-text {
     width: 513px; /* push desktop scrollbar outside parent */
 	max-width: calc(100% + 35px);
 	padding: 1em 2em 0 0; /* push text right-margin back */
@@ -488,10 +488,10 @@
 		border-top-right-radius: 0;
 		border-bottom-left-radius: 6px;
 	}
-	.pnotify_lyric .ui-pnotify-title {
+	.pnotify_lyrics .ui-pnotify-title {
 		width: calc(100vw - 40px);
 	}
-	.pnotify_lyric .ui-pnotify-closer {
+	.pnotify_lyrics .ui-pnotify-closer {
 		left: calc(100vw - 40px);
 	}
 }
