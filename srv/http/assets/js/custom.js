@@ -115,12 +115,12 @@ $( '#currentsong' ).click( function() {
 			  icon    : 'fa fa-refresh fa-spin fa-lg'
 			, title   : 'Lyrics'
 			, text    : 'Fetching ...'
+			, hide    : false
 			, addclass: 'pnotify_custom'
 		} );
 		$.get( 'lyrics.php',   
 			{ artist: artist, song: song },
 			function( lyrics ) {
-				console.log( lyrics );
 				//var lyrics = $( lyrics ).find( 'lyrics' ).text();
 				//var cover = $( lyrics ).find( 'LyricCovertArtUrl' ).text();
 				lyrics = lyrics ? lyrics.replace( /&amp;quot;/g, '&quot;' ).replace( /&amp;lt;/g, '&lt;' ).replace( /&amp;gt;/g, '&gt;' ) : '(Lyrics unavailable)';
