@@ -58,9 +58,10 @@ sed -i -e '/custom.css/, /<!-- enhancement -->/ d
 
 footer=/srv/http/app/templates/footer.php
 echo $footer
-sed -i -e '/custom.js/, /hammer.min.js/ d' $footer
+sed -i '/custom.js/ d' $footer
+[[ ! -e /usr/local/bin/uninstall_addo.sh ]] && sed -i '/hammer.min.js/ d' $footer
 # no RuneUI GPIO
-! $gpio && sed -i -e '/pnotify3.custom.min.js/ d' $footer
+! $gpio && sed -i '/pnotify3.custom.min.js/ d' $footer
 
 sed -i -e '/playbackcustom.php/, /\/\*/ d
 ' -e '/enh \*\/?>/ d
