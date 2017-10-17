@@ -60,7 +60,7 @@ fi
 if [[ ! -e /usr/local/bin/uninstall_gpio.sh ]]; then
 	rm $path/css/pnotify.css
 	rm $path/js/vendor/pnotify3.custom.min.js
-	sed -i -e '/pnotify.css/ d' $header
+	sed -i '/pnotify.css/ d' $header
 	sed -i '/pnotify3.custom.min.js/ d' $footer
 fi
 
@@ -80,5 +80,7 @@ if grep -q '^#zoom-level' $midori; then
 	' $midori
 fi
 sed -i '/#user-stylesheet-uri/ s/^#//' $midori
+
+clearcache
 
 uninstallfinish $1
