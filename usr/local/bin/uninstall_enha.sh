@@ -21,18 +21,10 @@ rm -v $path/css/customcoveroff.css
 rm -v $path/css/customvoloff.css
 rm -v $path/img/runelogo.svg
 rm -v $path/js/custom.js
-[[ ! -e /usr/local/bin/uninstall_addo.sh ]] && rm -v $path/js/vendor/hammer.min.js
-
-# no RuneUI GPIO
-[[ -e /srv/http/assets/css/gpiosettings.css ]] && gpio=true || gpio=false
-if ! $gpio; then
-	rm -v $path/css/pnotify.css
-	rm -v $path/js/vendor/pnotify3.custom.min.js
-fi
 
 # restore fonts
-cp -f /srv/http/assets/fonts/backup/* /srv/http/assets/fonts &> /dev/null
-rm -rf /srv/http/assets/fonts/backup
+cp -f $path/fonts/{backup/,}*
+rm -rf $path/fonts/backup
 
 # restore modified files #######################################
 echo -e "$bar Restore modified files ..."
@@ -53,25 +45,36 @@ sed -i -e '/custom.css/, /<!-- enhancement -->/ d
 ' -e $'s|"tab"\')?>><i class="fa fa-play-circle"></i>|"tab"\')?>><i class="fa fa-play"></i> Playback|
 ' -e 's|"fa fa-list"></i></a>|"fa fa-list"></i> Queue</a>|
 ' $header
-# no RuneUI GPIO
-! $gpio && sed -i -e '/pnotify.css/ d' $header
 
 footer=/srv/http/app/templates/footer.php
 echo $footer
 sed -i '/custom.js/ d' $footer
-[[ ! -e /usr/local/bin/uninstall_addo.sh ]] && sed -i '/hammer.min.js/ d' $footer
-# no RuneUI GPIO
-! $gpio && sed -i '/pnotify3.custom.min.js/ d' $footer
 
+# no Addons Menu
+if [[ ! -e /usr/local/bin/uninstall_addo.sh ]]; then
+	rm $path/js/vendor/hammer.min.js
+	sed -i '/hammer.min.js/ d' $footer
+fi
+
+# no RuneUI GPIO
+if [[ ! -e /usr/local/bin/uninstall_gpio.sh ]]; then
+	rm $path/css/pnotify.css
+	rm $path/js/vendor/pnotify3.custom.min.js
+	sed -i -e '/pnotify.css/ d' $header
+	sed -i '/pnotify3.custom.min.js/ d' $footer
+fi
+
+playback=/srv/http/app/templates/playback.php
+echo $playback
 sed -i -e '/playbackcustom.php/, /\/\*/ d
 ' -e '/enh \*\/?>/ d
 ' -e '/^\s\+<div id="db-currentpath"/,/<\/div>/ d
 ' -e 's/<!--enh\|enh-->//g
-' /srv/http/app/templates/playback.php
+' $playback
 
 midori=/root/.config/midori/config
 echo $midori
-if ! grep -q '^zoom-level=0.7' $midori; then
+if grep -q '^#zoom-level' $midori; then
 	sed -i -e '/^zoom-level/ d
 	' -e '/#zoom-level/ s/^#//
 	' $midori
