@@ -5,6 +5,8 @@
 
 alias=enha
 
+branch=master
+
 . /srv/http/addonstitle.sh
 
 installstart $1
