@@ -5,11 +5,9 @@
 
 alias=enha
 
-branch=master
-
 . /srv/http/addonstitle.sh
 
-installstart $1
+installstart $@
 
 # backup fonts
 mkdir /srv/http/assets/fonts/backup
@@ -125,7 +123,7 @@ sed -i 's/==UTF-8/=UTF-8/' $midori
 # correct version number
 [[ $( redis-cli get buildversion ) == 'beta-20160313' ]] && redis-cli set release 0.3 &> /dev/null
 
-installfinish $1
+installfinish $@
 
 clearcache
 
