@@ -10,6 +10,7 @@ alias=enha
 installstart $@
 
 # backup fonts
+echo -e "$bar Backup files ..."
 mkdir -p /srv/http/assets/fonts/backup
 cp /srv/http/assets/fonts/* /srv/http/assets/fonts/backup &> /dev/null
 
