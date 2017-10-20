@@ -23,8 +23,9 @@ rm -v $path/img/runelogo.svg
 rm -v $path/js/custom.js
 
 # restore fonts
-cp $path/fonts/{backup/,}*
-rm -rf $path/fonts/backup
+rm - $path/fonts/*
+cp -v $path/fonts/{backup/,}*
+rm -rv $path/fonts/backup
 
 # restore modified files #######################################
 echo -e "$bar Restore modified files ..."
