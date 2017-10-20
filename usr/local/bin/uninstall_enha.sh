@@ -4,7 +4,7 @@ alias=enha
 
 . /srv/http/addonstitle.sh
 
-uninstallstart $1
+uninstallstart $@
 
 if [[ $1 == u ]]; then
 	zoom=$( grep '^zoom' /root/.config/midori/config | cut -d '=' -f 2 )
@@ -83,4 +83,4 @@ sed -i '/#user-stylesheet-uri/ s/^#//' $midori
 
 clearcache
 
-uninstallfinish $1
+uninstallfinish $@
