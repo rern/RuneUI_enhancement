@@ -9,11 +9,6 @@ alias=enha
 
 installstart $@
 
-# backup fonts
-echo -e "$bar Backup files ..."
-mkdir -p /srv/http/assets/fonts/backup
-cp /srv/http/assets/fonts/fontawesome-webfont* /srv/http/assets/fonts/backup &> /dev/null
-
 getinstallzip
 
 # modify files #######################################
