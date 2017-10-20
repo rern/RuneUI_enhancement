@@ -4,7 +4,7 @@ alias=enha
 
 . /srv/http/addonstitle.sh
 
-uninstallstart $1
+uninstallstart $@
 
 if [[ $1 == u ]]; then
 	zoom=$( grep '^zoom' /root/.config/midori/config | cut -d '=' -f 2 )
@@ -21,10 +21,6 @@ rm -v $path/css/customcoveroff.css
 rm -v $path/css/customvoloff.css
 rm -v $path/img/runelogo.svg
 rm -v $path/js/custom.js
-
-# restore fonts
-cp -f $path/fonts/{backup/,}*
-rm -rf $path/fonts/backup
 
 # restore modified files #######################################
 echo -e "$bar Restore modified files ..."
@@ -83,4 +79,4 @@ sed -i '/#user-stylesheet-uri/ s/^#//' $midori
 
 clearcache
 
-uninstallfinish $1
+uninstallfinish $@
