@@ -13,21 +13,7 @@ installstart $@
 mkdir /srv/http/assets/fonts/backup
 cp /srv/http/assets/fonts/* /srv/http/assets/fonts/backup &> /dev/null
 
-echo -e "$bar Get files ..."
-wgetnc https://github.com/rern/RuneUI_enhancement/archive/$branch.zip
-
-echo -e "$bar Install new files ..."
-rm -rf /tmp/install
-mkdir -p /tmp/install
-bsdtar --exclude='.*' --exclude='*.md' -xvf $branch.zip --strip 1 -C /tmp/install
-rm $branch.zip /tmp/install/* &> /dev/null
-
-chown -R http:http /tmp/install/srv
-chmod -R 755 /tmp/install
-
-cp -rfp /tmp/install/* /
-rm -rf /tmp/install
-echo
+getinstallzip
 
 # modify files #######################################
 echo -e "$bar Modify files ..."
