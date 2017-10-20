@@ -75,7 +75,3 @@ Visual
 - Change icons and remove text labels
 - Enlarge icons
 - Add box shadow for layer depth
-
-**Library**  
-- Move directory path up to replace 'Back' button
-- Make directory path linked (breadcrumb)

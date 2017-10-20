@@ -64,8 +64,6 @@ playback=/srv/http/app/templates/playback.php
 echo $playback
 sed -i -e '/playbackcustom.php/, /\/\*/ d
 ' -e '/enh \*\/?>/ d
-' -e '/id="db-currentpath"/,/<\/div>/ d
-' -e '/id="db-level-up"/ {s/^<!--enh//; s/enh-->$//}
 ' $playback
 
 midori=/root/.config/midori/config
