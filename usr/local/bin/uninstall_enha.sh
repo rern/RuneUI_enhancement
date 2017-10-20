@@ -23,7 +23,7 @@ rm -v $path/img/runelogo.svg
 rm -v $path/js/custom.js
 
 # restore fonts
-rm $path/fonts/*
+rm $path/fonts/*.*
 cp $path/fonts/{backup/,}*
 rm -r $path/fonts/backup
 
