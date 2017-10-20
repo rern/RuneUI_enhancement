@@ -71,7 +71,6 @@ i\
                 <i id="db-up" class="fa fa-arrow-left"></i>\
             </div>
 }
-' -e '/db-currentpath/ {N;N; s/^/<!--enh/; s/$/enh-->/}
 ' $file
 
 # for nginx svg support
