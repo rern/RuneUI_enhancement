@@ -275,28 +275,6 @@
 	margin-left: 510px;
 	width: calc(100vw - 510px);
 }
-
-#db-currentpath {
-	width: calc(100% - 220px);
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
-#db-currentpath a,
-#db-currentpath i {
-	cursor: pointer;
-}
-#db-currentpath i {
-	margin-top: 5px;
-	padding: 0;
-	font-size: 28px;
-}
-#db-up {
-	position: absolute;
-	right: 200px;
-}
-
-
 /* ---------------------- lyrics custom pnotify ----------------------*/
 .pnotify_lyrics div.ui-pnotify-container {
 	width: 510px !important;
