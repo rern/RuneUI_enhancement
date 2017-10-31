@@ -165,8 +165,6 @@ $( '#menu-bottom' ).click( function() {
 	}
 } );
 
-// swipe
-Hammer = propagating( Hammer ); // propagating.js
 
 function panelr( lr ) {
 	var paneactive = $( '#content' ).find( 'div.active' ).prop( 'id' );
@@ -182,6 +180,10 @@ function panelr( lr ) {
 	}
 	$pane = ( lr === 'left' ) ? $paneleft.click() : $paneright.click();
 }
+
+// swipe
+Hammer = propagating( Hammer ); // propagating.js
+
 var hammercontent = new Hammer( document.getElementById( 'content' ) );
 hammercontent.on( 'swiperight', function() {
 	panelr( 'right' );
