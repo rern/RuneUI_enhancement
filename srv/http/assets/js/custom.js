@@ -156,20 +156,49 @@ $( '#currentalbum' ).click( function() {
 	if ( album.slice( 0, 3 ) != '[no' )
 		window.open( 'http://www.last.fm/music/'+ artist +'/'+ album );
 } );
+$( '#menu-bottom' ).click( function() {
+	if ( $( window ).height() < 737 ) {
+		$( '#menu-top' ).css( 'top', '-40px' );
+		$( '#menu-bottom' ).css( 'bottom', '-40px' );
+		$( '.btnlist-top' ).css( 'top', 0 );
+		$( '#database' ).css( 'padding-top', '40px' );
+	}
+} );
 
 // swipe
+Hammer = propagating( Hammer ); // propagating.js
+
+function panelr( lr ) {
+	var paneactive = $( '#content' ).find( 'div.active' ).prop( 'id' );
+	if ( paneactive === 'panel-sx' ) {
+		var $paneleft = $( '#open-playback a' );
+		var $paneright = $( '#open-panel-dx a' );
+	} else if ( paneactive === 'playback' ) {
+		var $paneleft = $( '#open-panel-dx a' );
+		var $paneright = $( '#open-panel-sx a' );
+	} else {
+		var $paneleft = $( '#open-panel-sx a' );
+		var $paneright = $( '#open-playback a' );
+	}
+	$pane = ( lr === 'left' ) ? $paneleft.click() : $paneright.click();
+}
+var hammercontent = new Hammer( document.getElementById( 'content' ) );
+hammercontent.on( 'swiperight', function() {
+	panelr( 'right' );
+} );
+hammercontent.on( 'swipeleft', function() {
+	panelr( 'left' );
+} );
+
 if ( $( '#playback' ).is( ':visible' ) ) {
 	var hammerinfo = new Hammer( document.getElementById( 'info' ) );
-	hammerinfo.on( 'swiperight', function() {
+	hammerinfo.on( 'swiperight', function( e ) {
 		$( '#previous' ).click();
+		e.stopPropagation();
 	} );
-	hammerinfo.on( 'swipeleft', function() {
+	hammerinfo.on( 'swipeleft', function( e ) {
 		$( '#next' ).click();
-	} );
-
-	var hammerrow = new Hammer( document.getElementById( 'playback-row' ) );
-	hammerrow.on( 'swipe', function() {
-		$( '#barright' ).click();
+		e.stopPropagation();
 	} );
 
 	var hammerbarleft = new Hammer( document.getElementById( 'barleft' ) );
