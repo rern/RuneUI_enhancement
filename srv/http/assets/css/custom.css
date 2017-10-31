@@ -1,6 +1,19 @@
 .tab-pane {
 	height: 100vh;
 }
+.input-group {
+	max-width: 200px;
+}
+.btnlist-bottom {
+	display: none;
+}
+#plbutton {
+	float: right;
+	margin-top: 5px;
+}
+#pl-search {
+	max-width: none;
+}
 #barleft,
 #barright {
 	position: fixed;
@@ -474,6 +487,21 @@
 	.pnotify_lyrics .ui-pnotify-closer {
 		left: calc(100vw - 40px);
 	}
+	#playlist {
+		padding-top: 40px;
+	}
+	.btnlist-top {
+		top: 0;
+	}
+	#plbutton {
+		float: none;
+	}
+	#pl-count {
+		display: none;
+	}
+	.input-group {
+		max-width: 155px;
+	}
 }
 @media(max-height: 640px) {
 	#playback {
@@ -553,6 +581,18 @@
 	#vol-group {
 		order: 6;
 		-webkit-order: 6;
+	}
+	#playlist {
+		padding-top: 40px;
+	}
+	.btnlist-top {
+		top: 0;
+	}
+	#pl-count {
+		display: none;
+	}
+	#plbutton {
+		float: none;
 	}
 }
 @media(max-height: 416px) {
