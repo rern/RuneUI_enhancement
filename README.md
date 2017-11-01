@@ -32,10 +32,10 @@ Functional
 
 - Tap `song` = get lyrics
 - Tap `artist` or `album` = get info from last.fm
+- Swipe left-right = swiches between `Library` - `Playback` - `Queue`
 - Swipe left-right on `text area` = previous-next track
 - Swipe up / down on `screen left` `screen right` or tap `screen left` = hide / show `top` `bottom`
 - (width < 500px) Swipe up / down or tap `screen left` = swap show / hide `cover art` `volume`
-- Swipe left / right on `time` `cover art` `volume` or  tap `screen right`= show / hide `buttons`
 - Tap `cover art` = play / pause (besides `time`)
 - Tap `playlist item` also go back to playback page
 - Tap `playback controls` on other pages also go back to playback page
@@ -75,3 +75,10 @@ Visual
 - Change icons and remove text labels
 - Enlarge icons
 - Add box shadow for layer depth
+
+**Library**
+- Add Home folder button for Library home page
+- Change and relocate `back` button
+- Move `add webradio` list to top bar button
+- Move path from bottom bar to top bar
+- Hide bottom bar with scroll buttons
