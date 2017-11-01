@@ -63,7 +63,7 @@ echo $file
 sed -i -e '/<div class="tab-content">/ i\
 <?php include "playbackcustom.php";\
 /\*
-' -e '/<!-- LIBRARY PANEL -->/ i\enh \*/?>
+' -e '/id="context-menus"/ i\enh \*/?>
 ' $file
 
 # for nginx svg support
