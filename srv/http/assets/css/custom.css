@@ -1,19 +1,36 @@
+/* library and queue */
 .tab-pane {
 	height: 100vh;
+}
+.btnlist-top {
+	padding-top: 5px;
+}
+#db-search,
+#pl-search {
+	margin-top: 0;
+}
+#pl-manage {
+	display: inline-block;
+	vertical-align: top;
+}
+#pl-count {
+	display: inline-block;
+	margin-left: 20px;
+	line-height: 30px;
+	width: calc( 100% - 350px );
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+#db-level-up,
+.btnlist-bottom {
+	display: none;
 }
 .input-group {
 	max-width: 200px;
 }
-.btnlist-bottom {
-	display: none;
-}
-#plbutton {
-	float: right;
-	margin-top: 5px;
-}
-#pl-search {
-	max-width: none;
-}
+
+/* ---------------------- main ---------------------- */
 #barleft,
 #barright {
 	position: fixed;
@@ -493,12 +510,6 @@
 	.btnlist-top {
 		top: 0;
 	}
-	#plbutton {
-		float: none;
-	}
-	#pl-count {
-		display: none;
-	}
 	.input-group {
 		max-width: 155px;
 	}
@@ -587,12 +598,6 @@
 	}
 	.btnlist-top {
 		top: 0;
-	}
-	#pl-count {
-		display: none;
-	}
-	#plbutton {
-		float: none;
 	}
 }
 @media(max-height: 416px) {
