@@ -45,6 +45,7 @@ Functional
 Visual
 ---
 
+### Playback
 **Top Bar:**
 - Hide on height < 500px
 - Change `logo` to svg
@@ -76,9 +77,14 @@ Visual
 - Enlarge icons
 - Add box shadow for layer depth
 
-**Library**
+### Library
 - Add Home folder button for Library home page
 - Change and relocate `back` button
 - Move `add webradio` list to top bar button
 - Move path from bottom bar to top bar
-- Hide bottom bar with scroll buttons
+- Hide bottom bar with `scroll` buttons
+
+### Queue
+- Change and relocate `back` button
+- Move `manage` buttons from bottom bar to top bar
+- Hide bottom bar with `scroll` buttons
