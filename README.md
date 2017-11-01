@@ -79,10 +79,19 @@ Visual
 
 ### Library
 - Add Home folder button for Library home page
-- Change and relocate `back` button
 - Move `add webradio` list to top bar button
 - Move path from bottom bar to top bar
+- **Breadcrumb path links** for shortcut jump to any **directory** in the path
+- Change and relocate `back` button
 - Hide bottom bar with `scroll` buttons
+- **Index bar** for quick scroll to directories
+- **Sorting**
+	- Fix incorrect **Library sorting**:
+		- Sort **non-english** language
+		- After [**Webradio import**](https://github.com/rern/RuneAudio/tree/master/webradio)
+		- After [**MPD Upgrade**](https://github.com/rern/RuneAudio/tree/master/mpd)
+		- Some of MPD default sorting
+	- Songs in albums still, by default, be sorted by track number
 
 ### Queue
 - Change and relocate `back` button
