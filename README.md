@@ -29,7 +29,7 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 
 Functional
 ---
-
+### Playback
 - Tap `song` = get lyrics
 - Tap `artist` or `album` = get info from last.fm
 - Swipe left-right = swiches between `Library` - `Playback` - `Queue`
@@ -42,6 +42,16 @@ Functional
 
 ![layout](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/RuneUImod1.gif)
 
+### Library
+- **Breadcrumb path links** = shortcut jump to any **directory** in the path
+- **Index bar** = quick scroll to directories
+- **Sorting** - fix incorrect:
+	- Sort **non-english** language
+	- Some of MPD default sorting
+	- After [**Webradio import**](https://github.com/rern/RuneAudio/tree/master/webradio)
+	- After [**MPD Upgrade**](https://github.com/rern/RuneAudio/tree/master/mpd)
+	- (Songs in albums still, by default, be sorted by track number)
+	
 Visual
 ---
 
@@ -78,20 +88,12 @@ Visual
 - Add box shadow for layer depth
 
 ### Library
+- Add index bar
 - Add Home folder button for Library home page
 - Move `add webradio` list to top bar button
 - Move path from bottom bar to top bar
-- **Breadcrumb path links** for shortcut jump to any **directory** in the path
 - Change and relocate `back` button
 - Hide bottom bar with `scroll` buttons
-- **Index bar** for quick scroll to directories
-- **Sorting**
-	- Fix incorrect **Library sorting**:
-		- Sort **non-english** language
-		- After [**Webradio import**](https://github.com/rern/RuneAudio/tree/master/webradio)
-		- After [**MPD Upgrade**](https://github.com/rern/RuneAudio/tree/master/mpd)
-		- Some of MPD default sorting
-	- Songs in albums still, by default, be sorted by track number
 
 ### Queue
 - Change and relocate `back` button
