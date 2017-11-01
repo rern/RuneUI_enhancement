@@ -395,3 +395,13 @@ function updateGUI() {
 	}
 // ****************************************************************************************
 }
+
+function timeConvert3( ss ) {
+    var hr = Math.floor( ss / 3600 );
+    var mm = Math.floor( ( ss - ( hr * 3600 ) ) / 60 );
+    ss = Math.floor( ss - ( hr * 3600 ) - ( mm * 60 ) );
+	hr = ( hr > 0 )  ? hr +':' : '';
+    mm = ( mm > 9 ) ? mm : '0' + mm;
+    ss = ( ss > 9 ) ? ss : '0' + ss;
+    return '&ensp;<a>'+ hr + mm +':'+ ss +'</a>&nbsp;';
+}
