@@ -8,9 +8,11 @@ Try it - [**Demo**](https://rern.github.io/RuneUI_GPIO/)
 - More fluid layout
 - Fit all in one phone screen (with 'Add to Home Screen')
 - Swipeable
+- Library breadcrumb path links to each directory
+- Library index bar
+- Fix Library sorting
 - Get lyrics
 - [**RuneUI GPIO**](https://github.com/rern/RuneUI_GPIO) for GPIO connected devices control.  
-- No file replaced. Any modifications will be there after install / uninstall.
 
 >[Install](#install)  
 >[Functional](#functional)  
