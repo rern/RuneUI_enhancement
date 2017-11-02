@@ -184,7 +184,7 @@ function panelr( lr ) {
 // swipe
 Hammer = propagating( Hammer ); // propagating.js
 
-var hammercontent = new Hammer( document.getElementById( 'content' ) );
+var hammercontent = new Hammer( document.body );
 hammercontent.on( 'swiperight', function() {
 	panelr( 'right' );
 } );
