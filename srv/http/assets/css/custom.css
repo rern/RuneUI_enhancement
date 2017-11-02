@@ -1,7 +1,4 @@
-./* ---------------------- library and queue ---------------------- */
-.tab-pane {
-	height: 100vh;
-}
+/* ---------------------- library and queue ---------------------- */
 .btnlist-top {
 	padding-top: 5px;
 }
@@ -47,6 +44,11 @@
 }
 #db-currentpath a {
 	color: #0095d8;
+}
+#db-currentpath span {
+	display: inline-block;
+	line-height: 30px;
+	vertical-align: top;
 }
 #db-currentpath i {
 	padding: 0;
@@ -554,6 +556,13 @@
 	}
 	.btnlist-top {
 		top: 0;
+	}
+	#db-currentpath {
+		width: calc( 100% - 190px );
+	}
+	#db-up,
+	#db-webradio-add {
+		right: 170px;
 	}
 	.input-group {
 		max-width: 155px;
