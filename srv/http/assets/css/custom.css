@@ -19,7 +19,15 @@
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
-#db-level-up,
+#db-search-results,
+#pl-filter-results {
+	margin-top: -8px;
+}
+#db-search-results i,
+#pl-filter-results i {
+	font-size: 28px;
+	vertical-align: bottom;
+}
 .btnlist-bottom {
 	display: none;
 }
@@ -54,7 +62,7 @@
 	padding: 0;
 	font-size: 28px;
 }
-#db-up,
+#db-level-up,
 #db-webradio-add {
 	position: absolute;
 	right: 200px;
