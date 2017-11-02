@@ -221,7 +221,6 @@ if ( $( '#playback' ).is( ':visible' ) ) {
 // library directory path link
 $( '#db-home' ).click( function() {
 	renderLibraryHome();
-	$( '#db-currentpath, #db-index' ).addClass( 'hide' );
 } );
 $( '#db-currentpath' ).on( 'click', 'a', function() {
 	getDB( { path: $( this ).attr( 'data-path' ) } );
@@ -267,8 +266,8 @@ window.addEventListener( 'orientationchange', function() {
 // document ready end *********************************************************************
 } );
 
-function scrolltext() {
 // scrolling text
+function scrolltext() {
 	setTimeout( function() {
 		$( '#divartist, #divsong, #divalbum' ).each( function() {
 			if ( $( this ).find( 'span' ).width() > Math.floor( window.innerWidth * 0.975 ) ) {
@@ -279,54 +278,26 @@ function scrolltext() {
 		} );
 	}, 50 );
 }
-
+// hide breadcrumb on search
+function getDBsearch() {
+	getDB( { cmd: 'search', path: GUI.currentpath, browsemode: GUI.browsemode } );
+	setTimeout( function() {
+		$( '#db-currentpath' ).addClass( 'hide' );
+	}, 250 );
+}
+var old_renderLibraryHome = renderLibraryHome;
+renderLibraryHome = function() {
+	old_renderLibraryHome();
+	$('#db-currentpath, #db-index').addClass('hide');
+}
 // replace functions in main runeui.js file **********************************************
-// $('#db-level-up').click(function() {
-$( '#db-up' ).click( function() {
-	--GUI.currentDBpos[10];
-	var path = GUI.currentpath;
-	if (GUI.currentDBpos[10] === 0) {
-		path = '';
-// ****************************************************************************************
-		$( '#db-currentpath, #db-index' ).addClass( 'hide' );
-// ****************************************************************************************
-	} else {
-		if (GUI.browsemode === 'file') {
-			var cutpos = path.lastIndexOf('/');
-			path = (cutpos !== -1) ? path.slice(0,cutpos):'';
-		} else {
-			if (GUI.browsemode === 'album') {
-				path = GUI.currentDBpath[GUI.currentDBpos[10] - 1];
-				// console.log(path);
-				if (path === '') {
-					path = 'Albums';
-				} else {
-					GUI.browsemode = 'artist';
-				}
-			} else if (GUI.browsemode === 'artist') {
-				path = GUI.currentDBpath[GUI.currentDBpos[10] - 1];
-				// console.log(path);
-				if (path === '') {
-					path = 'Artists';
-				} else {
-					GUI.browsemode = 'genre';
-				}
-			} else if (GUI.browsemode === 'genre') {
-				path = 'Genres';
-			} else if (GUI.browsemode === 'albumfilter') {
-				GUI.browsemode = 'artist';
-				path = GUI.currentDBpath[GUI.currentDBpos[10] - 1];
-			}
-		}
-	}
+$('#db-search-results').click(function(){
+	$(this).addClass('hide');
+	$('#db-level-up, #db-currentpath').removeClass('hide');
 	getDB({
-		browsemode: GUI.browsemode,
-		path: path,
-		plugin: GUI.plugin,
-		uplevel: 1
+		path: GUI.currentpath
 	});
-	GUI.plugin = '';
-} );
+});
 
 function refreshState() {
 	scrolltext();
