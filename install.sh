@@ -52,7 +52,9 @@ echo $file
 echo '<script src="<?=$this->asset('"'"'/js/custom.js'"'"')?>"></script>' >> $file
 ! grep -q 'hammer.min.js' $file && 
 echo '
-<script src="<?=$this->asset('"'"'/js/vendor/hammer.min.js'"'"')?>"></script>
+<script src="<?=$this->asset('"'"'/js/vendor/hammer.min.js'"'"')?>"></script>' >> $file
+! grep -q 'propagating.js' $file && 
+echo '
 <script src="<?=$this->asset('"'"'/js/vendor/propagating.js'"'"')?>"></script>' >> $file
 # no RuneUI GPIO
 ! grep -q 'pnotify3.custom.min.js' $file &&
