@@ -51,7 +51,11 @@ file=/srv/http/app/templates/footer.php
 echo $file
 echo '<script src="<?=$this->asset('"'"'/js/custom.js'"'"')?>"></script>' >> $file
 ! grep -q 'hammer.min.js' $file && 
-echo '<script src="<?=$this->asset('"'"'/js/vendor/hammer.min.js'"'"')?>"></script>' >> $file
+echo '
+<script src="<?=$this->asset('"'"'/js/vendor/hammer.min.js'"'"')?>"></script>' >> $file
+! grep -q 'propagating.js' $file && 
+echo '
+<script src="<?=$this->asset('"'"'/js/vendor/propagating.js'"'"')?>"></script>' >> $file
 # no RuneUI GPIO
 ! grep -q 'pnotify3.custom.min.js' $file &&
 echo '<script src="<?=$this->asset('"'"'/js/vendor/pnotify3.custom.min.js'"'"')?>"></script>' >> $file
@@ -61,7 +65,7 @@ echo $file
 sed -i -e '/<div class="tab-content">/ i\
 <?php include "playbackcustom.php";\
 /\*
-' -e '/<!-- LIBRARY PANEL -->/ i\enh \*/?>
+' -e '/id="context-menus"/ i\enh \*/?>
 ' $file
 
 # for nginx svg support

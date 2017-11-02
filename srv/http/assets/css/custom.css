@@ -1,16 +1,103 @@
-#barleft {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 60px;
-	height: 100vh;
+/* ---------------------- library and queue ---------------------- */
+.btnlist-top {
+	padding-top: 5px;
 }
+#db-search,
+#pl-search {
+	margin-top: 0;
+}
+#pl-manage {
+	display: inline-block;
+	vertical-align: top;
+}
+#pl-count {
+	display: inline-block;
+	margin-left: 20px;
+	line-height: 30px;
+	width: calc( 100% - 350px );
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+#db-search-results,
+#pl-filter-results {
+	margin-top: -8px;
+}
+#db-search-results i,
+#pl-filter-results i {
+	font-size: 28px;
+	vertical-align: bottom;
+}
+.btnlist-bottom {
+	display: none;
+}
+.input-group {
+	max-width: 200px;
+}
+/* breadcrumb and index */
+#database-entries {
+	float: left;
+	width: calc( 100% - 38px );
+	padding-bottom: 80px;
+}
+#db-currentpath {
+	width: calc( 100% - 220px );
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+#db-currentpath a,
+#db-currentpath i {
+	cursor: pointer;
+}
+#db-currentpath a {
+	color: #0095d8;
+}
+#db-currentpath span {
+	display: inline-block;
+	line-height: 30px;
+	vertical-align: top;
+}
+#db-currentpath i {
+	padding: 0;
+	font-size: 28px;
+}
+#db-level-up,
+#db-webradio-add {
+	position: absolute;
+	right: 200px;
+}
+#db-index {
+	position: fixed;
+	right: 0;
+	width: 38px;
+	padding: 0;
+	line-height: 30px;
+	list-style: none;
+	background: #172029;
+}
+#db-index li {
+	text-align: center;
+	color: #0095d8;
+	cursor: pointer;
+}
+#db-index li:hover {
+	background: #34495e;
+}
+
+/* ---------------------- playback ---------------------- */
+#barleft,
 #barright {
 	position: fixed;
 	top: 0;
-	right: 0;
 	width: 60px;
 	height: 100vh;
+}
+#barleft {
+	left: 0;
+}
+#barright {
+	right: 0;
 }
 /* ---------------------- menu-top ----------------------*/
 .logo {
@@ -472,6 +559,22 @@
 	.pnotify_lyrics .ui-pnotify-closer {
 		left: calc(100vw - 40px);
 	}
+	#playlist {
+		padding-top: 40px;
+	}
+	.btnlist-top {
+		top: 0;
+	}
+	#db-currentpath {
+		width: calc( 100% - 190px );
+	}
+	#db-up,
+	#db-webradio-add {
+		right: 170px;
+	}
+	.input-group {
+		max-width: 155px;
+	}
 }
 @media(max-height: 640px) {
 	#playback {
@@ -551,6 +654,12 @@
 	#vol-group {
 		order: 6;
 		-webkit-order: 6;
+	}
+	#playlist {
+		padding-top: 40px;
+	}
+	.btnlist-top {
+		top: 0;
 	}
 }
 @media(max-height: 416px) {

@@ -49,7 +49,9 @@ sed -i '/custom.js/ d' $footer
 # no Addons Menu
 if [[ ! -e /usr/local/bin/uninstall_addo.sh ]]; then
 	rm $path/js/vendor/hammer.min.js
-	sed -i '/hammer.min.js/ d' $footer
+	sed -i -e '/hammer.min.js/ d
+	' -e '/propagating.js/ d
+	' $footer
 fi
 
 # no RuneUI GPIO

@@ -21,7 +21,7 @@
                 <div id="time-knob">
                     <input id="time" value="0" data-width="230" data-height="230" data-bgColor="#34495E" data-fgcolor="#0095D8" data-thickness="0.30" data-min="0" data-max="1000" data-displayInput="false" data-displayPrevious="true">
                     <div id="overlay-playsource-open" title="View and change playback source">
-                        <button class="btn btn-default btn-xs<?php if ($this->spotify === '0') echo " disabled"?>" style="margin-top: -330px;">MPD</button>
+                        <button class="btn btn-default btn-xs" style="margin-top: -330px;">MPD</button>
                     </div>
                     <span id="countdown-display"><i class="fa fa-spinner fa-spin"></i></span>
                     <span id="total"><i class="fa fa-spinner fa-spin"></i></span>
@@ -62,3 +62,134 @@
             </div>
         </div>
     </div>
+    <!-- LIBRARY PANEL -->
+    <div id="panel-sx" class="tab-pane">
+        <div class="btnlist btnlist-top">
+            <form id="db-search" class="form-inline" action="javascript:getDBsearch();">
+                <div class="input-group">
+                    <input id="db-search-keyword" class="form-control osk-trigger" type="text" value="" placeholder="search in DB...">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="submit" title="Search"><i class="fa fa-search"></i></button>
+                    </span>
+                </div>
+            </form>
+            <div id="db-currentpath" class="hide">
+                <i id="db-home" class="fa fa-folder-open"></i> <span>Home</span>
+                <i id="db-level-up" class="fa fa-arrow-left"></i>
+                <i id="db-webradio-add" class="fa fa-plus-circle hide"></i>
+            </div>
+            <button id="db-search-results" class="btn hide" type="button" title="Close search results and go back to the Library browsing"><i class="fa fa-times sx"></i> back</button>
+        </div>
+        <div id="database">
+            <ul id="database-entries" class="database">
+                <!-- DB entries -->
+            </ul>
+			<ul id="db-index" class="hide">
+				<li>#</li>
+				<li>A</li>
+				<li class="half">B</li>
+				<li>C</li>
+				<li class="half">D</li>
+				<li>E</li>
+				<li class="half">F</li>
+				<li>G</li>
+				<li class="half">H</li>
+				<li>I</li>
+				<li class="half">J</li>
+				<li>K</li>
+				<li class="half">L</li>
+				<li>M</li>
+				<li class="half">N</li>
+				<li>O</li>
+				<li class="half">P</li>
+				<li>Q</li>
+				<li class="half">R</li>
+				<li>S</li>
+				<li class="half">T</li>
+				<li>U</li>
+				<li class="half">V</li>
+				<li>W</li>
+				<li class="half">X</li>
+				<li>Y</li>
+				<li class="half">Z</li>
+				<li>&nbsp</li>
+				<li>&nbsp</li>
+				<li>&nbsp</li>
+				<li>&nbsp</li>
+				<li>&nbsp</li>
+			</ul>
+            <div id="home-blocks" class="row">
+                <div class="col-sm-12">
+                    <h1 class="txtmid">Browse your library</h1>
+                </div>
+            </div>
+        </div>
+        <div class="btnlist btnlist-bottom">
+            <div id="db-controls">
+                <button id="db-homeSetup" class="btn btn-default hide" type="button" title="Setup the Library home screen"><i class="fa fa-gear"></i></button>
+                <button id="db-firstPage" class="btn btn-default" type="button" title="Scroll to the top"><i class="fa fa-angle-double-up"></i></button>
+                <button id="db-prevPage" class="btn btn-default" type="button" title="Scroll one page up"><i class="fa fa-angle-up"></i></button>
+                <button id="db-nextPage" class="btn btn-default" type="button" title="Scroll one page down"><i class="fa fa-angle-down"></i></button>
+                <button id="db-lastPage" class="btn btn-default" type="button" title="Scroll to the bottom"><i class="fa fa-angle-double-down"></i></button>
+            </div>
+        </div>
+        <div id="spinner-db" class="csspinner duo hide"></div>
+    </div>
+    <!-- QUEUE PANEL -->
+    <div id="panel-dx" class="tab-pane">
+        <div class="btnlist btnlist-top">
+            <form id="pl-search" class="form-inline" method="post" onSubmit="return false;" role="form">
+                <div class="input-group">
+                    <input id="pl-filter" class="form-control osk-trigger ttip" type="text" value="" placeholder="search in queue..." data-placement="bottom" data-toggle="tooltip" data-original-title="Type here to search on the fly">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" title="Search"><i class="fa fa-search"></i></button>
+                    </span>
+                </div>
+            </form>
+            <button id="pl-filter-results" class="btn hide" type="button" title="Close filter results and go back to the playing Queue"><i class="fa fa-times sx"></i> back</button>
+            <div id="pl-manage">
+                <button id="pl-manage-list" class="btn btn-default" type="button" title="Manage playlists"><i class="fa fa-file-text-o fa-lg"></i></button>
+                <button id="pl-manage-save" class="btn btn-default" type="button" title="Save current queue as playlist" data-toggle="modal" data-target="#modal-pl-save"><i class="fa fa-save fa-lg"></i></button>
+                <button id="pl-manage-clear" class="btn btn-default" type="button" title="Clear the playing queue" data-toggle="modal" data-target="#modal-pl-clear"><i class="fa fa-trash-o fa-lg"></i></button>
+            </div>
+            <span id="pl-count" class="hide">2143 entries</span>
+        </div>
+        <div id="playlist">
+            <ul id="playlist-entries" class="playlist">
+                <!-- playing queue entries -->
+            </ul>
+            <ul id="pl-editor" class="playlist hide">
+                <!-- playlists -->
+            </ul>
+            <ul id="pl-detail" class="playlist hide">
+                <!-- playlist entries -->
+            </ul>
+            <div id="playlist-warning" class="playlist hide">
+                <div class="col-sm-12">
+                    <h1 class="txtmid">Playing queue</h1>
+                </div>
+                <div class="col-sm-6 col-sm-offset-3">
+                    <div class="empty-block">
+                        <i class="fa fa-exclamation"></i>
+                        <h3>Empty queue</h3>
+                        <p>Add some entries from your library</p>
+                        <p><a id="open-library" href="#panel-sx" class="btn btn-primary btn-lg" data-toggle="tab">Browse Library</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="btnlist btnlist-bottom">
+            <div id="pl-controls">
+                <button id="pl-firstPage" class="btn btn-default" type="button" title="Scroll to the top"><i class="fa fa-angle-double-up"></i></button>
+                <button id="pl-prevPage" class="btn btn-default" type="button" title="Scroll one page up"><i class="fa fa-angle-up"></i></button>
+                <button id="pl-nextPage" class="btn btn-default" type="button" title="Scroll one page down"><i class="fa fa-angle-down"></i></button>
+                <button id="pl-lastPage" class="btn btn-default" type="button" title="Scroll to the bottom"><i class="fa fa-angle-double-down"></i></button>
+            </div>
+            <div id="pl-currentpath" class="hide">
+                <i class="fa fa-folder-open"></i>
+                <span>Playlists</span>
+            </div>
+        </div>
+        <div id="spinner-pl" class="csspinner duo hide"></div>
+    </div>
+</div>
