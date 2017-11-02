@@ -65,7 +65,7 @@
     <!-- LIBRARY PANEL -->
     <div id="panel-sx" class="tab-pane">
         <div class="btnlist btnlist-top">
-            <form id="db-search" class="form-inline" action="javascript:getDB({cmd: 'search', path: GUI.currentpath, browsemode: GUI.browsemode});">
+            <form id="db-search" class="form-inline" action="javascript:getDBsearch();">
                 <div class="input-group">
                     <input id="db-search-keyword" class="form-control osk-trigger" type="text" value="" placeholder="search in DB...">
                     <span class="input-group-btn">
@@ -75,10 +75,9 @@
             </form>
             <div id="db-currentpath" class="hide">
                 <i id="db-home" class="fa fa-folder-open"></i> <span>Home</span>
-                <i id="db-up" class="fa fa-arrow-left"></i>
+                <i id="db-level-up" class="fa fa-arrow-left"></i>
                 <i id="db-webradio-add" class="fa fa-plus-circle hide"></i>
             </div>
-            <button id="db-level-up" class="btn hide" type="button" title="Go back one level"><i class="fa fa-arrow-left sx"></i> back</button>
             <button id="db-search-results" class="btn hide" type="button" title="Close search results and go back to the Library browsing"><i class="fa fa-times sx"></i> back</button>
         </div>
         <div id="database">
