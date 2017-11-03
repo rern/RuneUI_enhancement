@@ -278,18 +278,20 @@ function scrolltext() {
 		} );
 	}, 50 );
 }
-// hide breadcrumb on search
-function getDBsearch() {
-	getDB( { cmd: 'search', path: GUI.currentpath, browsemode: GUI.browsemode } );
-	setTimeout( function() {
-		$( '#db-currentpath' ).addClass( 'hide' );
-	}, 250 );
-}
+
+// hide breadcrumb and index bar
 var old_renderLibraryHome = renderLibraryHome;
 renderLibraryHome = function() {
 	old_renderLibraryHome();
 	$('#db-currentpath, #db-index').addClass('hide');
 }
+// hide 'to queue' text
+var old_renderPlaylists = renderPlaylists;
+renderPlaylists = function( data ) {
+	old_renderPlaylists( data );
+	$( '#pl-filter-results' ).html( '<i class="fa fa-arrow-left sx"></i>' );
+}
+
 // replace functions in main runeui.js file **********************************************
 $('#db-search-results').click(function(){
 	$(this).addClass('hide');
@@ -589,7 +591,9 @@ function populateDB(options){
         } else {
         // browsing
             $('#database-entries').removeClass('hide');
-            $('#db-level-up').removeClass('hide');
+// ****************************************************************************************
+            $('#db-currentpath, #db-index').removeClass('hide');
+// ****************************************************************************************
             $('#home-blocks').addClass('hide');
             if (path) {
                 GUI.currentpath = path;
@@ -599,7 +603,9 @@ function populateDB(options){
             // search results
                 var results = (data.length) ? data.length : '0';
                 var s = (data.length === 1) ? '' : 's';
-                $('#db-level-up').addClass('hide');
+// ****************************************************************************************
+                $('#db-currentpath').addClass('hide');
+// ****************************************************************************************
                 $('#db-search-results').removeClass('hide').html('<i class="fa fa-times sx"></i><span class="visible-xs-inline">back</span><span class="hidden-xs">' + results + ' result' + s + ' for "<span class="keyword">' + keyword + '</span>"</span>');
             }
             data.sort(function(a, b){
@@ -686,7 +692,7 @@ function populateDB(options){
 // ****************************************************************************************
     }
 // ****************************************************************************************
-    $( '#db-currentpath, #db-index' ).removeClass( 'hide' );
+//    $( '#db-currentpath, #db-index' ).removeClass( 'hide' );
 // ****************************************************************************************
     $('#db-homeSetup').addClass('hide');
 	
