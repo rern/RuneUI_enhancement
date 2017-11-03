@@ -592,6 +592,7 @@ function populateDB(options){
         // browsing
             $('#database-entries').removeClass('hide');
 // ****************************************************************************************
+// show breascrumb and index bar
             $('#db-currentpath, #db-index').removeClass('hide');
 // ****************************************************************************************
             $('#home-blocks').addClass('hide');
@@ -604,7 +605,9 @@ function populateDB(options){
                 var results = (data.length) ? data.length : '0';
                 var s = (data.length === 1) ? '' : 's';
 // ****************************************************************************************
-                $('#db-currentpath').addClass('hide');
+// hide breascrumb and index bar
+                $('#db-currentpath, #db-index').addClass('hide');
+				$('#database-entries').css('width', '100%');
 // ****************************************************************************************
                 $('#db-search-results').removeClass('hide').html('<i class="fa fa-times sx"></i><span class="visible-xs-inline">back</span><span class="hidden-xs">' + results + ' result' + s + ' for "<span class="keyword">' + keyword + '</span>"</span>');
             }
