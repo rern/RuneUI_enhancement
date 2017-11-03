@@ -98,6 +98,8 @@ sed -i 's/==UTF-8/=UTF-8/' $midori
 
 # correct version number
 [[ $( redis-cli get buildversion ) == 'beta-20160313' ]] && redis-cli set release 0.3 &> /dev/null
+# set library home database
+redis-cli hmset library network checked usb checked webradios checked albums checked artists checked composers checked genres checked spotify checked dirble checked jamendo checked
 
 installfinish $@
 
