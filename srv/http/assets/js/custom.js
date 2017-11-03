@@ -165,7 +165,6 @@ $( '#menu-bottom' ).click( function() {
 	}
 } );
 
-
 function panelr( lr ) {
 	var paneactive = $( '#content' ).find( 'div.active' ).prop( 'id' );
 	if ( paneactive === 'panel-sx' ) {
@@ -217,6 +216,40 @@ if ( $( '#playback' ).is( ':visible' ) ) {
 	$( '#menu-bottom' ).css( 'bottom', 0 );
 	$( '#barleft, #barright' ).hide();
 }
+var hammerlibrary = new Hammer( document.getElementById( 'panel-sx' ) );
+hammerlibrary.on( 'press', function() {
+	info( {
+		  title  : 'Libary Home'
+		, message: 'Select items to show:'
+		, checkboxhtml : '<form id="librarysave" action="librarysave.php" method="post">\
+						<label><input name="nas" type="checkbox" '+ libraryredis[ 'nas' ] +'>&ensp;Network mounts</label>\
+						<br><label><input name="usb" type="checkbox" '+ libraryredis[ 'usb' ] +'>&ensp;USB storage</label>\
+						<br><label><input name="webradio" type="checkbox" '+ libraryredis[ 'webradio' ] +'>&ensp;My Webradios</label>\
+						<br><label><input name="albums" type="checkbox" '+ libraryredis[ 'albums' ] +'>&ensp;Albums</label>\
+						<br><label><input name="artists" type="checkbox" '+ libraryredis[ 'artists' ] +'>&ensp;Artists</label>\
+						<br><label><input name="composer" type="checkbox" '+ libraryredis[ 'composer' ] +'>&ensp;Composers</label>\
+						<br><label><input name="genre" type="checkbox" '+ libraryredis[ 'genre' ] +'>&ensp;Genres</label>\
+						<br><label><input name="spotify" type="checkbox" '+ libraryredis[ 'spotify' ] +'>&ensp;Spotify</label>\
+						<br><label><input name="dirble" type="checkbox" '+ libraryredis[ 'dirble' ] +'>&ensp;Dirble</label>\
+						<br><label><input name="jamendo" type="checkbox" '+ libraryredis[ 'jamendo' ] +'>&ensp;Jamendo</label>\
+						</form>'
+		, cancel : 1
+		, ok     : function () {
+			$.post( 'librarysave.php',
+				$( '#librarysave' ).serialize(),
+				function(data) {
+					if ( !data ) {
+						info( {
+							  title  : 'Libary Home'
+							, message: 'Save selected items failed!'
+						} );
+					}
+					libraryblock();
+				}
+			);
+		}
+	} );
+} );
 
 // library directory path link
 $( '#db-home' ).click( function() {
@@ -278,12 +311,33 @@ function scrolltext() {
 		} );
 	}, 50 );
 }
+// library home show/hide blocks
+$.get( 'libraryget.php', function(data) {
+	var libraryredis = $.parseJSON( data );
+} );
+function libraryblock() {
+	$.get( 'libraryget.php', function(data) {
+		libraryredis = $.parseJSON( data );
+		$( '#home-nas' ).parent().css( 'display', libraryredis[ 'nas' ] ? 'block' : 'none' );
+		$( '#home-usb' ).parent().css( 'display', libraryredis[ 'usb' ] ? 'block' : 'none' );
+		$( '#home-webradio' ).parent().css( 'display', libraryredis[ 'webradio' ] ? 'block' : 'none' );
+		$( '#home-albums' ).parent().css( 'display', libraryredis[ 'albums' ] ? 'block' : 'none' );
+		$( '#home-artists' ).parent().css( 'display', libraryredis[ 'artists' ] ? 'block' : 'none' );
+		$( '#home-composer' ).parent().css( 'display', libraryredis[ 'composer' ] ? 'block' : 'none' );
+		$( '#home-genre' ).parent().css( 'display', libraryredis[ 'genre' ] ? 'block' : 'none' );
+		$( '#home-spotify' ).parent().css( 'display', libraryredis[ 'spotify' ] ? 'block' : 'none' );
+		$( '#home-dirble' ).parent().css( 'display', libraryredis[ 'dirble' ] ? 'block' : 'none' );
+		$( '#home-jamendo' ).parent().css( 'display', libraryredis[ 'jamendo' ] ? 'block' : 'none' );
+	} );
+}
 
 // hide breadcrumb and index bar
 var old_renderLibraryHome = renderLibraryHome;
 renderLibraryHome = function() {
 	old_renderLibraryHome();
+	$( '#home-blocks div' ).eq(1).find('a').prop('id', 'home-nas')
 	$('#db-currentpath, #db-index').addClass('hide');
+	libraryblock();
 }
 // hide 'to queue' text
 var old_renderPlaylists = renderPlaylists;
