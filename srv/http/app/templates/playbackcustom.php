@@ -65,7 +65,7 @@
     <!-- LIBRARY PANEL -->
     <div id="panel-sx" class="tab-pane">
         <div class="btnlist btnlist-top">
-            <form id="db-search" class="form-inline" action="javascript:getDBsearch();">
+            <form id="db-search" class="form-inline" action="javascript:getDB({cmd: 'search', path: GUI.currentpath, browsemode: GUI.browsemode});">
                 <div class="input-group">
                     <input id="db-search-keyword" class="form-control osk-trigger" type="text" value="" placeholder="search in DB...">
                     <span class="input-group-btn">
