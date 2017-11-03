@@ -43,11 +43,9 @@
                     </div>
                 </div>
                 <?php endif ?>
-                <?php if (!preg_match('/mixer_type[\s]+"disabled"/', file_get_contents('/etc/mpd.conf'))):?>
                 <div id="volume-knob" class="<?=$this->volume['divclass'] ?>">
                     <?php // fix smaller volume knob size in mobile
-                    $mobile = stristr($_SERVER['HTTP_USER_AGENT'], 'mobi') !== FALSE;
-                    $wh = $mobile ? 250 : 230;
+                    $wh = stristr($_SERVER['HTTP_USER_AGENT'], 'mobi') !== FALSE ? 250 : 230;
                     ?>
                     <input id="volume" value="100" data-width=<?=$wh ?> data-height=<?=$wh ?> data-bgColor="#f00" data-thickness="0.25" data-skin="tron" data-cursor="true" data-angleArc="250" data-angleOffset="-125" data-readOnly="<?=$this->volume['readonly'] ?>" data-fgColor="<?=$this->volume['color'] ?>">
                 </div>
@@ -58,7 +56,6 @@
                         <button id="volumeup" class="btn btn-default btn-lg btn-cmd btn-volume" type="button" title="Volume up" data-cmd="volumeup"><i class="fa fa-volume-up"></i></button>
                     </div>
                 </div>
-                <?php endif ?>
             </div>
         </div>
     </div>
