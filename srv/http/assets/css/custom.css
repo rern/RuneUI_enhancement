@@ -44,7 +44,7 @@
 	padding-bottom: 80px;
 }
 #db-currentpath {
-	width: calc( 100% - 220px );
+	width: calc( 100% - 240px );
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -55,11 +55,6 @@
 }
 #db-currentpath a {
 	color: #0095d8;
-}
-#db-currentpath span {
-	display: inline-block;
-	line-height: 30px;
-	vertical-align: top;
 }
 #db-currentpath i {
 	padding: 0;
