@@ -107,4 +107,4 @@ installfinish $@
 clearcache
 
 # refresh svg support last for webui installation
-systemctl reload nginx
+[[ $1 != u ]] && systemctl reload nginx
