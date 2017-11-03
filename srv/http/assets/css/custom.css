@@ -1,4 +1,7 @@
 /* ---------------------- library and queue ---------------------- */
+.tab-pane {
+	height: 100vh;
+}
 .btnlist-top {
 	padding-top: 5px;
 }
