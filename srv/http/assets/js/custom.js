@@ -2,13 +2,14 @@ $( document ).ready( function() {
 // document ready start********************************************************************
 
 function topbottom() {
-	if ( $( '#menu-top' ).position().top !== 0 ) {
+	$( '#menu-top, #menu-bottom' ).toggle();
+/*	if ( $( '#menu-top' ).position().top !== 0 ) {
 		$( '#menu-top' ).css( 'top', 0 );
 		$( '#menu-bottom' ).css( 'bottom', 0 );
 	} else {
 		$( '#menu-top' ).css( 'top', '-40px' );
 		$( '#menu-bottom' ).css( 'bottom', '-40px' );
-	}
+	}*/
 }
 
 $( '#barleft' ).click( function() {
@@ -53,7 +54,7 @@ $( '#barright' ).click( function() {
 	} else {
 		$( '#play-group' ).toggle();
 	}
-	if ( $( '#play-group' ).is( ':visible' ) && $( '#coverart' ).is( ':visible' ) ) {
+	if ( displayredis[ 'time' ] && $( '#play-group' ).is( ':visible' ) && $( '#coverart' ).is( ':visible' ) ) {
 		$( '#share-group' ).show();
 	} else {
 		$( '#share-group' ).hide();
@@ -162,8 +163,9 @@ $( '#currentalbum' ).click( function() {
 } );
 $( '#menu-bottom' ).click( function() {
 	if ( $( window ).height() < 737 ) {
-		$( '#menu-top' ).css( 'top', '-40px' );
-		$( '#menu-bottom' ).css( 'bottom', '-40px' );
+		$( '#menu-top, #menu-bottom' ).hide();
+//		$( '#menu-top' ).css( 'top', '-40px' );
+//		$( '#menu-bottom' ).css( 'bottom', '-40px' );
 		$( '.btnlist-top' ).css( 'top', 0 );
 		$( '#database' ).css( 'padding-top', '40px' );
 	}
@@ -228,7 +230,8 @@ hammerplayback.on( 'press', function() {
 		, message: 'Select items to show:'
 		, checkboxhtml : '<form id="displaysaveplayback" action="displaysave.php" method="post">\
 						<input name="playback" type="hidden" value="1">\
-						<label><input name="time" type="checkbox" '+ displayredis[ 'time' ] +'>&ensp;Time</label>\
+						<label><input name="bar" type="checkbox" '+ displayredis[ 'bar' ] +'>&ensp;Top-Bottom bar</label>\
+						<br><label><input name="time" type="checkbox" '+ displayredis[ 'time' ] +'>&ensp;Time</label>\
 						<br><label><input name="coverart" type="checkbox" '+ displayredis[ 'coverart' ] +'>&ensp;Coverart</label>\
 						<br><label><input name="volume" type="checkbox" '+ displayredis[ 'volume' ] +'>&ensp;Volume</label>\
 						<br><label><input name="buttons" type="checkbox" '+ displayredis[ 'buttons' ] +'>&ensp;Buttons</label>\
@@ -361,16 +364,26 @@ function showhide( data, elem ) {
 function displayplayback() {
 	$.get( 'displayget.php', function( data ) {
 		displayredis = $.parseJSON( data );
-		showhide( displayredis[ 'time' ], '#time-knob' );
+		showhide( displayredis[ 'bar' ], '#menu-top, #menu-bottom' );
+		showhide( displayredis[ 'buttons' ], '#play-group, #share-group' );
+		showhide( displayredis[ 'time' ], '#time-knob, #share-group' );
 		showhide( displayredis[ 'coverart' ], '#coverart' );
 		showhide( displayredis[ 'volume' ], '#volume-knob' );
-		showhide( displayredis[ 'buttons' ], '#play-group, #share-group' );
 		if ( displayredis[ 'buttons' ] && displayredis[ 'volume' ] ) {
 			$( '#vol-group' ).show();
 		} else {
 			$( '#vol-group' ).hide();
 		}
-		$( '#time-knob, #coverart, #play-group, #share-group' ).css( 'width', displayredis[ 'volume' ] ? '30%' : '40%' );
+		var i = 0;
+		if ( displayredis[ 'time' ] ) i += 1;
+		if ( displayredis[ 'coverart' ] ) i += 1;
+		if ( displayredis[ 'volume' ] ) i += 1;
+		var elemW = {
+			  3: '30%'
+			, 2: '40%'
+			, 1: '60%'
+		}
+		$( '#time-knob, #coverart, #volume-knob, #play-group, #share-group, #vol-group' ).css( 'width', elemW[ i ] );
 	} );
 }
 function showhidelibrary( data, elem ) {
@@ -383,7 +396,12 @@ function showhidelibrary( data, elem ) {
 function displaylibrary() {
 	$.get( 'displayget.php', function( data ) {
 		displayredis = $.parseJSON( data );
-		showhidelibrary( displayredis[ 'nas' ], '#home-nas' );
+		// no 'id'
+		if ( displayredis[ 'nas' ] ) {
+			$( '#home-blocks div' ).eq( 1 ).show();
+		} else {
+			$( '#home-blocks div' ).eq( 1 ).hide();
+		}
 		showhidelibrary( displayredis[ 'usb' ], '#home-usb' );
 		showhidelibrary( displayredis[ 'webradio' ], '#home-webradio' );
 		showhidelibrary( displayredis[ 'albums' ], '#home-albums' );
@@ -401,7 +419,6 @@ var old_renderLibraryHome = renderLibraryHome;
 renderLibraryHome = function() {
 	old_renderLibraryHome();
 	// fix no id
-	$( '#home-blocks div' ).eq( 1 ).find( 'a' ).prop( 'id', 'home-nas' )
 	$( '#db-currentpath, #db-index' ).addClass( 'hide' );
 	displaylibrary();
 }
