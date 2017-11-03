@@ -16,7 +16,7 @@ fi
 # remove files #######################################
 echo -e "$bar Remove files ..."
 rm -v /srv/http/app/templates/playbackcustom.php
-rm -v /srv/http/{library*.php,lyrics.php}
+rm -v /srv/http/{display*.php,lyrics.php}
 path=/srv/http/assets
 rm -v $path/css/custom*.css
 rm -v $path/img/runelogo.svg
