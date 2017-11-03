@@ -1,20 +1,9 @@
 $( document ).ready( function() {
 // document ready start********************************************************************
 
-function topbottom() {
-	$( '#menu-top, #menu-bottom' ).toggle();
-/*	if ( $( '#menu-top' ).position().top !== 0 ) {
-		$( '#menu-top' ).css( 'top', 0 );
-		$( '#menu-bottom' ).css( 'bottom', 0 );
-	} else {
-		$( '#menu-top' ).css( 'top', '-40px' );
-		$( '#menu-bottom' ).css( 'bottom', '-40px' );
-	}*/
-}
-
 $( '#barleft' ).click( function() {
 	if ( !$( '#coverart' ).length || !$( '#volume-knob' ).length || $( window ).width() >= 640 ) {
-		topbottom();
+		$( '#menu-top, #menu-bottom' ).toggle();
 	} else {
 		$( '#coverart' ).slideToggle( function() {
 			$( '#time-knob, #volume-knob' ).css( 'margin-top', 0 );
@@ -88,7 +77,7 @@ $( '#playlist ul' ).click( function( e ) {
 	if ( e.target.nodeName == 'SPAN' ) {
 		$( '#open-playback a' ).click();
 		$( '#open-playback a' )[ 0 ].click();
-		if ( $( window ).width() < 500 || $( window ).height() < 500 ) topbottom();
+		if ( $( window ).width() < 500 || $( window ).height() < 500 ) $( '#menu-top, #menu-bottom' ).toggle();
 	}
 } );
 // playsource button replacement
@@ -164,8 +153,6 @@ $( '#currentalbum' ).click( function() {
 $( '#menu-bottom' ).click( function() {
 	if ( $( window ).height() < 737 ) {
 		$( '#menu-top, #menu-bottom' ).hide();
-//		$( '#menu-top' ).css( 'top', '-40px' );
-//		$( '#menu-bottom' ).css( 'bottom', '-40px' );
 		$( '.btnlist-top' ).css( 'top', 0 );
 		$( '#database' ).css( 'padding-top', '40px' );
 	}
@@ -215,7 +202,9 @@ if ( $( '#playback' ).is( ':visible' ) ) {
 	hammerbarleft.get( 'swipe' ).set( { direction: Hammer.DIRECTION_VERTICAL } );
 
 	var hammerbarright = new Hammer( document.getElementById( 'barright' ) );
-	hammerbarright.on( 'swipe', topbottom );
+	hammerbarright.on( 'swipe', function() {
+		$( '#menu-top, #menu-bottom' ).toggle();
+	} );
 	hammerbarright.get( 'swipe' ).set( { direction: Hammer.DIRECTION_VERTICAL } );
 } else {
 	$( '#menu-top' ).css( 'top', 0 );
