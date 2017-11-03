@@ -477,11 +477,9 @@
 	}
 }
 @media(max-width: 500px) {
-	#menu-top {
-		top: -40px;
-	}
+	#menu-top,
 	#menu-bottom {
-		bottom: -40px;
+		display: none;
 	}
 	#play-group,
 	#share-group,
@@ -608,11 +606,9 @@
 	}
 }
 @media(max-height: 500px) {
-	#menu-top {
-		top: -40px;
-	}
+	#menu-top,
 	#menu-bottom {
-		bottom: -40px;
+		display: none;
 	}
 /*	#play-group,
 	#share-group,
