@@ -48,7 +48,11 @@ $( '#barleft' ).click( function() {
 window.addEventListener( 'orientationchange', scrolltext );
 
 $( '#barright' ).click( function() {
-	$( '#play-group, #vol-group' ).toggle();
+	if ( displayredis[ 'volume' ] ) {
+		$( '#play-group, #vol-group' ).toggle();
+	} else {
+		$( '#play-group' ).toggle();
+	}
 	if ( $( '#play-group' ).is( ':visible' ) && $( '#coverart' ).is( ':visible' ) ) {
 		$( '#share-group' ).show();
 	} else {
@@ -216,35 +220,66 @@ if ( $( '#playback' ).is( ':visible' ) ) {
 	$( '#menu-bottom' ).css( 'bottom', 0 );
 	$( '#barleft, #barright' ).hide();
 }
+
+var hammerplayback = new Hammer( document.getElementById( 'playback' ) );
+hammerplayback.on( 'press', function() {
+	info( {
+		  title  : 'Playback'
+		, message: 'Select items to show:'
+		, checkboxhtml : '<form id="displaysaveplayback" action="displaysave.php" method="post">\
+						<input name="playback" type="hidden" value="1">\
+						<label><input name="time" type="checkbox" '+ displayredis[ 'time' ] +'>&ensp;Time</label>\
+						<br><label><input name="coverart" type="checkbox" '+ displayredis[ 'coverart' ] +'>&ensp;Coverart</label>\
+						<br><label><input name="volume" type="checkbox" '+ displayredis[ 'volume' ] +'>&ensp;Volume</label>\
+						<br><label><input name="buttons" type="checkbox" '+ displayredis[ 'buttons' ] +'>&ensp;Buttons</label>\
+						</form>'
+		, cancel : 1
+		, ok     : function () {
+			$.post( 'displaysave.php',
+				$( '#displaysaveplayback' ).serialize(),
+				function(data) {
+					if ( !data ) {
+						info( {
+							  title  : 'Playback'
+							, message: 'Save Playback display failed!'
+						} );
+					}
+					displayplayback();
+				}
+			);
+		}
+	} );
+} );
+
 var hammerlibrary = new Hammer( document.getElementById( 'panel-sx' ) );
 hammerlibrary.on( 'press', function() {
 	info( {
 		  title  : 'Libary Home'
 		, message: 'Select items to show:'
-		, checkboxhtml : '<form id="librarysave" action="librarysave.php" method="post">\
-						<label><input name="nas" type="checkbox" '+ libraryredis[ 'nas' ] +'>&ensp;Network mounts</label>\
-						<br><label><input name="usb" type="checkbox" '+ libraryredis[ 'usb' ] +'>&ensp;USB storage</label>\
-						<br><label><input name="webradio" type="checkbox" '+ libraryredis[ 'webradio' ] +'>&ensp;My Webradios</label>\
-						<br><label><input name="albums" type="checkbox" '+ libraryredis[ 'albums' ] +'>&ensp;Albums</label>\
-						<br><label><input name="artists" type="checkbox" '+ libraryredis[ 'artists' ] +'>&ensp;Artists</label>\
-						<br><label><input name="composer" type="checkbox" '+ libraryredis[ 'composer' ] +'>&ensp;Composers</label>\
-						<br><label><input name="genre" type="checkbox" '+ libraryredis[ 'genre' ] +'>&ensp;Genres</label>\
-						<br><label><input name="spotify" type="checkbox" '+ libraryredis[ 'spotify' ] +'>&ensp;Spotify</label>\
-						<br><label><input name="dirble" type="checkbox" '+ libraryredis[ 'dirble' ] +'>&ensp;Dirble</label>\
-						<br><label><input name="jamendo" type="checkbox" '+ libraryredis[ 'jamendo' ] +'>&ensp;Jamendo</label>\
+		, checkboxhtml : '<form id="displaysave" action="displaysave.php" method="post">\
+						<label><input name="nas" type="checkbox" '+ displayredis[ 'nas' ] +'>&ensp;Network mounts</label>\
+						<br><label><input name="usb" type="checkbox" '+ displayredis[ 'usb' ] +'>&ensp;USB storage</label>\
+						<br><label><input name="webradio" type="checkbox" '+ displayredis[ 'webradio' ] +'>&ensp;My Webradios</label>\
+						<br><label><input name="albums" type="checkbox" '+ displayredis[ 'albums' ] +'>&ensp;Albums</label>\
+						<br><label><input name="artists" type="checkbox" '+ displayredis[ 'artists' ] +'>&ensp;Artists</label>\
+						<br><label><input name="composer" type="checkbox" '+ displayredis[ 'composer' ] +'>&ensp;Composers</label>\
+						<br><label><input name="genre" type="checkbox" '+ displayredis[ 'genre' ] +'>&ensp;Genres</label>\
+						<br><label><input name="spotify" type="checkbox" '+ displayredis[ 'spotify' ] +'>&ensp;Spotify</label>\
+						<br><label><input name="dirble" type="checkbox" '+ displayredis[ 'dirble' ] +'>&ensp;Dirble</label>\
+						<br><label><input name="jamendo" type="checkbox" '+ displayredis[ 'jamendo' ] +'>&ensp;Jamendo</label>\
 						</form>'
 		, cancel : 1
 		, ok     : function () {
-			$.post( 'librarysave.php',
-				$( '#librarysave' ).serialize(),
+			$.post( 'displaysave.php',
+				$( '#displaysave' ).serialize(),
 				function(data) {
 					if ( !data ) {
 						info( {
 							  title  : 'Libary Home'
-							, message: 'Save selected items failed!'
+							, message: 'Save Library home failed!'
 						} );
 					}
-					libraryblock();
+					displaylibrary();
 				}
 			);
 		}
@@ -312,22 +347,52 @@ function scrolltext() {
 	}, 50 );
 }
 // library home show/hide blocks
-$.get( 'libraryget.php', function(data) {
-	var libraryredis = $.parseJSON( data );
+$.get( 'displayget.php', function( data ) {
+	var displayredis = $.parseJSON( data );
 } );
-function libraryblock() {
-	$.get( 'libraryget.php', function(data) {
-		libraryredis = $.parseJSON( data );
-		$( '#home-nas' ).parent().css( 'display', libraryredis[ 'nas' ] ? 'block' : 'none' );
-		$( '#home-usb' ).parent().css( 'display', libraryredis[ 'usb' ] ? 'block' : 'none' );
-		$( '#home-webradio' ).parent().css( 'display', libraryredis[ 'webradio' ] ? 'block' : 'none' );
-		$( '#home-albums' ).parent().css( 'display', libraryredis[ 'albums' ] ? 'block' : 'none' );
-		$( '#home-artists' ).parent().css( 'display', libraryredis[ 'artists' ] ? 'block' : 'none' );
-		$( '#home-composer' ).parent().css( 'display', libraryredis[ 'composer' ] ? 'block' : 'none' );
-		$( '#home-genre' ).parent().css( 'display', libraryredis[ 'genre' ] ? 'block' : 'none' );
-		$( '#home-spotify' ).parent().css( 'display', libraryredis[ 'spotify' ] ? 'block' : 'none' );
-		$( '#home-dirble' ).parent().css( 'display', libraryredis[ 'dirble' ] ? 'block' : 'none' );
-		$( '#home-jamendo' ).parent().css( 'display', libraryredis[ 'jamendo' ] ? 'block' : 'none' );
+
+function showhide( data, elem ) {
+	if ( data ) {
+		$( elem ).show();
+	} else {
+		$( elem ).hide();
+	}
+}
+function displayplayback() {
+	$.get( 'displayget.php', function( data ) {
+		displayredis = $.parseJSON( data );
+		showhide( displayredis[ 'time' ], '#time-knob' );
+		showhide( displayredis[ 'coverart' ], '#coverart' );
+		showhide( displayredis[ 'volume' ], '#volume-knob' );
+		showhide( displayredis[ 'buttons' ], '#play-group, #share-group' );
+		if ( displayredis[ 'buttons' ] && displayredis[ 'volume' ] ) {
+			$( '#vol-group' ).show();
+		} else {
+			$( '#vol-group' ).hide();
+		}
+		$( '#time-knob, #coverart, #play-group, #share-group' ).css( 'width', displayredis[ 'volume' ] ? '30%' : '40%' );
+	} );
+}
+function showhidelibrary( data, elem ) {
+	if ( data ) {
+		$( elem ).parent().show();
+	} else {
+		$( elem ).parent().hide();
+	}
+}
+function displaylibrary() {
+	$.get( 'displayget.php', function( data ) {
+		displayredis = $.parseJSON( data );
+		showhidelibrary( displayredis[ 'nas' ], '#home-nas' );
+		showhidelibrary( displayredis[ 'usb' ], '#home-usb' );
+		showhidelibrary( displayredis[ 'webradio' ], '#home-webradio' );
+		showhidelibrary( displayredis[ 'albums' ], '#home-albums' );
+		showhidelibrary( displayredis[ 'artists' ], '#home-artists' );
+		showhidelibrary( displayredis[ 'composer' ], '#home-composer' );
+		showhidelibrary( displayredis[ 'genre' ], '#home-genre' );
+		showhidelibrary( displayredis[ 'spotify' ], '#home-spotify' );
+		showhidelibrary( displayredis[ 'dirble' ], '#home-dirble' );
+		showhidelibrary( displayredis[ 'jamendo' ], '#home-jamendo' );
 	} );
 }
 
@@ -335,9 +400,10 @@ function libraryblock() {
 var old_renderLibraryHome = renderLibraryHome;
 renderLibraryHome = function() {
 	old_renderLibraryHome();
-	$( '#home-blocks div' ).eq(1).find('a').prop('id', 'home-nas')
-	$('#db-currentpath, #db-index').addClass('hide');
-	libraryblock();
+	// fix no id
+	$( '#home-blocks div' ).eq( 1 ).find( 'a' ).prop( 'id', 'home-nas' )
+	$( '#db-currentpath, #db-index' ).addClass( 'hide' );
+	displaylibrary();
 }
 // hide 'to queue' text
 var old_renderPlaylists = renderPlaylists;
@@ -347,16 +413,19 @@ renderPlaylists = function( data ) {
 }
 
 // replace functions in main runeui.js file **********************************************
-$('#db-search-results').click(function(){
-	$(this).addClass('hide');
-	$('#db-level-up, #db-currentpath').removeClass('hide');
-	getDB({
+$( '#db-search-results' ).click( function() {
+	$( this ).addClass( 'hide' );
+	$( '#db-level-up, #db-currentpath' ).removeClass( 'hide' );
+	getDB( {
 		path: GUI.currentpath
-	});
-});
+	} );
+} );
 
 function refreshState() {
+// ****************************************************************************************
 	scrolltext();
+	displayplayback();
+// ****************************************************************************************
 	
     var state = GUI.state;
 	var fileinfo = '';
