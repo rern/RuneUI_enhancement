@@ -9,6 +9,8 @@ uninstallstart $@
 if [[ $1 == u ]]; then
 	zoom=$( grep '^zoom' /root/.config/midori/config | cut -d '=' -f 2 )
 	redis-cli set enhazoom $zoom &> /dev/null
+else
+	redis-cli del library &> /dev/null
 fi
 
 # remove files #######################################
