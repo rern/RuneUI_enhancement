@@ -8,6 +8,7 @@
 #db-search,
 #pl-search {
 	margin-top: 0;
+	width: 180px;
 }
 #pl-manage {
 	display: inline-block;
@@ -562,14 +563,16 @@
 		top: 0;
 	}
 	#db-currentpath {
-		width: calc( 100% - 190px );
+		width: calc( 100% - 220px );
 	}
 	#db-up,
 	#db-webradio-add {
 		right: 170px;
 	}
-	.input-group {
-		max-width: 155px;
+	#db-search-results span,
+	#pl-filter-results span,
+	#pl-count {
+		display: none !important;
 	}
 }
 @media(max-height: 640px) {
