@@ -38,6 +38,9 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 
 Functional
 ---
+### All page
+- Long-press = show/hide items setting
+
 ### Playback
 - Tap `song` = get lyrics
 - Tap `artist` or `album` = get info from last.fm
@@ -86,7 +89,6 @@ Visual
 - Hide `volume` on disabled
 - Enlarge icons
 - Move `play source` inside `time`
-- Fix Webradio sorting
 
 ![lyrics](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/lyrics.jpg)
 
@@ -102,9 +104,8 @@ Visual
 - Move `add webradio` list to top bar button
 - Move path from bottom bar to top bar
 - Change and relocate `back` button
-- Hide bottom bar with `scroll` buttons
+- Fix sorting
 
 ### Queue
 - Change and relocate `back` button
 - Move `manage` buttons from bottom bar to top bar
-- Hide bottom bar with `scroll` buttons
