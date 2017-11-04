@@ -135,6 +135,13 @@
     <!-- QUEUE PANEL -->
     <div id="panel-dx" class="tab-pane">
         <div class="btnlist btnlist-top">
+            <button id="pl-filter-results" class="btn hide" type="button" title="Close filter results and go back to the playing Queue"><i class="fa fa-times sx"></i></button>
+            <div id="pl-manage">
+                <button id="pl-manage-list" class="btn btn-default" type="button" title="Manage playlists"><i class="fa fa-file-text-o fa-lg"></i></button>
+                <button id="pl-manage-save" class="btn btn-default" type="button" title="Save current queue as playlist" data-toggle="modal" data-target="#modal-pl-save"><i class="fa fa-save fa-lg"></i></button>
+                <button id="pl-manage-clear" class="btn btn-default" type="button" title="Clear the playing queue" data-toggle="modal" data-target="#modal-pl-clear"><i class="fa fa-trash-o fa-lg"></i></button>
+            </div>
+            <span id="pl-count" class="hide">2143 entries</span>
             <form id="pl-search" class="form-inline" method="post" onSubmit="return false;" role="form">
                 <div class="input-group">
                     <input id="pl-filter" class="form-control osk-trigger ttip" type="text" value="" placeholder="search in queue..." data-placement="bottom" data-toggle="tooltip" data-original-title="Type here to search on the fly">
@@ -143,13 +150,6 @@
                     </span>
                 </div>
             </form>
-            <button id="pl-filter-results" class="btn hide" type="button" title="Close filter results and go back to the playing Queue"><i class="fa fa-times sx"></i> back</button>
-            <div id="pl-manage">
-                <button id="pl-manage-list" class="btn btn-default" type="button" title="Manage playlists"><i class="fa fa-file-text-o fa-lg"></i></button>
-                <button id="pl-manage-save" class="btn btn-default" type="button" title="Save current queue as playlist" data-toggle="modal" data-target="#modal-pl-save"><i class="fa fa-save fa-lg"></i></button>
-                <button id="pl-manage-clear" class="btn btn-default" type="button" title="Clear the playing queue" data-toggle="modal" data-target="#modal-pl-clear"><i class="fa fa-trash-o fa-lg"></i></button>
-            </div>
-            <span id="pl-count" class="hide">2143 entries</span>
         </div>
         <div id="playlist">
             <ul id="playlist-entries" class="playlist">
