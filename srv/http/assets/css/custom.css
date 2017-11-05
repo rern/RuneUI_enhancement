@@ -1,42 +1,54 @@
 /* ---------------------- library and queue ---------------------- */
+.btnlist-bottom {
+	display: none;
+}
 .tab-pane {
 	height: 100vh;
 }
-.btnlist-top {
-	padding-top: 5px;
+.btnlist-top i,
+#db-level-up {
+	font-size: 28px;
+	vertical-align: -5%;
+	padding: 0;
 }
 #db-search,
 #pl-search {
-	margin-top: 0;
 	width: 180px;
 }
+#db-search i,
+#pl-search i {
+	font-size: 18px;
+}
+#pl-manage button i {
+	font-size: 22px;
+	line-height: 32px;
+}
+#db-currentpath div,
+#db-currentpath i,
+#db-currentpath span {
+	line-height: 40px;
+}
+#pl-filter-results i,
+#db-search-results i {
+	vertical-align: -10%;
+}
 #pl-manage {
-	display: inline-block;
-	vertical-align: top;
+	float: left;
+	margin-top: 4px;
+}
+#pl-manage button {
+	height: 32px;
+	width: 32px;
+	margin-right: 5px;
+	padding: 0;
 }
 #pl-count {
 	display: inline-block;
 	margin-left: 20px;
-	line-height: 30px;
 	width: calc( 100% - 350px );
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
-}
-#db-search-results,
-#pl-filter-results {
-	margin-top: -8px;
-}
-#db-search-results i,
-#pl-filter-results i {
-	font-size: 28px;
-	vertical-align: bottom;
-}
-.btnlist-bottom {
-	display: none;
-}
-.input-group {
-	max-width: 200px;
 }
 /* breadcrumb and index */
 #database-entries {
@@ -56,10 +68,6 @@
 }
 #db-currentpath a {
 	color: #0095d8;
-}
-#db-currentpath i {
-	padding: 0;
-	font-size: 28px;
 }
 #db-level-up,
 #db-webradio-add {
