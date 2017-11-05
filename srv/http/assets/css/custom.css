@@ -5,31 +5,28 @@
 .tab-pane {
 	height: 100vh;
 }
-.btnlist-top i,
-#db-level-up {
-	font-size: 28px;
-	vertical-align: -5%;
-	padding: 0;
-}
-#db-search,
-#pl-search {
-	width: 180px;
-}
-#db-search i,
-#pl-search i {
-	font-size: 18px;
-}
-#pl-manage button i {
-	font-size: 22px;
-	line-height: 32px;
-}
 #db-currentpath div,
 #db-currentpath i,
 #db-currentpath span {
 	line-height: 40px;
 }
-#pl-filter-results i,
-#db-search-results i {
+.btnlist-top i,
+#db-level-up {
+	font-size: 28px;
+	vertical-align: -5%;
+}
+#db-level-up,
+#db-webradio-add {
+	float: right;
+}
+.btnlist-top .form-inline {
+	width: 180px;
+	margin: 4px 0 0 0 !important;
+}
+.btnlist-top .form-inline i {
+	font-size: 18px;
+}
+.btnlist-top button i {
 	vertical-align: -10%;
 }
 #pl-manage {
@@ -42,6 +39,10 @@
 	margin-right: 5px;
 	padding: 0;
 }
+#pl-manage button i {
+	font-size: 22px;
+	line-height: 32px;
+}
 #pl-count {
 	display: inline-block;
 	margin-left: 20px;
@@ -50,13 +51,9 @@
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
-/* breadcrumb and index */
-#database-entries {
-	float: left;
-	width: calc( 100% - 38px );
-	padding-bottom: 80px;
-}
+/* ---------------------- breadcrumb and index ---------------------- */
 #db-currentpath {
+	float: left;
 	width: calc( 100% - 240px );
 	white-space: nowrap;
 	overflow: hidden;
@@ -69,10 +66,10 @@
 #db-currentpath a {
 	color: #0095d8;
 }
-#db-level-up,
-#db-webradio-add {
-	position: absolute;
-	right: 200px;
+#database-entries {
+	float: left;
+	width: calc( 100% - 38px );
+	padding-bottom: 80px;
 }
 #db-index {
 	position: fixed;
