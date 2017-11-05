@@ -72,10 +72,10 @@
             </form>
             <div id="db-currentpath" class="hide">
                 <i id="db-home" class="fa fa-folder-open"></i> <span></span>
-                <i id="db-level-up" class="fa fa-arrow-left"></i>
-                <i id="db-webradio-add" class="fa fa-plus-circle hide"></i>
             </div>
             <button id="db-search-results" class="btn hide" type="button" title="Close search results and go back to the Library browsing"><i class="fa fa-times sx"></i></button>
+			<i id="db-level-up" class="fa fa-arrow-left"></i>
+			<i id="db-webradio-add" class="fa fa-plus-circle hide"></i>
         </div>
         <div id="database">
             <ul id="database-entries" class="database">
