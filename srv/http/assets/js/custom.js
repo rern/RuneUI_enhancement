@@ -72,7 +72,7 @@ $( '.playback-controls' ).click( function() {
 	}
 } );
 // playlist click go back to home page
-$( '#playlist ul' ).click( function( e ) {
+$( '#playlist-entries' ).click( function( e ) {
 	//alert(e.target.nodeName);
 	if ( e.target.nodeName == 'SPAN' ) {
 		$( '#open-playback a' ).click();
