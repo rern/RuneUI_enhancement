@@ -26,26 +26,17 @@
 .btnlist-top .form-inline i {
 	font-size: 18px;
 }
-.btnlist-top button i {
-	vertical-align: -10%;
-}
 #pl-manage {
 	float: left;
 	margin-top: 4px;
 }
-#pl-manage button {
-	height: 32px;
-	width: 32px;
-	margin-right: 5px;
-	padding: 0;
-}
-#pl-manage button i {
-	font-size: 22px;
+#pl-manage i {
+	margin-right: 15px;
+	font-size: 24px;
 	line-height: 32px;
 }
 #pl-count {
 	display: inline-block;
-	margin-left: 20px;
 	width: calc( 100% - 350px );
 	white-space: nowrap;
 	overflow: hidden;
