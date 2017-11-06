@@ -62,7 +62,7 @@
     <!-- LIBRARY PANEL -->
     <div id="panel-sx" class="tab-pane">
         <div class="btnlist btnlist-top">
-            <form id="db-search" class="form-inline" action="javascript:getDB({cmd: 'search', path: GUI.currentpath, browsemode: GUI.browsemode});">
+            <form id="db-search" class="form-inline" action="javascript:if (document.getElementById( 'db-search-keyword' ).value) getDB({cmd: 'search', path: GUI.currentpath, browsemode: GUI.browsemode});">
                 <div class="input-group">
                     <input id="db-search-keyword" class="form-control osk-trigger" type="text" value="" placeholder="search in DB...">
                     <span class="input-group-btn">
@@ -121,15 +121,6 @@
                 </div>
             </div>
         </div>
-        <div class="btnlist btnlist-bottom">
-            <div id="db-controls">
-                <button id="db-homeSetup" class="btn btn-default hide" type="button" title="Setup the Library home screen"><i class="fa fa-gear"></i></button>
-                <button id="db-firstPage" class="btn btn-default" type="button" title="Scroll to the top"><i class="fa fa-angle-double-up"></i></button>
-                <button id="db-prevPage" class="btn btn-default" type="button" title="Scroll one page up"><i class="fa fa-angle-up"></i></button>
-                <button id="db-nextPage" class="btn btn-default" type="button" title="Scroll one page down"><i class="fa fa-angle-down"></i></button>
-                <button id="db-lastPage" class="btn btn-default" type="button" title="Scroll to the bottom"><i class="fa fa-angle-double-down"></i></button>
-            </div>
-        </div>
         <div id="spinner-db" class="csspinner duo hide"></div>
     </div>
     <!-- QUEUE PANEL -->
@@ -137,9 +128,9 @@
         <div class="btnlist btnlist-top">
             <button id="pl-filter-results" class="btn hide" type="button" title="Close filter results and go back to the playing Queue"><i class="fa fa-times sx"></i></button>
             <div id="pl-manage">
-                <button id="pl-manage-list" class="btn btn-default" type="button" title="Manage playlists"><i class="fa fa-file-text-o fa-lg"></i></button>
-                <button id="pl-manage-save" class="btn btn-default" type="button" title="Save current queue as playlist" data-toggle="modal" data-target="#modal-pl-save"><i class="fa fa-save fa-lg"></i></button>
-                <button id="pl-manage-clear" class="btn btn-default" type="button" title="Clear the playing queue" data-toggle="modal" data-target="#modal-pl-clear"><i class="fa fa-trash-o fa-lg"></i></button>
+                <i id="pl-manage-list" class="fa fa-file-text-o fa-lg" title="Manage playlists"></i>
+                <i id="pl-manage-save" class="fa fa-save fa-lg" title="Save current queue as playlist" data-toggle="modal" data-target="#modal-pl-save"></i>
+                <i id="pl-manage-clear" class="fa fa-trash-o fa-lg" title="Clear the playing queue" data-toggle="modal" data-target="#modal-pl-clear"></i>
             </div>
             <span id="pl-count" class="hide">2143 entries</span>
             <form id="pl-search" class="form-inline" method="post" onSubmit="return false;" role="form">
@@ -173,18 +164,6 @@
                         <p><a id="open-library" href="#panel-sx" class="btn btn-primary btn-lg" data-toggle="tab">Browse Library</a></p>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="btnlist btnlist-bottom">
-            <div id="pl-controls">
-                <button id="pl-firstPage" class="btn btn-default" type="button" title="Scroll to the top"><i class="fa fa-angle-double-up"></i></button>
-                <button id="pl-prevPage" class="btn btn-default" type="button" title="Scroll one page up"><i class="fa fa-angle-up"></i></button>
-                <button id="pl-nextPage" class="btn btn-default" type="button" title="Scroll one page down"><i class="fa fa-angle-down"></i></button>
-                <button id="pl-lastPage" class="btn btn-default" type="button" title="Scroll to the bottom"><i class="fa fa-angle-double-down"></i></button>
-            </div>
-            <div id="pl-currentpath" class="hide">
-                <i class="fa fa-folder-open"></i>
-                <span>Playlists</span>
             </div>
         </div>
         <div id="spinner-pl" class="csspinner duo hide"></div>
