@@ -1,19 +1,9 @@
 $( document ).ready( function() {
 // document ready start********************************************************************
 
-function topbottom() {
-	if ( $( '#menu-top' ).position().top !== 0 ) {
-		$( '#menu-top' ).css( 'top', 0 );
-		$( '#menu-bottom' ).css( 'bottom', 0 );
-	} else {
-		$( '#menu-top' ).css( 'top', '-40px' );
-		$( '#menu-bottom' ).css( 'bottom', '-40px' );
-	}
-}
-
 $( '#barleft' ).click( function() {
 	if ( !$( '#coverart' ).length || !$( '#volume-knob' ).length || $( window ).width() >= 640 ) {
-		topbottom();
+		$( '#menu-top, #menu-bottom' ).toggle();
 	} else {
 		$( '#coverart' ).slideToggle( function() {
 			$( '#time-knob, #volume-knob' ).css( 'margin-top', 0 );
@@ -48,8 +38,12 @@ $( '#barleft' ).click( function() {
 window.addEventListener( 'orientationchange', scrolltext );
 
 $( '#barright' ).click( function() {
-	$( '#play-group, #vol-group' ).toggle();
-	if ( $( '#play-group' ).is( ':visible' ) && $( '#coverart' ).is( ':visible' ) ) {
+	if ( displayredis[ 'volume' ] ) {
+		$( '#play-group, #vol-group' ).toggle();
+	} else {
+		$( '#play-group' ).toggle();
+	}
+	if ( displayredis[ 'time' ] && $( '#play-group' ).is( ':visible' ) && $( '#coverart' ).is( ':visible' ) ) {
 		$( '#share-group' ).show();
 	} else {
 		$( '#share-group' ).hide();
@@ -78,12 +72,12 @@ $( '.playback-controls' ).click( function() {
 	}
 } );
 // playlist click go back to home page
-$( '#playlist ul' ).click( function( e ) {
+$( '#playlist-entries' ).click( function( e ) {
 	//alert(e.target.nodeName);
 	if ( e.target.nodeName == 'SPAN' ) {
 		$( '#open-playback a' ).click();
 		$( '#open-playback a' )[ 0 ].click();
-		if ( $( window ).width() < 500 || $( window ).height() < 500 ) topbottom();
+		if ( $( window ).width() < 500 || $( window ).height() < 500 ) $( '#menu-top, #menu-bottom' ).toggle();
 	}
 } );
 // playsource button replacement
@@ -158,65 +152,11 @@ $( '#currentalbum' ).click( function() {
 } );
 $( '#menu-bottom' ).click( function() {
 	if ( $( window ).height() < 737 ) {
-		$( '#menu-top' ).css( 'top', '-40px' );
-		$( '#menu-bottom' ).css( 'bottom', '-40px' );
+		$( '#menu-top, #menu-bottom' ).hide();
 		$( '.btnlist-top' ).css( 'top', 0 );
 		$( '#database' ).css( 'padding-top', '40px' );
 	}
 } );
-
-
-function panelr( lr ) {
-	var paneactive = $( '#content' ).find( 'div.active' ).prop( 'id' );
-	if ( paneactive === 'panel-sx' ) {
-		var $paneleft = $( '#open-playback a' );
-		var $paneright = $( '#open-panel-dx a' );
-	} else if ( paneactive === 'playback' ) {
-		var $paneleft = $( '#open-panel-dx a' );
-		var $paneright = $( '#open-panel-sx a' );
-	} else {
-		var $paneleft = $( '#open-panel-sx a' );
-		var $paneright = $( '#open-playback a' );
-	}
-	$pane = ( lr === 'left' ) ? $paneleft.click() : $paneright.click();
-}
-
-// swipe
-Hammer = propagating( Hammer ); // propagating.js
-
-var hammercontent = new Hammer( document.body );
-hammercontent.on( 'swiperight', function() {
-	panelr( 'right' );
-} );
-hammercontent.on( 'swipeleft', function() {
-	panelr( 'left' );
-} );
-
-if ( $( '#playback' ).is( ':visible' ) ) {
-	var hammerinfo = new Hammer( document.getElementById( 'info' ) );
-	hammerinfo.on( 'swiperight', function( e ) {
-		$( '#previous' ).click();
-		e.stopPropagation();
-	} );
-	hammerinfo.on( 'swipeleft', function( e ) {
-		$( '#next' ).click();
-		e.stopPropagation();
-	} );
-
-	var hammerbarleft = new Hammer( document.getElementById( 'barleft' ) );
-	hammerbarleft.on( 'swipe', function() {
-		$( '#barleft' ).click();
-	} );
-	hammerbarleft.get( 'swipe' ).set( { direction: Hammer.DIRECTION_VERTICAL } );
-
-	var hammerbarright = new Hammer( document.getElementById( 'barright' ) );
-	hammerbarright.on( 'swipe', topbottom );
-	hammerbarright.get( 'swipe' ).set( { direction: Hammer.DIRECTION_VERTICAL } );
-} else {
-	$( '#menu-top' ).css( 'top', 0 );
-	$( '#menu-bottom' ).css( 'bottom', 0 );
-	$( '#barleft, #barright' ).hide();
-}
 
 // library directory path link
 $( '#db-home' ).click( function() {
@@ -263,8 +203,210 @@ window.addEventListener( 'orientationchange', function() {
 	setTimeout( indexheight(), 200 );
 } );
 
+function panelr( lr ) {
+	var paneactive = $( '#content' ).find( 'div.active' ).prop( 'id' );
+	if ( paneactive === 'panel-sx' ) {
+		var $paneleft = $( '#open-playback a' );
+		var $paneright = $( '#open-panel-dx a' );
+	} else if ( paneactive === 'playback' ) {
+		var $paneleft = $( '#open-panel-dx a' );
+		var $paneright = $( '#open-panel-sx a' );
+	} else {
+		var $paneleft = $( '#open-panel-sx a' );
+		var $paneright = $( '#open-playback a' );
+	}
+	$paneclick = ( lr === 'left' ) ? $paneleft.click() : $paneright.click();
+}
+
+// swipe ************************************************************************************
+Hammer = propagating( Hammer ); // propagating.js fix e.stopPropagation()
+
+var $hammercontent = new Hammer( document.body );
+$hammercontent.on( 'swiperight', function() {
+	panelr( 'right' );
+} );
+$hammercontent.on( 'swipeleft', function() {
+	panelr( 'left' );
+} );
+
+var $hammerinfo = new Hammer( document.getElementById( 'info' ) );
+$hammerinfo.on( 'swiperight', function( e ) {
+	$( '#previous' ).click();
+	e.stopPropagation();
+} );
+$hammerinfo.on( 'swipeleft', function( e ) {
+	$( '#next' ).click();
+	e.stopPropagation();
+} );
+
+var $hammerbarleft = new Hammer( document.getElementById( 'barleft' ) );
+$hammerbarleft.on( 'swipe', function() {
+	$( '#barleft' ).click();
+} );
+$hammerbarleft.get( 'swipe' ).set( { direction: Hammer.DIRECTION_VERTICAL } );
+
+var $hammerbarright = new Hammer( document.getElementById( 'barright' ) );
+$hammerbarright.on( 'swipe', function() {
+	$( '#menu-top, #menu-bottom' ).toggle();
+} );
+$hammerbarright.get( 'swipe' ).set( { direction: Hammer.DIRECTION_VERTICAL } );
+
+var $hammerplayback = new Hammer( document.getElementById( 'playback' ) );
+$hammerplayback.on( 'press', function() {
+	info( {
+		  title  : 'Playback'
+		, message: 'Select items to show:'
+		, checkboxhtml : '<form id="displaysaveplayback" action="displaysave.php" method="post">\
+						<input name="playback" type="hidden" value="1">\
+						<label><input name="bar" type="checkbox" '+ displayredis[ 'bar' ] +'>&ensp;Top-Bottom menu</label>\
+						<br><label><input name="time" type="checkbox" '+ displayredis[ 'time' ] +'>&ensp;Time</label>\
+						<br><label><input name="coverart" type="checkbox" '+ displayredis[ 'coverart' ] +'>&ensp;Coverart</label>\
+						<br><label><input name="volume" type="checkbox" '+ displayredis[ 'volume' ] +'>&ensp;Volume</label>\
+						<br><label><input name="buttons" type="checkbox" '+ displayredis[ 'buttons' ] +'>&ensp;Buttons</label>\
+						</form>'
+		, cancel : 1
+		, ok     : function () {
+			$.post( 'displaysave.php',
+				$( '#displaysaveplayback' ).serialize(),
+				function(data) {
+					if ( data ) {
+						displayplayback();
+					} else {
+						info( {
+							  title  : 'Playback'
+							, message: 'Save Playback display failed!'
+						} );
+					}
+				}
+			);
+		}
+	} );
+} );
+
+var $hammerlibrary = new Hammer( document.getElementById( 'panel-sx' ) );
+$hammerlibrary.on( 'press', function() {
+	info( {
+		  title  : 'Libary Home'
+		, message: 'Select items to show:'
+		, checkboxhtml : '<form id="displaysave" action="displaysave.php" method="post">\
+						<input name="library" type="hidden" value="1">\
+						<label><input name="bar" type="checkbox" '+ displayredis[ 'bar' ] +'>&ensp;Top-Bottom menu</label>\
+						<br><label><input name="nas" type="checkbox" '+ displayredis[ 'nas' ] +'>&ensp;Network mounts</label>\
+						<br><label><input name="usb" type="checkbox" '+ displayredis[ 'usb' ] +'>&ensp;USB storage</label>\
+						<br><label><input name="webradio" type="checkbox" '+ displayredis[ 'webradio' ] +'>&ensp;My Webradios</label>\
+						<br><label><input name="albums" type="checkbox" '+ displayredis[ 'albums' ] +'>&ensp;Albums</label>\
+						<br><label><input name="artists" type="checkbox" '+ displayredis[ 'artists' ] +'>&ensp;Artists</label>\
+						<br><label><input name="composer" type="checkbox" '+ displayredis[ 'composer' ] +'>&ensp;Composers</label>\
+						<br><label><input name="genre" type="checkbox" '+ displayredis[ 'genre' ] +'>&ensp;Genres</label>\
+						<br><label><input name="spotify" type="checkbox" '+ displayredis[ 'spotify' ] +'>&ensp;Spotify</label>\
+						<br><label><input name="dirble" type="checkbox" '+ displayredis[ 'dirble' ] +'>&ensp;Dirble</label>\
+						<br><label><input name="jamendo" type="checkbox" '+ displayredis[ 'jamendo' ] +'>&ensp;Jamendo</label>\
+						</form>'
+		, cancel : 1
+		, ok     : function () {
+			$.post( 'displaysave.php',
+				$( '#displaysave' ).serialize(),
+				function(data) {
+					if ( data ) {
+						displaylibrary();
+					} else {
+						info( {
+							  title  : 'Libary Home'
+							, message: 'Save Library home failed!'
+						} );
+					}
+				}
+			);
+		}
+	} );
+} );
+
 // document ready end *********************************************************************
 } );
+
+// show/hide blocks database
+$.get( 'displayget.php', function( data ) {
+	var displayredis = $.parseJSON( data );
+} );
+// playback show/hide blocks
+function displayplayback() {
+	$.get( 'displayget.php', function( data ) {
+		displayredis = $.parseJSON( data );
+		$( '#time-knob' ).css( 'display', displayredis[ 'time' ] ? 'block' : 'none' );
+		$( '#coverart' ).css( 'display', displayredis[ 'coverart' ] ? 'block' : 'none' );
+		$( '#volume-knob' ).css( 'display', displayredis[ 'volume' ] ? 'block' : 'none' );
+		var i = 0;
+		if ( displayredis[ 'time' ] ) i += 1;
+		if ( displayredis[ 'coverart' ] ) i += 1;
+		if ( displayredis[ 'volume' ] ) i += 1;
+		var elemW = {
+			  3: '30%'
+			, 2: '40%'
+			, 1: '60%'
+		}
+		$( '#time-knob, #coverart, #volume-knob' ).css( 'width', elemW[ i ] );
+//		$( '.btnlist-top' ).css( 'top', displayredis[ 'bar' ] ? '40px' : 0 );
+		if ( $( window ).height() > 736 || $( window ).width() > 568 ) {
+			$( '#menu-top, #menu-bottom' ).css( 'display', displayredis[ 'bar' ] ? 'block' : 'none' );
+			$( '#database, #playlist' ).css( 'padding-top', displayredis[ 'bar' ] ? '80px' : '40px' );
+			$( '#share-group' ).css( 'display', displayredis[ 'time' ] ? 'block' : 'none' );
+			$( '#play-group, #share-group' ).css( 'display', displayredis[ 'buttons' ] ? 'block' : 'none' );
+			$( '#play-group, #share-group, #vol-group' ).css( 'width', elemW[ i ] );
+			if ( displayredis[ 'buttons' ] && displayredis[ 'volume' ] ) {
+				$( '#vol-group' ).show();
+			} else {
+				$( '#vol-group' ).hide();
+			}
+		}
+	} );
+}
+// library home show/hide blocks
+function displaylibrary() {
+	$.get( 'displayget.php', function( data ) {
+		displayredis = $.parseJSON( data );
+		// no 'id'
+		$( '#home-blocks div' ).eq( 1 ).css( 'display', displayredis[ 'nas' ] ? 'block' : 'none' );
+		$( '#home-usb' ).parent().css( 'display', displayredis[ 'usb' ] ? 'block' : 'none' );
+		$( '#home-webradio' ).parent().css( 'display', displayredis[ 'webradio' ] ? 'block' : 'none' );
+		$( '#home-albums' ).parent().css( 'display', displayredis[ 'albums' ] ? 'block' : 'none' );
+		$( '#home-artists' ).parent().css( 'display', displayredis[ 'artists' ] ? 'block' : 'none' );
+		$( '#home-composer' ).parent().css( 'display', displayredis[ 'composer' ] ? 'block' : 'none' );
+		$( '#home-genre' ).parent().css( 'display', displayredis[ 'genre' ] ? 'block' : 'none' );
+		$( '#home-spotify' ).parent().css( 'display', displayredis[ 'spotify' ] ? 'block' : 'none' );
+		$( '#home-dirble' ).parent().css( 'display', displayredis[ 'dirble' ] ? 'block' : 'none' );
+		$( '#home-jamendo' ).parent().css( 'display', displayredis[ 'jamendo' ] ? 'block' : 'none' );
+		if ( $( window ).height() > 736 || $( window ).width() > 568 ) {
+			$( '#menu-top, #menu-bottom' ).css( 'display', displayredis[ 'bar' ] ? 'block' : 'none' );
+			$( '#database, #playlist' ).css( 'padding-top', displayredis[ 'bar' ] ? '80px' : '40px' );
+			$( '.btnlist-top' ).css( 'top', displayredis[ 'bar' ] ? '40px' : 0 );
+		}
+	} );
+}
+// hide breadcrumb and index bar
+var old_renderLibraryHome = renderLibraryHome;
+renderLibraryHome = function() {
+	old_renderLibraryHome();
+	$( '#barleft, #barright' ).hide();
+	$( '#db-currentpath, #db-index' ).addClass( 'hide' );
+	displaylibrary();
+}
+// hide 'to queue' text
+var old_renderPlaylists = renderPlaylists;
+renderPlaylists = function( data ) {
+	old_renderPlaylists( data );
+	$( '#barleft, #barright' ).hide();
+	$( '#pl-filter-results' ).html( '<i class="fa fa-arrow-left sx"></i>' );
+}
+// next lyrics on track change
+var old_updateGUI = updateGUI;
+updateGUI = function() {
+	old_updateGUI();
+	if ( !$( '#lyricsfade' ).hasClass( 'hide' ) && $( '#currentsong' ).text() != $( 'h4.ui-pnotify-title' ).text() ) {
+		PNotify.removeAll();
+		$( '#currentsong' ).click();
+	}
+
+}
 
 // scrolling text
 function scrolltext() {
@@ -278,29 +420,30 @@ function scrolltext() {
 		} );
 	}, 50 );
 }
-// hide breadcrumb on search
-function getDBsearch() {
-	getDB( { cmd: 'search', path: GUI.currentpath, browsemode: GUI.browsemode } );
-	setTimeout( function() {
-		$( '#db-currentpath' ).addClass( 'hide' );
-	}, 250 );
-}
-var old_renderLibraryHome = renderLibraryHome;
-renderLibraryHome = function() {
-	old_renderLibraryHome();
-	$('#db-currentpath, #db-index').addClass('hide');
-}
-// replace functions in main runeui.js file **********************************************
-$('#db-search-results').click(function(){
-	$(this).addClass('hide');
-	$('#db-level-up, #db-currentpath').removeClass('hide');
-	getDB({
-		path: GUI.currentpath
-	});
-});
 
+// replace functions in main runeui.js file **********************************************
+$( '#db-search-results' ).click( function() {
+	$( this ).addClass( 'hide' );
+	$( '#db-level-up, #db-currentpath' ).removeClass( 'hide' );
+	getDB( {
+		path: GUI.currentpath
+	} );
+} );
+
+function timeConvert3( ss ) {
+	var hr = Math.floor( ss / 3600 );
+	var mm = Math.floor( ( ss - ( hr * 3600 ) ) / 60 );
+	ss = Math.floor( ss - ( hr * 3600 ) - ( mm * 60 ) );
+	hr = ( hr > 0 )  ? hr +':' : '';
+	mm = ( mm > 9 ) ? mm : '0' + mm;
+	ss = ( ss > 9 ) ? ss : '0' + ss;
+	return '&ensp;<a>'+ hr + mm +':'+ ss +'</a>&nbsp;';
+}
 function refreshState() {
+// ****************************************************************************************
 	scrolltext();
+	displayplayback();
+// ****************************************************************************************
 	
     var state = GUI.state;
 	var fileinfo = '';
@@ -381,82 +524,6 @@ function refreshState() {
     } else {
         $('a', '#open-panel-sx').html('<i class="fa fa-folder-open"></i>');
     }
-}
-
-function updateGUI() {
-    var volume = GUI.json.volume;
-    var radioname = GUI.json.radioname;
-    var currentartist = GUI.json.currentartist;
-    var currentsong = GUI.json.currentsong;
-    var currentalbum = GUI.json.currentalbum;
-    // set radio mode if stream is present
-    GUI.stream = ((radioname !== null && radioname !== undefined && radioname !== '') ? 'radio' : '');
-    // check MPD status and refresh the UI info
-    refreshState();
-    if ($('#section-index').length) {
-        // check song update
-        // console.log('A = ', GUI.json.currentsong); console.log('B = ', GUI.currentsong);
-        if (GUI.currentsong !== GUI.json.currentsong) {
-            countdownRestart(0);
-            if ($('#panel-dx').hasClass('active')) {
-                var current = parseInt(GUI.json.song);
-                customScroll('pl', current);
-            }
-        }
-        // common actions
-        $('#volume').val((volume === '-1') ? 100 : volume, false).trigger('update');
-        // console.log('currentartist = ', GUI.json.currentartist);
-        if (GUI.stream !== 'radio') {
-            $('#currentartist').html((currentartist === null || currentartist === undefined || currentartist === '') ? '<span class="notag">[no artist]</span>' : currentartist);
-            $('#currentsong').html((currentsong === null || currentsong === undefined || currentsong === '') ? '<span class="notag">[no title]</span>' : currentsong);
-            $('#currentalbum').html((currentalbum === null || currentalbum === undefined || currentalbum === '') ? '<span class="notag">[no album]</span>' : currentalbum);
-        } else {
-        	var artistsong = currentsong.split(/ - (.+)/);
-			var artist = artistsong[0];
-			var song = artistsong[1];
-            $('#currentartist').html((currentartist === null || currentartist === undefined || currentartist === '') ? artist : currentartist);
-            $('#currentsong').html(artistsong.length > 1 ? song : currentsong);
-            $('#currentalbum').html(radioname);
-        }
-        if (GUI.json.repeat === '1') {
-            $('#repeat').addClass('btn-primary');
-        } else {
-            $('#repeat').removeClass('btn-primary');
-        }
-        if (GUI.json.random === '1') {
-            $('#random').addClass('btn-primary');
-        } else {
-            $('#random').removeClass('btn-primary');
-        }
-        if (GUI.json.consume === '1') {
-            $('#consume').addClass('btn-primary');
-        } else {
-            $('#consume').removeClass('btn-primary');
-        }
-        if (GUI.json.single === '1') {
-            $('#single').addClass('btn-primary');
-        } else {
-            $('#single').removeClass('btn-primary');
-        }
-        GUI.currentsong = currentsong;
-        var currentalbumstring = currentartist + ' - ' + currentalbum;
-        if (GUI.currentalbum !== currentalbumstring) {
-            if (radioname === null || radioname === undefined || radioname === '') {
-                var covercachenum = Math.floor(Math.random()*1001);
-                $('#cover-art').css('background-image','url("/coverart/?v=' + covercachenum + '")');
-            } else {
-                $('#cover-art').css('background-image','url("assets/img/cover-radio.jpg")');
-            }
-        }
-        GUI.currentalbum = currentalbumstring;
-    }
-// ****************************************************************************************
-// observe song change for lyrics
-	if ( !$( '#lyricsfade' ).hasClass( 'hide' ) && $( '#currentsong' ).text() != $( 'h4.ui-pnotify-title' ).text() ) {
-		PNotify.removeAll();
-		$( '#currentsong' ).click();
-	}
-// ****************************************************************************************
 }
 
 function populateDB(options){
@@ -589,7 +656,10 @@ function populateDB(options){
         } else {
         // browsing
             $('#database-entries').removeClass('hide');
-            $('#db-level-up').removeClass('hide');
+// ****************************************************************************************
+// show breascrumb and index bar
+            $('#db-currentpath, #db-level-up, #db-index').removeClass('hide');
+// ****************************************************************************************
             $('#home-blocks').addClass('hide');
             if (path) {
                 GUI.currentpath = path;
@@ -599,8 +669,12 @@ function populateDB(options){
             // search results
                 var results = (data.length) ? data.length : '0';
                 var s = (data.length === 1) ? '' : 's';
-                $('#db-level-up').addClass('hide');
-                $('#db-search-results').removeClass('hide').html('<i class="fa fa-times sx"></i><span class="visible-xs-inline">back</span><span class="hidden-xs">' + results + ' result' + s + ' for "<span class="keyword">' + keyword + '</span>"</span>');
+// ****************************************************************************************
+// hide breascrumb and index bar
+                $('#db-currentpath, #db-index').addClass('hide');
+				$('#database-entries').css('width', '100%');
+// ****************************************************************************************
+                $('#db-search-results').removeClass('hide').html('<i class="fa fa-times sx"></i><span class="visible-xs-inline"></span><span class="hidden-xs">' + results + ' result' + s + ' for "<span class="keyword">' + keyword + '</span>"</span>');
             }
             data.sort(function(a, b){
                 if (path === 'Artists' || path === 'AlbumArtists'|| path === 'Various Artists') {
@@ -627,14 +701,14 @@ function populateDB(options){
             if (path === 'Webradio') {
 // ****************************************************************************************
 // breadcrumb replace - modify add webradio button
-				$('#db-up').addClass('hide');
+				$('#db-level-up').addClass('hide');
 				$('#db-webradio-add').removeClass('hide')
 					.click(function() {
 						$('#modal-webradio-add').modal();
 					}
 				);
             } else {
-				$('#db-up').removeClass('hide');
+				$('#db-level-up').removeClass('hide');
 				$('#db-webradio-add').addClass('hide');
 // ****************************************************************************************
 			}
@@ -686,7 +760,7 @@ function populateDB(options){
 // ****************************************************************************************
     }
 // ****************************************************************************************
-    $( '#db-currentpath, #db-index' ).removeClass( 'hide' );
+//    $( '#db-currentpath, #db-index' ).removeClass( 'hide' );
 // ****************************************************************************************
     $('#db-homeSetup').addClass('hide');
 	
@@ -700,14 +774,4 @@ function populateDB(options){
     if (querytype != 'childs') {
         loadingSpinner('db', 'hide');
     }
-}
-
-function timeConvert3( ss ) {
-    var hr = Math.floor( ss / 3600 );
-    var mm = Math.floor( ( ss - ( hr * 3600 ) ) / 60 );
-    ss = Math.floor( ss - ( hr * 3600 ) - ( mm * 60 ) );
-	hr = ( hr > 0 )  ? hr +':' : '';
-    mm = ( mm > 9 ) ? mm : '0' + mm;
-    ss = ( ss > 9 ) ? ss : '0' + ss;
-    return '&ensp;<a>'+ hr + mm +':'+ ss +'</a>&nbsp;';
 }
