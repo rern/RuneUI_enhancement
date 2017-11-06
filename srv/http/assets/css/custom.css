@@ -1,7 +1,4 @@
 /* ---------------------- library and queue ---------------------- */
-.btnlist-bottom {
-	display: none;
-}
 .tab-pane {
 	height: 100vh;
 }
@@ -18,6 +15,8 @@
 #db-level-up,
 #db-webradio-add {
 	float: right;
+	margin: 5px 10px 0 0;
+	padding: 0;
 }
 .btnlist-top .form-inline {
 	width: 180px;
@@ -50,8 +49,8 @@
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
-#db-currentpath a,
-#db-currentpath i {
+.btnlist-top a,
+.btnlist-top i {
 	cursor: pointer;
 }
 #db-currentpath a {
