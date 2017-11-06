@@ -1,47 +1,50 @@
 /* ---------------------- library and queue ---------------------- */
-.btnlist-top {
-	padding-top: 5px;
+.tab-pane {
+	height: 100vh;
 }
-#db-search,
-#pl-search {
-	margin-top: 0;
+#db-currentpath div,
+#db-currentpath i,
+#db-currentpath span {
+	line-height: 40px;
+}
+.btnlist-top i,
+#db-level-up {
+	font-size: 28px;
+	vertical-align: -5%;
+}
+#db-level-up,
+#db-webradio-add {
+	float: right;
+	margin: 5px 10px 0 0;
+	padding: 0;
+}
+.btnlist-top .form-inline {
+	width: 180px;
+	margin: 4px 0 0 0 !important;
+}
+.btnlist-top .form-inline i {
+	font-size: 18px;
 }
 #pl-manage {
-	display: inline-block;
-	vertical-align: top;
+	float: left;
+	margin-top: 4px;
+}
+#pl-manage i {
+	margin-right: 15px;
+	font-size: 24px;
+	line-height: 32px;
 }
 #pl-count {
 	display: inline-block;
-	margin-left: 20px;
-	line-height: 30px;
 	width: calc( 100% - 350px );
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
-#db-search-results,
-#pl-filter-results {
-	margin-top: -8px;
-}
-#db-search-results i,
-#pl-filter-results i {
-	font-size: 28px;
-	vertical-align: bottom;
-}
-.btnlist-bottom {
-	display: none;
-}
-.input-group {
-	max-width: 200px;
-}
-/* breadcrumb and index */
-#database-entries {
-	float: left;
-	width: calc( 100% - 38px );
-	padding-bottom: 80px;
-}
+/* ---------------------- breadcrumb and index ---------------------- */
 #db-currentpath {
-	width: calc( 100% - 220px );
+	float: left;
+	width: calc( 100% - 240px );
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -53,19 +56,10 @@
 #db-currentpath a {
 	color: #0095d8;
 }
-#db-currentpath span {
-	display: inline-block;
-	line-height: 30px;
-	vertical-align: top;
-}
-#db-currentpath i {
-	padding: 0;
-	font-size: 28px;
-}
-#db-level-up,
-#db-webradio-add {
-	position: absolute;
-	right: 200px;
+#database-entries {
+	float: left;
+	width: calc( 100% - 38px );
+	padding-bottom: 80px;
 }
 #db-index {
 	position: fixed;
@@ -102,7 +96,7 @@
 /* ---------------------- menu-top ----------------------*/
 .logo {
     height: 35px;
-    margin: 0 20px 10px 0;
+    margin: 2px 20px 10px 0;
 }
 #clock-display {
 	margin-right: 10px;
@@ -474,11 +468,9 @@
 	}
 }
 @media(max-width: 500px) {
-	#menu-top {
-		top: -40px;
-	}
+	#menu-top,
 	#menu-bottom {
-		bottom: -40px;
+		display: none;
 	}
 	#play-group,
 	#share-group,
@@ -566,14 +558,16 @@
 		top: 0;
 	}
 	#db-currentpath {
-		width: calc( 100% - 190px );
+		width: calc( 100% - 220px );
 	}
 	#db-up,
 	#db-webradio-add {
 		right: 170px;
 	}
-	.input-group {
-		max-width: 155px;
+	#db-search-results span,
+	#pl-filter-results span,
+	#pl-count {
+		display: none !important;
 	}
 }
 @media(max-height: 640px) {
@@ -605,11 +599,9 @@
 	}
 }
 @media(max-height: 500px) {
-	#menu-top {
-		top: -40px;
-	}
+	#menu-top,
 	#menu-bottom {
-		bottom: -40px;
+		display: none;
 	}
 /*	#play-group,
 	#share-group,
