@@ -2,7 +2,7 @@ $( document ).ready( function() {
 // document ready start********************************************************************
 
 $( '#barleft' ).click( function() {
-	if ( !$( '#coverart' ).length || !$( '#volume-knob' ).length || $( window ).width() >= 640 ) {
+	if ( !$( '#coverart' ).length || !$( '#volume-knob' ).length || window.innerWidth >= 640 ) {
 		$( '#menu-top, #menu-bottom' ).toggle();
 	} else {
 		$( '#coverart' ).slideToggle( function() {
@@ -15,7 +15,7 @@ $( '#barleft' ).click( function() {
 					$( '#divalbum' ).show();
 					$( '#volume-knob' ).css( 'margin-top', '20px' );
 				}
-				if ( $( window ).width() > 500 ) {
+				if ( window.innerWidth > 500 ) {
 					$( '#coverart' ).css( { 'order': '2', '-webkit-order': '2' } );
 					$( '#share-group' ).css( { 'order': '4', '-webkit-order': '4' } );
 					$( '#volume-knob' ).css( { 'order': '5', '-webkit-order': '5' } );
@@ -23,7 +23,7 @@ $( '#barleft' ).click( function() {
 				}
 			} else {
 				$( '#share-group' ).hide();
-				if ( $( window ).width() > 500 ) {
+				if ( window.innerWidth > 500 ) {
 					$( '#playback-row' ).css( 'margin-top', 0 );
 					$( '#play-group, #vol-group' ).css( 'margin-top', 0 );
 					$( '#coverart' ).css( { 'order': '5', '-webkit-order': '5' } );
@@ -77,7 +77,7 @@ $( '#playlist-entries' ).click( function( e ) {
 	if ( e.target.nodeName == 'SPAN' ) {
 		$( '#open-playback a' ).click();
 		$( '#open-playback a' )[ 0 ].click();
-		if ( $( window ).width() < 500 || $( window ).height() < 500 ) $( '#menu-top, #menu-bottom' ).toggle();
+		if ( window.innerWidth < 500 || window.innerHeight < 500 ) $( '#menu-top, #menu-bottom' ).toggle();
 	}
 } );
 // playsource button replacement
@@ -151,7 +151,7 @@ $( '#currentalbum' ).click( function() {
 		window.open( 'http://www.last.fm/music/'+ artist +'/'+ album );
 } );
 $( '#menu-bottom' ).click( function() {
-	if ( $( window ).height() < 737 ) {
+	if ( window.innerHeight < 737 ) {
 		$( '#menu-top, #menu-bottom' ).hide();
 		$( '.btnlist-top' ).css( 'top', 0 );
 		$( '#database' ).css( 'padding-top', '40px' );
@@ -188,15 +188,15 @@ $( '#db-index li' ).click( function() {
 } );
 // index link height
 function indexheight() {
-	var indexoffset = ( $( window ).width() > 500 && $( window ).height() ) > 500 ? 160 : 80
-	if ( $( window ).height() > 500 ) {
+	var indexoffset = ( window.innerWidth > 500 && window.innerHeight ) > 500 ? 160 : 80
+	if ( window.innerHeight > 500 ) {
 		var indexline = 26;
 		$( '.half' ).show();
 	} else {
 		var indexline = 13;
 		$( '.half' ).hide();
 	}
-	$( '#db-index' ).css( 'line-height', ( $( window ).height() - indexoffset ) / indexline +'px' );
+	$( '#db-index' ).css( 'line-height', ( window.innerHeight - indexoffset ) / indexline +'px' );
 }
 indexheight();
 window.addEventListener( 'orientationchange', function() {
@@ -346,7 +346,7 @@ function displayplayback() {
 		}
 		$( '#time-knob, #coverart, #volume-knob' ).css( 'width', elemW[ i ] );
 //		$( '.btnlist-top' ).css( 'top', displayredis[ 'bar' ] ? '40px' : 0 );
-		if ( $( window ).height() > 736 || $( window ).width() > 568 ) {
+		if ( window.innerHeight > 736 || window.innerWidth > 568 ) {
 			$( '#menu-top, #menu-bottom' ).css( 'display', displayredis[ 'bar' ] ? 'block' : 'none' );
 			$( '#database, #playlist' ).css( 'padding-top', displayredis[ 'bar' ] ? '80px' : '40px' );
 			$( '#share-group' ).css( 'display', displayredis[ 'time' ] ? 'block' : 'none' );
@@ -375,7 +375,7 @@ function displaylibrary() {
 		$( '#home-spotify' ).parent().css( 'display', displayredis[ 'spotify' ] ? 'block' : 'none' );
 		$( '#home-dirble' ).parent().css( 'display', displayredis[ 'dirble' ] ? 'block' : 'none' );
 		$( '#home-jamendo' ).parent().css( 'display', displayredis[ 'jamendo' ] ? 'block' : 'none' );
-		if ( $( window ).height() > 736 || $( window ).width() > 568 ) {
+		if ( window.innerHeight > 736 || window.innerWidth > 568 ) {
 			$( '#menu-top, #menu-bottom' ).css( 'display', displayredis[ 'bar' ] ? 'block' : 'none' );
 			$( '#database, #playlist' ).css( 'padding-top', displayredis[ 'bar' ] ? '80px' : '40px' );
 			$( '.btnlist-top' ).css( 'top', displayredis[ 'bar' ] ? '40px' : 0 );
