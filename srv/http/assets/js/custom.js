@@ -285,6 +285,7 @@ $hammerplayback.on( 'press', function() {
 
 var $hammerlibrary = new Hammer( document.getElementById( 'panel-sx' ) );
 $hammerlibrary.on( 'press', function() {
+	if ( !$( '#db-currentpath' ).hasClass( 'hide' ) ) return
 	info( {
 		  title  : 'Libary Home'
 		, message: 'Select items to show:'
@@ -390,12 +391,27 @@ renderLibraryHome = function() {
 	$( '#db-currentpath, #db-index' ).addClass( 'hide' );
 	displaylibrary();
 }
-// hide 'to queue' text
+// hide 'to queue' text and 'pl-manage li' click
 var old_renderPlaylists = renderPlaylists;
 renderPlaylists = function( data ) {
 	old_renderPlaylists( data );
 	$( '#barleft, #barright' ).hide();
 	$( '#pl-filter-results' ).html( '<i class="fa fa-arrow-left sx"></i>' );
+	$( '#pl-editor li').click( function( e ) {
+		e.stopPropagation();
+		var clickX = e.pageX + 5;
+		var positionX = clickX < window.innerWidth - 245 ? clickX : clickX - 255 ;
+		var path = $(this).attr('data-path');
+		GUI.DBentry[0] = path;
+		$( '#context-menu-playlist' ).addClass( 'open' ).css( {
+			position: 'absolute',
+			top: $( this ).position().top +'px',
+			left: positionX +'px'
+		} );
+	} );
+	$( '#panel-dx, #context-menu-playlist' ).click( function() {
+		if ( $( '#context-menu-playlist' ).hasClass( 'open' ) ) $( '#context-menu-playlist' ).removeClass( 'open' );
+	} );
 }
 // next lyrics on track change
 var old_updateGUI = updateGUI;
