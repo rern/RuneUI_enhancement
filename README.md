@@ -63,6 +63,10 @@ Functional
 	- After [**Webradio import**](https://github.com/rern/RuneAudio/tree/master/webradio)
 	- After [**MPD Upgrade**](https://github.com/rern/RuneAudio/tree/master/mpd)
 	- (Songs in albums still, by default, be sorted by track number)
+- Disable search with blank data
+
+### Playlist
+- Click anywhere on an items in manage playlist also shows **context menu**
 	
 Visual
 ---
