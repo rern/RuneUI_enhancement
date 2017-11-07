@@ -391,7 +391,7 @@ var old_renderLibraryHome = renderLibraryHome;
 renderLibraryHome = function() {
 	old_renderLibraryHome();
 	$( '#barleft, #barright' ).hide();
-	$( '#db-currentpath, #db-index, #db-homeSetup' ).addClass( 'hide' );
+	$( '#db-currentpath, #db-index, #db-level-up, #db-webradio-add, #db-homeSetup' ).addClass( 'hide' );
 	displaylibrary();
 	
 	$( '.home-bookmark' ).each( function() {
