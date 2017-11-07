@@ -70,7 +70,6 @@
                     </span>
                 </div>
             </form>
-            <i id="db-homeSetup" class="fa fa-gear" title="Remove favorires"></i>
             <div id="db-currentpath" class="hide">
                 <i id="db-home" class="fa fa-folder-open"></i> <span></span>
             </div>
@@ -122,6 +121,7 @@
                 </div>
             </div>
         </div>
+        <button id="db-homeSetup" class="btn btn-default hide" type="button" title="Setup the Library home screen"><i class="fa fa-gear"></i></button>
         <div id="spinner-db" class="csspinner duo hide"></div>
     </div>
     <!-- QUEUE PANEL -->
