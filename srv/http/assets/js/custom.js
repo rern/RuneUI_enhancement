@@ -416,9 +416,12 @@ renderPlaylists = function( data ) {
 	$( '#pl-editor li' ).click( function( e ) {
 		e.stopPropagation();
 		var clickX = e.pageX + 5;
-		var positionX = clickX < window.innerWidth - 245 ? clickX : clickX - 255 ;
-		var path = $( this ).attr( 'data-path' );
-		GUI.DBentry[0] = path;
+		if ( window.innerWidth > 500 ) {
+			var positionX = clickX < 250 ? clickX : clickX - 255;
+		} else {
+			var positionX = window.innerWidth - 295;
+		}
+		GUI.DBentry[0] = $( this ).attr( 'data-path' );
 		$( '#context-menu-playlist' ).addClass( 'open' ).css( {
 			position: 'absolute',
 			top: $( this ).position().top +'px',
