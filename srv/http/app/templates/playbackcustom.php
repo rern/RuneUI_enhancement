@@ -17,7 +17,7 @@
                     <span id="format-bitrate"><i class="fa fa-spinner fa-spin"></i></span>
                 </div>
             </div>
-            <div class="row" id="playback-row">
+            <div class="row hide" id="playback-row">
                 <div id="time-knob">
                     <input id="time" value="0" data-width="230" data-height="230" data-bgColor="#34495E" data-fgcolor="#0095D8" data-thickness="0.30" data-min="0" data-max="1000" data-displayInput="false" data-displayPrevious="true">
                     <div id="overlay-playsource-open" title="View and change playback source">
