@@ -366,7 +366,7 @@ function displaylibrary() {
 	$.get( 'displayget.php', function( data ) {
 		displayredis = $.parseJSON( data );
 		// no 'id'
-		$( '#home-blocks div' ).eq( 1 ).css( 'display', displayredis[ 'nas' ] ? 'block' : 'none' );
+		$( '#home-blocks div:contains(Network mounts)' ).css( 'display', displayredis[ 'nas' ] ? 'block' : 'none' );
 		$( '#home-usb' ).parent().css( 'display', displayredis[ 'usb' ] ? 'block' : 'none' );
 		$( '#home-webradio' ).parent().css( 'display', displayredis[ 'webradio' ] ? 'block' : 'none' );
 		$( '#home-albums' ).parent().css( 'display', displayredis[ 'albums' ] ? 'block' : 'none' );
@@ -397,11 +397,11 @@ renderPlaylists = function( data ) {
 	old_renderPlaylists( data );
 	$( '#barleft, #barright' ).hide();
 	$( '#pl-filter-results' ).html( '<i class="fa fa-arrow-left sx"></i>' );
-	$( '#pl-editor li').click( function( e ) {
+	$( '#pl-editor li' ).click( function( e ) {
 		e.stopPropagation();
 		var clickX = e.pageX + 5;
 		var positionX = clickX < window.innerWidth - 245 ? clickX : clickX - 255 ;
-		var path = $(this).attr('data-path');
+		var path = $( this ).attr( 'data-path' );
 		GUI.DBentry[0] = path;
 		$( '#context-menu-playlist' ).addClass( 'open' ).css( {
 			position: 'absolute',
