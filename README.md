@@ -13,6 +13,7 @@ Try it - [**Demo**](https://rern.github.io/RuneUI_GPIO/)
 
 - More minimalism
 - More fluid layout
+- Select show/hide items
 - Fit all in one phone screen (with 'Add to Home Screen')
 - Swipeable
 - Library breadcrumb path links to each directory
@@ -51,6 +52,7 @@ Functional
 - Tap `cover art` = play / pause (besides `time`)
 - Tap `playlist item` also go back to playback page
 - Tap `playback controls` on other pages also go back to playback page
+- Long-press = show/hide items
 
 ![layout](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/RuneUImod1.gif)
 
@@ -63,6 +65,8 @@ Functional
 	- After [**Webradio import**](https://github.com/rern/RuneAudio/tree/master/webradio)
 	- After [**MPD Upgrade**](https://github.com/rern/RuneAudio/tree/master/mpd)
 	- (Songs in albums still, by default, be sorted by track number)
+- Long-press = show/hide items
+- Long-press `bookmark` = edit bookmarks
 - Disable search with blank data
 
 ### Playlist
