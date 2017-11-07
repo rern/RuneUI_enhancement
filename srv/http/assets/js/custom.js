@@ -218,7 +218,7 @@ function panelr( lr ) {
 	$paneclick = ( lr === 'left' ) ? $paneleft.click() : $paneright.click();
 }
 
-// swipe ************************************************************************************
+// hammer ************************************************************************************
 Hammer = propagating( Hammer ); // propagating.js fix e.stopPropagation()
 
 var $hammercontent = new Hammer( document.body );
@@ -284,6 +284,9 @@ $hammerplayback.on( 'press', function() {
 } );
 
 var $hammerlibrary = new Hammer( document.getElementById( 'panel-sx' ) );
+$hammerlibrary.on( 'tap', function( e ) {
+	if ( $( '.home-block-remove' ).length && !$( e.target ).is( 'span.block-remove' ) ) $( '#db-homeSetup' ).click();
+} );
 $hammerlibrary.on( 'press', function() {
 	if ( !$( '#db-currentpath' ).hasClass( 'hide' ) ) return
 	info( {
@@ -383,16 +386,28 @@ function displaylibrary() {
 		}
 	} );
 }
-// hide breadcrumb and index bar
+// hide breadcrumb, index bar, edit bookmark
 var old_renderLibraryHome = renderLibraryHome;
 renderLibraryHome = function() {
 	old_renderLibraryHome();
 	$( '#barleft, #barright' ).hide();
-	$( '#db-currentpath, #db-index' ).addClass( 'hide' );
-	$( '#db-homeSetup' ).css( 'display', $( '#home-blocks div.home-bookmark' ).length ? 'block' : 'none' );
+	$( '#db-currentpath, #db-index, #db-homeSetup' ).addClass( 'hide' );
 	displaylibrary();
+	
+	$( '.home-bookmark' ).each( function() {
+		var $this = $( this );
+		var $hammerbookmark = new Hammer( this );
+		$hammerbookmark.on( 'press', function( e ) {
+			e.stopPropagation();
+			$( '#home-blocks' ).css( 'pointer-events', 'none' );
+			$( '#db-homeSetup' ).click();
+			setTimeout( function() {
+				$( '#home-blocks' ).css( 'pointer-events', 'auto' );
+			}, 500 );
+		});
+	});
 }
-// hide 'to queue' text and 'pl-manage li' click
+// hide 'to queue' text and 'pl-manage li' click context menu
 var old_renderPlaylists = renderPlaylists;
 renderPlaylists = function( data ) {
 	old_renderPlaylists( data );
@@ -779,7 +794,6 @@ function populateDB(options){
 // ****************************************************************************************
 //    $( '#db-currentpath, #db-index' ).removeClass( 'hide' );
 // ****************************************************************************************
-    $('#db-homeSetup').addClass('hide');
 	
     if (uplevel) {
         var position = GUI.currentDBpos[GUI.currentDBpos[10]];
