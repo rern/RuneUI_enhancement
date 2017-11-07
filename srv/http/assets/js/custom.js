@@ -389,6 +389,7 @@ renderLibraryHome = function() {
 	old_renderLibraryHome();
 	$( '#barleft, #barright' ).hide();
 	$( '#db-currentpath, #db-index' ).addClass( 'hide' );
+	$( '#db-homeSetup' ).css( 'display', $( '#home-blocks div.home-bookmark' ).length ? 'block' : 'none' );
 	displaylibrary();
 }
 // hide 'to queue' text and 'pl-manage li' click
