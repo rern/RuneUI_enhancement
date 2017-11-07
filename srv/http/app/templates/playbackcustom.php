@@ -70,7 +70,7 @@
                     </span>
                 </div>
             </form>
-            <i id="db-homeSetup" class="fa fa-gear"></i>
+            <i id="db-homeSetup" class="fa fa-gear" title="Remove favorires"></i>
             <div id="db-currentpath" class="hide">
                 <i id="db-home" class="fa fa-folder-open"></i> <span></span>
             </div>
