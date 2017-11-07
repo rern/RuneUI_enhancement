@@ -362,6 +362,7 @@ function displayplayback() {
 				$( '#vol-group' ).hide();
 			}
 		}
+		$( '#playback-row' ).removeClass( 'hide' );
 	} );
 }
 // library home show/hide blocks
@@ -390,7 +391,7 @@ function displaylibrary() {
 var old_renderLibraryHome = renderLibraryHome;
 renderLibraryHome = function() {
 	old_renderLibraryHome();
-	$( '#barleft, #barright' ).hide();
+	if ( !$( '#playback' ).hasClass( 'active' ) ) $( '#barleft, #barright' ).hide();
 	$( '#db-currentpath, #db-index, #db-level-up, #db-webradio-add, #db-homeSetup' ).addClass( 'hide' );
 	displaylibrary();
 	
