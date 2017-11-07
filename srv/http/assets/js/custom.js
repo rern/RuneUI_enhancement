@@ -349,7 +349,6 @@ function displayplayback() {
 			, 1: '60%'
 		}
 		$( '#time-knob, #coverart, #volume-knob' ).css( 'width', elemW[ i ] );
-//		$( '.btnlist-top' ).css( 'top', displayredis[ 'bar' ] ? '40px' : 0 );
 		if ( window.innerHeight > 736 || window.innerWidth > 568 ) {
 			$( '#menu-top, #menu-bottom' ).css( 'display', displayredis[ 'bar' ] ? 'block' : 'none' );
 			$( '#database, #playlist' ).css( 'padding-top', displayredis[ 'bar' ] ? '80px' : '40px' );
@@ -562,7 +561,12 @@ function refreshState() {
     }
 }
 
-function populateDB(options){
+function compareAB( a, b, prop ) {
+	nameA = a.hasOwnProperty( prop ) ? a[ prop ] : '';
+	nameB = b.hasOwnProperty( prop ) ? b[ prop ] : '';
+	return nameA.localeCompare( nameB );
+}
+function populateDB(options) {
     var data = options.data || '',
         path = options.path || '',
         uplevel = options.uplevel || 0,
@@ -584,22 +588,18 @@ function populateDB(options){
             }
             document.getElementById('database-entries').innerHTML = '';
             data = (querytype === 'tracks') ? data.tracks : data.playlists;
-
-            data.sort(function(a, b){
-                if (path === 'Spotify' && querytype === '') {
-                    nameA = a.hasOwnProperty('name') ? a.name : '';
-                    nameB = b.hasOwnProperty('name') ? b.name : '';
-                } else if (querytype === 'tracks') {
-                    nameA = a.hasOwnProperty('title') ? a.title : '';
-                    nameB = b.hasOwnProperty('title') ? b.title : '';
+// ****************************************************************************************
+// sorting
+            data.sort( function( a, b ) {
+                if ( path === 'Spotify' && querytype === '' ) {
+					return compareAB( a, b, 'name' );
+                } else if ( querytype === 'tracks' ) {
+					return compareAB( a, b, 'title' );
                 } else {
                     return 0;
                 }
-// ****************************************************************************************
-// replace - fix sorting
-                return nameA.localeCompare(nameB);
-// ****************************************************************************************
             });
+// ****************************************************************************************
             for (i = 0; (row = data[i]); i += 1) {
                 content += parseResponse({
                     inputArr: row,
@@ -627,22 +627,18 @@ function populateDB(options){
             } else {
                 document.getElementById('database-entries').innerHTML = '';
             }            
-            data.sort(function(a, b){
-                if (querytype === 'childs' || querytype === 'categories') {
-                    nameA = a.hasOwnProperty('title') ? a.title : '';
-                    nameB = b.hasOwnProperty('title') ? b.title : '';
-                } else if (querytype === 'childs-stations' || querytype === 'stations') {
-                    nameA = a.hasOwnProperty('name') ? a.name : '';
-                    nameB = b.hasOwnProperty('name') ? b.name : '';
+// ****************************************************************************************
+// sorting
+            data.sort( function( a, b ) {
+                if ( querytype === 'childs' || querytype === 'categories' ) {
+					return compareAB( a, b, 'title' );
+                } else if ( querytype === 'childs-stations' || querytype === 'stations' ) {
+					return compareAB( a, b, 'name' );
                 } else {
                     return 0;
                 }
-// ****************************************************************************************
-// replace - fix sorting
-                return nameA.localeCompare(nameB);
-// ****************************************************************************************
             });
-
+// ****************************************************************************************
             for (i = 0; (row = data[i]); i += 1) {
                 content += parseResponse({
                     inputArr: row,
@@ -661,19 +657,16 @@ function populateDB(options){
                 GUI.currentpath = path;
             }
             document.getElementById('database-entries').innerHTML = '';
-
-            data.sort(function(a, b){
-                if (path === 'Jamendo' && querytype === '') {
-                    nameA = a.hasOwnProperty('dispname') ? a.dispname : '';
-                    nameB = b.hasOwnProperty('dispname') ? b.dispname : '';
+// ****************************************************************************************
+// sorting
+            data.sort( function( a, b ) {
+                if ( path === 'Jamendo' && querytype === '' ) {
+					return compareAB( a, b, 'dispname' );
                 } else {
                     return 0;
                 }
-// ****************************************************************************************
-// replace - fix sorting
-                return nameA.localeCompare(nameB);
-// ****************************************************************************************
             });
+// ****************************************************************************************
             for (i = 0; (row = data[i]); i += 1) {
                 content += parseResponse({
                     inputArr: row,
@@ -712,30 +705,22 @@ function populateDB(options){
 // ****************************************************************************************
                 $('#db-search-results').removeClass('hide').html('<i class="fa fa-times sx"></i><span class="visible-xs-inline"></span><span class="hidden-xs">' + results + ' result' + s + ' for "<span class="keyword">' + keyword + '</span>"</span>');
             }
-            data.sort(function(a, b){
-                if (path === 'Artists' || path === 'AlbumArtists'|| path === 'Various Artists') {
-                    nameA = a.hasOwnProperty('artist') ? a.artist : '';
-                    nameB = b.hasOwnProperty('artist') ? b.artist : '';
-                } else if (path === 'Albums') {
-                    nameA = a.hasOwnProperty('album') ? a.album : '';
-                    nameB = b.hasOwnProperty('album') ? b.album : '';
-                } else if (path === 'Webradio') {
-                    nameA = a.hasOwnProperty('playlist') ? a.playlist : '';
-                    nameB = b.hasOwnProperty('playlist') ? b.playlist : '';
-                } else if (path === 'Genres') {
-                    nameA = a.hasOwnProperty('genre') ? a.genre : '';
-                    nameB = b.hasOwnProperty('genre') ? b.genre : '';
+// ****************************************************************************************
+// sorting
+            data.sort( function( a, b ){
+                if ( path === 'Artists' || path === 'AlbumArtists'|| path === 'Various Artists' ) {
+                    return compareAB( a, b, 'artist' );
+                } else if ( path === 'Albums' ) {
+					return compareAB( a, b, 'album' );
+                } else if ( path === 'Webradio' ) {
+					return compareAB( a, b, 'playlist' );
+                } else if ( path === 'Genres' ) {
+					return compareAB( a, b, 'genre' );
                 } else {
-// ****************************************************************************************
-// replace - fix sorting
-                    nameA = a.hasOwnProperty('directory') ? a.directory : '';
-                    nameB = b.hasOwnProperty('directory') ? b.directory : '';
+					return compareAB( a, b, 'directory' );
                 }
-                return nameA.localeCompare(nameB);
-// ****************************************************************************************
             });
             if (path === 'Webradio') {
-// ****************************************************************************************
 // breadcrumb replace - modify add webradio button
 				$('#db-level-up').addClass('hide');
 				$('#db-webradio-add').removeClass('hide')
@@ -795,9 +780,6 @@ function populateDB(options){
         breadcrumb.html( folderCrumb );
 // ****************************************************************************************
     }
-// ****************************************************************************************
-//    $( '#db-currentpath, #db-index' ).removeClass( 'hide' );
-// ****************************************************************************************
 	
     if (uplevel) {
         var position = GUI.currentDBpos[GUI.currentDBpos[10]];
