@@ -12,6 +12,10 @@
 	font-size: 28px;
 	vertical-align: -5%;
 }
+#db-homeSetup {
+	background: none;
+	line-height: 40px;
+}
 #db-level-up,
 #db-webradio-add {
 	float: right;
