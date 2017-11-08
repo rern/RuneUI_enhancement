@@ -338,7 +338,7 @@ function displayplayback() {
 	$.get( 'displayget.php', function( data ) {
 		displayredis = $.parseJSON( data );
 		$( '#time-knob' ).css( 'display', displayredis[ 'time' ] ? 'block' : 'none' );
-		$( '#coverart' ).css( 'display', displayredis[ 'coverart' ] ? 'block' : 'none' );
+		$( '#coverart, #share-group' ).css( 'display', displayredis[ 'coverart' ] ? 'block' : 'none' );
 		$( '#volume-knob' ).css( 'display', displayredis[ 'volume' ] ? 'block' : 'none' );
 		var i = 0;
 		if ( displayredis[ 'time' ] ) i += 1;
@@ -357,7 +357,7 @@ function displayplayback() {
 			$( '#play-group, #share-group, #vol-group' ).css( 'width', elemW[ i ] );
 			if ( displayredis[ 'buttons' ] ) {
 				$( '#play-group' ).show();
-				if ( displayredis[ 'coverart' ] ) {
+				if ( displayredis[ 'time' ] && displayredis[ 'coverart' ] ) {
 					$( '#share-group' ).show();
 				} else {
 					$( '#share-group' ).hide();
