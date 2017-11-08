@@ -269,6 +269,7 @@ $hammerplayback.on( 'press', function() {
 			$.post( 'displaysave.php',
 				$( '#displaysaveplayback' ).serialize(),
 				function(data) {
+					console.log(data);
 					if ( data ) {
 						displayplayback();
 					} else {
@@ -289,7 +290,6 @@ $hammerlibrary.on( 'tap', function( e ) {
 } );
 $hammerlibrary.on( 'press', function() {
 	if ( !$( '#db-currentpath' ).hasClass( 'hide' ) ) return
-
 	info( {
 		  title  : 'Libary Home'
 		, message: 'Select items to show:'
@@ -350,10 +350,10 @@ function displayplayback() {
 			, 1: '60%'
 		}
 		$( '#time-knob, #coverart, #volume-knob' ).css( 'width', elemW[ i ] );
-
 		if ( window.innerHeight > 736 || window.innerWidth > 568 ) {
 			$( '#menu-top, #menu-bottom' ).css( 'display', displayredis[ 'bar' ] ? 'block' : 'none' );
 			$( '#database, #playlist' ).css( 'padding-top', displayredis[ 'bar' ] ? '80px' : '40px' );
+			$( '.btnlist-top' ).css( 'top', displayredis[ 'bar' ] ? '40px' : 0 );
 			$( '#share-group' ).css( 'display', displayredis[ 'time' ] ? 'block' : 'none' );
 			$( '#play-group, #share-group' ).css( 'display', displayredis[ 'buttons' ] ? 'block' : 'none' );
 			$( '#play-group, #share-group, #vol-group' ).css( 'width', elemW[ i ] );
@@ -363,7 +363,6 @@ function displayplayback() {
 				$( '#vol-group' ).hide();
 			}
 		}
-
 		$( '#playback-row' ).removeClass( 'hide' );
 	} );
 }
@@ -389,7 +388,6 @@ function displaylibrary() {
 		}
 	} );
 }
-
 // hide breadcrumb, index bar, edit bookmark
 var old_renderLibraryHome = renderLibraryHome;
 renderLibraryHome = function() {
@@ -446,7 +444,12 @@ updateGUI = function() {
 	}
 
 }
-
+// remove previous before new notify
+var old_renderMSG = renderMSG;
+renderMSG = function( text ) {
+	PNotify.removeAll();
+	old_renderMSG( text );
+}
 // scrolling text
 function scrolltext() {
 	setTimeout( function() {
