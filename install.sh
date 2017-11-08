@@ -73,6 +73,9 @@ file=/etc/nginx/nginx.conf
 if ! grep '|ico' $file | grep -q 'svg'; then
 	echo $file
 	sed -i 's/|ico/&|svg/' $file
+	svg=0
+else
+	svg=1
 fi
 
 # local display zoom, encoding, css #######################################
@@ -107,4 +110,4 @@ installfinish $@
 clearcache
 
 # refresh svg support last for webui installation
-[[ $1 != u ]] && systemctl reload nginx
+[[ $1 != u && $svg == 0 ]] && systemctl reload nginx
