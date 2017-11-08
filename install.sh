@@ -73,6 +73,9 @@ file=/etc/nginx/nginx.conf
 if ! grep '|ico' $file | grep -q 'svg'; then
 	echo $file
 	sed -i 's/|ico/&|svg/' $file
+	svg=0
+else
+	svg=1
 fi
 
 # local display zoom, encoding, css #######################################
@@ -98,13 +101,16 @@ sed -i 's/==UTF-8/=UTF-8/' $midori
 
 # correct version number
 [[ $( redis-cli get buildversion ) == 'beta-20160313' ]] && redis-cli set release 0.3 &> /dev/null
+
 # set library home database
-redis-cli hmset display bar checked time checked buttons checked coverart checked volume checked buttons checked \
+if [[ $( redis-cli keys display ) == '' ]]; then
+	redis-cli hmset display bar checked time checked coverart checked volume checked buttons checked \
 	\nas checked usb checked webradio checked albums checked artists checked composer checked genre checked spotify checked dirble checked jamendo checked &> /dev/null
+fi
 
 installfinish $@
 
 clearcache
 
 # refresh svg support last for webui installation
-[[ $1 != u ]] && systemctl reload nginx
+[[ $1 != u && $svg == 0 ]] && systemctl reload nginx
