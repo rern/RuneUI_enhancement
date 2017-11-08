@@ -101,11 +101,13 @@ sed -i 's/==UTF-8/=UTF-8/' $midori
 
 # correct version number
 [[ $( redis-cli get buildversion ) == 'beta-20160313' ]] && redis-cli set release 0.3 &> /dev/null
+
 # set library home database
 if ! redis-cli keys display &> /dev/null; then
 	redis-cli hmset display bar checked time checked playbuttons checked coverart checked sharebutton checked volume checked volumebuttons checked nas \
 	\checked usb checked webradio checked albums checked artists checked composer checked genre checked spotify checked dirble checked jamendo checked &> /dev/null
 fi
+
 installfinish $@
 
 clearcache
