@@ -9,16 +9,16 @@ uninstallstart $@
 if [[ $1 == u ]]; then
 	zoom=$( grep '^zoom' /root/.config/midori/config | cut -d '=' -f 2 )
 	redis-cli set enhazoom $zoom &> /dev/null
+else
+	redis-cli del display &> /dev/null
 fi
 
 # remove files #######################################
 echo -e "$bar Remove files ..."
 rm -v /srv/http/app/templates/playbackcustom.php
-rm -v /srv/http/lyrics.php
+rm -v /srv/http/{displayget.php,displaysave.php,lyrics.php}
 path=/srv/http/assets
-rm -v $path/css/custom.css
-rm -v $path/css/customcoveroff.css
-rm -v $path/css/customvoloff.css
+rm -v $path/css/custom*.css
 rm -v $path/img/runelogo.svg
 rm -v $path/js/custom.js
 

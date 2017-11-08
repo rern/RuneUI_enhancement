@@ -17,7 +17,7 @@
                     <span id="format-bitrate"><i class="fa fa-spinner fa-spin"></i></span>
                 </div>
             </div>
-            <div class="row" id="playback-row">
+            <div class="row hide" id="playback-row">
                 <div id="time-knob">
                     <input id="time" value="0" data-width="230" data-height="230" data-bgColor="#34495E" data-fgcolor="#0095D8" data-thickness="0.30" data-min="0" data-max="1000" data-displayInput="false" data-displayPrevious="true">
                     <div id="overlay-playsource-open" title="View and change playback source">
@@ -43,11 +43,9 @@
                     </div>
                 </div>
                 <?php endif ?>
-                <?php if (!preg_match('/mixer_type[\s]+"disabled"/', file_get_contents('/etc/mpd.conf'))):?>
                 <div id="volume-knob" class="<?=$this->volume['divclass'] ?>">
                     <?php // fix smaller volume knob size in mobile
-                    $mobile = stristr($_SERVER['HTTP_USER_AGENT'], 'mobi') !== FALSE;
-                    $wh = $mobile ? 250 : 230;
+                    $wh = stristr($_SERVER['HTTP_USER_AGENT'], 'mobi') !== FALSE ? 250 : 230;
                     ?>
                     <input id="volume" value="100" data-width=<?=$wh ?> data-height=<?=$wh ?> data-bgColor="#f00" data-thickness="0.25" data-skin="tron" data-cursor="true" data-angleArc="250" data-angleOffset="-125" data-readOnly="<?=$this->volume['readonly'] ?>" data-fgColor="<?=$this->volume['color'] ?>">
                 </div>
@@ -58,14 +56,13 @@
                         <button id="volumeup" class="btn btn-default btn-lg btn-cmd btn-volume" type="button" title="Volume up" data-cmd="volumeup"><i class="fa fa-volume-up"></i></button>
                     </div>
                 </div>
-                <?php endif ?>
             </div>
         </div>
     </div>
     <!-- LIBRARY PANEL -->
     <div id="panel-sx" class="tab-pane">
         <div class="btnlist btnlist-top">
-            <form id="db-search" class="form-inline" action="javascript:getDBsearch();">
+            <form id="db-search" class="form-inline" action="javascript:if (document.getElementById( 'db-search-keyword' ).value) getDB({cmd: 'search', path: GUI.currentpath, browsemode: GUI.browsemode});">
                 <div class="input-group">
                     <input id="db-search-keyword" class="form-control osk-trigger" type="text" value="" placeholder="search in DB...">
                     <span class="input-group-btn">
@@ -74,11 +71,11 @@
                 </div>
             </form>
             <div id="db-currentpath" class="hide">
-                <i id="db-home" class="fa fa-folder-open"></i> <span>Home</span>
-                <i id="db-level-up" class="fa fa-arrow-left"></i>
-                <i id="db-webradio-add" class="fa fa-plus-circle hide"></i>
+                <i id="db-home" class="fa fa-folder-open"></i> <span></span>
             </div>
-            <button id="db-search-results" class="btn hide" type="button" title="Close search results and go back to the Library browsing"><i class="fa fa-times sx"></i> back</button>
+            <button id="db-search-results" class="btn hide" type="button" title="Close search results and go back to the Library browsing"><i class="fa fa-times sx"></i></button>
+			<i id="db-level-up" class="fa fa-arrow-left"></i>
+			<i id="db-webradio-add" class="fa fa-plus-circle hide"></i>
         </div>
         <div id="database">
             <ul id="database-entries" class="database">
@@ -124,20 +121,19 @@
                 </div>
             </div>
         </div>
-        <div class="btnlist btnlist-bottom">
-            <div id="db-controls">
-                <button id="db-homeSetup" class="btn btn-default hide" type="button" title="Setup the Library home screen"><i class="fa fa-gear"></i></button>
-                <button id="db-firstPage" class="btn btn-default" type="button" title="Scroll to the top"><i class="fa fa-angle-double-up"></i></button>
-                <button id="db-prevPage" class="btn btn-default" type="button" title="Scroll one page up"><i class="fa fa-angle-up"></i></button>
-                <button id="db-nextPage" class="btn btn-default" type="button" title="Scroll one page down"><i class="fa fa-angle-down"></i></button>
-                <button id="db-lastPage" class="btn btn-default" type="button" title="Scroll to the bottom"><i class="fa fa-angle-double-down"></i></button>
-            </div>
-        </div>
+        <button id="db-homeSetup" class="btn btn-default hide" type="button" title="Setup the Library home screen"><i class="fa fa-gear"></i></button>
         <div id="spinner-db" class="csspinner duo hide"></div>
     </div>
     <!-- QUEUE PANEL -->
     <div id="panel-dx" class="tab-pane">
         <div class="btnlist btnlist-top">
+            <button id="pl-filter-results" class="btn hide" type="button" title="Close filter results and go back to the playing Queue"><i class="fa fa-times sx"></i></button>
+            <div id="pl-manage">
+                <i id="pl-manage-list" class="fa fa-file-text-o fa-lg" title="Manage playlists"></i>
+                <i id="pl-manage-save" class="fa fa-save fa-lg" title="Save current queue as playlist" data-toggle="modal" data-target="#modal-pl-save"></i>
+                <i id="pl-manage-clear" class="fa fa-trash-o fa-lg" title="Clear the playing queue" data-toggle="modal" data-target="#modal-pl-clear"></i>
+            </div>
+            <span id="pl-count" class="hide">2143 entries</span>
             <form id="pl-search" class="form-inline" method="post" onSubmit="return false;" role="form">
                 <div class="input-group">
                     <input id="pl-filter" class="form-control osk-trigger ttip" type="text" value="" placeholder="search in queue..." data-placement="bottom" data-toggle="tooltip" data-original-title="Type here to search on the fly">
@@ -146,13 +142,6 @@
                     </span>
                 </div>
             </form>
-            <button id="pl-filter-results" class="btn hide" type="button" title="Close filter results and go back to the playing Queue"><i class="fa fa-times sx"></i> back</button>
-            <div id="pl-manage">
-                <button id="pl-manage-list" class="btn btn-default" type="button" title="Manage playlists"><i class="fa fa-file-text-o fa-lg"></i></button>
-                <button id="pl-manage-save" class="btn btn-default" type="button" title="Save current queue as playlist" data-toggle="modal" data-target="#modal-pl-save"><i class="fa fa-save fa-lg"></i></button>
-                <button id="pl-manage-clear" class="btn btn-default" type="button" title="Clear the playing queue" data-toggle="modal" data-target="#modal-pl-clear"><i class="fa fa-trash-o fa-lg"></i></button>
-            </div>
-            <span id="pl-count" class="hide">2143 entries</span>
         </div>
         <div id="playlist">
             <ul id="playlist-entries" class="playlist">
@@ -176,18 +165,6 @@
                         <p><a id="open-library" href="#panel-sx" class="btn btn-primary btn-lg" data-toggle="tab">Browse Library</a></p>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="btnlist btnlist-bottom">
-            <div id="pl-controls">
-                <button id="pl-firstPage" class="btn btn-default" type="button" title="Scroll to the top"><i class="fa fa-angle-double-up"></i></button>
-                <button id="pl-prevPage" class="btn btn-default" type="button" title="Scroll one page up"><i class="fa fa-angle-up"></i></button>
-                <button id="pl-nextPage" class="btn btn-default" type="button" title="Scroll one page down"><i class="fa fa-angle-down"></i></button>
-                <button id="pl-lastPage" class="btn btn-default" type="button" title="Scroll to the bottom"><i class="fa fa-angle-double-down"></i></button>
-            </div>
-            <div id="pl-currentpath" class="hide">
-                <i class="fa fa-folder-open"></i>
-                <span>Playlists</span>
             </div>
         </div>
         <div id="spinner-pl" class="csspinner duo hide"></div>

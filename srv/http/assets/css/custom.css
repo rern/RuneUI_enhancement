@@ -49,8 +49,8 @@
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
-#db-currentpath a,
-#db-currentpath i {
+.btnlist-top a,
+.btnlist-top i {
 	cursor: pointer;
 }
 #db-currentpath a {

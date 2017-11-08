@@ -13,6 +13,7 @@ Try it - [**Demo**](https://rern.github.io/RuneUI_GPIO/)
 
 - More minimalism
 - More fluid layout
+- Select show/hide items
 - Fit all in one phone screen (with 'Add to Home Screen')
 - Swipeable
 - Library breadcrumb path links to each directory
@@ -38,6 +39,9 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 
 Functional
 ---
+### All page
+- Long-press = show/hide items setting
+
 ### Playback
 - Tap `song` = get lyrics
 - Tap `artist` or `album` = get info from last.fm
@@ -48,6 +52,7 @@ Functional
 - Tap `cover art` = play / pause (besides `time`)
 - Tap `playlist item` also go back to playback page
 - Tap `playback controls` on other pages also go back to playback page
+- Long-press = show/hide items
 
 ![layout](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/RuneUImod1.gif)
 
@@ -60,6 +65,12 @@ Functional
 	- After [**Webradio import**](https://github.com/rern/RuneAudio/tree/master/webradio)
 	- After [**MPD Upgrade**](https://github.com/rern/RuneAudio/tree/master/mpd)
 	- (Songs in albums still, by default, be sorted by track number)
+- Long-press = show/hide items
+- Long-press `bookmark` = edit bookmarks
+- Disable search with blank data
+
+### Playlist
+- Click anywhere on an items in manage playlist also shows **context menu**
 	
 Visual
 ---
@@ -86,7 +97,6 @@ Visual
 - Hide `volume` on disabled
 - Enlarge icons
 - Move `play source` inside `time`
-- Fix Webradio sorting
 
 ![lyrics](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/lyrics.jpg)
 
@@ -102,9 +112,8 @@ Visual
 - Move `add webradio` list to top bar button
 - Move path from bottom bar to top bar
 - Change and relocate `back` button
-- Hide bottom bar with `scroll` buttons
+- Fix sorting
 
 ### Queue
 - Change and relocate `back` button
 - Move `manage` buttons from bottom bar to top bar
-- Hide bottom bar with `scroll` buttons

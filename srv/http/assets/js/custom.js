@@ -168,7 +168,7 @@ $( '#db-currentpath' ).on( 'click', 'a', function() {
 
 // index link
 $( '#db-index li' ).click( function() {
-	var topoffset = $( '#menu-top' ).css( 'top') === '0px' ? 80 : 40;
+	var topoffset = $( '#menu-top' ).is( ':visible' ) ? 80 : 40;
 	var indextext = $( this ).text();
 	if ( indextext === '#' ) {
 		$( document ).scrollTop( 0 );
@@ -218,7 +218,7 @@ function panelr( lr ) {
 	$paneclick = ( lr === 'left' ) ? $paneleft.click() : $paneright.click();
 }
 
-// swipe ************************************************************************************
+// hammer ************************************************************************************
 Hammer = propagating( Hammer ); // propagating.js fix e.stopPropagation()
 
 var $hammercontent = new Hammer( document.body );
@@ -284,7 +284,12 @@ $hammerplayback.on( 'press', function() {
 } );
 
 var $hammerlibrary = new Hammer( document.getElementById( 'panel-sx' ) );
+$hammerlibrary.on( 'tap', function( e ) {
+	if ( $( '.home-block-remove' ).length && !$( e.target ).is( 'span.block-remove' ) ) $( '#db-homeSetup' ).click();
+} );
 $hammerlibrary.on( 'press', function() {
+	if ( !$( '#db-currentpath' ).hasClass( 'hide' ) ) return
+
 	info( {
 		  title  : 'Libary Home'
 		, message: 'Select items to show:'
@@ -345,7 +350,7 @@ function displayplayback() {
 			, 1: '60%'
 		}
 		$( '#time-knob, #coverart, #volume-knob' ).css( 'width', elemW[ i ] );
-//		$( '.btnlist-top' ).css( 'top', displayredis[ 'bar' ] ? '40px' : 0 );
+
 		if ( window.innerHeight > 736 || window.innerWidth > 568 ) {
 			$( '#menu-top, #menu-bottom' ).css( 'display', displayredis[ 'bar' ] ? 'block' : 'none' );
 			$( '#database, #playlist' ).css( 'padding-top', displayredis[ 'bar' ] ? '80px' : '40px' );
@@ -358,6 +363,8 @@ function displayplayback() {
 				$( '#vol-group' ).hide();
 			}
 		}
+
+		$( '#playback-row' ).removeClass( 'hide' );
 	} );
 }
 // library home show/hide blocks
@@ -365,7 +372,7 @@ function displaylibrary() {
 	$.get( 'displayget.php', function( data ) {
 		displayredis = $.parseJSON( data );
 		// no 'id'
-		$( '#home-blocks div' ).eq( 1 ).css( 'display', displayredis[ 'nas' ] ? 'block' : 'none' );
+		$( '#home-blocks div:contains(Network mounts)' ).css( 'display', displayredis[ 'nas' ] ? 'block' : 'none' );
 		$( '#home-usb' ).parent().css( 'display', displayredis[ 'usb' ] ? 'block' : 'none' );
 		$( '#home-webradio' ).parent().css( 'display', displayredis[ 'webradio' ] ? 'block' : 'none' );
 		$( '#home-albums' ).parent().css( 'display', displayredis[ 'albums' ] ? 'block' : 'none' );
@@ -382,20 +389,52 @@ function displaylibrary() {
 		}
 	} );
 }
-// hide breadcrumb and index bar
+
+// hide breadcrumb, index bar, edit bookmark
 var old_renderLibraryHome = renderLibraryHome;
 renderLibraryHome = function() {
 	old_renderLibraryHome();
-	$( '#barleft, #barright' ).hide();
-	$( '#db-currentpath, #db-index' ).addClass( 'hide' );
+	if ( !$( '#playback' ).hasClass( 'active' ) ) $( '#barleft, #barright' ).hide();
+	$( '#db-currentpath, #db-index, #db-level-up, #db-webradio-add, #db-homeSetup' ).addClass( 'hide' );
 	displaylibrary();
+	
+	$( '.home-bookmark' ).each( function() {
+		var $this = $( this );
+		var $hammerbookmark = new Hammer( this );
+		$hammerbookmark.on( 'press', function( e ) {
+			e.stopPropagation();
+			$( '#home-blocks' ).css( 'pointer-events', 'none' );
+			$( '#db-homeSetup' ).click();
+			setTimeout( function() {
+				$( '#home-blocks' ).css( 'pointer-events', 'auto' );
+			}, 500 );
+		});
+	});
 }
-// hide 'to queue' text
+// hide 'to queue' text and 'pl-manage li' click context menu
 var old_renderPlaylists = renderPlaylists;
 renderPlaylists = function( data ) {
 	old_renderPlaylists( data );
 	$( '#barleft, #barright' ).hide();
 	$( '#pl-filter-results' ).html( '<i class="fa fa-arrow-left sx"></i>' );
+	$( '#pl-editor li' ).click( function( e ) {
+		e.stopPropagation();
+		var clickX = e.pageX + 5;
+		if ( window.innerWidth > 500 ) {
+			var positionX = clickX < 250 ? clickX : clickX - 255;
+		} else {
+			var positionX = window.innerWidth - 295;
+		}
+		GUI.DBentry[0] = $( this ).attr( 'data-path' );
+		$( '#context-menu-playlist' ).addClass( 'open' ).css( {
+			position: 'absolute',
+			top: $( this ).position().top +'px',
+			left: positionX +'px'
+		} );
+	} );
+	$( '#panel-dx, #context-menu-playlist' ).click( function() {
+		if ( $( '#context-menu-playlist' ).hasClass( 'open' ) ) $( '#context-menu-playlist' ).removeClass( 'open' );
+	} );
 }
 // next lyrics on track change
 var old_updateGUI = updateGUI;
@@ -526,7 +565,12 @@ function refreshState() {
     }
 }
 
-function populateDB(options){
+function compareAB( a, b, prop ) {
+	nameA = a.hasOwnProperty( prop ) ? a[ prop ] : '';
+	nameB = b.hasOwnProperty( prop ) ? b[ prop ] : '';
+	return nameA.localeCompare( nameB );
+}
+function populateDB(options) {
     var data = options.data || '',
         path = options.path || '',
         uplevel = options.uplevel || 0,
@@ -548,22 +592,18 @@ function populateDB(options){
             }
             document.getElementById('database-entries').innerHTML = '';
             data = (querytype === 'tracks') ? data.tracks : data.playlists;
-
-            data.sort(function(a, b){
-                if (path === 'Spotify' && querytype === '') {
-                    nameA = a.hasOwnProperty('name') ? a.name : '';
-                    nameB = b.hasOwnProperty('name') ? b.name : '';
-                } else if (querytype === 'tracks') {
-                    nameA = a.hasOwnProperty('title') ? a.title : '';
-                    nameB = b.hasOwnProperty('title') ? b.title : '';
+// ****************************************************************************************
+// sorting
+            data.sort( function( a, b ) {
+                if ( path === 'Spotify' && querytype === '' ) {
+					return compareAB( a, b, 'name' );
+                } else if ( querytype === 'tracks' ) {
+					return compareAB( a, b, 'title' );
                 } else {
                     return 0;
                 }
-// ****************************************************************************************
-// replace - fix sorting
-                return nameA.localeCompare(nameB);
-// ****************************************************************************************
             });
+// ****************************************************************************************
             for (i = 0; (row = data[i]); i += 1) {
                 content += parseResponse({
                     inputArr: row,
@@ -591,22 +631,18 @@ function populateDB(options){
             } else {
                 document.getElementById('database-entries').innerHTML = '';
             }            
-            data.sort(function(a, b){
-                if (querytype === 'childs' || querytype === 'categories') {
-                    nameA = a.hasOwnProperty('title') ? a.title : '';
-                    nameB = b.hasOwnProperty('title') ? b.title : '';
-                } else if (querytype === 'childs-stations' || querytype === 'stations') {
-                    nameA = a.hasOwnProperty('name') ? a.name : '';
-                    nameB = b.hasOwnProperty('name') ? b.name : '';
+// ****************************************************************************************
+// sorting
+            data.sort( function( a, b ) {
+                if ( querytype === 'childs' || querytype === 'categories' ) {
+					return compareAB( a, b, 'title' );
+                } else if ( querytype === 'childs-stations' || querytype === 'stations' ) {
+					return compareAB( a, b, 'name' );
                 } else {
                     return 0;
                 }
-// ****************************************************************************************
-// replace - fix sorting
-                return nameA.localeCompare(nameB);
-// ****************************************************************************************
             });
-
+// ****************************************************************************************
             for (i = 0; (row = data[i]); i += 1) {
                 content += parseResponse({
                     inputArr: row,
@@ -625,19 +661,16 @@ function populateDB(options){
                 GUI.currentpath = path;
             }
             document.getElementById('database-entries').innerHTML = '';
-
-            data.sort(function(a, b){
-                if (path === 'Jamendo' && querytype === '') {
-                    nameA = a.hasOwnProperty('dispname') ? a.dispname : '';
-                    nameB = b.hasOwnProperty('dispname') ? b.dispname : '';
+// ****************************************************************************************
+// sorting
+            data.sort( function( a, b ) {
+                if ( path === 'Jamendo' && querytype === '' ) {
+					return compareAB( a, b, 'dispname' );
                 } else {
                     return 0;
                 }
-// ****************************************************************************************
-// replace - fix sorting
-                return nameA.localeCompare(nameB);
-// ****************************************************************************************
             });
+// ****************************************************************************************
             for (i = 0; (row = data[i]); i += 1) {
                 content += parseResponse({
                     inputArr: row,
@@ -676,30 +709,22 @@ function populateDB(options){
 // ****************************************************************************************
                 $('#db-search-results').removeClass('hide').html('<i class="fa fa-times sx"></i><span class="visible-xs-inline"></span><span class="hidden-xs">' + results + ' result' + s + ' for "<span class="keyword">' + keyword + '</span>"</span>');
             }
-            data.sort(function(a, b){
-                if (path === 'Artists' || path === 'AlbumArtists'|| path === 'Various Artists') {
-                    nameA = a.hasOwnProperty('artist') ? a.artist : '';
-                    nameB = b.hasOwnProperty('artist') ? b.artist : '';
-                } else if (path === 'Albums') {
-                    nameA = a.hasOwnProperty('album') ? a.album : '';
-                    nameB = b.hasOwnProperty('album') ? b.album : '';
-                } else if (path === 'Webradio') {
-                    nameA = a.hasOwnProperty('playlist') ? a.playlist : '';
-                    nameB = b.hasOwnProperty('playlist') ? b.playlist : '';
-                } else if (path === 'Genres') {
-                    nameA = a.hasOwnProperty('genre') ? a.genre : '';
-                    nameB = b.hasOwnProperty('genre') ? b.genre : '';
+// ****************************************************************************************
+// sorting
+            data.sort( function( a, b ){
+                if ( path === 'Artists' || path === 'AlbumArtists'|| path === 'Various Artists' ) {
+                    return compareAB( a, b, 'artist' );
+                } else if ( path === 'Albums' ) {
+					return compareAB( a, b, 'album' );
+                } else if ( path === 'Webradio' ) {
+					return compareAB( a, b, 'playlist' );
+                } else if ( path === 'Genres' ) {
+					return compareAB( a, b, 'genre' );
                 } else {
-// ****************************************************************************************
-// replace - fix sorting
-                    nameA = a.hasOwnProperty('directory') ? a.directory : '';
-                    nameB = b.hasOwnProperty('directory') ? b.directory : '';
+					return compareAB( a, b, 'directory' );
                 }
-                return nameA.localeCompare(nameB);
-// ****************************************************************************************
             });
             if (path === 'Webradio') {
-// ****************************************************************************************
 // breadcrumb replace - modify add webradio button
 				$('#db-level-up').addClass('hide');
 				$('#db-webradio-add').removeClass('hide')
@@ -759,10 +784,6 @@ function populateDB(options){
         breadcrumb.html( folderCrumb );
 // ****************************************************************************************
     }
-// ****************************************************************************************
-//    $( '#db-currentpath, #db-index' ).removeClass( 'hide' );
-// ****************************************************************************************
-    $('#db-homeSetup').addClass('hide');
 	
     if (uplevel) {
         var position = GUI.currentDBpos[GUI.currentDBpos[10]];
