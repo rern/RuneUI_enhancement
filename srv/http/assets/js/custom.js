@@ -354,13 +354,21 @@ function displayplayback() {
 			$( '#menu-top, #menu-bottom' ).css( 'display', displayredis[ 'bar' ] ? 'block' : 'none' );
 			$( '#database, #playlist' ).css( 'padding-top', displayredis[ 'bar' ] ? '80px' : '40px' );
 			$( '.btnlist-top' ).css( 'top', displayredis[ 'bar' ] ? '40px' : 0 );
-			$( '#share-group' ).css( 'display', displayredis[ 'time' ] ? 'block' : 'none' );
-			$( '#play-group, #share-group' ).css( 'display', displayredis[ 'buttons' ] ? 'block' : 'none' );
 			$( '#play-group, #share-group, #vol-group' ).css( 'width', elemW[ i ] );
-			if ( displayredis[ 'buttons' ] && displayredis[ 'volume' ] ) {
-				$( '#vol-group' ).show();
+			if ( displayredis[ 'buttons' ] ) {
+				$( '#play-group' ).show();
+				if ( displayredis[ 'coverart' ] ) {
+					$( '#share-group' ).show();
+				} else {
+					$( '#share-group' ).hide();
+				}
+				if ( displayredis[ 'volume' ] ) {
+					$( '#vol-group' ).show();
+				} else {
+					$( '#vol-group' ).hide();
+				}
 			} else {
-				$( '#vol-group' ).hide();
+				$( '#play-group, #share-group, #vol-group' ).hide();
 			}
 		}
 		$( '#playback-row' ).removeClass( 'hide' );
