@@ -104,8 +104,8 @@ sed -i 's/==UTF-8/=UTF-8/' $midori
 
 # set library home database
 if [[ $( redis-cli keys display ) == '' ]]; then
-	redis-cli hmset display bar checked time checked playbuttons checked coverart checked sharebutton checked volume checked volumebuttons checked nas \
-	\checked usb checked webradio checked albums checked artists checked composer checked genre checked spotify checked dirble checked jamendo checked &> /dev/null
+	redis-cli hmset display bar checked time checked coverart checked volume checked buttons checked \
+	\nas checked usb checked webradio checked albums checked artists checked composer checked genre checked spotify checked dirble checked jamendo checked &> /dev/null
 fi
 
 installfinish $@
