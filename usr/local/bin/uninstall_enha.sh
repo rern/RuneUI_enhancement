@@ -68,6 +68,10 @@ sed -i -e '/playbackcustom.php/, /\/\*/ d
 ' -e '/enh \*\/?>/ d
 ' $playback
 
+uninstallfinish $@
+
+[[ $1 == u ]] && exit
+
 midori=/root/.config/midori/config
 echo $midori
 if grep -q '^#zoom-level' $midori; then
@@ -78,5 +82,3 @@ fi
 sed -i '/#user-stylesheet-uri/ s/^#//' $midori
 
 clearcache
-
-uninstallfinish $@
