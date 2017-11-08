@@ -289,6 +289,7 @@ $hammerlibrary.on( 'tap', function( e ) {
 } );
 $hammerlibrary.on( 'press', function() {
 	if ( !$( '#db-currentpath' ).hasClass( 'hide' ) ) return
+
 	info( {
 		  title  : 'Libary Home'
 		, message: 'Select items to show:'
@@ -349,6 +350,7 @@ function displayplayback() {
 			, 1: '60%'
 		}
 		$( '#time-knob, #coverart, #volume-knob' ).css( 'width', elemW[ i ] );
+
 		if ( window.innerHeight > 736 || window.innerWidth > 568 ) {
 			$( '#menu-top, #menu-bottom' ).css( 'display', displayredis[ 'bar' ] ? 'block' : 'none' );
 			$( '#database, #playlist' ).css( 'padding-top', displayredis[ 'bar' ] ? '80px' : '40px' );
@@ -361,6 +363,7 @@ function displayplayback() {
 				$( '#vol-group' ).hide();
 			}
 		}
+
 		$( '#playback-row' ).removeClass( 'hide' );
 	} );
 }
@@ -386,6 +389,7 @@ function displaylibrary() {
 		}
 	} );
 }
+
 // hide breadcrumb, index bar, edit bookmark
 var old_renderLibraryHome = renderLibraryHome;
 renderLibraryHome = function() {
