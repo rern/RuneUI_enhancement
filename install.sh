@@ -68,6 +68,8 @@ sed -i -e '/<div class="tab-content">/ i\
 ' -e '/id="context-menus"/ i\enh \*/?>
 ' $file
 
+[[ $( redis-cli get release ) == 0.4b ]] && sed -i '/id="songinfo-open"/ s/<!--//; s/-->//' /srv/http/app/templates/playbackcustom.php
+
 # for nginx svg support
 file=/etc/nginx/nginx.conf
 if ! grep '|ico' $file | grep -q 'svg'; then
