@@ -452,12 +452,7 @@ updateGUI = function() {
 	}
 
 }
-// remove previous before new notify
-var old_renderMSG = renderMSG;
-renderMSG = function( text ) {
-	PNotify.removeAll();
-	old_renderMSG( text );
-}
+
 // scrolling text
 function scrolltext() {
 	setTimeout( function() {
@@ -540,7 +535,13 @@ function refreshState() {
 			var bitrate = Number( GUI.json.bitrate );
 			if ( ext == 'DSF' || ext == 'DFF' ) {
 				bitdepth = 1;
-				sampling = GUI.json.audio.split(':')[ 0 ] / 5512.5;
+				var audio = GUI.json.audio.split(':')[ 0 ];
+				if ( audio[ 0 ] == 'd' ) { // mpd0.20 - as dsd128:2 / dsd256:2 ...
+					channel = '';
+					sampling = Number( audio.replace( /[^\d]/g, '' ) );
+				} else {
+					sampling = GUI.json.audio.split(':')[ 0 ] / 5512.5;
+				}
 				bitrate = sampling * 44.1;
 				sampling = 'DSD'+ sampling;
 			} else if ( ext == 'FLAC' || ext == 'WAV' || ext == 'ALAC' ) {
