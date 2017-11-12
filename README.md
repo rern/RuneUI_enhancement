@@ -17,7 +17,7 @@ Try it - [**Demo**](https://rern.github.io/RuneUI_GPIO/)
 - Fit all in one phone screen (with 'Add to Home Screen')
 - Swipeable
 - Improved song info
-- Get lyrics
+- Get lyrics (with code from [LyricsCore](https://github.com/Smile4ever/LyricsCore))
 - Library breadcrumb path links to each directory
 - Library index bar
 - Fix Library sorting
