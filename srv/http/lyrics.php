@@ -5,7 +5,8 @@
 
 include 'simple_html_dom.php';
 
-// ************************************************************
+// modified ********************************************************
+
 $source = '';
 $url = '';
 
@@ -20,20 +21,16 @@ if ( !isset( $_GET[ 'filename' ] ) ) {
 
 $lyrics = get_lyrics( $artist, $title );
 
-echo $lyrics;
-// ************************************************************
-
-function get_text_from_unclean_html($unclean){
-	global $source;
-	if($source == "LyricsMania"){
-		$unclean = str_replace("\r\n\r\n\r\n", "\n\n", $unclean);
-		$unclean = preg_replace('/[\x00-\x09]/', '', $unclean);
-	}
-	
-	$unclean = str_replace("</p>", "\n\n", $unclean);
-		
-	return trim(strip_tags(html_entity_decode($unclean)));
+if ( $source == 'LyricsMania' ) {
+	$lyrics = str_replace( '\r\n\r\n\r\n', '\n\n', $lyrics );
+	$lyrics = preg_replace( '/[\x00-\x09]/', '', $lyrics );
 }
+
+$lyrics = str_replace( '</p>' , '\n\n', $lyrics );
+	
+print trim( strip_tags( html_entity_decode( $lyrics ) ) );
+
+// modified end ****************************************************
 
 function get_artist($filename){	
 	$filename = str_replace(chr(38), "", $filename);
