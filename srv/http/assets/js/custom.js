@@ -421,7 +421,7 @@ lyricsshow = function() {
 	new PNotify( {
 		  icon    : false
 		, title   : $( '#currentsong' ).text()
-		, text    : lyrics +'\n\n&#8226;&#8226;&#8226;\n\n\n\n\n\n\n\n'
+		, text    : lyrics.replace( /\\n/g, '<br>' ) +'\n\n&#8226;&#8226;&#8226;\n\n\n\n\n\n\n\n'
 		, hide    : false
 		, addclass: 'pnotify_lyrics pnotify_custom'
 		, buttons : {
