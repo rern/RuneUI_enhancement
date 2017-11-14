@@ -102,46 +102,18 @@ $( '#currentartist' ).click( function() {
 		window.open( 'http://www.last.fm/music/'+ artist );
 } );
 $( '#currentsong' ).click( function() {
-	var artist = $( '#currentartist' ).text();
-	var song = $( this ).text();
-	if ( song.slice( 0, 3 ) != '[no' ) {
-		new PNotify( {
+	if ( lyrics !== '' ) {
+		lyricsshow();
+	} else {
+		// wait for lyrics ready
+		PNotify.removeAll();
+		$fetching = new PNotify( {
 			  icon    : 'fa fa-refresh fa-spin fa-lg'
 			, title   : 'Lyrics'
 			, text    : 'Fetching ...'
 			, hide    : false
 			, addclass: 'pnotify_custom'
 		} );
-		$.get( 'lyrics.php',   
-			{ artist: artist, song: song },
-			function( lyrics ) {
-				//var lyrics = $( lyrics ).find( 'lyrics' ).text();
-				//var cover = $( lyrics ).find( 'LyricCovertArtUrl' ).text();
-				lyrics = lyrics ? lyrics.replace( /&amp;quot;/g, '&quot;' ).replace( /&amp;lt;/g, '&lt;' ).replace( /&amp;gt;/g, '&gt;' ) : '(Lyrics unavailable)';
-				PNotify.removeAll();
-				// need new 'pnotify.custom.min.js' with 'button', confirm', 'callback', 'css'
-				new PNotify( {
-					  icon    : false
-					, title   : song
-					, text    : lyrics +'\n\n&#8226;&#8226;&#8226;\n\n\n\n\n\n\n\n'
-					, hide    : false
-					, addclass: 'pnotify_lyrics pnotify_custom'
-					, buttons : {
-						  closer_hover: false
-						, sticker     : false
-					}
-					, before_open: function() {
-						$( '#lyricsfade' ).removeClass( 'hide' );
-						$( '#menu-bottom' ).addClass( 'lyrics-menu-bottom' );
-					}
-					, after_close: function() {
-						$( '#lyricsfade' ).addClass( 'hide' );
-						$( '#menu-bottom' ).removeClass( 'lyrics-menu-bottom' );
-						$( '.ui-pnotify' ).remove();
-					}
-				} );
-			}
-		);
 	}
 } );
 $( '#currentalbum' ).click( function() {
@@ -442,14 +414,51 @@ renderPlaylists = function( data ) {
 		if ( $( '#context-menu-playlist' ).hasClass( 'open' ) ) $( '#context-menu-playlist' ).removeClass( 'open' );
 	} );
 }
+
+lyricsshow = function() {
+	PNotify.removeAll();
+	// need new 'pnotify.custom.min.js' with 'button', confirm', 'callback', 'css'
+	new PNotify( {
+		  icon    : false
+		, title   : $( '#currentsong' ).text()
+		, text    : lyrics +'\n\n&#8226;&#8226;&#8226;\n\n\n\n\n\n\n\n'
+		, hide    : false
+		, addclass: 'pnotify_lyrics pnotify_custom'
+		, buttons : {
+			  closer_hover: false
+			, sticker     : false
+		}
+		, before_open: function() {
+			$( '#lyricsfade' ).removeClass( 'hide' );
+			$( '#menu-bottom' ).addClass( 'lyrics-menu-bottom' );
+		}
+		, after_close: function() {
+			$( '#lyricsfade' ).addClass( 'hide' );
+			$( '#menu-bottom' ).removeClass( 'lyrics-menu-bottom' );
+			$( '.ui-pnotify' ).remove();
+		}
+	} );
+}
 // next lyrics on track change
+var lyrics = '';
 var old_updateGUI = updateGUI;
 updateGUI = function() {
 	old_updateGUI();
-	if ( !$( '#lyricsfade' ).hasClass( 'hide' ) && $( '#currentsong' ).text() != $( 'h4.ui-pnotify-title' ).text() ) {
-		PNotify.removeAll();
-		$( '#currentsong' ).click();
+	// prefetch lyrics
+	lyrics = '';
+	$fetching = '';
+	var artist = $( '#currentartist' ).text();
+	var song = $( '#currentsong' ).text();
+	if ( song.slice( 0, 3 ) != '[no' ) {
+		$.get( 'lyrics.php',   
+			{ artist: artist, song: song },
+			function( data ) {
+				lyrics = data;
+				if ( $fetching ) lyricsshow();
+			}
+		);
 	}
+	if ( !$( '#lyricsfade' ).hasClass( 'hide' ) && $( '#currentsong' ).text() != $( 'h4.ui-pnotify-title' ).text() ) $( '#currentsong' ).click();
 
 }
 

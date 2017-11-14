@@ -66,7 +66,11 @@ sed -i -e '/<div class="tab-content">/ i\
 ' -e '/id="context-menus"/ i\enh \*/?>
 ' $file
 
-[[ $( redis-cli get release ) == 0.4b ]] && sed -i '/id="songinfo-open"/ {s/<!--//; s/-->//}' /srv/http/app/templates/playbackcustom.php
+file=/srv/http/app/templates/playbackcustom.php
+# for 0.4b
+[[ $( redis-cli get release ) == 0.4b ]] && sed -i '/id="songinfo-open"/ {s/<!--//; s/-->//}' $file
+# for rune youtube
+[[ -e /usr/local/bin/uninstall_RuneYoutube.sh ]] && sed -i '/id="pl-import-youtube"/ {s/<!--//; s/-->//}' $file
 
 # for nginx svg support
 file=/etc/nginx/nginx.conf
