@@ -104,11 +104,14 @@ body > .ui-pnotify-modal-overlay {
 .ui-pnotify-text {
     display: block;
 }
-.ui-pnotify-icon, .ui-pnotify-icon span {
+.ui-pnotify-icon {
     display: block;
     float: left;
-    margin-right: .2em;
 }
+.ui-pnotify-icon span {
+    line-height: 11px;
+}
+
 /* Alternate stack initial positioning. */
 .ui-pnotify.stack-topleft, .ui-pnotify.stack-bottomleft {
     left: 25px;
