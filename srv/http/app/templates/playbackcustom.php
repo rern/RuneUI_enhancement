@@ -132,7 +132,8 @@
             <div id="pl-manage">
                 <i id="pl-manage-list" class="fa fa-file-text-o fa-lg" title="Manage playlists"></i>
                 <i id="pl-manage-save" class="fa fa-save fa-lg" title="Save current queue as playlist" data-toggle="modal" data-target="#modal-pl-save"></i>
-                <i id="pl-manage-clear" class="fa fa-trash-o fa-lg" title="Clear the playing queue" data-toggle="modal" data-target="#modal-pl-clear"></i>
+                <!--<i id="pl-import-youtube" class="fa fa-youtube-play" title="Import a playlist or video from youtube." data-toggle="modal" data-target="#modal-pl-youtube"></i>-->
+				<i id="pl-manage-clear" class="fa fa-trash-o fa-lg" title="Clear the playing queue" data-toggle="modal" data-target="#modal-pl-clear"></i>
             </div>
             <span id="pl-count" class="hide">2143 entries</span>
             <form id="pl-search" class="form-inline" method="post" onSubmit="return false;" role="form">
