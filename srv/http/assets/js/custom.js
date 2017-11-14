@@ -453,8 +453,18 @@ updateGUI = function() {
 		$.get( 'lyrics.php',   
 			{ artist: artist, song: song },
 			function( data ) {
-				lyrics = data;
-				if ( $fetching ) lyricsshow();
+				if ( data ) {
+					lyrics = data;
+					if ( $fetching ) lyricsshow();
+				} else {
+					PNotify.removeAll();
+					$fetching = new PNotify( {
+						  icon    : 'fa fa-info-circle fa-lg'
+						, title   : 'Lyrics'
+						, text    : 'Lyrics not available.'
+						, addclass: 'pnotify_custom'
+					} );
+				}
 			}
 		);
 	}
