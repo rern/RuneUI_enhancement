@@ -10,23 +10,14 @@ include 'simple_html_dom.php';
 $source = '';
 $url = '';
 
-if ( !isset( $_GET[ 'filename' ] ) ) {
-	$artist = $_GET[ 'artist' ];
-	$title = $_GET[ 'song' ];
-} else {
-	$filename = $_GET[ 'filename' ];
-	$artist = get_artist( $filename );
-	$title = get_title( $filename );
-}
-
-$lyrics = get_lyrics( $artist, $title );
+$lyrics = get_lyrics( $_GET[ 'artist' ], $_GET[ 'song' ] );
 
 if ( $source == 'LyricsMania' ) {
-	$lyrics = str_replace( '\r\n\r\n\r\n', '\n\n', $lyrics );
-	$lyrics = preg_replace( '/[\x00-\x09]/', '', $lyrics );
+	$lyrics = str_replace( "\r\n\r\n\r\n", "\n\n", $lyrics );
+	$lyrics = preg_replace( "/[\x00-\x09]/", '', $lyrics );
 }
 
-$lyrics = str_replace( '</p>' , '\n\n', $lyrics );
+$lyrics = str_replace( "</p>" , "\n\n", $lyrics );
 	
 print trim( strip_tags( html_entity_decode( $lyrics ) ) );
 
