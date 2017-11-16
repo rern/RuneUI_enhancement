@@ -103,16 +103,21 @@ $( '#currentartist' ).click( function() {
 } );
 $( '#currentsong' ).click( function() {
 	if ( lyrics !== '' ) {
+		$fetching = 0;
 		lyricsshow();
 	} else {
 		// wait for lyrics ready
+		$fetching = 1;
 		PNotify.removeAll();
-		$fetching = new PNotify( {
+		new PNotify( {
 			  icon    : 'fa fa-refresh fa-spin fa-lg'
 			, title   : 'Lyrics'
 			, text    : 'Fetching ...'
 			, hide    : false
 			, addclass: 'pnotify_custom'
+			, after_close: function() {
+				$fetching = 0;
+			}
 		} );
 	}
 } );
@@ -416,6 +421,7 @@ renderPlaylists = function( data ) {
 }
 
 lyricsshow = function() {
+	$lyrics = 1;
 	PNotify.removeAll();
 	// need new 'pnotify.custom.min.js' with 'button', confirm', 'callback', 'css'
 	new PNotify( {
@@ -436,6 +442,7 @@ lyricsshow = function() {
 			$( '#lyricsfade' ).addClass( 'hide' );
 			$( '#menu-bottom' ).removeClass( 'lyrics-menu-bottom' );
 			$( '.ui-pnotify' ).remove();
+			$lyrics = 0;
 		}
 	} );
 }
@@ -443,22 +450,18 @@ lyricsshow = function() {
 var lyrics = '';
 var old_updateGUI = updateGUI;
 updateGUI = function() {
-	old_updateGUI();
 	// prefetch lyrics
 	lyrics = '';
-	$fetching = '';
-	var artist = $( '#currentartist' ).text();
-	var song = $( '#currentsong' ).text();
-	if ( song.slice( 0, 3 ) != '[no' ) {
+	if ( GUI.json.currentsong.slice( 0, 3 ) != '[no' ) {
 		$.get( 'lyrics.php',   
-			{ artist: artist, song: song },
+			{ artist: GUI.json.currentartist, song: GUI.json.currentsong },
 			function( data ) {
 				if ( data ) {
 					lyrics = data;
-					if ( $fetching ) lyricsshow();
+					if ( $fetching || $lyrics ) lyricsshow();
 				} else {
 					PNotify.removeAll();
-					$fetching = new PNotify( {
+					new PNotify( {
 						  icon    : 'fa fa-info-circle fa-lg'
 						, title   : 'Lyrics'
 						, text    : 'Lyrics not available.'
@@ -468,8 +471,8 @@ updateGUI = function() {
 			}
 		);
 	}
-	if ( !$( '#lyricsfade' ).hasClass( 'hide' ) && $( '#currentsong' ).text() != $( 'h4.ui-pnotify-title' ).text() ) $( '#currentsong' ).click();
-
+	old_updateGUI();
+	displayplayback();
 }
 
 // scrolling text
@@ -506,7 +509,6 @@ function timeConvert3( ss ) {
 function refreshState() {
 // ****************************************************************************************
 	scrolltext();
-	displayplayback();
 // ****************************************************************************************
 	
     var state = GUI.state;
