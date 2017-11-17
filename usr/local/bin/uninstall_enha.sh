@@ -16,7 +16,7 @@ fi
 # remove files #######################################
 echo -e "$bar Remove files ..."
 rm -v /srv/http/app/templates/playbackcustom.php
-rm -v /srv/http/{displayget.php,displaysave.php,lyrics.php,simple_html_dom.php}
+rm -v /srv/http/{displayget.php,displaysave.php}
 path=/srv/http/assets
 rm -v $path/css/custom*.css
 rm -v $path/img/runelogo.svg
@@ -27,7 +27,7 @@ echo -e "$bar Restore modified files ..."
 header=/srv/http/app/templates/header.php
 echo $header
 sed -i -e '/custom.css/, /<!-- enhancement -->/ d
-' -e '/barleft/, /lyricsfade/ d
+' -e '/barleft/, /barright/ d
 ' -e '/runelogo.svg/ d
 ' -e '/dropdownbg/ d
 ' -e 's/<button id="menu-settings" class="btn-default dropdown-toggle"/<a id="menu-settings" class="dropdown-toggle"/
@@ -52,14 +52,6 @@ sed -i -e '/custom.js/ d
 if [[ ! -e /usr/local/bin/uninstall_addo.sh ]]; then
 	rm $path/js/vendor/hammer.min.js
 	sed -i '/hammer.min.js/ d' $footer
-fi
-
-# no RuneUI GPIO
-if [[ ! -e /usr/local/bin/uninstall_gpio.sh ]]; then
-	rm $path/css/pnotify.css
-	rm $path/js/vendor/pnotify3.custom.min.js
-	sed -i '/pnotify.css/ d' $header
-	sed -i '/pnotify3.custom.min.js/ d' $footer
 fi
 
 playback=/srv/http/app/templates/playback.php
