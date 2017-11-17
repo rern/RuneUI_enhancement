@@ -20,7 +20,7 @@ rm -v /srv/http/{displayget.php,displaysave.php,lyrics.php,simple_html_dom.php}
 path=/srv/http/assets
 rm -v $path/css/custom*.css
 rm -v $path/img/runelogo.svg
-rm -v $path/js/custom.js
+rm -v $path/js/{custom.js,propagating.js}
 
 # restore modified files #######################################
 echo -e "$bar Restore modified files ..."
@@ -44,14 +44,14 @@ sed -i -e '/custom.css/, /<!-- enhancement -->/ d
 
 footer=/srv/http/app/templates/footer.php
 echo $footer
-sed -i '/custom.js/ d' $footer
+sed -i -e '/custom.js/ d
+' -e '/propagating.js/ d
+' $footer
 
 # no Addons Menu
 if [[ ! -e /usr/local/bin/uninstall_addo.sh ]]; then
 	rm $path/js/vendor/hammer.min.js
-	sed -i -e '/hammer.min.js/ d
-	' -e '/propagating.js/ d
-	' $footer
+	sed -i '/hammer.min.js/ d' $footer
 fi
 
 # no RuneUI GPIO
