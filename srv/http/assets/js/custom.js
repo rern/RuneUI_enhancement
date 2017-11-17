@@ -458,7 +458,7 @@ lyricsshow = function() {
 var lyrics = '';
 var old_updateGUI = updateGUI;
 updateGUI = function() {
-	// prefetch lyrics
+	displayplayback();
 	lyrics = '';
 	if ( GUI.json.currentsong.slice( 0, 3 ) != '[no' ) {
 		$.get( 'lyrics.php',   
@@ -480,7 +480,6 @@ updateGUI = function() {
 		);
 	}
 	old_updateGUI();
-	displayplayback();
 }
 
 // scrolling text
