@@ -84,12 +84,6 @@ $( '#playlist-entries' ).click( function( e ) {
 $( '#playsource' ).click( function() {
 	$( '#overlay-playsource-open' ).click();
 } );
-// menus click remove lyrics
-$( '#playsource, #menu-settings, #open-panel-sx, #open-panel-dx' ).click( function() {
-	PNotify.removeAll();
-	$( '#lyricsfade' ).addClass( 'hide' );
-	$( '#menu-bottom' ).removeClass( 'lyrics-menu-bottom' );
-} );
 // additional play/pause by click
 $( '#coverart' ).click( function() {
 	$( '#play' ).click();
