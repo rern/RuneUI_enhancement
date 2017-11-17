@@ -339,76 +339,6 @@
     width: 40px;
     font-size:20px;
 }
-/* ---------------------- lyrics ----------------------*/
-#lyricsfade { /* faded bottom */
-	position: fixed;
-	bottom: 0;
-	left: 0;
-	width: 510px;
-	max-width: 100vw;
-	height: 100px;
-	z-index: 100050;
-	background: -moz-linear-gradient(top,  transparent, #000000);
-	background: -webkit-linear-gradient(top,  transparent,#000000);
-	background: linear-gradient(to bottom,  transparent,#000000);
-}
-.lyrics-menu-bottom {
-	margin-left: 510px;
-	width: calc(100vw - 510px);
-}
-/* ---------------------- lyrics custom pnotify ----------------------*/
-.pnotify_lyrics div.ui-pnotify-container {
-	width: 510px !important;
-	max-width: 100vw !important;
-	height: calc(100vh - 50px) !important;
-	padding-top: 40px;
-	overflow: hidden;
-	-webkit-overflow-scrolling: touch;
-	background: #34495e;
-	box-shadow: 4px 0px 10px #000000;
-}
-.pnotify_lyrics .ui-pnotify-title {
-	position: fixed;
-	top: 50px;
-	left: 0;
-	width: 470px;
-	height: 40px;
-	line-height: 40px;
-	padding: 0 0 0 15px;
-	background: #0095d8;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis !important;
-}
-.pnotify_lyrics .alert h4 { /* title font */
-	font-size: 24px !important;
-	font-weight:  400 !important;
-	text-transform: none !important;
-}
-.pnotify_lyrics .ui-pnotify-closer {
-	position: fixed;
-	top: 50px;
-	left: 470px;
-	margin: 0;
-	width: 40px;
-	height: 40px;
-	line-height: 36px;
-	text-align: center;
-	background: #0095d8;
-	font-size: 24px;
-}
-.pnotify_lyrics .ui-pnotify-closer:hover {
-	background: #0072a5;
-}
-.pnotify_lyrics .ui-pnotify-text {
-    width: 513px; /* push desktop scrollbar outside parent */
-	max-width: calc(100% + 35px);
-	padding: 1em 2em 0 0; /* push text right-margin back */
-    height: 100%;
-    overflow-x: hidden;
-    overflow-y: scroll;
-	font-size: 16px;
-}
 
 /* ---------------------- responsive ----------------------*/
 @media(max-width: 750px) {
@@ -544,12 +474,6 @@
 	#playback .btn-group > .btn:last-child:not(:first-child) {
 		border-top-right-radius: 0;
 		border-bottom-left-radius: 6px;
-	}
-	.pnotify_lyrics .ui-pnotify-title {
-		width: calc(100vw - 40px);
-	}
-	.pnotify_lyrics .ui-pnotify-closer {
-		left: calc(100vw - 40px);
 	}
 	#playlist {
 		padding-top: 40px;

@@ -26,7 +26,6 @@ sed -i -e $'/runeui.css/ a\
 ' -e '/menu-top/ i\
 <div id="barleft"></div>\
 <div id="barright"></div>\
-<div id="lyricsfade" class="hide"></div>
 ' -e $'/class="home"/ i\
     <img class="logo" src="<?=$this->asset(\'/img/runelogo.svg\')?>" alt="RuneAudio" href="/">\
 	<?php $path = $_SERVER["REQUEST_URI"] == "/" ? "/#playback" : "/";?>
@@ -43,9 +42,6 @@ sed -i -e $'/runeui.css/ a\
 ' -e $'s|"tab"\')?>><i class="fa fa-play"></i> Playback|"tab"\')?>><i class="fa fa-play-circle"></i>|
 ' -e 's|"fa fa-list"></i> Queue|"fa fa-list"></i>|
 ' $file
-# no RuneUI GPIO
-! grep -q 'pnotify.css' $file &&
-	sed -i $'/runeui.css/ a\    <link rel="stylesheet" href="<?=$this->asset(\'/css/pnotify.css\')?>">' $file
 
 file=/srv/http/app/templates/footer.php
 echo $file
@@ -54,9 +50,6 @@ echo '<script src="<?=$this->asset('"'"'/js/custom.js'"'"')?>"></script>' >> $fi
 echo '<script src="<?=$this->asset('"'"'/js/vendor/hammer.min.js'"'"')?>"></script>' >> $file
 ! grep -q 'propagating.js' $file && 
 echo '<script src="<?=$this->asset('"'"'/js/vendor/propagating.js'"'"')?>"></script>' >> $file
-# no RuneUI GPIO
-! grep -q 'pnotify3.custom.min.js' $file &&
-echo '<script src="<?=$this->asset('"'"'/js/vendor/pnotify3.custom.min.js'"'"')?>"></script>' >> $file
 
 file=/srv/http/app/templates/playback.php
 echo $file

@@ -4,7 +4,7 @@ _Tested on RuneAudio 0.3 and 0.4b_
 
 ![mid](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/mid.gif)
 ![1](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/1.png)
-![3](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/3.png)
+
 ![4](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/4.png)
 ![5](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/5.png)
 ![6](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/6.png)
@@ -17,7 +17,6 @@ Try it - [**Demo**](https://rern.github.io/RuneUI_GPIO/)
 - Fit all in one phone screen (with 'Add to Home Screen')
 - Swipeable
 - Improved song info
-- Get lyrics (with code from [**LyricsCore**](https://github.com/Smile4ever/LyricsCore))
 - Library breadcrumb path links to each directory
 - Library index bar
 - Fix Library sorting
@@ -44,7 +43,6 @@ Functional
 - Long-press = show/hide items setting
 
 ### Playback
-- Tap `song` = get lyrics
 - Tap `artist` or `album` = get info from last.fm
 - Swipe left-right = swiches between `Library` - `Playback` - `Queue`
 - Swipe left-right on `text area` = previous-next track
