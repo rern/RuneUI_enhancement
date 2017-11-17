@@ -454,7 +454,8 @@ lyricsshow = function() {
 		}
 	} );
 }
-// next lyrics on track change
+var $fetching = 0;
+var $lyrics = 0;
 var lyrics = '';
 var old_updateGUI = updateGUI;
 updateGUI = function() {
