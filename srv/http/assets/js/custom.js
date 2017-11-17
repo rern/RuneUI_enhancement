@@ -73,7 +73,6 @@ $( '.playback-controls' ).click( function() {
 } );
 // playlist click go back to home page
 $( '#playlist-entries' ).click( function( e ) {
-	//alert(e.target.nodeName);
 	if ( e.target.nodeName == 'SPAN' ) {
 		$( '#open-playback a' ).click();
 		$( '#open-playback a' )[ 0 ].click();
@@ -87,7 +86,6 @@ $( '#playsource' ).click( function() {
 // additional play/pause by click
 $( '#coverart' ).click( function() {
 	$( '#play' ).click();
-//	launchIntoFullscreen(document.documentElement); // the whole page
 } );
 // lastfm search
 $( '#currentartist' ).click( function() {
