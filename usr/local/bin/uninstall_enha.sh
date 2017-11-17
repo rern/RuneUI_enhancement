@@ -20,7 +20,7 @@ rm -v /srv/http/{displayget.php,displaysave.php}
 path=/srv/http/assets
 rm -v $path/css/custom*.css
 rm -v $path/img/runelogo.svg
-rm -v $path/js/{custom.js,propagating.js}
+rm -v $path/js/{custom.js,vendor/propagating.js}
 
 # restore modified files #######################################
 echo -e "$bar Restore modified files ..."
