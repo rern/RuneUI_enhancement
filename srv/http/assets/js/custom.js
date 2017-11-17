@@ -260,6 +260,14 @@ $hammerplayback.on( 'press', function() {
 		}
 	} );
 } );
+var $hammertime = new Hammer( document.getElementById( 'time-knob' ) );
+$hammertime.on( 'press', function( e ) {
+	e.stopPropagation();
+} );
+var $hammervolume = new Hammer( document.getElementById( 'volume-knob' ) );
+$hammervolume.on( 'press', function( e ) {
+	e.stopPropagation();
+} );
 
 var $hammerlibrary = new Hammer( document.getElementById( 'panel-sx' ) );
 $hammerlibrary.on( 'tap', function( e ) {
