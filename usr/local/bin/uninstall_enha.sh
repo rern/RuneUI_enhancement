@@ -20,7 +20,7 @@ rm -v /srv/http/{displayget.php,displaysave.php}
 path=/srv/http/assets
 rm -v $path/css/custom*.css
 rm -v $path/img/runelogo.svg
-rm -v $path/js/{custom.js,propagating.js}
+rm -v $path/js/{custom.js,vendor/jquery_ui_min.js,vendor/propagating.js}
 
 # restore modified files #######################################
 echo -e "$bar Restore modified files ..."
@@ -45,7 +45,9 @@ sed -i -e '/custom.css/, /<!-- enhancement -->/ d
 footer=/srv/http/app/templates/footer.php
 echo $footer
 sed -i -e '/custom.js/ d
+' -e '/jquery_ui_min.js/ d
 ' -e '/propagating.js/ d
+' -e '/jquery-ui.js/ s/^<!--//; s/-->$//
 ' $footer
 
 # no Addons Menu
