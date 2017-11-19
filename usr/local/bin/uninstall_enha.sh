@@ -45,9 +45,9 @@ sed -i -e '/custom.css/, /<!-- enhancement -->/ d
 footer=/srv/http/app/templates/footer.php
 echo $footer
 sed -i -e '/custom.js/ d
-' -e '/jquery_ui_min.js/ d
 ' -e '/propagating.js/ d
 ' -e '/jquery-ui.js/ s/^<!--//; s/-->$//
+' -e '/jquery-ui.min.js/ d
 ' $footer
 
 # no Addons Menu
