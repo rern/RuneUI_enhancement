@@ -22,6 +22,8 @@ rm -v $path/css/custom*.css
 rm -v $path/img/runelogo.svg
 rm -v $path/js/{custom.js,vendor/jquery_ui_min.js,vendor/propagating.js}
 
+mv /srv/http/app/coverart_ctl.php{.backup,}
+
 # restore modified files #######################################
 echo -e "$bar Restore modified files ..."
 header=/srv/http/app/templates/header.php
