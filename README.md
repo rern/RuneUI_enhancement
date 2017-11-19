@@ -21,7 +21,7 @@ Try it - [**Demo**](https://rern.github.io/RuneUI_GPIO/)
 - Library index bar
 - Fix Library sorting
 - 0.4b fixes:
-	- Prevent coverarts update on play / pause
+	- Prevent `coverarts` and `song-info` update on play / pause in the same song
 	- Use local `jquery-ui.min.js` instead of online
 	- Fix missing `lato-bolditalic-webfont`
 
