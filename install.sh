@@ -9,7 +9,8 @@ alias=enha
 
 installstart $@
 
-mv /srv/http/app/coverart_ctl.php{.backup}
+mv /srv/http/app/coverart_ctl.php{,.backup}
+
 getinstallzip
 
 # modify files #######################################
