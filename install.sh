@@ -58,10 +58,23 @@ sed -i -e '/<div class="tab-content">/ i\
 /\*
 ' -e '/id="context-menus"/ i\enh \*/?>
 ' $file
+release=$( redis-cli get release )
+[[ $release == 0.4b ]] && sed -i -e '1 i\
+<?php\
+$redis = new Redis();\
+$redis->pconnect( "127.0.0.1" );\
+$localbrowser = $redis->get( "local_browser" );\
+if ( $localbrowser ) {\
+?>
+' -e '/<div class="tab-content">/ i\
+<?php\
+}\
+?>
+' $file
 
 file=/srv/http/app/templates/playbackcustom.php
 # for 0.4b
-[[ $( redis-cli get release ) == 0.4b ]] && sed -i '/id="songinfo-open"/ {s/<!--//; s/-->//}' $file
+[[ $release == 0.4b ]] && sed -i '/id="songinfo-open"/ {s/<!--//; s/-->//}' $file
 # for rune youtube
 [[ -e /usr/local/bin/uninstall_RuneYoutube.sh ]] && sed -i '/id="pl-import-youtube"/ {s/<!--//; s/-->//}' $file
 
