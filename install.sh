@@ -47,11 +47,7 @@ sed -i -e $'/runeui.css/ a\
 
 file=/srv/http/app/templates/footer.php
 echo $file
-if grep -q 'lyrics.js' $file; then
-	sed -i '/lyrics.js/ i\<script src="<?=$this->asset('"'"'/js/custom.js'"'"')?>"></script>' $file
-else
-	echo '<script src="<?=$this->asset('"'"'/js/custom.js'"'"')?>"></script>' >> $file
-fi
+echo '<script src="<?=$this->asset('"'"'/js/custom.js'"'"')?>"></script>' >> $file
 ! grep -q 'hammer.min.js' $file && 
 echo '<script src="<?=$this->asset('"'"'/js/vendor/hammer.min.js'"'"')?>"></script>' >> $file
 ! grep -q 'propagating.js' $file && 
