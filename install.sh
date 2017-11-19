@@ -50,7 +50,13 @@ echo '<script src="<?=$this->asset('"'"'/js/custom.js'"'"')?>"></script>' >> $fi
 echo '<script src="<?=$this->asset('"'"'/js/vendor/hammer.min.js'"'"')?>"></script>' >> $file
 ! grep -q 'propagating.js' $file && 
 echo '<script src="<?=$this->asset('"'"'/js/vendor/propagating.js'"'"')?>"></script>' >> $file
-sed -i 's|https://code.jquery.com/ui/1.12.0/jquery-ui.js|<?=$this->asset('"'"'/js/vendor/jquery-ui.min.js'"'"')?>|' $file
+sed -i -e '/jquery-ui.js/ {
+s/^/<!--/
+s/$/-->/
+a\
+<script src="<?=$this->asset('"'"'/js/vendor/jquery-ui.min.js'"'"')?>"></script>
+}
+' $file
 
 file=/srv/http/app/templates/playback.php
 echo $file
