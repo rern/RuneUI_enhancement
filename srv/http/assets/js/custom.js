@@ -586,17 +586,7 @@ function updateGUI() {
 	
 	// on song changed
 	if ( GUI.currentsong == GUI.json.currentsong ) return;
-// ************************************************************************	
-	lyrics = '';
-	$.get( 'lyrics.php',   
-		{ artist: GUI.json.currentartist, song: GUI.json.currentsong },
-		function( data ) {
-			lyrics = data ? data : 'Lyrics not available.';
-			if ( $fetching || $lyrics ) lyricsshow();
-			$( '#lyric-text-overlay' ).html( lyrics );
-		}
-	);
-// ****************************************************************************		
+	
 	countdownRestart(0);
 	if ($('#panel-dx').hasClass('active')) {
 		var current = parseInt(GUI.json.song);
