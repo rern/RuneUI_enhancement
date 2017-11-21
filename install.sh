@@ -81,10 +81,13 @@ if ( $localbrowser ) {\
 ?>
 ' $file
 
+# for 0.3 - no songinfo and screensaver
+[[ $release != 0.4b ]] && sed -i '/0.4b only/,/0.4b only/ d' /srv/http/assets/js/custom.js
+
 file=/srv/http/app/templates/playbackcustom.php
-# for 0.4b
+# for 0.4b - songinfo butto
 [[ $release == 0.4b ]] && sed -i '/id="songinfo-open"/ {s/<!--//; s/-->//}' $file
-# for rune youtube
+# for 0.4b - rune youtube
 [[ -e /usr/local/bin/uninstall_RuneYoutube.sh ]] && sed -i '/id="pl-import-youtube"/ {s/<!--//; s/-->//}' $file
 
 # for nginx svg support
