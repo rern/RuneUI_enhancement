@@ -566,9 +566,8 @@ function updateGUI() {
 	} else {
 		$('#cover-art').css('background-image','url("assets/img/cover-radio.jpg")');
 	}
-	
-	
-	// 0.4b only
+		
+// 0.4b only
 	if ( !$( '#songinfo-modal' ).length ) return;
 // -------------------------------------------------------------------------------	
 	$( '#lyric-text-overlay' ).html( lyrics );
@@ -651,6 +650,7 @@ function updateGUI() {
 			cache: false
 		});
 	}
+// 0.4b only
 }
 
 function compareAB( a, b, prop ) {
