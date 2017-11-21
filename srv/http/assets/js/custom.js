@@ -570,7 +570,7 @@ function updateGUI() {
 // 0.4b only
 	if ( !$( '#songinfo-modal' ).length ) return;
 // -------------------------------------------------------------------------------
-	$( '#lyric-text-overlay' ).html( lyrics );
+//	$( '#lyric-text-overlay' ).html( lyrics );
     var localbrowser = $( '#playback-ss' ).length;
 	if ( localbrowser ) {
 		if (GUI.stream !== 'radio') {
@@ -634,6 +634,13 @@ function updateGUI() {
 			},
 			cache: false
 		});
+		$.ajax({ // lyri
+			url: '/lyric/',
+			success: function(data){
+			   $('#lyric-text-overlay').html(data);
+			},
+			cache: false
+		}); // lyri
 	} else {
 		if ( !localbrowser ) return;
 		// --------------------------------------
