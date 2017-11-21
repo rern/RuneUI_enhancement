@@ -294,10 +294,6 @@ $.get( 'displayget.php', function( data ) {
 function displayplayback() {
 	$.get( 'displayget.php', function( data ) {
 		displayredis = $.parseJSON( data );
-		$( '#time-knob' ).css( 'display', displayredis[ 'time' ] ? 'block' : 'none' );
-function displayplayback() {
-	$.get( 'displayget.php', function( data ) {
-		displayredis = $.parseJSON( data );
 		$( '#time-knob' ).toggleClass( 'hide', !displayredis[ 'time' ] );
 		$( '#coverart' ).toggleClass( 'hide', !displayredis[ 'coverart' ] );
 		$( '#volume-knob' ).toggleClass( 'hide', !displayredis[ 'volume' ] );
