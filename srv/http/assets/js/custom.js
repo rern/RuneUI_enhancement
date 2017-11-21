@@ -518,7 +518,7 @@ function refreshState() {
 
 function updateGUI() {
     if ( !$( '#section-index' ).length ) return;
-// -------------------------------------------------------------------------------	
+// -------------------------------------------------------------------------------
     var volume = GUI.json.volume;
     var radioname = GUI.json.radioname;
     var currentartist = GUI.json.currentartist;
@@ -550,7 +550,7 @@ function updateGUI() {
 	
     // song changed
     if ( GUI.currentsong === GUI.json.currentsong ) return;
-// -------------------------------------------------------------------------------	
+// -------------------------------------------------------------------------------
 	GUI.currentsong = currentsong;	
 	countdownRestart(0);
 	if ( $('#panel-dx').hasClass('active') ) customScroll( 'pl', parseInt( GUI.json.song ) );
@@ -558,7 +558,7 @@ function updateGUI() {
 	
     // album changed
     if ( GUI.currentalbum === currentalbumstring ) return;
-// -------------------------------------------------------------------------------	
+// -------------------------------------------------------------------------------
     GUI.currentalbum = currentalbumstring;
 	if (GUI.stream !== 'radio') {
 		var covercachenum = Math.floor(Math.random()*1001);
@@ -569,7 +569,7 @@ function updateGUI() {
 		
 // 0.4b only
 	if ( !$( '#songinfo-modal' ).length ) return;
-// -------------------------------------------------------------------------------	
+// -------------------------------------------------------------------------------
 	$( '#lyric-text-overlay' ).html( lyrics );
     var localbrowser = $( '#playback-ss' ).length;
 	if ( localbrowser ) {
@@ -599,7 +599,7 @@ function updateGUI() {
 	}
 			
 	if (GUI.old_state === GUI.state && GUI.currentalbum === currentalbumstring) return;
-// ------------------------------------------------------------------------------	
+// ------------------------------------------------------------------------------
 	GUI.old_state = GUI.state;
 	$('#artist-bio-ss, #addinfo-text-ss, #artist-bio-overlay, #addinfo-text-overlay').html('');
 	$('#artist-image-ss, #artist-image-overlay').css('background-image', '');
@@ -636,6 +636,7 @@ function updateGUI() {
 		});
 	} else {
 		if ( !localbrowser ) return;
+		// --------------------------------------
 		$('#cover-art-ss').css('background-image','url("assets/img/cover-radio.jpg")');
 		$.ajax({
 			url: '/artist_info/',
