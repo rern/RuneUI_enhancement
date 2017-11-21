@@ -47,6 +47,7 @@ sed -i -e $'/runeui.css/ a\
 
 file=/srv/http/app/templates/footer.php
 echo $file
+# if lyrics installed
 if ! grep -q 'lyrics.js' $file; then
 	echo '<script src="<?=$this->asset('"'"'/js/custom.js'"'"')?>"></script>' >> $file
 else
