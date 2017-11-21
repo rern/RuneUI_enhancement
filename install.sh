@@ -87,7 +87,8 @@ if ( $localbrowser ) {\
 file=/srv/http/app/templates/playbackcustom.php
 # for 0.4b - songinfo butto
 [[ $release == 0.4b ]] && sed -i '/id="songinfo-open"/ {s/<!--//; s/-->//}' $file
-# for 0.4b - rune youtube
+
+# for rune youtube
 [[ -e /usr/local/bin/uninstall_RuneYoutube.sh ]] && sed -i '/id="pl-import-youtube"/ {s/<!--//; s/-->//}' $file
 
 # for nginx svg support
