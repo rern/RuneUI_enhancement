@@ -295,8 +295,12 @@ function displayplayback() {
 	$.get( 'displayget.php', function( data ) {
 		displayredis = $.parseJSON( data );
 		$( '#time-knob' ).css( 'display', displayredis[ 'time' ] ? 'block' : 'none' );
-		$( '#coverart' ).css( 'display', displayredis[ 'coverart' ] ? 'block' : 'none' );
-		$( '#volume-knob' ).css( 'display', displayredis[ 'volume' ] ? 'block' : 'none' );
+function displayplayback() {
+	$.get( 'displayget.php', function( data ) {
+		displayredis = $.parseJSON( data );
+		$( '#time-knob' ).toggleClass( 'hide', !displayredis[ 'time' ] );
+		$( '#coverart' ).toggleClass( 'hide', !displayredis[ 'coverart' ] );
+		$( '#volume-knob' ).toggleClass( 'hide', !displayredis[ 'volume' ] );
 		var i = 0;
 		if ( displayredis[ 'time' ] ) i += 1;
 		if ( displayredis[ 'coverart' ] ) i += 1;
@@ -308,24 +312,16 @@ function displayplayback() {
 		}
 		$( '#time-knob, #coverart, #volume-knob' ).css( 'width', elemW[ i ] );
 		if ( window.innerHeight > 736 || window.innerWidth > 568 ) {
-			$( '#menu-top, #menu-bottom' ).css( 'display', displayredis[ 'bar' ] ? 'block' : 'none' );
+			$( '#menu-top, #menu-bottom' ).toggleClass( 'hide', !displayredis[ 'bar' ] );
 			$( '#database, #playlist' ).css( 'padding-top', displayredis[ 'bar' ] ? '80px' : '40px' );
 			$( '.btnlist-top' ).css( 'top', displayredis[ 'bar' ] ? '40px' : 0 );
 			$( '#play-group, #share-group, #vol-group' ).css( 'width', elemW[ i ] );
 			if ( displayredis[ 'buttons' ] ) {
-				$( '#play-group' ).show();
-				if ( displayredis[ 'time' ] && displayredis[ 'coverart' ] ) {
-					$( '#share-group' ).show();
-				} else {
-					$( '#share-group' ).hide();
-				}
-				if ( displayredis[ 'volume' ] ) {
-					$( '#vol-group' ).show();
-				} else {
-					$( '#vol-group' ).hide();
-				}
+				$( '#play-group, #share-group, #vol-group' ).removeClass( 'hide' );
+				$( '#share-group' ).toggleClass( 'hide', !( displayredis[ 'time' ] && displayredis[ 'coverart' ] ) );
+				$( '#vol-group' ).toggleClass( 'hide', !displayredis[ 'volume' ] );
 			} else {
-				$( '#play-group, #share-group, #vol-group' ).hide();
+				$( '#play-group, #share-group, #vol-group' ).addClass( 'hide' );
 			}
 		}
 		$( '#playback-row' ).removeClass( 'hide' );
@@ -336,18 +332,18 @@ function displaylibrary() {
 	$.get( 'displayget.php', function( data ) {
 		displayredis = $.parseJSON( data );
 		// no 'id'
-		$( '#home-blocks div:contains(Network mounts)' ).css( 'display', displayredis[ 'nas' ] ? 'block' : 'none' );
-		$( '#home-usb' ).parent().css( 'display', displayredis[ 'usb' ] ? 'block' : 'none' );
-		$( '#home-webradio' ).parent().css( 'display', displayredis[ 'webradio' ] ? 'block' : 'none' );
-		$( '#home-albums' ).parent().css( 'display', displayredis[ 'albums' ] ? 'block' : 'none' );
-		$( '#home-artists' ).parent().css( 'display', displayredis[ 'artists' ] ? 'block' : 'none' );
-		$( '#home-composer' ).parent().css( 'display', displayredis[ 'composer' ] ? 'block' : 'none' );
-		$( '#home-genre' ).parent().css( 'display', displayredis[ 'genre' ] ? 'block' : 'none' );
-		$( '#home-spotify' ).parent().css( 'display', displayredis[ 'spotify' ] ? 'block' : 'none' );
-		$( '#home-dirble' ).parent().css( 'display', displayredis[ 'dirble' ] ? 'block' : 'none' );
-		$( '#home-jamendo' ).parent().css( 'display', displayredis[ 'jamendo' ] ? 'block' : 'none' );
+		$( '#home-blocks div:contains(Network mounts)' ).toggleClass( 'hide', !displayredis[ 'nas' ] );
+		$( '#home-usb' ).parent().toggleClass( 'hide', !displayredis[ 'usb' ] );
+		$( '#home-webradio' ).parent().toggleClass( 'hide', !displayredis[ 'webradio' ] );
+		$( '#home-albums' ).parent().toggleClass( 'hide', !displayredis[ 'albums' ] );
+		$( '#home-artists' ).parent().toggleClass( 'hide', !displayredis[ 'artists' ] );
+		$( '#home-composer' ).parent().toggleClass( 'hide', !displayredis[ 'composer' ] );
+		$( '#home-genre' ).parent().toggleClass( 'hide', !displayredis[ 'genre' ] );
+		$( '#home-spotify' ).parent().toggleClass( 'hide', !displayredis[ 'spotify' ] );
+		$( '#home-dirble' ).parent().toggleClass( 'hide', !displayredis[ 'dirble' ] );
+		$( '#home-jamendo' ).parent().toggleClass( 'hide', !displayredis[ 'jamendo' ] );
 		if ( window.innerHeight > 736 || window.innerWidth > 568 ) {
-			$( '#menu-top, #menu-bottom' ).css( 'display', displayredis[ 'bar' ] ? 'block' : 'none' );
+			$( '#menu-top, #menu-bottom' ).toggleClass( 'hide', !displayredis[ 'bar' ] );
 			$( '#database, #playlist' ).css( 'padding-top', displayredis[ 'bar' ] ? '80px' : '40px' );
 			$( '.btnlist-top' ).css( 'top', displayredis[ 'bar' ] ? '40px' : 0 );
 		}
