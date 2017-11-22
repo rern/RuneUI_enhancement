@@ -50,7 +50,7 @@ sed -i -e '/custom.js/ d
 ' -e '/propagating.js/ d
 ' $footer
 # 0.4b
-if grep -q 'jquery-ui.js' $file; then
+if grep -q 'jquery-ui.js' $footer; then
 	sed -i -e '/jquery-ui.js/ {s/^<!--//; s/-->$//}
 	' -e '/jquery-ui.min.js/ d
 	' $footer
