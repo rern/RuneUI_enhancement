@@ -57,13 +57,15 @@ fi
 echo '<script src="<?=$this->asset('"'"'/js/vendor/hammer.min.js'"'"')?>"></script>' >> $file
 ! grep -q 'propagating.js' $file && 
 echo '<script src="<?=$this->asset('"'"'/js/vendor/propagating.js'"'"')?>"></script>' >> $file
-sed -i -e '/jquery-ui.js/ {
-s/^/<!--/
-s/$/-->/
-a\
+if grep -q 'jquery-ui.js' $file; then
+	sed -i -e '/jquery-ui.js/ {
+	s/^/<!--/
+	s/$/-->/
+	a\
 <script src="<?=$this->asset('"'"'/js/vendor/jquery-ui.min.js'"'"')?>"></script>
-}
-' $file
+	}
+	' $file
+fi
 
 file=/srv/http/app/templates/playback.php
 echo $file
