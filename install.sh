@@ -70,11 +70,6 @@ fi
 
 file=/srv/http/app/templates/playback.php
 echo $file
-sed -i -e '/<div class="tab-content">/ i\
-<?php include "playbackcustom.php";\
-/\*
-' -e '/id="context-menus"/ i\enh \*/?>
-' $file
 release=$( redis-cli get release )
 [[ $release == 0.4b ]] && sed -i -e '1 i\
 <?php\
@@ -87,6 +82,11 @@ if ( $localbrowser ) {\
 <?php\
 }\
 ?>
+' $file
+sed -i -e '/<div class="tab-content">/ i\
+<?php include "playbackcustom.php";\
+/\*
+' -e '/id="context-menus"/ i\enh \*/?>
 ' $file
 
 # for 0.3 - no songinfo and screensaver
