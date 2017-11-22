@@ -47,11 +47,11 @@ sed -i -e $'/runeui.css/ a\
 
 file=/srv/http/app/templates/footer.php
 echo $file
-# must be after lyrics addon
+# must be before lyrics addon
 if ! grep -q 'lyrics.js' $file; then
 	echo '<script src="<?=$this->asset('"'"'/js/custom.js'"'"')?>"></script>' >> $file
 else
-	sed -i '/lyrics.js/ a\<script src="<?=$this->asset('"'"'/js/custom.js'"'"')?>"></script>' $file
+	sed -i '/lyrics.js/ i\<script src="<?=$this->asset('"'"'/js/custom.js'"'"')?>"></script>' $file
 fi
 ! grep -q 'hammer.min.js' $file && 
 echo '<script src="<?=$this->asset('"'"'/js/vendor/hammer.min.js'"'"')?>"></script>' >> $file
