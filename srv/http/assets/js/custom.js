@@ -519,7 +519,9 @@ function refreshState() {
 var old_countdownRestart = countdownRestart;
 countdownRestart = function( startFrom ) {
 	old_countdownRestart( startFrom );
-	
+	// move default lyrics here
+	// - prevent re-update on play-pause
+	// - easy to switch to 'lyrics addon'
 	$.ajax({
 		url: '/lyric/',
 		success: function(data){
