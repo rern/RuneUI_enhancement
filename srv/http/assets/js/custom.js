@@ -516,6 +516,18 @@ function refreshState() {
     }
 }
 
+var old_countdownRestart = countdownRestart;
+countdownRestart = function( startFrom ) {
+	old_countdownRestart( startFrom );
+	
+	$.ajax({
+		url: '/lyric/',
+		success: function(data){
+		   $('#lyric-text-overlay').html(data);
+		},
+		cache: false
+	});
+}
 function updateGUI() {
     if ( !$( '#section-index' ).length ) return;
 // -------------------------------------------------------------------------------
@@ -634,13 +646,6 @@ function updateGUI() {
 			},
 			cache: false
 		});
-		$.ajax({ // lyri
-			url: '/lyric/',
-			success: function(data){
-			   $('#lyric-text-overlay').html(data);
-			},
-			cache: false
-		}); // lyri
 	} else {
 		if ( !localbrowser ) return;
 		// --------------------------------------
