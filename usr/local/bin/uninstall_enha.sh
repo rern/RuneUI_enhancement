@@ -48,9 +48,12 @@ footer=/srv/http/app/templates/footer.php
 echo $footer
 sed -i -e '/custom.js/ d
 ' -e '/propagating.js/ d
-' -e '/jquery-ui.js/ {s/^<!--//; s/-->$//}
-' -e '/jquery-ui.min.js/ d
 ' $footer
+if grep -q 'jquery-ui.js' $file; then
+	sed -i -e '/jquery-ui.js/ {s/^<!--//; s/-->$//}
+	' -e '/jquery-ui.min.js/ d
+	' $footer
+fi
 
 # no Addons Menu
 if [[ ! -e /usr/local/bin/uninstall_addo.sh ]]; then
