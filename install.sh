@@ -59,12 +59,9 @@ echo '<script src="<?=$this->asset('"'"'/js/vendor/hammer.min.js'"'"')?>"></scri
 echo '<script src="<?=$this->asset('"'"'/js/vendor/propagating.js'"'"')?>"></script>' >> $file
 # 0.4b
 if grep -q 'jquery-ui.js' $file; then
-	sed -i -e '/jquery-ui.js/ {
-	s/^/<!--/
-	s/$/-->/
-	a\
+	sed -i -e 's/<.*jquery-ui.js.*script>/<!--&-->/
+	' -e '/jquery-ui.js/ a\
 <script src="<?=$this->asset('"'"'/js/vendor/jquery-ui.min.js'"'"')?>"></script>
-	}
 	' $file
 fi
 
