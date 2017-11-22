@@ -57,6 +57,7 @@ fi
 echo '<script src="<?=$this->asset('"'"'/js/vendor/hammer.min.js'"'"')?>"></script>' >> $file
 ! grep -q 'propagating.js' $file && 
 echo '<script src="<?=$this->asset('"'"'/js/vendor/propagating.js'"'"')?>"></script>' >> $file
+# 0.4b
 if grep -q 'jquery-ui.js' $file; then
 	sed -i -e '/jquery-ui.js/ {
 	s/^/<!--/
