@@ -516,9 +516,12 @@ function refreshState() {
     }
 }
 
-var old_countdownRestart = countdownRestart;
-countdownRestart = function( startFrom ) {
-	old_countdownRestart( startFrom );
+function countdownRestart(startFrom) {
+    var display = $('#countdown-display').countdown('destroy');
+    display.countdown({since: -(startFrom), compact: true, format: 'MS'});
+    var displayss = $('#countdown-display-ss').countdown('destroy');
+    displayss.countdown({since: -(startFrom), compact: true, format: 'MS'});
+	
 	// move default lyrics here
 	// - prevent re-update on play-pause
 	// - easy to switch to 'lyrics addon'
@@ -530,6 +533,7 @@ countdownRestart = function( startFrom ) {
 		cache: false
 	});
 }
+
 function updateGUI() {
     if ( !$( '#section-index' ).length ) return;
 // -------------------------------------------------------------------------------
