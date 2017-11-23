@@ -20,7 +20,9 @@ rm -v /srv/http/{displayget.php,displaysave.php}
 path=/srv/http/assets
 rm -v $path/css/custom*.css
 rm -v $path/img/runelogo.svg
-rm -v $path/js/{custom.js,vendor/propagating.js}
+rm -v $path/js/{custom.js,vendor/jquery-ui.min.js,vendor/propagating.js}
+
+mv /srv/http/app/coverart_ctl.php{.backup,}
 
 # restore modified files #######################################
 echo -e "$bar Restore modified files ..."
@@ -47,6 +49,12 @@ echo $footer
 sed -i -e '/custom.js/ d
 ' -e '/propagating.js/ d
 ' $footer
+# 0.4b
+if grep -q 'jquery-ui.js' $footer; then
+	sed -i -e '/jquery-ui.js/ {s/^<!--//; s/-->$//}
+	' -e '/jquery-ui.min.js/ d
+	' $footer
+fi
 
 # no Addons Menu
 if [[ ! -e /usr/local/bin/uninstall_addo.sh ]]; then

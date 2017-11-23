@@ -20,7 +20,11 @@ Try it - [**Demo**](https://rern.github.io/RuneUI_GPIO/)
 - Library breadcrumb path links to each directory
 - Library index bar
 - Fix Library sorting
-- [**RuneUI GPIO**](https://github.com/rern/RuneUI_GPIO) for GPIO connected devices control.  
+- Coverart files in directories overrule ID3 tag ones
+- 0.4b fixes:
+	- Prevent `coverarts` and `song-info` update on play / pause in the same song
+	- Use local `jquery-ui.min.js` instead of online
+	- Fix missing `lato-bolditalic-webfont`
 
 >[Install](#install)  
 >[Functional](#functional)  

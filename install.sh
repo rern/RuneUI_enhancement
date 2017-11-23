@@ -9,6 +9,8 @@ alias=enha
 
 installstart $@
 
+mv /srv/http/app/coverart_ctl.php{,.backup}
+
 getinstallzip
 
 # modify files #######################################
@@ -45,23 +47,52 @@ sed -i -e $'/runeui.css/ a\
 
 file=/srv/http/app/templates/footer.php
 echo $file
-echo '<script src="<?=$this->asset('"'"'/js/custom.js'"'"')?>"></script>' >> $file
+# must be before lyrics addon
+if ! grep -q 'lyrics.js' $file; then
+	echo '<script src="<?=$this->asset('"'"'/js/custom.js'"'"')?>"></script>' >> $file
+else
+	sed -i '/lyrics.js/ i\<script src="<?=$this->asset('"'"'/js/custom.js'"'"')?>"></script>' $file
+fi
 ! grep -q 'hammer.min.js' $file && 
 echo '<script src="<?=$this->asset('"'"'/js/vendor/hammer.min.js'"'"')?>"></script>' >> $file
 ! grep -q 'propagating.js' $file && 
 echo '<script src="<?=$this->asset('"'"'/js/vendor/propagating.js'"'"')?>"></script>' >> $file
+# 0.4b
+if grep -q 'jquery-ui.js' $file; then
+	sed -i -e 's/<.*jquery-ui.js.*script>/<!--&-->/
+	' -e '/jquery-ui.js/ a\
+<script src="<?=$this->asset('"'"'/js/vendor/jquery-ui.min.js'"'"')?>"></script>
+	' $file
+fi
 
 file=/srv/http/app/templates/playback.php
 echo $file
+release=$( redis-cli get release )
+[[ $release == 0.4b ]] && sed -i -e '1 i\
+<?php\
+$redis = new Redis();\
+$redis->pconnect( "127.0.0.1" );\
+$localbrowser = $redis->get( "local_browser" );\
+if ( $localbrowser ) {\
+?>
+' -e '/<div class="tab-content">/ i\
+<?php\
+}\
+?>
+' $file
 sed -i -e '/<div class="tab-content">/ i\
 <?php include "playbackcustom.php";\
 /\*
 ' -e '/id="context-menus"/ i\enh \*/?>
 ' $file
 
+# for 0.3 - no songinfo and screensaver
+[[ $release != 0.4b ]] && sed -i '/0.4b only/,/0.4b only/ d' /srv/http/assets/js/custom.js
+
 file=/srv/http/app/templates/playbackcustom.php
-# for 0.4b
-[[ $( redis-cli get release ) == 0.4b ]] && sed -i '/id="songinfo-open"/ {s/<!--//; s/-->//}' $file
+# for 0.4b - songinfo butto
+[[ $release == 0.4b ]] && sed -i '/id="songinfo-open"/ {s/<!--//; s/-->//}' $file
+
 # for rune youtube
 [[ -e /usr/local/bin/uninstall_RuneYoutube.sh ]] && sed -i '/id="pl-import-youtube"/ {s/<!--//; s/-->//}' $file
 
