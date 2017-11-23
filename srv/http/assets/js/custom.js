@@ -547,8 +547,8 @@ function updateGUI() {
     // check MPD status and refresh the UI info
     refreshState();
 	// common actions
-	if ( !$( '#volume-knob' ).hasClass( 'hide' ) ) {  // 0.3
-		if ( !$( '#songinfo-modal' ).length ) {
+	if ( !$( '#volume-knob' ).hasClass( 'hide' ) ) {
+		if ( !$( '#songinfo-modal' ).length ) {  // 0.3
 			$( '#volume' ).val( ( volume === '-1' ) ? 100 : volume, false ).trigger( 'update' );
 		} else {
 			if ( GUI.vol_changed_local === 0 ) $( '#volume' ).val( ( volume === '-1' ) ? 100 : volume, false ).trigger( 'update' );
