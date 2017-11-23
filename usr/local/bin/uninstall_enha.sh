@@ -64,6 +64,7 @@ fi
 
 playback=/srv/http/app/templates/playback.php
 echo $playback
+sed -i '/^<?php$/,/^?>$/ d' /srv/http/app/templates/playback.php
 sed -i -e '/playbackcustom.php/, /\/\*/ d
 ' -e '/enh \*\/?>/ d
 ' $playback
