@@ -7,9 +7,9 @@ $( '#barleft' ).click( function() {
 	} else {
 		$( '#coverart' ).slideToggle( function() {
 			$( '#time-knob, #volume-knob' ).css( 'margin-top', 0 );
-			if ( $( '#coverart' ).is( ':visible' ) ) {
+			if ( !$( '#coverart' ).hasClass( 'hide' ) ) {
 				$( '#playback-row' ).css( 'margin-top', '10px' );
-				if ( $( '#play-group' ).is( ':visible' ) ) {
+				if ( !$( '#play-group' ).hasClass( 'hide' ) ) {
 					$( '#share-group' ).show();
 				} else {
 					$( '#divalbum' ).show();
@@ -43,13 +43,13 @@ $( '#barright' ).click( function() {
 	} else {
 		$( '#play-group' ).toggle();
 	}
-	if ( displayredis[ 'time' ] && $( '#play-group' ).is( ':visible' ) && $( '#coverart' ).is( ':visible' ) ) {
+	if ( displayredis[ 'time' ] && !$( '#play-group' ).hasClass( 'hide' ) && !$( '#coverart' ).hasClass( 'hide' ) ) {
 		$( '#share-group' ).show();
 	} else {
 		$( '#share-group' ).hide();
 	}
 	if ( window.innerHeight < 414 ) {
-		if ( $( '#play-group' ).is( ':visible' ) ) {
+		if ( !$( '#play-group' ).hasClass( 'hide' ) ) {
 			$( '#divalbum, #sampling' ).hide();
 			$( '#play-group, #share-group, #vol-group' ).css( 'margin-top', '10px' );
 		} else {
@@ -117,7 +117,7 @@ $( '#db-currentpath' ).on( 'click', 'a', function() {
 
 // index link
 $( '#db-index li' ).click( function() {
-	var topoffset = $( '#menu-top' ).is( ':visible' ) ? 80 : 40;
+	var topoffset = !$( '#menu-top' ).hasClass( 'hide' ) ? 80 : 40;
 	var indextext = $( this ).text();
 	if ( indextext === '#' ) {
 		$( document ).scrollTop( 0 );
@@ -533,7 +533,7 @@ function countdownRestart(startFrom) {
 		cache: false
 	});
 }
-
+GUI.json.mute = 0;
 function updateGUI() {
     if ( !$( '#section-index' ).length ) return;
 // -------------------------------------------------------------------------------
@@ -547,7 +547,7 @@ function updateGUI() {
     // check MPD status and refresh the UI info
     refreshState();
 	    // common actions
-	if ( $( '#volume-knob' ).is( ':visible' ) && GUI.vol_changed_local === 0 )
+	if ( !$( '#volume-knob' ).hasClass( 'hide' ) && GUI.vol_changed_local === 0 )
 		$( '#volume' ).val( ( volume === '-1' ) ? 100 : volume, false ).trigger( 'update' );
 	if ( GUI.stream !== 'radio' ) {
 		$( '#currentartist' ).html( !currentartist ? '<span class="notag">[no artist]</span>' : currentartist );
@@ -559,7 +559,7 @@ function updateGUI() {
 		$( '#currentsong' ).html( !currentsong ? radioname : currentsong );
 	}
 	
-	if ( $( '#play-group' ).is( ':visible' ) ) {
+	if ( !$( '#play-group' ).hasClass( 'hide' ) ) {
 		$( '#repeat' ).toggleClass( 'btn-primary', GUI.json.repeat === '1' );
 		$( '#random' ).toggleClass( 'btn-primary', GUI.json.random === '1' );
 		$( '#consume' ).toggleClass( 'btn-primary', GUI.json.consume === '1' );
