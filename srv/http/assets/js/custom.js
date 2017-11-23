@@ -546,9 +546,15 @@ function updateGUI() {
     GUI.stream = ( radioname ? 'radio' : '' );
     // check MPD status and refresh the UI info
     refreshState();
-	    // common actions
-	if ( !$( '#volume-knob' ).hasClass( 'hide' ) && GUI.vol_changed_local === 0 )
-		$( '#volume' ).val( ( volume === '-1' ) ? 100 : volume, false ).trigger( 'update' );
+	// common actions
+	if ( !$( '#volume-knob' ).hasClass( 'hide' ) ) {
+		if ( !$( '#songinfo-modal' ).length ) {
+			$( '#volume' ).val( ( volume === '-1' ) ? 100 : volume, false ).trigger( 'update' );
+		} else {
+			if ( GUI.vol_changed_local === 0 ) $( '#volume' ).val( ( volume === '-1' ) ? 100 : volume, false ).trigger( 'update' );
+		}
+	}
+
 	if ( GUI.stream !== 'radio' ) {
 		$( '#currentartist' ).html( !currentartist ? '<span class="notag">[no artist]</span>' : currentartist );
 		$( '#currentsong' ).html( !currentsong ? '<span class="notag">[no title]</span>' : currentsong );
