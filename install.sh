@@ -67,6 +67,9 @@ fi
 
 file=/srv/http/app/templates/playback.php
 echo $file
+# tmp fix 
+sed -i '/^<?php$/,/^?>$/ d' $file
+
 release=$( redis-cli get release )
 [[ $release == 0.4b ]] && sed -i -e '1 i\
 <?php\
