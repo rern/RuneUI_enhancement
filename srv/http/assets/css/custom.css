@@ -49,6 +49,9 @@
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
+.btnlist-top {
+	box-shadow: 0px 4px 10px #000000;
+}
 .btnlist-top a,
 .btnlist-top i {
 	cursor: pointer;
