@@ -403,6 +403,10 @@ function scrolltext() {
 	}, 50 );
 }
 
+$( '#db-search' ).on( 'submit', function() {
+	$( '#db-level-up' ).hide(); // addClass( 'hide' ) not work
+} );
+
 // replace functions in main runeui.js file **********************************************
 $( '#db-search-results' ).click( function() {
 	$( this ).addClass( 'hide' );
@@ -410,7 +414,10 @@ $( '#db-search-results' ).click( function() {
 	getDB( {
 		path: GUI.currentpath
 	} );
+	$( '#db-level-up' ).show();
+	$( '#database-entries' ).removeAttr( 'style' );
 } );
+
 
 function timeConvert3( ss ) {
 	var hr = Math.floor( ss / 3600 );

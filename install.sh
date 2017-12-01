@@ -17,7 +17,8 @@ getinstallzip
 echo -e "$bar Modify files ..."
 file=/srv/http/app/templates/header.php
 echo $file
-sed -i -e $'/runeui.css/ a\
+sed -i -e 's/RuneAudio - RuneUI/RuneUIe/
+' -e $'/runeui.css/ a\
     <link rel="stylesheet" href="<?=$this->asset(\'/css/custom.css\')?>">\
     <?php if (preg_match(\'/mixer_type[\\\s]+"disabled"/\', file_get_contents(\'/etc/mpd.conf\'))): ?>\
         <link rel="stylesheet" href="<?=$this->asset(\'/css/customvoloff.css\')?>">\
