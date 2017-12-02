@@ -410,19 +410,23 @@ $( '#db-search' ).on( 'submit', function() {
 } );
 
 // replace functions in main runeui.js file **********************************************
+var observer = new MutationObserver( function() {
+	window.scrollTo( 0, librarytop );
+	$( '#db-level-up, #db-currentpath' ).removeClass( 'hide' );
+});
+
 $( '#db-search-results' ).click( function() {
 	$( this ).addClass( 'hide' );
 	getDB( {
 		path: GUI.currentpath
 	} );
-	$( '#db-level-up' ).show();
 	$( '#database-entries' ).removeAttr( 'style' );
-	setTimeout( function() {
-		window.scrollTo( 0, librarytop );
-		$( '#db-level-up, #db-currentpath' ).removeClass( 'hide' );
-	}, 500 );
+	
+	observer.observe( document.getElementById( 'database-entries' ), { childList: true } );
+	$( '#db-level-up' ).show( function() {
+		observer.disconnect();
+	} );
 } );
-
 
 function timeConvert3( ss ) {
 	var hr = Math.floor( ss / 3600 );
@@ -703,6 +707,7 @@ function populateDB(options) {
         args = options.args || '',
         content = '',
         i = 0,
+        databaseentries = document.getElementById('database-entries');
         row = [];
 
     if (plugin !== '') {
@@ -713,7 +718,7 @@ function populateDB(options) {
             if (path) {
                 GUI.currentpath = path;
             }
-            document.getElementById('database-entries').innerHTML = '';
+            databaseentries.innerHTML = '';
             data = (querytype === 'tracks') ? data.tracks : data.playlists;
 // ****************************************************************************************
 // sorting
@@ -736,7 +741,7 @@ function populateDB(options) {
                     inpath: args
                 });
             }
-            document.getElementById('database-entries').innerHTML = content;
+            databaseentries.innerHTML = content;
         }
         if (plugin === 'Dirble') {
             $('#database-entries').removeClass('hide');
@@ -750,9 +755,9 @@ function populateDB(options) {
                 }
             }
             if (querytype === 'childs-stations') {
-                content = document.getElementById('database-entries').innerHTML;
+                content = databaseentries.innerHTML;
             } else {
-                document.getElementById('database-entries').innerHTML = '';
+                databaseentries.innerHTML = '';
             }            
 // ****************************************************************************************
 // sorting
@@ -774,7 +779,7 @@ function populateDB(options) {
                     querytype: querytype
                 });
             }
-            document.getElementById('database-entries').innerHTML = content;
+            databaseentries.innerHTML = content;
         }
         if (plugin === 'Jamendo') {
             $('#database-entries').removeClass('hide');
@@ -783,7 +788,7 @@ function populateDB(options) {
             if (path) {
                 GUI.currentpath = path;
             }
-            document.getElementById('database-entries').innerHTML = '';
+            databaseentries.innerHTML = '';
 // ****************************************************************************************
 // sorting
             data.sort( function( a, b ) {
@@ -802,7 +807,7 @@ function populateDB(options) {
                     querytype: querytype
                 });
             }
-            document.getElementById('database-entries').innerHTML = content;
+            databaseentries.innerHTML = content;
         }
     } else {
     // normal MPD browsing
@@ -820,7 +825,7 @@ function populateDB(options) {
             if (path) {
                 GUI.currentpath = path;
             }
-            document.getElementById('database-entries').innerHTML = '';
+            databaseentries.innerHTML = '';
             if (keyword !== '') {
             // search results
                 var results = (data.length) ? data.length : '0';
@@ -868,7 +873,7 @@ function populateDB(options) {
                     inpath: path
                 });
             }
-            document.getElementById('database-entries').innerHTML = content;
+            databaseentries.innerHTML = content;
         }
     }
     var breadcrumb = $('span', '#db-currentpath');
