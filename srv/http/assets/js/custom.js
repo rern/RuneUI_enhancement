@@ -347,7 +347,7 @@ function displaylibrary() {
 var old_renderLibraryHome = renderLibraryHome;
 renderLibraryHome = function() {
 	old_renderLibraryHome();
-	if ( !$( '#playback' ).hasClass( 'active' ) ) $( '#barleft, #barright' ).hide();
+	if ( !$( '#playback' ).hasClass( 'active' ) ) $( '#barleft, #barright' ).addClass(' hide' );
 	$( '#db-currentpath, #db-index, #db-level-up, #db-webradio-add, #db-homeSetup' ).addClass( 'hide' );
 	displaylibrary();
 	
@@ -368,7 +368,7 @@ renderLibraryHome = function() {
 var old_renderPlaylists = renderPlaylists;
 renderPlaylists = function( data ) {
 	old_renderPlaylists( data );
-	$( '#barleft, #barright' ).hide();
+	$( '#barleft, #barright' ).addClass(' hide' );
 	$( '#pl-filter-results' ).html( '<i class="fa fa-arrow-left sx"></i>' );
 	$( '#pl-editor li' ).click( function( e ) {
 		e.stopPropagation();
@@ -404,29 +404,20 @@ function scrolltext() {
 }
 
 $( '#db-search' ).on( 'submit', function() {
-	librarytop = $(window).scrollTop();
-	$(window).scrollTop( 0 );
 	$( '#db-level-up' ).hide(); // addClass( 'hide' ) not work
 } );
 
 // replace functions in main runeui.js file **********************************************
-var observer = new MutationObserver( function() {
-	window.scrollTo( 0, librarytop );
-	$( '#db-level-up, #db-currentpath' ).removeClass( 'hide' );
-});
-
 $( '#db-search-results' ).click( function() {
 	$( this ).addClass( 'hide' );
+	$( '#db-level-up, #db-currentpath' ).removeClass( 'hide' );
 	getDB( {
 		path: GUI.currentpath
 	} );
+	$( '#db-level-up' ).show();
 	$( '#database-entries' ).removeAttr( 'style' );
-	
-	observer.observe( document.getElementById( 'database-entries' ), { childList: true } );
-	$( '#db-level-up' ).show( function() {
-		observer.disconnect();
-	} );
 } );
+
 
 function timeConvert3( ss ) {
 	var hr = Math.floor( ss / 3600 );
@@ -707,7 +698,6 @@ function populateDB(options) {
         args = options.args || '',
         content = '',
         i = 0,
-        databaseentries = document.getElementById('database-entries');
         row = [];
 
     if (plugin !== '') {
@@ -718,7 +708,7 @@ function populateDB(options) {
             if (path) {
                 GUI.currentpath = path;
             }
-            databaseentries.innerHTML = '';
+            document.getElementById('database-entries').innerHTML = '';
             data = (querytype === 'tracks') ? data.tracks : data.playlists;
 // ****************************************************************************************
 // sorting
@@ -741,7 +731,7 @@ function populateDB(options) {
                     inpath: args
                 });
             }
-            databaseentries.innerHTML = content;
+            document.getElementById('database-entries').innerHTML = content;
         }
         if (plugin === 'Dirble') {
             $('#database-entries').removeClass('hide');
@@ -755,9 +745,9 @@ function populateDB(options) {
                 }
             }
             if (querytype === 'childs-stations') {
-                content = databaseentries.innerHTML;
+                content = document.getElementById('database-entries').innerHTML;
             } else {
-                databaseentries.innerHTML = '';
+                document.getElementById('database-entries').innerHTML = '';
             }            
 // ****************************************************************************************
 // sorting
@@ -779,7 +769,7 @@ function populateDB(options) {
                     querytype: querytype
                 });
             }
-            databaseentries.innerHTML = content;
+            document.getElementById('database-entries').innerHTML = content;
         }
         if (plugin === 'Jamendo') {
             $('#database-entries').removeClass('hide');
@@ -788,7 +778,7 @@ function populateDB(options) {
             if (path) {
                 GUI.currentpath = path;
             }
-            databaseentries.innerHTML = '';
+            document.getElementById('database-entries').innerHTML = '';
 // ****************************************************************************************
 // sorting
             data.sort( function( a, b ) {
@@ -807,7 +797,7 @@ function populateDB(options) {
                     querytype: querytype
                 });
             }
-            databaseentries.innerHTML = content;
+            document.getElementById('database-entries').innerHTML = content;
         }
     } else {
     // normal MPD browsing
@@ -825,7 +815,7 @@ function populateDB(options) {
             if (path) {
                 GUI.currentpath = path;
             }
-            databaseentries.innerHTML = '';
+            document.getElementById('database-entries').innerHTML = '';
             if (keyword !== '') {
             // search results
                 var results = (data.length) ? data.length : '0';
@@ -873,7 +863,7 @@ function populateDB(options) {
                     inpath: path
                 });
             }
-            databaseentries.innerHTML = content;
+            document.getElementById('database-entries').innerHTML = content;
         }
     }
     var breadcrumb = $('span', '#db-currentpath');
