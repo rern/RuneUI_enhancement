@@ -404,6 +404,8 @@ function scrolltext() {
 }
 
 $( '#db-search' ).on( 'submit', function() {
+	librarytop = $(window).scrollTop();
+	$(window).scrollTop( 0 );
 	$( '#db-level-up' ).hide(); // addClass( 'hide' ) not work
 } );
 
@@ -416,6 +418,7 @@ $( '#db-search-results' ).click( function() {
 	} );
 	$( '#db-level-up' ).show();
 	$( '#database-entries' ).removeAttr( 'style' );
+	$(window).scrollTop( librarytop );
 } );
 
 
