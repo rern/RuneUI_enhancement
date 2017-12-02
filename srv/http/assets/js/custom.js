@@ -412,15 +412,15 @@ $( '#db-search' ).on( 'submit', function() {
 // replace functions in main runeui.js file **********************************************
 $( '#db-search-results' ).click( function() {
 	$( this ).addClass( 'hide' );
-	$( '#db-level-up, #db-currentpath' ).removeClass( 'hide' );
 	getDB( {
 		path: GUI.currentpath
 	} );
 	$( '#db-level-up' ).show();
 	$( '#database-entries' ).removeAttr( 'style' );
 	setTimeout( function() {
-		$(window).scrollTop( librarytop );
-	}, 300 );
+		window.scrollTo( 0, librarytop );
+		$( '#db-level-up, #db-currentpath' ).removeClass( 'hide' );
+	}, 500 );
 } );
 
 
