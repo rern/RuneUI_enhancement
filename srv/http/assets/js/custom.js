@@ -187,14 +187,16 @@ $hammerinfo.on( 'swipeleft', function( e ) {
 } );
 
 var $hammerbarleft = new Hammer( document.getElementById( 'barleft' ) );
-$hammerbarleft.on( 'swipe', function() {
+$hammerbarleft.on( 'swipe', function( e ) {
 	$( '#barleft' ).click();
+//	e.stopPropagation();
 } );
 $hammerbarleft.get( 'swipe' ).set( { direction: Hammer.DIRECTION_VERTICAL } );
 
 var $hammerbarright = new Hammer( document.getElementById( 'barright' ) );
-$hammerbarright.on( 'swipe', function() {
+$hammerbarright.on( 'swipe', function( e ) {
 	$( '#menu-top, #menu-bottom' ).toggle();
+//	e.stopPropagation();
 } );
 $hammerbarright.get( 'swipe' ).set( { direction: Hammer.DIRECTION_VERTICAL } );
 
@@ -404,8 +406,14 @@ function scrolltext() {
 }
 
 $( '#db-search' ).on( 'submit', function() {
+	lyricstop = $( window ).scrollTop();
 	$( '#db-level-up' ).hide(); // addClass( 'hide' ) not work
+	window.scrollTo( 0, 0 );
 } );
+
+var observer = new MutationObserver( function() {
+	window.scrollTo( 0, lyricstop );
+});
 
 // replace functions in main runeui.js file **********************************************
 $( '#db-search-results' ).click( function() {
@@ -414,8 +422,12 @@ $( '#db-search-results' ).click( function() {
 	getDB( {
 		path: GUI.currentpath
 	} );
-	$( '#db-level-up' ).show();
+	
 	$( '#database-entries' ).removeAttr( 'style' );
+	observer.observe( document.getElementById( 'database-entries' ), { childList: true } );
+	$( '#db-level-up' ).show( function() {
+		observer.disconnect();
+	} );
 } );
 
 
