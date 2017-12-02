@@ -347,7 +347,7 @@ function displaylibrary() {
 var old_renderLibraryHome = renderLibraryHome;
 renderLibraryHome = function() {
 	old_renderLibraryHome();
-	if ( !$( '#playback' ).hasClass( 'active' ) ) $( '#barleft, #barright' ).hide();
+	if ( !$( '#playback' ).hasClass( 'active' ) ) $( '#barleft, #barright' ).addClass( 'hide' );
 	$( '#db-currentpath, #db-index, #db-level-up, #db-webradio-add, #db-homeSetup' ).addClass( 'hide' );
 	displaylibrary();
 	
@@ -368,7 +368,7 @@ renderLibraryHome = function() {
 var old_renderPlaylists = renderPlaylists;
 renderPlaylists = function( data ) {
 	old_renderPlaylists( data );
-	$( '#barleft, #barright' ).hide();
+	$( '#barleft, #barright' ).addClass( 'hide' );
 	$( '#pl-filter-results' ).html( '<i class="fa fa-arrow-left sx"></i>' );
 	$( '#pl-editor li' ).click( function( e ) {
 		e.stopPropagation();
