@@ -418,7 +418,9 @@ $( '#db-search-results' ).click( function() {
 	} );
 	$( '#db-level-up' ).show();
 	$( '#database-entries' ).removeAttr( 'style' );
-	$(window).scrollTop( librarytop );
+	setTimeout( function() {
+		$(window).scrollTop( librarytop );
+	}, 300 );
 } );
 
 
