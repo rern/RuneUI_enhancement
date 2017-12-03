@@ -29,7 +29,7 @@ echo -e "$bar Restore modified files ..."
 header=/srv/http/app/templates/header.php
 echo $header
 sed -i -e 's/RuneUIe/RuneAudio - RuneUI/
-' -e '/custom.css/, /<!-- enhancement -->/ d
+' -e '/custom.css/ d
 ' -e '/barleft/, /barright/ d
 ' -e '/runelogo.svg/ d
 ' -e '/dropdownbg/ d
