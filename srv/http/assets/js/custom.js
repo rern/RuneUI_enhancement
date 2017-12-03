@@ -5,6 +5,9 @@ $( '#barleft' ).click( function() {
 	if ( window.innerWidth >= 640 ) {
 		$( '#menu-top, #menu-bottom' ).toggle();
 	} else {
+		// skip if in menu settings
+		if ( /\/.*\//.test( location.pathname ) === true ) return
+		
 		$( '#coverart' ).slideToggle( function() {
 			$( '#time-knob, #volume-knob' ).css( 'margin-top', 0 );
 			if ( $( '#coverart' ).is( ':visible' ) ) {
@@ -38,6 +41,9 @@ $( '#barleft' ).click( function() {
 window.addEventListener( 'orientationchange', scrolltext );
 
 $( '#barright' ).click( function() {
+	// skip if in menu settings
+	if ( /\/.*\//.test( location.pathname ) === true ) return
+	
 	if ( displayredis[ 'volume' ] ) {
 		$( '#play-group, #vol-group' ).toggle();
 	} else {
@@ -177,16 +183,6 @@ $hammercontent.on( 'swipeleft', function() {
 	panelr( 'left' );
 } );
 
-var $hammerinfo = new Hammer( document.getElementById( 'info' ) );
-$hammerinfo.on( 'swiperight', function( e ) {
-	$( '#previous' ).click();
-	e.stopPropagation();
-} );
-$hammerinfo.on( 'swipeleft', function( e ) {
-	$( '#next' ).click();
-	e.stopPropagation();
-} );
-
 var $hammerbarleft = new Hammer( document.getElementById( 'barleft' ) );
 $hammerbarleft.on( 'swipe', function( e ) {
 	$( '#barleft' ).click();
@@ -198,6 +194,19 @@ $hammerbarright.on( 'swipe', function( e ) {
 	$( '#menu-top, #menu-bottom' ).toggle();
 } );
 $hammerbarright.get( 'swipe' ).set( { direction: Hammer.DIRECTION_VERTICAL } );
+
+// skip if in menu settings
+if ( /\/.*\//.test( location.pathname ) === true ) return
+
+var $hammerinfo = new Hammer( document.getElementById( 'info' ) );
+$hammerinfo.on( 'swiperight', function( e ) {
+	$( '#previous' ).click();
+	e.stopPropagation();
+} );
+$hammerinfo.on( 'swipeleft', function( e ) {
+	$( '#next' ).click();
+	e.stopPropagation();
+} );
 
 var $hammerplayback = new Hammer( document.getElementById( 'playback' ) );
 $hammerplayback.on( 'press', function() {
@@ -281,12 +290,12 @@ $hammerlibrary.on( 'press', function() {
 		}
 	} );
 } );
-
 // document ready end *********************************************************************
 } );
 
 // show/hide blocks database
-$.get( 'displayget.php', function( data ) {
+var path = /\/.*\//.test( location.pathname ) ? '../../' : ''; // fix path if click in other menu pages
+$.get( path +'displayget.php', function( data ) {
 	var displayredis = $.parseJSON( data );
 } );
 // playback show/hide blocks
