@@ -19,13 +19,7 @@ file=/srv/http/app/templates/header.php
 echo $file
 sed -i -e 's/RuneAudio - RuneUI/RuneUIe/
 ' -e $'/runeui.css/ a\
-    <link rel="stylesheet" href="<?=$this->asset(\'/css/custom.css\')?>">\
-    <?php if (preg_match(\'/mixer_type[\\\s]+"disabled"/\', file_get_contents(\'/etc/mpd.conf\'))): ?>\
-        <link rel="stylesheet" href="<?=$this->asset(\'/css/customvoloff.css\')?>">\
-    <?php endif ?>\
-    <?php if ($this->coverart == 0): ?>\
-        <link rel="stylesheet" href="<?=$this->asset(\'/css/customcoveroff.css\')?>">\
-    <?php endif ?> <!-- enhancement -->
+    <link rel="stylesheet" href="<?=$this->asset(\'/css/custom.css\')?>">
 ' -e '/menu-top/ i\
 <div id="barleft"></div>\
 <div id="barright"></div>\
@@ -70,11 +64,10 @@ fi
 
 file=/srv/http/app/templates/playback.php
 echo $file
-# tmp fix 
-sed -i '/^<?php$/,/^?>$/ d' $file
 
 release=$( redis-cli get release )
-[[ $release == 0.4b ]] && sed -i -e '1 i\
+if [[ $release == 0.4b ]]; then
+sed -i -e '1 i\
 <?php\
 $redis = new Redis();\
 $redis->pconnect( "127.0.0.1" );\
@@ -86,6 +79,7 @@ if ( $localbrowser ) {\
 }\
 ?>
 ' $file
+fi
 sed -i -e '/<div class="tab-content">/ i\
 <?php include "playbackcustom.php";\
 /\*
@@ -93,11 +87,11 @@ sed -i -e '/<div class="tab-content">/ i\
 ' $file
 
 # for 0.3 - no songinfo and screensaver
-[[ $release != 0.4b ]] && sed -i '/0.4b only/,/0.4b only/ d' /srv/http/assets/js/custom.js
-
 file=/srv/http/app/templates/playbackcustom.php
-# for 0.4b - songinfo butto
-[[ $release == 0.4b ]] && sed -i '/id="songinfo-open"/ {s/<!--//; s/-->//}' $file
+if [[ $release != 0.4b ]]; then
+sed -i '/0.4b only/,/0.4b only/ d' /srv/http/assets/js/custom.js
+sed -i '/id="songinfo-open"/ d' $file
+fi
 
 # for rune youtube
 [[ -e /usr/local/bin/uninstall_RuneYoutube.sh ]] && sed -i '/id="pl-import-youtube"/ {s/<!--//; s/-->//}' $file

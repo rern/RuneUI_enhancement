@@ -5,6 +5,9 @@ $( '#barleft' ).click( function() {
 	if ( window.innerWidth >= 640 ) {
 		$( '#menu-top, #menu-bottom' ).toggle();
 	} else {
+		// skip if in menu settings
+		if ( /\/.*\//.test( location.pathname ) === true ) return
+		
 		$( '#coverart' ).slideToggle( function() {
 			$( '#time-knob, #volume-knob' ).css( 'margin-top', 0 );
 			if ( $( '#coverart' ).is( ':visible' ) ) {
@@ -38,6 +41,9 @@ $( '#barleft' ).click( function() {
 window.addEventListener( 'orientationchange', scrolltext );
 
 $( '#barright' ).click( function() {
+	// skip if in menu settings
+	if ( /\/.*\//.test( location.pathname ) === true ) return
+	
 	if ( displayredis[ 'volume' ] ) {
 		$( '#play-group, #vol-group' ).toggle();
 	} else {
@@ -111,6 +117,7 @@ $( '#db-home' ).click( function() {
 } );
 $( '#db-currentpath' ).on( 'click', 'a', function() {
 	getDB( { path: $( this ).attr( 'data-path' ) } );
+	window.scrollTo( 0, 0 );
 } );
 
 // index link
@@ -176,16 +183,6 @@ $hammercontent.on( 'swipeleft', function() {
 	panelr( 'left' );
 } );
 
-var $hammerinfo = new Hammer( document.getElementById( 'info' ) );
-$hammerinfo.on( 'swiperight', function( e ) {
-	$( '#previous' ).click();
-	e.stopPropagation();
-} );
-$hammerinfo.on( 'swipeleft', function( e ) {
-	$( '#next' ).click();
-	e.stopPropagation();
-} );
-
 var $hammerbarleft = new Hammer( document.getElementById( 'barleft' ) );
 $hammerbarleft.on( 'swipe', function( e ) {
 	$( '#barleft' ).click();
@@ -199,6 +196,19 @@ $hammerbarright.on( 'swipe', function( e ) {
 //	e.stopPropagation();
 } );
 $hammerbarright.get( 'swipe' ).set( { direction: Hammer.DIRECTION_VERTICAL } );
+
+// skip if in menu settings
+if ( /\/.*\//.test( location.pathname ) === true ) return
+
+var $hammerinfo = new Hammer( document.getElementById( 'info' ) );
+$hammerinfo.on( 'swiperight', function( e ) {
+	$( '#previous' ).click();
+	e.stopPropagation();
+} );
+$hammerinfo.on( 'swipeleft', function( e ) {
+	$( '#next' ).click();
+	e.stopPropagation();
+} );
 
 var $hammerplayback = new Hammer( document.getElementById( 'playback' ) );
 $hammerplayback.on( 'press', function() {
@@ -282,12 +292,12 @@ $hammerlibrary.on( 'press', function() {
 		}
 	} );
 } );
-
 // document ready end *********************************************************************
 } );
 
 // show/hide blocks database
-$.get( 'displayget.php', function( data ) {
+var path = /\/.*\//.test( location.pathname ) ? '../../' : ''; // fix path if click in other menu pages
+$.get( path +'displayget.php', function( data ) {
 	var displayredis = $.parseJSON( data );
 } );
 // playback show/hide blocks
@@ -343,12 +353,14 @@ function displaylibrary() {
 			$( '#database, #playlist' ).css( 'padding-top', displayredis[ 'bar' ] ? '80px' : '40px' );
 			$( '.btnlist-top' ).css( 'top', displayredis[ 'bar' ] ? '40px' : 0 );
 		}
+		window.scrollTo( 0, 0 );
 	} );
 }
 // hide breadcrumb, index bar, edit bookmark
 var old_renderLibraryHome = renderLibraryHome;
 renderLibraryHome = function() {
 	old_renderLibraryHome();
+	GUI.currentDBpos[ 10 ] = 0;
 	if ( !$( '#playback' ).hasClass( 'active' ) ) $( '#barleft, #barright' ).addClass( 'hide' );
 	$( '#db-currentpath, #db-index, #db-level-up, #db-webradio-add, #db-homeSetup' ).addClass( 'hide' );
 	displaylibrary();
@@ -363,6 +375,11 @@ renderLibraryHome = function() {
 			setTimeout( function() {
 				$( '#home-blocks' ).css( 'pointer-events', 'auto' );
 			}, 500 );
+		});
+		// fix bookmark breadcrumb
+		$hammerbookmark.on( 'tap', function( e ) {
+			e.stopPropagation();
+			GUI.currentDBpos[ 10 ] = $this.attr( 'data-path' ).match( /\//g ).length + 2;
 		});
 	});
 }
@@ -405,10 +422,22 @@ function scrolltext() {
 	}, 50 );
 }
 
+var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+var observersearch = new MutationObserver( function() {
+	window.scrollTo( 0, 0 );
+});
+var observer = new MutationObserver( function() {
+	window.scrollTo( 0, lyricstop );
+});
+var observerdiv = document.getElementById( 'database-entries' );
+var observeroption = { childList: true };
+
 $( '#db-search' ).on( 'submit', function() {
 	lyricstop = $( window ).scrollTop();
-	$( '#db-level-up' ).hide(); // addClass( 'hide' ) not work
-	window.scrollTo( 0, 0 );
+	observersearch.observe( observerdiv, observeroption );
+	$( '#db-level-up' ).hide( function() { // addClass( 'hide' ) not work
+		observersearch.disconnect();
+	} );
 } );
 
 var observer = new MutationObserver( function() {
@@ -424,7 +453,7 @@ $( '#db-search-results' ).click( function() {
 	} );
 	
 	$( '#database-entries' ).removeAttr( 'style' );
-	observer.observe( document.getElementById( 'database-entries' ), { childList: true } );
+	observer.observe( observerdiv, observeroption );
 	$( '#db-level-up' ).show( function() {
 		observer.disconnect();
 	} );
@@ -709,6 +738,7 @@ function populateDB(options) {
         querytype = options.querytype || '',
         args = options.args || '',
         content = '',
+		$databaseentries = document.getElementById('database-entries'),
         i = 0,
         row = [];
 
@@ -720,7 +750,7 @@ function populateDB(options) {
             if (path) {
                 GUI.currentpath = path;
             }
-            document.getElementById('database-entries').innerHTML = '';
+            $databaseentries.innerHTML = '';
             data = (querytype === 'tracks') ? data.tracks : data.playlists;
 // ****************************************************************************************
 // sorting
@@ -743,7 +773,7 @@ function populateDB(options) {
                     inpath: args
                 });
             }
-            document.getElementById('database-entries').innerHTML = content;
+            $databaseentries.innerHTML = content;
         }
         if (plugin === 'Dirble') {
             $('#database-entries').removeClass('hide');
@@ -757,9 +787,9 @@ function populateDB(options) {
                 }
             }
             if (querytype === 'childs-stations') {
-                content = document.getElementById('database-entries').innerHTML;
+                content = $databaseentries.innerHTML;
             } else {
-                document.getElementById('database-entries').innerHTML = '';
+                $databaseentries.innerHTML = '';
             }            
 // ****************************************************************************************
 // sorting
@@ -781,7 +811,7 @@ function populateDB(options) {
                     querytype: querytype
                 });
             }
-            document.getElementById('database-entries').innerHTML = content;
+            $databaseentries.innerHTML = content;
         }
         if (plugin === 'Jamendo') {
             $('#database-entries').removeClass('hide');
@@ -790,7 +820,7 @@ function populateDB(options) {
             if (path) {
                 GUI.currentpath = path;
             }
-            document.getElementById('database-entries').innerHTML = '';
+            $databaseentries.innerHTML = '';
 // ****************************************************************************************
 // sorting
             data.sort( function( a, b ) {
@@ -809,7 +839,7 @@ function populateDB(options) {
                     querytype: querytype
                 });
             }
-            document.getElementById('database-entries').innerHTML = content;
+            $databaseentries.innerHTML = content;
         }
     } else {
     // normal MPD browsing
@@ -827,7 +857,7 @@ function populateDB(options) {
             if (path) {
                 GUI.currentpath = path;
             }
-            document.getElementById('database-entries').innerHTML = '';
+            $databaseentries.innerHTML = '';
             if (keyword !== '') {
             // search results
                 var results = (data.length) ? data.length : '0';
@@ -875,7 +905,7 @@ function populateDB(options) {
                     inpath: path
                 });
             }
-            document.getElementById('database-entries').innerHTML = content;
+            $databaseentries.innerHTML = content;
         }
     }
     var breadcrumb = $('span', '#db-currentpath');

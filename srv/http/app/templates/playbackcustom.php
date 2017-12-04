@@ -33,17 +33,15 @@
                         <button id="single" class="btn btn-default btn-lg btn-cmd btn-toggle <?php if ($this->activePlayer === 'Spotify'): ?>disabled<?php endif; ?>" type="button" title="Single" data-cmd="single"><i class="fa fa-dot-circle-o"></i></button>
                     </div>
                 </div>
-                <?php if ($this->coverart == 1): ?>
                 <div id="coverart">
                     <img id="cover-art" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="transparent-square">
                 </div>
                 <div id="share-group">
                     <div class="btn-group">
                         <button id="overlay-social-open" class="btn btn-default btn-lg" type="button" title="Share this track"><i class="fa fa-share-alt"></i></button>
-                        <!--<button id="songinfo-open" class="btn btn-default" type="button" title="Song Info" href="#songinfo-modal" data-toggle="modal"><i class="fa fa-info"></i></button>-->
+                        <button id="songinfo-open" class="btn btn-default" type="button" title="Song Info" href="#songinfo-modal" data-toggle="modal"><i class="fa fa-info"></i></button>
                     </div>
                 </div>
-                <?php endif ?>
                 <div id="volume-knob" class="<?=$this->volume['divclass'] ?>">
                     <?php // fix smaller volume knob size in mobile
                     $wh = stristr($_SERVER['HTTP_USER_AGENT'], 'mobi') !== FALSE ? 250 : 230;

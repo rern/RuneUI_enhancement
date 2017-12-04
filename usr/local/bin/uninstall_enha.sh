@@ -28,7 +28,8 @@ mv /srv/http/app/coverart_ctl.php{.backup,}
 echo -e "$bar Restore modified files ..."
 header=/srv/http/app/templates/header.php
 echo $header
-sed -i -e '/custom.css/, /<!-- enhancement -->/ d
+sed -i -e 's/RuneUIe/RuneAudio - RuneUI/
+' -e '/custom.css/ d
 ' -e '/barleft/, /barright/ d
 ' -e '/runelogo.svg/ d
 ' -e '/dropdownbg/ d
