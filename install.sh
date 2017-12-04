@@ -66,7 +66,8 @@ file=/srv/http/app/templates/playback.php
 echo $file
 
 release=$( redis-cli get release )
-[[ $release == 0.4b ]] && sed -i -e '1 i\
+if [[ $release == 0.4b ]]; then
+sed -i -e '1 i\
 <?php\
 $redis = new Redis();\
 $redis->pconnect( "127.0.0.1" );\
@@ -78,6 +79,7 @@ if ( $localbrowser ) {\
 }\
 ?>
 ' $file
+fi
 sed -i -e '/<div class="tab-content">/ i\
 <?php include "playbackcustom.php";\
 /\*
