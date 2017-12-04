@@ -1,6 +1,9 @@
 $( document ).ready( function() {
 // document ready start********************************************************************
 
+// disabled local browser > disable screensaver events
+if ( !$( '#playback-ss' ).length ) $('#section-index').off( 'mousemove click keypress' );
+
 $( '#barleft' ).click( function() {
 	if ( window.innerWidth >= 640 ) {
 		$( '#menu-top, #menu-bottom' ).toggle();
