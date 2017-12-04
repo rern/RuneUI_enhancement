@@ -39,7 +39,7 @@
                 <div id="share-group">
                     <div class="btn-group">
                         <button id="overlay-social-open" class="btn btn-default btn-lg" type="button" title="Share this track"><i class="fa fa-share-alt"></i></button>
-                        <!--<button id="songinfo-open" class="btn btn-default" type="button" title="Song Info" href="#songinfo-modal" data-toggle="modal"><i class="fa fa-info"></i></button>-->
+                        <button id="songinfo-open" class="btn btn-default" type="button" title="Song Info" href="#songinfo-modal" data-toggle="modal"><i class="fa fa-info"></i></button>
                     </div>
                 </div>
                 <div id="volume-knob" class="<?=$this->volume['divclass'] ?>">
