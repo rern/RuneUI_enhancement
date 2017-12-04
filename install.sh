@@ -67,7 +67,7 @@ echo $file
 
 release=$( redis-cli get release )
 if [[ $release == 0.4b ]]; then
-sed -i -e '1 i\
+sed -i -e '/class="screen-saver-content"/ i\
 <?php\
 $redis = new Redis();\
 $redis->pconnect( "127.0.0.1" );\
@@ -89,8 +89,8 @@ sed -i -e '/<div class="tab-content">/ i\
 # for 0.3 - no songinfo and screensaver
 file=/srv/http/app/templates/playbackcustom.php
 if [[ $release != 0.4b ]]; then
-sed -i '/0.4b only/,/0.4b only/ d' /srv/http/assets/js/custom.js
-sed -i '/id="songinfo-open"/ d' $file
+	sed -i '/0.4b only/,/0.4b only/ d' /srv/http/assets/js/custom.js
+	sed -i '/id="songinfo-open"/ d' $file
 fi
 
 # for rune youtube
