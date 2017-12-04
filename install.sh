@@ -79,7 +79,7 @@ if ( !$localbrowser ) {\
 			var remoteSStime = -1;\
 		</script>\
 	';\
-} else {
+} else {\
 ?>
 ' -e '/<div class="tab-content">/ i\
 <?php\
