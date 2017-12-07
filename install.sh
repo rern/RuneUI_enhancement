@@ -60,6 +60,8 @@ if grep -q 'jquery-ui.js' $file; then
 	' -e '/jquery-ui.js/ a\
 <script src="<?=$this->asset('"'"'/js/vendor/jquery-ui.min.js'"'"')?>"></script>
 	' $file
+else
+	rm /srv/http/assets/js/vendor/jquery-ui.min.js
 fi
 
 file=/srv/http/app/templates/playback.php
