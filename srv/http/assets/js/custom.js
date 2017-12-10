@@ -194,10 +194,9 @@ $hammerbarright.on( 'swipe', function( e ) {
 } ).get( 'swipe' ).set( { direction: Hammer.DIRECTION_VERTICAL } );
 
 // skip if in menu settings
-if ( /\/.*\//.test( location.pathname ) === true ) return
+if ( /\/.*\//.test( location.pathname ) === true ) return;
 
 var $hammerinfo = new Hammer( document.getElementById( 'info' ) );
-var $hammercoverart = new Hammer( document.getElementById( 'coverart' ) );
 $hammerinfo.on( 'swiperight', function( e ) {
 	$( '#previous' ).click();
 	e.stopPropagation();
@@ -206,6 +205,7 @@ $hammerinfo.on( 'swiperight', function( e ) {
 	e.stopPropagation();
 } );
 // touch play control
+var $hammercoverart = new Hammer( document.getElementById( 'coverart' ) );
 $hammercoverart.on( 'tap', function( e ) {
 	$( '#play' ).click();
 	e.stopPropagation();
