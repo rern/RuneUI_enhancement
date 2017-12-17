@@ -50,6 +50,7 @@
 	text-overflow: ellipsis;
 }
 .btnlist-top {
+	top: 0;
 	box-shadow: 0px 4px 10px #000000;
 }
 .btnlist-top a,
@@ -482,9 +483,6 @@
 	#playlist {
 		padding-top: 40px;
 	}
-	.btnlist-top {
-		top: 0;
-	}
 	#db-currentpath {
 		width: calc( 100% - 220px );
 	}
@@ -577,9 +575,6 @@
 	}
 	#playlist {
 		padding-top: 40px;
-	}
-	.btnlist-top {
-		top: 0;
 	}
 }
 @media(max-height: 416px) {
