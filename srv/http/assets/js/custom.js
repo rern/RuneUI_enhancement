@@ -1,6 +1,8 @@
 $( document ).ready( function() {
 // document ready start********************************************************************
 
+window.addEventListener( 'orientationchange', scrolltext );
+
 // disabled local browser > disable screensaver events
 if ( !$( '#playback-ss' ).length ) $('#section-index').off( 'mousemove click keypress' );
 
@@ -38,7 +40,6 @@ $( '#barleft' ).click( function() {
 		} );
 	}
 } );
-window.addEventListener( 'orientationchange', scrolltext );
 
 $( '#barright' ).click( function() {
 	if ( displayredis[ 'volume' ] ) {
