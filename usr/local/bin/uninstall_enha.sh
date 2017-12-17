@@ -30,7 +30,8 @@ header=/srv/http/app/templates/header.php
 echo $header
 sed -i -e 's/RuneUIe/RuneAudio - RuneUI/
 ' -e '/custom.css/ d
-' -e '/barleft/, /barright/ d
+' -e 's/id="menu-top" class="hide"/id="menu-top"/
+' -e 's/id="menu-bottom" class="hide"/id="menu-bottom"/
 ' -e '/runelogo.svg/ d
 ' -e '/dropdownbg/ d
 ' -e 's/<button id="menu-settings" class="btn-default dropdown-toggle"/<a id="menu-settings" class="dropdown-toggle"/
