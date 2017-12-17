@@ -42,12 +42,12 @@ window.addEventListener( 'orientationchange', scrolltext );
 
 $( '#barright' ).click( function() {
 	if ( displayredis[ 'volume' ] ) {
-		$( '#play-group, #vol-group' ).toggle();
+		$( '#play-group, #vol-group' ).toggleClass( 'hide' );
 	} else {
-		$( '#play-group' ).toggle();
+		$( '#play-group' ).toggleClass( 'hide' );
 	}
 	if ( $( '#coverart' ).is( ':visible' ) ) {
-		$( '#share-group' ).toggle();
+		$( '#share-group' ).toggleClass( 'hide' );
 	}
 	if ( window.innerHeight < 414 ) {
 		if ( !$( '#play-group' ).hasClass( 'hide' ) ) {
