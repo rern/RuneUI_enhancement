@@ -65,12 +65,6 @@ $( '#barright' ).click( function() {
 	}
 } );
 
-$( '#open-panel-sx, #open-panel-dx' ).click( function() {
-	$( '#barleft, #barright' ).addClass( 'hide' );
-} );
-$( '#open-playback' ).click( function() {
-	$( '#barleft, #barright' ).removeClass( 'hide' );
-} );
 // playback buttons click go back to home page
 $( '.playback-controls' ).click( function() {
 	if ( !$( '#playback' ).hasClass( 'active' ) ) {
@@ -370,7 +364,6 @@ var old_renderLibraryHome = renderLibraryHome;
 renderLibraryHome = function() {
 	old_renderLibraryHome();
 	GUI.currentDBpos[ 10 ] = 0;
-	if ( !$( '#playback' ).hasClass( 'active' ) ) $( '#barleft, #barright' ).addClass( 'hide' );
 	$( '#db-currentpath, #db-index, #db-level-up, #db-webradio-add, #db-homeSetup' ).addClass( 'hide' );
 	displaylibrary();
 	
@@ -396,7 +389,6 @@ renderLibraryHome = function() {
 var old_renderPlaylists = renderPlaylists;
 renderPlaylists = function( data ) {
 	old_renderPlaylists( data );
-	$( '#barleft, #barright' ).addClass( 'hide' );
 	$( '#pl-filter-results' ).html( '<i class="fa fa-arrow-left sx"></i>' );
 	$( '#pl-editor li' ).click( function( e ) {
 		e.stopPropagation();
