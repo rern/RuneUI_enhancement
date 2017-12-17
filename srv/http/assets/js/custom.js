@@ -8,9 +8,6 @@ $( '#barleft' ).click( function() {
 	if ( window.innerWidth >= 640 ) {
 		$( '#menu-top, #menu-bottom' ).toggle();
 	} else {
-		// skip if in menu settings
-		if ( /\/.*\//.test( location.pathname ) === true ) return
-		
 		$( '#coverart' ).slideToggle( function() {
 			$( '#time-knob, #volume-knob' ).css( 'margin-top', 0 );
 			if ( $( '#coverart' ).is( ':visible' ) ) {
@@ -44,9 +41,6 @@ $( '#barleft' ).click( function() {
 window.addEventListener( 'orientationchange', scrolltext );
 
 $( '#barright' ).click( function() {
-	// skip if in menu settings
-	if ( /\/.*\//.test( location.pathname ) === true ) return
-	
 	if ( displayredis[ 'volume' ] ) {
 		$( '#play-group, #vol-group' ).toggle();
 	} else {
