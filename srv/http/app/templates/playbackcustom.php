@@ -1,7 +1,10 @@
 <div class="tab-content" id="content">
     <!-- PLAYBACK PANEL -->
     <div id="playback" class="tab-pane active">
-        <div id="container-playback">
+        <div id="barleft"></div>
+        <div id="barright"></div>
+		
+		<div id="container-playback">
             <div id="info">
                 <div id="divartist">
                     <span id="currentartist"><i class="fa fa-spinner fa-spin"></i></span>
