@@ -101,7 +101,6 @@
 .logo {
     height: 35px;
     margin: 2px 20px 10px 0;
-	vertical-align: top;
 }
 #clock-display {
 	margin-right: 10px;
@@ -403,10 +402,6 @@
 	}
 }
 @media(max-width: 500px) {
-	#menu-top,
-	#menu-bottom {
-		display: none;
-	}
 	#play-group,
 	#share-group,
 	#vol-group	{
@@ -525,15 +520,6 @@
 	}
 }
 @media(max-height: 500px) {
-	#menu-top,
-	#menu-bottom {
-		display: none;
-	}
-/*	#play-group,
-	#share-group,
-	#vol-group	{
-		display: none;
-	}*/
 	#playback {
 		padding: 20px 0 0 0;
 		overflow-x: hidden;
