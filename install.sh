@@ -20,9 +20,6 @@ echo $file
 sed -i -e 's/RuneAudio - RuneUI/RuneUIe/
 ' -e $'/runeui.css/ a\
     <link rel="stylesheet" href="<?=$this->asset(\'/css/custom.css\')?>">
-' -e '/menu-top/ i\
-<div id="barleft"></div>\
-<div id="barright"></div>\
 ' -e $'/class="home"/ i\
     <a href="http://www.runeaudio.com/forum/raspberry-pi-f7.html" target="_blank" alt="RuneAudio">\
         <img class="logo" src="<?=$this->asset(\'/img/runelogo.svg\')?>">\
