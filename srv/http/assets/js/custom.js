@@ -6,7 +6,7 @@ if ( !$( '#playback-ss' ).length ) $('#section-index').off( 'mousemove click key
 
 window.addEventListener( 'orientationchange', scrolltext );
 
-$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
+if ( /\/.*\//.test( location.pathname ) === true ) $( '#menu-top, #menu-bottom' ).addClass( 'hide' );
 	
 $( '#barleft' ).click( function() {
 	$( '#menu-top, #menu-bottom' ).toggleClass( 'hide' );
