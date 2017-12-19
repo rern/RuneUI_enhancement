@@ -13,8 +13,8 @@ $( '#menu-top, #menu-bottom' ).addClass( 'hide' );
 $( '#barleft' ).click( function() {
 	$( '#menu-top, #menu-bottom' ).toggleClass( 'hide' );
 } );
+// '#play-group, #share-group, #vol-group' use show/hide to comply with css media
 $( '#barright' ).click( function() {
-	displayplayback();
 	if ( displayredis[ 'volume' ] ) {
 		$( '#play-group, #vol-group' ).toggle();
 	} else {
@@ -24,7 +24,7 @@ $( '#barright' ).click( function() {
 		$( '#share-group' ).toggle();
 	}
 	if ( window.innerHeight < 414 ) {
-		if ( !$( '#play-group' ).hasClass( 'hide' ) ) {
+		if ( !$( '#play-group' ).not( ':visible' ) ) {
 			$( '#divalbum, #sampling' ).addClass( 'hide' );
 			$( '#play-group, #share-group, #vol-group' ).css( 'margin-top', '10px' );
 		} else {
@@ -335,11 +335,11 @@ function displayplayback() {
 		if ( window.innerWidth > 568 ) {
 			$( '#play-group, #share-group, #vol-group' ).css( 'width', elemW[ i ] );
 			if ( displayredis[ 'buttons' ] ) {
-				$( '#play-group, #share-group, #vol-group' ).removeClass( 'hide' );
-				$( '#share-group' ).toggleClass( 'hide', !( displayredis[ 'time' ] && displayredis[ 'coverart' ] ) );
-				$( '#vol-group' ).toggleClass( 'hide', !displayredis[ 'volume' ] );
+				$( '#play-group, #share-group, #vol-group' ).show();
+				$( '#share-group' ).css( 'display', !( displayredis[ 'time' ] && displayredis[ 'coverart' ] ) ? 'none' : 'block' );
+				$( '#vol-group' ).css( 'display', !displayredis[ 'volume' ] ? 'none' : 'block' );
 			} else {
-				$( '#play-group, #share-group, #vol-group' ).addClass( 'hide' );
+				$( '#play-group, #share-group, #vol-group' ).hide();
 			}
 		}
 		$( '#playback-row' ).removeClass( 'hide' );
