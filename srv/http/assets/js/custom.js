@@ -7,18 +7,21 @@ if ( !$( '#playback-ss' ).length ) $('#section-index').off( 'mousemove click key
 window.addEventListener( 'orientationchange', scrolltext );
 
 if ( /\/.*\//.test( location.pathname ) === true ) $( '#menu-top, #menu-bottom' ).addClass( 'hide' );
-	
+
+$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
+
 $( '#barleft' ).click( function() {
 	$( '#menu-top, #menu-bottom' ).toggleClass( 'hide' );
 } );
 $( '#barright' ).click( function() {
+	displayplayback();
 	if ( displayredis[ 'volume' ] ) {
-		$( '#play-group, #vol-group' ).toggleClass( 'hide' );
+		$( '#play-group, #vol-group' ).toggle();
 	} else {
-		$( '#play-group' ).toggleClass( 'hide' );
+		$( '#play-group' ).toggle();
 	}
 	if ( $( '#coverart' ).is( ':visible' ) ) {
-		$( '#share-group' ).toggleClass( 'hide' );
+		$( '#share-group' ).toggle();
 	}
 	if ( window.innerHeight < 414 ) {
 		if ( !$( '#play-group' ).hasClass( 'hide' ) ) {
@@ -128,7 +131,7 @@ function panelr( lr ) {
 		var $paneright = $( '#open-playback a' );
 	}
 	$paneclick = ( lr === 'left' ) ? $paneleft.click() : $paneright.click();
-	$( '#menu-top, #menu-bottom' ).toggleClass( 'hide', !displayredis[ 'bar' ] );
+	$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
 }
 
 // hammer ************************************************************************************
@@ -148,7 +151,6 @@ $hammerbarleft.on( 'swipe', function( e ) {
 		if ( $( '#coverart' ).is( ':visible' ) ) {
 			$( '#playback-row' ).css( 'margin-top', '10px' );
 			if ( !$( '#play-group' ).hasClass( 'hide' ) ) {
-//					$( '#share-group' ).removeClass( 'hide' );
 			} else {
 				$( '#divalbum' ).removeClass( 'hide' );
 				$( '#volume-knob' ).css( 'margin-top', '20px' );
@@ -160,7 +162,6 @@ $hammerbarleft.on( 'swipe', function( e ) {
 				$( '#vol-group' ).css( { 'order': '6', '-webkit-order': '6' } );
 			}
 		} else {
-//				$( '#share-group' ).addClass( 'hide' );
 			if ( window.innerWidth > 500 ) {
 				$( '#playback-row' ).css( 'margin-top', 0 );
 				$( '#play-group, #vol-group' ).css( 'margin-top', 0 );
@@ -298,6 +299,22 @@ var path = /\/.*\//.test( location.pathname ) ? '../../' : ''; // fix path if cl
 $.get( path +'displayget.php', function( data ) {
 	var displayredis = $.parseJSON( data );
 } );
+
+function displaycommon() {
+	if ( window.innerHeight > 736 ) {
+		if ( displayredis[ 'bar' ] ) {
+			$( '#menu-top, #menu-bottom' ).removeClass( 'hide' );
+			$( '#database, #playlist' ).css( 'padding-top', '80px' );
+			$( '.btnlist-top' ).css( 'top', '40px' );
+		} else {
+			$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
+			$( '#database, #playlist' ).css( 'padding-top', '40px' );
+			$( '.btnlist-top' ).css( 'top', 0 );
+		}
+	} else {
+		$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
+	}
+}
 // playback show/hide blocks
 function displayplayback() {
 	$.get( 'displayget.php', function( data ) {
@@ -315,11 +332,7 @@ function displayplayback() {
 			, 1: '60%'
 		}
 		$( '#time-knob, #coverart, #volume-knob' ).css( 'width', elemW[ i ] );
-		
-		if ( window.innerHeight > 736 || window.innerWidth > 568 ) {
-			$( '#menu-top, #menu-bottom' ).toggleClass( 'hide', !displayredis[ 'bar' ] );
-			$( '#database, #playlist' ).css( 'padding-top', displayredis[ 'bar' ] ? '80px' : '40px' );
-			$( '.btnlist-top' ).css( 'top', displayredis[ 'bar' ] ? '40px' : 0 );
+		if ( window.innerWidth > 568 ) {
 			$( '#play-group, #share-group, #vol-group' ).css( 'width', elemW[ i ] );
 			if ( displayredis[ 'buttons' ] ) {
 				$( '#play-group, #share-group, #vol-group' ).removeClass( 'hide' );
@@ -330,6 +343,7 @@ function displayplayback() {
 			}
 		}
 		$( '#playback-row' ).removeClass( 'hide' );
+		displaycommon();
 	} );
 }
 // library home show/hide blocks
@@ -348,11 +362,7 @@ function displaylibrary() {
 		$( '#home-dirble' ).parent().toggleClass( 'hide', !displayredis[ 'dirble' ] );
 		$( '#home-jamendo' ).parent().toggleClass( 'hide', !displayredis[ 'jamendo' ] );
 		
-		if ( window.innerHeight > 736 || window.innerWidth > 568 ) {
-			$( '#menu-top, #menu-bottom' ).toggleClass( 'hide', !displayredis[ 'bar' ] );
-			$( '#database, #playlist' ).css( 'padding-top', displayredis[ 'bar' ] ? '80px' : '40px' );
-			$( '.btnlist-top' ).css( 'top', displayredis[ 'bar' ] ? '40px' : 0 );
-		}
+		displaycommon();
 		window.scrollTo( 0, 0 );
 	} );
 }
