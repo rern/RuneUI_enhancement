@@ -131,7 +131,7 @@ function panelr( lr ) {
 		var $paneright = $( '#open-playback a' );
 	}
 	$paneclick = ( lr === 'left' ) ? $paneleft.click() : $paneright.click();
-	$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
+	displaycommon();
 }
 
 // hammer ************************************************************************************
