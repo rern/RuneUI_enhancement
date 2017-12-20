@@ -4,8 +4,6 @@ $( document ).ready( function() {
 // disabled local browser > disable screensaver events
 if ( !$( '#playback-ss' ).length ) $('#section-index').off( 'mousemove click keypress' );
 
-window.addEventListener( 'orientationchange', scrolltext );
-
 if ( /\/.*\//.test( location.pathname ) === true ) $( '#menu-top, #menu-bottom' ).addClass( 'hide' );
 
 $( '#menu-top, #menu-bottom' ).addClass( 'hide' );
@@ -115,6 +113,7 @@ function indexheight() {
 }
 indexheight();
 window.addEventListener( 'orientationchange', function() {
+	scrolltext();
 	setTimeout( indexheight(), 200 );
 } );
 
