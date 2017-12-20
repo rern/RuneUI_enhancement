@@ -100,7 +100,7 @@ $( '#db-index li' ).click( function() {
 	if ( matcharray.length ) $( document ).scrollTop( matcharray[0].offsetTop - topoffset );
 } );
 // index link height
-function indexheight() {
+indexheight = function() {
 	setTimeout( function() {
 		var panelH = $( '#panel-sx' ).height();
 		if ( $( '#menu-top' ).is( ':visible' ) ) {
