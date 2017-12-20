@@ -101,20 +101,27 @@ $( '#db-index li' ).click( function() {
 } );
 // index link height
 function indexheight() {
-	var indexoffset = ( window.innerWidth > 500 && window.innerHeight ) > 500 ? 160 : 80
-	if ( window.innerHeight > 500 ) {
-		var indexline = 26;
-		$( '.half' ).show();
-	} else {
-		var indexline = 13;
-		$( '.half' ).hide();
-	}
-	$( '#db-index' ).css( 'line-height', ( window.innerHeight - indexoffset ) / indexline +'px' );
+	setTimeout( function() {
+		var panelH = $( '#panel-sx' ).height();
+		if ( $( '#menu-top' ).is( ':visible' ) ) {
+			var indexoffset = 220;
+		} else {
+			var indexoffset = 140;
+		}
+		if ( panelH > 500 ) {
+			var indexline = 26;
+			$( '.half' ).show();
+		} else {
+			var indexline = 13;
+			$( '.half' ).hide();
+		}
+		$( '#db-index' ).css( 'line-height', ( panelH - indexoffset ) / indexline +'px' );
+	}, 200 );
 }
-indexheight();
-window.addEventListener( 'orientationchange', function() {
+
+window.addEventListener( 'orientationchange', function() { 
+	indexheight();
 	scrolltext();
-	setTimeout( indexheight(), 200 );
 } );
 
 function panelr( lr ) {
@@ -131,6 +138,7 @@ function panelr( lr ) {
 	}
 	$paneclick = ( lr === 'left' ) ? $paneleft.click() : $paneright.click();
 	displaycommon();
+	if ( $( '#panel-sx' ).hasClass( 'active' ) ) indexheight();
 }
 
 // hammer ************************************************************************************
@@ -362,6 +370,7 @@ function displaylibrary() {
 		$( '#home-jamendo' ).parent().toggleClass( 'hide', !displayredis[ 'jamendo' ] );
 		
 		displaycommon();
+		indexheight();
 		window.scrollTo( 0, 0 );
 	} );
 }
