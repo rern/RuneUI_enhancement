@@ -1,16 +1,15 @@
 $( document ).ready( function() {
 // document ready start********************************************************************3
 
+$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
+
 // disabled local browser > disable screensaver events
 if ( !$( '#playback-ss' ).length ) $('#section-index').off( 'mousemove click keypress' );
-
-if ( /\/.*\//.test( location.pathname ) === true ) $( '#menu-top, #menu-bottom' ).addClass( 'hide' );
-
-$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
 
 $( '#barleft' ).click( function() {
 	$( '#menu-top, #menu-bottom' ).toggleClass( 'hide' );
 } );
+
 // '#play-group, #share-group, #vol-group' use show/hide to comply with css media
 $( '#barright' ).click( function() {
 	if ( displayredis[ 'volume' ] ) {
