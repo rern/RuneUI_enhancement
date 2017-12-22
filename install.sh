@@ -20,9 +20,6 @@ echo $file
 sed -i -e 's/RuneAudio - RuneUI/RuneUIe/
 ' -e $'/runeui.css/ a\
     <link rel="stylesheet" href="<?=$this->asset(\'/css/custom.css\')?>">
-' -e '/menu-top/ i\
-<div id="barleft"></div>\
-<div id="barright"></div>\
 ' -e $'/class="home"/ i\
     <a href="http://www.runeaudio.com/forum/raspberry-pi-f7.html" target="_blank" alt="RuneAudio">\
         <img class="logo" src="<?=$this->asset(\'/img/runelogo.svg\')?>">\
@@ -60,6 +57,8 @@ if grep -q 'jquery-ui.js' $file; then
 	' -e '/jquery-ui.js/ a\
 <script src="<?=$this->asset('"'"'/js/vendor/jquery-ui.min.js'"'"')?>"></script>
 	' $file
+else
+	rm /srv/http/assets/js/vendor/jquery-ui.min.js
 fi
 
 file=/srv/http/app/templates/playback.php
@@ -67,12 +66,19 @@ echo $file
 
 release=$( redis-cli get release )
 if [[ $release == 0.4b ]]; then
-sed -i -e '/class="screen-saver-content"/ i\
+sed -i -e '1 i\
 <?php\
 $redis = new Redis();\
 $redis->pconnect( "127.0.0.1" );\
 $localbrowser = $redis->get( "local_browser" );\
-if ( $localbrowser ) {\
+if ( !$localbrowser ) {\
+	echo "\
+		<script>\
+			var localSStime = -1;\
+			var remoteSStime = -1;\
+		</script>\
+	";\
+} else {\
 ?>
 ' -e '/<div class="tab-content">/ i\
 <?php\

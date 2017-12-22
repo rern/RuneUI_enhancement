@@ -50,6 +50,7 @@
 	text-overflow: ellipsis;
 }
 .btnlist-top {
+	top: 0;
 	box-shadow: 0px 4px 10px #000000;
 }
 .btnlist-top a,
@@ -69,7 +70,7 @@
 	right: 0;
 	width: 38px;
 	padding: 0;
-	line-height: 30px;
+/*	line-height: 30px;*/
 	list-style: none;
 	background: #172029;
 }
@@ -401,10 +402,6 @@
 	}
 }
 @media(max-width: 500px) {
-	#menu-top,
-	#menu-bottom {
-		display: none;
-	}
 	#play-group,
 	#share-group,
 	#vol-group	{
@@ -481,9 +478,6 @@
 	#playlist {
 		padding-top: 40px;
 	}
-	.btnlist-top {
-		top: 0;
-	}
 	#db-currentpath {
 		width: calc( 100% - 220px );
 	}
@@ -526,15 +520,6 @@
 	}
 }
 @media(max-height: 500px) {
-	#menu-top,
-	#menu-bottom {
-		display: none;
-	}
-/*	#play-group,
-	#share-group,
-	#vol-group	{
-		display: none;
-	}*/
 	#playback {
 		padding: 20px 0 0 0;
 		overflow-x: hidden;
@@ -576,9 +561,6 @@
 	}
 	#playlist {
 		padding-top: 40px;
-	}
-	.btnlist-top {
-		top: 0;
 	}
 }
 @media(max-height: 416px) {
