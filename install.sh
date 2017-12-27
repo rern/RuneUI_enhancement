@@ -122,16 +122,16 @@ else
 	redis-cli del enhazoom &> /dev/null
 fi
 
-if [[ $zoom != 0.7 ]]; then
-	midori=/root/.config/midori/config
+if ! pacman -Qi chromium &> /dev/null; then
 	sed -i -e '/zoom-level/ s/^/#/
 	' -e '/user-stylesheet-uri/ s/^/#/
-	' -e "/settings/ a\
-	zoom-level=$zoom
-	" $midori
+	' -e 's/==UTF-8/=UTF-8/
+	' -e '/settings/ a\
+zoom-level=$zoom
+	' /root/.config/midori/config
+else
+	sed -i "s/force-device-scale-factor=.*/force-device-scale-factor=$zoom" /root/.xinitrc
 fi
-	
-sed -i 's/==UTF-8/=UTF-8/' $midori
 
 # correct version number
 [[ $( redis-cli get buildversion ) == 'beta-20160313' ]] && redis-cli set release 0.3 &> /dev/null
