@@ -126,9 +126,9 @@ if ! pacman -Qi chromium &> /dev/null; then
 	sed -i -e '/zoom-level/ s/^/#/
 	' -e '/user-stylesheet-uri/ s/^/#/
 	' -e 's/==UTF-8/=UTF-8/
-	' -e '/settings/ a\
+	' -e "/settings/ a\
 zoom-level=$zoom
-	' /root/.config/midori/config
+	" /root/.config/midori/config
 else
 	sed -i "s/force-device-scale-factor=.*/force-device-scale-factor=$zoom" /root/.xinitrc
 fi
