@@ -186,7 +186,7 @@ $hammerbarright.on( 'swipe', function( e ) {
 } ).get( 'swipe' ).set( { direction: Hammer.DIRECTION_VERTICAL } );
 
 // skip if in menu settings
-if ( /\/.*\//.test( location.pathname ) === true ) return;
+if ( ! $( '#playback' ).hasClass( 'active' ) ) return;
 
 var $hammerinfo = new Hammer( document.getElementById( 'info' ) );
 $hammerinfo.on( 'swiperight', function( e ) {
