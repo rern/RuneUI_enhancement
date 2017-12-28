@@ -1,7 +1,7 @@
 $( document ).ready( function() {
 // document ready start********************************************************************
 
-if ( /\/.*\//.test( location.pathname ) === false ) $( '#menu-top, #menu-bottom' ).addClass( 'hide' );
+if ( $( '#playback' ).hasClass( 'active' ) ) $( '#menu-top, #menu-bottom' ).addClass( 'hide' );
 
 // disabled local browser > disable screensaver events
 if ( !$( '#playback-ss' ).length ) $('#section-index').off( 'mousemove click keypress' );
