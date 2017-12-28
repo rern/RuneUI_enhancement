@@ -101,20 +101,20 @@ $( '#db-index li' ).click( function() {
 // index link height
 indexheight = function() {
 	setTimeout( function() {
-		var panelH = $( '#panel-sx' ).height();
+		var windowH = window.innerHeight;
 		if ( $( '#menu-top' ).is( ':visible' ) ) {
-			var indexoffset = 220;
+			var indexoffset = 160;
 		} else {
-			var indexoffset = 140;
+			var indexoffset = 80;
 		}
-		if ( panelH > 500 ) {
+		if ( windowH > 500 ) {
 			var indexline = 26;
 			$( '.half' ).show();
 		} else {
 			var indexline = 13;
 			$( '.half' ).hide();
 		}
-		$( '#db-index' ).css( 'line-height', ( panelH - indexoffset ) / indexline +'px' );
+		$( '#db-index' ).css( 'line-height', ( windowH - indexoffset ) / indexline +'px' );
 	}, 200 );
 }
 
