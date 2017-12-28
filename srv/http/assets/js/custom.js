@@ -118,7 +118,7 @@ indexheight = function() {
 	}, 200 );
 }
 
-window.addEventListener( 'orientationchange', function() { 
+window.addEventListener( 'resize', function() { 
 	indexheight();
 	scrolltext();
 } );
