@@ -87,6 +87,13 @@ Visual
 - Enlarge icons
 - Add box shadow for layer depth
 - Add `Development` to `Settings` menu
+- Coverart priority:
+    - coverart files in directories
+	- embedded id3 metadata
+	- fetch from last.fm and save to that directory
+	- override or change displayed coverart by changing the coverart files
+	    - filename: cover, Cover, folder, Folder, front, Front
+	    - format: jpg, png
 
 ![shadow](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/shadow.jpg)
 
