@@ -53,11 +53,7 @@ if ($activePlayer === 'MPD') {
     closeMpdSocket($mpd2);
     // 1. local coverart
     $local_cover_root = dirname( $currentpath );
-    $files = array(
-		  'cover.jpg', 'Cover.jpg', 'cover.png', 'Cover.png'
-		, 'folder.jpg', 'Folder.jpg', 'folder.png', 'Folder.png'
-		, 'front.png', 'Front.jpg', 'front.png', 'Front.png'
-	);
+    $files = array( 'cover.jpg', 'cover.png', 'folder.jpg', 'folder.png' );
     foreach( $files as $file ) {
     	$local_cover_path = $local_cover_root.'/'.$file;
     	if ( file_exists( $local_cover_path ) ) {
