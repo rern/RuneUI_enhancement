@@ -176,12 +176,12 @@ $hammercontent.on( 'swiperight', function() {
 } );
 
 var $hammerbarleft = new Hammer( document.getElementById( 'barleft' ) );
-$hammerbarleft.on( 'swipe', function( e ) {
+$hammerbarleft.on( 'swipe', function() {
 	$( '#menu-top, #menu-bottom' ).toggleClass( 'hide' );
 } ).get( 'swipe' ).set( { direction: Hammer.DIRECTION_VERTICAL } );
 
 var $hammerbarright = new Hammer( document.getElementById( 'barright' ) );
-$hammerbarrightm.on( 'swipe', function( e ) {
+$hammerbarrightm.on( 'swipe', function() {
 	$( '#menu-top, #menu-bottom' ).toggleClass( 'hide' );
 } ).get( 'swipe' ).set( { direction: Hammer.DIRECTION_VERTICAL } );
 
