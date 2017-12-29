@@ -71,7 +71,8 @@ sed -i -e '1 i\
 $redis = new Redis();\
 $redis->pconnect( "127.0.0.1" );\
 $localbrowser = $redis->get( "local_browser" );\
-if ( !$localbrowser ) {\
+$localSStime = $redis->get( "localSStime" );\
+if ( !$localbrowser || $localSStime == -1 ) {\
 	echo "\
 		<script>\
 			var localSStime = -1;\
