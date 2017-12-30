@@ -166,15 +166,16 @@ $hammercontent.on( 'swiperight', function() {
 } );
 
 var $hammerbarleft = new Hammer( document.getElementById( 'barleft' ) );
-$hammerbarleft.on( 'swipe', function( e ) {
+/*$hammerbarleft.on( 'swipe', function( e ) {
 	$( '#menu-top, #menu-bottom' ).toggleClass( 'hide' );
-} ).get( 'swipe' ).set( { direction: Hammer.DIRECTION_VERTICAL } );
+} ).get( 'swipe' ).set( { direction: Hammer.DIRECTION_VERTICAL } );*/
 
 var $hammerbarright = new Hammer( document.getElementById( 'barright' ) );
-$hammerbarright.on( 'swipe', function( e ) {
-	$( '#menu-top, #menu-bottom' ).toggleClass( 'hide' );
-} ).get( 'swipe' ).set( { direction: Hammer.DIRECTION_VERTICAL } );
-
+[ $hammerbarleft, $hammerbarright ].forEach( function( e ) {
+	e.on( 'swipe', function() {
+		$( '#menu-top, #menu-bottom' ).toggleClass( 'hide' );
+	} ).get( 'swipe' ).set( { direction: Hammer.DIRECTION_VERTICAL } );
+} );
 // skip if in menu settings
 if ( /\/.*\//.test( location.pathname ) === true ) return;
 
