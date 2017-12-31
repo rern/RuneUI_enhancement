@@ -298,7 +298,7 @@ $.get( path +'displayget.php', function( data ) {
 } );
 
 function displaycommon() {
-	if ( window.innerHeight > 736 ) {
+	if ( parseInt( $( '#playback' ).css( 'padding-top' ) ) > 25 ) {
 		if ( displayredis[ 'bar' ] ) {
 			$( '#menu-top, #menu-bottom' ).removeClass( 'hide' );
 			$( '#database, #playlist' ).css( 'padding-top', '80px' );
