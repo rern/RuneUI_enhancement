@@ -36,7 +36,7 @@ $( '#barright' ).click( function() {
 		$( '#share-group' ).toggle();
 	}
 	if ( window.innerHeight < 414 ) {
-		if ( !$( '#play-group' ).not( ':visible' ) ) {
+		if ( $( '#play-group' ).is( ':hidden' ) ) {
 			$( '#divalbum, #sampling' ).addClass( 'hide' );
 			$( '#play-group, #share-group, #vol-group' ).css( 'margin-top', '10px' );
 		} else {
