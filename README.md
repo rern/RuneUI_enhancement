@@ -2,7 +2,7 @@ RuneUI enhancement
 ---
 _Tested on RuneAudio 0.3 and 0.4b_   
 
-![mid](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/mid.gif)
+![mid](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/iPhoneP.gif)
 ![1](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/1.png)
 
 ![4](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/4.png)
