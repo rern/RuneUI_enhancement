@@ -7,7 +7,22 @@ if ( /\/.*\//.test( location.pathname ) === false ) $( '#menu-top, #menu-bottom'
 if ( !$( '#playback-ss' ).length ) $('#section-index').off( 'mousemove click keypress' );
 
 $( '#barleft' ).click( function() {
-	$( '#menu-top, #menu-bottom' ).toggleClass( 'hide' );
+	if ( window.innerWidth < 500 ) {
+		$( '#coverart' ).slideToggle( function() {
+			$( '#time-knob, #volume-knob' ).css( 'margin-top', 0 );
+			if ( $( '#coverart' ).is( ':visible' ) ) {
+				$( '#playback-row' ).css( 'margin-top', '10px' );
+				if ( $( '#play-group' ).is( ':visible' ) ) {
+					$( '#share-group' ).show();
+				} else {
+					$( '#divalbum' ).removeClass( 'hide' );
+					$( '#volume-knob' ).css( 'margin-top', '20px' );
+				}
+			} else {
+				$( '#share-group' ).hide();
+			}
+		} );
+	}
 } );
 
 // '#play-group, #share-group, #vol-group' use show/hide to comply with css media
@@ -21,7 +36,7 @@ $( '#barright' ).click( function() {
 		$( '#share-group' ).toggle();
 	}
 	if ( window.innerHeight < 414 ) {
-		if ( !$( '#play-group' ).not( ':visible' ) ) {
+		if ( $( '#play-group' ).is( ':hidden' ) ) {
 			$( '#divalbum, #sampling' ).addClass( 'hide' );
 			$( '#play-group, #share-group, #vol-group' ).css( 'margin-top', '10px' );
 		} else {
@@ -151,40 +166,16 @@ $hammercontent.on( 'swiperight', function() {
 } );
 
 var $hammerbarleft = new Hammer( document.getElementById( 'barleft' ) );
-$hammerbarleft.on( 'swipe', function( e ) {
-	$( '#coverart' ).slideToggle( function() {
-		$( '#time-knob, #volume-knob' ).css( 'margin-top', 0 );
-		if ( $( '#coverart' ).is( ':visible' ) ) {
-			$( '#playback-row' ).css( 'margin-top', '10px' );
-			if ( !$( '#play-group' ).hasClass( 'hide' ) ) {
-			} else {
-				$( '#divalbum' ).removeClass( 'hide' );
-				$( '#volume-knob' ).css( 'margin-top', '20px' );
-			}
-			if ( window.innerWidth > 500 ) {
-				$( '#coverart' ).css( { 'order': '2', '-webkit-order': '2' } );
-				$( '#share-group' ).css( { 'order': '4', '-webkit-order': '4' } );
-				$( '#volume-knob' ).css( { 'order': '5', '-webkit-order': '5' } );
-				$( '#vol-group' ).css( { 'order': '6', '-webkit-order': '6' } );
-			}
-		} else {
-			if ( window.innerWidth > 500 ) {
-				$( '#playback-row' ).css( 'margin-top', 0 );
-				$( '#play-group, #vol-group' ).css( 'margin-top', 0 );
-				$( '#coverart' ).css( { 'order': '5', '-webkit-order': '5' } );
-				$( '#share-group' ).css( { 'order': '6', '-webkit-order': '6' } );
-				$( '#volume-knob' ).css( { 'order': '2', '-webkit-order': '2' } );
-				$( '#vol-group' ).css ({ 'order': '4', '-webkit-order': '4' } );
-			}
-		}
-	} );
-} ).get( 'swipe' ).set( { direction: Hammer.DIRECTION_VERTICAL } );
+/*$hammerbarleft.on( 'swipe', function( e ) {
+	$( '#menu-top, #menu-bottom' ).toggleClass( 'hide' );
+} ).get( 'swipe' ).set( { direction: Hammer.DIRECTION_VERTICAL } );*/
 
 var $hammerbarright = new Hammer( document.getElementById( 'barright' ) );
-$hammerbarright.on( 'swipe', function( e ) {
-	$( '#menu-top, #menu-bottom' ).toggleClass( 'hide' );
-} ).get( 'swipe' ).set( { direction: Hammer.DIRECTION_VERTICAL } );
-
+[ $hammerbarleft, $hammerbarright ].forEach( function( e ) {
+	e.on( 'swipe', function() {
+		$( '#menu-top, #menu-bottom' ).toggleClass( 'hide' );
+	} ).get( 'swipe' ).set( { direction: Hammer.DIRECTION_VERTICAL } );
+} );
 // skip if in menu settings
 if ( /\/.*\//.test( location.pathname ) === true ) return;
 
@@ -211,11 +202,7 @@ $hammercoverart.on( 'tap', function( e ) {
 	$( '#next' ).click();
 	e.stopPropagation();
 } );
-/*.on( 'swipe', function() {
-	$( '#menu-top, #menu-bottom' ).show();
-//	$( '#menu-settings' ).click();
-} ).get( 'swipe' ).set( { direction: Hammer.DIRECTION_VERTICAL } );
-*/
+
 var $hammerplayback = new Hammer( document.getElementById( 'playback' ) );
 $hammerplayback.on( 'press', function() {
 	info( {
@@ -307,7 +294,7 @@ $.get( path +'displayget.php', function( data ) {
 } );
 
 function displaycommon() {
-	if ( window.innerHeight > 736 ) {
+	if ( parseInt( $( '#playback' ).css( 'padding-top' ) ) > 25 ) {
 		if ( displayredis[ 'bar' ] ) {
 			$( '#menu-top, #menu-bottom' ).removeClass( 'hide' );
 			$( '#database, #playlist' ).css( 'padding-top', '80px' );

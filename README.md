@@ -20,11 +20,12 @@ Try it - [**Demo**](https://rern.github.io/RuneUI_GPIO/)
 - Library breadcrumb path links to each directory
 - Library index bar
 - Fix Library sorting
-- Coverart files in directories overrule ID3 tag ones
+- Coverart override
 - 0.4b fixes:
 	- Prevent `coverarts` and `song-info` update on play / pause in the same song
 	- Use local `jquery-ui.min.js` instead of online
 	- Fix missing `lato-bolditalic-webfont`
+	- Remove screen saver items if disabled or if disable local browser
 
 >[Install](#install)  
 >[Functional](#functional)  
@@ -87,6 +88,13 @@ Visual
 - Enlarge icons
 - Add box shadow for layer depth
 - Add `Development` to `Settings` menu
+- Coverart priority:
+    - coverart files in directories
+	- embedded id3 metadata
+	- fetch from last.fm and save to that directory
+	- override or change displayed coverart by changing the coverart files
+	    - filename: cover, Cover, folder, Folder, front, Front
+	    - format: jpg, png
 
 ![shadow](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/shadow.jpg)
 
