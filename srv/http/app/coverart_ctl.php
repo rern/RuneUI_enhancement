@@ -56,7 +56,7 @@ if ($activePlayer === 'MPD') {
 	$files = array(
 		  'cover.jpg', 'Cover.jpg', 'cover.png', 'Cover.png'
 		, 'folder.jpg', 'Folder.jpg', 'folder.png', 'Folder.png'
-		, 'front.png', 'Front.jpg', 'front.png', 'Front.png'
+		, 'front.jpg', 'Front.jpg', 'front.png', 'Front.png'
 	);
     foreach( $files as $file ) {
     	$local_cover_path = $local_cover_root.'/'.$file;
