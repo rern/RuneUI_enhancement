@@ -68,11 +68,7 @@ release=$( redis-cli get release )
 if [[ $release == 0.4b ]]; then
 sed -i -e '1 i\
 <?php\
-$redis = new Redis();\
-$redis->pconnect( "127.0.0.1" );\
-$localbrowser = $redis->get( "local_browser" );\
-$localSStime = $redis->get( "localSStime" );\
-if ( !$localbrowser || $localSStime == -1 ) {\
+if ( $this->localSStime != 1 || $this->localSStime == -1 ) {\
 	echo "\
 		<script>\
 			var localSStime = -1;\
