@@ -202,11 +202,7 @@ $hammercoverart.on( 'tap', function( e ) {
 	$( '#next' ).click();
 	e.stopPropagation();
 } );
-/*.on( 'swipe', function() {
-	$( '#menu-top, #menu-bottom' ).show();
-//	$( '#menu-settings' ).click();
-} ).get( 'swipe' ).set( { direction: Hammer.DIRECTION_VERTICAL } );
-*/
+
 var $hammerplayback = new Hammer( document.getElementById( 'playback' ) );
 $hammerplayback.on( 'press', function() {
 	info( {
