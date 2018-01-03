@@ -118,9 +118,9 @@ indexheight = function() {
 	setTimeout( function() {
 		var panelH = $( '#panel-sx' ).height();
 		if ( $( '#menu-top' ).is( ':visible' ) ) {
-			var indexoffset = 220;
+			var indexoffset = 160;
 		} else {
-			var indexoffset = 140;
+			var indexoffset = 80;
 		}
 		if ( panelH > 500 ) {
 			var indexline = 26;
