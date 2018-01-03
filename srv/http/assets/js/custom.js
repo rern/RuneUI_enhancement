@@ -113,6 +113,10 @@ $( '#db-index li' ).click( function() {
 	} );
 	if ( matcharray.length ) $( document ).scrollTop( matcharray[0].offsetTop - topoffset );
 } );
+$( '#db-level-up' ).click( function() {
+	window.scrollTo( 0, dbtop );
+} );
+
 // index link height
 indexheight = function() {
 	setTimeout( function() {
@@ -429,23 +433,22 @@ var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 var observersearch = new MutationObserver( function() {
 	window.scrollTo( 0, 0 );
 });
-var observer = new MutationObserver( function() {
-	window.scrollTo( 0, lyricstop );
-});
 var observerdiv = document.getElementById( 'database-entries' );
 var observeroption = { childList: true };
-
 $( '#db-search' ).on( 'submit', function() {
-	lyricstop = $( window ).scrollTop();
+	dbtop = $( window ).scrollTop();
 	observersearch.observe( observerdiv, observeroption );
 	$( '#db-level-up' ).hide( function() { // addClass( 'hide' ) not work
 		observersearch.disconnect();
 	} );
 } );
-
-var observer = new MutationObserver( function() {
-	window.scrollTo( 0, lyricstop );
+var observerback = new MutationObserver( function() {
+	window.scrollTo( 0, dbtop );
 });
+$( '#database-entries' ).click( function() {
+	dbtop = $( window ).scrollTop();
+	observerback.observe( observerdiv, observeroption );
+} );
 
 // replace functions in main runeui.js file **********************************************
 $( '#db-search-results' ).click( function() {
@@ -456,12 +459,11 @@ $( '#db-search-results' ).click( function() {
 	} );
 	
 	$( '#database-entries' ).removeAttr( 'style' );
-	observer.observe( observerdiv, observeroption );
+	observerback.observe( observerdiv, observeroption );
 	$( '#db-level-up' ).show( function() {
-		observer.disconnect();
+		observerback.disconnect();
 	} );
 } );
-
 
 function timeConvert3( ss ) {
 	var hr = Math.floor( ss / 3600 );
