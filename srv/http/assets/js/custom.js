@@ -306,6 +306,7 @@ function displaycommon() {
 		}
 	} else {
 		$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
+		$( '#database' ).css( 'padding-top', '40px' );
 	}
 }
 // playback show/hide blocks
