@@ -443,7 +443,7 @@ $( '#db-search' ).on( 'submit', function() {
 	} );
 } );
 var observerback = new MutationObserver( function() {
-	window.scrollTo( 0, dbtop );
+	window.scrollTo( 0, $( '#database-entries>li' ).eq( 0 ).attr( 'class' ) === 'db-folder' ? dbtop : 0 );
 });
 $( '#database-entries' ).click( function() {
 	dbtop = $( window ).scrollTop();
