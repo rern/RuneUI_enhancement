@@ -8,8 +8,7 @@ if ( !$( '#playback-ss' ).length ) $('#section-index').off( 'mousemove click key
 
 $( '#bartop, #barbottom' ).mouseenter( function() {
 	$( '#menu-top, #menu-bottom' ).removeClass( 'hide' );
-} );
-$( '#bartop, #barbottom' ).mouseleave( function() {
+} ).mouseleave( function() {
 	$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
 } );
 $( '#barleft' ).click( function() {
