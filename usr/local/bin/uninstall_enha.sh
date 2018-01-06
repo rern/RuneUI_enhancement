@@ -69,6 +69,9 @@ sed -i -e '/^<?php$/,/^?>$/ d
 ' -e '/enh \*\/?>/ d
 ' $playback
 
+
+sed -i '/if ( \$template->local_browser )/,/^}$/ d' /srv/http/app/settings_ctl.php
+
 midori=/root/.config/midori/config
 echo $midori
 if grep -q '^#zoom-level' $midori; then
