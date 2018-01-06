@@ -6,6 +6,12 @@ if ( /\/.*\//.test( location.pathname ) === false ) $( '#menu-top, #menu-bottom'
 // disabled local browser > disable screensaver events
 if ( !$( '#playback-ss' ).length ) $('#section-index').off( 'mousemove click keypress' );
 
+$( '#bartop, #barbottom' ).mouseenter( function() {
+	$( '#menu-top, #menu-bottom' ).removeClass( 'hide' );
+} );
+$( '#bartop, #barbottom' ).mouseleave( function() {
+	$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
+} );
 $( '#barleft' ).click( function() {
 	if ( window.innerWidth < 500 ) {
 		$( '#coverart' ).slideToggle( function() {
