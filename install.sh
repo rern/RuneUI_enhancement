@@ -44,6 +44,9 @@ sed -i -e 's/RuneAudio - RuneUI/RuneUIe/
 ' -e 's|"fa fa-music"></i> Library|"fa fa-folder-open"></i>|
 ' -e $'s|"tab"\')?>><i class="fa fa-play"></i> Playback|"tab"\')?>><i class="fa fa-play-circle"></i>|
 ' -e 's|"fa fa-list"></i> Queue|"fa fa-list"></i>|
+' -e '$ a\
+<div id="bartop"></div>\
+<div id="barbottom"></div>
 ' $file
 
 file=/srv/http/app/templates/footer.php
