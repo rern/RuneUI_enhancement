@@ -63,7 +63,6 @@ fi
 
 file=/srv/http/app/templates/playback.php
 echo $file
-
 release=$( redis-cli get release )
 if [[ $release == 0.4b ]]; then
 sed -i -e '1 i\
@@ -87,6 +86,17 @@ sed -i -e '/<div class="tab-content">/ i\
 <?php include "playbackcustom.php";\
 /\*
 ' -e '/id="context-menus"/ i\enh \*/?>
+' $file
+
+# start/stop local browser
+file=/srv/http/app/settings_ctl.php
+echo $file
+sed -i '$ a\
+if ( $template->local_browser ) {\
+    exec( "/usr/bin/sudo /usr/bin/xinit &> /dev/null &" );\
+} else {\
+	exec( "/usr/bin/sudo /usr/bin/killall Xorg" );\
+}
 ' $file
 
 # for 0.3 - no songinfo and screensaver
