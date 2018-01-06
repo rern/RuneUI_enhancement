@@ -95,7 +95,7 @@ sed -i '$ a\
 if ( $template->local_browser ) {\
     exec( "/usr/bin/sudo /usr/bin/xinit &> /dev/null &" );\
 } else {\
-	exec( "/usr/bin/sudo /usr/bin/killall Xorg" );\
+    exec( "/usr/bin/sudo /usr/bin/killall Xorg" );\
 }
 ' $file
 
