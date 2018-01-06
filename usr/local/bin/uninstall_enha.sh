@@ -27,9 +27,9 @@ mv /srv/http/app/coverart_ctl.php{.backup,}
 # restore modified files #######################################
 echo -e "$bar Restore modified files ..."
 
-index=/srv/http/index.php
-echo $index
-sed -i '/template->local_browser/ d' $index
+file=/srv/http/app/playback_ctl.php
+echo $file
+sed -i '/template->local_browser/ d' $file
 
 header=/srv/http/app/templates/header.php
 echo $header
