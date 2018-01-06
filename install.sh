@@ -16,9 +16,9 @@ getinstallzip
 # modify files #######################################
 echo -e "$bar Modify files ..."
 
-file=/srv/http/index.php
+file=/srv/http/app/playback_ctl.php
 echo $file
-sed -i '/template->activePlayer/ a\
+sed -i '$ a\
 $template->local_browser = $redis->get("local_browser");
 ' $file
 
