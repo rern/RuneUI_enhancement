@@ -84,6 +84,19 @@
 }
 
 /* ---------------------- playback ---------------------- */
+#bartop,
+#barbottom {
+	position: fixed;
+	left: 0;
+	width: 100vw;
+	height: 10;
+}
+#bartop {
+	top: 0;
+}
+#barbottom {
+	bottom: 0;
+}
 #barleft,
 #barright {
 	position: fixed;
