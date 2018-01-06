@@ -67,7 +67,7 @@ release=$( redis-cli get release )
 if [[ $release == 0.4b ]]; then
 sed -i -e '1 i\
 <?php\
-if ( $this->localSStime == -1 ) {\
+if ( $this->localSStime == -1 || $this->remoteSStime == -1 ) {\
 	echo "\
 		<script>\
 			var localSStime = -1;\
