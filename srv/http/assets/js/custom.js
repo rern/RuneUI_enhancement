@@ -18,6 +18,7 @@ $( '#bartop, #barbottom' ).mouseenter( function() {
 } );
 $( '#menu-top, #menu-bottom' ).mouseleave( function() {
 	if ( menuhide ) $( '#menu-top, #menu-bottom' ).addClass( 'hide' );
+	menuhide = 0;
 } );
 
 $( '#barleft' ).click( function() {
