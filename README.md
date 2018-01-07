@@ -48,6 +48,7 @@ Functional
 - Long-press = show/hide items setting
 
 ### Playback
+- Mouse hover top/bottom of screen = toggle top/bottom menu bars (if hidden)
 - Tap `artist` or `album` = get info from last.fm
 - Swipe left-right = swiches between `Library` - `Playback` - `Queue`
 - Swipe left-right on `text area` = previous-next track
@@ -105,7 +106,6 @@ Visual
 - Show file format
 - Scroll long text on overflow
 - Hide artist and album text on width < 500px
-- Hide `volume` on disabled
 - Enlarge icons
 - Move `play source` inside `time`
 
