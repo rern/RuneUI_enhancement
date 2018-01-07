@@ -96,7 +96,7 @@ Visual
 **Middle:**
 - Rearrange all to more efficient and responsive layout
 - Improve sampling data display (calculate from raw data)
-- Show DSD64, DSD128
+- Show DSD info
 - Show file format
 - Scroll long text on overflow
 - Hide artist and album text on width < 500px
