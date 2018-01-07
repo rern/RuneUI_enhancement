@@ -32,16 +32,9 @@ Try it - [**Demo**](https://rern.github.io/RuneUI_GPIO/)
 >[Functional](#functional)  
 >[Visual](#visual)  
 
-![mid](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/RuneUImod1.gif)
-![midL](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/midL.gif)
-
 Install
 ---
 from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)  
-
-
-![small](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/small.gif)
-![smallL](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/smallL.gif)
 
 Functional
 ---
