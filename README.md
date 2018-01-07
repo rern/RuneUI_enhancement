@@ -12,8 +12,8 @@ _Tested on RuneAudio 0.3 and 0.4b_
 Try it - [**Demo**](https://rern.github.io/RuneUI_GPIO/)  
 
 - More minimalism
+- Even more minimal by selectable show/hide items
 - More fluid layout
-- Select show/hide items
 - Fit all in one phone screen (with 'Add to Home Screen')
 - Swipeable
 - Improved song info
@@ -21,6 +21,7 @@ Try it - [**Demo**](https://rern.github.io/RuneUI_GPIO/)
 - Library index bar
 - Fix Library sorting
 - Coverart override
+- Start/stop local browser right after settings saved (default needs system restart)
 - 0.4b fixes:
 	- Prevent `coverarts` and `song-info` update on play / pause in the same song
 	- Use local `jquery-ui.min.js` instead of online
