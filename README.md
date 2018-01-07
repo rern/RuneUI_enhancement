@@ -40,24 +40,24 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 
 Functional
 ---
-### All page
-- Long-press = show/hide items setting
 
 ### Playback
+- Long-press = show/hide items setting
 - Mouse hover top/bottom of screen = toggle top/bottom menu bars (if hidden)
 - Tap `artist` or `album` = get info from last.fm
 - Swipe left-right = swiches between `Library` - `Playback` - `Queue`
-- Swipe left-right on `text area` = previous-next track
-- Swipe up / down on `screen left` `screen right` or tap `screen left` = hide / show `top` `bottom`
-- (width < 500px) Swipe up / down or tap `screen left` = swap show / hide `cover art` `volume`
-- Tap `cover art` = play / pause (besides `time`)
+- Swipe up / down on `screen left` `screen right` = hide / show `top` `bottom`
+- (width < 500px) tap `screen left` = swap show / hide `cover art` `volume`
+- Swipe left-right on `text area` or `coverart` = previous-next track
+- Tap `cover art` = play / pause (besides default `time`)
+- Long-press `cover art` = stop
 - Tap `playlist item` also go back to playback page
 - Tap `playback controls` on other pages also go back to playback page
-- Long-press = show/hide items
 
 ![layout](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/RuneUImod1.gif)
 
 ### Library
+- Long-press = show/hide items setting
 - **Breadcrumb path links** = shortcut jump to any **directory** in the path
 - **Index bar** = quick scroll to directories
 - **Sorting** - fix incorrect:
