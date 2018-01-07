@@ -6,11 +6,19 @@ if ( /\/.*\//.test( location.pathname ) === false ) $( '#menu-top, #menu-bottom'
 // disabled local browser > disable screensaver events
 if ( !$( '#playback-ss' ).length ) $('#section-index').off( 'mousemove click keypress' );
 
+var menuhide = 0;
 $( '#bartop, #barbottom' ).mouseenter( function() {
-	$( '#menu-top, #menu-bottom' ).removeClass( 'hide' );
-} ).mouseleave( function() {
-	$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
+	if ( $( '#menu-top, #menu-bottom' ).is( ':visible' ) ) {
+		menuhide = 0;
+	} else {
+		menuhide = 1;
+		$( '#menu-top, #menu-bottom' ).removeClass( 'hide' );
+	}
 } );
+$( '#menu-top, #menu-bottom' ).mouseleave( function() {
+	if ( menuhide ) $( '#menu-top, #menu-bottom' ).addClass( 'hide' );
+} );
+
 $( '#barleft' ).click( function() {
 	if ( window.innerWidth < 500 ) {
 		$( '#coverart' ).slideToggle( function() {
