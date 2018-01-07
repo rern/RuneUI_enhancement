@@ -44,23 +44,22 @@ sed -i -e 's/RuneAudio - RuneUI/RuneUIe/
 ' -e 's|"fa fa-music"></i> Library|"fa fa-folder-open"></i>|
 ' -e $'s|"tab"\')?>><i class="fa fa-play"></i> Playback|"tab"\')?>><i class="fa fa-play-circle"></i>|
 ' -e 's|"fa fa-list"></i> Queue|"fa fa-list"></i>|
-' -e '$ a\
-<div id="bartop"></div>\
-<div id="barbottom"></div>
 ' $file
 
 file=/srv/http/app/templates/footer.php
 echo $file
+sed -i '1 i\
+<div id="bartop"></div>\
+<div id="barbottom"></div>
+' $file
 # must be before lyrics addon
 if ! grep -q 'lyrics.js' $file; then
 	echo '<script src="<?=$this->asset('"'"'/js/custom.js'"'"')?>"></script>' >> $file
 else
 	sed -i '/lyrics.js/ i\<script src="<?=$this->asset('"'"'/js/custom.js'"'"')?>"></script>' $file
 fi
-! grep -q 'hammer.min.js' $file && 
-echo '<script src="<?=$this->asset('"'"'/js/vendor/hammer.min.js'"'"')?>"></script>' >> $file
-! grep -q 'propagating.js' $file && 
-echo '<script src="<?=$this->asset('"'"'/js/vendor/propagating.js'"'"')?>"></script>' >> $file
+! grep -q 'hammer.min.js' $file && echo '<script src="<?=$this->asset('"'"'/js/vendor/hammer.min.js'"'"')?>"></script>' >> $file
+! grep -q 'propagating.js' $file && echo '<script src="<?=$this->asset('"'"'/js/vendor/propagating.js'"'"')?>"></script>' >> $file
 # 0.4b
 if grep -q 'jquery-ui.js' $file; then
 	sed -i -e 's/<.*jquery-ui.js.*script>/<!--&-->/
