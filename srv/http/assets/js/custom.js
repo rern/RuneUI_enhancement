@@ -8,11 +8,12 @@ if ( !$( '#playback-ss' ).length ) $('#section-index').off( 'mousemove click key
 
 var menuhide = 0;
 $( '#bartop, #barbottom' ).mouseenter( function() {
-	if ( $( '#menu-top, #menu-bottom' ).is( ':visible' ) ) {
+	var tb = $( this ).prop( 'id' ).replace( 'bar', '#menu-' );
+	if ( $( tb ).is( ':visible' ) ) {
 		menuhide = 0;
 	} else {
 		menuhide = 1;
-		$( '#menu-top, #menu-bottom' ).removeClass( 'hide' );
+		$( tb ).removeClass( 'hide' );
 	}
 } );
 $( '#menu-top, #menu-bottom' ).mouseleave( function() {
