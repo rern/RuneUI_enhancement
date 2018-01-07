@@ -36,6 +36,8 @@ Install
 ---
 from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)  
 
+![show-hide](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/show-hide.gif)
+
 Functional
 ---
 ### All page
