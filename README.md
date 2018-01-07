@@ -103,8 +103,6 @@ Visual
 - Enlarge icons
 - Move `play source` inside `time`
 
-![lyrics](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/lyrics.jpg)
-
 **Bottom Bar:**
 - Hide on height < 500px
 - Change icons and remove text labels
