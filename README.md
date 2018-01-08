@@ -13,7 +13,7 @@ Try it - [**Demo**](https://rern.github.io/RuneUI_GPIO/)
 
 - More minimalism
 - Even more minimal by selectable show/hide items
-- More fluid layout
+- More responsive layout
 - Fit all in one phone screen (with 'Add to Home Screen')
 - Swipeable
 - Improved song info
