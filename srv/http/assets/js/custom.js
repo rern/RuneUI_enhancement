@@ -6,6 +6,21 @@ if ( /\/.*\//.test( location.pathname ) === false ) $( '#menu-top, #menu-bottom'
 // disabled local browser > disable screensaver events
 if ( !$( '#playback-ss' ).length ) $('#section-index').off( 'mousemove click keypress' );
 
+var menuhide = 0;
+$( '#bartop, #barbottom' ).mouseenter( function() {
+	var tb = $( this ).prop( 'id' ).replace( 'bar', '#menu-' );
+	if ( $( tb ).is( ':visible' ) ) {
+		menuhide = 0;
+	} else {
+		menuhide = 1;
+		$( tb ).removeClass( 'hide' );
+	}
+} );
+$( '#menu-top, #menu-bottom' ).mouseleave( function() {
+	if ( menuhide ) $( '#menu-top, #menu-bottom' ).addClass( 'hide' );
+	menuhide = 0;
+} );
+
 $( '#barleft' ).click( function() {
 	if ( window.innerWidth < 500 ) {
 		$( '#coverart' ).slideToggle( function() {
@@ -443,7 +458,7 @@ $( '#db-search' ).on( 'submit', function() {
 	} );
 } );
 var observerback = new MutationObserver( function() {
-	window.scrollTo( 0, dbtop );
+	window.scrollTo( 0, $( '#database-entries>li' ).eq( 0 ).attr( 'class' ) === 'db-folder' ? dbtop : 0 );
 });
 $( '#database-entries' ).click( function() {
 	dbtop = $( window ).scrollTop();

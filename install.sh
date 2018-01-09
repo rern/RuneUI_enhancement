@@ -15,6 +15,13 @@ getinstallzip
 
 # modify files #######################################
 echo -e "$bar Modify files ..."
+
+file=/srv/http/app/playback_ctl.php
+echo $file
+sed -i '$ a\
+$template->local_browser = $redis->get("local_browser");
+' $file
+
 file=/srv/http/app/templates/header.php
 echo $file
 sed -i -e 's/RuneAudio - RuneUI/RuneUIe/
@@ -41,16 +48,18 @@ sed -i -e 's/RuneAudio - RuneUI/RuneUIe/
 
 file=/srv/http/app/templates/footer.php
 echo $file
+sed -i '1 i\
+<div id="bartop"></div>\
+<div id="barbottom"></div>
+' $file
 # must be before lyrics addon
 if ! grep -q 'lyrics.js' $file; then
 	echo '<script src="<?=$this->asset('"'"'/js/custom.js'"'"')?>"></script>' >> $file
 else
 	sed -i '/lyrics.js/ i\<script src="<?=$this->asset('"'"'/js/custom.js'"'"')?>"></script>' $file
 fi
-! grep -q 'hammer.min.js' $file && 
-echo '<script src="<?=$this->asset('"'"'/js/vendor/hammer.min.js'"'"')?>"></script>' >> $file
-! grep -q 'propagating.js' $file && 
-echo '<script src="<?=$this->asset('"'"'/js/vendor/propagating.js'"'"')?>"></script>' >> $file
+! grep -q 'hammer.min.js' $file && echo '<script src="<?=$this->asset('"'"'/js/vendor/hammer.min.js'"'"')?>"></script>' >> $file
+! grep -q 'propagating.js' $file && echo '<script src="<?=$this->asset('"'"'/js/vendor/propagating.js'"'"')?>"></script>' >> $file
 # 0.4b
 if grep -q 'jquery-ui.js' $file; then
 	sed -i -e 's/<.*jquery-ui.js.*script>/<!--&-->/
@@ -63,12 +72,11 @@ fi
 
 file=/srv/http/app/templates/playback.php
 echo $file
-
 release=$( redis-cli get release )
 if [[ $release == 0.4b ]]; then
 sed -i -e '1 i\
 <?php\
-if ( $this->localSStime != 1 || $this->localSStime == -1 ) {\
+if ( $this->localSStime == -1 && $this->remoteSStime == -1 ) {\
 	echo "\
 		<script>\
 			var localSStime = -1;\
@@ -87,6 +95,17 @@ sed -i -e '/<div class="tab-content">/ i\
 <?php include "playbackcustom.php";\
 /\*
 ' -e '/id="context-menus"/ i\enh \*/?>
+' $file
+
+# start/stop local browser
+file=/srv/http/app/settings_ctl.php
+echo $file
+sed -i '$ a\
+if ( $template->local_browser ) {\
+    exec( "/usr/bin/sudo /usr/bin/xinit &> /dev/null &" );\
+} else {\
+    exec( "/usr/bin/sudo /usr/bin/killall Xorg" );\
+}
 ' $file
 
 # for 0.3 - no songinfo and screensaver
@@ -113,7 +132,7 @@ fi
 if [[ $1 != u ]]; then
 	zoom=$1;
 	zoom=$( echo $zoom | awk '{if ($1 < 0.5) print 0.5; else print $1}' )
-	zoom=$( echo $zoom | awk '{if ($1 > 2) print 2; else print $1}' )
+	zoom=$( echo $zoom | awk '{if ($1 > 3) print 3; else print $1}' )
 else
 	zoom=$( redis-cli get enhazoom &> /dev/null )
 	redis-cli del enhazoom &> /dev/null

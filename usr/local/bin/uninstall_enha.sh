@@ -26,6 +26,11 @@ mv /srv/http/app/coverart_ctl.php{.backup,}
 
 # restore modified files #######################################
 echo -e "$bar Restore modified files ..."
+
+file=/srv/http/app/playback_ctl.php
+echo $file
+sed -i '/template->local_browser/ d' $file
+
 header=/srv/http/app/templates/header.php
 echo $header
 sed -i -e 's/RuneUIe/RuneAudio - RuneUI/
@@ -68,6 +73,10 @@ sed -i -e '/^<?php$/,/^?>$/ d
 ' -e '/playbackcustom.php/, /\/\*/ d
 ' -e '/enh \*\/?>/ d
 ' $playback
+
+settings=/srv/http/app/settings_ctl.php
+echo $settings
+sed -i '/if ( \$template->local_browser )/,/^}$/ d' $settings
 
 midori=/root/.config/midori/config
 echo $midori

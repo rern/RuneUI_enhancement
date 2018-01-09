@@ -12,8 +12,8 @@ _Tested on RuneAudio 0.3 and 0.4b_
 Try it - [**Demo**](https://rern.github.io/RuneUI_GPIO/)  
 
 - More minimalism
-- More fluid layout
-- Select show/hide items
+- Even more minimal by selectable show/hide items
+- More responsive layout
 - Fit all in one phone screen (with 'Add to Home Screen')
 - Swipeable
 - Improved song info
@@ -21,6 +21,7 @@ Try it - [**Demo**](https://rern.github.io/RuneUI_GPIO/)
 - Library index bar
 - Fix Library sorting
 - Coverart override
+- Start/stop local browser right after settings saved (default needs system restart)
 - 0.4b fixes:
 	- Prevent `coverarts` and `song-info` update on play / pause in the same song
 	- Use local `jquery-ui.min.js` instead of online
@@ -31,36 +32,32 @@ Try it - [**Demo**](https://rern.github.io/RuneUI_GPIO/)
 >[Functional](#functional)  
 >[Visual](#visual)  
 
-![mid](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/RuneUImod1.gif)
-![midL](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/midL.gif)
-
 Install
 ---
 from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)  
 
-
-![small](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/small.gif)
-![smallL](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/smallL.gif)
+![show-hide](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/show-hide.gif)
 
 Functional
 ---
-### All page
-- Long-press = show/hide items setting
 
 ### Playback
+- Long-press = show/hide items setting
+- Mouse hover top/bottom of screen = toggle top/bottom menu bars (if hidden)
 - Tap `artist` or `album` = get info from last.fm
 - Swipe left-right = swiches between `Library` - `Playback` - `Queue`
-- Swipe left-right on `text area` = previous-next track
-- Swipe up / down on `screen left` `screen right` or tap `screen left` = hide / show `top` `bottom`
-- (width < 500px) Swipe up / down or tap `screen left` = swap show / hide `cover art` `volume`
-- Tap `cover art` = play / pause (besides `time`)
+- Swipe up / down on `screen left` `screen right` = hide / show `top` `bottom`
+- (width < 500px) tap `screen left` = swap show / hide `cover art` `volume`
+- Swipe left-right on `text area` or `coverart` = previous-next track
+- Tap `cover art` = play / pause (besides default `time`)
+- Long-press `cover art` = stop
 - Tap `playlist item` also go back to playback page
 - Tap `playback controls` on other pages also go back to playback page
-- Long-press = show/hide items
 
 ![layout](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/RuneUImod1.gif)
 
 ### Library
+- Long-press = show/hide items setting
 - **Breadcrumb path links** = shortcut jump to any **directory** in the path
 - **Index bar** = quick scroll to directories
 - **Sorting** - fix incorrect:
@@ -101,15 +98,12 @@ Visual
 **Middle:**
 - Rearrange all to more efficient and responsive layout
 - Improve sampling data display (calculate from raw data)
-- Show DSD64, DSD128
+- Show DSD info
 - Show file format
 - Scroll long text on overflow
 - Hide artist and album text on width < 500px
-- Hide `volume` on disabled
 - Enlarge icons
 - Move `play source` inside `time`
-
-![lyrics](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/lyrics.jpg)
 
 **Bottom Bar:**
 - Hide on height < 500px
