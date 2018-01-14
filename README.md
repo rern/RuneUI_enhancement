@@ -12,6 +12,8 @@ _Tested on RuneAudio 0.3 and 0.4b_
 
 Try it - [**Demo**](https://rern.github.io/RuneUI_GPIO/)  
 
+Features
+---
 - More minimalism
 - Even more minimal by selectable show/hide items
 - More responsive layout
