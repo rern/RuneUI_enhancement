@@ -805,7 +805,7 @@ function populateDB(options) {
             }
 // ****************************************************************************************
 // sorting
-            data.sort( function( a, b ){
+            data.sort( function( a, b ) {
                 if ( path === 'Artists' || path === 'AlbumArtists'|| path === 'Various Artists' ) {
                     return compareAB( a, b, 'artist' );
                 } else if ( path === 'Albums' ) {
