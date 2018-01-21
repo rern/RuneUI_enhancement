@@ -660,9 +660,8 @@ function updateGUI() {
 }
 
 function compareAB( a, b, prop ) {
-	nameA = a.hasOwnProperty( prop ) ? a[ prop ] : '';
-	nameB = b.hasOwnProperty( prop ) ? b[ prop ] : '';
-	return nameA.localeCompare( nameB );
+	prop = a[ prop ] !== undefined ? prop : 'file'
+	return a[ prop ].localeCompare( b[ prop ] );
 }
 function populateDB(options) {
     var data = options.data || '',
