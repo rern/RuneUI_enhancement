@@ -307,8 +307,7 @@ $hammerlibrary.on( 'tap', function( e ) {
 } );
 
 // show/hide blocks database
-var path = /\/.*\//.test( location.pathname ) ? '../../' : ''; // fix path if click in other menu pages
-$.get( path +'displayget.php', function( data ) {
+$.get( '/displayget.php', function( data ) {
 	var displayredis = $.parseJSON( data );
 } );
 
