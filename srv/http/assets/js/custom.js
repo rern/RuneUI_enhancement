@@ -1,6 +1,24 @@
 $( document ).ready( function() {
 // document ready start********************************************************************
 
+$( '#open-panel-sx' ).click( function() {
+	menubottom( '#panel-sx', '#playback, #panel-dx' )
+} );
+$( '#open-playback' ).click( function() {
+	menubottom( '#playback', '#panel-sx, #panel-dx' )
+} );
+$( '#open-panel-dx' ).click( function() {
+	menubottom( '#panel-dx', '#playback, #panel-sx' )
+} );
+function menubottom( show, hide ) {
+	if ( /\/.*\//.test( location.pathname ) === false ) {
+		$( show ).show();
+		$( hide ).hide();
+	} else {
+		window.location.href = '/';
+	}
+}
+
 if ( /\/.*\//.test( location.pathname ) === false ) $( '#menu-top, #menu-bottom' ).addClass( 'hide' );
 
 // disabled local browser > disable screensaver events
@@ -158,7 +176,7 @@ window.addEventListener( 'orientationchange', function() {
 } );
 
 function panelr( lr ) {
-	var paneactive = $( '#content' ).find( 'div.active' ).prop( 'id' );
+	var paneactive = $( '#content' ).find( '.tab-pane:visible' ).prop( 'id' );
 	if ( paneactive === 'panel-sx' ) {
 		var $paneleft = $( '#open-playback a' );
 		var $paneright = $( '#open-panel-dx a' );
