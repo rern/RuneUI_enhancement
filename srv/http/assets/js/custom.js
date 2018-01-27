@@ -253,11 +253,20 @@ $hammerplayback.on( 'press', function() {
 			);
 		}
 	} );
-	if ( displayredis.volumempd == 0 ) 
+	// disable from autohide
+	if ( parseInt( $( '#playback' ).css( 'padding-top' ) ) < 25 ) {
+		$( 'input[name="bar"]' )
+			.prop( 'disabled', true )
+			.parent().css( 'color', '#7795b4' )
+			.append( ' (auto hide)' );
+	}
+	// disable from mpd volume
+	if ( displayredis.volumempd == 0 ) {
 		$( 'input[name="volume"]' )
 			.prop( 'disabled', true )
 			.parent().css( 'color', '#7795b4' )
 			.append( ' (disabled)' );
+	}
 } );
 var $hammertime = new Hammer( document.getElementById( 'time-knob' ) );
 $hammertime.on( 'press', function( e ) {
