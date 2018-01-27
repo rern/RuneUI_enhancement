@@ -42,7 +42,7 @@ $( '#barleft' ).click( function() {
 
 // '#play-group, #share-group, #vol-group' use show/hide to comply with css media
 $( '#barright' ).click( function() {
-	if ( displayredis[ 'volume' ] ) {
+	if ( displayredis.volume ) {
 		$( '#play-group, #vol-group' ).toggle();
 	} else {
 		$( '#play-group' ).toggle();
@@ -229,11 +229,11 @@ $hammerplayback.on( 'press', function() {
 		, message: 'Select items to show:'
 		, checkboxhtml : '<form id="displaysaveplayback" action="displaysave.php" method="post">\
 						<input name="playback" type="hidden" value="1">\
-						<label><input name="bar" type="checkbox" '+ displayredis[ 'bar' ] +'>&ensp;Top-Bottom menu</label>\
-						<br><label><input name="time" type="checkbox" '+ displayredis[ 'time' ] +'>&ensp;Time</label>\
-						<br><label><input name="coverart" type="checkbox" '+ displayredis[ 'coverart' ] +'>&ensp;Coverart</label>\
-						<br><label><input name="volume" type="checkbox" '+ displayredis[ 'volume' ] +'>&ensp;Volume</label>\
-						<br><label><input name="buttons" type="checkbox" '+ displayredis[ 'buttons' ] +'>&ensp;Buttons</label>\
+						<label><input name="bar" type="checkbox" '+ displayredis.bar +'>&ensp;Top-Bottom menu</label>\
+						<br><label><input name="time" type="checkbox" '+ displayredis.time +'>&ensp;Time</label>\
+						<br><label><input name="coverart" type="checkbox" '+ displayredis.coverart +'>&ensp;Coverart</label>\
+						<br><label><input name="volume" type="checkbox" '+ displayredis.volume +'>&ensp;Volume</label>\
+						<br><label><input name="buttons" type="checkbox" '+ displayredis.buttons +'>&ensp;Buttons</label>\
 						</form>'
 		, cancel : 1
 		, ok     : function () {
@@ -253,6 +253,11 @@ $hammerplayback.on( 'press', function() {
 			);
 		}
 	} );
+	if ( displayredis.volumempd == 0 ) 
+		$( 'input[name="volume"]' )
+			.prop( 'disabled', true )
+			.parent().css( 'color', '#7795b4' )
+			.append( ' (disabled)' );
 } );
 var $hammertime = new Hammer( document.getElementById( 'time-knob' ) );
 $hammertime.on( 'press', function( e ) {
@@ -273,17 +278,17 @@ $hammerlibrary.on( 'tap', function( e ) {
 		, message: 'Select items to show:'
 		, checkboxhtml : '<form id="displaysave" action="displaysave.php" method="post">\
 						<input name="library" type="hidden" value="1">\
-						<label><input name="bar" type="checkbox" '+ displayredis[ 'bar' ] +'>&ensp;Top-Bottom menu</label>\
-						<br><label><input name="nas" type="checkbox" '+ displayredis[ 'nas' ] +'>&ensp;Network mounts</label>\
-						<br><label><input name="usb" type="checkbox" '+ displayredis[ 'usb' ] +'>&ensp;USB storage</label>\
-						<br><label><input name="webradio" type="checkbox" '+ displayredis[ 'webradio' ] +'>&ensp;My Webradios</label>\
-						<br><label><input name="albums" type="checkbox" '+ displayredis[ 'albums' ] +'>&ensp;Albums</label>\
-						<br><label><input name="artists" type="checkbox" '+ displayredis[ 'artists' ] +'>&ensp;Artists</label>\
-						<br><label><input name="composer" type="checkbox" '+ displayredis[ 'composer' ] +'>&ensp;Composers</label>\
-						<br><label><input name="genre" type="checkbox" '+ displayredis[ 'genre' ] +'>&ensp;Genres</label>\
-						<br><label><input name="spotify" type="checkbox" '+ displayredis[ 'spotify' ] +'>&ensp;Spotify</label>\
-						<br><label><input name="dirble" type="checkbox" '+ displayredis[ 'dirble' ] +'>&ensp;Dirble</label>\
-						<br><label><input name="jamendo" type="checkbox" '+ displayredis[ 'jamendo' ] +'>&ensp;Jamendo</label>\
+						<label><input name="bar" type="checkbox" '+ displayredis.bar +'>&ensp;Top-Bottom menu</label>\
+						<br><label><input name="nas" type="checkbox" '+ displayredis.nas +'>&ensp;Network mounts</label>\
+						<br><label><input name="usb" type="checkbox" '+ displayredis.usb +'>&ensp;USB storage</label>\
+						<br><label><input name="webradio" type="checkbox" '+ displayredis.webradio +'>&ensp;My Webradios</label>\
+						<br><label><input name="albums" type="checkbox" '+ displayredis.albums +'>&ensp;Albums</label>\
+						<br><label><input name="artists" type="checkbox" '+ displayredis.artists +'>&ensp;Artists</label>\
+						<br><label><input name="composer" type="checkbox" '+ displayredis.composer +'>&ensp;Composers</label>\
+						<br><label><input name="genre" type="checkbox" '+ displayredis.genre +'>&ensp;Genres</label>\
+						<br><label><input name="spotify" type="checkbox" '+ displayredis.spotify +'>&ensp;Spotify</label>\
+						<br><label><input name="dirble" type="checkbox" '+ displayredis.dirble +'>&ensp;Dirble</label>\
+						<br><label><input name="jamendo" type="checkbox" '+ displayredis.jamendo +'>&ensp;Jamendo</label>\
 						</form>'
 		, cancel : 1
 		, ok     : function () {
@@ -307,13 +312,14 @@ $hammerlibrary.on( 'tap', function( e ) {
 } );
 
 // show/hide blocks database
-$.get( '/displayget.php', function( data ) {
+var path = /\/.*\//.test( location.pathname ) ? '../../' : ''; // fix path if click in other menu pages
+$.get( path +'displayget.php', function( data ) {
 	var displayredis = $.parseJSON( data );
 } );
 
 function displaycommon() {
 	if ( parseInt( $( '#playback' ).css( 'padding-top' ) ) > 25 ) {
-		if ( displayredis[ 'bar' ] ) {
+		if ( displayredis.bar ) {
 			$( '#menu-top, #menu-bottom' ).removeClass( 'hide' );
 			$( '#database, #playlist' ).css( 'padding-top', '80px' );
 			$( '.btnlist-top' ).css( 'top', '40px' );
@@ -331,13 +337,14 @@ function displaycommon() {
 function displayplayback() {
 	$.get( 'displayget.php', function( data ) {
 		displayredis = $.parseJSON( data );
-		$( '#time-knob' ).toggleClass( 'hide', !displayredis[ 'time' ] );
-		$( '#coverart' ).toggleClass( 'hide', !displayredis[ 'coverart' ] );
-		$( '#volume-knob' ).toggleClass( 'hide', !displayredis[ 'volume' ] );
+		var volume = ( displayredis.volume == 0 || displayredis.volumempd == 0 ) ? 0 : 1;
+		$( '#time-knob' ).toggleClass( 'hide', !displayredis.time );
+		$( '#coverart' ).toggleClass( 'hide', !displayredis.coverart );
+		$( '#volume-knob' ).toggleClass( 'hide', !volume );
 		var i = 0;
-		if ( displayredis[ 'time' ] ) i += 1;
-		if ( displayredis[ 'coverart' ] ) i += 1;
-		if ( displayredis[ 'volume' ] ) i += 1;
+		if ( displayredis.time ) i += 1;
+		if ( displayredis.coverart ) i += 1;
+		if ( volume ) i += 1;
 		var elemW = {
 			  3: '30%'
 			, 2: '40%'
@@ -346,10 +353,10 @@ function displayplayback() {
 		$( '#time-knob, #coverart, #volume-knob' ).css( 'width', elemW[ i ] );
 		if ( window.innerWidth > 568 ) {
 			$( '#play-group, #share-group, #vol-group' ).css( 'width', elemW[ i ] );
-			if ( displayredis[ 'buttons' ] ) {
+			if ( displayredis.buttons ) {
 				$( '#play-group, #share-group, #vol-group' ).show();
-				$( '#share-group' ).css( 'display', !( displayredis[ 'time' ] && displayredis[ 'coverart' ] ) ? 'none' : 'block' );
-				$( '#vol-group' ).css( 'display', !displayredis[ 'volume' ] ? 'none' : 'block' );
+				$( '#share-group' ).css( 'display', !( displayredis.time && displayredis.coverart ) ? 'none' : 'block' );
+				$( '#vol-group' ).css( 'display', !volume ? 'none' : 'block' );
 			} else {
 				$( '#play-group, #share-group, #vol-group' ).hide();
 			}
@@ -363,16 +370,16 @@ function displaylibrary() {
 	$.get( 'displayget.php', function( data ) {
 		displayredis = $.parseJSON( data );
 		// no 'id'
-		$( '#home-blocks div:contains(Network mounts)' ).toggleClass( 'hide', !displayredis[ 'nas' ] );
-		$( '#home-usb' ).parent().toggleClass( 'hide', !displayredis[ 'usb' ] );
-		$( '#home-webradio' ).parent().toggleClass( 'hide', !displayredis[ 'webradio' ] );
-		$( '#home-albums' ).parent().toggleClass( 'hide', !displayredis[ 'albums' ] );
-		$( '#home-artists' ).parent().toggleClass( 'hide', !displayredis[ 'artists' ] );
-		$( '#home-composer' ).parent().toggleClass( 'hide', !displayredis[ 'composer' ] );
-		$( '#home-genre' ).parent().toggleClass( 'hide', !displayredis[ 'genre' ] );
-		$( '#home-spotify' ).parent().toggleClass( 'hide', !displayredis[ 'spotify' ] );
-		$( '#home-dirble' ).parent().toggleClass( 'hide', !displayredis[ 'dirble' ] );
-		$( '#home-jamendo' ).parent().toggleClass( 'hide', !displayredis[ 'jamendo' ] );
+		$( '#home-blocks div:contains(Network mounts)' ).toggleClass( 'hide', !displayredis.nas );
+		$( '#home-usb' ).parent().toggleClass( 'hide', !displayredis.usb );
+		$( '#home-webradio' ).parent().toggleClass( 'hide', !displayredis.webradio );
+		$( '#home-albums' ).parent().toggleClass( 'hide', !displayredis.albums );
+		$( '#home-artists' ).parent().toggleClass( 'hide', !displayredis.artists );
+		$( '#home-composer' ).parent().toggleClass( 'hide', !displayredis.composer );
+		$( '#home-genre' ).parent().toggleClass( 'hide', !displayredis.genre );
+		$( '#home-spotify' ).parent().toggleClass( 'hide', !displayredis.spotify );
+		$( '#home-dirble' ).parent().toggleClass( 'hide', !displayredis.dirble );
+		$( '#home-jamendo' ).parent().toggleClass( 'hide', !displayredis.jamendo );
 		
 		displaycommon();
 		indexheight();
