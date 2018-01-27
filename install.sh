@@ -30,9 +30,8 @@ sed -i -e 's/RuneAudio - RuneUI/RuneUIe/
 ' -e $'/class="home"/ i\
     <a href="http://www.runeaudio.com/forum/raspberry-pi-f7.html" target="_blank" alt="RuneAudio">\
         <img class="logo" src="<?=$this->asset(\'/img/runelogo.svg\')?>">\
-	</a>\
-	<?php $path = $_SERVER["REQUEST_URI"] == "/" ? "/#playback" : "/";?>
-' -e 's|/#playback|<?=$path;?>|
+	</a>
+' -e 's|href="/#panel-sx"||; s|/#playback||; s|href="/#panel-dx"||
 ' -e '/dropdown-menu/ a\
             <li id="dropdownbg"></li> <!-- box-shadow -->
 ' -e 's/<a id="menu-settings" class="dropdown-toggle"/<button id="menu-settings" class="btn-default dropdown-toggle"/
