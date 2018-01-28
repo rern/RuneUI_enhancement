@@ -38,7 +38,7 @@ sed -i -e 's/RuneAudio - RuneUI/RuneUIe/
 ' -e '\|href="/"><i class="fa fa-play"| s|^|<?php /\*|; s|$|\*/?>|
 ' -e $'/Credits/ a\
             <li class="<?=$this->uri(1, \'dev\', \'active\')?>"><a href="/dev/"><i class="fa fa-code"></i> Development</a></li>
-' -e '/logo.png/ s|^|<?php /\*|; /logo.png/ s|$|\*/?>|
+' -e '/logo.png/ s|^|<?php /\*|; s|$|\*/?>|
 ' -e 's|href="/#panel-sx"||; s|/#playback||; s|href="/#panel-dx"||
 ' -e 's|"fa fa-music"></i> Library|"fa fa-folder-open"></i>|
 ' -e $'s|"tab"\')?>><i class="fa fa-play"></i> Playback|"tab"\')?>><i class="fa fa-play-circle"></i>|
