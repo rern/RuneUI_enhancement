@@ -1,24 +1,6 @@
 $( document ).ready( function() {
 // document ready start********************************************************************
 
-function menubottom( show, hide ) {
-	if ( /\/.*\//.test( location.pathname ) === false ) {
-		$( show ).show();
-		$( hide ).hide();
-	} else {
-		window.location.href = '/';
-	}
-}
-$( '#open-panel-sx' ).click( function() {
-	menubottom( '#panel-sx', '#playback, #panel-dx' )
-} );
-$( '#open-playback' ).click( function() {
-	menubottom( '#playback', '#panel-sx, #panel-dx' )
-} );
-$( '#open-panel-dx' ).click( function() {
-	menubottom( '#panel-dx', '#playback, #panel-sx' )
-} );
-
 if ( /\/.*\//.test( location.pathname ) === false ) $( '#menu-top, #menu-bottom' ).addClass( 'hide' );
 
 // disabled local browser > disable screensaver events
@@ -34,12 +16,10 @@ $( '#bartop, #barbottom' ).mouseenter( function() {
 		$( tb ).removeClass( 'hide' );
 	}
 } );
-setTimeout( function() { // fix mouse move pass menu on initial load
-	$( '#menu-top, #menu-bottom' ).mouseleave( function() {
-		if ( menuhide ) $( '#menu-top, #menu-bottom' ).addClass( 'hide' );
-		menuhide = 0;
-	} );
-}, 1000 );
+$( '#menu-top, #menu-bottom' ).mouseleave( function() {
+	if ( menuhide ) $( '#menu-top, #menu-bottom' ).addClass( 'hide' );
+	menuhide = 0;
+} );
 
 $( '#barleft' ).click( function() {
 	if ( window.innerWidth < 500 ) {
@@ -62,7 +42,7 @@ $( '#barleft' ).click( function() {
 
 // '#play-group, #share-group, #vol-group' use show/hide to comply with css media
 $( '#barright' ).click( function() {
-	if ( displayredis.volume != 0 && displayredis.volumempd != 0 ) {
+	if ( displayredis[ 'volume' ] ) {
 		$( '#play-group, #vol-group' ).toggle();
 	} else {
 		$( '#play-group' ).toggle();
@@ -177,102 +157,83 @@ window.addEventListener( 'orientationchange', function() {
 	scrolltext();
 } );
 
-// skip if in menu settings
-if ( /\/.*\//.test( location.pathname ) === true ) return;
-
-// hammer**************************************************************
-Hammer = propagating( Hammer ); // propagating.js fix e.stopPropagation()
-
-var $hammercontent = new Hammer( document.getElementById( 'content' ) );
-var $hammerbarleft = new Hammer( document.getElementById( 'barleft' ) );
-var $hammerbarright = new Hammer( document.getElementById( 'barright' ) );
-var $hammerlibrary = new Hammer( document.getElementById( 'panel-sx' ) );
-var $hammerplayback = new Hammer( document.getElementById( 'playback' ) );
-var $hammerlibrary = new Hammer( document.getElementById( 'panel-dx' ) );
-var $hammerinfo = new Hammer( document.getElementById( 'info' ) );
-var $hammertime = new Hammer( document.getElementById( 'time-knob' ) );
-var $hammercoverart = new Hammer( document.getElementById( 'coverart' ) );
-var $hammervolume = new Hammer( document.getElementById( 'volume-knob' ) );
-
-function panelLR( lr ) {
-	var pcurrent = $( '.tab-pane:visible' ).prop( 'id' );
-	if ( pcurrent === 'panel-sx' ) {
-		var $pL = $( '#open-playback a' );
-		var $pR = $( '#open-panel-dx a' );
-	} else if ( pcurrent === 'playback' ) {
-		var $pL = $( '#open-panel-dx a' );
-		var $pR = $( '#open-panel-sx a' );
+function panelr( lr ) {
+	var paneactive = $( '#content' ).find( 'div.active' ).prop( 'id' );
+	if ( paneactive === 'panel-sx' ) {
+		var $paneleft = $( '#open-playback a' );
+		var $paneright = $( '#open-panel-dx a' );
+	} else if ( paneactive === 'playback' ) {
+		var $paneleft = $( '#open-panel-dx a' );
+		var $paneright = $( '#open-panel-sx a' );
 	} else {
-		var $pL = $( '#open-panel-sx a' );
-		var $pR = $( '#open-playback a' );
+		var $paneleft = $( '#open-panel-sx a' );
+		var $paneright = $( '#open-playback a' );
 	}
-	$paneclick = ( lr === 'left' ) ? $pL.click() : $pR.click();
+	$paneclick = ( lr === 'left' ) ? $paneleft.click() : $paneright.click();
 	displaycommon();
 	if ( $( '#panel-sx' ).hasClass( 'active' ) ) indexheight();
 }
+
+// hammer ************************************************************************************
+Hammer = propagating( Hammer ); // propagating.js fix e.stopPropagation()
+
+var $hammercontent = new Hammer( document.body );
 $hammercontent.on( 'swiperight', function() {
-	panelLR();
+	panelr( 'right' );
 } ).on( 'swipeleft', function() {
-	panelLR( 'left' );
+	panelr( 'left' );
 } );
 
+var $hammerbarleft = new Hammer( document.getElementById( 'barleft' ) );
+/*$hammerbarleft.on( 'swipe', function( e ) {
+	$( '#menu-top, #menu-bottom' ).toggleClass( 'hide' );
+} ).get( 'swipe' ).set( { direction: Hammer.DIRECTION_VERTICAL } );*/
+
+var $hammerbarright = new Hammer( document.getElementById( 'barright' ) );
 [ $hammerbarleft, $hammerbarright ].forEach( function( e ) {
 	e.on( 'swipe', function() {
 		$( '#menu-top, #menu-bottom' ).toggleClass( 'hide' );
 	} ).get( 'swipe' ).set( { direction: Hammer.DIRECTION_VERTICAL } );
 } );
+// skip if in menu settings
+if ( /\/.*\//.test( location.pathname ) === true ) return;
 
-$hammerlibrary.on( 'tap', function( e ) {
-	if ( $( '.home-block-remove' ).length && !$( e.target ).is( 'span.block-remove' ) ) $( '#db-homeSetup' ).click();
-} ).on( 'press', function() {
-	if ( !$( '#db-currentpath' ).hasClass( 'hide' ) ) return
-	info( {
-		  title  : 'Libary Home'
-		, message: 'Select items to show:'
-		, checkboxhtml : '<form id="displaysave" action="displaysave.php" method="post">\
-						<input name="library" type="hidden" value="1">\
-						<label><input name="bar" type="checkbox" '+ displayredis.bar +'>&ensp;Top-Bottom menu</label>\
-						<br><label><input name="nas" type="checkbox" '+ displayredis.nas +'>&ensp;Network mounts</label>\
-						<br><label><input name="usb" type="checkbox" '+ displayredis.usb +'>&ensp;USB storage</label>\
-						<br><label><input name="webradio" type="checkbox" '+ displayredis.webradio +'>&ensp;My Webradios</label>\
-						<br><label><input name="albums" type="checkbox" '+ displayredis.albums +'>&ensp;Albums</label>\
-						<br><label><input name="artists" type="checkbox" '+ displayredis.artists +'>&ensp;Artists</label>\
-						<br><label><input name="composer" type="checkbox" '+ displayredis.composer +'>&ensp;Composers</label>\
-						<br><label><input name="genre" type="checkbox" '+ displayredis.genre +'>&ensp;Genres</label>\
-						<br><label><input name="spotify" type="checkbox" '+ displayredis.spotify +'>&ensp;Spotify</label>\
-						<br><label><input name="dirble" type="checkbox" '+ displayredis.dirble +'>&ensp;Dirble</label>\
-						<br><label><input name="jamendo" type="checkbox" '+ displayredis.jamendo +'>&ensp;Jamendo</label>\
-						</form>'
-		, cancel : 1
-		, ok     : function () {
-			$.post( 'displaysave.php',
-				$( '#displaysave' ).serialize(),
-				function(data) {
-					if ( data ) {
-						displaylibrary();
-					} else {
-						info( {
-							  title  : 'Libary Home'
-							, message: 'Save Library home failed!'
-						} );
-					}
-				}
-			);
-		}
-	} );
+var $hammerinfo = new Hammer( document.getElementById( 'info' ) );
+$hammerinfo.on( 'swiperight', function( e ) {
+	$( '#previous' ).click();
+	e.stopPropagation();
+} ).on( 'swipeleft', function( e ) {
+	$( '#next' ).click();
+	e.stopPropagation();
+} );
+// touch play control
+var $hammercoverart = new Hammer( document.getElementById( 'coverart' ) );
+$hammercoverart.on( 'tap', function( e ) {
+	$( '#play' ).click();
+	e.stopPropagation();
+} ).on( 'press', function( e ) {
+	$( '#stop' ).click();
+	e.stopPropagation();
+} ).on( 'swiperight', function( e ) {
+	$( '#previous' ).click();
+	e.stopPropagation();
+} ).on( 'swipeleft', function( e ) {
+	$( '#next' ).click();
+	e.stopPropagation();
 } );
 
+var $hammerplayback = new Hammer( document.getElementById( 'playback' ) );
 $hammerplayback.on( 'press', function() {
 	info( {
 		  title  : 'Playback'
 		, message: 'Select items to show:'
 		, checkboxhtml : '<form id="displaysaveplayback" action="displaysave.php" method="post">\
 						<input name="playback" type="hidden" value="1">\
-						<label><input name="bar" type="checkbox" '+ displayredis.bar +'>&ensp;Top-Bottom menu</label>\
-						<br><label><input name="time" type="checkbox" '+ displayredis.time +'>&ensp;Time</label>\
-						<br><label><input name="coverart" type="checkbox" '+ displayredis.coverart +'>&ensp;Coverart</label>\
-						<br><label><input name="volume" type="checkbox" '+ displayredis.volume +'>&ensp;Volume</label>\
-						<br><label><input name="buttons" type="checkbox" '+ displayredis.buttons +'>&ensp;Buttons</label>\
+						<label><input name="bar" type="checkbox" '+ displayredis[ 'bar' ] +'>&ensp;Top-Bottom menu</label>\
+						<br><label><input name="time" type="checkbox" '+ displayredis[ 'time' ] +'>&ensp;Time</label>\
+						<br><label><input name="coverart" type="checkbox" '+ displayredis[ 'coverart' ] +'>&ensp;Coverart</label>\
+						<br><label><input name="volume" type="checkbox" '+ displayredis[ 'volume' ] +'>&ensp;Volume</label>\
+						<br><label><input name="buttons" type="checkbox" '+ displayredis[ 'buttons' ] +'>&ensp;Buttons</label>\
 						</form>'
 		, cancel : 1
 		, ok     : function () {
@@ -292,49 +253,56 @@ $hammerplayback.on( 'press', function() {
 			);
 		}
 	} );
-	// disable from autohide
-	if ( parseInt( $( '#playback' ).css( 'padding-top' ) ) < 25 ) {
-		$( 'input[name="bar"]' )
-			.prop( 'disabled', true )
-			.parent().css( 'color', '#7795b4' )
-			.append( ' (auto hide)' );
-	}
-	// disable from mpd volume
-	if ( displayredis.volumempd == 0 ) {
-		$( 'input[name="volume"]' )
-			.prop( 'disabled', true )
-			.parent().css( 'color', '#7795b4' )
-			.append( ' (disabled)' );
-	}
 } );
-
-$hammerinfo.on( 'swiperight', function( e ) {
-	$( '#previous' ).click();
-	e.stopPropagation();
-} ).on( 'swipeleft', function( e ) {
-	$( '#next' ).click();
-	e.stopPropagation();
-} );
+var $hammertime = new Hammer( document.getElementById( 'time-knob' ) );
 $hammertime.on( 'press', function( e ) {
 	e.stopPropagation();
 } );
-$hammercoverart.on( 'tap', function( e ) {
-	$( '#play' ).click();
-	e.stopPropagation();
-} ).on( 'press', function( e ) {
-	$( '#stop' ).click();
-	e.stopPropagation();
-} ).on( 'swiperight', function( e ) {
-	$( '#previous' ).click();
-	e.stopPropagation();
-} ).on( 'swipeleft', function( e ) {
-	$( '#next' ).click();
-	e.stopPropagation();
-} );
+var $hammervolume = new Hammer( document.getElementById( 'volume-knob' ) );
 $hammervolume.on( 'press', function( e ) {
 	e.stopPropagation();
 } );
 
+var $hammerlibrary = new Hammer( document.getElementById( 'panel-sx' ) );
+$hammerlibrary.on( 'tap', function( e ) {
+	if ( $( '.home-block-remove' ).length && !$( e.target ).is( 'span.block-remove' ) ) $( '#db-homeSetup' ).click();
+} ).on( 'press', function() {
+	if ( !$( '#db-currentpath' ).hasClass( 'hide' ) ) return
+	info( {
+		  title  : 'Libary Home'
+		, message: 'Select items to show:'
+		, checkboxhtml : '<form id="displaysave" action="displaysave.php" method="post">\
+						<input name="library" type="hidden" value="1">\
+						<label><input name="bar" type="checkbox" '+ displayredis[ 'bar' ] +'>&ensp;Top-Bottom menu</label>\
+						<br><label><input name="nas" type="checkbox" '+ displayredis[ 'nas' ] +'>&ensp;Network mounts</label>\
+						<br><label><input name="usb" type="checkbox" '+ displayredis[ 'usb' ] +'>&ensp;USB storage</label>\
+						<br><label><input name="webradio" type="checkbox" '+ displayredis[ 'webradio' ] +'>&ensp;My Webradios</label>\
+						<br><label><input name="albums" type="checkbox" '+ displayredis[ 'albums' ] +'>&ensp;Albums</label>\
+						<br><label><input name="artists" type="checkbox" '+ displayredis[ 'artists' ] +'>&ensp;Artists</label>\
+						<br><label><input name="composer" type="checkbox" '+ displayredis[ 'composer' ] +'>&ensp;Composers</label>\
+						<br><label><input name="genre" type="checkbox" '+ displayredis[ 'genre' ] +'>&ensp;Genres</label>\
+						<br><label><input name="spotify" type="checkbox" '+ displayredis[ 'spotify' ] +'>&ensp;Spotify</label>\
+						<br><label><input name="dirble" type="checkbox" '+ displayredis[ 'dirble' ] +'>&ensp;Dirble</label>\
+						<br><label><input name="jamendo" type="checkbox" '+ displayredis[ 'jamendo' ] +'>&ensp;Jamendo</label>\
+						</form>'
+		, cancel : 1
+		, ok     : function () {
+			$.post( 'displaysave.php',
+				$( '#displaysave' ).serialize(),
+				function(data) {
+					if ( data ) {
+						displaylibrary();
+					} else {
+						info( {
+							  title  : 'Libary Home'
+							, message: 'Save Library home failed!'
+						} );
+					}
+				}
+			);
+		}
+	} );
+} );
 // document ready end *********************************************************************
 } );
 
@@ -346,7 +314,7 @@ $.get( path +'displayget.php', function( data ) {
 
 function displaycommon() {
 	if ( parseInt( $( '#playback' ).css( 'padding-top' ) ) > 25 ) {
-		if ( displayredis.bar ) {
+		if ( displayredis[ 'bar' ] ) {
 			$( '#menu-top, #menu-bottom' ).removeClass( 'hide' );
 			$( '#database, #playlist' ).css( 'padding-top', '80px' );
 			$( '.btnlist-top' ).css( 'top', '40px' );
@@ -364,14 +332,13 @@ function displaycommon() {
 function displayplayback() {
 	$.get( 'displayget.php', function( data ) {
 		displayredis = $.parseJSON( data );
-		var volume = ( displayredis.volume == 0 || displayredis.volumempd == 0 ) ? 0 : 1;
-		$( '#time-knob' ).toggleClass( 'hide', !displayredis.time );
-		$( '#coverart' ).toggleClass( 'hide', !displayredis.coverart );
-		$( '#volume-knob' ).toggleClass( 'hide', !volume );
+		$( '#time-knob' ).toggleClass( 'hide', !displayredis[ 'time' ] );
+		$( '#coverart' ).toggleClass( 'hide', !displayredis[ 'coverart' ] );
+		$( '#volume-knob' ).toggleClass( 'hide', !displayredis[ 'volume' ] );
 		var i = 0;
-		if ( displayredis.time ) i += 1;
-		if ( displayredis.coverart ) i += 1;
-		if ( volume ) i += 1;
+		if ( displayredis[ 'time' ] ) i += 1;
+		if ( displayredis[ 'coverart' ] ) i += 1;
+		if ( displayredis[ 'volume' ] ) i += 1;
 		var elemW = {
 			  3: '30%'
 			, 2: '40%'
@@ -380,10 +347,10 @@ function displayplayback() {
 		$( '#time-knob, #coverart, #volume-knob' ).css( 'width', elemW[ i ] );
 		if ( window.innerWidth > 568 ) {
 			$( '#play-group, #share-group, #vol-group' ).css( 'width', elemW[ i ] );
-			if ( displayredis.buttons ) {
+			if ( displayredis[ 'buttons' ] ) {
 				$( '#play-group, #share-group, #vol-group' ).show();
-				$( '#share-group' ).css( 'display', !( displayredis.time && displayredis.coverart ) ? 'none' : 'block' );
-				$( '#vol-group' ).css( 'display', !volume ? 'none' : 'block' );
+				$( '#share-group' ).css( 'display', !( displayredis[ 'time' ] && displayredis[ 'coverart' ] ) ? 'none' : 'block' );
+				$( '#vol-group' ).css( 'display', !displayredis[ 'volume' ] ? 'none' : 'block' );
 			} else {
 				$( '#play-group, #share-group, #vol-group' ).hide();
 			}
@@ -397,16 +364,16 @@ function displaylibrary() {
 	$.get( 'displayget.php', function( data ) {
 		displayredis = $.parseJSON( data );
 		// no 'id'
-		$( '#home-blocks div:contains(Network mounts)' ).toggleClass( 'hide', !displayredis.nas );
-		$( '#home-usb' ).parent().toggleClass( 'hide', !displayredis.usb );
-		$( '#home-webradio' ).parent().toggleClass( 'hide', !displayredis.webradio );
-		$( '#home-albums' ).parent().toggleClass( 'hide', !displayredis.albums );
-		$( '#home-artists' ).parent().toggleClass( 'hide', !displayredis.artists );
-		$( '#home-composer' ).parent().toggleClass( 'hide', !displayredis.composer );
-		$( '#home-genre' ).parent().toggleClass( 'hide', !displayredis.genre );
-		$( '#home-spotify' ).parent().toggleClass( 'hide', !displayredis.spotify );
-		$( '#home-dirble' ).parent().toggleClass( 'hide', !displayredis.dirble );
-		$( '#home-jamendo' ).parent().toggleClass( 'hide', !displayredis.jamendo );
+		$( '#home-blocks div:contains(Network mounts)' ).toggleClass( 'hide', !displayredis[ 'nas' ] );
+		$( '#home-usb' ).parent().toggleClass( 'hide', !displayredis[ 'usb' ] );
+		$( '#home-webradio' ).parent().toggleClass( 'hide', !displayredis[ 'webradio' ] );
+		$( '#home-albums' ).parent().toggleClass( 'hide', !displayredis[ 'albums' ] );
+		$( '#home-artists' ).parent().toggleClass( 'hide', !displayredis[ 'artists' ] );
+		$( '#home-composer' ).parent().toggleClass( 'hide', !displayredis[ 'composer' ] );
+		$( '#home-genre' ).parent().toggleClass( 'hide', !displayredis[ 'genre' ] );
+		$( '#home-spotify' ).parent().toggleClass( 'hide', !displayredis[ 'spotify' ] );
+		$( '#home-dirble' ).parent().toggleClass( 'hide', !displayredis[ 'dirble' ] );
+		$( '#home-jamendo' ).parent().toggleClass( 'hide', !displayredis[ 'jamendo' ] );
 		
 		displaycommon();
 		indexheight();
