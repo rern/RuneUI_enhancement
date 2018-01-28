@@ -35,10 +35,10 @@ sed -i -e 's/RuneAudio - RuneUI/RuneUIe/
             <li id="dropdownbg"></li> <!-- box-shadow -->
 ' -e 's/<a id="menu-settings" class="dropdown-toggle"/<button id="menu-settings" class="btn-default dropdown-toggle"/
 ' -e 's|href="#">MENU <i class="fa fa-bars dx"></i></a>|href="#"><i class="fa fa-gear"></i></button>|
-' -e '\|href="/"><i class="fa fa-play"| s|^|<?php /\*|; s|$|\*/?>|
+' -e '\|href="/"><i class="fa fa-play"| {s|^|<?php /\*|; s|$|\*/?>|}
 ' -e $'/Credits/ a\
             <li class="<?=$this->uri(1, \'dev\', \'active\')?>"><a href="/dev/"><i class="fa fa-code"></i> Development</a></li>
-' -e '/logo.png/ s|^|<?php /\*|; s|$|\*/?>|
+' -e '/logo.png/ {s|^|<?php /\*|; s|$|\*/?>|}
 ' -e 's|href="/#panel-sx"||; s|/#playback||; s|href="/#panel-dx"||
 ' -e 's|"fa fa-music"></i> Library|"fa fa-folder-open"></i>|
 ' -e $'s|"tab"\')?>><i class="fa fa-play"></i> Playback|"tab"\')?>><i class="fa fa-play-circle"></i>|
