@@ -41,6 +41,7 @@ sed -i -e 's/RuneUIe/RuneAudio - RuneUI/
 ' -e 's|href="#"><i class="fa fa-gear"></i></button>|href="#">MENU <i class="fa fa-bars dx"></i></a>|
 ' -e '\|href="/"><i class="fa fa-play"| s|^<?php /\*||; \|href="/"><i class="fa fa-play"| s|\*/?>$||
 ' -e 's|id="open-panel-dx"><a|& href="/#panel-dx"|
+' -e '\|href="http://www.runeaudio.com|, \|</a>| d
 ' -e '/logo.png/ s|^<?php /\*||; /logo.png/ s|\*/?>$||
 ' -e '\|"fa fa-code"></i> Development</a>| d
 ' -e 's|id="open-panel-sx"><a|& href="/#panel-sx"|
