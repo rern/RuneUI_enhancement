@@ -42,7 +42,9 @@ sed -i -e 's/RuneUIe/RuneAudio - RuneUI/
 ' -e '\|href="/"><i class="fa fa-play"| s|^<?php /\*||; \|href="/"><i class="fa fa-play"| s|\*/?>$||
 ' -e '\|"fa fa-code"></i> Development</a>| d
 ' -e '\|REQUEST_URI| d
-' -e 's|<?=$path;?>|/#playback|
+' -e 's|id="open-panel-sx"><a|& href="/#panel-sx"|
+' -e 's|id="open-playback".*><a|& href="/#playback"|
+' -e 's|id="open-panel-dx"><a|& href="/#panel-dx"|
 ' -e '/logo.png/ s|^<?php /\*||; /logo.png/ s|\*/?>$||
 ' -e $'s|"tab"\')?>><i class="fa fa-folder-open"></i></a>|"tab"\')?>><i class="fa fa-music"></i> Library</a>|
 ' -e $'s|"tab"\')?>><i class="fa fa-play-circle"></i>|"tab"\')?>><i class="fa fa-play"></i> Playback|
