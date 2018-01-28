@@ -28,7 +28,7 @@ sed -i -e 's/RuneAudio - RuneUI/RuneUIe/
 ' -e $'/runeui.css/ a\
     <link rel="stylesheet" href="<?=$this->asset(\'/css/custom.css\')?>">
 ' -e $'/class="home"/ i\
-    <a href="http://www.runeaudio.com/forum/raspberry-pi-f7.html" target="_blank" alt="RuneAudio">\
+    <a href="http://www.runeaudio.com/forum/raspberry-pi-f7.html" target="_blank" alt="RuneAudio Forum">\
         <img class="logo" src="<?=$this->asset(\'/img/runelogo.svg\')?>">\
 	</a>
 ' -e '/dropdown-menu/ a\
