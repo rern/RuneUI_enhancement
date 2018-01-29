@@ -30,19 +30,19 @@ sed -i -e 's/RuneAudio - RuneUI/RuneUIe/
 ' -e $'/class="home"/ i\
     <a href="http://www.runeaudio.com/forum/raspberry-pi-f7.html" target="_blank" alt="RuneAudio Forum">\
         <img class="logo" src="<?=$this->asset(\'/img/runelogo.svg\')?>">\
-	</a>
+    </a>
 ' -e '/dropdown-menu/ a\
             <li id="dropdownbg"></li> <!-- box-shadow -->
-' -e 's/<a id="menu-settings" class="dropdown-toggle"/<button id="menu-settings" class="btn-default dropdown-toggle"/
-' -e 's|href="#">MENU <i class="fa fa-bars dx"></i></a>|href="#"><i class="fa fa-gear"></i></button>|
+' -e 's|<a\( id="menu-settings" class="dropdown-toggle\)"|<button\1 btn-default"/|
+' -e 's|\(href="#">\)MENU\s*\(.*\)bars dx"></i></a>|\1\2gear"></i></button>|
 ' -e '\|href="/"><i class="fa fa-play"| {s|^|<?php /\*|; s|$|\*/?>|}
 ' -e $'/Credits/ a\
             <li class="<?=$this->uri(1, \'dev\', \'active\')?>"><a href="/dev/"><i class="fa fa-code"></i> Development</a></li>
-' -e '/logo.png/ {s|^|<?php /\*|; s|$|\*/?>|}
+' -e '\|logo.png| {s|^|<?php /\*|; s|$|\*/?>|}
 ' -e 's|href="/#panel-sx"||; s|href="/#playback"||; s|href="/#panel-dx"||
-' -e 's|"fa fa-music"></i> Library|"fa fa-folder-open"></i>|
-' -e $'s|"tab"\')?>><i class="fa fa-play"></i> Playback|"tab"\')?>><i class="fa fa-play-circle"></i>|
-' -e 's|"fa fa-list"></i> Queue|"fa fa-list"></i>|
+' -e 's|\("tab".*"fa fa-\)music"></i> Library|\1folder-open"></i>|
+' -e 's|\("tab".*"fa fa-play\)"></i> Playback|\1-circle"></i>|
+' -e 's|\("tab".*"fa fa-list"></i>\) Queue|\1|
 ' $file
 
 file=/srv/http/app/templates/footer.php
