@@ -40,12 +40,12 @@ sed -i -e 's/RuneUIe/RuneAudio - RuneUI/
 ' -e 's/<button id="menu-settings" class="btn-default dropdown-toggle"/<a id="menu-settings" class="dropdown-toggle"/
 ' -e 's|href="#"><i class="fa fa-gear"></i></button>|href="#">MENU <i class="fa fa-bars dx"></i></a>|
 ' -e '\|href="/"><i class="fa fa-play"| s|^<?php /\*||; s|\*/?>$||
-' -e 's|id="open-panel-dx"><a|& href="/#panel-dx"|
 ' -e '\|href="http://www.runeaudio.com|, \|</a>| d
 ' -e '/logo.png/ s|^<?php /\*||; s|\*/?>$||
 ' -e '\|"fa fa-code"></i> Development</a>| d
-' -e 's|id="open-panel-sx"><a|& href="/#panel-sx"|
-' -e 's|id="open-playback".*><a|& href="/#playback"|
+' -e 's|id="open-panel-sx"><a |& href="/#panel-sx"|
+' -e 's|id="open-playback".*><a |& href="/#playback"|
+' -e 's|id="open-panel-dx"><a |& href="/#panel-dx"|
 ' -e $'s|"tab"\')?>><i class="fa fa-folder-open"></i></a>|"tab"\')?>><i class="fa fa-music"></i> Library</a>|
 ' -e $'s|"tab"\')?>><i class="fa fa-play-circle"></i>|"tab"\')?>><i class="fa fa-play"></i> Playback|
 ' -e 's|"fa fa-list"></i></a>|"fa fa-list"></i> Queue</a>|
