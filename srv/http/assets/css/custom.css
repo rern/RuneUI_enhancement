@@ -52,7 +52,7 @@
 .btnlist-top {
 	top: 0;
 	box-shadow: 0px 4px 10px #000000;
-	z-index: 0;
+	z-index: 10;
 }
 .btnlist-top a,
 .btnlist-top i {
@@ -181,6 +181,7 @@
 #menu-bottom {
     box-shadow: 0px -4px 10px #000000;
     transition: all 0.3s ease;
+	cursor: pointer;
 }
 #menu-bottom a {
     margin: 0;
