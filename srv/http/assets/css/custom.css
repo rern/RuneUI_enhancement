@@ -191,6 +191,9 @@
 #menu-bottom a:hover {
     background-color: #222f3d;
 }
+#menu-bottom li.active a:hover {
+    background-color: #0072a5;
+}
 #menu-bottom li a i {
     margin: 0; /* fix wobble spin */
     width: 40px; /* fix wobble spin */
