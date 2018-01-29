@@ -692,18 +692,6 @@ function updateGUI() {
 		
 }
 
-function compareAB( a, b, prop ) {
-	if ( a[ prop ] === undefined ) {
-		if ( GUI.browsemode === 'artist' ) {
-			prop = 'album';
-		} else if ( GUI.browsemode === 'genre' ) {
-			prop = 'artist';
-		} else {
-			prop = 'file';
-		}
-	}
-	return a[ prop ].localeCompare( b[ prop ] );
-}
 function populateDB(options) {
     var data = options.data || '',
         path = options.path || '',
@@ -731,9 +719,9 @@ function populateDB(options) {
 // sorting
             data.sort( function( a, b ) {
                 if ( path === 'Spotify' && querytype === '' ) {
-					return compareAB( a, b, 'name' );
+					return a[ 'name' ].localeCompare( b[ 'name' ] )
                 } else if ( querytype === 'tracks' ) {
-					return compareAB( a, b, 'title' );
+					return a[ 'title' ].localeCompare( b[ 'title' ] )
                 } else {
                     return 0;
                 }
@@ -770,10 +758,10 @@ function populateDB(options) {
 // sorting
             data.sort( function( a, b ) {
                 if ( querytype === 'childs' || querytype === 'categories' ) {
-					return compareAB( a, b, 'title' );
+					return a[ 'title' ].localeCompare( b[ 'title' ] )
                 } else if ( querytype === 'childs-stations' || querytype === 'stations' ) {
-					return compareAB( a, b, 'name' );
-                } else {
+ 					return a[ 'name' ].localeCompare( b[ 'name' ] )
+               } else {
                     return 0;
                 }
             });
@@ -800,7 +788,7 @@ function populateDB(options) {
 // sorting
             data.sort( function( a, b ) {
                 if ( path === 'Jamendo' && querytype === '' ) {
-					return compareAB( a, b, 'dispname' );
+					return a[ 'dispname' ].localeCompare( b[ 'dispname' ] )
                 } else {
                     return 0;
                 }
@@ -826,7 +814,7 @@ function populateDB(options) {
             $('#database-entries').removeClass('hide');
 // ****************************************************************************************
 // show breascrumb and index bar
-            $('#db-currentpath, #db-level-up, #db-index').removeClass('hide');
+            $('#db-currentpath, #db-level-up').removeClass('hide');
 // ****************************************************************************************
             $('#home-blocks').addClass('hide');
             if (path) {
@@ -847,17 +835,28 @@ function populateDB(options) {
 // ****************************************************************************************
 // sorting
             data.sort( function( a, b ) {
-                if ( path === 'Artists' || path === 'AlbumArtists'|| path === 'Various Artists' ) {
-                    return compareAB( a, b, 'artist' );
-                } else if ( path === 'Albums' ) {
-					return compareAB( a, b, 'album' );
-                } else if ( path === 'Webradio' ) {
-					return compareAB( a, b, 'playlist' );
+                if ( path === 'Albums' ) {
+					prop = 'album';
+                } else if ( path === 'Artists' || path === 'AlbumArtists'|| path === 'Various Artists' ) {
+                    prop = 'artist';
                 } else if ( path === 'Genres' ) {
-					return compareAB( a, b, 'genre' );
+					prop = 'genre';
+                } else if ( path === 'Webradio' ) {
+					prop = 'playlist';
                 } else {
-					return compareAB( a, b, 'directory' );
+					prop = 'directory';
                 }
+				
+				if ( a[ prop ] === undefined ) {
+					if ( GUI.browsemode === 'artist' ) {
+						prop = 'album';
+					} else if ( GUI.browsemode === 'genre' ) {
+						prop = 'artist';
+					} else {
+						prop = 'file';
+					}
+				}
+				return a[ prop ].localeCompare( b[ prop ] );
             });
             if (path === 'Webradio') {
 // breadcrumb replace - modify add webradio button
@@ -930,4 +929,13 @@ function populateDB(options) {
     if (querytype != 'childs') {
         loadingSpinner('db', 'hide');
     }
+	
+	if ( $( '#database-entries' ).find( 'li' ).eq( 0 ).hasClass( 'db-folder' ) ) {
+		$('#db-index').removeClass('hide');
+		$('#database-entries').css('width', 'calc( 100% - 38px )');
+	} else {
+		$('#db-index').addClass('hide');
+		$('#database-entries').css('width', '100%');
+	}
+
 }
