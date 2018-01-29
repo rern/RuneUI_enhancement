@@ -31,8 +31,8 @@ file=/srv/http/app/playback_ctl.php
 echo $file
 sed -i '/template->local_browser/ d' $file
 
-header=/srv/http/app/templates/header.php
-echo $header
+file=/srv/http/app/templates/header.php
+echo $file
 sed -i -e 's|RuneUIe|RuneAudio - RuneUI|
 ' -e '\|custom.css| d
 ' -e '\|dropdownbg| d
@@ -48,46 +48,46 @@ sed -i -e 's|RuneUIe|RuneAudio - RuneUI|
 ' -e 's|\("tab".*"fa fa-\)folder-open"></i></a>|\1music"></i> Library</a>|
 ' -e 's|\("tab".*"fa fa-play\)-circle"></i>|\1"></i> Playback|
 ' -e 's|\("tab".*"fa fa-list"></i>\)</a>|\1 Queue</a>|
-' $header
+' $file
 
-footer=/srv/http/app/templates/footer.php
-echo $footer
+file=/srv/http/app/templates/footer.php
+echo $file
 sed -i -e '/custom.js/ d
 ' -e '/propagating.js/ d
-' $footer
+' $file
 # 0.4b
-if grep -q 'jquery-ui.js' $footer; then
+if grep -q 'jquery-ui.js' $file; then
 	sed -i -e '/jquery-ui.js/ {s/^<!--//; s/-->$//}
 	' -e '/jquery-ui.min.js/ d
-	' $footer
+	' $file
 fi
 
 # no Addons Menu
 if [[ ! -e /usr/local/bin/uninstall_addo.sh ]]; then
 	rm $path/js/vendor/hammer.min.js
-	sed -i '/hammer.min.js/ d' $footer
+	sed -i '/hammer.min.js/ d' $file
 fi
 
-playback=/srv/http/app/templates/playback.php
-echo $playback
+file=/srv/http/app/templates/playback.php
+echo $file
 sed -i -e '/^<?php$/,/^?>$/ d
 ' -e '/playbackcustom.php/, /\/\*/ d
 ' -e '/enh \*\/?>/ d
-' $playback
+' $file
 
-settings=/srv/http/app/settings_ctl.php
-echo $settings
-sed -i '/if ( \$template->local_browser )/,/^}$/ d' $settings
+file=/srv/http/app/settings_ctl.php
+echo $file
+sed -i '/if ( \$template->local_browser )/,/^}$/ d' $file
 
 if [[ $1 != u ]]; then
-	midori=/root/.config/midori/config
-	echo $midori
-	if grep -q '^#zoom-level' $midori; then
+	file=/root/.config/midori/config
+	echo $file
+	if grep -q '^#zoom-level' $file; then
 		sed -i -e '/^zoom-level/ d
 		' -e '/#zoom-level/ s/^#//
-		' $midori
+		' $file
 	fi
-	sed -i '/#user-stylesheet-uri/ s/^#//' $midori
+	sed -i '/#user-stylesheet-uri/ s/^#//' $file
 fi
 
 uninstallfinish $@
