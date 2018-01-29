@@ -18,7 +18,7 @@ echo -e "$bar Remove files ..."
 rm -v /srv/http/app/templates/playbackcustom.php
 rm -v /srv/http/{displayget.php,displaysave.php}
 path=/srv/http/assets
-rm -v $path/css/custom*.css
+rm -v $path/css/custom.css
 rm -v $path/img/runelogo.svg
 rm -vf $path/js/{custom.js,vendor/jquery-ui.min.js,vendor/propagating.js}
 
@@ -33,11 +33,11 @@ sed -i '/template->local_browser/ d' $file
 
 header=/srv/http/app/templates/header.php
 echo $header
-sed -i -e 's/RuneUIe/RuneAudio - RuneUI/
-' -e '/custom.css/ d
-' -e '/runelogo.svg/ d
-' -e '/dropdownbg/ d
-' -e 's/<button id="menu-settings" class="btn-default dropdown-toggle"/<a id="menu-settings" class="dropdown-toggle"/
+sed -i -e 's/|RuneUIe|RuneAudio - RuneUI|
+' -e '\|custom.css| d
+' -e '\|runelogo.svg| d
+' -e '\|dropdownbg| d
+' -e 's|<button id="menu-settings" class="btn-default dropdown-toggle"|<a id="menu-settings" class="dropdown-toggle"|
 ' -e 's|href="#"><i class="fa fa-gear"></i></button>|href="#">MENU <i class="fa fa-bars dx"></i></a>|
 ' -e '\|href="/"><i class="fa fa-play"| s|^<?php /\*||; s|\*/?>$||
 ' -e '\|href="http://www.runeaudio.com|, \|</a>| d
