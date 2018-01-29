@@ -7,7 +7,11 @@ alias=enha
 uninstallstart $@
 
 if [[ $1 == u ]]; then
-	zoom=$( grep '^zoom' /root/.config/midori/config | cut -d '=' -f 2 )
+	if ! pacman -Qi chromium &> /dev/null; then
+		zoom=$( grep '^zoom' /root/.config/midori/config | cut -d '=' -f 2 )
+	else
+		zoom=$( grep '^force-device-scale-factor' /root/.xinitrc | cut -d '=' -f 2 )
+	fi
 	redis-cli set enhazoom $zoom &> /dev/null
 else
 	redis-cli del display &> /dev/null
