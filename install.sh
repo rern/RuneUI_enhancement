@@ -132,22 +132,18 @@ if [[ $1 != u ]]; then
 	zoom=$1;
 	zoom=$( echo $zoom | awk '{if ($1 < 0.5) print 0.5; else print $1}' )
 	zoom=$( echo $zoom | awk '{if ($1 > 3) print 3; else print $1}' )
-else
-	zoom=$( redis-cli get enhazoom &> /dev/null )
-	redis-cli del enhazoom &> /dev/null
-fi
 
-if ! pacman -Qi chromium &> /dev/null; then
-	sed -i -e '/zoom-level/ s/^/#/
-	' -e '/user-stylesheet-uri/ s/^/#/
-	' -e 's/==UTF-8/=UTF-8/
-	' -e "/settings/ a\
+	if ! pacman -Qi chromium &> /dev/null; then
+		sed -i -e '/zoom-level/ s/^/#/
+		' -e '/user-stylesheet-uri/ s/^/#/
+		' -e 's/==UTF-8/=UTF-8/
+		' -e "/settings/ a\
 zoom-level=$zoom
-	" /root/.config/midori/config
-else
-	sed -i "s/\(force-device-scale-factor=\).*/\1$zoom" /root/.xinitrc
+		" /root/.config/midori/config
+	else
+		sed -i "s/\(force-device-scale-factor=\).*/\1$zoom" /root/.xinitrc
+	fi
 fi
-
 # correct version number
 [[ $( redis-cli get buildversion ) == 'beta-20160313' ]] && redis-cli set release 0.3 &> /dev/null
 
