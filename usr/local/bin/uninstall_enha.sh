@@ -33,22 +33,21 @@ sed -i '/template->local_browser/ d' $file
 
 header=/srv/http/app/templates/header.php
 echo $header
-sed -i -e 's|RuneUIe|RuneAudio - RuneUI|
+sed -I -e 's|RuneUIe|RuneAudio - RuneUI|
 ' -e '\|custom.css| d
-' -e '\|runelogo.svg| d
 ' -e '\|dropdownbg| d
-' -e 's|<button id="menu-settings" class="btn-default dropdown-toggle"|<a id="menu-settings" class="dropdown-toggle"|
-' -e 's|href="#"><i class="fa fa-gear"></i></button>|href="#">MENU <i class="fa fa-bars dx"></i></a>|
+' -e 's|<button\( id="menu-settings" class="\)btn-default \(dropdown-toggle"\)|<a\1\2|
+' -e 's|\(href="#">\)\(<i class="fa fa-\)gear"></i></button>|\1MENU\2bars dx"></i></a>|
 ' -e '\|href="/"><i class="fa fa-play"| {s|^<?php /\*||; s|\*/?>$||}
+' -e '\|"fa fa-code"></i> Development</a>| d
 ' -e '\|href="http://www.runeaudio.com|, \|</a>| d
 ' -e '\|logo.png| {s|^<?php /\*||; s|\*/?>$||}
-' -e '\|"fa fa-code"></i> Development</a>| d
-' -e 's|id="open-panel-sx"><a |& href="/#panel-sx"|
-' -e 's|id="open-playback".*><a |& href="/#playback"|
-' -e 's|id="open-panel-dx"><a |& href="/#panel-dx"|
-' -e $'s|"tab"\')?>><i class="fa fa-folder-open"></i></a>|"tab"\')?>><i class="fa fa-music"></i> Library</a>|
-' -e $'s|"tab"\')?>><i class="fa fa-play-circle"></i>|"tab"\')?>><i class="fa fa-play"></i> Playback|
-' -e 's|"fa fa-list"></i></a>|"fa fa-list"></i> Queue</a>|
+' -e 's|id="open-panel-sx"><a |&href="/#panel-sx"|
+' -e 's|id="open-playback".*><a |&href="/#playback"|
+' -e 's|id="open-panel-dx"><a |&href="/#panel-dx"|
+' -e 's|\("tab".*"fa fa-\)folder-open"></i></a>|\1music"></i> Library</a>|
+' -e 's|\("tab".*"fa fa-play\)-circle"></i>|\1"></i> Playback|
+' -e 's|\("tab".*"fa fa-list"></i>\)</a>|\1 Queue</a>|
 ' $header
 
 footer=/srv/http/app/templates/footer.php
