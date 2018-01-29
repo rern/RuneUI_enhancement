@@ -6,17 +6,6 @@ alias=enha
 
 uninstallstart $@
 
-if [[ $1 == u ]]; then
-	if ! pacman -Qi chromium &> /dev/null; then
-		zoom=$( grep '^zoom' /root/.config/midori/config | cut -d '=' -f 2 )
-	else
-		zoom=$( grep '^force-device-scale-factor' /root/.xinitrc | cut -d '=' -f 2 )
-	fi
-	redis-cli set enhazoom $zoom &> /dev/null
-else
-	redis-cli del display &> /dev/null
-fi
-
 # remove files #######################################
 echo -e "$bar Remove files ..."
 rm -v /srv/http/app/templates/playbackcustom.php
@@ -84,14 +73,16 @@ settings=/srv/http/app/settings_ctl.php
 echo $settings
 sed -i '/if ( \$template->local_browser )/,/^}$/ d' $settings
 
-midori=/root/.config/midori/config
-echo $midori
-if grep -q '^#zoom-level' $midori; then
-	sed -i -e '/^zoom-level/ d
-	' -e '/#zoom-level/ s/^#//
-	' $midori
+if [[ $1 != u ]]; then
+	midori=/root/.config/midori/config
+	echo $midori
+	if grep -q '^#zoom-level' $midori; then
+		sed -i -e '/^zoom-level/ d
+		' -e '/#zoom-level/ s/^#//
+		' $midori
+	fi
+	sed -i '/#user-stylesheet-uri/ s/^#//' $midori
 fi
-sed -i '/#user-stylesheet-uri/ s/^#//' $midori
 
 uninstallfinish $@
 
