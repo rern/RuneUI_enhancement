@@ -24,17 +24,17 @@ if ( /\/.*\//.test( location.pathname ) === false ) $( '#menu-top, #menu-bottom'
 // disabled local browser > disable screensaver events
 if ( !$( '#playback-ss' ).length ) $('#section-index').off( 'mousemove click keypress' );
 
-var menuhide = 0;
-$( '#bartop, #barbottom' ).mouseenter( function() {
-	var tb = $( this ).prop( 'id' ).replace( 'bar', '#menu-' );
-	if ( $( tb ).is( ':visible' ) ) {
-		menuhide = 0;
-	} else {
-		menuhide = 1;
-		$( tb ).removeClass( 'hide' );
-	}
-} );
 setTimeout( function() { // fix mouse move pass menu on initial load
+	var menuhide = 0;
+	$( '#bartop, #barbottom' ).mouseenter( function() {
+		var tb = $( this ).prop( 'id' ).replace( 'bar', '#menu-' );
+		if ( $( tb ).is( ':visible' ) ) {
+			menuhide = 0;
+		} else {
+			menuhide = 1;
+			$( tb ).removeClass( 'hide' );
+		}
+	} );
 	$( '#menu-top, #menu-bottom' ).mouseleave( function() {
 		if ( menuhide ) $( '#menu-top, #menu-bottom' ).addClass( 'hide' );
 		menuhide = 0;
@@ -693,7 +693,15 @@ function updateGUI() {
 }
 
 function compareAB( a, b, prop ) {
-	prop = a[ prop ] !== undefined ? prop : 'file'
+	if ( a[ prop ] === undefined ) {
+		if ( GUI.browsemode === 'artist' ) {
+			prop = 'album';
+		} else if ( GUI.browsemode === 'genre' ) {
+			prop = 'artist';
+		} else {
+			prop = 'file';
+		}
+	}
 	return a[ prop ].localeCompare( b[ prop ] );
 }
 function populateDB(options) {
