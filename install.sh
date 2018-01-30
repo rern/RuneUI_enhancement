@@ -147,7 +147,7 @@ if ! pacman -Q chromium &> /dev/null; then
 zoom-level=$zoom
 	" /root/.config/midori/config
 else
-	sed -i "s/force-device-scale-factor=.*/force-device-scale-factor=$zoom" /root/.xinitrc
+	sed -i "s/\(force-device-scale-factor=\).*/\1$zoom/" /root/.xinitrc
 fi
 
 # correct version number
