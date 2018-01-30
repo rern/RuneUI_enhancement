@@ -24,7 +24,7 @@ rm -v /srv/http/{displayget.php,displaysave.php}
 path=/srv/http/assets
 rm -v $path/css/custom.css
 rm -v $path/img/runelogo.svg
-rm -vf $path/js/{custom.js,vendor/jquery-ui.min.js}
+rm -vf $path/js/{custom.js,vendor/jquery-ui.min.js,vendor/propagating.js}
 
 mv /srv/http/app/coverart_ctl.php{.backup,}
 
