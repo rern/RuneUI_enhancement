@@ -53,10 +53,6 @@ sed -i -e 's/RuneAudio - RuneUI/RuneUIe/
 
 file=/srv/http/app/templates/footer.php
 echo $file
-sed -i '1 i\
-<div id="bartop"></div>\
-<div id="barbottom"></div>
-' $file
 # must be before lyrics addon
 if ! grep -q 'lyrics.js' $file; then
 	sed -i '$ a\<script src="<?=$this->asset(\'/js/custom.js\')?>"></script>' $file
