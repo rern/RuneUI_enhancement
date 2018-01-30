@@ -56,12 +56,12 @@ file=/srv/http/app/templates/footer.php
 echo $file
 # must be before lyrics addon
 if ! grep -q 'lyrics.js' $file; then
-	echo '<script src="<?=$this->asset('"'"'/js/custom.js'"'"')?>"></script>' >> $file
+	sed -i '$ a\<script src="<?=$this->asset('"'"'/js/custom.js'"'"')?>"></script>' $file
 else
 	sed -i '/lyrics.js/ i\<script src="<?=$this->asset('"'"'/js/custom.js'"'"')?>"></script>' $file
 fi
-! grep -q 'hammer.min.js' $file && echo '<script src="<?=$this->asset('"'"'/js/vendor/hammer.min.js'"'"')?>"></script>' >> $file
-! grep -q 'propagating.js' $file && echo '<script src="<?=$this->asset('"'"'/js/vendor/propagating.js'"'"')?>"></script>' >> $file
+! grep -q 'hammer.min.js' $file && sed -i '$ a\<script src="<?=$this->asset('"'"'/js/vendor/hammer.min.js'"'"')?>"></script>' $file
+! grep -q 'propagating.js' $file && sed -i '$ a\<script src="<?=$this->asset('"'"'/js/vendor/propagating.js'"'"')?>"></script>' $file
 # 0.4b
 if grep -q 'jquery-ui.js' $file; then
 	sed -i -e 's/<.*jquery-ui.js.*script>/<!--&-->/
@@ -131,12 +131,14 @@ else
 fi
 
 # local display zoom, encoding, css #######################################
-zoom=$( redis-cli get enhazoom &> /dev/null )
-redis-cli del enhazoom &> /dev/null
-if [[ -z $zoom ]]; then # not an update (no enhazoom)
+
+if [[ $1 != u ]]; then
 	zoom=$1;
 	zoom=$( echo $zoom | awk '{if ($1 < 0.5) print 0.5; else print $1}' )
 	zoom=$( echo $zoom | awk '{if ($1 > 3) print 3; else print $1}' )
+else
+	zoom=$( redis-cli get enhazoom &> /dev/null )
+	redis-cli del enhazoom &> /dev/null
 fi
 
 if ! pacman -Q chromium &> /dev/null; then
