@@ -52,7 +52,8 @@ sed -i -e 's|RuneUIe|RuneAudio - RuneUI|
 
 file=/srv/http/app/templates/footer.php
 echo $file
-sed -i -e '/custom.js/ d
+sed -i -e '/id="bartop"\|id="barbottom"/ d'
+' -e '/custom.js/ d
 ' -e '/propagating.js/ d
 ' $file
 # 0.4b
