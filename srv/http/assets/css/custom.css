@@ -52,7 +52,7 @@
 .btnlist-top {
 	top: 0;
 	box-shadow: 0px 4px 10px #000000;
-	z-index: 0;
+	z-index: 10;
 }
 .btnlist-top a,
 .btnlist-top i {
@@ -181,6 +181,7 @@
 #menu-bottom {
     box-shadow: 0px -4px 10px #000000;
     transition: all 0.3s ease;
+	cursor: pointer;
 }
 #menu-bottom a {
     margin: 0;
@@ -189,6 +190,9 @@
 }
 #menu-bottom a:hover {
     background-color: #222f3d;
+}
+#menu-bottom li.active a:hover {
+    background-color: #0072a5;
 }
 #menu-bottom li a i {
     margin: 0; /* fix wobble spin */
