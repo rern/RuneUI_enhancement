@@ -122,9 +122,9 @@ fi
 
 # for nginx svg support
 file=/etc/nginx/nginx.conf
-if ! grep '|ico' $file | grep -q 'svg'; then
+if ! grep 'ico|svg' $file; then
 	echo $file
-	sed -i 's/|ico/&|svg/' $file
+	sed -i 's/|ico/ico|svg/' $file
 	svg=0
 else
 	svg=1
@@ -140,7 +140,7 @@ else
 	redis-cli del enhazoom &> /dev/null
 fi
 
-if ! pacman -Qi chromium &> /dev/null; then
+if ! pacman -Q chromium &> /dev/null; then
 	sed -i -e '/zoom-level/ s/^/#/
 	' -e '/user-stylesheet-uri/ s/^/#/
 	' -e 's/==UTF-8/=UTF-8/
