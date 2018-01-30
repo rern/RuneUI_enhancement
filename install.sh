@@ -56,7 +56,7 @@ file=/srv/http/app/templates/footer.php
 echo $file
 # must be before lyrics addon
 if ! grep -q 'lyrics.js' $file; then
-	sed -i '$ a\<script src="<?=$this->asset(\'/js/custom.js\')?>"></script>' $file
+	sed -i $'$ a\<script src="<?=$this->asset(\'/js/custom.js\')?>"></script>' $file
 else
 	sed -i $'/lyrics.js/ i\<script src="<?=$this->asset(\'/js/custom.js\')?>"></script>' $file
 fi
