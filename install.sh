@@ -4,6 +4,7 @@
 # change version number in RuneAudio_Addons/srv/http/addonslist.php
 
 # temp fix - to be removed
+sed -i -e '\|href="http://www.runeaudio.com|,\|</a>| d' /srv/http/app/templates/header.php
 sed -i '/id="bartop"\|id="barbottom"/ d' /srv/http/app/templates/footer.php
 
 alias=enha
@@ -37,11 +38,11 @@ sed -i -e 's/RuneAudio - RuneUI/RuneUIe/
     <a href="http://www.runeaudio.com/forum/raspberry-pi-f7.html" target="_blank" alt="RuneAudio Forum">\
         <img class="logo" src="<?=$this->asset(\'/img/runelogo.svg\')?>">\
     </a>
-' -e '/dropdown-menu/ a\
-            <li id="dropdownbg"></li> <!-- box-shadow -->
-' -e '/a id="menu-settings"/ {s/^/<!--/; s/$/-->/; i\
+' -e '/^\s*<a id="menu-settings"/ {s/^/<!--/; s/$/-->/; i\
         <button id="menu-settings" class="dropdown-toggle btn-default" role="button" data-toggle="dropdown" data-target="#" href="#"><i class="fa fa-gear"></i></button>
 }
+' -e '/dropdown-menu/ a\
+            <li id="dropdownbg"></li> <!-- box-shadow -->
 ' -e '\|href="/"><i class="fa fa-play"| {s|^|<?php /\*|; s|$|\*/?>|}
 ' -e $'/Credits/ a\
             <li class="<?=$this->uri(1, \'dev\', \'active\')?>"><a href="/dev/"><i class="fa fa-code"></i> Development</a></li>
