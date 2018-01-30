@@ -122,7 +122,7 @@ fi
 
 # for nginx svg support
 file=/etc/nginx/nginx.conf
-if ! grep 'ico|svg' $file; then
+if ! grep -q 'ico|svg' $file; then
 	echo $file
 	sed -i 's/|ico/ico|svg/' $file
 	svg=0
