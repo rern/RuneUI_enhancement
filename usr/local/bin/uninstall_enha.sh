@@ -39,7 +39,7 @@ file=/srv/http/app/templates/header.php
 echo $file
 sed -i -e 's|RuneUIe|RuneAudio - RuneUI|
 ' -e '/custom.css\|id="bartop"\|id="barbottom\|dropdownbg\|button id="menu-settings"/ d
-' -e '\|a id="menu-settings"| {s|^<!--||; s|-->$||}
+' -e '\|^\s*<a id="menu-settings"| {s|^<!--||; s|-->$||}
 ' -e '\|href="/"><i class="fa fa-play"| {s|^<?php /\*||; s|\*/?>$||}
 ' -e '\|"fa fa-code"></i> Development</a>| d
 ' -e '\|href="http://www.runeaudio.com|, \|</a>| d
