@@ -36,7 +36,7 @@ echo $file
 sed -i -e 's|RuneUIe|RuneAudio - RuneUI|
 ' -e '\|custom.css| d
 ' -e '\|dropdownbg| d
-' -e 's|<button\( id="menu-settings" class="\)btn-default \(dropdown-toggle"\)|<a\1\2|
+' -e 's|<button\( id="menu-settings" class="dropdown-toggle\) btn-default"|<a\1"|
 ' -e 's|\(href="#">\)\(<i class="fa fa-\)gear"></i></button>|\1MENU \2bars dx"></i></a>|
 ' -e '\|href="/"><i class="fa fa-play"| {s|^<?php /\*||; s|\*/?>$||}
 ' -e '\|"fa fa-code"></i> Development</a>| d
