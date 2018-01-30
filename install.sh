@@ -3,6 +3,9 @@
 # $1-zoom
 # change version number in RuneAudio_Addons/srv/http/addonslist.php
 
+# temp fix - to be removed
+sed -i '/id="bartop"\|id="barbottom"/ d' /srv/http/app/templates/footer.php
+
 alias=enha
 
 . /srv/http/addonstitle.sh
