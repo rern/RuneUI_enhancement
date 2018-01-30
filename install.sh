@@ -137,7 +137,7 @@ if [[ $1 != u ]]; then
 	zoom=$( echo $zoom | awk '{if ($1 < 0.5) print 0.5; else print $1}' )
 	zoom=$( echo $zoom | awk '{if ($1 > 3) print 3; else print $1}' )
 else
-	zoom=$( redis-cli get enhazoom &> /dev/null )
+	zoom=$( redis-cli get enhazoom )
 	redis-cli del enhazoom &> /dev/null
 fi
 
