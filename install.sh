@@ -39,8 +39,9 @@ sed -i -e 's/RuneAudio - RuneUI/RuneUIe/
     </a>
 ' -e '/dropdown-menu/ a\
             <li id="dropdownbg"></li> <!-- box-shadow -->
-' -e 's|<a\( id="menu-settings" class="dropdown-toggle\)"|<button\1 btn-default"/|
-' -e 's|\(href="#">\)MENU\s*\(.*\)bars dx"></i></a>|\1\2gear"></i></button>|
+' -e '/a id="menu-settings"/ {s/^/<!--/; s/$/-->/; i\
+        <button id="menu-settings" class="dropdown-toggle btn-default" role="button" data-toggle="dropdown" data-target="#" href="#"><i class="fa fa-gear"></i></button>
+}
 ' -e '\|href="/"><i class="fa fa-play"| {s|^|<?php /\*|; s|$|\*/?>|}
 ' -e $'/Credits/ a\
             <li class="<?=$this->uri(1, \'dev\', \'active\')?>"><a href="/dev/"><i class="fa fa-code"></i> Development</a></li>
