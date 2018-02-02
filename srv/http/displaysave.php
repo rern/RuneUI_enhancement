@@ -1,12 +1,11 @@
 <?php
+$display = array( 'bar' => $_POST[ 'bar' ] ? 'checked' : '' );
 if ( isset( $_POST[ 'playback' ] ) ) {
-	$display = array( 'bar' => $_POST[ 'bar' ] ? 'checked' : '' );
 	$display[ 'time'] = $_POST[ 'time' ] ? 'checked' : '';
 	$display[ 'coverart'] = $_POST[ 'coverart' ] ? 'checked' : '';
 	$display[ 'volume'] = $_POST[ 'volume' ] ? 'checked' : '';
 	$display[ 'buttons'] = $_POST[ 'buttons' ] ? 'checked' : '';
-} else {
-	$display = array( 'bar' => $_POST[ 'bar' ] ? 'checked' : '' );
+} else if ( isset( $_POST[ 'library' ] ) ) {
 	$display[ 'nas'] = $_POST[ 'nas' ] ? 'checked' : '';
 	$display[ 'usb'] = $_POST[ 'usb' ] ? 'checked' : '';
 	$display[ 'webradios' ] = $_POST[ 'webradios' ] ? 'checked' : '';
