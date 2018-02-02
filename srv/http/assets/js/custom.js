@@ -188,7 +188,6 @@ var $hammerbarleft = new Hammer( document.getElementById( 'barleft' ) );
 var $hammerbarright = new Hammer( document.getElementById( 'barright' ) );
 var $hammerlibrary = new Hammer( document.getElementById( 'panel-sx' ) );
 var $hammerplayback = new Hammer( document.getElementById( 'playback' ) );
-var $hammerlibrary = new Hammer( document.getElementById( 'panel-dx' ) );
 var $hammerinfo = new Hammer( document.getElementById( 'info' ) );
 var $hammertime = new Hammer( document.getElementById( 'time-knob' ) );
 var $hammercoverart = new Hammer( document.getElementById( 'coverart' ) );
