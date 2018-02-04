@@ -561,27 +561,23 @@ function refreshState() {
 // ****************************************************************************************
 	scrolltext();
 	displayplayback();
-// ****************************************************************************************
 	
     var state = GUI.state;
 	var fileinfo = '';
+// split play-pause buttons
     if (state === 'play') {
         $('#play').addClass('btn-primary');
-        $('i', '#play').removeClass('fa fa-pause').addClass('fa fa-play');
-        $('#stop').removeClass('btn-primary');
+        $('#stop, #pause').removeClass('btn-primary');
     } else if (state === 'pause') {
         $('#playlist-position span').html('Not playing');
-        $('#play').addClass('btn-primary');
-        $('i', '#play').removeClass('fa fa-play').addClass('fa fa-pause');
-        $('#stop').removeClass('btn-primary');
+        $('#pause').addClass('btn-primary');
+        $('#stop, #play').removeClass('btn-primary');
     } else if (state === 'stop') {
-        $('#play').removeClass('btn-primary');
-        $('i', '#play').removeClass('fa fa-pause').addClass('fa fa-play');
         $('#stop').addClass('btn-primary');
+        $('#play, #pause').removeClass('btn-primary');
         if ($('#section-index').length) {
             $('#countdown-display').countdown('destroy');
         }
-// ****************************************************************************************
         if ( GUI.stream !== 'radio' ) {
         	$( '#total' ).html( '00:00' );
         } else {
