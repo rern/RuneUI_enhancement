@@ -38,6 +38,8 @@ sed -i -e 's/RuneAudio - RuneUI/RuneUIe/
     <a href="http://www.runeaudio.com/forum/raspberry-pi-f7.html" target="_blank" alt="RuneAudio Forum">\
         <img class="logo" src="<?=$this->asset(\'/img/runelogo.svg\')?>">\
     </a>
+' -e '/id="play"/ a\
+        <button id="pause" class="btn btn-default btn-cmd" title="Play/Pause" data-cmd="pause"><i class="fa fa-pause"></i></button>
 ' -e '/^\s*<a id="menu-settings"/ {s/^/<!--/; s/$/-->/; i\
         <button id="menu-settings" class="dropdown-toggle btn-default" role="button" data-toggle="dropdown" data-target="#" href="#"><i class="fa fa-gear"></i></button>
 }
