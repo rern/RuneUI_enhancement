@@ -186,13 +186,13 @@ Hammer = propagating( Hammer ); // propagating.js fix e.stopPropagation()
 var $hammercontent = new Hammer( document.getElementById( 'content' ) );
 var $hammerbarleft = new Hammer( document.getElementById( 'barleft' ) );
 var $hammerbarright = new Hammer( document.getElementById( 'barright' ) );
-var $hammerlibrary = new Hammer( document.getElementById( 'panel-sx' ) );
-var $hammerplayback = new Hammer( document.getElementById( 'playback' ) );
-var $hammerlibrary = new Hammer( document.getElementById( 'panel-dx' ) );
 var $hammerinfo = new Hammer( document.getElementById( 'info' ) );
 var $hammertime = new Hammer( document.getElementById( 'time-knob' ) );
 var $hammercoverart = new Hammer( document.getElementById( 'coverart' ) );
 var $hammervolume = new Hammer( document.getElementById( 'volume-knob' ) );
+var $hammerlibrary = new Hammer( document.getElementById( 'panel-sx' ) );
+var $hammerplayback = new Hammer( document.getElementById( 'playback' ) );
+var $hammerqueue = new Hammer( document.getElementById( 'panel-dx' ) );
 
 function panelLR( lr ) {
 	var pcurrent = $( '.tab-pane:visible' ).prop( 'id' );
@@ -221,45 +221,31 @@ $hammercontent.on( 'swiperight', function() {
 		$( '#menu-top, #menu-bottom' ).toggleClass( 'hide' );
 	} ).get( 'swipe' ).set( { direction: Hammer.DIRECTION_VERTICAL } );
 } );
-
-$hammerlibrary.on( 'tap', function( e ) {
-	if ( $( '.home-block-remove' ).length && !$( e.target ).is( 'span.block-remove' ) ) $( '#db-homeSetup' ).click();
-} ).on( 'press', function() {
-	if ( !$( '#db-currentpath' ).hasClass( 'hide' ) ) return
-	info( {
-		  title  : 'Libary Home'
-		, message: 'Select items to show:'
-		, checkboxhtml : '<form id="displaysave" action="displaysave.php" method="post">\
-						<input name="library" type="hidden" value="1">\
-						<label><input name="bar" type="checkbox" '+ displayredis.bar +'>&ensp;Top-Bottom menu</label>\
-						<br><label><input name="nas" type="checkbox" '+ displayredis.nas +'>&ensp;Network mounts</label>\
-						<br><label><input name="usb" type="checkbox" '+ displayredis.usb +'>&ensp;USB storage</label>\
-						<br><label><input name="webradio" type="checkbox" '+ displayredis.webradio +'>&ensp;My Webradios</label>\
-						<br><label><input name="albums" type="checkbox" '+ displayredis.albums +'>&ensp;Albums</label>\
-						<br><label><input name="artists" type="checkbox" '+ displayredis.artists +'>&ensp;Artists</label>\
-						<br><label><input name="composer" type="checkbox" '+ displayredis.composer +'>&ensp;Composers</label>\
-						<br><label><input name="genre" type="checkbox" '+ displayredis.genre +'>&ensp;Genres</label>\
-						<br><label><input name="spotify" type="checkbox" '+ displayredis.spotify +'>&ensp;Spotify</label>\
-						<br><label><input name="dirble" type="checkbox" '+ displayredis.dirble +'>&ensp;Dirble</label>\
-						<br><label><input name="jamendo" type="checkbox" '+ displayredis.jamendo +'>&ensp;Jamendo</label>\
-						</form>'
-		, cancel : 1
-		, ok     : function () {
-			$.post( 'displaysave.php',
-				$( '#displaysave' ).serialize(),
-				function(data) {
-					if ( data ) {
-						displaylibrary();
-					} else {
-						info( {
-							  title  : 'Libary Home'
-							, message: 'Save Library home failed!'
-						} );
-					}
-				}
-			);
-		}
-	} );
+$hammerinfo.on( 'swiperight', function( e ) {
+	$( '#previous' ).click();
+	e.stopPropagation();
+} ).on( 'swipeleft', function( e ) {
+	$( '#next' ).click();
+	e.stopPropagation();
+} );
+$hammertime.on( 'press', function( e ) {
+	e.stopPropagation();
+} );
+$hammercoverart.on( 'tap', function( e ) {
+	$( '#play' ).click();
+	e.stopPropagation();
+} ).on( 'press', function( e ) {
+	$( '#stop' ).click();
+	e.stopPropagation();
+} ).on( 'swiperight', function( e ) {
+	$( '#previous' ).click();
+	e.stopPropagation();
+} ).on( 'swipeleft', function( e ) {
+	$( '#next' ).click();
+	e.stopPropagation();
+} );
+$hammervolume.on( 'press', function( e ) {
+	e.stopPropagation();
 } );
 
 $hammerplayback.on( 'press', function() {
@@ -308,31 +294,71 @@ $hammerplayback.on( 'press', function() {
 	}
 } );
 
-$hammerinfo.on( 'swiperight', function( e ) {
-	$( '#previous' ).click();
-	e.stopPropagation();
-} ).on( 'swipeleft', function( e ) {
-	$( '#next' ).click();
-	e.stopPropagation();
+$hammerlibrary.on( 'tap', function( e ) {
+	if ( $( '.home-block-remove' ).length && !$( e.target ).is( 'span.block-remove' ) ) $( '#db-homeSetup' ).click();
+} ).on( 'press', function() {
+	if ( !$( '#db-currentpath' ).hasClass( 'hide' ) ) return
+	info( {
+		  title  : 'Libary Home'
+		, message: 'Select items to show:'
+		, checkboxhtml : '<form id="displaysavelibrary" action="displaysave.php" method="post">\
+						<input name="library" type="hidden" value="1">\
+						<label><input name="bar" type="checkbox" '+ displayredis.bar +'>&ensp;Top-Bottom menu</label>\
+						<br><label><input name="nas" type="checkbox" '+ displayredis.nas +'>&ensp;Network mounts</label>\
+						<br><label><input name="usb" type="checkbox" '+ displayredis.usb +'>&ensp;USB storage</label>\
+						<br><label><input name="webradio" type="checkbox" '+ displayredis.webradio +'>&ensp;My Webradios</label>\
+						<br><label><input name="albums" type="checkbox" '+ displayredis.albums +'>&ensp;Albums</label>\
+						<br><label><input name="artists" type="checkbox" '+ displayredis.artists +'>&ensp;Artists</label>\
+						<br><label><input name="composer" type="checkbox" '+ displayredis.composer +'>&ensp;Composers</label>\
+						<br><label><input name="genre" type="checkbox" '+ displayredis.genre +'>&ensp;Genres</label>\
+						<br><label><input name="spotify" type="checkbox" '+ displayredis.spotify +'>&ensp;Spotify</label>\
+						<br><label><input name="dirble" type="checkbox" '+ displayredis.dirble +'>&ensp;Dirble</label>\
+						<br><label><input name="jamendo" type="checkbox" '+ displayredis.jamendo +'>&ensp;Jamendo</label>\
+						</form>'
+		, cancel : 1
+		, ok     : function () {
+			$.post( 'displaysave.php',
+				$( '#displaysavelibrary' ).serialize(),
+				function(data) {
+					if ( data ) {
+						displaylibrary();
+					} else {
+						info( {
+							  title  : 'Libary Home'
+							, message: 'Save Library home failed!'
+						} );
+					}
+				}
+			);
+		}
+	} );
 } );
-$hammertime.on( 'press', function( e ) {
-	e.stopPropagation();
-} );
-$hammercoverart.on( 'tap', function( e ) {
-	$( '#play' ).click();
-	e.stopPropagation();
-} ).on( 'press', function( e ) {
-	$( '#stop' ).click();
-	e.stopPropagation();
-} ).on( 'swiperight', function( e ) {
-	$( '#previous' ).click();
-	e.stopPropagation();
-} ).on( 'swipeleft', function( e ) {
-	$( '#next' ).click();
-	e.stopPropagation();
-} );
-$hammervolume.on( 'press', function( e ) {
-	e.stopPropagation();
+
+$hammerqueue.on( 'press', function() {
+	if ( !$( '#pl-filter-results' ).hasClass( 'hide' ) ) return
+	info( {
+		  title  : 'Queue Home'
+		, message: 'Select items to show:'
+		, checkboxhtml : '<form id="displaysavequeue" action="displaysave.php" method="post">\
+						<label><input name="bar" type="checkbox" '+ displayredis.bar +'>&ensp;Top-Bottom menu</label>\
+						</form>'
+		, cancel : 1
+		, ok     : function () {
+			$.post( 'displaysave.php',
+				$( '#displaysavequeue' ).serialize(),
+				function(data) {
+					if ( data ) {
+						displayqueue();
+					} else {
+						info( {
+							  title  : 'Queue Home'
+							, message: 'Save Queue home failed!'
+						} );
+					}
+				}
+			);
+		}
+	} );
 } );
 
 // document ready end *********************************************************************
@@ -392,7 +418,7 @@ function displayplayback() {
 		displaycommon();
 	} );
 }
-// library home show/hide blocks
+// library show/hide blocks
 function displaylibrary() {
 	$.get( 'displayget.php', function( data ) {
 		displayredis = $.parseJSON( data );
@@ -413,6 +439,15 @@ function displaylibrary() {
 		window.scrollTo( 0, 0 );
 	} );
 }
+// queue show/hide menu
+function displayqueue() {
+	$.get( 'displayget.php', function( data ) {
+		displayredis = $.parseJSON( data );
+		displaycommon();
+		window.scrollTo( 0, 0 );
+	} );
+}
+
 // hide breadcrumb, index bar, edit bookmark
 var old_renderLibraryHome = renderLibraryHome;
 renderLibraryHome = function() {
