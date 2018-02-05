@@ -31,9 +31,13 @@ echo $file
 sed -i -e 's/RuneAudio - RuneUI/RuneUIe/
 ' -e $'/runeui.css/ a\
     <link rel="stylesheet" href="<?=$this->asset(\'/css/custom.css\')?>">
-' -e '/id="menu-top"/ i\
+' -e '/id="menu-top"/ {
+i\
 <div id="bartop"></div>\
 <div id="barbottom"></div>
+n; a\
+        <button id="menu-settings" class="dropdown-toggle btn-default" role="button" data-toggle="dropdown" data-target="#" href="#"><i class="fa fa-gear"></i></button>
+}
 ' -e $'/class="home"/ i\
     <a href="http://www.runeaudio.com/forum/raspberry-pi-f7.html" target="_blank" alt="RuneAudio Forum">\
         <img class="logo" src="<?=$this->asset(\'/img/runelogo.svg\')?>">\
@@ -41,10 +45,8 @@ sed -i -e 's/RuneAudio - RuneUI/RuneUIe/
 ' -e '/id="play"/ a\
         <button id="pause" class="btn btn-default btn-cmd" title="Play/Pause" data-cmd="pause"><i class="fa fa-pause"></i></button>
 ' -e '/^\s*<a id="menu-settings"\|href="\/"><i class="fa fa-play"\|logo.png/ {s|^|<?php /\*|; s|$|\*/?>|}
-' -e '/^\s*<a id="menu-settings"/ i\
-        <button id="menu-settings" class="dropdown-toggle btn-default" role="button" data-toggle="dropdown" data-target="#" href="#"><i class="fa fa-gear"></i></button>
 ' -e '/dropdown-menu/ a\
-            <li id="dropdownbg"></li> <!-- box-shadow -->
+            <li id="dropdownbg"></li>
 ' -e $'/Credits/ a\
             <li class="<?=$this->uri(1, \'dev\', \'active\')?>"><a href="/dev/"><i class="fa fa-code"></i> Development</a></li>
 ' -e 's|href="/#panel-sx"||; s|href="/#playback"||; s|href="/#panel-dx"||
