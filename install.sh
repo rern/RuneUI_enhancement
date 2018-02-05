@@ -40,15 +40,13 @@ sed -i -e 's/RuneAudio - RuneUI/RuneUIe/
     </a>
 ' -e '/id="play"/ a\
         <button id="pause" class="btn btn-default btn-cmd" title="Play/Pause" data-cmd="pause"><i class="fa fa-pause"></i></button>
-' -e '/^\s*<a id="menu-settings"/ {s|^|<?php /\*|; s|$|\*/?>|; i\
+' -e '/^\s*<a id="menu-settings"\|href="\/"><i class="fa fa-play"\|logo.png/ {s|^|<?php /\*|; s|$|\*/?>|}
+' -e '/^\s*<a id="menu-settings"/ i\
         <button id="menu-settings" class="dropdown-toggle btn-default" role="button" data-toggle="dropdown" data-target="#" href="#"><i class="fa fa-gear"></i></button>
-}
 ' -e '/dropdown-menu/ a\
             <li id="dropdownbg"></li> <!-- box-shadow -->
-' -e '\|href="/"><i class="fa fa-play"| {s|^|<?php /\*|; s|$|\*/?>|}
 ' -e $'/Credits/ a\
             <li class="<?=$this->uri(1, \'dev\', \'active\')?>"><a href="/dev/"><i class="fa fa-code"></i> Development</a></li>
-' -e '\|logo.png| {s|^|<?php /\*|; s|$|\*/?>|}
 ' -e 's|href="/#panel-sx"||; s|href="/#playback"||; s|href="/#panel-dx"||
 ' -e 's|\("tab".*"fa fa-\)music"></i> Library|\1folder-open"></i>|
 ' -e 's|\("tab".*"fa fa-play\)"></i> Playback|\1-circle"></i>|
