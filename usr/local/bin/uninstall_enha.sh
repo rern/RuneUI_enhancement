@@ -38,12 +38,9 @@ sed -i '/template->local_browser/ d' $file
 file=/srv/http/app/templates/header.php
 echo $file
 sed -i -e 's|RuneUIe|RuneAudio - RuneUI|
-' -e '/custom.css\|id="bartop"\|id="barbottom\|dropdownbg\|button id="menu-settings"\|id="pause"/ d
-' -e '\|^<!--\s*<a id="menu-settings"| {s|^<!--||; s|-->$||}
-' -e '\|href="/"><i class="fa fa-play"| {s|^<?php /\*||; s|\*/?>$||}
-' -e '\|"fa fa-code"></i> Development</a>| d
-' -e '\|href="http://www.runeaudio.com|, \|</a>| d
-' -e '\|logo.png| {s|^<?php /\*||; s|\*/?>$||}
+' -e '/custom.css\|id="bartop"\|id="barbottom\|dropdownbg\|button id="menu-settings"\|id="pause"\|Development<\/a>/ d
+' -e '/www.runeaudio.com/, /<\/a>/ d
+' -e 's|^<?php /\*||; s|\*/?>$||
 ' -e 's|id="open-panel-sx"><a |&href="/#panel-sx"|
 ' -e 's|id="open-playback".*><a |&href="/#playback"|
 ' -e 's|id="open-panel-dx"><a |&href="/#panel-dx"|
