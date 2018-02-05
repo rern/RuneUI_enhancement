@@ -38,8 +38,8 @@ sed -i '/template->local_browser/ d' $file
 file=/srv/http/app/templates/header.php
 echo $file
 sed -i -e 's|RuneUIe|RuneAudio - RuneUI|
-' -e '/custom.css\|id="bartop"\|id="barbottom\|dropdownbg\|button id="menu-settings"\|id="pause"\|Development<\/a>/ d
-' -e '/www.runeaudio.com/, /<\/a>/ d
+' -e '/custom.css\|id="bartop"\|id="barbottom\|dropdownbg\|button id="menu-settings"\|id="pause"\|Development<.a>/ d
+' -e '/a href="http:..www.runeaudio.com/, /<.a>/ d
 ' -e 's|^<?php /\*||; s|\*/?>$||
 ' -e 's|id="open-panel-sx"><a |&href="/#panel-sx"|
 ' -e 's|id="open-playback".*><a |&href="/#playback"|
