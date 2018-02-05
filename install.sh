@@ -40,7 +40,7 @@ sed -i -e 's/RuneAudio - RuneUI/RuneUIe/
     </a>
 ' -e '/id="play"/ a\
         <button id="pause" class="btn btn-default btn-cmd" title="Play/Pause" data-cmd="pause"><i class="fa fa-pause"></i></button>
-' -e '/^\s*<a id="menu-settings"/ {s/^/<!--/; s/$/-->/; i\
+' -e '/^\s*<a id="menu-settings"/ {s|^|<?php /\*|; s|$|\*/?>|; i\
         <button id="menu-settings" class="dropdown-toggle btn-default" role="button" data-toggle="dropdown" data-target="#" href="#"><i class="fa fa-gear"></i></button>
 }
 ' -e '/dropdown-menu/ a\
