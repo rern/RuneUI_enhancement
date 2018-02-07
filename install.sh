@@ -115,10 +115,7 @@ if ( $template->local_browser ) {\
 
 # for 0.3 - no songinfo and screensaver
 file=/srv/http/app/templates/playbackcustom.php
-if [[ $release != 0.4b ]]; then
-	sed -i '/0.4b only/,/0.4b only/ d' /srv/http/assets/js/custom.js
-	sed -i '/id="songinfo-open"/ d' $file
-fi
+[[ $release != 0.4b ]] && sed -i '/id="songinfo-open"/ d' $file
 
 # for rune youtube
 [[ -e /usr/local/bin/uninstall_RuneYoutube.sh ]] && sed -i '/id="pl-import-youtube"/ {s/<!--//; s/-->//}' $file
