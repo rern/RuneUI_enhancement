@@ -182,6 +182,7 @@ $hammercontent.on( 'swiperight', function() {
 		$( '#menu-top, #menu-bottom' ).toggleClass( 'hide' );
 	} ).get( 'swipe' ).set( { direction: Hammer.DIRECTION_VERTICAL } );
 } )
+// '#play-group, #share-group, #vol-group' use show/hide to comply with css media
 $hammerbarleft.on( 'tap', function() {
 	if ( window.innerWidth < 500 ) {
 		$( '#coverart' ).slideToggle( function() {
@@ -200,7 +201,6 @@ $hammerbarleft.on( 'tap', function() {
 		} );
 	}
 } );
-// '#play-group, #share-group, #vol-group' use show/hide to comply with css media
 $hammerbarright.on( 'tap', function() {
 	if ( displayredis.volume != 0 && displayredis.volumempd != 0 ) {
 		$( '#play-group, #vol-group' ).toggle();
