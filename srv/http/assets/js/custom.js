@@ -256,7 +256,7 @@ $hammerplayback.on( 'press', function() {
 						<input name="playback" type="hidden" value="1">\
 						<label><input name="bar" type="checkbox" '+ displayredis.bar +'>&ensp;Top-Bottom menu</label>\
 						<br><label><input name="time" type="checkbox" '+ displayredis.time +'>&ensp;Time</label>\
-						<br><label><input name="pause" type="checkbox" '+ displayredis.pause +'>&ensp;Play+Pause button</label>\
+						<br><label><input name="pause" type="checkbox" '+ displayredis.pause +'>&ensp;<code><i class="fa fa-play"></i></code>&emsp;<code><i class="fa fa-pause"></i></code>&emsp;buttons</label>\
 						<br><label><input name="coverart" type="checkbox" '+ displayredis.coverart +'>&ensp;Coverart</label>\
 						<br><label><input name="volume" type="checkbox" '+ displayredis.volume +'>&ensp;Volume</label>\
 						<br><label><input name="buttons" type="checkbox" '+ displayredis.buttons +'>&ensp;Buttons</label>\
