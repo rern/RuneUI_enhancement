@@ -3,10 +3,6 @@
 # $1-zoom
 # change version number in RuneAudio_Addons/srv/http/addonslist.php
 
-# temp fix - to be removed
-sed -i -e '\|href="http://www.runeaudio.com|,\|</a>| d' /srv/http/app/templates/header.php
-sed -i '/id="bartop"\|id="barbottom"/ d' /srv/http/app/templates/footer.php
-
 alias=enha
 
 . /srv/http/addonstitle.sh
@@ -30,7 +26,7 @@ file=/srv/http/app/templates/header.php
 echo $file
 sed -i -e 's/RuneAudio - RuneUI/RuneUIe/
 ' -e $'/runeui.css/ a\
-    <link rel="stylesheet" href="<?=$this->asset(\'/css/custom.css\')?>">
+    <link rel="stylesheet" href="<?=$this->asset(\'/css/enhance.css\')?>">
 ' -e '/id="menu-top"/ {
 i\
 <div id="bartop"></div>\
@@ -59,9 +55,9 @@ file=/srv/http/app/templates/footer.php
 echo $file
 # must be before lyrics addon
 if ! grep -q 'lyrics.js' $file; then
-	sed -i $'$ a\<script src="<?=$this->asset(\'/js/custom.js\')?>"></script>' $file
+	sed -i $'$ a\<script src="<?=$this->asset(\'/js/enhance.js\')?>"></script>' $file
 else
-	sed -i $'/lyrics.js/ i\<script src="<?=$this->asset(\'/js/custom.js\')?>"></script>' $file
+	sed -i $'/lyrics.js/ i\<script src="<?=$this->asset(\'/js/enhance.js\')?>"></script>' $file
 fi
 ! grep -q 'hammer.min.js' $file && sed -i $'$ a\<script src="<?=$this->asset(\'/js/vendor/hammer.min.js\')?>"></script>' $file
 ! grep -q 'propagating.js' $file && sed -i $'$ a\<script src="<?=$this->asset(\'/js/vendor/propagating.js\')?>"></script>' $file
