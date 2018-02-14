@@ -568,18 +568,28 @@ function refreshState() {
     var state = GUI.state;
 	var fileinfo = '';
 // split play-pause buttons
-    if (state === 'play') {
-        $('#play').addClass('btn-primary');
-        $('#stop, #pause').removeClass('btn-primary');
-    } else if (state === 'pause') {
-        $('#playlist-position span').html('Not playing');
-        $('#pause').addClass('btn-primary');
-        $('#stop, #play').removeClass('btn-primary');
-    } else if (state === 'stop') {
-        $('#stop').addClass('btn-primary');
-        $('#play, #pause').removeClass('btn-primary');
-        if ($('#section-index').length) {
-            $('#countdown-display').countdown('destroy');
+    if ( state === 'play' ) {
+        $( '#play' ).addClass( 'btn-primary' );
+        $( '#stop' ).removeClass( 'btn-primary' );
+        if ( $( '#pause' ).hasClass( 'hide' ) ) {
+            $( 'i', '#play' ).removeClass( 'fa fa-pause' ).addClass( 'fa fa-play' );
+        } else {
+            $( '#pause' ).removeClass( 'btn-primary' );
+        }
+    } else if ( state === 'pause' ) {
+        $( '#playlist-position span' ).html( 'Not playing' );
+        $( '#stop' ).removeClass( 'btn-primary' );
+        if ( $( '#pause' ).hasClass( 'hide' ) ) {
+            $( 'i', '#play' ).removeClass( 'fa fa-play' ).addClass( 'fa fa-pause' );
+        } else {
+            $( '#play' ).removeClass( 'btn-primary' );
+            $( '#pause' ).addClass( 'btn-primary' );
+        }
+    } else if ( state === 'stop' ) {
+        $( '#stop' ).addClass( 'btn-primary' );
+        $( '#play, #pause' ).removeClass( 'btn-primary' );
+        if ( $( '#section-index' ).length ) {
+            $( '#countdown-display' ).countdown( 'destroy' );
         }
         if ( GUI.stream !== 'radio' ) {
         	$( '#total' ).html( '00:00' );
