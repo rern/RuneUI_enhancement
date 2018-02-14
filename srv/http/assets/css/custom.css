@@ -145,11 +145,14 @@
 }
 #menu-top .playback-controls {
     left: 50%;
-    width: 380px;
-    margin: 0 0 0 -190px;
+    width: 300px;
+    margin: 0 0 0 -150px;
 }
 #menu-top .playback-controls button {
     margin: 0 10px;
+}
+.pausebtn {
+	margin: 0 3px !important;
 }
 #menu-top .playback-controls i,
 #gpio {
