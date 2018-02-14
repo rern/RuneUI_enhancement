@@ -22,7 +22,7 @@ echo -e "$bar Remove files ..."
 rm -v /srv/http/app/templates/playbackcustom.php
 rm -v /srv/http/{displayget.php,displaysave.php}
 path=/srv/http/assets
-rm -v $path/css/custom.css
+rm -v $path/css/enhance.css
 rm -v $path/img/runelogo.svg
 rm -vf $path/js/{custom.js,vendor/jquery-ui.min.js,vendor/propagating.js}
 
