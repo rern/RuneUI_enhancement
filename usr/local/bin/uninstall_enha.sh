@@ -24,7 +24,7 @@ rm -v /srv/http/{displayget.php,displaysave.php}
 path=/srv/http/assets
 rm -v $path/css/enhance.css
 rm -v $path/img/runelogo.svg
-rm -vf $path/js/{custom.js,vendor/jquery-ui.min.js,vendor/propagating.js}
+rm -vf $path/js/{enhance.js,vendor/jquery-ui.min.js,vendor/propagating.js}
 
 mv /srv/http/app/coverart_ctl.php{.backup,}
 
@@ -38,7 +38,7 @@ sed -i '/template->local_browser/ d' $file
 file=/srv/http/app/templates/header.php
 echo $file
 sed -i -e 's|RuneUIe|RuneAudio - RuneUI|
-' -e '/custom.css\|id="bartop"\|id="barbottom\|dropdownbg\|button id="menu-settings"\|id="pause"\|Development<.a>/ d
+' -e '/enhance.css\|id="bartop"\|id="barbottom\|dropdownbg\|button id="menu-settings"\|id="pause"\|Development<.a>/ d
 ' -e '/a href="http:..www.runeaudio.com/, /<.a>/ d
 ' -e 's|^<?php /\*||; s|\*/?>$||
 ' -e 's|id="open-panel-sx"><a |&href="/#panel-sx"|
@@ -51,7 +51,7 @@ sed -i -e 's|RuneUIe|RuneAudio - RuneUI|
 
 file=/srv/http/app/templates/footer.php
 echo $file
-sed -i -e '/custom.js/ d
+sed -i -e '/enhance.js/ d
 ' -e '/propagating.js/ d
 ' $file
 # 0.4b
