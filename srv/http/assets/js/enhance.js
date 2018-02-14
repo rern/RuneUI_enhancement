@@ -590,6 +590,9 @@ function refreshState() {
     } else if ( state === 'stop' ) {
         $( '#stop' ).addClass( 'btn-primary' );
         $( '#play, #pause' ).removeClass( 'btn-primary' );
+        if ( $( '#pause' ).hasClass( 'hide' ) ) {
+            $( 'i', '#play' ).removeClass( 'fa fa-pause' ).addClass( 'fa fa-play' );
+        }
         if ( $( '#section-index' ).length ) {
             $( '#countdown-display' ).countdown( 'destroy' );
         }
