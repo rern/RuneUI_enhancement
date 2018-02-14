@@ -386,6 +386,7 @@ function displaycommon() {
 		$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
 		$( '#database' ).css( 'padding-top', '40px' );
 	}
+	$( '#menu-top .playback-controls button' ).toggleClass( 'pausebtn', displayredis.pause === 'checked' && window.innerWidth < 340 );
 }
 // playback show/hide blocks
 function displayplayback() {
