@@ -371,7 +371,7 @@ $.get( path +'displayget.php', function( data ) {
 } );
 
 function displaycommon() {
-	if ( parseInt( $( '#playback' ).css( 'padding-top' ) ) > 25 ) {
+	if ( parseInt( $( '#playback' ).css( 'padding-top' ) ) > 25 && window.innerWidth > 568 ) {
 		if ( displayredis.bar ) {
 			$( '#menu-top, #menu-bottom' ).removeClass( 'hide' );
 			$( '#database, #playlist' ).css( 'padding-top', '80px' );
@@ -413,6 +413,8 @@ function displayplayback() {
 			} else {
 				$( '#play-group, #share-group, #vol-group' ).hide();
 			}
+		} else {
+			$( '#playback' ).css( 'padding-top', '25px' );
 		}
 		$( '#playback-row' ).removeClass( 'hide' );
 		displaycommon();
