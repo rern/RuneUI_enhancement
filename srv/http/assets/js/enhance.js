@@ -56,10 +56,6 @@ $( '#playlist-entries' ).click( function( e ) {
 		if ( window.innerWidth < 500 || window.innerHeight < 500 ) $( '#menu-top, #menu-bottom' ).toggle();
 	}
 } );
-// playsource button replacement
-$( '#playsource' ).click( function() {
-	$( '#overlay-playsource-open' ).click();
-} );
 // lastfm search
 $( '#currentartist' ).click( function() {
 	var artist = $( this ).text();
@@ -227,9 +223,13 @@ $hammerinfo.on( 'swiperight', function( e ) {
 	$( '#next' ).click();
 	e.stopPropagation();
 } );
-$hammertime.on( 'press', function( e ) {
-	e.stopPropagation();
+
+[ $hammertime, $hammervolume ].forEach( function( e ) {
+	e.on( 'press', function( ev ) {
+		ev.stopPropagation();
+	} );
 } );
+
 $hammercoverart.on( 'tap', function( e ) {
 	$( '#play' ).click();
 	e.stopPropagation();
@@ -241,9 +241,6 @@ $hammercoverart.on( 'tap', function( e ) {
 	e.stopPropagation();
 } ).on( 'swipeleft', function( e ) {
 	$( '#next' ).click();
-	e.stopPropagation();
-} );
-$hammervolume.on( 'press', function( e ) {
 	e.stopPropagation();
 } );
 
