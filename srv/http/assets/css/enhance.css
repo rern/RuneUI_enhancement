@@ -344,8 +344,14 @@
 	margin: 0 auto;
 	width: 230px;
 }
-#volume,
-#countdown-display {
+#overlay-playsource-open {
+    position: absolute;
+    top: 65px;
+    margin-left: -50px;
+    width: 100px;
+}
+#countdown-display,
+#volume {
     font-size: 38px !important;
     font-weight: 300 !important;
 }
