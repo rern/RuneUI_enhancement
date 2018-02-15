@@ -145,11 +145,14 @@
 }
 #menu-top .playback-controls {
     left: 50%;
-    width: 300px;
-    margin: 0 0 0 -150px;
+    width: 316px;
+    margin: 0 0 0 -158px;
 }
 #menu-top .playback-controls button {
     margin: 0 10px;
+}
+.pausebtn {
+	margin: 0 3px !important;
 }
 #menu-top .playback-controls i,
 #gpio {
@@ -341,8 +344,14 @@
 	margin: 0 auto;
 	width: 230px;
 }
-#volume,
-#countdown-display {
+#overlay-playsource-open {
+    position: absolute;
+    top: 65px;
+    margin-left: -50px;
+    width: 100px;
+}
+#countdown-display,
+#volume {
     font-size: 38px !important;
     font-weight: 300 !important;
 }

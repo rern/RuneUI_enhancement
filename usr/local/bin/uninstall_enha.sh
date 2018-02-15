@@ -22,9 +22,9 @@ echo -e "$bar Remove files ..."
 rm -v /srv/http/app/templates/playbackcustom.php
 rm -v /srv/http/{displayget.php,displaysave.php}
 path=/srv/http/assets
-rm -v $path/css/custom.css
+rm -v $path/css/enhance.css
 rm -v $path/img/runelogo.svg
-rm -vf $path/js/{custom.js,vendor/jquery-ui.min.js,vendor/propagating.js}
+rm -vf $path/js/{enhance.js,vendor/jquery-ui.min.js,vendor/propagating.js}
 
 mv /srv/http/app/coverart_ctl.php{.backup,}
 
@@ -38,12 +38,9 @@ sed -i '/template->local_browser/ d' $file
 file=/srv/http/app/templates/header.php
 echo $file
 sed -i -e 's|RuneUIe|RuneAudio - RuneUI|
-' -e '/custom.css\|id="bartop"\|id="barbottom\|dropdownbg\|button id="menu-settings"/ d
-' -e '\|^<!--\s*<a id="menu-settings"| {s|^<!--||; s|-->$||}
-' -e '\|href="/"><i class="fa fa-play"| {s|^<?php /\*||; s|\*/?>$||}
-' -e '\|"fa fa-code"></i> Development</a>| d
-' -e '\|href="http://www.runeaudio.com|, \|</a>| d
-' -e '\|logo.png| {s|^<?php /\*||; s|\*/?>$||}
+' -e '/enhance.css\|id="bartop"\|id="barbottom\|dropdownbg\|button id="menu-settings"\|id="pause"\|Development<.a>/ d
+' -e '/a href="http:..www.runeaudio.com/, /<.a>/ d
+' -e 's|^<?php /\*||; s|\*/?>$||
 ' -e 's|id="open-panel-sx"><a |&href="/#panel-sx"|
 ' -e 's|id="open-playback".*><a |&href="/#playback"|
 ' -e 's|id="open-panel-dx"><a |&href="/#panel-dx"|
@@ -54,7 +51,7 @@ sed -i -e 's|RuneUIe|RuneAudio - RuneUI|
 
 file=/srv/http/app/templates/footer.php
 echo $file
-sed -i -e '/custom.js/ d
+sed -i -e '/enhance.js/ d
 ' -e '/propagating.js/ d
 ' $file
 # 0.4b

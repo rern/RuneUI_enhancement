@@ -1,6 +1,7 @@
 <?php
 $display = array( 'bar' => $_POST[ 'bar' ] ? 'checked' : '' );
 if ( isset( $_POST[ 'playback' ] ) ) {
+	$display[ 'pause'] = $_POST[ 'pause' ] ? 'checked' : '';
 	$display[ 'time'] = $_POST[ 'time' ] ? 'checked' : '';
 	$display[ 'coverart'] = $_POST[ 'coverart' ] ? 'checked' : '';
 	$display[ 'volume'] = $_POST[ 'volume' ] ? 'checked' : '';

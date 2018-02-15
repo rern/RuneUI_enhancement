@@ -41,45 +41,6 @@ setTimeout( function() { // fix mouse move pass menu on initial load
 	} );
 }, 1000 );
 
-$( '#barleft' ).click( function() {
-	if ( window.innerWidth < 500 ) {
-		$( '#coverart' ).slideToggle( function() {
-			$( '#time-knob, #volume-knob' ).css( 'margin-top', 0 );
-			if ( $( '#coverart' ).is( ':visible' ) ) {
-				$( '#playback-row' ).css( 'margin-top', '10px' );
-				if ( $( '#play-group' ).is( ':visible' ) ) {
-					$( '#share-group' ).show();
-				} else {
-					$( '#divalbum' ).removeClass( 'hide' );
-					$( '#volume-knob' ).css( 'margin-top', '20px' );
-				}
-			} else {
-				$( '#share-group' ).hide();
-			}
-		} );
-	}
-} );
-
-// '#play-group, #share-group, #vol-group' use show/hide to comply with css media
-$( '#barright' ).click( function() {
-	if ( displayredis.volume != 0 && displayredis.volumempd != 0 ) {
-		$( '#play-group, #vol-group' ).toggle();
-	} else {
-		$( '#play-group' ).toggle();
-	}
-	if ( $( '#coverart' ).is( ':visible' ) ) {
-		$( '#share-group' ).toggle();
-	}
-	if ( window.innerHeight < 414 ) {
-		if ( $( '#play-group' ).is( ':hidden' ) ) {
-			$( '#divalbum, #sampling' ).addClass( 'hide' );
-			$( '#play-group, #share-group, #vol-group' ).css( 'margin-top', '10px' );
-		} else {
-			$( '#divalbum, #sampling' ).removeClass( 'hide' );
-		}
-	}
-} );
-
 // playback buttons click go back to home page
 $( '.playback-controls' ).click( function() {
 	if ( !$( '#playback' ).hasClass( 'active' ) ) {
@@ -94,10 +55,6 @@ $( '#playlist-entries' ).click( function( e ) {
 		$( '#open-playback a' )[ 0 ].click();
 		if ( window.innerWidth < 500 || window.innerHeight < 500 ) $( '#menu-top, #menu-bottom' ).toggle();
 	}
-} );
-// playsource button replacement
-$( '#playsource' ).click( function() {
-	$( '#overlay-playsource-open' ).click();
 } );
 // lastfm search
 $( '#currentartist' ).click( function() {
@@ -177,7 +134,7 @@ window.addEventListener( 'orientationchange', function() {
 	scrolltext();
 } );
 
-// skip if in menu settings
+// skip all hammers if in menu settings
 if ( /\/.*\//.test( location.pathname ) === true ) return;
 
 // hammer**************************************************************
@@ -220,7 +177,45 @@ $hammercontent.on( 'swiperight', function() {
 	e.on( 'swipe', function() {
 		$( '#menu-top, #menu-bottom' ).toggleClass( 'hide' );
 	} ).get( 'swipe' ).set( { direction: Hammer.DIRECTION_VERTICAL } );
+} )
+// '#play-group, #share-group, #vol-group' use show/hide to comply with css media
+$hammerbarleft.on( 'tap', function() {
+	if ( window.innerWidth < 500 ) {
+		$( '#coverart' ).slideToggle( function() {
+			$( '#time-knob, #volume-knob' ).css( 'margin-top', 0 );
+			if ( $( '#coverart' ).is( ':visible' ) ) {
+				$( '#playback-row' ).css( 'margin-top', '10px' );
+				if ( $( '#play-group' ).is( ':visible' ) ) {
+					$( '#share-group' ).show();
+				} else {
+					$( '#divalbum' ).removeClass( 'hide' );
+					$( '#volume-knob' ).css( 'margin-top', '20px' );
+				}
+			} else {
+				$( '#share-group' ).hide();
+			}
+		} );
+	}
 } );
+$hammerbarright.on( 'tap', function() {
+	if ( displayredis.volume != 0 && displayredis.volumempd != 0 ) {
+		$( '#play-group, #vol-group' ).toggle();
+	} else {
+		$( '#play-group' ).toggle();
+	}
+	if ( $( '#coverart' ).is( ':visible' ) ) {
+		$( '#share-group' ).toggle();
+	}
+	if ( window.innerHeight < 414 ) {
+		if ( $( '#play-group' ).is( ':hidden' ) ) {
+			$( '#divalbum, #sampling' ).addClass( 'hide' );
+			$( '#play-group, #share-group, #vol-group' ).css( 'margin-top', '10px' );
+		} else {
+			$( '#divalbum, #sampling' ).removeClass( 'hide' );
+		}
+	}
+} );
+
 $hammerinfo.on( 'swiperight', function( e ) {
 	$( '#previous' ).click();
 	e.stopPropagation();
@@ -228,9 +223,13 @@ $hammerinfo.on( 'swiperight', function( e ) {
 	$( '#next' ).click();
 	e.stopPropagation();
 } );
-$hammertime.on( 'press', function( e ) {
-	e.stopPropagation();
+
+[ $hammertime, $hammervolume ].forEach( function( e ) {
+	e.on( 'press', function( ev ) {
+		ev.stopPropagation();
+	} );
 } );
+
 $hammercoverart.on( 'tap', function( e ) {
 	$( '#play' ).click();
 	e.stopPropagation();
@@ -244,9 +243,6 @@ $hammercoverart.on( 'tap', function( e ) {
 	$( '#next' ).click();
 	e.stopPropagation();
 } );
-$hammervolume.on( 'press', function( e ) {
-	e.stopPropagation();
-} );
 
 $hammerplayback.on( 'press', function() {
 	info( {
@@ -255,6 +251,9 @@ $hammerplayback.on( 'press', function() {
 		, checkboxhtml : '<form id="displaysaveplayback" action="displaysave.php" method="post">\
 						<input name="playback" type="hidden" value="1">\
 						<label><input name="bar" type="checkbox" '+ displayredis.bar +'>&ensp;Top-Bottom menu</label>\
+						<br><label><input name="pause" type="checkbox" '+ displayredis.pause +'>\
+							&ensp;<code><i class="fa fa-play"></i></code>&emsp;<code><i class="fa fa-pause"></i></code>&emsp;buttons\
+						</label>\
 						<br><label><input name="time" type="checkbox" '+ displayredis.time +'>&ensp;Time</label>\
 						<br><label><input name="coverart" type="checkbox" '+ displayredis.coverart +'>&ensp;Coverart</label>\
 						<br><label><input name="volume" type="checkbox" '+ displayredis.volume +'>&ensp;Volume</label>\
@@ -265,7 +264,6 @@ $hammerplayback.on( 'press', function() {
 			$.post( 'displaysave.php',
 				$( '#displaysaveplayback' ).serialize(),
 				function(data) {
-					console.log(data);
 					if ( data ) {
 						displayplayback();
 					} else {
@@ -371,7 +369,7 @@ $.get( path +'displayget.php', function( data ) {
 } );
 
 function displaycommon() {
-	if ( parseInt( $( '#playback' ).css( 'padding-top' ) ) > 25 ) {
+	if ( parseInt( $( '#playback' ).css( 'padding-top' ) ) > 25 && window.innerWidth > 568 ) {
 		if ( displayredis.bar ) {
 			$( '#menu-top, #menu-bottom' ).removeClass( 'hide' );
 			$( '#database, #playlist' ).css( 'padding-top', '80px' );
@@ -385,12 +383,14 @@ function displaycommon() {
 		$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
 		$( '#database' ).css( 'padding-top', '40px' );
 	}
+	$( '#menu-top .playback-controls button' ).toggleClass( 'pausebtn', displayredis.pause === 'checked' && window.innerWidth < 400 );
 }
 // playback show/hide blocks
 function displayplayback() {
 	$.get( 'displayget.php', function( data ) {
 		displayredis = $.parseJSON( data );
 		var volume = ( displayredis.volume == 0 || displayredis.volumempd == 0 ) ? 0 : 1;
+		$( '#pause' ).toggleClass( 'hide', !displayredis.pause );
 		$( '#time-knob' ).toggleClass( 'hide', !displayredis.time );
 		$( '#coverart' ).toggleClass( 'hide', !displayredis.coverart );
 		$( '#volume-knob' ).toggleClass( 'hide', !volume );
@@ -413,6 +413,8 @@ function displayplayback() {
 			} else {
 				$( '#play-group, #share-group, #vol-group' ).hide();
 			}
+		} else {
+			$( '#playback' ).css( 'padding-top', '25px' );
 		}
 		$( '#playback-row' ).removeClass( 'hide' );
 		displaycommon();
@@ -561,27 +563,36 @@ function refreshState() {
 // ****************************************************************************************
 	scrolltext();
 	displayplayback();
-// ****************************************************************************************
 	
     var state = GUI.state;
 	var fileinfo = '';
-    if (state === 'play') {
-        $('#play').addClass('btn-primary');
-        $('i', '#play').removeClass('fa fa-pause').addClass('fa fa-play');
-        $('#stop').removeClass('btn-primary');
-    } else if (state === 'pause') {
-        $('#playlist-position span').html('Not playing');
-        $('#play').addClass('btn-primary');
-        $('i', '#play').removeClass('fa fa-play').addClass('fa fa-pause');
-        $('#stop').removeClass('btn-primary');
-    } else if (state === 'stop') {
-        $('#play').removeClass('btn-primary');
-        $('i', '#play').removeClass('fa fa-pause').addClass('fa fa-play');
-        $('#stop').addClass('btn-primary');
-        if ($('#section-index').length) {
-            $('#countdown-display').countdown('destroy');
+// split play-pause buttons
+    if ( state === 'play' ) {
+        $( '#play' ).addClass( 'btn-primary' );
+        $( '#stop' ).removeClass( 'btn-primary' );
+        if ( $( '#pause' ).hasClass( 'hide' ) ) {
+            $( 'i', '#play' ).removeClass( 'fa fa-pause' ).addClass( 'fa fa-play' );
+        } else {
+            $( '#pause' ).removeClass( 'btn-primary' );
         }
-// ****************************************************************************************
+    } else if ( state === 'pause' ) {
+        $( '#playlist-position span' ).html( 'Not playing' );
+        $( '#stop' ).removeClass( 'btn-primary' );
+        if ( $( '#pause' ).hasClass( 'hide' ) ) {
+            $( 'i', '#play' ).removeClass( 'fa fa-play' ).addClass( 'fa fa-pause' );
+        } else {
+            $( '#play' ).removeClass( 'btn-primary' );
+            $( '#pause' ).addClass( 'btn-primary' );
+        }
+    } else if ( state === 'stop' ) {
+        $( '#stop' ).addClass( 'btn-primary' );
+        $( '#play, #pause' ).removeClass( 'btn-primary' );
+        if ( $( '#pause' ).hasClass( 'hide' ) ) {
+            $( 'i', '#play' ).removeClass( 'fa fa-pause' ).addClass( 'fa fa-play' );
+        }
+        if ( $( '#section-index' ).length ) {
+            $( '#countdown-display' ).countdown( 'destroy' );
+        }
         if ( GUI.stream !== 'radio' ) {
         	$( '#total' ).html( '00:00' );
         } else {
