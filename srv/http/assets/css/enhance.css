@@ -428,7 +428,7 @@
 		padding: 50px 0 20px 0;
 	}
 }
-@media(max-width: 500px) {
+@media(max-width: 487px) {
 	#play-group,
 	#share-group,
 	#vol-group	{
@@ -590,7 +590,14 @@
 		padding-top: 40px;
 	}
 }
-@media(max-height: 416px) {
+@media(max-width: 390px) {
+	#play-group,
+	#share-group,
+	#vol-group	{
+		display: none;
+	}
+}
+@media(max-height: 390px) {
 	#play-group,
 	#share-group,
 	#vol-group	{
