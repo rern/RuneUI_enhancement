@@ -145,8 +145,8 @@
 }
 #menu-top .playback-controls {
     left: 50%;
-    width: 316px;
-    margin: 0 0 0 -158px;
+    width: 320px;
+    margin: 0 0 0 -160px;
 }
 #menu-top .playback-controls button {
     margin: 0 10px;
@@ -206,7 +206,7 @@
 /* ---------------------- middle window ----------------------*/
 #playback {
 	height: 100vh;
-	padding: 80px 0 40px 0;
+	padding-top: 80px;
 }
 #coverart {
 	display: block;
@@ -373,9 +373,6 @@
 
 /* ---------------------- responsive ----------------------*/
 @media(max-width: 750px) {
-	#playback {
-		padding: 50px 0 20px 0;
-	}
 	#playback-row {
 		margin-top: 10px;
 	}
@@ -386,7 +383,7 @@
 	#share-group,
 	#vol-group	{
 		width: 33%;
-		min-width: 244px;
+		min-width: 270px;
 	}
 	#time-knob {
 	    order: 1;
@@ -424,18 +421,12 @@
 	#menu-top {
 		padding: 0;
 	}
-	#playback {
-		padding: 50px 0 20px 0;
-	}
 }
-@media(max-width: 500px) {
+@media(max-width: 487px) {
 	#play-group,
 	#share-group,
 	#vol-group	{
 		display: none;
-	}
-	#playback {
-		padding: 25px 0 0 0;
 	}
 	#menu-top .dropdown-menu > li > a {
 		padding-right: 35px;
@@ -518,10 +509,9 @@
 		display: none !important;
 	}
 }
-@media(max-height: 640px) {
+@media(max-height: 580px) {
 	#playback {
-		padding: 55px 0 0 0;
-		overflow-x: hidden;
+		padding-top: 55px;
 	}
 	#sampling span,
 	#dot0 {
@@ -532,10 +522,6 @@
 	}
 }
 @media(max-height: 640px) and (max-width: 360px) {
-	#playback {
-		padding: 20px 0 0 0;
-		overflow-x: hidden;
-	}
 	#playback-row {
 		transform: scale(0.85, 0.85);
 		transform-origin: center top;
@@ -548,8 +534,7 @@
 }
 @media(max-height: 500px) {
 	#playback {
-		padding: 20px 0 0 0;
-		overflow-x: hidden;
+		padding-top: 20px;
 	}
 	#sampling span,
 	#dot0 {
@@ -590,17 +575,26 @@
 		padding-top: 40px;
 	}
 }
-@media(max-height: 416px) {
+@media(max-width: 390px) {
 	#play-group,
 	#share-group,
 	#vol-group	{
 		display: none;
 	}
 }
-@media(max-height: 360px) and (max-width: 640px) {
+@media(max-height: 390px) {
+	#play-group,
+	#share-group,
+	#vol-group	{
+		display: none;
+	}
+}
+@media(max-height: 360px) {
 	#playback {
 		padding-top: 10px;
 	}
+}
+@media(max-height: 360px) and (max-width: 640px) {
 	#time-knob {
 	    order: 1;
 		-webkit-order: 1;
@@ -632,10 +626,12 @@
 		margin-top: 10px;
 	}
 }
-@media(max-height: 320px) and (max-width: 568px) {
+@media(max-height: 320px) {
 	#playback {
 		padding-top: 5px;
 	}
+}
+@media(max-height: 320px) and (max-width: 568px) {
 	#divartist,
 	#divalbum {
 		display: none !important;
@@ -644,9 +640,6 @@
 @media(max-height: 568px) and (max-width: 320px) {
 	#menu-top .playback-controls button {
 		margin: 0 6px;
-	}
-	#playback {
-		padding-top: 20px;
 	}
 	#divartist,
 	#divalbum {

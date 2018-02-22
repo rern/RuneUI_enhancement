@@ -75,16 +75,9 @@ file=/srv/http/app/templates/playback.php
 echo $file
 release=$( redis-cli get release )
 if [[ $release == 0.4b ]]; then
-sed -i -e '1 i\
+sed -i -e '/<div class="screen-saver-content"/ i\
 <?php\
-if ( $this->localSStime == -1 && $this->remoteSStime == -1 ) {\
-	echo "\
-		<script>\
-			var localSStime = -1;\
-			var remoteSStime = -1;\
-		</script>\
-	";\
-} else {\
+if ( $this->remoteSStime != -1 ) {\
 ?>
 ' -e '/<div class="tab-content">/ i\
 <?php\
