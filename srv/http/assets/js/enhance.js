@@ -22,7 +22,7 @@ $( '#open-panel-dx' ).click( function() {
 	displayqueue();
 } );
 
-if ( /\/.*\//.test( location.pathname ) === false ) $( '#menu-top, #menu-bottom' ).addClass( 'hide' );
+if ( /\/.*\//.test( location.pathname ) === false ) $( '#menu-top, #menu-bottom' ).hide();
 
 // disabled local browser > disable screensaver events
 if ( !$( '#playback-ss' ).length ) $('#section-index').off( 'mousemove click keypress' );
@@ -42,21 +42,9 @@ $( '#playlist-entries' ).click( function( e ) {
 		if ( window.innerWidth < 500 || window.innerHeight < 500 ) $( '#menu-top, #menu-bottom' ).toggle();
 	}
 } );
-// lastfm search
-$( '#currentartist' ).click( function() {
-	var artist = $( this ).text();
-	if ( artist.slice( 0, 3 ) != '[no' )
-		window.open( 'http://www.last.fm/music/'+ artist );
-} );
-$( '#currentalbum' ).click( function() {
-	var artist = $( '#currentartist' ).text();
-	var album = $( this ).text();
-	if ( album.slice( 0, 3 ) != '[no' )
-		window.open( 'http://www.last.fm/music/'+ artist +'/'+ album );
-} );
 $( '#menu-bottom' ).click( function() {
-	if ( window.innerHeight < 737 ) {
-		$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
+	if ( window.innerWidth < 540 || window.innerHeight < 540 ) {
+		$( '#menu-top, #menu-bottom' ).hide();
 		$( '.btnlist-top' ).css( 'top', 0 );
 		$( '#database' ).css( 'padding-top', '40px' );
 	}
@@ -73,7 +61,7 @@ $( '#db-currentpath' ).on( 'click', 'a', function() {
 
 // index link
 $( '#db-index li' ).click( function() {
-	var topoffset = !$( '#menu-top' ).hasClass( 'hide' ) ? 80 : 40;
+	var topoffset = !$( '#menu-top' ).is( ':hidden' ) ? 80 : 40;
 	var indextext = $( this ).text();
 	if ( indextext === '#' ) {
 		$( document ).scrollTop( 0 );
@@ -115,6 +103,8 @@ var $hammercontent = new Hammer( document.getElementById( 'content' ) );
 var $hammerbarleft = new Hammer( document.getElementById( 'barleft' ) );
 var $hammerbarright = new Hammer( document.getElementById( 'barright' ) );
 var $hammerinfo = new Hammer( document.getElementById( 'info' ) );
+var $hammerartist = new Hammer( document.getElementById( 'currentartist' ) );
+var $hammeralbum = new Hammer( document.getElementById( 'currentalbum' ) );
 var $hammertime = new Hammer( document.getElementById( 'time-knob' ) );
 var $hammercoverart = new Hammer( document.getElementById( 'coverart' ) );
 var $hammervolume = new Hammer( document.getElementById( 'volume-knob' ) );
@@ -143,8 +133,9 @@ $hammercontent.on( 'swiperight', function() {
 } );
 
 [ $hammerbarleft, $hammerbarright ].forEach( function( e ) {
-	e.on( 'swipe', function() {
-		$( '#menu-top, #menu-bottom' ).toggleClass( 'hide' );
+	e.on( 'swipe press', function( ev ) {
+		$( '#menu-top, #menu-bottom' ).toggle();
+		ev.stopPropagation();
 	} ).get( 'swipe' ).set( { direction: Hammer.DIRECTION_VERTICAL } );
 } )
 // '#play-group, #share-group, #vol-group' use show/hide to comply with css media
@@ -186,6 +177,18 @@ $hammerinfo.on( 'swiperight', function( e ) {
 } ).on( 'swipeleft', function( e ) {
 	$( '#next' ).click();
 	e.stopPropagation();
+} );
+// lastfm search
+$hammerartist.on( 'tap', function() {
+	var artist = $( this ).text();
+	if ( artist.slice( 0, 3 ) != '[no' )
+		window.open( 'http://www.last.fm/music/'+ artist );
+} );
+$hammeralbum.on( 'tap', function() {
+	var artist = $( '#currentartist' ).text();
+	var album = $( this ).text();
+	if ( album.slice( 0, 3 ) != '[no' )
+		window.open( 'http://www.last.fm/music/'+ artist +'/'+ album );
 } );
 
 [ $hammertime, $hammervolume ].forEach( function( e ) {
@@ -241,7 +244,7 @@ $hammerplayback.on( 'press', function() {
 		}
 	} );
 	// disable from autohide
-	if ( parseInt( $( '#playback' ).css( 'padding-top' ) ) < 25 ) {
+	if ( parseInt( $( '#playback' ).css( 'padding-top' ) ) <= 25 ) {
 		$( 'input[name="bar"]' )
 			.prop( 'disabled', true )
 			.parent().css( 'color', '#7795b4' )
@@ -253,6 +256,13 @@ $hammerplayback.on( 'press', function() {
 			.prop( 'disabled', true )
 			.parent().css( 'color', '#7795b4' )
 			.append( ' (disabled)' );
+	}
+	// disable from css
+	if ( window.innerWidth <= 540 || window.innerHeight <= 390 ) {
+		$( 'input[name="buttons"]' )
+			.prop( 'disabled', true )
+			.parent().css( 'color', '#7795b4' )
+			.append( ' (auto hide)' );
 	}
 } );
 
@@ -333,12 +343,17 @@ $.get( path +'displayget.php', function( data ) {
 } );
 
 function displaycommon() {
-	if ( parseInt( $( '#playback' ).css( 'padding-top' ) ) > 25 && window.innerWidth > 568 ) {
+	if ( parseInt( $( '#playback' ).css( 'padding-top' ) ) > 25 ) {
 		if ( displayredis.bar ) {
-			$( '#menu-top, #menu-bottom' ).removeClass( 'hide' );
+			$( '#menu-top, #menu-bottom' ).toggle( window.innerWidth >= 540 );
 			$( '#database, #playlist' ).css( 'padding-top', '80px' );
 			$( '.btnlist-top' ).css( 'top', '40px' );
 		} else {
+			$( '#menu-top, #menu-bottom' ).hide();
+			$( '#database, #playlist' ).css( 'padding-top', '40px' );
+			$( '.btnlist-top' ).css( 'top', 0 );
+			// for mouse only
+			if ( navigator.userAgent.match( /(iPad)|(iPhone)|(iPod)|(android)|(webOS)/i ) ) return;
 			var menuhide = 0;
 			$( '#bartop, #barbottom' ).mouseenter( function() {
 				var tb = $( this ).prop( 'id' ).replace( 'bar', '#menu-' );
@@ -350,16 +365,11 @@ function displaycommon() {
 				}
 			} );
 			$( '#menu-top, #menu-bottom' ).mouseleave( function() {
-				if ( menuhide ) $( '#menu-top, #menu-bottom' ).addClass( 'hide' );
+				if ( menuhide ) $( '#menu-top, #menu-bottom' ).hide();
 				menuhide = 0;
 			} );
-			
-			$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
-			$( '#database, #playlist' ).css( 'padding-top', '40px' );
-			$( '.btnlist-top' ).css( 'top', 0 );
 		}
 	} else {
-		$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
 		$( '#database' ).css( 'padding-top', '40px' );
 	}
 	$( '#menu-top .playback-controls button' ).toggleClass( 'pausebtn', displayredis.pause === 'checked' && window.innerWidth < 400 );
@@ -383,16 +393,13 @@ function displayplayback() {
 			, 1: '60%'
 		}
 		$( '#time-knob, #coverart, #volume-knob' ).css( 'width', elemW[ i ] );
-		if ( window.innerWidth > 568 ) {
+		if ( window.innerWidth > 540 ) {
 			$( '#play-group, #share-group, #vol-group' ).css( 'width', elemW[ i ] );
-			if ( displayredis.buttons ) {
-//				$( '#play-group, #share-group' ).show();
-//				$( '#share-group' ).css( 'display', !( displayredis.time && displayredis.coverart ) ? 'none' : 'block' );
-			} else {
-//				$( '#play-group, #share-group' ).hide();
-			}
+		}
+		if ( ( window.innerWidth > 540 && window.innerHeight > 390 ) && displayredis.buttons ) {
+			$( '#play-group, #share-group' ).show();
 		} else {
-			$( '#playback' ).css( 'padding-top', '25px' );
+			$( '#play-group, #share-group' ).hide();
 		}
 		$( '#playback-row' ).removeClass( 'hide' );
 		$( '#vol-group' ).toggle( $( '#volume-knob' ).is( ':visible' ) && displayredis.buttons != '' );
