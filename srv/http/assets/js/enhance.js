@@ -167,8 +167,9 @@ $hammerbarright.on( 'tap', function() {
 		$( '#share-group' ).toggle();
 	}
 	if ( window.innerHeight < 414 && $( '#play-group' ).is( ':hidden' ) ) {
-			$( '#play-group, #share-group, #vol-group' ).css( 'margin-top', '10px' );
+		$( '#play-group, #share-group, #vol-group' ).css( 'margin-top', '10px' );
 	}
+	$( '#divartist, #sampling' ).toggleClass( 'hide', $( '#play-group' ).is( ':visible' ) || $( '#share-group' ).is( ':visible' ) ); 
 } );
 
 $hammerinfo.on( 'swiperight', function( e ) {
