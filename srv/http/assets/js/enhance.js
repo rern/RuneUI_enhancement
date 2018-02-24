@@ -22,7 +22,7 @@ $( '#open-panel-dx' ).click( function() {
 	displayqueue();
 } );
 
-//if ( /\/.*\//.test( location.pathname ) === false ) $( '#menu-top, #menu-bottom' ).hide();
+if ( /\/.*\//.test( location.pathname ) === false ) $( '#menu-top, #menu-bottom' ).hide();
 
 // disabled local browser > disable screensaver events
 if ( !$( '#playback-ss' ).length ) $('#section-index').off( 'mousemove click keypress' );
@@ -138,7 +138,6 @@ $hammercontent.on( 'swiperight', function() {
 		ev.stopPropagation();
 	} ).get( 'swipe' ).set( { direction: Hammer.DIRECTION_VERTICAL } );
 } )
-// '#play-group, #share-group, #vol-group' use show/hide to comply with css media
 $hammerbarleft.on( 'tap', function() {
 	if ( window.innerWidth < 500 ) {
 		$( '#coverart' ).slideToggle( function() {
@@ -183,18 +182,16 @@ $hammerinfo.on( 'swiperight', function( e ) {
 } ).on( 'swipeleft', function( e ) {
 	$( '#next' ).click();
 	e.stopPropagation();
+} ).on( 'tap', function( e ) {
+	e.stopPropagation();
 } );
 // lastfm search
-$hammerartist.on( 'tap', function() {
-	var artist = $( this ).text();
-	if ( artist.slice( 0, 3 ) != '[no' )
-		window.open( 'http://www.last.fm/music/'+ artist );
-} );
-$hammeralbum.on( 'tap', function() {
-	var artist = $( '#currentartist' ).text();
-	var album = $( this ).text();
-	if ( album.slice( 0, 3 ) != '[no' )
-		window.open( 'http://www.last.fm/music/'+ artist +'/'+ album );
+[ $hammerartist, $hammeralbum ].forEach( function( e ) {
+	e.on( 'tap', function() {
+		var data = $( '#currentartist' ).text();
+		if ( this.id === 'currentalbum' ) data += '/'+ this.text();
+		if ( data.slice( 0, 3 ) != '[no' ) window.open( 'http://www.last.fm/music/'+ data );
+	} );
 } );
 
 [ $hammertime, $hammervolume ].forEach( function( e ) {
@@ -341,6 +338,7 @@ $.get( path +'displayget.php', function( data ) {
 	var displayredis = $.parseJSON( data );
 } );
 
+// #menu-top, #menu-bottom, #play-group, #share-group, #vol-group use show/hide to work with css
 function displaycommon() {
 	if ( displayredis.bar !== '' && window.innerWidth > 540 ) {
 		if ( window.innerHeight > 520 ) $( '#menu-top, #menu-bottom' ).show();
@@ -352,7 +350,7 @@ function displaycommon() {
 		$( '.btnlist-top' ).css( 'top', 0 );
 		
 		// for mouse only
-		if ( navigator.userAgent.match( /(iPad)|(iPhone)|(iPod)|(android)|(webOS)/i ) ) return;
+		if ( navigator.userAgent.match( /iPad|iPhone|iPod|android|webOS/i ) ) return;
 		var menuhide = 0;
 		$( '#bartop, #barbottom' ).mouseenter( function() {
 			var tb = $( this ).prop( 'id' ).replace( 'bar', '#menu-' );
@@ -378,18 +376,15 @@ function displayplayback() {
 		$( '#time-knob' ).toggleClass( 'hide', !displayredis.time );
 		$( '#coverart' ).toggleClass( 'hide', !displayredis.coverart );
 		$( '#volume-knob' ).toggleClass( 'hide', !volume );
-		var i = 0;
-		if ( displayredis.time ) i += 1;
-		if ( displayredis.coverart ) i += 1;
-		if ( volume ) i += 1;
-		var elemW = {
+		var eW = {
 			  3: '30%'
 			, 2: '40%'
 			, 1: '60%'
 		}
-		$( '#time-knob, #coverart, #volume-knob' ).css( 'width', elemW[ i ] );
+		var i = ( displayredis.time ? 1 : 0 ) + ( displayredis.coverart ? 1 : 0 ) + volume;
+		$( '#time-knob, #coverart, #volume-knob' ).css( 'width', eW[ i ] );
 		if ( window.innerWidth > 540 ) {
-			$( '#play-group, #share-group, #vol-group' ).css( 'width', elemW[ i ] );
+			$( '#play-group, #share-group, #vol-group' ).css( 'width', eW[ i ] );
 			if ( !displayredis.time ) {
 				$( '#coverart' ).css( { 'order': '1', '-webkit-order': '1' } );
 				$( '#share-group' ).css( { 'order': '3', '-webkit-order': '3' } );
@@ -414,6 +409,7 @@ function displayplayback() {
 		$( '#playback-row' ).removeClass( 'hide' );
 		
 		displaycommon();
+		
 		// scroll info text
 		setTimeout( function() {
 			$( '#divartist, #divsong, #divalbum' ).each( function() {
