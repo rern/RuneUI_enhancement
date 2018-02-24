@@ -503,14 +503,14 @@
 		display: none !important;
 	}
 }
-@media(max-width: 400px) {
-	#pause {
-		margin: 0 3px !important;
+@media(max-width: 375px) {
+	.playback-controls button {
+		margin: 0 5px !important;
 	}
 }
-@media(max-width: 375px) {
-	#pause {
-		margin: 0 !important;
+@media(max-width: 320px) {
+	.playback-controls button {
+		margin: 0 2px !important;
 	}
 }
 
