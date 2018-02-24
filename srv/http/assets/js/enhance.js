@@ -22,8 +22,6 @@ $( '#open-panel-dx' ).click( function() {
 	displayqueue();
 } );
 
-if ( /\/.*\//.test( location.pathname ) === false ) $( '#menu-top, #menu-bottom' ).hide();
-
 // disabled local browser > disable screensaver events
 if ( !$( '#playback-ss' ).length ) $('#section-index').off( 'mousemove click keypress' );
 
@@ -340,8 +338,8 @@ $.get( path +'displayget.php', function( data ) {
 
 // #menu-top, #menu-bottom, #play-group, #share-group, #vol-group use show/hide to work with css
 function displaycommon() {
-	if ( displayredis.bar !== '' && window.innerWidth > 540 ) {
-		if ( window.innerHeight > 520 ) $( '#menu-top, #menu-bottom' ).show();
+	if ( displayredis.bar !== '' ) {
+		if ( window.innerWidth > 540 ) $( '#menu-top, #menu-bottom' ).show();
 		$( '#database, #playlist' ).css( 'padding-top', '80px' );
 		$( '.btnlist-top' ).css( 'top', '40px' );
 	} else {
@@ -388,16 +386,19 @@ function displayplayback() {
 			if ( !displayredis.time ) {
 				$( '#coverart' ).css( { 'order': '1', '-webkit-order': '1' } );
 				$( '#share-group' ).css( { 'order': '3', '-webkit-order': '3' } );
-				$( '#volume-knob' ).css( { 'order': '2', '-webkit-order': '2' } );
-				$( '#vol-group' ).css( { 'order': '4', '-webkit-order': '4' } );
 			}
 			if ( !displayredis.coverart ) {
 				$( '#play-group' ).css( { 'order': '3', '-webkit-order': '3' } );
+			}
+			if ( !displayredis.time || !displayredis.coverart ) {
 				$( '#volume-knob' ).css( { 'order': '2', '-webkit-order': '2' } );
 				$( '#vol-group' ).css( { 'order': '4', '-webkit-order': '4' } );
+				// fix oversize #volume-knob
+				if ( navigator.userAgent.match( /iPad|iPhone|iPod|android|webOS/i ) ) {
+					$( '#volume-knob' ).css( { 'padding-left': '10px' } )
+						.find( 'div' ).css( 'margin', '-10px 0' );
+				}
 			}
-			
-			$( '#volume-knob' ).css( 'margin-top', displayredis.buttons != '' ? 0 : '20px' );
 			
 			$( '#play-group' ).toggle( displayredis.time != '' && displayredis.buttons != '' );
 			$( '#share-group' ).toggle( displayredis.coverart != '' && displayredis.buttons != '' );
