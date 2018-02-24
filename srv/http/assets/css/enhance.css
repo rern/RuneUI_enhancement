@@ -151,9 +151,6 @@
 #menu-top .playback-controls button {
     margin: 0 10px;
 }
-.pausebtn {
-	margin: 0 3px !important;
-}
 #menu-top .playback-controls i,
 #gpio {
     font-size:24px;
@@ -506,80 +503,28 @@
 		display: none !important;
 	}
 }
+@media(max-width: 400px) {
+	#pause {
+		margin: 0 3px !important;
+	}
+}
+@media(max-width: 375px) {
+	#pause {
+		margin: 0 !important;
+	}
+}
 
-/* height */
-/*@media(max-height: 500px) {
-	#currentalbum {
-		margin: 0;
-	}
-	#time-knob {
-	    order: 1;
-		-webkit-order: 1;
-	}
-	#coverart {
-		order: 2;
-		-webkit-order: 2;
-	}
-	#volume-knob {
-		order: 3;
-		-webkit-order: 3;
-	}
-	#play-group {
-		order: 4;
-		-webkit-order: 4;
-	}
-	#share-group {
-		order: 5;
-		-webkit-order: 5;
-	}
-	#vol-group {
-		order: 6;
-		-webkit-order: 6;
-	}
-	#playlist {
-		padding-top: 40px;
-	}
-}*/
-/*@media(max-height: 340px) and (min-width: 540px) {
-	#time-knob {
-	    order: 1;
-		-webkit-order: 1;
-	}
-	#coverart {
-		order: 2;
-		-webkit-order: 2;
-	}
-	#volume-knob {
-		order: 5;
-		-webkit-order: 5;
-		margin-top: 20px;
-	}
-	#play-group {
-		order: 3;
-		-webkit-order: 3;
-	}
-	#share-group {
-		order: 4;
-		-webkit-order: 4;
-	}
-	#vol-group {
-		order: 6;
-		-webkit-order: 6;
-	}
-	#share-group,
-	#play-group,
-	#vol-group {
-		margin-top: 10px;
-	}
-}*/
-
-
-@media(max-height: 580px) {
+@media(max-height: 590px) {
 	#playback {
 		padding-top: 60px !important;
 	}
 }
-@media(max-height: 540px) {
+@media(max-height: 570px) {
+	#playback-row {
+		margin-top: 0;
+	}
+}
+@media(max-height: 520px) {
 	#menu-top,
 	#menu-bottom {
 		display: none;
@@ -588,12 +533,12 @@
 		padding-top: 40px;
 	}
 }
-@media(max-height: 490px) {
+@media(max-height: 480px) {
 	#playback {
 		padding-top: 40px !important;
 	}
 }
-@media(max-height: 470px) {
+@media(max-height: 460px) {
 	#playback {
 		padding-top: 25px !important;
 	}
@@ -616,22 +561,17 @@
 		margin-top: 10px;
 	}
 }
-@media(max-height: 390px) {
+@media(max-height: 385px) {
 	#playback {
 		padding-top: 15px !important;
 	}
-	#play-group,
-	#share-group,
-	#vol-group	{
-		display: none;
-	}
 }
-@media(max-height: 340px) {
+@media(max-height: 370px) {
 	#divalbum	{
 		display: none;
 	}
 }
-@media(max-height: 310px) {
+@media(max-height: 350px) {
 	#divartist	{
 		display: none;
 	}
