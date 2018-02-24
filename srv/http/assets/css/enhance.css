@@ -370,9 +370,6 @@
 
 /* ---------------------- responsive ----------------------*/
 @media(max-width: 750px) {
-	#playback-row {
-		margin-top: 10px;
-	}
 	#time-knob,
 	#coverart,
 	#volume-knob,
@@ -514,17 +511,17 @@
 	}
 }
 
-@media(max-height: 590px) {
+@media(max-height: 570px) {
 	#playback {
 		padding-top: 60px !important;
 	}
 }
-@media(max-height: 570px) {
+@media(max-height: 550px) {
 	#playback-row {
-		margin-top: 0;
+		margin-top: 10px;
 	}
 }
-@media(max-height: 520px) {
+@media(max-height: 530px) {
 	#menu-top,
 	#menu-bottom {
 		display: none;
@@ -533,12 +530,12 @@
 		padding-top: 40px;
 	}
 }
-@media(max-height: 480px) {
+@media(max-height: 490px) {
 	#playback {
 		padding-top: 40px !important;
 	}
 }
-@media(max-height: 460px) {
+@media(max-height: 470px) {
 	#playback {
 		padding-top: 25px !important;
 	}
