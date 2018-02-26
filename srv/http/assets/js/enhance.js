@@ -1,11 +1,11 @@
 $( document ).ready( function() {
 // document ready start********************************************************************
 
-dbtopsx = 0;
-dbtopdx = 0;
+librarytop = 0;
+queuetop = 0;
 function menubottom( show, hide ) {
-	if ( $( '#panel-sx' ).hasClass( 'active' ) ) dbtopsx = $( window ).scrollTop();
-	if ( $( '#panel-dx' ).hasClass( 'active' ) ) dbtopdx = $( window ).scrollTop();
+	if ( $( '#panel-sx' ).hasClass( 'active' ) ) librarytop = $( window ).scrollTop();
+	if ( $( '#panel-dx' ).hasClass( 'active' ) ) queuetop = $( window ).scrollTop();
 	if ( /\/.*\//.test( location.pathname ) === false ) {
 		$( show ).show().addClass( 'active' );
 		$( hide ).hide().removeClass( 'active' );
@@ -459,7 +459,7 @@ function displaylibrary() {
 			}
 			$( '#db-index' ).css( 'line-height', ( panelH - indexoffset ) / indexline +'px' );
 		}, 200 );
-		window.scrollTo( 0, dbtopsx );
+		window.scrollTo( 0, librarytop );
 	} );
 }
 // queue show/hide menu
@@ -467,7 +467,7 @@ function displayqueue() {
 	$.get( 'displayget.php', function( data ) {
 		displayredis = $.parseJSON( data );
 		displaycommon();
-		window.scrollTo( 0, dbtopdx );
+		window.scrollTo( 0, queuetop );
 	} );
 }
 
