@@ -139,16 +139,14 @@ $hammercontent.on( 'swiperight', function() {
 	} ).get( 'swipe' ).set( { direction: Hammer.DIRECTION_VERTICAL } );
 } )
 $hammerbarleft.on( 'tap', function() {
-	if ( window.innerWidth < 500 ) {
+	if ( window.innerWidth < 540 ) {
 		$( '#coverart' ).slideToggle( function() {
 			$( '#time-knob, #volume-knob' ).css( 'margin-top', 0 );
 			if ( $( '#coverart' ).is( ':visible' ) ) {
-				$( '#playback-row' ).css( 'margin-top', '10px' );
 				if ( $( '#play-group' ).is( ':visible' ) ) {
 					$( '#share-group' ).show();
 				} else {
 					$( '#divalbum' ).removeClass( 'hide' );
-					$( '#volume-knob' ).css( 'margin-top', '20px' );
 				}
 			} else {
 				$( '#share-group' ).hide();
@@ -164,7 +162,6 @@ $hammerbarright.on( 'tap', function() {
 		&& $( '#volume-knob' ).is( ':visible' ) 
 	) {
 		$( '#vol-group' ).toggle();
-		$( '#volume-knob' ).css( 'margin-top', $( '#vol-group' ).is( ':visible' ) ? 0 : '20px' );
 	}
 	
 	if ( window.innerHeight < 414 && $( '#play-group' ).is( ':hidden' ) ) {
