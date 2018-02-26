@@ -397,7 +397,7 @@ function displayplayback() {
 				$( '#vol-group' ).css( { 'order': '4', '-webkit-order': '4' } );
 				// fix oversize #volume-knob
 				if ( navigator.userAgent.match( /iPad|iPhone|iPod|android|webOS/i ) ) {
-					$( '#volume-knob' ).css( { 'padding-left': '10px' } )
+					$( '#volume-knob' ).css( { 'padding-left': '25px' } )
 						.find( 'div' ).css( 'margin', '-10px 0' );
 				}
 			}
