@@ -11,9 +11,9 @@ $data = preg_replace( '/\\\\n/', '<br>', $data );
 $summary = preg_replace( '/.*"summary":"(.*) <a .*"content".*/', '${1}', $data );
 $content = preg_replace( '/.*"content":"(.*) <a .*/', '${1}', $data );
 
-$info = array(
+$bio = array(
 	'bio'     => $summaryhtml,
 	'biofull' => $content
 );
 
-echo json_encode( $info );
+echo json_encode( $bio );
