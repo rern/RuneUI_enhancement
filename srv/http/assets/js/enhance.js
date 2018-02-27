@@ -52,6 +52,37 @@ $( '#menu-bottom' ).click( function() {
 	}
 } );
 
+$( '#songinfo-open' ).click( function() {
+	$.get( 'artistinfo.php',
+		{ artist: GUI.json.currentartist },
+		function( data ) {
+			var json = $.parseJSON( data );
+			console.log( json.biofull );
+			$( '#artist-image-overlay' ).css( 'background-image', 'url("'+ json.image +'")');
+			$('#artist-bio-overlay').html( json.bio );
+			$('#artist-bio-full-overlay').html( json.biofull );
+			$('#addinfo-text-overlay').html( json.addinfo );
+		}
+	);
+	$.ajax( {
+		url: 'lyrics.php',
+		data: { artist: GUI.json.currentartist, song: GUI.json.currentsong },
+		success: function( data ) {
+			lyrics = data ? data : '(Lyrics not available.)';
+			lyricshtml = data.replace( /\n/g, '<br>' );
+			$( '#lyric-text-overlay' ).html( lyricshtml );
+		},  
+		error: function() {
+			$.ajax( {
+				url: '/lyric/',
+				success: function( data ){
+				   $( '#lyric-text-overlay' ).html( data );
+				}
+			} );
+		}
+	} );
+} );
+
 // library directory path link
 $( '#db-home' ).click( function() {
 	renderLibraryHome();
