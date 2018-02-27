@@ -317,6 +317,11 @@
 	-webkit-order: 1;
 	height: 230px;
 }
+#time-knob .btn {
+	margin-left: 50%;
+	left: -30px;
+	width: 60px;
+}
 #coverart {
 	order: 2;
 	-webkit-order: 2;
