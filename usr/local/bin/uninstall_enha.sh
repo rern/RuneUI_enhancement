@@ -20,7 +20,7 @@ fi
 # remove files #######################################
 echo -e "$bar Remove files ..."
 rm -v /srv/http/app/templates/playbackcustom.php
-rm -v /srv/http/{displayget.php,displaysave.php}
+rm -v /srv/http/{artistinfo.php,displayget.php,displaysave.php}
 path=/srv/http/assets
 rm -v $path/css/enhance.css
 rm -v $path/img/runelogo.svg
