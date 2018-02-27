@@ -317,11 +317,6 @@
 	-webkit-order: 1;
 	height: 230px;
 }
-#time-knob .btn {
-	margin-left: 50%;
-	left: -30px;
-	width: 60px;
-}
 #coverart {
 	order: 2;
 	-webkit-order: 2;
@@ -347,10 +342,8 @@
 	width: 230px;
 }
 #overlay-playsource-open {
-    position: absolute;
-    top: 65px;
-    margin-left: -50px;
-    width: 100px;
+    position: relative;
+    top: -165px;
 }
 #countdown-display,
 #volume {
