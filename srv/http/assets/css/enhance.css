@@ -366,6 +366,21 @@
     font-size:20px;
 }
 
+#songinfo-modal .txtmid {
+	font-weight: 300;
+	text-align: left;
+}
+#songinfo-modal .modal-content,
+#songinfo-modal .modal-sm {
+	margin: 40px auto;
+	max-width: 600px;
+}
+#artist-image-overlay {
+	margin-left: 0 !important;
+}
+#artist-overlay a {
+	font-weight: 300;
+}
 /* ---------------------- responsive ----------------------*/
 @media(max-width: 750px) {
 	#time-knob,
