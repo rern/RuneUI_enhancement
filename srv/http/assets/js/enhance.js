@@ -650,7 +650,7 @@ function refreshState() {
 			$( '#total' ).html( '<a style="color: #587ca0;">streaming</a>' );
 		}
 // improve song info
-	if ( $( '#overlay-playsource-open button' ).text() === 'MPD' ) {
+	if ( GUI.libraryhome.ActivePlayer === 'MPD' ) {
 		if ( GUI.json.fileext !== false ) {
 			var dot = '<a style="color:#ffffff"> &#8226; </a>';
 			var channel = ( GUI.json.audio_channels == 'Stereo' ) ? '' : GUI.json.audio_channels +' ';
