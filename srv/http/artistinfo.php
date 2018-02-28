@@ -12,8 +12,8 @@ $data = preg_replace( '/\\\\"/', '&quot;', $data );
 
 $data = json_decode( $data, True );
 $image = $data[ 'artist' ][ 'image' ][ 2 ][ '#text' ];
-$summary = $data[ 'artist' ][ 'bio' ][ 'summary' ];
-$content = $data[ 'artist' ][ 'bio' ][ 'content' ];
+$summary = preg_replace( '/ <a.*Read more on Last.fm.*a>/', '', $data[ 'artist' ][ 'bio' ][ 'summary' ] );
+//$content = $data[ 'artist' ][ 'bio' ][ 'content' ];
 $similar =  $data[ 'artist' ][ 'similar' ][ 'artist' ];
 $similars = '<a>Similar Artists:</a>';
 foreach ( $similar as $name ) {
