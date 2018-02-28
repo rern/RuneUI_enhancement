@@ -57,11 +57,12 @@ $( '#songinfo-open' ).click( function() {
 		{ artist: GUI.json.currentartist },
 		function( data ) {
 			var json = $.parseJSON( data );
-			console.log( json.biofull );
+			$( '#artist-overlay' ).html( '<a>'+ GUI.json.currentartist +'</a>' );
 			$( '#artist-image-overlay' ).css( 'background-image', 'url("'+ json.image +'")');
-			$('#artist-bio-overlay').html( json.bio );
-			$('#artist-bio-full-overlay').html( json.biofull );
-			$('#addinfo-text-overlay').html( json.addinfo );
+			$( '#artist-bio-overlay' ).html( json.bio );
+//			$( '#artist-bio-full-overlay' ).html( json.biofull );
+			$( '#addinfo-text-overlay' ).html( json.addinfo );
+			$( '#lyric-overlay' ).html( '<a>...</a>' );
 		}
 	);
 	$.ajax( {
@@ -114,9 +115,6 @@ $( '#db-index li' ).click( function() {
 } );
 $( '#db-level-up' ).click( function() {
 	window.scrollTo( 0, dbtop );
-} );
-$( '#open-library' ).click( function() {
-	$( '#open-panel-sx' ).click();
 } );
 
 window.addEventListener( 'orientationchange', function() {
@@ -650,7 +648,7 @@ function refreshState() {
 			$( '#total' ).html( '<a style="color: #587ca0;">streaming</a>' );
 		}
 // improve song info
-	if ( GUI.libraryhome.ActivePlayer === 'MPD' ) {
+	if ( $( '#overlay-playsource-open button' ).text() === 'MPD' ) {
 		if ( GUI.json.fileext !== false ) {
 			var dot = '<a style="color:#ffffff"> &#8226; </a>';
 			var channel = ( GUI.json.audio_channels == 'Stereo' ) ? '' : GUI.json.audio_channels +' ';
