@@ -40,7 +40,7 @@
                 <div id="share-group">
                     <div class="btn-group">
                         <button id="overlay-social-open" class="btn btn-default btn-lg" type="button" title="Share this track"><i class="fa fa-share-alt"></i></button>
-                        <button id="songinfo-open" class="btn btn-default" type="button" title="Song Info" href="#songinfo-modal" data-toggle="modal"><i class="fa fa-info"></i></button>
+                        <button id="songinfo-open" class="btn btn-default" type="button" title="Song Info" data-toggle="modal"><i class="fa fa-info"></i></button>
                     </div>
                 </div>
                 <div id="volume-knob" class="<?=$this->volume['divclass'] ?>">
@@ -170,4 +170,11 @@
         </div>
         <div id="spinner-pl" class="csspinner duo hide"></div>
     </div>
+</div>
+
+<div id="bio" style="display: none;">
+	<div class="container">
+		<h1>BIO</h1><a id="closebio"><i class="fa fa-times fa-2x"></i></a>
+		<div id="biocontent"></div>
+	</div>
 </div>
