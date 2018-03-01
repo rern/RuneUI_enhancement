@@ -47,7 +47,7 @@ Functional
 ### Playback
 - Long-press = show/hide items setting
 - Mouse hover top/bottom of screen = toggle top/bottom menu bars (if hidden)
-- Tap `artist` or `album` = get info from last.fm
+- Tap `artist` or `i` button = show improved bio (data from last.fm)
 - Swipe left-right = swiches between `Library` - `Playback` - `Queue`
 - Swipe up / down on `screen left` `screen right` = hide / show `top` `bottom`
 - (width < 500px) tap `screen left` = swap show / hide `cover art` `volume`
@@ -81,8 +81,9 @@ Visual
 
 ### Playback
 **Top Bar:**
-- Hide on height < 500px
+- Hide on height < 530px
 - Change `logo` to svg
+- Separate pause from play buttons
 - Full height `buttons` and fixed at center
 - Change `Settings` icons and remove text label
 - Enlarge icons
@@ -107,12 +108,14 @@ Visual
 - Hide artist and album text on width < 500px
 - Enlarge icons
 - Move `play source` inside `time`
+- Improved artist bio
 
 **Bottom Bar:**
 - Hide on height < 500px
 - Change icons and remove text labels
 - Enlarge icons
 - Add box shadow for layer depth
+- No more tooltips
 
 ### Library
 - Add index bar
@@ -121,7 +124,9 @@ Visual
 - Move path from bottom bar to top bar
 - Change and relocate `back` button
 - Fix sorting
+- Preserve scroll position
 
 ### Queue
 - Change and relocate `back` button
 - Move `manage` buttons from bottom bar to top bar
+- Preserve scroll position
