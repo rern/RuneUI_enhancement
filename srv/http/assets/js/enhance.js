@@ -53,35 +53,27 @@ $( '#menu-bottom' ).click( function() {
 } );
 
 $( '#songinfo-open' ).click( function() {
-	$.get( 'artistinfo.php',
-		{ artist: GUI.json.currentartist },
-		function( data ) {
-			var json = $.parseJSON( data );
-			$( '#artist-overlay' ).html( '<a>'+ GUI.json.currentartist +'</a>' );
-			$( '#artist-image-overlay' ).css( 'background-image', 'url("'+ json.image +'")');
-			$( '#artist-bio-overlay' ).html( json.bio );
-//			$( '#artist-bio-full-overlay' ).html( json.biofull );
-			$( '#addinfo-text-overlay' ).html( json.addinfo );
-			$( '#lyric-overlay' ).html( '<a>...</a>' );
-		}
-	);
-	$.ajax( {
-		url: 'lyrics.php',
-		data: { artist: GUI.json.currentartist, song: GUI.json.currentsong },
-		success: function( data ) {
-			lyrics = data ? data : '(Lyrics not available.)';
-			lyricshtml = data.replace( /\n/g, '<br>' );
-			$( '#lyric-text-overlay' ).html( lyricshtml );
-		},  
-		error: function() {
-			$.ajax( {
-				url: '/lyric/',
-				success: function( data ){
-				   $( '#lyric-text-overlay' ).html( data );
-				}
-			} );
-		}
-	} );
+	menu = $( '#menu-top' ).is(':visible') ? 1 : 0;
+	$( '#songinfo-open' ).blur();
+	if ( menu ) $( '#menu-top, #menu-bottom' ).hide();
+	$( '#loader' ).removeClass( 'hide' );
+	if ( $( '#bio legend' ).text() != GUI.json.currentartist ) {
+		$.get( 'artistbio.php',
+			{ artist: GUI.json.currentartist },
+			function( data ) {
+				$( '#biocontent' ).html( data );
+				$( '#bio' ).show();
+				$( '#loader' ).addClass( 'hide' );
+			}
+		);
+	} else {
+		$( '#bio' ).show();
+		$( '#loader' ).addClass( 'hide' );
+	}
+} );
+$( '#closebio' ).click( function() {
+	$( '#bio' ).hide();
+	if ( menu ) $( '#menu-top, #menu-bottom' ).show();
 } );
 
 // library directory path link
@@ -372,7 +364,7 @@ $.get( path +'displayget.php', function( data ) {
 // #menu-top, #menu-bottom, #play-group, #share-group, #vol-group use show/hide to work with css
 function displaycommon() {
 	if ( displayredis.bar !== '' ) {
-		if ( window.innerWidth > 540 ) $( '#menu-top, #menu-bottom' ).show();
+		if ( window.innerWidth > 540 && window.innerHeight > 530 ) $( '#menu-top, #menu-bottom' ).show();
 		$( '#database, #playlist' ).css( 'padding-top', '80px' );
 		$( '.btnlist-top' ).css( 'top', '40px' );
 	} else {
