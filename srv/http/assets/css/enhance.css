@@ -389,9 +389,10 @@
 	width: 25px;
 }
 #bio legend,
-#biocontent sapn {
+#biocontent span {
 	color: #0095d8;
 }
+
 #bioimg {
 	float: left;
 	margin: 0 20px 20px 0;
