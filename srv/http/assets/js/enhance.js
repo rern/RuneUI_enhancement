@@ -361,7 +361,7 @@ $.get( path +'displayget.php', function( data ) {
 // #menu-top, #menu-bottom, #play-group, #share-group, #vol-group use show/hide to work with css
 function displaycommon() {
 	if ( displayredis.bar !== '' ) {
-		if ( window.innerWidth > 540 && window.innerHeight > 530 ) $( '#menu-top, #menu-bottom' ).show();
+		if ( window.innerWidth > 540 && window.innerHeight > 530 && $( '#bio' ).is( ':hidden' ) ) $( '#menu-top, #menu-bottom' ).show();
 		$( '#database, #playlist' ).css( 'padding-top', '80px' );
 		$( '.btnlist-top' ).css( 'top', '40px' );
 	} else {
