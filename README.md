@@ -114,6 +114,7 @@ Visual
 - Change icons and remove text labels
 - Enlarge icons
 - Add box shadow for layer depth
+- No more tooltips
 
 ### Library
 - Add index bar
@@ -122,7 +123,9 @@ Visual
 - Move path from bottom bar to top bar
 - Change and relocate `back` button
 - Fix sorting
+- Preserve scroll position
 
 ### Queue
 - Change and relocate `back` button
 - Move `manage` buttons from bottom bar to top bar
+- Preserve scroll position
