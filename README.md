@@ -81,8 +81,9 @@ Visual
 
 ### Playback
 **Top Bar:**
-- Hide on height < 500px
+- Hide on height < 530px
 - Change `logo` to svg
+- Separate pause from play buttons
 - Full height `buttons` and fixed at center
 - Change `Settings` icons and remove text label
 - Enlarge icons
