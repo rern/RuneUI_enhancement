@@ -52,30 +52,6 @@ $( '#menu-bottom' ).click( function() {
 	}
 } );
 
-$( '#songinfo-open' ).click( function() {
-	menu = $( '#menu-top' ).is(':visible') ? 1 : 0;
-	$( '#songinfo-open' ).blur();
-	if ( menu ) $( '#menu-top, #menu-bottom' ).hide();
-	$( '#loader' ).removeClass( 'hide' );
-	if ( $( '#bio legend' ).text() != GUI.json.currentartist ) {
-		$.get( 'artistbio.php',
-			{ artist: GUI.json.currentartist },
-			function( data ) {
-				$( '#biocontent' ).html( data );
-				$( '#bio' ).show();
-				$( '#loader' ).addClass( 'hide' );
-			}
-		);
-	} else {
-		$( '#bio' ).show();
-		$( '#loader' ).addClass( 'hide' );
-	}
-} );
-$( '#closebio' ).click( function() {
-	$( '#bio' ).hide();
-	if ( menu ) $( '#menu-top, #menu-bottom' ).show();
-} );
-
 // library directory path link
 $( '#db-home' ).click( function() {
 	renderLibraryHome();
@@ -130,9 +106,9 @@ var $hammerbarleft = new Hammer( document.getElementById( 'barleft' ) );
 var $hammerbarright = new Hammer( document.getElementById( 'barright' ) );
 var $hammerinfo = new Hammer( document.getElementById( 'info' ) );
 var $hammerartist = new Hammer( document.getElementById( 'currentartist' ) );
-var $hammeralbum = new Hammer( document.getElementById( 'currentalbum' ) );
 var $hammertime = new Hammer( document.getElementById( 'time-knob' ) );
 var $hammercoverart = new Hammer( document.getElementById( 'coverart' ) );
+var $hammersonginfo = new Hammer( document.getElementById( 'songinfo-open' ) );
 var $hammervolume = new Hammer( document.getElementById( 'volume-knob' ) );
 var $hammerlibrary = new Hammer( document.getElementById( 'panel-sx' ) );
 var $hammerplayback = new Hammer( document.getElementById( 'playback' ) );
@@ -209,12 +185,33 @@ $hammerinfo.on( 'swiperight', function( e ) {
 	e.stopPropagation();
 } );
 // lastfm search
-[ $hammerartist, $hammeralbum ].forEach( function( e ) {
-	e.on( 'tap', function() {
-		var data = $( '#currentartist' ).text();
-		if ( this.id === 'currentalbum' ) data += '/'+ this.text();
-		if ( data.slice( 0, 3 ) != '[no' ) window.open( 'http://www.last.fm/music/'+ data );
+[ $hammerartist, $hammersonginfo ].forEach( function( e ) {
+	e.on( 'tap', function( el ) {
+	if ( GUI.json.currentartist.slice( 0, 3 ) === '[no' ) return; 
+	menu = $( '#menu-top' ).is(':visible') ? 1 : 0;
+	if ( menu ) $( '#menu-top, #menu-bottom' ).hide();
+	$( '#songinfo-open' ).hide(); // fix button not hidden
+	$( '#loader' ).removeClass( 'hide' );
+	
+	if ( $( '#bio legend' ).text() != GUI.json.currentartist ) {
+		$.get( 'artistbio.php',
+			{ artist: GUI.json.currentartist },
+			function( data ) {
+				$( '#biocontent' ).html( data );
+				$( '#bio' ).show();
+				$( '#loader' ).addClass( 'hide' );
+			}
+		);
+	} else {
+		$( '#bio' ).show();
+		$( '#loader' ).addClass( 'hide' );
+	}
 	} );
+} );
+$( '#closebio' ).click( function() {
+	$( '#bio' ).hide();
+	$( '#songinfo-open' ).show(); // fix button not hidden
+	if ( menu ) $( '#menu-top, #menu-bottom' ).show();
 } );
 
 [ $hammertime, $hammervolume ].forEach( function( e ) {
