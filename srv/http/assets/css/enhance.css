@@ -374,6 +374,7 @@
 	margin: 0;
 	background: #000000;
 	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;
 }
 #bio .container {
 	max-width: 750px;
