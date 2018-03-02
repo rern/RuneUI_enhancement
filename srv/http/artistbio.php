@@ -22,7 +22,7 @@ $similar =  $data[ 'similar' ][ 'artist' ];
 $similars = '';
 foreach ( $similar as $name ) {
 	$similars.= '
-		<div id="biosimilar">
+		<div class="biosimilar">
 			<img src="'.$name[ 'image' ][ 2 ][ '#text' ].'"><br>
 			<p>'.$name[ 'name' ].'</p>
 		</div>
@@ -35,11 +35,12 @@ echo '
 		<img id="bioimg" src="'.$image.'">
 		<p>
 			'.$content.'
-			<br>
-			<span>Genre: </span>'.$genre.'<br>
-			<br>
-			<span>Similar Artists:</span><br>
-			'.$similars.'
 		</p>
+		<br>
+		<a>Genre: </a>'.$genre.'<span style="float: right;">Source: last.fm</span><br>
+		<br>
+		<a>Similar Artists:</a><br>
+		<br>
+		'.$similars.'
 	</form>
 ';
