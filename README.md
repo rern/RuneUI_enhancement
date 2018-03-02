@@ -26,7 +26,7 @@ Features
 - Coverart override
 - Start/stop local browser right after settings saved (default needs system restart)
 - 0.4b fixes:
-	- Prevent `coverarts` - `song-info` update on play / pause in the same song - artist
+	- Prevent `coverarts` update on play / pause in the same song
 	- Use local `jquery-ui.min.js` instead of online
 	- Fix missing `lato-bolditalic-webfont`
 	- Remove screen saver items if disabled or if disable local browser
