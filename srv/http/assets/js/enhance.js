@@ -84,7 +84,7 @@ $( '#db-index li' ).click( function() {
 $( '#db-level-up' ).click( function() {
 	window.scrollTo( 0, dbtop );
 } );
-	
+
 $( '#open-library' ).click( function() {
 	$( '#open-panel-sx' ).click();
 } );
@@ -191,27 +191,30 @@ $hammerinfo.on( 'swiperight', function( e ) {
 // lastfm search
 [ $hammerartist, $hammersonginfo ].forEach( function( e ) {
 	e.on( 'tap', function( el ) {
-	if ( GUI.json.currentartist.slice( 0, 3 ) === '[no' ) return; 
-	menu = $( '#menu-top' ).is(':visible') ? 1 : 0;
-	if ( menu ) $( '#menu-top, #menu-bottom' ).hide();
-	$( '#songinfo-open' ).hide(); // fix button not hidden
-	$( '#loader' ).removeClass( 'hide' );
-	
-	if ( $( '#bio legend' ).text() != GUI.json.currentartist ) {
-		$.get( 'artistbio.php',
-			{ artist: GUI.json.currentartist },
-			function( data ) {
-				$( '#biocontent' ).html( data );
-				$( '#bio' ).show();
-				$( '#loader' ).addClass( 'hide' );
-			}
-		);
-	} else {
-		$( '#bio' ).show();
-		$( '#loader' ).addClass( 'hide' );
-	}
+		if ( GUI.json.currentartist.slice( 0, 3 ) === '[no' ) return; 
+		menu = $( '#menu-top' ).is(':visible') ? 1 : 0;
+		$( '#loader' ).removeClass( 'hide' );
+		
+		if ( $( '#bio legend' ).text() != GUI.json.currentartist ) {
+			$.get( 'artistbio.php',
+				{ artist: GUI.json.currentartist },
+				function( data ) {
+					$( '#biocontent' ).html( data );
+					bioshow();
+				}
+			);
+		} else {
+			bioshow();
+		}
 	} );
 } );
+function bioshow() {
+	if ( menu ) $( '#menu-top, #menu-bottom' ).hide();
+	$( '#songinfo-open' ).hide(); // fix button not hidden
+	$( '#bio' ).show();
+	$( '#loader' ).addClass( 'hide' );
+}
+
 $( '#closebio' ).click( function() {
 	$( '#bio' ).hide();
 	$( '#songinfo-open' ).show(); // fix button not hidden
