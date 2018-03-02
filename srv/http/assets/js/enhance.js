@@ -84,6 +84,10 @@ $( '#db-index li' ).click( function() {
 $( '#db-level-up' ).click( function() {
 	window.scrollTo( 0, dbtop );
 } );
+	
+$( '#open-library' ).click( function() {
+	$( '#open-panel-sx' ).click();
+} );
 
 window.addEventListener( 'orientationchange', function() {
 	if ( $( '#playback' ).hasClass( 'active' ) ) {
