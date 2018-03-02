@@ -408,7 +408,7 @@
 }
 .biosimilar p {
 	width: 170px;
-	margin: 0;
+	margin: 0 0 10px 0;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
