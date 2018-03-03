@@ -144,14 +144,14 @@ $hammercontent.on( 'swiperight', function() {
 	panelLR( 'left' );
 } );
 
-[ $hammerbarleft, $hammerbarright ].forEach( function( e ) {
-	e.on( 'swipe tap', function( ev ) {
+[ $hammerbarleft, $hammerbarright ].forEach( function( el ) {
+	el.on( 'swipe tap', function( e ) {
 		$( '#menu-top, #menu-bottom' ).toggle();
 		if ( $( '#menu-top' ).is( ':hidden' ) ) barhide = 1;
-		ev.stopPropagation();
+		e.stopPropagation();
 	} ).get( 'swipe' ).set( { direction: Hammer.DIRECTION_VERTICAL } );
 } );
-$hammerbarleft.on( 'press', function() {
+$hammerbarleft.on( 'press', function( e ) {
 	if ( window.innerWidth < 540 ) {
 		$( '#coverart' ).slideToggle( function() {
 			$( '#time-knob, #volume-knob' ).css( 'margin-top', 0 );
@@ -166,11 +166,12 @@ $hammerbarleft.on( 'press', function() {
 			}
 		} );
 	}
+	e.stopPropagation();
 } );
 
 // lastfm search
-[ $hammerartist, $hammersonginfo ].forEach( function( e ) {
-	e.on( 'tap', function( el ) {
+[ $hammerartist, $hammersonginfo ].forEach( function( el ) {
+	el.on( 'tap', function() {
 		if ( GUI.json.currentartist.slice( 0, 3 ) === '[no' ) return; 
 		barhide = $( '#menu-top' ).is(':visible') ? 0 : 1;
 		$( '#loader' ).removeClass( 'hide' );
@@ -210,9 +211,9 @@ $( '#closebio' ).click( function() {
 	if ( !barhide ) $( '#menu-top, #menu-bottom' ).show();
 } );
 
-[ $hammertime, $hammervolume ].forEach( function( e ) {
-	e.on( 'press', function( ev ) {
-		ev.stopPropagation();
+[ $hammertime, $hammervolume ].forEach( function( el ) {
+	el.on( 'press', function( e ) {
+		e.stopPropagation();
 	} );
 } );
 $hammercoverT.on( 'tap', function( e ) {
@@ -254,13 +255,13 @@ $hammercoverB.on( 'tap', function( e ) {
 	);
 	if ( $( '#play-group' ).is( ':hidden' ) || $( '#share-group' ).is( ':hidden' ) || $( '#vol-group' ).is( ':hidden' ) ) buttonhide = 1;
 } );
-[ $hammercoverart, $hammercoverT, $hammercoverL, $hammercoverM, $hammercoverR, $hammercoverB ].forEach( function( e ) {
-	e.on( 'swiperight', function( ev ) {
+[ $hammercoverart, $hammercoverT, $hammercoverL, $hammercoverM, $hammercoverR, $hammercoverB ].forEach( function( el ) {
+	el.on( 'swiperight', function( e ) {
 		$( '#previous' ).click();
-		ev.stopPropagation();
-	} ).on( 'swipeleft', function( ev ) {
+		e.stopPropagation();
+	} ).on( 'swipeleft', function( e ) {
 		$( '#next' ).click();
-		ev.stopPropagation();
+		e.stopPropagation();
 	} );
 } );
 $hammerplayback.on( 'press', function() {
@@ -311,7 +312,7 @@ $hammerplayback.on( 'press', function() {
 	}
 } );
 
-$hammerlibrary.on( 'tap', function( e ) {
+$hammerlibrary.on( 'tap', function() {
 	if ( $( '.home-block-remove' ).length && !$( e.target ).is( 'span.block-remove' ) ) $( '#db-homeSetup' ).click();
 } ).on( 'press', function() {
 	if ( !$( '#db-currentpath' ).hasClass( 'hide' ) ) return
