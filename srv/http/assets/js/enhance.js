@@ -1,6 +1,7 @@
 $( document ).ready( function() {
 // document ready start********************************************************************
 
+barhide = 0;
 buttonhide = 0;
 librarytop = 0;
 queuetop = 0;
@@ -143,11 +144,14 @@ $hammercontent.on( 'swiperight', function() {
 	panelLR( 'left' );
 } );
 
-$hammerbarright.on( 'swipe tap', function( e ) {
-	$( '#menu-top, #menu-bottom' ).toggle();
-	e.stopPropagation();
-} ).get( 'swipe' ).set( { direction: Hammer.DIRECTION_VERTICAL } );
-$hammerbarleft.on( 'tap', function() {
+[ $hammerbarleft, $hammerbarright ].forEach( function( e ) {
+	e.on( 'swipe tap', function( ev ) {
+		$( '#menu-top, #menu-bottom' ).toggle();
+		if ( $( '#menu-top' ).is( ':hidden' ) ) barhide = 1;
+		ev.stopPropagation();
+	} ).get( 'swipe' ).set( { direction: Hammer.DIRECTION_VERTICAL } );
+} );
+$hammerbarleft.on( 'press', function() {
 	if ( window.innerWidth < 540 ) {
 		$( '#coverart' ).slideToggle( function() {
 			$( '#time-knob, #volume-knob' ).css( 'margin-top', 0 );
@@ -204,6 +208,7 @@ $( '#closebio' ).click( function() {
 } );
 $hammercoverT.on( 'tap', function( e ) {
 	$( '#menu-top, #menu-bottom' ).toggle();
+	if ( $( '#menu-top' ).is( ':hidden' ) ) barhide = 1;
 	e.stopPropagation();
 } );
 $hammercoverL.on( 'tap', function( e ) {
@@ -376,7 +381,7 @@ $.get( path +'displayget.php', function( data ) {
 // #menu-top, #menu-bottom, #play-group, #share-group, #vol-group use show/hide to work with css
 function displaycommon() {
 	if ( displayredis.bar !== '' ) {
-		if ( window.innerWidth > 540 && window.innerHeight > 530 && $( '#bio' ).is( ':hidden' ) ) $( '#menu-top, #menu-bottom' ).show();
+		if ( window.innerWidth > 540 && window.innerHeight > 530 && $( '#bio' ).is( ':hidden' ) && barhide == 0 ) $( '#menu-top, #menu-bottom' ).show();
 		$( '#database, #playlist' ).css( 'padding-top', '80px' );
 		$( '.btnlist-top' ).css( 'top', '40px' );
 	} else {
@@ -386,19 +391,18 @@ function displaycommon() {
 		
 		// for mouse only
 		if ( navigator.userAgent.match( /iPad|iPhone|iPod|android|webOS/i ) ) return;
-		var menuhide = 0;
 		$( '#bartop, #barbottom' ).mouseenter( function() {
 			var tb = $( this ).prop( 'id' ).replace( 'bar', '#menu-' );
 			if ( $( tb ).is( ':visible' ) ) {
-				menuhide = 0;
+				barhide = 0;
 			} else {
-				menuhide = 1;
+				barhide = 1;
 				$( tb ).show();
 			}
 		} );
 		$( '#menu-top, #menu-bottom' ).mouseleave( function() {
-			if ( menuhide ) $( '#menu-top, #menu-bottom' ).hide();
-			menuhide = 0;
+			if ( barhide ) $( '#menu-top, #menu-bottom' ).hide();
+			barhide = 0;
 		} );
 	}
 }
