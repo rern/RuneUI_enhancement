@@ -36,6 +36,11 @@
                 </div>
                 <div id="coverart">
                     <img id="cover-art" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="transparent-square">
+                    <div id="coverT" class="covermap t0 w130 h50 m-65"></div>
+                    <div id="coverB" class="covermap t180 w130 h50 m-65"></div>
+                    <div id="coverM" class="covermap t50 w130 h130 m-65"></div>
+                    <div id="coverL" class="covermap t50 w50 h130 m-115"></div>
+                    <div id="coverR" class="covermap t50 w50 h130 m65"></div>
                 </div>
                 <div id="share-group">
                     <div class="btn-group">
