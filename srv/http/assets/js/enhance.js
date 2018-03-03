@@ -1,6 +1,7 @@
 $( document ).ready( function() {
 // document ready start********************************************************************
 
+buttonhide = 0;
 librarytop = 0;
 queuetop = 0;
 function menubottom( show, hide ) {
@@ -108,10 +109,14 @@ Hammer = propagating( Hammer ); // propagating.js fix e.stopPropagation()
 var $hammercontent = new Hammer( document.getElementById( 'content' ) );
 var $hammerbarleft = new Hammer( document.getElementById( 'barleft' ) );
 var $hammerbarright = new Hammer( document.getElementById( 'barright' ) );
-var $hammerinfo = new Hammer( document.getElementById( 'info' ) );
 var $hammerartist = new Hammer( document.getElementById( 'currentartist' ) );
 var $hammertime = new Hammer( document.getElementById( 'time-knob' ) );
-var $hammercoverart = new Hammer( document.getElementById( 'coverart' ) );
+var $hammercoverart = new Hammer( document.getElementById( 'cover-art' ) );
+var $hammercoverT = new Hammer( document.getElementById( 'coverT' ) );
+var $hammercoverL = new Hammer( document.getElementById( 'coverL' ) );
+var $hammercoverM = new Hammer( document.getElementById( 'coverM' ) );
+var $hammercoverR = new Hammer( document.getElementById( 'coverR' ) );
+var $hammercoverB = new Hammer( document.getElementById( 'coverB' ) );
 var $hammersonginfo = new Hammer( document.getElementById( 'songinfo-open' ) );
 var $hammervolume = new Hammer( document.getElementById( 'volume-knob' ) );
 var $hammerlibrary = new Hammer( document.getElementById( 'panel-sx' ) );
@@ -138,12 +143,10 @@ $hammercontent.on( 'swiperight', function() {
 	panelLR( 'left' );
 } );
 
-[ $hammerbarleft, $hammerbarright ].forEach( function( e ) {
-	e.on( 'swipe press', function( ev ) {
-		$( '#menu-top, #menu-bottom' ).toggle();
-		ev.stopPropagation();
-	} ).get( 'swipe' ).set( { direction: Hammer.DIRECTION_VERTICAL } );
-} )
+$hammerbarright.on( 'swipe tap', function( e ) {
+	$( '#menu-top, #menu-bottom' ).toggle();
+	e.stopPropagation();
+} ).get( 'swipe' ).set( { direction: Hammer.DIRECTION_VERTICAL } );
 $hammerbarleft.on( 'tap', function() {
 	if ( window.innerWidth < 540 ) {
 		$( '#coverart' ).slideToggle( function() {
@@ -160,34 +163,7 @@ $hammerbarleft.on( 'tap', function() {
 		} );
 	}
 } );
-$hammerbarright.on( 'tap', function() {
-	if ( $( '#time-knob' ).is( ':visible' ) ) $( '#play-group' ).toggle();
-	if ( $( '#coverart' ).is( ':visible' ) ) $( '#share-group' ).toggle();
-	if ( displayredis.volume != 0 
-		&& displayredis.volumempd != 0 
-		&& $( '#volume-knob' ).is( ':visible' ) 
-	) {
-		$( '#vol-group' ).toggle();
-	}
-	
-	if ( window.innerHeight < 414 && $( '#play-group' ).is( ':hidden' ) ) {
-		$( '#play-group, #share-group, #vol-group' ).css( 'margin-top', '10px' );
-	}
-	$( '#divartist, #sampling' ).toggleClass( 'hide', 
-		( $( '#play-group' ).is( ':visible' ) || $( '#share-group' ).is( ':visible' ) )
-		&& window.innerHeight < 340
-	); 
-} );
 
-$hammerinfo.on( 'swiperight', function( e ) {
-	$( '#previous' ).click();
-	e.stopPropagation();
-} ).on( 'swipeleft', function( e ) {
-	$( '#next' ).click();
-	e.stopPropagation();
-} ).on( 'tap', function( e ) {
-	e.stopPropagation();
-} );
 // lastfm search
 [ $hammerartist, $hammersonginfo ].forEach( function( e ) {
 	e.on( 'tap', function( el ) {
@@ -226,21 +202,53 @@ $( '#closebio' ).click( function() {
 		ev.stopPropagation();
 	} );
 } );
-
-$hammercoverart.on( 'tap', function( e ) {
+$hammercoverT.on( 'tap', function( e ) {
+	$( '#menu-top, #menu-bottom' ).toggle();
+	e.stopPropagation();
+} );
+$hammercoverL.on( 'tap', function( e ) {
+	$( '#previous' ).click();
+	e.stopPropagation();
+} );
+$hammercoverM.on( 'tap', function( e ) {
 	$( '#play' ).click();
 	e.stopPropagation();
 } ).on( 'press', function( e ) {
 	$( '#stop' ).click();
 	e.stopPropagation();
-} ).on( 'swiperight', function( e ) {
-	$( '#previous' ).click();
-	e.stopPropagation();
-} ).on( 'swipeleft', function( e ) {
+} );
+$hammercoverR.on( 'tap', function( e ) {
 	$( '#next' ).click();
 	e.stopPropagation();
 } );
-
+$hammercoverB.on( 'tap', function( e ) {
+	if ( $( '#time-knob' ).is( ':visible' ) ) $( '#play-group' ).toggle();
+	if ( $( '#coverart' ).is( ':visible' ) ) $( '#share-group' ).toggle();
+	if ( displayredis.volume != 0 
+		&& displayredis.volumempd != 0 
+		&& $( '#volume-knob' ).is( ':visible' ) 
+	) {
+		$( '#vol-group' ).toggle();
+	}
+	
+	if ( window.innerHeight < 414 && $( '#play-group' ).is( ':hidden' ) ) {
+		$( '#play-group, #share-group, #vol-group' ).css( 'margin-top', '10px' );
+	}
+	$( '#divartist, #sampling' ).toggleClass( 'hide', 
+		( $( '#play-group' ).is( ':visible' ) || $( '#share-group' ).is( ':visible' ) )
+		&& window.innerHeight < 340
+	);
+	if ( $( '#play-group' ).is( ':hidden' ) || $( '#share-group' ).is( ':hidden' ) || $( '#vol-group' ).is( ':hidden' ) ) buttonhide = 1;
+} );
+[ $hammercoverart, $hammercoverT, $hammercoverL, $hammercoverM, $hammercoverR, $hammercoverB ].forEach( function( e ) {
+	e.on( 'swiperight', function( ev ) {
+		$( '#previous' ).click();
+		ev.stopPropagation();
+	} ).on( 'swipeleft', function( ev ) {
+		$( '#next' ).click();
+		ev.stopPropagation();
+	} );
+} );
 $hammerplayback.on( 'press', function() {
 	info( {
 		  title  : 'Playback'
@@ -428,10 +436,11 @@ function displayplayback() {
 						.find( 'div' ).css( 'margin', '-10px 0' );
 				}
 			}
-			
-			$( '#play-group' ).toggle( displayredis.time != '' && displayredis.buttons != '' );
-			$( '#share-group' ).toggle( displayredis.coverart != '' && displayredis.buttons != '' );
-			$( '#vol-group' ).toggle( volume == 1 && displayredis.buttons != '' );
+			if ( buttonhide == 0 ) {
+				$( '#play-group' ).toggle( displayredis.time != '' && displayredis.buttons != '' );
+				$( '#share-group' ).toggle( displayredis.coverart != '' && displayredis.buttons != '' );
+				$( '#vol-group' ).toggle( volume == 1 && displayredis.buttons != '' );
+			}
 		} else {
 			$( '#play-group, #share-group, #vol-group' ).hide();
 		}
@@ -701,17 +710,6 @@ function countdownRestart(startFrom) {
     display.countdown({since: -(startFrom), compact: true, format: 'MS'});
     var displayss = $('#countdown-display-ss').countdown('destroy');
     displayss.countdown({since: -(startFrom), compact: true, format: 'MS'});
-	
-	// move default lyrics here
-	// - prevent re-update on play-pause
-	// - easy to switch to 'lyrics addon'
-	$.ajax({
-		url: '/lyric/',
-		success: function(data){
-		   $('#lyric-text-overlay').html(data);
-		},
-		cache: false
-	});
 }
 GUI.json.mute = 0;
 function updateGUI() {
