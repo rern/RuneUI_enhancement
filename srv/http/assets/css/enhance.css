@@ -337,6 +337,19 @@
 	order: 6;
 	-webkit-order: 6;
 }
+
+#coverart { position: relative; }
+.covermap { position: absolute; }
+.t0 { top: 0; }
+.t50 { top: 50px; }
+.t180 { top: 180px; }
+.w50 { width: 50px; }
+.w130 { width: 130px; }
+.h50 { height: 50px; }
+.h130 { height: 130px; }
+.m-65 { margin-left: calc( 50% - 65px ); }
+.m65 { margin-left: calc( 50% + 65px ); }
+.m-115 { margin-left: calc( 50% - 115px ); }
 #cover-art {
 	margin: 0 auto;
 	width: 230px;
