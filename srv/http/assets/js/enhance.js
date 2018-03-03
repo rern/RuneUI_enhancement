@@ -172,7 +172,7 @@ $hammerbarleft.on( 'press', function() {
 [ $hammerartist, $hammersonginfo ].forEach( function( e ) {
 	e.on( 'tap', function( el ) {
 		if ( GUI.json.currentartist.slice( 0, 3 ) === '[no' ) return; 
-		menu = $( '#menu-top' ).is(':visible') ? 1 : 0;
+		barhide = $( '#menu-top' ).is(':visible') ? 0 : 1;
 		$( '#loader' ).removeClass( 'hide' );
 		
 		if ( $( '#bio legend' ).text() != GUI.json.currentartist ) {
@@ -189,16 +189,25 @@ $hammerbarleft.on( 'press', function() {
 	} );
 } );
 function bioshow() {
-	if ( menu ) $( '#menu-top, #menu-bottom' ).hide();
+	$( '#menu-top, #menu-bottom' ).hide();
 	$( '#songinfo-open' ).hide(); // fix button not hidden
 	$( '#bio' ).show();
 	$( '#loader' ).addClass( 'hide' );
 }
-
+$( '#biocontent' ).delegate( '.biosimilar', 'click', function() {
+	$( '#loader' ).removeClass( 'hide' );
+	$.get( 'artistbio.php',
+		{ artist: $( this ).find( 'p' ).text() },
+		function( data ) {
+			$( '#biocontent' ).html( data );
+			bioshow();
+		}
+	);
+} );
 $( '#closebio' ).click( function() {
 	$( '#bio' ).hide();
 	$( '#songinfo-open' ).show(); // fix button not hidden
-	if ( menu ) $( '#menu-top, #menu-bottom' ).show();
+	if ( !barhide ) $( '#menu-top, #menu-bottom' ).show();
 } );
 
 [ $hammertime, $hammervolume ].forEach( function( e ) {
