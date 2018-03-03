@@ -180,6 +180,8 @@
 <div id="bio" style="display: none;">
 	<div class="container">
 		<h1>BIO</h1><a id="closebio"><i class="fa fa-times fa-2x"></i></a>
-		<div id="biocontent"></div>
+		<div id="biocontent">
+			<div class="biosimilar"></div>
+		</div>
 	</div>
 </div>
