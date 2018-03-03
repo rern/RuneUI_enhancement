@@ -98,19 +98,6 @@
 #barbottom {
 	bottom: 0;
 }
-#barleft,
-#barright {
-	position: fixed;
-	top: 0;
-	width: 60px;
-	height: 100vh;
-}
-#barleft {
-	left: 0;
-}
-#barright {
-	right: 0;
-}
 /* ---------------------- menu-top ----------------------*/
 .logo {
     height: 35px;
@@ -487,8 +474,11 @@
 	}
 }
 @media(max-width: 540px) {
+	.container {
+		padding-top: 0;
+	}
 	#menu-top,
-	#menu-bottom {
+	#menu-bottom { 
 		display: none;
 	}
 	#menu-top {
@@ -559,13 +549,6 @@
 	}
 	#playlist {
 		padding-top: 40px;
-	}
-	.btnlist-top {
-		top: 0 !important;
-	}
-	#database,
-	#playlist	{
-		padding-top: 40px !important;
 	}
 	#db-currentpath {
 		width: calc( 100% - 220px );
