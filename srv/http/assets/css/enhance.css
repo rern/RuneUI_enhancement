@@ -418,6 +418,7 @@
 }
 .biosimilar {
 	display: inline-block;
+	    cursor: pointer;
 }
 .biosimilar p {
 	width: 170px;
