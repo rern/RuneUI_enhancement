@@ -1,22 +1,12 @@
 $( document ).ready( function() {
 // document ready start********************************************************************
-function mainenhance() { // enclose in main function to enable exit on 'return'
+function mainenhance() { // enclose in main function to enable exit on 'return' ***********
 
 barhide = 0;
 buttonhide = 0;
 librarytop = 0;
 queuetop = 0;
-function menubottom( show, hide ) {
-	$( '#menu-top, #menu-bottom' ).hide();
-	if ( $( '#panel-sx' ).hasClass( 'active' ) ) librarytop = $( window ).scrollTop();
-	if ( $( '#panel-dx' ).hasClass( 'active' ) ) queuetop = $( window ).scrollTop();
-	if ( /\/.*\//.test( location.pathname ) === false ) {
-		$( show ).show().addClass( 'active' );
-		$( hide ).hide().removeClass( 'active' );
-	} else {
-		window.location.href = '/';
-	}
-}
+
 $( '#open-panel-sx' ).click( function() {
 	menubottom( '#panel-sx', '#playback, #panel-dx' );
 	displaylibrary();
@@ -113,36 +103,24 @@ if ( /\/.*\//.test( location.pathname ) === true ) {
 	$hammerbody.on( 'swipeleft swiperight', function() {
 		location.href = '/';
 	} );
-	return;
+	return; // exit script, mainenhance()
 }
 
 var $hammercontent = new Hammer( document.getElementById( 'content' ) );
 var $hammerartist = new Hammer( document.getElementById( 'currentartist' ) );
-var $hammertime = new Hammer( document.getElementById( 'time-knob' ) );
+var $hammertime = new Hammer( document.getElementById( 'time-knob' ).getElementsByTagName( 'canvas' )[ 0 ] );
+var $hammertimenum = new Hammer( document.getElementById( 'countdown-display' ) );
 var $hammercoverT = new Hammer( document.getElementById( 'coverT' ) );
 var $hammercoverL = new Hammer( document.getElementById( 'coverL' ) );
 var $hammercoverM = new Hammer( document.getElementById( 'coverM' ) );
 var $hammercoverR = new Hammer( document.getElementById( 'coverR' ) );
 var $hammercoverB = new Hammer( document.getElementById( 'coverB' ) );
 var $hammersonginfo = new Hammer( document.getElementById( 'songinfo-open' ) );
-var $hammervolume = new Hammer( document.getElementById( 'volume-knob' ) );
+var $hammervolume = new Hammer( document.getElementById( 'volume-knob' ).getElementsByTagName( 'canvas' )[ 0 ] );
+var $hammervolnum = new Hammer( document.getElementById( 'volume' ) );
 var $hammerlibrary = new Hammer( document.getElementById( 'home-blocks' ) );
 var $hammerplayback = new Hammer( document.getElementById( 'playback' ) );
 
-function panelLR( lr ) {
-	var pcurrent = $( '.tab-pane:visible' ).prop( 'id' );
-	if ( pcurrent === 'panel-sx' ) {
-		var $pL = $( '#open-playback a' );
-		var $pR = $( '#open-panel-dx a' );
-	} else if ( pcurrent === 'playback' ) {
-		var $pL = $( '#open-panel-dx a' );
-		var $pR = $( '#open-panel-sx a' );
-	} else {
-		var $pL = $( '#open-panel-sx a' );
-		var $pR = $( '#open-playback a' );
-	}
-	$paneclick = ( lr === 'left' ) ? $pL.click() : $pR.click();
-}
 $hammercontent.on( 'swiperight', function() {
 	panelLR();
 } ).on( 'swipeleft', function() {
@@ -169,12 +147,6 @@ $hammercontent.on( 'swiperight', function() {
 		}
 	} );
 } );
-function bioshow() {
-	$( '#menu-top, #menu-bottom' ).hide();
-	$( '#songinfo-open' ).hide(); // fix button not hidden
-	$( '#bio' ).show();
-	$( '#loader' ).addClass( 'hide' );
-}
 $( '#biocontent' ).delegate( '.biosimilar', 'click', function() {
 	$( '#loader' ).removeClass( 'hide' );
 	$.get( 'artistbio.php',
@@ -195,6 +167,15 @@ $( '#closebio' ).click( function() {
 [ $hammertime, $hammervolume ].forEach( function( el ) {
 	el.on( 'press', function( e ) {
 		e.stopPropagation();
+	} );
+} );
+[ $hammertimenum, $hammervolnum ].forEach( function( el ) {
+	el.on( 'press', function( e ) {
+		$( '#menu-top, #menu-bottom' ).toggle();
+		barhide = $( '#menu-top' ).is( ':hidden' ) ? 1 : 0;
+		buttonshowhide();
+		e.stopPropagation();
+		return false;
 	} );
 } );
 $hammercoverT.on( 'tap', function( e ) {
@@ -218,31 +199,10 @@ $hammercoverR.on( 'tap', function( e ) {
 	e.stopPropagation();
 } );
 $hammercoverB.on( 'tap', function( e ) {
-	var time = $( '#time-knob' ).is( ':visible' );
-	var coverart = $( '#coverart' ).is( ':visible' );
-	var volume = displayredis.volume != 0 && displayredis.volumempd != 0 && $( '#volume-knob' ).is( ':visible' );
-	if ( buttonhide == 0 ) {
-		buttonhide = 1;
-		if ( time ) $( '#play-group' ).hide();
-		if ( coverart ) $( '#share-group' ).hide();
-		if ( volume ) $( '#vol-group' ).hide();
-	} else {
-		buttonhide = 0;
-		if ( time ) $( '#play-group' ).show();
-		if ( coverart ) $( '#share-group' ).show();
-		if ( volume ) $( '#vol-group' ).show();
-	}
-	
-	if ( window.innerHeight < 414 && $( '#play-group' ).is( ':hidden' ) ) {
-		$( '#play-group, #share-group, #vol-group' ).css( 'margin-top', '10px' );
-	}
-	$( '#divartist, #sampling' ).toggleClass( 'hide', 
-		$( '#play-group, #share-group' ).is( ':visible' )
-		&& window.innerHeight < 340
-	);
-	
+	buttonshowhide();
 	e.stopPropagation();
 } );
+
 $hammerplayback.on( 'press', function() {
 	info( {
 		  title  : 'Playback'
@@ -333,10 +293,66 @@ $hammerlibrary.on( 'tap', function() {
 } );
 
 
-}
+} // enclose in main function to enable exit on 'return' **********************************
 mainenhance();
 // document ready end *********************************************************************
 } );
+
+function menubottom( show, hide ) {
+	$( '#menu-top, #menu-bottom' ).hide();
+	if ( $( '#panel-sx' ).hasClass( 'active' ) ) librarytop = $( window ).scrollTop();
+	if ( $( '#panel-dx' ).hasClass( 'active' ) ) queuetop = $( window ).scrollTop();
+	if ( /\/.*\//.test( location.pathname ) === false ) {
+		$( show ).show().addClass( 'active' );
+		$( hide ).hide().removeClass( 'active' );
+	} else {
+		window.location.href = '/';
+	}
+}
+function panelLR( lr ) {
+	var pcurrent = $( '.tab-pane:visible' ).prop( 'id' );
+	if ( pcurrent === 'panel-sx' ) {
+		var $pL = $( '#open-playback a' );
+		var $pR = $( '#open-panel-dx a' );
+	} else if ( pcurrent === 'playback' ) {
+		var $pL = $( '#open-panel-dx a' );
+		var $pR = $( '#open-panel-sx a' );
+	} else {
+		var $pL = $( '#open-panel-sx a' );
+		var $pR = $( '#open-playback a' );
+	}
+	$paneclick = ( lr === 'left' ) ? $pL.click() : $pR.click();
+}
+function bioshow() {
+	$( '#menu-top, #menu-bottom' ).hide();
+	$( '#songinfo-open' ).hide(); // fix button not hidden
+	$( '#bio' ).show();
+	$( '#loader' ).addClass( 'hide' );
+}
+function buttonshowhide() {
+	var time = $( '#time-knob' ).is( ':visible' );
+	var coverart = $( '#coverart' ).is( ':visible' );
+	var volume = displayredis.volume != 0 && displayredis.volumempd != 0 && $( '#volume-knob' ).is( ':visible' );
+	if ( buttonhide == 0 ) {
+		buttonhide = 1;
+		if ( time ) $( '#play-group' ).hide();
+		if ( coverart ) $( '#share-group' ).hide();
+		if ( volume ) $( '#vol-group' ).hide();
+	} else {
+		buttonhide = 0;
+		if ( time ) $( '#play-group' ).show();
+		if ( coverart ) $( '#share-group' ).show();
+		if ( volume ) $( '#vol-group' ).show();
+	}
+	
+	if ( window.innerHeight < 414 && $( '#play-group' ).is( ':hidden' ) ) {
+		$( '#play-group, #share-group, #vol-group' ).css( 'margin-top', '10px' );
+	}
+	$( '#divartist, #sampling' ).toggleClass( 'hide', 
+		$( '#play-group, #share-group' ).is( ':visible' )
+		&& window.innerHeight < 340
+	);
+}
 
 // show/hide blocks database
 var path = /\/.*\//.test( location.pathname ) ? '../../' : ''; // fix path if click in other menu pages
