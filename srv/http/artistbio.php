@@ -1,7 +1,7 @@
 <?php
 $apikey = 'ba8ad00468a50732a3860832eaed0882';
 $artist = $_GET[ 'artist' ];
-$method = '&method=artist.getinfo&artist='.$artist;
+$method = '&method=artist.getinfo&artist='.urlencode( $artist );
 
 $ch = curl_init();
 curl_setopt( $ch, CURLOPT_URL, 'http://ws.audioscrobbler.com/2.0/?format=json&api_key='.$apikey.$method );
