@@ -2,6 +2,13 @@ $( document ).ready( function() {
 // document ready start********************************************************************
 function mainenhance() { // enclose in main function to enable exit on 'return' ***********
 
+if ( /\/.*\//.test( location.pathname ) === true ) {
+	if ( window.innerWidth < 540 || window.innerHeight < 530 ) {
+		$( 'div.container' ).find( 'h1' ).after( '<a href="/" class="close-root"><i class="fa fa-times fa-2x"></i></a>' );
+	}
+	return;
+}
+
 barhide = 0;
 buttonhide =  window.innerWidth < 540 ? 1 : 0;
 librarytop = 0;
@@ -39,7 +46,7 @@ $( '#playlist-entries' ).click( function( e ) {
 	}
 } );
 $( '#menu-bottom' ).click( function() {
-	if ( window.innerWidth < 540 || window.innerHeight < 540 ) {
+	if ( window.innerWidth < 540 || window.innerHeight < 530 ) {
 		$( '#menu-top, #menu-bottom' ).hide();
 		$( '.btnlist-top' ).css( 'top', 0 );
 		$( '#database' ).css( 'padding-top', '40px' );
@@ -95,16 +102,6 @@ window.addEventListener( 'orientationchange', function() {
 
 // hammer**************************************************************
 Hammer = propagating( Hammer ); // propagating.js fix 
-
-var $hammerbody = new Hammer( document.body );
-
-// skip all hammers if in setting pages
-if ( /\/.*\//.test( location.pathname ) === true ) {
-	$hammerbody.on( 'swipeleft swiperight', function() {
-		location.href = '/';
-	} );
-	return; // exit script, mainenhance()
-}
 
 var $hammercontent = new Hammer( document.getElementById( 'content' ) );
 var $hammerartist = new Hammer( document.getElementById( 'currentartist' ) );
