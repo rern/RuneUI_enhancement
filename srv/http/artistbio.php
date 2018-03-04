@@ -36,10 +36,11 @@ echo '
 		<p>
 			'.$content.'
 		</p>
+		<div style="clear: both;"></div>
 		<br>
 		<a>Genre: </a>'.$genre.'<span style="float: right;">Source: last.fm</span><br>
 		<br>
-		<a>Similar Artists:</a><br>
+		<a>Similar Artists:</a> <span>(click for bio of artists)</span><br>
 		<br>
 		'.$similars.'
 	</form>
