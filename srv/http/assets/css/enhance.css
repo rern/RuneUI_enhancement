@@ -366,6 +366,12 @@
     font-size:20px;
 }
 
+.close-root {
+	position: absolute;
+	top: 15px;
+	right: 15px;
+}
+
 #bio {
 	position: fixed;
 	top: 0;
@@ -591,6 +597,9 @@
 	}
 	#playlist {
 		padding-top: 40px;
+	}
+	.container {
+		padding-top: 0;
 	}
 }
 @media(max-height: 490px) {
