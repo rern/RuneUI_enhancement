@@ -3,7 +3,7 @@ $( document ).ready( function() {
 function mainenhance() { // enclose in main function to enable exit on 'return' ***********
 
 barhide = 0;
-buttonhide = 0;
+buttonhide =  window.innerWidth < 540 ? 1 : 0;
 librarytop = 0;
 queuetop = 0;
 
@@ -109,6 +109,7 @@ if ( /\/.*\//.test( location.pathname ) === true ) {
 var $hammercontent = new Hammer( document.getElementById( 'content' ) );
 var $hammerartist = new Hammer( document.getElementById( 'currentartist' ) );
 var $hammertime = new Hammer( document.getElementById( 'time-knob' ).getElementsByTagName( 'canvas' )[ 0 ] );
+var $hammertimecount = new Hammer( document.getElementById( 'countdown-display' ) );
 var $hammertimenum = new Hammer( document.getElementById( 'countdown-display' ) );
 var $hammercoverT = new Hammer( document.getElementById( 'coverT' ) );
 var $hammercoverL = new Hammer( document.getElementById( 'coverL' ) );
@@ -164,20 +165,21 @@ $( '#closebio' ).click( function() {
 	if ( !barhide ) $( '#menu-top, #menu-bottom' ).show();
 } );
 
+$( '#countdown-display' ).off( 'click' ); // disable default play-pause on click
 [ $hammertime, $hammervolume ].forEach( function( el ) {
 	el.on( 'press', function( e ) {
 		e.stopPropagation();
 	} );
 } );
 [ $hammertimenum, $hammervolnum ].forEach( function( el ) {
-	el.on( 'press', function( e ) {
-		$( '#menu-top, #menu-bottom' ).toggle();
-		barhide = $( '#menu-top' ).is( ':hidden' ) ? 1 : 0;
+	el.on( 'tap', function( e ) {
 		buttonshowhide();
+		$( '#menu-top, #menu-bottom' ).toggle( !buttonhide );
+		barhide = $( '#menu-top' ).is( ':hidden' ) ? 1 : 0;
 		e.stopPropagation();
-		return false;
 	} );
 } );
+
 $hammercoverT.on( 'tap', function( e ) {
 	$( '#menu-top, #menu-bottom' ).toggle();
 	barhide = $( '#menu-top' ).is( ':hidden' ) ? 1 : 0;
@@ -292,6 +294,41 @@ $hammerlibrary.on( 'tap', function() {
 	e.stopPropagation();
 } );
 
+var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+var observersearch = new MutationObserver( function() {
+	window.scrollTo( 0, 0 );
+});
+var observerdiv = document.getElementById( 'database-entries' );
+var observeroption = { childList: true };
+$( '#db-search' ).on( 'submit', function() {
+	dbtop = $( window ).scrollTop();
+	observersearch.observe( observerdiv, observeroption );
+	$( '#db-level-up' ).hide( function() { // addClass( 'hide' ) not work
+		observersearch.disconnect();
+	} );
+} );
+var observerback = new MutationObserver( function() {
+	window.scrollTo( 0, $( '#database-entries>li' ).eq( 0 ).attr( 'class' ) === 'db-folder' ? dbtop : 0 );
+});
+$( '#database-entries' ).click( function() {
+	dbtop = $( window ).scrollTop();
+	observerback.observe( observerdiv, observeroption );
+} );
+
+// replace functions in main runeui.js file **********************************************
+$( '#db-search-results' ).click( function() {
+	$( this ).addClass( 'hide' );
+	$( '#db-level-up, #db-currentpath' ).removeClass( 'hide' );
+	getDB( {
+		path: GUI.currentpath
+	} );
+	
+	$( '#database-entries' ).removeAttr( 'style' );
+	observerback.observe( observerdiv, observeroption );
+	$( '#db-level-up' ).show( function() {
+		observerback.disconnect();
+	} );
+} );
 
 } // enclose in main function to enable exit on 'return' **********************************
 mainenhance();
@@ -557,42 +594,6 @@ renderPlaylists = function( data ) {
 		if ( $( '#context-menu-playlist' ).hasClass( 'open' ) ) $( '#context-menu-playlist' ).removeClass( 'open' );
 	} );
 }
-
-var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
-var observersearch = new MutationObserver( function() {
-	window.scrollTo( 0, 0 );
-});
-var observerdiv = document.getElementById( 'database-entries' );
-var observeroption = { childList: true };
-$( '#db-search' ).on( 'submit', function() {
-	dbtop = $( window ).scrollTop();
-	observersearch.observe( observerdiv, observeroption );
-	$( '#db-level-up' ).hide( function() { // addClass( 'hide' ) not work
-		observersearch.disconnect();
-	} );
-} );
-var observerback = new MutationObserver( function() {
-	window.scrollTo( 0, $( '#database-entries>li' ).eq( 0 ).attr( 'class' ) === 'db-folder' ? dbtop : 0 );
-});
-$( '#database-entries' ).click( function() {
-	dbtop = $( window ).scrollTop();
-	observerback.observe( observerdiv, observeroption );
-} );
-
-// replace functions in main runeui.js file **********************************************
-$( '#db-search-results' ).click( function() {
-	$( this ).addClass( 'hide' );
-	$( '#db-level-up, #db-currentpath' ).removeClass( 'hide' );
-	getDB( {
-		path: GUI.currentpath
-	} );
-	
-	$( '#database-entries' ).removeAttr( 'style' );
-	observerback.observe( observerdiv, observeroption );
-	$( '#db-level-up' ).show( function() {
-		observerback.disconnect();
-	} );
-} );
 
 function timeConvert3( ss ) {
 	var hr = Math.floor( ss / 3600 );
