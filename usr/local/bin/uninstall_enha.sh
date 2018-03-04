@@ -71,7 +71,7 @@ fi
 file=/srv/http/app/templates/playback.php
 echo $file
 sed -i -e '/^<?php$/,/^?>$/ d
-' -e '/playbackcustom.php/, /\/\*/ d
+' -e '/playbackenhance.php/, /\/\*/ d
 ' -e '/enh \*\/?>/ d
 ' $file
 
