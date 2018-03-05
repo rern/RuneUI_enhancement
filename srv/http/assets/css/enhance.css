@@ -54,10 +54,6 @@
 	box-shadow: 0px 4px 10px #000000;
 	z-index: 10;
 }
-.btnlist-top a,
-.btnlist-top i {
-	cursor: pointer;
-}
 #db-currentpath a {
 	color: #0095d8;
 }
@@ -78,7 +74,6 @@
 #db-index li {
 	text-align: center;
 	color: #0095d8;
-	cursor: pointer;
 }
 #db-index li:hover {
 	background: #34495e;
@@ -181,7 +176,6 @@
 #menu-bottom {
     box-shadow: 0px -4px 10px #000000;
     transition: all 0.3s ease;
-	cursor: pointer;
 }
 #menu-bottom a {
     margin: 0;
@@ -207,7 +201,6 @@
 }
 #coverart {
 	display: block;
-    cursor: pointer;
 }
 /* ---------------------- info ----------------------*/
 #info span {
@@ -216,7 +209,6 @@
 	padding: 0 10px;
 	text-align: center;
 	white-space: nowrap;
-    cursor: pointer;
 }
 #divsong {
 	height: 34px;
@@ -380,9 +372,8 @@
 }
 
 .close-root {
-	position: absolute;
-	top: 20px;
-	right: 15px;
+	float: right;
+	margin-top: 20px;
 }
 
 #bio {
@@ -404,10 +395,6 @@
 	margin: 0;
 	width: calc(100% - 25px);
 }
-#bioclose {
-	vertical-align: 10px;
-	width: 25px;
-}
 #bio legend,
 #biocontent a:hover {
 	color: #0095d8;
@@ -424,7 +411,6 @@
 }
 .biosimilar {
 	display: inline-block;
-	    cursor: pointer;
 }
 .biosimilar p {
 	width: 170px;
@@ -447,6 +433,18 @@
 		float: none;
 	}
 }
+
+.btnlist-top a,
+.btnlist-top i,
+#db-index li,
+#menu-top li,
+#menu-bottom,
+#coverart,
+#info span,
+.biosimilar {
+	cursor: pointer;
+}
+
 /* ---------------------- responsive ----------------------*/
 @media(max-width: 750px) {
 	#time-knob,
@@ -456,7 +454,25 @@
 	#share-group,
 	#vol-group	{
 		width: 30%;
-		min-width: 270px;
+		min-width: 250px;
+	}
+	#clock-display {
+		display: none;
+	}
+}
+@media(max-width: 666px) {
+	#playback-row {
+		width: 100vw !important;
+		margin-left: 0 !important;
+	}
+	#time-knob,
+	#coverart,
+	#volume-knob,
+	#play-group,
+	#share-group,
+	#vol-group	{
+		margin: 0 10px 10px !important;
+		width: 34%;
 	}
 	#time-knob {
 	    order: 1;
@@ -483,9 +499,6 @@
 		order: 6;
 		-webkit-order: 6;
 	}
-	#clock-display {
-		display: none;
-	}
 }
 @media(max-width: 700px) {
 	.logo {
@@ -510,6 +523,9 @@
 	#dot0 {
 		display: inline;
 	}
+	#playback {
+		padding-top: 40px;
+	}
 	#playback-row {
 		margin-top: 10px;
 	}
@@ -518,6 +534,9 @@
 	#volume-knob {
 		margin: 0 0 10px 0;
 		width: 230px;
+	}
+	#coverart {
+		margin-bottom: 20px !important;
 	}
 	#share-group,
 	#play-group,
@@ -550,7 +569,6 @@
 	#vol-group {
 		order: 6;
 		-webkit-order: 6;
-		display:none;
 	}
 	#playback .btn-group {
 		margin-left: 10px;
@@ -636,6 +654,16 @@
 	#playback-row {
 		transform: scale(0.85, 0.85);
 		transform-origin: center top;
+		width: 900px;
+		margin-left: calc( ( 100vw - 900px ) / 2 )
+	}
+	#time-knob,
+	#coverart,
+	#volume-knob,
+	#play-group,
+	#share-group,
+	#vol-group	{
+		margin: 0 -10px;
 	}
 	#play-group,
 	#share-group,
@@ -644,6 +672,9 @@
 	}
 }
 @media(max-height: 385px) {
+	#divalbum {
+		display: none;
+	}
 	#playback {
 		padding-top: 15px !important;
 	}
@@ -655,6 +686,13 @@
 }
 @media(max-height: 350px) {
 	#divartist	{
+		display: none;
+	}
+}
+@media(max-height: 320px) {
+	#play-group,
+	#share-group,
+	#vol-group {
 		display: none;
 	}
 }
@@ -702,5 +740,7 @@
 	#playback-row {
 		transform: scale(0.85, 0.85);
 		transform-origin: center top;
+		width: 330px !important;
+		margin-left: calc( ( 100vw - 330px ) / 2 )
 	}
 }
