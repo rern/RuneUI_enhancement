@@ -98,6 +98,19 @@
 #barbottom {
 	bottom: 0;
 }
+#barleft,
+#barright {
+	position: fixed;
+	top: 0;
+	width: 60px;
+	height: 100vh;
+}
+#barleft {
+	left: 0;
+}
+#barright {
+	right: 0;
+}
 /* ---------------------- menu-top ----------------------*/
 .logo {
     height: 35px;
