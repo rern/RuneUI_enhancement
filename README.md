@@ -2,15 +2,6 @@ RuneUI enhancement
 ---
 _Tested on RuneAudio 0.3 and 0.4b_   
 
-![Controls](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-Controls.gif)
-![Bars-Buttons](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-Bars-Buttons.gif)
-![SwipePage](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-SwipePage.gif)
-
-![PressShowHide](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-PressShowHide.gif)
-![Bio](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-Bio.gif)
-
-Try it (to be updated) - [**Demo**](https://rern.github.io/RuneUI_GPIO/)  
-
 Features
 ---
 - More minimalism
@@ -33,6 +24,14 @@ Features
 >[Install](#install)  
 >[Functional](#functional)  
 >[Visual](#visual)  
+
+![Controls](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-Controls.gif) Controls  
+![Bars-Buttons](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-Bars-Buttons.gif) Top-Bottom Bars and Buttons  
+![SwipePage](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-SwipePage.gif) Pages  
+![PressShowHide](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-PressShowHide.gif) Show-Hide  
+![Bio](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-Bio.gif) Bio  
+
+Try it (to be updated) - [**Demo**](https://rern.github.io/RuneUI_GPIO/)  
 
 Install
 ---
