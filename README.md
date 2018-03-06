@@ -45,10 +45,10 @@ Functional
 ---
 
 ### Playback
-- Tap each area `cover-art` = all controls (long-press center area = stop)
-- Swipe left-right = swiches between `Library` - `Playback` - `Queue`
-- Tap `screen left` = show / hide `menu-top` `menu-bottom`
-- Tap `screen right` = show / hide `buttons`
+- `cover-art` - all controls
+	- long-press center area = stop
+- `screen left` and `screen right` - fallback if `cover-art` was hidden
+- Swipe for page change
 - Mouse hover top/bottom of screen = toggle top/bottom menu bars (if hidden)
 - Long-press empty area = show/hide items setting
 - Tap `artist` or `i` button = show improved bio (data from last.fm)
@@ -67,7 +67,6 @@ Functional
 	- After [**Webradio import**](https://github.com/rern/RuneAudio/tree/master/webradio)
 	- After [**MPD Upgrade**](https://github.com/rern/RuneAudio/tree/master/mpd)
 	- (Songs in albums still, by default, be sorted by track number)
-- Long-press = show/hide items
 - Long-press `bookmark` = edit bookmarks
 - Disable search with blank data
 
@@ -79,10 +78,10 @@ Visual
 
 ### Playback
 **Top Bar:**
-- Hide on height < 530px
+- Auto hide on height < 530px
 - Change `logo` to svg
-- Separate pause from play buttons
-- Full height `buttons` and fixed at center
+- Separate pause from play buttons (selectable)
+- Full height `buttons` and center aligned
 - Change `Settings` icons and remove text label
 - Enlarge icons
 - Add box shadow for layer depth
@@ -109,7 +108,7 @@ Visual
 - Improved artist bio
 
 **Bottom Bar:**
-- Hide on height < 500px
+- Auto hide on height < 500px
 - Change icons and remove text labels
 - Enlarge icons
 - Add box shadow for layer depth
