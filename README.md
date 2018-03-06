@@ -26,8 +26,8 @@ Features
 >[Visual](#visual)  
 
 ![Controls](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-Controls.gif) Controls  
-![Bars-Buttons](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-Bars-Buttons.gif) Top-Bottom Bars and Buttons  
 ![SwipePage](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-SwipePage.gif) Pages  
+![Bars-Buttons](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-Bars-Buttons.gif) Top-Bottom Bars and Buttons   
 ![PressShowHide](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-PressShowHide.gif) Show-Hide  
 ![Bio](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-Bio.gif) Bio  
 
@@ -43,15 +43,13 @@ Functional
 ---
 
 ### Playback
-- Long-press = show/hide items setting
-- Mouse hover top/bottom of screen = toggle top/bottom menu bars (if hidden)
-- Tap `artist` or `i` button = show improved bio (data from last.fm)
+- Tap each area `cover-art` = all controls (long-press center area = stop)
 - Swipe left-right = swiches between `Library` - `Playback` - `Queue`
-- Swipe up / down on `screen left` `screen right` = hide / show `top` `bottom`
-- (width < 500px) tap `screen left` = swap show / hide `cover art` `volume`
-- Swipe left-right on `text area` or `coverart` = previous-next track
-- Tap `cover art` = play / pause (besides default `time`)
-- Long-press `cover art` = stop
+- Tap `screen left` = show / hide `menu-top` `menu-bottom`
+- Tap `screen right` = show / hide `buttons`
+- Mouse hover top/bottom of screen = toggle top/bottom menu bars (if hidden)
+- Long-press empty area = show/hide items setting
+- Tap `artist` or `i` button = show improved bio (data from last.fm)
 - Tap `playlist item` also go back to playback page
 - Tap `playback controls` on other pages also go back to playback page
 
