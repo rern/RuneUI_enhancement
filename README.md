@@ -2,15 +2,14 @@ RuneUI enhancement
 ---
 _Tested on RuneAudio 0.3 and 0.4b_   
 
-![mid](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/iPhoneP.gif)
-![1](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/1.png)
-![1](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/3.png)
+![Controls](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-Controls.gif)
+![Bars-Buttons](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-Bars-Buttons.gif)
+![SwipePage](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-SwipePage.gif)
 
-![4](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/4.png)
-![5](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/5.png)
-![6](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/6.png)
+![PressShowHide](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-PressShowHide.gif)
+![Bio](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-Bio.gif)
 
-Try it - [**Demo**](https://rern.github.io/RuneUI_GPIO/)  
+Try it (to be updated) - [**Demo**](https://rern.github.io/RuneUI_GPIO/)  
 
 Features
 ---
