@@ -6,7 +6,10 @@ if ( /\/.*\//.test( location.pathname ) === true ) {
 	if ( window.innerWidth < 540 || window.innerHeight < 530 ) {
 		$( 'div.container' ).find( 'h1' ).before( '<a href="/" class="close-root"><i class="fa fa-times fa-2x"></i></a>' );
 	} else {
-		$( '#menu-top, #menu-bottom' ).show();
+		$( '#menu-top, #menu-bottom' ).click( function() {
+			location.href = '/';
+		} );
+
 	}
 	return;
 }
