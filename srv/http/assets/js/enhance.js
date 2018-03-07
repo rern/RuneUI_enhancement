@@ -455,7 +455,7 @@ function displaycommon() {
 // playback show/hide blocks
 function displayplayback() {
 	buttonhide =  window.innerHeight <= 320 || window.innerWidth < 540 ? 1 : 0;
-	console.log( buttonhide);
+
 	$.get( 'displayget.php', function( data ) {
 		displayredis = $.parseJSON( data );
 		var volume = ( displayredis.volume == '' || displayredis.volumempd == 0 ) ? 0 : 1;
