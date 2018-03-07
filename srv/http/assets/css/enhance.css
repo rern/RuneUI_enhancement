@@ -522,6 +522,9 @@
 	#menu-top .dropdown-menu > li > a {
 		padding-right: 35px;
 	}
+	#sampling {
+		height: 25px;
+	}
 	#sampling span,
 	#dot0 {
 		display: inline;
