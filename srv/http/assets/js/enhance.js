@@ -3,7 +3,7 @@ $( document ).ready( function() {
 function mainenhance() { // enclose in main function to enable exit on 'return' ***********
 
 if ( /\/.*\//.test( location.pathname ) === true ) {
-	if ( window.innerWidth < 540 || window.innerHeight < 530 ) {
+	if ( window.innerWidth < 540 || window.innerHeight < 515 ) {
 		$( 'div.container' ).find( 'h1' ).before( '<a href="/" class="close-root"><i class="fa fa-times fa-2x"></i></a>' );
 	} else {
 		$( '#menu-top, #menu-bottom' ).click( function() {
@@ -14,8 +14,9 @@ if ( /\/.*\//.test( location.pathname ) === true ) {
 	return;
 }
 
-barhide = 0;
-//buttonhide =  window.innerHeight <= 320 || window.innerWidth < 540 ? 1 : 0;
+//barhide = $( '#menu-top, #menu-bottom' ).is( ':hidden' ) ? 1 : 0;
+//buttonhide =  $( '#play-group, #share-group, #vol-group' ).is( ':hidden' ) ? 1 : 0;
+buttonhide =  window.innerHeight <= 320 || window.innerWidth < 499 ? 1 : 0;
 librarytop = 0;
 queuetop = 0;
 
@@ -47,11 +48,11 @@ $( '#playlist-entries' ).click( function( e ) {
 	if ( e.target.nodeName == 'SPAN' ) {
 		$( '#open-playback a' ).click();
 		$( '#open-playback a' )[ 0 ].click();
-		if ( window.innerWidth < 500 || window.innerHeight < 500 ) $( '#menu-top, #menu-bottom' ).toggle();
+		if ( window.innerWidth < 499 || window.innerHeight < 515 ) $( '#menu-top, #menu-bottom' ).toggle();
 	}
 } );
 $( '#menu-bottom' ).click( function() {
-	if ( window.innerWidth < 540 || window.innerHeight < 530 ) {
+	if ( window.innerWidth < 499 || window.innerHeight < 515 ) {
 		$( '#menu-top, #menu-bottom' ).hide();
 		$( '.btnlist-top' ).css( 'top', 0 );
 		$( '#database' ).css( 'padding-top', '40px' );
@@ -277,7 +278,7 @@ $hammerplayback.on( 'press', function() {
 		}
 	} );
 	// disable from autohide
-	if ( window.innerHeight <= 530 || window.innerWidth < 540 ) {
+	if ( window.innerWidth < 499 || window.innerHeight <= 515 ) {
 		$( 'input[name="bar"]' )
 			.prop( 'disabled', true )
 			.parent().css( 'color', '#7795b4' )
@@ -291,7 +292,7 @@ $hammerplayback.on( 'press', function() {
 			.append( ' (disabled)' );
 	}
 	// disable from mpd volume
-	if ( window.innerHeight <= 320 || window.innerWidth < 540 ) {
+	if ( window.innerWidth < 499 || window.innerHeight <= 320 ) {
 		$( 'input[name="buttons"]' )
 			.prop( 'disabled', true )
 			.parent().css( 'color', '#7795b4' )
@@ -421,9 +422,8 @@ $.get( path +'displayget.php', function( data ) {
 
 // #menu-top, #menu-bottom, #play-group, #share-group, #vol-group use show/hide to work with css
 function displaycommon() {
+	barhide = window.innerWidth < 499 || window.innerHeight < 515 ? 1 : 0;
 	if ( displayredis.bar !== ''
-		&& window.innerWidth > 540
-		&& window.innerHeight > 530
 		&& $( '#bio' ).is( ':hidden' )
 		&& barhide == 0
 	) {
@@ -454,15 +454,17 @@ function displaycommon() {
 }
 // playback show/hide blocks
 function displayplayback() {
-	buttonhide =  window.innerHeight <= 320 || window.innerWidth < 540 ? 1 : 0;
+	buttonhide = window.innerHeight <= 320 || window.innerWidth < 499 ? 1 : 0;
 
 	$.get( 'displayget.php', function( data ) {
 		displayredis = $.parseJSON( data );
 		var volume = ( displayredis.volume == '' || displayredis.volumempd == 0 ) ? 0 : 1;
 		$( '#pause' ).toggleClass( 'hide', !displayredis.pause );
 		// reset to default css
-		$( 'time-knob, #coverart, #volume-knob, #play-group, #share-group, #vol-group' ).css( {
+		$( '#playback-row, #time-knob, #coverart, #volume-knob, #play-group, #share-group, #vol-group' ).css( {
+			margin: '',
 			width: '',
+			'max-width': '',
 			order: '',
 			'-webkit-order': '',
 			display: ''
@@ -470,23 +472,31 @@ function displayplayback() {
 		$( '#time-knob, #play-group' ).toggleClass( 'hide', !displayredis.time );
 		$( '#coverart, #share-group' ).toggleClass( 'hide', !displayredis.coverart );
 		$( '#volume-knob, #vol-group' ).toggleClass( 'hide', !volume );
-		var eW = { // force newline
-			  3: '30%'
-			, 2: '34%'
-			, 1: '51%'
-		}
+		
 		var i = ( displayredis.time ? 1 : 0 ) + ( displayredis.coverart ? 1 : 0 ) + volume;
-		$( '#time-knob, #coverart, #volume-knob' ).css( 'width', eW[ i ] );
-		if ( window.innerWidth > 540 ) {
-			$( '#play-group, #share-group, #vol-group' ).css( 'width', eW[ i ] );
-			if ( !displayredis.time || !displayredis.coverart ) {
+//		if ( window.innerWidth < 749 ) {
+			if ( i == 2 && window.innerWidth > 499 ) {
+				if ( volume ) {
+					$( '#time-knob' ).css( { order: 1, '-webkit-order': '1' } );
+					$( '#coverart' ).css( { order: 2, '-webkit-order': '2' } );
+					$( '#volume-knob' ).css( { order: 3, '-webkit-order': '3' } );
+					$( '#play-group' ).css( { order: 4, '-webkit-order': '4' } );
+					$( '#share-group' ).css( { order: 5, '-webkit-order': '5' } );
+					$( '#vol-group' ).css( { order: 6, '-webkit-order': '6' } );
+				}
+				$( '#playback-row' ).css( 'max-width', '900px' );
+				$( '#time-knob, #coverart, #volume-knob, #play-group, #share-group, #vol-group' ).css( 'width', '45%' );
+			} else if ( i == 1 ) {
+				$( '#time-knob, #coverart, #volume-knob, #play-group, #share-group, #vol-group' ).css( 'width', '60%' );
+			}
+/*			if ( !displayredis.time || !displayredis.coverart ) {
 				// fix oversize #volume-knob
 				if ( navigator.userAgent.match( /iPad|iPhone|iPod|android|webOS/i ) ) {
 					$( '#volume-knob' ).css( { 'padding-left': '25px' } )
 						.find( 'div' ).css( 'margin', '-10px 0' );
 				}
-			}
-		}
+			}*/
+//		}
 
 		if ( buttonhide || displayredis.buttons == '' ) {
 			buttonhide = 1;
