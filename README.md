@@ -2,15 +2,13 @@ RuneUI enhancement
 ---
 _Tested on RuneAudio 0.3 and 0.4b_   
 
-![mid](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/iPhoneP.gif)
-![1](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/1.png)
-![1](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/3.png)
+|        Controls       |    Show/Hide Bars     |   Show/Hide Buttons   |
+|-----------------------|-----------------------|-----------------------|
+| ![Controls](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-Controls.gif) | ![Bars](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-Bars.gif) | ![Buttons](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-Buttons.gif) | 
 
-![4](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/4.png)
-![5](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/5.png)
-![6](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/6.png)
-
-Try it - [**Demo**](https://rern.github.io/RuneUI_GPIO/)  
+|   Show/Hide Elements  |      Artist's Bio     |      Change Page      |
+|-----------------------|-----------------------|-----------------------|
+|![PressShowHide](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-PressShowHide.gif) | ![Bio](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-Bio.gif) | ![SwipePage](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-SwipePage.gif) |
 
 Features
 ---
@@ -26,7 +24,7 @@ Features
 - Coverart override
 - Start/stop local browser right after settings saved (default needs system restart)
 - 0.4b fixes:
-	- Prevent `coverarts` and `song-info` update on play / pause in the same song
+	- Prevent `coverarts` update on play / pause in the same song
 	- Use local `jquery-ui.min.js` instead of online
 	- Fix missing `lato-bolditalic-webfont`
 	- Remove screen saver items if disabled or if disable local browser
@@ -34,6 +32,8 @@ Features
 >[Install](#install)  
 >[Functional](#functional)  
 >[Visual](#visual)  
+
+Try it (to be updated) - [**Demo**](https://rern.github.io/RuneUI_GPIO/)  
 
 Install
 ---
@@ -45,15 +45,13 @@ Functional
 ---
 
 ### Playback
-- Long-press = show/hide items setting
+- `cover-art` - all controls
+	- long-press center area = stop
+- `screen left` and `screen right` - fallback if `cover-art` was hidden
+- Swipe for page change
 - Mouse hover top/bottom of screen = toggle top/bottom menu bars (if hidden)
+- Long-press empty area = show/hide items setting
 - Tap `artist` or `i` button = show improved bio (data from last.fm)
-- Swipe left-right = swiches between `Library` - `Playback` - `Queue`
-- Swipe up / down on `screen left` `screen right` = hide / show `top` `bottom`
-- (width < 500px) tap `screen left` = swap show / hide `cover art` `volume`
-- Swipe left-right on `text area` or `coverart` = previous-next track
-- Tap `cover art` = play / pause (besides default `time`)
-- Long-press `cover art` = stop
 - Tap `playlist item` also go back to playback page
 - Tap `playback controls` on other pages also go back to playback page
 
@@ -69,7 +67,6 @@ Functional
 	- After [**Webradio import**](https://github.com/rern/RuneAudio/tree/master/webradio)
 	- After [**MPD Upgrade**](https://github.com/rern/RuneAudio/tree/master/mpd)
 	- (Songs in albums still, by default, be sorted by track number)
-- Long-press = show/hide items
 - Long-press `bookmark` = edit bookmarks
 - Disable search with blank data
 
@@ -81,10 +78,10 @@ Visual
 
 ### Playback
 **Top Bar:**
-- Hide on height < 530px
+- Auto hide on height < 530px
 - Change `logo` to svg
-- Separate pause from play buttons
-- Full height `buttons` and fixed at center
+- Separate pause from play buttons (selectable)
+- Full height `buttons` and center aligned
 - Change `Settings` icons and remove text label
 - Enlarge icons
 - Add box shadow for layer depth
@@ -111,7 +108,7 @@ Visual
 - Improved artist bio
 
 **Bottom Bar:**
-- Hide on height < 500px
+- Auto hide on height < 500px
 - Change icons and remove text labels
 - Enlarge icons
 - Add box shadow for layer depth

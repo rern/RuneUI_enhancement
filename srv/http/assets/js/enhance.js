@@ -1,18 +1,25 @@
 $( document ).ready( function() {
 // document ready start********************************************************************
+function mainenhance() { // enclose in main function to enable exit on 'return' ***********
 
+if ( /\/.*\//.test( location.pathname ) === true ) {
+	if ( window.innerWidth < 540 || window.innerHeight < 515 ) {
+		$( 'div.container' ).find( 'h1' ).before( '<a href="/" class="close-root"><i class="fa fa-times fa-2x"></i></a>' );
+	} else {
+		$( '#menu-top, #menu-bottom' ).click( function() {
+			location.href = '/';
+		} );
+
+	}
+	return;
+}
+
+//barhide = $( '#menu-top, #menu-bottom' ).is( ':hidden' ) ? 1 : 0;
+//buttonhide =  $( '#play-group, #share-group, #vol-group' ).is( ':hidden' ) ? 1 : 0;
+buttonhide =  window.innerHeight <= 320 || window.innerWidth < 499 ? 1 : 0;
 librarytop = 0;
 queuetop = 0;
-function menubottom( show, hide ) {
-	if ( $( '#panel-sx' ).hasClass( 'active' ) ) librarytop = $( window ).scrollTop();
-	if ( $( '#panel-dx' ).hasClass( 'active' ) ) queuetop = $( window ).scrollTop();
-	if ( /\/.*\//.test( location.pathname ) === false ) {
-		$( show ).show().addClass( 'active' );
-		$( hide ).hide().removeClass( 'active' );
-	} else {
-		window.location.href = '/';
-	}
-}
+
 $( '#open-panel-sx' ).click( function() {
 	menubottom( '#panel-sx', '#playback, #panel-dx' );
 	displaylibrary();
@@ -41,11 +48,11 @@ $( '#playlist-entries' ).click( function( e ) {
 	if ( e.target.nodeName == 'SPAN' ) {
 		$( '#open-playback a' ).click();
 		$( '#open-playback a' )[ 0 ].click();
-		if ( window.innerWidth < 500 || window.innerHeight < 500 ) $( '#menu-top, #menu-bottom' ).toggle();
+		if ( window.innerWidth < 499 || window.innerHeight < 515 ) $( '#menu-top, #menu-bottom' ).toggle();
 	}
 } );
 $( '#menu-bottom' ).click( function() {
-	if ( window.innerWidth < 540 || window.innerHeight < 540 ) {
+	if ( window.innerWidth < 499 || window.innerHeight < 515 ) {
 		$( '#menu-top, #menu-bottom' ).hide();
 		$( '.btnlist-top' ).css( 'top', 0 );
 		$( '#database' ).css( 'padding-top', '40px' );
@@ -85,76 +92,55 @@ $( '#db-level-up' ).click( function() {
 	window.scrollTo( 0, dbtop );
 } );
 
-window.addEventListener( 'orientationchange', function() {
-	if ( $( '#playback' ).hasClass( 'active' ) ) {
-		displayplayback();
-	} else if ( $( '#panel-sx' ).hasClass( 'active' ) ) {
-		displaylibrarry();
-	} else if ( $( '#panel-dx' ).hasClass( 'active' ) ) {
-		displayqueue();
-	}
+$( '#open-library' ).click( function() {
+	$( '#open-panel-sx' ).click();
 } );
 
-// skip all hammers if in menu settings
-if ( /\/.*\//.test( location.pathname ) === true ) return;
+window.addEventListener( 'orientationchange', function() {
+	setTimeout( function() {
+		if ( $( '#playback' ).hasClass( 'active' ) ) {
+			displayplayback();
+		} else if ( $( '#panel-sx' ).hasClass( 'active' ) ) {
+			displaylibrarry();
+		} else if ( $( '#panel-dx' ).hasClass( 'active' ) ) {
+			displayqueue();
+		}
+	}, 100 );
+} );
 
 // hammer**************************************************************
-Hammer = propagating( Hammer ); // propagating.js fix e.stopPropagation()
+Hammer = propagating( Hammer ); // propagating.js fix 
 
 var $hammercontent = new Hammer( document.getElementById( 'content' ) );
 var $hammerbarleft = new Hammer( document.getElementById( 'barleft' ) );
 var $hammerbarright = new Hammer( document.getElementById( 'barright' ) );
-var $hammerinfo = new Hammer( document.getElementById( 'info' ) );
 var $hammerartist = new Hammer( document.getElementById( 'currentartist' ) );
-var $hammertime = new Hammer( document.getElementById( 'time-knob' ) );
-var $hammercoverart = new Hammer( document.getElementById( 'coverart' ) );
+var $hammertime = new Hammer( document.getElementById( 'time-knob' ).getElementsByTagName( 'canvas' )[ 0 ] );
+var $hammercoverT = new Hammer( document.getElementById( 'coverT' ) );
+var $hammercoverL = new Hammer( document.getElementById( 'coverL' ) );
+var $hammercoverM = new Hammer( document.getElementById( 'coverM' ) );
+var $hammercoverR = new Hammer( document.getElementById( 'coverR' ) );
+var $hammercoverB = new Hammer( document.getElementById( 'coverB' ) );
 var $hammersonginfo = new Hammer( document.getElementById( 'songinfo-open' ) );
-var $hammervolume = new Hammer( document.getElementById( 'volume-knob' ) );
-var $hammerlibrary = new Hammer( document.getElementById( 'panel-sx' ) );
+var $hammervolume = new Hammer( document.getElementById( 'volume-knob' ).getElementsByTagName( 'canvas' )[ 0 ] );
+var $hammerlibrary = new Hammer( document.getElementById( 'home-blocks' ) );
 var $hammerplayback = new Hammer( document.getElementById( 'playback' ) );
-var $hammerqueue = new Hammer( document.getElementById( 'panel-dx' ) );
 
-function panelLR( lr ) {
-	var pcurrent = $( '.tab-pane:visible' ).prop( 'id' );
-	if ( pcurrent === 'panel-sx' ) {
-		var $pL = $( '#open-playback a' );
-		var $pR = $( '#open-panel-dx a' );
-	} else if ( pcurrent === 'playback' ) {
-		var $pL = $( '#open-panel-dx a' );
-		var $pR = $( '#open-panel-sx a' );
-	} else {
-		var $pL = $( '#open-panel-sx a' );
-		var $pR = $( '#open-playback a' );
-	}
-	$paneclick = ( lr === 'left' ) ? $pL.click() : $pR.click();
-}
 $hammercontent.on( 'swiperight', function() {
 	panelLR();
 } ).on( 'swipeleft', function() {
 	panelLR( 'left' );
 } );
 
-[ $hammerbarleft, $hammerbarright ].forEach( function( e ) {
-	e.on( 'swipe press', function( ev ) {
+[ $hammerbarleft, $hammerbarright ].forEach( function( el ) {
+	el.on( 'swipe', function( e ) {
 		$( '#menu-top, #menu-bottom' ).toggle();
-		ev.stopPropagation();
+		e.stopPropagation();
 	} ).get( 'swipe' ).set( { direction: Hammer.DIRECTION_VERTICAL } );
 } )
-$hammerbarleft.on( 'tap', function() {
-	if ( window.innerWidth < 540 ) {
-		$( '#coverart' ).slideToggle( function() {
-			$( '#time-knob, #volume-knob' ).css( 'margin-top', 0 );
-			if ( $( '#coverart' ).is( ':visible' ) ) {
-				if ( $( '#play-group' ).is( ':visible' ) ) {
-					$( '#share-group' ).show();
-				} else {
-					$( '#divalbum' ).removeClass( 'hide' );
-				}
-			} else {
-				$( '#share-group' ).hide();
-			}
-		} );
-	}
+$hammerbarleft.on( 'tap', function( e ) {
+	$( '#menu-top, #menu-bottom' ).toggle();
+	e.stopPropagation();
 } );
 $hammerbarright.on( 'tap', function() {
 	if ( $( '#time-knob' ).is( ':visible' ) ) $( '#play-group' ).toggle();
@@ -165,72 +151,97 @@ $hammerbarright.on( 'tap', function() {
 	) {
 		$( '#vol-group' ).toggle();
 	}
-	
-	if ( window.innerHeight < 414 && $( '#play-group' ).is( ':hidden' ) ) {
-		$( '#play-group, #share-group, #vol-group' ).css( 'margin-top', '10px' );
-	}
-	$( '#divartist, #sampling' ).toggleClass( 'hide', 
-		( $( '#play-group' ).is( ':visible' ) || $( '#share-group' ).is( ':visible' ) )
-		&& window.innerHeight < 340
-	); 
 } );
 
-$hammerinfo.on( 'swiperight', function( e ) {
-	$( '#previous' ).click();
-	e.stopPropagation();
-} ).on( 'swipeleft', function( e ) {
-	$( '#next' ).click();
-	e.stopPropagation();
-} ).on( 'tap', function( e ) {
-	e.stopPropagation();
-} );
 // lastfm search
-[ $hammerartist, $hammersonginfo ].forEach( function( e ) {
-	e.on( 'tap', function( el ) {
-	if ( GUI.json.currentartist.slice( 0, 3 ) === '[no' ) return; 
-	menu = $( '#menu-top' ).is(':visible') ? 1 : 0;
-	if ( menu ) $( '#menu-top, #menu-bottom' ).hide();
-	$( '#songinfo-open' ).hide(); // fix button not hidden
-	$( '#loader' ).removeClass( 'hide' );
-	
-	if ( $( '#bio legend' ).text() != GUI.json.currentartist ) {
-		$.get( 'artistbio.php',
-			{ artist: GUI.json.currentartist },
-			function( data ) {
-				$( '#biocontent' ).html( data );
-				$( '#bio' ).show();
-				$( '#loader' ).addClass( 'hide' );
-			}
-		);
-	} else {
-		$( '#bio' ).show();
-		$( '#loader' ).addClass( 'hide' );
-	}
+[ $hammerartist, $hammersonginfo ].forEach( function( el ) {
+	el.on( 'tap', function() {
+		if ( GUI.json.currentartist.slice( 0, 3 ) === '[no' ) return; 
+		barhide = $( '#menu-top' ).is(':visible') ? 0 : 1;
+		$( '#loader' ).removeClass( 'hide' );
+		
+		if ( $( '#bio legend' ).text() != GUI.json.currentartist ) {
+			$.get( 'artistbio.php',
+				{ artist: GUI.json.currentartist },
+				function( data ) {
+					$( '#biocontent' ).html( data );
+					bioshow();
+				}
+			);
+		} else {
+			bioshow();
+		}
 	} );
+} );
+$( '#biocontent' ).delegate( '.biosimilar', 'click', function() {
+	$( '#loader' ).removeClass( 'hide' );
+	$.get( 'artistbio.php',
+		{ artist: $( this ).find( 'p' ).text() },
+		function( data ) {
+			$( '#biocontent' ).html( data );
+			bioshow();
+			$( '#bio' ).scrollTop( 0 );
+		}
+	);
 } );
 $( '#closebio' ).click( function() {
 	$( '#bio' ).hide();
 	$( '#songinfo-open' ).show(); // fix button not hidden
-	if ( menu ) $( '#menu-top, #menu-bottom' ).show();
+	if ( !barhide ) $( '#menu-top, #menu-bottom' ).show();
 } );
 
-[ $hammertime, $hammervolume ].forEach( function( e ) {
-	e.on( 'press', function( ev ) {
-		ev.stopPropagation();
+$( '#countdown-display' ).off( 'click' ); // disable default play-pause on click
+[ $hammertime, $hammervolume ].forEach( function( el ) {
+	el.on( 'press', function( e ) {
+		e.stopPropagation();
 	} );
 } );
 
-$hammercoverart.on( 'tap', function( e ) {
+$hammercoverT.on( 'tap', function( e ) {
+	$( '#menu-top, #menu-bottom' ).toggle();
+	barhide = $( '#menu-top' ).is( ':hidden' ) ? 1 : 0;
+	e.stopPropagation();
+} );
+$hammercoverL.on( 'tap', function( e ) {
+	$( '#previous' ).click();
+	e.stopPropagation();
+} );
+$hammercoverM.on( 'tap', function( e ) {
 	$( '#play' ).click();
 	e.stopPropagation();
 } ).on( 'press', function( e ) {
 	$( '#stop' ).click();
 	e.stopPropagation();
-} ).on( 'swiperight', function( e ) {
-	$( '#previous' ).click();
-	e.stopPropagation();
-} ).on( 'swipeleft', function( e ) {
+} );
+$hammercoverR.on( 'tap', function( e ) {
 	$( '#next' ).click();
+	e.stopPropagation();
+} );
+$hammercoverB.on( 'tap', function( e ) {
+	var time = $( '#time-knob' ).is( ':visible' );
+	var coverart = $( '#coverart' ).is( ':visible' );
+	var volume = displayredis.volume != 0 && displayredis.volumempd != 0 && $( '#volume-knob' ).is( ':visible' );
+	if ( buttonhide == 0 ) {
+		buttonhide = 1;
+		$( '#play-group, #share-group, #vol-group' ).hide();
+	} else {
+		buttonhide = 0;
+		if ( time ) $( '#play-group' ).show();
+		if ( coverart ) $( '#share-group' ).show();
+		if ( volume ) $( '#vol-group' ).show();
+	}
+	
+	if ( window.innerHeight < 414 && $( '#play-group' ).is( ':hidden' ) ) {
+		$( '#play-group, #share-group, #vol-group' ).css( 'margin-top', '10px' );
+	}
+/*	$( '#divartist' ).toggleClass( 'hide', 
+		$( '#play-group, #share-group' ).is( ':visible' )
+		&& window.innerHeight < 385
+	);*/
+/*	$( '#sampling' ).toggleClass( 'hide', 
+		$( '#play-group, #share-group' ).is( ':visible' )
+		&& window.innerHeight < 340
+	);*/
 	e.stopPropagation();
 } );
 
@@ -267,7 +278,7 @@ $hammerplayback.on( 'press', function() {
 		}
 	} );
 	// disable from autohide
-	if ( window.innerWidth < 540 ) {
+	if ( window.innerWidth < 499 || window.innerHeight <= 515 ) {
 		$( 'input[name="bar"]' )
 			.prop( 'disabled', true )
 			.parent().css( 'color', '#7795b4' )
@@ -280,11 +291,18 @@ $hammerplayback.on( 'press', function() {
 			.parent().css( 'color', '#7795b4' )
 			.append( ' (disabled)' );
 	}
+	// disable from mpd volume
+	if ( window.innerWidth < 499 || window.innerHeight <= 320 ) {
+		$( 'input[name="buttons"]' )
+			.prop( 'disabled', true )
+			.parent().css( 'color', '#7795b4' )
+			.append( ' (auto hide)' );
+	}
 } );
 
-$hammerlibrary.on( 'tap', function( e ) {
+$hammerlibrary.on( 'tap', function() {
 	if ( $( '.home-block-remove' ).length && !$( e.target ).is( 'span.block-remove' ) ) $( '#db-homeSetup' ).click();
-} ).on( 'press', function() {
+} ).on( 'press', function( e ) {
 	if ( !$( '#db-currentpath' ).hasClass( 'hide' ) ) return
 	info( {
 		  title  : 'Libary Home'
@@ -320,37 +338,81 @@ $hammerlibrary.on( 'tap', function( e ) {
 			);
 		}
 	} );
+	e.stopPropagation();
 } );
 
-$hammerqueue.on( 'press', function() {
-	if ( !$( '#pl-filter-results' ).hasClass( 'hide' ) ) return
-	info( {
-		  title  : 'Queue Home'
-		, message: 'Select items to show:'
-		, checkboxhtml : '<form id="displaysavequeue" action="displaysave.php" method="post">\
-						<label><input name="bar" type="checkbox" '+ displayredis.bar +'>&ensp;Top-Bottom menu</label>\
-						</form>'
-		, cancel : 1
-		, ok     : function () {
-			$.post( 'displaysave.php',
-				$( '#displaysavequeue' ).serialize(),
-				function(data) {
-					if ( data ) {
-						displayqueue();
-					} else {
-						info( {
-							  title  : 'Queue Home'
-							, message: 'Save Queue home failed!'
-						} );
-					}
-				}
-			);
-		}
+var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+var observersearch = new MutationObserver( function() {
+	window.scrollTo( 0, 0 );
+});
+var observerdiv = document.getElementById( 'database-entries' );
+var observeroption = { childList: true };
+$( '#db-search' ).on( 'submit', function() {
+	dbtop = $( window ).scrollTop();
+	observersearch.observe( observerdiv, observeroption );
+	$( '#db-level-up' ).hide( function() { // addClass( 'hide' ) not work
+		observersearch.disconnect();
+	} );
+} );
+var observerback = new MutationObserver( function() {
+	window.scrollTo( 0, $( '#database-entries>li' ).eq( 0 ).attr( 'class' ) === 'db-folder' ? dbtop : 0 );
+});
+$( '#database-entries' ).click( function() {
+	dbtop = $( window ).scrollTop();
+	observerback.observe( observerdiv, observeroption );
+} );
+
+// replace functions in main runeui.js file **********************************************
+$( '#db-search-results' ).click( function() {
+	$( this ).addClass( 'hide' );
+	$( '#db-level-up, #db-currentpath' ).removeClass( 'hide' );
+	getDB( {
+		path: GUI.currentpath
+	} );
+	
+	$( '#database-entries' ).removeAttr( 'style' );
+	observerback.observe( observerdiv, observeroption );
+	$( '#db-level-up' ).show( function() {
+		observerback.disconnect();
 	} );
 } );
 
+} // enclose in main function to enable exit on 'return' **********************************
+mainenhance();
 // document ready end *********************************************************************
 } );
+
+function menubottom( show, hide ) {
+	$( '#menu-top, #menu-bottom' ).hide();
+	if ( $( '#panel-sx' ).hasClass( 'active' ) ) librarytop = $( window ).scrollTop();
+	if ( $( '#panel-dx' ).hasClass( 'active' ) ) queuetop = $( window ).scrollTop();
+	if ( /\/.*\//.test( location.pathname ) === false ) {
+		$( show ).show().addClass( 'active' );
+		$( hide ).hide().removeClass( 'active' );
+	} else {
+		window.location.href = '/';
+	}
+}
+function panelLR( lr ) {
+	var pcurrent = $( '.tab-pane:visible' ).prop( 'id' );
+	if ( pcurrent === 'panel-sx' ) {
+		var $pL = $( '#open-playback a' );
+		var $pR = $( '#open-panel-dx a' );
+	} else if ( pcurrent === 'playback' ) {
+		var $pL = $( '#open-panel-dx a' );
+		var $pR = $( '#open-panel-sx a' );
+	} else {
+		var $pL = $( '#open-panel-sx a' );
+		var $pR = $( '#open-playback a' );
+	}
+	$paneclick = ( lr === 'left' ) ? $pL.click() : $pR.click();
+}
+function bioshow() {
+	$( '#menu-top, #menu-bottom' ).hide();
+	$( '#songinfo-open' ).hide(); // fix button not hidden
+	$( '#bio' ).show();
+	$( '#loader' ).addClass( 'hide' );
+}
 
 // show/hide blocks database
 var path = /\/.*\//.test( location.pathname ) ? '../../' : ''; // fix path if click in other menu pages
@@ -360,8 +422,12 @@ $.get( path +'displayget.php', function( data ) {
 
 // #menu-top, #menu-bottom, #play-group, #share-group, #vol-group use show/hide to work with css
 function displaycommon() {
-	if ( displayredis.bar !== '' ) {
-		if ( window.innerWidth > 540 && window.innerHeight > 530 && $( '#bio' ).is( ':hidden' ) ) $( '#menu-top, #menu-bottom' ).show();
+	barhide = window.innerWidth < 499 || window.innerHeight < 515 ? 1 : 0;
+	if ( displayredis.bar !== ''
+		&& $( '#bio' ).is( ':hidden' )
+		&& barhide == 0
+	) {
+		$( '#menu-top, #menu-bottom' ).show();
 		$( '#database, #playlist' ).css( 'padding-top', '80px' );
 		$( '.btnlist-top' ).css( 'top', '40px' );
 	} else {
@@ -371,65 +437,72 @@ function displaycommon() {
 		
 		// for mouse only
 		if ( navigator.userAgent.match( /iPad|iPhone|iPod|android|webOS/i ) ) return;
-		var menuhide = 0;
 		$( '#bartop, #barbottom' ).mouseenter( function() {
 			var tb = $( this ).prop( 'id' ).replace( 'bar', '#menu-' );
 			if ( $( tb ).is( ':visible' ) ) {
-				menuhide = 0;
+				barhide = 0;
 			} else {
-				menuhide = 1;
+				barhide = 1;
 				$( tb ).show();
 			}
 		} );
 		$( '#menu-top, #menu-bottom' ).mouseleave( function() {
-			if ( menuhide ) $( '#menu-top, #menu-bottom' ).hide();
-			menuhide = 0;
+			if ( barhide ) $( '#menu-top, #menu-bottom' ).hide();
+			barhide = 0;
 		} );
 	}
 }
 // playback show/hide blocks
 function displayplayback() {
+	buttonhide = window.innerHeight <= 320 || window.innerWidth < 499 ? 1 : 0;
+
 	$.get( 'displayget.php', function( data ) {
 		displayredis = $.parseJSON( data );
 		var volume = ( displayredis.volume == '' || displayredis.volumempd == 0 ) ? 0 : 1;
 		$( '#pause' ).toggleClass( 'hide', !displayredis.pause );
-		$( '#time-knob' ).toggleClass( 'hide', !displayredis.time );
-		$( '#coverart' ).toggleClass( 'hide', !displayredis.coverart );
-		$( '#volume-knob' ).toggleClass( 'hide', !volume );
-		var eW = {
-			  3: '30%'
-			, 2: '40%'
-			, 1: '60%'
-		}
+		// reset to default css
+		$( '#playback-row, #time-knob, #coverart, #volume-knob, #play-group, #share-group, #vol-group' ).css( {
+			margin: '',
+			width: '',
+			'max-width': '',
+			order: '',
+			'-webkit-order': '',
+			display: ''
+		} );
+		$( '#time-knob, #play-group' ).toggleClass( 'hide', !displayredis.time );
+		$( '#coverart, #share-group' ).toggleClass( 'hide', !displayredis.coverart );
+		$( '#volume-knob, #vol-group' ).toggleClass( 'hide', !volume );
+		
 		var i = ( displayredis.time ? 1 : 0 ) + ( displayredis.coverart ? 1 : 0 ) + volume;
-		$( '#time-knob, #coverart, #volume-knob' ).css( 'width', eW[ i ] );
-		if ( window.innerWidth > 540 ) {
-			$( '#play-group, #share-group, #vol-group' ).css( 'width', eW[ i ] );
-			if ( !displayredis.time ) {
-				$( '#coverart' ).css( { 'order': '1', '-webkit-order': '1' } );
-				$( '#share-group' ).css( { 'order': '3', '-webkit-order': '3' } );
+//		if ( window.innerWidth < 749 ) {
+			if ( i == 2 && window.innerWidth > 499 ) {
+				if ( volume ) {
+					$( '#time-knob' ).css( { order: 1, '-webkit-order': '1' } );
+					$( '#coverart' ).css( { order: 2, '-webkit-order': '2' } );
+					$( '#volume-knob' ).css( { order: 3, '-webkit-order': '3' } );
+					$( '#play-group' ).css( { order: 4, '-webkit-order': '4' } );
+					$( '#share-group' ).css( { order: 5, '-webkit-order': '5' } );
+					$( '#vol-group' ).css( { order: 6, '-webkit-order': '6' } );
+				}
+				$( '#playback-row' ).css( 'max-width', '900px' );
+				$( '#time-knob, #coverart, #volume-knob, #play-group, #share-group, #vol-group' ).css( 'width', '45%' );
+			} else if ( i == 1 ) {
+				$( '#time-knob, #coverart, #volume-knob, #play-group, #share-group, #vol-group' ).css( 'width', '60%' );
 			}
-			if ( !displayredis.coverart ) {
-				$( '#play-group' ).css( { 'order': '3', '-webkit-order': '3' } );
-			}
-			if ( !displayredis.time || !displayredis.coverart ) {
-				$( '#volume-knob' ).css( { 'order': '2', '-webkit-order': '2' } );
-				$( '#vol-group' ).css( { 'order': '4', '-webkit-order': '4' } );
+/*			if ( !displayredis.time || !displayredis.coverart ) {
 				// fix oversize #volume-knob
 				if ( navigator.userAgent.match( /iPad|iPhone|iPod|android|webOS/i ) ) {
 					$( '#volume-knob' ).css( { 'padding-left': '25px' } )
 						.find( 'div' ).css( 'margin', '-10px 0' );
 				}
-			}
-			
-			$( '#play-group' ).toggle( displayredis.time != '' && displayredis.buttons != '' );
-			$( '#share-group' ).toggle( displayredis.coverart != '' && displayredis.buttons != '' );
-			$( '#vol-group' ).toggle( volume == 1 && displayredis.buttons != '' );
-		} else {
+			}*/
+//		}
+
+		if ( buttonhide || displayredis.buttons == '' ) {
+			buttonhide = 1;
 			$( '#play-group, #share-group, #vol-group' ).hide();
 		}
-
-		$( '#playback-row' ).removeClass( 'hide' );
+		$( '#playback-row' ).removeClass( 'hide' ); // restore - hidden by fix flash
 		
 		displaycommon();
 		
@@ -542,42 +615,6 @@ renderPlaylists = function( data ) {
 		if ( $( '#context-menu-playlist' ).hasClass( 'open' ) ) $( '#context-menu-playlist' ).removeClass( 'open' );
 	} );
 }
-
-var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
-var observersearch = new MutationObserver( function() {
-	window.scrollTo( 0, 0 );
-});
-var observerdiv = document.getElementById( 'database-entries' );
-var observeroption = { childList: true };
-$( '#db-search' ).on( 'submit', function() {
-	dbtop = $( window ).scrollTop();
-	observersearch.observe( observerdiv, observeroption );
-	$( '#db-level-up' ).hide( function() { // addClass( 'hide' ) not work
-		observersearch.disconnect();
-	} );
-} );
-var observerback = new MutationObserver( function() {
-	window.scrollTo( 0, $( '#database-entries>li' ).eq( 0 ).attr( 'class' ) === 'db-folder' ? dbtop : 0 );
-});
-$( '#database-entries' ).click( function() {
-	dbtop = $( window ).scrollTop();
-	observerback.observe( observerdiv, observeroption );
-} );
-
-// replace functions in main runeui.js file **********************************************
-$( '#db-search-results' ).click( function() {
-	$( this ).addClass( 'hide' );
-	$( '#db-level-up, #db-currentpath' ).removeClass( 'hide' );
-	getDB( {
-		path: GUI.currentpath
-	} );
-	
-	$( '#database-entries' ).removeAttr( 'style' );
-	observerback.observe( observerdiv, observeroption );
-	$( '#db-level-up' ).show( function() {
-		observerback.disconnect();
-	} );
-} );
 
 function timeConvert3( ss ) {
 	var hr = Math.floor( ss / 3600 );
@@ -694,17 +731,6 @@ function countdownRestart(startFrom) {
     display.countdown({since: -(startFrom), compact: true, format: 'MS'});
     var displayss = $('#countdown-display-ss').countdown('destroy');
     displayss.countdown({since: -(startFrom), compact: true, format: 'MS'});
-	
-	// move default lyrics here
-	// - prevent re-update on play-pause
-	// - easy to switch to 'lyrics addon'
-	$.ajax({
-		url: '/lyric/',
-		success: function(data){
-		   $('#lyric-text-overlay').html(data);
-		},
-		cache: false
-	});
 }
 GUI.json.mute = 0;
 function updateGUI() {

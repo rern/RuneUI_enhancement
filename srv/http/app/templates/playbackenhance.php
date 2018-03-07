@@ -36,6 +36,11 @@
                 </div>
                 <div id="coverart">
                     <img id="cover-art" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="transparent-square">
+                    <div id="coverT" class="covermap t0 w130 h50 m-65"></div>
+                    <div id="coverB" class="covermap t180 w130 h50 m-65"></div>
+                    <div id="coverM" class="covermap t50 w130 h130 m-65"></div>
+                    <div id="coverL" class="covermap t50 w50 h130 m-115"></div>
+                    <div id="coverR" class="covermap t50 w50 h130 m65"></div>
                 </div>
                 <div id="share-group">
                     <div class="btn-group">
@@ -47,7 +52,7 @@
                     <?php // fix smaller volume knob size in mobile
                     $wh = stristr($_SERVER['HTTP_USER_AGENT'], 'mobi') !== FALSE ? 250 : 230;
                     ?>
-                    <input id="volume" value="100" data-width=<?=$wh ?> data-height=<?=$wh ?> data-bgColor="#f00" data-thickness="0.25" data-skin="tron" data-cursor="true" data-angleArc="250" data-angleOffset="-125" data-readOnly="<?=$this->volume['readonly'] ?>" data-fgColor="<?=$this->volume['color'] ?>">
+                    <input id="volume" value="100" data-width=<?=$wh ?> data-height=<?=$wh ?> data-bgColor="#f00" data-thickness="0.25" data-skin="tron" data-cursor="true" data-angleArc="250" data-angleOffset="-125" data-readOnly="<?=$this->volume['readonly'] ?>" data-fgColor="<?=$this->volume['color'] ?>" disabled>
                 </div>
                 <div id="vol-group">
                     <div class="btn-group">
@@ -175,6 +180,8 @@
 <div id="bio" style="display: none;">
 	<div class="container">
 		<h1>BIO</h1><a id="closebio"><i class="fa fa-times fa-2x"></i></a>
-		<div id="biocontent"></div>
+		<div id="biocontent">
+			<div class="biosimilar"></div>
+		</div>
 	</div>
 </div>

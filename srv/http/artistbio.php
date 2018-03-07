@@ -1,10 +1,10 @@
 <?php
 $apikey = 'ba8ad00468a50732a3860832eaed0882';
 $artist = $_GET[ 'artist' ];
-$method = '&method=artist.getinfo&artist='.$artist;
+$method = '&method=artist.getinfo&artist='.urlencode( $artist );
 
 $ch = curl_init();
-curl_setopt( $ch, CURLOPT_URL, 'http://ws.audioscrobbler.com/2.0/?format=json&api_key='.$apikey.$method );
+curl_setopt( $ch, CURLOPT_URL, 'http://ws.audioscrobbler.com/2.0/?autocorrect=1&format=json&api_key='.$apikey.$method );
 curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 ); //return the transfer as a string 
 $data = curl_exec( $ch );
 curl_close( $ch );
@@ -22,7 +22,7 @@ $similar =  $data[ 'similar' ][ 'artist' ];
 $similars = '';
 foreach ( $similar as $name ) {
 	$similars.= '
-		<div id="biosimilar">
+		<div class="biosimilar">
 			<img src="'.$name[ 'image' ][ 2 ][ '#text' ].'"><br>
 			<p>'.$name[ 'name' ].'</p>
 		</div>
@@ -35,11 +35,13 @@ echo '
 		<img id="bioimg" src="'.$image.'">
 		<p>
 			'.$content.'
-			<br>
-			<span>Genre: </span>'.$genre.'<br>
-			<br>
-			<span>Similar Artists:</span><br>
-			'.$similars.'
 		</p>
+		<div style="clear: both;"></div>
+		<br>
+		<a>Genre: </a>'.$genre.'<span style="float: right;">Source: last.fm</span><br>
+		<br>
+		<a>Similar Artists:</a> <span>(click for bio of artists)</span><br>
+		<br>
+		'.$similars.'
 	</form>
 ';

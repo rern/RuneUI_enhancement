@@ -19,8 +19,9 @@ fi
 
 # remove files #######################################
 echo -e "$bar Remove files ..."
-rm -v /srv/http/app/templates/playbackcustom.php
-rm -v /srv/http/{artistinfo.php,displayget.php,displaysave.php}
+rm -v /srv/http/app/templates/playbackenhance.php
+rm -v /srv/http/{artistbio.php,displayget.php,displaysave.php}
+rm -v /srv/http/artistinfo.php &> /dev/null # tmp: to be removed
 path=/srv/http/assets
 rm -v $path/css/enhance.css
 rm -v $path/img/runelogo.svg
@@ -70,7 +71,7 @@ fi
 file=/srv/http/app/templates/playback.php
 echo $file
 sed -i -e '/^<?php$/,/^?>$/ d
-' -e '/playbackcustom.php/, /\/\*/ d
+' -e '/playbackenhance.php/, /\/\*/ d
 ' -e '/enh \*\/?>/ d
 ' $file
 
