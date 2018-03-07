@@ -2,13 +2,13 @@ RuneUI enhancement
 ---
 _Tested on RuneAudio 0.3 and 0.4b_   
 
-|   Controls   |    Pages     |   Buttons    |
-|--------------|--------------|--------------|
-| ![Controls](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-Controls.gif) | ![SwipePage](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-SwipePage.gif) | ![Buttons](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-Buttons.gif) | 
+|        Controls       |    Show/Hide Bars     |   Show/Hide Buttons   |
+|-----------------------|-----------------------|-----------------------|
+| ![Controls](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-Controls.gif) | ![Bars](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-Bars.gif) | ![Buttons](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-Buttons.gif) | 
 
-|   Show-Hide  |      Bio     |     Bars     |
-|--------------|--------------|--------------|
-|![PressShowHide](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-PressShowHide.gif) | ![Bio](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-Bio.gif) | ![Bars](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-Bars.gif) |
+|   Show/Hide Elements  |      Artist's Bio     |      Change Page      |
+|-----------------------|-----------------------|-----------------------|
+|![PressShowHide](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-PressShowHide.gif) | ![Bio](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-Bio.gif) | ![SwipePage](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-SwipePage.gif) |
 
 Features
 ---
