@@ -16,12 +16,6 @@ getinstallzip
 # modify files #######################################
 echo -e "$bar Modify files ..."
 
-file=/srv/http/app/playback_ctl.php
-echo $file
-sed -i '$ a\
-$template->local_browser = $redis->get("local_browser");
-' $file
-
 file=/srv/http/app/templates/header.php
 echo $file
 sed -i -e 's/RuneAudio - RuneUI/RuneUIe/
