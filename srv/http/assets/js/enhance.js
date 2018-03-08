@@ -17,9 +17,6 @@ if ( /\/.*\//.test( location.pathname ) === true ) {
 	return;
 }
 
-//barhide = $( '#menu-top, #menu-bottom' ).is( ':hidden' ) ? 1 : 0;
-//buttonhide =  $( '#play-group, #share-group, #vol-group' ).is( ':hidden' ) ? 1 : 0;
-buttonhide =  window.innerHeight <= 320 || window.innerWidth < 499 ? 1 : 0;
 librarytop = 0;
 queuetop = 0;
 
@@ -129,6 +126,8 @@ var $hammercoverR = new Hammer( document.getElementById( 'coverR' ) );
 var $hammercoverB = new Hammer( document.getElementById( 'coverB' ) );
 var $hammersonginfo = new Hammer( document.getElementById( 'songinfo-open' ) );
 var $hammervolume = new Hammer( document.getElementById( 'volume-knob' ).getElementsByTagName( 'canvas' )[ 0 ] );
+var $hammervolumedn = new Hammer( document.getElementById( 'volumedn' ) );
+var $hammervolumeup = new Hammer( document.getElementById( 'volumeup' ) );
 var $hammerlibrary = new Hammer( document.getElementById( 'home-blocks' ) );
 var $hammerplayback = new Hammer( document.getElementById( 'playback' ) );
 
@@ -197,7 +196,7 @@ $( '#closebio' ).click( function() {
 } );
 
 $( '#countdown-display' ).off( 'click' ); // disable default play-pause on click
-[ $hammertime, $hammervolume ].forEach( function( el ) {
+[ $hammertime, $hammervolume, $hammervolumedn, $hammervolumeup ].forEach( function( el ) {
 	el.on( 'press', function( e ) {
 		e.stopPropagation();
 	} );
@@ -1044,4 +1043,95 @@ function populateDB(options) {
 		$('#database-entries').css('width', '100%');
 	}
 
+}
+
+function commandButton(el) {
+    var dataCmd = el.data('cmd');
+    var cmd;
+    // stop
+    if (dataCmd === 'stop') {
+        el.addClass('btn-primary');
+        $('#play').removeClass('btn-primary');
+        if ($('#section-index').length) {
+            refreshTimer(0, 0, 'stop');
+            window.clearInterval(GUI.currentKnob);
+            $('.playlist').find('li').removeClass('active');
+            $('#total').html('00:00');
+            $('#total-ss').html('00:00');
+        }
+    }
+    // play/pause
+    else if (dataCmd === 'play') {
+        var state = GUI.state;
+        if (state === 'play') {
+            cmd = 'pause';
+            if ($('#section-index').length) {
+                $('#countdown-display').countdown('pause');
+                $('#countdown-display-ss').countdown('pause');
+            }
+        } else if (state === 'pause') {
+            cmd = 'play';
+            if ($('#section-index').length) {
+                $('#countdown-display').countdown('resume');
+                $('#countdown-display-ss').countdown('resume');
+            }
+        } else if (state === 'stop') {
+            cmd = 'play';
+            if ($('#section-index').length) {
+                $('#countdown-display').countdown({since: 0, compact: true, format: 'MS'});
+                $('#countdown-display-ss').countdown({since: 0, compact: true, format: 'MS'});
+            }
+        }
+        window.clearInterval(GUI.currentKnob);
+        sendCmd(cmd);
+        return;
+    }
+    // previous/next
+    else if (dataCmd === 'previous' || dataCmd === 'next') {
+        if ($('#section-index').length) {
+            $('#countdown-display').countdown('pause');
+            $('#countdown-display-ss').countdown('pause');
+            window.clearInterval(GUI.currentKnob);
+        }
+    }
+    // step volume control
+// fix: volume up/down not work on initial load/refresh
+// ****************************************************************************************
+    else if ( el.hasClass( 'btn-volume' ) ) {
+        var vol;
+        var knobvol = parseInt( $('#volume').val() );
+		if ( knobvol ) GUI.volume = knobvol;
+        if ( dataCmd === 'volumedn' && GUI.volume > 0) {
+            vol = GUI.volume - 1;
+            GUI.volume = vol;
+        } else if ( dataCmd === 'volumeup' && GUI.volume < 100 ) {
+            vol = GUI.volume + 1;
+            GUI.volume = vol;
+        } else if ( dataCmd === 'volumemute' ) {
+            if ( knobvol !== 0 ) {
+                GUI.volume = knobvol;
+                vol = 0;
+            } else {
+                vol = GUI.volume;
+            }
+        }
+        $( '#volumemute' ).toggleClass( 'btn-primary', dataCmd === 'volumemute' && knobvol != 0 );
+        if ( vol >= 0 && vol <= 100 ) {
+            sendCmd( 'setvol '+ vol );
+            $( '#volume' ).val(vol ).trigger( 'update' );
+        }
+        return;
+    }
+// ****************************************************************************************
+
+    // toggle buttons
+    if (el.hasClass('btn-toggle')) {
+        cmd = dataCmd + (el.hasClass('btn-primary')? ' 0':' 1');
+        el.toggleClass('btn-primary');
+    // send command
+    } else {
+        cmd = dataCmd;
+    }
+    sendCmd(cmd);
+    // console.log('sendCmd(' + cmd + ');');
 }
