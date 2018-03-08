@@ -1,11 +1,3 @@
-<?php // preserve page link from setting pages
-$redis = new Redis(); 
-$redis->pconnect( '127.0.0.1' );
-?>
-<script>
-	var page = "<?=$this->page;?>"
-</script>
-
 <div class="tab-content" id="content">
     <!-- PLAYBACK PANEL -->
     <div id="playback" class="tab-pane active">
