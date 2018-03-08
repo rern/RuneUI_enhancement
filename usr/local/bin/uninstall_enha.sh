@@ -32,10 +32,6 @@ mv /srv/http/app/coverart_ctl.php{.backup,}
 # restore modified files #######################################
 echo -e "$bar Restore modified files ..."
 
-file=/srv/http/app/playback_ctl.php
-echo $file
-sed -i '/template->local_browser/ d' $file
-
 file=/srv/http/app/templates/header.php
 echo $file
 sed -i -e 's|RuneUIe|RuneAudio - RuneUI|
