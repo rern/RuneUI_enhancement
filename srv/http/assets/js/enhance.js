@@ -10,8 +10,9 @@ if ( /\/.*\//.test( location.pathname ) === true ) {
 			location.href = '/';
 		} );
 		$( '#menu-bottom li' ).click( function() {
-			$.post( '/page.php', { 'page': this.id } );
-			location.href = '/';
+			$.post( '/redis.php', { 'cmd': 'set', 'key': 'page', 'value': this.id }, function() {
+				location.href = '/';
+			} );
 		} );
 	}
 	return;
@@ -34,8 +35,11 @@ $( '#open-panel-dx' ).click( function() {
 } );
 
 // back from setting pages
-if ( /\/.*\//.test( document.referrer ) == true && page !== 'open-playback' ) $( '#'+ page ).click();
-
+if ( /\/.*\//.test( document.referrer ) == true ) {
+	$.post( '/redis.php', { 'cmd': 'get', 'key': 'page', 'del': 1 }, function( page ) {
+		if ( page !== 'open-playback' ) $( '#'+ page ).click();
+	} );
+}
 // disabled local browser > disable screensaver events
 if ( !$( '#playback-ss' ).length ) $('#section-index').off( 'mousemove click keypress' );
 
