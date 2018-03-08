@@ -82,9 +82,6 @@ fi
 file=/srv/http/assets/js/vendor/jquery.knob.js
 echo $file
 sed '/DOMMouseScroll/ s|^|//|' $file
-file=/srv/http/assets/js/vendor/jquery.knob.min.js
-echo $file
-sed -i 's|\(this.*"mousewheel DOMMouseScroll".*"mousewheel DOMMouseScroll",mw)};\)|/*###enha###\1###enha###*/|' $file
 
 file=/srv/http/app/templates/playback.php
 echo $file
