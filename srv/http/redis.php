@@ -2,18 +2,23 @@
 $redis = new Redis(); 
 $redis->pconnect( '127.0.0.1' );
 
-if ( $_POST[ 'cmd' ] === 'set' ) {
-	$redis->set( $_POST[ 'key' ], $_POST[ 'value' ] );
-} else if ( $_POST[ 'cmd' ] === 'get' ) {
-	echo $redis->get( $_POST[ 'key' ] );
-	if ( isset( $_POST[ 'del' ] ) ) $redis->del( $_POST[ 'key' ] );
-} else if ( $_POST[ 'cmd' ] === 'del' ) {
-	$redis->del( $_POST[ 'key' ] );
-} else if ( $_POST[ 'cmd' ] === 'hset' ) {
-	$redis->hSet( $_POST[ 'key' ], $_POST[ 'hash' ], $_POST[ 'value' ] );
-} else if ( $_POST[ 'cmd' ] === 'hget' ) {
-	echo $redis->hGet( $_POST[ 'key' ], $_POST[ 'hash' ] );
-	if ( isset( $_POST[ 'del' ] ) ) $redis->hDel( $_POST[ 'key' ] );
-} else if ( $_POST[ 'cmd' ] === 'hdel' ) {
-	$redis->hDel( $_POST[ 'key' ], $_POST[ 'hash' ] );
+$cmd = $_POST[ 'cmd' ];
+$key = $_POST[ 'key' ];
+$value = $_POST[ 'value' ];
+$hash = $_POST[ 'hash' ];
+
+if ( $cmd === 'set' ) {
+	$redis->set( $key, $value );
+} else if ( $cmd === 'get' ) {
+	echo $redis->get( $key );
+	if ( isset( $_POST[ 'del' ] ) ) $redis->del( $key );
+} else if ( $cmd === 'del' ) {
+	$redis->del( $key );
+} else if ( $cmd === 'hset' ) {
+	$redis->hSet( $key, $hash, $value );
+} else if ( $cmd === 'hget' ) {
+	echo $redis->hGet( $key, $hash );
+	if ( isset( $_POST[ 'del' ] ) ) $redis->hDel( $key );
+} else if ( $cmd === 'hdel' ) {
+	$redis->hDel( $key, $hash );
 }
