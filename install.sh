@@ -19,8 +19,8 @@ echo -e "$bar Modify files ..."
 file=/srv/http/index.php
 echo $file
 sed -i '/render layout/ i\
-$template->page = $redis->get( 'page' );
-$redis->set( 'page', 'open-playback' );
+$template->page = $redis->get( "page" );\
+$redis->set( "page", "open-playback" );
 ' $file
 
 file=/srv/http/app/playback_ctl.php
