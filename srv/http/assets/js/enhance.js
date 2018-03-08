@@ -6,7 +6,11 @@ if ( /\/.*\//.test( location.pathname ) === true ) {
 	if ( window.innerWidth < 540 || window.innerHeight < 515 ) {
 		$( 'div.container' ).find( 'h1' ).before( '<a href="/" class="close-root"><i class="fa fa-times fa-2x"></i></a>' );
 	} else {
-		$( '.playback-controls button, #menu-bottom' ).click( function() {
+		$( '.playback-controls button' ).click( function() {
+			location.href = '/';
+		} );
+		$( '#menu-bottom li' ).click( function() {
+			$.post( '/page.php', { 'page': this.id } );
 			location.href = '/';
 		} );
 	}
@@ -31,6 +35,9 @@ $( '#open-panel-dx' ).click( function() {
 	menubottom( '#panel-dx', '#playback, #panel-sx' );
 	displayqueue();
 } );
+
+// back from setting pages
+if ( /\/.*\//.test( document.referrer ) == true && page !== 'open-playback' ) $( '#'+ page ).click();
 
 // disabled local browser > disable screensaver events
 if ( !$( '#playback-ss' ).length ) $('#section-index').off( 'mousemove click keypress' );
