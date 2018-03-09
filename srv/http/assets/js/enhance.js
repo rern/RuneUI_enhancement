@@ -1,4 +1,5 @@
 $( document ).ready( function() {
+
 // document ready start********************************************************************
 function mainenhance() { // enclose in main function to enable exit on 'return' ***********
 
@@ -10,7 +11,8 @@ if ( /\/.*\//.test( location.pathname ) === true ) {
 			location.href = '/';
 		} );
 		$( '#menu-bottom li' ).click( function() {
-			$.post( '/redis.php', { 'cmd': 'set', 'key': 'page', 'value': this.id }, function() {
+			var redis = { page: { cmd: 'set', key: 'page', value: this.id } };
+			$.post( '/redis.php', { json: JSON.stringify( redis ) }, function() {
 				location.href = '/';
 			} );
 		} );
@@ -36,7 +38,12 @@ $( '#open-panel-dx' ).click( function() {
 
 // back from setting pages
 if ( /\/.*\//.test( document.referrer ) == true ) {
-	$.post( '/redis.php', { 'cmd': 'get', 'key': 'page', 'del': 1 }, function( page ) {
+	var redis = { 
+		page: { 'cmd': 'get', 'key': 'page' },
+		del: { 'cmd': 'del', 'key': 'page' }
+	};
+	$.post( '/redis.php',{ json: JSON.stringify( redis ) }, function( data ) {
+		var page = JSON.parse( data ).page;
 		if ( page !== 'open-playback' ) $( '#'+ page ).click();
 	} );
 }
@@ -138,7 +145,7 @@ var $hammervolume = new Hammer( document.getElementById( 'volume-knob' ).getElem
 var $hammervolumedn = new Hammer( document.getElementById( 'volumedn' ) );
 var $hammervolumemute = new Hammer( document.getElementById( 'volumemute' ) );
 var $hammervolumeup = new Hammer( document.getElementById( 'volumeup' ) );
-var $hammerlibrary = new Hammer( document.getElementById( 'home-blocks' ) );
+var $hammerlibrary = new Hammer( document.getElementById( 'panel-sx' ) );
 var $hammerplayback = new Hammer( document.getElementById( 'playback' ) );
 
 $hammercontent.on( 'swiperight', function() {
@@ -311,8 +318,7 @@ $hammerplayback.on( 'press', function() {
 	info( {
 		  title  : 'Playback'
 		, message: 'Select items to show:'
-		, checkboxhtml : '<form id="displaysaveplayback" action="displaysave.php" method="post">\
-						<input name="playback" type="hidden" value="1">\
+		, checkboxhtml : '<form id="displaysaveplayback">\
 						<label><input name="bar" type="checkbox" '+ displayredis.bar +'>&ensp;Top-Bottom menu</label>\
 						<br><label><input name="pause" type="checkbox" '+ displayredis.pause +'>\
 							&ensp;<code><i class="fa fa-play"></i></code>&emsp;<code><i class="fa fa-pause"></i></code>&emsp;buttons\
@@ -324,10 +330,16 @@ $hammerplayback.on( 'press', function() {
 						</form>'
 		, cancel : 1
 		, ok     : function () {
-			$.post( 'displaysave.php',
-				$( '#displaysaveplayback' ).serialize(),
-				function(data) {
-					if ( data ) {
+			var data = {};
+			// no: serializeArray() omit unchecked fields
+			$( '#displaysaveplayback input' ).each( function() {
+				data[ this.name ] = this.checked ? 'checked' : '';
+			} );
+			var redis = { display: { cmd: 'hmset', key: 'display', value: data } };
+			$.post( '/redis.php', 
+				{ json: JSON.stringify( redis ) },
+				function( data ) {
+					if ( JSON.parse( data ).display ) {
 						displayplayback();
 					} else {
 						info( {
@@ -369,8 +381,7 @@ $hammerlibrary.on( 'tap', function() {
 	info( {
 		  title  : 'Libary Home'
 		, message: 'Select items to show:'
-		, checkboxhtml : '<form id="displaysavelibrary" action="displaysave.php" method="post">\
-						<input name="library" type="hidden" value="1">\
+		, checkboxhtml : '<form id="displaysavelibrary">\
 						<label><input name="bar" type="checkbox" '+ displayredis.bar +'>&ensp;Top-Bottom menu</label>\
 						<br><label><input name="nas" type="checkbox" '+ displayredis.nas +'>&ensp;Network mounts</label>\
 						<br><label><input name="usb" type="checkbox" '+ displayredis.usb +'>&ensp;USB storage</label>\
@@ -385,10 +396,15 @@ $hammerlibrary.on( 'tap', function() {
 						</form>'
 		, cancel : 1
 		, ok     : function () {
-			$.post( 'displaysave.php',
-				$( '#displaysavelibrary' ).serialize(),
-				function(data) {
-					if ( data ) {
+			var data = {};
+			$( '#displaysavelibrary input' ).each( function() {
+				data[ this.name ] = this.checked ? 'checked' : '';
+			} );
+			var redis = { display: { cmd: 'hmset', key: 'display', value: data } };
+			$.post( '/redis.php', 
+				{ json: JSON.stringify( redis ) },
+				function( data ) {
+					if ( JSON.parse( data ).display ) {
 						displaylibrary();
 					} else {
 						info( {
@@ -477,9 +493,12 @@ function bioshow() {
 }
 
 // show/hide blocks database
-var path = /\/.*\//.test( location.pathname ) ? '../../' : ''; // fix path if click in other menu pages
-$.get( path +'displayget.php', function( data ) {
-	var displayredis = $.parseJSON( data );
+var redis = {
+	display: { cmd: 'hGetAll', key: 'display'},
+	volumempd: { cmd: 'get', key: 'volume' }
+};
+$.post( '/redis.php', { json: JSON.stringify( redis ) }, function( data ) {
+	var displayredis = JSON.parse( data ).display;
 } );
 
 // #menu-top, #menu-bottom, #play-group, #share-group, #vol-group use show/hide to work with css
@@ -517,9 +536,11 @@ function displaycommon() {
 // playback show/hide blocks
 function displayplayback() {
 	buttonhide = window.innerHeight <= 320 || window.innerWidth < 499 ? 1 : 0;
-	
-	$.get( 'displayget.php', function( data ) {
-		displayredis = $.parseJSON( data );
+	var redis = { display: { cmd: 'hGetAll', key: 'display' } };
+	$.post( '/redis.php', 
+		{ json: JSON.stringify( redis ) },
+		function( data ) {
+		displayredis = JSON.parse( data ).display;
 		var volume = ( displayredis.volume == '' || displayredis.volumempd == 0 ) ? 0 : 1;
 		$( '#pause' ).toggleClass( 'hide', !displayredis.pause );
 		// reset to default css
@@ -583,8 +604,11 @@ function displayplayback() {
 }
 // library show/hide blocks
 function displaylibrary() {
-	$.get( 'displayget.php', function( data ) {
-		displayredis = $.parseJSON( data );
+	var redis = { display: { cmd: 'hGetAll', key: 'display' } };
+	$.post( '/redis.php', 
+		{ json: JSON.stringify( redis ) },
+		function( data ) {
+		displayredis = JSON.parse( data ).display;
 		// no 'id'
 		$( '#home-blocks div:contains(Network mounts)' ).toggleClass( 'hide', !displayredis.nas );
 		$( '#home-usb' ).parent().toggleClass( 'hide', !displayredis.usb );
@@ -621,8 +645,11 @@ function displaylibrary() {
 }
 // queue show/hide menu
 function displayqueue() {
-	$.get( 'displayget.php', function( data ) {
-		displayredis = $.parseJSON( data );
+	var redis = { display: { cmd: 'hGetAll', key: 'display' } };
+	$.post( '/redis.php', 
+		{ json: JSON.stringify( redis ) },
+		function( data ) {
+		displayredis = JSON.parse( data ).display;
 		displaycommon();
 		window.scrollTo( 0, queuetop );
 	} );
@@ -1166,13 +1193,19 @@ function commandButton(el) {
             if ( knobvol !== 0 ) {
                 vol = 0;
                 GUI.volume = knobvol;
-                $.post( '/redis.php', { cmd: 'set', key: 'volumecurrent', value: knobvol } );
+                var redis = { vol: { cmd: 'set', key: 'volumecurrent', value: knobvol } };
+                $.post( '/redis.php', { json: JSON.stringify( redis ) } );
             } else {
             	if ( GUI.volume ) {
                 	vol = GUI.volume;
                 } else {
-                	$.post( '/redis.php', { cmd: 'get', key: 'volumecurrent', del: 1 }, function( data ) {
-                		vol = parseInt( data );
+                	var redis = { 
+                		vol: { cmd: 'get', key: 'volumecurrent' },
+                		del: { cmd: 'del', key: 'volumecurrent' }
+                };
+                	$.post( '/redis.php', { json: JSON.stringify( redis ) }, function( data ) {
+                		var json = JSON.parse( data );
+                		vol = parseInt( json.vol );
                 		$( '#volumemute' ).removeClass( 'btn-primary' );
 				        sendCmd( 'setvol '+ vol );
 				        $( '#volume' ).val( vol ).trigger( 'update' );
