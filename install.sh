@@ -68,7 +68,7 @@ fi
 // disable scroll wheel on volume knob
 file=/srv/http/assets/js/vendor/jquery.knob.js
 echo $file
-sed '/DOMMouseScroll/ s|^|//|' $file
+sed -i '/DOMMouseScroll/ s|^|//|' $file
 
 file=/srv/http/app/templates/playback.php
 echo $file
