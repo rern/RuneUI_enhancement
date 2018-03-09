@@ -200,11 +200,48 @@ $( '#closebio' ).click( function() {
 } );
 
 $( '#countdown-display' ).off( 'click' ); // disable default play-pause on click
-[ $hammertime, $hammervolume, $hammervolumedn, $hammervolumeup ].forEach( function( el ) {
+[ $hammertime, $hammervolume ].forEach( function( el ) {
 	el.on( 'press', function( e ) {
 		e.stopPropagation();
 	} );
 } );
+
+var timeoutId;
+var intervalId;
+var interval;
+[ $hammervolumedn, $hammervolumeup ].forEach( function( el ) {
+	el.on( 'press', function( e ) {
+		if ( el.element.id === 'volumemute' ) return;
+		timeoutId = setTimeout( volumepress( 300, el.element.id ), 500 );
+		e.stopPropagation();
+	} );
+} );
+function volumepress( interval, id, fast ) {
+	var knobvol = parseInt( $( '#volume' ).val() );
+	if ( knobvol === 0 || knobvol === 100 ) return;
+	var vol = knobvol;
+	var increment = ( id === 'volumeup' ) ? 1 : -1;
+	var count = 0;
+	intervalId = setInterval( function() {
+		if ( !fast ) {
+			count++;
+			if ( count >= 8 ) {
+				clearInterval( intervalId );
+				volumepress( 50, id, 1 );
+			}
+		}
+		vol = vol + increment;
+		setvol( vol );
+		$( '#volume' ).val( vol ).trigger( 'update' );
+		if ( vol === 0 || vol === 100 ) clearInterval( intervalId );
+	}, interval );
+}
+$( '#volumedn, #volumeup' )
+	.unbind( 'mousedown' )
+	.on( 'touchend mouseleave mouseout mouseup', function() {
+		clearTimeout( timeoutId );
+		clearInterval( intervalId );
+});
 
 $hammercoverT.on( 'tap', function( e ) {
 	$( '#menu-top, #menu-bottom' ).toggle();
@@ -1052,7 +1089,6 @@ function populateDB(options) {
 function commandButton(el) {
     var dataCmd = el.data('cmd');
     var cmd;
-    // stop
     if (dataCmd === 'stop') {
         el.addClass('btn-primary');
         $('#play').removeClass('btn-primary');
@@ -1064,7 +1100,6 @@ function commandButton(el) {
             $('#total-ss').html('00:00');
         }
     }
-    // play/pause
     else if (dataCmd === 'play') {
         var state = GUI.state;
         if (state === 'play') {
@@ -1090,7 +1125,6 @@ function commandButton(el) {
         sendCmd(cmd);
         return;
     }
-    // previous/next
     else if (dataCmd === 'previous' || dataCmd === 'next') {
         if ($('#section-index').length) {
             $('#countdown-display').countdown('pause');
@@ -1105,7 +1139,7 @@ function commandButton(el) {
         var vol;
         var knobvol = parseInt( $('#volume').val() );
 		if ( knobvol ) GUI.volume = knobvol;
-        if ( dataCmd === 'volumedn' && GUI.volume > 0) {
+        if ( dataCmd === 'volumedn' && GUI.volume > 0 ) {
             vol = GUI.volume - 1;
             GUI.volume = vol;
         } else if ( dataCmd === 'volumeup' && GUI.volume < 100 ) {
@@ -1122,20 +1156,17 @@ function commandButton(el) {
         $( '#volumemute' ).toggleClass( 'btn-primary', dataCmd === 'volumemute' && knobvol != 0 );
         if ( vol >= 0 && vol <= 100 ) {
             sendCmd( 'setvol '+ vol );
-            $( '#volume' ).val(vol ).trigger( 'update' );
+            $( '#volume' ).val( vol ).trigger( 'update' );
         }
         return;
     }
 // ****************************************************************************************
-
-    // toggle buttons
     if (el.hasClass('btn-toggle')) {
         cmd = dataCmd + (el.hasClass('btn-primary')? ' 0':' 1');
         el.toggleClass('btn-primary');
-    // send command
     } else {
         cmd = dataCmd;
     }
     sendCmd(cmd);
-    // console.log('sendCmd(' + cmd + ');');
 }
+
