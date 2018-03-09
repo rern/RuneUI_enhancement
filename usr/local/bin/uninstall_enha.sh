@@ -77,7 +77,7 @@ sed -i '/if ( \$template->local_browser )/,/^}$/ d' $file
 
 file=/srv/http/assets/js/vendor/jquery.knob.js
 echo $file
-sed '/DOMMouseScroll/ s|^//||' $file
+sed -i '/DOMMouseScroll/ s|^//||' $file
 
 if [[ $1 != u ]]; then
 	file=/root/.config/midori/config
