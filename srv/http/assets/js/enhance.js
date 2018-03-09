@@ -103,6 +103,11 @@ $( '#open-library' ).click( function() {
 	$( '#open-panel-sx' ).click();
 } );
 
+buttonactive = 0;
+$( '#play-group, #share-group, #vol-group' ).click( function() {
+	buttonactive = 1;
+} );
+
 window.addEventListener( 'orientationchange', function() {
 	setTimeout( function() {
 		if ( $( '#playback' ).hasClass( 'active' ) ) {
@@ -212,6 +217,7 @@ var intervalId;
 var interval;
 [ $hammervolumedn, $hammervolumemute, $hammervolumeup ].forEach( function( el ) {
 	el.on( 'press', function( e ) {
+		buttonactive = 1;
 		e.stopPropagation();
 		if ( el.element.id === 'volumemute' ) {
 			$( '#volumemute' ).click();
@@ -268,10 +274,15 @@ $hammercoverR.on( 'tap', function( e ) {
 	e.stopPropagation();
 } );
 $hammercoverB.on( 'tap', function( e ) {
+	buttonactive = 0;
 	var time = $( '#time-knob' ).is( ':visible' );
 	var coverart = $( '#coverart' ).is( ':visible' );
 	var volume = displayredis.volume != 0 && displayredis.volumempd != 0 && $( '#volume-knob' ).is( ':visible' );
-	if ( buttonhide == 0 ) {
+	if ( buttonhide == 0 
+		|| $( '#play-group' ).is( ':visible' )
+		|| $( '#share-group' ).is( ':visible' )
+		|| $( '#vole-group' ).is( ':visible' )
+		) {
 		buttonhide = 1;
 		$( '#play-group, #share-group, #vol-group' ).hide();
 	} else {
@@ -284,6 +295,7 @@ $hammercoverB.on( 'tap', function( e ) {
 	if ( window.innerHeight < 414 && $( '#play-group' ).is( ':hidden' ) ) {
 		$( '#play-group, #share-group, #vol-group' ).css( 'margin-top', '10px' );
 	}
+	
 /*	$( '#divartist' ).toggleClass( 'hide', 
 		$( '#play-group, #share-group' ).is( ':visible' )
 		&& window.innerHeight < 385
@@ -505,7 +517,7 @@ function displaycommon() {
 // playback show/hide blocks
 function displayplayback() {
 	buttonhide = window.innerHeight <= 320 || window.innerWidth < 499 ? 1 : 0;
-
+	
 	$.get( 'displayget.php', function( data ) {
 		displayredis = $.parseJSON( data );
 		var volume = ( displayredis.volume == '' || displayredis.volumempd == 0 ) ? 0 : 1;
@@ -522,7 +534,7 @@ function displayplayback() {
 		$( '#time-knob, #play-group' ).toggleClass( 'hide', !displayredis.time );
 		$( '#coverart, #share-group' ).toggleClass( 'hide', !displayredis.coverart );
 		$( '#volume-knob, #vol-group' ).toggleClass( 'hide', !volume );
-		
+		$( '#volumemute' ).toggleClass( 'btn-primary', $( '#volume' ).val() == 0 );
 		var i = ( displayredis.time ? 1 : 0 ) + ( displayredis.coverart ? 1 : 0 ) + volume;
 //		if ( window.innerWidth < 749 ) {
 			if ( i == 2 && window.innerWidth > 499 ) {
@@ -552,6 +564,7 @@ function displayplayback() {
 			buttonhide = 1;
 			$( '#play-group, #share-group, #vol-group' ).hide();
 		}
+		if ( buttonactive ) $( '#play-group, #share-group, #vol-group' ).show();
 		$( '#playback-row' ).removeClass( 'hide' ); // restore - hidden by fix flash
 		
 		displaycommon();
@@ -1142,7 +1155,7 @@ function commandButton(el) {
     else if ( el.hasClass( 'btn-volume' ) ) {
         var vol;
         var knobvol = parseInt( $('#volume').val() );
-		if ( knobvol ) GUI.volume = knobvol;
+        if ( knobvol ) GUI.volume = knobvol;
         if ( dataCmd === 'volumedn' && GUI.volume > 0 ) {
             vol = GUI.volume - 1;
             GUI.volume = vol;
@@ -1151,13 +1164,24 @@ function commandButton(el) {
             GUI.volume = vol;
         } else if ( dataCmd === 'volumemute' ) {
             if ( knobvol !== 0 ) {
-                GUI.volume = knobvol;
                 vol = 0;
+                GUI.volume = knobvol;
+                $.post( '/redis.php', { cmd: 'set', key: 'volumecurrent', value: knobvol } );
             } else {
-                vol = GUI.volume;
+            	if ( GUI.volume ) {
+                	vol = GUI.volume;
+                } else {
+                	$.post( '/redis.php', { cmd: 'get', key: 'volumecurrent', del: 1 }, function( data ) {
+                		vol = parseInt( data );
+                		$( '#volumemute' ).removeClass( 'btn-primary' );
+				        sendCmd( 'setvol '+ vol );
+				        $( '#volume' ).val( vol ).trigger( 'update' );
+				        return;
+                	} );
+                }
             }
         }
-        $( '#volumemute' ).toggleClass( 'btn-primary', dataCmd === 'volumemute' && knobvol != 0 );
+        $( '#volumemute' ).toggleClass( 'btn-primary', dataCmd === 'volumemute' && vol == 0 );
         if ( vol >= 0 && vol <= 100 ) {
             sendCmd( 'setvol '+ vol );
             $( '#volume' ).val( vol ).trigger( 'update' );
