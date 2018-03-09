@@ -213,7 +213,10 @@ var interval;
 [ $hammervolumedn, $hammervolumemute, $hammervolumeup ].forEach( function( el ) {
 	el.on( 'press', function( e ) {
 		e.stopPropagation();
-		if ( el.element.id === 'volumemute' ) return;
+		if ( el.element.id === 'volumemute' ) {
+			$( '#volumemute' ).click();
+			return;
+		}
 		timeoutId = setTimeout( volumepress( 300, el.element.id ), 500 );
 	} );
 } );
