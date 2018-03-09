@@ -2,23 +2,23 @@
 $redis = new Redis(); 
 $redis->pconnect( '127.0.0.1' );
 
-$cmd = $_POST[ 'cmd' ];
-$key = $_POST[ 'key' ];
-$value = $_POST[ 'value' ];
-$hash = $_POST[ 'hash' ];
+$array = json_decode( $_POST[ 'json' ], true );
 
-if ( $cmd === 'set' ) {
-	$redis->set( $key, $value );
-} else if ( $cmd === 'get' ) {
-	echo $redis->get( $key );
-	if ( isset( $_POST[ 'del' ] ) ) $redis->del( $key );
-} else if ( $cmd === 'del' ) {
-	$redis->del( $key );
-} else if ( $cmd === 'hset' ) {
-	$redis->hSet( $key, $hash, $value );
-} else if ( $cmd === 'hget' ) {
-	echo $redis->hGet( $key, $hash );
-	if ( isset( $_POST[ 'del' ] ) ) $redis->hDel( $key );
-} else if ( $cmd === 'hdel' ) {
-	$redis->hDel( $key, $hash );
+foreach ( $array as $field => $arg ) {
+	$cmd = $arg[ 'cmd' ];
+	$key = $arg[ 'key' ];
+	$hash = $arg[ 'hash' ];
+	$value = $arg[ 'value' ];
+	
+	if ( $cmd == 'set' || $cmd == 'hmset' ) {
+		$result[ $field ] = $redis->$cmd( $key, $value );
+	} else if ( $cmd == 'get' || $cmd == 'hGetAll' || $cmd == 'del' ) {
+		$result[ $field ] = $redis->$cmd( $key );
+	} else if ( $cmd == 'hSet' ) {
+		$result[ $field ] = $redis->$cmd( $key, $hash, $value );
+	} else if ( $cmd == 'hGet' || $cmd == 'hDel' ) {
+		$result[ $field ] = $redis->$cmd( $key, $hash );
+	} 
 }
+
+echo json_encode( $result );
