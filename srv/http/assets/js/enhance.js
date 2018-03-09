@@ -131,6 +131,7 @@ var $hammercoverB = new Hammer( document.getElementById( 'coverB' ) );
 var $hammersonginfo = new Hammer( document.getElementById( 'songinfo-open' ) );
 var $hammervolume = new Hammer( document.getElementById( 'volume-knob' ).getElementsByTagName( 'canvas' )[ 0 ] );
 var $hammervolumedn = new Hammer( document.getElementById( 'volumedn' ) );
+var $hammervolumemute = new Hammer( document.getElementById( 'volumemute' ) );
 var $hammervolumeup = new Hammer( document.getElementById( 'volumeup' ) );
 var $hammerlibrary = new Hammer( document.getElementById( 'home-blocks' ) );
 var $hammerplayback = new Hammer( document.getElementById( 'playback' ) );
@@ -209,11 +210,11 @@ $( '#countdown-display' ).off( 'click' ); // disable default play-pause on click
 var timeoutId;
 var intervalId;
 var interval;
-[ $hammervolumedn, $hammervolumeup ].forEach( function( el ) {
+[ $hammervolumedn, $hammervolumemute, $hammervolumeup ].forEach( function( el ) {
 	el.on( 'press', function( e ) {
+		e.stopPropagation();
 		if ( el.element.id === 'volumemute' ) return;
 		timeoutId = setTimeout( volumepress( 300, el.element.id ), 500 );
-		e.stopPropagation();
 	} );
 } );
 function volumepress( interval, id, fast ) {
@@ -1170,3 +1171,5 @@ function commandButton(el) {
     sendCmd(cmd);
 }
 
+function vol_down_interval() {}
+function vol_up_interval() {}
