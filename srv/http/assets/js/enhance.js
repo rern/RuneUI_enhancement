@@ -141,6 +141,7 @@ var $hammercoverR = new Hammer( document.getElementById( 'coverR' ) );
 var $hammercoverB = new Hammer( document.getElementById( 'coverB' ) );
 var $hammersonginfo = new Hammer( document.getElementById( 'songinfo-open' ) );
 var $hammervolume = new Hammer( document.getElementById( 'volume-knob' ).getElementsByTagName( 'canvas' )[ 0 ] );
+var $hammervolumenum = new Hammer( document.getElementById( 'volume' ) );
 var $hammervolumedn = new Hammer( document.getElementById( 'volumedn' ) );
 var $hammervolumemute = new Hammer( document.getElementById( 'volumemute' ) );
 var $hammervolumeup = new Hammer( document.getElementById( 'volumeup' ) );
@@ -218,6 +219,10 @@ $( '#countdown-display' ).off( 'click' ); // disable default play-pause on click
 	} );
 } );
 
+$hammervolumenum.on( 'tap', function( e ) {
+	$( '#volumemute' ).click();
+} );
+
 $hammercoverT.on( 'tap', function( e ) {
 	$( '#menu-top, #menu-bottom' ).toggle();
 	barhide = $( '#menu-top' ).is( ':hidden' ) ? 1 : 0;
@@ -273,7 +278,7 @@ $hammercoverB.on( 'tap', function( e ) {
 	);*/
 	e.stopPropagation();
 } );
-[ $hammervolumedn, $hammervolumemute, $hammervolumeup ].forEach( function( el ) {
+[ $hammervolumenum, $hammervolumedn, $hammervolumemute, $hammervolumeup ].forEach( function( el ) {
 	el.on( 'press', function( e ) {
 		e.stopPropagation();
 	} );
