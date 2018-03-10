@@ -21,7 +21,6 @@ fi
 echo -e "$bar Remove files ..."
 rm -v /srv/http/app/templates/playbackenhance.php
 rm -v /srv/http/enhance*
-rm -v /srv/http/artistinfo.php &> /dev/null # tmp: to be removed
 path=/srv/http/assets
 rm -v $path/css/enhance.css
 rm -v $path/img/runelogo.svg
