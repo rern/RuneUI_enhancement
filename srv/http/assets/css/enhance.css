@@ -537,7 +537,7 @@
 	}
 	#menu-top,
 	#menu-bottom { 
-		display: none !important;
+		display: none;
 	}
 	#menu-top {
 		padding: 0;
