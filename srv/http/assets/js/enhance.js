@@ -1,7 +1,5 @@
 $( document ).ready( function() {
-
 // document ready start********************************************************************
-function mainenhance() { // enclose in main function to enable exit on 'return' ***********
 
 if ( /\/.*\//.test( location.pathname ) === true ) {
 	if ( window.innerWidth < 540 || window.innerHeight < 515 ) {
@@ -11,8 +9,8 @@ if ( /\/.*\//.test( location.pathname ) === true ) {
 			location.href = '/';
 		} );
 		$( '#menu-bottom li' ).click( function() {
-			var redis = { page: { cmd: 'set', key: 'page', value: this.id } };
-			$.post( '/redis.php', { json: JSON.stringify( redis ) }, function() {
+			var redis = { page: [ 'set', 'page', this.id ] };
+			$.post( '/enhanceredis.php', { json: JSON.stringify( redis ) }, function(data) {
 				location.href = '/';
 			} );
 		} );
@@ -39,10 +37,10 @@ $( '#open-panel-dx' ).click( function() {
 // back from setting pages
 if ( /\/.*\//.test( document.referrer ) == true ) {
 	var redis = { 
-		page: { 'cmd': 'get', 'key': 'page' },
-		del: { 'cmd': 'del', 'key': 'page' }
+		page: [ 'get', 'page' ],
+		del: [ 'del', 'page' ]
 	};
-	$.post( '/redis.php',{ json: JSON.stringify( redis ) }, function( data ) {
+	$.post( '/enhanceredis.php',{ json: JSON.stringify( redis ) }, function( data ) {
 		var page = JSON.parse( data ).page;
 		if ( page !== 'open-playback' ) $( '#'+ page ).click();
 	} );
@@ -219,47 +217,6 @@ $( '#countdown-display' ).off( 'click' ); // disable default play-pause on click
 	} );
 } );
 
-var timeoutId;
-var intervalId;
-var interval;
-[ $hammervolumedn, $hammervolumemute, $hammervolumeup ].forEach( function( el ) {
-	el.on( 'press', function( e ) {
-		buttonactive = 1;
-		e.stopPropagation();
-		if ( el.element.id === 'volumemute' ) {
-			$( '#volumemute' ).click();
-			return;
-		}
-		timeoutId = setTimeout( volumepress( 300, el.element.id ), 500 );
-	} );
-} );
-function volumepress( interval, id, fast ) {
-	var knobvol = parseInt( $( '#volume' ).val() );
-	if ( knobvol === 0 || knobvol === 100 ) return;
-	var vol = knobvol;
-	var increment = ( id === 'volumeup' ) ? 1 : -1;
-	var count = 0;
-	intervalId = setInterval( function() {
-		if ( !fast ) {
-			count++;
-			if ( count >= 8 ) {
-				clearInterval( intervalId );
-				volumepress( 50, id, 1 );
-			}
-		}
-		vol = vol + increment;
-		setvol( vol );
-		$( '#volume' ).val( vol ).trigger( 'update' );
-		if ( vol === 0 || vol === 100 ) clearInterval( intervalId );
-	}, interval );
-}
-$( '#volumedn, #volumeup' )
-	.unbind( 'mousedown' )
-	.on( 'touchend mouseleave mouseout mouseup', function() {
-		clearTimeout( timeoutId );
-		clearInterval( intervalId );
-});
-
 $hammercoverT.on( 'tap', function( e ) {
 	$( '#menu-top, #menu-bottom' ).toggle();
 	barhide = $( '#menu-top' ).is( ':hidden' ) ? 1 : 0;
@@ -314,6 +271,45 @@ $hammercoverB.on( 'tap', function( e ) {
 	e.stopPropagation();
 } );
 
+var timeoutId;
+var intervalId;
+var interval;
+[ $hammervolumedn, $hammervolumemute, $hammervolumeup ].forEach( function( el ) {
+	el.on( 'press', function( e ) {
+		buttonactive = 1;
+		e.stopPropagation();
+		if ( el.element.id === 'volumemute' ) {
+			$( '#volumemute' ).click();
+			return;
+		}
+		timeoutId = setTimeout( volumepress( 300, el.element.id ), 500 );
+	} ).on( 'pressup panstart', function() {
+		clearTimeout( timeoutId );
+		clearInterval( intervalId );
+	} );
+});
+function volumepress( interval, id, fast ) {
+	var knobvol = parseInt( $( '#volume' ).val() );
+	var vol = knobvol;
+	var increment = ( id === 'volumeup' ) ? 1 : -1;
+	if ( ( increment === -1 && knobvol === 0 )
+		|| ( increment === 1 && knobvol === 100 ) ) return;
+	var count = 0;
+	intervalId = setInterval( function() {
+		if ( !fast ) {
+			count++;
+			if ( count >= 8 ) {
+				clearInterval( intervalId );
+				volumepress( 50, id, 1 );
+			}
+		}
+		vol = vol + increment;
+		setvol( vol );
+		$( '#volume' ).val( vol ).trigger( 'update' );
+		if ( vol === 0 || vol === 100 ) clearInterval( intervalId );
+	}, interval );
+}
+
 $hammerplayback.on( 'press', function() {
 	info( {
 		  title  : 'Playback'
@@ -335,8 +331,8 @@ $hammerplayback.on( 'press', function() {
 			$( '#displaysaveplayback input' ).each( function() {
 				data[ this.name ] = this.checked ? 'checked' : '';
 			} );
-			var redis = { display: { cmd: 'hmset', key: 'display', value: data } };
-			$.post( '/redis.php', 
+			var redis = { display: [ 'hmset', 'display', data ] };
+			$.post( '/enhanceredis.php', 
 				{ json: JSON.stringify( redis ) },
 				function( data ) {
 					if ( JSON.parse( data ).display ) {
@@ -400,8 +396,8 @@ $hammerlibrary.on( 'tap', function() {
 			$( '#displaysavelibrary input' ).each( function() {
 				data[ this.name ] = this.checked ? 'checked' : '';
 			} );
-			var redis = { display: { cmd: 'hmset', key: 'display', value: data } };
-			$.post( '/redis.php', 
+			var redis = { display: [ 'hmset', 'display', data ] };
+			$.post( '/enhanceredis.php', 
 				{ json: JSON.stringify( redis ) },
 				function( data ) {
 					if ( JSON.parse( data ).display ) {
@@ -455,8 +451,6 @@ $( '#db-search-results' ).click( function() {
 	} );
 } );
 
-} // enclose in main function to enable exit on 'return' **********************************
-mainenhance();
 // document ready end *********************************************************************
 } );
 
@@ -494,10 +488,10 @@ function bioshow() {
 
 // show/hide blocks database
 var redis = {
-	display: { cmd: 'hGetAll', key: 'display'},
-	volumempd: { cmd: 'get', key: 'volume' }
+	display: [ 'hGetAll', 'display' ],
+	volumempd: [ 'get', 'volume' ]
 };
-$.post( '/redis.php', { json: JSON.stringify( redis ) }, function( data ) {
+$.post( '/enhanceredis.php', { json: JSON.stringify( redis ) }, function( data ) {
 	var displayredis = JSON.parse( data ).display;
 } );
 
@@ -536,8 +530,8 @@ function displaycommon() {
 // playback show/hide blocks
 function displayplayback() {
 	buttonhide = window.innerHeight <= 320 || window.innerWidth < 499 ? 1 : 0;
-	var redis = { display: { cmd: 'hGetAll', key: 'display' } };
-	$.post( '/redis.php', 
+	var redis = { display: [ 'hGetAll', 'display' ] };
+	$.post( '/enhanceredis.php', 
 		{ json: JSON.stringify( redis ) },
 		function( data ) {
 		displayredis = JSON.parse( data ).display;
@@ -555,7 +549,9 @@ function displayplayback() {
 		$( '#time-knob, #play-group' ).toggleClass( 'hide', !displayredis.time );
 		$( '#coverart, #share-group' ).toggleClass( 'hide', !displayredis.coverart );
 		$( '#volume-knob, #vol-group' ).toggleClass( 'hide', !volume );
+		
 		$( '#volumemute' ).toggleClass( 'btn-primary', $( '#volume' ).val() == 0 );
+		
 		var i = ( displayredis.time ? 1 : 0 ) + ( displayredis.coverart ? 1 : 0 ) + volume;
 //		if ( window.innerWidth < 749 ) {
 			if ( i == 2 && window.innerWidth > 499 ) {
@@ -604,8 +600,8 @@ function displayplayback() {
 }
 // library show/hide blocks
 function displaylibrary() {
-	var redis = { display: { cmd: 'hGetAll', key: 'display' } };
-	$.post( '/redis.php', 
+	var redis = { display: [ 'hGetAll', 'display' ] };
+	$.post( '/enhanceredis.php', 
 		{ json: JSON.stringify( redis ) },
 		function( data ) {
 		displayredis = JSON.parse( data ).display;
@@ -645,8 +641,8 @@ function displaylibrary() {
 }
 // queue show/hide menu
 function displayqueue() {
-	var redis = { display: { cmd: 'hGetAll', key: 'display' } };
-	$.post( '/redis.php', 
+	var redis = { display: [ 'hGetAll', 'display' ] };
+	$.post( '/enhanceredis.php', 
 		{ json: JSON.stringify( redis ) },
 		function( data ) {
 		displayredis = JSON.parse( data ).display;
@@ -1193,17 +1189,17 @@ function commandButton(el) {
             if ( knobvol !== 0 ) {
                 vol = 0;
                 GUI.volume = knobvol;
-                var redis = { vol: { cmd: 'set', key: 'volumecurrent', value: knobvol } };
-                $.post( '/redis.php', { json: JSON.stringify( redis ) } );
+                var redis = { vol: [ 'set', 'volumecurrent', knobvol ] };
+                $.post( '/enhanceredis.php', { json: JSON.stringify( redis ) } );
             } else {
             	if ( GUI.volume ) {
                 	vol = GUI.volume;
                 } else {
                 	var redis = { 
-                		vol: { cmd: 'get', key: 'volumecurrent' },
-                		del: { cmd: 'del', key: 'volumecurrent' }
-                };
-                	$.post( '/redis.php', { json: JSON.stringify( redis ) }, function( data ) {
+                		vol: [ 'get', 'volumecurrent' ],
+                		del: [ 'del', 'volumecurrent' ]
+                	};
+                	$.post( '/enhanceredis.php', { json: JSON.stringify( redis ) }, function( data ) {
                 		var json = JSON.parse( data );
                 		vol = parseInt( json.vol );
                 		$( '#volumemute' ).removeClass( 'btn-primary' );
@@ -1230,6 +1226,3 @@ function commandButton(el) {
     }
     sendCmd(cmd);
 }
-
-function vol_down_interval() {}
-function vol_up_interval() {}
