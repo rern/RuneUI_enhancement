@@ -133,6 +133,7 @@ var $hammerbarleft = new Hammer( document.getElementById( 'barleft' ) );
 var $hammerbarright = new Hammer( document.getElementById( 'barright' ) );
 var $hammerartist = new Hammer( document.getElementById( 'currentartist' ) );
 var $hammertime = new Hammer( document.getElementById( 'time-knob' ).getElementsByTagName( 'canvas' )[ 0 ] );
+var $hammertimecount = new Hammer( document.getElementById( 'countdown-display' ) );
 var $hammercoverT = new Hammer( document.getElementById( 'coverT' ) );
 var $hammercoverL = new Hammer( document.getElementById( 'coverL' ) );
 var $hammercoverM = new Hammer( document.getElementById( 'coverM' ) );
@@ -226,12 +227,14 @@ $hammercoverL.on( 'tap', function( e ) {
 	$( '#previous' ).click();
 	e.stopPropagation();
 } );
-$hammercoverM.on( 'tap', function( e ) {
-	$( '#play' ).click();
-	e.stopPropagation();
-} ).on( 'press', function( e ) {
-	$( '#stop' ).click();
-	e.stopPropagation();
+[ $hammercoverM, $hammertimecount ].forEach( function( el ) {
+	el.on( 'tap', function( e ) {
+		$( '#play' ).click();
+		e.stopPropagation();
+	} ).on( 'press', function( e ) {
+		$( '#stop' ).click();
+		e.stopPropagation();
+	} );
 } );
 $hammercoverR.on( 'tap', function( e ) {
 	$( '#next' ).click();
@@ -270,7 +273,12 @@ $hammercoverB.on( 'tap', function( e ) {
 	);*/
 	e.stopPropagation();
 } );
-
+[ $hammervolumedn, $hammervolumemute, $hammervolumeup ].forEach( function( el ) {
+	el.on( 'press', function( e ) {
+		e.stopPropagation();
+	} );
+} );
+/*
 var timeoutId;
 var intervalId;
 var interval;
@@ -283,7 +291,7 @@ var interval;
 			return;
 		}
 		timeoutId = setTimeout( volumepress( 300, el.element.id ), 500 );
-	} ).on( 'pressup panstart', function() {
+	} ).on( 'pressup panstart touchend', function() {
 		clearTimeout( timeoutId );
 		clearInterval( intervalId );
 	} );
@@ -305,11 +313,11 @@ function volumepress( interval, id, fast ) {
 		}
 		vol = vol + increment;
 		setvol( vol );
-		$( '#volume' ).val( vol ).trigger( 'update' );
+		$( '#volume' ).val( vol ).trigger( 'change' );
 		if ( vol === 0 || vol === 100 ) clearInterval( intervalId );
 	}, interval );
 }
-
+*/
 $hammerplayback.on( 'press', function() {
 	info( {
 		  title  : 'Playback'
