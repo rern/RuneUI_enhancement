@@ -181,7 +181,7 @@ $hammerbarright.on( 'tap', function() {
 		$( '#loader' ).removeClass( 'hide' );
 		
 		if ( $( '#bio legend' ).text() != GUI.json.currentartist ) {
-			$.get( 'artistbio.php',
+			$.get( '/enhancebio.php',
 				{ artist: GUI.json.currentartist },
 				function( data ) {
 					$( '#biocontent' ).html( data );
@@ -195,7 +195,7 @@ $hammerbarright.on( 'tap', function() {
 } );
 $( '#biocontent' ).delegate( '.biosimilar', 'click', function() {
 	$( '#loader' ).removeClass( 'hide' );
-	$.get( 'artistbio.php',
+	$.get( '/enhancebio.php',
 		{ artist: $( this ).find( 'p' ).text() },
 		function( data ) {
 			$( '#biocontent' ).html( data );
