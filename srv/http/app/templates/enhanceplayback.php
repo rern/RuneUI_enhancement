@@ -22,7 +22,7 @@
             </div>
             <div class="row hide" id="playback-row">
                 <div id="time-knob">
-                    <input id="time" value="0" data-width="230" data-height="230" data-bgColor="#34495E" data-fgcolor="#0095D8" data-thickness="0.30" data-min="0" data-max="1000" data-displayInput="false" data-displayPrevious="true">
+                    <input id="time" value="0" data-width="230" data-height="230" data-bgColor="#34495E" data-fgcolor="#0095D8" data-thickness="0.25" data-min="0" data-max="1000" data-displayInput="false" data-displayPrevious="true">
                     <button id="overlay-playsource-open" class="btn btn-default btn-xs">MPD</button>
                     <span id="countdown-display"><i class="fa fa-spinner fa-spin"></i></span>
                     <span id="total"><i class="fa fa-spinner fa-spin"></i></span>
@@ -52,7 +52,7 @@
                     <?php // fix smaller volume knob size in mobile
                     $wh = stristr($_SERVER['HTTP_USER_AGENT'], 'mobi') !== FALSE ? 250 : 230;
                     ?>
-                    <input id="volume" value="100" data-width=<?=$wh ?> data-height=<?=$wh ?> data-bgColor="#f00" data-thickness="0.25" data-skin="tron" data-cursor="true" data-angleArc="250" data-angleOffset="-125" data-readOnly="<?=$this->volume['readonly'] ?>" data-fgColor="<?=$this->volume['color'] ?>" data-dynamic="<?=$this->volume['dynamic'] ?>" disabled>
+                    <input id="volume" value="100" data-width=<?=$wh ?> data-height=<?=$wh ?> data-thickness="0.25" data-skin="tron" data-cursor="true" data-angleArc="250" data-angleOffset="-125" data-dynamic="<?=$this->volume['dynamic'] ?>" disabled>
                 </div>
                 <div id="vol-group">
                     <div class="btn-group">
