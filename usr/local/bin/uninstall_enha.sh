@@ -19,7 +19,7 @@ fi
 
 # remove files #######################################
 echo -e "$bar Remove files ..."
-rm -v /srv/http/app/templates/playbackenhance.php
+rm -v /srv/http/app/templates/enhanceplayback.php
 rm -v /srv/http/enhance*
 path=/srv/http/assets
 rm -v $path/css/enhance.css
@@ -66,7 +66,7 @@ fi
 file=/srv/http/app/templates/playback.php
 echo $file
 sed -i -e '/^<?php$/,/^?>$/ d
-' -e '/playbackenhance.php/, /\/\*/ d
+' -e '/enhanceplayback.php/, /\/\*/ d
 ' -e '/enh \*\/?>/ d
 ' $file
 
