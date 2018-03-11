@@ -600,11 +600,15 @@ function displaycommon() {
 // playback show/hide blocks
 function displayplayback() {
 	buttonhide = window.innerHeight <= 320 || window.innerWidth < 499 ? 1 : 0;
-	var redis = { display: [ 'hGetAll', 'display' ] };
+	var redis = {
+		display: [ 'hGetAll', 'display' ],
+		volumempd: [ 'get', 'volume' ]
+	};
 	$.post( '/enhanceredis.php', 
 		{ json: JSON.stringify( redis ) },
 		function( data ) {
-		displayredis = JSON.parse( data ).display;
+		var data = JSON.parse( data );
+		displayredis = data.display;
 		var volume = ( displayredis.volume == '' || displayredis.volumempd == 0 ) ? 0 : 1;
 		$( '#pause' ).toggleClass( 'hide', !displayredis.pause );
 		// reset to default css
