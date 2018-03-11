@@ -546,7 +546,7 @@ $('#volume').knob({
 			var inner = navigator.userAgent.match( /iPad|iPhone|iPod|android|webOS/i ) ? 50 : 33; // fix inconsistent radius
             this.g.arc(this.xy, this.xy, this.radius - this.lineWidth + inner, a.s, a.e, a.d); // pin inner radius
             this.g.stroke();
-            this.g.lineWidth = 3; // circle line width
+            this.g.lineWidth = 5; // circle line width
             this.g.beginPath();
             this.g.strokeStyle = this.o.fgColor;
             this.g.arc( this.xy, this.xy, this.radius - this.lineWidth + 13 + this.lineWidth, 0, 2 * Math.PI, false); // circle size
