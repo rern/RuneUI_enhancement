@@ -497,6 +497,64 @@ function bioshow() {
 
 } ); //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
+var dynVolumeKnob = $('#volume').data('dynamic');
+$('#volume').knob({
+    inline: false,
+    change: function (value) {
+        var vol = parseInt(value);
+        if (vol > GUI.maxvol - 4 && GUI.checkvol < GUI.minvol + 5) {
+            $('#volume').val(0);
+            if (dynVolumeKnob) {
+                $(document).mouseup();
+            }
+            return false;
+        } else if (vol < GUI.minvol + 4 && GUI.checkvol > GUI.maxvol - 5) {
+            $('#volume').val(100);
+            if (dynVolumeKnob) {
+                $(document).mouseup();
+            }
+            return false;
+        }
+        if (dynVolumeKnob && vol !== GUI.volume) {
+            setvol(vol);
+        }
+        GUI.checkvol = vol;
+    },
+    release: function (value) {
+        var vol = parseInt(value);
+        if (!dynVolumeKnob && vol !== GUI.volume) {
+            setvol(vol);
+        }
+    },
+    draw: function() {
+        // "tron" case
+        if (this.$.data('skin') === 'tron') {
+			this.o.fgColor = '#34495e'; // circle and pin color
+            this.cursorExt = 0.05; // pin width
+            var a = this.arc(this.cv), pa, r = 1;
+            this.g.lineWidth = this.lineWidth - 8; // pin outer radius
+            if (this.o.displayPrevious) {
+                pa = this.arc(this.v);
+                this.g.beginPath();
+                this.g.strokeStyle = this.pColor;
+                this.g.arc(this.xy, this.xy, this.radius - this.lineWidth, pa.s, pa.e, pa.d);
+                this.g.stroke();
+            }
+            this.g.beginPath();
+            this.g.strokeStyle = r ? this.o.fgColor : this.fgColor ;
+			var inner = navigator.userAgent.match( /iPad|iPhone|iPod|android|webOS/i ) ? 50 : 33; // fix inconsistent radius
+            this.g.arc(this.xy, this.xy, this.radius - this.lineWidth + inner, a.s, a.e, a.d); // pin inner radius
+            this.g.stroke();
+            this.g.lineWidth = 3; // circle line width
+            this.g.beginPath();
+            this.g.strokeStyle = this.o.fgColor;
+            this.g.arc( this.xy, this.xy, this.radius - this.lineWidth + 13 + this.lineWidth, 0, 2 * Math.PI, false); // circle size
+            this.g.stroke();
+            return false;
+        }
+    }
+});
+
 // show/hide blocks database
 var redis = {
 	display: [ 'hGetAll', 'display' ],
