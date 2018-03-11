@@ -299,6 +299,7 @@
 #volume {
     font-size: 38px !important;
     font-weight: 300 !important;
+	color: #e0e7ee !important;
 }
 #countdown-display,
 #total {
