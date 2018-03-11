@@ -1,5 +1,14 @@
-$( document ).ready( function() {
-// document ready start********************************************************************
+$( function() { //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+/*$( '#volume' ).knob( {
+	skin: "tron",
+	width: 250,
+	height: 250,
+	bgColor: "#f00",
+	thickness: 0.1,
+	cursor: true,
+	angleArc: 250,
+	angleOffset: -125 
+} );*/
 
 if ( /\/.*\//.test( location.pathname ) === true ) {
 	if ( window.innerWidth < 540 || window.innerHeight < 515 ) {
@@ -17,9 +26,6 @@ if ( /\/.*\//.test( location.pathname ) === true ) {
 	}
 	return;
 }
-
-librarytop = 0;
-queuetop = 0;
 
 $( '#open-panel-sx' ).click( function() {
 	menubottom( '#panel-sx', '#playback, #panel-dx' );
@@ -464,8 +470,8 @@ $( '#db-search-results' ).click( function() {
 	} );
 } );
 
-// document ready end *********************************************************************
-} );
+librarytop = 0;
+queuetop = 0;
 
 function menubottom( show, hide ) {
 	$( '#menu-top, #menu-bottom' ).hide();
@@ -498,6 +504,8 @@ function bioshow() {
 	$( '#bio' ).show();
 	$( '#loader' ).addClass( 'hide' );
 }
+
+} ); //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 // show/hide blocks database
 var redis = {
