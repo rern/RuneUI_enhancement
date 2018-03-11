@@ -1277,28 +1277,26 @@ $('#volume').knob({
         // "tron" case
         if (this.$.data('skin') === 'tron') {
 // *******************************************************************
-            this.o.fgColor = '#34495e';            // circle and pin color
             this.g.lineWidth = this.lineWidth - 8; // pin outer radius
-// *******************************************************************
-            this.cursorExt = 0.05;                 // pin width
-            var a = this.arc(this.cv), pa, r = 1;
+            this.cursorExt = 0.02;                 // pin width
+            var a = this.arc(this.cv);
+			var pa;
             if (this.o.displayPrevious) {
                 pa = this.arc(this.v);
                 this.g.beginPath();
-                this.g.strokeStyle = this.pColor;
+                this.g.strokeStyle = '#34495e';
                 this.g.arc(this.xy, this.xy, this.radius - this.lineWidth, pa.s, pa.e, pa.d);
                 this.g.stroke();
             }
             this.g.beginPath();
-            this.g.strokeStyle = r ? this.o.fgColor : this.fgColor ;
-// *******************************************************************
-            var inner = navigator.userAgent.match( /iPad|iPhone|iPod|android|webOS/i ) ? 50 : 33;      // fix inconsistent radius
-            this.g.arc(this.xy, this.xy, this.radius - this.lineWidth + inner, a.s, a.e, a.d);          // pin inner radius
+            this.g.strokeStyle = '#e0e7ee';        // pin color
+            var inner = navigator.userAgent.match( /iPad|iPhone|iPod|android|webOS/i ) ? 50 : 33; // fix inconsistent radius
+            this.g.arc(this.xy, this.xy, this.radius - this.lineWidth + inner, a.s, a.e, a.d);    // pin inner radius
             this.g.stroke();
             this.g.lineWidth = 5;                 // circle line width
 // *******************************************************************
             this.g.beginPath();
-            this.g.strokeStyle = this.o.fgColor;
+            this.g.strokeStyle = '#34495e';      // circle color
             this.g.arc( this.xy, this.xy, this.radius - this.lineWidth + 13 + this.lineWidth, 0, 2 * Math.PI, false); // circle size
             this.g.stroke();
             return false;
