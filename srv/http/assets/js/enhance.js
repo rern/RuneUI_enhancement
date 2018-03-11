@@ -1,14 +1,4 @@
 $( function() { //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-/*$( '#volume' ).knob( {
-	skin: "tron",
-	width: 250,
-	height: 250,
-	bgColor: "#f00",
-	thickness: 0.1,
-	cursor: true,
-	angleArc: 250,
-	angleOffset: -125 
-} );*/
 
 if ( /\/.*\//.test( location.pathname ) === true ) {
 	if ( window.innerWidth < 540 || window.innerHeight < 515 ) {
