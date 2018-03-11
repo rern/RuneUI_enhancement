@@ -52,7 +52,7 @@
                     <?php // fix smaller volume knob size in mobile
                     $wh = stristr($_SERVER['HTTP_USER_AGENT'], 'mobi') !== FALSE ? 250 : 230;
                     ?>
-                    <input id="volume" value="100" data-width=<?=$wh ?> data-height=<?=$wh ?> data-bgColor="#f00" data-thickness="0.25" data-skin="tron" data-cursor="true" data-angleArc="250" data-angleOffset="-125" data-readOnly="<?=$this->volume['readonly'] ?>" data-fgColor="<?=$this->volume['color'] ?>" disabled>
+                    <input id="volume" value="100" data-width=<?=$wh ?> data-height=<?=$wh ?> data-bgColor="#f00" data-thickness="0.25" data-skin="tron" data-cursor="true" data-angleArc="250" data-angleOffset="-125" data-readOnly="<?=$this->volume['readonly'] ?>" data-fgColor="<?=$this->volume['color'] ?>" data-dynamic="<?=$this->volume['dynamic'] ?>" disabled>
                 </div>
                 <div id="vol-group">
                     <div class="btn-group">

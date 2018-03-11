@@ -1,24 +1,21 @@
-$( document ).ready( function() {
-// document ready start********************************************************************
-function mainenhance() { // enclose in main function to enable exit on 'return' ***********
+$( function() { //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 if ( /\/.*\//.test( location.pathname ) === true ) {
 	if ( window.innerWidth < 540 || window.innerHeight < 515 ) {
 		$( 'div.container' ).find( 'h1' ).before( '<a href="/" class="close-root"><i class="fa fa-times fa-2x"></i></a>' );
 	} else {
-		$( '#menu-top, #menu-bottom' ).click( function() {
+		$( '.playback-controls button' ).click( function() {
 			location.href = '/';
 		} );
-
+		$( '#menu-bottom li' ).click( function() {
+			var redis = { page: [ 'set', 'page', this.id ] };
+			$.post( '/enhanceredis.php', { json: JSON.stringify( redis ) }, function(data) {
+				location.href = '/';
+			} );
+		} );
 	}
 	return;
 }
-
-//barhide = $( '#menu-top, #menu-bottom' ).is( ':hidden' ) ? 1 : 0;
-//buttonhide =  $( '#play-group, #share-group, #vol-group' ).is( ':hidden' ) ? 1 : 0;
-buttonhide =  window.innerHeight <= 320 || window.innerWidth < 499 ? 1 : 0;
-librarytop = 0;
-queuetop = 0;
 
 $( '#open-panel-sx' ).click( function() {
 	menubottom( '#panel-sx', '#playback, #panel-dx' );
@@ -33,6 +30,17 @@ $( '#open-panel-dx' ).click( function() {
 	displayqueue();
 } );
 
+// back from setting pages
+if ( /\/.*\//.test( document.referrer ) == true ) {
+	var redis = { 
+		page: [ 'get', 'page' ],
+		del: [ 'del', 'page' ]
+	};
+	$.post( '/enhanceredis.php',{ json: JSON.stringify( redis ) }, function( data ) {
+		var page = JSON.parse( data ).page;
+		if ( page !== 'open-playback' ) $( '#'+ page ).click();
+	} );
+}
 // disabled local browser > disable screensaver events
 if ( !$( '#playback-ss' ).length ) $('#section-index').off( 'mousemove click keypress' );
 
@@ -96,6 +104,11 @@ $( '#open-library' ).click( function() {
 	$( '#open-panel-sx' ).click();
 } );
 
+buttonactive = 0;
+$( '#play-group, #share-group, #vol-group' ).click( function() {
+	buttonactive = 1;
+} );
+
 window.addEventListener( 'orientationchange', function() {
 	setTimeout( function() {
 		if ( $( '#playback' ).hasClass( 'active' ) ) {
@@ -116,6 +129,7 @@ var $hammerbarleft = new Hammer( document.getElementById( 'barleft' ) );
 var $hammerbarright = new Hammer( document.getElementById( 'barright' ) );
 var $hammerartist = new Hammer( document.getElementById( 'currentartist' ) );
 var $hammertime = new Hammer( document.getElementById( 'time-knob' ).getElementsByTagName( 'canvas' )[ 0 ] );
+var $hammertimecount = new Hammer( document.getElementById( 'countdown-display' ) );
 var $hammercoverT = new Hammer( document.getElementById( 'coverT' ) );
 var $hammercoverL = new Hammer( document.getElementById( 'coverL' ) );
 var $hammercoverM = new Hammer( document.getElementById( 'coverM' ) );
@@ -123,7 +137,11 @@ var $hammercoverR = new Hammer( document.getElementById( 'coverR' ) );
 var $hammercoverB = new Hammer( document.getElementById( 'coverB' ) );
 var $hammersonginfo = new Hammer( document.getElementById( 'songinfo-open' ) );
 var $hammervolume = new Hammer( document.getElementById( 'volume-knob' ).getElementsByTagName( 'canvas' )[ 0 ] );
-var $hammerlibrary = new Hammer( document.getElementById( 'home-blocks' ) );
+var $hammervolumenum = new Hammer( document.getElementById( 'volume' ) );
+var $hammervolumedn = new Hammer( document.getElementById( 'volumedn' ) );
+var $hammervolumemute = new Hammer( document.getElementById( 'volumemute' ) );
+var $hammervolumeup = new Hammer( document.getElementById( 'volumeup' ) );
+var $hammerlibrary = new Hammer( document.getElementById( 'panel-sx' ) );
 var $hammerplayback = new Hammer( document.getElementById( 'playback' ) );
 
 $hammercontent.on( 'swiperight', function() {
@@ -161,7 +179,7 @@ $hammerbarright.on( 'tap', function() {
 		$( '#loader' ).removeClass( 'hide' );
 		
 		if ( $( '#bio legend' ).text() != GUI.json.currentartist ) {
-			$.get( 'artistbio.php',
+			$.get( '/enhancebio.php',
 				{ artist: GUI.json.currentartist },
 				function( data ) {
 					$( '#biocontent' ).html( data );
@@ -175,7 +193,7 @@ $hammerbarright.on( 'tap', function() {
 } );
 $( '#biocontent' ).delegate( '.biosimilar', 'click', function() {
 	$( '#loader' ).removeClass( 'hide' );
-	$.get( 'artistbio.php',
+	$.get( '/enhancebio.php',
 		{ artist: $( this ).find( 'p' ).text() },
 		function( data ) {
 			$( '#biocontent' ).html( data );
@@ -197,6 +215,10 @@ $( '#countdown-display' ).off( 'click' ); // disable default play-pause on click
 	} );
 } );
 
+$hammervolumenum.on( 'tap', function( e ) {
+	$( '#volumemute' ).click();
+} );
+
 $hammercoverT.on( 'tap', function( e ) {
 	$( '#menu-top, #menu-bottom' ).toggle();
 	barhide = $( '#menu-top' ).is( ':hidden' ) ? 1 : 0;
@@ -206,22 +228,29 @@ $hammercoverL.on( 'tap', function( e ) {
 	$( '#previous' ).click();
 	e.stopPropagation();
 } );
-$hammercoverM.on( 'tap', function( e ) {
-	$( '#play' ).click();
-	e.stopPropagation();
-} ).on( 'press', function( e ) {
-	$( '#stop' ).click();
-	e.stopPropagation();
+[ $hammercoverM, $hammertimecount ].forEach( function( el ) {
+	el.on( 'tap', function( e ) {
+		$( '#play' ).click();
+		e.stopPropagation();
+	} ).on( 'press', function( e ) {
+		$( '#stop' ).click();
+		e.stopPropagation();
+	} );
 } );
 $hammercoverR.on( 'tap', function( e ) {
 	$( '#next' ).click();
 	e.stopPropagation();
 } );
 $hammercoverB.on( 'tap', function( e ) {
+	buttonactive = 0;
 	var time = $( '#time-knob' ).is( ':visible' );
 	var coverart = $( '#coverart' ).is( ':visible' );
 	var volume = displayredis.volume != 0 && displayredis.volumempd != 0 && $( '#volume-knob' ).is( ':visible' );
-	if ( buttonhide == 0 ) {
+	if ( buttonhide == 0 
+		|| $( '#play-group' ).is( ':visible' )
+		|| $( '#share-group' ).is( ':visible' )
+		|| $( '#vole-group' ).is( ':visible' )
+		) {
 		buttonhide = 1;
 		$( '#play-group, #share-group, #vol-group' ).hide();
 	} else {
@@ -234,6 +263,7 @@ $hammercoverB.on( 'tap', function( e ) {
 	if ( window.innerHeight < 414 && $( '#play-group' ).is( ':hidden' ) ) {
 		$( '#play-group, #share-group, #vol-group' ).css( 'margin-top', '10px' );
 	}
+	
 /*	$( '#divartist' ).toggleClass( 'hide', 
 		$( '#play-group, #share-group' ).is( ':visible' )
 		&& window.innerHeight < 385
@@ -244,13 +274,56 @@ $hammercoverB.on( 'tap', function( e ) {
 	);*/
 	e.stopPropagation();
 } );
-
+[ $hammervolumenum, $hammervolumedn, $hammervolumemute, $hammervolumeup ].forEach( function( el ) {
+	el.on( 'press', function( e ) {
+		e.stopPropagation();
+	} );
+} );
+/*
+var timeoutId;
+var intervalId;
+var interval;
+[ $hammervolumedn, $hammervolumemute, $hammervolumeup ].forEach( function( el ) {
+	el.on( 'press', function( e ) {
+		buttonactive = 1;
+		e.stopPropagation();
+		if ( el.element.id === 'volumemute' ) {
+			$( '#volumemute' ).click();
+			return;
+		}
+		timeoutId = setTimeout( volumepress( 300, el.element.id ), 500 );
+	} ).on( 'pressup panstart touchend', function() {
+		clearTimeout( timeoutId );
+		clearInterval( intervalId );
+	} );
+});
+function volumepress( interval, id, fast ) {
+	var knobvol = parseInt( $( '#volume' ).val() );
+	var vol = knobvol;
+	var increment = ( id === 'volumeup' ) ? 1 : -1;
+	if ( ( increment === -1 && knobvol === 0 )
+		|| ( increment === 1 && knobvol === 100 ) ) return;
+	var count = 0;
+	intervalId = setInterval( function() {
+		if ( !fast ) {
+			count++;
+			if ( count >= 8 ) {
+				clearInterval( intervalId );
+				volumepress( 50, id, 1 );
+			}
+		}
+		vol = vol + increment;
+		setvol( vol );
+		$( '#volume' ).val( vol ).trigger( 'change' );
+		if ( vol === 0 || vol === 100 ) clearInterval( intervalId );
+	}, interval );
+}
+*/
 $hammerplayback.on( 'press', function() {
 	info( {
 		  title  : 'Playback'
 		, message: 'Select items to show:'
-		, checkboxhtml : '<form id="displaysaveplayback" action="displaysave.php" method="post">\
-						<input name="playback" type="hidden" value="1">\
+		, checkboxhtml : '<form id="displaysaveplayback">\
 						<label><input name="bar" type="checkbox" '+ displayredis.bar +'>&ensp;Top-Bottom menu</label>\
 						<br><label><input name="pause" type="checkbox" '+ displayredis.pause +'>\
 							&ensp;<code><i class="fa fa-play"></i></code>&emsp;<code><i class="fa fa-pause"></i></code>&emsp;buttons\
@@ -262,10 +335,16 @@ $hammerplayback.on( 'press', function() {
 						</form>'
 		, cancel : 1
 		, ok     : function () {
-			$.post( 'displaysave.php',
-				$( '#displaysaveplayback' ).serialize(),
-				function(data) {
-					if ( data ) {
+			var data = {};
+			// no: serializeArray() omit unchecked fields
+			$( '#displaysaveplayback input' ).each( function() {
+				data[ this.name ] = this.checked ? 'checked' : '';
+			} );
+			var redis = { display: [ 'hmset', 'display', data ] };
+			$.post( '/enhanceredis.php', 
+				{ json: JSON.stringify( redis ) },
+				function( data ) {
+					if ( JSON.parse( data ).display ) {
 						displayplayback();
 					} else {
 						info( {
@@ -307,8 +386,7 @@ $hammerlibrary.on( 'tap', function() {
 	info( {
 		  title  : 'Libary Home'
 		, message: 'Select items to show:'
-		, checkboxhtml : '<form id="displaysavelibrary" action="displaysave.php" method="post">\
-						<input name="library" type="hidden" value="1">\
+		, checkboxhtml : '<form id="displaysavelibrary">\
 						<label><input name="bar" type="checkbox" '+ displayredis.bar +'>&ensp;Top-Bottom menu</label>\
 						<br><label><input name="nas" type="checkbox" '+ displayredis.nas +'>&ensp;Network mounts</label>\
 						<br><label><input name="usb" type="checkbox" '+ displayredis.usb +'>&ensp;USB storage</label>\
@@ -323,10 +401,15 @@ $hammerlibrary.on( 'tap', function() {
 						</form>'
 		, cancel : 1
 		, ok     : function () {
-			$.post( 'displaysave.php',
-				$( '#displaysavelibrary' ).serialize(),
-				function(data) {
-					if ( data ) {
+			var data = {};
+			$( '#displaysavelibrary input' ).each( function() {
+				data[ this.name ] = this.checked ? 'checked' : '';
+			} );
+			var redis = { display: [ 'hmset', 'display', data ] };
+			$.post( '/enhanceredis.php', 
+				{ json: JSON.stringify( redis ) },
+				function( data ) {
+					if ( JSON.parse( data ).display ) {
 						displaylibrary();
 					} else {
 						info( {
@@ -377,10 +460,8 @@ $( '#db-search-results' ).click( function() {
 	} );
 } );
 
-} // enclose in main function to enable exit on 'return' **********************************
-mainenhance();
-// document ready end *********************************************************************
-} );
+librarytop = 0;
+queuetop = 0;
 
 function menubottom( show, hide ) {
 	$( '#menu-top, #menu-bottom' ).hide();
@@ -414,10 +495,15 @@ function bioshow() {
 	$( '#loader' ).addClass( 'hide' );
 }
 
+} ); //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
 // show/hide blocks database
-var path = /\/.*\//.test( location.pathname ) ? '../../' : ''; // fix path if click in other menu pages
-$.get( path +'displayget.php', function( data ) {
-	var displayredis = $.parseJSON( data );
+var redis = {
+	display: [ 'hGetAll', 'display' ],
+	volumempd: [ 'get', 'volume' ]
+};
+$.post( '/enhanceredis.php', { json: JSON.stringify( redis ) }, function( data ) {
+	var displayredis = JSON.parse( data ).display;
 } );
 
 // #menu-top, #menu-bottom, #play-group, #share-group, #vol-group use show/hide to work with css
@@ -455,9 +541,11 @@ function displaycommon() {
 // playback show/hide blocks
 function displayplayback() {
 	buttonhide = window.innerHeight <= 320 || window.innerWidth < 499 ? 1 : 0;
-
-	$.get( 'displayget.php', function( data ) {
-		displayredis = $.parseJSON( data );
+	var redis = { display: [ 'hGetAll', 'display' ] };
+	$.post( '/enhanceredis.php', 
+		{ json: JSON.stringify( redis ) },
+		function( data ) {
+		displayredis = JSON.parse( data ).display;
 		var volume = ( displayredis.volume == '' || displayredis.volumempd == 0 ) ? 0 : 1;
 		$( '#pause' ).toggleClass( 'hide', !displayredis.pause );
 		// reset to default css
@@ -472,6 +560,8 @@ function displayplayback() {
 		$( '#time-knob, #play-group' ).toggleClass( 'hide', !displayredis.time );
 		$( '#coverart, #share-group' ).toggleClass( 'hide', !displayredis.coverart );
 		$( '#volume-knob, #vol-group' ).toggleClass( 'hide', !volume );
+		
+		$( '#volumemute' ).toggleClass( 'btn-primary', $( '#volume' ).val() == 0 );
 		
 		var i = ( displayredis.time ? 1 : 0 ) + ( displayredis.coverart ? 1 : 0 ) + volume;
 //		if ( window.innerWidth < 749 ) {
@@ -502,6 +592,7 @@ function displayplayback() {
 			buttonhide = 1;
 			$( '#play-group, #share-group, #vol-group' ).hide();
 		}
+		if ( buttonactive ) $( '#play-group, #share-group, #vol-group' ).show();
 		$( '#playback-row' ).removeClass( 'hide' ); // restore - hidden by fix flash
 		
 		displaycommon();
@@ -520,8 +611,11 @@ function displayplayback() {
 }
 // library show/hide blocks
 function displaylibrary() {
-	$.get( 'displayget.php', function( data ) {
-		displayredis = $.parseJSON( data );
+	var redis = { display: [ 'hGetAll', 'display' ] };
+	$.post( '/enhanceredis.php', 
+		{ json: JSON.stringify( redis ) },
+		function( data ) {
+		displayredis = JSON.parse( data ).display;
 		// no 'id'
 		$( '#home-blocks div:contains(Network mounts)' ).toggleClass( 'hide', !displayredis.nas );
 		$( '#home-usb' ).parent().toggleClass( 'hide', !displayredis.usb );
@@ -558,8 +652,11 @@ function displaylibrary() {
 }
 // queue show/hide menu
 function displayqueue() {
-	$.get( 'displayget.php', function( data ) {
-		displayredis = $.parseJSON( data );
+	var redis = { display: [ 'hGetAll', 'display' ] };
+	$.post( '/enhanceredis.php', 
+		{ json: JSON.stringify( redis ) },
+		function( data ) {
+		displayredis = JSON.parse( data ).display;
 		displaycommon();
 		window.scrollTo( 0, queuetop );
 	} );
@@ -1038,4 +1135,105 @@ function populateDB(options) {
 		$('#database-entries').css('width', '100%');
 	}
 
+}
+
+function commandButton(el) {
+    var dataCmd = el.data('cmd');
+    var cmd;
+    if (dataCmd === 'stop') {
+        el.addClass('btn-primary');
+        $('#play').removeClass('btn-primary');
+        if ($('#section-index').length) {
+            refreshTimer(0, 0, 'stop');
+            window.clearInterval(GUI.currentKnob);
+            $('.playlist').find('li').removeClass('active');
+            $('#total').html('00:00');
+            $('#total-ss').html('00:00');
+        }
+    }
+    else if (dataCmd === 'play') {
+        var state = GUI.state;
+        if (state === 'play') {
+            cmd = 'pause';
+            if ($('#section-index').length) {
+                $('#countdown-display').countdown('pause');
+                $('#countdown-display-ss').countdown('pause');
+            }
+        } else if (state === 'pause') {
+            cmd = 'play';
+            if ($('#section-index').length) {
+                $('#countdown-display').countdown('resume');
+                $('#countdown-display-ss').countdown('resume');
+            }
+        } else if (state === 'stop') {
+            cmd = 'play';
+            if ($('#section-index').length) {
+                $('#countdown-display').countdown({since: 0, compact: true, format: 'MS'});
+                $('#countdown-display-ss').countdown({since: 0, compact: true, format: 'MS'});
+            }
+        }
+        window.clearInterval(GUI.currentKnob);
+        sendCmd(cmd);
+        return;
+    }
+    else if (dataCmd === 'previous' || dataCmd === 'next') {
+        if ($('#section-index').length) {
+            $('#countdown-display').countdown('pause');
+            $('#countdown-display-ss').countdown('pause');
+            window.clearInterval(GUI.currentKnob);
+        }
+    }
+    // step volume control
+// fix: volume up/down not work on initial load/refresh
+// ****************************************************************************************
+    else if ( el.hasClass( 'btn-volume' ) ) {
+        var vol;
+        var knobvol = parseInt( $('#volume').val() );
+        if ( knobvol ) GUI.volume = knobvol;
+        if ( dataCmd === 'volumedn' && GUI.volume > 0 ) {
+            vol = GUI.volume - 1;
+            GUI.volume = vol;
+        } else if ( dataCmd === 'volumeup' && GUI.volume < 100 ) {
+            vol = GUI.volume + 1;
+            GUI.volume = vol;
+        } else if ( dataCmd === 'volumemute' ) {
+            if ( knobvol !== 0 ) {
+                vol = 0;
+                GUI.volume = knobvol;
+                var redis = { vol: [ 'set', 'volumecurrent', knobvol ] };
+                $.post( '/enhanceredis.php', { json: JSON.stringify( redis ) } );
+            } else {
+            	if ( GUI.volume ) {
+                	vol = GUI.volume;
+                } else {
+                	var redis = { 
+                		vol: [ 'get', 'volumecurrent' ],
+                		del: [ 'del', 'volumecurrent' ]
+                	};
+                	$.post( '/enhanceredis.php', { json: JSON.stringify( redis ) }, function( data ) {
+                		var json = JSON.parse( data );
+                		vol = parseInt( json.vol );
+                		$( '#volumemute' ).removeClass( 'btn-primary' );
+				        sendCmd( 'setvol '+ vol );
+				        $( '#volume' ).val( vol ).trigger( 'update' );
+				        return;
+                	} );
+                }
+            }
+        }
+        $( '#volumemute' ).toggleClass( 'btn-primary', dataCmd === 'volumemute' && vol == 0 );
+        if ( vol >= 0 && vol <= 100 ) {
+            sendCmd( 'setvol '+ vol );
+            $( '#volume' ).val( vol ).trigger( 'update' );
+        }
+        return;
+    }
+// ****************************************************************************************
+    if (el.hasClass('btn-toggle')) {
+        cmd = dataCmd + (el.hasClass('btn-primary')? ' 0':' 1');
+        el.toggleClass('btn-primary');
+    } else {
+        cmd = dataCmd;
+    }
+    sendCmd(cmd);
 }

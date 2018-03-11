@@ -16,12 +16,6 @@ getinstallzip
 # modify files #######################################
 echo -e "$bar Modify files ..."
 
-file=/srv/http/app/playback_ctl.php
-echo $file
-sed -i '$ a\
-$template->local_browser = $redis->get("local_browser");
-' $file
-
 file=/srv/http/app/templates/header.php
 echo $file
 sed -i -e 's/RuneAudio - RuneUI/RuneUIe/
@@ -71,6 +65,11 @@ else
 	rm /srv/http/assets/js/vendor/jquery-ui.min.js
 fi
 
+// disable scroll wheel on volume knob
+file=/srv/http/assets/js/vendor/jquery.knob.js
+echo $file
+sed -i '/DOMMouseScroll/ s|^|//|' $file
+
 file=/srv/http/app/templates/playback.php
 echo $file
 release=$( redis-cli get release )
@@ -86,7 +85,7 @@ if ( $this->remoteSStime != -1 ) {\
 ' $file
 fi
 sed -i -e '/<div class="tab-content">/ i\
-<?php include "playbackenhance.php";\
+<?php include "enhanceplayback.php";\
 /\*
 ' -e '/id="context-menus"/ i\enh \*/?>
 ' $file

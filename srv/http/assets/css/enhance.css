@@ -1,84 +1,3 @@
-/* ---------------------- library and queue ---------------------- */
-.tab-pane {
-	height: 100vh;
-}
-#db-currentpath div,
-#db-currentpath i,
-#db-currentpath span {
-	line-height: 40px;
-}
-.btnlist-top i,
-#db-level-up {
-	font-size: 28px;
-	vertical-align: -5%;
-}
-#db-level-up,
-#db-webradio-add {
-	float: right;
-	margin: 5px 10px 0 0;
-	padding: 0;
-}
-.btnlist-top .form-inline {
-	width: 180px;
-	margin: 4px 0 0 0 !important;
-}
-.btnlist-top .form-inline i {
-	font-size: 18px;
-}
-#pl-manage {
-	float: left;
-	margin-top: 4px;
-}
-#pl-manage i {
-	margin-right: 15px;
-	font-size: 24px;
-	line-height: 32px;
-}
-#pl-count {
-	display: inline-block;
-	width: calc( 100% - 350px );
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
-/* ---------------------- breadcrumb and index ---------------------- */
-#db-currentpath {
-	float: left;
-	width: calc( 100% - 240px );
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
-.btnlist-top {
-	top: 0;
-	box-shadow: 0px 4px 10px #000000;
-	z-index: 10;
-}
-#db-currentpath a {
-	color: #0095d8;
-}
-#database-entries {
-	float: left;
-	width: calc( 100% - 38px );
-	padding-bottom: 80px;
-}
-#db-index {
-	position: fixed;
-	right: 0;
-	width: 38px;
-	padding: 0;
-/*	line-height: 30px;*/
-	list-style: none;
-	background: #172029;
-}
-#db-index li {
-	text-align: center;
-	color: #0095d8;
-}
-#db-index li:hover {
-	background: #34495e;
-}
-
 /* ---------------------- playback ---------------------- */
 #bartop,
 #barbottom {
@@ -331,6 +250,31 @@
 	-webkit-order: 6;
 }
 
+#vol-group div.btn-group {
+	display: flex;
+	flex-flow: row wrap;
+	align-items: center;
+	justify-content: center;
+	display: -webkit-flex;
+	-webkit-flex-direction: row;
+	-webkit-flex-wrap: wrap;
+	-webkit-align-items: center;
+	-webkit-justify-content: center;
+	width: 100%;
+}
+#volumedn {
+	order: 1;
+	-webkit-order: 1;
+}
+#volumemute {
+	order: 2;
+	-webkit-order: 2;
+}
+#volumeup {
+	order: 3;
+	-webkit-order: 3;
+}
+
 #coverart { position: relative; }
 .covermap { position: absolute; }
 .t0 { top: 0; }
@@ -376,7 +320,17 @@
 	float: right;
 	margin-top: 20px;
 }
-
+.btnlist-top a,
+.btnlist-top i,
+#db-index li,
+#menu-top li,
+#menu-bottom,
+#coverart,
+#info span,
+.biosimilar {
+	cursor: pointer;
+}
+/* ---------------------- bio ---------------------- */
 #bio {
 	position: fixed;
 	top: 0;
@@ -434,16 +388,85 @@
 		float: none;
 	}
 }
-
-.btnlist-top a,
+/* ---------------------- library and queue ---------------------- */
+.tab-pane {
+	height: 100vh;
+}
+#db-currentpath div,
+#db-currentpath i,
+#db-currentpath span {
+	line-height: 40px;
+}
 .btnlist-top i,
-#db-index li,
-#menu-top li,
-#menu-bottom,
-#coverart,
-#info span,
-.biosimilar {
-	cursor: pointer;
+#db-level-up {
+	font-size: 28px;
+	vertical-align: -5%;
+}
+#db-level-up,
+#db-webradio-add {
+	float: right;
+	margin: 5px 10px 0 0;
+	padding: 0;
+}
+.btnlist-top .form-inline {
+	width: 180px;
+	margin: 4px 0 0 0 !important;
+}
+.btnlist-top .form-inline i {
+	font-size: 18px;
+}
+#pl-manage {
+	float: left;
+	margin-top: 4px;
+}
+#pl-manage i {
+	margin-right: 15px;
+	font-size: 24px;
+	line-height: 32px;
+}
+#pl-count {
+	display: inline-block;
+	width: calc( 100% - 350px );
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+/* ---------------------- breadcrumb and index ---------------------- */
+#db-currentpath {
+	float: left;
+	width: calc( 100% - 240px );
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.btnlist-top {
+	top: 0;
+	box-shadow: 0px 4px 10px #000000;
+	z-index: 10;
+}
+#db-currentpath a {
+	color: #0095d8;
+}
+#database-entries {
+	float: left;
+	width: calc( 100% - 38px );
+	padding-bottom: 80px;
+}
+#db-index {
+	position: fixed;
+	right: 0;
+	width: 38px;
+	padding: 0;
+/*	line-height: 30px;*/
+	list-style: none;
+	background: #172029;
+}
+#db-index li {
+	text-align: center;
+	color: #0095d8;
+}
+#db-index li:hover {
+	background: #34495e;
 }
 
 /* ---------------------- responsive ----------------------*/
@@ -514,7 +537,7 @@
 	}
 	#menu-top,
 	#menu-bottom { 
-		display: none !important;
+		display: none;
 	}
 	#menu-top {
 		padding: 0;
@@ -575,6 +598,7 @@
 		order: 6;
 		-webkit-order: 6;
 	}
+	
 	#playback .btn-group {
 		margin-left: 10px;
 	}
@@ -589,6 +613,18 @@
 		border-top-right-radius: 0;
 		border-bottom-left-radius: 6px;
 	}
+	
+	#volumedn {
+		order: 3;
+		-webkit-order: 3;
+		border-radius: 0 0 6px 6px !important;
+	}
+	#volumeup {
+		order: 1;
+		-webkit-order: 1;
+		border-radius: 6px 6px 0 0 !important;
+	}
+
 	#playlist {
 		padding-top: 40px;
 	}

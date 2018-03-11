@@ -19,9 +19,8 @@ fi
 
 # remove files #######################################
 echo -e "$bar Remove files ..."
-rm -v /srv/http/app/templates/playbackenhance.php
-rm -v /srv/http/{artistbio.php,displayget.php,displaysave.php}
-rm -v /srv/http/artistinfo.php &> /dev/null # tmp: to be removed
+rm -v /srv/http/app/templates/enhanceplayback.php
+rm -v /srv/http/enhance*
 path=/srv/http/assets
 rm -v $path/css/enhance.css
 rm -v $path/img/runelogo.svg
@@ -31,10 +30,6 @@ mv /srv/http/app/coverart_ctl.php{.backup,}
 
 # restore modified files #######################################
 echo -e "$bar Restore modified files ..."
-
-file=/srv/http/app/playback_ctl.php
-echo $file
-sed -i '/template->local_browser/ d' $file
 
 file=/srv/http/app/templates/header.php
 echo $file
@@ -71,13 +66,17 @@ fi
 file=/srv/http/app/templates/playback.php
 echo $file
 sed -i -e '/^<?php$/,/^?>$/ d
-' -e '/playbackenhance.php/, /\/\*/ d
+' -e '/enhanceplayback.php/, /\/\*/ d
 ' -e '/enh \*\/?>/ d
 ' $file
 
 file=/srv/http/app/settings_ctl.php
 echo $file
 sed -i '/if ( \$template->local_browser )/,/^}$/ d' $file
+
+file=/srv/http/assets/js/vendor/jquery.knob.js
+echo $file
+sed -i '/DOMMouseScroll/ s|^//||' $file
 
 if [[ $1 != u ]]; then
 	file=/root/.config/midori/config
