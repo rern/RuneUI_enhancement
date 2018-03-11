@@ -217,6 +217,7 @@ $( '#countdown-display' ).off( 'click' ); // disable default play-pause on click
 
 $hammervolumenum.on( 'tap', function( e ) {
 	$( '#volumemute' ).click();
+	buttonactive = 0;
 } );
 
 $hammercoverT.on( 'tap', function( e ) {
