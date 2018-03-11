@@ -85,7 +85,7 @@ if ( $this->remoteSStime != -1 ) {\
 ' $file
 fi
 sed -i -e '/<div class="tab-content">/ i\
-<?php include "playbackenhance.php";\
+<?php include "enhanceplayback.php";\
 /\*
 ' -e '/id="context-menus"/ i\enh \*/?>
 ' $file
