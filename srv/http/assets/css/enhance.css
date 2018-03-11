@@ -290,6 +290,9 @@
 #cover-art {
 	margin: 0 auto;
 	width: 230px;
+	border: none;
+	-webkit-box-shadow: 0 0 5px 5px #111111;
+	box-shadow: 0 0 5px 5px #111111;
 }
 #overlay-playsource-open {
     position: relative;
