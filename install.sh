@@ -26,7 +26,9 @@ i\
 <div id="bartop"></div>\
 <div id="barbottom"></div>
 n; a\
-        <button id="menu-settings" class="dropdown-toggle btn-default" role="button" data-toggle="dropdown" data-target="#" href="#"><i class="fa fa-gear"></i><span id="badge"></span></button>
+        <button id="menu-settings" class="dropdown-toggle btn-default" role="button" data-toggle="dropdown" data-target="#" href="#">
+		<i class="fa fa-gear"></i><span id="badge"></span>
+		</button>
 }
 ' -e $'/class="home"/ i\
     <a href="http://www.runeaudio.com/forum/raspberry-pi-f7.html" target="_blank" alt="RuneAudio Forum">\
