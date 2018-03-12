@@ -509,7 +509,7 @@ function displaycommon() {
 		$( '#menu-top, #menu-bottom' ).show();
 		$( '#database, #playlist' ).css( 'padding-top', '80px' );
 		$( '.btnlist-top' ).css( 'top', '40px' );
-		$( '#badge' ).text( update ).toggle( update != 0 );
+		if ( update ) $( '#badge' ).text( update ).toggle( update != 0 );
 	} else {
 		$( '#menu-top, #menu-bottom' ).hide();
 		$( '#database, #playlist' ).css( 'padding-top', '40px' );
