@@ -499,7 +499,6 @@ function bioshow() {
 } ); //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 // #menu-top, #menu-bottom, #play-group, #share-group, #vol-group use show/hide to work with css
-var update;
 function displaycommon() {
 	barhide = window.innerWidth < 499 || window.innerHeight < 515 ? 1 : 0;
 	if ( displayredis.bar !== ''
@@ -509,7 +508,6 @@ function displaycommon() {
 		$( '#menu-top, #menu-bottom' ).show();
 		$( '#database, #playlist' ).css( 'padding-top', '80px' );
 		$( '.btnlist-top' ).css( 'top', '40px' );
-		if ( update ) $( '#badge' ).text( update ).toggle( update != 0 );
 	} else {
 		$( '#menu-top, #menu-bottom' ).hide();
 		$( '#database, #playlist' ).css( 'padding-top', '40px' );
@@ -545,8 +543,13 @@ function displayplayback() {
 		function( data ) {
 		var data = JSON.parse( data );
 		displayredis = data.display;
-		update = data.update;
 		var volume = ( displayredis.volume == '' || data.volumempd == 0 ) ? 0 : 1;
+		
+		if ( data.update != 0 ) {
+			$( '#menu-settings' ).append( '<span id="badge">'+ data.update +'</span>' );
+		} else {
+			$( '#badge' ).remove();
+		}
 		$( '#pause' ).toggleClass( 'hide', !displayredis.pause );
 		// reset to default css
 		$( '#playback-row, #time-knob, #coverart, #volume-knob, #play-group, #share-group, #vol-group' ).css( {
