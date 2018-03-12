@@ -290,6 +290,9 @@
 #cover-art {
 	margin: 0 auto;
 	width: 230px;
+	border: none;
+	-webkit-box-shadow: 0 0 5px 5px #222222;
+	box-shadow: 0 0 5px 5px #222222;
 }
 #overlay-playsource-open {
     position: relative;
@@ -299,6 +302,8 @@
 #volume {
     font-size: 38px !important;
     font-weight: 300 !important;
+	color: #e0e7ee !important;
+	opacity: 1; /* fix volume text color */
 }
 #countdown-display,
 #total {
