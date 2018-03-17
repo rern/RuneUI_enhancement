@@ -49,7 +49,7 @@
                     </div>
                 </div>
                 <div id="volume-knob" class="<?=$this->volume['divclass'] ?>">
-                    <div id="volume"></div>
+                    <div id="volume" data-dynamic="<?=$this->volume['dynamic'] ?>"></div>
                     <div id="volup"></div>
                     <div id="voldn"></div>
                 </div>
