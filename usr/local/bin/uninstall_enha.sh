@@ -34,7 +34,7 @@ echo -e "$bar Restore modified files ..."
 file=/srv/http/app/templates/header.php
 echo $file
 sed -i -e 's|RuneUIe|RuneAudio - RuneUI|
-' -e '/enhance.css\|id="bartop"\|id="barbottom\|dropdownbg\|button id="menu-settings"\|id="pause"\|Development<.a>/ d
+' -e '/roundslider.min.css\|enhance.css\|id="bartop"\|id="barbottom\|dropdownbg\|button id="menu-settings"\|id="pause"\|Development<.a>/ d
 ' -e '/a href="http:..www.runeaudio.com/, /<.a>/ d
 ' -e 's|^<?php /\*||; s|\*/?>$||
 ' -e 's|id="open-panel-sx"><a |&href="/#panel-sx"|
@@ -47,7 +47,7 @@ sed -i -e 's|RuneUIe|RuneAudio - RuneUI|
 
 file=/srv/http/app/templates/footer.php
 echo $file
-sed -i -e '/enhance.js/ d
+sed -i -e '/roundslider.min.js\|enhance.js/ d
 ' -e '/propagating.js/ d
 ' $file
 # 0.4b
@@ -74,9 +74,13 @@ file=/srv/http/app/settings_ctl.php
 echo $file
 sed -i '/if ( \$template->local_browser )/,/^}$/ d' $file
 
-file=/srv/http/assets/js/vendor/jquery.knob.js
+file=/srv/http/assets/js/runeui.js
 echo $file
-sed -i '/DOMMouseScroll/ s|^//||' $file
+sed -i '/^\/\*enha\|^enha\*\// d' $file
+
+file=/srv/http/assets/js/runeui.min.js
+echo $file
+sed -i 's|/\*enha ||; s| enha\*/||' $file
 
 if [[ $1 != u ]]; then
 	file=/root/.config/midori/config
