@@ -92,6 +92,20 @@ sed -i -e '/<div class="tab-content">/ i\
 ' -e '/id="context-menus"/ i\enh \*/?>
 ' $file
 
+file=/srv/http/assets/js/runeui.js
+echo $file
+sed -i -e '\|// KNOBS| i\
+/*enha
+' -e '\|// PLAYING QUEUE| i\
+enha*/
+' $file
+
+file=/srv/http/assets/js/runeui.min.js
+echo $file
+sed -i -e 's|e("#time").knob|/\*enha &|
+' -e 's|var r=e("#playlist-entries")|& enha*/|
+' $file
+
 # start/stop local browser
 file=/srv/http/app/settings_ctl.php
 echo $file
