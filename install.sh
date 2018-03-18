@@ -118,10 +118,6 @@ if ( $template->local_browser ) {\
 }
 ' $file
 
-# for 0.3 - no songinfo and screensaver
-file=/srv/http/app/templates/enhanceplayback.php
-[[ $release != 0.4b ]] && sed -i '/id="songinfo-open"/ d' $file
-
 # for rune youtube
 [[ -e /usr/local/bin/uninstall_RuneYoutube.sh ]] && sed -i '/id="pl-import-youtube"/ {s/<!--//; s/-->//}' $file
 
