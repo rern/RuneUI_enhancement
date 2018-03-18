@@ -325,7 +325,6 @@
     height: 40px;
     width: 40px;
     font-size:20px;
-	background-color: #34495e !important;
 	box-shadow: 0 0 1px 1px #555555;
 }
 #repeat.btn-default.btn-primary,
@@ -334,17 +333,21 @@
 #volmute.btn-default.btn-primary {
 	background-color: #0095d8 !important;
 }
-#playback .btn-group button:first-child {
+/* highlight */
+#repeat, #overlay-social-open, #voldn {
 	background: -webkit-radial-gradient(100% -50%, 300% 190%, hsla(0,0%,100%,.3) 50%, hsla(0,0%,100%,0) 53%); /* button highlight - last % for anti-alias edge*/
 	background: radial-gradient(225% 90% at 100% 0% ,hsla(0,0%,100%,.3) 50%,hsla(0,0%,100%,0) 55%); /* (Width% Heigth% at H-center_offset% V-center_offset%, hsla(0,0%,100%,1st-T) 1st-area%, hsla(0,0%,100%,2nd-T) 2nd-area%)) */
+	background-color: #34495e;
 }
-#playback .btn-group button:not(:first-child):not(:last-child) {
+#random, #volmute {
 	background: -webkit-linear-gradient(top, hsla(0,0%,100%,.3) 0%, hsla(0,0%,100%,.3) 45%,rgba(0,0,0,0) 50%, rgba(0,0,0,0) 100%);
 	background: linear-gradient(to bottom, hsla(0,0%,100%,.3) 0%, hsla(0,0%,100%,.3) 45%, rgba(0,0,0,0) 50%,rgba(0,0,0,0) 100%);
+	background-color: #34495e;
 }
-#playback .btn-group button:last-child {
+#single, #songinfo-open, #volup {
 	background: -webkit-radial-gradient(0% -50%, 400% 190%, hsla(0,0%,100%,.3) 50%, hsla(0,0%,100%,0) 53%); 
 	background: radial-gradient(300% 90% at 0% 0% ,hsla(0,0%,100%,.3) 50%,hsla(0,0%,100%,0) 55%);
+	background-color: #34495e;
 }
 
 .close-root {
@@ -763,6 +766,18 @@
 		order: 1;
 		-webkit-order: 1;
 		border-radius: 6px 6px 0 0 !important;
+	}
+	/* highlight */
+	#random, #songinfo-open, #volmute {
+		background: -webkit-radial-gradient(100% -50%, 300% 190%, hsla(0,0%,100%,.3) 50%, hsla(0,0%,100%,0) 53%) !important;
+		background: radial-gradient(225% 90% at 100% 0% ,hsla(0,0%,100%,.3) 50%,hsla(0,0%,100%,0) 55%) !important;
+		background-color: #34495e !important;
+	}
+	#single, #voldn {
+		background: #34495e !important;
+	}
+	#repeat, #overlay-social-open, #volup {
+		background: #717f8e !important;
 	}
 
 	#playlist {
