@@ -50,14 +50,14 @@
                 </div>
                 <div id="volume-knob" class="<?=$this->volume['divclass'] ?>">
                     <div id="volume" data-dynamic="<?=$this->volume['dynamic'] ?>"></div>
-                    <div id="volup"></div>
-                    <div id="voldn"></div>
+                    <div id="voluprs"></div>
+                    <div id="voldnrs"></div>
                 </div>
                 <div id="vol-group">
                     <div class="btn-group">
-                        <button id="volumedn" class="btn btn-default btn-lg btn-cmd btn-volume" type="button" title="Volume down" data-cmd="volumedn"><i class="fa fa-volume-down"></i></button>
-                        <button id="volumemute" class="btn btn-default btn-lg btn-cmd btn-volume" type="button" title="Volume mute/unmute" data-cmd="volumemute"><i class="fa fa-volume-off"></i> <i class="fa fa-exclamation"></i></button>
-                        <button id="volumeup" class="btn btn-default btn-lg btn-cmd btn-volume" type="button" title="Volume up" data-cmd="volumeup"><i class="fa fa-volume-up"></i></button>
+                        <button id="voldn" class="btn btn-default btn-lg" type="button" title="Volume down"><i class="fa fa-volume-down"></i></button>
+                        <button id="volmute" class="btn btn-default btn-lg" type="button" title="Volume mute/unmute"><i class="fa fa-volume-off"></i> <i class="fa fa-exclamation"></i></button>
+                        <button id="volup" class="btn btn-default btn-lg" type="button" title="Volume up"><i class="fa fa-volume-up"></i></button>
                     </div>
                 </div>
             </div>
