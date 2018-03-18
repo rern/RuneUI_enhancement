@@ -373,8 +373,8 @@
 	border: none !important;
 }
 .rs-range-color,
-.rs-path-color {
-	background: #34495e !important;
+#time .rs-path-color {
+	background: #34495e;
 }
 .rs-tooltip {
 	left: 20% !important;
