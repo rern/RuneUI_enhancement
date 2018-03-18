@@ -814,15 +814,12 @@ function updateGUI() {
     // check MPD status and refresh the UI info
     refreshState();
 	// common actions
-	if ( !$( '#volume-knob' ).hasClass( 'hide' ) ) {
-		var obj = $( '#volume' ).roundSlider();
-		if ( !$( '#songinfo-modal' ).length ) {  // 0.3
-//			$( '#volume' ).roundSlider( 'setValue', volume === '-1' ? 100: volume );
-		} else {
-			if ( GUI.vol_changed_local === 0 ) {
-//				$( '#volume' ).roundSlider( 'setValue', volume === '-1' ? 100 : volume );
-			}
-		}
+	if ( !$( '#volume-knob' ).hasClass( 'hide' )
+		&& ( !$( '#songinfo-modal' ).length || GUI.vol_changed_local === 0 )
+	) {
+		var obj = $( '#volume' ).data( 'roundSlider' );
+		obj.setValue( volume === '-1' ? 100: volume );
+		$( '#volume .rs-handle' ).rsRotate( - obj._handle1.angle );
 	}
 
 	if ( GUI.stream !== 'radio' ) {
@@ -844,7 +841,6 @@ function updateGUI() {
 	
     // song changed
     if ( GUI.currentsong === GUI.json.currentsong ) return;
-// -------------------------------------------------------------------------------
 	GUI.currentsong = currentsong;	
 	countdownRestart(0);
 	if ( $('#panel-dx').hasClass('active') ) customScroll( 'pl', parseInt( GUI.json.song ) );
@@ -1251,15 +1247,6 @@ function mutereset() {
 		volumemute = 0;
 	}
 }
-
-// set knob value
-setTimeout( function() {
-	var obj = $( '#volume' ).data( 'roundSlider' );
-	obj.setValue( GUI.json.volume );
-	$( '#volume .rs-handle' ).rsRotate( - obj._handle1.angle );
-	
-	$( '#time' ).roundSlider( 'setValue', Math.round( GUI.json.song_percent * 10 ) );
-}, 1000 );
 
 function refreshKnob() {
     window.clearInterval(GUI.currentKnob);
