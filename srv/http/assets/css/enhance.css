@@ -483,6 +483,7 @@
 	background: #000000;
 	overflow-y: auto;
 	-webkit-overflow-scrolling: touch;
+	z-index: 10;
 }
 #bio .container {
 	max-width: 750px;
