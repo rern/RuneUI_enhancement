@@ -22,9 +22,10 @@ echo -e "$bar Remove files ..."
 rm -v /srv/http/app/templates/enhanceplayback.php
 rm -v /srv/http/enhance*
 path=/srv/http/assets
-rm -v $path/css/enhance.css
+rm -v $path/css/{enhance.css,roundslider.min.css}
 rm -v $path/img/runelogo.svg
-rm -vf $path/js/{enhance.js,vendor/jquery-ui.min.js,vendor/propagating.js}
+rm -v $path/js/enhance.js
+rm -vf $path/js/vendor/{jquery-ui.min.js,propagating.js,roundslider.min.js}
 
 mv /srv/http/app/coverart_ctl.php{.backup,}
 
