@@ -48,7 +48,7 @@ n; a\
 
 file=/srv/http/app/templates/footer.php
 echo $file
-sed -i '/jquery.knob.min.js/ {s|^|<?php/*|; s|$|*/?>|}' $file
+sed -i '/jquery.knob.min.js/ {s/^/<!--/; s/$/-->/}' $file
 # must be before lyrics addon
 if ! grep -q 'lyrics.js' $file; then
 	sed -i $'$ a\
