@@ -103,7 +103,7 @@ enha*/
 
 file=/srv/http/assets/js/runeui.min.js
 echo $file
-sed -i -e 's|e("#time").knob|/\*enha &|
+sed -i -e 's|,e("#time").knob\)|;/\*enha &|
 ' -e 's|var r=e("#playlist-entries")| enha*/&|
 ' $file
 
