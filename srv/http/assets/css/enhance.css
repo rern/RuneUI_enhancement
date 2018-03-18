@@ -291,8 +291,9 @@
 	margin: 0 auto;
 	width: 230px;
 	border: none;
-	-webkit-box-shadow: 0 0 5px 5px #222222;
-	box-shadow: 0 0 5px 5px #222222;
+	border-radius: 0;
+	-webkit-box-shadow: #555555 0 0 8px 2px;
+	box-shadow: #555555 0 0 8px 2px;
 }
 #overlay-playsource-open {
     position: relative;
