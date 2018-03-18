@@ -374,7 +374,7 @@
 }
 .rs-range-color,
 .rs-path-color {
-	background: #34495e;
+	background: #34495e !important;
 }
 .rs-tooltip {
 	left: 20% !important;
@@ -382,8 +382,8 @@
 	width: 60%;
 	height: 50px;
 	margin: 0 !important;
-	font-family: Lato;
-	font-size: 38px;
+	font-family: Lato !important;
+	font-size: 38px !important;
 	color: #e0e7ee;
 }
 #time .rs-range-color {
