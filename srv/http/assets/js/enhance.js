@@ -282,46 +282,6 @@ $hammercoverB.on( 'tap', function( e ) {
 		e.stopPropagation();
 	} );
 } );
-/*
-var timeoutId;
-var intervalId;
-var interval;
-[ $hammervolumedn, $hammervolumemute, $hammervolumeup ].forEach( function( el ) {
-	el.on( 'press', function( e ) {
-		buttonactive = 1;
-		e.stopPropagation();
-		if ( el.element.id === 'volumemute' ) {
-			$( '#volumemute' ).click();
-			return;
-		}
-		timeoutId = setTimeout( volumepress( 300, el.element.id ), 500 );
-	} ).on( 'pressup panstart touchend', function() {
-		clearTimeout( timeoutId );
-		clearInterval( intervalId );
-	} );
-});
-function volumepress( interval, id, fast ) {
-	var knobvol = parseInt( $( '#volume' ).val() );
-	var vol = knobvol;
-	var increment = ( id === 'volumeup' ) ? 1 : -1;
-	if ( ( increment === -1 && knobvol === 0 )
-		|| ( increment === 1 && knobvol === 100 ) ) return;
-	var count = 0;
-	intervalId = setInterval( function() {
-		if ( !fast ) {
-			count++;
-			if ( count >= 8 ) {
-				clearInterval( intervalId );
-				volumepress( 50, id, 1 );
-			}
-		}
-		vol = vol + increment;
-		setvol( vol );
-		$( '#volume' ).val( vol ).trigger( 'change' );
-		if ( vol === 0 || vol === 100 ) clearInterval( intervalId );
-	}, interval );
-}
-*/
 $hammerplayback.on( 'press', function() {
 	info( {
 		  title  : 'Playback'
@@ -1155,14 +1115,16 @@ function populateDB(options) {
 
 // new knob
 $( '#time' ).roundSlider( {
-    sliderType: "min-range",
+	sliderType: "min-range",
 	max: 1000,
 	radius: 115,
 	width: 20,
-    startAngle: 90,
-    endAngle: 450,
-    showTooltip: false,
-	
+	startAngle: 90,
+	endAngle: 450,
+	showTooltip: false,
+	change: function( e ) {
+		onreleaseKnob( e.value );
+	},
 	drag: function () {
 		if ( GUI.state !== 'stop' ) window.clearInterval( GUI.currentKnob );
 	},
@@ -1248,6 +1210,9 @@ $( '#volup, #voldn, #voluprs, #voldnrs' ).click( function() {
 	var obj = $( '#volume' ).data( 'roundSlider' );
 	var vol = obj.getValue();
 	
+	if ( vol === 0 && ( this.id === 'voldn' || this.id === 'voldnrs' ) ) return;
+	if ( vol === 100 && ( this.id === 'volup' || this.id === 'voluprs' ) ) return;
+
 	if ( vol === 0 ) {
 		$( '#volume .rs-handle' ).css( 'background', '#0095d8' );
 		$( '#volume .rs-tooltip' ).css( 'color', '#e0e7ee' );
@@ -1345,5 +1310,46 @@ function onreleaseKnob(value) {
         }
     }
 }
+
+/*
+var timeoutId;
+var intervalId;
+var interval;
+[ $hammervolumedn, $hammervolumemute, $hammervolumeup ].forEach( function( el ) {
+	el.on( 'press', function( e ) {
+		buttonactive = 1;
+		e.stopPropagation();
+		if ( el.element.id === 'volumemute' ) {
+			$( '#volumemute' ).click();
+			return;
+		}
+		timeoutId = setTimeout( volumepress( 300, el.element.id ), 500 );
+	} ).on( 'pressup panstart touchend', function() {
+		clearTimeout( timeoutId );
+		clearInterval( intervalId );
+	} );
+});
+function volumepress( interval, id, fast ) {
+	var knobvol = parseInt( $( '#volume' ).val() );
+	var vol = knobvol;
+	var increment = ( id === 'volumeup' ) ? 1 : -1;
+	if ( ( increment === -1 && knobvol === 0 )
+		|| ( increment === 1 && knobvol === 100 ) ) return;
+	var count = 0;
+	intervalId = setInterval( function() {
+		if ( !fast ) {
+			count++;
+			if ( count >= 8 ) {
+				clearInterval( intervalId );
+				volumepress( 50, id, 1 );
+			}
+		}
+		vol = vol + increment;
+		setvol( vol );
+		$( '#volume' ).val( vol ).trigger( 'change' );
+		if ( vol === 0 || vol === 100 ) clearInterval( intervalId );
+	}, interval );
+}
+*/
 
 } // if end <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
