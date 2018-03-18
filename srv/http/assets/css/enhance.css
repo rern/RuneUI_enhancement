@@ -262,15 +262,15 @@
 	-webkit-justify-content: center;
 	width: 100%;
 }
-#volumedn {
+#voldn {
 	order: 1;
 	-webkit-order: 1;
 }
-#volumemute {
+#volmute {
 	order: 2;
 	-webkit-order: 2;
 }
-#volumeup {
+#volup {
 	order: 3;
 	-webkit-order: 3;
 }
@@ -297,6 +297,11 @@
 #overlay-playsource-open {
     position: relative;
     top: -165px;
+}
+#overlay-playsource-open,
+#countdown-display,
+#total {
+	z-index: 5;
 }
 #countdown-display,
 #volume {
@@ -335,6 +340,115 @@
 .biosimilar {
 	cursor: pointer;
 }
+/* roundSlider */
+.rs-container {
+	box-shadow: #555555 0 0 8px 2px;
+	border-radius: 50%;
+}
+.rs-border {
+	border: none !important;
+}
+.rs-range-color,
+.rs-path-color {
+	background: #34495e;
+}
+.rs-tooltip {
+	left: 20% !important;
+	top: 40% !important;
+	width: 60%;
+	height: 50px;
+	margin: 0 !important;
+	font-family: Lato;
+	font-size: 38px;
+	color: #e0e7ee;
+}
+#time .rs-range-color {
+	background: #0095d8 !important;
+}
+#time .rs-handle {
+	opacity: 0;
+}
+#volume .rs-path-color {
+	background: linear-gradient( #333333, #000000 );
+}
+#volume .rs-handle {
+	border: 1px solid #333333;
+	background: #0095d8;
+	box-shadow: inset #34495e 0 5px 5px;
+}
+/* highlight */
+.rs-outer {
+	position: relative;
+}
+.rs-outer:before {
+	width: 220px;
+	height: 220px;
+}
+.rs-outer:before,
+#time .rs-inner:before {
+	position: absolute;
+	content: '';
+	top: 5px;
+	left: 5px;
+	background-color: #000000;
+	border-radius: 50%;
+	z-index: 5;
+}
+#time .rs-outer:before {
+	background: none;
+}
+.rs-outer:after { /* glossy overlay */
+	position: absolute;
+	content: '';
+	border-radius: 50%;
+	background: -webkit-radial-gradient(70% -50%, 160% 200%, hsla(0,0%,100%,0.15) 50%, hsla(0,0%,100%,0) 50%);
+	background: radial-gradient(160% 100% at 75% 0% ,hsla(0,0%,100%,.15) 50%,hsla(0,0%,100%,0) 50%);
+	z-index: 6;
+}
+#time .rs-outer:after {
+	top: 20px;
+	left: 20px;
+	width: 190px;
+	height: 190px;
+}
+#time .rs-inner:before { /* inner circle */
+	top: 4px;
+	left: 4px;
+	width: 182px;
+	height: 182px;
+}
+#time .rs-inner {
+	position: relative;
+	background: linear-gradient( #333333, #000000 );
+}
+#volume .rs-outer:after {
+	top: 0;
+	left: 0;
+	width: 230px;
+	height: 230px;
+}
+/* volume up/down */
+.rscontainer,
+#volume {
+	position: relative;
+}
+#voluprs,
+#voldnrs {
+	position: absolute;
+	display: block;
+	height: 50px;
+	width: 50px;
+    left: 50%;
+	margin-left: -25px;
+	z-index: 10;
+}
+#voluprs {
+	top: 45px;
+}
+#voldnrs {
+	top: 145px;
+}
+
 /* ---------------------- bio ---------------------- */
 #bio {
 	position: fixed;
@@ -619,12 +733,12 @@
 		border-bottom-left-radius: 6px;
 	}
 	
-	#volumedn {
+	#voldn {
 		order: 3;
 		-webkit-order: 3;
 		border-radius: 0 0 6px 6px !important;
 	}
-	#volumeup {
+	#volup {
 		order: 1;
 		-webkit-order: 1;
 		border-radius: 6px 6px 0 0 !important;
