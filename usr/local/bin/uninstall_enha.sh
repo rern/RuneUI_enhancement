@@ -20,7 +20,8 @@ fi
 # remove files #######################################
 echo -e "$bar Remove files ..."
 rm -v /srv/http/app/templates/enhanceplayback.php
-rm -v /srv/http/enhance*
+rm -v /srv/http/enhancebio.php
+[[ ! -e /usr/local/bin/uninstall_addo.sh ]] && rm -v /srv/http/enhanceredis.php
 path=/srv/http/assets
 rm -v $path/css/{enhance.css,roundslider.min.css}
 rm -v $path/img/runelogo.svg
