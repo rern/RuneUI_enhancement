@@ -82,7 +82,7 @@ sed -i '/^\/\*enha\|^enha\*\// d' $file
 
 file=/srv/http/assets/js/runeui.min.js
 echo $file
-sed -i 's|/;\*enha ||; s| enha\*/||' $file
+sed -i 's|/\*enha ||; s| enha\*/||' $file
 
 if [[ $1 != u ]]; then
 	file=/root/.config/midori/config
