@@ -47,7 +47,8 @@ sed -i -e 's|RuneUIe|RuneAudio - RuneUI|
 
 file=/srv/http/app/templates/footer.php
 echo $file
-sed -i -e '/roundslider.min.js\|enhance.js/ d
+sed -i -e '/jquery.knob.min.js/ s|^<?php/\*||; s|\*/?>$||
+' -e '/roundslider.min.js\|enhance.js/ d
 ' -e '/propagating.js/ d
 ' $file
 # 0.4b
