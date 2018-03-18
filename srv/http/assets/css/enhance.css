@@ -385,6 +385,7 @@
 	font-family: Lato !important;
 	font-size: 38px !important;
 	color: #e0e7ee;
+	cursor: pointer;
 }
 #time .rs-range-color {
 	background: #0095d8 !important;
@@ -465,6 +466,7 @@
     left: 50%;
 	margin-left: -25px;
 	z-index: 10;
+	cursor: pointer;
 }
 #voluprs {
 	top: 45px;
