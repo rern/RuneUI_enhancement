@@ -18,6 +18,9 @@ if ( /\/.*\//.test( location.pathname ) === true ) {
 	
 	return;
 }
+if ( /Midori/.test( navigator.userAgent ) ) {
+	$( 'head link[rel="stylesheet"]').last().after( '<link rel="stylesheet" href="/css/midori.css">' )
+}
 
 $( '#open-panel-sx' ).click( function() {
 	menubottom( '#panel-sx', '#playback, #panel-dx' );
