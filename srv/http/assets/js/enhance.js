@@ -51,7 +51,7 @@ if ( !$( '#playback-ss' ).length ) $('#section-index').off( 'mousemove click key
 
 // playback buttons click go back to home page
 $( '.playback-controls' ).click( function() {
-	if ( !$( '#playback' ).hasClass( 'active' ) ) {
+	if ( $( '#playback' ).not( '.active' ) ) {
 		$( '#open-playback a' ).click();
 		$( '#open-playback a' )[ 0 ].click();
 	}
@@ -111,7 +111,7 @@ $( '#open-library' ).click( function() {
 
 buttonactive = 0;
 $( '#play-group, #share-group, #vol-group' ).click( function() {
-	buttonactive = 1;
+	if ( window.innerWidth < 499 ) buttonactive = 1;
 } );
 
 function displayall() {
@@ -340,7 +340,7 @@ $hammerplayback.on( 'press', function() {
 $hammerlibrary.on( 'tap', function() {
 	if ( $( '.home-block-remove' ).length && !$( e.target ).is( 'span.block-remove' ) ) $( '#db-homeSetup' ).click();
 } ).on( 'press', function( e ) {
-	if ( !$( '#db-currentpath' ).hasClass( 'hide' ) ) return
+	if ( $( '#db-currentpath' ).not( '.hide' ) ) return
 	info( {
 		  title  : 'Libary Home'
 		, message: 'Select items to show:'
@@ -454,6 +454,97 @@ function bioshow() {
 }
 
 } ); // document ready end <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+function refreshState() {
+// ****************************************************************************************
+	var state = GUI.state;
+	var fileinfo = '';
+// split play-pause buttons
+	if ( state === 'play' ) {
+		$( '#play' ).addClass( 'btn-primary' );
+		$( '#stop' ).removeClass( 'btn-primary' );
+		if ( $( '#pause' ).hasClass( 'hide' ) ) {
+			$( 'i', '#play' ).removeClass( 'fa fa-pause' ).addClass( 'fa fa-play' );
+		} else {
+			$( '#pause' ).removeClass( 'btn-primary' );
+		}
+	} else if ( state === 'pause' ) {
+		$( '#playlist-position span' ).html( 'Not playing' );
+		$( '#stop' ).removeClass( 'btn-primary' );
+		if ( $( '#pause' ).hasClass( 'hide' ) ) {
+			$( 'i', '#play' ).removeClass( 'fa fa-play' ).addClass( 'fa fa-pause' );
+		} else {
+			$( '#play' ).removeClass( 'btn-primary' );
+			$( '#pause' ).addClass( 'btn-primary' );
+		}
+	} else if ( state === 'stop' ) {
+		$( '#stop' ).addClass( 'btn-primary' );
+		$( '#play, #pause' ).removeClass( 'btn-primary' );
+		if ( $( '#pause' ).hasClass( 'hide' ) ) $( 'i', '#play' ).removeClass( 'fa fa-pause' ).addClass( 'fa fa-play' );
+		if ( $( '#section-index' ).length ) $( '#countdown-display' ).countdown( 'destroy' );
+		$( '#total' ).html( GUI.stream !== 'radio' ? '00:00' : '' );
+		$( '#time' ).roundSlider( 'setValue', 0 );
+		$( '#format-bitrate' ).html( '&nbsp;' );
+		$( 'li', '#playlist-entries' ).removeClass( 'active' );
+	}
+	if ( state !== 'stop' ) {
+		if ( GUI.stream !== 'radio' ) {
+			$( '#total' ).html( ( GUI.json.time !== undefined ) ? timeConvert( GUI.json.time ) : '00:00' );
+		} else {
+			$( '#total' ).html( '<a style="color: #587ca0;">streaming</a>' );
+		}
+// improve song info
+		if ( GUI.libraryhome.ActivePlayer === 'MPD' ) {
+			if ( GUI.json.fileext !== false ) {
+				var dot = '<a style="color:#ffffff"> &#8226; </a>';
+				var channel = ( GUI.json.audio_channels == 'Stereo' ) ? '' : GUI.json.audio_channels +' ';
+				var ext = ( GUI.stream === 'radio' ) ? 'RADIO' : GUI.json.fileext.toUpperCase();
+				var bitdepth = Number( GUI.json.audio_sample_depth );
+				var sampling = Number( GUI.json.audio_sample_rate );
+				var bitrate = Number( GUI.json.bitrate );
+				if ( ext == 'DSF' || ext == 'DFF' ) {
+					bitdepth = 1;
+					var audio = GUI.json.audio.split(':')[ 0 ];
+					if ( audio[ 0 ] == 'd' ) { // mpd0.20 - as dsd128:2 / dsd256:2 ...
+						channel = '';
+						sampling = Number( audio.replace( /[^\d]/g, '' ) );
+					} else {
+						sampling = GUI.json.audio.split(':')[ 0 ] / 5512.5;
+					}
+					bitrate = sampling * 44.1;
+					sampling = 'DSD'+ sampling;
+				} else if ( ext == 'FLAC' || ext == 'WAV' || ext == 'ALAC' ) {
+					bitrate = bitdepth * sampling * 2;
+				}
+				sampling = ( bitdepth != 1 ) ? sampling +' kHz ' : sampling +' - ';
+				fileinfo = '<a id="dot0" style="color:#ffffff"> &#8226; </a>' + channel + bitdepth +' bit '+ sampling + bitrate +' kbps<a style="color:#ffffff"> &#8226; </a>' + ext;
+			} else {
+				fileinfo = '';
+			}
+		} else {
+			fileinfo = ( GUI.json.audio_channels && GUI.json.audio_sample_depth && GUI.json.audio_sample_rate ) ? ( GUI.json.audio_channels + ', ' + GUI.json.audio_sample_depth + ' bit, ' + GUI.json.audio_sample_rate +' kHz, '+GUI.json.bitrate+' kbps' ) : '&nbsp;';
+		}
+// ****************************************************************************************
+        $('#format-bitrate').html(fileinfo);
+        $('li', '#playlist-entries').removeClass('active');
+        var current = parseInt(GUI.json.song);
+        $('#playlist-entries').find('li').eq(current).addClass('active');
+    }
+    if (GUI.json.playlistlength && GUI.json.playlistlength !== '0') {
+        if (GUI.json.song) {
+            $('#playlist-position span').html((parseInt(GUI.json.song) + 1) + '/' + GUI.json.playlistlength);
+        } else {
+            $('#playlist-position span').html('1/' + GUI.json.playlistlength);
+        }
+    } else {
+        $('#playlist-position span').html('Empty queue, add some music!');
+    }
+    if (GUI.json.updating_db !== undefined) {
+        $('a', '#open-panel-sx').html('<i class="fa fa-refresh fa-spin"></i>');
+    } else {
+        $('a', '#open-panel-sx').html('<i class="fa fa-folder-open"></i>');
+    }
+}
 
 // ##### prevent loading js in setting pages ##### (fix: put inside main function errors)
 if ( /\/.*\//.test( location.pathname ) === false ) { // if start >>>>>>>>>>>>>>>>>>>
@@ -675,96 +766,6 @@ function timeConvert3( ss ) {
 	ss = ( ss > 9 ) ? ss : '0' + ss;
 	return '&ensp;<a>'+ hr + mm +':'+ ss +'</a>&nbsp;';
 }
-function refreshState() {
-// ****************************************************************************************
-	var state = GUI.state;
-	var fileinfo = '';
-// split play-pause buttons
-	if ( state === 'play' ) {
-		$( '#play' ).addClass( 'btn-primary' );
-		$( '#stop' ).removeClass( 'btn-primary' );
-		if ( $( '#pause' ).hasClass( 'hide' ) ) {
-			$( 'i', '#play' ).removeClass( 'fa fa-pause' ).addClass( 'fa fa-play' );
-		} else {
-			$( '#pause' ).removeClass( 'btn-primary' );
-		}
-	} else if ( state === 'pause' ) {
-		$( '#playlist-position span' ).html( 'Not playing' );
-		$( '#stop' ).removeClass( 'btn-primary' );
-		if ( $( '#pause' ).hasClass( 'hide' ) ) {
-			$( 'i', '#play' ).removeClass( 'fa fa-play' ).addClass( 'fa fa-pause' );
-		} else {
-			$( '#play' ).removeClass( 'btn-primary' );
-			$( '#pause' ).addClass( 'btn-primary' );
-		}
-	} else if ( state === 'stop' ) {
-		$( '#stop' ).addClass( 'btn-primary' );
-		$( '#play, #pause' ).removeClass( 'btn-primary' );
-		if ( $( '#pause' ).hasClass( 'hide' ) ) $( 'i', '#play' ).removeClass( 'fa fa-pause' ).addClass( 'fa fa-play' );
-		if ( $( '#section-index' ).length ) $( '#countdown-display' ).countdown( 'destroy' );
-		$( '#total' ).html( GUI.stream !== 'radio' ? '00:00' : '' );
-		$( '#time' ).roundSlider( 'setValue', 0 );
-		$( '#format-bitrate' ).html( '&nbsp;' );
-		$( 'li', '#playlist-entries' ).removeClass( 'active' );
-	}
-	if ( state !== 'stop' ) {
-		if ( GUI.stream !== 'radio' ) {
-			$( '#total' ).html( ( GUI.json.time !== undefined ) ? timeConvert( GUI.json.time ) : '00:00' );
-		} else {
-			$( '#total' ).html( '<a style="color: #587ca0;">streaming</a>' );
-		}
-// improve song info
-		if ( GUI.libraryhome.ActivePlayer === 'MPD' ) {
-			if ( GUI.json.fileext !== false ) {
-				var dot = '<a style="color:#ffffff"> &#8226; </a>';
-				var channel = ( GUI.json.audio_channels == 'Stereo' ) ? '' : GUI.json.audio_channels +' ';
-				var ext = ( GUI.stream === 'radio' ) ? 'RADIO' : GUI.json.fileext.toUpperCase();
-				var bitdepth = Number( GUI.json.audio_sample_depth );
-				var sampling = Number( GUI.json.audio_sample_rate );
-				var bitrate = Number( GUI.json.bitrate );
-				if ( ext == 'DSF' || ext == 'DFF' ) {
-					bitdepth = 1;
-					var audio = GUI.json.audio.split(':')[ 0 ];
-					if ( audio[ 0 ] == 'd' ) { // mpd0.20 - as dsd128:2 / dsd256:2 ...
-						channel = '';
-						sampling = Number( audio.replace( /[^\d]/g, '' ) );
-					} else {
-						sampling = GUI.json.audio.split(':')[ 0 ] / 5512.5;
-					}
-					bitrate = sampling * 44.1;
-					sampling = 'DSD'+ sampling;
-				} else if ( ext == 'FLAC' || ext == 'WAV' || ext == 'ALAC' ) {
-					bitrate = bitdepth * sampling * 2;
-				}
-				sampling = ( bitdepth != 1 ) ? sampling +' kHz ' : sampling +' - ';
-				fileinfo = '<a id="dot0" style="color:#ffffff"> &#8226; </a>' + channel + bitdepth +' bit '+ sampling + bitrate +' kbps<a style="color:#ffffff"> &#8226; </a>' + ext;
-			} else {
-				fileinfo = '';
-			}
-		} else {
-			fileinfo = ( GUI.json.audio_channels && GUI.json.audio_sample_depth && GUI.json.audio_sample_rate ) ? ( GUI.json.audio_channels + ', ' + GUI.json.audio_sample_depth + ' bit, ' + GUI.json.audio_sample_rate +' kHz, '+GUI.json.bitrate+' kbps' ) : '&nbsp;';
-		}
-// ****************************************************************************************
-        $('#format-bitrate').html(fileinfo);
-        $('li', '#playlist-entries').removeClass('active');
-        var current = parseInt(GUI.json.song);
-        $('#playlist-entries').find('li').eq(current).addClass('active');
-    }
-    if (GUI.json.playlistlength && GUI.json.playlistlength !== '0') {
-        if (GUI.json.song) {
-            $('#playlist-position span').html((parseInt(GUI.json.song) + 1) + '/' + GUI.json.playlistlength);
-        } else {
-            $('#playlist-position span').html('1/' + GUI.json.playlistlength);
-        }
-    } else {
-        $('#playlist-position span').html('Empty queue, add some music!');
-    }
-    if (GUI.json.updating_db !== undefined) {
-        $('a', '#open-panel-sx').html('<i class="fa fa-refresh fa-spin"></i>');
-    } else {
-        $('a', '#open-panel-sx').html('<i class="fa fa-folder-open"></i>');
-    }
-}
 
 function countdownRestart(startFrom) {
     var display = $('#countdown-display').countdown('destroy');
@@ -772,8 +773,8 @@ function countdownRestart(startFrom) {
     var displayss = $('#countdown-display-ss').countdown('destroy');
     displayss.countdown({since: -(startFrom), compact: true, format: 'MS'});
 }
-GUI.json.mute = 0;
-function updateGUI() {
+
+function updateGUI(volumemute) {
     if ( !$( '#section-index' ).length ) return;
 // -------------------------------------------------------------------------------
     var volume = GUI.json.volume;
@@ -786,12 +787,15 @@ function updateGUI() {
     // check MPD status and refresh the UI info
     refreshState();
 	// common actions
-	if ( !$( '#volume-knob' ).hasClass( 'hide' )
+	if ( $( '#volume-knob' ).not( '.hide' )
 		&& ( !$( '#songinfo-modal' ).length || GUI.vol_changed_local === 0 )
 	) {
 		var obj = $( '#volume' ).data( 'roundSlider' );
 		obj.setValue( volume === '-1' ? 100: volume );
 		$( '#volume .rs-handle' ).rsRotate( - obj._handle1.angle );
+	}
+	if ( $( '#volume-knob, #volgroup-group' ).not( '.hide' ) ) {
+		$( '#volmute' ).toggleClass( 'btn-primary', volumemute != 0 );
 	}
 
 	if ( GUI.stream !== 'radio' ) {
@@ -804,13 +808,11 @@ function updateGUI() {
 		$( '#currentsong' ).html( !currentsong ? radioname : currentsong );
 	}
 	
-	if ( !$( '#play-group' ).hasClass( 'hide' ) ) {
+	if ( $( '#play-group' ).not( '.hide' ) ) {
 		$( '#repeat' ).toggleClass( 'btn-primary', GUI.json.repeat === '1' );
 		$( '#random' ).toggleClass( 'btn-primary', GUI.json.random === '1' );
-		$( '#consume' ).toggleClass( 'btn-primary', GUI.json.consume === '1' );
 		$( '#single' ).toggleClass( 'btn-primary', GUI.json.single === '1' );
 	}
-	
     // song changed
     if ( GUI.currentsong === GUI.json.currentsong ) return;
 	GUI.currentsong = currentsong;	
@@ -1101,7 +1103,8 @@ $( '#time' ).roundSlider( {
 	}
 } );
 
-var dynVolumeKnob = $('#volume').data('dynamic');
+var dynVolumeKnob = $( '#volume' ).data( 'dynamic' );
+
 $( '#volume' ).roundSlider( {
 	sliderType: 'default',
 	radius: 115,
@@ -1136,10 +1139,15 @@ $( '#volume' ).roundSlider( {
 //		console.log('stop')
 	}
 } );
+function mutecolor( volumemute ) {
+	$( '#volume .rs-handle' ).css( 'background', '#587ca0' );
+	$( '#volume .rs-tooltip' ).text( volumemute ).css( 'color', '#0095d8' );
+//	$( '#volmute' ).addClass( 'btn-primary' );
+}
 function unmutecolor() {
 	$( '#volume .rs-handle' ).css( 'background', '#0095d8' );
 	$( '#volume .rs-tooltip' ).css( 'color', '#e0e7ee' );
-	$( '#volmute' ).removeClass( 'btn-primary' );
+//	$( '#volmute' ).removeClass( 'btn-primary' );
 }
 function mutereset() {
 	var redis = { vol: [ 'del', 'volumemute' ] };
@@ -1159,14 +1167,13 @@ $( '#volmute, #volume .rs-tooltip' ).click( function() {
 		$( '#volume .rs-handle' ).rsRotate( - obj._handle1.angle );
 		// change color after rotate finish
 		$( '#volume .rs-first' ).one( 'transitionend webkitTransitionEnd mozTransitionEnd', function() {
-			$( '#volume .rs-handle' ).css( 'background', '#587ca0' );
-			$( '#volume .rs-tooltip' ).text( volumemute ).css( 'color', '#0095d8' );
+			mutecolor( volumemute );
 		} );
-		$( '#volmute' ).addClass( 'btn-primary' );
+		$( '#mute' ).val( 1 );
 	} else {
 		var redis = { 
 			vol: [ 'get', 'volumemute' ],
-			del: [ 'del', 'volumemute' ]
+			del: [ 'set', 'volumemute', 0 ]
 		};
 		$.post( '/enhanceredis.php', { json: JSON.stringify( redis ) }, function( data ) {
 			var json = JSON.parse( data );
@@ -1176,9 +1183,8 @@ $( '#volmute, #volume .rs-tooltip' ).click( function() {
 			obj.setValue( vol );
 			$( '#volume .rs-handle' ).rsRotate( - obj._handle1.angle );
 			// restore color immediately on click
-			$( '#volume .rs-handle' ).css( 'background', '#0095d8' );
-			$( '#volume .rs-tooltip' ).css( 'color', '#e0e7ee' );
-			$( '#volmute' ).removeClass( 'btn-primary' );
+			unmutecolor();
+			$( '#mute' ).val( 0 );
 		} );
 	}
 } );
@@ -1202,21 +1208,14 @@ $( '#volup, #voldn, #voluprs, #voldnrs' ).click( function() {
 	$( '#volume .rs-handle' ).rsRotate( - obj._handle1.angle );
 } );
 
-// initial mute button
-volumemute = 0;
-var redis = { vol: [ 'get', 'volumemute' ] };
-$.post( '/enhanceredis.php', 
-	{ json: JSON.stringify( redis ) },
-	function( data ) {
-	var json = JSON.parse( data );
-	volumemute = parseInt( json.vol );
-	if ( volumemute ) {
-		$( '#volume .rs-handle' ).css( 'background', '#587ca0' );
-		$( '#volume .rs-tooltip' ).text( volumemute ).css( 'color', '#0095d8' );
-		$( '#volmute' ).addClass( 'btn-primary' );
-	}
-} );
-
+function setvol( vol ) {
+    GUI.volume = vol;
+    sendCmd( 'setvol '+ vol );
+    if ( GUI.vol_changed_local === 0 ) {
+        setInterval( reset_vol_changed_local, 5000 );
+        GUI.vol_changed_local = 1;
+    }
+}
 function refreshKnob() {
     window.clearInterval(GUI.currentKnob);
     var initTime = parseInt(GUI.json.song_percent)*10;
@@ -1230,25 +1229,36 @@ function refreshKnob() {
         }, delta);
     }
 }
-function renderUI(text){
+// backend call - force refresh all clients
+function renderUI(text) {
     toggleLoader('close');
     GUI.json = text[0];
     GUI.state = GUI.json.state;
-    updateGUI();
-    if ($('#section-index').length) {
-        var elapsed = (GUI.json.elapsed !== '' && GUI.json.elapsed !== undefined)? GUI.json.elapsed : 0;
-        var time = (GUI.json.time !== '' && GUI.json.time !== undefined && GUI.json.time !== null)? GUI.json.time : 0;
-        refreshTimer(parseInt(elapsed), parseInt(time), GUI.json.state);
-        if (GUI.stream !== 'radio') {
-            refreshKnob();
-        } else {
-            $( '#time' ).roundSlider( 'setValue', 0 );
-        }
-        if (GUI.json.playlist !== GUI.playlist) {
-            getPlaylistCmd();
-            GUI.playlist = GUI.json.playlist;
-        }
-    }
+	// mute button
+	volumemute = 0;
+	var redis = { vol: [ 'get', 'volumemute' ] };
+	$.post( '/enhanceredis.php', 
+		{ json: JSON.stringify( redis ) },
+		function( data ) {
+		var json = JSON.parse( data );
+		volumemute = parseInt( json.vol );
+		if ( volumemute ) mutecolor( volumemute );
+		updateGUI(volumemute);
+		if ($('#section-index').length) {
+			var elapsed = (GUI.json.elapsed !== '' && GUI.json.elapsed !== undefined)? GUI.json.elapsed : 0;
+			var time = (GUI.json.time !== '' && GUI.json.time !== undefined && GUI.json.time !== null)? GUI.json.time : 0;
+			refreshTimer(parseInt(elapsed), parseInt(time), GUI.json.state);
+			if (GUI.stream !== 'radio') {
+				refreshKnob();
+			} else {
+				$( '#time' ).roundSlider( 'setValue', 0 );
+			}
+			if (GUI.json.playlist !== GUI.playlist) {
+				getPlaylistCmd();
+				GUI.playlist = GUI.json.playlist;
+			}
+		}
+	} );
 }
 function onreleaseKnob(value) {
     if (GUI.state !== 'stop' && GUI.state !== '') {
