@@ -111,7 +111,7 @@ $( '#play-group, #share-group, #vol-group' ).click( function() {
 	buttonactive = 1;
 } );
 
-window.addEventListener( 'orientationchange', function() {
+function displayall() {
 	setTimeout( function() {
 		if ( $( '#playback' ).hasClass( 'active' ) ) {
 			displayplayback();
@@ -121,6 +121,10 @@ window.addEventListener( 'orientationchange', function() {
 			displayqueue();
 		}
 	}, 100 );
+}
+window.addEventListener( 'orientationchange', displayall );
+window.addEventListener( 'visibilitychange', function() {
+	if ( document.visibilityState === 'visible' ) displayall();
 } );
 
 // hammer**************************************************************
@@ -530,7 +534,6 @@ function displayplayback() {
 		$( '#volume-knob, #vol-group' ).toggleClass( 'hide', !volume );
 		
 		var i = ( displayredis.time ? 1 : 0 ) + ( displayredis.coverart ? 1 : 0 ) + volume;
-//		if ( window.innerWidth < 749 ) {
 			if ( i == 2 && window.innerWidth > 499 ) {
 				if ( volume ) {
 					$( '#time-knob' ).css( { order: 1, '-webkit-order': '1' } );
@@ -545,14 +548,6 @@ function displayplayback() {
 			} else if ( i == 1 ) {
 				$( '#time-knob, #coverart, #volume-knob, #play-group, #share-group, #vol-group' ).css( 'width', '60%' );
 			}
-/*			if ( !displayredis.time || !displayredis.coverart ) {
-				// fix oversize #volume-knob
-				if ( navigator.userAgent.match( /iPad|iPhone|iPod|android|webOS/i ) ) {
-					$( '#volume-knob' ).css( { 'padding-left': '25px' } )
-						.find( 'div' ).css( 'margin', '-10px 0' );
-				}
-			}*/
-//		}
 
 		if ( buttonhide || displayredis.buttons == '' ) {
 			buttonhide = 1;
@@ -580,6 +575,7 @@ function displayplayback() {
 		}, 50 );
 	} );
 }
+displayplayback();
 // library show/hide blocks
 function displaylibrary() {
 	var redis = { display: [ 'hGetAll', 'display' ] };
@@ -695,83 +691,73 @@ function timeConvert3( ss ) {
 }
 function refreshState() {
 // ****************************************************************************************
-	displayplayback();
-	
-    var state = GUI.state;
+	var state = GUI.state;
 	var fileinfo = '';
 // split play-pause buttons
-    if ( state === 'play' ) {
-        $( '#play' ).addClass( 'btn-primary' );
-        $( '#stop' ).removeClass( 'btn-primary' );
-        if ( $( '#pause' ).hasClass( 'hide' ) ) {
-            $( 'i', '#play' ).removeClass( 'fa fa-pause' ).addClass( 'fa fa-play' );
-        } else {
-            $( '#pause' ).removeClass( 'btn-primary' );
-        }
-    } else if ( state === 'pause' ) {
-        $( '#playlist-position span' ).html( 'Not playing' );
-        $( '#stop' ).removeClass( 'btn-primary' );
-        if ( $( '#pause' ).hasClass( 'hide' ) ) {
-            $( 'i', '#play' ).removeClass( 'fa fa-play' ).addClass( 'fa fa-pause' );
-        } else {
-            $( '#play' ).removeClass( 'btn-primary' );
-            $( '#pause' ).addClass( 'btn-primary' );
-        }
-    } else if ( state === 'stop' ) {
-        $( '#stop' ).addClass( 'btn-primary' );
-        $( '#play, #pause' ).removeClass( 'btn-primary' );
-        if ( $( '#pause' ).hasClass( 'hide' ) ) {
-            $( 'i', '#play' ).removeClass( 'fa fa-pause' ).addClass( 'fa fa-play' );
-        }
-        if ( $( '#section-index' ).length ) {
-            $( '#countdown-display' ).countdown( 'destroy' );
-        }
-        if ( GUI.stream !== 'radio' ) {
-        	$( '#total' ).html( '00:00' );
-        } else {
-        	$( '#total' ).html( '' );
-        }
-        $( '#time' ).roundSlider( 'setValue', 0 );
-        $( '#format-bitrate' ).html( '&nbsp;' );
-        $( 'li', '#playlist-entries' ).removeClass( 'active' );
-    }
-    if ( state !== 'stop' ) {
-        if ( GUI.stream !== 'radio' ) {
+	if ( state === 'play' ) {
+		$( '#play' ).addClass( 'btn-primary' );
+		$( '#stop' ).removeClass( 'btn-primary' );
+		if ( $( '#pause' ).hasClass( 'hide' ) ) {
+			$( 'i', '#play' ).removeClass( 'fa fa-pause' ).addClass( 'fa fa-play' );
+		} else {
+			$( '#pause' ).removeClass( 'btn-primary' );
+		}
+	} else if ( state === 'pause' ) {
+		$( '#playlist-position span' ).html( 'Not playing' );
+		$( '#stop' ).removeClass( 'btn-primary' );
+		if ( $( '#pause' ).hasClass( 'hide' ) ) {
+			$( 'i', '#play' ).removeClass( 'fa fa-play' ).addClass( 'fa fa-pause' );
+		} else {
+			$( '#play' ).removeClass( 'btn-primary' );
+			$( '#pause' ).addClass( 'btn-primary' );
+		}
+	} else if ( state === 'stop' ) {
+		$( '#stop' ).addClass( 'btn-primary' );
+		$( '#play, #pause' ).removeClass( 'btn-primary' );
+		if ( $( '#pause' ).hasClass( 'hide' ) ) $( 'i', '#play' ).removeClass( 'fa fa-pause' ).addClass( 'fa fa-play' );
+		if ( $( '#section-index' ).length ) $( '#countdown-display' ).countdown( 'destroy' );
+		$( '#total' ).html( GUI.stream !== 'radio' ? '00:00' : '' );
+		$( '#time' ).roundSlider( 'setValue', 0 );
+		$( '#format-bitrate' ).html( '&nbsp;' );
+		$( 'li', '#playlist-entries' ).removeClass( 'active' );
+	}
+	if ( state !== 'stop' ) {
+		if ( GUI.stream !== 'radio' ) {
 			$( '#total' ).html( ( GUI.json.time !== undefined ) ? timeConvert( GUI.json.time ) : '00:00' );
 		} else {
 			$( '#total' ).html( '<a style="color: #587ca0;">streaming</a>' );
 		}
 // improve song info
-	if ( GUI.libraryhome.ActivePlayer === 'MPD' ) {
-		if ( GUI.json.fileext !== false ) {
-			var dot = '<a style="color:#ffffff"> &#8226; </a>';
-			var channel = ( GUI.json.audio_channels == 'Stereo' ) ? '' : GUI.json.audio_channels +' ';
-			var ext = ( GUI.stream === 'radio' ) ? 'RADIO' : GUI.json.fileext.toUpperCase();
-			var bitdepth = Number( GUI.json.audio_sample_depth );
-			var sampling = Number( GUI.json.audio_sample_rate );
-			var bitrate = Number( GUI.json.bitrate );
-			if ( ext == 'DSF' || ext == 'DFF' ) {
-				bitdepth = 1;
-				var audio = GUI.json.audio.split(':')[ 0 ];
-				if ( audio[ 0 ] == 'd' ) { // mpd0.20 - as dsd128:2 / dsd256:2 ...
-					channel = '';
-					sampling = Number( audio.replace( /[^\d]/g, '' ) );
-				} else {
-					sampling = GUI.json.audio.split(':')[ 0 ] / 5512.5;
+		if ( GUI.libraryhome.ActivePlayer === 'MPD' ) {
+			if ( GUI.json.fileext !== false ) {
+				var dot = '<a style="color:#ffffff"> &#8226; </a>';
+				var channel = ( GUI.json.audio_channels == 'Stereo' ) ? '' : GUI.json.audio_channels +' ';
+				var ext = ( GUI.stream === 'radio' ) ? 'RADIO' : GUI.json.fileext.toUpperCase();
+				var bitdepth = Number( GUI.json.audio_sample_depth );
+				var sampling = Number( GUI.json.audio_sample_rate );
+				var bitrate = Number( GUI.json.bitrate );
+				if ( ext == 'DSF' || ext == 'DFF' ) {
+					bitdepth = 1;
+					var audio = GUI.json.audio.split(':')[ 0 ];
+					if ( audio[ 0 ] == 'd' ) { // mpd0.20 - as dsd128:2 / dsd256:2 ...
+						channel = '';
+						sampling = Number( audio.replace( /[^\d]/g, '' ) );
+					} else {
+						sampling = GUI.json.audio.split(':')[ 0 ] / 5512.5;
+					}
+					bitrate = sampling * 44.1;
+					sampling = 'DSD'+ sampling;
+				} else if ( ext == 'FLAC' || ext == 'WAV' || ext == 'ALAC' ) {
+					bitrate = bitdepth * sampling * 2;
 				}
-				bitrate = sampling * 44.1;
-				sampling = 'DSD'+ sampling;
-			} else if ( ext == 'FLAC' || ext == 'WAV' || ext == 'ALAC' ) {
-				bitrate = bitdepth * sampling * 2;
+				sampling = ( bitdepth != 1 ) ? sampling +' kHz ' : sampling +' - ';
+				fileinfo = '<a id="dot0" style="color:#ffffff"> &#8226; </a>' + channel + bitdepth +' bit '+ sampling + bitrate +' kbps<a style="color:#ffffff"> &#8226; </a>' + ext;
+			} else {
+				fileinfo = '';
 			}
-			sampling = ( bitdepth != 1 ) ? sampling +' kHz ' : sampling +' - ';
-			fileinfo = '<a id="dot0" style="color:#ffffff"> &#8226; </a>' + channel + bitdepth +' bit '+ sampling + bitrate +' kbps<a style="color:#ffffff"> &#8226; </a>' + ext;
 		} else {
-			fileinfo = '';
+			fileinfo = ( GUI.json.audio_channels && GUI.json.audio_sample_depth && GUI.json.audio_sample_rate ) ? ( GUI.json.audio_channels + ', ' + GUI.json.audio_sample_depth + ' bit, ' + GUI.json.audio_sample_rate +' kHz, '+GUI.json.bitrate+' kbps' ) : '&nbsp;';
 		}
-	} else {
-		fileinfo = ( GUI.json.audio_channels && GUI.json.audio_sample_depth && GUI.json.audio_sample_rate ) ? ( GUI.json.audio_channels + ', ' + GUI.json.audio_sample_depth + ' bit, ' + GUI.json.audio_sample_rate +' kHz, '+GUI.json.bitrate+' kbps' ) : '&nbsp;';
-	}
 // ****************************************************************************************
         $('#format-bitrate').html(fileinfo);
         $('li', '#playlist-entries').removeClass('active');
