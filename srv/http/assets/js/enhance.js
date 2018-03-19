@@ -123,9 +123,9 @@ function displayall() {
 	}, 100 );
 }
 window.addEventListener( 'orientationchange', displayall );
-window.addEventListener( 'visibilitychange', function() {
+/*window.addEventListener( 'visibilitychange', function() {
 	if ( document.visibilityState === 'visible' ) displayall();
-} );
+} );*/
 
 // hammer**************************************************************
 Hammer = propagating( Hammer ); // propagating.js fix 
@@ -143,10 +143,11 @@ var $hammercoverR = new Hammer( document.getElementById( 'coverR' ) );
 var $hammercoverB = new Hammer( document.getElementById( 'coverB' ) );
 var $hammersonginfo = new Hammer( document.getElementById( 'songinfo-open' ) );
 var $hammervolume = new Hammer( document.getElementById( 'volume' ) );
-//var $hammervolumenum = new Hammer( document.getElementById( 'volumenum' ) );
 var $hammervoldn = new Hammer( document.getElementById( 'voldn' ) );
 var $hammervolmute = new Hammer( document.getElementById( 'volmute' ) );
 var $hammervolup = new Hammer( document.getElementById( 'volup' ) );
+var $hammervoldnrs = new Hammer( document.getElementById( 'voldnrs' ) );
+var $hammervoluprs = new Hammer( document.getElementById( 'voluprs' ) );
 var $hammerlibrary = new Hammer( document.getElementById( 'panel-sx' ) );
 var $hammerplayback = new Hammer( document.getElementById( 'playback' ) );
 
@@ -221,11 +222,6 @@ $( '#countdown-display' ).off( 'click' ); // disable default play-pause on click
 	} );
 } );
 
-/*$hammervolumenum.on( 'tap', function( e ) {
-	$( '#volumemute' ).click();
-	buttonactive = 0
-} );*/
-
 $hammercoverT.on( 'tap', function( e ) {
 	$( '#menu-top, #menu-bottom' ).toggle();
 	barhide = $( '#menu-top' ).is( ':hidden' ) ? 1 : 0;
@@ -271,17 +267,9 @@ $hammercoverB.on( 'tap', function( e ) {
 		$( '#play-group, #share-group, #vol-group' ).css( 'margin-top', '10px' );
 	}
 	
-/*	$( '#divartist' ).toggleClass( 'hide', 
-		$( '#play-group, #share-group' ).is( ':visible' )
-		&& window.innerHeight < 385
-	);*/
-/*	$( '#sampling' ).toggleClass( 'hide', 
-		$( '#play-group, #share-group' ).is( ':visible' )
-		&& window.innerHeight < 340
-	);*/
 	e.stopPropagation();
 } );
-[ $hammervoldn, $hammervolmute, $hammervolup ].forEach( function( el ) {
+[ $hammervoldn, $hammervolmute, $hammervolup, $hammervoldnrs, $hammervoluprs ].forEach( function( el ) {
 	el.on( 'press', function( e ) {
 		e.stopPropagation();
 	} );
@@ -558,11 +546,6 @@ function displayplayback() {
 		
 		displaycommon();
 		
-//		if ( data.mute ) {
-//			$( '#vol-mute' ).addClass( 'btn-primary' );
-//			$( '#volume .rs-handle' ).css( 'background', '#587ca0' );
-//			$( '#volume .rs-tooltip' ).text( data.volumecurrent )
-//		}
 		// scroll info text
 		setTimeout( function() {
 			$( '#divartist, #divsong, #divalbum' ).each( function() {
@@ -1124,33 +1107,42 @@ $( '#volume' ).roundSlider( {
 	startAngle: -50,
 	endAngle: 230,
 	editableTooltip: false,
-	// rotate handle to preserve shadow angle
-	create: function () {
+	
+	create: function () { // preserve shadow angle of handle
 		this.control.find( '.rs-handle' )
-			.addClass( 'rs-transition' ).eq( 0 ) // make it rotate with rs-transition class
-			.rsRotate( - this._handle1.angle ); // initial rotate
+			.addClass( 'rs-transition' ).eq( 0 ) // make it rotate with 'rs-transition'
+			.rsRotate( - this._handle1.angle );  // initial rotate
 	},
-	change: function( e ) {
+	change: function( e ) { // on click and 'drag - stop' (not fire on 'setValue')
 		setvol( e.value );
-		$( e.handle.element ).css( 'background', '#0095d8' ).rsRotate( - e.handle.angle );
-		$( '#volmute' ).removeClass( 'btn-primary' );
-		$( '#volume .rs-tooltip' ).css( 'color', '#e0e7ee' );
-		mutereset();
+		$( e.handle.element ).rsRotate( - e.handle.angle );
+		if ( e.preValue === 0 ) { // value before 'change'
+			mutereset();
+			unmutecolor();
+		}
 	},
-	start: function( e ) {
+	start: function( e ) { // on 'drag - start'
 		// restore handle color immediately on start drag
-		$( e.handle.element ).css( 'background', '#0095d8' );
-		$( '#volume .rs-tooltip' ).css( 'color', '#e0e7ee' );
+		if ( e.value === 0 ) unmutecolor(); // value before 'start'
 	},
 	drag: function ( e ) {
 		$( e.handle.element ).rsRotate( - e.handle.angle );
-		if ( dynVolumeKnob ) setvol( e.value );
+		if ( dynVolumeKnob ) setvol( e.value ); // value in real time
 	},
-	stop: function( e ) {
-		if ( !dynVolumeKnob ) setvol( e.value );
-		mutereset();
+	stop: function( e ) { // on 'drag - stop' also trigger 'change'
+//		console.log('stop')
 	}
 } );
+function unmutecolor() {
+	$( '#volume .rs-handle' ).css( 'background', '#0095d8' );
+	$( '#volume .rs-tooltip' ).css( 'color', '#e0e7ee' );
+	$( '#volmute' ).removeClass( 'btn-primary' );
+}
+function mutereset() {
+	var redis = { vol: [ 'del', 'volumemute' ] };
+	$.post( '/enhanceredis.php', { json: JSON.stringify( redis ) } );
+	volumemute = 0;
+}
 
 $( '#volmute, #volume .rs-tooltip' ).click( function() {
 	var obj = $( '#volume' ).data( 'roundSlider' );
@@ -1189,23 +1181,19 @@ $( '#volmute, #volume .rs-tooltip' ).click( function() {
 } );
 
 $( '#volup, #voldn, #voluprs, #voldnrs' ).click( function() {
+	var thisid = this.id;
 	var obj = $( '#volume' ).data( 'roundSlider' );
 	var vol = obj.getValue();
 	
-	if ( vol === 0 && ( this.id === 'voldn' || this.id === 'voldnrs' ) ) return;
-	if ( vol === 100 && ( this.id === 'volup' || this.id === 'voluprs' ) ) return;
+	if ( ( vol === 0 && ( thisid === 'voldn' || thisid === 'voldnrs' ) )
+		|| ( vol === 100 && ( thisid === 'volup' || thisid === 'voluprs' ) ) )
+			return;
 
 	if ( vol === 0 ) {
-		$( '#volume .rs-handle' ).css( 'background', '#0095d8' );
-		$( '#volume .rs-tooltip' ).css( 'color', '#e0e7ee' );
-		$( '#volmute' ).removeClass( 'btn-primary' );
 		mutereset();
+		unmutecolor()
 	}
-	if ( this.id == 'volup' || this.id == 'voluprs' ) {
-		vol++
-	} else {
-		vol--
-	}
+	vol = ( thisid == 'volup' || thisid == 'voluprs' ) ? vol + 1 : vol - 1;
 	setvol( vol );
 	obj.setValue( vol );
 	$( '#volume .rs-handle' ).rsRotate( - obj._handle1.angle );
@@ -1225,14 +1213,6 @@ $.post( '/enhanceredis.php',
 		$( '#volmute' ).addClass( 'btn-primary' );
 	}
 } );
-
-function mutereset() {
-	if ( volumemute ) {
-		var redis = { vol: [ 'del', 'volumemute' ] };
-		$.post( '/enhanceredis.php', { json: JSON.stringify( redis ) } );
-		volumemute = 0;
-	}
-}
 
 function refreshKnob() {
     window.clearInterval(GUI.currentKnob);
