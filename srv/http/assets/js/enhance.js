@@ -455,99 +455,6 @@ function bioshow() {
 
 } ); // document ready end <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-function refreshState() {
-// ****************************************************************************************
-	var state = GUI.state;
-	var fileinfo = '';
-// split play-pause buttons
-	if ( state === 'play' ) {
-		$( '#play' ).addClass( 'btn-primary' );
-		$( '#stop' ).removeClass( 'btn-primary' );
-		if ( $( '#pause' ).hasClass( 'hide' ) ) {
-			$( 'i', '#play' ).removeClass( 'fa fa-pause' ).addClass( 'fa fa-play' );
-		} else {
-			$( '#pause' ).removeClass( 'btn-primary' );
-		}
-	} else if ( state === 'pause' ) {
-		$( '#playlist-position span' ).html( 'Not playing' );
-		$( '#stop' ).removeClass( 'btn-primary' );
-		if ( $( '#pause' ).hasClass( 'hide' ) ) {
-			$( 'i', '#play' ).removeClass( 'fa fa-play' ).addClass( 'fa fa-pause' );
-		} else {
-			$( '#play' ).removeClass( 'btn-primary' );
-			$( '#pause' ).addClass( 'btn-primary' );
-		}
-	} else if ( state === 'stop' ) {
-		$( '#stop' ).addClass( 'btn-primary' );
-		$( '#play, #pause' ).removeClass( 'btn-primary' );
-		if ( $( '#pause' ).hasClass( 'hide' ) ) $( 'i', '#play' ).removeClass( 'fa fa-pause' ).addClass( 'fa fa-play' );
-		if ( $( '#section-index' ).length ) $( '#countdown-display' ).countdown( 'destroy' );
-		$( '#total' ).html( GUI.stream !== 'radio' ? '00:00' : '' );
-		$( '#time' ).roundSlider( 'setValue', 0 );
-		$( '#format-bitrate' ).html( '&nbsp;' );
-		$( 'li', '#playlist-entries' ).removeClass( 'active' );
-	}
-	if ( state !== 'stop' ) {
-		if ( GUI.stream !== 'radio' ) {
-			$( '#total' ).html( ( GUI.json.time !== undefined ) ? timeConvert( GUI.json.time ) : '00:00' );
-		} else {
-			$( '#total' ).html( '<a style="color: #587ca0;">streaming</a>' );
-		}
-// improve song info
-		if ( GUI.libraryhome.ActivePlayer === 'MPD' ) {
-			if ( GUI.json.fileext !== false ) {
-				var dot = '<a style="color:#ffffff"> &#8226; </a>';
-				var channel = ( GUI.json.audio_channels == 'Stereo' ) ? '' : GUI.json.audio_channels +' ';
-				var ext = ( GUI.stream === 'radio' ) ? 'RADIO' : GUI.json.fileext.toUpperCase();
-				var bitdepth = Number( GUI.json.audio_sample_depth );
-				var sampling = Number( GUI.json.audio_sample_rate );
-				var bitrate = Number( GUI.json.bitrate );
-				if ( ext == 'DSF' || ext == 'DFF' ) {
-					bitdepth = 1;
-					var audio = GUI.json.audio.split(':')[ 0 ];
-					if ( audio[ 0 ] == 'd' ) { // mpd0.20 - as dsd128:2 / dsd256:2 ...
-						channel = '';
-						sampling = Number( audio.replace( /[^\d]/g, '' ) );
-					} else {
-						sampling = GUI.json.audio.split(':')[ 0 ] / 5512.5;
-					}
-					bitrate = sampling * 44.1;
-					sampling = 'DSD'+ sampling;
-				} else if ( ext == 'FLAC' || ext == 'WAV' || ext == 'ALAC' ) {
-					bitrate = bitdepth * sampling * 2;
-				}
-				sampling = ( bitdepth != 1 ) ? sampling +' kHz ' : sampling +' - ';
-				fileinfo = '<a id="dot0" style="color:#ffffff"> &#8226; </a>' + channel + bitdepth +' bit '+ sampling + bitrate +' kbps<a style="color:#ffffff"> &#8226; </a>' + ext;
-			} else {
-				fileinfo = '';
-			}
-		} else {
-			fileinfo = ( GUI.json.audio_channels && GUI.json.audio_sample_depth && GUI.json.audio_sample_rate ) ? ( GUI.json.audio_channels + ', ' + GUI.json.audio_sample_depth + ' bit, ' + GUI.json.audio_sample_rate +' kHz, '+GUI.json.bitrate+' kbps' ) : '&nbsp;';
-		}
-// ****************************************************************************************
-        $('#format-bitrate').html(fileinfo);
-        $('li', '#playlist-entries').removeClass('active');
-        var current = parseInt(GUI.json.song);
-        $('#playlist-entries').find('li').eq(current).addClass('active');
-    }
-    if (GUI.json.playlistlength && GUI.json.playlistlength !== '0') {
-        if (GUI.json.song) {
-            $('#playlist-position span').html((parseInt(GUI.json.song) + 1) + '/' + GUI.json.playlistlength);
-        } else {
-            $('#playlist-position span').html('1/' + GUI.json.playlistlength);
-        }
-    } else {
-        $('#playlist-position span').html('Empty queue, add some music!');
-    }
-    if (GUI.json.updating_db !== undefined) {
-        $('a', '#open-panel-sx').html('<i class="fa fa-refresh fa-spin"></i>');
-    } else {
-        $('a', '#open-panel-sx').html('<i class="fa fa-folder-open"></i>');
-    }
-}
-
-// ##### prevent loading js in setting pages ##### (fix: put inside main function errors)
-if ( /\/.*\//.test( location.pathname ) === false ) { // if start >>>>>>>>>>>>>>>>>>>
 
 // #menu-top, #menu-bottom, #play-group, #share-group, #vol-group use show/hide to work with css
 function displaycommon() {
@@ -765,6 +672,96 @@ function timeConvert3( ss ) {
 	mm = ( mm > 9 ) ? mm : '0' + mm;
 	ss = ( ss > 9 ) ? ss : '0' + ss;
 	return '&ensp;<a>'+ hr + mm +':'+ ss +'</a>&nbsp;';
+}
+function refreshState() {
+// ****************************************************************************************
+	var state = GUI.state;
+	var fileinfo = '';
+// split play-pause buttons
+	if ( state === 'play' ) {
+		$( '#play' ).addClass( 'btn-primary' );
+		$( '#stop' ).removeClass( 'btn-primary' );
+		if ( $( '#pause' ).hasClass( 'hide' ) ) {
+			$( 'i', '#play' ).removeClass( 'fa fa-pause' ).addClass( 'fa fa-play' );
+		} else {
+			$( '#pause' ).removeClass( 'btn-primary' );
+		}
+	} else if ( state === 'pause' ) {
+		$( '#playlist-position span' ).html( 'Not playing' );
+		$( '#stop' ).removeClass( 'btn-primary' );
+		if ( $( '#pause' ).hasClass( 'hide' ) ) {
+			$( 'i', '#play' ).removeClass( 'fa fa-play' ).addClass( 'fa fa-pause' );
+		} else {
+			$( '#play' ).removeClass( 'btn-primary' );
+			$( '#pause' ).addClass( 'btn-primary' );
+		}
+	} else if ( state === 'stop' ) {
+		$( '#stop' ).addClass( 'btn-primary' );
+		$( '#play, #pause' ).removeClass( 'btn-primary' );
+		if ( $( '#pause' ).hasClass( 'hide' ) ) $( 'i', '#play' ).removeClass( 'fa fa-pause' ).addClass( 'fa fa-play' );
+		if ( $( '#section-index' ).length ) $( '#countdown-display' ).countdown( 'destroy' );
+		$( '#total' ).html( GUI.stream !== 'radio' ? '00:00' : '' );
+		$( '#time' ).roundSlider( 'setValue', 0 );
+		$( '#format-bitrate' ).html( '&nbsp;' );
+		$( 'li', '#playlist-entries' ).removeClass( 'active' );
+	}
+	if ( state !== 'stop' ) {
+		if ( GUI.stream !== 'radio' ) {
+			$( '#total' ).html( ( GUI.json.time !== undefined ) ? timeConvert( GUI.json.time ) : '00:00' );
+		} else {
+			$( '#total' ).html( '<a style="color: #587ca0;">streaming</a>' );
+		}
+// improve song info
+		if ( GUI.libraryhome.ActivePlayer === 'MPD' ) {
+			if ( GUI.json.fileext !== false ) {
+				var dot = '<a style="color:#ffffff"> &#8226; </a>';
+				var channel = ( GUI.json.audio_channels == 'Stereo' ) ? '' : GUI.json.audio_channels +' ';
+				var ext = ( GUI.stream === 'radio' ) ? 'RADIO' : GUI.json.fileext.toUpperCase();
+				var bitdepth = Number( GUI.json.audio_sample_depth );
+				var sampling = Number( GUI.json.audio_sample_rate );
+				var bitrate = Number( GUI.json.bitrate );
+				if ( ext == 'DSF' || ext == 'DFF' ) {
+					bitdepth = 1;
+					var audio = GUI.json.audio.split(':')[ 0 ];
+					if ( audio[ 0 ] == 'd' ) { // mpd0.20 - as dsd128:2 / dsd256:2 ...
+						channel = '';
+						sampling = Number( audio.replace( /[^\d]/g, '' ) );
+					} else {
+						sampling = GUI.json.audio.split(':')[ 0 ] / 5512.5;
+					}
+					bitrate = sampling * 44.1;
+					sampling = 'DSD'+ sampling;
+				} else if ( ext == 'FLAC' || ext == 'WAV' || ext == 'ALAC' ) {
+					bitrate = bitdepth * sampling * 2;
+				}
+				sampling = ( bitdepth != 1 ) ? sampling +' kHz ' : sampling +' - ';
+				fileinfo = '<a id="dot0" style="color:#ffffff"> &#8226; </a>' + channel + bitdepth +' bit '+ sampling + bitrate +' kbps<a style="color:#ffffff"> &#8226; </a>' + ext;
+			} else {
+				fileinfo = '';
+			}
+		} else {
+			fileinfo = ( GUI.json.audio_channels && GUI.json.audio_sample_depth && GUI.json.audio_sample_rate ) ? ( GUI.json.audio_channels + ', ' + GUI.json.audio_sample_depth + ' bit, ' + GUI.json.audio_sample_rate +' kHz, '+GUI.json.bitrate+' kbps' ) : '&nbsp;';
+		}
+// ****************************************************************************************
+        $('#format-bitrate').html(fileinfo);
+        $('li', '#playlist-entries').removeClass('active');
+        var current = parseInt(GUI.json.song);
+        $('#playlist-entries').find('li').eq(current).addClass('active');
+    }
+    if (GUI.json.playlistlength && GUI.json.playlistlength !== '0') {
+        if (GUI.json.song) {
+            $('#playlist-position span').html((parseInt(GUI.json.song) + 1) + '/' + GUI.json.playlistlength);
+        } else {
+            $('#playlist-position span').html('1/' + GUI.json.playlistlength);
+        }
+    } else {
+        $('#playlist-position span').html('Empty queue, add some music!');
+    }
+    if (GUI.json.updating_db !== undefined) {
+        $('a', '#open-panel-sx').html('<i class="fa fa-refresh fa-spin"></i>');
+    } else {
+        $('a', '#open-panel-sx').html('<i class="fa fa-folder-open"></i>');
+    }
 }
 
 function countdownRestart(startFrom) {
@@ -1317,5 +1314,3 @@ function volumepress( interval, id, fast ) {
 	}, interval );
 }
 */
-
-} // if end <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
