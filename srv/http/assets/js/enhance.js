@@ -792,7 +792,11 @@ function updateGUI(volumemute) {
 		$( '#volume .rs-handle' ).rsRotate( - obj._handle1.angle );
 	}
 	if ( $( '#volume-knob, #volgroup-group' ).not( '.hide' ) ) {
-		$( '#volmute' ).toggleClass( 'btn-primary', volumemute != 0 );
+		if ( volumemute != 0 ) {
+			mutecolor( volumemute );
+		} else {
+			unmutecolor();
+		}
 	}
 
 	if ( GUI.stream !== 'radio' ) {
@@ -1133,23 +1137,23 @@ $( '#volume' ).roundSlider( {
 		if ( dynVolumeKnob ) setvol( e.value ); // value in real time
 	},
 	stop: function( e ) { // on 'drag - stop' also trigger 'change'
-//		console.log('stop')
+		console.log('stop')
 	}
 } );
 function mutecolor( volumemute ) {
 	$( '#volume .rs-handle' ).css( 'background', '#587ca0' );
 	$( '#volume .rs-tooltip' ).text( volumemute ).css( 'color', '#0095d8' );
-//	$( '#volmute' ).addClass( 'btn-primary' );
+	$( '#volmute' ).addClass( 'btn-primary' );
 }
 function unmutecolor() {
 	$( '#volume .rs-handle' ).css( 'background', '#0095d8' );
 	$( '#volume .rs-tooltip' ).css( 'color', '#e0e7ee' );
-//	$( '#volmute' ).removeClass( 'btn-primary' );
+	$( '#volmute' ).removeClass( 'btn-primary' );
 }
 function mutereset() {
-	var redis = { vol: [ 'del', 'volumemute' ] };
+	var redis = { vol: [ 'set', 'volumemute', 0 ] };
 	$.post( '/enhanceredis.php', { json: JSON.stringify( redis ) } );
-	volumemute = 0;
+//	volumemute = 0;
 }
 
 $( '#volmute, #volume .rs-tooltip' ).click( function() {
