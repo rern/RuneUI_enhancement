@@ -494,7 +494,131 @@ function bioshow() {
 	$( '#loader' ).addClass( 'hide' );
 }
 
+// new knob
+$( '#time' ).roundSlider( {
+	sliderType: "min-range",
+	max: 1000,
+	radius: 115,
+	width: 20,
+	startAngle: 90,
+	endAngle: 450,
+	showTooltip: false,
+	change: function( e ) {
+		onreleaseKnob( e.value );
+	},
+	drag: function () {
+		if ( GUI.state !== 'stop' ) window.clearInterval( GUI.currentKnob );
+	},
+	stop: function ( e ) {
+		onreleaseKnob( e.value );
+	}
+} );
 
+var dynVolumeKnob = $( '#volume' ).data( 'dynamic' );
+
+$( '#volume' ).roundSlider( {
+	sliderType: 'default',
+	radius: 115,
+	width: 50,
+	handleSize: '-25',
+	startAngle: -50,
+	endAngle: 230,
+	editableTooltip: false,
+	
+	create: function () { // preserve shadow angle of handle
+		this.control.find( '.rs-handle' )
+			.addClass( 'rs-transition' ).eq( 0 ) // make it rotate with 'rs-transition'
+			.rsRotate( - this._handle1.angle );  // initial rotate
+	},
+	change: function( e ) { // on click and 'drag - stop' (not fire on 'setValue')
+		setvol( e.value );
+		$( e.handle.element ).rsRotate( - e.handle.angle );
+		if ( e.preValue === 0 ) { // value before 'change'
+			mutereset();
+			unmutecolor();
+		}
+	},
+	start: function( e ) { // on 'drag - start'
+		// restore handle color immediately on start drag
+		if ( e.value === 0 ) unmutecolor(); // value before 'start'
+	},
+	drag: function ( e ) {
+		$( e.handle.element ).rsRotate( - e.handle.angle );
+		if ( dynVolumeKnob ) setvol( e.value ); // value in real time
+	},
+	stop: function( e ) { // on 'drag - stop' also trigger 'change'
+//		console.log('stop')
+	}
+} );
+$( '#volmute, #volume .rs-tooltip' ).click( function() {
+	var obj = $( '#volume' ).data( 'roundSlider' );
+	var volumemute = obj.getValue();
+	if ( volumemute ) {
+		var redis = { vol: [ 'set', 'volumemute', volumemute ] };
+		$.post( '/enhanceredis.php', { json: JSON.stringify( redis ) } );
+		setvol( 0 );
+		obj.setValue( 0 );
+		// rotate box-shadow back
+		$( '#volume .rs-handle' ).rsRotate( - obj._handle1.angle );
+		// change color after rotate finish
+		$( '#volume .rs-first' ).one( 'transitionend webkitTransitionEnd mozTransitionEnd', function() {
+			mutecolor( volumemute );
+		} );
+		$( '#mute' ).val( 1 );
+	} else {
+		var redis = { 
+			vol: [ 'get', 'volumemute' ],
+			del: [ 'set', 'volumemute', 0 ]
+		};
+		$.post( '/enhanceredis.php', { json: JSON.stringify( redis ) }, function( data ) {
+			var json = JSON.parse( data );
+			vol = parseInt( json.vol );
+			if ( vol === 0 ) return;
+			setvol( vol );
+			obj.setValue( vol );
+			$( '#volume .rs-handle' ).rsRotate( - obj._handle1.angle );
+			// restore color immediately on click
+			unmutecolor();
+		} );
+	}
+} );
+
+$( '#volup, #voldn, #voluprs, #voldnrs' ).click( function() {
+	var thisid = this.id;
+	var obj = $( '#volume' ).data( 'roundSlider' );
+	var vol = obj.getValue();
+	
+	if ( ( vol === 0 && ( thisid === 'voldn' || thisid === 'voldnrs' ) )
+		|| ( vol === 100 && ( thisid === 'volup' || thisid === 'voluprs' ) ) )
+			return;
+
+	if ( vol === 0 ) {
+		mutereset();
+		unmutecolor()
+	}
+	vol = ( thisid == 'volup' || thisid == 'voluprs' ) ? vol + 1 : vol - 1;
+	setvol( vol );
+	obj.setValue( vol );
+	$( '#volume .rs-handle' ).rsRotate( - obj._handle1.angle );
+} );
+
+} ); // document ready end <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+function mutecolor( volumemute ) {
+	$( '#volume .rs-handle' ).css( 'background', '#587ca0' );
+	$( '#volume .rs-tooltip' ).text( volumemute ).css( 'color', '#0095d8' );
+	$( '#volmute' ).addClass( 'btn-primary' );
+}
+function unmutecolor() {
+	$( '#volume .rs-handle' ).css( 'background', '#0095d8' );
+	$( '#volume .rs-tooltip' ).css( 'color', '#e0e7ee' );
+	$( '#volmute' ).removeClass( 'btn-primary' );
+}
+function mutereset() {
+	var redis = { vol: [ 'set', 'volumemute', 0 ] };
+	$.post( '/enhanceredis.php', { json: JSON.stringify( redis ) } );
+//	volumemute = 0;
+}
 
 // #menu-top, #menu-bottom, #play-group, #share-group, #vol-group use show/hide to work with css
 function displaycommon() {
@@ -653,130 +777,6 @@ function displayqueue() {
 	} );
 }
 
-// new knob
-$( '#time' ).roundSlider( {
-	sliderType: "min-range",
-	max: 1000,
-	radius: 115,
-	width: 20,
-	startAngle: 90,
-	endAngle: 450,
-	showTooltip: false,
-	change: function( e ) {
-		onreleaseKnob( e.value );
-	},
-	drag: function () {
-		if ( GUI.state !== 'stop' ) window.clearInterval( GUI.currentKnob );
-	},
-	stop: function ( e ) {
-		onreleaseKnob( e.value );
-	}
-} );
-
-var dynVolumeKnob = $( '#volume' ).data( 'dynamic' );
-
-$( '#volume' ).roundSlider( {
-	sliderType: 'default',
-	radius: 115,
-	width: 50,
-	handleSize: '-25',
-	startAngle: -50,
-	endAngle: 230,
-	editableTooltip: false,
-	
-	create: function () { // preserve shadow angle of handle
-		this.control.find( '.rs-handle' )
-			.addClass( 'rs-transition' ).eq( 0 ) // make it rotate with 'rs-transition'
-			.rsRotate( - this._handle1.angle );  // initial rotate
-	},
-	change: function( e ) { // on click and 'drag - stop' (not fire on 'setValue')
-		setvol( e.value );
-		$( e.handle.element ).rsRotate( - e.handle.angle );
-		if ( e.preValue === 0 ) { // value before 'change'
-			mutereset();
-			unmutecolor();
-		}
-	},
-	start: function( e ) { // on 'drag - start'
-		// restore handle color immediately on start drag
-		if ( e.value === 0 ) unmutecolor(); // value before 'start'
-	},
-	drag: function ( e ) {
-		$( e.handle.element ).rsRotate( - e.handle.angle );
-		if ( dynVolumeKnob ) setvol( e.value ); // value in real time
-	},
-	stop: function( e ) { // on 'drag - stop' also trigger 'change'
-//		console.log('stop')
-	}
-} );
-mutecolor = function( volumemute ) { // make global function fix
-	$( '#volume .rs-handle' ).css( 'background', '#587ca0' );
-	$( '#volume .rs-tooltip' ).text( volumemute ).css( 'color', '#0095d8' );
-	$( '#volmute' ).addClass( 'btn-primary' );
-}
-unmutecolor = function() { // make global function fix
-	$( '#volume .rs-handle' ).css( 'background', '#0095d8' );
-	$( '#volume .rs-tooltip' ).css( 'color', '#e0e7ee' );
-	$( '#volmute' ).removeClass( 'btn-primary' );
-}
-function mutereset() {
-	var redis = { vol: [ 'set', 'volumemute', 0 ] };
-	$.post( '/enhanceredis.php', { json: JSON.stringify( redis ) } );
-//	volumemute = 0;
-}
-
-$( '#volmute, #volume .rs-tooltip' ).click( function() {
-	var obj = $( '#volume' ).data( 'roundSlider' );
-	var volumemute = obj.getValue();
-	if ( volumemute ) {
-		var redis = { vol: [ 'set', 'volumemute', volumemute ] };
-		$.post( '/enhanceredis.php', { json: JSON.stringify( redis ) } );
-		setvol( 0 );
-		obj.setValue( 0 );
-		// rotate box-shadow back
-		$( '#volume .rs-handle' ).rsRotate( - obj._handle1.angle );
-		// change color after rotate finish
-		$( '#volume .rs-first' ).one( 'transitionend webkitTransitionEnd mozTransitionEnd', function() {
-			mutecolor( volumemute );
-		} );
-		$( '#mute' ).val( 1 );
-	} else {
-		var redis = { 
-			vol: [ 'get', 'volumemute' ],
-			del: [ 'set', 'volumemute', 0 ]
-		};
-		$.post( '/enhanceredis.php', { json: JSON.stringify( redis ) }, function( data ) {
-			var json = JSON.parse( data );
-			vol = parseInt( json.vol );
-			if ( vol === 0 ) return;
-			setvol( vol );
-			obj.setValue( vol );
-			$( '#volume .rs-handle' ).rsRotate( - obj._handle1.angle );
-			// restore color immediately on click
-			unmutecolor();
-		} );
-	}
-} );
-
-$( '#volup, #voldn, #voluprs, #voldnrs' ).click( function() {
-	var thisid = this.id;
-	var obj = $( '#volume' ).data( 'roundSlider' );
-	var vol = obj.getValue();
-	
-	if ( ( vol === 0 && ( thisid === 'voldn' || thisid === 'voldnrs' ) )
-		|| ( vol === 100 && ( thisid === 'volup' || thisid === 'voluprs' ) ) )
-			return;
-
-	if ( vol === 0 ) {
-		mutereset();
-		unmutecolor()
-	}
-	vol = ( thisid == 'volup' || thisid == 'voluprs' ) ? vol + 1 : vol - 1;
-	setvol( vol );
-	obj.setValue( vol );
-	$( '#volume .rs-handle' ).rsRotate( - obj._handle1.angle );
-} );
-
 
 function setvol( vol ) {
     GUI.volume = vol;
@@ -802,7 +802,7 @@ function onreleaseKnob(value) {
         }
     }
 }
-refreshKnob = function() { // make global function fix
+function refreshKnob() {
     window.clearInterval(GUI.currentKnob);
     var initTime = parseInt(GUI.json.song_percent)*10;
     var delta = parseInt(GUI.json.time);
@@ -1130,9 +1130,7 @@ function populateDB(options) {
 
 }
 
-// called by backend socket - force refresh all clients
-
-updateGUI = function( volumemute ) { // make global function fix
+function updateGUI( volumemute ) {
 	if ( !$( '#section-index' ).length ) return;
 	var volume = GUI.json.volume;
 	var radioname = GUI.json.radioname;
@@ -1191,7 +1189,6 @@ updateGUI = function( volumemute ) { // make global function fix
 		$('#cover-art').css('background-image','url("assets/img/cover-radio.jpg")');
 	}
 }
-
 
 function refreshState() {
 // ****************************************************************************************
@@ -1284,9 +1281,9 @@ function refreshState() {
     }
 }
 
-} ); // document ready end <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-function renderUI(text) { // outside document reaady fixes making global not overide existing 'renderUI()'
+// ### called by backend socket - force refresh all clients ###
+// rendrUI() > updateGUI() > refreshState()
+function renderUI(text) {
 	toggleLoader('close');
 	GUI.json = text[0];
 	GUI.state = GUI.json.state;
