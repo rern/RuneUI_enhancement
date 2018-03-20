@@ -250,18 +250,6 @@
 	-webkit-order: 6;
 }
 
-#vol-group div.btn-group {
-	display: flex;
-	flex-flow: row wrap;
-	align-items: center;
-	justify-content: center;
-	display: -webkit-flex;
-	-webkit-flex-direction: row;
-	-webkit-flex-wrap: wrap;
-	-webkit-align-items: center;
-	-webkit-justify-content: center;
-	width: 100%;
-}
 #voldn {
 	order: 1;
 	-webkit-order: 1;
@@ -325,7 +313,7 @@
     height: 40px;
     width: 40px;
     font-size:20px;
-	box-shadow: 0 0 1px 1px #555555;
+//	box-shadow: 0 0 1px 1px #555555;
 }
 #repeat.btn-default.btn-primary,
 #random.btn-default.btn-primary,
@@ -334,22 +322,49 @@
 	background-color: #0095d8 !important;
 }
 /* highlight */
-#repeat, #overlay-social-open, #voldn {
+#repeat, 
+#overlay-social-open,
+#voldn {
 	background: -webkit-radial-gradient(100% -50%, 300% 190%, hsla(0,0%,100%,.3) 50%, hsla(0,0%,100%,0) 53%); /* button highlight - last % for anti-alias edge*/
 	background: radial-gradient(225% 90% at 100% 0% ,hsla(0,0%,100%,.3) 50%,hsla(0,0%,100%,0) 55%); /* (Width% Heigth% at H-center_offset% V-center_offset%, hsla(0,0%,100%,1st-T) 1st-area%, hsla(0,0%,100%,2nd-T) 2nd-area%)) */
 	background-color: #34495e;
 }
-#random, #volmute {
+#random,
+#volmute {
 	background: -webkit-linear-gradient(top, hsla(0,0%,100%,.3) 0%, hsla(0,0%,100%,.3) 45%,rgba(0,0,0,0) 50%, rgba(0,0,0,0) 100%);
 	background: linear-gradient(to bottom, hsla(0,0%,100%,.3) 0%, hsla(0,0%,100%,.3) 45%, rgba(0,0,0,0) 50%,rgba(0,0,0,0) 100%);
 	background-color: #34495e;
+	border-left: 1px solid #333333;
 }
-#single, #songinfo-open, #volup {
+#single,
+#songinfo-open,
+#volup {
 	background: -webkit-radial-gradient(0% -50%, 400% 190%, hsla(0,0%,100%,.3) 50%, hsla(0,0%,100%,0) 53%); 
 	background: radial-gradient(300% 90% at 0% 0% ,hsla(0,0%,100%,.3) 50%,hsla(0,0%,100%,0) 55%);
 	background-color: #34495e;
+	border-left: 1px solid #333333;
 }
-
+/* button shadow */
+#playback .btn-group {
+	position: relative;
+}
+#playback .btn-group:before {
+	position: absolute;
+	content: '';
+	top: 0;
+	left: 0;
+	width: 120px;
+	height: 40px;
+	border-radius: 6px;
+	box-shadow: 0 0 1px 1px #444444;
+	z-index: -10;
+}
+#share-group .btn-group:before {
+	width: 80px;
+}
+#overlay-social {
+	z-index: 15;
+}
 .close-root {
 	float: right;
 	margin-top: 20px;
@@ -744,7 +759,19 @@
 		order: 6;
 		-webkit-order: 6;
 	}
-	
+	#vol-group div.btn-group {
+		display: flex;
+		flex-flow: row wrap;
+		align-items: center;
+		justify-content: center;
+		display: -webkit-flex;
+		-webkit-flex-direction: row;
+		-webkit-flex-wrap: wrap;
+		-webkit-align-items: center;
+		-webkit-justify-content: center;
+		width: 100%;
+	}
+
 	#playback .btn-group {
 		margin-left: 10px;
 	}
