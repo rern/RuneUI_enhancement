@@ -89,8 +89,8 @@ file=/root/.config/midori/config
 echo $file
 sed -i -e '/zoom-level/ d
 ' -e '/middle-click/ i\
-
-' -e '/user-stylesheet-uri/ s/^#//
+zoom-level=0.7
+' -e '/user-stylesheet-uri/ s/^#*//
 ' $file
 
 uninstallfinish $@
