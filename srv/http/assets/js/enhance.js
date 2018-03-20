@@ -803,17 +803,15 @@ function onreleaseKnob(value) {
     }
 }
 function refreshKnob() {
-    window.clearInterval(GUI.currentKnob);
-    var initTime = parseInt(GUI.json.song_percent)*10;
-    var delta = parseInt(GUI.json.time);
-    var step = parseInt(1000/delta);
-    $( '#time' ).roundSlider( 'setValue', initTime );
-    if (GUI.state === 'play') {
-        GUI.currentKnob = setInterval(function() {
-            initTime = initTime + ((GUI.visibility !== 'visible') ? step : 1);
-            $( '#time' ).roundSlider( 'setValue', initTime );
-        }, delta);
-    }
+    window.clearInterval( GUI.currentKnob );
+	if ( GUI.state !== 'play' ) return;
+    var initTime = parseInt( GUI.json.song_percent ) * 10;
+    var delta = parseInt( GUI.json.time );
+    var step = parseInt( 1000 / delta );
+	GUI.currentKnob = setInterval( function() {
+		initTime = initTime + ( ( GUI.visibility !== 'visible' ) ? step : 1 );
+		$( '#time' ).roundSlider( 'setValue', initTime );
+	}, delta );
 }
 function timeConvert3( ss ) {
 	var hr = Math.floor( ss / 3600 );
@@ -1147,7 +1145,9 @@ function updateGUI( volumemute ) {
 	) {
 		var obj = $( '#volume' ).data( 'roundSlider' );
 		obj.setValue( volume === '-1' ? 100: volume );
-		$( '#volume .rs-handle' ).rsRotate( - obj._handle1.angle );
+		$( '#volume .rs-handle' ).rsRotate( - obj._handle1.angle ).show(); // rotated then show
+		// enable animation after set initial value
+		$( '#volume .rs-animation, #volume .rs-transition' ).css( 'transition', 'all 0.5s linear' );
 	}
 	if ( $( '#volume-knob, #volgroup-group' ).not( '.hide' ) ) {
 		if ( volumemute != 0 ) {
