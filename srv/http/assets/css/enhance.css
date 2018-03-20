@@ -27,91 +27,91 @@
 }
 /* ---------------------- menu-top ----------------------*/
 .logo {
-    height: 35px;
-    margin: 2px 20px 10px 0;
+	height: 35px;
+	margin: 2px 20px 10px 0;
 }
 #clock-display {
 	margin-right: 10px;
-    font-size: 30px;
-    font-weight: 300;
+	font-size: 30px;
+	font-weight: 300;
 }
 #clock-display:empty { /* fix margin or padding of hidden elements still take space*/
 	display: none;
 }
 #menu-top {
-    padding: 0 20px 0 30px;
-    box-shadow: 0px 4px 10px #000000;
-    transition: all 0.3s ease;
+	padding: 0 20px 0 30px;
+	box-shadow: 0px 4px 10px #000000;
+	transition: all 0.3s ease;
 }
 #menu-top button, #menu-bottom a {
-    height: 40px;
-    line-height: 40px;
+	height: 40px;
+	line-height: 40px;
 }
 #menu-top button {
-    margin: 0;
-    padding: 0;
-    height: 40px;
-    width: 40px;
-    line-height: 40px;
-    vertical-align: baseline;
-    border: none;
-    border-radius: 0;
+	margin: 0;
+	padding: 0;
+	height: 40px;
+	width: 40px;
+	line-height: 40px;
+	vertical-align: baseline;
+	border: none;
+	border-radius: 0;
 }
 #menu-top .playback-controls {
-    left: 50%;
-    width: 320px;
-    margin: 0 0 0 -160px;
+	left: 50%;
+	width: 320px;
+	margin: 0 0 0 -160px;
 }
 #menu-top .playback-controls button {
-    margin: 0 10px;
+	margin: 0 10px;
 }
 #menu-top .playback-controls i,
 #gpio {
-    font-size:24px;
-    line-height: 40px;
+	font-size:24px;
+	line-height: 40px;
 }
 #gpio .fa-lg {
-    vertical-align: -10%;
+	vertical-align: -10%;
 }
 #menu-settings i,
 #playsource i {
-    padding-top: 5px;
-    font-size: 30px;
+	padding-top: 5px;
+	font-size: 30px;
 }
 .dropdown {
-    margin-right: 0 !important;
+	margin-right: 0 !important;
 }
 #dropdownbg { /* fix dropdown box-shadow */
-    position: absolute;
-    width: 160px;
-    height: 328px;
-    box-shadow: -4px 4px 10px #000000;
-    z-index: -100;
+	position: absolute;
+	width: 160px;
+	height: 328px;
+	box-shadow: -4px 4px 10px #000000;
+	z-index: -100;
 }
 .modal-dialog {
-    margin-top: 50px;
+	margin-top: 50px;
 }
 /* ---------------------- menu-bottom ----------------------*/
 #menu-bottom {
-    box-shadow: 0px -4px 10px #000000;
-    transition: all 0.3s ease;
+	box-shadow: 0px -4px 10px #000000;
+	transition: all 0.3s ease;
 }
 #menu-bottom a {
-    margin: 0;
-    padding: 0;
-    font-size: 30px;
+	margin: 0;
+	padding: 0;
+	font-size: 30px;
 }
 #menu-bottom a:hover {
-    background-color: #222f3d;
+	background-color: #222f3d;
 }
 #menu-bottom li.active a:hover {
-    background-color: #0072a5;
+	background-color: #0072a5;
 }
 #menu-bottom li a i {
-    margin: 0; /* fix wobble spin */
-    width: 40px; /* fix wobble spin */
-    line-height: 40px;
-    font-size: 28px;
+	margin: 0; /* fix wobble spin */
+	width: 40px; /* fix wobble spin */
+	line-height: 40px;
+	font-size: 28px;
 }
 /* ---------------------- middle window ----------------------*/
 #playback {
@@ -133,7 +133,7 @@
 	height: 34px;
 }
 #currentsong {
-    font-weight: normal;
+	font-weight: normal;
 }
 #divartist, #divalbum {
 	height: 25px;
@@ -205,7 +205,7 @@
 }
 #time-knob>div:first-child, 
 #volume-knob>div:first-child {
-    margin: 0 auto;
+	margin: 0 auto;
 }
 #time-knob,
 #coverart,
@@ -284,8 +284,8 @@
 	box-shadow: #555555 0 0 8px 2px;
 }
 #overlay-playsource-open {
-    position: relative;
-    top: -165px;
+	position: relative;
+	top: -165px;
 }
 #overlay-playsource-open,
 #countdown-display,
@@ -294,27 +294,28 @@
 }
 #countdown-display,
 #volume {
-    font-size: 38px !important;
-    font-weight: 300 !important;
+	font-size: 38px !important;
+	font-weight: 300 !important;
 	color: #e0e7ee !important;
 	opacity: 1; /* fix volume text color */
 }
 #countdown-display,
 #total {
-    top: 115px;
+	top: 115px;
 }
 #volume,
 #total {
-    font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 #playback .btn-group button {
-    margin: 0 0 10px 0;
-    padding: 0;
-    height: 40px;
-    width: 40px;
-    font-size:20px;
-//	box-shadow: 0 0 1px 1px #555555;
+	margin: 0 0 10px 0;
+	padding: 0;
+	height: 40px;
+	width: 40px;
+	font-size:20px;
+	outline: none;
 }
+
 #repeat.btn-default.btn-primary,
 #random.btn-default.btn-primary,
 #single.btn-default.btn-primary,
@@ -396,6 +397,7 @@
 	background: #34495e;
 }
 .rs-tooltip {
+	display: none; /* hide initial load - show after set value */
 	left: 20% !important;
 	top: 40% !important;
 	width: 60%;
@@ -483,7 +485,7 @@
 	display: block;
 	height: 50px;
 	width: 50px;
-    left: 50%;
+	left: 50%;
 	margin-left: -25px;
 	z-index: 10;
 	cursor: pointer;
