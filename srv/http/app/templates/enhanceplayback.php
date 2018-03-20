@@ -86,38 +86,19 @@
 				<!-- DB entries -->
 			</ul>
 			<ul id="db-index" class="hide">
-				<li>#</li>
-				<li>A</li>
-				<li class="half">B</li>
-				<li>C</li>
-				<li class="half">D</li>
-				<li>E</li>
-				<li class="half">F</li>
-				<li>G</li>
-				<li class="half">H</li>
-				<li>I</li>
-				<li class="half">J</li>
-				<li>K</li>
-				<li class="half">L</li>
-				<li>M</li>
-				<li class="half">N</li>
-				<li>O</li>
-				<li class="half">P</li>
-				<li>Q</li>
-				<li class="half">R</li>
-				<li>S</li>
-				<li class="half">T</li>
-				<li>U</li>
-				<li class="half">V</li>
-				<li>W</li>
-				<li class="half">X</li>
-				<li>Y</li>
-				<li class="half">Z</li>
-				<li>&nbsp</li>
-				<li>&nbsp</li>
-				<li>&nbsp</li>
-				<li>&nbsp</li>
-				<li>&nbsp</li>
+<?php
+$indexarray = range( 'A', 'Z' );
+$ilength = count( $indexarray );
+$li = '<li>#</li>';
+foreach( $indexarray as $i => $char ) {
+	if ( $i % 2 === 0 ) {
+		$li.= '<li>'.$char."</li>\n";
+	} else {
+		$li.= '<li class="half">'.$char."</li>\n";
+	}
+}
+echo $li.str_repeat( "<li>&nbsp</li>\n", 5 );
+?>
 			</ul>
 			<div id="home-blocks" class="row">
 				<div class="col-sm-12">
