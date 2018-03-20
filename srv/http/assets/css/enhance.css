@@ -334,7 +334,7 @@
 	background: -webkit-linear-gradient(top, hsla(0,0%,100%,.3) 0%, hsla(0,0%,100%,.3) 45%,rgba(0,0,0,0) 50%, rgba(0,0,0,0) 100%);
 	background: linear-gradient(to bottom, hsla(0,0%,100%,.3) 0%, hsla(0,0%,100%,.3) 45%, rgba(0,0,0,0) 50%,rgba(0,0,0,0) 100%);
 	background-color: #34495e;
-	border-left: 1px solid #333333;
+	border-left: 1px solid #444444;
 }
 #single,
 #songinfo-open,
@@ -342,7 +342,7 @@
 	background: -webkit-radial-gradient(0% -50%, 400% 190%, hsla(0,0%,100%,.3) 50%, hsla(0,0%,100%,0) 53%); 
 	background: radial-gradient(300% 90% at 0% 0% ,hsla(0,0%,100%,.3) 50%,hsla(0,0%,100%,0) 55%);
 	background-color: #34495e;
-	border-left: 1px solid #333333;
+	border-left: 1px solid #444444;
 }
 /* button shadow */
 #playback .btn-group {
