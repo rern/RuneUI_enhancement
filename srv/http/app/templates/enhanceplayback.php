@@ -88,7 +88,6 @@
 			<ul id="db-index" class="hide">
 <?php
 $indexarray = range( 'A', 'Z' );
-$ilength = count( $indexarray );
 $li = '<li>#</li>';
 foreach( $indexarray as $i => $char ) {
 	if ( $i % 2 === 0 ) {
