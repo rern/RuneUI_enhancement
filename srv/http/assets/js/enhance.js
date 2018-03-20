@@ -379,9 +379,11 @@ $hammerplayback.on( 'press', function() {
 } );
 
 $hammerlibrary.on( 'tap', function() {
+	console.log('tap');
 	if ( $( '.home-block-remove' ).length && !$( e.target ).is( 'span.block-remove' ) ) $( '#db-homeSetup' ).click();
 } ).on( 'press', function( e ) {
-	if ( $( '#db-currentpath' ).not( '.hide' ) ) return
+	console.log('press');
+	if ( $( '#db-currentpath' ).is( ':visible' ) ) return
 	info( {
 		  title  : 'Libary Home'
 		, message: 'Select items to show:'
@@ -1169,7 +1171,7 @@ function updateGUI( volumemute ) {
 		$( '#currentsong' ).html( !currentsong ? radioname : currentsong );
 	}
 	
-	if ( $( '#play-group' ).not( '.hide' ) ) {
+	if ( $( '#play-group' ).is( ':visible' ) ) {
 		$( '#repeat' ).toggleClass( 'btn-primary', GUI.json.repeat === '1' );
 		$( '#random' ).toggleClass( 'btn-primary', GUI.json.random === '1' );
 		$( '#single' ).toggleClass( 'btn-primary', GUI.json.single === '1' );
