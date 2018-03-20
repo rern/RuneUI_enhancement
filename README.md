@@ -2,6 +2,8 @@ RuneUI enhancement
 ---
 _Tested on RuneAudio 0.3 and 0.4b_   
 
+![glossy](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/800px.jpg)
+
 |        Controls       |    Show/Hide Bars     |   Show/Hide Buttons   |
 |-----------------------|-----------------------|-----------------------|
 | ![Controls](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-Controls.gif) | ![Bars](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-Bars.gif) | ![Buttons](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/gestures/iPnone8P-Buttons.gif) | 
