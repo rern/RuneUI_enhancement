@@ -79,15 +79,11 @@ sed -i '/if ( \$template->local_browser )/,/^}$/ d' $file
 
 file=/srv/http/assets/js/runeui.js
 echo $file
-sed -i -e '/^\/\*enha\|^enha\*\// d
-' -e 's|fa-folder-open"></i>|fa-music sx"></i> Library|
-' $file
+sed -i -e '/^\/\*enha\|^enha\*\// d' $file
 
 file=/srv/http/assets/js/runeui.min.js
 echo $file
-sed -i -e 's|/\*enha ||; s| enha\*/||
-' -e 's|fa-folder-open"></i>|fa-music sx"></i> Library|
-' $file
+sed -i -e 's|/\*enha ||; s| enha\*/||' $file
 
 file=/root/.config/midori/config
 echo $file
