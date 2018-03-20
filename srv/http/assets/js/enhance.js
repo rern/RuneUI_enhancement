@@ -335,7 +335,7 @@ $hammerplayback.on( 'press', function() {
 		, cancel : 1
 		, ok     : function () {
 			var data = {};
-			// fix: serializeArray() omit unchecked fields
+			// no: serializeArray() omit unchecked fields
 			$( '#displaysaveplayback input' ).each( function() {
 				data[ this.name ] = this.checked ? 'checked' : '';
 			} );
@@ -493,6 +493,8 @@ function bioshow() {
 	$( '#bio' ).show();
 	$( '#loader' ).addClass( 'hide' );
 }
+
+
 
 // #menu-top, #menu-bottom, #play-group, #share-group, #vol-group use show/hide to work with css
 function displaycommon() {
@@ -707,19 +709,20 @@ $( '#volume' ).roundSlider( {
 //		console.log('stop')
 	}
 } );
-mutecolor = function( volumemute ) {
+mutecolor = function( volumemute ) { // make global function fix
 	$( '#volume .rs-handle' ).css( 'background', '#587ca0' );
 	$( '#volume .rs-tooltip' ).text( volumemute ).css( 'color', '#0095d8' );
 	$( '#volmute' ).addClass( 'btn-primary' );
 }
-unmutecolor = function() {
+unmutecolor = function() { // make global function fix
 	$( '#volume .rs-handle' ).css( 'background', '#0095d8' );
 	$( '#volume .rs-tooltip' ).css( 'color', '#e0e7ee' );
 	$( '#volmute' ).removeClass( 'btn-primary' );
 }
-mutereset = function() {
+function mutereset() {
 	var redis = { vol: [ 'set', 'volumemute', 0 ] };
 	$.post( '/enhanceredis.php', { json: JSON.stringify( redis ) } );
+//	volumemute = 0;
 }
 
 $( '#volmute, #volume .rs-tooltip' ).click( function() {
@@ -799,7 +802,7 @@ function onreleaseKnob(value) {
         }
     }
 }
-function refreshKnob() {
+refreshKnob = function() { // make global function fix
     window.clearInterval(GUI.currentKnob);
     var initTime = parseInt(GUI.json.song_percent)*10;
     var delta = parseInt(GUI.json.time);
@@ -1127,7 +1130,9 @@ function populateDB(options) {
 
 }
 
-updateGUI = function( volumemute ) {
+// called by backend socket - force refresh all clients
+
+updateGUI = function( volumemute ) { // make global function fix
 	if ( !$( '#section-index' ).length ) return;
 	var volume = GUI.json.volume;
 	var radioname = GUI.json.radioname;
@@ -1186,6 +1191,7 @@ updateGUI = function( volumemute ) {
 		$('#cover-art').css('background-image','url("assets/img/cover-radio.jpg")');
 	}
 }
+
 
 function refreshState() {
 // ****************************************************************************************
@@ -1280,8 +1286,7 @@ function refreshState() {
 
 } ); // document ready end <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-// called by backend socket - force refresh all clients
-function renderUI(text) { // outside document reaady fixes not overide existing 'renderUI()'
+function renderUI(text) { // outside document reaady fixes making global not overide existing 'renderUI()'
 	toggleLoader('close');
 	GUI.json = text[0];
 	GUI.state = GUI.json.state;
