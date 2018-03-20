@@ -387,7 +387,7 @@
 .rs-border {
 	border: none !important;
 }
-.rs-animation .rs-transition { /* fix: '#time' flickering on animation */
+.rs-animation .rs-transition { /* fix: '#time' flickering on animation in iOS*/
 	-webkit-transition: none;
 	transition: none;
 }
