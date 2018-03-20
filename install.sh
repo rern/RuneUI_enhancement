@@ -99,14 +99,12 @@ sed -i -e '\|// KNOBS| i\
 /*enha
 ' -e '\|// PLAYING QUEUE| i\
 enha*/
-' -e 's|fa-music sx"></i> Library|fa-folder-open"></i>|
 ' $file
 
 file=/srv/http/assets/js/runeui.min.js
 echo $file
 sed -i -e 's|,e("#time").knob|/\*enha &|
 ' -e 's|;var r=e("#playlist-entries")| enha*/&|
-' -e 's|fa-music sx"></i> Library|fa-folder-open"></i>|
 ' $file
 
 # start/stop local browser
