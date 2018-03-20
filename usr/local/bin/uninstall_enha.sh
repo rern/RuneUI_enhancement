@@ -85,16 +85,13 @@ file=/srv/http/assets/js/runeui.min.js
 echo $file
 sed -i 's|/\*enha ||; s| enha\*/||' $file
 
-if [[ $1 != u ]]; then
-	file=/root/.config/midori/config
-	echo $file
-	if grep -q '^#zoom-level' $file; then
-		sed -i -e '/^zoom-level/ d
-		' -e '/#zoom-level/ s/^#//
-		' $file
-	fi
-	sed -i '/#user-stylesheet-uri/ s/^#//' $file
-fi
+file=/root/.config/midori/config
+echo $file
+sed -i -e '/zoom-level/ d
+' -e '/middle-click/ i\
+
+' -e '/user-stylesheet-uri/ s/^#//
+' $file
 
 uninstallfinish $@
 
