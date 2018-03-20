@@ -387,6 +387,10 @@
 .rs-border {
 	border: none !important;
 }
+.rs-animation .rs-transition { /* fix: '#time' flickering on animation */
+	-webkit-transition: none;
+	transition: none;
+}
 .rs-range-color,
 #time .rs-path-color {
 	background: #34495e;
@@ -412,6 +416,7 @@
 	background: linear-gradient( #333333, #000000 );
 }
 #volume .rs-handle {
+	display: none; /* hide initial rotate - show after rotated */
 	border: 1px solid #333333;
 	background: #0095d8;
 	box-shadow: inset #34495e 0 5px 5px;
