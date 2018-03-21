@@ -91,6 +91,7 @@ sed -i -e '/<div class="tab-content">/ i\
 <?php include "enhanceplayback.php";\
 /\*
 ' -e '/id="context-menus"/ i\enh \*/?>
+' -e 's|</input>||; s|</img>||
 ' $file
 
 file=/srv/http/assets/js/runeui.js
