@@ -96,7 +96,7 @@ foreach( $indexarray as $i => $char ) {
 		$li.= '<li class="half">'.$char."</li>\n";
 	}
 }
-echo $li.str_repeat( "<li>&nbsp</li>\n", 5 );
+echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 ?>
 			</ul>
 			<div id="home-blocks" class="row">
