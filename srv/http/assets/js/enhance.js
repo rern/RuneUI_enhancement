@@ -1160,6 +1160,8 @@ function refreshState() {
 			$( '#play' ).removeClass( 'btn-primary' );
 			$( '#pause' ).addClass( 'btn-primary' );
 		}
+		var pausetime = parseInt( GUI.json.song_percent ) * 10;
+		$( '#time' ).roundSlider( 'setValue', pausetime );
 	} else if ( state === 'stop' ) {
 		$( '#stop' ).addClass( 'btn-primary' );
 		$( '#play, #pause' ).removeClass( 'btn-primary' );
