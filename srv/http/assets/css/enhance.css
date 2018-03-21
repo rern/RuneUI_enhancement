@@ -389,9 +389,6 @@
 .rs-border {
 	border: none !important;
 }
-.rs-animation .rs-transition {
-	transition-duration: 0s; /* fix: '#time' flickering on animation in iOS*/
-}
 .rs-range-color,
 #time .rs-path-color {
 	background: #34495e;
@@ -723,16 +720,11 @@
 	#playback {
 		padding-top: 40px;
 	}
-	#playback-row {
-/*		margin-top: 10px !important;*/
-	}
 	#time-knob,
 	#coverart,
 	#volume-knob {
 		width: 55%;
-	}
-	#coverart {
-		margin-bottom: 20px !important;
+		margin-bottom: 20px;
 	}
 	#share-group,
 	#play-group,
@@ -740,7 +732,7 @@
 		display: none;
 		width: 40px;
 		min-width: 40px;
-		margin: 0 0 25px 0;
+		margin-left: 10px;
 	}
 	#time-knob {
 	    order: 3;
