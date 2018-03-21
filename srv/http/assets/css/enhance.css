@@ -389,16 +389,15 @@
 .rs-border {
 	border: none !important;
 }
-.rs-animation .rs-transition { /* fix: '#time' flickering on animation in iOS*/
-	-webkit-transition: none;
-	transition: none;
+.rs-animation .rs-transition {
+	transition-duration: 0s; /* fix: '#time' flickering on animation in iOS*/
 }
 .rs-range-color,
 #time .rs-path-color {
 	background: #34495e;
 }
 .rs-tooltip {
-	display: none; /* hide initial load - show after set value */
+	display: none; /* hide '0' on initial load - show after set */
 	left: 20% !important;
 	top: 40% !important;
 	width: 60%;
@@ -419,7 +418,7 @@
 	background: linear-gradient( #333333, #000000 );
 }
 #volume .rs-handle {
-	display: none; /* hide initial rotate - show after rotated */
+	display: none; /* hide '0' position on initial rotate - show after rotated */
 	border: 1px solid #333333;
 	background: #0095d8;
 	box-shadow: inset #34495e 0 5px 5px;
