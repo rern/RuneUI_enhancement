@@ -504,6 +504,10 @@ $( '#time' ).roundSlider( {
 	startAngle: 90,
 	endAngle: 450,
 	showTooltip: false,
+	
+	create: function () {
+		$( '#time' ).find( '.rs-animation, .rs-transition' ).css( 'transition-duration', '0s' );
+	},
 	change: function( e ) {
 		onreleaseKnob( e.value );
 	},
@@ -559,13 +563,14 @@ $( '#volmute, #volume .rs-tooltip' ).click( function() {
 		$.post( '/enhanceredis.php', { json: JSON.stringify( redis ) } );
 		setvol( 0 );
 		obj.setValue( 0 );
+		// keep display level before mute
+		$( '#volume .rs-tooltip' ).text( volumemute );
 		// rotate box-shadow back
 		$( '#volume .rs-handle' ).rsRotate( - obj._handle1.angle );
 		// change color after rotate finish
 		$( '#volume .rs-first' ).one( 'transitionend webkitTransitionEnd mozTransitionEnd', function() {
 			mutecolor( volumemute );
 		} );
-		$( '#mute' ).val( 1 );
 	} else {
 		var redis = { 
 			vol: [ 'get', 'volumemute' ],
@@ -606,22 +611,22 @@ $( '#volup, #voldn, #voluprs, #voldnrs' ).click( function() {
 } ); // document ready end <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 function mutecolor( volumemute ) {
-	$( '#volume .rs-handle' ).css( 'background', '#587ca0' );
 	$( '#volume .rs-tooltip' ).text( volumemute ).css( 'color', '#0095d8' );
+	$( '#volume .rs-handle' ).css( 'background', '#587ca0' );
 	$( '#volmute' ).addClass( 'btn-primary' );
 }
 function unmutecolor() {
-	$( '#volume .rs-handle' ).css( 'background', '#0095d8' );
 	$( '#volume .rs-tooltip' ).css( 'color', '#e0e7ee' );
+	$( '#volume .rs-handle' ).css( 'background', '#0095d8' );
 	$( '#volmute' ).removeClass( 'btn-primary' );
 }
 function mutereset() {
 	var redis = { vol: [ 'set', 'volumemute', 0 ] };
 	$.post( '/enhanceredis.php', { json: JSON.stringify( redis ) } );
-//	volumemute = 0;
 }
 
-// #menu-top, #menu-bottom, #play-group, #share-group, #vol-group use show/hide to work with css
+// #menu-top, #menu-bottom, #play-group, #share-group, #vol-group:
+// use show/hide to work with css 'display: none'
 function displaycommon() {
 	barhide = window.innerWidth < 499 || window.innerHeight < 515 ? 1 : 0;
 	if ( displayredis.bar !== ''
@@ -1149,8 +1154,6 @@ function updateGUI( volumemute ) {
 		obj.setValue( volume === '-1' ? 100: volume );
 		$( '#volume .rs-handle' ).rsRotate( - obj._handle1.angle ).show(); // rotated then show
 		$( '#volume .rs-tooltip' ).show();
-		// enable animation after set initial value
-		$( '#volume .rs-animation, #volume .rs-transition' ).css( 'transition-duration', '0.5s' );
 		
 		if ( $( '#vol-group' ).is( ':visible' ) ) {
 			if ( volumemute != 0 ) {
