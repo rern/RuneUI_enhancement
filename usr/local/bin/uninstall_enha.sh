@@ -20,11 +20,13 @@ fi
 # remove files #######################################
 echo -e "$bar Remove files ..."
 rm -v /srv/http/app/templates/enhanceplayback.php
-rm -v /srv/http/enhance*
+rm -v /srv/http/enhancebio.php
+[[ ! -e /usr/local/bin/uninstall_addo.sh ]] && rm -v /srv/http/enhanceredis.php
 path=/srv/http/assets
-rm -v $path/css/enhance.css
+rm -v $path/css/{enhance.css,midori.css,roundslider.min.css}
 rm -v $path/img/runelogo.svg
-rm -vf $path/js/{enhance.js,vendor/jquery-ui.min.js,vendor/propagating.js}
+rm -v $path/js/enhance.js
+rm -vf $path/js/vendor/{jquery-ui.min.js,propagating.js,roundslider.min.js}
 
 mv /srv/http/app/coverart_ctl.php{.backup,}
 
@@ -34,7 +36,7 @@ echo -e "$bar Restore modified files ..."
 file=/srv/http/app/templates/header.php
 echo $file
 sed -i -e 's|RuneUIe|RuneAudio - RuneUI|
-' -e '/enhance.css\|id="bartop"\|id="barbottom\|dropdownbg\|button id="menu-settings"\|id="pause"\|Development<.a>/ d
+' -e '/roundslider.min.css\|enhance.css\|id="bartop"\|id="barbottom\|dropdownbg\|button id="menu-settings"\|id="pause"\|Development<.a>/ d
 ' -e '/a href="http:..www.runeaudio.com/, /<.a>/ d
 ' -e 's|^<?php /\*||; s|\*/?>$||
 ' -e 's|id="open-panel-sx"><a |&href="/#panel-sx"|
@@ -47,7 +49,8 @@ sed -i -e 's|RuneUIe|RuneAudio - RuneUI|
 
 file=/srv/http/app/templates/footer.php
 echo $file
-sed -i -e '/enhance.js/ d
+sed -i -e '/jquery.knob.min.js/ {s/^<!--//; s/-->$//}
+' -e '/roundslider.min.js\|enhance.js/ d
 ' -e '/propagating.js/ d
 ' $file
 # 0.4b
@@ -74,20 +77,21 @@ file=/srv/http/app/settings_ctl.php
 echo $file
 sed -i '/if ( \$template->local_browser )/,/^}$/ d' $file
 
-file=/srv/http/assets/js/vendor/jquery.knob.js
+file=/srv/http/assets/js/runeui.js
 echo $file
-sed -i '/DOMMouseScroll/ s|^//||' $file
+sed -i -e '/^\/\*enha\|^enha\*\// d' $file
 
-if [[ $1 != u ]]; then
-	file=/root/.config/midori/config
-	echo $file
-	if grep -q '^#zoom-level' $file; then
-		sed -i -e '/^zoom-level/ d
-		' -e '/#zoom-level/ s/^#//
-		' $file
-	fi
-	sed -i '/#user-stylesheet-uri/ s/^#//' $file
-fi
+file=/srv/http/assets/js/runeui.min.js
+echo $file
+sed -i -e 's|/\*enha ||; s| enha\*/||' $file
+
+file=/root/.config/midori/config
+echo $file
+sed -i -e '/zoom-level/ d
+' -e '/middle-click/ i\
+zoom-level=0.7
+' -e '/user-stylesheet-uri/ s/^#*//
+' $file
 
 uninstallfinish $@
 

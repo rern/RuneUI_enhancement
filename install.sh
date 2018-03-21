@@ -20,6 +20,7 @@ file=/srv/http/app/templates/header.php
 echo $file
 sed -i -e 's/RuneAudio - RuneUI/RuneUIe/
 ' -e $'/runeui.css/ a\
+    <link rel="stylesheet" href="<?=$this->asset(\'/css/roundslider.min.css\')?>">\
     <link rel="stylesheet" href="<?=$this->asset(\'/css/enhance.css\')?>">
 ' -e '/id="menu-top"/ {
 i\
@@ -47,11 +48,18 @@ n; a\
 
 file=/srv/http/app/templates/footer.php
 echo $file
+sed -i '/jquery.knob.min.js/ {s/^/<!--/; s/$/-->/}' $file
 # must be before lyrics addon
 if ! grep -q 'lyrics.js' $file; then
-	sed -i $'$ a\<script src="<?=$this->asset(\'/js/enhance.js\')?>"></script>' $file
+	sed -i $'$ a\
+<script src="<?=$this->asset(\'/js/vendor/roundslider.min.js\')?>"></script>\
+<script src="<?=$this->asset(\'/js/enhance.js\')?>"></script>
+	' $file
 else
-	sed -i $'/lyrics.js/ i\<script src="<?=$this->asset(\'/js/enhance.js\')?>"></script>' $file
+	sed -i $'/lyrics.js/ i\
+<script src="<?=$this->asset(\'/js/vendor/roundslider.min.js\')?>"></script>\
+<script src="<?=$this->asset(\'/js/enhance.js\')?>"></script>
+' $file
 fi
 ! grep -q 'hammer.min.js' $file && sed -i $'$ a\<script src="<?=$this->asset(\'/js/vendor/hammer.min.js\')?>"></script>' $file
 ! grep -q 'propagating.js' $file && sed -i $'$ a\<script src="<?=$this->asset(\'/js/vendor/propagating.js\')?>"></script>' $file
@@ -64,11 +72,6 @@ if grep -q 'jquery-ui.js' $file; then
 else
 	rm /srv/http/assets/js/vendor/jquery-ui.min.js
 fi
-
-// disable scroll wheel on volume knob
-file=/srv/http/assets/js/vendor/jquery.knob.js
-echo $file
-sed -i '/DOMMouseScroll/ s|^|//|' $file
 
 file=/srv/http/app/templates/playback.php
 echo $file
@@ -88,6 +91,21 @@ sed -i -e '/<div class="tab-content">/ i\
 <?php include "enhanceplayback.php";\
 /\*
 ' -e '/id="context-menus"/ i\enh \*/?>
+' -e 's|</input>||; s|</img>||
+' $file
+
+file=/srv/http/assets/js/runeui.js
+echo $file
+sed -i -e '\|// KNOBS| i\
+/*enha
+' -e '\|// PLAYING QUEUE| i\
+enha*/
+' $file
+
+file=/srv/http/assets/js/runeui.min.js
+echo $file
+sed -i -e 's|,e("#time").knob|/\*enha &|
+' -e 's|;var r=e("#playlist-entries")| enha*/&|
 ' $file
 
 # start/stop local browser
@@ -100,10 +118,6 @@ if ( $template->local_browser ) {\
     exec( "/usr/bin/sudo /usr/bin/killall Xorg" );\
 }
 ' $file
-
-# for 0.3 - no songinfo and screensaver
-file=/srv/http/app/templates/playbackcustom.php
-[[ $release != 0.4b ]] && sed -i '/id="songinfo-open"/ d' $file
 
 # for rune youtube
 [[ -e /usr/local/bin/uninstall_RuneYoutube.sh ]] && sed -i '/id="pl-import-youtube"/ {s/<!--//; s/-->//}' $file
