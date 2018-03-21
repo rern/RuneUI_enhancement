@@ -610,6 +610,10 @@ $( '#volup, #voldn, #voluprs, #voldnrs' ).click( function() {
 
 } ); // document ready end <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
+
+// load only not in setting pages
+if ( /\/.*\//.test( location.pathname ) === false ) { // start if >>>>>>>>>>>>>>>>>>>
+
 function mutecolor( volumemute ) {
 	$( '#volume .rs-tooltip' ).text( volumemute ).css( 'color', '#0095d8' );
 	$( '#volume .rs-handle' ).css( 'background', '#587ca0' );
@@ -661,8 +665,6 @@ function displaycommon() {
 // playback show/hide blocks
 buttonactive = 0;
 function displayplayback() {
-	if ( /\/.*\//.test( location.pathname ) === true ) return;
-	
 	buttonhide = window.innerHeight <= 320 || window.innerWidth < 499 ? 1 : 0;
 	var redis = {
 		display: [ 'hGetAll', 'display' ],
@@ -785,7 +787,6 @@ function displayqueue() {
 		window.scrollTo( 0, queuetop );
 	} );
 }
-
 
 function setvol( vol ) {
 	GUI.volume = vol;
@@ -1323,3 +1324,5 @@ function renderUI(text) {
 		}
 	} );
 }
+
+} // end if <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
