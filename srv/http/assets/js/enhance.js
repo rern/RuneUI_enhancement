@@ -110,7 +110,6 @@ $( '#open-library' ).click( function() {
 	$( '#open-panel-sx' ).click();
 } );
 
-buttonactive = 0;
 $( '#play-group, #share-group, #vol-group' ).click( function() {
 	if ( window.innerWidth < 499 ) buttonactive = 1;
 } );
@@ -655,6 +654,7 @@ function displaycommon() {
 	}
 }
 // playback show/hide blocks
+buttonactive = 0;
 function displayplayback() {
 	buttonhide = window.innerHeight <= 320 || window.innerWidth < 499 ? 1 : 0;
 	var redis = {
@@ -1150,7 +1150,7 @@ function updateGUI( volumemute ) {
 		$( '#volume .rs-handle' ).rsRotate( - obj._handle1.angle ).show(); // rotated then show
 		$( '#volume .rs-tooltip' ).show();
 		// enable animation after set initial value
-		$( '#volume .rs-animation, #volume .rs-transition' ).css( 'transition', 'all 0.5s linear' );
+		$( '#volume .rs-animation, #volume .rs-transition' ).css( 'transition-duration', '0.5s' );
 		
 		if ( $( '#vol-group' ).is( ':visible' ) ) {
 			if ( volumemute != 0 ) {
