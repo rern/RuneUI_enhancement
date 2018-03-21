@@ -548,11 +548,11 @@ $( '#volume' ).roundSlider( {
 		if ( e.value === 0 ) unmutecolor(); // value before 'start'
 	},
 	drag: function ( e ) {
-		$( e.handle.element ).rsRotate( - e.handle.angle );
 		if ( dynVolumeKnob ) setvol( e.value ); // value in real time
+		$( e.handle.element ).rsRotate( - e.handle.angle );
 	},
 	stop: function( e ) { // on 'drag - stop' also trigger 'change'
-//		console.log('stop')
+		//setvol( e.value );
 	}
 } );
 $( '#volmute, #volume .rs-tooltip' ).click( function() {
@@ -661,6 +661,8 @@ function displaycommon() {
 // playback show/hide blocks
 buttonactive = 0;
 function displayplayback() {
+	if ( /\/.*\//.test( location.pathname ) === true ) return;
+	
 	buttonhide = window.innerHeight <= 320 || window.innerWidth < 499 ? 1 : 0;
 	var redis = {
 		display: [ 'hGetAll', 'display' ],
@@ -1135,68 +1137,6 @@ function populateDB(options) {
 
 }
 
-function updateGUI( volumemute ) {
-	if ( !$( '#section-index' ).length ) return;
-	var volume = GUI.json.volume;
-	var radioname = GUI.json.radioname;
-	var currentartist = GUI.json.currentartist;
-	var currentsong = GUI.json.currentsong ? GUI.json.currentsong : '';
-	var currentalbum = GUI.json.currentalbum;
-	// set radio mode if stream is present
-	GUI.stream = ( radioname ? 'radio' : '' );
-	// check MPD status and refresh the UI info
-	refreshState();
-	
-	if ( $( '#volume-knob' ).not( '.hide' )
-		&& ( !$( '#songinfo-modal' ).length || GUI.vol_changed_local === 0 )
-	) {
-		var obj = $( '#volume' ).data( 'roundSlider' );
-		obj.setValue( volume === '-1' ? 100: volume );
-		$( '#volume .rs-handle' ).rsRotate( - obj._handle1.angle ).show(); // rotated then show
-		$( '#volume .rs-tooltip' ).show();
-		
-		if ( $( '#vol-group' ).is( ':visible' ) ) {
-			if ( volumemute != 0 ) {
-				mutecolor( volumemute );
-			} else {
-				unmutecolor();
-			}
-		}
-	}
-	
-	if ( GUI.stream !== 'radio' ) {
-		$( '#currentartist' ).html( !currentartist ? '<span class="notag">[no artist]</span>' : currentartist );
-		$( '#currentsong' ).html( !currentsong ? '<span class="notag">[no title]</span>' : currentsong );
-		$( '#currentalbum').html( !currentalbum ? '<span class="notag">[no album]</span>' : currentalbum );
-	} else {
-		$( '#currentartist' ).html( !currentartist ? radioname : currentartist );
-		$( '#currentalbum' ).html( '<span class="notag">streaming</span>' );
-		$( '#currentsong' ).html( !currentsong ? radioname : currentsong );
-	}
-	
-	if ( $( '#play-group' ).is( ':visible' ) ) {
-		$( '#repeat' ).toggleClass( 'btn-primary', GUI.json.repeat === '1' );
-		$( '#random' ).toggleClass( 'btn-primary', GUI.json.random === '1' );
-		$( '#single' ).toggleClass( 'btn-primary', GUI.json.single === '1' );
-	}
-	// song changed
-	if ( GUI.currentsong === GUI.json.currentsong ) return;
-	GUI.currentsong = currentsong;	
-	countdownRestart(0);
-	if ( $('#panel-dx').hasClass('active') ) customScroll( 'pl', parseInt( GUI.json.song ) );
-	var currentalbumstring = currentartist +' - '+ currentalbum;
-	// album changed
-	if ( GUI.currentalbum === currentalbumstring ) return;
-// -------------------------------------------------------------------------------
-	GUI.currentalbum = currentalbumstring;
-	if (GUI.stream !== 'radio') {
-		var covercachenum = Math.floor(Math.random()*1001);
-		$('#cover-art').css('background-image','url("/coverart/?v=' + covercachenum + '")');
-	} else {
-		$('#cover-art').css('background-image','url("assets/img/cover-radio.jpg")');
-	}
-}
-
 function refreshState() {
 // ****************************************************************************************
 	var state = GUI.state;
@@ -1285,6 +1225,68 @@ function refreshState() {
 		$('a', '#open-panel-sx').html('<i class="fa fa-refresh fa-spin"></i>');
 	} else {
 		$('a', '#open-panel-sx').html('<i class="fa fa-folder-open"></i>');
+	}
+}
+
+function updateGUI( volumemute ) {
+	if ( !$( '#section-index' ).length ) return;
+	var volume = GUI.json.volume;
+	var radioname = GUI.json.radioname;
+	var currentartist = GUI.json.currentartist;
+	var currentsong = GUI.json.currentsong ? GUI.json.currentsong : '';
+	var currentalbum = GUI.json.currentalbum;
+	// set radio mode if stream is present
+	GUI.stream = ( radioname ? 'radio' : '' );
+	// check MPD status and refresh the UI info
+	refreshState();
+	
+	if ( $( '#volume-knob' ).not( '.hide' )
+		&& ( !$( '#songinfo-modal' ).length || GUI.vol_changed_local === 0 )
+	) {
+		var obj = $( '#volume' ).data( 'roundSlider' );
+		obj.setValue( volume === '-1' ? 100: volume );
+		$( '#volume .rs-handle' ).rsRotate( - obj._handle1.angle ).show(); // rotated then show
+		$( '#volume .rs-tooltip' ).show();
+		
+		if ( $( '#vol-group' ).is( ':visible' ) ) {
+			if ( volumemute != 0 ) {
+				mutecolor( volumemute );
+			} else {
+				unmutecolor();
+			}
+		}
+	}
+	
+	if ( GUI.stream !== 'radio' ) {
+		$( '#currentartist' ).html( !currentartist ? '<span class="notag">[no artist]</span>' : currentartist );
+		$( '#currentsong' ).html( !currentsong ? '<span class="notag">[no title]</span>' : currentsong );
+		$( '#currentalbum').html( !currentalbum ? '<span class="notag">[no album]</span>' : currentalbum );
+	} else {
+		$( '#currentartist' ).html( !currentartist ? radioname : currentartist );
+		$( '#currentalbum' ).html( '<span class="notag">streaming</span>' );
+		$( '#currentsong' ).html( !currentsong ? radioname : currentsong );
+	}
+	
+	if ( $( '#play-group' ).is( ':visible' ) ) {
+		$( '#repeat' ).toggleClass( 'btn-primary', GUI.json.repeat === '1' );
+		$( '#random' ).toggleClass( 'btn-primary', GUI.json.random === '1' );
+		$( '#single' ).toggleClass( 'btn-primary', GUI.json.single === '1' );
+	}
+	// song changed
+	if ( GUI.currentsong === GUI.json.currentsong ) return;
+	GUI.currentsong = currentsong;	
+	countdownRestart(0);
+	if ( $('#panel-dx').hasClass('active') ) customScroll( 'pl', parseInt( GUI.json.song ) );
+	var currentalbumstring = currentartist +' - '+ currentalbum;
+	// album changed
+	if ( GUI.currentalbum === currentalbumstring ) return;
+// -------------------------------------------------------------------------------
+	GUI.currentalbum = currentalbumstring;
+	if (GUI.stream !== 'radio') {
+		var covercachenum = Math.floor(Math.random()*1001);
+		$('#cover-art').css('background-image','url("/coverart/?v=' + covercachenum + '")');
+	} else {
+		$('#cover-art').css('background-image','url("assets/img/cover-radio.jpg")');
 	}
 }
 
