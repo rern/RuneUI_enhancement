@@ -1248,8 +1248,10 @@ function updateGUI( volumemute ) {
 	) {
 		var obj = $( '#volume' ).data( 'roundSlider' );
 		obj.setValue( volume === '-1' ? 100: volume );
-		$( '#volume .rs-handle' ).rsRotate( - obj._handle1.angle ).show(); // rotated then show
-		$( '#volume .rs-tooltip' ).show();
+		$( '#volume .rs-handle' ).rsRotate( - obj._handle1.angle ); // rotated then show
+		$( '#volume .rs-first' ).one( 'transitionend webkitTransitionEnd mozTransitionEnd', function() {
+			$( '#volume .rs-handle, #volume .rs-tooltip' ).show(); // rotated then show
+		} );
 		
 		if ( $( '#vol-group' ).is( ':visible' ) ) {
 			if ( volumemute != 0 ) {
