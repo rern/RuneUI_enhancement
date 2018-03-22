@@ -78,6 +78,19 @@
 	padding-top: 5px;
 	font-size: 30px;
 }
+#badge {
+    position: absolute;
+    height: 2rem;
+    top: 1.5rem !important;
+    left: -0.5rem !important;
+    width: 2rem;
+    text-align: center;
+    line-height: 2rem;
+    font-size: 1.25rem;
+    border-radius: 50%;
+    color: #e0e7ee;
+    background: red;
+}
 .dropdown {
 	margin-right: 0 !important;
 }
