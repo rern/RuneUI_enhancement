@@ -497,7 +497,7 @@ function bioshow() {
 
 // new knob
 $( '#time' ).roundSlider( {
-	sliderType: "min-range",
+	sliderType: 'min-range',
 	max: 1000,
 	radius: 115,
 	width: 20,
@@ -505,7 +505,7 @@ $( '#time' ).roundSlider( {
 	endAngle: 450,
 	showTooltip: false,
 	
-	create: function () {
+	create: function () { // fix: flickering on iOS
 		$( '#time' ).find( '.rs-animation, .rs-transition' ).css( 'transition-duration', '0s' );
 	},
 	change: function( e ) {
@@ -1231,28 +1231,8 @@ function refreshState() {
 	}
 }
 
-function updateGUI( volumemute ) {
+function updateGUI() {
 	if ( !$( '#section-index' ).length ) return;
-	
-	if ( $( '#volume-knob' ).not( '.hide' )
-		&& ( !$( '#songinfo-modal' ).length || GUI.vol_changed_local === 0 )
-	) {
-		var volume = GUI.json.volume;
-		var obj = $( '#volume' ).data( 'roundSlider' );
-		obj.setValue( volume === '-1' ? 100: volume );
-		$( '#volume .rs-handle' ).rsRotate( - obj._handle1.angle ); // rotated then show
-		$( '#volume .rs-first' ).one( 'transitionend webkitTransitionEnd mozTransitionEnd', function() {
-			$( '#volume .rs-handle, #volume .rs-tooltip' ).show(); // rotated then show
-		} );
-		
-		if ( $( '#vol-group' ).is( ':visible' ) ) {
-			if ( volumemute != 0 ) {
-				mutecolor( volumemute );
-			} else {
-				unmutecolor();
-			}
-		}
-	}
 	
 	var radioname = GUI.json.radioname;
 	var currentartist = GUI.json.currentartist;
@@ -1279,10 +1259,12 @@ function updateGUI( volumemute ) {
 		$( '#random' ).toggleClass( 'btn-primary', GUI.json.random === '1' );
 		$( '#single' ).toggleClass( 'btn-primary', GUI.json.single === '1' );
 	}
+	
 	// song changed
 	if ( GUI.currentsong === GUI.json.currentsong ) return;
-	GUI.currentsong = currentsong;	
+	GUI.currentsong = currentsong;
 	countdownRestart(0);
+	// scroll long song text
 	if ( $('#panel-dx').hasClass('active') ) customScroll( 'pl', parseInt( GUI.json.song ) );
 	
 	// album changed
@@ -1304,27 +1286,48 @@ function renderUI(text) {
 	toggleLoader('close');
 	GUI.json = text[0];
 	GUI.state = GUI.json.state;
+	
+	updateGUI();
+	
+	if ( !$('#section-index' ).length ) return;
+	
 	// set mute button before refresh
 	volumemute = 0;
 	var redis = { vol: [ 'get', 'volumemute' ] };
 	$.post( '/enhanceredis.php', 
 		{ json: JSON.stringify( redis ) },
 		function( data ) {
-		updateGUI( json.vol );
+		var json = JSON.parse( data );
+
+		if ( $( '#volume-knob' ).not( '.hide' )
+			&& ( !$( '#songinfo-modal' ).length || GUI.vol_changed_local === 0 )
+		) {
+			var volume = GUI.json.volume;
+			var obj = $( '#volume' ).data( 'roundSlider' );
+			obj.setValue( volume === '-1' ? 100: volume );
+			$( '#volume .rs-handle' ).rsRotate( - obj._handle1.angle );
+			$( '#volume .rs-handle, #volume .rs-tooltip' ).show(); // rotated then show
+			
+			if ( $( '#vol-group' ).is( ':visible' ) ) {
+				if ( json.vol != 0 ) {
+					mutecolor( json.vol );
+				} else {
+					unmutecolor();
+				}
+			}
+		}
 		
-		if ($('#section-index').length) {
-			var elapsed = (GUI.json.elapsed !== '' && GUI.json.elapsed !== undefined)? GUI.json.elapsed : 0;
-			var time = (GUI.json.time !== '' && GUI.json.time !== undefined && GUI.json.time !== null)? GUI.json.time : 0;
-			refreshTimer(parseInt(elapsed), parseInt(time), GUI.json.state);
-			if (GUI.stream !== 'radio') {
-				refreshKnob();
-			} else {
-				$( '#time' ).roundSlider( 'setValue', 0 );
-			}
-			if (GUI.json.playlist !== GUI.playlist) {
-				getPlaylistCmd();
-				GUI.playlist = GUI.json.playlist;
-			}
+		var elapsed = (GUI.json.elapsed !== '' && GUI.json.elapsed !== undefined)? GUI.json.elapsed : 0;
+		var time = (GUI.json.time !== '' && GUI.json.time !== undefined && GUI.json.time !== null)? GUI.json.time : 0;
+		refreshTimer(parseInt(elapsed), parseInt(time), GUI.json.state);
+		if (GUI.stream !== 'radio') {
+			refreshKnob();
+		} else {
+			$( '#time' ).roundSlider( 'setValue', 0 );
+		}
+		if (GUI.json.playlist !== GUI.playlist) {
+			getPlaylistCmd();
+			GUI.playlist = GUI.json.playlist;
 		}
 	} );
 }
