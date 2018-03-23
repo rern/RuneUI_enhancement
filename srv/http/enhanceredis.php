@@ -15,7 +15,8 @@ foreach ( $array as $field => $arg ) {
 	$key = $arg[ 1 ];
 	
 	if ( $count === 1 ) { // for bash
-		$result[ $field ] = exec( '/usr/bin/sudo '.$key );
+		$result[ $field ] = exec( '/usr/bin/sudo '.$command );
+//		$result[ $field ] = $command;
 	} else if ( $count === 2 ) {
 		$result[ $field ] = $redis->$command( $key );
 	} else if ( $count === 3 ) {
