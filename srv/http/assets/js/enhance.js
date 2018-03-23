@@ -569,9 +569,7 @@ pushstreamVolume.onmessage = function( response ) { // on receive broadcast
 	if ( vollocal === 1 ) {
 		vollocal = 0;
 	} else {
-		setTimeout( function() {
-			setvolume();
-		}, 5000 );
+		setvolume();
 	}
 };
 pushstreamVolume.connect();
