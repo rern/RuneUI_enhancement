@@ -127,7 +127,7 @@ function displayall() {
 }
 window.addEventListener( 'orientationchange', displayall );
 /*window.addEventListener( 'visibilitychange', function() {
-	if ( document.visibilityState === 'visible' ) displayall();
+	if ( document.visibilityState === 'visible' ) $( '#volume .rs-handle, #volume .rs-tooltip' ).show();
 } );*/
 
 // hammer**************************************************************
@@ -520,7 +520,7 @@ $( '#time' ).roundSlider( {
 } );
 
 var dynVolumeKnob = $( '#volume' ).data( 'dynamic' );
-
+vollocal = 0;
 $( '#volume' ).roundSlider( {
 	sliderType: 'default',
 	radius: 115,
@@ -537,6 +537,9 @@ $( '#volume' ).roundSlider( {
 	},
 	change: function( e ) { // on click and 'drag - stop' (not fire on 'setValue')
 		setvol( e.value );
+		vollocal = 1;
+		var redis = { vol: [ 'curl', 'vol', 1 ] };
+		$.post( '/enhanceredis.php', { json: JSON.stringify( redis ) } );
 		$( e.handle.element ).rsRotate( - e.handle.angle );
 		if ( e.preValue === 0 ) { // value before 'change'
 			mutereset();
@@ -555,6 +558,24 @@ $( '#volume' ).roundSlider( {
 		//setvol( e.value );
 	}
 } );
+
+var pushstreamVolume = new PushStream( {
+	host: window.location.hostname,
+	port: window.location.port,
+	modes: GUI.mode
+} );
+pushstreamVolume.addChannel( 'volume' );
+pushstreamVolume.onmessage = function( response ) { // on receive broadcast
+	if ( vollocal === 1 ) {
+		vollocal = 0;
+	} else {
+		setTimeout( function() {
+			setvolume();
+		}, 5000 );
+	}
+};
+pushstreamVolume.connect();
+
 $( '#volmute, #volume .rs-tooltip' ).click( function() {
 	var obj = $( '#volume' ).data( 'roundSlider' );
 	var volumemute = obj.getValue();
@@ -587,6 +608,9 @@ $( '#volmute, #volume .rs-tooltip' ).click( function() {
 			unmutecolor();
 		} );
 	}
+	vollocal = 1;
+	var redis = { vol: [ 'curl', 'vol', 1 ] };
+	$.post( '/enhanceredis.php', { json: JSON.stringify( redis ) } );
 } );
 
 $( '#volup, #voldn, #voluprs, #voldnrs' ).click( function() {
@@ -609,19 +633,19 @@ $( '#volup, #voldn, #voluprs, #voldnrs' ).click( function() {
 } );
 
 // initial volume
-if ( $('#section-index' ).length ) {
-	// set mute button before refresh
+function setvolume() {
+	if ( !$('#section-index' ).length ) return;
+	
+	// set mute button before render
 	volumemute = 0;
 	var redis = {
 		volumemute: [ 'get', 'volumemute' ],
-		vol: [ '/usr/bin/mpc volume' ],
-		volpreset: [ 'get', 'mpd_start_volume' ]
+		vol: [ '/usr/bin/mpc volume' ]
 	};
 	$.post( '/enhanceredis.php', 
 		{ json: JSON.stringify( redis ) },
 		function( data ) {
 			var json = JSON.parse( data );
-			var vol = json.vol.replace( /[^0-9]/g, '' );
 
 			if ( $( '#volume-knob' ).not( '.hide' )
 				&& ( !$( '#songinfo-modal' ).length || GUI.vol_changed_local === 0 )
@@ -629,7 +653,7 @@ if ( $('#section-index' ).length ) {
 				var $animation = $( '#volume' ).find( '.rs-animation, .rs-transition' );
 				$animation.css( 'transition-duration', '0s' );
 				var obj = $( '#volume' ).data( 'roundSlider' );
-				obj.setValue( json.volpreset !== '-1' ? json.volpreset : vol );
+				obj.setValue( json.vol.replace( /[^0-9]/g, '' ) );
 				$( '#volume .rs-handle' ).rsRotate( - obj._handle1.angle );
 				$( '#volume .rs-handle, #volume .rs-tooltip' ).show(); // show after 'setValue'
 				$animation.css( 'transition-duration', '0.5s' );
@@ -645,6 +669,7 @@ if ( $('#section-index' ).length ) {
 		}
 	);
 }
+setvolume();
 
 } ); // document ready end <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
@@ -829,10 +854,6 @@ function displayqueue() {
 function setvol( vol ) {
 	GUI.volume = vol;
 	sendCmd( 'setvol '+ vol );
-	if ( GUI.vol_changed_local === 0 ) {
-		setInterval( reset_vol_changed_local, 5000 );
-		GUI.vol_changed_local = 1;
-	}
 }
 function onreleaseKnob(value) {
 	if (GUI.state !== 'stop' && GUI.state !== '') {
