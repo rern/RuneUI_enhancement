@@ -16,11 +16,15 @@ foreach ( $array as $field => $arg ) {
 	
 	if ( $count === 1 ) { // for bash
 		$result[ $field ] = exec( '/usr/bin/sudo '.$command );
-//		$result[ $field ] = $command;
 	} else if ( $count === 2 ) {
 		$result[ $field ] = $redis->$command( $key );
 	} else if ( $count === 3 ) {
-		$result[ $field ] = $redis->$command( $key, $arg[ 2 ] );
+		$value = $arg[ 2 ];
+		if ( $command !== 'curl' ) {
+			$result[ $field ] = $redis->$command( $key, $value );
+		} else {
+			exec( '/usr/bin/sudo /usr/bin/curl -s -v -X POST "http://localhost/pub?id=volume" -d "{ \"'.$key.'\": \"'.$value.'\" }"' );
+		}
 	} else if ( $count === 4 ) {
 		$result[ $field ] = $redis->$command( $key, $arg[ 2 ], $arg[ 3 ] );
 	}
