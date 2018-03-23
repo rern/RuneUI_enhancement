@@ -1233,19 +1233,11 @@ function refreshState() {
 
 function updateGUI( volumemute ) {
 	if ( !$( '#section-index' ).length ) return;
-	var volume = GUI.json.volume;
-	var radioname = GUI.json.radioname;
-	var currentartist = GUI.json.currentartist;
-	var currentsong = GUI.json.currentsong ? GUI.json.currentsong : '';
-	var currentalbum = GUI.json.currentalbum;
-	// set radio mode if stream is present
-	GUI.stream = ( radioname ? 'radio' : '' );
-	// check MPD status and refresh the UI info
-	refreshState();
 	
 	if ( $( '#volume-knob' ).not( '.hide' )
 		&& ( !$( '#songinfo-modal' ).length || GUI.vol_changed_local === 0 )
 	) {
+		var volume = GUI.json.volume;
 		var obj = $( '#volume' ).data( 'roundSlider' );
 		obj.setValue( volume === '-1' ? 100: volume );
 		$( '#volume .rs-handle' ).rsRotate( - obj._handle1.angle ); // rotated then show
@@ -1261,6 +1253,16 @@ function updateGUI( volumemute ) {
 			}
 		}
 	}
+	
+	var radioname = GUI.json.radioname;
+	var currentartist = GUI.json.currentartist;
+	var currentsong = GUI.json.currentsong ? GUI.json.currentsong : '';
+	var currentalbum = GUI.json.currentalbum;
+	// set radio mode if stream is present
+	GUI.stream = ( radioname ? 'radio' : '' );
+	
+	// check MPD status and refresh the UI info
+	refreshState();
 	
 	if ( GUI.stream !== 'radio' ) {
 		$( '#currentartist' ).html( !currentartist ? '<span class="notag">[no artist]</span>' : currentartist );
@@ -1282,8 +1284,9 @@ function updateGUI( volumemute ) {
 	GUI.currentsong = currentsong;	
 	countdownRestart(0);
 	if ( $('#panel-dx').hasClass('active') ) customScroll( 'pl', parseInt( GUI.json.song ) );
-	var currentalbumstring = currentartist +' - '+ currentalbum;
+	
 	// album changed
+	var currentalbumstring = currentartist +' - '+ currentalbum;
 	if ( GUI.currentalbum === currentalbumstring ) return;
 // -------------------------------------------------------------------------------
 	GUI.currentalbum = currentalbumstring;
@@ -1307,10 +1310,7 @@ function renderUI(text) {
 	$.post( '/enhanceredis.php', 
 		{ json: JSON.stringify( redis ) },
 		function( data ) {
-		var json = JSON.parse( data );
-		volumemute = parseInt( json.vol );
-		if ( volumemute ) mutecolor( volumemute );
-		updateGUI( volumemute );
+		updateGUI( json.vol );
 		
 		if ($('#section-index').length) {
 			var elapsed = (GUI.json.elapsed !== '' && GUI.json.elapsed !== undefined)? GUI.json.elapsed : 0;
