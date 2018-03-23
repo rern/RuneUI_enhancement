@@ -827,7 +827,6 @@ function displayqueue() {
 }
 
 function setvol( vol ) {
-	console.log(vol)
 	GUI.volume = vol;
 	sendCmd( 'setvol '+ vol );
 	if ( GUI.vol_changed_local === 0 ) {
