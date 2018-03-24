@@ -535,8 +535,8 @@ $( '#volume' ).roundSlider( {
 			.addClass( 'rs-transition' ).eq( 0 ) // make it rotate with 'rs-transition'
 			.rsRotate( - this._handle1.angle );  // initial rotate
 	},
-	change: function( e ) { // on click and 'drag - stop' (not fire on 'setValue')
-		setvol( e.value );
+	change: function( e ) { // not fire on 'setValue'
+		setvol( e.value ); // value after click or 'stop drag'
 		vollocal = 1;
 		var redis = { vol: [ 'curl', 'vol', 1 ] };
 		$.post( '/enhanceredis.php', { json: JSON.stringify( redis ) } );
@@ -546,16 +546,16 @@ $( '#volume' ).roundSlider( {
 			unmutecolor();
 		}
 	},
-	start: function( e ) { // on 'drag - start'
+	start: function( e ) { // on 'start drag'
 		// restore handle color immediately on start drag
-		if ( e.value === 0 ) unmutecolor(); // value before 'start'
+		if ( e.value === 0 ) unmutecolor(); // value before 'start drag'
 	},
 	drag: function ( e ) {
-		if ( dynVolumeKnob ) setvol( e.value ); // value in real time
+		setvol( e.value ); // value in real time 'drag'
 		$( e.handle.element ).rsRotate( - e.handle.angle );
 	},
 	stop: function( e ) { // on 'drag - stop' also trigger 'change'
-		//setvol( e.value );
+//		console.log( e )
 	}
 } );
 
@@ -649,12 +649,12 @@ function setvolume() {
 				&& ( !$( '#songinfo-modal' ).length || GUI.vol_changed_local === 0 )
 			) {
 				var $animation = $( '#volume' ).find( '.rs-animation, .rs-transition' );
-				$animation.css( 'transition-duration', '0s' );
+				$animation.css( 'transition-duration', '0s' ); // suppress initial rotate animation
 				var obj = $( '#volume' ).data( 'roundSlider' );
 				obj.setValue( json.vol.replace( /[^0-9]/g, '' ) );
 				$( '#volume .rs-handle' ).rsRotate( - obj._handle1.angle );
 				$( '#volume .rs-handle, #volume .rs-tooltip' ).show(); // show after 'setValue'
-				$animation.css( 'transition-duration', '0.5s' );
+				$animation.css( 'transition', '' );            // reset animation to default
 				
 				if ( $( '#vol-group' ).is( ':visible' ) ) {
 					if ( json.volumemute != 0 ) {
@@ -852,6 +852,20 @@ function displayqueue() {
 function setvol( vol ) {
 	GUI.volume = vol;
 	sendCmd( 'setvol '+ vol );
+}
+function setPlaybackSource() {
+    var activePlayer = GUI.libraryhome.ActivePlayer;
+    $('#overlay-playsource-open button').text(activePlayer);
+    $('#overlay-playsource a').addClass('inactive');
+    var source = activePlayer.toLowerCase();
+    $('#playsource-' + source).removeClass('inactive');
+    $( '#single' ).prop( 'disabled', activePlayer === 'Spotify' || activePlayer === 'Airplay' );
+    $('#playlist-entries').removeClass(function(index, css) {
+        return (css.match (/(^|\s)playlist-\S+/g) || []).join(' ');
+    }).addClass('playlist-' + source);
+    $('#pl-manage').removeClass(function(index, css) {
+        return (css.match (/(^|\s)pl-manage-\S+/g) || []).join(' ');
+    }).addClass('pl-manage-' + source);
 }
 function onreleaseKnob(value) {
 	if (GUI.state !== 'stop' && GUI.state !== '') {
