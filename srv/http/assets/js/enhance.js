@@ -511,11 +511,22 @@ $( '#time' ).roundSlider( {
 	change: function( e ) {
 		onreleaseKnob( e.value );
 	},
-	drag: function () {
-		if ( GUI.state !== 'stop' ) window.clearInterval( GUI.currentKnob );
+	start: function () {
+		if ( GUI.state === 'play' ) window.clearInterval( GUI.currentKnob );
 	},
-	stop: function ( e ) {
-		onreleaseKnob( e.value );
+	drag: function ( e ) {
+		if ( GUI.stream === 'radio' ) return;
+		
+		var time = GUI.json.time;
+		var current = Math.round( e.value / 1000 * time );
+		var hr = Math.floor( current / 3600 );
+		var mm = Math.floor( ( current - ( hr * 3600 ) ) / 60 );
+		ss = Math.floor( current - ( hr * 3600 ) - ( mm * 60 ) );
+		hr = ( hr > 0 ) ? hr +':' : '';
+		mm = ( mm > 9 ) ? mm : '0' + mm;
+		ss = ( ss > 9 ) ? ss : '0' + ss;
+		
+		$( '#countdown-display' ).text( hr + mm +':'+ ss );
 	}
 } );
 
@@ -554,9 +565,6 @@ $( '#volume' ).roundSlider( {
 		setvol( e.value ); // value in real time 'drag'
 		$( e.handle.element ).rsRotate( - e.handle.angle );
 	},
-	stop: function( e ) { // on 'drag - stop' also trigger 'change'
-//		console.log( e )
-	}
 } );
 
 var pushstreamVolume = new PushStream( {
@@ -630,7 +638,6 @@ $( '#volup, #voldn, #voluprs, #voldnrs' ).click( function() {
 	$( '#volume .rs-handle' ).rsRotate( - obj._handle1.angle );
 } );
 
-// initial volume
 function setvolume() {
 	if ( !$('#section-index' ).length ) return;
 	
@@ -667,7 +674,7 @@ function setvolume() {
 		}
 	);
 }
-setvolume();
+setvolume(); // initial volume
 
 } ); // document ready end <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
@@ -870,10 +877,8 @@ function setPlaybackSource() {
 function onreleaseKnob(value) {
 	if (GUI.state !== 'stop' && GUI.state !== '') {
 		if (GUI.stream !== 'radio') {
-			window.clearInterval(GUI.currentKnob);
 			var seekto = Math.floor((value * parseInt(GUI.json.time)) / 1000);
 			sendCmd('seek ' + GUI.json.song + ' ' + seekto);
-			$( '#time' ).roundSlider( 'setValue', value );
 			$('#countdown-display').countdown('destroy');
 			$('#countdown-display').countdown({since: -seekto, compact: true, format: 'MS'});
 			if ( $( '#countdown-display-ss' ).length ) {
@@ -885,16 +890,30 @@ function onreleaseKnob(value) {
 		}
 	}
 }
-function refreshKnob() {
+function refreshTimer( startFrom, stopTo, state ) {
+    var display = $( '#countdown-display' );
+    display.countdown( 'destroy' );
+    display.countdown( { since: ( ( state !== 'stop' || state !== undefined ) ? -(startFrom) : 0 ), compact: true, format: 'MS' } );
+    if ( state !== 'play' ) display.countdown( 'pause' );
+    
+    if ( $( '#countdown-display-ss' ).length ) {
+	    var displayss = $('#countdown-display-ss');
+	    displayss.countdown('destroy');
+	    displayss.countdown({ since: ((state !== 'stop' || state !== undefined)? -(startFrom) : 0), compact: true, format: 'MS' });
+	    if (state !== 'play'){
+	        displayss.countdown('pause');
+	    }
+	}
+}
+function refreshKnob( percent, time, state ) {
 	window.clearInterval( GUI.currentKnob );
-	if ( GUI.state !== 'play' ) return;
-	var initTime = parseInt( GUI.json.song_percent ) * 10;
-	var delta = parseInt( GUI.json.time );
-	var step = parseInt( 1000 / delta );
+	if ( state !== 'play' ) return;
+	var initTime = percent * 10;
+	var step = parseInt( 1000 / time );
 	GUI.currentKnob = setInterval( function() {
 		initTime = initTime + ( ( GUI.visibility !== 'visible' ) ? step : 1 );
 		$( '#time' ).roundSlider( 'setValue', initTime );
-	}, delta );
+	}, time );
 }
 function timeConvert3( ss ) {
 	var hr = Math.floor( ss / 3600 );
@@ -908,8 +927,10 @@ function timeConvert3( ss ) {
 function countdownRestart(startFrom) {
 	var display = $('#countdown-display').countdown('destroy');
 	display.countdown({since: -(startFrom), compact: true, format: 'MS'});
-	var displayss = $('#countdown-display-ss').countdown('destroy');
-	displayss.countdown({since: -(startFrom), compact: true, format: 'MS'});
+	if ( $( '#countdown-display-ss' ).length ) {
+		var displayss = $('#countdown-display-ss').countdown('destroy');
+		displayss.countdown({since: -(startFrom), compact: true, format: 'MS'});
+	}
 }
 
 // hide breadcrumb, index bar, edit bookmark
@@ -1363,32 +1384,46 @@ function renderUI(text) {
 	updateGUI();
 	
 	if ( !$('#section-index' ).length ) return;
-/*	var redis = { mpdstatus: [ '/usr/bin/mpc status' ] }; // must edit enhanceredis.sh to 'shell_exec'
-	$.post( '/enhanceredis.php', { json: JSON.stringify( redis ) }, function( data ) {
-		var mpdstatus = JSON.parse( data ).mpdstatus.split( '\n' )[ 1 ].replace( /#.*  /, '' );
-		var statussplit = mpdstatus.split( ' ' );
-		var timesplit = statussplit[ 1 ].split( '/' );
-		var currentsplit = timesplit[ 0 ].split( ':' );
-		var totalsplit = timesplit[ 1 ].split( ':' );
-		
-		var state = statussplit[ 0 ].replace( /[\[\]']+/g, '' );
-		var elapsed = parseInt( currentsplit[ 0 ] * 60 + parseInt( currentsplit[ 1 ] ) );
-		var time = parseInt( totalsplit[ 0 ] * 60 + parseInt( totalsplit[ 1 ] ) );
-		var song_percent = statussplit[ 2 ].replace( /[\(\)%]/g, '' );
-		console.log( state +' '+ elapsed +' '+ time +' '+ song_percent );
-	} );*/
-	var elapsed = (GUI.json.elapsed !== '' && GUI.json.elapsed !== undefined)? GUI.json.elapsed : 0;
+	
+	settime();
+/*	var elapsed = (GUI.json.elapsed !== '' && GUI.json.elapsed !== undefined)? GUI.json.elapsed : 0;
 	var time = (GUI.json.time !== '' && GUI.json.time !== undefined && GUI.json.time !== null)? GUI.json.time : 0;
 	refreshTimer(parseInt(elapsed), parseInt(time), GUI.json.state);
 	if (GUI.stream !== 'radio') {
 		refreshKnob();
 	} else {
 		$( '#time' ).roundSlider( 'setValue', 0 );
-	}
+	}*/
 	if (GUI.json.playlist !== GUI.playlist) {
 		getPlaylistCmd();
 		GUI.playlist = GUI.json.playlist;
 	}
+}
+function settime() {
+	var redis = { status: [ '/usr/bin/mpc status | grep ")" | sed "s/\] *#.*   */ /; s|[:/]| |g; s/[\[(%)]//g"' ] };
+	$.post( '/enhanceredis.php', { json: JSON.stringify( redis ) }, function( data ) {
+		var ar = JSON.parse( data ).status.split( ' ' );
+		
+		if ( !ar[ 0 ] ) {
+			var state = 'stop';
+			var elapsed = 0;
+			var time = 0;
+			var percent = 0;
+		} else {
+			var state = ar[ 0 ] === 'playing' ? 'play' : 'pause';
+			var elapsed = 60 * ar[ 1 ] + parseInt( ar[ 2 ] );
+			var time = 60 * ar[ 3 ] + parseInt( ar[ 4 ] );
+			var percent = ar[ 5 ];
+		}
+
+		refreshTimer( elapsed, time, state );
+		
+		if (GUI.stream !== 'radio') {
+			refreshKnob( percent, time, state );
+		} else {
+			$( '#time' ).roundSlider( 'setValue', 0 );
+		}
+	} );
 }
 
 } // end if <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
