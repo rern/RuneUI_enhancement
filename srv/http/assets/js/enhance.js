@@ -875,9 +875,11 @@ function onreleaseKnob(value) {
 			sendCmd('seek ' + GUI.json.song + ' ' + seekto);
 			$( '#time' ).roundSlider( 'setValue', value );
 			$('#countdown-display').countdown('destroy');
-			$('#countdown-display-ss').countdown('destroy');
 			$('#countdown-display').countdown({since: -seekto, compact: true, format: 'MS'});
-			$('#countdown-display-ss').countdown({since: -seekto, compact: true, format: 'MS'});
+			if ( $( '#countdown-display-ss' ).length ) {
+				$('#countdown-display-ss').countdown('destroy');
+				$('#countdown-display-ss').countdown({since: -seekto, compact: true, format: 'MS'});
+			}
 		} else {
 			$( '#time' ).roundSlider( 'setValue', 0 );
 		}
@@ -1361,7 +1363,20 @@ function renderUI(text) {
 	updateGUI();
 	
 	if ( !$('#section-index' ).length ) return;
-	
+/*	var redis = { mpdstatus: [ '/usr/bin/mpc status' ] }; // must edit enhanceredis.sh to 'shell_exec'
+	$.post( '/enhanceredis.php', { json: JSON.stringify( redis ) }, function( data ) {
+		var mpdstatus = JSON.parse( data ).mpdstatus.split( '\n' )[ 1 ].replace( /#.*  /, '' );
+		var statussplit = mpdstatus.split( ' ' );
+		var timesplit = statussplit[ 1 ].split( '/' );
+		var currentsplit = timesplit[ 0 ].split( ':' );
+		var totalsplit = timesplit[ 1 ].split( ':' );
+		
+		var state = statussplit[ 0 ].replace( /[\[\]']+/g, '' );
+		var elapsed = parseInt( currentsplit[ 0 ] * 60 + parseInt( currentsplit[ 1 ] ) );
+		var time = parseInt( totalsplit[ 0 ] * 60 + parseInt( totalsplit[ 1 ] ) );
+		var song_percent = statussplit[ 2 ].replace( /[\(\)%]/g, '' );
+		console.log( state +' '+ elapsed +' '+ time +' '+ song_percent );
+	} );*/
 	var elapsed = (GUI.json.elapsed !== '' && GUI.json.elapsed !== undefined)? GUI.json.elapsed : 0;
 	var time = (GUI.json.time !== '' && GUI.json.time !== undefined && GUI.json.time !== null)? GUI.json.time : 0;
 	refreshTimer(parseInt(elapsed), parseInt(time), GUI.json.state);
