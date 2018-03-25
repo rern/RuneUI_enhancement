@@ -130,12 +130,12 @@ window.addEventListener( 'orientationchange', displayall );
 	console.log( document.visibilityState ); // visible or hidden
 } );*/
 $( window ).blur( function() {
-	$( '#time' ).find( '.rs-animation, .rs-transition' ).css( 'transition-duration', '0s' );
+	$timetransition.css( 'transition-duration', '0s' );
 } );
 $( window ).focus( function() {
 	settime();
 	setTimeout( function() {
-		$( '#time' ).find( '.rs-animation, .rs-transition' ).css( 'transition-duration', '0.5s' );
+		$timetransition.css( 'transition-duration', '0.5s' );
 	}, 1000 );
 } );
 // hammer**************************************************************
@@ -289,18 +289,16 @@ var interval;
 			$( '#volumemute' ).click();
 			return;
 		}
-		$( '#volume' ).find( '.rs-animation, .rs-transition' ).css( 'transition-duration', '0s' );
+		$volumetransition.css( 'transition-duration', '0s' );
 		timeoutId = setTimeout( volumepress( 300, el.element.id ), 500 );
 	} ).on( 'pressup panstart touchend', function() {
 		clearTimeout( timeoutId );
 		clearInterval( intervalId );
-		$( '#volume' ).find( '.rs-animation, .rs-transition' ).css( 'transition-duration', '' );
+		$volumetransition.css( 'transition-duration', '' );
 	} );
 });
 function volumepress( interval, id, fast ) {
-	var obj = $( '#volume' ).data( 'roundSlider' );
-	var $handle = $( '#volume .rs-handle' );
-	var knobvol = parseInt( obj.getValue() );
+	var knobvol = parseInt( $volumeRS.getValue() );
 	var vol = knobvol;
 	var increment = ( id === 'volup' ) ? 1 : -1;
 	if ( ( increment === -1 && knobvol === 0 )
@@ -315,8 +313,8 @@ function volumepress( interval, id, fast ) {
 			}
 		}
 		vol = vol + increment;
-		obj.setValue( vol );
-		$handle.rsRotate( - obj._handle1.angle );
+		$volumeRS.setValue( vol );
+		$volumehandle.rsRotate( - $volumeRS._handle1.angle );
 		if ( vol === 0 || vol === 100 ) clearInterval( intervalId );
 	}, interval );
 }
@@ -382,10 +380,8 @@ $hammerplayback.on( 'press', function() {
 } );
 
 $hammerlibrary.on( 'tap', function() {
-	console.log('tap');
 	if ( $( '.home-block-remove' ).length && !$( e.target ).is( 'span.block-remove' ) ) $( '#db-homeSetup' ).click();
 } ).on( 'press', function( e ) {
-	console.log('press');
 	if ( $( '#db-currentpath' ).is( ':visible' ) ) return
 	info( {
 		  title  : 'Libary Home'
@@ -520,8 +516,11 @@ $( '#time' ).roundSlider( {
 		return hr + mm +':'+ ss;
 	},
 	
-	create: function ( e ) { // fix: flickering on iOS
-		$( '#time' ).find( '.rs-animation, .rs-transition' ).css( 'transition-duration', '0s' );
+	create: function ( e ) {
+		$timeRS = this;
+		$timetransition = $( '#time' ).find( '.rs-animation, .rs-transition' );
+		$timetoolip = $( '#time' ).find( '.rs-tooltip' );
+		$timetransition.css( 'transition-duration', '0s' ); // fix: flickering on iOS
 		var $hammertime = new Hammer( document.querySelector( 'span.rs-tooltip' ) );
 		$hammertime.on( 'tap', function( e ) {
 		$( '#play' ).click();
@@ -536,13 +535,13 @@ $( '#time' ).roundSlider( {
 			var seekto = Math.floor( e.value / 1000 * GUI.json.time );
 			sendCmd( 'seek '+ GUI.json.song +' '+ seekto );
 		} else {
-			$( '#time' ).roundSlider( 'setValue', 0 );
+			$timeRS.setValue( 0 );
 		}
-		$( '#time' ).find( '.rs-animation, .rs-transition' ).css( 'transition-duration', '' );
+		$timetransition.css( 'transition-duration', '' );
 	},
 	start: function () {
 		if ( GUI.state === 'play' ) window.clearInterval( GUI.currentKnob );
-		$( '#time' ).find( '.rs-animation, .rs-transition' ).css( 'transition-duration', '0s' );
+		$timetransition.css( 'transition-duration', '0s' );
 	}
 } );
 
@@ -558,8 +557,11 @@ $( '#volume' ).roundSlider( {
 	editableTooltip: false,
 	
 	create: function () { // preserve shadow angle of handle
-		this.control.find( '.rs-handle' )
-			.addClass( 'rs-transition' ).eq( 0 ) // make it rotate with 'rs-transition'
+		$volumeRS = this;
+		$volumetransition = $( '#volume' ).find( '.rs-animation, .rs-transition' );
+		$volumetooltip = $( '#volume' ).find( '.rs-tooltip' );
+		$volumehandle = $( '#volume' ).find( '.rs-handle' );
+		$volumehandle.addClass( 'rs-transition' ).eq( 0 ) // make it rotate with 'rs-transition'
 			.rsRotate( - this._handle1.angle );  // initial rotate
 	},
 	change: function( e ) { // not fire on 'setValue'
@@ -599,17 +601,16 @@ pushstreamVolume.onmessage = function( response ) { // on receive broadcast
 pushstreamVolume.connect();
 
 $( '#volmute, #volume .rs-tooltip' ).click( function() {
-	var obj = $( '#volume' ).data( 'roundSlider' );
-	var volumemute = obj.getValue();
+	var volumemute = $volumeRS.getValue();
 	if ( volumemute ) {
 		var redis = { vol: [ 'set', 'volumemute', volumemute ] };
 		$.post( '/enhanceredis.php', { json: JSON.stringify( redis ) } );
 		setvol( 0 );
-		obj.setValue( 0 );
+		$volumeRS.setValue( 0 );
 		// keep display level before mute
-		$( '#volume .rs-tooltip' ).text( volumemute );
+		$volumetooltip.text( volumemute );
 		// rotate box-shadow back
-		$( '#volume .rs-handle' ).rsRotate( - obj._handle1.angle );
+		$volumehandle.rsRotate( - $volumeRS._handle1.angle );
 		// change color after rotate finish
 		$( '#volume .rs-first' ).one( 'transitionend webkitTransitionEnd mozTransitionEnd', function() {
 			mutecolor( volumemute );
@@ -624,8 +625,8 @@ $( '#volmute, #volume .rs-tooltip' ).click( function() {
 			vol = parseInt( json.vol );
 			if ( vol === 0 ) return;
 			setvol( vol );
-			obj.setValue( vol );
-			$( '#volume .rs-handle' ).rsRotate( - obj._handle1.angle );
+			$volumeRS.setValue( vol );
+			$volumehandle.rsRotate( - $volumeRS._handle1.angle );
 			// restore color immediately on click
 			unmutecolor();
 		} );
@@ -637,8 +638,7 @@ $( '#volmute, #volume .rs-tooltip' ).click( function() {
 
 $( '#volup, #voldn, #voluprs, #voldnrs' ).click( function() {
 	var thisid = this.id;
-	var obj = $( '#volume' ).data( 'roundSlider' );
-	var vol = obj.getValue();
+	var vol = $volumeRS.getValue();
 	
 	if ( ( vol === 0 && ( thisid === 'voldn' || thisid === 'voldnrs' ) )
 		|| ( vol === 100 && ( thisid === 'volup' || thisid === 'voluprs' ) ) )
@@ -650,8 +650,8 @@ $( '#volup, #voldn, #voluprs, #voldnrs' ).click( function() {
 	}
 	vol = ( thisid == 'volup' || thisid == 'voluprs' ) ? vol + 1 : vol - 1;
 	setvol( vol );
-	obj.setValue( vol );
-	$( '#volume .rs-handle' ).rsRotate( - obj._handle1.angle );
+	$volumeRS.setValue( vol );
+	$volumehandle.rsRotate( - $volumeRS._handle1.angle );
 } );
 
 function setvolume() {
@@ -671,14 +671,12 @@ function setvolume() {
 			if ( $( '#volume-knob' ).not( '.hide' )
 				&& ( !$( '#songinfo-modal' ).length || GUI.vol_changed_local === 0 )
 			) {
-				var $animation = $( '#volume' ).find( '.rs-animation, .rs-transition' );
-				$animation.css( 'transition-duration', '0s' ); // suppress initial rotate animation
-				var obj = $( '#volume' ).data( 'roundSlider' );
-				obj.setValue( json.vol.replace( /[^0-9]/g, '' ) );
-				$( '#volume .rs-handle' ).rsRotate( - obj._handle1.angle );
-				$( '#volume .rs-handle, #volume .rs-tooltip' ).show(); // show after 'setValue'
-				$animation.css( 'transition', '' );            // reset animation to default
-				
+				$volumetransition.css( 'transition-duration', '0s' ); // suppress initial rotate animation
+				$volumeRS.setValue( json.vol.replace( /[^0-9]/g, '' ) );
+				$volumehandle.rsRotate( - $volumeRS._handle1.angle );
+				$volumetooltip.show(); // show after 'setValue'
+				$volumehandle.show(); // show after 'setValue'
+				$volumetransition.css( 'transition', '' );            // reset animation to default
 				if ( $( '#vol-group' ).is( ':visible' ) ) {
 					if ( json.volumemute != 0 ) {
 						mutecolor( json.volumemute );
@@ -703,13 +701,13 @@ function setvol( vol ) {
 	sendCmd( 'setvol '+ vol );
 }
 function mutecolor( volumemute ) {
-	$( '#volume .rs-tooltip' ).text( volumemute ).css( 'color', '#0095d8' );
-	$( '#volume .rs-handle' ).css( 'background', '#587ca0' );
+	$volumetooltip.text( volumemute ).css( 'color', '#0095d8' );
+	$volumehandle.css( 'background', '#587ca0' );
 	$( '#volmute' ).addClass( 'btn-primary' );
 }
 function unmutecolor() {
-	$( '#volume .rs-tooltip' ).css( 'color', '#e0e7ee' );
-	$( '#volume .rs-handle' ).css( 'background', '#0095d8' );
+	$volumetooltip.css( 'color', '#e0e7ee' );
+	$volumehandle.css( 'background', '#0095d8' );
 	$( '#volmute' ).removeClass( 'btn-primary' );
 }
 function mutereset() {
@@ -1213,13 +1211,13 @@ function refreshState() {
 			$( '#pause' ).addClass( 'btn-primary' );
 		}
 		var pausetime = parseInt( GUI.json.song_percent ) * 10;
-		$( '#time' ).roundSlider( 'setValue', pausetime );
+		$timeRS.setValue( pausetime );
 	} else if ( state === 'stop' ) {
 		$( '#stop' ).addClass( 'btn-primary' );
 		$( '#play, #pause' ).removeClass( 'btn-primary' );
 		if ( $( '#pause' ).hasClass( 'hide' ) ) $( 'i', '#play' ).removeClass( 'fa fa-pause' ).addClass( 'fa fa-play' );
 		$( '#total' ).html( GUI.stream !== 'radio' ? '00:00' : '' );
-		$( '#time' ).roundSlider( 'setValue', 0 );
+		$timeRS.setValue( 0 );
 		$( '#format-bitrate' ).html( '&nbsp;' );
 		$( 'li', '#playlist-entries' ).removeClass( 'active' );
 	}
@@ -1372,23 +1370,22 @@ function settime() {
 		GUI.json.time = time;
 		
 		if (GUI.stream !== 'radio') {
-			$( '#time .rs-tooltip' ).show(); // fix: hide initial 'NaN'
+			$timetoolip.show(); // fix: hide initial 'NaN'
 			clearInterval( GUI.currentKnob );
 			if ( state !== 'play' ) return;
 			var position = percent * 10;
-			$( '#time' ).roundSlider( 'setValue', position );
+			$timeRS.setValue( position );
 			var localbrowser = ( location.hostname === 'localhost' || location.hostname === '127.0.0.1' ) ? 10 : 1;
 			var step = 1 * localbrowser; // fix: reduce cpu cycle on local browser
 			var every = time * localbrowser;
 			
 			GUI.currentKnob = setInterval( function() {
 				position = position + step;
-				$( '#time' ).roundSlider( 'setValue', position );
+				$timeRS.setValue( position );
 			}, time );
 		} else {
-			$( '#time' ).roundSlider( 'setValue', 0 );
+			$timeRS.setValue( 0 );
 		}
 	} );
 }
-
 } // end if <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
