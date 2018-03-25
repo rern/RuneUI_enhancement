@@ -25,10 +25,11 @@ rm -v /srv/http/enhancebio.php
 path=/srv/http/assets
 rm -v $path/css/{enhance.css,midori.css,roundslider.min.css}
 rm -v $path/img/runelogo.svg
-rm -v $path/js/enhance.js
+rm -v $path/js/{enhance.js,runeui.min.js}
 rm -vf $path/js/vendor/{jquery-ui.min.js,propagating.js,roundslider.min.js}
 
 mv /srv/http/app/coverart_ctl.php{.backup,}
+mv $path/js/runeui.min.js{.backup,}
 
 # restore modified files #######################################
 echo -e "$bar Restore modified files ..."
@@ -49,7 +50,7 @@ sed -i -e 's|RuneUIe|RuneAudio - RuneUI|
 
 file=/srv/http/app/templates/footer.php
 echo $file
-sed -i -e '/jquery.knob.min.js/ {s/^<!--//; s/-->$//}
+sed -i -e '/knob.min.js\|countdown.min.js/ {s/^<!--//; s/-->$//}
 ' -e '/roundslider.min.js\|enhance.js/ d
 ' -e '/propagating.js/ d
 ' $file
