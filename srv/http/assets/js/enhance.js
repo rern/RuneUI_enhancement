@@ -299,6 +299,7 @@ var interval;
 });
 function volumepress( interval, id, fast ) {
 	var obj = $( '#volume' ).data( 'roundSlider' );
+	var $handle = $( '#volume .rs-handle' );
 	var knobvol = parseInt( obj.getValue() );
 	var vol = knobvol;
 	var increment = ( id === 'volup' ) ? 1 : -1;
@@ -315,6 +316,7 @@ function volumepress( interval, id, fast ) {
 		}
 		vol = vol + increment;
 		obj.setValue( vol );
+		$handle.rsRotate( - obj._handle1.angle );
 		if ( vol === 0 || vol === 100 ) clearInterval( intervalId );
 	}, interval );
 }
