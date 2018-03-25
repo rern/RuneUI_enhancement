@@ -127,9 +127,16 @@ function displayall() {
 }
 window.addEventListener( 'orientationchange', displayall );
 /*window.addEventListener( 'visibilitychange', function() {
-	if ( document.visibilityState === 'visible' ) $( '#volume .rs-handle, #volume .rs-tooltip' ).show();
+	console.log( document.visibilityState ); // visible or hidden
 } );*/
-
+$( window ).blur( function() {
+	$( '#time' ).find( '.rs-animation, .rs-transition' ).css( 'transition-duration', '0s' );
+} );
+$( window ).focus( function() {
+	setTimeout( function() {
+		$( '#time' ).find( '.rs-animation, .rs-transition' ).css( 'transition-duration', '0.5s' );
+	}, 1000 );
+} );
 // hammer**************************************************************
 Hammer = propagating( Hammer ); // propagating.js fix 
 
@@ -527,9 +534,11 @@ $( '#time' ).roundSlider( {
 		} else {
 			$( '#time' ).roundSlider( 'setValue', 0 );
 		}
+		$( '#time' ).find( '.rs-animation, .rs-transition' ).css( 'transition-duration', '' );
 	},
 	start: function () {
 		if ( GUI.state === 'play' ) window.clearInterval( GUI.currentKnob );
+		$( '#time' ).find( '.rs-animation, .rs-transition' ).css( 'transition-duration', '0s' );
 	}
 } );
 
