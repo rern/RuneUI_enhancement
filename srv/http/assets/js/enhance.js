@@ -133,6 +133,7 @@ $( window ).blur( function() {
 	$( '#time' ).find( '.rs-animation, .rs-transition' ).css( 'transition-duration', '0s' );
 } );
 $( window ).focus( function() {
+	settime();
 	setTimeout( function() {
 		$( '#time' ).find( '.rs-animation, .rs-transition' ).css( 'transition-duration', '0.5s' );
 	}, 1000 );
