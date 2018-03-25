@@ -137,8 +137,7 @@ var $hammercontent = new Hammer( document.getElementById( 'content' ) );
 var $hammerbarleft = new Hammer( document.getElementById( 'barleft' ) );
 var $hammerbarright = new Hammer( document.getElementById( 'barright' ) );
 var $hammerartist = new Hammer( document.getElementById( 'currentartist' ) );
-var $hammertime = new Hammer( document.getElementById( 'time' ) );
-var $hammertimecount = new Hammer( document.getElementById( 'countdown-display' ) );
+//var $hammertime = new Hammer( document.getElementById( 'time' ) );
 var $hammercoverT = new Hammer( document.getElementById( 'coverT' ) );
 var $hammercoverL = new Hammer( document.getElementById( 'coverL' ) );
 var $hammercoverM = new Hammer( document.getElementById( 'coverM' ) );
@@ -218,13 +217,9 @@ $( '#closebio' ).click( function() {
 	if ( !barhide ) $( '#menu-top, #menu-bottom' ).show();
 } );
 
-$( '#countdown-display' ).off( 'click' ); // disable default play-pause on click
-[ $hammertime, $hammervolume ].forEach( function( el ) {
-	el.on( 'press', function( e ) {
-		e.stopPropagation();
-	} );
+$hammervolume.on( 'press', function( e ) {
+	e.stopPropagation();
 } );
-
 $hammercoverT.on( 'tap', function( e ) {
 	$( '#menu-top, #menu-bottom' ).toggle();
 	barhide = $( '#menu-top' ).is( ':hidden' ) ? 1 : 0;
@@ -234,14 +229,12 @@ $hammercoverL.on( 'tap', function( e ) {
 	$( '#previous' ).click();
 	e.stopPropagation();
 } );
-[ $hammercoverM, $hammertimecount ].forEach( function( el ) {
-	el.on( 'tap', function( e ) {
-		$( '#play' ).click();
-		e.stopPropagation();
-	} ).on( 'press', function( e ) {
-		$( '#stop' ).click();
-		e.stopPropagation();
-	} );
+$hammercoverM.on( 'tap', function( e ) {
+	$( '#play' ).click();
+	e.stopPropagation();
+} ).on( 'press', function( e ) {
+	$( '#stop' ).click();
+	e.stopPropagation();
 } );
 $hammercoverR.on( 'tap', function( e ) {
 	$( '#next' ).click();
@@ -503,21 +496,9 @@ $( '#time' ).roundSlider( {
 	width: 20,
 	startAngle: 90,
 	endAngle: 450,
-	showTooltip: false,
-	
-	create: function () { // fix: flickering on iOS
-		$( '#time' ).find( '.rs-animation, .rs-transition' ).css( 'transition-duration', '0s' );
-	},
-	change: function( e ) {
-		onreleaseKnob( e.value );
-	},
-	start: function () {
-		if ( GUI.state === 'play' ) window.clearInterval( GUI.currentKnob );
-	},
-	drag: function ( e ) {
-		if ( GUI.stream === 'radio' ) return;
-		
-		var time = GUI.json.time;
+	editableTooltip: false,
+	tooltipFormat: function( e ) {
+		var time = GUI.json.time ? GUI.json.time : 0;
 		var current = Math.round( e.value / 1000 * time );
 		var hr = Math.floor( current / 3600 );
 		var mm = Math.floor( ( current - ( hr * 3600 ) ) / 60 );
@@ -525,8 +506,30 @@ $( '#time' ).roundSlider( {
 		hr = ( hr > 0 ) ? hr +':' : '';
 		mm = ( mm > 9 ) ? mm : '0' + mm;
 		ss = ( ss > 9 ) ? ss : '0' + ss;
-		
-		$( '#countdown-display' ).text( hr + mm +':'+ ss );
+		return hr + mm +':'+ ss;
+	},
+	
+	create: function ( e ) { // fix: flickering on iOS
+		$( '#time' ).find( '.rs-animation, .rs-transition' ).css( 'transition-duration', '0s' );
+		var $hammertime = new Hammer( document.querySelector( 'span.rs-tooltip' ) );
+		$hammertime.on( 'tap', function( e ) {
+		$( '#play' ).click();
+			e.stopPropagation();
+		} ).on( 'press', function( e ) {
+			$( '#stop' ).click();
+			e.stopPropagation();
+		} );
+	},
+	change: function( e ) {
+		if ( GUI.stream !== 'radio' && ( GUI.state === 'play' || GUI.state === 'pause' ) ) {
+			var seekto = Math.floor( e.value / 1000 * GUI.json.time );
+			sendCmd( 'seek '+ GUI.json.song +' '+ seekto );
+		} else {
+			$( '#time' ).roundSlider( 'setValue', 0 );
+		}
+	},
+	start: function () {
+		if ( GUI.state === 'play' ) window.clearInterval( GUI.currentKnob );
 	}
 } );
 
@@ -682,6 +685,10 @@ setvolume(); // initial volume
 // load only not in setting pages
 if ( /\/.*\//.test( location.pathname ) === false ) { // start if >>>>>>>>>>>>>>>>>>>
 
+function setvol( vol ) {
+	GUI.volume = vol;
+	sendCmd( 'setvol '+ vol );
+}
 function mutecolor( volumemute ) {
 	$( '#volume .rs-tooltip' ).text( volumemute ).css( 'color', '#0095d8' );
 	$( '#volume .rs-handle' ).css( 'background', '#587ca0' );
@@ -856,10 +863,6 @@ function displayqueue() {
 	} );
 }
 
-function setvol( vol ) {
-	GUI.volume = vol;
-	sendCmd( 'setvol '+ vol );
-}
 function setPlaybackSource() {
     var activePlayer = GUI.libraryhome.ActivePlayer;
     $('#overlay-playsource-open button').text(activePlayer);
@@ -873,64 +876,6 @@ function setPlaybackSource() {
     $('#pl-manage').removeClass(function(index, css) {
         return (css.match (/(^|\s)pl-manage-\S+/g) || []).join(' ');
     }).addClass('pl-manage-' + source);
-}
-function onreleaseKnob(value) {
-	if (GUI.state !== 'stop' && GUI.state !== '') {
-		if (GUI.stream !== 'radio') {
-			var seekto = Math.floor((value * parseInt(GUI.json.time)) / 1000);
-			sendCmd('seek ' + GUI.json.song + ' ' + seekto);
-			$('#countdown-display').countdown('destroy');
-			$('#countdown-display').countdown({since: -seekto, compact: true, format: 'MS'});
-			if ( $( '#countdown-display-ss' ).length ) {
-				$('#countdown-display-ss').countdown('destroy');
-				$('#countdown-display-ss').countdown({since: -seekto, compact: true, format: 'MS'});
-			}
-		} else {
-			$( '#time' ).roundSlider( 'setValue', 0 );
-		}
-	}
-}
-function refreshTimer( startFrom, stopTo, state ) {
-    var display = $( '#countdown-display' );
-    display.countdown( 'destroy' );
-    display.countdown( { since: ( ( state !== 'stop' || state !== undefined ) ? -(startFrom) : 0 ), compact: true, format: 'MS' } );
-    if ( state !== 'play' ) display.countdown( 'pause' );
-    
-    if ( $( '#countdown-display-ss' ).length ) {
-	    var displayss = $('#countdown-display-ss');
-	    displayss.countdown('destroy');
-	    displayss.countdown({ since: ((state !== 'stop' || state !== undefined)? -(startFrom) : 0), compact: true, format: 'MS' });
-	    if (state !== 'play'){
-	        displayss.countdown('pause');
-	    }
-	}
-}
-function refreshKnob( percent, time, state ) {
-	window.clearInterval( GUI.currentKnob );
-	if ( state !== 'play' ) return;
-	var initTime = percent * 10;
-	var step = parseInt( 1000 / time );
-	GUI.currentKnob = setInterval( function() {
-		initTime = initTime + ( ( GUI.visibility !== 'visible' ) ? step : 1 );
-		$( '#time' ).roundSlider( 'setValue', initTime );
-	}, time );
-}
-function timeConvert3( ss ) {
-	var hr = Math.floor( ss / 3600 );
-	var mm = Math.floor( ( ss - ( hr * 3600 ) ) / 60 );
-	ss = Math.floor( ss - ( hr * 3600 ) - ( mm * 60 ) );
-	hr = ( hr > 0 )  ? hr +':' : '';
-	mm = ( mm > 9 ) ? mm : '0' + mm;
-	ss = ( ss > 9 ) ? ss : '0' + ss;
-	return '&ensp;<a>'+ hr + mm +':'+ ss +'</a>&nbsp;';
-}
-function countdownRestart(startFrom) {
-	var display = $('#countdown-display').countdown('destroy');
-	display.countdown({since: -(startFrom), compact: true, format: 'MS'});
-	if ( $( '#countdown-display-ss' ).length ) {
-		var displayss = $('#countdown-display-ss').countdown('destroy');
-		displayss.countdown({since: -(startFrom), compact: true, format: 'MS'});
-	}
 }
 
 // hide breadcrumb, index bar, edit bookmark
@@ -1260,7 +1205,6 @@ function refreshState() {
 		$( '#stop' ).addClass( 'btn-primary' );
 		$( '#play, #pause' ).removeClass( 'btn-primary' );
 		if ( $( '#pause' ).hasClass( 'hide' ) ) $( 'i', '#play' ).removeClass( 'fa fa-pause' ).addClass( 'fa fa-play' );
-		if ( $( '#section-index' ).length ) $( '#countdown-display' ).countdown( 'destroy' );
 		$( '#total' ).html( GUI.stream !== 'radio' ? '00:00' : '' );
 		$( '#time' ).roundSlider( 'setValue', 0 );
 		$( '#format-bitrate' ).html( '&nbsp;' );
@@ -1357,7 +1301,11 @@ function updateGUI() {
 	// song changed
 	if ( GUI.currentsong === GUI.json.currentsong ) return;
 	GUI.currentsong = currentsong;
-	countdownRestart(0);
+	if ( $( '#lyricscontainer' ).length ) {
+		lyrics = '';
+		if ( GUI.currentalbum !== 'null - null' ) getlyrics();
+	}
+
 	// scroll long song text
 	if ( $('#panel-dx').hasClass('active') ) customScroll( 'pl', parseInt( GUI.json.song ) );
 	
@@ -1386,14 +1334,7 @@ function renderUI(text) {
 	if ( !$('#section-index' ).length ) return;
 	
 	settime();
-/*	var elapsed = (GUI.json.elapsed !== '' && GUI.json.elapsed !== undefined)? GUI.json.elapsed : 0;
-	var time = (GUI.json.time !== '' && GUI.json.time !== undefined && GUI.json.time !== null)? GUI.json.time : 0;
-	refreshTimer(parseInt(elapsed), parseInt(time), GUI.json.state);
-	if (GUI.stream !== 'radio') {
-		refreshKnob();
-	} else {
-		$( '#time' ).roundSlider( 'setValue', 0 );
-	}*/
+	
 	if (GUI.json.playlist !== GUI.playlist) {
 		getPlaylistCmd();
 		GUI.playlist = GUI.json.playlist;
@@ -1415,11 +1356,19 @@ function settime() {
 			var time = 60 * ar[ 3 ] + parseInt( ar[ 4 ] );
 			var percent = ar[ 5 ];
 		}
-
-		refreshTimer( elapsed, time, state );
+		GUI.json.time = time;
 		
 		if (GUI.stream !== 'radio') {
-			refreshKnob( percent, time, state );
+			$( '#time .rs-tooltip' ).show(); // fix: hide initial 'NaN'
+			clearInterval( GUI.currentKnob );
+			if ( state !== 'play' ) return;
+			var initTime = percent * 10;
+			$( '#time' ).roundSlider( 'setValue', initTime );
+			var step = parseInt( 1000 / time );
+			GUI.currentKnob = setInterval( function() {
+				initTime = initTime + ( ( GUI.visibility !== 'visible' ) ? step : 1 );
+				$( '#time' ).roundSlider( 'setValue', initTime );
+			}, time );
 		} else {
 			$( '#time' ).roundSlider( 'setValue', 0 );
 		}
