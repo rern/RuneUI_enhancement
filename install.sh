@@ -48,7 +48,7 @@ n; a\
 
 file=/srv/http/app/templates/footer.php
 echo $file
-sed -i '/jquery.knob.min.js/ {s/^/<!--/; s/$/-->/}' $file
+sed -i '/knob.min.js\|countdown.min.js/ {s/^/<!--/; s/$/-->/}' $file
 # must be before lyrics addon
 if ! grep -q 'lyrics.js' $file; then
 	sed -i $'$ a\
@@ -100,12 +100,7 @@ sed -i -e '\|// KNOBS| i\
 /*enha
 ' -e '\|// PLAYING QUEUE| i\
 enha*/
-' $file
-
-file=/srv/http/assets/js/runeui.min.js
-echo $file
-sed -i -e 's|,e("#time").knob|/\*enha &|
-' -e 's|;var r=e("#playlist-entries")| enha*/&|
+' -e '/\.countdown(/ s|^|//|
 ' $file
 
 # start/stop local browser
