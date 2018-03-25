@@ -145,7 +145,6 @@ var $hammercontent = new Hammer( document.getElementById( 'content' ) );
 var $hammerbarleft = new Hammer( document.getElementById( 'barleft' ) );
 var $hammerbarright = new Hammer( document.getElementById( 'barright' ) );
 var $hammerartist = new Hammer( document.getElementById( 'currentartist' ) );
-//var $hammertime = new Hammer( document.getElementById( 'time' ) );
 var $hammercoverT = new Hammer( document.getElementById( 'coverT' ) );
 var $hammercoverL = new Hammer( document.getElementById( 'coverL' ) );
 var $hammercoverM = new Hammer( document.getElementById( 'coverM' ) );
@@ -273,16 +272,16 @@ $hammercoverB.on( 'tap', function( e ) {
 	
 	e.stopPropagation();
 } );
-[ $hammervoldn, $hammervolmute, $hammervolup, $hammervoldnrs, $hammervoluprs ].forEach( function( el ) {
+[ $hammervoldnrs, $hammervoluprs ].forEach( function( el ) {
 	el.on( 'press', function( e ) {
 		e.stopPropagation();
 	} );
 } );
-/*
+
 var timeoutId;
 var intervalId;
 var interval;
-[ $hammervolumedn, $hammervolumemute, $hammervolumeup ].forEach( function( el ) {
+[ $hammervoldn, $hammervolmute, $hammervolup ].forEach( function( el ) {
 	el.on( 'press', function( e ) {
 		buttonactive = 1;
 		e.stopPropagation();
@@ -290,16 +289,19 @@ var interval;
 			$( '#volumemute' ).click();
 			return;
 		}
+		$( '#volume' ).find( '.rs-animation, .rs-transition' ).css( 'transition-duration', '0s' );
 		timeoutId = setTimeout( volumepress( 300, el.element.id ), 500 );
 	} ).on( 'pressup panstart touchend', function() {
 		clearTimeout( timeoutId );
 		clearInterval( intervalId );
+		$( '#volume' ).find( '.rs-animation, .rs-transition' ).css( 'transition-duration', '' );
 	} );
 });
 function volumepress( interval, id, fast ) {
-	var knobvol = parseInt( $( '#volume' ).val() );
+	var obj = $( '#volume' ).data( 'roundSlider' );
+	var knobvol = parseInt( obj.getValue() );
 	var vol = knobvol;
-	var increment = ( id === 'volumeup' ) ? 1 : -1;
+	var increment = ( id === 'volup' ) ? 1 : -1;
 	if ( ( increment === -1 && knobvol === 0 )
 		|| ( increment === 1 && knobvol === 100 ) ) return;
 	var count = 0;
@@ -312,12 +314,11 @@ function volumepress( interval, id, fast ) {
 			}
 		}
 		vol = vol + increment;
-		setvol( vol );
-		$( '#volume' ).val( vol ).trigger( 'change' );
+		obj.setValue( vol );
 		if ( vol === 0 || vol === 100 ) clearInterval( intervalId );
 	}, interval );
 }
-*/
+
 $hammerplayback.on( 'press', function() {
 	info( {
 		  title  : 'Playback'
@@ -574,7 +575,7 @@ $( '#volume' ).roundSlider( {
 		// restore handle color immediately on start drag
 		if ( e.value === 0 ) unmutecolor(); // value before 'start drag'
 	},
-	drag: function ( e ) {
+	drag: function ( e ) { // drag with no transition by default
 		setvol( e.value ); // value in real time 'drag'
 		$( e.handle.element ).rsRotate( - e.handle.angle );
 	},
