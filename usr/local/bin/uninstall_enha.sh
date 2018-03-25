@@ -80,11 +80,10 @@ sed -i '/if ( \$template->local_browser )/,/^}$/ d' $file
 
 file=/srv/http/assets/js/runeui.js
 echo $file
-sed -i -e '/^\/\*enha\|^enha\*\// d' $file
+sed -i -e '/^\/\*enha\|^enha\*\// d
+' -e '/\.countdown(/ s|^//||
+' $file
 
-file=/srv/http/assets/js/runeui.min.js
-echo $file
-sed -i -e 's|/\*enha ||; s| enha\*/||' $file
 
 file=/root/.config/midori/config
 echo $file
