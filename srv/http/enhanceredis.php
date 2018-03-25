@@ -2,11 +2,11 @@
 $redis = new Redis(); 
 $redis->pconnect( '127.0.0.1' );
 
-// json: data = { dataid: [ 'command', 'key', ['hash',] 'value' ] }
-// bash: data = { dataid: [ '/fullpath/command argument' ] }
-// curl: data = { dataid: [ 'curl', 'key', 'value' ] }
+// json: command = { dataid: [ 'command', 'key', ['hash',] 'value' ] }
+// bash: command = { dataid: [ '/fullpath/command argument' ] }
+// curl: command = { dataid: [ 'curl', 'key', 'value' ] }
 //
-// $.post( '/enhanceredis.php', { JSON.stringify( data ) }, ...
+// $.post( '/enhanceredis.php', { JSON.stringify( command ) }, ...
 
 $array = json_decode( $_POST[ 'json' ], true );
 
