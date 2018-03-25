@@ -1377,7 +1377,7 @@ function settime() {
 			if ( state !== 'play' ) return;
 			var position = percent * 10;
 			$( '#time' ).roundSlider( 'setValue', position );
-			var localbrowser = (location.hostname === "localhost" || location.hostname === "127.0.0.1") ? 10 : 1;
+			var localbrowser = ( location.hostname === 'localhost' || location.hostname === '127.0.0.1' ) ? 10 : 1;
 			var step = 1 * localbrowser; // fix: reduce cpu cycle on local browser
 			var every = time * localbrowser;
 			
