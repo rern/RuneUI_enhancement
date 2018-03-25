@@ -410,14 +410,16 @@
 	background: #34495e;
 }
 .rs-tooltip {
-	display: none; /* hide '0' on initial load - show after set */
+	display: none; /* hide '0' / 'NaN' on initial load - show after set */
 	left: 20% !important;
 	top: 40% !important;
+	margin: 0 !important;
 	width: 60%;
 	height: 50px;
-	margin: 0 !important;
-	font-family: Lato !important;
-	font-size: 38px !important;
+	font-family: Lato;
+	font-size: 38px;
+	font-weight: 300;
+	line-height: 50px;
 	color: #e0e7ee;
 	cursor: pointer;
 }
