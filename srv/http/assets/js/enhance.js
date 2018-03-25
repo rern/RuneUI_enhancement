@@ -1371,12 +1371,15 @@ function settime() {
 			$( '#time .rs-tooltip' ).show(); // fix: hide initial 'NaN'
 			clearInterval( GUI.currentKnob );
 			if ( state !== 'play' ) return;
-			var initTime = percent * 10;
-			$( '#time' ).roundSlider( 'setValue', initTime );
-			var step = parseInt( 1000 / time );
+			var position = percent * 10;
+			$( '#time' ).roundSlider( 'setValue', position );
+			var localbrowser = (location.hostname === "localhost" || location.hostname === "127.0.0.1") ? 10 : 1;
+			var step = 1 * localbrowser; // fix: reduce cpu cycle on local browser
+			var every = time * localbrowser;
+			
 			GUI.currentKnob = setInterval( function() {
-				initTime = initTime + ( ( GUI.visibility !== 'visible' ) ? step : 1 );
-				$( '#time' ).roundSlider( 'setValue', initTime );
+				position = position + step;
+				$( '#time' ).roundSlider( 'setValue', position );
 			}, time );
 		} else {
 			$( '#time' ).roundSlider( 'setValue', 0 );
