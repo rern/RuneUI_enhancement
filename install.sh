@@ -10,6 +10,7 @@ alias=enha
 installstart $@
 
 mv /srv/http/app/coverart_ctl.php{,.backup}
+mv /srv/http/assets/js/runeui.min.js{,.backup}
 
 getinstallzip
 
