@@ -39,6 +39,7 @@ echo $file
 sed -i -e 's|RuneUIe|RuneAudio - RuneUI|
 ' -e '/roundslider.min.css\|enhance.css\|id="bartop"\|id="barbottom\|dropdownbg\|button id="menu-settings"\|id="pause"\|Development<.a>/ d
 ' -e '/a href="http:..www.runeaudio.com/, /<.a>/ d
+' -e 's/data-cmd="toggle"/data-cmd="play"/
 ' -e 's|^<?php /\*||; s|\*/?>$||
 ' -e 's|id="open-panel-sx"><a |&href="/#panel-sx"|
 ' -e 's|id="open-playback".*><a |&href="/#playback"|
