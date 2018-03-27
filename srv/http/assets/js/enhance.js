@@ -377,7 +377,7 @@ $hammerplayback.on( 'press', function() {
 	}
 } );
 
-$hammerlibrary.on( 'tap', function() {
+$hammerlibrary.on( 'tap', function( e ) {
 	if ( $( '.home-block-remove' ).length && !$( e.target ).is( 'span.block-remove' ) ) $( '#db-homeSetup' ).click();
 } ).on( 'press', function( e ) {
 	if ( $( '#db-currentpath' ).is( ':visible' ) ) return
@@ -1340,13 +1340,9 @@ function renderUI( text ) {
 	}
 }
 function settime() {
-	var command = {
-		status: [ '/usr/bin/mpc status | grep ")" | sed "s/\] *#.*   */ /; s|[:/]| |g; s/[\[(%)]//g"' ],
-		volume: [ '/usr/bin/mpc volume | sed "s/[^0-9]//g"' ]
-	};
+	var command = { status: [ '/usr/bin/mpc status | grep ")" | sed "s/\] *#.*   */ /; s|[:/]| |g; s/[\[(%)]//g"' ] };
 	$.post( '/enhanceredis.php', { json: JSON.stringify( command ) }, function( data ) {
-		var data = JSON.parse( data );
-		var ar = data.status.split( ' ' );
+		var ar = JSON.parse( data ).status.split( ' ' );
 		
 		if ( !ar[ 0 ] ) {
 			var state = 'stop';
@@ -1384,16 +1380,29 @@ function settime() {
 		}
 	} );
 }
+
 function commandButton( el ) {
     var dataCmd = el.data( 'cmd' );
     
     if ( !el.hasClass( 'btn-toggle' ) ) {
 	    clearInterval( GUI.currentKnob );
+		if ( dataCmd === 'play' ) {
+			var state = GUI.state;
+			if ( state === 'play' ) {
+				cmd = 'pause';
+			} else if ( state === 'pause' ) {
+				cmd = 'play';
+			} else if ( state === 'stop' ) {
+				cmd = 'play';
+			}
+		} else if ( dataCmd === 'stop' ) {
+			cmd = 'stop';
+		}
     } else {
-    	dataCmd = dataCmd + ( el.hasClass( 'btn-primary' ) ? ' 0' : ' 1' );    
+    	cmd = dataCmd + ( el.hasClass( 'btn-primary' ) ? ' 0' : ' 1' );    
     }
 	//total = $('#playlist li.active').find('span span').text();
-    sendCmd( dataCmd );
+    sendCmd( cmd );
 }
 
 } // end if <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
