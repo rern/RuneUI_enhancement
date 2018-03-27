@@ -34,8 +34,11 @@ n; a\
     <a href="http://www.runeaudio.com/forum/raspberry-pi-f7.html" target="_blank" alt="RuneAudio Forum">\
         <img class="logo" src="<?=$this->asset(\'/img/runelogo.svg\')?>">\
     </a>
-' -e '/id="play"/ a\
-        <button id="pause" class="btn btn-default btn-cmd" title="Play/Pause" data-cmd="pause"><i class="fa fa-pause"></i></button>
+' -e '/id="play"/ {
+s/data-cmd="play"/data-cmd="toggle"/
+a\
+        <button id="pause" class="btn btn-default btn-cmd" title="Play/Pause" data-cmd="toggle"><i class="fa fa-pause"></i></button>
+}
 ' -e '/^\s*<a id="menu-settings"\|href="\/"><i class="fa fa-play"\|logo.png/ {s|^|<?php /\*|; s|$|\*/?>|}
 ' -e '/dropdown-menu/ a\
             <li id="dropdownbg"></li>
