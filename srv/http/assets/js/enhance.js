@@ -890,17 +890,20 @@ renderLibraryHome = function() {
 		var $this = $( this );
 		var $hammerbookmark = new Hammer( this );
 		$hammerbookmark.on( 'press', function( e ) {
-			e.stopPropagation();
 			$( '#home-blocks' ).css( 'pointer-events', 'none' );
 			$( '#db-homeSetup' ).click();
 			setTimeout( function() {
 				$( '#home-blocks' ).css( 'pointer-events', 'auto' );
 			}, 500 );
-		});
-		// fix bookmark breadcrumb
-		$hammerbookmark.on( 'tap', function( e ) {
 			e.stopPropagation();
+		}).on( 'tap', function( e ) { // fix bookmark breadcrumb
 			GUI.currentDBpos[ 10 ] = $this.attr( 'data-path' ).match( /\//g ).length + 2;
+			if ( e.target.className == 'block-remove' ) {
+				setTimeout( function() {
+					$this.parent().remove();
+				}, 100 );
+			}
+			e.stopPropagation();
 		});
 	});
 }
@@ -1383,7 +1386,7 @@ function settime() {
 
 function commandButton( el ) {
     var dataCmd = el.data( 'cmd' );
-    
+    var cmd;
     if ( !el.hasClass( 'btn-toggle' ) ) {
 	    clearInterval( GUI.currentKnob );
 		if ( dataCmd === 'play' ) {
