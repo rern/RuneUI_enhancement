@@ -1389,17 +1389,6 @@ function commandButton( el ) {
     
     if ( !el.hasClass( 'btn-toggle' ) ) {
 	    clearInterval( GUI.currentKnob );
-	
-	    if ( dataCmd === 'play' ) {
-	        var state = GUI.state;
-	        if ( state === 'play' ) {
-	            dataCmd = 'pause';
-	        } else if ( state === 'pause' ) {
-	            dataCmd = 'play';
-	        } else if ( state === 'stop' ) {
-	            dataCmd = 'play';
-	        }
-	    }
     } else {
     	dataCmd = dataCmd + ( el.hasClass( 'btn-primary' ) ? ' 0' : ' 1' );    
     }
