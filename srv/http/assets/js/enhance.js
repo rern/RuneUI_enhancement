@@ -9,8 +9,8 @@ if ( /\/.*\//.test( location.pathname ) === true ) {
 			location.href = '/';
 		} );
 		$( '#menu-bottom li' ).click( function() {
-			var redis = { page: [ 'set', 'page', this.id ] };
-			$.post( '/enhanceredis.php', { json: JSON.stringify( redis ) }, function(data) {
+			var command = { page: [ 'set', 'page', this.id ] };
+			$.post( '/enhanceredis.php', { json: JSON.stringify( command ) }, function(data) {
 				location.href = '/';
 			} );
 		} );
@@ -38,11 +38,11 @@ $( '#open-panel-dx' ).click( function() {
 
 // back from setting pages
 if ( /\/.*\//.test( document.referrer ) == true ) {
-	var redis = { 
+	var command = { 
 		page: [ 'get', 'page' ],
 		del: [ 'del', 'page' ]
 	};
-	$.post( '/enhanceredis.php',{ json: JSON.stringify( redis ) }, function( data ) {
+	$.post( '/enhanceredis.php',{ json: JSON.stringify( command ) }, function( data ) {
 		var page = JSON.parse( data ).page;
 		if ( page !== 'open-playback' ) $( '#'+ page ).click();
 	} );
@@ -52,7 +52,7 @@ if ( !$( '#playback-ss' ).length ) $('#section-index').off( 'mousemove click key
 
 // playback buttons click go back to home page
 $( '.playback-controls' ).click( function() {
-	if ( $( '#playback' ).not( '.active' ) ) {
+	if ( !$( '#playback' ).hasClass( 'active' ) ) {
 		$( '#open-playback a' ).click();
 		$( '#open-playback a' )[ 0 ].click();
 	}
@@ -87,7 +87,7 @@ $( '#db-index li' ).click( function() {
 	var topoffset = !$( '#menu-top' ).is( ':hidden' ) ? 80 : 40;
 	var indextext = $( this ).text();
 	if ( indextext === '#' ) {
-		$( document ).scrollTop( 0 );
+		window.scrollTo( 0, 0 );
 		return
 	}
 	if ( GUI.browsemode === 'file' ) {
@@ -100,7 +100,7 @@ $( '#db-index li' ).click( function() {
 	var matcharray = $( '#database-entries li' ).filter( function() {
 		return $( this ).attr( 'data-path' ).match( new RegExp( datapathindex ) );
 	} );
-	if ( matcharray.length ) $( document ).scrollTop( matcharray[0].offsetTop - topoffset );
+	if ( matcharray.length ) window.scrollTo( 0, matcharray[0].offsetTop - topoffset );
 } );
 $( '#db-level-up' ).click( function() {
 	window.scrollTo( 0, dbtop );
@@ -129,15 +129,13 @@ window.addEventListener( 'orientationchange', displayall );
 /*window.addEventListener( 'visibilitychange', function() {
 	console.log( document.visibilityState ); // visible or hidden
 } );*/
-$( window ).blur( function() {
-	$timetransition.css( 'transition-duration', '0s' );
-} );
-$( window ).focus( function() {
+/*$( window ).blur( function() { // better than visibilitychange
+	console.log( 'hidden' );
+} );*/
+$( window ).focus( function() { // better than visibilitychange
 	settime();
-	setTimeout( function() {
-		$timetransition.css( 'transition-duration', '0.5s' );
-	}, 1000 );
 } );
+
 // hammer**************************************************************
 Hammer = propagating( Hammer ); // propagating.js fix 
 
@@ -340,9 +338,9 @@ $hammerplayback.on( 'press', function() {
 			$( '#displaysaveplayback input' ).each( function() {
 				data[ this.name ] = this.checked ? 'checked' : '';
 			} );
-			var redis = { display: [ 'hmset', 'display', data ] };
+			var command = { display: [ 'hmset', 'display', data ] };
 			$.post( '/enhanceredis.php', 
-				{ json: JSON.stringify( redis ) },
+				{ json: JSON.stringify( command ) },
 				function( data ) {
 					if ( JSON.parse( data ).display ) {
 						displayplayback();
@@ -405,9 +403,9 @@ $hammerlibrary.on( 'tap', function() {
 			$( '#displaysavelibrary input' ).each( function() {
 				data[ this.name ] = this.checked ? 'checked' : '';
 			} );
-			var redis = { display: [ 'hmset', 'display', data ] };
+			var command = { display: [ 'hmset', 'display', data ] };
 			$.post( '/enhanceredis.php', 
-				{ json: JSON.stringify( redis ) },
+				{ json: JSON.stringify( command ) },
 				function( data ) {
 					if ( JSON.parse( data ).display ) {
 						displaylibrary();
@@ -507,23 +505,15 @@ $( '#time' ).roundSlider( {
 	tooltipFormat: function( e ) {
 		var time = GUI.json.time ? GUI.json.time : 0;
 		var current = Math.round( e.value / 1000 * time );
-		var hr = Math.floor( current / 3600 );
-		var mm = Math.floor( ( current - ( hr * 3600 ) ) / 60 );
-		ss = Math.floor( current - ( hr * 3600 ) - ( mm * 60 ) );
-		hr = ( hr > 0 ) ? hr +':' : '';
-		mm = ( mm > 9 ) ? mm : '0' + mm;
-		ss = ( ss > 9 ) ? ss : '0' + ss;
-		return hr + mm +':'+ ss;
+		return timeConvert2( current );
 	},
 	
 	create: function ( e ) {
 		$timeRS = this;
-		$timetransition = $( '#time' ).find( '.rs-animation, .rs-transition' );
 		$timetoolip = $( '#time' ).find( '.rs-tooltip' );
-		$timetransition.css( 'transition-duration', '0s' ); // fix: flickering on iOS
 		var $hammertime = new Hammer( document.querySelector( 'span.rs-tooltip' ) );
 		$hammertime.on( 'tap', function( e ) {
-		$( '#play' ).click();
+			$( '#play' ).click();
 			e.stopPropagation();
 		} ).on( 'press', function( e ) {
 			$( '#stop' ).click();
@@ -532,16 +522,15 @@ $( '#time' ).roundSlider( {
 	},
 	change: function( e ) {
 		if ( GUI.stream !== 'radio' && ( GUI.state === 'play' || GUI.state === 'pause' ) ) {
+			clearInterval( GUI.currentKnob );
 			var seekto = Math.floor( e.value / 1000 * GUI.json.time );
 			sendCmd( 'seek '+ GUI.json.song +' '+ seekto );
 		} else {
 			$timeRS.setValue( 0 );
 		}
-		$timetransition.css( 'transition-duration', '' );
 	},
 	start: function () {
-		if ( GUI.state === 'play' ) window.clearInterval( GUI.currentKnob );
-		$timetransition.css( 'transition-duration', '0s' );
+		clearInterval( GUI.currentKnob );
 	}
 } );
 
@@ -567,8 +556,8 @@ $( '#volume' ).roundSlider( {
 	change: function( e ) { // not fire on 'setValue'
 		setvol( e.value ); // value after click or 'stop drag'
 		vollocal = 1;
-		var redis = { vol: [ 'curl', 'vol', 1 ] };
-		$.post( '/enhanceredis.php', { json: JSON.stringify( redis ) } );
+		var command = { vol: [ 'curl', 'vol', 1 ] };
+		$.post( '/enhanceredis.php', { json: JSON.stringify( command ) } );
 		$( e.handle.element ).rsRotate( - e.handle.angle );
 		if ( e.preValue === 0 ) { // value before 'change'
 			mutereset();
@@ -603,8 +592,8 @@ pushstreamVolume.connect();
 $( '#volmute, #volume .rs-tooltip' ).click( function() {
 	var volumemute = $volumeRS.getValue();
 	if ( volumemute ) {
-		var redis = { vol: [ 'set', 'volumemute', volumemute ] };
-		$.post( '/enhanceredis.php', { json: JSON.stringify( redis ) } );
+		var command = { vol: [ 'set', 'volumemute', volumemute ] };
+		$.post( '/enhanceredis.php', { json: JSON.stringify( command ) } );
 		setvol( 0 );
 		$volumeRS.setValue( 0 );
 		// keep display level before mute
@@ -616,11 +605,11 @@ $( '#volmute, #volume .rs-tooltip' ).click( function() {
 			mutecolor( volumemute );
 		} );
 	} else {
-		var redis = { 
+		var command = { 
 			vol: [ 'get', 'volumemute' ],
 			del: [ 'set', 'volumemute', 0 ]
 		};
-		$.post( '/enhanceredis.php', { json: JSON.stringify( redis ) }, function( data ) {
+		$.post( '/enhanceredis.php', { json: JSON.stringify( command ) }, function( data ) {
 			var json = JSON.parse( data );
 			vol = parseInt( json.vol );
 			if ( vol === 0 ) return;
@@ -632,8 +621,8 @@ $( '#volmute, #volume .rs-tooltip' ).click( function() {
 		} );
 	}
 	vollocal = 1;
-	var redis = { vol: [ 'curl', 'vol', 1 ] };
-	$.post( '/enhanceredis.php', { json: JSON.stringify( redis ) } );
+	var command = { vol: [ 'curl', 'vol', 1 ] };
+	$.post( '/enhanceredis.php', { json: JSON.stringify( command ) } );
 } );
 
 $( '#volup, #voldn, #voluprs, #voldnrs' ).click( function() {
@@ -659,20 +648,20 @@ function setvolume() {
 	
 	// set mute button before render
 	volumemute = 0;
-	var redis = {
+	var command = {
 		volumemute: [ 'get', 'volumemute' ],
-		vol: [ '/usr/bin/mpc volume' ]
+		volume: [ '/usr/bin/mpc volume | sed "s/[^0-9]//g"' ]
 	};
 	$.post( '/enhanceredis.php', 
-		{ json: JSON.stringify( redis ) },
+		{ json: JSON.stringify( command ) },
 		function( data ) {
 			var json = JSON.parse( data );
 
-			if ( $( '#volume-knob' ).not( '.hide' )
+			if ( !$( '#volume-knob' ).hasClass( 'hide' )
 				&& ( !$( '#songinfo-modal' ).length || GUI.vol_changed_local === 0 )
 			) {
 				$volumetransition.css( 'transition-duration', '0s' ); // suppress initial rotate animation
-				$volumeRS.setValue( json.vol.replace( /[^0-9]/g, '' ) );
+				$volumeRS.setValue( json.volume );
 				$volumehandle.rsRotate( - $volumeRS._handle1.angle );
 				$volumetooltip.show(); // show after 'setValue'
 				$volumehandle.show(); // show after 'setValue'
@@ -711,8 +700,8 @@ function unmutecolor() {
 	$( '#volmute' ).removeClass( 'btn-primary' );
 }
 function mutereset() {
-	var redis = { vol: [ 'set', 'volumemute', 0 ] };
-	$.post( '/enhanceredis.php', { json: JSON.stringify( redis ) } );
+	var command = { vol: [ 'set', 'volumemute', 0 ] };
+	$.post( '/enhanceredis.php', { json: JSON.stringify( command ) } );
 }
 
 // #menu-top, #menu-bottom, #play-group, #share-group, #vol-group:
@@ -752,13 +741,13 @@ function displaycommon() {
 buttonactive = 0;
 function displayplayback() {
 	buttonhide = window.innerHeight <= 320 || window.innerWidth < 499 ? 1 : 0;
-	var redis = {
+	var command = {
 		display: [ 'hGetAll', 'display' ],
 		volumempd: [ 'get', 'volume' ],
 		update: [ 'hGet', 'addons', 'update' ]
 	};
 	$.post( '/enhanceredis.php', 
-		{ json: JSON.stringify( redis ) },
+		{ json: JSON.stringify( command ) },
 		function( data ) {
 		var data = JSON.parse( data );
 		displayredis = data.display;
@@ -823,9 +812,9 @@ function displayplayback() {
 displayplayback();
 // library show/hide blocks
 function displaylibrary() {
-	var redis = { display: [ 'hGetAll', 'display' ] };
+	var command = { display: [ 'hGetAll', 'display' ] };
 	$.post( '/enhanceredis.php', 
-		{ json: JSON.stringify( redis ) },
+		{ json: JSON.stringify( command ) },
 		function( data ) {
 		displayredis = JSON.parse( data ).display;
 		// no 'id'
@@ -864,9 +853,9 @@ function displaylibrary() {
 }
 // queue show/hide menu
 function displayqueue() {
-	var redis = { display: [ 'hGetAll', 'display' ] };
+	var command = { display: [ 'hGetAll', 'display' ] };
 	$.post( '/enhanceredis.php', 
-		{ json: JSON.stringify( redis ) },
+		{ json: JSON.stringify( command ) },
 		function( data ) {
 		displayredis = JSON.parse( data ).display;
 		displaycommon();
@@ -1219,7 +1208,6 @@ function refreshState() {
 		$( '#total' ).html( GUI.stream !== 'radio' ? '00:00' : '' );
 		$timeRS.setValue( 0 );
 		$( '#format-bitrate' ).html( '&nbsp;' );
-		$( 'li', '#playlist-entries' ).removeClass( 'active' );
 	}
 	if ( state !== 'stop' ) {
 		if ( GUI.stream !== 'radio' ) {
@@ -1335,9 +1323,9 @@ function updateGUI() {
 
 // ### called by backend socket - force refresh all clients ###
 // rendrUI() > updateGUI() > refreshState()
-function renderUI(text) {
-	toggleLoader('close');
-	GUI.json = text[0];
+function renderUI( text ) {
+	toggleLoader( 'close' );
+	GUI.json = text[ 0 ];
 	GUI.state = GUI.json.state;
 	
 	updateGUI();
@@ -1346,15 +1334,19 @@ function renderUI(text) {
 	
 	settime();
 	
-	if (GUI.json.playlist !== GUI.playlist) {
+	if ( GUI.json.playlist !== GUI.playlist ) {
 		getPlaylistCmd();
 		GUI.playlist = GUI.json.playlist;
 	}
 }
 function settime() {
-	var redis = { status: [ '/usr/bin/mpc status | grep ")" | sed "s/\] *#.*   */ /; s|[:/]| |g; s/[\[(%)]//g"' ] };
-	$.post( '/enhanceredis.php', { json: JSON.stringify( redis ) }, function( data ) {
-		var ar = JSON.parse( data ).status.split( ' ' );
+	var command = {
+		status: [ '/usr/bin/mpc status | grep ")" | sed "s/\] *#.*   */ /; s|[:/]| |g; s/[\[(%)]//g"' ],
+		volume: [ '/usr/bin/mpc volume | sed "s/[^0-9]//g"' ]
+	};
+	$.post( '/enhanceredis.php', { json: JSON.stringify( command ) }, function( data ) {
+		var data = JSON.parse( data );
+		var ar = data.status.split( ' ' );
 		
 		if ( !ar[ 0 ] ) {
 			var state = 'stop';
@@ -1381,6 +1373,10 @@ function settime() {
 			
 			GUI.currentKnob = setInterval( function() {
 				position = position + step;
+				if ( position === 1000 ) {
+					clearInterval( GUI.currentKnob );
+					settime();
+				}
 				$timeRS.setValue( position );
 			}, time );
 		} else {
@@ -1388,4 +1384,27 @@ function settime() {
 		}
 	} );
 }
+function commandButton( el ) {
+    var dataCmd = el.data( 'cmd' );
+    
+    if ( !el.hasClass( 'btn-toggle' ) ) {
+	    clearInterval( GUI.currentKnob );
+	
+	    if ( dataCmd === 'play' ) {
+	        var state = GUI.state;
+	        if ( state === 'play' ) {
+	            dataCmd = 'pause';
+	        } else if ( state === 'pause' ) {
+	            dataCmd = 'play';
+	        } else if ( state === 'stop' ) {
+	            dataCmd = 'play';
+	        }
+	    }
+    } else {
+    	dataCmd = dataCmd + ( el.hasClass( 'btn-primary' ) ? ' 0' : ' 1' );    
+    }
+	//total = $('#playlist li.active').find('span span').text();
+    sendCmd( dataCmd );
+}
+
 } // end if <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
