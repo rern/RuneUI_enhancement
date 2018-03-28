@@ -18,7 +18,7 @@ if ( /\/.*\//.test( location.pathname ) === true ) {
 	
 	return;
 }
-// fix: midori box-shadow not render correctly
+// fix: midori renders box-shadow incorrectly
 if ( /Midori/.test( navigator.userAgent ) ) {
 	$( 'head link[rel="stylesheet"]').last().after( '<link rel="stylesheet" href="/css/midori.css">' )
 }
@@ -931,6 +931,13 @@ renderPlaylists = function( data ) {
 		if ( $( '#context-menu-playlist' ).hasClass( 'open' ) ) $( '#context-menu-playlist' ).removeClass( 'open' );
 	} );
 }
+// get total time
+var old_getPlaylistPlain = getPlaylistPlain;
+getPlaylistPlain = function( data ) {
+	old_getPlaylistPlain( data );
+	total = $( '#playlist-entries li:contains('+ GUI.json.currentsong +'):contains('+ GUI.json.currentartist +' - '+ GUI.json.currentalbum +')' ).find('span span').text();
+	$( '#total' ).html( total ? total : '' );
+}
 
 function populateDB(options) {
 	var data = options.data || '',
@@ -1180,45 +1187,50 @@ function populateDB(options) {
 
 }
 
+// buttons, sampling info, time
 function refreshState() {
 // ****************************************************************************************
 	var state = GUI.state;
 	var fileinfo = '';
+	
+// buttons, sampling info
+	if ( $( '#play-group' ).is( ':visible' ) ) {
+		$( '#repeat' ).toggleClass( 'btn-primary', GUI.json.repeat === '1' );
+		$( '#random' ).toggleClass( 'btn-primary', GUI.json.random === '1' );
+		$( '#single' ).toggleClass( 'btn-primary', GUI.json.single === '1' );
+	}
+
 // split play-pause buttons
-	if ( state === 'play' ) {
-		$( '#play' ).addClass( 'btn-primary' );
-		$( '#stop' ).removeClass( 'btn-primary' );
-		if ( $( '#pause' ).hasClass( 'hide' ) ) {
-			$( 'i', '#play' ).removeClass( 'fa fa-pause' ).addClass( 'fa fa-play' );
-		} else {
-			$( '#pause' ).removeClass( 'btn-primary' );
-		}
-	} else if ( state === 'pause' ) {
-		$( '#playlist-position span' ).html( 'Not playing' );
-		$( '#stop' ).removeClass( 'btn-primary' );
-		if ( $( '#pause' ).hasClass( 'hide' ) ) {
-			$( 'i', '#play' ).removeClass( 'fa fa-play' ).addClass( 'fa fa-pause' );
-		} else {
-			$( '#play' ).removeClass( 'btn-primary' );
-			$( '#pause' ).addClass( 'btn-primary' );
-		}
-		var pausetime = parseInt( GUI.json.song_percent ) * 10;
-		$timeRS.setValue( pausetime );
-	} else if ( state === 'stop' ) {
+	if ( state === 'stop' ) {
 		$( '#stop' ).addClass( 'btn-primary' );
 		$( '#play, #pause' ).removeClass( 'btn-primary' );
-		if ( $( '#pause' ).hasClass( 'hide' ) ) $( 'i', '#play' ).removeClass( 'fa fa-pause' ).addClass( 'fa fa-play' );
-		$( '#total' ).html( GUI.stream !== 'radio' ? '00:00' : '' );
-		$timeRS.setValue( 0 );
+		if ( $( '#pause' ).hasClass( 'hide' ) ) $( '#play i' ).removeClass( 'fa fa-pause' ).addClass( 'fa fa-play' );
 		$( '#format-bitrate' ).html( '&nbsp;' );
-	}
-	if ( state !== 'stop' ) {
-		if ( GUI.stream !== 'radio' ) {
-			$( '#total' ).html( ( GUI.json.time !== undefined ) ? timeConvert( GUI.json.time ) : '00:00' );
-		} else {
-			$( '#total' ).html( '<a style="color: #587ca0;">streaming</a>' );
-		}
-// improve song info
+
+		$timeRS.setValue( 0 );
+	} else {
+		if ( state === 'play' ) {
+			$( '#play' ).addClass( 'btn-primary' );
+			$( '#stop' ).removeClass( 'btn-primary' );
+			if ( $( '#pause' ).hasClass( 'hide' ) ) {
+				$( '#play i' ).removeClass( 'fa fa-pause' ).addClass( 'fa fa-play' );
+			} else {
+				$( '#pause' ).removeClass( 'btn-primary' );
+			}
+		} else if ( state === 'pause' ) {
+			$( '#playlist-position span' ).html( 'Not playing' );
+			$( '#stop' ).removeClass( 'btn-primary' );
+			if ( $( '#pause' ).hasClass( 'hide' ) ) {
+				$( '#play i' ).removeClass( 'fa fa-play' ).addClass( 'fa fa-pause' );
+			} else {
+				$( '#play' ).removeClass( 'btn-primary' );
+				$( '#pause' ).addClass( 'btn-primary' );
+			}
+			
+			var pausetime = parseInt( GUI.json.song_percent ) * 10;
+			$timeRS.setValue( pausetime );
+		}		
+// improve sampling info
 		if ( GUI.libraryhome.ActivePlayer === 'MPD' ) {
 			if ( GUI.json.fileext !== false ) {
 				var dot = '<a style="color:#ffffff"> &#8226; </a>';
@@ -1249,28 +1261,26 @@ function refreshState() {
 		} else {
 			fileinfo = ( GUI.json.audio_channels && GUI.json.audio_sample_depth && GUI.json.audio_sample_rate ) ? ( GUI.json.audio_channels + ', ' + GUI.json.audio_sample_depth + ' bit, ' + GUI.json.audio_sample_rate +' kHz, '+GUI.json.bitrate+' kbps' ) : '&nbsp;';
 		}
-// ****************************************************************************************
-		$('#format-bitrate').html(fileinfo);
-		$('li', '#playlist-entries').removeClass('active');
-		var current = parseInt(GUI.json.song);
-		$('#playlist-entries').find('li').eq(current).addClass('active');
+		$( '#format-bitrate' ).html( fileinfo );
+		$( '#playlist-entries li ' ).removeClass( 'active' );
+		var current = parseInt( GUI.json.song );
+		$( '#playlist-entries' ).find( 'li' ).eq( current ).addClass( 'active' );
 	}
-	if (GUI.json.playlistlength && GUI.json.playlistlength !== '0') {
-		if (GUI.json.song) {
-			$('#playlist-position span').html((parseInt(GUI.json.song) + 1) + '/' + GUI.json.playlistlength);
+
+	if ( GUI.json.playlistlength && GUI.json.playlistlength !== '0' ) {
+		if ( GUI.json.song ) {
+			$( '#playlist-position span' ).html( ( parseInt( GUI.json.song ) + 1 ) +'/'+ GUI.json.playlistlength );
 		} else {
-			$('#playlist-position span').html('1/' + GUI.json.playlistlength);
+			$( '#playlist-position span' ).html( '1/'+ GUI.json.playlistlength );
 		}
 	} else {
-		$('#playlist-position span').html('Empty queue, add some music!');
+		$( '#playlist-position span' ).html( 'Empty queue, add some music!' );
 	}
-	if (GUI.json.updating_db !== undefined) {
-		$('a', '#open-panel-sx').html('<i class="fa fa-refresh fa-spin"></i>');
-	} else {
-		$('a', '#open-panel-sx').html('<i class="fa fa-folder-open"></i>');
-	}
+	
+	if ( GUI.json.updating_db !== undefined ) $( '#open-panel-sx a' ).html( '<i class="fa fa-refresh fa-spin"></i>' );
 }
 
+// song info
 function updateGUI() {
 	if ( !$( '#section-index' ).length ) return;
 	
@@ -1294,19 +1304,14 @@ function updateGUI() {
 		$( '#currentsong' ).html( !currentsong ? radioname : currentsong );
 	}
 	
-	if ( $( '#play-group' ).is( ':visible' ) ) {
-		$( '#repeat' ).toggleClass( 'btn-primary', GUI.json.repeat === '1' );
-		$( '#random' ).toggleClass( 'btn-primary', GUI.json.random === '1' );
-		$( '#single' ).toggleClass( 'btn-primary', GUI.json.single === '1' );
-	}
-	
 	// song changed
 	if ( GUI.currentsong === GUI.json.currentsong ) return;
 	GUI.currentsong = currentsong;
-	if ( $( '#lyricscontainer' ).length ) {
-		lyrics = '';
-		if ( GUI.currentalbum !== 'null - null' ) getlyrics();
-	}
+	//set total time
+	total = $( '#playlist-entries li:contains('+ GUI.json.currentsong +'):contains('+ GUI.json.currentartist +' - '+ GUI.json.currentalbum +')' ).find('span span').text();
+	$( '#total' ).html( GUI.stream !== 'radio' ? total : 'streaming' );
+	
+	if ( $( '#lyricscontainer' ).length && $( '#lyricscontainer' ).is( ':visible' ) )  getlyrics();
 
 	// scroll long song text
 	if ( $('#panel-dx').hasClass('active') ) customScroll( 'pl', parseInt( GUI.json.song ) );
@@ -1398,13 +1403,12 @@ function commandButton( el ) {
 			} else if ( state === 'stop' ) {
 				cmd = 'play';
 			}
-		} else if ( dataCmd === 'stop' ) {
-			cmd = 'stop';
+		} else {
+			cmd = dataCmd;
 		}
     } else {
     	cmd = dataCmd + ( el.hasClass( 'btn-primary' ) ? ' 0' : ' 1' );    
     }
-	//total = $('#playlist li.active').find('span span').text();
     sendCmd( cmd );
 }
 
