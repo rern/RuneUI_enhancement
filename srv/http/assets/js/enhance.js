@@ -1391,25 +1391,13 @@ function settime() {
 
 function commandButton( el ) {
     var dataCmd = el.data( 'cmd' );
-    var cmd;
-    if ( !el.hasClass( 'btn-toggle' ) ) {
-	    clearInterval( GUI.currentKnob );
-		if ( dataCmd === 'play' ) {
-			var state = GUI.state;
-			if ( state === 'play' ) {
-				cmd = 'pause';
-			} else if ( state === 'pause' ) {
-				cmd = 'play';
-			} else if ( state === 'stop' ) {
-				cmd = 'play';
-			}
-		} else {
-			cmd = dataCmd;
-		}
+    if ( el.hasClass( 'btn-toggle' ) ) {
+    	dataCmd = dataCmd + ( el.hasClass( 'btn-primary' ) ? ' 0' : ' 1' );    
     } else {
-    	cmd = dataCmd + ( el.hasClass( 'btn-primary' ) ? ' 0' : ' 1' );    
+	    clearInterval( GUI.currentKnob );
+		if ( dataCmd === 'play' ) dataCmd = ( GUI.state === 'play' ) ? 'pause' : 'play';
     }
-    sendCmd( cmd );
+    sendCmd( dataCmd );
 }
 
 } // end if <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
