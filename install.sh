@@ -102,6 +102,7 @@ sed -i -e '\|// KNOBS| i\
 ' -e '\|// PLAYING QUEUE| i\
 enha*/
 ' -e '/\.countdown(/ s|^|//|
+' -e 's|\(fa-spin"></i>\) Updating|\1|
 ' -e 's|fa-music sx"></i> Library|fa-folder-open"></i>|
 ' $file
 
