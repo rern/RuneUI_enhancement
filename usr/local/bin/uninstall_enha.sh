@@ -83,7 +83,8 @@ file=/srv/http/assets/js/runeui.js
 echo $file
 sed -i -e '/^\/\*enha\|^enha\*\// d
 ' -e '/\.countdown(/ s|^//||
-' -e 's|fa-folder</i>|fa-music sx"></i> Library|
+' -e 's|fa-spin"></i>|& Updating|
+' -e 's|fa-folder-open"></i>|fa-music sx"></i> Library|
 ' $file
 
 
