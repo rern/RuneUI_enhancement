@@ -36,15 +36,21 @@ n; a\
     </a>
 ' -e '/id="play"/ a\
         <button id="pause" class="btn btn-default btn-cmd" title="Pause" data-cmd="play"><i class="fa fa-pause"></i></button>
-' -e '/^\s*<a id="menu-settings"\|href="\/"><i class="fa fa-play"\|logo.png/ {s|^|<?php /\*|; s|$|\*/?>|}
+' -e '/^\s*<a id="menu-settings"\|href="\/"><i class="fa fa-play"\|logo.png/ {s/^/<--enha/; s/$/enha-->/}
 ' -e '/dropdown-menu/ a\
             <li id="dropdownbg"></li>
 ' -e $'/Credits/ a\
             <li class="<?=$this->uri(1, \'dev\', \'active\')?>"><a href="/dev/"><i class="fa fa-code"></i> Development</a></li>
-' -e 's|href="/#panel-sx"||; s|href="/#playback"||; s|href="/#panel-dx"||
-' -e 's|\("tab".*"fa fa-\)music"></i> Library|\1folder-open"></i>|
-' -e 's|\("tab".*"fa fa-play\)"></i> Playback|\1-circle"></i>|
-' -e 's|\("tab".*"fa fa-list"></i>\) Queue|\1|
+' -e '/id="open-panel-sx"/ s/^<!--/
+' -e '/id="open-panel-dx"/ {
+s/$/-->/
+a\
+<!--0enha\
+        <li id="open-panel-sx"><a><i class="fa fa-folder-open"></i></a></li>\
+        <li id="open-playback" class="active"><a><i class="fa fa-play-circle"></i></a></li>\
+        <li id="open-panel-dx"><a><i class="fa fa-list"></i></a></li>\
+1enha-->
+}
 ' $file
 
 file=/srv/http/app/templates/footer.php
