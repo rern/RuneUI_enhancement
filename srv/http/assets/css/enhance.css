@@ -410,7 +410,6 @@
 	background: #34495e;
 }
 .rs-tooltip {
-	display: none; /* hide '0' / 'NaN' on initial load - show after set */
 	left: 20% !important;
 	top: 40% !important;
 	margin: 0 !important;
@@ -422,6 +421,9 @@
 	line-height: 50px;
 	color: #e0e7ee;
 	cursor: pointer;
+}
+#volume .rs-tooltip {
+	display: none; /* hide '0' / 'NaN' on initial load - show after set */
 }
 #time .rs-range-color {
 	background: #0095d8 !important;
