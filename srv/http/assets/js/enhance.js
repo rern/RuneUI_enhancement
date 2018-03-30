@@ -158,16 +158,11 @@ function displayall() {
 	}, 100 );
 }
 window.addEventListener( 'orientationchange', displayall );
-/*window.addEventListener( 'visibilitychange', function() {
-	console.log( document.visibilityState ); // visible or hidden
-} );*/
-/*$( window ).blur( function() { // better than visibilitychange
-	console.log( 'hidden' );
-} );*/
-$( window ).focus( function() { // better than visibilitychange
-	settime();
+window.addEventListener( 'visibilitychange', function() {
+	if ( document.visibilityState === 'visible' ) {
+		settime();
+	}
 } );
-
 // hammer**************************************************************
 Hammer = propagating( Hammer ); // propagating.js fix 
 
@@ -505,7 +500,9 @@ $( '#time' ).roundSlider( {
 	tooltipFormat: function( e ) {
 		var time = GUI.json.time ? GUI.json.time : 0;
 		var current = Math.round( e.value / 1000 * time );
-		return timeConvert2( current );
+		var mm = Math.floor( current / 60 );
+		var ss = current - mm;
+		return mm + ':' + ( ss > 9 ? ss : '0'+ ss );
 	},
 	
 	create: function ( e ) {
@@ -520,7 +517,7 @@ $( '#time' ).roundSlider( {
 			e.stopPropagation();
 		} );
 	},
-	change: function( e ) {
+	change: function( e ) { // not fire on 'setValue'
 		if ( GUI.stream !== 'radio' && ( GUI.state === 'play' || GUI.state === 'pause' ) ) {
 			clearInterval( GUI.currentKnob );
 			var seekto = Math.floor( e.value / 1000 * GUI.json.time );
@@ -1330,8 +1327,8 @@ function settime() {
 		$( '#total' ).html( 'streaming' );
 		return;
 	}
-	var command = { 
-		status: [ '/usr/bin/mpc status | grep ")" | sed "s/\] *#.*   */ /; s|[:/]| |g; s/[\[(%)]//g"' ],
+	var command = {
+		status: [ '/usr/bin/mpc status | grep ")" | sed "s/\] *#.*   */ /; s|/| |g; s/[\[(%)]//g"' ],
 		info: [ "/usr/bin/soxi '/mnt/MPD/"+ GUI.json.file +"' | tr -d '\n' | sed 's/.*Channels  *: //; s/ = .*//; s/Sample Rate  *://; s/Precision  *://; s/-bitDuration  *://'" ]
 	};
 	$.post( '/enhanceredis.php', { json: JSON.stringify( command ) }, function( data ) {
@@ -1350,27 +1347,46 @@ function settime() {
 
 			var hms = info[ 3 ].split( ':' );
 			var hh = parseInt( hms[ 0 ] );
+			var mm = parseInt( hms[ 1 ] );
 			var ss = Math.round( hms[ 2 ] );
-			var total = ( hh ? hh +':' : '' ) + hms[ 1 ] +':'+ ( ss > 9 ? ss : '0'+ ss );
+			var time = 3600 * hh + 60 * mm + ss;
+			var total = ( hh ? hh +':' : '' ) + ( hh ? '0'+ mm  : mm ) +':'+ ( ss > 9 ? ss : '0'+ ss );
 			$( '#total' ).html( total );
+		} else {
+			if ( GUI.state !== 'stop' ) {
+				var hms = status[ 2 ].split( ':' ); // available while playing only
+				if ( hms.length > 2 ) { 
+					var time = 3600 * parseInt( hms[ 0 ] ) + 60 * parseInt( hms[ 1 ] ) + parseInt( hms[ 2 ] );
+				} else {
+					var time = 60 * parseInt( hms[ 0 ] ) + parseInt( hms[ 1 ] );
+				}
+				$( '#total' ).html( status[ 2 ] );
+			} else {
+				$( '#format-bitrate' ).html( ext === 'DSF' || ext === 'DFF' ? 'DSD' : '&nbsp;' );
+				$( '#total' ).html( '' );
+			}
 		}
 		
-		if ( !status[ 0 ] ) {
-			var state = 'stop';
-			clearInterval( GUI.currentKnob );
+		clearInterval( GUI.currentKnob );
+		
+		if ( !status[ 0 ] ) { // if stop
 			$timeRS.setValue( 0 );
 			return;
 		}
 		
-		var position = status[ 5 ] * 10;
+		var hms = status[ 1 ].split( ':' );
+		if ( hms.length > 2 ) { 
+			var currenttime = 3600 * parseInt( hms[ 0 ] ) + 60 * parseInt( hms[ 1 ] ) + parseInt( hms[ 2 ] );
+		} else {
+			var currenttime = 60 * parseInt( hms[ 0 ] ) + parseInt( hms[ 1 ] );
+		}
+		var position = Math.round( currenttime / time * 1000 );
 		$timeRS.setValue( position );
-		
-		var state = status[ 0 ] === 'playing' ? 'play' : 'pause';
-		if ( state !== 'play' ) return;
+
+		if ( status[ 0 ] === 'paused' ) return;
 		
 		var localbrowser = ( location.hostname === 'localhost' || location.hostname === '127.0.0.1' ) ? 10 : 1;
 		var step = 1 * localbrowser; // fix: reduce cpu cycle on local browser
-		var time = 3600 * hms[ 0 ] + 60 * hms[ 1 ] + Math.round( hms[ 2 ] );
 		var every = time * localbrowser;
 		
 		GUI.currentKnob = setInterval( function() {
@@ -1389,8 +1405,8 @@ function commandButton( el ) {
 	if ( el.hasClass( 'btn-toggle' ) ) {
 		dataCmd = dataCmd + ( el.hasClass( 'btn-primary' ) ? ' 0' : ' 1' );    
 	} else {
-	    clearInterval( GUI.currentKnob );
 		if ( dataCmd === 'play' ) dataCmd = ( GUI.state === 'play' ) ? 'pause' : 'play';
+		if ( dataCmd !== 'play' ) clearInterval( GUI.currentKnob );
 	}
 	sendCmd( dataCmd );
 }
