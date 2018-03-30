@@ -500,8 +500,9 @@ $( '#time' ).roundSlider( {
 	tooltipFormat: function( e ) {
 		var time = GUI.json.time ? GUI.json.time : 0;
 		var current = Math.round( e.value / 1000 * time );
-		var mm = Math.floor( current / 60 );
-		var ss = current - mm;
+		var hh = Math.floor( current / 3600 );
+		var mm = Math.floor( ( current - hh ) / 60 );
+		var ss = ( current - hh ) % 60;
 		return mm + ':' + ( ss > 9 ? ss : '0'+ ss );
 	},
 	
@@ -1178,7 +1179,7 @@ function populateDB(options) {
 
 }
 
-// buttons, sampling info, time
+// buttons and playlist
 function refreshState() {
 // ****************************************************************************************
 	var state = GUI.state;
@@ -1214,25 +1215,6 @@ function refreshState() {
 				$( '#pause' ).addClass( 'btn-primary' );
 			}
 		}	
-// DSD sampling info ( available while playing only )
-		if ( GUI.libraryhome.ActivePlayer === 'MPD' ) {
-			var ext = GUI.json.fileext.toUpperCase();
-			if ( ext === 'DSF' || ext === 'DFF' ) {
-				var audio = GUI.json.audio.split(':')[ 0 ];
-				// mpd0.20 - as dsd128:2 / dsd256:2 ...
-				var sampling = ( audio[ 0 ] === 'd' ) ? parseInt( audio ) : audio / 5512.5;
-				var bitrate = sampling * 44.1;
-				var fileinfo = '<a id="dot0" style="color:#ffffff"> &#8226; </a>1 bit DSD'+ sampling +' - '+ bitrate +' kbps <a style="color:#ffffff">&#8226;</a> ' + ext;
-				$( '#format-bitrate' ).html( fileinfo );
-			}
-		} else {
-			if ( GUI.json.audio_sample_depth && GUI.json.audio_sample_rate ) {
-				var fileinfo =  GUI.json.audio_sample_depth + ' bit ' + GUI.json.audio_sample_rate +' kHz '+GUI.json.bitrate+' kbps';
-			} else {
-				var fileinfo = '&nbsp;';
-			}
-			$( '#format-bitrate' ).html( fileinfo );
-		}
 	}
 
 	if ( GUI.json.playlistlength && GUI.json.playlistlength !== '0' ) {
@@ -1272,7 +1254,7 @@ function updateGUI() {
 		$( '#currentalbum').html( !currentalbum ? '<span class="notag">[no album]</span>' : currentalbum );
 	} else {
 		$( '#currentartist' ).html( !currentartist ? radioname : currentartist );
-		$( '#currentalbum' ).html( '<span class="notag">streaming</span>' );
+		$( '#currentalbum' ).html( !currentartist ? '<span class="notag">streaming</span>' : currentalbub );
 		$( '#currentsong' ).html( !currentsong ? radioname : currentsong );
 	}
 	
@@ -1319,14 +1301,20 @@ function renderUI( text ) {
 		GUI.playlist = GUI.json.playlist;
 	}
 }
-// preserve sampling info and duration while stop
+// song - sampling info and time
 function settime() {
+	var dot =  '<a style="color:#ffffff"> &#8226; </a>';
+	var dot0 = dot.replace( '<a', '<a id="dot0"' );
+	var info =  dot0 + GUI.json.audio_sample_depth + ' bit ' + GUI.json.audio_sample_rate +' kHz '+GUI.json.bitrate+' kbps';
 	if ( GUI.stream === 'radio' ) {
-		$( '#format-bitrate' ).html( '&nbsp;' );
+		var fileinfo =  GUI.json.audio_sample_depth ? info + dot +'Radio' : '&nbsp;';
+		$( '#format-bitrate' ).html( fileinfo );
 		$timeRS.setValue( 0 );
+		$( '#time .rs-tooltip' ).show();
 		$( '#total' ).html( 'streaming' );
 		return;
 	}
+	
 	var command = {
 		status: [ '/usr/bin/mpc status | grep ")" | sed "s/\] *#.*   */ /; s|/| |g; s/[\[(%)]//g"' ],
 		info: [ "/usr/bin/soxi '/mnt/MPD/"+ GUI.json.file +"' | tr -d '\n' | sed 's/.*Channels  *: //; s/ = .*//; s/Sample Rate  *://; s/Precision  *://; s/-bitDuration  *://'" ]
@@ -1342,8 +1330,7 @@ function settime() {
 			var bitdepth = info[ 2 ];
 			var sampling = info[ 1 ] / 1000;
 			var bitrate = bitdepth * sampling * 2;
-			var fileinfo = '<a id="dot0" style="color:#ffffff"> &#8226; </a>' + channel + bitdepth +' bit '+ sampling +' kHz '+ bitrate +' kbps <a style="color:#ffffff">&#8226;</a> '+ ext;
-			$( '#format-bitrate' ).html( fileinfo );
+			var fileinfo = dot0 + channel + bitdepth +' bit '+ sampling +' kHz '+ bitrate +' kbps'+ dot + ext;
 
 			var hms = info[ 3 ].split( ':' );
 			var hh = parseInt( hms[ 0 ] );
@@ -1353,6 +1340,11 @@ function settime() {
 			var total = ( hh ? hh +':' : '' ) + ( hh ? '0'+ mm  : mm ) +':'+ ( ss > 9 ? ss : '0'+ ss );
 			$( '#total' ).html( total );
 		} else {
+			var audio = GUI.json.audio.split(':')[ 0 ];
+			// mpd0.20 - as dsd128:2 / dsd256:2 ...
+			var sampling = ( audio[ 0 ] === 'd' ) ? parseInt( audio ) : audio / 5512.5;
+			var fileinfo = dot0 +'1 bit DSD'+ sampling +' - '+ sampling * 44.1 +' kbps'+ dot + ext;
+
 			if ( GUI.state !== 'stop' ) {
 				var hms = status[ 2 ].split( ':' ); // available while playing only
 				if ( hms.length > 2 ) { 
@@ -1362,10 +1354,12 @@ function settime() {
 				}
 				$( '#total' ).html( status[ 2 ] );
 			} else {
-				$( '#format-bitrate' ).html( ext === 'DSF' || ext === 'DFF' ? 'DSD' : '&nbsp;' );
+				$( '#format-bitrate' ).html( ext === 'DSF' || ext === 'DFF' ? dot0 +'DSD' : '&nbsp;' );
 				$( '#total' ).html( '' );
 			}
 		}
+		
+		$( '#format-bitrate' ).html( fileinfo );
 		
 		clearInterval( GUI.currentKnob );
 		
@@ -1382,6 +1376,7 @@ function settime() {
 		}
 		var position = Math.round( currenttime / time * 1000 );
 		$timeRS.setValue( position );
+		$( '#time .rs-tooltip' ).show();
 
 		if ( status[ 0 ] === 'paused' ) return;
 		
