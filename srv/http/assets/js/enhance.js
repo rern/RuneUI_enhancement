@@ -1150,7 +1150,7 @@ function populateDB(options) {
 
 }
 
-stopprevnext = 0;
+stopprevnext = 0; // for disable 'btn-primary' - previous/next while stop
 function commandButton( el ) {
 	var dataCmd = el.data( 'cmd' );
 	if ( el.hasClass( 'btn-toggle' ) ) {
