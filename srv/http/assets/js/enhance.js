@@ -1150,14 +1150,30 @@ function populateDB(options) {
 
 }
 
+stopprevnext = 0;
 function commandButton( el ) {
 	var dataCmd = el.data( 'cmd' );
 	if ( el.hasClass( 'btn-toggle' ) ) {
 		if ( GUI.stream === 'radio' ) return;
 		dataCmd = dataCmd + ( el.hasClass( 'btn-primary' ) ? ' 0' : ' 1' );    
 	} else {
-		if ( dataCmd === 'play' ) dataCmd = ( GUI.state === 'play' ) ? 'pause' : 'play';
-		if ( dataCmd !== 'play' ) clearInterval( GUI.currentKnob );
+		if ( dataCmd === 'play' ) {
+			dataCmd = ( GUI.state === 'play' ) ? 'pause' : 'play';
+		} else {
+			clearInterval( GUI.currentKnob );
+			// enable previous / next while stop
+			if ( GUI.state === 'stop' && ( dataCmd === 'previous' || dataCmd === 'next' ) ) {
+				stopprevnext = 1;
+				dataCmd = ( dataCmd === 'previous' ) ? 'prev' : 'next';
+				var command = { prevnext: [ '/usr/bin/mpc play; /usr/bin/mpc '+ dataCmd +'; /usr/bin/mpc stop;' ] };
+				$.post( '/enhanceredis.php', { json: JSON.stringify( command ) }, function() {
+					setTimeout( function() {
+						stopprevnext = 0;
+					}, 500 );
+				});
+				return
+			}
+		}
 	}
 	sendCmd( dataCmd );
 }
@@ -1178,7 +1194,7 @@ function setbutton() {
 		$( '#play, #pause' ).removeClass( 'btn-primary' );
 		if ( $( '#pause' ).hasClass( 'hide' ) ) $( '#play i' ).removeClass( 'fa fa-pause' ).addClass( 'fa fa-play' );
 	} else {
-		if ( state === 'play' ) {
+		if ( state === 'play' && !stopprevnext ) {
 			$( '#play' ).addClass( 'btn-primary' );
 			$( '#stop' ).removeClass( 'btn-primary' );
 			if ( $( '#pause' ).hasClass( 'hide' ) ) {
@@ -1220,10 +1236,10 @@ function settime() {
 	var ActivePlayer = GUI.libraryhome.ActivePlayer;
 	var dot =  '<a style="color:#ffffff"> &#8226; </a>';
 	var dot0 = dot.replace( '<a', '<a id="dot0"' );
-	var info =  dot0 + GUI.json.audio_sample_depth + ' bit ' + GUI.json.audio_sample_rate +' kHz '+GUI.json.bitrate+' kbit/s';
+	var sampling =  dot0 + GUI.json.audio_sample_depth + ' bit ' + GUI.json.audio_sample_rate +' kHz '+GUI.json.bitrate+' kbit/s';
 	if ( GUI.stream === 'radio' || ActivePlayer === 'Airplay' || ActivePlayer === 'Spotify' ) {
 		var type = GUI.stream === 'radio' ? 'Radio' : ActivePlayer;
-		var fileinfo =  GUI.json.audio_sample_depth ? info + dot + type : type;
+		var fileinfo =  GUI.json.audio_sample_depth ? sampling + dot + type : type;
 		$( '#format-bitrate' ).html( fileinfo );
 		$timeRS.setValue( 0 );
 		$( '#time .rs-tooltip' ).hide();
@@ -1231,6 +1247,8 @@ function settime() {
 		return;
 	}
 	
+	// mpd client-server protocol
+	// status: [ '{ /usr/bin/echo status; /usr/bin/sleep 0.1; } | /usr/bin/telnet localhost 6600' ]
 	var command = {
 		status: [ '/usr/bin/mpc status | grep ")" | sed "s/\] *#.*   */ /; s|/| |g; s/[\[(%)]//g"' ],
 		info: [ "/usr/bin/soxi '/mnt/MPD/"+ GUI.json.file +"' | tr -d '\n' | sed 's/.*Channels  *: //; s/ = .*//; s/Sample Rate  *://; s/Precision  *://; s/-bitDuration  *://'" ]
@@ -1247,13 +1265,17 @@ function settime() {
 			var sampling = info[ 1 ] / 1000;
 			var bitrate = bitdepth * sampling * 2;
 			var fileinfo = dot0 + channel + bitdepth +' bit '+ sampling +' kHz '+ bitrate +' kbit/s'+ dot + ext;
-
-			var hms = info[ 3 ].split( ':' );
-			var hh = parseInt( hms[ 0 ] );
-			var mm = parseInt( hms[ 1 ] );
-			var ss = Math.round( hms[ 2 ] );
-			var time = 3600 * hh + 60 * mm + ss;
-			var total = ( hh ? hh +':' : '' ) + ( hh ? '0'+ mm  : mm ) +':'+ ( ss > 9 ? ss : '0'+ ss );
+			
+			if ( info[ 3 ] ) { // fix: prev/next while stop 'undefined'
+				var hms = info[ 3 ].split( ':' );
+				var hh = parseInt( hms[ 0 ] );
+				var mm = parseInt( hms[ 1 ] );
+				var ss = Math.round( hms[ 2 ] );
+				var time = 3600 * hh + 60 * mm + ss;
+				var total = ( hh ? hh +':' : '' ) + ( hh ? '0'+ mm  : mm ) +':'+ ( ss > 9 ? ss : '0'+ ss );
+			} else {
+				var fileinfo = '&nbsp;'; // fix: prev/next while stop 'NaN'
+			}
 		} else {
 			if ( GUI.state !== 'stop' ) {
 				var audio = GUI.json.audio.split(':')[ 0 ];
