@@ -525,10 +525,15 @@ $( '#time' ).roundSlider( {
 		} );
 	},
 	change: function( e ) { // not fire on 'setValue'
-		if ( GUI.stream !== 'radio' && ( GUI.state === 'play' || GUI.state === 'pause' ) ) {
-			clearInterval( GUI.currentKnob );
-			var seekto = Math.floor( e.value / 1000 * GUI.json.time );
-			sendCmd( 'seek '+ GUI.json.song +' '+ seekto );
+		if ( GUI.stream !== 'radio' ) {
+			var seekto = Math.floor( e.value / 1000 * time );
+			if ( GUI.state !== 'stop' ) {
+				clearInterval( GUI.currentKnob );
+				sendCmd( 'seek '+ GUI.json.song +' '+ seekto );
+			} else {
+				var command = { seek: [ '/usr/bin/mpc play; /usr/bin/mpc seek '+ seekto +'; /usr/bin/mpc pause;' ] };
+				$.post( '/enhanceredis.php', { json: JSON.stringify( command ) });				
+			}
 		} else {
 			$timeRS.setValue( 0 );
 		}
@@ -1150,7 +1155,7 @@ function populateDB(options) {
 
 }
 
-stopprevnext = 0; // for disable 'btn-primary' - previous/next while stop
+buttondisable = 0; // for disable 'btn-primary' - previous/next while stop
 function commandButton( el ) {
 	var dataCmd = el.data( 'cmd' );
 	if ( el.hasClass( 'btn-toggle' ) ) {
@@ -1163,12 +1168,12 @@ function commandButton( el ) {
 			clearInterval( GUI.currentKnob );
 			// enable previous / next while stop
 			if ( GUI.state === 'stop' && ( dataCmd === 'previous' || dataCmd === 'next' ) ) {
-				stopprevnext = 1;
+				buttondisable = 1;
 				dataCmd = ( dataCmd === 'previous' ) ? 'prev' : 'next';
 				var command = { prevnext: [ '/usr/bin/mpc play; /usr/bin/mpc '+ dataCmd +'; /usr/bin/mpc stop;' ] };
 				$.post( '/enhanceredis.php', { json: JSON.stringify( command ) }, function() {
 					setTimeout( function() {
-						stopprevnext = 0;
+						buttondisable = 0;
 					}, 500 );
 				});
 				return
@@ -1194,7 +1199,7 @@ function setbutton() {
 		$( '#play, #pause' ).removeClass( 'btn-primary' );
 		if ( $( '#pause' ).hasClass( 'hide' ) ) $( '#play i' ).removeClass( 'fa fa-pause' ).addClass( 'fa fa-play' );
 	} else {
-		if ( state === 'play' && !stopprevnext ) {
+		if ( state === 'play' && !buttondisable ) {
 			$( '#play' ).addClass( 'btn-primary' );
 			$( '#stop' ).removeClass( 'btn-primary' );
 			if ( $( '#pause' ).hasClass( 'hide' ) ) {
@@ -1271,7 +1276,7 @@ function settime() {
 				var hh = parseInt( hms[ 0 ] );
 				var mm = parseInt( hms[ 1 ] );
 				var ss = Math.round( hms[ 2 ] );
-				var time = 3600 * hh + 60 * mm + ss;
+				time = 3600 * hh + 60 * mm + ss; // glbal var for use by time knob
 				var total = ( hh ? hh +':' : '' ) + ( hh ? '0'+ mm  : mm ) +':'+ ( ss > 9 ? ss : '0'+ ss );
 			} else {
 				var fileinfo = '&nbsp;'; // fix: prev/next while stop 'NaN'
@@ -1284,9 +1289,9 @@ function settime() {
 				var fileinfo = dot0 +'1 bit DSD'+ sampling +' - '+ sampling * 44.1 +' kbit/s'+ dot + ext;
 					var hms = status[ 2 ].split( ':' ); // available while playing only
 				if ( hms.length > 2 ) { 
-					var time = 3600 * parseInt( hms[ 0 ] ) + 60 * parseInt( hms[ 1 ] ) + parseInt( hms[ 2 ] );
+					time = 3600 * parseInt( hms[ 0 ] ) + 60 * parseInt( hms[ 1 ] ) + parseInt( hms[ 2 ] );
 				} else {
-					var time = 60 * parseInt( hms[ 0 ] ) + parseInt( hms[ 1 ] );
+					time = 60 * parseInt( hms[ 0 ] ) + parseInt( hms[ 1 ] );
 				}
 				var total = status[ 2 ];
 			} else {
