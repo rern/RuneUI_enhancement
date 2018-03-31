@@ -411,11 +411,8 @@
 }
 .rs-tooltip {
 	display: none; /* hide '0' / 'NaN' on initial load - show after set */
-	left: 20% !important;
 	top: 40% !important;
 	margin: 0 !important;
-	width: 60%;
-	height: 50px;
 	font-family: Lato;
 	font-size: 38px;
 	font-weight: 300;
@@ -423,9 +420,15 @@
 	color: #e0e7ee;
 	cursor: pointer;
 }
+#time .rs-tooltip {
+	left: 20% !important;
+	width: 60%;
+    height: 60px;
+}
 #volume .rs-tooltip {
 	left: 30% !important;
 	width: 40%;
+	height: 50px;
 }
 #time .rs-range-color {
 	background: #0095d8 !important;
