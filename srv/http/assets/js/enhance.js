@@ -1264,12 +1264,12 @@ function settime() {
 	
 	var state = GUI.state;
 	
-	var command = { fileinfo: [ '/srv/http/enhancestatus.sh' ] };
+	var command = { status: [ '/srv/http/enhancestatus.sh' ] };
 	$.post( '/enhanceredis.php', { json: JSON.stringify( command ) }, function( data ) {
 		setTimeout( function() { // fix: enhancestatus.sh
 			onsettime = 0;
 		}, 1000 );
-		var data = JSON.parse( data ).fileinfo;
+		var data = JSON.parse( data ).status;
 		data = JSON.parse( data ); // data return from bash must be parsed again
 		var dot =  '<a style="color:#ffffff"> &#8226; </a>';
 		var dot0 = dot.replace( '<a', '<a id="dot0"' );
