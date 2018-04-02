@@ -7,24 +7,25 @@
 		<div id="container-playback">
 			<div id="info">
 				<div id="divartist">
-					<span id="currentartist"></span>
+					<span id="currentartist"><i class="fa fa-spinner fa-spin"></i></span>
 				</div>
 				<div id="divsong">
-					<span id="currentsong"></span>
+					<span id="currentsong"><i class="fa fa-spinner fa-spin"></i></span>
 				</div>
 				<div id="divalbum">
-					<span id="currentalbum"></span>
+					<span id="currentalbum"><i class="fa fa-spinner fa-spin"></i></span>
 				</div>
 				<div id="sampling">
 					<span id="playlist-position"><span></span></span>
-					<span id="format-bitrate"></span>
+					<span id="format-bitrate"><i class="fa fa-spinner fa-spin"></i></span>
 				</div>
 			</div>
 			<div class="row hide" id="playback-row">
 				<div id="time-knob">
 					<div id="time"></div>
 					<button id="overlay-playsource-open" class="btn btn-default btn-xs">MPD</button>
-					<span id="total"></span>
+					<span id="countdown-display"><i class="fa fa-spinner fa-spin"></i></span>
+					<span id="total"><i class="fa fa-spinner fa-spin"></i></span>
 				</div>
 				<div id="play-group">
 					<div class="btn-group">
