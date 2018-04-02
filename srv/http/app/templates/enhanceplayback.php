@@ -24,6 +24,7 @@
 				<div id="time-knob">
 					<div id="time"></div>
 					<button id="overlay-playsource-open" class="btn btn-default btn-xs">MPD</button>
+					<span id="elapsed"></span>
 					<span id="total"></span>
 				</div>
 				<div id="play-group">
