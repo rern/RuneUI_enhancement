@@ -1239,6 +1239,7 @@ function settime() {
 		}
 		$( '#format-bitrate' ).html( fileinfo );
 		$timeRS.setValue( 0 );
+		clearInterval( GUI.countdown );
 		$( '#elapsed' ).html( GUI.state === 'play' ? '<a class="dot">.</a><a class="dot dot2">.</a><a class="dot dot3">.</a>' : '' ).show();
 		$( '#total' ).text( '' );
 		return;
