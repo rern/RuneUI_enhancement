@@ -172,6 +172,7 @@ var $hammercontent = new Hammer( document.getElementById( 'content' ) );
 var $hammerbarleft = new Hammer( document.getElementById( 'barleft' ) );
 var $hammerbarright = new Hammer( document.getElementById( 'barright' ) );
 var $hammerartist = new Hammer( document.getElementById( 'currentartist' ) );
+var $hammertime = new Hammer( document.getElementById( 'elapsed' ) );
 var $hammercoverT = new Hammer( document.getElementById( 'coverT' ) );
 var $hammercoverL = new Hammer( document.getElementById( 'coverL' ) );
 var $hammercoverM = new Hammer( document.getElementById( 'coverM' ) );
@@ -272,12 +273,14 @@ $hammercoverL.on( 'tap', function( e ) {
 	$( '#previous' ).click();
 	e.stopPropagation();
 } );
-$hammercoverM.on( 'tap', function( e ) {
-	$( '#play' ).click();
-	e.stopPropagation();
-} ).on( 'press', function( e ) {
-	$( '#stop' ).click();
-	e.stopPropagation();
+[ $hammertime, $hammercoverM ].forEach( function( el ) {
+	el.on( 'tap', function( e ) {
+		$( '#play' ).click();
+		e.stopPropagation();
+	} ).on( 'press', function( e ) {
+		$( '#stop' ).click();
+		e.stopPropagation();
+	} );
 } );
 $hammercoverR.on( 'tap', function( e ) {
 	$( '#next' ).click();
@@ -499,36 +502,17 @@ $( '#time' ).roundSlider( {
 	width: 20,
 	startAngle: 90,
 	endAngle: 450,
-	editableTooltip: false,
-	tooltipFormat: function( e ) {
-		var time = GUI.json.time ? GUI.json.time : 0;
-		var current = Math.round( e.value / 1000 * time );
-		var hh = Math.floor( current / 3600 );
-		var mm = Math.floor( ( current - hh ) / 60 );
-		var ss = ( current - hh ) % 60;
-		return ( hh ? hh + ':' + ( mm < 10 ? '0' : '' ) : ''  )
-			+ ( mm ? mm + ':' + ( ss < 10 ? '0' : '' ) : '' )
-			+ ( mm || ss ? ss : '' )
-		;
-	},
+	showTooltip: false,
 	
 	create: function ( e ) {
 		$timeRS = this;
-		$timetoolip = $( '#time' ).find( '.rs-tooltip' );
-		var $hammertime = new Hammer( document.querySelector( 'span.rs-tooltip' ) );
-		$hammertime.on( 'tap', function( e ) {
-			$( '#play' ).click();
-			e.stopPropagation();
-		} ).on( 'press', function( e ) {
-			$( '#stop' ).click();
-			e.stopPropagation();
-		} );
 	},
 	change: function( e ) { // not fire on 'setValue'
 		if ( GUI.stream !== 'radio' ) {
 			var seekto = Math.floor( e.value / 1000 * time );
 			if ( GUI.state !== 'stop' ) {
 				clearInterval( GUI.currentKnob );
+				clearInterval( GUI.countdown );
 				sendCmd( 'seek '+ GUI.json.song +' '+ seekto );
 			} else {
 				var command = { seek: [ '/usr/bin/mpc play; /usr/bin/mpc seek '+ seekto +'; /usr/bin/mpc pause;' ] };
@@ -540,6 +524,7 @@ $( '#time' ).roundSlider( {
 	},
 	start: function () {
 		clearInterval( GUI.currentKnob );
+		clearInterval( GUI.countdown );
 	}
 } );
 
@@ -1166,15 +1151,18 @@ function commandButton( el ) {
 			dataCmd = ( GUI.state === 'play' ) ? 'pause' : 'play';
 		} else {
 			clearInterval( GUI.currentKnob );
+			clearInterval( GUI.countdown );
 			// enable previous / next while stop
 			if ( GUI.state === 'stop' && ( dataCmd === 'previous' || dataCmd === 'next' ) ) {
 				buttondisable = 1;
+				onsettime = 1;
 				dataCmd = ( dataCmd === 'previous' ) ? 'prev' : 'next';
 				var command = { prevnext: [ '/usr/bin/mpc play; /usr/bin/mpc '+ dataCmd +'; /usr/bin/mpc stop;' ] };
 				$.post( '/enhanceredis.php', { json: JSON.stringify( command ) }, function() {
 					setTimeout( function() {
 						buttondisable = 0;
-					}, 500 );
+						onsettime = 0;
+					}, 1000 );
 				});
 				return
 			}
@@ -1251,7 +1239,7 @@ function settime() {
 		}
 		$( '#format-bitrate' ).html( fileinfo );
 		$timeRS.setValue( 0 );
-		$( '#time .rs-tooltip' ).html( GUI.state === 'play' ? '<a class="dot">.</a><a class="dot dot2">.</a><a class="dot dot3">.</a>' : '' ).show();
+		$( '#elapsed' ).html( GUI.state === 'play' ? '<a class="dot">.</a><a class="dot dot2">.</a><a class="dot dot3">.</a>' : '' ).show();
 		$( '#total' ).text( '' );
 		return;
 	}
@@ -1280,15 +1268,18 @@ function settime() {
 		time = +data.time;
 		
 		clearInterval( GUI.currentKnob );
+		clearInterval( GUI.countdown );
 
 		if ( state === 'stop' || $( '#time-knob' ).hasClass( 'hide' ) ) { // stop
 			$timeRS.setValue( 0 );
+			$( '#elapsed' ).text( '' );
 			return;
 		}
 		
-		var position = Math.round( 1000 * data.elapsed / time );
+		var elapsed = data.elapsed;
+		var position = Math.round( 1000 * elapsed / time );
 		$timeRS.setValue( position );
-		$( '#time .rs-tooltip' ).show();
+		$( '#elapsed' ).text( converthms( elapsed ) );
 
 		if ( state === 'pause' ) return; // pause
 		
@@ -1300,11 +1291,28 @@ function settime() {
 			position = position + step;
 			if ( position === 1000 ) {
 				clearInterval( GUI.currentKnob );
+				clearInterval( GUI.countdown );
+				$( '#elapsed' ).text( '' );
 				settime();
 			}
 			$timeRS.setValue( position );
 		}, time );
+		
+		GUI.countdown = setInterval( function() {
+			elapsed++
+			mmss = converthms( elapsed );
+			$( '#elapsed' ).text( mmss );
+		}, 1000 );
 	} );
+}
+function converthms( second ) {
+		var hh = Math.floor( second / 3600 );
+		var mm = Math.floor( ( second - hh ) / 60 );
+		var ss = ( second - hh ) % 60;
+		return ( hh ? hh + ':' + ( mm < 10 ? '0' : '' ) : ''  )
+			+ ( mm ? mm + ':' + ( ss < 10 ? '0' : '' ) : '' )
+			+ ( mm || ss ? ss : '' )
+		;
 }
 
 function setvolume() {
