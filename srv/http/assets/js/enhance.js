@@ -1186,39 +1186,7 @@ function commandButton( el ) {
 // buttons and playlist
 function setbutton() {
 	var state = GUI.state;
-	var fileinfo = '';
 	
-	if ( $( '#play-group' ).is( ':visible' ) ) {
-		$( '#repeat' ).toggleClass( 'btn-primary', GUI.json.repeat === '1' );
-		$( '#random' ).toggleClass( 'btn-primary', GUI.json.random === '1' );
-		$( '#single' ).toggleClass( 'btn-primary', GUI.json.single === '1' );
-	}
-	
-	if ( state === 'stop' ) {
-		$( '#stop' ).addClass( 'btn-primary' );
-		$( '#play, #pause' ).removeClass( 'btn-primary' );
-		if ( $( '#pause' ).hasClass( 'hide' ) ) $( '#play i' ).removeClass( 'fa fa-pause' ).addClass( 'fa fa-play' );
-	} else {
-		if ( state === 'play' && !buttondisable ) {
-			$( '#play' ).addClass( 'btn-primary' );
-			$( '#stop' ).removeClass( 'btn-primary' );
-			if ( $( '#pause' ).hasClass( 'hide' ) ) {
-				$( '#play i' ).removeClass( 'fa fa-pause' ).addClass( 'fa fa-play' );
-			} else {
-				$( '#pause' ).removeClass( 'btn-primary' );
-			}
-		} else if ( state === 'pause' ) {
-			$( '#playlist-position span' ).html( 'Not playing' );
-			$( '#stop' ).removeClass( 'btn-primary' );
-			if ( $( '#pause' ).hasClass( 'hide' ) ) {
-				$( '#play i' ).removeClass( 'fa fa-play' ).addClass( 'fa fa-pause' );
-			} else {
-				$( '#play' ).removeClass( 'btn-primary' );
-				$( '#pause' ).addClass( 'btn-primary' );
-			}
-		}	
-	}
-
 	if ( GUI.json.playlistlength && GUI.json.playlistlength !== '0' ) {
 		if ( GUI.json.song ) {
 			$( '#playlist-position span' ).html( ( parseInt( GUI.json.song ) + 1 ) +'/'+ GUI.json.playlistlength );
@@ -1234,93 +1202,95 @@ function setbutton() {
     } else {
         $( '#open-panel-sx a' ).html( '<i class="fa fa-folder-open"></i>' );
     }
+	
+	if ( $( '#play-group' ).is( ':visible' ) ) {
+		$( '#repeat' ).toggleClass( 'btn-primary', GUI.json.repeat === '1' );
+		$( '#random' ).toggleClass( 'btn-primary', GUI.json.random === '1' );
+		$( '#single' ).toggleClass( 'btn-primary', GUI.json.single === '1' );
+	}
+	
+	if ( onsettime ) return;
+	
+	if ( state === 'stop' ) {
+		$( '#stop' ).addClass( 'btn-primary' );
+		$( '#play, #pause' ).removeClass( 'btn-primary' );
+		if ( $( '#pause' ).hasClass( 'hide' ) ) $( '#play i' ).removeClass( 'fa fa-pause' ).addClass( 'fa fa-play' );
+	} else {
+		if ( state === 'play' && !buttondisable ) {
+			$( '#play' ).addClass( 'btn-primary' );
+			$( '#stop' ).removeClass( 'btn-primary' );
+			if ( $( '#pause' ).hasClass( 'hide' ) ) {
+				$( '#play i' ).removeClass( 'fa fa-pause' ).addClass( 'fa fa-play' );
+			} else {
+				$( '#pause' ).removeClass( 'btn-primary' );
+			}
+		} else if ( state === 'pause' ) {
+//			$( '#playlist-position span' ).html( 'Not playing' );
+			$( '#stop' ).removeClass( 'btn-primary' );
+			if ( $( '#pause' ).hasClass( 'hide' ) ) {
+				$( '#play i' ).removeClass( 'fa fa-play' ).addClass( 'fa fa-pause' );
+			} else {
+				$( '#play' ).removeClass( 'btn-primary' );
+				$( '#pause' ).addClass( 'btn-primary' );
+			}
+		}	
+	}
 }
 
 // song - sampling info and time
+onsettime = 0;
 function settime() {
-	var ActivePlayer = GUI.libraryhome.ActivePlayer;
-	var dot =  '<a style="color:#ffffff"> &#8226; </a>';
-	var dot0 = dot.replace( '<a', '<a id="dot0"' );
-	var sampling =  dot0 + GUI.json.audio_sample_depth + ' bit ' + GUI.json.audio_sample_rate +' kHz '+GUI.json.bitrate+' kbit/s';
-	if ( GUI.stream === 'radio' || ActivePlayer === 'Airplay' || ActivePlayer === 'Spotify' ) {
-		var type = GUI.stream === 'radio' ? 'Radio' : ActivePlayer;
-		var fileinfo =  GUI.json.audio_sample_depth ? sampling + dot + type : type;
+	// no current song
+	if ( !GUI.json.currentsong ) return;
+	
+	if ( GUI.stream === 'radio' || GUI.libraryhome.ActivePlayer !== 'MPD' ) {
+		var fileinfo =  GUI.json.audio_sample_depth ? '<a id="dot0" style="color:#ffffff"> &#8226; </a>' + GUI.json.audio_sample_depth + ' bit ' + GUI.json.audio_sample_rate +' kHz '+GUI.json.bitrate+' kbit/s' : '&nbsp;';
+		if ( GUI.state === 'stop' ) {
+			$( '#currentsong' ).html( 'Radio' );
+			$( '#currentalbum' ).html( '' );
+		}
 		$( '#format-bitrate' ).html( fileinfo );
 		$timeRS.setValue( 0 );
-		$( '#time .rs-tooltip' ).hide();
-		$( '#total' ).html( 'streaming' );
+		$( '#time .rs-tooltip' ).html( GUI.state === 'play' ? '<a class="dot">.</a><a class="dot dot2">.</a><a class="dot dot3">.</a>' : '' ).show();
+		$( '#total' ).text( '' );
 		return;
 	}
 	
-	// mpd client-server protocol
-	// status: [ '{ /usr/bin/echo status; /usr/bin/sleep 0.1; } | /usr/bin/telnet localhost 6600' ]
-	var command = {
-		status: [ '/usr/bin/mpc status | grep ")" | sed "s/\] *#.*   */ /; s|/| |g; s/[\[(%)]//g"' ],
-		info: [ "/usr/bin/soxi '/mnt/MPD/"+ GUI.json.file +"' | tr -d '\n' | sed 's/.*Channels  *: //; s/ = .*//; s/Sample Rate  *://; s/Precision  *://; s/-bitDuration  *://'" ]
-	};
+	// fix: fire twice on play
+	// fix: enhancestatus.sh causes infinite loop settime() on stop and stop-play button flash
+	if ( onsettime ) return;
+	onsettime = 1;
+//	console.log('settime');
+	
+	var state = GUI.state;
+	
+	var command = { fileinfo: [ '/srv/http/enhancestatus.sh' ] };
 	$.post( '/enhanceredis.php', { json: JSON.stringify( command ) }, function( data ) {
-		var data = JSON.parse( data );
-		var info = data.info.split( ' ' );
-		var status = data.status.split( ' ' );
-		
+		setTimeout( function() { // fix: enhancestatus.sh
+			onsettime = 0;
+		}, 1000 );
+		var data = JSON.parse( data ).fileinfo;
+		data = JSON.parse( data ); // data return from bash must be parsed again
+		var dot =  '<a style="color:#ffffff"> &#8226; </a>';
+		var dot0 = dot.replace( '<a', '<a id="dot0"' );
 		var ext = GUI.json.fileext.toUpperCase();
-		if ( ext !== 'DSF' && ext !== 'DFF' ) { // soxi cannot get info from DSD files
-			var channel = ( info[ 0 ] == 2 ) ? '' : info[ 0 ] +' ';
-			var bitdepth = info[ 2 ];
-			var sampling = info[ 1 ] / 1000;
-			var bitrate = bitdepth * sampling * 2;
-			var fileinfo = dot0 + channel + bitdepth +' bit '+ sampling +' kHz '+ bitrate +' kbit/s'+ dot + ext;
-			
-			if ( info[ 3 ] ) { // fix: prev/next while stop 'undefined'
-				var hms = info[ 3 ].split( ':' );
-				var hh = parseInt( hms[ 0 ] );
-				var mm = parseInt( hms[ 1 ] );
-				var ss = Math.round( hms[ 2 ] );
-				time = 3600 * hh + 60 * mm + ss; // glbal var for use by time knob
-				var total = ( hh ? hh +':' : '' ) + ( hh ? '0'+ mm  : mm ) +':'+ ( ss > 9 ? ss : '0'+ ss );
-			} else {
-				var fileinfo = '&nbsp;'; // fix: prev/next while stop 'NaN'
-			}
-		} else {
-			if ( GUI.state !== 'stop' ) {
-				var audio = GUI.json.audio.split(':')[ 0 ];
-				// mpd0.20 - as dsd128:2 / dsd256:2 ...
-				var sampling = ( audio[ 0 ] === 'd' ) ? parseInt( audio ) : audio / 5512.5;
-				var fileinfo = dot0 +'1 bit DSD'+ sampling +' - '+ sampling * 44.1 +' kbit/s'+ dot + ext;
-					var hms = status[ 2 ].split( ':' ); // available while playing only
-				if ( hms.length > 2 ) { 
-					time = 3600 * parseInt( hms[ 0 ] ) + 60 * parseInt( hms[ 1 ] ) + parseInt( hms[ 2 ] );
-				} else {
-					time = 60 * parseInt( hms[ 0 ] ) + parseInt( hms[ 1 ] );
-				}
-				var total = status[ 2 ];
-			} else {
-				var fileinfo = ( ext === 'DSF' || ext === 'DFF' ) ? dot0 +'DSD' : '&nbsp;';
-				var total = 'DSD';
-			}
-		}
 		
-		$( '#format-bitrate' ).html( fileinfo );
-		$( '#total' ).html( total );
+		$( '#format-bitrate' ).html( dot0 + data.fileinfo + dot + ext );
+		$( '#total' ).html( data.total );
+		time = +data.time;
 		
 		clearInterval( GUI.currentKnob );
 
-		if ( !status[ 0 ] || $( '#time-knob' ).hasClass( 'hide' ) ) { // if stop
+		if ( state === 'stop' || $( '#time-knob' ).hasClass( 'hide' ) ) { // stop
 			$timeRS.setValue( 0 );
 			return;
 		}
 		
-		var hms = status[ 1 ].split( ':' );
-		if ( hms.length > 2 ) { 
-			var currenttime = 3600 * parseInt( hms[ 0 ] ) + 60 * parseInt( hms[ 1 ] ) + parseInt( hms[ 2 ] );
-		} else {
-			var currenttime = 60 * parseInt( hms[ 0 ] ) + parseInt( hms[ 1 ] );
-		}
-		var position = Math.round( currenttime / time * 1000 );
+		var position = Math.round( 1000 * data.elapsed / time );
 		$timeRS.setValue( position );
 		$( '#time .rs-tooltip' ).show();
 
-		if ( status[ 0 ] === 'paused' ) return;
+		if ( state === 'pause' ) return; // pause
 		
 		var localbrowser = ( location.hostname === 'localhost' || location.hostname === '127.0.0.1' ) ? 10 : 1;
 		var step = 1 * localbrowser; // fix: reduce cpu cycle on local browser
@@ -1350,7 +1320,6 @@ function setvolume() {
 		{ json: JSON.stringify( command ) },
 		function( data ) {
 			var json = JSON.parse( data );
-
 			if ( !$( '#songinfo-modal' ).length || GUI.vol_changed_local === 0 ) {
 				$volumetransition.css( 'transition-duration', '0s' ); // suppress initial rotate animation
 				$volumeRS.setValue( json.volume );
@@ -1388,7 +1357,7 @@ function setinfo() {
 		$( '#currentalbum').html( !currentalbum ? '<span class="notag">[no album]</span>' : currentalbum );
 	} else {
 		$( '#currentartist' ).html( !currentartist ? radioname : currentartist );
-		$( '#currentalbum' ).html( !currentartist ? '<span class="notag">streaming</span>' : currentalbub );
+		$( '#currentalbum' ).html( !currentalbum ? 'Radio' : currentalbum );
 		$( '#currentsong' ).html( !currentsong ? radioname : currentsong );
 	}
 	
