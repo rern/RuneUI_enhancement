@@ -7,17 +7,17 @@
 		<div id="container-playback">
 			<div id="info">
 				<div id="divartist">
-					<span id="currentartist"><i class="fa fa-spinner fa-spin"></i></span>
+					<span id="currentartist"></span>
 				</div>
 				<div id="divsong">
-					<span id="currentsong"><i class="fa fa-spinner fa-spin"></i></span>
+					<span id="currentsong"></span>
 				</div>
 				<div id="divalbum">
-					<span id="currentalbum"><i class="fa fa-spinner fa-spin"></i></span>
+					<span id="currentalbum"></span>
 				</div>
 				<div id="sampling">
 					<span id="playlist-position"><span></span></span>
-					<span id="format-bitrate"><i class="fa fa-spinner fa-spin"></i></span>
+					<span id="format-bitrate"></span>
 				</div>
 			</div>
 			<div class="row hide" id="playback-row">
