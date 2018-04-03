@@ -161,7 +161,7 @@ function displayall() {
 window.addEventListener( 'orientationchange', displayall );
 window.addEventListener( 'visibilitychange', function() {
 	if ( document.visibilityState === 'visible' ) {
-		settime();
+//		settime();
 	}
 } );
 
@@ -767,6 +767,8 @@ function displayplayback() {
 			} );
 		}, 50 );
 	} );
+	// empty playlist
+	if ( !GUI.json.currentsong ) $( '#currentartist, #currentsong, #currentalbum, #format-bitrate, #total' ).html( '&nbsp;' );
 }
 displayplayback();
 // library show/hide blocks
@@ -830,7 +832,6 @@ function setPlaybackSource() {
 	$('#playsource-' + source).removeClass('inactive');
 	
 	if ( activePlayer === 'Spotify' || activePlayer === 'Airplay' ) {
-	console.log('airplay')
 //		$( '#volume-knob, #vol-group' ).addClass( 'hide' );
 		$( '#single' ).prop( 'disabled' );
 	}
@@ -1140,7 +1141,6 @@ function populateDB(options) {
 
 }
 
-buttondisable = 0; // for disable 'btn-primary' - previous/next while stop
 function commandButton( el ) {
 	var dataCmd = el.data( 'cmd' );
 	if ( el.hasClass( 'btn-toggle' ) ) {
@@ -1153,19 +1153,13 @@ function commandButton( el ) {
 			clearInterval( GUI.currentKnob );
 			clearInterval( GUI.countdown );
 			// enable previous / next while stop
-			if ( GUI.state === 'stop' && ( dataCmd === 'previous' || dataCmd === 'next' ) ) {
-				buttondisable = 1;
-				onsettime = 1;
-				dataCmd = ( dataCmd === 'previous' ) ? 'prev' : 'next';
-				var command = { prevnext: [ '/usr/bin/mpc play; /usr/bin/mpc '+ dataCmd +'; /usr/bin/mpc stop;' ] };
-				$.post( '/enhanceredis.php', { json: JSON.stringify( command ) }, function() {
-					setTimeout( function() {
-						buttondisable = 0;
-						onsettime = 0;
-					}, 1000 );
-				});
+/*			if ( GUI.state === 'stop' && ( dataCmd === 'previous' || dataCmd === 'next' ) ) {
+				var current = parseInt( GUI.json.song );
+				var last = parseInt( GUI.json.playlistlength );
+				var targetsong = ( dataCmd === 'previous' ) ? ( ( current !== 1 ) ? current - 1 : last ) : ( ( current !== last ) ? current + 1 : 1 );
+				settime( targetsong );
 				return
-			}
+			}*/
 		}
 	}
 	sendCmd( dataCmd );
@@ -1204,7 +1198,7 @@ function setbutton() {
 		$( '#play, #pause' ).removeClass( 'btn-primary' );
 		if ( $( '#pause' ).hasClass( 'hide' ) ) $( '#play i' ).removeClass( 'fa fa-pause' ).addClass( 'fa fa-play' );
 	} else {
-		if ( state === 'play' && !buttondisable ) {
+		if ( state === 'play' && !onsettime ) {
 			$( '#play' ).addClass( 'btn-primary' );
 			$( '#stop' ).removeClass( 'btn-primary' );
 			if ( $( '#pause' ).hasClass( 'hide' ) ) {
@@ -1227,20 +1221,17 @@ function setbutton() {
 
 // song - sampling info and time
 onsettime = 0;
-function settime() {
+function settime( targetsong ) {
 	// no current song
 	if ( !GUI.json.currentsong ) return;
 	
-	if ( GUI.stream === 'radio' || GUI.libraryhome.ActivePlayer !== 'MPD' ) {
-		var fileinfo =  GUI.json.audio_sample_depth ? '<a id="dot0" style="color:#ffffff"> &#8226; </a>' + GUI.json.audio_sample_depth + ' bit ' + GUI.json.audio_sample_rate +' kHz '+GUI.json.bitrate+' kbit/s' : '&nbsp;';
-		if ( GUI.state === 'stop' ) {
-			$( '#currentsong' ).html( 'Radio' );
-			$( '#currentalbum' ).html( '' );
-		}
-		$( '#format-bitrate' ).html( fileinfo );
+//	if ( GUI.libraryhome.ActivePlayer !== 'MPD' ) {
+	if ( GUI.stream === 'radio' ) {
+		$( '#format-bitrate' ).html( GUI.json.audio_sample_depth ? '<a id="dot0" style="color:#ffffff"> &#8226; </a>' + GUI.json.audio_sample_depth + ' bit ' + GUI.json.audio_sample_rate +' kHz '+GUI.json.bitrate+' kbit/s' : '&nbsp;' );
 		$timeRS.setValue( 0 );
+		clearInterval( GUI.currentKnob );
 		clearInterval( GUI.countdown );
-		$( '#elapsed' ).html( GUI.state === 'play' ? '<a class="dot">.</a> <a class="dot dot2">.</a> <a class="dot dot3">.</a>' : '' ).show();
+		$( '#elapsed' ).html( GUI.state === 'play' ? '<a class="dot">.</a> <a class="dot dot2">.</a> <a class="dot dot3">.</a>' : '' );
 		$( '#total' ).text( '' );
 		return;
 	}
@@ -1252,7 +1243,6 @@ function settime() {
 //	console.log('settime');
 	
 	var state = GUI.state;
-	
 	var command = { status: [ '/srv/http/enhancestatus.sh' ] };
 	$.post( '/enhanceredis.php', { json: JSON.stringify( command ) }, function( data ) {
 		setTimeout( function() { // fix: enhancestatus.sh
@@ -1262,27 +1252,26 @@ function settime() {
 		data = JSON.parse( data ); // data return from bash must be parsed again
 		var dot =  '<a style="color:#ffffff"> &#8226; </a>';
 		var dot0 = dot.replace( '<a', '<a id="dot0"' );
-		var ext = GUI.json.fileext.toUpperCase();
-		
-		$( '#format-bitrate' ).html( dot0 + data.fileinfo + dot + ext );
-		$( '#total' ).html( data.total );
+		var ext = ( GUI.stream !== 'radio' ) ? dot + GUI.json.fileext.toUpperCase() : '';
+		$( '#format-bitrate' ).html( dot0 + data.sampling + ext );
+		$( '#total' ).text( data.total );
 		time = +data.time;
 		
 		clearInterval( GUI.currentKnob );
 		clearInterval( GUI.countdown );
 
-		if ( state === 'stop' || $( '#time-knob' ).hasClass( 'hide' ) ) { // stop
+		if ( state === 'stop' || $( '#time-knob' ).hasClass( 'hide' ) ) {
 			$timeRS.setValue( 0 );
 			$( '#elapsed' ).text( '' );
 			return;
-		}
+		} // stop <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 		
 		var elapsed = data.elapsed;
 		var position = Math.round( 1000 * elapsed / time );
 		$timeRS.setValue( position );
 		$( '#elapsed' ).text( converthms( elapsed ) );
-
-		if ( state === 'pause' ) return; // pause
+		
+		if ( state === 'pause' ) return; // pause <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 		
 		var localbrowser = ( location.hostname === 'localhost' || location.hostname === '127.0.0.1' ) ? 10 : 1;
 		var step = 1 * localbrowser; // fix: reduce cpu cycle on local browser
@@ -1361,13 +1350,18 @@ function setinfo() {
 	setbutton();
 	
 	if ( GUI.stream !== 'radio' ) {
-		$( '#currentartist' ).html( !currentartist ? '<span class="notag">[no artist]</span>' : currentartist );
-		$( '#currentsong' ).html( !currentsong ? '<span class="notag">[no title]</span>' : currentsong );
-		$( '#currentalbum').html( !currentalbum ? '<span class="notag">[no album]</span>' : currentalbum );
+		$( '#currentartist' ).html( currentartist ? currentartist : '&nbsp;' );
+		$( '#currentsong' ).html( currentsong ? currentsong : '&nbsp;' );
+		$( '#currentalbum').html( currentalbum ? currentalbum : '&nbsp;' );
 	} else {
-		$( '#currentartist' ).html( !currentartist ? radioname : currentartist );
-		$( '#currentalbum' ).html( !currentalbum ? 'Radio' : currentalbum );
-		$( '#currentsong' ).html( !currentsong ? radioname : currentsong );
+		$( '#currentartist' ).html( currentartist ? currentartist : radioname );
+		if ( GUI.state !== 'stop' ) {
+			$( '#currentalbum' ).html( currentalbum ? currentalbum : 'Radio' );
+			$( '#currentsong' ).html( currentsong ? currentsong : radioname );
+		} else {
+			$( '#currentsong' ).html( 'Radio' );
+			$( '#currentalbum' ).html( '' );
+		}
 	}
 	
 	// song changed
