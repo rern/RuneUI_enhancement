@@ -2,8 +2,8 @@
 
 playpause=$( mpc status | grep ')' )
 if [[ ! $playpause ]]; then
-	data=( $( { { echo -e 'play'; sleep 0.1; } | telnet localhost 6600; { echo -e 'status\nstop'; sleep 0.1; } | telnet localhost 6600; } | grep "bitrate\|audio" | tr -d "\n" | sed "s/bitrate: *//; s/audio: *\|:/ /g" ) )
-	data+=( $( { mpc play; mpc status; mpc stop; } | grep ")" | sed "s/\[.*\] *#.*   *\|\// /g; s/ (.*)//" ) )
+	data=( $( { { echo play; sleep 0.1; } | telnet localhost 6600; { echo status; sleep 0.1; } | telnet localhost 6600; } | grep "bitrate\|audio" | tr -d "\n" | sed "s/bitrate: *//; s/audio: *\|:/ /g" ) )
+	data+=( $( { mpc status; mpc stop; } | grep ")" | sed "s/\[.*\] *#.*   *\|\// /g; s/ (.*)//" ) )
 else
 	data=( $( { echo status; sleep 0.1; } | telnet localhost 6600 | grep "bitrate\|audio" | tr -d "\n" | sed "s/bitrate: *//; s/audio: *\|:/ /g" ) )
 	data+=( $( mpc status | grep ")" | sed "s/\[.*\] *#.*   *\|\// /g; s/ (.*)//" ) )
@@ -28,4 +28,4 @@ toSecond() {
 elapsed=$( toSecond ${data[4]} )
 time=$( toSecond ${data[5]} )
 
-echo '{ "fileinfo": "'$json'", "elapsed": "'$elapsed'", "time": "'$time'", "total": "'${data[5]}'" }'
+echo '{ "sampling": "'$json'", "elapsed": "'$elapsed'", "time": "'$time'", "total": "'${data[5]}'" }'
