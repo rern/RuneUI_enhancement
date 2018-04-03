@@ -161,7 +161,7 @@ function displayall() {
 window.addEventListener( 'orientationchange', displayall );
 window.addEventListener( 'visibilitychange', function() {
 	if ( document.visibilityState === 'visible' ) {
-//		settime();
+		settime();
 	}
 } );
 
@@ -1141,6 +1141,7 @@ function populateDB(options) {
 
 }
 
+prevnext = 0; // for disable 'btn-primary' - previous/next while stop
 function commandButton( el ) {
 	var dataCmd = el.data( 'cmd' );
 	if ( el.hasClass( 'btn-toggle' ) ) {
@@ -1153,13 +1154,19 @@ function commandButton( el ) {
 			clearInterval( GUI.currentKnob );
 			clearInterval( GUI.countdown );
 			// enable previous / next while stop
-/*			if ( GUI.state === 'stop' && ( dataCmd === 'previous' || dataCmd === 'next' ) ) {
-				var current = parseInt( GUI.json.song );
+			if ( GUI.state === 'stop' && ( dataCmd === 'previous' || dataCmd === 'next' ) ) {
+				prevnext = 1;
+				var current = parseInt( GUI.json.song ) + 1;
 				var last = parseInt( GUI.json.playlistlength );
 				var targetsong = ( dataCmd === 'previous' ) ? ( ( current !== 1 ) ? current - 1 : last ) : ( ( current !== last ) ? current + 1 : 1 );
-				settime( targetsong );
+				var command = { changesong: [ '/usr/bin/mpc play '+ targetsong +'; /usr/bin/mpc stop;' ] };
+				$.post( '/enhanceredis.php', { json: JSON.stringify( command ) }, function() {
+					setTimeout( function() {
+						prevnext = 0;
+					}, 500 );
+				});
 				return
-			}*/
+			}
 		}
 	}
 	sendCmd( dataCmd );
@@ -1191,14 +1198,12 @@ function setbutton() {
 		$( '#single' ).toggleClass( 'btn-primary', GUI.json.single === '1' );
 	}
 	
-	if ( onsettime ) return;
-	
 	if ( state === 'stop' ) {
 		$( '#stop' ).addClass( 'btn-primary' );
 		$( '#play, #pause' ).removeClass( 'btn-primary' );
 		if ( $( '#pause' ).hasClass( 'hide' ) ) $( '#play i' ).removeClass( 'fa fa-pause' ).addClass( 'fa fa-play' );
 	} else {
-		if ( state === 'play' && !onsettime ) {
+		if ( state === 'play' ) {
 			$( '#play' ).addClass( 'btn-primary' );
 			$( '#stop' ).removeClass( 'btn-primary' );
 			if ( $( '#pause' ).hasClass( 'hide' ) ) {
@@ -1220,8 +1225,8 @@ function setbutton() {
 }
 
 // song - sampling info and time
-onsettime = 0;
-function settime( targetsong ) {
+function settime() {
+//	console.log('settime');
 	// no current song
 	if ( !GUI.json.currentsong ) return;
 	
@@ -1236,42 +1241,32 @@ function settime( targetsong ) {
 		return;
 	}
 	
-	// fix: fire twice on play
-	// fix: enhancestatus.sh causes infinite loop settime() on stop and stop-play button flash
-	if ( onsettime ) return;
-	onsettime = 1;
-//	console.log('settime');
-	
-	var state = GUI.state;
 	var command = { status: [ '/srv/http/enhancestatus.sh' ] };
 	$.post( '/enhanceredis.php', { json: JSON.stringify( command ) }, function( data ) {
-		setTimeout( function() { // fix: enhancestatus.sh
-			onsettime = 0;
-		}, 1000 );
-		var data = JSON.parse( data ).status;
-		data = JSON.parse( data ); // data return from bash must be parsed again
+		var status = JSON.parse( data ).status;
+		status = JSON.parse( status ); // data return from bash must be parsed again
 		var dot =  '<a style="color:#ffffff"> &#8226; </a>';
 		var dot0 = dot.replace( '<a', '<a id="dot0"' );
 		var ext = ( GUI.stream !== 'radio' ) ? dot + GUI.json.fileext.toUpperCase() : '';
-		$( '#format-bitrate' ).html( dot0 + data.sampling + ext );
-		$( '#total' ).text( data.total );
-		time = +data.time;
+		$( '#format-bitrate' ).html( dot0 + status.sampling + ext );
+		time = +status.time;
+		$( '#total' ).text( converthms( time ) );
 		
 		clearInterval( GUI.currentKnob );
 		clearInterval( GUI.countdown );
 
-		if ( state === 'stop' || $( '#time-knob' ).hasClass( 'hide' ) ) {
+		if ( status.state === 'stop' || prevnext === 1 || $( '#time-knob' ).hasClass( 'hide' ) ) {
 			$timeRS.setValue( 0 );
 			$( '#elapsed' ).text( '' );
 			return;
 		} // stop <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 		
-		var elapsed = data.elapsed;
+		var elapsed = status.elapsed;
 		var position = Math.round( 1000 * elapsed / time );
 		$timeRS.setValue( position );
 		$( '#elapsed' ).text( converthms( elapsed ) );
 		
-		if ( state === 'pause' ) return; // pause <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+		if ( status.state === 'paused' ) return; // pause <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 		
 		var localbrowser = ( location.hostname === 'localhost' || location.hostname === '127.0.0.1' ) ? 10 : 1;
 		var step = 1 * localbrowser; // fix: reduce cpu cycle on local browser
