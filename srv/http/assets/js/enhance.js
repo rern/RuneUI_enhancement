@@ -343,7 +343,7 @@ function volumepress( interval, id, fast ) {
 			}
 		}
 		vol = vol + increment;
-		setvol( vol );
+		$.post( '/enhanceredis.php', { bash: '/usr/bin/mpc volume '+ vol } ); // for no broadcast
 		$volumeRS.setValue( vol );
 		$volumehandle.rsRotate( - $volumeRS._handle1.angle );
 		if ( vol === 0 || vol === 100 ) clearInterval( intervalId );
@@ -515,8 +515,7 @@ $( '#time' ).roundSlider( {
 				clearInterval( GUI.countdown );
 				sendCmd( 'seek '+ GUI.json.song +' '+ seekto );
 			} else {
-				var command = { seek: [ '/usr/bin/mpc play; /usr/bin/mpc seek '+ seekto +'; /usr/bin/mpc pause;' ] };
-				$.post( '/enhanceredis.php', { json: JSON.stringify( command ) });				
+				$.post( '/enhanceredis.php', { bash: '/usr/bin/mpc play; /usr/bin/mpc seek '+ seekto +'; /usr/bin/mpc pause' });
 			}
 		} else {
 			$timeRS.setValue( 0 );
@@ -547,14 +546,13 @@ $( '#volume' ).roundSlider( {
 		$volumehandle.addClass( 'rs-transition' ).eq( 0 ) // make it rotate with 'rs-transition'
 			.rsRotate( - this._handle1.angle );  // initial rotate
 	},
-	change: function( e ) { // not fire on 'setValue'
-		setvol( e.value ); // value after click or 'stop drag'
+	change: function( e ) { // (not fire on 'setValue') value after click or 'stop drag'
 		vollocal = 1;
-		var command = { vol: [ 'curl', 'vol', 1 ] };
-		$.post( '/enhanceredis.php', { json: JSON.stringify( command ) } );
+		$.post( '/enhanceredis.php', { bash: '/srv/http/enhancevolume.sh '+ e.value +' 0' } );
 		$( e.handle.element ).rsRotate( - e.handle.angle );
 		if ( e.preValue === 0 ) { // value before 'change'
-			mutereset();
+			var command = { vol: [ 'set', 'volumemute', 0 ] };
+			$.post( '/enhanceredis.php', { json: JSON.stringify( command ) } );
 			unmutecolor();
 		}
 	},
@@ -563,32 +561,53 @@ $( '#volume' ).roundSlider( {
 		if ( e.value === 0 ) unmutecolor(); // value before 'start drag'
 	},
 	drag: function ( e ) { // drag with no transition by default
-		setvol( e.value ); // value in real time 'drag'
+		vollocal = 1;
+		$.post( '/enhanceredis.php', { bash: '/usr/bin/mpc volume '+ e.value } ); // value in real time 'drag'
 		$( e.handle.element ).rsRotate( - e.handle.angle );
 	},
+	stop: function( e ) { // on 'stop drag'
+		// broadcast to all
+		vollocal = 1;
+		$.post( '/enhanceredis.php', { bash: '/srv/http/enhancevolume.sh '+ e.value +' 0' } );
+	}
 } );
 
+onsetvolume = 0;
 var pushstreamVolume = new PushStream( {
 	host: window.location.hostname,
 	port: window.location.port,
 	modes: GUI.mode
 } );
 pushstreamVolume.addChannel( 'volume' );
-pushstreamVolume.onmessage = function( response ) { // on receive broadcast
+pushstreamVolume.onmessage = function( data ) { // on receive broadcast
 	if ( vollocal === 1 ) {
 		vollocal = 0;
+		return;
+	}
+	
+	onsetvolume = 1; // prevent renderUI()
+	setTimeout( function() {
+		onsetvolume = 0;
+	}, 500 );
+
+	var data = data[ 0 ]; // data as json key '0' from bash 'curl'
+	$volumeRS.setValue( data.vol );
+	$volumehandle.rsRotate( - $volumeRS._handle1.angle );
+	if ( data.volumemute == 0 ) return;
+	
+	if ( data.volumemute != -1 ) {
+		mutecolor( volumemute )
 	} else {
-		setvolume();
+		unmutecolor();
 	}
 };
 pushstreamVolume.connect();
 
 $( '#volmute, #volume .rs-tooltip' ).click( function() {
+	vollocal = 1;
 	var volumemute = $volumeRS.getValue();
 	if ( volumemute ) {
-		var command = { vol: [ 'set', 'volumemute', volumemute ] };
-		$.post( '/enhanceredis.php', { json: JSON.stringify( command ) } );
-		setvol( 0 );
+		$.post( '/enhanceredis.php', { bash: '/srv/http/enhancevolume.sh 0 '+ volumemute } );
 		$volumeRS.setValue( 0 );
 		// keep display level before mute
 		$volumetooltip.text( volumemute );
@@ -599,24 +618,15 @@ $( '#volmute, #volume .rs-tooltip' ).click( function() {
 			mutecolor( volumemute );
 		} );
 	} else {
-		var command = { 
-			vol: [ 'get', 'volumemute' ],
-			del: [ 'set', 'volumemute', 0 ]
-		};
-		$.post( '/enhanceredis.php', { json: JSON.stringify( command ) }, function( data ) {
-			var json = JSON.parse( data );
-			vol = parseInt( json.vol );
-			if ( vol === 0 ) return;
-			setvol( vol );
-			$volumeRS.setValue( vol );
+		$.post( '/enhanceredis.php', { bash: '/srv/http/enhancevolume.sh 0 -1' }, function( data ) {
+			var data = JSON.parse( data ); // data as string from bash 'echo'
+			if ( data.vol === 0 ) return;
+			$volumeRS.setValue( data.vol );
 			$volumehandle.rsRotate( - $volumeRS._handle1.angle );
 			// restore color immediately on click
 			unmutecolor();
 		} );
 	}
-	vollocal = 1;
-	var command = { vol: [ 'curl', 'vol', 1 ] };
-	$.post( '/enhanceredis.php', { json: JSON.stringify( command ) } );
 } );
 
 $( '#volup, #voldn, #voluprs, #voldnrs' ).click( function() {
@@ -628,11 +638,13 @@ $( '#volup, #voldn, #voluprs, #voldnrs' ).click( function() {
 			return;
 
 	if ( vol === 0 ) {
-		mutereset();
-		unmutecolor()
+		var command = { vol: [ 'set', 'volumemute', 0 ] };
+		$.post( '/enhanceredis.php', { json: JSON.stringify( command ) } );
+		unmutecolor();
 	}
 	vol = ( thisid == 'volup' || thisid == 'voluprs' ) ? vol + 1 : vol - 1;
-	setvol( vol );
+	vollocal = 1;
+	$.post( '/enhanceredis.php', { bash: '/srv/http/enhancevolume.sh '+ vol +' 0' } );
 	$volumeRS.setValue( vol );
 	$volumehandle.rsRotate( - $volumeRS._handle1.angle );
 } );
@@ -644,10 +656,10 @@ $( '#volup, #voldn, #voluprs, #voldnrs' ).click( function() {
 // load only not in setting pages
 if ( /\/.*\//.test( location.pathname ) === false ) { // start if >>>>>>>>>>>>>>>>>>>
 
-function setvol( vol ) {
+/*function setvol( vol ) {
 	GUI.volume = vol;
 	sendCmd( 'setvol '+ vol );
-}
+}*/
 function mutecolor( volumemute ) {
 	$volumetooltip.text( volumemute ).css( 'color', '#0095d8' );
 	$volumehandle.css( 'background', '#587ca0' );
@@ -657,10 +669,6 @@ function unmutecolor() {
 	$volumetooltip.css( 'color', '#e0e7ee' );
 	$volumehandle.css( 'background', '#0095d8' );
 	$( '#volmute' ).removeClass( 'btn-primary' );
-}
-function mutereset() {
-	var command = { vol: [ 'set', 'volumemute', 0 ] };
-	$.post( '/enhanceredis.php', { json: JSON.stringify( command ) } );
 }
 
 // #menu-top, #menu-bottom, #play-group, #share-group, #vol-group:
@@ -1159,8 +1167,8 @@ function commandButton( el ) {
 				var current = parseInt( GUI.json.song ) + 1;
 				var last = parseInt( GUI.json.playlistlength );
 				var targetsong = ( dataCmd === 'previous' ) ? ( ( current !== 1 ) ? current - 1 : last ) : ( ( current !== last ) ? current + 1 : 1 );
-				var command = { changesong: [ '/usr/bin/mpc play '+ targetsong +'; /usr/bin/mpc stop;' ] };
-				$.post( '/enhanceredis.php', { json: JSON.stringify( command ) }, function() {
+				var command = { changesong: [ '/usr/bin/mpc play '+ targetsong +'; /usr/bin/mpc stop' ] };
+				$.post( '/enhanceredis.php', { bash: '/usr/bin/mpc play '+ targetsong +'; /usr/bin/mpc stop;' }, function() {
 					setTimeout( function() {
 						prevnext = 0;
 					}, 500 );
@@ -1241,10 +1249,8 @@ function settime() {
 		return;
 	}
 	
-	var command = { status: [ '/srv/http/enhancestatus.sh' ] };
-	$.post( '/enhanceredis.php', { json: JSON.stringify( command ) }, function( data ) {
-		var status = JSON.parse( data ).status;
-		status = JSON.parse( status ); // data return from bash must be parsed again
+	$.post( '/enhanceredis.php', { bash: '/srv/http/enhancestatus.sh' }, function( data ) {
+		var status = JSON.parse( data );
 		var dot =  '<a style="color:#ffffff"> &#8226; </a>';
 		var dot0 = dot.replace( '<a', '<a id="dot0"' );
 		var ext = ( GUI.stream !== 'radio' ) ? dot + GUI.json.fileext.toUpperCase() : '';
@@ -1312,6 +1318,7 @@ function setvolume() {
 	$.post( '/enhanceredis.php', 
 		{ json: JSON.stringify( command ) },
 		function( data ) {
+			onsetvolume = 0;
 			var json = JSON.parse( data );
 			if ( !$( '#songinfo-modal' ).length || GUI.vol_changed_local === 0 ) {
 				$volumetransition.css( 'transition-duration', '0s' ); // suppress initial rotate animation
@@ -1390,8 +1397,11 @@ function setinfo() {
 // ### called by backend socket - force refresh all clients ###
 // rendrUI() > updateGUI() > refreshState()
 function renderUI( text ) {
+	if ( onsetvolume ) return;
+//	console.log('renderUI');
+	
 	toggleLoader( 'close' );
-	if ( !$('#section-index' ).length ) return;
+	if ( !$('#section-index' ).length || onsetvolume ) return;
 	
 	GUI.json = text[ 0 ];
 	GUI.state = GUI.json.state;
