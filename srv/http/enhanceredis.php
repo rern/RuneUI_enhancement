@@ -1,12 +1,18 @@
 <?php
-$redis = new Redis(); 
-$redis->pconnect( '127.0.0.1' );
-
 // json: command = { dataid: [ 'command', 'key', ['hash',] 'value' ] }
 // bash: command = { dataid: [ '/fullpath/command argument' ] }
-// curl: command = { dataid: [ 'curl', 'key', 'value' ] }
 //
 // $.post( '/enhanceredis.php', { JSON.stringify( command ) }, ...
+
+// single bash
+if ( isset( $_POST[ 'bash' ] ) ) {
+	$result = exec( '/usr/bin/sudo '.$_POST[ 'bash' ] );
+	echo $result;
+	die();
+}
+
+$redis = new Redis(); 
+$redis->pconnect( '127.0.0.1' );
 
 $array = json_decode( $_POST[ 'json' ], true );
 
@@ -20,12 +26,7 @@ foreach ( $array as $field => $arg ) {
 	} else if ( $count === 2 ) {
 		$result[ $field ] = $redis->$command( $key );
 	} else if ( $count === 3 ) {
-		$value = $arg[ 2 ];
-		if ( $command !== 'curl' ) {
-			$result[ $field ] = $redis->$command( $key, $value );
-		} else {
-			exec( '/usr/bin/sudo /usr/bin/curl -s -v -X POST "http://localhost/pub?id=volume" -d "{ \"'.$key.'\": \"'.$value.'\" }"' );
-		}
+		$result[ $field ] = $redis->$command( $key, $arg[ 2 ] );
 	} else if ( $count === 4 ) {
 		$result[ $field ] = $redis->$command( $key, $arg[ 2 ], $arg[ 3 ] );
 	}
