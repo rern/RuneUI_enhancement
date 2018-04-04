@@ -596,7 +596,7 @@ pushstreamVolume.onmessage = function( data ) { // on receive broadcast
 	if ( data.volumemute == 0 ) return;
 	
 	if ( data.volumemute != -1 ) {
-		mutecolor( volumemute )
+		mutecolor( data.volumemute )
 	} else {
 		unmutecolor();
 	}
