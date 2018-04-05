@@ -21,17 +21,17 @@ else
 	# stop - get file and time with 'currentsong' mpd protocol
 	filetime=$( { echo currentsong; sleep 0.1; } | telnet localhost 6600 | grep 'file:\|Time:' | sed 's|file: |/mnt/MPD/|' )
 	file=${filetime/Time:*}
-	ext=$( echo $file | sed 's/^.*\.//' )
+	ext=$( echo $file | sed 's/^.*\.//' | tr '[:lower:]' '[:upper:]' )
 	elapsed=0
 	time=${filetime#*Time: }
 	state='stop'
 	
-	if [[ $ext == dff ]]; then
+	if [[ $ext == DFF ]]; then
 		echo '{ "sampling": "'&nbsp;'", "elapsed": "0", "time": "0", "state": "stop" }'
 		exit
 	fi
 	
-	if [[ $ext != dsf ]]; then # not DSD - get sampling with 'soxi'
+	if [[ $ext != DSF ]]; then # not DSD - get sampling with 'soxi'
 		IFS0=$IFS
 		IFS=$( echo -en "\n\b" )
 		data=$( soxi $file | grep 'Channels\|Sample Rate\|Precision' | tr -d '\n' )
