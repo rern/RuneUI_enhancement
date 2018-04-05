@@ -41,15 +41,15 @@ n; a\
             <li id="dropdownbg"></li>
 ' -e $'/Credits/ a\
             <li class="<?=$this->uri(1, \'dev\', \'active\')?>"><a href="/dev/"><i class="fa fa-code"></i> Development</a></li>
-' -e '/id="open-panel-sx"/ s/^<!--/
+' -e '/id="open-panel-sx"/ s/^/<!--/
 ' -e '/id="open-panel-dx"/ {
 s/$/-->/
 a\
-<!--0enha\
+<!--0enha-->\
         <li id="open-panel-sx"><a><i class="fa fa-folder-open"></i></a></li>\
         <li id="open-playback" class="active"><a><i class="fa fa-play-circle"></i></a></li>\
         <li id="open-panel-dx"><a><i class="fa fa-list"></i></a></li>\
-1enha-->
+<!--1enha-->
 }
 ' $file
 
