@@ -55,7 +55,7 @@ a\
 
 file=/srv/http/app/templates/footer.php
 echo $file
-sed -i '/knob.min.js\|countdown.min.js/ {s/^/<!--/; s/$/-->/}' $file
+sed -i '/knob.min.js\|countdown.min.js\|jquery-ui.js/ {s/^/<!--enha/; s/$/enha-->/}' $file
 # must be before lyrics addon
 if ! grep -q 'lyrics.js' $file; then
 	sed -i $'$ a\
@@ -72,12 +72,7 @@ fi
 ! grep -q 'propagating.js' $file && sed -i $'$ a\<script src="<?=$this->asset(\'/js/vendor/propagating.js\')?>"></script>' $file
 # 0.4b
 if grep -q 'jquery-ui.js' $file; then
-	sed -i -e 's/<.*jquery-ui.js.*script>/<!--&-->/
-	' -e $'/jquery-ui.js/ a\
-<script src="<?=$this->asset(\'/js/vendor/jquery-ui.min.js\')?>"></script>
-	' $file
-else
-	rm /srv/http/assets/js/vendor/jquery-ui.min.js
+	sed -i $'/jquery-ui.js/ a\<script src="<?=$this->asset(\'/js/vendor/jquery-ui.min.js\')?>"></script>' $file
 fi
 
 file=/srv/http/app/templates/playback.php
