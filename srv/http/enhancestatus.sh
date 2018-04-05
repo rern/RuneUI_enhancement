@@ -42,15 +42,18 @@ else
 		channel=${audio[0]}
 		bitdepth=${audio[2]}
 		samplerate=$( python -c "print( ${audio[1]} / 1000 )" )
-		kbps=$( python -c "print( $channel * $bitdepth * $samplerate )" )
-		
-		sampling="$bitdepth bit $samplerate kHz $kbps kbit/s"
+		bitrate=$( python -c "print( $channel * $bitdepth * $samplerate )" )
+		sampling="$bitdepth bit $samplerate kHz $bitrate kbit/s"
+		if (( ${bitrate%.*} >= 1000 )); then
+			bitrate=$( python -c "print( round( $bitrate / 1000, 2 ) )" )
+			sampling="$bitdepth bit $samplerate kHz $bitrate Mbit/s"
+		fi
 	# DSD - get sampling by 'hexdump'
-	# dsd64 = 2822400 <-> 002b1100
-	# dsd128= 5644800 <-> 00562200
-	# dsd256=11289600 <-> 00AC4400
-	# dsd512=22579200 <-> 01588800
 	else
+		# dsd64  =  2822400 <-> 002b1100
+		# dsd128 =  5644800 <-> 00562200
+		# dsd256 = 11289600 <-> 00AC4400
+		# dsd512 = 22579200 <-> 01588800
 		IFS0=$IFS
 		IFS=$( echo -en "\n\b" )
 		if [[ $ext == DSF ]]; then
@@ -65,7 +68,7 @@ else
 			bitrate=$( echo $(( 16#${hex[1]}${hex[0]}${hex[3]}${hex[2]} )) ) # bitrate byte order: #62#61#64#63
 		fi
 		dsd=$(( bitrate / 44100 ))
-		Mbps=$( python -c "print( round( $bitrate / 1000000, 2 ) ) " )
+		Mbps=$( python -c "print( round( $bitrate / 1000000, 2 ) )" )
 		sampling="1 bit DSD$dsd - $Mbps Mbit/s"
 	fi
 fi
