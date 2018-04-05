@@ -36,7 +36,7 @@ n; a\
     </a>
 ' -e '/id="play"/ a\
         <button id="pause" class="btn btn-default btn-cmd" title="Pause" data-cmd="play"><i class="fa fa-pause"></i></button>
-' -e '/^\s*<a id="menu-settings"\|id="clock-display"\|href="\/"><i class="fa fa-play"\|logo.png/ {s/^/<--enha/; s/$/enha-->/}
+' -e '/^\s*<a id="menu-settings"\|id="clock-display"\|href="\/"><i class="fa fa-play"\|logo.png/ {s/^/<!--enha/; s/$/enha-->/}
 ' -e '/dropdown-menu/ a\
             <li id="dropdownbg"></li>
 ' -e $'/Credits/ a\
