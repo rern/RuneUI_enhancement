@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if (( $2 == 0 )); then      # normal
+if [[ -z $2 ]]; then      # normal
 	mpc volume $1
 	curl -s -v -X POST 'http://localhost/pub?id=volume' -d '{ "vol": "'$1'", "volumemute": "0" }'
 	exit
