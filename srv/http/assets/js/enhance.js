@@ -1271,14 +1271,12 @@ function setbutton() {
 // song - sampling info and time
 onsetmode = 0;
 function settime() {
-//	console.log('settime');
 	// no current song
 	if ( !GUI.json.currentsong || onsetmode ) {
 		$( '#format-bitrate, #total' ).html( '&nbsp;' );
 		return;
 	}
-//	if ( GUI.libraryhome.ActivePlayer !== 'MPD' ) {
-	if ( GUI.stream === 'radio' ) {
+	if ( GUI.stream === 'radio' || GUI.libraryhome.ActivePlayer === 'Airplay' || GUI.libraryhome.ActivePlayer === 'Spotify' ) {
 		$( '#format-bitrate' ).html( GUI.json.audio_sample_depth ? '<a id="dot0" style="color:#ffffff"> &#8226; </a>' + GUI.json.audio_sample_depth + ' bit ' + GUI.json.audio_sample_rate +' kHz '+GUI.json.bitrate+' kbit/s' : '&nbsp;' );
 		$timeRS.setValue( 0 );
 		clearInterval( GUI.currentKnob );
@@ -1287,7 +1285,6 @@ function settime() {
 		$( '#total' ).text( '' );
 		return;
 	}
-//	$( '#format-bitrate, #total' ).html( '&nbsp;' );
 	$.post( '/enhanceredis.php', { bash: '/srv/http/enhancestatus.sh' }, function( data ) {
 		var status = JSON.parse( data );
 		var dot =  '<a style="color:#ffffff"> &#8226; </a>';
