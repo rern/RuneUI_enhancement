@@ -1264,7 +1264,7 @@ function settime() {
 		$( '#total' ).text( '' );
 		return;
 	}
-	
+	$( '#format-bitrate, #total' ).html( '&nbsp;' );
 	$.post( '/enhanceredis.php', { bash: '/srv/http/enhancestatus.sh' }, function( data ) {
 		var status = JSON.parse( data );
 		var dot =  '<a style="color:#ffffff"> &#8226; </a>';
