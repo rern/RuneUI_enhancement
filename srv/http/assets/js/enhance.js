@@ -559,6 +559,11 @@ $( '#volume' ).roundSlider( {
 	},
 	change: function( e ) { // (not fire on 'setValue') value after click or 'stop drag'
 		vollocal = 1;
+		onsetvolume = 1;
+		setTimeout( function() {
+			onsetvolume = 0;
+		}, 500 );
+		
 		$.post( '/enhanceredis.php', { bash: '/srv/http/enhancevolume.sh '+ e.value } );
 		$( e.handle.element ).rsRotate( - e.handle.angle );
 		if ( e.preValue === 0 ) { // value before 'change'
@@ -621,7 +626,12 @@ pushstreamVolume.connect();
 
 $( '#volmute, #volume .rs-tooltip' ).click( function() {
 	vollocal = 1;
+	onsetvolume = 1;
+	setTimeout( function() {
+		onsetvolume = 0;
+	}, 500 );
 	var volumemute = $volumeRS.getValue();
+	
 	if ( volumemute ) {
 		$.post( '/enhanceredis.php', { bash: '/srv/http/enhancevolume.sh 0 '+ volumemute } );
 		$volumeRS.setValue( 0 );
@@ -648,6 +658,10 @@ $( '#volmute, #volume .rs-tooltip' ).click( function() {
 $( '#volup, #voldn, #voluprs, #voldnrs' ).click( function() {
 	var thisid = this.id;
 	var vol = $volumeRS.getValue();
+	onsetvolume = 1;
+	setTimeout( function() {
+		onsetvolume = 0;
+	}, 500 );
 	
 	if ( ( vol === 0 && ( thisid === 'voldn' || thisid === 'voldnrs' ) )
 		|| ( vol === 100 && ( thisid === 'volup' || thisid === 'voluprs' ) ) )
@@ -1170,6 +1184,12 @@ function commandButton( el ) {
 	var dataCmd = el.data( 'cmd' );
 	if ( el.hasClass( 'btn-toggle' ) ) {
 		if ( GUI.stream === 'radio' ) return;
+		
+		onsetmode = 1;
+		setTimeout( function() {
+			onsetmode = 0;
+		}, 500 );
+		
 		dataCmd = dataCmd + ( el.hasClass( 'btn-primary' ) ? ' 0' : ' 1' );    
 	} else {
 		if ( dataCmd === 'play' ) {
@@ -1249,10 +1269,11 @@ function setbutton() {
 }
 
 // song - sampling info and time
+onsetmode = 0;
 function settime() {
 //	console.log('settime');
 	// no current song
-	if ( !GUI.json.currentsong ) return;
+	if ( !GUI.json.currentsong || onsetmode ) return;
 	
 //	if ( GUI.libraryhome.ActivePlayer !== 'MPD' ) {
 	if ( GUI.stream === 'radio' ) {
@@ -1264,7 +1285,7 @@ function settime() {
 		$( '#total' ).text( '' );
 		return;
 	}
-	$( '#format-bitrate, #total' ).html( '&nbsp;' );
+//	$( '#format-bitrate, #total' ).html( '&nbsp;' );
 	$.post( '/enhanceredis.php', { bash: '/srv/http/enhancestatus.sh' }, function( data ) {
 		var status = JSON.parse( data );
 		var dot =  '<a style="color:#ffffff"> &#8226; </a>';
@@ -1414,7 +1435,6 @@ function setinfo() {
 // rendrUI() > updateGUI() > refreshState()
 function renderUI( text ) {
 	if ( onsetvolume ) return;
-//	console.log('renderUI');
 	
 	toggleLoader( 'close' );
 	if ( !$('#section-index' ).length || onsetvolume ) return;
