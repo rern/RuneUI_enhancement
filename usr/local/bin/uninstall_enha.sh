@@ -50,7 +50,7 @@ sed -i -e 's|RuneUIe|RuneAudio - RuneUI|
 file=/srv/http/app/templates/footer.php
 echo $file
 sed -i -e 's/<!--enha\|enha-->//g
-' -e '/vendor\/jquery-ui.min.js/ d
+' -e '/roundslider.min.js\|enhance.js\|vendor.jquery-ui.min.js/ d
 ' $file
 
 # no Addons Menu
