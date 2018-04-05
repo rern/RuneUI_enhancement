@@ -318,6 +318,7 @@ var interval;
 [ $hammervoldn, $hammervolup, $hammervoldnrs, $hammervoluprs ].forEach( function( el ) {
 	el.on( 'press', function( e ) {
 		buttonactive = 1;
+		onsetvolume = 1;
 		e.stopPropagation();
 		$volumetransition.css( 'transition-duration', '0s' );
 		timeoutId = setTimeout( volumepress( 300, el.element.id ), 500 );
@@ -325,6 +326,12 @@ var interval;
 		clearTimeout( timeoutId );
 		clearInterval( intervalId );
 		$volumetransition.css( 'transition-duration', '' );
+		
+		vollocal = 1;
+		$.post( '/enhanceredis.php', { bash: '/srv/http/enhancevolume.sh '+ $volumeRS.getValue() } );
+		setTimeout( function() {
+			onsetvolume = 0;
+		}, 500 );
 	} );
 });
 function volumepress( interval, id, fast ) {
@@ -339,11 +346,15 @@ function volumepress( interval, id, fast ) {
 			count++;
 			if ( count >= 8 ) {
 				clearInterval( intervalId );
-				volumepress( 50, id, 1 );
+				volumepress( 75, id, 1 );
 			}
 		}
 		vol = vol + increment;
-		$.post( '/enhanceredis.php', { bash: '/usr/bin/mpc volume '+ vol } ); // for no broadcast
+		if ( !fast ) {
+			setvol( vol ); // fix: enhancevolume.sh delay
+		} else {
+			if ( vol % 2 === 0 ) setvol( vol );
+		}
 		$volumeRS.setValue( vol );
 		$volumehandle.rsRotate( - $volumeRS._handle1.angle );
 		if ( vol === 0 || vol === 100 ) clearInterval( intervalId );
@@ -548,7 +559,7 @@ $( '#volume' ).roundSlider( {
 	},
 	change: function( e ) { // (not fire on 'setValue') value after click or 'stop drag'
 		vollocal = 1;
-		$.post( '/enhanceredis.php', { bash: '/srv/http/enhancevolume.sh '+ e.value +' 0' } );
+		$.post( '/enhanceredis.php', { bash: '/srv/http/enhancevolume.sh '+ e.value } );
 		$( e.handle.element ).rsRotate( - e.handle.angle );
 		if ( e.preValue === 0 ) { // value before 'change'
 			var command = { vol: [ 'set', 'volumemute', 0 ] };
@@ -559,16 +570,21 @@ $( '#volume' ).roundSlider( {
 	start: function( e ) { // on 'start drag'
 		// restore handle color immediately on start drag
 		if ( e.value === 0 ) unmutecolor(); // value before 'start drag'
+		onsetvolume = 1;
 	},
 	drag: function ( e ) { // drag with no transition by default
-		vollocal = 1;
-		$.post( '/enhanceredis.php', { bash: '/usr/bin/mpc volume '+ e.value } ); // value in real time 'drag'
-		$( e.handle.element ).rsRotate( - e.handle.angle );
+		if ( e.value % 2 === 0 ) {
+			setvol( e.value ); // fix: enhancevolume.sh delay
+			$( e.handle.element ).rsRotate( - e.handle.angle );
+		}
 	},
 	stop: function( e ) { // on 'stop drag'
 		// broadcast to all
 		vollocal = 1;
-		$.post( '/enhanceredis.php', { bash: '/srv/http/enhancevolume.sh '+ e.value +' 0' } );
+		$.post( '/enhanceredis.php', { bash: '/srv/http/enhancevolume.sh '+ e.value } );
+		setTimeout( function() {
+			onsetvolume = 0;
+		}, 500 );
 	}
 } );
 
@@ -644,7 +660,7 @@ $( '#volup, #voldn, #voluprs, #voldnrs' ).click( function() {
 	}
 	vol = ( thisid == 'volup' || thisid == 'voluprs' ) ? vol + 1 : vol - 1;
 	vollocal = 1;
-	$.post( '/enhanceredis.php', { bash: '/srv/http/enhancevolume.sh '+ vol +' 0' } );
+	$.post( '/enhanceredis.php', { bash: '/srv/http/enhancevolume.sh '+ vol } );
 	$volumeRS.setValue( vol );
 	$volumehandle.rsRotate( - $volumeRS._handle1.angle );
 } );
@@ -656,10 +672,10 @@ $( '#volup, #voldn, #voluprs, #voldnrs' ).click( function() {
 // load only not in setting pages
 if ( /\/.*\//.test( location.pathname ) === false ) { // start if >>>>>>>>>>>>>>>>>>>
 
-/*function setvol( vol ) {
+function setvol( vol ) {
 	GUI.volume = vol;
 	sendCmd( 'setvol '+ vol );
-}*/
+}
 function mutecolor( volumemute ) {
 	$volumetooltip.text( volumemute ).css( 'color', '#0095d8' );
 	$volumehandle.css( 'background', '#587ca0' );
