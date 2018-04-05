@@ -41,9 +41,9 @@ n; a\
             <li id="dropdownbg"></li>
 ' -e $'/Credits/ a\
             <li class="<?=$this->uri(1, \'dev\', \'active\')?>"><a href="/dev/"><i class="fa fa-code"></i> Development</a></li>
-' -e '/id="open-panel-sx"/ s/^/<!--/
+' -e '/id="open-panel-sx"/ s/^/<!--enha/
 ' -e '/id="open-panel-dx"/ {
-s/$/-->/
+s/$/enha-->/
 a\
 <!--0enha-->\
         <li id="open-panel-sx"><a><i class="fa fa-folder-open"></i></a></li>\
