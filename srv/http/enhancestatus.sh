@@ -10,8 +10,9 @@ else
 	elapsed=0
 fi
 
+# get file within bash avoids character escaping
 filetime=$( { echo currentsong; sleep 0.1; } | telnet localhost 6600 | grep 'file:\|Time:' | sed 's|file: |/mnt/MPD/|' )
-# fix: initial playlist not response to 'currentsong'
+# initial playlist not response to 'currentsong'
 if [[ ! $filetime ]]; then
 	mpc play
 	mpc stop
