@@ -31,7 +31,8 @@ else
 		exit
 	fi
 	
-	if [[ $ext != DSF ]]; then # not DSD - get sampling with 'soxi'
+	# not DSD - get sampling with 'soxi'
+	if [[ $ext != DSF && $ext != DFF ]]; then
 		IFS0=$IFS
 		IFS=$( echo -en "\n\b" )
 		data=$( soxi $file | grep 'Channels\|Sample Rate\|Precision' | tr -d '\n' )
@@ -44,17 +45,23 @@ else
 		kbps=$( python -c "print( $channel * $bitdepth * $samplerate )" )
 		
 		sampling="$bitdepth bit $samplerate kHz $kbps kbit/s"
-	else # DSD - get sampling by 'hexdump'
+	# DSD - get sampling by 'hexdump'
+	else
 		IFS0=$IFS
 		IFS=$( echo -en "\n\b" )
-		# 1bit DSD sampling: LSB(Least Significant Bit) first - sampling = ( byte #59-60 + byte #57-58 )
-		hexword=$( hexdump -x -s56 -n4 $file )
-		IFS=$IFS0
-		hex=( $( echo $hexword | cut -d' ' -f2,3 ) )
-		bitrate=$( echo $(( 16#${hex[1]}${hex[0]} )) )
+		if [[ $ext == DSF ]]; then
+			hexword=$( hexdump -x -s56 -n4 $file ) # strin=0000040 <5758> <5960> 000003c
+			IFS=$IFS0
+			hex=( $( echo $hexword | cut -d' ' -f2,3 ) ) # array=( <5758> <5960> )
+			bitrate=$( echo $(( 16#${hex[1]}${hex[0]} )) ) # bitrate byte order: #59#60#57#58
+		else # DFF
+			hexword=$( hexdump -x -s60 -n4 $file )  # string=000003c <6162> <6364> 0000040
+			IFS=$IFS0
+			hex=( $( echo $hexword | cut -d' ' -f2,3 | tr -d ' ' | sed 's/.\{2\}/& /g' ) ) # array=( <61> <62> <63> <64> )
+			bitrate=$( echo $(( 16#${hex[1]}${hex[0]}${hex[3]}${hex[2]} )) ) # bitrate byte order: #62#61#64#63
+		fi
 		dsd=$(( bitrate / 44100 ))
 		Mbps=$( python -c "print( round( $bitrate / 1000000, 2 ) ) " )
-		
 		sampling="1 bit DSD$dsd - $Mbps Mbit/s"
 	fi
 fi
