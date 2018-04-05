@@ -52,21 +52,14 @@ sed -i -e 's|RuneUIe|RuneAudio - RuneUI|
 
 file=/srv/http/app/templates/footer.php
 echo $file
-sed -i -e '/knob.min.js\|countdown.min.js/ {s/^<!--//; s/-->$//}
-' -e '/roundslider.min.js\|enhance.js/ d
-' -e '/propagating.js/ d
+sed -i -e 's|<!--enha||; s|enha-->||' $file
+' -e '/vendor\/jquery-ui.min.js/ d
 ' $file
-# 0.4b
-if grep -q 'jquery-ui.js' $file; then
-	sed -i -e '/jquery-ui.js/ {s/^<!--//; s/-->$//}
-	' -e '/jquery-ui.min.js/ d
-	' $file
-fi
 
 # no Addons Menu
 if [[ ! -e /usr/local/bin/uninstall_addo.sh ]]; then
 	rm $path/js/vendor/hammer.min.js
-	sed -i '/hammer.min.js/ d' $file
+	sed -i '/hammer.min.js\|propagating.js/ d' $file
 fi
 
 file=/srv/http/app/templates/playback.php
