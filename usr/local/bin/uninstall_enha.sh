@@ -41,7 +41,7 @@ sed -i -e 's|RuneUIe|RuneAudio - RuneUI|
 ' -e '/a href="http:..www.runeaudio.com/, /<.a>/ d
 ' -e 's/data-cmd="toggle"/data-cmd="play"/
 ' -e 's|<!--enha||; s|enha-->||
-' -e '/<!--0enha/,/1enha-->/ d
+' -e '/<!--0enha-->/,/<!--1enha-->/ d
 ' -e 's|id="open-panel-sx"><a |&href="/#panel-sx"|
 ' -e 's|id="open-playback".*><a |&href="/#playback"|
 ' -e 's|id="open-panel-dx"><a |&href="/#panel-dx"|
