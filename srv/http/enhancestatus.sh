@@ -47,20 +47,15 @@ else
 	else # DSD - get sampling by 'hexdump'
 		IFS0=$IFS
 		IFS=$( echo -en "\n\b" )
-		hexword=$( hexdump -x -s58 -n1 $file ) # byte 59 is most significant bit of dsd
+		# 1bit DSD sampling: LSB(Least Significant Bit) first - sampling = ( byte #59-60 + byte #57-58 )
+		hexword=$( hexdump -x -s56 -n4 $file )
 		IFS=$IFS0
-		hex=$( echo $hexword | cut -d' ' -f2 )
-		dec=$((16#$hex))
+		hex=( $( echo $hexword | cut -d' ' -f2,3 ) )
+		bitrate=$( echo $(( 16#${hex[1]}${hex[0]} )) )
+		dsd=$(( bitrate / 44100 ))
+		Mbps=$( python -c "print( round( $bitrate / 1000000, 2 ) ) " )
 		
-		if (( dec == 43 )); then
-			sampling='1 bit DSD64 - 2.82 Mbit/s'
-		elif (( dec == 86 )); then
-			sampling='1 bit DSD128 - 5.65 Mbit/s'
-		elif (( dec == 172 )); then
-			sampling='1 bit DSD256 - 11.29 Mbit/s'
-		else
-			sampling='1 bit DSD512 - 22.58 Mbit/s'
-		fi
+		sampling="1 bit DSD$dsd - $Mbps Mbit/s"
 	fi
 fi
 
