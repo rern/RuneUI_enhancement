@@ -1178,13 +1178,13 @@ function commandButton( el ) {
 			clearInterval( GUI.currentKnob );
 			clearInterval( GUI.countdown );
 			// enable previous / next while stop
-			if ( GUI.state === 'stop' && ( dataCmd === 'previous' || dataCmd === 'next' ) ) {
+			if ( dataCmd === 'previous' || dataCmd === 'next' ) {
 				prevnext = 1;
 				var current = parseInt( GUI.json.song ) + 1;
 				var last = parseInt( GUI.json.playlistlength );
 				var targetsong = ( dataCmd === 'previous' ) ? ( ( current !== 1 ) ? current - 1 : last ) : ( ( current !== last ) ? current + 1 : 1 );
-				var command = { changesong: [ '/usr/bin/mpc play '+ targetsong +'; /usr/bin/mpc stop' ] };
-				$.post( '/enhanceredis.php', { bash: '/usr/bin/mpc play '+ targetsong +'; /usr/bin/mpc stop;' }, function() {
+				var mpcstop = ( GUI.state === 'play' ) ? '' : '; /usr/bin/mpc '+ GUI.state;
+				$.post( '/enhanceredis.php', { bash: '/usr/bin/mpc play '+ targetsong + mpcstop }, function() {
 					setTimeout( function() {
 						prevnext = 0;
 					}, 500 );
