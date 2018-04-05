@@ -11,6 +11,12 @@ else
 fi
 
 filetime=$( { echo currentsong; sleep 0.1; } | telnet localhost 6600 | grep 'file:\|Time:' | sed 's|file: |/mnt/MPD/|' )
+# fix: initial playlist not response to 'currentsong'
+if [[ ! $filetime ]]; then
+	mpc play
+	mpc stop
+	filetime=$( { echo currentsong; sleep 0.1; } | telnet localhost 6600 | grep 'file:\|Time:' | sed 's|file: |/mnt/MPD/|' )
+fi
 file=${filetime/Time:*}
 ext=$( echo $file | sed 's/^.*\.//' | tr '[:lower:]' '[:upper:]' )
 time=${filetime#*Time: }
