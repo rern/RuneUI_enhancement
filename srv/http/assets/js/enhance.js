@@ -1273,8 +1273,10 @@ onsetmode = 0;
 function settime() {
 //	console.log('settime');
 	// no current song
-	if ( !GUI.json.currentsong || onsetmode ) return;
-	
+	if ( !GUI.json.currentsong || onsetmode ) {
+		$( '#format-bitrate, #total' ).html( '&nbsp;' );
+		return;
+	}
 //	if ( GUI.libraryhome.ActivePlayer !== 'MPD' ) {
 	if ( GUI.stream === 'radio' ) {
 		$( '#format-bitrate' ).html( GUI.json.audio_sample_depth ? '<a id="dot0" style="color:#ffffff"> &#8226; </a>' + GUI.json.audio_sample_depth + ' bit ' + GUI.json.audio_sample_rate +' kHz '+GUI.json.bitrate+' kbit/s' : '&nbsp;' );
