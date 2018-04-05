@@ -26,6 +26,11 @@ else
 	time=${filetime#*Time: }
 	state='stop'
 	
+	if [[ $ext == dff ]]; then
+		echo '{ "sampling": "'&nbsp;'", "elapsed": "0", "time": "0", "state": "stop" }'
+		exit
+	fi
+	
 	if [[ $ext != dsf ]]; then # not DSD - get sampling with 'soxi'
 		IFS0=$IFS
 		IFS=$( echo -en "\n\b" )
