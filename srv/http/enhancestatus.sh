@@ -46,6 +46,10 @@ else
 		
 		sampling="$bitdepth bit $samplerate kHz $kbps kbit/s"
 	# DSD - get sampling by 'hexdump'
+	# dsd64 = 2822400 <-> 002b1100
+	# dsd128= 5644800 <-> 00562200
+	# dsd256=11289600 <-> 00AC4400
+	# dsd512=22579200 <-> 01588800
 	else
 		IFS0=$IFS
 		IFS=$( echo -en "\n\b" )
