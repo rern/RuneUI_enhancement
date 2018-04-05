@@ -41,22 +41,18 @@ if [[ $ext != DSF && $ext != DFF ]]; then
 	fi
 # DSD - get sampling by 'hexdump'
 else
-	# dsd64  =  2822400 <-> 002b1100
-	# dsd128 =  5644800 <-> 00562200
-	# dsd256 = 11289600 <-> 00AC4400
-	# dsd512 = 22579200 <-> 01588800
 	IFS0=$IFS
 	IFS=$( echo -en "\n\b" )
 	if [[ $ext == DSF ]]; then
-		hexword=$( hexdump -x -s56 -n4 $file )         # strin=0000040 <5758> <5960> 000003c
+		hexword=$( hexdump -x -s56 -n4 $file )
 		IFS=$IFS0
-		hex=( $( echo $hexword | cut -d' ' -f2,3 ) )   # array=( <5758> <5960> )
-		bitrate=$( echo $(( 16#${hex[1]}${hex[0]} )) ) # bitrate byte order: #59#60#57#58
+		hex=( $( echo $hexword | cut -d' ' -f2,3 ) )
+		bitrate=$( echo $(( 16#${hex[1]}${hex[0]} )) )
 	else # DFF
-		hexword=$( hexdump -x -s60 -n4 $file )                                         # string=000003c <6162> <6364> 0000040
+		hexword=$( hexdump -x -s60 -n4 $file )
 		IFS=$IFS0
-		hex=( $( echo $hexword | cut -d' ' -f2,3 | tr -d ' ' | sed 's/.\{2\}/& /g' ) ) # array=( <61> <62> <63> <64> )
-		bitrate=$( echo $(( 16#${hex[1]}${hex[0]}${hex[3]}${hex[2]} )) )               # bitrate byte order: #62#61#64#63
+		hex=( $( echo $hexword | cut -d' ' -f2,3 | tr -d ' ' | sed 's/.\{2\}/& /g' ) )
+		bitrate=$( echo $(( 16#${hex[1]}${hex[0]}${hex[3]}${hex[2]} )) )
 	fi
 	dsd=$(( bitrate / 44100 ))
 	Mbps=$( python -c "print( round( $bitrate / 1000000, 2 ) )" )
