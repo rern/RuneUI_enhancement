@@ -41,9 +41,9 @@ else
 		channel=${audio[0]}
 		bitdepth=${audio[2]}
 		samplerate=$( python -c "print( ${audio[1]} / 1000 )" )
-		bitrate=$( python -c "print( $channel * $bitdepth * $samplerate )" )
+		kbps=$( python -c "print( $channel * $bitdepth * $samplerate )" )
 		
-		sampling="$bitdepth bit $samplerate kHz $bitrate kbit/s"
+		sampling="$bitdepth bit $samplerate kHz $kbps kbit/s"
 	else # DSD - get sampling by 'hexdump'
 		IFS0=$IFS
 		IFS=$( echo -en "\n\b" )
