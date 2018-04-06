@@ -32,11 +32,11 @@ if [[ $ext != DSF && $ext != DFF ]]; then
 	audio=( $( echo $data | sed 's/Channels : \|Sample Rate :\|Precision :\|-bit//g' ) )
 	channel=${audio[0]}
 	bitdepth=${audio[2]}
-	samplerate=$( awk "BEGIN {printf \"%.1f\n\", ${audio[1]} / 1000 }" )
-	bitrate=$( awk "BEGIN {printf \"%.2f\n\", $channel * $bitdepth * $samplerate }" )
+	samplerate=$( awk "BEGIN { printf \"%.1f\n\", ${audio[1]} / 1000 }" )
+	bitrate=$( awk "BEGIN { printf \"%.2f\n\", $channel * $bitdepth * $samplerate }" )
 	sampling="$bitdepth bit $samplerate kHz $bitrate kbit/s"
 	if (( ${bitrate%.*} >= 1000 )); then
-		bitrate=$( awk "BEGIN {printf \"%.2f\n\", $bitrate / 1000 }" )
+		bitrate=$( awk "BEGIN { printf \"%.2f\n\", $bitrate / 1000 }" )
 		sampling="$bitdepth bit $samplerate kHz $bitrate Mbit/s"
 	fi
 # DSD - get sampling by 'hexdump'
@@ -55,7 +55,7 @@ else
 		bitrate=$( echo $(( 16#${hex[1]}${hex[0]}${hex[3]}${hex[2]} )) )
 	fi
 	dsd=$(( bitrate / 44100 ))
-	Mbps=$( awk "BEGIN {printf \"%.2f\n\", $bitrate / 1000000 }" )
+	Mbps=$( awk "BEGIN { printf \"%.2f\n\", $bitrate / 1000000 }" )
 	sampling="1 bit DSD$dsd - $Mbps Mbit/s"
 fi
 
