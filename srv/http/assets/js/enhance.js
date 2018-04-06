@@ -1271,11 +1271,9 @@ function setbutton() {
 // song - sampling info and time
 onsetmode = 0;
 function settime() {
-	// no current song
-	if ( !GUI.json.currentsong || onsetmode ) {
-		$( '#format-bitrate, #total' ).html( '&nbsp;' );
-		return;
-	}
+	// no current song or set mode buttons
+	if ( !GUI.json.currentsong || onsetmode ) return;
+	
 	if ( GUI.stream === 'radio' || GUI.libraryhome.ActivePlayer === 'Airplay' || GUI.libraryhome.ActivePlayer === 'Spotify' ) {
 		$( '#format-bitrate' ).html( GUI.json.audio_sample_depth ? '<a id="dot0" style="color:#ffffff"> &#8226; </a>' + GUI.json.audio_sample_depth + ' bit ' + GUI.json.audio_sample_rate +' kHz '+GUI.json.bitrate+' kbit/s' : '&nbsp;' );
 		$timeRS.setValue( 0 );
@@ -1354,15 +1352,17 @@ function setvolume() {
 	$.post( '/enhanceredis.php', 
 		{ json: JSON.stringify( command ) },
 		function( data ) {
-			onsetvolume = 0;
+			setTimeout( function() {
+				onsetvolume = 0;
+			}, 500 );
 			var json = JSON.parse( data );
 			if ( !$( '#songinfo-modal' ).length || GUI.vol_changed_local === 0 ) {
 				$volumetransition.css( 'transition-duration', '0s' ); // suppress initial rotate animation
 				$volumeRS.setValue( json.volume );
 				$volumehandle.rsRotate( - $volumeRS._handle1.angle );
 				$volumetooltip.show(); // show after 'setValue'
-				$volumehandle.show(); // show after 'setValue'
-				$volumetransition.css( 'transition', '' );            // reset animation to default
+				$volumehandle.show();
+				$volumetransition.css( 'transition', '' );           // reset animation to default
 				if ( $( '#vol-group' ).is( ':visible' ) ) {
 					if ( json.volumemute != 0 ) {
 						mutecolor( json.volumemute );
@@ -1433,8 +1433,6 @@ function setinfo() {
 // ### called by backend socket - force refresh all clients ###
 // rendrUI() > updateGUI() > refreshState()
 function renderUI( text ) {
-	if ( onsetvolume ) return;
-	
 	toggleLoader( 'close' );
 	if ( !$('#section-index' ).length || onsetvolume ) return;
 	
