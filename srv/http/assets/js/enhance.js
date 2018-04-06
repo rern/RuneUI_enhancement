@@ -194,7 +194,12 @@ var visibilityState = visibilityState( prefix );
 var visibilityEvent = visibilityEvent( prefix );
  
 document.addEventListener( visibilityEvent, function( event ) {
-	if ( !document[ hidden ] ) settime();
+	if ( !document[ hidden ] ) {
+		settime();
+	} else {
+		clearInterval( GUI.currentKnob );
+		clearInterval( GUI.countdown );
+	}
 });
 
 // hammer**************************************************************
@@ -1226,16 +1231,23 @@ function commandButton( el ) {
 	} else {
 		if ( dataCmd === 'play' ) {
 			dataCmd = ( GUI.state === 'play' ) ? 'pause' : 'play';
-		} else {
+		} else if ( dataCmd === 'stop' ) {
 			clearInterval( GUI.currentKnob );
 			clearInterval( GUI.countdown );
+		} else {
 			// enable previous / next while stop
 			if ( dataCmd === 'previous' || dataCmd === 'next' ) {
 				prevnext = 1;
 				var current = parseInt( GUI.json.song ) + 1;
 				var last = parseInt( GUI.json.playlistlength );
 				var targetsong = ( dataCmd === 'previous' ) ? ( ( current !== 1 ) ? current - 1 : last ) : ( ( current !== last ) ? current + 1 : 1 );
-				var mpcstop = ( GUI.state === 'play' ) ? '' : '; /usr/bin/mpc '+ GUI.state;
+				if ( GUI.state === 'play' ) {
+					var mpcstop = '';
+				} else {
+					var mpcstop = '; /usr/bin/mpc stop';
+					$( '#pause' ).removeClass( 'btn-primary' );
+					$( '#stop' ).addClass( 'btn-primary' );
+				}
 				$.post( '/enhanceredis.php', { bash: '/usr/bin/mpc play '+ targetsong + mpcstop }, function() {
 					setTimeout( function() {
 						prevnext = 0;
@@ -1273,6 +1285,8 @@ function setbutton() {
 		$( '#random' ).toggleClass( 'btn-primary', GUI.json.random === '1' );
 		$( '#single' ).toggleClass( 'btn-primary', GUI.json.single === '1' );
 	}
+	
+	if ( prevnext === 1 ) return; // disable for previous/next while stop
 	
 	if ( state === 'stop' ) {
 		$( '#stop' ).addClass( 'btn-primary' );
@@ -1327,7 +1341,7 @@ function settime() {
 		clearInterval( GUI.currentKnob );
 		clearInterval( GUI.countdown );
 
-		if ( status.state === 'stop' || prevnext === 1 || $( '#time-knob' ).hasClass( 'hide' ) ) {
+		if ( status.state === 'stop' || $( '#time-knob' ).hasClass( 'hide' ) ) {
 			$timeRS.setValue( 0 );
 			$( '#elapsed' ).text( '' );
 			return;
