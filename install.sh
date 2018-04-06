@@ -10,6 +10,7 @@ alias=enha
 installstart $@
 
 mv /srv/http/app/coverart_ctl.php{,.backup}
+mv /srv/http/assets/js/runeui.min.js{,.backup}
 
 getinstallzip
 
@@ -34,21 +35,25 @@ n; a\
         <img class="logo" src="<?=$this->asset(\'/img/runelogo.svg\')?>">\
     </a>
 ' -e '/id="play"/ a\
-        <button id="pause" class="btn btn-default btn-cmd" title="Play/Pause" data-cmd="pause"><i class="fa fa-pause"></i></button>
-' -e '/^\s*<a id="menu-settings"\|href="\/"><i class="fa fa-play"\|logo.png/ {s|^|<?php /\*|; s|$|\*/?>|}
+        <button id="pause" class="btn btn-default btn-cmd" title="Pause" data-cmd="play"><i class="fa fa-pause"></i></button>
+' -e '/^\s*<a id="menu-settings"\|id="clock-display"\|href="\/"><i class="fa fa-play"\|logo.png/ {s/^/<!--enha/; s/$/enha-->/}
 ' -e '/dropdown-menu/ a\
             <li id="dropdownbg"></li>
 ' -e $'/Credits/ a\
             <li class="<?=$this->uri(1, \'dev\', \'active\')?>"><a href="/dev/"><i class="fa fa-code"></i> Development</a></li>
-' -e 's|href="/#panel-sx"||; s|href="/#playback"||; s|href="/#panel-dx"||
-' -e 's|\("tab".*"fa fa-\)music"></i> Library|\1folder-open"></i>|
-' -e 's|\("tab".*"fa fa-play\)"></i> Playback|\1-circle"></i>|
-' -e 's|\("tab".*"fa fa-list"></i>\) Queue|\1|
+' -e '/id="open-panel-sx"/ s/^/<!--enha/
+' -e '/id="open-panel-dx"/ {
+s/$/enha-->/
+a\
+        <li id="open-panel-sx"><a><i class="fa fa-folder-open"></i></a></li>\
+        <li id="open-playback" class="active"><a><i class="fa fa-play-circle"></i></a></li>\
+        <li id="open-panel-dx"><a><i class="fa fa-list"></i></a></li>
+}
 ' $file
 
 file=/srv/http/app/templates/footer.php
 echo $file
-sed -i '/jquery.knob.min.js/ {s/^/<!--/; s/$/-->/}' $file
+sed -i '/knob.min.js\|countdown.min.js\|jquery-ui.js/ {s/^/<!--enha/; s/$/enha-->/}' $file
 # must be before lyrics addon
 if ! grep -q 'lyrics.js' $file; then
 	sed -i $'$ a\
@@ -65,12 +70,7 @@ fi
 ! grep -q 'propagating.js' $file && sed -i $'$ a\<script src="<?=$this->asset(\'/js/vendor/propagating.js\')?>"></script>' $file
 # 0.4b
 if grep -q 'jquery-ui.js' $file; then
-	sed -i -e 's/<.*jquery-ui.js.*script>/<!--&-->/
-	' -e $'/jquery-ui.js/ a\
-<script src="<?=$this->asset(\'/js/vendor/jquery-ui.min.js\')?>"></script>
-	' $file
-else
-	rm /srv/http/assets/js/vendor/jquery-ui.min.js
+	sed -i $'/jquery-ui.js/ a\<script src="<?=$this->asset(\'/js/vendor/jquery-ui.min.js\')?>"></script>' $file
 fi
 
 file=/srv/http/app/templates/playback.php
@@ -100,12 +100,9 @@ sed -i -e '\|// KNOBS| i\
 /*enha
 ' -e '\|// PLAYING QUEUE| i\
 enha*/
-' $file
-
-file=/srv/http/assets/js/runeui.min.js
-echo $file
-sed -i -e 's|,e("#time").knob|/\*enha &|
-' -e 's|;var r=e("#playlist-entries")| enha*/&|
+' -e '/\.countdown(/ s|^|//|
+' -e 's|\(fa-spin"></i>\) Updating|\1|
+' -e 's|fa-music sx"></i> Library|fa-folder-open"></i>|
 ' $file
 
 # start/stop local browser

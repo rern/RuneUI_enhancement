@@ -20,15 +20,16 @@ fi
 # remove files #######################################
 echo -e "$bar Remove files ..."
 rm -v /srv/http/app/templates/enhanceplayback.php
-rm -v /srv/http/enhancebio.php
+rm -v /srv/http/{enhancebio.php,enhancestatus.sh,enhancevolume.sh}
 [[ ! -e /usr/local/bin/uninstall_addo.sh ]] && rm -v /srv/http/enhanceredis.php
 path=/srv/http/assets
 rm -v $path/css/{enhance.css,midori.css,roundslider.min.css}
 rm -v $path/img/runelogo.svg
-rm -v $path/js/enhance.js
+rm -v $path/js/{enhance.js,runeui.min.js}
 rm -vf $path/js/vendor/{jquery-ui.min.js,propagating.js,roundslider.min.js}
 
 mv /srv/http/app/coverart_ctl.php{.backup,}
+mv $path/js/runeui.min.js{.backup,}
 
 # restore modified files #######################################
 echo -e "$bar Restore modified files ..."
@@ -37,11 +38,10 @@ file=/srv/http/app/templates/header.php
 echo $file
 sed -i -e 's|RuneUIe|RuneAudio - RuneUI|
 ' -e '/roundslider.min.css\|enhance.css\|id="bartop"\|id="barbottom\|dropdownbg\|button id="menu-settings"\|id="pause"\|Development<.a>/ d
+' -e '/fa-folder-open"><.i><.a>/,/fa-list"><.i><.a>/ d
 ' -e '/a href="http:..www.runeaudio.com/, /<.a>/ d
-' -e 's|^<?php /\*||; s|\*/?>$||
-' -e 's|id="open-panel-sx"><a |&href="/#panel-sx"|
-' -e 's|id="open-playback".*><a |&href="/#playback"|
-' -e 's|id="open-panel-dx"><a |&href="/#panel-dx"|
+' -e 's/data-cmd="toggle"/data-cmd="play"/
+' -e 's/<!--enha\|enha-->//g
 ' -e 's|\("tab".*"fa fa-\)folder-open"></i></a>|\1music"></i> Library</a>|
 ' -e 's|\("tab".*"fa fa-play\)-circle"></i>|\1"></i> Playback|
 ' -e 's|\("tab".*"fa fa-list"></i>\)</a>|\1 Queue</a>|
@@ -49,21 +49,14 @@ sed -i -e 's|RuneUIe|RuneAudio - RuneUI|
 
 file=/srv/http/app/templates/footer.php
 echo $file
-sed -i -e '/jquery.knob.min.js/ {s/^<!--//; s/-->$//}
-' -e '/roundslider.min.js\|enhance.js/ d
-' -e '/propagating.js/ d
+sed -i -e 's/<!--enha\|enha-->//g
+' -e '/roundslider.min.js\|enhance.js\|vendor.jquery-ui.min.js/ d
 ' $file
-# 0.4b
-if grep -q 'jquery-ui.js' $file; then
-	sed -i -e '/jquery-ui.js/ {s/^<!--//; s/-->$//}
-	' -e '/jquery-ui.min.js/ d
-	' $file
-fi
 
 # no Addons Menu
 if [[ ! -e /usr/local/bin/uninstall_addo.sh ]]; then
 	rm $path/js/vendor/hammer.min.js
-	sed -i '/hammer.min.js/ d' $file
+	sed -i '/hammer.min.js\|propagating.js/ d' $file
 fi
 
 file=/srv/http/app/templates/playback.php
@@ -79,11 +72,12 @@ sed -i '/if ( \$template->local_browser )/,/^}$/ d' $file
 
 file=/srv/http/assets/js/runeui.js
 echo $file
-sed -i -e '/^\/\*enha\|^enha\*\// d' $file
+sed -i -e '/^\/\*enha\|^enha\*\// d
+' -e '/\.countdown(/ s|^//||
+' -e 's|fa-spin"></i>|& Updating|
+' -e 's|fa-folder-open"></i>|fa-music sx"></i> Library|
+' $file
 
-file=/srv/http/assets/js/runeui.min.js
-echo $file
-sed -i -e 's|/\*enha ||; s| enha\*/||' $file
 
 file=/root/.config/midori/config
 echo $file

@@ -1,11 +1,18 @@
 <?php
+// json: command = { dataid: [ 'command', 'key', ['hash',] 'value' ] }
+// bash: command = { dataid: [ '/fullpath/command argument' ] }
+//
+// $.post( '/enhanceredis.php', { JSON.stringify( command ) }, ...
+
+// single bash
+if ( isset( $_POST[ 'bash' ] ) ) {
+	$result = exec( '/usr/bin/sudo '.$_POST[ 'bash' ] );
+	echo $result;
+	die();
+}
+
 $redis = new Redis(); 
 $redis->pconnect( '127.0.0.1' );
-
-// 'json' from js:
-// redis = { dataid: [ 'command', 'key', 'hash', 'value' ] }
-// $.post( '/enhanceredis.php', { JSON.stringify( redis ) }, ...
-// 'bash' - use 1 item, '/fullpath/command', in array
 
 $array = json_decode( $_POST[ 'json' ], true );
 
@@ -15,7 +22,7 @@ foreach ( $array as $field => $arg ) {
 	$key = $arg[ 1 ];
 	
 	if ( $count === 1 ) { // for bash
-		$result[ $field ] = exec( '/usr/bin/sudo '.$key );
+		$result[ $field ] = exec( '/usr/bin/sudo '.$command );
 	} else if ( $count === 2 ) {
 		$result[ $field ] = $redis->$command( $key );
 	} else if ( $count === 3 ) {
