@@ -159,11 +159,43 @@ function displayall() {
 	}, 100 );
 }
 window.addEventListener( 'orientationchange', displayall );
-window.addEventListener( 'visibilitychange', function() {
+/*window.addEventListener( 'visibilitychange', function() {
 	if ( document.visibilityState === 'visible' ) {
 		settime();
 	}
-} );
+} );*/
+
+// cross-browser page visibility event 
+// (from: https://code.tutsplus.com/articles/html5-page-visibility-api--cms-22021)
+function getBrowserPrefix() {
+	if ( 'hidden' in document ) return null; // 1. no prefix
+	
+	var browserPrefixes = [ 'moz', 'ms', 'o', 'webkit' ]; // 2. get prefix
+	for ( var i = 0; i < browserPrefixes.length; i++ ) {
+		var prefix = browserPrefixes[ i ] + 'Hidden';
+		if ( prefix in document ) return browserPrefixes[ i ];
+	}
+	
+	return null; // 3. browser not support
+}
+function hiddenProperty( prefix ) {
+    return ( prefix ) ? prefix + 'Hidden' : 'hidden';
+}
+function visibilityState( prefix ) {
+    return ( prefix ) ? prefix + 'VisibilityState' : 'visibilityState';
+}
+function visibilityEvent( prefix ) {
+    return ( prefix ) ? prefix + 'visibilitychange' : 'visibilitychange';
+}
+
+var prefix = getBrowserPrefix();
+var hidden = hiddenProperty( prefix );
+var visibilityState = visibilityState( prefix );
+var visibilityEvent = visibilityEvent( prefix );
+ 
+document.addEventListener( visibilityEvent, function( event ) {
+	if ( !document[ hidden ] ) settime();
+});
 
 // hammer**************************************************************
 Hammer = propagating( Hammer ); // propagating.js fix 
@@ -1179,6 +1211,7 @@ function populateDB(options) {
 
 }
 
+prevnext = 0; // for disable 'btn-primary' - previous/next while stop
 function commandButton( el ) {
 	var dataCmd = el.data( 'cmd' );
 	if ( el.hasClass( 'btn-toggle' ) ) {
@@ -1198,12 +1231,17 @@ function commandButton( el ) {
 			clearInterval( GUI.countdown );
 			// enable previous / next while stop
 			if ( dataCmd === 'previous' || dataCmd === 'next' ) {
+				prevnext = 1;
 				var current = parseInt( GUI.json.song ) + 1;
 				var last = parseInt( GUI.json.playlistlength );
 				var targetsong = ( dataCmd === 'previous' ) ? ( ( current !== 1 ) ? current - 1 : last ) : ( ( current !== last ) ? current + 1 : 1 );
-				var mpcstop = ( GUI.state === 'play' ) ? '' : '; /usr/bin/mpc stop';
-				$.post( '/enhanceredis.php', { bash: '/usr/bin/mpc play '+ targetsong + mpcstop } );
-				return;
+				var mpcstop = ( GUI.state === 'play' ) ? '' : '; /usr/bin/mpc '+ GUI.state;
+				$.post( '/enhanceredis.php', { bash: '/usr/bin/mpc play '+ targetsong + mpcstop }, function() {
+					setTimeout( function() {
+						prevnext = 0;
+					}, 500 );
+				});
+				return
 			}
 		}
 	}
@@ -1289,7 +1327,7 @@ function settime() {
 		clearInterval( GUI.currentKnob );
 		clearInterval( GUI.countdown );
 
-		if ( status.state === 'stop' || $( '#time-knob' ).hasClass( 'hide' ) ) {
+		if ( status.state === 'stop' || prevnext === 1 || $( '#time-knob' ).hasClass( 'hide' ) ) {
 			$timeRS.setValue( 0 );
 			$( '#elapsed' ).text( '' );
 			return;
