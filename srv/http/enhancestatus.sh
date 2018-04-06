@@ -1,6 +1,6 @@
 #!/bin/bash
 
-state=$( mpc status | grep ')' | sed 's/\[\(.*\)\].*/\1/' )
+state=$( mpc status | grep '\[' | sed 's/\[\(.*\)\].*/\1/' )
 [[ ! $state ]] && state=stop
 
 if [[ $state != stop ]]; then
