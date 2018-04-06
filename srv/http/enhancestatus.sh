@@ -32,11 +32,11 @@ if [[ $ext != DSF && $ext != DFF ]]; then
 	audio=( $( echo $data | sed 's/Channels : \|Sample Rate :\|Precision :\|-bit//g' ) )
 	channel=${audio[0]}
 	bitdepth=${audio[2]}
-	samplerate=$( python -c "print( ${audio[1]} / 1000 )" )
-	bitrate=$( python -c "print( $channel * $bitdepth * $samplerate )" )
+	samplerate=$( awk "BEGIN {printf \"%.1f\n\", ${audio[1]} / 1000 }" )
+	bitrate=$( awk "BEGIN {printf \"%.2f\n\", $channel * $bitdepth * $samplerate }" )
 	sampling="$bitdepth bit $samplerate kHz $bitrate kbit/s"
 	if (( ${bitrate%.*} >= 1000 )); then
-		bitrate=$( python -c "print( round( $bitrate / 1000, 2 ) )" )
+		bitrate=$( awk "BEGIN {printf \"%.2f\n\", $bitrate / 1000 }" )
 		sampling="$bitdepth bit $samplerate kHz $bitrate Mbit/s"
 	fi
 # DSD - get sampling by 'hexdump'
