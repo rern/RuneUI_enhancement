@@ -55,7 +55,7 @@ else
 		bitrate=$( echo $(( 16#${hex[1]}${hex[0]}${hex[3]}${hex[2]} )) )
 	fi
 	dsd=$(( bitrate / 44100 ))
-	Mbps=$( python -c "print( round( $bitrate / 1000000, 2 ) )" )
+	Mbps=$( awk "BEGIN {printf \"%.2f\n\", $bitrate / 1000000 }" )
 	sampling="1 bit DSD$dsd - $Mbps Mbit/s"
 fi
 
