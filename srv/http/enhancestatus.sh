@@ -10,8 +10,8 @@ else
 	elapsed=0
 fi
 
-# get file within bash avoids character escaping
-filetime=$( { echo currentsong; sleep 0.1; } | telnet localhost 6600 | grep 'file:\|Time:' | sed 's|file: |/mnt/MPD/|' )
+# get file within bash avoids character escaping ( grep -a : fix filename with diacritics )
+filetime=$( { echo currentsong; sleep 0.1; } | telnet localhost 6600 | grep -a 'file:\|Time:' | sed 's|file: |/mnt/MPD/|' )
 # initial playlist not response to 'currentsong'
 if [[ ! $filetime ]]; then
 	mpc play
