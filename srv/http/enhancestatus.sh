@@ -65,13 +65,29 @@ else
 	
 #	channel=${data[1]}
 	bitdepth=${data[2]}
+	samplerate=${data[0]}
 	bitrate=${data[3]}
-	[[ $bitdepth == 'N/A' ]] && bitdepth='' || bitdepth="$bitdepth bit "
-	samplerate=$( awk "BEGIN { printf \"%.1f\n\", ${data[0]} / 1000 }" )
-	kbps=$( awk "BEGIN { printf \"%.1f\n\", $bitrate / 1000 }" )
-	Mbps=$( awk "BEGIN { printf \"%.2f\n\", $bitrate / 1000000 }" )
-	(( $bitrate < 1000000 )) && bitrate="$kbps kbit/s" || bitrate="$Mbps Mbit/s"
-	sampling="$bitdepth$samplerate kHz $bitrate"
+	
+	if [[ $bitdepth == 'N/A' ]]; then
+		if [[ $ext == WAV || $ext == AIFF ]]; then
+			bitdepth=$(( $bitrate / $samplerate / 2 ))' bit '
+		else
+			bitdepth=''
+		fi
+	else
+		bitdepth=$bitdepth' bit '
+	fi
+	
+	(( $samplerate % 1000 )) && decimal='%.1f\n' || decimal='%.0f\n'
+	samplerate=$( awk "BEGIN { printf \"$decimal\", $samplerate / 1000 }" )' kHz '
+
+	if (( $bitrate < 1000000 )); then
+		bitrate=$( awk "BEGIN { printf \"%.1f\n\", $bitrate / 1000 }" )' kbit/s'
+	else
+		bitrate=$( awk "BEGIN { printf \"%.2f\n\", $bitrate / 1000000 }" )' Mbit/s'
+	fi
+	
+	sampling=$bitdepth$samplerate$bitrate
 fi
 
 echo '{ "artist": "'$artist'", "song": "'$song'", "album": "'$album'", "sampling": "'$sampling'", "ext": "'$ext'", "elapsed": "'$elapsed'", "time": "'$time'", "repeat": "'$repeat'", "random": "'$random'", "single": "'$single'", "volume": "'$volume'", "volumemute": "'$volumemute'", "state": "'$state'" }'
