@@ -159,11 +159,48 @@ function displayall() {
 	}, 100 );
 }
 window.addEventListener( 'orientationchange', displayall );
-window.addEventListener( 'visibilitychange', function() {
+/*window.addEventListener( 'visibilitychange', function() {
 	if ( document.visibilityState === 'visible' ) {
 		settime();
 	}
-} );
+} );*/
+
+// cross-browser page visibility event 
+// (from: https://code.tutsplus.com/articles/html5-page-visibility-api--cms-22021)
+function getBrowserPrefix() {
+	if ( 'hidden' in document ) return null; // 1. no prefix
+	
+	var browserPrefixes = [ 'moz', 'ms', 'o', 'webkit' ]; // 2. get prefix
+	for ( var i = 0; i < browserPrefixes.length; i++ ) {
+		var prefix = browserPrefixes[ i ] + 'Hidden';
+		if ( prefix in document ) return browserPrefixes[ i ];
+	}
+	
+	return null; // 3. browser not support
+}
+function hiddenProperty( prefix ) {
+    return ( prefix ) ? prefix + 'Hidden' : 'hidden';
+}
+function visibilityState( prefix ) {
+    return ( prefix ) ? prefix + 'VisibilityState' : 'visibilityState';
+}
+function visibilityEvent( prefix ) {
+    return ( prefix ) ? prefix + 'visibilitychange' : 'visibilitychange';
+}
+
+var prefix = getBrowserPrefix();
+var hidden = hiddenProperty( prefix );
+var visibilityState = visibilityState( prefix );
+var visibilityEvent = visibilityEvent( prefix );
+ 
+document.addEventListener( visibilityEvent, function( event ) {
+	if ( !document[ hidden ] ) {
+		settime();
+	} else {
+		clearInterval( GUI.currentKnob );
+		clearInterval( GUI.countdown );
+	}
+});
 
 // hammer**************************************************************
 Hammer = propagating( Hammer ); // propagating.js fix 
@@ -1194,16 +1231,23 @@ function commandButton( el ) {
 	} else {
 		if ( dataCmd === 'play' ) {
 			dataCmd = ( GUI.state === 'play' ) ? 'pause' : 'play';
-		} else {
+		} else if ( dataCmd === 'stop' ) {
 			clearInterval( GUI.currentKnob );
 			clearInterval( GUI.countdown );
+		} else {
 			// enable previous / next while stop
 			if ( dataCmd === 'previous' || dataCmd === 'next' ) {
 				prevnext = 1;
 				var current = parseInt( GUI.json.song ) + 1;
 				var last = parseInt( GUI.json.playlistlength );
 				var targetsong = ( dataCmd === 'previous' ) ? ( ( current !== 1 ) ? current - 1 : last ) : ( ( current !== last ) ? current + 1 : 1 );
-				var mpcstop = ( GUI.state === 'play' ) ? '' : '; /usr/bin/mpc '+ GUI.state;
+				if ( GUI.state === 'play' ) {
+					var mpcstop = '';
+				} else {
+					var mpcstop = '; /usr/bin/mpc stop';
+					$( '#pause' ).removeClass( 'btn-primary' );
+					$( '#stop' ).addClass( 'btn-primary' );
+				}
 				$.post( '/enhanceredis.php', { bash: '/usr/bin/mpc play '+ targetsong + mpcstop }, function() {
 					setTimeout( function() {
 						prevnext = 0;
@@ -1242,6 +1286,8 @@ function setbutton() {
 		$( '#single' ).toggleClass( 'btn-primary', GUI.json.single === '1' );
 	}
 	
+	if ( prevnext === 1 ) return; // disable for previous/next while stop
+	
 	if ( state === 'stop' ) {
 		$( '#stop' ).addClass( 'btn-primary' );
 		$( '#play, #pause' ).removeClass( 'btn-primary' );
@@ -1274,8 +1320,9 @@ function settime() {
 	// no current song or set mode buttons
 	if ( !GUI.json.currentsong || onsetmode ) return;
 	
+	var dot0 = '<a id="dot0" style="color:#ffffff"> &#8226; </a>';
 	if ( GUI.stream === 'radio' || GUI.libraryhome.ActivePlayer === 'Airplay' || GUI.libraryhome.ActivePlayer === 'Spotify' ) {
-		$( '#format-bitrate' ).html( GUI.json.audio_sample_depth ? '<a id="dot0" style="color:#ffffff"> &#8226; </a>' + GUI.json.audio_sample_depth + ' bit ' + GUI.json.audio_sample_rate +' kHz '+GUI.json.bitrate+' kbit/s' : '&nbsp;' );
+		$( '#format-bitrate' ).html( GUI.json.audio_sample_depth ? dot0 + GUI.json.audio_sample_depth + ' bit ' + GUI.json.audio_sample_rate +' kHz '+GUI.json.bitrate+' kbit/s' : '&nbsp;' );
 		$timeRS.setValue( 0 );
 		clearInterval( GUI.currentKnob );
 		clearInterval( GUI.countdown );
@@ -1285,9 +1332,23 @@ function settime() {
 	}
 	$.post( '/enhanceredis.php', { bash: '/srv/http/enhancestatus.sh' }, function( data ) {
 		var status = JSON.parse( data );
-		var dot =  '<a style="color:#ffffff"> &#8226; </a>';
-		var dot0 = dot.replace( '<a', '<a id="dot0"' );
-		var ext = ( GUI.stream !== 'radio' ) ? dot + GUI.json.fileext.toUpperCase() : '';
+		// volume
+		$volumetransition.css( 'transition-duration', '0s' ); // suppress initial rotate animation
+		$volumeRS.setValue( status.volume );
+		$volumehandle.rsRotate( - $volumeRS._handle1.angle );
+		$volumetooltip.show(); // show after 'setValue'
+		$volumehandle.show();
+		$volumetransition.css( 'transition', '' );           // reset animation to default
+		if ( $( '#vol-group' ).is( ':visible' ) ) {
+			if ( status.volumemute != 0 ) {
+				mutecolor( status.volumemute );
+			} else {
+				unmutecolor();
+			}
+		}
+		// sampling and time
+		var dot = dot0.replace( ' id="dot0"', '' );
+		var ext = ( GUI.stream !== 'radio' ) ? dot + status.ext : '';
 		$( '#format-bitrate' ).html( dot0 + status.sampling + ext );
 		time = +status.time;
 		$( '#total' ).text( converthms( time ) );
@@ -1295,7 +1356,7 @@ function settime() {
 		clearInterval( GUI.currentKnob );
 		clearInterval( GUI.countdown );
 
-		if ( status.state === 'stop' || prevnext === 1 || $( '#time-knob' ).hasClass( 'hide' ) ) {
+		if ( status.state === 'stop' || $( '#time-knob' ).hasClass( 'hide' ) ) {
 			$timeRS.setValue( 0 );
 			$( '#elapsed' ).text( '' );
 			return;
@@ -1339,42 +1400,6 @@ function converthms( second ) {
 			+ ( mm || ss ? ss : '' )
 		;
 }
-
-function setvolume() {
-	if ( !$('#section-index' ).length || $( '#volume-knob' ).hasClass( 'hide' ) ) return;
-	
-	// set mute button before render
-	volumemute = 0;
-	var command = {
-		volumemute: [ 'get', 'volumemute' ],
-		volume: [ '/usr/bin/mpc volume | sed "s/[^0-9]//g"' ]
-	};
-	$.post( '/enhanceredis.php', 
-		{ json: JSON.stringify( command ) },
-		function( data ) {
-			setTimeout( function() {
-				onsetvolume = 0;
-			}, 500 );
-			var json = JSON.parse( data );
-			if ( !$( '#songinfo-modal' ).length || GUI.vol_changed_local === 0 ) {
-				$volumetransition.css( 'transition-duration', '0s' ); // suppress initial rotate animation
-				$volumeRS.setValue( json.volume );
-				$volumehandle.rsRotate( - $volumeRS._handle1.angle );
-				$volumetooltip.show(); // show after 'setValue'
-				$volumehandle.show();
-				$volumetransition.css( 'transition', '' );           // reset animation to default
-				if ( $( '#vol-group' ).is( ':visible' ) ) {
-					if ( json.volumemute != 0 ) {
-						mutecolor( json.volumemute );
-					} else {
-						unmutecolor();
-					}
-				}
-			}
-		}
-	);
-}
-setvolume(); // initial volume
 
 // song info
 function setinfo() {
