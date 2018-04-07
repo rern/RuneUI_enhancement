@@ -1318,7 +1318,7 @@ function setbutton() {
 onsetmode = 0;
 function settime() {
 	// no current song or set mode buttons
-	if ( !GUI.json.currentsong || onsetmode ) return;
+	if ( !GUI.json.playlistlength || onsetmode ) return;
 	
 	var dot0 = '<a id="dot0" style="color:#ffffff"> &#8226; </a>';
 	if ( GUI.stream === 'radio' || GUI.libraryhome.ActivePlayer === 'Airplay' || GUI.libraryhome.ActivePlayer === 'Spotify' ) {
