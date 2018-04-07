@@ -19,14 +19,14 @@ fi
 
 # get filename within bash avoids character escaping
 data=$( { echo currentsong; sleep 0.1; } | telnet localhost 6600 )
-file=$( echo "$data" | grep file | sed 's|file: |/mnt/MPD/|' )
+file=$( echo "$data" | grep -a file | sed 's|file: |/mnt/MPD/|' )
 
 # initial playlist not response to 'currentsong'
 if [[ ! $file ]]; then
 	mpc play
 	mpc stop
 	data=$( { echo currentsong; sleep 0.1; } | telnet localhost 6600 )
-	file=$( echo "$data" | grep file | sed 's|file: |/mnt/MPD/|' )
+	file=$( echo "$data" | grep -a file | sed 's|file: |/mnt/MPD/|' )
 fi
 
 ext=$( echo $file | sed 's/^.*\.//' | tr '[:lower:]' '[:upper:]' )
