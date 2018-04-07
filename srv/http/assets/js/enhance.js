@@ -1320,8 +1320,9 @@ function settime() {
 	// no current song or set mode buttons
 	if ( !GUI.json.currentsong || onsetmode ) return;
 	
+	var dot0 = '<a id="dot0" style="color:#ffffff"> &#8226; </a>';
 	if ( GUI.stream === 'radio' || GUI.libraryhome.ActivePlayer === 'Airplay' || GUI.libraryhome.ActivePlayer === 'Spotify' ) {
-		$( '#format-bitrate' ).html( GUI.json.audio_sample_depth ? '<a id="dot0" style="color:#ffffff"> &#8226; </a>' + GUI.json.audio_sample_depth + ' bit ' + GUI.json.audio_sample_rate +' kHz '+GUI.json.bitrate+' kbit/s' : '&nbsp;' );
+		$( '#format-bitrate' ).html( GUI.json.audio_sample_depth ? dot0 + GUI.json.audio_sample_depth + ' bit ' + GUI.json.audio_sample_rate +' kHz '+GUI.json.bitrate+' kbit/s' : '&nbsp;' );
 		$timeRS.setValue( 0 );
 		clearInterval( GUI.currentKnob );
 		clearInterval( GUI.countdown );
@@ -1346,9 +1347,8 @@ function settime() {
 			}
 		}
 		// sampling and time
-		var dot =  '<a style="color:#ffffff"> &#8226; </a>';
-		var dot0 = dot.replace( '<a', '<a id="dot0"' );
-		var ext = ( GUI.stream !== 'radio' ) ? dot + status.ext.toUpperCase() : '';
+		var dot = dot0.replace( ' id="dot0"', '' );
+		var ext = ( GUI.stream !== 'radio' ) ? dot + status.ext : '';
 		$( '#format-bitrate' ).html( dot0 + status.sampling + ext );
 		time = +status.time;
 		$( '#total' ).text( converthms( time ) );
