@@ -66,7 +66,7 @@ else
 #	channel=${data[1]}
 	bitdepth=${data[2]}
 	bitrate=${data[3]}
-	[[ $bitdepth ]] && bitdepth="$bitdepth bit " || bitdepth=''
+	[[ $bitdepth == 'N/A' ]] && bitdepth='' || bitdepth="$bitdepth bit "
 	samplerate=$( awk "BEGIN { printf \"%.1f\n\", ${data[0]} / 1000 }" )
 	kbps=$( awk "BEGIN { printf \"%.1f\n\", $bitrate / 1000 }" )
 	Mbps=$( awk "BEGIN { printf \"%.2f\n\", $bitrate / 1000000 }" )
