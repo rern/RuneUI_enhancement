@@ -843,7 +843,7 @@ function displayplayback() {
 		}, 50 );
 	} );
 	// empty playlist
-	if ( !GUI.json.currentsong ) $( '#currentartist, #currentsong, #currentalbum, #format-bitrate, #total' ).html( '&nbsp;' );
+	if ( !GUI.json.playlistlength ) $( '#currentartist, #currentsong, #currentalbum, #format-bitrate, #total' ).html( '&nbsp;' );
 }
 displayplayback();
 // library show/hide blocks
