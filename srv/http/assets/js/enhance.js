@@ -1331,9 +1331,24 @@ function settime() {
 	}
 	$.post( '/enhanceredis.php', { bash: '/srv/http/enhancestatus.sh' }, function( data ) {
 		var status = JSON.parse( data );
+		// volume
+		$volumetransition.css( 'transition-duration', '0s' ); // suppress initial rotate animation
+		$volumeRS.setValue( status.volume );
+		$volumehandle.rsRotate( - $volumeRS._handle1.angle );
+		$volumetooltip.show(); // show after 'setValue'
+		$volumehandle.show();
+		$volumetransition.css( 'transition', '' );           // reset animation to default
+		if ( $( '#vol-group' ).is( ':visible' ) ) {
+			if ( status.volumemute != 0 ) {
+				mutecolor( status.volumemute );
+			} else {
+				unmutecolor();
+			}
+		}
+		// sampling and time
 		var dot =  '<a style="color:#ffffff"> &#8226; </a>';
 		var dot0 = dot.replace( '<a', '<a id="dot0"' );
-		var ext = ( GUI.stream !== 'radio' ) ? dot + GUI.json.fileext.toUpperCase() : '';
+		var ext = ( GUI.stream !== 'radio' ) ? dot + status.ext.toUpperCase() : '';
 		$( '#format-bitrate' ).html( dot0 + status.sampling + ext );
 		time = +status.time;
 		$( '#total' ).text( converthms( time ) );
@@ -1385,42 +1400,6 @@ function converthms( second ) {
 			+ ( mm || ss ? ss : '' )
 		;
 }
-
-function setvolume() {
-	if ( !$('#section-index' ).length || $( '#volume-knob' ).hasClass( 'hide' ) ) return;
-	
-	// set mute button before render
-	volumemute = 0;
-	var command = {
-		volumemute: [ 'get', 'volumemute' ],
-		volume: [ '/usr/bin/mpc volume | sed "s/[^0-9]//g"' ]
-	};
-	$.post( '/enhanceredis.php', 
-		{ json: JSON.stringify( command ) },
-		function( data ) {
-			setTimeout( function() {
-				onsetvolume = 0;
-			}, 500 );
-			var json = JSON.parse( data );
-			if ( !$( '#songinfo-modal' ).length || GUI.vol_changed_local === 0 ) {
-				$volumetransition.css( 'transition-duration', '0s' ); // suppress initial rotate animation
-				$volumeRS.setValue( json.volume );
-				$volumehandle.rsRotate( - $volumeRS._handle1.angle );
-				$volumetooltip.show(); // show after 'setValue'
-				$volumehandle.show();
-				$volumetransition.css( 'transition', '' );           // reset animation to default
-				if ( $( '#vol-group' ).is( ':visible' ) ) {
-					if ( json.volumemute != 0 ) {
-						mutecolor( json.volumemute );
-					} else {
-						unmutecolor();
-					}
-				}
-			}
-		}
-	);
-}
-setvolume(); // initial volume
 
 // song info
 function setinfo() {
