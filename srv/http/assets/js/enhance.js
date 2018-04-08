@@ -304,23 +304,31 @@ $( '#closebio' ).click( function() {
 $hammercoverT.on( 'tap', function( e ) {
 	$( '#menu-top, #menu-bottom' ).toggle();
 	barhide = $( '#menu-top' ).is( ':hidden' ) ? 1 : 0;
+	$( '#controls' ).hide();
+	e.stopPropagation();
+} ).on( 'press', function( e ) {
+	$( '#controls' ).toggle();
 	e.stopPropagation();
 } );
 $hammercoverL.on( 'tap', function( e ) {
 	$( '#previous' ).click();
+	$( '#controls' ).hide();
 	e.stopPropagation();
 } );
 [ $hammertime, $hammercoverM ].forEach( function( el ) {
 	el.on( 'tap', function( e ) {
 		$( '#play' ).click();
+		$( '#controls' ).hide();
 		e.stopPropagation();
 	} ).on( 'press', function( e ) {
 		$( '#stop' ).click();
+		$( '#controls' ).hide();
 		e.stopPropagation();
 	} );
 } );
 $hammercoverR.on( 'tap', function( e ) {
 	$( '#next' ).click();
+	$( '#controls' ).hide();
 	e.stopPropagation();
 } );
 $hammercoverB.on( 'tap', function( e ) {
@@ -345,7 +353,7 @@ $hammercoverB.on( 'tap', function( e ) {
 	if ( window.innerHeight < 414 && $( '#play-group' ).is( ':hidden' ) ) {
 		$( '#play-group, #share-group, #vol-group' ).css( 'margin-top', '10px' );
 	}
-	
+	$( '#controls' ).hide();
 	e.stopPropagation();
 } );
 
