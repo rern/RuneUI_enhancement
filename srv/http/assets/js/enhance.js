@@ -159,7 +159,7 @@ window.addEventListener( 'orientationchange', function() {
 	}, 100 );
 } );
 
-if ( 'hidden' in document ) {
+if ( 'hidden' in document ) { // fix: ios not fire
 	var visibilitychange = 'visibilitychange';
 	var hidden = 'hidden';
 } else {
@@ -167,20 +167,21 @@ if ( 'hidden' in document ) {
 	for ( var i = 0; i < 4; i++ ) {
 		var p = prefixes[ i ];
 		if ( p +'Hidden' in document ) {
-			var visibilitychange = prefix +'visibilitychange';
-			var hidden = prefix +'Hidden';
+			var visibilitychange = p +'visibilitychange';
+			var hidden = p +'Hidden';
 			break;
 		}
 	}
 }
 document.addEventListener( visibilitychange, function() {
 	if ( document[ hidden ] ) {
+		$( '#elapsed' ).text( '' );
 		clearInterval( GUI.currentKnob );
 		clearInterval( GUI.countdown );
 	} else {
 		settime();
 	}
-});
+} );
 
 // hammer**************************************************************
 Hammer = propagating( Hammer ); // propagating.js fix 
