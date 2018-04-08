@@ -147,7 +147,7 @@ $( '#play-group, #share-group, #vol-group' ).click( function() {
 	if ( window.innerWidth < 499 ) buttonactive = 1;
 } );
 
-function displayall() {
+window.addEventListener( 'orientationchange', function() {
 	setTimeout( function() {
 		if ( $( '#playback' ).hasClass( 'active' ) ) {
 			displayplayback();
@@ -157,48 +157,28 @@ function displayall() {
 			displayqueue();
 		}
 	}, 100 );
-}
-window.addEventListener( 'orientationchange', displayall );
-/*window.addEventListener( 'visibilitychange', function() {
-	if ( document.visibilityState === 'visible' ) {
-		settime();
-	}
-} );*/
+} );
 
-// cross-browser page visibility event 
-// (from: https://code.tutsplus.com/articles/html5-page-visibility-api--cms-22021)
-function getBrowserPrefix() {
-	if ( 'hidden' in document ) return null; // 1. no prefix
-	
-	var browserPrefixes = [ 'moz', 'ms', 'o', 'webkit' ]; // 2. get prefix
-	for ( var i = 0; i < browserPrefixes.length; i++ ) {
-		var prefix = browserPrefixes[ i ] + 'Hidden';
-		if ( prefix in document ) return browserPrefixes[ i ];
+if ( 'hidden' in document ) {
+	var visibilitychange = 'visibilitychange';
+	var hidden = 'hidden';
+} else {
+	var prefixes = [ 'webkit', 'moz', 'ms', 'o' ];
+	for ( var i = 0; i < 4; i++ ) {
+		var p = prefixes[ i ];
+		if ( p +'Hidden' in document ) {
+			var visibilitychange = prefix +'visibilitychange';
+			var hidden = prefix +'Hidden';
+			break;
+		}
 	}
-	
-	return null; // 3. browser not support
 }
-function hiddenProperty( prefix ) {
-    return ( prefix ) ? prefix + 'Hidden' : 'hidden';
-}
-function visibilityState( prefix ) {
-    return ( prefix ) ? prefix + 'VisibilityState' : 'visibilityState';
-}
-function visibilityEvent( prefix ) {
-    return ( prefix ) ? prefix + 'visibilitychange' : 'visibilitychange';
-}
-
-var prefix = getBrowserPrefix();
-var hidden = hiddenProperty( prefix );
-var visibilityState = visibilityState( prefix );
-var visibilityEvent = visibilityEvent( prefix );
- 
-document.addEventListener( visibilityEvent, function( event ) {
-	if ( !document[ hidden ] ) {
-		settime();
-	} else {
+document.addEventListener( visibilitychange, function() {
+	if ( document[ hidden ] ) {
 		clearInterval( GUI.currentKnob );
 		clearInterval( GUI.countdown );
+	} else {
+		settime();
 	}
 });
 
@@ -839,16 +819,6 @@ function displayplayback() {
 		
 		displaycommon();
 		
-		// scroll info text
-		setTimeout( function() {
-			$( '#divartist, #divsong, #divalbum' ).each( function() {
-				if ( $( this ).find( 'span' ).width() > Math.floor( window.innerWidth * 0.975 ) ) {
-					$( this ).addClass( 'scroll-left' );
-				} else {
-					$( this ).removeClass( 'scroll-left' );
-				}
-			} );
-		}, 50 );
 	} );
 	// empty playlist
 	if ( !GUI.json.playlistlength ) $( '#currentartist, #currentsong, #currentalbum, #format-bitrate, #total' ).html( '&nbsp;' );
@@ -1445,9 +1415,15 @@ function setinfo() {
 	
 	if ( $( '#lyricscontainer' ).length && $( '#lyricscontainer' ).is( ':visible' ) )  getlyrics();
 
-	// scroll long song text
-	if ( $('#panel-dx').hasClass('active') ) customScroll( 'pl', parseInt( GUI.json.song ) );
-	
+	// scroll info text
+	$( '#divartist, #divsong, #divalbum' ).each( function() {
+		if ( $( this ).find( 'span' ).width() > Math.floor( window.innerWidth * 0.975 ) ) {
+			$( this ).addClass( 'scroll-left' );
+		} else {
+			$( this ).removeClass( 'scroll-left' );
+		}
+	} );
+
 	// album changed
 	var currentalbumstring = currentartist +' - '+ currentalbum;
 	if ( GUI.currentalbum === currentalbumstring ) return;
