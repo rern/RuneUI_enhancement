@@ -288,6 +288,15 @@
 .m-65 { margin-left: calc( 50% - 65px ); }
 .m65 { margin-left: calc( 50% + 65px ); }
 .m-115 { margin-left: calc( 50% - 115px ); }
+#controls {
+	display: none;
+	position: absolute;
+	top: 0;
+	left: 50%;
+	margin-left: -115px;
+	width: 230px;
+	height: 230px;
+}
 #cover-art {
 	margin: 0 auto;
 	width: 230px;
