@@ -282,13 +282,13 @@ $( '#closebio' ).click( function() {
 	if ( !barhide ) $( '#menu-top, #menu-bottom' ).show();
 } );
 
+$( '#coverTL, #coverTR' ).click( function() {
+	$( '#controls' ).toggle();
+} );
 $hammercoverT.on( 'tap', function( e ) {
 	$( '#menu-top, #menu-bottom' ).toggle();
 	barhide = $( '#menu-top' ).is( ':hidden' ) ? 1 : 0;
 	$( '#controls' ).hide();
-	e.stopPropagation();
-} ).on( 'press', function( e ) {
-	$( '#controls' ).toggle();
 	e.stopPropagation();
 } );
 $hammercoverL.on( 'tap', function( e ) {
