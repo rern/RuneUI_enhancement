@@ -159,22 +159,22 @@ window.addEventListener( 'orientationchange', function() {
 	}, 100 );
 } );
 
-if ( 'hidden' in document ) { // fix: ios not fire
-	var visibilitychange = 'visibilitychange';
-	var hidden = 'hidden';
-} else {
+if ( 'hidden' in document ) {
+	var visibilityevent = 'visibilitychange';
+	var hiddenstate = 'hidden';
+} else { // cross-browser document.visibilityState must be prefixed
 	var prefixes = [ 'webkit', 'moz', 'ms', 'o' ];
 	for ( var i = 0; i < 4; i++ ) {
 		var p = prefixes[ i ];
 		if ( p +'Hidden' in document ) {
-			var visibilitychange = p +'visibilitychange';
-			var hidden = p +'Hidden';
+			var visibilityevent = p +'visibilitychange';
+			var hiddenstate = p +'Hidden';
 			break;
 		}
 	}
 }
-document.addEventListener( visibilitychange, function() {
-	if ( document[ hidden ] ) {
+document.addEventListener( visibilityevent, function() {
+	if ( document[ hiddenstate ] ) {
 		$( '#elapsed' ).text( '' );
 		clearInterval( GUI.currentKnob );
 		clearInterval( GUI.countdown );
