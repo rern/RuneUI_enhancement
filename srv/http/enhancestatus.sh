@@ -82,7 +82,7 @@ else
 	samplerate=$( awk "BEGIN { printf \"$decimal\", $samplerate / 1000 }" )' kHz '
 
 	if (( $bitrate < 1000000 )); then
-		bitrate=$( awk "BEGIN { printf \"%.1f\n\", $bitrate / 1000 }" )' kbit/s'
+		bitrate=$(( bitrate / 1000 ))' kbit/s'
 	else
 		bitrate=$( awk "BEGIN { printf \"%.2f\n\", $bitrate / 1000000 }" )' Mbit/s'
 	fi

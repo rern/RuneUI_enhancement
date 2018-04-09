@@ -36,8 +36,10 @@
 				</div>
 				<div id="coverart">
 					<img id="cover-art" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="transparent-square">
-					<img id="controls" src="/srv/http/assets/img/controls.png" style="display: none; position: absolute; top: 0; left: 50%; margin-left: -115px;">
+					<img id="controls" src="/srv/http/assets/img/controls.svg">
+					<div id="coverTL" class="covermap t0 w50 h50 m-115"></div>
 					<div id="coverT" class="covermap t0 w130 h50 m-65"></div>
+					<div id="coverTR" class="covermap t0 w50 h50 m65"></div>
 					<div id="coverB" class="covermap t180 w130 h50 m-65"></div>
 					<div id="coverM" class="covermap t50 w130 h130 m-65"></div>
 					<div id="coverL" class="covermap t50 w50 h130 m-115"></div>

@@ -24,7 +24,7 @@ rm -v /srv/http/{enhancebio.php,enhancestatus.sh,enhancevolume.sh}
 [[ ! -e /usr/local/bin/uninstall_addo.sh ]] && rm -v /srv/http/enhanceredis.php
 path=/srv/http/assets
 rm -v $path/css/{enhance.css,midori.css,roundslider.min.css}
-rm -v $path/img/runelogo.svg
+rm -v $path/img/{controls.svg,runelogo.svg}
 rm -v $path/js/{enhance.js,runeui.min.js}
 rm -vf $path/js/vendor/{jquery-ui.min.js,propagating.js,roundslider.min.js}
 
