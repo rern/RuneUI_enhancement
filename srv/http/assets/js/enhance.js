@@ -827,7 +827,9 @@ function displayplayback() {
 		$( '#currentalbum' ).html( 'Empty queue' );
 		$( '#playlist-position span' ).html( 'Add some entries from your library' );
 		$( '#elapsed, #total' ).html( '&nbsp;' );
-//		$( '#volume .rs-handle, #volume .rs-tooltip' ).hide();
+		clearInterval( GUI.currentKnob );
+		clearInterval( GUI.countdown );
+		$( '#time' ).roundSlider( 'setValue', 0 );
 	}
 }
 displayplayback();
@@ -1277,7 +1279,6 @@ function setbutton() {
 				$( '#pause' ).removeClass( 'btn-primary' );
 			}
 		} else if ( state === 'pause' ) {
-//			$( '#playlist-position span' ).html( 'Not playing' );
 			$( '#stop' ).removeClass( 'btn-primary' );
 			if ( $( '#pause' ).hasClass( 'hide' ) ) {
 				$( '#play i' ).removeClass( 'fa fa-play' ).addClass( 'fa fa-pause' );
@@ -1289,7 +1290,7 @@ function setbutton() {
 	}
 }
 
-// song - sampling info and time
+// song - sampling info, time, volume
 onsetmode = 0;
 function settime() {
 	$.post( '/enhanceredis.php', { bash: '/srv/http/enhancestatus.sh' }, function( data ) {
@@ -1333,14 +1334,14 @@ function settime() {
 		clearInterval( GUI.countdown );
 
 		if ( status.state === 'stop' || $( '#time-knob' ).hasClass( 'hide' ) ) {
-			$timeRS.setValue( 0 );
+			$( '#time' ).roundSlider( 'setValue', 0 );
 			$( '#elapsed' ).text( '' );
 			return;
 		} // stop <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 		
 		var elapsed = status.elapsed;
 		var position = Math.round( 1000 * elapsed / time );
-		$timeRS.setValue( position );
+		$( '#time' ).roundSlider( 'setValue', position );
 		$( '#elapsed' ).text( converthms( elapsed ) );
 		
 		if ( status.state === 'paused' ) return; // pause <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -1357,7 +1358,7 @@ function settime() {
 				$( '#elapsed' ).text( '' );
 				settime();
 			}
-			$timeRS.setValue( position );
+			$( '#time' ).roundSlider( 'setValue', position );
 		}, time );
 		
 		GUI.countdown = setInterval( function() {
