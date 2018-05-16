@@ -26,7 +26,12 @@ path=/srv/http/assets
 rm -v $path/css/{enhance.css,midori.css,roundslider.min.css}
 rm -v $path/img/{controls.svg,runelogo.svg}
 rm -v $path/js/{enhance.js,runeui.min.js}
-rm -vf $path/js/vendor/{jquery-ui.min.js,propagating.js,roundslider.min.js}
+rm -vf $path/js/vendor/{jquery-ui.min.js,roundslider.min.js}
+
+if [[ ! -e /usr/local/bin/uninstall_addo.sh ]]; then
+	rm -v /srv/http/assets/js/vendor/hammer.min.js
+	rm -v /srv/http/assets/js/vendor/propagating.js
+fi
 
 mv /srv/http/app/coverart_ctl.php{.backup,}
 mv $path/js/runeui.min.js{.backup,}
