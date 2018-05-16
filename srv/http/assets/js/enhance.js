@@ -822,7 +822,13 @@ function displayplayback() {
 		
 	} );
 	// empty playlist
-	if ( !GUI.json.playlistlength ) $( '#currentartist, #currentsong, #currentalbum, #format-bitrate, #total' ).html( '&nbsp;' );
+	if ( !GUI.json.currentsong ) {
+		$( '#currentartist, #currentsong, #format-bitrate, #total' ).html( '&nbsp;' );
+		$( '#currentalbum' ).html( 'Empty queue' );
+		$( '#playlist-position span' ).html( 'Add some entries from your library' );
+		$( '#elapsed, #total' ).html( '&nbsp;' );
+//		$( '#volume .rs-handle, #volume .rs-tooltip' ).hide();
+	}
 }
 displayplayback();
 // library show/hide blocks
@@ -1243,21 +1249,11 @@ function commandButton( el ) {
 function setbutton() {
 	var state = GUI.state;
 	
-	if ( GUI.json.playlistlength && GUI.json.playlistlength !== '0' ) {
-		if ( GUI.json.song ) {
-			$( '#playlist-position span' ).html( ( parseInt( GUI.json.song ) + 1 ) +'/'+ GUI.json.playlistlength );
-		} else {
-			$( '#playlist-position span' ).html( '1/'+ GUI.json.playlistlength );
-		}
+	if ( GUI.json.updating_db !== undefined ) {
+		$( '#open-panel-sx a' ).html( '<i class="fa fa-refresh fa-spin"></i>' );
 	} else {
-		$( '#playlist-position span' ).html( 'Empty queue, add some music!' );
+		$( '#open-panel-sx a' ).html( '<i class="fa fa-folder-open"></i>' );
 	}
-	
-    if ( GUI.json.updating_db !== undefined ) {
-        $( '#open-panel-sx a' ).html( '<i class="fa fa-refresh fa-spin"></i>' );
-    } else {
-        $( '#open-panel-sx a' ).html( '<i class="fa fa-folder-open"></i>' );
-    }
 	
 	if ( $( '#play-group' ).is( ':visible' ) ) {
 		$( '#repeat' ).toggleClass( 'btn-primary', GUI.json.repeat === '1' );
@@ -1296,19 +1292,6 @@ function setbutton() {
 // song - sampling info and time
 onsetmode = 0;
 function settime() {
-	// no current song or set mode buttons
-	if ( !GUI.json.currentsong || onsetmode ) return;
-	
-	var dot0 = '<a id="dot0" style="color:#ffffff"> &#8226; </a>';
-	if ( GUI.stream === 'radio' || GUI.libraryhome.ActivePlayer === 'Airplay' || GUI.libraryhome.ActivePlayer === 'Spotify' ) {
-		$( '#format-bitrate' ).html( GUI.json.audio_sample_depth ? dot0 + GUI.json.audio_sample_depth + ' bit ' + GUI.json.audio_sample_rate +' kHz '+GUI.json.bitrate+' kbit/s' : '&nbsp;' );
-		$timeRS.setValue( 0 );
-		clearInterval( GUI.currentKnob );
-		clearInterval( GUI.countdown );
-		$( '#elapsed' ).html( GUI.state === 'play' ? '<a class="dot">.</a> <a class="dot dot2">.</a> <a class="dot dot3">.</a>' : '' );
-		$( '#total' ).text( '' );
-		return;
-	}
 	$.post( '/enhanceredis.php', { bash: '/srv/http/enhancestatus.sh' }, function( data ) {
 		var status = JSON.parse( data );
 		// volume
@@ -1324,6 +1307,20 @@ function settime() {
 			} else {
 				unmutecolor();
 			}
+		}
+		
+		// no current song or set mode buttons
+		if ( !GUI.json.currentsong || onsetmode ) return;
+		
+		var dot0 = '<a id="dot0" style="color:#ffffff"> &#8226; </a>';
+		if ( GUI.stream === 'radio' || GUI.libraryhome.ActivePlayer === 'Airplay' || GUI.libraryhome.ActivePlayer === 'Spotify' ) {
+			$( '#format-bitrate' ).html( GUI.json.audio_sample_depth ? dot0 + GUI.json.audio_sample_depth + ' bit ' + GUI.json.audio_sample_rate +' kHz '+GUI.json.bitrate+' kbit/s' : '&nbsp;' );
+			$timeRS.setValue( 0 );
+			clearInterval( GUI.currentKnob );
+			clearInterval( GUI.countdown );
+			$( '#elapsed' ).html( GUI.state === 'play' ? '<a class="dot">.</a> <a class="dot dot2">.</a> <a class="dot dot3">.</a>' : '' );
+			$( '#total' ).text( '' );
+			return;
 		}
 		// sampling and time
 		var dot = dot0.replace( ' id="dot0"', '' );
@@ -1391,20 +1388,30 @@ function setinfo() {
 	
 	setbutton();
 	
-	if ( GUI.stream !== 'radio' ) {
-		$( '#currentartist' ).html( currentartist ? currentartist : '&nbsp;' );
-		$( '#currentsong' ).html( currentsong ? currentsong : '&nbsp;' );
-		$( '#currentalbum').html( currentalbum ? currentalbum : '&nbsp;' );
-	} else {
-		$( '#currentartist' ).html( currentartist ? currentartist : radioname );
-		if ( GUI.state !== 'stop' ) {
-			$( '#currentalbum' ).html( currentalbum ? currentalbum : 'Radio' );
-			$( '#currentsong' ).html( currentsong ? currentsong : radioname );
+	if ( GUI.json.playlistlength !== '0' ) {
+		if ( GUI.stream !== 'radio' ) {
+			$( '#currentartist' ).html( currentartist ? currentartist : '&nbsp;' );
+			$( '#currentsong' ).html( currentsong ? currentsong : '&nbsp;' );
+			$( '#currentalbum').html( currentalbum ? currentalbum : '&nbsp;' );
 		} else {
-			$( '#currentsong' ).html( 'Radio' );
-			$( '#divsong' ).removeClass( 'scroll-left' );
-			$( '#currentalbum' ).html( '' );
+			$( '#currentartist' ).html( currentartist ? currentartist : radioname );
+			if ( GUI.state !== 'stop' ) {
+				$( '#currentalbum' ).html( currentalbum ? currentalbum : 'Radio' );
+				$( '#currentsong' ).html( currentsong ? currentsong : radioname );
+			} else {
+				$( '#currentsong' ).html( 'Radio' )
+				$( '#divsong' ).removeClass( 'scroll-left' );
+				$( '#currentalbum' ).html( '' );
+			}
 		}
+		
+		if ( GUI.json.song ) {
+			$( '#playlist-position span' ).html( ( parseInt( GUI.json.song ) + 1 ) +'/'+ GUI.json.playlistlength );
+		} else {
+			$( '#playlist-position span' ).html( '1/'+ GUI.json.playlistlength );
+		}
+		
+		if (GUI.stream === 'radio') $('#cover-art').css('background-image','url("assets/img/cover-radio.jpg")');
 	}
 	
 	// song changed
