@@ -29,9 +29,7 @@ rm -v $path/js/enhance.js
 rm -vf $path/js/vendor/{jquery-ui.min.js,roundslider.min.js}
 
 mv /srv/http/app/coverart_ctl.php{.backup,}
-if [[ -e $path/js/runeui.min.js.backup ]]; then
-	mv $path/js/runeui.min.js{.backup,}
-fi
+mv $path/js/runeui.min.js{.backup,}
 
 # restore modified files #######################################
 echo -e "$bar Restore modified files ..."
