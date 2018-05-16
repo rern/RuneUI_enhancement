@@ -1297,7 +1297,7 @@ function setbutton() {
 onsetmode = 0;
 function settime() {
 	// no current song or set mode buttons
-	if ( !GUI.json.playlistlength || onsetmode ) return;
+	if ( !GUI.json.currentsong || onsetmode ) return;
 	
 	var dot0 = '<a id="dot0" style="color:#ffffff"> &#8226; </a>';
 	if ( GUI.stream === 'radio' || GUI.libraryhome.ActivePlayer === 'Airplay' || GUI.libraryhome.ActivePlayer === 'Spotify' ) {
@@ -1402,6 +1402,7 @@ function setinfo() {
 			$( '#currentsong' ).html( currentsong ? currentsong : radioname );
 		} else {
 			$( '#currentsong' ).html( 'Radio' );
+			$( '#divsong' ).removeClass( 'scroll-left' );
 			$( '#currentalbum' ).html( '' );
 		}
 	}
