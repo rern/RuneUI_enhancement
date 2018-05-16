@@ -25,8 +25,8 @@ rm -v /srv/http/{enhancebio.php,enhancestatus.sh,enhancevolume.sh}
 path=/srv/http/assets
 rm -v $path/css/{enhance.css,midori.css,roundslider.min.css}
 rm -v $path/img/{controls.svg,runelogo.svg}
-rm -v $path/js/{enhance.js,runeui.min.js}
-rm -vf $path/js/vendor/{jquery-ui.min.js,propagating.js,roundslider.min.js}
+rm -v $path/js/enhance.js
+rm -vf $path/js/vendor/{jquery-ui.min.js,roundslider.min.js}
 
 mv /srv/http/app/coverart_ctl.php{.backup,}
 mv $path/js/runeui.min.js{.backup,}
@@ -55,8 +55,8 @@ sed -i -e 's/<!--enha\|enha-->//g
 
 # no Addons Menu
 if [[ ! -e /usr/local/bin/uninstall_addo.sh ]]; then
-	rm $path/js/vendor/hammer.min.js
 	sed -i '/hammer.min.js\|propagating.js/ d' $file
+	rm $path/js/vendor/{hammer.min.js,propagating.js}
 fi
 
 file=/srv/http/app/templates/playback.php
