@@ -1316,7 +1316,7 @@ function settime() {
 		var dot0 = '<a id="dot0" style="color:#ffffff"> &#8226; </a>';
 		if ( GUI.stream === 'radio' || GUI.libraryhome.ActivePlayer === 'Airplay' || GUI.libraryhome.ActivePlayer === 'Spotify' ) {
 			$( '#format-bitrate' ).html( GUI.json.audio_sample_depth ? dot0 + GUI.json.audio_sample_depth + ' bit ' + GUI.json.audio_sample_rate +' kHz '+GUI.json.bitrate+' kbit/s' : '&nbsp;' );
-			$timeRS.setValue( 0 );
+			$( '#time' ).roundSlider( 'setValue', 0 );
 			clearInterval( GUI.currentKnob );
 			clearInterval( GUI.countdown );
 			$( '#elapsed' ).html( GUI.state === 'play' ? '<a class="dot">.</a> <a class="dot dot2">.</a> <a class="dot dot3">.</a>' : '' );
