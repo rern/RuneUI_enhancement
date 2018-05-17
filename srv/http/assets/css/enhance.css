@@ -419,13 +419,15 @@
 	50% { color: transparent }
 }
 .dot {
-	animation: 1s blink infinite
+	animation: 1s blink infinite;
+	line-height: normal;
+	vertical-align: 100%;
 }
 .dot2 {
-	animation-delay: 250ms
+	animation-delay: 250ms;
 }
 .dot3 {
-	animation-delay: 500ms
+	animation-delay: 500ms;
 }
 
 /* ------------------- roundSlider ------------------- */
