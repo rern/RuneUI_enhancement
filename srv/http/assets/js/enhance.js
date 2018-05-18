@@ -1152,6 +1152,10 @@ function populateDB(options) {
 				});
 			}
 			$databaseentries.innerHTML = content;
+			// fix: ios not scroll to top
+			setTimeout( function() {
+				window.scrollTo( 0, 0 );
+			}, 50 );
 		}
 	}
 	var breadcrumb = $('span', '#db-currentpath');
