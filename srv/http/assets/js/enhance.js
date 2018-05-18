@@ -1152,10 +1152,6 @@ function populateDB(options) {
 				});
 			}
 			$databaseentries.innerHTML = content;
-			// fix: ios not scroll to top
-			setTimeout( function() {
-				window.scrollTo( 0, 0 );
-			}, 50 );
 		}
 	}
 	var breadcrumb = $('span', '#db-currentpath');
@@ -1422,7 +1418,7 @@ function setinfo() {
 		if ( GUI.json.song ) {
 			$( '#playlist-position span' ).html( ( parseInt( GUI.json.song ) + 1 ) +'/'+ GUI.json.playlistlength );
 		} else {
-			$( '#playlist-position span' ).html( '1/'+ GUI.json.playlistlength );
+			$( '#playlist-position span' ).html( '&nbsp;' );
 		}
 		
 		if (GUI.stream === 'radio') $('#cover-art').css('background-image','url("assets/img/cover-radio.jpg")');
