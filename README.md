@@ -40,8 +40,7 @@ Try it (to be updated) - [**Demo**](https://rern.github.io/RuneUI_GPIO/)
 Install
 ---
 from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)  
-
-![show-hide](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/show-hide.gif)
+  
 
 Functional
 ---
