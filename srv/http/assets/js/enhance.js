@@ -1425,28 +1425,26 @@ function setinfo() {
 	}
 	
 	var currentalbumstring = currentartist +' - '+ currentalbum;
-	// song or album changed
-	if ( GUI.currentsong === GUI.json.currentsong && GUI.currentalbum === currentalbumstring ) return;
-	
-	GUI.currentsong = currentsong;
-	$( '#playlist-entries li ' ).removeClass( 'active' );
-	var current = parseInt( GUI.json.song );
-	$( '#playlist-entries' ).find( 'li' ).eq( current ).addClass( 'active' );
-	
-	if ( $( '#lyricscontainer' ).length && $( '#lyricscontainer' ).is( ':visible' ) )  getlyrics();
-
-	// scroll info text
-	$( '#divartist, #divsong, #divalbum' ).each( function() {
-		if ( $( this ).find( 'span' ).width() > Math.floor( window.innerWidth * 0.975 ) ) {
-			$( this ).addClass( 'scroll-left' );
-		} else {
-			$( this ).removeClass( 'scroll-left' );
-		}
-	} );
+	// song changed
+	if ( GUI.currentsong !== currentsong || GUI.currentalbum !== currentalbumstring ) {
+		GUI.currentsong = currentsong;
+		// scroll info text
+		$( '#divartist, #divsong, #divalbum' ).each( function() {
+			if ( $( this ).find( 'span' ).width() > Math.floor( window.innerWidth * 0.975 ) ) {
+				$( this ).addClass( 'scroll-left' );
+			} else {
+				$( this ).removeClass( 'scroll-left' );
+			}
+		} );
+		$( '#playlist-entries li ' ).removeClass( 'active' );
+		$( '#playlist-entries' ).find( 'li' ).eq( parseInt( GUI.json.song ) ).addClass( 'active' );
+		
+		if ( $( '#lyricscontainer' ).length && $( '#lyricscontainer' ).is( ':visible' ) )  getlyrics();
+	}
 
 	// album changed
 	if ( GUI.currentalbum === currentalbumstring || $( '#coverart' ).hasClass( 'hide' ) ) return;
-
+	
 	GUI.currentalbum = currentalbumstring;
 	if (GUI.stream !== 'radio') {
 		var covercachenum = Math.floor(Math.random()*1001);
