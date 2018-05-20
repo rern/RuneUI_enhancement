@@ -834,7 +834,7 @@ function displayplayback() {
 	if ( !GUI.json.currentsong ) {
 		$( '#currentartist, #format-bitrate, #total' ).html( '&nbsp;' );
 		$( '#currentsong' ).html( '<i class="fa fa-plus-circle"></i>' );
-		$( '#currentalbum' ).html( 'Empty queue' );
+		$( '#currentalbum' ).html( '&nbsp;' );
 		$( '#playlist-position span' ).html( 'Add some entries from your library' );
 		$( '#elapsed, #total' ).html( '&nbsp;' );
 		clearInterval( GUI.currentKnob );
