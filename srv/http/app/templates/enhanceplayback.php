@@ -145,7 +145,7 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 				<div class="col-sm-6 col-sm-offset-3">
 					<div class="empty-block">
 						<i class="fa fa-plus-circle open-sx"></i>
-						<h3>Empty queue</h3>
+						<p>&nbsp;</>
 						<p>Add some entries from your library</p>
 					</div>
 				</div>
