@@ -147,10 +147,10 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 				</div>
 				<div class="col-sm-6 col-sm-offset-3">
 					<div class="empty-block">
-						<i class="fa fa-exclamation"></i>
+						<i class="fa fa-plus-circle open-sx"></i>
 						<h3>Empty queue</h3>
 						<p>Add some entries from your library</p>
-						<p><a id="open-library" href="#panel-sx" class="btn btn-primary btn-lg" data-toggle="tab">Browse Library</a></p>
+						<!--<p><a id="open-library" href="#panel-sx" class="btn btn-primary btn-lg" data-toggle="tab">Browse Library</a></p>-->
 					</div>
 				</div>
 			</div>
