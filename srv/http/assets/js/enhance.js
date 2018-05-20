@@ -832,7 +832,8 @@ function displayplayback() {
 	} );
 	// empty playlist
 	if ( !GUI.json.currentsong ) {
-		$( '#currentartist, #currentsong, #format-bitrate, #total' ).html( '&nbsp;' );
+		$( '#currentartist, #format-bitrate, #total' ).html( '&nbsp;' );
+		$( '#currentsong' ).html( '<i class="fa fa-plus-circle open-sx"></i>' );
 		$( '#currentalbum' ).html( 'Empty queue' );
 		$( '#playlist-position span' ).html( 'Add some entries from your library' );
 		$( '#elapsed, #total' ).html( '&nbsp;' );
