@@ -24,7 +24,7 @@ if ( /Midori/.test( navigator.userAgent ) ) {
 	$( 'head link[rel="stylesheet"]').last().after( '<link rel="stylesheet" href="/css/midori.css">' )
 }
 
-$( '#open-panel-sx' ).click( function() {
+$( '#open-panel-sx, .open-sx' ).click( function() {
 	var activePlayer = GUI.libraryhome.ActivePlayer;
 	if ( activePlayer === 'Spotify' || activePlayer === 'Airplay' ) {
 		$( '#overlay-playsource-open' ).click();
