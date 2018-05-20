@@ -835,7 +835,7 @@ function displayplayback() {
 		$( '#currentartist, #format-bitrate, #total' ).html( '&nbsp;' );
 		$( '#currentsong' ).html( '<i class="fa fa-plus-circle"></i>' );
 		$( '#currentalbum' ).html( '&nbsp;' );
-		$( '#playlist-position span' ).html( 'Add some entries from your library' );
+		$( '#playlist-position span' ).html( 'Add some entries from Library' );
 		$( '#elapsed, #total' ).html( '&nbsp;' );
 		clearInterval( GUI.currentKnob );
 		clearInterval( GUI.countdown );
