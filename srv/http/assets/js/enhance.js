@@ -1424,8 +1424,9 @@ function setinfo() {
 		if (GUI.stream === 'radio') $('#cover-art').css('background-image','url("assets/img/cover-radio.jpg")');
 	}
 	
-	// song changed
-	if ( GUI.currentsong === GUI.json.currentsong ) return;
+	var currentalbumstring = currentartist +' - '+ currentalbum;
+	// song or album changed
+	if ( GUI.currentsong === GUI.json.currentsong && GUI.currentalbum === currentalbumstring ) return;
 	
 	GUI.currentsong = currentsong;
 	$( '#playlist-entries li ' ).removeClass( 'active' );
@@ -1444,11 +1445,8 @@ function setinfo() {
 	} );
 
 	// album changed
-	var currentalbumstring = currentartist +' - '+ currentalbum;
-	if ( GUI.currentalbum === currentalbumstring ) return;
+	if ( GUI.currentalbum === currentalbumstring || $( '#coverart' ).hasClass( 'hide' ) ) return;
 
-	if ( $( '#coverart' ).hasClass( 'hide' ) ) return;
-	
 	GUI.currentalbum = currentalbumstring;
 	if (GUI.stream !== 'radio') {
 		var covercachenum = Math.floor(Math.random()*1001);
