@@ -146,7 +146,7 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 					<div class="empty-block">
 						<i class="fa fa-plus-circle open-sx"></i>
 						<p>&nbsp;</p>
-						<p>Add some entries from Library</p>
+						<p>Add something from Library</p>
 					</div>
 				</div>
 			</div>
