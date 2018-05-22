@@ -5,8 +5,8 @@ sampling=
 i=0
 until [[ i -eq 10 ]]; do
 	sampling=$( { echo status; sleep 0.1; } | telnet localhost 6600 | grep 'bitrate\|audio' )
+	[[ -n $sampling && $sampling != 'bitrate: 0' ]] && break || sleep 0.1
 	(( i++ ))
-	[[ -n $sampling && $sampling != 'bitrate: 0' ]] && break || sleep 0.5
 done
 
 mpc stop
