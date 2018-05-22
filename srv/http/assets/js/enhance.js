@@ -761,17 +761,6 @@ function displaycommon() {
 	}
 }
 
-function scrollinfo() {
-	// scroll info text
-	$( '#divartist, #divsong, #divalbum' ).each( function() {
-		if ( $( this ).find( 'span' ).width() > Math.floor( window.innerWidth * 0.975 ) ) {
-			$( this ).addClass( 'scroll-left' );
-		} else {
-			$( this ).removeClass( 'scroll-left' );
-		}
-	} );
-}
-
 // playback show/hide blocks
 buttonactive = 0;
 function displayplayback() {
@@ -830,41 +819,10 @@ function displayplayback() {
 		if ( buttonactive ) $( '#play-group, #share-group, #vol-group' ).show();
 		$( '#playback-row' ).removeClass( 'hide' ); // restore - hidden by fix flash
 		
-		setTimeout( function() {
-			// webradio info
-			var webradio = GUI.json.file && GUI.json.file.slice( 0, 4 ) === 'http' ? 1 : 0;
-			var sampling = $( '#format-bitrate' ).html();
-			if ( ( !GUI.stream && webradio ) || ( GUI.state === 'stop' && webradio ) ) {
-				if ( sampling === '' || sampling === '&nbsp;' ) {
-					$.post( '/enhanceredis.php', { bash: '/srv/http/enhanceradio.sh' }, function( data ) {
-						$( '#currentartist' ).html( GUI.currentsong );
-						$( '#currentsong' ).html( '&nbsp;' );
-						$( '#currentalbum' ).html( 'Radio' );
-						$( '#format-bitrate' ).html( data );
-						$('#cover-art').css('background-image','url("assets/img/cover-radio.jpg")');
-					} );
-				}
-				return;
-			}
-			// empty queue
-			if ( !GUI.json.currentsong ) {
-				$( '#currentartist, #format-bitrate, #total' ).html( '&nbsp;' );
-				$( '#currentsong' ).html( '<i class="fa fa-plus-circle"></i>' );
-				$( '#currentalbum' ).html( '&nbsp;' );
-				$( '#playlist-position span' ).html( 'Add something from Library' );
-				$( '#elapsed, #total' ).html( '&nbsp;' );
-				clearInterval( GUI.currentKnob );
-				clearInterval( GUI.countdown );
-				$( '#time' ).roundSlider( 'setValue', 0 );
-			}
-		}, 1000 );
-		
-		scrollinfo();
 		displaycommon();
-		
 	} );
 }
-displayplayback();
+
 // library show/hide blocks
 function displaylibrary() {
 	var command = { display: [ 'hGetAll', 'display' ] };
@@ -1254,12 +1212,7 @@ function commandButton( el ) {
 		if ( dataCmd === 'play' ) {
 			dataCmd = ( GUI.state === 'play' ) ? 'pause' : 'play';
 		} else if ( dataCmd === 'stop' ) {
-			if ( GUI.stream === 'radio' ) {
-				var sampling = $( '#format-bitrate' ).html();
-				setTimeout( function() {
-					$( '#format-bitrate' ).html( sampling );
-				}, 1000 );
-			}
+			if ( GUI.json.file.slice( 0, 4 ) === 'http' ) $( '#currentsong' ).html( '&nbsp;' );
 			clearInterval( GUI.currentKnob );
 			clearInterval( GUI.countdown );
 		} else {
@@ -1277,6 +1230,10 @@ function commandButton( el ) {
 					$( '#stop' ).addClass( 'btn-primary' );
 				}
 				$.post( '/enhanceredis.php', { bash: '/usr/bin/mpc play '+ targetsong + mpcstop }, function() {
+					if ( GUI.json.file.slice( 0, 4 ) === 'http' ) {
+						$( '#format-bitrate' ).html( '&nbsp;' );
+						$('#cover-art').css('background-image','url("assets/img/cover-radio.jpg")');
+					}
 					setTimeout( function() {
 						prevnext = 0;
 					}, 500 );
@@ -1352,10 +1309,10 @@ function settime() {
 		}
 		
 		// no current song or set mode buttons
-		if ( !GUI.json.currentsong || onsetmode || ( !GUI.stream && GUI.json.file.slice( 0, 4 ) === 'http' ) ) return;
+		if ( !GUI.json.currentsong || onsetmode ) return;
 		
 		var dot0 = '<a id="dot0" style="color:#ffffff"> &#8226; </a>';
-		if ( GUI.stream === 'radio' || GUI.libraryhome.ActivePlayer === 'Airplay' || GUI.libraryhome.ActivePlayer === 'Spotify' ) {
+		if ( GUI.json.file.slice( 0, 4 ) === 'http' || GUI.libraryhome.ActivePlayer === 'Airplay' || GUI.libraryhome.ActivePlayer === 'Spotify' ) {
 			var sampling = $( '#format-bitrate' ).html();
 			if ( sampling === '' || sampling === '&nbsp;' ) $( '#format-bitrate' ).html( GUI.json.audio_sample_depth ? dot0 + GUI.json.audio_sample_depth + ' bit ' + GUI.json.audio_sample_rate +' kHz '+GUI.json.bitrate+' kbit/s' : '&nbsp;' );
 			$( '#time' ).roundSlider( 'setValue', 0 );
@@ -1422,29 +1379,44 @@ function converthms( second ) {
 
 // song info
 function setinfo() {
-	var radioname = GUI.json.radioname;
+	// empty queue
+	if ( GUI.json.playlistlength == 0 ) {
+		$( '#currentartist, #format-bitrate, #total' ).html( '&nbsp;' );
+		$( '#currentsong' ).html( '<i class="fa fa-plus-circle"></i>' );
+		$( '#currentalbum' ).html( '&nbsp;' );
+		$( '#playlist-position span' ).html( 'Add something from Library' );
+		$( '#elapsed, #total' ).html( '&nbsp;' );
+		clearInterval( GUI.currentKnob );
+		clearInterval( GUI.countdown );
+		$( '#time' ).roundSlider( 'setValue', 0 );
+		return;
+	}
+
 	var currentartist = GUI.json.currentartist;
 	var currentsong = GUI.json.currentsong ? GUI.json.currentsong : '';
 	var currentalbum = GUI.json.currentalbum;
-
-	GUI.stream = ( radioname ? 'radio' : '' );
-	
-	setbutton();
 	
 	if ( GUI.json.playlistlength !== '0' ) {
-		if ( GUI.stream !== 'radio' ) {
+		if ( GUI.json.file.slice( 0, 4 ) !== 'http' ) {
 			$( '#currentartist' ).html( currentartist ? currentartist : '&nbsp;' );
 			$( '#currentsong' ).html( currentsong ? currentsong : '&nbsp;' );
 			$( '#currentalbum').html( currentalbum ? currentalbum : '&nbsp;' );
 		} else {
-			$( '#currentartist' ).html( currentartist ? currentartist : radioname );
+			$( '#currentartist' ).html( GUI.json.radioname );
+			$( '#currentalbum' ).html( 'Radio' );
 			if ( GUI.state !== 'stop' ) {
-				$( '#currentalbum' ).html( currentalbum ? currentalbum : 'Radio' );
-				$( '#currentsong' ).html( currentsong ? currentsong : radioname );
+				$( '#currentsong' ).html( GUI.json.currentsong );
 			} else {
-				$( '#currentsong' ).html( '&nbsp;' )
-				$( '#divsong' ).removeClass( 'scroll-left' );
-				$( '#currentalbum' ).html( 'Radio' );
+				var sampling = $( '#format-bitrate' ).html();
+				if ( sampling === '' || sampling === '&nbsp;' ) {
+					$( '#info' ).css( 'visibility', 'hidden' );
+					$.post( '/enhanceredis.php', { bash: '/srv/http/enhanceradio.sh' }, function( data ) {
+						$( '#currentsong' ).html( '&nbsp;' );
+						$( '#divsong' ).removeClass( 'scroll-left' );
+						$( '#format-bitrate' ).html( data );
+						$( '#info' ).css( 'visibility', 'visible' );
+					} );
+				}
 			}
 			$('#cover-art').css('background-image','url("assets/img/cover-radio.jpg")');
 		}
@@ -1460,7 +1432,14 @@ function setinfo() {
 	// song changed
 	if ( GUI.currentsong !== currentsong || GUI.currentalbum !== currentalbumstring ) {
 		GUI.currentsong = currentsong;
-		scrollinfo();
+		// scroll info text
+		$( '#divartist, #divsong, #divalbum' ).each( function() {
+			if ( $( this ).find( 'span' ).width() > Math.floor( window.innerWidth * 0.975 ) ) {
+				$( this ).addClass( 'scroll-left' );
+			} else {
+				$( this ).removeClass( 'scroll-left' );
+			}
+		} );
 		
 		$( '#playlist-entries li ' ).removeClass( 'active' );
 		$( '#playlist-entries' ).find( 'li' ).eq( parseInt( GUI.json.song ) ).addClass( 'active' );
@@ -1489,8 +1468,10 @@ function renderUI( text ) {
 	GUI.json = text[ 0 ];
 	GUI.state = GUI.json.state;
 	
+	setbutton();
 	setinfo();
 	settime();
+	if ( $( '#playback' ).hasClass( 'active' ) ) displayplayback();
 	
 	if ( GUI.json.playlist !== GUI.playlist ) {
 		getPlaylistCmd();
