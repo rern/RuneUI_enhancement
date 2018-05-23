@@ -1319,6 +1319,7 @@ function settime() {
 			$( '#currentalbum' ).html( '&nbsp;' );
 			$( '#playlist-position span' ).html( 'Add something from Library' );
 			$( '#elapsed, #total' ).html( '&nbsp;' );
+			$( '#cover-art' ).css( 'background-image', 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' );
 			return;
 		}
 		// sampling
