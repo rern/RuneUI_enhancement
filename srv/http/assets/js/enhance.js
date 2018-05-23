@@ -1230,11 +1230,11 @@ function commandButton( el ) {
 					$( '#stop' ).addClass( 'btn-primary' );
 				}
 				$.post( '/enhanceredis.php', { bash: '/usr/bin/mpc play '+ targetsong + mpcstop }, function() {
-					if ( GUI.json.file.slice( 0, 4 ) === 'http' ) {
-						$( '#format-bitrate' ).html( '&nbsp;' );
-						$('#cover-art').css('background-image','url("assets/img/cover-radio.jpg")');
-					}
 					setTimeout( function() {
+						if ( GUI.json.file.slice( 0, 4 ) === 'http' ) {
+							$( '#format-bitrate' ).html( '&nbsp;' );
+							setinfo();
+						}
 						prevnext = 0;
 					}, 500 );
 				});
@@ -1404,6 +1404,7 @@ function setinfo() {
 		} else {
 			$( '#currentartist' ).html( GUI.json.radioname );
 			$( '#currentalbum' ).html( 'Radio' );
+			$( '#cover-art' ).css( 'background-image','url("assets/img/cover-radio.jpg")' );
 			if ( GUI.state !== 'stop' ) {
 				$( '#currentsong' ).html( GUI.json.currentsong );
 			} else {
@@ -1418,7 +1419,6 @@ function setinfo() {
 					} );
 				}
 			}
-			$('#cover-art').css('background-image','url("assets/img/cover-radio.jpg")');
 		}
 		
 		if ( GUI.json.song ) {
@@ -1451,11 +1451,11 @@ function setinfo() {
 	if ( GUI.currentalbum === currentalbumstring || $( '#coverart' ).hasClass( 'hide' ) ) return;
 	
 	GUI.currentalbum = currentalbumstring;
-	if (GUI.stream !== 'radio') {
-		var covercachenum = Math.floor(Math.random()*1001);
-		$('#cover-art').css('background-image','url("/coverart/?v=' + covercachenum + '")');
+	if ( GUI.json.file.slice( 0, 4 ) !== 'http' ) {
+		var covercachenum = Math.floor( Math.random() * 1001 );
+		$( '#cover-art' ).css( 'background-image','url("/coverart/?v=' + covercachenum + '")' );
 	} else {
-		$('#cover-art').css('background-image','url("assets/img/cover-radio.jpg")');
+		$( '#cover-art' ).css( 'background-image','url("assets/img/cover-radio.jpg")' );
 	}
 }
 
