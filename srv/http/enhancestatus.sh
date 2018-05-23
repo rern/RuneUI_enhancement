@@ -19,23 +19,35 @@ fi
 
 # get filename within bash avoids character escaping
 data=$( { echo currentsong; sleep 0.1; } | telnet localhost 6600 )
-file=$( echo "$data" | grep -a file | sed 's|file: |/mnt/MPD/|' )
-
-# initial playlist not response to 'currentsong'
-if [[ ! $file ]]; then
+filepath=$( echo "$data" | grep -a file )
+# before initial play, playlist not response to 'currentsong'
+if [[ ! $filepath ]]; then
 	mpc play
 	mpc stop
 	data=$( { echo currentsong; sleep 0.1; } | telnet localhost 6600 )
-	file=$( echo "$data" | grep -a file | sed 's|file: |/mnt/MPD/|' )
+	filepath=$( echo "$data" | grep -a file )
 fi
 
-ext=$( echo $file | sed 's/^.*\.//' | tr '[:lower:]' '[:upper:]' )
-
-track=$( echo "$data" | sed 's/"/\\/g' ) # escape double quotes for json output
-artist=$( echo "$track" | grep Artist | sed 's/Artist: //' )
-song=$( echo "$track" | grep Title | sed 's/Title: //' )
-album=$( echo "$track" | grep Album | sed 's/Album: //' )
-time=$( echo "$track" | grep Time | sed 's/Time: //' )
+if [[ ${filepath:6:4} == http ]]; then
+	file=/srv/http/stream
+	ext=radio
+	artist=$( echo "$data" | grep -a Name | sed 's/^Name: //' )
+	artist=$( echo "$data" | grep -a Title | sed 's/^Title: //' )
+	album=Radio
+	time=0
+	
+	url=$( echo "$filepath" | sed 's/^file: //' )
+	curl -sm 1 $url -o $file
+	[[ ! -e $file ]] && curl -sm 2 $url -o $file
+else
+	file=$( echo "$filepath" | sed 's|^file: |/mnt/MPD/|' )
+	ext=$( echo $file | sed 's/^.*\.//' | tr '[:lower:]' '[:upper:]' )
+	track=$( echo "$data" | sed 's/"/\\/g' ) # escape double quotes for json output
+	artist=$( echo "$track" | grep Artist | sed 's/Artist: //' )
+	song=$( echo "$track" | grep Title | sed 's/Title: //' )
+	album=$( echo "$track" | grep Album | sed 's/Album: //' )
+	time=$( echo "$track" | grep Time | sed 's/Time: //' )
+fi
 
 # DSD - get sampling by 'hexdump'
 if [[ $ext == DSF || $ext == DFF ]]; then
@@ -56,36 +68,42 @@ if [[ $ext == DSF || $ext == DFF ]]; then
 	Mbps=$( awk "BEGIN { printf \"%.2f\n\", $bitrate / 1000000 }" )
 	sampling="1 bit DSD$dsd - $Mbps Mbit/s"
 else
-# not DSD or m4a - get sampling with 'soxi'
-	IFS0=$IFS
-	IFS=$( echo -en "\n\b" )
-	data=( $( ffprobe -v quiet -select_streams a:0 -show_entries stream=bits_per_raw_sample,sample_rate -show_format_entry bit_rate -of default=noprint_wrappers=1:nokey=1 "$file" ) )
-	IFS=$IFS0
-	
-	bitdepth=${data[1]}
-	samplerate=${data[0]}
-	bitrate=${data[2]}
-	
-	if [[ $bitdepth == 'N/A' ]]; then
-		if [[ $ext == WAV || $ext == AIFF ]]; then
-			bitdepth=$(( $bitrate / $samplerate / 2 ))' bit '
+# not DSD or m4a - get sampling with 'ffprobe'
+	if [[ ext == radio && ! -e $file ]]; then
+		sampling='&nbsp;'
+	else
+		IFS0=$IFS
+		IFS=$( echo -en "\n\b" )
+		data=( $( ffprobe -v quiet -select_streams a:0 -show_entries stream=bits_per_raw_sample,sample_rate -show_entries format=bit_rate -of default=noprint_wrappers=1:nokey=1 "$file" ) )
+		IFS=$IFS0
+		
+		rm -f /srv/http/stream
+		
+		bitdepth=${data[1]}
+		samplerate=${data[0]}
+		bitrate=${data[2]}
+		
+		if [[ $bitdepth == 'N/A' ]]; then
+			if [[ $ext == WAV || $ext == AIFF ]]; then
+				bitdepth=$(( $bitrate / $samplerate / 2 ))' bit '
+			else
+				bitdepth=''
+			fi
 		else
-			bitdepth=''
+			bitdepth=$bitdepth' bit '
 		fi
-	else
-		bitdepth=$bitdepth' bit '
-	fi
-	
-	(( $samplerate % 1000 )) && decimal='%.1f\n' || decimal='%.0f\n'
-	samplerate=$( awk "BEGIN { printf \"$decimal\", $samplerate / 1000 }" )' kHz '
+		
+		(( $samplerate % 1000 )) && decimal='%.1f\n' || decimal='%.0f\n'
+		samplerate=$( awk "BEGIN { printf \"$decimal\", $samplerate / 1000 }" )' kHz '
 
-	if (( $bitrate < 1000000 )); then
-		bitrate=$(( bitrate / 1000 ))' kbit/s'
-	else
-		bitrate=$( awk "BEGIN { printf \"%.2f\n\", $bitrate / 1000000 }" )' Mbit/s'
+		if (( $bitrate < 1000000 )); then
+			bitrate=$(( bitrate / 1000 ))' kbit/s'
+		else
+			bitrate=$( awk "BEGIN { printf \"%.2f\n\", $bitrate / 1000000 }" )' Mbit/s'
+		fi
+		
+		sampling=$bitdepth$samplerate$bitrate
 	fi
-	
-	sampling=$bitdepth$samplerate$bitrate
 fi
 
 echo '{ "artist": "'$artist'", "song": "'$song'", "album": "'$album'", "sampling": "'$sampling'", "ext": "'$ext'", "elapsed": "'$elapsed'", "time": "'$time'", "repeat": "'$repeat'", "random": "'$random'", "single": "'$single'", "volume": "'$volume'", "volumemute": "'$volumemute'", "state": "'$state'" }'
