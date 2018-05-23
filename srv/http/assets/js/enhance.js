@@ -1322,9 +1322,15 @@ function settime() {
 			$( '#cover-art' ).css( 'background-image', 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' );
 			return;
 		}
+		
 		// sampling
 		var dot0 = '<a id="dot0" style="color:#ffffff"> &#8226; </a>';
+		// streaming
 		if ( GUI.json.file.slice( 0, 4 ) === 'http' || GUI.libraryhome.ActivePlayer === 'Airplay' || GUI.libraryhome.ActivePlayer === 'Spotify' ) {
+			if ( $( '#currentartist' ).html() == '' ) {
+				$( '#currentartist' ).html( status.artist );
+				$( '#cover-art' ).css( 'background-image', 'url("assets/img/cover-radio.jpg")' );
+			}
 			var sampling = $( '#format-bitrate' ).html();
 			if ( sampling === '' || sampling === '&nbsp;' ) $( '#format-bitrate' ).html( dot0 + status.sampling );
 			$( '#elapsed' ).html( GUI.state === 'play' ? '<a class="dot">.</a> <a class="dot dot2">.</a> <a class="dot dot3">.</a>' : '' );
@@ -1387,16 +1393,12 @@ function converthms( second ) {
 function setinfo() {
 	// empty queue
 	if ( GUI.json.playlistlength == 0 ) return;
-
-	var currentartist = GUI.json.currentartist;
-	var currentsong = GUI.json.currentsong ? GUI.json.currentsong : '';
-	var currentalbum = GUI.json.currentalbum;
 	
 	if ( GUI.json.playlistlength !== '0' ) {
 		if ( GUI.json.file.slice( 0, 4 ) !== 'http' ) {
-			$( '#currentartist' ).html( currentartist ? currentartist : '&nbsp;' );
-			$( '#currentsong' ).html( currentsong ? currentsong : '&nbsp;' );
-			$( '#currentalbum').html( currentalbum ? currentalbum : '&nbsp;' );
+			$( '#currentartist' ).html( GUI.json.currentartist ? GUI.json.currentartist : '&nbsp;' );
+			$( '#currentsong' ).html( GUI.json.currentsong ? GUI.json.currentsong : '&nbsp;' );
+			$( '#currentalbum').html( GUI.json.currentalbum ? GUI.json.currentalbum : '&nbsp;' );
 		} else {
 			$( '#currentartist' ).html( GUI.json.radioname );
 			$( '#currentsong' ).html( GUI.state !== 'stop' ? GUI.json.currentsong : '&nbsp;' );
@@ -1410,10 +1412,10 @@ function setinfo() {
 		}
 	}
 	
-	var currentalbumstring = currentartist +' - '+ currentalbum;
+	var currentalbumstring = GUI.json.currentartist +' - '+ GUI.json.currentalbum;
 	// song changed
-	if ( GUI.currentsong !== currentsong || GUI.currentalbum !== currentalbumstring ) {
-		GUI.currentsong = currentsong;
+	if ( GUI.currentsong !== GUI.json.currentsong || GUI.currentalbum !== currentalbumstring ) {
+		GUI.currentsong = GUI.json.currentsong;
 		// scroll info text
 		$( '#divartist, #divsong, #divalbum' ).each( function() {
 			if ( $( this ).find( 'span' ).width() > Math.floor( window.innerWidth * 0.975 ) ) {
@@ -1435,9 +1437,9 @@ function setinfo() {
 	GUI.currentalbum = currentalbumstring;
 	if ( GUI.json.file.slice( 0, 4 ) !== 'http' ) {
 		var covercachenum = Math.floor( Math.random() * 1001 );
-		$( '#cover-art' ).css( 'background-image','url("/coverart/?v=' + covercachenum + '")' );
+		$( '#cover-art' ).css( 'background-image', 'url("/coverart/?v=' + covercachenum + '")' );
 	} else {
-		$( '#cover-art' ).css( 'background-image','url("assets/img/cover-radio.jpg")' );
+		$( '#cover-art' ).css( 'background-image', 'url("assets/img/cover-radio.jpg")' );
 	}
 }
 
