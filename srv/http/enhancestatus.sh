@@ -37,8 +37,8 @@ if [[ ${filepath:6:4} == http ]]; then
 	time=0
 	
 	url=$( echo "$filepath" | sed 's/^file: //' )
-	curl -sm 1 $url -o $file
-	[[ ! -e $file ]] && curl -sm 2 $url -o $file
+	# -s = silent; -m 4 = max 4 seconds; head -c 50000 = 0-50000 byte
+	curl -sm 4 $url | head -c 50000 > $file
 else
 	file=$( echo "$filepath" | sed 's|^file: |/mnt/MPD/|' )
 	ext=$( echo $file | sed 's/^.*\.//' | tr '[:lower:]' '[:upper:]' )
