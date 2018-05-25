@@ -1288,6 +1288,7 @@ function commandButton( el ) {
 		} else {
 			// enable previous / next while stop
 			if ( dataCmd === 'previous' || dataCmd === 'next' ) {
+				if ( GUI.json.playlistlength == 1 ) return;
 				prevnext = 1;
 				var current = parseInt( GUI.json.song ) + 1;
 				var last = parseInt( GUI.json.playlistlength );
@@ -1474,7 +1475,7 @@ function setinfo() {
 		} else {
 			$( '#currentartist' ).html( GUI.json.radioname );
 			$( '#currentsong' ).html( GUI.state !== 'stop' ? GUI.json.currentsong : '&nbsp;' );
-			$( '#currentalbum' ).html( 'Webradio' );
+			$( '#currentalbum' ).html( 'Streaming' );
 		}
 		
 		if ( GUI.json.song ) {
