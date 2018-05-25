@@ -1474,7 +1474,7 @@ function setinfo() {
 		} else {
 			$( '#currentartist' ).html( GUI.json.radioname );
 			$( '#currentsong' ).html( GUI.state !== 'stop' ? GUI.json.currentsong : '&nbsp;' );
-			$( '#currentalbum' ).html( 'Radio' );
+			$( '#currentalbum' ).html( 'Streaming' );
 		}
 		
 		if ( GUI.json.song ) {
