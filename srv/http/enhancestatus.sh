@@ -26,12 +26,18 @@ if [[ ! $filepath ]]; then
 	filepath=$( echo "$data" | grep -a file )
 fi
 
+track=$( echo "$data" | sed 's/"/\\/g' ) # escape double quotes for json output
+	
 if [[ ${filepath:6:4} == http ]]; then
 	file=/srv/http/stream
 	ext=radio
 	album=Radio
-	artist=$( echo "$data" | grep -a Name | sed 's/^Name: //' )
-	song=$( echo "$data" | grep -a Title | sed 's/^Title: //' )
+	artist=$( echo "$track" | grep -a Name | sed 's/^Name: //' )
+	song=$( echo "$track" | grep -a Title | sed 's/^Title: //' )
+	if [[ -z $artist ]]; then
+		artist=$song
+		song=
+	fi
 	time=0
 	
 	if [[ $state == stop ]]; then
@@ -42,7 +48,6 @@ if [[ ${filepath:6:4} == http ]]; then
 else
 	file=$( echo "$filepath" | sed 's|^file: |/mnt/MPD/|' )
 	ext=$( echo $file | sed 's/^.*\.//' | tr '[:lower:]' '[:upper:]' )
-	track=$( echo "$data" | sed 's/"/\\/g' ) # escape double quotes for json output
 	artist=$( echo "$track" | grep Artist | sed 's/Artist: //' )
 	song=$( echo "$track" | grep Title | sed 's/Title: //' )
 	album=$( echo "$track" | grep Album | sed 's/Album: //' )
