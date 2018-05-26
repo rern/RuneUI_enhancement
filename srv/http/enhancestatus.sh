@@ -1,18 +1,16 @@
 #!/bin/bash
 
-status=$( mpc status )
-state=$( echo "$status" | grep '\[' | sed 's/\[\(.*\)\].*/\1/' )
-[[ ! $state ]] && state=stop
-volumemode=( $( echo "$status" | grep volume | tr -d ' ' | sed 's/volume:\|%repeat\|random\|single\|consume//g; s/:/ /g; s/on/1/g; s/off/0/g' ) )
-volume=${volumemode[0]}
+status=$( { echo status; sleep 0.1; } | telnet localhost 6600 )
+
+state=$( echo "$status" | grep '^state: ' | cut -d' ' -f2 )
+volume=$( echo "$status" | grep '^volume: ' | cut -d' ' -f2 )
 volumemute=$( redis-cli get volumemute )
-repeat=${volumemode[1]}
-random=${volumemode[2]}
-single=${volumemode[3]}
+repeat=$( echo "$status" | grep '^repeat: ' | cut -d' ' -f2 )
+random=$( echo "$status" | grep '^random: ' | cut -d' ' -f2 )
+single=$( echo "$status" | grep '^consume: ' | cut -d' ' -f2 )
 
 if [[ $state != stop ]]; then
-	elapsed=( $( echo "$status" | grep '\[' | sed 's/.*#.*   *//; s|/.*||' ) )
-	elapsed=$( echo $elapsed | awk -F':' '{ if ( NF == 2 ) { print $1 * 60 + $2 } else { print $1 * 60 * 60 + $2 * 60 + $3 } }' )
+	elapsed=$( echo "$status" | grep '^time: ' | cut -d' ' -f2 | cut -d':' -f1 )
 else
 	elapsed=0
 fi
@@ -31,14 +29,16 @@ fi
 if [[ ${filepath:6:4} == http ]]; then
 	file=/srv/http/stream
 	ext=radio
-	artist=$( echo "$data" | grep -a Name | sed 's/^Name: //' )
-	artist=$( echo "$data" | grep -a Title | sed 's/^Title: //' )
 	album=Radio
+	artist=$( echo "$data" | grep -a Name | sed 's/^Name: //' )
+	song=$( echo "$data" | grep -a Title | sed 's/^Title: //' )
 	time=0
 	
-	url=$( echo "$filepath" | sed 's/^file: //' )
-	# -s = silent; -m 4 = max 4 seconds; head -c 10000 = 0-10000 byte
-	curl -sm 4 $url | head -c 10000 > $file
+	if [[ $state == stop ]]; then
+		url=$( echo "$filepath" | sed 's/^file: //' )
+		# -s = silent; -m 4 = max 4 seconds; head -c 10000 = 0-10000 byte
+		curl -sm 4 $url | head -c 10000 > $file
+	fi
 else
 	file=$( echo "$filepath" | sed 's|^file: |/mnt/MPD/|' )
 	ext=$( echo $file | sed 's/^.*\.//' | tr '[:lower:]' '[:upper:]' )
@@ -69,8 +69,15 @@ if [[ $ext == DSF || $ext == DFF ]]; then
 	sampling="1 bit DSD$dsd - $Mbps Mbit/s"
 else
 # not DSD or m4a - get sampling with 'ffprobe'
-	if [[ ext == radio && ! -e $file ]]; then
-		sampling='&nbsp;'
+	if [[ $ext == radio && $state != stop ]]; then
+		bitdepth=
+		samplerate=$( echo "$status" | grep '^audio: ' | cut -d' ' -f2 | cut -d':' -f1 )
+		bitrate=$( echo "$status" | grep '^bitrate: ' | cut -d' ' -f2 )
+		bitrate=$(( bitrate * 1000 ))
+	elif [[ $ext == radio && $state == stop && ! -e $file ]]; then
+		bitdepth=
+		samplerate=
+		bitrate='&nbsp;'
 	else
 		IFS0=$IFS
 		IFS=$( echo -en "\n\b" )
@@ -82,28 +89,30 @@ else
 		bitdepth=${data[1]}
 		samplerate=${data[0]}
 		bitrate=${data[2]}
-		
-		if [[ $bitdepth == 'N/A' ]]; then
-			if [[ $ext == WAV || $ext == AIFF ]]; then
-				bitdepth=$(( $bitrate / $samplerate / 2 ))' bit '
-			else
-				bitdepth=''
-			fi
-		else
-			bitdepth=$bitdepth' bit '
-		fi
-		
-		(( $samplerate % 1000 )) && decimal='%.1f\n' || decimal='%.0f\n'
-		samplerate=$( awk "BEGIN { printf \"$decimal\", $samplerate / 1000 }" )' kHz '
-
-		if (( $bitrate < 1000000 )); then
-			bitrate=$(( bitrate / 1000 ))' kbit/s'
-		else
-			bitrate=$( awk "BEGIN { printf \"%.2f\n\", $bitrate / 1000000 }" )' Mbit/s'
-		fi
-		
-		sampling=$bitdepth$samplerate$bitrate
+		# fix tolerance in ffprobe of some webradio
+		bitrate=$(( bitrate - ( bitrate % 32000 ) ))
 	fi
+	
+	if [[ $bitdepth == 'N/A' ]]; then
+		if [[ $ext == WAV || $ext == AIFF ]]; then
+			bitdepth=$(( $bitrate / $samplerate / 2 ))' bit '
+		else
+			bitdepth=
+		fi
+	elif [[ -n $bitdepth ]]; then
+		bitdepth=$bitdepth' bit '
+	fi
+	
+	(( $samplerate % 1000 )) && decimal='%.1f\n' || decimal='%.0f\n'
+	samplerate=$( awk "BEGIN { printf \"$decimal\", $samplerate / 1000 }" )' kHz '
+
+	if (( $bitrate < 1000000 )); then
+		bitrate=$(( bitrate / 1000 ))' kbit/s'
+	else
+		bitrate=$( awk "BEGIN { printf \"%.2f\n\", $bitrate / 1000000 }" )' Mbit/s'
+	fi
+	
+	sampling=$bitdepth$samplerate$bitrate
 fi
 
 echo '{ "artist": "'$artist'", "song": "'$song'", "album": "'$album'", "sampling": "'$sampling'", "ext": "'$ext'", "elapsed": "'$elapsed'", "time": "'$time'", "repeat": "'$repeat'", "random": "'$random'", "single": "'$single'", "volume": "'$volume'", "volumemute": "'$volumemute'", "state": "'$state'" }'
