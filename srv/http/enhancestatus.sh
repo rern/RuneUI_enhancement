@@ -36,7 +36,7 @@ if [[ ${filepath:6:4} == http ]]; then
 	
 	if [[ $state == stop ]]; then
 		url=$( echo "$filepath" | sed 's/^file: //' )
-		# -s = silent; -m 4 = max 4 seconds; head -c 3000 = 0-3000 byte
+		# -s = silent; -m 3 = max 3 seconds; head -c 3000 = 0-3000 byte
 		curl -sm 3 $url | head -c 3000 > $file
 	fi
 else
