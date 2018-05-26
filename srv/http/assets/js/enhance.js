@@ -1198,9 +1198,6 @@ function populateDB(options) {
 
 }
 function getPlaylistPlain( data ) {
-	if ( data.indexOf( 'Name: ' ) !== -1 ) var data = data.replace( /Title: .*\n/, '' ).replace( 'Name: ', 'Title: ' );
-	var data = data.replace( /(Title: .*\nPos: .*\n)/g, 'Last-Modified: \nAlbum: \nArtist: \nGenre: \n$1Date: \nTime: \n' );
-
 	var current = parseInt(GUI.json.song) + 1;
 	var state = GUI.json.state;
 	var content = time = artist = album = title = name = str = filename = path = songid = bottomline = '';
@@ -1228,32 +1225,23 @@ function getPlaylistPlain( data ) {
 		}
 		else if ('Id' === infos[0]) {
 			songid = infos[1];
-			if (title === '' || album === '') {
-				path = parsePath(str);
-				filename = str.split('/').pop();
-				title = filename;
-				if (artist === '') {
-					bottomline = 'path: ' + path;
-				} else {
-					bottomline = artist;
-				}
-			} else {
-				bottomline = artist + ' - ' + album;
-			}
 			if ( str.slice( 0, 4 ) === 'http' ) {
-				title = '<i class="fa fa-microphone"></i>' + title;
+				title = name != '' ? name : title;
+				topline = '<i class="fa fa-microphone"></i>'+ title;
 				bottomline = str;
-				totaltime = '';
 			} else {
-				totaltime = '<span>' + timeConvert2(time) + '</span>';
+				title = title ? title : str.split('/').pop();
+				topline = title +'<span>'+ timeConvert2( time ) +'</span>';
+				bottomline = artist ? artist + ' - ' + album : parsePath(str);
 				playlisttime += time;
 			}
 			pos++;
-			content += '<li id="pl-' + songid + '"' + (state !== 'stop' && pos === current ? ' class="active"' : '') + '>'
-				+'<i class="fa fa-times-circle pl-action" title="Remove song from playlist"></i><span class="sn">' + title + totaltime + '</span>'
-				+'<span class="bl">' + bottomline + '</span>'
+			content += '<li id="pl-'+ songid +'"' 
+			+ ( state !== 'stop' && pos === current ? ' class="active"' : '' ) +'>'
+				+'<i class="fa fa-times-circle pl-action" title="Remove song from playlist"></i><span class="sn">'+ topline +'</span>'
+				+'<span class="bl">'+ bottomline +'</span>'
 				+'</li>';
-			time = ''; artist = ''; album = ''; title = ''; name = '';
+			time = artist = album = title = name = '';
 		}
 	}
 	$('.playlist').addClass('hide');
@@ -1304,6 +1292,7 @@ function commandButton( el ) {
 					$( '#pause' ).removeClass( 'btn-primary' );
 					$( '#stop' ).addClass( 'btn-primary' );
 				}
+				$( '#format-bitrate' ).html( '' );
 				$.post( '/enhanceredis.php', { bash: '/usr/bin/mpc play '+ targetsong + mpcstop }, function() {
 					setTimeout( function() {
 						if ( GUI.json.file.slice( 0, 4 ) === 'http' ) $( '#format-bitrate' ).html( '&nbsp;' );
@@ -1388,17 +1377,7 @@ function settime() {
 		$( '#time' ).roundSlider( 'setValue', 0 );
 		
 		// empty queue
-		if ( GUI.json.playlistlength == 0 ) {
-			$( '.playback-controls' ).css( 'visibility', 'hidden' );
-			$( '#divartist, #divsong, #divalbum' ).removeClass( 'scroll-left' );
-			$( '#currentartist, #format-bitrate, #total' ).html( '&nbsp;' );
-			$( '#currentsong' ).html( '<i class="fa fa-plus-circle"></i>' );
-			$( '#currentalbum' ).html( '&nbsp;' );
-			$( '#playlist-position span' ).html( 'Add something from Library' );
-			$( '#elapsed, #total' ).html( '&nbsp;' );
-			$( '#cover-art' ).css( 'background-image', 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' );
-			return;
-		}
+		if ( GUI.json.playlistlength == 0 ) return;
 		
 		// sampling
 		var dot0 = '<a id="dot0" style="color:#ffffff"> &#8226; </a>';
@@ -1434,7 +1413,7 @@ function settime() {
 		
 		if ( status.state === 'paused' ) return; // pause <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 		
-		var localbrowser = ( location.hostname === 'localhost' || location.hostname === '127.0.0.1' ) ? 10 : 1;
+		var localbrowser = ( location.hostname === 'localhost' || location.hostname === '127.0.0.1' ) ? 2 : 1;
 		var step = 1 * localbrowser; // fix: reduce cpu cycle on local browser
 		var every = time * localbrowser;
 		
@@ -1469,7 +1448,17 @@ function converthms( second ) {
 // song info
 function setinfo() {
 	// empty queue
-	if ( GUI.json.playlistlength == 0 ) return;
+	if ( GUI.json.playlistlength == 0 ) {
+		$( '.playback-controls' ).css( 'visibility', 'hidden' );
+		$( '#divartist, #divsong, #divalbum' ).removeClass( 'scroll-left' );
+		$( '#currentartist, #format-bitrate, #total' ).html( '&nbsp;' );
+		$( '#currentsong' ).html( '<i class="fa fa-plus-circle"></i>' );
+		$( '#currentalbum' ).html( '&nbsp;' );
+		$( '#playlist-position span' ).html( 'Add something from Library' );
+		$( '#elapsed, #total' ).html( '&nbsp;' );
+		$( '#cover-art' ).css( 'background-image', 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' );
+		return;
+	}
 	
 	if ( GUI.json.playlistlength !== '0' ) {
 		if ( GUI.json.file.slice( 0, 4 ) !== 'http' ) {
