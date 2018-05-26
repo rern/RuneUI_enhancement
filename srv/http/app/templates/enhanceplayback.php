@@ -144,7 +144,7 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 			<div id="playlist-warning" class="playlist hide">
 				<div class="col-sm-6 col-sm-offset-3">
 					<div class="empty-block">
-						<i class="fa fa-plus-circle open-sx"></i>
+						<i class="fa fa-plus-circle open-sx" style="font-size: 30px; color: #0095d8;"></i>
 						<p>&nbsp;</p>
 						<p>Add something from Library</p>
 					</div>
