@@ -1352,7 +1352,8 @@ function setbutton() {
 				$( '#play' ).removeClass( 'btn-primary' );
 				$( '#pause' ).addClass( 'btn-primary' );
 			}
-		}	
+		}
+		if ( GUI.json.file.slice( 0, 4 ) === 'http' ) $( '#currentsong' ).css( 'opacity', state === 'pause' ? 0.3 : 1 );
 	}
 }
 
