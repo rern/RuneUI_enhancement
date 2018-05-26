@@ -37,7 +37,7 @@ if [[ ${filepath:6:4} == http ]]; then
 	if [[ $state == stop ]]; then
 		url=$( echo "$filepath" | sed 's/^file: //' )
 		# -s = silent; -m 4 = max 4 seconds; head -c 10000 = 0-10000 byte
-		curl -sm 4 $url | head -c 10000 > $file
+		curl -sm 3 $url | head -c 5000 > $file
 	fi
 else
 	file=$( echo "$filepath" | sed 's|^file: |/mnt/MPD/|' )
