@@ -1280,7 +1280,11 @@ function commandButton( el ) {
 		dataCmd = dataCmd + ( el.hasClass( 'btn-primary' ) ? ' 0' : ' 1' );    
 	} else {
 		if ( dataCmd === 'play' ) {
-			dataCmd = ( GUI.state === 'play' ) ? 'pause' : 'play';
+			if ( GUI.json.file.slice( 0, 4 ) === 'http' ) {
+				dataCmd = ( GUI.state === 'play' ) ? 'stop' : 'play';
+			} else {
+				dataCmd = ( GUI.state === 'play' ) ? 'pause' : 'play';
+			}
 		} else if ( dataCmd === 'stop' ) {
 			if ( GUI.json.file.slice( 0, 4 ) === 'http' ) $( '#currentsong' ).html( '&nbsp;' );
 			clearInterval( GUI.currentKnob );
@@ -1353,7 +1357,6 @@ function setbutton() {
 				$( '#pause' ).addClass( 'btn-primary' );
 			}
 		}
-		if ( GUI.json.file.slice( 0, 4 ) === 'http' ) $( '#currentsong' ).css( 'opacity', state === 'pause' ? 0.3 : 1 );
 	}
 }
 
