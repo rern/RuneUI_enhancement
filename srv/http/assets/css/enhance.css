@@ -656,6 +656,15 @@
 #playlist-entries .sn span {
     color: #587ca0;
 }
+#playlist-entries li.active .sn span {
+	color: #34495e;
+}
+#playlist-entries li.radio:before {
+	content: "\f130";
+}
+#playlist-entries li.radio {
+	margin: 0;
+}
 /* ---------------------- breadcrumb and index ---------------------- */
 #db-currentpath {
 	float: left;
