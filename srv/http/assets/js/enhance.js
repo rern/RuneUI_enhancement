@@ -1305,7 +1305,7 @@ function commandButton( el ) {
 			if ( GUI.json.file.slice( 0, 4 ) === 'http' ) $( '#currentsong' ).html( '&nbsp;' );
 			clearInterval( GUI.currentKnob );
 			clearInterval( GUI.countdown );
-		} else {
+		} else if ( dataCmd === 'previous' || dataCmd === 'next' ) {
 			// enable previous / next while stop
 			if ( GUI.json.playlistlength == 1 ) return;
 			prevnext = 1;
