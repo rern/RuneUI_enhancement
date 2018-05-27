@@ -652,6 +652,10 @@
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
+#database-entries .sn span,
+#playlist-entries .sn span {
+    color: #587ca0;
+}
 /* ---------------------- breadcrumb and index ---------------------- */
 #db-currentpath {
 	float: left;
