@@ -1232,7 +1232,7 @@ function getPlaylistPlain( data ) {
 				bottomline = str;
 			} else {
 				title = title ? title : str.split('/').pop();
-				topline = title +'<span>'+ timeConvert2( time ) +'</span>';
+				topline = title +'<span>'+ converthms( time ) +'</span>';
 				bottomline = artist ? artist + ' - ' + album : parsePath(str);
 				playlisttime += time;
 			}
@@ -1252,7 +1252,7 @@ function getPlaylistPlain( data ) {
 	$('#pl-filter-results').addClass('hide').html('');
 	$('#pl-filter').val('');
 	$('#pl-manage').removeClass('hide');
-	$('#pl-count').removeClass('hide').html(pos + ((pos !== 1) ? ' entries' : ' entry') + ' ' + timeConvert3(playlisttime) + ' total playtime');
+	$('#pl-count').removeClass('hide').html( 'List: '+ pos +'<span>&emsp;Total: '+ converthms(playlisttime) +'</span>');
 }
 
 prevnext = 0; // for disable 'btn-primary' - previous/next while stop
