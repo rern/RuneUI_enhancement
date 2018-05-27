@@ -821,6 +821,7 @@ function displayplayback() {
 		if ( buttonactive ) $( '#play-group, #share-group, #vol-group' ).show();
 		$( '#playback-row' ).removeClass( 'hide' ); // restore - hidden by fix flash
 		
+		setbutton();
 		displaycommon();
 	} );
 }
@@ -1279,28 +1280,39 @@ function commandButton( el ) {
 			clearInterval( GUI.countdown );
 		} else {
 			// enable previous / next while stop
-			if ( dataCmd === 'previous' || dataCmd === 'next' ) {
-				if ( GUI.json.playlistlength == 1 ) return;
-				prevnext = 1;
-				var current = parseInt( GUI.json.song ) + 1;
-				var last = parseInt( GUI.json.playlistlength );
-				var targetsong = ( dataCmd === 'previous' ) ? ( ( current !== 1 ) ? current - 1 : last ) : ( ( current !== last ) ? current + 1 : 1 );
-				if ( GUI.state === 'play' ) {
-					var mpcstop = '';
-				} else {
-					var mpcstop = '; /usr/bin/mpc stop';
-					$( '#pause' ).removeClass( 'btn-primary' );
-					$( '#stop' ).addClass( 'btn-primary' );
-				}
-				$( '#format-bitrate' ).html( '' );
-				$.post( '/enhanceredis.php', { bash: '/usr/bin/mpc play '+ targetsong + mpcstop }, function() {
-					setTimeout( function() {
-						if ( GUI.json.file.slice( 0, 4 ) === 'http' ) $( '#format-bitrate' ).html( '&nbsp;' );
-						prevnext = 0;
-					}, 500 );
-				});
-				return
+			if ( GUI.json.playlistlength == 1 ) return;
+			prevnext = 1;
+			var current = parseInt( GUI.json.song ) + 1;
+			var last = parseInt( GUI.json.playlistlength );
+			
+			if ( GUI.state === 'play' ) {
+				var mpcstop = '';
+			} else {
+				var mpcstop = '; /usr/bin/mpc stop';
+				$( '#pause' ).removeClass( 'btn-primary' );
+				$( '#stop' ).addClass( 'btn-primary' );
 			}
+			
+			if ( GUI.json.random == 1 ) {
+				// fix: repeat pattern of mpd random
+				var randomtrack = Math.floor( Math.random() * last ) + 1;
+				if ( randomtrack === current ) rand = Math.floor( Math.random() * last ) + 1;
+				var cmd = 'play '+ randomtrack + mpcstop;
+			} else {
+				if ( dataCmd === 'previous' ) {
+					var cmd = current !== 1 ? 'prev' : 'play '+ last + mpcstop;
+				} else {
+					var cmd = current !== last ? 'next' : 'play 1 '+ mpcstop;
+				}
+			}
+			$( '#format-bitrate' ).html( '' );
+			$.post( '/enhanceredis.php', { bash: '/usr/bin/mpc '+ cmd }, function() {
+				setTimeout( function() {
+					if ( GUI.json.file.slice( 0, 4 ) === 'http' ) $( '#format-bitrate' ).html( '&nbsp;' );
+					prevnext = 0;
+				}, 500 );
+			});
+			return
 		}
 	}
 	sendCmd( dataCmd );
@@ -1518,7 +1530,6 @@ function renderUI( text ) {
 	GUI.json = text[ 0 ];
 	GUI.state = GUI.json.state;
 	
-	setbutton();
 	setinfo();
 	settime();
 	if ( $( '#playback' ).hasClass( 'active' ) ) displayplayback();
