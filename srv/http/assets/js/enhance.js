@@ -1199,9 +1199,10 @@ function populateDB(options) {
 
 }
 function getPlaylistPlain( data ) {
+	console.log(data)
 	var current = parseInt(GUI.json.song) + 1;
 	var state = GUI.json.state;
-	var content = time = artist = album = title = name = str = filename = path = songid = bottomline = '';
+	var content = time = artist = album = title = name = str = filename = path = songid = bottomline = classcurrent = classradio = hidetotal = '';
 	var id = totaltime = playlisttime = pos = 0;
 	var i, line, lines = data.split('\n'), infos=[];
 	for (i = 0; (line = lines[i]); i += 1) {
@@ -1227,9 +1228,10 @@ function getPlaylistPlain( data ) {
 		else if ('Id' === infos[0]) {
 			songid = infos[1];
 			if ( str.slice( 0, 4 ) === 'http' ) {
-				title = name != '' ? name : title;
-				topline = '<i class="fa fa-microphone"></i>'+ title;
+				classradio = ' radio"';
+				topline = name != '' ? name : title ? title : '&nbsp;';
 				bottomline = str;
+				hidetotal = ' class="hide"';
 			} else {
 				title = title ? title : str.split('/').pop();
 				topline = title +'<span>'+ converthms( time ) +'</span>';
@@ -1237,12 +1239,12 @@ function getPlaylistPlain( data ) {
 				playlisttime += time;
 			}
 			pos++;
-			content += '<li id="pl-'+ songid +'"' 
-			+ ( state !== 'stop' && pos === current ? ' class="active"' : '' ) +'>'
+			classcurrent = ( state !== 'stop' && pos === current ) ? 'active' : ''
+			content += '<li id="pl-'+ songid +'" class="'+ classcurrent + classradio +'">'
 				+'<i class="fa fa-times-circle pl-action" title="Remove song from playlist"></i><span class="sn">'+ topline +'</span>'
 				+'<span class="bl">'+ bottomline +'</span>'
 				+'</li>';
-			time = artist = album = title = name = '';
+			time = artist = album = title = name = classcurrent = classradio = '';
 		}
 	}
 	$('.playlist').addClass('hide');
@@ -1252,7 +1254,32 @@ function getPlaylistPlain( data ) {
 	$('#pl-filter-results').addClass('hide').html('');
 	$('#pl-filter').val('');
 	$('#pl-manage').removeClass('hide');
-	$('#pl-count').removeClass('hide').html( 'List: '+ pos +'<span>&emsp;Total: '+ converthms(playlisttime) +'</span>');
+	$('#pl-count').removeClass('hide').html( 'List: <a>'+ pos +'</a><span'+ hidetotal +'>&emsp;Duration: <a>'+ converthms(playlisttime) +'</a></span>');
+}
+function getPlaylistCmd(){
+    loadingSpinner('pl');
+    $.ajax({
+        url: '/db/?cmd=playlist',
+        success: function(data){
+            if ( data.length > 4) {
+                $('.playlist').addClass('hide');
+                $('#playlist-entries').removeClass('hide');
+                getPlaylistPlain(data);
+                
+                var current = parseInt(GUI.json.song);
+                if ($('#panel-dx').hasClass('active') && GUI.currentsong !== GUI.json.currentsong) {
+                    customScroll('pl', current, 200); // highlight current song in playlist
+                }
+            } else {
+                $('.playlist').addClass('hide');
+                $('#playlist-warning').removeClass('hide');
+                $('#pl-filter-results').addClass('hide').html('');
+                $('#pl-count').removeClass('hide').html('');
+            }
+            loadingSpinner('pl', 'hide');
+        },
+        cache: false
+    });
 }
 
 prevnext = 0; // for disable 'btn-primary' - previous/next while stop
@@ -1294,19 +1321,18 @@ function commandButton( el ) {
 			}
 			
 			if ( GUI.json.random == 1 ) {
-				// fix: repeat pattern of mpd random
-				var randomtrack = Math.floor( Math.random() * last ) + 1;
-				if ( randomtrack === current ) rand = Math.floor( Math.random() * last ) + 1;
-				var cmd = 'play '+ randomtrack + mpcstop;
+				// improve: repeat pattern of mpd random
+				var pos = Math.floor( Math.random() * last ) + 1;
+				if ( pos === current ) pos = Math.floor( Math.random() * last ) + 1;
 			} else {
 				if ( dataCmd === 'previous' ) {
-					var cmd = current !== 1 ? 'prev' : 'play '+ last + mpcstop;
+					var pos = current !== 1 ? current - 1 : last;
 				} else {
-					var cmd = current !== last ? 'next' : 'play 1 '+ mpcstop;
+					var pos = current !== last ? current + 1 : 1;
 				}
 			}
 			$( '#format-bitrate' ).html( '' );
-			$.post( '/enhanceredis.php', { bash: '/usr/bin/mpc '+ cmd }, function() {
+			$.post( '/enhanceredis.php', { bash: '/usr/bin/mpc play '+ pos + mpcstop }, function() {
 				setTimeout( function() {
 					if ( GUI.json.file.slice( 0, 4 ) === 'http' ) $( '#format-bitrate' ).html( '&nbsp;' );
 					prevnext = 0;
@@ -1423,7 +1449,7 @@ function settime() {
 		$( '#time' ).roundSlider( 'setValue', position );
 		$( '#elapsed' ).text( converthms( elapsed ) );
 		
-		if ( status.state === 'paused' ) return; // pause <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+		if ( status.state === 'pause' ) return; // pause <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 		
 		var localbrowser = ( location.hostname === 'localhost' || location.hostname === '127.0.0.1' ) ? 2 : 1;
 		var step = 1 * localbrowser; // fix: reduce cpu cycle on local browser
@@ -1448,13 +1474,18 @@ function settime() {
 	} );
 }
 function converthms( second ) {
-		var hh = Math.floor( second / 3600 );
-		var mm = Math.floor( ( second - hh ) / 60 );
-		var ss = ( second - hh ) % 60;
-		return ( hh ? hh + ':' + ( mm < 10 ? '0' : '' ) : ''  )
-			+ ( mm ? mm + ':' + ( ss < 10 ? '0' : '' ) : '' )
-			+ ( mm || ss ? ss : '' )
-		;
+	var hh = Math.floor( second / 3600 );
+	var mm = Math.floor( ( second % 3600 ) / 60 );
+	var ss = second - hh * 3600 - mm * 60;
+	
+	hh = hh ? hh +':' : '';
+	if ( hh ) {
+		mm = mm > 9 ? mm : '0'+ mm;
+	} else {
+		mm = mm ? mm : '';
+	}
+	if ( mm ) ss = ss > 9 ? ':'+ ss : ':0'+ ss;
+	return hh + mm + ss;
 }
 
 // song info
