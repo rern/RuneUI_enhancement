@@ -24,7 +24,7 @@ if ( /Midori/.test( navigator.userAgent ) ) {
 	$( 'head link[rel="stylesheet"]').last().after( '<link rel="stylesheet" href="/css/midori.css">' )
 }
 
-$( '#open-panel-sx, .open-sx' ).click( function() {
+$( '#open-panel-sx' ).click( function() {
 	var activePlayer = GUI.libraryhome.ActivePlayer;
 	if ( activePlayer === 'Spotify' || activePlayer === 'Airplay' ) {
 		$( '#overlay-playsource-open' ).click();
@@ -760,7 +760,6 @@ function displaycommon() {
 		} );
 	}
 }
-
 // playback show/hide blocks
 buttonactive = 0;
 function displayplayback() {
@@ -770,8 +769,6 @@ function displayplayback() {
 		volumempd: [ 'get', 'volume' ],
 		update: [ 'hGet', 'addons', 'update' ]
 	};
-	if ( GUI.json.playlistlength != 0 ) $( '.playback-controls' ).css( 'visibility', 'visible' );
-	
 	$.post( '/enhanceredis.php', 
 		{ json: JSON.stringify( command ) },
 		function( data ) {
@@ -821,11 +818,30 @@ function displayplayback() {
 		if ( buttonactive ) $( '#play-group, #share-group, #vol-group' ).show();
 		$( '#playback-row' ).removeClass( 'hide' ); // restore - hidden by fix flash
 		
-		setbutton();
+		// scroll info text
+		$( '#divartist, #divsong, #divalbum' ).each( function() {
+			if ( $( this ).find( 'span' ).width() > Math.floor( window.innerWidth * 0.975 ) ) {
+				$( this ).addClass( 'scroll-left' );
+			} else {
+				$( this ).removeClass( 'scroll-left' );
+			}
+		} );
+		
 		displaycommon();
+		
 	} );
+	// empty playlist
+	if ( !GUI.json.currentsong ) {
+		$( '#currentartist, #currentsong, #format-bitrate, #total' ).html( '&nbsp;' );
+		$( '#currentalbum' ).html( 'Empty queue' );
+		$( '#playlist-position span' ).html( 'Add some entries from your library' );
+		$( '#elapsed, #total' ).html( '&nbsp;' );
+		clearInterval( GUI.currentKnob );
+		clearInterval( GUI.countdown );
+		$( '#time' ).roundSlider( 'setValue', 0 );
+	}
 }
-
+displayplayback();
 // library show/hide blocks
 function displaylibrary() {
 	var command = { display: [ 'hGetAll', 'display' ] };
@@ -1136,9 +1152,6 @@ function populateDB(options) {
 				});
 			}
 			$databaseentries.innerHTML = content;
-			setTimeout( function() {
-				window.scrollTo( 0, 0 );
-			}, 100 );
 		}
 	}
 	var breadcrumb = $('span', '#db-currentpath');
@@ -1198,89 +1211,6 @@ function populateDB(options) {
 	}
 
 }
-function getPlaylistPlain( data ) {
-	console.log(data)
-	var current = parseInt(GUI.json.song) + 1;
-	var state = GUI.json.state;
-	var content = time = artist = album = title = name = str = filename = path = songid = bottomline = classcurrent = classradio = hidetotal = '';
-	var id = totaltime = playlisttime = pos = 0;
-	var i, line, lines = data.split('\n'), infos=[];
-	for (i = 0; (line = lines[i]); i += 1) {
-		infos = line.split(/: (.+)?/);
-		if ('Time' === infos[0]) {
-			time = parseInt(infos[1]);
-		}
-		else if ('Artist' === infos[0]) {
-			artist = infos[1];
-		}
-		else if ('Title' === infos[0]) {
-			title = infos[1];
-		}
-		else if ('Name' === infos[0]) {
-			name = infos[1];
-		}
-		else if ('Album' === infos[0]) {
-			album = infos[1];
-		}
-		else if ('file' === infos[0]) {
-			str = infos[1];
-		}
-		else if ('Id' === infos[0]) {
-			songid = infos[1];
-			if ( str.slice( 0, 4 ) === 'http' ) {
-				classradio = ' radio"';
-				topline = name != '' ? name : title ? title : '&nbsp;';
-				bottomline = str;
-				hidetotal = ' class="hide"';
-			} else {
-				title = title ? title : str.split('/').pop();
-				topline = title +'<span>'+ converthms( time ) +'</span>';
-				bottomline = artist ? artist + ' - ' + album : parsePath(str);
-				playlisttime += time;
-			}
-			pos++;
-			classcurrent = ( state !== 'stop' && pos === current ) ? 'active' : ''
-			content += '<li id="pl-'+ songid +'" class="'+ classcurrent + classradio +'">'
-				+'<i class="fa fa-times-circle pl-action" title="Remove song from playlist"></i><span class="sn">'+ topline +'</span>'
-				+'<span class="bl">'+ bottomline +'</span>'
-				+'</li>';
-			time = artist = album = title = name = classcurrent = classradio = '';
-		}
-	}
-	$('.playlist').addClass('hide');
-	$('#playlist-entries').removeClass('hide');
-	var pl_entries = document.getElementById('playlist-entries');
-	if( pl_entries ){ pl_entries.innerHTML = content; }
-	$('#pl-filter-results').addClass('hide').html('');
-	$('#pl-filter').val('');
-	$('#pl-manage').removeClass('hide');
-	$('#pl-count').removeClass('hide').html( 'List: <a>'+ pos +'</a><span'+ hidetotal +'>&emsp;Duration: <a>'+ converthms(playlisttime) +'</a></span>');
-}
-function getPlaylistCmd(){
-    loadingSpinner('pl');
-    $.ajax({
-        url: '/db/?cmd=playlist',
-        success: function(data){
-            if ( data.length > 4) {
-                $('.playlist').addClass('hide');
-                $('#playlist-entries').removeClass('hide');
-                getPlaylistPlain(data);
-                
-                var current = parseInt(GUI.json.song);
-                if ($('#panel-dx').hasClass('active') && GUI.currentsong !== GUI.json.currentsong) {
-                    customScroll('pl', current, 200); // highlight current song in playlist
-                }
-            } else {
-                $('.playlist').addClass('hide');
-                $('#playlist-warning').removeClass('hide');
-                $('#pl-filter-results').addClass('hide').html('');
-                $('#pl-count').removeClass('hide').html('');
-            }
-            loadingSpinner('pl', 'hide');
-        },
-        cache: false
-    });
-}
 
 prevnext = 0; // for disable 'btn-primary' - previous/next while stop
 function commandButton( el ) {
@@ -1296,49 +1226,31 @@ function commandButton( el ) {
 		dataCmd = dataCmd + ( el.hasClass( 'btn-primary' ) ? ' 0' : ' 1' );    
 	} else {
 		if ( dataCmd === 'play' ) {
-			if ( GUI.json.file.slice( 0, 4 ) === 'http' ) {
-				dataCmd = ( GUI.state === 'play' ) ? 'stop' : 'play';
-			} else {
-				dataCmd = ( GUI.state === 'play' ) ? 'pause' : 'play';
-			}
+			dataCmd = ( GUI.state === 'play' ) ? 'pause' : 'play';
 		} else if ( dataCmd === 'stop' ) {
-			if ( GUI.json.file.slice( 0, 4 ) === 'http' ) $( '#currentsong' ).html( '&nbsp;' );
 			clearInterval( GUI.currentKnob );
 			clearInterval( GUI.countdown );
 		} else {
 			// enable previous / next while stop
-			if ( GUI.json.playlistlength == 1 ) return;
-			prevnext = 1;
-			var current = parseInt( GUI.json.song ) + 1;
-			var last = parseInt( GUI.json.playlistlength );
-			
-			if ( GUI.state === 'play' ) {
-				var mpcstop = '';
-			} else {
-				var mpcstop = '; /usr/bin/mpc stop';
-				$( '#pause' ).removeClass( 'btn-primary' );
-				$( '#stop' ).addClass( 'btn-primary' );
-			}
-			
-			if ( GUI.json.random == 1 ) {
-				// improve: repeat pattern of mpd random
-				var pos = Math.floor( Math.random() * last ) + 1;
-				if ( pos === current ) pos = Math.floor( Math.random() * last ) + 1;
-			} else {
-				if ( dataCmd === 'previous' ) {
-					var pos = current !== 1 ? current - 1 : last;
+			if ( dataCmd === 'previous' || dataCmd === 'next' ) {
+				prevnext = 1;
+				var current = parseInt( GUI.json.song ) + 1;
+				var last = parseInt( GUI.json.playlistlength );
+				var targetsong = ( dataCmd === 'previous' ) ? ( ( current !== 1 ) ? current - 1 : last ) : ( ( current !== last ) ? current + 1 : 1 );
+				if ( GUI.state === 'play' ) {
+					var mpcstop = '';
 				} else {
-					var pos = current !== last ? current + 1 : 1;
+					var mpcstop = '; /usr/bin/mpc stop';
+					$( '#pause' ).removeClass( 'btn-primary' );
+					$( '#stop' ).addClass( 'btn-primary' );
 				}
+				$.post( '/enhanceredis.php', { bash: '/usr/bin/mpc play '+ targetsong + mpcstop }, function() {
+					setTimeout( function() {
+						prevnext = 0;
+					}, 500 );
+				});
+				return
 			}
-			$( '#format-bitrate' ).html( '' );
-			$.post( '/enhanceredis.php', { bash: '/usr/bin/mpc play '+ pos + mpcstop }, function() {
-				setTimeout( function() {
-					if ( GUI.json.file.slice( 0, 4 ) === 'http' ) $( '#format-bitrate' ).html( '&nbsp;' );
-					prevnext = 0;
-				}, 500 );
-			});
-			return
 		}
 	}
 	sendCmd( dataCmd );
@@ -1383,11 +1295,11 @@ function setbutton() {
 				$( '#play' ).removeClass( 'btn-primary' );
 				$( '#pause' ).addClass( 'btn-primary' );
 			}
-		}
+		}	
 	}
 }
 
-// volume, sampling, time
+// song - sampling info, time, volume
 onsetmode = 0;
 function settime() {
 	$.post( '/enhanceredis.php', { bash: '/srv/http/enhancestatus.sh' }, function( data ) {
@@ -1407,39 +1319,31 @@ function settime() {
 			}
 		}
 		
-		// set mode buttons
-		if ( onsetmode ) return;
-
-		clearInterval( GUI.currentKnob );
-		clearInterval( GUI.countdown );
-		$( '#time' ).roundSlider( 'setValue', 0 );
+		// no current song or set mode buttons
+		if ( !GUI.json.currentsong || onsetmode ) return;
 		
-		// empty queue
-		if ( GUI.json.playlistlength == 0 ) return;
-		
-		// sampling
 		var dot0 = '<a id="dot0" style="color:#ffffff"> &#8226; </a>';
-		// streaming
-		if ( GUI.json.file.slice( 0, 4 ) === 'http' || GUI.libraryhome.ActivePlayer === 'Airplay' || GUI.libraryhome.ActivePlayer === 'Spotify' ) {
-			if ( $( '#currentartist' ).html() == '' ) {
-				$( '#currentartist' ).html( status.artist );
-				$( '#cover-art' ).css( 'background-image', 'url("assets/img/cover-radio.jpg")' );
-			}
-			var sampling = $( '#format-bitrate' ).html();
-			if ( sampling === '' || sampling === '&nbsp;' ) $( '#format-bitrate' ).html( dot0 + status.sampling );
+		if ( GUI.stream === 'radio' || GUI.libraryhome.ActivePlayer === 'Airplay' || GUI.libraryhome.ActivePlayer === 'Spotify' ) {
+			$( '#format-bitrate' ).html( GUI.json.audio_sample_depth ? dot0 + GUI.json.audio_sample_depth + ' bit ' + GUI.json.audio_sample_rate +' kHz '+GUI.json.bitrate+' kbit/s' : '&nbsp;' );
+			$( '#time' ).roundSlider( 'setValue', 0 );
+			clearInterval( GUI.currentKnob );
+			clearInterval( GUI.countdown );
 			$( '#elapsed' ).html( GUI.state === 'play' ? '<a class="dot">.</a> <a class="dot dot2">.</a> <a class="dot dot3">.</a>' : '' );
 			$( '#total' ).text( '' );
 			return;
 		}
-		
+		// sampling and time
 		var dot = dot0.replace( ' id="dot0"', '' );
-		var ext = ( status.ext !== 'radio' ) ? dot + status.ext : '';
+		var ext = ( GUI.stream !== 'radio' ) ? dot + status.ext : '';
 		$( '#format-bitrate' ).html( dot0 + status.sampling + ext );
-		// time
 		time = +status.time;
 		$( '#total' ).text( converthms( time ) );
 		
+		clearInterval( GUI.currentKnob );
+		clearInterval( GUI.countdown );
+
 		if ( status.state === 'stop' || $( '#time-knob' ).hasClass( 'hide' ) ) {
+			$( '#time' ).roundSlider( 'setValue', 0 );
 			$( '#elapsed' ).text( '' );
 			return;
 		} // stop <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -1449,9 +1353,9 @@ function settime() {
 		$( '#time' ).roundSlider( 'setValue', position );
 		$( '#elapsed' ).text( converthms( elapsed ) );
 		
-		if ( status.state === 'pause' ) return; // pause <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+		if ( status.state === 'paused' ) return; // pause <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 		
-		var localbrowser = ( location.hostname === 'localhost' || location.hostname === '127.0.0.1' ) ? 2 : 1;
+		var localbrowser = ( location.hostname === 'localhost' || location.hostname === '127.0.0.1' ) ? 10 : 1;
 		var step = 1 * localbrowser; // fix: reduce cpu cycle on local browser
 		var every = time * localbrowser;
 		
@@ -1474,81 +1378,83 @@ function settime() {
 	} );
 }
 function converthms( second ) {
-	var hh = Math.floor( second / 3600 );
-	var mm = Math.floor( ( second % 3600 ) / 60 );
-	var ss = second - hh * 3600 - mm * 60;
-	
-	hh = hh ? hh +':' : '';
-	if ( hh ) {
-		mm = mm > 9 ? mm : '0'+ mm;
-	} else {
-		mm = mm ? mm : '';
-	}
-	if ( mm ) ss = ss > 9 ? ':'+ ss : ':0'+ ss;
-	return hh + mm + ss;
+		var hh = Math.floor( second / 3600 );
+		var mm = Math.floor( ( second - hh ) / 60 );
+		var ss = ( second - hh ) % 60;
+		return ( hh ? hh + ':' + ( mm < 10 ? '0' : '' ) : ''  )
+			+ ( mm ? mm + ':' + ( ss < 10 ? '0' : '' ) : '' )
+			+ ( mm || ss ? ss : '' )
+		;
 }
 
 // song info
 function setinfo() {
-	// empty queue
-	if ( GUI.json.playlistlength == 0 ) {
-		$( '.playback-controls' ).css( 'visibility', 'hidden' );
-		$( '#divartist, #divsong, #divalbum' ).removeClass( 'scroll-left' );
-		$( '#currentartist, #format-bitrate, #total' ).html( '&nbsp;' );
-		$( '#currentsong' ).html( '<i class="fa fa-plus-circle"></i>' );
-		$( '#currentalbum' ).html( '&nbsp;' );
-		$( '#playlist-position span' ).html( 'Add something from Library' );
-		$( '#elapsed, #total' ).html( '&nbsp;' );
-		$( '#cover-art' ).css( 'background-image', 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' );
-		return;
-	}
+	var radioname = GUI.json.radioname;
+	var currentartist = GUI.json.currentartist;
+	var currentsong = GUI.json.currentsong ? GUI.json.currentsong : '';
+	var currentalbum = GUI.json.currentalbum;
+
+	GUI.stream = ( radioname ? 'radio' : '' );
+	
+	setbutton();
 	
 	if ( GUI.json.playlistlength !== '0' ) {
-		if ( GUI.json.file.slice( 0, 4 ) !== 'http' ) {
-			$( '#currentartist' ).html( GUI.json.currentartist ? GUI.json.currentartist : '&nbsp;' );
-			$( '#currentsong' ).html( GUI.json.currentsong ? GUI.json.currentsong : '&nbsp;' );
-			$( '#currentalbum').html( GUI.json.currentalbum ? GUI.json.currentalbum : '&nbsp;' );
+		if ( GUI.stream !== 'radio' ) {
+			$( '#currentartist' ).html( currentartist ? currentartist : '&nbsp;' );
+			$( '#currentsong' ).html( currentsong ? currentsong : '&nbsp;' );
+			$( '#currentalbum').html( currentalbum ? currentalbum : '&nbsp;' );
 		} else {
-			$( '#currentartist' ).html( GUI.json.radioname );
-			$( '#currentsong' ).html( GUI.state !== 'stop' ? GUI.json.currentsong : '&nbsp;' );
-			$( '#currentalbum' ).html( 'Webradio' );
+			$( '#currentartist' ).html( currentartist ? currentartist : radioname );
+			if ( GUI.state !== 'stop' ) {
+				$( '#currentalbum' ).html( currentalbum ? currentalbum : 'Radio' );
+				$( '#currentsong' ).html( currentsong ? currentsong : radioname );
+			} else {
+				$( '#currentsong' ).html( 'Radio' )
+				$( '#divsong' ).removeClass( 'scroll-left' );
+				$( '#currentalbum' ).html( '' );
+			}
 		}
 		
 		if ( GUI.json.song ) {
 			$( '#playlist-position span' ).html( ( parseInt( GUI.json.song ) + 1 ) +'/'+ GUI.json.playlistlength );
 		} else {
-			$( '#playlist-position span' ).html( '&nbsp;' );
+			$( '#playlist-position span' ).html( '1/'+ GUI.json.playlistlength );
 		}
+		
+		if (GUI.stream === 'radio') $('#cover-art').css('background-image','url("assets/img/cover-radio.jpg")');
 	}
 	
-	var currentalbumstring = GUI.json.currentartist +' - '+ GUI.json.currentalbum;
 	// song changed
-	if ( GUI.currentsong !== GUI.json.currentsong || GUI.currentalbum !== currentalbumstring ) {
-		GUI.currentsong = GUI.json.currentsong;
-		// scroll info text
-		$( '#divartist, #divsong, #divalbum' ).each( function() {
-			if ( $( this ).find( 'span' ).width() > Math.floor( window.innerWidth * 0.975 ) ) {
-				$( this ).addClass( 'scroll-left' );
-			} else {
-				$( this ).removeClass( 'scroll-left' );
-			}
-		} );
-		
-		$( '#playlist-entries li ' ).removeClass( 'active' );
-		$( '#playlist-entries' ).find( 'li' ).eq( parseInt( GUI.json.song ) ).addClass( 'active' );
-		
-		if ( $( '#lyricscontainer' ).length && $( '#lyricscontainer' ).is( ':visible' ) )  getlyrics();
-	}
+	if ( GUI.currentsong === GUI.json.currentsong ) return;
+	
+	GUI.currentsong = currentsong;
+	$( '#playlist-entries li ' ).removeClass( 'active' );
+	var current = parseInt( GUI.json.song );
+	$( '#playlist-entries' ).find( 'li' ).eq( current ).addClass( 'active' );
+	
+	if ( $( '#lyricscontainer' ).length && $( '#lyricscontainer' ).is( ':visible' ) )  getlyrics();
+
+	// scroll info text
+	$( '#divartist, #divsong, #divalbum' ).each( function() {
+		if ( $( this ).find( 'span' ).width() > Math.floor( window.innerWidth * 0.975 ) ) {
+			$( this ).addClass( 'scroll-left' );
+		} else {
+			$( this ).removeClass( 'scroll-left' );
+		}
+	} );
 
 	// album changed
-	if ( GUI.currentalbum === currentalbumstring || $( '#coverart' ).hasClass( 'hide' ) ) return;
+	var currentalbumstring = currentartist +' - '+ currentalbum;
+	if ( GUI.currentalbum === currentalbumstring ) return;
+
+	if ( $( '#coverart' ).hasClass( 'hide' ) ) return;
 	
 	GUI.currentalbum = currentalbumstring;
-	if ( GUI.json.file.slice( 0, 4 ) !== 'http' ) {
-		var covercachenum = Math.floor( Math.random() * 1001 );
-		$( '#cover-art' ).css( 'background-image', 'url("/coverart/?v=' + covercachenum + '")' );
+	if (GUI.stream !== 'radio') {
+		var covercachenum = Math.floor(Math.random()*1001);
+		$('#cover-art').css('background-image','url("/coverart/?v=' + covercachenum + '")');
 	} else {
-		$( '#cover-art' ).css( 'background-image', 'url("assets/img/cover-radio.jpg")' );
+		$('#cover-art').css('background-image','url("assets/img/cover-radio.jpg")');
 	}
 }
 
@@ -1563,7 +1469,6 @@ function renderUI( text ) {
 	
 	setinfo();
 	settime();
-	if ( $( '#playback' ).hasClass( 'active' ) ) displayplayback();
 	
 	if ( GUI.json.playlist !== GUI.playlist ) {
 		getPlaylistCmd();
