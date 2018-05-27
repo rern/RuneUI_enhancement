@@ -1199,7 +1199,6 @@ function populateDB(options) {
 
 }
 function getPlaylistPlain( data ) {
-	console.log(data)
 	var current = parseInt(GUI.json.song) + 1;
 	var state = GUI.json.state;
 	var content = time = artist = album = title = name = str = filename = path = songid = bottomline = classcurrent = classradio = hidetotal = '';
