@@ -1116,17 +1116,6 @@ function populateDB(options) {
 				}
 				return a[ prop ].localeCompare( b[ prop ] );
 			});
-			if ( path === 'Webradio' ) {
-// breadcrumb replace - modify add webradio button
-				$( '#db-level-up' ).addClass( 'hide' );
-				$( '#db-webradio-add' ).removeClass( 'hide' ).click( function() {
-						$( '#modal-webradio-add' ).modal();
-				} );
-			} else {
-				$( '#db-level-up' ).removeClass( 'hide' );
-				$( '#db-webradio-add' ).addClass( 'hide' );
-// ****************************************************************************************
-			}
 			for (i = 0; (row = data[i]); i += 1) {
 				content += parseResponse({
 					inputArr: row,
@@ -1139,6 +1128,35 @@ function populateDB(options) {
 			setTimeout( function() {
 				window.scrollTo( 0, 0 );
 			}, 100 );
+			if ( path === 'Webradio' ) {
+// breadcrumb replace - modify add webradio button
+				$( '#db-level-up' ).addClass( 'hide' );
+				$( '#db-webradio-add' ).removeClass( 'hide' ).click( function() {
+						$( '#modal-webradio-add' ).modal();
+				} );
+				
+				// set default 'webradio' to url
+				if ( $( '#database-entries span.bl' ).eq( 0 ).text() === 'webradio' ) {
+					var $el = [];
+					var name = [];
+					$( '#database-entries span.bl' ).each( function() {
+						$th = $( this );
+						$el.push( $th );
+						name.push( $th.prev().text() );
+					} );
+					$.post( '/enhanceredis.php', { radio: JSON.stringify( name ) }, function( data ) {
+						var json = JSON.parse( data );
+						var ilength = $el.length;
+						for ( i = 0; i < ilength; i++ ) {
+							$el[ i ].html( json[ i ] );
+						}
+					} );
+				}
+			} else {
+				$( '#db-level-up' ).removeClass( 'hide' );
+				$( '#db-webradio-add' ).addClass( 'hide' );
+// ****************************************************************************************
+			}
 		}
 	}
 	var breadcrumb = $('span', '#db-currentpath');
@@ -1248,21 +1266,28 @@ function getPlaylistPlain( data ) {
 		}
 	}
 	$( '.playlist' ).addClass( 'hide' );
-	$( '#playlist-entries' )
-		.html( content )
-		.removeClass( 'hide' )
-		.find( 'span.sn' ).each( function() {
+	$( '#playlist-entries' ).html( content ).removeClass( 'hide' );
+	
+	// get 'no name webradio' on initial load saved playlist
+	var $el = [];
+	var url = [];
+	$( '#playlist-entries span.sn' ).each( function() {
 			var $th = $( this );
 			if ( $th.html().slice( 0, 3 ) === '<i ' ) {
-				var url = $th.next().text();
-				if ( url.slice( 0, 4 ) === 'http' ) {
-					$.post( '/enhanceredis.php', { radio: url }, function( data ) {
-						$th.html( data );
-						if ( !$( '#currentartist' ).text() && GUI.json.currentalbum === url.slice( 7 ) ) $( '#currentartist' ).text( data );
-					} );
-				}
+				$el.push( $th );
+				url.push( $th.next().text() );
 			}
 	} );
+	// get webradio name
+	$.post( '/enhanceredis.php', { radio: JSON.stringify( url ) }, function( data ) {
+		var json = JSON.parse( data );
+		var ilength = $el.length;
+		for ( i = 0; i < ilength; i++ ) {
+			$el[ i ].html( json[ i ] );
+			if ( !$( '#currentartist' ).text() && 'http://'+ GUI.json.currentalbum === url[ i ] ) $( '#currentartist' ).text( json[ i ] );
+		}
+	} );
+	
 	$( '#pl-filter' ).val( '' );
 	$( '#pl-filter-results' ).addClass( 'hide' ).html( '' );
 	$( '#pl-manage, #pl-count' ).removeClass( 'hide' );
