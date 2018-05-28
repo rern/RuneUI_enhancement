@@ -1199,42 +1199,43 @@ function populateDB(options) {
 
 }
 function getPlaylistPlain( data ) {
-	var current = parseInt(GUI.json.song) + 1;
+	var current = parseInt( GUI.json.song ) + 1;
 	var state = GUI.json.state;
-	var content = time = artist = album = title = name = str = filename = path = songid = bottomline = classcurrent = classradio = hidetotal = '';
-	var id = totaltime = playlisttime = pos = 0;
-	var i, line, lines = data.split('\n'), infos=[];
-	for (i = 0; (line = lines[i]); i += 1) {
-		infos = line.split(/: (.+)?/);
-		if ('Time' === infos[0]) {
-			time = parseInt(infos[1]);
+	var content = time = artist = album = title = name = str = filename = path = songid = bottomline = line = classcurrent = classradio = hidetotal = '';
+	var id = totaltime = playlisttime = pos = i = 0;
+	var lines = data.split( '\n' );
+	var infos=[];
+	for ( i = 0; line = lines[ i ]; i += 1 ) {
+		infos = line.split( /: (.+)?/ );
+		if ( 'Time' === infos[ 0 ] ) {
+			time = parseInt( infos[ 1 ] );
 		}
-		else if ('Artist' === infos[0]) {
-			artist = infos[1];
+		else if ( 'Artist' === infos[ 0 ] ) {
+			artist = infos[ 1 ];
 		}
-		else if ('Title' === infos[0]) {
-			title = infos[1];
+		else if ( 'Title' === infos[ 0 ] ) {
+			title = infos[ 1 ];
 		}
-		else if ('Name' === infos[0]) {
-			name = infos[1];
+		else if ( 'Name' === infos[ 0 ] ) {
+			name = infos[ 1 ];
 		}
-		else if ('Album' === infos[0]) {
-			album = infos[1];
+		else if ( 'Album' === infos[ 0 ] ) {
+			album = infos[ 1 ];
 		}
-		else if ('file' === infos[0]) {
-			str = infos[1];
+		else if ( 'file' === infos[ 0 ] ) {
+			str = infos[ 1 ];
 		}
-		else if ('Id' === infos[0]) {
-			songid = infos[1];
+		else if ( 'Id' === infos[ 0 ] ) {
+			songid = infos[ 1 ];
 			if ( str.slice( 0, 4 ) === 'http' ) {
 				classradio = ' radio"';
-				topline = name != '' ? name : title ? title : '&nbsp;';
+				topline = name != '' ? name : title ? title : '<i class="fa fa-refresh fa-spin"></i>';
 				bottomline = str;
 				hidetotal = ' class="hide"';
 			} else {
-				title = title ? title : str.split('/').pop();
+				title = title ? title : str.split( '/' ).pop();
 				topline = title +'<span>'+ converthms( time ) +'</span>';
-				bottomline = artist ? artist + ' - ' + album : parsePath(str);
+				bottomline = artist ? artist + ' - ' + album : parsePath( str );
 				playlisttime += time;
 			}
 			pos++;
@@ -1246,14 +1247,25 @@ function getPlaylistPlain( data ) {
 			time = artist = album = title = name = classcurrent = classradio = '';
 		}
 	}
-	$('.playlist').addClass('hide');
-	$('#playlist-entries').removeClass('hide');
-	var pl_entries = document.getElementById('playlist-entries');
-	if( pl_entries ){ pl_entries.innerHTML = content; }
-	$('#pl-filter-results').addClass('hide').html('');
-	$('#pl-filter').val('');
-	$('#pl-manage').removeClass('hide');
-	$('#pl-count').removeClass('hide').html( 'List: <a>'+ pos +'</a><span'+ hidetotal +'>&emsp;Duration: <a>'+ converthms(playlisttime) +'</a></span>');
+	$( '.playlist' ).addClass( 'hide' );
+	$( '#playlist-entries' )
+		.html( content )
+		.removeClass( 'hide' )
+		.find( 'span.sn' ).each( function() {
+			var $th = $( this );
+			if ( $th.html().slice( 0, 3 ) === '<i ' ) {
+				var url = $th.next().text();
+				if ( url.slice( 0, 4 ) === 'http' ) {
+					$.post( '/enhanceredis.php', { bash: '/srv/http/enhanceradioname.sh '+ url }, function( data ) {
+						$th.html( data );
+					} );
+				}
+			}
+	} );
+	$( '#pl-filter' ).val( '' );
+	$( '#pl-filter-results' ).addClass( 'hide' ).html( '' );
+	$( '#pl-manage, #pl-count' ).removeClass( 'hide' );
+	$( '#pl-count' ).html( 'List: <a>'+ pos +'</a><span'+ hidetotal +'> &#8226; <a>'+ converthms( playlisttime ) +'</a></span>' );
 }
 function getPlaylistCmd(){
     loadingSpinner('pl');
