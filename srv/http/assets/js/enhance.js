@@ -1271,20 +1271,19 @@ function getPlaylistPlain( data ) {
 	// get 'no name webradio' on initial load saved playlist
 	var $el = [];
 	var url = [];
-	$( '#playlist-entries span.sn' ).each( function() {
+	$( '#playlist-entries span.sn' ).has( 'i' ).each( function() {
 			var $th = $( this );
-			if ( $th.html().slice( 0, 3 ) === '<i ' ) {
-				$el.push( $th );
-				url.push( $th.next().text() );
-			}
+			$el.push( $th );
+			url.push( $th.next().text() );
 	} );
 	// get webradio name
 	$.post( '/enhanceredis.php', { radio: JSON.stringify( url ) }, function( data ) {
+		var radioname = $( '#currentartist' ).text();
 		var json = JSON.parse( data );
 		var ilength = $el.length;
 		for ( i = 0; i < ilength; i++ ) {
 			$el[ i ].html( json[ i ] );
-			if ( !$( '#currentartist' ).text() && 'http://'+ GUI.json.currentalbum === url[ i ] ) $( '#currentartist' ).text( json[ i ] );
+			if ( !radioname && 'http://'+ GUI.json.currentalbum === url[ i ] ) $( '#currentartist' ).text( json[ i ] );
 		}
 	} );
 	
