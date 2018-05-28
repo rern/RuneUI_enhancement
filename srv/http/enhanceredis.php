@@ -14,6 +14,16 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 $redis = new Redis(); 
 $redis->pconnect( '127.0.0.1' );
 
+// radioname
+if ( isset( $_POST[ 'radio' ] ) ) {
+	$webradios = $redis->hgetall( 'webradios' );
+	$webradios = array_flip( $webradios );
+	$name = $webradios[ $_POST[ 'radio' ] ];
+	echo $name;
+	die();
+}
+
+
 $array = json_decode( $_POST[ 'json' ], true );
 
 foreach ( $array as $field => $arg ) {
