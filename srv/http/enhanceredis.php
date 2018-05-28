@@ -17,9 +17,12 @@ $redis->pconnect( '127.0.0.1' );
 // radioname
 if ( isset( $_POST[ 'radio' ] ) ) {
 	$webradios = $redis->hgetall( 'webradios' );
-	$webradios = array_flip( $webradios );
-	$name = $webradios[ $_POST[ 'radio' ] ];
-	echo $name;
+	$radio = json_decode( $_POST[ 'radio' ] );
+	if ( substr( $radio[ 0 ], 0, 4 ) === 'http' ) $webradios = array_flip( $webradios );
+	foreach( $radio as $val ) {
+		$list[] = $webradios[ $val ];
+	}
+	echo json_encode( $list );
 	die();
 }
 
