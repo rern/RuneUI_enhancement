@@ -1489,12 +1489,13 @@ function settime() {
 		time = +status.time;
 		$( '#total' ).text( converthms( time ) );
 		// stop <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-		if ( status.state === 'stop' || $( '#time-knob' ).hasClass( 'hide' ) ) {
-			$( '#elapsed' ).text( '' );
-			$( '#total' ).css( 'color', '#e0e7ee' );
+		if ( $( '#time-knob' ).hasClass( 'hide' ) ) return;
+		if ( status.state === 'stop' ) {
+			$( '#elapsed' ).text( $( '#total' ).text() ).css( 'color', '##587ca0' );
+			$( '#total' ).text( '' );
 			return;
 		} else {
-			$( '#total' ).css( 'color', '' );
+			$( '#elapsed, #total' ).css( 'color', '' );
 		}
 		
 		var elapsed = status.elapsed;
