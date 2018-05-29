@@ -1262,7 +1262,7 @@ function getPlaylistPlain( data ) {
 		else if ( 'Id' === infos[ 0 ] ) {
 			songid = infos[ 1 ];
 			if ( str.slice( 0, 4 ) === 'http' ) {
-				classradio = ' radio"';
+				classradio = ' radio';
 				topline = name != '' ? name : title ? title : '<i class="fa fa-refresh fa-spin"></i>';
 				bottomline = str;
 				hidetotal = ' class="hide"';
@@ -1273,8 +1273,10 @@ function getPlaylistPlain( data ) {
 				playlisttime += time;
 			}
 			pos++;
-			classcurrent = ( state !== 'stop' && pos === current ) ? 'active' : ''
-			content += '<li id="pl-'+ songid +'" class="'+ classcurrent + classradio +'">'
+			classcurrent = ( state !== 'stop' && pos === current ) ? 'active' : '';
+			cl = ' class="'+ classcurrent + classradio +'"';
+			cl = ( classcurrent || classradio ) ? cl : '';
+			content += '<li id="pl-'+ songid +'"'+ cl +'>'
 				+'<i class="fa fa-times-circle pl-action" title="Remove song from playlist"></i><span class="sn">'+ topline +'</span>'
 				+'<span class="bl">'+ bottomline +'</span>'
 				+'</li>';
