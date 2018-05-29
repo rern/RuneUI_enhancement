@@ -321,7 +321,7 @@
 #volume {
 	font-size: 38px !important;
 	font-weight: 300 !important;
-	color: #e0e7ee !important;
+	color: #e0e7ee;
 	opacity: 1; /* fix volume text color */
 }
 #elapsed {
@@ -335,6 +335,7 @@
 }
 #total {
 	top: 120px;
+	color: #587ca0;
 }
 #volume,
 #total {
@@ -532,6 +533,7 @@
 #volume { /* volume up/down */
 	position: relative;
 }
+#timestop,
 #voluprs,
 #voldnrs {
 	position: absolute;
@@ -546,6 +548,7 @@
 #voluprs {
 	top: 45px;
 }
+#timestop,
 #voldnrs {
 	top: 145px;
 }
