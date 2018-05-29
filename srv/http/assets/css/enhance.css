@@ -655,12 +655,13 @@
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
-#database-entries .fa-folder-open,
 #database-entries .db-icon,
-#database-entries .sn span,
+#database-entries li span i,
+#pl-editor li span i,
 #playlist-entries li:before,
+#database-entries .sn span,
 #playlist-entries .sn span {
-    color: #587ca0;
+    color: #587ca0 !important;
 }
 #playlist-entries li.active .sn span {
 	color: #34495e;
