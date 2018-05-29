@@ -1510,9 +1510,9 @@ function settime() {
 			$( '#elapsed' ).css( 'color', '' );
 			$( '#total' ).css( 'color', '' );
 		}
-		var localbrowser = ( location.hostname === 'localhost' || location.hostname === '127.0.0.1' ) ? 2 : 1;
-		var step = 1 * localbrowser; // fix: reduce cpu cycle on local browser
-		var every = time * localbrowser;
+//		var localbrowser = ( location.hostname === 'localhost' || location.hostname === '127.0.0.1' ) ? 10 : 1;
+//		var step = 1 * localbrowser; // fix: reduce cpu cycle on local browser
+		var step = 1;
 		
 		GUI.currentKnob = setInterval( function() {
 			position = position + step;
