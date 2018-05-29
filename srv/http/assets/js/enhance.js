@@ -287,8 +287,11 @@ $( '#closebio' ).click( function() {
 	if ( !barhide ) $( '#menu-top, #menu-bottom' ).show();
 } );
 
-$( '#coverTL, #coverTR' ).click( function() {
+$( '#coverTL' ).click( function() {
 	$( '#controls' ).toggle();
+} );
+$( '#coverTR' ).click( function() {
+	$( '#overlay-playsource-open' ).click();
 } );
 $hammercoverT.on( 'tap', function( e ) {
 	$( '#menu-top, #menu-bottom' ).toggle();
