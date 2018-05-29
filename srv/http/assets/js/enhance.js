@@ -105,6 +105,9 @@ $( '#menu-bottom' ).click( function() {
 		$( '#database' ).css( 'padding-top', '40px' );
 	}
 } );
+$( '#currentsong' ).click( function() {
+	if ( $( this ).has( 'i' ).length ) $( '#open-panel-sx' ).click();
+} );
 
 // library directory path link
 $( '#db-home' ).click( function() {
