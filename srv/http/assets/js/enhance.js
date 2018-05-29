@@ -191,11 +191,13 @@ var $hammerbarleft = new Hammer( document.getElementById( 'barleft' ) );
 var $hammerbarright = new Hammer( document.getElementById( 'barright' ) );
 var $hammerartist = new Hammer( document.getElementById( 'currentartist' ) );
 var $hammertime = new Hammer( document.getElementById( 'elapsed' ) );
+var $hammertimestop = new Hammer( document.getElementById( 'timestop' ) );
 var $hammercoverT = new Hammer( document.getElementById( 'coverT' ) );
 var $hammercoverL = new Hammer( document.getElementById( 'coverL' ) );
 var $hammercoverM = new Hammer( document.getElementById( 'coverM' ) );
 var $hammercoverR = new Hammer( document.getElementById( 'coverR' ) );
-var $hammercoverB = new Hammer( document.getElementById( 'coverB' ) );
+var $hammercoverBL = new Hammer( document.getElementById( 'coverBL' ) );
+var $hammercoverBR = new Hammer( document.getElementById( 'coverBR' ) );
 var $hammersonginfo = new Hammer( document.getElementById( 'songinfo-open' ) );
 var $hammervolume = new Hammer( document.getElementById( 'volume' ) );
 var $hammervoldn = new Hammer( document.getElementById( 'voldn' ) );
@@ -307,35 +309,41 @@ $hammercoverL.on( 'tap', function( e ) {
 		e.stopPropagation();
 	} );
 } );
+$( '#timestop, #coverB' ).click( function() {
+	$( '#stop' ).click();
+	$( '#controls' ).hide();
+} );
 $hammercoverR.on( 'tap', function( e ) {
 	$( '#next' ).click();
 	$( '#controls' ).hide();
 	e.stopPropagation();
 } );
-$hammercoverB.on( 'tap', function( e ) {
-	buttonactive = 0;
-	var time = $( '#time-knob' ).is( ':visible' );
-	var coverart = $( '#coverart' ).is( ':visible' );
-	var volume = displayredis.volume != 0 && displayredis.volumempd != 0 && $( '#volume-knob' ).is( ':visible' );
-	if ( buttonhide == 0 
-		|| $( '#play-group' ).is( ':visible' )
-		|| $( '#share-group' ).is( ':visible' )
-		|| $( '#vole-group' ).is( ':visible' )
-		) {
-		buttonhide = 1;
-		$( '#play-group, #share-group, #vol-group' ).hide();
-	} else {
-		buttonhide = 0;
-		if ( time ) $( '#play-group' ).show();
-		if ( coverart ) $( '#share-group' ).show();
-		if ( volume ) $( '#vol-group' ).show();
-	}
-	
-	if ( window.innerHeight < 414 && $( '#play-group' ).is( ':hidden' ) ) {
-		$( '#play-group, #share-group, #vol-group' ).css( 'margin-top', '10px' );
-	}
-	$( '#controls' ).hide();
-	e.stopPropagation();
+[ $hammercoverBL, $hammercoverBR ].forEach( function( el ) {
+	el.on( 'tap', function( e ) {
+		buttonactive = 0;
+		var time = $( '#time-knob' ).is( ':visible' );
+		var coverart = $( '#coverart' ).is( ':visible' );
+		var volume = displayredis.volume != 0 && displayredis.volumempd != 0 && $( '#volume-knob' ).is( ':visible' );
+		if ( buttonhide == 0 
+			|| $( '#play-group' ).is( ':visible' )
+			|| $( '#share-group' ).is( ':visible' )
+			|| $( '#vole-group' ).is( ':visible' )
+			) {
+			buttonhide = 1;
+			$( '#play-group, #share-group, #vol-group' ).hide();
+		} else {
+			buttonhide = 0;
+			if ( time ) $( '#play-group' ).show();
+			if ( coverart ) $( '#share-group' ).show();
+			if ( volume ) $( '#vol-group' ).show();
+		}
+		
+		if ( window.innerHeight < 414 && $( '#play-group' ).is( ':hidden' ) ) {
+			$( '#play-group, #share-group, #vol-group' ).css( 'margin-top', '10px' );
+		}
+		$( '#controls' ).hide();
+		e.stopPropagation();
+	} );
 } );
 
 var timeoutId;
@@ -400,6 +408,7 @@ $hammerplayback.on( 'press', function() {
 						<br><label><input name="coverart" type="checkbox" '+ displayredis.coverart +'>&ensp;Coverart</label>\
 						<br><label><input name="volume" type="checkbox" '+ displayredis.volume +'>&ensp;Volume</label>\
 						<br><label><input name="buttons" type="checkbox" '+ displayredis.buttons +'>&ensp;Buttons</label>\
+						<br><label><input name="source" type="checkbox" '+ displayredis.source +'>&ensp;Playback source</label>\
 						</form>'
 		, cancel : 1
 		, ok     : function () {
@@ -794,6 +803,7 @@ function displayplayback() {
 			'-webkit-order': '',
 			display: ''
 		} );
+		$( '#overlay-playsource-open' ).toggleClass( 'hide', !displayredis.source );
 		$( '#time-knob, #play-group' ).toggleClass( 'hide', !displayredis.time );
 		$( '#coverart, #share-group' ).toggleClass( 'hide', !displayredis.coverart );
 		$( '#volume-knob, #vol-group' ).toggleClass( 'hide', !volume );
@@ -1337,7 +1347,8 @@ function commandButton( el ) {
 			} else {
 				dataCmd = ( GUI.state === 'play' ) ? 'pause' : 'play';
 			}
-		} else if ( dataCmd === 'stop' ) {
+		}
+		if ( dataCmd === 'pause' || dataCmd === 'stop' ) {
 			if ( GUI.json.file.slice( 0, 4 ) === 'http' ) $( '#currentsong' ).html( '&nbsp;' );
 			clearInterval( GUI.currentKnob );
 			clearInterval( GUI.countdown );
@@ -1474,19 +1485,28 @@ function settime() {
 		// time
 		time = +status.time;
 		$( '#total' ).text( converthms( time ) );
-		
+		// stop <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 		if ( status.state === 'stop' || $( '#time-knob' ).hasClass( 'hide' ) ) {
 			$( '#elapsed' ).text( '' );
+			$( '#total' ).css( 'color', '#e0e7ee' );
 			return;
-		} // stop <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+		} else {
+			$( '#total' ).css( 'color', '' );
+		}
 		
 		var elapsed = status.elapsed;
 		var position = Math.round( 1000 * elapsed / time );
 		$( '#time' ).roundSlider( 'setValue', position );
 		$( '#elapsed' ).text( converthms( elapsed ) );
-		
-		if ( status.state === 'pause' ) return; // pause <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-		
+		// pause <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+		if ( status.state === 'pause' ) {
+			$( '#elapsed' ).css( 'color', '#0095d8' );
+			$( '#total' ).css( 'color', '#e0e7ee' );
+			return;
+		} else {
+			$( '#elapsed' ).css( 'color', '' );
+			$( '#total' ).css( 'color', '' );
+		}
 		var localbrowser = ( location.hostname === 'localhost' || location.hostname === '127.0.0.1' ) ? 2 : 1;
 		var step = 1 * localbrowser; // fix: reduce cpu cycle on local browser
 		var every = time * localbrowser;
