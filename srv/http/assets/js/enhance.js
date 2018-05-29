@@ -286,12 +286,12 @@ $( '#closebio' ).click( function() {
 	$( '#songinfo-open' ).show(); // fix button not hidden
 	if ( !barhide ) $( '#menu-top, #menu-bottom' ).show();
 } );
-
 $( '#coverTL' ).click( function() {
-	$( '#controls' ).toggle();
+	$( '#overlay-playsource-open' ).click();
+	$( '#controls' ).hide();
 } );
 $( '#coverTR' ).click( function() {
-	$( '#overlay-playsource-open' ).click();
+	$( '#controls' ).toggle();
 } );
 $hammercoverT.on( 'tap', function( e ) {
 	$( '#menu-top, #menu-bottom' ).toggle();
