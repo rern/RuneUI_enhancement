@@ -1546,7 +1546,7 @@ function converthms( second ) {
 	hh = hh ? hh +':' : '';
 	mm = hh ? ( mm > 9 ? mm +':' : '0'+ mm +':' ) : ( mm ? mm +':' : '' );
 	ss = mm ? ( ss > 9 ? ss : '0'+ ss ) : ss;
-	return hh + mm + ss;
+	return ss ? hh + mm + ss : '';
 }
 
 // song info
