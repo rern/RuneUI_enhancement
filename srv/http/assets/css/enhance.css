@@ -655,7 +655,10 @@
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
+#database-entries .fa-folder-open,
+#database-entries .db-icon,
 #database-entries .sn span,
+#playlist-entries li:before,
 #playlist-entries .sn span {
     color: #587ca0;
 }
@@ -663,7 +666,7 @@
 	color: #34495e;
 }
 #playlist-entries li.radio:before {
-	content: "\f130";
+	content: "";
 }
 #playlist-entries li.radio {
 	margin: 0;
@@ -916,6 +919,11 @@
 	#pl-filter-results span,
 	#pl-count {
 		display: none !important;
+	}
+}
+@media(min-width: 480px) {
+	#playlist-entries li.radio:before {
+		content: "\f130";
 	}
 }
 @media(max-width: 375px) {
