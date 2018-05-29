@@ -26,6 +26,7 @@
 					<button id="overlay-playsource-open" class="btn btn-default btn-xs">MPD</button>
 					<span id="elapsed"></span>
 					<span id="total"></span>
+					<div id="timestop"></div>
 				</div>
 				<div id="play-group">
 					<div class="btn-group">
@@ -40,7 +41,9 @@
 					<div id="coverTL" class="covermap t0 w50 h50 m-115"></div>
 					<div id="coverT" class="covermap t0 w130 h50 m-65"></div>
 					<div id="coverTR" class="covermap t0 w50 h50 m65"></div>
+					<div id="coverBL" class="covermap t180 w50 h50 m-115"></div>
 					<div id="coverB" class="covermap t180 w130 h50 m-65"></div>
+					<div id="coverBR" class="covermap t180 w50 h50 m65"></div>
 					<div id="coverM" class="covermap t50 w130 h130 m-65"></div>
 					<div id="coverL" class="covermap t50 w50 h130 m-115"></div>
 					<div id="coverR" class="covermap t50 w50 h130 m65"></div>
