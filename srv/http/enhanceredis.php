@@ -15,8 +15,8 @@ $redis = new Redis();
 $redis->pconnect( '127.0.0.1' );
 
 // radio name / url
-if ( isset( $_POST[ 'webradioname' ] || isset( $_POST[ 'webradios' ] ) ) {
-	if ( isset( $_POST[ 'webradioname' ] ) {
+if ( isset( $_POST[ 'webradioname' ] ) || isset( $_POST[ 'webradios' ] ) ) {
+	if ( isset( $_POST[ 'webradioname' ] ) ) {
 		$values = json_decode( $_POST[ 'webradioname' ] );
 		$key = 'webradioname';
 	} else {
