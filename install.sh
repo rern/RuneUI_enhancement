@@ -108,6 +108,20 @@ enha*/
 ' -e 's|fa-music sx"></i> Library|fa-folder-open"></i>|
 ' $file
 
+file=/srv/http/app/libs/runeaudio.php
+echo $file
+sed -i -e $'/runelog(.addRadio/ a\
+        $redis->hSet(\'webradioname\', $data->url, $data->label); //enha
+' -e $'/hDel(.webradios., $data->label)/ i\
+            $urldel = $redis->hGet(\'webradios\', $data->label); //enha\
+            $redis->hDel(\'webradioname\', $urldel); //enha
+' -e $'/hSet(.webradios.,$data->label,$data->url)/ a\
+            $redis->hSet(\'webradioname\',$data->url,$data->label); //enha
+' -e $'/hDel(.webradios., $label)/ i\
+            $urldel = $redis->hGet(\'webradios\', $label); //enha\
+            $redis->hDel(\'webradioname\', $urldel); //enha
+' $file
+
 # start/stop local browser
 file=/srv/http/app/settings_ctl.php
 echo $file
