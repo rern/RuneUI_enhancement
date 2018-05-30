@@ -152,6 +152,7 @@
 	height: 25px;
 }
 #currentalbum a {
+	font-size: 14px;
 	color: #587ca0;
 }
 #sampling {
@@ -662,11 +663,18 @@
 #database-entries .db-icon,
 #database-entries li span i,
 #pl-editor li span i,
-#playlist-entries li:before,
-#database-entries .sn span,
-#playlist-entries .sn span {
+#playlist-entries li:before {
 	font-size: 24px;
 	line-height: 1.2em;
+	color: #587ca0 !important;
+}
+#database-entries .sn,
+#playlist-entries .sn {
+	padding-top: 8px;
+}
+#database-entries .sn span,
+#playlist-entries .sn span {
+	font-size: 18px;
 	color: #587ca0 !important;
 }
 #playlist-entries li.active:before,
