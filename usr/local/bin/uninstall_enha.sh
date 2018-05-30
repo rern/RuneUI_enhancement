@@ -76,6 +76,7 @@ sed -i -e '/^\/\*enha\|^enha\*\// d
 ' -e '/\.countdown(/ s|^//||
 ' -e 's|fa-spin"></i>|& Updating|
 ' -e 's|fa-folder-open"></i>|fa-music sx"></i> Library|
+' -e 's|\(#open-panel-sx.).html(.<i class="fa fa-\)folder-open|\1music sx"></i> Library|
 ' $file
 
 
