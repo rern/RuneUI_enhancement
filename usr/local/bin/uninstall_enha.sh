@@ -15,6 +15,7 @@ if [[ $1 == u ]]; then
 	redis-cli set enhazoom $zoom &> /dev/null
 else
 	redis-cli del display &> /dev/null
+	redis-cli del webradiosampling &> /dev/null
 fi
 
 # remove files #######################################
