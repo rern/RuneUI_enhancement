@@ -151,6 +151,9 @@
 #divartist, #divalbum {
 	height: 25px;
 }
+#currentalbum a {
+	color: #587ca0;
+}
 #sampling {
 	text-align: center;
 	height: 40px;
@@ -158,9 +161,7 @@
 #sampling span {
 	padding: 0;
 }
-#dot0 {
-	display: none;
-}
+
 /* ---------------------- info scrolling ----------------------*/
 .scroll-left {
  overflow: hidden;
@@ -416,21 +417,6 @@
 	cursor: pointer;
 }
 
-@keyframes blink {
-	50% { color: transparent }
-}
-.dot {
-	animation: 1s blink infinite;
-	line-height: normal;
-	vertical-align: 100%;
-}
-.dot2 {
-	animation-delay: 250ms;
-}
-.dot3 {
-	animation-delay: 500ms;
-}
-
 /* ------------------- roundSlider ------------------- */
 .rs-container {
 	box-shadow: #555555 0 0 8px 2px;
@@ -551,6 +537,24 @@
 #timestop,
 #voldnrs {
 	top: 145px;
+}
+
+@keyframes blink {
+	50% { color: transparent }
+}
+.dot {
+	animation: 1s blink infinite;
+	line-height: 10px;
+	vertical-align: 100%;
+}
+.dot2 {
+	animation-delay: 250ms;
+}
+.dot3 {
+	animation-delay: 500ms;
+}
+#dot0 {
+	display: none;
 }
 
 /* ---------------------- bio ---------------------- */
