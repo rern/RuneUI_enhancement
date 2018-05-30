@@ -122,6 +122,8 @@ sed -i -e $'/runelog(.addRadio/ a\
             $redis->hDel(\'webradioname\', $urldel); //enha
 ' $file
 
+systemctl php-fpm restart
+
 # start/stop local browser
 file=/srv/http/app/settings_ctl.php
 echo $file
