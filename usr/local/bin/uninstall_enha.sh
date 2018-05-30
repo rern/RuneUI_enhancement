@@ -79,6 +79,9 @@ sed -i -e '/^\/\*enha\|^enha\*\// d
 ' -e 's|\(#open-panel-sx.).html(.<i class="fa fa-\)folder-open|\1music sx"></i> Library|
 ' $file
 
+file=/srv/http/app/libs/runeaudio.php
+echo $file
+sed -i '/\/\/enha$/ d' $file
 
 file=/root/.config/midori/config
 echo $file
