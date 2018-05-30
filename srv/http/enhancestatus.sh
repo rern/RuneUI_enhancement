@@ -44,7 +44,7 @@ if [[ ${filepath:6:4} == http ]]; then
 	time=0
 	
 	if [[ $state == stop ]]; then
-		sampling=$( redis-cli hget webradiosampling $url )
+		sampling=$( redis-cli hget webradiosampling "$url" )
 		# -s = silent; -m 3 = max 3 seconds; head -c 3000 = 0-3000 byte
 		[[ $sampling ]] || curl -sm 3 $url | head -c 3000 > $file
 	fi

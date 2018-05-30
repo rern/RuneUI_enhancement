@@ -15,10 +15,15 @@ $redis = new Redis();
 $redis->pconnect( '127.0.0.1' );
 
 // radio name / url
-if ( isset( $_POST[ 'radio' ] ) ) {
-	$radio = json_decode( $_POST[ 'radio' ] );
-	$key = substr( $radio[ 0 ], 0, 4 ) === 'http' ? 'webradioname' : 'webradios';
-	foreach( $radio as $val ) {
+if ( isset( $_POST[ 'webradioname' ] || isset( $_POST[ 'webradios' ] ) ) {
+	if ( isset( $_POST[ 'webradioname' ] ) {
+		$values = json_decode( $_POST[ 'webradioname' ] );
+		$key = 'webradioname';
+	} else {
+		$values = json_decode( $_POST[ 'webradios' ] );
+		$key = 'webradios';
+	}
+	foreach( $values as $val ) {
 		$list[] = $redis->hget( $key, $val );
 	}
 	echo json_encode( $list );
