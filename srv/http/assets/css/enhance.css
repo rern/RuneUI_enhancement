@@ -544,7 +544,7 @@
 }
 .dot {
 	animation: 1s blink infinite;
-	line-height: 10px;
+	line-height: 8px;
 	vertical-align: 100%;
 }
 .dot2 {
