@@ -14,13 +14,12 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 $redis = new Redis(); 
 $redis->pconnect( '127.0.0.1' );
 
-// radioname
+// radio name / url
 if ( isset( $_POST[ 'radio' ] ) ) {
-	$webradios = $redis->hgetall( 'webradios' );
 	$radio = json_decode( $_POST[ 'radio' ] );
-	if ( substr( $radio[ 0 ], 0, 4 ) === 'http' ) $webradios = array_flip( $webradios );
+	$key = substr( $radio[ 0 ], 0, 4 ) === 'http' ? 'webradioname' : 'webradios';
 	foreach( $radio as $val ) {
-		$list[] = $webradios[ $val ];
+		$list[] = $redis->hget( $key, $val );
 	}
 	echo json_encode( $list );
 	die();
