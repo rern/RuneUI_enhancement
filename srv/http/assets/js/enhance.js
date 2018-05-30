@@ -1395,7 +1395,7 @@ function commandButton( el ) {
 			$( '#format-bitrate' ).html( '' );
 			$.post( '/enhanceredis.php', { bash: '/usr/bin/mpc play '+ pos + mpcstop }, function() {
 				setTimeout( function() {
-					if ( GUI.json.file.slice( 0, 4 ) === 'http' ) $( '#format-bitrate' ).html( '&nbsp;' );
+//					if ( GUI.json.file.slice( 0, 4 ) === 'http' ) $( '#format-bitrate' ).html( '&nbsp;' );
 					prevnext = 0;
 				}, 500 );
 			});
@@ -1481,11 +1481,13 @@ function settime() {
 		// sampling
 		var dot0 = '<a id="dot0" style="color:#ffffff"> &#8226; </a>';
 		// streaming
-		if ( GUI.json.file.slice( 0, 4 ) === 'http' || GUI.libraryhome.ActivePlayer === 'Airplay' || GUI.libraryhome.ActivePlayer === 'Spotify' ) {
-			if ( $( '#currentartist' ).html() == '' ) {
-				$( '#currentartist' ).html( status.artist );
-				$( '#cover-art' ).css( 'background-image', 'url("assets/img/cover-radio.jpg")' );
-			}
+//		if ( GUI.json.file.slice( 0, 4 ) === 'http' || GUI.libraryhome.ActivePlayer === 'Airplay' || GUI.libraryhome.ActivePlayer === 'Spotify' ) {
+		if ( GUI.json.file.slice( 0, 4 ) === 'http' ) {
+			$( '#currentartist' ).html( status.artist );
+			$( '#currentsong' ).html( GUI.state !== 'stop' ? status.song : '&nbsp;' );
+			$( '#currentalbum' ).html( '<a>'+ GUI.json.file +'</a>' );
+			$( '#cover-art' ).css( 'background-image', 'url("assets/img/cover-radio.jpg")' );
+			
 			var sampling = $( '#format-bitrate' ).html();
 			if ( sampling === '' || sampling === '&nbsp;' ) $( '#format-bitrate' ).html( dot0 + status.sampling );
 			$( '#elapsed' ).html( GUI.state === 'play' ? '<a class="dot">.</a> <a class="dot dot2">.</a> <a class="dot dot3">.</a>' : '' );
@@ -1571,14 +1573,10 @@ function setinfo() {
 	}
 	
 	if ( GUI.json.playlistlength !== '0' ) {
-		if ( GUI.json.file.slice( 0, 4 ) !== 'http' ) {
+		if ( GUI.json.file.slice( 0, 4 ) !== 'http' ) { // webradio set in 'settime()'
 			$( '#currentartist' ).html( GUI.json.currentartist ? GUI.json.currentartist : '&nbsp;' );
 			$( '#currentsong' ).html( GUI.json.currentsong ? GUI.json.currentsong : '&nbsp;' );
 			$( '#currentalbum').html( GUI.json.currentalbum ? GUI.json.currentalbum : '&nbsp;' );
-		} else {
-			$( '#currentartist' ).html( GUI.json.radioname );
-			$( '#currentsong' ).html( GUI.state !== 'stop' ? GUI.json.currentsong : '&nbsp;' );
-			$( '#currentalbum' ).html( '<a>'+ GUI.json.file +'</a>' );
 		}
 		
 		if ( GUI.json.song ) {
