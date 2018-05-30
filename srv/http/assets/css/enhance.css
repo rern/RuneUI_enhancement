@@ -661,10 +661,13 @@
 #playlist-entries li:before,
 #database-entries .sn span,
 #playlist-entries .sn span {
-    color: #587ca0 !important;
+	font-size: 24px;
+	line-height: 1.2em;
+	color: #587ca0 !important;
 }
+#playlist-entries li.active:before,
 #playlist-entries li.active .sn span {
-	color: #34495e;
+	color: #34495e !important;
 }
 #playlist-entries li.radio:before {
 	content: "";
@@ -676,9 +679,18 @@
 #db-currentpath {
 	float: left;
 	width: calc( 100% - 240px );
+	margin-left: -10px;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+}
+#db-home {
+	width: 40px;
+	padding-left: 7px;
+	background: #34495e;
+}
+#db-home:hover {
+	background: #0095d8;
 }
 .btnlist-top {
 	top: 0;
@@ -709,7 +721,12 @@
 #db-index li:hover {
 	background: #34495e;
 }
-
+#database-entries .fa-folder-open:before {
+	content: "\f07b";
+}
+#database-entries .fa-folder-open {
+	margin-right: 12px;
+}
 /* ---------------------- responsive ----------------------*/
 @media(max-width: 749px) {
 	#playback-row {
