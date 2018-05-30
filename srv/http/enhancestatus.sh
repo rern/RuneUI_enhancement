@@ -34,7 +34,8 @@ if [[ ${filepath:6:4} == http ]]; then
 	ext=radio
 	album=$url
 	artist=$( echo "$track" | grep -a Name | sed 's/^Name: //' )
-	[[ ! $artist ]] && artist=$( redis-cli hgetall webradios | sed -n "\|$url| {x;p;d;}; x" )
+#	[[ ! $artist ]] && artist=$( redis-cli hgetall webradios | sed -n "\|$url| {x;p;d;}; x" )
+	[[ ! $artist ]] && artist=$( redis-cli hget webradioname "$url" )
 	song=$( echo "$track" | grep -a Title | sed 's/^Title: //' )
 	if [[ -z $artist ]]; then
 		artist=$song
