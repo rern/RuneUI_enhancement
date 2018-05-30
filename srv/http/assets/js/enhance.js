@@ -25,6 +25,10 @@ if ( /Midori/.test( navigator.userAgent ) ) {
 }
 
 $( '#open-panel-sx, .open-sx' ).click( function() {
+	if ( $( this ).hasClass( 'active' ) ) {
+		$( '#db-home' ).click();
+		return;
+	}
 	var activePlayer = GUI.libraryhome.ActivePlayer;
 	if ( activePlayer === 'Spotify' || activePlayer === 'Airplay' ) {
 		$( '#overlay-playsource-open' ).click();
@@ -408,13 +412,13 @@ $hammerplayback.on( 'press', function() {
 		, checkboxhtml : '<form id="displaysaveplayback">\
 						<label><input name="bar" type="checkbox" '+ displayredis.bar +'>&ensp;Top-Bottom menu</label>\
 						<br><label><input name="pause" type="checkbox" '+ displayredis.pause +'>\
-							&ensp;<code><i class="fa fa-play"></i></code>&emsp;<code><i class="fa fa-pause"></i></code>&emsp;buttons\
+							&ensp;<code><i class="fa fa-play"></i></code>&ensp;<code><i class="fa fa-pause"></i></code>&ensp;buttons</label>\
+						<br><label><input name="source" type="checkbox" '+ displayredis.source +'>&ensp;<code>MPD</code>&ensp;button</label>\
 						</label>\
 						<br><label><input name="time" type="checkbox" '+ displayredis.time +'>&ensp;Time</label>\
 						<br><label><input name="coverart" type="checkbox" '+ displayredis.coverart +'>&ensp;Coverart</label>\
 						<br><label><input name="volume" type="checkbox" '+ displayredis.volume +'>&ensp;Volume</label>\
 						<br><label><input name="buttons" type="checkbox" '+ displayredis.buttons +'>&ensp;Buttons</label>\
-						<br><label><input name="source" type="checkbox" '+ displayredis.source +'>&ensp;Playback source</label>\
 						</form>'
 		, cancel : 1
 		, ok     : function () {
@@ -917,6 +921,8 @@ function setPlaybackSource() {
 // hide breadcrumb, index bar, edit bookmark
 var old_renderLibraryHome = renderLibraryHome;
 renderLibraryHome = function() {
+	if ( $( '#database-entries' ).hasClass( 'hide' ) ) return;
+	
 	old_renderLibraryHome();
 	GUI.currentDBpos[ 10 ] = 0;
 	$( '#db-currentpath, #db-index, #db-level-up, #db-webradio-add, #db-homeSetup' ).addClass( 'hide' );
