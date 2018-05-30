@@ -738,6 +738,7 @@
 }
 #database-entries .fa-folder-open {
 	margin-right: 12px;
+	vertical-align: -8%;
 }
 /* ---------------------- responsive ----------------------*/
 @media(max-width: 749px) {
