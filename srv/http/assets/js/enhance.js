@@ -1166,7 +1166,7 @@ function populateDB(options) {
 						$el.push( $th );
 						name.push( $th.prev().text() );
 					} );
-					$.post( '/enhanceredis.php', { radio: JSON.stringify( name ) }, function( data ) {
+					$.post( '/enhanceredis.php', { webradioname: JSON.stringify( name ) }, function( data ) {
 						var json = JSON.parse( data );
 						var ilength = $el.length;
 						for ( i = 0; i < ilength; i++ ) {
@@ -1301,15 +1301,17 @@ function getPlaylistPlain( data ) {
 			url.push( $th.next().text() );
 	} );
 	// get webradio name
-	$.post( '/enhanceredis.php', { radio: JSON.stringify( url ) }, function( data ) {
-		var radioname = $( '#currentartist' ).text();
-		var json = JSON.parse( data );
-		var ilength = $el.length;
-		for ( i = 0; i < ilength; i++ ) {
-			$el[ i ].html( json[ i ] );
-			if ( !radioname && 'http://'+ GUI.json.currentalbum === url[ i ] ) $( '#currentartist' ).text( json[ i ] );
-		}
-	} );
+	if ( $el.length ) {
+		$.post( '/enhanceredis.php', { webradios: JSON.stringify( url ) }, function( data ) {
+			var radioname = $( '#currentartist' ).text();
+			var json = JSON.parse( data );
+			var ilength = $el.length;
+			for ( i = 0; i < ilength; i++ ) {
+				$el[ i ].html( json[ i ] );
+				if ( !radioname && 'http://'+ GUI.json.currentalbum === url[ i ] ) $( '#currentartist' ).text( json[ i ] );
+			}
+		} );
+	}
 	
 	$( '#pl-filter' ).val( '' );
 	$( '#pl-filter-results' ).addClass( 'hide' ).html( '' );
