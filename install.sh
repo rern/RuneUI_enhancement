@@ -132,7 +132,7 @@ sed -i -e '/echo getPlayQueue($mpd)/ s|^|//|
                     }\
                     $info[] = $data;\
                 }\
-                echo json_encode( $info );\
+                echo json_encode( $info );
 ' $file
 
 file=/srv/http/app/libs/runeaudio.php
