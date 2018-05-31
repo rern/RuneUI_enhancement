@@ -108,6 +108,33 @@ enha*/
 ' -e 's|fa-music sx"></i> Library|fa-folder-open"></i>|
 ' $file
 
+file=/srv/http/db/index.php
+echo $file
+sed -i -e '/echo getPlayQueue($mpd)/ s|^|//|
+' -e '/echo getPlayQueue($mpd)/ a\
+                $playlist = getPlayQueue( $mpd );\
+                $playlist = preg_replace( "/\\nfile/", "\\nfilefile", $playlist );\
+                $playlist = explode( "\\nfile", $playlist );\
+                $info = array();\
+                $ilength = count( $playlist );\
+                for ( $i = 0; $i < $ilength; $i++ ) {\
+                    $list = explode( "\\n", $playlist[ $i ] );\
+                    $data = array();\
+                    foreach ( $list as $line ) {\
+                        $kv = explode( ": ", $line );\
+                        if ( $kv[ 0 ] == "OK" || !$kv[ 0 ] ) continue;\
+                        $data[ $kv[ 0 ] ] = $kv[ 1 ];\
+                    }\
+                    if ( !array_key_exists( "Title", $data ) ) {\
+                        $redis = new Redis(); \
+                        $redis->pconnect( "127.0.0.1" );\
+                        $data[ "Title" ] = $redis->hGet( "webradioname", $data[ "file" ] );\
+                    }\
+                    $info[] = $data;\
+                }\
+                echo json_encode( $info );\
+' $file
+
 file=/srv/http/app/libs/runeaudio.php
 echo $file
 sed -i -e $'/runelog(.addRadio/ a\
