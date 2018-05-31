@@ -1243,82 +1243,41 @@ function getPlaylistPlain( data ) {
 	var state = GUI.json.state;
 	var content = time = artist = album = title = name = str = filename = path = songid = bottomline = line = classcurrent = classradio = hidetotal = '';
 	var id = totaltime = playlisttime = pos = i = 0;
-	var lines = data.split( '\n' );
-	var infos=[];
-	for ( i = 0; line = lines[ i ]; i += 1 ) {
-		infos = line.split( /: (.+)?/ );
-		if ( 'Time' === infos[ 0 ] ) {
-			time = parseInt( infos[ 1 ] );
+	var json = JSON.parse(data);
+	var ilength = json.length;
+	for ( i = 0; i < ilength; i++ ) {
+		var data = json[ i ];
+		if ( data[ 'file' ].slice( 0, 4 ) === 'http' ) {
+			classradio = ' radio';
+			topline = data[ 'Name' ] ? data[ 'Name' ] : data[ 'Title' ];
+			bottomline = data[ 'file' ];
+			hidetotal = ' class="hide"';
+		} else {
+			title = data[ 'Title' ] ? data[ 'Title' ] : data[ 'file' ].split( '/' ).pop();
+			time = parseInt( data[ 'Time' ] );
+			topline = title +'<span>'+ converthms( time ) +'</span>';
+			bottomline = data[ 'Artist' ] ? data[ 'Artist' ] + ' - ' + data[ 'Album' ] : data[ 'file' ];
+			playlisttime += time;
 		}
-		else if ( 'Artist' === infos[ 0 ] ) {
-			artist = infos[ 1 ];
-		}
-		else if ( 'Title' === infos[ 0 ] ) {
-			title = infos[ 1 ];
-		}
-		else if ( 'Name' === infos[ 0 ] ) {
-			name = infos[ 1 ];
-		}
-		else if ( 'Album' === infos[ 0 ] ) {
-			album = infos[ 1 ];
-		}
-		else if ( 'file' === infos[ 0 ] ) {
-			str = infos[ 1 ];
-		}
-		else if ( 'Id' === infos[ 0 ] ) {
-			songid = infos[ 1 ];
-			if ( str.slice( 0, 4 ) === 'http' ) {
-				classradio = ' radio';
-				topline = name != '' ? name : title ? title : '<i class="fa fa-refresh fa-spin"></i>';
-				bottomline = str;
-				hidetotal = ' class="hide"';
-			} else {
-				title = title ? title : str.split( '/' ).pop();
-				topline = title +'<span>'+ converthms( time ) +'</span>';
-				bottomline = artist ? artist + ' - ' + album : parsePath( str );
-				playlisttime += time;
-			}
-			pos++;
-			classcurrent = ( state !== 'stop' && pos === current ) ? 'active' : '';
-			cl = ' class="'+ classcurrent + classradio +'"';
-			cl = ( classcurrent || classradio ) ? cl : '';
-			content += '<li id="pl-'+ songid +'"'+ cl +'>'
-				+'<i class="fa fa-times-circle pl-action" title="Remove song from playlist"></i><span class="sn">'+ topline +'</span>'
-				+'<span class="bl">'+ bottomline +'</span>'
-				+'</li>';
-			time = artist = album = title = name = classcurrent = classradio = '';
-		}
+		pos++;
+		classcurrent = ( state !== 'stop' && pos === current ) ? 'active' : '';
+		cl = ' class="'+ classcurrent + classradio +'"';
+		cl = ( classcurrent || classradio ) ? cl : '';
+		content += '<li id="pl-'+ songid +'"'+ cl +'>'
+			+'<i class="fa fa-times-circle pl-action" title="Remove song from playlist"></i><span class="sn">'+ topline +'</span>'
+			+'<span class="bl">'+ bottomline +'</span>'
+			+'</li>';
+		time = artist = album = title = name = classcurrent = classradio = '';
 	}
 	$( '.playlist' ).addClass( 'hide' );
 	$( '#playlist-entries' ).html( content ).removeClass( 'hide' );
-	
-	// get 'no name webradio' on initial load saved playlist
-	var $el = [];
-	var url = [];
-	$( '#playlist-entries span.sn' ).has( 'i' ).each( function() {
-			var $th = $( this );
-			$el.push( $th );
-			url.push( $th.next().text() );
-	} );
-	// get webradio name
-	if ( $el.length ) {
-		$.post( '/enhanceredis.php', { webradioname: JSON.stringify( url ) }, function( data ) {
-			var radioname = $( '#currentartist' ).text();
-			var json = JSON.parse( data );
-			var ilength = $el.length;
-			for ( i = 0; i < ilength; i++ ) {
-				$el[ i ].html( json[ i ] );
-				if ( !radioname && 'http://'+ GUI.json.currentalbum === url[ i ] ) $( '#currentartist' ).text( json[ i ] );
-			}
-		} );
-	}
-	
 	$( '#pl-filter' ).val( '' );
 	$( '#pl-filter-results' ).addClass( 'hide' ).html( '' );
 	$( '#pl-manage, #pl-count' ).removeClass( 'hide' );
 	$( '#pl-count' ).html( 'List: <a>'+ pos +'</a><span'+ hidetotal +'> &#8226; <a>'+ converthms( playlisttime ) +'</a></span>' );
 }
 function getPlaylistCmd(){
+	if ( GUI.json.playlistlength == 0 ) return;
     loadingSpinner('pl');
     $.ajax({
         url: '/db/?cmd=playlist',
