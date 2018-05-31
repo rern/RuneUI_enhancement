@@ -34,7 +34,6 @@ if [[ ${filepath:6:4} == http ]]; then
 	ext=radio
 	album=$url
 	artist=$( echo "$track" | grep -a Name | sed 's/^Name: //' )
-#	[[ ! $artist ]] && artist=$( redis-cli hgetall webradios | sed -n "\|$url| {x;p;d;}; x" )
 	[[ ! $artist ]] && artist=$( redis-cli hget webradioname "$url" )
 	song=$( echo "$track" | grep -a Title | sed 's/^Title: //' )
 	if [[ -z $artist ]]; then
@@ -43,11 +42,7 @@ if [[ ${filepath:6:4} == http ]]; then
 	fi
 	time=0
 	
-	if [[ $state == stop ]]; then
-		sampling=$( redis-cli hget webradiosampling "$url" )
-		# -s = silent; -m 3 = max 3 seconds; head -c 3000 = 0-3000 byte
-		[[ $sampling ]] || curl -sm 3 $url | head -c 3000 > $file
-	fi
+	[[ $state == stop ]] && sampling=$( redis-cli hget webradiosampling "$url" )
 else
 	file=$( echo "$filepath" | sed 's|^file: |/mnt/MPD/|' )
 	ext=$( echo $file | sed 's/^.*\.//' | tr '[:lower:]' '[:upper:]' )
@@ -122,9 +117,9 @@ if [[ ! $sampling ]]; then
 	
 	sampling=$bitdepth$samplerate$bitrate
 	
-	if [[ $ext == radio && -n $sampling ]]; then
+	if [[ $ext == radio ]]; then
 		rm -f /srv/http/stream
-		redis-cli hset webradiosampling "$url" "$sampling"
+		[[ -n $sampling && $sampling != $( redis-cli hget webradiosampling "$url" ) ]] && redis-cli hset webradiosampling "$url" "$sampling"
 	fi
 fi
 
