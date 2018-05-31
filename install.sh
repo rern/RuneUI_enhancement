@@ -110,8 +110,9 @@ enha*/
 
 file=/srv/http/db/index.php
 echo $file
-sed -i -e '/echo getPlayQueue($mpd)/ s|^|//|
-' -e '/echo getPlayQueue($mpd)/ a\
+sed -i '/echo getPlayQueue($mpd)/ {
+s|^|//|;
+a\
                 $playlist = getPlayQueue( $mpd );\
                 $playlist = preg_replace( "/\\nfile/", "\\nfilefile", $playlist );\
                 $playlist = explode( "\\nfile", $playlist );\
@@ -133,6 +134,7 @@ sed -i -e '/echo getPlayQueue($mpd)/ s|^|//|
                     $info[] = $data;\
                 }\
                 echo json_encode( $info );
+}
 ' $file
 
 file=/srv/http/app/libs/runeaudio.php
