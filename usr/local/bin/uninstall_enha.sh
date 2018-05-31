@@ -91,6 +91,12 @@ zoom-level=0.7
 ' -e '/user-stylesheet-uri/ s/^#*//
 ' $file
 
+file=/srv/http/db/index.php
+echo $file
+sed -i -e '/echo getPlayQueue($mpd)/ s|^//||
+' -e '/$playlist = getPlayQueue( $mpd )/, /$playlist = getPlayQueue( $mpd )/ d
+' $file
+
 uninstallfinish $@
 
 [[ $1 != u ]] && clearcache
