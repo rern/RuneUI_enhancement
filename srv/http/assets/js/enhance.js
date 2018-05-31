@@ -974,6 +974,191 @@ renderPlaylists = function( data ) {
 	} );
 }
 
+function parseResponse(options) {
+	var inputArr = options.inputArr || '',
+		respType = options.respType || '',
+		i = options.i || 0,
+		inpath = options.inpath || '',
+		querytype = options.querytype || '',
+		content = '';
+	
+	switch (respType) {
+		case 'playlist':
+			// code placeholder
+		break;
+		case 'db':
+			if (GUI.browsemode === 'file') {
+				if (inpath === '' && inputArr.file !== undefined) {
+					inpath = parsePath(inputArr.file);
+				}
+				if (inputArr.file !== undefined || inpath === 'Webradio') {
+					content = '<li id="db-' + (i + 1) + '" data-path="';
+					if (inputArr.Title !== undefined) {
+						content += inputArr.file;
+						content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i><span class="sn">';
+						content += inputArr.Title + ' <span>' + timeConvert(inputArr.Time) + '</span></span>';
+						content += ' <span class="bl">';
+						content +=  inputArr.Artist;
+						content += ' - ';
+						content +=  inputArr.Album;
+					} else {
+						if (inpath !== 'Webradio') {
+							content += inputArr.file;
+							content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i><span class="sn">';
+							content += inputArr.file.replace(inpath + '/', '') + ' <span>' + timeConvert(inputArr.Time) + '</span></span>';
+							content += '<span class="bl">';
+							content += ' path: ';
+							content += inpath;
+						} else {
+							content += inputArr.playlist;
+							content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-webradio"></i><i class="fa fa-microphone db-icon db-radio"></i>';
+							content += '<span class="sn">' + inputArr.playlist;
+							content += '</span><span class="bl">'+ inputArr.url;
+						}
+					}
+					content += '</span></li>';
+				} else if (inputArr.playlist !== undefined) {
+					if (inputArr.fileext === 'cue') {
+						content = '<li id="db-' + (i + 1) + '" data-path="';
+						content += inputArr.playlist;
+						content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-file"></i><i class="fa fa-file-text db-icon"></i><span class="sn">';
+						content += inputArr.playlist.replace(inpath + '/', '') + ' <span>[CUE file]</span></span>';
+						content += '<span class="bl">';
+						content += ' path: ';
+						content += inpath;
+						content += '</span></li>';
+					}
+				} else {
+					content = '<li id="db-' + (i + 1) + '" class="db-folder" data-path="';
+					content += inputArr.directory;
+					if (inpath !== '') {
+						content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu"></i><span><i class="fa fa-folder-open"></i>'
+					} else {
+						content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-root"></i><i class="fa fa-hdd-o icon-root"></i><span>';
+					}
+					content += inputArr.directory.replace(inpath + '/', '');
+					content += '</span></li>';
+				}
+			} else if (GUI.browsemode === 'album' || GUI.browsemode === 'albumfilter') {
+				if (inputArr.file !== undefined) {
+					content = '<li id="db-' + (i + 1) + '" data-path="';
+					content += inputArr.file;
+					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i><span class="sn">';
+					content += inputArr.Title + ' <span>' + timeConvert(inputArr.Time) + '</span></span>';
+					content += ' <span class="bl">';
+					content +=  inputArr.Artist;
+					content += ' - ';
+					content +=  inputArr.Album;
+					content += '</span></li>';
+				} else if (inputArr.album !== '') {
+					content = '<li id="db-' + (i + 1) + '" class="db-folder db-album" data-path="';
+					content += inputArr.album.replace(/\"/g,'&quot;');
+					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-album"></i><span><i class="fa fa-dot-circle-o"></i>';
+					content += inputArr.album;
+					content += '</span></li>';
+				}
+			} else if (GUI.browsemode === 'artist') {
+				if (inputArr.album !== undefined) {
+					content = '<li id="db-' + (i + 1) + '" class="db-folder db-album" data-path="';
+					content += inputArr.album;
+					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-album"></i><span><i class="fa fa-dot-circle-o"></i>';
+					content += (inputArr.album !== '') ? inputArr.album : 'Unknown album';
+					content += '</span></li>';
+				} else if (inputArr.artist !== '') {
+					content = '<li id="db-' + (i + 1) + '" class="db-folder db-artist" data-path="';
+					content += inputArr.artist;
+					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-artist"></i><span><i class="fa fa-user"></i>';
+					content += inputArr.artist;
+					content += '</span></li>';
+				}
+			} else if (GUI.browsemode === 'composer') {
+				if (inputArr.file !== undefined) {
+					content = '<li id="db-' + (i + 1) + '" data-path="';
+					content += inputArr.file;
+					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i><span class="sn">';
+					content += inputArr.Title + ' <span>' + timeConvert(inputArr.Time) + '</span></span>';
+					content += ' <span class="bl">';
+					content +=  inputArr.Artist;
+					content += ' - ';
+					content +=  inputArr.Album;
+					content += '</span></li>';
+				} else if (inputArr.composer !== '') {
+					content = '<li id="db-' + (i + 1) + '" class="db-folder db-composer" data-path="';
+					content += inputArr.composer;
+					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-composer"></i><span><i class="fa fa-user"></i>';
+					content += inputArr.composer;
+					content += '</span></li>';
+				}
+			} else if (GUI.browsemode === 'genre') {
+				if (inputArr.artist !== undefined) {
+					content = '<li id="db-' + (i + 1) + '" class="db-folder db-artist" data-path="';
+					content += inputArr.artist;
+					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-artist"></i><span><i class="fa fa-dot-circle-o"></i>';
+					content += (inputArr.artist !== '') ? inputArr.artist : 'Unknown artist';
+					content += '</span></li>';
+				} else if (inputArr.genre !== '') {
+					content = '<li id="db-' + (i + 1) + '" class="db-folder db-genre" data-path="';
+					content += inputArr.genre;
+					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-genre"></i><span><i class="fa fa-tags"></i>';
+					content += inputArr.genre;
+					content += '</span></li>';
+				}
+			}
+		break;
+		case 'Spotify':
+			if (querytype === '') {
+				content = '<li id="db-' + (i + 1) + '" class="db-spotify db-folder" data-path="';
+				content += inputArr.index;
+				content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-spotify-pl"></i><span><i class="fa fa-folder-open"></i>'
+				content += (inputArr.name !== '') ? inputArr.name : 'Favorites';
+				content += ' (';
+				content += inputArr.tracks;
+				content += ')</span></li>';
+			} else if (querytype === 'tracks') {
+				content = '<li id="db-' + (i + 1) + '" class="db-spotify" data-path="';
+				content += inputArr.index;
+				content += '" data-plid="';
+				content += inpath;
+				content += '" data-type="spotify-track"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-spotify"></i><i class="fa fa-spotify db-icon"></i><span class="sn">';
+				content += inputArr.title + ' <span>' + timeConvert(inputArr.duration/1000) + '</span></span>';
+				content += ' <span class="bl">';
+				content +=  inputArr.artist;
+				content += ' - ';
+				content +=  inputArr.album;
+				content += '</span></li>';
+			}
+		break;
+		case 'Dirble':
+			if (querytype === '' || querytype === 'childs') {
+				var childClass = (querytype === 'childs') ? ' db-dirble-child' : '';
+				content = '<li id="db-' + (i + 1) + '" class="db-dirble db-folder' + childClass + '" data-path="';
+				content += inputArr.id;
+				content += '"><span><i class="fa fa-folder-open"></i>'
+				content += inputArr.title;
+				content += '</span></li>';
+			} else if (querytype === 'search' || querytype === 'stations' || querytype === 'childs-stations') {
+				if (inputArr.streams.length === 0) {
+					break; // Filter stations with no streams
+				}
+				content = '<li id="db-' + (i + 1) + '" class="db-dirble db-radio" data-path="';
+				content += inputArr.name + ' | ' + inputArr.streams[0].stream;
+				content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-dirble"></i><i class="fa fa-microphone db-icon"></i>';
+				content += '<span class="sn">' + inputArr.name + '<span>(' + inputArr.country + ')</span></span>';
+				content += '<span class="bl">';
+				content += inputArr.website ? inputArr.website : '-no website-';
+				content += '</span></li>';
+			}
+		break;
+		case 'Jamendo':
+				content = '<li id="db-' + (i + 1) + '" class="db-jamendo db-folder" data-path="';
+				content += inputArr.stream;
+				content += '"><img class="jamendo-cover" src="/tun/' + inputArr.image + '" alt=""><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-file"></i>';
+				content += inputArr.dispname + '</div></li>';
+		break;
+	}
+	return content;
+}
+
 function populateDB(options) {
 	var data = options.data || '',
 		path = options.path || '',
@@ -1156,24 +1341,6 @@ function populateDB(options) {
 				$( '#db-webradio-add' ).removeClass( 'hide' ).click( function() {
 						$( '#modal-webradio-add' ).modal();
 				} );
-				
-				// set default 'webradio' to url
-				if ( $( '#database-entries span.bl' ).eq( 0 ).text() === 'webradio' ) {
-					var $el = [];
-					var name = [];
-					$( '#database-entries span.bl' ).each( function() {
-						$th = $( this );
-						$el.push( $th );
-						name.push( $th.prev().text() );
-					} );
-					$.post( '/enhanceredis.php', { webradios: JSON.stringify( name ) }, function( data ) {
-						var json = JSON.parse( data );
-						var ilength = $el.length;
-						for ( i = 0; i < ilength; i++ ) {
-							$el[ i ].html( json[ i ] );
-						}
-					} );
-				}
 			} else {
 				$( '#db-level-up' ).removeClass( 'hide' );
 				$( '#db-webradio-add' ).addClass( 'hide' );
@@ -1277,30 +1444,35 @@ function getPlaylistPlain( data ) {
 	$( '#pl-count' ).html( 'List: <a>'+ pos +'</a><span'+ hidetotal +'> &#8226; <a>'+ converthms( playlisttime ) +'</a></span>' );
 }
 function getPlaylistCmd(){
-	if ( GUI.json.playlistlength == 0 ) return;
-    loadingSpinner('pl');
-    $.ajax({
-        url: '/db/?cmd=playlist',
-        success: function(data){
-            if ( data.length > 4) {
-                $('.playlist').addClass('hide');
-                $('#playlist-entries').removeClass('hide');
-                getPlaylistPlain(data);
-                
-                var current = parseInt(GUI.json.song);
-                if ($('#panel-dx').hasClass('active') && GUI.currentsong !== GUI.json.currentsong) {
-                    customScroll('pl', current, 200); // highlight current song in playlist
-                }
-            } else {
-                $('.playlist').addClass('hide');
-                $('#playlist-warning').removeClass('hide');
-                $('#pl-filter-results').addClass('hide').html('');
-                $('#pl-count').removeClass('hide').html('');
-            }
-            loadingSpinner('pl', 'hide');
-        },
-        cache: false
-    });
+	if ( GUI.json.playlistlength == 0 ) {
+		$('.playlist, #pl-filter-results').addClass('hide');
+		$('#playlist-warning, #pl-count').removeClass('hide');
+		$('#pl-filter-results, #pl-count').html('');
+		return;
+	}
+	loadingSpinner('pl');
+	$.ajax({
+		url: '/db/?cmd=playlist',
+		success: function(data){
+			if ( data.length > 4) {
+				$('.playlist').addClass('hide');
+				$('#playlist-entries').removeClass('hide');
+				getPlaylistPlain(data);
+				
+				var current = parseInt(GUI.json.song);
+				if ($('#panel-dx').hasClass('active') && GUI.currentsong !== GUI.json.currentsong) {
+					customScroll('pl', current, 200); // highlight current song in playlist
+				}
+			} else {
+				$('.playlist').addClass('hide');
+				$('#playlist-warning').removeClass('hide');
+				$('#pl-filter-results').addClass('hide').html('');
+				$('#pl-count').removeClass('hide').html('');
+			}
+			loadingSpinner('pl', 'hide');
+		},
+		cache: false
+	});
 }
 
 prevnext = 0; // for disable 'btn-primary' - previous/next while stop
