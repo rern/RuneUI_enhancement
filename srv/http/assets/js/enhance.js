@@ -1416,7 +1416,7 @@ function getPlaylistPlain( data ) {
 		var data = json[ i ];
 		if ( data[ 'file' ].slice( 0, 4 ) === 'http' ) {
 			classradio = ' radio';
-			topline = data[ 'Name' ] ? data[ 'Name' ] : data[ 'Title' ];
+			topline = data[ 'Title' ];
 			bottomline = data[ 'file' ];
 			hidetotal = ' class="hide"';
 		} else {
