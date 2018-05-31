@@ -182,7 +182,7 @@ fi
 # webradioname redis
 nameurl=$( redis-cli hgetall webradios )
 readarray -t urlname <<<"$nameurl"
-ilength=${#urlname[*]}
+ilength=${#urlname[@]}
 for (( i=0; i < ilength; i+=2 )); do
 	redis-cli hset webradioname "${urlname[i+1]}" "${urlname[i]}" &> /dev/null
 done
