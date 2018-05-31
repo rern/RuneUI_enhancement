@@ -1166,7 +1166,7 @@ function populateDB(options) {
 						$el.push( $th );
 						name.push( $th.prev().text() );
 					} );
-					$.post( '/enhanceredis.php', { webradioname: JSON.stringify( name ) }, function( data ) {
+					$.post( '/enhanceredis.php', { webradios: JSON.stringify( name ) }, function( data ) {
 						var json = JSON.parse( data );
 						var ilength = $el.length;
 						for ( i = 0; i < ilength; i++ ) {
@@ -1302,7 +1302,7 @@ function getPlaylistPlain( data ) {
 	} );
 	// get webradio name
 	if ( $el.length ) {
-		$.post( '/enhanceredis.php', { webradios: JSON.stringify( url ) }, function( data ) {
+		$.post( '/enhanceredis.php', { webradioname: JSON.stringify( url ) }, function( data ) {
 			var radioname = $( '#currentartist' ).text();
 			var json = JSON.parse( data );
 			var ilength = $el.length;
