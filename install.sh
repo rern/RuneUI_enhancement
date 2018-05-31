@@ -180,14 +180,14 @@ if [[ $( redis-cli keys display ) == '' ]]; then
 fi
 
 # prefetch webradio sampling info for display while stop
-echo -e "$bar Webradio database ..."
+echo -e "$bar Prefetch Webradio sampling info ..."
 nameurl=$( redis-cli hgetall webradios )
 readarray -t nameurl <<<"$nameurl"
 ilength=${#nameurl[@]}
 for (( i=0; i < ilength; i+=2 )); do
 	name="${nameurl[i]}"
 	url="${nameurl[i+1]}"
-	echo Probing $name @ $url ...
+	echo $i/$ilength $name @ $url ...
 	curl -sm 3 $url | head -c 3000 > stream
 	data=( $( ffprobe -v quiet -select_streams a:0 -show_entries stream=bits_per_raw_sample,sample_rate -show_entries format=bit_rate -of default=noprint_wrappers=1:nokey=1 stream ) )
 	rm -f stream
