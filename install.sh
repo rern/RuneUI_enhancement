@@ -113,7 +113,7 @@ echo $file
 sed -i '/echo getPlayQueue($mpd)/ {
 s|^|//|;
 a\
-                $playlist = getPlayQueue( $mpd );\
+                $playlist = getPlayQueue( $mpd ); //enha0\
                 $playlist = preg_replace( "/\\nfile/", "\\nfilefile", $playlist );\
                 $playlist = explode( "\\nfile", $playlist );\
                 $info = array();\
@@ -133,7 +133,7 @@ a\
                     }\
                     $info[] = $data;\
                 }\
-                echo json_encode( $info );
+                echo json_encode( $info ); //enha1
 }
 ' $file
 
@@ -149,6 +149,24 @@ sed -i -e $'/runelog(.addRadio/ a\
 ' -e $'/hDel(.webradios., $label)/ i\
             $urldel = $redis->hGet(\'webradios\', $label); //enha\
             $redis->hDel(\'webradioname\', $urldel); //enha
+' -e '/browseMode = TRUE/ a\
+        if ( preg_match( "/playlist: Webradio/", $plistLine ) ) {\
+            $webradiolist = 1;\
+            $redis = new Redis();\
+            $redis->pconnect( "127.0.0.1" );\
+        }
+' -e '/parseFileStr($value/ {
+s|^|//|
+a\
+                $pathinfo = pathinfo( $value ); //enha0\
+                $plistArray[$plCounter]["fileext"] = $pathinfo["extension"];\
+                if ( preg_match( "/^Webradio/", $value ) ) {\
+                    $webradioname = $pathinfo["filename"];\
+                    $webradiourl = $redis->hGet("webradios", $webradioname);\
+                    $plistArray[$plCounter]["url"] = $webradiourl;\
+                    $plistArray[$plCounter][$element] = $webradioname;\
+                } //enha1
+}
 ' $file
 
 systemctl php-fpm restart
