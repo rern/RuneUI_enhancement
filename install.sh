@@ -179,6 +179,14 @@ if [[ $( redis-cli keys display ) == '' ]]; then
 	\nas checked usb checked webradio checked albums checked artists checked composer checked genre checked spotify checked dirble checked jamendo checked &> /dev/null
 fi
 
+# webradioname redis
+nameurl=$( redis-cli hgetall webradios )
+readarray -t urlname <<<"$nameurl"
+ilength=${#urlname[*]}
+for (( i=0; i < ilength; i+=2 )); do
+	redis-cli hset webradioname "${urlname[i+1]}" "${urlname[i]}" &> /dev/null
+done
+
 installfinish $@
 
 clearcache
