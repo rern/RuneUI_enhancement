@@ -81,7 +81,9 @@ sed -i -e '/^\/\*enha\|^enha\*\// d
 
 file=/srv/http/app/libs/runeaudio.php
 echo $file
-sed -i '/\/\/enha$/ d' $file
+sed -i -e '/\/\/enha0/, /\/\/enha1/ d
+' -e '/\/\/enha$/ d
+' $file
 
 file=/root/.config/midori/config
 echo $file
@@ -94,7 +96,7 @@ zoom-level=0.7
 file=/srv/http/db/index.php
 echo $file
 sed -i -e '/echo getPlayQueue($mpd)/ s|^//||
-' -e '/$playlist = getPlayQueue( $mpd )/, /$playlist = getPlayQueue( $mpd )/ d
+' -e '/\/\/enha0/, /\/\/enha1/ d
 ' $file
 
 uninstallfinish $@
