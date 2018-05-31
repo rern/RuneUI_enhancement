@@ -150,11 +150,11 @@ sed -i -e $'/runelog(.addRadio/ a\
             $urldel = $redis->hGet(\'webradios\', $label); //enha\
             $redis->hDel(\'webradioname\', $urldel); //enha
 ' -e '/browseMode = TRUE/ a\
-        if ( preg_match( "/playlist: Webradio/", $plistLine ) ) {\
+        if ( preg_match( "/playlist: Webradio/", $plistLine ) ) { //enha0\
             $webradiolist = 1;\
             $redis = new Redis();\
             $redis->pconnect( "127.0.0.1" );\
-        }
+        } //enha1
 ' -e '/parseFileStr($value/ {
 s|^|//|
 a\
