@@ -691,7 +691,7 @@
 #db-currentpath {
 	float: left;
 	width: calc( 100% - 240px );
-	margin-left: -10px;
+	margin-left: -12px;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -737,7 +737,7 @@
 	content: "\f07b";
 }
 #database-entries .fa-folder-open {
-	margin-right: 12px;
+	margin-right: 10px;
 	vertical-align: -8%;
 }
 /* ---------------------- responsive ----------------------*/
