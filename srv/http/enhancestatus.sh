@@ -89,11 +89,7 @@ if [[ ! $sampling ]]; then
 		samplerate=
 		bitrate=
 	else
-		IFS0=$IFS
-		IFS=$( echo -en "\n\b" )
 		data=( $( ffprobe -v quiet -select_streams a:0 -show_entries stream=bits_per_raw_sample,sample_rate -show_entries format=bit_rate -of default=noprint_wrappers=1:nokey=1 "$file" ) )
-		IFS=$IFS0
-		
 		bitdepth=${data[1]}
 		samplerate=${data[0]}
 		bitrate=${data[2]}
