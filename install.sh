@@ -179,12 +179,30 @@ if [[ $( redis-cli keys display ) == '' ]]; then
 	\nas checked usb checked webradio checked albums checked artists checked composer checked genre checked spotify checked dirble checked jamendo checked &> /dev/null
 fi
 
-# webradioname redis
+# prefetch webradio sampling info for display while stop
+echo -e "$bar Webradio database ..."
 nameurl=$( redis-cli hgetall webradios )
-readarray -t urlname <<<"$nameurl"
-ilength=${#urlname[@]}
+readarray -t nameurl <<<"$nameurl"
+ilength=${#nameurl[@]}
 for (( i=0; i < ilength; i+=2 )); do
-	redis-cli hset webradioname "${urlname[i+1]}" "${urlname[i]}" &> /dev/null
+	name="${nameurl[i]}"
+	url="${nameurl[i+1]}"
+	echo Probing $name @ $url ...
+	curl -sm 3 $url | head -c 3000 > stream
+	data=( $( ffprobe -v quiet -select_streams a:0 -show_entries stream=bits_per_raw_sample,sample_rate -show_entries format=bit_rate -of default=noprint_wrappers=1:nokey=1 stream ) )
+	rm -f stream
+	samplerate=${data[0]}
+	bitrate=${data[2]}
+	
+	bitrate=$(( bitrate - ( bitrate % 32000 ) )) # round tolerance in ffprobe of some webradio
+	bitrate=$(( bitrate / 1000 ))' kbit/s'
+	if [[ $samplerate ]]; then
+		(( $samplerate % 1000 )) && decimal='%.1f\n' || decimal='%.0f\n'
+		samplerate=$( awk "BEGIN { printf \"$decimal\", $samplerate / 1000 }" )' kHz '
+	fi
+	sampling=$samplerate$bitrate
+	redis-cli hset webradiosampling "$url" "$sampling" &> /dev/null
+	redis-cli hset webradioname "$url" "$name" &> /dev/null
 done
 
 installfinish $@
