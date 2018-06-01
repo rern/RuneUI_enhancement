@@ -154,8 +154,8 @@ $( '#play-group, #share-group, #vol-group' ).click( function() {
 	if ( window.innerWidth < 499 ) buttonactive = 1;
 } );
 // fix: hide on cancel / close
-$( '#modal-webradio-add button' ).click( function() {
-	loadingSpinner( 'db', 'hide' );
+$( '#modal-webradio-add button:lt(2)' ).click( function() {
+	$('#spinner-db').addClass('hide')
 } );
 
 window.addEventListener( 'orientationchange', function() {
