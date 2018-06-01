@@ -164,7 +164,6 @@ a\
                     $webradioname = $pathinfo["filename"];\
                     $webradiourl = $redis->hGet("webradios", $webradioname);\
                     $plistArray[$plCounter]["url"] = $webradiourl;\
-                    $plistArray[$plCounter][$element] = $webradioname;\
                 } //enha1
 }
 ' $file
