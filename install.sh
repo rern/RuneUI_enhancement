@@ -233,7 +233,7 @@ ilength=${#nameurl[@]}
 for (( i=0; i < ilength; i+=2 )); do
 	name="${nameurl[i]}"
 	url="${nameurl[i+1]}"
-	echo $i/$ilength $name @ $url ...
+	echo $(( i + 1 ))/$(( ilength / 2 )) $name @ $url ...
 	curl -sm 3 $url | head -c 3000 > stream
 	data=( $( ffprobe -v quiet -select_streams a:0 -show_entries stream=bits_per_raw_sample,sample_rate -show_entries format=bit_rate -of default=noprint_wrappers=1:nokey=1 stream ) )
 	rm -f stream
