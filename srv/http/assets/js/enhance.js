@@ -924,58 +924,58 @@ function setPlaybackSource() {
 
 function renderLibraryHome() {
 	if ( $( '#database-entries' ).hasClass( 'hide' ) ) return;
-	loadingSpinner('db');
-	$('#database-entries').addClass('hide');
-	$('#db-level-up').addClass('hide');
-	$('#db-homeSetup').removeClass('hide').removeClass('btn-primary').addClass('btn-default');
-	$('#home-blocks').removeClass('hide');
+	
+	loadingSpinner( 'db' );
+	$( '#database-entries, #db-level-up' ).addClass( 'hide' );
+	$( '#home-blocks, #db-homeSetup' ).removeClass( 'hide' );
+	$( '#db-homeSetup' ).removeClass( 'btn-primary' ).addClass( 'btn-default' );
 	var obj = GUI.libraryhome,
 	i = 0,
 	divOpen = '<div class="col-lg-3 col-md-4 col-sm-6">',
 	toggleSpotify = '',
-	notMPD = (obj.ActivePlayer === 'Spotify' || obj.ActivePlayer === 'Airplay');
+	notMPD = ( obj.ActivePlayer === 'Spotify' || obj.ActivePlayer === 'Airplay' );
 	toggleMPD = notMPD ? ' inactive' : '';
 	content = isLocalHost ? '' : '<div class="col-sm-12"><h1 class="txtmid">Browse your library</h1></div>';
 	// Set active player
 	setPlaybackSource();
 
-	for (i = 0; (bookmark = obj.bookmarks[i]); i += 1) {
+	for ( i = 0; ( bookmark = obj.bookmarks[ i ] ); i++ ) {
 		content += divOpen +'<div id="home-bookmark-'+ bookmark.id +'" class="home-block home-bookmark'+ toggleMPD +'" data-path="'+ bookmark.path +'"><i class="fa fa-star"></i><h3>' + bookmark.name + '</h3>bookmark</div></div>';
 	}
-	if (chkKey(obj.networkMounts)) {
+	if ( chkKey( obj.networkMounts ) ) {
 		content += divOpen +'<a id="home-nas" class="home-block'+ toggleMPD +'"'+ ( obj.networkMounts === 0 ? ( notMPD ? '' : ' href="/sources/add/"' ) : ' data-path="NAS"' ) +'>';
 		content += '<i class="fa fa-sitemap"></i><h3>Network mounts (' + obj.networkMounts + ')</h3>'+ ( isLocalHost ? '' : 'network attached storages</a></div>' );
 	}
-	if (chkKey(obj.localStorages)) {
+	if ( chkKey( obj.localStorages ) ) {
 		content += ( obj.localStorages === 0 ) ? '' : divOpen +'<div id="home-local" class="home-block'+ toggleMPD +'" data-path="LocalStorage"><i class="fa fa-hdd-o"></i><h3>LocalStorage ('+ obj.localStorages +')</h3>'+ ( isLocalHost ? '' : 'locally stored music</div></div>' );
 	}
-	if (chkKey(obj.USBMounts)) {
+	if ( chkKey( obj.USBMounts ) ) {
 		content += divOpen +'<div id="home-usb" class="home-block'+ toggleMPD +'"'+ ( obj.USBMounts === 0 ? ( notMPD ? '' : ' href="/sources/sources/"' ) : ' data-path="USB"' ) +'>';
 		content += '<i class="fa fa-hdd-o"></i><h3>USB storage ('+ obj.USBMounts +')</h3>'+ ( isLocalHost ? '' : 'USB storage</div></div>' );
 	}
-	if (chkKey(obj.webradio)) {
+	if ( chkKey( obj.webradio ) ) {
 		content += divOpen +'<div id="home-webradio" class="home-block'+ toggleMPD +'" data-path="Webradio"><i class="fa fa-microphone"></i><h3>My Webradios ('+ obj.webradio +')</h3>'+ ( isLocalHost ? '' : 'webradio local playlists</div></div>' );
 	}
 	content += divOpen +'<div id="home-albums" class="home-block'+ toggleMPD +'" data-path="Albums" data-browsemode="album"><i class="fa fa-dot-circle-o"></i><h3>Albums</h3>'+ ( isLocalHost ? '' : 'browse MPD database by album</div></div>' );
 	content += divOpen +'<div id="home-artists" class="home-block'+ toggleMPD +'" data-path="Artists" data-browsemode="artist"><i class="fa fa-users"></i><h3>Artists</h3>'+ ( isLocalHost ? '' : 'browse MPD database by artist</div></div>' );
 	content += divOpen +'<div id="home-composer" class="home-block'+ toggleMPD +'" data-path="Composer" data-browsemode="composer"><i class="fa fa-user"></i><h3>Composer</h3>'+ ( isLocalHost ? '' : 'browse MPD database by composer</div></div>' );
 	content += divOpen +'<div id="home-genre" class="home-block' + toggleMPD +'" data-path="Genres" data-browsemode="genre"><i class="fa fa-tags"></i><h3>Genres</h3>'+ ( isLocalHost ? '' : 'browse MPD database by genre</div></div>' );
-	if (chkKey(obj.Spotify) && obj.Spotify !== '0') {
+	if ( chkKey( obj.Spotify ) && obj.Spotify !== '0' ) {
 		if (obj.ActivePlayer !== 'Spotify') {
 			content += divOpen +'<div id="home-spotify-switch" class="home-block"><i class="fa fa-spotify"></i><h3>Spotify</h3>'+ ( isLocalHost ? '' : 'click to switch renderer</div></div>' );
 		} else {
 			content += divOpen +'<div id="home-spotify" class="home-block'+ toggleSpotify +'" data-plugin="Spotify" data-path="Spotify"><i class="fa fa-spotify"></i><h3>Spotify</h3>'+ ( isLocalHost ? '' : 'music for everyone</div></div>' );
 		}
 	}
-	if (chkKey(obj.Dirble)) {
+	if ( chkKey( obj.Dirble ) ) {
 		content += divOpen +'<div id="home-dirble" class="home-block'+ toggleMPD +'" data-plugin="Dirble" data-path="Dirble"><i class="fa fa-globe"></i><h3>Dirble</h3>'+ ( isLocalHost ? '' : 'radio stations open directory</div></div>' );
 	}
 	content += divOpen +'<div id="home-jamendo" class="home-block'+ toggleMPD +'" data-plugin="Jamendo" data-path="Jamendo"><i class="fa fa-play-circle-o"></i><h3>Jamendo<span id="home-count-jamendo"></span></h3>'+ ( isLocalHost ? '' : 'world\'s largest platform for free music</div></div>' );
 
 	content += '</div>';
-	document.getElementById('home-blocks').innerHTML = content;
-	loadingSpinner('db', 'hide');
-	$('span', '#db-currentpath').html('');
+	document.getElementById( 'home-blocks' ).innerHTML = content;
+	loadingSpinner( 'db', 'hide' );
+	$( 'span', '#db-currentpath' ).html( '' );
 // hide breadcrumb, index bar, edit bookmark
 	GUI.currentDBpos[ 10 ] = 0;
 	$( '#db-currentpath, #db-index, #db-level-up, #db-webradio-add, #db-homeSetup' ).addClass( 'hide' );
@@ -1003,26 +1003,23 @@ function renderLibraryHome() {
 	});
 }
 
-function renderPlaylists(data){
-	var content = '', playlistname = '';
-	var i, line, lines=data.split('\n'), infos=[];
-	for (i = 0; (line = lines[i]); i += 1 ) {
-		infos = line.split(': ');
-		if( 'playlist' === infos[0] ) {
-			playlistname = infos[1];
+function renderPlaylists( data ) {
+	var content = playlistname = '';
+	var i, line, lines = data.split('\n'), infos = [];
+	for ( i = 0; ( line = lines[ i ] ); i++ ) {
+		infos = line.split( ': ' );
+		if ( 'playlist' === infos[ 0 ] ) {
+			playlistname = infos[ 1 ];
 			content += '<li class="pl-folder" data-path="' + playlistname + '"><i class="fa fa-bars pl-action" data-target="#context-menu-playlist" data-toggle="context" title="Actions"></i><span><i class="fa fa-list-ol"></i>' + playlistname + '</span></li>';
 			playlistname = '';
 		}
 	}
-	document.getElementById('playlist-entries').innerHTML = '';
-	$('.playlist').addClass('hide');
-	$('#pl-manage').addClass('hide');
-	$('#pl-count').addClass('hide');
-	$('#pl-filter-results').removeClass('hide').addClass('back-to-queue').html('<i class="fa fa-arrow-left sx"></i> to queue');
-	$('#pl-currentpath').removeClass('hide');
-	$('#pl-editor').removeClass('hide');
-	document.getElementById('pl-editor').innerHTML = content;
-	loadingSpinner('pl', 'hide');
+	document.getElementById( 'playlist-entries' ).innerHTML = '';
+	$( '.playlist, #pl-manage, #pl-count' ).addClass( 'hide' );
+	$( '#pl-filter-results' ).addClass( 'back-to-queue' ).html( '<i class="fa fa-arrow-left sx"></i> to queue' );
+	$( '#pl-filter-results, #pl-currentpath, #pl-editor' ).removeClass( 'hide' );
+	document.getElementById( 'pl-editor' ).innerHTML = content;
+	loadingSpinner( 'pl', 'hide' );
 // hide 'to queue' text and 'pl-manage li' click context menu
 	$( '#pl-filter-results' ).html( '<i class="fa fa-arrow-left sx"></i>' );
 	$( '#pl-editor li' ).click( function( e ) {
