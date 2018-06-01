@@ -154,8 +154,8 @@ $( '#play-group, #share-group, #vol-group' ).click( function() {
 	if ( window.innerWidth < 499 ) buttonactive = 1;
 } );
 // fix: hide on cancel / close
-$( '#modal-webradio-add button:lt(2)' ).click( function() {
-	$('#spinner-db').addClass('hide')
+$( '#home-webradio' ).click( function() {
+	//$('#spinner-db').addClass('hide');
 } );
 
 window.addEventListener( 'orientationchange', function() {
@@ -924,192 +924,58 @@ function setPlaybackSource() {
 
 function renderLibraryHome() {
 	if ( $( '#database-entries' ).hasClass( 'hide' ) ) return;
-    loadingSpinner('db');
-    $('#database-entries').addClass('hide');
-    $('#db-level-up').addClass('hide');
-    $('#db-homeSetup').removeClass('hide').removeClass('btn-primary').addClass('btn-default');
-    $('#home-blocks').removeClass('hide');
-    var obj = GUI.libraryhome,
-        i = 0,
-        content = '',
-        divOpen = '<div class="col-lg-3 col-md-4 col-sm-6">',
-        divClose = '</div>',
-        toggleMPD = '',
-        toggleSpotify = '',
-        notMPD = (obj.ActivePlayer === 'Spotify' || obj.ActivePlayer === 'Airplay');
-    if(isLocalHost) {
-        content = '';
-    } else {
-        content = '<div class="col-sm-12"><h1 class="txtmid">Browse your library</h1></div>';
-    }
-    
-    // Set active player
-    setPlaybackSource();
-    if (notMPD) {
-        toggleMPD = ' inactive';
-    }
-    // bookmarks blocks
-    for (i = 0; (bookmark = obj.bookmarks[i]); i += 1) {
-        content += divOpen + '<div id="home-bookmark-' + bookmark.id + '" class="home-block home-bookmark' + toggleMPD + '" data-path="' + bookmark.path + '"><i class="fa fa-star"></i><h3>' + bookmark.name + '</h3>bookmark</div>' + divClose;
-    }
-    if (chkKey(obj.networkMounts)) {
-    // network mounts block
-	    if(isLocalHost) {
-            if (obj.networkMounts === 0) {
-                if (notMPD) {
-                    content += divOpen + '<div id="home-nas" class="home-block inactive"><i class="fa fa-sitemap"></i><h3>Network mounts (0)</h3></div>' + divClose;
-                } else {
-                    content += divOpen + '<a class="home-block' + toggleMPD + '" href="/sources/add/"><i class="fa fa-sitemap"></i><h3>Network mounts (0)</h3></a>' + divClose;
-                }
-            } else {
-                content += divOpen + '<div id="home-nas" class="home-block' + toggleMPD + '" data-path="NAS"><i class="fa fa-sitemap"></i><h3>Network mounts (' + obj.networkMounts + ')</h3></div>' + divClose;
-            }
-        } else {
-            if (obj.networkMounts === 0) {
-                if (notMPD) {
-                    content += divOpen + '<div id="home-nas" class="home-block inactive"><i class="fa fa-sitemap"></i><h3>Network mounts (0)</h3>network attached storages</div>' + divClose;
-                } else {
-                    content += divOpen + '<a class="home-block' + toggleMPD + '" href="/sources/add/"><i class="fa fa-sitemap"></i><h3>Network mounts (0)</h3>click to add some</a>' + divClose;
-                }
-            } else {
-                content += divOpen + '<div id="home-nas" class="home-block' + toggleMPD + '" data-path="NAS"><i class="fa fa-sitemap"></i><h3>Network mounts (' + obj.networkMounts + ')</h3>network attached storages</div>' + divClose;
-            }
+	loadingSpinner('db');
+	$('#database-entries').addClass('hide');
+	$('#db-level-up').addClass('hide');
+	$('#db-homeSetup').removeClass('hide').removeClass('btn-primary').addClass('btn-default');
+	$('#home-blocks').removeClass('hide');
+	var obj = GUI.libraryhome,
+	i = 0,
+	divOpen = '<div class="col-lg-3 col-md-4 col-sm-6">',
+	toggleSpotify = '',
+	notMPD = (obj.ActivePlayer === 'Spotify' || obj.ActivePlayer === 'Airplay');
+	toggleMPD = notMPD ? ' inactive' : '';
+	content = isLocalHost ? '' : '<div class="col-sm-12"><h1 class="txtmid">Browse your library</h1></div>';
+	// Set active player
+	setPlaybackSource();
+
+	for (i = 0; (bookmark = obj.bookmarks[i]); i += 1) {
+		content += divOpen +'<div id="home-bookmark-'+ bookmark.id +'" class="home-block home-bookmark'+ toggleMPD +'" data-path="'+ bookmark.path +'"><i class="fa fa-star"></i><h3>' + bookmark.name + '</h3>bookmark</div></div>';
+	}
+	if (chkKey(obj.networkMounts)) {
+		content += divOpen +'<a id="home-nas" class="home-block'+ toggleMPD +'"'+ ( obj.networkMounts === 0 ? ( notMPD ? '' : ' href="/sources/add/"' ) : ' data-path="NAS"' ) +'>';
+		content += '<i class="fa fa-sitemap"></i><h3>Network mounts (' + obj.networkMounts + ')</h3>'+ ( isLocalHost ? '' : 'network attached storages</a></div>' );
+	}
+	if (chkKey(obj.localStorages)) {
+		content += ( obj.localStorages === 0 ) ? '' : divOpen +'<div id="home-local" class="home-block'+ toggleMPD +'" data-path="LocalStorage"><i class="fa fa-hdd-o"></i><h3>LocalStorage ('+ obj.localStorages +')</h3>'+ ( isLocalHost ? '' : 'locally stored music</div></div>' );
+	}
+	if (chkKey(obj.USBMounts)) {
+		content += divOpen +'<div id="home-usb" class="home-block'+ toggleMPD +'"'+ ( obj.USBMounts === 0 ? ( notMPD ? '' : ' href="/sources/sources/"' ) : ' data-path="USB"' ) +'>';
+		content += '<i class="fa fa-hdd-o"></i><h3>USB storage ('+ obj.USBMounts +')</h3>'+ ( isLocalHost ? '' : 'USB storage</div></div>' );
+	}
+	if (chkKey(obj.webradio)) {
+		content += divOpen +'<div id="home-webradio" class="home-block'+ toggleMPD +'" data-path="Webradio"><i class="fa fa-microphone"></i><h3>My Webradios ('+ obj.webradio +')</h3>'+ ( isLocalHost ? '' : 'webradio local playlists</div></div>' );
+	}
+	content += divOpen +'<div id="home-albums" class="home-block'+ toggleMPD +'" data-path="Albums" data-browsemode="album"><i class="fa fa-dot-circle-o"></i><h3>Albums</h3>'+ ( isLocalHost ? '' : 'browse MPD database by album</div></div>' );
+	content += divOpen +'<div id="home-artists" class="home-block'+ toggleMPD +'" data-path="Artists" data-browsemode="artist"><i class="fa fa-users"></i><h3>Artists</h3>'+ ( isLocalHost ? '' : 'browse MPD database by artist</div></div>' );
+	content += divOpen +'<div id="home-composer" class="home-block'+ toggleMPD +'" data-path="Composer" data-browsemode="composer"><i class="fa fa-user"></i><h3>Composer</h3>'+ ( isLocalHost ? '' : 'browse MPD database by composer</div></div>' );
+	content += divOpen +'<div id="home-genre" class="home-block' + toggleMPD +'" data-path="Genres" data-browsemode="genre"><i class="fa fa-tags"></i><h3>Genres</h3>'+ ( isLocalHost ? '' : 'browse MPD database by genre</div></div>' );
+	if (chkKey(obj.Spotify) && obj.Spotify !== '0') {
+		if (obj.ActivePlayer !== 'Spotify') {
+			content += divOpen +'<div id="home-spotify-switch" class="home-block"><i class="fa fa-spotify"></i><h3>Spotify</h3>'+ ( isLocalHost ? '' : 'click to switch renderer</div></div>' );
+		} else {
+			content += divOpen +'<div id="home-spotify" class="home-block'+ toggleSpotify +'" data-plugin="Spotify" data-path="Spotify"><i class="fa fa-spotify"></i><h3>Spotify</h3>'+ ( isLocalHost ? '' : 'music for everyone</div></div>' );
 		}
-    }
-    if (chkKey(obj.localStorages)) {
-    // local storages block
-        if(isLocalHost) {
-            if (obj.localStorages === 0) {
-                content += '';
-            } else {
-                content += divOpen + '<div id="home-local" class="home-block' + toggleMPD + '" data-path="LocalStorage"><i class="fa fa-hdd-o"></i><h3>LocalStorage (' + obj.localStorages + ')</h3></div>' + divClose;
-            }
-        } else {
-            if (obj.localStorages === 0) {
-                content += '';
-            } else {
-                content += divOpen + '<div id="home-local" class="home-block' + toggleMPD + '" data-path="LocalStorage"><i class="fa fa-hdd-o"></i><h3>LocalStorage (' + obj.localStorages + ')</h3>locally stored music</div>' + divClose;
-            }
-        }
-    }
-    if (chkKey(obj.USBMounts)) {
-    // USB mounts block
-        if(isLocalHost) {
-            if (obj.USBMounts === 0) {
-                if (notMPD) {
-                    content += divOpen + '<div id="home-usb" class="home-block inactive"><i class="fa fa-hdd-o"></i><h3>USB storage (0)</h3></div>' + divClose;
-                } else {
-                    content += divOpen + '<a id="home-usb" class="home-block' + toggleMPD + '" href="/sources"><i class="fa fa-hdd-o"></i><h3>USB storage (0)</h3></a>' + divClose;
-                }
-            } else {
-                content += divOpen + '<div id="home-usb" class="home-block' + toggleMPD + '" data-path="USB"><i class="fa fa-hdd-o"></i><h3>USB storage (' + obj.USBMounts + ')</h3></div>' + divClose;
-            }
-        } else {
-            if (obj.USBMounts === 0) {
-                if (notMPD) {
-                    content += divOpen + '<div id="home-usb" class="home-block inactive"><i class="fa fa-hdd-o"></i><h3>USB storage (0)</h3>no USB storage plugged</div>' + divClose;
-                } else {
-                    content += divOpen + '<a id="home-usb" class="home-block' + toggleMPD + '" href="/sources"><i class="fa fa-hdd-o"></i><h3>USB storage (0)</h3>no USB storage plugged</a>' + divClose;
-                }
-            } else {
-                content += divOpen + '<div id="home-usb" class="home-block' + toggleMPD + '" data-path="USB"><i class="fa fa-hdd-o"></i><h3>USB storage (' + obj.USBMounts + ')</h3>USB attached drives</div>' + divClose;
-            }
-        }
-    }
-    if (chkKey(obj.webradio)) {
-    // webradios block
-        if(isLocalHost) {
-            if (obj.webradio === 0) {
-                if (notMPD) {
-                    content += divOpen + '<div id="home-webradio" class="home-block inactive"><i class="fa fa-microphone"></i><h3>My Webradios (0)</h3></div>' + divClose;
-                } else {
-                    content += divOpen + '<a id="home-webradio" class="home-block' + toggleMPD + '" href="#" data-toggle="modal" data-target="#modal-webradio-add"><i class="fa fa-microphone"></i><h3>My Webradios (0)</h3></a>' + divClose;
-                }
-            } else {
-                content += divOpen + '<div id="home-webradio" class="home-block' + toggleMPD + '" data-path="Webradio"><i class="fa fa-microphone"></i><h3>My Webradios (' + obj.webradio + ')</h3></div>' + divClose;
-            }
-        } else {
-             if (obj.webradio === 0) {
-                if (notMPD) {
-                    content += divOpen + '<div id="home-webradio" class="home-block inactive"><i class="fa fa-microphone"></i><h3>My Webradios (0)</h3>webradio local playlists</div>' + divClose;
-                } else {
-                    content += divOpen + '<a id="home-webradio" class="home-block' + toggleMPD + '" href="#" data-toggle="modal" data-target="#modal-webradio-add"><i class="fa fa-microphone"></i><h3>My Webradios (0)</h3>click to add some</a>' + divClose;
-                }
-            } else {
-                content += divOpen + '<div id="home-webradio" class="home-block' + toggleMPD + '" data-path="Webradio"><i class="fa fa-microphone"></i><h3>My Webradios (' + obj.webradio + ')</h3>webradio local playlists</div>' + divClose;
-            }
-        }
-    }
-    // Album list (static)
-    if(isLocalHost) {
-        content += divOpen + '<div id="home-albums" class="home-block' + toggleMPD + '" data-path="Albums" data-browsemode="album"><i class="fa fa-dot-circle-o"></i><h3>Albums</h3></div>' + divClose;
-    } else {
-        content += divOpen + '<div id="home-albums" class="home-block' + toggleMPD + '" data-path="Albums" data-browsemode="album"><i class="fa fa-dot-circle-o"></i><h3>Albums</h3>browse MPD database by album</div>' + divClose;
-    }
-    // Artist list (static)
-    if(isLocalHost) {
-        content += divOpen + '<div id="home-artists" class="home-block' + toggleMPD + '" data-path="Artists" data-browsemode="artist"><i class="fa fa-users"></i><h3>Artists</h3></div>' + divClose;
-    } else {
-        content += divOpen + '<div id="home-artists" class="home-block' + toggleMPD + '" data-path="Artists" data-browsemode="artist"><i class="fa fa-users"></i><h3>Artists</h3>browse MPD database by artist</div>' + divClose;
-    }
-    // Composer list (static)
-    if(isLocalHost) {
-        content += divOpen + '<div id="home-composer" class="home-block' + toggleMPD + '" data-path="Composer" data-browsemode="composer"><i class="fa fa-user"></i><h3>Composer</h3></div>' + divClose;
-    } else {
-        content += divOpen + '<div id="home-composer" class="home-block' + toggleMPD + '" data-path="Composer" data-browsemode="composer"><i class="fa fa-user"></i><h3>Composer</h3>browse MPD database by composer</div>' + divClose;
-    }
-    // Genre list (static)
-    if(isLocalHost) {
-        content += divOpen + '<div id="home-genre" class="home-block' + toggleMPD + '" data-path="Genres" data-browsemode="genre"><i class="fa fa-tags"></i><h3>Genres</h3></div>' + divClose;
-    } else {
-        content += divOpen + '<div id="home-genre" class="home-block' + toggleMPD + '" data-path="Genres" data-browsemode="genre"><i class="fa fa-tags"></i><h3>Genres</h3>browse MPD database by genre</div>' + divClose;
-    }
+	}
+	if (chkKey(obj.Dirble)) {
+		content += divOpen +'<div id="home-dirble" class="home-block'+ toggleMPD +'" data-plugin="Dirble" data-path="Dirble"><i class="fa fa-globe"></i><h3>Dirble</h3>'+ ( isLocalHost ? '' : 'radio stations open directory</div></div>' );
+	}
+	content += divOpen +'<div id="home-jamendo" class="home-block'+ toggleMPD +'" data-plugin="Jamendo" data-path="Jamendo"><i class="fa fa-play-circle-o"></i><h3>Jamendo<span id="home-count-jamendo"></span></h3>'+ ( isLocalHost ? '' : 'world\'s largest platform for free music</div></div>' );
 
-    // Spotify block
-    if (chkKey(obj.Spotify)) {
-        if(isLocalHost) {
-            if (obj.Spotify === '0') {
-                //content += divOpen + '<a id="home-spotify" class="home-block' + toggleSpotify + '" href="/settings/#features-management"><i class="fa fa-spotify"></i><h3>Spotify<span id="home-count-spotify"></span></h3></a>' + divClose;
-            } else {
-                if (obj.ActivePlayer !== 'Spotify') {
-                    content += divOpen + '<div id="home-spotify-switch" class="home-block"><i class="fa fa-spotify"></i><h3>Spotify</h3></div>' + divClose;
-                } else {
-                    content += divOpen + '<div id="home-spotify" class="home-block' + toggleSpotify + '" data-plugin="Spotify" data-path="Spotify"><i class="fa fa-spotify"></i><h3>Spotify</div>' + divClose;
-                }
-            }
-        } else {
-            if (obj.Spotify === '0') {
-                //content += divOpen + '<a id="home-spotify" class="home-block' + toggleSpotify + '" href="/settings/#features-management"><i class="fa fa-spotify"></i><h3>Spotify<span id="home-count-spotify"></span></h3>click to configure</a>' + divClose;
-            } else {
-                if (obj.ActivePlayer !== 'Spotify') {
-                    content += divOpen + '<div id="home-spotify-switch" class="home-block"><i class="fa fa-spotify"></i><h3>Spotify</h3>click to switch renderer</div>' + divClose;
-                } else {
-                    content += divOpen + '<div id="home-spotify" class="home-block' + toggleSpotify + '" data-plugin="Spotify" data-path="Spotify"><i class="fa fa-spotify"></i><h3>Spotify</h3>music for everyone</div>' + divClose;
-                }
-            }
-        }
-    }
-
-    // Dirble block
-    if (chkKey(obj.Dirble)) {
-        if(isLocalHost) {
-            content += divOpen + '<div id="home-dirble" class="home-block' + toggleMPD + '" data-plugin="Dirble" data-path="Dirble"><i class="fa fa-globe"></i><h3>Dirble</h3></div>' + divClose;
-        } else {
-            content += divOpen + '<div id="home-dirble" class="home-block' + toggleMPD + '" data-plugin="Dirble" data-path="Dirble"><i class="fa fa-globe"></i><h3>Dirble</h3>radio stations open directory</div>' + divClose;
-        }
-    }
-
-    // Jamendo (static)
-    if(isLocalHost) {
-        content += divOpen + '<div id="home-jamendo" class="home-block' + toggleMPD + '" data-plugin="Jamendo" data-path="Jamendo"><i class="fa fa-play-circle-o"></i><h3>Jamendo<span id="home-count-jamendo"></span></h3></div>' + divClose;
-    } else {
-        content += divOpen + '<div id="home-jamendo" class="home-block' + toggleMPD + '" data-plugin="Jamendo" data-path="Jamendo"><i class="fa fa-play-circle-o"></i><h3>Jamendo<span id="home-count-jamendo"></span></h3>world\'s largest platform for free music</div>' + divClose;
-    }
-
-    content += '</div>';
-    document.getElementById('home-blocks').innerHTML = content;
-    loadingSpinner('db', 'hide');
-    $('span', '#db-currentpath').html('');
+	content += '</div>';
+	document.getElementById('home-blocks').innerHTML = content;
+	loadingSpinner('db', 'hide');
+	$('span', '#db-currentpath').html('');
 // hide breadcrumb, index bar, edit bookmark
 	GUI.currentDBpos[ 10 ] = 0;
 	$( '#db-currentpath, #db-index, #db-level-up, #db-webradio-add, #db-homeSetup' ).addClass( 'hide' );
