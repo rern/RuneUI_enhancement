@@ -153,6 +153,10 @@ $( '#open-library' ).click( function() {
 $( '#play-group, #share-group, #vol-group' ).click( function() {
 	if ( window.innerWidth < 499 ) buttonactive = 1;
 } );
+// fix: hide on cancel / close
+$( '#modal-webradio-add button' ).click( function() {
+	loadingSpinner( 'db', 'hide' );
+} );
 
 window.addEventListener( 'orientationchange', function() {
 	setTimeout( function() {
@@ -1006,29 +1010,17 @@ function renderLibraryHome() {
 			}
 		}
 	}
-	if (chkKey(obj.webradio)) {
-		if(isLocalHost) {
-			if (obj.webradio === 0) {
-				if (notMPD) {
-					content += divOpen + '<div id="home-webradio" class="home-block inactive"><i class="fa fa-microphone"></i><h3>My Webradios (0)</h3></div>' + divClose;
-				} else {
-					content += divOpen + '<a id="home-webradio" class="home-block' + toggleMPD + '" href="#" data-toggle="modal" data-target="#modal-webradio-add"><i class="fa fa-microphone"></i><h3>My Webradios (0)</h3></a>' + divClose;
-				}
+    if (chkKey(obj.webradio)) {
+		if (obj.webradio === 0) {
+			if (notMPD) {
+				content += divOpen +'<div id="home-webradio" class="home-block inactive"><i class="fa fa-microphone"></i><h3>My Webradios (0)</h3>'+ ( isLocalHost ? '' : 'webradio local playlists' ) +'</div>'+ divClose;
 			} else {
-				content += divOpen + '<div id="home-webradio" class="home-block' + toggleMPD + '" data-path="Webradio"><i class="fa fa-microphone"></i><h3>My Webradios (' + obj.webradio + ')</h3></div>' + divClose;
+				content += divOpen +'<div id="home-webradio" class="home-block'+ toggleMPD +'" href="#" data-toggle="modal" data-target="#modal-webradio-add"><i class="fa fa-microphone"></i><h3>My Webradios (0)</h3>'+ ( isLocalHost ? '' : 'click to add some' ) +'</div>'+ divClose;
 			}
 		} else {
-			 if (obj.webradio === 0) {
-				if (notMPD) {
-					content += divOpen + '<div id="home-webradio" class="home-block inactive"><i class="fa fa-microphone"></i><h3>My Webradios (0)</h3>webradio local playlists</div>' + divClose;
-				} else {
-					content += divOpen + '<a id="home-webradio" class="home-block' + toggleMPD + '" href="#" data-toggle="modal" data-target="#modal-webradio-add"><i class="fa fa-microphone"></i><h3>My Webradios (0)</h3>click to add some</a>' + divClose;
-				}
-			} else {
-				content += divOpen + '<div id="home-webradio" class="home-block' + toggleMPD + '" data-path="Webradio"><i class="fa fa-microphone"></i><h3>My Webradios (' + obj.webradio + ')</h3>webradio local playlists</div>' + divClose;
-			}
+			content += divOpen +'<div id="home-webradio" class="home-block'+ toggleMPD +'" data-path="Webradio"><i class="fa fa-microphone"></i><h3>My Webradios ('+ obj.webradio +')</h3>'+ ( isLocalHost ? '' : 'webradio local playlists' ) +'</div>'+ divClose;
 		}
-	}
+    }
 	content += divOpen + '<div id="home-albums" class="home-block' + toggleMPD + '" data-path="Albums" data-browsemode="album"><i class="fa fa-dot-circle-o"></i><h3>Albums</h3>'+ ( isLocalHost ? '' : 'browse MPD database by album' ) +'</div>' + divClose;
 	content += divOpen + '<div id="home-artists" class="home-block' + toggleMPD + '" data-path="Artists" data-browsemode="artist"><i class="fa fa-users"></i><h3>Artists</h3>'+ ( isLocalHost ? '' : 'browse MPD database by artist' ) +'</div>' + divClose;
 	content += divOpen + '<div id="home-composer" class="home-block' + toggleMPD + '" data-path="Composer" data-browsemode="composer"><i class="fa fa-user"></i><h3>Composer</h3>'+ ( isLocalHost ? '' : 'browse MPD database by composer' ) +'</div>' + divClose;
@@ -1143,7 +1135,6 @@ function renderPlaylists(data){
 }
 
 function parseResponse(options) {
-	console.log(options)
 	var inputArr = options.inputArr || '',
 		respType = options.respType || '',
 		i = options.i || 0,
@@ -1165,7 +1156,7 @@ function parseResponse(options) {
 					if (inputArr.Title !== undefined) {
 						content += inputArr.file;
 						content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i><span class="sn">';
-						content += inputArr.Title + ' <span>' + timeConvert(inputArr.Time) + '</span></span>';
+						content += inputArr.Title + '<span>' + converthms(inputArr.Time) + '</span></span>';
 						content += ' <span class="bl">';
 						content +=  inputArr.Artist;
 						content += ' - ';
@@ -1174,7 +1165,7 @@ function parseResponse(options) {
 						if (inpath !== 'Webradio') {
 							content += inputArr.file;
 							content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i><span class="sn">';
-							content += inputArr.file.replace(inpath + '/', '') + ' <span>' + timeConvert(inputArr.Time) + '</span></span>';
+							content += inputArr.file.replace(inpath + '/', '') + ' <span>' + converthms(inputArr.Time) + '</span></span>';
 							content += '<span class="bl">';
 							content += ' path: ';
 							content += inpath;
@@ -1213,7 +1204,7 @@ function parseResponse(options) {
 					content = '<li id="db-' + (i + 1) + '" data-path="';
 					content += inputArr.file;
 					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i><span class="sn">';
-					content += inputArr.Title + ' <span>' + timeConvert(inputArr.Time) + '</span></span>';
+					content += inputArr.Title + '<span>' + converthms(inputArr.Time) + '</span></span>';
 					content += ' <span class="bl">';
 					content +=  inputArr.Artist;
 					content += ' - ';
@@ -1245,7 +1236,7 @@ function parseResponse(options) {
 					content = '<li id="db-' + (i + 1) + '" data-path="';
 					content += inputArr.file;
 					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i><span class="sn">';
-					content += inputArr.Title + ' <span>' + timeConvert(inputArr.Time) + '</span></span>';
+					content += inputArr.Title + '<span>' + converthms(inputArr.Time) + '</span></span>';
 					content += ' <span class="bl">';
 					content +=  inputArr.Artist;
 					content += ' - ';
@@ -1289,7 +1280,7 @@ function parseResponse(options) {
 				content += '" data-plid="';
 				content += inpath;
 				content += '" data-type="spotify-track"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-spotify"></i><i class="fa fa-spotify db-icon"></i><span class="sn">';
-				content += inputArr.title + ' <span>' + timeConvert(inputArr.duration/1000) + '</span></span>';
+				content += inputArr.Title + '<span>' + converthms(inputArr.duration/1000) + '</span></span>';
 				content += ' <span class="bl">';
 				content +=  inputArr.artist;
 				content += ' - ';
@@ -1577,7 +1568,7 @@ function populateDB(options) {
 function getPlaylistPlain( data ) {
 	var current = parseInt( GUI.json.song ) + 1;
 	var state = GUI.json.state;
-	var content = time = artist = album = title = name = str = filename = path = songid = bottomline = line = classcurrent = classradio = hidetotal = '';
+	var content = bottomline = classcurrent = classradio = hidetotal = '';
 	var id = totaltime = playlisttime = pos = i = 0;
 	var json = JSON.parse(data);
 	var ilength = json.length;
@@ -1589,9 +1580,8 @@ function getPlaylistPlain( data ) {
 			bottomline = data[ 'file' ];
 			hidetotal = ' class="hide"';
 		} else {
-			title = data[ 'Title' ] ? data[ 'Title' ] : data[ 'file' ].split( '/' ).pop();
 			time = parseInt( data[ 'Time' ] );
-			topline = title +'<span>'+ converthms( time ) +'</span>';
+			topline = ( data[ 'Title' ] ? data[ 'Title' ] : data[ 'file' ].split( '/' ).pop() ) +'<span>'+ converthms( time ) +'</span>';
 			bottomline = data[ 'Artist' ] ? data[ 'Artist' ] + ' - ' + data[ 'Album' ] : data[ 'file' ];
 			playlisttime += time;
 		}
@@ -1599,11 +1589,11 @@ function getPlaylistPlain( data ) {
 		classcurrent = ( state !== 'stop' && pos === current ) ? 'active' : '';
 		cl = ' class="'+ classcurrent + classradio +'"';
 		cl = ( classcurrent || classradio ) ? cl : '';
-		content += '<li id="pl-'+ songid +'"'+ cl +'>'
+		content += '<li id="pl-'+ data[ 'Id' ] +'"'+ cl +'>'
 			+'<i class="fa fa-times-circle pl-action" title="Remove song from playlist"></i><span class="sn">'+ topline +'</span>'
 			+'<span class="bl">'+ bottomline +'</span>'
 			+'</li>';
-		time = artist = album = title = name = classcurrent = classradio = '';
+		classcurrent = classradio = '';
 	}
 	$( '.playlist' ).addClass( 'hide' );
 	$( '#playlist-entries' ).html( content ).removeClass( 'hide' );
