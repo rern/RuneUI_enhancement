@@ -248,7 +248,7 @@ if (( ilength )); then
 			samplerate=$( awk "BEGIN { printf \"$decimal\", $samplerate / 1000 }" )' kHz '
 		fi
 		sampling=$samplerate$bitrate
-		redis-cli hset webradiosampling "$url" "$sampling" &> /dev/null
+		redis-cli hset webradiosampling "$name" "$sampling" &> /dev/null
 		redis-cli hset webradioname "$url" "$name" &> /dev/null
 	done
 fi
