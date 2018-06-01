@@ -126,7 +126,7 @@ a\
                         if ( $kv[ 0 ] == "OK" || !$kv[ 0 ] ) continue;\
                         $data[ $kv[ 0 ] ] = $kv[ 1 ];\
                     }\
-                    if ( !array_key_exists( "Title", $data ) ) {\
+                    if ( substr( $data[ "file" ], 0, 4 ) === 'http' ) {\
                         $redis = new Redis(); \
                         $redis->pconnect( "127.0.0.1" );\
                         $data[ "Title" ] = $redis->hGet( "webradioname", $data[ "file" ] );\
