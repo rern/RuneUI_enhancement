@@ -33,16 +33,15 @@ if [[ ${filepath:6:4} == http ]]; then
 	file=/srv/http/stream
 	ext=radio
 	album=$url
-	artist=$( echo "$track" | grep -a Name | sed 's/^Name: //' )
-	[[ ! $artist ]] && artist=$( redis-cli hget webradioname "$url" )
+#	artist=$( echo "$track" | grep -a Name | sed 's/^Name: //' )
+#	[[ ! $artist ]] && artist=$( redis-cli hget webradioname "$url" )
+	artist=$( redis-cli hget webradioname "$url" )
 	song=$( echo "$track" | grep -a Title | sed 's/^Title: //' )
 	if [[ -z $artist ]]; then
 		artist=$song
 		song=
 	fi
 	time=0
-	
-	[[ $state == stop ]] && sampling=$( redis-cli hget webradiosampling "$url" )
 else
 	file=$( echo "$filepath" | sed 's|^file: |/mnt/MPD/|' )
 	ext=$( echo $file | sed 's/^.*\.//' | tr '[:lower:]' '[:upper:]' )
@@ -51,6 +50,39 @@ else
 	album=$( echo "$track" | grep Album | sed 's/Album: //' )
 	time=$( echo "$track" | grep Time | sed 's/Time: //' )
 fi
+
+samplinginfo() {
+	local bitdepth=$1
+	local samplerate=$2
+	local bitrate=$3
+	
+	if [[ $bitdepth == 'N/A' ]]; then
+		if [[ $ext == WAV || $ext == AIFF ]]; then
+			bitdepth=$(( $bitrate / $samplerate / 2 ))' bit '
+		else
+			bitdepth=
+		fi
+	elif [[ $bitdepth != 0 ]]; then
+		bitdepth=$bitdepth' bit '
+	else
+		bitdepth=
+	fi
+	
+	if [[ $samplerate ]]; then
+		(( $samplerate % 1000 )) && decimal='%.1f\n' || decimal='%.0f\n'
+		samplerate=$( awk "BEGIN { printf \"$decimal\", $samplerate / 1000 }" )' kHz '
+	fi
+	
+	if [[ $bitrate ]]; then
+		if (( $bitrate < 1000000 )); then
+			bitrate=$(( bitrate / 1000 ))' kbit/s'
+		else
+			bitrate=$( awk "BEGIN { printf \"%.2f\n\", $bitrate / 1000000 }" )' Mbit/s'
+		fi
+	fi
+	
+	sampling="$bitdepth$samplerate$bitrate"
+}
 
 # DSD - get sampling by 'hexdump'
 if [[ $ext == DSF || $ext == DFF ]]; then
@@ -70,57 +102,31 @@ if [[ $ext == DSF || $ext == DFF ]]; then
 	dsd=$(( bitrate / 44100 ))
 	Mbps=$( awk "BEGIN { printf \"%.2f\n\", $bitrate / 1000000 }" )
 	sampling="1 bit DSD$dsd - $Mbps Mbit/s"
-fi
 
-if [[ ! $sampling ]]; then
 # not DSD or m4a - get sampling with 'ffprobe'
-	if [[ $ext == radio && $state != stop ]]; then
-		bitdepth=
+elif [[ $ext == radio ]]; then
+	if [[ $state == stop ]]; then
+		sampling=$( redis-cli hget webradiosampling "$artist" )
+	else
+		bitdepth=0
 		samplerate=$( echo "$status" | grep '^audio: ' | cut -d' ' -f2 | cut -d':' -f1 )
 		bitrate=$( echo "$status" | grep '^bitrate: ' | cut -d' ' -f2 )
+		# refetch if too soon to connect properly
+		if [[ $samplerate == 0 || $bitrate == 0 || -z $samplerate || -z $birate ]]; then
+			status=$( { echo status; sleep 0.1; } | telnet localhost 6600 )
+			samplerate=$( echo "$status" | grep '^audio: ' | cut -d' ' -f2 | cut -d':' -f1 )
+			bitrate=$( echo "$status" | grep '^bitrate: ' | cut -d' ' -f2 )
+		fi
 		bitrate=$(( bitrate * 1000 ))
-	elif [[ $ext == radio && $state == stop && ! -e $file ]]; then
-		bitdepth=
-		samplerate=
-		bitrate=
-	else
-		data=( $( ffprobe -v quiet -select_streams a:0 -show_entries stream=bits_per_raw_sample,sample_rate -show_entries format=bit_rate -of default=noprint_wrappers=1:nokey=1 "$file" ) )
-		bitdepth=${data[1]}
-		samplerate=${data[0]}
-		bitrate=${data[2]}
-		# fix tolerance in ffprobe of some webradio
-		bitrate=$(( bitrate - ( bitrate % 32000 ) ))
+		samplinginfo $bitdepth $samplerate $bitrate
+		redis-cli hset webradiosampling "$artist" "$sampling"
 	fi
-	
-	if [[ $bitdepth == 'N/A' ]]; then
-		if [[ $ext == WAV || $ext == AIFF ]]; then
-			bitdepth=$(( $bitrate / $samplerate / 2 ))' bit '
-		else
-			bitdepth=
-		fi
-	elif [[ -n $bitdepth ]]; then
-		bitdepth=$bitdepth' bit '
-	fi
-	
-	if [[ $samplerate ]]; then
-		(( $samplerate % 1000 )) && decimal='%.1f\n' || decimal='%.0f\n'
-		samplerate=$( awk "BEGIN { printf \"$decimal\", $samplerate / 1000 }" )' kHz '
-	fi
-	
-	if [[ $bitrate ]]; then
-		if (( $bitrate < 1000000 )); then
-			bitrate=$(( bitrate / 1000 ))' kbit/s'
-		else
-			bitrate=$( awk "BEGIN { printf \"%.2f\n\", $bitrate / 1000000 }" )' Mbit/s'
-		fi
-	fi
-	
-	sampling=$bitdepth$samplerate$bitrate
-	
-	if [[ $ext == radio ]]; then
-		rm -f /srv/http/stream
-		[[ -n $sampling && $sampling != $( redis-cli hget webradiosampling "$url" ) ]] && redis-cli hset webradiosampling "$url" "$sampling"
-	fi
+else
+	data=( $( ffprobe -v quiet -select_streams a:0 -show_entries stream=bits_per_raw_sample,sample_rate -show_entries format=bit_rate -of default=noprint_wrappers=1:nokey=1 "$file" ) )
+	bitdepth=${data[1]}
+	samplerate=${data[0]}
+	bitrate=${data[2]}
+	samplinginfo $bitdepth $samplerate $bitrate
 fi
 
 echo '{ "artist": "'$artist'", "song": "'$song'", "album": "'$album'", "sampling": "'$sampling'", "ext": "'$ext'", "elapsed": "'$elapsed'", "time": "'$time'", "repeat": "'$repeat'", "random": "'$random'", "single": "'$single'", "volume": "'$volume'", "volumemute": "'$volumemute'", "state": "'$state'" }'
