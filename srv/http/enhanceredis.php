@@ -14,23 +14,6 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 $redis = new Redis(); 
 $redis->pconnect( '127.0.0.1' );
 
-// radio name / url
-if ( isset( $_POST[ 'webradioname' ] ) || isset( $_POST[ 'webradios' ] ) ) {
-	if ( isset( $_POST[ 'webradioname' ] ) ) {
-		$values = json_decode( $_POST[ 'webradioname' ] );
-		$key = 'webradioname';
-	} else {
-		$values = json_decode( $_POST[ 'webradios' ] );
-		$key = 'webradios';
-	}
-	foreach( $values as $val ) {
-		$list[] = $redis->hget( $key, $val );
-	}
-	echo json_encode( $list );
-	die();
-}
-
-
 $array = json_decode( $_POST[ 'json' ], true );
 
 foreach ( $array as $field => $arg ) {
