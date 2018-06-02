@@ -139,16 +139,38 @@ a\
 
 file=/srv/http/app/libs/runeaudio.php
 echo $file
-sed -i -e $'/runelog(.addRadio/ a\
-        $redis->hSet(\'webradioname\', $data->url, $data->label); //enha
-' -e $'/hDel(.webradios., $data->label)/ i\
-            $urldel = $redis->hGet(\'webradios\', $data->label); //enha\
-            $redis->hDel(\'webradioname\', $urldel); //enha
-' -e $'/hSet(.webradios.,$data->label,$data->url)/ a\
-            $redis->hSet(\'webradioname\',$data->url,$data->label); //enha
-' -e $'/hDel(.webradios., $label)/ i\
-            $urldel = $redis->hGet(\'webradios\', $label); //enha\
-            $redis->hDel(\'webradioname\', $urldel); //enha
+sed -i -e $'/function addRadio/ i\
+// enha0\
+function radiosampling( $data )\
+{\
+	ui_notify( "Webradio", "Testing connection ..." );\
+	$data = shell_exec( "{ echo play; sleep 3; echo status; echo stop; sleep 0.1; } | telnet localhost 6600 | grep \'bitrate\\|audio\' | sed \'s/^.*: //; s/:.*:.*$//\'" );\
+	$data = explode( "\n", $data );\
+	$sampling = $data[ 0 ] ? round( $data[ 1 ] / 1000 , 1 )." kHz ".$data[ 0 ]." kbit/s" : "";\
+	if ( !$sampling ) {\
+		ui_notify( "Webradio", "URL Connection FAILED!." );\
+		return;\
+	}\
+	$redis->hSet( "webradiosampling", $data->label, $sampling);\
+	ui_notify( "Webradio", $sampling );\
+}\
+// enha1
+' -e '/runelog(.addRadio/ i\
+		radiosampling( $data );                                   //enha0\
+		$redis->hSet("webradioname", $data->url, $data->label);   //enha1
+' -e '/hDel(.webradios., $data->label)/ i\
+			$urldel = $redis->hGet("webradios", $data->label);    //enha0\
+			$redis->hDel("webradioname", $urldel);\
+			$redis->hDel("webradiosampling", $data->label);       //enha1
+' -e '/hSet(.webradios.,$data->label,$data->url)/ i\
+			$urldel = $redis->hGet("webradios", $data->label);    //enha0\
+			radiosampling( $data );\
+			$redis->hDel("webradioname", $urldel);\
+			$redis->hSet("webradioname",$data->url,$data->label); //enha1
+' -e '/hDel(.webradios., $label)/ i\
+			$urldel = $redis->hGet("webradios", $label);          //enha0\
+			$redis->hDel("webradioname", $urldel);\
+			$redis->hDel("webradiosampling", $label);             //enha1
 ' -e '/browseMode = TRUE/ a\
         if ( preg_match( "/playlist: Webradio/", $plistLine ) ) { //enha0\
             $webradiolist = 1;\
