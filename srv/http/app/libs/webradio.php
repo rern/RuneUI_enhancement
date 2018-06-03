@@ -1,15 +1,11 @@
 <?php
-function getInfo( $mpd ) {
-sendMpdCommand( $mpd, 'status' );
-$status = readMpdResponse( $mpd );
-sendMpdCommand( $mpd, 'currentsong' );
-$status.= readMpdResponse( $mpd );
-$line = strtok( $status, PHP_EOL );
+function arrayLines( $lines ) {
+$line = strtok( $lines, PHP_EOL );
 while ( $line !== false ) {
-	$pair = explode( ' ', $line );
+	$pair = explode( ' ', $line, 2 );
 	$key = substr( $pair[ 0 ], 0, -1 );       // remove ':'
 	$val = $pair[ 1 ];
-	if ( $key !== 'O' ) $info[ $key ] = $val; // remove 'OK' lines
+	if ( $key !== 'O' ) $info[ $key ] = $val; // skip 'OK' lines
 	if ( $key === 'audio') {
 		$audio = explode( ':', $val );
 		$info[ 'bitdepth' ] = $audio[ 1 ];
@@ -26,6 +22,7 @@ if ( array_key_exists( 'bitrate', $info ) ) {
 }
 	return $info;
 }
+
 function addRadio( $mpd, $redis, $data ) {
 	if ( $data->label === '' || $data->url === '' ) return;
     
@@ -37,26 +34,40 @@ function addRadio( $mpd, $redis, $data ) {
 	$fp = fopen( $file, 'w' );
 	fwrite( $fp, $newpls );
 	fclose( $fp );
-
-	ui_notify( 'Webradio', 'Testing connection ...' );
-	addToQueue( $mpd, 'Webradio/'.$data->label.'.pls' );
-	sleep( 1 );
-	$last = getInfo()[ 'playlistlength' ] - 1;
-	sendMpdCommand( $mpd, 'play '.$last );
+	
+	ui_notify( 'Webradio', 'Testing URL connection ...' );
+	
+	$status = sendMpdCommand( $mpd, 'status' );
+	$last = arrayLines( $status )[ 'playlistlength' ]; // mpd play #position start at 0
+	$cmdlist = "command_list_begin\n"
+		."stop\n"
+		."load \"".html_entity_decode( 'Webradio/'.$data->label.'.pls' )."\"\n"
+		."play ".$last."\n"
+		."command_list_end";
+	$status = sendMpdCommand( $mpd, $cmdlist );
 	sleep( 3 );
-	$samplinginfo = getInfo()[ 'samplinginfo' ];
+	$cmdlist = "command_list_begin\n"
+		."status\n"
+		."currentsong\n"
+		."command_list_end";
+	$status = sendMpdCommand( $mpd, $cmdlist );
+	$samplinginfo = arrayLines( $status )[ 'samplinginfo' ];
 	if ( !$samplinginfo ) {
 		ui_notify( 'Webradio', "URL Connection FAILED!." );
 		unlink( $file );
+		$cmdlist = "command_list_begin\n"
+			."delete ".$last."\n"
+			."update Webradio\n"
+			."command_list_end";
+		sendMpdCommand( $mpd, $cmdlist );
 		return;
 	}
 	
 	ui_notify( 'Webradio', $samplinginfo );
 	
+	$redis->hSet( 'webradios', $data->label, $data->url );
 	$redis->hSet( 'webradiosampling', $data->label, $samplinginfo );
 	$redis->hSet( 'webradioname', $data->url, $data->label );
-	$redis->hSet( 'webradios', $data->label, $data->url );
-	
 	
 	sendMpdCommand( $mpd, 'update Webradio' );
 }
