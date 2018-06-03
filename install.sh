@@ -137,8 +137,8 @@ a\
 file=/srv/http/app/libs/runeaudio.php
 echo $file
 sed -i -e '/function addRadio/ i\/*enha
-' -e '/function ui_notify/ i\
-enha*/
+' -e '/function ui_notify(/ i\
+enha*/\
 include( "/srv/http/app/libs/webradio.php" );
 ' -e '/browseMode = TRUE/ a\
         if ( preg_match( "/playlist: Webradio/", $plistLine ) ) { //enha0\
