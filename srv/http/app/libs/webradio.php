@@ -2,8 +2,8 @@
 function arrayLines( $lines ) {
 $line = strtok( $lines, PHP_EOL );
 while ( $line !== false ) {
-	$pair = explode( ' ', $line, 2 );
-	$key = substr( $pair[ 0 ], 0, -1 );       // remove ':'
+	$pair = explode( ': ', $line, 2 );
+	$key = $pair[ 0 ];
 	$val = $pair[ 1 ];
 	if ( $key !== 'O' ) $info[ $key ] = $val; // skip 'OK' lines
 	if ( $key === 'audio') {
