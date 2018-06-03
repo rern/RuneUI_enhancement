@@ -116,15 +116,12 @@ a\
                 $playlist = getPlayQueue( $mpd ); //enha0\
                 $playlist = preg_replace( "/\\nfile/", "\\nfilefile", $playlist );\
                 $playlist = explode( "\\nfile", $playlist );\
-                $info = array();\
                 $ilength = count( $playlist );\
                 for ( $i = 0; $i < $ilength; $i++ ) {\
                     $list = explode( "\\n", $playlist[ $i ] );\
-                    $data = array();\
                     foreach ( $list as $line ) {\
-                        $kv = explode( ": ", $line );\
-                        if ( $kv[ 0 ] == "OK" || !$kv[ 0 ] ) continue;\
-                        $data[ $kv[ 0 ] ] = $kv[ 1 ];\
+                        $kv = explode( ": ", $line, 2 );\
+                        if ( $kv[ 0 ] !== "OK" && $kv[ 0 ] ) $data[ $kv[ 0 ] ] = $kv[ 1 ];\
                     }\
                     if ( substr( $data[ "file" ], 0, 4 ) === 'http' ) {\
                         $redis = new Redis(); \
