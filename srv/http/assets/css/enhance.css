@@ -699,10 +699,10 @@
 #db-home {
 	width: 40px;
 	padding-left: 7px;
-	background: #34495e;
+	background: #0095d8;
 }
 #db-home:hover {
-	background: #0095d8;
+	background: #0072a5;
 }
 .btnlist-top {
 	top: 0;
