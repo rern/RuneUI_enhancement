@@ -37,20 +37,22 @@ function addRadio( $mpd, $redis, $data ) {
 	
 	ui_notify( 'Webradio', 'Testing URL connection ...' );
 	
-	$status = sendMpdCommand( $mpd, 'status' );
+	sendMpdCommand( $mpd, 'status' );
+	$status = readMpdResponse( $mpd );
 	$last = arrayLines( $status )[ 'playlistlength' ]; // mpd play #position start at 0
 	$cmdlist = "command_list_begin\n"
 		."stop\n"
 		."load \"".html_entity_decode( 'Webradio/'.$data->label.'.pls' )."\"\n"
 		."play ".$last."\n"
 		."command_list_end";
-	$status = sendMpdCommand( $mpd, $cmdlist );
+	sendMpdCommand( $mpd, $cmdlist );
 	sleep( 3 );
 	$cmdlist = "command_list_begin\n"
 		."status\n"
 		."currentsong\n"
 		."command_list_end";
-	$status = sendMpdCommand( $mpd, $cmdlist );
+	sendMpdCommand( $mpd, $cmdlist );
+	$status = readMpdResponse( $mpd );
 	$samplinginfo = arrayLines( $status )[ 'samplinginfo' ];
 	if ( !$samplinginfo ) {
 		ui_notify( 'Webradio', "URL Connection FAILED!." );
