@@ -1,6 +1,6 @@
 <?php
 function arrayLines( $lines ) {
-$line = strtok( $lines, PHP_EOL );
+$line = strtok( $lines, "\n" );
 while ( $line !== false ) {
 	$pair = explode( ': ', $line, 2 );
 	$key = $pair[ 0 ];
@@ -9,16 +9,16 @@ while ( $line !== false ) {
 	if ( $key === 'audio') {
 		$audio = explode( ':', $val );
 		$info[ 'bitdepth' ] = $audio[ 1 ];
-		$info[ 'sampling' ] = $audio[ 0 ];
+		$info[ 'samplingrate' ] = $audio[ 0 ];
 	}
-	$line = strtok( PHP_EOL );
+	$line = strtok( "\n" );
 }
 if ( array_key_exists( 'bitrate', $info ) ) {
-	$samplinginfo = substr( $info[ 'file' ], 0, 4 ) === 'http' ? '' : $info[ 'bitdepth' ].' bit ';
-	$samplinginfo.= round( $info[ 'sampling' ] / 1000, 1 ).' kHz '.$info[ 'bitrate' ].' kbit/s';
-	$info[ 'samplinginfo' ] = $samplinginfo;
+	$sampling = substr( $info[ 'file' ], 0, 4 ) === 'http' ? '' : $info[ 'bitdepth' ].' bit ';
+	$sampling.= round( $info[ 'samplingrate' ] / 1000, 1 ).' kHz '.$info[ 'bitrate' ].' kbit/s';
+	$info[ 'sampling' ] = $sampling;
 } else {
-	$info[ 'samplinginfo' ] = '';
+	$info[ 'sampling' ] = '';
 }
 	return $info;
 }
@@ -53,8 +53,8 @@ function addRadio( $mpd, $redis, $data ) {
 		."command_list_end";
 	sendMpdCommand( $mpd, $cmdlist );
 	$status = readMpdResponse( $mpd );
-	$samplinginfo = arrayLines( $status )[ 'samplinginfo' ];
-	if ( !$samplinginfo ) {
+	$sampling = arrayLines( $status )[ 'sampling' ];
+	if ( !$sampling ) {
 		ui_notify( 'Webradio', "URL Connection FAILED!." );
 		unlink( $file );
 		$cmdlist = "command_list_begin\n"
@@ -65,10 +65,10 @@ function addRadio( $mpd, $redis, $data ) {
 		return;
 	}
 	
-	ui_notify( 'Webradio', $samplinginfo );
+	ui_notify( 'Webradio', $sampling );
 	
 	$redis->hSet( 'webradios', $data->label, $data->url );
-	$redis->hSet( 'webradiosampling', $data->label, $samplinginfo );
+	$redis->hSet( 'webradiosampling', $data->label, $sampling );
 	$redis->hSet( 'webradioname', $data->url, $data->label );
 	
 	sendMpdCommand( $mpd, 'update Webradio' );
