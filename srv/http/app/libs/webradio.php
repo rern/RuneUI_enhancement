@@ -9,13 +9,13 @@ while ( $line !== false ) {
 	if ( $key === 'audio') {
 		$audio = explode( ':', $val );
 		$info[ 'bitdepth' ] = $audio[ 1 ];
-		$info[ 'samplingrate' ] = $audio[ 0 ];
+		$info[ 'samplerate' ] = $audio[ 0 ];
 	}
 	$line = strtok( "\n" );
 }
 if ( array_key_exists( 'bitrate', $info ) ) {
 	$sampling = substr( $info[ 'file' ], 0, 4 ) === 'http' ? '' : $info[ 'bitdepth' ].' bit ';
-	$sampling.= round( $info[ 'samplingrate' ] / 1000, 1 ).' kHz '.$info[ 'bitrate' ].' kbit/s';
+	$sampling.= round( $info[ 'samplerate' ] / 1000, 1 ).' kHz '.$info[ 'bitrate' ].' kbit/s';
 	$info[ 'sampling' ] = $sampling;
 } else {
 	$info[ 'sampling' ] = '';
