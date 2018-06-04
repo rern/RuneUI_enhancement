@@ -33,7 +33,7 @@ else
 		else
 			bitdepth=
 		fi
-	elif [[ $bitdepth != 0 ]]; then
+	elif [[ -n $bitdepth ]]; then
 		bitdepth=$bitdepth' bit '
 	else
 		bitdepth=
