@@ -957,6 +957,12 @@
 		content: "\f130";
 	}
 }
+@media(max-width: 480px) {
+	#database-entries .sn span,
+	#playlist-entries .sn span {
+		font-size: 15px !important;
+	}
+}
 @media(max-width: 375px) {
 	.playback-controls button {
 		margin: 0 5px !important;
