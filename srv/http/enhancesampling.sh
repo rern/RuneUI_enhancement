@@ -1,7 +1,8 @@
 #!/bin/bash
 
+ext=$( echo ${1##*.} | tr '[:lower:]' '[:upper:]' )
 file=/mnt/MPD/$1
-ext=$( echo ${file##*.} | tr '[:lower:]' '[:upper:]' )
+
 if [[ $ext == DSF || $ext == DFF ]]; then
 	IFS0=$IFS
 	IFS=$( echo -en "\n\b" )
