@@ -960,7 +960,7 @@
 @media(max-width: 480px) {
 	#database-entries .sn span,
 	#playlist-entries .sn span {
-		font-size: 15px !important;
+		font-size: 15px;
 	}
 }
 @media(max-width: 375px) {
