@@ -63,9 +63,13 @@ if ( $ext === 'DSF' || $ext === 'DFF' ) {
 		$sampling = $bitdepth.$samplerate.$bitrate;
 	}
 }
-if ( $status[ 'file' ], 0, 4 ) === 'http' && !isset( $status[ 'Name' ] ) {
-	$status[ 'Name' ] = $status[ 'Tile' ];
-	$status[ 'Tile' ] = '';
+if ( $status[ 'file' ], 0, 4 ) === 'http' ) {
+	$status[ 'Artist' ] = $status[ 'Tile' ];;
+	$status[ 'Album' ] = $status[ 'file' ];
+	if ( !isset( $status[ 'Name' ] ) {
+		$status[ 'Name' ] = $status[ 'Tile' ];
+		$status[ 'Tile' ] = '';
+	}
 }
 $status[ 'time' ] = 0;
 $status[ 'elapsed' ] = 0;
