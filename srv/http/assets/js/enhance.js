@@ -376,7 +376,7 @@ var interval;
 		$volumetransition.css( 'transition-duration', '' );
 		
 		vollocal = 1;
-		$.post( '/enhanceredis.php', { bash: '/srv/http/enhancevolume.sh '+ $volumeRS.getValue() } );
+		$.post( '/enhanceredis.php', { volume: $volumeRS.getValue() } );
 		setTimeout( function() {
 			onsetvolume = 0;
 		}, 500 );
@@ -613,7 +613,7 @@ $( '#volume' ).roundSlider( {
 			onsetvolume = 0;
 		}, 500 );
 		
-		$.post( '/enhanceredis.php', { bash: '/srv/http/enhancevolume.sh '+ e.value } );
+		$.post( '/enhanceredis.php', { volume: e.value } );
 		$( e.handle.element ).rsRotate( - e.handle.angle );
 		if ( e.preValue === 0 ) { // value before 'change'
 			var command = { vol: [ 'set', 'volumemute', 0 ] };
@@ -635,7 +635,7 @@ $( '#volume' ).roundSlider( {
 	stop: function( e ) { // on 'stop drag'
 		// broadcast to all
 		vollocal = 1;
-		$.post( '/enhanceredis.php', { bash: '/srv/http/enhancevolume.sh '+ e.value } );
+		$.post( '/enhanceredis.php', { volume: e.value } );
 		setTimeout( function() {
 			onsetvolume = 0;
 		}, 500 );
@@ -682,7 +682,7 @@ $( '#volmute, #volume .rs-tooltip' ).click( function() {
 	var volumemute = $volumeRS.getValue();
 	
 	if ( volumemute ) {
-		$.post( '/enhanceredis.php', { bash: '/srv/http/enhancevolume.sh 0 '+ volumemute } );
+		$.post( '/enhanceredis.php', { volume: -1 } );
 		$volumeRS.setValue( 0 );
 		// keep display level before mute
 		$volumetooltip.text( volumemute );
@@ -693,10 +693,10 @@ $( '#volmute, #volume .rs-tooltip' ).click( function() {
 			mutecolor( volumemute );
 		} );
 	} else {
-		$.post( '/enhanceredis.php', { bash: '/srv/http/enhancevolume.sh 0 -1' }, function( data ) {
-			var data = JSON.parse( data ); // data as string from bash 'echo'
-			if ( data.vol === 0 ) return;
-			$volumeRS.setValue( data.vol );
+		$.post( '/enhanceredis.php', { volume: -1 }, function( data ) {
+			console.log(data);
+			if ( data == 0 ) return;
+			$volumeRS.setValue( data );
 			$volumehandle.rsRotate( - $volumeRS._handle1.angle );
 			// restore color immediately on click
 			unmutecolor();
@@ -723,7 +723,7 @@ $( '#volup, #voldn, #voluprs, #voldnrs' ).click( function() {
 	}
 	vol = ( thisid == 'volup' || thisid == 'voluprs' ) ? vol + 1 : vol - 1;
 	vollocal = 1;
-	$.post( '/enhanceredis.php', { bash: '/srv/http/enhancevolume.sh '+ vol } );
+	$.post( '/enhanceredis.php', { volume: vol } );
 	$volumeRS.setValue( vol );
 	$volumehandle.rsRotate( - $volumeRS._handle1.angle );
 } );
