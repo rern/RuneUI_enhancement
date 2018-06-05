@@ -26,7 +26,8 @@ $status = readMpdResponse( $mpd );
 $status = arrayLines( $status );
 if ( isset( $status[ 'error' ] ) && $status[ 'state' ] !== 'stop' ) {
 	sendMpdCommand( $mpd, 'stop' );
-	ui_notify( 'Error !', $status[ 'error' ] );
+	$output = array( 'icon' => 'fa fa-exclamation-circle', 'title' => 'MPD Error', 'text' => $status[ 'error' ] );
+	ui_render( 'notify', json_encode( $output ) );
 }
 
 $redis = new Redis(); 
@@ -42,7 +43,7 @@ if ( $status[ 'ext' ] === 'radio' && $status[ 'state' ] === 'play' ) {
 	$sampling = samplingline( $bitdepth, $status[ 'samplerate' ], $status[ 'bitrate' ] );
     $status[ 'sampling' ] = $sampling;
     echo json_encode( $status );
-	// update webradio sampling on each play
+	// save only webradio: update sampling database on each play
     $redis->hSet( 'sampling', $status[ 'file' ], $sampling );
     die();
 }
