@@ -39,7 +39,18 @@ $pathinfo = pathinfo( $file );
 $ext = strtoupper( $pathinfo[ 'extension' ] );
 $status[ 'ext' ] = ( substr($file, 0, 4 ) !== 'http' ) ? $ext : 'radio';
 
-if ( $status[ 'ext' ] === 'radio' && $status[ 'state' ] === 'play' ) {
+if ( $status[ 'ext' ] === 'radio' ) {
+	// before 1st play: no 'Name:' but 'Title:'= value of 'Name:' instead
+	$status[ 'Artist' ] = isset( $status[ 'Name' ] ) ? $status[ 'Name' ] : $status[ 'Tile' ];
+	$status[ 'Title' ] = ( $status[ 'state' ] === 'stop' ) ? '&nbsp;' : $status[ 'Title' ];
+	$status[ 'Album' ] = $file;
+	$status[ 'time' ] = '';
+	$status[ 'elapsed' ] = '';
+}
+
+// sampling >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+if ( $status[ 'state' ] === 'play' ) {
+	// lossless - no bitdepth
 	$bitdepth = ( $status[ 'ext' ] === 'radio' ) ? '' : $status[ 'bitdepth' ];
 	$sampling = samplingline( $bitdepth, $status[ 'samplerate' ], $status[ 'bitrate' ] );
 	$status[ 'sampling' ] = $sampling;
@@ -49,15 +60,10 @@ if ( $status[ 'ext' ] === 'radio' && $status[ 'state' ] === 'play' ) {
 	die();
 }
 
-// state: stop >>>>>>>>>>
+// state: stop / pause >>>>>>>>>>
 // webradio
 if ( $status[ 'ext' ] === 'radio' ) {
 	if ( $sampling = $redis->hGet( 'sampling', $file ) ) $status[ 'sampling' ] = $sampling;
-	$status[ 'Artist' ] = isset( $status[ 'Name' ] ) ? $status[ 'Name' ] : $status[ 'Tile' ];
-	$status[ 'Title' ] = '';
-	$status[ 'Album' ] = $file;
-	$status[ 'time' ] = '';
-	$status[ 'elapsed' ] = '';
 	echo json_encode( $status );
 	die();
 }
