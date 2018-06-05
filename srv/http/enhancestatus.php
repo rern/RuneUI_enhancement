@@ -24,6 +24,10 @@ $cmdlist = "command_list_begin\n"
 sendMpdCommand( $mpd, $cmdlist );
 $status = readMpdResponse( $mpd );
 $status = arrayLines( $status );
+if ( isset( $status[ 'error' ] ) && $status[ 'state' ] !== 'stop' ) {
+	sendMpdCommand( $mpd, 'stop' );
+	ui_notify( 'Error !', $status[ 'error' ] );
+}
 
 $redis = new Redis(); 
 $redis->pconnect( '127.0.0.1' );
@@ -33,12 +37,13 @@ $file = $status[ 'file' ];
 $ext = strtoupper( pathinfo( $file, PATHINFO_EXTENSION ) );
 $status[ 'ext' ] = ( substr($file, 0, 4 ) !== 'http' ) ? $ext : 'radio';
 
-if ( $status[ 'state' ] !== 'stop' ) {
-	$sampling = samplingline( $status[ 'bitdepth' ], $status[ 'samplerate' ], $status[ 'bitrate' ] );
+if ( $status[ 'ext' ] === 'radio' && $status[ 'state' ] === 'play' ) {
+	$bitdepth = ( $status[ 'ext' ] === 'radio' ) ? '' : $status[ 'bitdepth' ];
+	$sampling = samplingline( $bitdepth, $status[ 'samplerate' ], $status[ 'bitrate' ] );
     $status[ 'sampling' ] = $sampling;
     echo json_encode( $status );
 	// update webradio sampling on each play
-    if ( $status[ 'ext' ] === 'radio' ) $redis->hSet( 'sampling', $status[ 'file' ], $sampling );
+    $redis->hSet( 'sampling', $status[ 'file' ], $sampling );
     die();
 }
 
