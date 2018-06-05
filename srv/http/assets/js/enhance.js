@@ -575,9 +575,7 @@ $( '#time' ).roundSlider( {
 				clearInterval( GUI.countdown );
 				sendCmd( 'seek '+ GUI.json.song +' '+ seekto );
 			} else {
-				$.post( '/enhance.php', { mpd: 'play\nseek '+ seekto }, function() {
-					$.post( '/enhance.php', { mpd: 'pause' } );
-				} );
+				$.post( '/enhance.php', { mpd: 'command_list_begin\nplay\nseek '+ GUI.json.song +' '+ seekto +'\npause\ncommand_list_end' } );
 			}
 		} else {
 			$timeRS.setValue( 0 );
@@ -1560,7 +1558,7 @@ function commandButton( el ) {
 				$( '#pause' ).removeClass( 'btn-primary' );
 				$( '#stop' ).addClass( 'btn-primary' );
 			}
-			$.post( '/enhance.php', { mpd: 'play '+ pos + ( GUI.state !== 'play' ? '\nstop' : '' ) }, function() {
+			$.post( '/enhance.php', { mpd: 'command_list_begin\nplay '+ pos + ( GUI.state !== 'play' ? '\nstop' : '' ) +'\ncommand_list_end' }, function() {
 				setTimeout( function() {
 					prevnext = 0;
 				}, 500 );
@@ -1614,7 +1612,18 @@ function setbutton() {
 	}
 }
 
-// volume, sampling, time
+function scrollText() {
+	setTimeout( function() {
+		$( '#divartist, #divsong, #divalbum' ).each( function() {
+			if ( $( this ).find( 'span' ).width() > Math.floor( window.innerWidth * 0.975 ) ) {
+				$( this ).addClass( 'scroll-left' );
+			} else {
+				$( this ).removeClass( 'scroll-left' );
+			}
+		} );
+	}, 500 );
+}
+
 onsetmode = 0;
 function setplaybackdata() {
 	$.post( '/enhancestatus.php', function( data ) {
@@ -1653,10 +1662,13 @@ function setplaybackdata() {
 			$( '#cover-art' ).css( 'background-image', 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' );
 			return;
 		}
-		var dot0 = '<a id="dot0" style="color:#ffffff"> &#8226; </a>';
 		$( '#currentartist' ).html( status.Artist );
 		$( '#currentsong' ).html( status.Title );
 		$( '#currentalbum' ).html( status.ext !== 'radio' ? status.Album : '<a>'+ status.Album +'</a>' );
+		// scroll info text
+		scrollText();
+
+		var dot0 = '<a id="dot0" style="color:#ffffff"> &#8226; </a>';
 		$( '#playlist-position span' ).html( status.song ? ( Number( status.song ) + 1 ) +'/'+ status.playlistlength : '&nbsp;' );		var dot = dot0.replace( ' id="dot0"', '' );
 		var ext = ( status.ext !== 'radio' ) ? dot + status.ext : '';
 		$( '#format-bitrate' ).html( dot0 + status.sampling + ext );
@@ -1726,15 +1738,7 @@ function setplaybackdata() {
 	if ( GUI.currentsong !== status.Title || GUI.currentalbum !== currentalbumstring ) {
 		GUI.currentsong = status.Title;
 		// scroll info text
-		setTimeout( function() {
-			$( '#divartist, #divsong, #divalbum' ).each( function() {
-				if ( $( this ).find( 'span' ).width() > Math.floor( window.innerWidth * 0.975 ) ) {
-					$( this ).addClass( 'scroll-left' );
-				} else {
-					$( this ).removeClass( 'scroll-left' );
-				}
-			} );
-		}, 500 );
+		scrollText();
 		
 		$( '#playlist-entries li ' ).removeClass( 'active' );
 		$( '#playlist-entries' ).find( 'li' ).eq( parseInt( GUI.json.song ) ).addClass( 'active' );
