@@ -113,27 +113,26 @@ echo $file
 sed -i '/echo getPlayQueue($mpd)/ {
 s|^|//|;
 a\
-                $playlist = getPlayQueue( $mpd ); //enha0\
-                $playlist = preg_replace( "/\\nfile/", "\\nfilefile", $playlist );\
-                $playlist = explode( "\\nfile", $playlist );\
-                $ilength = count( $playlist );\
-                for ( $i = 0; $i < $ilength; $i++ ) {\
-                    $list = explode( "\\n", $playlist[ $i ] );\
-                    foreach ( $list as $line ) {\
-                        $kv = explode( ": ", $line, 2 );\
-                        if ( $kv[ 0 ] !== "OK" && $kv[ 0 ] ) $data[ $kv[ 0 ] ] = $kv[ 1 ];\
+                $playlist = getPlayQueue($mpd); //enha0\
+                $line = strtok( $playlist."\\nfile", "\\n" );\
+                while ( $line !== false ) {\
+                    if ( strpos( $line, "file" ) === 0 && $data ) {\
+                        $file = $data[ "file" ];\
+                        if ( substr( $file, 0, 4 ) === "http" ) {\
+                            $redis = new Redis();\
+                            $redis->pconnect( "127.0.0.1" );\
+                            $data[ "Title" ] = $redis->hGet( "webradioname", $data[ "file" ] );\
+                        }\
+                        $pathinfo = pathinfo( $file );\
+                        if ( !isset( $data[ "Artist" ] ) ) $data[ "Artist" ] = basename( $pathinfo[ "dirname" ] );\
+                        if ( !isset( $data[ "Title" ] ) ) $data[ "Title" ] = $pathinfo[ "filename" ];\
+                        if ( !isset( $data[ "Album" ] ) ) $data[ "Album" ] = "";\
+                        $info[] = $data;\
+                        $data = NULL;\
                     }\
-                    if ( substr( $data[ "file" ], 0, 4 ) === 'http' ) {\
-                        $redis = new Redis(); \
-                        $redis->pconnect( "127.0.0.1" );\
-                        $data[ "Title" ] = $redis->hGet( "webradioname", $data[ "file" ] );\
-                    }\
-                    $pathinfo = pathinfo( $data[ "file" ] );\
-                    if ( !isset( $data[ "Artist" ] ) ) $data[ "Artist" ] = basename( $pathinfo[ "dirname" ] );\
-                    if ( !isset( $data[ "Title" ] ) ) $data[ "Title" ] = $pathinfo[ "filename" ];\
-                    if ( !isset( $data[ "Album" ] ) ) $data[ "Album" ] = "";\
-                    $info[] = $data;\
-                    $data = "";\
+                    $kv = explode( ": ", $line, 2 );\
+                    if ( $kv[ 0 ] !== "OK" && $kv[ 0 ] ) $data[ $kv[ 0 ] ] = $kv[ 1 ];\
+                    $line = strtok( "\\n" );\
                 }\
                 echo json_encode( $info ); //enha1
 }
