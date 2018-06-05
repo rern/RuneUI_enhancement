@@ -1617,6 +1617,7 @@ function setbutton() {
 onsetmode = 0;
 function settime() {
 	$.post( '/enhancestatus.php', function( data ) {
+		console.log( data );
 		var status = JSON.parse( data );
 		// volume
 		$volumetransition.css( 'transition-duration', '0s' ); // suppress initial rotate animation
@@ -1663,7 +1664,7 @@ function settime() {
 		var ext = ( status.ext !== 'radio' ) ? dot + status.ext : '';
 		$( '#format-bitrate' ).html( dot0 + status.sampling + ext );
 		// time
-		time = +status.time;
+		time = +status.Time;
 		$( '#total' ).text( converthms( time ) );
 		// stop <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 		if ( $( '#time-knob' ).hasClass( 'hide' ) ) return;
