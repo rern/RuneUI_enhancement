@@ -4,7 +4,12 @@ $line = strtok( $lines, "\n" );
 while ( $line !== false ) {
 	$pair = explode( ': ', $line, 2 );
 	$key = $pair[ 0 ];
-	$val = ( $key !== 'elapsed' ) ? $pair[ 1 ] : round( $pair[ 1 ] );
+	$val = $pair[ 1 ];
+	if ( $key === 'elapsed' ) {
+		$val = round( $val );
+	} else if ( $key === 'bitrate' ) {
+		$val = $val * 1000;
+	}
 	if ( $key !== 'O' ) $status[ $key ] = $val; // skip 'OK' lines
 	if ( $key === 'audio') {
 		$audio = explode( ':', $val );
@@ -18,7 +23,7 @@ if ( array_key_exists( 'bitrate', $status ) ) {
 	$sampling.= round( $status[ 'samplerate' ] / 1000, 1 ).' kHz '.$status[ 'bitrate' ].' kbit/s';
 	$status[ 'sampling' ] = $sampling;
 } else {
-	$status[ 'sampling' ] = '';
+	$status[ 'sampling' ] = '&nbsp;';
 }
 	return $status;
 }
