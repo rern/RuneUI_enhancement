@@ -244,8 +244,8 @@ $hammerbarleft.on( 'tap', function( e ) {
 $hammerbarright.on( 'tap', function() {
 	if ( $( '#time-knob' ).is( ':visible' ) ) $( '#play-group' ).toggle();
 	if ( $( '#coverart' ).is( ':visible' ) ) $( '#share-group' ).toggle();
-	if ( displayredis.volume != 0 
-		&& displayredis.volumempd != 0 
+	if ( redis.display.volume != 0 
+		&& redis.display.volumempd != 0 
 		&& $( '#volume-knob' ).is( ':visible' ) 
 	) {
 		$( '#vol-group' ).toggle();
@@ -337,7 +337,7 @@ $hammercoverR.on( 'tap', function( e ) {
 		buttonactive = 0;
 		var time = $( '#time-knob' ).is( ':visible' );
 		var coverart = $( '#coverart' ).is( ':visible' );
-		var volume = displayredis.volume != 0 && displayredis.volumempd != 0 && $( '#volume-knob' ).is( ':visible' );
+		var volume = redis.display.volume != 0 && redis.display.volumempd != 0 && $( '#volume-knob' ).is( ':visible' );
 		if ( buttonhide == 0 
 			|| $( '#play-group' ).is( ':visible' )
 			|| $( '#share-group' ).is( ':visible' )
@@ -414,35 +414,27 @@ $hammerplayback.on( 'press', function() {
 		  title  : 'Playback'
 		, message: 'Select items to show:'
 		, checkboxhtml : '<form id="displaysaveplayback">\
-						<label><input name="bar" type="checkbox" '+ displayredis.bar +'>&ensp;Top-Bottom menu</label>\
-						<br><label><input name="pause" type="checkbox" '+ displayredis.pause +'>\
+						<label><input name="bar" type="checkbox" '+ redis.display.bar +'>&ensp;Top-Bottom menu</label>\
+						<br><label><input name="pause" type="checkbox" '+ redis.display.pause +'>\
 							&ensp;<code><i class="fa fa-play"></i></code>&ensp;<code><i class="fa fa-pause"></i></code>&ensp;buttons</label>\
-						<br><label><input name="source" type="checkbox" '+ displayredis.source +'>&ensp;<code>MPD</code>&ensp;button</label>\
+						<br><label><input name="source" type="checkbox" '+ redis.display.source +'>&ensp;<code>MPD</code>&ensp;button</label>\
 						</label>\
-						<br><label><input name="time" type="checkbox" '+ displayredis.time +'>&ensp;Time</label>\
-						<br><label><input name="coverart" type="checkbox" '+ displayredis.coverart +'>&ensp;Coverart</label>\
-						<br><label><input name="volume" type="checkbox" '+ displayredis.volume +'>&ensp;Volume</label>\
-						<br><label><input name="buttons" type="checkbox" '+ displayredis.buttons +'>&ensp;Buttons</label>\
+						<br><label><input name="time" type="checkbox" '+ redis.display.time +'>&ensp;Time</label>\
+						<br><label><input name="coverart" type="checkbox" '+ redis.display.coverart +'>&ensp;Coverart</label>\
+						<br><label><input name="volume" type="checkbox" '+ redis.display.volume +'>&ensp;Volume</label>\
+						<br><label><input name="buttons" type="checkbox" '+ redis.display.buttons +'>&ensp;Buttons</label>\
 						</form>'
 		, cancel : 1
 		, ok     : function () {
-			var data = {};
 			// no: serializeArray() omit unchecked fields
 			$( '#displaysaveplayback input' ).each( function() {
-				data[ this.name ] = this.checked ? 'checked' : '';
+				redis.display[ this.name ] = this.checked ? 'checked' : '';
 			} );
-			var command = { display: [ 'hmset', 'display', data ] };
+			var command = { display: [ 'hmset', 'display', redis.display ] };
 			$.post( '/enhance.php', 
 				{ redis: JSON.stringify( command ) },
 				function( data ) {
-					if ( JSON.parse( data ).display ) {
-						displayplayback();
-					} else {
-						info( {
-							  title  : 'Playback'
-							, message: 'Save Playback display failed!'
-						} );
-					}
+					displayplayback();
 				}
 			);
 		}
@@ -455,7 +447,7 @@ $hammerplayback.on( 'press', function() {
 			.append( ' (auto hide)' );
 	}
 	// disable from mpd volume
-	if ( displayredis.volumempd == 0 ) {
+	if ( redis.display.volumempd == 0 ) {
 		$( 'input[name="volume"]' )
 			.prop( 'disabled', true )
 			.parent().css( 'color', '#7795b4' )
@@ -478,36 +470,28 @@ $hammerlibrary.on( 'tap', function( e ) {
 		  title  : 'Libary Home'
 		, message: 'Select items to show:'
 		, checkboxhtml : '<form id="displaysavelibrary">\
-						<label><input name="bar" type="checkbox" '+ displayredis.bar +'>&ensp;Top-Bottom menu</label>\
-						<br><label><input name="nas" type="checkbox" '+ displayredis.nas +'>&ensp;Network mounts</label>\
-						<br><label><input name="usb" type="checkbox" '+ displayredis.usb +'>&ensp;USB storage</label>\
-						<br><label><input name="webradio" type="checkbox" '+ displayredis.webradio +'>&ensp;My Webradios</label>\
-						<br><label><input name="albums" type="checkbox" '+ displayredis.albums +'>&ensp;Albums</label>\
-						<br><label><input name="artists" type="checkbox" '+ displayredis.artists +'>&ensp;Artists</label>\
-						<br><label><input name="composer" type="checkbox" '+ displayredis.composer +'>&ensp;Composers</label>\
-						<br><label><input name="genre" type="checkbox" '+ displayredis.genre +'>&ensp;Genres</label>\
-						<br><label><input name="spotify" type="checkbox" '+ displayredis.spotify +'>&ensp;Spotify</label>\
-						<br><label><input name="dirble" type="checkbox" '+ displayredis.dirble +'>&ensp;Dirble</label>\
-						<br><label><input name="jamendo" type="checkbox" '+ displayredis.jamendo +'>&ensp;Jamendo</label>\
+						<label><input name="bar" type="checkbox" '+ redis.display.bar +'>&ensp;Top-Bottom menu</label>\
+						<br><label><input name="nas" type="checkbox" '+ redis.display.nas +'>&ensp;Network mounts</label>\
+						<br><label><input name="usb" type="checkbox" '+ redis.display.usb +'>&ensp;USB storage</label>\
+						<br><label><input name="webradio" type="checkbox" '+ redis.display.webradio +'>&ensp;My Webradios</label>\
+						<br><label><input name="albums" type="checkbox" '+ redis.display.albums +'>&ensp;Albums</label>\
+						<br><label><input name="artists" type="checkbox" '+ redis.display.artists +'>&ensp;Artists</label>\
+						<br><label><input name="composer" type="checkbox" '+ redis.display.composer +'>&ensp;Composers</label>\
+						<br><label><input name="genre" type="checkbox" '+ redis.display.genre +'>&ensp;Genres</label>\
+						<br><label><input name="spotify" type="checkbox" '+ redis.display.spotify +'>&ensp;Spotify</label>\
+						<br><label><input name="dirble" type="checkbox" '+ redis.display.dirble +'>&ensp;Dirble</label>\
+						<br><label><input name="jamendo" type="checkbox" '+ redis.display.jamendo +'>&ensp;Jamendo</label>\
 						</form>'
 		, cancel : 1
 		, ok     : function () {
-			var data = {};
 			$( '#displaysavelibrary input' ).each( function() {
-				data[ this.name ] = this.checked ? 'checked' : '';
+				redis.display[ this.name ] = this.checked ? 'checked' : '';
 			} );
-			var command = { display: [ 'hmset', 'display', data ] };
+			var command = { display: [ 'hmset', 'display', redis.display ] };
 			$.post( '/enhance.php', 
 				{ redis: JSON.stringify( command ) },
 				function( data ) {
-					if ( JSON.parse( data ).display ) {
-						displaylibrary();
-					} else {
-						info( {
-							  title  : 'Libary Home'
-							, message: 'Save Library home failed!'
-						} );
-					}
+					displaylibrary();
 				}
 			);
 		}
@@ -568,7 +552,7 @@ $( '#time' ).roundSlider( {
 		$timeRS = this;
 	},
 	change: function( e ) { // not fire on 'setValue'
-		if ( GUI.stream !== 'radio' ) {
+		if ( GUI.json.file.slice( 0, 4 ) !== 'http' ) {
 			var seekto = Math.floor( e.value / 1000 * time );
 			if ( GUI.state !== 'stop' ) {
 				clearInterval( GUI.currentKnob );
@@ -582,8 +566,10 @@ $( '#time' ).roundSlider( {
 		}
 	},
 	start: function () {
-		clearInterval( GUI.currentKnob );
-		clearInterval( GUI.countdown );
+		if ( GUI.json.file.slice( 0, 4 ) !== 'http' ) {
+			clearInterval( GUI.currentKnob );
+			clearInterval( GUI.countdown );
+		}
 	}
 } );
 
@@ -724,7 +710,7 @@ function unmutecolor() {
 // use show/hide to work with css 'display: none'
 function displaycommon() {
 	barhide = window.innerWidth < 499 || window.innerHeight < 515 ? 1 : 0;
-	if ( displayredis.bar !== ''
+	if ( redis.display.bar !== ''
 		&& $( '#bio' ).is( ':hidden' )
 		&& barhide == 0
 	) {
@@ -755,122 +741,108 @@ function displaycommon() {
 }
 
 // playback show/hide blocks
+var command = {
+	display: [ 'hGetAll', 'display' ],
+	volumempd: [ 'get', 'volume' ],
+	update: [ 'hGet', 'addons', 'update' ]
+};
+$.post( '/enhance.php', { redis: JSON.stringify( command ) }, function( data ) {
+	redis = JSON.parse( data );
+} );
 buttonactive = 0;
+
 function displayplayback() {
 	buttonhide = window.innerHeight <= 320 || window.innerWidth < 499 ? 1 : 0;
-	var command = {
-		display: [ 'hGetAll', 'display' ],
-		volumempd: [ 'get', 'volume' ],
-		update: [ 'hGet', 'addons', 'update' ]
-	};
 	if ( GUI.json.playlistlength != 0 ) $( '.playback-controls' ).css( 'visibility', 'visible' );
 	
-	$.post( '/enhance.php', 
-		{ redis: JSON.stringify( command ) },
-		function( data ) {
-		var data = JSON.parse( data );
-		displayredis = data.display;
-		var volume = ( displayredis.volume == '' || data.volumempd == 0 ) ? 0 : 1;
-		
-		if ( data.update != 0 ) {
-			$( '#menu-settings' ).append( '<span id="badge">'+ data.update +'</span>' );
-		} else {
-			$( '#badge' ).remove();
-		}
-		$( '#pause' ).toggleClass( 'hide', !displayredis.pause );
-		// reset to default css
-		$( '#playback-row, #time-knob, #coverart, #volume-knob, #play-group, #share-group, #vol-group' ).css( {
-			margin: '',
-			width: '',
-			'max-width': '',
-			order: '',
-			'-webkit-order': '',
-			display: ''
-		} );
-		$( '#overlay-playsource-open' ).toggleClass( 'hide', !displayredis.source );
-		$( '#time-knob, #play-group' ).toggleClass( 'hide', !displayredis.time );
-		$( '#coverart, #share-group' ).toggleClass( 'hide', !displayredis.coverart );
-		$( '#volume-knob, #vol-group' ).toggleClass( 'hide', !volume );
-		
-		var i = ( displayredis.time ? 1 : 0 ) + ( displayredis.coverart ? 1 : 0 ) + volume;
-			if ( i == 2 && window.innerWidth > 499 ) {
-				if ( volume ) {
-					$( '#time-knob' ).css( { order: 1, '-webkit-order': '1' } );
-					$( '#coverart' ).css( { order: 2, '-webkit-order': '2' } );
-					$( '#volume-knob' ).css( { order: 3, '-webkit-order': '3' } );
-					$( '#play-group' ).css( { order: 4, '-webkit-order': '4' } );
-					$( '#share-group' ).css( { order: 5, '-webkit-order': '5' } );
-					$( '#vol-group' ).css( { order: 6, '-webkit-order': '6' } );
-				}
-				$( '#playback-row' ).css( 'max-width', '900px' );
-				$( '#time-knob, #coverart, #volume-knob, #play-group, #share-group, #vol-group' ).css( 'width', '45%' );
-			} else if ( i == 1 ) {
-				$( '#time-knob, #coverart, #volume-knob, #play-group, #share-group, #vol-group' ).css( 'width', '60%' );
-			}
-
-		if ( buttonhide || displayredis.buttons == '' ) {
-			buttonhide = 1;
-			$( '#play-group, #share-group, #vol-group' ).hide();
-		}
-		if ( buttonactive ) $( '#play-group, #share-group, #vol-group' ).show();
-		$( '#playback-row' ).removeClass( 'hide' ); // restore - hidden by fix flash
-		
-		setbutton();
-		displaycommon();
+	var volume = ( redis.display.volume == '' || redis.volumempd == 0 ) ? 0 : 1;
+	
+	if ( redis.update != 0 ) {
+		$( '#menu-settings' ).append( '<span id="badge">'+ redis.update +'</span>' );
+	} else {
+		$( '#badge' ).remove();
+	}
+	$( '#pause' ).toggleClass( 'hide', !redis.display.pause );
+	// reset to default css
+	$( '#playback-row, #time-knob, #coverart, #volume-knob, #play-group, #share-group, #vol-group' ).css( {
+		margin: '',
+		width: '',
+		'max-width': '',
+		order: '',
+		'-webkit-order': '',
+		display: ''
 	} );
+	$( '#overlay-playsource-open' ).toggleClass( 'hide', !redis.display.source );
+	$( '#time-knob, #play-group' ).toggleClass( 'hide', !redis.display.time );
+	$( '#coverart, #share-group' ).toggleClass( 'hide', !redis.display.coverart );
+	$( '#volume-knob, #vol-group' ).toggleClass( 'hide', !volume );
+	
+	var i = ( redis.display.time ? 1 : 0 ) + ( redis.display.coverart ? 1 : 0 ) + volume;
+		if ( i == 2 && window.innerWidth > 499 ) {
+			if ( volume ) {
+				$( '#time-knob' ).css( { order: 1, '-webkit-order': '1' } );
+				$( '#coverart' ).css( { order: 2, '-webkit-order': '2' } );
+				$( '#volume-knob' ).css( { order: 3, '-webkit-order': '3' } );
+				$( '#play-group' ).css( { order: 4, '-webkit-order': '4' } );
+				$( '#share-group' ).css( { order: 5, '-webkit-order': '5' } );
+				$( '#vol-group' ).css( { order: 6, '-webkit-order': '6' } );
+			}
+			$( '#playback-row' ).css( 'max-width', '900px' );
+			$( '#time-knob, #coverart, #volume-knob, #play-group, #share-group, #vol-group' ).css( 'width', '45%' );
+		} else if ( i == 1 ) {
+			$( '#time-knob, #coverart, #volume-knob, #play-group, #share-group, #vol-group' ).css( 'width', '60%' );
+		}
+
+	if ( buttonhide || redis.display.buttons == '' ) {
+		buttonhide = 1;
+		$( '#play-group, #share-group, #vol-group' ).hide();
+	}
+	if ( buttonactive ) $( '#play-group, #share-group, #vol-group' ).show();
+	$( '#playback-row' ).removeClass( 'hide' ); // restore - hidden by fix flash
+	
+	setbutton();
+	displaycommon();
 }
 
 // library show/hide blocks
 function displaylibrary() {
-	var command = { display: [ 'hGetAll', 'display' ] };
-	$.post( '/enhance.php', 
-		{ redis: JSON.stringify( command ) },
-		function( data ) {
-		displayredis = JSON.parse( data ).display;
-		// no 'id'
-		$( '#home-blocks div:contains(Network mounts)' ).toggleClass( 'hide', !displayredis.nas );
-		$( '#home-usb' ).parent().toggleClass( 'hide', !displayredis.usb );
-		$( '#home-webradio' ).parent().toggleClass( 'hide', !displayredis.webradio );
-		$( '#home-albums' ).parent().toggleClass( 'hide', !displayredis.albums );
-		$( '#home-artists' ).parent().toggleClass( 'hide', !displayredis.artists );
-		$( '#home-composer' ).parent().toggleClass( 'hide', !displayredis.composer );
-		$( '#home-genre' ).parent().toggleClass( 'hide', !displayredis.genre );
-		$( '#home-spotify' ).parent().toggleClass( 'hide', !displayredis.spotify );
-		$( '#home-dirble' ).parent().toggleClass( 'hide', !displayredis.dirble );
-		$( '#home-jamendo' ).parent().toggleClass( 'hide', !displayredis.jamendo );
-		
-		displaycommon();
-		
-		// index height
-		setTimeout( function() {
-			var panelH = $( '#panel-sx' ).height();
-			if ( $( '#menu-top' ).is( ':visible' ) ) {
-				var indexoffset = 160;
-			} else {
-				var indexoffset = 80;
-			}
-			if ( panelH > 500 ) {
-				var indexline = 26;
-				$( '.half' ).show();
-			} else {
-				var indexline = 13;
-				$( '.half' ).hide();
-			}
-			$( '#db-index' ).css( 'line-height', ( panelH - indexoffset ) / indexline +'px' );
-		}, 200 );
-		window.scrollTo( 0, librarytop );
-	} );
+	// no 'id'
+	$( '#home-blocks div:contains(Network mounts)' ).toggleClass( 'hide', !redis.display.nas );
+	$( '#home-usb' ).parent().toggleClass( 'hide', !redis.display.usb );
+	$( '#home-webradio' ).parent().toggleClass( 'hide', !redis.display.webradio );
+	$( '#home-albums' ).parent().toggleClass( 'hide', !redis.display.albums );
+	$( '#home-artists' ).parent().toggleClass( 'hide', !redis.display.artists );
+	$( '#home-composer' ).parent().toggleClass( 'hide', !redis.display.composer );
+	$( '#home-genre' ).parent().toggleClass( 'hide', !redis.display.genre );
+	$( '#home-spotify' ).parent().toggleClass( 'hide', !redis.display.spotify );
+	$( '#home-dirble' ).parent().toggleClass( 'hide', !redis.display.dirble );
+	$( '#home-jamendo' ).parent().toggleClass( 'hide', !redis.display.jamendo );
+	
+	displaycommon();
+	
+	// index height
+	setTimeout( function() {
+		var panelH = $( '#panel-sx' ).height();
+		if ( $( '#menu-top' ).is( ':visible' ) ) {
+			var indexoffset = 160;
+		} else {
+			var indexoffset = 80;
+		}
+		if ( panelH > 500 ) {
+			var indexline = 26;
+			$( '.half' ).show();
+		} else {
+			var indexline = 13;
+			$( '.half' ).hide();
+		}
+		$( '#db-index' ).css( 'line-height', ( panelH - indexoffset ) / indexline +'px' );
+	}, 200 );
+	window.scrollTo( 0, librarytop );
 }
 // queue show/hide menu
 function displayqueue() {
-	var command = { display: [ 'hGetAll', 'display' ] };
-	$.post( '/enhance.php', 
-		{ redis: JSON.stringify( command ) },
-		function( data ) {
-		displayredis = JSON.parse( data ).display;
-		displaycommon();
-		window.scrollTo( 0, queuetop );
-	} );
+	displaycommon();
+	window.scrollTo( 0, queuetop );
 }
 
 function setPlaybackSource() {
