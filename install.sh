@@ -128,7 +128,12 @@ a\
                         $redis->pconnect( "127.0.0.1" );\
                         $data[ "Title" ] = $redis->hGet( "webradioname", $data[ "file" ] );\
                     }\
+                    $pathinfo = pathinfo( $data[ "file" ] );\
+                    if ( !isset( $data[ "Artist" ] ) ) $data[ "Artist" ] = basename( $pathinfo[ "dirname" ] );\
+                    if ( !isset( $data[ "Title" ] ) ) $data[ "Title" ] = $pathinfo[ "filename" ];\
+                    if ( !isset( $data[ "Album" ] ) ) $data[ "Album" ] = "";\
                     $info[] = $data;\
+                    $data = "";\
                 }\
                 echo json_encode( $info ); //enha1
 }
