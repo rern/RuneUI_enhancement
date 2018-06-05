@@ -40,8 +40,9 @@ function addRadio( $mpd, $redis, $data ) {
 	fwrite( $fp, $newpls );
 	fclose( $fp );
 	
-	ui_notify( 'Webradio', 'Testing URL connection ...' );
-	
+	$output = array( 'icon' => 'fa fa-refresh', 'title' => 'Webradio', 'text' => 'Testing URL connection ...' );
+	ui_render( 'notify', json_encode( $output ) );
+
 	sendMpdCommand( $mpd, 'status' );
 	$status = readMpdResponse( $mpd );
 	$last = arrayLines( $status )[ 'playlistlength' ]; // mpd play #position start at 0
@@ -60,7 +61,8 @@ function addRadio( $mpd, $redis, $data ) {
 	$status = readMpdResponse( $mpd );
 	$sampling = arrayLines( $status )[ 'sampling' ];
 	if ( !$sampling ) {
-		ui_notify( 'Webradio', "URL Connection FAILED!." );
+		$output = array( 'icon' => 'fa fa-exclamation-clicle', 'title' => 'Add Webradio Error', 'text' => 'URL Connection FAILED!.' );
+		ui_render( 'notify', json_encode( $output ) );
 		unlink( $file );
 		$cmdlist = "command_list_begin\n"
 			."delete ".$last."\n"
@@ -70,7 +72,7 @@ function addRadio( $mpd, $redis, $data ) {
 		return;
 	}
 	
-	ui_notify( 'Webradio', $sampling );
+	ui_notify( 'Webradio', $data->label +'<br>'+ $sampling );
 	
 	$redis->hSet( 'webradios', $data->label, $data->url );
 	$redis->hSet( 'webradiosampling', $data->label, $sampling );
