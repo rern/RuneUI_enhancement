@@ -74,7 +74,7 @@ if ( $ext === 'DSF' || $ext === 'DFF' ) {
     $bitrate = hexdec( $hex );
     $dsd = $bitrate / 44100;
     $bitrate = round( $bitrate / 1000000, 2 );
-    $sampling = '1 bit DSD '.$dsd.' - '.$bitrate.' Mbit/s';
+    $sampling = '1 bit DSD'.$dsd.' - '.$bitrate.' Mbit/s';
 } else {
     $data = shell_exec( '/usr/bin/ffprobe -v quiet -select_streams a:0 -show_entries stream=bits_per_raw_sample,sample_rate -show_entries format=bit_rate -of default=noprint_wrappers=1:nokey=1 "'.$file.'"' );
     $data = explode( "\n", $data );
