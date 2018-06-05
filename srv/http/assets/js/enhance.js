@@ -1462,7 +1462,7 @@ function getPlaylistPlain( data ) {
 		} else {
 			time = parseInt( data[ 'Time' ] );
 			topline = ( data[ 'Title' ] ? data[ 'Title' ] : data[ 'file' ].split( '/' ).pop() ) +'<span>'+ converthms( time ) +'</span>';
-			bottomline = data[ 'Artist' ] ? data[ 'Artist' ] + ' - ' + data[ 'Album' ] : data[ 'file' ];
+			bottomline = data[ 'Artist' ] + ( data[ 'Album' ] ? ' - '+ data[ 'Album' ] : '' );
 			playlisttime += time;
 		}
 		pos++;
