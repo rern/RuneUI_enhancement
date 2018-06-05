@@ -190,7 +190,7 @@ document.addEventListener( visibilityevent, function() {
 		clearInterval( GUI.currentKnob );
 		clearInterval( GUI.countdown );
 	} else {
-		settime();
+		setplaybackdata();
 	}
 } );
 
@@ -575,7 +575,9 @@ $( '#time' ).roundSlider( {
 				clearInterval( GUI.countdown );
 				sendCmd( 'seek '+ GUI.json.song +' '+ seekto );
 			} else {
-				$.post( '/enhance.php', { mpd: 'play\nseek '+ seekto +'\npause' } );
+				$.post( '/enhance.php', { mpd: 'play\nseek '+ seekto }, function() {
+					$.post( '/enhance.php', { mpd: 'pause' } );
+				} );
 			}
 		} else {
 			$timeRS.setValue( 0 );
@@ -1614,9 +1616,8 @@ function setbutton() {
 
 // volume, sampling, time
 onsetmode = 0;
-function settime() {
+function setplaybackdata() {
 	$.post( '/enhancestatus.php', function( data ) {
-		console.log( data );
 		var status = JSON.parse( data );
 		// volume
 		$volumetransition.css( 'transition-duration', '0s' ); // suppress initial rotate animation
@@ -1641,16 +1642,22 @@ function settime() {
 		$( '#time' ).roundSlider( 'setValue', 0 );
 		
 		// empty queue
-		if ( GUI.json.playlistlength == 0 ) return;
-		
-		// sampling
+		if ( status.playlistlength == 0 ) {
+			$( '.playback-controls' ).css( 'visibility', 'hidden' );
+			$( '#divartist, #divsong, #divalbum' ).removeClass( 'scroll-left' );
+			$( '#currentartist, #format-bitrate, #total' ).html( '&nbsp;' );
+			$( '#currentsong' ).html( '<i class="fa fa-plus-circle"></i>' );
+			$( '#currentalbum' ).html( '&nbsp;' );
+			$( '#playlist-position span' ).html( 'Add something from Library' );
+			$( '#elapsed, #total' ).html( '&nbsp;' );
+			$( '#cover-art' ).css( 'background-image', 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' );
+			return;
+		}
 		var dot0 = '<a id="dot0" style="color:#ffffff"> &#8226; </a>';
-		// streaming
-//		if ( GUI.json.file.slice( 0, 4 ) === 'http' || GUI.libraryhome.ActivePlayer === 'Airplay' || GUI.libraryhome.ActivePlayer === 'Spotify' ) {
 		$( '#currentartist' ).html( status.Artist );
-		$( '#currentsong' ).html( GUI.state !== 'stop' ? status.Title : '&nbsp;' );
-		$( '#currentalbum' ).html( '<a>'+ status.Album +'</a>' );
-		var dot = dot0.replace( ' id="dot0"', '' );
+		$( '#currentsong' ).html( status.Title );
+		$( '#currentalbum' ).html( status.ext !== 'radio' ? status.Album : '<a>'+ status.Album +'</a>' );
+		$( '#playlist-position span' ).html( status.song ? ( Number( status.song ) + 1 ) +'/'+ status.playlistlength : '&nbsp;' );		var dot = dot0.replace( ' id="dot0"', '' );
 		var ext = ( status.ext !== 'radio' ) ? dot + status.ext : '';
 		$( '#format-bitrate' ).html( dot0 + status.sampling + ext );
 		if ( status.ext === 'radio' ) {
@@ -1658,8 +1665,10 @@ function settime() {
 			$( '#elapsed' ).html( GUI.state === 'play' ? '<a class="dot">.</a> <a class="dot dot2">.</a> <a class="dot dot3">.</a>' : '' );
 			$( '#total' ).text( '' );
 			return;
+		} else {
+			var covercachenum = Math.floor( Math.random() * 1001 );
+			$( '#cover-art' ).css( 'background-image', 'url("/coverart/?v=' + covercachenum + '")' );
 		}
-		
 		// time
 		time = +status.Time;
 		$( '#total' ).text( converthms( time ) );
@@ -1701,7 +1710,6 @@ function settime() {
 				clearInterval( GUI.currentKnob );
 				clearInterval( GUI.countdown );
 				$( '#elapsed' ).text( '' );
-				settime();
 			}
 			$( '#time' ).roundSlider( 'setValue', position );
 		}, time );
@@ -1712,45 +1720,11 @@ function settime() {
 			$( '#elapsed' ).text( mmss );
 		}, 1000 );
 	} );
-}
-function converthms( second ) {
-	var hh = Math.floor( second / 3600 );
-	var mm = Math.floor( ( second % 3600 ) / 60 );
-	var ss = second % 60;
 	
-	hh = hh ? hh +':' : '';
-	mm = hh ? ( mm > 9 ? mm +':' : '0'+ mm +':' ) : ( mm ? mm +':' : '' );
-	ss = mm ? ( ss > 9 ? ss : '0'+ ss ) : ss;
-	return ss ? hh + mm + ss : '';
-}
-
-// song info
-function setinfo() {
-	// empty queue
-	if ( GUI.json.playlistlength == 0 ) {
-		$( '.playback-controls' ).css( 'visibility', 'hidden' );
-		$( '#divartist, #divsong, #divalbum' ).removeClass( 'scroll-left' );
-		$( '#currentartist, #format-bitrate, #total' ).html( '&nbsp;' );
-		$( '#currentsong' ).html( '<i class="fa fa-plus-circle"></i>' );
-		$( '#currentalbum' ).html( '&nbsp;' );
-		$( '#playlist-position span' ).html( 'Add something from Library' );
-		$( '#elapsed, #total' ).html( '&nbsp;' );
-		$( '#cover-art' ).css( 'background-image', 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' );
-		return;
-	}
-	
-	if ( GUI.json.playlistlength !== '0' ) {
-		if ( GUI.json.song ) {
-			$( '#playlist-position span' ).html( ( parseInt( GUI.json.song ) + 1 ) +'/'+ GUI.json.playlistlength );
-		} else {
-			$( '#playlist-position span' ).html( '&nbsp;' );
-		}
-	}
-	
-	var currentalbumstring = GUI.json.currentartist +' - '+ GUI.json.currentalbum;
 	// song changed
-	if ( GUI.currentsong !== GUI.json.currentsong || GUI.currentalbum !== currentalbumstring ) {
-		GUI.currentsong = GUI.json.currentsong;
+	var currentalbumstring = status.Artist +' - '+ status.Album;
+	if ( GUI.currentsong !== status.Title || GUI.currentalbum !== currentalbumstring ) {
+		GUI.currentsong = status.Title;
 		// scroll info text
 		setTimeout( function() {
 			$( '#divartist, #divsong, #divalbum' ).each( function() {
@@ -1767,17 +1741,26 @@ function setinfo() {
 		
 		if ( $( '#lyricscontainer' ).length && $( '#lyricscontainer' ).is( ':visible' ) )  getlyrics();
 	}
-
 	// album changed
 	if ( GUI.currentalbum === currentalbumstring || $( '#coverart' ).hasClass( 'hide' ) ) return;
 	
 	GUI.currentalbum = currentalbumstring;
-	if ( GUI.json.file.slice( 0, 4 ) !== 'http' ) {
+	if ( status.ext !== 'radio' ) {
 		var covercachenum = Math.floor( Math.random() * 1001 );
 		$( '#cover-art' ).css( 'background-image', 'url("/coverart/?v=' + covercachenum + '")' );
 	} else {
 		$( '#cover-art' ).css( 'background-image', 'url("assets/img/cover-radio.jpg")' );
 	}
+}
+function converthms( second ) {
+	var hh = Math.floor( second / 3600 );
+	var mm = Math.floor( ( second % 3600 ) / 60 );
+	var ss = second % 60;
+	
+	hh = hh ? hh +':' : '';
+	mm = hh ? ( mm > 9 ? mm +':' : '0'+ mm +':' ) : ( mm ? mm +':' : '' );
+	ss = mm ? ( ss > 9 ? ss : '0'+ ss ) : ss;
+	return ss ? hh + mm + ss : '';
 }
 
 // ### called by backend socket - force refresh all clients ###
@@ -1789,8 +1772,7 @@ function renderUI( text ) {
 	GUI.json = text[ 0 ];
 	GUI.state = GUI.json.state;
 	
-	setinfo();
-	settime();
+	setplaybackdata();
 	if ( $( '#playback' ).hasClass( 'active' ) ) displayplayback();
 	
 	if ( GUI.json.playlist !== GUI.playlist ) {
