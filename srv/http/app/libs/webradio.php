@@ -4,7 +4,7 @@ $line = strtok( $lines, "\n" );
 while ( $line !== false ) {
 	$pair = explode( ': ', $line, 2 );
 	$key = $pair[ 0 ];
-	$val = $pair[ 1 ];
+	$val = ( $key !== 'elapsed' ) ? $pair[ 1 ] : round( $pair[ 1 ] );
 	if ( $key !== 'O' ) $status[ $key ] = $val; // skip 'OK' lines
 	if ( $key === 'audio') {
 		$audio = explode( ':', $val );
