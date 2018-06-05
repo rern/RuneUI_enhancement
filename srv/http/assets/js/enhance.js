@@ -1554,7 +1554,6 @@ function commandButton( el ) {
 					var pos = current !== last ? current : 0;
 				}
 			}
-			$( '#format-bitrate' ).html( '' );
 			if ( GUI.state !== 'play' ) {
 				$( '#pause' ).removeClass( 'btn-primary' );
 				$( '#stop' ).addClass( 'btn-primary' );
@@ -1651,18 +1650,16 @@ function settime() {
 		$( '#currentartist' ).html( status.Artist );
 		$( '#currentsong' ).html( GUI.state !== 'stop' ? status.Title : '&nbsp;' );
 		$( '#currentalbum' ).html( '<a>'+ status.Album +'</a>' );
+		var dot = dot0.replace( ' id="dot0"', '' );
+		var ext = ( status.ext !== 'radio' ) ? dot + status.ext : '';
+		$( '#format-bitrate' ).html( dot0 + status.sampling + ext );
 		if ( status.ext === 'radio' ) {
 			$( '#cover-art' ).css( 'background-image', 'url("assets/img/cover-radio.jpg")' );
-			var sampling = $( '#format-bitrate' ).html();
-			if ( sampling === '' || sampling === '&nbsp;' ) $( '#format-bitrate' ).html( dot0 + status.sampling );
 			$( '#elapsed' ).html( GUI.state === 'play' ? '<a class="dot">.</a> <a class="dot dot2">.</a> <a class="dot dot3">.</a>' : '' );
 			$( '#total' ).text( '' );
 			return;
 		}
 		
-		var dot = dot0.replace( ' id="dot0"', '' );
-		var ext = ( status.ext !== 'radio' ) ? dot + status.ext : '';
-		$( '#format-bitrate' ).html( dot0 + status.sampling + ext );
 		// time
 		time = +status.Time;
 		$( '#total' ).text( converthms( time ) );
@@ -1681,6 +1678,11 @@ function settime() {
 		$( '#time' ).roundSlider( 'setValue', position );
 		$( '#elapsed' ).text( converthms( elapsed ) );
 		// pause <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+		if ( status.error ) {
+			$( '#stop' ).addClass( 'btn-primary' );
+			$( '#play, #pause' ).removeClass( 'btn-primary' );
+			if ( $( '#pause' ).hasClass( 'hide' ) ) $( '#play i' ).removeClass( 'fa fa-pause' ).addClass( 'fa fa-play' );
+		}
 		if ( status.state === 'pause' ) {
 			$( '#elapsed' ).css( 'color', '#0095d8' );
 			$( '#total' ).css( 'color', '#e0e7ee' );
