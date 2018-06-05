@@ -63,6 +63,7 @@ if ( $status[ 'state' ] === 'play' ) {
 // state: stop / pause >>>>>>>>>>
 // webradio
 if ( $status[ 'ext' ] === 'radio' ) {
+	$status[ 'Artist' ] = $redis->hGet( 'webradioname', $file );
 	if ( $sampling = $redis->hGet( 'sampling', $file ) ) $status[ 'sampling' ] = $sampling;
 	echo json_encode( $status );
 	die();
