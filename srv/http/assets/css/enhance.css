@@ -1,4 +1,8 @@
 /* ---------------------- playback ---------------------- */
+.ui-pnotify-icon {
+	font-size: 18px;
+	margin-top: -3px;
+}
 #bartop,
 #barbottom {
 	position: fixed;
