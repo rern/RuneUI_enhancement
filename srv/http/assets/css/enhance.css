@@ -691,10 +691,14 @@
 #playlist-entries li.radio {
 	margin: 0;
 }
-#database-entries .fa-folder,
+#database-entries li .fa,
 #pl-editor .fa-list-ul {
 	margin: 0 12px;
 	vertical-align: -9%;
+}
+#database-entries li .fa-music,
+#database-entries li .fa-microphone {
+	margin: 0 6px;
 }
 /* ---------------------- breadcrumb and index ---------------------- */
 #db-currentpath {
