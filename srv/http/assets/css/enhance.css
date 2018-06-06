@@ -1,8 +1,4 @@
 /* ---------------------- playback ---------------------- */
-.ui-pnotify-icon {
-	font-size: 18px;
-	margin-top: -3px;
-}
 #bartop,
 #barbottom {
 	position: fixed;
@@ -740,9 +736,17 @@
 #database-entries .fa-folder-open:before {
 	content: "\f07b";
 }
-#database-entries .fa-folder-open {
+.fa-list-ol:before {
+	content: "\f03a"
+}
+#database-entries .fa-folder-open,
+.fa-list-ol:before {
 	margin-right: 10px;
 	vertical-align: -8%;
+}
+.ui-pnotify-icon {
+	font-size: 18px;
+	margin-top: -3px;
 }
 /* ---------------------- responsive ----------------------*/
 @media(max-width: 749px) {
