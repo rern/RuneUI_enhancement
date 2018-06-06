@@ -692,7 +692,7 @@
 	margin: 0;
 }
 #database-entries .fa-folder,
-#playlist-entries .fa-list-ul {
+#pl-editor .fa-list-ul {
 	margin: 0 12px;
 	vertical-align: -9%;
 }
