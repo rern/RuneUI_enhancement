@@ -621,6 +621,12 @@
 .tab-pane {
 	height: 100vh;
 }
+#home-blocks h4 {
+	color: #e0e7ee;
+}
+#home-blocks h4 span {
+	color: #587ca0;
+}
 #db-currentpath div,
 #db-currentpath i,
 #db-currentpath span {
