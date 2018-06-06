@@ -1320,10 +1320,10 @@ function populateDB(options) {
 					prop = 'album';
 				} else if ( path === 'Artists' || path === 'AlbumArtists'|| path === 'Various Artists' ) {
 					prop = 'artist';
-				} else if ( path === 'Genres' ) {
-					prop = 'genre';
 				} else if ( path === 'Composer' ) {
 					prop = 'composer';
+				} else if ( path === 'Genres' ) {
+					prop = 'genre';
 				} else if ( path === 'Webradio' ) {
 					prop = 'playlist';
 				} else {
