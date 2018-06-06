@@ -664,9 +664,13 @@
 #database-entries li span i,
 #pl-editor li span i,
 #playlist-entries li:before {
+	margin: 0 6px;
 	font-size: 24px;
 	line-height: 1.2em;
 	color: #587ca0 !important;
+}
+#playlist-entries li:before {
+	margin-top: 9px;
 }
 #database-entries .sn,
 #playlist-entries .sn {
@@ -686,6 +690,11 @@
 }
 #playlist-entries li.radio {
 	margin: 0;
+}
+#database-entries .fa-folder,
+#playlist-entries .fa-list-ul {
+	margin: 0 12px;
+	vertical-align: -9%;
 }
 /* ---------------------- breadcrumb and index ---------------------- */
 #db-currentpath {
@@ -733,17 +742,7 @@
 #db-index li:hover {
 	background: #34495e;
 }
-#database-entries .fa-folder-open:before {
-	content: "\f07b";
-}
-.fa-list-ol:before {
-	content: "\f03a"
-}
-#database-entries .fa-folder-open,
-.fa-list-ol:before {
-	margin-right: 10px;
-	vertical-align: -8%;
-}
+
 .ui-pnotify-icon {
 	font-size: 18px;
 	margin-top: -3px;
