@@ -952,7 +952,7 @@ function renderPlaylists( data ) {
 		infos = line.split( ': ' );
 		if ( 'playlist' === infos[ 0 ] ) {
 			playlistname = infos[ 1 ];
-			content += '<li class="pl-folder" data-path="' + playlistname + '"><i class="fa fa-bars pl-action" data-target="#context-menu-playlist" data-toggle="context" title="Actions"></i><span><i class="fa fa-list-ol"></i>' + playlistname + '</span></li>';
+			content += '<li class="pl-folder" data-path="' + playlistname + '"><i class="fa fa-bars pl-action" data-target="#context-menu-playlist" data-toggle="context" title="Actions"></i><span><i class="fa fa-list-ul"></i>' + playlistname + '</span></li>';
 			playlistname = '';
 		}
 	}
@@ -1042,7 +1042,7 @@ function parseResponse(options) {
 					content = '<li id="db-' + (i + 1) + '" class="db-folder" data-path="';
 					content += inputArr.directory;
 					if (inpath !== '') {
-						content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu"></i><span><i class="fa fa-folder-open"></i>'
+						content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu"></i><span><i class="fa fa-folder"></i>'
 					} else {
 						content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-root"></i><i class="fa fa-hdd-o icon-root"></i><span>';
 					}
