@@ -138,10 +138,13 @@ $( '#db-index li' ).click( function() {
 		var datapathindex = '^'+ indextext;
 	}
 	var matcharray = $( '#database-entries li' ).filter( function() {
-		return $( this ).attr( 'data-path' ).match( new RegExp( datapathindex ) );
+		// strip leading articles
+		var name = $( this ).attr( 'data-path' ).replace( /^a |^an |^the /i, '' );
+		return name.match( new RegExp( datapathindex ) );
 	} );
 	if ( matcharray.length ) window.scrollTo( 0, matcharray[0].offsetTop - topoffset );
 } );
+dbtop = 0;
 $( '#db-level-up' ).click( function() {
 	window.scrollTo( 0, dbtop );
 } );
@@ -896,11 +899,11 @@ function renderLibraryHome() {
 		content += '<i class="fa fa-hdd-o"></i><h3>USB storage ('+ obj.USBMounts +')</h3>'+ ( isLocalHost ? '' : 'USB storage</div></div>' );
 	}
 	if ( chkKey( obj.webradio ) ) {
-		content += divOpen +'<div id="home-webradio" class="home-block'+ toggleMPD +'" data-path="Webradio"><i class="fa fa-microphone"></i><h3>My Webradios ('+ obj.webradio +')</h3>'+ ( isLocalHost ? '' : 'webradio local playlists</div></div>' );
+		content += divOpen +'<div id="home-webradio" class="home-block'+ toggleMPD +'" data-path="Webradio"><i class="fa fa-microphone"></i><h3>Webradios ('+ obj.webradio +')</h3>'+ ( isLocalHost ? '' : 'webradio local playlists</div></div>' );
 	}
 	content += divOpen +'<div id="home-albums" class="home-block'+ toggleMPD +'" data-path="Albums" data-browsemode="album"><i class="fa fa-dot-circle-o"></i><h3>Albums</h3>'+ ( isLocalHost ? '' : 'browse MPD database by album</div></div>' );
 	content += divOpen +'<div id="home-artists" class="home-block'+ toggleMPD +'" data-path="Artists" data-browsemode="artist"><i class="fa fa-users"></i><h3>Artists</h3>'+ ( isLocalHost ? '' : 'browse MPD database by artist</div></div>' );
-	content += divOpen +'<div id="home-composer" class="home-block'+ toggleMPD +'" data-path="Composer" data-browsemode="composer"><i class="fa fa-user"></i><h3>Composer</h3>'+ ( isLocalHost ? '' : 'browse MPD database by composer</div></div>' );
+	content += divOpen +'<div id="home-composer" class="home-block'+ toggleMPD +'" data-path="Composer" data-browsemode="composer"><i class="fa fa-pencil"></i><h3>Composer</h3>'+ ( isLocalHost ? '' : 'browse MPD database by composer</div></div>' );
 	content += divOpen +'<div id="home-genre" class="home-block' + toggleMPD +'" data-path="Genres" data-browsemode="genre"><i class="fa fa-tags"></i><h3>Genres</h3>'+ ( isLocalHost ? '' : 'browse MPD database by genre</div></div>' );
 	if ( chkKey( obj.Spotify ) && obj.Spotify !== '0' ) {
 		if (obj.ActivePlayer !== 'Spotify') {
@@ -1095,7 +1098,7 @@ function parseResponse(options) {
 				} else if (inputArr.composer !== '') {
 					content = '<li id="db-' + (i + 1) + '" class="db-folder db-composer" data-path="';
 					content += inputArr.composer;
-					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-composer"></i><span><i class="fa fa-user"></i>';
+					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-composer"></i><span><i class="fa fa-pencil"></i>';
 					content += inputArr.composer;
 					content += '</span></li>';
 				}
@@ -1169,6 +1172,9 @@ function parseResponse(options) {
 	return content;
 }
 
+function stripArticles( string ) {
+	return string.replace( /^(an?|the)\s/i, '' );
+}
 function populateDB(options) {
 	var data = options.data || '',
 		path = options.path || '',
@@ -1196,9 +1202,9 @@ function populateDB(options) {
 // sorting
 			data.sort( function( a, b ) {
 				if ( path === 'Spotify' && querytype === '' ) {
-					return a[ 'name' ].localeCompare( b[ 'name' ] )
+					return stripArticles( a[ 'name' ] ).localeCompare( stripArticles( b[ 'name' ] ) )
 				} else if ( querytype === 'tracks' ) {
-					return a[ 'title' ].localeCompare( b[ 'title' ] )
+					return stripArticles( a[ 'title' ]) .localeCompare( stripArticles( b[ 'title' ] ) )
 				} else {
 					return 0;
 				}
@@ -1235,9 +1241,9 @@ function populateDB(options) {
 // sorting
 			data.sort( function( a, b ) {
 				if ( querytype === 'childs' || querytype === 'categories' ) {
-					return a[ 'title' ].localeCompare( b[ 'title' ] )
+					return stripArticles( a[ 'title' ] ).localeCompare( stripArticles( b[ 'title' ] ) )
 				} else if ( querytype === 'childs-stations' || querytype === 'stations' ) {
-					return a[ 'name' ].localeCompare( b[ 'name' ] )
+					return stripArticles( a[ 'name' ] ).localeCompare( stripArticles( b[ 'name' ] ) )
 			   } else {
 					return 0;
 				}
@@ -1265,7 +1271,7 @@ function populateDB(options) {
 // sorting
 			data.sort( function( a, b ) {
 				if ( path === 'Jamendo' && querytype === '' ) {
-					return a[ 'dispname' ].localeCompare( b[ 'dispname' ] )
+					return stripArticles( a[ 'dispname' ] ).localeCompare( stripArticles( b[ 'dispname' ] ) )
 				} else {
 					return 0;
 				}
@@ -1316,6 +1322,8 @@ function populateDB(options) {
 					prop = 'artist';
 				} else if ( path === 'Genres' ) {
 					prop = 'genre';
+				} else if ( path === 'Composer' ) {
+					prop = 'composer';
 				} else if ( path === 'Webradio' ) {
 					prop = 'playlist';
 				} else {
@@ -1331,7 +1339,7 @@ function populateDB(options) {
 						prop = 'file';
 					}
 				}
-				return a[ prop ].localeCompare( b[ prop ] );
+				return stripArticles( a[ prop ] ).localeCompare( stripArticles( b[ prop ] ) );
 			});
 			for (i = 0; (row = data[i]); i += 1) {
 				content += parseResponse({
