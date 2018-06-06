@@ -1585,17 +1585,14 @@ function setbutton() {
 }
 
 function scrollText() {
-	setTimeout( function() {
-		$( '#divartist, #divsong, #divalbum' ).each( function() {
-			if ( $( this ).find( 'span' ).width() > Math.floor( window.innerWidth * 0.975 ) ) {
-				$( this ).addClass( 'scroll-left' );
-			} else {
-				$( this ).removeClass( 'scroll-left' );
-			}
-		} );
-	}, 500 );
+	$( '#divartist, #divsong, #divalbum' ).each( function() {
+		if ( $( this ).find( 'span' ).width() > Math.floor( window.innerWidth * 0.975 ) ) {
+			$( this ).addClass( 'scroll-left' );
+		} else {
+			$( this ).removeClass( 'scroll-left' );
+		}
+	} );
 }
-
 onsetmode = 0;
 function setplaybackdata() {
 	$.post( '/enhancestatus.php', function( data ) {
@@ -1636,9 +1633,10 @@ function setplaybackdata() {
 		}
 		$( '#currentartist' ).html( status.Artist );
 		$( '#currentsong' ).html( status.Title );
-		$( '#currentalbum' ).html( status.ext !== 'radio' ? status.Album : '<a>'+ status.Album +'</a>' );
-		// scroll info text
-		scrollText();
+		$( '#currentalbum' ).html( status.ext !== 'radio' ? status.Album : '<a>'+ status.Album +'</a>' ).promise().done( function() {
+			// scroll info text
+			scrollText();
+		} );
 
 		var dot0 = '<a id="dot0" style="color:#ffffff"> &#8226; </a>';
 		$( '#playlist-position span' ).html( status.song ? ( Number( status.song ) + 1 ) +'/'+ status.playlistlength : '&nbsp;' );		var dot = dot0.replace( ' id="dot0"', '' );
@@ -1709,9 +1707,6 @@ function setplaybackdata() {
 	var currentalbumstring = status.Artist +' - '+ status.Album;
 	if ( GUI.currentsong !== status.Title || GUI.currentalbum !== currentalbumstring ) {
 		GUI.currentsong = status.Title;
-		// scroll info text
-		scrollText();
-		
 		$( '#playlist-entries li ' ).removeClass( 'active' );
 		$( '#playlist-entries' ).find( 'li' ).eq( parseInt( GUI.json.song ) ).addClass( 'active' );
 		
