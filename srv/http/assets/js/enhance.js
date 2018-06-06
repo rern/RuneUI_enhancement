@@ -972,7 +972,7 @@ function renderPlaylists( data ) {
 		} else {
 			var positionX = window.innerWidth - 295;
 		}
-		GUI.DBentry[0] = $( this ).attr( 'data-path' );
+		GUI.DBentry[ 0 ] = $( this ).attr( 'data-path' );
 		$( '#context-menu-playlist' ).addClass( 'open' ).css( {
 			position: 'absolute',
 			top: $( this ).position().top +'px',
@@ -1744,6 +1744,7 @@ function renderUI( text ) {
 	GUI.state = GUI.json.state;
 	
 	setplaybackdata();
+	
 	if ( $( '#playback' ).hasClass( 'active' ) ) displayplayback();
 	
 	if ( GUI.json.playlist !== GUI.playlist ) {
