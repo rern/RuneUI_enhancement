@@ -975,9 +975,33 @@
 	}
 }
 @media(max-width: 480px) {
+	#database-entries li .fa-folder {
+		display: none;
+	}
+	#database-entries li .fa {
+		margin: 0;
+	}
+	#database-entries .db-folder {
+		padding-left: 5px;
+	}
+	#database-entries .sn,
+	#database-entries .bl,
+	#playlist-entries .sn,
+	#playlist-entries .bl {
+		padding-left: 15px;
+	}
+	#playlist-entries span.sn {
+		margin-top: -3px;
+		padding-top: 0;
+	}
+	#database-entries .sn,
 	#database-entries .sn span,
+	#playlist-entries .sn,
 	#playlist-entries .sn span {
-		font-size: 15px;
+		font-size: 16px;
+	}
+	#playlist-entries li .fa {
+		line-height: 30px;
 	}
 }
 @media(max-width: 375px) {
