@@ -113,7 +113,7 @@ echo $file
 sed -i '/echo getPlayQueue($mpd)/ {
 s|^|//|;
 a\
-                $playlist = getPlayQueue($mpd); //enha0\
+                $playlist = getPlayQueue( $mpd ); //enha0\
                 $line = strtok( $playlist."\\nfile", "\\n" );\
                 while ( $line !== false ) {\
                     if ( strpos( $line, "file" ) === 0 && $data ) {\
