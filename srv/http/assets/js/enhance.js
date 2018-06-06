@@ -901,10 +901,10 @@ function renderLibraryHome() {
 	if ( chkKey( obj.webradio ) ) {
 		content += divOpen +'<div id="home-webradio" class="home-block'+ toggleMPD +'" data-path="Webradio"><i class="fa fa-microphone"></i><h3>Webradios ('+ obj.webradio +')</h3>'+ ( isLocalHost ? '' : 'webradio local playlists</div></div>' );
 	}
-	content += divOpen +'<div id="home-albums" class="home-block'+ toggleMPD +'" data-path="Albums" data-browsemode="album"><i class="fa fa-dot-circle-o"></i><h3>Albums</h3>'+ ( isLocalHost ? '' : 'browse MPD database by album</div></div>' );
-	content += divOpen +'<div id="home-artists" class="home-block'+ toggleMPD +'" data-path="Artists" data-browsemode="artist"><i class="fa fa-users"></i><h3>Artists</h3>'+ ( isLocalHost ? '' : 'browse MPD database by artist</div></div>' );
+	content += divOpen +'<div id="home-albums" class="home-block'+ toggleMPD +'" data-path="Albums" data-browsemode="album"><i class="fa fa-stop"></i><h3>Albums</h3>'+ ( isLocalHost ? '' : 'browse MPD database by album</div></div>' );
+	content += divOpen +'<div id="home-artists" class="home-block'+ toggleMPD +'" data-path="Artists" data-browsemode="artist"><i class="fa fa-user"></i><h3>Artists</h3>'+ ( isLocalHost ? '' : 'browse MPD database by artist</div></div>' );
 	content += divOpen +'<div id="home-composer" class="home-block'+ toggleMPD +'" data-path="Composer" data-browsemode="composer"><i class="fa fa-pencil"></i><h3>Composer</h3>'+ ( isLocalHost ? '' : 'browse MPD database by composer</div></div>' );
-	content += divOpen +'<div id="home-genre" class="home-block' + toggleMPD +'" data-path="Genres" data-browsemode="genre"><i class="fa fa-tags"></i><h3>Genres</h3>'+ ( isLocalHost ? '' : 'browse MPD database by genre</div></div>' );
+	content += divOpen +'<div id="home-genre" class="home-block' + toggleMPD +'" data-path="Genres" data-browsemode="genre"><i class="fa fa-tag"></i><h3>Genres</h3>'+ ( isLocalHost ? '' : 'browse MPD database by genre</div></div>' );
 	if ( chkKey( obj.Spotify ) && obj.Spotify !== '0' ) {
 		if (obj.ActivePlayer !== 'Spotify') {
 			content += divOpen +'<div id="home-spotify-switch" class="home-block"><i class="fa fa-spotify"></i><h3>Spotify</h3>'+ ( isLocalHost ? '' : 'click to switch renderer</div></div>' );
@@ -1066,7 +1066,7 @@ function parseResponse(options) {
 				} else if (inputArr.album !== '') {
 					content = '<li id="db-' + (i + 1) + '" class="db-folder db-album" data-path="';
 					content += inputArr.album.replace(/\"/g,'&quot;');
-					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-album"></i><span><i class="fa fa-dot-circle-o"></i>';
+					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-album"></i><span><i class="fa fa-stop"></i>';
 					content += inputArr.album;
 					content += '</span></li>';
 				}
@@ -1074,7 +1074,7 @@ function parseResponse(options) {
 				if (inputArr.album !== undefined) {
 					content = '<li id="db-' + (i + 1) + '" class="db-folder db-album" data-path="';
 					content += inputArr.album;
-					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-album"></i><span><i class="fa fa-dot-circle-o"></i>';
+					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-album"></i><span><i class="fa fa-stop"></i>';
 					content += (inputArr.album !== '') ? inputArr.album : 'Unknown album';
 					content += '</span></li>';
 				} else if (inputArr.artist !== '') {
@@ -1112,7 +1112,7 @@ function parseResponse(options) {
 				} else if (inputArr.genre !== '') {
 					content = '<li id="db-' + (i + 1) + '" class="db-folder db-genre" data-path="';
 					content += inputArr.genre;
-					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-genre"></i><span><i class="fa fa-tags"></i>';
+					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-genre"></i><span><i class="fa fa-tag"></i>';
 					content += inputArr.genre;
 					content += '</span></li>';
 				}
