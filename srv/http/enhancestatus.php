@@ -34,7 +34,15 @@ if ( isset( $status[ 'error' ] ) && $status[ 'state' ] !== 'stop' ) {
 $redis = new Redis(); 
 $redis->pconnect( '127.0.0.1' );
 $status[ 'volumemute' ] = $redis->get( 'volumemute' );
-
+// fix: webradio at 1st item which not yet played - currentsong = (blank)
+if ( !isset( $status[ 'file' ] ) ) {
+	sendMpdCommand( $mpd, 'playlistinfo 0' );
+	$status1 = readMpdResponse( $mpd );
+	$status1 = arrayLines( $status1 );
+	$status[ 'file' ] = $status1[ 'file' ];
+	$status[ 'song' ] = $status[ 'playlistlength' ] - 1;
+	if ( substr( $status[ 'file' ], 0, 4 ) === "http" ) $status[ 'ext' ] = 'radio';
+}
 $file = $status[ 'file' ];
 $pathinfo = pathinfo( $file );
 $ext = strtoupper( $pathinfo[ 'extension' ] );
