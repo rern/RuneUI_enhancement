@@ -18,6 +18,7 @@ function samplingline( $bitdepth, $samplerate, $bitrate ) {
 }
 
 $cmdlist = "command_list_begin\n"
+	."clearerror\n"
 	."status\n"
 	."currentsong\n"
 	."command_list_end";
