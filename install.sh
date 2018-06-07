@@ -215,13 +215,6 @@ if [[ $( redis-cli keys display ) == '' ]]; then
 	redis-cli hmset display bar checked pause checked time checked coverart checked volume checked buttons checked source checked\
 	\nas checked usb checked webradio checked albums checked artists checked composer checked genre checked spotify checked dirble checked jamendo checked &> /dev/null
 fi
-# webradio url-name
-nameurl=$( redis-cli hgetall webradios )
-readarray -t nameurl <<<"$nameurl"
-ilength=${#nameurl[@]}
-for (( i=0; i < ilength; i+=2 )); do
-	redis-cli hset webradioname "${nameurl[i+1]}" "${nameurl[i]}" &> /dev/null
-done
 
 installfinish $@
 
