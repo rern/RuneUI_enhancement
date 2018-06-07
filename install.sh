@@ -146,7 +146,6 @@ enha*/\
 include( "/srv/http/app/libs/webradio.php" );
 ' -e '/browseMode = TRUE/ a\
         if ( preg_match( "/playlist: Webradio/", $plistLine ) ) { //enha0\
-            $webradiolist = 1;\
             $redis = new Redis();\
             $redis->pconnect( "127.0.0.1" );\
         } //enha1
@@ -154,11 +153,10 @@ include( "/srv/http/app/libs/webradio.php" );
 s|^|//|
 a\
                 $pathinfo = pathinfo( $value ); //enha0\
-                $plistArray[$plCounter]["fileext"] = $pathinfo["extension"];\
+                $plistArray[ $plCounter ][ "fileext" ] = $pathinfo[ "extension" ];\
                 if ( preg_match( "/^Webradio/", $value ) ) {\
-                    $webradioname = $pathinfo["filename"];\
-                    $webradiourl = $redis->hGet("webradios", $webradioname);\
-                    $plistArray[$plCounter]["url"] = $webradiourl;\
+                    $webradiourl = $redis->hGet( "webradios", $pathinfo[ "filename" ] );\
+                    $plistArray[ $plCounter ][ "url" ] = $webradiourl;\
                 } //enha1
 }
 ' $file
