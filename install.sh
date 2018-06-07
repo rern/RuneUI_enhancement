@@ -114,14 +114,18 @@ sed -i '/echo getPlayQueue($mpd)/ {
 s|^|//|;
 a\
                 $playlist = getPlayQueue( $mpd ); //enha0\
+                if ( preg_match( "/file: http/", $playlist ) {\
+                    $redis = new Redis();\
+                    $redis->pconnect( "127.0.0.1" );\
+                }\
                 $line = strtok( $playlist."\\nfile", "\\n" );\
                 while ( $line !== false ) {\
                     if ( strpos( $line, "file" ) === 0 && $data ) {\
                         $file = $data[ "file" ];\
                         if ( substr( $file, 0, 4 ) === "http" ) {\
-                            $redis = new Redis();\
-                            $redis->pconnect( "127.0.0.1" );\
-                            $data[ "Title" ] = $redis->hGet( "webradioname", $data[ "file" ] );\
+                            $webradios = $redis->hGetAll( "webradios" );\
+                            $webradioname = array_flip( $webradios );\
+                            $data[ "Title" ] = $webradioname[ $file ];\
                         }\
                         $pathinfo = pathinfo( $file );\
                         if ( !isset( $data[ "Artist" ] ) ) $data[ "Artist" ] = basename( $pathinfo[ "dirname" ] );\
