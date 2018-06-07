@@ -114,7 +114,7 @@ sed -i '/echo getPlayQueue($mpd)/ {
 s|^|//|;
 a\
                 $playlist = getPlayQueue( $mpd ); //enha0\
-                if ( preg_match( "/file: http/", $playlist ) {\
+                if ( preg_match( "/file: http/", $playlist ) ) {\
                     $redis = new Redis();\
                     $redis->pconnect( "127.0.0.1" );\
                 }\
