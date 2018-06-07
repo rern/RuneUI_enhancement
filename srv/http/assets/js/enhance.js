@@ -378,7 +378,6 @@ var interval;
 		clearInterval( intervalId );
 		$volumetransition.css( 'transition-duration', '' );
 		
-		vollocal = 1;
 		$.post( '/enhance.php', { volume: $volumeRS.getValue() } );
 		setTimeout( function() {
 			onsetvolume = 0;
@@ -542,6 +541,17 @@ librarytop = 0;
 queuetop = 0;
 
 // new knob
+seek = 0;
+function mpdseek( seekto ) {
+	seek = 1;
+	if ( GUI.state !== 'stop' ) {
+		clearInterval( GUI.currentKnob );
+		clearInterval( GUI.countdown );
+		sendCmd( 'seekcur '+ seekto );
+	} else {
+		$.post( '/enhance.php', { mpd: 'command_list_begin\nplay\nseekcur '+ seekto +'\npause\ncommand_list_end' } );
+	}
+}
 $( '#time' ).roundSlider( {
 	sliderType: 'min-range',
 	max: 1000,
@@ -557,13 +567,7 @@ $( '#time' ).roundSlider( {
 	change: function( e ) { // not fire on 'setValue'
 		if ( GUI.json.file.slice( 0, 4 ) !== 'http' ) {
 			var seekto = Math.floor( e.value / 1000 * time );
-			if ( GUI.state !== 'stop' ) {
-				clearInterval( GUI.currentKnob );
-				clearInterval( GUI.countdown );
-				sendCmd( 'seek '+ GUI.json.song +' '+ seekto );
-			} else {
-				$.post( '/enhance.php', { mpd: 'command_list_begin\nplay\nseek '+ GUI.json.song +' '+ seekto +'\npause\ncommand_list_end' } );
-			}
+			mpdseek( seekto );
 		} else {
 			$timeRS.setValue( 0 );
 		}
@@ -573,11 +577,22 @@ $( '#time' ).roundSlider( {
 			clearInterval( GUI.currentKnob );
 			clearInterval( GUI.countdown );
 		}
+	},
+	drag: function ( e ) { // drag with no transition by default
+		if ( GUI.json.file.slice( 0, 4 ) !== 'http' ) {
+			var seekto = Math.round( e.value / 1000 * time );
+			$( '#elapsed' ).text( converthms( seekto ) );
+		}
+	},
+	stop: function( e ) { // on 'stop drag'
+		if ( GUI.json.file.slice( 0, 4 ) !== 'http' ) {
+			var seekto = Math.round( e.value / 1000 * time );
+			mpdseek( seekto );
+		}
 	}
 } );
 
 var dynVolumeKnob = $( '#volume' ).data( 'dynamic' );
-vollocal = 0;
 onsetvolume = 0;
 $( '#volume' ).roundSlider( {
 	sliderType: 'default',
@@ -597,7 +612,6 @@ $( '#volume' ).roundSlider( {
 			.rsRotate( - this._handle1.angle );  // initial rotate
 	},
 	change: function( e ) { // (not fire on 'setValue') value after click or 'stop drag'
-		vollocal = 1;
 		onsetvolume = 1;
 		setTimeout( function() {
 			onsetvolume = 0;
@@ -623,8 +637,6 @@ $( '#volume' ).roundSlider( {
 		}
 	},
 	stop: function( e ) { // on 'stop drag'
-		// broadcast to all
-		vollocal = 1;
 		$.post( '/enhance.php', { volume: e.value } );
 		setTimeout( function() {
 			onsetvolume = 0;
@@ -633,7 +645,6 @@ $( '#volume' ).roundSlider( {
 } );
 
 $( '#volmute, #volume .rs-tooltip' ).click( function() {
-	vollocal = 1;
 	onsetvolume = 1;
 	setTimeout( function() {
 		onsetvolume = 0;
@@ -653,7 +664,6 @@ $( '#volmute, #volume .rs-tooltip' ).click( function() {
 		} );
 	} else {
 		$.post( '/enhance.php', { volume: -1 }, function( data ) {
-			console.log(data);
 			if ( data == 0 ) return;
 			$volumeRS.setValue( data );
 			$volumehandle.rsRotate( - $volumeRS._handle1.angle );
@@ -681,7 +691,6 @@ $( '#volup, #voldn, #voluprs, #voldnrs' ).click( function() {
 		unmutecolor();
 	}
 	vol = ( thisid == 'volup' || thisid == 'voluprs' ) ? vol + 1 : vol - 1;
-	vollocal = 1;
 	$.post( '/enhance.php', { volume: vol } );
 	$volumeRS.setValue( vol );
 	$volumehandle.rsRotate( - $volumeRS._handle1.angle );
@@ -1650,16 +1659,20 @@ function setplaybackdata() {
 		var ext = ( status.ext !== 'radio' ) ? dot + status.ext : '';
 		$( '#format-bitrate' ).html( dot0 + status.sampling + ext );
 		if ( status.ext === 'radio' ) {
-			$( '#cover-art' ).css( 'background-image', 'url("assets/img/cover-radio.jpg")' );
+			if ( $( '#cover-art' ).css( 'background-image' ) !== 'url("assets/img/cover-radio.jpg")' ) {
+				$( '#cover-art' ).css( 'background-image', 'url("assets/img/cover-radio.jpg")' );
+			}
 			$( '#elapsed' ).html( GUI.state === 'play' ? '<a class="dot">.</a> <a class="dot dot2">.</a> <a class="dot dot3">.</a>' : '' );
 			$( '#total' ).text( '' );
 			return;
 		} else {
-			var covercachenum = Math.floor( Math.random() * 1001 );
-			$( '#cover-art' ).css( 'background-image', 'url("/coverart/?v=' + covercachenum + '")' );
+			if ( !seek ) {
+				var covercachenum = Math.floor( Math.random() * 1001 );
+				$( '#cover-art' ).css( 'background-image', 'url("/coverart/?v=' + covercachenum + '")' );
+			}
 		}
 		// time
-		time = +status.Time;
+		time = status.Time;
 		$( '#total' ).text( converthms( time ) );
 		// stop <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 		if ( $( '#time-knob' ).hasClass( 'hide' ) ) return;
@@ -1672,7 +1685,7 @@ function setplaybackdata() {
 		}
 		
 		var elapsed = status.elapsed;
-		var position = Math.round( 1000 * elapsed / time );
+		var position = Math.round( elapsed / time * 1000 );
 		$( '#time' ).roundSlider( 'setValue', position );
 		$( '#elapsed' ).text( converthms( elapsed ) );
 		// pause <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -1680,6 +1693,11 @@ function setplaybackdata() {
 			$( '#stop' ).addClass( 'btn-primary' );
 			$( '#play, #pause' ).removeClass( 'btn-primary' );
 			if ( $( '#pause' ).hasClass( 'hide' ) ) $( '#play i' ).removeClass( 'fa fa-pause' ).addClass( 'fa fa-play' );
+			new PNotify( {
+				title: 'Error',
+				text: status.error,
+				icon: 'fa fa-exclamation-circle'
+			} );
 		}
 		if ( status.state === 'pause' ) {
 			$( '#elapsed' ).css( 'color', '#0095d8' );
@@ -1721,7 +1739,6 @@ function setplaybackdata() {
 	}
 	// album changed
 	if ( GUI.currentalbum === currentalbumstring || $( '#coverart' ).hasClass( 'hide' ) ) return;
-	
 	GUI.currentalbum = currentalbumstring;
 	if ( status.ext !== 'radio' ) {
 		var covercachenum = Math.floor( Math.random() * 1001 );
