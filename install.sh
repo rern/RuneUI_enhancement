@@ -144,11 +144,7 @@ a\
 
 file=/srv/http/app/libs/runeaudio.php
 echo $file
-sed -i -e '/function addRadio/ i\/* //enha
-' -e '/function ui_notify(/ i\
-//enha */\
-include( "/srv/http/app/libs/enhanceradio.php" );
-' -e '/browseMode = TRUE/ a\
+sed -i -e '/browseMode = TRUE/ a\
         if ( preg_match( "/playlist: Webradio/", $plistLine ) ) { //enha0\
             $redis = new Redis();\
             $redis->pconnect( "127.0.0.1" );\
