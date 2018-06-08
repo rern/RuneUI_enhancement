@@ -154,7 +154,7 @@ include( "/srv/http/app/libs/enhanceradio.php" );
             $redis->pconnect( "127.0.0.1" );\
         } //enha1
 ' -e '/parseFileStr($value/ {
-s|^|//|
+s|^|//xenha|
 a\
                 $pathinfo = pathinfo( $value ); //enha0\
                 $plistArray[ $plCounter ][ "fileext" ] = $pathinfo[ "extension" ];\
