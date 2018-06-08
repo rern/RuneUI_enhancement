@@ -39,11 +39,11 @@ echo -e "$bar Restore modified files ..."
 file=/srv/http/app/templates/header.php
 echo $file
 sed -i -e 's|RuneUIe|RuneAudio - RuneUI|
-' -e '/roundslider.min.css\|enhance.css\|id="bartop"\|id="barbottom\|dropdownbg\|button id="menu-settings"\|id="pause"\|Development<.a>/ d
+' -e '/<!--enha-->/ d
+' -e 's/<!--enha\|enha-->//g
 ' -e '/fa-folder-open"><.i><.a>/,/fa-list"><.i><.a>/ d
 ' -e '/a href="http:..www.runeaudio.com/, /<.a>/ d
 ' -e 's/data-cmd="toggle"/data-cmd="play"/
-' -e 's/<!--enha\|enha-->//g
 ' -e 's|\("tab".*"fa fa-\)folder-open"></i></a>|\1music"></i> Library</a>|
 ' -e 's|\("tab".*"fa fa-play\)-circle"></i>|\1"></i> Playback|
 ' -e 's|\("tab".*"fa fa-list"></i>\)</a>|\1 Queue</a>|
