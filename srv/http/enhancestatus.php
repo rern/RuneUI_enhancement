@@ -86,6 +86,9 @@ if ( $status[ 'ext' ] === 'radio' ) {
 $redis = new Redis(); 
 $redis->pconnect( '127.0.0.1' );
 $status[ 'volumemute' ] = $redis->get( 'volumemute' );
+$webradios = $redis->hGetAll( "webradios" );
+$webradioname = array_flip( $webradios );
+$name = $webradioname[ $file ];
 
 // sampling >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 if ( $status[ 'state' ] === 'play' ) {
@@ -95,19 +98,17 @@ if ( $status[ 'state' ] === 'play' ) {
 	$status[ 'sampling' ] = $sampling;
 	echo json_encode( $status );
 	// save only webradio: update sampling database on each play
-	$redis->hSet( 'sampling', $file, $sampling );
+	$redis->hSet( 'sampling', $name, $sampling );
 	die();
 }
 
 // state: stop / pause >>>>>>>>>>
 // webradio
 if ( $status[ 'ext' ] === 'radio' ) {
-	$redis = new Redis();
-	$redis->pconnect( "127.0.0.1" );
 	$webradios = $redis->hGetAll( "webradios" );
 	$webradioname = array_flip( $webradios );
-	$status[ 'Artist' ] = $webradioname[ $file ];
-	if ( $sampling = $redis->hGet( 'sampling', $file ) ) $status[ 'sampling' ] = $sampling;
+	$status[ 'Artist' ] = $name;
+	if ( $sampling = $redis->hGet( 'sampling', $name ) ) $status[ 'sampling' ] = $sampling;
 	echo json_encode( $status );
 	die();
 }
