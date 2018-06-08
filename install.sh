@@ -24,33 +24,33 @@ file=/srv/http/app/templates/header.php
 echo $file
 sed -i -e 's/RuneAudio - RuneUI/RuneUIe/
 ' -e $'/runeui.css/ a\
-    <link rel="stylesheet" href="<?=$this->asset(\'/css/roundslider.min.css\')?>">\
-    <link rel="stylesheet" href="<?=$this->asset(\'/css/enhance.css\')?>">
+    <link rel="stylesheet" href="<?=$this->asset(\'/css/roundslider.min.css\')?>"> <!--enha-->\
+    <link rel="stylesheet" href="<?=$this->asset(\'/css/enhance.css\')?>"> <!--enha-->
 ' -e '/id="menu-top"/ {
 i\
-<div id="bartop"></div>\
-<div id="barbottom"></div>
+<div id="bartop"></div> <!--enha-->\
+<div id="barbottom"></div> <!--enha-->
 n; a\
-        <button id="menu-settings" class="dropdown-toggle btn-default" role="button" data-toggle="dropdown" data-target="#" href="#"><i class="fa fa-gear"></i></button>
+        <button id="menu-settings" class="dropdown-toggle btn-default" role="button" data-toggle="dropdown" data-target="#" href="#"><i class="fa fa-gear"></i></button> <!--enha-->
 }
 ' -e $'/class="home"/ i\
-    <a href="http://www.runeaudio.com/forum/raspberry-pi-f7.html" target="_blank" alt="RuneAudio Forum">\
-        <img class="logo" src="<?=$this->asset(\'/img/runelogo.svg\')?>">\
-    </a>
+    <a href="http://www.runeaudio.com/forum/raspberry-pi-f7.html" target="_blank" alt="RuneAudio Forum"> <!--enha-->\
+        <img class="logo" src="<?=$this->asset(\'/img/runelogo.svg\')?>"> <!--enha-->\
+    </a> <!--enha-->
 ' -e '/id="play"/ a\
-        <button id="pause" class="btn btn-default btn-cmd" title="Pause" data-cmd="play"><i class="fa fa-pause"></i></button>
+        <button id="pause" class="btn btn-default btn-cmd" title="Pause" data-cmd="play"><i class="fa fa-pause"></i></button> <!--enha-->
 ' -e '/^\s*<a id="menu-settings"\|id="clock-display"\|href="\/"><i class="fa fa-play"\|logo.png/ {s/^/<!--enha/; s/$/enha-->/}
 ' -e '/dropdown-menu/ a\
-            <li id="dropdownbg"></li>
+            <li id="dropdownbg"></li> <!--enha-->
 ' -e $'/Credits/ a\
-            <li class="<?=$this->uri(1, \'dev\', \'active\')?>"><a href="/dev/"><i class="fa fa-code"></i> Development</a></li>
+            <li class="<?=$this->uri(1, \'dev\', \'active\')?>"><a href="/dev/"><i class="fa fa-code"></i> Development</a></li> <!--enha-->
 ' -e '/id="open-panel-sx"/ s/^/<!--enha/
 ' -e '/id="open-panel-dx"/ {
 s/$/enha-->/
 a\
-        <li id="open-panel-sx"><a><i class="fa fa-folder-open"></i></a></li>\
-        <li id="open-playback" class="active"><a><i class="fa fa-play-circle"></i></a></li>\
-        <li id="open-panel-dx"><a><i class="fa fa-list-ul"></i></a></li>
+        <li id="open-panel-sx"><a><i class="fa fa-folder-open"></i></a></li> <!--enha-->\
+        <li id="open-playback" class="active"><a><i class="fa fa-play-circle"></i></a></li> <!--enha-->\
+        <li id="open-panel-dx"><a><i class="fa fa-list-ul"></i></a></li> <!--enha-->
 }
 ' $file
 
