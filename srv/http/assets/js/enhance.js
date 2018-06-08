@@ -541,9 +541,7 @@ librarytop = 0;
 queuetop = 0;
 
 // new knob
-seek = 0;
 function mpdseek( seekto ) {
-	seek = 1;
 	if ( GUI.state !== 'stop' ) {
 		clearInterval( GUI.currentKnob );
 		clearInterval( GUI.countdown );
@@ -1613,6 +1611,7 @@ onsetmode = 0;
 function setplaybackdata() {
 	$.post( '/enhancestatus.php', function( data ) {
 		var status = JSON.parse( data );
+		// song and album before update for song/album change detection
 		var previoussong = $( '#currentsong' ).text();
 		var previousalbum = $( '#currentalbum' ).text();
 		// volume
@@ -1663,6 +1662,8 @@ function setplaybackdata() {
 		var dot = dot0.replace( ' id="dot0"', '' );
 		var ext = ( status.ext !== 'radio' ) ? dot + status.ext : '';
 		$( '#format-bitrate' ).html( dot0 + status.sampling + ext );
+		if ( !GUI.json.song ) GUI.json.song = status.song;
+		
 		if ( status.ext === 'radio' ) {
 			if ( $( '#cover-art' ).css( 'background-image' ) !== 'url("assets/img/cover-radio.jpg")' ) {
 				$( '#cover-art' ).css( 'background-image', 'url("assets/img/cover-radio.jpg")' );
@@ -1671,11 +1672,12 @@ function setplaybackdata() {
 			$( '#total' ).text( '' );
 			return;
 		} else {
-			if ( !seek && status.Album !== previousalbum ) {
+			if ( status.Album !== previousalbum ) {
 				var covercachenum = Math.floor( Math.random() * 1001 );
 				$( '#cover-art' ).css( 'background-image', 'url("/coverart/?v=' + covercachenum + '")' );
 			}
 		}
+
 		// time
 		time = status.Time;
 		$( '#total' ).text( converthms( time ) );
