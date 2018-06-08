@@ -155,6 +155,8 @@ a\
                     $plistArray[ $plCounter ][ "url" ] = $webradiourl;\
                 } //enha1
 }
+' -e '/hDel('webradios', $label)/ a\
+            $redis->hDel('sampling', $label); //enha
 ' $file
 
 # start/stop local browser
