@@ -90,10 +90,6 @@ sed -i -e '/<div class="tab-content">/ i\
 <?php include "enhanceplayback.php"; //enha ?>
 ' -e '/id="context-menus"/ i\
 <?php } //enha ?>
-' -e '/id="modal-webradio-add/ i\
-<?php /* //enha
-' -e '/id="overlay-social"/ i\
-//enha */ ?>
 ' -e 's|</input>||; s|</img>||
 ' $file
 
