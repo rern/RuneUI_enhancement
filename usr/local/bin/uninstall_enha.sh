@@ -77,7 +77,7 @@ sed -i -e '/^\/\*enha\|^enha\*\// d
 
 file=/srv/http/app/libs/runeaudio.php
 echo $file
-sed -i -e '/\/\/enha0/, /\/\/enha1/ d
+sed -i -e '/\/\/enha0$/, /\/\/enha1$/ d
 ' -e '/^\/\*enha\|^enha\*\// d
 ' -e '/\/\/enha$/ d
 ' -e 's/^\/\/xenha//
