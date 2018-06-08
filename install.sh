@@ -144,9 +144,9 @@ a\
 
 file=/srv/http/app/libs/runeaudio.php
 echo $file
-sed -i -e '/function addRadio/ i\/*enha
+sed -i -e '/function addRadio/ i\/* //enha
 ' -e '/function ui_notify(/ i\
-enha*/\
+//enha */\
 include( "/srv/http/app/libs/enhanceradio.php" );
 ' -e '/browseMode = TRUE/ a\
         if ( preg_match( "/playlist: Webradio/", $plistLine ) ) { //enha0\
@@ -169,11 +169,11 @@ a\
 file=/srv/http/app/settings_ctl.php
 echo $file
 sed -i '$ a\
-if ( $template->local_browser ) {\
+if ( $template->local_browser ) { //enha0\
     exec( "/usr/bin/sudo /usr/bin/xinit &> /dev/null &" );\
 } else {\
     exec( "/usr/bin/sudo /usr/bin/killall Xorg" );\
-}
+} //enha1
 ' $file
 
 # for rune youtube
