@@ -2,6 +2,34 @@
 include( '/srv/http/app/libs/runeaudio.php' );
 $mpd = openMpdSocket('/run/mpd.sock');
 
+function status2array( $lines ) {
+	$line = strtok( $lines, "\n" );
+	while ( $line !== false ) {
+		$pair = explode( ': ', $line, 2 );
+		$key = $pair[ 0 ];
+		$val = $pair[ 1 ];
+		if ( $key === 'elapsed' ) {
+			$val = round( $val );
+		} else if ( $key === 'bitrate' ) {
+			$val = $val * 1000;
+		}
+		if ( $key !== 'O' ) $status[ $key ] = $val; // skip 'OK' lines
+		if ( $key === 'audio') {
+			$audio = explode( ':', $val );
+			$status[ 'bitdepth' ] = $audio[ 1 ];
+			$status[ 'samplerate' ] = $audio[ 0 ];
+		}
+		$line = strtok( "\n" );
+	}
+	if ( array_key_exists( 'bitrate', $status ) ) {
+		$sampling = substr( $status[ 'file' ], 0, 4 ) === 'http' ? '' : $status[ 'bitdepth' ].' bit ';
+		$sampling.= round( $status[ 'samplerate' ] / 1000, 1 ).' kHz '.$status[ 'bitrate' ].' kbit/s';
+		$status[ 'sampling' ] = $sampling;
+	} else {
+		$status[ 'sampling' ] = '&nbsp;';
+	}
+	return $status;
+}
 function samplingline( $bitdepth, $samplerate, $bitrate ) {
 	if ( $bitdepth == 'N/A' ) {
 		$bitdepth = ( $ext === 'WAV' || $ext === 'AIFF' ) ? ( $bitrate / $samplerate / 2 ).' bit ' : '';
@@ -24,25 +52,23 @@ $cmdlist = "command_list_begin\n"
 	."command_list_end";
 sendMpdCommand( $mpd, $cmdlist );
 $status = readMpdResponse( $mpd );
-$status = arrayLines( $status );
+$status = status2array( $status );
+
+// fix: initially add song without play - currentsong = (blank)
+if ( !isset( $status[ 'file' ] ) ) {
+	sendMpdCommand( $mpd, 'playlistinfo 0' );
+	$status0 = readMpdResponse( $mpd );
+	$status0 = status2array( $status0 );
+	$status = array_merge( $status, $status0 );
+	$status[ 'song' ] = 0;
+}
+
 if ( isset( $status[ 'error' ] ) && $status[ 'state' ] !== 'stop' ) {
 	sendMpdCommand( $mpd, 'stop' );
 	$output = array( 'icon' => 'fa fa-exclamation-circle', 'title' => 'MPD Error', 'text' => $status[ 'error' ] );
 	ui_render( 'notify', json_encode( $output ) );
 }
 
-$redis = new Redis(); 
-$redis->pconnect( '127.0.0.1' );
-$status[ 'volumemute' ] = $redis->get( 'volumemute' );
-// fix: webradio at 1st item which not yet played - currentsong = (blank)
-if ( !isset( $status[ 'file' ] ) ) {
-	sendMpdCommand( $mpd, 'playlistinfo 0' );
-	$status1 = readMpdResponse( $mpd );
-	$status1 = arrayLines( $status1 );
-	$status[ 'file' ] = $status1[ 'file' ];
-	$status[ 'song' ] = $status[ 'playlistlength' ] - 1;
-	if ( substr( $status[ 'file' ], 0, 4 ) === "http" ) $status[ 'ext' ] = 'radio';
-}
 $file = $status[ 'file' ];
 $pathinfo = pathinfo( $file );
 $ext = strtoupper( $pathinfo[ 'extension' ] );
@@ -56,6 +82,10 @@ if ( $status[ 'ext' ] === 'radio' ) {
 	$status[ 'time' ] = '';
 	$status[ 'elapsed' ] = '';
 }
+
+$redis = new Redis(); 
+$redis->pconnect( '127.0.0.1' );
+$status[ 'volumemute' ] = $redis->get( 'volumemute' );
 
 // sampling >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 if ( $status[ 'state' ] === 'play' ) {
