@@ -81,19 +81,19 @@ echo $file
 release=$( redis-cli get release )
 if [[ $release == 0.4b ]]; then
 sed -i -e '/<div class="screen-saver-content"/ i\
-<?php\
-if ( $this->remoteSStime != -1 ) {\
-?>
+<?php if ( $this->remoteSStime != -1 ) { //enha ?>
 ' -e '/<div class="tab-content">/ i\
-<?php\
-}\
-?>
+<?php } //enha ?>
 ' $file
 fi
 sed -i -e '/<div class="tab-content">/ i\
-<?php include "enhanceplayback.php";\
-/\*
-' -e '/id="context-menus"/ i\enh \*/?>
+<?php include "enhanceplayback.php"; //enha ?>
+' -e '/id="context-menus"/ i\
+<?php } //enha ?>
+' -e '/id="modal-webradio-add/ i\
+<?php /* //enha
+' -e '/id="overlay-social"/ i\
+//enha */ ?>
 ' -e 's|</input>||; s|</img>||
 ' $file
 
