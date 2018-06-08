@@ -147,7 +147,7 @@ echo $file
 sed -i -e '/function addRadio/ i\/*enha
 ' -e '/function ui_notify(/ i\
 enha*/\
-include( "/srv/http/app/libs/webradio.php" );
+include( "/srv/http/app/libs/enhanceradio.php" );
 ' -e '/browseMode = TRUE/ a\
         if ( preg_match( "/playlist: Webradio/", $plistLine ) ) { //enha0\
             $redis = new Redis();\
