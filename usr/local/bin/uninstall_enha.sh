@@ -41,8 +41,6 @@ echo $file
 sed -i -e 's|RuneUIe|RuneAudio - RuneUI|
 ' -e '/<!--enha-->/ d
 ' -e 's/<!--enha\|enha-->//g
-' -e '/fa-folder-open"><.i><.a>/,/fa-list"><.i><.a>/ d
-' -e '/a href="http:..www.runeaudio.com/, /<.a>/ d
 ' -e 's/data-cmd="toggle"/data-cmd="play"/
 ' -e 's|\("tab".*"fa fa-\)folder-open"></i></a>|\1music"></i> Library</a>|
 ' -e 's|\("tab".*"fa fa-play\)-circle"></i>|\1"></i> Playback|
