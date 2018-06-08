@@ -138,8 +138,8 @@ $( '#db-index li' ).click( function() {
 		var datapathindex = '^'+ indextext;
 	}
 	var matcharray = $( '#database-entries li' ).filter( function() {
-		// strip leading articles
-		var name = $( this ).attr( 'data-path' ).replace( /^a |^an |^the /i, '' );
+		// strip leading A, An, The
+		var name = $( this ).attr( 'data-path' ).replace( /^a *|^an *|^the */i, '' );
 		return name.match( new RegExp( datapathindex ) );
 	} );
 	if ( matcharray.length ) window.scrollTo( 0, matcharray[0].offsetTop - topoffset );
@@ -1179,9 +1179,9 @@ function parseResponse(options) {
 	}
 	return content;
 }
-
-function stripArticles( string ) {
-	return string.replace( /^(an?|the)\s/i, '' );
+// strip leading A, An, The
+function stripAAnThe( string ) {
+	return string.replace( /^a *|^an *|^the */i, '' );
 }
 function populateDB(options) {
 	var data = options.data || '',
@@ -1210,9 +1210,9 @@ function populateDB(options) {
 // sorting
 			data.sort( function( a, b ) {
 				if ( path === 'Spotify' && querytype === '' ) {
-					return stripArticles( a[ 'name' ] ).localeCompare( stripArticles( b[ 'name' ] ) )
+					return stripAAnThe( a[ 'name' ] ).localeCompare( stripAAnThe( b[ 'name' ] ) )
 				} else if ( querytype === 'tracks' ) {
-					return stripArticles( a[ 'title' ]) .localeCompare( stripArticles( b[ 'title' ] ) )
+					return stripAAnThe( a[ 'title' ]) .localeCompare( stripAAnThe( b[ 'title' ] ) )
 				} else {
 					return 0;
 				}
@@ -1249,9 +1249,9 @@ function populateDB(options) {
 // sorting
 			data.sort( function( a, b ) {
 				if ( querytype === 'childs' || querytype === 'categories' ) {
-					return stripArticles( a[ 'title' ] ).localeCompare( stripArticles( b[ 'title' ] ) )
+					return stripAAnThe( a[ 'title' ] ).localeCompare( stripAAnThe( b[ 'title' ] ) )
 				} else if ( querytype === 'childs-stations' || querytype === 'stations' ) {
-					return stripArticles( a[ 'name' ] ).localeCompare( stripArticles( b[ 'name' ] ) )
+					return stripAAnThe( a[ 'name' ] ).localeCompare( stripAAnThe( b[ 'name' ] ) )
 			   } else {
 					return 0;
 				}
@@ -1279,7 +1279,7 @@ function populateDB(options) {
 // sorting
 			data.sort( function( a, b ) {
 				if ( path === 'Jamendo' && querytype === '' ) {
-					return stripArticles( a[ 'dispname' ] ).localeCompare( stripArticles( b[ 'dispname' ] ) )
+					return stripAAnThe( a[ 'dispname' ] ).localeCompare( stripAAnThe( b[ 'dispname' ] ) )
 				} else {
 					return 0;
 				}
@@ -1347,7 +1347,7 @@ function populateDB(options) {
 						prop = 'file';
 					}
 				}
-				return stripArticles( a[ prop ] ).localeCompare( stripArticles( b[ prop ] ) );
+				return stripAAnThe( a[ prop ] ).localeCompare( stripAAnThe( b[ prop ] ) );
 			});
 			for (i = 0; (row = data[i]); i += 1) {
 				content += parseResponse({
@@ -1613,6 +1613,8 @@ onsetmode = 0;
 function setplaybackdata() {
 	$.post( '/enhancestatus.php', function( data ) {
 		var status = JSON.parse( data );
+		var previoussong = $( '#currentsong' ).text();
+		var previousalbum = $( '#currentalbum' ).text();
 		// volume
 		$volumetransition.css( 'transition-duration', '0s' ); // suppress initial rotate animation
 		$volumeRS.setValue( status.volume );
@@ -1653,20 +1655,23 @@ function setplaybackdata() {
 			// scroll info text
 			scrollText();
 		} );
-
+		
+		$( '#playlist-position span' ).html( ( Number( status.song ) + 1 ) +'/'+ status.playlistlength );
+//		if ( !GUI.json.song ) GUI.json.song = status.song;
+		
 		var dot0 = '<a id="dot0" style="color:#ffffff"> &#8226; </a>';
-		$( '#playlist-position span' ).html( status.song ? ( Number( status.song ) + 1 ) +'/'+ status.playlistlength : '&nbsp;' );		var dot = dot0.replace( ' id="dot0"', '' );
+		var dot = dot0.replace( ' id="dot0"', '' );
 		var ext = ( status.ext !== 'radio' ) ? dot + status.ext : '';
 		$( '#format-bitrate' ).html( dot0 + status.sampling + ext );
 		if ( status.ext === 'radio' ) {
 			if ( $( '#cover-art' ).css( 'background-image' ) !== 'url("assets/img/cover-radio.jpg")' ) {
 				$( '#cover-art' ).css( 'background-image', 'url("assets/img/cover-radio.jpg")' );
 			}
-			$( '#elapsed' ).html( GUI.state === 'play' ? '<a class="dot">.</a> <a class="dot dot2">.</a> <a class="dot dot3">.</a>' : '' );
+			$( '#elapsed' ).html( status.state === 'play' ? '<a class="dot">.</a> <a class="dot dot2">.</a> <a class="dot dot3">.</a>' : '' );
 			$( '#total' ).text( '' );
 			return;
 		} else {
-			if ( !seek ) {
+			if ( !seek && status.Album !== previousalbum ) {
 				var covercachenum = Math.floor( Math.random() * 1001 );
 				$( '#cover-art' ).css( 'background-image', 'url("/coverart/?v=' + covercachenum + '")' );
 			}
@@ -1726,26 +1731,15 @@ function setplaybackdata() {
 			mmss = converthms( elapsed );
 			$( '#elapsed' ).text( mmss );
 		}, 1000 );
-	} );
 	
-	// song changed
-	var currentalbumstring = status.Artist +' - '+ status.Album;
-	if ( GUI.currentsong !== status.Title || GUI.currentalbum !== currentalbumstring ) {
-		GUI.currentsong = status.Title;
-		$( '#playlist-entries li ' ).removeClass( 'active' );
-		$( '#playlist-entries' ).find( 'li' ).eq( parseInt( GUI.json.song ) ).addClass( 'active' );
-		
-		if ( $( '#lyricscontainer' ).length && $( '#lyricscontainer' ).is( ':visible' ) )  getlyrics();
-	}
-	// album changed
-	if ( GUI.currentalbum === currentalbumstring || $( '#coverart' ).hasClass( 'hide' ) ) return;
-	GUI.currentalbum = currentalbumstring;
-	if ( status.ext !== 'radio' ) {
-		var covercachenum = Math.floor( Math.random() * 1001 );
-		$( '#cover-art' ).css( 'background-image', 'url("/coverart/?v=' + covercachenum + '")' );
-	} else {
-		$( '#cover-art' ).css( 'background-image', 'url("assets/img/cover-radio.jpg")' );
-	}
+		// playlist current song ( and lyrics if installed )
+		if ( status.Title !== previoussong || status.Album !== previousalbum ) {
+			$( '#playlist-entries li ' ).removeClass( 'active' );
+			$( '#playlist-entries' ).find( 'li' ).eq( parseInt( status.song ) ).addClass( 'active' );
+			
+			if ( $( '#lyricscontainer' ).length && $( '#lyricscontainer' ).is( ':visible' ) )  getlyrics();
+		}
+	} );
 }
 function converthms( second ) {
 	var hh = Math.floor( second / 3600 );
