@@ -63,7 +63,7 @@ fi
 
 file=/srv/http/app/templates/playback.php
 echo $file
-sed -i '/enhanceplayback.php\|^<?php\s*\/\*enha\|enha\*\/\s*?>$/ d' $file
+sed -i '\|//enha| d' $file
 
 file=/srv/http/app/settings_ctl.php
 echo $file
