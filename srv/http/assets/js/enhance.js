@@ -190,6 +190,10 @@ $( '#db-level-up' ).click( function() {
 	
 	window.scrollTo( 0, dbtop );
 });
+// fix; hide spinner on cancel
+$('#modal-webradio-add button[data-dismiss="modal"], #modal-webradio-add').click( function() {
+	$('#spinner-db').addClass('hide');
+} );
 
 $( '#open-library' ).click( function() {
 	$( '#open-panel-sx' ).click();
@@ -943,7 +947,11 @@ function renderLibraryHome() {
 		content += '<i class="fa fa-hdd-o"></i><h4>USB drives <span>('+ obj.USBMounts +')</span></h4></div></div>';
 	}
 	if ( chkKey( obj.webradio ) ) {
-		content += divOpen +'<div id="home-webradio" class="home-block'+ toggleMPD +'" data-path="Webradio"><i class="fa fa-microphone"></i><h4>Webradios <span>('+ obj.webradio +')</span></h4></div></div>';
+		if ( obj.webradio === 0 ) {
+			content += divOpen +'<div id="home-webradio" class="home-block' + toggleMPD + '" href="#" data-toggle="modal" data-target="#modal-webradio-add"><i class="fa fa-microphone"></i><h4>Webradios <span>('+ obj.webradio +')</span></h4></div></div>';
+		} else {
+			content += divOpen +'<div id="home-webradio" class="home-block'+ toggleMPD +'" data-path="Webradio"><i class="fa fa-microphone"></i><h4>Webradios <span>('+ obj.webradio +')</span></h4></div></div>';
+		}
 	}
 	content += divOpen +'<div id="home-albums" class="home-block'+ toggleMPD +'" data-path="Albums" data-browsemode="album"><i class="fa fa-dot-circle-o"></i><h4>Albums</h4></div></div>';
 	content += divOpen +'<div id="home-artists" class="home-block'+ toggleMPD +'" data-path="Artists" data-browsemode="artist"><i class="fa fa-user"></i><h4>Artists</h4></div></div>';
