@@ -702,9 +702,15 @@
 	margin: 0 12px;
 	vertical-align: -6%;
 }
+.db-action {
+	margin: 0 !important;
+}
 #database-entries li .fa-music,
 #database-entries li .fa-microphone {
 	margin: 0 6px;
+}
+.fa-dot-circle-o:before {
+	content: '\f04d';
 }
 /* ---------------------- breadcrumb and index ---------------------- */
 #db-currentpath {
@@ -714,6 +720,7 @@
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	font-size: 18px !important;
 }
 #db-home {
 	width: 40px;
@@ -729,6 +736,7 @@
 	z-index: 10;
 }
 #db-currentpath a {
+	font-size: 18px;
 	color: #0095d8;
 }
 #database-entries {
