@@ -35,7 +35,7 @@ if ( isset( $_POST[ 'redis' ] ) ) {
 }
 
 
-include( '/srv/http/app/libs/runeaudio.php' );
+include '/srv/http/app/libs/runeaudio.php';
 $mpd = openMpdSocket('/run/mpd.sock');
 
 // MPD telnet command (protocol)
