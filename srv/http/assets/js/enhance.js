@@ -19,6 +19,7 @@ if ( /\/.*\//.test( location.pathname ) === true ) {
 	
 	return;
 }
+
 // fix: midori renders box-shadow incorrectly
 if ( /Midori/.test( navigator.userAgent ) ) {
 	$( 'head link[rel="stylesheet"]').last().after( '<link rel="stylesheet" href="/css/midori.css">' )
@@ -118,7 +119,14 @@ $( '#db-home' ).click( function() {
 	renderLibraryHome();
 } );
 $( '#db-currentpath' ).on( 'click', 'a', function() {
-	getDB( { path: $( this ).attr( 'data-path' ) } );
+	var path = $( this ).attr( 'data-path' );
+	var mode = {
+		  Artists  : 'artist'
+		, Albums   : 'album'
+		, Genres   : 'genre'
+		, Composer : 'composer'
+	}
+	getDB( { browsemode: mode[ path ], path: path } );
 	window.scrollTo( 0, 0 );
 } );
 
@@ -145,9 +153,43 @@ $( '#db-index li' ).click( function() {
 	if ( matcharray.length ) window.scrollTo( 0, matcharray[0].offsetTop - topoffset );
 } );
 dbtop = 0;
+$( '#db-level-up' ).off( 'click' );
 $( '#db-level-up' ).click( function() {
+	GUI.currentDBpos[ 10 ]--;
+	var path = GUI.currentpath;
+	if ( GUI.currentDBpos[ 10 ] === 0 ) {
+		path = '';
+	} else {
+		if ( GUI.browsemode === 'file' ) {
+			var cutpos = path.lastIndexOf( '/' );
+			path = ( cutpos !== -1 ) ? path.slice( 0, cutpos ) : '';
+		} else {
+			var arpath = {
+				  album       : 'Albums'
+				, artist      : 'Artists'
+				, composer    : 'Composer'
+				, genre       : 'Genres'
+				, albumfilter : path
+			};
+			path = GUI.currentDBpath[ GUI.currentDBpos[ 10 ] - 1 ];
+			if ( path === '' && GUI.currentDBpos[ 10 ] === 1 ) {
+				path = arpath[ GUI.browsemode ];
+			} else {
+				GUI.browsemode = GUI.browsemode !== 'artist' ? 'artist' : 'genre'; 
+			}
+		}
+	}
+	
+	getDB( { 
+		browsemode: GUI.browsemode,
+		path: path,
+		plugin: GUI.plugin,
+		uplevel: 1
+	} );
+	GUI.plugin = '';
+	
 	window.scrollTo( 0, dbtop );
-} );
+});
 
 $( '#open-library' ).click( function() {
 	$( '#open-panel-sx' ).click();
@@ -155,10 +197,6 @@ $( '#open-library' ).click( function() {
 
 $( '#play-group, #share-group, #vol-group' ).click( function() {
 	if ( window.innerWidth < 499 ) buttonactive = 1;
-} );
-// fix: hide on cancel / close
-$( '#home-webradio' ).click( function() {
-	//$('#spinner-db').addClass('hide');
 } );
 
 window.addEventListener( 'orientationchange', function() {
@@ -907,7 +945,7 @@ function renderLibraryHome() {
 	if ( chkKey( obj.webradio ) ) {
 		content += divOpen +'<div id="home-webradio" class="home-block'+ toggleMPD +'" data-path="Webradio"><i class="fa fa-microphone"></i><h4>Webradios <span>('+ obj.webradio +')</span></h4></div></div>';
 	}
-	content += divOpen +'<div id="home-albums" class="home-block'+ toggleMPD +'" data-path="Albums" data-browsemode="album"><i class="fa fa-stop"></i><h4>Albums</h4></div></div>';
+	content += divOpen +'<div id="home-albums" class="home-block'+ toggleMPD +'" data-path="Albums" data-browsemode="album"><i class="fa fa-dot-circle-o"></i><h4>Albums</h4></div></div>';
 	content += divOpen +'<div id="home-artists" class="home-block'+ toggleMPD +'" data-path="Artists" data-browsemode="artist"><i class="fa fa-user"></i><h4>Artists</h4></div></div>';
 	content += divOpen +'<div id="home-composer" class="home-block'+ toggleMPD +'" data-path="Composer" data-browsemode="composer"><i class="fa fa-pencil"></i><h4>Composers</h4></div></div>';
 	content += divOpen +'<div id="home-genre" class="home-block' + toggleMPD +'" data-path="Genres" data-browsemode="genre"><i class="fa fa-tag"></i><h4>Genres</h4></div></div>';
@@ -1181,6 +1219,7 @@ function parseResponse(options) {
 function stripAAnThe( string ) {
 	return string.replace( /^a *|^an *|^the */i, '' );
 }
+
 function populateDB(options) {
 	var data = options.data || '',
 		path = options.path || '',
@@ -1302,7 +1341,7 @@ function populateDB(options) {
 		// browsing
 			$('#database-entries').removeClass('hide');
 // ****************************************************************************************
-// show breascrumb and index bar
+// show breadcrumb and index bar
 			$( '#db-currentpath, #db-level-up' ).removeClass( 'hide' );
 // ****************************************************************************************
 			$('#home-blocks').addClass('hide');
@@ -1315,46 +1354,77 @@ function populateDB(options) {
 				var results = (data.length) ? data.length : '0';
 				var s = (data.length === 1) ? '' : 's';
 // ****************************************************************************************
-// hide breascrumb and index bar
+// hide breadcrumb and index bar
 				$( '#db-currentpath, #db-index' ).addClass( 'hide' );
 				$( '#database-entries' ).css( 'width', '100%' );
 				$( '#db-search-results' ).removeClass( 'hide' ).html( '<i class="fa fa-times sx"></i><span class="visible-xs-inline"></span><span class="hidden-xs">' + results + ' result' + s + ' for "<span class="keyword">' + keyword + '</span>"</span>' );
 			}
 // sorting
-			data.sort( function( a, b ) {
-				if ( path === 'Albums' ) {
-					prop = 'album';
-				} else if ( path === 'Artists' || path === 'AlbumArtists'|| path === 'Various Artists' ) {
-					prop = 'artist';
-				} else if ( path === 'Composer' ) {
-					prop = 'composer';
-				} else if ( path === 'Genres' ) {
-					prop = 'genre';
-				} else if ( path === 'Webradio' ) {
-					prop = 'playlist';
-				} else {
-					prop = 'directory';
-				}
-				
-				if ( a[ prop ] === undefined ) {
-					if ( GUI.browsemode === 'artist' ) {
-						prop = 'album';
-					} else if ( GUI.browsemode === 'genre' ) {
-						prop = 'artist';
+			if ( data[ 0 ].directory || data[ 0 ].file ) {
+				var arraydir = [];
+				var arrayfile = [];
+				$.each( data, function( index, value ) {
+					if ( value.directory ) {
+						arraydir.push( value );
 					} else {
-						prop = 'file';
+						arrayfile.push( value );
 					}
+				} );
+				arraydir.sort( function( a, b ) {
+					return stripAAnThe( a[ 'directory' ] ).localeCompare( stripAAnThe( b[ 'directory' ] ) );
+				} );
+				for ( i = 0; row = arraydir[ i ]; i++ ) {
+					content += parseResponse( {
+						inputArr: row,
+						respType: 'db',
+						i: i,
+						inpath: path
+					} );
 				}
-				return stripAAnThe( a[ prop ] ).localeCompare( stripAAnThe( b[ prop ] ) );
-			});
-			for (i = 0; (row = data[i]); i += 1) {
-				content += parseResponse({
-					inputArr: row,
-					respType: 'db',
-					i: i,
-					inpath: path
+				// files sorted by track numbers
+/*				arrayfile.sort( function( a, b ) {
+					return a[ 'file' ].localeCompare( b[ 'file' ] );
+				} );*/
+				for ( i = 0; row = arrayfile[ i ]; i++ ) {
+					content += parseResponse( {
+						inputArr: row,
+						respType: 'db',
+						i: i,
+						inpath: path
+					} );
+				}
+			} else {
+				var type = {
+					  Albums            : 'album'
+					, Artists           : 'artist'
+					, AlbumArtists      : 'artist'
+					, 'Various Artists' : 'artist'
+					, Composer          : 'composer'
+					, Genres            : 'genre'
+					, Webradio          : 'playlist'
+				};
+				prop = type[ path ] ? type[ path ] : 'directory';
+				
+				data.sort( function( a, b ) {
+					if ( a[ prop ] === undefined ) {
+						if ( GUI.browsemode === 'artist' ) {
+							prop = 'album';
+						} else if ( GUI.browsemode === 'genre' ) {
+							prop = 'artist';
+						}
+					}
+					return stripAAnThe( a[ prop ] ).localeCompare( stripAAnThe( b[ prop ] ) );
 				});
+				for ( i = 0; row = data[ i ]; i++ ) {
+					content += parseResponse( {
+						inputArr: row,
+						respType: 'db',
+						i: i,
+						inpath: path
+					} );
+				}
 			}
+			
 			$databaseentries.innerHTML = content;
 			setTimeout( function() {
 				window.scrollTo( 0, 0 );
@@ -1368,31 +1438,21 @@ function populateDB(options) {
 			} else {
 				$( '#db-level-up' ).removeClass( 'hide' );
 				$( '#db-webradio-add' ).addClass( 'hide' );
-// ****************************************************************************************
 			}
 		}
 	}
-	var breadcrumb = $('span', '#db-currentpath');
-	if (GUI.browsemode === 'album') {
-		if (path === 'Albums') {
-			breadcrumb.html('ALBUMS');
-		} else {
-			breadcrumb.html('ALBUMS / ' + path);
-		}
-	} else if (GUI.browsemode === 'artist') {
-		if (path === 'Artists') {
-			breadcrumb.html('ARTISTS');
-		} else {
-			breadcrumb.html('ARTISTS / ' + path);
-		}
-	} else if (GUI.browsemode === 'genre') {
-		if (path === 'Genres') {
-			breadcrumb.html('GENRES');
-		} else {
-			breadcrumb.html('GENRES / ' + path);
-		}
+// 
+	var breadcrumb = $( 'span', '#db-currentpath' );
+	var dot = '<span style="color: #587ca0"> &#8226; </span>';
+	if ( GUI.browsemode === 'album' ) {
+		breadcrumb.html( '<a data-path="Albums">A L B U M S</a>'+ ( path === 'Albums' ? '' : dot + path ) );
+	} else if ( GUI.browsemode === 'artist' ) {
+		breadcrumb.html( '<a data-path="Artists">A R T I S T S</a>'+ ( path === 'Artists' ? '' : dot + path ) );
+	} else if ( GUI.browsemode === 'genre' ) {
+		breadcrumb.html( '<a data-path="Genres">G E N R E S</a>'+ ( path === 'Genres' ? '' : dot + path ) );
+	} else if ( GUI.browsemode === 'composer' ) {
+		breadcrumb.html( '<a data-path="Composer">C O M P O S E R S</a>'+ ( path === 'Composer' ? '' : dot + path ) );
 	} else {
-// ****************************************************************************************
 // breadcrumb add - library directory path link
 		var folder = path.split( '/' );
 		var folderPath = '';
