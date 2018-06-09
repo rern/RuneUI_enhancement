@@ -45,6 +45,34 @@ if ( isset( $_POST[ 'mpd' ] ) ) {
 }
 
 // volume
+function status2array( $lines ) {
+	$line = strtok( $lines, "\n" );
+	while ( $line !== false ) {
+		$pair = explode( ': ', $line, 2 );
+		$key = $pair[ 0 ];
+		$val = $pair[ 1 ];
+		if ( $key === 'elapsed' ) {
+			$val = round( $val );
+		} else if ( $key === 'bitrate' ) {
+			$val = $val * 1000;
+		}
+		if ( $key !== 'O' ) $status[ $key ] = $val; // skip 'OK' lines
+		if ( $key === 'audio') {
+			$audio = explode( ':', $val );
+			$status[ 'bitdepth' ] = $audio[ 1 ];
+			$status[ 'samplerate' ] = $audio[ 0 ];
+		}
+		$line = strtok( "\n" );
+	}
+	if ( array_key_exists( 'bitrate', $status ) ) {
+		$sampling = substr( $status[ 'file' ], 0, 4 ) === 'http' ? '' : $status[ 'bitdepth' ].' bit ';
+		$sampling.= round( $status[ 'samplerate' ] / 1000, 1 ).' kHz '.$status[ 'bitrate' ].' kbit/s';
+		$status[ 'sampling' ] = $sampling;
+	} else {
+		$status[ 'sampling' ] = '&nbsp;';
+	}
+	return $status;
+}
 if ( isset( $_POST[ 'volume' ] ) ) {
 	// normal
 	if ( $_POST[ 'volume' ] != -1 ) {
@@ -61,7 +89,7 @@ if ( isset( $_POST[ 'volume' ] ) ) {
 			."command_list_end";
 		sendMpdCommand( $mpd, $cmdlist );
 		$status = readMpdResponse( $mpd );
-		$vol = arrayLines( $status )[ 'volume' ];
+		$vol = status2array( $status )[ 'volume' ];
 		$redis->set( 'volumemute', $vol );
 		echo $vol;
 	} else {
