@@ -1,5 +1,5 @@
 <?php
-include( '/srv/http/app/libs/runeaudio.php' );
+include '/srv/http/app/libs/runeaudio.php';
 $mpd = openMpdSocket('/run/mpd.sock');
 
 function status2array( $lines ) {
