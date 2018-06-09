@@ -1360,6 +1360,10 @@ function populateDB(options) {
 				$( '#db-search-results' ).removeClass( 'hide' ).html( '<i class="fa fa-times sx"></i><span class="visible-xs-inline"></span><span class="hidden-xs">' + results + ' result' + s + ' for "<span class="keyword">' + keyword + '</span>"</span>' );
 			}
 // sorting
+			if ( !data.length ) {
+				$( '#db-currentpath a' ).click();
+				return;
+			}
 			if ( data[ 0 ].directory || data[ 0 ].file ) {
 				var arraydir = [];
 				var arrayfile = [];
@@ -1398,13 +1402,18 @@ function populateDB(options) {
 					  Albums            : 'album'
 					, Artists           : 'artist'
 					, AlbumArtists      : 'artist'
-					, 'Various Artists' : 'artist'
+					, Various           : 'artist'
 					, Composer          : 'composer'
 					, Genres            : 'genre'
 					, Webradio          : 'playlist'
-				};
+				}
 				prop = type[ path ] ? type[ path ] : 'directory';
-				
+				// filter out 'various' artists
+				if ( path === 'Artists' ) {
+					data = data.filter( function( el ) {
+						return el[ 'artist' ].search( /^\(*various\)* *|^\(*va\)* */i ) === -1; 
+					} );
+				}
 				data.sort( function( a, b ) {
 					if ( a[ prop ] === undefined ) {
 						if ( GUI.browsemode === 'artist' ) {
@@ -1463,6 +1472,8 @@ function populateDB(options) {
 				folderCrumb += ' / ';
 			}
 			folderPath += folder[ i ];
+			if ( folder[ i ] === 'Webradio' ) folder[ i ] = 'W E B R A D I O S';
+			if ( folder[ i ] === 'USB' ) folder[ i ] = 'U S B';
 			folderCrumb += '<a data-path="'+ folderPath +'">'+ folder[ i ] +'</a>';
 		}
 		breadcrumb.html( folderCrumb );
