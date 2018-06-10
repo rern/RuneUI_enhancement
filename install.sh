@@ -10,8 +10,7 @@ alias=enha
 installstart $@
 
 # temp fix: remove uninstall leftover
-sed -i -e 's|fa-music sx"></i> Library\(.\);|fa-folder-open"></i>\1|
-' -e 's|</i>"></i>|</i>|
+sed -i 's|fa-music sx"></i> Library\(.\);|fa-folder-open"></i>\1|
 ' /srv/http/assets/js/runeui.js
 
 mv /srv/http/app/coverart_ctl.php{,.backup}
