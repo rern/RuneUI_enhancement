@@ -520,6 +520,7 @@
 #volume { /* volume up/down */
 	position: relative;
 }
+#timesource,
 #timestop,
 #voluprs,
 #voldnrs {
@@ -532,6 +533,7 @@
 	z-index: 10;
 	cursor: pointer;
 }
+#timesource,
 #voluprs {
 	top: 45px;
 }
