@@ -253,7 +253,6 @@ var $hammercoverT = new Hammer( document.getElementById( 'coverT' ) );
 var $hammercoverL = new Hammer( document.getElementById( 'coverL' ) );
 var $hammercoverM = new Hammer( document.getElementById( 'coverM' ) );
 var $hammercoverR = new Hammer( document.getElementById( 'coverR' ) );
-var $hammercoverBL = new Hammer( document.getElementById( 'coverBL' ) );
 var $hammercoverBR = new Hammer( document.getElementById( 'coverBR' ) );
 var $hammersonginfo = new Hammer( document.getElementById( 'songinfo-open' ) );
 var $hammervolume = new Hammer( document.getElementById( 'volume' ) );
@@ -340,17 +339,16 @@ $( '#closebio' ).click( function() {
 	$( '#songinfo-open' ).show(); // fix button not hidden
 	if ( !barhide ) $( '#menu-top, #menu-bottom' ).show();
 } );
-$( '#coverTL' ).click( function() {
+$( '#timesource' ).click( function() {
 	$( '#overlay-playsource-open' ).click();
-	$( '#controls' ).hide();
 } );
 $( '#coverTR' ).click( function() {
-	$( '#controls' ).toggle();
-} );
-$hammercoverT.on( 'tap', function( e ) {
 	$( '#menu-top, #menu-bottom' ).toggle();
 	barhide = $( '#menu-top' ).is( ':hidden' ) ? 1 : 0;
 	$( '#controls' ).hide();
+} );
+$hammercoverT.on( 'tap', function( e ) {
+	$( '#controls' ).toggle();
 	e.stopPropagation();
 } );
 $hammercoverL.on( 'tap', function( e ) {
@@ -378,32 +376,30 @@ $hammercoverR.on( 'tap', function( e ) {
 	$( '#controls' ).hide();
 	e.stopPropagation();
 } );
-[ $hammercoverBL, $hammercoverBR ].forEach( function( el ) {
-	el.on( 'tap', function( e ) {
-		buttonactive = 0;
-		var time = $( '#time-knob' ).is( ':visible' );
-		var coverart = $( '#coverart' ).is( ':visible' );
-		var volume = redis.display.volume != 0 && redis.display.volumempd != 0 && $( '#volume-knob' ).is( ':visible' );
-		if ( buttonhide == 0 
-			|| $( '#play-group' ).is( ':visible' )
-			|| $( '#share-group' ).is( ':visible' )
-			|| $( '#vole-group' ).is( ':visible' )
-			) {
-			buttonhide = 1;
-			$( '#play-group, #share-group, #vol-group' ).hide();
-		} else {
-			buttonhide = 0;
-			if ( time ) $( '#play-group' ).show();
-			if ( coverart ) $( '#share-group' ).show();
-			if ( volume ) $( '#vol-group' ).show();
-		}
-		
-		if ( window.innerHeight < 414 && $( '#play-group' ).is( ':hidden' ) ) {
-			$( '#play-group, #share-group, #vol-group' ).css( 'margin-top', '10px' );
-		}
-		$( '#controls' ).hide();
-		e.stopPropagation();
-	} );
+$hammercoverBR.on( 'tap', function( e ) {
+	buttonactive = 0;
+	var time = $( '#time-knob' ).is( ':visible' );
+	var coverart = $( '#coverart' ).is( ':visible' );
+	var volume = redis.display.volume != 0 && redis.display.volumempd != 0 && $( '#volume-knob' ).is( ':visible' );
+	if ( buttonhide == 0 
+		|| $( '#play-group' ).is( ':visible' )
+		|| $( '#share-group' ).is( ':visible' )
+		|| $( '#vole-group' ).is( ':visible' )
+		) {
+		buttonhide = 1;
+		$( '#play-group, #share-group, #vol-group' ).hide();
+	} else {
+		buttonhide = 0;
+		if ( time ) $( '#play-group' ).show();
+		if ( coverart ) $( '#share-group' ).show();
+		if ( volume ) $( '#vol-group' ).show();
+	}
+	
+	if ( window.innerHeight < 414 && $( '#play-group' ).is( ':hidden' ) ) {
+		$( '#play-group, #share-group, #vol-group' ).css( 'margin-top', '10px' );
+	}
+	$( '#controls' ).hide();
+	e.stopPropagation();
 } );
 
 var timeoutId;
