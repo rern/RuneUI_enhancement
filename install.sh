@@ -88,7 +88,7 @@ sed -i -e '/<div class="screen-saver-content"/ i\
 fi
 sed -i -e '/<div class="tab-content">/ i\
 <?php include "enhanceplayback.php"; //enha ?>\
-<?php if(0){//enha
+<?php if(0){//enha ?>
 ' -e '/id="context-menus"/ i\
 <?php }//enha ?>
 ' -e 's|</input>||; s|</img>||
