@@ -623,8 +623,19 @@
 .tab-pane {
 	height: 100vh;
 }
+.home-block {
+	padding: 30px 30px 10px 30px;
+}
+.home-block i {
+	font-size: 48px;
+}
 #home-blocks h4 {
+	font-weight: 300;
 	color: #e0e7ee;
+}
+#home-blocks h4 span {
+	font-weight: 600;
+	font-size: 16px;
 }
 #home-blocks h4 span {
 	color: #587ca0;
