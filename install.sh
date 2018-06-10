@@ -83,13 +83,14 @@ if [[ $release == 0.4b ]]; then
 sed -i -e '/<div class="screen-saver-content"/ i\
 <?php if ( $this->remoteSStime != -1 ) { //enha ?>
 ' -e '/<div class="tab-content">/ i\
-<?php } //enha ?>
+<?php }//enha ?>
 ' $file
 fi
 sed -i -e '/<div class="tab-content">/ i\
 <?php include "enhanceplayback.php"; //enha ?>
+<?php if(0){//enha
 ' -e '/id="context-menus"/ i\
-<?php } //enha ?>
+<?php }//enha ?>
 ' -e 's|</input>||; s|</img>||
 ' $file
 
