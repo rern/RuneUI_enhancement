@@ -300,7 +300,7 @@ $hammerbarright.on( 'tap', function() {
 // lastfm search
 [ $hammerartist, $hammersonginfo ].forEach( function( el ) {
 	el.on( 'tap', function() {
-		if ( GUI.json.currentartist.slice( 0, 3 ) === '[no' ) return; 
+		if ( GUI.json.file.slice( 0, 4 ) === 'http' ) return;
 		barhide = $( '#menu-top' ).is(':visible') ? 0 : 1;
 		$( '#loader' ).removeClass( 'hide' );
 		
@@ -512,9 +512,10 @@ $hammerlibrary.on( 'tap', function( e ) {
 		, message: 'Select items to show:'
 		, checkboxhtml : '<form id="displaysavelibrary">\
 						<label><input name="bar" type="checkbox" '+ redis.display.bar +'>&ensp;Top-Bottom menu</label>\
-						<br><label><input name="nas" type="checkbox" '+ redis.display.nas +'>&ensp;Network mounts</label>\
-						<br><label><input name="usb" type="checkbox" '+ redis.display.usb +'>&ensp;USB storage</label>\
-						<br><label><input name="webradio" type="checkbox" '+ redis.display.webradio +'>&ensp;My Webradios</label>\
+						<br><label><input name="nas" type="checkbox" '+ redis.display.nas +'>&ensp;Network mounts</label>'
+						+ ( GUI.libraryhome.localStorages ? '<br><label><input name="sd" type="checkbox" '+ redis.display.sd +'>&ensp;Local SD</label>' : '' )
+						+'<br><label><input name="usb" type="checkbox" '+ redis.display.usb +'>&ensp;USB drives</label>\
+						<br><label><input name="webradio" type="checkbox" '+ redis.display.webradio +'>&ensp;Webradios</label>\
 						<br><label><input name="albums" type="checkbox" '+ redis.display.albums +'>&ensp;Albums</label>\
 						<br><label><input name="artists" type="checkbox" '+ redis.display.artists +'>&ensp;Artists</label>\
 						<br><label><input name="composer" type="checkbox" '+ redis.display.composer +'>&ensp;Composers</label>\
@@ -857,6 +858,7 @@ function displayplayback() {
 function displaylibrary() {
 	// no 'id'
 	$( '#home-blocks div:contains(Network mounts)' ).toggleClass( 'hide', !redis.display.nas );
+	$( '#home-local' ).parent().toggleClass( 'hide', !redis.display.sd );
 	$( '#home-usb' ).parent().toggleClass( 'hide', !redis.display.usb );
 	$( '#home-webradio' ).parent().toggleClass( 'hide', !redis.display.webradio );
 	$( '#home-albums' ).parent().toggleClass( 'hide', !redis.display.albums );
@@ -934,10 +936,10 @@ function renderLibraryHome() {
 	}
 	if ( chkKey( obj.networkMounts ) ) {
 		content += divOpen +'<a id="home-nas" class="home-block'+ toggleMPD +'"'+ ( obj.networkMounts === 0 ? ( notMPD ? '' : ' href="/sources/add/"' ) : ' data-path="NAS"' ) +'>';
-		content += '<i class="fa fa-sitemap"></i><h4>Network mounts <span>(' + obj.networkMounts + ')</span></h4></a></div>';
+		content += '<i class="fa fa-sitemap"></i><h4>Network drives <span>(' + obj.networkMounts + ')</span></h4></a></div>';
 	}
 	if ( chkKey( obj.localStorages ) ) {
-		content += ( obj.localStorages === 0 ) ? '' : divOpen +'<div id="home-local" class="home-block'+ toggleMPD +'" data-path="LocalStorage"><i class="fa fa-hdd-o"></i><h4>LocalStorage <span>('+ obj.localStorages +')</span></h4></div></div>';
+		content += ( obj.localStorages === 0 ) ? '' : divOpen +'<div id="home-local" class="home-block'+ toggleMPD +'" data-path="LocalStorage"><i class="fa fa-hdd-o"></i><h4>SD card <span>('+ obj.localStorages +')</span></h4></div></div>';
 	}
 	if ( chkKey( obj.USBMounts ) ) {
 		content += divOpen +'<div id="home-usb" class="home-block'+ toggleMPD +'"'+ ( obj.USBMounts === 0 ? ( notMPD ? '' : ' href="/sources/sources/"' ) : ' data-path="USB"' ) +'>';
@@ -1459,10 +1461,10 @@ function populateDB(options) {
 	var breadcrumb = $( 'span', '#db-currentpath' );
 	var dot = '<span style="color: #587ca0"> &#8226; </span>';
 	var mode = {
-		  album    : [ 'Albums', 'A L B U M S' ]
-		, artist   : [ 'Artists', 'A R T I S T S' ]
-		, genre    : [ 'Genres', 'G E N R E S' ]
-		, composer : [ 'Composer', 'C O M P O S E R S' ]
+		  album    : [ 'Albums', 'A L B U M' ]
+		, artist   : [ 'Artists', 'A R T I S T' ]
+		, genre    : [ 'Genres', 'G E N R E' ]
+		, composer : [ 'Composer', 'C O M P O S E R' ]
 	}
 	if ( GUI.browsemode !== 'file' ) {
 		var dot = ( path === mode[ GUI.browsemode ][ 0 ] ) ? '' : dot + path;
@@ -1481,9 +1483,9 @@ function populateDB(options) {
 			folderPath += foldername;
 			var name = {
 				  USB          : 'U S B'
-				, Webradio     : 'W E B R A D I O S'
+				, Webradio     : 'W E B R A D I O'
 				, LocalStorage : 'S D'
-				, NAS          : 'N A S'
+				, NAS          : 'N E T W O R K'
 			}
 			if ( name [ foldername ] ) foldername = name [ foldername ];
 			folderCrumb += '<a data-path="'+ folderPath +'">'+ foldername +'</a>';
