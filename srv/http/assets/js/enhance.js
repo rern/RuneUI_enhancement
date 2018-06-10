@@ -119,6 +119,7 @@ $( '#db-home' ).click( function() {
 	renderLibraryHome();
 } );
 $( '#db-currentpath' ).on( 'click', 'a', function() {
+	if ( $( '#db-currentpath span' ).children().length === 1 ) return;
 	var path = $( this ).attr( 'data-path' );
 	var mode = {
 		  Artists  : 'artist'
@@ -1458,36 +1459,42 @@ function populateDB(options) {
 			}
 		}
 	}
-// 
+// breadcrumb add - library directory path link
 	var breadcrumb = $( 'span', '#db-currentpath' );
 	var dot = '<span style="color: #587ca0"> &#8226; </span>';
-	if ( GUI.browsemode === 'album' ) {
-		breadcrumb.html( '<a data-path="Albums">A L B U M S</a>'+ ( path === 'Albums' ? '' : dot + path ) );
-	} else if ( GUI.browsemode === 'artist' ) {
-		breadcrumb.html( '<a data-path="Artists">A R T I S T S</a>'+ ( path === 'Artists' ? '' : dot + path ) );
-	} else if ( GUI.browsemode === 'genre' ) {
-		breadcrumb.html( '<a data-path="Genres">G E N R E S</a>'+ ( path === 'Genres' ? '' : dot + path ) );
-	} else if ( GUI.browsemode === 'composer' ) {
-		breadcrumb.html( '<a data-path="Composer">C O M P O S E R S</a>'+ ( path === 'Composer' ? '' : dot + path ) );
+	var mode = {
+		  album    : [ 'Albums', 'A L B U M S' ]
+		, artist   : [ 'Artists', 'A R T I S T S' ]
+		, genre    : [ 'Genres', 'G E N R E S' ]
+		, composer : [ 'Composer', 'C O M P O S E R S' ]
+	}
+	if ( GUI.browsemode !== 'file' ) {
+		var dot = ( path === mode[ GUI.browsemode ][ 0 ] ) ? '' : dot + path;
+		breadcrumb.html( '<a data-path="'+ mode[ GUI.browsemode ][ 0 ] +'">'+ mode[ GUI.browsemode ][ 1 ] +'</a>'+ dot );
 	} else {
-// breadcrumb add - library directory path link
 		var folder = path.split( '/' );
 		var folderPath = '';
 		var folderCrumb = '';
-		for ( i = 0; i < folder.length; i++ ) {
+		var ilength = folder.length;
+		for ( i = 0; i < ilength; i++ ) {
 			if ( i !== 0 ) {
 				folderPath += '/';
 				folderCrumb += ' / ';
 			}
-			folderPath += folder[ i ];
-			if ( folder[ i ] === 'Webradio' ) folder[ i ] = 'W E B R A D I O S';
-			if ( folder[ i ] === 'USB' ) folder[ i ] = 'U S B';
-			folderCrumb += '<a data-path="'+ folderPath +'">'+ folder[ i ] +'</a>';
+			var foldername = folder[ i ];
+			folderPath += foldername;
+			var name = {
+				  USB          : 'U S B'
+				, Webradio     : 'W E B R A D I O S'
+				, LocalStorage : 'S D'
+				, NAS          : 'N A S'
+			}
+			if ( name [ foldername ] ) foldername = name [ foldername ];
+			folderCrumb += '<a data-path="'+ folderPath +'">'+ foldername +'</a>';
 		}
 		breadcrumb.html( folderCrumb );
-// ****************************************************************************************
 	}
-	
+// ****************************************************************************************
 	if (uplevel) {
 		var position = GUI.currentDBpos[GUI.currentDBpos[10]];
 		$('#db-' + position).addClass('active');
