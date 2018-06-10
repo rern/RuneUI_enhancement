@@ -26,12 +26,14 @@
 					<button id="overlay-playsource-open" class="btn btn-default btn-xs">MPD</button>
 					<span id="elapsed"></span>
 					<span id="total"></span>
+					<div id="timesource"></div>
+					<div id="timestop"></div>
 				</div>
 				<div id="play-group">
 					<div class="btn-group">
 						<button id="repeat" class="btn btn-default btn-lg btn-cmd btn-toggle" type="button" title="Repeat" data-cmd="repeat"><i class="fa fa-repeat"></i></button>
 						<button id="random" class="btn btn-default btn-lg btn-cmd btn-toggle" type="button" title="Random" data-cmd="random"><i class="fa fa-random"></i></button>
-						<button id="single" class="btn btn-default btn-lg btn-cmd btn-toggle <?php if ($this->activePlayer === 'Spotify'): ?>disabled<?php endif; ?>" type="button" title="Single" data-cmd="single"><i class="fa fa-dot-circle-o"></i></button>
+						<button id="single" class="btn btn-default btn-lg btn-cmd btn-toggle <?php if ($this->activePlayer === 'Spotify'): ?>disabled<?php endif; ?>" type="button" title="Single" data-cmd="single"><i class="fa fa-thumb-tack"></i></button>
 					</div>
 				</div>
 				<div id="coverart">
@@ -40,7 +42,9 @@
 					<div id="coverTL" class="covermap t0 w50 h50 m-115"></div>
 					<div id="coverT" class="covermap t0 w130 h50 m-65"></div>
 					<div id="coverTR" class="covermap t0 w50 h50 m65"></div>
+					<div id="coverBL" class="covermap t180 w50 h50 m-115"></div>
 					<div id="coverB" class="covermap t180 w130 h50 m-65"></div>
+					<div id="coverBR" class="covermap t180 w50 h50 m65"></div>
 					<div id="coverM" class="covermap t50 w130 h130 m-65"></div>
 					<div id="coverL" class="covermap t50 w50 h130 m-115"></div>
 					<div id="coverR" class="covermap t50 w50 h130 m65"></div>
@@ -116,7 +120,7 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 		<div class="btnlist btnlist-top">
 			<button id="pl-filter-results" class="btn hide" type="button" title="Close filter results and go back to the playing Queue"><i class="fa fa-times sx"></i></button>
 			<div id="pl-manage">
-				<i id="pl-manage-list" class="fa fa-file-text-o fa-lg" title="Manage playlists"></i>
+				<i id="pl-manage-list" class="fa fa-list-ol fa-lg" title="Manage playlists"></i>
 				<i id="pl-manage-save" class="fa fa-save fa-lg" title="Save current queue as playlist" data-toggle="modal" data-target="#modal-pl-save"></i>
 				<!--<i id="pl-import-youtube" class="fa fa-youtube-play" title="Import a playlist or video from youtube." data-toggle="modal" data-target="#modal-pl-youtube"></i>-->
 				<i id="pl-manage-clear" class="fa fa-trash-o fa-lg" title="Clear the playing queue" data-toggle="modal" data-target="#modal-pl-clear"></i>
@@ -141,18 +145,9 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 			<ul id="pl-detail" class="playlist hide">
 				<!-- playlist entries -->
 			</ul>
-			<div id="playlist-warning" class="playlist hide">
-				<div class="col-sm-12">
-					<h1 class="txtmid">Playing queue</h1>
-				</div>
-				<div class="col-sm-6 col-sm-offset-3">
-					<div class="empty-block">
-						<i class="fa fa-exclamation"></i>
-						<h3>Empty queue</h3>
-						<p>Add some entries from your library</p>
-						<p><a id="open-library" href="#panel-sx" class="btn btn-primary btn-lg" data-toggle="tab">Browse Library</a></p>
-					</div>
-				</div>
+			<div id="playlist-warning" class="playlist hide" style="margin-top: 27px; text-align: center;">
+				<i class="fa fa-plus-circle open-sx" style="font-size: 30px; color: #0095d8; cursor: pointer;"></i><br>
+				<p style="margin-top: 26px; color: #587ca0;">Add something from Library</p>
 			</div>
 		</div>
 		<div id="spinner-pl" class="csspinner duo hide"></div>

@@ -151,6 +151,10 @@
 #divartist, #divalbum {
 	height: 25px;
 }
+#currentalbum a {
+	font-size: 14px;
+	color: #587ca0;
+}
 #sampling {
 	text-align: center;
 	height: 40px;
@@ -158,9 +162,7 @@
 #sampling span {
 	padding: 0;
 }
-#dot0 {
-	display: none;
-}
+
 /* ---------------------- info scrolling ----------------------*/
 .scroll-left {
  overflow: hidden;
@@ -321,7 +323,7 @@
 #volume {
 	font-size: 38px !important;
 	font-weight: 300 !important;
-	color: #e0e7ee !important;
+	color: #e0e7ee;
 	opacity: 1; /* fix volume text color */
 }
 #elapsed {
@@ -335,6 +337,7 @@
 }
 #total {
 	top: 120px;
+	color: #587ca0;
 }
 #volume,
 #total {
@@ -413,19 +416,6 @@
 #info span,
 .biosimilar {
 	cursor: pointer;
-}
-
-@keyframes blink {
-	50% { color: transparent }
-}
-.dot {
-	animation: 1s blink infinite
-}
-.dot2 {
-	animation-delay: 250ms
-}
-.dot3 {
-	animation-delay: 500ms
 }
 
 /* ------------------- roundSlider ------------------- */
@@ -530,6 +520,8 @@
 #volume { /* volume up/down */
 	position: relative;
 }
+#timesource,
+#timestop,
 #voluprs,
 #voldnrs {
 	position: absolute;
@@ -541,11 +533,31 @@
 	z-index: 10;
 	cursor: pointer;
 }
+#timesource,
 #voluprs {
 	top: 45px;
 }
+#timestop,
 #voldnrs {
 	top: 145px;
+}
+
+@keyframes blink {
+	50% { color: transparent }
+}
+.dot {
+	animation: 1s blink infinite;
+	line-height: 8px;
+	vertical-align: 100%;
+}
+.dot2 {
+	animation-delay: 250ms;
+}
+.dot3 {
+	animation-delay: 500ms;
+}
+#dot0 {
+	display: none;
 }
 
 /* ---------------------- bio ---------------------- */
@@ -611,6 +623,23 @@
 .tab-pane {
 	height: 100vh;
 }
+.home-block {
+	padding: 30px 30px 10px 30px;
+}
+.home-block i {
+	font-size: 48px;
+}
+#home-blocks h4 {
+	font-weight: 300;
+	color: #e0e7ee;
+}
+#home-blocks h4 span {
+	font-weight: 600;
+	font-size: 16px;
+}
+#home-blocks h4 span {
+	color: #587ca0;
+}
 #db-currentpath div,
 #db-currentpath i,
 #db-currentpath span {
@@ -650,13 +679,69 @@
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
+#database-entries .db-icon,
+#database-entries li span i,
+#pl-editor li span i,
+#playlist-entries li:before {
+	margin: 0 6px;
+	font-size: 24px;
+	line-height: 1.2em;
+	color: #587ca0 !important;
+}
+#playlist-entries li:before {
+	margin-top: 9px;
+}
+#database-entries .sn,
+#playlist-entries .sn {
+	padding-top: 8px;
+}
+#database-entries .sn span,
+#playlist-entries .sn span {
+	font-size: 18px;
+	color: #587ca0 !important;
+}
+#playlist-entries li.active:before,
+#playlist-entries li.active .sn span {
+	color: #34495e !important;
+}
+#playlist-entries li.radio:before {
+	content: "";
+}
+#playlist-entries li.radio {
+	margin: 0;
+}
+#database-entries li .fa,
+#pl-editor .fa-list-ul {
+	margin: 0 12px;
+	vertical-align: -6%;
+}
+.db-action {
+	margin: 0 !important;
+}
+#database-entries li .fa-music,
+#database-entries li .fa-microphone {
+	margin: 0 6px;
+}
+.fa-dot-circle-o:before {
+	content: '\f04d';
+}
 /* ---------------------- breadcrumb and index ---------------------- */
 #db-currentpath {
 	float: left;
 	width: calc( 100% - 240px );
+	margin-left: -12px;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	font-size: 18px !important;
+}
+#db-home {
+	width: 40px;
+	padding-left: 7px;
+	background: #0095d8;
+}
+#db-home:hover {
+	background: #0072a5;
 }
 .btnlist-top {
 	top: 0;
@@ -664,6 +749,7 @@
 	z-index: 10;
 }
 #db-currentpath a {
+	font-size: 18px;
 	color: #0095d8;
 }
 #database-entries {
@@ -688,6 +774,10 @@
 	background: #34495e;
 }
 
+.ui-pnotify-icon {
+	font-size: 18px;
+	margin-top: -3px;
+}
 /* ---------------------- responsive ----------------------*/
 @media(max-width: 749px) {
 	#playback-row {
@@ -898,6 +988,41 @@
 	#pl-filter-results span,
 	#pl-count {
 		display: none !important;
+	}
+}
+@media(min-width: 480px) {
+	#playlist-entries li.radio:before {
+		content: "\f130";
+	}
+}
+@media(max-width: 480px) {
+	#database-entries li .fa-folder {
+		display: none;
+	}
+	#database-entries li .fa {
+		margin: 0;
+	}
+	#database-entries .db-folder {
+		padding-left: 5px;
+	}
+	#database-entries .sn,
+	#database-entries .bl,
+	#playlist-entries .sn,
+	#playlist-entries .bl {
+		padding-left: 15px;
+	}
+	#playlist-entries span.sn {
+		margin-top: -3px;
+		padding-top: 0;
+	}
+	#database-entries .sn,
+	#database-entries .sn span,
+	#playlist-entries .sn,
+	#playlist-entries .sn span {
+		font-size: 16px;
+	}
+	#playlist-entries li .fa {
+		line-height: 30px;
 	}
 }
 @media(max-width: 375px) {

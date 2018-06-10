@@ -9,6 +9,9 @@ alias=enha
 
 installstart $@
 
+# temp fix: remove uninstall leftover
+sed -i 's|fa-music sx"></i> Library\(.\);|fa-folder-open"></i>\1|' /srv/http/assets/js/runeui.js
+
 mv /srv/http/app/coverart_ctl.php{,.backup}
 mv /srv/http/assets/js/runeui.min.js{,.backup}
 
@@ -21,33 +24,33 @@ file=/srv/http/app/templates/header.php
 echo $file
 sed -i -e 's/RuneAudio - RuneUI/RuneUIe/
 ' -e $'/runeui.css/ a\
-    <link rel="stylesheet" href="<?=$this->asset(\'/css/roundslider.min.css\')?>">\
-    <link rel="stylesheet" href="<?=$this->asset(\'/css/enhance.css\')?>">
+    <link rel="stylesheet" href="<?=$this->asset(\'/css/roundslider.min.css\')?>"> <!--enha-->\
+    <link rel="stylesheet" href="<?=$this->asset(\'/css/enhance.css\')?>"> <!--enha-->
 ' -e '/id="menu-top"/ {
 i\
-<div id="bartop"></div>\
-<div id="barbottom"></div>
+<div id="bartop"></div> <!--enha-->\
+<div id="barbottom"></div> <!--enha-->
 n; a\
-        <button id="menu-settings" class="dropdown-toggle btn-default" role="button" data-toggle="dropdown" data-target="#" href="#"><i class="fa fa-gear"></i></button>
+        <button id="menu-settings" class="dropdown-toggle btn-default" role="button" data-toggle="dropdown" data-target="#" href="#"><i class="fa fa-gear"></i></button> <!--enha-->
 }
 ' -e $'/class="home"/ i\
-    <a href="http://www.runeaudio.com/forum/raspberry-pi-f7.html" target="_blank" alt="RuneAudio Forum">\
-        <img class="logo" src="<?=$this->asset(\'/img/runelogo.svg\')?>">\
-    </a>
+    <a href="http://www.runeaudio.com/forum/raspberry-pi-f7.html" target="_blank" alt="RuneAudio Forum"> <!--enha-->\
+        <img class="logo" src="<?=$this->asset(\'/img/runelogo.svg\')?>"> <!--enha-->\
+    </a> <!--enha-->
 ' -e '/id="play"/ a\
-        <button id="pause" class="btn btn-default btn-cmd" title="Pause" data-cmd="play"><i class="fa fa-pause"></i></button>
+        <button id="pause" class="btn btn-default btn-cmd" title="Pause" data-cmd="play"><i class="fa fa-pause"></i></button> <!--enha-->
 ' -e '/^\s*<a id="menu-settings"\|id="clock-display"\|href="\/"><i class="fa fa-play"\|logo.png/ {s/^/<!--enha/; s/$/enha-->/}
 ' -e '/dropdown-menu/ a\
-            <li id="dropdownbg"></li>
+            <li id="dropdownbg"></li> <!--enha-->
 ' -e $'/Credits/ a\
-            <li class="<?=$this->uri(1, \'dev\', \'active\')?>"><a href="/dev/"><i class="fa fa-code"></i> Development</a></li>
+            <li class="<?=$this->uri(1, \'dev\', \'active\')?>"><a href="/dev/"><i class="fa fa-code"></i> Development</a></li> <!--enha-->
 ' -e '/id="open-panel-sx"/ s/^/<!--enha/
 ' -e '/id="open-panel-dx"/ {
 s/$/enha-->/
 a\
-        <li id="open-panel-sx"><a><i class="fa fa-folder-open"></i></a></li>\
-        <li id="open-playback" class="active"><a><i class="fa fa-play-circle"></i></a></li>\
-        <li id="open-panel-dx"><a><i class="fa fa-list"></i></a></li>
+        <li id="open-panel-sx"><a><i class="fa fa-folder-open"></i></a></li> <!--enha-->\
+        <li id="open-playback" class="active"><a><i class="fa fa-play-circle"></i></a></li> <!--enha-->\
+        <li id="open-panel-dx"><a><i class="fa fa-list-ul"></i></a></li> <!--enha-->
 }
 ' $file
 
@@ -78,19 +81,16 @@ echo $file
 release=$( redis-cli get release )
 if [[ $release == 0.4b ]]; then
 sed -i -e '/<div class="screen-saver-content"/ i\
-<?php\
-if ( $this->remoteSStime != -1 ) {\
-?>
+<?php if ( $this->remoteSStime != -1 ) { //enha ?>
 ' -e '/<div class="tab-content">/ i\
-<?php\
-}\
-?>
+<?php }//enha ?>
 ' $file
 fi
 sed -i -e '/<div class="tab-content">/ i\
-<?php include "enhanceplayback.php";\
-/\*
-' -e '/id="context-menus"/ i\enh \*/?>
+<?php include "enhanceplayback.php"; //enha ?>\
+<?php if(0){//enha ?>
+' -e '/id="context-menus"/ i\
+<?php }//enha ?>
 ' -e 's|</input>||; s|</img>||
 ' $file
 
@@ -105,15 +105,70 @@ enha*/
 ' -e 's|fa-music sx"></i> Library|fa-folder-open"></i>|
 ' $file
 
+file=/srv/http/db/index.php
+echo $file
+sed -i '/echo getPlayQueue($mpd)/ {
+s|^|//|;
+a\
+                $playlist = getPlayQueue( $mpd ); //enha0\
+                if ( preg_match( "/file: http/", $playlist ) ) {\
+                    $redis = new Redis();\
+                    $redis->pconnect( "127.0.0.1" );\
+                }\
+                $line = strtok( $playlist."\\nfile", "\\n" );\
+                while ( $line !== false ) {\
+                    if ( strpos( $line, "file" ) === 0 && $data ) {\
+                        $file = $data[ "file" ];\
+                        if ( substr( $file, 0, 4 ) === "http" ) {\
+                            $webradios = $redis->hGetAll( "webradios" );\
+                            $webradioname = array_flip( $webradios );\
+                            $data[ "Title" ] = $webradioname[ $file ];\
+                        }\
+                        $pathinfo = pathinfo( $file );\
+                        if ( !isset( $data[ "Artist" ] ) ) $data[ "Artist" ] = basename( $pathinfo[ "dirname" ] );\
+                        if ( !isset( $data[ "Title" ] ) ) $data[ "Title" ] = $pathinfo[ "filename" ];\
+                        if ( !isset( $data[ "Album" ] ) ) $data[ "Album" ] = "";\
+                        $info[] = $data;\
+                        $data = NULL;\
+                    }\
+                    $kv = explode( ": ", $line, 2 );\
+                    if ( $kv[ 0 ] !== "OK" && $kv[ 0 ] ) $data[ $kv[ 0 ] ] = $kv[ 1 ];\
+                    $line = strtok( "\\n" );\
+                }\
+                echo json_encode( $info ); //enha1
+}
+' $file
+
+file=/srv/http/app/libs/runeaudio.php
+echo $file
+sed -i -e '/browseMode = TRUE/ a\
+        if ( preg_match( "/playlist: Webradio/", $plistLine ) ) { //enha0\
+            $redis = new Redis();\
+            $redis->pconnect( "127.0.0.1" );\
+        } //enha1
+' -e '/parseFileStr($value/ {
+s|^|//xenha|
+a\
+                $pathinfo = pathinfo( $value ); //enha0\
+                $plistArray[ $plCounter ][ "fileext" ] = $pathinfo[ "extension" ];\
+                if ( preg_match( "/^Webradio/", $value ) ) {\
+                    $webradiourl = $redis->hGet( "webradios", $pathinfo[ "filename" ] );\
+                    $plistArray[ $plCounter ][ "url" ] = $webradiourl;\
+                } //enha1
+}
+' -e '/hDel('webradios', $label)/ a\
+            $redis->hDel('sampling', $label); //enha
+' $file
+
 # start/stop local browser
 file=/srv/http/app/settings_ctl.php
 echo $file
 sed -i '$ a\
-if ( $template->local_browser ) {\
+if ( $template->local_browser ) { //enha0\
     exec( "/usr/bin/sudo /usr/bin/xinit &> /dev/null &" );\
 } else {\
     exec( "/usr/bin/sudo /usr/bin/killall Xorg" );\
-}
+} //enha1
 ' $file
 
 # for rune youtube
@@ -156,8 +211,8 @@ fi
 
 # set library home database
 if [[ $( redis-cli keys display ) == '' ]]; then
-	redis-cli hmset display bar checked pause checked time checked coverart checked volume checked buttons checked \
-	\nas checked usb checked webradio checked albums checked artists checked composer checked genre checked spotify checked dirble checked jamendo checked &> /dev/null
+	redis-cli hmset display bar checked pause checked time checked coverart checked volume checked buttons checked source checked\
+	\nas checked sd checked usb checked webradio checked albums checked artists checked composer checked genre checked spotify checked dirble checked jamendo checked &> /dev/null
 fi
 
 installfinish $@
