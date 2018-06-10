@@ -26,6 +26,7 @@
 					<button id="overlay-playsource-open" class="btn btn-default btn-xs">MPD</button>
 					<span id="elapsed"></span>
 					<span id="total"></span>
+					<div id="timesource"></div>
 					<div id="timestop"></div>
 				</div>
 				<div id="play-group">
