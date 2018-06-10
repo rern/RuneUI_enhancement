@@ -212,7 +212,7 @@ fi
 # set library home database
 if [[ $( redis-cli keys display ) == '' ]]; then
 	redis-cli hmset display bar checked pause checked time checked coverart checked volume checked buttons checked source checked\
-	\nas checked usb checked webradio checked albums checked artists checked composer checked genre checked spotify checked dirble checked jamendo checked &> /dev/null
+	\nas checked sd checked usb checked webradio checked albums checked artists checked composer checked genre checked spotify checked dirble checked jamendo checked &> /dev/null
 fi
 
 installfinish $@
