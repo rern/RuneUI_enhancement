@@ -41,7 +41,7 @@ string=$( cat <<'EOF'
 EOF
 )
 insertphp 'id="menu-top"'
-commentphp 'href="#">MENU'
+commentphp 'this->hostname' 'href="#">MENU'
 string=$( cat <<'EOF'
         <button id="menu-settings" class="dropdown-toggle btn-default" role="button" data-toggle="dropdown" data-target="#" href="#"><i class="fa fa-gear"></i></button>
 EOF
