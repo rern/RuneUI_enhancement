@@ -83,120 +83,157 @@ appendphp 'id="open-panel-dx"'
 
 file=/srv/http/app/templates/footer.php
 echo $file
-sed -i '/knob.min.js\|countdown.min.js\|jquery-ui.js/ {s/^/<!--enha/; s/$/enha-->/}' $file
+commentphp 'knob.min.js'
+commentphp 'countdown.min.js'
+commentphp 'jquery-ui.js'
+
 # must be before lyrics addon
 if ! grep -q 'lyrics.js' $file; then
-	sed -i $'$ a\
-<script src="<?=$this->asset(\'/js/vendor/roundslider.min.js\')?>"></script>\
-<script src="<?=$this->asset(\'/js/enhance.js\')?>"></script>
-	' $file
+string=$( cat <<'EOF'
+<script src="<?=$this->asset('/js/vendor/roundslider.min.js')?>"></script>\n\
+<script src="<?=$this->asset('/js/enhance.js')?>"></script>
+EOF
+)
+appendphp '$'
 else
-	sed -i $'/lyrics.js/ i\
-<script src="<?=$this->asset(\'/js/vendor/roundslider.min.js\')?>"></script>\
+string=$( cat <<'EOF'
+<script src="<?=$this->asset(\'/js/vendor/roundslider.min.js\')?>"></script>\n\
 <script src="<?=$this->asset(\'/js/enhance.js\')?>"></script>
-' $file
+EOF
+)
+insertphp 'lyrics.js'
 fi
-! grep -q 'hammer.min.js' $file && sed -i $'$ a\<script src="<?=$this->asset(\'/js/vendor/hammer.min.js\')?>"></script>' $file
-! grep -q 'propagating.js' $file && sed -i $'$ a\<script src="<?=$this->asset(\'/js/vendor/propagating.js\')?>"></script>' $file
+string=$( cat <<'EOF'
+<script src="<?=$this->asset('/js/vendor/hammer.min.js')?>"></script>
+EOF
+)
+! grep -q 'hammer.min.js' $file && appendphp '$'
+string=$( cat <<'EOF'
+<script src="<?=$this->asset('/js/vendor/propagating.js')?>"></script>
+EOF
+)
+! grep -q 'propagating.js' $file && appendphp '$'
 # 0.4b
-if grep -q 'jquery-ui.js' $file; then
-	sed -i $'/jquery-ui.js/ a\<script src="<?=$this->asset(\'/js/vendor/jquery-ui.min.js\')?>"></script>' $file
-fi
+string=$( cat <<'EOF'
+<script src="<?=$this->asset('/js/vendor/jquery-ui.min.js')?>"></script>
+EOF
+)
+[[ grep -q 'jquery-ui.js' $file ] && appendphp 'jquery-ui.js'
 
 file=/srv/http/app/templates/playback.php
 echo $file
 release=$( redis-cli get release )
 if [[ $release == 0.4b ]]; then
-sed -i -e '/<div class="screen-saver-content"/ i\
-<?php if ( $this->remoteSStime != -1 ) { //enha ?>
-' -e '/<div class="tab-content">/ i\
-<?php }//enha ?>
-' $file
+string=$( cat <<'EOF'
+<?php if ( $this->remoteSStime != -1 ) {
+EOF
+)
+insertphp '<div class="screen-saver-content"'
+string=$( cat <<'EOF'
+<?php }
+EOF
+)
+insertphp '<div class="tab-content">'
 fi
-sed -i -e '/<div class="tab-content">/ i\
-<?php include "enhanceplayback.php"; //enha ?>\
-<?php if(0){//enha ?>
-' -e '/id="context-menus"/ i\
-<?php }//enha ?>
-' -e 's|</input>||; s|</img>||
-' $file
+string=$( cat <<'EOF'
+<?php include "enhanceplayback.php";
+EOF
+)
+insertphp '<div class="tab-content">'
+commentphp '<div class="tab-content">' '^</div>$'
+# remove unused tags
+sed -i 's|</input>||; s|</img>||' $file
 
 file=/srv/http/assets/js/runeui.js
 echo $file
-sed -i -e '\|// KNOBS| i\
-/*enha
-' -e '\|// PLAYING QUEUE| i\
-enha*/
-' -e '/\.countdown(/ s|^|//|
-' -e 's|\(fa-spin"></i>\) Updating|\1|
-' -e 's|fa-music sx"></i> Library|fa-folder-open"></i>|
-' $file
+comment '// KNOBS' '// PLAYING QUEUE'
+comment '\.countdown('
+comment 'fa-spin"></i> Updating'
+string=$( cat <<'EOF'
+        $('a', '#open-panel-sx').html('<i class="fa fa-refresh fa-spin"></i>');
+EOF
+)
+append 'fa-spin"></i> Updating'
+comment 'fa-music sx"></i> Library'
+string=$( cat <<'EOF'
+        $('a', '#open-panel-sx').html('<i class="fa fa-folder-open"></i>');
+EOF
+)
+append 'fa-music sx"></i> Library'
 
 file=/srv/http/db/index.php
 echo $file
-sed -i '/echo getPlayQueue($mpd)/ {
-s|^|//|;
-a\
-                $playlist = getPlayQueue( $mpd ); //enha0\
-                if ( preg_match( "/file: http/", $playlist ) ) {\
-                    $redis = new Redis();\
-                    $redis->pconnect( "127.0.0.1" );\
+comment 'echo getPlayQueue($mpd)'
+string=$( cat <<'EOF'
+                $playlist = getPlayQueue( $mpd );\n\
+                if ( preg_match( "/file: http/", $playlist ) ) {\n\
+                    $redis = new Redis();\n\
+                    $redis->pconnect( "127.0.0.1" );\n\
                 }\
-                $line = strtok( $playlist."\\nfile", "\\n" );\
-                while ( $line !== false ) {\
-                    if ( strpos( $line, "file" ) === 0 && $data ) {\
-                        $file = $data[ "file" ];\
-                        if ( substr( $file, 0, 4 ) === "http" ) {\
-                            $webradios = $redis->hGetAll( "webradios" );\
-                            $webradioname = array_flip( $webradios );\
-                            $data[ "Title" ] = $webradioname[ $file ];\
-                        }\
-                        $pathinfo = pathinfo( $file );\
-                        if ( !isset( $data[ "Artist" ] ) ) $data[ "Artist" ] = basename( $pathinfo[ "dirname" ] );\
-                        if ( !isset( $data[ "Title" ] ) ) $data[ "Title" ] = $pathinfo[ "filename" ];\
-                        if ( !isset( $data[ "Album" ] ) ) $data[ "Album" ] = "";\
-                        $info[] = $data;\
-                        $data = NULL;\
-                    }\
-                    $kv = explode( ": ", $line, 2 );\
-                    if ( $kv[ 0 ] !== "OK" && $kv[ 0 ] ) $data[ $kv[ 0 ] ] = $kv[ 1 ];\
-                    $line = strtok( "\\n" );\
-                }\
-                echo json_encode( $info ); //enha1
-}
-' $file
+                $line = strtok( $playlist."\\nfile", "\\n" );\n\
+                while ( $line !== false ) {\n\
+                    if ( strpos( $line, "file" ) === 0 && $data ) {\n\
+                        $file = $data[ "file" ];\n\
+                        if ( substr( $file, 0, 4 ) === "http" ) {\n\
+                            $webradios = $redis->hGetAll( "webradios" );\n\
+                            $webradioname = array_flip( $webradios );\n\
+                            $data[ "Title" ] = $webradioname[ $file ];\n\
+                        }\n\
+                        $pathinfo = pathinfo( $file );\n\
+                        if ( !isset( $data[ "Artist" ] ) ) $data[ "Artist" ] = basename( $pathinfo[ "dirname" ] );\n\
+                        if ( !isset( $data[ "Title" ] ) ) $data[ "Title" ] = $pathinfo[ "filename" ];\n\
+                        if ( !isset( $data[ "Album" ] ) ) $data[ "Album" ] = "";\n\
+                        $info[] = $data;\n\
+                        $data = NULL;\n\
+                    }\n\
+                    $kv = explode( ": ", $line, 2 );\n\
+                    if ( $kv[ 0 ] !== "OK" && $kv[ 0 ] ) $data[ $kv[ 0 ] ] = $kv[ 1 ];\n\
+                    $line = strtok( "\\n" );\n\
+                }\n\
+                echo json_encode( $info );
+EOF
+)
+append 'echo getPlayQueue($mpd)'
 
 file=/srv/http/app/libs/runeaudio.php
 echo $file
-sed -i -e '/browseMode = TRUE/ a\
-        if ( preg_match( "/playlist: Webradio/", $plistLine ) ) { //enha0\
-            $redis = new Redis();\
-            $redis->pconnect( "127.0.0.1" );\
-        } //enha1
-' -e '/parseFileStr($value/ {
-s|^|//xenha|
-a\
-                $pathinfo = pathinfo( $value ); //enha0\
-                $plistArray[ $plCounter ][ "fileext" ] = $pathinfo[ "extension" ];\
-                if ( preg_match( "/^Webradio/", $value ) ) {\
-                    $webradiourl = $redis->hGet( "webradios", $pathinfo[ "filename" ] );\
-                    $plistArray[ $plCounter ][ "url" ] = $webradiourl;\
-                } //enha1
-}
-' -e '/hDel('webradios', $label)/ a\
-            $redis->hDel('sampling', $label); //enha
-' $file
+string=$( cat <<'EOF'
+        if ( preg_match( "/playlist: Webradio/", $plistLine ) ) {\n\
+            $redis = new Redis();\n\
+            $redis->pconnect( "127.0.0.1" );\n\
+        }
+EOF
+)
+append 'browseMode = TRUE'
+comment 'parseFileStr($value'
+string=$( cat <<'EOF'
+                $pathinfo = pathinfo( $value );\n\
+                $plistArray[ $plCounter ][ "fileext" ] = $pathinfo[ "extension" ];\n\
+                if ( preg_match( "/^Webradio/", $value ) ) {\n\
+                    $webradiourl = $redis->hGet( "webradios", $pathinfo[ "filename" ] );\n\
+                    $plistArray[ $plCounter ][ "url" ] = $webradiourl;\n\
+                }
+EOF
+)
+append 'parseFileStr($value'
+string=$( cat <<'EOF'
+            $redis->hDel('sampling', $label);
+EOF
+)
+append 'hDel(.webradios., $label)'
 
 # start/stop local browser
 file=/srv/http/app/settings_ctl.php
 echo $file
-sed -i '$ a\
-if ( $template->local_browser ) { //enha0\
-    exec( "/usr/bin/sudo /usr/bin/xinit &> /dev/null &" );\
-} else {\
-    exec( "/usr/bin/sudo /usr/bin/killall Xorg" );\
-} //enha1
-' $file
+string=$( cat <<'EOF'
+if ( $template->local_browser ) {\n\
+    exec( "/usr/bin/sudo /usr/bin/xinit &> /dev/null &" );\n\
+} else {\n\
+    exec( "/usr/bin/sudo /usr/bin/killall Xorg" );\n\
+}
+EOF
+)
+append '$'
 
 # for rune youtube
 [[ -e /usr/local/bin/uninstall_RuneYoutube.sh ]] && sed -i '/id="pl-import-youtube"/ {s/<!--//; s/-->//}' $file
