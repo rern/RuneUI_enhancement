@@ -23,102 +23,102 @@ echo -e "$bar Modify files ..."
 
 file=/srv/http/app/templates/header.php
 echo $file
-commentphp 'RuneAudio - RuneUI'
+commentP 'RuneAudio - RuneUI'
 string=$( cat <<'EOF'
     <title>RuneUIe</title>
 EOF
 )
-appendphp 'RuneAudio - RuneUI'
+appendP 'RuneAudio - RuneUI'
 string=$( cat <<'EOF'
-    <link rel="stylesheet" href="<?=$this->asset('/css/roundslider.min.css')?>">\n\
+    <link rel="stylesheet" href="<?=$this->asset('/css/roundslider.min.css')?>">
     <link rel="stylesheet" href="<?=$this->asset('/css/enhance.css')?>">
 EOF
 )
-appendphp 'runeui.css'
+appendP 'runeui.css'
 string=$( cat <<'EOF'
-<div id="bartop"></div>\n\
+<div id="bartop"></div>
 <div id="barbottom"></div>
 EOF
 )
-insertphp 'id="menu-top"'
-commentphp 'this->hostname' 'href="#">MENU'
+insertP 'id="menu-top"'
+commentP 'this->hostname' 'href="#">MENU'
 string=$( cat <<'EOF'
         <button id="menu-settings" class="dropdown-toggle btn-default" role="button" data-toggle="dropdown" data-target="#" href="#"><i class="fa fa-gear"></i></button>
 EOF
 )
-appendphp 'href="#">MENU'
-commentphp 'href="."><i class="fa fa-play"'
+appendP 'href="#">MENU'
+commentP 'href="."><i class="fa fa-play"'
 string=$( cat <<'EOF'
             <li id="dropdownbg"></li>
 EOF
 )
-appendphp 'href="."><i class="fa fa-play"'
+appendP 'href="."><i class="fa fa-play"'
 string=$( cat <<'EOF'
             <li class="<?=$this->uri(1, 'dev', 'active')?>"><a href="/dev/"><i class="fa fa-code"></i> Development</a></li>
 EOF
 )
-appendphp 'Credits'
+appendP 'Credits'
 string=$( cat <<'EOF'
         <button id="pause" class="btn btn-default btn-cmd" title="Pause" data-cmd="play"><i class="fa fa-pause"></i></button>
 EOF
 )
-appendphp 'id="play"'
-commentphp 'class="home"'
+appendP 'id="play"'
+commentP 'class="home"'
 string=$( cat <<'EOF'
-    <a href="http://www.runeaudio.com/forum/raspberry-pi-f7.html" target="_blank" alt="RuneAudio Forum">\n\
-        <img class="logo" src="<?=$this->asset('/img/runelogo.svg')?>">\n\
+    <a href="http://www.runeaudio.com/forum/raspberry-pi-f7.html" target="_blank" alt="RuneAudio Forum">
+        <img class="logo" src="<?=$this->asset('/img/runelogo.svg')?>">
     </a>
 EOF
 )
-insertphp 'class="home"'
-commentphp 'id="open-panel-sx"' 'id="open-panel-dx"'
+insertP 'class="home"'
+commentP 'id="open-panel-sx"' 'id="open-panel-dx"'
 
 string=$( cat <<'EOF'
-        <li id="open-panel-sx"><a><i class="fa fa-folder-open"></i></a></li>\n\
-        <li id="open-playback" class="active"><a><i class="fa fa-play-circle"></i></a></li>\n\
+        <li id="open-panel-sx"><a><i class="fa fa-folder-open"></i></a></li>
+        <li id="open-playback" class="active"><a><i class="fa fa-play-circle"></i></a></li>
         <li id="open-panel-dx"><a><i class="fa fa-list-ul"></i></a></li>
 EOF
 )
-appendphp 'id="open-panel-dx"'
+appendP 'id="open-panel-dx"'
 
 file=/srv/http/app/templates/footer.php
 echo $file
-commentphp 'knob.min.js'
-commentphp 'countdown.min.js'
-commentphp 'jquery-ui.js'
+commentP 'knob.min.js'
+commentP 'countdown.min.js'
+commentP 'jquery-ui.js'
 
 # must be before lyrics addon
 if ! grep -q 'lyrics.js' $file; then
 string=$( cat <<'EOF'
-<script src="<?=$this->asset('/js/vendor/roundslider.min.js')?>"></script>\n\
+<script src="<?=$this->asset('/js/vendor/roundslider.min.js')?>"></script>
 <script src="<?=$this->asset('/js/enhance.js')?>"></script>
 EOF
 )
-appendphp '$'
+appendP '$'
 else
 string=$( cat <<'EOF'
-<script src="<?=$this->asset(\'/js/vendor/roundslider.min.js\')?>"></script>\n\
-<script src="<?=$this->asset(\'/js/enhance.js\')?>"></script>
+<script src="<?=$this->asset('/js/vendor/roundslider.min.js')?>"></script>
+<script src="<?=$this->asset('/js/enhance.js')?>"></script>
 EOF
 )
-insertphp 'lyrics.js'
+insertP 'lyrics.js'
 fi
 string=$( cat <<'EOF'
 <script src="<?=$this->asset('/js/vendor/hammer.min.js')?>"></script>
 EOF
 )
-! grep -q 'hammer.min.js' $file && appendphp '$'
+! grep -q 'hammer.min.js' $file && appendP '$'
 string=$( cat <<'EOF'
 <script src="<?=$this->asset('/js/vendor/propagating.js')?>"></script>
 EOF
 )
-! grep -q 'propagating.js' $file && appendphp '$'
+! grep -q 'propagating.js' $file && appendP '$'
 # 0.4b
 string=$( cat <<'EOF'
 <script src="<?=$this->asset('/js/vendor/jquery-ui.min.js')?>"></script>
 EOF
 )
-[[ grep -q 'jquery-ui.js' $file ] && appendphp 'jquery-ui.js'
+[[ grep -q 'jquery-ui.js' $file ] && appendP 'jquery-ui.js'
 
 file=/srv/http/app/templates/playback.php
 echo $file
@@ -128,26 +128,26 @@ string=$( cat <<'EOF'
 <?php if ( $this->remoteSStime != -1 ) {
 EOF
 )
-insertphp '<div class="screen-saver-content"'
+insertP '<div class="screen-saver-content"'
 string=$( cat <<'EOF'
 <?php }
 EOF
 )
-insertphp '<div class="tab-content">'
+insertP '<div class="tab-content">'
 fi
 string=$( cat <<'EOF'
 <?php include "enhanceplayback.php";
 EOF
 )
-insertphp '<div class="tab-content">'
-commentphp '<div class="tab-content">' '^</div>$'
+insertP '<div class="tab-content">'
+commentP '<div class="tab-content">' '^</div>$'
 # remove unused tags
 sed -i 's|</input>||; s|</img>||' $file
 
 file=/srv/http/assets/js/runeui.js
 echo $file
 comment '// KNOBS' '// PLAYING QUEUE'
-comment '\.countdown('
+comment '.countdown('
 comment 'fa-spin"></i> Updating'
 string=$( cat <<'EOF'
         $('a', '#open-panel-sx').html('<i class="fa fa-refresh fa-spin"></i>');
@@ -165,31 +165,31 @@ file=/srv/http/db/index.php
 echo $file
 comment 'echo getPlayQueue($mpd)'
 string=$( cat <<'EOF'
-                $playlist = getPlayQueue( $mpd );\n\
-                if ( preg_match( "/file: http/", $playlist ) ) {\n\
-                    $redis = new Redis();\n\
-                    $redis->pconnect( "127.0.0.1" );\n\
-                }\
-                $line = strtok( $playlist."\\nfile", "\\n" );\n\
-                while ( $line !== false ) {\n\
-                    if ( strpos( $line, "file" ) === 0 && $data ) {\n\
-                        $file = $data[ "file" ];\n\
-                        if ( substr( $file, 0, 4 ) === "http" ) {\n\
-                            $webradios = $redis->hGetAll( "webradios" );\n\
-                            $webradioname = array_flip( $webradios );\n\
-                            $data[ "Title" ] = $webradioname[ $file ];\n\
-                        }\n\
-                        $pathinfo = pathinfo( $file );\n\
-                        if ( !isset( $data[ "Artist" ] ) ) $data[ "Artist" ] = basename( $pathinfo[ "dirname" ] );\n\
-                        if ( !isset( $data[ "Title" ] ) ) $data[ "Title" ] = $pathinfo[ "filename" ];\n\
-                        if ( !isset( $data[ "Album" ] ) ) $data[ "Album" ] = "";\n\
-                        $info[] = $data;\n\
-                        $data = NULL;\n\
-                    }\n\
-                    $kv = explode( ": ", $line, 2 );\n\
-                    if ( $kv[ 0 ] !== "OK" && $kv[ 0 ] ) $data[ $kv[ 0 ] ] = $kv[ 1 ];\n\
-                    $line = strtok( "\\n" );\n\
-                }\n\
+                $playlist = getPlayQueue( $mpd );
+                if ( preg_match( "/file: http/", $playlist ) ) {
+                    $redis = new Redis();
+                    $redis->pconnect( "127.0.0.1" );
+                }
+                $line = strtok( $playlist."\nfile", "\n" );
+                while ( $line !== false ) {
+                    if ( strpos( $line, "file" ) === 0 && $data ) {
+                        $file = $data[ "file" ];
+                        if ( substr( $file, 0, 4 ) === "http" ) {
+                            $webradios = $redis->hGetAll( "webradios" );
+                            $webradioname = array_flip( $webradios );
+                            $data[ "Title" ] = $webradioname[ $file ];
+                        }
+                        $pathinfo = pathinfo( $file );
+                        if ( !isset( $data[ "Artist" ] ) ) $data[ "Artist" ] = basename( $pathinfo[ "dirname" ] );
+                        if ( !isset( $data[ "Title" ] ) ) $data[ "Title" ] = $pathinfo[ "filename" ];
+                        if ( !isset( $data[ "Album" ] ) ) $data[ "Album" ] = "";
+                        $info[] = $data;
+                        $data = NULL;
+                    }
+                    $kv = explode( ": ", $line, 2 );
+                    if ( $kv[ 0 ] !== "OK" && $kv[ 0 ] ) $data[ $kv[ 0 ] ] = $kv[ 1 ];
+                    $line = strtok( "\n" );
+                }
                 echo json_encode( $info );
 EOF
 )
@@ -198,20 +198,20 @@ append 'echo getPlayQueue($mpd)'
 file=/srv/http/app/libs/runeaudio.php
 echo $file
 string=$( cat <<'EOF'
-        if ( preg_match( "/playlist: Webradio/", $plistLine ) ) {\n\
-            $redis = new Redis();\n\
-            $redis->pconnect( "127.0.0.1" );\n\
+        if ( preg_match( "/playlist: Webradio/", $plistLine ) ) {
+            $redis = new Redis();
+            $redis->pconnect( "127.0.0.1" );
         }
 EOF
 )
 append 'browseMode = TRUE'
 comment 'parseFileStr($value'
 string=$( cat <<'EOF'
-                $pathinfo = pathinfo( $value );\n\
-                $plistArray[ $plCounter ][ "fileext" ] = $pathinfo[ "extension" ];\n\
-                if ( preg_match( "/^Webradio/", $value ) ) {\n\
-                    $webradiourl = $redis->hGet( "webradios", $pathinfo[ "filename" ] );\n\
-                    $plistArray[ $plCounter ][ "url" ] = $webradiourl;\n\
+                $pathinfo = pathinfo( $value );
+                $plistArray[ $plCounter ][ "fileext" ] = $pathinfo[ "extension" ];
+                if ( preg_match( "/^Webradio/", $value ) ) {
+                    $webradiourl = $redis->hGet( "webradios", $pathinfo[ "filename" ] );
+                    $plistArray[ $plCounter ][ "url" ] = $webradiourl;
                 }
 EOF
 )
@@ -226,10 +226,10 @@ append 'hDel(.webradios., $label)'
 file=/srv/http/app/settings_ctl.php
 echo $file
 string=$( cat <<'EOF'
-if ( $template->local_browser ) {\n\
-    exec( "/usr/bin/sudo /usr/bin/xinit &> /dev/null &" );\n\
-} else {\n\
-    exec( "/usr/bin/sudo /usr/bin/killall Xorg" );\n\
+if ( $template->local_browser ) {
+    exec( "/usr/bin/sudo /usr/bin/xinit &> /dev/null &" );
+} else {
+    exec( "/usr/bin/sudo /usr/bin/killall Xorg" );
 }
 EOF
 )
