@@ -24,11 +24,11 @@
 					<img id="controls-time" class="controls" src="/srv/http/assets/img/controls-time.svg">
 					<span id="elapsed" class="controls1"></span>
 					<span id="total" class="controls1"></span>
-					<div id="timesource"></div>
-					<div id="timeprev"></div>
-					<div id="timeplay"></div>
-					<div id="timenext"></div>
-					<div id="timestop"></div>
+					<div id="timeT" class="timemap"></div>
+					<div id="timeL" class="timemap"></div>
+					<div id="timeM" class="timemap"></div>
+					<div id="timeR" class="timemap"></div>
+					<div id="timeB" class="timemap"></div>
 				</div>
 				<div id="play-group">
 					<div class="btn-group">
@@ -39,16 +39,16 @@
 				</div>
 				<div id="coverart">
 					<img id="cover-art" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="transparent-square">
-					<img id="controls" class="controls" src="/srv/http/assets/img/controls.svg">
+					<img id="controls-cover" class="controls" src="/srv/http/assets/img/controls.svg">
 					<div id="coverTL" class="covermap t0 w50 h50 m-115"></div>
 					<div id="coverT" class="covermap t0 w130 h50 m-65"></div>
 					<div id="coverTR" class="covermap t0 w50 h50 m65"></div>
+					<div id="coverL" class="covermap t50 w50 h130 m-115"></div>
+					<div id="coverM" class="covermap t50 w130 h130 m-65"></div>
+					<div id="coverR" class="covermap t50 w50 h130 m65"></div>
 					<div id="coverBL" class="covermap t180 w50 h50 m-115"></div>
 					<div id="coverB" class="covermap t180 w130 h50 m-65"></div>
 					<div id="coverBR" class="covermap t180 w50 h50 m65"></div>
-					<div id="coverM" class="covermap t50 w130 h130 m-65"></div>
-					<div id="coverL" class="covermap t50 w50 h130 m-115"></div>
-					<div id="coverR" class="covermap t50 w50 h130 m65"></div>
 				</div>
 				<div id="share-group">
 					<div class="btn-group">
@@ -58,9 +58,9 @@
 				</div>
 				<div id="volume-knob" class="<?=$this->volume['divclass'] ?>">
 					<div id="volume" data-dynamic="<?=$this->volume['dynamic'] ?>"></div>
-					<div id="voluprs"></div>
-					<div id="volmuters"></div>
-					<div id="voldnrs"></div>
+					<div id="volT" class="volmap"></div>
+					<div id="volM" class="volmap"></div>
+					<div id="volB" class="volmap"></div>
 					<img id="controls-vol" class="controls" src="/srv/http/assets/img/controls-vol.svg">
 				</div>
 				<div id="vol-group">
