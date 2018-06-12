@@ -1,9 +1,6 @@
 <div class="tab-content" id="content">
 	<!-- PLAYBACK PANEL -->
 	<div id="playback" class="tab-pane active">
-		<div id="barleft"></div>
-		<div id="barright"></div>
-		
 		<div id="container-playback">
 			<div id="info">
 				<div id="divartist">
@@ -28,6 +25,9 @@
 					<span id="elapsed" class="controls1"></span>
 					<span id="total" class="controls1"></span>
 					<div id="timesource"></div>
+					<div id="timeprev"></div>
+					<div id="timeplay"></div>
+					<div id="timenext"></div>
 					<div id="timestop"></div>
 				</div>
 				<div id="play-group">
@@ -59,6 +59,7 @@
 				<div id="volume-knob" class="<?=$this->volume['divclass'] ?>">
 					<div id="volume" data-dynamic="<?=$this->volume['dynamic'] ?>"></div>
 					<div id="voluprs"></div>
+					<div id="volmuters"></div>
 					<div id="voldnrs"></div>
 					<img id="controls-vol" class="controls" src="/srv/http/assets/img/controls-vol.svg">
 				</div>
