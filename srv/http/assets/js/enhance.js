@@ -204,6 +204,107 @@ $( '#play-group, #share-group, #vol-group' ).click( function() {
 	if ( window.innerWidth < 499 ) buttonactive = 1;
 } );
 
+// lastfm search
+$( '#currentartist, #songinfo-open' ).click( function() {
+	if ( GUI.json.file.slice( 0, 4 ) === 'http' ) return;
+	barhide = $( '#menu-top' ).is(':visible') ? 0 : 1;
+	$( '#loader' ).removeClass( 'hide' );
+	
+	if ( $( '#bio legend' ).text() != GUI.json.currentartist ) {
+		$.get( '/enhancebio.php',
+			{ artist: GUI.json.currentartist },
+			function( data ) {
+				$( '#biocontent' ).html( data );
+				bioshow();
+			}
+		);
+	} else {
+		bioshow();
+	}
+} );
+$( '#biocontent' ).delegate( '.biosimilar', 'click', function() {
+	$( '#loader' ).removeClass( 'hide' );
+	$.get( '/enhancebio.php',
+		{ artist: $( this ).find( 'p' ).text() },
+		function( data ) {
+			$( '#biocontent' ).html( data );
+			bioshow();
+			$( '#bio' ).scrollTop( 0 );
+		}
+	);
+} );
+function bioshow() {
+	$( '#menu-top, #menu-bottom' ).hide();
+	$( '#songinfo-open' ).hide(); // fix button not hidden
+	$( '#bio' ).show();
+	$( '#loader' ).addClass( 'hide' );
+}
+$( '#closebio' ).click( function() {
+	$( '#bio' ).hide();
+	$( '#songinfo-open' ).show(); // fix button not hidden
+	if ( !barhide ) $( '#menu-top, #menu-bottom' ).show();
+} );
+$( '#timesource' ).click( function() {
+	$( '#overlay-playsource-open' ).click();
+} );
+$( '#coverT' ).click( function() {
+	console.log(1);
+	$( '.controls' ).toggle();
+	$( '.controls1' ).toggle();
+	$( '.rs-tooltip' ).toggle();
+} );
+$( '#coverTR' ).click( function() {
+	$( '#menu-top, #menu-bottom' ).toggle();
+	barhide = $( '#menu-top' ).is( ':hidden' ) ? 1 : 0;
+	$( '.controls' ).hide();
+	$( '.controls1, .rs-tooltip' ).show();
+} );
+$( '#timeprev, #coverL' ).click( function() {
+	$( '#previous' ).click();
+	$( '.controls' ).hide();
+	$( '.controls1, .rs-tooltip' ).show();
+} );
+$( '#timeplay, #coverM' ).click( function() {
+	$( '#play' ).click();
+	$( '.controls' ).hide();
+	$( '.controls1, .rs-tooltip' ).show();
+} );
+$( '#timenext, #coverR' ).click( function() {
+	$( '#next' ).click();
+	$( '.controls' ).hide();
+	$( '.controls1, .rs-tooltip' ).show();
+} );
+$( '#timestop, #coverB' ).click( function() {
+	$( '#stop' ).click();
+	$( '.controls' ).hide();
+	$( '.controls1, .rs-tooltip' ).show();
+} );
+$( '#coverBR' ).click( function() {
+	buttonactive = 0;
+	var time = $( '#time-knob' ).is( ':visible' );
+	var coverart = $( '#coverart' ).is( ':visible' );
+	var volume = redis.display.volume != 0 && redis.display.volumempd != 0 && $( '#volume-knob' ).is( ':visible' );
+	if ( buttonhide == 0 
+		|| $( '#play-group' ).is( ':visible' )
+		|| $( '#share-group' ).is( ':visible' )
+		|| $( '#vole-group' ).is( ':visible' )
+		) {
+		buttonhide = 1;
+		$( '#play-group, #share-group, #vol-group' ).hide();
+	} else {
+		buttonhide = 0;
+		if ( time ) $( '#play-group' ).show();
+		if ( coverart ) $( '#share-group' ).show();
+		if ( volume ) $( '#vol-group' ).show();
+	}
+	
+	if ( window.innerHeight < 414 && $( '#play-group' ).is( ':hidden' ) ) {
+		$( '#play-group, #share-group, #vol-group' ).css( 'margin-top', '10px' );
+	}
+	$( '.controls' ).hide();
+	$( '.controls1, .rs-tooltip' ).show();
+} );
+
 window.addEventListener( 'orientationchange', function() {
 	setTimeout( function() {
 		if ( $( '#playback' ).hasClass( 'active' ) ) {
@@ -244,169 +345,17 @@ document.addEventListener( visibilityevent, function() {
 Hammer = propagating( Hammer ); // propagating.js fix 
 
 var $hammercontent = new Hammer( document.getElementById( 'content' ) );
-var $hammerbarleft = new Hammer( document.getElementById( 'barleft' ) );
-var $hammerbarright = new Hammer( document.getElementById( 'barright' ) );
-var $hammerartist = new Hammer( document.getElementById( 'currentartist' ) );
-var $hammertime = new Hammer( document.getElementById( 'elapsed' ) );
-var $hammertimestop = new Hammer( document.getElementById( 'timestop' ) );
-var $hammercoverT = new Hammer( document.getElementById( 'coverT' ) );
-var $hammercoverL = new Hammer( document.getElementById( 'coverL' ) );
-var $hammercoverM = new Hammer( document.getElementById( 'coverM' ) );
-var $hammercoverR = new Hammer( document.getElementById( 'coverR' ) );
-var $hammercoverBR = new Hammer( document.getElementById( 'coverBR' ) );
-var $hammersonginfo = new Hammer( document.getElementById( 'songinfo-open' ) );
-var $hammervolume = new Hammer( document.getElementById( 'volume' ) );
 var $hammervoldn = new Hammer( document.getElementById( 'voldn' ) );
-var $hammervolmute = new Hammer( document.getElementById( 'volmute' ) );
 var $hammervolup = new Hammer( document.getElementById( 'volup' ) );
 var $hammervoldnrs = new Hammer( document.getElementById( 'voldnrs' ) );
 var $hammervoluprs = new Hammer( document.getElementById( 'voluprs' ) );
 var $hammerlibrary = new Hammer( document.getElementById( 'panel-sx' ) );
 var $hammerplayback = new Hammer( document.getElementById( 'playback' ) );
 
-[ $hammervolume, $hammervolmute ].forEach( function( el ) {
-	el.on( 'press', function( e ) {
-		e.stopPropagation();
-	} );
-} );
-
 $hammercontent.on( 'swiperight', function() {
 	panelLR();
 } ).on( 'swipeleft', function() {
 	panelLR( 'left' );
-} );
-
-[ $hammerbarleft, $hammerbarright ].forEach( function( el ) {
-	el.on( 'swipe', function( e ) {
-		$( '#menu-top, #menu-bottom' ).toggle();
-		e.stopPropagation();
-	} ).get( 'swipe' ).set( { direction: Hammer.DIRECTION_VERTICAL } );
-} )
-$hammerbarleft.on( 'tap', function( e ) {
-	$( '#menu-top, #menu-bottom' ).toggle();
-	e.stopPropagation();
-} );
-$hammerbarright.on( 'tap', function() {
-	if ( $( '#time-knob' ).is( ':visible' ) ) $( '#play-group' ).toggle();
-	if ( $( '#coverart' ).is( ':visible' ) ) $( '#share-group' ).toggle();
-	if ( redis.display.volume != 0 
-		&& redis.display.volumempd != 0 
-		&& $( '#volume-knob' ).is( ':visible' ) 
-	) {
-		$( '#vol-group' ).toggle();
-	}
-} );
-
-// lastfm search
-[ $hammerartist, $hammersonginfo ].forEach( function( el ) {
-	el.on( 'tap', function() {
-		if ( GUI.json.file.slice( 0, 4 ) === 'http' ) return;
-		barhide = $( '#menu-top' ).is(':visible') ? 0 : 1;
-		$( '#loader' ).removeClass( 'hide' );
-		
-		if ( $( '#bio legend' ).text() != GUI.json.currentartist ) {
-			$.get( '/enhancebio.php',
-				{ artist: GUI.json.currentartist },
-				function( data ) {
-					$( '#biocontent' ).html( data );
-					bioshow();
-				}
-			);
-		} else {
-			bioshow();
-		}
-	} );
-} );
-$( '#biocontent' ).delegate( '.biosimilar', 'click', function() {
-	$( '#loader' ).removeClass( 'hide' );
-	$.get( '/enhancebio.php',
-		{ artist: $( this ).find( 'p' ).text() },
-		function( data ) {
-			$( '#biocontent' ).html( data );
-			bioshow();
-			$( '#bio' ).scrollTop( 0 );
-		}
-	);
-} );
-function bioshow() {
-	$( '#menu-top, #menu-bottom' ).hide();
-	$( '#songinfo-open' ).hide(); // fix button not hidden
-	$( '#bio' ).show();
-	$( '#loader' ).addClass( 'hide' );
-}
-$( '#closebio' ).click( function() {
-	$( '#bio' ).hide();
-	$( '#songinfo-open' ).show(); // fix button not hidden
-	if ( !barhide ) $( '#menu-top, #menu-bottom' ).show();
-} );
-$( '#timesource' ).click( function() {
-	$( '#overlay-playsource-open' ).click();
-} );
-$( '#coverTR' ).click( function() {
-	$( '#menu-top, #menu-bottom' ).toggle();
-	barhide = $( '#menu-top' ).is( ':hidden' ) ? 1 : 0;
-	$( '.controls' ).hide();
-	$( '.controls1, .rs-tooltip' ).show();
-} );
-$hammercoverT.on( 'tap', function( e ) {
-	$( '.controls, .controls1, .rs-tooltip' ).toggle();
-	e.stopPropagation();
-} );
-$hammercoverL.on( 'tap', function( e ) {
-	$( '#previous' ).click();
-	$( '.controls' ).hide();
-	$( '.controls1, .rs-tooltip' ).show();
-	e.stopPropagation();
-} );
-[ $hammertime, $hammercoverM ].forEach( function( el ) {
-	el.on( 'tap', function( e ) {
-		$( '#play' ).click();
-		$( '.controls' ).hide();
-	$( '.controls1, .rs-tooltip' ).show();
-		e.stopPropagation();
-	} ).on( 'press', function( e ) {
-		$( '#stop' ).click();
-		$( '.controls' ).hide();
-	$( '.controls1, .rs-tooltip' ).show();
-		e.stopPropagation();
-	} );
-} );
-$( '#timestop, #coverB' ).click( function() {
-	$( '#stop' ).click();
-	$( '.controls' ).hide();
-	$( '.controls1, .rs-tooltip' ).show();
-} );
-$hammercoverR.on( 'tap', function( e ) {
-	$( '#next' ).click();
-	$( '.controls' ).hide();
-	$( '.controls1, .rs-tooltip' ).show();
-	e.stopPropagation();
-} );
-$hammercoverBR.on( 'tap', function( e ) {
-	buttonactive = 0;
-	var time = $( '#time-knob' ).is( ':visible' );
-	var coverart = $( '#coverart' ).is( ':visible' );
-	var volume = redis.display.volume != 0 && redis.display.volumempd != 0 && $( '#volume-knob' ).is( ':visible' );
-	if ( buttonhide == 0 
-		|| $( '#play-group' ).is( ':visible' )
-		|| $( '#share-group' ).is( ':visible' )
-		|| $( '#vole-group' ).is( ':visible' )
-		) {
-		buttonhide = 1;
-		$( '#play-group, #share-group, #vol-group' ).hide();
-	} else {
-		buttonhide = 0;
-		if ( time ) $( '#play-group' ).show();
-		if ( coverart ) $( '#share-group' ).show();
-		if ( volume ) $( '#vol-group' ).show();
-	}
-	
-	if ( window.innerHeight < 414 && $( '#play-group' ).is( ':hidden' ) ) {
-		$( '#play-group, #share-group, #vol-group' ).css( 'margin-top', '10px' );
-	}
-	$( '.controls' ).hide();
-	$( '.controls1, .rs-tooltip' ).show();
-	e.stopPropagation();
 } );
 
 var timeoutId;
