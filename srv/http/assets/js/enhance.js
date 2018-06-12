@@ -185,24 +185,30 @@ $( '#closebio' ).click( function() {
 var btnctrl = {
 	  timeT  : 'overlay-playsource-open'
 	, timeL  : 'previous'
-	, coverL : 'previous'
 	, timeM  : 'play'
-	, coverM : 'play'
 	, timeR  : 'next'
-	, coverR : 'next'
 	, timeB  : 'stop'
+	, coverTL: ''
+	, coverT : ''
+	, coverL : 'previous'
+	, coverM : 'play'
+	, coverR : 'next'
+	, coverBL: ''
 	, coverB : 'stop'
-	, volmuters : 'volumemute'
+	, coverBR: ''
+	, volT   : ''
+	, volM   : 'volumemute'
+	, volB   : ''
 }
-$( '.btnctrl' ).click( function() {
+$( '.timemap, .covermap, .volmap' ).click( function() {
 	if ( this.id === 'coverT' ) {
 		$( '.controls, .controls1,.rs-tooltip' ).toggle();
 		return;
-	} else if ( this.id === 'coverBR' ) {
-		btntoggle()
 	} else if ( this.id === 'coverTR' ) {
 		$( '#menu-top, #menu-bottom' ).toggle();
 		barhide = $( '#menu-top' ).is( ':hidden' ) ? 1 : 0;
+	} else if ( this.id === 'coverBR' ) {
+		btntoggle()
 	} else {
 		$( '#'+ btnctrl[ this.id ] ).click();
 	}
@@ -339,8 +345,8 @@ var $hammercontent = new Hammer( document.getElementById( 'content' ) );
 var $hammercoverT = new Hammer( document.getElementById( 'coverT' ) );
 var $hammervoldn = new Hammer( document.getElementById( 'voldn' ) );
 var $hammervolup = new Hammer( document.getElementById( 'volup' ) );
-var $hammervoldnrs = new Hammer( document.getElementById( 'voldnrs' ) );
-var $hammervoluprs = new Hammer( document.getElementById( 'voluprs' ) );
+var $hammervolB = new Hammer( document.getElementById( 'volB' ) );
+var $hammervolT = new Hammer( document.getElementById( 'volT' ) );
 var $hammerlibrary = new Hammer( document.getElementById( 'panel-sx' ) );
 var $hammerplayback = new Hammer( document.getElementById( 'playback' ) );
 
@@ -353,7 +359,7 @@ $hammercontent.on( 'swiperight', function() {
 function volumepress( interval, id, fast ) {
 	var knobvol = parseInt( $volumeRS.getValue() );
 	var vol = knobvol;
-	var increment = ( id === 'volup' || id === 'voluprs' ) ? 1 : -1;
+	var increment = ( id === 'volup' || id === 'volT' ) ? 1 : -1;
 	if ( ( increment === -1 && knobvol === 0 )
 		|| ( increment === 1 && knobvol === 100 ) ) return;
 	var count = 0;
@@ -379,7 +385,7 @@ function volumepress( interval, id, fast ) {
 var timeoutId;
 var intervalId;
 var interval;
-[ $hammervoldn, $hammervolup, $hammervoldnrs, $hammervoluprs ].forEach( function( el ) {
+[ $hammervoldn, $hammervolup, $hammervolB, $hammervolT ].forEach( function( el ) {
 	el.on( 'press', function( e ) {
 		buttonactive = 1;
 		onsetvolume = 1;
@@ -665,7 +671,7 @@ $( '#volmute, #volume .rs-tooltip' ).click( function() {
 	}
 } );
 
-$( '#volup, #voldn, #voluprs, #voldnrs' ).click( function() {
+$( '#volup, #voldn, #volT, #volB' ).click( function() {
 	var thisid = this.id;
 	var vol = $volumeRS.getValue();
 	onsetvolume = 1;
@@ -673,8 +679,8 @@ $( '#volup, #voldn, #voluprs, #voldnrs' ).click( function() {
 		onsetvolume = 0;
 	}, 500 );
 	
-	if ( ( vol === 0 && ( thisid === 'voldn' || thisid === 'voldnrs' ) )
-		|| ( vol === 100 && ( thisid === 'volup' || thisid === 'voluprs' ) ) )
+	if ( ( vol === 0 && ( thisid === 'voldn' || thisid === 'volB' ) )
+		|| ( vol === 100 && ( thisid === 'volup' || thisid === 'volT' ) ) )
 			return;
 
 	if ( vol === 0 ) {
@@ -682,7 +688,7 @@ $( '#volup, #voldn, #voluprs, #voldnrs' ).click( function() {
 		$.post( '/enhance.php', { redis: JSON.stringify( command ) } );
 		unmutecolor();
 	}
-	vol = ( thisid == 'volup' || thisid == 'voluprs' ) ? vol + 1 : vol - 1;
+	vol = ( thisid == 'volup' || thisid == 'volT' ) ? vol + 1 : vol - 1;
 	$.post( '/enhance.php', { volume: vol } );
 	$volumeRS.setValue( vol );
 	$volumehandle.rsRotate( - $volumeRS._handle1.angle );
