@@ -58,6 +58,29 @@ function bioshow() {
 	$( '#bio' ).show();
 	$( '#loader' ).addClass( 'hide' );
 }
+function btntoggle() {
+	buttonactive = 0;
+	var time = $( '#time-knob' ).is( ':visible' );
+	var coverart = $( '#coverart' ).is( ':visible' );
+	var volume = redis.display.volume != 0 && redis.display.volumempd != 0 && $( '#volume-knob' ).is( ':visible' );
+	if ( buttonhide == 0 
+		|| $( '#play-group' ).is( ':visible' )
+		|| $( '#share-group' ).is( ':visible' )
+		|| $( '#vole-group' ).is( ':visible' )
+		) {
+		buttonhide = 1;
+		$( '#play-group, #share-group, #vol-group' ).hide();
+	} else {
+		buttonhide = 0;
+		if ( time ) $( '#play-group' ).show();
+		if ( coverart ) $( '#share-group' ).show();
+		if ( volume ) $( '#vol-group' ).show();
+	}
+	
+	if ( window.innerHeight < 414 && $( '#play-group' ).is( ':hidden' ) ) {
+		$( '#play-group, #share-group, #vol-group' ).css( 'margin-top', '10px' );
+	}
+}
 
 $( '#open-panel-sx, .open-sx' ).click( function() {
 	if ( $( this ).hasClass( 'active' ) ) {
@@ -159,66 +182,34 @@ $( '#closebio' ).click( function() {
 	$( '#songinfo-open' ).show(); // fix button not hidden
 	if ( !barhide ) $( '#menu-top, #menu-bottom' ).show();
 } );
-$( '#timesource' ).click( function() {
-	$( '#overlay-playsource-open' ).click();
-} );
-$( '#coverT' ).click( function() {
-	console.log(1);
-	$( '.controls' ).toggle();
-	$( '.controls1' ).toggle();
-	$( '.rs-tooltip' ).toggle();
-} );
-$( '#coverTR' ).click( function() {
-	$( '#menu-top, #menu-bottom' ).toggle();
-	barhide = $( '#menu-top' ).is( ':hidden' ) ? 1 : 0;
-	$( '.controls' ).hide();
-	$( '.controls1, .rs-tooltip' ).show();
-} );
-$( '#timeprev, #coverL' ).click( function() {
-	$( '#previous' ).click();
-	$( '.controls' ).hide();
-	$( '.controls1, .rs-tooltip' ).show();
-} );
-$( '#timeplay, #coverM' ).click( function() {
-	$( '#play' ).click();
-	$( '.controls' ).hide();
-	$( '.controls1, .rs-tooltip' ).show();
-} );
-$( '#timenext, #coverR' ).click( function() {
-	$( '#next' ).click();
-	$( '.controls' ).hide();
-	$( '.controls1, .rs-tooltip' ).show();
-} );
-$( '#timestop, #coverB' ).click( function() {
-	$( '#stop' ).click();
-	$( '.controls' ).hide();
-	$( '.controls1, .rs-tooltip' ).show();
-} );
-$( '#coverBR' ).click( function() {
-	buttonactive = 0;
-	var time = $( '#time-knob' ).is( ':visible' );
-	var coverart = $( '#coverart' ).is( ':visible' );
-	var volume = redis.display.volume != 0 && redis.display.volumempd != 0 && $( '#volume-knob' ).is( ':visible' );
-	if ( buttonhide == 0 
-		|| $( '#play-group' ).is( ':visible' )
-		|| $( '#share-group' ).is( ':visible' )
-		|| $( '#vole-group' ).is( ':visible' )
-		) {
-		buttonhide = 1;
-		$( '#play-group, #share-group, #vol-group' ).hide();
+var btnctrl = {
+	  timeT  : 'overlay-playsource-open'
+	, timeL  : 'previous'
+	, coverL : 'previous'
+	, timeM  : 'play'
+	, coverM : 'play'
+	, timeR  : 'next'
+	, coverR : 'next'
+	, timeB  : 'stop'
+	, coverB : 'stop'
+	, volmuters : 'volumemute'
+}
+$( '.btnctrl' ).click( function() {
+	if ( this.id === 'coverT' ) {
+		$( '.controls, .controls1,.rs-tooltip' ).toggle();
+		return;
+	} else if ( this.id === 'coverBR' ) {
+		btntoggle()
+	} else if ( this.id === 'coverTR' ) {
+		$( '#menu-top, #menu-bottom' ).toggle();
+		barhide = $( '#menu-top' ).is( ':hidden' ) ? 1 : 0;
 	} else {
-		buttonhide = 0;
-		if ( time ) $( '#play-group' ).show();
-		if ( coverart ) $( '#share-group' ).show();
-		if ( volume ) $( '#vol-group' ).show();
-	}
-	
-	if ( window.innerHeight < 414 && $( '#play-group' ).is( ':hidden' ) ) {
-		$( '#play-group, #share-group, #vol-group' ).css( 'margin-top', '10px' );
+		$( '#'+ btnctrl[ this.id ] ).click();
 	}
 	$( '.controls' ).hide();
 	$( '.controls1, .rs-tooltip' ).show();
 } );
+
 // library directory path link
 $( '#db-home' ).click( function() {
 	renderLibraryHome();
@@ -345,6 +336,7 @@ document.addEventListener( visibilityevent, function() {
 Hammer = propagating( Hammer ); // propagating.js fix 
 
 var $hammercontent = new Hammer( document.getElementById( 'content' ) );
+var $hammercoverT = new Hammer( document.getElementById( 'coverT' ) );
 var $hammervoldn = new Hammer( document.getElementById( 'voldn' ) );
 var $hammervolup = new Hammer( document.getElementById( 'volup' ) );
 var $hammervoldnrs = new Hammer( document.getElementById( 'voldnrs' ) );
@@ -405,8 +397,11 @@ var interval;
 		}, 500 );
 	} );
 });
-
-$hammerplayback.on( 'tap', function() {
+// fix: 'tap on blank area hide overlay controls' causes toggle hide failed
+$hammercoverT.on( 'tap', function( e ) {
+	e.stopPropagation();
+} );
+$hammerplayback.on( 'tap', function( e ) {
 	$( '.controls' ).hide();
 	$( '.controls1, .rs-tooltip' ).show();
 } ).on( 'press', function() {
