@@ -192,8 +192,8 @@ $( '#db-level-up' ).click( function() {
 	window.scrollTo( 0, dbtop );
 });
 // fix; hide spinner on cancel
-$('#modal-webradio-add button[data-dismiss="modal"], #modal-webradio-add').click( function() {
-	$('#spinner-db').addClass('hide');
+$( '#modal-webradio-add button[data-dismiss="modal"], #modal-webradio-add' ).click( function() {
+	$( '#spinner-db' ).addClass( 'hide' );
 } );
 
 $( '#open-library' ).click( function() {
@@ -345,35 +345,41 @@ $( '#timesource' ).click( function() {
 $( '#coverTR' ).click( function() {
 	$( '#menu-top, #menu-bottom' ).toggle();
 	barhide = $( '#menu-top' ).is( ':hidden' ) ? 1 : 0;
-	$( '#controls' ).hide();
+	$( '.controls' ).hide();
+	$( '.controls1, .rs-tooltip' ).show();
 } );
 $hammercoverT.on( 'tap', function( e ) {
-	$( '#controls' ).toggle();
+	$( '.controls, .controls1, .rs-tooltip' ).toggle();
 	e.stopPropagation();
 } );
 $hammercoverL.on( 'tap', function( e ) {
 	$( '#previous' ).click();
-	$( '#controls' ).hide();
+	$( '.controls' ).hide();
+	$( '.controls1, .rs-tooltip' ).show();
 	e.stopPropagation();
 } );
 [ $hammertime, $hammercoverM ].forEach( function( el ) {
 	el.on( 'tap', function( e ) {
 		$( '#play' ).click();
-		$( '#controls' ).hide();
+		$( '.controls' ).hide();
+	$( '.controls1, .rs-tooltip' ).show();
 		e.stopPropagation();
 	} ).on( 'press', function( e ) {
 		$( '#stop' ).click();
-		$( '#controls' ).hide();
+		$( '.controls' ).hide();
+	$( '.controls1, .rs-tooltip' ).show();
 		e.stopPropagation();
 	} );
 } );
 $( '#timestop, #coverB' ).click( function() {
 	$( '#stop' ).click();
-	$( '#controls' ).hide();
+	$( '.controls' ).hide();
+	$( '.controls1, .rs-tooltip' ).show();
 } );
 $hammercoverR.on( 'tap', function( e ) {
 	$( '#next' ).click();
-	$( '#controls' ).hide();
+	$( '.controls' ).hide();
+	$( '.controls1, .rs-tooltip' ).show();
 	e.stopPropagation();
 } );
 $hammercoverBR.on( 'tap', function( e ) {
@@ -398,7 +404,8 @@ $hammercoverBR.on( 'tap', function( e ) {
 	if ( window.innerHeight < 414 && $( '#play-group' ).is( ':hidden' ) ) {
 		$( '#play-group, #share-group, #vol-group' ).css( 'margin-top', '10px' );
 	}
-	$( '#controls' ).hide();
+	$( '.controls' ).hide();
+	$( '.controls1, .rs-tooltip' ).show();
 	e.stopPropagation();
 } );
 
@@ -450,7 +457,10 @@ function volumepress( interval, id, fast ) {
 	}, interval );
 }
 
-$hammerplayback.on( 'press', function() {
+$hammerplayback.on( 'tap', function() {
+	$( '.controls' ).hide();
+	$( '.controls1, .rs-tooltip' ).show();
+} ).on( 'press', function() {
 	info( {
 		  title  : 'Playback'
 		, message: 'Select items to show:'
