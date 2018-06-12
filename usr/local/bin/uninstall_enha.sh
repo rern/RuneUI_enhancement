@@ -20,7 +20,6 @@ fi
 
 # remove files #######################################
 echo -e "$bar Remove files ..."
-rm -v /srv/http/app/libs/enhanceradio.php
 rm -v /srv/http/app/templates/enhanceplayback.php
 rm -v /srv/http/enhance*
 [[ ! -e /usr/local/bin/uninstall_addo.sh ]] && rm -v /srv/http/enhanceredis.php
