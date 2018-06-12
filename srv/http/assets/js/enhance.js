@@ -1184,7 +1184,7 @@ function parseResponse(options) {
 }
 // strip leading A, An, The
 function stripAAnThe( string ) {
-	return string.replace( /^a *|^an *|^the */i, '' );
+	return string.replace( /^a +|^an +|^the +/i, '' );
 }
 
 function populateDB(options) {
@@ -1342,7 +1342,9 @@ function populateDB(options) {
 					}
 				} );
 				arraydir.sort( function( a, b ) {
-					return stripAAnThe( a[ 'directory' ] ).localeCompare( stripAAnThe( b[ 'directory' ] ) );
+					var adir = stripAAnThe( a[ 'directory' ].split( '/' ).pop() );
+					var bdir = stripAAnThe( b[ 'directory' ].split( '/' ).pop() );
+					return adir.localeCompare( bdir );
 				} );
 				for ( i = 0; row = arraydir[ i ]; i++ ) {
 					content += parseResponse( {
@@ -1352,10 +1354,11 @@ function populateDB(options) {
 						inpath: path
 					} );
 				}
-				// files sorted by track numbers
-/*				arrayfile.sort( function( a, b ) {
-					return a[ 'file' ].localeCompare( b[ 'file' ] );
-				} );*/
+				arrayfile.sort( function( a, b ) {
+					var afile = stripAAnThe( a[ 'file' ] );
+					var bfile = stripAAnThe( b[ 'file' ] );
+					return afile.localeCompare( bfile );
+				} );
 				for ( i = 0; row = arrayfile[ i ]; i++ ) {
 					content += parseResponse( {
 						inputArr: row,
