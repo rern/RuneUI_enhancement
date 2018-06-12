@@ -279,7 +279,10 @@
 }
 
 #coverart { position: relative; }
-.covermap { position: absolute; }
+.covermap {
+	position: absolute;
+	z-index: 10;
+}
 .t0 { top: 0; }
 .t50 { top: 50px; }
 .t180 { top: 180px; }
@@ -355,11 +358,11 @@
 #total {
 	font-family: "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
-#timesource,
-#timeprev,
-#timeplay,
-#timenext,
-#timestop,
+#timeT,
+#timeL,
+#timeM,
+#timeR,
+#timeB,
 #voluprs,
 #volmuters,
 #voldnrs {
@@ -372,27 +375,27 @@
 	z-index: 10;
 	cursor: pointer;
 }
-#timesource,
+#timeT,
 #voluprs {
 	top: 50px;
 }
-#timeprev,
-#timeplay,
-#timenext,
+#timeL,
+#timeM,
+#timeR,
 #volmuters {
 	top: 97px;
 }
-#timeprev,
-#timenext {
+#timeL,
+#timeR {
 	width: 35px;
 }
-#timeprev {
+#timeL {
 	margin-left: -71px;
 }
-#timenext {
+#timeR {
 	margin-left: 36px;
 }
-#timestop,
+#timeB,
 #voldnrs {
 	top: 145px;
 }
