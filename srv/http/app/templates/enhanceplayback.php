@@ -23,9 +23,10 @@
 			<div class="row hide" id="playback-row">
 				<div id="time-knob">
 					<div id="time"></div>
-					<button id="overlay-playsource-open" class="btn btn-default btn-xs">MPD</button>
-					<span id="elapsed"></span>
-					<span id="total"></span>
+					<button id="overlay-playsource-open" class="btn btn-default btn-xs controls1">MPD</button>
+					<img id="controls-time" class="controls" src="/srv/http/assets/img/controls-time.svg">
+					<span id="elapsed" class="controls1"></span>
+					<span id="total" class="controls1"></span>
 					<div id="timesource"></div>
 					<div id="timestop"></div>
 				</div>
@@ -38,7 +39,7 @@
 				</div>
 				<div id="coverart">
 					<img id="cover-art" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="transparent-square">
-					<img id="controls" src="/srv/http/assets/img/controls.svg">
+					<img id="controls" class="controls" src="/srv/http/assets/img/controls.svg">
 					<div id="coverTL" class="covermap t0 w50 h50 m-115"></div>
 					<div id="coverT" class="covermap t0 w130 h50 m-65"></div>
 					<div id="coverTR" class="covermap t0 w50 h50 m65"></div>
@@ -59,6 +60,7 @@
 					<div id="volume" data-dynamic="<?=$this->volume['dynamic'] ?>"></div>
 					<div id="voluprs"></div>
 					<div id="voldnrs"></div>
+					<img id="controls-vol" class="controls" src="/srv/http/assets/img/controls-vol.svg">
 				</div>
 				<div id="vol-group">
 					<div class="btn-group">
