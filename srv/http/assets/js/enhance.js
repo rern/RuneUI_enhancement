@@ -25,27 +25,6 @@ if ( /Midori/.test( navigator.userAgent ) ) {
 	$( 'head link[rel="stylesheet"]').last().after( '<link rel="stylesheet" href="/css/midori.css">' )
 }
 
-$( '#open-panel-sx, .open-sx' ).click( function() {
-	if ( $( this ).hasClass( 'active' ) ) {
-		$( '#db-home' ).click();
-		return;
-	}
-	var activePlayer = GUI.libraryhome.ActivePlayer;
-	if ( activePlayer === 'Spotify' || activePlayer === 'Airplay' ) {
-		$( '#overlay-playsource-open' ).click();
-	} else {
-		menubottom( 'panel-sx', 'playback', 'panel-dx' );
-		displaylibrary();
-	}
-} );
-$( '#open-playback' ).click( function() {
-	menubottom( 'playback', 'panel-sx', 'panel-dx' );
-	displayplayback();
-} );
-$( '#open-panel-dx' ).click( function() {
-	menubottom( 'panel-dx', 'playback', 'panel-sx' );
-	displayqueue();
-} );
 function menubottom( elshow, elhide1, elhide2 ) {
 	$( '#menu-top, #menu-bottom' ).hide();
 	if ( $( '#panel-sx' ).hasClass( 'active' ) ) librarytop = $( window ).scrollTop();
@@ -73,6 +52,34 @@ function panelLR( lr ) {
 	}
 	$paneclick = ( lr === 'left' ) ? $pL.click() : $pR.click();
 }
+function bioshow() {
+	$( '#menu-top, #menu-bottom' ).hide();
+	$( '#songinfo-open' ).hide(); // fix button not hidden
+	$( '#bio' ).show();
+	$( '#loader' ).addClass( 'hide' );
+}
+
+$( '#open-panel-sx, .open-sx' ).click( function() {
+	if ( $( this ).hasClass( 'active' ) ) {
+		$( '#db-home' ).click();
+		return;
+	}
+	var activePlayer = GUI.libraryhome.ActivePlayer;
+	if ( activePlayer === 'Spotify' || activePlayer === 'Airplay' ) {
+		$( '#overlay-playsource-open' ).click();
+	} else {
+		menubottom( 'panel-sx', 'playback', 'panel-dx' );
+		displaylibrary();
+	}
+} );
+$( '#open-playback' ).click( function() {
+	menubottom( 'playback', 'panel-sx', 'panel-dx' );
+	displayplayback();
+} );
+$( '#open-panel-dx' ).click( function() {
+	menubottom( 'panel-dx', 'playback', 'panel-sx' );
+	displayqueue();
+} );
 
 // back from setting pages
 if ( /\/.*\//.test( document.referrer ) == true ) {
@@ -114,6 +121,104 @@ $( '#currentsong' ).click( function() {
 	if ( $( this ).has( 'i' ).length ) $( '#open-panel-sx' ).click();
 } );
 
+$( '#play-group, #share-group, #vol-group' ).click( function() {
+	if ( window.innerWidth < 499 ) buttonactive = 1;
+} );
+
+// lastfm search
+$( '#currentartist, #songinfo-open' ).click( function() {
+	if ( GUI.json.file.slice( 0, 4 ) === 'http' ) return;
+	barhide = $( '#menu-top' ).is(':visible') ? 0 : 1;
+	$( '#loader' ).removeClass( 'hide' );
+	
+	if ( $( '#bio legend' ).text() != GUI.json.currentartist ) {
+		$.get( '/enhancebio.php',
+			{ artist: GUI.json.currentartist },
+			function( data ) {
+				$( '#biocontent' ).html( data );
+				bioshow();
+			}
+		);
+	} else {
+		bioshow();
+	}
+} );
+$( '#biocontent' ).delegate( '.biosimilar', 'click', function() {
+	$( '#loader' ).removeClass( 'hide' );
+	$.get( '/enhancebio.php',
+		{ artist: $( this ).find( 'p' ).text() },
+		function( data ) {
+			$( '#biocontent' ).html( data );
+			bioshow();
+			$( '#bio' ).scrollTop( 0 );
+		}
+	);
+} );
+$( '#closebio' ).click( function() {
+	$( '#bio' ).hide();
+	$( '#songinfo-open' ).show(); // fix button not hidden
+	if ( !barhide ) $( '#menu-top, #menu-bottom' ).show();
+} );
+$( '#timesource' ).click( function() {
+	$( '#overlay-playsource-open' ).click();
+} );
+$( '#coverT' ).click( function() {
+	console.log(1);
+	$( '.controls' ).toggle();
+	$( '.controls1' ).toggle();
+	$( '.rs-tooltip' ).toggle();
+} );
+$( '#coverTR' ).click( function() {
+	$( '#menu-top, #menu-bottom' ).toggle();
+	barhide = $( '#menu-top' ).is( ':hidden' ) ? 1 : 0;
+	$( '.controls' ).hide();
+	$( '.controls1, .rs-tooltip' ).show();
+} );
+$( '#timeprev, #coverL' ).click( function() {
+	$( '#previous' ).click();
+	$( '.controls' ).hide();
+	$( '.controls1, .rs-tooltip' ).show();
+} );
+$( '#timeplay, #coverM' ).click( function() {
+	$( '#play' ).click();
+	$( '.controls' ).hide();
+	$( '.controls1, .rs-tooltip' ).show();
+} );
+$( '#timenext, #coverR' ).click( function() {
+	$( '#next' ).click();
+	$( '.controls' ).hide();
+	$( '.controls1, .rs-tooltip' ).show();
+} );
+$( '#timestop, #coverB' ).click( function() {
+	$( '#stop' ).click();
+	$( '.controls' ).hide();
+	$( '.controls1, .rs-tooltip' ).show();
+} );
+$( '#coverBR' ).click( function() {
+	buttonactive = 0;
+	var time = $( '#time-knob' ).is( ':visible' );
+	var coverart = $( '#coverart' ).is( ':visible' );
+	var volume = redis.display.volume != 0 && redis.display.volumempd != 0 && $( '#volume-knob' ).is( ':visible' );
+	if ( buttonhide == 0 
+		|| $( '#play-group' ).is( ':visible' )
+		|| $( '#share-group' ).is( ':visible' )
+		|| $( '#vole-group' ).is( ':visible' )
+		) {
+		buttonhide = 1;
+		$( '#play-group, #share-group, #vol-group' ).hide();
+	} else {
+		buttonhide = 0;
+		if ( time ) $( '#play-group' ).show();
+		if ( coverart ) $( '#share-group' ).show();
+		if ( volume ) $( '#vol-group' ).show();
+	}
+	
+	if ( window.innerHeight < 414 && $( '#play-group' ).is( ':hidden' ) ) {
+		$( '#play-group, #share-group, #vol-group' ).css( 'margin-top', '10px' );
+	}
+	$( '.controls' ).hide();
+	$( '.controls1, .rs-tooltip' ).show();
+} );
 // library directory path link
 $( '#db-home' ).click( function() {
 	renderLibraryHome();
@@ -200,111 +305,6 @@ $( '#open-library' ).click( function() {
 	$( '#open-panel-sx' ).click();
 } );
 
-$( '#play-group, #share-group, #vol-group' ).click( function() {
-	if ( window.innerWidth < 499 ) buttonactive = 1;
-} );
-
-// lastfm search
-$( '#currentartist, #songinfo-open' ).click( function() {
-	if ( GUI.json.file.slice( 0, 4 ) === 'http' ) return;
-	barhide = $( '#menu-top' ).is(':visible') ? 0 : 1;
-	$( '#loader' ).removeClass( 'hide' );
-	
-	if ( $( '#bio legend' ).text() != GUI.json.currentartist ) {
-		$.get( '/enhancebio.php',
-			{ artist: GUI.json.currentartist },
-			function( data ) {
-				$( '#biocontent' ).html( data );
-				bioshow();
-			}
-		);
-	} else {
-		bioshow();
-	}
-} );
-$( '#biocontent' ).delegate( '.biosimilar', 'click', function() {
-	$( '#loader' ).removeClass( 'hide' );
-	$.get( '/enhancebio.php',
-		{ artist: $( this ).find( 'p' ).text() },
-		function( data ) {
-			$( '#biocontent' ).html( data );
-			bioshow();
-			$( '#bio' ).scrollTop( 0 );
-		}
-	);
-} );
-function bioshow() {
-	$( '#menu-top, #menu-bottom' ).hide();
-	$( '#songinfo-open' ).hide(); // fix button not hidden
-	$( '#bio' ).show();
-	$( '#loader' ).addClass( 'hide' );
-}
-$( '#closebio' ).click( function() {
-	$( '#bio' ).hide();
-	$( '#songinfo-open' ).show(); // fix button not hidden
-	if ( !barhide ) $( '#menu-top, #menu-bottom' ).show();
-} );
-$( '#timesource' ).click( function() {
-	$( '#overlay-playsource-open' ).click();
-} );
-$( '#coverT' ).click( function() {
-	console.log(1);
-	$( '.controls' ).toggle();
-	$( '.controls1' ).toggle();
-	$( '.rs-tooltip' ).toggle();
-} );
-$( '#coverTR' ).click( function() {
-	$( '#menu-top, #menu-bottom' ).toggle();
-	barhide = $( '#menu-top' ).is( ':hidden' ) ? 1 : 0;
-	$( '.controls' ).hide();
-	$( '.controls1, .rs-tooltip' ).show();
-} );
-$( '#timeprev, #coverL' ).click( function() {
-	$( '#previous' ).click();
-	$( '.controls' ).hide();
-	$( '.controls1, .rs-tooltip' ).show();
-} );
-$( '#timeplay, #coverM' ).click( function() {
-	$( '#play' ).click();
-	$( '.controls' ).hide();
-	$( '.controls1, .rs-tooltip' ).show();
-} );
-$( '#timenext, #coverR' ).click( function() {
-	$( '#next' ).click();
-	$( '.controls' ).hide();
-	$( '.controls1, .rs-tooltip' ).show();
-} );
-$( '#timestop, #coverB' ).click( function() {
-	$( '#stop' ).click();
-	$( '.controls' ).hide();
-	$( '.controls1, .rs-tooltip' ).show();
-} );
-$( '#coverBR' ).click( function() {
-	buttonactive = 0;
-	var time = $( '#time-knob' ).is( ':visible' );
-	var coverart = $( '#coverart' ).is( ':visible' );
-	var volume = redis.display.volume != 0 && redis.display.volumempd != 0 && $( '#volume-knob' ).is( ':visible' );
-	if ( buttonhide == 0 
-		|| $( '#play-group' ).is( ':visible' )
-		|| $( '#share-group' ).is( ':visible' )
-		|| $( '#vole-group' ).is( ':visible' )
-		) {
-		buttonhide = 1;
-		$( '#play-group, #share-group, #vol-group' ).hide();
-	} else {
-		buttonhide = 0;
-		if ( time ) $( '#play-group' ).show();
-		if ( coverart ) $( '#share-group' ).show();
-		if ( volume ) $( '#vol-group' ).show();
-	}
-	
-	if ( window.innerHeight < 414 && $( '#play-group' ).is( ':hidden' ) ) {
-		$( '#play-group, #share-group, #vol-group' ).css( 'margin-top', '10px' );
-	}
-	$( '.controls' ).hide();
-	$( '.controls1, .rs-tooltip' ).show();
-} );
-
 window.addEventListener( 'orientationchange', function() {
 	setTimeout( function() {
 		if ( $( '#playback' ).hasClass( 'active' ) ) {
@@ -358,27 +358,6 @@ $hammercontent.on( 'swiperight', function() {
 	panelLR( 'left' );
 } );
 
-var timeoutId;
-var intervalId;
-var interval;
-[ $hammervoldn, $hammervolup, $hammervoldnrs, $hammervoluprs ].forEach( function( el ) {
-	el.on( 'press', function( e ) {
-		buttonactive = 1;
-		onsetvolume = 1;
-		e.stopPropagation();
-		$volumetransition.css( 'transition-duration', '0s' );
-		timeoutId = setTimeout( volumepress( 300, el.element.id ), 500 );
-	} ).on( 'pressup panstart touchend', function() {
-		clearTimeout( timeoutId );
-		clearInterval( intervalId );
-		$volumetransition.css( 'transition-duration', '' );
-		
-		$.post( '/enhance.php', { volume: $volumeRS.getValue() } );
-		setTimeout( function() {
-			onsetvolume = 0;
-		}, 500 );
-	} );
-});
 function volumepress( interval, id, fast ) {
 	var knobvol = parseInt( $volumeRS.getValue() );
 	var vol = knobvol;
@@ -405,6 +384,27 @@ function volumepress( interval, id, fast ) {
 		if ( vol === 0 || vol === 100 ) clearInterval( intervalId );
 	}, interval );
 }
+var timeoutId;
+var intervalId;
+var interval;
+[ $hammervoldn, $hammervolup, $hammervoldnrs, $hammervoluprs ].forEach( function( el ) {
+	el.on( 'press', function( e ) {
+		buttonactive = 1;
+		onsetvolume = 1;
+		e.stopPropagation();
+		$volumetransition.css( 'transition-duration', '0s' );
+		timeoutId = setTimeout( volumepress( 300, el.element.id ), 500 );
+	} ).on( 'pressup panstart touchend', function() {
+		clearTimeout( timeoutId );
+		clearInterval( intervalId );
+		$volumetransition.css( 'transition-duration', '' );
+		
+		$.post( '/enhance.php', { volume: $volumeRS.getValue() } );
+		setTimeout( function() {
+			onsetvolume = 0;
+		}, 500 );
+	} );
+});
 
 $hammerplayback.on( 'tap', function() {
 	$( '.controls' ).hide();
