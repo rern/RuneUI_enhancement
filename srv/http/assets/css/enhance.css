@@ -4,6 +4,37 @@
     font-weight: normal;
     font-style: normal
 }
+@font-face {
+    font-family: 'Lato';
+    src: url('../fonts/lato/lato-bold-webfont.woff') format('woff');
+    font-weight: bold;
+    font-style: normal
+}
+@font-face {
+    font-family: 'Lato';
+    src: url('../fonts/lato/lato-bolditalic-webfont.woff') format('woff');
+    font-weight: bold;
+    font-style: italic
+}
+@font-face {
+    font-family: 'Lato';
+    src: url('../fonts/lato/lato-italic-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: italic
+}
+@font-face {
+    font-family: 'Lato';
+    src: url('../fonts/lato/lato-light-webfont.woff') format('woff');
+	font-weight: 300;
+    font-style: normal
+}
+@font-face {
+    font-family: 'Lato';
+    src: url('../fonts/lato/lato-regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal
+}
+
 /* ---------------------- playback ---------------------- */
 #bartop,
 #barbottom {
