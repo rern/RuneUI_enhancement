@@ -66,7 +66,7 @@
 				<div id="vol-group">
 					<div class="btn-group">
 						<button id="voldn" class="btn btn-default btn-lg" type="button" title="Volume down"><i class="fa fa-volume-down"></i></button>
-						<button id="volmute" class="btn btn-default btn-lg" type="button" title="Volume mute/unmute"><i class="fa fa-volume-off"></i> <i class="fa fa-exclamation"></i></button>
+						<button id="volmute" class="btn btn-default btn-lg" type="button" title="Volume mute/unmute"><i class="fa fa-mute"></i></button>
 						<button id="volup" class="btn btn-default btn-lg" type="button" title="Volume up"><i class="fa fa-volume-up"></i></button>
 					</div>
 				</div>
