@@ -34,23 +34,26 @@
     font-weight: normal;
     font-style: normal
 }
+.fa-play-circle:before {
+    content: "\f550"
+}
 .fa-mute:before {
-    content: "\f23a"
+    content: "\f551"
 }
 .fa-microsd:before {
-    content: "\f23b"
+    content: "\f552"
 }
 .fa-album:before {
-    content: "\f23c"
+    content: "\f553"
 }
 .fa-artist:before {
-    content: "\f23d"
-}
-.fa-genre:before {
-    content: "\f23e"
+    content: "\f554"
 }
 .fa-composer:before {
-    content: "\f23f"
+    content: "\f555"
+}
+.fa-genre:before {
+    content: "\f556"
 }
 /* ---------------------- playback ---------------------- */
 #bartop,
