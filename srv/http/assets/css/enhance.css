@@ -34,7 +34,24 @@
     font-weight: normal;
     font-style: normal
 }
-
+.fa-mute:before {
+    content: "\f23a"
+}
+.fa-microsd:before {
+    content: "\f23b"
+}
+.fa-album:before {
+    content: "\f23c"
+}
+.fa-artist:before {
+    content: "\f23d"
+}
+.fa-genre:before {
+    content: "\f23e"
+}
+.fa-composer:before {
+    content: "\f23f"
+}
 /* ---------------------- playback ---------------------- */
 #bartop,
 #barbottom {
