@@ -1083,7 +1083,7 @@
 	}
 }
 @media(max-width: 480px) {
-	#database-entries li .fa-folder {
+	#database-entries li span .fa {
 		display: none;
 	}
 	#database-entries li .fa {
