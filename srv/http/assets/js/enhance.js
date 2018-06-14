@@ -878,7 +878,7 @@ function setPlaybackSource() {
 function renderLibraryHome() {
 	if ( $( '#database-entries' ).hasClass( 'hide' ) ) return;
 	
-	loadingSpinner( 'db' );
+//	loadingSpinner( 'db' );
 	$( '#database-entries, #db-level-up' ).addClass( 'hide' );
 	$( '#home-blocks, #db-homeSetup' ).removeClass( 'hide' );
 	$( '#db-homeSetup' ).removeClass( 'btn-primary' ).addClass( 'btn-default' );
@@ -1077,7 +1077,7 @@ function parseResponse(options) {
 				} else if (inputArr.album !== '') {
 					content = '<li id="db-' + (i + 1) + '" class="db-folder db-album" data-path="';
 					content += inputArr.album.replace(/\"/g,'&quot;');
-					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-album"></i><span><i class="fa fa-stop"></i>';
+					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-album"></i><span><i class="fa fa-album"></i>';
 					content += inputArr.album;
 					content += '</span></li>';
 				}
@@ -1085,13 +1085,13 @@ function parseResponse(options) {
 				if (inputArr.album !== undefined) {
 					content = '<li id="db-' + (i + 1) + '" class="db-folder db-album" data-path="';
 					content += inputArr.album;
-					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-album"></i><span><i class="fa fa-stop"></i>';
+					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-album"></i><span><i class="fa fa-album"></i>';
 					content += (inputArr.album !== '') ? inputArr.album : 'Unknown album';
 					content += '</span></li>';
 				} else if (inputArr.artist !== '') {
 					content = '<li id="db-' + (i + 1) + '" class="db-folder db-artist" data-path="';
 					content += inputArr.artist;
-					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-artist"></i><span><i class="fa fa-user"></i>';
+					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-artist"></i><span><i class="fa fa-artist"></i>';
 					content += inputArr.artist;
 					content += '</span></li>';
 				}
@@ -1109,7 +1109,7 @@ function parseResponse(options) {
 				} else if (inputArr.composer !== '') {
 					content = '<li id="db-' + (i + 1) + '" class="db-folder db-composer" data-path="';
 					content += inputArr.composer;
-					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-composer"></i><span><i class="fa fa-pencil"></i>';
+					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-composer"></i><span><i class="fa fa-composer"></i>';
 					content += inputArr.composer;
 					content += '</span></li>';
 				}
@@ -1117,13 +1117,13 @@ function parseResponse(options) {
 				if (inputArr.artist !== undefined) {
 					content = '<li id="db-' + (i + 1) + '" class="db-folder db-artist" data-path="';
 					content += inputArr.artist;
-					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-artist"></i><span><i class="fa fa-dot-circle-o"></i>';
+					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-artist"></i><span><i class="fa fa-album"></i>';
 					content += (inputArr.artist !== '') ? inputArr.artist : 'Unknown artist';
 					content += '</span></li>';
 				} else if (inputArr.genre !== '') {
 					content = '<li id="db-' + (i + 1) + '" class="db-folder db-genre" data-path="';
 					content += inputArr.genre;
-					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-genre"></i><span><i class="fa fa-tag"></i>';
+					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-genre"></i><span><i class="fa fa-genre"></i>';
 					content += inputArr.genre;
 					content += '</span></li>';
 				}
@@ -1182,12 +1182,20 @@ function parseResponse(options) {
 	}
 	return content;
 }
-// strip leading A, An, The
+// strip leading A, An, The, (, [ before sort
 function stripAAnThe( string ) {
-	return string.replace( /^a +|^an +|^the +/i, '' );
+	return string.replace( /^a +|^an +|^the +|^\(\s*|^\[\s*/i, '' );
 }
-
-function populateDB(options) {
+function preparse( array, i, type, path, query ) {
+	return parseResponse( {
+		  inputArr  : array
+		, i         : i
+		, respType  : type
+		, inpath    : path
+		, querytype : query ? query : ''
+	} );
+}
+function populateDB( options ) {
 	var data = options.data || '',
 		path = options.path || '',
 		uplevel = options.uplevel || 0,
@@ -1196,22 +1204,18 @@ function populateDB(options) {
 		querytype = options.querytype || '',
 		args = options.args || '',
 		content = '',
-		$databaseentries = document.getElementById('database-entries'),
+		$databaseentries = document.getElementById( 'database-entries' ),
 		i = 0,
 		row = [];
 
-	if (plugin !== '') {
-		if (plugin === 'Spotify') {
-			$('#database-entries').removeClass('hide');
-			$('#db-level-up').removeClass('hide');
-			$('#home-blocks').addClass('hide');
-			if (path) {
-				GUI.currentpath = path;
-			}
+	if ( path ) GUI.currentpath = path;
+	$( '#database-entries, #db-level-up' ).removeClass( 'hide' );
+	$(' #home-blocks ').addClass('hide');
+
+	if ( plugin ) {
+		if ( plugin === 'Spotify' ) {
 			$databaseentries.innerHTML = '';
-			data = (querytype === 'tracks') ? data.tracks : data.playlists;
-// ****************************************************************************************
-// sorting
+			data = ( querytype === 'tracks' ) ? data.tracks : data.playlists;
 			data.sort( function( a, b ) {
 				if ( path === 'Spotify' && querytype === '' ) {
 					return stripAAnThe( a[ 'name' ] ).localeCompare( stripAAnThe( b[ 'name' ] ) )
@@ -1221,36 +1225,15 @@ function populateDB(options) {
 					return 0;
 				}
 			});
-// ****************************************************************************************
-			for (i = 0; (row = data[i]); i += 1) {
-				content += parseResponse({
-					inputArr: row,
-					respType: 'Spotify',
-					i: i,
-					querytype: querytype,
-					inpath: args
-				});
-			}
+			for (i = 0; (row = data[i]); i += 1) content += preparse( row, i, 'Spotify', arg, querytype );
 			$databaseentries.innerHTML = content;
 		}
-		if (plugin === 'Dirble') {
-			$('#database-entries').removeClass('hide');
-			$('#db-level-up').removeClass('hide');
-			$('#home-blocks').addClass('hide');
-			if (path) {
-				if (querytype === 'search') {
-					GUI.currentpath = 'Dirble';
-				} else {
-					GUI.currentpath = path;
-				}
-			}
-			if (querytype === 'childs-stations') {
+		if ( plugin === 'Dirble' ) {
+			if ( querytype === 'childs-stations' ) {
 				content = $databaseentries.innerHTML;
 			} else {
 				$databaseentries.innerHTML = '';
 			}            
-// ****************************************************************************************
-// sorting
 			data.sort( function( a, b ) {
 				if ( querytype === 'childs' || querytype === 'categories' ) {
 					return stripAAnThe( a[ 'title' ] ).localeCompare( stripAAnThe( b[ 'title' ] ) )
@@ -1260,27 +1243,11 @@ function populateDB(options) {
 					return 0;
 				}
 			});
-// ****************************************************************************************
-			for (i = 0; (row = data[i]); i += 1) {
-				content += parseResponse({
-					inputArr: row,
-					respType: 'Dirble',
-					i: i,
-					querytype: querytype
-				});
-			}
+			for (i = 0; (row = data[i]); i += 1) content += preparse( row, i, 'Dirble', '', querytype );
 			$databaseentries.innerHTML = content;
 		}
-		if (plugin === 'Jamendo') {
-			$('#database-entries').removeClass('hide');
-			$('#db-level-up').removeClass('hide');
-			$('#home-blocks').addClass('hide');
-			if (path) {
-				GUI.currentpath = path;
-			}
+		if ( plugin === 'Jamendo' ) {
 			$databaseentries.innerHTML = '';
-// ****************************************************************************************
-// sorting
 			data.sort( function( a, b ) {
 				if ( path === 'Jamendo' && querytype === '' ) {
 					return stripAAnThe( a[ 'dispname' ] ).localeCompare( stripAAnThe( b[ 'dispname' ] ) )
@@ -1288,119 +1255,84 @@ function populateDB(options) {
 					return 0;
 				}
 			});
-// ****************************************************************************************
-			for (i = 0; (row = data[i]); i += 1) {
-				content += parseResponse({
-					inputArr: row,
-					respType: 'Jamendo',
-					i: i,
-					querytype: querytype
-				});
-			}
+			for (i = 0; (row = data[i]); i += 1) content += preparse( row, i, 'Jamendo', '', querytype );
 			$databaseentries.innerHTML = content;
 		}
 	} else {
-	// normal MPD browsing
-		if (path === '' && keyword === '') {
-			renderLibraryHome();
+// normal MPD browsing
+		// show breadcrumb and index bar
+		$( '#db-currentpath' ).removeClass( 'hide' );
+		if ( ( path === '' && keyword === '' ) || !data.length ) {
+			loadingSpinner( 'db', 'hide' );
 			return;
 		} else {
-		// browsing
-			$('#database-entries').removeClass('hide');
-// ****************************************************************************************
-// show breadcrumb and index bar
-			$( '#db-currentpath, #db-level-up' ).removeClass( 'hide' );
-// ****************************************************************************************
-			$('#home-blocks').addClass('hide');
-			if (path) {
-				GUI.currentpath = path;
+			var type = {
+				  Albums       : 'album'
+				, Artists      : 'artist'
+				, AlbumArtists : 'artist'
+				, Composer     : 'composer'
+				, Genres       : 'genre'
+				, Webradio     : 'playlist'
 			}
+			var mode = {
+				  file    : 'file'
+				, album   : 'file'
+				, artist  : 'album'
+				, genre   : 'artist'
+				, composer: 'file'
+			}
+			// undefined type are directory names
+			prop = type[ path ] ? type[ path ] : 'directory';
+			// filter out blank and various
+			if ( prop === 'artist' || prop === 'genre' || prop === 'directory' ) {
+				data = data.filter( function( el ) {
+					var key = ( el[ prop ] !== undefined ) ? prop : mode[ GUI.browsemode ];
+					return el[ key ].search( /^\s+$|^\(*various\)* *|^\(*va\)* */i ) === -1;
+				} );
+			}
+			if ( data.length === 0 ) {
+				loadingSpinner( 'db', 'hide' );
+				return;
+			}
+			// browsing
 			$databaseentries.innerHTML = '';
-			if (keyword !== '') {
+			if ( keyword ) {
 			// search results
-				var results = (data.length) ? data.length : '0';
-				var s = (data.length === 1) ? '' : 's';
-// ****************************************************************************************
+				var results = ( data.length ) ? data.length : '0';
+				var s = ( data.length === 1 ) ? '' : 's';
 // hide breadcrumb and index bar
 				$( '#db-currentpath, #db-index' ).addClass( 'hide' );
 				$( '#database-entries' ).css( 'width', '100%' );
 				$( '#db-search-results' ).removeClass( 'hide' ).html( '<i class="fa fa-times sx"></i><span class="visible-xs-inline"></span><span class="hidden-xs">' + results + ' result' + s + ' for "<span class="keyword">' + keyword + '</span>"</span>' );
 			}
-// sorting
-			if ( !data.length ) {
-				$( '#db-currentpath a' ).click();
-				return;
-			}
 			if ( data[ 0 ].directory || data[ 0 ].file ) {
 				var arraydir = [];
 				var arrayfile = [];
 				$.each( data, function( index, value ) {
-					if ( value.directory ) {
-						arraydir.push( value );
-					} else {
-						arrayfile.push( value );
-					}
+					value.directory ? arraydir.push( value ) : arrayfile.push( value );
 				} );
+				
 				arraydir.sort( function( a, b ) {
 					var adir = stripAAnThe( a[ 'directory' ].split( '/' ).pop() );
 					var bdir = stripAAnThe( b[ 'directory' ].split( '/' ).pop() );
 					return adir.localeCompare( bdir );
 				} );
-				for ( i = 0; row = arraydir[ i ]; i++ ) {
-					content += parseResponse( {
-						inputArr: row,
-						respType: 'db',
-						i: i,
-						inpath: path
-					} );
-				}
+				for ( i = 0; row = arraydir[ i ]; i++ ) content += preparse( row, i, 'db', path );
+				
 				arrayfile.sort( function( a, b ) {
 					var afile = stripAAnThe( a[ 'file' ] );
 					var bfile = stripAAnThe( b[ 'file' ] );
 					return afile.localeCompare( bfile );
 				} );
-				for ( i = 0; row = arrayfile[ i ]; i++ ) {
-					content += parseResponse( {
-						inputArr: row,
-						respType: 'db',
-						i: i,
-						inpath: path
-					} );
-				}
+				for ( i = 0; row = arrayfile[ i ]; i++ ) content += preparse( row, i, 'db', path );
 			} else {
-				var type = {
-					  Albums            : 'album'
-					, Artists           : 'artist'
-					, AlbumArtists      : 'artist'
-					, Various           : 'artist'
-					, Composer          : 'composer'
-					, Genres            : 'genre'
-					, Webradio          : 'playlist'
-				}
-				prop = type[ path ] ? type[ path ] : 'directory';
-				// filter out 'various' artists
-				if ( path === 'Artists' ) {
-					data = data.filter( function( el ) {
-						return el[ 'artist' ].search( /^\(*various\)* *|^\(*va\)* */i ) === -1; 
-					} );
-				}
 				data.sort( function( a, b ) {
-					if ( a[ prop ] === undefined ) {
-						if ( GUI.browsemode === 'artist' ) {
-							prop = 'album';
-						} else if ( GUI.browsemode === 'genre' ) {
-							prop = 'artist';
-						}
-					}
+					if ( a[ prop ] === undefined ) prop = mode[ GUI.browsemode ];
 					return stripAAnThe( a[ prop ] ).localeCompare( stripAAnThe( b[ prop ] ) );
 				});
+				
 				for ( i = 0; row = data[ i ]; i++ ) {
-					content += parseResponse( {
-						inputArr: row,
-						respType: 'db',
-						i: i,
-						inpath: path
-					} );
+					content += preparse( row, i, 'db', path );
 				}
 			}
 			
@@ -1423,6 +1355,12 @@ function populateDB(options) {
 // breadcrumb add - library directory path link
 	var breadcrumb = $( 'span', '#db-currentpath' );
 	var dot = '<span style="color: #587ca0"> &#8226; </span>';
+	var name = {
+		  USB          : 'U S B'
+		, Webradio     : 'W E B R A D I O'
+		, LocalStorage : 'S D'
+		, NAS          : 'N E T W O R K'
+	}
 	var mode = {
 		  album    : [ 'Albums', 'A L B U M' ]
 		, artist   : [ 'Artists', 'A R T I S T' ]
@@ -1444,37 +1382,27 @@ function populateDB(options) {
 			}
 			var foldername = folder[ i ];
 			folderPath += foldername;
-			var name = {
-				  USB          : 'U S B'
-				, Webradio     : 'W E B R A D I O'
-				, LocalStorage : 'S D'
-				, NAS          : 'N E T W O R K'
-			}
 			if ( name [ foldername ] ) foldername = name [ foldername ];
 			folderCrumb += '<a data-path="'+ folderPath +'">'+ foldername +'</a>';
 		}
 		breadcrumb.html( folderCrumb );
 	}
-// ****************************************************************************************
-	if (uplevel) {
-		var position = GUI.currentDBpos[GUI.currentDBpos[10]];
-		$('#db-' + position).addClass('active');
-		customScroll('db', position, 0);
+	if ( uplevel ) {
+		var position = GUI.currentDBpos[ GUI.currentDBpos[ 10 ] ];
+		$( '#db-' + position ).addClass( 'active' );
+		customScroll( 'db', position, 0 );
 	} else {
-		customScroll('db', 0, 0);
+		customScroll( 'db', 0, 0 );
 	}
-	if (querytype != 'childs') {
-		loadingSpinner('db', 'hide');
-	}
+	if ( querytype != 'childs' ) loadingSpinner('db', 'hide');
 	
 	if ( $( '#database-entries' ).find( 'li' ).eq( 0 ).hasClass( 'db-folder' ) ) {
-		$('#db-index').removeClass('hide');
-		$('#database-entries').css('width', 'calc( 100% - 38px )');
+		$( '#db-index' ).removeClass( 'hide' );
+		$( '#database-entries' ).css( 'width', 'calc( 100% - 38px )' );
 	} else {
-		$('#db-index').addClass('hide');
-		$('#database-entries').css('width', '100%');
+		$( '#db-index' ).addClass( 'hide' );
+		$( '#database-entries' ).css( 'width', '100%' );
 	}
-
 }
 function getPlaylistPlain( data ) {
 	var current = parseInt( GUI.json.song ) + 1;
