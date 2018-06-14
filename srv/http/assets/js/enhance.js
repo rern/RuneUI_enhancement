@@ -258,6 +258,10 @@ $( '#db-index li' ).click( function() {
 dbtop = 0;
 $( '#db-level-up' ).off( 'click' );
 $( '#db-level-up' ).click( function() {
+	if ( $( '#db-currentpath span' ).children().length === 1 ) {
+		renderLibraryHome();
+		return
+	}
 	GUI.currentDBpos[ 10 ]--;
 	var path = GUI.currentpath;
 	if ( GUI.currentDBpos[ 10 ] === 0 ) {
@@ -291,8 +295,11 @@ $( '#db-level-up' ).click( function() {
 	} );
 	GUI.plugin = '';
 	
-	window.scrollTo( 0, dbtop );
+//	window.scrollTo( 0, dbtop );
 });
+$( '#db-webradio-add' ).click( function() {
+		$( '#modal-webradio-add' ).modal();
+} );
 // fix; hide spinner on cancel
 $( '#modal-webradio-add button[data-dismiss="modal"], #modal-webradio-add' ).click( function() {
 	$( '#spinner-db' ).addClass( 'hide' );
@@ -1226,27 +1233,23 @@ function populateDB( options ) {
 				}
 			});
 			for (i = 0; (row = data[i]); i += 1) content += preparse( row, i, 'Spotify', arg, querytype );
-			$databaseentries.innerHTML = content;
-		}
-		if ( plugin === 'Dirble' ) {
+		} else if ( plugin === 'Dirble' ) {
 			if ( querytype === 'childs-stations' ) {
 				content = $databaseentries.innerHTML;
 			} else {
 				$databaseentries.innerHTML = '';
-			}            
-			data.sort( function( a, b ) {
-				if ( querytype === 'childs' || querytype === 'categories' ) {
-					return stripAAnThe( a[ 'title' ] ).localeCompare( stripAAnThe( b[ 'title' ] ) )
-				} else if ( querytype === 'childs-stations' || querytype === 'stations' ) {
-					return stripAAnThe( a[ 'name' ] ).localeCompare( stripAAnThe( b[ 'name' ] ) )
-			   } else {
-					return 0;
-				}
-			});
-			for (i = 0; (row = data[i]); i += 1) content += preparse( row, i, 'Dirble', '', querytype );
-			$databaseentries.innerHTML = content;
-		}
-		if ( plugin === 'Jamendo' ) {
+				data.sort( function( a, b ) {
+					if ( querytype === 'childs' || querytype === 'categories' ) {
+						return stripAAnThe( a[ 'title' ] ).localeCompare( stripAAnThe( b[ 'title' ] ) )
+					} else if ( querytype === 'childs-stations' || querytype === 'stations' ) {
+						return stripAAnThe( a[ 'name' ] ).localeCompare( stripAAnThe( b[ 'name' ] ) )
+				   } else {
+						return 0;
+					}
+				});
+				for (i = 0; (row = data[i]); i += 1) content += preparse( row, i, 'Dirble', '', querytype );
+			}
+		} else if ( plugin === 'Jamendo' ) {
 			$databaseentries.innerHTML = '';
 			data.sort( function( a, b ) {
 				if ( path === 'Jamendo' && querytype === '' ) {
@@ -1256,12 +1259,11 @@ function populateDB( options ) {
 				}
 			});
 			for (i = 0; (row = data[i]); i += 1) content += preparse( row, i, 'Jamendo', '', querytype );
-			$databaseentries.innerHTML = content;
 		}
 	} else {
 // normal MPD browsing
 		// show breadcrumb and index bar
-		$( '#db-currentpath' ).removeClass( 'hide' );
+		$( '#db-currentpath, #db-index' ).removeClass( 'hide' );
 		if ( ( path === '' && keyword === '' ) || !data.length ) {
 			loadingSpinner( 'db', 'hide' );
 			return;
@@ -1320,9 +1322,7 @@ function populateDB( options ) {
 				for ( i = 0; row = arraydir[ i ]; i++ ) content += preparse( row, i, 'db', path );
 				
 				arrayfile.sort( function( a, b ) {
-					var afile = stripAAnThe( a[ 'file' ] );
-					var bfile = stripAAnThe( b[ 'file' ] );
-					return afile.localeCompare( bfile );
+					return stripAAnThe( a[ 'file' ] ).localeCompare( stripAAnThe( b[ 'file' ] ) );
 				} );
 				for ( i = 0; row = arrayfile[ i ]; i++ ) content += preparse( row, i, 'db', path );
 			} else {
@@ -1331,28 +1331,16 @@ function populateDB( options ) {
 					return stripAAnThe( a[ prop ] ).localeCompare( stripAAnThe( b[ prop ] ) );
 				});
 				
-				for ( i = 0; row = data[ i ]; i++ ) {
-					content += preparse( row, i, 'db', path );
-				}
+				for ( i = 0; row = data[ i ]; i++ ) content += preparse( row, i, 'db', path );
 			}
-			
-			$databaseentries.innerHTML = content;
-			setTimeout( function() {
-				window.scrollTo( 0, 0 );
-			}, 100 );
-			if ( path === 'Webradio' ) {
-// breadcrumb replace - modify add webradio button
-				$( '#db-level-up' ).addClass( 'hide' );
-				$( '#db-webradio-add' ).removeClass( 'hide' ).click( function() {
-						$( '#modal-webradio-add' ).modal();
-				} );
-			} else {
-				$( '#db-level-up' ).removeClass( 'hide' );
-				$( '#db-webradio-add' ).addClass( 'hide' );
-			}
+			$( '#db-webradio-add' ).toggleClass( 'hide', path !== 'Webradio' );
 		}
 	}
-// breadcrumb add - library directory path link
+	$( '#database-entries' ).html( content ).promise().done( function() {
+		window.scrollTo( 0, dbtop );
+	} );
+	
+// breadcrumb directory path link
 	var breadcrumb = $( 'span', '#db-currentpath' );
 	var dot = '<span style="color: #587ca0"> &#8226; </span>';
 	var name = {
@@ -1396,13 +1384,9 @@ function populateDB( options ) {
 	}
 	if ( querytype != 'childs' ) loadingSpinner('db', 'hide');
 	
-	if ( $( '#database-entries' ).find( 'li' ).eq( 0 ).hasClass( 'db-folder' ) ) {
-		$( '#db-index' ).removeClass( 'hide' );
-		$( '#database-entries' ).css( 'width', 'calc( 100% - 38px )' );
-	} else {
-		$( '#db-index' ).addClass( 'hide' );
-		$( '#database-entries' ).css( 'width', '100%' );
-	}
+	var dirmode = $( '#database-entries li:first-child' ).hasClass( 'db-folder' );
+	$( '#db-index' ).toggleClass( 'hide', dirmode === false );
+	$( '#database-entries' ).css( 'width', dirmode ? 'calc( 100% - 38px )' : '100%' );
 }
 function getPlaylistPlain( data ) {
 	var current = parseInt( GUI.json.song ) + 1;
