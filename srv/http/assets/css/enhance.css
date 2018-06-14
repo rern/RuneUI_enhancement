@@ -736,8 +736,10 @@
 	font-size: 28px;
 	vertical-align: -5%;
 }
-#db-level-up,
 #db-webradio-add {
+	padding-left: 20px;
+}
+#db-level-up {
 	float: right;
 	margin: 5px 10px 0 0;
 	padding: 0;
@@ -799,7 +801,6 @@
 #database-entries li .fa,
 #pl-editor .fa-list-ul {
 	margin: 0 12px;
-	vertical-align: -6%;
 }
 .db-action {
 	margin: 0 !important;
