@@ -507,7 +507,6 @@ $hammerlibrary.on( 'tap', function( e ) {
 	} );
 	e.stopPropagation();
 } );
-
 var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 var observersearch = new MutationObserver( function() {
 	window.scrollTo( 0, 0 );
@@ -964,6 +963,17 @@ function renderLibraryHome() {
 			e.stopPropagation();
 		});
 	});
+/*	$( '.home-block' ).each( function() {
+		var $hammerhomeblock = new Hammer( this );
+		$hammerhomeblock.on( 'press', function( e ) {
+			e.stopPropagation();
+		} );
+	} );*/
+/*	var $hammerwebradio = new Hammer( document.getElementById( 'home-webradio' ) );
+	$hammerwebradio.on( 'press', function( e ) {
+		e.stopPropagation();
+	} );*/
+
 }
 
 function renderPlaylists( data ) {
@@ -1140,7 +1150,7 @@ function parseResponse(options) {
 			if (querytype === '') {
 				content = '<li id="db-' + (i + 1) + '" class="db-spotify db-folder" data-path="';
 				content += inputArr.index;
-				content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-spotify-pl"></i><span><i class="fa fa-folder-open"></i>'
+				content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-spotify-pl"></i><span><i class="fa fa-genre"></i>'
 				content += (inputArr.name !== '') ? inputArr.name : 'Favorites';
 				content += ' (';
 				content += inputArr.tracks;
@@ -1164,7 +1174,7 @@ function parseResponse(options) {
 				var childClass = (querytype === 'childs') ? ' db-dirble-child' : '';
 				content = '<li id="db-' + (i + 1) + '" class="db-dirble db-folder' + childClass + '" data-path="';
 				content += inputArr.id;
-				content += '"><span><i class="fa fa-folder-open"></i>'
+				content += '"><span><i class="fa fa-genre"></i>'
 				content += inputArr.title;
 				content += '</span></li>';
 			} else if (querytype === 'search' || querytype === 'stations' || querytype === 'childs-stations') {
@@ -1216,7 +1226,7 @@ function populateDB( options ) {
 		row = [];
 
 	if ( path ) GUI.currentpath = path;
-	$( '#database-entries, #db-level-up' ).removeClass( 'hide' );
+	$( '#database-entries, #db-currentpath, #db-level-up' ).removeClass( 'hide' );
 	$(' #home-blocks ').addClass('hide');
 
 	if ( plugin ) {
@@ -1262,8 +1272,8 @@ function populateDB( options ) {
 		}
 	} else {
 // normal MPD browsing
-		// show breadcrumb and index bar
-		$( '#db-currentpath, #db-index' ).removeClass( 'hide' );
+		// show index bar
+		$( '#db-index' ).removeClass( 'hide' );
 		if ( ( path === '' && keyword === '' ) || !data.length ) {
 			loadingSpinner( 'db', 'hide' );
 			return;
