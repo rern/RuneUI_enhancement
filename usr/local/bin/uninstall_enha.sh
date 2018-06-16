@@ -26,12 +26,10 @@ rm -v /srv/http/enhance*
 [[ ! -e /usr/local/bin/uninstall_addo.sh ]] && rm -v /srv/http/enhanceredis.php
 path=/srv/http/assets
 rm -v $path/css/{enhance.css,midori.css,roundslider.min.css}
-rm -v $path/fonts/fontawesome-webfont.woff
 rm -v $path/img/{controls.svg,runelogo.svg}
 rm -v $path/js/enhance.js
 rm -vf $path/js/vendor/{jquery-ui.min.js,roundslider.min.js}
 
-mv $path/fonts/fontawesome-webfont.woff{.backup,}
 mv $path/js/runeui.min.js{.backup,}
 mv /srv/http/app/coverart_ctl.php{.backup,}
 
