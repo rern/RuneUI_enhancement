@@ -34,7 +34,7 @@
 					<div class="btn-group">
 						<button id="repeat" class="btn btn-default btn-lg btn-cmd btn-toggle" type="button" title="Repeat" data-cmd="repeat"><i class="fa fa-repeat"></i></button>
 						<button id="random" class="btn btn-default btn-lg btn-cmd btn-toggle" type="button" title="Random" data-cmd="random"><i class="fa fa-random"></i></button>
-						<button id="single" class="btn btn-default btn-lg btn-cmd btn-toggle <?php if ($this->activePlayer === 'Spotify'): ?>disabled<?php endif; ?>" type="button" title="Single" data-cmd="single"><i class="fa fa-thumb-tack"></i></button>
+						<button id="single" class="btn btn-default btn-lg btn-cmd btn-toggle <?php if ($this->activePlayer === 'Spotify'): ?>disabled<?php endif; ?>" type="button" title="Single" data-cmd="single"><i class="fa fa-single"></i></button>
 					</div>
 				</div>
 				<div id="coverart">
@@ -150,7 +150,7 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 			</ul>
 			<div id="playlist-warning" class="playlist hide" style="margin-top: 27px; text-align: center;">
 				<i class="fa fa-plus-circle open-sx" style="font-size: 30px; color: #0095d8; cursor: pointer;"></i><br>
-				<p style="margin-top: 26px; color: #587ca0;">Add something from Library</p>
+				<p style="margin-top: 27px; color: #587ca0;">Add something from Library</p>
 			</div>
 		</div>
 		<div id="spinner-pl" class="csspinner duo hide"></div>
