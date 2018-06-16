@@ -841,6 +841,7 @@
 	font-size: 18px;
 	color: #587ca0 !important;
 }
+#database-entries li.active span i,
 #playlist-entries li.active:before,
 #playlist-entries li.active .sn span {
 	color: #34495e !important;
