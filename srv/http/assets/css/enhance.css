@@ -34,21 +34,54 @@
     font-weight: normal;
     font-style: normal
 }
-.fa-repeat:before,
-.fa-random:before,
-.fa-single:before,
-.fa-info:before,
-.fa-mute:before,
-.fa-play-circle:before,
-#home-blocks i {
-    font-family: 'enhance';
+/*.playback-controls i,
+.fa-menu,
+#menu-bottom i,
+#home-blocks i,
+#database-entries i,
+#playlist-entries i {*/
+.fa-repeat,
+.fa-random,
+.fa-single,
+.fa-info,
+.fa-mute,
+.fa-play-circle,
+#home-blocks i,
+#database-entries .db-icon,
+#database-entries span i,
+#playlist-entries li:before {
+    font-family: enhance;
 }
+#database-entries .db-folder .fa-folder,
+#database-entries .db-folder .fa-music {
+    font-family: FontAwesome;
+}
+
+/*
+.fa-library:before { content: "\f520" }
+.fa-playback:before { content: "\f521" }
+.fa-playlist:before { content: "\f522" }
+
+.fa-previous:before { content: "\f500" }
+.fa-stop:before { content: "\f501" }
+.fa-play:before { content: "\f502" }
+.fa-pause:before { content: "\f503" }
+.fa-next:before { content: "\f504" }
+
+.fa-gear:before { content: "\f505" }
+
+.fa-add:before { content: "\f510" }
+*/
+
 .fa-repeat:before { content: "\f511" }
 .fa-random:before { content: "\f512" }
 .fa-single:before { content: "\f513" }
+.fa-share:before { content: "\f514" }
 .fa-info:before { content: "\f515" }
 .fa-mute:before { content: "\f517" }
-.fa-play-circle:before { content: "\f510" }
+.fa-play-circle:before { content: "\f521" }
+
+
 .fa-bookmark:before { content: "\f550" }
 .fa-network:before { content: "\f551" }
 .fa-microsd:before { content: "\f552" }
@@ -60,6 +93,21 @@
 .fa-genre:before { content: "\f558" }
 .fa-dirble:before { content: "\f559" }
 .fa-jamendo:before { content: "\f55A" }
+
+.fa-music:before { content: "\f55C" }
+.fa-microphone:before { content: "\f554" }
+#playlist-entries li:before { content: ''; }
+@media(min-width: 480px) {
+	#playlist-entries li:before {
+		font-family: enhance;
+		content: "\f55C";
+	}
+	#playlist-entries li.radio:before {
+		font-family: enhance;
+		content: "\f554";
+	}
+}
+
 /* ---------------------- playback ---------------------- */
 #bartop,
 #barbottom {
@@ -797,15 +845,15 @@
 #playlist-entries li.active .sn span {
 	color: #34495e !important;
 }
-#playlist-entries li.radio:before {
-	content: "";
-}
 #playlist-entries li.radio {
 	margin: 0;
 }
 #database-entries li .fa,
 #pl-editor .fa-list-ul {
 	margin: 0 12px;
+}
+.db-icon {
+	margin: 0 6px !important;
 }
 .db-action {
 	margin: 0 !important;
@@ -1080,11 +1128,6 @@
 	#pl-filter-results span,
 	#pl-count {
 		display: none !important;
-	}
-}
-@media(min-width: 480px) {
-	#playlist-entries li.radio:before {
-		content: "\f130";
 	}
 }
 @media(max-width: 480px) {
