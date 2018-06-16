@@ -899,24 +899,24 @@ function renderLibraryHome() {
 	var content = '<br>';
 	var divOpen = '<div class="col-lg-3 col-md-4 col-sm-6">';
 	for ( i = 0; ( bookmark = obj.bookmarks[ i ] ); i++ ) {
-		content += divOpen +'<div id="home-bookmark-'+ bookmark.id +'" class="home-block home-bookmark'+ toggleMPD +'" data-path="'+ bookmark.path +'"><i class="fa fa-star"></i><h4>' + bookmark.name + '</h4></div></div>';
+		content += divOpen +'<div id="home-bookmark-'+ bookmark.id +'" class="home-block home-bookmark'+ toggleMPD +'" data-path="'+ bookmark.path +'"><i class="fa fa-bookmark"></i><h4>' + bookmark.name + '</h4></div></div>';
 	}
 	if ( chkKey( obj.networkMounts ) ) {
 		content += divOpen +'<a id="home-nas" class="home-block'+ toggleMPD +'"'+ ( obj.networkMounts === 0 ? ( notMPD ? '' : ' href="/sources/add/"' ) : ' data-path="NAS"' ) +'>';
-		content += '<i class="fa fa-sitemap"></i><h4>Network drives <span>(' + obj.networkMounts + ')</span></h4></a></div>';
+		content += '<i class="fa fa-network"></i><h4>Network drives <span>(' + obj.networkMounts + ')</span></h4></a></div>';
 	}
 	if ( chkKey( obj.localStorages ) ) {
 		content += ( obj.localStorages === 0 ) ? '' : divOpen +'<div id="home-local" class="home-block'+ toggleMPD +'" data-path="LocalStorage"><i class="fa fa-microsd"></i><h4>SD card <span>('+ obj.localStorages +')</span></h4></div></div>';
 	}
 	if ( chkKey( obj.USBMounts ) ) {
 		content += divOpen +'<div id="home-usb" class="home-block'+ toggleMPD +'"'+ ( obj.USBMounts === 0 ? ( notMPD ? '' : ' href="/sources/sources/"' ) : ' data-path="USB"' ) +'>';
-		content += '<i class="fa fa-hdd-o"></i><h4>USB drives <span>('+ obj.USBMounts +')</span></h4></div></div>';
+		content += '<i class="fa fa-usbdrive"></i><h4>USB drives <span>('+ obj.USBMounts +')</span></h4></div></div>';
 	}
 	if ( chkKey( obj.webradio ) ) {
 		if ( obj.webradio === 0 ) {
-			content += divOpen +'<div id="home-webradio" class="home-block' + toggleMPD + '" href="#" data-toggle="modal" data-target="#modal-webradio-add"><i class="fa fa-microphone"></i><h4>Webradios <span>('+ obj.webradio +')</span></h4></div></div>';
+			content += divOpen +'<div id="home-webradio" class="home-block' + toggleMPD + '" href="#" data-toggle="modal" data-target="#modal-webradio-add"><i class="fa fa-webradio"></i><h4>Webradios <span>('+ obj.webradio +')</span></h4></div></div>';
 		} else {
-			content += divOpen +'<div id="home-webradio" class="home-block'+ toggleMPD +'" data-path="Webradio"><i class="fa fa-microphone"></i><h4>Webradios <span>('+ obj.webradio +')</span></h4></div></div>';
+			content += divOpen +'<div id="home-webradio" class="home-block'+ toggleMPD +'" data-path="Webradio"><i class="fa fa-webradio"></i><h4>Webradios <span>('+ obj.webradio +')</span></h4></div></div>';
 		}
 	}
 	content += divOpen +'<div id="home-albums" class="home-block'+ toggleMPD +'" data-path="Albums" data-browsemode="album"><i class="fa fa-album"></i><h4>Albums</h4></div></div>';
@@ -931,9 +931,9 @@ function renderLibraryHome() {
 		}
 	}
 	if ( chkKey( obj.Dirble ) ) {
-		content += divOpen +'<div id="home-dirble" class="home-block'+ toggleMPD +'" data-plugin="Dirble" data-path="Dirble"><i class="fa fa-globe"></i><h4>Dirble</h4></div></div>';
+		content += divOpen +'<div id="home-dirble" class="home-block'+ toggleMPD +'" data-plugin="Dirble" data-path="Dirble"><i class="fa fa-dirble"></i><h4>Dirble</h4></div></div>';
 	}
-	content += divOpen +'<div id="home-jamendo" class="home-block'+ toggleMPD +'" data-plugin="Jamendo" data-path="Jamendo"><i class="fa fa-play-circle-o"></i><h4>Jamendo<span id="home-count-jamendo"></span></h4></div></div>';
+	content += divOpen +'<div id="home-jamendo" class="home-block'+ toggleMPD +'" data-plugin="Jamendo" data-path="Jamendo"><i class="fa fa-jamendo"></i><h4>Jamendo<span id="home-count-jamendo"></span></h4></div></div>';
 
 	content += '</div>';
 	document.getElementById( 'home-blocks' ).innerHTML = content;
@@ -1398,7 +1398,7 @@ function getPlaylistPlain( data ) {
 	for ( i = 0; i < ilength; i++ ) {
 		var data = json[ i ];
 		if ( data[ 'file' ].slice( 0, 4 ) === 'http' ) {
-			classradio = ' radio';
+			classradio = 'radio';
 			topline = data[ 'Title' ];
 			bottomline = data[ 'file' ];
 			hidetotal = ' class="hide"';
