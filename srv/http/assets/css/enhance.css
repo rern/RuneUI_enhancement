@@ -1,6 +1,6 @@
 @font-face {
-    font-family: 'FontAwesome';
-    src: url('../fonts/fontawesome-webfont.woff?v=4.3.0') format('woff');
+    font-family: 'enhance';
+    src: url('../fonts/enhance.woff?v=4.3.0') format('woff');
     font-weight: normal;
     font-style: normal
 }
@@ -34,27 +34,32 @@
     font-weight: normal;
     font-style: normal
 }
-.fa-play-circle:before {
-    content: "\f550"
+.fa-repeat:before,
+.fa-random:before,
+.fa-single:before,
+.fa-info:before,
+.fa-mute:before,
+.fa-play-circle:before,
+#home-blocks i {
+    font-family: 'enhance';
 }
-.fa-mute:before {
-    content: "\f551"
-}
-.fa-microsd:before {
-    content: "\f552"
-}
-.fa-album:before {
-    content: "\f553"
-}
-.fa-artist:before {
-    content: "\f554"
-}
-.fa-composer:before {
-    content: "\f555"
-}
-.fa-genre:before {
-    content: "\f556"
-}
+.fa-repeat:before { content: "\f511" }
+.fa-random:before { content: "\f512" }
+.fa-single:before { content: "\f513" }
+.fa-info:before { content: "\f515" }
+.fa-mute:before { content: "\f517" }
+.fa-play-circle:before { content: "\f510" }
+.fa-bookmark:before { content: "\f550" }
+.fa-network:before { content: "\f551" }
+.fa-microsd:before { content: "\f552" }
+.fa-usbdrive:before { content: "\f553" }
+.fa-webradio:before { content: "\f554" }
+.fa-album:before { content: "\f555" }
+.fa-artist:before { content: "\f556" }
+.fa-composer:before { content: "\f557" }
+.fa-genre:before { content: "\f558" }
+.fa-dirble:before { content: "\f559" }
+.fa-jamendo:before { content: "\f55A" }
 /* ---------------------- playback ---------------------- */
 #bartop,
 #barbottom {
