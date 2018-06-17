@@ -487,7 +487,6 @@ $hammerlibrary.on( 'tap', function( e ) {
 						<br><label><input name="artists" type="checkbox" '+ redis.display.artists +'>&ensp;Artists</label>\
 						<br><label><input name="composer" type="checkbox" '+ redis.display.composer +'>&ensp;Composers</label>\
 						<br><label><input name="genre" type="checkbox" '+ redis.display.genre +'>&ensp;Genres</label>\
-						<br><label><input name="spotify" type="checkbox" '+ redis.display.spotify +'>&ensp;Spotify</label>\
 						<br><label><input name="dirble" type="checkbox" '+ redis.display.dirble +'>&ensp;Dirble</label>\
 						<br><label><input name="jamendo" type="checkbox" '+ redis.display.jamendo +'>&ensp;Jamendo</label>\
 						</form>'
@@ -718,8 +717,8 @@ function mutecolor( volumemute ) {
 		.find( 'i' ).removeClass( 'fa-volume' ).addClass( 'fa-mute' );
 }
 function unmutecolor() {
-	$volumetooltip.css( 'color', '#e0e7ee' );
-	$volumehandle.css( 'background', '#0095d8' );
+	$volumetooltip.css( 'color', '' );
+	$volumehandle.css( 'background', '' );
 	$( '#volmute' ).removeClass( 'btn-primary' )
 		.find( 'i' ).removeClass( 'fa-mute' ).addClass( 'fa-volume' );
 }
@@ -833,7 +832,6 @@ function displaylibrary() {
 	$( '#home-artists' ).parent().toggleClass( 'hide', !redis.display.artists );
 	$( '#home-composer' ).parent().toggleClass( 'hide', !redis.display.composer );
 	$( '#home-genre' ).parent().toggleClass( 'hide', !redis.display.genre );
-	$( '#home-spotify' ).parent().toggleClass( 'hide', !redis.display.spotify );
 	$( '#home-dirble' ).parent().toggleClass( 'hide', !redis.display.dirble );
 	$( '#home-jamendo' ).parent().toggleClass( 'hide', !redis.display.jamendo );
 	
@@ -965,17 +963,6 @@ function renderLibraryHome() {
 			e.stopPropagation();
 		});
 	});
-/*	$( '.home-block' ).each( function() {
-		var $hammerhomeblock = new Hammer( this );
-		$hammerhomeblock.on( 'press', function( e ) {
-			e.stopPropagation();
-		} );
-	} );*/
-/*	var $hammerwebradio = new Hammer( document.getElementById( 'home-webradio' ) );
-	$hammerwebradio.on( 'press', function( e ) {
-		e.stopPropagation();
-	} );*/
-
 }
 
 function renderPlaylists( data ) {
@@ -1636,8 +1623,14 @@ function setplaybackdata() {
 		if ( !GUI.json.song ) GUI.json.song = status.song;
 		
 		if ( status.ext === 'radio' ) {
-			if ( $( '#cover-art' ).css( 'background-image' ) !== 'url("assets/img/cover-radio.jpg")' ) {
-				$( '#cover-art' ).css( 'background-image', 'url("assets/img/cover-radio.jpg")' );
+			if ( status.state === 'play' ) {
+				if ( $( '#cover-art' ).css( 'background-image' ) !== 'url("assets/img/turntable.gif")' ) {
+					$( '#cover-art' ).css( 'background-image', 'url("assets/img/turntable.gif")' );
+				}
+			} else {
+				if ( $( '#cover-art' ).css( 'background-image' ) !== 'url("assets/img/turntable.jpg")' ) {
+					$( '#cover-art' ).css( 'background-image', 'url("assets/img/turntable.jpg")' );
+				}
 			}
 			$( '#elapsed' ).html( status.state === 'play' ? '<a class="dot">.</a> <a class="dot dot2">.</a> <a class="dot dot3">.</a>' : '' );
 			$( '#total' ).text( '' );
