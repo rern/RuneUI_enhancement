@@ -380,7 +380,7 @@ function volumepress( interval, id, fast ) {
 		}
 		vol = vol + increment;
 		if ( !fast ) {
-			setvol( vol ); // fix: enhancevolume.sh delay
+			setvol( vol ); // fix: delay
 		} else {
 			if ( vol % 2 === 0 ) setvol( vol );
 		}
@@ -648,7 +648,7 @@ $( '#volume' ).roundSlider( {
 	}
 } );
 
-$( '#volmute, #volume .rs-tooltip' ).click( function() {
+$( '#volmute, #volM' ).click( function() {
 	onsetvolume = 1;
 	setTimeout( function() {
 		onsetvolume = 0;
@@ -714,12 +714,14 @@ function setvol( vol ) {
 function mutecolor( volumemute ) {
 	$volumetooltip.text( volumemute ).css( 'color', '#0095d8' );
 	$volumehandle.css( 'background', '#587ca0' );
-	$( '#volmute' ).addClass( 'btn-primary' );
+	$( '#volmute' ).addClass( 'btn-primary' )
+		.find( 'i' ).removeClass( 'fa-volume' ).addClass( 'fa-mute' );
 }
 function unmutecolor() {
 	$volumetooltip.css( 'color', '#e0e7ee' );
 	$volumehandle.css( 'background', '#0095d8' );
-	$( '#volmute' ).removeClass( 'btn-primary' );
+	$( '#volmute' ).removeClass( 'btn-primary' )
+		.find( 'i' ).removeClass( 'fa-mute' ).addClass( 'fa-volume' );
 }
 
 // #menu-top, #menu-bottom, #play-group, #share-group, #vol-group:
