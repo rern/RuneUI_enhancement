@@ -52,6 +52,7 @@
 .btn-group i,
 #menu-bottom i,
 #home-blocks i,
+#db-home,
 #database-entries .db-icon,
 #database-entries span i,
 #playlist-entries li:before {
@@ -59,7 +60,7 @@
 }
 .fa-step-backward:before { content: "\f500" }
 .fa-stop:before { content: "\f501" }
-.fa-play:before { content: "\f502" }
+.playback-controls .fa-play:before { content: "\f502" }
 .fa-pause:before { content: "\f503" }
 .fa-step-forward:before { content: "\f504" }
 
