@@ -1531,7 +1531,7 @@ function setbutton() {
 	if ( GUI.json.updating_db !== undefined ) {
 		$( '#open-panel-sx a' ).html( '<i class="fa fa-refresh fa-spin"></i>' );
 	} else {
-		$( '#open-panel-sx a' ).html( '<i class="fa fa-folder-open"></i>' );
+		$( '#open-panel-sx a' ).html( '<i class="fa fa-library"></i>' );
 	}
 	
 	if ( $( '#play-group' ).is( ':visible' ) ) {
