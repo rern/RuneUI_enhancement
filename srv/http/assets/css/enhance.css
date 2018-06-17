@@ -1,58 +1,66 @@
 @font-face {
-    font-family: 'Lato';
-    src: url('../fonts/lato/lato-bold-webfont.woff') format('woff');
-    font-weight: bold;
-    font-style: normal
+	font-family: Lato;
+	src: url('../fonts/lato/lato-regular-webfont.woff') format('woff'),
+		url('../fonts/lato/lato-regular-webfont.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
 }
 @font-face {
-    font-family: 'Lato';
-    src: url('../fonts/lato/lato-bolditalic-webfont.woff') format('woff');
-    font-weight: bold;
-    font-style: italic
-}
-@font-face {
-    font-family: 'Lato';
-    src: url('../fonts/lato/lato-italic-webfont.woff') format('woff');
-    font-weight: normal;
-    font-style: italic
-}
-@font-face {
-    font-family: 'Lato';
-    src: url('../fonts/lato/lato-light-webfont.woff') format('woff');
+	font-family: Lato;
+	src: url('../fonts/lato/lato-light-webfont.woff') format('woff'),
+		url('../fonts/lato/lato-light-webfont.ttf') format('truetype');
 	font-weight: 300;
-    font-style: normal
+	font-style: normal;
 }
 @font-face {
-    font-family: 'Lato';
-    src: url('../fonts/lato/lato-regular-webfont.woff') format('woff');
-    font-weight: normal;
-    font-style: normal
+	font-family: Lato;
+	src: url('../fonts/lato/lato-bold-webfont.woff') format('woff'),
+		url('../fonts/lato/lato-bold-webfont.ttf') format('truetype');
+	font-weight: bold;
+	font-style: normal;
 }
-/* ---------------------- fontawesome ---------------------- */
 @font-face {
-    font-family: 'enhance';
-    src: url('../fonts/enhance.woff?v=4.3.0') format('woff');
-    font-weight: normal;
-    font-style: normal
+	font-family: Lato;
+	src: url('../fonts/lato/lato-italic-webfont.woff') format('woff'),
+		url('../fonts/lato/lato-italic-webfont.ttf') format('truetype');
+	font-weight: normal;
+	font-style: italic;
 }
-.fa-step-backward,
-.fa-step-forward,
-.fa-repeat,
-.fa-random,
-.fa-single,
-.fa-info,
-.fa-mute,
-.fa-play-circle,
+@font-face {
+	font-family: Lato;
+	src: url('../fonts/lato/lato-bolditalic-webfont.woff') format('woff'),
+		url('../fonts/lato/lato-bolditalic-webfont.ttf') format('truetype');
+	font-weight: bold;
+	font-style: italic;
+}
+@font-face {
+	font-family: FontAwesome;
+	src: url('../fonts/fontawesome-webfont.woff') format('woff'),
+		url('../fonts/fontawesome-webfont.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+/* ---------------------- fontawesome mod ---------------------- */
+@font-face {
+	font-family: enhance;
+	src: url('../fonts/enhance.woff') format('woff'),
+		url('../fonts/enhance.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+.playback-controls i,
+.btn-group i,
+#menu-bottom i,
 #home-blocks i,
 #database-entries .db-icon,
 #database-entries span i,
 #playlist-entries li:before {
-    font-family: 'enhance';
-}
-#database-entries .fa-folder {
-    font-family: 'FontAwesome';
+    font-family: enhance;
 }
 .fa-step-backward:before { content: "\f500" }
+.fa-stop:before { content: "\f501" }
+.fa-play:before { content: "\f502" }
+.fa-pause:before { content: "\f503" }
 .fa-step-forward:before { content: "\f504" }
 
 .fa-repeat:before { content: "\f511" }
@@ -60,9 +68,14 @@
 .fa-single:before { content: "\f513" }
 .fa-share:before { content: "\f514" }
 .fa-info:before { content: "\f515" }
-.fa-mute:before { content: "\f517" }
+.fa-minus:before { content: "\f516" }
+.fa-volume:before { content: "\f517" }
+.fa-mute:before { content: "\f518" }
+.fa-plus:before { content: "\f519" }
 
-.fa-play-circle:before { content: "\f521" }
+.fa-library:before { content: "\f520" }
+.fa-playback:before { content: "\f521" }
+.fa-playlist:before { content: "\f522" }
 
 .fa-bookmark:before { content: "\f550" }
 .fa-network:before { content: "\f551" }
@@ -76,6 +89,7 @@
 .fa-dirble:before { content: "\f559" }
 .fa-jamendo:before { content: "\f55A" }
 
+.fa-folder:before { content: "\f55B" }
 .fa-music:before { content: "\f55C" }
 .fa-microphone:before { content: "\f554" }
 #playlist-entries li:before {
@@ -89,11 +103,15 @@
 	#playlist-entries li.radio:before {
 		font-family: enhance;
 		content: "\f554";
+		padding-left: 4px;
 	}
 }
 #database-entries li .fa-music,
 #database-entries li .fa-microphone {
 	margin: 0 6px;
+}
+#database-entries li .fa-microphone {
+	padding-left: 4px;
 }
 #database-entries .db-icon,
 #database-entries li span i,
@@ -106,6 +124,19 @@
 }
 #playlist-entries li:before {
 	margin-top: 9px;
+}
+.db-icon {
+	margin: 0 6px !important;
+}
+.db-action {
+	margin: 0 !important;
+}
+#playlist-entries li.radio {
+	margin: 0;
+}
+#database-entries li .fa,
+#pl-editor .fa-list-ul {
+	margin: 0 12px;
 }
 #database-entries .sn,
 #playlist-entries .sn {
@@ -120,19 +151,6 @@
 #playlist-entries li.active:before,
 #playlist-entries li.active .sn span {
 	color: #34495e !important;
-}
-#playlist-entries li.radio {
-	margin: 0;
-}
-#database-entries li .fa,
-#pl-editor .fa-list-ul {
-	margin: 0 12px;
-}
-.db-icon {
-	margin: 0 6px !important;
-}
-.db-action {
-	margin: 0 !important;
 }
 /* ---------------------- playback ---------------------- */
 #bartop,
