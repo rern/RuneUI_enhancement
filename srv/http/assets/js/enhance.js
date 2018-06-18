@@ -1416,7 +1416,7 @@ function getPlaylistPlain( data ) {
 	for ( i = 0; i < ilength; i++ ) {
 		var data = json[ i ];
 		if ( data[ 'file' ].slice( 0, 4 ) === 'http' ) {
-			classradio = 'radio';
+			classradio = 1;
 			topline = data[ 'Title' ];
 			bottomline = data[ 'file' ];
 			hidetotal = ' class="hide"';
@@ -1428,7 +1428,7 @@ function getPlaylistPlain( data ) {
 		}
 		pos++;
 		classcurrent = ( state !== 'stop' && pos === current ) ? 'active' : '';
-		cl = ' class="'+ classcurrent + classradio +'"';
+		cl = ' class="'+ classcurrent + ( classradio ? ' radio' : '' ) +'"';
 		cl = ( classcurrent || classradio ) ? cl : '';
 		content += '<li id="pl-'+ data[ 'Id' ] +'"'+ cl +'>'
 			+'<i class="fa fa-times-circle pl-action" title="Remove song from playlist"></i><span class="sn">'+ topline +'</span>'
