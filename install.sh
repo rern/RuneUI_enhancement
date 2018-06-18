@@ -43,7 +43,9 @@ n; a\
 ' -e '/dropdown-menu/ a\
             <li id="dropdownbg"></li> <!--enha-->
 ' -e $'/Credits/ a\
-            <li class="<?=$this->uri(1, \'dev\', \'active\')?>"><a href="/dev/"><i class="fa fa-code"></i> Development</a></li> <!--enha-->
+            <li class="<?=$this->uri(1, \'dev\', \'active\')?>"><a href="/dev/"><i class="fa fa-code"></i> Development</a></li> <!--enha-->\
+            <li><a id="turnoff"><i class="fa fa-power-off"></i> Turn off</a></li>
+' -e '/href="poweroff-modal"/ s/^/<!--enha/; s/$/enha-->
 ' -e '/id="open-panel-sx"/ s/^/<!--enha/
 ' -e '/id="open-panel-dx"/ {
 s/$/enha-->/
