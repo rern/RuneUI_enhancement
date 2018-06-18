@@ -50,9 +50,9 @@ n; a\
 ' -e '/id="open-panel-dx"/ {
 s/$/enha-->/
 a\
-        <li id="open-panel-sx"><a><i class="fa fa-folder-open"></i></a></li> <!--enha-->\
-        <li id="open-playback" class="active"><a><i class="fa fa-play-circle"></i></a></li> <!--enha-->\
-        <li id="open-panel-dx"><a><i class="fa fa-list-ul"></i></a></li> <!--enha-->
+        <li id="open-panel-sx"><a><i class="fa fa-library"></i></a></li> <!--enha-->\
+        <li id="open-playback" class="active"><a><i class="fa fa-playback"></i></a></li> <!--enha-->\
+        <li id="open-panel-dx"><a><i class="fa fa-playlist"></i></a></li> <!--enha-->
 }
 ' $file
 
