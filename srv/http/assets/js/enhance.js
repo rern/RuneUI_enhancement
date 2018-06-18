@@ -20,11 +20,6 @@ if ( /\/.*\//.test( location.pathname ) === true ) {
 	return;
 }
 
-// fix: midori renders box-shadow incorrectly
-if ( /Midori/.test( navigator.userAgent ) ) {
-	$( 'head link[rel="stylesheet"]').last().after( '<link rel="stylesheet" href="/css/midori.css">' )
-}
-
 function menubottom( elshow, elhide1, elhide2 ) {
 	$( '#menu-top, #menu-bottom' ).hide();
 	if ( $( '#panel-sx' ).hasClass( 'active' ) ) librarytop = $( window ).scrollTop();
@@ -294,11 +289,9 @@ $( '#db-level-up' ).click( function() {
 		uplevel: 1
 	} );
 	GUI.plugin = '';
-	
-//	window.scrollTo( 0, dbtop );
 });
 $( '#db-webradio-add' ).click( function() {
-		$( '#modal-webradio-add' ).modal();
+	$( '#modal-webradio-add' ).modal();
 } );
 // fix; hide spinner on cancel
 $( '#modal-webradio-add button[data-dismiss="modal"], #modal-webradio-add' ).click( function() {
@@ -343,6 +336,32 @@ document.addEventListener( visibilityevent, function() {
 	} else {
 		setplaybackdata();
 	}
+} );
+
+// fix: midori renders box-shadow incorrectly
+if ( /Midori/.test( navigator.userAgent ) ) {
+	$( 'head link[rel="stylesheet"]').last().after( '<link rel="stylesheet" href="/css/midori.css">' )
+}
+// improve overlay close
+$( '.overlay-scale' ).click( function() {
+	$( this ).removeClass( 'open' ).addClass( 'closed' );
+} );
+// poweroff modal
+$( '#turnoff' ).click( function() {
+	info( {
+		  title       : 'Turn Off'
+		, message     : 'Select mode'
+		, oklabel     : 'Power off'
+		, ok          : function() {
+			$.post( '/settings/', { 'syscmd' : 'poweroff' } );
+			toggleLoader();
+		}
+		, buttonlabel : 'Reboot'
+		, button      : function() {
+			$.post( '/settings/', { 'syscmd' : 'reboot' } );
+			toggleLoader();
+		}
+	} );
 } );
 
 // hammer**************************************************************
