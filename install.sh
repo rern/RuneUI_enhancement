@@ -64,7 +64,10 @@ a\
 
 file=/srv/http/app/templates/footer.php
 echo $file
-sed -i '/knob.min.js\|countdown.min.js\|jquery-ui.js/ {s/^/<!--enha/; s/$/enha-->/}' $file
+sed -i -e '/knob.min.js\|countdown.min.js\|jquery-ui.js\|modernizr-2.6.2-respond-1.1.0.min.js/ {s/^/<!--enha/; s/$/enha-->/}
+' -e $'/modernizr-2.6.2-respond-1.1.0.min.js/ a\
+<script src="<?=$this->asset(\'/js/vendor/modernizr-custom.js\')?>"></script>
+' $file
 # must be before lyrics addon
 if ! grep -q 'lyrics.js' $file; then
 	sed -i $'$ a\
