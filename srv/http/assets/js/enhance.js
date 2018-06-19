@@ -145,7 +145,7 @@ $( '#play-group, #share-group, #vol-group' ).click( function() {
 
 // lastfm search
 $( '#currentartist, #songinfo-open' ).click( function() {
-	if ( GUI.json.file.slice( 0, 4 ) === 'http' ) return;
+	if ( GUI.json.radio ) return;
 	barhide = $( '#menu-top' ).is(':visible') ? 0 : 1;
 	$( '#loader' ).removeClass( 'hide' );
 	
@@ -587,7 +587,7 @@ $( '#time' ).roundSlider( {
 		$timeRS = this;
 	},
 	change: function( e ) { // not fire on 'setValue'
-		if ( GUI.json.file.slice( 0, 4 ) !== 'http' ) {
+		if ( !GUI.json.radio ) {
 			var seekto = Math.floor( e.value / 1000 * time );
 			mpdseek( seekto );
 		} else {
@@ -595,19 +595,19 @@ $( '#time' ).roundSlider( {
 		}
 	},
 	start: function () {
-		if ( GUI.json.file.slice( 0, 4 ) !== 'http' ) {
+		if ( !GUI.json.radio ) {
 			clearInterval( GUI.currentKnob );
 			clearInterval( GUI.countdown );
 		}
 	},
 	drag: function ( e ) { // drag with no transition by default
-		if ( GUI.json.file.slice( 0, 4 ) !== 'http' ) {
+		if ( !GUI.json.radio ) {
 			var seekto = Math.round( e.value / 1000 * time );
 			$( '#elapsed' ).text( converthms( seekto ) );
 		}
 	},
 	stop: function( e ) { // on 'stop drag'
-		if ( GUI.json.file.slice( 0, 4 ) !== 'http' ) {
+		if ( !GUI.json.radio ) {
 			var seekto = Math.round( e.value / 1000 * time );
 			mpdseek( seekto );
 		}
@@ -836,7 +836,6 @@ function displayplayback() {
 	if ( buttonactive ) $( '#play-group, #share-group, #vol-group' ).show();
 	$( '#playback-row' ).removeClass( 'hide' ); // restore - hidden by fix flash
 	
-	setbutton();
 	displaycommon();
 }
 
@@ -1489,14 +1488,14 @@ function commandButton( el ) {
 		dataCmd = dataCmd + ( el.hasClass( 'btn-primary' ) ? ' 0' : ' 1' );    
 	} else {
 		if ( dataCmd === 'play' ) {
-			if ( GUI.json.file.slice( 0, 4 ) === 'http' ) {
+			if ( GUI.json.radio ) {
 				dataCmd = ( GUI.state === 'play' ) ? 'stop' : 'play';
 			} else {
 				dataCmd = ( GUI.state === 'play' ) ? 'pause' : 'play';
 			}
 		}
 		if ( dataCmd === 'pause' || dataCmd === 'stop' ) {
-			if ( GUI.json.file.slice( 0, 4 ) === 'http' ) $( '#currentsong' ).html( '&nbsp;' );
+			if ( GUI.json.radio ) $( '#currentsong' ).html( '&nbsp;' );
 			clearInterval( GUI.currentKnob );
 			clearInterval( GUI.countdown );
 		} else if ( dataCmd === 'previous' || dataCmd === 'next' ) {
@@ -1534,8 +1533,6 @@ function commandButton( el ) {
 
 // buttons and playlist
 function setbutton() {
-	var state = GUI.state;
-	
 	if ( GUI.json.updating_db !== undefined ) {
 		$( '#open-panel-sx a' ).html( '<i class="fa fa-refresh fa-spin"></i>' );
 	} else {
@@ -1543,6 +1540,11 @@ function setbutton() {
 	}
 	
 	if ( $( '#play-group' ).is( ':visible' ) ) {
+		if ( GUI.json.radio ) {
+			$(' #play-group button, #share-group button').prop( 'disabled', true );
+		} else {
+			$(' #play-group button, #share-group button').prop( 'disabled', false );
+		}
 		$( '#repeat' ).toggleClass( 'btn-primary', GUI.json.repeat === '1' );
 		$( '#random' ).toggleClass( 'btn-primary', GUI.json.random === '1' );
 		$( '#single' ).toggleClass( 'btn-primary', GUI.json.single === '1' );
@@ -1550,12 +1552,12 @@ function setbutton() {
 	
 	if ( prevnext === 1 ) return; // disable for previous/next while stop
 	
-	if ( state === 'stop' ) {
+	if ( GUI.state === 'stop' ) {
 		$( '#stop' ).addClass( 'btn-primary' );
 		$( '#play, #pause' ).removeClass( 'btn-primary' );
 		if ( $( '#pause' ).hasClass( 'hide' ) ) $( '#play i' ).removeClass( 'fa fa-pause' ).addClass( 'fa fa-play' );
 	} else {
-		if ( state === 'play' ) {
+		if ( GUI.state === 'play' ) {
 			$( '#play' ).addClass( 'btn-primary' );
 			$( '#stop' ).removeClass( 'btn-primary' );
 			if ( $( '#pause' ).hasClass( 'hide' ) ) {
@@ -1563,7 +1565,7 @@ function setbutton() {
 			} else {
 				$( '#pause' ).removeClass( 'btn-primary' );
 			}
-		} else if ( state === 'pause' ) {
+		} else if ( GUI.state === 'pause' ) {
 			$( '#stop' ).removeClass( 'btn-primary' );
 			if ( $( '#pause' ).hasClass( 'hide' ) ) {
 				$( '#play i' ).removeClass( 'fa fa-play' ).addClass( 'fa fa-pause' );
@@ -1574,7 +1576,6 @@ function setbutton() {
 		}
 	}
 }
-
 function scrollText() {
 	$( '#divartist, #divsong, #divalbum' ).each( function() {
 		if ( $( this ).find( 'span' ).width() > Math.floor( window.innerWidth * 0.975 ) ) {
@@ -1588,6 +1589,9 @@ onsetmode = 0;
 function setplaybackdata() {
 	$.post( '/enhancestatus.php', function( data ) {
 		var status = JSON.parse( data );
+		
+		GUI.json.radio = ( status.file.slice( 0, 4 ) === 'http' ? 1 : 0 );
+		setbutton();
 		// song and album before update for song/album change detection
 		var previoussong = $( '#currentsong' ).text();
 		var previousalbum = $( '#currentalbum' ).text();
