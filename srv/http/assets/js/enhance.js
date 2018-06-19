@@ -1525,7 +1525,6 @@ function commandButton( el ) {
 			$.post( '/enhance.php', { mpd: 'command_list_begin\nplay '+ pos + ( GUI.state !== 'play' ? '\nstop' : '' ) +'\ncommand_list_end' }, function() {
 				setTimeout( function() {
 					prevnext = 0;
-//					setbutton();
 				}, 500 );
 			});
 			return
@@ -1752,6 +1751,7 @@ function renderUI( text ) {
 	GUI.state = GUI.json.state;
 	
 	setplaybackdata();
+	setbutton();
 	
 	if ( $( '#playback' ).hasClass( 'active' ) ) displayplayback();
 	
