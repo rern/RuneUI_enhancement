@@ -1507,8 +1507,10 @@ function commandButton( el ) {
 			
 			if ( GUI.json.random == 1 ) {
 				// improve: repeat pattern of mpd random
-				var pos = Math.floor( Math.random() * last ) + 1;
-				if ( pos === current ) pos = Math.floor( Math.random() * last ) + 1;
+				// Math.floor( Math.random() * ( max - min + 1 ) ) + min;
+				var pos = Math.floor( Math.random() * last );
+				// avoid same pos ( no pos-- or pos++ in ternary )
+				if ( pos === current - 1 ) pos = ( pos === last - 1 ) ? pos - 1 : pos + 1;
 			} else {
 				if ( dataCmd === 'previous' ) {
 					var pos = current !== 1 ? current - 2 : last - 1;
@@ -1523,6 +1525,7 @@ function commandButton( el ) {
 			$.post( '/enhance.php', { mpd: 'command_list_begin\nplay '+ pos + ( GUI.state !== 'play' ? '\nstop' : '' ) +'\ncommand_list_end' }, function() {
 				setTimeout( function() {
 					prevnext = 0;
+//					setbutton();
 				}, 500 );
 			});
 			return
@@ -1538,17 +1541,13 @@ function setbutton() {
 	} else {
 		$( '#open-panel-sx a' ).html( '<i class="fa fa-library"></i>' );
 	}
-	
 	if ( $( '#play-group' ).is( ':visible' ) ) {
-		if ( GUI.json.radio ) {
-			$(' #play-group button, #share-group button').prop( 'disabled', true );
-		} else {
-			$(' #play-group button, #share-group button').prop( 'disabled', false );
-		}
+//		$( '#play-group button').prop( 'disabled', GUI.json.radio ? true : false );
 		$( '#repeat' ).toggleClass( 'btn-primary', GUI.json.repeat === '1' );
 		$( '#random' ).toggleClass( 'btn-primary', GUI.json.random === '1' );
 		$( '#single' ).toggleClass( 'btn-primary', GUI.json.single === '1' );
 	}
+//	if ( $( '#share-group' ).is( ':visible' ) ) $( '#share-group button').prop( 'disabled', GUI.json.radio ? true : false );
 	
 	if ( prevnext === 1 ) return; // disable for previous/next while stop
 	
@@ -1590,8 +1589,6 @@ function setplaybackdata() {
 	$.post( '/enhancestatus.php', function( data ) {
 		var status = JSON.parse( data );
 		
-		GUI.json.radio = ( status.file.slice( 0, 4 ) === 'http' ? 1 : 0 );
-		setbutton();
 		// song and album before update for song/album change detection
 		var previoussong = $( '#currentsong' ).text();
 		var previousalbum = $( '#currentalbum' ).text();
@@ -1629,6 +1626,10 @@ function setplaybackdata() {
 			$( '#cover-art' ).css( 'background-image', 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' );
 			return;
 		}
+		
+		GUI.json.radio = ( status.file.slice( 0, 4 ) === 'http' ? 1 : 0 );
+		setbutton();
+		
 		$( '#currentartist' ).html( status.Artist );
 		$( '#currentsong' ).html( status.Title );
 		$( '#currentalbum' ).html( status.ext !== 'radio' ? status.Album : '<a>'+ status.Album +'</a>' ).promise().done( function() {
