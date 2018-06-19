@@ -58,37 +58,37 @@
 #playlist-entries li:before {
     font-family: enhance;
 }
-.fa-step-backward:before { content: "\f500" }
-.fa-stop:before { content: "\f501" }
+.playback-controls .fa-step-backward:before { content: "\f500" }
+.playback-controls .fa-stop:before { content: "\f501" }
 .playback-controls .fa-play:before { content: "\f502" }
-.fa-pause:before { content: "\f503" }
-.fa-step-forward:before { content: "\f504" }
+.playback-controls .fa-pause:before { content: "\f503" }
+.playback-controls .fa-step-forward:before { content: "\f504" }
 
-.fa-repeat:before { content: "\f511" }
-.fa-random:before { content: "\f512" }
-.fa-single:before { content: "\f513" }
-.fa-share:before { content: "\f514" }
-.fa-info:before { content: "\f515" }
-.fa-minus:before { content: "\f516" }
-.fa-volume:before { content: "\f517" }
-.fa-mute:before { content: "\f518" }
-.fa-plus:before { content: "\f519" }
+.btn-group .fa-repeat:before { content: "\f511" }
+.btn-group .fa-random:before { content: "\f512" }
+.btn-group .fa-single:before { content: "\f513" }
+.btn-group .fa-share:before { content: "\f514" }
+.btn-group .fa-info:before { content: "\f515" }
+.btn-group .fa-minus:before { content: "\f516" }
+.btn-group .fa-volume:before { content: "\f517" }
+.btn-group .fa-mute:before { content: "\f518" }
+.btn-group .fa-plus:before { content: "\f519" }
 
-.fa-library:before { content: "\f520" }
-.fa-playback:before { content: "\f521" }
-.fa-playlist:before { content: "\f522" }
+#menu-bottom .fa-library:before { content: "\f520" }
+#menu-bottom .fa-playback:before { content: "\f521" }
+#menu-bottom .fa-playlist:before { content: "\f522" }
 
-.fa-bookmark:before { content: "\f550" }
-.fa-network:before { content: "\f551" }
-.fa-microsd:before { content: "\f552" }
-.fa-usbdrive:before { content: "\f553" }
-.fa-webradio:before { content: "\f554" }
-.fa-album:before { content: "\f555" }
-.fa-artist:before { content: "\f556" }
-.fa-composer:before { content: "\f557" }
-.fa-genre:before { content: "\f558" }
-.fa-dirble:before { content: "\f559" }
-.fa-jamendo:before { content: "\f55A" }
+#home-blocks .fa-bookmark:before { content: "\f550" }
+#home-blocks .fa-network:before { content: "\f551" }
+#home-blocks .fa-microsd:before { content: "\f552" }
+#home-blocks .fa-usbdrive:before { content: "\f553" }
+#home-blocks .fa-webradio:before { content: "\f554" }
+#home-blocks .fa-album:before { content: "\f555" }
+#home-blocks .fa-artist:before { content: "\f556" }
+#home-blocks .fa-composer:before { content: "\f557" }
+#home-blocks .fa-genre:before { content: "\f558" }
+#home-blocks .fa-dirble:before { content: "\f559" }
+#home-blocks .fa-jamendo:before { content: "\f55A" }
 
 .fa-folder:before { content: "\f55B" }
 .fa-music:before { content: "\f55C" }
