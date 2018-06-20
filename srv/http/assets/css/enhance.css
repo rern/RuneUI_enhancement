@@ -74,7 +74,8 @@
 .btn-group .fa-mute:before { content: "\f518" }
 .btn-group .fa-plus:before { content: "\f519" }
 
-#menu-bottom .fa-library:before { content: "\f520" }
+#menu-bottom .fa-refresh:before { content: "\f55D" }
+#menu-bottom .fa-folder-open:before { content: "\f520" }
 #menu-bottom .fa-playback:before { content: "\f521" }
 #menu-bottom .fa-playlist:before { content: "\f522" }
 
