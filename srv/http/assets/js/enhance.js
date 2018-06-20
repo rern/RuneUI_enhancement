@@ -842,7 +842,7 @@ function displayplayback() {
 // library show/hide blocks
 function displaylibrary() {
 	// no 'id'
-	$( '#home-blocks div:contains(Network mounts)' ).toggleClass( 'hide', !redis.display.nas );
+	$( '#home-nas' ).parent().toggleClass( 'hide', !redis.display.nas );
 	$( '#home-local' ).parent().toggleClass( 'hide', !redis.display.sd );
 	$( '#home-usb' ).parent().toggleClass( 'hide', !redis.display.usb );
 	$( '#home-webradio' ).parent().toggleClass( 'hide', !redis.display.webradio );
@@ -1538,7 +1538,7 @@ function setbutton() {
 	if ( GUI.json.updating_db !== undefined ) {
 		$( '#open-panel-sx a' ).html( '<i class="fa fa-refresh fa-spin"></i>' );
 	} else {
-		$( '#open-panel-sx a' ).html( '<i class="fa fa-library"></i>' );
+		$( '#open-panel-sx a' ).html( '<i class="fa fa-folder-open"></i>' );
 	}
 	if ( $( '#play-group' ).is( ':visible' ) ) {
 //		$( '#play-group button').prop( 'disabled', GUI.json.radio ? true : false );
