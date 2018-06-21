@@ -49,6 +49,7 @@
 	font-style: normal;
 }
 .playback-controls i,
+#menu-settings i,
 .btn-group i,
 #menu-bottom i,
 #home-blocks i,
@@ -79,6 +80,7 @@
 #db-currentpath .fa-folder-open:before { content: "\f520" }
 #menu-bottom .fa-playback:before { content: "\f521" }
 #menu-bottom .fa-playlist:before { content: "\f522" }
+#menu-settings .fa-gear:before { content: "\f505" }
 
 #home-blocks .fa-bookmark:before { content: "\f550" }
 #home-blocks .fa-network:before { content: "\f551" }
