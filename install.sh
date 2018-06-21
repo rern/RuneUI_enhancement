@@ -14,9 +14,9 @@ sed -i 's|fa-music sx"></i> Library\(.\);|fa-folder-open"></i>\1|' /srv/http/ass
 
 mv /srv/http/app/coverart_ctl.php{,.backup}
 mv /srv/http/assets/js/runeui.min.js{,.backup}
-mv /usr/share/bootsplash/start-runeaudio.png{,backup}
-mv /usr/share/bootsplash/reboot-runeaudio.png{,backup}
-mv /usr/share/bootsplash/shutdown-runeaudio.png{,backup}
+mv /usr/share/bootsplash/start-runeaudio.png{,.backup}
+mv /usr/share/bootsplash/reboot-runeaudio.png{,.backup}
+mv /usr/share/bootsplash/shutdown-runeaudio.png{,.backup}
 
 getinstallzip
 
