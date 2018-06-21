@@ -20,8 +20,8 @@ mv /usr/share/bootsplash/shutdown-runeaudio.png{,backup}
 
 getinstallzip
 
-ln -s /usr/share/bootsplash/{start,reboot}-runeaudio}.png
-ln -s /usr/share/bootsplash/{start,shutdown}-runeaudio}.png
+ln -s /usr/share/bootsplash/{start,reboot}-runeaudio.png
+ln -s /usr/share/bootsplash/{start,shutdown}-runeaudio.png
 
 # modify files #######################################
 echo -e "$bar Modify files ..."
