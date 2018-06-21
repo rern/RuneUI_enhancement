@@ -29,13 +29,13 @@ rm -v $path/css/{enhance.css,midori.css,roundslider.min.css}
 rm -v $path/img/{controls.svg,runelogo.svg}
 rm -v $path/js/enhance.js
 rm -vf $path/js/vendor/{jquery-ui.min.js,roundslider.min.js}
-rm /usr/share/bootsplash/{start-runeaudio.png,reboot-runeaudio.png,shutdown-runeaudio.png}
+rm /usr/share/bootsplash/{start,reboot,shutdown}-runeaudio.png
 
 mv $path/js/runeui.min.js{.backup,}
 mv /srv/http/app/coverart_ctl.php{.backup,}
-mv /usr/share/bootsplash/start-runeaudio.png{backup,}
-mv /usr/share/bootsplash/reboot-runeaudio.png{backup,}
-mv /usr/share/bootsplash/shutdown-runeaudio.png{backup,}
+mv /usr/share/bootsplash/start-runeaudio.png{.backup,}
+mv /usr/share/bootsplash/reboot-runeaudio.png{.backup,}
+mv /usr/share/bootsplash/shutdown-runeaudio.png{.backup,}
 
 # restore modified files #######################################
 echo -e "$bar Restore modified files ..."
