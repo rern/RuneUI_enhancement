@@ -76,6 +76,7 @@
 
 #menu-bottom .fa-refresh:before { content: "\f55D" }
 #menu-bottom .fa-folder-open:before { content: "\f520" }
+#db-currentpath .fa-folder-open:before { content: "\f520" }
 #menu-bottom .fa-playback:before { content: "\f521" }
 #menu-bottom .fa-playlist:before { content: "\f522" }
 
