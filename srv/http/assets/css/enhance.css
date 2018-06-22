@@ -87,17 +87,17 @@
 #menu-bottom .fa-list-ul:before { content: "\f522" }
 #menu-settings .fa-gear:before { content: "\f505" }
 
-#home-blocks .fa-bookmark:before { content: "\f550" }
-#home-blocks .fa-network:before { content: "\f551" }
-#home-blocks .fa-microsd:before { content: "\f552" }
-#home-blocks .fa-usbdrive:before { content: "\f553" }
-#home-blocks .fa-webradio:before { content: "\f554" }
-#home-blocks .fa-album:before { content: "\f555" }
-#home-blocks .fa-artist:before { content: "\f556" }
-#home-blocks .fa-composer:before { content: "\f557" }
-#home-blocks .fa-genre:before { content: "\f558" }
-#home-blocks .fa-dirble:before { content: "\f559" }
-#home-blocks .fa-jamendo:before { content: "\f55A" }
+.fa-bookmark:before { content: "\f550" }
+.fa-network:before { content: "\f551" }
+.fa-microsd:before { content: "\f552" }
+.fa-usbdrive:before { content: "\f553" }
+.fa-webradio:before { content: "\f554" }
+.fa-album:before { content: "\f555" }
+.fa-artist:before { content: "\f556" }
+.fa-composer:before { content: "\f557" }
+.fa-genre:before { content: "\f558" }
+.fa-dirble:before { content: "\f559" }
+.fa-jamendo:before { content: "\f55A" }
 
 .fa-folder:before { content: "\f55B" }
 .fa-music:before { content: "\f55C" }
