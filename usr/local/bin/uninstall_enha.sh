@@ -49,7 +49,7 @@ files="
 /srv/http/db/index.php
 /root/.config/midori/config
 "
-restorefile $file
+restorefile $files
 
 uninstallfinish $@
 
