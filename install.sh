@@ -153,7 +153,7 @@ insertP '<div id="context-menus">'
 file=/srv/http/assets/js/runeui.js
 echo $file
 
-comment '// KNOBS' '// PLAYING QUEUE'
+comment '// KNOBS' -n -1 '// PLAYING QUEUE'
 comment '.countdown('
 comment 'fa-spin"></i> Updating'
 
