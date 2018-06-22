@@ -154,7 +154,7 @@ file=/srv/http/assets/js/runeui.js
 echo $file
 
 comment '// KNOBS' -n -1 '// PLAYING QUEUE'
-comment '.countdown('
+
 comment 'fa-spin"></i> Updating'
 
 string=$( cat <<'EOF'
