@@ -14,7 +14,6 @@ installstart $@
 sed -i 's|fa-music sx"></i> Library\(.\);|fa-folder-open"></i>\1|' /srv/http/assets/js/runeui.js
 
 mv /srv/http/app/coverart_ctl.php{,.backup}
-mv /srv/http/assets/fonts/fontawesome-webfont.woff{,.backup}
 mv /srv/http/assets/js/runeui.min.js{,.backup}
 mv /usr/share/bootsplash/start-runeaudio.png{,.backup}
 mv /usr/share/bootsplash/reboot-runeaudio.png{,.backup}
