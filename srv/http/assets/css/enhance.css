@@ -50,6 +50,7 @@
 }
 .playback-controls i,
 #menu-settings i,
+#addons i,
 .btn-group i,
 #menu-bottom i,
 #home-blocks i,
@@ -64,6 +65,10 @@
 .playback-controls .fa-play:before { content: "\f502" }
 .playback-controls .fa-pause:before { content: "\f503" }
 .playback-controls .fa-step-forward:before { content: "\f504" }
+#addons .fa-addons:before { 
+	content: "\f506";
+	font-size: 1.3em;
+}
 
 .btn-group .fa-repeat:before { content: "\f511" }
 .btn-group .fa-random:before { content: "\f512" }
