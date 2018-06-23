@@ -346,17 +346,20 @@ if ( /Midori/.test( navigator.userAgent ) ) {
 $( '.overlay-scale' ).click( function() {
 	$( this ).removeClass( 'open' ).addClass( 'closed' );
 } );
-// poweroff modal
+// poweroff
 $( '#turnoff' ).click( function() {
 	info( {
-		  title       : 'Turn Off'
-		, message     : 'Select mode'
+		  icon        : 'power-off'
+		, title       : 'Power'
+		, message     : 'Select mode:'
 		, oklabel     : 'Power off'
+		, okcolor     : '#bb2828'
 		, ok          : function() {
 			$.post( '/settings/', { 'syscmd' : 'poweroff' } );
 			toggleLoader();
 		}
 		, buttonlabel : 'Reboot'
+		, buttoncolor : '#9a9229'
 		, button      : function() {
 			$.post( '/settings/', { 'syscmd' : 'reboot' } );
 			toggleLoader();
@@ -447,6 +450,7 @@ $hammerplayback.on( 'tap', function( e ) {
 						<br><label><input name="source" type="checkbox" '+ redis.display.source +'>&ensp;<code>MPD</code>&ensp;button</label>\
 						</label>\
 						<br><label><input name="time" type="checkbox" '+ redis.display.time +'>&ensp;Time</label>\
+						<br><label><input name="radioelapsed" type="checkbox" '+ redis.display.radioelapsed +'>&ensp;Webradio elapsed</label>\
 						<br><label><input name="coverart" type="checkbox" '+ redis.display.coverart +'>&ensp;Coverart</label>\
 						<br><label><input name="volume" type="checkbox" '+ redis.display.volume +'>&ensp;Volume</label>\
 						<br><label><input name="buttons" type="checkbox" '+ redis.display.buttons +'>&ensp;Buttons</label>\
@@ -457,10 +461,16 @@ $hammerplayback.on( 'tap', function( e ) {
 			$( '#displaysaveplayback input' ).each( function() {
 				redis.display[ this.name ] = this.checked ? 'checked' : '';
 			} );
-			var command = { display: [ 'hmset', 'display', redis.display ] };
+			var command = {
+				set: [ 'hmset', 'display', redis.display ],
+				display: [ 'hGetAll', 'display' ],
+				volumempd: [ 'get', 'volume' ],
+				update: [ 'hGet', 'addons', 'update' ]
+			};
 			$.post( '/enhance.php', 
 				{ redis: JSON.stringify( command ) },
 				function( data ) {
+					redis = JSON.parse( data );
 					displayplayback();
 				}
 			);
@@ -784,9 +794,9 @@ var command = {
 };
 $.post( '/enhance.php', { redis: JSON.stringify( command ) }, function( data ) {
 	redis = JSON.parse( data );
+	radioelapsed = redis.display.radioelapsed;
 } );
 buttonactive = 0;
-
 function displayplayback() {
 	buttonhide = window.innerHeight <= 320 || window.innerWidth < 499 ? 1 : 0;
 	if ( GUI.json.playlistlength != 0 ) $( '.playback-controls' ).css( 'visibility', 'visible' );
@@ -814,21 +824,24 @@ function displayplayback() {
 	$( '#volume-knob, #vol-group' ).toggleClass( 'hide', !volume );
 	
 	var i = ( redis.display.time ? 1 : 0 ) + ( redis.display.coverart ? 1 : 0 ) + volume;
-		if ( i == 2 && window.innerWidth > 499 ) {
-			if ( volume ) {
-				$( '#time-knob' ).css( { order: 1, '-webkit-order': '1' } );
-				$( '#coverart' ).css( { order: 2, '-webkit-order': '2' } );
-				$( '#volume-knob' ).css( { order: 3, '-webkit-order': '3' } );
-				$( '#play-group' ).css( { order: 4, '-webkit-order': '4' } );
-				$( '#share-group' ).css( { order: 5, '-webkit-order': '5' } );
-				$( '#vol-group' ).css( { order: 6, '-webkit-order': '6' } );
-			}
-			$( '#playback-row' ).css( 'max-width', '900px' );
-			$( '#time-knob, #coverart, #volume-knob, #play-group, #share-group, #vol-group' ).css( 'width', '45%' );
-		} else if ( i == 1 ) {
-			$( '#time-knob, #coverart, #volume-knob, #play-group, #share-group, #vol-group' ).css( 'width', '60%' );
+	if ( i == 2 && window.innerWidth > 499 ) {
+		if ( volume ) {
+			$( '#time-knob' ).css( { order: 1, '-webkit-order': '1' } );
+			$( '#coverart' ).css( { order: 2, '-webkit-order': '2' } );
+			$( '#volume-knob' ).css( { order: 3, '-webkit-order': '3' } );
+			$( '#play-group' ).css( { order: 4, '-webkit-order': '4' } );
+			$( '#share-group' ).css( { order: 5, '-webkit-order': '5' } );
+			$( '#vol-group' ).css( { order: 6, '-webkit-order': '6' } );
 		}
-
+		$( '#playback-row' ).css( 'max-width', '900px' );
+		$( '#time-knob, #coverart, #volume-knob, #play-group, #share-group, #vol-group' ).css( 'width', '45%' );
+	} else if ( i == 1 ) {
+		$( '#time-knob, #coverart, #volume-knob, #play-group, #share-group, #vol-group' ).css( 'width', '60%' );
+	}
+	if ( redis.display.radioelapsed !== radioelapsed ) {
+		radioelapsed = redis.display.radioelapsed;
+		setplaybackdata();
+	}
 	if ( buttonhide || redis.display.buttons == '' ) {
 		buttonhide = 1;
 		$( '#play-group, #share-group, #vol-group' ).hide();
@@ -1587,7 +1600,6 @@ onsetmode = 0;
 function setplaybackdata() {
 	$.post( '/enhancestatus.php', function( data ) {
 		var status = JSON.parse( data );
-		
 		// song and album before update for song/album change detection
 		var previoussong = $( '#currentsong' ).text();
 		var previousalbum = $( '#currentalbum' ).text();
@@ -1657,6 +1669,17 @@ function setplaybackdata() {
 			}
 			$( '#elapsed' ).html( status.state === 'play' ? '<a class="dot">.</a> <a class="dot dot2">.</a> <a class="dot dot3">.</a>' : '' );
 			$( '#total' ).text( '' );
+			// show / hide elapsed at total
+			if ( !status.radioelapsed ) {
+				$( '#total' ).text( '' );
+			} else {
+				var elapsed = status.elapsed;
+				GUI.countdown = setInterval( function() {
+					elapsed++
+					mmss = converthms( elapsed );
+					$( '#total' ).text( mmss ).css( 'color', '#e0e7ee' );
+				}, 1000 );
+			}
 			return;
 		} else {
 			if ( status.Album !== previousalbum ) {
