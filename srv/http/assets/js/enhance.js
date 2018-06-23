@@ -840,7 +840,20 @@ function displayplayback() {
 	}
 	if ( redis.display.radioelapsed !== radioelapsed ) {
 		radioelapsed = redis.display.radioelapsed;
-		setplaybackdata();
+		clearInterval( GUI.countdown );
+		if ( !radioelapsed ) {
+			$( '#total' ).text( '' );
+		} else if ( GUI.state === 'play' ) {
+			$.post( '/enhancestatus.php', function( data ) {
+				var status = JSON.parse( data );
+				var elapsed = status.elapsed;
+				GUI.countdown = setInterval( function() {
+					elapsed++
+					mmss = converthms( elapsed );
+					$( '#total' ).text( mmss ).css( 'color', '#e0e7ee' );
+				}, 1000 );
+			} );
+		}
 	}
 	if ( buttonhide || redis.display.buttons == '' ) {
 		buttonhide = 1;
