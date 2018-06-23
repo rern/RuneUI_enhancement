@@ -65,7 +65,7 @@
 .playback-controls .fa-play:before { content: "\f502" }
 .playback-controls .fa-pause:before { content: "\f503" }
 .playback-controls .fa-step-forward:before { content: "\f504" }
-#addons .fa-addons:before { 
+#addons .fa-cubes:before { 
 	content: "\f506";
 	font-size: 1.3em;
 }
