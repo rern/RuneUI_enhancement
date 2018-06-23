@@ -24,7 +24,6 @@ getinstallzip
 ln -s /usr/share/bootsplash/{start,reboot}-runeaudio.png
 ln -s /usr/share/bootsplash/{start,shutdown}-runeaudio.png
 
-# modify files #######################################
 echo -e "$bar Modify files ..."
 #----------------------------------------------------------------------------------
 file=/srv/http/app/templates/header.php
@@ -64,12 +63,9 @@ insertH ' Sources'
 
 commentP 'href="#poweroff-modal"'
 
-commentP 'id="addons"'
-
 string=$( cat <<'EOF'
             <li class="<?=$this->uri(1, 'dev', 'active')?>"><a href="/dev/"><i class="fa fa-code"></i> Development</a></li>
             <li><a id="turnoff"><i class="fa fa-power-off"></i> Power</a></li>
-            <li><a id="addons"><i class="fa fa-addons"></i> Addons</a></li>
 EOF
 )
 appendH 'href="#poweroff-modal"'
