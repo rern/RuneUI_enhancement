@@ -80,7 +80,6 @@ if ( $status[ 'ext' ] === 'radio' ) {
 	$status[ 'Title' ] = ( $status[ 'state' ] === 'stop' ) ? '&nbsp;' : $status[ 'Title' ];
 	$status[ 'Album' ] = $file;
 	$status[ 'time' ] = '';
-	$status[ 'elapsed' ] = '';
 }
 
 $redis = new Redis(); 
@@ -92,6 +91,7 @@ $name = $webradioname[ $file ];
 
 // sampling >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 if ( $status[ 'state' ] === 'play' ) {
+	$status[ 'radioelapsed' ] = $redis->hGet( 'display', 'radioelapsed' );
 	// lossless - no bitdepth
 	$bitdepth = ( $status[ 'ext' ] === 'radio' ) ? '' : $status[ 'bitdepth' ];
 	$sampling = samplingline( $bitdepth, $status[ 'samplerate' ], $status[ 'bitrate' ] );
@@ -105,7 +105,7 @@ if ( $status[ 'state' ] === 'play' ) {
 // state: stop / pause >>>>>>>>>>
 // webradio
 if ( $status[ 'ext' ] === 'radio' ) {
-	$webradios = $redis->hGetAll( "webradios" );
+	$webradios = $redis->hGetAll( 'webradios' );
 	$webradioname = array_flip( $webradios );
 	$status[ 'Artist' ] = $name;
 	if ( $sampling = $redis->hGet( 'sampling', $name ) ) $status[ 'sampling' ] = $sampling;
