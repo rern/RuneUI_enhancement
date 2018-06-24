@@ -325,7 +325,7 @@ fi
 
 # set library home database
 if [[ $1 != u ]]; then
-	redis-cli hmset display bar checked pause checked time checked coverart checked volume checked buttons checked source checked \
+	redis-cli hmset display bar checked pause checked time checked coverart checked volume checked buttons checked \
 	\nas checked sd checked usb checked webradio checked albums checked artists checked composer checked genre checked \
 	\spotify checked dirble checked jamendo checked &> /dev/null
 fi
