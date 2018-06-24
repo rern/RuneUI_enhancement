@@ -324,11 +324,11 @@ fi
 [[ $( redis-cli get buildversion ) == 'beta-20160313' ]] && redis-cli set release 0.3 &> /dev/null
 
 # set library home database
-if [[ $( redis-cli keys display ) == '' ]]; then
+if [[ $1 != u ]]; then
 	redis-cli hmset display bar checked pause checked time checked coverart checked volume checked buttons checked source checked\
-	\nas checked sd checked usb checked webradio checked albums checked artists checked composer checked genre checked spotify checked dirble checked jamendo checked\
-	\radioimg 'vu.gif' radioimgstop 'vustop.gif' &> /dev/null
+	\nas checked sd checked usb checked webradio checked albums checked artists checked composer checked genre checked spotify checked dirble checked jamendo checked &> /dev/null
 fi
+redis-cli hmset display radioimg 'vu.gif' radioimgstop 'vustop.gif' &> /dev/null
 
 installfinish $@
 
