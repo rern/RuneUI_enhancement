@@ -151,6 +151,27 @@ EOF
 )
 insertP '<div id="context-menus">'
 #----------------------------------------------------------------------------------
+file=/srv/http/assets/css/addons.css
+echo $file
+
+string=$( cat <<'EOF'
+@font-face {
+	font-family: enhance;
+	src: url('../fonts/enhance.woff') format('woff'),
+		url('../fonts/enhance.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+.container h1:before,
+#addo span:before { 
+	font-family: enhance;
+	content: "\00a0\f506\00a0";
+	color: #7795b4;
+}
+EOF
+)
+insert '1'
+#----------------------------------------------------------------------------------
 file=/srv/http/assets/js/runeui.js
 echo $file
 
