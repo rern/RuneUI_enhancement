@@ -29,7 +29,7 @@ echo -e "$bar Modify files ..."
 file=/srv/http/app/templates/header.php
 echo $file
 
-commentP 'RuneAudio - RuneUI'
+commentH 'RuneAudio - RuneUI'
 
 string=$( cat <<'EOF'
     <title>RuneUIe</title>
@@ -51,7 +51,7 @@ EOF
 )
 insertH 'id="menu-top"'
 
-commentP 'this->hostname' 'href="/"><i class="fa fa-play">'
+commentH 'this->hostname' 'href="/"><i class="fa fa-play">'
 
 string=$( cat <<'EOF'
         <button id="menu-settings" class="dropdown-toggle btn-default" role="button" data-toggle="dropdown" data-target="#" href="#"><i class="fa fa-gear"></i></button>
@@ -61,14 +61,14 @@ EOF
 )
 insertH ' Sources'
 
-commentP 'href="#poweroff-modal"'
+commentH 'href="#poweroff-modal"'
 
 string=$( cat <<'EOF'
             <li class="<?=$this->uri(1, 'dev', 'active')?>"><a href="/dev/"><i class="fa fa-code"></i> Development</a></li>
             <li><a id="turnoff"><i class="fa fa-power-off"></i> Power</a></li>
 EOF
 )
-appendH 'href="#poweroff-modal"'
+insertH 'href="#poweroff-modal"'
 
 string=$( cat <<'EOF'
         <button id="pause" class="btn btn-default btn-cmd" title="Pause" data-cmd="play"><i class="fa fa-pause"></i></button>
@@ -76,7 +76,7 @@ EOF
 )
 appendH 'id="play"'
 
-commentP 'class="home"'
+commentH 'class="home"'
 
 string=$( cat <<'EOF'
     <a href="http://www.runeaudio.com/forum/raspberry-pi-f7.html" target="_blank" alt="RuneAudio Forum">
@@ -86,7 +86,7 @@ EOF
 )
 insertH 'class="home"'
 
-commentP 'id="open-panel-sx"' 'id="open-panel-dx"'
+commentH 'id="open-panel-sx"' 'id="open-panel-dx"'
 
 string=$( cat <<'EOF'
         <li id="open-panel-sx"><a><i class="fa fa-folder-open"></i></a></li>
@@ -99,14 +99,14 @@ appendH 'id="open-panel-dx"'
 file=/srv/http/app/templates/footer.php
 echo $file
 
-commentP 'id="poweroff-modal"' '^<\/div>$'
-commentP 'knob.min.js'
-commentP 'countdown.min.js'
-commentP 'modernizr'
+commentH 'id="poweroff-modal"' '^<\/div>$'
+commentH 'knob.min.js'
+commentH 'countdown.min.js'
+commentH 'modernizr'
 
 # 0.4b
 if grep -q 'jquery-ui.js' $file; then
-    commentP 'jquery-ui.js'
+    commentH 'jquery-ui.js'
 	
     string=$( cat <<'EOF'
 <script src="<?=$this->asset('/js/vendor/jquery-ui.min.js')?>"></script>
@@ -143,7 +143,7 @@ EOF
     insertP '<div class="tab-content">'
 fi
 
-commentP '<div class="tab-content">' -n -1 '<div id="context-menus">'
+commentH '<div class="tab-content">' -n -1 '<div id="context-menus">'
 
 string=$( cat <<'EOF'
 include "enhanceplayback.php";
