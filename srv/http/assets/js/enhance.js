@@ -186,7 +186,7 @@ var btnctrl = {
 	, coverTL: ''
 	, coverT : ''
 	, coverL : 'previous'
-//	, coverM : 'play'
+	, coverM : 'play'
 	, coverR : 'next'
 	, coverBL: ''
 	, coverB : 'stop'
@@ -372,7 +372,7 @@ Hammer = propagating( Hammer ); // propagating.js fix
 
 var $hammercontent = new Hammer( document.getElementById( 'content' ) );
 var $hammercoverT = new Hammer( document.getElementById( 'coverT' ) );
-var $hammercoverM = new Hammer( document.getElementById( 'coverM' ) );
+//var $hammercoverM = new Hammer( document.getElementById( 'coverM' ) );
 var $hammervoldn = new Hammer( document.getElementById( 'voldn' ) );
 var $hammervolup = new Hammer( document.getElementById( 'volup' ) );
 var $hammervolB = new Hammer( document.getElementById( 'volB' ) );
@@ -380,7 +380,7 @@ var $hammervolT = new Hammer( document.getElementById( 'volT' ) );
 var $hammerlibrary = new Hammer( document.getElementById( 'panel-sx' ) );
 var $hammerplayback = new Hammer( document.getElementById( 'playback' ) );
 
-$hammercoverM.on( 'press', function( e ) {
+/*$hammercoverM.on( 'press', function( e ) {
 	if ( GUI.json.file.slice( 0, 4 ) !== 'http' ) return;
 	
 	var img     = [ 'vu.gif',     'turntable.gif' ];
@@ -404,13 +404,17 @@ $hammercoverM.on( 'press', function( e ) {
 			var radioimg = 'url("assets/img/'+ display.radioimg +'")';
 			var radioimgstop = 'url("assets/img/'+ display.radioimgstop +'")';
 			$( '#cover-art' ).css( 'background-image', GUI.state === 'play' ? radioimg : radioimgstop );
+			var radiobgvu = ( display.radioimg === 'vu.gif' || display.radioimgstop === 'vustop.gif' ) ? true : false;
+			
+			$( '#cover-art' ).css( 'border-radius', radiobgvu ? '18px' : 0 );
+			$( '#coverartoverlay' ).toggle( radiobgvu );
 		}
 	} );
 	e.stopPropagation();
 } ).on( 'tap', function( e ) {
 	$( '#play' ).click();
 	e.stopPropagation();
-} );
+} );*/
 $hammercontent.on( 'swiperight', function() {
 	panelLR();
 } ).on( 'swipeleft', function() {
@@ -1708,9 +1712,10 @@ function setplaybackdata() {
 			var radiobg = $( '#cover-art' ).css( 'background-image' );
 			var radioimg = 'url("assets/img/'+ display.radioimg +'")';
 			var radioimgstop = 'url("assets/img/'+ display.radioimgstop +'")';
+			var radiobgvu = ( display.radioimg === 'vu.gif' || display.radioimgstop === 'vustop.gif' ) ? true : false;
 			
-			$( '#cover-art' ).css( 'border-radius', '18px' );
-			$( '#coverartoverlay' ).show();
+			$( '#cover-art' ).css( 'border-radius', radiobgvu ? '18px' : 0 );
+			$( '#coverartoverlay' ).toggle( radiobgvu );
 			if ( status.state === 'play' ) {
 				if ( radiobg !== radioimg ) {
 					$( '#cover-art' ).css( 'background-image', radioimg );
@@ -1737,10 +1742,8 @@ function setplaybackdata() {
 		} else {
 			if ( status.Album !== previousalbum ) {
 				var covercachenum = Math.floor( Math.random() * 1001 );
-				$( '#cover-art' ).css( {
-					  'background-image': 'url("/coverart/?v=' + covercachenum + '")'
-					, 'border-radius': ''
-				} );
+				$( '#cover-art' ).css( 'background-image', 'url("/coverart/?v=' + covercachenum + '")' );
+				$( '#cover-art' ).css( 'border-radius', 0 );
 				$( '#coverartoverlay' ).hide();
 			}
 		}
