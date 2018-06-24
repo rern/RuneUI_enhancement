@@ -343,9 +343,9 @@ if ( /Midori/.test( navigator.userAgent ) ) {
 	$( 'head link[rel="stylesheet"]').last().after( '<link rel="stylesheet" href="/css/midori.css">' )
 }
 // improve overlay close
-$( '.overlay-scale' ).click( function() {
+/*$( '.overlay-scale' ).click( function() {
 	$( this ).removeClass( 'open' ).addClass( 'closed' );
-} );
+} );*/
 // poweroff
 $( '#turnoff' ).click( function() {
 	info( {
