@@ -58,7 +58,7 @@
 #database-entries .db-icon,
 #database-entries span i,
 #playlist-entries li:before {
-    font-family: enhance;
+	font-family: enhance;
 }
 .playback-controls .fa-step-backward:before { content: "\f500" }
 .playback-controls .fa-stop:before { content: "\f501" }
@@ -230,17 +230,17 @@
 	font-size: 30px;
 }
 #badge {
-    position: absolute;
-    height: 2rem;
-    top: 1.5rem !important;
-    left: -0.5rem !important;
-    width: 2rem;
-    text-align: center;
-    line-height: 2rem;
-    font-size: 1.25rem;
-    border-radius: 50%;
-    color: #e0e7ee;
-    background: red;
+	position: absolute;
+	height: 2rem;
+	top: 1.5rem !important;
+	left: -0.5rem !important;
+	width: 2rem;
+	text-align: center;
+	line-height: 2rem;
+	font-size: 1.25rem;
+	border-radius: 50%;
+	color: #e0e7ee;
+	background: red;
 }
 .dropdown {
 	margin-right: 0 !important;
