@@ -293,9 +293,8 @@ $( '#db-level-up' ).click( function() {
 $( '#db-webradio-add' ).click( function() {
 	$( '#modal-webradio-add' ).modal();
 } );
-// fix; hide spinner on cancel
-$( '#modal-webradio-add button[data-dismiss="modal"], #modal-webradio-add' ).click( function() {
-	$( '#spinner-db' ).addClass( 'hide' );
+$( '#webradio-add-button, #webradio-edit-button, #webradio-delete-button' ).click( function() {
+	getDB( { path: 'Webradio' } );
 } );
 
 $( '#open-library' ).click( function() {
@@ -1284,6 +1283,7 @@ function preparse( array, i, type, path, query ) {
 	} );
 }
 function populateDB( options ) {
+	if ( !options.data.length ) $( '#database-entries' ).empty(); // fix: delete last webradio
 	var data = options.data || '',
 		path = options.path || '',
 		uplevel = options.uplevel || 0,
@@ -1685,7 +1685,11 @@ function setplaybackdata() {
 			$( '#currentalbum' ).html( '&nbsp;' );
 			$( '#playlist-position span' ).html( 'Add something from Library' );
 			$( '#elapsed, #total' ).html( '&nbsp;' );
-			$( '#cover-art' ).css( 'background-image', 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' );
+			$( '#cover-art' ).css( {
+				  'background-image': 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
+				, 'border-radius': 0
+			} );
+			$( '#coverartoverlay' ).hide();
 			return;
 		}
 		
