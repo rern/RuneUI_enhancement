@@ -441,6 +441,7 @@
 	box-shadow: #555555 0 0 8px 2px;
 }
 #coverartoverlay {
+	display: none;
 	position: absolute;
 	top: 0;
 	margin-left: 50%;
