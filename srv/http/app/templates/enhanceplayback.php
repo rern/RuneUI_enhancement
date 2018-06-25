@@ -112,7 +112,7 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 			</ul>
 			<div id="home-blocks" class="row">
 				<div class="col-sm-12">
-					<h1 class="txtmid">Browse your library</h1>
+					<h1 class="txtmid"></h1>
 				</div>
 			</div>
 		</div>
@@ -129,7 +129,7 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 				<!--<i id="pl-import-youtube" class="fa fa-youtube-play" title="Import a playlist or video from youtube." data-toggle="modal" data-target="#modal-pl-youtube"></i>-->
 				<i id="pl-manage-clear" class="fa fa-trash-o fa-lg" title="Clear the playing queue" data-toggle="modal" data-target="#modal-pl-clear"></i>
 			</div>
-			<span id="pl-count" class="hide">2143 entries</span>
+			<span id="pl-count" class="hide"></span>
 			<form id="pl-search" class="form-inline" method="post" onSubmit="return false;" role="form">
 				<div class="input-group">
 					<input id="pl-filter" class="form-control osk-trigger ttip" type="text" value="" placeholder="search in queue..." data-placement="bottom" data-toggle="tooltip" data-original-title="Type here to search on the fly">
