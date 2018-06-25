@@ -278,10 +278,11 @@ file=/srv/http/app/templates/enhanceplayback.php
 file=/etc/nginx/nginx.conf
 if ! grep -q 'ico|svg' $file; then
 	echo $file
-	commentS 'gif|ico'
+	commentS 'gif\|ico'
 	string=$( cat <<'EOF'
         location ~* (.+)\.(?:\d+)\.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
 EOF
+	appendS 'gif\|ico'
 )
 	svg=0
 else
