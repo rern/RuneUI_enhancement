@@ -319,5 +319,4 @@ title -nt "$info Please reboot."
 
 #clearcache
 
-# refresh svg support last for webui installation
-#[[ $svg == 0 ]] && systemctl reload nginx
+#[[ $svg == 0 ]] && restart nginx
