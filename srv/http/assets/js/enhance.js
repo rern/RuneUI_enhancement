@@ -79,7 +79,7 @@ function btntoggle() {
 
 $( '#open-panel-sx, .open-sx' ).click( function() {
 	if ( $( this ).hasClass( 'active' ) ) {
-		$( '#db-home' ).click();
+		renderLibraryHome();
 		return;
 	}
 	var activePlayer = GUI.libraryhome.ActivePlayer;
@@ -295,6 +295,9 @@ $( '#db-webradio-add' ).click( function() {
 } );
 $( '#webradio-add-button, #webradio-edit-button, #webradio-delete-button' ).click( function() {
 	getDB( { path: 'Webradio' } );
+} );
+$( '#modal-webradio-add button' ).click( function() {
+	if ( !$( '#db-currentpath span' ).text() ) renderLibraryHome();
 } );
 
 $( '#open-library' ).click( function() {
@@ -1283,7 +1286,11 @@ function preparse( array, i, type, path, query ) {
 	} );
 }
 function populateDB( options ) {
-	if ( !options.data.length ) $( '#database-entries' ).empty(); // fix: delete last webradio
+	if ( !options.data.length ) { // fix: delete last webradio
+		$( '#database-entries' ).empty();
+		renderLibraryHome();
+		return
+	}
 	var data = options.data || '',
 		path = options.path || '',
 		uplevel = options.uplevel || 0,
