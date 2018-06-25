@@ -173,7 +173,7 @@ string=$( cat <<'EOF'
 EOF
 )
 append 'fa-music sx"></i> Library'
-
+#----------------------------------------------------------------------------------
 file=/srv/http/db/index.php
 echo $file
 comment 'echo getPlayQueue($mpd)'
@@ -237,7 +237,6 @@ EOF
 )
 append 'hDel(.webradios., $label)'
 #----------------------------------------------------------------------------------
-# start/stop local browser
 file=/srv/http/app/settings_ctl.php
 echo $file
 
@@ -250,12 +249,7 @@ if ( $template->local_browser ) {
 EOF
 )
 append '$'
-
-# for rune youtube
-file=/srv/http/app/templates/enhanceplayback.php
-[[ -e /usr/local/bin/uninstall_RuneYoutube.sh ]] && sed -i '/id="pl-import-youtube"/ {s/<!--//; s/-->//}' $file
-
-# for nginx svg support
+#----------------------------------------------------------------------------------
 file=/etc/nginx/nginx.conf
 if ! grep -q 'ico|svg' $file; then
 	echo $file
@@ -270,9 +264,7 @@ EOF
 else
 	svg=1
 fi
-
-# local display zoom, encoding, css #######################################
-
+#----------------------------------------------------------------------------------
 if [[ $1 != u ]]; then
 	zoom=$1;
 	zoom=$( echo $zoom | awk '{if ($1 < 0.5) print 0.5; else print $1}' )
@@ -283,6 +275,7 @@ else
 fi
 
 if ! pacman -Q chromium &> /dev/null; then
+#----------------------------------------------------------------------------------
 	file=/root/.config/midori/config
 	echo $file
 	
@@ -295,6 +288,7 @@ EOF
 )
 	appendS 'settings'
 else
+#----------------------------------------------------------------------------------
 	file=/root/.xinitrc
 	echo $file
 	
@@ -305,6 +299,10 @@ EOF
 )
 	appendS 'force-device-scale-factor='
 fi
+#----------------------------------------------------------------------------------
+file=/srv/http/app/templates/enhanceplayback.php  # for rune youtube
+[[ -e /usr/local/bin/uninstall_RuneYoutube.sh ]] && sed -i '/id="pl-import-youtube"/ {s/<!--//; s/-->//}' $file
+#----------------------------------------------------------------------------------
 
 # correct version number
 [[ $( redis-cli get buildversion ) == 'beta-20160313' ]] && redis-cli set release 0.3 &> /dev/null
