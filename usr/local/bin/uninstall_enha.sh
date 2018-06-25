@@ -43,13 +43,12 @@ files="
 /srv/http/app/templates/header.php
 /srv/http/app/templates/footer.php
 /srv/http/app/templates/playback.php
-/srv/http/app/settings_ctl.php
-/srv/http/assets/css/addons.css
 /srv/http/assets/js/runeui.js
-/srv/http/app/libs/runeaudio.php
 /srv/http/db/index.php
-/etc/nginx/nginx.conf
+/srv/http/app/libs/runeaudio.php
+/srv/http/app/settings_ctl.php
 /root/.config/midori/config
+/root/.xinitrc
 "
 restorefile $files
 
