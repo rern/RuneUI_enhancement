@@ -12,7 +12,15 @@ installstart $@
 
 #0temp0 remove uninstall leftover
 sed -i 's|fa-music sx"></i> Library\(.\);|fa-folder-open"></i>\1|' /srv/http/assets/js/runeui.js
-sed -i 's/gif.*)/gif\|ico)/' /etc/nginx/nginx.conf
+
+string=$( cat <<'EOF'
+        location ~* (.+)\.(?:\d+)\.(js|css|png|jpg|jpeg|gif|ico)$ {
+EOF
+)
+sed -i -e "/ico/ d
+" -e '/try_files \$uri \$1.\$2;/ i\
+'"$string"'
+' /etc/nginx/nginx.conf
 #1temp1
 
 mv /srv/http/app/coverart_ctl.php{,.backup}
