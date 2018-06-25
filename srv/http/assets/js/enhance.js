@@ -296,7 +296,7 @@ $( '#db-webradio-add' ).click( function() {
 $( '#webradio-add-button, #webradio-edit-button, #webradio-delete-button' ).click( function() {
 	getDB( { path: 'Webradio' } );
 } );
-$( '#modal-webradio-add button' ).click( function() {
+$( '#modal-webradio-add button:eq( 0 ), #modal-webradio-add button:eq( 1 )' ).click( function() {
 	if ( !$( '#db-currentpath span' ).text() ) renderLibraryHome();
 } );
 
