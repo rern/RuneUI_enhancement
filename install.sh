@@ -284,6 +284,8 @@ fi
 
 if ! pacman -Q chromium &> /dev/null; then
 	file=/root/.config/midori/config
+	echo $file
+	
 	commentS 'zoom-level'
 	commentS 'user-stylesheet-uri'
 	
@@ -294,6 +296,7 @@ EOF
 	appendS 'settings'
 else
 	file=/root/.xinitrc
+	echo $file
 	
 	commentS 'force-device-scale-factor='
 	string=$( cat <<EOF
