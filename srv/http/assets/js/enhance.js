@@ -236,16 +236,16 @@ $( '#db-index li' ).click( function() {
 		window.scrollTo( 0, 0 );
 		return
 	}
-	if ( GUI.browsemode === 'file' ) {
-		var datapatharray = $( '#database-entries li' ).attr( 'data-path' ).split('/');
-		var path = datapatharray.slice( 0, -1 ).join( '/' );
-		var datapathindex = path +'/'+ indextext;
+	if ( GUI.currentpath.slice( 0, 3 ) === 'USB' ) {
+		var datapathindex = GUI.currentpath +'/'+ indextext;
 	} else {
 		var datapathindex = '^'+ indextext;
+		var dirmode = 1
 	}
 	var matcharray = $( '#database-entries li' ).filter( function() {
+		var name = dirmode ? $( this ).find( 'span.sn' ).text() : $( this ).attr( 'data-path' );
 		// strip leading A, An, The
-		var name = $( this ).attr( 'data-path' ).replace( /^a *|^an *|^the */i, '' );
+		name = name.replace( /^a *|^an *|^the */i, '' );
 		return name.match( new RegExp( datapathindex ) );
 	} );
 	if ( matcharray.length ) window.scrollTo( 0, matcharray[0].offsetTop - topoffset );
@@ -1473,7 +1473,7 @@ function populateDB( options ) {
 	if ( querytype != 'childs' ) loadingSpinner('db', 'hide');
 	
 	var dirmode = $( '#database-entries li:first-child' ).hasClass( 'db-folder' );
-	$( '#db-index' ).toggleClass( 'hide', dirmode === false );
+	$( '#db-index' ).toggleClass( 'hide', dirmode === false && !plugin );
 	$( '#database-entries' ).css( 'width', dirmode ? 'calc( 100% - 38px )' : '100%' );
 }
 function getPlaylistPlain( data ) {
