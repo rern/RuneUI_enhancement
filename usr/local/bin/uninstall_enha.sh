@@ -48,6 +48,7 @@ files="
 /srv/http/assets/js/runeui.js
 /srv/http/app/libs/runeaudio.php
 /srv/http/db/index.php
+/etc/nginx/nginx.conf
 /root/.config/midori/config
 "
 restorefile $files
