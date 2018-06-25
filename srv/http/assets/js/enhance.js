@@ -401,9 +401,9 @@ var $hammerplayback = new Hammer( document.getElementById( 'playback' ) );
 				, radioimgstop: [ 'hSet', 'display', 'radioimgstop', display.radioimgstop ]
 			};
 			$.post( '/enhance.php', { redis: JSON.stringify( command ) } );
-			var radioimg = 'url("assets/img/'+ display.radioimg +'")';
-			var radioimgstop = 'url("assets/img/'+ display.radioimgstop +'")';
-			$( '#cover-art' ).css( 'background-image', GUI.state === 'play' ? radioimg : radioimgstop );
+			var radiourl = 'url("assets/img/'+ display.radioimg +'")';
+			var radiourlstop = 'url("assets/img/'+ display.radioimgstop +'")';
+			$( '#cover-art' ).css( 'background-image', GUI.state === 'play' ? radiourl : radiourlstop );
 			var radiobgvu = ( display.radioimg === 'vu.gif' || display.radioimgstop === 'vustop.gif' ) ? true : false;
 			
 			$( '#cover-art' ).css( 'border-radius', radiobgvu ? '18px' : 0 );
@@ -1710,19 +1710,21 @@ function setplaybackdata() {
 		
 		if ( status.ext === 'radio' ) {
 			var radiobg = $( '#cover-art' ).css( 'background-image' );
-			var radioimg = 'url("assets/img/'+ display.radioimg +'")';
-			var radioimgstop = 'url("assets/img/'+ display.radioimgstop +'")';
-			var radiobgvu = ( display.radioimg === 'vu.gif' || display.radioimgstop === 'vustop.gif' ) ? true : false;
+			var radioimg = display.radioimg ? display.radioimg : 'vu.gif';
+			var radioimgstop = display.radioimgstop ? display.radioimgstop : 'vustop.gif';
+			var radiourl = 'url("assets/img/'+ radioimg +'")';
+			var radiourlstop = 'url("assets/img/'+ radioimgstop +'")';
+			var radiobgvu = ( radioimg === 'vu.gif' || radioimgstop === 'vustop.gif' ) ? true : false;
 			
 			$( '#cover-art' ).css( 'border-radius', radiobgvu ? '18px' : 0 );
 			$( '#coverartoverlay' ).toggle( radiobgvu );
 			if ( status.state === 'play' ) {
-				if ( radiobg !== radioimg ) {
-					$( '#cover-art' ).css( 'background-image', radioimg );
+				if ( radiobg !== radiourl ) {
+					$( '#cover-art' ).css( 'background-image', radiourl );
 				}
 			} else {
-				if ( radiobg !== radioimgstop ) {
-					$( '#cover-art' ).css( 'background-image', radioimgstop );
+				if ( radiobg !== radiourlstop ) {
+					$( '#cover-art' ).css( 'background-image', radiourlstop );
 				}
 			}
 			$( '#elapsed' ).html( status.state === 'play' ? '<a class="dot">.</a> <a class="dot dot2">.</a> <a class="dot dot3">.</a>' : '' );
