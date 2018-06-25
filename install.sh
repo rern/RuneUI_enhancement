@@ -261,8 +261,9 @@ if ! grep -q 'ico|svg' $file; then
 	string=$( cat <<'EOF'
         location ~* (.+)\.(?:\d+)\.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
 EOF
-	appendS 'gif\|ico'
 )
+	appendS 'gif\|ico'
+	
 	svg=0
 else
 	svg=1
