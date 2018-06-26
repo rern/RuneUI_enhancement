@@ -244,7 +244,7 @@ $( '#db-index li' ).click( function() {
 	}
 	var matcharray = $( '#database-entries li' ).filter( function() {
 		var name = dirmode ? $( this ).find( 'span:eq( 0 )' ).text() : $( this ).attr( 'data-path' );
-		return stripLeading( name ).match( new RegExp( datapathindex ) );
+		return stripLeading( name ).match( new RegExp( datapathindex, 'i' ) );
 	} );
 	if ( matcharray.length ) window.scrollTo( 0, matcharray[0].offsetTop - topoffset );
 } );
