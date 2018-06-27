@@ -70,6 +70,10 @@
 #pl-manage-list:before {                     /* change to fa-folder-open */
 	content: "\f07c"
 }
+.fa-trash-o:before {                         /* change to fa-times-circle */
+	content: "\f057"
+}
+
 #playlist-entries li:before { /* toggle */
 	content: '';
 }
@@ -105,7 +109,10 @@
 #menu-bottom .fa-folder-open:before,
 #db-currentpath .fa-folder-open:before { content: "\f520" }
 #menu-bottom .fa-play-circle:before { content: "\f521" }
-#menu-bottom .fa-list-ul:before { content: "\f522" }
+.fa-list-ul:before {
+	font-family: enhance;
+	content: "\f522";
+}
 #menu-settings .fa-gear:before { content: "\f505" }
 
 .fa-bookmark:before { content: "\f550" }
@@ -143,6 +150,15 @@
 #playlist-entries li:before {
 	margin-top: 9px;
 }
+#db-search-results {
+	padding-top: 0;
+}
+#db-search-results i {
+	margin: 5px 20px 0 -2px;
+}
+#pl-filter-results i {
+	margin-left: -5px;
+}
 .db-icon {
 	margin: 0 6px !important;
 }
@@ -152,9 +168,11 @@
 #playlist-entries li.radio {
 	margin: 0;
 }
-#database-entries li .fa,
-#pl-editor .fa-list-ul {
+#database-entries li .fa {
 	margin: 0 12px;
+}
+#pl-editor .fa-list-ul {
+	margin: 0 14px;
 }
 #database-entries .sn,
 #playlist-entries .sn {
