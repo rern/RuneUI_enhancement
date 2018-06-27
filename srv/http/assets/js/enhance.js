@@ -237,6 +237,31 @@ $( '#searchbtn' ).click( function() {
 		, arg       : keyword
 	} );
 } );
+$( '#pl-filter' ).off( 'keyup' ).on( 'keyup', function() {
+	$.scrollTo(0 , 500);
+	var filter = $(this).val(), count = 0;
+	$('li', '#playlist-entries').each(function(){
+		var el = $(this);
+		if (el.text().search(new RegExp(filter, 'i')) < 0) {
+			el.hide();
+		} else {
+			el.show();
+			count++;
+		}
+	});
+	var numberItems = count;
+	var s = (count === 1) ? '' : 's';
+	if (filter !== '') {
+		$('#pl-manage, #pl-count').addClass('hide');
+		$('#pl-filter-results').removeClass('hide').html('<i class="fa fa-times sx"></i><span class="visible-xs-inline">back</span><span class="hidden-xs">' + count + ' of <span class="keyword">' + filter + '</span></span>');
+	} else {
+		$('#pl-manage, #pl-count').removeClass('hide');
+		$('#pl-filter-results').addClass('hide').html('');
+	}
+} );
+$( '#pl-filter-results' ).click( function() {
+	$( '#pl-manage' ).removeClass( 'hide' );
+} );
 // index link
 $( '#db-index li' ).click( function() {
 	var topoffset = !$( '#menu-top' ).is( ':hidden' ) ? 80 : 40;
@@ -1402,11 +1427,10 @@ function populateDB( options ) {
 			if ( keyword ) {
 			// search results
 				var results = ( data.length ) ? data.length : '0';
-				var s = ( data.length === 1 ) ? '' : 's';
 // hide breadcrumb and index bar
 				$( '#db-currentpath, #db-level-up, #db-index' ).addClass( 'hide' );
 				$( '#database-entries' ).css( 'width', '100%' );
-				$( '#db-search-results' ).removeClass( 'hide' ).html( '<i class="fa fa-times-circle sx"></i><span class="visible-xs-inline"></span><span class="hidden-xs">' + results + ' result' + s + ' for "<span class="keyword">' + keyword + '</span>"</span>' );
+				$( '#db-search-results' ).removeClass( 'hide' ).html( '<i class="fa fa-times sx"></i><span class="visible-xs-inline"></span><span class="hidden-xs">' + results + ' of <span class="keyword">' + keyword + '</span></span>' );
 			}
 			if ( data[ 0 ].directory || data[ 0 ].file ) {
 				var arraydir = [];
