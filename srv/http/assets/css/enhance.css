@@ -211,8 +211,11 @@
 	margin-left: 10px;
 	color: #e0e7ee;
 }
-.white { /* for Album, Artist, Genre, Composer */
+#db-currentpath span a:last-of-type {
 	color: #e0e7ee;
+}
+#db-currentpath span a:first-of-type {
+	color: #0095d8;
 }
 #database-entries .sn span,
 #playlist-entries .sn span {
