@@ -1331,7 +1331,7 @@ function populateDB( options ) {
 			} else {
 				$databaseentries.innerHTML = '';
 				data.sort( function( a, b ) {
-					if ( querytype === 'childs' || querytype === 'categories' ) {
+					if ( !querytype || querytype === 'childs' || querytype === 'categories' ) {
 						return stripLeading( a[ 'title' ] ).localeCompare( stripLeading( b[ 'title' ] ) )
 					} else if ( querytype === 'childs-stations' || querytype === 'stations' ) {
 						return stripLeading( a[ 'name' ] ).localeCompare( stripLeading( b[ 'name' ] ) )
