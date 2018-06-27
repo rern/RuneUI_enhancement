@@ -55,6 +55,7 @@
 #menu-bottom i,
 #home-blocks i,
 #db-home,
+#db-currentpath span i,
 #database-entries .db-icon,
 #database-entries span i,
 #playlist-entries li:before {
@@ -73,7 +74,17 @@
 .fa-trash-o:before {                         /* change to fa-times-circle */
 	content: "\f057"
 }
-
+#db-currentpath span a:first-child {
+	letter-spacing: 5px;
+}
+@media(max-width: 480px) {
+	#db-currentpath span span {
+		display: none;
+	}
+	#db-currentpath span a:first-child {
+		letter-spacing: 0;
+	}
+}
 #playlist-entries li:before { /* toggle */
 	content: '';
 }
@@ -177,6 +188,10 @@
 #database-entries .sn,
 #playlist-entries .sn {
 	padding-top: 8px;
+}
+#db-currentpath span i {
+	    margin-left: 10px;
+	color: #e0e7ee;
 }
 #database-entries .sn span,
 #playlist-entries .sn span {
