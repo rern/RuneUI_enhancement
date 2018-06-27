@@ -216,15 +216,16 @@ $( '#db-home' ).click( function() {
 	renderLibraryHome();
 } );
 $( '#db-currentpath' ).on( 'click', 'a', function() {
-	if ( $( '#db-currentpath span' ).children().length === 1 ) return;
+	if ( $( '#db-currentpath span a' ).length === 1 ) return;
 	var path = $( this ).attr( 'data-path' );
-	var mode = {
+	var path2mode = {
 		  Artists  : 'artist'
 		, Albums   : 'album'
 		, Genres   : 'genre'
 		, Composer : 'composer'
+		, Dirble   : 'Dirble'
 	}
-	getDB( { browsemode: mode[ path ], path: path } );
+	getDB( { browsemode: path2mode[ path ], path: path } );
 	window.scrollTo( 0, 0 );
 } );
 $( '#searchbtn' ).click( function() {
@@ -232,8 +233,8 @@ $( '#searchbtn' ).click( function() {
 	if ( !keyword ) return;
 	getDB( {
 		  cmd       : 'search'
-		, path      : GUI.currentpath
-		, browsemode: GUI.browsemode
+//		, path      : GUI.currentpath
+//		, browsemode: GUI.browsemode
 		, arg       : keyword
 	} );
 } );
@@ -283,9 +284,9 @@ $( '#db-index li' ).click( function() {
 	if ( matcharray.length ) window.scrollTo( 0, matcharray[0].offsetTop - topoffset );
 } );
 dbtop = 0;
-$( '#db-level-up' ).off( 'click' );
-$( '#db-level-up' ).click( function() {
-	if ( $( '#db-currentpath span' ).children().length === 1 ) {
+$( '#db-level-up' ).off( 'click' ).on( 'click', function() {
+	// topmost of path
+	if ( $( '#db-currentpath span a' ).length === 1 ) {
 		renderLibraryHome();
 		return
 	}
@@ -295,25 +296,25 @@ $( '#db-level-up' ).click( function() {
 		path = '';
 	} else {
 		if ( GUI.browsemode === 'file' ) {
-			var cutpos = path.lastIndexOf( '/' );
-			path = ( cutpos !== -1 ) ? path.slice( 0, cutpos ) : '';
+			var toppath = GUI.currentpath.split( '/' )[ 0 ];
+			if ( toppath === 'USB' ) {
+				cutpos = path.lastIndexOf( '/' );
+				path = ( cutpos !== -1 ) ? path.slice( 0, cutpos ) : '';
+			} else {
+				path = toppath;
+				GUI.plugin = toppath;
+			}
 		} else {
-			var arpath = {
+			var mode2path = {
 				  album       : 'Albums'
 				, artist      : 'Artists'
 				, composer    : 'Composer'
 				, genre       : 'Genres'
 				, albumfilter : path
 			};
-			path = GUI.currentDBpath[ GUI.currentDBpos[ 10 ] - 1 ];
-			if ( path === '' && GUI.currentDBpos[ 10 ] === 1 ) {
-				path = arpath[ GUI.browsemode ];
-			} else {
-				GUI.browsemode = GUI.browsemode !== 'artist' ? 'artist' : 'genre'; 
-			}
+			path = mode2path[ GUI.browsemode ];
 		}
 	}
-	
 	getDB( { 
 		browsemode: GUI.browsemode,
 		path: path,
@@ -630,10 +631,17 @@ $( '#database-entries' ).click( function() {
 // replace functions in main runeui.js file **********************************************
 $( '#db-search-results' ).off( 'click' ).on( 'click', function() {
 	$( this ).addClass( 'hide' );
+	var mode = {
+		  Artists  : 'artist'
+		, Albums   : 'album'
+		, Genres   : 'genre'
+		, Composer : 'composer'
+	}
 	if ( GUI.currentpath ) {
 		$( '#db-level-up, #db-currentpath' ).removeClass( 'hide' );
 		getDB( {
-			path: GUI.currentpath
+			  browsemode: mode[ GUI.currentpath ]
+			, path      : GUI.currentpath
 		} );
 		
 		$( '#database-entries' ).removeAttr( 'style' );
@@ -1202,9 +1210,9 @@ function parseResponse(options) {
 					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i><span class="sn">';
 					content += inputArr.Title + '<span>' + converthms(inputArr.Time) + '</span></span>';
 					content += ' <span class="bl">';
-					content +=  inputArr.Artist;
-					content += ' - ';
 					content +=  inputArr.Album;
+					content += ' - ';
+					content +=  inputArr.Artist;
 					content += '</span></li>';
 				} else if (inputArr.album !== '') {
 					content = '<li id="db-' + (i + 1) + '" class="db-folder db-album" data-path="';
@@ -1487,7 +1495,12 @@ function populateDB( options ) {
 		, composer : [ 'Composer', '<span><i class="fa fa-composer"></i></span>COMPOSERS' ]
 	}
 	if ( GUI.browsemode !== 'file' ) {
-		var dot = ( path === mode[ GUI.browsemode ][ 0 ] ) ? '' : dot + path;
+		if ( GUI.browsemode !== 'album' ) {
+			var dot = ( path === mode[ GUI.browsemode ][ 0 ] ) ? '' : '<a>'+ dot +'<span class="white">'+ path +'</span></a>';
+		} else {
+			var albumartist = $( '#database-entries li:eq( 0 ) span.bl' ).text();
+			var dot = albumartist ? '<a>'+ dot +'<span class="white">'+ albumartist +'</span></a>' : '';
+		}
 		breadcrumb.html( '<a data-path="'+ mode[ GUI.browsemode ][ 0 ] +'">'+ mode[ GUI.browsemode ][ 1 ] +'</a>'+ dot );
 	} else {
 		var folder = path.split( '/' );
