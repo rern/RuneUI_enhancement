@@ -79,7 +79,7 @@
 		<div class="btnlist btnlist-top">
 			<div id="db-search" class="form-inline">
 				<div class="input-group">
-					<input id="db-search-keyword" class="form-control osk-trigger" type="text" value="" placeholder="search in DB...">
+					<input id="db-search-keyword" class="form-control osk-trigger" type="text">
 					<span class="input-group-btn">
 						<button id="searchbtn" class="btn btn-default" title="Search"><i class="fa fa-search"></i></button>
 					</span>
