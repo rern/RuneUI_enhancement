@@ -227,7 +227,16 @@ $( '#db-currentpath' ).on( 'click', 'a', function() {
 	getDB( { browsemode: mode[ path ], path: path } );
 	window.scrollTo( 0, 0 );
 } );
-
+$( '#searchbtn' ).click( function() {
+	var keyword = $( '#db-search-keyword' ).val();
+	if ( !keyword ) return;
+	getDB( {
+		  cmd       : 'search'
+		, path      : GUI.currentpath
+		, browsemode: GUI.browsemode
+		, arg       : keyword
+	} );
+} );
 // index link
 $( '#db-index li' ).click( function() {
 	var topoffset = !$( '#menu-top' ).is( ':hidden' ) ? 80 : 40;
