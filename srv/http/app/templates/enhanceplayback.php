@@ -77,14 +77,14 @@
 	<!-- LIBRARY PANEL -->
 	<div id="panel-sx" class="tab-pane">
 		<div class="btnlist btnlist-top">
-			<form id="db-search" class="form-inline" action="javascript:if (document.getElementById( 'db-search-keyword' ).value) getDB({cmd: 'search', path: GUI.currentpath, browsemode: GUI.browsemode});">
+			<div id="db-search" class="form-inline">
 				<div class="input-group">
 					<input id="db-search-keyword" class="form-control osk-trigger" type="text" value="" placeholder="search in DB...">
 					<span class="input-group-btn">
-						<button class="btn btn-default" type="submit" title="Search"><i class="fa fa-search"></i></button>
+						<button id="searchbtn" class="btn btn-default" title="Search"><i class="fa fa-search"></i></button>
 					</span>
 				</div>
-			</form>
+			</div>
 			<div id="db-currentpath" class="hide">
 				<i id="db-home" class="fa fa-folder-open"></i> <span></span>
 				<i id="db-webradio-add" class="fa fa-plus-circle"></i>
