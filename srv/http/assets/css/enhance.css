@@ -60,15 +60,36 @@
 #playlist-entries li:before {
 	font-family: enhance;
 }
+#addons .fa-cubes:before {                   /* change to fa-addons */
+	content: "\f506";
+	font-size: 1.3em;
+}
+#context-menu-dirble .fa-microphone:before { /* change to fa-save */
+	content: "\f0c7" !important;
+}
+#pl-manage-list:before {                     /* change to fa-folder-open */
+	content: "\f07c"
+}
+#playlist-entries li:before { /* toggle */
+	content: '';
+}
+@media(min-width: 480px) {    /* toggle */
+	#playlist-entries li:before {
+		font-family: enhance;
+		content: "\f55C";
+	}
+	#playlist-entries li.radio:before {
+		font-family: enhance;
+		content: "\f554";
+		padding-left: 4px;
+	}
+}
+
 .playback-controls .fa-step-backward:before { content: "\f500" }
 .playback-controls .fa-stop:before { content: "\f501" }
 .playback-controls .fa-play:before { content: "\f502" }
 .playback-controls .fa-pause:before { content: "\f503" }
 .playback-controls .fa-step-forward:before { content: "\f504" }
-#addons .fa-cubes:before { 
-	content: "\f506";
-	font-size: 1.3em;
-}
 
 .btn-group .fa-repeat:before { content: "\f511" }
 .btn-group .fa-random:before { content: "\f512" }
@@ -81,8 +102,8 @@
 .btn-group .fa-plus:before { content: "\f519" }
 
 #menu-bottom .fa-refresh:before { content: "\f55D" }
+#menu-bottom .fa-folder-open:before,
 #db-currentpath .fa-folder-open:before { content: "\f520" }
-#menu-bottom .fa-folder-open:before { content: "\f520" }
 #menu-bottom .fa-play-circle:before { content: "\f521" }
 #menu-bottom .fa-list-ul:before { content: "\f522" }
 #menu-settings .fa-gear:before { content: "\f505" }
@@ -102,25 +123,6 @@
 .fa-folder:before { content: "\f55B" }
 .fa-music:before { content: "\f55C" }
 .fa-microphone:before { content: "\f554" }
-#context-menu-dirble .fa-microphone:before { /* change to fa-save */
-	content: "\f0c7" !important;
-}
-/* toggle */
-#playlist-entries li:before {
-	content: '';
-}
-@media(min-width: 480px) {
-	#playlist-entries li:before {
-		font-family: enhance;
-		content: "\f55C";
-	}
-	#playlist-entries li.radio:before {
-		font-family: enhance;
-		content: "\f554";
-		padding-left: 4px;
-	}
-}
-/* toggle */
 
 #database-entries li .fa-music,
 #database-entries li .fa-microphone {
