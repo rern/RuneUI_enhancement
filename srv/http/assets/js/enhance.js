@@ -1122,7 +1122,7 @@ function parseResponse(options) {
 							content += inputArr.file;
 							content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i><span class="sn">';
 							content += inputArr.Title + '<span>' + converthms(inputArr.Time) + '</span></span>';
-							content += ' <span class="bl">';
+							content += '<span class="bl">';
 							content +=  bl;
 						} else {
 							content += inputArr.file;
@@ -1397,7 +1397,7 @@ function populateDB( options ) {
 // hide breadcrumb and index bar
 				$( '#db-currentpath, #db-level-up, #db-index' ).addClass( 'hide' );
 				$( '#database-entries' ).css( 'width', '100%' );
-				$( '#db-search-results' ).removeClass( 'hide' ).html( '<i class="fa fa-times sx"></i><span class="visible-xs-inline"></span><span class="hidden-xs">' + results + ' result' + s + ' for "<span class="keyword">' + keyword + '</span>"</span>' );
+				$( '#db-search-results' ).removeClass( 'hide' ).html( '<i class="fa fa-times-circle sx"></i><span class="visible-xs-inline"></span><span class="hidden-xs">' + results + ' result' + s + ' for "<span class="keyword">' + keyword + '</span>"</span>' );
 			}
 			if ( data[ 0 ].directory || data[ 0 ].file ) {
 				var arraydir = [];
@@ -1439,16 +1439,19 @@ function populateDB( options ) {
 	var breadcrumb = $( 'span', '#db-currentpath' );
 	var dot = '<span style="color: #587ca0"> &#8226; </span>';
 	var name = {
-		  USB          : 'U S B'
-		, Webradio     : 'W E B R A D I O'
-		, LocalStorage : 'S D'
-		, NAS          : 'N E T W O R K'
+		  USB          : '<span><i class="fa fa-usbdrive"></i></span>USB'
+		, LocalStorage : '<span><i class="fa fa-microsd"></i></span>SD'
+		, NAS          : '<span><i class="fa fa-network"></i></span>NETWORK'
+		, Webradio     : '<span><i class="fa fa-webradio"></i> </span>WEBRADIOS'
+		, Dirble       : '<span><i class="fa fa-dirble"></i> </span>DIRBLE'
+		, Jamendo      : '<span><i class="fa fa-jamendo"></i></span>JAMENDO'
+		, Spotify      : '<span><i class="fa fa-spotify"></i></span>SPOTIFY'
 	}
 	var mode = {
-		  album    : [ 'Albums', 'A L B U M' ]
-		, artist   : [ 'Artists', 'A R T I S T' ]
-		, genre    : [ 'Genres', 'G E N R E' ]
-		, composer : [ 'Composer', 'C O M P O S E R' ]
+		  album    : [ 'Albums', '<span><i class="fa fa-album"></i></span>ALBUMS' ]
+		, artist   : [ 'Artists', '<span><i class="fa fa-artist"></i></span>ARTISTS' ]
+		, genre    : [ 'Genres', '<span><i class="fa fa-genre"></i></span>GENRES' ]
+		, composer : [ 'Composer', '<span><i class="fa fa-composer"></i></span>COMPOSERS' ]
 	}
 	if ( GUI.browsemode !== 'file' ) {
 		var dot = ( path === mode[ GUI.browsemode ][ 0 ] ) ? '' : dot + path;
@@ -1555,17 +1558,22 @@ function getPlaylistCmd(){
 }
 
 prevnext = 0; // for disable 'btn-primary' - previous/next while stop
-function commandButton( el ) {
-	var dataCmd = el.data( 'cmd' );
-	if ( el.hasClass( 'btn-toggle' ) ) {
+$( '.btn-cmd' ).click( function() {
+	var dataCmd = $( this ).data( 'cmd' );
+	if ( $( this ).hasClass( 'btn-toggle' ) ) {
 		if ( GUI.stream === 'radio' ) return;
 		
 		onsetmode = 1;
 		setTimeout( function() {
 			onsetmode = 0;
 		}, 500 );
+
+		if ( this.id === 'random' && $( this ).attr('data-cmd') === 'pl-ashuffle-stop' ) {
+			$.post( '/db/?cmd=pl-ashuffle-stop', '' );
+			$( this ).attr('data-cmd', 'random');
+		}
 		
-		dataCmd = dataCmd + ( el.hasClass( 'btn-primary' ) ? ' 0' : ' 1' );    
+		dataCmd = dataCmd + ( $( this ).hasClass( 'btn-primary' ) ? ' 0' : ' 1' );    
 	} else {
 		if ( dataCmd === 'play' ) {
 			if ( GUI.json.radio ) {
@@ -1611,7 +1619,7 @@ function commandButton( el ) {
 		}
 	}
 	sendCmd( dataCmd );
-}
+} );
 
 // buttons and playlist
 function setbutton() {
