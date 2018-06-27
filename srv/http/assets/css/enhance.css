@@ -102,6 +102,10 @@
 .fa-folder:before { content: "\f55B" }
 .fa-music:before { content: "\f55C" }
 .fa-microphone:before { content: "\f554" }
+#context-menu-dirble .fa-microphone:before { /* change to fa-save */
+	content: "\f0c7" !important;
+}
+/* toggle */
 #playlist-entries li:before {
 	content: '';
 }
@@ -116,6 +120,8 @@
 		padding-left: 4px;
 	}
 }
+/* toggle */
+
 #database-entries li .fa-music,
 #database-entries li .fa-microphone {
 	margin: 0 6px;
@@ -158,6 +164,8 @@
 	color: #587ca0 !important;
 }
 #database-entries li.active span i,
+#database-entries li.active span span,
+#database-entries li.active i:before,
 #playlist-entries li.active:before,
 #playlist-entries li.active .sn span {
 	color: #34495e !important;
