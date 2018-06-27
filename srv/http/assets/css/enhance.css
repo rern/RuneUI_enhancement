@@ -175,7 +175,8 @@
 	margin: 5px 15px 0 -2px;
 }
 #pl-filter-results i {
-	margin-left: -5px;
+	margin-left: -2px;
+	font-size: 24px;
 }
 .db-icon {
 	margin: 0 6px !important;
@@ -196,7 +197,11 @@
 	margin: 0 12px 0 0;
 }
 #pl-filter-results {
-	float: right;
+	width: 40px;
+	background: #0095d8;
+}
+#pl-filter-results:hover {
+	background: #0072a5;
 }
 #db-search-results .hidden-xs,
 #pl-filter-results .hidden-xs {
