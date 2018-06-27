@@ -71,6 +71,7 @@
 #pl-manage-list:before {                     /* change to fa-folder-open */
 	content: "\f07c"
 }
+.fa-times:before,
 .fa-trash-o:before {                         /* change to fa-times-circle */
 	content: "\f057"
 }
@@ -142,6 +143,10 @@
 .fa-folder:before { content: "\f55B" }
 .fa-music:before { content: "\f55C" }
 .fa-microphone:before { content: "\f554" }
+.fa-save:before {
+	font-family: enhance;
+	content: "\f530"
+}
 
 #database-entries li .fa-music,
 #database-entries li .fa-microphone {
@@ -166,7 +171,7 @@
 	padding-top: 0;
 }
 #db-search-results i {
-	margin: 5px 20px 0 -2px;
+	margin: 5px 15px 0 -2px;
 }
 #pl-filter-results i {
 	margin-left: -5px;
@@ -188,6 +193,14 @@
 }
 #pl-editor .fa-list-ul {
 	margin: 0 12px 0 0;
+}
+#pl-filter-results {
+	float: right;
+}
+#db-search-results .hidden-xs,
+#pl-filter-results .hidden-xs {
+	margin-left: 5px;
+	vertical-align: 10%;
 }
 #database-entries .sn,
 #playlist-entries .sn {
