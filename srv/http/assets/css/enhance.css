@@ -168,6 +168,7 @@
 	margin-top: 9px;
 }
 #db-search-results {
+	float: right;
 	padding-top: 0;
 }
 #db-search-results i {
