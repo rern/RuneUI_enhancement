@@ -78,7 +78,8 @@
 	letter-spacing: 5px;
 }
 @media(max-width: 480px) {
-	#db-currentpath span span {
+	#db-currentpath span span,
+	#pl-editor span i {
 		display: none;
 	}
 	#db-currentpath span a:first-child {
@@ -182,8 +183,11 @@
 #database-entries li .fa {
 	margin: 0 12px;
 }
+#pl-editor span {
+	padding-left: 15px !important;
+}
 #pl-editor .fa-list-ul {
-	margin: 0 14px;
+	margin: 0 12px 0 0;
 }
 #database-entries .sn,
 #playlist-entries .sn {
