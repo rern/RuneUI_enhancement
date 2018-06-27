@@ -1109,12 +1109,12 @@ function renderPlaylists( data ) {
 	}
 	document.getElementById( 'playlist-entries' ).innerHTML = '';
 	$( '.playlist, #pl-manage, #pl-count' ).addClass( 'hide' );
-	$( '#pl-filter-results' ).addClass( 'back-to-queue' ).html( '<i class="fa fa-arrow-left sx"></i> to queue' );
+	$( '#pl-filter-results' ).addClass( 'back-to-queue' ).html( '<i class="fa fa-list-ul sx"></i> to queue' );
 	$( '#pl-filter-results, #pl-currentpath, #pl-editor' ).removeClass( 'hide' );
 	document.getElementById( 'pl-editor' ).innerHTML = content;
 	loadingSpinner( 'pl', 'hide' );
 // hide 'to queue' text and 'pl-manage li' click context menu
-	$( '#pl-filter-results' ).html( '<i class="fa fa-arrow-left sx"></i>' );
+	$( '#pl-filter-results' ).html( '<i class="fa fa-list-ul sx"></i>' );
 	$( '#pl-editor li' ).click( function( e ) {
 		e.stopPropagation();
 		var clickX = e.pageX + 5;
