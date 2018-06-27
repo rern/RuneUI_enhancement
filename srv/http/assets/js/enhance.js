@@ -1496,10 +1496,10 @@ function populateDB( options ) {
 	}
 	if ( GUI.browsemode !== 'file' ) {
 		if ( GUI.browsemode !== 'album' ) {
-			var dot = ( path === mode[ GUI.browsemode ][ 0 ] ) ? '' : '<a>'+ dot +'<span class="white">'+ path +'</span></a>';
+			var dot = ( path === mode[ GUI.browsemode ][ 0 ] ) ? '' : '<a>'+ dot + path +'</a>';
 		} else {
 			var albumartist = $( '#database-entries li:eq( 0 ) span.bl' ).text();
-			var dot = albumartist ? '<a>'+ dot +'<span class="white">'+ albumartist +'</span></a>' : '';
+			var dot = albumartist ? '<a>'+ dot + albumartist +'</a>' : '';
 		}
 		breadcrumb.html( '<a data-path="'+ mode[ GUI.browsemode ][ 0 ] +'">'+ mode[ GUI.browsemode ][ 1 ] +'</a>'+ dot );
 	} else {
