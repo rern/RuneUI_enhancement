@@ -208,7 +208,10 @@
 	padding-top: 8px;
 }
 #db-currentpath span i {
-	    margin-left: 10px;
+	margin-left: 10px;
+	color: #e0e7ee;
+}
+.white { /* for Album, Artist, Genre, Composer */
 	color: #e0e7ee;
 }
 #database-entries .sn span,
