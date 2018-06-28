@@ -318,37 +318,32 @@ $( '#pl-manage-list' ).off( 'click' ).on( 'click', function() {
 });
 $( '#pl-filter' ).off( 'keyup' ).on( 'keyup', function() {
 	$.scrollTo( 0 , 500 );
-	var filter = $(this).val();
+	var search = $(this).val();
 	var count = 0;
-	$( 'li', '#playlist-entries' ).each(function(){
-		var el = $( this );
-		if ( el.text().search( new RegExp( filter, 'i' ) ) < 0 ) {
-			el.hide();
-		} else {
-			el.show();
-			count++;
-		}
+	$( '#playlist-entries li' ).each(function(){
+		var match = ( $( this ).text().search( new RegExp( search, 'i' ) ) >= 0 ) ? true : false;
+		count = match ? ( count + 1 ) : count;
+		$( this ).toggle( match );
 	});
-	if ( filter !== '' ) {
+	if ( search !== '' ) {
 		$( '#pl-manage, #pl-count' ).addClass( 'hide' );
-		$( '#pl-filter-results' ).removeClass( 'hide' ).html( '<i class="fa fa-times sx"></i><span class="visible-xs-inline"></span><span class="hidden-xs">' + count + ' of <span class="keyword">' + filter + '</span></span>' );
+		$( '#pl-filter-results' ).removeClass( 'hide' ).html( 
+			'<i class="fa fa-times sx"></i><span class="hidden-xs">'+ count +' of </span>'
+		);
 	} else {
 		$( '#pl-manage, #pl-count' ).removeClass( 'hide' );
 		$( '#pl-filter-results' ).addClass( 'hide' ).html( '' );
 	}
 } );
 $( '#pl-home' ).click( function() {
-	$( this ).addClass( 'hide' );
-	getPlaylistCmd();
-	$( '.playlist, #pl-currentpath' ).addClass( 'hide' );
+	$( this, '.playlist, #pl-currentpath' ).addClass( 'hide' );
 	$( '#pl-manage, #pl-search' ).removeClass( 'hide' );
+	getPlaylistCmd();
 } );
 $( '#pl-filter-results' ).off( 'click' ).on( 'click', function() {
 	$( this ).addClass( 'hide' );
 	$( '#pl-currentpath, #pl-manage, #pl-count' ).removeClass( 'hide' );
-	$( 'li', '#playlist-entries' ).each( function() {
-		$( this ).show();
-	});
+	$( '#playlist-entries li' ).show();
 	$( '#pl-filter' ).val( '' );
 	$( '#pl-filter-results' ).html( '' );
 	customScroll( 'pl', parseInt( GUI.json.song ), 500 );
@@ -1453,7 +1448,7 @@ function populateDB( options ) {
 // hide breadcrumb and index bar
 				$( '#db-currentpath, #db-level-up, #db-index' ).addClass( 'hide' );
 				$( '#database-entries' ).css( 'width', '100%' );
-				$( '#db-search-results' ).removeClass( 'hide' ).html( '<i class="fa fa-times sx"></i><span class="visible-xs-inline"></span><span class="hidden-xs">' + results + ' of <span class="keyword">' + keyword + '</span></span>' );
+				$( '#db-search-results' ).removeClass( 'hide' ).html( '<i class="fa fa-times sx"></i><span class="visible-xs-inline"></span><span class="hidden-xs">' + results + ' of </span>' );
 			}
 			if ( data[ 0 ].directory || data[ 0 ].file ) {
 				var arraydir = [];
