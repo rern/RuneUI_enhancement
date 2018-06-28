@@ -58,7 +58,11 @@
 #db-currentpath span i,
 #database-entries .db-icon,
 #database-entries span i,
-#playlist-entries li:before {
+#playlist-entries li:before,
+.fa-music:before,
+.fa-microphone:before,
+.fa-list-ul:before,
+.fa-save:before {
 	font-family: enhance;
 }
 #addons .fa-cubes:before {                   /* change to fa-addons */
@@ -121,10 +125,7 @@
 #menu-bottom .fa-folder-open:before,
 #db-currentpath .fa-folder-open:before { content: "\f520" }
 #menu-bottom .fa-play-circle:before { content: "\f521" }
-.fa-list-ul:before {
-	font-family: enhance;
-	content: "\f522";
-}
+.fa-list-ul:before { content: "\f522"; }
 #menu-settings .fa-gear:before { content: "\f505" }
 
 .fa-bookmark:before { content: "\f550" }
@@ -142,10 +143,7 @@
 .fa-folder:before { content: "\f55B" }
 .fa-music:before { content: "\f55C" }
 .fa-microphone:before { content: "\f554" }
-.fa-save:before {
-	font-family: enhance;
-	content: "\f530"
-}
+.fa-save:before { content: "\f530"}
 
 #database-entries li .fa-music,
 #database-entries li .fa-microphone {
