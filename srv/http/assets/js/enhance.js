@@ -1487,22 +1487,22 @@ function populateDB( options ) {
 	} );
 	
 // breadcrumb directory path link
-	var breadcrumb = $( 'span', '#db-currentpath' );
+	var breadcrumb = $( '#db-currentpath span' );
 	var dot = '<span style="color: #587ca0"> &#8226; </span>';
 	var name = {
-		  USB          : '<span><i class="fa fa-usbdrive"></i></span>USB'
-		, LocalStorage : '<span><i class="fa fa-microsd"></i></span>SD'
-		, NAS          : '<span><i class="fa fa-network"></i></span>NETWORK'
-		, Webradio     : '<span><i class="fa fa-webradio"></i> </span>WEBRADIOS'
-		, Dirble       : '<span><i class="fa fa-dirble"></i> </span>DIRBLE'
-		, Jamendo      : '<span><i class="fa fa-jamendo"></i></span>JAMENDO'
-		, Spotify      : '<span><i class="fa fa-spotify"></i></span>SPOTIFY'
+		  USB          : '<i class="fa fa-usbdrive"></i>USB'
+		, LocalStorage : '<i class="fa fa-microsd"></i>SD'
+		, NAS          : '<i class="fa fa-network"></i>NETWORK'
+		, Webradio     : '<i class="fa fa-webradio"></i> WEBRADIOS'
+		, Dirble       : '<i class="fa fa-dirble"></i> DIRBLE'
+		, Jamendo      : '<i class="fa fa-jamendo"></i>JAMENDO'
+		, Spotify      : '<i class="fa fa-spotify"></i>SPOTIFY'
 	}
 	var mode = {
-		  album    : [ 'Albums', '<span><i class="fa fa-album"></i></span>ALBUMS' ]
-		, artist   : [ 'Artists', '<span><i class="fa fa-artist"></i></span>ARTISTS' ]
-		, genre    : [ 'Genres', '<span><i class="fa fa-genre"></i></span>GENRES' ]
-		, composer : [ 'Composer', '<span><i class="fa fa-composer"></i></span>COMPOSERS' ]
+		  album    : [ 'Albums', '<i class="fa fa-album"></i>ALBUMS' ]
+		, artist   : [ 'Artists', '<i class="fa fa-artist"></i>ARTISTS' ]
+		, genre    : [ 'Genres', '<i class="fa fa-genre"></i>GENRES' ]
+		, composer : [ 'Composer', '<i class="fa fa-composer"></i>COMPOSERS' ]
 	}
 	if ( GUI.browsemode !== 'file' ) {
 		if ( GUI.browsemode !== 'album' ) {
@@ -1566,7 +1566,13 @@ function getPlaylistPlain( data ) {
 			playlisttime += time;
 		}
 		counttotal++;
-		var total = classradio ? '<a>'+ countradio +'</a>&ensp; <i class="fa fa-microphone"></i>' : '<a>'+ converthms( playlisttime ) +'</a>';
+		if ( classradio ) {
+			var totalhtml = '<span>'+ converthms( playlisttime ) +'</span>';
+			var radiohtml = '&emsp;<a>'+ countradio +'</a>&ensp; <i class="fa fa-microphone"></i>';
+		} else {
+			var totalhtml = '<a>'+ converthms( playlisttime ) +'</a>';
+			var radiohtml = '';
+		}
 		classcurrent = ( state !== 'stop' && counttotal === current ) ? 'active' : '';
 		cl = ' class="'+ classcurrent + ( classradio ? ' radio' : '' ) +'"';
 		cl = ( classcurrent || classradio ) ? cl : '';
@@ -1581,7 +1587,7 @@ function getPlaylistPlain( data ) {
 	$( '#pl-filter' ).val( '' );
 	$( '#pl-filter-results' ).addClass( 'hide' ).html( '' );
 	$( '#pl-manage, #pl-count' ).removeClass( 'hide' );
-	$( '#pl-count' ).html( '<a>'+ countsong +'</a>&ensp;<i class="fa fa-music"></i> &emsp; '+ total );
+	$( '#pl-count' ).html( '<a>'+ countsong +'</a>&ensp;<i class="fa fa-music"></i>&emsp;'+ totalhtml + radiohtml );
 }
 function getPlaylistCmd(){
 	if ( GUI.json.playlistlength == 0 ) {
