@@ -238,31 +238,6 @@ $( '#searchbtn' ).click( function() {
 		, arg       : keyword
 	} );
 } );
-$( '#pl-filter' ).off( 'keyup' ).on( 'keyup', function() {
-	$.scrollTo(0 , 500);
-	var filter = $(this).val(), count = 0;
-	$('li', '#playlist-entries').each(function(){
-		var el = $(this);
-		if (el.text().search(new RegExp(filter, 'i')) < 0) {
-			el.hide();
-		} else {
-			el.show();
-			count++;
-		}
-	});
-	var numberItems = count;
-	var s = (count === 1) ? '' : 's';
-	if (filter !== '') {
-		$('#pl-manage, #pl-count').addClass('hide');
-		$('#pl-filter-results').removeClass('hide').html('<i class="fa fa-times sx"></i><span class="visible-xs-inline">back</span><span class="hidden-xs">' + count + ' of <span class="keyword">' + filter + '</span></span>');
-	} else {
-		$('#pl-manage, #pl-count').removeClass('hide');
-		$('#pl-filter-results').addClass('hide').html('');
-	}
-} );
-$( '#pl-filter-results' ).click( function() {
-	$( '#pl-manage' ).removeClass( 'hide' );
-} );
 // index link
 $( '#db-index li' ).click( function() {
 	var topoffset = !$( '#menu-top' ).is( ':hidden' ) ? 80 : 40;
@@ -333,9 +308,51 @@ $( '#modal-webradio-add button:eq( 0 ), #modal-webradio-add button:eq( 1 )' ).cl
 	if ( !$( '#db-currentpath span' ).text() ) renderLibraryHome();
 } );
 
-$( '#open-library' ).click( function() {
+$( '#open-library' ).off( 'click' ).on( 'click', function() {
 	$( '#open-panel-sx' ).click();
 } );
+
+$( '#pl-manage-list' ).off( 'click' ).on( 'click', function() {
+	$( '#pl-search' ).addClass( 'hide' );
+	getPlaylists();
+});
+$( '#pl-filter' ).off( 'keyup' ).on( 'keyup', function() {
+	$.scrollTo( 0 , 500 );
+	var filter = $(this).val();
+	var count = 0;
+	$( 'li', '#playlist-entries' ).each(function(){
+		var el = $( this );
+		if ( el.text().search( new RegExp( filter, 'i' ) ) < 0 ) {
+			el.hide();
+		} else {
+			el.show();
+			count++;
+		}
+	});
+	if ( filter !== '' ) {
+		$( '#pl-manage, #pl-count' ).addClass( 'hide' );
+		$( '#pl-filter-results' ).removeClass( 'hide' ).html( '<i class="fa fa-times sx"></i><span class="visible-xs-inline"></span><span class="hidden-xs">' + count + ' of <span class="keyword">' + filter + '</span></span>' );
+	} else {
+		$( '#pl-manage, #pl-count' ).removeClass( 'hide' );
+		$( '#pl-filter-results' ).addClass( 'hide' ).html( '' );
+	}
+} );
+$( '#pl-home' ).click( function() {
+	$( this ).addClass( 'hide' );
+	getPlaylistCmd();
+	$( '.playlist, #pl-currentpath' ).addClass( 'hide' );
+	$( '#pl-manage, #pl-search' ).removeClass( 'hide' );
+} );
+$( '#pl-filter-results' ).off( 'click' ).on( 'click', function() {
+	$( this ).addClass( 'hide' );
+	$( '#pl-currentpath, #pl-manage, #pl-count' ).removeClass( 'hide' );
+	$( 'li', '#playlist-entries' ).each( function() {
+		$( this ).show();
+	});
+	$( '#pl-filter' ).val( '' );
+	$( '#pl-filter-results' ).html( '' );
+	customScroll( 'pl', parseInt( GUI.json.song ), 500 );
+});
 
 window.addEventListener( 'orientationchange', function() {
 	setTimeout( function() {
@@ -1109,12 +1126,10 @@ function renderPlaylists( data ) {
 	}
 	document.getElementById( 'playlist-entries' ).innerHTML = '';
 	$( '.playlist, #pl-manage, #pl-count' ).addClass( 'hide' );
-	$( '#pl-filter-results' ).addClass( 'back-to-queue' ).html( '<i class="fa fa-list-ul sx"></i> to queue' );
+	$( '#pl-home, #pl-filter-results' ).removeClass( 'hide' );
 	$( '#pl-filter-results, #pl-currentpath, #pl-editor' ).removeClass( 'hide' );
 	document.getElementById( 'pl-editor' ).innerHTML = content;
 	loadingSpinner( 'pl', 'hide' );
-// hide 'to queue' text and 'pl-manage li' click context menu
-	$( '#pl-filter-results' ).html( '<i class="fa fa-list-ul sx"></i>' );
 	$( '#pl-editor li' ).click( function( e ) {
 		e.stopPropagation();
 		var clickX = e.pageX + 5;
@@ -1496,10 +1511,10 @@ function populateDB( options ) {
 	}
 	if ( GUI.browsemode !== 'file' ) {
 		if ( GUI.browsemode !== 'album' ) {
-			var dot = ( path === mode[ GUI.browsemode ][ 0 ] ) ? '' : '<a>'+ dot + path +'</a>';
+			var dot = ( path === mode[ GUI.browsemode ][ 0 ] ) ? '' : '<a>'+ dot +'<span class="white">'+ path +'</span></a>';
 		} else {
 			var albumartist = $( '#database-entries li:eq( 0 ) span.bl' ).text();
-			var dot = albumartist ? '<a>'+ dot + albumartist +'</a>' : '';
+			var dot = albumartist ? '<a>'+ dot +'<span class="white">'+ albumartist +'</span></a>' : '';
 		}
 		breadcrumb.html( '<a data-path="'+ mode[ GUI.browsemode ][ 0 ] +'">'+ mode[ GUI.browsemode ][ 1 ] +'</a>'+ dot );
 	} else {
