@@ -1490,13 +1490,13 @@ function populateDB( options ) {
 	var breadcrumb = $( '#db-currentpath span' );
 	var dot = '<span style="color: #587ca0"> &#8226; </span>';
 	var name = {
-		  USB          : '<i class="fa fa-usbdrive"></i> USB'
-		, LocalStorage : '<i class="fa fa-microsd"></i> SD'
-		, NAS          : '<i class="fa fa-network"></i> NETWORK'
-		, Webradio     : '<i class="fa fa-webradio"></i>&nbsp; WEBRADIOS'
-		, Dirble       : '<i class="fa fa-dirble"></i>&nbsp; DIRBLE'
-		, Jamendo      : '<i class="fa fa-jamendo"></i> JAMENDO'
-		, Spotify      : '<i class="fa fa-spotify"></i> SPOTIFY'
+		  USB          : '<i class="fa fa-usbdrive"></i>USB'
+		, LocalStorage : '<i class="fa fa-microsd"></i>SD'
+		, NAS          : '<i class="fa fa-network"></i>NETWORK'
+		, Webradio     : '<i class="fa fa-webradio"></i>WEBRADIOS'
+		, Dirble       : '<i class="fa fa-dirble"></i> DIRBLE'
+		, Jamendo      : '<i class="fa fa-jamendo"></i>JAMENDO'
+		, Spotify      : '<i class="fa fa-spotify"></i>SPOTIFY'
 	}
 	var mode = {
 		  album    : [ 'Albums', '<i class="fa fa-album"></i>ALBUMS' ]
