@@ -79,15 +79,9 @@
 .fa-trash-o:before {                         /* change to fa-times-circle */
 	content: "\f057"
 }
-#db-currentpath span a:first-child {
-	letter-spacing: 5px;
-}
 @media(max-width: 480px) {
 	#db-currentpath span span {
 		display: none;
-	}
-	#db-currentpath span a:first-child {
-		letter-spacing: 0;
 	}
 }
 #playlist-entries li:before { /* toggle */
@@ -213,14 +207,20 @@
 	padding-top: 8px;
 }
 #db-currentpath span i {
-	margin-left: 10px;
+	margin: 0 10px;
 	color: #e0e7ee;
 }
 #db-currentpath span a:last-of-type {
 	color: #e0e7ee;
 }
 #db-currentpath span a:first-of-type {
+	letter-spacing: 5px;
 	color: #0095d8;
+}
+@media(max-width: 480px) {    /* toggle */
+	#db-currentpath span a {
+		display: none;
+	}
 }
 #database-entries .sn span,
 #playlist-entries .sn span {
@@ -233,6 +233,9 @@
 #playlist-entries li.active:before,
 #playlist-entries li.active .sn span {
 	color: #34495e !important;
+}
+w {
+	color: #e0e7ee;
 }
 /* ---------------------- playback ---------------------- */
 #bartop,
@@ -915,7 +918,7 @@
 	vertical-align: -5%;
 }
 #db-webradio-add {
-	padding-left: 20px;
+	padding-left: 10px;
 }
 #db-level-up {
 	float: right;
