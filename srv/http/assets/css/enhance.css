@@ -951,7 +951,7 @@
 #db-currentpath {
 	float: left;
 	width: calc( 100% - 240px );
-	margin-left: -12px;
+	margin-left: -10px;
 	margin-top: -2px;
 	white-space: nowrap;
 	overflow: hidden;
@@ -971,7 +971,7 @@
 	background: #0072a5;
 }
 #pl-home {
-	margin-left: -12px !important;
+	margin-left: -10px !important;
 	height: 40px;
 	line-height: 40px;
 }
