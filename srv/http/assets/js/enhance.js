@@ -1548,24 +1548,26 @@ function getPlaylistPlain( data ) {
 	var current = parseInt( GUI.json.song ) + 1;
 	var state = GUI.json.state;
 	var content = bottomline = classcurrent = classradio = hidetotal = '';
-	var id = totaltime = playlisttime = pos = i = 0;
+	var id = totaltime = playlisttime = countsong = countradio = counttotal = i = 0;
 	var json = JSON.parse(data);
 	var ilength = json.length;
 	for ( i = 0; i < ilength; i++ ) {
 		var data = json[ i ];
 		if ( data[ 'file' ].slice( 0, 4 ) === 'http' ) {
 			classradio = 1;
+			countradio++
 			topline = data[ 'Title' ];
 			bottomline = data[ 'file' ];
-			hidetotal = ' class="hide"';
 		} else {
+			countsong++
 			time = parseInt( data[ 'Time' ] );
 			topline = ( data[ 'Title' ] ? data[ 'Title' ] : data[ 'file' ].split( '/' ).pop() ) +'<span>'+ converthms( time ) +'</span>';
 			bottomline = data[ 'Artist' ] + ( data[ 'Album' ] ? ' - '+ data[ 'Album' ] : '' );
 			playlisttime += time;
 		}
-		pos++;
-		classcurrent = ( state !== 'stop' && pos === current ) ? 'active' : '';
+		counttotal++;
+		var total = classradio ? '<a>'+ countradio +'</a>&ensp; <i class="fa fa-microphone"></i>' : '<a>'+ converthms( playlisttime ) +'</a>';
+		classcurrent = ( state !== 'stop' && counttotal === current ) ? 'active' : '';
 		cl = ' class="'+ classcurrent + ( classradio ? ' radio' : '' ) +'"';
 		cl = ( classcurrent || classradio ) ? cl : '';
 		content += '<li id="pl-'+ data[ 'Id' ] +'"'+ cl +'>'
@@ -1579,7 +1581,7 @@ function getPlaylistPlain( data ) {
 	$( '#pl-filter' ).val( '' );
 	$( '#pl-filter-results' ).addClass( 'hide' ).html( '' );
 	$( '#pl-manage, #pl-count' ).removeClass( 'hide' );
-	$( '#pl-count' ).html( 'List: <a>'+ pos +'</a><span'+ hidetotal +'> &#8226; <a>'+ converthms( playlisttime ) +'</a></span>' );
+	$( '#pl-count' ).html( '<a>'+ countsong +'</a>&ensp;<i class="fa fa-music"></i> &emsp; '+ total );
 }
 function getPlaylistCmd(){
 	if ( GUI.json.playlistlength == 0 ) {
