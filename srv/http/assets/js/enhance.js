@@ -1532,14 +1532,11 @@ function populateDB( options ) {
 	} else {
 		var folder = path.split( '/' );
 		var folderPath = '';
-		var folderCrumb = '';
+		var folderCrumb = icon[ folder[ 0 ] ];
 		var ilength = folder.length;
 		for ( i = 0; i < ilength; i++ ) {
-			var slashPath = i > 0 ? '/' : '';
-			var slashCrumb = i > 0 ? '<w> / </w>' : '';
-			var foldername = folder[ i ];
-			folderPath += slashPath + foldername;
-			folderCrumb += ( i === 0 ? icon[ foldername ] : '' ) + '<a data-path="'+ folderPath +'">'+ slashCrumb + ( name[ foldername ] ? name[ foldername ] : foldername ) +'</a>';
+			folderPath += ( i > 0 ? '/' : '' ) + folder[ i ];
+			folderCrumb += '<a data-path="'+ folderPath +'">'+ ( i > 0 ? '<w> / </w>' : '' ) + ( name[ folder[ i ] ] ? name[ folder[ i ] ] : folder[ i ] ) +'</a>';
 		}
 		breadcrumb.html( folderCrumb );
 	}
