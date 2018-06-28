@@ -1489,43 +1489,57 @@ function populateDB( options ) {
 // breadcrumb directory path link
 	var breadcrumb = $( '#db-currentpath span' );
 	var dot = '<span style="color: #587ca0"> &#8226; </span>';
+	var icon = {
+		  USB          : '<i class="fa fa-usbdrive"></i>'
+		, LocalStorage : '<i class="fa fa-microsd"></i>'
+		, NAS          : '<i class="fa fa-network"></i>'
+		, Webradio     : '<i class="fa fa-webradio"></i>'
+		, Dirble       : '<i class="fa fa-dirble"></i>'
+		, Jamendo      : '<i class="fa fa-jamendo"></i>'
+		, Spotify      : '<i class="fa fa-spotify"></i>'
+		, album        : '<i class="fa fa-album"></i>'
+		, artist       : '<i class="fa fa-artist"></i>'
+		, genre        : '<i class="fa fa-genre"></i>'
+		, composer     : '<i class="fa fa-composer"></i>'
+	}
 	var name = {
-		  USB          : '<i class="fa fa-usbdrive"></i>USB'
-		, LocalStorage : '<i class="fa fa-microsd"></i>SD'
-		, NAS          : '<i class="fa fa-network"></i>NETWORK'
-		, Webradio     : '<i class="fa fa-webradio"></i>WEBRADIOS'
-		, Dirble       : '<i class="fa fa-dirble"></i> DIRBLE'
-		, Jamendo      : '<i class="fa fa-jamendo"></i>JAMENDO'
-		, Spotify      : '<i class="fa fa-spotify"></i>SPOTIFY'
+		  USB          : 'USB'
+		, LocalStorage : 'SD'
+		, NAS          : 'NETWORK'
+		, Webradio     : 'WEBRADIOS'
+		, Dirble       : ' DIRBLE'
+		, Jamendo      : 'JAMENDO'
+		, Spotify      : 'SPOTIFY'
+		, album        : 'ALBUMS'
+		, artist       : 'ARTISTS'
+		, genre        : 'GENRES'
+		, composer     : 'COMPOSERS'
 	}
 	var mode = {
-		  album    : [ 'Albums', '<i class="fa fa-album"></i>ALBUMS' ]
-		, artist   : [ 'Artists', '<i class="fa fa-artist"></i>ARTISTS' ]
-		, genre    : [ 'Genres', '<i class="fa fa-genre"></i>GENRES' ]
-		, composer : [ 'Composer', '<i class="fa fa-composer"></i>COMPOSERS' ]
+		  album    : 'Albums'
+		, artist   : 'Artists'
+		, genre    : 'Genres'
+		, composer : 'Composer'
 	}
 	if ( GUI.browsemode !== 'file' ) {
 		if ( GUI.browsemode !== 'album' ) {
-			var dot = ( path === mode[ GUI.browsemode ][ 0 ] ) ? '' : '<a>'+ dot +'<span class="white">'+ path +'</span></a>';
+			var dot = ( path === mode[ GUI.browsemode ] ) ? '' : '<a>'+ dot +'<span class="white">'+ path +'</span></a>';
 		} else {
 			var albumartist = $( '#database-entries li:eq( 0 ) span.bl' ).text();
 			var dot = albumartist ? '<a>'+ dot +'<span class="white">'+ albumartist +'</span></a>' : '';
 		}
-		breadcrumb.html( '<a data-path="'+ mode[ GUI.browsemode ][ 0 ] +'">'+ mode[ GUI.browsemode ][ 1 ] +'</a>'+ dot );
+		breadcrumb.html( icon[ GUI.browsemode ] +'&ensp;<a data-path="'+ mode[ GUI.browsemode ] +'">'+ name[ GUI.browsemode ] +'</a>'+ dot );
 	} else {
 		var folder = path.split( '/' );
 		var folderPath = '';
 		var folderCrumb = '';
 		var ilength = folder.length;
 		for ( i = 0; i < ilength; i++ ) {
-			if ( i !== 0 ) {
-				folderPath += '/';
-				folderCrumb += ' / ';
-			}
+			var slashPath = i > 0 ? '/' : '';
+			var slashCrumb = i > 0 ? '<w> / </w>' : '';
 			var foldername = folder[ i ];
-			folderPath += foldername;
-			if ( name [ foldername ] ) foldername = name [ foldername ];
-			folderCrumb += '<a data-path="'+ folderPath +'">'+ foldername +'</a>';
+			folderPath += slashPath + foldername;
+			folderCrumb += ( i === 0 ? icon[ foldername ] : '' ) + '<a data-path="'+ folderPath +'">'+ slashCrumb + ( name[ foldername ] ? name[ foldername ] : foldername ) +'</a>';
 		}
 		breadcrumb.html( folderCrumb );
 	}
