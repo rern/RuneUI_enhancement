@@ -122,7 +122,7 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 	<!-- QUEUE PANEL -->
 	<div id="panel-dx" class="tab-pane">
 		<div class="btnlist btnlist-top">
-			<button id="pl-filter-results" class="btn hide" type="button" title="Close filter results and go back to the playing Queue"><i class="fa fa-times sx"></i></button>
+			<i id="pl-home" class="fa fa-list-ul sx hide"></i>
 			<div id="pl-manage">
 				<i id="pl-manage-list" class="fa fa-list-ol fa-lg" title="Manage playlists"></i>
 				<i id="pl-manage-save" class="fa fa-save fa-lg" title="Save current queue as playlist" data-toggle="modal" data-target="#modal-pl-save"></i>
@@ -132,12 +132,13 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 			<span id="pl-count" class="hide"></span>
 			<form id="pl-search" class="form-inline" method="post" onSubmit="return false;" role="form">
 				<div class="input-group">
-					<input id="pl-filter" class="form-control osk-trigger ttip" type="text" value="" placeholder="search in queue..." data-placement="bottom" data-toggle="tooltip" data-original-title="Type here to search on the fly">
+					<input id="pl-filter" class="form-control osk-trigger ttip" type="text" data-placement="bottom" data-toggle="tooltip" data-original-title="Type here to search on the fly">
 					<span class="input-group-btn">
 						<button class="btn btn-default" type="button" title="Search"><i class="fa fa-search"></i></button>
 					</span>
 				</div>
 			</form>
+			<button id="pl-filter-results" class="btn hide" type="button" title="Close filter results and go back to the playing Queue"></button>
 		</div>
 		<div id="playlist">
 			<ul id="playlist-entries" class="playlist">
