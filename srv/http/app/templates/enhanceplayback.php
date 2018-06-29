@@ -85,8 +85,8 @@
 					</span>
 				</div>
 			</div>
-			<div id="db-currentpath" class="hide">
-				<i id="db-home" class="fa fa-folder-open"></i> <span></span>
+			<div id="db-currentpath">
+				<div id="db-home"><i class="fa fa-library"></i></div> <span>LIBRARY</span>
 				<i id="db-webradio-add" class="fa fa-plus-circle"></i>
 			</div>
 			<button id="db-search-results" class="btn hide" type="button" title="Close search results and go back to the Library browsing"><i class="fa fa-times sx"></i></button>
@@ -122,7 +122,7 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 	<!-- QUEUE PANEL -->
 	<div id="panel-dx" class="tab-pane">
 		<div class="btnlist btnlist-top">
-			<i id="pl-home" class="fa fa-list-ul sx hide"></i>
+			<i id="pl-home" class="fa fa-list-ul sx hide"></i>&emsp;<a id="pl-home-text" class="hide">PLAYLISTS</a>
 			<div id="pl-manage">
 				<i id="pl-manage-list" class="fa fa-list-ol fa-lg" title="Manage playlists"></i>
 				<i id="pl-manage-save" class="fa fa-save fa-lg" title="Save current queue as playlist" data-toggle="modal" data-target="#modal-pl-save"></i>
