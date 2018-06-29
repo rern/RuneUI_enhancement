@@ -91,7 +91,7 @@ insertH 'class="home"'
 commentH 'id="open-panel-sx"' 'id="open-panel-dx"'
 
 string=$( cat <<'EOF'
-        <li id="open-panel-sx"><a><i class="fa fa-folder-open"></i></a></li>
+        <li id="open-panel-sx"><a><i class="fa fa-library"></i></a></li>
         <li id="open-playback" class="active"><a><i class="fa fa-play-circle"></i></a></li>
         <li id="open-panel-dx"><a><i class="fa fa-list-ul"></i></a></li>
 EOF
