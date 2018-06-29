@@ -25,12 +25,13 @@ echo -e "$bar Remove files ..."
 rm -v /srv/http/app/templates/enhanceplayback.php
 rm -v /srv/http/enhance*
 rm -v /srv/http/assets/css/{enhance.css,midori.css,roundslider.min.css}
-rm -v /srv/http/assets/fonts/enhance*
 rm -v /srv/http/assets/img/{controls*,runelogo.svg,turntable*}
 rm -v /srv/http/assets/js/enhance.js
 rm -v /srv/http/assets/js/vendor/{jquery-ui.min.js,modernizr-custom.js,roundslider.min.js}
 rm /usr/share/bootsplash/{start,reboot,shutdown}-runeaudio.png
 
+rm -v /srv/http/assets/fonts/fontawesome-webfont.woff{.backup,}
+rm -v /srv/http/assets/fonts/fontawesome-webfont.ttf{.backup,}
 mv /srv/http/assets/js/runeui.min.js{.backup,}
 mv /srv/http/app/coverart_ctl.php{.backup,}
 mv /usr/share/bootsplash/start-runeaudio.png{.backup,}
