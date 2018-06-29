@@ -1592,7 +1592,7 @@ function getPlaylistPlain( data ) {
 		cl = ' class="'+ classcurrent + ( classradio ? ' radio' : '' ) +'"';
 		cl = ( classcurrent || classradio ) ? cl : '';
 		content += '<li id="pl-'+ data[ 'Id' ] +'"'+ cl +'>'
-			+'<i class="fa fa-times-circle pl-action" title="Remove song from playlist"></i><span class="sn">'+ topline +'</span>'
+			+'<i class="fa fa-minus-circle pl-action" title="Remove song from playlist"></i><span class="sn">'+ topline +'</span>'
 			+'<span class="bl">'+ bottomline +'</span>'
 			+'</li>';
 		classcurrent = classradio = '';
