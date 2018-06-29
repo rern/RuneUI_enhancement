@@ -41,48 +41,11 @@
 	font-style: normal;
 }
 /* ---------------------- fontawesome mod ---------------------- */
-/*
-@font-face {
-	font-family: enhance;
-	src: url('../fonts/enhance.woff') format('woff'),
-		url('../fonts/enhance.ttf') format('truetype');
-	font-weight: normal;
-	font-style: normal;
-}
-
-.playback-controls i,
-#menu-settings i,
-#addons i,
-.btn-group i,
-#menu-bottom i,
-#home-blocks i,
-#db-home,
-#db-currentpath span i,
-#database-entries .db-icon,
-#database-entries span i,
-#playlist-entries li:before,
-.fa-music:before,
-.fa-microphone:before,
-.fa-list-ul:before,
-.fa-save:before {
-	font-family: enhance;
-}*/
-.fa-star:before { content: "\f550" }
-
-#addons .fa-cubes:before {                   /* change to fa-addons */
-	content: "\f506";
-	font-size: 1.3em;
-}
-#context-menu-dirble .fa-microphone:before { /* change to fa-save */
-	content: "\f0c7" !important;
-}
-#pl-manage-list:before {                     /* change to fa-folder-open */
-	content: "\f07c"
-}
+#context-menu-dirble .fa-microphone:before { content: "\f530" !important } /* change to fa-save */
+#pl-manage-list:before { content: "\f07c" } /* change to fa-folder-open */
+.fa-cubes:before { content: "\f506" } /* change to fa-addons */
 .fa-times:before,
-.fa-trash-o:before {                         /* change to fa-times-circle */
-	content: "\f057"
-}
+.fa-trash-o:before { content: "\f057" } /* change to fa-times-circle */
 @media(max-width: 480px) {
 	#db-currentpath span span {
 		display: none;
@@ -106,6 +69,16 @@
 .fa-play:before { content: "\f502" }
 .fa-pause:before { content: "\f503" }
 .fa-step-forward:before { content: "\f504" }
+
+.dropdown-menu .fa-play:before { content: "\f531" }
+.dropdown-menu .fa-share-square-o:before { content: "\f532" }
+.dropdown-menu .fa-refresh:before { content: "\f55D" }
+.dropdown-menu .fa-undo:before { content: "\f533" }
+
+.dropdown-menu .fa-folder-open:before { content: "\f534" }
+.dropdown-menu .fa-cogs:before { content: "\f535" }
+.dropdown-menu .fa-sitemap:before { content: "\f551" }
+.dropdown-menu .fa-wrench:before { content: "\f1DE" }
 
 .fa-repeat:before { content: "\f511" }
 .fa-random:before { content: "\f512" }
@@ -139,6 +112,7 @@
 .fa-music:before { content: "\f55C" }
 .fa-microphone:before { content: "\f554" }
 .fa-save:before { content: "\f530"}
+.fa-star:before { content: "\f550" }
 
 /* ---------------------- playback ---------------------- */
 #bartop,
@@ -219,6 +193,9 @@
 	border-radius: 50%;
 	color: #e0e7ee;
 	background: red;
+}
+.dropdown-menu i {
+	font-size: 20px !important;
 }
 .dropdown {
 	margin-right: 0 !important;
