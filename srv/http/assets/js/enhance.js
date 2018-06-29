@@ -96,7 +96,9 @@ $( '#open-playback' ).click( function() {
 } );
 $( '#open-panel-dx' ).click( function() {
 	menubottom( 'panel-dx', 'playback', 'panel-sx' );
-	displayqueue();
+	displaycommon();
+	window.scrollTo( 0, queuetop );
+	if ( $( '#pl-home' ).is( ':visible' ) ) $( '#pl-manage, #pl-count, #pl-search' ).addClass( 'hide' );
 } );
 
 // back from setting pages
@@ -336,7 +338,8 @@ $( '#pl-filter' ).off( 'keyup' ).on( 'keyup', function() {
 	}
 } );
 $( '#pl-home' ).click( function() {
-	$( this, '.playlist, #pl-currentpath' ).addClass( 'hide' );
+	$( '#pl-home, #pl-home-text' ).addClass( 'hide' );
+	$( '.playlist, #pl-currentpath' ).addClass( 'hide' );
 	$( '#pl-manage, #pl-search' ).removeClass( 'hide' );
 	getPlaylistCmd();
 } );
@@ -356,7 +359,8 @@ window.addEventListener( 'orientationchange', function() {
 		} else if ( $( '#panel-sx' ).hasClass( 'active' ) ) {
 			displaylibrarry();
 		} else if ( $( '#panel-dx' ).hasClass( 'active' ) ) {
-			displayqueue();
+			displaycommon();
+			window.scrollTo( 0, queuetop );
 		}
 	}, 100 );
 } );
@@ -650,7 +654,7 @@ $( '#db-search-results' ).off( 'click' ).on( 'click', function() {
 		, Composer : 'composer'
 	}
 	if ( GUI.currentpath ) {
-		$( '#db-level-up, #db-currentpath' ).removeClass( 'hide' );
+		$( '#db-level-up' ).removeClass( 'hide' );
 		getDB( {
 			  browsemode: mode[ GUI.currentpath ]
 			, path      : GUI.currentpath
@@ -936,19 +940,21 @@ function displayplayback() {
 	}
 	if ( display.radioelapsed !== radioelapsed ) {
 		radioelapsed = display.radioelapsed;
-		clearInterval( GUI.countdown );
-		if ( !radioelapsed ) {
-			$( '#total' ).text( '' );
-		} else if ( GUI.state === 'play' ) {
-			$.post( '/enhancestatus.php', function( data ) {
-				var status = JSON.parse( data );
-				var elapsed = status.elapsed;
-				GUI.countdown = setInterval( function() {
-					elapsed++
-					mmss = converthms( elapsed );
-					$( '#total' ).text( mmss ).css( 'color', '#e0e7ee' );
-				}, 1000 );
-			} );
+		if ( GUI.json.radio && GUI.state === 'play' ) {
+			clearInterval( GUI.countdown );
+			if ( !radioelapsed ) {
+				$( '#total' ).text( '' );
+			} else {
+				$.post( '/enhancestatus.php', function( data ) {
+					var status = JSON.parse( data );
+					var elapsed = status.elapsed;
+					GUI.countdown = setInterval( function() {
+						elapsed++
+						mmss = converthms( elapsed );
+						$( '#total' ).text( mmss );
+					}, 1000 );
+				} );
+			}
 		}
 	}
 	if ( buttonhide || display.buttons == '' ) {
@@ -995,11 +1001,6 @@ function displaylibrary() {
 		$( '#db-index' ).css( 'line-height', ( panelH - indexoffset ) / indexline +'px' );
 	}, 200 );
 	window.scrollTo( 0, librarytop );
-}
-// queue show/hide menu
-function displayqueue() {
-	displaycommon();
-	window.scrollTo( 0, queuetop );
 }
 
 function setPlaybackSource() {
@@ -1080,10 +1081,10 @@ function renderLibraryHome() {
 	content += '</div>';
 	document.getElementById( 'home-blocks' ).innerHTML = content;
 	loadingSpinner( 'db', 'hide' );
-	$( 'span', '#db-currentpath' ).html( '' );
+	$( '#db-currentpath span' ).html( '<a>&ensp;LIBRARY</a>' );
 // hide breadcrumb, index bar, edit bookmark
 	GUI.currentDBpos[ 10 ] = 0;
-	$( '#db-currentpath, #db-index, #db-level-up, #db-webradio-add, #db-homeSetup' ).addClass( 'hide' );
+	$( '#db-index, #db-level-up, #db-webradio-add, #db-homeSetup' ).addClass( 'hide' );
 	displaylibrary();
 	
 	$( '.home-bookmark' ).each( function() {
@@ -1121,7 +1122,7 @@ function renderPlaylists( data ) {
 	}
 	document.getElementById( 'playlist-entries' ).innerHTML = '';
 	$( '.playlist, #pl-manage, #pl-count' ).addClass( 'hide' );
-	$( '#pl-home, #pl-filter-results' ).removeClass( 'hide' );
+	$( '#pl-home, #pl-home-text, #pl-filter-results' ).removeClass( 'hide' );
 	$( '#pl-filter-results, #pl-currentpath, #pl-editor' ).removeClass( 'hide' );
 	document.getElementById( 'pl-editor' ).innerHTML = content;
 	loadingSpinner( 'pl', 'hide' );
@@ -1360,7 +1361,7 @@ function populateDB( options ) {
 		row = [];
 
 	if ( path ) GUI.currentpath = path;
-	$( '#database-entries, #db-currentpath, #db-level-up' ).removeClass( 'hide' );
+	$( '#database-entries, #db-level-up' ).removeClass( 'hide' );
 	$(' #home-blocks ').addClass('hide');
 
 	if ( plugin ) {
@@ -1446,7 +1447,7 @@ function populateDB( options ) {
 			// search results
 				var results = ( data.length ) ? data.length : '0';
 // hide breadcrumb and index bar
-				$( '#db-currentpath, #db-level-up, #db-index' ).addClass( 'hide' );
+				$( '#db-level-up, #db-index' ).addClass( 'hide' );
 				$( '#database-entries' ).css( 'width', '100%' );
 				$( '#db-search-results' ).removeClass( 'hide' ).html( '<i class="fa fa-times sx"></i><span class="visible-xs-inline"></span><span class="hidden-xs">' + results + ' of </span>' );
 			}
@@ -1699,9 +1700,13 @@ $( '.btn-cmd' ).click( function() {
 // buttons and playlist
 function setbutton() {
 	if ( GUI.json.updating_db !== undefined ) {
-		$( '#open-panel-sx a' ).html( '<i class="fa fa-refresh fa-spin"></i>' );
+		$( '#open-panel-sx i, #db-home i' )
+			.removeClass( 'fa-library' )
+			.addClass( 'fa-update fa-spin' );
 	} else {
-		$( '#open-panel-sx a' ).html( '<i class="fa fa-folder-open"></i>' );
+		$( '#open-panel-sx i, #db-home i' )
+			.removeClass( 'fa-update fa-spin' )
+			.addClass( 'fa-library' );
 	}
 	if ( $( '#play-group' ).is( ':visible' ) ) {
 //		$( '#play-group button').prop( 'disabled', GUI.json.radio ? true : false );
@@ -1840,7 +1845,7 @@ function setplaybackdata() {
 				GUI.countdown = setInterval( function() {
 					elapsed++
 					mmss = converthms( elapsed );
-					$( '#total' ).text( mmss ).css( 'color', '#e0e7ee' );
+					$( '#total' ).text( mmss ).css( 'color', '#587ca0' );
 				}, 1000 );
 			}
 			return;
@@ -1859,7 +1864,7 @@ function setplaybackdata() {
 		// stop <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 		if ( $( '#time-knob' ).hasClass( 'hide' ) ) return;
 		if ( status.state === 'stop' ) {
-			$( '#elapsed' ).text( $( '#total' ).text() ).css( 'color', '##587ca0' );
+			$( '#elapsed' ).text( $( '#total' ).text() ).css( 'color', '#587ca0' );
 			$( '#total' ).text( '' );
 			return;
 		} else {
