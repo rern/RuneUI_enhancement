@@ -6,7 +6,7 @@
 
 // bash
 if ( isset( $_POST[ 'bash' ] ) ) {
-	$result = exec( '/usr/bin/sudo '.$_POST[ 'bash' ] );
+	$result = shell_exec( '/usr/bin/sudo '.$_POST[ 'bash' ] );
 	echo $result;
 	die();
 }
@@ -41,6 +41,7 @@ $mpd = openMpdSocket('/run/mpd.sock');
 // MPD telnet command (protocol)
 if ( isset( $_POST[ 'mpd' ] ) ) {
 	sendMpdCommand( $mpd, $_POST[ 'mpd' ] );
+	echo readMpdResponse( $mpd );
 	die();
 }
 
