@@ -16,6 +16,8 @@ sed -i 's/gifico|svg/gif|ico/' /etc/nginx/nginx.conf
 #1temp1
 
 mv /srv/http/app/coverart_ctl.php{,.backup}
+mv -v /srv/http/assets/fonts/fontawesome-webfont.woff{,.backup}
+mv -v /srv/http/assets/fonts/fontawesome-webfont.ttf{,.backup}
 mv /srv/http/assets/js/runeui.min.js{,.backup}
 mv /usr/share/bootsplash/start-runeaudio.png{,.backup}
 mv /usr/share/bootsplash/reboot-runeaudio.png{,.backup}
