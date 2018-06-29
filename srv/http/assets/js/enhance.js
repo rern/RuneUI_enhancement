@@ -1113,6 +1113,8 @@ function renderLibraryHome() {
 }
 
 function renderPlaylists( data ) {
+	if ( $( '#pl-home' ).is( ':visible' ) ) return;
+	
 	var content = playlistname = '';
 	var i, line, lines = data.split('\n'), infos = [];
 	for ( i = 0; ( line = lines[ i ] ); i++ ) {
