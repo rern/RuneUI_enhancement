@@ -1217,6 +1217,12 @@ w {
 	}
 }
 @media(max-width: 480px) {
+	#db-search {
+		max-width: 160px;
+	}
+	#db-currentpath {
+		overflow: visible;
+	}
 	#database-entries li span .fa {
 		display: none;
 	}
