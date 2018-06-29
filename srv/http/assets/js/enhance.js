@@ -32,6 +32,7 @@ function menubottom( elshow, elhide1, elhide2 ) {
 	} else {
 		window.location.href = '/';
 	}
+	$( '.context-menu' ).removeClass( 'open' );
 }
 function panelLR( lr ) {
 	var pcurrent = $( '.tab-pane:visible' ).prop( 'id' );
