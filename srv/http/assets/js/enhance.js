@@ -593,7 +593,7 @@ $hammerplayback.on( 'tap', function( e ) {
 $hammerlibrary.on( 'tap', function( e ) {
 	if ( $( '.home-block-remove' ).length && !$( e.target ).is( 'span.block-remove' ) ) $( '#db-homeSetup' ).click();
 } ).on( 'press', function( e ) {
-	if ( $( '#db-currentpath' ).is( ':visible' ) ) return
+	if ( $( '#home-blocks' ).hasClass( 'hide' ) ) return;
 	info( {
 		  title  : 'Libary Home'
 		, message: 'Select items to show:'
