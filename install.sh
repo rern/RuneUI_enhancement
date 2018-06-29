@@ -320,6 +320,6 @@ installfinish $@
 
 title -nt "$info Please clear browser cache and reboot."
 
-#clearcache
+clearcache
 
 #[[ $svg == 0 ]] && restart nginx
