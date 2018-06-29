@@ -322,4 +322,4 @@ title -nt "$info Please clear browser cache and reboot."
 
 clearcache
 
-#[[ $svg == 0 ]] && restart nginx
+[[ $svg == 0 ]] && restart nginx
