@@ -103,7 +103,16 @@ appendH 'id="open-panel-dx"'
 file=/srv/http/app/templates/footer.php
 echo $file
 
-commentH 'id="poweroff-modal"' '^<\/div>$'
+commentH 'id="poweroff-modal"' 'id="loader"'
+
+string=$( cat <<'EOF'
+<div id="loader"<?php if ($this->section == 'dev') { ?> class="hide"<?php } ?>>
+	<div id="loaderbg"></div><div id="loadercontent"><img src="<?=$this->asset('/img/runelogo.svg')?>"></div>
+</div>
+EOF
+)
+appendH 'id="loader"'
+
 commentH 'knob.min.js'
 commentH 'countdown.min.js'
 commentH 'modernizr'
@@ -322,4 +331,4 @@ title -nt "$info Please clear browser cache and reboot."
 
 clearcache
 
-[[ $svg == 0 ]] && restart nginx
+[[ $svg == 0 ]] && systemctl restart nginx
