@@ -105,7 +105,7 @@ echo $file
 
 commentH 'id="poweroff-modal"' 'id="loader"'
 
-string=$( cat <<'EOP'
+string=$( cat <<'EOF'
 <div id="loader"<?php if ($this->section == 'dev') { ?> class="hide"<?php } ?>>
 	<div id="loaderbg"></div><div id="loadercontent"><img src="<?=$this->asset('/img/runelogo.svg')?>"></div>
 </div>
@@ -331,4 +331,4 @@ title -nt "$info Please clear browser cache and reboot."
 
 clearcache
 
-[[ $svg == 0 ]] && restart nginx
+[[ $svg == 0 ]] && systemctl restart nginx
