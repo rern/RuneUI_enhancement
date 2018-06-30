@@ -44,7 +44,7 @@
 #context-menu-dirble .fa-microphone:before { content: "\f537" !important } /* change to fa-save */
 #pl-manage-list:before { content: "\f07c" } /* change to fa-folder-open */
 .fa-cubes:before { content: "\f520" } /* change to fa-addons */
-.fa-times:before,
+.fa-times-circle:before,
 .fa-trash-o:before { content: "\f536" } /* change to fa-times-circle */
 @media(max-width: 480px) {
 	#db-currentpath span span {
@@ -121,6 +121,15 @@
 .fa-star:before { content: "\f550" }
 .fa-minus-circle:before { content: "\f535" }
 
+#loader img {
+	animation: blinker 1.5s linear infinite;
+	width: 300px;
+	height: 75px;
+	margin-left: -100px;
+}
+@keyframes blinker {
+	50% { opacity: 0; }
+}
 /* ---------------------- playback ---------------------- */
 #bartop,
 #barbottom {
@@ -795,6 +804,12 @@
 }
 #home-blocks h4 span {
 	color: #587ca0;
+}
+.home-bookmark h4 {
+	width: 100%;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 /* ---------------------- breadcrumb and index ---------------------- */
 .btnlist-top {
