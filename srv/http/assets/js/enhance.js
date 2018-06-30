@@ -639,9 +639,9 @@ var observeroption = { childList: true };
 $( '#db-search' ).on( 'submit', function() {
 	dbtop = $( window ).scrollTop();
 	observersearch.observe( observerdiv, observeroption );
-	$( '#db-level-up' ).hide( function() { // addClass( 'hide' ) not work
+	//$( '#db-level-up' ).hide( function() { // addClass( 'hide' ) not work
 		observersearch.disconnect();
-	} );
+	//} );
 } );
 var observerback = new MutationObserver( function() {
 	window.scrollTo( 0, $( '#database-entries>li' ).eq( 0 ).attr( 'class' ) === 'db-folder' ? dbtop : 0 );
@@ -654,6 +654,7 @@ $( '#database-entries' ).click( function() {
 // replace functions in main runeui.js file **********************************************
 $( '#db-search-results' ).off( 'click' ).on( 'click', function() {
 	$( this ).addClass( 'hide' );
+	$( '#db-currentpath' ).css( 'width', '' );
 	var mode = {
 		  Artists  : 'artist'
 		, Albums   : 'album'
@@ -1455,10 +1456,12 @@ function populateDB( options ) {
 			if ( keyword ) {
 			// search results
 				var results = ( data.length ) ? data.length : '0';
-// hide breadcrumb and index bar
 				$( '#db-level-up, #db-index' ).addClass( 'hide' );
 				$( '#database-entries' ).css( 'width', '100%' );
-				$( '#db-search-results' ).removeClass( 'hide' ).html( '<i class="fa fa-times sx"></i><span class="visible-xs-inline"></span><span class="hidden-xs">' + results + ' of </span>' );
+				$( '#db-search-results' )
+					.removeClass( 'hide' )
+					.html( '<i class="fa fa-times sx"></i><span class="visible-xs-inline"></span>\
+						<span class="hidden-xs">' + results + ' of </span>' );
 			}
 			if ( data[ 0 ].directory || data[ 0 ].file ) {
 				var arraydir = [];
@@ -1497,7 +1500,6 @@ function populateDB( options ) {
 	} );
 	
 // breadcrumb directory path link
-	var breadcrumb = $( '#db-currentpath span' );
 	var dot = '<span style="color: #587ca0"> &#8226; </span>';
 	var icon = {
 		  USB          : '<i class="fa fa-usbdrive"></i>'
@@ -1538,17 +1540,22 @@ function populateDB( options ) {
 			var albumartist = $( '#database-entries li:eq( 0 ) span.bl' ).text();
 			var dot = albumartist ? '<a>'+ dot +'<span class="white">'+ albumartist +'</span></a>' : '';
 		}
-		breadcrumb.html( icon[ GUI.browsemode ] +'&ensp;<a data-path="'+ mode[ GUI.browsemode ] +'">'+ name[ GUI.browsemode ] +'</a>'+ dot );
+		$( '#db-currentpath span' ).html( icon[ GUI.browsemode ] +'&ensp;<a data-path="'+ mode[ GUI.browsemode ] +'">'+ name[ GUI.browsemode ] +'</a>'+ dot );
 	} else {
 		var folder = path.split( '/' );
 		var folderPath = '';
 		var folderCrumb = icon[ folder[ 0 ] ];
-		var ilength = folder.length;
-		for ( i = 0; i < ilength; i++ ) {
-			folderPath += ( i > 0 ? '/' : '' ) + folder[ i ];
-			folderCrumb += '<a data-path="'+ folderPath +'">'+ ( i > 0 ? '<w> / </w>' : '' ) + ( name[ folder[ i ] ] ? name[ folder[ i ] ] : folder[ i ] ) +'</a>';
+		if ( folderCrumb !== undefined ) {
+			var ilength = folder.length;
+			for ( i = 0; i < ilength; i++ ) {
+				folderPath += ( i > 0 ? '/' : '' ) + folder[ i ];
+				folderCrumb += '<a data-path="'+ folderPath +'">'+ ( i > 0 ? '<w> / </w>' : '' ) + ( name[ folder[ i ] ] ? name[ folder[ i ] ] : folder[ i ] ) +'</a>';
+			} 
+		} else {
+			folderCrumb = '';
+			$( '#db-currentpath' ).css( 'width', '50px' );
 		}
-		breadcrumb.html( folderCrumb );
+		$( '#db-currentpath span' ).html( folderCrumb );
 	}
 	if ( uplevel ) {
 		var position = GUI.currentDBpos[ GUI.currentDBpos[ 10 ] ];
@@ -1558,10 +1565,6 @@ function populateDB( options ) {
 		customScroll( 'db', 0, 0 );
 	}
 	if ( querytype != 'childs' ) loadingSpinner('db', 'hide');
-	
-//	var dirmode = $( '#database-entries li:first-child' ).is( '.db-folder, .db-radio' );
-//	$( '#db-index' ).toggleClass( 'hide', dirmode === false && !plugin );
-//	$( '#database-entries' ).css( 'width', dirmode ? 'calc( 100% - 38px )' : '100%' );
 	$( '#db-index' ).removeClass( 'hide' );
 	$( '#database-entries' ).css( 'width', 'calc( 100% - 38px )' );
 }
