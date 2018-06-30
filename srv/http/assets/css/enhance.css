@@ -122,7 +122,7 @@
 .fa-minus-circle:before { content: "\f535" }
 
 #loaderbg {
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.9);
 }
 #loader img {
 	animation: blinker 1.5s linear infinite;
