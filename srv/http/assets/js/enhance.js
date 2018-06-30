@@ -80,6 +80,10 @@ function btntoggle() {
 $( '#menu-top, #menu-bottom' ).click( function() {
 	$( '.context-menu' ).removeClass( 'open' );
 } );
+$( '#context-menu-playlist' ).click( function() {
+	$( '#pl-home, #pl-home-text' ).addClass( 'hide' );
+} );
+
 $( '#open-panel-sx, .open-sx' ).click( function() {
 	if ( $( this ).hasClass( 'active' ) ) {
 		renderLibraryHome();
@@ -593,7 +597,7 @@ $hammerplayback.on( 'tap', function( e ) {
 $hammerlibrary.on( 'tap', function( e ) {
 	if ( $( '.home-block-remove' ).length && !$( e.target ).is( 'span.block-remove' ) ) $( '#db-homeSetup' ).click();
 } ).on( 'press', function( e ) {
-	if ( $( '#home-blocks' ).hasClass( 'hide' ) ) return;
+	if ( $( '#home-blocks' ).hasClass( 'hide' ) ) return
 	info( {
 		  title  : 'Libary Home'
 		, message: 'Select items to show:'
