@@ -81,7 +81,7 @@ $( '#menu-top, #menu-bottom' ).click( function() {
 	$( '.context-menu' ).removeClass( 'open' );
 } );
 $( '#context-menu-playlist' ).click( function() {
-	$( '#pl-home, #pl-home-text' ).addClass( 'hide' );
+	$( '#pl-home-text' ).addClass( 'hide' );
 } );
 
 $( '#open-panel-sx, .open-sx' ).click( function() {
@@ -105,7 +105,7 @@ $( '#open-panel-dx' ).click( function() {
 	menubottom( 'panel-dx', 'playback', 'panel-sx' );
 	displaycommon();
 	window.scrollTo( 0, queuetop );
-	if ( $( '#pl-home' ).is( ':visible' ) ) $( '#pl-manage, #pl-count, #pl-search' ).addClass( 'hide' );
+	if ( $( '#pl-home-text' ).is( ':visible' ) ) $( '#pl-manage, #pl-count, #pl-search' ).addClass( 'hide' );
 } );
 
 // back from setting pages
@@ -345,7 +345,9 @@ $( '#pl-filter' ).off( 'keyup' ).on( 'keyup', function() {
 	}
 } );
 $( '#pl-home' ).click( function() {
-	$( '#pl-home, #pl-home-text' ).addClass( 'hide' );
+	if ( $( '#pl-home-text' ).hasClass( 'hide' ) ) return;
+	
+	$( '#pl-home-text' ).addClass( 'hide' );
 	$( '.playlist, #pl-currentpath' ).addClass( 'hide' );
 	$( '#pl-manage, #pl-search' ).removeClass( 'hide' );
 	getPlaylistCmd();
@@ -1118,7 +1120,7 @@ function renderLibraryHome() {
 }
 
 function renderPlaylists( data ) {
-	if ( $( '#pl-home' ).is( ':visible' ) ) return;
+	if ( $( '#pl-home-text' ).is( ':visible' ) ) return;
 	
 	var content = playlistname = '';
 	var i, line, lines = data.split('\n'), infos = [];
@@ -1132,7 +1134,7 @@ function renderPlaylists( data ) {
 	}
 	document.getElementById( 'playlist-entries' ).innerHTML = '';
 	$( '.playlist, #pl-manage, #pl-count' ).addClass( 'hide' );
-	$( '#pl-home, #pl-home-text, #pl-filter-results' ).removeClass( 'hide' );
+	$( '#pl-home-text, #pl-filter-results' ).removeClass( 'hide' );
 	$( '#pl-filter-results, #pl-currentpath, #pl-editor' ).removeClass( 'hide' );
 	document.getElementById( 'pl-editor' ).innerHTML = content;
 	loadingSpinner( 'pl', 'hide' );
@@ -1611,7 +1613,7 @@ function getPlaylistPlain( data ) {
 	$( '#pl-filter' ).val( '' );
 	$( '#pl-filter-results' ).addClass( 'hide' ).html( '' );
 	$( '#pl-manage, #pl-count' ).removeClass( 'hide' );
-	$( '#pl-count' ).html( '<a>'+ countsong +'</a>&ensp;<i class="fa fa-music"></i>&emsp;'+ totalhtml + radiohtml );
+	$( '#pl-count' ).html( '<a>'+ countsong +'</a>&ensp;<i class="fa fa-music"></i>&ensp;'+ totalhtml + radiohtml );
 }
 function getPlaylistCmd(){
 	if ( GUI.json.playlistlength == 0 ) {
