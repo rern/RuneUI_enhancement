@@ -48,29 +48,25 @@
 	font-weight: normal;
 	font-style: normal;
 }
-.fa {
+.fa,
+#playlist-entries li:before {
 	font-family: FontAwesome, enhance;
 }
-#context-menu-dirble .fa-microphone:before { content: "\f537" !important } /* change to fa-save */
-#pl-manage-list:before { content: "\f07c" } /* change to fa-folder-open */
-.fa-cubes:before { content: "\f520" } /* change to fa-addons */
+.fa-cubes:before { content: "\f520" }                                      /* change to fa-addons */
 .fa-times-circle:before,
-.fa-trash-o:before { content: "\f536" } /* change to fa-times-circle */
+.fa-trash-o:before { content: "\f536" }                                    /* change to fa-times-circle */
+#pl-manage-list:before { content: "\f07c" }                                /* change to fa-folder-open */
+#context-menu-dirble .fa-microphone:before { content: "\f537" !important } /* change to fa-save */
+
 @media(max-width: 480px) {
 	#db-currentpath span span {
 		display: none;
 	}
 }
-#playlist-entries li:before { /* toggle */
-	content: '';
-}
 @media(min-width: 480px) {    /* toggle */
-	#playlist-entries li:before {
-		content: "\f541";
-	}
-	#playlist-entries li.radio:before {
-		content: "\f554";
-		padding-left: 4px;
+	#playlist-entries li:before,
+	#playlist-entries li.radio:before	{
+		content: none;
 	}
 }
 
@@ -133,7 +129,7 @@
 .fa-times:before { content: "\f538" }
 
 #loaderbg {
-    background: rgba(0, 0, 0, 0.9);
+	background: rgba(0, 0, 0, 0.9);
 }
 #loader img {
 	animation: blinker 1.5s linear infinite;
@@ -912,6 +908,16 @@
 	letter-spacing: 5px;
 	color: #0095d8;
 }
+#db-search-results {
+	float: right;
+	padding-top: 0;
+}
+#db-search-results i {
+	margin: 5px 15px 0 -2px;
+}
+#database-entries li .fa {
+	margin: 0 12px;
+}
 #database-entries {
 	float: left;
 	width: calc( 100% - 38px );
@@ -939,33 +945,29 @@
 #database-entries li .fa-microphone {
 	padding-left: 4px;
 }
-#database-entries .db-icon,
-#database-entries li span i,
+.db-icon,
+.pl-icon,
 #pl-editor li span i,
+#database-entries li span i,
 #playlist-entries li:before {
 	margin: 0 6px;
 	font-size: 24px;
-	line-height: 1.2em;
+	line-height: 40px;
 	color: #587ca0 !important;
 }
-#db-search-results {
-	float: right;
-	padding-top: 0;
-}
-#db-search-results i {
-	margin: 5px 15px 0 -2px;
-}
-.db-icon {
-	margin: 0 6px !important;
+.db-icon,
+.pl-icon {
+	float: left;
+	display: block;
+	width: 24px;
+	padding-top: 0 !important;
+	text-align: center;
 }
 .db-action {
 	margin: 0 !important;
 }
 #playlist-entries li.radio {
 	margin: 0;
-}
-#database-entries li .fa {
-	margin: 0 12px;
 }
 #pl-home-text {
 	float: left;
