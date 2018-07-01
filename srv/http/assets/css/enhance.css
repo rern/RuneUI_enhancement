@@ -41,6 +41,16 @@
 	font-style: normal;
 }
 /* ---------------------- fontawesome mod ---------------------- */
+@font-face {
+	font-family: enhance;
+	src: url('../fonts/enhance.woff') format('woff'),
+		url('../fonts/enhance.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+.fa {
+	font-family: FontAwesome, enhance;
+}
 #context-menu-dirble .fa-microphone:before { content: "\f537" !important } /* change to fa-save */
 #pl-manage-list:before { content: "\f07c" } /* change to fa-folder-open */
 .fa-cubes:before { content: "\f520" } /* change to fa-addons */
