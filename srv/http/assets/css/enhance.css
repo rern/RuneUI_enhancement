@@ -843,9 +843,8 @@
 }
 #db-currentpath {
 	float: left;
-	width: calc( 100% - 180px );
+	width: calc( 100% - 220px );
 	margin-left: -10px;
-	margin-top: -2px;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -853,6 +852,8 @@
 }
 #db-home,
 #pl-home {
+	float: left;
+	display: inline-block;
 	margin: 0 !important;
 	width: 40px;
 	padding-left: 10px;
@@ -860,24 +861,20 @@
 	vertical-align: 0%;
 	background: #0095d8;
 }
-#db-home,
-#pl-home {
-	display: inline-block;
-}
 #db-home {
-	margin-top: 2px !important;
+/*	margin: -2px 0 0 0 !important;*/
+}
+#pl-home {
+	margin-left: -10px !important;
 }
 #db-home i,
 #pl-home i {
 	margin-left: 0;
-	font-size: 24px;;
+	font-size: 24px;
 }
 #db-home:hover,
 #pl-home:hover {
 	background: #0072a5;
-}
-#pl-home {
-	margin-left: -10px !important;
 }
 #db-currentpath a,
 #pl-home-text {
@@ -915,7 +912,6 @@
 	right: 0;
 	width: 38px;
 	padding: 0;
-/*	line-height: 30px;*/
 	list-style: none;
 	background: #172029;
 }
@@ -961,17 +957,22 @@
 #database-entries li .fa {
 	margin: 0 12px;
 }
+#pl-home-text {
+	float: left;
+	margin-top: 7px;
+}
 #pl-manage {
 	float: left;
-	margin-top: 4px;
+	margin: 0 0 0 15px;
 }
 #pl-manage i {
-	margin-right: 15px;
+	margin-right: 10px;
 	font-size: 24px;
-	line-height: 32px;
+	line-height: 40px;
 }
 #pl-count {
 	display: inline-block;
+	margin: 2px 0 0 15px;
 	width: calc( 100% - 350px );
 	font-size: 16px;
 	white-space: nowrap;
