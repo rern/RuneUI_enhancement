@@ -54,7 +54,7 @@
 }
 .fa-cubes:before { content: "\f520" }                                      /* change to fa-addons */
 .fa-times-circle:before,
-.fa-trash-o:before { content: "\f51B" }                                    /* change to fa-times-circle */
+.fa-trash-o:before { content: "\f51C" }                                    /* change to fa-times-circle */
 #context-menu-dirble .fa-microphone:before { content: "\f537" !important } /* change to fa-save */
 
 @media(max-width: 480px) {
@@ -80,7 +80,7 @@
 .dropdown-menu .fa-undo:before { content: "\f531" }
 .dropdown-menu .fa-play:before { content: "\f532" }
 .dropdown-menu .fa-share-square-o:before { content: "\f533" }
-.dropdown-menu .fa-trash-o:before { content: "\f51B" }
+.dropdown-menu .fa-trash-o:before { content: "\f51C" }
 .dropdown-menu .fa-refresh:before { content: "\f542" }
 
 .dropdown-menu .fa-folder-open:before { content: "\f521" }
@@ -93,9 +93,9 @@
 .fa-single:before { content: "\f513" }
 .fa-share:before { content: "\f514" }
 .fa-info:before { content: "\f515" }
-.fa-minus:before { content: "\f516" }
-.fa-volume:before { content: "\f517" }
-.fa-mute:before { content: "\f518" }
+.fa-minus:before { content: "\f518" }
+.fa-volume:before { content: "\f516" }
+.fa-mute:before { content: "\f517" }
 .fa-plus:before { content: "\f519" }
 
 
@@ -125,12 +125,14 @@
 .fa-microphone:before { content: "\f554" }
 .fa-save:before { content: "\f537"}
 .fa-star:before { content: "\f550" }
-.fa-plus-circle:before { content: "\f51C" }
-.fa-minus-circle:before { content: "\f51B" }
+.fa-plus-circle:before { content: "\f51D" }
+.fa-minus-circle:before { content: "\f51C" }
 .fa-times:before { content: "\f51A" }
 .fa-power-off:before { content: "\f562" }
 .fa-info-circle:before { content: "\f560" }
 .fa-question-circle:before { content: "\f561" }
+.fa-refresh:before { content: "\f563" }
+.fa-arrow-left:before { content: "\f564" }
 
 #loaderbg {
 	background: rgba(0, 0, 0, 0.9);
