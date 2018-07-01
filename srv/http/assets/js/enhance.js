@@ -1595,15 +1595,19 @@ function getPlaylistPlain( data ) {
 		if ( classradio ) {
 			var totalhtml = '<span>'+ converthms( playlisttime ) +'</span>';
 			var radiohtml = '&emsp;<a>'+ countradio +'</a>&ensp; <i class="fa fa-microphone"></i>';
+			var iconhtml = '<i class="fa fa-microphone pl-icon"></i>';
 		} else {
 			var totalhtml = '<a>'+ converthms( playlisttime ) +'</a>';
 			var radiohtml = '';
+			var iconhtml = '<i class="fa fa-music pl-icon"></i>';
 		}
 		classcurrent = ( state !== 'stop' && counttotal === current ) ? 'active' : '';
 		cl = ' class="'+ classcurrent + ( classradio ? ' radio' : '' ) +'"';
 		cl = ( classcurrent || classradio ) ? cl : '';
 		content += '<li id="pl-'+ data[ 'Id' ] +'"'+ cl +'>'
-			+'<i class="fa fa-minus-circle pl-action" title="Remove song from playlist"></i><span class="sn">'+ topline +'</span>'
+			+ iconhtml
+			+'<i class="fa fa-minus-circle pl-action" title="Remove song from playlist"></i>'
+			+'<span class="sn">'+ topline +'</span>'
 			+'<span class="bl">'+ bottomline +'</span>'
 			+'</li>';
 		classcurrent = classradio = '';
