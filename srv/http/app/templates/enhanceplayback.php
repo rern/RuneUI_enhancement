@@ -125,7 +125,7 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 			<div id="pl-home"><i class="fa fa-list-ul sx"></i></div>
 			<span id="pl-home-text" class="hide"> &ensp;PLAYLISTS</span>
 			<div id="pl-manage">
-				<i id="pl-manage-list" class="fa fa-list-ol fa-lg" title="Manage playlists"></i>
+				<i id="pl-manage-list" class="fa fa-folder-open fa-lg" title="Manage playlists"></i>
 				<i id="pl-manage-save" class="fa fa-save fa-lg" title="Save current queue as playlist" data-toggle="modal" data-target="#modal-pl-save"></i>
 				<!--<i id="pl-import-youtube" class="fa fa-youtube-play" title="Import a playlist or video from youtube." data-toggle="modal" data-target="#modal-pl-youtube"></i>-->
 				<i id="pl-manage-clear" class="fa fa-minus-circle fa-lg" title="Clear the playing queue" data-toggle="modal" data-target="#modal-pl-clear"></i>
