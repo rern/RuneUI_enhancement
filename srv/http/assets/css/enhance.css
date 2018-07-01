@@ -933,33 +933,34 @@
 #db-index li:hover {
 	background: #34495e;
 }
-#database-entries li .fa-music,
-#database-entries li .fa-microphone {
-	margin: 0 6px;
-}
-#database-entries li .fa-microphone {
-	padding-left: 4px;
+#database-entries span i {
+	padding: 0 8px;
 }
 .db-icon,
 .pl-icon,
 #pl-editor li span i,
-#database-entries li span i,
-#playlist-entries li:before {
-	margin: 0 6px;
+#database-entries i,
+#playlist-entries i {
+	margin: 5px;
 	font-size: 24px;
 	line-height: 40px;
 	color: #587ca0 !important;
 }
+#playlist-entries {
+	margin-left: 5px;
+}
+
 .db-icon,
 .pl-icon {
 	float: left;
 	display: block;
-	width: 24px;
 	padding-top: 0 !important;
 	text-align: center;
 }
-.db-action {
+.db-action,
+.pl-action {
 	margin: 0 !important;
+	color: #587ca0 !important;
 }
 #playlist-entries li.radio {
 	margin: 0;
@@ -986,11 +987,8 @@
 	overflow: hidden;
 	text-overflow: ellipsis
 }
-#pl-editor span {
-	padding-left: 15px !important;
-}
-#pl-editor .fa-list-ul {
-	margin: 0 12px 0 0;
+#pl-editor span i {
+	padding: 0 10px 0 5px !important;*/
 }
 #pl-filter-results {
 	float: right;
