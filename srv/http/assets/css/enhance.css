@@ -847,6 +847,15 @@
 .btnlist-top .form-inline i {
 	font-size: 18px;
 }
+#db-search-results {
+	float: right;
+}
+.form-control:focus {
+	border: 2px solid #34495e;
+	border-radius: 6px;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
 #db-webradio-add {
 	padding-left: 10px;
 	font-size: 24px;
