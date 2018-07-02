@@ -55,7 +55,7 @@
 .fa-cubes:before { content: "\f520" }                                      /* change to fa-addons */
 .fa-times-circle:before,
 .fa-trash-o:before { content: "\f51C" }                                    /* change to fa-times-circle */
-#context-menu-dirble .fa-microphone:before { content: "\f537" !important } /* change to fa-save */
+#context-menu-dirble .fa-microphone:before { content: "\f542" !important } /* change to fa-save */
 
 @media(max-width: 480px) {
 	#db-currentpath span span {
@@ -76,12 +76,12 @@
 .fa-step-forward:before { content: "\f505" }
 
 .dropdown-menu .fa-plus-circle:before { content: "\f530" }
-.fa-edit:before { content: "\f534" }
+.dropdown-menu .fa-edit:before { content: "\f535" }
 .dropdown-menu .fa-undo:before { content: "\f531" }
 .dropdown-menu .fa-play:before { content: "\f532" }
 .dropdown-menu .fa-share-square-o:before { content: "\f533" }
 .dropdown-menu .fa-trash-o:before { content: "\f51C" }
-.dropdown-menu .fa-refresh:before { content: "\f542" }
+.dropdown-menu .fa-refresh:before { content: "\f534" }
 
 .dropdown-menu .fa-folder-open:before { content: "\f521" }
 .dropdown-menu .fa-cogs:before { content: "\f522" }
@@ -117,10 +117,10 @@
 .fa-jamendo:before { content: "\f55A" }
 
 .fa-folder:before { content: "\f540" }
-.fa-folder-open:before { content: "\f536" }
-.fa-music:before { content: "\f541" }
+.fa-folder-open:before { content: "\f541" }
+.fa-music:before { content: "\f543" }
 .fa-microphone:before { content: "\f554" }
-.fa-save:before { content: "\f537"}
+.fa-save:before { content: "\f542"}
 .fa-star:before { content: "\f550" }
 .fa-plus-circle:before { content: "\f51D" }
 .fa-minus-circle:before { content: "\f51C" }
@@ -131,6 +131,8 @@
 .fa-arrow-left:before { content: "\f564" }
 .fa-edit:before { content: "\f56A" }
 .fa-undo:before { content: "\f56B" }
+.fa-bars:before { content: "\f536" }
+.fa-gears:before { content: "\f523" }
 
 #loaderbg {
 	background: rgba(0, 0, 0, 0.9);
