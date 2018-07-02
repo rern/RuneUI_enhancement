@@ -132,7 +132,6 @@
 .fa-edit:before { content: "\f56A" }
 .fa-undo:before { content: "\f56B" }
 .fa-bars:before { content: "\f536" }
-.fa-gears:before { content: "\f523" }
 
 #loaderbg {
 	background: rgba(0, 0, 0, 0.9);
