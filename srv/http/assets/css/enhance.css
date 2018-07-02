@@ -958,6 +958,10 @@
 #database-entries span i {
 	padding: 0 8px;
 }
+#database-entries li.db-folder span,
+#pl-editor span {
+	margin-top: -3px;
+}
 .db-icon,
 .pl-icon,
 #pl-editor li span i,
