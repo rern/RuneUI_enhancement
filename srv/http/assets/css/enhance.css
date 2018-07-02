@@ -98,10 +98,7 @@
 .fa-mute:before { content: "\f517" }
 .fa-plus:before { content: "\f519" }
 
-
-#open-panel-sx .fa-refresh:before,
-#db-home .fa-refresh:before { content: "\f542" }
-.fa-update:before { content: "\f542" }
+.fa-refresh:before { content: "\f563" }
 .fa-gear:before { content: "\f506" }
 .fa-library:before { content: "\f507" }
 .fa-play-circle:before { content: "\f508" }
@@ -131,8 +128,9 @@
 .fa-power-off:before { content: "\f562" }
 .fa-info-circle:before { content: "\f560" }
 .fa-question-circle:before { content: "\f561" }
-.fa-refresh:before { content: "\f563" }
 .fa-arrow-left:before { content: "\f564" }
+.fa-edit:before { content: "\f56A" }
+.fa-undo:before { content: "\f56B" }
 
 #loaderbg {
 	background: rgba(0, 0, 0, 0.9);
@@ -551,6 +549,9 @@
 	width: 40px;
 	font-size:24px;
 	outline: none;
+}
+#playback .btn-group button i {
+	vertical-align: 5%;
 }
 /* button shadow */
 #playback .btn-group {
