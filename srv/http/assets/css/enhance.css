@@ -908,7 +908,16 @@
 #db-search-results .hidden-xs,
 #pl-filter-results .hidden-xs {
 	margin-left: 5px;
-	vertical-align: 10%;
+	vertical-align: 5%;
+	font-size: 18px;
+}
+#db-search-results i,
+#pl-filter-results i {
+	color: #0095d8;
+}
+#db-search-results .hidden-xs a,
+#pl-filter-results .hidden-xs a {
+	color: #587ca0;
 }
 #database-entries .sn,
 #playlist-entries .sn {
@@ -1005,10 +1014,6 @@
 }
 #pl-filter-results {
 	float: right;
-}
-#pl-filter-results i {
-	margin-left: -2px;
-	font-size: 24px;
 }
 #playlist-entries li:before {
 	margin-top: 9px;
