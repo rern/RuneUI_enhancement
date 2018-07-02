@@ -1720,10 +1720,10 @@ function setbutton() {
 	if ( GUI.json.updating_db !== undefined ) {
 		$( '#open-panel-sx i, #db-home i' )
 			.removeClass( 'fa-library' )
-			.addClass( 'fa-update fa-spin' );
+			.addClass( 'fa-refresh fa-spin' );
 	} else {
 		$( '#open-panel-sx i, #db-home i' )
-			.removeClass( 'fa-update fa-spin' )
+			.removeClass( 'fa-refresh fa-spin' )
 			.addClass( 'fa-library' );
 	}
 	if ( $( '#play-group' ).is( ':visible' ) ) {
