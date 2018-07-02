@@ -66,7 +66,7 @@ insertH ' Sources'
 commentH 'href="#poweroff-modal"'
 
 string=$( cat <<'EOF'
-            <li class="<?=$this->uri(1, 'dev', 'active')?>"><a href="/dev/"><i class="fa fa-code"></i> Development</a></li>
+            <li class="<?=$this->uri(1, 'dev', 'active')?>"><a href="/dev/"><i class="fa fa-gears"></i> Development</a></li>
             <li><a id="turnoff"><i class="fa fa-power-off"></i> Power</a></li>
 EOF
 )
