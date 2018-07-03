@@ -1611,7 +1611,7 @@ function getPlaylistPlain( data ) {
 	$( '#pl-filter' ).val( '' );
 	$( '#pl-filter-results' ).addClass( 'hide' ).html( '' );
 	$( '#pl-manage, #pl-count' ).removeClass( 'hide' );
-	$( '#pl-count' ).html( '<a>'+ countsong +'</a>&ensp;<i class="fa fa-music"></i>&ensp;'+ totalhtml );
+	$( '#pl-count' ).html( '<span>PLAYLIST&emsp;</span><span>&#8226;&ensp;</span><a>'+ countsong +'</a>&ensp;<i class="fa fa-music"></i>&ensp;'+ totalhtml );
 }
 function getPlaylistCmd(){
 	if ( GUI.json.playlistlength == 0 ) {
