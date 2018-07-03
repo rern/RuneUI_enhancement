@@ -936,7 +936,8 @@
 	position: fixed;
 	right: 0;
 	width: 38px;
-	padding: 0;
+	height: 100%;
+	padding: 20px 0 0 0;
 	list-style: none;
 	background: #172029;
 }
