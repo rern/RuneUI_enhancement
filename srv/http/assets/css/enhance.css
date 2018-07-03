@@ -1264,7 +1264,8 @@ w {
 	#db-currentpath {
 		overflow: visible;
 	}
-	#database-entries li span .fa {
+	#database-entries li span .fa,
+	#pl-editor span i {
 		display: none;
 	}
 	#database-entries li {
