@@ -51,7 +51,6 @@
 .fa {
 	font-family: FontAwesome, enhance;
 }
-.fa-cubes:before { content: "\f520" }                                      /* change to fa-addons */
 .fa-times-circle:before,
 .fa-trash-o:before { content: "\f51C" }                                    /* change to fa-minus-circle */
 #context-menu-dirble .fa-microphone:before { content: "\f542" !important } /* change to fa-save */
