@@ -1024,6 +1024,7 @@
 #playlist-entries li,
 #database-entries .sn span,
 #playlist-entries .sn span {
+	vertical-align: -5%;
 	font-size: 18px;
 	color: #587ca0 !important;
 }
