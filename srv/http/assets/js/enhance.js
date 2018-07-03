@@ -325,6 +325,7 @@ $( '#open-library' ).off( 'click' ).on( 'click', function() {
 
 $( '#pl-manage-list' ).off( 'click' ).on( 'click', function() {
 	$( '#pl-search' ).addClass( 'hide' );
+	$( '#pl-currentpath' ).removeClass( 'hide' );
 	getPlaylists();
 });
 $( '#pl-filter' ).off( 'keyup' ).on( 'keyup', function() {
@@ -1607,7 +1608,7 @@ function getPlaylistPlain( data ) {
 	$( '#pl-filter' ).val( '' );
 	$( '#pl-filter-results' ).addClass( 'hide' ).html( '' );
 	$( '#pl-manage, #pl-count' ).removeClass( 'hide' );
-	$( '#pl-count' ).html( '<span>&#8226;&ensp;</span><a>'+ countsong +'</a>&ensp;<i class="fa fa-music"></i>&ensp;'+ totalhtml );
+	$( '#pl-count' ).html( '<a>PLAYLIST</a><span>&ensp;&#8226;&ensp;</span><a>'+ countsong +'</a>&ensp;<i class="fa fa-music"></i>&ensp;'+ totalhtml );
 }
 function getPlaylistCmd(){
 	if ( GUI.json.playlistlength == 0 ) {
