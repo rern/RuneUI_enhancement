@@ -980,7 +980,6 @@
 #database-entries .db-action,
 #playlist-entries .pl-action {
 	margin: 0 !important;
-	color: #587ca0 !important;
 }
 #playlist-entries li.radio {
 	margin: 0;
@@ -1035,7 +1034,13 @@ w {
 }
 		
 #database-entries li.active,
-#playlist-entries li.active {
+#playlist-entries li.active,
+#database-entries li.active .db-action,
+#playlist-entries li.active .pl-action,
+#database-entries li.active .db-icon,
+#playlist-entries li.active .pl-icon,
+#database-entries li.active .sn span,
+#playlist-entries li.active .sn span {
 	color: #34495e !important;
 }
 
