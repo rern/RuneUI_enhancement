@@ -974,8 +974,8 @@
 	padding-top: 0 !important;
 	text-align: center;
 }
-.db-action,
-.pl-action {
+#database-entries .db-action,
+#playlist-entries .pl-action {
 	margin: 0 !important;
 	color: #587ca0 !important;
 }
