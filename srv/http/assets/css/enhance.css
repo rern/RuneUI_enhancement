@@ -899,7 +899,7 @@
 	background: #0072a5;
 }
 #db-currentpath a,
-#pl-home-text {
+#pl-currentpath {
 	font-size: 18px;
 	color: #0095d8;
 }
@@ -926,7 +926,8 @@
 	color: #e0e7ee;
 }
 #db-currentpath span a:first-of-type,
-#pl-home-text {
+#pl-count a:first-child,
+#pl-currentpath {
 	letter-spacing: 5px;
 	color: #0095d8;
 }
@@ -984,10 +985,6 @@
 #playlist-entries li.radio {
 	margin: 0;
 }
-#pl-home-text {
-	float: left;
-	margin-top: 7px;
-}
 #pl-manage {
 	float: right;
 	margin: 0 0 0 15px;
@@ -999,7 +996,7 @@
 }
 #pl-count {
 	display: inline-block;
-	margin: 2px 0 0 13px;
+	margin: 0 0 0 13px;
 	width: calc( 100% - 500px );
 	font-size: 16px;
 	white-space: nowrap;
@@ -1016,12 +1013,11 @@
 	margin-top: 9px;
 }
 @media(max-width: 480px) {    /* toggle */
-	#pl-home-text,
 	#db-currentpath span>*:not(:first-child) {
 		display: none;
 	}
 	#db-currentpath span a:first-of-type,
-	#pl-home-text {
+	#pl-currentpath {
 		letter-spacing: 0;
 	}
 }
