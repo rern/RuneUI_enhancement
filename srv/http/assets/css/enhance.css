@@ -874,8 +874,8 @@
 	display: inline-block;
 	margin: 0 !important;
 	width: 40px;
-	padding-left: 10px;
 	line-height: 40px;
+	text-align: center;
 	vertical-align: 0%;
 	background: #0095d8;
 }
@@ -887,8 +887,10 @@
 }
 #db-home i,
 #pl-home i {
-	margin-left: 0;
 	font-size: 24px;
+}
+#pl-home i {
+	margin-left: 5px;
 }
 #db-home:hover,
 #pl-home:hover {
