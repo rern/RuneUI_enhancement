@@ -107,6 +107,9 @@ $( '#open-panel-dx' ).click( function() {
 	window.scrollTo( 0, queuetop );
 	if ( $( '#pl-home-text' ).is( ':visible' ) ) $( '#pl-manage, #pl-count, #pl-search' ).addClass( 'hide' );
 } );
+$( '#panel-dx, #context-menu-playlist' ).click( function() {
+	if ( $( '#context-menu-playlist' ).hasClass( 'open' ) ) $( '#context-menu-playlist' ).removeClass( 'open' );
+} );
 
 // back from setting pages
 if ( /\/.*\//.test( document.referrer ) == true ) {
@@ -1120,8 +1123,6 @@ function renderLibraryHome() {
 }
 
 function renderPlaylists( data ) {
-	if ( $( '#pl-home-text' ).is( ':visible' ) ) return;
-	
 	var content = playlistname = '';
 	var i, line, lines = data.split('\n'), infos = [];
 	for ( i = 0; ( line = lines[ i ] ); i++ ) {
@@ -1134,8 +1135,7 @@ function renderPlaylists( data ) {
 	}
 	document.getElementById( 'playlist-entries' ).innerHTML = '';
 	$( '.playlist, #pl-manage, #pl-count' ).addClass( 'hide' );
-	$( '#pl-home-text, #pl-filter-results' ).removeClass( 'hide' );
-	$( '#pl-filter-results, #pl-currentpath, #pl-editor' ).removeClass( 'hide' );
+	$( '#pl-home-text, #pl-filter-results, #pl-currentpath, #pl-editor' ).removeClass( 'hide' );
 	document.getElementById( 'pl-editor' ).innerHTML = content;
 	loadingSpinner( 'pl', 'hide' );
 	$( '#pl-editor li' ).click( function( e ) {
@@ -1153,11 +1153,7 @@ function renderPlaylists( data ) {
 			left: positionX +'px'
 		} );
 	} );
-	$( '#panel-dx, #context-menu-playlist' ).click( function() {
-		if ( $( '#context-menu-playlist' ).hasClass( 'open' ) ) $( '#context-menu-playlist' ).removeClass( 'open' );
-	} );
 }
-
 function parseResponse(options) {
 	var inputArr = options.inputArr || '',
 		respType = options.respType || '',
@@ -1580,11 +1576,13 @@ function getPlaylistPlain( data ) {
 	for ( i = 0; i < ilength; i++ ) {
 		var data = json[ i ];
 		if ( data[ 'file' ].slice( 0, 4 ) === 'http' ) {
+			var iconhtml = '<i class="fa fa-microphone pl-icon"></i>';
 			classradio = 1;
 			countradio++
 			topline = data[ 'Title' ];
 			bottomline = data[ 'file' ];
 		} else {
+			var iconhtml = '<i class="fa fa-music pl-icon"></i>';
 			countsong++
 			time = parseInt( data[ 'Time' ] );
 			topline = ( data[ 'Title' ] ? data[ 'Title' ] : data[ 'file' ].split( '/' ).pop() ) +'<span>'+ converthms( time ) +'</span>';
@@ -1592,15 +1590,6 @@ function getPlaylistPlain( data ) {
 			playlisttime += time;
 		}
 		counttotal++;
-		if ( classradio ) {
-			var totalhtml = '<span>'+ converthms( playlisttime ) +'</span>';
-			var radiohtml = '&emsp;<a>'+ countradio +'</a>&ensp; <i class="fa fa-microphone"></i>';
-			var iconhtml = '<i class="fa fa-microphone pl-icon"></i>';
-		} else {
-			var totalhtml = '<a>'+ converthms( playlisttime ) +'</a>';
-			var radiohtml = '';
-			var iconhtml = '<i class="fa fa-music pl-icon"></i>';
-		}
 		classcurrent = ( state !== 'stop' && counttotal === current ) ? 'active' : '';
 		cl = ' class="'+ classcurrent + ( classradio ? ' radio' : '' ) +'"';
 		cl = ( classcurrent || classradio ) ? cl : '';
@@ -1612,12 +1601,17 @@ function getPlaylistPlain( data ) {
 			+'</li>';
 		classcurrent = classradio = '';
 	}
+	if ( countradio ) {
+		var totalhtml = '<span>'+ converthms( playlisttime ) +'</span>&emsp;<a>'+ countradio +'</a>&ensp; <i class="fa fa-microphone"></i>';
+	} else {
+		var totalhtml = '<a>'+ converthms( playlisttime ) +'</a>';
+	}
 	$( '.playlist' ).addClass( 'hide' );
 	$( '#playlist-entries' ).html( content ).removeClass( 'hide' );
 	$( '#pl-filter' ).val( '' );
 	$( '#pl-filter-results' ).addClass( 'hide' ).html( '' );
 	$( '#pl-manage, #pl-count' ).removeClass( 'hide' );
-	$( '#pl-count' ).html( '<a>'+ countsong +'</a>&ensp;<i class="fa fa-music"></i>&ensp;'+ totalhtml + radiohtml );
+	$( '#pl-count' ).html( '<a>'+ countsong +'</a>&ensp;<i class="fa fa-music"></i>&ensp;'+ totalhtml );
 }
 function getPlaylistCmd(){
 	if ( GUI.json.playlistlength == 0 ) {
