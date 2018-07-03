@@ -362,15 +362,15 @@ $( '#pl-filter-results' ).off( 'click' ).on( 'click', function() {
 
 window.addEventListener( 'orientationchange', function() {
 	setTimeout( function() {
-		if ( $( '#playback' ).hasClass( 'active' ) ) {
+		if ( $( '#open-playback' ).hasClass( 'active' ) ) {
 			displayplayback();
-		} else if ( $( '#panel-sx' ).hasClass( 'active' ) ) {
-			displaylibrarry();
-		} else if ( $( '#panel-dx' ).hasClass( 'active' ) ) {
+		} else if ( $( '#open-panel-sx' ).hasClass( 'active' ) ) {
+			displaylibrary();
+		} else if ( $( '#open-panel-dx' ).hasClass( 'active' ) ) {
 			displaycommon();
 			window.scrollTo( 0, queuetop );
 		}
-	}, 100 );
+	}, 50 );
 } );
 
 if ( 'hidden' in document ) {
@@ -991,24 +991,23 @@ function displaylibrary() {
 	$( '#home-jamendo' ).parent().toggleClass( 'hide', !display.jamendo );
 	
 	displaycommon();
-	
 	// index height
 	setTimeout( function() {
-		var panelH = $( '#panel-sx' ).height();
+		var panelH = window.innerHeight;
 		if ( $( '#menu-top' ).is( ':visible' ) ) {
-			var indexoffset = 160;
+			var indexoffset = 170;
 		} else {
-			var indexoffset = 80;
+			var indexoffset = 90;
 		}
 		if ( panelH > 500 ) {
-			var indexline = 26;
+			var indexline = 27;
 			$( '.half' ).show();
 		} else {
 			var indexline = 13;
 			$( '.half' ).hide();
 		}
-		$( '#db-index' ).css( 'line-height', ( panelH - indexoffset ) / indexline +'px' );
-	}, 200 );
+		$( '#db-index' ).css( 'line-height', Math.round( ( panelH - indexoffset ) / indexline +'px' ) );
+	}, 300 );
 	window.scrollTo( 0, librarytop );
 }
 
