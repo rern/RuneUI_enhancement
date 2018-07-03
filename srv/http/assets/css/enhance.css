@@ -828,6 +828,10 @@
 	box-shadow: 0px 4px 10px #000000;
 	z-index: 10;
 }
+.btnlist a,
+#pl-count span {
+	font-size: 18px;
+}
 .btnlist-top i,
 #db-level-up {
 	font-size: 28px;
@@ -923,7 +927,8 @@
 	color: #e0e7ee;
 }
 #db-currentpath span a:first-of-type,
-#pl-home-text {
+#pl-home-text,
+#pl-count span:first-child {
 	letter-spacing: 5px;
 	color: #0095d8;
 }
@@ -983,7 +988,7 @@
 }
 #pl-home-text {
 	float: left;
-	margin-top: 7px;
+	margin-top: 9px;
 }
 #pl-manage {
 	float: right;
@@ -996,7 +1001,7 @@
 }
 #pl-count {
 	display: inline-block;
-	margin: 2px 0 0 15px;
+	margin: 2px 0 0 13px;
 	width: calc( 100% - 350px );
 	font-size: 16px;
 	white-space: nowrap;
@@ -1013,6 +1018,7 @@
 	margin-top: 9px;
 }
 @media(max-width: 480px) {    /* toggle */
+	#pl-count a span,
 	#db-currentpath span>*:not(:first-child) {
 		display: none;
 	}
