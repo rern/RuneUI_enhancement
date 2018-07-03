@@ -1,81 +1,82 @@
 @font-face {
 	font-family: Lato;
-	src: url( '../fonts/lato/lato-regular-webfont.woff' ) format( 'woff' ),
-		url( '../fonts/lato/lato-regular-webfont.ttf' ) format( 'truetype' );
+	src: url('../fonts/lato/lato-regular-webfont.woff') format('woff'),
+		url('../fonts/lato/lato-regular-webfont.ttf') format('truetype');
 	font-weight: normal;
 	font-style: normal;
 }
 @font-face {
 	font-family: Lato;
-	src: url( '../fonts/lato/lato-light-webfont.woff' ) format( 'woff' ),
-		url( '../fonts/lato/lato-light-webfont.ttf' ) format( 'truetype' );
+	src: url('../fonts/lato/lato-light-webfont.woff') format('woff'),
+		url('../fonts/lato/lato-light-webfont.ttf') format('truetype');
 	font-weight: 300;
 	font-style: normal;
 }
 @font-face {
 	font-family: Lato;
-	src: url( '../fonts/lato/lato-bold-webfont.woff' ) format( 'woff' ),
-		url( '../fonts/lato/lato-bold-webfont.ttf' ) format( 'truetype' );
+	src: url('../fonts/lato/lato-bold-webfont.woff') format('woff'),
+		url('../fonts/lato/lato-bold-webfont.ttf') format('truetype');
 	font-weight: bold;
 	font-style: normal;
 }
 @font-face {
 	font-family: Lato;
-	src: url( '../fonts/lato/lato-italic-webfont.woff' ) format( 'woff' ),
-		url( '../fonts/lato/lato-italic-webfont.ttf' ) format( 'truetype' );
+	src: url('../fonts/lato/lato-italic-webfont.woff') format('woff'),
+		url('../fonts/lato/lato-italic-webfont.ttf') format('truetype');
 	font-weight: normal;
 	font-style: italic;
 }
 @font-face {
 	font-family: Lato;
-	src: url( '../fonts/lato/lato-bolditalic-webfont.woff' ) format( 'woff' ),
-		url( '../fonts/lato/lato-bolditalic-webfont.ttf' ) format( 'truetype' );
+	src: url('../fonts/lato/lato-bolditalic-webfont.woff') format('woff'),
+		url('../fonts/lato/lato-bolditalic-webfont.ttf') format('truetype');
 	font-weight: bold;
 	font-style: italic;
 }
 @font-face {
 	font-family: FontAwesome;
-	src: url( '../fonts/fontawesome-webfont.woff' ) format( 'woff' ),
-		url( '../fonts/fontawesome-webfont.ttf' ) format( 'truetype' );
+	src: url('../fonts/fontawesome-webfont.woff') format('woff'),
+		url('../fonts/fontawesome-webfont.ttf') format('truetype');
 	font-weight: normal;
 	font-style: normal;
 }
 /* ---------------------- fontawesome mod ---------------------- */
-@font-face {
-	font-family: enhance;
-	src: url( '../fonts/enhance.woff' ) format( 'woff' ),
-		url( '../fonts/enhance.ttf' ) format( 'truetype' );
-	font-weight: normal;
-	font-style: normal;
-}
-.fa {
-	font-family: FontAwesome, enhance;
-}
-.fa-cubes:before { content: "\f520" }                                      /* change to fa-addons */
-.fa-times-circle:before,
-.fa-trash-o:before { content: "\f51C" }                                    /* change to fa-minus-circle */
-#context-menu-dirble .fa-microphone:before { content: "\f542" !important } /* change to fa-save */
-@media( max-width: 480px ) {
-	#db-currentpath span span,
-	.pl-icon {
-		display: none !important;
+#context-menu-dirble .fa-microphone:before { content: "\f537" !important } /* change to fa-save */
+#pl-manage-list:before { content: "\f07c" } /* change to fa-folder-open */
+.fa-cubes:before { content: "\f520" } /* change to fa-addons */
+.fa-times:before,
+.fa-trash-o:before { content: "\f536" } /* change to fa-times-circle */
+@media(max-width: 480px) {
+	#db-currentpath span span {
+		display: none;
 	}
 }
-#playlist-entries li:before { content: none; } /* remove default css */
+#playlist-entries li:before { /* toggle */
+	content: '';
+}
+@media(min-width: 480px) {    /* toggle */
+	#playlist-entries li:before {
+		content: "\f541";
+	}
+	#playlist-entries li.radio:before {
+		content: "\f554";
+		padding-left: 4px;
+	}
+}
 
-.fa-step-backward:before { content: "\f501" }
-.fa-stop:before { content: "\f502" }
-.fa-play:before { content: "\f503" }
-.fa-pause:before { content: "\f504" }
-.fa-step-forward:before { content: "\f505" }
+.fa-step-backward:before { content: "\f500" }
+.fa-stop:before { content: "\f501" }
+.fa-play:before { content: "\f502" }
+.fa-pause:before { content: "\f503" }
+.fa-step-forward:before { content: "\f504" }
 
-.dropdown-menu .fa-plus-circle:before { content: "\f530" }
-.dropdown-menu .fa-edit:before { content: "\f535" }
+.fa-plus-circle:before { content: "\f530" }
+.fa-edit:before { content: "\f534" }
 .dropdown-menu .fa-undo:before { content: "\f531" }
 .dropdown-menu .fa-play:before { content: "\f532" }
 .dropdown-menu .fa-share-square-o:before { content: "\f533" }
-.dropdown-menu .fa-trash-o:before { content: "\f51C" }
-.dropdown-menu .fa-refresh:before { content: "\f534" }
+.dropdown-menu .fa-trash-o:before { content: "\f535" }
+.dropdown-menu .fa-refresh:before { content: "\f542" }
 
 .dropdown-menu .fa-folder-open:before { content: "\f521" }
 .dropdown-menu .fa-cogs:before { content: "\f522" }
@@ -87,16 +88,19 @@
 .fa-single:before { content: "\f513" }
 .fa-share:before { content: "\f514" }
 .fa-info:before { content: "\f515" }
-.fa-minus:before { content: "\f518" }
-.fa-volume:before { content: "\f516" }
-.fa-mute:before { content: "\f517" }
+.fa-minus:before { content: "\f516" }
+.fa-volume:before { content: "\f517" }
+.fa-mute:before { content: "\f518" }
 .fa-plus:before { content: "\f519" }
 
-.fa-refresh:before { content: "\f563" }
-.fa-gear:before { content: "\f506" }
-.fa-library:before { content: "\f507" }
-.fa-play-circle:before { content: "\f508" }
-.fa-list-ul:before { content: "\f509"; }
+
+#open-panel-sx .fa-refresh:before,
+#db-home .fa-refresh:before { content: "\f542" }
+.fa-update:before { content: "\f542" }
+.fa-library:before { content: "\f506" }
+.fa-play-circle:before { content: "\f507" }
+.fa-list-ul:before { content: "\f508"; }
+.fa-gear:before { content: "\f505" }
 
 .fa-bookmark:before { content: "\f550" }
 .fa-network:before { content: "\f551" }
@@ -111,34 +115,12 @@
 .fa-jamendo:before { content: "\f55A" }
 
 .fa-folder:before { content: "\f540" }
-.fa-folder-open:before { content: "\f541" }
-.fa-music:before { content: "\f543" }
+.fa-music:before { content: "\f541" }
 .fa-microphone:before { content: "\f554" }
-.fa-save:before { content: "\f542"}
+.fa-save:before { content: "\f537"}
 .fa-star:before { content: "\f550" }
-.fa-plus-circle:before { content: "\f51D" }
-.fa-minus-circle:before { content: "\f51C" }
-.fa-times:before { content: "\f51A" }
-.fa-power-off:before { content: "\f562" }
-.fa-info-circle:before { content: "\f560" }
-.fa-question-circle:before { content: "\f561" }
-.fa-arrow-left:before { content: "\f564" }
-.fa-edit:before { content: "\f56A" }
-.fa-undo:before { content: "\f56B" }
-.fa-bars:before { content: "\f536" }
+.fa-minus-circle:before { content: "\f535" }
 
-#loaderbg {
-	background: rgba(0, 0, 0, 0.9);
-}
-#loader img {
-	animation: blinker 1.5s linear infinite;
-	width: 300px;
-	height: 75px;
-	margin-left: -100px;
-}
-@keyframes blinker {
-	50% { opacity: 0; }
-}
 /* ---------------------- playback ---------------------- */
 #bartop,
 #barbottom {
@@ -221,7 +203,7 @@
 }
 .dropdown-menu i {
 	font-size: 22px !important;
-	margin: 0 5px 0 0 !important;
+	margin: 0 10px 0 0 !important;
 	vertical-align: -10%;
 }
 .dropdown {
@@ -545,9 +527,6 @@
 	font-size:24px;
 	outline: none;
 }
-#playback .btn-group button i {
-	vertical-align: 5%;
-}
 /* button shadow */
 #playback .btn-group {
 	position: relative;
@@ -817,12 +796,6 @@
 #home-blocks h4 span {
 	color: #587ca0;
 }
-.home-bookmark h4 {
-	width: 100%;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
 /* ---------------------- breadcrumb and index ---------------------- */
 .btnlist-top {
 	top: 0;
@@ -841,18 +814,8 @@
 .btnlist-top .form-inline i {
 	font-size: 18px;
 }
-#db-search-results {
-	float: right;
-}
-.form-control:focus {
-	border: 2px solid #34495e;
-	border-radius: 6px;
-	-webkit-box-shadow: none;
-	box-shadow: none;
-}
 #db-webradio-add {
 	padding-left: 10px;
-	font-size: 24px;
 }
 #db-level-up {
 	float: right;
@@ -861,8 +824,9 @@
 }
 #db-currentpath {
 	float: left;
-	width: calc( 100% - 220px );
+	width: calc( 100% - 240px );
 	margin-left: -10px;
+	margin-top: -2px;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -870,31 +834,31 @@
 }
 #db-home,
 #pl-home {
-	float: left;
-	display: inline-block;
 	margin: 0 !important;
 	width: 40px;
+	padding-left: 10px;
 	line-height: 40px;
-	text-align: center;
 	vertical-align: 0%;
 	background: #0095d8;
 }
-#db-home {
-/*	margin: -2px 0 0 0 !important;*/
-}
+#db-home,
 #pl-home {
-	margin-left: -10px !important;
+	display: inline-block;
+}
+#db-home {
+	margin-top: 2px !important;
 }
 #db-home i,
 #pl-home i {
-	font-size: 24px;
-}
-#pl-home i {
-	margin-left: 5px;
+	margin-left: 0;
+	font-size: 24px;;
 }
 #db-home:hover,
 #pl-home:hover {
 	background: #0072a5;
+}
+#pl-home {
+	margin-left: -10px !important;
 }
 #db-currentpath a,
 #pl-home-text {
@@ -904,16 +868,11 @@
 #db-search-results .hidden-xs,
 #pl-filter-results .hidden-xs {
 	margin-left: 5px;
-	vertical-align: 5%;
-	font-size: 18px;
+	vertical-align: 10%;
 }
-#db-search-results i,
-#pl-filter-results i {
-	color: #0095d8;
-}
-#db-search-results .hidden-xs a,
-#pl-filter-results .hidden-xs a {
-	color: #587ca0;
+#database-entries .sn,
+#playlist-entries .sn {
+	padding-top: 8px;
 }
 #db-currentpath span i {
 	margin: 0 10px;
@@ -927,12 +886,17 @@
 	letter-spacing: 5px;
 	color: #0095d8;
 }
-
+#database-entries {
+	float: left;
+	width: calc( 100% - 38px );
+	padding-bottom: 80px;
+}
 #db-index {
 	position: fixed;
 	right: 0;
 	width: 38px;
 	padding: 0;
+/*	line-height: 30px;*/
 	list-style: none;
 	background: #172029;
 }
@@ -943,71 +907,70 @@
 #db-index li:hover {
 	background: #34495e;
 }
-#database-entries {
-	float: left;
-	width: calc( 100% - 38px );
-	padding-bottom: 80px;
+#database-entries li .fa-music,
+#database-entries li .fa-microphone {
+	margin: 0 6px;
 }
-#database-entries span i {
-	padding: 0 8px;
+#database-entries li .fa-microphone {
+	padding-left: 4px;
 }
-.db-icon,
-.pl-icon,
+#database-entries .db-icon,
+#database-entries li span i,
 #pl-editor li span i,
-#database-entries i,
-#playlist-entries i {
+#playlist-entries li:before {
+	margin: 0 6px;
 	font-size: 24px;
-	line-height: 40px;
+	line-height: 1.2em;
 	color: #587ca0 !important;
 }
-#database-entries i {
-	margin: 0 4px 0 8px !important;
+#db-search-results {
+	float: right;
+	padding-top: 0;
 }
-#playlist-entries i {
-	margin: 0 5px 0 10px !important;
+#db-search-results i {
+	margin: 5px 15px 0 -2px;
 }
-.db-icon,
-.pl-icon {
-	float: left;
-	display: block;
-	padding-top: 0 !important;
-	text-align: center;
+.db-icon {
+	margin: 0 6px !important;
 }
-.db-action,
-.pl-action {
+.db-action {
 	margin: 0 !important;
-	color: #587ca0 !important;
 }
 #playlist-entries li.radio {
 	margin: 0;
 }
-#pl-home-text {
-	float: left;
-	margin-top: 7px;
+#database-entries li .fa {
+	margin: 0 12px;
 }
 #pl-manage {
 	float: left;
-	margin: 0 0 0 15px;
+	margin-top: 4px;
 }
 #pl-manage i {
-	margin-right: 10px;
+	margin-right: 15px;
 	font-size: 24px;
-	line-height: 40px;
+	line-height: 32px;
 }
 #pl-count {
 	display: inline-block;
-	margin: 2px 0 0 15px;
 	width: calc( 100% - 350px );
 	font-size: 16px;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis
 }
-#pl-editor span i {
-	padding: 0 10px 0 5px !important;*/
+#pl-editor span {
+	padding-left: 15px !important;
+}
+#pl-editor .fa-list-ul {
+	margin: 0 12px 0 0;
 }
 #pl-filter-results {
 	float: right;
+}
+#pl-filter-results i {
+	margin-left: -2px;
+	font-size: 24px;
 }
 #playlist-entries li:before {
 	margin-top: 9px;
@@ -1021,22 +984,20 @@
 		letter-spacing: 0;
 	}
 }
-#database-entries li,
-#playlist-entries li,
 #database-entries .sn span,
 #playlist-entries .sn span {
 	font-size: 18px;
 	color: #587ca0 !important;
 }
-#database-entries li span,
-.sn,
+#database-entries li.active span i,
+#database-entries li.active span span,
+#database-entries li.active i:before,
+#playlist-entries li.active:before,
+#playlist-entries li.active .sn span {
+	color: #34495e !important;
+}
 w {
 	color: #e0e7ee;
-}
-		
-#database-entries li.active,
-#playlist-entries li.active {
-	color: #34495e !important;
 }
 
 .ui-pnotify-icon {
@@ -1044,11 +1005,6 @@ w {
 	margin-top: -3px;
 }
 /* ---------------------- responsive ----------------------*/
-@media (max-width: 767px) {
-	.hidden-xs {
-		display: inline !important;
-	}
-}
 @media(max-width: 749px) {
 	#playback-row {
 		margin-top: 0;
@@ -1254,30 +1210,46 @@ w {
 	#db-webradio-add {
 		right: 170px;
 	}
+	#db-search-results span,
+	#pl-filter-results span,
 	#pl-count {
 		display: none !important;
 	}
 }
 @media(max-width: 480px) {
-	#db-search,
-	#pl-search {
-		max-width: 150px;
+	#db-search {
+		max-width: 160px;
 	}
 	#db-currentpath {
 		overflow: visible;
 	}
-	#database-entries li span .fa,
-	#pl-editor span i {
+	#database-entries li span .fa {
 		display: none;
 	}
-	#database-entries li {
+	#database-entries li .fa {
+		margin: 0;
+	}
+	#database-entries .db-folder {
 		padding-left: 5px;
+	}
+	#database-entries .sn,
+	#database-entries .bl,
+	#playlist-entries .sn,
+	#playlist-entries .bl {
+		padding-left: 15px;
+	}
+	#playlist-entries span.sn {
+		margin-top: -3px;
+		padding-top: 0;
 	}
 	#database-entries .sn,
 	#database-entries .sn span,
 	#playlist-entries .sn,
 	#playlist-entries .sn span {
 		font-size: 16px;
+	}
+	#playlist-entries li .fa {
+		line-height: 30px;
 	}
 }
 @media(max-width: 375px) {
