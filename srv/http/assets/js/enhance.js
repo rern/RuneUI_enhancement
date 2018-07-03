@@ -360,9 +360,10 @@ $( '#pl-filter-results' ).off( 'click' ).on( 'click', function() {
 	customScroll( 'pl', parseInt( GUI.json.song ), 500 );
 });
 
-window.addEventListener( 'orientationchange', function() {
-	setTimeout( function() {
-		if ( $( '#open-playback' ).hasClass( 'active' ) ) {
+$( window ).on( 'orientationchange', function() {
+    // After orientationchange, add a one-time resize event
+    $( window ).one( 'resize', function() {
+    	if ( $( '#open-playback' ).hasClass( 'active' ) ) {
 			displayplayback();
 		} else if ( $( '#open-panel-sx' ).hasClass( 'active' ) ) {
 			displaylibrary();
@@ -370,9 +371,8 @@ window.addEventListener( 'orientationchange', function() {
 			displaycommon();
 			window.scrollTo( 0, queuetop );
 		}
-	}, 50 );
+    } );
 } );
-
 if ( 'hidden' in document ) {
 	var visibilityevent = 'visibilitychange';
 	var hiddenstate = 'hidden';
@@ -1006,8 +1006,9 @@ function displaylibrary() {
 			var indexline = 13;
 			$( '.half' ).hide();
 		}
-		$( '#db-index' ).css( 'line-height', Math.round( ( panelH - indexoffset ) / indexline +'px' ) );
-	}, 300 );
+		$( '#db-index' ).css( 'line-height', Math.round( ( panelH - indexoffset ) / indexline ) +'px' );
+		console.log(panelH +' | '+ Math.round( ( panelH - indexoffset ) / indexline ) )
+	}, 200 );
 	window.scrollTo( 0, librarytop );
 }
 
