@@ -828,8 +828,7 @@
 	box-shadow: 0px 4px 10px #000000;
 	z-index: 10;
 }
-.btnlist a,
-#pl-count span {
+.btnlist a {
 	font-size: 18px;
 }
 .btnlist-top i,
@@ -927,8 +926,7 @@
 	color: #e0e7ee;
 }
 #db-currentpath span a:first-of-type,
-#pl-home-text,
-#pl-count span:first-child {
+#pl-home-text {
 	letter-spacing: 5px;
 	color: #0095d8;
 }
@@ -988,7 +986,7 @@
 }
 #pl-home-text {
 	float: left;
-	margin-top: 9px;
+	margin-top: 7px;
 }
 #pl-manage {
 	float: right;
@@ -1002,7 +1000,7 @@
 #pl-count {
 	display: inline-block;
 	margin: 2px 0 0 13px;
-	width: calc( 100% - 350px );
+	width: calc( 100% - 500px );
 	font-size: 16px;
 	white-space: nowrap;
 	overflow: hidden;
@@ -1018,7 +1016,7 @@
 	margin-top: 9px;
 }
 @media(max-width: 480px) {    /* toggle */
-	#pl-count a span,
+	#pl-home-text,
 	#db-currentpath span>*:not(:first-child) {
 		display: none;
 	}
