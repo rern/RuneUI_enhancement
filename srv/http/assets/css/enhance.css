@@ -1,73 +1,67 @@
 @font-face {
 	font-family: Lato;
-	src: url('../fonts/lato/lato-regular-webfont.woff') format('woff'),
-		url('../fonts/lato/lato-regular-webfont.ttf') format('truetype');
+	src: url( '../fonts/lato/lato-regular-webfont.woff' ) format( 'woff' ),
+		url( '../fonts/lato/lato-regular-webfont.ttf' ) format( 'truetype' );
 	font-weight: normal;
 	font-style: normal;
 }
 @font-face {
 	font-family: Lato;
-	src: url('../fonts/lato/lato-light-webfont.woff') format('woff'),
-		url('../fonts/lato/lato-light-webfont.ttf') format('truetype');
+	src: url( '../fonts/lato/lato-light-webfont.woff' ) format( 'woff' ),
+		url( '../fonts/lato/lato-light-webfont.ttf' ) format( 'truetype' );
 	font-weight: 300;
 	font-style: normal;
 }
 @font-face {
 	font-family: Lato;
-	src: url('../fonts/lato/lato-bold-webfont.woff') format('woff'),
-		url('../fonts/lato/lato-bold-webfont.ttf') format('truetype');
+	src: url( '../fonts/lato/lato-bold-webfont.woff' ) format( 'woff' ),
+		url( '../fonts/lato/lato-bold-webfont.ttf' ) format( 'truetype' );
 	font-weight: bold;
 	font-style: normal;
 }
 @font-face {
 	font-family: Lato;
-	src: url('../fonts/lato/lato-italic-webfont.woff') format('woff'),
-		url('../fonts/lato/lato-italic-webfont.ttf') format('truetype');
+	src: url( '../fonts/lato/lato-italic-webfont.woff' ) format( 'woff' ),
+		url( '../fonts/lato/lato-italic-webfont.ttf' ) format( 'truetype' );
 	font-weight: normal;
 	font-style: italic;
 }
 @font-face {
 	font-family: Lato;
-	src: url('../fonts/lato/lato-bolditalic-webfont.woff') format('woff'),
-		url('../fonts/lato/lato-bolditalic-webfont.ttf') format('truetype');
+	src: url( '../fonts/lato/lato-bolditalic-webfont.woff' ) format( 'woff' ),
+		url( '../fonts/lato/lato-bolditalic-webfont.ttf' ) format( 'truetype' );
 	font-weight: bold;
 	font-style: italic;
 }
 @font-face {
 	font-family: FontAwesome;
-	src: url('../fonts/fontawesome-webfont.woff') format('woff'),
-		url('../fonts/fontawesome-webfont.ttf') format('truetype');
+	src: url( '../fonts/fontawesome-webfont.woff' ) format( 'woff' ),
+		url( '../fonts/fontawesome-webfont.ttf' ) format( 'truetype' );
 	font-weight: normal;
 	font-style: normal;
 }
 /* ---------------------- fontawesome mod ---------------------- */
 @font-face {
 	font-family: enhance;
-	src: url('../fonts/enhance.woff') format('woff'),
-		url('../fonts/enhance.ttf') format('truetype');
+	src: url( '../fonts/enhance.woff' ) format( 'woff' ),
+		url( '../fonts/enhance.ttf' ) format( 'truetype' );
 	font-weight: normal;
 	font-style: normal;
 }
-.fa,
-#playlist-entries li:before {
+.fa {
 	font-family: FontAwesome, enhance;
 }
 .fa-cubes:before { content: "\f520" }                                      /* change to fa-addons */
 .fa-times-circle:before,
-.fa-trash-o:before { content: "\f51C" }                                    /* change to fa-times-circle */
+.fa-trash-o:before { content: "\f51C" }                                    /* change to fa-minus-circle */
 #context-menu-dirble .fa-microphone:before { content: "\f542" !important } /* change to fa-save */
-
-@media(max-width: 480px) {
-	#db-currentpath span span {
-		display: none;
+@media( max-width: 480px ) {
+	#db-currentpath span span,
+	.pl-icon {
+		display: none !important;
 	}
 }
-@media(min-width: 480px) {    /* toggle */
-	#playlist-entries li:before,
-	#playlist-entries li.radio:before	{
-		content: none;
-	}
-}
+#playlist-entries li:before { content: none; } /* remove default css */
 
 .fa-step-backward:before { content: "\f501" }
 .fa-stop:before { content: "\f502" }
@@ -919,10 +913,6 @@
 #pl-filter-results .hidden-xs a {
 	color: #587ca0;
 }
-#database-entries .sn,
-#playlist-entries .sn {
-	padding-top: 8px;
-}
 #db-currentpath span i {
 	margin: 0 10px;
 	color: #e0e7ee;
@@ -935,11 +925,7 @@
 	letter-spacing: 5px;
 	color: #0095d8;
 }
-#database-entries {
-	float: left;
-	width: calc( 100% - 38px );
-	padding-bottom: 80px;
-}
+
 #db-index {
 	position: fixed;
 	right: 0;
@@ -955,27 +941,29 @@
 #db-index li:hover {
 	background: #34495e;
 }
+#database-entries {
+	float: left;
+	width: calc( 100% - 38px );
+	padding-bottom: 80px;
+}
 #database-entries span i {
 	padding: 0 8px;
-}
-#database-entries li.db-folder span,
-#pl-editor span {
-	margin-top: -3px;
 }
 .db-icon,
 .pl-icon,
 #pl-editor li span i,
 #database-entries i,
 #playlist-entries i {
-	margin: 5px;
 	font-size: 24px;
 	line-height: 40px;
 	color: #587ca0 !important;
 }
-#playlist-entries {
-	margin-left: 5px;
+#database-entries i {
+	margin: 0 4px 0 8px !important;
 }
-
+#playlist-entries i {
+	margin: 0 5px 0 10px !important;
+}
 .db-icon,
 .pl-icon {
 	float: left;
@@ -1031,20 +1019,22 @@
 		letter-spacing: 0;
 	}
 }
+#database-entries li,
+#playlist-entries li,
 #database-entries .sn span,
 #playlist-entries .sn span {
 	font-size: 18px;
 	color: #587ca0 !important;
 }
-#database-entries li.active span i,
-#database-entries li.active span span,
-#database-entries li.active i:before,
-#playlist-entries li.active:before,
-#playlist-entries li.active .sn span {
-	color: #34495e !important;
-}
+#database-entries li span,
+.sn,
 w {
 	color: #e0e7ee;
+}
+		
+#database-entries li.active,
+#playlist-entries li.active {
+	color: #34495e !important;
 }
 
 .ui-pnotify-icon {
@@ -1052,6 +1042,11 @@ w {
 	margin-top: -3px;
 }
 /* ---------------------- responsive ----------------------*/
+@media (max-width: 767px) {
+	.hidden-xs {
+		display: inline !important;
+	}
+}
 @media(max-width: 749px) {
 	#playback-row {
 		margin-top: 0;
@@ -1257,15 +1252,14 @@ w {
 	#db-webradio-add {
 		right: 170px;
 	}
-	#db-search-results span,
-	#pl-filter-results span,
 	#pl-count {
 		display: none !important;
 	}
 }
 @media(max-width: 480px) {
-	#db-search {
-		max-width: 160px;
+	#db-search,
+	#pl-search {
+		max-width: 150px;
 	}
 	#db-currentpath {
 		overflow: visible;
@@ -1273,30 +1267,14 @@ w {
 	#database-entries li span .fa {
 		display: none;
 	}
-	#database-entries li .fa {
-		margin: 0;
-	}
-	#database-entries .db-folder {
+	#database-entries li {
 		padding-left: 5px;
-	}
-	#database-entries .sn,
-	#database-entries .bl,
-	#playlist-entries .sn,
-	#playlist-entries .bl {
-		padding-left: 15px;
-	}
-	#playlist-entries span.sn {
-		margin-top: -3px;
-		padding-top: 0;
 	}
 	#database-entries .sn,
 	#database-entries .sn span,
 	#playlist-entries .sn,
 	#playlist-entries .sn span {
 		font-size: 16px;
-	}
-	#playlist-entries li .fa {
-		line-height: 30px;
 	}
 }
 @media(max-width: 375px) {
