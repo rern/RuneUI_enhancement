@@ -353,11 +353,10 @@ $( '#pl-home' ).click( function() {
 	getPlaylistCmd();
 } );
 $( '#pl-filter-results' ).off( 'click' ).on( 'click', function() {
-	$( this ).addClass( 'hide' );
-	$( '#pl-currentpath, #pl-manage, #pl-count' ).removeClass( 'hide' );
+	$( this ).addClass( 'hide' ).html( '' );
+	$( '#pl-manage, #pl-count' ).removeClass( 'hide' );
 	$( '#playlist-entries li' ).show();
 	$( '#pl-filter' ).val( '' );
-	$( '#pl-filter-results' ).html( '' );
 	customScroll( 'pl', parseInt( GUI.json.song ), 500 );
 });
 
