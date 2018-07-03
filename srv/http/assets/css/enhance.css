@@ -917,6 +917,7 @@
 }
 #db-currentpath span i {
 	margin: 0 10px;
+	vertical-align: -15%;
 	color: #e0e7ee;
 }
 #db-currentpath span a:last-of-type {
@@ -949,7 +950,7 @@
 	padding-bottom: 80px;
 }
 #database-entries span i {
-	padding: 0 8px;
+	padding: 0 8px 0 4px;
 }
 .db-icon,
 .pl-icon,
@@ -961,10 +962,10 @@
 	color: #587ca0 !important;
 }
 #database-entries i {
-	margin: 0 4px 0 8px !important;
+	margin: 3px 4px 0 8px !important;
 }
 #playlist-entries i {
-	margin: 0 5px 0 10px !important;
+	margin: 3px 5px 0 10px !important;
 }
 .db-icon,
 .pl-icon {
