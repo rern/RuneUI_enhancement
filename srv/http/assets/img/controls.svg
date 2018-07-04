@@ -6,9 +6,12 @@
 	.st0{opacity:0.5;fill:#FFFFFF;enable-background:new    ;}
 	.st1{opacity:0.5;fill:#35495E;enable-background:new    ;}
 	.st2{opacity:0.7;fill:#1694D3;enable-background:new    ;}
-	.st3{fill:#34495E;}
-	.st4{fill:#1694D3;enable-background:new    ;}
-	.st5{fill:#FFFFFF;}
+	.st3{enable-background:new    ;}
+	.st4{fill:#34495E;stroke:#888888;stroke-width:0.2718;stroke-miterlimit:10;}
+	.st5{fill:#34495E;stroke:#888888;stroke-width:0.2755;stroke-miterlimit:10;}
+	.st6{fill:#34495E;}
+	.st7{fill:#1694D3;enable-background:new    ;}
+	.st8{fill:#FFFFFF;}
 </style>
 <rect class="st0" width="230" height="230"/>
 <rect x="50" class="st1" width="130" height="48"/>
@@ -16,35 +19,55 @@
 <rect x="182" y="50" class="st2" width="48" height="130"/>
 <rect x="50" y="182" class="st2" width="130" height="48"/>
 <rect x="50" y="50" class="st2" width="130" height="130"/>
-<rect x="182" y="182" class="st1" width="48" height="48"/>
+<rect x="182" y="182" class="st3" width="48" height="48"/>
 <g>
-	<path class="st3" d="M196,214h-9c-0.6,0-1-0.4-1-1v-3c0-0.6,0.4-1,1-1h9c0.6,0,1,0.4,1,1v3C197,213.6,196.6,214,196,214z"/>
-	<path class="st3" d="M208,214h-5c-0.6,0-1-0.4-1-1v-3c0-0.6,0.4-1,1-1h5c0.6,0,1,0.4,1,1v3C209,213.6,208.6,214,208,214z"/>
-	<path class="st3" d="M224,214h-9c-0.6,0-1-0.4-1-1v-3c0-0.6,0.4-1,1-1h9c0.6,0,1,0.4,1,1v3C225,213.6,224.6,214,224,214z"/>
+	<path class="st4" d="M197.8,212.5h-10.6c-0.7,0-1.2-0.4-1.2-1v-3c0-0.6,0.5-1,1.2-1h10.6c0.7,0,1.2,0.4,1.2,1v3
+		C199,212.1,198.5,212.5,197.8,212.5z"/>
+	<path class="st5" d="M209,212.5H203c-0.7,0-1.2-0.4-1.2-1v-3c0-0.6,0.5-1,1.2-1h6.1c0.7,0,1.2,0.4,1.2,1v3
+		C210.3,212.1,209.8,212.5,209,212.5z"/>
+	<path class="st4" d="M224.8,212.5h-10.6c-0.7,0-1.2-0.4-1.2-1v-3c0-0.6,0.5-1,1.2-1h10.6c0.7,0,1.2,0.4,1.2,1v3
+		C226,212.1,225.5,212.5,224.8,212.5z"/>
 </g>
-<rect x="182.2" class="st1" width="48" height="48"/>
-<rect x="182" class="st3" width="48" height="6"/>
-<rect x="182.2" y="42" class="st3" width="48" height="6"/>
-<rect x="197.5" y="42" class="st4" width="17" height="6"/>
-<rect x="203" class="st4" width="6" height="6"/>
+<rect x="182" class="st3" width="48" height="48"/>
+<rect x="182" class="st6" width="48" height="6"/>
+<rect x="182.2" y="42" class="st6" width="48" height="6"/>
+<rect x="197.5" y="42" class="st7" width="17" height="6"/>
+<rect x="203" class="st7" width="6" height="6"/>
 <g>
-	<polygon class="st5" points="85.6,102.9 85.6,127.1 106.6,115 	"/>
-</g>
-<g>
-	<rect x="122.4" y="104" class="st5" width="8.8" height="22"/>
-	<rect x="135.6" y="104" class="st5" width="8.8" height="22"/>
-</g>
-<g>
-	<polygon class="st5" points="17.2,114.6 17.2,103.3 12.5,103.3 12.5,126.7 17.2,126.7 17.2,115.4 37.5,127.1 37.5,102.9 	"/>
+	<polygon class="st8" points="85.6,102.9 85.6,127.1 106.6,115 	"/>
 </g>
 <g>
-	<polygon class="st5" points="212.8,114.6 212.8,103.3 217.5,103.3 217.5,126.7 212.8,126.7 212.8,115.4 192.5,127.1 192.5,102.9 	
+	<rect x="122.4" y="104" class="st8" width="8.8" height="22"/>
+	<rect x="135.6" y="104" class="st8" width="8.8" height="22"/>
+</g>
+<g>
+	<polygon class="st8" points="17.2,114.6 17.2,103.3 12.5,103.3 12.5,126.7 17.2,126.7 17.2,115.4 37.5,127.1 37.5,102.9 	"/>
+</g>
+<g>
+	<polygon class="st8" points="212.8,114.6 212.8,103.3 217.5,103.3 217.5,126.7 212.8,126.7 212.8,115.4 192.5,127.1 192.5,102.9 	
 		"/>
 </g>
 <g>
-	<rect x="104.5" y="195.5" class="st5" width="21" height="21"/>
+	<rect x="104.5" y="195.5" class="st8" width="21" height="21"/>
 </g>
 <g>
-	<polygon class="st5" points="115,33 129.6,18.4 126.1,15 115,26.1 103.9,15 100.4,18.4 	"/>
+	<polygon class="st8" points="115,33 129.6,18.4 126.1,15 115,26.1 103.9,15 100.4,18.4 	"/>
 </g>
+<circle class="st8" cx="206" cy="3" r="1"/>
+<circle class="st8" cx="200" cy="3" r="1"/>
+<circle class="st8" cx="212" cy="3" r="1"/>
+<circle class="st8" cx="227" cy="3" r="1"/>
+<circle class="st8" cx="206" cy="45" r="1"/>
+<circle class="st8" cx="190" cy="45" r="1"/>
+<circle class="st8" cx="222" cy="45" r="1"/>
+<circle class="st8" cx="194" cy="3" r="1"/>
+<circle class="st8" cx="218" cy="3" r="1"/>
+<circle class="st8" cx="197" cy="210" r="1"/>
+<circle class="st8" cx="188" cy="210" r="1"/>
+<circle class="st8" cx="215" cy="210" r="1"/>
+<circle class="st8" cx="224" cy="210" r="1"/>
+<circle class="st8" cx="192.5" cy="210" r="1"/>
+<circle class="st8" cx="219.5" cy="210" r="1"/>
+<circle class="st8" cx="208.3" cy="210" r="1"/>
+<circle class="st8" cx="203.8" cy="210" r="1"/>
 </svg>
