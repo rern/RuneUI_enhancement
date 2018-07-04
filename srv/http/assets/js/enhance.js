@@ -197,14 +197,15 @@ var btnctrl = {
 	, timeM  : 'play'
 	, timeR  : 'next'
 	, timeB  : 'stop'
-	, coverTL: ''
+	, coverTL: 'repeat'
 	, coverT : ''
+	, coverTR: ''
 	, coverL : 'previous'
 	, coverM : 'play'
 	, coverR : 'next'
-	, coverBL: ''
+	, coverBL: 'random'
 	, coverB : 'stop'
-	, coverBR: ''
+	, coverBR: 'single'
 	, volT   : ''
 	, volM   : 'volumemute'
 	, volB   : ''
@@ -213,16 +214,14 @@ $( '.timemap, .covermap, .volmap' ).click( function() {
 	if ( this.id === 'coverT' ) {
 		$( '.controls, .controls1,.rs-tooltip' ).toggle();
 		return;
-	} else if ( this.id === 'coverTR' ) {
-		$( '#menu-top, #menu-bottom' ).toggle();
-		barhide = $( '#menu-top' ).is( ':hidden' ) ? 1 : 0;
-	} else if ( this.id === 'coverBR' ) {
-		btntoggle()
 	} else {
 		$( '#'+ btnctrl[ this.id ] ).click();
 	}
 	$( '.controls' ).hide();
 	$( '.controls1, .rs-tooltip' ).show();
+} );
+$( '#menu-settings' ).click( function() {
+	$( '#settings' ).toggle();
 } );
 
 // library directory path link
@@ -430,6 +429,7 @@ Hammer = propagating( Hammer ); // propagating.js fix
 
 var $hammercontent = new Hammer( document.getElementById( 'content' ) );
 var $hammercoverT = new Hammer( document.getElementById( 'coverT' ) );
+var $hammercoverTR = new Hammer( document.getElementById( 'coverTR' ) );
 //var $hammercoverM = new Hammer( document.getElementById( 'coverM' ) );
 var $hammervoldn = new Hammer( document.getElementById( 'voldn' ) );
 var $hammervolup = new Hammer( document.getElementById( 'volup' ) );
@@ -530,8 +530,13 @@ var interval;
 $hammercoverT.on( 'tap', function( e ) {
 	e.stopPropagation();
 } );
+$hammercoverTR.on( 'tap', function( e ) {
+	$( '#settings' ).toggle().css( 'top', $( '#menu-top' ).is( ':hidden' ) ? 0 : '40px' );
+	e.stopPropagation();
+} );
+
 $hammerplayback.on( 'tap', function( e ) {
-	$( '.controls' ).hide();
+	$( '.controls, #settings' ).hide();
 	$( '.controls1, .rs-tooltip' ).show();
 } ).on( 'press', function() {
 	info( {
@@ -875,22 +880,17 @@ function displaycommon() {
 		$( '#database, #playlist' ).css( 'padding-top', '40px' );
 		$( '.btnlist-top' ).css( 'top', 0 );
 		
-		// for mouse only
-		if ( navigator.userAgent.match( /iPad|iPhone|iPod|android|webOS/i ) ) return;
-		$( '#bartop, #barbottom' ).mouseenter( function() {
-			var tb = $( this ).prop( 'id' ).replace( 'bar', '#menu-' );
-			if ( $( tb ).is( ':visible' ) ) {
-				barhide = 0;
-			} else {
-				barhide = 1;
-				$( tb ).show();
-			}
-		} );
-		$( '#menu-top, #menu-bottom' ).mouseleave( function() {
-			if ( barhide ) $( '#menu-top, #menu-bottom' ).hide();
-			barhide = 0;
-		} );
 	}
+		// for mouse only
+	if ( navigator.userAgent.match( /iPad|iPhone|iPod|android|webOS/i ) ) return;
+	
+	$( '#bartop, #barbottom' ).mouseenter( function() {
+		var tb = $( this ).prop( 'id' ).replace( 'bar', '#menu-' );
+		if ( $( tb ).is( ':hidden' ) ) $( tb ).show();
+	} );
+	$( '#menu-top, #menu-bottom' ).mouseleave( function() {
+		if ( display.bar == '' || barhide ) $( '#menu-top, #menu-bottom' ).hide();
+	} );
 }
 
 // playback show/hide blocks
@@ -926,7 +926,7 @@ function displayplayback() {
 		'-webkit-order': '',
 		display: ''
 	} );
-	$( '#overlay-playsource-open' ).toggleClass( 'hide', !display.source );
+	$( '#overlay-playsource-open' ).css( 'visibility', display.source ? 'visible' : 'hidden' );
 	$( '#time-knob, #play-group' ).toggleClass( 'hide', !display.time );
 	$( '#coverart, #share-group' ).toggleClass( 'hide', !display.coverart );
 	$( '#volume-knob, #vol-group' ).toggleClass( 'hide', !volume );
@@ -1646,9 +1646,16 @@ $( '.btn-cmd' ).click( function() {
 			onsetmode = 0;
 		}, 500 );
 
-		if ( this.id === 'random' && $( this ).attr('data-cmd') === 'pl-ashuffle-stop' ) {
+		if ( this.id === 'random' && $( this ).attr( 'data-cmd' ) === 'pl-ashuffle-stop' ) {
 			$.post( '/db/?cmd=pl-ashuffle-stop', '' );
-			$( this ).attr('data-cmd', 'random');
+			$( this ).attr( 'data-cmd', 'random' );
+		}
+		if ( this.id === 'repeat' ) {
+			$( '#irepeat' ).toggle( !$( this ).hasClass( 'btn-primary' ) )
+		} else if ( this.id === 'random' ) {
+			$( '#irandom' ).toggle( !$( this ).hasClass( 'btn-primary' ) )
+		} else if ( this.id === 'single' ) {
+			$( '#isingle' ).toggle( !$( this ).hasClass( 'btn-primary' ) )
 		}
 		
 		dataCmd = dataCmd + ( $( this ).hasClass( 'btn-primary' ) ? ' 0' : ' 1' );    
@@ -1716,6 +1723,9 @@ function setbutton() {
 		$( '#random' ).toggleClass( 'btn-primary', GUI.json.random === '1' );
 		$( '#single' ).toggleClass( 'btn-primary', GUI.json.single === '1' );
 	}
+	$( '#irepeat' ).toggle( GUI.json.repeat === '1' );
+	$( '#irandom' ).toggle( GUI.json.random === '1' );
+	$( '#isingle' ).toggle( GUI.json.single === '1' );
 //	if ( $( '#share-group' ).is( ':visible' ) ) $( '#share-group button').prop( 'disabled', GUI.json.radio ? true : false );
 	
 	if ( prevnext === 1 ) return; // disable for previous/next while stop
