@@ -105,6 +105,9 @@ $( '#open-panel-dx' ).click( function() {
 	menubottom( 'panel-dx', 'playback', 'panel-sx' );
 	displaycommon();
 	window.scrollTo( 0, queuetop );
+	$( '#pl-currentpath' ).addClass( 'hide' );
+	$( '#pl-search' ).removeClass( 'hide' );
+	getPlaylistCmd();
 } );
 $( '#panel-dx, #context-menu-playlist' ).click( function() {
 	if ( $( '#context-menu-playlist' ).hasClass( 'open' ) ) $( '#context-menu-playlist' ).removeClass( 'open' );
@@ -348,9 +351,7 @@ $( '#pl-filter' ).off( 'keyup' ).on( 'keyup', function() {
 	}
 } );
 $( '#pl-home' ).click( function() {
-	$( '.playlist, #pl-currentpath' ).addClass( 'hide' );
-	$( '#pl-manage, #pl-search' ).removeClass( 'hide' );
-	getPlaylistCmd();
+	$( '#open-panel-dx' ).click();
 } );
 $( '#pl-filter-results' ).off( 'click' ).on( 'click', function() {
 	$( this ).addClass( 'hide' ).html( '' );
