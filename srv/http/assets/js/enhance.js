@@ -104,10 +104,10 @@ $( '#open-playback' ).click( function() {
 $( '#open-panel-dx' ).click( function() {
 	menubottom( 'panel-dx', 'playback', 'panel-sx' );
 	displaycommon();
-	$( '#pl-currentpath' ).addClass( 'hide' );
-	$( '#pl-search' ).removeClass( 'hide' );
 	getPlaylistCmd();
 	window.scrollTo( 0, queuetop );
+	$( '#pl-currentpath' ).addClass( 'hide' );
+	$( '#pl-count, #pl-manage, #pl-search' ).removeClass( 'hide' );
 } );
 $( '#panel-dx, #context-menu-playlist' ).click( function() {
 	if ( $( '#context-menu-playlist' ).hasClass( 'open' ) ) $( '#context-menu-playlist' ).removeClass( 'open' );
