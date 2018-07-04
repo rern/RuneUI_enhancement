@@ -215,9 +215,14 @@ var btnctrl = {
 	, volB   : ''
 }
 $( '.timemap, .covermap, .volmap' ).click( function() {
-	if ( this.id === 'coverT' ) {
+	var id = this.id;
+	var cmd = btnctrl[ id ];
+	if ( id === 'coverT' ) {
 		$( '.controls, .controls1,.rs-tooltip' ).toggle();
 		return;
+	} else if ( cmd === 'repeat' || cmd === 'random' || cmd === 'single' ) {
+		var onoff = GUI.json[ cmd ] == 1 ? 0 : 1;
+		sendCmd( cmd +' '+ ( GUI.json[ cmd ] == 1 ? 0 : 1 ) );
 	} else {
 		$( '#'+ btnctrl[ this.id ] ).click();
 	}
@@ -973,7 +978,7 @@ function displayplayback() {
 		buttonhide = 1;
 		$( '#play-group, #share-group, #vol-group' ).hide();
 	}
-	if ( buttonactive ) $( '#play-group, #share-group, #vol-group' ).show();
+//	if ( buttonactive ) $( '#play-group, #share-group, #vol-group' ).show();
 	$( '#playback-row' ).removeClass( 'hide' ); // restore - hidden by fix flash
 	
 	displaycommon();
@@ -1650,19 +1655,20 @@ $( '.btn-cmd' ).click( function() {
 			onsetmode = 0;
 		}, 500 );
 
-		if ( this.id === 'random' && $( this ).attr( 'data-cmd' ) === 'pl-ashuffle-stop' ) {
-			$.post( '/db/?cmd=pl-ashuffle-stop', '' );
-			$( this ).attr( 'data-cmd', 'random' );
-		}
-		if ( this.id === 'repeat' ) {
-			$( '#irepeat' ).toggle( !$( this ).hasClass( 'btn-primary' ) )
-		} else if ( this.id === 'random' ) {
-			$( '#irandom' ).toggle( !$( this ).hasClass( 'btn-primary' ) )
-		} else if ( this.id === 'single' ) {
-			$( '#isingle' ).toggle( !$( this ).hasClass( 'btn-primary' ) )
+		var id = this.id;
+		if ( id === 'random' ) {
+			if ( $( this ).attr( 'data-cmd' ) === 'pl-ashuffle-stop' ) {
+				$.post( '/db/?cmd=pl-ashuffle-stop', '' );
+				$( this ).attr( 'data-cmd', 'random' );
+			}
+			$( '#irandom' ).toggle( GUI.json.random == 0 );
+		} else if ( id === 'repeat' ) {
+			$( '#irepeat' ).toggle( GUI.json.repeat == 0 );
+		} else if ( id === 'single' ) {
+			$( '#isingle' ).toggle( GUI.json.single == 0 );
 		}
 		
-		dataCmd = dataCmd + ( $( this ).hasClass( 'btn-primary' ) ? ' 0' : ' 1' );    
+		dataCmd = dataCmd +' '+ ( GUI.json[ id ] == 1 ? 0 : 1 );
 	} else {
 		if ( dataCmd === 'play' ) {
 			if ( GUI.json.radio ) {
