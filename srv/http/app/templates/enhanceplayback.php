@@ -21,6 +21,11 @@
 				<div id="time-knob">
 					<div id="time"></div>
 					<button id="overlay-playsource-open" class="btn btn-default btn-xs controls1">MPD</button>
+					<div class="imode">
+						<a id="irepeat"><i class="fa fa-repeat overlaymode"></i></a>
+						<a id="irandom"><i class="fa fa-random overlaymode"></i></a>
+						<a id="isingle"><i class="fa fa-single overlaymode"></i></a>
+					</div>
 					<img id="controls-time" class="controls" src="/srv/http/assets/img/controls-time.svg">
 					<span id="elapsed" class="controls1"></span>
 					<span id="total" class="controls1"></span>
