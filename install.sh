@@ -46,22 +46,17 @@ EOF
 )
 appendH 'runeui.css'
 
+commentH 'id="menu-top"' 'href="/"><i class="fa fa-play">'
+
 string=$( cat <<'EOF'
 <div id="bartop"></div>
 <div id="barbottom"></div>
-EOF
-)
-insertH 'id="menu-top"'
-
-commentH 'this->hostname' 'href="/"><i class="fa fa-play">'
-
-string=$( cat <<'EOF'
-        <button id="menu-settings" class="dropdown-toggle btn-default" role="button" data-toggle="dropdown" data-target="#" href="#"><i class="fa fa-gear"></i></button>
-        <ul class="dropdown-menu" role="menu" aria-labelledby="menu-settings">
+        <ul id="settings" class="dropdown-menu" role="menu" aria-labelledby="menu-settings">
             <li id="dropdownbg"></li>
+
 EOF
 )
-insertH ' Sources'
+appendH 'href="/"><i class="fa fa-play">'
 
 commentH 'href="#poweroff-modal"'
 
@@ -71,6 +66,16 @@ string=$( cat <<'EOF'
 EOF
 )
 insertH 'href="#poweroff-modal"'
+
+string=$( cat <<'EOF'
+        </ul>
+<div id="menu-top">
+    <button id="menu-settings" class="dropdown-toggle btn-default" role="button" data-toggle="dropdown" data-target="#" href="#"><i class="fa fa-gear"></i></button>
+EOF
+)
+insertH -n -2 'class="playback-controls"'
+
+commentK -n -2 'class="playback-controls"' -n -1 'class="playback-controls"'
 
 string=$( cat <<'EOF'
         <button id="pause" class="btn btn-default btn-cmd" title="Pause" data-cmd="play"><i class="fa fa-pause"></i></button>
