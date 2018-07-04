@@ -360,19 +360,17 @@ $( '#pl-filter-results' ).off( 'click' ).on( 'click', function() {
 	customScroll( 'pl', parseInt( GUI.json.song ), 500 );
 });
 
-$( window ).on( 'orientationchange', function() {
-    // After orientationchange, add a one-time resize event
-    $( window ).one( 'resize', function() {
-    	if ( $( '#open-playback' ).hasClass( 'active' ) ) {
-			displayplayback();
-		} else if ( $( '#open-panel-sx' ).hasClass( 'active' ) ) {
-			displaylibrary();
-		} else if ( $( '#open-panel-dx' ).hasClass( 'active' ) ) {
-			displaycommon();
-			window.scrollTo( 0, queuetop );
-		}
-    } );
+$( window ).on( 'resize', function() {
+	if ( $( '#open-playback' ).hasClass( 'active' ) ) {
+		displayplayback();
+	} else if ( $( '#open-panel-sx' ).hasClass( 'active' ) ) {
+		displaylibrary();
+	} else if ( $( '#open-panel-dx' ).hasClass( 'active' ) ) {
+		displaycommon();
+		window.scrollTo( 0, queuetop );
+	}
 } );
+// clear all intervals when not in current view
 if ( 'hidden' in document ) {
 	var visibilityevent = 'visibilitychange';
 	var hiddenstate = 'hidden';
@@ -993,21 +991,16 @@ function displaylibrary() {
 	displaycommon();
 	// index height
 	setTimeout( function() {
-		var panelH = window.innerHeight;
-		if ( $( '#menu-top' ).is( ':visible' ) ) {
-			var indexoffset = 170;
-		} else {
-			var indexoffset = 90;
-		}
-		if ( panelH > 500 ) {
+		var wH = window.innerHeight;
+		var indexoffset = $( '#menu-top' ).is( ':visible' ) ? 160 : 80;
+		if ( wH > 500 ) {
 			var indexline = 27;
 			$( '.half' ).show();
 		} else {
 			var indexline = 13;
 			$( '.half' ).hide();
 		}
-		$( '#db-index' ).css( 'line-height', Math.round( ( panelH - indexoffset ) / indexline ) +'px' );
-		console.log(panelH +' | '+ Math.round( ( panelH - indexoffset ) / indexline ) )
+		$( '#db-index' ).css( 'line-height', ( ( wH - indexoffset ) / indexline ) +'px' );
 	}, 200 );
 	window.scrollTo( 0, librarytop );
 }
@@ -1805,7 +1798,7 @@ function setplaybackdata() {
 			return;
 		}
 		
-		GUI.json.radio = ( status.file.slice( 0, 4 ) === 'http' ? 1 : 0 );
+		GUI.json.radio = ( status.ext === 'radio' ? 1 : 0 );
 		setbutton();
 		
 		$( '#currentartist' ).html( status.Artist );
