@@ -1,23 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Generator: Adobe Illustrator 19.2.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 60 138" style="enable-background:new 0 0 60 138;" xml:space="preserve">
+	 viewBox="0 0 67 147" style="enable-background:new 0 0 67 147;" xml:space="preserve">
 <style type="text/css">
 	.st0{opacity:0.7;fill:#1F94D2;enable-background:new    ;}
 	.st1{fill:#FFFFFF;}
 </style>
-<rect x="7.5" y="93" class="st0" width="45" height="45"/>
-<rect x="7.5" class="st0" width="45" height="45"/>
-<rect y="46.5" class="st0" width="60" height="45"/>
-<polyline class="st1" points="34.7,66.9 38.3,63.2 40.4,65.3 36.8,69 40.4,72.7 38.3,74.8 34.7,71.1 "/>
-<polygon class="st1" points="28.9,72.7 32.6,69 28.9,65.3 31,63.2 34.7,66.9 34.7,57.5 27.5,64.2 20.3,64.2 20.3,73.8 27.5,73.8 
-	34.7,80.5 34.7,71.1 31,74.8 "/>
-<line class="st1" x1="34.7" y1="72.3" x2="31" y2="76"/>
+<rect x="0" y="102" class="st0" width="67" height="45"/>
+<rect x="0" class="st0" width="67" height="45"/>
+<rect y="47" class="st0" width="67" height="53"/>
+<polyline class="st1" points="39.7,62 32.5,68.7 25.3,68.7 25.3,78.3 32.5,78.3 39.7,85 "/>
+<line class="st1" x1="38.2" y1="76.8" x2="34.5" y2="80.5"/>
 <g>
-	<rect x="22.5" y="114" class="st1" width="15" height="3"/>
+	<rect x="26" y="123" class="st1" width="15" height="3"/>
 </g>
 <g>
-	<polygon class="st1" points="31.5,24 37.5,24 37.5,21 31.5,21 31.5,15 28.6,15 28.6,21 22.5,21 22.5,24 28.6,24 28.6,30 31.5,30 	
-		"/>
+	<polygon class="st1" points="35,24 41,24 41,21 35,21 35,15 32.1,15 32.1,21 26,21 26,24 32.1,24 32.1,30 35,30 	"/>
 </g>
 </svg>
