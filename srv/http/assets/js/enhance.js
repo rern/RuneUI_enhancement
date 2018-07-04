@@ -104,10 +104,10 @@ $( '#open-playback' ).click( function() {
 $( '#open-panel-dx' ).click( function() {
 	menubottom( 'panel-dx', 'playback', 'panel-sx' );
 	displaycommon();
-	window.scrollTo( 0, queuetop );
 	$( '#pl-currentpath' ).addClass( 'hide' );
 	$( '#pl-search' ).removeClass( 'hide' );
 	getPlaylistCmd();
+	window.scrollTo( 0, queuetop );
 } );
 $( '#panel-dx, #context-menu-playlist' ).click( function() {
 	if ( $( '#context-menu-playlist' ).hasClass( 'open' ) ) $( '#context-menu-playlist' ).removeClass( 'open' );
@@ -1949,11 +1949,6 @@ function renderUI( text ) {
 	setbutton();
 	
 	if ( $( '#playback' ).hasClass( 'active' ) ) displayplayback();
-	
-	if ( GUI.json.playlist !== GUI.playlist ) {
-		getPlaylistCmd();
-		GUI.playlist = GUI.json.playlist;
-	}
 }
 
 } // end if <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
