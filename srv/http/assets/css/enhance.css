@@ -556,6 +556,29 @@
 #volT {
 	top: 50px;
 }
+#timeTL,
+#timeTR,
+#timeBL,
+#timeBR {
+	width: 25px;
+	height: 25px;
+}
+#timeTL,
+#timeTR {
+	top: 65px;
+	margin-left: -61px;
+}
+#timeTR {
+	margin-left: 36px;
+}
+#timeBL,
+#timeBR {
+	top: 144px;
+	margin-left: -61px;
+}
+#timeBR {
+	margin-left: 36px;
+}
 #timeL,
 #timeM,
 #timeR,
