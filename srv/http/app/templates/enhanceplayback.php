@@ -29,11 +29,15 @@
 					<img id="controls-time" class="controls" src="/srv/http/assets/img/controls-time.svg">
 					<span id="elapsed" class="controls1"></span>
 					<span id="total" class="controls1"></span>
+					<div id="timeTL" class="timemap"></div>
 					<div id="timeT" class="timemap"></div>
+					<div id="timeTR" class="timemap"></div>
 					<div id="timeL" class="timemap"></div>
 					<div id="timeM" class="timemap"></div>
 					<div id="timeR" class="timemap"></div>
+					<div id="timeBL" class="timemap"></div>
 					<div id="timeB" class="timemap"></div>
+					<div id="timeBR" class="timemap"></div>
 				</div>
 				<div id="play-group">
 					<div class="btn-group">
