@@ -192,11 +192,15 @@ $( '#closebio' ).click( function() {
 	if ( !barhide ) $( '#menu-top, #menu-bottom' ).show();
 } );
 var btnctrl = {
-	  timeT  : 'overlay-playsource-open'
+	  timeTL : 'repeat'
+	, timeT  : 'overlay-playsource-open'
+	, timeTR : ''
 	, timeL  : 'previous'
 	, timeM  : 'play'
+	, timeBL : 'random'
 	, timeR  : 'next'
 	, timeB  : 'stop'
+	, timeBR : 'single'
 	, coverTL: 'repeat'
 	, coverT : ''
 	, coverTR: ''
