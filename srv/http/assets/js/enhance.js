@@ -80,6 +80,9 @@ function btntoggle() {
 $( '#menu-top, #menu-bottom' ).click( function() {
 	$( '.context-menu' ).removeClass( 'open' );
 } );
+$( '.playback-controls, #menu-bottom' ).click( function() {
+	$( '#settings' ).hide();
+} );
 $( '#context-menu-playlist' ).click( function() {
 	$( '#pl-home-text' ).addClass( 'hide' );
 } );
