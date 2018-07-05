@@ -75,7 +75,7 @@ EOF
 )
 insertH -n -2 'class="playback-controls"'
 
-commentK -n -2 'class="playback-controls"' -n -1 'class="playback-controls"'
+commentH -n -2 'class="playback-controls"' -n -1 'class="playback-controls"'
 
 string=$( cat <<'EOF'
         <button id="pause" class="btn btn-default btn-cmd" title="Pause" data-cmd="play"><i class="fa fa-pause"></i></button>
