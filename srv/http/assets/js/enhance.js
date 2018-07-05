@@ -223,14 +223,14 @@ $( '.timemap, .covermap, .volmap' ).click( function() {
 	} else if ( cmd === 'repeat' || cmd === 'random' || cmd === 'single' ) {
 		var onoff = GUI.json[ cmd ] == 1 ? 0 : 1;
 		sendCmd( cmd +' '+ ( GUI.json[ cmd ] == 1 ? 0 : 1 ) );
-	} else {
-		$( '#'+ btnctrl[ this.id ] ).click();
+	} else if ( cmd ) {
+		$( '#'+ cmd ).click();
 	}
 	$( '.controls' ).hide();
 	$( '.controls1, .rs-tooltip' ).show();
 } );
 $( '#menu-settings' ).click( function() {
-	$( '#settings' ).toggle();
+	$( '#settings' ).toggle().css( 'top', $( '#menu-top' ).is( ':hidden' ) ? 0 : '40px' );
 } );
 
 // library directory path link
@@ -437,6 +437,7 @@ $( '#turnoff' ).click( function() {
 Hammer = propagating( Hammer ); // propagating.js fix 
 
 var $hammercontent = new Hammer( document.getElementById( 'content' ) );
+var $hammertimeTR = new Hammer( document.getElementById( 'timeTR' ) );
 var $hammercoverT = new Hammer( document.getElementById( 'coverT' ) );
 var $hammercoverTR = new Hammer( document.getElementById( 'coverTR' ) );
 //var $hammercoverM = new Hammer( document.getElementById( 'coverM' ) );
@@ -539,9 +540,11 @@ var interval;
 $hammercoverT.on( 'tap', function( e ) {
 	e.stopPropagation();
 } );
-$hammercoverTR.on( 'tap', function( e ) {
-	$( '#settings' ).toggle().css( 'top', $( '#menu-top' ).is( ':hidden' ) ? 0 : '40px' );
-	e.stopPropagation();
+[ $hammertimeTR, $hammercoverTR ].forEach( function( el ) {
+	el.on( 'tap', function( e ) {
+		$( '#settings' ).toggle().css( 'top', $( '#menu-top' ).is( ':hidden' ) ? 0 : '40px' );
+		e.stopPropagation();
+	} );
 } );
 
 $hammerplayback.on( 'tap', function( e ) {
