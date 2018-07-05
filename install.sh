@@ -70,7 +70,7 @@ insertH 'href="#poweroff-modal"'
 string=$( cat <<'EOF'
         </ul>
 <div id="menu-top">
-    <button id="menu-settings" class="dropdown-toggle btn-default" role="button" data-toggle="dropdown" data-target="#" href="#"><i class="fa fa-gear"></i></button>
+    <button id="menu-settings"><i class="fa fa-gear"></i></button>
 EOF
 )
 insertH -n -2 'class="playback-controls"'
