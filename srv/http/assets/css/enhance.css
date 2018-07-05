@@ -553,6 +553,13 @@
 	margin-left: -30px;
 }
 #timeT,
+#timeB,
+#volT,
+#volB {
+	margin-left: -25px;
+	width: 50px;
+}
+#timeT,
 #volT {
 	top: 45px;
 }
@@ -560,28 +567,31 @@
 #timeTR,
 #timeBL,
 #timeBR {
-	width: 28px;
-	height: 28px;
+	width: 33px;
+	height: 33px;
 }
 #timeTL,
 #timeTR {
 	top: 57px;
 	margin-left: -60px;
 }
-#timeTR {
-	margin-left: 32px;
+#timeTR,
+#timeBR {
+	margin-left: 27px;
 }
 #timeBL,
 #timeBR {
-	top: 149px;
+	top: 144px;
+}
+#timeBL {
 	margin-left: -60px;
 }
-#timeBR {
-	margin-left: 32px;
-}
 #timeL,
+#timeR {
+	top: 92px;
+	height: 50px;
+}
 #timeM,
-#timeR,
 #volM {
 	top: 87px;
 	height: 60px;
