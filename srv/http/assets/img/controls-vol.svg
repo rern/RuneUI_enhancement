@@ -6,8 +6,8 @@
 	.st0{opacity:0.7;fill:#34495E;enable-background:new    ;}
 	.st1{fill:#FFFFFF;}
 </style>
-<rect y="102" class="st0" width="60" height="40"/>
-<rect class="st0" width="60" height="40"/>
+<rect x="5" y="102" class="st0" width="50" height="40"/>
+<rect x="5" class="st0" width="50" height="40"/>
 <rect y="42" class="st0" width="60" height="58"/>
 <polyline class="st1" points="36.7,59.5 29.5,66.2 22.3,66.2 22.3,75.8 29.5,75.8 36.7,82.5 "/>
 <g>
