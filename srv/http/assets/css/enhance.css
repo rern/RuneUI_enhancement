@@ -1,33 +1,3 @@
-#menu-settings {
-	float: right;
-}
-#settings {
-	float: right;
-	top: 40px;
-	right: 0px;
-	left: calc( 100% - 170px );
-	margin: 0;
-	padding: 0;
-	width: 170px;
-	border-radius: 0px;
-	z-index: 1000;
-}
-#settings>li>a {
-	line-height: 36px;
-	padding: 2px 10px;
-	background: #34495e;
-	border-bottom: 1px solid #222f3d;
-	color: #e0e7ee;
-	text-decoration: none;
-	cursor: pointer;
-}
-#settings>li>a:hover {
-	background: #222f3d;
-}
-#settings i {
-	width: 30px;
-	text-align: center;
-}
 @font-face {
 	font-family: Lato;
 	src: url( '../fonts/lato/lato-regular-webfont.woff' ) format( 'woff' ),
@@ -230,16 +200,18 @@
 #gpio .fa-lg {
 	vertical-align: -10%;
 }
-#menu-settings i,
-#playsource i {
+#menu-settings {
+	float: right;
+}
+#menu-settings i {
 	padding-top: 5px;
 	font-size: 30px;
 }
 #badge {
 	position: absolute;
 	height: 2rem;
-	top: 1.5rem !important;
-	left: -0.5rem !important;
+	top: 15px;
+	right: 40px;
 	width: 2rem;
 	text-align: center;
 	line-height: 2rem;
@@ -247,6 +219,33 @@
 	border-radius: 50%;
 	color: #e0e7ee;
 	background: red;
+}
+#settings {
+	float: right;
+	top: 40px;
+	right: 0px;
+	left: calc( 100% - 170px );
+	margin: 0;
+	padding: 0;
+	width: 170px;
+	border-radius: 0px;
+	z-index: 1000;
+}
+#settings>li>a {
+	line-height: 36px;
+	padding: 2px 10px;
+	background: #34495e;
+	border-bottom: 1px solid #222f3d;
+	color: #e0e7ee;
+	text-decoration: none;
+	cursor: pointer;
+}
+#settings>li>a:hover {
+	background: #222f3d;
+}
+#settings i {
+	width: 30px;
+	text-align: center;
 }
 .dropdown-menu i {
 	font-size: 22px !important;
