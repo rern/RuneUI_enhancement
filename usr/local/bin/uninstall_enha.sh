@@ -31,8 +31,6 @@ rm -v /srv/http/assets/js/enhance.js
 rm -v /srv/http/assets/js/vendor/{jquery-ui.min.js,modernizr-custom.js,roundslider.min.js}
 rm /usr/share/bootsplash/{start,reboot,shutdown}-runeaudio.png
 
-mv /srv/http/assets/fonts/fontawesome-webfont.woff{.backup,}
-mv /srv/http/assets/fonts/fontawesome-webfont.ttf{.backup,}
 mv /srv/http/assets/js/runeui.min.js{.backup,}
 mv /srv/http/app/coverart_ctl.php{.backup,}
 mv /usr/share/bootsplash/start-runeaudio.png{.backup,}
