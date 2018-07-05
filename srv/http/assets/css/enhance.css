@@ -522,10 +522,10 @@
 }
 #controls-time,
 #controls-vol {
-	top: 48px;
-	margin-left: -80px;
-	width: 160px;
-	height: 138px;
+	top: 45px;
+	margin-left: -72px;
+	width: 144px;
+	height: 144px;
 }
 /* overlay controls */
 .timemap,
@@ -554,50 +554,51 @@
 }
 #timeT,
 #volT {
-	top: 50px;
+	top: 45px;
 }
 #timeTL,
 #timeTR,
 #timeBL,
 #timeBR {
-	width: 25px;
-	height: 25px;
+	width: 28px;
+	height: 28px;
 }
 #timeTL,
 #timeTR {
-	top: 65px;
-	margin-left: -61px;
+	top: 57px;
+	margin-left: -60px;
 }
 #timeTR {
-	margin-left: 36px;
+	margin-left: 32px;
 }
 #timeBL,
 #timeBR {
-	top: 144px;
-	margin-left: -61px;
+	top: 149px;
+	margin-left: -60px;
 }
 #timeBR {
-	margin-left: 36px;
+	margin-left: 32px;
 }
 #timeL,
 #timeM,
 #timeR,
 #volM {
-	top: 97px;
+	top: 87px;
+	height: 60px;
 }
 #timeL,
 #timeR {
-	width: 35px;
+	width: 40px;
 }
 #timeL {
-	margin-left: -71px;
+	margin-left: -72px;
 }
 #timeR {
-	margin-left: 36px;
+	margin-left: 32px;
 }
 #timeB,
 #volB {
-	top: 145px;
+	top: 149px;
 }
 
 #playback .btn-group button {
