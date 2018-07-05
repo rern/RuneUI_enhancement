@@ -330,7 +330,7 @@ fi
 
 installfinish $@
 
-title -nt "$info Please clear browser cache and reboot."
+title -nt "$info Please reboot and clear browser cache."
 
 clearcache
 
