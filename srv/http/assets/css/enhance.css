@@ -219,6 +219,7 @@
 	border-radius: 50%;
 	color: #e0e7ee;
 	background: red;
+	cursor: pointer;
 }
 #settings {
 	float: right;
