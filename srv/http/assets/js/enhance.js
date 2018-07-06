@@ -220,6 +220,7 @@ var btnctrl = {
 $( '.timemap, .covermap, .volmap' ).click( function() {
 	var id = this.id;
 	var cmd = btnctrl[ id ];
+	var imodeshow = ( !redis.display.buttons && redis.display.time ) ? 1 : 0;
 	if ( id === 'timeT' || id === 'coverT' ) {
 		$( '.controls, .controls1,.rs-tooltip' ).toggle();
 		return;
@@ -227,18 +228,18 @@ $( '.timemap, .covermap, .volmap' ).click( function() {
 		if ( cmd === 'random' ) {
 			var onoff = GUI.json.random == 1 ? 0 : 1;
 			sendCmd( 'random '+ onoff );
-			$( '#irandom' ).toggleClass( 'hide', !onoff );
+			if ( imodeshow ) $( '#irandom' ).toggleClass( 'hide', !onoff );
 		} else {
 			if ( GUI.json.repeat === '0' ) {
 				sendCmd( 'repeat 1' );
 			} else {
 				if ( GUI.json.single === '0' ) {
 					sendCmd( 'single 1' );
-					$( '#irepeat' ).removeClass( 'fa-repeat' ).addClass( 'fa-repeat-single' );
+					if ( imodeshow ) $( '#irepeat' ).removeClass( 'fa-repeat' ).addClass( 'fa-repeat-single' );
 				} else {
 					sendCmd( 'repeat 0' );
 					sendCmd( 'single 0' );
-					$( '#irepeat' ).removeClass( 'fa-repeat-single' ).addClass( 'hide' );
+					if ( imodeshow ) $( '#irepeat' ).removeClass( 'fa-repeat-single' ).addClass( 'hide' );
 				}
 			}
 		}		
@@ -1758,7 +1759,7 @@ function setbutton() {
 		$( '#random' ).toggleClass( 'btn-primary', GUI.json.random === '1' );
 		$( '#single' ).toggleClass( 'btn-primary', GUI.json.single === '1' );
 	}
-	if ( $( '#time' ).is( ':visible' ) ) {
+	if ( ( !redis.display.buttons && redis.display.time ) ) {
 		$( '#irandom' ).toggleClass( 'hide', GUI.json.random === '0' );
 		if ( GUI.json.repeat === '0' ) {
 			$( '#irepeat' ).removeClass( 'fa-repeat-single' ).addClass( 'hide' );
@@ -1769,6 +1770,8 @@ function setbutton() {
 			var source = GUI.libraryhome.ActivePlayer.toLowerCase();
 			$( '#iplayer' ).addClass( 'fa-'+ source ).removeClass( 'hide' );
 		}
+	} else {
+		$( '#irandom, #irepeat' ).addClass( 'hide' );
 	}
 //	if ( $( '#share-group' ).is( ':visible' ) ) $( '#share-group button').prop( 'disabled', GUI.json.radio ? true : false );
 	
