@@ -441,14 +441,12 @@ $( '#turnoff' ).click( function() {
 		, oklabel     : 'Power off'
 		, okcolor     : '#bb2828'
 		, ok          : function() {
-			$.post( '/settings/', { 'syscmd' : 'poweroff' } );
-			toggleLoader();
+			$( '#syscmd-poweroff' ).click();
 		}
 		, buttonlabel : 'Reboot'
 		, buttoncolor : '#9a9229'
 		, button      : function() {
-			$.post( '/settings/', { 'syscmd' : 'reboot' } );
-			toggleLoader();
+			$( '#syscmd-reboot' ).click();
 		}
 	} );
 } );
