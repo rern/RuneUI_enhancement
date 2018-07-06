@@ -22,12 +22,9 @@
 					<div id="time"></div>
 					<button id="overlay-playsource-open" class="btn btn-default btn-xs controls1">MPD</button>
 					<div class="imode">
-						<i id="irepeat" class="fa fa-repeat hide"></i>
 						<i id="irandom" class="fa fa-random hide"></i>
-						<i id="isingle" class="fa fa-single hide"></i>
-						<i id="ispotify" class="fa fa-spotify hide"></i>
-						<i id="iairplay" class="fa fa-airplay hide"></i>
-						<i id="idlna" class="fa fa-dlna hide"></i>
+						<i id="irepeat" class="fa hide"></i>
+						<i id="iplayer" class="fa hide"></i>
 					</div>
 					<img id="controls-time" class="controls" src="/srv/http/assets/img/controls-time.svg">
 					<span id="elapsed" class="controls1"></span>
