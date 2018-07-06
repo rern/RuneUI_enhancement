@@ -55,7 +55,6 @@
 .fa-trash-o:before { content: "\f51C" }                                    /* change to fa-minus-circle */
 #context-menu-dirble .fa-microphone:before { content: "\f542" !important } /* change to fa-save */
 .fa-linux:before { content: "\f571" }
-#overlay-playsource .fa-linux { margin-left: 3px; }
 .fa-spotify:before { content: "\f572" }
 .fa-apple:before,
 .fa-airplay:before {
@@ -92,6 +91,7 @@
 .dropdown-menu .fa-sitemap:before { content: "\f551" }
 .dropdown-menu .fa-wrench:before { content: "\f1DE" }
 
+.fa-repeat-single:before { content: "\f510" }
 .fa-repeat:before { content: "\f511" }
 .fa-random:before { content: "\f512" }
 .fa-single:before { content: "\f513" }
