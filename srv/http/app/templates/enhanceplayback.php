@@ -20,7 +20,7 @@
 			<div class="row hide" id="playback-row">
 				<div id="time-knob">
 					<div id="time"></div>
-					<button id="overlay-playsource-open" class="btn btn-default btn-xs controls1">MPD</button>
+					<button id="overlay-playsource-open" class="btn btn-default btn-xs">MPD</button>
 					<div class="imode">
 						<i id="irandom" class="fa fa-random hide"></i>
 						<i id="irepeat" class="fa hide"></i>
