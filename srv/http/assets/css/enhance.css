@@ -54,6 +54,17 @@
 .fa-times-circle:before,
 .fa-trash-o:before { content: "\f51C" }                                    /* change to fa-minus-circle */
 #context-menu-dirble .fa-microphone:before { content: "\f542" !important } /* change to fa-save */
+.fa-linux:before { content: "\f571" }
+#overlay-playsource .fa-linux { margin-left: 3px; }
+.fa-spotify:before { content: "\f572" }
+.fa-apple:before,
+.fa-airplay:before {
+	content: "\f573";
+}
+.fa-puzzle-piece:before,
+.fa-dlna:before {
+	content: "\f574";
+}
 @media( max-width: 480px ) {
 	#db-currentpath span span,
 	.pl-icon {
@@ -202,10 +213,8 @@
 }
 #menu-settings {
 	float: right;
-}
-#menu-settings i {
-	padding-top: 5px;
 	font-size: 30px;
+	cursor: pointer;
 }
 #badge {
 	position: absolute;
@@ -365,6 +374,7 @@
  }
 }
 /* ---------------------- knobs, buttons ----------------------*/
+#overlay-playsource-open { display: none; }
 #playback-row {
 	display: flex;
 	flex-flow: row wrap;
@@ -468,15 +478,18 @@
 	top: -176px;
 }
 .imode {
-	position: relative;
-	top: -90px;
+	position: absolute;
+	left: 50%;
+	top: 160px;
+	margin-left: -50px;
+	width: 100px;
 	text-align: center;
 	z-index: 5;
 }
-.imode a {
-	display: none;
-	margin: 0 5px;
+.imode i {
+	width: 24px;
 	font-size: 16px;
+	color: #0095d8;
 }
 #overlay-playsource-open,
 #elapsed,
