@@ -220,7 +220,7 @@ var btnctrl = {
 $( '.timemap, .covermap, .volmap' ).click( function() {
 	var id = this.id;
 	var cmd = btnctrl[ id ];
-	var imodeshow = ( !redis.display.buttons && redis.display.time ) ? 1 : 0;
+	var imodeshow = ( $( '#play-group' ).is( ':hidden' ) && redis.display.time ) ? 1 : 0;
 	if ( id === 'timeT' || id === 'coverT' ) {
 		$( '.controls, .controls1,.rs-tooltip' ).toggle();
 		return;
@@ -1759,7 +1759,7 @@ function setbutton() {
 		$( '#random' ).toggleClass( 'btn-primary', GUI.json.random === '1' );
 		$( '#single' ).toggleClass( 'btn-primary', GUI.json.single === '1' );
 	}
-	if ( ( !redis.display.buttons && redis.display.time ) ) {
+	if ( ( $( '#play-group' ).is( ':hidden' ) && redis.display.time ) ) {
 		$( '#irandom' ).toggleClass( 'hide', GUI.json.random === '0' );
 		if ( GUI.json.repeat === '0' ) {
 			$( '#irepeat' ).removeClass( 'fa-repeat-single' ).addClass( 'hide' );
