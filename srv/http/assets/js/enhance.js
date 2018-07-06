@@ -951,6 +951,8 @@ function displayplayback() {
 		$( '#badge' ).remove();
 	}
 	$( '#pause' ).toggleClass( 'hide', !display.pause );
+	$( '.controls' ).hide();
+	$( '.controls1, .rs-tooltip' ).show();
 	// reset to default css
 	$( '#playback-row, #time-knob, #coverart, #volume-knob, #play-group, #share-group, #vol-group' ).css( {
 		margin: '',
@@ -960,7 +962,6 @@ function displayplayback() {
 		'-webkit-order': '',
 		display: ''
 	} );
-	$( '#overlay-playsource-open' ).css( 'visibility', display.source ? 'visible' : 'hidden' );
 	$( '#time-knob, #play-group' ).toggleClass( 'hide', !display.time );
 	$( '#coverart, #share-group' ).toggleClass( 'hide', !display.coverart );
 	$( '#volume-knob, #vol-group' ).toggleClass( 'hide', !volume );
@@ -1042,7 +1043,6 @@ function displaylibrary() {
 
 function setPlaybackSource() {
 	var activePlayer = GUI.libraryhome.ActivePlayer;
-	$('#overlay-playsource-open button').text(activePlayer);
 	$('#overlay-playsource a').addClass('inactive');
 	var source = activePlayer.toLowerCase();
 	$('#playsource-' + source).removeClass('inactive');
