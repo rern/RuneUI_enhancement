@@ -334,4 +334,4 @@ clearcache
 
 title -nt "$info Please reboot and clear browser cache."
 
-[[ $svg == 0 ]] && systemctl restart nginx
+[[ $svg == 0 ]] && restartnginx
