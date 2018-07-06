@@ -171,7 +171,6 @@ file=/srv/http/assets/js/runeui.js
 echo $file
 
 comment -n +2 '(evtname, visChange)' -n -1 '// PLAYING QUEUE'
-comment 'system poweroff' -n +4 'system display off'
 comment 'fa-spin"></i> Updating'
 
 string=$( cat <<'EOF'
