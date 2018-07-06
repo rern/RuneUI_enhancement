@@ -223,12 +223,25 @@ $( '.timemap, .covermap, .volmap' ).click( function() {
 	if ( id === 'timeT' || id === 'coverT' ) {
 		$( '.controls, .controls1,.rs-tooltip, .imode' ).toggle();
 		return;
-	} else if ( cmd === 'repeat' || cmd === 'random' || cmd === 'single' ) {
-		var onoff = GUI.json[ cmd ] == 1 ? 0 : 1;
-		sendCmd( cmd +' '+ ( GUI.json[ cmd ] == 1 ? 0 : 1 ) );
-		$( '#irepeat' ).toggleClass( 'hide', GUI.json.repeat === '0' );
-		$( '#irandom' ).toggleClass( 'hide', GUI.json.random === '0' );
-		$( '#isingle' ).toggleClass( 'hide', GUI.json.single === '0' );
+	} else if ( cmd === 'repeat' || cmd === 'random' ) {
+		if ( cmd === 'random' ) {
+			var onoff = GUI.json.random == 1 ? 0 : 1;
+			sendCmd( 'random '+ onoff );
+			$( '#irandom' ).toggleClass( 'hide', !onoff );
+		} else {
+			if ( GUI.json.repeat === '0' ) {
+				sendCmd( 'repeat 1' );
+			} else {
+				if ( GUI.json.single === '0' ) {
+					sendCmd( 'single 1' );
+					$( '#irepeat' ).removeClass( 'fa-repeat' ).addClass( 'fa-repeat-single' );
+				} else {
+					sendCmd( 'repeat 0' );
+					sendCmd( 'single 0' );
+					$( '#irepeat' ).removeClass( 'fa-repeat-single' ).addClass( 'hide' );
+				}
+			}
+		}		
 	} else if ( cmd ) {
 		$( '#'+ cmd ).click();
 	}
@@ -1746,15 +1759,15 @@ function setbutton() {
 		$( '#single' ).toggleClass( 'btn-primary', GUI.json.single === '1' );
 	}
 	if ( $( '#time' ).is( ':visible' ) ) {
-		$( '#irepeat' ).toggleClass( 'hide', GUI.json.repeat === '0' );
 		$( '#irandom' ).toggleClass( 'hide', GUI.json.random === '0' );
-		$( '#isingle' ).toggleClass( 'hide', GUI.json.single === '0' );
-		if ( GUI.libraryhome.ActivePlayer === 'Spotify' ) {
-			$( '#ispotify' ).removeClass( 'hide' );
-		} else if ( GUI.libraryhome.ActivePlayer === 'Airplay' ) {
-			$( '#iairplay' ).removeClass( 'hide' );
-		} else if ( GUI.libraryhome.ActivePlayer === 'DLNA' ) {
-			$( '#idlna' ).removeClass( 'hide' );
+		if ( GUI.json.repeat === '0' ) {
+			$( '#irepeat' ).removeClass( 'fa-repeat-single' ).addClass( 'hide' );
+		} else {
+			$( '#irepeat' ).addClass( GUI.json.single === '1' ? 'fa-repeat-single' : 'fa-repeat' ).removeClass( 'hide' );
+		}
+		if ( GUI.libraryhome.ActivePlayer !== 'MPD' ) {
+			var source = GUI.libraryhome.ActivePlayer.toLowerCase();
+			$( '#iplayer' ).addClass( 'fa-'+ source ).removeClass( 'hide' );
 		}
 	}
 //	if ( $( '#share-group' ).is( ':visible' ) ) $( '#share-group button').prop( 'disabled', GUI.json.radio ? true : false );
