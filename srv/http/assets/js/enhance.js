@@ -195,16 +195,16 @@ $( '#closebio' ).click( function() {
 	if ( !barhide ) $( '#menu-top, #menu-bottom' ).show();
 } );
 var btnctrl = {
-	  timeTL : 'repeat'
-	, timeT  : 'overlay-playsource-open'
+	  timeTL : 'overlay-playsource-open'
+	, timeT  : ''
 	, timeTR : ''
 	, timeL  : 'previous'
 	, timeM  : 'play'
 	, timeBL : 'random'
 	, timeR  : 'next'
 	, timeB  : 'stop'
-	, timeBR : 'single'
-	, coverTL: 'repeat'
+	, timeBR : 'repeat'
+	, coverTL: 'overlay-playsource-open'
 	, coverT : ''
 	, coverTR: ''
 	, coverL : 'previous'
@@ -212,20 +212,23 @@ var btnctrl = {
 	, coverR : 'next'
 	, coverBL: 'random'
 	, coverB : 'stop'
-	, coverBR: 'single'
-	, volT   : ''
+	, coverBR: 'repeat'
+	, volT   : 'volup'
 	, volM   : 'volumemute'
-	, volB   : ''
+	, volB   : 'voldn'
 }
 $( '.timemap, .covermap, .volmap' ).click( function() {
 	var id = this.id;
 	var cmd = btnctrl[ id ];
-	if ( id === 'coverT' ) {
-		$( '.controls, .controls1,.rs-tooltip' ).toggle();
+	if ( id === 'timeT' || id === 'coverT' ) {
+		$( '.controls, .controls1,.rs-tooltip, .imode' ).toggle();
 		return;
 	} else if ( cmd === 'repeat' || cmd === 'random' || cmd === 'single' ) {
 		var onoff = GUI.json[ cmd ] == 1 ? 0 : 1;
 		sendCmd( cmd +' '+ ( GUI.json[ cmd ] == 1 ? 0 : 1 ) );
+		$( '#irepeat' ).toggleClass( 'hide', GUI.json.repeat === '0' );
+		$( '#irandom' ).toggleClass( 'hide', GUI.json.random === '0' );
+		$( '#isingle' ).toggleClass( 'hide', GUI.json.single === '0' );
 	} else if ( cmd ) {
 		$( '#'+ cmd ).click();
 	}
@@ -440,6 +443,7 @@ $( '#turnoff' ).click( function() {
 Hammer = propagating( Hammer ); // propagating.js fix 
 
 var $hammercontent = new Hammer( document.getElementById( 'content' ) );
+var $hammertimeT = new Hammer( document.getElementById( 'timeT' ) );
 var $hammertimeTR = new Hammer( document.getElementById( 'timeTR' ) );
 var $hammercoverT = new Hammer( document.getElementById( 'coverT' ) );
 var $hammercoverTR = new Hammer( document.getElementById( 'coverTR' ) );
@@ -521,7 +525,7 @@ function volumepress( interval, id, fast ) {
 var timeoutId;
 var intervalId;
 var interval;
-[ $hammervoldn, $hammervolup, $hammervolB, $hammervolT ].forEach( function( el ) {
+[ $hammervoldn, $hammervolup, $hammervolT, $hammervolB ].forEach( function( el ) {
 	el.on( 'press', function( e ) {
 		buttonactive = 1;
 		onsetvolume = 1;
@@ -540,6 +544,9 @@ var interval;
 	} );
 });
 // fix: 'tap on blank area hide overlay controls' causes toggle hide failed
+$hammertimeT.on( 'tap', function( e ) {
+	e.stopPropagation();
+} );
 $hammercoverT.on( 'tap', function( e ) {
 	e.stopPropagation();
 } );
@@ -561,8 +568,6 @@ $hammerplayback.on( 'tap', function( e ) {
 						<label><input name="bar" type="checkbox" '+ display.bar +'>&ensp;Top-Bottom menu</label>\
 						<br><label><input name="pause" type="checkbox" '+ display.pause +'>\
 							&ensp;<code><i class="fa fa-play"></i></code>&ensp;<code><i class="fa fa-pause"></i></code>&ensp;buttons</label>\
-						<br><label><input name="source" type="checkbox" '+ display.source +'>&ensp;<code>MPD</code>&ensp;button</label>\
-						</label>\
 						<br><label><input name="time" type="checkbox" '+ display.time +'>&ensp;Time</label>\
 						<br><label><input name="radioelapsed" type="checkbox" '+ display.radioelapsed +'>&ensp;Webradio elapsed</label>\
 						<br><label><input name="coverart" type="checkbox" '+ display.coverart +'>&ensp;Coverart</label>\
@@ -587,6 +592,7 @@ $hammerplayback.on( 'tap', function( e ) {
 					redis = JSON.parse( data );
 					display = redis.display;
 					displayplayback();
+					setbutton();
 				}
 			);
 		}
@@ -832,7 +838,7 @@ $( '#volmute, #volM' ).click( function() {
 	}
 } );
 
-$( '#volup, #voldn, #volT, #volB' ).click( function() {
+$( '#volup, #voldn' ).click( function() {
 	var thisid = this.id;
 	var vol = $volumeRS.getValue();
 	onsetvolume = 1;
@@ -840,8 +846,8 @@ $( '#volup, #voldn, #volT, #volB' ).click( function() {
 		onsetvolume = 0;
 	}, 500 );
 	
-	if ( ( vol === 0 && ( thisid === 'voldn' || thisid === 'volB' ) )
-		|| ( vol === 100 && ( thisid === 'volup' || thisid === 'volT' ) ) )
+	if ( ( vol === 0 && ( thisid === 'voldn' ) )
+		|| ( vol === 100 && ( thisid === 'volup' ) ) )
 			return;
 
 	if ( vol === 0 ) {
@@ -849,7 +855,7 @@ $( '#volup, #voldn, #volT, #volB' ).click( function() {
 		$.post( '/enhance.php', { redis: JSON.stringify( command ) } );
 		unmutecolor();
 	}
-	vol = ( thisid == 'volup' || thisid == 'volT' ) ? vol + 1 : vol - 1;
+	vol = ( thisid == 'volup' ) ? vol + 1 : vol - 1;
 	$.post( '/enhance.php', { volume: vol } );
 	$volumeRS.setValue( vol );
 	$volumehandle.rsRotate( - $volumeRS._handle1.angle );
@@ -1739,9 +1745,18 @@ function setbutton() {
 		$( '#random' ).toggleClass( 'btn-primary', GUI.json.random === '1' );
 		$( '#single' ).toggleClass( 'btn-primary', GUI.json.single === '1' );
 	}
-	$( '#irepeat' ).toggle( GUI.json.repeat === '1' );
-	$( '#irandom' ).toggle( GUI.json.random === '1' );
-	$( '#isingle' ).toggle( GUI.json.single === '1' );
+	if ( $( '#time' ).is( ':visible' ) ) {
+		$( '#irepeat' ).toggleClass( 'hide', GUI.json.repeat === '0' );
+		$( '#irandom' ).toggleClass( 'hide', GUI.json.random === '0' );
+		$( '#isingle' ).toggleClass( 'hide', GUI.json.single === '0' );
+		if ( GUI.libraryhome.ActivePlayer === 'Spotify' ) {
+			$( '#ispotify' ).removeClass( 'hide' );
+		} else if ( GUI.libraryhome.ActivePlayer === 'Airplay' ) {
+			$( '#iairplay' ).removeClass( 'hide' );
+		} else if ( GUI.libraryhome.ActivePlayer === 'DLNA' ) {
+			$( '#idlna' ).removeClass( 'hide' );
+		}
+	}
 //	if ( $( '#share-group' ).is( ':visible' ) ) $( '#share-group button').prop( 'disabled', GUI.json.radio ? true : false );
 	
 	if ( prevnext === 1 ) return; // disable for previous/next while stop
