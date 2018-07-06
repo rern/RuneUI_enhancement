@@ -221,7 +221,7 @@ $( '.timemap, .covermap, .volmap' ).click( function() {
 	var id = this.id;
 	var cmd = btnctrl[ id ];
 	if ( id === 'timeT' || id === 'coverT' ) {
-		$( '.controls, .controls1,.rs-tooltip, .imode' ).toggle();
+		$( '.controls, .controls1,.rs-tooltip' ).toggle();
 		return;
 	} else if ( cmd === 'repeat' || cmd === 'random' ) {
 		if ( cmd === 'random' ) {
