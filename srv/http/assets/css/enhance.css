@@ -164,6 +164,9 @@
 	bottom: 0;
 }
 /* ---------------------- menu-top ----------------------*/
+#menu-top, #menu-bottom {
+	display: none;
+}
 .logo {
 	height: 35px;
 	margin: 2px 20px 10px 0;
