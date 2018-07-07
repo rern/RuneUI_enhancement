@@ -203,8 +203,7 @@
 #menu-top .playback-controls button {
 	margin: 0 10px;
 }
-#menu-top .playback-controls i,
-#gpio {
+#menu-top .playback-controls i {
 	font-size:24px;
 	line-height: 40px;
 }
