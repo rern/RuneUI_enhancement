@@ -21,7 +21,7 @@
 				<div id="time-knob">
 					<div id="time"></div>
 					<button id="overlay-playsource-open" class="btn btn-default btn-xs">MPD</button>
-					<div class="imode">
+					<div id="imode">
 						<i id="irandom" class="fa fa-random hide"></i>
 						<i id="irepeat" class="fa hide"></i>
 						<i id="iplayer" class="fa hide"></i>
