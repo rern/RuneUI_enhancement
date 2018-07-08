@@ -222,7 +222,7 @@ $( '.timemap, .covermap, .volmap' ).click( function() {
 	var cmd = btnctrl[ id ];
 	var imodeshow = ( $( '#play-group' ).is( ':hidden' ) && redis.display.time ) ? 1 : 0;
 	if ( id === 'timeT' || id === 'coverT' ) {
-		$( '.controls, .controls1,.rs-tooltip' ).toggle();
+		$( '.controls, .controls1,.rs-tooltip, #imode' ).toggle();
 		return;
 	} else if ( cmd === 'repeat' || cmd === 'random' ) {
 		if ( cmd === 'random' ) {
@@ -247,7 +247,7 @@ $( '.timemap, .covermap, .volmap' ).click( function() {
 		$( '#'+ cmd ).click();
 	}
 	$( '.controls' ).hide();
-	$( '.controls1, .rs-tooltip' ).show();
+	$( '.controls1, .rs-tooltip, #imode' ).show();
 } );
 $( '#menu-settings' ).click( function() {
 	$( '#settings' ).toggle().css( 'top', $( '#menu-top' ).is( ':hidden' ) ? 0 : '40px' );
@@ -571,7 +571,7 @@ $hammercoverT.on( 'tap', function( e ) {
 
 $hammerplayback.on( 'tap', function( e ) {
 	$( '.controls, #settings' ).hide();
-	$( '.controls1, .rs-tooltip' ).show();
+	$( '.controls1, .rs-tooltip, #imode' ).show();
 } ).on( 'press', function() {
 	info( {
 		  title  : 'Playback'
@@ -952,7 +952,7 @@ function displayplayback() {
 	}
 	$( '#pause' ).toggleClass( 'hide', !display.pause );
 	$( '.controls' ).hide();
-	$( '.controls1, .rs-tooltip' ).show();
+	$( '.controls1, .rs-tooltip, #imode' ).show();
 	// reset to default css
 	$( '#playback-row, #time-knob, #coverart, #volume-knob, #play-group, #share-group, #vol-group' ).css( {
 		margin: '',
