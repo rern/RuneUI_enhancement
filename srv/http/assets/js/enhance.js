@@ -938,6 +938,7 @@ $.post( '/enhance.php', { redis: JSON.stringify( command ) }, function( data ) {
 	radioelapsed = display.radioelapsed;
 } );
 buttonactive = 0;
+var imodedelay = 0; // fix imode flashing on usb dac switching
 function displayplayback() {
 	buttonhide = window.innerHeight <= 320 || window.innerWidth < 499 ? 1 : 0;
 	if ( GUI.json.playlistlength != 0 ) $( '.playback-controls' ).css( 'visibility', 'visible' );
@@ -1005,7 +1006,20 @@ function displayplayback() {
 	}
 //	if ( buttonactive ) $( '#play-group, #share-group, #vol-group' ).show();
 	$( '#playback-row' ).removeClass( 'hide' ); // restore - hidden by fix flash
-	
+	if ( display.buttons == '' && display.time == 'checked' ) {
+		$( '#irandom' ).toggleClass( 'hide', GUI.json.random === '0' );
+		if ( GUI.json.repeat === '0' ) {
+			$( '#irepeat' ).removeClass( 'fa-repeat-single' ).addClass( 'hide' );
+		} else {
+			$( '#irepeat' ).removeClass( 'hide fa-repeat fa-repeat-single ' ).addClass( GUI.json.single === '1' ? 'fa-repeat-single' : 'fa-repeat' );
+		}
+		if ( GUI.libraryhome.ActivePlayer !== 'MPD' ) {
+			var source = GUI.libraryhome.ActivePlayer.toLowerCase();
+			$( '#iplayer' ).addClass( 'fa-'+ source ).removeClass( 'hide' );
+		}
+	} else {
+		$( '#imode i' ).addClass( 'hide' );
+	}
 	displaycommon();
 }
 
@@ -1757,20 +1771,6 @@ function setbutton() {
 		$( '#random' ).toggleClass( 'btn-primary', GUI.json.random === '1' );
 		$( '#single' ).toggleClass( 'btn-primary', GUI.json.single === '1' );
 	}
-	if ( ( $( '#play-group' ).is( ':hidden' ) && redis.display.time ) ) {
-		$( '#irandom' ).toggleClass( 'hide', GUI.json.random === '0' );
-		if ( GUI.json.repeat === '0' ) {
-			$( '#irepeat' ).removeClass( 'fa-repeat-single' ).addClass( 'hide' );
-		} else {
-			$( '#irepeat' ).addClass( GUI.json.single === '1' ? 'fa-repeat-single' : 'fa-repeat' ).removeClass( 'hide' );
-		}
-		if ( GUI.libraryhome.ActivePlayer !== 'MPD' ) {
-			var source = GUI.libraryhome.ActivePlayer.toLowerCase();
-			$( '#iplayer' ).addClass( 'fa-'+ source ).removeClass( 'hide' );
-		}
-	} else {
-		$( '#irandom, #irepeat' ).addClass( 'hide' );
-	}
 //	if ( $( '#share-group' ).is( ':visible' ) ) $( '#share-group button').prop( 'disabled', GUI.json.radio ? true : false );
 	
 	if ( prevnext === 1 ) return; // disable for previous/next while stop
@@ -1812,6 +1812,7 @@ onsetmode = 0;
 function setplaybackdata() {
 	$.post( '/enhancestatus.php', function( data ) {
 		var status = JSON.parse( data );
+		GUI.status = status;
 		// song and album before update for song/album change detection
 		var previoussong = $( '#currentsong' ).text();
 		var previousalbum = $( '#currentalbum' ).text();
@@ -1992,7 +1993,6 @@ function converthms( second ) {
 }
 
 // ### called by backend socket - force refresh all clients ###
-// rendrUI() > updateGUI() > refreshState()
 function renderUI( text ) {
 	toggleLoader( 'close' );
 	if ( !$('#section-index' ).length || onsetvolume ) return;
@@ -2002,8 +2002,8 @@ function renderUI( text ) {
 	
 	setplaybackdata();
 	setbutton();
-	
-	if ( $( '#playback' ).hasClass( 'active' ) ) displayplayback();
+	// imodedelay fix imode flashing on usb dac switching
+	if ( $( '#playback' ).hasClass( 'active' ) && !imodedelay ) displayplayback();
 }
 
 } // end if <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
