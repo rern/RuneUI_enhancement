@@ -479,7 +479,7 @@
 	position: relative;
 	top: -176px;
 }
-.imode {
+#imode {
 	position: absolute;
 	left: 50%;
 	top: 165px;
@@ -488,7 +488,7 @@
 	text-align: center;
 	z-index: 5;
 }
-.imode i {
+#imode i {
 	width: 24px;
 	font-size: 16px;
 	color: #0095d8;
