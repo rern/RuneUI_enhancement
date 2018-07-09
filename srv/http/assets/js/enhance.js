@@ -5,23 +5,28 @@ $( '#menu-settings' ).click( function() {
 } );
 // ##### prevent loading js in setting pages #####
 if ( /\/.*\//.test( location.pathname ) === true ) {
-	if ( window.innerWidth < 540 || window.innerHeight < 515 ) {
-		$( '#menu-top, #menu-bottom' ).hide();
-		$( 'div.container' ).find( 'h1' ).before( '<a href="/" class="close-root"><i class="fa fa-times fa-2x"></i></a>' );
-	} else {
-		$( '#menu-top, #menu-bottom' ).show();
-		$( '.playback-controls button' ).click( function() {
-			location.href = '/';
-		} );
-		$( '#menu-bottom li' ).click( function() {
-			var command = { page: [ 'set', 'page', this.id ] };
-			$.post( '/enhance.php', { redis: JSON.stringify( command ) }, function(data) {
+	var command = { display: [ 'hGetAll', 'display' ] };
+	$.post( '/enhance.php', { redis: JSON.stringify( command ) }, function( data ) {
+		var display = JSON.parse( data ).display;
+	
+		if ( window.innerWidth < 540 || window.innerHeight < 515 || display.bar === '' ) {
+			$( '#menu-top, #menu-bottom' ).hide();
+			$( 'div.container' )
+				.css( 'padding-top', '20px' )
+				.find( 'h1' ).before( '<a href="/" class="close-root"><i class="fa fa-times fa-2x"></i></a>' );
+		} else {
+			$( '#menu-top, #menu-bottom' ).show();
+			$( '.playback-controls button, #menu-bottom li' ).click( function() {
 				location.href = '/';
 			} );
-		} );
-		$( '#menu-bottom li' ).removeClass( 'active' );
-	}
-	
+			$( '#menu-bottom li' )
+				.removeClass( 'active' )
+				.click( function() {
+					var command = { backtarget: [ 'set', 'backtarget', this.id ] };
+					$.post( '/enhance.php', { redis: JSON.stringify( command ) } );
+				} );
+		}
+	} );
 	return;
 }
 
@@ -121,17 +126,6 @@ $( '#panel-dx, #context-menu-playlist' ).click( function() {
 	if ( $( '#context-menu-playlist' ).hasClass( 'open' ) ) $( '#context-menu-playlist' ).removeClass( 'open' );
 } );
 
-// back from setting pages
-if ( /\/.*\//.test( document.referrer ) == true ) {
-	var command = { 
-		page: [ 'get', 'page' ],
-		del: [ 'del', 'page' ]
-	};
-	$.post( '/enhance.php',{ redis: JSON.stringify( command ) }, function( data ) {
-		var page = JSON.parse( data ).page;
-		if ( page !== 'open-playback' ) $( '#'+ page ).click();
-	} );
-}
 // disabled local browser > disable screensaver events
 if ( !$( '#playback-ss' ).length ) $('#section-index').off( 'mousemove click keypress' );
 
@@ -922,15 +916,25 @@ function displaycommon() {
 
 // playback show/hide blocks
 var command = {
-	display: [ 'hGetAll', 'display' ],
-	volumempd: [ 'get', 'volume' ],
-	update: [ 'hGet', 'addons', 'update' ]
+	  display   : [ 'hGetAll', 'display' ]
+	, volumempd : [ 'get', 'volume' ]
+	, update    : [ 'hGet', 'addons', 'update' ]
+	, backtarget: [ 'get', 'backtarget' ]
+	, del       : [ 'del', 'backtarget' ]
 };
 $.post( '/enhance.php', { redis: JSON.stringify( command ) }, function( data ) {
 	redis = JSON.parse( data );
 	display = redis.display;
 	radioelapsed = display.radioelapsed;
+	backtarget = redis.backtarget
+	// back from setting pages
+	if ( /\/.*\//.test( document.referrer ) == true && ( backtarget || backtarget !== 'open-playback' ) ) {
+		setTimeout( function() {
+			$( '#'+ backtarget ).click();
+		}, 500 );
+	}
 } );
+
 buttonactive = 0;
 var imodedelay = 0; // fix imode flashing on usb dac switching
 function displayplayback() {
@@ -1752,12 +1756,12 @@ $( '.btn-cmd' ).click( function() {
 function setbutton() {
 	if ( GUI.json.updating_db !== undefined ) {
 		$( '#open-panel-sx i, #db-home i' )
-			.removeClass( 'fa-library' )
+			.removeClass( 'fa-folder-open' )
 			.addClass( 'fa-refresh fa-spin' );
 	} else {
 		$( '#open-panel-sx i, #db-home i' )
 			.removeClass( 'fa-refresh fa-spin' )
-			.addClass( 'fa-library' );
+			.addClass( 'fa-folder-open' );
 	}
 	if ( $( '#play-group' ).is( ':visible' ) ) {
 //		$( '#play-group button').prop( 'disabled', GUI.json.radio ? true : false );
