@@ -6,6 +6,7 @@ $( '#menu-settings' ).click( function() {
 // ##### prevent loading js in setting pages #####
 if ( /\/.*\//.test( location.pathname ) === true ) {
 	if ( window.innerWidth < 540 || window.innerHeight < 515 ) {
+		$( '#menu-top, #menu-bottom' ).hide();
 		$( 'div.container' ).find( 'h1' ).before( '<a href="/" class="close-root"><i class="fa fa-times fa-2x"></i></a>' );
 	} else {
 		$( '#menu-top, #menu-bottom' ).show();
@@ -136,10 +137,7 @@ if ( !$( '#playback-ss' ).length ) $('#section-index').off( 'mousemove click key
 
 // playback buttons click go back to home page
 $( '.playback-controls' ).click( function() {
-	if ( !$( '#playback' ).hasClass( 'active' ) ) {
-		$( '#open-playback a' ).click();
-		$( '#open-playback a' )[ 0 ].click();
-	}
+	if ( !$( '#open-playback' ).hasClass( 'active' ) ) $( '#open-playback' ).click();
 } );
 // playlist click go back to home page
 $( '#playlist-entries' ).click( function( e ) {
