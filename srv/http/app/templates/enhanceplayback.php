@@ -96,7 +96,7 @@
 				</div>
 			</div>
 			<div id="db-currentpath">
-				<div id="db-home"><i class="fa fa-library"></i></div> <span>LIBRARY</span>
+				<div id="db-home"><i class="fa fa-folder-open"></i></div> <span>LIBRARY</span>
 				<i id="db-webradio-add" class="fa fa-plus-circle"></i>
 			</div>
 			<button id="db-search-results" class="btn hide" type="button" title="Close search results and go back to the Library browsing"><i class="fa fa-times sx"></i></button>
