@@ -105,6 +105,7 @@
 .fa-refresh:before { content: "\f563" }
 .fa-gear:before { content: "\f506" }
 .fa-library:before { content: "\f507" }
+#open-panel-sx .fa-folder-open:before { content: "\f507" }
 .fa-play-circle:before { content: "\f508" }
 .fa-list-ul:before { content: "\f509"; }
 
