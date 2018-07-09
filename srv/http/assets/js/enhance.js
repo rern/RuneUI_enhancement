@@ -928,7 +928,7 @@ $.post( '/enhance.php', { redis: JSON.stringify( command ) }, function( data ) {
 	radioelapsed = display.radioelapsed;
 	backtarget = redis.backtarget
 	// back from setting pages
-	if ( /\/.*\//.test( document.referrer ) == true && ( backtarget || backtarget !== 'open-playback' ) ) {
+	if ( /\/.*\//.test( document.referrer ) == true && backtarget && backtarget !== 'open-playback' ) {
 		setTimeout( function() {
 			$( '#'+ backtarget ).click();
 		}, 500 );
