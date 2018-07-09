@@ -1,10 +1,14 @@
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+$( '#menu-settings' ).click( function() {
+	$( '#settings' ).toggle().css( 'top', $( '#menu-top' ).is( ':hidden' ) ? 0 : '40px' );
+} );
 // ##### prevent loading js in setting pages #####
 if ( /\/.*\//.test( location.pathname ) === true ) {
 	if ( window.innerWidth < 540 || window.innerHeight < 515 ) {
 		$( 'div.container' ).find( 'h1' ).before( '<a href="/" class="close-root"><i class="fa fa-times fa-2x"></i></a>' );
 	} else {
+		$( '#menu-top, #menu-bottom' ).show();
 		$( '.playback-controls button' ).click( function() {
 			location.href = '/';
 		} );
@@ -196,8 +200,8 @@ $( '#closebio' ).click( function() {
 } );
 var btnctrl = {
 	  timeTL : 'overlay-playsource-open'
-	, timeT  : ''
-	, timeTR : ''
+	, timeT  : 'toggle'
+	, timeTR : 'menu'
 	, timeL  : 'previous'
 	, timeM  : 'play'
 	, timeBL : 'random'
@@ -205,8 +209,8 @@ var btnctrl = {
 	, timeB  : 'stop'
 	, timeBR : 'repeat'
 	, coverTL: 'overlay-playsource-open'
-	, coverT : ''
-	, coverTR: ''
+	, coverT : 'toggle'
+	, coverTR: 'menu'
 	, coverL : 'previous'
 	, coverM : 'play'
 	, coverR : 'next'
@@ -221,36 +225,33 @@ $( '.timemap, .covermap, .volmap' ).click( function() {
 	var id = this.id;
 	var cmd = btnctrl[ id ];
 	var imodeshow = ( $( '#play-group' ).is( ':hidden' ) && redis.display.time ) ? 1 : 0;
-	if ( id === 'timeT' || id === 'coverT' ) {
+	if ( cmd === 'menu' ) {
+		$( '#menu-settings' ).click();
+	} else if ( cmd === 'toggle' ) {
 		$( '.controls, .controls1,.rs-tooltip, #imode' ).toggle();
 		return;
-	} else if ( cmd === 'repeat' || cmd === 'random' ) {
-		if ( cmd === 'random' ) {
+	} else if ( cmd === 'random' ) {
 			var onoff = GUI.json.random == 1 ? 0 : 1;
 			sendCmd( 'random '+ onoff );
 			if ( imodeshow ) $( '#irandom' ).toggleClass( 'hide', !onoff );
+	} else if ( cmd === 'repeat' ) {
+		if ( GUI.json.repeat === '0' ) {
+			sendCmd( 'repeat 1' );
 		} else {
-			if ( GUI.json.repeat === '0' ) {
-				sendCmd( 'repeat 1' );
+			if ( GUI.json.single === '0' ) {
+				sendCmd( 'single 1' );
+				if ( imodeshow ) $( '#irepeat' ).removeClass( 'fa-repeat' ).addClass( 'fa-repeat-single' );
 			} else {
-				if ( GUI.json.single === '0' ) {
-					sendCmd( 'single 1' );
-					if ( imodeshow ) $( '#irepeat' ).removeClass( 'fa-repeat' ).addClass( 'fa-repeat-single' );
-				} else {
-					sendCmd( 'repeat 0' );
-					sendCmd( 'single 0' );
-					if ( imodeshow ) $( '#irepeat' ).removeClass( 'fa-repeat-single' ).addClass( 'hide' );
-				}
+				sendCmd( 'repeat 0' );
+				sendCmd( 'single 0' );
+				if ( imodeshow ) $( '#irepeat' ).removeClass( 'fa-repeat-single' ).addClass( 'hide' );
 			}
-		}		
+		}
 	} else if ( cmd ) {
 		$( '#'+ cmd ).click();
 	}
 	$( '.controls' ).hide();
 	$( '.controls1, .rs-tooltip, #imode' ).show();
-} );
-$( '#menu-settings' ).click( function() {
-	$( '#settings' ).toggle().css( 'top', $( '#menu-top' ).is( ':hidden' ) ? 0 : '40px' );
 } );
 
 // library directory path link
@@ -461,7 +462,6 @@ var $hammertimeT = new Hammer( document.getElementById( 'timeT' ) );
 var $hammertimeTR = new Hammer( document.getElementById( 'timeTR' ) );
 var $hammercoverT = new Hammer( document.getElementById( 'coverT' ) );
 var $hammercoverTR = new Hammer( document.getElementById( 'coverTR' ) );
-//var $hammercoverM = new Hammer( document.getElementById( 'coverM' ) );
 var $hammervoldn = new Hammer( document.getElementById( 'voldn' ) );
 var $hammervolup = new Hammer( document.getElementById( 'volup' ) );
 var $hammervolB = new Hammer( document.getElementById( 'volB' ) );
@@ -469,7 +469,8 @@ var $hammervolT = new Hammer( document.getElementById( 'volT' ) );
 var $hammerlibrary = new Hammer( document.getElementById( 'panel-sx' ) );
 var $hammerplayback = new Hammer( document.getElementById( 'playback' ) );
 
-/*$hammercoverM.on( 'press', function( e ) {
+/*var $hammercoverM = new Hammer( document.getElementById( 'coverM' ) );
+$hammercoverM.on( 'press', function( e ) {
 	if ( GUI.json.file.slice( 0, 4 ) !== 'http' ) return;
 	
 	var img     = [ 'vu.gif',     'turntable.gif' ];
@@ -557,16 +558,9 @@ var interval;
 		}, 500 );
 	} );
 });
-// fix: 'tap on blank area hide overlay controls' causes toggle hide failed
-$hammertimeT.on( 'tap', function( e ) {
-	e.stopPropagation();
-} );
-$hammercoverT.on( 'tap', function( e ) {
-	e.stopPropagation();
-} );
-[ $hammertimeTR, $hammercoverTR ].forEach( function( el ) {
+// fix: toggle
+[ $hammertimeT, $hammercoverT, $hammertimeTR, $hammercoverTR ].forEach( function( el ) {
 	el.on( 'tap', function( e ) {
-		$( '#settings' ).toggle().css( 'top', $( '#menu-top' ).is( ':hidden' ) ? 0 : '40px' );
 		e.stopPropagation();
 	} );
 } );
