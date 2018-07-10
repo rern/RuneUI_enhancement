@@ -79,6 +79,7 @@
 .fa-pause:before { content: "\f504" }
 .fa-step-forward:before { content: "\f505" }
 
+.dropdown-menu .fa { margin-right: 10px !important; }
 .dropdown-menu .fa-plus-circle:before { content: "\f530" }
 .dropdown-menu .fa-edit:before { content: "\f535" }
 .dropdown-menu .fa-undo:before { content: "\f531" }
