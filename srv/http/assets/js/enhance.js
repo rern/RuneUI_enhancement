@@ -1754,8 +1754,13 @@ $( '.btn-cmd' ).click( function() {
 
 // buttons and playlist
 function setbutton() {
-	$( '#open-panel-sx i, #db-home i' ).css( 'animation', GUI.json.updating_db === undefined ? '' : 'blinkopaque 1.5s linear infinite' );
-	$( '#iupdate' ).toggleClass( 'hide', GUI.json.updating_db === undefined );
+	if ( GUI.json.updating_db !== undefined ) {
+		$( '#open-panel-sx i, #db-home i, #iupdate' ).addClass( 'blink' );
+		if ( $( '#menu-bottom' ).is( ':hidden' ) ) $( '#iupdate' ).removeClass( 'hide' );
+	} else {
+		$( '#open-panel-sx i, #db-home i, #iupdate' ).removeClass( 'blink' );
+		$( '#iupdate' ).addClass( 'hide' );
+	}
 	if ( $( '#play-group' ).is( ':visible' ) ) {
 //		$( '#play-group button').prop( 'disabled', GUI.json.radio ? true : false );
 		$( '#repeat' ).toggleClass( 'btn-primary', GUI.json.repeat === '1' );
