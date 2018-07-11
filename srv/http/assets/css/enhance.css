@@ -104,8 +104,8 @@
 .fa-mute:before { content: "\f517" }
 .fa-plus:before { content: "\f519" }
 
-.fa-refresh:before { content: "\f563" }
 .fa-gear:before { content: "\f506" }
+.fa-library:before { content: "\f507" }
 .fa-play-circle:before { content: "\f508" }
 .fa-list-ul:before { content: "\f509"; }
 
@@ -141,14 +141,18 @@
 #loaderbg {
 	background: rgba( 0, 0, 0, 0.9 );
 }
+@keyframes blinkopaque {
+	50% { opacity: 0; }
+}
+/*#menu-bottom .fa-refresh.fa-spin:before {
+	content: "\f507";
+	animation: blinkopaque 1.5s linear infinite;
+}*/
 #loader img {
-	animation: blinker 1.5s linear infinite;
+	animation: blinkopaque 1.5s linear infinite;
 	width: 300px;
 	height: 75px;
 	margin-left: -100px;
-}
-@keyframes blinker {
-	50% { opacity: 0; }
 }
 /* ---------------------- playback ---------------------- */
 #bartop,
@@ -495,6 +499,10 @@
 	font-size: 16px;
 	color: #0095d8;
 }
+#iupdate {
+	font-size: 14px !important;
+	vertical-align: 8%;
+}
 #overlay-playsource-open,
 #elapsed,
 #total {
@@ -810,11 +818,11 @@
 	position: relative;
 }
 
-@keyframes blink {
+@keyframes blinkdot {
 	50% { color: transparent }
 }
 .dot {
-	animation: 1s blink infinite;
+	animation: 1s blinkdot infinite;
 	line-height: 8px;
 	vertical-align: 100%;
 }
@@ -973,9 +981,6 @@
 	text-align: center;
 	vertical-align: 0%;
 	background: #0095d8;
-}
-#db-home {
-/*	margin: -2px 0 0 0 !important;*/
 }
 #pl-home {
 	margin-left: -10px !important;
