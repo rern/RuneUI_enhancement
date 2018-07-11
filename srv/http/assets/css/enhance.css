@@ -144,10 +144,9 @@
 @keyframes blinkopaque {
 	50% { opacity: 0; }
 }
-/*#menu-bottom .fa-refresh.fa-spin:before {
-	content: "\f507";
+.blink {
 	animation: blinkopaque 1.5s linear infinite;
-}*/
+}
 #loader img {
 	animation: blinkopaque 1.5s linear infinite;
 	width: 300px;
@@ -489,8 +488,8 @@
 	position: absolute;
 	left: 50%;
 	top: 165px;
-	margin-left: -50px;
-	width: 100px;
+	margin-left: -60px;
+	width: 120px;
 	text-align: center;
 	z-index: 5;
 }
