@@ -171,21 +171,6 @@ file=/srv/http/assets/js/runeui.js
 echo $file
 
 comment -n +2 '(evtname, visChange)' -n -1 '// PLAYING QUEUE'
-comment 'fa-spin"></i> Updating'
-
-string=$( cat <<'EOF'
-        $( 'a', '#open-panel-sx' ).html( '<i class="fa fa-refresh fa-spin"></i>' );
-EOF
-)
-append 'fa-spin"></i> Updating'
-
-comment 'fa-music sx"></i> Library'
-
-string=$( cat <<'EOF'
-        $( 'a', '#open-panel-sx' ).html( '<i class="fa fa-folder-open"></i>' );
-EOF
-)
-append 'fa-music sx"></i> Library'
 #----------------------------------------------------------------------------------
 file=/srv/http/db/index.php
 echo $file
