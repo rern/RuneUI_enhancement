@@ -500,7 +500,6 @@
 }
 #iupdate {
 	font-size: 14px !important;
-	vertical-align: 8%;
 }
 #overlay-playsource-open,
 #elapsed,
@@ -611,7 +610,9 @@
 	margin-left: -60px;
 }
 #timeL,
-#timeR {
+#timeR,
+#volL,
+#volR {
 	top: 92px;
 	height: 50px;
 }
@@ -621,13 +622,17 @@
 	height: 60px;
 }
 #timeL,
-#timeR {
+#timeR,
+#volL,
+#volR {
 	width: 40px;
 }
-#timeL {
+#timeL,
+#volL {
 	margin-left: -72px;
 }
-#timeR {
+#timeR,
+#volR {
 	margin-left: 32px;
 }
 #timeB,
