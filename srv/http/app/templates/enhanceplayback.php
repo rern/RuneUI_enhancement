@@ -25,6 +25,7 @@
 						<i id="irandom" class="fa fa-random hide"></i>
 						<i id="irepeat" class="fa hide"></i>
 						<i id="iplayer" class="fa hide"></i>
+						<i id="iupdate" class="fa fa-library hide"></i>
 						<i id="igpio" class="fa fa-gpio hide"></i>
 					</div>
 					<img id="controls-time" class="controls" src="/srv/http/assets/img/controls-time.svg">
