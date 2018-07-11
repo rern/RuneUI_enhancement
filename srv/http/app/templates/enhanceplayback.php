@@ -22,10 +22,10 @@
 					<div id="time"></div>
 					<button id="overlay-playsource-open" class="btn btn-default btn-xs">MPD</button>
 					<div id="imode">
+						<i id="iupdate" class="fa fa-library hide"></i>
 						<i id="irandom" class="fa fa-random hide"></i>
 						<i id="irepeat" class="fa hide"></i>
 						<i id="iplayer" class="fa hide"></i>
-						<i id="iupdate" class="fa fa-library hide"></i>
 						<i id="igpio" class="fa fa-gpio hide"></i>
 					</div>
 					<img id="controls-time" class="controls" src="/srv/http/assets/img/controls-time.svg">
@@ -71,7 +71,9 @@
 				<div id="volume-knob" class="<?=$this->volume['divclass'] ?>">
 					<div id="volume" data-dynamic="<?=$this->volume['dynamic'] ?>"></div>
 					<div id="volT" class="volmap"></div>
+					<div id="volL" class="volmap"></div>
 					<div id="volM" class="volmap"></div>
+					<div id="volR" class="volmap"></div>
 					<div id="volB" class="volmap"></div>
 					<img id="controls-vol" class="controls" src="/srv/http/assets/img/controls-vol.svg">
 				</div>
