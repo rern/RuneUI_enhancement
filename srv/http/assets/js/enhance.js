@@ -210,7 +210,9 @@ var btnctrl = {
 	, coverB : 'stop'
 	, coverBR: 'repeat'
 	, volT   : 'volup'
+	, volL   : 'voldn'
 	, volM   : 'volumemute'
+	, volR   : 'volup'
 	, volB   : 'voldn'
 }
 $( '.timemap, .covermap, .volmap' ).click( function() {
