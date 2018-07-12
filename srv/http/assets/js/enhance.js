@@ -90,7 +90,7 @@ function btntoggle() {
 $( '#menu-top, #menu-bottom' ).click( function() {
 	$( '.context-menu' ).removeClass( 'open' );
 } );
-$( '.playback-controls, #menu-bottom' ).click( function() {
+$( '.playback-controls, #menu-bottom, #settings' ).click( function() {
 	$( '#settings' ).hide();
 } );
 $( '#context-menu-playlist' ).click( function() {
