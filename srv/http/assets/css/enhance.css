@@ -238,7 +238,7 @@
 	cursor: pointer;
 }
 #settings {
-	float: right;
+	position: fixed;
 	top: 40px;
 	right: 0px;
 	left: calc( 100% - 170px );
