@@ -458,8 +458,10 @@ var $hammercoverT = new Hammer( document.getElementById( 'coverT' ) );
 var $hammercoverTR = new Hammer( document.getElementById( 'coverTR' ) );
 var $hammervoldn = new Hammer( document.getElementById( 'voldn' ) );
 var $hammervolup = new Hammer( document.getElementById( 'volup' ) );
-var $hammervolB = new Hammer( document.getElementById( 'volB' ) );
 var $hammervolT = new Hammer( document.getElementById( 'volT' ) );
+var $hammervolL = new Hammer( document.getElementById( 'volL' ) );
+var $hammervolR = new Hammer( document.getElementById( 'volR' ) );
+var $hammervolB = new Hammer( document.getElementById( 'volB' ) );
 var $hammerlibrary = new Hammer( document.getElementById( 'panel-sx' ) );
 var $hammerplayback = new Hammer( document.getElementById( 'playback' ) );
 
@@ -508,7 +510,7 @@ $hammercontent.on( 'swiperight', function() {
 function volumepress( interval, id, fast ) {
 	var knobvol = parseInt( $volumeRS.getValue() );
 	var vol = knobvol;
-	var increment = ( id === 'volup' || id === 'volT' ) ? 1 : -1;
+	var increment = ( id === 'volup' || id === 'volT' || id == 'volR' ) ? 1 : -1;
 	if ( ( increment === -1 && knobvol === 0 )
 		|| ( increment === 1 && knobvol === 100 ) ) return;
 	var count = 0;
@@ -534,7 +536,7 @@ function volumepress( interval, id, fast ) {
 var timeoutId;
 var intervalId;
 var interval;
-[ $hammervoldn, $hammervolup, $hammervolT, $hammervolB ].forEach( function( el ) {
+[ $hammervoldn, $hammervolup, $hammervolT, $hammervolL, $hammervolR, $hammervolB ].forEach( function( el ) {
 	el.on( 'press', function( e ) {
 		buttonactive = 1;
 		onsetvolume = 1;
