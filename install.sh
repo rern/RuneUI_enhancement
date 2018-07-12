@@ -313,6 +313,8 @@ if [[ $1 != u ]]; then
 	\nas checked sd checked usb checked webradio checked albums checked artists checked composer checked genre checked \
 	\spotify checked dirble checked jamendo checked &> /dev/null
 fi
+# disable screensaver
+redis-cli set localSStime -1
 
 installfinish $@
 
