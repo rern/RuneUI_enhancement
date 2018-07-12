@@ -2004,4 +2004,12 @@ function renderUI( text ) {
 	if ( $( '#playback' ).hasClass( 'active' ) && !imodedelay ) displayplayback();
 }
 
+} else { // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+	
+// for updating icon in sources page
+function renderUI( text ) {
+	GUI.json = text[ 0 ];
+	$( '#open-panel-sx i' ).toggleClass( 'blink', GUI.json.updating_db !== undefined );
+}
+
 } // end if <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
