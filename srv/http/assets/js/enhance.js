@@ -1990,26 +1990,25 @@ function converthms( second ) {
 	return ss ? hh + mm + ss : '';
 }
 
+} // end if <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
 // ### called by backend socket - force refresh all clients ###
 function renderUI( text ) {
-	toggleLoader( 'close' );
-	if ( !$('#section-index' ).length || onsetvolume ) return;
-	
-	GUI.json = text[ 0 ];
-	GUI.state = GUI.json.state;
-	
-	setplaybackdata();
-	setbutton();
-	// imodedelay fix imode flashing on usb dac switching
-	if ( $( '#playback' ).hasClass( 'active' ) && !imodedelay ) displayplayback();
+	if ( /\/.*\//.test( location.pathname ) === false ) { // not setting pages
+		toggleLoader( 'close' );
+		if ( !$('#section-index' ).length || onsetvolume ) return;
+		
+		GUI.json = text[ 0 ];
+		GUI.state = GUI.json.state;
+		
+		setplaybackdata();
+		setbutton();
+		// imodedelay fix imode flashing on usb dac switching
+		if ( $( '#playback' ).hasClass( 'active' ) && !imodedelay ) displayplayback();
+	} else if ( /\/sources\//.test( location.pathname ) === true ) { // sources page
+		GUI.json = text[ 0 ];
+		var mpdupdate = GUI.json.updating_db !== undefined ? true : false;
+		$( '#open-panel-sx i' ).toggleClass( 'blink', mpdupdate );
+		$( '#updatempddb i, #rescanmpddb i' ).toggleClass( 'fa-spin', mpdupdate );
+	}
 }
-
-} else { // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-	
-// for updating icon in sources page
-function renderUI( text ) {
-	GUI.json = text[ 0 ];
-	$( '#open-panel-sx i' ).toggleClass( 'blink', GUI.json.updating_db !== undefined );
-}
-
-} // end if <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
