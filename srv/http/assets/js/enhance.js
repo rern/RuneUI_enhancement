@@ -1858,6 +1858,7 @@ function setplaybackdata() {
 		GUI.json.radio = ( status.ext === 'radio' ? 1 : 0 );
 		setbutton();
 		
+		$( '.playback-controls' ).css( 'visibility', 'visible' );
 		$( '#currentartist' ).html( status.Artist );
 		$( '#currentsong' ).html( status.Title );
 		$( '#currentalbum' ).html( status.ext !== 'radio' ? status.Album : '<a>'+ status.Album +'</a>' ).promise().done( function() {
@@ -2006,7 +2007,11 @@ function renderUI( text ) {
 		setplaybackdata();
 		setbutton();
 		// imodedelay fix imode flashing on usb dac switching
-		if ( $( '#playback' ).hasClass( 'active' ) && !imodedelay ) displayplayback();
+		if ( $( '#open-playback' ).hasClass( 'active' ) && !imodedelay ) displayplayback();
+		if ( $( '#open-panel-dx' ).hasClass( 'active' ) ) {
+			getPlaylistCmd();
+			GUI.playlist = GUI.json.playlist;
+		}
 	} else if ( /\/sources\//.test( location.pathname ) === true ) { // sources page
 		GUI.json = text[ 0 ];
 		var mpdupdate = GUI.json.updating_db !== undefined ? true : false;
