@@ -20,15 +20,26 @@
 			<div class="row hide" id="playback-row">
 				<div id="time-knob">
 					<div id="time"></div>
-					<button id="overlay-playsource-open" class="btn btn-default btn-xs controls1">MPD</button>
+					<button id="overlay-playsource-open" class="btn btn-default btn-xs">MPD</button>
+					<div id="imode">
+						<i id="iupdate" class="fa fa-library hide"></i>
+						<i id="irandom" class="fa fa-random hide"></i>
+						<i id="irepeat" class="fa hide"></i>
+						<i id="iplayer" class="fa hide"></i>
+						<i id="igpio" class="fa fa-gpio hide"></i>
+					</div>
 					<img id="controls-time" class="controls" src="/srv/http/assets/img/controls-time.svg">
 					<span id="elapsed" class="controls1"></span>
 					<span id="total" class="controls1"></span>
+					<div id="timeTL" class="timemap"></div>
 					<div id="timeT" class="timemap"></div>
+					<div id="timeTR" class="timemap"></div>
 					<div id="timeL" class="timemap"></div>
 					<div id="timeM" class="timemap"></div>
 					<div id="timeR" class="timemap"></div>
+					<div id="timeBL" class="timemap"></div>
 					<div id="timeB" class="timemap"></div>
+					<div id="timeBR" class="timemap"></div>
 				</div>
 				<div id="play-group">
 					<div class="btn-group">
@@ -60,7 +71,9 @@
 				<div id="volume-knob" class="<?=$this->volume['divclass'] ?>">
 					<div id="volume" data-dynamic="<?=$this->volume['dynamic'] ?>"></div>
 					<div id="volT" class="volmap"></div>
+					<div id="volL" class="volmap"></div>
 					<div id="volM" class="volmap"></div>
+					<div id="volR" class="volmap"></div>
 					<div id="volB" class="volmap"></div>
 					<img id="controls-vol" class="controls" src="/srv/http/assets/img/controls-vol.svg">
 				</div>
@@ -86,7 +99,7 @@
 				</div>
 			</div>
 			<div id="db-currentpath">
-				<div id="db-home"><i class="fa fa-library"></i></div> <span>LIBRARY</span>
+				<div id="db-home"><i class="fa fa-folder-open"></i></div> <span>LIBRARY</span>
 				<i id="db-webradio-add" class="fa fa-plus-circle"></i>
 			</div>
 			<button id="db-search-results" class="btn hide" type="button" title="Close search results and go back to the Library browsing"><i class="fa fa-times sx"></i></button>
@@ -122,13 +135,8 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 	<!-- QUEUE PANEL -->
 	<div id="panel-dx" class="tab-pane">
 		<div class="btnlist btnlist-top">
-			<div id="pl-home" class="hide"><i class="fa fa-list-ul sx"></i></div> <span id="pl-home-text" class="hide"> &ensp;PLAYLISTS</span>
-			<div id="pl-manage">
-				<i id="pl-manage-list" class="fa fa-list-ol fa-lg" title="Manage playlists"></i>
-				<i id="pl-manage-save" class="fa fa-save fa-lg" title="Save current queue as playlist" data-toggle="modal" data-target="#modal-pl-save"></i>
-				<!--<i id="pl-import-youtube" class="fa fa-youtube-play" title="Import a playlist or video from youtube." data-toggle="modal" data-target="#modal-pl-youtube"></i>-->
-				<i id="pl-manage-clear" class="fa fa-trash-o fa-lg" title="Clear the playing queue" data-toggle="modal" data-target="#modal-pl-clear"></i>
-			</div>
+			<div id="pl-home"><i class="fa fa-list-ul sx"></i></div>
+			<span id="pl-currentpath" class="hide"> &ensp;PLAYLISTS</span>
 			<span id="pl-count" class="hide"></span>
 			<form id="pl-search" class="form-inline" method="post" onSubmit="return false;" role="form">
 				<div class="input-group">
@@ -138,6 +146,12 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 					</span>
 				</div>
 			</form>
+			<div id="pl-manage">
+				<i id="pl-manage-list" class="fa fa-folder-open fa-lg" title="Manage playlists"></i>
+				<i id="pl-manage-save" class="fa fa-save fa-lg" title="Save current queue as playlist" data-toggle="modal" data-target="#modal-pl-save"></i>
+				<!--<i id="pl-import-youtube" class="fa fa-youtube-play" title="Import a playlist or video from youtube." data-toggle="modal" data-target="#modal-pl-youtube"></i>-->
+				<i id="pl-manage-clear" class="fa fa-minus-circle fa-lg" title="Clear the playing queue" data-toggle="modal" data-target="#modal-pl-clear"></i>
+			</div>
 			<button id="pl-filter-results" class="btn hide" type="button" title="Close filter results and go back to the playing Queue"></button>
 		</div>
 		<div id="playlist">

@@ -16,8 +16,6 @@ sed -i 's/gifico|svg/gif|ico/' /etc/nginx/nginx.conf
 #1temp1
 
 mv /srv/http/app/coverart_ctl.php{,.backup}
-mv /srv/http/assets/fonts/fontawesome-webfont.woff{,.backup}
-mv /srv/http/assets/fonts/fontawesome-webfont.ttf{,.backup}
 mv /srv/http/assets/js/runeui.min.js{,.backup}
 mv /usr/share/bootsplash/start-runeaudio.png{,.backup}
 mv /usr/share/bootsplash/reboot-runeaudio.png{,.backup}
@@ -48,31 +46,36 @@ EOF
 )
 appendH 'runeui.css'
 
+commentH 'id="menu-top"' 'href="/"><i class="fa fa-play">'
+
 string=$( cat <<'EOF'
 <div id="bartop"></div>
 <div id="barbottom"></div>
-EOF
-)
-insertH 'id="menu-top"'
-
-commentH 'this->hostname' 'href="/"><i class="fa fa-play">'
-
-string=$( cat <<'EOF'
-        <button id="menu-settings" class="dropdown-toggle btn-default" role="button" data-toggle="dropdown" data-target="#" href="#"><i class="fa fa-gear"></i></button>
-        <ul class="dropdown-menu" role="menu" aria-labelledby="menu-settings">
+        <ul id="settings" class="dropdown-menu" role="menu" aria-labelledby="menu-settings">
             <li id="dropdownbg"></li>
+
 EOF
 )
-insertH ' Sources'
+appendH 'href="/"><i class="fa fa-play">'
 
 commentH 'href="#poweroff-modal"'
 
 string=$( cat <<'EOF'
-            <li class="<?=$this->uri(1, 'dev', 'active')?>"><a href="/dev/"><i class="fa fa-code"></i> Development</a></li>
+            <li class="<?=$this->uri(1, 'dev', 'active')?>"><a href="/dev/"><i class="fa fa-gears"></i> Development</a></li>
             <li><a id="turnoff"><i class="fa fa-power-off"></i> Power</a></li>
 EOF
 )
 insertH 'href="#poweroff-modal"'
+
+string=$( cat <<'EOF'
+        </ul>
+<div id="menu-top">
+    <i id="menu-settings" class="fa fa-gear"></i>
+EOF
+)
+insertH -n -2 'class="playback-controls"'
+
+commentH -n -2 'class="playback-controls"' -n -1 'class="playback-controls"'
 
 string=$( cat <<'EOF'
         <button id="pause" class="btn btn-default btn-cmd" title="Pause" data-cmd="play"><i class="fa fa-pause"></i></button>
@@ -93,7 +96,7 @@ insertH 'class="home"'
 commentH 'id="open-panel-sx"' 'id="open-panel-dx"'
 
 string=$( cat <<'EOF'
-        <li id="open-panel-sx"><a><i class="fa fa-library"></i></a></li>
+        <li id="open-panel-sx"><a><i class="fa fa-folder-open"></i></a></li>
         <li id="open-playback" class="active"><a><i class="fa fa-play-circle"></i></a></li>
         <li id="open-panel-dx"><a><i class="fa fa-list-ul"></i></a></li>
 EOF
@@ -167,23 +170,9 @@ insertP '<div id="context-menus">'
 file=/srv/http/assets/js/runeui.js
 echo $file
 
+comment 'function renderLibraryHome()' -n -3 'function getPlaylist(text)'
+comment 'function renderUI(text)' -n -3 'function renderPlaylists(data)'
 comment -n +2 '(evtname, visChange)' -n -1 '// PLAYING QUEUE'
-comment 'system poweroff' -n +4 'system display off'
-comment 'fa-spin"></i> Updating'
-
-string=$( cat <<'EOF'
-        $( 'a', '#open-panel-sx' ).html( '<i class="fa fa-refresh fa-spin"></i>' );
-EOF
-)
-append 'fa-spin"></i> Updating'
-
-comment 'fa-music sx"></i> Library'
-
-string=$( cat <<'EOF'
-        $( 'a', '#open-panel-sx' ).html( '<i class="fa fa-folder-open"></i>' );
-EOF
-)
-append 'fa-music sx"></i> Library'
 #----------------------------------------------------------------------------------
 file=/srv/http/db/index.php
 echo $file
@@ -324,11 +313,13 @@ if [[ $1 != u ]]; then
 	\nas checked sd checked usb checked webradio checked albums checked artists checked composer checked genre checked \
 	\spotify checked dirble checked jamendo checked &> /dev/null
 fi
+# disable screensaver
+redis-cli set localSStime -1
 
 installfinish $@
 
-title -nt "$info Please clear browser cache and reboot."
-
 clearcache
 
-[[ $svg == 0 ]] && systemctl restart nginx
+title -nt "$info Please reboot and clear browser cache."
+
+[[ $svg == 0 ]] && restartnginx
