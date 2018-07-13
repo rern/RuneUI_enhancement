@@ -920,12 +920,6 @@
 #home-blocks h4 span {
 	color: #587ca0;
 }
-.home-bookmark h4 {
-	width: 100%;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
 /* ---------------------- breadcrumb and index ---------------------- */
 .btnlist-top {
 	top: 0;
