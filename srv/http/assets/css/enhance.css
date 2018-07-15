@@ -1098,6 +1098,9 @@
 	overflow: hidden;
 	text-overflow: ellipsis
 }
+#pl-count i {
+	font-size: 24px;
+}
 #pl-editor span i {
 	padding: 0 15px 0 10px !important;
 }
