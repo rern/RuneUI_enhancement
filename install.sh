@@ -314,7 +314,7 @@ if [[ $1 != u ]]; then
 	\spotify checked dirble checked jamendo checked &> /dev/null
 fi
 # disable screensaver
-redis-cli set localSStime -1
+redis-cli set localSStime -1 &> /dev/null
 
 installfinish $@
 
