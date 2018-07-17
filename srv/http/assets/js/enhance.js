@@ -195,7 +195,7 @@ var btnctrl = {
 $( '.timemap, .covermap, .volmap' ).click( function() {
 	var id = this.id;
 	var cmd = btnctrl[ id ];
-	var imodeshow = ( redis.display.buttons && redis.display.time ) ? 1 : 0;
+	var imodeshow = ( !redis.display.buttons && redis.display.time ) ? 1 : 0;
 	if ( cmd === 'menu' ) {
 		$( '#menu-settings' ).click();
 	} else if ( cmd === 'toggle' ) {
@@ -985,7 +985,7 @@ function displayplayback() {
 	}
 //	if ( buttonactive ) $( '#play-group, #share-group, #vol-group' ).show();
 	$( '#playback-row' ).removeClass( 'hide' ); // restore - hidden by fix flash
-	if ( display.buttons == '' && display.time == 'checked' ) {
+	if ( !display.buttons && display.time ) {
 		$( '#irandom' ).toggleClass( 'hide', GUI.json.random === '0' );
 		if ( GUI.json.repeat === '0' ) {
 			$( '#irepeat' ).removeClass( 'fa-repeat-single' ).addClass( 'hide' );
