@@ -63,29 +63,6 @@ function bioshow() {
 	$( '#bio' ).show();
 	$( '#loader' ).addClass( 'hide' );
 }
-function btntoggle() {
-	buttonactive = 0;
-	var time = $( '#time-knob' ).is( ':visible' );
-	var coverart = $( '#coverart' ).is( ':visible' );
-	var volume = display.volume != 0 && display.volumempd != 0 && $( '#volume-knob' ).is( ':visible' );
-	if ( buttonhide == 0 
-		|| $( '#play-group' ).is( ':visible' )
-		|| $( '#share-group' ).is( ':visible' )
-		|| $( '#vole-group' ).is( ':visible' )
-		) {
-		buttonhide = 1;
-		$( '#play-group, #share-group, #vol-group' ).hide();
-	} else {
-		buttonhide = 0;
-		if ( time ) $( '#play-group' ).show();
-		if ( coverart ) $( '#share-group' ).show();
-		if ( volume ) $( '#vol-group' ).show();
-	}
-	
-	if ( window.innerHeight < 414 && $( '#play-group' ).is( ':hidden' ) ) {
-		$( '#play-group, #share-group, #vol-group' ).css( 'margin-top', '10px' );
-	}
-}
 
 $( '#menu-top, #menu-bottom' ).click( function() {
 	$( '.context-menu' ).removeClass( 'open' );
@@ -218,7 +195,7 @@ var btnctrl = {
 $( '.timemap, .covermap, .volmap' ).click( function() {
 	var id = this.id;
 	var cmd = btnctrl[ id ];
-	var imodeshow = ( $( '#play-group' ).is( ':hidden' ) && redis.display.time ) ? 1 : 0;
+	var imodeshow = ( redis.display.buttons && redis.display.time ) ? 1 : 0;
 	if ( cmd === 'menu' ) {
 		$( '#menu-settings' ).click();
 	} else if ( cmd === 'toggle' ) {
@@ -277,7 +254,7 @@ $( '#searchbtn' ).click( function() {
 } );
 // index link
 $( '#db-index li' ).click( function() {
-	var topoffset = !$( '#menu-top' ).is( ':hidden' ) ? 80 : 40;
+	var topoffset = display.bar ? 80 : 40;
 	var indextext = $( this ).text();
 	if ( indextext === '#' ) {
 		window.scrollTo( 0, 0 );
@@ -914,7 +891,7 @@ function displaycommon() {
 		if ( $( tb ).is( ':hidden' ) ) $( tb ).show();
 	} );
 	$( '#menu-top, #menu-bottom' ).mouseleave( function() {
-		if ( display.bar == '' || barhide ) $( '#menu-top, #menu-bottom' ).hide();
+		if ( !display.bar || barhide ) $( '#menu-top, #menu-bottom' ).hide();
 	} );
 }
 
@@ -1043,7 +1020,7 @@ function displaylibrary() {
 	// index height
 	setTimeout( function() {
 		var wH = window.innerHeight;
-		var indexoffset = $( '#menu-top' ).is( ':visible' ) ? 160 : 80;
+		var indexoffset = display.bar ? 160 : 80;
 		if ( wH > 500 ) {
 			var indexline = 27;
 			$( '.half' ).show();
@@ -1761,7 +1738,7 @@ $( '.btn-cmd' ).click( function() {
 function setbutton() {
 	if ( GUI.json.updating_db !== undefined ) {
 		$( '#open-panel-sx i, #db-home i, #iupdate' ).addClass( 'blink' );
-		if ( $( '#menu-bottom' ).is( ':hidden' ) ) $( '#iupdate' ).removeClass( 'hide' );
+		if ( !display.bar ) $( '#iupdate' ).removeClass( 'hide' );
 	} else {
 		$( '#open-panel-sx i, #db-home i, #iupdate' ).removeClass( 'blink' );
 		$( '#iupdate' ).addClass( 'hide' );
