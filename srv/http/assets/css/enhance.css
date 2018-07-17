@@ -1094,9 +1094,6 @@
 	margin: 0 0 0 13px;
 	width: calc( 100% - 340px );
 	font-size: 18px;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis
 }
 #pl-count i {
 	font-size: 24px;
@@ -1197,6 +1194,17 @@ w {
 		display: none;
 	}
 }
+@media(max-width: 700px) {
+	.logo {
+		display: none;
+	}
+}
+@media(max-width: 680px) and (min-width: 540px) {
+	#pl-count a:first-child,
+	#pl-count span:first-of-type {
+		display: none;
+	}
+}
 @media(max-width: 666px) {
 	#playback-row {
 		width: 100vw !important;
@@ -1210,8 +1218,10 @@ w {
 /*		min-width: 50%;*/
 	}
 }
-@media(max-width: 700px) {
-	.logo {
+@media(max-width: 540px) {
+	#pl-count span,
+	#pl-count i,
+	#pl-count a:not(:first-child) {
 		display: none;
 	}
 }
@@ -1359,14 +1369,14 @@ w {
 	#db-webradio-add {
 		right: 170px;
 	}
-	#pl-count {
-		display: none !important;
-	}
 }
 @media(max-width: 480px) {
 	#db-search,
 	#pl-search {
 		max-width: 150px;
+	}
+	#pl-count {
+		display: none !important;
 	}
 	#db-currentpath {
 		overflow: visible;
