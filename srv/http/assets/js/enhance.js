@@ -63,6 +63,29 @@ function bioshow() {
 	$( '#bio' ).show();
 	$( '#loader' ).addClass( 'hide' );
 }
+function btntoggle() {
+	buttonactive = 0;
+	var time = $( '#time-knob' ).is( ':visible' );
+	var coverart = $( '#coverart' ).is( ':visible' );
+	var volume = display.volume != 0 && display.volumempd != 0 && $( '#volume-knob' ).is( ':visible' );
+	if ( buttonhide == 0 
+		|| $( '#play-group' ).is( ':visible' )
+		|| $( '#share-group' ).is( ':visible' )
+		|| $( '#vole-group' ).is( ':visible' )
+		) {
+		buttonhide = 1;
+		$( '#play-group, #share-group, #vol-group' ).hide();
+	} else {
+		buttonhide = 0;
+		if ( time ) $( '#play-group' ).show();
+		if ( coverart ) $( '#share-group' ).show();
+		if ( volume ) $( '#vol-group' ).show();
+	}
+	
+	if ( window.innerHeight < 414 && $( '#play-group' ).is( ':hidden' ) ) {
+		$( '#play-group, #share-group, #vol-group' ).css( 'margin-top', '10px' );
+	}
+}
 
 $( '#menu-top, #menu-bottom' ).click( function() {
 	$( '.context-menu' ).removeClass( 'open' );
@@ -195,7 +218,7 @@ var btnctrl = {
 $( '.timemap, .covermap, .volmap' ).click( function() {
 	var id = this.id;
 	var cmd = btnctrl[ id ];
-	var imodeshow = ( !redis.display.buttons && redis.display.time ) ? 1 : 0;
+	var imodeshow = ( $( '#play-group' ).is( ':hidden' ) && redis.display.time ) ? 1 : 0;
 	if ( cmd === 'menu' ) {
 		$( '#menu-settings' ).click();
 	} else if ( cmd === 'toggle' ) {
@@ -254,7 +277,7 @@ $( '#searchbtn' ).click( function() {
 } );
 // index link
 $( '#db-index li' ).click( function() {
-	var topoffset = display.bar ? 80 : 40;
+	var topoffset = !$( '#menu-top' ).is( ':hidden' ) ? 80 : 40;
 	var indextext = $( this ).text();
 	if ( indextext === '#' ) {
 		window.scrollTo( 0, 0 );
@@ -891,13 +914,15 @@ function displaycommon() {
 		if ( $( tb ).is( ':hidden' ) ) $( tb ).show();
 	} );
 	$( '#menu-top, #menu-bottom' ).mouseleave( function() {
-		if ( !display.bar || barhide ) $( '#menu-top, #menu-bottom' ).hide();
+		if ( display.bar == '' || barhide ) $( '#menu-top, #menu-bottom' ).hide();
 	} );
 }
 
 // playback show/hide blocks
 var command = {
 	  display   : [ 'hGetAll', 'display' ]
+	, activeplayer: [ 'get', 'activePlayer' ]
+	, actplayerinfo: [ 'get', 'act_player_info' ]
 	, volumempd : [ 'get', 'volume' ]
 	, update    : [ 'hGet', 'addons', 'update' ]
 	, backtarget: [ 'get', 'backtarget' ]
@@ -907,7 +932,12 @@ $.post( '/enhance.php', { redis: JSON.stringify( command ) }, function( data ) {
 	redis = JSON.parse( data );
 	display = redis.display;
 	radioelapsed = display.radioelapsed;
-	backtarget = redis.backtarget
+	backtarget = redis.backtarget;
+	if ( !GUI.json ) {
+		GUI.activePlayer = redis.activeplayer;
+		GUI.json = JSON.parse( redis.actplayerinfo );
+		if ( GUI.activePlayer === 'Airplay' ) displayairplay();
+	}
 	// back from setting pages
 	if ( /\/.*\//.test( document.referrer ) == true && backtarget && backtarget !== 'open-playback' ) {
 		setTimeout( function() {
@@ -916,9 +946,29 @@ $.post( '/enhance.php', { redis: JSON.stringify( command ) }, function( data ) {
 	}
 } );
 
+function displayairplay() {
+	$( '.playback-controls' ).css( 'visibility', 'hidden' );
+	$( '#divartist, #divsong, #divalbum' ).removeClass( 'scroll-left' );
+	$( '#playlist-position span, #format-bitrate, #total' ).html( '&nbsp;' );
+	$( '#currentartist' ).html( GUI.json.currentartist );
+	$( '#currentsong' ).html( GUI.json.currentsong );
+	$( '#currentalbum' ).html( GUI.json.currentalbum );
+	$( '#elapsed, #total' ).html( '&nbsp;' );
+	$( '#cover-art' ).css( {
+		  'background-image': 'url("/srv/http/assets/img/airplay-cover.jpg")'
+		, 'border-radius': 0
+	} );
+	$( '#playback-row' ).removeClass( 'hide' );
+	$( '#time-knob, #play-group, #volume-knob, #vol-group' ).addClass( 'hide' );
+	$( '#coverart, #share-group' ).css( 'width', '60%' );
+}
 buttonactive = 0;
 var imodedelay = 0; // fix imode flashing on usb dac switching
 function displayplayback() {
+	if ( GUI.activePlayer === 'Airplay' ) {
+		displayairplay();
+		return;
+	}
 	buttonhide = window.innerHeight <= 320 || window.innerWidth < 499 ? 1 : 0;
 	if ( GUI.json.playlistlength != 0 ) $( '.playback-controls' ).css( 'visibility', 'visible' );
 	
@@ -985,7 +1035,7 @@ function displayplayback() {
 	}
 //	if ( buttonactive ) $( '#play-group, #share-group, #vol-group' ).show();
 	$( '#playback-row' ).removeClass( 'hide' ); // restore - hidden by fix flash
-	if ( !display.buttons && display.time ) {
+	if ( display.buttons == '' && display.time == 'checked' ) {
 		$( '#irandom' ).toggleClass( 'hide', GUI.json.random === '0' );
 		if ( GUI.json.repeat === '0' ) {
 			$( '#irepeat' ).removeClass( 'fa-repeat-single' ).addClass( 'hide' );
@@ -1020,7 +1070,7 @@ function displaylibrary() {
 	// index height
 	setTimeout( function() {
 		var wH = window.innerHeight;
-		var indexoffset = display.bar ? 160 : 80;
+		var indexoffset = $( '#menu-top' ).is( ':visible' ) ? 160 : 80;
 		if ( wH > 500 ) {
 			var indexline = 27;
 			$( '.half' ).show();
@@ -1617,7 +1667,6 @@ function getPlaylistPlain( data ) {
 			+'</li>';
 		classcurrent = classradio = '';
 	}
-	var songhtml = countsong ? '<a>'+ countsong +'</a>&ensp;<i class="fa fa-music"></i>&ensp;' : '';
 	if ( countradio ) {
 		var totalhtml = '<span>'+ converthms( playlisttime ) +'</span>&emsp;<a>'+ countradio +'</a>&ensp; <i class="fa fa-microphone"></i>';
 	} else {
@@ -1628,7 +1677,7 @@ function getPlaylistPlain( data ) {
 	$( '#pl-filter' ).val( '' );
 	$( '#pl-filter-results' ).addClass( 'hide' ).html( '' );
 	$( '#pl-manage, #pl-count' ).removeClass( 'hide' );
-	$( '#pl-count' ).html( '<a>PLAYLIST</a><span>&ensp;&#8226;&ensp;</span>'+ songhtml + totalhtml );
+	$( '#pl-count' ).html( '<a>PLAYLIST</a><span>&ensp;&#8226;&ensp;</span><a>'+ countsong +'</a>&ensp;<i class="fa fa-music"></i>&ensp;'+ totalhtml );
 }
 function getPlaylistCmd(){
 	if ( GUI.json.playlistlength == 0 ) {
@@ -1738,7 +1787,7 @@ $( '.btn-cmd' ).click( function() {
 function setbutton() {
 	if ( GUI.json.updating_db !== undefined ) {
 		$( '#open-panel-sx i, #db-home i, #iupdate' ).addClass( 'blink' );
-		if ( !display.bar ) $( '#iupdate' ).removeClass( 'hide' );
+		if ( $( '#menu-bottom' ).is( ':hidden' ) ) $( '#iupdate' ).removeClass( 'hide' );
 	} else {
 		$( '#open-panel-sx i, #db-home i, #iupdate' ).removeClass( 'blink' );
 		$( '#iupdate' ).addClass( 'hide' );
@@ -1788,6 +1837,10 @@ function scrollText() {
 }
 onsetmode = 0;
 function setplaybackdata() {
+	if ( GUI.activePlayer === 'Airplay' ) {
+		displayairplay();
+		return;
+	}
 	$.post( '/enhancestatus.php', function( data ) {
 		var status = JSON.parse( data );
 		GUI.status = status;
