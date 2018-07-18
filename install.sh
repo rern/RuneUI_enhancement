@@ -319,7 +319,7 @@ redis-cli set localSStime -1 &> /dev/null
 installfinish $@
 
 clearcache
-
-title -nt "$info Please reboot and clear browser cache."
+echo -e "$info Please clear browser cache."
+title -nt "If first time install, reboot as well."
 
 [[ $svg == 0 ]] && restartnginx
