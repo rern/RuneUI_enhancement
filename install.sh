@@ -254,7 +254,7 @@ file=/srv/http/command/rune_PL_wrk
 echo $file
 
 string=$( cat <<'EOF'
-                        $status['actPlayer'] = "Airplay";
+                        $status['activePlayer'] = "Airplay";
 EOF
 )
 append 'song_percent'
