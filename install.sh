@@ -250,6 +250,15 @@ EOF
 )
 append '$'
 #----------------------------------------------------------------------------------
+file=/srv/http/command/rune_PL_wrk
+echo $file
+
+string=$( cat <<'EOF'
+                        $status['actPlayer'] = "Airplay";
+EOF
+)
+append 'song_percent'
+#----------------------------------------------------------------------------------
 file=/etc/nginx/nginx.conf
 if ! grep -q 'ico|svg' $file; then
 	echo $file
