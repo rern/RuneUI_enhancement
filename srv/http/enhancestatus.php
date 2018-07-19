@@ -85,6 +85,7 @@ if ( $status[ 'ext' ] === 'radio' ) {
 $redis = new Redis(); 
 $redis->pconnect( '127.0.0.1' );
 $status[ 'volumemute' ] = $redis->get( 'volumemute' );
+$status[ 'activePlayer' ] = $redis->get( 'activePlayer' );
 $webradios = $redis->hGetAll( "webradios" );
 $webradioname = array_flip( $webradios );
 $name = $webradioname[ $file ];
