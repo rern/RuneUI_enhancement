@@ -83,7 +83,7 @@ EOF
 )
 appendH 'id="play"'
 
-commentH 'id="clock-display"' '$'
+commentH 'id="clock-display"' -n +2 'id="open-panel-dx"'
 
 string=$( cat <<'EOF'
     <a href="http://www.runeaudio.com/forum/raspberry-pi-f7.html" target="_blank" alt="RuneAudio Forum">
