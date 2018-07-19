@@ -959,8 +959,25 @@ function displayairplay() {
 		, 'border-radius': 0
 	} );
 	$( '#playback-row' ).removeClass( 'hide' );
-	$( '#coverartoverlay, #time-knob, #play-group, #volume-knob, #vol-group' ).addClass( 'hide' );
-	$( '#coverart, #share-group' ).css( 'width', '60%' );
+	$( '#imode, #coverartoverlay, #volume-knob, #play-group, #share-group, #vol-group' ).addClass( 'hide' );
+	if ( display.time ) {
+		$( '#time-knob' ).removeClass( 'hide' );
+		$( '#time-knob, #play-group, #coverart, #share-group' ).css( 'width', '45%' );
+		clearInterval( GUI.currentKnob );
+		clearInterval( GUI.countdown );
+		$( '#time' ).roundSlider( 'setValue', 0 );
+		$( '#eleapsed' ).css( 'color', '#e0e7ee' );
+		$( '#total' ).text( '' );
+		var elapsed = 0;
+		GUI.countdown = setInterval( function() {
+			elapsed++
+			mmss = converthms( elapsed );
+			$( '#elapsed' ).text( mmss );
+		}, 1000 );
+	} else {
+		$( '#time-knob' ).addClass( 'hide' );
+		$( '#coverart, #share-group' ).css( 'width', '60%' );
+	}
 }
 buttonactive = 0;
 var imodedelay = 0; // fix imode flashing on usb dac switching
@@ -991,6 +1008,7 @@ function displayplayback() {
 		'-webkit-order': '',
 		display: ''
 	} );
+	$( '#play-group' ).css( 'visibility', '' );
 	$( '#time-knob, #play-group' ).toggleClass( 'hide', !display.time );
 	$( '#coverart, #share-group' ).toggleClass( 'hide', !display.coverart );
 	$( '#volume-knob, #vol-group' ).toggleClass( 'hide', !volume );
