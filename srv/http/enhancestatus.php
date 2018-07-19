@@ -1,4 +1,13 @@
 <?php
+$redis = new Redis(); 
+$redis->pconnect( '127.0.0.1' );
+$activePlayer = $redis->get( 'activePlayer' );
+if ( $activePlayer === 'Airplay' ) {
+	$status[ 'activePlayer' ] = $activePlayer;
+	echo json_encode( $status );
+	die();
+}
+
 include '/srv/http/app/libs/runeaudio.php';
 $mpd = openMpdSocket('/run/mpd.sock');
 
@@ -82,10 +91,8 @@ if ( $status[ 'ext' ] === 'radio' ) {
 	$status[ 'time' ] = '';
 }
 
-$redis = new Redis(); 
-$redis->pconnect( '127.0.0.1' );
+$status[ 'activePlayer' ] = $activePlayer;
 $status[ 'volumemute' ] = $redis->get( 'volumemute' );
-$status[ 'activePlayer' ] = $redis->get( 'activePlayer' );
 $webradios = $redis->hGetAll( "webradios" );
 $webradioname = array_flip( $webradios );
 $name = $webradioname[ $file ];
