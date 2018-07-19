@@ -250,6 +250,23 @@ EOF
 )
 append '$'
 #----------------------------------------------------------------------------------
+file=/srv/http/command/airplay_toggle
+echo $file
+
+string=$( cat <<'EOF'
+		exec( '/usr/bin/systemctl stop mpd' );
+		ui_render('playback', '{"actPlayer":"Airplay"}');
+EOF
+)
+append 'Playback has been switched'
+
+string=$( cat <<'EOF'
+		exec( '/usr/bin/systemctl start mpd' );
+		ui_render('playback', '{"actPlayer":"MPD"}');
+EOF
+)
+append 'Airplay playback has completed'
+#----------------------------------------------------------------------------------
 file=/srv/http/command/rune_PL_wrk
 echo $file
 
