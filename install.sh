@@ -69,7 +69,7 @@ insertH 'href="#poweroff-modal"'
 
 string=$( cat <<'EOF'
         </ul>
-<div id="menu-top">
+<div id="menu-top" class="hide">
     <i id="menu-settings" class="fa fa-gear"></i>
 EOF
 )
@@ -83,25 +83,23 @@ EOF
 )
 appendH 'id="play"'
 
-commentH 'class="home"'
+commentH 'id="clock-display"' '$'
 
 string=$( cat <<'EOF'
     <a href="http://www.runeaudio.com/forum/raspberry-pi-f7.html" target="_blank" alt="RuneAudio Forum">
         <img class="logo" src="<?=$this->asset('/img/runelogo.svg')?>">
     </a>
-EOF
-)
-insertH 'class="home"'
-
-commentH 'id="open-panel-sx"' 'id="open-panel-dx"'
-
-string=$( cat <<'EOF'
+</div>
+<div id="menu-bottom" class="hide">
+    <ul>
         <li id="open-panel-sx"><a><i class="fa fa-folder-open"></i></a></li>
         <li id="open-playback" class="active"><a><i class="fa fa-play-circle"></i></a></li>
         <li id="open-panel-dx"><a><i class="fa fa-list-ul"></i></a></li>
+    </ul>
+</div>
 EOF
 )
-appendH 'id="open-panel-dx"'
+insertH 'id="clock-display"'
 #----------------------------------------------------------------------------------
 file=/srv/http/app/templates/footer.php
 echo $file
