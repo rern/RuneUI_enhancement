@@ -889,7 +889,7 @@ function unmutecolor() {
 		.find( 'i' ).removeClass( 'fa-mute' ).addClass( 'fa-volume' );
 }
 
-// #menu-top, #menu-bottom, #play-group, #share-group, #vol-group:
+// #play-group, #share-group, #vol-group:
 // use show/hide to work with css 'display: none'
 function displaycommon() {
 	barhide = window.innerWidth < 499 || window.innerHeight < 515 ? 1 : 0;
@@ -897,11 +897,11 @@ function displaycommon() {
 		&& $( '#bio' ).is( ':hidden' )
 		&& barhide == 0
 	) {
-		$( '#menu-top, #menu-bottom' ).show();
+		$( '#menu-top, #menu-bottom' ).removeClass( 'hide' );
 		$( '#database, #playlist' ).css( 'padding-top', '80px' );
 		$( '.btnlist-top' ).css( 'top', '40px' );
 	} else {
-		$( '#menu-top, #menu-bottom' ).hide();
+		$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
 		$( '#database, #playlist' ).css( 'padding-top', '40px' );
 		$( '.btnlist-top' ).css( 'top', 0 );
 		
@@ -911,10 +911,10 @@ function displaycommon() {
 	
 	$( '#bartop, #barbottom' ).mouseenter( function() {
 		var tb = $( this ).prop( 'id' ).replace( 'bar', '#menu-' );
-		if ( $( tb ).is( ':hidden' ) ) $( tb ).show();
+		if ( $( tb ).is( ':hidden' ) ) $( tb ).removeClass( 'hide' );
 	} );
 	$( '#menu-top, #menu-bottom' ).mouseleave( function() {
-		if ( display.bar == '' || barhide ) $( '#menu-top, #menu-bottom' ).hide();
+		if ( display.bar == '' || barhide ) $( '#menu-top, #menu-bottom' ).addClass( 'hide' );
 	} );
 }
 
@@ -958,10 +958,11 @@ function displayairplay() {
 		  'background-image': 'url("/srv/http/assets/img/airplay-cover.jpg")'
 		, 'border-radius': 0
 	} );
+	$( '#menu-top, #menu-bottom' ).toggleClass( 'hide', !display.bar );
 	$( '#playback-row' ).removeClass( 'hide' );
+	$( '#time-knob' ).toggleClass( 'hide', !display.time );
 	$( '#imode, #coverartoverlay, #volume-knob, #play-group, #share-group, #vol-group' ).addClass( 'hide' );
 	if ( display.time ) {
-		$( '#time-knob' ).removeClass( 'hide' );
 		$( '#time-knob, #play-group, #coverart, #share-group' ).css( 'width', '45%' );
 		clearInterval( GUI.currentKnob );
 		clearInterval( GUI.countdown );
@@ -975,7 +976,6 @@ function displayairplay() {
 			$( '#elapsed' ).text( mmss );
 		}, 1000 );
 	} else {
-		$( '#time-knob' ).addClass( 'hide' );
 		$( '#coverart, #share-group' ).css( 'width', '60%' );
 	}
 }
