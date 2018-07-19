@@ -933,10 +933,10 @@ $.post( '/enhance.php', { redis: JSON.stringify( command ) }, function( data ) {
 	display = redis.display;
 	radioelapsed = display.radioelapsed;
 	backtarget = redis.backtarget;
-	if ( !GUI.json ) {
-		GUI.activePlayer = redis.activeplayer;
+	GUI.activePlayer = redis.activeplayer;
+	if ( GUI.activePlayer === 'Airplay' ) {
 		GUI.json = JSON.parse( redis.actplayerinfo );
-		if ( GUI.activePlayer === 'Airplay' ) displayairplay();
+		displayairplay();
 	}
 	// back from setting pages
 	if ( /\/.*\//.test( document.referrer ) == true && backtarget && backtarget !== 'open-playback' ) {
@@ -959,7 +959,7 @@ function displayairplay() {
 		, 'border-radius': 0
 	} );
 	$( '#playback-row' ).removeClass( 'hide' );
-	$( '#time-knob, #play-group, #volume-knob, #vol-group' ).addClass( 'hide' );
+	$( '#coverartoverlay, #time-knob, #play-group, #volume-knob, #vol-group' ).addClass( 'hide' );
 	$( '#coverart, #share-group' ).css( 'width', '60%' );
 }
 buttonactive = 0;
@@ -1837,12 +1837,13 @@ function scrollText() {
 }
 onsetmode = 0;
 function setplaybackdata() {
-	if ( GUI.activePlayer === 'Airplay' ) {
-		displayairplay();
-		return;
-	}
 	$.post( '/enhancestatus.php', function( data ) {
 		var status = JSON.parse( data );
+		GUI.activePlayer = status.activePlayer;
+		if ( GUI.activePlayer === 'Airplay' ) {
+			displayairplay();
+			return;
+		}
 		GUI.status = status;
 		// song and album before update for song/album change detection
 		var previoussong = $( '#currentsong' ).text();
