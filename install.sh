@@ -255,14 +255,14 @@ echo $file
 
 string=$( cat <<'EOF'
 		exec( '/usr/bin/systemctl stop mpd' );
-		ui_render('playback', '{"actPlayer":"Airplay"}');
+		ui_render('playback', '{"activePlayer":"Airplay"}');
 EOF
 )
 append 'Playback has been switched'
 
 string=$( cat <<'EOF'
 		exec( '/usr/bin/systemctl start mpd' );
-		ui_render('playback', '{"actPlayer":"MPD"}');
+		ui_render('playback', '{"activePlayer":"MPD"}');
 EOF
 )
 append 'Airplay playback has completed'
