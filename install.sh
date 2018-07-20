@@ -17,6 +17,7 @@ sed -i 's/gifico|svg/gif|ico/' /etc/nginx/nginx.conf
 
 mv /srv/http/app/coverart_ctl.php{,.backup}
 mv /srv/http/assets/js/runeui.min.js{,.backup}
+mv /srv/http/command/airplay_toggle{,.backup}
 mv /usr/share/bootsplash/start-runeaudio.png{,.backup}
 mv /usr/share/bootsplash/reboot-runeaudio.png{,.backup}
 mv /usr/share/bootsplash/shutdown-runeaudio.png{,.backup}
@@ -245,24 +246,6 @@ if ( $template->local_browser ) {
 EOF
 )
 append '$'
-#----------------------------------------------------------------------------------
-file=/srv/http/command/airplay_toggle
-echo $file
-
-string=$( cat <<'EOF'
-		exec( '/usr/bin/systemctl stop mpd' );
-		ui_render('playback', '{"activePlayer":"Airplay"}');
-EOF
-)
-append 'Playback has been switched'
-
-string=$( cat <<'EOF'
-		exec( '/usr/bin/systemctl restart shairport' );
-		exec( '/usr/bin/systemctl start mpd' );
-		ui_render('playback', '{"activePlayer":"MPD"}');
-EOF
-)
-append 'Airplay playback has completed'
 #----------------------------------------------------------------------------------
 file=/etc/nginx/nginx.conf
 if ! grep -q 'ico|svg' $file; then
