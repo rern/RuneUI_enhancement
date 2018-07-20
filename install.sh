@@ -257,6 +257,7 @@ EOF
 append 'Playback has been switched'
 
 string=$( cat <<'EOF'
+		exec( '/usr/bin/systemctl restart shairport' );
 		exec( '/usr/bin/systemctl start mpd' );
 		ui_render('playback', '{"activePlayer":"MPD"}');
 EOF
