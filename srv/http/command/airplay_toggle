@@ -15,7 +15,6 @@ switch( $argv[ 1 ] ) {
         break;
     case "off":
         wrk_stopAirplay($redis);
-		exec( '/usr/bin/systemctl restart shairport' );
 		exec( '/usr/bin/systemctl start mpd' );
 		ui_render( 'playback', '{"activePlayer":"MPD"}' );
         ui_notify( 'AirPlay Stop', 'Playback switched to MPD.' );
