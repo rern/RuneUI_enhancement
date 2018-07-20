@@ -124,20 +124,18 @@ if grep -q 'jquery-ui.js' $file; then
 	
     string=$( cat <<'EOF'
 <script src="<?=$this->asset('/js/vendor/jquery-ui.min.js')?>"></script>
-<script src="<?=$this->asset('/js/vendor/modernizr-custom.js')?>"></script>
-<script src="<?=$this->asset('/js/vendor/roundslider.min.js')?>"></script>
-<script src="<?=$this->asset('/js/enhance.js')?>"></script>
 EOF
 )
-else
-    string=$( cat <<'EOF'
-<script src="<?=$this->asset('/js/vendor/modernizr-custom.js')?>"></script>
-<script src="<?=$this->asset('/js/vendor/roundslider.min.js')?>"></script>
-<script src="<?=$this->asset('/js/enhance.js')?>"></script>
-EOF
-)
+	insertH 'code.jquery.com'
 fi
-appendH '$'
+
+string=$( cat <<'EOF'
+<script src="<?=$this->asset('/js/vendor/modernizr-custom.js')?>"></script>
+<script src="<?=$this->asset('/js/vendor/roundslider.min.js')?>"></script>
+<script src="<?=$this->asset('/js/enhance.js')?>"></script>
+EOF
+)
+appendH -n +1 'addonsmenu.js'
 #----------------------------------------------------------------------------------
 file=/srv/http/app/templates/playback.php
 echo $file
