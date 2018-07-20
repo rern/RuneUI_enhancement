@@ -682,6 +682,13 @@ $( '#database-entries' ).click( function() {
 } );
 
 // replace functions in main runeui.js file **********************************************
+$( '#playsource-mpd' ).off( 'click' ).on( 'click', function() {
+	$.post( 'enhance.php', { bash: '/usr/bin/systemctl restart shairport' } );
+	$( '#iplayer' ).removeClass( 'fa-airplay' ).addClass( 'hide' );
+	$( '#overlay-playsource' ).removeClass( 'open' );
+	$( '#playsource-mpd' ).removeClass( 'inactive' );
+	$( '#playsource-airplay' ).addClass( 'inactive' );
+} );
 $( '#db-search-results' ).off( 'click' ).on( 'click', function() {
 	$( this ).addClass( 'hide' );
 	$( '#db-currentpath' ).css( 'width', '' );
@@ -961,14 +968,17 @@ function displayairplay() {
 	$( '#menu-top, #menu-bottom' ).toggleClass( 'hide', !display.bar );
 	$( '#playback-row' ).removeClass( 'hide' );
 	$( '#time-knob' ).toggleClass( 'hide', !display.time );
-	$( '#imode, #coverartoverlay, #volume-knob, #play-group, #share-group, #vol-group' ).addClass( 'hide' );
+	$( '#imode i, #coverartoverlay, #volume-knob, #play-group, #share-group, #vol-group' ).addClass( 'hide' );
+	$( '#playsource-mpd' ).addClass( 'inactive' );
+	$( '#playsource-airplay' ).removeClass( 'inactive' );
 	if ( display.time ) {
 		$( '#time-knob, #play-group, #coverart, #share-group' ).css( 'width', '45%' );
 		clearInterval( GUI.currentKnob );
 		clearInterval( GUI.countdown );
 		$( '#time' ).roundSlider( 'setValue', 0 );
-		$( '#eleapsed' ).css( 'color', '#e0e7ee' );
+		$( '#elapsed' ).css( 'color', '#e0e7ee' );
 		$( '#total' ).text( '' );
+		$( '#iplayer' ).addClass( 'fa-airplay' ).removeClass( 'hide' );
 		var elapsed = 0;
 		GUI.countdown = setInterval( function() {
 			elapsed++
