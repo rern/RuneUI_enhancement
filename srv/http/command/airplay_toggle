@@ -1,23 +1,13 @@
 #!/usr/bin/php
 <?php
-define('APP', '/srv/http/app/');
 include('/srv/http/app/libs/runeaudio.php');
-
 $redis = new Redis();
 $redis->connect( '/tmp/redis.sock' );
-
-switch( $argv[ 1 ] ) {
-    case "on":
-        wrk_startAirplay( $redis );
-		exec( '/usr/bin/systemctl stop mpd' );
-		ui_render( 'playback', '{"activePlayer":"Airplay"}' );
-        ui_notify( 'AirPlay Start', 'Playback switched to Airplay.' );
-        break;
-    case "off":
-        wrk_stopAirplay($redis);
-		exec( '/usr/bin/systemctl start mpd' );
-		ui_render( 'playback', '{"activePlayer":"MPD"}' );
-        ui_notify( 'AirPlay Stop', 'Playback switched to MPD.' );
-        break;
+if ( $argv[ 1 ] === 'on' ) {
+	wrk_startAirplay( $redis );
+	exec( '/usr/bin/systemctl stop mpd' );
+} else {
+	wrk_stopAirplay($redis);
+	exec( '/usr/bin/systemctl start mpd' );
 }
-ui_libraryHome($redis);
+exec( '/usr/bin/curl -s -v -X POST "http://localhost/pub?id=playback" -d 1' );
