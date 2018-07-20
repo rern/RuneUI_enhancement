@@ -98,23 +98,26 @@ $( '#context-menu-playlist' ).click( function() {
 } );
 
 $( '#open-panel-sx, .open-sx' ).click( function() {
+	if ( GUI.activePlayer === 'Airplay' || GUI.activePlayer === 'Spotify' ) {
+		$( '#overlay-playsource' ).addClass( 'open' );
+		return;
+	}
 	if ( $( this ).hasClass( 'active' ) ) {
 		renderLibraryHome();
 		return;
 	}
-	var activePlayer = GUI.libraryhome.ActivePlayer;
-	if ( activePlayer === 'Spotify' || activePlayer === 'Airplay' ) {
-		$( '#overlay-playsource-open' ).click();
-	} else {
-		menubottom( 'panel-sx', 'playback', 'panel-dx' );
-		displaylibrary();
-	}
+	menubottom( 'panel-sx', 'playback', 'panel-dx' );
+	displaylibrary();
 } );
 $( '#open-playback' ).click( function() {
 	menubottom( 'playback', 'panel-sx', 'panel-dx' );
 	displayplayback();
 } );
 $( '#open-panel-dx' ).click( function() {
+	if ( GUI.activePlayer === 'Airplay' || GUI.activePlayer === 'Spotify' ) {
+		$( '#overlay-playsource' ).addClass( 'open' );
+		return;
+	}
 	menubottom( 'panel-dx', 'playback', 'panel-sx' );
 	displaycommon();
 	getPlaylistCmd();
@@ -963,6 +966,7 @@ function displayairplay() {
 		  'background-image': 'url("/srv/http/assets/img/airplay-cover.jpg")'
 		, 'border-radius': 0
 	} );
+	scrolltext();
 	$( '#menu-top, #menu-bottom' ).toggleClass( 'hide', !display.bar );
 	$( '#playback-row' ).removeClass( 'hide' );
 	$( '#time-knob' ).toggleClass( 'hide', !display.time );
@@ -994,6 +998,7 @@ function displayplayback() {
 		displayairplay();
 		return;
 	}
+	$( '#iplayer' ).removeClass( 'fa-airplay' ).addClass( 'hide' );
 	buttonhide = window.innerHeight <= 320 || window.innerWidth < 499 ? 1 : 0;
 	if ( GUI.json.playlistlength != 0 ) $( '.playback-controls' ).css( 'visibility', 'visible' );
 	
@@ -1859,7 +1864,7 @@ function setbutton() {
 		}
 	}
 }
-function scrollText() {
+function scrolltext() {
 	$( '#divartist, #divsong, #divalbum' ).each( function() {
 		if ( $( this ).find( 'span' ).width() > Math.floor( window.innerWidth * 0.975 ) ) {
 			$( this ).addClass( 'scroll-left' );
@@ -1928,7 +1933,7 @@ function setplaybackdata() {
 		$( '#currentsong' ).html( status.Title );
 		$( '#currentalbum' ).html( status.ext !== 'radio' ? status.Album : '<a>'+ status.Album +'</a>' ).promise().done( function() {
 			// scroll info text
-			scrollText();
+			scrolltext();
 		} );
 		
 		$( '#playlist-position span' ).html( ( Number( status.song ) + 1 ) +'/'+ status.playlistlength );
