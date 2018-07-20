@@ -1089,7 +1089,7 @@
 #pl-count {
 	display: inline-block;
 	margin: 0 0 0 13px;
-	width: calc( 100% - 340px );
+	width: calc( 100% - 350px );
 	font-size: 18px;
 }
 #pl-count i {
