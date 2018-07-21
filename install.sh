@@ -17,6 +17,7 @@ sed -i 's/gifico|svg/gif|ico/' /etc/nginx/nginx.conf
 
 mv /srv/http/app/coverart_ctl.php{,.backup}
 mv /srv/http/assets/js/runeui.min.js{,.backup}
+mv /srv/http/command/airplay_toggle{,.backup}
 mv /usr/share/bootsplash/start-runeaudio.png{,.backup}
 mv /usr/share/bootsplash/reboot-runeaudio.png{,.backup}
 mv /usr/share/bootsplash/shutdown-runeaudio.png{,.backup}
@@ -69,7 +70,7 @@ insertH 'href="#poweroff-modal"'
 
 string=$( cat <<'EOF'
         </ul>
-<div id="menu-top">
+<div id="menu-top" class="hide">
     <i id="menu-settings" class="fa fa-gear"></i>
 EOF
 )
@@ -83,25 +84,23 @@ EOF
 )
 appendH 'id="play"'
 
-commentH 'class="home"'
+commentH 'id="clock-display"' -n +2 'id="open-panel-dx"'
 
 string=$( cat <<'EOF'
     <a href="http://www.runeaudio.com/forum/raspberry-pi-f7.html" target="_blank" alt="RuneAudio Forum">
         <img class="logo" src="<?=$this->asset('/img/runelogo.svg')?>">
     </a>
-EOF
-)
-insertH 'class="home"'
-
-commentH 'id="open-panel-sx"' 'id="open-panel-dx"'
-
-string=$( cat <<'EOF'
+</div>
+<div id="menu-bottom" class="hide">
+    <ul>
         <li id="open-panel-sx"><a><i class="fa fa-folder-open"></i></a></li>
         <li id="open-playback" class="active"><a><i class="fa fa-play-circle"></i></a></li>
         <li id="open-panel-dx"><a><i class="fa fa-list-ul"></i></a></li>
+    </ul>
+</div>
 EOF
 )
-appendH 'id="open-panel-dx"'
+insertH 'id="clock-display"'
 #----------------------------------------------------------------------------------
 file=/srv/http/app/templates/footer.php
 echo $file
@@ -126,20 +125,18 @@ if grep -q 'jquery-ui.js' $file; then
 	
     string=$( cat <<'EOF'
 <script src="<?=$this->asset('/js/vendor/jquery-ui.min.js')?>"></script>
-<script src="<?=$this->asset('/js/vendor/modernizr-custom.js')?>"></script>
-<script src="<?=$this->asset('/js/vendor/roundslider.min.js')?>"></script>
-<script src="<?=$this->asset('/js/enhance.js')?>"></script>
 EOF
 )
-else
-    string=$( cat <<'EOF'
-<script src="<?=$this->asset('/js/vendor/modernizr-custom.js')?>"></script>
-<script src="<?=$this->asset('/js/vendor/roundslider.min.js')?>"></script>
-<script src="<?=$this->asset('/js/enhance.js')?>"></script>
-EOF
-)
+	insertH 'code.jquery.com'
 fi
-appendH '$'
+
+string=$( cat <<'EOF'
+<script src="<?=$this->asset('/js/vendor/modernizr-custom.js')?>"></script>
+<script src="<?=$this->asset('/js/vendor/roundslider.min.js')?>"></script>
+<script src="<?=$this->asset('/js/enhance.js')?>"></script>
+EOF
+)
+appendH -n +1 'addonsmenu.js'
 #----------------------------------------------------------------------------------
 file=/srv/http/app/templates/playback.php
 echo $file
@@ -314,12 +311,12 @@ if [[ $1 != u ]]; then
 	\spotify checked dirble checked jamendo checked &> /dev/null
 fi
 # disable screensaver
-redis-cli set localSStime -1
+redis-cli set localSStime -1 &> /dev/null
 
 installfinish $@
 
 clearcache
-
-title -nt "$info Please reboot and clear browser cache."
+echo -e "$info Please clear browser cache."
+title -nt "If first time install, reboot as well."
 
 [[ $svg == 0 ]] && restartnginx

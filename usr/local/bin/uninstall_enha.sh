@@ -33,6 +33,7 @@ rm /usr/share/bootsplash/{start,reboot,shutdown}-runeaudio.png
 
 mv /srv/http/assets/js/runeui.min.js{.backup,}
 mv /srv/http/app/coverart_ctl.php{.backup,}
+mv /srv/http/command/airplay_toggle{.backup,}
 mv /usr/share/bootsplash/start-runeaudio.png{.backup,}
 mv /usr/share/bootsplash/reboot-runeaudio.png{.backup,}
 mv /usr/share/bootsplash/shutdown-runeaudio.png{.backup,}

@@ -168,9 +168,6 @@
 	bottom: 0;
 }
 /* ---------------------- menu-top ----------------------*/
-#menu-top, #menu-bottom {
-	display: none;
-}
 .logo {
 	height: 35px;
 	margin: 2px 20px 10px 0;
@@ -1092,11 +1089,11 @@
 #pl-count {
 	display: inline-block;
 	margin: 0 0 0 13px;
-	width: calc( 100% - 340px );
-	font-size: 16px;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis
+	width: calc( 100% - 350px );
+	font-size: 18px;
+}
+#pl-count i {
+	font-size: 24px;
 }
 #pl-editor span i {
 	padding: 0 15px 0 10px !important;
@@ -1194,6 +1191,17 @@ w {
 		display: none;
 	}
 }
+@media(max-width: 700px) {
+	.logo {
+		display: none;
+	}
+}
+@media(max-width: 680px) and (min-width: 540px) {
+	#pl-count a:first-child,
+	#pl-count span:first-of-type {
+		display: none;
+	}
+}
 @media(max-width: 666px) {
 	#playback-row {
 		width: 100vw !important;
@@ -1207,8 +1215,10 @@ w {
 /*		min-width: 50%;*/
 	}
 }
-@media(max-width: 700px) {
-	.logo {
+@media(max-width: 540px) {
+	#pl-count span,
+	#pl-count i,
+	#pl-count a:not(:first-child) {
 		display: none;
 	}
 }
@@ -1356,14 +1366,14 @@ w {
 	#db-webradio-add {
 		right: 170px;
 	}
-	#pl-count {
-		display: none !important;
-	}
 }
 @media(max-width: 480px) {
 	#db-search,
 	#pl-search {
 		max-width: 150px;
+	}
+	#pl-count {
+		display: none !important;
 	}
 	#db-currentpath {
 		overflow: visible;
