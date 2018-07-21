@@ -223,7 +223,7 @@ $( '.timemap, .covermap, .volmap' ).click( function() {
 	if ( cmd === 'menu' ) {
 		$( '#menu-settings' ).click();
 	} else if ( cmd === 'toggle' ) {
-		$( '.controls, .controls1,.rs-tooltip, #imode' ).toggle();
+		$( '.controls, .controls1,.rs-tooltip, #imode' ).toggle( $( '#coverartoverlay' ).is( ':hidden' ) );
 		return;
 	} else if ( cmd === 'random' ) {
 			var onoff = GUI.json.random == 1 ? 0 : 1;
