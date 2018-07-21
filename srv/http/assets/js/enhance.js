@@ -2073,6 +2073,8 @@ function setplaybackdata() {
 	} );
 }
 function converthms( second ) {
+	if ( second <= 0 ) return '';
+	
 	var second = Math.round( second );
 	var hh = Math.floor( second / 3600 );
 	var mm = Math.floor( ( second % 3600 ) / 60 );
