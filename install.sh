@@ -300,6 +300,11 @@ else
 	sed -i "s/\(force-device-scale-factor=\).*/\1$zoom/" $file
 fi
 #----------------------------------------------------------------------------------
+file=/boot/config.txt
+echo $file
+echo 'disable_overscan=1
+hdmi_ignore_cec=1' >> $file
+#----------------------------------------------------------------------------------
 file=/srv/http/app/templates/enhanceplayback.php  # for rune youtube
 [[ -e /usr/local/bin/uninstall_RuneYoutube.sh ]] && sed -i '/id="pl-import-youtube"/ {s/<!--//; s/-->//}' $file
 #----------------------------------------------------------------------------------
