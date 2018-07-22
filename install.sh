@@ -297,12 +297,7 @@ else
 	file=/root/.xinitrc
 	echo $file
 	
-	commentS 'force-device-scale-factor='
-	string=$( cat <<EOF
-force-device-scale-factor=$zoom
-EOF
-)
-	appendS 'force-device-scale-factor='
+	sed -i "s/\(force-device-scale-factor=\).*/\1$zoom/" $file
 fi
 #----------------------------------------------------------------------------------
 file=/srv/http/app/templates/enhanceplayback.php  # for rune youtube
