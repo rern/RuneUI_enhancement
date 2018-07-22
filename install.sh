@@ -325,6 +325,6 @@ installfinish $@
 
 clearcache
 echo -e "$info Please clear browser cache."
-title -nt "If first time install, reboot as well."
+title -nt "First time install, reboot as well."
 
 [[ $svg == 0 ]] && restartnginx
