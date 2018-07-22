@@ -262,10 +262,18 @@ else
 	svg=1
 fi
 #----------------------------------------------------------------------------------
-if [[ $1 != u ]]; then
-	zoom=$1;
-	zoom=$( echo "$zoom 0.5" | awk '{if (( $1 < $2 )) print $2; else print $1}' )
-	zoom=$( echo "$zoom 3" | awk '{if (( $1 > $2 )) print $2; else print $1}' )
+if [[ $1 != u ]]; then # keep range: 0.5 - 3.0
+	z=$1;
+	zoom=$( echo "0.5 $z 3" \
+      | awk '{
+          if (( $1 < $2 && $2 < $3 ))
+            print $2
+          else if (( $2 < $1 ))
+            print $1
+          else
+            print $3
+        }'
+	)
 else
 	zoom=$( redis-cli get enhazoom )
 	redis-cli del enhazoom &> /dev/null
