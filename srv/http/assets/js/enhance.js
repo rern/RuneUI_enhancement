@@ -156,6 +156,76 @@ $( '#menu-bottom' ).click( function() {
 		$( '#database' ).css( 'padding-top', '40px' );
 	}
 } );
+
+$( '#playback, #panel-sx, #panel-dx' ).on( 'swiperight', function() {
+	panelLR();
+} ).on( 'swipeleft', function() {
+	panelLR( 'left' );
+} );
+
+$( '#playback' ).click( function( e ) {
+	if ( !$( e.target ).is( '.controls, .controls1, .timemap, .covermap, .volmap' ) ) $( '.controls, .controls1, #settings' ).addClass( 'hide' );
+} ).on( 'taphold', function() {
+	if ( swipe === 1 ) return;
+	info( {
+		  title  : 'Playback'
+		, message: 'Select items to show:'
+		, checkboxhtml : '<form id="displaysaveplayback">\
+						<label><input name="bar" type="checkbox" '+ display.bar +'>&ensp;Top-Bottom menu</label>\
+						<br><label><input name="pause" type="checkbox" '+ display.pause +'>\
+							&ensp;<code><i class="fa fa-play"></i></code>&ensp;<code><i class="fa fa-pause"></i></code>&ensp;buttons</label>\
+						<br><label><input name="time" type="checkbox" '+ display.time +'>&ensp;Time</label>\
+						<br><label><input name="radioelapsed" type="checkbox" '+ display.radioelapsed +'>&ensp;Webradio elapsed</label>\
+						<br><label><input name="coverart" type="checkbox" '+ display.coverart +'>&ensp;Coverart</label>\
+						<br><label><input name="volume" type="checkbox" '+ display.volume +'>&ensp;Volume</label>\
+						<br><label><input name="buttons" type="checkbox" '+ display.buttons +'>&ensp;Buttons</label>\
+						</form>'
+		, cancel : 1
+		, ok     : function () {
+			// no: serializeArray() omit unchecked fields
+			$( '#displaysaveplayback input' ).each( function() {
+				display[ this.name ] = this.checked ? 'checked' : '';
+			} );
+			var command = {
+				set: [ 'hmset', 'display', display ],
+				display: [ 'hGetAll', 'display' ],
+				volumempd: [ 'get', 'volume' ],
+				update: [ 'hGet', 'addons', 'update' ]
+			};
+			$.post( '/enhance.php', 
+				{ redis: JSON.stringify( command ) },
+				function( data ) {
+					redis = JSON.parse( data );
+					display = redis.display;
+					displayplayback();
+					setbutton();
+				}
+			);
+		}
+	} );
+	// disable from autohide
+	if ( window.innerWidth < 499 || window.innerHeight <= 515 ) {
+		$( 'input[name="bar"]' )
+			.prop( 'disabled', true )
+			.parent().css( 'color', '#7795b4' )
+			.append( ' (auto hide)' );
+	}
+	// disable from mpd volume
+	if ( display.volumempd == 0 ) {
+		$( 'input[name="volume"]' )
+			.prop( 'disabled', true )
+			.parent().css( 'color', '#7795b4' )
+			.append( ' (disabled)' );
+	}
+	// disable from mpd volume
+	if ( window.innerWidth < 499 || window.innerHeight <= 320 ) {
+		$( 'input[name="buttons"]' )
+			.prop( 'disabled', true )
+			.parent().css( 'color', '#7795b4' )
+			.append( ' (auto hide)' );
+	}
+} );
+
 $( '#currentsong' ).click( function() {
 	if ( $( this ).has( 'i' ).length ) $( '#open-panel-sx' ).click();
 } );
@@ -231,7 +301,7 @@ $( '.timemap, .covermap, .volmap' ).click( function() {
 		$( '.controls, .controls1, .rs-tooltip, #imode' ).toggleClass( 'hide' );
 		return;
 	} else if ( cmd === 'menu' ) {
-		$( '#settings' ).toggleClass( 'hide' );
+		$( '#menu-settings' ).click();
 	} else if ( cmd === 'random' ) {
 		var onoff = GUI.json.random === '0' ? 1 : 0;
 		sendCmd( 'random '+ onoff );
@@ -447,75 +517,6 @@ $( '#turnoff' ).click( function() {
 			toggleLoader();
 		}
 	} );
-} );
-
-$( '#playback, #panel-sx, #panel-dx' ).on( 'swiperight', function() {
-	panelLR();
-} ).on( 'swipeleft', function() {
-	panelLR( 'left' );
-} );
-
-$( '#playback' ).click( function( e ) {
-	if ( e.target.id === 'playback' ) $( '.controls, .controls1, #settings' ).addClass( 'hide' );
-} ).on( 'taphold', function() {
-	if ( swipe === 1 ) return;
-	info( {
-		  title  : 'Playback'
-		, message: 'Select items to show:'
-		, checkboxhtml : '<form id="displaysaveplayback">\
-						<label><input name="bar" type="checkbox" '+ display.bar +'>&ensp;Top-Bottom menu</label>\
-						<br><label><input name="pause" type="checkbox" '+ display.pause +'>\
-							&ensp;<code><i class="fa fa-play"></i></code>&ensp;<code><i class="fa fa-pause"></i></code>&ensp;buttons</label>\
-						<br><label><input name="time" type="checkbox" '+ display.time +'>&ensp;Time</label>\
-						<br><label><input name="radioelapsed" type="checkbox" '+ display.radioelapsed +'>&ensp;Webradio elapsed</label>\
-						<br><label><input name="coverart" type="checkbox" '+ display.coverart +'>&ensp;Coverart</label>\
-						<br><label><input name="volume" type="checkbox" '+ display.volume +'>&ensp;Volume</label>\
-						<br><label><input name="buttons" type="checkbox" '+ display.buttons +'>&ensp;Buttons</label>\
-						</form>'
-		, cancel : 1
-		, ok     : function () {
-			// no: serializeArray() omit unchecked fields
-			$( '#displaysaveplayback input' ).each( function() {
-				display[ this.name ] = this.checked ? 'checked' : '';
-			} );
-			var command = {
-				set: [ 'hmset', 'display', display ],
-				display: [ 'hGetAll', 'display' ],
-				volumempd: [ 'get', 'volume' ],
-				update: [ 'hGet', 'addons', 'update' ]
-			};
-			$.post( '/enhance.php', 
-				{ redis: JSON.stringify( command ) },
-				function( data ) {
-					redis = JSON.parse( data );
-					display = redis.display;
-					displayplayback();
-					setbutton();
-				}
-			);
-		}
-	} );
-	// disable from autohide
-	if ( window.innerWidth < 499 || window.innerHeight <= 515 ) {
-		$( 'input[name="bar"]' )
-			.prop( 'disabled', true )
-			.parent().css( 'color', '#7795b4' )
-			.append( ' (auto hide)' );
-	}
-	// disable from mpd volume
-	if ( display.volumempd == 0 ) {
-		$( 'input[name="volume"]' )
-			.prop( 'disabled', true )
-			.parent().css( 'color', '#7795b4' )
-			.append( ' (disabled)' );
-	}
-	// disable from mpd volume
-	if ( window.innerWidth < 499 || window.innerHeight <= 320 ) {
-		$( 'input[name="buttons"]' )
-			.prop( 'disabled', true )
-			.parent().css( 'color', '#7795b4' )
-			.append( ' (auto hide)' );
-	}
 } );
 
 var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
