@@ -131,14 +131,6 @@ string=$( cat <<'EOF'
 EOF
 )
 appendH -n +1 'addonsmenu.js'
-
-if ! grep 'jquery.mobile.custom.min.js' $file; then
-	string+=$( cat <<'EOF'
-<script src="<?=$this->asset('/js/vendor/jquery.mobile.custom.min.js')?>"></script>
-EOF
-)
-	sed '$ a\$string' $file
-fi
 #----------------------------------------------------------------------------------
 file=/srv/http/app/templates/playback.php
 echo $file
