@@ -235,6 +235,7 @@
 	cursor: pointer;
 }
 #settings {
+	display: block;
 	position: fixed;
 	top: 40px;
 	right: 0px;
@@ -538,7 +539,6 @@
 }
 /* overlay controls guide */
 .controls {
-	display: none;
 	position: absolute;
 	top: 0;
 	left: 50%;
