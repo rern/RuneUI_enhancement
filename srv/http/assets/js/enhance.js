@@ -29,6 +29,7 @@ if ( /\/.*\//.test( location.pathname ) === true ) {
 	} );
 	return;
 }
+swipe = 0;
 function menubottom( elshow, elhide1, elhide2 ) {
 	$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
 		swipe = 1;
@@ -1064,6 +1065,7 @@ function renderLibraryHome() {
 			$( '.home-bookmark div.home-block-remove' ).remove();
 		}
 	} ).on( 'taphold', function( e ) {
+		console.log( swipe +' ; '+ bookmark )
 		var bookmark = $( e.target ).parent().hasClass( 'home-bookmark' ) || $( e.target ).hasClass( 'home-bookmark' );
 		if ( swipe || bookmark ) return;
 		if ( $( '#home-blocks' ).hasClass( 'hide' ) ) return
