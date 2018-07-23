@@ -1059,7 +1059,6 @@ function renderLibraryHome() {
 			$( '.home-bookmark div.home-block-remove' ).remove();
 		}
 	} ).on( 'taphold', function( e ) {
-		console.log( swipe +' ; '+ bookmark )
 		var bookmark = $( e.target ).parent().hasClass( 'home-bookmark' ) || $( e.target ).hasClass( 'home-bookmark' );
 		if ( swipe || bookmark ) return;
 		if ( $( '#home-blocks' ).hasClass( 'hide' ) ) return
