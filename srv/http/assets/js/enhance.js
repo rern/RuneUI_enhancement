@@ -311,30 +311,25 @@ $( '#db-level-up' ).off( 'click' ).on( 'click', function() {
 		renderLibraryHome();
 		return
 	}
-	GUI.currentDBpos[ 10 ]--;
 	var path = GUI.currentpath;
-	if ( GUI.currentDBpos[ 10 ] === 0 ) {
-		path = '';
-	} else {
-		if ( GUI.browsemode === 'file' ) {
-			var toppath = GUI.currentpath.split( '/' )[ 0 ];
-			if ( toppath === 'USB' ) {
-				cutpos = path.lastIndexOf( '/' );
-				path = ( cutpos !== -1 ) ? path.slice( 0, cutpos ) : '';
-			} else {
-				path = toppath;
-				GUI.plugin = toppath;
-			}
+	if ( GUI.browsemode === 'file' ) {
+		var toppath = GUI.currentpath.split( '/' )[ 0 ];
+		if ( toppath === 'USB' ) {
+			cutpos = path.lastIndexOf( '/' );
+			path = ( cutpos !== -1 ) ? path.slice( 0, cutpos ) : '';
 		} else {
-			var mode2path = {
-				  album       : 'Albums'
-				, artist      : 'Artists'
-				, composer    : 'Composer'
-				, genre       : 'Genres'
-				, albumfilter : path
-			};
-			path = mode2path[ GUI.browsemode ];
+			path = toppath;
+			GUI.plugin = toppath;
 		}
+	} else {
+		var mode2path = {
+			  album       : 'Albums'
+			, artist      : 'Artists'
+			, composer    : 'Composer'
+			, genre       : 'Genres'
+			, albumfilter : path
+		};
+		path = mode2path[ GUI.browsemode ];
 	}
 	getDB( { 
 		browsemode: GUI.browsemode,
