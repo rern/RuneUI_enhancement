@@ -130,6 +130,12 @@ string=$( cat <<'EOF'
 <script src="<?=$this->asset('/js/enhance.js')?>"></script>
 EOF
 )
+if grep 'jquery.mobile.custom.min.js' $file; then
+string+=$( cat <<'EOF'
+
+<script src="<?=$this->asset('/js/vendor/jquery.mobile.custom.min.js')?>"></script>
+EOF
+)
 appendH -n +1 'addonsmenu.js'
 #----------------------------------------------------------------------------------
 file=/srv/http/app/templates/playback.php
