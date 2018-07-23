@@ -164,7 +164,11 @@ $( '#playback, #panel-sx, #panel-dx' ).on( 'swiperight', function() {
 } );
 
 $( '#playback' ).click( function( e ) {
-	if ( !$( e.target ).is( '.controls, .controls1, .timemap, .covermap, .volmap' ) ) $( '.controls, .controls1, #settings' ).addClass( 'hide' );
+	if ( !$( e.target ).is( '.controls, .timemap, .covermap, .volmap' ) ) {
+		$( '.controls, #settings' ).addClass( 'hide' );
+		$( '.controls1, .rs-tooltip, #imode' ).removeClass( 'hide' );
+	}
+	displayplayback();
 } ).on( 'taphold', function() {
 	if ( swipe === 1 ) return;
 	info( {
@@ -296,7 +300,6 @@ var showguide = 1;
 $( '.timemap, .covermap, .volmap' ).click( function() {
 	var id = this.id;
 	var cmd = btnctrl[ id ];
-	var imodeshow = ( !redis.display.buttons && redis.display.time ) ? 1 : 0;
 	if ( cmd === 'toggle' ) {
 		$( '.controls, .controls1, .rs-tooltip, #imode' ).toggleClass( 'hide' );
 		return;
@@ -305,25 +308,22 @@ $( '.timemap, .covermap, .volmap' ).click( function() {
 	} else if ( cmd === 'random' ) {
 		var onoff = GUI.json.random === '0' ? 1 : 0;
 		sendCmd( 'random '+ onoff );
-		if ( imodeshow ) $( '#irandom' ).toggleClass( 'hide', onoff );
 	} else if ( cmd === 'repeat' ) {
 		if ( GUI.json.repeat === '0' ) {
 			sendCmd( 'repeat 1' );
 		} else {
 			if ( GUI.json.single === '0' ) {
 				sendCmd( 'single 1' );
-				if ( imodeshow ) $( '#irepeat' ).removeClass( 'fa-repeat' ).addClass( 'fa-repeat-single' );
 			} else {
 				sendCmd( 'repeat 0' );
 				sendCmd( 'single 0' );
-				if ( imodeshow ) $( '#irepeat' ).removeClass( 'fa-repeat-single' ).addClass( 'hide' );
 			}
 		}
 	} else if ( cmd ) {
 		$( '#'+ cmd ).click();
 	}
-	$( '.controls, .controls1' ).addClass( 'hide' );
-	$( '.rs-tooltip, #imode' ).removeClass( 'hide' );
+	$( '.controls' ).addClass( 'hide' );
+	$( '.controls1, .rs-tooltip, #imode' ).removeClass( 'hide' );
 } );
 
 // library directory path link
