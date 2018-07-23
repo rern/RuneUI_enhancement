@@ -162,6 +162,7 @@ file=/srv/http/assets/js/runeui.js
 echo $file
 
 comment 'function renderLibraryHome()' -n -3 'function getPlaylist(text)'
+comment -n +1 'click on Library home block' -n -2 'setup Library home'
 comment 'function renderUI(text)' -n -3 'function renderPlaylists(data)'
 comment -n +2 '(evtname, visChange)' -n -1 '// PLAYING QUEUE'
 #----------------------------------------------------------------------------------
