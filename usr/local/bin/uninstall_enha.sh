@@ -28,7 +28,7 @@ rm -v /srv/http/assets/css/{enhance.css,midori.css,roundslider.min.css}
 rm -v /srv/http/assets/fonts/enhance*
 rm -v /srv/http/assets/img/{controls*,runelogo.svg,vu*}
 rm -v /srv/http/assets/js/enhance.js
-rm -v /srv/http/assets/js/vendor/{jquery.mobile.custom.min.js,modernizr-custom.js,roundslider.min.js}
+rm -v /srv/http/assets/js/vendor/{modernizr-custom.js,roundslider.min.js}
 rm /usr/share/bootsplash/{start,reboot,shutdown}-runeaudio.png
 
 mv /srv/http/app/coverart_ctl.php{.backup,}
