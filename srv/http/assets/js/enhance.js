@@ -29,9 +29,13 @@ if ( /\/.*\//.test( location.pathname ) === true ) {
 	} );
 	return;
 }
-
 function menubottom( elshow, elhide1, elhide2 ) {
 	$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
+		swipe = 1;
+		setTimeout( function() {
+			swipe = 0;
+		}, 1000 );
+	
 	if ( $( '#panel-sx' ).hasClass( 'active' ) ) librarytop = $( window ).scrollTop();
 	if ( $( '#panel-dx' ).hasClass( 'active' ) ) queuetop = $( window ).scrollTop();
 	if ( /\/.*\//.test( location.pathname ) === false ) {
@@ -55,6 +59,7 @@ function panelLR( lr ) {
 		var $pL = $( '#open-panel-sx a' );
 		var $pR = $( '#open-playback a' );
 	}
+	
 	$paneclick = ( lr === 'left' ) ? $pL.click() : $pR.click();
 }
 function bioshow() {
@@ -447,18 +452,9 @@ $( '#turnoff' ).click( function() {
 	} );
 } );
 
-var swipe = 0;
-$( '#content' ).on( 'swiperight', function() {
-	swipe = 1;
-	setTimeout( function() {
-		swipe = 0;
-	}, 1000 );
+$( '#playback, #panel-sx, #panel-dx' ).on( 'swiperight', function() {
 	panelLR();
 } ).on( 'swipeleft', function() {
-	swipe = 1;
-	setTimeout( function() {
-		swipe = 0;
-	}, 1000 );
 	panelLR( 'left' );
 } );
 
@@ -996,12 +992,11 @@ function setPlaybackSource() {
 		return (css.match (/(^|\s)pl-manage-\S+/g) || []).join(' ');
 	}).addClass('pl-manage-' + source);
 }
-
 function renderLibraryHome() {
 	$( '#database-entries' ).empty();
 	$('#db-search-results').addClass( 'hide' );
 	$( '#db-search-keyword' ).val( '' );
-//	if ( $( '#database-entries' ).hasClass( 'hide' ) ) return;
+	if ( $( '#database-entries' ).hasClass( 'hide' ) && !bookmarkedit ) return;
 	
 //	loadingSpinner( 'db' );
 	$( '#database-entries, #db-level-up' ).addClass( 'hide' );
@@ -1070,7 +1065,7 @@ function renderLibraryHome() {
 		}
 	} ).on( 'taphold', function( e ) {
 		var bookmark = $( e.target ).parent().hasClass( 'home-bookmark' ) || $( e.target ).hasClass( 'home-bookmark' );
-		if ( bookmark ) return;
+		if ( swipe || bookmark ) return;
 		if ( $( '#home-blocks' ).hasClass( 'hide' ) ) return
 		info( {
 			  title  : 'Libary Home'
