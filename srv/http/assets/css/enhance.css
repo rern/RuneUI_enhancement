@@ -906,6 +906,9 @@
 .home-block i {
 	font-size: 48px;
 }
+.home-block.btn-primary {
+	text-transform: none;
+}
 #home-blocks h4 {
 	font-weight: 300;
 	color: #e0e7ee;
