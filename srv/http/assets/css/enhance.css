@@ -51,6 +51,7 @@
 .fa {
 	font-family: FontAwesome, enhance;
 }
+.fa-trophy:before { content: "\f575" } /* change to fa-rune */
 .fa-folder-open:before { content: "\f507" } /* change to fa-library */
 .fa-times-circle:before,
 .fa-trash-o:before { content: "\f51C" } /* change to fa-minus-circle */
