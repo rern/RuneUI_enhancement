@@ -13,10 +13,9 @@ if [[ $1 == u ]]; then
 	else
 		zoom=$( grep '^force-device-scale-factor' /root/.xinitrc | cut -d'=' -f2 )
 	fi
-	redis-cli set enhazoom $zoom &> /dev/null
+	redis-cli set zoomlevel $zoom &> /dev/null
 else
-	redis-cli del display &> /dev/null
-	redis-cli del webradiosampling &> /dev/null
+	redis-cli del display webradiosampling zoomlevel &> /dev/null
 fi
 
 # remove files #######################################
