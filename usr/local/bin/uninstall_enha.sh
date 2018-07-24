@@ -8,12 +8,14 @@ alias=enha
 uninstallstart $@
 
 if [[ $1 == u ]]; then
-	if ! pacman -Q chromium &> /dev/null; then
-		zoom=$( grep '^zoom' /root/.config/midori/config | cut -d'=' -f2 )
-	else
-		zoom=$( grep '^force-device-scale-factor' /root/.xinitrc | cut -d'=' -f2 )
+	zoom=$( redis-cli get zoomlevel )
+	if [[ -z $zoom ]]; then
+		if ! pacman -Q chromium &> /dev/null; then
+			zoom=$( grep '^zoom' /root/.config/midori/config | cut -d'=' -f2 )
+		else
+			zoom=$( grep '^force-device-scale-factor' /root/.xinitrc | cut -d'=' -f2 )
+		fi
 	fi
-	redis-cli set zoomlevel $zoom &> /dev/null
 else
 	redis-cli del display webradiosampling zoomlevel &> /dev/null
 fi
