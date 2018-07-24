@@ -277,9 +277,9 @@ if [[ $1 != u ]]; then # keep range: 0.5 - 3.0
             print $3
         }'
 	)
+	redis-cli set zoomlevel $zoom &> /dev/null
 else
-	zoom=$( redis-cli get enhazoom )
-	redis-cli del enhazoom &> /dev/null
+	zoom=$( redis-cli get zoomlevel )
 fi
 
 if ! pacman -Q chromium &> /dev/null; then
