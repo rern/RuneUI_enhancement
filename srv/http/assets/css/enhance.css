@@ -303,7 +303,7 @@
 	font-size: 28px;
 }
 /* ---------------------- middle window ----------------------*/
-#playback, #panel-sx, #panel-dx {
+#playback, #panel-sx, #panel-dx, #settings {
 	-webkit-touch-callout: none; /* iOS Safari */
 	-webkit-user-select: none; /* Safari */
 	-moz-user-select: none; /* Firefox */
