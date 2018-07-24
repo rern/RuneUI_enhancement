@@ -355,7 +355,7 @@ $( '#searchbtn' ).click( function() {
 } );
 // index link
 $( '#db-index li' ).click( function() {
-	var topoffset = !$( '#menu-top' ).is( ':hidden' ) ? 80 : 40;
+	var topoffset = display.bar ? 80 : 40;
 	var $this = $( this );
 	var indextext = $this.text();
 	if ( indextext === '#' ) {
@@ -369,6 +369,7 @@ $( '#db-index li' ).click( function() {
 		var dirmode = 1
 	}
 	var matcharray = $( '#database-entries li' ).filter( function() {
+		var $this = $( this );
 		var name = dirmode ? $this.find( 'span:eq( 0 )' ).text() : $this.attr( 'data-path' );
 		return stripLeading( name ).match( new RegExp( datapathindex, 'i' ) );
 	} );
