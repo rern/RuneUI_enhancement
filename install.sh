@@ -124,7 +124,7 @@ commentH 'modernizr'
 if grep -q 'jquery-ui.js' $file; then
     commentH 'jquery-ui.js'
 	string=$( cat <<'EOF'
-<script src="<?=$this->asset('/js/vendor/jquery-ui.min.js')?>"></script>
+    <script src="<?=$this->asset('/js/vendor/jquery-ui.min.js')?>"></script>
 EOF
 )
 appendH 'jquery.onScreenKeyboard.js'
