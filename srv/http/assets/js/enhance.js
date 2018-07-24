@@ -12,7 +12,7 @@ if ( /\/.*\//.test( location.pathname ) === true ) {
 		if ( window.innerWidth < 540 || window.innerHeight < 515 || display.bar === '' ) {
 			$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
 			$( 'div.container' )
-				.css( 'padding-top', '20px' )
+				.css( 'padding-top', '0' )
 				.find( 'h1' ).before( '<a href="/" class="close-root"><i class="fa fa-times fa-2x"></i></a>' );
 		} else {
 			$( '#menu-top, #menu-bottom' ).removeClass( 'hide' );
