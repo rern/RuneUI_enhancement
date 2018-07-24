@@ -1,6 +1,8 @@
 #!/bin/bash
 
 # $1-zoom
+# $2-local browser
+
 # change version number in RuneAudio_Addons/srv/http/addonslist.php
 
 alias=enha
@@ -324,7 +326,12 @@ redis-cli set localSStime -1 &> /dev/null
 
 installfinish $@
 
-clearcache
+if [[ $2 == 0 ]]; then
+	killall Xorg
+	redis-cli set local_browser 0
+else
+	clearcache
+fi
 echo -e "$info Please clear browser cache."
 title -nt "First time install, reboot as well."
 
