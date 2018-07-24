@@ -29,6 +29,10 @@ if ( /\/.*\//.test( location.pathname ) === true ) {
 	} );
 	return;
 }
+
+// fix: midori renders box-shadow incorrectly
+if ( /Midori/.test( navigator.userAgent ) ) $( 'head link[rel="stylesheet"]').last().after( '<link rel="stylesheet" href="/css/midori.css">' )
+
 swipe = 0;
 function menubottom( elshow, elhide1, elhide2 ) {
 	$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
@@ -99,8 +103,25 @@ $( '#menu-top, #menu-bottom' ).click( function() {
 $( '.playback-controls, #menu-bottom, #settings' ).click( function() {
 	$( '#settings' ).addClass( 'hide' );
 } );
-$( '#context-menu-playlist' ).click( function() {
-	$( '#pl-home-text' ).addClass( 'hide' );
+// poweroff
+$( '#turnoff' ).click( function() {
+	info( {
+		  icon        : 'power-off'
+		, title       : 'Power'
+		, message     : 'Select mode:'
+		, oklabel     : 'Power off'
+		, okcolor     : '#bb2828'
+		, ok          : function() {
+			$.post( '/settings/', { 'syscmd' : 'poweroff' } );
+			toggleLoader();
+		}
+		, buttonlabel : 'Reboot'
+		, buttoncolor : '#9a9229'
+		, button      : function() {
+			$.post( '/settings/', { 'syscmd' : 'reboot' } );
+			toggleLoader();
+		}
+	} );
 } );
 
 $( '#open-panel-sx, .open-sx' ).click( function() {
@@ -130,9 +151,6 @@ $( '#open-panel-dx' ).click( function() {
 	window.scrollTo( 0, queuetop );
 	$( '#pl-count, #pl-manage, #pl-search' ).removeClass( 'hide' );
 } );
-$( '#panel-dx, #context-menu-playlist' ).click( function() {
-	if ( $( '#context-menu-playlist' ).hasClass( 'open' ) ) $( '#context-menu-playlist' ).removeClass( 'open' );
-} );
 
 // disabled local browser > disable screensaver events
 if ( !$( '#playback-ss' ).length ) $('#section-index').off( 'mousemove click keypress' );
@@ -140,14 +158,6 @@ if ( !$( '#playback-ss' ).length ) $('#section-index').off( 'mousemove click key
 // playback buttons click go back to home page
 $( '.playback-controls' ).click( function() {
 	if ( !$( '#open-playback' ).hasClass( 'active' ) ) $( '#open-playback' ).click();
-} );
-// playlist click go back to home page
-$( '#playlist-entries' ).click( function( e ) {
-	if ( e.target.nodeName == 'SPAN' ) {
-		$( '#open-playback a' ).click();
-		$( '#open-playback a' )[ 0 ].click();
-		$( '#menu-top, #menu-bottom' ).toggleClass( 'hide', ( window.innerWidth < 499 || window.innerHeight < 515 ) );
-	}
 } );
 $( '#menu-bottom' ).click( function() {
 	if ( window.innerWidth < 499 || window.innerHeight < 515 ) {
@@ -416,14 +426,28 @@ $( '#db-webradio-add' ).click( function() {
 $( '#webradio-add-button, #webradio-edit-button, #webradio-delete-button' ).click( function() {
 	getDB( { path: 'Webradio' } );
 } );
-$( '#modal-webradio-add button:eq( 0 ), #modal-webradio-add button:eq( 1 )' ).click( function() {
-	if ( !$( '#db-currentpath span' ).text() ) renderLibraryHome();
+$( '#modal-webradio-add button' ).click( function() {
+	if ( this.id !== 'webradio-add-button' && !$( '#database-entries li' ).length ) $( '#db-home' ).click();
 } );
 
 $( '#open-library' ).off( 'click' ).on( 'click', function() {
 	$( '#open-panel-sx' ).click();
 } );
 
+// playlist click go back to home page
+$( '#playlist-entries' ).click( function( e ) {
+	if ( e.target.nodeName == 'SPAN' ) {
+		$( '#open-playback a' ).click();
+		$( '#open-playback a' )[ 0 ].click();
+		$( '#menu-top, #menu-bottom' ).toggleClass( 'hide', ( window.innerWidth < 499 || window.innerHeight < 515 ) );
+	}
+} );
+$( '#panel-dx, #context-menu-playlist' ).click( function() {
+	if ( $( '#context-menu-playlist' ).hasClass( 'open' ) ) $( '#context-menu-playlist' ).removeClass( 'open' );
+} );
+$( '#context-menu-playlist' ).click( function() {
+	$( '#pl-home-text' ).addClass( 'hide' );
+} );
 $( '#pl-manage-list' ).off( 'click' ).on( 'click', function() {
 	$( '#pl-search' ).addClass( 'hide' );
 	$( '#pl-currentpath' ).removeClass( 'hide' );
@@ -493,31 +517,6 @@ document.addEventListener( visibilityevent, function() {
 	} else {
 		setplaybackdata();
 	}
-} );
-
-// fix: midori renders box-shadow incorrectly
-if ( /Midori/.test( navigator.userAgent ) ) {
-	$( 'head link[rel="stylesheet"]').last().after( '<link rel="stylesheet" href="/css/midori.css">' )
-}
-// poweroff
-$( '#turnoff' ).click( function() {
-	info( {
-		  icon        : 'power-off'
-		, title       : 'Power'
-		, message     : 'Select mode:'
-		, oklabel     : 'Power off'
-		, okcolor     : '#bb2828'
-		, ok          : function() {
-			$.post( '/settings/', { 'syscmd' : 'poweroff' } );
-			toggleLoader();
-		}
-		, buttonlabel : 'Reboot'
-		, buttoncolor : '#9a9229'
-		, button      : function() {
-			$.post( '/settings/', { 'syscmd' : 'reboot' } );
-			toggleLoader();
-		}
-	} );
 } );
 
 var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
@@ -708,7 +707,6 @@ $( '#volmute, #volM' ).click( function() {
 		} );
 	}
 } );
-
 $( '#volup, #voldn' ).click( function() {
 	var thisid = this.id;
 	var vol = $volumeRS.getValue();
@@ -731,7 +729,6 @@ $( '#volup, #voldn' ).click( function() {
 	$volumeRS.setValue( vol );
 	$volumehandle.rsRotate( - $volumeRS._handle1.angle );
 } );
-
 
 } ); // document ready end <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
