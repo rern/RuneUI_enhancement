@@ -815,7 +815,7 @@ $.post( '/enhance.php', { redis: JSON.stringify( command ) }, function( data ) {
 		}, 500 );
 	}
 } );
-
+var blinkdot = '<a class="dot">.</a> <a class="dot dot2">.</a> <a class="dot dot3">.</a>';
 function displayairplay() {
 	$( '.playback-controls' ).css( 'visibility', 'hidden' );
 	$( '#divartist, #divsong, #divalbum' ).removeClass( 'scroll-left' );
@@ -840,15 +840,9 @@ function displayairplay() {
 		clearInterval( GUI.currentKnob );
 		clearInterval( GUI.countdown );
 		$( '#time' ).roundSlider( 'setValue', 0 );
-		$( '#elapsed' ).css( 'color', '#e0e7ee' );
+		$( '#elapsed' ).html( blinkdot );
 		$( '#total' ).text( '' );
 		$( '#iplayer' ).addClass( 'fa-airplay' ).removeClass( 'hide' );
-		var elapsed = 0;
-		GUI.countdown = setInterval( function() {
-			elapsed++
-			mmss = converthms( elapsed );
-			$( '#elapsed' ).text( mmss );
-		}, 1000 );
 	} else {
 		$( '#coverart, #share-group' ).css( 'width', '60%' );
 	}
@@ -1860,7 +1854,7 @@ function setplaybackdata() {
 					$( '#cover-art' ).css( 'background-image', radiourlstop );
 				}
 			}
-			$( '#elapsed' ).html( status.state === 'play' ? '<a class="dot">.</a> <a class="dot dot2">.</a> <a class="dot dot3">.</a>' : '' );
+			$( '#elapsed' ).html( status.state === 'play' ? blinkdot : '' );
 			$( '#total' ).text( '' );
 			// show / hide elapsed at total
 			if ( !status.radioelapsed ) {
