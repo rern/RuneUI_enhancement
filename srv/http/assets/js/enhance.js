@@ -173,6 +173,20 @@ $( '#playback, #panel-sx, #panel-dx' ).on( 'swiperight', function() {
 	panelLR( 'left' );
 } );
 
+// for set display broadcast
+var pushstreamdisplay = new PushStream( {
+	host: window.location.hostname,
+	port: window.location.port,
+	modes: GUI.mode
+} );
+pushstreamdisplay.addChannel( 'display' );
+pushstreamdisplay.onmessage = function( data ) { // on receive broadcast
+	display = data[ 0 ].display;
+	displayplayback();
+	setbutton();
+}
+pushstreamdisplay.connect();
+
 $( '#playback' ).click( function( e ) {
 	if ( !$( e.target ).is( '.controls, .timemap, .covermap, .volmap' ) ) {
 		$( '.controls, #settings' ).addClass( 'hide' );
@@ -206,15 +220,7 @@ $( '#playback' ).click( function( e ) {
 				volumempd: [ 'get', 'volume' ],
 				update: [ 'hGet', 'addons', 'update' ]
 			};
-			$.post( '/enhance.php', 
-				{ redis: JSON.stringify( command ) },
-				function( data ) {
-					redis = JSON.parse( data );
-					display = redis.display;
-					displayplayback();
-					setbutton();
-				}
-			);
+			$.post( '/enhance.php', { redis: JSON.stringify( command ) } );
 		}
 	} );
 	// disable from autohide
