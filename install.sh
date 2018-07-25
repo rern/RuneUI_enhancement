@@ -282,9 +282,9 @@ else
 	zoom=$( redis-cli get zoomlevel )
 fi
 
-if ! pacman -Q chromium &> /dev/null; then
 #----------------------------------------------------------------------------------
-	file=/root/.config/midori/config
+file=/root/.config/midori/config
+if ! grep '^chromium' $file &> /dev/null; then
 	echo $file
 	
 	commentS 'zoom-level'
