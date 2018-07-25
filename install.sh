@@ -333,6 +333,6 @@ else
 	clearcache
 fi
 echo -e "$info Please" $( tcolor 'clear browser cache' ).
-title -nt "First time install:"  $( tcolor 'reboot as well ).
+title -nt "First time install:"  $( tcolor 'reboot as well' ).
 
 [[ $svg == 0 ]] && restartnginx
