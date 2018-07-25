@@ -31,7 +31,7 @@ if ( isset( $_POST[ 'redis' ] ) ) {
 		}
 	}
 	echo json_encode( $result );
-	// broadcast to all clients
+	// broadcast to all clients on set display
 	$ch = curl_init( 'http://localhost/pub?id=display' );
 	curl_setopt( $ch, CURLOPT_HTTPHEADER, array( 'Content-Type:application/json' ) );
 	curl_setopt( $ch, CURLOPT_POSTFIELDS, json_encode( $result ) );
