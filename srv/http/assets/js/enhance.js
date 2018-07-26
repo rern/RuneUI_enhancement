@@ -33,14 +33,8 @@ if ( /\/.*\//.test( location.pathname ) === true ) {
 // fix: midori renders box-shadow incorrectly
 if ( /Midori/.test( navigator.userAgent ) ) $( 'head link[rel="stylesheet"]').last().after( '<link rel="stylesheet" href="/css/midori.css">' )
 
-swipe = 0;
-function menubottom( elshow, elhide1, elhide2 ) {
+function menubottom( elshow, elhide1, elhide2 ) {	
 	$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
-		swipe = 1;
-		setTimeout( function() {
-			swipe = 0;
-		}, 1000 );
-	
 	if ( $( '#panel-sx' ).hasClass( 'active' ) ) librarytop = $( window ).scrollTop();
 	if ( $( '#panel-dx' ).hasClass( 'active' ) ) queuetop = $( window ).scrollTop();
 	if ( /\/.*\//.test( location.pathname ) === false ) {
@@ -51,21 +45,6 @@ function menubottom( elshow, elhide1, elhide2 ) {
 	} else {
 		window.location.href = '/';
 	}
-}
-function panelLR( lr ) {
-	var pcurrent = $( '.tab-pane:visible' ).prop( 'id' );
-	if ( pcurrent === 'panel-sx' ) {
-		var $pL = $( '#open-playback a' );
-		var $pR = $( '#open-panel-dx a' );
-	} else if ( pcurrent === 'playback' ) {
-		var $pL = $( '#open-panel-dx a' );
-		var $pR = $( '#open-panel-sx a' );
-	} else {
-		var $pL = $( '#open-panel-sx a' );
-		var $pR = $( '#open-playback a' );
-	}
-	
-	$paneclick = ( lr === 'left' ) ? $pL.click() : $pR.click();
 }
 
 $( '#open-panel-sx, .open-sx' ).click( function() {
@@ -95,6 +74,35 @@ $( '#open-panel-dx' ).click( function() {
 	window.scrollTo( 0, queuetop );
 	$( '#pl-count, #pl-manage, #pl-search' ).removeClass( 'hide' );
 } );
+function panelLR( lr ) {
+	var pcurrent = $( '.tab-pane:visible' ).prop( 'id' );
+	if ( pcurrent === 'panel-sx' ) {
+		var $pL = $( '#open-playback a' );
+		var $pR = $( '#open-panel-dx a' );
+	} else if ( pcurrent === 'playback' ) {
+		var $pL = $( '#open-panel-dx a' );
+		var $pR = $( '#open-panel-sx a' );
+	} else {
+		var $pL = $( '#open-panel-sx a' );
+		var $pR = $( '#open-playback a' );
+	}
+	
+	$paneclick = ( lr === 'left' ) ? $pL.click() : $pR.click();
+}
+// fix: prevent taphold on swipe
+swipe = 0;
+function swipetoggle( panelL ) {
+	swipe = 1;
+	setTimeout( function() {
+		swipe = 0;
+	}, 1000 );
+	panelLR( panelL );
+}
+$( '#playback, #panel-sx, #panel-dx' ).on( 'swiperight', function() {
+	swipetoggle();
+} ).on( 'swipeleft', function() {
+	swipetoggle( 'left' );
+} );
 
 // disabled local browser > disable screensaver events
 if ( !$( '#playback-ss' ).length ) $('#section-index').off( 'mousemove click keypress' );
@@ -109,12 +117,6 @@ $( '#menu-bottom' ).click( function() {
 		$( '.btnlist-top' ).css( 'top', 0 );
 		$( '#database' ).css( 'padding-top', '40px' );
 	}
-} );
-
-$( '#playback, #panel-sx, #panel-dx' ).on( 'swiperight', function() {
-	panelLR();
-} ).on( 'swipeleft', function() {
-	panelLR( 'left' );
 } );
 
 // for set display broadcast
@@ -135,7 +137,6 @@ $( '#playback' ).click( function( e ) {
 	if ( !$( e.target ).is( '.controls, .timemap, .covermap, .volmap' ) ) {
 		$( '.controls, #settings' ).addClass( 'hide' );
 		$( '.controls1, .rs-tooltip, #imode' ).removeClass( 'hide' );
-		//displayplayback();
 	}
 } ).on( 'taphold', function() {
 	if ( swipe === 1 ) return;
@@ -239,8 +240,6 @@ $( '.timemap, .covermap, .volmap' ).click( function() {
 	} else if ( cmd ) {
 		$( '#'+ cmd ).click();
 	}
-//	$( '.controls' ).addClass( 'hide' );
-//	$( '.controls1, .rs-tooltip, #imode' ).removeClass( 'hide' );
 } );
 $( '#menu-top, #menu-bottom' ).click( function( e ) {
 	if ( e.target.id !== 'menu-settings' ) $( '#settings' ).addClass( 'hide' );
