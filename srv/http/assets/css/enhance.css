@@ -738,7 +738,6 @@
 	background: #34495e;
 }
 .rs-tooltip {
-	display: none; /* hide '0' / 'NaN' on initial load - show after set */
 	top: 40% !important;
 	margin: 0 !important;
 	left: 30% !important;
@@ -760,7 +759,6 @@
 	background: linear-gradient( #333333, #000000 );
 }
 #volume .rs-handle {
-	display: none; /* hide '0' position on initial rotate - show after rotated */
 	border: 1px solid #333333;
 	background: #0095d8;
 	box-shadow: inset #34495e 0 5px 5px;
