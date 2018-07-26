@@ -38,9 +38,9 @@ function menubottom( elshow, elhide1, elhide2 ) {
 	if ( $( '#panel-sx' ).hasClass( 'active' ) ) librarytop = $( window ).scrollTop();
 	if ( $( '#panel-dx' ).hasClass( 'active' ) ) queuetop = $( window ).scrollTop();
 	if ( /\/.*\//.test( location.pathname ) === false ) {
-		$( '#'+ elshow ).show();
+		$( '#'+ elshow ).removeClass( 'hide' );
 		$( '#open-'+ elshow ).addClass( 'active' );
-		$( '#'+ elhide1 +', #'+ elhide2 ).hide();
+		$( '#'+ elhide1 +', #'+ elhide2 ).addClass( 'hide' );
 		$( '#open-'+ elhide1 +', #open-'+ elhide2 ).removeClass( 'active' );
 	} else {
 		window.location.href = '/';
@@ -77,14 +77,14 @@ $( '#open-panel-dx' ).click( function() {
 function panelLR( lr ) {
 	var pcurrent = $( '.tab-pane:visible' ).prop( 'id' );
 	if ( pcurrent === 'panel-sx' ) {
-		var $pL = $( '#open-playback a' );
-		var $pR = $( '#open-panel-dx a' );
+		var $pL = $( '#open-playback' );
+		var $pR = $( '#open-panel-dx' );
 	} else if ( pcurrent === 'playback' ) {
-		var $pL = $( '#open-panel-dx a' );
-		var $pR = $( '#open-panel-sx a' );
+		var $pL = $( '#open-panel-dx' );
+		var $pR = $( '#open-panel-sx' );
 	} else {
-		var $pL = $( '#open-panel-sx a' );
-		var $pR = $( '#open-playback a' );
+		var $pL = $( '#open-panel-sx' );
+		var $pR = $( '#open-playback' );
 	}
 	
 	$paneclick = ( lr === 'left' ) ? $pL.click() : $pR.click();
@@ -277,10 +277,8 @@ $( '#currentartist, #songinfo-open' ).click( function() {
 } );
 
 function bioshow() {
-	$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
-	$( '#songinfo-open' ).hide(); // fix button not hidden
-	$( '#bio' ).show();
-	$( '#loader' ).addClass( 'hide' );
+	$( '#menu-top, #menu-bottom, #loader' ).addClass( 'hide' );
+	$( '#bio' ).removeClass( 'hide' );
 }
 $( '#biocontent' ).delegate( '.biosimilar', 'click', function() {
 	$( '#loader' ).removeClass( 'hide' );
@@ -294,8 +292,7 @@ $( '#biocontent' ).delegate( '.biosimilar', 'click', function() {
 	);
 } );
 $( '#closebio' ).click( function() {
-	$( '#bio' ).hide();
-	$( '#songinfo-open' ).show(); // fix button not hidden
+	$( '#bio' ).addClass( 'hide' );
 	if ( !barhide ) $( '#menu-top, #menu-bottom' ).removeClass( 'hide' );
 } );
 // poweroff
@@ -461,8 +458,7 @@ $( '#pl-home' ).click( function() {
 } );
 $( '#pl-filter-results' ).off( 'click' ).on( 'click', function() {
 	$( this ).addClass( 'hide' ).html( '' );
-	$( '#pl-manage, #pl-count' ).removeClass( 'hide' );
-	$( '#playlist-entries li' ).show();
+	$( '#pl-manage, #pl-count, #playlist-entries li' ).removeClass( 'hide' );
 	$( '#pl-filter' ).val( '' );
 	customScroll( 'pl', parseInt( GUI.json.song ), 500 );
 });
@@ -549,9 +545,9 @@ $( '#db-search-results' ).off( 'click' ).on( 'click', function() {
 		
 		$( '#database-entries' ).removeAttr( 'style' );
 		observerback.observe( observerdiv, observeroption );
-		$( '#db-level-up' ).show( function() {
+/*		$( '#db-level-up' ).show( function() {
 			observerback.disconnect();
-		} );
+		} );*/
 	} else {
 		renderLibraryHome();
 	}
@@ -626,6 +622,7 @@ $( '#volume' ).roundSlider( {
 		$volumetransition = $( '#volume' ).find( '.rs-animation, .rs-transition' );
 		$volumetooltip = $( '#volume' ).find( '.rs-tooltip' );
 		$volumehandle = $( '#volume' ).find( '.rs-handle' );
+		$volumetooltip.add( $volumehandle ).addClass( 'hide' ); // hide '0' / 'NaN' on initial load - show after set
 		$volumehandle.addClass( 'rs-transition' ).eq( 0 ) // make it rotate with 'rs-transition'
 			.rsRotate( - this._handle1.angle );  // initial rotate
 	},
@@ -893,7 +890,7 @@ function displayplayback() {
 	}
 	if ( buttonhide || display.buttons == '' ) {
 		buttonhide = 1;
-		$( '#play-group, #share-group, #vol-group' ).hide();
+		$( '#play-group, #share-group, #vol-group' ).addClass( 'hide' );
 	}
 //	if ( buttonactive ) $( '#play-group, #share-group, #vol-group' ).show();
 	$( '#playback-row' ).removeClass( 'hide' ); // restore - hidden by fix flash
@@ -935,10 +932,10 @@ function displaylibrary() {
 		var indexoffset = $( '#menu-top' ).is( ':visible' ) ? 160 : 80;
 		if ( wH > 500 ) {
 			var indexline = 27;
-			$( '.half' ).show();
+			$( '.half' ).removeClass( 'hide' );
 		} else {
 			var indexline = 13;
-			$( '.half' ).hide();
+			$( '.half' ).addClass( 'hide' );
 		}
 		$( '#db-index' ).css( 'line-height', ( ( wH - indexoffset ) / indexline ) +'px' );
 	}, 200 );
@@ -1757,8 +1754,7 @@ function setplaybackdata() {
 		$volumetransition.css( 'transition-duration', '0s' ); // suppress initial rotate animation
 		$volumeRS.setValue( status.volume );
 		$volumehandle.rsRotate( - $volumeRS._handle1.angle );
-		$volumetooltip.show(); // show after 'setValue'
-		$volumehandle.show();
+		$volumetooltip.add( $volumehandle ).removeClass( 'hide' ); // show after 'setValue'
 		$volumetransition.css( 'transition', '' );           // reset animation to default
 		if ( $( '#vol-group' ).is( ':visible' ) ) {
 			if ( status.volumemute != 0 ) {
@@ -1788,7 +1784,7 @@ function setplaybackdata() {
 				  'background-image': 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
 				, 'border-radius': 0
 			} );
-			$( '#coverartoverlay' ).hide();
+			$( '#coverartoverlay' ).addClass( 'hide' );
 			return;
 		}
 		
@@ -1850,7 +1846,7 @@ function setplaybackdata() {
 				var covercachenum = Math.floor( Math.random() * 1001 );
 				$( '#cover-art' ).css( 'background-image', 'url("/coverart/?v=' + covercachenum + '")' );
 				$( '#cover-art' ).css( 'border-radius', 0 );
-				$( '#coverartoverlay' ).hide();
+				$( '#coverartoverlay' ).addClass( 'hide' );
 			}
 		}
 
