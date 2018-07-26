@@ -88,7 +88,7 @@
 		</div>
 	</div>
 	<!-- LIBRARY PANEL -->
-	<div id="panel-sx" class="tab-pane">
+	<div id="panel-sx" class="tab-pane hide">
 		<div class="btnlist btnlist-top">
 			<div id="db-search" class="form-inline">
 				<div class="input-group">
@@ -133,7 +133,7 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 		<div id="spinner-db" class="csspinner duo hide"></div>
 	</div>
 	<!-- QUEUE PANEL -->
-	<div id="panel-dx" class="tab-pane">
+	<div id="panel-dx" class="tab-pane hide">
 		<div class="btnlist btnlist-top">
 			<div id="pl-home"><i class="fa fa-list-ul sx"></i></div>
 			<span id="pl-currentpath" class="hide"> &ensp;PLAYLISTS</span>
