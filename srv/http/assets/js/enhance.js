@@ -9,7 +9,7 @@ if ( /\/.*\//.test( location.pathname ) === true ) {
 	$.post( '/enhance.php', { redis: JSON.stringify( command ) }, function( data ) {
 		var display = JSON.parse( data ).display;
 	
-		if ( window.innerWidth < 540 || window.innerHeight < 515 || !display.bar ) {
+		if ( window.innerWidth < 540 || window.innerHeight < 515 || !display.bars ) {
 			$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
 			$( 'div.container' )
 				.css( 'padding-top', '0' )
@@ -144,7 +144,7 @@ $( '#playback' ).click( function( e ) {
 		  title  : 'Playback'
 		, message: 'Select items to show:'
 		, checkboxhtml : '<form id="displaysaveplayback">\
-						<label><input name="bar" type="checkbox" '+ display.bar +'>&ensp;Top-Bottom menu</label>\
+						<label><input name="bars" type="checkbox" '+ display.bars +'>&ensp;Top-Bottom menu</label>\
 						<br><label><input name="pause" type="checkbox" '+ display.pause +'>\
 							&ensp;<code><i class="fa fa-play"></i></code>&ensp;<code><i class="fa fa-pause"></i></code>&ensp;buttons</label>\
 						<br><label><input name="time" type="checkbox" '+ display.time +'>&ensp;Time</label>\
@@ -170,7 +170,7 @@ $( '#playback' ).click( function( e ) {
 	} );
 	// disable from autohide
 	if ( window.innerWidth < 499 || window.innerHeight <= 515 ) {
-		$( 'input[name="bar"]' )
+		$( 'input[name="bars"]' )
 			.prop( 'disabled', true )
 			.parent().css( 'color', '#7795b4' )
 			.append( ' (auto hide)' );
@@ -345,7 +345,7 @@ $( '#searchbtn' ).click( function() {
 } );
 // index link
 $( '#db-index li' ).click( function() {
-	var topoffset = display.bar ? 80 : 40;
+	var topoffset = display.bars ? 80 : 40;
 	var $this = $( this );
 	var indextext = $this.text();
 	if ( indextext === '#' ) {
@@ -737,7 +737,7 @@ function unmutecolor() {
 // use show/hide to work with css 'display: none'
 function displaycommon() {
 	barhide = window.innerWidth < 499 || window.innerHeight < 515 ? 1 : 0;
-	if ( display.bar
+	if ( display.bars
 		&& $( '#bio' ).is( ':hidden' )
 		&& barhide == 0
 	) {
@@ -758,7 +758,7 @@ function displaycommon() {
 		if ( $( tb ).is( ':hidden' ) ) $( tb ).removeClass( 'hide' );
 	} );
 	$( '#menu-top, #menu-bottom' ).mouseleave( function() {
-		if ( !display.bar || barhide ) $( '#menu-top, #menu-bottom' ).addClass( 'hide' );
+		if ( !display.bars || barhide ) $( '#menu-top, #menu-bottom' ).addClass( 'hide' );
 	} );
 }
 
@@ -803,7 +803,7 @@ function displayairplay() {
 		, 'border-radius': 0
 	} );
 	scrolltext();
-	$( '#menu-top, #menu-bottom' ).toggleClass( 'hide', !display.bar );
+	$( '#menu-top, #menu-bottom' ).toggleClass( 'hide', !display.bars );
 	$( '#playback-row' ).removeClass( 'hide' );
 	$( '#time-knob' ).toggleClass( 'hide', !display.time );
 	$( '#imode i, #coverartoverlay, #volume-knob, #play-group, #share-group, #vol-group' ).addClass( 'hide' );
@@ -1038,7 +1038,7 @@ function renderLibraryHome() {
 			  title  : 'Libary Home'
 			, message: 'Select items to show:'
 			, checkboxhtml : '<form id="displaysavelibrary">\
-							<label><input name="bar" type="checkbox" '+ display.bar +'>&ensp;Top-Bottom menu</label>\
+							<label><input name="bars" type="checkbox" '+ display.bars +'>&ensp;Top-Bottom menu</label>\
 							<br><label><input name="nas" type="checkbox" '+ display.nas +'>&ensp;Network mounts</label>'
 							+ ( GUI.libraryhome.localStorages ? '<br><label><input name="sd" type="checkbox" '+ display.sd +'>&ensp;Local SD</label>' : '' )
 							+'<br><label><input name="usb" type="checkbox" '+ display.usb +'>&ensp;USB drives</label>\
