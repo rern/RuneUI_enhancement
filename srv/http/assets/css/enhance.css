@@ -154,6 +154,9 @@
 	height: 75px;
 	margin-left: -100px;
 }
+.tab-content>.tab-pane {
+    display: block;
+}
 /* ---------------------- playback ---------------------- */
 #bartop,
 #barbottom {
