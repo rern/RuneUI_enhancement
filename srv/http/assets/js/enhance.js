@@ -9,7 +9,7 @@ if ( /\/.*\//.test( location.pathname ) === true ) {
 	$.post( '/enhance.php', { redis: JSON.stringify( command ) }, function( data ) {
 		var display = JSON.parse( data ).display;
 	
-		if ( window.innerWidth < 540 || window.innerHeight < 515 || display.bar === '' ) {
+		if ( window.innerWidth < 540 || window.innerHeight < 515 || !display.bar ) {
 			$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
 			$( 'div.container' )
 				.css( 'padding-top', '0' )
@@ -443,7 +443,7 @@ $( '#pl-filter' ).off( 'keyup' ).on( 'keyup', function() {
 		count = match ? ( count + 1 ) : count;
 		$this.toggle( match );
 	});
-	if ( search !== '' ) {
+	if ( search ) {
 		$( '#pl-manage, #pl-count' ).addClass( 'hide' );
 		$( '#pl-filter-results' ).removeClass( 'hide' ).html( 
 			'<i class="fa fa-times sx"></i><span class="hidden-xs">'+ count +' <a>of</a> </span>'
@@ -737,7 +737,7 @@ function unmutecolor() {
 // use show/hide to work with css 'display: none'
 function displaycommon() {
 	barhide = window.innerWidth < 499 || window.innerHeight < 515 ? 1 : 0;
-	if ( display.bar !== ''
+	if ( display.bar
 		&& $( '#bio' ).is( ':hidden' )
 		&& barhide == 0
 	) {
@@ -832,7 +832,7 @@ function displayplayback() {
 	buttonhide = window.innerHeight <= 320 || window.innerWidth < 499 ? 1 : 0;
 	if ( GUI.json.playlistlength != 0 ) $( '.playback-controls' ).css( 'visibility', 'visible' );
 	
-	var volume = ( display.volume == '' || redis.volumempd == 0 ) ? 0 : 1;
+	var volume = ( !display.volume || redis.volumempd == 0 ) ? 0 : 1;
 	
 	if ( redis.update != 0 ) {
 		$( '#menu-settings' ).append( '<span id="badge">'+ redis.update +'</span>' );
@@ -888,13 +888,13 @@ function displayplayback() {
 			}
 		}
 	}
-	if ( buttonhide || display.buttons == '' ) {
+	if ( buttonhide || !display.buttons ) {
 		buttonhide = 1;
 		$( '#play-group, #share-group, #vol-group' ).addClass( 'hide' );
 	}
 //	if ( buttonactive ) $( '#play-group, #share-group, #vol-group' ).show();
 	$( '#playback-row' ).removeClass( 'hide' ); // restore - hidden by fix flash
-	if ( !display.buttons && display.time ) {
+	if ( ( buttonhide || !display.buttons ) && display.time ) {
 		$( '#irandom' ).toggleClass( 'hide', GUI.json.random === '0' );
 		if ( GUI.json.repeat === '0' ) {
 			$( '#irepeat' ).removeClass( 'fa-repeat-single' ).addClass( 'hide' );
