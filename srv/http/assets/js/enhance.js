@@ -512,11 +512,11 @@ $( '#db-search' ).on( 'submit', function() {
 var observerback = new MutationObserver( function() {
 	if ( window.innerHeight / 40 > $( '#database-entries li' ).length ) return;
 	window.scrollTo( 0, $( '#database-entries>li' ).eq( 0 ).attr( 'class' ) === 'db-folder' ? dbtop : 0 );
+	observerback.disconnect();
 });
 $( '#database-entries' ).click( function() {
 	dbtop = $( window ).scrollTop();
 	observerback.observe( observerdiv, observeroption );
-	observerback.disconnect();
 } );
 
 // replace functions in main runeui.js file **********************************************
