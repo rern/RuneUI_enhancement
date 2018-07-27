@@ -15,7 +15,7 @@ installstart $@
 #0temp0 remove uninstall leftover
 sed -i 's|fa-music sx"></i> Library\(.\);|fa-folder-open"></i>\1|' /srv/http/assets/js/runeui.js
 sed -i 's/gifico|svg/gif|ico/' /etc/nginx/nginx.conf
-rm /srv/http/assets/js/vendor/{hammer.min.js,propagating.js}
+rm -f /srv/http/assets/js/vendor/{hammer.min.js,propagating.js}
 sed -i '/hammer.min.js\|propagating.js/ d' /srv/http/app/templates/footer.php
 #1temp1
 
