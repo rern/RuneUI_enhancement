@@ -507,16 +507,16 @@ var observeroption = { childList: true };
 $( '#db-search' ).on( 'submit', function() {
 	dbtop = $( window ).scrollTop();
 	observersearch.observe( observerdiv, observeroption );
-	//$( '#db-level-up' ).hide( function() { // addClass( 'hide' ) not work
-		observersearch.disconnect();
-	//} );
+	observersearch.disconnect();
 } );
 var observerback = new MutationObserver( function() {
+	if ( window.innerHeight / 40 > $( '#database-entries li' ).length ) return;
 	window.scrollTo( 0, $( '#database-entries>li' ).eq( 0 ).attr( 'class' ) === 'db-folder' ? dbtop : 0 );
 });
 $( '#database-entries' ).click( function() {
 	dbtop = $( window ).scrollTop();
 	observerback.observe( observerdiv, observeroption );
+	observerback.disconnect();
 } );
 
 // replace functions in main runeui.js file **********************************************
