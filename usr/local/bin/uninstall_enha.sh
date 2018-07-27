@@ -8,15 +8,16 @@ alias=enha
 uninstallstart $@
 
 if [[ $1 == u ]]; then
-	if ! pacman -Q chromium &> /dev/null; then
-		zoom=$( grep '^zoom' /root/.config/midori/config | cut -d'=' -f2 )
-	else
-		zoom=$( grep '^force-device-scale-factor' /root/.xinitrc | cut -d'=' -f2 )
+	zoom=$( redis-cli get zoomlevel )
+	if [[ -z $zoom ]]; then
+		if ! pacman -Q chromium &> /dev/null; then
+			zoom=$( grep '^zoom' /root/.config/midori/config | cut -d'=' -f2 )
+		else
+			zoom=$( grep '^force-device-scale-factor' /root/.xinitrc | cut -d'=' -f2 )
+		fi
 	fi
-	redis-cli set enhazoom $zoom &> /dev/null
 else
-	redis-cli del display &> /dev/null
-	redis-cli del webradiosampling &> /dev/null
+	redis-cli del display webradiosampling zoomlevel &> /dev/null
 fi
 
 # remove files #######################################
@@ -26,12 +27,11 @@ rm -v /srv/http/app/templates/enhanceplayback.php
 rm -v /srv/http/enhance*
 rm -v /srv/http/assets/css/{enhance.css,midori.css,roundslider.min.css}
 rm -v /srv/http/assets/fonts/enhance*
-rm -v /srv/http/assets/img/{controls*,runelogo.svg,turntable*}
+rm -v /srv/http/assets/img/{controls*,runelogo.svg,vu*}
 rm -v /srv/http/assets/js/enhance.js
 rm -v /srv/http/assets/js/vendor/{jquery-ui.min.js,modernizr-custom.js,roundslider.min.js}
 rm /usr/share/bootsplash/{start,reboot,shutdown}-runeaudio.png
 
-mv /srv/http/assets/js/runeui.min.js{.backup,}
 mv /srv/http/app/coverart_ctl.php{.backup,}
 mv /srv/http/command/airplay_toggle{.backup,}
 mv /usr/share/bootsplash/start-runeaudio.png{.backup,}

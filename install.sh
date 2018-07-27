@@ -1,6 +1,8 @@
 #!/bin/bash
 
 # $1-zoom
+# $2-local browser
+
 # change version number in RuneAudio_Addons/srv/http/addonslist.php
 
 alias=enha
@@ -13,10 +15,11 @@ installstart $@
 #0temp0 remove uninstall leftover
 sed -i 's|fa-music sx"></i> Library\(.\);|fa-folder-open"></i>\1|' /srv/http/assets/js/runeui.js
 sed -i 's/gifico|svg/gif|ico/' /etc/nginx/nginx.conf
+rm /srv/http/assets/js/vendor/{hammer.min.js,propagating.js}
+sed -i '/hammer.min.js\|propagating.js/ d' /srv/http/app/templates/footer.php
 #1temp1
 
 mv /srv/http/app/coverart_ctl.php{,.backup}
-mv /srv/http/assets/js/runeui.min.js{,.backup}
 mv /srv/http/command/airplay_toggle{,.backup}
 mv /usr/share/bootsplash/start-runeaudio.png{,.backup}
 mv /usr/share/bootsplash/reboot-runeaudio.png{,.backup}
@@ -52,7 +55,7 @@ commentH 'id="menu-top"' 'href="/"><i class="fa fa-play">'
 string=$( cat <<'EOF'
 <div id="bartop"></div>
 <div id="barbottom"></div>
-        <ul id="settings" class="dropdown-menu" role="menu" aria-labelledby="menu-settings">
+        <ul id="settings" class="dropdown-menu hide" role="menu" aria-labelledby="menu-settings">
             <li id="dropdownbg"></li>
 
 EOF
@@ -122,12 +125,11 @@ commentH 'modernizr'
 # 0.4b
 if grep -q 'jquery-ui.js' $file; then
     commentH 'jquery-ui.js'
-	
-    string=$( cat <<'EOF'
-<script src="<?=$this->asset('/js/vendor/jquery-ui.min.js')?>"></script>
+	string=$( cat <<'EOF'
+    <script src="<?=$this->asset('/js/vendor/jquery-ui.min.js')?>"></script>
 EOF
 )
-	insertH 'code.jquery.com'
+appendH 'jquery.onScreenKeyboard.js'
 fi
 
 string=$( cat <<'EOF'
@@ -168,6 +170,7 @@ file=/srv/http/assets/js/runeui.js
 echo $file
 
 comment 'function renderLibraryHome()' -n -3 'function getPlaylist(text)'
+comment -n +1 'click on Library home block' -n -2 'setup Library home'
 comment 'function renderUI(text)' -n -3 'function renderPlaylists(data)'
 comment -n +2 '(evtname, visChange)' -n -1 '// PLAYING QUEUE'
 #----------------------------------------------------------------------------------
@@ -262,18 +265,26 @@ else
 	svg=1
 fi
 #----------------------------------------------------------------------------------
-if [[ $1 != u ]]; then
-	zoom=$1;
-	zoom=$( echo "$zoom 0.5" | awk '{if (( $1 < $2 )) print $2; else print $1}' )
-	zoom=$( echo "$zoom 3" | awk '{if (( $1 > $2 )) print $2; else print $1}' )
+if [[ $1 != u ]]; then # keep range: 0.5 - 3.0
+	z=$1;
+	zoom=$( echo "0.5 $z 3" \
+      | awk '{
+          if (( $1 < $2 && $2 < $3 ))
+            print $2
+          else if (( $2 < $1 ))
+            print $1
+          else
+            print $3
+        }'
+	)
+	redis-cli set zoomlevel $zoom &> /dev/null
 else
-	zoom=$( redis-cli get enhazoom )
-	redis-cli del enhazoom &> /dev/null
+	zoom=$( redis-cli get zoomlevel )
 fi
 
-if ! pacman -Q chromium &> /dev/null; then
 #----------------------------------------------------------------------------------
-	file=/root/.config/midori/config
+file=/root/.config/midori/config
+if ! grep '^chromium' $file &> /dev/null; then
 	echo $file
 	
 	commentS 'zoom-level'
@@ -289,13 +300,13 @@ else
 	file=/root/.xinitrc
 	echo $file
 	
-	commentS 'force-device-scale-factor='
-	string=$( cat <<EOF
-force-device-scale-factor=$zoom
-EOF
-)
-	appendS 'force-device-scale-factor='
+	sed -i "s/\(force-device-scale-factor=\).*/\1$zoom/" $file
 fi
+#----------------------------------------------------------------------------------
+file=/boot/config.txt
+echo $file
+echo 'disable_overscan=1
+hdmi_ignore_cec=1' >> $file
 #----------------------------------------------------------------------------------
 file=/srv/http/app/templates/enhanceplayback.php  # for rune youtube
 [[ -e /usr/local/bin/uninstall_RuneYoutube.sh ]] && sed -i '/id="pl-import-youtube"/ {s/<!--//; s/-->//}' $file
@@ -306,7 +317,7 @@ file=/srv/http/app/templates/enhanceplayback.php  # for rune youtube
 
 # set library home database
 if [[ $1 != u ]]; then
-	redis-cli hmset display bar checked pause checked time checked coverart checked volume checked buttons checked \
+	redis-cli hmset display bars checked pause checked time checked coverart checked volume checked buttons checked \
 	\nas checked sd checked usb checked webradio checked albums checked artists checked composer checked genre checked \
 	\spotify checked dirble checked jamendo checked &> /dev/null
 fi
@@ -315,8 +326,13 @@ redis-cli set localSStime -1 &> /dev/null
 
 installfinish $@
 
-clearcache
-echo -e "$info Please clear browser cache."
-title -nt "If first time install, reboot as well."
+if [[ $2 == 0 ]]; then
+	killall Xorg
+	redis-cli set local_browser 0
+else
+	clearcache
+fi
+echo -e "$info Please" $( tcolor 'clear browser cache' ).
+title -nt "First time install:"  $( tcolor 'reboot as well' ).
 
 [[ $svg == 0 ]] && restartnginx

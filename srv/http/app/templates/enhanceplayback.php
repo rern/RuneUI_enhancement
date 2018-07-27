@@ -28,7 +28,7 @@
 						<i id="iplayer" class="fa hide"></i>
 						<i id="igpio" class="fa fa-gpio hide"></i>
 					</div>
-					<img id="controls-time" class="controls" src="/srv/http/assets/img/controls-time.svg">
+					<img id="controls-time" class="controls hide" src="/srv/http/assets/img/controls-time.svg">
 					<span id="elapsed" class="controls1"></span>
 					<span id="total" class="controls1"></span>
 					<div id="timeTL" class="timemap"></div>
@@ -51,7 +51,7 @@
 				<div id="coverart">
 					<img id="cover-art" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="transparent-square">
 					<div id="coverartoverlay"></div>
-					<img id="controls-cover" class="controls" src="/srv/http/assets/img/controls.svg">
+					<img id="controls-cover" class="controls hide" src="/srv/http/assets/img/controls.svg">
 					<div id="coverTL" class="covermap t0 w50 h50 m-115"></div>
 					<div id="coverT" class="covermap t0 w130 h50 m-65"></div>
 					<div id="coverTR" class="covermap t0 w50 h50 m65"></div>
@@ -75,7 +75,7 @@
 					<div id="volM" class="volmap"></div>
 					<div id="volR" class="volmap"></div>
 					<div id="volB" class="volmap"></div>
-					<img id="controls-vol" class="controls" src="/srv/http/assets/img/controls-vol.svg">
+					<img id="controls-vol" class="controls hide" src="/srv/http/assets/img/controls-vol.svg">
 				</div>
 				<div id="vol-group">
 					<div class="btn-group">
@@ -88,7 +88,7 @@
 		</div>
 	</div>
 	<!-- LIBRARY PANEL -->
-	<div id="panel-sx" class="tab-pane">
+	<div id="panel-sx" class="tab-pane hide">
 		<div class="btnlist btnlist-top">
 			<div id="db-search" class="form-inline">
 				<div class="input-group">
@@ -133,7 +133,7 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 		<div id="spinner-db" class="csspinner duo hide"></div>
 	</div>
 	<!-- QUEUE PANEL -->
-	<div id="panel-dx" class="tab-pane">
+	<div id="panel-dx" class="tab-pane hide">
 		<div class="btnlist btnlist-top">
 			<div id="pl-home"><i class="fa fa-list-ul sx"></i></div>
 			<span id="pl-currentpath" class="hide"> &ensp;PLAYLISTS</span>
@@ -173,7 +173,7 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 	</div>
 </div>
 
-<div id="bio" style="display: none;">
+<div id="bio" class="hide">
 	<div class="container">
 		<h1>BIO</h1><a id="closebio"><i class="fa fa-times fa-2x"></i></a>
 		<div id="biocontent">

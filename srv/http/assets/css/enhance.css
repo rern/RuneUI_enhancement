@@ -51,6 +51,7 @@
 .fa {
 	font-family: FontAwesome, enhance;
 }
+.fa-trophy:before { content: "\f575" } /* change to fa-rune */
 .fa-folder-open:before { content: "\f507" } /* change to fa-library */
 .fa-times-circle:before,
 .fa-trash-o:before { content: "\f51C" } /* change to fa-minus-circle */
@@ -153,6 +154,9 @@
 	height: 75px;
 	margin-left: -100px;
 }
+.tab-content>.tab-pane {
+    display: block;
+}
 /* ---------------------- playback ---------------------- */
 #bartop,
 #barbottom {
@@ -235,6 +239,7 @@
 	cursor: pointer;
 }
 #settings {
+	display: block;
 	position: fixed;
 	top: 40px;
 	right: 0px;
@@ -302,6 +307,13 @@
 	font-size: 28px;
 }
 /* ---------------------- middle window ----------------------*/
+#playback, #panel-sx, #panel-dx, #settings {
+	-webkit-touch-callout: none; /* iOS Safari */
+	-webkit-user-select: none; /* Safari */
+	-moz-user-select: none; /* Firefox */
+	-ms-user-select: none; /* Internet Explorer/Edge */
+	user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+}
 #playback {
 	height: 100vh;
 	padding-top: 80px;
@@ -531,7 +543,6 @@
 }
 /* overlay controls guide */
 .controls {
-	display: none;
 	position: absolute;
 	top: 0;
 	left: 50%;
@@ -730,7 +741,6 @@
 	background: #34495e;
 }
 .rs-tooltip {
-	display: none; /* hide '0' / 'NaN' on initial load - show after set */
 	top: 40% !important;
 	margin: 0 !important;
 	left: 30% !important;
@@ -752,7 +762,6 @@
 	background: linear-gradient( #333333, #000000 );
 }
 #volume .rs-handle {
-	display: none; /* hide '0' position on initial rotate - show after rotated */
 	border: 1px solid #333333;
 	background: #0095d8;
 	box-shadow: inset #34495e 0 5px 5px;
