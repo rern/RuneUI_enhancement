@@ -1414,15 +1414,15 @@ w {
 	#playback-row {
 		margin: 15px auto;
 	}
-	#play-group,
-	#share-group,
-	#vol-group {
-		margin-top: 15px;
-	}
 }
 @media(max-height: 560px) {
 	#playback {
 		padding-top: 60px !important;
+	}
+	#play-group,
+	#share-group,
+	#vol-group {
+		margin-top: 15px;
 	}
 }
 @media(max-height: 535px) {
