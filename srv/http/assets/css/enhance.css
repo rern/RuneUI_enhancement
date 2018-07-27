@@ -401,7 +401,7 @@
 	-webkit-flex-wrap: wrap;
 	-webkit-align-items: center;
 	-webkit-justify-content: center;
-	margin: 20px auto 0;
+	margin: 20px auto;
 	padding: 0;
 	width: 100vw;
 	max-width: 1200px;
@@ -416,7 +416,6 @@
 #play-group,
 #share-group,
 #vol-group {
-	margin: 10px 0;
 	padding: 0;
 	text-align: center;
 	width: 30%;
@@ -1413,15 +1412,12 @@ w {
 }
 @media(max-height: 600px) {
 	#playback-row {
-		margin-top: 0;
+		margin: 15px auto;
 	}
-	#time-knob,
-	#coverart,
-	#volume-knob,
-	#share-group,
 	#play-group,
+	#share-group,
 	#vol-group {
-		margin-top: 0;
+		margin-top: 15px;
 	}
 }
 @media(max-height: 560px) {
@@ -1430,8 +1426,8 @@ w {
 	}
 }
 @media(max-height: 535px) {
-	#sampling {
-		height: 25px;
+	#playback-row {
+		margin: 10px auto;
 	}
 }
 @media(max-height: 515px) {
