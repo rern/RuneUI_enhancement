@@ -53,8 +53,6 @@ appendH 'runeui.css'
 commentH 'id="menu-top"' 'href="/"><i class="fa fa-play">'
 
 string=$( cat <<'EOF'
-<div id="bartop"></div>
-<div id="barbottom"></div>
         <ul id="settings" class="dropdown-menu hide" role="menu" aria-labelledby="menu-settings">
             <li id="dropdownbg"></li>
 
