@@ -47,7 +47,10 @@ function menubottom( elshow, elhide1, elhide2 ) {
 	}
 }
 
-$( '#open-panel-sx, .open-sx' ).click( function() {
+$( '#currentsong, #playlist-warning' ).on( 'click', 'i', function() {
+	$( '#open-panel-sx' ).click();
+} );
+$( '#open-panel-sx' ).click( function() {
 	if ( GUI.activePlayer === 'Airplay' || GUI.activePlayer === 'Spotify' ) {
 		$( '#overlay-playsource' ).addClass( 'open' );
 		return;
@@ -158,6 +161,79 @@ function playbacktaphold() {
 			.append( ' (auto hide)' );
 	}
 }
+
+var bookmarkedit = 0;
+$( '#panel-sx' ).click( function( e ) {
+	if ( $( e.target ).parent().hasClass( 'home-bookmark' ) || $( e.target ).hasClass( 'home-bookmark' ) ) return;
+	bookmarkedit = 0;
+	$( '.home-bookmark div.home-block-remove' ).remove();
+} ).on( 'taphold', function( e ) {
+	//alert($( e.target ).prop('class'))
+	if (
+		(  e.target.id === 'database' || e.target.id === 'home-blocks' || $( e.target ).hasClass( 'col-lg-3' ) )
+		&& !bookmarkedit
+	) librarytaphold( e );
+} ).on( 'taphold', '.home-block', function( e ) {
+	if ( $( e.target ).parent().hasClass( 'home-bookmark' ) || $( e.target ).hasClass( 'home-bookmark' ) ) {
+		bookmarkedit = 1;
+		$( '.home-bookmark' ).append( '<div class="home-block-remove"><span class="block-remove">&times;</span></div>' );
+	} else {
+		librarytaphold( e );
+	}
+} );
+$( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
+	var $this = $( this );
+	if ( $( e.target ).is( 'span.block-remove' ) ) {
+		var id = this.id.replace( 'home-bookmark-', '' );
+		var name = $this.find( 'h4' ).text();
+		$.post( '/db/?cmd=bookmark', { id: id, name: name }, function() {
+			$this.parent().remove();
+			renderLibraryHome();
+		} );
+	} else {
+		if ( bookmarkedit ) return;
+		++GUI.currentDBpos[ 10 ];
+		getDB( {
+			browsemode: $this.data( 'browsemode' ),
+			path: $this.data( 'path' ),
+			uplevel: 0,
+			plugin: $this.data( 'plugin' )
+		});
+	}
+});
+function librarytaphold( e ) {
+	info( {
+		  title  : 'Libary Home'
+		, message: 'Select items to show:'
+		, checkboxhtml : '<form id="displaysavelibrary">\
+						<label><input name="bars" type="checkbox" '+ display.bars +'>&ensp;Top-Bottom menu</label>\
+						<br><label><input name="nas" type="checkbox" '+ display.nas +'>&ensp;Network mounts</label>'
+						+ ( GUI.libraryhome.localStorages ? '<br><label><input name="sd" type="checkbox" '+ display.sd +'>&ensp;Local SD</label>' : '' )
+						+'<br><label><input name="usb" type="checkbox" '+ display.usb +'>&ensp;USB drives</label>\
+						<br><label><input name="webradio" type="checkbox" '+ display.webradio +'>&ensp;Webradios</label>\
+						<br><label><input name="albums" type="checkbox" '+ display.albums +'>&ensp;Albums</label>\
+						<br><label><input name="artists" type="checkbox" '+ display.artists +'>&ensp;Artists</label>\
+						<br><label><input name="composer" type="checkbox" '+ display.composer +'>&ensp;Composers</label>\
+						<br><label><input name="genre" type="checkbox" '+ display.genre +'>&ensp;Genres</label>\
+						<br><label><input name="dirble" type="checkbox" '+ display.dirble +'>&ensp;Dirble</label>\
+						<br><label><input name="jamendo" type="checkbox" '+ display.jamendo +'>&ensp;Jamendo</label>\
+						</form>'
+		, cancel : 1
+		, ok     : function () {
+			$( '#displaysavelibrary input' ).each( function() {
+				display[ this.name ] = this.checked ? 'checked' : '';
+			} );
+			var command = { display: [ 'hmset', 'display', display ] };
+			$.post( '/enhance.php', 
+				{ redis: JSON.stringify( command ) },
+				function( data ) {
+					displaylibrary();
+				}
+			);
+		}
+	} );
+}
+
 // disabled local browser > disable screensaver events
 if ( !$( '#playback-ss' ).length ) $('#section-index').off( 'mousemove click keypress' );
 
@@ -946,7 +1022,7 @@ function setPlaybackSource() {
 }
 function renderLibraryHome() {
 	$( '#database-entries' ).empty();
-	$('#db-search-results').addClass( 'hide' );
+	$( '#db-search-results' ).addClass( 'hide' );
 	$( '#db-search-keyword' ).val( '' );
 	if ( $( '#database-entries' ).hasClass( 'hide' ) && !bookmarkedit ) return;
 	
@@ -1009,15 +1085,15 @@ function renderLibraryHome() {
 	$( '#db-index, #db-level-up, #db-webradio-add, #db-homeSetup' ).addClass( 'hide' );
 	displaylibrary();
 
-	var bookmarkedit = 0;
+/*	var bookmarkedit = 0;
 	$( '#panel-sx' ).click( function( e ) {
 		if ( $( e.target ).parent().hasClass( 'home-bookmark' ) || $( e.target ).hasClass( 'home-bookmark' ) ) return;
 		bookmarkedit = 0;
 		$( '.home-bookmark div.home-block-remove' ).remove();
 	} ).on( 'taphold', function( e ) {
 		librarytaphold( e );
-	} );
-	$( '#home-blocks .home-block' ).click( function( e ) {
+	} );*/
+/*	$( '#home-blocks .home-block' ).click( function( e ) {
 		var $this = $( this );
 		if ( $( e.target ).is( 'span.block-remove' ) ) {
 			var id = this.id.replace( 'home-bookmark-', '' );
@@ -1036,44 +1112,7 @@ function renderLibraryHome() {
 				plugin: $this.data( 'plugin' )
 			});
 		}
-	});
-}
-function librarytaphold( e ) {
-	if ( $( e.target ).parent().hasClass( 'home-bookmark' ) || $( e.target ).hasClass( 'home-bookmark' ) ) {
-		bookmarkedit = 1;
-		$( '.home-bookmark' ).append( '<div class="home-block-remove"><span class="block-remove">&times;</span></div>' );
-		return;
-	}
-	info( {
-		  title  : 'Libary Home'
-		, message: 'Select items to show:'
-		, checkboxhtml : '<form id="displaysavelibrary">\
-						<label><input name="bars" type="checkbox" '+ display.bars +'>&ensp;Top-Bottom menu</label>\
-						<br><label><input name="nas" type="checkbox" '+ display.nas +'>&ensp;Network mounts</label>'
-						+ ( GUI.libraryhome.localStorages ? '<br><label><input name="sd" type="checkbox" '+ display.sd +'>&ensp;Local SD</label>' : '' )
-						+'<br><label><input name="usb" type="checkbox" '+ display.usb +'>&ensp;USB drives</label>\
-						<br><label><input name="webradio" type="checkbox" '+ display.webradio +'>&ensp;Webradios</label>\
-						<br><label><input name="albums" type="checkbox" '+ display.albums +'>&ensp;Albums</label>\
-						<br><label><input name="artists" type="checkbox" '+ display.artists +'>&ensp;Artists</label>\
-						<br><label><input name="composer" type="checkbox" '+ display.composer +'>&ensp;Composers</label>\
-						<br><label><input name="genre" type="checkbox" '+ display.genre +'>&ensp;Genres</label>\
-						<br><label><input name="dirble" type="checkbox" '+ display.dirble +'>&ensp;Dirble</label>\
-						<br><label><input name="jamendo" type="checkbox" '+ display.jamendo +'>&ensp;Jamendo</label>\
-						</form>'
-		, cancel : 1
-		, ok     : function () {
-			$( '#displaysavelibrary input' ).each( function() {
-				display[ this.name ] = this.checked ? 'checked' : '';
-			} );
-			var command = { display: [ 'hmset', 'display', display ] };
-			$.post( '/enhance.php', 
-				{ redis: JSON.stringify( command ) },
-				function( data ) {
-					displaylibrary();
-				}
-			);
-		}
-	} );
+	});*/
 }
 
 function renderPlaylists( data ) {
@@ -1756,7 +1795,9 @@ function setplaybackdata() {
 		if ( status.playlistlength == 0 ) {
 			$( '.playback-controls' ).css( 'visibility', 'hidden' );
 			$( '#divartist, #divsong, #divalbum' ).removeClass( 'scroll-left' );
-			$( '#elapsed, #total' ).html( '' );
+			$( '#currentsong' ).html( '<i class="fa fa-plus-circle"></i>' );
+			$( '#playlist-position span' ).text( 'Add something from Library' );
+			$( '#currentartist, #currentalbum, #elapsed, #total' ).html( '' );
 			$( '#cover-art' ).css( {
 				  'background-image': 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
 				, 'border-radius': 0
