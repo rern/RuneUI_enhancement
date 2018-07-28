@@ -39,9 +39,9 @@ function menubottom( elshow, elhide1, elhide2 ) {
 	if ( $( '#panel-dx' ).hasClass( 'active' ) ) queuetop = $( window ).scrollTop();
 	if ( /\/.*\//.test( location.pathname ) === false ) {
 		$( '#'+ elshow ).removeClass( 'hide' );
-		$( '#open-'+ elshow ).addClass( 'active' );
+		$( '#'+ elshow +', #open-'+ elshow ).addClass( 'active' );
 		$( '#'+ elhide1 +', #'+ elhide2 ).addClass( 'hide' );
-		$( '#open-'+ elhide1 +', #open-'+ elhide2 ).removeClass( 'active' );
+		$( '#'+ elhide1 +', #'+ elhide2 +', #open-'+ elhide1 +', #open-'+ elhide2 ).removeClass( 'active' );
 	} else {
 		window.location.href = '/';
 	}
@@ -248,10 +248,6 @@ $( '#menu-top, #menu-bottom' ).click( function( e ) {
 } );
 $( '#menu-top, #menu-bottom' ).click( function() {
 	$( '.context-menu' ).removeClass( 'open' );
-} );
-
-$( '#currentsong' ).click( function() {
-	if ( $( this ).has( 'i' ).length ) $( '#open-panel-sx' ).click();
 } );
 
 $( '#play-group, #share-group, #vol-group' ).click( function() {
@@ -498,25 +494,28 @@ document.addEventListener( visibilityevent, function() {
 	}
 } );
 
+// MutationObserver - watch for content changed
 var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
-var observersearch = new MutationObserver( function() {
-	window.scrollTo( 0, 0 );
-});
-var observerdiv = document.getElementById( 'database-entries' );
-var observeroption = { childList: true };
-$( '#db-search' ).on( 'submit', function() {
-	dbtop = $( window ).scrollTop();
-	observersearch.observe( observerdiv, observeroption );
-	observersearch.disconnect();
-} );
-var observerback = new MutationObserver( function() {
+var observerOption = { childList: true };
+var observerTarget = document.getElementById( 'database-entries' );
+// on observed target changed
+var observerFnBack = new MutationObserver( function() {
 	if ( window.innerHeight / 40 > $( '#database-entries li' ).length ) return;
 	window.scrollTo( 0, $( '#database-entries>li' ).eq( 0 ).attr( 'class' ) === 'db-folder' ? dbtop : 0 );
-	observerback.disconnect();
+	observerFnBack.disconnect();
 });
+/*var observerFnSearch = new MutationObserver( function() {
+	window.scrollTo( 0, 0 );
+});*/
 $( '#database-entries' ).click( function() {
 	dbtop = $( window ).scrollTop();
-	observerback.observe( observerdiv, observeroption );
+	observerFnBack.observe( observerTarget, observerOption );
+} );
+$( '#searchbtn' ).click( function() {
+	dbtop = $( window ).scrollTop();
+	observerFnBack.observe( observerTarget, observerOption );
+//	observerFnSearch.observe( observerTarget, observerOption );
+//	observerFnSearch.disconnect();
 } );
 
 // replace functions in main runeui.js file **********************************************
@@ -544,10 +543,7 @@ $( '#db-search-results' ).off( 'click' ).on( 'click', function() {
 		} );
 		
 		$( '#database-entries' ).removeAttr( 'style' );
-		observerback.observe( observerdiv, observeroption );
-/*		$( '#db-level-up' ).show( function() {
-			observerback.disconnect();
-		} );*/
+		observerFnBack.observe( observerTarget, observerOption );
 	} else {
 		renderLibraryHome();
 	}
@@ -752,14 +748,6 @@ function displaycommon() {
 	}
 		// for mouse only
 	if ( navigator.userAgent.match( /iPad|iPhone|iPod|android|webOS/i ) ) return;
-	
-	$( '#bartop, #barbottom' ).mouseenter( function() {
-		var tb = $( this ).prop( 'id' ).replace( 'bar', '#menu-' );
-		if ( $( tb ).is( ':hidden' ) ) $( tb ).removeClass( 'hide' );
-	} );
-	$( '#menu-top, #menu-bottom' ).mouseleave( function() {
-		if ( !display.bars || barhide ) $( '#menu-top, #menu-bottom' ).addClass( 'hide' );
-	} );
 }
 
 // playback show/hide blocks
@@ -1775,11 +1763,7 @@ function setplaybackdata() {
 		if ( status.playlistlength == 0 ) {
 			$( '.playback-controls' ).css( 'visibility', 'hidden' );
 			$( '#divartist, #divsong, #divalbum' ).removeClass( 'scroll-left' );
-			$( '#currentartist, #format-bitrate, #total' ).html( '&nbsp;' );
-			$( '#currentsong' ).html( '<i class="fa fa-plus-circle"></i>' );
-			$( '#currentalbum' ).html( '&nbsp;' );
-			$( '#playlist-position span' ).html( 'Add something from Library' );
-			$( '#elapsed, #total' ).html( '&nbsp;' );
+			$( '#elapsed, #total' ).html( '' );
 			$( '#cover-art' ).css( {
 				  'background-image': 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
 				, 'border-radius': 0
