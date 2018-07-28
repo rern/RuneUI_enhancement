@@ -157,20 +157,6 @@
 .tab-content>.tab-pane {
     display: block;
 }
-/* ---------------------- playback ---------------------- */
-#bartop,
-#barbottom {
-	position: fixed;
-	left: 0;
-	width: 100vw;
-	height: 10px;
-}
-#bartop {
-	top: 0;
-}
-#barbottom {
-	bottom: 0;
-}
 /* ---------------------- menu-top ----------------------*/
 .logo {
 	height: 35px;
