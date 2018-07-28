@@ -92,16 +92,13 @@ function panelLR( lr ) {
 	
 	$paneclick = ( lr === 'left' ) ? $pL.click() : $pR.click();
 }
+swipe = 0;
 $( '#playback, #panel-sx, #panel-dx' ).on( 'swipeleft swiperight', function( e ) {
 	panelLR( e.type === 'swipeleft' ? 'left' : '' );
-	if ( e.target.id === 'panel-dx' || $( e.target ).parents().is( '#panel-dx' ) ) return;
-	
-	// fix: prevent taphold on swipe
-	$( '#playback, #panel-sx' ).off( 'taphold' );
-	var id = e.target.id;
+	// fix: prevent taphold fire on swipe
+	swipe = 1;
 	setTimeout( function() {
-		$( '#playback' ).on( 'taphold', setDisplayPlayback );
-		$( '#panel-sx' ).on( 'taphold', setDisplayLibrary );
+		swipe = 0;
 	}, 1000 );
 } );
 
@@ -112,6 +109,8 @@ $( '#playback' ).click( function( e ) {
 	}
 } ).on( 'taphold', setDisplayPlayback );
 function setDisplayPlayback() {
+	if ( swipe ) return;
+	
 	info( {
 		  title  : 'Playback'
 		, message: 'Select items to show:'
@@ -165,8 +164,12 @@ function setDisplayPlayback() {
 
 var bookmarkedit = 0;
 $( '#panel-sx' ).on( 'taphold', function( e ) {
+	if ( swipe ) return;
+	
 	if ( !bookmarkedit ) setDisplayLibrary( e );
 } ).on( 'taphold', '.home-block', function( e ) {
+	if ( swipe ) return;
+	
 	if ( !$( e.target ).parent().hasClass( 'home-bookmark' ) && !$( e.target ).hasClass( 'home-bookmark' ) ) return;
 	
 	bookmarkedit = 1;
@@ -895,6 +898,7 @@ function displayPlayback() {
 		displayAirPlay();
 		return;
 	}
+	$( '#container-playback' ).addClass( 'hide' );
 	$( '#iplayer' ).removeClass( 'fa-airplay' ).addClass( 'hide' );
 	buttonhide = window.innerHeight <= 320 || window.innerWidth < 499 ? 1 : 0;
 	if ( GUI.json.playlistlength != 0 ) $( '.playback-controls' ).css( 'visibility', 'visible' );
@@ -976,6 +980,7 @@ function displayPlayback() {
 		$( '#imode i' ).addClass( 'hide' );
 	}
 	displayCommon();
+	$( '#container-playback' ).removeClass( 'hide' );
 }
 
 // library show/hide blocks
