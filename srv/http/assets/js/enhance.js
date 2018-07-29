@@ -1,39 +1,5 @@
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-$( '#database-entries' ).off( 'click', '.db-action' )
-var licurrent = '';
-$( '#database-entries' ).on( 'click', '.db-action', function() {
-	var $this = $( this );
-	var $target = $( $this.attr( 'data-target' ) );
-	var liid = $this.parent().prop( 'id' );
-	$( '.context-menu' ).removeClass( 'open' );
-	if ( liid === licurrent ) {
-		licurrent = '';
-	} else {
-		licurrent = liid;
-		$target.addClass( 'open' )
-			.find( 'ul' ).css( { top: $this.offset().top +'px', right: '70px' } );
-	}
-} );
-$( '#pl-editor' ).off( 'click', '.pl-action' )
-var plcurrent = '';
-$( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
-	e.stopPropagation();
-	var $this = $( this );
-	if ( !$this.hasClass( 'fa-bars' ) ) return;
-	
-	var plpath = $this.parent().attr( 'data-path' );
-	GUI.DBentry[0] = plpath;
-	$( '.context-menu' ).removeClass( 'open' );
-	if ( plpath === plcurrent ) {
-		plcurrent = '';
-	} else {
-		plcurrent = plpath;
-		$( '#context-menu-playlist' ).addClass( 'open' )
-			.find( 'ul' ).css( { top: $this.position().top +'px', right: '30px' } );
-	}
-} );
-
 $( '#menu-settings' ).click( function() {
 	$( '#settings' ).toggleClass( 'hide' ).css( 'top', $( '#menu-top' ).is( ':hidden' ) ? 0 : '40px' );
 } );
@@ -107,7 +73,7 @@ $( '#open-panel-dx' ).click( function() {
 	}
 	menuBottom( 'panel-dx', 'playback', 'panel-sx' );
 	displayCommon();
-	getPlaylistCmd();
+	if ( !$( '#playlist-entries' ).hasClass( 'hide' ) ) getPlaylistCmd();
 	window.scrollTo( 0, queuetop );
 	$( '#pl-count, #pl-manage, #pl-search' ).removeClass( 'hide' );
 } );
@@ -260,7 +226,10 @@ function setDisplayLibrary( e ) {
 			$( '#displaysavelibrary input' ).each( function() {
 				display[ this.name ] = this.checked ? 'checked' : '';
 			} );
-			var command = { display: [ 'hmset', 'display', display ] };
+			var command = {
+				set: [ 'hmset', 'display', display ],
+				display: [ 'hGetAll', 'display' ]
+			};
 			$.post( '/enhance.php', { redis: JSON.stringify( command ) } );
 		}
 	} );
@@ -357,17 +326,15 @@ $( '#menu-top, #menu-bottom' ).click( function( e ) {
 	$( '.controls' ).addClass( 'hide' );
 	$( '.controls1, .rs-tooltip, #imode' ).removeClass( 'hide' );
 } );
-$( '#menu-top, #menu-bottom, .context-menu' ).click( function( e ) {
-	licurrent = '';
-	plcurrent = '';
-	$( '.context-menu' ).removeClass( 'open' );
-} );
 
 $( '#play-group, #share-group, #vol-group' ).click( function() {
 	if ( window.innerWidth < 499 ) buttonactive = 1;
 } );
 
-// lastfm search
+function bioShow() {
+	$( '#menu-top, #menu-bottom, #loader' ).addClass( 'hide' );
+	$( '#bio' ).removeClass( 'hide' );
+}
 $( '#currentartist, #songinfo-open' ).click( function() {
 	if ( GUI.json.radio ) return;
 	$( '#loader' ).removeClass( 'hide' );
@@ -384,11 +351,6 @@ $( '#currentartist, #songinfo-open' ).click( function() {
 		bioShow();
 	}
 } );
-
-function bioShow() {
-	$( '#menu-top, #menu-bottom, #loader' ).addClass( 'hide' );
-	$( '#bio' ).removeClass( 'hide' );
-}
 $( '#biocontent' ).delegate( '.biosimilar', 'click', function() {
 	$( '#loader' ).removeClass( 'hide' );
 	$.get( '/enhancebio.php',
@@ -532,12 +494,6 @@ $( '#playlist-entries' ).click( function( e ) {
 		$( '#menu-top, #menu-bottom' ).toggleClass( 'hide', ( window.innerWidth < 499 || window.innerHeight < 515 ) );
 	}
 } );
-$( '#panel-dx, #context-menu-playlist' ).click( function() {
-	if ( $( '#context-menu-playlist' ).hasClass( 'open' ) ) $( '#context-menu-playlist' ).removeClass( 'open' );
-} );
-$( '#context-menu-playlist' ).click( function() {
-	$( '#pl-home-text' ).addClass( 'hide' );
-} );
 $( '#pl-manage-list' ).off( 'click' ).on( 'click', function() {
 	$( '#pl-search' ).addClass( 'hide' );
 	$( '#pl-currentpath' ).removeClass( 'hide' );
@@ -564,8 +520,8 @@ $( '#pl-filter' ).off( 'keyup' ).on( 'keyup', function() {
 	}
 } );
 $( '#pl-home' ).click( function() {
-	$( '#pl-currentpath' ).addClass( 'hide' );
-	$( '#open-panel-dx' ).click();
+	$( '#pl-editor, #pl-currentpath' ).addClass( 'hide' );
+	$( '#pl-count, #pl-manage, #pl-search, #playlist-entries' ).removeClass( 'hide' );
 } );
 $( '#pl-filter-results' ).off( 'click' ).on( 'click', function() {
 	$( this ).addClass( 'hide' ).html( '' );
@@ -619,9 +575,6 @@ var observerFnBack = new MutationObserver( function() {
 	window.scrollTo( 0, $( '#database-entries>li' ).eq( 0 ).attr( 'class' ) === 'db-folder' ? dbtop : 0 );
 	observerFnBack.disconnect();
 });
-/*var observerFnSearch = new MutationObserver( function() {
-	window.scrollTo( 0, 0 );
-});*/
 $( '#database-entries' ).click( function() {
 	dbtop = $( window ).scrollTop();
 	observerFnBack.observe( observerTarget, observerOption );
@@ -629,11 +582,48 @@ $( '#database-entries' ).click( function() {
 $( '#searchbtn' ).click( function() {
 	dbtop = $( window ).scrollTop();
 	observerFnBack.observe( observerTarget, observerOption );
-//	observerFnSearch.observe( observerTarget, observerOption );
-//	observerFnSearch.disconnect();
 } );
 
+$( '#menu-top, #menu-bottom, .context-menu' ).click( function( e ) {
+	licurrent = '';
+	plcurrent = '';
+	$( '.context-menu' ).removeClass( 'open' );
+} );
 // replace functions in main runeui.js file **********************************************
+$( '#database-entries' ).off( 'click', '.db-action' )
+var licurrent = '';
+$( '#database-entries' ).on( 'click', '.db-action', function() {
+	var $this = $( this );
+	var $target = $( $this.attr( 'data-target' ) );
+	var liid = $this.parent().prop( 'id' );
+	$( '.context-menu' ).removeClass( 'open' );
+	if ( liid === licurrent ) {
+		licurrent = '';
+	} else {
+		licurrent = liid;
+		$target.addClass( 'open' )
+			.find( 'ul' ).css( { top: $this.offset().top +'px', right: '70px' } );
+	}
+} );
+$( '#pl-editor' ).off( 'click', '.pl-action' )
+var plcurrent = '';
+$( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
+	e.stopPropagation();
+	var $this = $( this );
+	if ( !$this.hasClass( 'fa-bars' ) ) return;
+	
+	var plpath = $this.parent().attr( 'data-path' );
+	GUI.DBentry[0] = plpath;
+	$( '.context-menu' ).removeClass( 'open' );
+	if ( plpath === plcurrent ) {
+		plcurrent = '';
+	} else {
+		plcurrent = plpath;
+		$( '#context-menu-playlist' ).addClass( 'open' )
+			.find( 'ul' ).css( { top: $this.position().top +'px', right: '30px' } );
+	}
+} );
+
 $( '#playsource-mpd' ).off( 'click' ).on( 'click', function() {
 	$.post( 'enhance.php', { bash: '/usr/bin/systemctl restart shairport' } );
 	$( '#iplayer' ).removeClass( 'fa-airplay' ).addClass( 'hide' );
@@ -664,12 +654,11 @@ $( '#db-search-results' ).off( 'click' ).on( 'click', function() {
 	}
 } );
 $( '#modal-pl-clear button.btn-cmd' ).click( function() {
-	$( '#playlist-warning' ).addClass( 'hide' );
 	setTimeout( function() {
 		displayCommon();
-		$( '#playlist-warning' ).removeClass( 'hide' );
 	}, 500 );
 } );
+
 librarytop = 0;
 queuetop = 0;
 
@@ -881,10 +870,7 @@ $.post( '/enhance.php', { redis: JSON.stringify( command ) }, function( data ) {
 var blinkdot = '<a class="dot">.</a> <a class="dot dot2">.</a> <a class="dot dot3">.</a>';
 function displayCommon() {
 	barhide = window.innerWidth < 499 || window.innerHeight < 515 ? 1 : 0;
-	if ( display.bars
-		&& $( '#bio' ).is( ':hidden' )
-		&& barhide == 0
-	) {
+	if ( display.bars && $( '#bio' ).is( ':hidden' ) && barhide == 0 ) {
 		$( '#menu-top, #menu-bottom' ).removeClass( 'hide' );
 		$( '#database, #playlist' ).css( 'padding', '' );
 		$( '.btnlist-top' ).css( 'top', '40px' );
@@ -895,8 +881,6 @@ function displayCommon() {
 		$( '.btnlist-top' ).css( 'top', 0 );
 	}
 	$( '#pl-currentpath' ).addClass( 'hide' );
-		// for mouse only
-	if ( navigator.userAgent.match( /iPad|iPhone|iPod|android|webOS/i ) ) return;
 }
 function displayAirPlay() {
 	$( '.playback-controls' ).css( 'visibility', 'hidden' );
@@ -1001,7 +985,6 @@ function displayPlayback() {
 		buttonhide = 1;
 		$( '#play-group, #share-group, #vol-group' ).addClass( 'hide' );
 	}
-//	if ( buttonactive ) $( '#play-group, #share-group, #vol-group' ).show();
 	$( '#playback-row' ).removeClass( 'hide' ); // restore - hidden by fix flash
 	if ( ( buttonhide || !display.buttons ) && display.time ) {
 		$( '#irandom' ).toggleClass( 'hide', GUI.json.random === '0' );
@@ -1135,23 +1118,6 @@ function renderLibraryHome() {
 	displayLibrary();
 }
 
-function renderPlaylists( data ) {
-	var content = playlistname = '';
-	var i, line, lines = data.split('\n'), infos = [];
-	for ( i = 0; ( line = lines[ i ] ); i++ ) {
-		infos = line.split( ': ' );
-		if ( 'playlist' === infos[ 0 ] ) {
-			playlistname = infos[ 1 ];
-			content += '<li class="pl-folder" data-path="' + playlistname + '"><i class="fa fa-bars pl-action"></i><span><i class="fa fa-list-ul"></i>' + playlistname + '</span></li>';
-			playlistname = '';
-		}
-	}
-	document.getElementById( 'playlist-entries' ).innerHTML = '';
-	$( '.playlist, #pl-manage, #pl-count' ).addClass( 'hide' );
-	$( '#pl-filter-results, #pl-currentpath, #pl-editor' ).removeClass( 'hide' );
-	document.getElementById( 'pl-editor' ).innerHTML = content;
-	loadingSpinner( 'pl', 'hide' );
-}
 function parseResponse(options) {
 	var inputArr = options.inputArr || '',
 		respType = options.respType || '',
@@ -1649,6 +1615,26 @@ function getPlaylistCmd(){
 		cache: false
 	});
 }
+function getPlaylists(){
+    loadingSpinner('pl');
+    $.ajax({
+        url: '/command/?cmd=listplaylists',
+        success: function( data ) {
+			var pl = data.split( '\n' ).filter( el => el.match( /^playlist/ ) );
+			var content = playlistname = '';
+			pl.forEach( function( el ) {
+				plname = el.replace( 'playlist: ', '' );
+				content += '<li class="pl-folder" data-path="'+ plname +'"><i class="fa fa-bars pl-action"></i><span><i class="fa fa-list-ul"></i>'+ plname +'</span></li>';
+			} );
+			
+			$( '.playlist, #pl-manage, #pl-count' ).addClass( 'hide' );
+			$( '#pl-filter-results, #pl-currentpath, #pl-editor' ).removeClass( 'hide' );
+			document.getElementById( 'pl-editor' ).innerHTML = content;
+			loadingSpinner( 'pl', 'hide' );
+        },
+        cache: false
+    });
+}
 
 prevnext = 0; // for disable 'btn-primary' - previous/next while stop
 $( '.btn-cmd' ).click( function() {
@@ -1965,8 +1951,9 @@ function renderUI( text ) {
 		setPlaybackData();
 		setButton();
 		// imodedelay fix imode flashing on usb dac switching
-		if ( $( '#open-playback' ).hasClass( 'active' ) && !imodedelay ) displayPlayback();
-		if ( $( '#open-panel-dx' ).hasClass( 'active' ) ) {
+		if ( $( '#playback' ).hasClass( 'active' ) && !imodedelay ) {
+			displayPlayback();
+		} else if ( $( '#panel-dx' ).hasClass( 'active' ) && !$( '#playlist-entries' ).hasClass( 'hide' ) ) {
 			getPlaylistCmd();
 			GUI.playlist = GUI.json.playlist;
 		}
