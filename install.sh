@@ -116,8 +116,7 @@ EOF
 )
 appendH 'id="loader"'
 
-commentH 'knob.min.js'
-commentH 'countdown.min.js'
+commentH 'knob.min.js' 'bootstrap-contextmenu.min.js'
 commentH 'modernizr'
 
 # 0.4b
