@@ -35,8 +35,11 @@ if ( /Midori/.test( navigator.userAgent ) ) $( 'head link[rel="stylesheet"]').la
 
 function menuBottom( elshow, elhide1, elhide2 ) {	
 	$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
-	if ( $( '#panel-sx' ).hasClass( 'active' ) ) librarytop = $( window ).scrollTop();
-	if ( $( '#panel-dx' ).hasClass( 'active' ) ) queuetop = $( window ).scrollTop();
+	if ( $( '#panel-sx' ).hasClass( 'active' ) ) {
+		librarytop = $( window ).scrollTop();
+	} else if ( $( '#panel-dx' ).hasClass( 'active' ) ) {
+		queuetop = $( window ).scrollTop();
+	}
 	if ( /\/.*\//.test( location.pathname ) === false ) {
 		$( '#'+ elshow ).removeClass( 'hide' );
 		$( '#'+ elshow +', #open-'+ elshow ).addClass( 'active' );
@@ -522,6 +525,7 @@ $( '#pl-filter' ).off( 'keyup' ).on( 'keyup', function() {
 $( '#pl-home' ).click( function() {
 	$( '#pl-editor, #pl-currentpath' ).addClass( 'hide' );
 	$( '#pl-count, #pl-manage, #pl-search, #playlist-entries' ).removeClass( 'hide' );
+	if ( GUI.json.playlistlength == 0 ) $( '#playlist-warning' ).removeClass( 'hide' );
 } );
 $( '#pl-filter-results' ).off( 'click' ).on( 'click', function() {
 	$( this ).addClass( 'hide' ).html( '' );
@@ -874,11 +878,12 @@ function displayCommon() {
 		$( '#menu-top, #menu-bottom' ).removeClass( 'hide' );
 		$( '#database, #playlist' ).css( 'padding', '' );
 		$( '.btnlist-top' ).css( 'top', '40px' );
+		$( '#playlist-warning' ).css( 'margin-top', '27px' );
 	} else {
 		$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
-		$( '#database' ).css( 'padding', '40px 0' );
-		$( '#playlist' ).css( 'padding', GUI.json.playlistlength != 0 ? '40px 0' : '80px 0' );
+		$( '#database, #playlist' ).css( 'padding', '40px 0' );
 		$( '.btnlist-top' ).css( 'top', 0 );
+		$( '#playlist-warning' ).css( 'margin-top', '67px' );
 	}
 	$( '#pl-currentpath' ).addClass( 'hide' );
 }
@@ -1621,7 +1626,7 @@ function getPlaylists(){
         url: '/command/?cmd=listplaylists',
         success: function( data ) {
 			var pl = data.split( '\n' ).filter( el => el.match( /^playlist/ ) );
-			var content = playlistname = '';
+			var content = plname = '';
 			pl.forEach( function( el ) {
 				plname = el.replace( 'playlist: ', '' );
 				content += '<li class="pl-folder" data-path="'+ plname +'"><i class="fa fa-bars pl-action"></i><span><i class="fa fa-list-ul"></i>'+ plname +'</span></li>';
