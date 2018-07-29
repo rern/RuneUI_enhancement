@@ -7,13 +7,13 @@
 					<span id="currentartist"></span>
 				</div>
 				<div id="divsong">
-					<span id="currentsong"><i class="fa fa-plus-circle open-sx"></i></span>
+					<span id="currentsong"></span>
 				</div>
 				<div id="divalbum">
 					<span id="currentalbum"></span>
 				</div>
 				<div id="sampling">
-					<span id="playlist-position"><span>Add something from Library</span></span>
+					<span id="playlist-position"><span></span></span>
 					<span id="format-bitrate"></span>
 				</div>
 			</div>
