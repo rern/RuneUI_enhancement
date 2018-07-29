@@ -1,5 +1,39 @@
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+$( '#database-entries' ).off( 'click', '.db-action' )
+var licurrent = '';
+$( '#database-entries' ).on( 'click', '.db-action', function() {
+	var $this = $( this );
+	var $target = $( $this.attr( 'data-target' ) );
+	var liid = $this.parent().prop( 'id' );
+	$( '.context-menu' ).removeClass( 'open' );
+	if ( liid === licurrent ) {
+		licurrent = '';
+	} else {
+		licurrent = liid;
+		$target.addClass( 'open' )
+			.find( 'ul' ).css( { top: $this.offset().top +'px', right: '70px' } );
+	}
+} );
+$( '#pl-editor' ).off( 'click', '.pl-action' )
+var plcurrent = '';
+$( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
+	e.stopPropagation();
+	var $this = $( this );
+	if ( !$this.hasClass( 'fa-bars' ) ) return;
+	
+	var plpath = $this.parent().attr( 'data-path' );
+	GUI.DBentry[0] = plpath;
+	$( '.context-menu' ).removeClass( 'open' );
+	if ( plpath === plcurrent ) {
+		plcurrent = '';
+	} else {
+		plcurrent = plpath;
+		$( '#context-menu-playlist' ).addClass( 'open' )
+			.find( 'ul' ).css( { top: $this.position().top +'px', right: '30px' } );
+	}
+} );
+
 $( '#menu-settings' ).click( function() {
 	$( '#settings' ).toggleClass( 'hide' ).css( 'top', $( '#menu-top' ).is( ':hidden' ) ? 0 : '40px' );
 } );
@@ -97,6 +131,7 @@ $( '#playback, #panel-sx, #panel-dx' ).on( 'swipeleft swiperight', function( e )
 	panelLR( e.type === 'swipeleft' ? 'left' : '' );
 	// fix: prevent taphold fire on swipe
 	swipe = 1;
+	
 	setTimeout( function() {
 		swipe = 0;
 	}, 1000 );
@@ -322,7 +357,9 @@ $( '#menu-top, #menu-bottom' ).click( function( e ) {
 	$( '.controls' ).addClass( 'hide' );
 	$( '.controls1, .rs-tooltip, #imode' ).removeClass( 'hide' );
 } );
-$( '#menu-top, #menu-bottom' ).click( function() {
+$( '#menu-top, #menu-bottom, .context-menu' ).click( function( e ) {
+	licurrent = '';
+	plcurrent = '';
 	$( '.context-menu' ).removeClass( 'open' );
 } );
 
@@ -527,6 +564,7 @@ $( '#pl-filter' ).off( 'keyup' ).on( 'keyup', function() {
 	}
 } );
 $( '#pl-home' ).click( function() {
+	$( '#pl-currentpath' ).addClass( 'hide' );
 	$( '#open-panel-dx' ).click();
 } );
 $( '#pl-filter-results' ).off( 'click' ).on( 'click', function() {
@@ -855,8 +893,8 @@ function displayCommon() {
 		$( '#database' ).css( 'padding', '40px 0' );
 		$( '#playlist' ).css( 'padding', GUI.json.playlistlength != 0 ? '40px 0' : '80px 0' );
 		$( '.btnlist-top' ).css( 'top', 0 );
-		
 	}
+	$( '#pl-currentpath' ).addClass( 'hide' );
 		// for mouse only
 	if ( navigator.userAgent.match( /iPad|iPhone|iPod|android|webOS/i ) ) return;
 }
@@ -1104,7 +1142,7 @@ function renderPlaylists( data ) {
 		infos = line.split( ': ' );
 		if ( 'playlist' === infos[ 0 ] ) {
 			playlistname = infos[ 1 ];
-			content += '<li class="pl-folder" data-path="' + playlistname + '"><i class="fa fa-bars pl-action" data-target="#context-menu-playlist" data-toggle="context" title="Actions"></i><span><i class="fa fa-list-ul"></i>' + playlistname + '</span></li>';
+			content += '<li class="pl-folder" data-path="' + playlistname + '"><i class="fa fa-bars pl-action"></i><span><i class="fa fa-list-ul"></i>' + playlistname + '</span></li>';
 			playlistname = '';
 		}
 	}
@@ -1113,22 +1151,6 @@ function renderPlaylists( data ) {
 	$( '#pl-filter-results, #pl-currentpath, #pl-editor' ).removeClass( 'hide' );
 	document.getElementById( 'pl-editor' ).innerHTML = content;
 	loadingSpinner( 'pl', 'hide' );
-	$( '#pl-editor li' ).click( function( e ) {
-		e.stopPropagation();
-		var $this = $( this );
-		var clickX = e.pageX + 5;
-		if ( window.innerWidth > 500 ) {
-			var positionX = clickX < 250 ? clickX : clickX - 255;
-		} else {
-			var positionX = window.innerWidth - 295;
-		}
-		GUI.DBentry[ 0 ] = $this.attr( 'data-path' );
-		$( '#context-menu-playlist' ).addClass( 'open' ).css( {
-			position: 'absolute',
-			top: $this.position().top +'px',
-			left: positionX +'px'
-		} );
-	} );
 }
 function parseResponse(options) {
 	var inputArr = options.inputArr || '',
@@ -1157,13 +1179,13 @@ function parseResponse(options) {
 								var bl = inputArr.file.split( '/' ).pop(); // filename
 							}
 							content += inputArr.file;
-							content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i><span class="sn">';
+							content += '"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i><span class="sn">';
 							content += inputArr.Title + '<span>' + convertHMS(inputArr.Time) + '</span></span>';
 							content += '<span class="bl">';
 							content +=  bl;
 						} else {
 							content += inputArr.file;
-							content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i><span class="sn">';
+							content += '"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i><span class="sn">';
 							content += inputArr.file.replace(inpath + '/', '') + ' <span>' + convertHMS(inputArr.Time) + '</span></span>';
 							content += '<span class="bl">';
 							content += ' path: ';
@@ -1171,7 +1193,7 @@ function parseResponse(options) {
 						}
 					} else {
 						content += inputArr.playlist;
-						content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-webradio"></i><i class="fa fa-microphone db-icon db-radio"></i>';
+						content += '"><i class="fa fa-bars db-action" data-target="#context-menu-webradio"></i><i class="fa fa-microphone db-icon db-radio"></i>';
 						content += '<span class="sn">' + inputArr.playlist.replace(inpath +'/', '').replace('.'+ inputArr.fileext, '');
 						content += '</span><span class="bl">'+ inputArr.url;
 					}
@@ -1180,7 +1202,7 @@ function parseResponse(options) {
 					if (inputArr.fileext === 'cue') {
 						content = '<li id="db-' + (i + 1) + '" data-path="';
 						content += inputArr.playlist;
-						content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-file"></i><i class="fa fa-file-text db-icon"></i><span class="sn">';
+						content += '"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-file-text db-icon"></i><span class="sn">';
 						content += inputArr.playlist.replace(inpath + '/', '') + ' <span>[CUE file]</span></span>';
 						content += '<span class="bl">';
 						content += ' path: ';
@@ -1191,9 +1213,9 @@ function parseResponse(options) {
 					content = '<li id="db-' + (i + 1) + '" class="db-folder" data-path="';
 					content += inputArr.directory;
 					if (inpath !== '') {
-						content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu"></i><span><i class="fa fa-folder"></i>'
+						content += '"><i class="fa fa-bars db-action" data-target="#context-menu"></i><span><i class="fa fa-folder"></i>'
 					} else {
-						content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-root"></i><i class="fa fa-hdd-o icon-root"></i><span>';
+						content += '"><i class="fa fa-bars db-action" data-target="#context-menu-root"></i><i class="fa fa-hdd-o icon-root"></i><span>';
 					}
 					content += inputArr.directory.replace(inpath + '/', '');
 					content += '</span></li>';
@@ -1202,7 +1224,7 @@ function parseResponse(options) {
 				if (inputArr.file !== undefined) {
 					content = '<li id="db-' + (i + 1) + '" data-path="';
 					content += inputArr.file;
-					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i><span class="sn">';
+					content += '"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i><span class="sn">';
 					content += inputArr.Title + '<span>' + convertHMS(inputArr.Time) + '</span></span>';
 					content += ' <span class="bl">';
 					content +=  inputArr.Album;
@@ -1212,7 +1234,7 @@ function parseResponse(options) {
 				} else if (inputArr.album !== '') {
 					content = '<li id="db-' + (i + 1) + '" class="db-folder db-album" data-path="';
 					content += inputArr.album.replace(/\"/g,'&quot;');
-					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-album"></i><span><i class="fa fa-album"></i>';
+					content += '"><i class="fa fa-bars db-action" data-target="#context-menu-album"></i><span><i class="fa fa-album"></i>';
 					content += inputArr.album;
 					content += '</span></li>';
 				}
@@ -1220,13 +1242,13 @@ function parseResponse(options) {
 				if (inputArr.album !== undefined) {
 					content = '<li id="db-' + (i + 1) + '" class="db-folder db-album" data-path="';
 					content += inputArr.album;
-					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-album"></i><span><i class="fa fa-album"></i>';
+					content += '"><i class="fa fa-bars db-action" data-target="#context-menu-album"></i><span><i class="fa fa-album"></i>';
 					content += (inputArr.album !== '') ? inputArr.album : 'Unknown album';
 					content += '</span></li>';
 				} else if (inputArr.artist !== '') {
 					content = '<li id="db-' + (i + 1) + '" class="db-folder db-artist" data-path="';
 					content += inputArr.artist;
-					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-artist"></i><span><i class="fa fa-artist"></i>';
+					content += '"><i class="fa fa-bars db-action" data-target="#context-menu-artist"></i><span><i class="fa fa-artist"></i>';
 					content += inputArr.artist;
 					content += '</span></li>';
 				}
@@ -1234,7 +1256,7 @@ function parseResponse(options) {
 				if (inputArr.file !== undefined) {
 					content = '<li id="db-' + (i + 1) + '" data-path="';
 					content += inputArr.file;
-					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i><span class="sn">';
+					content += '"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i><span class="sn">';
 					content += inputArr.Title + '<span>' + convertHMS(inputArr.Time) + '</span></span>';
 					content += ' <span class="bl">';
 					content +=  inputArr.Artist;
@@ -1244,7 +1266,7 @@ function parseResponse(options) {
 				} else if (inputArr.composer !== '') {
 					content = '<li id="db-' + (i + 1) + '" class="db-folder db-composer" data-path="';
 					content += inputArr.composer;
-					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-composer"></i><span><i class="fa fa-composer"></i>';
+					content += '"><i class="fa fa-bars db-action" data-target="#context-menu-composer"></i><span><i class="fa fa-composer"></i>';
 					content += inputArr.composer;
 					content += '</span></li>';
 				}
@@ -1252,13 +1274,13 @@ function parseResponse(options) {
 				if (inputArr.artist !== undefined) {
 					content = '<li id="db-' + (i + 1) + '" class="db-folder db-artist" data-path="';
 					content += inputArr.artist;
-					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-artist"></i><span><i class="fa fa-album"></i>';
+					content += '"><i class="fa fa-bars db-action" data-target="#context-menu-artist"></i><span><i class="fa fa-album"></i>';
 					content += (inputArr.artist !== '') ? inputArr.artist : 'Unknown artist';
 					content += '</span></li>';
 				} else if (inputArr.genre !== '') {
 					content = '<li id="db-' + (i + 1) + '" class="db-folder db-genre" data-path="';
 					content += inputArr.genre;
-					content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-genre"></i><span><i class="fa fa-genre"></i>';
+					content += '"><i class="fa fa-bars db-action" data-target="#context-menu-genre"></i><span><i class="fa fa-genre"></i>';
 					content += inputArr.genre;
 					content += '</span></li>';
 				}
@@ -1268,7 +1290,7 @@ function parseResponse(options) {
 			if (querytype === '') {
 				content = '<li id="db-' + (i + 1) + '" class="db-spotify db-folder" data-path="';
 				content += inputArr.index;
-				content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-spotify-pl"></i><span><i class="fa fa-genre"></i>'
+				content += '"><i class="fa fa-bars db-action" data-target="#context-menu-spotify-pl"></i><span><i class="fa fa-genre"></i>'
 				content += (inputArr.name !== '') ? inputArr.name : 'Favorites';
 				content += ' (';
 				content += inputArr.tracks;
@@ -1278,7 +1300,7 @@ function parseResponse(options) {
 				content += inputArr.index;
 				content += '" data-plid="';
 				content += inpath;
-				content += '" data-type="spotify-track"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-spotify"></i><i class="fa fa-spotify db-icon"></i><span class="sn">';
+				content += '" data-type="spotify-track"><i class="fa fa-bars db-action" data-target="#context-menu-spotify"></i><i class="fa fa-spotify db-icon"></i><span class="sn">';
 				content += inputArr.Title + '<span>' + convertHMS(inputArr.duration/1000) + '</span></span>';
 				content += ' <span class="bl">';
 				content +=  inputArr.artist;
@@ -1301,7 +1323,7 @@ function parseResponse(options) {
 				}
 				content = '<li id="db-' + (i + 1) + '" class="db-dirble db-radio" data-path="';
 				content += inputArr.name + ' | ' + inputArr.streams[0].stream;
-				content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-dirble"></i><i class="fa fa-microphone db-icon"></i>';
+				content += '"><i class="fa fa-bars db-action" data-target="#context-menu-dirble"></i><i class="fa fa-microphone db-icon"></i>';
 				content += '<span class="sn">' + inputArr.name + '<span>(' + inputArr.country + ')</span></span>';
 				content += '<span class="bl">';
 				content += inputArr.website ? inputArr.website : '-no website-';
@@ -1311,7 +1333,7 @@ function parseResponse(options) {
 		case 'Jamendo':
 				content = '<li id="db-' + (i + 1) + '" class="db-jamendo db-folder" data-path="';
 				content += inputArr.stream;
-				content += '"><img class="jamendo-cover" src="/tun/' + inputArr.image + '" alt=""><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-file"></i>';
+				content += '"><img class="jamendo-cover" src="/tun/' + inputArr.image + '" alt=""><i class="fa fa-bars db-action" data-target="#context-menu-file"></i>';
 				content += inputArr.dispname + '</div></li>';
 		break;
 	}
