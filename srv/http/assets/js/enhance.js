@@ -76,7 +76,9 @@ $( '#open-panel-dx' ).click( function() {
 	}
 	menuBottom( 'panel-dx', 'playback', 'panel-sx' );
 	displayCommon();
-	if ( !$( '#playlist-entries' ).hasClass( 'hide' ) ) getPlaylistCmd();
+	if ( $( '#playlist-entries' ).hasClass( 'hide' ) ) return;
+	
+	getPlaylistCmd();
 	window.scrollTo( 0, queuetop );
 	$( '#pl-count, #pl-manage, #pl-search' ).removeClass( 'hide' );
 } );
@@ -885,7 +887,7 @@ function displayCommon() {
 		$( '.btnlist-top' ).css( 'top', 0 );
 		$( '#playlist-warning' ).css( 'margin-top', '67px' );
 	}
-	$( '#pl-currentpath' ).addClass( 'hide' );
+	$( '#pl-currentpath' ).toggleClass( 'hide', !$( '#playlist-entries' ).hasClass( 'hide' ) );
 }
 function displayAirPlay() {
 	$( '.playback-controls' ).css( 'visibility', 'hidden' );
