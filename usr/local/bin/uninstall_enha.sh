@@ -24,6 +24,7 @@ fi
 echo -e "$bar Remove files ..."
 
 rm -v /srv/http/enhance*
+rm -v /srv/http/app/templates/playback.php
 rm -v /srv/http/assets/css/{enhance.css,midori.css,roundslider.min.css}
 rm -v /srv/http/assets/fonts/enhance*
 rm -v /srv/http/assets/img/{controls*,runelogo.svg,vu*}
