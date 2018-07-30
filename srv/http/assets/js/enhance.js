@@ -575,6 +575,7 @@ $( '#pl-manage-clear' ).click( function() {
 		, cancel     : 1
 		, ok         : function() {
 			sendCmd( 'clear' );
+			$( '#playlist-entries' ).empty();
 		}
 	} );
 } );
@@ -805,6 +806,7 @@ $( '#pl-home' ).click( function() {
 	$( '#pl-editor, #pl-currentpath' ).addClass( 'hide' );
 	$( '#pl-count, #pl-manage, #pl-search, #playlist-entries' ).removeClass( 'hide' );
 	if ( GUI.json.playlistlength == 0 ) $( '#playlist-warning' ).removeClass( 'hide' );
+	if ( !$( '#playlist-entries li' ).length ) getPlaylistCmd();
 } );
 $( '#pl-filter-results' ).on( 'click', function() {
 	$( this ).addClass( 'hide' ).html( '' );
