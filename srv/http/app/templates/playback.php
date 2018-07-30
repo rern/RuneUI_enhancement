@@ -233,7 +233,7 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
             <li><a href="javascript:;" data-cmd="addplay"><i class="fa fa-play sx"></i> Add and play</a></li>
             <li><a href="javascript:;" data-cmd="addreplaceplay"><i class="fa fa-share-square-o sx"></i> Add, replace and play</a></li>
             <li><a href="javascript:;" data-cmd="rescan"><i class="fa fa-refresh sx"></i> Update this folder</a></li>
-            <li><a href="javascript:;" data-cmd="bookmark"><i class="fa fa-star sx"></i> Save as bookmark</a></li>
+            <li><a id="bookmarkadd"><i class="fa fa-star sx"></i> Save as bookmark</a></li>
         </ul>
     </div>
     <div id="context-menu-file" class="context-menu">
