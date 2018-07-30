@@ -699,10 +699,10 @@ $( '#pldelete' ).click( function() {
 		, cancel     : 1
 		, ok         : function() {
 			$.post( '/command/?cmd=rm%20%22' + name + '%22', function() {
-				if ( $( '#database-entries li' ).length ) {
+				if ( $( '#pl-editor li' ).length ) {
 					getPlaylists();
 				} else {
-					$( '#db-home' ).click();
+					$( '#pl-home' ).click();
 				}
 			} );
 		}
