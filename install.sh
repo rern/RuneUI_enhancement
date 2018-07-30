@@ -20,7 +20,7 @@ sed -i '/hammer.min.js\|propagating.js/ d' /srv/http/app/templates/footer.php
 #1temp1
 
 mv /srv/http/app/coverart_ctl.php{,.backup}
-mv /srv/http/app/playback.php{,.backup}
+mv /srv/http/app/templates/playback.php{,.backup}
 mv /srv/http/assets/js/runeui.js{,.backup}
 mv /srv/http/assets/js/runeui.min.js{,.backup}
 mv /srv/http/command/airplay_toggle{,.backup}
