@@ -95,7 +95,7 @@ if ( $this->remoteSStime != -1 ) {
 					</div>
 				</div>
 				<div id="coverart">
-					<img id="cover-art" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="transparent-square">
+					<img id="cover-art">
 					<div id="coverartoverlay"></div>
 					<img id="controls-cover" class="controls hide" src="/srv/http/assets/img/controls.svg">
 					<div id="coverTL" class="covermap t0 w50 h50 m-115"></div>
