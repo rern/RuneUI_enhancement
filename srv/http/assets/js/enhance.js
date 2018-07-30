@@ -805,7 +805,7 @@ $( '#pl-filter' ).on( 'keyup', function() {
 $( '#pl-home' ).click( function() {
 	$( '#pl-editor, #pl-currentpath' ).addClass( 'hide' );
 	$( '#pl-count, #pl-manage, #pl-search, #playlist-entries' ).removeClass( 'hide' );
-	if ( GUI.json.playlistlength == 0 ) $( '#playlist-warning' ).removeClass( 'hide' );
+	$( '#playlist-warning' ).toggleClass( 'hide', GUI.json.playlistlength != 0 );
 	if ( !$( '#playlist-entries li' ).length ) getPlaylistCmd();
 } );
 $( '#pl-filter-results' ).on( 'click', function() {
