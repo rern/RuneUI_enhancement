@@ -477,14 +477,134 @@ $( '#db-level-up' ).off( 'click' ).on( 'click', function() {
 	} );
 	GUI.plugin = '';
 });
+
+function webRadioAddVerify() {
+	var name = $( '#infoTextbox' ).val();
+	var url = $( '#infoTextbox2' ).val();
+	if ( !name || !url ) {
+		info( {
+			  icon    : 'info-circle'
+			, title   : 'Add Webradio'
+			, message : 'Name and URL cannot be blank.'
+			, ok      : function() {
+				webRadioAdd( name, url )
+			}
+		} );
+		return;
+	}
+	var exists = false;
+	$( '#database-entries li span.sn' ).each( function( i, el ) {
+		if ( $( el ).text() === name ) {
+			exists = true;
+			return false;
+		}
+	} );
+	if ( exists ) {
+		info( {
+			  icon    : 'info-circle'
+			, title   : 'Add Webradio'
+			, message : '<white>'+ name +'</white> already exists.'
+			, ok      : function() {
+				webRadioAdd( name, url )
+			}
+		} );
+	} else {
+		$.post( '/db/?cmd=addradio', {
+			  'radio[label]' : name
+			, 'radio[url]'   : url
+		} );
+		getDB( { path: 'Webradio' } );
+	}
+}
+function webRadioAdd( name, url ) {
+	info( {
+		  title      : 'Add Webradio'
+		, textlabel  : 'Name'
+		, textvalue  : name ? name : ''
+		, textlabel2 : 'URL'
+		, textvalue2 : url ? url : ''
+		, boxwidth   : 'max'
+		, cancel     : 1
+		, ok         : function() {
+			webRadioAddVerify();
+		}
+	} );
+}
+function webRadioEditVerify( name ) {
+	if ( !name ) {
+		info( {
+			  icon    : 'info-circle'
+			, title   : 'Edit Webradio'
+			, message : 'Name cannot be blank.'
+			, ok      : function() {
+				webRadioEdit( name )
+			}
+		} );
+		return;
+	}
+	var exists = false;
+	$( '#database-entries li span.sn' ).each( function( i, el ) {
+		if ( $( el ).text() +' === '+ name ) {
+			exists = true;
+			return false;
+		}
+	} );
+	if ( exists ) {
+		info( {
+			  icon    : 'info-circle'
+			, title   : 'Edit Webradio'
+			, message : '<white>'+ name +'</white> already exists.'
+			, ok      : function() {
+				webRadioEdit( name )
+			}
+		} );
+	} else {
+		var $liactive = $( '#database-entries li.active' );
+		$.post( '/db/?cmd=editradio', {
+			  'radio[newlabel]' : name
+			, 'radio[url]'      : $liactive.find( 'span.bl' ).text()
+			, 'radio[label]'    : $liactive.find( 'span.sn' ).text()
+		}, function() {
+			getDB( { path: 'Webradio' } );
+		} );
+	}
+}
+function webRadioEdit( name ) {
+	var oldname = $( '#database-entries li.active' ).find( 'span.sn' ).text();
+	info( {
+		  title      : 'Edit Webradio'
+		, message    : 'Change <white>'+ oldname +'</white> to:'
+		, textlabel  : 'Name'
+		, textvalue  : name ? name : oldname
+		, boxwidth   : 'max'
+		, cancel     : 1
+		, ok         : function() {
+			webRadioEditVerify( $( '#infoTextbox' ).val() );
+		}
+	} );
+}
 $( '#db-webradio-add' ).click( function() {
-	$( '#modal-webradio-add' ).modal();
+	webRadioAdd();
 } );
-$( '#webradio-add-button, #webradio-edit-button, #webradio-delete-button' ).click( function() {
-	getDB( { path: 'Webradio' } );
+$( '#wredit' ).click( function() {
+	webRadioEdit();
 } );
-$( '#modal-webradio-add button' ).click( function() {
-	if ( this.id !== 'webradio-add-button' && !$( '#database-entries li' ).length ) $( '#db-home' ).click();
+$( '#wrdelete' ).click( function() {
+	var name = $( '#database-entries li.active' ).find( 'span.sn' ).text();
+	info( {
+		  title      : 'Delete Webradio'
+		, message    : 'Delete <white>'+ name +'</white>?'
+		, cancel     : 1
+		, ok         : function() {
+			$.post( '/db/?cmd=deleteradio', { 'radio[label]' : name +'.pls' }, function() {
+				if ( $( '#database-entries li' ).length ) {
+					getDB( { path: 'Webradio' } );
+				} else {
+					$( '#db-home' ).click();
+				}
+			} );
+		}
+	} );
 } );
 
 $( '#open-library' ).off( 'click' ).on( 'click', function() {
@@ -601,12 +721,14 @@ var licurrent = '';
 $( '#database-entries' ).on( 'click', '.db-action', function() {
 	var $this = $( this );
 	var $target = $( $this.attr( 'data-target' ) );
+	$( '#database-entries li' ).removeClass( 'active' );
 	var liid = $this.parent().prop( 'id' );
 	$( '.context-menu' ).removeClass( 'open' );
 	if ( liid === licurrent ) {
 		licurrent = '';
 	} else {
 		licurrent = liid;
+		$this.parent().addClass( 'active' );
 		$target.addClass( 'open' )
 			.find( 'ul' ).css( { top: $this.offset().top +'px', right: '70px' } );
 	}
@@ -629,7 +751,40 @@ $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 			.find( 'ul' ).css( { top: $this.position().top +'px', right: '30px' } );
 	}
 } );
-
+$( '#modal-pl-save-btn' ).off( 'click' ).on( 'click', function() {
+	var plname = $( '#pl-save-name' ).val();
+	$.post( 'enhance.php', { mpd: 'listplaylists' }, function( data ) {
+		var pl = data.split( '\n' ).filter( el => el.match( /^playlist/ ) );
+		exists = false;
+		pl.some( function( el ) {
+			return  exists = ( plname === el.replace( 'playlist: ', '' ) );
+		} );
+		if ( exists ) {
+			info( {
+				  icon    : 'info-circle'
+				, title   : 'Playlist Save'
+				, message : '<white>'+ plname +'</white> already exists.'
+			} );
+		} else {
+			sendCmd( 'save "'+ plname +'"' );
+		}
+	} );
+});
+$( '#pl-rename-button' ).off( 'click' ).on( 'click', function() {
+	var oldname = $( '#pl-rename-oldname' ).text();
+	var newname = $( '#pl-rename-name' ).val();
+	if ( $( '#pl-editor li[data-path='+ newname +']' ).length ) {
+		info( {
+			  icon    : 'info-circle'
+			, title   : 'Playlist Rename'
+			, message : '<white>'+ newname +'</white> already exists.'
+		} );
+	} else {
+		sendCmd( 'rename "'+ oldname +'" "'+ newname +'"' );
+		getPlaylists();
+	}
+} );
+  
 $( '#playsource-mpd' ).off( 'click' ).on( 'click', function() {
 	$.post( 'enhance.php', { bash: '/usr/bin/systemctl restart shairport' } );
 	$( '#iplayer' ).removeClass( 'fa-airplay' ).addClass( 'hide' );
