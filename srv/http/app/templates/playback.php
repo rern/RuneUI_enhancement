@@ -271,7 +271,7 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
             <li><a href="javascript:;" data-cmd="add"><i class="fa fa-plus-circle sx"></i> Add</a></li>
             <li><a href="javascript:;" data-cmd="addplay"><i class="fa fa-play sx"></i> Add and play</a></li>
             <li><a href="javascript:;" data-cmd="addreplaceplay"><i class="fa fa-share-square-o sx"></i> Add, replace and play</a></li>
-            <li><a id="wredit"><i class="fa fa-edit sx"></i> Edit</a></li>
+            <li><a id="wredit"><i class="fa fa-edit sx"></i> Rename</a></li>
             <li><a id="wrdelete"><i class="fa fa-trash-o sx"></i> Delete</a></li>
         </ul>
     </div>
