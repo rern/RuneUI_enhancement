@@ -137,32 +137,6 @@ EOF
 )
 appendH -n +1 'addonsmenu.js'
 #----------------------------------------------------------------------------------
-file=/srv/http/app/templates/playback.php
-echo $file
-
-release=$( redis-cli get release )
-if [[ $release == 0.4b ]]; then
-    string=$( cat <<'EOF'
-if ( $this->remoteSStime != -1 ) {
-EOF
-)
-    insertP '<div class="screen-saver-content"'
-
-    string=$( cat <<'EOF'
-}
-EOF
-)
-    insertP '<div class="tab-content">'
-fi
-
-commentH '<div class="tab-content">' -n -1 '<div id="context-menus">'
-
-string=$( cat <<'EOF'
-include "enhanceplayback.php";
-EOF
-)
-insertP '<div id="context-menus">'
-#----------------------------------------------------------------------------------
 file=/srv/http/assets/js/runeui.js
 echo $file
 
