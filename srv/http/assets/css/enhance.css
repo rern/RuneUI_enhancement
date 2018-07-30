@@ -1128,7 +1128,9 @@ w {
 #database-entries li.active .db-icon,
 #playlist-entries li.active .pl-icon,
 #database-entries li.active .sn span,
-#playlist-entries li.active .sn span {
+#playlist-entries li.active .sn span,
+#pl-editor li.active .fa-bars,
+#pl-editor li.active .fa-list-ul {
 	color: #34495e !important;
 }
 
