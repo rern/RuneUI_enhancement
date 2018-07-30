@@ -478,6 +478,7 @@ $( '#db-level-up' ).off( 'click' ).on( 'click', function() {
 	GUI.plugin = '';
 });
 
+// context menus //////////////////////////////////////////////
 function webRadioAddVerify() {
 	var name = $( '#infoTextbox' ).val();
 	var url = $( '#infoTextbox2' ).val();
@@ -534,7 +535,7 @@ function webRadioEditVerify( name ) {
 	if ( !name ) {
 		info( {
 			  icon    : 'info-circle'
-			, title   : 'Edit Webradio'
+			, title   : 'Rename Webradio'
 			, message : 'Name cannot be blank.'
 			, ok      : function() {
 				webRadioEdit( name )
@@ -552,7 +553,7 @@ function webRadioEditVerify( name ) {
 	if ( exists ) {
 		info( {
 			  icon    : 'info-circle'
-			, title   : 'Edit Webradio'
+			, title   : 'Rename Webradio'
 			, message : '<white>'+ name +'</white> already exists.'
 			, ok      : function() {
 				webRadioEdit( name )
@@ -572,7 +573,7 @@ function webRadioEditVerify( name ) {
 function webRadioEdit( name ) {
 	var oldname = $( '#database-entries li.active' ).find( 'span.sn' ).text();
 	info( {
-		  title      : 'Edit Webradio'
+		  title      : 'Rename Webradio'
 		, message    : 'Change <white>'+ oldname +'</white> to:'
 		, textlabel  : 'Name'
 		, textvalue  : name ? name : oldname
@@ -606,6 +607,108 @@ $( '#wrdelete' ).click( function() {
 		}
 	} );
 } );
+function playlistSaveVerify() {
+	var name = $( '#infoTextbox' ).val();
+	if ( !name ) {
+		info( {
+			  icon    : 'info-circle'
+			, title   : 'Save Playlist'
+			, message : 'Name cannot be blank.'
+			, ok      : function() {
+				playlistSave();
+			}
+		} );
+		return;
+	} 
+	$.post( 'enhance.php', { mpd: 'listplaylists' }, function( data ) {
+		var pl = data.split( '\n' ).filter( el => el.match( /^playlist/ ) );
+		var exists = false;
+		pl.some( function( el ) {
+			return  exists = ( name === el.replace( 'playlist: ', '' ) );
+		} );
+		if ( exists ) {
+			info( {
+				  icon    : 'info-circle'
+				, title   : 'Save Playlist'
+				, message : '<white>'+ name +'</white> already exists.'
+			} );
+		} else {
+			sendCmd( 'save "'+ name +'"' );
+		}
+	} );
+}
+function playlistSave() {
+	info( {
+		  title      : 'Save Playlist'
+		, message    : 'Save this playlist as:'
+		, textlabel  : 'Name'
+		, cancel     : 1
+		, ok         : playlistSaveVerify
+	} );
+}
+$( '#plsave' ).click( function() {
+	playlistSave();
+} );
+function playlistEditVerify( name ) {
+	if ( !name ) {
+		info( {
+			  icon    : 'info-circle'
+			, title   : 'Rename Playlist'
+			, message : 'Name cannot be blank.'
+			, ok      : function() {
+				playlistEdit( name )
+			}
+		} );
+		return;
+	}
+	var oldname = $( '#pl-editor li.active' ).text();
+	var newname = $( '#infoTextbox' ).val();
+	if ( $( '#pl-editor li[data-path='+ newname +']' ).length ) {
+		info( {
+			  icon    : 'info-circle'
+			, title   : 'Rename Playlist'
+			, message : '<white>'+ newname +'</white> already exists.'
+			, ok      : function() {
+				playlistEdit( name )
+			}
+		} );
+	} else {
+		sendCmd( 'rename "'+ oldname +'" "'+ newname +'"' );
+		getPlaylists();
+	}
+}
+function playlistEdit( name ) {
+	var oldname = $( '#pl-editor li.active' ).text();
+	info( {
+		  title      : 'Rename Playlist'
+		, message    : 'Change <white>'+ oldname +'</white> to:'
+		, textlabel  : 'Name'
+		, textvalue  : name ? name : oldname
+		, cancel     : 1
+		, ok         : playlistSaveVerify
+	} );
+}
+$( '#pledit' ).click( function() {
+	playlistEdit();
+} );
+$( '#pldelete' ).click( function() {
+	var name = $( '#pl-editor li.active' ).text();
+	info( {
+		  title      : 'Delete Playlist'
+		, message    : 'Delete <white>'+ name +'</white>?'
+		, cancel     : 1
+		, ok         : function() {
+			$.post( '/command/?cmd=rm%20%22' + name + '%22', function() {
+				if ( $( '#database-entries li' ).length ) {
+					getPlaylists();
+				} else {
+					$( '#db-home' ).click();
+				}
+			} );
+		}
+	} );
+} );
+// context menus \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 $( '#open-library' ).off( 'click' ).on( 'click', function() {
 	$( '#open-panel-sx' ).click();
@@ -720,9 +823,9 @@ $( '#database-entries' ).off( 'click', '.db-action' )
 var licurrent = '';
 $( '#database-entries' ).on( 'click', '.db-action', function() {
 	var $this = $( this );
-	var $target = $( $this.attr( 'data-target' ) );
-	$( '#database-entries li' ).removeClass( 'active' );
+	var $target = $( $this.data( 'target' ) );
 	var liid = $this.parent().prop( 'id' );
+	$( '#database-entries li' ).removeClass( 'active' );
 	$( '.context-menu' ).removeClass( 'open' );
 	if ( liid === licurrent ) {
 		licurrent = '';
@@ -738,50 +841,17 @@ var plcurrent = '';
 $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 	e.stopPropagation();
 	var $this = $( this );
-	if ( !$this.hasClass( 'fa-bars' ) ) return;
-	
-	var plpath = $this.parent().attr( 'data-path' );
+	var plpath = $this.parent().data( 'path' );
 	GUI.DBentry[0] = plpath;
+	$( '#pl-editor li' ).removeClass( 'active' );
 	$( '.context-menu' ).removeClass( 'open' );
 	if ( plpath === plcurrent ) {
 		plcurrent = '';
 	} else {
 		plcurrent = plpath;
+		$this.parent().addClass( 'active' );
 		$( '#context-menu-playlist' ).addClass( 'open' )
 			.find( 'ul' ).css( { top: $this.position().top +'px', right: '30px' } );
-	}
-} );
-$( '#modal-pl-save-btn' ).off( 'click' ).on( 'click', function() {
-	var plname = $( '#pl-save-name' ).val();
-	$.post( 'enhance.php', { mpd: 'listplaylists' }, function( data ) {
-		var pl = data.split( '\n' ).filter( el => el.match( /^playlist/ ) );
-		exists = false;
-		pl.some( function( el ) {
-			return  exists = ( plname === el.replace( 'playlist: ', '' ) );
-		} );
-		if ( exists ) {
-			info( {
-				  icon    : 'info-circle'
-				, title   : 'Playlist Save'
-				, message : '<white>'+ plname +'</white> already exists.'
-			} );
-		} else {
-			sendCmd( 'save "'+ plname +'"' );
-		}
-	} );
-});
-$( '#pl-rename-button' ).off( 'click' ).on( 'click', function() {
-	var oldname = $( '#pl-rename-oldname' ).text();
-	var newname = $( '#pl-rename-name' ).val();
-	if ( $( '#pl-editor li[data-path='+ newname +']' ).length ) {
-		info( {
-			  icon    : 'info-circle'
-			, title   : 'Playlist Rename'
-			, message : '<white>'+ newname +'</white> already exists.'
-		} );
-	} else {
-		sendCmd( 'rename "'+ oldname +'" "'+ newname +'"' );
-		getPlaylists();
 	}
 } );
   
@@ -1777,7 +1847,7 @@ function getPlaylistCmd(){
 		cache: false
 	});
 }
-function getPlaylists(){
+function getPlaylists() {
     loadingSpinner('pl');
     $.ajax({
         url: '/command/?cmd=listplaylists',
