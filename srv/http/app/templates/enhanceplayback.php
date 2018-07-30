@@ -1,3 +1,49 @@
+<script>
+    var localSStime = parseInt("<?php echo $this->localSStime; ?>");
+    var remoteSStime = parseInt("<?php echo $this->remoteSStime; ?>");
+</script>
+<?php
+if ( $this->remoteSStime != -1 ) {
+?>
+<div class="screen-saver-content" style="display:none;">
+    <!-- PLAYBACK PANEL -->
+    <div id="playback-ss" class="tab-pane active">
+        <div class="container-fluid">
+            <div id="leftpanel-ss" style="float: left; width: 40%; height: 100%">
+                <div id="currentartist-ss" style="font-size: 30px; display: block; box-sizing: border-box; text-align: center; font-family: "Lato,Helvetica Neue,Helvetica,Arial,sans-serif"; line-height: 1.42857; color: rgb(224, 231, 238)"><i class="fa fa-spinner fa-spin"></i></div>
+                <div id="currentsong-ss" style="white-space: nowrap; overflow: hidden; height: 40px; font-size: 40px; display: block; box-sizing: border-box; text-align: center; font-weight: bold; color: rgb(0, 149, 216); line-height: 34px;"><i class="fa fa-spinner fa-spin"></i></div>
+                <div id="currentalbum-ss" style=" font-size: 30px; display: block; box-sizing: border-box; text-align: center; font-family: "Lato,Helvetica Neue,Helvetica,Arial,sans-serif"; line-height: 1.42857; color: rgb(224, 231, 238);"><i class="fa fa-spinner fa-spin"></i></div>
+                <div class="col-sm-4 coverart-ss" style="height: auto; margin: 10px auto 11px; width: 100%;">
+                    <img id="cover-art-ss" style="width: 100%; height: auto; border: 2px solid rgb(52, 73, 94); margin-bottom: 20px; border-radius: 6px; background-size: 100% 100%;" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="transparent-square">
+                    <div id="countdown-display-ss" style="float: left; width: 50%; line-height: 38px; font-size: 38px; font-weight: bold; text-align: center;"><i class="fa fa-spinner fa-spin"></i></div>
+                    <div id="total-ss" style="line-height: 38px; font-size: 28px; font-weight: bold; text-align: center;"><i class="fa fa-spinner fa-spin"></i></div>
+                </div>
+            </div>
+            <div id="rightpanel-ss" style="float: right; width: 60%; height: 100%">
+                <div style="height: 110px">
+                    <div id="playlist-position-ss" style="padding-top: 30px; font-size: 22px; display: block; box-sizing: border-box; text-align: center; font-weight: bold; color: rgb(0, 149, 216); line-height: 34px;"><span></span></div>
+                    <div id="format-bitrate-ss" style="font-size: 22px; display: block; box-sizing: border-box; text-align: center; font-weight: bold; color: rgb(0, 149, 216); line-height: 34px;"><i class="fa fa-spinner fa-spin"></i></div>
+                </div>
+                <div style="height: 100%">
+                    <div class="col-sm-4 coverart" style="height: auto; margin: 10px auto 11px; width: 100%;">
+                        <div id="artist-ss" style="font-size: 30px; display: block; box-sizing: border-box; text-align: left; font-weight: bold; color: rgb(0, 149, 216); line-height: 34px;"><i>Artist:</i></div>
+                        <img id="artist-image-ss" style="margin-right: 20px; margin-left: 10px; float: left; width: 130px; height: auto; border: 2px solid rgb(52, 73, 94); border-radius: 6px; background-size: 100% 100%;" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="transparent-square"></img>
+                        <div id="artist-bio-ss" style="font-size: 20px"><pre class="fa fa-spinner fa-spin"></pre></div>
+                    </div>
+                </div>
+                <div style="height: auto">
+                    <div class="col-sm-4 coverart" style="height: auto; margin: 10px auto 11px; width: 100%;">
+                        <div id="addinfo-ss" style="font-size: 24px; display: block; box-sizing: border-box; text-align: left; font-weight: bold; color: rgb(0, 149, 216); line-height: 34px;"><i>Additional Info:</i></div>
+                        <div id="addinfo-text-ss" style="font-size: 20px; box-sizing: border-box;"><pre class="fa fa-spinner fa-spin"></pre></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<?php
+}
+?>
 <div class="tab-content" id="content">
 	<!-- PLAYBACK PANEL -->
 	<div id="playback" class="tab-pane active">
@@ -7,7 +53,7 @@
 					<span id="currentartist"></span>
 				</div>
 				<div id="divsong">
-					<span id="currentsong"></span>
+					<span id="currentsong"></i></span>
 				</div>
 				<div id="divalbum">
 					<span id="currentalbum"></span>
@@ -180,4 +226,115 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 			<div class="biosimilar"></div>
 		</div>
 	</div>
+</div>
+    <div id="context-menu" class="context-menu">
+        <ul class="dropdown-menu" role="menu">
+            <li><a href="javascript:;" data-cmd="add"><i class="fa fa-plus-circle sx"></i> Add</a></li>
+            <li><a href="javascript:;" data-cmd="addplay"><i class="fa fa-play sx"></i> Add and play</a></li>
+            <li><a href="javascript:;" data-cmd="addreplaceplay"><i class="fa fa-share-square-o sx"></i> Add, replace and play</a></li>
+            <li><a href="javascript:;" data-cmd="rescan"><i class="fa fa-refresh sx"></i> Update this folder</a></li>
+            <li><a href="javascript:;" data-cmd="bookmark"><i class="fa fa-star sx"></i> Save as bookmark</a></li>
+        </ul>
+    </div>
+    <div id="context-menu-file" class="context-menu">
+        <ul class="dropdown-menu" role="menu">
+            <li><a href="javascript:;" data-cmd="add"><i class="fa fa-plus-circle sx"></i> Add</a></li>
+            <li><a href="javascript:;" data-cmd="addplay"><i class="fa fa-play sx"></i> Add and play</a></li>
+            <li><a href="javascript:;" data-cmd="addreplaceplay"><i class="fa fa-share-square-o sx"></i> Add, replace and play</a></li>
+            <li><a href="javascript:;" data-cmd="lastfmaddreplaceplay"><i class="fa fa-lastfm sx"></i> Last.fm playlist from this</a></li>
+        </ul>
+    </div>
+    <div id="context-menu-dirble" class="context-menu">
+        <ul class="dropdown-menu" role="menu">
+            <li><a href="javascript:;" data-cmd="wradd"><i class="fa fa-plus-circle sx"></i> Add</a></li>
+            <li><a href="javascript:;" data-cmd="wraddplay"><i class="fa fa-play sx"></i> Add and play</a></li>
+            <li><a href="javascript:;" data-cmd="wraddreplaceplay"><i class="fa fa-share-square-o sx"></i> Add, replace and play</a></li>
+            <li><a href="javascript:;" data-cmd="wrsave"><i class="fa fa-microphone sx"></i> Save in My Webradios</a></li>
+        </ul>
+    </div>
+	<div id="context-menu-spotify-pl" class="context-menu">
+        <ul class="dropdown-menu" role="menu">
+            <li><a href="javascript:;" data-cmd="spadd" data-type="spotify-playlist"><i class="fa fa-plus-circle sx"></i> Add</a></li>
+            <li><a href="javascript:;" data-cmd="spaddplay" data-type="spotify-playlist"><i class="fa fa-play sx"></i> Add and play</a></li>
+            <li><a href="javascript:;" data-cmd="spaddreplaceplay" data-type="spotify-playlist"><i class="fa fa-share-square-o sx"></i> Add, replace and play</a></li>
+        </ul>
+    </div>
+	<div id="context-menu-spotify" class="context-menu">
+        <ul class="dropdown-menu" role="menu">
+            <li><a href="javascript:;" data-cmd="spadd" data-type="spotify-track"><i class="fa fa-plus-circle sx"></i> Add</a></li>
+            <li><a href="javascript:;" data-cmd="spaddplay" data-type="spotify-track"><i class="fa fa-play sx"></i> Add and play</a></li>
+            <li><a href="javascript:;" data-cmd="spaddreplaceplay" data-type="spotify-track"><i class="fa fa-share-square-o sx"></i> Add, replace and play</a></li>
+        </ul>
+    </div>
+    <div id="context-menu-webradio" class="context-menu">
+        <ul class="dropdown-menu" role="menu">
+            <li><a href="javascript:;" data-cmd="add"><i class="fa fa-plus-circle sx"></i> Add</a></li>
+            <li><a href="javascript:;" data-cmd="addplay"><i class="fa fa-play sx"></i> Add and play</a></li>
+            <li><a href="javascript:;" data-cmd="addreplaceplay"><i class="fa fa-share-square-o sx"></i> Add, replace and play</a></li>
+            <li><a id="wredit"><i class="fa fa-edit sx"></i> Edit</a></li>
+            <li><a id="wrdelete"><i class="fa fa-trash-o sx"></i> Delete</a></li>
+        </ul>
+    </div>
+    <div id="context-menu-playlist" class="context-menu">
+        <ul class="dropdown-menu" role="menu">
+            <li><a href="javascript:;" data-cmd="pl-add"><i class="fa fa-plus-circle sx"></i> Add to queue</a></li>
+            <li><a href="javascript:;" data-cmd="pl-replace"><i class="fa fa-undo sx"></i> Replace the queue</a></li>
+            <li><a href="javascript:;" data-cmd="pl-addreplaceplay"><i class="fa fa-share-square-o sx"></i> Replace and play the queue</a></li>
+			<li><a href="javascript:;" data-cmd="pl-ashuffle"><i class="fa fa-random sx"></i> Randomly add songs to queue</a></li>
+            <li><a href="javascript:;" data-cmd="pl-rename"><i class="fa fa-edit sx"></i> Rename</a></li>
+            <li><a href="javascript:;" data-cmd="pl-rm"><i class="fa fa-trash-o sx"></i> Delete</a></li>
+        </ul>
+    </div>
+    <div id="context-menu-album" class="context-menu">
+        <ul class="dropdown-menu" role="menu">
+            <li><a href="javascript:;" data-cmd="albumadd"><i class="fa fa-plus-circle sx"></i> Add</a></li>
+            <li><a href="javascript:;" data-cmd="albumaddplay"><i class="fa fa-play sx"></i> Add and play</a></li>
+            <li><a href="javascript:;" data-cmd="albumaddreplaceplay"><i class="fa fa-share-square-o sx"></i> Add, replace and play</a></li>
+        </ul>
+    </div>
+    <div id="context-menu-artist" class="context-menu">
+        <ul class="dropdown-menu" role="menu">
+            <li><a href="javascript:;" data-cmd="artistadd"><i class="fa fa-plus-circle sx"></i> Add</a></li>
+            <li><a href="javascript:;" data-cmd="artistaddplay"><i class="fa fa-play sx"></i> Add and play</a></li>
+            <li><a href="javascript:;" data-cmd="artistaddreplaceplay"><i class="fa fa-share-square-o sx"></i> Add, replace and play</a></li>
+        </ul>
+    </div>
+    <div id="context-menu-genre" class="context-menu">
+        <ul class="dropdown-menu" role="menu">
+            <li><a href="javascript:;" data-cmd="genreadd"><i class="fa fa-plus-circle sx"></i> Add</a></li>
+            <li><a href="javascript:;" data-cmd="genreaddplay"><i class="fa fa-play sx"></i> Add and play</a></li>
+            <li><a href="javascript:;" data-cmd="genreaddreplaceplay"><i class="fa fa-share-square-o sx"></i> Add, replace and play</a></li>
+        </ul>
+    </div>
+    <div id="context-menu-composer" class="context-menu">
+        <ul class="dropdown-menu" role="menu">
+            <li><a href="javascript:;" data-cmd="composeradd"><i class="fa fa-plus-circle sx"></i> Add</a></li>
+            <li><a href="javascript:;" data-cmd="composeraddplay"><i class="fa fa-play sx"></i> Add and play</a></li>
+            <li><a href="javascript:;" data-cmd="composeraddreplaceplay"><i class="fa fa-share-square-o sx"></i> Add, replace and play</a></li>
+        </ul>
+    </div>
+</div>
+<div id="overlay-social" class="overlay-scale closed">
+    <nav>
+        <ul>
+            <li><span>Share this track</span></li>
+            <li><a id="urlTwitter" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;" class="btn btn-default btn-lg btn-block share-twitter" href="#"><i class="fa fa-twitter sx"></i> Share on Twitter</a></li>
+            <li><a id="urlFacebook" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;" class="btn btn-default btn-lg btn-block share-facebook" href="#"><i class="fa fa-facebook sx"></i> Share on Facebook</a></li>
+            <li><a id="urlGooglePlus" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;" class="btn btn-default btn-lg btn-block share-google-plus" href="#"><i class="fa fa-google-plus sx"></i> Share on Google+</a></li>
+            <li><a id="support-us" class="btn btn-default btn-lg btn-block" href="http://www.runeaudio.com/support-us/" target="_blank"><i class="fa fa-heart sx"></i> Support RuneAudio</a></li>
+            <li><button id="overlay-social-close" class="btn btn-link" type="button"><i class="fa fa-times"></i> close this layer</button></li>
+        </ul>
+    </nav>
+</div>
+<div id="overlay-playsource" class="overlay-scale closed">
+    <nav>
+        <ul>
+            <li><span>Playback source</span></li>
+			<li><a href="javascript:;" id="playsource-mpd" class="btn btn-default btn-lg btn-block" title="Switch to MPD"><i class="fa fa-linux sx"></i> MPD</a></li>
+			<li><a href="javascript:;" id="playsource-spotify" class="btn btn-default btn-lg btn-block inactive" title="Switch to Spotify"><i class="fa fa-spotify sx"></i> <span>spop</span> Spotify</a></li>
+			<li><a href="javascript:;" id="playsource-airplay" class="btn btn-default btn-lg btn-block inactive"><i class="fa fa-apple sx"></i> <span>ShairPort</span> Airplay</a></li>
+			<li><a href="javascript:;" id="playsource-dlna" class="btn btn-default btn-lg btn-block inactive"><i class="fa fa-puzzle-piece sx"></i> <span>upmpdcli</span> DLNA</a></li>
+            <li><button id="overlay-playsource-close" class="btn btn-link" type="button"><i class="fa fa-times"></i> close this layer</button></li>
+        </ul>
+    </nav>
 </div>
