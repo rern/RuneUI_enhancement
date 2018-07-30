@@ -21,6 +21,8 @@ sed -i '/hammer.min.js\|propagating.js/ d' /srv/http/app/templates/footer.php
 
 mv /srv/http/app/coverart_ctl.php{,.backup}
 mv /srv/http/app/playback.php{,.backup}
+mv /srv/http/assets/js/runeui.js{,.backup}
+mv /srv/http/assets/js/runeui.min.js{,.backup}
 mv /srv/http/command/airplay_toggle{,.backup}
 mv /usr/share/bootsplash/start-runeaudio.png{,.backup}
 mv /usr/share/bootsplash/reboot-runeaudio.png{,.backup}
@@ -137,17 +139,6 @@ string=$( cat <<'EOF'
 EOF
 )
 appendH -n +1 'addonsmenu.js'
-#----------------------------------------------------------------------------------
-file=/srv/http/assets/js/runeui.js
-echo $file
-
-comment 'function renderLibraryHome()' -n -3 'function getPlaylist(text)'
-comment -n +1 'click on Library home block' -n -2 'setup Library home'
-comment 'function renderUI(text)' -n -3 'function renderPlaylists(data)'
-comment -n +2 '(evtname, visChange)' -n -1 '// PLAYING QUEUE'
-comment -n -1 '// actions context menu' -n -1 '// list browsing'
-comment -n -2 '// double click'
-comment 'function updatePlaylistDropdown' -n -3 'function parseResponse'
 #----------------------------------------------------------------------------------
 file=/srv/http/db/index.php
 echo $file
