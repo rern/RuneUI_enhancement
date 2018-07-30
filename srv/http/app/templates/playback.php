@@ -281,8 +281,8 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
             <li><a href="javascript:;" data-cmd="pl-replace"><i class="fa fa-undo sx"></i> Replace the queue</a></li>
             <li><a href="javascript:;" data-cmd="pl-addreplaceplay"><i class="fa fa-share-square-o sx"></i> Replace and play the queue</a></li>
 			<li><a href="javascript:;" data-cmd="pl-ashuffle"><i class="fa fa-random sx"></i> Randomly add songs to queue</a></li>
-            <li><a href="javascript:;" data-cmd="pl-rename"><i class="fa fa-edit sx"></i> Rename</a></li>
-            <li><a href="javascript:;" data-cmd="pl-rm"><i class="fa fa-trash-o sx"></i> Delete</a></li>
+            <li><a id="pledit"><i class="fa fa-edit sx"></i> Rename</a></li>
+            <li><a id="pldelete"><i class="fa fa-trash-o sx"></i> Delete</a></li>
         </ul>
     </div>
     <div id="context-menu-album" class="context-menu">
