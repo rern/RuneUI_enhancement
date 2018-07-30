@@ -147,6 +147,7 @@ comment 'function renderUI(text)' -n -3 'function renderPlaylists(data)'
 comment -n +2 '(evtname, visChange)' -n -1 '// PLAYING QUEUE'
 comment -n -1 '// actions context menu' -n -1 '// list browsing'
 comment -n -2 '// double click'
+comment 'function updatePlaylistDropdown' -n -3 'function parseResponse'
 #----------------------------------------------------------------------------------
 file=/srv/http/db/index.php
 echo $file
