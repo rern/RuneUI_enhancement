@@ -568,6 +568,16 @@ $( '#pldelete' ).click( function() {
 		}
 	} );
 } );
+$( '#pl-manage-clear' ).click( function() {
+	info( {
+		  title      : 'Clear Playlist'
+		, message    : 'Clear all in playlist?'
+		, cancel     : 1
+		, ok         : function() {
+			sendCmd( 'clear' );
+		}
+	} );
+} );
 
 function webRadioAdd( name, url ) {
 	info( {
