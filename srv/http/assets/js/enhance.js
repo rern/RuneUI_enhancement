@@ -2032,7 +2032,10 @@ function setPlaybackData() {
 			$( '#currentsong' ).html( '<i class="fa fa-plus-circle"></i>' );
 			$( '#playlist-position span' ).text( 'Add something from Library' );
 			$( '#currentartist, #currentalbum, #elapsed, #total' ).html( '' );
-			$( '#cover-art' ).css( 'border-radius', 0 );
+			$( '#cover-art' ).css( {
+				  'background-image': 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
+				, 'border-radius': 0
+			} );
 			$( '#coverartoverlay' ).addClass( 'hide' );
 			return;
 		}
