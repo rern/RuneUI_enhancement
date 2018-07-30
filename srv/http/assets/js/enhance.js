@@ -168,9 +168,9 @@ function setDisplayPlayback() {
 	}
 }
 
-var bookmarkedit = 0;
+bookmarkedit = 0;
 $( '#panel-sx' ).on( 'taphold', function( e ) {
-	if ( swipe ) return;
+	if ( swipe || bookmarkedit ) return;
 	
 	if ( !bookmarkedit ) setDisplayLibrary( e );
 } ).on( 'taphold', '.home-block', function( e ) {
@@ -209,6 +209,10 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 		});
 	}
 });
+$( '#bookmarkadd' ).click( function() {
+	$.post( '/db/?cmd=bookmark', { path: $( '#database-entries li.active' ).data( 'path' ) } );
+} );
+
 function setDisplayLibrary( e ) {
 	info( {
 		  title  : 'Libary Home'
@@ -443,7 +447,7 @@ $( '#db-index li' ).click( function() {
 	if ( matcharray.length ) window.scrollTo( 0, matcharray[0].offsetTop - topoffset );
 } );
 dbtop = 0;
-$( '#db-level-up' ).off( 'click' ).on( 'click', function() {
+$( '#db-level-up' ).on( 'click', function() {
 	// topmost of path
 	if ( $( '#db-currentpath span a' ).length === 1 ) {
 		renderLibraryHome();
@@ -545,7 +549,7 @@ function webRadioEditVerify( name ) {
 	}
 	var exists = false;
 	$( '#database-entries li span.sn' ).each( function( i, el ) {
-		if ( $( el ).text() +' === '+ name ) {
+		if ( $( el ).text() === name ) {
 			exists = true;
 			return false;
 		}
@@ -710,7 +714,7 @@ $( '#pldelete' ).click( function() {
 } );
 // context menus \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-$( '#open-library' ).off( 'click' ).on( 'click', function() {
+$( '#open-library' ).on( 'click', function() {
 	$( '#open-panel-sx' ).click();
 } );
 
@@ -722,12 +726,12 @@ $( '#playlist-entries' ).click( function( e ) {
 		$( '#menu-top, #menu-bottom' ).toggleClass( 'hide', ( window.innerWidth < 499 || window.innerHeight < 515 ) );
 	}
 } );
-$( '#pl-manage-list' ).off( 'click' ).on( 'click', function() {
+$( '#pl-manage-list' ).on( 'click', function() {
 	$( '#pl-search' ).addClass( 'hide' );
 	$( '#pl-currentpath' ).removeClass( 'hide' );
 	getPlaylists();
 });
-$( '#pl-filter' ).off( 'keyup' ).on( 'keyup', function() {
+$( '#pl-filter' ).on( 'keyup', function() {
 	$.scrollTo( 0 , 500 );
 	var search = $(this).val();
 	var count = 0;
@@ -752,7 +756,7 @@ $( '#pl-home' ).click( function() {
 	$( '#pl-count, #pl-manage, #pl-search, #playlist-entries' ).removeClass( 'hide' );
 	if ( GUI.json.playlistlength == 0 ) $( '#playlist-warning' ).removeClass( 'hide' );
 } );
-$( '#pl-filter-results' ).off( 'click' ).on( 'click', function() {
+$( '#pl-filter-results' ).on( 'click', function() {
 	$( this ).addClass( 'hide' ).html( '' );
 	$( '#pl-manage, #pl-count, #playlist-entries li' ).removeClass( 'hide' );
 	$( '#pl-filter' ).val( '' );
@@ -819,9 +823,9 @@ $( '#menu-top, #menu-bottom, .context-menu' ).click( function( e ) {
 	$( '.context-menu' ).removeClass( 'open' );
 } );
 // replace functions in main runeui.js file **********************************************
-$( '#database-entries' ).off( 'click', '.db-action' )
 var licurrent = '';
-$( '#database-entries' ).on( 'click', '.db-action', function() {
+$( '#database-entries' ).on( 'click', '.db-action', function( e ) {
+	e.stopPropagation();
 	var $this = $( this );
 	var $target = $( $this.data( 'target' ) );
 	var liid = $this.parent().prop( 'id' );
@@ -836,7 +840,6 @@ $( '#database-entries' ).on( 'click', '.db-action', function() {
 			.find( 'ul' ).css( { top: $this.offset().top +'px', right: '70px' } );
 	}
 } );
-$( '#pl-editor' ).off( 'click', '.pl-action' )
 var plcurrent = '';
 $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 	e.stopPropagation();
@@ -855,14 +858,14 @@ $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 	}
 } );
   
-$( '#playsource-mpd' ).off( 'click' ).on( 'click', function() {
+$( '#playsource-mpd' ).on( 'click', function() {
 	$.post( 'enhance.php', { bash: '/usr/bin/systemctl restart shairport' } );
 	$( '#iplayer' ).removeClass( 'fa-airplay' ).addClass( 'hide' );
 	$( '#overlay-playsource' ).removeClass( 'open' );
 	$( '#playsource-mpd' ).removeClass( 'inactive' );
 	$( '#playsource-airplay' ).addClass( 'inactive' );
 } );
-$( '#db-search-results' ).off( 'click' ).on( 'click', function() {
+$( '#db-search-results' ).on( 'click', function() {
 	$( this ).addClass( 'hide' );
 	$( '#db-currentpath' ).css( 'width', '' );
 	var mode = {
