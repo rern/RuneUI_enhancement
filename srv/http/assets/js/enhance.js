@@ -697,7 +697,7 @@ function playlistSaveVerify( name ) {
 		return;
 	} 
 	$.post( 'enhance.php', { mpd: 'listplaylists' }, function( data ) {
-		var pl = data.split( '\n' ).filter( el => el.match( /^playlist/ ) );
+		var pl = data.split( '\n' ).filter( function( el ) { return el.match( /^playlist/ ) } );
 		var exists = false;
 		pl.some( function( el ) {
 			return  exists = ( name === el.replace( 'playlist: ', '' ) );
@@ -1854,7 +1854,7 @@ function getPlaylists() {
     $.ajax({
         url: '/command/?cmd=listplaylists',
         success: function( data ) {
-			var pl = data.split( '\n' ).filter( el => el.match( /^playlist/ ) );
+			var pl = data.split( '\n' ).filter( function( el ) { return el.match( /^playlist/ ) } );
 			var content = plname = '';
 			pl.forEach( function( el ) {
 				plname = el.replace( 'playlist: ', '' );
