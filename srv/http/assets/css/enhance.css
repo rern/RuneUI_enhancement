@@ -80,6 +80,15 @@
 .fa-pause:before { content: "\f504" }
 .fa-step-forward:before { content: "\f505" }
 
+.menu .fa { margin-right: 10px; }
+.menu .fa-plus-circle:before { content: "\f530" }
+.menu .fa-edit:before { content: "\f535" }
+.menu .fa-undo:before { content: "\f531" }
+.menu .fa-play:before { content: "\f532" }
+.menu .fa-share-square-o:before { content: "\f533" }
+.menu .fa-trash-o:before { content: "\f51C" }
+.menu .fa-refresh:before { content: "\f534" }
+
 .dropdown-menu .fa { margin-right: 10px !important; }
 .dropdown-menu .fa-plus-circle:before { content: "\f530" }
 .dropdown-menu .fa-edit:before { content: "\f535" }
@@ -157,6 +166,31 @@
 .tab-content>.tab-pane {
     display: block;
 }
+.menu {
+	margin: 0;
+	width: 180px;
+	line-height: 36px;
+	padding: 2px 10px;
+	background: #34495e;
+	border-top: 1px solid #222f3d;
+	cursor: pointer;
+}
+.menu:hover {
+	background: #222f3d;
+}
+.menu a {
+	display: block;
+	color: #e0e7ee;
+	text-decoration: none;
+}
+.menu i {
+	width: 30px;
+	text-align: center;
+	font-size: 22px;
+	margin: 0 5px 0 0;
+	vertical-align: -10%;
+}
+
 /* ---------------------- menu-top ----------------------*/
 .logo {
 	height: 35px;
@@ -207,6 +241,7 @@
 #menu-settings {
 	float: right;
 	font-size: 30px;
+	line-height: 40px;
 	cursor: pointer;
 }
 #badge {
@@ -225,18 +260,18 @@
 	cursor: pointer;
 }
 #settings {
+	float: right;
 	display: block;
-	position: fixed;
 	top: 40px;
+	left: auto;
 	right: 0px;
-	left: calc( 100% - 170px );
-	margin: 0;
 	padding: 0;
 	width: 170px;
-	border-radius: 0px;
-	z-index: 1000;
 }
-#settings>li>a {
+.dropdown-menu {
+	width: 230px;
+}
+.dropdown-menu > li > a {
 	line-height: 36px;
 	padding: 2px 10px;
 	background: #34495e;
@@ -245,14 +280,13 @@
 	text-decoration: none;
 	cursor: pointer;
 }
-#settings>li>a:hover {
+.dropdown-menu > li > a:hover {
+	color: #e0e7ee;
 	background: #222f3d;
 }
-#settings i {
+.dropdown-menu i {
 	width: 30px;
 	text-align: center;
-}
-.dropdown-menu i {
 	font-size: 22px !important;
 	margin: 0 5px 0 0 !important;
 	vertical-align: -10%;
@@ -266,9 +300,6 @@
 	height: 368px;
 	box-shadow: -4px 4px 10px #000000;
 	z-index: -100;
-}
-.modal-dialog {
-	margin-top: 50px;
 }
 /* ---------------------- menu-bottom ----------------------*/
 #menu-bottom {
@@ -1121,12 +1152,8 @@ w {
 	color: #e0e7ee;
 }
 		
-#database-entries li.active,
-#playlist-entries li.active,
-#database-entries li.active .db-action,
-#playlist-entries li.active .pl-action,
-#database-entries li.active .db-icon,
-#playlist-entries li.active .pl-icon,
+#database-entries li.active i,
+#playlist-entries li.active i,
 #database-entries li.active .sn span,
 #playlist-entries li.active .sn span,
 #pl-editor li.active .fa-bars,
