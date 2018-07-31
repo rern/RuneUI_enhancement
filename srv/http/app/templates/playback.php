@@ -48,6 +48,7 @@ if ( $this->remoteSStime != -1 ) {
 	<!-- PLAYBACK PANEL -->
 	<div id="playback" class="tab-pane active">
 		<div id="container-playback">
+		
 			<div id="info">
 				<div id="divartist">
 					<span id="currentartist"></span>
@@ -227,93 +228,76 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 		</div>
 	</div>
 </div>
-    <div id="context-menu" class="context-menu">
-        <ul class="dropdown-menu" role="menu">
-            <li><a href="javascript:;" data-cmd="add"><i class="fa fa-plus-circle sx"></i> Add</a></li>
-            <li><a href="javascript:;" data-cmd="addplay"><i class="fa fa-play sx"></i> Add and play</a></li>
-            <li><a href="javascript:;" data-cmd="addreplaceplay"><i class="fa fa-share-square-o sx"></i> Add, replace and play</a></li>
-            <li><a href="javascript:;" data-cmd="rescan"><i class="fa fa-refresh sx"></i> Update this folder</a></li>
-            <li><a id="bookmarkadd"><i class="fa fa-star sx"></i> Save as bookmark</a></li>
-        </ul>
-    </div>
-    <div id="context-menu-file" class="context-menu">
-        <ul class="dropdown-menu" role="menu">
-            <li><a href="javascript:;" data-cmd="add"><i class="fa fa-plus-circle sx"></i> Add</a></li>
-            <li><a href="javascript:;" data-cmd="addplay"><i class="fa fa-play sx"></i> Add and play</a></li>
-            <li><a href="javascript:;" data-cmd="addreplaceplay"><i class="fa fa-share-square-o sx"></i> Add, replace and play</a></li>
-            <li><a href="javascript:;" data-cmd="lastfmaddreplaceplay"><i class="fa fa-lastfm sx"></i> Last.fm playlist from this</a></li>
-        </ul>
-    </div>
-    <div id="context-menu-dirble" class="context-menu">
-        <ul class="dropdown-menu" role="menu">
-            <li><a href="javascript:;" data-cmd="wradd"><i class="fa fa-plus-circle sx"></i> Add</a></li>
-            <li><a href="javascript:;" data-cmd="wraddplay"><i class="fa fa-play sx"></i> Add and play</a></li>
-            <li><a href="javascript:;" data-cmd="wraddreplaceplay"><i class="fa fa-share-square-o sx"></i> Add, replace and play</a></li>
-            <li><a href="javascript:;" data-cmd="wrsave"><i class="fa fa-microphone sx"></i> Save in My Webradios</a></li>
-        </ul>
-    </div>
-	<div id="context-menu-spotify-pl" class="context-menu">
-        <ul class="dropdown-menu" role="menu">
-            <li><a href="javascript:;" data-cmd="spadd" data-type="spotify-playlist"><i class="fa fa-plus-circle sx"></i> Add</a></li>
-            <li><a href="javascript:;" data-cmd="spaddplay" data-type="spotify-playlist"><i class="fa fa-play sx"></i> Add and play</a></li>
-            <li><a href="javascript:;" data-cmd="spaddreplaceplay" data-type="spotify-playlist"><i class="fa fa-share-square-o sx"></i> Add, replace and play</a></li>
-        </ul>
-    </div>
-	<div id="context-menu-spotify" class="context-menu">
-        <ul class="dropdown-menu" role="menu">
-            <li><a href="javascript:;" data-cmd="spadd" data-type="spotify-track"><i class="fa fa-plus-circle sx"></i> Add</a></li>
-            <li><a href="javascript:;" data-cmd="spaddplay" data-type="spotify-track"><i class="fa fa-play sx"></i> Add and play</a></li>
-            <li><a href="javascript:;" data-cmd="spaddreplaceplay" data-type="spotify-track"><i class="fa fa-share-square-o sx"></i> Add, replace and play</a></li>
-        </ul>
-    </div>
-    <div id="context-menu-webradio" class="context-menu">
-        <ul class="dropdown-menu" role="menu">
-            <li><a href="javascript:;" data-cmd="add"><i class="fa fa-plus-circle sx"></i> Add</a></li>
-            <li><a href="javascript:;" data-cmd="addplay"><i class="fa fa-play sx"></i> Add and play</a></li>
-            <li><a href="javascript:;" data-cmd="addreplaceplay"><i class="fa fa-share-square-o sx"></i> Add, replace and play</a></li>
-            <li><a id="wredit"><i class="fa fa-edit sx"></i> Rename</a></li>
-            <li><a id="wrdelete"><i class="fa fa-trash-o sx"></i> Delete</a></li>
-        </ul>
-    </div>
-    <div id="context-menu-playlist" class="context-menu">
-        <ul class="dropdown-menu" role="menu">
-            <li><a href="javascript:;" data-cmd="pl-add"><i class="fa fa-plus-circle sx"></i> Add to queue</a></li>
-            <li><a href="javascript:;" data-cmd="pl-replace"><i class="fa fa-undo sx"></i> Replace the queue</a></li>
-            <li><a href="javascript:;" data-cmd="pl-addreplaceplay"><i class="fa fa-share-square-o sx"></i> Replace and play the queue</a></li>
-			<li><a href="javascript:;" data-cmd="pl-ashuffle"><i class="fa fa-random sx"></i> Randomly add songs to queue</a></li>
-            <li><a id="pledit"><i class="fa fa-edit sx"></i> Rename</a></li>
-            <li><a id="pldelete"><i class="fa fa-trash-o sx"></i> Delete</a></li>
-        </ul>
-    </div>
-    <div id="context-menu-album" class="context-menu">
-        <ul class="dropdown-menu" role="menu">
-            <li><a href="javascript:;" data-cmd="albumadd"><i class="fa fa-plus-circle sx"></i> Add</a></li>
-            <li><a href="javascript:;" data-cmd="albumaddplay"><i class="fa fa-play sx"></i> Add and play</a></li>
-            <li><a href="javascript:;" data-cmd="albumaddreplaceplay"><i class="fa fa-share-square-o sx"></i> Add, replace and play</a></li>
-        </ul>
-    </div>
-    <div id="context-menu-artist" class="context-menu">
-        <ul class="dropdown-menu" role="menu">
-            <li><a href="javascript:;" data-cmd="artistadd"><i class="fa fa-plus-circle sx"></i> Add</a></li>
-            <li><a href="javascript:;" data-cmd="artistaddplay"><i class="fa fa-play sx"></i> Add and play</a></li>
-            <li><a href="javascript:;" data-cmd="artistaddreplaceplay"><i class="fa fa-share-square-o sx"></i> Add, replace and play</a></li>
-        </ul>
-    </div>
-    <div id="context-menu-genre" class="context-menu">
-        <ul class="dropdown-menu" role="menu">
-            <li><a href="javascript:;" data-cmd="genreadd"><i class="fa fa-plus-circle sx"></i> Add</a></li>
-            <li><a href="javascript:;" data-cmd="genreaddplay"><i class="fa fa-play sx"></i> Add and play</a></li>
-            <li><a href="javascript:;" data-cmd="genreaddreplaceplay"><i class="fa fa-share-square-o sx"></i> Add, replace and play</a></li>
-        </ul>
-    </div>
-    <div id="context-menu-composer" class="context-menu">
-        <ul class="dropdown-menu" role="menu">
-            <li><a href="javascript:;" data-cmd="composeradd"><i class="fa fa-plus-circle sx"></i> Add</a></li>
-            <li><a href="javascript:;" data-cmd="composeraddplay"><i class="fa fa-play sx"></i> Add and play</a></li>
-            <li><a href="javascript:;" data-cmd="composeraddreplaceplay"><i class="fa fa-share-square-o sx"></i> Add, replace and play</a></li>
-        </ul>
-    </div>
-</div>
+<?php
+// context menus
+function menuli( $command, $icon, $label, $id ) {
+	$href_id = $id ? 'id="'.$id : 'href="javascript:;" data-cmd="'.$command;
+	return '<li><a '.$href_id.'"><i class="fa fa-'.$icon.'"></i>'.$label.'</a></li>';
+}
+function menudiv( $id, $html ) {
+	$id = $id ? '-'.$id : '';
+	return '
+		<div id="context-menu'.$id.'" class="context-menu">
+			<ul class="dropdown-menu" role="menu">'.$html.'</ul>
+		</div>';
+}
+function menucommon( $add, $addplay, $replaceplay ) {
+	$htmlcommon = '';
+	$htmlcommon.= menuli( $add,         'plus-circle',    'Add' );
+	$htmlcommon.= menuli( $addplay,     'play',           'Add and play' );
+	$htmlcommon.= menuli( $replaceplay, 'share-square-o', 'Replace and play' );
+	return $htmlcommon;
+}
+$menu = '<div id="context-menus">';
+$htmlcommon = menucommon( 'add', 'addplay', 'addreplaceplay' );
+
+$html = $htmlcommon;
+$html.= menuli( 'rescan', 'refresh', 'Update this folder' );
+$html.= menuli( '',       'star',    'Save as bookmark', 'bookmarkadd' );
+$menu.= menudiv( '', $html );
+$menudiv = '';
+
+$html = $htmlcommon;
+$html.= menuli( 'lastfmaddreplaceplay', 'lastfm', 'Last.fm playlist' );
+$menu.= menudiv( 'file', $html );
+$menudiv = '';
+
+$html = menucommon( 'wradd', 'wraddplay', 'wraddreplaceplay' );
+$html.= menuli( 'wrsave', 'microphone', 'Save in Webradios' );
+$menu.= menudiv( 'dirble', $html );
+$menudiv = '';
+
+$html = $htmlcommon;
+$html.= menuli( '', 'edit',    'Rename', 'wredit' );
+$html.= menuli( '', 'trash-o', 'Delete', 'wrdelete' );
+$menu.= menudiv( 'webradio', $html );
+$menudiv = '';
+
+$html = menucommon( 'pl-add', 'pl-replace', 'pl-addreplaceplay' );
+$html.= menuli( 'pl-ashuffle', 'random',  'Add randomly' );
+$html.= menuli( '',            'edit',    'Rename', 'pledit' );
+$html.= menuli( '',            'trash-o', 'Delete', 'pldelete' );
+$menu.= menudiv( 'playlist', $html );
+$menudiv = '';
+
+$html = menucommon( 'albumadd', 'albumaddplay', 'albumaddreplaceplay' );
+$menu.= menudiv( 'album', $html );
+$menudiv = '';
+
+$html = menucommon( 'artistadd', 'artistaddplay', 'artistaddreplaceplay' );
+$menu.= menudiv( 'artist', $html );
+$menudiv = '';
+
+$html = menucommon( 'genreadd', 'genreaddplay', 'genreaddreplaceplay' );
+$menu.= menudiv( 'genre', $html );
+$menudiv = '';
+
+$html = menucommon( 'composeradd', 'composeraddplay', 'composeraddreplaceplay' );
+$menu.= menudiv( 'composer', $html );
+$menu.= '</div>';
+
+echo $menu;
+?>
 <div id="overlay-social" class="overlay-scale closed">
     <nav>
         <ul>
