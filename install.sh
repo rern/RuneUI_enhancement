@@ -13,7 +13,6 @@ alias=enha
 installstart $@
 
 #0temp0 remove uninstall leftover
-# delete runeui.min.js.backup after next update
 sed -i 's|fa-music sx"></i> Library\(.\);|fa-folder-open"></i>\1|' /srv/http/assets/js/runeui.js
 sed -i 's/gifico|svg/gif|ico/' /etc/nginx/nginx.conf
 rm -f /srv/http/assets/js/vendor/{hammer.min.js,propagating.js}
