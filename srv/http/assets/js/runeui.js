@@ -644,7 +644,7 @@ function parseResponse(options) {
                         } else {
                         // webradio playlists
                             content += inputArr.playlist;
-                            content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-webradio"></i><i class="fa fa-microphone db-icon db-radio"></i>';
+                            content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-webradio"></i><i class="fa fa-webradio db-icon db-radio"></i>';
                             content += '<span class="sn">' + inputArr.playlist.replace(inpath + '/', '').replace('.' + inputArr.fileext , '');
                             content += '</span><span class="bl">webradio';
                         }
@@ -789,7 +789,7 @@ function parseResponse(options) {
                 }
                 content = '<li id="db-' + (i + 1) + '" class="db-dirble db-radio" data-path="';
                 content += inputArr.name + ' | ' + inputArr.streams[0].stream;
-                content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-dirble"></i><i class="fa fa-microphone db-icon"></i>';
+                content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-dirble"></i><i class="fa fa-webradio db-icon"></i>';
                 content += '<span class="sn">' + inputArr.name + '<span>(' + inputArr.country + ')</span></span>';
                 content += '<span class="bl">';
                 content += inputArr.website ? inputArr.website : '-no website-';
