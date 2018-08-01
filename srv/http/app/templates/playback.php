@@ -232,17 +232,15 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 // context menus
 function menuli( $command, $icon, $label, $id ) {
 	$href_id = $id ? 'id="'.$id : 'href="javascript:;" data-cmd="'.$command;
-	return '<li><a '.$href_id.'"><i class="fa fa-'.$icon.'"></i>'.$label.'</a></li>';
+	return '<a '.$href_id.'"><i class="fa fa-'.$icon.'"></i>'.$label.'</a>';
 }
 function menudiv( $id, $html ) {
 	$id = $id ? '-'.$id : '';
 	return '
-		<div id="context-menu'.$id.'" class="context-menu">
-			<ul class="dropdown-menu" role="menu">'.$html.'</ul>
-		</div>';
+		<div id="context-menu'.$id.'" class="menu hide">'.$html.'</div>';
 }
 function menucommon( $add, $addplay, $replaceplay ) {
-	$htmlcommon = '';
+	$htmlcommon = '<a class="menushadow"></a>';
 	$htmlcommon.= menuli( $add,         'plus-circle',    'Add' );
 	$htmlcommon.= menuli( $addplay,     'play',           'Add and play' );
 	$htmlcommon.= menuli( $replaceplay, 'share-square-o', 'Replace and play' );
