@@ -483,33 +483,36 @@ $( '#db-level-up' ).on( 'click', function() {
 });
 
 // context menus //////////////////////////////////////////////
-$( '#menu-top, #menu-bottom, .context-menu' ).click( function( e ) {
+$( '#menu-top, #menu-bottom, #db-home, #pl-home, .context-menu' ).click( function( e ) {
 	licurrent = '';
 	plcurrent = '';
 	$( '.context-menu' ).removeClass( 'open' );
 } );
-var licurrent = '';
+var dbcurrent = '';
 $( '#database-entries' ).on( 'click', '.db-action', function( e ) {
 	e.stopPropagation();
 	var $this = $( this );
+	var $thisli = $this.parent();
+	dbpath = $thisli.data( 'path' );
+	GUI.DBentry[ 0 ] = dbpath;
 	var $target = $( $this.data( 'target' ) );
-	var liid = $this.parent().prop( 'id' );
 	$( '#database-entries li' ).removeClass( 'active' );
 	$( '.context-menu' ).removeClass( 'open' );
-	if ( liid === licurrent ) {
-		licurrent = '';
+	if ( dbpath === dbcurrent ) {
+		dbcurrent = '';
 	} else {
-		licurrent = liid;
-		$this.parent().addClass( 'active' );
+		dbcurrent = dbpath;
+		$thisli.addClass( 'active' );
 		$target.addClass( 'open' )
-			.find( 'ul' ).css( { top: $this.offset().top +'px', right: '70px' } );
+			.find( 'ul' ).css( 'top', $this.offset().top +'px' );
 	}
 } );
 var plcurrent = '';
 $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 	e.stopPropagation();
 	var $this = $( this );
-	var plpath = $this.parent().data( 'path' );
+	var $thisli = $this.parent();
+	var plpath = $thisli.data( 'path' );
 	GUI.DBentry[0] = plpath;
 	$( '#pl-editor li' ).removeClass( 'active' );
 	$( '.context-menu' ).removeClass( 'open' );
@@ -517,7 +520,7 @@ $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 		plcurrent = '';
 	} else {
 		plcurrent = plpath;
-		$this.parent().addClass( 'active' );
+		$thisli.addClass( 'active' );
 		$( '#context-menu-playlist' ).addClass( 'open' )
 			.find( 'ul' ).css( { top: $this.position().top +'px', right: '30px' } );
 	}
