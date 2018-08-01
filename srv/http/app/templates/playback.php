@@ -231,7 +231,7 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 <?php
 // context menus
 function menuli( $command, $icon, $label, $id ) {
-	$href_id = $id ? 'id="'.$id : 'href="javascript:;" data-cmd="'.$command;
+	$href_id = $id ? 'id="'.$id : 'data-cmd="'.$command;
 	return '<a '.$href_id.'"><i class="fa fa-'.$icon.'"></i>'.$label.'</a>';
 }
 function menudiv( $id, $html ) {
