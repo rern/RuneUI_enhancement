@@ -66,9 +66,9 @@ string=$( cat <<'EOF'
 	<a class="<?=$this->uri(1, 'credits', 'active')?>" href="/credits/"><i class="fa fa-rune"></i>Credits</a>
 	<a class="<?=$this->uri(1, 'dev', 'active')?>" href="/dev/"><i class="fa fa-gears"></i>Development</a>
 	<a id="turnoff"><i class="fa fa-power-off"></i>Power</a>
-	<?php if ($this->pwd_protection):?>
-	  <a href="/logout.php"><i class="fa fa-sign-out"></i>Logout</a>
-	<?php endif ?>
+<?php if ($this->pwd_protection):?>
+	<a href="/logout.php"><i class="fa fa-sign-out"></i>Logout</a>
+<?php endif ?>
 	<a id="addons"><i class="fa"></i>Addons</a>
 </div>
 <div id="menu-top" class="hide">
@@ -79,7 +79,9 @@ insertH 'class="playback-controls"'
 
 if [[ -e /url/local/bin/uninstall_gpio.sh ]]; then
 	string=$( cat <<'EOF'
-	<a id="gpio"><i class="fa"></i>GPIO</a>	
+<?php //0gpio0 ?>
+	<a id="gpio"><i class="fa"></i>GPIO</a>
+<?php //1gpio1 ?>
 EOF
 )
 	insertH 'id="addons"'
