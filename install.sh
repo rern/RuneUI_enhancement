@@ -84,7 +84,7 @@ if [[ -e /url/local/bin/uninstall_gpio.sh ]]; then
 <?php //1gpio1 ?>
 EOF
 )
-	insertH 'id="addons"'
+	appendH 'fa-power-off'
 fi
 
 string=$( cat <<'EOF'
