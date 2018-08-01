@@ -80,7 +80,6 @@
 .fa-pause:before { content: "\f504" }
 .fa-step-forward:before { content: "\f505" }
 
-.menu .fa { margin-right: 10px; }
 .menu .fa-plus-circle:before { content: "\f530" }
 .menu .fa-edit:before { content: "\f535" }
 .menu .fa-undo:before { content: "\f531" }
@@ -167,28 +166,40 @@
     display: block;
 }
 .menu {
-	margin: 0;
-	width: 180px;
-	line-height: 36px;
-	padding: 2px 10px;
-	background: #34495e;
-	border-top: 1px solid #222f3d;
-	cursor: pointer;
-}
-.menu:hover {
-	background: #222f3d;
+	position: absolute;
+	float: right;
+	right: 90px;
+	width: 200px;
+	padding: 0 !important;
+	z-index: 10;
 }
 .menu a {
 	display: block;
+	margin: 0;
+	padding: 2px 15px;
+	font-size: 16px;
+	line-height: 36px;
 	color: #e0e7ee;
+	background: #34495e;
+	border-bottom: 1px solid #222f3d;
 	text-decoration: none;
+	cursor: pointer;
+}
+.menu a:hover {
+	background: #222f3d;
 }
 .menu i {
 	width: 30px;
+	margin-right: 20px;
 	text-align: center;
 	font-size: 22px;
-	margin: 0 5px 0 0;
 	vertical-align: -10%;
+}
+.menushadow {
+	position: absolute;
+	width: 180px;
+	box-shadow: -4px 4px 10px #000000;
+	z-index: -100;
 }
 
 /* ---------------------- menu-top ----------------------*/
@@ -269,6 +280,7 @@
 	width: 170px;
 }
 .dropdown-menu {
+	right: 70px;
 	width: 230px;
 }
 .dropdown-menu > li > a {
