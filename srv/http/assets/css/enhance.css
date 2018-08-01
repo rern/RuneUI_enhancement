@@ -51,21 +51,6 @@
 .fa {
 	font-family: FontAwesome, enhance;
 }
-.fa-trophy:before { content: "\f575" } /* change to fa-rune */
-.fa-folder-open:before { content: "\f507" } /* change to fa-library */
-.fa-times-circle:before,
-.fa-trash-o:before { content: "\f51C" } /* change to fa-minus-circle */
-#context-menu-dirble .fa-microphone:before { content: "\f542" !important } /* change to fa-save */
-.fa-linux:before { content: "\f571" }
-.fa-spotify:before { content: "\f572" }
-.fa-apple:before,
-.fa-airplay:before {
-	content: "\f573";
-}
-.fa-puzzle-piece:before,
-.fa-dlna:before {
-	content: "\f574";
-}
 @media( max-width: 480px ) {
 	#db-currentpath span span,
 	.pl-icon {
@@ -74,33 +59,26 @@
 }
 #playlist-entries li:before { content: none; } /* remove default css */
 
+.fa-rune:before { content: "\f575" }
+.fa-linux:before { content: "\f571" }
+.fa-spotify:before { content: "\f572" }
+.fa-airplay:before { content: "\f573" }
+.fa-dlna:before { content: "\f574" }
+.fa-mpd:before { content: "\f522" }
+
 .fa-step-backward:before { content: "\f501" }
 .fa-stop:before { content: "\f502" }
 .fa-play:before { content: "\f503" }
 .fa-pause:before { content: "\f504" }
 .fa-step-forward:before { content: "\f505" }
 
-.menu .fa-plus-circle:before { content: "\f530" }
-.menu .fa-edit:before { content: "\f535" }
-.menu .fa-undo:before { content: "\f531" }
-.menu .fa-play:before { content: "\f532" }
-.menu .fa-share-square-o:before { content: "\f533" }
-.menu .fa-trash-o:before { content: "\f51C" }
-.menu .fa-refresh:before { content: "\f534" }
-
-.dropdown-menu .fa { margin-right: 10px !important; }
-.dropdown-menu .fa-plus-circle:before { content: "\f530" }
-.dropdown-menu .fa-edit:before { content: "\f535" }
-.dropdown-menu .fa-undo:before { content: "\f531" }
-.dropdown-menu .fa-play:before { content: "\f532" }
-.dropdown-menu .fa-share-square-o:before { content: "\f533" }
-.dropdown-menu .fa-trash-o:before { content: "\f51C" }
-.dropdown-menu .fa-refresh:before { content: "\f534" }
-
-.dropdown-menu .fa-folder-open:before { content: "\f521" }
-.dropdown-menu .fa-cogs:before { content: "\f522" }
-.dropdown-menu .fa-sitemap:before { content: "\f551" }
-.dropdown-menu .fa-wrench:before { content: "\f1DE" }
+.fa-library:before { content: "\f507" }
+.fa-minus-circle:before { content: "\f51C" }
+.fa-plus-o:before { content: "\f530" }
+.fa-edit-circle:before { content: "\f535" }
+.fa-play-plus-o:before { content: "\f532" }
+.fa-play-plus-refresh:before { content: "\f533" }
+.fa-folder-refresh:before { content: "\f534" }
 
 .fa-repeat-single:before { content: "\f510" }
 .fa-repeat:before { content: "\f511" }
@@ -131,9 +109,10 @@
 .fa-jamendo:before { content: "\f55A" }
 
 .fa-folder:before { content: "\f540" }
-#pl-manage .fa-folder-open:before { content: "\f541" }
+.fa-folder-open:before { content: "\f541" }
+.fa-folder-open-cascade:before { content: "\f521" }
 .fa-music:before { content: "\f543" }
-.fa-microphone:before { content: "\f554" }
+.fa-webradio:before { content: "\f554" }
 .fa-save:before { content: "\f542"}
 .fa-star:before { content: "\f550" }
 .fa-plus-circle:before { content: "\f51D" }
@@ -168,10 +147,10 @@
 .menu {
 	position: absolute;
 	float: right;
-	right: 90px;
+	right: 0;
 	width: 200px;
 	padding: 0 !important;
-	z-index: 10;
+	z-index: 11;
 }
 .menu a {
 	display: block;
@@ -181,7 +160,7 @@
 	line-height: 36px;
 	color: #e0e7ee;
 	background: #34495e;
-	border-bottom: 1px solid #222f3d;
+	border-top: 1px solid #222f3d;
 	text-decoration: none;
 	cursor: pointer;
 }
@@ -189,8 +168,8 @@
 	background: #222f3d;
 }
 .menu i {
-	width: 30px;
-	margin-right: 20px;
+	width: 25px;
+	margin-right: 10px;
 	text-align: center;
 	font-size: 22px;
 	vertical-align: -10%;
@@ -279,39 +258,9 @@
 	padding: 0;
 	width: 170px;
 }
-.dropdown-menu {
-	right: 70px;
-	width: 230px;
-}
-.dropdown-menu > li > a {
-	line-height: 36px;
-	padding: 2px 10px;
-	background: #34495e;
-	border-bottom: 1px solid #222f3d;
-	color: #e0e7ee;
-	text-decoration: none;
-	cursor: pointer;
-}
-.dropdown-menu > li > a:hover {
-	color: #e0e7ee;
-	background: #222f3d;
-}
-.dropdown-menu i {
-	width: 30px;
-	text-align: center;
-	font-size: 22px !important;
-	margin: 0 5px 0 0 !important;
-	vertical-align: -10%;
-}
-.dropdown {
-	margin-right: 0 !important;
-}
-#dropdownbg { /* fix dropdown box-shadow */
-	position: absolute;
-	width: 169px;
-	height: 368px;
-	box-shadow: -4px 4px 10px #000000;
-	z-index: -100;
+#settings .menushadow {
+	width: 170px;
+	height: 370px;
 }
 /* ---------------------- menu-bottom ----------------------*/
 #menu-bottom {
