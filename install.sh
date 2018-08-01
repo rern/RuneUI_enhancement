@@ -77,6 +77,14 @@ EOF
 )
 insertH 'class="playback-controls"'
 
+if [[ -e /url/local/bin/uninstall_gpio.sh ]]; then
+	string=$( cat <<'EOF'
+	<a id="gpio"><i class="fa"></i>GPIO</a>	
+EOF
+)
+	insertH 'id="addons"'
+fi
+
 string=$( cat <<'EOF'
         <button id="pause" class="btn btn-default btn-cmd" title="Pause" data-cmd="play"><i class="fa fa-pause"></i></button>
 EOF
