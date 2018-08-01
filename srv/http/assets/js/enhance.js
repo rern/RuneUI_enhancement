@@ -198,6 +198,8 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 			$this.parent().remove();
 			renderLibraryHome();
 		} );
+	} else if ( $this.data( 'target' ) === '#modal-webradio-add' ) {
+		webRadioAdd();
 	} else {
 		if ( bookmarkedit ) return;
 		++GUI.currentDBpos[ 10 ];
@@ -486,7 +488,7 @@ $( '#db-level-up' ).on( 'click', function() {
 $( '#menu-top, #menu-bottom, #db-home, #pl-home, .context-menu' ).click( function( e ) {
 	licurrent = '';
 	plcurrent = '';
-	$( '.context-menu' ).removeClass( 'open' );
+	$( '.menu' ).addClass( 'hide' );
 } );
 var dbcurrent = '';
 $( '#database-entries' ).on( 'click', '.db-action', function( e ) {
@@ -497,14 +499,15 @@ $( '#database-entries' ).on( 'click', '.db-action', function( e ) {
 	GUI.DBentry[ 0 ] = dbpath;
 	var $target = $( $this.data( 'target' ) );
 	$( '#database-entries li' ).removeClass( 'active' );
-	$( '.context-menu' ).removeClass( 'open' );
+	$( '.menu' ).addClass( 'hide' );
 	if ( dbpath === dbcurrent ) {
 		dbcurrent = '';
 	} else {
 		dbcurrent = dbpath;
 		$thisli.addClass( 'active' );
-		$target.addClass( 'open' )
-			.find( 'ul' ).css( 'top', $this.offset().top +'px' );
+		$target.removeClass( 'hide' )
+			.css( 'top', $this.offset().top +'px' )
+			.find( '.menushadow' ).css( 'height', $target.find( 'i' ).length * 40 );
 	}
 } );
 var plcurrent = '';
@@ -515,14 +518,15 @@ $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 	var plpath = $thisli.data( 'path' );
 	GUI.DBentry[0] = plpath;
 	$( '#pl-editor li' ).removeClass( 'active' );
-	$( '.context-menu' ).removeClass( 'open' );
+	$( '.menu' ).addClass( 'hide' );
 	if ( plpath === plcurrent ) {
 		plcurrent = '';
 	} else {
 		plcurrent = plpath;
 		$thisli.addClass( 'active' );
-		$( '#context-menu-playlist' ).addClass( 'open' )
-			.find( 'ul' ).css( { top: $this.position().top +'px', right: '30px' } );
+		$( '#context-menu-playlist' ).removeClass( 'hide' )
+			.css( { top: $this.position().top +'px', right: '50px' } )
+			.find( '.menushadow' ).css( 'height', $( '#context-menu-playlist' ).find( 'i' ).length * 40 );
 	}
 } );
 $( '#db-webradio-add' ).click( function() {
@@ -593,7 +597,7 @@ function webRadioAdd( name, url ) {
 		, boxwidth   : 'max'
 		, cancel     : 1
 		, ok         : function() {
-			webRadioAddVerify( $( '#infoTextbox' ).val(), $( '#infoTextbox2' ).val() );
+			webRadioAddVerify( $( '#infoTextBox' ).val(), $( '#infoTextBox2' ).val() );
 		}
 	} );
 }
@@ -643,7 +647,7 @@ function webRadioEdit( name ) {
 		, boxwidth   : 'max'
 		, cancel     : 1
 		, ok         : function() {
-			webRadioEditVerify( $( '#infoTextbox' ).val() );
+			webRadioEditVerify( $( '#infoTextBox' ).val() );
 		}
 	} );
 }
@@ -694,7 +698,7 @@ function playlistSave( name ) {
 		, valuetext  : name ? name : ''
 		, cancel     : 1
 		, ok         : function() {
-			playlistSaveVerify( $( '#infoTextbox' ).val() );
+			playlistSaveVerify( $( '#infoTextBox' ).val() );
 		}
 	} );
 }
@@ -740,7 +744,7 @@ function playlistEdit( name ) {
 		, boxwidth   : 'max'
 		, cancel     : 1
 		, ok         : function() {
-			playlistEditVerify( $( '#infoTextbox' ).val() );
+			playlistEditVerify( $( '#infoTextBox' ).val() );
 		}
 	} );
 }
