@@ -146,7 +146,7 @@ if ( $this->remoteSStime != -1 ) {
 				</div>
 			</div>
 			<div id="db-currentpath">
-				<div id="db-home"><i class="fa fa-folder-open"></i></div> <span>LIBRARY</span>
+				<div id="db-home"><i class="fa fa-library"></i></div> <span>LIBRARY</span>
 				<i id="db-webradio-add" class="fa fa-plus-circle"></i>
 			</div>
 			<button id="db-search-results" class="btn hide" type="button" title="Close search results and go back to the Library browsing"><i class="fa fa-times sx"></i></button>
@@ -237,20 +237,20 @@ function menuli( $command, $icon, $label, $id ) {
 function menudiv( $id, $html ) {
 	$id = $id ? '-'.$id : '';
 	return '
-		<div id="context-menu'.$id.'" class="menu hide">'.$html.'</div>';
+		<div id="context-menu'.$id.'" class="menu contextmenu hide">'.$html.'</div>';
 }
 function menucommon( $add, $addplay, $replaceplay ) {
 	$htmlcommon = '<a class="menushadow"></a>';
-	$htmlcommon.= menuli( $add,         'plus-circle',    'Add' );
-	$htmlcommon.= menuli( $addplay,     'play',           'Add and play' );
-	$htmlcommon.= menuli( $replaceplay, 'share-square-o', 'Replace and play' );
+	$htmlcommon.= menuli( $add,         'plus-o',    'Add' );
+	$htmlcommon.= menuli( $addplay,     'play-plus-o',           'Add and play' );
+	$htmlcommon.= menuli( $replaceplay, 'play-plus-refresh', 'Replace and play' );
 	return $htmlcommon;
 }
-$menu = '<div id="context-menus">';
+$menu = '<div>';
 $htmlcommon = menucommon( 'add', 'addplay', 'addreplaceplay' );
 
 $html = $htmlcommon;
-$html.= menuli( 'rescan', 'refresh', 'Update this folder' );
+$html.= menuli( 'rescan', 'folder-refresh', 'Update this folder' );
 $html.= menuli( '',       'star',    'Save as bookmark', 'bookmarkadd' );
 $menu.= menudiv( '', $html );
 $menudiv = '';
@@ -261,20 +261,20 @@ $menu.= menudiv( 'file', $html );
 $menudiv = '';
 
 $html = menucommon( 'wradd', 'wraddplay', 'wraddreplaceplay' );
-$html.= menuli( 'wrsave', 'microphone', 'Save in Webradios' );
+$html.= menuli( 'wrsave', 'save', 'Save in Webradios' );
 $menu.= menudiv( 'dirble', $html );
 $menudiv = '';
 
 $html = $htmlcommon;
-$html.= menuli( '', 'edit',    'Rename', 'wredit' );
-$html.= menuli( '', 'trash-o', 'Delete', 'wrdelete' );
+$html.= menuli( '', 'edit-circle',    'Rename', 'wredit' );
+$html.= menuli( '', 'minus-circle', 'Delete', 'wrdelete' );
 $menu.= menudiv( 'webradio', $html );
 $menudiv = '';
 
 $html = menucommon( 'pl-add', 'pl-replace', 'pl-addreplaceplay' );
 $html.= menuli( 'pl-ashuffle', 'random',  'Add randomly' );
-$html.= menuli( '',            'edit',    'Rename', 'pledit' );
-$html.= menuli( '',            'trash-o', 'Delete', 'pldelete' );
+$html.= menuli( '',            'edit-circle',    'Rename', 'pledit' );
+$html.= menuli( '',            'minus-circle', 'Delete', 'pldelete' );
 $menu.= menudiv( 'playlist', $html );
 $menudiv = '';
 
@@ -314,8 +314,8 @@ echo $menu;
             <li><span>Playback source</span></li>
 			<li><a href="javascript:;" id="playsource-mpd" class="btn btn-default btn-lg btn-block" title="Switch to MPD"><i class="fa fa-linux sx"></i> MPD</a></li>
 			<li><a href="javascript:;" id="playsource-spotify" class="btn btn-default btn-lg btn-block inactive" title="Switch to Spotify"><i class="fa fa-spotify sx"></i> <span>spop</span> Spotify</a></li>
-			<li><a href="javascript:;" id="playsource-airplay" class="btn btn-default btn-lg btn-block inactive"><i class="fa fa-apple sx"></i> <span>ShairPort</span> Airplay</a></li>
-			<li><a href="javascript:;" id="playsource-dlna" class="btn btn-default btn-lg btn-block inactive"><i class="fa fa-puzzle-piece sx"></i> <span>upmpdcli</span> DLNA</a></li>
+			<li><a href="javascript:;" id="playsource-airplay" class="btn btn-default btn-lg btn-block inactive"><i class="fa fa-airplay sx"></i> <span>ShairPort</span> Airplay</a></li>
+			<li><a href="javascript:;" id="playsource-dlna" class="btn btn-default btn-lg btn-block inactive"><i class="fa fa-dlna sx"></i> <span>upmpdcli</span> DLNA</a></li>
             <li><button id="overlay-playsource-close" class="btn btn-link" type="button"><i class="fa fa-times"></i> close this layer</button></li>
         </ul>
     </nav>
