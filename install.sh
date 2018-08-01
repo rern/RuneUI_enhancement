@@ -53,34 +53,29 @@ EOF
 )
 appendH 'runeui.css'
 
-commentH 'id="menu-top"' 'href="/"><i class="fa fa-play">'
+commentH 'id="menu-top"' -n -1 'class="playback-controls"'
 
 string=$( cat <<'EOF'
-        <ul id="settings" class="dropdown-menu hide" role="menu" aria-labelledby="menu-settings">
-            <li id="dropdownbg"></li>
-
-EOF
-)
-appendH 'href="/"><i class="fa fa-play">'
-
-commentH 'href="#poweroff-modal"'
-
-string=$( cat <<'EOF'
-            <li class="<?=$this->uri(1, 'dev', 'active')?>"><a href="/dev/"><i class="fa fa-gears"></i> Development</a></li>
-            <li><a id="turnoff"><i class="fa fa-power-off"></i> Power</a></li>
-EOF
-)
-insertH 'href="#poweroff-modal"'
-
-string=$( cat <<'EOF'
-        </ul>
+<div id="settings" class="menu hide">
+	<a class="menushadow"></a>
+	<a class="<?=$this->uri(1, 'sources', 'active')?>" href="/sources/"><i class="fa fa-folder-open-cascade"></i>Sources</a>
+	<a class="<?=$this->uri(1, 'mpd', 'active')?>" href="/mpd/"><i class="fa fa-mpd"></i>MPD</a>
+	<a class="<?=$this->uri(1, 'settings', 'active')?>" href="/settings/"><i class="fa fa-sliders"></i>Settings</a>
+	<a class="<?=$this->uri(1, 'network', 'active')?>" href="/network/"><i class="fa fa-sitemap"></i>Network</a>
+	<a class="<?=$this->uri(1, 'debug', 'active')?>" href="/debug/"><i class="fa fa-bug"></i>Debug</a></a>
+	<a class="<?=$this->uri(1, 'credits', 'active')?>" href="/credits/"><i class="fa fa-rune"></i>Credits</a>
+	<a class="<?=$this->uri(1, 'dev', 'active')?>" href="/dev/"><i class="fa fa-gears"></i>Development</a>
+	<a id="turnoff"><i class="fa fa-power-off"></i>Power</a>
+	<?php if ($this->pwd_protection):?>
+	  <a href="/logout.php"><i class="fa fa-sign-out"></i>Logout</a>
+	<?php endif ?>
+	<a id="addons"><i class="fa"></i>Addons</a>
+</div>
 <div id="menu-top" class="hide">
     <i id="menu-settings" class="fa fa-gear"></i>
 EOF
 )
-insertH -n -2 'class="playback-controls"'
-
-commentH -n -2 'class="playback-controls"' -n -1 'class="playback-controls"'
+insertH 'class="playback-controls"'
 
 string=$( cat <<'EOF'
         <button id="pause" class="btn btn-default btn-cmd" title="Pause" data-cmd="play"><i class="fa fa-pause"></i></button>
