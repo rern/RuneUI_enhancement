@@ -933,7 +933,7 @@
 	-webkit-box-shadow: none;
 	box-shadow: none;
 }
-#db-webradio-add {
+#db-webradio-new {
 	padding-left: 10px;
 	font-size: 24px;
 }
@@ -1347,7 +1347,7 @@ w {
 		width: calc( 100% - 220px );
 	}
 	#db-up,
-	#db-webradio-add {
+	#db-webradio-new {
 		right: 170px;
 	}
 }
