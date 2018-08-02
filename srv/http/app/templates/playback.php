@@ -147,7 +147,7 @@ if ( $this->remoteSStime != -1 ) {
 			</div>
 			<div id="db-currentpath">
 				<div id="db-home"><i class="fa fa-library"></i></div> <span>LIBRARY</span>
-				<i id="db-webradio-add" class="fa fa-plus-circle"></i>
+				<i id="db-webradio-new" class="fa fa-plus-circle"></i>
 			</div>
 			<button id="db-search-results" class="btn hide" type="button" title="Close search results and go back to the Library browsing"><i class="fa fa-times sx"></i></button>
 			<i id="db-level-up" class="fa fa-arrow-left"></i>
@@ -230,9 +230,8 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 </div>
 <?php
 // context menus
-function menuli( $command, $icon, $label, $id ) {
-	$href_id = $id ? 'id="'.$id : 'data-cmd="'.$command;
-	return '<a '.$href_id.'"><i class="fa fa-'.$icon.'"></i>'.$label.'</a>';
+function menuli( $command, $icon, $label ) {
+	return '<a data-cmd="'.$command.'"><i class="fa fa-'.$icon.'"></i>'.$label.'</a>';
 }
 function menudiv( $id, $html ) {
 	$id = $id ? '-'.$id : '';
@@ -250,8 +249,8 @@ $menu = '<div>';
 $htmlcommon = menucommon( 'add', 'addplay', 'addreplaceplay' );
 
 $html = $htmlcommon;
-$html.= menuli( 'rescan', 'folder-refresh', 'Update this folder' );
-$html.= menuli( '',       'star',    'Save as bookmark', 'bookmarkadd' );
+$html.= menuli( 'rescan',      'folder-refresh', 'Update this folder' );
+$html.= menuli( 'bookmarkadd', 'star',           'Save as bookmark' );
 $menu.= menudiv( '', $html );
 $menudiv = '';
 
@@ -265,16 +264,16 @@ $html.= menuli( 'wrsave', 'save', 'Save in Webradios' );
 $menu.= menudiv( 'dirble', $html );
 $menudiv = '';
 
-$html = $htmlcommon;
-$html.= menuli( '', 'edit-circle',    'Rename', 'wredit' );
-$html.= menuli( '', 'minus-circle', 'Delete', 'wrdelete' );
+$html = menucommon( 'wradd', 'wraddplay', 'wraddreplaceplay' );
+$html.= menuli( 'wrrename', 'edit-circle',  'Rename' );
+$html.= menuli( 'wrdelete', 'minus-circle', 'Delete' );
 $menu.= menudiv( 'webradio', $html );
 $menudiv = '';
 
-$html = menucommon( 'pl-add', 'pl-replace', 'pl-addreplaceplay' );
-$html.= menuli( 'pl-ashuffle', 'random',  'Add randomly' );
-$html.= menuli( '',            'edit-circle',    'Rename', 'pledit' );
-$html.= menuli( '',            'minus-circle', 'Delete', 'pldelete' );
+$html = menucommon( 'pladd', 'plreplace', 'pladdreplaceplay' );
+$html.= menuli( 'plashuffle', 'random',       'Add randomly' );
+$html.= menuli( 'plrename',   'edit-circle',  'Rename' );
+$html.= menuli( 'pldelete',   'minus-circle', 'Delete' );
 $menu.= menudiv( 'playlist', $html );
 $menudiv = '';
 
