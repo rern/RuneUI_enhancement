@@ -7,9 +7,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="msapplication-tap-highlight" content="no" />
     <link rel="stylesheet" href="<?=$this->asset('/css/runeui.css')?>">
-<?php //0gpio0 ?>
-	<link rel="stylesheet" href="<?=$this->asset('/css/gpio.css')?>">
-<?php //1gpio1 ?>
     <link rel="stylesheet" href="<?=$this->asset('/css/roundslider.min.css')?>">
     <link rel="stylesheet" href="<?=$this->asset('/css/enhance.css')?>">
     <link rel="stylesheet" href="<?=$this->asset('/css/addonsinfo.css')?>">
@@ -52,11 +49,8 @@
 	<a class="<?=$this->uri(1, 'credits', 'active')?>" href="/credits/"><i class="fa fa-rune"></i>Credits</a>
 	<a class="<?=$this->uri(1, 'dev', 'active')?>" href="/dev/"><i class="fa fa-gears"></i>Development</a>
 	<a id="turnoff"><i class="fa fa-power-off"></i>Power</a>
-<?php //0gpio0 ?>
-	<a id="gpio"><i class="fa"></i>GPIO</a>
-<?php //1gpio1 ?>
 	<?php if ($this->pwd_protection):?>
-	  <a href="/logout.php"><i class="fa fa-sign-out"></i>Logout</a>
+	<a href="/logout.php"><i class="fa fa-sign-out"></i>Logout</a>
 	<?php endif ?>
 	<a id="addons"><i class="fa"></i>Addons</a>
 </div>
