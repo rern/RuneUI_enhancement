@@ -221,6 +221,11 @@ EOF
 )
 append '$'
 #----------------------------------------------------------------------------------
+file=/srv/http/app/templates/settings.php
+echo $file
+
+commentH -n -1 'for="localSStime">' -n -2 'USB Automount'
+#----------------------------------------------------------------------------------
 file=/etc/nginx/nginx.conf
 if ! grep -q 'ico|svg' $file; then
 	echo $file
