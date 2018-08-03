@@ -96,10 +96,8 @@ function sendCmd(inputcmd) {
 // check WebSocket support
 function checkWebSocket(){
     if (window.WebSocket){
-        // console.log('WebSockets supported');
         return 'websocket';
     } else {
-        // console.log('WebSockets not supported');
         return 'longpolling';
     }
 }
@@ -107,10 +105,8 @@ function checkWebSocket(){
 // check HTML5 Workers support
 function checkWorkers(){
     if ((window.Worker && window.Blob) || (Modernizr.webworkers && Modernizr.blobconstructor)) {
-        // console.log('WebWorkers supported');
         return true;
     } else {
-        // console.log('WebWorkers not supported');
         return false;
     }
 }
@@ -118,7 +114,6 @@ function checkWorkers(){
 // recover the path from input string
 function parsePath(str) {
     var cutpos = str && str.length? str.lastIndexOf('/'):0;
-    // console.log('parsePath.cutpos', cutpos)
     //-- verify this switch! (Orion)
     var songpath = '';
     if (cutpos && cutpos !== -1){
@@ -127,195 +122,15 @@ function parsePath(str) {
     return songpath;
 }
 
-// switch view after a certain time
-var idleTime = 0;
-var viewScreenSaver = 0;
-var widthScreenSaver = 0;
-var isLocalHost = 0;
-var SStime = -1;
 $(document).ready(function () {
 
     // get an UUID for the client
     GUI.clientUUID = generateUUID();
 
-    if ($('#section-index').length) {
-        if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
-            isLocalHost = 1;
-            SStime = localSStime;
-        } else {
-            isLocalHost = 0;
-            SStime = remoteSStime;
-        }
-        if (SStime >= 0) {
-            //Increment the idle time counter every second.
-            var idleInterval = setInterval(timerIncrement, 1000); // 1 second
-        }
-        
-        //Zero the idle timer on mouse movement and keypress.
-        $(this).on( "mousemove click keypress", function (e) {
-            idleTime = 0;
-            if (viewScreenSaver) {
-                $('.tab-content').show("slow");
-                $('.screen-saver-content').hide("slow");
-                $('#menu-bottom').show("slow");
-                $('#menu-top').show("slow");
-                viewScreenSaver = 0;
-            }
-        });
-    }
 });
-
-function timerIncrement() {
-    if ($('#section-index').length && GUI.state === 'play') {
-        // only when in playback section
-        idleTime = idleTime + 1;
-    } else {
-        idleTime = 0;
-    }
-    if (idleTime > SStime) {
-        $('.tab-content').hide("slow");
-        $('.screen-saver-content').show("slow");
-        $('#menu-bottom').hide("slow");
-        $('#menu-top').hide("slow");
-        viewScreenSaver = 1;
-    }
-}
-
-// update countdown
-function refreshTimer(startFrom, stopTo, state) {
-    // console.log('startFrom = ', startFrom);
-    // console.log('state = ', state);
-    var display = $('#countdown-display');
-    display.countdown('destroy');
-    display.countdown({ since: ((state !== 'stop' || state !== undefined)? -(startFrom) : 0), compact: true, format: 'MS' });
-    if (state !== 'play'){
-        // console.log('startFrom = ', startFrom);
-        display.countdown('pause');
-    }
-    var displayss = $('#countdown-display-ss');
-    displayss.countdown('destroy');
-    displayss.countdown({ since: ((state !== 'stop' || state !== undefined)? -(startFrom) : 0), compact: true, format: 'MS' });
-    if (state !== 'play'){
-        // console.log('startFrom = ', startFrom);
-        displayss.countdown('pause');
-    }
-}
-
-// update playback progress knob
-function refreshKnob() {
-    window.clearInterval(GUI.currentKnob);
-    var initTime = parseInt(GUI.json.song_percent)*10;
-    var delta = parseInt(GUI.json.time);
-    var step = parseInt(1000/delta);
-    // console.log('initTime = ' + initTime + ', delta = ' + delta + ', step = ' + step);
-    var time = $('#time');
-    time.val(initTime, false).trigger('update');
-    if (GUI.state === 'play') {
-        GUI.currentKnob = setInterval(function() {
-            // console.log('initTime = ', initTime);
-            initTime = initTime + ((GUI.visibility !== 'visible') ? step : 1);
-            time.val(initTime, false).trigger('update');
-            //document.title = Math.round(initTime)/10 + '% - ' + GUI.visibility;
-        }, delta);
-    }
-}
-
-// time conversion
-function timeConvert(seconds) {
-    var minutes = Math.floor(seconds / 60);
-    seconds -= minutes * 60;
-    var mm = (minutes < 10) ? ('0' + minutes) : minutes;
-    var ss = (seconds < 10) ? ('0' + seconds) : seconds;
-    return mm + ':' + ss;
-}
-function timeConvert2(ss) {
-    var hr = Math.floor(ss/3600);
-    var mm = Math.floor((ss -(hr * 3600))/60);
-    ss = Math.floor(ss -(hr*3600) -(mm * 60));
-    if (hr > 0) {
-        if (hr < 10){
-            hr = '0' + hr;
-        }
-        hr += ':';
-    } else {
-        hr = '';
-    }
-    if (mm < 10) { mm = '0' + mm; }
-    if (ss < 10) { ss = '0' + ss; }
-    return hr + mm + ':' + ss;
-}
-function timeConvert3(ss) {
-    var hr = Math.floor(ss/3600);
-    var mm = Math.floor((ss -(hr * 3600))/60);
-    ss = Math.floor(ss -(hr*3600) -(mm * 60));
-    if (hr > 0) {
-        if (hr < 10){
-            hr = '0' + hr + 'h ';
-        }
-        hr += 'h ';
-    } else {
-        hr = '';
-    }
-    if (mm < 10) { mm = '0' + mm; }
-    if (ss < 10) { ss = '0' + ss; }
-    return hr + mm + 'm ' + ss + 's';
-}
-
-// reset countdown
-function countdownRestart(startFrom) {
-    var display = $('#countdown-display').countdown('destroy');
-    display.countdown({since: -(startFrom), compact: true, format: 'MS'});
-    var displayss = $('#countdown-display-ss').countdown('destroy');
-    displayss.countdown({since: -(startFrom), compact: true, format: 'MS'});
-}
-
-function reset_vol_changed_local() {
-    GUI.vol_changed_local = 0;
-}
-
-// set volume with knob
-function setvol(val) {
-    //$('#volume').val(val, false).trigger('update');
-    GUI.volume = val;
-    $('#volumemute').removeClass('btn-primary');
-    sendCmd('setvol ' + val);
-    if (GUI.vol_changed_local === 0) {
-        setInterval(reset_vol_changed_local, 5000);
-        GUI.vol_changed_local = 1;
-    }
-}
-
-// stepped volume control
-function volumeStepCalc(direction) {
-    var i = 0;
-    var way = direction;
-    GUI.volume = parseInt($('#volume').val());
-    var volumeStep = function volumeStepCycle(way){
-        i++;
-        if (direction === 'up') {
-            GUI.stepVolumeDelta = parseInt(GUI.volume) + i;
-        } else if (direction === 'dn') {
-            GUI.stepVolumeDelta = parseInt(GUI.volume) - i;
-        }
-        // console.log('GUI.stepVolumeDelta = ', GUI.stepVolumeDelta);
-        $('#volume').val(GUI.stepVolumeDelta).trigger('change');
-    };
-    volumeStep();
-    // console.log('GUI.volume = ', GUI.volume);
-    
-    GUI.stepVolumeInt = window.setInterval(function() {
-        volumeStep();
-    }, 200);
-}
-function volumeStepSet() {
-    window.clearInterval(GUI.stepVolumeInt);
-    setvol(GUI.stepVolumeDelta);
-    // console.log('set volume to = ', GUI.stepVolumeDelta);
-}
     
 // custom scrolling
 function customScroll(list, destination, speed) {
-    // console.log('list = ' + list + ', destination = ' + destination + ', speed = ' + speed);
     if (typeof(speed) === 'undefined') {
         speed = 500;
     }
@@ -334,13 +149,6 @@ function customScroll(list, destination, speed) {
         scrolloffset = (scrollcalc > scrolltop ? '+':'-') + '=' + scrolloffset + 'px';
         $('#playlist-entries').find('li').eq(destination).addClass('active');
     }
-    // debug
-    // console.log('-------------------------------------------');
-    // console.log('customScroll parameters = ' + list + ', ' + destination + ', ' + speed);
-    // console.log('scrolltop = ', scrolltop);
-    // console.log('scrollcalc = ', scrollcalc);
-    // console.log('scrolloffset = ', scrolloffset);
-    $.scrollTo( (scrollcalc >0? scrolloffset:0), speed);
 }
 
 // [!] scrolling debug purpose only
@@ -409,7 +217,6 @@ function customNotify(notify) {
 
 // notify messages rendering
 function renderMSG(text) {
-    // console.log(text);
     var notify = text[0];
     if ('custom' in notify && notify.custom !== null) {
         customNotify(notify);
@@ -448,7 +255,6 @@ function renderMSG(text) {
 function sortOrder(id) {
     var pos = $('#' + id).index();
     id = parseInt(id.replace('pl-', ''));
-    // console.log('id = ' + id + ', pos = ', pos);
     sendCmd('moveid ' + id + ' ' + pos);
 }
 
@@ -508,7 +314,6 @@ function chkKey(key) {
 // launch the playing queue refresh (PushStream mode, not implemented yet)
 function getPlaylist(text) {
     data = text[0];
-    // console.log(data);
     if ( data.length > 4) {
         $('.playlist').addClass('hide');
         $('#playlist-entries').removeClass('hide');
@@ -601,8 +406,6 @@ function parseResponse(options) {
         content = '';
         
     // DEBUG
-    // console.log('parseResponse OPTIONS: inputArr = ' + inputArr + ', respType = ' + respType + ', i = ' + i + ', inpath = ' + inpath +', querytype = ' + querytype);
-    // console.log(inputArr);
     
     switch (respType) {
         case 'playlist':
@@ -618,10 +421,6 @@ function parseResponse(options) {
                 }
                 if (inputArr.file !== undefined || inpath === 'Webradio') {
                     // DEBUG
-                    // console.log('inputArr.file: ', inputArr.file);
-                    // console.log('inputArr.Title: ', inputArr.Title);
-                    // console.log('inputArr.Artist: ', inputArr.Artist);
-                    // console.log('inputArr.Album: ', inputArr.Album);
                     content = '<li id="db-' + (i + 1) + '" data-path="';
                     if (inputArr.Title !== undefined) {
                     // files
@@ -826,8 +625,6 @@ function populateDB(options){
         row = [];
         
     // DEBUG
-    // console.log('populateDB OPTIONS: data = ' + data + ', path = ' + path + ', uplevel = ' + uplevel + ', keyword = ' + keyword +', querytype = ' + querytype);
-    console.log(JSON.stringify(data));
 
     if (plugin !== '') {
     // plugins
@@ -886,7 +683,6 @@ function populateDB(options){
             } else {
                 document.getElementById('database-entries').innerHTML = '';
             }
-            // console.log(data);
             
             data.sort(function(a, b){
                 if (querytype === 'childs' || querytype === 'categories') {
@@ -962,7 +758,6 @@ function populateDB(options){
             if (path) {
                 GUI.currentpath = path;
             }
-            // console.log(' new GUI.currentpath = ', GUI.currentpath);
             document.getElementById('database-entries').innerHTML = '';
             if (keyword !== '') {
             // search results
@@ -1006,9 +801,6 @@ function populateDB(options){
             }
             document.getElementById('database-entries').innerHTML = content;
             // DEBUG
-            // console.log('GUI.currentDBpos = ', GUI.currentDBpos);
-            // console.log('level = ', GUI.currentDBpos[10]);
-            // console.log('highlighted entry = ', GUI.currentDBpos[GUI.currentDBpos[10]]);
         }
     }
     var breadcrumb = $('span', '#db-currentpath');
@@ -1064,7 +856,6 @@ function getDB(options){
         args = options.args || '';
         
     // DEBUG
-    // console.log('OPTIONS: cmd = ' + cmd + ', path = ' + path + ', browsemode = ' + browsemode + ', uplevel = ' + uplevel + ', plugin = ' + plugin);
     
     loadingSpinner('db');
     GUI.browsemode = browsemode;
@@ -1164,7 +955,6 @@ function getDB(options){
         // EXAMPLE: cmd === 'update', 'addplay', 'addreplaceplay', 'update'
             loadingSpinner('db', 'hide');
             $.post('/db/?cmd='+cmd, { 'path': path, 'querytype': querytype }, function(path) {
-                // console.log('add= ', path);
             }, 'json');
         }
     }
@@ -1174,12 +964,9 @@ function getDB(options){
 function onreleaseKnob(value) {
     if (GUI.state !== 'stop' && GUI.state !== '') {
         if (GUI.stream !== 'radio') {
-            // console.log('release percent = ', value);
-            // console.log(GUI.state);
             window.clearInterval(GUI.currentKnob);
             var seekto = Math.floor((value * parseInt(GUI.json.time)) / 1000);
             sendCmd('seek ' + GUI.json.song + ' ' + seekto);
-            // console.log('seekto = ', seekto);
             $('#time').val(value);
             $('#countdown-display').countdown('destroy');
             $('#countdown-display-ss').countdown('destroy');
@@ -1233,7 +1020,6 @@ function commandButton(el) {
         //$(this).find('i').toggleClass('fa fa-play').toggleClass('fa fa-pause');
         window.clearInterval(GUI.currentKnob);
         sendCmd(cmd);
-        // console.log('sendCmd(' + cmd + ');');
         return;
         // } else {
             // $(this).addClass('btn-primary');
@@ -1272,7 +1058,6 @@ function commandButton(el) {
                 vol = GUI.volume;
             }
         }
-        // console.log('volume = ', GUI.volume);
         if ((vol >= 0) && (vol <= 100)) {
             sendCmd('setvol ' + vol);
             $('#volume').val(vol, false).trigger('update');
@@ -1289,7 +1074,6 @@ function commandButton(el) {
         cmd = dataCmd;
     }
     sendCmd(cmd);
-    // console.log('sendCmd(' + cmd + ');');
 }
 
 // Library home screen
@@ -1313,7 +1097,6 @@ function libraryHome(text) {
 // list of in range wlans
 function listWLANs(text) {
     var i = 0, content = '', inrange = '', stored = '', wlans = text[0];
-    //console.log(wlans);
     $.each(wlans, function(i) {
         content += '<p><a href="/network/wlan/' + wlans[i].nic + '/' + wlans[i].ESSID + '" class="btn btn-lg btn-default btn-block" title="See network properties">';
         if (wlans[i].connected !== 0) {
@@ -1353,7 +1136,6 @@ function listWLANs(text) {
 // draw the NICs details table
 function nicsDetails(text) {
     var i = 0, content = '', nics = text[0];
-    // console.log(nics);
     $.each(nics, function(i) {
         if (i === $('#nic-details').data('name')) {
             content += '<tr><th>Name:</th><td><strong>' + i + '<strong></td></tr>';
@@ -1388,21 +1170,17 @@ function playbackChannel(){
     });
     pushstream.onmessage = renderUI;
     pushstream.onstatuschange = function(status) {
-        // console.log('[nginx pushtream module] status = ', status);
         if (status === 2) {
             $('#loader').addClass('hide');
             sendCmd('renderui'); // force UI rendering (backend-call)
         } else {
-            // console.log('[nginx pushtream module] status change (' + status + ')');
             if (status === 0) {
-                // console.log('[nginx pushtream module] status disconnected (0)');
                 toggleLoader();
             }
         }
     };
     // pushstream.onerror = function() {
         // toggleLoader();
-        // console.log('[nginx pushtream module] error');
     // };
     pushstream.addChannel('playback');
     pushstream.connect();
@@ -1559,10 +1337,8 @@ function isHidden() {
 function visChange() {
     if (isHidden()) {
         GUI.visibility = 'hidden';
-        // console.log('Visibility: hidden');
     } else {
         GUI.visibility = 'visible';
-        // console.log('Visibility: visible');
     }
 }
 
@@ -1638,17 +1414,7 @@ if ($('#section-index').length) {
         .on('shown.bs.tab', function (e) {
             var current = parseInt(GUI.json.song);
             customScroll('pl', current, 0);
-        });
-
-        // sort Queue entries
-        var sortlist = document.getElementById('playlist-entries');
-        new Sortable(sortlist, {
-            ghostClass: 'sortable-ghost',
-            onUpdate: function (evt){
-                sortOrder(evt.item.getAttribute('id'));
-            }
-        });
-        
+        });        
         
         // LIBRARY
         // ----------------------------------------------------------------------------------------------------
@@ -1771,7 +1537,6 @@ if ($('#section-index').length) {
                     GUI.currentDBpos[GUI.currentDBpos[10]] = entryID;
                     GUI.currentDBpath[GUI.currentDBpos[10]] = path;
                     ++GUI.currentDBpos[10];
-                    // console.log('getDB path = ', path);
                 } else if (el.hasClass('db-webradio-add')) {
                     $('#modal-webradio-add').modal();
                 }
@@ -1783,7 +1548,6 @@ if ($('#section-index').length) {
                 $('li.active', '#database-entries').removeClass('active');
                 el.addClass('active');
                 var path = el.data('path');
-                // console.log('doubleclicked path = ', path);
                 if (el.hasClass('db-spotify')) {
                     path = el.attr('data-plid') + '-' + el.attr('data-path');
                     getDB({
@@ -1806,7 +1570,6 @@ if ($('#section-index').length) {
         
         // open tab from external link
         var url = document.location.toString();
-        // console.log('url = ', url);
         if ( url.match('#') ) {
             $('#menu-bottom a[href="/#' + url.split('#')[1] + '"]').tab('show');
         }
@@ -1924,10 +1687,8 @@ if ($('#section-index').length) {
             // enable/disable CIFS user and password fields
             $('#nas-guest').change(function(){
                 if ($(this).prop('checked')) {
-                    //console.log('checked');
                     $('#mount-auth').addClass('disabled').children('.disabler').removeClass('hide');
                 } else {
-                    //console.log('unchecked');
                     $('#mount-auth').removeClass('disabled').children('.disabler').addClass('hide');
                 }
             });
@@ -2031,7 +1792,6 @@ if ($('#section-index').length) {
                     input.val(label);
                 } else {
                     if (label) {
-                        console.log('Selected file: ', label);
                         if (label.indexOf('backup_') > -1 && label.indexOf('.tar.gz') > -1) {
                             $('#backup-file').html(' <i class="fa fa-check dx green"></i> ' + label + '');
                             $('#btn-backup-upload').prop('disabled', false);
@@ -2152,43 +1912,10 @@ if ($('#section-index').length) {
             });
         }
         
-        
-        // DEBUG
-        // ----------------------------------------------------------------------------------------------------
-        
-        if ($('#section-debug').length) {
-
-            ZeroClipboard.config({swfPath: '/assets/js/vendor/ZeroClipboard.swf'});
-            var client = new ZeroClipboard(document.getElementById('copy-to-clipboard'));
-            client.on('ready', function(readyEvent){
-                // alert('ZeroClipboard SWF is ready!');
-                client.on('aftercopy', function(event){
-                    // alert('Copied text to clipboard: ' + event.data['text/plain']);
-                    new PNotify({
-                        title: 'Copied to clipboard',
-                        text: 'The debug output was copied successfully in your clipboard.',
-                        icon: 'fa fa-check'
-                    });
-                });
-            });
-
-        }
-
         // on screen keyboard
         if (document.location.hostname == "localhost")
             $('.osk-trigger').onScreenKeyboard({
                 'draggable': true
         });
     });
-    
-    
-    // FILE UPLOAD
-    // ----------------------------------------------------------------------------------------------------
-    $(document).on('change', '.btn-file :file', function() {
-        var input = $(this),
-            numFiles = input.get(0).files ? input.get(0).files.length : 1,
-            label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-        input.trigger('fileselect', [numFiles, label]);
-    });
-
 }
