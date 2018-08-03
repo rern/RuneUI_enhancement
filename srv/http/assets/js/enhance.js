@@ -76,10 +76,11 @@ $( '#open-panel-dx' ).click( function() {
 	}
 	menuBottom( 'panel-dx', 'playback', 'panel-sx' );
 	displayCommon();
-	if ( $( '#playlist-entries' ).hasClass( 'hide' ) ) return;
+	if ( !$( '#pl-editor' ).hasClass( 'hide' ) ) return;
 	
 	getPlaylistCmd();
 	window.scrollTo( 0, queuetop );
+	$( '#pl-editor' ).addClass( 'hide' )
 	$( '#pl-count, #pl-manage, #pl-search' ).removeClass( 'hide' );
 } );
 function panelLR( lr ) {
@@ -120,16 +121,17 @@ function setDisplayPlayback() {
 	info( {
 		  title  : 'Playback'
 		, message: 'Select items to show:'
-		, checkboxhtml : '<form id="displaysaveplayback">\
-						<label><input name="bars" type="checkbox" '+ display.bars +'>&ensp;Top-Bottom menu</label>\
-						<br><label><input name="pause" type="checkbox" '+ display.pause +'>\
-							&ensp;<code><i class="fa fa-play"></i></code>&ensp;<code><i class="fa fa-pause"></i></code>&ensp;buttons</label>\
-						<br><label><input name="time" type="checkbox" '+ display.time +'>&ensp;Time</label>\
-						<br><label><input name="radioelapsed" type="checkbox" '+ display.radioelapsed +'>&ensp;Webradio elapsed</label>\
-						<br><label><input name="coverart" type="checkbox" '+ display.coverart +'>&ensp;Coverart</label>\
-						<br><label><input name="volume" type="checkbox" '+ display.volume +'>&ensp;Volume</label>\
-						<br><label><input name="buttons" type="checkbox" '+ display.buttons +'>&ensp;Buttons</label>\
-						</form>'
+		, checkboxhtml : 
+			'<form id="displaysaveplayback">\
+				<label><input name="bars" type="checkbox" '+ display.bars +'>&ensp;Top-Bottom menu</label>\
+				<br><label><input name="pause" type="checkbox" '+ display.pause +'>\
+					&ensp;<code><i class="fa fa-play"></i></code>&ensp;<code><i class="fa fa-pause"></i></code>&ensp;buttons</label>\
+				<br><label><input name="time" type="checkbox" '+ display.time +'>&ensp;Time</label>\
+				<br><label><input name="radioelapsed" type="checkbox" '+ display.radioelapsed +'>&ensp;Webradio elapsed</label>\
+				<br><label><input name="coverart" type="checkbox" '+ display.coverart +'>&ensp;Coverart</label>\
+				<br><label><input name="volume" type="checkbox" '+ display.volume +'>&ensp;Volume</label>\
+				<br><label><input name="buttons" type="checkbox" '+ display.buttons +'>&ensp;Buttons</label>\
+			</form>'
 		, cancel : 1
 		, ok     : function () {
 			// no: serializeArray() omit unchecked fields
@@ -219,19 +221,20 @@ function setDisplayLibrary( e ) {
 	info( {
 		  title  : 'Libary Home'
 		, message: 'Select items to show:'
-		, checkboxhtml : '<form id="displaysavelibrary">\
-						<label><input name="bars" type="checkbox" '+ display.bars +'>&ensp;Top-Bottom menu</label>\
-						<br><label><input name="nas" type="checkbox" '+ display.nas +'>&ensp;Network mounts</label>'
-						+ ( GUI.libraryhome.localStorages ? '<br><label><input name="sd" type="checkbox" '+ display.sd +'>&ensp;Local SD</label>' : '' )
-						+'<br><label><input name="usb" type="checkbox" '+ display.usb +'>&ensp;USB drives</label>\
-						<br><label><input name="webradio" type="checkbox" '+ display.webradio +'>&ensp;Webradios</label>\
-						<br><label><input name="albums" type="checkbox" '+ display.albums +'>&ensp;Albums</label>\
-						<br><label><input name="artists" type="checkbox" '+ display.artists +'>&ensp;Artists</label>\
-						<br><label><input name="composer" type="checkbox" '+ display.composer +'>&ensp;Composers</label>\
-						<br><label><input name="genre" type="checkbox" '+ display.genre +'>&ensp;Genres</label>\
-						<br><label><input name="dirble" type="checkbox" '+ display.dirble +'>&ensp;Dirble</label>\
-						<br><label><input name="jamendo" type="checkbox" '+ display.jamendo +'>&ensp;Jamendo</label>\
-						</form>'
+		, checkboxhtml : 
+			'<form id="displaysavelibrary">\
+				<label><input name="bars" type="checkbox" '+ display.bars +'>&ensp;Top-Bottom menu</label>\
+				<br><label><input name="nas" type="checkbox" '+ display.nas +'>&ensp;Network mounts</label>'
+				+ ( GUI.libraryhome.localStorages ? '<br><label><input name="sd" type="checkbox" '+ display.sd +'>&ensp;Local SD</label>' : '' )
+				+'<br><label><input name="usb" type="checkbox" '+ display.usb +'>&ensp;USB drives</label>\
+				<br><label><input name="webradio" type="checkbox" '+ display.webradio +'>&ensp;Webradios</label>\
+				<br><label><input name="albums" type="checkbox" '+ display.albums +'>&ensp;Albums</label>\
+				<br><label><input name="artists" type="checkbox" '+ display.artists +'>&ensp;Artists</label>\
+				<br><label><input name="composer" type="checkbox" '+ display.composer +'>&ensp;Composers</label>\
+				<br><label><input name="genre" type="checkbox" '+ display.genre +'>&ensp;Genres</label>\
+				<br><label><input name="dirble" type="checkbox" '+ display.dirble +'>&ensp;Dirble</label>\
+				<br><label><input name="jamendo" type="checkbox" '+ display.jamendo +'>&ensp;Jamendo</label>\
+			</form>'
 		, cancel : 1
 		, ok     : function () {
 			$( '#displaysavelibrary input' ).each( function() {
@@ -496,7 +499,7 @@ $( '#database-entries' ).on( 'click', '.db-action', function( e ) {
 	var $this = $( this );
 	var $thisli = $this.parent();
 	dbpath = $thisli.data( 'path' );
-	GUI.DBentry[ 0 ] = dbpath;
+	GUI.DBentry[ 0 ] = dbpath; // used in contextmenu
 	var $target = $( $this.data( 'target' ) );
 	$( '#database-entries li' ).removeClass( 'active' );
 	$( '.contextmenu' ).addClass( 'hide' );
@@ -516,7 +519,7 @@ $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 	var $this = $( this );
 	var $thisli = $this.parent();
 	var plpath = $thisli.data( 'path' );
-	GUI.DBentry[0] = plpath;
+	GUI.DBentry[0] = plpath; // used in contextmenu
 	$( '#pl-editor li' ).removeClass( 'active' );
 	$( '.contextmenu' ).addClass( 'hide' );
 	if ( plpath === plcurrent ) {
@@ -532,6 +535,7 @@ $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 $( '.contextmenu a' ).click( function() {
 	var cmd = $( this ).data( 'cmd' );
 	var path = GUI.DBentry[ 0 ];
+	dbcurrent = '';
 	switch( cmd ) {
 		case 'wradd': getDB( { cmd: 'add', path: path } ); break;
 		case 'wraddplay': getDB( { cmd: 'addplay', path: path } ); break;
@@ -564,50 +568,19 @@ $( '.contextmenu a' ).click( function() {
 $( '#db-webradio-new' ).click( function() {
 	webRadioAdd();
 } );
-function webRadioDelete() {
-	var name = GUI.DBentry[ 0 ];
-	info( {
-		  title      : 'Delete Webradio'
-		, message    : 'Delete <white>'+ name +'</white>?'
-		, cancel     : 1
-		, ok         : function() {
-			$.post( '/db/?cmd=deleteradio', { 'radio[label]' : name +'.pls' }, function() {
-				if ( $( '#database-entries li' ).length ) {
-					getDB( { path: 'Webradio' } );
-				} else {
-					$( '#db-home' ).click();
-				}
-			} );
-		}
-	} );
-}
 $( '#plsave' ).click( function() {
 	playlistSave();
 } );
 $( '#pledit' ).click( function() {
 	playlistRename();
 } );
-function playlistDelete() {
-	var name = GUI.DBentry[ 0 ];
-	info( {
-		  title      : 'Delete Playlist'
-		, message    : 'Delete <white>'+ name +'</white>?'
-		, cancel     : 1
-		, ok         : function() {
-			$.post( '/command/?cmd=rm%20%22' + name + '%22', function() {
-				if ( $( '#pl-editor li' ).length ) {
-					getPlaylists();
-				} else {
-					$( '#pl-home' ).click();
-				}
-			} );
-		}
-	} );
-}
+$( '#playlist-entries' ).on( 'click', 'li', function() {
+	sendCmd( 'deleteid '+ this.id.replace( 'pl-', '' ) );
+} );
 $( '#pl-manage-clear' ).click( function() {
 	info( {
 		  title      : 'Clear Playlist'
-		, message    : 'Clear all in playlist?'
+		, message    : 'Clear this playlist?'
 		, cancel     : 1
 		, ok         : function() {
 			sendCmd( 'clear' );
@@ -667,20 +640,24 @@ function webRadioNewVerify( name, url ) {
 	}
 }
 function webRadioRename( name ) {
-	var oldname = GUI.DBentry[ 0 ];
+	var $liactive = $( '#database-entries li.active' );
+	var oldname = $liactive.find( 'span.sn' ).text();
+	var url = $liactive.find( 'span.bl' ).text();
 	info( {
 		  title      : 'Rename Webradio'
-		, message    : 'Change <white>'+ oldname +'</white> to:'
+		, message    : 'Rename:'
+					+'<br><white>'+ oldname +'</white>'
+					+'<br>'+ url
 		, textlabel  : 'Name'
 		, textvalue  : name ? name : oldname
 		, boxwidth   : 'max'
 		, cancel     : 1
 		, ok         : function() {
-			webRadioRenameVerify( $( '#infoTextBox' ).val() );
+			webRadioRenameVerify( $( '#infoTextBox' ).val(), oldname, url );
 		}
 	} );
 }
-function webRadioRenameVerify( name ) {
+function webRadioRenameVerify( name, oldname, url ) {
 	if ( !name ) {
 		info( {
 			  icon    : 'info-circle'
@@ -709,15 +686,35 @@ function webRadioRenameVerify( name ) {
 			}
 		} );
 	} else {
-		var nameurl = GUI.DBentry[ 0 ].split( ' | ' );
 		$.post( '/db/?cmd=editradio', {
 			  'radio[newlabel]' : name
-			, 'radio[label]'    : nameurl[ 0 ]
-			, 'radio[url]'      : nameurl[ 1 ]
+			, 'radio[label]'    : oldname
+			, 'radio[url]'      : url
 		}, function() {
 			getDB( { path: 'Webradio' } );
 		} );
 	}
+}
+function webRadioDelete() {
+	var $liactive = $( '#database-entries li.active' );
+	var name = $liactive.find( 'span.sn' ).text();
+	var url = $liactive.find( 'span.bl' ).text();
+	info( {
+		  title      : 'Delete Webradio'
+		, message    : 'Delete?'
+					+'<br><white>'+ name +'</white>'
+					+'<br>'+ url
+		, cancel     : 1
+		, ok         : function() {
+			$.post( '/db/?cmd=deleteradio', { 'radio[label]' : name +'.pls' }, function() {
+				if ( $( '#database-entries li' ).length ) {
+					getDB( { path: 'Webradio' } );
+				} else {
+					$( '#db-home' ).click();
+				}
+			} );
+		}
+	} );
 }
 function playlistSave( name ) {
 	info( {
@@ -764,20 +761,21 @@ function playlistSaveVerify( name ) {
 	} );
 }
 function playlistRename( name ) {
-	var oldname = GUI.DBentry[ 0 ];
+	var oldname = $( '#pl-editor li.active' ).text();
 	info( {
 		  title      : 'Rename Playlist'
-		, message    : 'Change <white>'+ oldname +'</white> to:'
+		, message    : 'Rename:'
+					+'<br><white>'+ oldname +'</white>'
 		, textlabel  : 'Name'
 		, textvalue  : name ? name : oldname
 		, boxwidth   : 'max'
 		, cancel     : 1
 		, ok         : function() {
-			playlistRenameVerify( $( '#infoTextBox' ).val() );
+			playlistRenameVerify( $( '#infoTextBox' ).val(), oldname );
 		}
 	} );
 }
-function playlistRenameVerify( name ) {
+function playlistRenameVerify( name, oldname ) {
 	if ( !name ) {
 		info( {
 			  icon    : 'info-circle'
@@ -789,7 +787,6 @@ function playlistRenameVerify( name ) {
 		} );
 		return;
 	}
-	var oldname = GUI.DBentry[ 0 ];
 	if ( $( '#pl-editor li[data-path='+ name +']' ).length ) {
 		info( {
 			  icon    : 'info-circle'
@@ -804,6 +801,24 @@ function playlistRenameVerify( name ) {
 		getPlaylists();
 	}
 }
+function playlistDelete() {
+	var name = $( '#pl-editor li.active' ).text();
+	info( {
+		  title      : 'Delete Playlist'
+		, message    : 'Delete?'
+					+'<br><white>'+ name +'</white>'
+		, cancel     : 1
+		, ok         : function() {
+			$.post( '/command/?cmd=rm%20%22' + name + '%22', function() {
+				if ( $( '#pl-editor li' ).length ) {
+					getPlaylists();
+				} else {
+					$( '#pl-home' ).click();
+				}
+			} );
+		}
+	} );
+}
 // context menus \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 // playlist click go back to home page
 $( '#playlist-entries' ).click( function( e ) {
@@ -812,9 +827,6 @@ $( '#playlist-entries' ).click( function( e ) {
 		$( '#open-playback a' )[ 0 ].click();
 		$( '#menu-top, #menu-bottom' ).toggleClass( 'hide', ( window.innerWidth < 499 || window.innerHeight < 515 ) );
 	}
-} );
-$( '#playlist-entries' ).on( 'click', 'li', function() {
-	sendCmd( 'deleteid '+ this.id.replace( 'pl-', '' ) );
 } );
 $( '#pl-manage-list' ).on( 'click', function() {
 	$( '#pl-search' ).addClass( 'hide' );
@@ -2072,7 +2084,7 @@ function setPlaybackData() {
 			$( '#divartist, #divsong, #divalbum' ).removeClass( 'scroll-left' );
 			$( '#currentsong' ).html( '<i class="fa fa-plus-circle"></i>' );
 			$( '#playlist-position span' ).text( 'Add something from Library' );
-			$( '#currentartist, #currentalbum, #elapsed, #total' ).html( '' );
+			$( '#currentartist, #currentalbum, #format-bitrate, #elapsed, #total' ).html( '' );
 			$( '#cover-art' ).css( {
 				  'background-image': 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
 				, 'border-radius': 0
