@@ -20,6 +20,3 @@
 <script src="<?=$this->asset('/js/addonsmenu.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/roundslider.min.js')?>"></script>
 <script src="<?=$this->asset('/js/enhance.js')?>"></script>
-<?php //0gpio0 ?>
-<script src="<?=$this->asset('/js/gpio.js')?>"></script>
-<?php //1gpio1 ?>
