@@ -125,6 +125,7 @@ EOF
 appendH 'id="loader"'
 
 commentH 'vendor/jquery.plugin.min.js' 'fastclick.min.js'
+commentH 'parsley.min.js'
 commentH 'modernizr'
 
 # 0.4b
