@@ -1801,103 +1801,8 @@ if ($('#section-index').length) {
             }
         });
 
-        // context dropdown menu
-        $('a', '.context-menu').click(function(){
-            var dataCmd = $(this).data('cmd');
-            var dataType = $(this).data('type');
-            var path = GUI.DBentry[0];
-            GUI.DBentry[0] = '';
-            switch (dataCmd) {
-                case 'pl-add':
-                    sendCmd('load "' + path + '"');
-                    break;
-                    
-                case 'pl-replace':
-                    sendCmd('clear');
-                    sendCmd('load "' + path + '"');
-                    break;
-
-                case 'pl-addreplaceplay':
-                    sendCmd('clear');
-                    sendCmd('load "' + path + '"');
-                    sendCmd('play');
-                    break;
-                case 'pl-ashuffle':
-                    $.post('/db/?cmd=pl-ashuffle', { 'playlist' : path });
-                    $('#random').attr('data-cmd', 'pl-ashuffle-stop');
-                    $('#random').attr('title', 'Stop randomly adding songs');
-                    $('#random').addClass('btn-primary');
-                    break;
-
-                case 'wradd':
-                    path = path.split(' | ')[1];
-                    getDB({
-                        cmd: 'add',
-                        path: path
-                    });
-                    break;
-                    
-                case 'wraddplay':
-                    path = path.split(' | ')[1];
-                    getDB({
-                        cmd: 'addplay',
-                        path: path
-                    });
-                    break;
-                    
-                case 'wraddreplaceplay':
-                    path = path.split(' | ')[1];
-                    getDB({
-                        cmd: 'addreplaceplay',
-                        path: path
-                    });
-                    break;
-                default:
-                    getDB({
-                        cmd: dataCmd,
-                        path: path,
-                        browsemode: GUI.browsemode,
-                        querytype: dataType
-                    });
-                    break;
-            }
-        });
-
         // GENERAL
         // ----------------------------------------------------------------------------------------------------
-        
-        // scroll buttons
-        $('#db-firstPage').click(function(){
-            $.scrollTo(0 , 500);
-        });
-        $('#db-prevPage').click(function(){
-            var scrolloffset = '-=' + $(window).height() + 'px';
-            $.scrollTo(scrolloffset , 500);
-        });
-        $('#db-nextPage').click(function(){
-            var scrolloffset = '+=' + $(window).height() + 'px';
-            $.scrollTo(scrolloffset , 500);
-        });
-        $('#db-lastPage').click(function(){
-            $.scrollTo('100%', 500);
-        });
-
-        $('#pl-firstPage').click(function(){
-            $.scrollTo(0 , 500);
-        });
-        $('#pl-prevPage').click(function(){
-            var scrollTop = $(window).scrollTop();
-            var scrolloffset = scrollTop - $(window).height();
-            $.scrollTo(scrolloffset , 500);
-        });
-        $('#pl-nextPage').click(function(){
-            var scrollTop = $(window).scrollTop();
-            var scrolloffset = scrollTop + $(window).height();
-            $.scrollTo(scrolloffset , 500);
-        });
-        $('#pl-lastPage').click(function(){
-            $.scrollTo('100%', 500);
-        });
         
         // open tab from external link
         var url = document.location.toString();
@@ -1918,29 +1823,6 @@ if ($('#section-index').length) {
             }
         });
         
-        // tooltips
-        if ($('.ttip').length) {
-            $('.ttip').tooltip();
-        }
-        
-        // remove the 300ms click delay on mobile browsers
-        FastClick.attach(document.body);
-        
-        // system poweroff
-        $('#syscmd-poweroff').click(function(){
-            $.post('/settings/', { 'syscmd' : 'poweroff' });
-            toggleLoader();
-        });
-        // system reboot
-        $('#syscmd-reboot').click(function(){
-            $.post('/settings/', { 'syscmd' : 'reboot' });
-            toggleLoader();
-        });
-        // system display off
-        $('#syscmd-display_off').click(function(){
-            $.post('/settings/', { 'syscmd' : 'display_off' });
-        });
-
         // social share overlay
         overlayTrigger('#overlay-social');
         // play source overlay
@@ -2012,21 +1894,6 @@ if ($('#section-index').length) {
         $('.btn-cmd').click(function(){
             var el = $(this);
             commandButton(el);
-        });
-        
-        // system poweroff
-        $('#syscmd-poweroff').click(function(){
-            $.post('/settings/', { 'syscmd' : 'poweroff' });
-            toggleLoader();
-        });
-        // system reboot
-        $('#syscmd-reboot').click(function(){
-            $.post('/settings/', { 'syscmd' : 'reboot' });
-            toggleLoader();
-        });
-        // system display off
-        $('#syscmd-display_off').click(function(){
-            $.post('/settings/', { 'syscmd' : 'display_off' });
         });
         
         // COMMON
