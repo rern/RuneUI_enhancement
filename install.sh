@@ -21,6 +21,7 @@ sed -i '/hammer.min.js\|propagating.js/ d' /srv/http/app/templates/footer.php
 
 mv /srv/http/app/coverart_ctl.php{,.backup}
 mv /srv/http/app/templates/footer.php{,.backup}
+mv /srv/http/app/templates/header.php{,.backup}
 mv /srv/http/app/templates/playback.php{,.backup}
 mv /srv/http/assets/js/runeui.js{,.backup}
 mv /srv/http/assets/js/runeui.min.js{,.backup}
@@ -36,49 +37,19 @@ ln -s /usr/share/bootsplash/{start,shutdown}-runeaudio.png
 
 echo -e "$bar Modify files ..."
 #----------------------------------------------------------------------------------
-file=/srv/http/app/templates/header.php
-echo $file
 
-commentH 'RuneAudio - RuneUI'
-
-string=$( cat <<'EOF'
-    <title>RuneUIe</title>
-EOF
-)
-appendH 'RuneAudio - RuneUI'
-
-string=$( cat <<'EOF'
-    <link rel="stylesheet" href="<?=$this->asset('/css/roundslider.min.css')?>">
-    <link rel="stylesheet" href="<?=$this->asset('/css/enhance.css')?>">
-EOF
-)
-appendH 'runeui.css'
-
-commentH 'id="menu-top"' -n -1 'class="playback-controls"'
-
-string=$( cat <<'EOF'
-<div id="settings" class="menu hide">
-	<a class="menushadow"></a>
-	<a class="<?=$this->uri(1, 'sources', 'active')?>" href="/sources/"><i class="fa fa-folder-open-cascade"></i>Sources</a>
-	<a class="<?=$this->uri(1, 'mpd', 'active')?>" href="/mpd/"><i class="fa fa-mpd"></i>MPD</a>
-	<a class="<?=$this->uri(1, 'settings', 'active')?>" href="/settings/"><i class="fa fa-sliders"></i>Settings</a>
-	<a class="<?=$this->uri(1, 'network', 'active')?>" href="/network/"><i class="fa fa-sitemap"></i>Network</a>
-	<a class="<?=$this->uri(1, 'debug', 'active')?>" href="/debug/"><i class="fa fa-bug"></i>Debug</a></a>
-	<a class="<?=$this->uri(1, 'credits', 'active')?>" href="/credits/"><i class="fa fa-rune"></i>Credits</a>
-	<a class="<?=$this->uri(1, 'dev', 'active')?>" href="/dev/"><i class="fa fa-gears"></i>Development</a>
-	<a id="turnoff"><i class="fa fa-power-off"></i>Power</a>
-<?php if ($this->pwd_protection):?>
-	<a href="/logout.php"><i class="fa fa-sign-out"></i>Logout</a>
-<?php endif ?>
-	<a id="addons"><i class="fa"></i>Addons</a>
-</div>
-<div id="menu-top" class="hide">
-    <i id="menu-settings" class="fa fa-gear"></i>
-EOF
-)
-insertH 'class="playback-controls"'
-
+# for installed gpio
 if [[ -e /url/local/bin/uninstall_gpio.sh ]]; then
+	file=/srv/http/app/templates/header.php
+	
+	string=$( cat <<'EOF'
+<?php //0gpio0 ?>
+	<link rel="stylesheet" href="<?=$this->asset('/css/gpio.css')?>">
+<?php //1gpio1 ?>
+EOF
+)
+	appendH 'runeui.css'
+	
 	string=$( cat <<'EOF'
 <?php //0gpio0 ?>
 	<a id="gpio"><i class="fa"></i>GPIO</a>
@@ -86,31 +57,17 @@ if [[ -e /url/local/bin/uninstall_gpio.sh ]]; then
 EOF
 )
 	appendH 'fa-power-off'
+	
+	file=/srv/http/app/templates/footer.php
+	
+	string=$( cat <<'EOF'
+<?php //0gpio0 ?>
+<script src="<?=$this->asset('/js/gpio.js')?>"></script>
+<?php //1gpio1 ?>
+EOF
+)
+	appendH '$'
 fi
-
-string=$( cat <<'EOF'
-        <button id="pause" class="btn btn-default btn-cmd" title="Pause" data-cmd="play"><i class="fa fa-pause"></i></button>
-EOF
-)
-appendH 'id="play"'
-
-commentH 'id="clock-display"' -n +2 'id="open-panel-dx"'
-
-string=$( cat <<'EOF'
-    <a href="http://www.runeaudio.com/forum/raspberry-pi-f7.html" target="_blank" alt="RuneAudio Forum">
-        <img class="logo" src="<?=$this->asset('/img/runelogo.svg')?>">
-    </a>
-</div>
-<div id="menu-bottom" class="hide">
-    <ul>
-        <li id="open-panel-sx"><a><i class="fa fa-folder-open"></i></a></li>
-        <li id="open-playback" class="active"><a><i class="fa fa-play-circle"></i></a></li>
-        <li id="open-panel-dx"><a><i class="fa fa-list-ul"></i></a></li>
-    </ul>
-</div>
-EOF
-)
-insertH 'id="clock-display"'
 #----------------------------------------------------------------------------------
 file=/srv/http/db/index.php
 echo $file
