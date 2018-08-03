@@ -499,7 +499,13 @@ $( '#database-entries' ).on( 'click', '.db-action', function( e ) {
 	var $this = $( this );
 	var $thisli = $this.parent();
 	dbpath = $thisli.data( 'path' );
-	GUI.DBentry[ 0 ] = dbpath; // used in contextmenu
+	GUI.DBentry.path = dbpath; // used in contextmenu
+	if ( !$thisli.find( '.sn' ).length ) {
+		GUI.DBentry.name = $thisli.text() ;
+	} else {
+		GUI.DBentry.name = $thisli.find( '.sn' ).text();
+		GUI.DBentry.url = $thisli.find( '.bl' ).text();
+	}
 	var $target = $( $this.data( 'target' ) );
 	$( '#database-entries li' ).removeClass( 'active' );
 	$( '.contextmenu' ).addClass( 'hide' );
@@ -518,14 +524,14 @@ $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 	e.stopPropagation();
 	var $this = $( this );
 	var $thisli = $this.parent();
-	var plpath = $thisli.data( 'path' );
-	GUI.DBentry[0] = plpath; // used in contextmenu
+	var plname = $thisli.data( 'path' );
+	GUI.DBentry.name = plname; // used in contextmenu
 	$( '#pl-editor li' ).removeClass( 'active' );
 	$( '.contextmenu' ).addClass( 'hide' );
-	if ( plpath === plcurrent ) {
+	if ( plname === plcurrent ) {
 		plcurrent = '';
 	} else {
-		plcurrent = plpath;
+		plcurrent = plname;
 		$thisli.addClass( 'active' );
 		$( '#context-menu-playlist' ).removeClass( 'hide' )
 			.css( { top: $this.position().top +'px', right: '50px' } )
@@ -534,32 +540,29 @@ $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 } );
 $( '.contextmenu a' ).click( function() {
 	var cmd = $( this ).data( 'cmd' );
-	var path = GUI.DBentry[ 0 ];
 	dbcurrent = '';
 	switch( cmd ) {
-		case 'wradd': getDB( { cmd: 'add', path: path } ); break;
-		case 'wraddplay': getDB( { cmd: 'addplay', path: path } ); break;
-		case 'wraddreplaceplay': getDB( { cmd: 'addreplaceplay', path: path }); break;
+		case 'wradd': getDB( { cmd: 'add', path: GUI.DBentry.path } ); break;
+		case 'wraddplay': getDB( { cmd: 'addplay', path: GUI.DBentry.path } ); break;
+		case 'wraddreplaceplay': getDB( { cmd: 'addreplaceplay', path: GUI.DBentry.path }); break;
 		case 'wrrename'  : webRadioRename(); break;
 		case 'wrdelete': webRadioDelete(); break;
-		case 'wrsave':
-			var parameters = path.split( ' | ' );
-			$.post( '/db/?cmd=addradio', { 'radio[label]': parameters[ 0 ], 'radio[url]': parameters[ 1 ] } );
-			break;
-		case 'pladd'  : sendCmd('load "' + path + '"'); break;
-		case 'plreplace': sendCmd('clear'); sendCmd('load "' + path + '"'); break;
-		case 'pladdreplaceplay': sendCmd('clear'); sendCmd('load "' + path + '"'); sendCmd('play'); break;
+		case 'wrsave': $.post( '/db/?cmd=addradio', { 'radio[label]': GUI.DBentry.name, 'radio[url]': GUI.DBentry.url } ); break;
+		
+		case 'pladd'  : sendCmd( 'load "' + GUI.DBentry.name +'"' ); break;
+		case 'plreplace': sendCmd( 'clear' ); sendCmd( 'load "' + GUI.DBentry.name + '"' ); break;
+		case 'pladdreplaceplay': sendCmd( 'clear' ); sendCmd( 'load "' + GUI.DBentry.name + '"' ); sendCmd( 'play' ); break;
 		case 'plrename': playlistRename(); break;
 		case 'pldelete': playlistDelete(); break;
 		case 'plashuffle':
-			$.post( '/db/?cmd=pl-ashuffle', { 'playlist' : path } );
+			$.post( '/db/?cmd=pl-ashuffle', { 'playlist' : GUI.DBentry.name } );
 			$( '#random' ).attr( { 'data-cmd': 'pl-ashuffle-stop', 'title': 'Stop randomly adding songs' } )
 				.addClass( 'btn-primary' );
 			break;
 		default:
 			getDB( {
 				  cmd       : cmd
-				, path      : path
+				, path      : GUI.DBentry.path
 				, browsemode: GUI.browsemode
 			} );
 			break;
@@ -640,20 +643,17 @@ function webRadioNewVerify( name, url ) {
 	}
 }
 function webRadioRename( name ) {
-	var $liactive = $( '#database-entries li.active' );
-	var oldname = $liactive.find( 'span.sn' ).text();
-	var url = $liactive.find( 'span.bl' ).text();
 	info( {
 		  title      : 'Rename Webradio'
 		, message    : 'Rename:'
-					+'<br><white>'+ oldname +'</white>'
+					+'<br><white>'+ GUI.DBentry.name +'</white>'
 					+'<br>'+ url
 		, textlabel  : 'Name'
-		, textvalue  : name ? name : oldname
+		, textvalue  : name ? name : GUI.DBentry.name
 		, boxwidth   : 'max'
 		, cancel     : 1
 		, ok         : function() {
-			webRadioRenameVerify( $( '#infoTextBox' ).val(), oldname, url );
+			webRadioRenameVerify( $( '#infoTextBox' ).val(), GUI.DBentry.name, GUI.DBentry.url );
 		}
 	} );
 }
@@ -696,17 +696,14 @@ function webRadioRenameVerify( name, oldname, url ) {
 	}
 }
 function webRadioDelete() {
-	var $liactive = $( '#database-entries li.active' );
-	var name = $liactive.find( 'span.sn' ).text();
-	var url = $liactive.find( 'span.bl' ).text();
 	info( {
 		  title      : 'Delete Webradio'
 		, message    : 'Delete?'
-					+'<br><white>'+ name +'</white>'
-					+'<br>'+ url
+					+'<br><white>'+ GUI.DBentry.name +'</white>'
+					+'<br>'+ GUI.DBentry.url
 		, cancel     : 1
 		, ok         : function() {
-			$.post( '/db/?cmd=deleteradio', { 'radio[label]' : name +'.pls' }, function() {
+			$.post( '/db/?cmd=deleteradio', { 'radio[label]' : GUI.DBentry.name +'.pls' }, function() {
 				if ( $( '#database-entries li' ).length ) {
 					getDB( { path: 'Webradio' } );
 				} else {
@@ -761,17 +758,16 @@ function playlistSaveVerify( name ) {
 	} );
 }
 function playlistRename( name ) {
-	var oldname = $( '#pl-editor li.active' ).text();
 	info( {
 		  title      : 'Rename Playlist'
 		, message    : 'Rename:'
-					+'<br><white>'+ oldname +'</white>'
+					+'<br><white>'+ GUI.DBentry.name +'</white>'
 		, textlabel  : 'Name'
-		, textvalue  : name ? name : oldname
+		, textvalue  : name ? name : GUI.DBentry.name
 		, boxwidth   : 'max'
 		, cancel     : 1
 		, ok         : function() {
-			playlistRenameVerify( $( '#infoTextBox' ).val(), oldname );
+			playlistRenameVerify( $( '#infoTextBox' ).val(), GUI.DBentry.name );
 		}
 	} );
 }
@@ -802,14 +798,13 @@ function playlistRenameVerify( name, oldname ) {
 	}
 }
 function playlistDelete() {
-	var name = $( '#pl-editor li.active' ).text();
 	info( {
 		  title      : 'Delete Playlist'
 		, message    : 'Delete?'
-					+'<br><white>'+ name +'</white>'
+					+'<br><white>'+ GUI.DBentry.name +'</white>'
 		, cancel     : 1
 		, ok         : function() {
-			$.post( '/command/?cmd=rm%20%22' + name + '%22', function() {
+			$.post( '/command/?cmd=rm%20%22' + GUI.DBentry.name + '%22', function() {
 				if ( $( '#pl-editor li' ).length ) {
 					getPlaylists();
 				} else {
