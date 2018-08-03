@@ -24,7 +24,7 @@ fi
 echo -e "$bar Remove files ..."
 
 rm -v /srv/http/enhance*
-rm -v /srv/http/app/templates/{footer,playback}.php
+rm -v /srv/http/app/templates/{footer,header,playback}.php
 rm -v /srv/http/assets/css/{enhance,midori,roundslider.min}.css
 rm -v /srv/http/assets/fonts/enhance*
 rm -v /srv/http/assets/img/{controls*,runelogo.svg,vu*}
@@ -34,6 +34,7 @@ rm /usr/share/bootsplash/{start,reboot,shutdown}-runeaudio.png
 
 mv /srv/http/app/coverart_ctl.php{.backup,}
 mv /srv/http/app/templates/footer.php{.backup,}
+mv /srv/http/app/templates/header.php{.backup,}
 mv /srv/http/app/templates/playback.php{.backup,}
 mv /srv/http/assets/js/runeui.js{.backup,}
 mv /srv/http/assets/js/runeui.min.js{.backup,}
