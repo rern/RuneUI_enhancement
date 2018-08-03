@@ -20,6 +20,7 @@ sed -i '/hammer.min.js\|propagating.js/ d' /srv/http/app/templates/footer.php
 #1temp1
 
 mv /srv/http/app/coverart_ctl.php{,.backup}
+mv /srv/http/app/templates/footer.php{,.backup}
 mv /srv/http/app/templates/playback.php{,.backup}
 mv /srv/http/assets/js/runeui.js{,.backup}
 mv /srv/http/assets/js/runeui.min.js{,.backup}
@@ -110,41 +111,6 @@ string=$( cat <<'EOF'
 EOF
 )
 insertH 'id="clock-display"'
-#----------------------------------------------------------------------------------
-file=/srv/http/app/templates/footer.php
-echo $file
-
-commentH 'id="poweroff-modal"' 'id="loader"'
-
-string=$( cat <<'EOF'
-<div id="loader"<?php if ($this->section == 'dev') { ?> class="hide"<?php } ?>>
-	<div id="loaderbg"></div><div id="loadercontent"><img src="<?=$this->asset('/img/runelogo.svg')?>"></div>
-</div>
-EOF
-)
-appendH 'id="loader"'
-
-commentH -n -1 'ZeroClipboard.min.js' -n +1 'fastclick.min.js'
-commentH 'parsley.min.js' -n +1 'parsley.min.js'
-commentH 'modernizr'
-
-# 0.4b
-if grep -q 'jquery-ui.js' $file; then
-    commentH 'jquery-ui.js'
-	string=$( cat <<'EOF'
-    <script src="<?=$this->asset('/js/vendor/jquery-ui.min.js')?>"></script>
-EOF
-)
-appendH 'jquery.onScreenKeyboard.js'
-fi
-
-string=$( cat <<'EOF'
-<script src="<?=$this->asset('/js/vendor/modernizr-custom.js')?>"></script>
-<script src="<?=$this->asset('/js/vendor/roundslider.min.js')?>"></script>
-<script src="<?=$this->asset('/js/enhance.js')?>"></script>
-EOF
-)
-appendH -n +1 'addonsmenu.js'
 #----------------------------------------------------------------------------------
 file=/srv/http/db/index.php
 echo $file
