@@ -1,49 +1,3 @@
-<script>
-    var localSStime = parseInt("<?php echo $this->localSStime; ?>");
-    var remoteSStime = parseInt("<?php echo $this->remoteSStime; ?>");
-</script>
-<?php
-if ( $this->remoteSStime != -1 ) {
-?>
-<div class="screen-saver-content" style="display:none;">
-    <!-- PLAYBACK PANEL -->
-    <div id="playback-ss" class="tab-pane active">
-        <div class="container-fluid">
-            <div id="leftpanel-ss" style="float: left; width: 40%; height: 100%">
-                <div id="currentartist-ss" style="font-size: 30px; display: block; box-sizing: border-box; text-align: center; font-family: "Lato,Helvetica Neue,Helvetica,Arial,sans-serif"; line-height: 1.42857; color: rgb(224, 231, 238)"><i class="fa fa-spinner fa-spin"></i></div>
-                <div id="currentsong-ss" style="white-space: nowrap; overflow: hidden; height: 40px; font-size: 40px; display: block; box-sizing: border-box; text-align: center; font-weight: bold; color: rgb(0, 149, 216); line-height: 34px;"><i class="fa fa-spinner fa-spin"></i></div>
-                <div id="currentalbum-ss" style=" font-size: 30px; display: block; box-sizing: border-box; text-align: center; font-family: "Lato,Helvetica Neue,Helvetica,Arial,sans-serif"; line-height: 1.42857; color: rgb(224, 231, 238);"><i class="fa fa-spinner fa-spin"></i></div>
-                <div class="col-sm-4 coverart-ss" style="height: auto; margin: 10px auto 11px; width: 100%;">
-                    <img id="cover-art-ss" style="width: 100%; height: auto; border: 2px solid rgb(52, 73, 94); margin-bottom: 20px; border-radius: 6px; background-size: 100% 100%;" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="transparent-square">
-                    <div id="countdown-display-ss" style="float: left; width: 50%; line-height: 38px; font-size: 38px; font-weight: bold; text-align: center;"><i class="fa fa-spinner fa-spin"></i></div>
-                    <div id="total-ss" style="line-height: 38px; font-size: 28px; font-weight: bold; text-align: center;"><i class="fa fa-spinner fa-spin"></i></div>
-                </div>
-            </div>
-            <div id="rightpanel-ss" style="float: right; width: 60%; height: 100%">
-                <div style="height: 110px">
-                    <div id="playlist-position-ss" style="padding-top: 30px; font-size: 22px; display: block; box-sizing: border-box; text-align: center; font-weight: bold; color: rgb(0, 149, 216); line-height: 34px;"><span></span></div>
-                    <div id="format-bitrate-ss" style="font-size: 22px; display: block; box-sizing: border-box; text-align: center; font-weight: bold; color: rgb(0, 149, 216); line-height: 34px;"><i class="fa fa-spinner fa-spin"></i></div>
-                </div>
-                <div style="height: 100%">
-                    <div class="col-sm-4 coverart" style="height: auto; margin: 10px auto 11px; width: 100%;">
-                        <div id="artist-ss" style="font-size: 30px; display: block; box-sizing: border-box; text-align: left; font-weight: bold; color: rgb(0, 149, 216); line-height: 34px;"><i>Artist:</i></div>
-                        <img id="artist-image-ss" style="margin-right: 20px; margin-left: 10px; float: left; width: 130px; height: auto; border: 2px solid rgb(52, 73, 94); border-radius: 6px; background-size: 100% 100%;" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="transparent-square"></img>
-                        <div id="artist-bio-ss" style="font-size: 20px"><pre class="fa fa-spinner fa-spin"></pre></div>
-                    </div>
-                </div>
-                <div style="height: auto">
-                    <div class="col-sm-4 coverart" style="height: auto; margin: 10px auto 11px; width: 100%;">
-                        <div id="addinfo-ss" style="font-size: 24px; display: block; box-sizing: border-box; text-align: left; font-weight: bold; color: rgb(0, 149, 216); line-height: 34px;"><i>Additional Info:</i></div>
-                        <div id="addinfo-text-ss" style="font-size: 20px; box-sizing: border-box;"><pre class="fa fa-spinner fa-spin"></pre></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<?php
-}
-?>
 <div class="tab-content" id="content">
 	<!-- PLAYBACK PANEL -->
 	<div id="playback" class="tab-pane active">
@@ -187,7 +141,7 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 			<span id="pl-count" class="hide"></span>
 			<form id="pl-search" class="form-inline" method="post" onSubmit="return false;" role="form">
 				<div class="input-group">
-					<input id="pl-filter" class="form-control osk-trigger ttip" type="text" data-placement="bottom" data-toggle="tooltip" data-original-title="Type here to search on the fly">
+					<input id="pl-filter" class="form-control osk-trigger" type="text" data-placement="bottom" data-toggle="tooltip" data-original-title="Type here to search on the fly">
 					<span class="input-group-btn">
 						<button class="btn btn-default" type="button" title="Search"><i class="fa fa-search"></i></button>
 					</span>
