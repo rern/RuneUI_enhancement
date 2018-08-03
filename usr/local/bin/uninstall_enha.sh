@@ -46,6 +46,7 @@ echo -e "$bar Restore modified files ..."
 files="
 /srv/http/app/templates/header.php
 /srv/http/app/templates/footer.php
+/srv/http/app/templates/settings.php
 /srv/http/db/index.php
 /srv/http/app/libs/runeaudio.php
 /srv/http/app/settings_ctl.php
