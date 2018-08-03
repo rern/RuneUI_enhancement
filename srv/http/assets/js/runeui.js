@@ -1,36 +1,3 @@
-/*
- * Copyright (C) 2013 RuneAudio Team
- * http://www.runeaudio.com
- *
- * RuneUI
- * copyright (C) 2013 – Andrea Coiutti (aka ACX) & Simone De Gregori (aka Orion)
- *
- * RuneOS
- * copyright (C) 2013 – Carmelo San Giovanni (aka Um3ggh1U)
- *
- * RuneAudio website and logo
- * copyright (C) 2013 – ACX webdesign (Andrea Coiutti)
- *
- * This Program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3, or (at your option)
- * any later version.
- *
- * This Program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with RuneAudio; see the file COPYING.    If not, see
- * <http://www.gnu.org/licenses/gpl-3.0.txt>.
- *
- *    file: runeui.js
- *    version: 1.3
- *
- */
-
-
 // ====================================================================================================
 // Global GUI Array
 // ====================================================================================================
@@ -102,15 +69,6 @@ function checkWebSocket(){
     }
 }
 
-// check HTML5 Workers support
-function checkWorkers(){
-    if ((window.Worker && window.Blob) || (Modernizr.webworkers && Modernizr.blobconstructor)) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
 // recover the path from input string
 function parsePath(str) {
     var cutpos = str && str.length? str.lastIndexOf('/'):0;
@@ -149,18 +107,6 @@ function customScroll(list, destination, speed) {
         scrolloffset = (scrollcalc > scrolltop ? '+':'-') + '=' + scrolloffset + 'px';
         $('#playlist-entries').find('li').eq(destination).addClass('active');
     }
-}
-
-// [!] scrolling debug purpose only
-function randomScrollPL() {
-    var n = $('.playlist li').size();
-    var random = 1 + Math.floor(Math.random() * n);
-    customScroll('pl', random);
-}
-function randomScrollDB() {
-    var n = $('.database li').size();
-    var random = 1 + Math.floor(Math.random() * n);
-    customScroll('db', random);
 }
 
 // toggle blocking loading layer (spinning arrows)
@@ -251,13 +197,6 @@ function renderMSG(text) {
     }
 }
 
-// sorting commands
-function sortOrder(id) {
-    var pos = $('#' + id).index();
-    id = parseInt(id.replace('pl-', ''));
-    sendCmd('moveid ' + id + ' ' + pos);
-}
-
 // loading spinner display/hide
 function loadingSpinner(section, hide) {
     if (hide === 'hide') {
@@ -305,10 +244,6 @@ function setPlaybackSource() {
     $('#pl-manage').removeClass(function(index, css) {
         return (css.match (/(^|\s)pl-manage-\S+/g) || []).join(' ');
     }).addClass('pl-manage-' + source);
-}
-
-function chkKey(key) {
-    return (key !== undefined && key !== '');
 }
 
 // launch the playing queue refresh (PushStream mode, not implemented yet)
@@ -368,481 +303,6 @@ function getPlaylists(){
         cache: false
     });
 }
-
-// update save playlist dropdown
-function updatePlaylistDropdown(data){
-    var i, line, lines=data.split('\n'), infos=[];
-    var options = '';
-    for (i = 0; (line = lines[i]); i += 1 ) {
-        infos = line.split(': ');
-        if( 'playlist' === infos[0] ) {
-            options += '<option value="'+infos[1]+'" />';
-        }
-    }
-    document.getElementById('pl-list').innerHTML = options;
-    loadingSpinner('pl', 'hide');
-}
-
-// get saved playlists
-function getPlaylistsDropdown(){
-    loadingSpinner('pl');
-    $.ajax({
-        url: '/command/?cmd=listplaylists',
-        success: function(data){
-            updatePlaylistDropdown(data);
-        },
-        cache: false
-    });
-}
-
-// parse the JSON response and return the formatted code
-function parseResponse(options) {
-    // DEFAULTS
-    var inputArr = options.inputArr || '',
-        respType = options.respType || '',
-        i = options.i || 0,
-        inpath = options.inpath || '',
-        querytype = options.querytype || '',
-        content = '';
-        
-    // DEBUG
-    
-    switch (respType) {
-        case 'playlist':
-            // code placeholder
-        break;
-        
-        case 'db':
-        // normal MPD browsing by file
-            if (GUI.browsemode === 'file') {
-            // browse by file
-                if (inpath === '' && inputArr.file !== undefined) {
-                    inpath = parsePath(inputArr.file);
-                }
-                if (inputArr.file !== undefined || inpath === 'Webradio') {
-                    // DEBUG
-                    content = '<li id="db-' + (i + 1) + '" data-path="';
-                    if (inputArr.Title !== undefined) {
-                    // files
-                        content += inputArr.file;
-                        content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i><span class="sn">';
-                        content += inputArr.Title + ' <span>' + timeConvert(inputArr.Time) + '</span></span>';
-                        content += ' <span class="bl">';
-                        content +=  inputArr.Artist;
-                        content += ' - ';
-                        content +=  inputArr.Album;
-                    } else {
-                        if (inpath !== 'Webradio') {
-                        // files with no tags
-                            content += inputArr.file;
-                            content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i><span class="sn">';
-                            content += inputArr.file.replace(inpath + '/', '') + ' <span>' + timeConvert(inputArr.Time) + '</span></span>';
-                            content += '<span class="bl">';
-                            content += ' path: ';
-                            content += inpath;
-                        } else {
-                        // webradio playlists
-                            content += inputArr.playlist;
-                            content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-webradio"></i><i class="fa fa-webradio db-icon db-radio"></i>';
-                            content += '<span class="sn">' + inputArr.playlist.replace(inpath + '/', '').replace('.' + inputArr.fileext , '');
-                            content += '</span><span class="bl">webradio';
-                        }
-                    }
-                    content += '</span></li>';
-                } else if (inputArr.playlist !== undefined) {
-                    if (inputArr.fileext === 'cue') {
-                    // CUE files
-                        content = '<li id="db-' + (i + 1) + '" data-path="';
-                        content += inputArr.playlist;
-                        content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-file"></i><i class="fa fa-file-text db-icon"></i><span class="sn">';
-                        content += inputArr.playlist.replace(inpath + '/', '') + ' <span>[CUE file]</span></span>';
-                        content += '<span class="bl">';
-                        content += ' path: ';
-                        content += inpath;
-                        content += '</span></li>';
-                    }
-                } else {
-                // folders
-                    content = '<li id="db-' + (i + 1) + '" class="db-folder" data-path="';
-                    content += inputArr.directory;
-                    if (inpath !== '') {
-                        content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu"></i><span><i class="fa fa-folder-open"></i>';
-                    } else {
-                        content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-root"></i><i class="fa fa-hdd-o icon-root"></i><span>';
-                    }
-                    content += inputArr.directory.replace(inpath + '/', '');
-                    content += '</span></li>';
-                }
-            } else if (GUI.browsemode === 'album' || GUI.browsemode === 'albumfilter') {
-            // browse by album
-                if (inputArr.file !== undefined) {
-                    content = '<li id="db-' + (i + 1) + '" data-path="';
-                    content += inputArr.file;
-                    content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i><span class="sn">';
-                    content += inputArr.Title + ' <span>' + timeConvert(inputArr.Time) + '</span></span>';
-                    content += ' <span class="bl">';
-                    content +=  inputArr.Artist;
-                    content += ' - ';
-                    content +=  inputArr.Album;
-                    content += '</span></li>';
-                } else if (inputArr.album !== '') {
-                    content = '<li id="db-' + (i + 1) + '" class="db-folder db-album" data-path="';
-                    content += inputArr.album.replace(/\"/g,'&quot;');
-                    content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-album"></i><span><i class="fa fa-dot-circle-o"></i>';
-                    content += inputArr.album;
-                    content += '</span></li>';
-                }
-            } else if (GUI.browsemode === 'artist') {
-            // browse by artist
-                if (inputArr.album !== undefined) {
-                    content = '<li id="db-' + (i + 1) + '" class="db-folder db-album" data-path="';
-                    content += inputArr.album;
-                    content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-album"></i><span><i class="fa fa-dot-circle-o"></i>';
-                    content += (inputArr.album !== '') ? inputArr.album : 'Unknown album';
-                    content += '</span></li>';
-                } else if (inputArr.artist !== '') {
-                    content = '<li id="db-' + (i + 1) + '" class="db-folder db-artist" data-path="';
-                    content += inputArr.artist;
-                    content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-artist"></i><span><i class="fa fa-user"></i>';
-                    content += inputArr.artist;
-                    content += '</span></li>';
-                }
-            } else if (GUI.browsemode === 'composer') {
-            // browse by composer
-                if (inputArr.file !== undefined) {
-                    content = '<li id="db-' + (i + 1) + '" data-path="';
-                    content += inputArr.file;
-                    content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i><span class="sn">';
-                    content += inputArr.Title + ' <span>' + timeConvert(inputArr.Time) + '</span></span>';
-                    content += ' <span class="bl">';
-                    content +=  inputArr.Artist;
-                    content += ' - ';
-                    content +=  inputArr.Album;
-                    content += '</span></li>';
-                } else if (inputArr.composer !== '') {
-                    content = '<li id="db-' + (i + 1) + '" class="db-folder db-composer" data-path="';
-                    content += inputArr.composer;
-                    content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-composer"></i><span><i class="fa fa-user"></i>';
-                    content += inputArr.composer;
-                    content += '</span></li>';
-                }
-            } else if (GUI.browsemode === 'genre') {
-            // browse by genre
-                if (inputArr.artist !== undefined) {
-                    content = '<li id="db-' + (i + 1) + '" class="db-folder db-artist" data-path="';
-                    content += inputArr.artist;
-                    content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-artist"></i><span><i class="fa fa-dot-circle-o"></i>';
-                    content += (inputArr.artist !== '') ? inputArr.artist : 'Unknown artist';
-                    content += '</span></li>';
-                } else if (inputArr.genre !== '') {
-                    content = '<li id="db-' + (i + 1) + '" class="db-folder db-genre" data-path="';
-                    content += inputArr.genre;
-                    content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-genre"></i><span><i class="fa fa-tags"></i>';
-                    content += inputArr.genre;
-                    content += '</span></li>';
-                }
-            }
-        break;
-        
-        case 'Spotify':
-        // Spotify plugin
-            if (querytype === '') {
-            // folders
-                content = '<li id="db-' + (i + 1) + '" class="db-spotify db-folder" data-path="';
-                content += inputArr.index;
-                content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-spotify-pl"></i><span><i class="fa fa-folder-open"></i>';
-                content += (inputArr.name !== '') ? inputArr.name : 'Favorites';
-                content += ' (';
-                content += inputArr.tracks;
-                content += ')</span></li>';
-            } else if (querytype === 'tracks') {
-            // playlists
-                content = '<li id="db-' + (i + 1) + '" class="db-spotify" data-path="';
-                content += inputArr.index;
-                content += '" data-plid="';
-                content += inpath;
-                content += '" data-type="spotify-track"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-spotify"></i><i class="fa fa-spotify db-icon"></i><span class="sn">';
-                content += inputArr.title + ' <span>' + timeConvert(inputArr.duration/1000) + '</span></span>';
-                content += ' <span class="bl">';
-                content +=  inputArr.artist;
-                content += ' - ';
-                content +=  inputArr.album;
-                content += '</span></li>';
-            }
-        break;
-        
-        case 'Dirble':
-        // Dirble plugin
-            if (querytype === '' || querytype === 'childs') {
-            // folders
-                var childClass = (querytype === 'childs') ? ' db-dirble-child' : '';
-                content = '<li id="db-' + (i + 1) + '" class="db-dirble db-folder' + childClass + '" data-path="';
-                content += inputArr.id;
-                content += '"><span><i class="fa fa-folder-open"></i>';
-                content += inputArr.title;
-                content += '</span></li>';
-            } else if (querytype === 'search' || querytype === 'stations' || querytype === 'childs-stations') {
-            // stations
-                if (inputArr.streams.length === 0) {
-                    break; // Filter stations with no streams
-                }
-                content = '<li id="db-' + (i + 1) + '" class="db-dirble db-radio" data-path="';
-                content += inputArr.name + ' | ' + inputArr.streams[0].stream;
-                content += '"><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-dirble"></i><i class="fa fa-webradio db-icon"></i>';
-                content += '<span class="sn">' + inputArr.name + '<span>(' + inputArr.country + ')</span></span>';
-                content += '<span class="bl">';
-                content += inputArr.website ? inputArr.website : '-no website-';
-                content += '</span></li>';
-            }
-        break;
-        
-        case 'Jamendo':
-        // Jamendo plugin
-            // if (querytype === 'radio') {
-                content = '<li id="db-' + (i + 1) + '" class="db-jamendo db-folder" data-path="';
-                content += inputArr.stream;
-                content += '"><img class="jamendo-cover" src="/tun/' + inputArr.image + '" alt=""><i class="fa fa-bars db-action" title="Actions" data-toggle="context" data-target="#context-menu-file"></i>';
-                content += inputArr.dispname + '</div></li>';
-            // }
-        break;
-        
-    }
-    return content;
-} // end parseResponse()
-
-// populate the Library view lists with entries
-function populateDB(options){
-    // DEFAULTS
-    var data = options.data || '',
-        path = options.path || '',
-        uplevel = options.uplevel || 0,
-        keyword = options.keyword || '',
-        plugin = options.plugin || '',
-        querytype = options.querytype || '',
-        args = options.args || '',
-        content = '',
-        i = 0,
-        row = [];
-        
-    // DEBUG
-
-    if (plugin !== '') {
-    // plugins
-        if (plugin === 'Spotify') {
-        // Spotify plugin
-            $('#database-entries').removeClass('hide');
-            $('#db-level-up').removeClass('hide');
-            $('#home-blocks').addClass('hide');
-            if (path) {
-                GUI.currentpath = path;
-            }
-            document.getElementById('database-entries').innerHTML = '';
-            data = (querytype === 'tracks') ? data.tracks : data.playlists;
-
-            data.sort(function(a, b){
-                if (path === 'Spotify' && querytype === '') {
-                    nameA = a.hasOwnProperty('name')?a.name.toLowerCase():'';
-                    nameB = b.hasOwnProperty('name')?b.name.toLowerCase():'';
-                } else if (querytype === 'tracks') {
-                    nameA = a.hasOwnProperty('title')?a.title.toLowerCase():'';
-                    nameB = b.hasOwnProperty('title')?b.title.toLowerCase():'';
-                } else {
-                    return 0;
-                }
-                if (nameA < nameB) //sort string ascending
-                    return -1;
-                if (nameA > nameB)
-                    return 1;
-                return 0; //default return value (no sorting)
-            });
-            for (i = 0; (row = data[i]); i += 1) {
-                content += parseResponse({
-                    inputArr: row,
-                    respType: 'Spotify',
-                    i: i,
-                    querytype: querytype,
-                    inpath: args
-                });
-            }
-            document.getElementById('database-entries').innerHTML = content;
-        }
-        if (plugin === 'Dirble') {
-        // Dirble plugin
-            $('#database-entries').removeClass('hide');
-            $('#db-level-up').removeClass('hide');
-            $('#home-blocks').addClass('hide');
-            if (path) {
-                if (querytype === 'search') {
-                    GUI.currentpath = 'Dirble';
-                } else {
-                    GUI.currentpath = path;
-                }
-            }
-            if (querytype === 'childs-stations') {
-                content = document.getElementById('database-entries').innerHTML;
-            } else {
-                document.getElementById('database-entries').innerHTML = '';
-            }
-            
-            data.sort(function(a, b){
-                if (querytype === 'childs' || querytype === 'categories') {
-                    nameA = a.hasOwnProperty('title')?a.title.toLowerCase():'';
-                    nameB = b.hasOwnProperty('title')?b.title.toLowerCase():'';
-                } else if (querytype === 'childs-stations' || querytype === 'stations') {
-                    nameA = a.hasOwnProperty('name')?a.name.toLowerCase():'';
-                    nameB = b.hasOwnProperty('name')?b.name.toLowerCase():'';
-                } else {
-                    return 0;
-                }
-                if (nameA < nameB) //sort string ascending
-                    return -1;
-                if (nameA > nameB)
-                    return 1;
-                return 0; //default return value (no sorting)
-            });
-
-            for (i = 0; (row = data[i]); i += 1) {
-                content += parseResponse({
-                    inputArr: row,
-                    respType: 'Dirble',
-                    i: i,
-                    querytype: querytype
-                });
-            }
-            document.getElementById('database-entries').innerHTML = content;
-        }
-        if (plugin === 'Jamendo') {
-        // Jamendo plugin
-            $('#database-entries').removeClass('hide');
-            $('#db-level-up').removeClass('hide');
-            $('#home-blocks').addClass('hide');
-            if (path) {
-                GUI.currentpath = path;
-            }
-            document.getElementById('database-entries').innerHTML = '';
-
-            data.sort(function(a, b){
-                if (path === 'Jamendo' && querytype === '') {
-                    nameA = a.hasOwnProperty('dispname')?a.dispname.toLowerCase():'';
-                    nameB = b.hasOwnProperty('dispname')?b.dispname.toLowerCase():'';
-                } else {
-                    return 0;
-                }
-                if (nameA < nameB) //sort string ascending
-                    return -1;
-                if (nameA > nameB)
-                    return 1;
-                return 0; //default return value (no sorting)
-            });
-            for (i = 0; (row = data[i]); i += 1) {
-                content += parseResponse({
-                    inputArr: row,
-                    respType: 'Jamendo',
-                    i: i,
-                    querytype: querytype
-                });
-            }
-            document.getElementById('database-entries').innerHTML = content;
-        }
-    } else {
-    // normal MPD browsing
-        if (path === '' && keyword === '') {
-        // Library home
-            renderLibraryHome();
-            return;
-        } else {
-        // browsing
-            $('#database-entries').removeClass('hide');
-            $('#db-level-up').removeClass('hide');
-            $('#home-blocks').addClass('hide');
-            if (path) {
-                GUI.currentpath = path;
-            }
-            document.getElementById('database-entries').innerHTML = '';
-            if (keyword !== '') {
-            // search results
-                var results = (data.length) ? data.length : '0';
-                var s = (data.length === 1) ? '' : 's';
-                $('#db-level-up').addClass('hide');
-                $('#db-search-results').removeClass('hide').html('<i class="fa fa-times sx"></i><span class="visible-xs-inline">back</span><span class="hidden-xs">' + results + ' result' + s + ' for "<span class="keyword">' + keyword + '</span>"</span>');
-            }
-            data.sort(function(a, b){
-                if (path === 'Artists' || path === 'AlbumArtists'|| path === 'Various Artists') {
-                    nameA = a.hasOwnProperty('artist')?a.artist.toLowerCase():'';
-                    nameB = b.hasOwnProperty('artist')?b.artist.toLowerCase():'';
-                } else if (path === 'Albums') {
-                    nameA = a.hasOwnProperty('album')?a.album.toLowerCase():'';
-                    nameB = b.hasOwnProperty('album')?b.album.toLowerCase():'';
-                } else if (path === 'Webradio') {
-                    nameA = a.hasOwnProperty('playlist')?a.playlist.toLowerCase():'';
-                    nameB = b.hasOwnProperty('playlist')?b.playlist.toLowerCase():'';
-                } else if (path === 'Genres') {
-                    nameA = a.hasOwnProperty('genre')?a.genre.toLowerCase():'';
-                    nameB = b.hasOwnProperty('genre')?b.genre.toLowerCase():'';
-                } else {
-                    return 0;
-                }
-                if (nameA < nameB) //sort string ascending
-                    return -1;
-                if (nameA > nameB)
-                    return 1;
-                return 0; //default return value (no sorting)
-            });
-            if (path === 'Webradio') {
-                content += '<li id="webradio-add" class="db-webradio-add"><i class="fa fa-plus-circle db-icon"></i><span class="sn"><em>add new</em></span><span class="bl">add a webradio to your library</span></li>';
-            }
-            for (i = 0; (row = data[i]); i += 1) {
-                content += parseResponse({
-                    inputArr: row,
-                    respType: 'db',
-                    i: i,
-                    inpath: path
-                });
-            }
-            document.getElementById('database-entries').innerHTML = content;
-            // DEBUG
-        }
-    }
-    var breadcrumb = $('span', '#db-currentpath');
-    if (GUI.browsemode === 'album') {
-        if (path === 'Albums') {
-            breadcrumb.html(path);
-        } else {
-            breadcrumb.html('Albums/' + path);
-        }
-    } else if (GUI.browsemode === 'artist') {
-        if (path === 'Artists') {
-            breadcrumb.html(path);
-        } else {
-            breadcrumb.html('Artists/' + path);
-        }
-    } else if (GUI.browsemode === 'composer') {
-        if (path === 'Composer') {
-            breadcrumb.html(path);
-        } else {
-            breadcrumb.html('Composer/' + path);
-        }
-    } else if (GUI.browsemode === 'genre') {
-        if (path === 'Genres') {
-            breadcrumb.html(path);
-        } else {
-            breadcrumb.html('Genres/' + path);
-        }
-    } else {
-        breadcrumb.html(path);
-    }
-    $('#db-homeSetup').addClass('hide');
-    if (uplevel) {
-        var position = GUI.currentDBpos[GUI.currentDBpos[10]];
-        $('#db-' + position).addClass('active');
-        customScroll('db', position, 0);
-    } else {
-        customScroll('db', 0, 0);
-    }
-    if (querytype != 'childs') {
-        loadingSpinner('db', 'hide');
-    }
-} // end populateDB()
 
 // launch the right AJAX call for Library rendering
 function getDB(options){
@@ -959,122 +419,6 @@ function getDB(options){
         }
     }
 } // end getDB()
-
-// on release knob
-function onreleaseKnob(value) {
-    if (GUI.state !== 'stop' && GUI.state !== '') {
-        if (GUI.stream !== 'radio') {
-            window.clearInterval(GUI.currentKnob);
-            var seekto = Math.floor((value * parseInt(GUI.json.time)) / 1000);
-            sendCmd('seek ' + GUI.json.song + ' ' + seekto);
-            $('#time').val(value);
-            $('#countdown-display').countdown('destroy');
-            $('#countdown-display-ss').countdown('destroy');
-            $('#countdown-display').countdown({since: -seekto, compact: true, format: 'MS'});
-            $('#countdown-display-ss').countdown({since: -seekto, compact: true, format: 'MS'});
-        } else {
-            $('#time').val(0).trigger('change');
-        }
-    }
-}
-
-// playback command buttons
-function commandButton(el) {
-    var dataCmd = el.data('cmd');
-    var cmd;
-    // stop
-    if (dataCmd === 'stop') {
-        el.addClass('btn-primary');
-        $('#play').removeClass('btn-primary');
-        if ($('#section-index').length) {
-            refreshTimer(0, 0, 'stop');
-            window.clearInterval(GUI.currentKnob);
-            $('.playlist').find('li').removeClass('active');
-            $('#total').html('00:00');
-            $('#total-ss').html('00:00');
-        }
-    }
-    // play/pause
-    else if (dataCmd === 'play') {
-        var state = GUI.state;
-        //if (json.currentsong != null) {
-        if (state === 'play') {
-            cmd = 'pause';
-            if ($('#section-index').length) {
-                $('#countdown-display').countdown('pause');
-                $('#countdown-display-ss').countdown('pause');
-            }
-        } else if (state === 'pause') {
-            cmd = 'play';
-            if ($('#section-index').length) {
-                $('#countdown-display').countdown('resume');
-                $('#countdown-display-ss').countdown('resume');
-            }
-        } else if (state === 'stop') {
-            cmd = 'play';
-            if ($('#section-index').length) {
-                $('#countdown-display').countdown({since: 0, compact: true, format: 'MS'});
-                $('#countdown-display-ss').countdown({since: 0, compact: true, format: 'MS'});
-            }
-        }
-        //$(this).find('i').toggleClass('fa fa-play').toggleClass('fa fa-pause');
-        window.clearInterval(GUI.currentKnob);
-        sendCmd(cmd);
-        return;
-        // } else {
-            // $(this).addClass('btn-primary');
-            // $('#stop').removeClass('btn-primary');
-            // $('#time').val(0, false).trigger('update');
-            // $('#countdown-display').countdown({since: 0, compact: true, format: 'MS'});
-        // }
-    }
-    // previous/next
-    else if (dataCmd === 'previous' || dataCmd === 'next') {
-        if ($('#section-index').length) {
-            $('#countdown-display').countdown('pause');
-            $('#countdown-display-ss').countdown('pause');
-            window.clearInterval(GUI.currentKnob);
-        }
-    }
-    // step volume control
-    else if (el.hasClass('btn-volume')) {
-        var vol;
-        var knobvol = parseInt($('#volume').val());
-        if (dataCmd === 'volumedn' && parseInt(GUI.volume) > 0) {
-            vol = parseInt(GUI.volume) - 1;
-            GUI.volume = vol;
-            $('#volumemute').removeClass('btn-primary');
-        } else if (dataCmd === 'volumeup' && parseInt(GUI.volume) < 100) {
-            vol = parseInt(GUI.volume) + 1;
-            GUI.volume = vol;
-            $('#volumemute').removeClass('btn-primary');
-        } else if (dataCmd === 'volumemute') {
-            if (knobvol !== 0 ) {
-                GUI.volume = knobvol;
-                el.addClass('btn-primary');
-                vol = 0;
-            } else {
-                el.removeClass('btn-primary');
-                vol = GUI.volume;
-            }
-        }
-        if ((vol >= 0) && (vol <= 100)) {
-            sendCmd('setvol ' + vol);
-            $('#volume').val(vol, false).trigger('update');
-        }
-        return;
-    }
-
-    // toggle buttons
-    if (el.hasClass('btn-toggle')) {
-        cmd = dataCmd + (el.hasClass('btn-primary')? ' 0':' 1');
-        el.toggleClass('btn-primary');
-    // send command
-    } else {
-        cmd = dataCmd;
-    }
-    sendCmd(cmd);
-}
 
 // Library home screen
 function libraryHome(text) {
@@ -1284,12 +628,6 @@ function overlayTrigger(overlayID) {
                 }
                 overlay.removeClass('closed');
             };
-            // if (support.transitions) {
-                // overlay.addEventListener( transEndEventName, onEndTransitionFn );
-            // }
-            // else {
-                // onEndTransitionFn();
-            // }
         }
         else if (overlay.hasClass('closed')) {
             overlay.addClass('open');
@@ -1310,7 +648,7 @@ function overlayTrigger(overlayID) {
         toggleOverlay();
     });
 }
-
+/*
 // check visibility of the window
 function getHiddenProp(){
     var prefixes = ['webkit','moz','ms','o'];
@@ -1341,7 +679,7 @@ function visChange() {
         GUI.visibility = 'visible';
     }
 }
-
+*/
 
 
 if ($('#section-index').length) {
@@ -1381,11 +719,11 @@ if ($('#section-index').length) {
         notifyChannel();
         
         // use the property name to generate the prefixed event name
-        var visProp = getHiddenProp();
+/*        var visProp = getHiddenProp();
         if (visProp) {
             var evtname = visProp.replace(/[H|h]idden/,'') + 'visibilitychange';
             document.addEventListener(evtname, visChange);
-        }
+        }*/
         // PLAYING QUEUE
         // ----------------------------------------------------------------------------------------------------
 
@@ -1567,25 +905,7 @@ if ($('#section-index').length) {
 
         // GENERAL
         // ----------------------------------------------------------------------------------------------------
-        
-        // open tab from external link
-        var url = document.location.toString();
-        if ( url.match('#') ) {
-            $('#menu-bottom a[href="/#' + url.split('#')[1] + '"]').tab('show');
-        }
-        // do not scroll with HTML5 history API
-        $('#menu-bottom a').on('shown', function(e) {
-            if(history.pushState) {
-                history.pushState(null, null, e.target.hash);
-            } else {
-                window.location.hash = e.target.hash; // Polyfill for old browsers
-            }
-        }).on('click', function() {
-            if ($('#overlay-social').hasClass('open')) {
-                $('.overlay-close').trigger('click');
-            }
-        });
-        
+                
         // social share overlay
         overlayTrigger('#overlay-social');
         // play source overlay
@@ -1623,7 +943,7 @@ if ($('#section-index').length) {
 // OTHER SECTIONS
 // ====================================================================================================
 
-    jQuery(document).ready(function($){ 'use strict';
+    $(document).ready(function($){ 'use strict';
         
         // INITIALIZATION
         // ----------------------------------------------------------------------------------------------------
@@ -1649,15 +969,6 @@ if ($('#section-index').length) {
         // open notify channel
         notifyChannel();
         
-        
-        // BUTTONS
-        // ----------------------------------------------------------------------------------------------------
-        
-        // playback buttons
-        $('.btn-cmd').click(function(){
-            var el = $(this);
-            commandButton(el);
-        });
         
         // COMMON
         // ----------------------------------------------------------------------------------------------------
@@ -1917,5 +1228,14 @@ if ($('#section-index').length) {
             $('.osk-trigger').onScreenKeyboard({
                 'draggable': true
         });
+    });
+    
+    // FILE UPLOAD
+    // ----------------------------------------------------------------------------------------------------
+    $(document).on('change', '.btn-file :file', function() {
+        var input = $(this),
+            numFiles = input.get(0).files ? input.get(0).files.length : 1,
+            label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+        input.trigger('fileselect', [numFiles, label]);
     });
 }
