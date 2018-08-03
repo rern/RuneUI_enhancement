@@ -76,12 +76,14 @@ $( '#open-panel-dx' ).click( function() {
 	}
 	menuBottom( 'panel-dx', 'playback', 'panel-sx' );
 	displayCommon();
-	if ( !$( '#pl-editor' ).hasClass( 'hide' ) ) return;
+//	if ( !$( '#pl-editor' ).hasClass( 'hide' ) ) return;
 	
 	getPlaylistCmd();
 	window.scrollTo( 0, queuetop );
-	$( '#pl-editor' ).addClass( 'hide' )
-	$( '#pl-count, #pl-manage, #pl-search' ).removeClass( 'hide' );
+	$( '#pl-editor, #pl-currentpath' ).addClass( 'hide' );
+	$( '#pl-count, #pl-manage, #pl-search, #playlist-entries' ).removeClass( 'hide' );
+	$( '#playlist-warning' ).toggleClass( 'hide', GUI.json.playlistlength != 0 );
+	if ( !$( '#playlist-entries li' ).length ) getPlaylistCmd();
 } );
 function panelLR( lr ) {
 	var pcurrent = $( '.tab-pane:visible' ).prop( 'id' );
@@ -549,15 +551,14 @@ $( '.contextmenu a' ).click( function() {
 		case 'wrdelete': webRadioDelete(); break;
 		case 'wrsave': $.post( '/db/?cmd=addradio', { 'radio[label]': GUI.DBentry.name, 'radio[url]': GUI.DBentry.url } ); break;
 		
-		case 'pladd'  : sendCmd( 'load "' + GUI.DBentry.name +'"' ); break;
-		case 'plreplace': sendCmd( 'clear' ); sendCmd( 'load "' + GUI.DBentry.name + '"' ); break;
-		case 'pladdreplaceplay': sendCmd( 'clear' ); sendCmd( 'load "' + GUI.DBentry.name + '"' ); sendCmd( 'play' ); break;
+		case 'pladd'  : $.post( 'enhance.php', { mpd: 'load "' + GUI.DBentry.name +'"' } ); break;
+		case 'plreplace': $.post( 'enhance.php', { mpd: 'command_list_begin\nclear\nload "'+ GUI.DBentry.name +'"\ncommand_list_end' } ); break;
+		case 'pladdreplaceplay': $.post( 'enhance.php', { mpd: 'command_list_begin\nclear\nload "'+ GUI.DBentry.name + '"\nplay\ncommand_list_end' } ); break;
 		case 'plrename': playlistRename(); break;
 		case 'pldelete': playlistDelete(); break;
 		case 'plashuffle':
 			$.post( '/db/?cmd=pl-ashuffle', { 'playlist' : GUI.DBentry.name } );
-			$( '#random' ).attr( { 'data-cmd': 'pl-ashuffle-stop', 'title': 'Stop randomly adding songs' } )
-				.addClass( 'btn-primary' );
+			$( '#random' ).attr( 'data-cmd', 'pl-ashuffle-stop' ).addClass( 'btn-primary' );
 			break;
 		default:
 			getDB( {
@@ -849,10 +850,7 @@ $( '#pl-filter' ).on( 'keyup', function() {
 	}
 } );
 $( '#pl-home' ).click( function() {
-	$( '#pl-editor, #pl-currentpath' ).addClass( 'hide' );
-	$( '#pl-count, #pl-manage, #pl-search, #playlist-entries' ).removeClass( 'hide' );
-	$( '#playlist-warning' ).toggleClass( 'hide', GUI.json.playlistlength != 0 );
-	if ( !$( '#playlist-entries li' ).length ) getPlaylistCmd();
+	$( '#open-panel-dx' ).click();
 } );
 $( '#pl-filter-results' ).on( 'click', function() {
 	$( this ).addClass( 'hide' ).html( '' );
