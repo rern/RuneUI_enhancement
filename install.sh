@@ -124,8 +124,7 @@ EOF
 )
 appendH 'id="loader"'
 
-commentH 'vendor/jquery.plugin.min.js' 'bootstrap-contextmenu.min.js'
-commentH 'fastclick.min.js' 'Sortable.min.js'
+commentH 'vendor/jquery.plugin.min.js' 'fastclick.min.js'
 commentH 'modernizr'
 
 # 0.4b
