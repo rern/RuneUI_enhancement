@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="msapplication-tap-highlight" content="no" />
     <link rel="stylesheet" href="<?=$this->asset('/css/runeui.css')?>">
+<?php /*gpio	<link rel="stylesheet" href="<?=$this->asset('/css/gpio.css')?>">gpio*/ ?>
     <link rel="stylesheet" href="<?=$this->asset('/css/roundslider.min.css')?>">
     <link rel="stylesheet" href="<?=$this->asset('/css/enhance.css')?>">
     <link rel="stylesheet" href="<?=$this->asset('/css/addonsinfo.css')?>">
@@ -52,6 +53,7 @@
 	<?php if ($this->pwd_protection):?>
 	<a href="/logout.php"><i class="fa fa-sign-out"></i>Logout</a>
 	<?php endif ?>
+<?php /*gpio	<a id="gpio"><i class="fa"></i>GPIO</a>gpio*/ ?>
 	<a id="addons"><i class="fa"></i>Addons</a>
 </div>
 <div id="menu-top" class="hide">
