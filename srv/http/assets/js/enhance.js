@@ -69,14 +69,18 @@ $( '#open-playback' ).click( function() {
 	menuBottom( 'playback', 'panel-sx', 'panel-dx' );
 	displayPlayback();
 } );
+pleditor = 0;
 $( '#open-panel-dx' ).click( function() {
 	if ( GUI.activePlayer === 'Airplay' || GUI.activePlayer === 'Spotify' ) {
 		$( '#overlay-playsource' ).addClass( 'open' );
 		return;
 	}
+	
+	if ( $( this ).hasClass( 'active' ) ) pleditor = 0;
+	
 	menuBottom( 'panel-dx', 'playback', 'panel-sx' );
 	displayCommon();
-//	if ( !$( '#pl-editor' ).hasClass( 'hide' ) ) return;
+	if ( pleditor ) return;
 	
 	getPlaylistCmd();
 	window.scrollTo( 0, queuetop );
@@ -203,7 +207,7 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 			renderLibraryHome();
 		} );
 	} else if ( $this.data( 'target' ) === '#modal-webradio-add' ) {
-		webRadioAdd();
+		webRadioNew();
 	} else {
 		if ( bookmarkedit ) return;
 		++GUI.currentDBpos[ 10 ];
@@ -215,9 +219,6 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 		});
 	}
 });
-$( '#bookmarkadd' ).click( function() {
-	$.post( '/db/?cmd=bookmark', { path: $( '#database-entries li.active' ).data( 'path' ) } );
-} );
 
 function setDisplayLibrary( e ) {
 	info( {
@@ -489,6 +490,28 @@ $( '#db-level-up' ).on( 'click', function() {
 	GUI.plugin = '';
 });
 
+$( '#db-webradio-new' ).click( function() {
+	webRadioNew();
+} );
+
+$( '#plsave' ).click( function() {
+	playlistSave();
+} );
+$( '#pl-manage-clear' ).click( function() {
+	info( {
+		  title      : 'Clear Playlist'
+		, message    : 'Clear this playlist?'
+		, cancel     : 1
+		, ok         : function() {
+			sendCmd( 'clear' );
+			$( '#playlist-entries' ).empty();
+		}
+	} );
+} );
+$( '#playlist-entries' ).on( 'click', 'li', function() {
+	sendCmd( 'deleteid '+ this.id.replace( 'pl-', '' ) );
+} );
+
 // context menus //////////////////////////////////////////////
 $( '#menu-top, #menu-bottom, #db-home, #pl-home, .menu' ).click( function( e ) {
 	licurrent = '';
@@ -544,11 +567,14 @@ $( '.contextmenu a' ).click( function() {
 	var cmd = $( this ).data( 'cmd' );
 	dbcurrent = '';
 	switch( cmd ) {
+		case 'bookmarkadd': $.post( '/db/?cmd=bookmark', { path: GUI.DBentry.path } ); break;
+		
 		case 'wradd': getDB( { cmd: 'add', path: GUI.DBentry.path } ); break;
 		case 'wraddplay': getDB( { cmd: 'addplay', path: GUI.DBentry.path } ); break;
 		case 'wraddreplaceplay': getDB( { cmd: 'addreplaceplay', path: GUI.DBentry.path }); break;
 		case 'wrrename'  : webRadioRename(); break;
 		case 'wrdelete': webRadioDelete(); break;
+		// in dirble
 		case 'wrsave': $.post( '/db/?cmd=addradio', { 'radio[label]': GUI.DBentry.name, 'radio[url]': GUI.DBentry.url } ); break;
 		
 		case 'pladd'  : $.post( 'enhance.php', { mpd: 'load "' + GUI.DBentry.name +'"' } ); break;
@@ -565,32 +591,10 @@ $( '.contextmenu a' ).click( function() {
 				  cmd       : cmd
 				, path      : GUI.DBentry.path
 				, browsemode: GUI.browsemode
+				, querytype : $( this ).data( 'type' ) ? $( this ).data( 'cmd' ) : '' // soptify only
 			} );
 			break;
 	}
-} );
-$( '#db-webradio-new' ).click( function() {
-	webRadioAdd();
-} );
-$( '#plsave' ).click( function() {
-	playlistSave();
-} );
-$( '#pledit' ).click( function() {
-	playlistRename();
-} );
-$( '#playlist-entries' ).on( 'click', 'li', function() {
-	sendCmd( 'deleteid '+ this.id.replace( 'pl-', '' ) );
-} );
-$( '#pl-manage-clear' ).click( function() {
-	info( {
-		  title      : 'Clear Playlist'
-		, message    : 'Clear this playlist?'
-		, cancel     : 1
-		, ok         : function() {
-			sendCmd( 'clear' );
-			$( '#playlist-entries' ).empty();
-		}
-	} );
 } );
 
 function webRadioNew( name, url ) {
@@ -648,7 +652,7 @@ function webRadioRename( name ) {
 		  title      : 'Rename Webradio'
 		, message    : 'Rename:'
 					+'<br><white>'+ GUI.DBentry.name +'</white>'
-					+'<br>'+ url
+					+'<br>'+ GUI.DBentry.url
 		, textlabel  : 'Name'
 		, textvalue  : name ? name : GUI.DBentry.name
 		, boxwidth   : 'max'
@@ -825,6 +829,7 @@ $( '#playlist-entries' ).click( function( e ) {
 	}
 } );
 $( '#pl-manage-list' ).on( 'click', function() {
+	pleditor = 1;
 	$( '#pl-search' ).addClass( 'hide' );
 	$( '#pl-currentpath' ).removeClass( 'hide' );
 	getPlaylists();
@@ -856,6 +861,7 @@ $( '#pl-filter-results' ).on( 'click', function() {
 	$( this ).addClass( 'hide' ).html( '' );
 	$( '#pl-manage, #pl-count, #playlist-entries li' ).removeClass( 'hide' );
 	$( '#pl-filter' ).val( '' );
+	$( '#playlist-entries li' ).show();
 	customScroll( 'pl', parseInt( GUI.json.song ), 500 );
 });
 
@@ -1341,6 +1347,9 @@ function setPlaybackSource() {
 	$('#pl-manage').removeClass(function(index, css) {
 		return (css.match (/(^|\s)pl-manage-\S+/g) || []).join(' ');
 	}).addClass('pl-manage-' + source);
+}
+function chkKey( key ) {
+	return ( key !== undefined && key !== '' );
 }
 function renderLibraryHome() {
 	$( '#database-entries' ).empty();
