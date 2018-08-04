@@ -39,7 +39,7 @@ echo -e "$bar Modify files ..."
 #----------------------------------------------------------------------------------
 
 # for installed gpio
-if [[ -e /url/local/bin/uninstall_gpio.sh ]]; then
+if [[ -e /usr/local/bin/uninstall_gpio.sh ]]; then
 	file=/srv/http/app/templates/header.php
 	
 	string=$( cat <<'EOF'
