@@ -40,33 +40,7 @@ echo -e "$bar Modify files ..."
 
 # for installed gpio
 if [[ -e /usr/local/bin/uninstall_gpio.sh ]]; then
-	file=/srv/http/app/templates/header.php
-	
-	string=$( cat <<'EOF'
-<?php //0gpio0 ?>
-	<link rel="stylesheet" href="<?=$this->asset('/css/gpio.css')?>">
-<?php //1gpio1 ?>
-EOF
-)
-	appendH 'runeui.css'
-	
-	string=$( cat <<'EOF'
-<?php //0gpio0 ?>
-	<a id="gpio"><i class="fa"></i>GPIO</a>
-<?php //1gpio1 ?>
-EOF
-)
-	appendH 'fa-power-off'
-	
-	file=/srv/http/app/templates/footer.php
-	
-	string=$( cat <<'EOF'
-<?php //0gpio0 ?>
-<script src="<?=$this->asset('/js/gpio.js')?>"></script>
-<?php //1gpio1 ?>
-EOF
-)
-	appendH '$'
+	restorefile /srv/http/app/templates/header.php srv/http/app/templates/footer.php
 fi
 #----------------------------------------------------------------------------------
 file=/srv/http/db/index.php
