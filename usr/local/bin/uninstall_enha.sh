@@ -45,6 +45,7 @@ mv /usr/share/bootsplash/shutdown-runeaudio.png{.backup,}
 
 # restore modified files #######################################
 echo -e "$bar Restore modified files ..."
+
 files="
 /srv/http/app/templates/header.php
 /srv/http/app/templates/footer.php
