@@ -7,12 +7,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="msapplication-tap-highlight" content="no" />
     <link rel="stylesheet" href="<?=$this->asset('/css/runeui.css')?>">
+	<link rel="stylesheet" href="<?=$this->asset('/css/addonsinfo.css')?>">
 <?php /*gpio	<link rel="stylesheet" href="<?=$this->asset('/css/gpio.css')?>">gpio*/ ?>
     <link rel="stylesheet" href="<?=$this->asset('/css/roundslider.min.css')?>">
     <link rel="stylesheet" href="<?=$this->asset('/css/enhance.css')?>">
-    <link rel="stylesheet" href="<?=$this->asset('/css/addonsinfo.css')?>">
     <?php if (is_localhost()): ?>
-        <link rel="stylesheet" href="<?=$this->asset('/css/onScreenKeyboard.css')?>">
+    <link rel="stylesheet" href="<?=$this->asset('/css/onScreenKeyboard.css')?>">
     <?php endif ?>
     <link rel="shortcut icon" href="<?=$this->asset('/img/favicon.ico')?>">
     <link rel="apple-touch-icon" sizes="57x57" href="<?=$this->asset('/img/apple-touch-icon-57x57.png')?>">
