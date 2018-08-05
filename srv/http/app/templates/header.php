@@ -8,10 +8,10 @@
 	<meta name="msapplication-tap-highlight" content="no" />
 	<link rel="stylesheet" href="<?=$this->asset('/css/runeui.css')?>">
 	<link rel="stylesheet" href="<?=$this->asset('/css/addonsinfo.css')?>">
-	<link rel="stylesheet" href="<?=$this->asset('/css/gpio.css')?>">
+<?php /*gpio	<link rel="stylesheet" href="<?=$this->asset('/css/gpio.css')?>">gpio*/ ?>
 	<link rel="stylesheet" href="<?=$this->asset('/css/roundslider.min.css')?>">
 	<link rel="stylesheet" href="<?=$this->asset('/css/enhance.css')?>">
-<?=( is_localhost() ? '<link rel="stylesheet" href="'.$this->asset('/css/onScreenKeyboard.css').'">' : '' ) ?>
+<?=( is_localhost() ? '	<link rel="stylesheet" href="'.$this->asset('/css/onScreenKeyboard.css').'">' : '' ) ?>
 	<link rel="shortcut icon" href="<?=$this->asset('/img/favicon.ico')?>">
 	<link rel="apple-touch-icon" sizes="57x57" href="<?=$this->asset('/img/apple-touch-icon-57x57.png')?>">
 	<link rel="apple-touch-icon" sizes="114x114" href="<?=$this->asset('/img/apple-touch-icon-114x114.png')?>">
@@ -44,7 +44,7 @@
 	<a class="<?=$this->uri(1, 'credits', 'active')?>" href="/credits/"><i class="fa fa-rune"></i>Credits</a>
 	<a class="<?=$this->uri(1, 'dev', 'active')?>" href="/dev/"><i class="fa fa-gears"></i>Development</a>
 	<a id="turnoff"><i class="fa fa-power-off"></i>Power</a>
-	<a id="gpio"><i class="fa"></i>GPIO</a>
+<?php/*gpio	<a id="gpio"><i class="fa"></i>GPIO</a>gpio*/ ?>
 <?=( $this->pwd_protection ? '<a href="/logout.php"><i class="fa fa-sign-out"></i>Logout</a>' : '' ) ?>
 <a id="addons"><i class="fa"></i>Addons</a>
 </div>
