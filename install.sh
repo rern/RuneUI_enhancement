@@ -40,7 +40,9 @@ echo -e "$bar Modify files ..."
 
 # for installed gpio
 if [[ -e /usr/local/bin/uninstall_gpio.sh ]]; then
+	alias=gpio
 	restorefile /srv/http/app/templates/header.php srv/http/app/templates/footer.php
+	alias=enha
 fi
 #----------------------------------------------------------------------------------
 file=/srv/http/db/index.php
