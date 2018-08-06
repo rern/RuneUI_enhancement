@@ -11,13 +11,13 @@
 <?php if ( $_SERVER['REQUEST_URI'] === '/addons' ): ?>
     <link rel="stylesheet" href="<?=$this->asset('/css/addons.css')?>">
 <?php endif ?>
-<?php /*gpio
-<?php if ( $_SERVER['REQUEST_URI'] === '/gpiosettings' ): ?>
-	<link rel="stylesheet" href="<?=$this->asset('/css/gpio.css')?>">
-<?php endif ?>
-gpio*/ ?>
+<?php if ( $_SERVER['REQUEST_URI'] !== '/gpiosettings' ): ?>
 	<link rel="stylesheet" href="<?=$this->asset('/css/roundslider.min.css')?>">
 	<link rel="stylesheet" href="<?=$this->asset('/css/enhance.css')?>">
+<?php /*gpio	<link rel="stylesheet" href="<?=$this->asset('/css/gpio.css')?>">gpio*/ ?>
+<?php else: ?>
+	<link rel="stylesheet" href="<?=$this->asset('/css/gpiosettings.css')?>">
+<?php endif ?>
 <?=( is_localhost() ? '	<link rel="stylesheet" href="'.$this->asset('/css/onScreenKeyboard.css').'">' : '' ) ?>
 	<link rel="shortcut icon" href="<?=$this->asset('/img/favicon.ico')?>">
 	<link rel="apple-touch-icon" sizes="57x57" href="<?=$this->asset('/img/apple-touch-icon-57x57.png')?>">
