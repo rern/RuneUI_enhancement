@@ -18,6 +18,9 @@
 
 <script src="<?=$this->asset('/js/addonsinfo.js')?>"></script>
 <script src="<?=$this->asset('/js/addonsmenu.js')?>"></script>
+<?php if ( $_SERVER['REQUEST_URI'] === '/addons' ): ?>
+<script src="<?=$this->asset('/js/addons.js')?>"></script>
+<?php endif ?>
 <script src="<?=$this->asset('/js/vendor/roundslider.min.js')?>"></script>
 <script src="<?=$this->asset('/js/enhance.js')?>"></script>
 <?php /*gpio<script src="<?=$this->asset('/js/gpio.js')?>"></script>gpio*/ ?>
