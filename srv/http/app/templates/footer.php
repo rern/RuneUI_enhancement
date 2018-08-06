@@ -23,4 +23,8 @@
 <?php endif ?>
 <script src="<?=$this->asset('/js/vendor/roundslider.min.js')?>"></script>
 <script src="<?=$this->asset('/js/enhance.js')?>"></script>
-<?php /*gpio<script src="<?=$this->asset('/js/gpio.js')?>"></script>gpio*/ ?>
+<?php /*gpio
+<?php if ( $_SERVER['REQUEST_URI'] === '/gpiosettings' ): ?>
+<script src="<?=$this->asset('/js/gpio.js')?>"></script>
+<?php endif ?>
+gpio*/ ?>
