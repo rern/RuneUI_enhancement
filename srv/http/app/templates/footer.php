@@ -10,21 +10,25 @@
 <?php endif ?>
 <script src="<?=$this->asset('/js/vendor/pushstream.min.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/bootstrap.min.js')?>"></script>
-<script src="<?=$this->asset('/js/vendor/bootstrap-select.min.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/pnotify.custom.min.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/openwebapp.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/modernizr-custom.js')?>"></script>
+<?php if ( $_SERVER['REQUEST_URI'] !== '/gpiosettings' ): ?>
 <script src="<?=$this->asset('/js/runeui'.( $this->dev === '0' ? '.min' : '' ).'.js')?>"></script>
-
+<?php endif ?>
 <script src="<?=$this->asset('/js/addonsinfo.js')?>"></script>
 <script src="<?=$this->asset('/js/addonsmenu.js')?>"></script>
 <?php if ( $_SERVER['REQUEST_URI'] === '/addons' ): ?>
 <script src="<?=$this->asset('/js/addons.js')?>"></script>
 <?php endif ?>
+<?php if ( $_SERVER['REQUEST_URI'] !== '/gpiosettings' ): ?>
+<script src="<?=$this->asset('/js/vendor/bootstrap-select.min.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/roundslider.min.js')?>"></script>
 <script src="<?=$this->asset('/js/enhance.js')?>"></script>
 <?php /*gpio
-<?php if ( $_SERVER['REQUEST_URI'] === '/gpiosettings' ): ?>
 <script src="<?=$this->asset('/js/gpio.js')?>"></script>
-<?php endif ?>
 gpio*/ ?>
+<?php else: ?>
+<script src="assets/js/vendor/bootstrap-select-1.12.1.min.js"></script>
+<script src="assets/js/gpiosettings.js"></script>
+<?php endif ?>
