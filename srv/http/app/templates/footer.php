@@ -25,9 +25,7 @@
 <script src="<?=$this->asset('/js/vendor/bootstrap-select.min.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/roundslider.min.js')?>"></script>
 <script src="<?=$this->asset('/js/enhance.js')?>"></script>
-<?php /*gpio
-<script src="<?=$this->asset('/js/gpio.js')?>"></script>
-gpio*/ ?>
+<?php /*gpio<script src="<?=$this->asset('/js/gpio.js')?>"></script>gpio*/ ?>
 <?php else: ?>
 <script src="assets/js/vendor/bootstrap-select-1.12.1.min.js"></script>
 <script src="assets/js/gpiosettings.js"></script>
