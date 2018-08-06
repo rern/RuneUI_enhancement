@@ -1186,8 +1186,9 @@ function displayAirPlay() {
 	$( '#currentsong' ).html( GUI.json.currentsong );
 	$( '#currentalbum' ).html( GUI.json.currentalbum );
 	$( '#elapsed, #total' ).html( '&nbsp;' );
+	var time = new Date().getTime();
 	$( '#cover-art' ).css( {
-		  'background-image': 'url("/srv/http/assets/img/airplay-cover.jpg")'
+		  'background-image': 'url("assets/img/airplay-cover.jpg?v='+ time +'")'
 		, 'border-radius': 0
 	} );
 	scrollText();
@@ -2119,8 +2120,8 @@ function setPlaybackData() {
 			var radiobg = $( '#cover-art' ).css( 'background-image' );
 			var radioimg = display.radioimg ? display.radioimg : 'vu.gif';
 			var radioimgstop = display.radioimgstop ? display.radioimgstop : 'vustop.gif';
-			var radiourl = 'url("assets/img/'+ radioimg +'")';
-			var radiourlstop = 'url("assets/img/'+ radioimgstop +'")';
+			var radiourl = 'url("/srv/http/assets/img/'+ radioimg +'")';
+			var radiourlstop = 'url("/srv/http/assets/img/'+ radioimgstop +'")';
 			var radiobgvu = ( radioimg === 'vu.gif' || radioimgstop === 'vustop.gif' ) ? true : false;
 			
 			$( '#cover-art' ).css( 'border-radius', radiobgvu ? '18px' : 0 );
