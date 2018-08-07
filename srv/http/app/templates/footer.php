@@ -29,7 +29,7 @@
 <script src="<?=$this->asset('/js/vendor/parsley.min.js')?>"></script>
 <?php endif ?>
 
-<script src="<?=$this->asset('/js/runeui'.( $this->dev === '0' ? '' : '' ).'.js')?>"></script>
+<script src="<?=$this->asset('/js/runeui'.( $this->dev === '0' ? '.min' : '' ).'.js')?>"></script>
 <script src="<?=$this->asset('/js/enhance.js')?>"></script>
 <script src="<?=$this->asset('/js/addonsmenu.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/roundslider.min.js')?>"></script>
