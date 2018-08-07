@@ -11,6 +11,7 @@
 
 	<link rel="stylesheet" href="<?=$this->asset('/css/runeui.css')?>">
 
+<?php if ( empty( $this->uri(1) ) || $this->uri(1) === 'addons' || $this->uri(1) === 'gpiosettings'): ?>
 <style>
 	@font-face {
 		font-family: addons;
@@ -27,7 +28,7 @@
 		font-style: normal;
 	}
 </style>
-
+<?php endif ?>
 <?php if ( empty( $this->uri(1) ) ): ?>
 	<link rel="stylesheet" href="<?=$this->asset('/css/addonsinfo.css')?>">
 	<link rel="stylesheet" href="<?=$this->asset('/css/enhance.css')?>">
