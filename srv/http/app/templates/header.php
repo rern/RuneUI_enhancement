@@ -14,16 +14,16 @@
 <?php if ( empty( $this->uri(1) ) ): ?>
 	<style>
 		@font-face {
-			font-family: enhance;
-			src: url( '<?=$this->asset('/fonts/enhance.woff') ?>' ) format( 'woff' ),
-				url( '<?=$this->asset('/fonts/enhance.ttf') ?>' ) format( 'truetype' );
+			font-family: addons;
+			src: url( '<?=$this->asset('/fonts/addons.woff') ?>' ) format( 'woff' ),
+				url( '<?=$this->asset('/fonts/addons.ttf') ?>' ) format( 'truetype' );
 			font-weight: normal;
 			font-style: normal;
 		}
 		@font-face {
-			font-family: addons;
-			src: url( '<?=$this->asset('/fonts/addons.woff') ?>' ) format( 'woff' ),
-				url( '<?=$this->asset('/fonts/addons.ttf') ?>' ) format( 'truetype' );
+			font-family: enhance;
+			src: url( '<?=$this->asset('/fonts/enhance.woff') ?>' ) format( 'woff' ),
+				url( '<?=$this->asset('/fonts/enhance.ttf') ?>' ) format( 'truetype' );
 			font-weight: normal;
 			font-style: normal;
 		}
