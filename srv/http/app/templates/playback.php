@@ -29,7 +29,7 @@
 						<i id="iplayer" class="fa hide"></i>
 						<i id="igpio" class="fa fa-gpio hide"></i>
 					</div>
-					<img id="controls-time" class="controls hide" src="/srv/http/assets/img/controls-time.svg">
+					<img id="controls-time" class="controls hide" src="<?=$this->asset('/img/controls-time.svg')?>">
 					<span id="elapsed" class="controls1"></span>
 					<span id="total" class="controls1"></span>
 					<div id="timeTL" class="timemap"></div>
@@ -52,7 +52,7 @@
 				<div id="coverart">
 					<img id="cover-art" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
 					<div id="coverartoverlay"></div>
-					<img id="controls-cover" class="controls hide" src="/srv/http/assets/img/controls.svg">
+					<img id="controls-cover" class="controls hide" src="<?=$this->asset('/img/controls.svg')?>">
 					<div id="coverTL" class="covermap t0 w50 h50 m-115"></div>
 					<div id="coverT" class="covermap t0 w130 h50 m-65"></div>
 					<div id="coverTR" class="covermap t0 w50 h50 m65"></div>
@@ -76,7 +76,7 @@
 					<div id="volM" class="volmap"></div>
 					<div id="volR" class="volmap"></div>
 					<div id="volB" class="volmap"></div>
-					<img id="controls-vol" class="controls hide" src="/srv/http/assets/img/controls-vol.svg">
+					<img id="controls-vol" class="controls hide" src="<?=$this->asset('/img/controls-vol.svg')?>">
 				</div>
 				<div id="vol-group">
 					<div class="btn-group">
