@@ -39,6 +39,7 @@
 <script src="<?=$this->asset('/js/vendor/parsley.min.js')?>"></script>
 <?=( $this->uri(1) === 'debug' ? '<script src="'.$this->asset('/js/vendor/ZeroClipboard.min.js').'"></script>' : '' ) ?>
 <script>
+// no top-bottom bars - use close icon
 	$( 'div.container' )
 		.css( 'padding-top', '0' )
 		.find( 'h1' ).before( '<a href="/" style="	float: right; margin-top: 20px;"><i class="fa fa-times fa-2x"></i></a>' );
