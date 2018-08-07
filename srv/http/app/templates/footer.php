@@ -38,6 +38,11 @@
 <script src="<?=$this->asset('/js/vendor/bootstrap-select.min.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/parsley.min.js')?>"></script>
 <?=( $this->uri(1) === 'debug' ? '<script src="'.$this->asset('/js/vendor/ZeroClipboard.min.js').'"></script>' : '' ) ?>
+<script>
+	$( 'div.container' )
+		.css( 'padding-top', '0' )
+		.find( 'h1' ).before( '<a href="/" style="	float: right; margin-top: 20px;"><i class="fa fa-times fa-2x"></i></a>' );
+</script>
 <?php endif ?>
 
 <?php /*gpio<script src="<?=$this->asset('/js/gpio.js')?>"></script>gpio*/ ?>

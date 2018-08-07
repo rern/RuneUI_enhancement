@@ -6,15 +6,28 @@
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="msapplication-tap-highlight" content="no" />
+	
+<?=( is_localhost() ? '	<link rel="stylesheet" href="'.$this->asset('/css/onScreenKeyboard.css').'">' : '' ) ?>
+
 	<link rel="stylesheet" href="<?=$this->asset('/css/runeui.css')?>">
+
+<?php if ( empty( $this->uri(1) ) ): ?>
 	<link rel="stylesheet" href="<?=$this->asset('/css/addonsinfo.css')?>">
 	<link rel="stylesheet" href="<?=$this->asset('/css/enhance.css')?>">
 	<link rel="stylesheet" href="<?=$this->asset('/css/roundslider.min.css')?>">
 <?php /*gpio	<link rel="stylesheet" href="<?=$this->asset('/css/gpio.css')?>">gpio*/ ?>
-<?=( $this->uri(1) === 'addons' ? '<link rel="stylesheet" href="'.$this->asset('/css/addons.css').'">' : '' ) ?>
-<?=( $this->uri(1) === 'gpiosettings' ? '<link rel="stylesheet" href="'.$this->asset('/css/gpiosettings.css').'">' : '' ) ?>
-<?=( is_localhost() ? '	<link rel="stylesheet" href="'.$this->asset('/css/onScreenKeyboard.css').'">' : '' ) ?>
+	
+<?php elseif ( $this->uri(1) === 'addons' ): ?>
+	<link rel="stylesheet" href="<?=$this->asset('/css/addonsinfo.css')?>">
+	<link rel="stylesheet" href="<?=$this->asset('/css/addons.css')?>">
+	
+<?php elseif ( $this->uri(1) === 'gpiosettings' ): ?>
+	<link rel="stylesheet" href="<?=$this->asset('/css/addonsinfo.css')?>">
+	<link rel="stylesheet" href="<?=$this->asset('/css/gpiosettings.css')?>">
+<?php endif ?>
+
 	<link rel="shortcut icon" href="<?=$this->asset('/img/favicon.ico')?>">
+<?php if ( empty( $this->uri(1) ) ): ?>
 	<link rel="apple-touch-icon" sizes="57x57" href="<?=$this->asset('/img/apple-touch-icon-57x57.png')?>">
 	<link rel="apple-touch-icon" sizes="114x114" href="<?=$this->asset('/img/apple-touch-icon-114x114.png')?>">
 	<link rel="apple-touch-icon" sizes="72x72" href="<?=$this->asset('/img/apple-touch-icon-72x72.png')?>">
@@ -34,9 +47,11 @@
 	<meta name="msapplication-TileImage" content="/img/mstile-144x144.png">
 	<meta name="msapplication-config" content="/img/browserconfig.xml">
 	<meta name="application-name" content="RuneAudio">
+<?php endif ?>
 </head>
-<body id="section-<?=( empty( $this->uri(1) ) || $this->uri(1) === 'playback' ? index : $this->section )?>">
-<?php if ( $this->uri(1) !== 'addons' && $this->uri(1) !== 'gpiosettings' ): ?>
+<body id="section-<?=( empty( $this->uri(1) ) || $this->uri(1) === 'playback' ? 'index' : $this->section )?>">
+
+<?php if ( empty( $this->uri(1) ) ): ?>
 <div id="settings" class="menu hide">
 	<a class="menushadow"></a>
 	<a class="<?=$this->uri(1, 'sources', 'active')?>" href="/sources/"><i class="fa fa-folder-open-cascade"></i>Sources</a>
