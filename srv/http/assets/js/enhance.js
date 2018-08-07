@@ -1,37 +1,11 @@
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+// fix: midori renders box-shadow incorrectly
+if ( /Midori/.test( navigator.userAgent ) ) $( 'head link[rel="stylesheet"]').last().after( '<link rel="stylesheet" href="/css/midori.css">' )
+
 $( '#menu-settings' ).click( function() {
 	$( '#settings' ).toggleClass( 'hide' ).css( 'top', $( '#menu-top' ).is( ':hidden' ) ? 0 : '40px' );
 } );
-// ##### prevent loading js in setting pages #####
-if ( /\/.*\//.test( location.pathname ) === true ) {
-	var command = { display: [ 'hGetAll', 'display' ] };
-	$.post( '/enhance.php', { redis: JSON.stringify( command ) }, function( data ) {
-		var display = JSON.parse( data ).display;
-	
-		if ( window.innerWidth < 540 || window.innerHeight < 515 || !display.bars ) {
-			$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
-			$( 'div.container' )
-				.css( 'padding-top', '0' )
-				.find( 'h1' ).before( '<a href="/" class="close-root"><i class="fa fa-times fa-2x"></i></a>' );
-		} else {
-			$( '#menu-top, #menu-bottom' ).removeClass( 'hide' );
-			$( '.playback-controls button, #menu-bottom li' ).click( function() {
-				location.href = '/';
-			} );
-			$( '#menu-bottom li' )
-				.removeClass( 'active' )
-				.click( function() {
-					var command = { backtarget: [ 'set', 'backtarget', this.id ] };
-					$.post( '/enhance.php', { redis: JSON.stringify( command ) } );
-				} );
-		}
-	} );
-	return;
-}
-
-// fix: midori renders box-shadow incorrectly
-if ( /Midori/.test( navigator.userAgent ) ) $( 'head link[rel="stylesheet"]').last().after( '<link rel="stylesheet" href="/css/midori.css">' )
 
 function menuBottom( elshow, elhide1, elhide2 ) {	
 	$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
@@ -1141,24 +1115,15 @@ var command = {
 	, actplayerinfo: [ 'get', 'act_player_info' ]
 	, volumempd : [ 'get', 'volume' ]
 	, update    : [ 'hGet', 'addons', 'update' ]
-	, backtarget: [ 'get', 'backtarget' ]
-	, del       : [ 'del', 'backtarget' ]
 };
 $.post( '/enhance.php', { redis: JSON.stringify( command ) }, function( data ) {
 	redis = JSON.parse( data );
 	display = redis.display;
 	radioelapsed = display.radioelapsed;
-	backtarget = redis.backtarget;
 	GUI.activePlayer = redis.activeplayer;
 	if ( GUI.activePlayer === 'Airplay' ) {
 		GUI.json = JSON.parse( redis.actplayerinfo );
 		displayAirPlay();
-	}
-	// back from setting pages
-	if ( /\/.*\//.test( document.referrer ) == true && backtarget && backtarget !== 'open-playback' ) {
-		setTimeout( function() {
-			$( '#'+ backtarget ).click();
-		}, 500 );
 	}
 } );
 
