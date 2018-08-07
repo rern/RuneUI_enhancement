@@ -16,15 +16,7 @@
 <?php endif ?>
 <?=( $this->section == 'debug' ? '<script src="'.$this->asset('/js/vendor/ZeroClipboard.min.js').'"></script>' : '' ) ?>
 
-<?php if ( $this->section === 'index'): ?>
-<script src="<?=$this->asset('/js/vendor/jquery.plugin.min.js')?>"></script>
-<script src="<?=$this->asset('/js/vendor/jquery.countdown.min.js')?>"></script>
-<script src="<?=$this->asset('/js/vendor/jquery.knob.min.js')?>"></script>
-<script src="<?=$this->asset('/js/vendor/bootstrap-contextmenu.min.js')?>"></script>
-<script src="<?=$this->asset('/js/vendor/jquery.scrollTo.min.js')?>"></script>
-<script src="<?=$this->asset('/js/vendor/Sortable.min.js')?>"></script>
-<script src="<?=$this->asset('/js/vendor/fastclick.min.js')?>"></script>
-<?php else: ?>
+<?php if ( !empty( $this->uri(1) ) && $this->uri(1) !== 'gpiosettings' ): ?>
 <script src="<?=$this->asset('/js/vendor/bootstrap-select.min.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/parsley.min.js')?>"></script>
 <?php endif ?>
