@@ -8,11 +8,9 @@
 	<meta name="msapplication-tap-highlight" content="no" />
 	<link rel="stylesheet" href="<?=$this->asset('/css/runeui.css')?>">
 	<link rel="stylesheet" href="<?=$this->asset('/css/addonsinfo.css')?>">
-<?php if ( empty( $this->uri(1) ) ): ?>
-	<link rel="stylesheet" href="<?=$this->asset('/css/roundslider.min.css')?>">
 	<link rel="stylesheet" href="<?=$this->asset('/css/enhance.css')?>">
+	<link rel="stylesheet" href="<?=$this->asset('/css/roundslider.min.css')?>">
 <?php /*gpio	<link rel="stylesheet" href="<?=$this->asset('/css/gpio.css')?>">gpio*/ ?>
-<?php endif ?>
 <?=( $this->uri(1) === 'addons' ? '<link rel="stylesheet" href="'.$this->asset('/css/addons.css').'">' : '' ) ?>
 <?=( $this->uri(1) === 'gpiosettings' ? '<link rel="stylesheet" href="'.$this->asset('/css/gpiosettings.css').'">' : '' ) ?>
 <?=( is_localhost() ? '	<link rel="stylesheet" href="'.$this->asset('/css/onScreenKeyboard.css').'">' : '' ) ?>
