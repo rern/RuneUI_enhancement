@@ -1,6 +1,5 @@
 <div id="loader" class="hide">
-	<div id="loaderbg"></div>
-	<div id="loadercontent"><img src="<?=$this->asset('/img/runelogo.svg')?>"></div>
+	<img src="<?=$this->asset('/img/runelogo.svg')?>">
 </div>
 <script src="<?=$this->asset('/js/vendor/jquery-2.1.0.min.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/jquery.mobile.custom.min.js')?>"></script>
