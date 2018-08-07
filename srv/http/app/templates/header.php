@@ -8,16 +8,13 @@
 	<meta name="msapplication-tap-highlight" content="no" />
 	<link rel="stylesheet" href="<?=$this->asset('/css/runeui.css')?>">
 	<link rel="stylesheet" href="<?=$this->asset('/css/addonsinfo.css')?>">
-<?php if ( $_SERVER['REQUEST_URI'] === '/addons' ): ?>
-    <link rel="stylesheet" href="<?=$this->asset('/css/addons.css')?>">
-<?php endif ?>
-<?php if ( $_SERVER['REQUEST_URI'] !== '/gpiosettings' ): ?>
+<?php if ( empty( $this->uri(1) ) ): ?>
 	<link rel="stylesheet" href="<?=$this->asset('/css/roundslider.min.css')?>">
 	<link rel="stylesheet" href="<?=$this->asset('/css/enhance.css')?>">
 <?php /*gpio	<link rel="stylesheet" href="<?=$this->asset('/css/gpio.css')?>">gpio*/ ?>
-<?php else: ?>
-	<link rel="stylesheet" href="<?=$this->asset('/css/gpiosettings.css')?>">
 <?php endif ?>
+<?=( $this->uri(1) === 'addons' ? '<link rel="stylesheet" href="'.$this->asset('/css/addons.css').'">' : '' ) ?>
+<?=( $this->uri(1) === 'gpiosettings' ? '<link rel="stylesheet" href="'.$this->asset('/css/gpiosettings.css').'">' : '' ) ?>
 <?=( is_localhost() ? '	<link rel="stylesheet" href="'.$this->asset('/css/onScreenKeyboard.css').'">' : '' ) ?>
 	<link rel="shortcut icon" href="<?=$this->asset('/img/favicon.ico')?>">
 	<link rel="apple-touch-icon" sizes="57x57" href="<?=$this->asset('/img/apple-touch-icon-57x57.png')?>">
@@ -40,7 +37,8 @@
 	<meta name="msapplication-config" content="/img/browserconfig.xml">
 	<meta name="application-name" content="RuneAudio">
 </head>
-<?=( empty($this->uri(1)) || $this->uri(1) == 'playback' ? '<body id="section-index">' : '<body id="section-'.$this->section.'">' ) ?>
+<body id="section-<?=( empty( $this->uri(1) ) || $this->uri(1) === 'playback' ? index : $this->section )?>">
+<?php if ( $this->uri(1) !== 'addons' && $this->uri(1) !== 'gpiosettings' ): ?>
 <div id="settings" class="menu hide">
 	<a class="menushadow"></a>
 	<a class="<?=$this->uri(1, 'sources', 'active')?>" href="/sources/"><i class="fa fa-folder-open-cascade"></i>Sources</a>
@@ -51,13 +49,13 @@
 	<a class="<?=$this->uri(1, 'credits', 'active')?>" href="/credits/"><i class="fa fa-rune"></i>Credits</a>
 	<a class="<?=$this->uri(1, 'dev', 'active')?>" href="/dev/"><i class="fa fa-gears"></i>Development</a>
 	<a id="turnoff"><i class="fa fa-power-off"></i>Power</a>
-<?php/*gpio	<a id="gpio"><i class="fa"></i>GPIO</a>gpio*/ ?>
+<?php /*gpio	<a id="gpio"><i class="fa"></i>GPIO</a>gpio*/ ?>
 <?=( $this->pwd_protection ? '<a href="/logout.php"><i class="fa fa-sign-out"></i>Logout</a>' : '' ) ?>
-<a id="addons"><i class="fa"></i>Addons</a>
+	<a id="addons"><i class="fa"></i>Addons</a>
 </div>
 <div id="menu-top" class="hide">
 <i id="menu-settings" class="fa fa-gear"></i>
-<div class="playback-controls">    
+<div class="playback-controls">
 	<button id="previous" class="btn btn-default btn-cmd" title="Previous" data-cmd="previous"><i class="fa fa-step-backward"></i></button>
 	<button id="stop" class="btn btn-default btn-cmd" title="Stop" data-cmd="stop"><i class="fa fa-stop"></i></button>
 	<button id="play" class="btn btn-default btn-cmd" title="Play/Pause" data-cmd="play"><i class="fa fa-play"></i></button>
@@ -75,3 +73,4 @@
 		<li id="open-panel-dx"><a><i class="fa fa-list-ul"></i></a></li>
 	</ul>
 </div>
+<?php endif ?>
