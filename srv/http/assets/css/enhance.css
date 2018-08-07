@@ -726,8 +726,8 @@
 	left: 30% !important;
 	width: 40%;
 	height: 50px;
-	font-family: Lato;
-	font-size: 38px;
+	font-family: Lato !important;
+	font-size: 38px !important;
 	font-weight: 300;
 	line-height: 50px;
 	color: #e0e7ee;
