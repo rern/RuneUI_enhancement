@@ -136,11 +136,13 @@
 .blink {
 	animation: blinkopaque 1.5s linear infinite;
 }
+#loader {
+	background: rgba(0, 0, 0, 0.8);
+}
 #loader img {
+	margin-top: calc( 50vh - 38px );
+	width: 250px;
 	animation: blinkopaque 1.5s linear infinite;
-	width: 300px;
-	height: 75px;
-	margin-left: -100px;
 }
 .tab-content>.tab-pane {
     display: block;
