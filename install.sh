@@ -126,21 +126,6 @@ echo $file
 
 commentH -n -1 'for="localSStime">' -n -2 'USB Automount'
 #----------------------------------------------------------------------------------
-file=/etc/nginx/nginx.conf
-if ! grep -q 'ico|svg' $file; then
-	echo $file
-	commentS 'gif\|ico'
-	string=$( cat <<'EOF'
-        location ~* (.+)\.(?:\d+)\.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
-EOF
-)
-	appendS 'gif\|ico'
-	
-	svg=0
-else
-	svg=1
-fi
-#----------------------------------------------------------------------------------
 if [[ $1 != u ]]; then # keep range: 0.5 - 3.0
 	z=$1;
 	zoom=$( echo "0.5 $z 3" \
@@ -209,7 +194,5 @@ else
 	clearcache
 fi
 
-title -nt "$info Please" $( tcolor 'clear browser cache' ).
-[[ $1 != u ]] && title -nt "First time install:"  $( tcolor 'reboot as well' ).
-
-[[ $svg == 0 ]] && restartnginx
+title -nt "$info Any issues, try $( tcolor 'clear browser cache' )."
+[[ $1 != u ]] && title -nt "First time install:"  $( tcolor 'Reboot' ).
