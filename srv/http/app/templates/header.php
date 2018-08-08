@@ -30,9 +30,8 @@ if ( empty( $this->uri(1) ) || $this->uri(1) === 'addons' ) {
 ?>
 <?php if ( empty( $this->uri(1) ) ): ?>
 	<link rel="stylesheet" href="<?=$this->asset('/css/addonsinfo.css')?>">
-	<link rel="stylesheet" href="<?=$this->asset('/css/enhance.css')?>">
 	<link rel="stylesheet" href="<?=$this->asset('/css/roundslider.min.css')?>">
-	<link rel="stylesheet" href="<?=$this->asset('/css/gpio.css')?>">
+	<link rel="stylesheet" href="<?=$this->asset('/css/enhance.css')?>">
 	
 <?php elseif ( $this->uri(1) === 'addons' ): ?>
 	<link rel="stylesheet" href="<?=$this->asset('/css/addonsinfo.css')?>">
