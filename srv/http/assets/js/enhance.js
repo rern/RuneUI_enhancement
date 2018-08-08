@@ -627,7 +627,7 @@ function webRadioRename( name ) {
 		, message    : 'Rename:'
 					+'<br><white>'+ GUI.DBentry.name +'</white>'
 					+'<br>'+ GUI.DBentry.url
-		, textlabel  : 'Name'
+		, textlabel  : 'To'
 		, textvalue  : name ? name : GUI.DBentry.name
 		, boxwidth   : 'max'
 		, cancel     : 1
@@ -741,7 +741,7 @@ function playlistRename( name ) {
 		  title      : 'Rename Playlist'
 		, message    : 'Rename:'
 					+'<br><white>'+ GUI.DBentry.name +'</white>'
-		, textlabel  : 'Name'
+		, textlabel  : 'To'
 		, textvalue  : name ? name : GUI.DBentry.name
 		, boxwidth   : 'max'
 		, cancel     : 1
