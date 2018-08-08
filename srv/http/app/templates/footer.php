@@ -30,7 +30,7 @@
 <script src="<?=$this->asset('/js/addonsmenu.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/roundslider.min.js')?>"></script>
 <script src="<?=$this->asset('/js/enhance.js')?>"></script>
-<script src="<?=$this->asset('/js/gpio.js')?>"></script>
+<?php /*gpio<script src="<?=$this->asset('/js/gpio.js')?>"></script>gpio*/ ?>
 
 <?php elseif ( $this->uri(1) === 'addons' ): ?>
 <script src="<?=$this->asset('/js/vendor/jquery.mobile.custom.min.js')?>"></script>
