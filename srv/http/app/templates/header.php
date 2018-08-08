@@ -11,24 +11,23 @@
 
 	<link rel="stylesheet" href="<?=$this->asset('/css/runeui.css')?>">
 
-<?php if ( empty( $this->uri(1) ) || $this->uri(1) === 'addons' || $this->uri(1) === 'gpiosettings'): ?>
-<style>
+<?php
+function fontface( $name, $woff, $ttf ) {
+	return '
 	@font-face {
-		font-family: addons;
-		src: url( '<?=$this->asset('/fonts/addons.woff') ?>' ) format( 'woff' ),
-			url( '<?=$this->asset('/fonts/addons.ttf') ?>' ) format( 'truetype' );
+		font-family: '.$name.';
+		src        : url( "'.$woff.'" ) format( "woff" ), url( "'.$ttf.'" ) format( "truetype" );
 		font-weight: normal;
-		font-style: normal;
-	}
-	@font-face {
-		font-family: enhance;
-		src: url( '<?=$this->asset('/fonts/enhance.woff') ?>' ) format( 'woff' ),
-			url( '<?=$this->asset('/fonts/enhance.ttf') ?>' ) format( 'truetype' );
-		font-weight: normal;
-		font-style: normal;
-	}
-</style>
-<?php endif ?>
+		font-style : normal;
+	}';
+}
+if ( empty( $this->uri(1) ) || $this->uri(1) === 'addons' || $this->uri(1) === 'gpiosettings') {
+	$font = '';
+	foreach ( array( 'addons', 'enhance' ) as $name )
+		$font.= fontface( $name, $this->asset('/fonts/'.$name.'.woff'), $this->asset('/fonts/'.$name.'.ttf') );
+	echo '<style>'.$font.'</style>';
+}
+?>
 <?php if ( empty( $this->uri(1) ) ): ?>
 	<link rel="stylesheet" href="<?=$this->asset('/css/addonsinfo.css')?>">
 	<link rel="stylesheet" href="<?=$this->asset('/css/enhance.css')?>">
