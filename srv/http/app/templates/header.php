@@ -28,9 +28,6 @@ if ( empty( $this->uri(1) )
 	foreach ( array( 'addons', 'enhance' ) as $name )
 		$font.= fontface( $name, $this->asset('/fonts/'.$name.'.woff'), $this->asset('/fonts/'.$name.'.ttf') );
 	echo '<style>'.$font.'</style>';
-} else if ( $this->uri(1) === 'addonsbash' ) {
-	$name = 'addons';
-	echo '<style>'.fontface( $name, $this->asset('/fonts/'.$name.'.woff'), $this->asset('/fonts/'.$name.'.ttf') ).'</style>';
 }
 ?>
 <?php if ( empty( $this->uri(1) ) ): ?>
@@ -39,9 +36,9 @@ if ( empty( $this->uri(1) )
 	<link rel="stylesheet" href="<?=$this->asset('/css/roundslider.min.css')?>">
 	<link rel="stylesheet" href="<?=$this->asset('/css/gpio.css')?>">
 	
-<?php elseif ( $this->uri(1) === 'addons' || $this->uri(1) === 'addonsbash' ): ?>
-	<link rel="stylesheet" href="<?=$this->asset('/css/addonsinfo.css')?>">
-	<link rel="stylesheet" href="<?=$this->asset('/css/addons.css')?>">
+<?php elseif ( $this->uri(1) === 'addons' ): ?>
+	<link id="addonsinfocss" rel="stylesheet" href="<?=$this->asset('/css/addonsinfo.css')?>">
+	<link id="addonscss" rel="stylesheet" href="<?=$this->asset('/css/addons.css')?>">
 	
 <?php elseif ( $this->uri(1) === 'gpiosettings' ): ?>
 	<link rel="stylesheet" href="<?=$this->asset('/css/addonsinfo.css')?>">

@@ -25,15 +25,12 @@
 
 <?php elseif ( $this->uri(1) === 'addons' ): ?>
 <script src="<?=$this->asset('/js/vendor/jquery.mobile.custom.min.js')?>"></script>
-<script src="<?=$this->asset('/js/addonsinfo.js')?>"></script>
+<script id="addonsinfojs" src="<?=$this->asset('/js/addonsinfo.js')?>"></script>
 <script src="<?=$this->asset('/js/addons.js')?>"></script>
 <script>
 // restore after update changed to spinning gear
 	$( '#loader' ).html( '<img src="<?=$this->asset('/img/runelogo.svg')?>">' );
 </script>
-
-<?php elseif ( $this->uri(1) === 'addonsbash' ): ?>
-<script src="<?=$this->asset('/js/addonsinfo.js')?>"></script>
 
 <?php elseif ( $this->uri(1) === 'gpiosettings' ): ?>
 <script src="<?=$this->asset('/js/vendor/bootstrap.min.js')?>"></script>
