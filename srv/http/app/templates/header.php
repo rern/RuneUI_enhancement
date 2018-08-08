@@ -23,12 +23,14 @@ function fontface( $name, $woff, $ttf ) {
 }
 if ( empty( $this->uri(1) )
 	|| $this->uri(1) === 'addons'
-	|| $this->uri(1) === 'addonsbash'
 	|| $this->uri(1) === 'gpiosettings') {
 	$font = '';
 	foreach ( array( 'addons', 'enhance' ) as $name )
 		$font.= fontface( $name, $this->asset('/fonts/'.$name.'.woff'), $this->asset('/fonts/'.$name.'.ttf') );
 	echo '<style>'.$font.'</style>';
+} else if ( $this->uri(1) === 'addonsbash' ) {
+	$name = 'addons';
+	echo '<style>'.fontface( $name, $this->asset('/fonts/'.$name.'.woff'), $this->asset('/fonts/'.$name.'.ttf') ).'</style>';
 }
 ?>
 <?php if ( empty( $this->uri(1) ) ): ?>
