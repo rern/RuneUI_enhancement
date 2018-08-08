@@ -2,6 +2,15 @@
 	<img src="<?=$this->asset('/img/runelogo.svg')?>">
 </div>
 
+<!-- pass cache busting assets to addons and gpiosettings -->
+<input id="addonswoff" type="hidden" value="<?=$this->asset('/fonts/addons.woff')?>">
+<input id="addonsttf" type="hidden" value="<?=$this->asset('/fonts/addons.ttf')?>">
+<input id="addonsinfocss" type="hidden" value="<?=$this->asset('/css/addonsinfo.css')?>">
+<input id="addonscss" type="hidden" value="<?=$this->asset('/css/addons.css')?>">
+<input id="addonsinfojs" type="hidden" value="<?=$this->asset('/js/addonsinfo.js')?>">
+<input id="gpiosettingscss" type="hidden" value="<?=$this->asset('/css/gpiosettings.css')?>">
+<input id="gpiosettingsjs" type="hidden" value="<?=$this->asset('/js/gpiosettings.js')?>">
+
 <script src="<?=$this->asset('/js/vendor/jquery-2.1.0.min.js')?>"></script>
 
 <?php if ( is_localhost() ): ?>
@@ -25,18 +34,12 @@
 
 <?php elseif ( $this->uri(1) === 'addons' ): ?>
 <script src="<?=$this->asset('/js/vendor/jquery.mobile.custom.min.js')?>"></script>
-<script id="addonsinfojs" src="<?=$this->asset('/js/addonsinfo.js')?>"></script>
+<script src="<?=$this->asset('/js/addonsinfo.js')?>"></script>
 <script src="<?=$this->asset('/js/addons.js')?>"></script>
 <script>
 // restore after update changed to spinning gear
 	$( '#loader' ).html( '<img src="<?=$this->asset('/img/runelogo.svg')?>">' );
 </script>
-
-<?php elseif ( $this->uri(1) === 'gpiosettings' ): ?>
-<script src="<?=$this->asset('/js/vendor/bootstrap.min.js')?>"></script>
-<script src="<?=$this->asset('/js/vendor/bootstrap-select-1.12.1.min.js')?>"></script>
-<script src="<?=$this->asset('/js/addonsinfo.js')?>"></script>
-<script src="<?=$this->asset('/js/gpiosettings.js')?>"></script>
 
 <?php else: ?>
 <script src="<?=$this->asset('/js/vendor/bootstrap.min.js')?>"></script>
