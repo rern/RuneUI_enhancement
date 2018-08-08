@@ -2083,14 +2083,11 @@ function setPlaybackData() {
 		
 		if ( status.ext === 'radio' ) {
 			var radiobg = $( '#cover-art' ).css( 'background-image' );
-			var radioimg = display.radioimg ? display.radioimg : 'vu.gif';
-			var radioimgstop = display.radioimgstop ? display.radioimgstop : 'vustop.gif';
-			var radiourl = 'url("/srv/http/assets/img/'+ radioimg +'")';
-			var radiourlstop = 'url("/srv/http/assets/img/'+ radioimgstop +'")';
-			var radiobgvu = ( radioimg === 'vu.gif' || radioimgstop === 'vustop.gif' ) ? true : false;
+			var radiourl = $( '#vu' ).val();
+			var radiourlstop = $( '#vustop' ).val();
 			
-			$( '#cover-art' ).css( 'border-radius', radiobgvu ? '18px' : 0 );
-			$( '#coverartoverlay' ).toggle( radiobgvu );
+			$( '#cover-art' ).css( 'border-radius', '18px' );
+			$( '#coverartoverlay' ).show();
 			if ( status.state === 'play' ) {
 				if ( radiobg !== radiourl ) {
 					$( '#cover-art' ).css( 'background-image', radiourl );
