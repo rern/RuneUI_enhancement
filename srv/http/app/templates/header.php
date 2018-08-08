@@ -9,7 +9,7 @@
 	
 <?=( is_localhost() ? '	<link rel="stylesheet" href="'.$this->asset('/css/onScreenKeyboard.css').'">' : '' ) ?>
 
-	<link rel="stylesheet" href="<?=$this->asset('/css/runeui.css')?>">
+	<link rel="stylesheet" href="<?=$this->asset('/css/runeui.min.css')?>">
 
 <?php
 function fontface( $name, $woff, $ttf ) {
