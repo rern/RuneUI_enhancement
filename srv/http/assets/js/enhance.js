@@ -312,7 +312,7 @@ $( '.timemap, .covermap, .volmap' ).click( function() {
 		$( '#'+ cmd ).click();
 	}
 } );
-$( '#menu-top, #menu-bottom' ).click( function( e ) {
+$( '#menu-top, #menu-bottom, #settings' ).click( function( e ) {
 	if ( e.target.id !== 'menu-settings' ) $( '#settings' ).addClass( 'hide' );
 	$( '.controls' ).addClass( 'hide' );
 	$( '.controls1, .rs-tooltip, #imode' ).removeClass( 'hide' );
