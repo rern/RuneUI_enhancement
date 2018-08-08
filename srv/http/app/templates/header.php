@@ -22,9 +22,10 @@ function fontface( $name, $woff, $ttf ) {
 	}';
 }
 if ( empty( $this->uri(1) ) || $this->uri(1) === 'addons' ) {
-	$font = '';
-	foreach ( array( 'addons', 'enhance' ) as $name )
-		$font.= fontface( $name, $this->asset('/fonts/'.$name.'.woff'), $this->asset('/fonts/'.$name.'.ttf') );
+	$name = 'addons';
+	$font = fontface( $name, $this->asset('/fonts/'.$name.'.woff'), $this->asset('/fonts/'.$name.'.ttf') );
+	$name = 'enhance';
+	$font.= fontface( $name, $this->asset('/fonts/'.$name.'.woff'), $this->asset('/fonts/'.$name.'.ttf') );
 	echo '<style>'.$font.'</style>';
 }
 ?>
