@@ -43,7 +43,7 @@
 /* ---------------------- fontawesome mod ---------------------- */
 /* 'enhance' declared in <head> for cache busting */
 .fa {
-	font-family: FontAwesome, enhance;
+	font-family: enhance, FontAwesome;
 }
 @media( max-width: 480px ) {
 	#db-currentpath span span,
