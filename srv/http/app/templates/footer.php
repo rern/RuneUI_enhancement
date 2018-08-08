@@ -8,8 +8,6 @@
 <input id="addonsinfocss" type="hidden" value="<?=$this->asset('/css/addonsinfo.css')?>">
 <input id="addonscss" type="hidden" value="<?=$this->asset('/css/addons.css')?>">
 <input id="addonsinfojs" type="hidden" value="<?=$this->asset('/js/addonsinfo.js')?>">
-<input id="gpiosettingscss" type="hidden" value="<?=$this->asset('/css/gpiosettings.css')?>">
-<input id="gpiosettingsjs" type="hidden" value="<?=$this->asset('/js/gpiosettings.js')?>">
 
 <script src="<?=$this->asset('/js/vendor/jquery-2.1.0.min.js')?>"></script>
 
