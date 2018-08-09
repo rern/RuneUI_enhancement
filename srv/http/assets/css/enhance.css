@@ -49,7 +49,7 @@
 	font-style: normal;
 }
 .fa {
-	font-family: FontAwesome, enhance;
+	font-family: FontAwesome, enhance !important;
 }
 .fa-trophy:before { content: "\f575" } /* change to fa-rune */
 .fa-folder-open:before { content: "\f507" } /* change to fa-library */
