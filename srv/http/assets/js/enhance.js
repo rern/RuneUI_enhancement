@@ -128,8 +128,14 @@ var pushstreamdisplay = new PushStream( {
 pushstreamdisplay.addChannel( 'display' );
 pushstreamdisplay.onmessage = function( data ) { // on receive broadcast
 	display = data[ 0 ].display;
-	displayplayback();
-	setbutton();
+	if ( $( '#playback' ).hasClass( 'active' ) ) {
+		displayplayback();
+		setbutton();
+	} else if ( $( '#panel-sx' ).hasClass( 'active' ) ) {
+		displaylibrary();
+	} else {
+		displaycommon();
+	}
 }
 pushstreamdisplay.connect();
 
@@ -1055,7 +1061,10 @@ function renderLibraryHome() {
 				$( '#displaysavelibrary input' ).each( function() {
 					display[ this.name ] = this.checked ? 'checked' : '';
 				} );
-				var command = { display: [ 'hmset', 'display', display ] };
+				var command = {
+					set: [ 'hmset', 'display', display ],
+					display: [ 'hGetAll', 'display' ]
+				};
 				$.post( '/enhance.php', 
 					{ redis: JSON.stringify( command ) },
 					function( data ) {
