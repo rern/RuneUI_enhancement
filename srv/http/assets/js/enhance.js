@@ -702,6 +702,7 @@ function playlistSave( name ) {
 		, message   : 'Save this playlist as:'
 		, textlabel : 'Name'
 		, valuetext : name ? name : ''
+		, boxwidth  : 'max'
 		, cancel    : 1
 		, ok        : function() {
 			playlistSaveVerify( $( '#infoTextBox' ).val() );
