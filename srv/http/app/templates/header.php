@@ -77,7 +77,6 @@ if ( empty( $this->uri(1) ) || $this->uri(1) === 'addons' ) {
 	<a class="<?=$this->uri(1, 'credits', 'active')?>" href="/credits/"><i class="fa fa-rune"></i>Credits</a>
 	<a class="<?=$this->uri(1, 'dev', 'active')?>" href="/dev/"><i class="fa fa-gears"></i>Development</a>
 	<a id="turnoff"><i class="fa fa-power-off"></i>Power</a>
-	<a id="gpio"><i class="fa"></i>GPIO</a>
 <?=( $this->pwd_protection ? '<a href="/logout.php"><i class="fa fa-sign-out"></i>Logout</a>' : '' ) ?>
 	<a id="addons"><i class="fa"></i>Addons</a>
 </div>
