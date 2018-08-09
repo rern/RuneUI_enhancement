@@ -573,7 +573,8 @@ $( '.contextmenu a' ).click( function() {
 
 function webRadioNew( name, url ) {
 	info( {
-		  title      : 'Add Webradio'
+		  icon       : 'edit-circle'
+		, title      : 'Add Webradio'
 		, textlabel  : 'Name'
 		, textvalue  : name ? name : ''
 		, textlabel2 : 'URL'
@@ -588,7 +589,7 @@ function webRadioNew( name, url ) {
 function webRadioNewVerify( name, url ) {
 	if ( !name || !url ) {
 		info( {
-			  icon    : 'info-circle'
+			  icon    : 'warning'
 			, title   : 'Add Webradio'
 			, message : 'Name and URL cannot be blank.'
 			, ok      : function() {
@@ -606,7 +607,7 @@ function webRadioNewVerify( name, url ) {
 	} );
 	if ( exists ) {
 		info( {
-			  icon    : 'info-circle'
+			  icon    : 'warning'
 			, title   : 'Add Webradio'
 			, message : '<white>'+ name +'</white> already exists.'
 			, ok      : function() {
@@ -623,15 +624,16 @@ function webRadioNewVerify( name, url ) {
 }
 function webRadioRename( name ) {
 	info( {
-		  title      : 'Rename Webradio'
-		, message    : 'Rename:'
+		  icon      : 'edit-circle'
+		, title     : 'Rename Webradio'
+		, message   : 'Rename:'
 					+'<br><white>'+ GUI.DBentry.name +'</white>'
 					+'<br>'+ GUI.DBentry.url
-		, textlabel  : 'To'
-		, textvalue  : name ? name : GUI.DBentry.name
-		, boxwidth   : 'max'
-		, cancel     : 1
-		, ok         : function() {
+		, textlabel : 'To'
+		, textvalue : name ? name : GUI.DBentry.name
+		, boxwidth  : 'max'
+		, cancel    : 1
+		, ok        : function() {
 			webRadioRenameVerify( $( '#infoTextBox' ).val(), GUI.DBentry.name, GUI.DBentry.url );
 		}
 	} );
@@ -639,7 +641,7 @@ function webRadioRename( name ) {
 function webRadioRenameVerify( name, oldname, url ) {
 	if ( !name ) {
 		info( {
-			  icon    : 'info-circle'
+			  icon    : 'warning'
 			, title   : 'Rename Webradio'
 			, message : 'Name cannot be blank.'
 			, ok      : function() {
@@ -657,7 +659,7 @@ function webRadioRenameVerify( name, oldname, url ) {
 	} );
 	if ( exists ) {
 		info( {
-			  icon    : 'info-circle'
+			  icon    : 'warning'
 			, title   : 'Rename Webradio'
 			, message : '<white>'+ name +'</white> already exists.'
 			, ok      : function() {
@@ -676,12 +678,13 @@ function webRadioRenameVerify( name, oldname, url ) {
 }
 function webRadioDelete() {
 	info( {
-		  title      : 'Delete Webradio'
-		, message    : 'Delete?'
+		  icon    : 'minus-circle'
+		, title   : 'Delete Webradio'
+		, message : 'Delete?'
 					+'<br><white>'+ GUI.DBentry.name +'</white>'
 					+'<br>'+ GUI.DBentry.url
-		, cancel     : 1
-		, ok         : function() {
+		, cancel  : 1
+		, ok      : function() {
 			$.post( '/db/?cmd=deleteradio', { 'radio[label]' : GUI.DBentry.name +'.pls' }, function() {
 				if ( $( '#database-entries li' ).length ) {
 					getDB( { path: 'Webradio' } );
@@ -694,12 +697,13 @@ function webRadioDelete() {
 }
 function playlistSave( name ) {
 	info( {
-		  title      : 'Save Playlist'
-		, message    : 'Save this playlist as:'
-		, textlabel  : 'Name'
-		, valuetext  : name ? name : ''
-		, cancel     : 1
-		, ok         : function() {
+		  icon      : 'save'
+		, title     : 'Save Playlist'
+		, message   : 'Save this playlist as:'
+		, textlabel : 'Name'
+		, valuetext : name ? name : ''
+		, cancel    : 1
+		, ok        : function() {
 			playlistSaveVerify( $( '#infoTextBox' ).val() );
 		}
 	} );
@@ -707,7 +711,7 @@ function playlistSave( name ) {
 function playlistSaveVerify( name ) {
 	if ( !name ) {
 		info( {
-			  icon    : 'info-circle'
+			  icon    : 'warning'
 			, title   : 'Save Playlist'
 			, message : 'Name cannot be blank.'
 			, ok      : function() {
@@ -724,7 +728,7 @@ function playlistSaveVerify( name ) {
 		} );
 		if ( exists ) {
 			info( {
-				  icon    : 'info-circle'
+				  icon    : 'warning'
 				, title   : 'Save Playlist'
 				, message : '<white>'+ name +'</white> already exists.'
 				, ok      : function() {
@@ -738,14 +742,15 @@ function playlistSaveVerify( name ) {
 }
 function playlistRename( name ) {
 	info( {
-		  title      : 'Rename Playlist'
-		, message    : 'Rename:'
-					+'<br><white>'+ GUI.DBentry.name +'</white>'
-		, textlabel  : 'To'
-		, textvalue  : name ? name : GUI.DBentry.name
-		, boxwidth   : 'max'
-		, cancel     : 1
-		, ok         : function() {
+		  icon      : 'edit-circle'
+		, title     : 'Rename Playlist'
+		, message   : 'Rename:'
+		             +'<br><white>'+ GUI.DBentry.name +'</white>'
+		, textlabel : 'To'
+		, textvalue : name ? name : GUI.DBentry.name
+		, boxwidth  : 'max'
+		, cancel    : 1
+		, ok        : function() {
 			playlistRenameVerify( $( '#infoTextBox' ).val(), GUI.DBentry.name );
 		}
 	} );
@@ -753,7 +758,7 @@ function playlistRename( name ) {
 function playlistRenameVerify( name, oldname ) {
 	if ( !name ) {
 		info( {
-			  icon    : 'info-circle'
+			  icon    : 'warning'
 			, title   : 'Rename Playlist'
 			, message : 'Name cannot be blank.'
 			, ok      : function() {
@@ -764,7 +769,7 @@ function playlistRenameVerify( name, oldname ) {
 	}
 	if ( $( '#pl-editor li[data-path='+ name +']' ).length ) {
 		info( {
-			  icon    : 'info-circle'
+			  icon    : 'warning'
 			, title   : 'Rename Playlist'
 			, message : '<white>'+ name +'</white> already exists.'
 			, ok      : function() {
@@ -778,11 +783,12 @@ function playlistRenameVerify( name, oldname ) {
 }
 function playlistDelete() {
 	info( {
-		  title      : 'Delete Playlist'
-		, message    : 'Delete?'
+		  icon    : 'minus-circle'
+		, title   : 'Delete Playlist'
+		, message : 'Delete?'
 					+'<br><white>'+ GUI.DBentry.name +'</white>'
-		, cancel     : 1
-		, ok         : function() {
+		, cancel  : 1
+		, ok      : function() {
 			$.post( '/command/?cmd=rm%20%22' + GUI.DBentry.name + '%22', function() {
 				if ( $( '#pl-editor li' ).length ) {
 					getPlaylists();
