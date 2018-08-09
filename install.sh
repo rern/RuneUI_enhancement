@@ -194,5 +194,8 @@ else
 	clearcache
 fi
 
-title -nt "$info Any issues, try $( tcolor 'clear browser cache' )."
-[[ $1 != u ]] && title -nt "First time install:"  $( tcolor 'Reboot' ).
+[[ $1 == u ]] && exit
+
+title -nt  "$info Please wait Reinitialize for 5 seconds before continue."
+
+systemctl restart rune_SY_wrk
