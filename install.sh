@@ -187,14 +187,10 @@ redis-cli set localSStime -1 &> /dev/null
 
 installfinish $@
 
-if [[ $2 == 0 ]]; then
-	killall Xorg
-	redis-cli set local_browser 0
-else
+if [[ $1 == u ]]; then
 	clearcache
+	exit
 fi
-
-[[ $1 == u ]] && exit
 
 title -nt  "$info Please wait Reinitialize for 5 seconds before continue."
 
