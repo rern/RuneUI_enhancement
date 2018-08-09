@@ -33,6 +33,8 @@ rm -v /srv/http/assets/js/vendor/{jquery-ui.min.js,modernizr-custom.js,roundslid
 rm /usr/share/bootsplash/{start,reboot,shutdown}-runeaudio.png
 
 mv /srv/http/app/coverart_ctl.php{.backup,}
+mv /srv/http/assets/js/runeui.js{.backup,}
+mv /srv/http/assets/js/runeui.min.js{.backup,}
 mv /srv/http/command/airplay_toggle{.backup,}
 mv /usr/share/bootsplash/start-runeaudio.png{.backup,}
 mv /usr/share/bootsplash/reboot-runeaudio.png{.backup,}
