@@ -139,7 +139,7 @@ string=$( cat <<'EOF'
 <script src="<?=$this->asset('/js/enhance.js')?>"></script>
 EOF
 )
-appendH -n +1 'addonsmenu.js'
+appendH -n +1 'addons.js'
 #----------------------------------------------------------------------------------
 file=/srv/http/app/templates/playback.php
 echo $file
