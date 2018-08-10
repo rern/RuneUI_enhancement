@@ -482,8 +482,14 @@ $( '#pl-manage-clear' ).click( function() {
 		}
 	} );
 } );
-$( '#playlist-entries' ).on( 'click', 'li', function() {
-	sendCmd( 'deleteid '+ this.id.replace( 'pl-', '' ) );
+$( '#playlist-entries' ).on( 'click', 'li', function( e ) {
+	if ( $( e.target ).hasClass( 'pl-action' ) ) {
+		sendCmd( 'deleteid '+ $( this ).prop( 'id' ).replace( 'pl-', '' ) );
+		return
+	}
+	sendCmd( 'play '+ $( this ).index() );
+	$( '#playlist-entries li' ).removeClass( 'active' );
+	$( this ).addClass('active');
 } );
 
 // context menus //////////////////////////////////////////////

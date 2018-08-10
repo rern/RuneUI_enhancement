@@ -727,19 +727,6 @@ if ($('#section-index').length) {
         // PLAYING QUEUE
         // ----------------------------------------------------------------------------------------------------
 
-        var playlist = $('#playlist-entries');
-        
-        // click on queue entry
-        playlist.on('click', 'li', function(e) {
-            var cmd = '';
-                // play queue entry
-                var pos = $('li', '#playlist-entries').index(this);
-                cmd = 'play ' + pos;
-                sendCmd(cmd);
-                $('li.active', '#playlist-entries').removeClass('active');
-                $(this).addClass('active');
-        });
-
         // on ready playlist tab
         $('a', '#open-panel-dx').click(function(){
             if ($('#open-panel-dx').hasClass('active')) {
