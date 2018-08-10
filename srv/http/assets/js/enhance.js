@@ -94,10 +94,11 @@ $( '#playback' ).click( function( e ) {
 		$( '.controls, #settings' ).addClass( 'hide' );
 		$( '.controls1, .rs-tooltip, #imode' ).removeClass( 'hide' );
 	}
-} ).on( 'taphold', setDisplayPlayback );
+} ).on( 'taphold', function( e ) {
+	if ( swipe || e.target.id !== 'playback' ) return;
+	setDisplayPlayback();
+} );
 function setDisplayPlayback() {
-	if ( swipe ) return;
-	
 	info( {
 		  title  : 'Playback'
 		, message: 'Select items to show:'
