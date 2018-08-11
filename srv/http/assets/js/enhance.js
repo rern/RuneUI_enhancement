@@ -418,14 +418,21 @@ $( '#db-index li' ).click( function() {
 	}
 	if ( GUI.currentpath.slice( 0, 3 ) === 'USB' ) {
 		var datapathindex = GUI.currentpath +'/'+ indextext;
+		var dirmode = 0;
 	} else {
 		var datapathindex = '^'+ indextext;
-		var dirmode = 1
+		var dirmode = 1;
 	}
+	var name;
 	var matcharray = $( '#database-entries li' ).filter( function() {
 		var $this = $( this );
-		var name = dirmode ? $this.find( 'span:eq( 0 )' ).text() : $this.attr( 'data-path' );
-		return stripLeading( name ).match( new RegExp( datapathindex, 'i' ) );
+		if ( dirmode ) {
+			name = stripLeading( $this.attr( 'data-path' ) );
+		} else {
+			name = $this.find( 'span:eq( 0 )' ).text();
+			name = GUI.currentpath +'/'+  stripLeading( name.replace( /^.*\//, '' ) );
+		}
+		return name.match( new RegExp( datapathindex, 'i' ) );
 	} );
 	if ( matcharray.length ) window.scrollTo( 0, matcharray[0].offsetTop - topoffset );
 } );
