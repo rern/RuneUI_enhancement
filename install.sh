@@ -192,6 +192,7 @@ if [[ $1 == u ]]; then
 	exit
 fi
 
-title -nt  "$info Please wait Reinitialize for 5 seconds before continue."
+echo -e "$bar Reinitialize ..."
+title -nt  "$info Please wait 5 seconds before continue."
 
 systemctl restart rune_SY_wrk
