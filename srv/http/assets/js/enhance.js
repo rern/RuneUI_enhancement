@@ -416,21 +416,17 @@ $( '#db-index li' ).click( function() {
 		window.scrollTo( 0, 0 );
 		return
 	}
-	if ( GUI.currentpath.slice( 0, 3 ) === 'USB' ) {
-		var datapathindex = GUI.currentpath +'/'+ indextext;
-		var dirmode = 0;
-	} else {
-		var datapathindex = '^'+ indextext;
-		var dirmode = 1;
-	}
-	var name;
+	var usbpath = GUI.currentpath.slice( 0, 3 ) === 'USB' ? 1 : 0;
+	var datapathindex, name;
 	var matcharray = $( '#database-entries li' ).filter( function() {
 		var $this = $( this );
-		if ( dirmode ) {
-			name = stripLeading( $this.attr( 'data-path' ) );
+		if ( usbpath ) {
+			name = $this.find( 'span:eq( 0 )' ).text().replace( /^.*\//, '' );
+			name = GUI.currentpath +'/'+  stripLeading( name );
+			datapathindex = GUI.currentpath +'/'+ indextext;
 		} else {
-			name = $this.find( 'span:eq( 0 )' ).text();
-			name = GUI.currentpath +'/'+  stripLeading( name.replace( /^.*\//, '' ) );
+			name = stripLeading( $this.attr( 'data-path' ) );
+			datapathindex = '^'+ indextext;
 		}
 		return name.match( new RegExp( datapathindex, 'i' ) );
 	} );
