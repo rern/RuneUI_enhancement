@@ -6,6 +6,13 @@ $(document).ready(function($){ 'use strict';
 	// Bootstrap-select
 	$('.selectpicker').selectpicker();
 	
+	// FILE UPLOAD
+	$(document).on('change', '.btn-file :file', function() {
+		var input = $(this),
+			numFiles = input.get(0).files ? input.get(0).files.length : 1,
+			label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+		input.trigger('fileselect', [numFiles, label]);
+	});
 
 	// SOURCES
 	// ----------------------------------------------------------------------------------------------------
@@ -208,7 +215,6 @@ $(document).ready(function($){ 'use strict';
 			$('#dhcp-option-router').val($('#ip-address').val());
 		});
 	} else if ($('#section-mpd').length) {
-		
 		// output interface select
 		$('#audio-output-interface').change(function(){
 			renderMSG([{'title': 'Switching audio output', 'text': 'Please wait for the config update...', 'icon': 'fa fa-cog fa-spin', 'delay': 5000 }]);
@@ -229,19 +235,4 @@ $(document).ready(function($){ 'use strict';
 			$('#manual-edit-warning').addClass('hide');
 		});
 	}
-	
-	// on screen keyboard
-	if (document.location.hostname == "localhost")
-		$('.osk-trigger').onScreenKeyboard({
-			'draggable': true
-	});
-});
-
-// FILE UPLOAD
-// ----------------------------------------------------------------------------------------------------
-$(document).on('change', '.btn-file :file', function() {
-	var input = $(this),
-		numFiles = input.get(0).files ? input.get(0).files.length : 1,
-		label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-	input.trigger('fileselect', [numFiles, label]);
 });
