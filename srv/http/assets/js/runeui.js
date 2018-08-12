@@ -86,47 +86,6 @@ $(document).ready(function () {
     GUI.clientUUID = generateUUID();
 
 });
-    
-// custom scrolling
-/*function customScroll(list, destination, speed) {
-    if (typeof(speed) === 'undefined') {
-        speed = 500;
-    }
-    var entryheight = 49;
-    var centerheight = parseInt($(window).height()/2);
-    var scrolltop = $(window).scrollTop();
-    var scrollcalc = 0;
-    var scrolloffset = 0;
-    if (list === 'db') {
-        scrollcalc = parseInt((destination)*entryheight - centerheight);
-        scrolloffset = scrollcalc;
-    } else if (list === 'pl') {
-        //var scrolloffset = parseInt((destination + 2)*entryheight - centerheight);
-        scrollcalc = parseInt((destination + 2)*entryheight - centerheight);
-        scrolloffset = Math.abs(scrollcalc - scrolltop);
-        scrolloffset = (scrollcalc > scrolltop ? '+':'-') + '=' + scrolloffset + 'px';
-        $('#playlist-entries').find('li').eq(destination).addClass('active');
-    }
-}*/
-
-// toggle blocking loading layer (spinning arrows)
-/*function toggleLoader(action) {
-    if (action === 'close') {
-        $('#loader').addClass('hide');
-    } else {
-        if ($('#section-dev').length) {
-            $('#loader').addClass('hide');
-            new PNotify({
-                title: 'Warning',
-                text: 'The loading layer (spinning arrows) points to a socket error',
-                icon: 'fa fa-exclamation-circle'
-            });
-        } else {
-            $('#loader').removeClass('hide');
-        }
-    }
-}*/
-
 // custom complex notifies
 function customNotify(notify) {
     if (notify.custom === 'kernelswitch') {
@@ -252,14 +211,7 @@ function getPlaylist(text) {
     if ( data.length > 4) {
         $('.playlist').addClass('hide');
         $('#playlist-entries').removeClass('hide');
-        // console.time('getPlaylistPlain timer');
         getPlaylistPlain(data);
-        // console.timeEnd('getPlaylistPlain timer');
-        
-/*        var current = parseInt(GUI.json.song);
-        if ($('#panel-dx').hasClass('active') && GUI.currentsong !== GUI.json.currentsong) {
-            customScroll('pl', current, 200); // center the scroll and highlight current song in playlist
-        }*/
     } else {
         $('.playlist').addClass('hide');
         $('#playlist-warning').removeClass('hide');
@@ -643,39 +595,6 @@ function overlayTrigger(overlayID) {
         toggleOverlay();
     });
 }
-/*
-// check visibility of the window
-function getHiddenProp(){
-    var prefixes = ['webkit','moz','ms','o'];
-    // if 'hidden' is natively supported just return it
-    if ('hidden' in document) {
-        return 'hidden';
-    }
-    // otherwise loop over all the known prefixes until we find one
-    for (var i = 0; i < prefixes.length; i++){
-        if ((prefixes[i] + 'Hidden') in document) {
-            return prefixes[i] + 'Hidden';
-        }
-    }
-    // otherwise it's not supported
-    return null;
-}
-function isHidden() {
-    var prop = getHiddenProp();
-    if (!prop) {
-        return false;
-    }
-    return document[prop];
-}
-function visChange() {
-    if (isHidden()) {
-        GUI.visibility = 'hidden';
-    } else {
-        GUI.visibility = 'visible';
-    }
-}
-*/
-
 
 if ($('#section-index').length) {
 
@@ -713,41 +632,8 @@ if ($('#section-index').length) {
         // open notify channel
         notifyChannel();
         
-        // use the property name to generate the prefixed event name
-/*        var visProp = getHiddenProp();
-        if (visProp) {
-            var evtname = visProp.replace(/[H|h]idden/,'') + 'visibilitychange';
-            document.addEventListener(evtname, visChange);
-        }*/
-        // PLAYING QUEUE
-        // ----------------------------------------------------------------------------------------------------
-
-        // on ready playlist tab
-/*        $('a', '#open-panel-dx').click(function(){
-            if ($('#open-panel-dx').hasClass('active')) {
-                var current = parseInt(GUI.json.song);
-                customScroll('pl', current, 500);
-                if (!$('#pl-filter-results').hasClass('hide'))  //mod when playlist browsing, click to show queue again
-                    $('#pl-filter-results').click();
-            }
-        })
-        .on('shown.bs.tab', function (e) {
-            var current = parseInt(GUI.json.song);
-            customScroll('pl', current, 0);
-        });*/ 
-        
         // LIBRARY
         // ----------------------------------------------------------------------------------------------------
-        
-        // on ready Library tab
-/*        $('a', '#open-panel-sx').click(function(){
-            if ($('#open-panel-sx').hasClass('active')) {
-                customScroll('pl', parseInt(GUI.json.song), 500);
-            }
-        })
-        .on('shown.bs.tab', function (e) {
-            customScroll('db', GUI.currentDBpos[GUI.currentDBpos[10]], 0);
-        });*/
         
         // setup Library home
         $('#db-homeSetup').click(function(){

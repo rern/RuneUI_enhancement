@@ -367,13 +367,13 @@ $( '#turnoff' ).click( function() {
 		, okcolor     : '#bb2828'
 		, ok          : function() {
 			$.post( '/settings/', { 'syscmd' : 'poweroff' } );
-			toggleLoader();
+			$( '#loader' ).removeClass( 'hide' );
 		}
 		, buttonlabel : 'Reboot'
 		, buttoncolor : '#9a9229'
 		, button      : function() {
 			$.post( '/settings/', { 'syscmd' : 'reboot' } );
-			toggleLoader();
+			$( '#loader' ).removeClass( 'hide' );
 		}
 	} );
 } );
@@ -2235,7 +2235,7 @@ function convertHMS( second ) {
 // ### called by backend socket - force refresh all clients ###
 function renderUI( text ) {
 	if ( /\/.*\//.test( location.pathname ) === false ) { // not setting pages
-		toggleLoader( 'close' );
+		$( '#loader' ).addClass( 'hide' );
 		if ( !$('#section-index' ).length || onsetvolume ) return;
 		
 		GUI.json = text[ 0 ];
