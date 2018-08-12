@@ -33,7 +33,9 @@ if ( empty( $this->uri(1) ) || $this->uri(1) === 'addons' ) {
 	<link rel="stylesheet" href="<?=$this->asset('/css/addonsinfo.css')?>">
 	<link rel="stylesheet" href="<?=$this->asset('/css/roundslider.min.css')?>">
 	<link rel="stylesheet" href="<?=$this->asset('/css/enhance.css')?>">
-	
+<?=( file_exists('/srv/http/assets/js/gpio.js') ? '<link rel="stylesheet" href="'.$this->asset('/css/gpio.css').'">' : '' )?>
+<?=( file_exists('/srv/http/assets/js/lyrics.js') ? '<link rel="stylesheet" href="'.$this->asset('/css/lyrics.css').'">' : '' )?>
+
 <?php elseif ( $this->uri(1) === 'addons' ): ?>
 	<link rel="stylesheet" href="<?=$this->asset('/css/addonsinfo.css')?>">
 	<link rel="stylesheet" href="<?=$this->asset('/css/addons.css')?>">
@@ -78,6 +80,7 @@ if ( empty( $this->uri(1) ) || $this->uri(1) === 'addons' ) {
 	<a class="<?=$this->uri(1, 'dev', 'active')?>" href="/dev/"><i class="fa fa-gears"></i>Development</a>
 	<a id="turnoff"><i class="fa fa-power-off"></i>Power</a>
 <?=( $this->pwd_protection ? '<a href="/logout.php"><i class="fa fa-sign-out"></i>Logout</a>' : '' ) ?>
+<?=( file_exists('/srv/http/assets/js/gpio.js') ? '<a id="gpio"><i class="fa fa-gpio"></i>GPIO</a>' : '' )?>
 	<a id="addons"><i class="fa"></i>Addons</a>
 </div>
 <div id="menu-top" class="hide">
@@ -100,4 +103,6 @@ if ( empty( $this->uri(1) ) || $this->uri(1) === 'addons' ) {
 		<li id="open-panel-dx"><a><i class="fa fa-list-ul"></i></a></li>
 	</ul>
 </div>
+<?php if ( file_exists('/srv/http/assets/js/lyrics.js') ) include 'lyricscontainer.php';?>
+
 <?php endif ?>

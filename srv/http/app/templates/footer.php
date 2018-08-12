@@ -8,6 +8,11 @@
 <input id="addonsinfocss" type="hidden" value="<?=$this->asset('/css/addonsinfo.css')?>">
 <input id="addonscss" type="hidden" value="<?=$this->asset('/css/addons.css')?>">
 <input id="addonsinfojs" type="hidden" value="<?=$this->asset('/js/addonsinfo.js')?>">
+<?php if ( file_exists('/srv/http/assets/js/gpio.js') ): ?>
+<input id="gpiosettingscss" type="hidden" value="<?=$this->asset('/css/gpiosettings.css')?>">
+<input id="gpiosettingsjs" type="hidden" value="<?=$this->asset('/js/gpiosettings.js')?>">
+<input id="gpiopin" type="hidden" value="<?=$this->asset('/img/RPi3_GPIO.svg')?>">
+<?php endif ?>
 
 <script src="<?=$this->asset('/js/vendor/jquery-2.1.0.min.js')?>"></script>
 
@@ -27,6 +32,8 @@
 <script src="<?=$this->asset('/js/addonsmenu.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/roundslider.min.js')?>"></script>
 <script src="<?=$this->asset('/js/enhance.js')?>"></script>
+<?=( file_exists('/srv/http/assets/js/gpio.js') ? '<script src="'.$this->asset('/js/gpio.js').'"></script>' : '' )?>
+<?=( file_exists('/srv/http/assets/js/lyrics.js') ? '<script src="'.$this->asset('/js/lyrics.js').'"></script>' : '' )?>
 
 <?php elseif ( $this->uri(1) === 'addons' ): ?>
 <script src="<?=$this->asset('/js/vendor/jquery.mobile.custom.min.js')?>"></script>
@@ -46,6 +53,7 @@
 <script src="<?=$this->asset('/js/runeuisettings.js')?>"></script>
 <?=( $this->uri(1) === 'debug' ? '<script src="'.$this->asset('/js/vendor/ZeroClipboard.min.js').'"></script>' : '' ) ?>
 <script>
+<?=( file_exists('/srv/http/assets/js/backuprestore.js') && $this->uri(1) === 'settings' ? '<script src="'.$this->asset('/js/backuprestore.js').'"></script>' : '' )?>
 // no top-bottom bars - use close icon
 	$( 'div.container' )
 		.css( 'padding-top', '0' )
