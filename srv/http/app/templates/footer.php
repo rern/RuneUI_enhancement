@@ -44,7 +44,6 @@
 <script src="<?=$this->asset('/js/vendor/pnotify.custom.min.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/bootstrap-select.min.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/parsley.min.js')?>"></script>
-<script src="<?=$this->asset('/js/runeui.js')?>"></script>
 <script src="<?=$this->asset('/js/runeuisettings.js')?>"></script>
 <?=( $this->uri(1) === 'debug' ? '<script src="'.$this->asset('/js/vendor/ZeroClipboard.min.js').'"></script>' : '' ) ?>
 <script>
