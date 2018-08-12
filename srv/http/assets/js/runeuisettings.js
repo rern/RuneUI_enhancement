@@ -1,5 +1,153 @@
 $(document).ready(function($){ 'use strict';
 	
+PNotify.prototype.options.styling = 'fontawesome';
+PNotify.prototype.options.stack.dir1 = 'up';
+PNotify.prototype.options.stack.dir2 = 'left';
+PNotify.prototype.options.stack.firstpos1 = 90;
+PNotify.prototype.options.stack.firstpos2 = 50;
+PNotify.prototype.options.stack.spacing1 = 10;
+PNotify.prototype.options.stack.spacing2 = 10;
+
+var GUI = {};
+GUI.mode = window.WebSocket ? 'websocket' : 'longpolling';
+
+function renderMSG(text) {
+    var notify = text[0];
+    if ('custom' in notify && notify.custom !== null) {
+        customNotify(notify);
+        return;
+    }
+    var noticeOptions = {
+        title: ('title' in notify) ? notify.title : '[missing title]',
+        text: ('text' in notify) ? notify.text : '[missing text]',
+        icon: (notify.icon === undefined) ? 'fa fa-check' : notify.icon,
+        opacity: (notify.opacity === undefined) ? 0.9 : notify.opacity,
+        hide: (notify.hide === undefined && notify.permanotice === undefined),
+        buttons: {
+            closer: (notify.permanotice === undefined),
+            sticker: (notify.permanotice === undefined)
+        },
+        delay: (notify.delay === undefined) ? 8000 : notify.delay,
+        mouse_reset: false
+    };
+    if ('permanotice' in notify) {
+        if (GUI.noticeUI[notify.permanotice] === undefined) {
+            GUI.noticeUI[notify.permanotice] = new PNotify(noticeOptions);
+        } else {
+            if ('permaremove' in notify) {
+                GUI.noticeUI[notify.permanotice].remove();
+                GUI.noticeUI[notify.permanotice] = undefined;
+            } else {
+                GUI.noticeUI[notify.permanotice].open();
+            }
+        }
+    } else {
+        new PNotify(noticeOptions);
+    }
+}
+var pushstreamnofify = new PushStream({
+	host: window.location.hostname,
+	port: window.location.port,
+	modes: GUI.mode
+});
+pushstreamnofify.onmessage = renderMSG;
+pushstreamnofify.addChannel('notify');
+pushstreamnofify.connect();
+// open the in range Wi-Fi networks list channel
+var pushstreamwlan = new PushStream({
+	host: window.location.hostname,
+	port: window.location.port,
+	modes: GUI.mode
+});
+pushstreamwlan.onmessage = listWLANs;
+pushstreamwlan.addChannel('wlans');
+pushstreamwlan.connect();
+$.ajax({
+	url: '/command/?cmd=wifiscan',
+	cache: false
+});
+
+// open the NIC details channel
+var pushstreamnic = new PushStream({
+	host: window.location.hostname,
+	port: window.location.port,
+	modes: GUI.mode
+});
+pushstreamnic.onmessage = nicsDetails;
+pushstreamnic.addChannel('nics');
+pushstreamnic.connect();
+    
+if ( document.location.hostname === 'localhost' )
+	$( '.osk-trigger' ).onScreenKeyboard( {
+		'draggable': true
+} ); 
+
+// list of in range wlans
+function listWLANs(text) {
+    var i = 0, content = '', inrange = '', stored = '', wlans = text[0];
+    $.each(wlans, function(i) {
+        content += '<p><a href="/network/wlan/' + wlans[i].nic + '/' + wlans[i].ESSID + '" class="btn btn-lg btn-default btn-block" title="See network properties">';
+        if (wlans[i].connected !== 0) {
+            content += '<i class="fa fa-check green sx"></i>';
+        }
+        if (wlans[i].storedprofile === 1 && wlans[i].encryption === 'on') {
+            content += '<i class="fa fa-lock sx"></i>';
+        } else {
+            if (wlans[i].encryption === 'on') {
+                content += '<i class="fa fa-rss fa-wifi"></i><i class="fa fa-lock sx"></i>';
+            } else {
+                if (wlans[i].storedprofile !== 1 ) {
+                content += '<i class="fa fa-rss fa-wifi sx"></i>';
+                }
+            }
+        }
+        content += '<strong>' + wlans[i].ESSID + '</strong></a></p>';
+        if (wlans[i].origin === 'scan') {
+            inrange += content;
+        }
+        if (wlans[i].storedprofile === 1) {
+            stored += content;
+        }
+        content = '';
+    });
+    if (inrange === '') {
+        inrange = '<p><a class="btn btn-lg btn-default btn-block" href="#"><i class="fa fa-cog fa-spin sx"></i>scanning for networks...</a></p>';
+    }
+    document.getElementById('wifiNetworks').innerHTML = inrange;
+    document.getElementById('wifiStored').innerHTML = stored;
+    $.ajax({
+        url: '/command/?cmd=wifiscan',
+        cache: false
+    });
+}
+
+// draw the NICs details table
+function nicsDetails(text) {
+    var i = 0, content = '', nics = text[0];
+    $.each(nics, function(i) {
+        if (i === $('#nic-details').data('name')) {
+            content += '<tr><th>Name:</th><td><strong>' + i + '<strong></td></tr>';
+            content += '<tr><th>Type:</th><td>wireless</td></tr>';
+            if (nics[i].currentssid === null) {
+                content += '<tr><th>Status:</th><td><i class="fa fa-times red sx"></i>no network connected</td></tr>';
+            } else {
+                content += '<tr><th>Status:</th><td><i class="fa fa-check green sx"></i>connected</td></tr>';
+                content += '<tr><th>Associated SSID:</th><td><strong>' + nics[i].currentssid + '</strong></td></tr>';
+            }
+            
+            content += '<tr><th>Assigned IP:</th><td>' + ((nics[i].ip !== null) ? ('<strong>' + nics[i].ip + '</strong>') : 'none') + '</td></tr>';
+            content += '<tr><th>Speed:</th><td>' + ((nics[i].speed !== null) ? nics[i].speed : 'unknown') + '</td></tr>';
+            if (nics[i].currentssid !== null) {
+                content += '<tr><th>Netmask:</th><td>' + nics[i].netmask + '</td></tr>';
+                content += '<tr><th>Gateway:</th><td>' + nics[i].gw + '</td></tr>';
+                content += '<tr><th>DNS1:</th><td>' + nics[i].dns1 + '</td></tr>';
+                content += '<tr><th>DNS2:</th><td>' + nics[i].dns2 + '</td></tr>';
+            }
+        }
+    });
+    $('#nic-details tbody').html(content);
+}
+
 	// INITIALIZATION
 	// ----------------------------------------------------------------------------------------------------
 	 
