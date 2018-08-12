@@ -23,7 +23,7 @@
 <script src="<?=$this->asset('/js/vendor/pnotify.custom.min.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/openwebapp.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/modernizr-custom.js')?>"></script>
-<script src="<?=$this->asset('/js/runeui.min.js')?>"></script>
+<script src="<?=$this->asset('/js/runeui.js')?>"></script>
 <script src="<?=$this->asset('/js/addonsinfo.js')?>"></script>
 <script src="<?=$this->asset('/js/addonsmenu.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/roundslider.min.js')?>"></script>
@@ -39,9 +39,13 @@
 </script>
 
 <?php else: ?>
+<script src="<?=$this->asset('/js/vendor/pushstream.min.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/bootstrap.min.js')?>"></script>
+<script src="<?=$this->asset('/js/vendor/pnotify.custom.min.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/bootstrap-select.min.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/parsley.min.js')?>"></script>
+<script src="<?=$this->asset('/js/runeui.js')?>"></script>
+<script src="<?=$this->asset('/js/runeuisettings.js')?>"></script>
 <?=( $this->uri(1) === 'debug' ? '<script src="'.$this->asset('/js/vendor/ZeroClipboard.min.js').'"></script>' : '' ) ?>
 <script>
 // no top-bottom bars - use close icon

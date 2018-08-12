@@ -64,7 +64,7 @@ if ( empty( $this->uri(1) ) || $this->uri(1) === 'addons' ) {
 <?php endif ?>
 </head>
 
-<body id="section-<?=( empty( $this->uri(1) ) || $this->uri(1) === 'playback' ? 'index' : $this->section )?>">
+<body>
 
 <?php if ( empty( $this->uri(1) ) ): ?>
 <div id="settings" class="menu hide">
