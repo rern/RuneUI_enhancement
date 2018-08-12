@@ -28,7 +28,7 @@ rm -v /srv/http/app/templates/{footer,header,playback}.php
 rm -v /srv/http/assets/css/{enhance,midori,runeui.min,roundslider.min}.css
 rm -v /srv/http/assets/fonts/enhance*
 rm -v /srv/http/assets/img/{controls*,runelogo.svg,vu*}
-rm -v /srv/http/assets/js/{enhance,runeui,runeui.min}.js
+rm -v /srv/http/assets/js/{enhance,runeui,runeuisettings,runeui.min}.js
 rm -v /srv/http/assets/js/vendor/{jquery-ui.min,modernizr-custom,roundslider.min}.js
 rm /usr/share/bootsplash/{start,reboot,shutdown}-runeaudio.png
 
