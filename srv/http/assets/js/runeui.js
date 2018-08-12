@@ -88,7 +88,7 @@ $(document).ready(function () {
 });
     
 // custom scrolling
-function customScroll(list, destination, speed) {
+/*function customScroll(list, destination, speed) {
     if (typeof(speed) === 'undefined') {
         speed = 500;
     }
@@ -107,10 +107,10 @@ function customScroll(list, destination, speed) {
         scrolloffset = (scrollcalc > scrolltop ? '+':'-') + '=' + scrolloffset + 'px';
         $('#playlist-entries').find('li').eq(destination).addClass('active');
     }
-}
+}*/
 
 // toggle blocking loading layer (spinning arrows)
-function toggleLoader(action) {
+/*function toggleLoader(action) {
     if (action === 'close') {
         $('#loader').addClass('hide');
     } else {
@@ -125,7 +125,7 @@ function toggleLoader(action) {
             $('#loader').removeClass('hide');
         }
     }
-}
+}*/
 
 // custom complex notifies
 function customNotify(notify) {
@@ -145,7 +145,7 @@ function customNotify(notify) {
                     addClass: 'btn-default btn-block  uppercase',
                     click: function() {
                         $.post('/settings/', { 'syscmd' : 'reboot' });
-                        toggleLoader();
+                        $('#loader').removeClass('hide');
                     }
                 },
                 {
@@ -256,10 +256,10 @@ function getPlaylist(text) {
         getPlaylistPlain(data);
         // console.timeEnd('getPlaylistPlain timer');
         
-        var current = parseInt(GUI.json.song);
+/*        var current = parseInt(GUI.json.song);
         if ($('#panel-dx').hasClass('active') && GUI.currentsong !== GUI.json.currentsong) {
             customScroll('pl', current, 200); // center the scroll and highlight current song in playlist
-        }
+        }*/
     } else {
         $('.playlist').addClass('hide');
         $('#playlist-warning').removeClass('hide');
@@ -517,15 +517,10 @@ function playbackChannel(){
         if (status === 2) {
             $('#loader').addClass('hide');
             sendCmd('renderui'); // force UI rendering (backend-call)
-        } else {
-            if (status === 0) {
-                toggleLoader();
-            }
+        } else if (status === 0) {
+            $('#loader').removeClass('hide');          
         }
     };
-    // pushstream.onerror = function() {
-        // toggleLoader();
-    // };
     pushstream.addChannel('playback');
     pushstream.connect();
 }
@@ -728,7 +723,7 @@ if ($('#section-index').length) {
         // ----------------------------------------------------------------------------------------------------
 
         // on ready playlist tab
-        $('a', '#open-panel-dx').click(function(){
+/*        $('a', '#open-panel-dx').click(function(){
             if ($('#open-panel-dx').hasClass('active')) {
                 var current = parseInt(GUI.json.song);
                 customScroll('pl', current, 500);
@@ -739,20 +734,20 @@ if ($('#section-index').length) {
         .on('shown.bs.tab', function (e) {
             var current = parseInt(GUI.json.song);
             customScroll('pl', current, 0);
-        });        
+        });*/ 
         
         // LIBRARY
         // ----------------------------------------------------------------------------------------------------
         
         // on ready Library tab
-        $('a', '#open-panel-sx').click(function(){
+/*        $('a', '#open-panel-sx').click(function(){
             if ($('#open-panel-sx').hasClass('active')) {
                 customScroll('pl', parseInt(GUI.json.song), 500);
             }
         })
         .on('shown.bs.tab', function (e) {
             customScroll('db', GUI.currentDBpos[GUI.currentDBpos[10]], 0);
-        });
+        });*/
         
         // setup Library home
         $('#db-homeSetup').click(function(){
