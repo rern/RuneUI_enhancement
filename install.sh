@@ -23,8 +23,6 @@ mv /srv/http/app/coverart_ctl.php{,.backup}
 mv /srv/http/app/templates/footer.php{,.backup}
 mv /srv/http/app/templates/header.php{,.backup}
 mv /srv/http/app/templates/playback.php{,.backup}
-mv /srv/http/assets/js/runeui.js{,.backup}
-mv /srv/http/assets/js/runeui.min.js{,.backup}
 mv /srv/http/command/airplay_toggle{,.backup}
 mv /usr/share/bootsplash/start-runeaudio.png{,.backup}
 mv /usr/share/bootsplash/reboot-runeaudio.png{,.backup}
@@ -36,14 +34,6 @@ ln -s /usr/share/bootsplash/{start,reboot}-runeaudio.png
 ln -s /usr/share/bootsplash/{start,shutdown}-runeaudio.png
 
 echo -e "$bar Modify files ..."
-#----------------------------------------------------------------------------------
-
-# for installed gpio
-if [[ -e /usr/local/bin/uninstall_gpio.sh ]]; then
-	alias=gpio
-	restorefile /srv/http/app/templates/header.php srv/http/app/templates/footer.php
-	alias=enha
-fi
 #----------------------------------------------------------------------------------
 file=/srv/http/db/index.php
 echo $file
