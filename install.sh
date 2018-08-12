@@ -30,20 +30,6 @@ mv /usr/share/bootsplash/shutdown-runeaudio.png{,.backup}
 
 getinstallzip
 
-# for already installed gpio and lyrics
-file=/srv/http/app/templates/footer.php
-if grep -s 'gpio.js' $file.backup; then
-	appendAsset '$' 'gpio.js'
-	file=/srv/http/app/templates/header.php
-	appendAsset 'enhance.css' 'gpio.css'
-fi
-file=/srv/http/app/templates/footer.php
-if grep -s 'lyrics.js' $file.backup; then
-	appendAsset '$' 'lyrics.js'
-	file=/srv/http/app/templates/header.php
-	appendAsset 'enhance.css' 'lyrics.css'
-fi
-
 ln -s /usr/share/bootsplash/{start,reboot}-runeaudio.png
 ln -s /usr/share/bootsplash/{start,shutdown}-runeaudio.png
 
