@@ -39,7 +39,7 @@ if grep -s 'gpio.js' $file.backup; then
 fi
 file=/srv/http/app/templates/footer.php
 if grep -s 'lyrics.js' $file.backup; then
-    appendAsset '$' 'lyrics.js'
+	appendAsset '$' 'lyrics.js'
 	file=/srv/http/app/templates/header.php
 	appendAsset 'enhance.css' 'lyrics.css'
 fi
