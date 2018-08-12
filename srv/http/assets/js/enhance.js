@@ -1,4 +1,251 @@
+var GUI = {
+    DBentry: [ '', '', '' ],
+    DBupdate: 0,
+    activePlayer: '',
+    browsemode: 'file',
+    checkvol: 0,
+    currentDBpos: [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    currentDBpath: [ '', '', '', '', '', '', '', '', '', '', '' ],
+    currentalbum: null,
+    currentknob: null,
+    currentpath: '',
+    currentsong: null,
+    json: 0,
+    libraryhome: '',
+    forceGUIupdate: false,
+    maxvol: 100,
+    minvol: 0,
+    mode: 'websocket',
+    noticeUI: {},
+    playlist: null,
+    plugin: '',
+    state: '',
+    old_state: 'none',
+    stepVolumeDelta: 0,
+    stepVolumeInt: 0,
+    stream: '',
+    visibility: 'visible',
+    vol_changed_local: 0,
+    volume: null,
+    clientUUID: null
+};
+
+PNotify.prototype.options.styling = 'fontawesome';
+PNotify.prototype.options.stack.dir1 = 'up';
+PNotify.prototype.options.stack.dir2 = 'left';
+PNotify.prototype.options.stack.firstpos1 = 90;
+PNotify.prototype.options.stack.firstpos2 = 50;
+PNotify.prototype.options.stack.spacing1 = 10;
+PNotify.prototype.options.stack.spacing2 = 10;
+
+function renderMSG( text ) {
+    var notify = text[ 0 ];
+    var noticeOptions = {
+        title: ( 'title' in notify ) ? notify.title : '',
+        text: ( 'text' in notify ) ? notify.text : '',
+        icon: ( notify.icon === undefined ) ? 'fa fa-check' : notify.icon,
+        opacity: ( notify.opacity === undefined ) ? 0.9 : notify.opacity,
+        hide: ( notify.hide === undefined && notify.permanotice === undefined ),
+        buttons: {
+            closer: ( notify.permanotice === undefined ),
+            sticker: ( notify.permanotice === undefined )
+        },
+        delay: ( notify.delay === undefined ) ? 8000 : notify.delay,
+        mouse_reset: false
+    };
+    if ( 'permanotice' in notify ) {
+        if ( GUI.noticeUI[ notify.permanotice ] === undefined ) {
+            GUI.noticeUI[ notify.permanotice ] = new PNotify( noticeOptions );
+        } else {
+            if ( 'permaremove' in notify ) {
+                GUI.noticeUI[ notify.permanotice ].remove();
+                GUI.noticeUI[ notify.permanotice ] = undefined;
+            } else {
+                GUI.noticeUI[ notify.permanoticeb].open();
+            }
+        }
+    } else {
+        new PNotify( noticeOptions );
+    }
+}
+
+// UUID for the client
+var d = new Date().getTime();
+GUI.clientUUID = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace( /[xy]/g, function( c ) {
+    var r = ( d + Math.random() * 16 ) % 16 | 0;
+    return ( c=='x' ? r : ( r & 0x3 | 0x8 ) ).toString( 16 );
+} );
+
+// send a MPD playback control command
+function sendCmd( cmd ) {
+    $.get( '/command/?cmd='+ cmd +'&clientUUID='+ GUI.clientUUID );
+}
+
+
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+if ( document.location.hostname === 'localhost' )
+	$( '.osk-trigger' ).onScreenKeyboard( {
+		'draggable': true
+} );
+
+// recover the path from input string
+function parsePath( str ) {
+    var cutpos = str && str.length ? str.lastIndexOf( '/' ) : 0;
+    return ( cutpos && cutpos !== -1 ) ? str.slice( 0, cutpos ) : '';
+}
+
+// launch the right AJAX call for Library rendering
+function getDB( options ) {
+    // DEFAULTS
+    var cmd = options.cmd || 'browse',
+        path = options.path || '',
+        browsemode = options.browsemode || 'file',
+        uplevel = options.uplevel || '',
+        plugin = options.plugin || '',
+        querytype = options.querytype || '',
+        args = options.args || '';
+        
+    $( '#spinner-db' ).removeClass( 'hide' );
+    GUI.browsemode = browsemode;
+    
+    if ( plugin ) {
+        if ( plugin === 'Spotify' ) {
+            $.post( '/db/?cmd=spotify', { 'plid': args }, function( data ) {
+                populateDB( {
+                    data: data,
+                    path: path,
+                    plugin: plugin,
+                    querytype: querytype,
+                    uplevel: uplevel,
+                    args: args
+                } );
+            }, 'json' );
+        }
+        else if ( plugin === 'Dirble' ) {
+            if ( querytype === 'childs' ) {
+                $.post( '/db/?cmd=dirble', { 'querytype': 'childs', 'args': args }, function( data ) {
+                    populateDB( {
+                        data: data,
+                        path: path,
+                        plugin: plugin,
+                        querytype: 'childs',
+                        uplevel: uplevel
+                    } );
+                }, 'json' );
+                $.post( '/db/?cmd=dirble', { 'querytype': 'childs-stations', 'args': args }, function( data ) {
+                    populateDB( {
+                        data: data,
+                        path: path,
+                        plugin: plugin,
+                        querytype: 'childs-stations',
+                        uplevel: uplevel
+                    } );
+                }, 'json' );            
+            } else {
+                $.post( '/db/?cmd=dirble', { 'querytype': (querytype === '' ) ? 'categories' : querytype, 'args': args }, function( data ) {
+                    populateDB( {
+                        data: data,
+                        path: path,
+                        plugin: plugin,
+                        querytype: querytype,
+                        uplevel: uplevel
+                    } );
+                }, 'json' );
+            }
+        }
+        else if ( plugin === 'Jamendo' ) {
+            $.post( '/db/?cmd=jamendo', { 'querytype': (querytype === '' ) ? 'radio' : querytype, 'args': args }, function( data ) {
+                populateDB( {
+                    data: data.results,
+                    path: path,
+                    plugin: plugin,
+                    querytype: querytype
+                } );
+            }, 'json' );
+        }
+    } else {
+    // normal browsing
+        if ( cmd === 'search' ) {
+            var keyword = $( '#db-search-keyword' ).val();
+            if ( path.match(/Dirble/)) {
+                $.post( '/db/?cmd=dirble', { 'querytype': 'search', 'args': keyword }, function( data ) {
+                    populateDB( {
+                        data: data,
+                        path: path,
+                        plugin: 'Dirble',
+                        querytype: 'search',
+                        uplevel: uplevel
+                    } );
+                }, 'json' );
+            } else {
+                $.post( '/db/?querytype='+ GUI.browsemode + '&cmd=search', { 'query': keyword }, function( data ) {
+                    populateDB( {
+                        data: data,
+                        path: path,
+                        uplevel: uplevel,
+                        keyword: keyword
+                    } );
+                }, 'json' );
+            }
+        } else if ( cmd === 'browse' ) {
+            $.post( '/db/?cmd=browse', { 'path': path, 'browsemode': GUI.browsemode }, function( data ) {
+                populateDB( {
+                    data: data,
+                    path: path,
+                    uplevel: uplevel
+                } );
+            }, 'json' );
+        } else {
+            $( '#spinner-db' ).addClass( 'hide' );
+            $.post( '/db/?cmd='+ cmd, { 'path': path, 'querytype': querytype } );
+        }
+    }
+}
+
+function libraryHome( text ) {
+    GUI.libraryhome = text[ 0 ];
+    if ( GUI.libraryhome.clientUUID === GUI.clientUUID && GUI.plugin !== 'Dirble' && GUI.currentpath !== 'Webradio' ) {
+        renderLibraryHome(); // TODO: do it only while in home
+    }
+    if ( GUI.currentpath === 'Webradio' ) {
+        getDB( {
+            path: 'Webradio',
+            uplevel: 0
+		} );
+    }
+	if ( GUI.forceGUIupdate === true ) {
+        GUI.forceGUIupdate = false;
+		renderLibraryHome();
+	}
+}
+
+$( '#timeTL, #coverTL' ).click( function() {
+    $( '#overlay-playsource' ).addClass( 'open' );
+} );
+$( '#overlay-playsource-close' ).click( function() {
+    $( '#overlay-playsource' ).removeClass( ' open' );
+} );
+
+$( '#overlay-social-open' ).click( function() {
+    $( '#overlay-social' ).addClass( 'open' );
+	var urlTwitter = 'https://twitter.com/home?status=Listening+to+' + GUI.json.currentsong.replace( /\s+/g, '+' ) +'+by+'+ GUI.json.currentartist.replace( /\s+/g, '+' ) +'+on+%40RuneAudio+http%3A%2F%2Fwww.runeaudio.com%2F+%23nowplaying';
+	$( '#urlTwitter' ).attr( 'href', urlTwitter );
+} );
+$( '#overlay-social-close' ).click( function() {
+    $( '#overlay-social' ).removeClass( 'open' );
+} );
+
+GUI.mode = window.WebSocket ? 'websocket' : 'longpolling';
+
+var pushstreamnofify = new PushStream( {
+	host: window.location.hostname,
+	port: window.location.port,
+	modes: GUI.mode
+} );
+pushstreamnofify.onmessage = renderMSG;
+pushstreamnofify.addChannel( 'notify' );
+pushstreamnofify.connect();
 
 var pushstreamplayback = new PushStream( {
 	host: window.location.hostname,
@@ -60,8 +307,6 @@ pushstreamdisplay.onmessage = function( data ) { // on receive broadcast
 }
 pushstreamdisplay.connect();
 
-overlayTrigger( '#overlay-social' );
-overlayTrigger( '#overlay-playsource' );
 $( '#playsource-spotify' ).click( function() {
 	if ( $( this ).hasClass( 'inactive' ) ) {
 		if ( GUI.libraryhome.Spotify === '1' ) {
@@ -552,12 +797,12 @@ $( '#database-entries' ).on( 'click', 'li', function( e ) {
 			} );
 			GUI.plugin = 'Dirble';
 		} else if ( $this.hasClass( 'db-jamendo' ) ) {
-			// getDB({
+			// getDB( {
 				// path: GUI.currentpath +'/'+ $this.find( 'span' ).text(),
 				// plugin: 'Jamendo',
 				// querytype: 'radio',
 				// args : $this.data( 'path' )
-			// });
+			// } );
 		} else {
 		// browse by file (default)
 			getDB( {
@@ -1463,12 +1708,6 @@ function setPlaybackSource() {
 //		$( '#volume-knob, #vol-group' ).addClass( 'hide' );
 		$( '#single' ).prop( 'disabled' );
 	}
-	$('#playlist-entries').removeClass(function(index, css) {
-		return (css.match (/(^|\s)playlist-\S+/g) || []).join(' ');
-	}).addClass('playlist-' + source);
-	$('#pl-manage').removeClass(function(index, css) {
-		return (css.match (/(^|\s)pl-manage-\S+/g) || []).join(' ');
-	}).addClass('pl-manage-' + source);
 }
 function chkKey( key ) {
 	return ( key !== undefined && key !== '' );
@@ -1479,7 +1718,6 @@ function renderLibraryHome() {
 	$( '#db-search-keyword' ).val( '' );
 	if ( $( '#database-entries' ).hasClass( 'hide' ) && !bookmarkedit ) return;
 	
-//	loadingSpinner( 'db' );
 	$( '#database-entries, #db-level-up' ).addClass( 'hide' );
 	$( '#home-blocks, #db-homeSetup' ).removeClass( 'hide' );
 	$( '#db-homeSetup' ).removeClass( 'btn-primary' ).addClass( 'btn-default' );
@@ -1531,7 +1769,7 @@ function renderLibraryHome() {
 
 	content += '</div>';
 	document.getElementById( 'home-blocks' ).innerHTML = content;
-	loadingSpinner( 'db', 'hide' );
+	$( '#spinner-db' ).addClass( 'hide' );
 	$( '#db-currentpath span' ).html( '<a>&ensp;LIBRARY</a>' );
 // hide breadcrumb, index bar, edit bookmark
 	GUI.currentDBpos[ 10 ] = 0;
@@ -1803,7 +2041,7 @@ function populateDB( options ) {
 		// show index bar
 //		$( '#db-index' ).removeClass( 'hide' );
 		if ( ( path === '' && keyword === '' ) || !data.length ) {
-			loadingSpinner( 'db', 'hide' );
+			$( '#spinner-db' ).addClass( 'hide' );
 			return;
 		} else {
 			var type = {
@@ -1831,7 +2069,7 @@ function populateDB( options ) {
 				} );
 			}
 			if ( data.length === 0 ) {
-				loadingSpinner( 'db', 'hide' );
+				$( '#spinner-db' ).addClass( 'hide' );
 				return;
 			}
 			// browsing
@@ -1947,7 +2185,7 @@ function populateDB( options ) {
 	} else {
 		customScroll( 'db', 0, 0 );
 	}*/
-	if ( querytype != 'childs' ) loadingSpinner('db', 'hide');
+	if ( querytype != 'childs' ) $( '#spinner-db' ).addClass( 'hide' );
 	if ( $( '#database-entries li:eq( 0 )' ).hasClass( 'db-folder' ) ) {
 		$( '#db-index' ).removeClass( 'hide' );
 		$( '#database-entries' ).css( 'width', 'calc( 100% - 38px )' );
@@ -2009,7 +2247,7 @@ function getPlaylistPlain( data ) {
 	$( '#pl-manage, #pl-count' ).removeClass( 'hide' );
 	$( '#pl-count' ).html( counthtml );
 }
-function getPlaylistCmd(){
+function getPlaylistCmd() {
 	if ( GUI.json.playlistlength == 0 ) {
 		$( '.playlist, #pl-filter-results' ).addClass( 'hide' );
 		$( '#playlist-warning' ).removeClass( 'hide' );
@@ -2017,35 +2255,24 @@ function getPlaylistCmd(){
 		$( '#pl-count').html( '<a>PLAYLIST</a>' );
 		return;
 	}
-	loadingSpinner('pl');
-	$.ajax({
-		url: '/db/?cmd=playlist',
-		success: function(data){
+	$( '#spinner-pl' ).removeClass( 'hide' );
+	$.get( '/db/?cmd=playlist', function( data ) {
 			if ( data.length > 4) {
-				$('.playlist').addClass('hide');
-				$('#playlist-entries').removeClass('hide');
-				getPlaylistPlain(data);
-				
-/*				var current = parseInt(GUI.json.song);
-				if ($('#panel-dx').hasClass('active') && GUI.currentsong !== GUI.json.currentsong) {
-					customScroll('pl', current, 200); // highlight current song in playlist
-				}*/
+				$( '.playlist' ).addClass( 'hide' );
+				$( '#playlist-entries' ).removeClass( 'hide' );
+				getPlaylistPlain( data );
 			} else {
-				$('.playlist').addClass('hide');
+				$( '.playlist' ).addClass('hide');
 				$('#playlist-warning').removeClass('hide');
 				$('#pl-filter-results').addClass('hide').html('');
-				$('#pl-count').removeClass('hide').html('');
+				$('#pl-count').removeClass('hide');
 			}
-			loadingSpinner('pl', 'hide');
-		},
-		cache: false
-	});
+			$( '#spinner-pl' ).addClass( 'hide' );
+	} );
 }
 function getPlaylists() {
-    loadingSpinner('pl');
-    $.ajax({
-        url: '/command/?cmd=listplaylists',
-        success: function( data ) {
+    $( '#spinner-pl' ).removeClass( 'hide' );
+    $.get( '/command/?cmd=listplaylists', function( data ) {
 			var pl = data.split( '\n' ).filter( function( el ) { return el.match( /^playlist/ ) } );
 			var content = plname = '';
 			pl.forEach( function( el ) {
@@ -2056,10 +2283,8 @@ function getPlaylists() {
 			$( '.playlist, #pl-manage, #pl-count' ).addClass( 'hide' );
 			$( '#pl-filter-results, #pl-currentpath, #pl-editor' ).removeClass( 'hide' );
 			document.getElementById( 'pl-editor' ).innerHTML = content;
-			loadingSpinner( 'pl', 'hide' );
-        },
-        cache: false
-    });
+			$( '#spinner-pl' ).addClass( 'hide' );
+    } );
 }
 
 prevnext = 0; // for disable 'btn-primary' - previous/next while stop
