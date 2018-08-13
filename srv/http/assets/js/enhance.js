@@ -203,23 +203,6 @@ function getDB( options ) {
     }
 }
 
-function libraryHome( text ) {
-    GUI.libraryhome = text[ 0 ];
-    if ( GUI.libraryhome.clientUUID === GUI.clientUUID && GUI.plugin !== 'Dirble' && GUI.currentpath !== 'Webradio' ) {
-        renderLibraryHome(); // TODO: do it only while in home
-    }
-    if ( GUI.currentpath === 'Webradio' ) {
-        getDB( {
-            path: 'Webradio',
-            uplevel: 0
-		} );
-    }
-	if ( GUI.forceGUIupdate === true ) {
-        GUI.forceGUIupdate = false;
-		renderLibraryHome();
-	}
-}
-
 $( '#timeTL, #coverTL' ).click( function() {
     $( '#overlay-playsource' ).addClass( 'open' );
 } );
@@ -238,14 +221,14 @@ $( '#overlay-social-close' ).click( function() {
 
 GUI.mode = window.WebSocket ? 'websocket' : 'longpolling';
 
-var pushstreamnofify = new PushStream( {
+var pushstreamnotify = new PushStream( {
 	host: window.location.hostname,
 	port: window.location.port,
 	modes: GUI.mode
 } );
-pushstreamnofify.onmessage = renderMSG;
-pushstreamnofify.addChannel( 'notify' );
-pushstreamnofify.connect();
+pushstreamnotify.onmessage = renderMSG;
+pushstreamnotify.addChannel( 'notify' );
+pushstreamnotify.connect();
 
 var pushstreamplayback = new PushStream( {
 	host: window.location.hostname,
@@ -265,6 +248,22 @@ pushstreamplayback.onstatuschange = function( status ) {
 pushstreamplayback.addChannel( 'playback' );
 pushstreamplayback.connect();
 
+function libraryHome( text ) {
+    GUI.libraryhome = text[ 0 ];
+    if ( GUI.libraryhome.clientUUID === GUI.clientUUID && GUI.plugin !== 'Dirble' && GUI.currentpath !== 'Webradio' ) {
+        renderLibraryHome(); // TODO: do it only while in home
+    }
+    if ( GUI.currentpath === 'Webradio' ) {
+        getDB( {
+            path: 'Webradio',
+            uplevel: 0
+		} );
+    }
+	if ( GUI.forceGUIupdate === true ) {
+        GUI.forceGUIupdate = false;
+		renderLibraryHome();
+	}
+}
 var pushstreamlibrary = new PushStream( {
 	host: window.location.hostname,
 	port: window.location.port,
@@ -326,10 +325,6 @@ $( '#playsource-spotify' ).click( function() {
 		}
 	}
 } );
-
-
-// fix: midori renders box-shadow incorrectly
-if ( /Midori/.test( navigator.userAgent ) ) $( 'head link[rel="stylesheet"]').last().after( '<link rel="stylesheet" href="/css/midori.css">' )
 
 $( '#menu-settings' ).click( function() {
 	$( '#settings' ).toggleClass( 'hide' ).css( 'top', $( '#menu-top' ).is( ':hidden' ) ? 0 : '40px' );
@@ -2605,10 +2600,5 @@ function renderUI( text ) {
 			getPlaylistCmd();
 			GUI.playlist = GUI.json.playlist;
 		}
-	} else if ( /\/sources\//.test( location.pathname ) === true ) { // sources page
-		GUI.json = text[ 0 ];
-		var mpdupdate = GUI.json.updating_db !== undefined ? true : false;
-		$( '#open-panel-sx i' ).toggleClass( 'blink', mpdupdate );
-		$( '#updatempddb i, #rescanmpddb i' ).toggleClass( 'fa-spin', mpdupdate );
 	}
 }
