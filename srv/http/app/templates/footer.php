@@ -2,12 +2,14 @@
 	<img src="<?=$this->asset('/img/runelogo.svg')?>">
 </div>
 
-<!-- pass cache busting assets to addons and gpiosettings -->
+<!-- pass cache busting assets to addonsbash.php and gpiosettings.php -->
+<?php if ( $this->uri(1) === 'addons' ): ?>
 <input id="addonswoff" type="hidden" value="<?=$this->asset('/fonts/addons.woff')?>">
 <input id="addonsttf" type="hidden" value="<?=$this->asset('/fonts/addons.ttf')?>">
 <input id="addonsinfocss" type="hidden" value="<?=$this->asset('/css/addonsinfo.css')?>">
 <input id="addonscss" type="hidden" value="<?=$this->asset('/css/addons.css')?>">
 <input id="addonsinfojs" type="hidden" value="<?=$this->asset('/js/addonsinfo.js')?>">
+<?php endif ?>
 <?php if ( file_exists('/srv/http/assets/js/gpio.js') ): ?>
 <input id="gpiosettingscss" type="hidden" value="<?=$this->asset('/css/gpiosettings.css')?>">
 <input id="gpiosettingsjs" type="hidden" value="<?=$this->asset('/js/gpiosettings.js')?>">
