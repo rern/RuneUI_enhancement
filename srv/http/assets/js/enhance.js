@@ -30,6 +30,21 @@ var GUI = {
     clientUUID: null
 };
 
+$( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+if ( document.location.hostname === 'localhost' ) $( '.osk-trigger' ).onScreenKeyboard( { 'draggable': true } );
+
+// UUID for the client
+var d = new Date().getTime();
+GUI.clientUUID = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace( /[xy]/g, function( c ) {
+    var r = ( d + Math.random() * 16 ) % 16 | 0;
+    return ( c=='x' ? r : ( r & 0x3 | 0x8 ) ).toString( 16 );
+} );
+// send a MPD playback control command
+function sendCmd( cmd ) {
+    $.get( '/command/?cmd='+ cmd +'&clientUUID='+ GUI.clientUUID );
+}
+
 PNotify.prototype.options.styling = 'fontawesome';
 PNotify.prototype.options.stack.dir1 = 'up';
 PNotify.prototype.options.stack.dir2 = 'left';
@@ -68,159 +83,6 @@ function renderMSG( text ) {
         new PNotify( noticeOptions );
     }
 }
-
-// UUID for the client
-var d = new Date().getTime();
-GUI.clientUUID = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace( /[xy]/g, function( c ) {
-    var r = ( d + Math.random() * 16 ) % 16 | 0;
-    return ( c=='x' ? r : ( r & 0x3 | 0x8 ) ).toString( 16 );
-} );
-
-// send a MPD playback control command
-function sendCmd( cmd ) {
-    $.get( '/command/?cmd='+ cmd +'&clientUUID='+ GUI.clientUUID );
-}
-
-
-$( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-if ( document.location.hostname === 'localhost' )
-	$( '.osk-trigger' ).onScreenKeyboard( {
-		'draggable': true
-} );
-
-// recover the path from input string
-function parsePath( str ) {
-    var cutpos = str && str.length ? str.lastIndexOf( '/' ) : 0;
-    return ( cutpos && cutpos !== -1 ) ? str.slice( 0, cutpos ) : '';
-}
-
-// launch the right AJAX call for Library rendering
-function getDB( options ) {
-    // DEFAULTS
-    var cmd = options.cmd || 'browse',
-        path = options.path || '',
-        browsemode = options.browsemode || 'file',
-        uplevel = options.uplevel || '',
-        plugin = options.plugin || '',
-        querytype = options.querytype || '',
-        args = options.args || '';
-        
-    $( '#spinner-db' ).removeClass( 'hide' );
-    GUI.browsemode = browsemode;
-    
-    if ( plugin ) {
-        if ( plugin === 'Spotify' ) {
-            $.post( '/db/?cmd=spotify', { 'plid': args }, function( data ) {
-                populateDB( {
-                    data: data,
-                    path: path,
-                    plugin: plugin,
-                    querytype: querytype,
-                    uplevel: uplevel,
-                    args: args
-                } );
-            }, 'json' );
-        }
-        else if ( plugin === 'Dirble' ) {
-            if ( querytype === 'childs' ) {
-                $.post( '/db/?cmd=dirble', { 'querytype': 'childs', 'args': args }, function( data ) {
-                    populateDB( {
-                        data: data,
-                        path: path,
-                        plugin: plugin,
-                        querytype: 'childs',
-                        uplevel: uplevel
-                    } );
-                }, 'json' );
-                $.post( '/db/?cmd=dirble', { 'querytype': 'childs-stations', 'args': args }, function( data ) {
-                    populateDB( {
-                        data: data,
-                        path: path,
-                        plugin: plugin,
-                        querytype: 'childs-stations',
-                        uplevel: uplevel
-                    } );
-                }, 'json' );            
-            } else {
-                $.post( '/db/?cmd=dirble', { 'querytype': (querytype === '' ) ? 'categories' : querytype, 'args': args }, function( data ) {
-                    populateDB( {
-                        data: data,
-                        path: path,
-                        plugin: plugin,
-                        querytype: querytype,
-                        uplevel: uplevel
-                    } );
-                }, 'json' );
-            }
-        }
-        else if ( plugin === 'Jamendo' ) {
-            $.post( '/db/?cmd=jamendo', { 'querytype': (querytype === '' ) ? 'radio' : querytype, 'args': args }, function( data ) {
-                populateDB( {
-                    data: data.results,
-                    path: path,
-                    plugin: plugin,
-                    querytype: querytype
-                } );
-            }, 'json' );
-        }
-    } else {
-    // normal browsing
-        if ( cmd === 'search' ) {
-            var keyword = $( '#db-search-keyword' ).val();
-            if ( path.match(/Dirble/)) {
-                $.post( '/db/?cmd=dirble', { 'querytype': 'search', 'args': keyword }, function( data ) {
-                    populateDB( {
-                        data: data,
-                        path: path,
-                        plugin: 'Dirble',
-                        querytype: 'search',
-                        uplevel: uplevel
-                    } );
-                }, 'json' );
-            } else {
-                $.post( '/db/?querytype='+ GUI.browsemode + '&cmd=search', { 'query': keyword }, function( data ) {
-                    populateDB( {
-                        data: data,
-                        path: path,
-                        uplevel: uplevel,
-                        keyword: keyword
-                    } );
-                }, 'json' );
-            }
-        } else if ( cmd === 'browse' ) {
-            $.post( '/db/?cmd=browse', { 'path': path, 'browsemode': GUI.browsemode }, function( data ) {
-                populateDB( {
-                    data: data,
-                    path: path,
-                    uplevel: uplevel
-                } );
-            }, 'json' );
-        } else {
-            $( '#spinner-db' ).addClass( 'hide' );
-            $.post( '/db/?cmd='+ cmd, { 'path': path, 'querytype': querytype } );
-        }
-    }
-}
-
-$( '#timeTL, #coverTL' ).click( function() {
-    $( '#overlay-playsource' ).addClass( 'open' );
-} );
-$( '#overlay-playsource-close' ).click( function() {
-    $( '#overlay-playsource' ).removeClass( ' open' );
-} );
-
-$( '#overlay-social-open' ).click( function() {
-    $( '#overlay-social' ).addClass( 'open' );
-	var urlTwitter = 'https://twitter.com/home?status=Listening+to+' + GUI.json.currentsong.replace( /\s+/g, '+' ) +'+by+'+ GUI.json.currentartist.replace( /\s+/g, '+' ) +'+on+%40RuneAudio+http%3A%2F%2Fwww.runeaudio.com%2F+%23nowplaying';
-	$( '#urlTwitter' ).attr( 'href', urlTwitter );
-} );
-$( '#overlay-social-close' ).click( function() {
-    $( '#overlay-social' ).removeClass( 'open' );
-} );
-
-GUI.mode = window.WebSocket ? 'websocket' : 'longpolling';
-
 var pushstreamnotify = new PushStream( {
 	host: window.location.hostname,
 	port: window.location.port,
@@ -242,7 +104,7 @@ pushstreamplayback.onstatuschange = function( status ) {
 		$( '#loader' ).addClass( 'hide' );
 		sendCmd( 'renderui' ); // force UI rendering (backend-call)
 	} else if ( status === 0 ) {
-		$( '#loader' ).removeClass('hide');          
+		$( '#loader' ).removeClass( 'hide' );          
 	}
 };
 pushstreamplayback.addChannel( 'playback' );
@@ -270,7 +132,7 @@ var pushstreamlibrary = new PushStream( {
 	modes: GUI.mode
 } );
 pushstreamlibrary.onmessage = libraryHome;
-pushstreamlibrary.addChannel('library');
+pushstreamlibrary.addChannel( 'library' );
 pushstreamlibrary.connect();
 
 /*var pushstreamplaylist = new PushStream( {
@@ -281,7 +143,7 @@ pushstreamlibrary.connect();
 pushstreamplaylist.onmessage = getPlaylist;
 // pushstreamplaylist.onstatuschange = function(status) {
 // force queue rendering (backend-call)
-	// if (status === 2) sendCmd('renderpl');
+	// if (status === 2) sendCmd( 'renderpl' );
 // };
 pushstreamplaylist.addChannel( 'playlist' );
 pushstreamplaylist.connect();*/
@@ -305,26 +167,6 @@ pushstreamdisplay.onmessage = function( data ) { // on receive broadcast
 	}
 }
 pushstreamdisplay.connect();
-
-$( '#playsource-spotify' ).click( function() {
-	if ( $( this ).hasClass( 'inactive' ) ) {
-		if ( GUI.libraryhome.Spotify === '1' ) {
-			GUI.forceGUIupdate = true;
-			$.ajax( {
-				url: '/command/?switchplayer=Spotify',
-				cache: false
-			} );
-			// close switch buttons layer
-			$( '#overlay-playsource-close' ).trigger( 'click' );
-		} else {
-			new PNotify( {
-				title : 'Spotify not enabled',
-				text  : 'Enable and configure it under the Settings screen',
-				icon  : 'fa fa-exclamation-circle'
-			} );
-		}
-	}
-} );
 
 $( '#menu-settings' ).click( function() {
 	$( '#settings' ).toggleClass( 'hide' ).css( 'top', $( '#menu-top' ).is( ':hidden' ) ? 0 : '40px' );
@@ -677,6 +519,39 @@ $( '#turnoff' ).click( function() {
 		}
 	} );
 } );
+$( '#overlay-playsource-open' ).click( function() {
+    $( '#overlay-playsource' ).addClass( 'open' );
+} );
+$( '#overlay-playsource-close' ).click( function() {
+    $( '#overlay-playsource' ).removeClass( 'open' );
+} );
+$( '#overlay-social-open' ).click( function() {
+    $( '#overlay-social' ).addClass( 'open' );
+	var urlTwitter = 'https://twitter.com/home?status=Listening+to+' + GUI.json.currentsong.replace( /\s+/g, '+' ) +'+by+'+ GUI.json.currentartist.replace( /\s+/g, '+' ) +'+on+%40RuneAudio+http%3A%2F%2Fwww.runeaudio.com%2F+%23nowplaying';
+	$( '#urlTwitter' ).attr( 'href', urlTwitter );
+} );
+$( '#overlay-social-close' ).click( function() {
+    $( '#overlay-social' ).removeClass( 'open' );
+} );
+$( '#playsource-spotify' ).click( function() {
+	if ( $( this ).hasClass( 'inactive' ) ) {
+		if ( GUI.libraryhome.Spotify === '1' ) {
+			GUI.forceGUIupdate = true;
+			$.ajax( {
+				url: '/command/?switchplayer=Spotify',
+				cache: false
+			} );
+			// close switch buttons layer
+			$( '#overlay-playsource-close' ).trigger( 'click' );
+		} else {
+			new PNotify( {
+				title : 'Spotify not enabled',
+				text  : 'Enable and configure it under the Settings screen',
+				icon  : 'fa fa-exclamation-circle'
+			} );
+		}
+	}
+} );
 
 // library directory path link
 $( '#db-home' ).click( function() {
@@ -777,7 +652,7 @@ $( '#database-entries' ).on( 'click', 'li', function( e ) {
 			} );
 		} else if ( $this.hasClass( 'db-spotify' ) ) {
 			getDB( {
-				path: GUI.currentpath +'/'+ $this.find('span').text(),
+				path: GUI.currentpath +'/'+ $this.find( 'span' ).text(),
 				plugin: 'Spotify',
 				args: $this.data( 'path' ).toString(),
 				querytype: 'tracks'
@@ -862,7 +737,7 @@ $( '#playlist-entries' ).on( 'click', 'li', function( e ) {
 	}
 	sendCmd( 'play '+ $( this ).index() );
 	$( '#playlist-entries li' ).removeClass( 'active' );
-	$( this ).addClass('active');
+	$( this ).addClass( 'active' );
 } );
 // context menus //////////////////////////////////////////////
 $( 'body' ).click( function( e ) {
@@ -1395,7 +1270,7 @@ $( '#volume' ).roundSlider( {
 		$volumehandle.addClass( 'rs-transition' ).eq( 0 ) // make it rotate with 'rs-transition'
 			.rsRotate( - this._handle1.angle );  // initial rotate
 	},
-	change: function( e ) { // (not fire on 'setValue') value after click or 'stop drag'
+	change: function( e ) { // (not fire on 'setValue' ) value after click or 'stop drag'
 		onsetvolume = 1;
 		setTimeout( function() {
 			onsetvolume = 0;
@@ -1478,12 +1353,6 @@ $( '#volup, #voldn' ).click( function() {
 	$volumeRS.setValue( vol );
 	$volumehandle.rsRotate( - $volumeRS._handle1.angle );
 } );
-
-} ); // document ready end <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-
-// load only not in setting pages
-if ( /\/.*\//.test( location.pathname ) === false ) { // start if >>>>>>>>>>>>>>>>>>>
 
 function setvol( vol ) {
 	GUI.volume = vol;
@@ -1695,9 +1564,9 @@ function displayLibrary() {
 
 function setPlaybackSource() {
 	var activePlayer = GUI.libraryhome.ActivePlayer;
-	$('#overlay-playsource a').addClass('inactive');
+	$( '#overlay-playsource a' ).addClass( 'inactive' );
 	var source = activePlayer.toLowerCase();
-	$('#playsource-' + source).removeClass('inactive');
+	$( '#playsource-' + source).removeClass( 'inactive' );
 	
 	if ( activePlayer === 'Spotify' || activePlayer === 'Airplay' ) {
 //		$( '#volume-knob, #vol-group' ).addClass( 'hide' );
@@ -1730,28 +1599,28 @@ function renderLibraryHome() {
 	}
 	if ( chkKey( obj.networkMounts ) ) {
 		content += divOpen +'<a id="home-nas" class="home-block'+ toggleMPD +'"'+ ( obj.networkMounts === 0 ? ( notMPD ? '' : ' href="/sources/add/"' ) : ' data-path="NAS"' ) +'>';
-		content += '<i class="fa fa-network"></i><h4>Network drives <span>(' + obj.networkMounts + ')</span></h4></a></div>';
+		content += '<i class="fa fa-network"></i><h4>Network drives <span>( '+ obj.networkMounts +' )</span></h4></a></div>';
 	}
 	if ( chkKey( obj.localStorages ) ) {
-		content += ( obj.localStorages === 0 ) ? '' : divOpen +'<div id="home-local" class="home-block'+ toggleMPD +'" data-path="LocalStorage"><i class="fa fa-microsd"></i><h4>SD card <span>('+ obj.localStorages +')</span></h4></div></div>';
+		content += ( obj.localStorages === 0 ) ? '' : divOpen +'<div id="home-local" class="home-block'+ toggleMPD +'" data-path="LocalStorage"><i class="fa fa-microsd"></i><h4>SD card <span>( '+ obj.localStorages +' )</span></h4></div></div>';
 	}
 	if ( chkKey( obj.USBMounts ) ) {
 		content += divOpen +'<div id="home-usb" class="home-block'+ toggleMPD +'"'+ ( obj.USBMounts === 0 ? ( notMPD ? '' : ' href="/sources/sources/"' ) : ' data-path="USB"' ) +'>';
-		content += '<i class="fa fa-usbdrive"></i><h4>USB drives <span>('+ obj.USBMounts +')</span></h4></div></div>';
+		content += '<i class="fa fa-usbdrive"></i><h4>USB drives <span>( '+ obj.USBMounts +' )</span></h4></div></div>';
 	}
 	if ( chkKey( obj.webradio ) ) {
 		if ( obj.webradio === 0 ) {
-			content += divOpen +'<div id="home-webradio" class="home-block' + toggleMPD + '" href="#" data-toggle="modal" data-target="#modal-webradio-add"><i class="fa fa-webradio"></i><h4>Webradios <span>('+ obj.webradio +')</span></h4></div></div>';
+			content += divOpen +'<div id="home-webradio" class="home-block'+ toggleMPD +'" href="#" data-toggle="modal" data-target="#modal-webradio-add"><i class="fa fa-webradio"></i><h4>Webradios <span>( '+ obj.webradio +' )</span></h4></div></div>';
 		} else {
-			content += divOpen +'<div id="home-webradio" class="home-block'+ toggleMPD +'" data-path="Webradio"><i class="fa fa-webradio"></i><h4>Webradios <span>('+ obj.webradio +')</span></h4></div></div>';
+			content += divOpen +'<div id="home-webradio" class="home-block'+ toggleMPD +'" data-path="Webradio"><i class="fa fa-webradio"></i><h4>Webradios <span>( '+ obj.webradio +' )</span></h4></div></div>';
 		}
 	}
 	content += divOpen +'<div id="home-albums" class="home-block'+ toggleMPD +'" data-path="Albums" data-browsemode="album"><i class="fa fa-album"></i><h4>Albums</h4></div></div>';
 	content += divOpen +'<div id="home-artists" class="home-block'+ toggleMPD +'" data-path="Artists" data-browsemode="artist"><i class="fa fa-artist"></i><h4>Artists</h4></div></div>';
 	content += divOpen +'<div id="home-composer" class="home-block'+ toggleMPD +'" data-path="Composer" data-browsemode="composer"><i class="fa fa-composer"></i><h4>Composers</h4></div></div>';
-	content += divOpen +'<div id="home-genre" class="home-block' + toggleMPD +'" data-path="Genres" data-browsemode="genre"><i class="fa fa-genre"></i><h4>Genres</h4></div></div>';
+	content += divOpen +'<div id="home-genre" class="home-block'+ toggleMPD +'" data-path="Genres" data-browsemode="genre"><i class="fa fa-genre"></i><h4>Genres</h4></div></div>';
 	if ( chkKey( obj.Spotify ) && obj.Spotify !== '0' ) {
-		if (obj.ActivePlayer !== 'Spotify') {
+		if (obj.ActivePlayer !== 'Spotify' ) {
 			content += divOpen +'<div id="home-spotify-switch" class="home-block"><i class="fa fa-spotify"></i><h4>Spotify</h4></div></div>';
 		} else {
 			content += divOpen +'<div id="home-spotify" class="home-block'+ toggleSpotify +'" data-plugin="Spotify" data-path="Spotify"><i class="fa fa-spotify"></i><h4>Spotify</h4></div></div>';
@@ -1772,7 +1641,7 @@ function renderLibraryHome() {
 	displayLibrary();
 }
 
-function parseResponse(options) {
+function parseResponse( options ) {
 	var inputArr = options.inputArr || '',
 		respType = options.respType || '',
 		i = options.i || 0,
@@ -1780,19 +1649,20 @@ function parseResponse(options) {
 		querytype = options.querytype || '',
 		content = '';
 	
-	switch (respType) {
+	switch ( respType ) {
 		case 'playlist':
 			// code placeholder
 		break;
 		case 'db':
-			if (GUI.browsemode === 'file') {
-				if (inpath === '' && inputArr.file !== undefined) {
-					inpath = parsePath(inputArr.file);
+			if ( GUI.browsemode === 'file' ) {
+				if ( inpath === '' && inputArr.file !== undefined ) {
+					var file = inputArr.file
+					inpath = file.slice( 0, file.lastIndexOf( '/' ) );
 				}
-				if (inputArr.file !== undefined || inpath === 'Webradio') {
-					content = '<li id="db-' + (i + 1) + '" data-path="';
-					if (inpath !== 'Webradio') {
-						if (inputArr.Title !== undefined) {
+				if ( inputArr.file !== undefined || inpath === 'Webradio' ) {
+					content = '<li id="db-'+ ( i + 1 ) +'" data-path="';
+					if ( inpath !== 'Webradio' ) {
+						if ( inputArr.Title !== undefined ) {
 							if ( $( '#db-search-keyword' ).val() ) {
 								var bl = inputArr.Artist +' - '+ inputArr.Album;
 							} else {
@@ -1800,13 +1670,13 @@ function parseResponse(options) {
 							}
 							content += inputArr.file;
 							content += '"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i><span class="sn">';
-							content += inputArr.Title + '<span>' + convertHMS(inputArr.Time) + '</span></span>';
+							content += inputArr.Title +'<span>'+ convertHMS( inputArr.Time ) +'</span></span>';
 							content += '<span class="bl">';
 							content +=  bl;
 						} else {
 							content += inputArr.file;
 							content += '"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i><span class="sn">';
-							content += inputArr.file.replace(inpath + '/', '') + ' <span>' + convertHMS(inputArr.Time) + '</span></span>';
+							content += inputArr.file.replace( inpath +'/', '' ) +' <span>' + convertHMS( inputArr.Time ) +'</span></span>';
 							content += '<span class="bl">';
 							content += ' path: ';
 							content += inpath;
@@ -1814,91 +1684,91 @@ function parseResponse(options) {
 					} else {
 						content += inputArr.playlist;
 						content += '"><i class="fa fa-bars db-action" data-target="#context-menu-webradio"></i><i class="fa fa-webradio db-icon db-radio"></i>';
-						content += '<span class="sn">' + inputArr.playlist.replace(inpath +'/', '').replace('.'+ inputArr.fileext, '');
+						content += '<span class="sn">'+ inputArr.playlist.replace( inpath +'/', '' ).replace( '.'+ inputArr.fileext, '' );
 						content += '</span><span class="bl">'+ inputArr.url;
 					}
 					content += '</span></li>';
-				} else if (inputArr.playlist !== undefined) {
-					if (inputArr.fileext === 'cue') {
-						content = '<li id="db-' + (i + 1) + '" data-path="';
+				} else if ( inputArr.playlist !== undefined ) {
+					if ( inputArr.fileext === 'cue' ) {
+						content = '<li id="db-'+ ( i + 1 ) +'" data-path="';
 						content += inputArr.playlist;
 						content += '"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-file-text db-icon"></i><span class="sn">';
-						content += inputArr.playlist.replace(inpath + '/', '') + ' <span>[CUE file]</span></span>';
+						content += inputArr.playlist.replace( inpath +'/', '' ) +' <span>[CUE file]</span></span>';
 						content += '<span class="bl">';
 						content += ' path: ';
 						content += inpath;
 						content += '</span></li>';
 					}
 				} else {
-					content = '<li id="db-' + (i + 1) + '" class="db-folder" data-path="';
+					content = '<li id="db-'+ ( i + 1 ) +'" class="db-folder" data-path="';
 					content += inputArr.directory;
-					if (inpath !== '') {
+					if (inpath !== '' ) {
 						content += '"><i class="fa fa-bars db-action" data-target="#context-menu"></i><span><i class="fa fa-folder"></i>'
 					} else {
 						content += '"><i class="fa fa-bars db-action" data-target="#context-menu-root"></i><i class="fa fa-hdd-o icon-root"></i><span>';
 					}
-					content += inputArr.directory.replace(inpath + '/', '');
+					content += inputArr.directory.replace( inpath +'/', '' );
 					content += '</span></li>';
 				}
-			} else if (GUI.browsemode === 'album' || GUI.browsemode === 'albumfilter') {
-				if (inputArr.file !== undefined) {
-					content = '<li id="db-' + (i + 1) + '" data-path="';
+			} else if ( GUI.browsemode === 'album' || GUI.browsemode === 'albumfilter' ) {
+				if ( inputArr.file !== undefined ) {
+					content = '<li id="db-'+ ( i + 1 ) +'" data-path="';
 					content += inputArr.file;
 					content += '"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i><span class="sn">';
-					content += inputArr.Title + '<span>' + convertHMS(inputArr.Time) + '</span></span>';
+					content += inputArr.Title +'<span>'+ convertHMS( inputArr.Time ) +'</span></span>';
 					content += ' <span class="bl">';
 					content +=  inputArr.Album;
 					content += ' - ';
 					content +=  inputArr.Artist;
 					content += '</span></li>';
-				} else if (inputArr.album !== '') {
-					content = '<li id="db-' + (i + 1) + '" class="db-folder db-album" data-path="';
-					content += inputArr.album.replace(/\"/g,'&quot;');
+				} else if ( inputArr.album !== '' ) {
+					content = '<li id="db-'+ ( i + 1 ) +'" class="db-folder db-album" data-path="';
+					content += inputArr.album.replace( /\"/g, '&quot;' );
 					content += '"><i class="fa fa-bars db-action" data-target="#context-menu-album"></i><span><i class="fa fa-album"></i>';
 					content += inputArr.album;
 					content += '</span></li>';
 				}
-			} else if (GUI.browsemode === 'artist') {
-				if (inputArr.album !== undefined) {
-					content = '<li id="db-' + (i + 1) + '" class="db-folder db-album" data-path="';
+			} else if ( GUI.browsemode === 'artist' ) {
+				if ( inputArr.album !== undefined ) {
+					content = '<li id="db-'+ ( i + 1 ) +'" class="db-folder db-album" data-path="';
 					content += inputArr.album;
 					content += '"><i class="fa fa-bars db-action" data-target="#context-menu-album"></i><span><i class="fa fa-album"></i>';
-					content += (inputArr.album !== '') ? inputArr.album : 'Unknown album';
+					content += ( inputArr.album !== '' ) ? inputArr.album : 'Unknown album';
 					content += '</span></li>';
-				} else if (inputArr.artist !== '') {
-					content = '<li id="db-' + (i + 1) + '" class="db-folder db-artist" data-path="';
+				} else if ( inputArr.artist !== '' ) {
+					content = '<li id="db-'+ ( i + 1) +'" class="db-folder db-artist" data-path="';
 					content += inputArr.artist;
 					content += '"><i class="fa fa-bars db-action" data-target="#context-menu-artist"></i><span><i class="fa fa-artist"></i>';
 					content += inputArr.artist;
 					content += '</span></li>';
 				}
-			} else if (GUI.browsemode === 'composer') {
-				if (inputArr.file !== undefined) {
-					content = '<li id="db-' + (i + 1) + '" data-path="';
+			} else if ( GUI.browsemode === 'composer' ) {
+				if ( inputArr.file !== undefined ) {
+					content = '<li id="db-'+ ( i + 1 ) +'" data-path="';
 					content += inputArr.file;
 					content += '"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i><span class="sn">';
-					content += inputArr.Title + '<span>' + convertHMS(inputArr.Time) + '</span></span>';
+					content += inputArr.Title +'<span>'+ convertHMS( inputArr.Time ) +'</span></span>';
 					content += ' <span class="bl">';
 					content +=  inputArr.Artist;
 					content += ' - ';
 					content +=  inputArr.Album;
 					content += '</span></li>';
-				} else if (inputArr.composer !== '') {
-					content = '<li id="db-' + (i + 1) + '" class="db-folder db-composer" data-path="';
+				} else if ( inputArr.composer !== '' ) {
+					content = '<li id="db-'+ ( i + 1 ) +'" class="db-folder db-composer" data-path="';
 					content += inputArr.composer;
 					content += '"><i class="fa fa-bars db-action" data-target="#context-menu-composer"></i><span><i class="fa fa-composer"></i>';
 					content += inputArr.composer;
 					content += '</span></li>';
 				}
-			} else if (GUI.browsemode === 'genre') {
-				if (inputArr.artist !== undefined) {
-					content = '<li id="db-' + (i + 1) + '" class="db-folder db-artist" data-path="';
+			} else if ( GUI.browsemode === 'genre' ) {
+				if ( inputArr.artist !== undefined ) {
+					content = '<li id="db-'+ ( i + 1 ) +'" class="db-folder db-artist" data-path="';
 					content += inputArr.artist;
 					content += '"><i class="fa fa-bars db-action" data-target="#context-menu-artist"></i><span><i class="fa fa-album"></i>';
-					content += (inputArr.artist !== '') ? inputArr.artist : 'Unknown artist';
+					content += ( inputArr.artist !== '' ) ? inputArr.artist : 'Unknown artist';
 					content += '</span></li>';
-				} else if (inputArr.genre !== '') {
-					content = '<li id="db-' + (i + 1) + '" class="db-folder db-genre" data-path="';
+				} else if (inputArr.genre !== '' ) {
+					content = '<li id="db-'+ ( i + 1 ) +'" class="db-folder db-genre" data-path="';
 					content += inputArr.genre;
 					content += '"><i class="fa fa-bars db-action" data-target="#context-menu-genre"></i><span><i class="fa fa-genre"></i>';
 					content += inputArr.genre;
@@ -1907,21 +1777,21 @@ function parseResponse(options) {
 			}
 		break;
 		case 'Spotify':
-			if (querytype === '') {
-				content = '<li id="db-' + (i + 1) + '" class="db-spotify db-folder" data-path="';
+			if ( querytype === '' ) {
+				content = '<li id="db-'+ ( i + 1 ) +'" class="db-spotify db-folder" data-path="';
 				content += inputArr.index;
 				content += '"><i class="fa fa-bars db-action" data-target="#context-menu-spotify-pl"></i><span><i class="fa fa-genre"></i>'
-				content += (inputArr.name !== '') ? inputArr.name : 'Favorites';
-				content += ' (';
+				content += ( inputArr.name !== '' ) ? inputArr.name : 'Favorites';
+				content += ' ( ';
 				content += inputArr.tracks;
-				content += ')</span></li>';
-			} else if (querytype === 'tracks') {
-				content = '<li id="db-' + (i + 1) + '" class="db-spotify" data-path="';
+				content += ' )</span></li>';
+			} else if ( querytype === 'tracks' ) {
+				content = '<li id="db-'+ ( i + 1 ) +'" class="db-spotify" data-path="';
 				content += inputArr.index;
 				content += '" data-plid="';
 				content += inpath;
 				content += '" data-type="spotify-track"><i class="fa fa-bars db-action" data-target="#context-menu-spotify"></i><i class="fa fa-spotify db-icon"></i><span class="sn">';
-				content += inputArr.Title + '<span>' + convertHMS(inputArr.duration/1000) + '</span></span>';
+				content += inputArr.Title +'<span>'+ convertHMS( inputArr.duration / 1000 ) +'</span></span>';
 				content += ' <span class="bl">';
 				content +=  inputArr.artist;
 				content += ' - ';
@@ -1930,34 +1800,141 @@ function parseResponse(options) {
 			}
 		break;
 		case 'Dirble':
-			if (querytype === '' || querytype === 'childs') {
-				var childClass = (querytype === 'childs') ? ' db-dirble-child' : '';
-				content = '<li id="db-' + (i + 1) + '" class="db-dirble db-folder' + childClass + '" data-path="';
+			if ( querytype === '' || querytype === 'childs' ) {
+				var childClass = ( querytype === 'childs' ) ? ' db-dirble-child' : '';
+				content = '<li id="db-'+ ( i + 1 ) +'" class="db-dirble db-folder'+ childClass +'" data-path="';
 				content += inputArr.id;
 				content += '"><span><i class="fa fa-genre"></i>'
 				content += inputArr.title;
 				content += '</span></li>';
-			} else if (querytype === 'search' || querytype === 'stations' || querytype === 'childs-stations') {
-				if (inputArr.streams.length === 0) {
+			} else if ( querytype === 'search' || querytype === 'stations' || querytype === 'childs-stations' ) {
+				if ( inputArr.streams.length === 0 ) {
 					break; // Filter stations with no streams
 				}
-				content = '<li id="db-' + (i + 1) + '" class="db-dirble db-radio" data-path="';
-				content += inputArr.name + ' | ' + inputArr.streams[0].stream;
+				content = '<li id="db-'+ ( i + 1 ) +'" class="db-dirble db-radio" data-path="';
+				content += inputArr.name +' | '+ inputArr.streams[ 0 ].stream;
 				content += '"><i class="fa fa-bars db-action" data-target="#context-menu-dirble"></i><i class="fa fa-webradio db-icon"></i>';
-				content += '<span class="sn">' + inputArr.name + '<span>(' + inputArr.country + ')</span></span>';
+				content += '<span class="sn">'+ inputArr.name +'<span>( '+ inputArr.country +' )</span></span>';
 				content += '<span class="bl">';
 				content += inputArr.website ? inputArr.website : '-no website-';
 				content += '</span></li>';
 			}
 		break;
 		case 'Jamendo':
-				content = '<li id="db-' + (i + 1) + '" class="db-jamendo db-folder" data-path="';
+				content = '<li id="db-'+ ( i + 1 ) +'" class="db-jamendo db-folder" data-path="';
 				content += inputArr.stream;
-				content += '"><img class="jamendo-cover" src="/tun/' + inputArr.image + '" alt=""><i class="fa fa-bars db-action" data-target="#context-menu-file"></i>';
-				content += inputArr.dispname + '</div></li>';
+				content += '"><img class="jamendo-cover" src="/tun/'+ inputArr.image +'" alt=""><i class="fa fa-bars db-action" data-target="#context-menu-file"></i>';
+				content += inputArr.dispname +'</div></li>';
 		break;
 	}
 	return content;
+}
+// launch the right AJAX call for Library rendering
+function getDB( options ) {
+    // DEFAULTS
+    var cmd = options.cmd || 'browse',
+        path = options.path || '',
+        browsemode = options.browsemode || 'file',
+        uplevel = options.uplevel || '',
+        plugin = options.plugin || '',
+        querytype = options.querytype || '',
+        args = options.args || '';
+        
+    $( '#spinner-db' ).removeClass( 'hide' );
+    GUI.browsemode = browsemode;
+    
+    if ( plugin ) {
+        if ( plugin === 'Spotify' ) {
+            $.post( '/db/?cmd=spotify', { 'plid': args }, function( data ) {
+                populateDB( {
+                    data: data,
+                    path: path,
+                    plugin: plugin,
+                    querytype: querytype,
+                    uplevel: uplevel,
+                    args: args
+                } );
+            }, 'json' );
+        }
+        else if ( plugin === 'Dirble' ) {
+            if ( querytype === 'childs' ) {
+                $.post( '/db/?cmd=dirble', { 'querytype': 'childs', 'args': args }, function( data ) {
+                    populateDB( {
+                        data: data,
+                        path: path,
+                        plugin: plugin,
+                        querytype: 'childs',
+                        uplevel: uplevel
+                    } );
+                }, 'json' );
+                $.post( '/db/?cmd=dirble', { 'querytype': 'childs-stations', 'args': args }, function( data ) {
+                    populateDB( {
+                        data: data,
+                        path: path,
+                        plugin: plugin,
+                        querytype: 'childs-stations',
+                        uplevel: uplevel
+                    } );
+                }, 'json' );            
+            } else {
+                $.post( '/db/?cmd=dirble', { 'querytype': (querytype === '' ) ? 'categories' : querytype, 'args': args }, function( data ) {
+                    populateDB( {
+                        data: data,
+                        path: path,
+                        plugin: plugin,
+                        querytype: querytype,
+                        uplevel: uplevel
+                    } );
+                }, 'json' );
+            }
+        }
+        else if ( plugin === 'Jamendo' ) {
+            $.post( '/db/?cmd=jamendo', { 'querytype': (querytype === '' ) ? 'radio' : querytype, 'args': args }, function( data ) {
+                populateDB( {
+                    data: data.results,
+                    path: path,
+                    plugin: plugin,
+                    querytype: querytype
+                } );
+            }, 'json' );
+        }
+    } else {
+    // normal browsing
+        if ( cmd === 'search' ) {
+            var keyword = $( '#db-search-keyword' ).val();
+            if ( path.match(/Dirble/)) {
+                $.post( '/db/?cmd=dirble', { 'querytype': 'search', 'args': keyword }, function( data ) {
+                    populateDB( {
+                        data: data,
+                        path: path,
+                        plugin: 'Dirble',
+                        querytype: 'search',
+                        uplevel: uplevel
+                    } );
+                }, 'json' );
+            } else {
+                $.post( '/db/?querytype='+ GUI.browsemode +'&cmd=search', { 'query': keyword }, function( data ) {
+                    populateDB( {
+                        data: data,
+                        path: path,
+                        uplevel: uplevel,
+                        keyword: keyword
+                    } );
+                }, 'json' );
+            }
+        } else if ( cmd === 'browse' ) {
+            $.post( '/db/?cmd=browse', { 'path': path, 'browsemode': GUI.browsemode }, function( data ) {
+                populateDB( {
+                    data: data,
+                    path: path,
+                    uplevel: uplevel
+                } );
+            }, 'json' );
+        } else {
+            $( '#spinner-db' ).addClass( 'hide' );
+            $.post( '/db/?cmd='+ cmd, { 'path': path, 'querytype': querytype } );
+        }
+    }
 }
 // strip leading A|An|The|(|[|. (for sorting)
 function stripLeading( string ) {
@@ -1988,7 +1965,7 @@ function populateDB( options ) {
 
 	if ( path ) GUI.currentpath = path;
 	$( '#database-entries, #db-level-up' ).removeClass( 'hide' );
-	$(' #home-blocks ').addClass('hide');
+	$( ' #home-blocks ' ).addClass( 'hide' );
 
 	if ( plugin ) {
 		if ( plugin === 'Spotify' ) {
@@ -2247,7 +2224,7 @@ function getPlaylistCmd() {
 		$( '.playlist, #pl-filter-results' ).addClass( 'hide' );
 		$( '#playlist-warning' ).removeClass( 'hide' );
 		$( '#pl-filter-results' ).html( '' );
-		$( '#pl-count').html( '<a>PLAYLIST</a>' );
+		$( '#pl-count' ).html( '<a>PLAYLIST</a>' );
 		return;
 	}
 	$( '#spinner-pl' ).removeClass( 'hide' );
@@ -2257,10 +2234,10 @@ function getPlaylistCmd() {
 				$( '#playlist-entries' ).removeClass( 'hide' );
 				getPlaylistPlain( data );
 			} else {
-				$( '.playlist' ).addClass('hide');
-				$('#playlist-warning').removeClass('hide');
-				$('#pl-filter-results').addClass('hide').html('');
-				$('#pl-count').removeClass('hide');
+				$( '.playlist' ).addClass( 'hide' );
+				$( '#playlist-warning' ).removeClass( 'hide' );
+				$( '#pl-filter-results' ).addClass( 'hide' ).html( '' );
+				$( '#pl-count' ).removeClass( 'hide' );
 			}
 			$( '#spinner-pl' ).addClass( 'hide' );
 	} );
@@ -2580,13 +2557,11 @@ function convertHMS( second ) {
 	return ss ? hh + mm + ss : '';
 }
 
-} // end if <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
 // ### called by backend socket - force refresh all clients ###
 function renderUI( text ) {
 	if ( /\/.*\//.test( location.pathname ) === false ) { // not setting pages
 		$( '#loader' ).addClass( 'hide' );
-		if ( !$('#open-playback' ).hasClass( 'active' ) || onsetvolume ) return;
+		if ( !$( '#open-playback' ).hasClass( 'active' ) || onsetvolume ) return;
 		
 		GUI.json = text[ 0 ];
 		GUI.state = GUI.json.state;
@@ -2602,3 +2577,5 @@ function renderUI( text ) {
 		}
 	}
 }
+
+} ); // document ready end <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
