@@ -748,6 +748,7 @@ $( '#pl-manage-clear' ).click( function() {
 $( '#playlist-entries' ).on( 'click', 'li', function( e ) {
 	if ( $( e.target ).hasClass( 'pl-action' ) ) {
 		sendCmd( 'deleteid '+ $( this ).prop( 'id' ).replace( 'pl-', '' ) );
+		$( this ).remove();
 		return
 	}
 	sendCmd( 'play '+ $( this ).index() );
@@ -961,11 +962,7 @@ function webRadioDelete() {
 		, cancel  : 1
 		, ok      : function() {
 			$.post( '/db/?cmd=deleteradio', { 'radio[label]' : GUI.DBentry.name +'.pls' }, function() {
-				if ( $( '#database-entries li' ).length ) {
-					getDB( { path: 'Webradio' } );
-				} else {
-					$( '#db-home' ).click();
-				}
+				$( '#database-entries li.active' ).remove();
 			} );
 		}
 	} );
@@ -1066,11 +1063,7 @@ function playlistDelete() {
 		, cancel  : 1
 		, ok      : function() {
 			$.post( '/command/?cmd=rm%20%22' + GUI.DBentry.name + '%22', function() {
-				if ( $( '#pl-editor li' ).length ) {
-					getPlaylists();
-				} else {
-					$( '#pl-home' ).click();
-				}
+				$( '#pl-editor li.active' ).remove();
 			} );
 		}
 	} );
@@ -2267,8 +2260,8 @@ function getPlaylists() {
 				content += '<li class="pl-folder" data-path="'+ plname +'"><i class="fa fa-bars pl-action"></i><span><i class="fa fa-list-ul"></i>'+ plname +'</span></li>';
 			} );
 			
-			$( '.playlist, #pl-manage, #pl-count' ).addClass( 'hide' );
-			$( '#pl-filter-results, #pl-currentpath, #pl-editor' ).removeClass( 'hide' );
+			$( '.playlist, #pl-manage, #pl-count, #pl-filter-results' ).addClass( 'hide' );
+			$( '#pl-currentpath, #pl-editor' ).removeClass( 'hide' );
 			document.getElementById( 'pl-editor' ).innerHTML = content;
 			$( '#spinner-pl' ).addClass( 'hide' );
     } );
