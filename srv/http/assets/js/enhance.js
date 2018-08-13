@@ -1,33 +1,33 @@
 var GUI = {
-    DBentry: [ '', '', '' ],
-    DBupdate: 0,
-    activePlayer: '',
-    browsemode: 'file',
-    checkvol: 0,
-    currentDBpos: [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-    currentDBpath: [ '', '', '', '', '', '', '', '', '', '', '' ],
-    currentalbum: null,
-    currentknob: null,
-    currentpath: '',
-    currentsong: null,
-    json: 0,
-    libraryhome: '',
-    forceGUIupdate: false,
-    maxvol: 100,
-    minvol: 0,
-    mode: 'websocket',
-    noticeUI: {},
-    playlist: null,
-    plugin: '',
-    state: '',
-    old_state: 'none',
-    stepVolumeDelta: 0,
-    stepVolumeInt: 0,
-    stream: '',
-    visibility: 'visible',
-    vol_changed_local: 0,
-    volume: null,
-    clientUUID: null
+    DBentry           : [ '', '', '' ],
+    DBupdate          : 0,
+    activePlayer      : '',
+    browsemode        : 'file',
+    checkvol          : 0,
+    currentDBpos      : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    currentDBpath     : [ '', '', '', '', '', '', '', '', '', '', '' ],
+    currentalbum      : null,
+    currentknob       : null,
+    currentpath       : '',
+    currentsong       : null,
+    json              : 0,
+    libraryhome       : '',
+    forceGUIupdate    : false,
+    maxvol            : 100,
+    minvol            : 0,
+    mode              : 'websocket',
+    noticeUI          : {},
+    playlist          : null,
+    plugin            : '',
+    state             : '',
+    old_state         : 'none',
+    stepVolumeDelta   : 0,
+    stepVolumeInt     : 0,
+    stream            : '',
+    visibility        : 'visible',
+    vol_changed_local : 0,
+    volume            : null,
+    clientUUID        : null
 };
 
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -46,13 +46,14 @@ function sendCmd( cmd ) {
 }
 
 PNotify.prototype.options.styling = 'fontawesome';
-PNotify.prototype.options.stack.dir1 = 'up';
-PNotify.prototype.options.stack.dir2 = 'left';
-PNotify.prototype.options.stack.firstpos1 = 90;
-PNotify.prototype.options.stack.firstpos2 = 50;
-PNotify.prototype.options.stack.spacing1 = 10;
-PNotify.prototype.options.stack.spacing2 = 10;
-
+PNotify.prototype.options.stack = {
+	dir1      : 'up',
+	dir2      : 'left',
+	firstpos1 : 90,
+	firstpos2 : 50,
+	spacing1  : 10,
+	spacing2  : 10,
+}
 function renderMSG( text ) {
     var notify = text[ 0 ];
     var noticeOptions = {
@@ -92,6 +93,24 @@ pushstreamnotify.onmessage = renderMSG;
 pushstreamnotify.addChannel( 'notify' );
 pushstreamnotify.connect();
 
+// ### called by backend socket - force refresh all clients ###
+function renderUI( text ) {
+	$( '#loader' ).addClass( 'hide' );
+	if ( !$( '#open-playback' ).hasClass( 'active' ) || onsetvolume ) return;
+	
+	GUI.json = text[ 0 ];
+	GUI.state = GUI.json.state;
+	
+	setPlaybackData();
+	setButton();
+	// imodedelay fix imode flashing on usb dac switching
+	if ( $( '#playback' ).hasClass( 'active' ) && !imodedelay ) {
+		displayPlayback();
+	} else if ( $( '#panel-dx' ).hasClass( 'active' ) && !$( '#playlist-entries' ).hasClass( 'hide' ) ) {
+		getPlaylistCmd();
+		GUI.playlist = GUI.json.playlist;
+	}
+}
 var pushstreamplayback = new PushStream( {
 	host: window.location.hostname,
 	port: window.location.port,
@@ -179,14 +198,10 @@ function menuBottom( elshow, elhide1, elhide2 ) {
 	} else if ( $( '#panel-dx' ).hasClass( 'active' ) ) {
 		queuetop = $( window ).scrollTop();
 	}
-	if ( /\/.*\//.test( location.pathname ) === false ) {
-		$( '#'+ elshow ).removeClass( 'hide' );
-		$( '#'+ elshow +', #open-'+ elshow ).addClass( 'active' );
-		$( '#'+ elhide1 +', #'+ elhide2 ).addClass( 'hide' );
-		$( '#'+ elhide1 +', #'+ elhide2 +', #open-'+ elhide1 +', #open-'+ elhide2 ).removeClass( 'active' );
-	} else {
-		window.location.href = '/';
-	}
+	$( '#'+ elshow ).removeClass( 'hide' );
+	$( '#'+ elshow +', #open-'+ elshow ).addClass( 'active' );
+	$( '#'+ elhide1 +', #'+ elhide2 ).addClass( 'hide' );
+	$( '#'+ elhide1 +', #'+ elhide2 +', #open-'+ elhide1 +', #open-'+ elhide2 ).removeClass( 'active' );
 }
 
 $( '#currentsong, #playlist-warning' ).on( 'click', 'i', function() {
@@ -2555,27 +2570,6 @@ function convertHMS( second ) {
 	mm = hh ? ( mm > 9 ? mm +':' : '0'+ mm +':' ) : ( mm ? mm +':' : '' );
 	ss = mm ? ( ss > 9 ? ss : '0'+ ss ) : ss;
 	return ss ? hh + mm + ss : '';
-}
-
-// ### called by backend socket - force refresh all clients ###
-function renderUI( text ) {
-	if ( /\/.*\//.test( location.pathname ) === false ) { // not setting pages
-		$( '#loader' ).addClass( 'hide' );
-		if ( !$( '#open-playback' ).hasClass( 'active' ) || onsetvolume ) return;
-		
-		GUI.json = text[ 0 ];
-		GUI.state = GUI.json.state;
-		
-		setPlaybackData();
-		setButton();
-		// imodedelay fix imode flashing on usb dac switching
-		if ( $( '#playback' ).hasClass( 'active' ) && !imodedelay ) {
-			displayPlayback();
-		} else if ( $( '#panel-dx' ).hasClass( 'active' ) && !$( '#playlist-entries' ).hasClass( 'hide' ) ) {
-			getPlaylistCmd();
-			GUI.playlist = GUI.json.playlist;
-		}
-	}
 }
 
 } ); // document ready end <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
