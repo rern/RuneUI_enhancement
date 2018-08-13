@@ -23,28 +23,21 @@ if ( /\/sources\//.test( location.pathname ) ) {
 	// enable/disable CIFS auth section
 	if ( $( '#mount-type' ).val() === 'nfs' ) $( '#mount-cifs' ).addClass( 'disabled' ).children( '.disabler' ).removeClass( 'hide' );
 	$( '#mount-type' ).change( function() {
-		if ( $( this ).val() === 'cifs' || $( this ).val() === 'osx' ) {
-			$( '#mount-cifs' ).removeClass( 'disabled' ).children( '.disabler' ).addClass( 'hide' );
-		} else {
-			$( '#mount-cifs' ).addClass( 'disabled' ).children( '.disabler' ).removeClass( 'hide' );
-		}
+		var checked = $( this ).val() === 'cifs' || $( this ).val() === 'osx';
+		$( '#mount-cifs' ).toggleClass( 'disabled', !checked );
+		$( '#mount-cifs' ).children( '.disabler' ).toggleClass( 'hide', checked );
 	} );
-	
 	// enable/disable CIFS user and password fields
 	$( '#nas-guest' ).change( function() {
-		if ( $( this ).prop( 'checked' ) ) {
-			$( '#mount-auth' ).addClass( 'disabled' ).children( '.disabler' ).removeClass( 'hide' );
-		} else {
-			$( '#mount-auth' ).removeClass( 'disabled' ).children( '.disabler' ).addClass( 'hide' );
-		}
+		var checked = $( this ).prop( 'checked' );
+		$( '#mount-auth' ).toggleClass( 'disabled', checked );
+		$( '#mount-auth' ).children( '.disabler' ).toggleClass( 'hide', !checked );
 	} );
-	
 	// show advanced options
 	$( '#nas-advanced' ).change( function() {
 		$( '#mount-advanced-config' ).toggleClass( 'hide', !$( this ).prop( 'checked' ) );
 	} );
-	
-	$( '#show-mount-advanced-config' ).click( function( e ){
+	$( '#show-mount-advanced-config' ).click( function( e ) {
 		e.preventDefault();
 		if ( $( this ).hasClass( 'active' ) ) {
 			$( '#mount-advanced-config' ).toggleClass( 'hide' );
@@ -103,7 +96,7 @@ if ( /\/sources\//.test( location.pathname ) ) {
 		} else {
 			if ( !label ) return;
 			
-			if ( label.indexOf( 'backup_' ) > -1 && label.indexOf( '.tar.gz' ) > -1 ) {
+			if ( label.indexOf( '.tar.gz' ) > -1 ) {
 				$( '#backup-file' ).html( ' <i class="fa fa-check dx green"></i> '+ label );
 				$( '#btn-backup-upload' ).prop( 'disabled', false );
 			} else {
@@ -114,25 +107,18 @@ if ( /\/sources\//.test( location.pathname ) ) {
 	} );
 } else if ( /\/network\//.test( location.pathname ) ) {
 	// show/hide static network configuration based on select value
-	var netManualConf = $( '#network-manual-config' );
-	if ( $( '#dhcp' ).val() === '0' ) {
-		netManualConf.removeClass( 'hide' );
-	}
+	$( '#network-manual-config' ).toggleClass( 'hide', $( '#dhcp' ).val() === '0' );
 	$( '#dhcp' ).change( function() {
-		netManualConf.removeClass( 'hide', $( this ).val() !== '0' );
+		$( '#network-manual-config' ).toggleClass( 'hide', $( this ).val() === '0' );
 	} );
-	
 	// show/hide WiFi security configuration based on select value
-	var WiFiKey = $( '#wifi-security-key' );
-	if ( $( '#wifi-security' ).val() !== 'open' ) {
-		WiFiKey.removeClass( 'hide' );
-	}
+	$( '#wifi-security-key' ).toggleClass( 'hide', $( '#wifi-security' ).val() !== 'open' );
 	$( '#wifi-security' ).change( function() {
-		WiFiKey.removeClass( 'hide', $( this ).val() === 'open' );
+		$( '#wifi-security-key' ).toggleClass( 'hide', $( '#wifi-security' ).val() !== 'open' );
 	} );
 	
 	// refresh in range Wi-Fi networks list
-	if ( $( '#wifiNetworks' ).length) {
+	if ( $( '#wifiNetworks' ).length ) {
 		$.get( '/command/?cmd=wifiscan' );
 		
 		// open the in range Wi-Fi networks list channel
@@ -160,9 +146,7 @@ if ( /\/sources\//.test( location.pathname ) ) {
 			var i = 0, content = '', inrange = '', stored = '', wlans = text[ 0 ];
 			$.each( wlans, function( i ) {
 				content += '<p><a href="/network/wlan/' + wlans[i].nic + '/' + wlans[ i ].ESSID + '" class="btn btn-lg btn-default btn-block" title="See network properties">';
-				if ( wlans[ i ].connected !== 0 ) {
-					content += '<i class="fa fa-check green sx"></i>';
-				}
+				if ( wlans[ i ].connected !== 0 ) content += '<i class="fa fa-check green sx"></i>';
 				if ( wlans[ i ].storedprofile === 1 && wlans[ i ].encryption === 'on' ) {
 					content += '<i class="fa fa-lock sx"></i>';
 				} else {
@@ -175,12 +159,8 @@ if ( /\/sources\//.test( location.pathname ) ) {
 					}
 				}
 				content += '<strong>' + wlans[ i ].ESSID + '</strong></a></p>';
-				if ( wlans[ i ].origin === 'scan' ) {
-					inrange += content;
-				}
-				if ( wlans[ i ].storedprofile === 1 ) {
-					stored += content;
-				}
+				if ( wlans[ i ].origin === 'scan' ) inrange += content;
+				if ( wlans[ i ].storedprofile === 1 ) stored += content;
 				content = '';
 			} );
 			if ( inrange === '' ) inrange = '<p><a class="btn btn-lg btn-default btn-block" href="#"><i class="fa fa-cog fa-spin sx"></i>scanning for networks...</a></p>';
@@ -201,7 +181,6 @@ if ( /\/sources\//.test( location.pathname ) ) {
 						content += '<tr><th>Status:</th><td><i class="fa fa-check green sx"></i>connected</td></tr>';
 						content += '<tr><th>Associated SSID:</th><td><strong>'+ nics[ i ].currentssid +'</strong></td></tr>';
 					}
-					
 					content += '<tr><th>Assigned IP:</th><td>'+ ( ( nics[ i ].ip !== null) ? ( '<strong>' + nics[ i ].ip + '</strong>' ) : 'none' ) +'</td></tr>';
 					content += '<tr><th>Speed:</th><td>'+ ( (nics[ i ].speed !== null ) ? nics[ i ].speed : 'unknown' ) +'</td></tr>';
 					if ( nics[ i ].currentssid !== null ) {
@@ -212,7 +191,7 @@ if ( /\/sources\//.test( location.pathname ) ) {
 					}
 				}
 			} );
-			$( '#nic-details tbody' ).html(content);
+			$( '#nic-details tbody' ).html( content );
 		}
 	}
 	
