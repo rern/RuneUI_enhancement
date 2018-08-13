@@ -33,6 +33,7 @@ if ( empty( $this->uri(1) ) || $this->uri(1) === 'addons' ) {
 	<link rel="stylesheet" href="<?=$this->asset('/css/addonsinfo.css')?>">
 	<link rel="stylesheet" href="<?=$this->asset('/css/roundslider.min.css')?>">
 	<link rel="stylesheet" href="<?=$this->asset('/css/enhance.css')?>">
+<?=( strpos( $_SERVER['HTTP_USER_AGENT'], 'Midori') !== false ? '<link rel="stylesheet" href="'.$this->asset('/css/midori.css').'">' : '' )?>
 <?=( file_exists('/srv/http/assets/js/gpio.js') ? '<link rel="stylesheet" href="'.$this->asset('/css/gpio.css').'">' : '' )?>
 <?=( file_exists('/srv/http/assets/js/lyrics.js') ? '<link rel="stylesheet" href="'.$this->asset('/css/lyrics.css').'">' : '' )?>
 
@@ -103,6 +104,4 @@ if ( empty( $this->uri(1) ) || $this->uri(1) === 'addons' ) {
 		<li id="open-panel-dx"><a><i class="fa fa-list-ul"></i></a></li>
 	</ul>
 </div>
-<?php if ( file_exists('/srv/http/assets/js/lyrics.js') ) include 'lyricscontainer.php';?>
-
 <?php endif ?>
