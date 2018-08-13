@@ -11,6 +11,8 @@
 <input id="addonsinfojs" type="hidden" value="<?=$this->asset('/js/addonsinfo.js')?>">
 <?php endif ?>
 <?php if ( file_exists('/srv/http/assets/js/gpio.js') ): ?>
+<input id="addonswoff" type="hidden" value="<?=$this->asset('/fonts/addons.woff')?>">
+<input id="addonsttf" type="hidden" value="<?=$this->asset('/fonts/addons.ttf')?>">
 <input id="gpiosettingscss" type="hidden" value="<?=$this->asset('/css/gpiosettings.css')?>">
 <input id="gpiosettingsjs" type="hidden" value="<?=$this->asset('/js/gpiosettings.js')?>">
 <input id="gpiopin" type="hidden" value="<?=$this->asset('/img/RPi3_GPIO.svg')?>">
