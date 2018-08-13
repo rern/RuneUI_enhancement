@@ -139,7 +139,7 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 		<div id="spinner-db" class="csspinner duo hide"></div>
 	</div>
 	<!-- QUEUE PANEL -->
-	<div id="panel-dx" class="tab-pane hide">
+	<div id="panel-dx" class="tab-pane hide" onclick=""> <!-- onclick fix ios safari not recognize click for e.target -->
 		<div class="btnlist btnlist-top">
 			<div id="pl-home"><i class="fa fa-list-ul sx"></i></div>
 			<span id="pl-currentpath" class="hide"> &ensp;PLAYLISTS</span>
