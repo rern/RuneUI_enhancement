@@ -5,6 +5,23 @@ if ( document.location.hostname === 'localhost' ) $( '.osk-trigger' ).onScreenKe
 $( '.selectpicker' ).selectpicker();
 
 if ( /\/sources\//.test( location.pathname ) ) {
+	// get updating status on load
+	$.post( '/enhance.php', { mpd: 'status' }, function( status ) {
+		var updatingdb = status.match( /updating_db/ ) ? true : false;
+		$( '#updatempddb i, #rescanmpddb i' ).toggleClass( 'fa-spin', updatingdb );
+	} );
+	// stop fa-spin when done updating
+	var pushstreamplayback = new PushStream( {
+		host: window.location.hostname,
+		port: window.location.port,
+		modes: 'websocket'
+	} );
+	pushstreamplayback.onmessage = function( text ) {
+		var updatingdb = text[ 0 ].updating_db ? true : false;
+		$( '#updatempddb i, #rescanmpddb i' ).toggleClass( 'fa-spin', updatingdb );
+	}
+	pushstreamplayback.addChannel( 'playback' );
+	pushstreamplayback.connect();
 
 	// enable/disable CIFS auth section
 	if ($('#mount-type').val() === 'nfs') {
@@ -167,7 +184,45 @@ if ( /\/sources\//.test( location.pathname ) ) {
 	
 	// refresh in range Wi-Fi networks list
 	if ($('#wifiNetworks').length) {
-		// open wlans channel
+		// list of in range wlans
+		function listWLANs(text) {
+			var i = 0, content = '', inrange = '', stored = '', wlans = text[0];
+			//console.log(wlans);
+			$.each(wlans, function(i) {
+				content += '<p><a href="/network/wlan/' + wlans[i].nic + '/' + wlans[i].ESSID + '" class="btn btn-lg btn-default btn-block" title="See network properties">';
+				if (wlans[i].connected !== 0) {
+					content += '<i class="fa fa-check green sx"></i>';
+				}
+				if (wlans[i].storedprofile === 1 && wlans[i].encryption === 'on') {
+					content += '<i class="fa fa-lock sx"></i>';
+				} else {
+					if (wlans[i].encryption === 'on') {
+						content += '<i class="fa fa-rss fa-wifi"></i><i class="fa fa-lock sx"></i>';
+					} else {
+						if (wlans[i].storedprofile !== 1 ) {
+						content += '<i class="fa fa-rss fa-wifi sx"></i>';
+						}
+					}
+				}
+				content += '<strong>' + wlans[i].ESSID + '</strong></a></p>';
+				if (wlans[i].origin === 'scan') {
+					inrange += content;
+				}
+				if (wlans[i].storedprofile === 1) {
+					stored += content;
+				}
+				content = '';
+			});
+			if (inrange === '') {
+				inrange = '<p><a class="btn btn-lg btn-default btn-block" href="#"><i class="fa fa-cog fa-spin sx"></i>scanning for networks...</a></p>';
+			}
+			document.getElementById('wifiNetworks').innerHTML = inrange;
+			document.getElementById('wifiStored').innerHTML = stored;
+			$.ajax({
+				url: '/command/?cmd=wifiscan',
+				cache: false
+			});
+		}
 		var pushstream = new PushStream({
 			host: window.location.hostname,
 			port: window.location.port,
@@ -181,7 +236,33 @@ if ( /\/sources\//.test( location.pathname ) ) {
 			cache: false
 		});
 		
-		// open nics channel
+		// draw the NICs details table
+		function nicsDetails(text) {
+			var i = 0, content = '', nics = text[0];
+			// console.log(nics);
+			$.each(nics, function(i) {
+				if (i === $('#nic-details').data('name')) {
+					content += '<tr><th>Name:</th><td><strong>' + i + '<strong></td></tr>';
+					content += '<tr><th>Type:</th><td>wireless</td></tr>';
+					if (nics[i].currentssid === null) {
+						content += '<tr><th>Status:</th><td><i class="fa fa-times red sx"></i>no network connected</td></tr>';
+					} else {
+						content += '<tr><th>Status:</th><td><i class="fa fa-check green sx"></i>connected</td></tr>';
+						content += '<tr><th>Associated SSID:</th><td><strong>' + nics[i].currentssid + '</strong></td></tr>';
+					}
+					
+					content += '<tr><th>Assigned IP:</th><td>' + ((nics[i].ip !== null) ? ('<strong>' + nics[i].ip + '</strong>') : 'none') + '</td></tr>';
+					content += '<tr><th>Speed:</th><td>' + ((nics[i].speed !== null) ? nics[i].speed : 'unknown') + '</td></tr>';
+					if (nics[i].currentssid !== null) {
+						content += '<tr><th>Netmask:</th><td>' + nics[i].netmask + '</td></tr>';
+						content += '<tr><th>Gateway:</th><td>' + nics[i].gw + '</td></tr>';
+						content += '<tr><th>DNS1:</th><td>' + nics[i].dns1 + '</td></tr>';
+						content += '<tr><th>DNS2:</th><td>' + nics[i].dns2 + '</td></tr>';
+					}
+				}
+			});
+			$('#nic-details tbody').html(content);
+		}
 		var pushstream = new PushStream({
 			host: window.location.hostname,
 			port: window.location.port,
@@ -190,7 +271,7 @@ if ( /\/sources\//.test( location.pathname ) ) {
 		pushstream.onmessage = nicsDetails;
 		pushstream.addChannel('nics');
 		pushstream.connect();
-		}
+	}
 	
 	// show/hide WiFi stored profile box
 	$('#wifiProfiles').change(function(){
