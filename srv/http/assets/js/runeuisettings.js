@@ -8,6 +8,7 @@ if ( /\/sources\//.test( location.pathname ) ) {
 	// get updating status on load
 	$.post( '/enhance.php', { mpd: 'status' }, function( status ) {
 		var updatingdb = status.match( /updating_db/ ) ? true : false;
+		$( '#updatempddb, #rescanmpddb' ).toggleClass( 'disabled', updatingdb );
 		$( '#updatempddb i, #rescanmpddb i' ).toggleClass( 'fa-spin', updatingdb );
 	} );
 	// stop fa-spin when done updating
@@ -18,6 +19,7 @@ if ( /\/sources\//.test( location.pathname ) ) {
 	} );
 	pushstreamplayback.onmessage = function( text ) {
 		var updatingdb = text[ 0 ].updating_db ? true : false;
+		$( '#updatempddb, #rescanmpddb' ).toggleClass( 'disabled', updatingdb );
 		$( '#updatempddb i, #rescanmpddb i' ).toggleClass( 'fa-spin', updatingdb );
 	}
 	pushstreamplayback.addChannel( 'playback' );
