@@ -358,7 +358,6 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 		var name = $this.find( 'h4' ).text();
 		$.post( '/db/?cmd=bookmark', { id: id, name: name }, function() {
 			$this.parent().remove();
-			renderLibraryHome();
 		} );
 	} else if ( $this.data( 'target' ) === '#modal-webradio-add' ) {
 		webRadioNew();
