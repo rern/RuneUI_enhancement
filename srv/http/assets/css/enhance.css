@@ -698,7 +698,7 @@
 .biosimilar,
 .btnlist-top a,
 .btnlist-top i,
-#db-index li {
+.index li {
 	cursor: pointer;
 }
 
@@ -1007,7 +1007,7 @@
 	letter-spacing: 5px;
 	color: #0095d8;
 }
-#db-index {
+.index {
 	position: fixed;
 	right: 0;
 	width: 38px;
@@ -1016,14 +1016,15 @@
 	list-style: none;
 	background: #172029;
 }
-#db-index li {
+.index li {
 	text-align: center;
 	color: #0095d8;
 }
-#db-index li:hover {
+.index li:hover {
 	background: #34495e;
 }
-#database-entries {
+#database-entries,
+#pl-editor {
 	float: left;
 	width: calc( 100% - 38px );
 	padding-bottom: 80px;
