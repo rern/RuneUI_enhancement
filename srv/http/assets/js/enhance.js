@@ -573,7 +573,7 @@ $( '#db-home' ).click( function() {
 } );
 $( '#db-currentpath' ).on( 'click', 'a', function() {
 	if ( $( '#db-currentpath span a' ).length === 1 ) return;
-	var path = $( this ).attr( 'data-path' );
+	var path = $( this ).data( 'path' );
 	var path2mode = {
 		  Artists  : 'artist'
 		, Albums   : 'album'
@@ -598,7 +598,6 @@ $( '#searchbtn' ).click( function() {
 $( '#db-search-keyword' ).on( 'keypress', function( e ) {
 	if ( e.which == 13 ) $( '#searchbtn' ).click();
 } );
-dbtop = 0;
 $( '#db-level-up' ).on( 'click', function() {
 	// topmost of path
 	if ( $( '#db-currentpath span a' ).length === 1 ) {
@@ -633,74 +632,76 @@ $( '#db-level-up' ).on( 'click', function() {
 	} );
 	GUI.plugin = '';
 });
+dbscrolltop = {};
 $( '#database-entries' ).on( 'click', 'li', function( e ) {
 	var $this = $( this );
 	var path = $this.data( 'path' );
 	var browsemode = '';
+	// get scroll position for back navigation
+	dbscrolltop[ $( '#db-currentpath' ).attr( 'path' ) ] = $( window ).scrollTop();
 	$( '#database-entries li' ).removeClass( 'active' );
 	$this.addClass( 'active' );
-	if ( $this.hasClass( 'db-folder' ) ) {
-		if ( $this.hasClass( 'db-album' ) ) {
-			getDB( {
-				path: path ? path : GUI.currentDBpath[ GUI.currentDBpos[ 10 ] - 1 ],
-				uplevel: 0,
-				browsemode: path ? 'album' : 'albumfilter'
-			} );
-		} else if ( $this.hasClass( 'db-artist' ) ) {
-			getDB( {
-				path: path,
-				uplevel: 0,
-				browsemode: 'artist'
-			} );
-		} else if ( $this.hasClass( 'db-composer' ) ) {
-			getDB( {
-				path: path,
-				uplevel: 0,
-				browsemode: 'composer'
-			} );
-		} else if ( $this.hasClass( 'db-genre' ) ) {
-			getDB( {
-				path: path,
-				uplevel: 0,
-				browsemode: 'genre'
-			} );
-		} else if ( $this.hasClass( 'db-spotify' ) ) {
-			getDB( {
-				path: GUI.currentpath +'/'+ $this.find( 'span' ).text(),
-				plugin: 'Spotify',
-				args: $this.data( 'path' ).toString(),
-				querytype: 'tracks'
-			} );
-			GUI.plugin = 'Spotify';
-		} else if ( $this.hasClass( 'db-dirble' ) ) {
-			getDB( {
-				path: GUI.currentpath +'/'+ $this.find( 'span' ).text(),
-				plugin: 'Dirble',
-				querytype: $this.hasClass( 'db-dirble-child' ) ? 'stations' : 'childs',
-				args: $this.data( 'path' )
-			} );
-			GUI.plugin = 'Dirble';
-		} else if ( $this.hasClass( 'db-jamendo' ) ) {
-			// getDB( {
-				// path: GUI.currentpath +'/'+ $this.find( 'span' ).text(),
-				// plugin: 'Jamendo',
-				// querytype: 'radio',
-				// args : $this.data( 'path' )
-			// } );
-		} else {
-		// browse by file (default)
-			getDB( {
-				path: path,
-				uplevel: 0,
-				browsemode: $this.data( 'browsemode' )
-			} );
-		}
-		var entryID = $this.attr( 'id' );
-		entryID = entryID.replace( 'db-', '' );
-		GUI.currentDBpos[ GUI.currentDBpos[ 10 ] ] = entryID;
-		GUI.currentDBpath[ GUI.currentDBpos[ 10 ] ] = path;
-		++GUI.currentDBpos[ 10 ];
+	if ( !$this.hasClass( 'db-folder' ) ) return;
+	
+	if ( $this.hasClass( 'db-album' ) ) {
+		getDB( {
+			path: path ? path : GUI.currentDBpath[ GUI.currentDBpos[ 10 ] - 1 ],
+			uplevel: 0,
+			browsemode: path ? 'album' : 'albumfilter'
+		} );
+	} else if ( $this.hasClass( 'db-artist' ) ) {
+		getDB( {
+			path: path,
+			uplevel: 0,
+			browsemode: 'artist'
+		} );
+	} else if ( $this.hasClass( 'db-composer' ) ) {
+		getDB( {
+			path: path,
+			uplevel: 0,
+			browsemode: 'composer'
+		} );
+	} else if ( $this.hasClass( 'db-genre' ) ) {
+		getDB( {
+			path: path,
+			uplevel: 0,
+			browsemode: 'genre'
+		} );
+	} else if ( $this.hasClass( 'db-spotify' ) ) {
+		getDB( {
+			path: GUI.currentpath +'/'+ $this.find( 'span' ).text(),
+			plugin: 'Spotify',
+			args: $this.data( 'path' ).toString(),
+			querytype: 'tracks'
+		} );
+		GUI.plugin = 'Spotify';
+	} else if ( $this.hasClass( 'db-dirble' ) ) {
+		getDB( {
+			path: GUI.currentpath +'/'+ $this.find( 'span' ).text(),
+			plugin: 'Dirble',
+			querytype: $this.hasClass( 'db-dirble-child' ) ? 'stations' : 'childs',
+			args: $this.data( 'path' )
+		} );
+		GUI.plugin = 'Dirble';
+	} else if ( $this.hasClass( 'db-jamendo' ) ) {
+		// getDB( {
+			// path: GUI.currentpath +'/'+ $this.find( 'span' ).text(),
+			// plugin: 'Jamendo',
+			// querytype: 'radio',
+			// args : $this.data( 'path' )
+		// } );
+	} else {
+	// browse by file (default)
+		getDB( {
+			path: path,
+			uplevel: 0,
+			browsemode: $this.data( 'browsemode' )
+		} );
 	}
+	entryID = this.id.replace( 'db-', '' );
+	GUI.currentDBpos[ GUI.currentDBpos[ 10 ] ] = entryID;
+	GUI.currentDBpath[ GUI.currentDBpos[ 10 ] ] = path;
+	++GUI.currentDBpos[ 10 ];
 } );
 
 
@@ -722,7 +723,7 @@ $( '#db-index li' ).click( function() {
 			name = GUI.currentpath +'/'+  stripLeading( name );
 			datapathindex = GUI.currentpath +'/'+ indextext;
 		} else {
-			name = stripLeading( $this.attr( 'data-path' ) );
+			name = stripLeading( $this.data( 'path' ) );
 			datapathindex = '^'+ indextext;
 		}
 		return name.match( new RegExp( datapathindex, 'i' ) );
@@ -833,7 +834,7 @@ $( '.contextmenu a' ).click( function() {
 		case 'pldelete': playlistDelete(); break;
 		case 'plashuffle':
 			$.post( '/db/?cmd=pl-ashuffle', { 'playlist' : GUI.DBentry.name } );
-			$( '#random' ).attr( 'data-cmd', 'pl-ashuffle-stop' ).addClass( 'btn-primary' );
+			$( '#random' ).data( 'cmd', 'pl-ashuffle-stop' ).addClass( 'btn-primary' );
 			break;
 		default:
 			getDB( {
@@ -1150,22 +1151,18 @@ document.addEventListener( visibilityevent, function() {
 window.addEventListener( 'orientationchange', function() {
 	displayDbIndex();
 } );
-// MutationObserver - watch for content changed
+// MutationObserver - watch for '#database-entries' content changed then scroll to previous position
 var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 var observerOption = { childList: true };
 var observerTarget = document.getElementById( 'database-entries' );
 // on observed target changed
 var observerFnBack = new MutationObserver( function() {
-	if ( window.innerHeight / 40 > $( '#database-entries li' ).length ) return;
-	window.scrollTo( 0, $( '#database-entries>li' ).eq( 0 ).attr( 'class' ) === 'db-folder' ? dbtop : 0 );
+	var scrollpos = dbscrolltop[ $( '#db-currentpath' ).attr( 'path' ) ];
+	if ( window.innerHeight / 40 > $( '#database-entries li' ).length || scrollpos === 'undefined' ) scrollpos = 0;
+	window.scrollTo( 0, scrollpos );
 	observerFnBack.disconnect();
 });
-$( '#database-entries' ).click( function() {
-	dbtop = $( window ).scrollTop();
-	observerFnBack.observe( observerTarget, observerOption );
-} );
-$( '#searchbtn' ).click( function() {
-	dbtop = $( window ).scrollTop();
+$( '#db-currentpath, #db-level-up, #database-entries li' ).click( function() {
 	observerFnBack.observe( observerTarget, observerOption );
 } );
   
@@ -1584,6 +1581,8 @@ function chkKey( key ) {
 	return ( key !== undefined && key !== '' );
 }
 function renderLibraryHome() {
+	dbscrolltop = {};
+	$( '#db-currentpath' ).removeAttr( 'path' );
 	$( '#database-entries' ).empty();
 	$( '#db-search-results' ).addClass( 'hide' );
 	$( '#db-search-keyword' ).val( '' );
@@ -2095,9 +2094,7 @@ function populateDB( options ) {
 			$( '#db-webradio-new' ).toggleClass( 'hide', path !== 'Webradio' );
 		}
 	}
-	$( '#database-entries' ).html( content ).promise().done( function() {
-		window.scrollTo( 0, dbtop );
-	} );
+	$( '#database-entries' ).html( content );
 	
 // breadcrumb directory path link
 	var dot = '<span style="color: #587ca0"> &#8226; </span>';
@@ -2140,6 +2137,7 @@ function populateDB( options ) {
 			var albumartist = $( '#database-entries li:eq( 0 ) span.bl' ).text();
 			var dot = albumartist ? '<a>'+ dot +'<span class="white">'+ albumartist +'</span></a>' : '';
 		}
+		$( '#db-currentpath' ).attr( 'path', path ); // for back navigation
 		$( '#db-currentpath span' ).html( icon[ GUI.browsemode ] +'&ensp;<a data-path="'+ mode[ GUI.browsemode ] +'">'+ name[ GUI.browsemode ] +'</a>'+ dot );
 	} else {
 		var folder = path.split( '/' );
@@ -2150,6 +2148,7 @@ function populateDB( options ) {
 			for ( i = 0; i < ilength; i++ ) {
 				folderPath += ( i > 0 ? '/' : '' ) + folder[ i ];
 				folderCrumb += '<a data-path="'+ folderPath +'">'+ ( i > 0 ? '<w> / </w>' : '' ) + ( name[ folder[ i ] ] ? name[ folder[ i ] ] : folder[ i ] ) +'</a>';
+				if ( i === ilength - 1 ) $( '#db-currentpath' ).attr( 'path', path );
 			} 
 		} else {
 			folderCrumb = '';
@@ -2277,7 +2276,7 @@ $( '.btn-cmd' ).click( function() {
 		setTimeout( function() {
 			onsetmode = 0;
 		}, 500 );
-		if ( $this.attr( 'data-cmd' ) === 'pl-ashuffle-stop' ) $.post( '/db/?cmd=pl-ashuffle-stop', '' );
+		if ( $this.data( 'cmd' ) === 'pl-ashuffle-stop' ) $.post( '/db/?cmd=pl-ashuffle-stop', '' );
 		dataCmd = dataCmd +' '+ ( GUI.json[ this.id ] == 1 ? 0 : 1 );
 	} else {
 		if ( dataCmd === 'play' ) {
