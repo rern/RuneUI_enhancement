@@ -167,7 +167,7 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 			<ul id="pl-editor" class="hide">
 				<!-- playlists -->
 			</ul>
-			<div id="playlist-warning" class="hide" style="margin-top: 27px; text-align: center;">
+			<div id="playlist-warning" class="playlist hide" style="margin-top: 27px; text-align: center;">
 				<i class="fa fa-plus-circle" style="font-size: 30px; color: #0095d8; cursor: pointer;"></i><br>
 				<p style="margin-top: 27px; color: #587ca0;">Add something from Library</p>
 			</div>
