@@ -143,8 +143,8 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 		<div class="btnlist btnlist-top">
 			<div id="pl-home"><i class="fa fa-list-ul sx"></i></div>
 			<span id="pl-currentpath" class="hide"> &ensp;PLAYLISTS</span>
-			<span id="pl-count" class="hide"></span>
-			<form id="pl-search" class="form-inline" method="post" onSubmit="return false;" role="form">
+			<span id="pl-count" class="playlist hide"></span>
+			<form id="pl-search" class="playlist form-inline" method="post" onSubmit="return false;" role="form">
 				<div class="input-group">
 					<input id="pl-filter" class="form-control osk-trigger" type="text" data-placement="bottom" data-toggle="tooltip" data-original-title="Type here to search on the fly">
 					<span class="input-group-btn">
@@ -152,7 +152,7 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 					</span>
 				</div>
 			</form>
-			<div id="pl-manage">
+			<div id="pl-manage" class="playlist">
 				<i id="pl-manage-list" class="fa fa-folder-open fa-lg" title="Manage playlists"></i>
 				<i id="plsave" class="fa fa-save fa-lg" title="Save current queue as playlist" data-toggle="modal" data-target="#modal-pl-save"></i>
 				<!--<i id="pl-import-youtube" class="fa fa-youtube-play" title="Import a playlist or video from youtube." data-toggle="modal" data-target="#modal-pl-youtube"></i>-->
@@ -164,13 +164,10 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 			<ul id="playlist-entries" class="playlist">
 				<!-- playing queue entries -->
 			</ul>
-			<ul id="pl-editor" class="playlist hide">
+			<ul id="pl-editor" class="hide">
 				<!-- playlists -->
 			</ul>
-			<ul id="pl-detail" class="playlist hide">
-				<!-- playlist entries -->
-			</ul>
-			<div id="playlist-warning" class="playlist hide" style="margin-top: 27px; text-align: center;">
+			<div id="playlist-warning" class="hide" style="margin-top: 27px; text-align: center;">
 				<i class="fa fa-plus-circle" style="font-size: 30px; color: #0095d8; cursor: pointer;"></i><br>
 				<p style="margin-top: 27px; color: #587ca0;">Add something from Library</p>
 			</div>
