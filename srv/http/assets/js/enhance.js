@@ -216,6 +216,7 @@ $( '#open-panel-sx' ).click( function() {
 } );
 $( '#open-playback' ).click( function() {
 	menuBottom( 'playback', 'panel-sx', 'panel-dx' );
+	window.scrollTo( 0, 0 );
 	displayPlayback();
 } );
 pleditor = 0;
@@ -1566,8 +1567,10 @@ function displayLibrary() {
 }
 function displayPlaylist() {
 	if ( $( '#playlist-entries li' ).length ) {
-		if ( !$( '#playlist-entries li.active' ).length ) return;
-		var scrollpos = $( '#playlist-entries li.active' ).offset().top - $( '#playlist-entries' ).offset().top;
+		var $liactive = $( '#pl-'+ GUI.status.songid );
+		$( '#playlist-entries li' ).removeClass( 'active' );
+		$liactive.addClass( 'active' );
+		var scrollpos = $liactive.offset().top - $( '#playlist-entries' ).offset().top;
 		if ( window.innerHeight / 48 < $( '#playlist-entries li' ).length ) window.scrollTo( 0, scrollpos );
 	} else {
 		renderPlaylist();
@@ -2240,8 +2243,10 @@ function renderPlaylist() {
 		$( '#playlist-warning' ).addClass( 'hide' );
 		$( '#pl-count' ).html( counthtml );
 		$( '#playlist-entries' ).html( content ).promise().done( function() {
-			if ( !$( '#playlist-entries li.active' ).length ) return;
-			var scrollpos = $( '#playlist-entries li.active' ).offset().top - $( '#playlist-entries' ).offset().top;
+			var $liactive = $( '#pl-'+ GUI.status.songid );
+			$( '#playlist-entries li' ).removeClass( 'active' );
+			$liactive.addClass( 'active' );
+			var scrollpos = $liactive.offset().top - $( '#playlist-entries' ).offset().top;
 			if ( window.innerHeight / 48 < $( '#playlist-entries li' ).length ) window.scrollTo( 0, scrollpos );
 		} );
 	} );
@@ -2540,9 +2545,6 @@ function setPlaybackData() {
 	
 		// playlist current song ( and lyrics if installed )
 		if ( status.Title !== previoussong || status.Album !== previousalbum ) {
-			$( '#playlist-entries li ' ).removeClass( 'active' );
-			$( '#playlist-entries' ).find( 'li' ).eq( parseInt( status.song ) ).addClass( 'active' );
-			
 			if ( $( '#lyricscontainer' ).length && $( '#lyricscontainer' ).is( ':visible' ) )  getlyrics();
 		}
 	} );
