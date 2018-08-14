@@ -226,12 +226,12 @@ $( '#open-panel-dx' ).click( function() {
 		return;
 	}
 	
-	if ( $( this ).hasClass( 'active' ) ) pleditor = 0;
-	
+	if ( $( this ).hasClass( 'active' ) && pleditor ) {
+		pleditor = 0;
+		renderPlaylist();
+	}
 	menuBottom( 'panel-dx', 'playback', 'panel-sx' );
-
 	displayPlaylist()
-	displayCommon();
 } );
 function panelLR( lr ) {
 	var pcurrent = $( '.tab-pane:visible' ).prop( 'id' );
@@ -1089,7 +1089,7 @@ $( '#playlist-entries' ).click( function( e ) {
 $( '#pl-manage-list' ).on( 'click', function() {
 	pleditor = 1;
 	$( '.playlist' ).addClass( 'hide' );
-	$( '#pl-currentpath' ).removeClass( 'hide' );
+	$( '#pl-currentpath, #pl-index' ).removeClass( 'hide' );
 	getSavedPlaylists();
 });
 $( '#pl-filter' ).on( 'keyup', function() {
@@ -1157,7 +1157,7 @@ document.addEventListener( visibilityevent, function() {
 	}
 } );
 window.addEventListener( 'orientationchange', function() {
-	displayDbIndex();
+	displayIndex();
 } );
 // MutationObserver - watch for '#database-entries' content changed then scroll to previous position
 var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
@@ -1534,7 +1534,7 @@ function displayPlayback() {
 	$( '#container-playback' ).removeClass( 'hide' );
 }
 
-function displayDbIndex() {
+function displayIndex() {
 	setTimeout( function() {
 		var wH = window.innerHeight;
 		var indexoffset = $( '#menu-top' ).is( ':visible' ) ? 160 : 80;
@@ -1545,7 +1545,8 @@ function displayDbIndex() {
 			var indexline = 13;
 			$( '.half' ).addClass( 'hide' );
 		}
-		$( '#db-index' ).css( 'line-height', ( ( wH - indexoffset ) / indexline ) +'px' );
+		$index = $( '#panel-sx' ).hasClass( 'active' ) ? $( '#db-index' ) : $( '#pl-index' );
+		$index.css( 'line-height', ( ( wH - indexoffset ) / indexline ) +'px' );
 	}, 200 );
 }
 // library show/hide blocks
@@ -1563,7 +1564,7 @@ function displayLibrary() {
 	$( '#home-jamendo' ).parent().toggleClass( 'hide', !display.jamendo );
 	
 	displayCommon();
-	displayDbIndex();
+	displayIndex();
 }
 function displayPlaylist() {
 	if ( $( '#playlist-entries li' ).length ) {
@@ -1575,6 +1576,8 @@ function displayPlaylist() {
 	} else {
 		renderPlaylist();
 	}
+	displayCommon();
+	displayIndex();
 }
 
 function setPlaybackSource() {
