@@ -112,7 +112,7 @@
 			<ul id="database-entries" class="database">
 				<!-- DB entries -->
 			</ul>
-			<ul id="db-index" class="hide">
+			<ul id="db-index" class="index hide">
 <?php
 $vu = $this->asset('/img/vu.gif');
 $vustop = $this->asset('/img/vustop.gif');
@@ -166,6 +166,20 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 			</ul>
 			<ul id="pl-editor" class="hide">
 				<!-- playlists -->
+			</ul>
+			<ul id="pl-index" class="index hide">
+<?php
+$indexarray = range( 'A', 'Z' );
+$li = '<li>#</li>';
+foreach( $indexarray as $i => $char ) {
+	if ( $i % 2 === 0 ) {
+		$li.= '<li>'.$char."</li>\n";
+	} else {
+		$li.= '<li class="half">'.$char."</li>\n";
+	}
+}
+echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
+?>
 			</ul>
 			<div id="playlist-warning" class="playlist hide" style="margin-top: 27px; text-align: center;">
 				<i class="fa fa-plus-circle" style="font-size: 30px; color: #0095d8; cursor: pointer;"></i><br>
