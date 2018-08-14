@@ -228,13 +228,9 @@ $( '#open-panel-dx' ).click( function() {
 	if ( $( this ).hasClass( 'active' ) ) pleditor = 0;
 	
 	menuBottom( 'panel-dx', 'playback', 'panel-sx' );
+	renderPlaylist();
+	displayPlaylist()
 	displayCommon();
-	if ( pleditor ) return;
-	
-	$( '#pl-editor, #pl-currentpath' ).addClass( 'hide' );
-	$( '#pl-count, #pl-manage, #pl-search, #playlist-entries' ).removeClass( 'hide' );
-	$( '#playlist-warning' ).toggleClass( 'hide', GUI.json.playlistlength != 0 );
-	if ( !$( '#playlist-entries li' ).length ) renderPlaylist();
 } );
 function panelLR( lr ) {
 	var pcurrent = $( '.tab-pane:visible' ).prop( 'id' );
@@ -1091,7 +1087,7 @@ $( '#playlist-entries' ).click( function( e ) {
 } );
 $( '#pl-manage-list' ).on( 'click', function() {
 	pleditor = 1;
-	$( '#pl-search' ).addClass( 'hide' );
+	$( '.playlist' ).addClass( 'hide' );
 	$( '#pl-currentpath' ).removeClass( 'hide' );
 	getSavedPlaylists();
 });
@@ -1166,8 +1162,7 @@ window.addEventListener( 'orientationchange', function() {
 var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 var observerOption = { childList: true };
 var observerTarget = document.getElementById( 'database-entries' );
-// on observed target changed
-var observerFnBack = new MutationObserver( function() {
+var observerFnBack = new MutationObserver( function() { // on observed target changed
 	var scrollpos = dbscrolltop[ $( '#db-currentpath' ).attr( 'path' ) ];
 	if ( window.innerHeight / 40 > $( '#database-entries li' ).length || scrollpos === 'undefined' ) scrollpos = 0;
 	window.scrollTo( 0, scrollpos );
@@ -1176,7 +1171,7 @@ var observerFnBack = new MutationObserver( function() {
 $( '#db-currentpath, #db-level-up, #database-entries li' ).click( function() {
 	observerFnBack.observe( observerTarget, observerOption );
 } );
-  
+
 $( '#playsource-mpd' ).on( 'click', function() {
 	$.post( 'enhance.php', { bash: '/usr/bin/systemctl restart shairport' } );
 	$( '#iplayer' ).removeClass( 'fa-airplay' ).addClass( 'hide' );
@@ -1405,18 +1400,15 @@ $.post( '/enhance.php', { redis: JSON.stringify( command ) }, function( data ) {
 var blinkdot = '<a class="dot">.</a> <a class="dot dot2">.</a> <a class="dot dot3">.</a>';
 function displayCommon() {
 	barhide = window.innerWidth < 499 || window.innerHeight < 515 ? 1 : 0;
-	if ( display.bars && $( '#bio' ).is( ':hidden' ) && barhide == 0 ) {
+	if ( display.bars && $( '#bio' ).is( ':hidden' ) && !barhide ) {
 		$( '#menu-top, #menu-bottom' ).removeClass( 'hide' );
 		$( '#database, #playlist' ).css( 'padding', '' );
 		$( '.btnlist-top' ).css( 'top', '40px' );
-		$( '#playlist-warning' ).css( 'margin-top', '27px' );
 	} else {
 		$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
 		$( '#database, #playlist' ).css( 'padding', '40px 0' );
 		$( '.btnlist-top' ).css( 'top', 0 );
-		$( '#playlist-warning' ).css( 'margin-top', '67px' );
 	}
-	$( '#pl-currentpath' ).toggleClass( 'hide', !$( '#playlist-entries' ).hasClass( 'hide' ) );
 }
 function displayAirPlay() {
 	$( '.playback-controls' ).css( 'visibility', 'hidden' );
@@ -1571,6 +1563,13 @@ function displayLibrary() {
 	
 	displayCommon();
 	displayDbIndex();
+}
+function displayPlaylist() {
+	if ( !$( '#playlist-entries li' ).length ) {
+		barhide = window.innerWidth < 499 || window.innerHeight < 515 ? 1 : 0;
+		$( '#playlist-warning' ).removeClass( 'hide' )
+			.css( 'margin-top', ( display.bars && barhide == 0 ) ? '27px' : '67px' );
+	}
 }
 
 function setPlaybackSource() {
@@ -2173,18 +2172,17 @@ function populateDB( options ) {
 	}
 }
 function renderPlaylist() {
+	$( '#pl-filter' ).val( '' );
+	$( '#pl-filter-results' ).html( '' );
+	$( '#pl-currentpath, #pl-editor' ).addClass( 'hide' );
+	
 	if ( ( GUI.json.playlistlength == 0 && !pleditor ) || plclear ) {
 		plclear = 0;
-		$( '#pl-filter-results' ).addClass( 'hide' );
-		$( '#playlist-warning' ).removeClass( 'hide' );
-		$( '#pl-filter-results' ).html( '' );
+		$( '.playlist' ).removeClass( 'hide' );
 		$( '#pl-count' ).html( '<a>PLAYLIST</a>' );
 		return;
 	}
 	
-	$( '#pl-filter' ).val( '' );
-	$( '#pl-filter-results' ).html( '' );
-	$( '#pl-filter-results, #playlist-warning, #pl-currentpath, #pl-editor' ).addClass( 'hide' );
 	$( '#spinner-pl' ).removeClass( 'hide' );
 	
 	$.get( '/db/?cmd=playlist', function( data ) {
@@ -2234,9 +2232,13 @@ function renderPlaylist() {
 			counthtml += countradio +'</a>&ensp; <i class="fa fa-webradio"></i>';
 		}
 		$( '#spinner-pl' ).addClass( 'hide' );
-		$( '#playlist-entries' ).html( content );
 		$( '.playlist' ).removeClass( 'hide' );
+		$( '#playlist-warning' ).addClass( 'hide' );
 		$( '#pl-count' ).html( counthtml );
+		$( '#playlist-entries' ).html( content ).promise().done( function() {
+			if ( !$( '#playlist-entries li.active' ).length ) return;
+			if ( window.innerHeight / 40 > $( '#playlist-entries li' ).length ) window.scrollTo( 0, $( '#playlist-entries li.active' ).offset().top - $( '#playlist-entries' ).offset().top );
+		} );
 	} );
 }
 function getSavedPlaylists() {
@@ -2249,7 +2251,7 @@ function getSavedPlaylists() {
 				content += '<li class="pl-folder" data-path="'+ plname +'"><i class="fa fa-bars pl-action"></i><span><i class="fa fa-list-ul"></i>'+ plname +'</span></li>';
 			} );
 			
-			$( '.playlist, #playlist-warning' ).addClass( 'hide' );
+			$( '.playlist' ).addClass( 'hide' );
 			$( '#pl-currentpath, #pl-editor' ).removeClass( 'hide' );
 			document.getElementById( 'pl-editor' ).innerHTML = content;
 			$( '#spinner-pl' ).addClass( 'hide' );
