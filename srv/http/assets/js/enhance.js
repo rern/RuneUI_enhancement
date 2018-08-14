@@ -2237,7 +2237,8 @@ function renderPlaylist() {
 		$( '#pl-count' ).html( counthtml );
 		$( '#playlist-entries' ).html( content ).promise().done( function() {
 			if ( !$( '#playlist-entries li.active' ).length ) return;
-			if ( window.innerHeight / 40 > $( '#playlist-entries li' ).length ) window.scrollTo( 0, $( '#playlist-entries li.active' ).offset().top - $( '#playlist-entries' ).offset().top );
+			var scrollpos = $( '#playlist-entries li.active' ).offset().top - $( '#playlist-entries' ).offset().top;
+			if ( window.innerHeight / 40 < $( '#playlist-entries li' ).length ) window.scrollTo( 0, scrollpos );
 		} );
 	} );
 }
