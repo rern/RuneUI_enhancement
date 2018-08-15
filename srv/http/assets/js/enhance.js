@@ -565,6 +565,10 @@ $( '#db-home' ).click( function() {
 $( '#db-currentpath' ).on( 'click', 'a', function() {
 	if ( $( '#db-currentpath span a' ).length === 1 ) return;
 	var path = $( this ).data( 'path' );
+	// get scroll position for back navigation
+	dbscrolltop[ $( '#db-currentpath' ).attr( 'path' ) ] = $( window ).scrollTop();
+	observerFnBack.observe( observerTarget, observerOption );
+	
 	var path2mode = {
 		  Artists  : 'artist'
 		, Albums   : 'album'
@@ -573,7 +577,7 @@ $( '#db-currentpath' ).on( 'click', 'a', function() {
 		, Dirble   : 'Dirble'
 	}
 	getDB( { browsemode: path2mode[ path ], path: path } );
-	$( window ).scrollTop( 0 );
+//	$( window ).scrollTop( 0 );
 } );
 $( '#db-webradio-new' ).click( function() {
 	webRadioNew();
@@ -630,6 +634,7 @@ $( '#database-entries' ).on( 'click', 'li', function( e ) {
 	var browsemode = '';
 	// get scroll position for back navigation
 	dbscrolltop[ $( '#db-currentpath' ).attr( 'path' ) ] = $( window ).scrollTop();
+	observerFnBack.observe( observerTarget, observerOption );
 	$( '#database-entries li' ).removeClass( 'active' );
 	$this.addClass( 'active' );
 	if ( !$this.hasClass( 'db-folder' ) ) return;
@@ -1176,12 +1181,11 @@ var observerOption = { childList: true };
 var observerTarget = document.getElementById( 'database-entries' );
 var observerFnBack = new MutationObserver( function() { // on observed target changed
 	var scrollpos = dbscrolltop[ $( '#db-currentpath' ).attr( 'path' ) ];
-	if ( window.innerHeight / 40 > $( '#database-entries li' ).length || scrollpos === 'undefined' ) scrollpos = 0;
-	$( window ).scrollTop( scrollpos );
+	$( window ).scrollTop( scrollpos !== 'undefined' ? scrollpos : 0 );
 	observerFnBack.disconnect();
 });
-$( '#db-currentpath, #db-level-up, #database-entries li' ).click( function() {
-	observerFnBack.observe( observerTarget, observerOption );
+$( '#db-level-up' ).click( function() {
+	observerFnBack.observe( observerTarget, observerOption ); // standard js - must be one on one element
 } );
 
 $( '#playsource-mpd' ).on( 'click', function() {
