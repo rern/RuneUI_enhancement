@@ -23,6 +23,7 @@
 					<div id="time"></div>
 					<button id="overlay-playsource-open" class="btn btn-default btn-xs">MPD</button>
 					<div id="imode">
+						<i id="iaddons" class="fa fa-addons hide"></i>
 						<i id="iupdate" class="fa fa-library hide"></i>
 						<i id="irandom" class="fa fa-random hide"></i>
 						<i id="irepeat" class="fa hide"></i>
