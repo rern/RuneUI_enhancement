@@ -216,7 +216,7 @@ $( '#open-panel-sx' ).click( function() {
 } );
 $( '#open-playback' ).click( function() {
 	menuBottom( 'playback', 'panel-sx', 'panel-dx' );
-	window.scrollTo( 0, 0 );
+	$( window ).scrollTop( 0 );
 	displayPlayback();
 } );
 pleditor = 0;
@@ -573,7 +573,7 @@ $( '#db-currentpath' ).on( 'click', 'a', function() {
 		, Dirble   : 'Dirble'
 	}
 	getDB( { browsemode: path2mode[ path ], path: path } );
-	window.scrollTo( 0, 0 );
+	$( window ).scrollTop( 0 );
 } );
 $( '#db-webradio-new' ).click( function() {
 	webRadioNew();
@@ -699,7 +699,7 @@ $( '#db-index li' ).click( function() {
 	var topoffset = display.bars ? 80 : 40;
 	var indextext = $( this ).text();
 	if ( indextext === '#' ) {
-		window.scrollTo( 0, 0 );
+		$( window ).scrollTop( 0 );
 		return
 	}
 	var usbpath = GUI.currentpath.slice( 0, 3 ) === 'USB' ? 1 : 0;
@@ -716,20 +716,20 @@ $( '#db-index li' ).click( function() {
 		}
 		return name.match( new RegExp( datapathindex, 'i' ) );
 	} );
-	if ( matcharray.length ) window.scrollTo( 0, matcharray[ 0 ].offsetTop - topoffset );
+	if ( matcharray.length ) $( window ).scrollTop( matcharray[ 0 ].offsetTop - topoffset );
 } );
 $( '#pl-index li' ).click( function() {
 	var topoffset = display.bars ? 80 : 40;
 	var indextext = $( this ).text();
 	if ( indextext === '#' ) {
-		window.scrollTo( 0, 0 );
+		$( window ).scrollTop( 0 );
 		return
 	}
 	var matcharray = $( '#pl-editor li' ).filter( function() {
 		var name = stripLeading( $( this ).data( 'path' ) );
 		return name.match( new RegExp( '^'+ indextext, 'i' ) );
 	} );
-	if ( matcharray.length ) window.scrollTo( 0, matcharray[ 0 ].offsetTop - topoffset );
+	if ( matcharray.length ) $( window ).scrollTop( matcharray[ 0 ].offsetTop - topoffset );
 } );
 
 $( '#plsave' ).click( function() {
@@ -1103,7 +1103,7 @@ $( '#pl-manage-list' ).on( 'click', function() {
 	renderSavedPlaylists();
 });
 $( '#pl-filter' ).on( 'keyup', function() {
-	$.scrollTo( 0 , 500 );
+//	$.scrollTo( 0 , 500 );
 	var search = $(this).val();
 	var count = 0;
 	$( '#playlist-entries li' ).each( function() {
@@ -1176,7 +1176,7 @@ var observerTarget = document.getElementById( 'database-entries' );
 var observerFnBack = new MutationObserver( function() { // on observed target changed
 	var scrollpos = dbscrolltop[ $( '#db-currentpath' ).attr( 'path' ) ];
 	if ( window.innerHeight / 40 > $( '#database-entries li' ).length || scrollpos === 'undefined' ) scrollpos = 0;
-	window.scrollTo( 0, scrollpos );
+	$( window ).scrollTop( scrollpos );
 	observerFnBack.disconnect();
 });
 $( '#db-currentpath, #db-level-up, #database-entries li' ).click( function() {
@@ -1582,7 +1582,7 @@ function displayPlaylist() {
 		$( '#playlist-entries li' ).removeClass( 'active' );
 		$liactive.addClass( 'active' );
 		var scrollpos = $liactive.offset().top - $( '#playlist-entries' ).offset().top;
-		if ( window.innerHeight / 48 < $( '#playlist-entries li' ).length ) window.scrollTo( 0, scrollpos );
+		if ( window.innerHeight / 48 < $( '#playlist-entries li' ).length ) $( window ).scrollTop( scrollpos );
 	} else {
 		renderPlaylist();
 	}
@@ -2011,7 +2011,7 @@ function populateDB( options ) {
 			for (i = 0; (row = data[i]); i += 1) content += preparse( row, i, 'Spotify', arg, querytype );
 		} else if ( plugin === 'Dirble' ) {
 			if ( querytype === 'childs-stations' ) {
-				content = $( '#databaseentries' ).html();
+				content = $( '#database-entries' ).html();
 			} else {
 				data.sort( function( a, b ) {
 					if ( !querytype || querytype === 'childs' || querytype === 'categories' ) {
@@ -2257,7 +2257,7 @@ function renderPlaylist() {
 			$( '#playlist-entries li' ).removeClass( 'active' );
 			$liactive.addClass( 'active' );
 			var scrollpos = $liactive.offset().top - $( '#playlist-entries' ).offset().top;
-			if ( window.innerHeight / 48 < $( '#playlist-entries li' ).length ) window.scrollTo( 0, scrollpos );
+			if ( window.innerHeight / 48 < $( '#playlist-entries li' ).length ) $( window ).scrollTop( scrollpos );
 		} );
 	} );
 }
@@ -2288,7 +2288,7 @@ function renderSavedPlaylists() {
 				$( '#pl-index' ).removeClass( 'hide' );
 				$( '#pl-editor' ).css( 'width', 'calc( 100% - 38px )' );
 			}
-			window.scrollTo( 0, 0 );
+			$( window ).scrollTop( 0 );
 		} );
 		$( '#spinner-pl' ).addClass( 'hide' );
     } );
