@@ -1034,7 +1034,7 @@
 }
 .db-icon,
 .pl-icon,
-#pl-editor li span i,
+#pl-editor span:before,
 #database-entries i,
 #playlist-entries i {
 	font-size: 24px;
@@ -1079,7 +1079,9 @@
 #pl-count i {
 	font-size: 24px;
 }
-#pl-editor span i {
+#pl-editor span:before {
+	font-family: 'enhance';
+	content: '\f509';
 	padding: 0 15px 0 10px !important;
 }
 #pl-filter-results {
