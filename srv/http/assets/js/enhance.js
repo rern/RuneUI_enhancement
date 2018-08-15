@@ -2413,6 +2413,9 @@ function scrollText() {
 onsetmode = 0;
 function setPlaybackData() {
 	$.post( '/enhancestatus.php', function( data ) {
+		// 'gpio off' restarts mpd which makes data briefly unavailable
+		if ( data.charAt( 0 ) !== '{' ) return;
+		
 		var status = JSON.parse( data );
 		GUI.activePlayer = status.activePlayer;
 		if ( GUI.activePlayer === 'Airplay' ) {
