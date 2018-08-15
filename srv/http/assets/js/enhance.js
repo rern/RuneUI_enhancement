@@ -1560,13 +1560,8 @@ function displayIndex() {
 	setTimeout( function() {
 		var wH = window.innerHeight;
 		var indexoffset = $( '#menu-top' ).is( ':visible' ) ? 160 : 80;
-		if ( wH > 500 ) {
-			var indexline = 27;
-			$( '.half' ).removeClass( 'hide' );
-		} else {
-			var indexline = 13;
-			$( '.half' ).addClass( 'hide' );
-		}
+		var indexline = wH < 500 ? 13 : 27;
+		$( '.half' ).toggleClass( 'hide', wH < 500 );
 		$index = $( '#panel-sx' ).hasClass( 'active' ) ? $( '#db-index' ) : $( '#pl-index' );
 		$index.css( 'line-height', ( ( wH - indexoffset ) / indexline ) +'px' );
 	}, 200 );
