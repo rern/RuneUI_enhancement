@@ -695,12 +695,9 @@ $( '#database-entries' ).on( 'click', 'li', function( e ) {
 	++GUI.currentDBpos[ 10 ];
 } );
 
-
-// index link
 $( '#db-index li' ).click( function() {
 	var topoffset = display.bars ? 80 : 40;
-	var $this = $( this );
-	var indextext = $this.text();
+	var indextext = $( this ).text();
 	if ( indextext === '#' ) {
 		window.scrollTo( 0, 0 );
 		return
@@ -719,7 +716,20 @@ $( '#db-index li' ).click( function() {
 		}
 		return name.match( new RegExp( datapathindex, 'i' ) );
 	} );
-	if ( matcharray.length ) window.scrollTo( 0, matcharray[0].offsetTop - topoffset );
+	if ( matcharray.length ) window.scrollTo( 0, matcharray[ 0 ].offsetTop - topoffset );
+} );
+$( '#pl-index li' ).click( function() {
+	var topoffset = display.bars ? 80 : 40;
+	var indextext = $( this ).text();
+	if ( indextext === '#' ) {
+		window.scrollTo( 0, 0 );
+		return
+	}
+	var matcharray = $( '#pl-editor li' ).filter( function() {
+		var name = stripLeading( $( this ).data( 'path' ) );
+		return name.match( new RegExp( '^'+ indextext, 'i' ) );
+	} );
+	if ( matcharray.length ) window.scrollTo( 0, matcharray[ 0 ].offsetTop - topoffset );
 } );
 
 $( '#plsave' ).click( function() {
@@ -1060,7 +1070,7 @@ function playlistRenameVerify( name, oldname ) {
 		} );
 	} else {
 		sendCmd( 'rename "'+ oldname +'" "'+ name +'"' );
-		getSavedPlaylists();
+		renderSavedPlaylists();
 	}
 }
 function playlistDelete() {
@@ -1089,8 +1099,8 @@ $( '#playlist-entries' ).click( function( e ) {
 $( '#pl-manage-list' ).on( 'click', function() {
 	pleditor = 1;
 	$( '.playlist' ).addClass( 'hide' );
-	$( '#pl-currentpath, #pl-index' ).removeClass( 'hide' );
-	getSavedPlaylists();
+	$( '#pl-currentpath' ).removeClass( 'hide' );
+	renderSavedPlaylists();
 });
 $( '#pl-filter' ).on( 'keyup', function() {
 	$.scrollTo( 0 , 500 );
@@ -1109,14 +1119,14 @@ $( '#pl-filter' ).on( 'keyup', function() {
 		);
 	} else {
 		$( '#pl-manage, #pl-count' ).removeClass( 'hide' );
-		$( '#pl-filter-results' ).addClass( 'hide' ).html( '' );
+		$( '#pl-filter-results' ).addClass( 'hide' ).empty();
 	}
 } );
 $( '#pl-home' ).click( function() {
 	$( '#open-panel-dx' ).click();
 } );
 $( '#pl-filter-results' ).on( 'click', function() {
-	$( this ).addClass( 'hide' ).html( '' );
+	$( this ).addClass( 'hide' ).empty();
 	$( '#pl-manage, #pl-count, #playlist-entries li' ).removeClass( 'hide' );
 	$( '#pl-filter' ).val( '' );
 	$( '#playlist-entries li' ).show();
@@ -1138,7 +1148,7 @@ if ( 'hidden' in document ) {
 }
 document.addEventListener( visibilityevent, function() {
 	if ( document[ hiddenstate ] ) {
-		$( '#elapsed' ).text( '' );
+		$( '#elapsed' ).empty();
 		clearInterval( GUI.currentKnob );
 		clearInterval( GUI.countdown );
 	} else {
@@ -1437,7 +1447,7 @@ function displayAirPlay() {
 		clearInterval( GUI.countdown );
 		$( '#time' ).roundSlider( 'setValue', 0 );
 		$( '#elapsed' ).html( blinkdot );
-		$( '#total' ).text( '' );
+		$( '#total' ).empty();
 		$( '#iplayer' ).addClass( 'fa-airplay' ).removeClass( 'hide' );
 	} else {
 		$( '#coverart, #share-group' ).css( 'width', '60%' );
@@ -1497,7 +1507,7 @@ function displayPlayback() {
 		if ( GUI.json.radio && GUI.state === 'play' ) {
 			clearInterval( GUI.countdown );
 			if ( !radioelapsed ) {
-				$( '#total' ).text( '' );
+				$( '#total' ).empty();
 			} else {
 				$.post( '/enhancestatus.php', function( data ) {
 					var status = JSON.parse( data );
@@ -1652,7 +1662,7 @@ function renderLibraryHome() {
 	content += divOpen +'<div id="home-jamendo" class="home-block'+ toggleMPD +'" data-plugin="Jamendo" data-path="Jamendo"><i class="fa fa-jamendo"></i><h4>Jamendo<span id="home-count-jamendo"></span></h4></div></div>';
 
 	content += '</div>';
-	document.getElementById( 'home-blocks' ).innerHTML = content;
+	$( '#home-blocks' ).html( content );
 	$( '#spinner-db' ).addClass( 'hide' );
 	$( '#db-currentpath span' ).html( '<a>&ensp;LIBRARY</a>' );
 // hide breadcrumb, index bar, edit bookmark
@@ -1689,13 +1699,13 @@ function parseResponse( options ) {
 								var bl = inputArr.file.split( '/' ).pop(); // filename
 							}
 							content += inputArr.file;
-							content += '"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i><span class="sn">';
+							content += '" class="db-song"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i><span class="sn">';
 							content += inputArr.Title +'<span>'+ convertHMS( inputArr.Time ) +'</span></span>';
 							content += '<span class="bl">';
 							content +=  bl;
 						} else {
 							content += inputArr.file;
-							content += '"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i><span class="sn">';
+							content += '" class="db-song"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i><span class="sn">';
 							content += inputArr.file.replace( inpath +'/', '' ) +' <span>' + convertHMS( inputArr.Time ) +'</span></span>';
 							content += '<span class="bl">';
 							content += ' path: ';
@@ -1970,7 +1980,6 @@ function preparse( array, i, type, path, query ) {
 	} );
 }
 function populateDB( options ) {
-	if ( !options.data.length ) $( '#database-entries' ).empty(); // fix: delete last webradio
 	var data = options.data || '',
 		path = options.path || '',
 		uplevel = options.uplevel || 0,
@@ -1979,23 +1988,22 @@ function populateDB( options ) {
 		querytype = options.querytype || '',
 		args = options.args || '',
 		content = '',
-		$databaseentries = document.getElementById( 'database-entries' ),
 		i = 0,
 		row = [];
 
 	if ( path ) GUI.currentpath = path;
+	$( '#database-entries' ).empty();
 	$( '#database-entries, #db-level-up' ).removeClass( 'hide' );
 	$( ' #home-blocks ' ).addClass( 'hide' );
 
 	if ( plugin ) {
 		if ( plugin === 'Spotify' ) {
-			$databaseentries.innerHTML = '';
 			data = ( querytype === 'tracks' ) ? data.tracks : data.playlists;
 			data.sort( function( a, b ) {
 				if ( path === 'Spotify' && querytype === '' ) {
-					return stripLeading( a[ 'name' ] ).localeCompare( stripLeading( b[ 'name' ] ) )
+					return stripLeading( a[ 'name' ] ).localeCompare( stripLeading( b[ 'name' ] ), undefined, { numeric: true } )
 				} else if ( querytype === 'tracks' ) {
-					return stripLeading( a[ 'title' ]) .localeCompare( stripLeading( b[ 'title' ] ) )
+					return stripLeading( a[ 'title' ]) .localeCompare( stripLeading( b[ 'title' ] ), undefined, { numeric: true } )
 				} else {
 					return 0;
 				}
@@ -2003,14 +2011,13 @@ function populateDB( options ) {
 			for (i = 0; (row = data[i]); i += 1) content += preparse( row, i, 'Spotify', arg, querytype );
 		} else if ( plugin === 'Dirble' ) {
 			if ( querytype === 'childs-stations' ) {
-				content = $databaseentries.innerHTML;
+				content = $( '#databaseentries' ).html();
 			} else {
-				$databaseentries.innerHTML = '';
 				data.sort( function( a, b ) {
 					if ( !querytype || querytype === 'childs' || querytype === 'categories' ) {
-						return stripLeading( a[ 'title' ] ).localeCompare( stripLeading( b[ 'title' ] ) )
+						return stripLeading( a[ 'title' ] ).localeCompare( stripLeading( b[ 'title' ] ), undefined, { numeric: true } )
 					} else if ( querytype === 'childs-stations' || querytype === 'stations' ) {
-						return stripLeading( a[ 'name' ] ).localeCompare( stripLeading( b[ 'name' ] ) )
+						return stripLeading( a[ 'name' ] ).localeCompare( stripLeading( b[ 'name' ] ), undefined, { numeric: true } )
 				   } else {
 						return 0;
 					}
@@ -2018,10 +2025,9 @@ function populateDB( options ) {
 				for (i = 0; (row = data[i]); i += 1) content += preparse( row, i, 'Dirble', '', querytype );
 			}
 		} else if ( plugin === 'Jamendo' ) {
-			$databaseentries.innerHTML = '';
 			data.sort( function( a, b ) {
 				if ( path === 'Jamendo' && querytype === '' ) {
-					return stripLeading( a[ 'dispname' ] ).localeCompare( stripLeading( b[ 'dispname' ] ) )
+					return stripLeading( a[ 'dispname' ] ).localeCompare( stripLeading( b[ 'dispname' ] ), undefined, { numeric: true } )
 				} else {
 					return 0;
 				}
@@ -2065,7 +2071,6 @@ function populateDB( options ) {
 				return;
 			}
 			// browsing
-			$databaseentries.innerHTML = '';
 			if ( keyword ) {
 			// search results
 				var results = ( data.length ) ? data.length : '0';
@@ -2086,21 +2091,21 @@ function populateDB( options ) {
 				arraydir.sort( function( a, b ) {
 					var adir = stripLeading( a[ 'directory' ].split( '/' ).pop() );
 					var bdir = stripLeading( b[ 'directory' ].split( '/' ).pop() );
-					return adir.localeCompare( bdir );
+					return adir.localeCompare( bdir, undefined, { numeric: true } );
 				} );
 				for ( i = 0; row = arraydir[ i ]; i++ ) content += preparse( row, i, 'db', path );
 				arrayfile.sort( function( a, b ) {
 					if ( !keyword ) {
-						return stripLeading( a[ 'file' ] ).localeCompare( stripLeading( b[ 'file' ] ) );
+						return stripLeading( a[ 'file' ] ).localeCompare( stripLeading( b[ 'file' ] ), undefined, { numeric: true } );
 					} else {
-						return stripLeading( a[ 'Title' ] ).localeCompare( stripLeading( b[ 'Title' ] ) );
+						return stripLeading( a[ 'Title' ] ).localeCompare( stripLeading( b[ 'Title' ] ), undefined, { numeric: true } );
 					}
 				} );
 				for ( i = 0; row = arrayfile[ i ]; i++ ) content += preparse( row, i, 'db', path );
 			} else {
 				data.sort( function( a, b ) {
 					if ( a[ prop ] === undefined ) prop = mode[ GUI.browsemode ];
-					return stripLeading( a[ prop ] ).localeCompare( stripLeading( b[ prop ] ) );
+					return stripLeading( a[ prop ] ).localeCompare( stripLeading( b[ prop ] ), undefined, { numeric: true } );
 				});
 				
 				for ( i = 0; row = data[ i ]; i++ ) content += preparse( row, i, 'db', path );
@@ -2171,17 +2176,19 @@ function populateDB( options ) {
 		$( '#db-currentpath span' ).html( folderCrumb );
 	}
 	if ( querytype != 'childs' ) $( '#spinner-db' ).addClass( 'hide' );
-	if ( $( '#database-entries li:eq( 0 )' ).hasClass( 'db-folder' ) ) {
-		$( '#db-index' ).removeClass( 'hide' );
-		$( '#database-entries' ).css( 'width', 'calc( 100% - 38px )' );
-	} else {
+	// hide index bar in track list mode or list not overflow
+	var dbentriesH = window.innerHeight - 40 - ( display.bars ? 80 : 0 );
+	if ( $( '#database-entries li:eq( 0 )' ).hasClass( 'db-song' ) || dbentriesH / 48 > $( '#database-entries li' ).length ) {
 		$( '#db-index' ).addClass( 'hide' );
 		$( '#database-entries' ).css( 'width', '100%' );
+	} else {
+		$( '#db-index' ).removeClass( 'hide' );
+		$( '#database-entries' ).css( 'width', 'calc( 100% - 38px )' );
 	}
 }
 function renderPlaylist() {
 	$( '#pl-filter' ).val( '' );
-	$( '#pl-filter-results' ).html( '' );
+	$( '#pl-filter-results' ).empty();
 	$( '#pl-currentpath, #pl-editor' ).addClass( 'hide' );
 	
 	if ( ( GUI.json.playlistlength == 0 && !pleditor ) || plclear ) {
@@ -2254,20 +2261,36 @@ function renderPlaylist() {
 		} );
 	} );
 }
-function getSavedPlaylists() {
+function renderSavedPlaylists() {
     $( '#spinner-pl' ).removeClass( 'hide' );
     $.get( '/command/?cmd=listplaylists', function( data ) {
-			var pl = data.split( '\n' ).filter( function( el ) { return el.match( /^playlist/ ) } );
-			var content = plname = '';
-			pl.forEach( function( el ) {
-				plname = el.replace( 'playlist: ', '' );
-				content += '<li class="pl-folder" data-path="'+ plname +'"><i class="fa fa-bars pl-action"></i><span><i class="fa fa-list-ul"></i>'+ plname +'</span></li>';
-			} );
-			
-			$( '.playlist' ).addClass( 'hide' );
-			$( '#pl-currentpath, #pl-editor' ).removeClass( 'hide' );
-			document.getElementById( 'pl-editor' ).innerHTML = content;
-			$( '#spinner-pl' ).addClass( 'hide' );
+		var pl = data.split( '\n' ).filter( function( el ) { return el.match( /^playlist/ ) } );
+		arraypl = [];
+		pl.forEach( function( el ) {
+			arraypl.push( el.replace( 'playlist: ', '' ) );
+		} );
+		arraypl.sort( function( a, b ) {
+			return stripLeading( a ).localeCompare( stripLeading( b ), undefined, { numeric: true } );
+		} );
+		var content = plname = '';
+		arraypl.forEach( function( el ) {
+			//plname = el.replace( 'playlist: ', '' );
+			content += '<li class="pl-folder" data-path="'+ el +'"><i class="fa fa-bars pl-action"></i><span><i class="fa fa-list-ul"></i>'+ el +'</span></li>';
+		} );
+		$( '.playlist' ).addClass( 'hide' );
+		$( '#pl-currentpath, #pl-editor' ).removeClass( 'hide' );
+		$( '#pl-editor' ).html( content ).promise().done( function() {
+			var pleditorH = window.innerHeight - 40 - ( display.bars ? 80 : 0 );
+			if ( pleditorH / 48 > $( '#pl-editor li' ).length ) {
+				$( '#pl-index' ).addClass( 'hide' );
+				$( '#pl-editor' ).css( 'width', '100%' );
+			} else {
+				$( '#pl-index' ).removeClass( 'hide' );
+				$( '#pl-editor' ).css( 'width', 'calc( 100% - 38px )' );
+			}
+			window.scrollTo( 0, 0 );
+		} );
+		$( '#spinner-pl' ).addClass( 'hide' );
     } );
 }
 
@@ -2422,7 +2445,7 @@ function setPlaybackData() {
 			$( '#divartist, #divsong, #divalbum' ).removeClass( 'scroll-left' );
 			$( '#currentsong' ).html( '<i class="fa fa-plus-circle"></i>' );
 			$( '#playlist-position span' ).text( 'Add something from Library' );
-			$( '#currentartist, #currentalbum, #format-bitrate, #elapsed, #total' ).html( '' );
+			$( '#currentartist, #currentalbum, #format-bitrate, #elapsed, #total' ).empty();
 			$( '#cover-art' ).css( {
 				  'background-image': 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
 				, 'border-radius': 0
@@ -2468,10 +2491,10 @@ function setPlaybackData() {
 				}
 			}
 			$( '#elapsed' ).html( status.state === 'play' ? blinkdot : '' );
-			$( '#total' ).text( '' );
+			$( '#total' ).empty();
 			// show / hide elapsed at total
 			if ( !status.radioelapsed ) {
-				$( '#total' ).text( '' );
+				$( '#total' ).empty();
 			} else {
 				var elapsed = status.elapsed;
 				GUI.countdown = setInterval( function() {
@@ -2497,7 +2520,7 @@ function setPlaybackData() {
 		if ( $( '#time-knob' ).hasClass( 'hide' ) ) return;
 		if ( status.state === 'stop' ) {
 			$( '#elapsed' ).text( $( '#total' ).text() ).css( 'color', '#587ca0' );
-			$( '#total' ).text( '' );
+			$( '#total' ).empty();
 			return;
 		} else {
 			$( '#elapsed, #total' ).css( 'color', '' );
@@ -2535,7 +2558,7 @@ function setPlaybackData() {
 			if ( position === 1000 ) {
 				clearInterval( GUI.currentKnob );
 				clearInterval( GUI.countdown );
-				$( '#elapsed' ).text( '' );
+				$( '#elapsed' ).empty();
 			}
 			$( '#time' ).roundSlider( 'setValue', position );
 		}, time );
