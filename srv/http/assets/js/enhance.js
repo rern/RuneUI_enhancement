@@ -1475,7 +1475,12 @@ function displayPlayback() {
 	var volume = ( !display.volume || redis.volumempd == 0 ) ? 0 : 1;
 	
 	if ( redis.update != 0 ) {
-		$( '#menu-settings' ).append( '<span id="badge">'+ redis.update +'</span>' );
+		if ( display.bars ) {
+			$( '#menu-settings' ).append( '<span id="badge">'+ redis.update +'</span>' );
+			$( '#iaddons' ).addClass( 'hide' );
+		} else {
+			$( '#iaddons' ).removeClass( 'hide' );
+		}
 	} else {
 		$( '#badge' ).remove();
 	}
