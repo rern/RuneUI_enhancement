@@ -711,7 +711,7 @@ $( '#db-index li' ).click( function() {
 			name = GUI.currentpath +'/'+  stripLeading( name );
 			datapathindex = GUI.currentpath +'/'+ indextext;
 		} else {
-			name = stripLeading( $this.data( 'path' ) );
+			name = stripLeading( $this.data( 'path' ).toString() );
 			datapathindex = '^'+ indextext;
 		}
 		return name.match( new RegExp( datapathindex, 'i' ) );
@@ -725,8 +725,9 @@ $( '#pl-index li' ).click( function() {
 		$( window ).scrollTop( 0 );
 		return
 	}
+//	console.log($( '#pl-editor li' ))
 	var matcharray = $( '#pl-editor li' ).filter( function() {
-		var name = stripLeading( $( this ).data( 'path' ) );
+		var name = stripLeading( $( this ).data( 'path' ).toString() );
 		return name.match( new RegExp( '^'+ indextext, 'i' ) );
 	} );
 	if ( matcharray.length ) $( window ).scrollTop( matcharray[ 0 ].offsetTop - topoffset );
@@ -2113,7 +2114,7 @@ function populateDB( options ) {
 			$( '#db-webradio-new' ).toggleClass( 'hide', path !== 'Webradio' );
 		}
 	}
-	$( '#database-entries' ).html( content );
+	$( '#database-entries' ).html( content +'<p></p>' );
 	
 // breadcrumb directory path link
 	var dot = '<span style="color: #587ca0"> &#8226; </span>';
@@ -2176,15 +2177,17 @@ function populateDB( options ) {
 		$( '#db-currentpath span' ).html( folderCrumb );
 	}
 	if ( querytype != 'childs' ) $( '#spinner-db' ).addClass( 'hide' );
-	// hide index bar in track list mode or list not overflow
-	var dbentriesH = window.innerHeight - 40 - ( display.bars ? 80 : 0 );
-	if ( $( '#database-entries li:eq( 0 )' ).hasClass( 'db-song' ) || dbentriesH / 48 > $( '#database-entries li' ).length ) {
+	// fill bottom of list to mave last li movable to top
+	$( '#database-entries p' ).css( 'min-height', window.innerHeight - ( display.bars ? 220 : 180 ) +'px' );
+	// hide index bar in track list mode
+	if ( $( '#database-entries li:eq( 0 )' ).hasClass( 'db-song' ) ) {
 		$( '#db-index' ).addClass( 'hide' );
 		$( '#database-entries' ).css( 'width', '100%' );
 	} else {
 		$( '#db-index' ).removeClass( 'hide' );
-		$( '#database-entries' ).css( 'width', 'calc( 100% - 38px )' );
+		$( '#database-entries' ).css( 'width', '' );
 	}
+	$( window ).scrollTop( 0 );
 }
 function renderPlaylist() {
 	$( '#pl-filter' ).val( '' );
@@ -2263,6 +2266,8 @@ function renderPlaylist() {
 }
 function renderSavedPlaylists() {
     $( '#spinner-pl' ).removeClass( 'hide' );
+	$( '.playlist' ).addClass( 'hide' );
+	
     $.get( '/command/?cmd=listplaylists', function( data ) {
 		var pl = data.split( '\n' ).filter( function( el ) { return el.match( /^playlist/ ) } );
 		arraypl = [];
@@ -2277,20 +2282,13 @@ function renderSavedPlaylists() {
 			//plname = el.replace( 'playlist: ', '' );
 			content += '<li class="pl-folder" data-path="'+ el +'"><i class="fa fa-bars pl-action"></i><span><i class="fa fa-list-ul"></i>'+ el +'</span></li>';
 		} );
-		$( '.playlist' ).addClass( 'hide' );
-		$( '#pl-currentpath, #pl-editor' ).removeClass( 'hide' );
-		$( '#pl-editor' ).html( content ).promise().done( function() {
-			var pleditorH = window.innerHeight - 40 - ( display.bars ? 80 : 0 );
-			if ( pleditorH / 48 > $( '#pl-editor li' ).length ) {
-				$( '#pl-index' ).addClass( 'hide' );
-				$( '#pl-editor' ).css( 'width', '100%' );
-			} else {
-				$( '#pl-index' ).removeClass( 'hide' );
-				$( '#pl-editor' ).css( 'width', 'calc( 100% - 38px )' );
-			}
+		$( '#pl-editor' ).html( content +'<p></p>' ).promise().done( function() {
+			// fill bottom of list to mave last li movable to top
+			$( '#pl-editor p' ).css( 'min-height', window.innerHeight - ( display.bars ? 220 : 180 ) +'px' );
+			$( '#spinner-pl' ).addClass( 'hide' );
+			$( '#pl-currentpath, #pl-editor, #pl-index' ).removeClass( 'hide' );
 			$( window ).scrollTop( 0 );
 		} );
-		$( '#spinner-pl' ).addClass( 'hide' );
     } );
 }
 
