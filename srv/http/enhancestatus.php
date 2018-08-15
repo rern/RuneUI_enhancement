@@ -10,6 +10,7 @@ if ( $activePlayer === 'Airplay' ) {
 
 include '/srv/http/app/libs/runeaudio.php';
 $mpd = openMpdSocket('/run/mpd.sock');
+if ( !$mpd ) die();
 
 function status2array( $lines ) {
 	$line = strtok( $lines, "\n" );
