@@ -716,7 +716,7 @@ $( '#db-index li' ).click( function() {
 			name = GUI.currentpath +'/'+  stripLeading( name );
 			datapathindex = GUI.currentpath +'/'+ indextext;
 		} else {
-			name = stripLeading( $this.data( 'path' ).toString() );
+			name = stripLeading( $this.data( 'path' ) );
 			datapathindex = '^'+ indextext;
 		}
 		return name.match( new RegExp( datapathindex, 'i' ) );
@@ -732,7 +732,7 @@ $( '#pl-index li' ).click( function() {
 	}
 //	console.log($( '#pl-editor li' ))
 	var matcharray = $( '#pl-editor li' ).filter( function() {
-		var name = stripLeading( $( this ).data( 'path' ).toString() );
+		var name = stripLeading( $( this ).data( 'path' ) );
 		return name.match( new RegExp( '^'+ indextext, 'i' ) );
 	} );
 	if ( matcharray.length ) $( window ).scrollTop( matcharray[ 0 ].offsetTop - topoffset );
@@ -973,7 +973,8 @@ function webRadioRenameVerify( name, oldname, url ) {
 			, 'radio[label]'    : oldname
 			, 'radio[url]'      : url
 		}, function() {
-			getDB( { path: 'Webradio' } );
+			//getDB( { path: 'Webradio' } );
+			$( '#database-entries li.active' ).find( 'span.sn' ).text( name );
 		} );
 	}
 }
@@ -1076,7 +1077,8 @@ function playlistRenameVerify( name, oldname ) {
 		} );
 	} else {
 		sendCmd( 'rename "'+ oldname +'" "'+ name +'"' );
-		renderSavedPlaylists();
+		//renderSavedPlaylists();
+		$( '#pl-editor li.active' ).find( 'span' ).text( name );
 	}
 }
 function playlistDelete() {
@@ -1973,6 +1975,7 @@ function getDB( options ) {
 }
 // strip leading A|An|The|(|[|. (for sorting)
 function stripLeading( string ) {
+	if ( typeof string === 'number' ) string = string.toString();
 	return string.replace( /^A +|^An +|^The +|^\(\s*|^\[\s*|^\.\s*/i, '' );
 }
 function preparse( array, i, type, path, query ) {
@@ -2284,7 +2287,7 @@ function renderSavedPlaylists() {
 		var content = plname = '';
 		arraypl.forEach( function( el ) {
 			//plname = el.replace( 'playlist: ', '' );
-			content += '<li class="pl-folder" data-path="'+ el +'"><i class="fa fa-bars pl-action"></i><span><i class="fa fa-list-ul"></i>'+ el +'</span></li>';
+			content += '<li class="pl-folder" data-path="'+ el +'"><i class="fa fa-bars pl-action"></i><span>'+ el +'</span></li>';
 		} );
 		$( '#pl-editor' ).html( content +'<p></p>' ).promise().done( function() {
 			// fill bottom of list to mave last li movable to top
