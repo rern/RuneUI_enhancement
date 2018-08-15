@@ -1445,7 +1445,7 @@ function displayAirPlay() {
 	$( '#menu-top, #menu-bottom' ).toggleClass( 'hide', !display.bars );
 	$( '#playback-row' ).removeClass( 'hide' );
 	$( '#time-knob' ).toggleClass( 'hide', !display.time );
-	$( '#imode i, #coverartoverlay, #volume-knob, #play-group, #share-group, #vol-group' ).addClass( 'hide' );
+	$( '#irandom, irepeat, #coverartoverlay, #volume-knob, #play-group, #share-group, #vol-group' ).addClass( 'hide' );
 	$( '#playsource-mpd' ).addClass( 'inactive' );
 	$( '#playsource-airplay' ).removeClass( 'inactive' );
 	if ( display.time ) {
@@ -1544,8 +1544,8 @@ function displayPlayback() {
 			var source = GUI.libraryhome.ActivePlayer.toLowerCase();
 			$( '#iplayer' ).addClass( 'fa-'+ source ).removeClass( 'hide' );
 		}
-	} else {
-		$( '#imode i' ).addClass( 'hide' );
+	} else if ( !display.time ) {
+		$( '#imode' ).addClass( 'hide' );
 	}
 	displayCommon();
 	$( '#container-playback' ).removeClass( 'hide' );
