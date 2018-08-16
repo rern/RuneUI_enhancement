@@ -1,33 +1,33 @@
 var GUI = {
-    DBentry           : [ '', '', '' ],
-    DBupdate          : 0,
-    activePlayer      : '',
-    browsemode        : 'file',
-    checkvol          : 0,
-    currentDBpos      : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-    currentDBpath     : [ '', '', '', '', '', '', '', '', '', '', '' ],
-    currentalbum      : null,
-    currentknob       : null,
-    currentpath       : '',
-    currentsong       : null,
-    json              : 0,
-    libraryhome       : '',
-    forceGUIupdate    : false,
-    maxvol            : 100,
-    minvol            : 0,
-    mode              : 'websocket',
-    noticeUI          : {},
-    playlist          : null,
-    plugin            : '',
-    state             : '',
-    old_state         : 'none',
-    stepVolumeDelta   : 0,
-    stepVolumeInt     : 0,
-    stream            : '',
-    visibility        : 'visible',
-    vol_changed_local : 0,
-    volume            : null,
-    clientUUID        : null
+	DBentry           : [ '', '', '' ],
+	DBupdate          : 0,
+	activePlayer      : '',
+	browsemode        : 'file',
+	checkvol          : 0,
+	currentDBpos      : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+	currentDBpath     : [ '', '', '', '', '', '', '', '', '', '', '' ],
+	currentalbum      : null,
+	currentknob       : null,
+	currentpath       : '',
+	currentsong       : null,
+	json              : 0,
+	libraryhome       : '',
+	forceGUIupdate    : false,
+	maxvol            : 100,
+	minvol            : 0,
+	mode              : 'websocket',
+	noticeUI          : {},
+	playlist          : null,
+	plugin            : '',
+	state             : '',
+	old_state         : 'none',
+	stepVolumeDelta   : 0,
+	stepVolumeInt     : 0,
+	stream            : '',
+	visibility        : 'visible',
+	vol_changed_local : 0,
+	volume            : null,
+	clientUUID        : null
 };
 
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -37,12 +37,12 @@ if ( document.location.hostname === 'localhost' ) $( '.osk-trigger' ).onScreenKe
 // UUID for the client
 var d = new Date().getTime();
 GUI.clientUUID = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace( /[xy]/g, function( c ) {
-    var r = ( d + Math.random() * 16 ) % 16 | 0;
-    return ( c=='x' ? r : ( r & 0x3 | 0x8 ) ).toString( 16 );
+	var r = ( d + Math.random() * 16 ) % 16 | 0;
+	return ( c=='x' ? r : ( r & 0x3 | 0x8 ) ).toString( 16 );
 } );
 // send a MPD playback control command
 function sendCmd( cmd ) {
-    $.get( '/command/?cmd='+ cmd +'&clientUUID='+ GUI.clientUUID );
+	$.get( '/command/?cmd='+ cmd +'&clientUUID='+ GUI.clientUUID );
 }
 
 PNotify.prototype.options.styling = 'fontawesome';
@@ -55,34 +55,34 @@ PNotify.prototype.options.stack = {
 	spacing2  : 10,
 }
 function renderMSG( text ) {
-    var notify = text[ 0 ];
-    var noticeOptions = {
-        title: ( 'title' in notify ) ? notify.title : '',
-        text: ( 'text' in notify ) ? notify.text : '',
-        icon: ( notify.icon === undefined ) ? 'fa fa-check' : notify.icon,
-        opacity: ( notify.opacity === undefined ) ? 0.9 : notify.opacity,
-        hide: ( notify.hide === undefined && notify.permanotice === undefined ),
-        buttons: {
-            closer: ( notify.permanotice === undefined ),
-            sticker: ( notify.permanotice === undefined )
-        },
-        delay: ( notify.delay === undefined ) ? 8000 : notify.delay,
-        mouse_reset: false
-    };
-    if ( 'permanotice' in notify ) {
-        if ( GUI.noticeUI[ notify.permanotice ] === undefined ) {
-            GUI.noticeUI[ notify.permanotice ] = new PNotify( noticeOptions );
-        } else {
-            if ( 'permaremove' in notify ) {
-                GUI.noticeUI[ notify.permanotice ].remove();
-                GUI.noticeUI[ notify.permanotice ] = undefined;
-            } else {
-                GUI.noticeUI[ notify.permanoticeb].open();
-            }
-        }
-    } else {
-        new PNotify( noticeOptions );
-    }
+	var notify = text[ 0 ];
+	var noticeOptions = {
+		title: ( 'title' in notify ) ? notify.title : '',
+		text: ( 'text' in notify ) ? notify.text : '',
+		icon: ( notify.icon === undefined ) ? 'fa fa-check' : notify.icon,
+		opacity: ( notify.opacity === undefined ) ? 0.9 : notify.opacity,
+		hide: ( notify.hide === undefined && notify.permanotice === undefined ),
+		buttons: {
+			closer: ( notify.permanotice === undefined ),
+			sticker: ( notify.permanotice === undefined )
+		},
+		delay: ( notify.delay === undefined ) ? 8000 : notify.delay,
+		mouse_reset: false
+	};
+	if ( 'permanotice' in notify ) {
+		if ( GUI.noticeUI[ notify.permanotice ] === undefined ) {
+			GUI.noticeUI[ notify.permanotice ] = new PNotify( noticeOptions );
+		} else {
+			if ( 'permaremove' in notify ) {
+				GUI.noticeUI[ notify.permanotice ].remove();
+				GUI.noticeUI[ notify.permanotice ] = undefined;
+			} else {
+				GUI.noticeUI[ notify.permanoticeb].open();
+			}
+		}
+	} else {
+		new PNotify( noticeOptions );
+	}
 }
 var pushstreamnotify = new PushStream( {
 	host: window.location.hostname,
@@ -130,18 +130,18 @@ pushstreamplayback.addChannel( 'playback' );
 pushstreamplayback.connect();
 
 function libraryHome( text ) {
-    GUI.libraryhome = text[ 0 ];
-    if ( GUI.libraryhome.clientUUID === GUI.clientUUID && GUI.plugin !== 'Dirble' && GUI.currentpath !== 'Webradio' ) {
-        renderLibraryHome(); // TODO: do it only while in home
-    }
-    if ( GUI.currentpath === 'Webradio' ) {
-        getDB( {
-            path: 'Webradio',
-            uplevel: 0
+	GUI.libraryhome = text[ 0 ];
+	if ( GUI.libraryhome.clientUUID === GUI.clientUUID && GUI.plugin !== 'Dirble' && GUI.currentpath !== 'Webradio' ) {
+		renderLibraryHome(); // TODO: do it only while in home
+	}
+	if ( GUI.currentpath === 'Webradio' ) {
+		getDB( {
+			path: 'Webradio',
+			uplevel: 0
 		} );
-    }
+	}
 	if ( GUI.forceGUIupdate === true ) {
-        GUI.forceGUIupdate = false;
+		GUI.forceGUIupdate = false;
 		renderLibraryHome();
 	}
 }
@@ -525,18 +525,18 @@ $( '#turnoff' ).click( function() {
 	} );
 } );
 $( '#overlay-playsource-open' ).click( function() {
-    $( '#overlay-playsource' ).addClass( 'open' );
+	$( '#overlay-playsource' ).addClass( 'open' );
 } );
 $( '#overlay-playsource-close' ).click( function() {
-    $( '#overlay-playsource' ).removeClass( 'open' );
+	$( '#overlay-playsource' ).removeClass( 'open' );
 } );
 $( '#overlay-social-open' ).click( function() {
-    $( '#overlay-social' ).addClass( 'open' );
+	$( '#overlay-social' ).addClass( 'open' );
 	var urlTwitter = 'https://twitter.com/home?status=Listening+to+' + GUI.json.currentsong.replace( /\s+/g, '+' ) +'+by+'+ GUI.json.currentartist.replace( /\s+/g, '+' ) +'+on+%40RuneAudio+http%3A%2F%2Fwww.runeaudio.com%2F+%23nowplaying';
 	$( '#urlTwitter' ).attr( 'href', urlTwitter );
 } );
 $( '#overlay-social-close' ).click( function() {
-    $( '#overlay-social' ).removeClass( 'open' );
+	$( '#overlay-social' ).removeClass( 'open' );
 } );
 $( '#playsource-spotify' ).click( function() {
 	if ( $( this ).hasClass( 'inactive' ) ) {
@@ -601,31 +601,15 @@ $( '#db-level-up' ).on( 'click', function() {
 	}
 	var path = GUI.currentpath;
 	if ( GUI.browsemode === 'file' ) {
-		var toppath = GUI.currentpath.split( '/' )[ 0 ];
-		if ( toppath === 'USB' ) {
-			cutpos = path.lastIndexOf( '/' );
-			path = ( cutpos !== -1 ) ? path.slice( 0, cutpos ) : '';
-		} else {
-			path = toppath;
-			GUI.plugin = toppath;
-		}
+		$( '#db-currentpath a:nth-last-child( 2 )' ).click();
 	} else {
-		var mode2path = {
-			  album       : 'Albums'
-			, artist      : 'Artists'
-			, composer    : 'Composer'
-			, genre       : 'Genres'
-			, albumfilter : path
-		};
-		path = mode2path[ GUI.browsemode ];
+		getDB( { 
+			  path       : dblevelup.path
+			, browsemode : dblevelup.browsemode
+			, plugin     : dblevelup.plugin
+			, uplevel    : dblevelup.uplevel
+		} );
 	}
-	getDB( { 
-		browsemode: GUI.browsemode,
-		path: path,
-		plugin: GUI.plugin,
-		uplevel: 1
-	} );
-	GUI.plugin = '';
 });
 dbscrolltop = {};
 $( '#database-entries' ).on( 'click', 'li', function( e ) {
@@ -1878,112 +1862,120 @@ function parseResponse( options ) {
 	}
 	return content;
 }
+dbcurrent = {};
+dblevelup = {};
 // launch the right AJAX call for Library rendering
 function getDB( options ) {
-    // DEFAULTS
-    var cmd = options.cmd || 'browse',
-        path = options.path || '',
-        browsemode = options.browsemode || 'file',
-        uplevel = options.uplevel || '',
-        plugin = options.plugin || '',
-        querytype = options.querytype || '',
-        args = options.args || '';
-        
-    $( '#spinner-db' ).removeClass( 'hide' );
-    GUI.browsemode = browsemode;
-    
-    if ( plugin ) {
-        if ( plugin === 'Spotify' ) {
-            $.post( '/db/?cmd=spotify', { 'plid': args }, function( data ) {
-                populateDB( {
-                    data: data,
-                    path: path,
-                    plugin: plugin,
-                    querytype: querytype,
-                    uplevel: uplevel,
-                    args: args
-                } );
-            }, 'json' );
-        }
-        else if ( plugin === 'Dirble' ) {
-            if ( querytype === 'childs' ) {
-                $.post( '/db/?cmd=dirble', { 'querytype': 'childs', 'args': args }, function( data ) {
-                    populateDB( {
-                        data: data,
-                        path: path,
-                        plugin: plugin,
-                        querytype: 'childs',
-                        uplevel: uplevel
-                    } );
-                }, 'json' );
-                $.post( '/db/?cmd=dirble', { 'querytype': 'childs-stations', 'args': args }, function( data ) {
-                    populateDB( {
-                        data: data,
-                        path: path,
-                        plugin: plugin,
-                        querytype: 'childs-stations',
-                        uplevel: uplevel
-                    } );
-                }, 'json' );            
-            } else {
-                $.post( '/db/?cmd=dirble', { 'querytype': (querytype === '' ) ? 'categories' : querytype, 'args': args }, function( data ) {
-                    populateDB( {
-                        data: data,
-                        path: path,
-                        plugin: plugin,
-                        querytype: querytype,
-                        uplevel: uplevel
-                    } );
-                }, 'json' );
-            }
-        }
-        else if ( plugin === 'Jamendo' ) {
-            $.post( '/db/?cmd=jamendo', { 'querytype': (querytype === '' ) ? 'radio' : querytype, 'args': args }, function( data ) {
-                populateDB( {
-                    data: data.results,
-                    path: path,
-                    plugin: plugin,
-                    querytype: querytype
-                } );
-            }, 'json' );
-        }
-    } else {
-    // normal browsing
-        if ( cmd === 'search' ) {
-            var keyword = $( '#db-search-keyword' ).val();
-            if ( path.match(/Dirble/)) {
-                $.post( '/db/?cmd=dirble', { 'querytype': 'search', 'args': keyword }, function( data ) {
-                    populateDB( {
-                        data: data,
-                        path: path,
-                        plugin: 'Dirble',
-                        querytype: 'search',
-                        uplevel: uplevel
-                    } );
-                }, 'json' );
-            } else {
-                $.post( '/db/?querytype='+ GUI.browsemode +'&cmd=search', { 'query': keyword }, function( data ) {
-                    populateDB( {
-                        data: data,
-                        path: path,
-                        uplevel: uplevel,
-                        keyword: keyword
-                    } );
-                }, 'json' );
-            }
-        } else if ( cmd === 'browse' ) {
-            $.post( '/db/?cmd=browse', { 'path': path, 'browsemode': GUI.browsemode }, function( data ) {
-                populateDB( {
-                    data: data,
-                    path: path,
-                    uplevel: uplevel
-                } );
-            }, 'json' );
-        } else {
-            $( '#spinner-db' ).addClass( 'hide' );
-            $.post( '/db/?cmd='+ cmd, { 'path': path, 'querytype': querytype } );
-        }
-    }
+	// DEFAULTS
+	var cmd = options.cmd || 'browse',
+		path = options.path || '',
+		browsemode = options.browsemode || 'file',
+		uplevel = options.uplevel || '',
+		plugin = options.plugin || '',
+		querytype = options.querytype || '',
+		args = options.args || '';
+	dblevelup = dbcurrent;
+	dbcurrent = {
+		  path       : path
+		, browsemode : browsemode
+		, plugin     : plugin
+		, uplevel    : uplevel
+	}
+	$( '#spinner-db' ).removeClass( 'hide' );
+	GUI.browsemode = browsemode;
+	
+	if ( plugin ) {
+		if ( plugin === 'Spotify' ) {
+			$.post( '/db/?cmd=spotify', { 'plid': args }, function( data ) {
+				populateDB( {
+					data: data,
+					path: path,
+					plugin: plugin,
+					querytype: querytype,
+					uplevel: uplevel,
+					args: args
+				} );
+			}, 'json' );
+		}
+		else if ( plugin === 'Dirble' ) {
+			if ( querytype === 'childs' ) {
+				$.post( '/db/?cmd=dirble', { 'querytype': 'childs', 'args': args }, function( data ) {
+					populateDB( {
+						data: data,
+						path: path,
+						plugin: plugin,
+						querytype: 'childs',
+						uplevel: uplevel
+					} );
+				}, 'json' );
+				$.post( '/db/?cmd=dirble', { 'querytype': 'childs-stations', 'args': args }, function( data ) {
+					populateDB( {
+						data: data,
+						path: path,
+						plugin: plugin,
+						querytype: 'childs-stations',
+						uplevel: uplevel
+					} );
+				}, 'json' );            
+			} else {
+				$.post( '/db/?cmd=dirble', { 'querytype': (querytype === '' ) ? 'categories' : querytype, 'args': args }, function( data ) {
+					populateDB( {
+						data: data,
+						path: path,
+						plugin: plugin,
+						querytype: querytype,
+						uplevel: uplevel
+					} );
+				}, 'json' );
+			}
+		}
+		else if ( plugin === 'Jamendo' ) {
+			$.post( '/db/?cmd=jamendo', { 'querytype': (querytype === '' ) ? 'radio' : querytype, 'args': args }, function( data ) {
+				populateDB( {
+					data: data.results,
+					path: path,
+					plugin: plugin,
+					querytype: querytype
+				} );
+			}, 'json' );
+		}
+	} else {
+	// normal browsing
+		if ( cmd === 'search' ) {
+			var keyword = $( '#db-search-keyword' ).val();
+			if ( path.match(/Dirble/)) {
+				$.post( '/db/?cmd=dirble', { 'querytype': 'search', 'args': keyword }, function( data ) {
+					populateDB( {
+						data: data,
+						path: path,
+						plugin: 'Dirble',
+						querytype: 'search',
+						uplevel: uplevel
+					} );
+				}, 'json' );
+			} else {
+				$.post( '/db/?querytype='+ GUI.browsemode +'&cmd=search', { 'query': keyword }, function( data ) {
+					populateDB( {
+						data: data,
+						path: path,
+						uplevel: uplevel,
+						keyword: keyword
+					} );
+				}, 'json' );
+			}
+		} else if ( cmd === 'browse' ) {
+			$.post( '/db/?cmd=browse', { 'path': path, 'browsemode': GUI.browsemode }, function( data ) {
+				populateDB( {
+					data: data,
+					path: path,
+					uplevel: uplevel
+				} );
+			}, 'json' );
+		} else {
+			$( '#spinner-db' ).addClass( 'hide' );
+			$.post( '/db/?cmd='+ cmd, { 'path': path, 'querytype': querytype } );
+		}
+	}
 }
 // strip leading A|An|The|(|[|. (for sorting)
 function stripLeading( string ) {
@@ -2288,10 +2280,10 @@ function renderPlaylist() {
 	} );
 }
 function renderSavedPlaylists() {
-    $( '#spinner-pl' ).removeClass( 'hide' );
+	$( '#spinner-pl' ).removeClass( 'hide' );
 	$( '.playlist' ).addClass( 'hide' );
 	
-    $.get( '/command/?cmd=listplaylists', function( data ) {
+	$.get( '/command/?cmd=listplaylists', function( data ) {
 		var pl = data.split( '\n' ).filter( function( el ) { return el.match( /^playlist/ ) } );
 		arraypl = [];
 		pl.forEach( function( el ) {
@@ -2312,7 +2304,7 @@ function renderSavedPlaylists() {
 			$( '#pl-currentpath, #pl-editor, #pl-index' ).removeClass( 'hide' );
 			$( window ).scrollTop( 0 );
 		} );
-    } );
+	} );
 }
 
 prevnext = 0; // for disable 'btn-primary' - previous/next while stop
