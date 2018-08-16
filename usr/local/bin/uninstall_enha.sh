@@ -36,6 +36,7 @@ mv /srv/http/app/coverart_ctl.php{.backup,}
 mv /srv/http/app/templates/footer.php{.backup,}
 mv /srv/http/app/templates/header.php{.backup,}
 mv /srv/http/app/templates/playback.php{.backup,}
+mv /srv/http/assets/js/vendor/Sortable.min.js{.backup,}
 mv /srv/http/command/airplay_toggle{.backup,}
 mv /usr/share/bootsplash/start-runeaudio.png{.backup,}
 mv /usr/share/bootsplash/reboot-runeaudio.png{.backup,}
