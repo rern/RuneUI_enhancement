@@ -2480,7 +2480,6 @@ function setPlaybackData() {
 		
 		GUI.json.radio = ( status.ext === 'radio' ? 1 : 0 );
 		setButton();
-		
 		$( '.playback-controls' ).css( 'visibility', 'visible' );
 		$( '#currentartist' ).html( status.Artist );
 		$( '#currentsong' ).html( status.Title );
