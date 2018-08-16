@@ -116,7 +116,6 @@ if ( $status[ 'state' ] === 'play' ) {
 if ( $status[ 'ext' ] === 'radio' ) {
 	$webradios = $redis->hGetAll( 'webradios' );
 	$webradioname = array_flip( $webradios );
-	$status[ 'Artist' ] = $name;
 	if ( $sampling = $redis->hGet( 'sampling', $name ) ) $status[ 'sampling' ] = $sampling;
 	echo json_encode( $status );
 	die();
