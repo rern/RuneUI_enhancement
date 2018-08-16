@@ -27,6 +27,7 @@
 <script src="<?=$this->asset('/js/vendor/jquery.mobile.custom.min.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/pushstream.min.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/bootstrap.min.js')?>"></script>
+<script src="<?=$this->asset('/js/vendor/Sortable.min.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/pnotify.custom.min.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/openwebapp.js')?>"></script>
 <script src="<?=$this->asset('/js/vendor/modernizr-custom.js')?>"></script>
