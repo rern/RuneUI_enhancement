@@ -2504,7 +2504,7 @@ function setPlaybackData() {
 			var radiourlstop = $( '#vustop' ).val();
 			
 			$( '#cover-art' ).css( 'border-radius', '18px' );
-			$( '#coverartoverlay' ).show();
+			$( '#coverartoverlay' ).removeClass( 'hide' );
 			if ( status.state === 'play' ) {
 				if ( radiobg !== radiourl ) {
 					$( '#cover-art' ).css( 'background-image', radiourl );
