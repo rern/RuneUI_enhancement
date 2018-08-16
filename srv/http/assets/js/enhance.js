@@ -1138,17 +1138,20 @@ $( '#pl-filter-results' ).on( 'click', function() {
 	$( '#playlist-entries li' ).show();
 });
 
-var sortlist = document.getElementById( 'playlist-entries' );
-new Sortable( sortlist, {
+drag = 0;
+var list = document.getElementById( 'playlist-entries' );
+new Sortable( list, {
 	ghostClass: 'sortable-ghost',
+	delay: 300,
 	onUpdate  : function ( e ) {
-		var id = e.target.id;
+		drag = 1;
+		var id = e.item.id;
 		var pos = $( '#' + id ).index();
 		id = parseInt( id.replace( 'pl-', '' ) );
 		sendCmd( 'moveid '+ id +' '+ pos );
 	}
 } );
-
+					
 if ( 'hidden' in document ) {
 	var visibilityevent = 'visibilitychange';
 	var hiddenstate = 'hidden';
@@ -2275,6 +2278,10 @@ function renderPlaylist() {
 			var $liactive = $( '#pl-'+ GUI.status.songid );
 			$( '#playlist-entries li' ).removeClass( 'active' );
 			$liactive.addClass( 'active' );
+			if ( drag ) {
+				drag = 0;
+				return;
+			}
 			var scrollpos = $liactive.offset().top - $( '#playlist-entries' ).offset().top;
 			if ( window.innerHeight / 48 < $( '#playlist-entries li' ).length ) $( window ).scrollTop( scrollpos );
 		} );
