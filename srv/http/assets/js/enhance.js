@@ -1095,7 +1095,9 @@ function playlistDelete() {
 		}
 	} );
 }
-// context menus \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+$( '#pl-home' ).click( function() {
+	$( '#open-panel-dx' ).click();
+} );
 // playlist click go back to home page
 $( '#playlist-entries' ).click( function( e ) {
 	if ( e.target.nodeName == 'SPAN' ) {
@@ -1111,7 +1113,6 @@ $( '#pl-manage-list' ).on( 'click', function() {
 	renderSavedPlaylists();
 });
 $( '#pl-filter' ).on( 'keyup', function() {
-//	$.scrollTo( 0 , 500 );
 	var search = $(this).val();
 	var count = 0;
 	$( '#playlist-entries li' ).each( function() {
@@ -1130,15 +1131,23 @@ $( '#pl-filter' ).on( 'keyup', function() {
 		$( '#pl-filter-results' ).addClass( 'hide' ).empty();
 	}
 } );
-$( '#pl-home' ).click( function() {
-	$( '#open-panel-dx' ).click();
-} );
 $( '#pl-filter-results' ).on( 'click', function() {
 	$( this ).addClass( 'hide' ).empty();
 	$( '#pl-manage, #pl-count, #playlist-entries li' ).removeClass( 'hide' );
 	$( '#pl-filter' ).val( '' );
 	$( '#playlist-entries li' ).show();
 });
+
+var sortlist = document.getElementById( 'playlist-entries' );
+new Sortable( sortlist, {
+	ghostClass: 'sortable-ghost',
+	onUpdate  : function ( e ) {
+		var id = e.target.id;
+		var pos = $( '#' + id ).index();
+		id = parseInt( id.replace( 'pl-', '' ) );
+		sendCmd( 'moveid '+ id +' '+ pos );
+	}
+} );
 
 if ( 'hidden' in document ) {
 	var visibilityevent = 'visibilitychange';
