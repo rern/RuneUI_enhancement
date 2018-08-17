@@ -11,6 +11,9 @@ var GUI = {
 	currentknob       : null,
 	currentpath       : '',
 	currentsong       : null,
+	dbback            : 0,
+	dbbackdata        : [],
+	dbbrowsemode      : '',
 	dbcurrent         : {},
 	dblevelup         : {},
 	dbpath            : '',
@@ -218,6 +221,7 @@ $( '#currentsong, #playlist-warning' ).on( 'click', 'i', function() {
 	$( '#open-panel-sx' ).click();
 } );
 $( '#open-panel-sx' ).click( function() {
+	GUI.dbbackdata = [];
 	if ( GUI.activePlayer === 'Airplay' || GUI.activePlayer === 'Spotify' ) {
 		$( '#overlay-playsource' ).addClass( 'open' );
 		return;
@@ -366,6 +370,8 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 		webRadioNew();
 	} else {
 		if ( GUI.bookmarkedit ) return;
+		
+		GUI.dbbrowsemode = $this.data( 'browsemode' );
 		getDB( {
 			browsemode: $this.data( 'browsemode' ),
 			path: $this.data( 'path' ),
@@ -606,22 +612,32 @@ $( '#db-level-up' ).on( 'click', function() {
 		renderLibraryHome();
 		return
 	}
-	var path = GUI.currentpath;
 	if ( GUI.browsemode === 'file' ) {
 		$( '#db-currentpath a:nth-last-child( 2 )' ).click();
 	} else {
-		getDB( { 
-			  path       : GUI.dblevelup.path
-			, browsemode : GUI.dblevelup.browsemode
-			, plugin     : GUI.dblevelup.plugin
-			, uplevel    : GUI.dblevelup.uplevel
-		} );
+		if ( GUI.dbbrowsemode !== 'artist' && GUI.dbbrowsemode !== 'genre' ) {
+			$( '#db-currentpath span a:eq( 0 )' ).click();
+			GUI.dbbackdata = [];
+		} else {
+			var pagemode = $( '#db-currentpath span a:eq( 0 )' ).text().replace( /S$/, '' ).toLowerCase();
+			if ( pagemode === GUI.dbbrowsemode ) {
+				$( '#db-currentpath span a:eq( 0 )' ).click();
+				GUI.dbbackdata = [];
+			} else {
+				GUI.dbback = 1;
+				var dbbacklast = GUI.dbbackdata.pop();
+				if ( dbbacklast.path === GUI.currentpath ) {
+					getDB( GUI.dbbackdata.pop() );
+				} else {
+					getDB( dbbacklast );
+				}
+			}
+		}
 	}
 });
 $( '#database-entries' ).on( 'click', 'li', function( e ) {
 	var $this = $( this );
 	var path = $this.data( 'path' );
-	var browsemode = '';
 	// get scroll position for back navigation
 	GUI.dbscrolltop[ $( '#db-currentpath' ).attr( 'path' ) ] = $( window ).scrollTop();
 	observerFnBack.observe( observerTarget, observerOption );
@@ -1622,17 +1638,17 @@ function renderLibraryHome() {
 	var content = '<br>';
 	var divOpen = '<div class="col-lg-3 col-md-4 col-sm-6">';
 	for ( i = 0; ( bookmark = obj.bookmarks[ i ] ); i++ ) {
-		content += divOpen +'<div id="home-bookmark-'+ bookmark.id +'" class="home-block home-bookmark'+ toggleMPD +'" data-path="'+ bookmark.path +'"><i class="fa fa-bookmark"></i><h4>' + bookmark.name + '</h4></div></div>';
+		content += divOpen +'<div id="home-bookmark-'+ bookmark.id +'" class="home-block home-bookmark'+ toggleMPD +'" data-path="'+ bookmark.path +'" data-browsemode="file"><i class="fa fa-bookmark"></i><h4>' + bookmark.name + '</h4></div></div>';
 	}
 	if ( chkKey( obj.networkMounts ) ) {
 		content += divOpen +'<a id="home-nas" class="home-block'+ toggleMPD +'"'+ ( obj.networkMounts === 0 ? ( notMPD ? '' : ' href="/sources/add/"' ) : ' data-path="NAS"' ) +'>';
 		content += '<i class="fa fa-network"></i><h4>Network drives <span>( '+ obj.networkMounts +' )</span></h4></a></div>';
 	}
 	if ( chkKey( obj.localStorages ) ) {
-		content += ( obj.localStorages === 0 ) ? '' : divOpen +'<div id="home-local" class="home-block'+ toggleMPD +'" data-path="LocalStorage"><i class="fa fa-microsd"></i><h4>SD card <span>( '+ obj.localStorages +' )</span></h4></div></div>';
+		content += ( obj.localStorages === 0 ) ? '' : divOpen +'<div id="home-local" class="home-block'+ toggleMPD +'" data-path="LocalStorage" data-browsemode="file"><i class="fa fa-microsd"></i><h4>SD card <span>( '+ obj.localStorages +' )</span></h4></div></div>';
 	}
 	if ( chkKey( obj.USBMounts ) ) {
-		content += divOpen +'<div id="home-usb" class="home-block'+ toggleMPD +'"'+ ( obj.USBMounts === 0 ? ( notMPD ? '' : ' href="/sources/sources/"' ) : ' data-path="USB"' ) +'>';
+		content += divOpen +'<div id="home-usb" class="home-block'+ toggleMPD +'"'+ ( obj.USBMounts === 0 ? ( notMPD ? '' : ' href="/sources/sources/"' ) : ' data-path="USB"' ) +' data-browsemode="file">';
 		content += '<i class="fa fa-usbdrive"></i><h4>USB drives <span>( '+ obj.USBMounts +' )</span></h4></div></div>';
 	}
 	if ( chkKey( obj.webradio ) ) {
@@ -1865,13 +1881,17 @@ function getDB( options ) {
 		plugin = options.plugin || '',
 		querytype = options.querytype || '',
 		args = options.args || '';
-	GUI.dblevelup = GUI.dbcurrent;
-	GUI.dbcurrent = {
-		  path       : path
-		, browsemode : browsemode
-		, plugin     : plugin
-		, uplevel    : uplevel
+	
+	if ( !GUI.dbback ) {
+		GUI.dbbackdata.push( {
+			  path : path
+			, browsemode : browsemode
+			, uplevel    : uplevel
+		} );
+	} else {
+		GUI.dbback = 0;
 	}
+		
 	$( '#spinner-db' ).removeClass( 'hide' );
 	GUI.browsemode = browsemode;
 	
