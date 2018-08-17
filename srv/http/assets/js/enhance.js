@@ -14,8 +14,6 @@ var GUI = {
 	dbback            : 0,
 	dbbackdata        : [],
 	dbbrowsemode      : '',
-	dbcurrent         : {},
-	dblevelup         : {},
 	dbpath            : '',
 	dbscrolltop       : {},
 	drag              : 0,
@@ -222,6 +220,7 @@ $( '#currentsong, #playlist-warning' ).on( 'click', 'i', function() {
 } );
 $( '#open-panel-sx' ).click( function() {
 	GUI.dbbackdata = [];
+	GUI.dbback = 0;
 	if ( GUI.activePlayer === 'Airplay' || GUI.activePlayer === 'Spotify' ) {
 		$( '#overlay-playsource' ).addClass( 'open' );
 		return;
@@ -617,12 +616,12 @@ $( '#db-level-up' ).on( 'click', function() {
 	} else {
 		if ( GUI.dbbrowsemode !== 'artist' && GUI.dbbrowsemode !== 'genre' ) {
 			$( '#db-currentpath span a:eq( 0 )' ).click();
-			GUI.dbbackdata = [];
 		} else {
-			var pagemode = $( '#db-currentpath span a:eq( 0 )' ).text().replace( /S$/, '' ).toLowerCase();
+			var pagemode = $( '#db-currentpath' ).attr( 'mode' );
 			if ( pagemode === GUI.dbbrowsemode ) {
 				$( '#db-currentpath span a:eq( 0 )' ).click();
 				GUI.dbbackdata = [];
+				GUI.dbback = 0;
 			} else {
 				GUI.dbback = 1;
 				var dbbacklast = GUI.dbbackdata.pop();
@@ -2178,7 +2177,9 @@ function populateDB( options ) {
 			var albumartist = $( '#database-entries li:eq( 0 ) span.bl' ).text();
 			var dot = albumartist ? '<a>'+ dot +'<span class="white">'+ albumartist +'</span></a>' : '';
 		}
-		$( '#db-currentpath' ).attr( 'path', path ); // for back navigation
+		$( '#db-currentpath' )
+			.attr( 'path', path )
+			.attr( 'mode', GUI.browsemode ); // for back navigation
 		$( '#db-currentpath span' ).html( icon[ GUI.browsemode ] +'&ensp;<a data-path="'+ mode[ GUI.browsemode ] +'">'+ name[ GUI.browsemode ] +'</a>'+ dot );
 	} else {
 		var folder = path.split( '/' );
