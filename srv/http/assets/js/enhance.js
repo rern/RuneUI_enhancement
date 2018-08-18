@@ -17,7 +17,6 @@ var GUI = {
 	dbbrowsemode      : '',
 	dbpath            : '',
 	dbscrolltop       : {},
-	drag              : 0,
 	json              : 0,
 	libraryhome       : '',
 	forceGUIupdate    : false,
@@ -25,6 +24,7 @@ var GUI = {
 	maxvol            : 100,
 	minvol            : 0,
 	mode              : 'websocket',
+	noscroll          : 0,
 	noticeUI          : {},
 	onsetmode         : 0,
 	onsetvolume       : 0,
@@ -736,6 +736,7 @@ $( '#pl-manage-clear' ).click( function() {
 } );
 $( '#playlist-entries' ).on( 'click', 'li', function( e ) {
 	if ( $( e.target ).hasClass( 'pl-action' ) ) {
+		GUI.noscroll = 1; // prevent scroll to active li
 		sendCmd( 'deleteid '+ $( this ).prop( 'id' ).replace( 'pl-', '' ) );
 		$( this ).remove();
 		return
@@ -1118,7 +1119,7 @@ new Sortable( list, {
 	ghostClass: 'sortable-ghost',
 	delay: 300,
 	onUpdate  : function ( e ) {
-		GUI.drag = 1;
+		GUI.noscroll = 1;
 		var id = e.item.id;
 		var pos = $( '#' + id ).index();
 		id = parseInt( id.replace( 'pl-', '' ) );
@@ -1579,8 +1580,8 @@ function setPlaylistScroll() {
 		var $liactive = $( '#pl-'+ GUI.status.songid );
 		$( '#playlist-entries li' ).removeClass( 'active' );
 		$liactive.addClass( 'active' );
-		if ( GUI.drag ) {
-			GUI.drag = 0;
+		if ( GUI.noscroll ) {
+			GUI.noscroll = 0;
 			return;
 		}
 		var scrollpos = $liactive.offset().top - $( '#playlist-entries' ).offset().top;
