@@ -11,6 +11,7 @@ var GUI = {
 	currentknob       : null,
 	currentpath       : '',
 	currentsong       : null,
+	dbcurrent         : '',
 	dbback            : 0,
 	dbbackdata        : [],
 	dbbrowsemode      : '',
@@ -798,7 +799,6 @@ $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 			.find( '.menushadow' ).css( 'height', $( '#context-menu-playlist' ).find( 'i' ).length * 40 );
 	}
 } );
-GUI.pleditor = 0;
 $( '.contextmenu a' ).click( function() {
 	var cmd = $( this ).data( 'cmd' );
 	GUI.dbcurrent = '';
@@ -1175,6 +1175,11 @@ var observerFnBack = new MutationObserver( function() { // on observed target ch
 $( '#db-level-up' ).click( function() {
 	observerFnBack.observe( observerTarget, observerOption ); // standard js - must be one on one element
 } );
+var observerTargetPl = document.getElementById( 'playlist-entries' );
+var observerFnPl = new MutationObserver( function() { // on observed target changed
+	setPlaylistScroll();
+	observerFnPl.disconnect();
+});
 
 $( '#playsource-mpd' ).on( 'click', function() {
 	$.post( 'enhance.php', { bash: '/usr/bin/systemctl restart shairport' } );
@@ -1567,17 +1572,24 @@ function displayLibrary() {
 	displayCommon();
 	displayIndex();
 }
+function setPlaylistScroll() {
+	if ( !GUI.status.songid ) {
+		var scrollpos = 0;
+	} else {
+		var $liactive = $( '#pl-'+ GUI.status.songid );
+		$( '#playlist-entries li' ).removeClass( 'active' );
+		$liactive.addClass( 'active' );
+		if ( GUI.drag ) {
+			GUI.drag = 0;
+			return;
+		}
+		var scrollpos = $liactive.offset().top - $( '#playlist-entries' ).offset().top;
+	}
+	if ( window.innerHeight / 48 < $( '#playlist-entries li' ).length ) $( window ).scrollTop( scrollpos );
+}
 function displayPlaylist() {
 	if ( $( '#playlist-entries li' ).length ) {
-		if ( !GUI.status.songid ) {
-			var scrollpos = 0;
-		} else {
-			var $liactive = $( '#pl-'+ GUI.status.songid );
-			$( '#playlist-entries li' ).removeClass( 'active' );
-			$liactive.addClass( 'active' );
-			var scrollpos = $liactive.offset().top - $( '#playlist-entries' ).offset().top;
-		}
-		if ( window.innerHeight / 48 < $( '#playlist-entries li' ).length ) $( window ).scrollTop( scrollpos );
+		setPlaylistScroll();
 	} else {
 		renderPlaylist();
 	}
@@ -2277,21 +2289,10 @@ function renderPlaylist() {
 		$( '.playlist' ).removeClass( 'hide' );
 		$( '#playlist-warning' ).addClass( 'hide' );
 		$( '#pl-count' ).html( counthtml );
-		$( '#playlist-entries' ).html( content ).promise().done( function() {
-			if ( !GUI.status.songid ) {
-				var scrollpos = 0;
-			} else {
-				var $liactive = $( '#pl-'+ GUI.status.songid );
-				$( '#playlist-entries li' ).removeClass( 'active' );
-				$liactive.addClass( 'active' );
-				if ( GUI.drag ) {
-					GUI.drag = 0;
-					return;
-				}
-				var scrollpos = $liactive.offset().top - $( '#playlist-entries' ).offset().top;
-			}
-			if ( window.innerHeight / 48 < $( '#playlist-entries li' ).length ) $( window ).scrollTop( scrollpos );
-		} );
+		
+		observerFnPl.observe( observerTargetPl, observerOption );
+
+		$( '#playlist-entries' ).html( content );
 	} );
 }
 function renderSavedPlaylists() {
