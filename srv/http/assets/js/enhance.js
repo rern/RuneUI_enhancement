@@ -1586,6 +1586,7 @@ function setPlaylistScroll() {
 		}
 		var scrollpos = $liactive.offset().top - $( '#playlist-entries' ).offset().top;
 	}
+	$( '#playlist-entries p' ).css( 'min-height', window.innerHeight - ( display.bars ? 180 : 140 ) +'px' );
 	if ( window.innerHeight / 48 < $( '#playlist-entries li' ).length ) $( window ).scrollTop( scrollpos );
 }
 function displayPlaylist() {
@@ -2293,7 +2294,7 @@ function renderPlaylist() {
 		
 		observerFnPl.observe( observerTargetPl, observerOption );
 
-		$( '#playlist-entries' ).html( content );
+		$( '#playlist-entries' ).html( content +'<p></p>' );
 	} );
 }
 function renderSavedPlaylists() {
