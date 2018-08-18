@@ -1569,10 +1569,14 @@ function displayLibrary() {
 }
 function displayPlaylist() {
 	if ( $( '#playlist-entries li' ).length ) {
-		var $liactive = $( '#pl-'+ GUI.status.songid );
-		$( '#playlist-entries li' ).removeClass( 'active' );
-		$liactive.addClass( 'active' );
-		var scrollpos = $liactive.offset().top - $( '#playlist-entries' ).offset().top;
+		if ( !GUI.status.songid ) {
+			var scrollpos = 0;
+		} else {
+			var $liactive = $( '#pl-'+ GUI.status.songid );
+			$( '#playlist-entries li' ).removeClass( 'active' );
+			$liactive.addClass( 'active' );
+			var scrollpos = $liactive.offset().top - $( '#playlist-entries' ).offset().top;
+		}
 		if ( window.innerHeight / 48 < $( '#playlist-entries li' ).length ) $( window ).scrollTop( scrollpos );
 	} else {
 		renderPlaylist();
@@ -1844,8 +1848,8 @@ function parseResponse( options ) {
 		case 'Jamendo':
 				content = '<li id="db-'+ ( i + 1 ) +'" class="db-folder" mode="jamendo" data-path="';
 				content += inputArr.stream;
-				content += '"><img class="jamendo-cover" src="/tun/'+ inputArr.image +'" alt=""><i class="fa fa-bars db-action" data-target="#context-menu-file"></i>';
-				content += inputArr.dispname +'</div></li>';
+				content += '"><img class="jamendo-cover" src="'+ inputArr.image +'" alt=""><i class="fa fa-bars db-action" data-target="#context-menu-file"></i>';
+				content += '<span>'+ inputArr.dispname +'</span></div></li>';
 		break;
 	}
 	return content;
@@ -1930,6 +1934,15 @@ function getDB( options ) {
 		}
 		else if ( plugin === 'Jamendo' ) {
 			$.post( '/db/?cmd=jamendo', { 'querytype': (querytype === '' ) ? 'radio' : querytype, 'args': args }, function( data ) {
+				if ( !data ) {
+					$( '#spinner-db' ).addClass( 'hide' );
+					info( {
+						  icon    : 'warning'
+						, title   : 'Jamendo'
+						, message : 'Jamendo not response. Please try again later'
+					} );
+					return;
+				}
 				populateDB( {
 					data: data.results,
 					path: path,
@@ -2265,14 +2278,18 @@ function renderPlaylist() {
 		$( '#playlist-warning' ).addClass( 'hide' );
 		$( '#pl-count' ).html( counthtml );
 		$( '#playlist-entries' ).html( content ).promise().done( function() {
-			var $liactive = $( '#pl-'+ GUI.status.songid );
-			$( '#playlist-entries li' ).removeClass( 'active' );
-			$liactive.addClass( 'active' );
-			if ( GUI.drag ) {
-				GUI.drag = 0;
-				return;
+			if ( !GUI.status.songid ) {
+				var scrollpos = 0;
+			} else {
+				var $liactive = $( '#pl-'+ GUI.status.songid );
+				$( '#playlist-entries li' ).removeClass( 'active' );
+				$liactive.addClass( 'active' );
+				if ( GUI.drag ) {
+					GUI.drag = 0;
+					return;
+				}
+				var scrollpos = $liactive.offset().top - $( '#playlist-entries' ).offset().top;
 			}
-			var scrollpos = $liactive.offset().top - $( '#playlist-entries' ).offset().top;
 			if ( window.innerHeight / 48 < $( '#playlist-entries li' ).length ) $( window ).scrollTop( scrollpos );
 		} );
 	} );
