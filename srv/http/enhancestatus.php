@@ -10,6 +10,7 @@ if ( $activePlayer === 'Airplay' ) {
 
 include '/srv/http/app/libs/runeaudio.php';
 $mpd = openMpdSocket('/run/mpd.sock');
+if ( !$mpd ) die();
 
 function status2array( $lines ) {
 	$line = strtok( $lines, "\n" );
@@ -115,7 +116,6 @@ if ( $status[ 'state' ] === 'play' ) {
 if ( $status[ 'ext' ] === 'radio' ) {
 	$webradios = $redis->hGetAll( 'webradios' );
 	$webradioname = array_flip( $webradios );
-	$status[ 'Artist' ] = $name;
 	if ( $sampling = $redis->hGet( 'sampling', $name ) ) $status[ 'sampling' ] = $sampling;
 	echo json_encode( $status );
 	die();
