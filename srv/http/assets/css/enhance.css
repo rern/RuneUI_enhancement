@@ -1056,6 +1056,9 @@
 #db-currentpath .fa-dirble {
 	margin-left: 15px;
 }
+.jamendo-cover {
+	width: 33px;
+}
 #database-entries .db-action,
 #playlist-entries .pl-action {
 	margin: 0 !important;
