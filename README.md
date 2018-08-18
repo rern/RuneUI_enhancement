@@ -21,7 +21,6 @@ Features
 	- Prevent `coverarts` update on play / pause in the same song
 	- Use local `jquery-ui.min.js` instead of online
 	- Fix missing `lato-bolditalic-webfont`
-	- Remove screen saver items if disabled or if disable local browser
 
 >[Install](#install)  
 >[Functional](#functional)  
@@ -38,15 +37,12 @@ Functional
 ---
 
 ### Playback
-- `cover-art` - all controls
-	- long-press center area = stop
-- `screen left` and `screen right` - fallback if `cover-art` was hidden
-- Swipe for page change
-- Mouse hover top/bottom of screen = toggle top/bottom menu bars (if hidden)
 - Long-press empty area = show/hide items setting
-- Tap `artist` or `i` button = show improved bio (data from last.fm)
+- `cover-art`, `time-knob` - all playback controls
+- Swipe to switch between pages
+- Mouse hover top/bottom of screen = toggle top/bottom menu bars (if hidden)
+- Tap `artist` or `bio` button = show improved bio
 - Tap `playlist item` also go back to playback page
-- Tap `playback controls` on other pages also go back to playback page
 
 ![layout](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/RuneUImod1.gif)
 
@@ -59,12 +55,11 @@ Functional
 	- Some of MPD default sorting
 	- After [**Webradio import**](https://github.com/rern/RuneAudio/tree/master/webradio)
 	- After [**MPD Upgrade**](https://github.com/rern/RuneAudio/tree/master/mpd)
-	- (Songs in albums still, by default, be sorted by track number)
+	- (Songs in albums still, by default, be sorted by filename)
 - Long-press `bookmark` = edit bookmarks
-- Disable search with blank data
 
 ### Playlist
-- Click anywhere on an items in manage playlist also shows **context menu**
+- Fix drag to arrange order on touch device
 	
 Visual
 ---
@@ -76,7 +71,7 @@ Visual
 - Separate pause from play buttons (selectable)
 - Full height `buttons` and center aligned
 - Change `Settings` icons and remove text label
-- Enlarge icons
+- New and improved icons
 - Add box shadow for layer depth
 - Add `Development` to `Settings` menu
 - Coverart priority:
@@ -96,19 +91,20 @@ Visual
 - Show file format
 - Scroll long text on overflow
 - Hide artist and album text on width < 500px
-- Enlarge icons
+- All new icons
 - Move `play source` inside `time`
 - Improved artist bio
 
 **Bottom Bar:**
 - Auto hide on height < 500px
 - Change icons and remove text labels
-- Enlarge icons
+- All new icons
 - Add box shadow for layer depth
 - No more tooltips
 
 ### Library
 - Add index bar
+- All new icons
 - Add Home folder button for Library home page
 - Move `add webradio` list to top bar button
 - Move path from bottom bar to top bar
@@ -119,4 +115,5 @@ Visual
 ### Queue
 - Change and relocate `back` button
 - Move `manage` buttons from bottom bar to top bar
-- Preserve scroll position
+- Fix drag to arrange order on touch devices
+- Always scroll current song to the top
