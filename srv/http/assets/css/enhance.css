@@ -100,7 +100,7 @@
 .fa-artist:before { content: "\f556" }
 .fa-composer:before { content: "\f557" }
 .fa-genre:before { content: "\f558" }
-.fa-dirble:before { content: "\f559"; margin-left: 5px; }
+.fa-dirble:before { content: "\f559" }
 .fa-jamendo:before { content: "\f55A" }
 
 .fa-folder:before { content: "\f540" }
@@ -1052,6 +1052,9 @@
 	display: block;
 	padding-top: 0 !important;
 	text-align: center;
+}
+#db-currentpath .fa-dirble {
+	margin-left: 15px;
 }
 #database-entries .db-action,
 #playlist-entries .pl-action {
