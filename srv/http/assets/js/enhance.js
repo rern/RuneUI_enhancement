@@ -1588,10 +1588,10 @@ function setPlaylistScroll() {
 			GUI.noscroll = 0;
 			return;
 		}
-		var scrollpos = $liactive.offset().top - $( '#playlist-entries' ).offset().top - ( wH / 4 );
+		var scrollpos = $liactive.offset().top - $( '#playlist-entries' ).offset().top - ( 49 * 3 );
 	}
 	$( '#playlist-entries p' ).css( 'min-height', wH - ( display.bars ? 180 : 140 ) +'px' );
-	if ( wH / 48 < $( '#playlist-entries li' ).length ) $( 'html, body' ).scrollTop( scrollpos );
+	if ( wH / 49 < $( '#playlist-entries li' ).length ) $( 'html, body' ).scrollTop( scrollpos );
 }
 function displayPlaylist() {
 	if ( $( '#playlist-entries li' ).length ) {
