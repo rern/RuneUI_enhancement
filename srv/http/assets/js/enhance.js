@@ -1534,8 +1534,8 @@ function displayPlayback() {
 		} else {
 			$( '#irepeat' ).removeClass( 'hide fa-repeat fa-repeat-single ' ).addClass( GUI.json.single === '1' ? 'fa-repeat-single' : 'fa-repeat' );
 		}
-		if ( GUI.libraryhome.ActivePlayer !== 'MPD' ) {
-			var source = GUI.libraryhome.ActivePlayer.toLowerCase();
+		if ( GUI.activePlayer !== 'MPD' ) {
+			var source = GUI.activePlayer.toLowerCase();
 			$( '#iplayer' ).addClass( 'fa-'+ source ).removeClass( 'hide' );
 		}
 	} else if ( !display.time ) {
@@ -1600,7 +1600,7 @@ function displayPlaylist() {
 }
 
 function setPlaybackSource() {
-	var activePlayer = GUI.libraryhome.ActivePlayer;
+	var activePlayer = GUI.activePlayer;
 	$( '#overlay-playsource a' ).addClass( 'inactive' );
 	var source = activePlayer.toLowerCase();
 	$( '#playsource-' + source).removeClass( 'inactive' );
