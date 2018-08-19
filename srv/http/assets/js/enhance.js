@@ -782,7 +782,7 @@ $( '#database-entries' ).on( 'click', '.db-action', function( e ) {
 			.find( '.menushadow' ).css( 'height', $target.find( 'i' ).length * 40 );
 		var targetB = $target.offset().top + $target.height();
 		var wH = window.innerHeight;
-		if ( targetB > wH ) $( 'html, body' ).animate( { scrollTop: targetB - wH }, 500 );
+		if ( targetB > wH + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH }, 500 );
 	}
 } );
 $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
