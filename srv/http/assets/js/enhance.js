@@ -62,21 +62,17 @@ function sendCmd( cmd ) {
 }
 // display toggle data
 var command = {
-	  display      : [ 'hGetAll', 'display' ]
-	, activeplayer : [ 'get', 'activePlayer' ]
-	, actplayerinfo: [ 'get', 'act_player_info' ]
-	, volumempd    : [ 'get', 'volume' ]
-	, update       : [ 'hGet', 'addons', 'update' ]
+	  display       : [ 'hGetAll', 'display' ]
+	, volumemute    : [ 'get', 'volumemute' ]
+	, activeplayer  : [ 'get', 'activePlayer' ]
 };
-$.post( '/enhance.php', { redis: JSON.stringify( command ) }, function( data ) {
-	var redisjson = JSON.parse( data );
-	display = redisjson.display;
-	display.volumempd = redisjson.volumempd;
-	display.update = redisjson.update;
+$.post( 'enhance.php', { redis: JSON.stringify( command ) }, function( data ) {
+	var redis = JSON.parse( data );
+	display = redis.display;
 	GUI.radioelapsed = display.radioelapsed;
-	GUI.activePlayer = redisjson.activeplayer;
+	GUI.activePlayer = redis.activeplayer;
 	if ( GUI.activePlayer === 'Airplay' ) {
-		GUI.json = JSON.parse( redisjson.actplayerinfo );
+		GUI.json = JSON.parse( redis.actplayerinfo ); // available if 'activeplayer' is 'Airplay'
 		displayAirPlay();
 	}
 } );
@@ -323,13 +319,8 @@ function setDisplayPlayback() {
 			$( '#displaysaveplayback input' ).each( function() {
 				display[ this.name ] = this.checked ? 'checked' : '';
 			} );
-			var command = {
-				  set       : [ 'hmset', 'display', display ]
-				, display   : [ 'hGetAll', 'display' ]
-				, volumempd : [ 'get', 'volume' ]
-				, update    : [ 'hGet', 'addons', 'update' ]
-			};
-			$.post( '/enhance.php', { redis: JSON.stringify( command ) } );
+			var command = { set : [ 'hmSet', 'display', display ] };
+			$.post( 'enhance.php', { redis: JSON.stringify( command ) } );
 		}
 	} );
 	// disable from autohide
@@ -423,11 +414,8 @@ function setDisplayLibrary( e ) {
 			$( '#displaysavelibrary input' ).each( function() {
 				display[ this.name ] = this.checked ? 'checked' : '';
 			} );
-			var command = {
-				  set     : [ 'hmset', 'display', display ]
-				, display : [ 'hGetAll', 'display' ]
-			};
-			$.post( '/enhance.php', { redis: JSON.stringify( command ) } );
+			var command = { set: [ 'hmSet', 'display', display ] };
+			$.post( 'enhance.php', { redis: JSON.stringify( command ) } );
 		}
 	} );
 }
@@ -510,7 +498,7 @@ $( '#currentartist, #songinfo-open' ).click( function() {
 	$( '#loader' ).removeClass( 'hide' );
 	
 	if ( $( '#bio legend' ).text() != GUI.json.currentartist ) {
-		$.get( '/enhancebio.php',
+		$.get( 'enhancebio.php',
 			{ artist: GUI.json.currentartist },
 			function( data ) {
 				$( '#biocontent' ).html( data );
@@ -523,7 +511,7 @@ $( '#currentartist, #songinfo-open' ).click( function() {
 } );
 $( '#biocontent' ).delegate( '.biosimilar', 'click', function() {
 	$( '#loader' ).removeClass( 'hide' );
-	$.get( '/enhancebio.php',
+	$.get( 'enhancebio.php',
 		{ artist: $( this ).find( 'p' ).text() },
 		function( data ) {
 			$( '#biocontent' ).html( data );
@@ -1265,7 +1253,7 @@ function mpdSeek( seekto ) {
 		clearInterval( GUI.countdown );
 		sendCmd( 'seekcur '+ seekto );
 	} else {
-		$.post( '/enhance.php', { mpd: 'command_list_begin\nplay\nseekcur '+ seekto +'\npause\ncommand_list_end' } );
+		$.post( 'enhance.php', { mpd: 'command_list_begin\nplay\nseekcur '+ seekto +'\npause\ncommand_list_end' } );
 	}
 }
 $( '#time' ).roundSlider( {
@@ -1333,11 +1321,11 @@ $( '#volume' ).roundSlider( {
 			GUI.onsetvolume = 0;
 		}, 500 );
 		
-		$.post( '/enhance.php', { volume: e.value } );
+		$.post( 'enhance.php', { volume: e.value } );
 		$( e.handle.element ).rsRotate( - e.handle.angle );
 		if ( e.preValue === 0 ) { // value before 'change'
-			var command = { vol: [ 'set', 'volumemute', 0 ] };
-			$.post( '/enhance.php', { redis: JSON.stringify( command ) } );
+			var command = { set: [ 'volumemute', 0 ] };
+			$.post( 'enhance.php', { redis: JSON.stringify( command ) } );
 			unmuteColor();
 		}
 	}
@@ -1353,7 +1341,7 @@ $( '#volume' ).roundSlider( {
 		}
 	}
 	, stop            : function( e ) { // on 'stop drag'
-		$.post( '/enhance.php', { volume: e.value } );
+		$.post( 'enhance.php', { volume: e.value } );
 		setTimeout( function() {
 			GUI.onsetvolume = 0;
 		}, 500 );
@@ -1368,7 +1356,7 @@ $( '#volmute, #volM' ).click( function() {
 	var volumemute = $volumeRS.getValue();
 	
 	if ( volumemute ) {
-		$.post( '/enhance.php', { volume: -1 } );
+		$.post( 'enhance.php', { volume: -1 } );
 		$volumeRS.setValue( 0 );
 		// keep display level before mute
 		$volumetooltip.text( volumemute );
@@ -1379,7 +1367,7 @@ $( '#volmute, #volM' ).click( function() {
 			muteColor( volumemute );
 		} );
 	} else {
-		$.post( '/enhance.php', { volume: -1 }, function( data ) {
+		$.post( 'enhance.php', { volume: -1 }, function( data ) {
 			if ( data == 0 ) return;
 			$volumeRS.setValue( data );
 			$volumehandle.rsRotate( - $volumeRS._handle1.angle );
@@ -1401,12 +1389,12 @@ $( '#volup, #voldn' ).click( function() {
 			return;
 
 	if ( vol === 0 ) {
-		var command = { vol: [ 'set', 'volumemute', 0 ] };
-		$.post( '/enhance.php', { redis: JSON.stringify( command ) } );
+		var command = { set: [ 'volumemute', 0 ] };
+		$.post( 'enhance.php', { redis: JSON.stringify( command ) } );
 		unmuteColor();
 	}
 	vol = ( thisid == 'volup' ) ? vol + 1 : vol - 1;
-	$.post( '/enhance.php', { volume: vol } );
+	$.post( 'enhance.php', { volume: vol } );
 	$volumeRS.setValue( vol );
 	$volumehandle.rsRotate( - $volumeRS._handle1.angle );
 } );
@@ -1478,12 +1466,10 @@ function displayPlayback() {
 		displayAirPlay();
 		return;
 	}
-	$( '#container-playback' ).addClass( 'hide' );
 	$( '#iplayer' ).removeClass( 'fa-airplay' ).addClass( 'hide' );
-	var buttonhide = window.innerHeight <= 320 || window.innerWidth < 499 ? 1 : 0;
+	var buttonhide = !display.buttons || window.innerHeight <= 320 || window.innerWidth < 499 ? 1 : 0;
 	if ( GUI.json.playlistlength != 0 ) $( '.playback-controls' ).css( 'visibility', 'visible' );
-	
-	var volume = ( !display.volume || display.volumempd == 0 ) ? 0 : 1;
+	var volume = ( !display.volumempd || !display.volume ) ? 0 : 1;
 	
 	if ( display.update != 0 ) {
 		if ( display.bars ) {
@@ -1532,7 +1518,7 @@ function displayPlayback() {
 			if ( !GUI.radioelapsed ) {
 				$( '#total' ).empty();
 			} else {
-				$.post( '/enhancestatus.php', function( data ) {
+				$.post( 'enhancestatus.php', function( data ) {
 					var status = JSON.parse( data );
 					var elapsed = status.elapsed;
 					GUI.countdown = setInterval( function() {
@@ -1544,28 +1530,24 @@ function displayPlayback() {
 			}
 		}
 	}
-	if ( buttonhide || !display.buttons ) {
-		buttonhide = 1;
+	if ( buttonhide ) {
 		$( '#play-group, #share-group, #vol-group' ).addClass( 'hide' );
+		if ( display.time ) {
+			$( '#irandom' ).toggleClass( 'hide', GUI.json.random === '0' );
+			if ( GUI.json.repeat === '0' ) {
+				$( '#irepeat' ).removeClass( 'fa-repeat-single' ).addClass( 'hide' );
+			} else {
+				$( '#irepeat' ).removeClass( 'hide fa-repeat fa-repeat-single ' ).addClass( GUI.json.single === '1' ? 'fa-repeat-single' : 'fa-repeat' );
+			}
+		}
 	}
-	$( '#playback-row' ).removeClass( 'hide' ); // restore - hidden by fix flash
-	if ( ( buttonhide || !display.buttons ) && display.time ) {
-		$( '#irandom' ).toggleClass( 'hide', GUI.json.random === '0' );
-		if ( GUI.json.repeat === '0' ) {
-			$( '#irepeat' ).removeClass( 'fa-repeat-single' ).addClass( 'hide' );
-		} else {
-			$( '#irepeat' ).removeClass( 'hide fa-repeat fa-repeat-single ' ).addClass( GUI.json.single === '1' ? 'fa-repeat-single' : 'fa-repeat' );
-		}
-		if ( GUI.activePlayer !== 'MPD' ) {
-			var source = GUI.activePlayer.toLowerCase();
-			$( '#iplayer' ).addClass( 'fa-'+ source ).removeClass( 'hide' );
-		}
-	} else if ( !display.time ) {
-		$( '#imode' ).addClass( 'hide' );
+	if ( GUI.activePlayer !== 'MPD' ) {
+		var source = GUI.activePlayer.toLowerCase();
+		$( '#iplayer' ).addClass( 'fa-'+ source ).removeClass( 'hide' );
 	}
 	setButton();
 	displayCommon();
-	$( '#container-playback' ).removeClass( 'hide' );
+	$( '#container-playback, #playback-row' ).removeClass( 'hide' );
 }
 
 function displayIndex() {
@@ -2394,7 +2376,7 @@ $( '.btn-cmd' ).click( function() {
 				$( '#pause' ).removeClass( 'btn-primary' );
 				$( '#stop' ).addClass( 'btn-primary' );
 			}
-			$.post( '/enhance.php', { mpd: 'command_list_begin\nplay '+ pos + ( GUI.state !== 'play' ? '\nstop' : '' ) +'\ncommand_list_end' }, function() {
+			$.post( 'enhance.php', { mpd: 'command_list_begin\nplay '+ pos + ( GUI.state !== 'play' ? '\nstop' : '' ) +'\ncommand_list_end' }, function() {
 				setTimeout( function() {
 					GUI.prevnext = 0;
 				}, 500 );
@@ -2457,7 +2439,7 @@ function scrollText() {
 	} );
 }
 function setPlaybackData() {
-	$.post( '/enhancestatus.php', function( data ) {
+	$.post( 'enhancestatus.php', function( data ) {
 		// 'gpio off' restarts mpd which makes data briefly unavailable
 		if ( data.charAt( 0 ) !== '{' ) return;
 		
@@ -2477,7 +2459,7 @@ function setPlaybackData() {
 		$volumehandle.rsRotate( - $volumeRS._handle1.angle );
 		$volumetooltip.add( $volumehandle ).removeClass( 'hide' ); // show after 'setValue'
 		$volumetransition.css( 'transition', '' );           // reset animation to default
-		if ( $( '#vol-group' ).is( ':visible' ) ) {
+		if ( display.volume && display.volumempd ) {
 			if ( status.volumemute != 0 ) {
 				muteColor( status.volumemute );
 			} else {
