@@ -134,26 +134,38 @@ if ( /\/sources\//.test( location.pathname ) ) {
 			$('#spotifyBox').removeClass('boxed-group');
 		}
 	});
-	
-	// file upload
-	$('.btn-file :file').on('fileselect', function(event, numFiles, label) {
-		var input = $(this).parents('.input-group').find(':text');
-		if (input.length) {
-			input.val(label);
-		} else {
-			if (label) {
-				console.log('Selected file: ', label);
-				if (label.indexOf('backup_') > -1 && label.indexOf('.tar.gz') > -1) {
-					$('#backup-file').html(' <i class="fa fa-check dx green"></i> ' + label + '');
-					$('#btn-backup-upload').prop('disabled', false);
-				} else {
-					$('#backup-file').html(' <i class="fa fa-times dx red"></i> not a valid backup file');
-					$('#btn-backup-upload').prop('disabled', true);
-				}
-			}
+	$( '#filebackup' ).on( 'change', function() {
+		var label = $( this ).val().split( /[\\/]/ ).pop();
+		if ( label.indexOf( '.tar.gz' ) === -1 ) {
+			$( '#backup-file' ).html( '<i class="fa fa-times dx red"></i> not a valid backup file');
+			return;
 		}
-	});
-
+		$( '#backup-file' ).html( '<i class="fa fa-check dx green"> </i>'+ label );
+		$( '#btn-backup-upload' ).prop( 'disabled', false );
+	} );
+	$( '#restore' ).submit( function() {
+		var formData = new FormData( $( this )[ 0 ] );
+		$.ajax( {
+			url: 'restore.php',
+			type: 'POST',
+			data: formData,
+			cache: false,
+			contentType: false,
+			enctype: 'multipart/form-data',
+			processData: false,
+			success: function ( response ) {
+				info( {
+					  icon    : response == 0 ? 'info-circle' : 'warning'
+					, title   : 'Restore Settings' 
+					, message : 'Settings restored '+ response == 0 ? 'successfully.' : 'failed.'
+				} );
+			}
+		});
+		return false
+	} );
+	$( '#btn-restore' ).click( function() {
+		$( '#restore' ).submit();
+	} );
 } else if ( /\/network\//.test( location.pathname ) ) {
 	
 	// show/hide static network configuration based on select value
