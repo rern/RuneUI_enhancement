@@ -26,8 +26,6 @@ var GUI = {
 	, mode              : 'websocket'
 	, noscroll          : 0
 	, noticeUI          : {}
-	, onsetmode         : 0
-	, onsetvolume       : 0
 	, playlist          : null
 	, plclear           : 0
 	, plcurrent         : ''
@@ -38,6 +36,8 @@ var GUI = {
 	, status            : {}
 	, old_state         : 'none'
 	, radioelapsed      : ''
+	, setmode         : 0
+	, setvolume       : 0
 	, stepVolumeDelta   : 0
 	, stepVolumeInt     : 0
 	, stream            : ''
@@ -129,7 +129,7 @@ pushstreamNotify.connect();
 // ### called by backend socket - force refresh all clients ###
 function renderUI( text ) {
 	$( '#loader' ).addClass( 'hide' );
-	if ( GUI.onsetvolume ) return;
+	if ( GUI.setvolume ) return;
 	
 	GUI.json = text[ 0 ];
 	GUI.state = GUI.json.state;
@@ -262,6 +262,7 @@ $( '#open-panel-dx' ).click( function() {
 		GUI.pleditor = 0;
 		renderPlaylist();
 	}
+	$( '#pl-index' ).addClass( 'hide' );
 	menuBottom( 'panel-dx', 'playback', 'panel-sx' );
 	displayPlaylist()
 } );
@@ -525,7 +526,6 @@ $( '#biocontent' ).delegate( '.biosimilar', 'click', function() {
 } );
 $( '#closebio' ).click( function() {
 	$( '#bio' ).addClass( 'hide' );
-	if ( !barhide ) $( '#menu-top, #menu-bottom' ).removeClass( 'hide' );
 } );
 // poweroff
 $( '#turnoff' ).click( function() {
@@ -590,7 +590,7 @@ $( '#db-currentpath' ).on( 'click', 'a', function() {
 	var path = $( this ).data( 'path' );
 	// get scroll position for back navigation
 	GUI.dbscrolltop[ $( '#db-currentpath' ).attr( 'path' ) ] = $( window ).scrollTop();
-	observerFnBack.observe( observerTarget, observerOption );
+	mutationLibrary.observe( observerLibrary, observerOption );
 	
 	var path2mode = {
 		  Artists  : 'artist'
@@ -649,7 +649,7 @@ $( '#database-entries' ).on( 'click', 'li', function( e ) {
 	var path = $this.data( 'path' );
 	// get scroll position for back navigation
 	GUI.dbscrolltop[ $( '#db-currentpath' ).attr( 'path' ) ] = $( window ).scrollTop();
-	observerFnBack.observe( observerTarget, observerOption );
+	mutationLibrary.observe( observerLibrary, observerOption );
 	$( '#database-entries li' ).removeClass( 'active' );
 	$this.addClass( 'active' );
 	if ( !$this.hasClass( 'db-folder' ) ) return;
@@ -1194,24 +1194,25 @@ document.addEventListener( visibilityevent, function() {
 	}
 } );
 window.addEventListener( 'orientationchange', function() {
-	displayIndex();
+	if ( ( $( '#panel-sx' ).hasClass( 'active' ) && !$( '#home-blocks' ).hasClass( 'hide' ) )
+		|| !$( '#pl-editor' ).hasClass( 'hide' ) ) displayIndex();
 } );
 // MutationObserver - watch for '#database-entries' content changed then scroll to previous position
 var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 var observerOption = { childList: true };
-var observerTarget = document.getElementById( 'database-entries' );
-var observerFnBack = new MutationObserver( function() { // on observed target changed
+var observerLibrary = document.getElementById( 'database-entries' );
+var mutationLibrary = new MutationObserver( function() { // on observed target changed
 	var scrollpos = GUI.dbscrolltop[ $( '#db-currentpath' ).attr( 'path' ) ];
 	$( 'html, body' ).scrollTop( scrollpos !== 'undefined' ? scrollpos : 0 );
-	observerFnBack.disconnect();
+	mutationLibrary.disconnect();
 } );
 $( '#db-level-up' ).click( function() {
-	observerFnBack.observe( observerTarget, observerOption ); // standard js - must be one on one element
+	mutationLibrary.observe( observerLibrary, observerOption ); // standard js - must be one on one element
 } );
-var observerTargetPl = document.getElementById( 'playlist-entries' );
-var observerFnPl = new MutationObserver( function() { // on observed target changed
+var observerPlaylist = document.getElementById( 'playlist-entries' );
+var mutationPlaylist = new MutationObserver( function() { // on observed target changed
 	setPlaylistScroll();
-	observerFnPl.disconnect();
+	mutationPlaylist.disconnect();
 } );
 
 $( '#playsource-mpd' ).on( 'click', function() {
@@ -1238,15 +1239,10 @@ $( '#db-search-results' ).on( 'click', function() {
 		} );
 		
 		$( '#database-entries' ).removeAttr( 'style' );
-		observerFnBack.observe( observerTarget, observerOption );
+		mutationLibrary.observe( observerLibrary, observerOption );
 	} else {
 		renderLibraryHome();
 	}
-} );
-$( '#modal-pl-clear button.btn-cmd' ).click( function() {
-	setTimeout( function() {
-		displayCommon();
-	}, 500 );
 } );
 
 // new knob
@@ -1319,9 +1315,9 @@ $( '#volume' ).roundSlider( {
 			.rsRotate( - this._handle1.angle );  // initial rotate
 	}
 	, change          : function( e ) { // (not fire on 'setValue' ) value after click or 'stop drag'
-		GUI.onsetvolume = 1;
+		GUI.setvolume = 1;
 		setTimeout( function() {
-			GUI.onsetvolume = 0;
+			GUI.setvolume = 0;
 		}, 500 );
 		
 		$.post( 'enhance.php', { volume: e.value } );
@@ -1335,7 +1331,7 @@ $( '#volume' ).roundSlider( {
 	, start           : function( e ) { // on 'start drag'
 		// restore handle color immediately on start drag
 		if ( e.value === 0 ) unmuteColor(); // value before 'start drag'
-		GUI.onsetvolume = 1;
+		GUI.setvolume = 1;
 	}
 	, drag            : function ( e ) { // drag with no transition by default
 		if ( e.value % 2 === 0 ) {
@@ -1346,15 +1342,15 @@ $( '#volume' ).roundSlider( {
 	, stop            : function( e ) { // on 'stop drag'
 		$.post( 'enhance.php', { volume: e.value } );
 		setTimeout( function() {
-			GUI.onsetvolume = 0;
+			GUI.setvolume = 0;
 		}, 500 );
 	}
 } );
 
 $( '#volmute, #volM' ).click( function() {
-	GUI.onsetvolume = 1;
+	GUI.setvolume = 1;
 	setTimeout( function() {
-		GUI.onsetvolume = 0;
+		GUI.setvolume = 0;
 	}, 500 );
 	var volumemute = $volumeRS.getValue();
 	
@@ -1382,9 +1378,9 @@ $( '#volmute, #volM' ).click( function() {
 $( '#volup, #voldn' ).click( function() {
 	var thisid = this.id;
 	var vol = $volumeRS.getValue();
-	GUI.onsetvolume = 1;
+	GUI.setvolume = 1;
 	setTimeout( function() {
-		GUI.onsetvolume = 0;
+		GUI.setvolume = 0;
 	}, 500 );
 	
 	if ( ( vol === 0 && ( thisid === 'voldn' ) )
@@ -1421,15 +1417,15 @@ function unmuteColor() {
 
 var blinkdot = '<a class="dot">.</a> <a class="dot dot2">.</a> <a class="dot dot3">.</a>';
 function displayCommon() {
-	barhide = window.innerWidth < 499 || window.innerHeight < 515 ? 1 : 0;
-	if ( GUI.display.bars && $( '#bio' ).is( ':hidden' ) && !barhide ) {
-		$( '#menu-top, #menu-bottom' ).removeClass( 'hide' );
-		$( '#database, #playlist' ).css( 'padding', '' );
-		$( '.btnlist-top' ).css( 'top', '40px' );
-	} else {
+	var barhide = !GUI.display.bars || window.innerWidth < 499 || window.innerHeight < 515;
+	if ( barhide ) {
 		$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
 		$( '#database, #playlist' ).css( 'padding', '40px 0' );
 		$( '.btnlist-top' ).css( 'top', 0 );
+	} else {
+		$( '#menu-top, #menu-bottom' ).removeClass( 'hide' );
+		$( '#database, #playlist' ).css( 'padding', '' );
+		$( '.btnlist-top' ).css( 'top', '40px' );
 	}
 }
 function displayAirPlay() {
@@ -1578,7 +1574,6 @@ function displayLibrary() {
 	$( '#home-jamendo' ).parent().toggleClass( 'hide', !GUI.display.jamendo );
 	
 	displayCommon();
-	displayIndex();
 }
 function setPlaylistScroll() {
 	var  wH = window.innerHeight;
@@ -1604,7 +1599,6 @@ function displayPlaylist() {
 		renderPlaylist();
 	}
 	displayCommon();
-	displayIndex();
 }
 
 function setPlaybackSource() {
@@ -2156,7 +2150,9 @@ function populateDB( options ) {
 			$( '#db-webradio-new' ).toggleClass( 'hide', path !== 'Webradio' );
 		}
 	}
-	$( '#database-entries' ).html( content +'<p></p>' );
+	$( '#database-entries' ).html( content +'<p></p>' ).promise().done( function() {
+		displayIndex();
+	} );
 	
 // breadcrumb directory path link
 	var dot = '<span style="color: #587ca0"> &#8226; </span>';
@@ -2240,8 +2236,8 @@ function renderPlaylist() {
 		GUI.plclear = 0;
 		$( '.playlist' ).removeClass( 'hide' );
 		$( '#pl-count' ).html( '<a>PLAYLIST</a>' );
-		barhide = window.innerWidth < 499 || window.innerHeight < 515 ? 1 : 0;
-		$( '#playlist-warning' ).css( 'margin-top', ( GUI.display.bars && barhide == 0 ) ? '27px' : '67px' );
+		var barhide = !GUI.display.bars || window.innerWidth < 499 || window.innerHeight < 515;
+		$( '#playlist-warning' ).css( 'margin-top', barhide ? '27px' : '67px' );
 		return;
 	}
 	
@@ -2298,7 +2294,7 @@ function renderPlaylist() {
 		$( '#playlist-warning' ).addClass( 'hide' );
 		$( '#pl-count' ).html( counthtml );
 		
-		observerFnPl.observe( observerTargetPl, observerOption );
+		mutationPlaylist.observe( observerPlaylist, observerOption );
 
 		$( '#playlist-entries' ).html( content +'<p></p>' );
 	} );
@@ -2327,6 +2323,7 @@ function renderSavedPlaylists() {
 			$( '#spinner-pl' ).addClass( 'hide' );
 			$( '#pl-currentpath, #pl-editor, #pl-index' ).removeClass( 'hide' );
 			$( 'html, body' ).scrollTop( 0 );
+			displayIndex();
 		} );
 	} );
 }
@@ -2337,9 +2334,9 @@ $( '.btn-cmd' ).click( function() {
 	if ( $this.hasClass( 'btn-toggle' ) ) {
 		if ( GUI.stream === 'radio' ) return;
 		
-		GUI.onsetmode = 1;
+		GUI.setmode = 1;
 		setTimeout( function() {
-			GUI.onsetmode = 0;
+			GUI.setmode = 0;
 		}, 500 );
 		if ( $this.data( 'cmd' ) === 'pl-ashuffle-stop' ) $.post( '/db/?cmd=pl-ashuffle-stop', '' );
 		dataCmd = dataCmd +' '+ ( GUI.json[ this.id ] == 1 ? 0 : 1 );
@@ -2471,7 +2468,7 @@ function setPlaybackData() {
 		}
 		
 		// set mode buttons
-		if ( GUI.onsetmode ) return;
+		if ( GUI.setmode ) return;
 
 		clearInterval( GUI.currentKnob );
 		clearInterval( GUI.countdown );
