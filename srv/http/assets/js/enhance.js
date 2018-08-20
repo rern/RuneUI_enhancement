@@ -1579,6 +1579,7 @@ function displayLibrary() {
 }
 function setPlaylistScroll() {
 	var  wH = window.innerHeight;
+	$( '#playlist-entries p' ).css( 'min-height', wH - ( display.bars ? 180 : 140 ) +'px' );
 	if ( !GUI.status.songid ) {
 		var scrollpos = 0;
 	} else {
@@ -1591,7 +1592,6 @@ function setPlaylistScroll() {
 		}
 		var scrollpos = $liactive.offset().top - $( '#playlist-entries' ).offset().top - ( 49 * 3 );
 	}
-	$( '#playlist-entries p' ).css( 'min-height', wH - ( display.bars ? 180 : 140 ) +'px' );
 	if ( wH / 49 < $( '#playlist-entries li' ).length ) $( 'html, body' ).scrollTop( scrollpos );
 }
 function displayPlaylist() {
