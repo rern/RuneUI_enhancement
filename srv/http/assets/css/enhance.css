@@ -903,7 +903,7 @@
 .btnlist-top {
 	top: 0;
 	box-shadow: 0px 4px 10px #000000;
-	z-index: 10;
+	z-index: 12;
 }
 .btnlist a {
 	font-size: 18px;
@@ -1117,7 +1117,7 @@
 w {
 	color: #e0e7ee;
 }
-		
+.menu a.active i,	
 #database-entries li.active i,
 #playlist-entries li.active i,
 #database-entries li.active .sn span,
@@ -1126,7 +1126,9 @@ w {
 #pl-editor li.active .fa-list-ul {
 	color: #34495e !important;
 }
-
+.menu a.active {
+	background: #0095d8;
+}
 .ui-pnotify-icon {
 	font-size: 18px;
 	margin-top: -3px;
