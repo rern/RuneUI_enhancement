@@ -68,7 +68,7 @@
 				<div id="share-group">
 					<div class="btn-group">
 						<button id="overlay-social-open" class="btn btn-default btn-lg" type="button"><i class="fa fa-share"></i></button>
-						<button id="songinfo-open" class="btn btn-default" type="button"><i class="fa fa-info"></i></button>
+						<button id="songinfo-open" class="btn btn-default" type="button"><i class="fa fa-bio"></i></button>
 					</div>
 				</div>
 				<div id="volume-knob" class="<?=$this->volume['divclass'] ?>">
