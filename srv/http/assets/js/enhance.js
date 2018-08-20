@@ -377,7 +377,7 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 		$.post( '/db/?cmd=bookmark', { id: id, name: name }, function() {
 			$this.parent().remove();
 		} );
-	} else if ( $this.data( 'target' ) === '#modal-webradio-add' ) {
+	} else if ( $this.data( 'target' ) === 'webradio-add' ) {
 		webRadioNew();
 	} else {
 		if ( GUI.bookmarkedit ) return;
@@ -1651,11 +1651,8 @@ function renderLibraryHome() {
 		content += '<i class="fa fa-usbdrive"></i><h4>USB drives <span>( '+ obj.USBMounts +' )</span></h4></div></div>';
 	}
 	if ( chkKey( obj.webradio ) ) {
-		if ( obj.webradio === 0 ) {
-			content += divOpen +'<div id="home-webradio" class="home-block'+ toggleMPD +'" href="#" data-toggle="modal" data-target="#modal-webradio-add"><i class="fa fa-webradio"></i><h4>Webradios <span>( '+ obj.webradio +' )</span></h4></div></div>';
-		} else {
-			content += divOpen +'<div id="home-webradio" class="home-block'+ toggleMPD +'" data-path="Webradio"><i class="fa fa-webradio"></i><h4>Webradios <span>( '+ obj.webradio +' )</span></h4></div></div>';
-		}
+		var data = obj.webradio === 0 ? ' data-target="webradio-add"' : ' data-path="Webradio"';
+		content += divOpen +'<div id="home-webradio" class="home-block'+ toggleMPD +'"'+ data +'><i class="fa fa-webradio"></i><h4>Webradios <span>( '+ obj.webradio +' )</span></h4></div></div>';
 	}
 	content += divOpen +'<div id="home-albums" class="home-block'+ toggleMPD +'" data-path="Albums" data-browsemode="album"><i class="fa fa-album"></i><h4>Albums</h4></div></div>';
 	content += divOpen +'<div id="home-artists" class="home-block'+ toggleMPD +'" data-path="Artists" data-browsemode="artist"><i class="fa fa-artist"></i><h4>Artists</h4></div></div>';
