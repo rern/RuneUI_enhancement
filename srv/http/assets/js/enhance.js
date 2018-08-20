@@ -1933,7 +1933,7 @@ function getDB( options ) {
 					} );
 				}, 'json' );            
 			} else {
-				$.post( '/db/?cmd=dirble', { querytype: querytype ? querytype : 'categories', 'args': args }, function( data ) {
+				$.post( '/db/?cmd=dirble', { querytype: querytype ? querytype : 'categories', args: args }, function( data ) {
 					populateDB( {
 						  data      : data
 						, path      : path
