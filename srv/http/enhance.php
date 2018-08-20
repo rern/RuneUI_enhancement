@@ -17,21 +17,27 @@ $redis->pconnect( '127.0.0.1' );
 // redis
 if ( isset( $_POST[ 'redis' ] ) ) {
 	$array = json_decode( $_POST[ 'redis' ], true );
+	$pushstream = 0;
 	foreach ( $array as $field => $arg ) {
 		$count = count( $arg );
 		$command = $arg[ 0 ];
-		$key = $arg[ 1 ];
+		if ( in_array( $command, [ 'hmSet', 'hmset', 'set' ] ) ) $pushstream = 1;
 		
 		if ( $count === 2 ) {
-			$result[ $field ] = $redis->$command( $key );
+			$result[ $field ] = $redis->$command( $arg[ 1 ] );
 		} else if ( $count === 3 ) {
-			$result[ $field ] = $redis->$command( $key, $arg[ 2 ] );
+			$result[ $field ] = $redis->$command( $arg[ 1 ], $arg[ 2 ] );
+			if ( $arg[ 2 ] === 'activePlayer' && $result[ $field ] === 'Airplay' ) $result[ 'actplayerinfo' ] = $redis->get( 'act_player_info' );
 		} else if ( $count === 4 ) {
-			$result[ $field ] = $redis->$command( $key, $arg[ 2 ], $arg[ 3 ] );
+			$result[ $field ] = $redis->$command( $arg[ 1 ], $arg[ 2 ], $arg[ 3 ] );
 		}
 	}
 	echo json_encode( $result );
-	// broadcast to all clients on set display
+	
+	// broadcast to all clients on hmSet display or set volume
+	if ( !$pushstream ) die();
+	
+	$result[ 'display' ] = $redis->hGetAll( 'display' );
 	$ch = curl_init( 'http://localhost/pub?id=display' );
 	curl_setopt( $ch, CURLOPT_HTTPHEADER, array( 'Content-Type:application/json' ) );
 	curl_setopt( $ch, CURLOPT_POSTFIELDS, json_encode( $result ) );
