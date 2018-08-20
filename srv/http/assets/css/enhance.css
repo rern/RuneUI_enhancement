@@ -903,7 +903,7 @@
 .btnlist-top {
 	top: 0;
 	box-shadow: 0px 4px 10px #000000;
-	z-index: 10;
+	z-index: 12;
 }
 .btnlist a {
 	font-size: 18px;
