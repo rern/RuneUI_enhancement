@@ -317,10 +317,11 @@ function setDisplayPlayback() {
 		, cancel       : 1
 		, ok           : function () {
 			// no: serializeArray() omit unchecked fields
+			var toggles = {};
 			$( '#displaysaveplayback input' ).each( function() {
-				GUI.display[ this.name ] = this.checked ? 'checked' : '';
+				toggles[ this.name ] = this.checked ? 'checked' : '';
 			} );
-			var command = { set : [ 'hmSet', 'display', GUI.display ] };
+			var command = { set : [ 'hmSet', 'display', toggles ] };
 			$.post( 'enhance.php', { redis: JSON.stringify( command ) } );
 		}
 	} );
@@ -412,10 +413,11 @@ function setDisplayLibrary( e ) {
 			</form>'
 		, cancel       : 1
 		, ok           : function () {
+			var toggles = {};
 			$( '#displaysavelibrary input' ).each( function() {
-				GUI.display[ this.name ] = this.checked ? 'checked' : '';
+				toggles[ this.name ] = this.checked ? 'checked' : '';
 			} );
-			var command = { set: [ 'hmSet', 'display', GUI.display ] };
+			var command = { set: [ 'hmSet', 'display', toggles ] };
 			$.post( 'enhance.php', { redis: JSON.stringify( command ) } );
 		}
 	} );
