@@ -117,6 +117,21 @@ echo $file
 
 commentH -n -1 'for="localSStime">' -n -2 'USB Automount'
 #----------------------------------------------------------------------------------
+file=/srv/http/app/libs/runeaudio.php
+echo $file
+
+string=$( cat <<'EOF'
+                        $redis->hSet( 'display', 'volumempd', 1);
+EOF
+)
+append "set('volume', 1)"
+
+string=$( cat <<'EOF'
+                        $redis->hSet( 'display', 'volumempd', 0);
+EOF
+)
+append "set('volume', 0)"
+#----------------------------------------------------------------------------------
 if [[ $1 != u ]]; then # keep range: 0.5 - 3.0
 	z=$1;
 	zoom=$( echo "0.5 $z 3" \
@@ -169,9 +184,11 @@ file=/srv/http/app/templates/enhanceplayback.php  # for rune youtube
 
 # set library home database
 if [[ $1 != u ]]; then
+	volume=$( redis-cli get volume )
+	
 	redis-cli hmset display bars checked pause checked time checked coverart checked volume checked buttons checked \
 	\nas checked sd checked usb checked webradio checked albums checked artists checked composer checked genre checked \
-	\spotify checked dirble checked jamendo checked &> /dev/null
+	\spotify checked dirble checked jamendo checked volumempd $volume &> /dev/null
 fi
 # disable screensaver
 redis-cli set localSStime -1 &> /dev/null
