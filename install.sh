@@ -188,15 +188,8 @@ if [[ $1 != u ]]; then
 	redis-cli hmset display bars checked pause checked time checked coverart checked volume checked buttons checked \
 	\nas checked sd checked usb checked webradio checked albums checked artists checked composer checked genre checked \
 	\spotify checked dirble checked jamendo checked &> /dev/null
-
-#	[[ $( redis-cli get volume ) == 1 ]] && volume=1 || volume=''
-#	redis-cli hset display volumempd $volume &> /dev/null
-#	reinitsystem
-#else
-#	clearcache
 fi
 
-# temp for version before 20180822
 [[ $( redis-cli get volume ) == 1 ]] && volume=1 || volume=''
 redis-cli hset display volumempd $volume &> /dev/null
 
