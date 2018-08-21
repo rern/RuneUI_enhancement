@@ -190,7 +190,7 @@ if [[ $1 != u ]]; then
 	\spotify checked dirble checked jamendo checked &> /dev/null
 
 #	[[ $( redis-cli get volume ) == 1 ]] && volume=1 || volume=''
-#	redis-cli hset display volumempd $volume
+#	redis-cli hset display volumempd $volume &> /dev/null
 #	reinitsystem
 #else
 #	clearcache
@@ -198,6 +198,6 @@ fi
 
 # temp for version before 20180822
 [[ $( redis-cli get volume ) == 1 ]] && volume=1 || volume=''
-redis-cli hset display volumempd $volume
+redis-cli hset display volumempd $volume &> /dev/null
 
 reinitsystem
