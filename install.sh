@@ -82,7 +82,9 @@ string=$( cat <<'EOF'
 EOF
 )
 append 'browseMode = TRUE'
+
 comment 'parseFileStr($value'
+
 string=$( cat <<'EOF'
                 $pathinfo = pathinfo( $value );
                 $plistArray[ $plCounter ][ 'fileext' ] = $pathinfo[ 'extension' ];
@@ -93,11 +95,24 @@ string=$( cat <<'EOF'
 EOF
 )
 append 'parseFileStr($value'
+
 string=$( cat <<'EOF'
             $redis->hDel('sampling', $label);
 EOF
 )
 append 'hDel(.webradios., $label)'
+
+string=$( cat <<'EOF'
+                        $redis->hSet( 'display', 'volumempd', 1);
+EOF
+)
+append "set('volume', 1)"
+
+string=$( cat <<'EOF'
+                        $redis->hSet( 'display', 'volumempd', 0);
+EOF
+)
+append "set('volume', 0)"
 #----------------------------------------------------------------------------------
 file=/srv/http/app/settings_ctl.php
 echo $file
@@ -116,21 +131,6 @@ file=/srv/http/app/templates/settings.php
 echo $file
 
 commentH -n -1 'for="localSStime">' -n -2 'USB Automount'
-#----------------------------------------------------------------------------------
-file=/srv/http/app/libs/runeaudio.php
-echo $file
-
-string=$( cat <<'EOF'
-                        $redis->hSet( 'display', 'volumempd', 1);
-EOF
-)
-append "set('volume', 1)"
-
-string=$( cat <<'EOF'
-                        $redis->hSet( 'display', 'volumempd', 0);
-EOF
-)
-append "set('volume', 0)"
 #----------------------------------------------------------------------------------
 if [[ $1 != u ]]; then # keep range: 0.5 - 3.0
 	z=$1;
@@ -195,8 +195,9 @@ redis-cli set localSStime -1 &> /dev/null
 
 installfinish $@
 
-if [[ $1 == u ]]; then
-	clearcache
-else
-	reinitsystem
-fi
+#if [[ $1 == u ]]; then
+#	clearcache
+#	exit
+#fi
+
+reinitsystem
