@@ -13,6 +13,8 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 
 $redis = new Redis(); 
 $redis->pconnect( '127.0.0.1' );
+$volumempd = $redis->get( 'volume' ) == 1 ? 'checked' : '';
+$redis->hSet( 'display', 'volumempd', $volumempd ); // normally not in 'display'
 
 // redis
 if ( isset( $_POST[ 'redis' ] ) ) {
@@ -21,11 +23,10 @@ if ( isset( $_POST[ 'redis' ] ) ) {
 	foreach ( $array as $field => $arg ) {
 		$count = count( $arg );
 		$command = $arg[ 0 ];
-		if ( in_array( $command, [ 'hmSet', 'hmset', 'set' ] ) ) $pushstream = 1;
+		if ( in_array( $command, [ 'hGetAll', 'hmSet', 'set' ] ) ) $pushstream = 1;
 		
 		if ( $count === 2 ) {
 			$result[ $field ] = $redis->$command( $arg[ 1 ] );
-			if ( $command === 'hGetAll' && $arg[ 1 ] === 'display' ) $result[ $field ][ 'volumempd' ] = $redis->get( 'volume' ) != 0 ? 'checked' : '';
 		} else if ( $count === 3 ) {
 			$result[ $field ] = $redis->$command( $arg[ 1 ], $arg[ 2 ] );
 			if ( $arg[ 2 ] === 'activePlayer' && $result[ $field ] === 'Airplay' ) $result[ 'actplayerinfo' ] = $redis->get( 'act_player_info' );
