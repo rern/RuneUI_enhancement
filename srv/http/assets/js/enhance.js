@@ -1209,7 +1209,7 @@ document.addEventListener( visibilityevent, function() {
 	}
 } );
 window.addEventListener( 'orientationchange', function() {
-	if ( ( $( '#panel-sx' ).hasClass( 'active' ) && !$( '#home-blocks' ).hasClass( 'hide' ) )
+	if ( ( $( '#panel-sx' ).hasClass( 'active' ) && $( '#home-blocks' ).hasClass( 'hide' ) )
 		|| !$( '#pl-editor' ).hasClass( 'hide' ) ) displayIndex();
 } );
 // MutationObserver - watch for '#database-entries' content changed then scroll to previous position
@@ -1480,6 +1480,7 @@ function displayPlayback() {
 		displayAirPlay();
 		return;
 	}
+	$( '#imode' ).addClass( 'hide' );
 	$( '#iplayer' ).removeClass( 'fa-airplay' ).addClass( 'hide' );
 	var buttonhide = !GUI.display.buttons || window.innerHeight <= 320 || window.innerWidth < 499 ? 1 : 0;
 	if ( GUI.json.playlistlength != 0 ) $( '.playback-controls' ).css( 'visibility', 'visible' );
@@ -1561,7 +1562,10 @@ function displayPlayback() {
 	}
 	setButton();
 	displayCommon();
-	$( '#container-playback, #playback-row' ).removeClass( 'hide' );
+	
+	setTimeout( function() {
+		$( '#container-playback, #playback-row, #imode' ).removeClass( 'hide' );
+	}, 600 );
 }
 
 function displayIndex() {
@@ -1572,7 +1576,7 @@ function displayIndex() {
 		$( '.half' ).toggleClass( 'hide', wH < 500 );
 		$index = $( '#panel-sx' ).hasClass( 'active' ) ? $( '#db-index' ) : $( '#pl-index' );
 		$index.css( 'line-height', ( ( wH - indexoffset ) / indexline ) +'px' );
-	}, 200 );
+	}, 0 );
 }
 // library show/hide blocks
 function displayLibrary() {
