@@ -1610,7 +1610,7 @@ function setPlaylistScroll() {
 		}
 	}
 //	if ( wH / 49 < $( '#playlist-entries li' ).length ) $( 'html, body' ).scrollTop( scrollpos );
-	$( 'html, body' ).scrollTop( scrollpos );
+	if ( $( '#panel-dx' ).hasClass( 'active' ) && !$( '#playlist-entries' ).hasClass( 'hide' ) ) $( 'html, body' ).scrollTop( scrollpos );
 }
 function displayPlaylist() {
 	if ( !GUI.pleditor ) {
