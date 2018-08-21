@@ -13,8 +13,6 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 
 $redis = new Redis(); 
 $redis->pconnect( '127.0.0.1' );
-$volumempd = $redis->get( 'volume' ) == 1 ? 'checked' : '';
-$redis->hSet( 'display', 'volumempd', $volumempd ); // normally not in 'display'
 
 // redis
 if ( isset( $_POST[ 'redis' ] ) ) {
