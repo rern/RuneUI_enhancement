@@ -273,8 +273,8 @@ $( '#open-panel-dx' ).click( function() {
 		$( '#overlay-playsource' ).addClass( 'open' );
 		return;
 	}
-	menuBottom( 'panel-dx', 'playback', 'panel-sx' );
 	displayPlaylist()
+	menuBottom( 'panel-dx', 'playback', 'panel-sx' );
 } );
 function panelLR( lr ) {
 	var pcurrent = $( '.tab-pane:visible' ).prop( 'id' );
@@ -1620,11 +1620,13 @@ function displayPlaylist() {
 			renderPlaylist();
 		}
 	} else {
-		if ( $( '#open-panel-dx' ).hasClass( 'active' ) ) {
+		if ( $( '#panel-dx' ).hasClass( 'active' ) ) {
 			GUI.pleditor = 0;
 			renderPlaylist();
 		} else {
-			$( 'html, body' ).scrollTop( GUI.plscrolltop );
+			setTimeout( function() {
+				$( 'html, body' ).scrollTop( GUI.plscrolltop );
+			}, 0 );
 		}
 	}
 	displayCommon();
