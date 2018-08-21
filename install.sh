@@ -13,7 +13,6 @@ alias=enha
 installstart $@
 
 #0temp0 remove uninstall leftover
-sed -i 's|fa-music sx"></i> Library\(.\);|fa-folder-open"></i>\1|' /srv/http/assets/js/runeui.js
 sed -i 's/gifico|svg/gif|ico/' /etc/nginx/nginx.conf
 rm -f /srv/http/assets/js/vendor/{hammer.min.js,propagating.js}
 sed -i '/hammer.min.js\|propagating.js/ d' /srv/http/app/templates/footer.php
@@ -197,7 +196,7 @@ else
 	clearcache
 fi
 
-# temp for recent update
+# temp for version before 20180822
 [[ $( redis-cli get volume ) == 1 ]] && volume=1 || volume=''
 redis-cli hset display volumempd $volume
 
