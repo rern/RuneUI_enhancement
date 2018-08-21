@@ -109,7 +109,7 @@ EOF
 append "set('volume', 1)"
 
 string=$( cat <<'EOF'
-                        $redis->hSet( 'display', 'volumempd', 0);
+                        $redis->hSet( 'display', 'volumempd', '');
 EOF
 )
 append "set('volume', 0)"
@@ -182,22 +182,23 @@ file=/srv/http/app/templates/enhanceplayback.php  # for rune youtube
 # correct version number
 [[ $( redis-cli get buildversion ) == 'beta-20160313' ]] && redis-cli set release 0.3 &> /dev/null
 
+installfinish $@
+
 # set library home database
 if [[ $1 != u ]]; then
-	volume=$( redis-cli get volume )
+	[[ $( redis-cli get volume ) == 1 ]] && volume=1 || volume=''
 	
 	redis-cli hmset display bars checked pause checked time checked coverart checked volume checked buttons checked \
 	\nas checked sd checked usb checked webradio checked albums checked artists checked composer checked genre checked \
 	\spotify checked dirble checked jamendo checked volumempd $volume &> /dev/null
+	
+	reinitsystem
+else
+	clearcache
 fi
-# disable screensaver
-redis-cli set localSStime -1 &> /dev/null
 
-installfinish $@
-
-#if [[ $1 == u ]]; then
-#	clearcache
-#	exit
-#fi
+# temp for recent update
+[[ $( redis-cli get volume ) == 1 ]] && volume=1 || volume=''
+redis-cli hset display volumempd $volume
 
 reinitsystem
