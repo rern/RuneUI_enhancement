@@ -226,6 +226,7 @@ $( '#menu-settings' ).click( function() {
 function menuBottom( elshow, elhide1, elhide2 ) {	
 	if ( $( '#panel-sx' ).hasClass( 'active' ) ) {
 		GUI.dbscrolltop[ $( '#db-currentpath' ).attr( 'path' ) ] = $( window ).scrollTop();
+		
 	} else if ( $( '#panel-dx' ).hasClass( 'active' ) && !$( '#pl-editor' ).hasClass( 'hide' ) ) {
 		GUI.plscrolltop = $( window ).scrollTop();
 	}
@@ -272,18 +273,8 @@ $( '#open-panel-dx' ).click( function() {
 		$( '#overlay-playsource' ).addClass( 'open' );
 		return;
 	}
-	
-	if ( $( this ).hasClass( 'active' ) && GUI.pleditor ) {
-		GUI.pleditor = 0;
-		renderPlaylist();
-	}
 	menuBottom( 'panel-dx', 'playback', 'panel-sx' );
 	displayPlaylist()
-	if ( !GUI.pleditor ) {
-		$( '#pl-index' ).addClass( 'hide' );
-	} else {
-		$( 'html, body' ).scrollTop( GUI.plscrolltop );
-	}
 } );
 function panelLR( lr ) {
 	var pcurrent = $( '.tab-pane:visible' ).prop( 'id' );
@@ -401,6 +392,7 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 	} else {
 		if ( GUI.bookmarkedit ) return;
 		
+		mutationLibrary.observe( observerLibrary, observerOption );
 		var browsemode = $this.data( 'browsemode' );
 		GUI.plugin = $this.data( 'plugin' );
 		GUI.dbbrowsemode = browsemode ? browsemode : GUI.plugin ? GUI.plugin : 'file';
@@ -823,6 +815,9 @@ $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 		$( '#context-menu-playlist' ).removeClass( 'hide' )
 			.css( { top: $this.position().top +'px', right: '50px' } )
 			.find( '.menushadow' ).css( 'height', $( '#context-menu-playlist' ).find( 'i' ).length * 40 );
+		var targetB = $( '#context-menu-playlist' ).offset().top + $( '#context-menu-playlist' ).height();
+		var wH = window.innerHeight;
+		if ( targetB > wH + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + ( GUI.display.bars ? 42 : 0 ) }, 500 );
 	}
 } );
 $( '.contextmenu a' ).click( function() {
@@ -878,7 +873,9 @@ $( '.contextmenu a' ).click( function() {
 			$( '#random' ).data( 'cmd', 'pl-ashuffle-stop' ).addClass( 'btn-primary' );
 			break;
 		default:
-			$.post( '/db/?cmd='+ cmd, { path: GUI.DBentry.path } );
+			$.post( '/db/?cmd='+ cmd, { path: GUI.DBentry.path }, function() {
+				renderPlaylist();
+			} );
 			break;
 	}
 } );
@@ -1594,27 +1591,41 @@ function displayLibrary() {
 	displayCommon();
 }
 function setPlaylistScroll() {
+	if ( GUI.noscroll ) {
+		GUI.noscroll = 0;
+		return;
+	}
 	var  wH = window.innerHeight;
-	$( '#playlist-entries p' ).css( 'min-height', wH - ( GUI.display.bars ? 180 : 140 ) +'px' );
+	$( '#playlist-entries p' ).css( 'min-height', wH - ( GUI.display.bars ? 220 : 140 ) +'px' );
 	if ( GUI.status.songid === undefined ) {
 		var scrollpos = 0;
 	} else {
 		var $liactive = $( '#pl-'+ GUI.status.songid );
 		$( '#playlist-entries li' ).removeClass( 'active' );
-		$liactive.addClass( 'active' );
-		if ( GUI.noscroll ) {
-			GUI.noscroll = 0;
-			return;
+		if ( $liactive.length ) {
+			$liactive.addClass( 'active' );
+			var scrollpos = $liactive.offset().top - $( '#playlist-entries' ).offset().top - ( 49 * 3 );
+		} else {
+			var scrollpos = 0;
 		}
-		var scrollpos = $liactive.offset().top - $( '#playlist-entries' ).offset().top - ( 49 * 3 );
 	}
-	if ( wH / 49 < $( '#playlist-entries li' ).length ) $( 'html, body' ).scrollTop( scrollpos );
+//	if ( wH / 49 < $( '#playlist-entries li' ).length ) $( 'html, body' ).scrollTop( scrollpos );
+	$( 'html, body' ).scrollTop( scrollpos );
 }
 function displayPlaylist() {
-	if ( $( '#playlist-entries li' ).length ) {
-		setPlaylistScroll();
+	if ( !GUI.pleditor ) {
+		if ( $( '#playlist-entries li' ).length ) {
+			setPlaylistScroll();
+		} else {
+			renderPlaylist();
+		}
 	} else {
-		renderPlaylist();
+		if ( $( '#open-panel-dx' ).hasClass( 'active' ) ) {
+			GUI.pleditor = 0;
+			renderPlaylist();
+		} else {
+			$( 'html, body' ).scrollTop( GUI.plscrolltop );
+		}
 	}
 	displayCommon();
 }
@@ -1634,7 +1645,7 @@ function chkKey( key ) {
 	return ( key !== undefined && key !== '' );
 }
 function renderLibraryHome() {
-	GUI.dbscrolltop = {};
+//	GUI.dbscrolltop = {}; // comment to always kepp scroll positions
 	GUI.plugin = '';
 	$( '#db-currentpath' ).removeAttr( 'path' );
 	$( '#database-entries' ).empty();
@@ -2247,7 +2258,7 @@ function populateDB( options ) {
 function renderPlaylist() {
 	$( '#pl-filter' ).val( '' );
 	$( '#pl-filter-results' ).empty();
-	$( '#pl-currentpath, #pl-editor' ).addClass( 'hide' );
+	$( '#pl-currentpath, #pl-editor, #pl-index' ).addClass( 'hide' );
 	
 	if ( ( GUI.json.playlistlength == 0 && !GUI.pleditor ) || GUI.plclear ) {
 		GUI.plclear = 0;
