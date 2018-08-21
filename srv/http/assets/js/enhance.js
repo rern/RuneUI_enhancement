@@ -265,8 +265,8 @@ $( '#open-panel-sx' ).click( function() {
 } );
 $( '#open-playback' ).click( function() {
 	menuBottom( 'playback', 'panel-sx', 'panel-dx' );
+	setPlaybackData();
 	$( 'html, body' ).scrollTop( 0 );
-	displayPlayback();
 } );
 $( '#open-panel-dx' ).click( function() {
 	if ( GUI.activePlayer === 'Airplay' || GUI.activePlayer === 'Spotify' ) {
