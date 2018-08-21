@@ -25,6 +25,7 @@ if ( isset( $_POST[ 'redis' ] ) ) {
 		
 		if ( $count === 2 ) {
 			$result[ $field ] = $redis->$command( $arg[ 1 ] );
+			if ( $command === 'hGetAll' && $arg[ 1 ] === 'display' ) $result[ $field ][ 'volumempd' ] = $redis->get( 'volume' ) != 0 ? 'checked' : '';
 		} else if ( $count === 3 ) {
 			$result[ $field ] = $redis->$command( $arg[ 1 ], $arg[ 2 ] );
 			if ( $arg[ 2 ] === 'activePlayer' && $result[ $field ] === 'Airplay' ) $result[ 'actplayerinfo' ] = $redis->get( 'act_player_info' );
