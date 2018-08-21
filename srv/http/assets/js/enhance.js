@@ -829,10 +829,6 @@ $( '.contextmenu a' ).click( function() {
 	var cmd = $( this ).data( 'cmd' );
 	GUI.dbcurrent = '';
 	switch( cmd ) {
-		case 'bookmarkadd':
-			$.post( '/db/?cmd=bookmark', { path: GUI.DBentry.path } );
-			break;
-		
 		case 'wradd':
 			getDB( { cmd: 'add', path: GUI.DBentry.path } );
 			break;
@@ -878,16 +874,11 @@ $( '.contextmenu a' ).click( function() {
 			playlistDelete();
 			break;
 		case 'plashuffle':
-			$.post( '/db/?cmd=pl-ashuffle', { 'playlist' : GUI.DBentry.name } );
+			$.post( '/db/?cmd=pl-ashuffle', { playlist: GUI.DBentry.name } );
 			$( '#random' ).data( 'cmd', 'pl-ashuffle-stop' ).addClass( 'btn-primary' );
 			break;
 		default:
-			getDB( {
-				  cmd       : cmd
-				, path      : GUI.DBentry.path
-				, browsemode: GUI.browsemode
-				, querytype : $( this ).data( 'type' ) ? $( this ).data( 'cmd' ) : '' // soptify only
-			} );
+			$.post( '/db/?cmd='+ cmd, { path: GUI.DBentry.path } );
 			break;
 	}
 } );
@@ -1605,7 +1596,7 @@ function displayLibrary() {
 function setPlaylistScroll() {
 	var  wH = window.innerHeight;
 	$( '#playlist-entries p' ).css( 'min-height', wH - ( GUI.display.bars ? 180 : 140 ) +'px' );
-	if ( !GUI.status.songid ) {
+	if ( GUI.status.songid === undefined ) {
 		var scrollpos = 0;
 	} else {
 		var $liactive = $( '#pl-'+ GUI.status.songid );
@@ -2023,7 +2014,9 @@ function getDB( options ) {
 			}, 'json' );
 		} else {
 			$( '#spinner-db' ).addClass( 'hide' );
-			$.post( '/db/?cmd='+ cmd, { path: path, querytype: querytype } );
+			$.post( '/db/?cmd='+ cmd, { path: path, querytype: querytype }, function( path ) {
+                // console.log('add= ', path);
+            }, 'json');
 		}
 	}
 }
