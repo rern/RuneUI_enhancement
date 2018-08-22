@@ -437,7 +437,7 @@ function setDisplayLibrary( e ) {
 
 // playback buttons click go back to home page
 $( '.playback-controls' ).click( function() {
-	if ( !$( '#open-playback' ).hasClass( 'active' ) ) $( '#open-playback' ).click();
+	if ( !$( '#playback' ).hasClass( 'active' ) ) $( '#open-playback' ).click();
 } );
 
 var btnctrl = {
@@ -1202,9 +1202,11 @@ document.addEventListener( visibilityevent, function() {
 		clearInterval( GUI.currentKnob );
 		clearInterval( GUI.countdown );
 	} else {
-		if ( $( '#open-playback' ).hasClass( 'active' ) ) {
+		if ( $( '#playback' ).hasClass( 'active' ) ) {
 			setPlaybackData();
 			displayPlayback();
+		} else if ( $( '#panel-dx' ).hasClass( 'active' ) ) {
+			setPlaylistScroll();
 		}
 	}
 } );
