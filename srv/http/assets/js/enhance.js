@@ -227,7 +227,7 @@ function menuBottom( elshow, elhide1, elhide2 ) {
 	if ( $( '#panel-sx' ).hasClass( 'active' ) ) {
 		GUI.dbscrolltop[ $( '#db-currentpath' ).attr( 'path' ) ] = $( window ).scrollTop();
 		
-	} else if ( $( '#panel-dx' ).hasClass( 'active' ) && !$( '#pl-editor' ).hasClass( 'hide' ) ) {
+	} else if ( $( '#panel-dx' ).hasClass( 'active' ) && GUI.pleditor ) {
 		GUI.plscrolltop = $( window ).scrollTop();
 	}
 	$( '#'+ elhide1 +', #'+ elhide2 +', #open-'+ elhide1 +', #open-'+ elhide2 ).removeClass( 'active' );
@@ -1599,22 +1599,22 @@ function setPlaylistScroll() {
 		GUI.noscroll = 0;
 		return;
 	}
+	if ( $( '#playlist-entries' ).hasClass( 'hide' ) ) return;
+	
+	var scrollpos;
 	var  wH = window.innerHeight;
 	$( '#playlist-entries p' ).css( 'min-height', wH - ( GUI.display.bars ? 220 : 140 ) +'px' );
 	if ( GUI.status.songid === undefined ) {
-		var scrollpos = 0;
+		$( 'html, body' ).scrollTop( 0 );
 	} else {
 		var $liactive = $( '#pl-'+ GUI.status.songid );
 		$( '#playlist-entries li' ).removeClass( 'active' );
-		if ( $liactive.length ) {
-			$liactive.addClass( 'active' );
-			var scrollpos = $liactive.offset().top - $( '#playlist-entries' ).offset().top - ( 49 * 3 );
-		} else {
-			var scrollpos = 0;
-		}
+		$liactive.addClass( 'active' );
+		setTimeout( function() {
+			scrollpos = $liactive.offset().top - $( '#playlist-entries' ).offset().top - ( 49 * 3 );
+			$( 'html, body' ).scrollTop( scrollpos );
+		}, 0 );
 	}
-//	if ( wH / 49 < $( '#playlist-entries li' ).length ) $( 'html, body' ).scrollTop( scrollpos );
-	if ( $( '#panel-dx' ).hasClass( 'active' ) && !$( '#playlist-entries' ).hasClass( 'hide' ) ) $( 'html, body' ).scrollTop( scrollpos );
 }
 function displayPlaylist() {
 	if ( !GUI.pleditor ) {
