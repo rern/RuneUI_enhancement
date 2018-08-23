@@ -543,10 +543,10 @@ $( '#turnoff' ).click( function() {
 			$( '#gpio' ).length ? $.get( 'gpioexec.php?command=poweroff' ) : $.post( 'settings', { 'syscmd' : 'poweroff' } );
 			$( '#loader' ).removeClass( 'hide' );
 		}
-		, buttonlabel : 'Reboot'
+		, buttonlabel : '&ensp;Reboot&ensp;'
 		, buttoncolor : '#de810e'
 		, button      : function() {
-			$( '#gpio' ).length ? $.post( 'settings', { 'syscmd' : 'reboot' } ) : $.get( 'gpioexec.php?command=reboot' );
+			$( '#gpio' ).length ? $.get( 'gpioexec.php?command=reboot' ) : $.post( 'settings', { 'syscmd' : 'reboot' } );
 			$( '#loader' ).removeClass( 'hide' );
 		}
 	} );
