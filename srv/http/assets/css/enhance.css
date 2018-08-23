@@ -53,12 +53,11 @@
 }
 #playlist-entries li:before { content: none; } /* remove default css */
 
-.fa-rune:before { content: "\f575" }
-.fa-linux:before { content: "\f571" }
-.fa-spotify:before { content: "\f572" }
-.fa-airplay:before { content: "\f573" }
-.fa-dlna:before { content: "\f574" }
 .fa-mpd:before { content: "\f522" }
+.fa-spotify:before { content: "\f523" }
+.fa-airplay:before { content: "\f524" }
+.fa-dlna:before { content: "\f525" }
+.fa-rune:before { content: "\f526" }
 
 .fa-step-backward:before { content: "\f501" }
 .fa-stop:before { content: "\f502" }
@@ -112,14 +111,17 @@
 .fa-star:before { content: "\f550" }
 .fa-plus-circle:before { content: "\f51D" }
 .fa-minus-circle:before { content: "\f51C" }
-.fa-power-off:before { content: "\f562" }
-.fa-arrow-left:before { content: "\f564" }
-.fa-edit:before { content: "\f56A" }
-.fa-undo:before { content: "\f56B" }
-.fa-bars:before { content: "\f536" }
-.fa-info-circle:before { content: "\f560" }
-.fa-question-circle:before { content: "\f561" }
+.fa-power:before { content: "\f527" }
+.fa-reboot:before { content: "\f528" }
+.fa-arrow-left:before { content: "\f544" }
+.fa-edit:before { content: "\f536" }
+.fa-undo:before { content: "\f537" }
+.fa-bars:before { content: "\f538" }
+
 .fa-times:before { content: "\f51A" }
+.fa-question-circle:before { content: "\f560" }
+.fa-info-circle:before { content: "\f561" }
+.fa-warning:before { content: "\f562" }
 
 #loaderbg {
 	background: rgba( 0, 0, 0, 0.9 );
