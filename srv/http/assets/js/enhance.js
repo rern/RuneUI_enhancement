@@ -652,7 +652,8 @@ $( '#database-entries' ).on( 'click', 'li', function( e ) {
 	var $this = $( this );
 	var path = $this.data( 'path' );
 	// get scroll position for back navigation
-	GUI.dbscrolltop[ $( '#db-currentpath' ).attr( 'path' ) ] = $( window ).scrollTop();
+	var current = $( '#db-currentpath' ).attr( 'path' );
+	GUI.dbscrolltop[ current ] = $( window ).scrollTop();
 	mutationLibrary.observe( observerLibrary, observerOption );
 	$( '#database-entries li' ).removeClass( 'active' );
 	$this.addClass( 'active' );
@@ -660,6 +661,15 @@ $( '#database-entries' ).on( 'click', 'li', function( e ) {
 	
 	var mode = $this.attr( 'mode' );
 	if ( [ 'dirble', 'jamendo', 'spotify' ].indexOf( mode ) === -1 ) {
+		// fix browse 'Artist' search by artist and album
+/*		if ( $( '#db-currentpath span' ).length > 1 && mode === 'album' ) {
+			$.post( 'enhance.php'
+				, { mpd: 'find artist "'+ current +'" album "'+ path +'"' }
+				, function( data) {
+					var data = JSON.parse( data );
+					console.log( data );
+			} );
+		}*/
 		getDB( {
 			  path       : path
 			, uplevel    : 0
@@ -1717,14 +1727,148 @@ function renderLibraryHome() {
 	displayLibrary();
 }
 
-function parseResponse( options ) {
-	var inputArr = options.inputArr || '',
-		respType = options.respType || '',
-		i = options.i || 0,
-		inpath = options.inpath || '',
+// launch the right AJAX call for Library rendering
+function getDB( options ) {
+	// DEFAULTS
+	var cmd = options.cmd || 'browse',
+		path = options.path || '',
+		browsemode = options.browsemode || 'file',
+		uplevel = options.uplevel || '',
+		plugin = options.plugin || '',
 		querytype = options.querytype || '',
-		content = '';
+		args = options.args || '';
 	
+	if ( !GUI.dbback ) {
+		if ( !plugin ) {
+			GUI.dbbackdata.push( {
+				  path       : path
+				, browsemode : browsemode
+				, uplevel    : uplevel
+			} );
+		} else {
+			GUI.dbbackdata.push( {
+				  path      : path
+				, plugin    : plugin
+				, args      : args
+				, querytype : querytype
+			} );
+		}
+	} else {
+		GUI.dbback = 0;
+	}
+		
+	$( '#spinner-db' ).removeClass( 'hide' );
+	GUI.browsemode = browsemode;
+	
+	if ( plugin ) {
+		if ( plugin === 'Spotify' ) {
+			$.post( '/db/?cmd=spotify', { plid: args }, function( data ) {
+				populateDB( {
+					  data      : data
+					, path      : path
+					, plugin    : plugin
+					, querytype : querytype
+					, uplevel   : uplevel
+					, args      : args
+				} );
+			}, 'json' );
+		} else if ( plugin === 'Dirble' ) {
+			if ( querytype === 'childs' ) {
+				$.post( '/db/?cmd=dirble', { querytype: 'childs', args: args }, function( data ) {
+					populateDB( {
+						  data      : data
+						, path      : path
+						, plugin    : plugin
+						, querytype : 'childs'
+						, uplevel   : uplevel
+					} );
+				}, 'json' );
+				$.post( '/db/?cmd=dirble', { querytype: 'childs-stations', args: args }, function( data ) {
+					populateDB( {
+						  data      : data
+						, path      : path
+						, plugin    : plugin
+						, querytype : 'childs-stations'
+						, uplevel   : uplevel
+					} );
+				}, 'json' );            
+			} else {
+				$.post( '/db/?cmd=dirble', { querytype: querytype ? querytype : 'categories', args: args }, function( data ) {
+					populateDB( {
+						  data      : data
+						, path      : path
+						, plugin    : plugin
+						, querytype : querytype
+						, uplevel   : uplevel
+					} );
+				}, 'json' );
+			}
+		} else if ( plugin === 'Jamendo' ) {
+			$.post( '/db/?cmd=jamendo', { querytype: querytype ? querytype : 'radio', args: args }, function( data ) {
+				if ( !data ) {
+					$( '#spinner-db' ).addClass( 'hide' );
+					info( {
+						  icon    : 'warning'
+						, title   : 'Jamendo'
+						, message : 'Jamendo not response. Please try again later'
+					} );
+					return;
+				}
+				populateDB( {
+					  data      : data.results
+					, path      : path
+					, plugin    : plugin
+					, querytype : querytype
+				} );
+			}, 'json' );
+		}
+	} else {
+	// normal browsing
+		if ( cmd === 'search' ) {
+			var keyword = $( '#db-search-keyword' ).val();
+			if ( path.match(/Dirble/)) {
+				$.post( '/db/?cmd=dirble', { querytype: 'search', args: keyword }, function( data ) {
+					populateDB( {
+						  data      : data
+						, path      : path
+						, plugin    : 'Dirble'
+						, querytype : 'search'
+						, uplevel   : uplevel
+					} );
+				}, 'json' );
+			} else {
+				$.post( '/db/?querytype='+ GUI.browsemode +'&cmd=search', { query: keyword }, function( data ) {
+					populateDB( {
+						  data    : data
+						, path    : path
+						, uplevel : uplevel
+						, keyword : keyword
+					} );
+				}, 'json' );
+			}
+		} else if ( cmd === 'browse' ) {
+			$.post( '/db/?cmd=browse', { path: path, browsemode: GUI.browsemode }, function( data ) {
+				populateDB( {
+					  data    : data
+					, path    : path
+					, uplevel : uplevel
+				} );
+			}, 'json' );
+		} else {
+			$( '#spinner-db' ).addClass( 'hide' );
+			$.post( '/db/?cmd='+ cmd, { path: path, querytype: querytype }, function( path ) {
+                // console.log('add= ', path);
+            }, 'json');
+		}
+	}
+}
+function parseResponse( inputArr, i, respType, inpath, querytype ) {
+	var inputArr = inputArr || '',
+		i = i || 0,
+		respType = respType || '',
+		inpath = inpath || '',
+		querytype = querytype || '',
+		content = '';
 	switch ( respType ) {
 		case 'playlist':
 			// code placeholder
@@ -1905,154 +2049,10 @@ function parseResponse( options ) {
 	}
 	return content;
 }
-// launch the right AJAX call for Library rendering
-function getDB( options ) {
-	// DEFAULTS
-	var cmd = options.cmd || 'browse',
-		path = options.path || '',
-		browsemode = options.browsemode || 'file',
-		uplevel = options.uplevel || '',
-		plugin = options.plugin || '',
-		querytype = options.querytype || '',
-		args = options.args || '';
-	
-	if ( !GUI.dbback ) {
-		if ( !plugin ) {
-			GUI.dbbackdata.push( {
-				  path       : path
-				, browsemode : browsemode
-				, uplevel    : uplevel
-			} );
-		} else {
-			GUI.dbbackdata.push( {
-				  path      : path
-				, plugin    : plugin
-				, args      : args
-				, querytype : querytype
-			} );
-		}
-	} else {
-		GUI.dbback = 0;
-	}
-		
-	$( '#spinner-db' ).removeClass( 'hide' );
-	GUI.browsemode = browsemode;
-	
-	if ( plugin ) {
-		if ( plugin === 'Spotify' ) {
-			$.post( '/db/?cmd=spotify', { plid: args }, function( data ) {
-				populateDB( {
-					  data      : data
-					, path      : path
-					, plugin    : plugin
-					, querytype : querytype
-					, uplevel   : uplevel
-					, args      : args
-				} );
-			}, 'json' );
-		} else if ( plugin === 'Dirble' ) {
-			if ( querytype === 'childs' ) {
-				$.post( '/db/?cmd=dirble', { querytype: 'childs', args: args }, function( data ) {
-					populateDB( {
-						  data      : data
-						, path      : path
-						, plugin    : plugin
-						, querytype : 'childs'
-						, uplevel   : uplevel
-					} );
-				}, 'json' );
-				$.post( '/db/?cmd=dirble', { querytype: 'childs-stations', args: args }, function( data ) {
-					populateDB( {
-						  data      : data
-						, path      : path
-						, plugin    : plugin
-						, querytype : 'childs-stations'
-						, uplevel   : uplevel
-					} );
-				}, 'json' );            
-			} else {
-				$.post( '/db/?cmd=dirble', { querytype: querytype ? querytype : 'categories', args: args }, function( data ) {
-					populateDB( {
-						  data      : data
-						, path      : path
-						, plugin    : plugin
-						, querytype : querytype
-						, uplevel   : uplevel
-					} );
-				}, 'json' );
-			}
-		} else if ( plugin === 'Jamendo' ) {
-			$.post( '/db/?cmd=jamendo', { querytype: querytype ? querytype : 'radio', args: args }, function( data ) {
-				if ( !data ) {
-					$( '#spinner-db' ).addClass( 'hide' );
-					info( {
-						  icon    : 'warning'
-						, title   : 'Jamendo'
-						, message : 'Jamendo not response. Please try again later'
-					} );
-					return;
-				}
-				populateDB( {
-					  data      : data.results
-					, path      : path
-					, plugin    : plugin
-					, querytype : querytype
-				} );
-			}, 'json' );
-		}
-	} else {
-	// normal browsing
-		if ( cmd === 'search' ) {
-			var keyword = $( '#db-search-keyword' ).val();
-			if ( path.match(/Dirble/)) {
-				$.post( '/db/?cmd=dirble', { querytype: 'search', args: keyword }, function( data ) {
-					populateDB( {
-						  data      : data
-						, path      : path
-						, plugin    : 'Dirble'
-						, querytype : 'search'
-						, uplevel   : uplevel
-					} );
-				}, 'json' );
-			} else {
-				$.post( '/db/?querytype='+ GUI.browsemode +'&cmd=search', { query: keyword }, function( data ) {
-					populateDB( {
-						  data    : data
-						, path    : path
-						, uplevel : uplevel
-						, keyword : keyword
-					} );
-				}, 'json' );
-			}
-		} else if ( cmd === 'browse' ) {
-			$.post( '/db/?cmd=browse', { path: path, browsemode: GUI.browsemode }, function( data ) {
-				populateDB( {
-					  data    : data
-					, path    : path
-					, uplevel : uplevel
-				} );
-			}, 'json' );
-		} else {
-			$( '#spinner-db' ).addClass( 'hide' );
-			$.post( '/db/?cmd='+ cmd, { path: path, querytype: querytype }, function( path ) {
-                // console.log('add= ', path);
-            }, 'json');
-		}
-	}
-}
 // strip leading A|An|The|(|[|. (for sorting)
 function stripLeading( string ) {
 	if ( typeof string === 'number' ) string = string.toString();
 	return string.replace( /^A +|^An +|^The +|^\(\s*|^\[\s*|^\.\s*/i, '' );
-}
-function preparse( array, i, type, path, query ) {
-	return parseResponse( {
-		  inputArr  : array
-		, i         : i
-		, respType  : type
-		, inpath    : path
-		, querytype : query || ''
-	} );
 }
 function populateDB( options ) {
 	var data = options.data || '',
@@ -2083,7 +2083,7 @@ function populateDB( options ) {
 					return 0;
 				}
 			} );
-			for (i = 0; (row = data[i]); i += 1) content += preparse( row, i, 'Spotify', arg, querytype );
+			for (i = 0; (row = data[i]); i += 1) content += parseResponse( row, i, 'Spotify', arg, querytype );
 		} else if ( plugin === 'Dirble' ) {
 			if ( querytype === 'childs-stations' ) {
 				content = $( '#database-entries' ).html();
@@ -2097,7 +2097,7 @@ function populateDB( options ) {
 						return 0;
 					}
 				} );
-				for (i = 0; (row = data[i]); i += 1) content += preparse( row, i, 'Dirble', '', querytype );
+				for (i = 0; (row = data[i]); i += 1) content += parseResponse( row, i, 'Dirble', '', querytype );
 			}
 		} else if ( plugin === 'Jamendo' ) {
 			data.sort( function( a, b ) {
@@ -2107,7 +2107,7 @@ function populateDB( options ) {
 					return 0;
 				}
 			} );
-			for (i = 0; (row = data[i]); i += 1) content += preparse( row, i, 'Jamendo', '', querytype );
+			for (i = 0; (row = data[i]); i += 1) content += parseResponse( row, i, 'Jamendo', '', querytype );
 		}
 	} else {
 // normal MPD browsing
@@ -2167,7 +2167,7 @@ function populateDB( options ) {
 					var bdir = stripLeading( b[ 'directory' ].split( '/' ).pop() );
 					return adir.localeCompare( bdir, undefined, { numeric: true } );
 				} );
-				for ( i = 0; row = arraydir[ i ]; i++ ) content += preparse( row, i, 'db', path );
+				for ( i = 0; row = arraydir[ i ]; i++ ) content += parseResponse( row, i, 'db', path );
 				arrayfile.sort( function( a, b ) {
 					if ( !keyword ) {
 						return stripLeading( a[ 'file' ] ).localeCompare( stripLeading( b[ 'file' ] ), undefined, { numeric: true } );
@@ -2175,14 +2175,14 @@ function populateDB( options ) {
 						return stripLeading( a[ 'Title' ] ).localeCompare( stripLeading( b[ 'Title' ] ), undefined, { numeric: true } );
 					}
 				} );
-				for ( i = 0; row = arrayfile[ i ]; i++ ) content += preparse( row, i, 'db', path );
+				for ( i = 0; row = arrayfile[ i ]; i++ ) content += parseResponse( row, i, 'db', path );
 			} else {
 				data.sort( function( a, b ) {
 					if ( a[ prop ] === undefined ) prop = mode[ GUI.browsemode ];
 					return stripLeading( a[ prop ] ).localeCompare( stripLeading( b[ prop ] ), undefined, { numeric: true } );
 				} );
 				
-				for ( i = 0; row = data[ i ]; i++ ) content += preparse( row, i, 'db', path );
+				for ( i = 0; row = data[ i ]; i++ ) content += parseResponse( row, i, 'db', path );
 			}
 			$( '#db-webradio-new' ).toggleClass( 'hide', path !== 'Webradio' );
 		}
@@ -2300,8 +2300,8 @@ function renderPlaylist() {
 				countsong++
 				time = parseInt( data.Time );
 				var title = data.Title ? data.Title : data.file.split( '/' ).pop();
-				var track = data.Track ? '#'+ data.Track +' - ' : '';
-				var album = data.Album ? ' - '+ data.Album : '';
+				var track = data.Track ? '#'+ data.Track +' • ' : '';
+				var album = data.Album ? ' • '+ data.Album : '';
 				topline = title +'<span>'+ convertHMS( time ) +'</span>';
 				bottomline = track + data.Artist + album;
 				playlisttime += time;
