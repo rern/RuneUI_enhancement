@@ -540,13 +540,13 @@ $( '#turnoff' ).click( function() {
 		, oklabel     : 'Power off'
 		, okcolor     : '#bb2828'
 		, ok          : function() {
-			$.post( '/settings/', { 'syscmd' : 'poweroff' } );
+			$( '#gpio' ).length ? $.get( 'gpioexec.php?command=poweroff' ) : $.post( 'settings', { 'syscmd' : 'poweroff' } );
 			$( '#loader' ).removeClass( 'hide' );
 		}
 		, buttonlabel : 'Reboot'
-		, buttoncolor : '#9a9229'
+		, buttoncolor : '#de810e'
 		, button      : function() {
-			$.post( '/settings/', { 'syscmd' : 'reboot' } );
+			$( '#gpio' ).length ? $.post( 'settings', { 'syscmd' : 'reboot' } ) : $.get( 'gpioexec.php?command=reboot' );
 			$( '#loader' ).removeClass( 'hide' );
 		}
 	} );
