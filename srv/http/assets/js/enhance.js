@@ -69,15 +69,14 @@ var command = {
 	, activeplayer : [ 'get', 'activePlayer' ]
 };
 $.post( 'enhance.php', { redis: JSON.stringify( command ) }, function( data ) {
-	var redis = JSON.parse( data );
-	GUI.display = redis.display;
+	GUI.display = data.display;
 	GUI.radioelapsed = GUI.display.radioelapsed;
-	GUI.activePlayer = redis.activeplayer;
+	GUI.activePlayer = data.activeplayer;
 	if ( GUI.activePlayer === 'Airplay' ) {
-		GUI.json = JSON.parse( redis.actplayerinfo ); // available if 'activeplayer' is 'Airplay'
+		GUI.json = data.actplayerinfo; // available if 'activeplayer' is 'Airplay'
 		displayAirPlay();
 	}
-} );
+}, 'json' );
 
 PNotify.prototype.options.styling = 'fontawesome';
 PNotify.prototype.options.stack = {
@@ -512,8 +511,7 @@ $( '#currentartist, #songinfo-open' ).click( function() {
 			function( data ) {
 				$( '#biocontent' ).html( data );
 				bioShow();
-			}
-		);
+		}, 'html' );
 	} else {
 		bioShow();
 	}
@@ -1047,7 +1045,7 @@ function playlistSaveVerify( name ) {
 		} else {
 			sendCmd( 'save "'+ name +'"' );
 		}
-	} );
+	}, 'text' );
 }
 function playlistRename( name ) {
 	info( {
@@ -1386,7 +1384,7 @@ $( '#volmute, #volM' ).click( function() {
 			$volumehandle.rsRotate( - $volumeRS._handle1.angle );
 			// restore color immediately on click
 			unmuteColor();
-		} );
+		}, 'text' );
 	}
 } );
 $( '#volup, #voldn' ).click( function() {
@@ -1532,15 +1530,14 @@ function displayPlayback() {
 			if ( !GUI.radioelapsed ) {
 				$( '#total' ).empty();
 			} else {
-				$.post( 'enhancestatus.php', function( data ) {
-					var status = JSON.parse( data );
+				$.post( 'enhancestatus.php', function( status ) {
 					var elapsed = status.elapsed;
 					GUI.countdown = setInterval( function() {
 						elapsed++
 						mmss = convertHMS( elapsed );
 						$( '#total' ).text( mmss );
 					}, 1000 );
-				} );
+				}, 'json' );
 			}
 		}
 	}
@@ -2229,32 +2226,31 @@ function renderPlaylist() {
 		var state = GUI.json.state;
 		var content = bottomline = classcurrent = classradio = hidetotal = '';
 		var id = totaltime = playlisttime = countsong = countradio = counttotal = i = 0;
-		var json = JSON.parse(data);
-		var ilength = json.length;
+		var ilength = data.length;
 		for ( i = 0; i < ilength; i++ ) {
-			var data = json[ i ];
-			if ( data[ 'file' ].slice( 0, 4 ) === 'http' ) {
+			var pl = data[ i ];
+			if ( pl.file.slice( 0, 4 ) === 'http' ) {
 				var iconhtml = '<i class="fa fa-webradio pl-icon"></i>';
 				classradio = 1;
 				countradio++
-				topline = data.Title;
-				bottomline = data.file;
+				topline = pl.Title;
+				bottomline = pl.file;
 			} else {
 				var iconhtml = '<i class="fa fa-music pl-icon"></i>';
 				countsong++
-				time = parseInt( data.Time );
-				var title = data.Title ? data.Title : data.file.split( '/' ).pop();
-				var track = data.Track ? '#'+ data.Track +' • ' : '';
-				var album = data.Album ? ' • '+ data.Album : '';
+				time = parseInt( pl.Time );
+				var title = pl.Title ? pl.Title : pl.file.split( '/' ).pop();
+				var track = pl.Track ? '#'+ pl.Track +' • ' : '';
+				var album = pl.Album ? ' • '+ pl.Album : '';
 				topline = title +'<span>'+ convertHMS( time ) +'</span>';
-				bottomline = track + data.Artist + album;
+				bottomline = track + pl.Artist + album;
 				playlisttime += time;
 			}
 			counttotal++;
 			classcurrent = ( state !== 'stop' && counttotal === current ) ? 'active' : '';
 			cl = ' class="'+ classcurrent + ( classradio ? ' radio' : '' ) +'"';
 			cl = ( classcurrent || classradio ) ? cl : '';
-			content += '<li id="pl-'+ data.Id +'"'+ cl +'>'
+			content += '<li id="pl-'+ pl.Id +'"'+ cl +'>'
 				+ iconhtml
 				+'<i class="fa fa-minus-circle pl-action" title="Remove song from playlist"></i>'
 				+'<span class="sn">'+ topline +'</span>'
@@ -2281,7 +2277,7 @@ function renderPlaylist() {
 		$( '#playlist-entries' ).html( content +'<p></p>' ).promise().done( function() {
 			setPlaylistScroll();
 		} );
-	} );
+	}, 'json' );
 }
 
 $( '.btn-cmd' ).click( function() {
@@ -2395,11 +2391,10 @@ function scrollText() {
 	} );
 }
 function setPlaybackData() {
-	$.post( 'enhancestatus.php', function( data ) {
+	$.post( 'enhancestatus.php', function( status ) {
 		// 'gpio off' restarts mpd which makes data briefly unavailable
-		if ( data.charAt( 0 ) !== '{' ) return;
+		if( typeof status !== 'object' ) return;
 		
-		var status = JSON.parse( data );
 		GUI.activePlayer = status.activePlayer;
 		if ( GUI.activePlayer === 'Airplay' ) {
 			displayAirPlay();
@@ -2563,7 +2558,7 @@ function setPlaybackData() {
 		if ( status.Title !== previoussong || status.Album !== previousalbum ) {
 			if ( $( '#lyricscontainer' ).length && $( '#lyricscontainer' ).is( ':visible' ) )  getlyrics();
 		}
-	} );
+	}, 'json' );
 }
 function convertHMS( second ) {
 	if ( second <= 0 ) return '';
