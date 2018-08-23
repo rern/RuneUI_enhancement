@@ -662,15 +662,6 @@ $( '#database-entries' ).on( 'click', 'li', function( e ) {
 	
 	var mode = $this.attr( 'mode' );
 	if ( [ 'dirble', 'jamendo', 'spotify' ].indexOf( mode ) === -1 ) {
-		// fix browse 'Artist' search by artist and album
-/*		if ( $( '#db-currentpath span' ).length > 1 && mode === 'album' ) {
-			$.post( 'enhance.php'
-				, { mpd: 'find artist "'+ current +'" album "'+ path +'"' }
-				, function( data) {
-					var data = JSON.parse( data );
-					console.log( data );
-			} );
-		}*/
 		getDB( {
 			  path       : path
 			, uplevel    : 0
@@ -1761,44 +1752,19 @@ function getDB( options ) {
 	if ( plugin ) {
 		if ( plugin === 'Spotify' ) {
 			$.post( '/db/?cmd=spotify', { plid: args }, function( data ) {
-				populateDB( {
-					  data      : data
-					, path      : path
-					, plugin    : plugin
-					, querytype : querytype
-					, uplevel   : uplevel
-					, args      : args
-				} );
+				populateDB( data, path, plugin, querytype, uplevel, arg );
 			}, 'json' );
 		} else if ( plugin === 'Dirble' ) {
 			if ( querytype === 'childs' ) {
 				$.post( '/db/?cmd=dirble', { querytype: 'childs', args: args }, function( data ) {
-					populateDB( {
-						  data      : data
-						, path      : path
-						, plugin    : plugin
-						, querytype : 'childs'
-						, uplevel   : uplevel
-					} );
+					populateDB( data, path, plugin, 'childs', uplevel );
 				}, 'json' );
 				$.post( '/db/?cmd=dirble', { querytype: 'childs-stations', args: args }, function( data ) {
-					populateDB( {
-						  data      : data
-						, path      : path
-						, plugin    : plugin
-						, querytype : 'childs-stations'
-						, uplevel   : uplevel
-					} );
+					populateDB( data, path, plugin, 'childs-stations', uplevel );
 				}, 'json' );            
 			} else {
 				$.post( '/db/?cmd=dirble', { querytype: querytype ? querytype : 'categories', args: args }, function( data ) {
-					populateDB( {
-						  data      : data
-						, path      : path
-						, plugin    : plugin
-						, querytype : querytype
-						, uplevel   : uplevel
-					} );
+					populateDB( data, path, plugin, querytype, uplevel );
 				}, 'json' );
 			}
 		} else if ( plugin === 'Jamendo' ) {
@@ -1812,12 +1778,7 @@ function getDB( options ) {
 					} );
 					return;
 				}
-				populateDB( {
-					  data      : data.results
-					, path      : path
-					, plugin    : plugin
-					, querytype : querytype
-				} );
+				populateDB( data.results, path, plugin, querytype );
 			}, 'json' );
 		}
 	} else {
@@ -1826,31 +1787,16 @@ function getDB( options ) {
 			var keyword = $( '#db-search-keyword' ).val();
 			if ( path.match(/Dirble/)) {
 				$.post( '/db/?cmd=dirble', { querytype: 'search', args: keyword }, function( data ) {
-					populateDB( {
-						  data      : data
-						, path      : path
-						, plugin    : 'Dirble'
-						, querytype : 'search'
-						, uplevel   : uplevel
-					} );
+					populateDB( data, path, 'Dirble', 'search', uplevel );
 				}, 'json' );
 			} else {
 				$.post( '/db/?querytype='+ GUI.browsemode +'&cmd=search', { query: keyword }, function( data ) {
-					populateDB( {
-						  data    : data
-						, path    : path
-						, uplevel : uplevel
-						, keyword : keyword
-					} );
+					populateDB( data, path, '', '', uplevel, '', keyword );
 				}, 'json' );
 			}
 		} else if ( cmd === 'browse' ) {
 			$.post( '/db/?cmd=browse', { path: path, browsemode: GUI.browsemode }, function( data ) {
-				populateDB( {
-					  data    : data
-					, path    : path
-					, uplevel : uplevel
-				} );
+				populateDB( data, path, '', '', uplevel );
 			}, 'json' );
 		} else {
 			$( '#spinner-db' ).addClass( 'hide' );
@@ -2052,14 +1998,14 @@ function stripLeading( string ) {
 	if ( typeof string === 'number' ) string = string.toString();
 	return string.replace( /^A +|^An +|^The +|^\(\s*|^\[\s*|^\.\s*/i, '' );
 }
-function populateDB( options ) {
-	var data = options.data || '',
-		path = options.path || '',
-		uplevel = options.uplevel || 0,
-		keyword = options.keyword || '',
-		plugin = options.plugin || '',
-		querytype = options.querytype || '',
-		args = options.args || '',
+function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
+	var data = data || '',
+		path = path || '',
+		plugin = plugin || '',
+		querytype = querytype || '',
+		uplevel = uplevel || 0,
+		args = args || '',
+		keyword = keyword || '',
 		content = '',
 		i = 0,
 		row = [];
