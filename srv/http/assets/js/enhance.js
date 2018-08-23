@@ -822,7 +822,6 @@ $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 } );
 $( '.contextmenu a' ).click( function() {
 	var cmd = $( this ).data( 'cmd' );
-	GUI.noscroll = 1;
 	GUI.dbcurrent = '';
 	switch( cmd ) {
 		case 'wradd':
@@ -1602,7 +1601,7 @@ function setPlaylistScroll() {
 		GUI.noscroll = 0;
 		return;
 	}
-	if ( $( '#playlist-entries' ).hasClass( 'hide' ) ) return;
+	if ( !$( '#panel-dx' ).hasClass( 'active' ) || $( '#playlist-entries' ).hasClass( 'hide' ) ) return;
 	
 	var scrollpos;
 	var  wH = window.innerHeight;
@@ -2294,21 +2293,24 @@ function renderPlaylist() {
 				var iconhtml = '<i class="fa fa-webradio pl-icon"></i>';
 				classradio = 1;
 				countradio++
-				topline = data[ 'Title' ];
-				bottomline = data[ 'file' ];
+				topline = data.Title;
+				bottomline = data.file;
 			} else {
 				var iconhtml = '<i class="fa fa-music pl-icon"></i>';
 				countsong++
-				time = parseInt( data[ 'Time' ] );
-				topline = ( data[ 'Title' ] ? data[ 'Title' ] : data[ 'file' ].split( '/' ).pop() ) +'<span>'+ convertHMS( time ) +'</span>';
-				bottomline = data[ 'Artist' ] + ( data[ 'Album' ] ? ' - '+ data[ 'Album' ] : '' );
+				time = parseInt( data.Time );
+				var title = data.Title ? data.Title : data.file.split( '/' ).pop();
+				var track = data.Track ? '#'+ data.Track +' - ' : '';
+				var album = data.Album ? ' - '+ data.Album : '';
+				topline = title +'<span>'+ convertHMS( time ) +'</span>';
+				bottomline = track + data.Artist + album;
 				playlisttime += time;
 			}
 			counttotal++;
 			classcurrent = ( state !== 'stop' && counttotal === current ) ? 'active' : '';
 			cl = ' class="'+ classcurrent + ( classradio ? ' radio' : '' ) +'"';
 			cl = ( classcurrent || classradio ) ? cl : '';
-			content += '<li id="pl-'+ data[ 'Id' ] +'"'+ cl +'>'
+			content += '<li id="pl-'+ data.Id +'"'+ cl +'>'
 				+ iconhtml
 				+'<i class="fa fa-minus-circle pl-action" title="Remove song from playlist"></i>'
 				+'<span class="sn">'+ topline +'</span>'
