@@ -796,7 +796,7 @@ $( '#database-entries' ).on( 'click', '.db-action', function( e ) {
 			.find( '.menushadow' ).css( 'height', $target.find( 'i' ).length * 40 );
 		var targetB = $target.offset().top + $target.height();
 		var wH = window.innerHeight;
-		if ( targetB > wH + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + ( GUI.display.bars ? 42 : 0 ) }, 500 );
+		if ( targetB > wH + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + ( GUI.display.bars ? 42 : 0 ) } );
 	}
 } );
 $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
@@ -817,7 +817,7 @@ $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 			.find( '.menushadow' ).css( 'height', $( '#context-menu-playlist' ).find( 'i' ).length * 40 );
 		var targetB = $( '#context-menu-playlist' ).offset().top + $( '#context-menu-playlist' ).height();
 		var wH = window.innerHeight;
-		if ( targetB > wH + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + ( GUI.display.bars ? 42 : 0 ) }, 500 );
+		if ( targetB > wH + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + ( GUI.display.bars ? 42 : 0 ) } );
 	}
 } );
 $( '.contextmenu a' ).click( function() {
@@ -1614,7 +1614,7 @@ function setPlaylistScroll() {
 		$liactive.addClass( 'active' );
 		setTimeout( function() {
 			scrollpos = $liactive.offset().top - $( '#playlist-entries' ).offset().top - ( 49 * 3 );
-			$( 'html, body' ).scrollTop( scrollpos );
+			$( 'html, body' ).animate( { scrollTop: scrollpos } );
 		}, 0 );
 	}
 }
