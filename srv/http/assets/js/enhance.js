@@ -266,6 +266,7 @@ $( '#open-panel-sx' ).click( function() {
 $( '#open-playback' ).click( function() {
 	menuBottom( 'playback', 'panel-sx', 'panel-dx' );
 	setPlaybackData();
+	displayPlayback();
 	$( 'html, body' ).scrollTop( 0 );
 } );
 $( '#open-panel-dx' ).click( function() {
@@ -1215,7 +1216,7 @@ document.addEventListener( visibilityevent, function() {
 		if ( $( '#playback' ).hasClass( 'active' ) ) {
 			setPlaybackData();
 			displayPlayback();
-		} else if ( $( '#panel-dx' ).hasClass( 'active' ) ) {
+		} else if ( $( '#panel-dx' ).hasClass( 'active' ) && !GUI.pleditor ) {
 			setPlaylistScroll();
 		}
 	}
@@ -1235,11 +1236,6 @@ var mutationLibrary = new MutationObserver( function() { // on observed target c
 } );
 $( '#db-level-up' ).click( function() {
 	mutationLibrary.observe( observerLibrary, observerOption ); // standard js - must be one on one element
-} );
-var observerPlaylist = document.getElementById( 'playlist-entries' );
-var mutationPlaylist = new MutationObserver( function() { // on observed target changed
-	setPlaylistScroll();
-	mutationPlaylist.disconnect();
 } );
 
 $( '#playsource-mpd' ).on( 'click', function() {
@@ -1577,6 +1573,7 @@ function displayPlayback() {
 	
 	setTimeout( function() {
 		$( '#container-playback, #playback-row, #imode' ).removeClass( 'hide' );
+		$( 'html, body' ).scrollTop( 0 );
 	}, 600 );
 }
 
@@ -1611,7 +1608,8 @@ function setPlaylistScroll() {
 		GUI.noscroll = 0;
 		return;
 	}
-	if ( !$( '#panel-dx' ).hasClass( 'active' ) || $( '#playlist-entries' ).hasClass( 'hide' ) ) return;
+//	if ( !$( '#panel-dx' ).hasClass( 'active' ) || $( '#playlist-entries' ).hasClass( 'hide' ) ) return;
+	if ( GUI.pleditor ) return;
 	
 	var scrollpos;
 	var  wH = window.innerHeight;
@@ -2334,9 +2332,9 @@ function renderPlaylist() {
 		$( '#playlist-warning' ).addClass( 'hide' );
 		$( '#pl-count' ).html( counthtml );
 		
-		mutationPlaylist.observe( observerPlaylist, observerOption );
-
-		$( '#playlist-entries' ).html( content +'<p></p>' );
+		$( '#playlist-entries' ).html( content +'<p></p>' ).promise().done( function() {
+			setPlaylistScroll();
+		} );
 	} );
 }
 
