@@ -822,6 +822,7 @@ $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 } );
 $( '.contextmenu a' ).click( function() {
 	var cmd = $( this ).data( 'cmd' );
+	GUI.noscroll = 1;
 	GUI.dbcurrent = '';
 	switch( cmd ) {
 		case 'wradd':
@@ -1610,6 +1611,7 @@ function setPlaylistScroll() {
 		$( 'html, body' ).scrollTop( 0 );
 	} else {
 		var $liactive = $( '#pl-'+ GUI.status.songid );
+		$liactive = $liactive.length ? $liactive : $( '#playlist-entries li:eq( 0 )' );
 		$( '#playlist-entries li' ).removeClass( 'active' );
 		$liactive.addClass( 'active' );
 		setTimeout( function() {
