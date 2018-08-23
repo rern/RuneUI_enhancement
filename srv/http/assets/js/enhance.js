@@ -148,7 +148,7 @@ var pushstreamPlayback = new PushStream( {
 	  host  : window.location.hostname
 	, port  : window.location.port
 	, modes : GUI.mode
-	, reconnectOnChannelUnavailableInterval: 5000
+//	, reconnectOnChannelUnavailableInterval: 5000
 } );
 pushstreamPlayback.onmessage = renderUI;
 pushstreamPlayback.onstatuschange = function( status ) {
