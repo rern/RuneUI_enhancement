@@ -1075,10 +1075,11 @@
 }
 #pl-manage {
 	float: right;
-	margin: 0 0 0 15px;
+	margin-right: 5px;
 }
 #pl-manage i {
-	margin-right: 15px;
+	width: 40px;
+	text-align: center;
 	font-size: 24px;
 	line-height: 40px;
 }
