@@ -1156,10 +1156,10 @@ document.addEventListener( visibilityevent, function() {
 		clearInterval( GUI.currentKnob );
 		clearInterval( GUI.countdown );
 		pushstreamNotify.disconnect();
-		pushstreamPlayback.disconnect();
 		pushstreamLibrary.disconnect();
 		pushstreamDisplay.disconnect();
 		pushstreamPlaylist.disconnect();
+		pushstreamPlayback.disconnect();
 	} else {
 		if ( $( '#playback' ).hasClass( 'active' ) ) {
 			setPlaybackData();
@@ -1168,10 +1168,10 @@ document.addEventListener( visibilityevent, function() {
 			setPlaylistScroll();
 		}
 		pushstreamNotify.connect();
-		pushstreamPlayback.connect();
 		pushstreamLibrary.connect();
 		pushstreamDisplay.connect();
 		pushstreamPlaylist.connect();
+		pushstreamPlayback.connect();
 	}
 } );
 window.addEventListener( 'orientationchange', function() {
