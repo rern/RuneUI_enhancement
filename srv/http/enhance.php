@@ -59,8 +59,12 @@ if ( isset( $_POST[ 'redis' ] ) ) {
 	include '/srv/http/app/libs/runeaudio.php';
 	$mpd = openMpdSocket('/run/mpd.sock');
 	sendMpdCommand( $mpd, $_POST[ 'mpd' ] );
-	echo readMpdResponse( $mpd );
-	if ( isset( $_POST[ 'pushstream' ] ) ) ui_render( $_POST[ 'pushstream' ], 1 );
+	$result = readMpdResponse( $mpd );
+	echo $result;
+	if ( isset( $_POST[ 'pushstream' ] ) ) {
+		$pushstream = $_POST[ 'pushstream' ];
+		ui_render( $pushstream, $pushstream === 'playlist' ? 1 : $result );
+	}
 } else if ( isset( $_POST[ 'bash' ] ) ) {
 	$result = shell_exec( '/usr/bin/sudo '.$_POST[ 'bash' ] );
 	echo $result;
