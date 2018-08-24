@@ -60,6 +60,7 @@ if ( isset( $_POST[ 'redis' ] ) ) {
 	$mpd = openMpdSocket('/run/mpd.sock');
 	sendMpdCommand( $mpd, $_POST[ 'mpd' ] );
 	echo readMpdResponse( $mpd );
+	if ( isset( $_POST[ 'pushstream' ] ) ) ui_render( $_POST[ 'pushstream' ], 1 );
 } else if ( isset( $_POST[ 'bash' ] ) ) {
 	$result = shell_exec( '/usr/bin/sudo '.$_POST[ 'bash' ] );
 	echo $result;
