@@ -117,11 +117,12 @@ function renderMSG( text ) {
 		new PNotify( noticeOptions );
 	}
 }
-var pushstreamNotify = new PushStream( {
+var psOption = {
 	host: window.location.hostname,
 	port: window.location.port,
 	modes: GUI.mode
-} );
+};
+var pushstreamNotify = new PushStream( psOption );
 pushstreamNotify.onmessage = renderMSG;
 pushstreamNotify.addChannel( 'notify' );
 pushstreamNotify.connect();
@@ -138,12 +139,9 @@ function renderUI( text ) {
 	// imodedelay fix imode flashing on usb dac switching
 	if ( $( '#playback' ).hasClass( 'active' ) && !GUI.imodedelay ) displayPlayback();
 }
-var pushstreamPlayback = new PushStream( {
-	  host  : window.location.hostname
-	, port  : window.location.port
-	, modes : GUI.mode
-	, reconnectOnChannelUnavailableInterval: 5000
-} );
+var psOptionPb = psOption;
+psOptionPb.reconnectOnChannelUnavailableInterval = 5000;
+var pushstreamPlayback = new PushStream( psOptionPb );
 pushstreamPlayback.onmessage = renderUI;
 pushstreamPlayback.onstatuschange = function( status ) {
 	if ( status === 2 ) {
@@ -173,39 +171,23 @@ function libraryHome( text ) {
 		} );
 	}
 }
-var pushstreamLibrary = new PushStream( {
-	  host  : window.location.hostname
-	, port  : window.location.port
-	, modes : GUI.mode
-} );
+var pushstreamLibrary = new PushStream( psOption );
 pushstreamLibrary.onmessage = libraryHome;
 pushstreamLibrary.addChannel( 'library' );
 pushstreamLibrary.connect();
 
-var pushstreamPlaylist = new PushStream( {
-	  host  : window.location.hostname
-	, port  : window.location.port
-	, modes : GUI.mode
-} );
+var pushstreamPlaylist = new PushStream( psOption );
 pushstreamPlaylist.onmessage = function() {
 	if ( $( '#panel-dx' ).hasClass( 'active' ) ) {
 		GUI.plscrolltop = $( window ).scrollTop();
 		GUI.pleditor ? $( '#pl-manage-list' ).click() : renderPlaylist();
 	}
 }
-// pushstreamPlaylist.onstatuschange = function(status) {
-// force queue rendering (backend-call)
-	// if (status === 2) sendCmd( 'renderpl' );
-// };
 pushstreamPlaylist.addChannel( 'playlist' );
 pushstreamPlaylist.connect();
 
 // for set display broadcast
-var pushstreamDisplay = new PushStream( {
-	  host  : window.location.hostname
-	, port  : window.location.port
-	, modes : GUI.mode
-} );
+var pushstreamDisplay = new PushStream( psOption );
 pushstreamDisplay.addChannel( 'display' );
 pushstreamDisplay.onmessage = function( data ) { // on receive broadcast
 	GUI.display = data[ 0 ].display;
