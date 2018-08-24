@@ -1,109 +1,71 @@
 <?php
-// bash: command = { dataid: [ '/fullpath/command argument' ] }
-// redis: command = { dataid: [ 'command', 'key', ['hash',] 'value' ] }
-// { volume: N } ( mute/unmute: N = -1 )
-// [no parameters] for status
+// redis  : command = { dataid: [ 'command', 'key', ['hash',] 'value' ] }
+// volume : N ... mute/unmute: N = -1 )
+// mpd    : mpd protocol command
 
-// bash
-if ( isset( $_POST[ 'bash' ] ) ) {
-	$result = shell_exec( '/usr/bin/sudo '.$_POST[ 'bash' ] );
-	echo $result;
-	die();
-}
-
-$redis = new Redis(); 
-$redis->pconnect( '127.0.0.1' );
-
-// redis
 if ( isset( $_POST[ 'redis' ] ) ) {
+	$redis = new Redis(); 
+	$redis->pconnect( '127.0.0.1' );
 	$array = json_decode( $_POST[ 'redis' ], true );
 	foreach ( $array as $field => $arg ) {
 		$count = count( $arg );
 		$command = $arg[ 0 ];
-		$key = $arg[ 1 ];
+		if ( in_array( $command, [ 'hGetAll', 'hmSet', 'set' ] ) ) $pushstream = 1;
 		
 		if ( $count === 2 ) {
-			$result[ $field ] = $redis->$command( $key );
+			$result[ $field ] = $redis->$command( $arg[ 1 ] );
 		} else if ( $count === 3 ) {
-			$result[ $field ] = $redis->$command( $key, $arg[ 2 ] );
+			$result[ $field ] = $redis->$command( $arg[ 1 ], $arg[ 2 ] );
+			if ( $arg[ 2 ] === 'activePlayer' && $result[ $field ] === 'Airplay' ) $airplay = 1;
 		} else if ( $count === 4 ) {
-			$result[ $field ] = $redis->$command( $key, $arg[ 2 ], $arg[ 3 ] );
+			$result[ $field ] = $redis->$command( $arg[ 1 ], $arg[ 2 ], $arg[ 3 ] );
 		}
 	}
 	echo json_encode( $result );
-	// broadcast to all clients on set display
+	
+	// broadcast to all clients on hmSet display or set volume
+	if ( !isset( $pushstream ) ) die();
+	
+	$result[ 'display' ] = $redis->hGetAll( 'display' );
+	if ( isset( $airplay ) ) $result[ 'actplayerinfo' ] = $redis->get( 'act_player_info' );
 	$ch = curl_init( 'http://localhost/pub?id=display' );
 	curl_setopt( $ch, CURLOPT_HTTPHEADER, array( 'Content-Type:application/json' ) );
 	curl_setopt( $ch, CURLOPT_POSTFIELDS, json_encode( $result ) );
 	curl_exec( $ch );
 	curl_close( $ch );
-	
-	die();
-}
-
-
-include '/srv/http/app/libs/runeaudio.php';
-$mpd = openMpdSocket('/run/mpd.sock');
-
-// MPD telnet command (protocol)
-if ( isset( $_POST[ 'mpd' ] ) ) {
-	sendMpdCommand( $mpd, $_POST[ 'mpd' ] );
-	echo readMpdResponse( $mpd );
-	die();
-}
-
-// volume
-function status2array( $lines ) {
-	$line = strtok( $lines, "\n" );
-	while ( $line !== false ) {
-		$pair = explode( ': ', $line, 2 );
-		$key = $pair[ 0 ];
-		$val = $pair[ 1 ];
-		if ( $key === 'elapsed' ) {
-			$val = round( $val );
-		} else if ( $key === 'bitrate' ) {
-			$val = $val * 1000;
-		}
-		if ( $key !== 'O' ) $status[ $key ] = $val; // skip 'OK' lines
-		if ( $key === 'audio') {
-			$audio = explode( ':', $val );
-			$status[ 'bitdepth' ] = $audio[ 1 ];
-			$status[ 'samplerate' ] = $audio[ 0 ];
-		}
-		$line = strtok( "\n" );
-	}
-	if ( array_key_exists( 'bitrate', $status ) ) {
-		$sampling = substr( $status[ 'file' ], 0, 4 ) === 'http' ? '' : $status[ 'bitdepth' ].' bit ';
-		$sampling.= round( $status[ 'samplerate' ] / 1000, 1 ).' kHz '.$status[ 'bitrate' ].' kbit/s';
-		$status[ 'sampling' ] = $sampling;
-	} else {
-		$status[ 'sampling' ] = '&nbsp;';
-	}
-	return $status;
-}
-if ( isset( $_POST[ 'volume' ] ) ) {
+} else if ( isset( $_POST[ 'volume' ] ) ) {
+	$redis = new Redis(); 
+	$redis->pconnect( '127.0.0.1' );
 	// normal
-	if ( $_POST[ 'volume' ] != -1 ) {
-		sendMpdCommand( $mpd, 'setvol '.$_POST[ 'volume' ] );
+	$volume = $_POST[ 'volume' ];
+	if ( $volume != -1 ) {
+		exec( 'mpc volume '.$volume );
 		$redis->set( 'volumemute', 0 );
 		die();
 	}
 	// mute / unmute
 	$volumemute = $redis->get( 'volumemute' );
 	if ( $volumemute == 0 ) {
-		$cmdlist = "command_list_begin\n"
-			."status\n"
-			."setvol 0\n"
-			."command_list_end";
-		sendMpdCommand( $mpd, $cmdlist );
-		$status = readMpdResponse( $mpd );
-		$vol = status2array( $status )[ 'volume' ];
-		$redis->set( 'volumemute', $vol );
-		echo $vol;
+		$currentvol = exec( "mpc volume | cut -d' ' -f2 | cut -d'%' -f1" );
+		$redis->set( 'volumemute', $currentvol );
+		exec( 'mpc volume 0' );
+		echo $currentvol;
 	} else {
-		sendMpdCommand( $mpd, 'setvol '.$volumemute );
+		exec( 'mpc volume '.$volumemute );
 		$redis->set( 'volumemute', 0 );
 		echo $volumemute;
 	}
-	die();
+} else if ( isset( $_POST[ 'mpd' ] ) ) {
+	include '/srv/http/app/libs/runeaudio.php';
+	$mpd = openMpdSocket('/run/mpd.sock');
+	sendMpdCommand( $mpd, $_POST[ 'mpd' ] );
+	$result = readMpdResponse( $mpd );
+	echo $result;
+	if ( isset( $_POST[ 'pushstream' ] ) ) {
+		$data = isset( $_POST[ 'getdata' ] ) ? $result : 1;
+		ui_render( $_POST[ 'pushstream' ], $data );
+	}
+} else if ( isset( $_POST[ 'bash' ] ) ) {
+	$result = shell_exec( '/usr/bin/sudo '.$_POST[ 'bash' ] );
+	echo $result;
 }

@@ -56,7 +56,6 @@
 <script src="<?=$this->asset('/js/runeuisettings.js')?>"></script>
 <?=( $this->uri(1) === 'debug' ? '<script src="'.$this->asset('/js/vendor/ZeroClipboard.min.js').'"></script>' : '' ) ?>
 <script>
-<?=( file_exists('/srv/http/assets/js/backuprestore.js') && $this->uri(1) === 'settings' ? '<script src="'.$this->asset('/js/backuprestore.js').'"></script>' : '' )?>
 // no top-bottom bars - use close icon
 	$( 'div.container' )
 		.css( 'padding-top', '0' )

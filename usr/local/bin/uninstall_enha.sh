@@ -36,6 +36,7 @@ mv /srv/http/app/coverart_ctl.php{.backup,}
 mv /srv/http/app/templates/footer.php{.backup,}
 mv /srv/http/app/templates/header.php{.backup,}
 mv /srv/http/app/templates/playback.php{.backup,}
+mv /srv/http/assets/js/vendor/pushstream.min.js{.backup,}
 mv /srv/http/assets/js/vendor/Sortable.min.js{.backup,}
 mv /srv/http/command/airplay_toggle{.backup,}
 mv /usr/share/bootsplash/start-runeaudio.png{.backup,}
@@ -48,6 +49,7 @@ echo -e "$bar Restore modified files ..."
 files="
 /srv/http/app/templates/header.php
 /srv/http/app/templates/footer.php
+/srv/http/app/templates/mpd.php
 /srv/http/app/templates/settings.php
 /srv/http/db/index.php
 /srv/http/app/libs/runeaudio.php

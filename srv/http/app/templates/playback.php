@@ -1,7 +1,6 @@
 <div class="tab-content" id="content">
-	<!-- PLAYBACK PANEL -->
 	<div id="playback" class="tab-pane active">
-		<div id="container-playback">
+		<div id="container-playback" class="hide">
 		
 			<div id="info">
 				<div id="divartist">
@@ -45,9 +44,9 @@
 				</div>
 				<div id="play-group">
 					<div class="btn-group">
-						<button id="repeat" class="btn btn-default btn-lg btn-cmd btn-toggle" type="button" title="Repeat" data-cmd="repeat"><i class="fa fa-repeat"></i></button>
-						<button id="random" class="btn btn-default btn-lg btn-cmd btn-toggle" type="button" title="Random" data-cmd="random"><i class="fa fa-random"></i></button>
-						<button id="single" class="btn btn-default btn-lg btn-cmd btn-toggle <?php if ($this->activePlayer === 'Spotify'): ?>disabled<?php endif; ?>" type="button" title="Single" data-cmd="single"><i class="fa fa-single"></i></button>
+						<button id="repeat" class="btn btn-default btn-lg btn-cmd btn-toggle" type="button" data-cmd="repeat"><i class="fa fa-repeat"></i></button>
+						<button id="random" class="btn btn-default btn-lg btn-cmd btn-toggle" type="button" data-cmd="random"><i class="fa fa-random"></i></button>
+						<button id="single" class="btn btn-default btn-lg btn-cmd btn-toggle <?php if ($this->activePlayer === 'Spotify'): ?>disabled<?php endif; ?>" type="button" data-cmd="single"><i class="fa fa-single"></i></button>
 					</div>
 				</div>
 				<div id="coverart">
@@ -68,8 +67,8 @@
 				</div>
 				<div id="share-group">
 					<div class="btn-group">
-						<button id="overlay-social-open" class="btn btn-default btn-lg" type="button" title="Share this track"><i class="fa fa-share"></i></button>
-						<button id="songinfo-open" class="btn btn-default" type="button" title="Song Info" data-toggle="modal"><i class="fa fa-info"></i></button>
+						<button id="overlay-social-open" class="btn btn-default btn-lg" type="button"><i class="fa fa-share"></i></button>
+						<button id="songinfo-open" class="btn btn-default" type="button"><i class="fa fa-bio"></i></button>
 					</div>
 				</div>
 				<div id="volume-knob" class="<?=$this->volume['divclass'] ?>">
@@ -91,7 +90,6 @@
 			</div>
 		</div>
 	</div>
-	<!-- LIBRARY PANEL -->
 	<div id="panel-sx" class="tab-pane hide">
 		<div class="btnlist btnlist-top">
 			<div id="db-search" class="form-inline">
@@ -106,13 +104,11 @@
 				<div id="db-home"><i class="fa fa-library"></i></div> <span>LIBRARY</span>
 				<i id="db-webradio-new" class="fa fa-plus-circle"></i>
 			</div>
-			<button id="db-search-results" class="btn hide" type="button" title="Close search results and go back to the Library browsing"><i class="fa fa-times sx"></i></button>
+			<button id="db-search-results" class="btn hide" type="button"><i class="fa fa-times sx"></i></button>
 			<i id="db-level-up" class="fa fa-arrow-left"></i>
 		</div>
 		<div id="database">
-			<ul id="database-entries" class="database">
-				<!-- DB entries -->
-			</ul>
+			<ul id="database-entries" class="database"></ul>
 			<ul id="db-index" class="index hide">
 <?php
 $vu = $this->asset('/img/vu.gif');
@@ -136,10 +132,9 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 				</div>
 			</div>
 		</div>
-		<button id="db-homeSetup" class="btn btn-default hide" type="button" title="Setup the Library home screen"><i class="fa fa-gear"></i></button>
+		<button id="db-homeSetup" class="btn btn-default hide" type="button"><i class="fa fa-gear"></i></button>
 		<div id="spinner-db" class="csspinner duo hide"></div>
 	</div>
-	<!-- QUEUE PANEL -->
 	<div id="panel-dx" class="tab-pane hide" onclick=""> <!-- onclick fix ios safari not recognize click for e.target -->
 		<div class="btnlist btnlist-top">
 			<div id="pl-home"><i class="fa fa-list-ul sx"></i></div>
@@ -147,27 +142,23 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 			<span id="pl-count" class="playlist hide"></span>
 			<form id="pl-search" class="playlist form-inline" method="post" onSubmit="return false;" role="form">
 				<div class="input-group">
-					<input id="pl-filter" class="form-control osk-trigger" type="text" data-placement="bottom" data-toggle="tooltip" data-original-title="Type here to search on the fly">
+					<input id="pl-filter" class="form-control osk-trigger" type="text" data-placement="bottom" data-toggle="tooltip">
 					<span class="input-group-btn">
-						<button class="btn btn-default" type="button" title="Search"><i class="fa fa-search"></i></button>
+						<button class="btn btn-default" type="button"><i class="fa fa-search"></i></button>
 					</span>
 				</div>
 			</form>
 			<div id="pl-manage" class="playlist">
-				<i id="pl-manage-list" class="fa fa-folder-open fa-lg" title="Manage playlists"></i>
-				<i id="plsave" class="fa fa-save fa-lg" title="Save current queue as playlist" data-toggle="modal" data-target="#modal-pl-save"></i>
-				<!--<i id="pl-import-youtube" class="fa fa-youtube-play" title="Import a playlist or video from youtube." data-toggle="modal" data-target="#modal-pl-youtube"></i>-->
-				<i id="pl-manage-clear" class="fa fa-minus-circle fa-lg" title="Clear the playing queue" data-toggle="modal" data-target="#modal-pl-clear"></i>
+				<i id="pl-manage-list" class="fa fa-folder-open fa-lg"></i>
+				<i id="plsave" class="fa fa-save fa-lg"></i>
+<?=( file_exists('/srv/http/assets/js/RuneYoutube.js') ? '<i id="pl-import-youtube" class="fa fa-youtube-play" data-toggle="modal" data-target="#modal-pl-youtube"></i>' : '' )?>
+				<i id="pl-manage-clear" class="fa fa-minus-circle fa-lg"></i>
 			</div>
-			<button id="pl-filter-results" class="btn hide" type="button" title="Close filter results and go back to the playing Queue"></button>
+			<button id="pl-filter-results" class="btn hide" type="button"></button>
 		</div>
 		<div id="playlist">
-			<ul id="playlist-entries" class="playlist">
-				<!-- playing queue entries -->
-			</ul>
-			<ul id="pl-editor" class="hide">
-				<!-- playlists -->
-			</ul>
+			<ul id="playlist-entries" class="playlist"></ul>
+			<ul id="pl-editor" class="hide"></ul>
 			<ul id="pl-index" class="index hide">
 <?php
 $indexarray = range( 'A', 'Z' );
@@ -228,8 +219,8 @@ $menu = '<div>';
 $htmlcommon = menucommon( 'add', 'addplay', 'addreplaceplay' );
 
 $html = $htmlcommon;
-$html.= menuli( 'rescan',      'folder-refresh', 'Update this folder' );
-$html.= menuli( 'bookmarkadd', 'star',           'Save as bookmark' );
+$html.= menuli( 'rescan',   'folder-refresh', 'Update this folder' );
+$html.= menuli( 'bookmark', 'star',           'Save as bookmark' );
 $menu.= menudiv( '', $html );
 $menudiv = '';
 
@@ -301,7 +292,7 @@ echo $menu;
     <nav>
         <ul>
             <li><span>Playback Source</span></li>
-			<li><a id="playsource-mpd" class="btn btn-default btn-lg btn-block" title="Switch to MPD"><i class="fa fa-linux sx"></i> MPD</a></li>
+			<li><a id="playsource-mpd" class="btn btn-default btn-lg btn-block" title="Switch to MPD"><i class="fa fa-mpd sx"></i> MPD</a></li>
 			<li><a id="playsource-spotify" class="btn btn-default btn-lg btn-block inactive" title="Switch to Spotify"><i class="fa fa-spotify sx"></i> <span>spop</span> Spotify</a></li>
 			<li><a id="playsource-airplay" class="btn btn-default btn-lg btn-block inactive"><i class="fa fa-airplay sx"></i> <span>ShairPort</span> Airplay</a></li>
 			<li><a id="playsource-dlna" class="btn btn-default btn-lg btn-block inactive"><i class="fa fa-dlna sx"></i> <span>upmpdcli</span> DLNA</a></li>

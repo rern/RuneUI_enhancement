@@ -72,17 +72,17 @@ if ( empty( $this->uri(1) ) || $this->uri(1) === 'addons' ) {
 <?php if ( empty( $this->uri(1) ) ): ?>
 <div id="settings" class="menu hide">
 	<a class="menushadow"></a>
-	<a class="<?=$this->uri(1, 'sources', 'active')?>" href="/sources/"><i class="fa fa-folder-open-cascade"></i>Sources</a>
-	<a class="<?=$this->uri(1, 'mpd', 'active')?>" href="/mpd/"><i class="fa fa-mpd"></i>MPD</a>
-	<a class="<?=$this->uri(1, 'settings', 'active')?>" href="/settings/"><i class="fa fa-sliders"></i>Settings</a>
-	<a class="<?=$this->uri(1, 'network', 'active')?>" href="/network/"><i class="fa fa-sitemap"></i>Network</a>
-	<a class="<?=$this->uri(1, 'debug', 'active')?>" href="/debug/"><i class="fa fa-bug"></i>Debug</a></a>
-	<a class="<?=$this->uri(1, 'credits', 'active')?>" href="/credits/"><i class="fa fa-rune"></i>Credits</a>
-	<a class="<?=$this->uri(1, 'dev', 'active')?>" href="/dev/"><i class="fa fa-gears"></i>Development</a>
-	<a id="turnoff"><i class="fa fa-power-off"></i>Power</a>
-<?=( $this->pwd_protection ? '<a href="/logout.php"><i class="fa fa-sign-out"></i>Logout</a>' : '' ) ?>
+	<a class="<?=$this->uri(1, 'sources', 'active')?>" href="sources"><i class="fa fa-folder-open-cascade"></i>Sources</a>
+	<a class="<?=$this->uri(1, 'mpd', 'active')?>" href="mpd"><i class="fa fa-mpd"></i>MPD</a>
+	<a class="<?=$this->uri(1, 'settings', 'active')?>" href="settings"><i class="fa fa-sliders"></i>Settings</a>
+	<a class="<?=$this->uri(1, 'network', 'active')?>" href="network"><i class="fa fa-sitemap"></i>Network</a>
+	<a class="<?=$this->uri(1, 'debug', 'active')?>" href="debug"><i class="fa fa-bug"></i>Debug</a></a>
+	<a class="<?=$this->uri(1, 'credits', 'active')?>" href="credits"><i class="fa fa-rune"></i>Credits</a>
+	<a class="<?=$this->uri(1, 'dev', 'active')?>" href="dev"><i class="fa fa-gears"></i>Development</a>
+	<a id="turnoff"><i class="fa fa-power"></i>Power</a>
+<?=( $this->pwd_protection ? '<a href="logout.php"><i class="fa fa-sign-out"></i>Logout</a>' : '' ) ?>
 <?=( file_exists('/srv/http/assets/js/gpio.js') ? '<a id="gpio"><i class="fa fa-gpio"></i>GPIO</a>' : '' )?>
-	<a id="addons"><i class="fa"></i>Addons</a>
+	<a id="addons"><i class="fa fa-addons"></i>Addons</a>
 </div>
 <div id="menu-top" class="hide">
 <i id="menu-settings" class="fa fa-gear"></i>

@@ -13,7 +13,6 @@ alias=enha
 installstart $@
 
 #0temp0 remove uninstall leftover
-sed -i 's|fa-music sx"></i> Library\(.\);|fa-folder-open"></i>\1|' /srv/http/assets/js/runeui.js
 sed -i 's/gifico|svg/gif|ico/' /etc/nginx/nginx.conf
 rm -f /srv/http/assets/js/vendor/{hammer.min.js,propagating.js}
 sed -i '/hammer.min.js\|propagating.js/ d' /srv/http/app/templates/footer.php
@@ -23,6 +22,7 @@ mv /srv/http/app/coverart_ctl.php{,.backup}
 mv /srv/http/app/templates/footer.php{,.backup}
 mv /srv/http/app/templates/header.php{,.backup}
 mv /srv/http/app/templates/playback.php{,.backup}
+mv /srv/http/assets/js/vendor/pushstream.min.js{,.backup}
 mv /srv/http/assets/js/vendor/Sortable.min.js{,.backup}
 mv /srv/http/command/airplay_toggle{,.backup}
 mv /usr/share/bootsplash/start-runeaudio.png{,.backup}
@@ -82,7 +82,9 @@ string=$( cat <<'EOF'
 EOF
 )
 append 'browseMode = TRUE'
+
 comment 'parseFileStr($value'
+
 string=$( cat <<'EOF'
                 $pathinfo = pathinfo( $value );
                 $plistArray[ $plCounter ][ 'fileext' ] = $pathinfo[ 'extension' ];
@@ -93,11 +95,29 @@ string=$( cat <<'EOF'
 EOF
 )
 append 'parseFileStr($value'
+
 string=$( cat <<'EOF'
             $redis->hDel('sampling', $label);
 EOF
 )
 append 'hDel(.webradios., $label)'
+
+string=$( cat <<'EOF'
+                        $redis->hSet( 'display', 'volumempd', 1);
+EOF
+)
+append "set('volume', 1)"
+
+string=$( cat <<'EOF'
+                        $redis->hSet( 'display', 'volumempd', '');
+EOF
+)
+append "set('volume', 0)"
+#----------------------------------------------------------------------------------
+file=/srv/http/app/templates/mpd.php
+echo $file
+
+commentH -n -1 'for="realtime-volume"' -n +2 '<strong>on release'
 #----------------------------------------------------------------------------------
 file=/srv/http/app/settings_ctl.php
 echo $file
@@ -167,23 +187,16 @@ file=/srv/http/app/templates/enhanceplayback.php  # for rune youtube
 # correct version number
 [[ $( redis-cli get buildversion ) == 'beta-20160313' ]] && redis-cli set release 0.3 &> /dev/null
 
+installfinish $@
+
 # set library home database
 if [[ $1 != u ]]; then
 	redis-cli hmset display bars checked pause checked time checked coverart checked volume checked buttons checked \
 	\nas checked sd checked usb checked webradio checked albums checked artists checked composer checked genre checked \
 	\spotify checked dirble checked jamendo checked &> /dev/null
 fi
-# disable screensaver
-redis-cli set localSStime -1 &> /dev/null
 
-installfinish $@
+[[ $( redis-cli get volume ) == 1 ]] && volume=1 || volume=''
+redis-cli hset display volumempd $volume &> /dev/null
 
-if [[ $1 == u ]]; then
-	clearcache
-	exit
-fi
-
-echo -e "$bar Reinitialize ..."
-title -nt  "$info Please wait 5 seconds before continue."
-
-systemctl restart rune_SY_wrk
+reinitsystem
