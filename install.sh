@@ -114,6 +114,11 @@ EOF
 )
 append "set('volume', 0)"
 #----------------------------------------------------------------------------------
+file=/srv/http/app/templates/mpd.php
+echo $file
+
+commentH -n -1 'for="realtime-volume"' -n +2 '<strong>on release'
+#----------------------------------------------------------------------------------
 file=/srv/http/app/settings_ctl.php
 echo $file
 
