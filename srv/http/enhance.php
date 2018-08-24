@@ -61,10 +61,7 @@ if ( isset( $_POST[ 'redis' ] ) ) {
 	sendMpdCommand( $mpd, $_POST[ 'mpd' ] );
 	$result = readMpdResponse( $mpd );
 	echo $result;
-	if ( isset( $_POST[ 'pushstream' ] ) ) {
-		$pushstream = $_POST[ 'pushstream' ];
-		ui_render( $pushstream, $pushstream === 'playlist' ? 1 : $result );
-	}
+	if ( isset( $_POST[ 'pushstream' ] ) ) ui_render( $_POST[ 'pushstream' ], isset( $_POST[ 'result' ] ) ? $result : 1 );
 } else if ( isset( $_POST[ 'bash' ] ) ) {
 	$result = shell_exec( '/usr/bin/sudo '.$_POST[ 'bash' ] );
 	echo $result;
