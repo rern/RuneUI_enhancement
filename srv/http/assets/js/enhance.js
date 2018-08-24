@@ -273,7 +273,7 @@ $( '#open-panel-dx' ).click( function() {
 		$( '#overlay-playsource' ).addClass( 'open' );
 		return;
 	}
-	displayPlaylist()
+	displayPlaylist();
 	menuBottom( 'panel-dx', 'playback', 'panel-sx' );
 } );
 function panelLR( lr ) {
@@ -833,22 +833,13 @@ $( '.contextmenu a' ).click( function() {
 			break;
 		
 		case 'pladd':
-			$.post( 'enhance.php', { mpd: 'load "' + GUI.DBentry.name +'"' }, function() {
-				GUI.pleditor = 1;
-				renderPlaylist();
-			} );
+			$.post( 'enhance.php', { mpd: 'load "' + GUI.DBentry.name +'"' } );
 			break;
 		case 'plreplace': 
-			$.post( 'enhance.php', { mpd: 'command_list_begin\nclear\nload "'+ GUI.DBentry.name +'"\ncommand_list_end' }, function() {
-				GUI.pleditor = 1;
-				renderPlaylist();
-			} );
+			$.post( 'enhance.php', { mpd: 'command_list_begin\nclear\nload "'+ GUI.DBentry.name +'"\ncommand_list_end' } );
 			break;
 		case 'pladdreplaceplay':
-			$.post( 'enhance.php', { mpd: 'command_list_begin\nclear\nload "'+ GUI.DBentry.name + '"\nplay\ncommand_list_end' }, function() {
-				GUI.pleditor = 1;
-				renderPlaylist();
-			} );
+			$.post( 'enhance.php', { mpd: 'command_list_begin\nclear\nload "'+ GUI.DBentry.name + '"\nplay\ncommand_list_end' } );
 			break;
 		case 'plrename':
 			playlistRename();
@@ -1572,32 +1563,23 @@ function setPlaylistScroll() {
 		GUI.noscroll = 0;
 		return;
 	}
-//	if ( !$( '#panel-dx' ).hasClass( 'active' ) || $( '#playlist-entries' ).hasClass( 'hide' ) ) return;
 	if ( GUI.pleditor ) return;
 	
 	var scrollpos;
 	var  wH = window.innerHeight;
 	$( '#playlist-entries p' ).css( 'min-height', wH - ( GUI.display.bars ? 220 : 140 ) +'px' );
-	if ( GUI.status.songid === undefined ) {
-		$( 'html, body' ).scrollTop( 0 );
-	} else {
-		var $liactive = $( '#pl-'+ GUI.status.songid );
-		$liactive = $liactive.length ? $liactive : $( '#playlist-entries li:eq( 0 )' );
-		$( '#playlist-entries li' ).removeClass( 'active' );
-		$liactive.addClass( 'active' );
-		setTimeout( function() {
-			scrollpos = $liactive.offset().top - $( '#playlist-entries' ).offset().top - ( 49 * 3 );
-			$( 'html, body' ).animate( { scrollTop: scrollpos } );
-		}, 0 );
-	}
+	$( 'html, body' ).scrollTop( 0 );
+	$( '#playlist-entries li' ).removeClass( 'active' );
+	var $liactive = $( '#pl-'+ GUI.status.Id );
+	$liactive.addClass( 'active' );
+	setTimeout( function() {
+		scrollpos = $liactive.offset().top - $( '#playlist-entries' ).offset().top - ( 49 * 3 );
+		$( 'html, body' ).animate( { scrollTop: scrollpos } );
+	}, 0 );
 }
 function displayPlaylist() {
 	if ( !GUI.pleditor ) {
-		if ( $( '#playlist-entries li' ).length ) {
-			setPlaylistScroll();
-		} else {
-			renderPlaylist();
-		}
+		$( '#playlist-entries li' ).length ? setPlaylistScroll() : renderPlaylist();
 	} else {
 		if ( $( '#panel-dx' ).hasClass( 'active' ) ) {
 			GUI.pleditor = 0;
