@@ -1,7 +1,7 @@
 <?php
-// bash: command = { dataid: [ '/fullpath/command argument' ] }
-// redis: command = { dataid: [ 'command', 'key', ['hash',] 'value' ] }
-// { volume: N } ( mute/unmute: N = -1 )
+// redis  : command = { dataid: [ 'command', 'key', ['hash',] 'value' ] }
+// volume : N ... mute/unmute: N = -1 )
+// mpd    : mpd protocol command
 
 if ( isset( $_POST[ 'redis' ] ) ) {
 	$redis = new Redis(); 
