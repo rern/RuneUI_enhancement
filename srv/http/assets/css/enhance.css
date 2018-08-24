@@ -915,10 +915,8 @@
 .btnlist a {
 	font-size: 18px;
 }
-.btnlist-top i,
-#db-level-up {
+.btnlist-top i {
 	font-size: 28px;
-	vertical-align: -10%;
 }
 .btnlist-top .form-inline {
 	width: 180px;
@@ -937,13 +935,19 @@
 	box-shadow: none;
 }
 #db-webradio-new {
-	padding-left: 10px;
+	width: 40px;
+	line-height: 40px;
 	font-size: 24px;
+	text-align: center;
 }
 #db-level-up {
 	float: right;
-	margin: 5px 10px 0 0;
+	width: 40px;
+	margin: 0 5px 0 0;
 	padding: 0;
+	line-height: 40px;
+	text-align: center;
+	font-size: 28px;
 	color: #0095d8;
 }
 #db-currentpath {
