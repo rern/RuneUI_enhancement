@@ -291,14 +291,14 @@ function panelLR( lr ) {
 	
 	$paneclick = ( lr === 'left' ) ? $pL.click() : $pR.click();
 }
+function tempFlag( flag, ms = 500 ) {
+	GUI[ flag ] = 1;
+	setTimeout( function() { GUI[ flag ] = 0 }, ms );
+}
 $( '#playback, #panel-sx, #panel-dx' ).on( 'swipeleft swiperight', function( e ) {
 	panelLR( e.type === 'swipeleft' ? 'left' : '' );
 	// fix: prevent taphold fire on swipe
-	GUI.swipe = 1;
-	
-	setTimeout( function() {
-		GUI.swipe = 0;
-	}, 1000 );
+	tempFlag( 'swipe', 1000 );
 } );
 
 $( '#playback' ).click( function( e ) {
@@ -307,7 +307,7 @@ $( '#playback' ).click( function( e ) {
 		$( '.controls1, .rs-tooltip, #imode' ).removeClass( 'hide' );
 	}
 } ).on( 'taphold', function( e ) {
-	if ( GUI.swipe || e.target.id !== 'playback' ) return;
+	if ( GUI.swipe || $( e.target ).parents().hasClass( 'rs-transition' ) ) return;
 	setDisplayPlayback();
 } );
 function setDisplayPlayback() {
@@ -337,28 +337,18 @@ function setDisplayPlayback() {
 		}
 	} );
 	// disable from autohide
-	if ( window.innerWidth < 499 || window.innerHeight <= 515 ) {
-		$( 'input[name="bars"]' )
-			.prop( 'disabled', true )
-			.parent().css( 'color', '#7795b4' )
-			.append( ' (auto hide)' );
-	}
+	if ( window.innerWidth < 499 || window.innerHeight <= 515 ) setToggleButton( 'bars' );
 	// disable from mpd volume
-	if ( GUI.display.volumempd == 0 ) {
-		$( 'input[name="volume"]' )
-			.prop( 'disabled', true )
-			.parent().css( 'color', '#7795b4' )
-			.append( ' (disabled)' );
-	}
+	if ( GUI.display.volumempd == 0 ) setToggleButton( 'volume', '(disabled)' );
 	// disable from mpd volume
-	if ( window.innerWidth < 499 || window.innerHeight <= 320 ) {
-		$( 'input[name="buttons"]' )
-			.prop( 'disabled', true )
-			.parent().css( 'color', '#7795b4' )
-			.append( ' (auto hide)' );
-	}
+	if ( window.innerWidth < 499 || window.innerHeight <= 320 ) setToggleButton( 'buttons' );
 }
-
+function setToggleButton( name, append = '(auto hide)' ) {
+	$( 'input[name="'+ name +'"]' )
+		.prop( 'disabled', true )
+		.parent().css( 'color', '#7795b4' )
+		.append( ' '+ append );
+}
 $( '#panel-sx' ).on( 'taphold', function( e ) {
 	if ( GUI.swipe || GUI.bookmarkedit ) return;
 	
@@ -374,9 +364,7 @@ $( '#panel-sx' ).on( 'taphold', function( e ) {
 	if ( $( e.target ).parent().hasClass( 'home-bookmark' ) || $( e.target ).hasClass( 'home-bookmark' ) ) return;
 	
 	$( '.home-bookmark div.home-block-remove' ).remove();
-	setTimeout( function() {
-		GUI.bookmarkedit = 0;
-	}, 1000 );
+	setTimeout( function() { GUI.bookmarkedit = 0 }, 500 );
 } );
 
 $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
@@ -1327,11 +1315,7 @@ $( '#volume' ).roundSlider( {
 			.rsRotate( - this._handle1.angle );  // initial rotate
 	}
 	, change          : function( e ) { // (not fire on 'setValue' ) value after click or 'stop drag'
-		GUI.setvolume = 1;
-		setTimeout( function() {
-			GUI.setvolume = 0;
-		}, 500 );
-		
+		tempFlag( 'setvolume' );
 		$.post( 'enhance.php', { volume: e.value } );
 		$( e.handle.element ).rsRotate( - e.handle.angle );
 		if ( e.preValue === 0 ) { // value before 'change'
@@ -1353,17 +1337,12 @@ $( '#volume' ).roundSlider( {
 	}
 	, stop            : function( e ) { // on 'stop drag'
 		$.post( 'enhance.php', { volume: e.value } );
-		setTimeout( function() {
-			GUI.setvolume = 0;
-		}, 500 );
+		setTimeout( function() { GUI.setvolume = 0 }, 500 );
 	}
 } );
 
 $( '#volmute, #volM' ).click( function() {
-	GUI.setvolume = 1;
-	setTimeout( function() {
-		GUI.setvolume = 0;
-	}, 500 );
+	tempFlag( 'setvolume' );
 	var volumemute = $volumeRS.getValue();
 	
 	if ( volumemute ) {
@@ -1390,10 +1369,7 @@ $( '#volmute, #volM' ).click( function() {
 $( '#volup, #voldn' ).click( function() {
 	var thisid = this.id;
 	var vol = $volumeRS.getValue();
-	GUI.setvolume = 1;
-	setTimeout( function() {
-		GUI.setvolume = 0;
-	}, 500 );
+	tempFlag( 'setvolume' );
 	
 	if ( ( vol === 0 && ( thisid === 'voldn' ) )
 		|| ( vol === 100 && ( thisid === 'volup' ) ) )
@@ -2286,11 +2262,8 @@ $( '.btn-cmd' ).click( function() {
 	if ( $this.hasClass( 'btn-toggle' ) ) {
 		if ( GUI.stream === 'radio' ) return;
 		
-		GUI.setmode = 1;
-		setTimeout( function() {
-			GUI.setmode = 0;
-		}, 500 );
-		if ( $this.data( 'cmd' ) === 'pl-ashuffle-stop' ) $.post( '/db/?cmd=pl-ashuffle-stop', '' );
+		tempFlag( 'setmode' );
+		if ( dataCmd === 'pl-ashuffle-stop' ) $.post( '/db/?cmd=pl-ashuffle-stop' );
 		dataCmd = dataCmd +' '+ ( GUI.json[ this.id ] == 1 ? 0 : 1 );
 	} else {
 		if ( dataCmd === 'play' ) {
@@ -2307,7 +2280,7 @@ $( '.btn-cmd' ).click( function() {
 		} else if ( dataCmd === 'previous' || dataCmd === 'next' ) {
 			// enable previous / next while stop
 			if ( GUI.json.playlistlength == 1 ) return;
-			GUI.prevnext = 1;
+			
 			var current = parseInt( GUI.json.song ) + 1;
 			var last = parseInt( GUI.json.playlistlength );
 			
@@ -2328,17 +2301,12 @@ $( '.btn-cmd' ).click( function() {
 				$( '#pause' ).removeClass( 'btn-primary' );
 				$( '#stop' ).addClass( 'btn-primary' );
 			}
-			$.post( 'enhance.php', { mpd: 'command_list_begin\nplay '+ pos + ( GUI.state !== 'play' ? '\nstop' : '' ) +'\ncommand_list_end' }, function() {
-				setTimeout( function() {
-					GUI.prevnext = 0;
-				}, 500 );
-			} );
-			return
+			dataCmd = 'command_list_begin\nplay '+ pos + ( GUI.state !== 'play' ? '\nstop' : '' ) +'\ncommand_list_end';
+			tempFlag( 'prevnext' );
 		}
 	}
-	sendCmd( dataCmd );
+	$.post( 'enhance.php', { mpd: dataCmd } );
 } );
-
 // buttons and playlist
 function setButton() {
 	if ( GUI.json.updating_db !== undefined ) {
