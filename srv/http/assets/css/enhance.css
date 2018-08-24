@@ -959,12 +959,15 @@
 	text-overflow: ellipsis;
 	font-size: 18px !important;
 }
+#db-currentpath i {
+	margin: 0;
+}
 #db-home,
 #pl-home {
 	float: left;
 	display: inline-block;
-	margin: 0 !important;
 	width: 40px;
+	height: 40px !important;
 	line-height: 40px;
 	text-align: center;
 	vertical-align: 0%;
@@ -975,10 +978,10 @@
 }
 #db-home i,
 #pl-home i {
+	width: 40px;
+	line-height: 40px;
+	text-align: center;
 	font-size: 24px;
-}
-#pl-home i {
-	margin-left: 5px;
 }
 #db-home:hover,
 #pl-home:hover {
