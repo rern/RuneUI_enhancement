@@ -1289,7 +1289,6 @@ $( '#time' ).roundSlider( {
 	}
 } );
 
-var dynVolumeKnob = $( '#volume' ).data( 'dynamic' );
 $( '#volume' ).roundSlider( {
 	  sliderType: 'default'
 	, radius          : 115
@@ -2357,11 +2356,9 @@ function setPlaybackData() {
 		var previoussong = $( '#currentsong' ).text();
 		var previousalbum = $( '#currentalbum' ).text();
 		// volume
-		$volumetransition.css( 'transition-duration', '0s' ); // suppress initial rotate animation
 		$volumeRS.setValue( status.volume );
 		$volumehandle.rsRotate( - $volumeRS._handle1.angle );
 		$volumetooltip.add( $volumehandle ).removeClass( 'hide' ); // show after 'setValue'
-		$volumetransition.css( 'transition', '' );           // reset animation to default
 		if ( GUI.display.volume && GUI.display.volumempd ) {
 			if ( status.volumemute != 0 ) {
 				muteColor( status.volumemute );
