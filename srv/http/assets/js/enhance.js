@@ -78,6 +78,11 @@ $.post( 'enhance.php', { redis: JSON.stringify( command ) }, function( data ) {
 	}
 }, 'json' );
 
+var psOption = {
+	host: window.location.hostname,
+	port: window.location.port,
+	modes: GUI.mode
+};
 PNotify.prototype.options.styling = 'fontawesome';
 PNotify.prototype.options.stack = {
 	  dir1      : 'up'
@@ -117,42 +122,11 @@ function renderMSG( text ) {
 		new PNotify( noticeOptions );
 	}
 }
-var psOption = {
-	host: window.location.hostname,
-	port: window.location.port,
-	modes: GUI.mode
-};
+// notify pushstream
 var pushstreamNotify = new PushStream( psOption );
 pushstreamNotify.onmessage = renderMSG;
 pushstreamNotify.addChannel( 'notify' );
 pushstreamNotify.connect();
-
-// ### called by backend socket - force refresh all clients ###
-function renderUI( text ) {
-	$( '#loader' ).addClass( 'hide' );
-	if ( GUI.setvolume ) return;
-	
-	GUI.json = text[ 0 ];
-	GUI.state = GUI.json.state;
-	
-	setPlaybackData();
-	// imodedelay fix imode flashing on usb dac switching
-	if ( $( '#playback' ).hasClass( 'active' ) && !GUI.imodedelay ) displayPlayback();
-}
-var psOptionPb = psOption;
-psOptionPb.reconnectOnChannelUnavailableInterval = 5000;
-var pushstreamPlayback = new PushStream( psOptionPb );
-pushstreamPlayback.onmessage = renderUI;
-pushstreamPlayback.onstatuschange = function( status ) {
-	if ( status === 2 ) {
-		$( '#loader' ).addClass( 'hide' );
-		sendCmd( 'renderui' ); // force UI rendering (backend-call)
-	} else if ( status === 0 ) {
-		$( '#loader' ).removeClass( 'hide' );          
-	}
-};
-pushstreamPlayback.addChannel( 'playback' );
-pushstreamPlayback.connect();
 
 function libraryHome( text ) {
 	if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) {
@@ -171,11 +145,12 @@ function libraryHome( text ) {
 		} );
 	}
 }
+// library pushstream
 var pushstreamLibrary = new PushStream( psOption );
 pushstreamLibrary.onmessage = libraryHome;
 pushstreamLibrary.addChannel( 'library' );
 pushstreamLibrary.connect();
-
+// playlist pushstream
 var pushstreamPlaylist = new PushStream( psOption );
 pushstreamPlaylist.onmessage = function() {
 	if ( $( '#panel-dx' ).hasClass( 'active' ) ) {
@@ -185,8 +160,7 @@ pushstreamPlaylist.onmessage = function() {
 }
 pushstreamPlaylist.addChannel( 'playlist' );
 pushstreamPlaylist.connect();
-
-// for set display broadcast
+// display pushstream
 var pushstreamDisplay = new PushStream( psOption );
 pushstreamDisplay.addChannel( 'display' );
 pushstreamDisplay.onmessage = function( data ) { // on receive broadcast
@@ -200,6 +174,32 @@ pushstreamDisplay.onmessage = function( data ) { // on receive broadcast
 	}
 }
 pushstreamDisplay.connect();
+
+function renderUI( text ) {
+	$( '#loader' ).addClass( 'hide' );
+	if ( GUI.setvolume ) return;
+	
+	GUI.json = text[ 0 ];
+	GUI.state = GUI.json.state;
+	
+	setPlaybackData();
+	// imodedelay fix imode flashing on usb dac switching
+	if ( $( '#playback' ).hasClass( 'active' ) && !GUI.imodedelay ) displayPlayback();
+}
+// playback pushstream
+psOption.reconnectOnChannelUnavailableInterval = 5000;
+var pushstreamPlayback = new PushStream( psOption );
+pushstreamPlayback.onmessage = renderUI;
+pushstreamPlayback.onstatuschange = function( status ) {
+	if ( status === 2 ) {
+		$( '#loader' ).addClass( 'hide' );
+		sendCmd( 'renderui' ); // force UI rendering (backend-call)
+	} else if ( status === 0 ) {
+		$( '#loader' ).removeClass( 'hide' );          
+	}
+};
+pushstreamPlayback.addChannel( 'playback' );
+pushstreamPlayback.connect();
 
 $( '#menu-settings' ).click( function() {
 	$( '#settings' ).toggleClass( 'hide' ).css( 'top', $( '#menu-top' ).is( ':hidden' ) ? 0 : '40px' );
