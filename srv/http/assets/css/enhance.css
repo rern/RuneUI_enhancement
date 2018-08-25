@@ -147,9 +147,12 @@
 	position: absolute;
 	float: right;
 	right: 90px;
-	width: 200px;
 	padding: 0 !important;
 	z-index: 11;
+}
+.menu,
+.menushadow {
+	width: 190px;
 }
 .menu a {
 	display: block;
@@ -173,7 +176,6 @@
 }
 .menushadow {
 	position: absolute;
-	width: 200px;
 	box-shadow: -4px 4px 10px #000000;
 	z-index: -100;
 }
@@ -258,10 +260,13 @@
 	left: auto;
 	right: 0px;
 	padding: 0;
-	width: 170px;
+	z-index: 15;
+}
+#settings,
+#settings .menushadow {
+	width: 160px;
 }
 #settings .menushadow {
-	width: 170px;
 	height: 370px;
 }
 /* ---------------------- menu-bottom ----------------------*/
