@@ -130,33 +130,33 @@ PNotify.prototype.options.styling = 'fontawesome';
 PNotify.prototype.options.stack = {
 	  dir1      : 'up'
 	, dir2      : 'left'
-	, firstpos1 : 90
-	, firstpos2 : 50
+	, firstpos1 : 50
+	, firstpos2 : 0
 	, spacing1  : 10
 	, spacing2  : 10
 }
 function renderMSG( text ) {
 	var notify = text[ 0 ];
 	var noticeOptions = {
-		  title       : 'title' in notify ? notify.title : ''
-		, text        : 'text' in notify ? notify.text : ''
-		, icon        : notify.icon === undefined ? 'fa fa-check' : notify.icon
-		, opacity     : notify.opacity === undefined ? 0.9 : notify.opacity
-		, hide        : notify.hide === undefined && notify.permanotice === undefined
+		  title       : notify.title ? notify.title : 'Info'
+		, text        : notify.text ? notify.text : ''
+		, icon        : notify.icon ? notify.icon : 'fa fa-check'
+		, opacity     : notify.opacity ? notify.opacity : 0.9
+		, hide        : !notify.hide && !notify.permanotice
 		, buttons     : {
-			closer  : notify.permanotice === undefined,
-			sticker : notify.permanotice === undefined
+			  closer  : !notify.permanotice
+			, sticker : !notify.permanotice
 		}
-		, delay       : notify.delay === undefined ? 8000 : notify.delay
+		, delay       : notify.delay ? notify.delay : 8000
 		, mouse_reset : false
 	};
-	if ( 'permanotice' in notify ) {
-		if ( GUI.noticeUI[ notify.permanotice ] === undefined ) {
+	if ( notify.permanotice ) {
+		if ( !GUI.noticeUI[ notify.permanotice ] ) {
 			GUI.noticeUI[ notify.permanotice ] = new PNotify( noticeOptions );
 		} else {
-			if ( 'permaremove' in notify ) {
+			if ( notify.permaremove ) {
 				GUI.noticeUI[ notify.permanotice ].remove();
-				GUI.noticeUI[ notify.permanotice ] = undefined;
+				GUI.noticeUI[ notify.permanotice ] = 0;
 			} else {
 				GUI.noticeUI[ notify.permanoticeb].open();
 			}
