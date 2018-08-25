@@ -121,16 +121,11 @@ window.addEventListener( 'orientationchange', function() {
 		|| !$( '#pl-editor' ).hasClass( 'hide' ) ) displayIndex();
 } );
 
-var psOption = {
-	host: window.location.hostname,
-	port: window.location.port,
-	modes: GUI.mode
-};
 PNotify.prototype.options.styling = 'fontawesome';
 PNotify.prototype.options.stack = {
-	  dir1      : 'up'
-	, dir2      : 'left'
-	, firstpos1 : 50
+	  dir1      : 'up'   // offset from bottom = firstpos1
+	, dir2      : 'left' // offset from right  = firstpos2
+	, firstpos1 : 60
 	, firstpos2 : 0
 	, spacing1  : 10
 	, spacing2  : 10
@@ -149,6 +144,7 @@ function renderMSG( text ) {
 		}
 		, delay       : notify.delay ? notify.delay : 8000
 		, mouse_reset : false
+		, addclass    : 'pnotify_enhance'
 	};
 	if ( notify.permanotice ) {
 		if ( !GUI.noticeUI[ notify.permanotice ] ) {
@@ -165,6 +161,11 @@ function renderMSG( text ) {
 		new PNotify( noticeOptions );
 	}
 }
+var psOption = {
+	host: window.location.hostname,
+	port: window.location.port,
+	modes: GUI.mode
+};
 // notify pushstream
 var pushstreamNotify = new PushStream( psOption );
 pushstreamNotify.onmessage = renderMSG;
