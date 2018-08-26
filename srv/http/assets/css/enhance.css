@@ -254,6 +254,7 @@
 	cursor: pointer;
 }
 #settings {
+	position: fixed;
 	float: right;
 	display: block;
 	top: 40px;
