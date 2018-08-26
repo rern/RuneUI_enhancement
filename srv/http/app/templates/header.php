@@ -12,9 +12,9 @@
 	<link rel="stylesheet" href="<?=$this->asset('/css/runeui.css')?>">
 	<link rel="stylesheet" href="<?=$this->asset('/css/pnotify.custom.css')?>">
 
-<?php 
-if ( is_localhost() ) echo 
-	'<link rel="stylesheet" href="'.$this->asset('/css/onScreenKeyboard.css').'">';
+<?php if ( is_localhost() ) { ?>
+	<link rel="stylesheet" href="<?=$this->asset('/css/onScreenKeyboard.css')?>">
+<?php }
 function fontface( $name, $woff, $ttf ) {
 	return '
 	@font-face {
@@ -31,25 +31,28 @@ if ( empty( $this->uri(1) ) || $this->uri(1) === 'addons' ) {
 	$font.= fontface( $name, $this->asset('/fonts/'.$name.'.woff'), $this->asset('/fonts/'.$name.'.ttf') );
 	echo '<style>'.$font.'</style>';
 }
-if ( empty( $this->uri(1) ) ) {
-	echo '<link rel="stylesheet" href="'.$this->asset('/css/addonsinfo.css').'">'
-		.'<link rel="stylesheet" href="'.$this->asset('/css/roundslider.min.css').'">'
-		.'<link rel="stylesheet" href="'.$this->asset('/css/enhance.css').'">';
-	
-	if ( strpos( $_SERVER['HTTP_USER_AGENT'], 'Midori' ) !== false ) echo 
-		'<link rel="stylesheet" href="'.$this->asset('/css/midori.css').'">';
-	if ( file_exists( '/srv/http/assets/js/gpio.js' ) ) echo 
-		'<link rel="stylesheet" href="'.$this->asset('/css/gpio.css').'">';
-	if ( file_exists('/srv/http/assets/js/lyrics.js') ) echo 
-		'<link rel="stylesheet" href="'.$this->asset('/css/lyrics.css').'">';
-} else if ( $this->uri(1) === 'addons' ) {
-	echo '<link rel="stylesheet" href="'.$this->asset('/css/addonsinfo.css').'">'
-		.'<link rel="stylesheet" href="'.$this->asset('/css/addons.css').'">';
-} else {
-	echo '<link rel="stylesheet" href="'.$this->asset('/css/bootstrap-select.min.css').'">'
-		.'<link rel="stylesheet" href="'.$this->asset('/css/toggle-switch.min.css').'">';
-}
-if ( empty( $this->uri(1) ) ): ?>
+if ( empty( $this->uri(1) ) ) { ?>
+	<link rel="stylesheet" href="<?=$this->asset('/css/addonsinfo.css')?>">
+	<link rel="stylesheet" href="<?=$this->asset('/css/roundslider.min.css')?>">
+	<link rel="stylesheet" href="<?=$this->asset('/css/enhance.css')?>">
+	<?php
+	if ( strpos( $_SERVER['HTTP_USER_AGENT'], 'Midori' ) !== false ) { ?> 
+	<link rel="stylesheet" href="<?=$this->asset('/css/midori.css')?>">
+	<?php }
+	if ( file_exists( '/srv/http/assets/js/gpio.js' ) ) { ?> 
+	<link rel="stylesheet" href="<?=$this->asset('/css/gpio.css')?>">
+	<?php }
+	if ( file_exists('/srv/http/assets/js/lyrics.js') ) { ?> 
+	<link rel="stylesheet" href="<?=$this->asset('/css/lyrics.css')?>">
+	<?php }
+} else if ( $this->uri(1) === 'addons' ) { ?>
+	<link rel="stylesheet" href="<?=$this->asset('/css/addonsinfo.css')?>">
+	<link rel="stylesheet" href="<?=$this->asset('/css/addons.css')?>">
+<?php } else { ?>
+	<link rel="stylesheet" href="<?=$this->asset('/css/bootstrap-select.min.css')?>">
+	<link rel="stylesheet" href="<?=$this->asset('/css/toggle-switch.min.css')?>">
+<?php }
+if ( empty( $this->uri(1) ) ) { ?>
 	<link rel="apple-touch-icon" sizes="57x57" href="<?=$this->asset('/img/apple-touch-icon-57x57.png')?>">
 	<link rel="apple-touch-icon" sizes="114x114" href="<?=$this->asset('/img/apple-touch-icon-114x114.png')?>">
 	<link rel="apple-touch-icon" sizes="72x72" href="<?=$this->asset('/img/apple-touch-icon-72x72.png')?>">
@@ -69,13 +72,13 @@ if ( empty( $this->uri(1) ) ): ?>
 	<meta name="msapplication-TileImage" content="/img/mstile-144x144.png">
 	<meta name="msapplication-config" content="/img/browserconfig.xml">
 	<meta name="application-name" content="RuneAudio">
-<?php endif ?>
+<?php } ?>
 	<link rel="shortcut icon" href="<?=$this->asset('/img/favicon.ico')?>">
 </head>
 
 <body>
 
-<?php if ( empty( $this->uri(1) ) ): ?>
+<?php if ( empty( $this->uri(1) ) ) { ?>
 <div id="settings" class="menu hide">
 	<a class="menushadow"></a>
 	<a class="<?=$this->uri(1, 'sources', 'active')?>" href="sources"><i class="fa fa-folder-open-cascade"></i>Sources</a>
@@ -86,12 +89,12 @@ if ( empty( $this->uri(1) ) ): ?>
 	<a class="<?=$this->uri(1, 'credits', 'active')?>" href="credits"><i class="fa fa-rune"></i>Credits</a>
 	<a class="<?=$this->uri(1, 'dev', 'active')?>" href="dev"><i class="fa fa-gears"></i>Development</a>
 	<a id="turnoff"><i class="fa fa-power"></i>Power</a>
-<?php
-if ( $this->pwd_protection ) echo 
-	'<a href="logout.php"><i class="fa fa-sign-out"></i>Logout</a>';
-if ( file_exists('/srv/http/assets/js/gpio.js') ) echo 
-	'<a id="gpio"><i class="fa fa-gpio"></i>GPIO</a>';
-?>
+	<?php if ( $this->pwd_protection ) { ?>
+	<a href="logout.php"><i class="fa fa-sign-out"></i>Logout</a>
+	<?php }
+	if ( file_exists('/srv/http/assets/js/gpio.js') ) { ?>
+	<a id="gpio"><i class="fa fa-gpio"></i>GPIO</a>
+	<?php } ?>
 	<a id="addons"><i class="fa fa-addons"></i>Addons</a>
 </div>
 <div id="menu-top" class="hide">
@@ -114,4 +117,4 @@ if ( file_exists('/srv/http/assets/js/gpio.js') ) echo
 		<li id="open-panel-dx"><a><i class="fa fa-list-ul"></i></a></li>
 	</ul>
 </div>
-<?php endif ?>
+<?php } ?>
