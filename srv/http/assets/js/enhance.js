@@ -123,12 +123,12 @@ window.addEventListener( 'orientationchange', function() {
 
 PNotify.prototype.options.styling = 'fontawesome';
 PNotify.prototype.options.stack = {
-	  dir1      : 'up'   // offset from bottom = firstpos1
-	, dir2      : 'left' // offset from right  = firstpos2
-	, firstpos1 : 60
-	, firstpos2 : 0
-	, spacing1  : 10
-	, spacing2  : 10
+	  dir1      : 'up'    // stack up
+	, dir2      : 'right' // when full stack right
+	, firstpos1 : 60      // offset from border H
+	, firstpos2 : 0       // offset from border V
+	, spacing1  : 10      // space between dir1
+	, spacing2  : 10      // space between dir2
 }
 function renderMSG( text ) {
 	var notify = text[ 0 ];
@@ -144,7 +144,7 @@ function renderMSG( text ) {
 		}
 		, delay       : notify.delay ? notify.delay : 8000
 		, mouse_reset : false
-		, addclass    : 'pnotify_enhance'
+//		, addclass    : 'pnotify_enhance'
 	};
 	if ( notify.permanotice ) {
 		if ( !GUI.noticeUI[ notify.permanotice ] ) {
@@ -1114,7 +1114,7 @@ $( '#playlist-entries' ).click( function( e ) {
 $( '#pl-manage-list' ).click( function() {
 	GUI.pleditor = 1;
 	$( '.playlist' ).addClass( 'hide' );
-	$( '#pl-currentpath, #spinner-pl' ).removeClass( 'hide' );
+	$( '#loader' ).removeClass( 'hide' );
 	
 	$.get( '/command/?cmd=listplaylists', function( data ) {
 		var pl = data.split( '\n' ).filter( function( el ) { return el.match( /^playlist/ ) } );
@@ -1125,17 +1125,15 @@ $( '#pl-manage-list' ).click( function() {
 		arraypl.sort( function( a, b ) {
 			return stripLeading( a ).localeCompare( stripLeading( b ), undefined, { numeric: true } );
 		} );
-		var content = plname = '';
+		var content = '';
 		arraypl.forEach( function( el ) {
-			//plname = el.replace( 'playlist: ', '' );
 			content += '<li class="pl-folder" data-path="'+ el +'"><i class="fa fa-bars pl-action"></i><span>'+ el +'</span></li>';
 		} );
 		$( '#pl-editor' ).html( content +'<p></p>' ).promise().done( function() {
 			// fill bottom of list to mave last li movable to top
 			$( '#pl-editor p' ).css( 'min-height', window.innerHeight - ( GUI.display.bars ? 220 : 180 ) +'px' );
-			$( '#spinner-pl' ).addClass( 'hide' );
+			$( '#loader' ).addClass( 'hide' );
 			$( '#pl-currentpath, #pl-editor, #pl-index' ).removeClass( 'hide' );
-//			$( 'html, body' ).scrollTop( 0 );
 			$( 'html, body' ).scrollTop( GUI.plscrolltop );
 			displayIndex();
 		} );
@@ -1647,7 +1645,7 @@ function renderLibraryHome() {
 
 	content += '</div>';
 	$( '#home-blocks' ).html( content );
-	$( '#spinner-db' ).addClass( 'hide' );
+	$( '#loader' ).addClass( 'hide' );
 	$( '#db-currentpath span' ).html( '<a>&ensp;LIBRARY</a>' );
 // hide breadcrumb, index bar, edit bookmark
 	$( '#db-index, #db-level-up, #db-webradio-new, #db-homeSetup' ).addClass( 'hide' );
@@ -1684,7 +1682,7 @@ function getDB( options ) {
 		GUI.dbback = 0;
 	}
 		
-	$( '#spinner-db' ).removeClass( 'hide' );
+	$( '#loader' ).removeClass( 'hide' );
 	GUI.browsemode = browsemode;
 	
 	if ( plugin ) {
@@ -1708,7 +1706,7 @@ function getDB( options ) {
 		} else if ( plugin === 'Jamendo' ) {
 			$.post( '/db/?cmd=jamendo', { querytype: querytype ? querytype : 'radio', args: args }, function( data ) {
 				if ( !data ) {
-					$( '#spinner-db' ).addClass( 'hide' );
+					$( '#oader' ).addClass( 'hide' );
 					info( {
 						  icon    : 'warning'
 						, title   : 'Jamendo'
@@ -1737,7 +1735,7 @@ function getDB( options ) {
 				populateDB( data, path, '', '', uplevel );
 			}, 'json' );
 		} else {
-			$( '#spinner-db' ).addClass( 'hide' );
+			$( '#loader' ).addClass( 'hide' );
 			$.post( '/db/?cmd='+ cmd, { path: path, querytype: querytype }, function( path ) {
                 // console.log('add= ', path);
             }, 'json');
@@ -1995,7 +1993,7 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 // normal MPD browsing
 		// show index bar
 		if ( ( path === '' && keyword === '' ) || !data.length ) {
-			$( '#spinner-db' ).addClass( 'hide' );
+			$( '#loader' ).addClass( 'hide' );
 			return;
 		} else {
 			var type = {
@@ -2023,7 +2021,7 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 				} );
 			}
 			if ( data.length === 0 ) {
-				$( '#spinner-db' ).addClass( 'hide' );
+				$( '#loader' ).addClass( 'hide' );
 				return;
 			}
 			// browsing
@@ -2133,7 +2131,7 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 		}
 		$( '#db-currentpath span' ).html( folderCrumb );
 	}
-	if ( querytype != 'childs' ) $( '#spinner-db' ).addClass( 'hide' );
+	if ( querytype != 'childs' ) $( '#loader' ).addClass( 'hide' );
 	// fill bottom of list to mave last li movable to top
 	$( '#database-entries p' ).css( 'min-height', window.innerHeight - ( GUI.display.bars ? 220 : 180 ) +'px' );
 	// hide index bar in track list mode
@@ -2160,7 +2158,7 @@ function renderPlaylist() {
 		return;
 	}
 	
-	$( '#spinner-pl' ).removeClass( 'hide' );
+	$( '#loader' ).removeClass( 'hide' );
 	
 	$.get( '/db/?cmd=playlist', function( data ) {
 		var current = parseInt( GUI.json.song ) + 1;
@@ -2210,7 +2208,7 @@ function renderPlaylist() {
 		} else {
 			counthtml += countradio +'</a>&ensp; <i class="fa fa-webradio"></i>';
 		}
-		$( '#spinner-pl' ).addClass( 'hide' );
+		$( '#loader' ).addClass( 'hide' );
 		$( '.playlist' ).removeClass( 'hide' );
 		$( '#playlist-warning' ).addClass( 'hide' );
 		$( '#pl-count' ).html( counthtml );
