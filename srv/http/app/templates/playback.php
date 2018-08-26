@@ -133,7 +133,6 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 			</div>
 		</div>
 		<button id="db-homeSetup" class="btn btn-default hide" type="button"><i class="fa fa-gear"></i></button>
-		<div id="spinner-db" class="csspinner duo hide"></div>
 	</div>
 	<div id="panel-dx" class="tab-pane hide" onclick=""> <!-- onclick fix ios safari not recognize click for e.target -->
 		<div class="btnlist btnlist-top">
@@ -178,7 +177,6 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 				<p style="margin-top: 27px; color: #587ca0;">Add something from Library</p>
 			</div>
 		</div>
-		<div id="spinner-pl" class="csspinner duo hide"></div>
 	</div>
 </div>
 
