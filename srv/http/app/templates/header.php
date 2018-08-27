@@ -14,7 +14,6 @@
 <?php } ?>
 	<link rel="shortcut icon" href="<?=$this->asset( '/img/favicon.ico' )?>">
 	<link rel="stylesheet" href="<?=$this->asset( '/css/bootstrap.min.css' )?>">
-	<link rel="stylesheet" href="<?=$this->asset( '/css/fontawesome.min.css' )?>">
 	<link rel="stylesheet" href="<?=$this->asset( '/css/pnotify.custom.css' )?>">
 
 <?php if ( is_localhost() ) { ?>
@@ -38,6 +37,7 @@ if ( empty( $this->uri(1) ) || $this->uri(1) === 'addons' ) {
 	<style>$font</style>";
 }
 if ( empty( $this->uri(1) ) ) { ?>
+	<link rel="stylesheet" href="<?=$this->asset( '/css/fontawesome.min.css' )?>">
 	<link rel="stylesheet" href="<?=$this->asset( '/css/addonsinfo.css' )?>">
 	<link rel="stylesheet" href="<?=$this->asset( '/css/roundslider.min.css' )?>">
 	<link rel="stylesheet" href="<?=$this->asset( '/css/enhance.css' )?>">
@@ -55,6 +55,7 @@ if ( empty( $this->uri(1) ) ) { ?>
 	<link rel="stylesheet" href="<?=$this->asset( '/css/addonsinfo.css' )?>">
 	<link rel="stylesheet" href="<?=$this->asset( '/css/addons.css' )?>">
 <?php } else { ?>
+	<link rel="stylesheet" href="<?=$this->asset( '/css/fontawesome.min.css' )?>">
 	<link rel="stylesheet" href="<?=$this->asset( '/css/bootstrap-select.min.css' )?>">
 	<link rel="stylesheet" href="<?=$this->asset( '/css/toggle-switch.min.css' )?>">
 	<link rel="stylesheet" href="<?=$this->asset( '/css/settings.css' )?>">
