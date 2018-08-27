@@ -14,7 +14,9 @@
 <?php if ( is_localhost() ) { ?>
 	<link rel="stylesheet" href="<?=$this->asset('/css/onScreenKeyboard.css')?>">
 <?php }
-function fontface( $name, $woff, $ttf ) {
+function fontface( $name, $_this ) {
+	$woff = $_this->asset('/fonts/'.$name.'.woff');
+	$ttf = $_this->asset('/fonts/'.$name.'.ttf');
 	return '
 	@font-face {
 		font-family: '.$name.';
@@ -24,11 +26,10 @@ function fontface( $name, $woff, $ttf ) {
 	}';
 }
 if ( empty( $this->uri(1) ) || $this->uri(1) === 'addons' ) {
-	$name = 'addons';
-	$font = fontface( $name, $this->asset('/fonts/'.$name.'.woff'), $this->asset('/fonts/'.$name.'.ttf') );
-	$name = 'enhance';
-	$font.= fontface( $name, $this->asset('/fonts/'.$name.'.woff'), $this->asset('/fonts/'.$name.'.ttf') );
-	echo '<style>'.$font.'</style>';
+	$font = fontface( 'addons', $this );
+	$font.= fontface( 'enhance', $this );
+	echo "
+	<style>$font</style>";
 }
 if ( empty( $this->uri(1) ) ) { ?>
 	<link rel="stylesheet" href="<?=$this->asset('/css/addonsinfo.css')?>">
