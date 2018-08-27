@@ -1737,8 +1737,8 @@ function getDB( options ) {
 		} else {
 			$( '#loader' ).addClass( 'hide' );
 			$.post( '/db/?cmd='+ cmd, { path: path, querytype: querytype }, function( path ) {
-                // console.log('add= ', path);
-            }, 'json');
+				// console.log('add= ', path);
+			}, 'json');
 		}
 	}
 }
