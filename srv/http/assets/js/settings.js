@@ -4,7 +4,7 @@ if ( document.location.hostname === 'localhost' ) $( '.osk-trigger' ).onScreenKe
 
 $( '.selectpicker' ).selectpicker();
 
-if ( /\/sources\//.test( location.pathname ) ) {
+if ( /\/sources/.test( location.pathname ) ) {
 	// get updating status on load
 	$.post( '/enhance.php', { mpd: 'status' }, function( status ) {
 		var updatingdb = status.match( /updating_db/ ) ? true : false;
@@ -78,7 +78,7 @@ if ( /\/sources\//.test( location.pathname ) ) {
 		$('#usb-umount-name').html(mountName);
 		$('#usb-umount').val(mountName);
 	});
-} else if ( /\/settings\//.test( location.pathname ) ) {
+} else if ( /\/settings/.test( location.pathname ) ) {
 	
 	// show/hide AirPlay name form
 	$('#airplay').change(function(){
@@ -134,7 +134,7 @@ if ( /\/sources\//.test( location.pathname ) ) {
 			$('#spotifyBox').removeClass('boxed-group');
 		}
 	});
-} else if ( /\/network\//.test( location.pathname ) ) {
+} else if ( /\/network/.test( location.pathname ) ) {
 	
 	// show/hide static network configuration based on select value
 	var netManualConf = $('#network-manual-config');
@@ -264,7 +264,7 @@ if ( /\/sources\//.test( location.pathname ) ) {
 		}
 	});
 
-} else if ( /\/accesspoint\//.test( location.pathname ) ) {
+} else if ( /\/accesspoint/.test( location.pathname ) ) {
 	
 	// show/hide AP settings form
 	$('#accesspoint').change(function(){
@@ -286,7 +286,7 @@ if ( /\/sources\//.test( location.pathname ) ) {
 		$('#dhcp-option-dns').val($('#ip-address').val());
 		$('#dhcp-option-router').val($('#ip-address').val());
 	});
-} else if ( /\/mpd\//.test( location.pathname ) ) {
+} else if ( /\/mpd/.test( location.pathname ) ) {
 	
 	// output interface select
 	$('#audio-output-interface').change(function(){
@@ -307,7 +307,7 @@ if ( /\/sources\//.test( location.pathname ) ) {
 		$('#mpdconf_editor').removeClass('hide');
 		$('#manual-edit-warning').addClass('hide');
 	});
-} else if ( /\/debug\//.test( location.pathname ) ) {
+} else if ( /\/debug/.test( location.pathname ) ) {
 
 	ZeroClipboard.config({swfPath: '/assets/js/vendor/ZeroClipboard.swf'});
 	var client = new ZeroClipboard(document.getElementById('copy-to-clipboard'));
