@@ -1112,7 +1112,6 @@ $( '#playlist-entries' ).click( function( e ) {
 	}
 } );
 $( '#pl-manage-list' ).click( function() {
-	GUI.pleditor = 1;
 	$( '.playlist' ).addClass( 'hide' );
 	$( '#loader' ).removeClass( 'hide' );
 	
@@ -1130,6 +1129,7 @@ $( '#pl-manage-list' ).click( function() {
 			content += '<li class="pl-folder" data-path="'+ el +'"><i class="fa fa-bars pl-action"></i><span>'+ el +'</span></li>';
 		} );
 		$( '#pl-editor' ).html( content +'<p></p>' ).promise().done( function() {
+			GUI.pleditor = 1;
 			// fill bottom of list to mave last li movable to top
 			$( '#pl-editor p' ).css( 'min-height', window.innerHeight - ( GUI.display.bars ? 140 : 100 ) +'px' );
 			$( '#loader' ).addClass( 'hide' );
@@ -1563,6 +1563,7 @@ function displayPlaylist() {
 	} else {
 		if ( $( '#panel-dx' ).hasClass( 'active' ) ) {
 			GUI.pleditor = 0;
+			GUI.plclear = 0;
 			renderPlaylist();
 		} else {
 			setTimeout( function() {
@@ -2156,6 +2157,7 @@ function renderPlaylist() {
 		$( '#playlist-warning' ).css( 'margin-top', barhide ? '27px' : '67px' );
 		return;
 	}
+	console.log( GUI.pleditor )
 	
 	$( '#loader' ).removeClass( 'hide' );
 	
