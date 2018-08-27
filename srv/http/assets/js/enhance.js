@@ -1591,7 +1591,7 @@ function chkKey( key ) {
 function renderLibraryHome() {
 //	GUI.dbscrolltop = {}; // comment to always kepp scroll positions
 	GUI.plugin = '';
-	$( '#db-currentpath' ).removeAttr( 'path' );
+	$( '#db-currentpath' ).removeAttr( 'path' ).css( 'width', '' );
 	$( '#database-entries' ).empty();
 	$( '#db-search-results' ).addClass( 'hide' );
 	$( '#db-search-keyword' ).val( '' );
