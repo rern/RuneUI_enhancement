@@ -1152,7 +1152,7 @@ $( '#pl-filter' ).on( 'keyup', function() {
 	if ( search ) {
 		$( '#pl-manage, #pl-count' ).addClass( 'hide' );
 		$( '#pl-filter-results' ).removeClass( 'hide' ).html( 
-			'<i class="fa fa-times sx"></i><span class="hidden-xs">'+ count +' <a>of</a> </span>'
+			'<i class="fa fa-times sx"></i><span>'+ count +' <a>of</a> </span>'
 		);
 	} else {
 		$( '#pl-manage, #pl-count' ).removeClass( 'hide' );
@@ -2033,7 +2033,7 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 				$( '#db-search-results' )
 					.removeClass( 'hide' )
 					.html( '<i class="fa fa-times sx"></i><span class="visible-xs-inline"></span>\
-						<span class="hidden-xs">' + results + ' <a>of</a> </span>' );
+						<span>' + results + ' <a>of</a> </span>' );
 			}
 			if ( data[ 0 ].directory || data[ 0 ].file ) {
 				var arraydir = [];
