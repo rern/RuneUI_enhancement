@@ -1361,14 +1361,12 @@ w {
 }
 #playlist-entries li.sortable-ghost:before {
 	line-height: 46px;
-	margin-top: 0;
 	content: "\f07d";
 	font-family: "FontAwesome";
 	color: #e0e7ee;
-	text-align: left
 }
-#playlist-entries li.sortable-ghost:before {
-	color: #e0e7ee;
+#playlist-entries li.sortable-ghost {
+	background: #34495e;
 }
 .menu a.active {
 	background: #0095d8;
