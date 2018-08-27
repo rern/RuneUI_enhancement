@@ -531,9 +531,8 @@ body {
 	background: -webkit-radial-gradient(70% -45%, 150% 150%, hsla(0,0%,100%,0.2) 60%, hsla(0,0%,100%,0) 50%);
 	background: radial-gradient(110% 75% at 67% 0% ,hsla(0,0%,100%,.2) 60%,hsla(0,0%,100%,0) 50%);
 }
-#overlay-playsource-open {
-	position: relative;
-	top: -176px;
+.btn {
+    border: medium none
 }
 #imode {
 	position: absolute;
