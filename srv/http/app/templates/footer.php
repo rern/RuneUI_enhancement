@@ -59,7 +59,7 @@ if ( empty( $this->uri(1) ) ) { ?>
 <script src="<?=$this->asset( '/js/vendor/pnotify.custom.min.js' )?>"></script>
 <script src="<?=$this->asset( '/js/vendor/bootstrap-select.min.js' )?>"></script>
 <script src="<?=$this->asset( '/js/vendor/parsley.min.js' )?>"></script>
-<script src="<?=$this->asset( '/js/runeuisettings.js' )?>"></script>
+<script src="<?=$this->asset( '/js/settings.js' )?>"></script>
 <script>
 // no top-bottom bars - use close icon
 	$( 'div.container' )
