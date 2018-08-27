@@ -52,6 +52,7 @@
 .fa-airplay:before { content: "\f524" }
 .fa-dlna:before { content: "\f525" }
 .fa-rune:before { content: "\f526" }
+.fa-output:before { content: "\f52B" }
 
 .fa-step-backward:before { content: "\f501" }
 .fa-stop:before { content: "\f502" }
@@ -111,6 +112,7 @@
 .fa-edit:before { content: "\f536" }
 .fa-undo:before { content: "\f537" }
 .fa-bars:before { content: "\f538" }
+.fa-up-down:before { content: "\f568" }
 
 .fa-times:before { content: "\f51A" }
 .fa-question-circle:before { content: "\f560" }
@@ -1361,8 +1363,8 @@ w {
 }
 #playlist-entries li.sortable-ghost:before {
 	line-height: 46px;
-	content: "\f07d";
-	font-family: "FontAwesome";
+	content: "\f568";
+	font-family: enhance;
 	color: #e0e7ee;
 }
 #playlist-entries li.sortable-ghost {
