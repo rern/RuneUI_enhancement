@@ -144,7 +144,6 @@ function renderMSG( text ) {
 		}
 		, delay       : notify.delay ? notify.delay : 8000
 		, mouse_reset : false
-//		, addclass    : 'pnotify_enhance'
 	};
 	if ( notify.permanotice ) {
 		if ( !GUI.noticeUI[ notify.permanotice ] ) {
@@ -2272,9 +2271,9 @@ $( '.btn-cmd' ).click( function() {
 } );
 // buttons and playlist
 function setButton() {
-	if ( GUI.json.updating_db !== undefined ) {
+	if ( GUI.json.updating_db ) {
 		$( '#open-panel-sx i, #db-home i, #iupdate' ).addClass( 'blink' );
-		if ( $( '#menu-bottom' ).is( ':hidden' ) ) $( '#iupdate' ).removeClass( 'hide' );
+		$( '#iupdate' ).toggleClass( 'hide', GUI.display.bars );
 	} else {
 		$( '#open-panel-sx i, #db-home i, #iupdate' ).removeClass( 'blink' );
 		$( '#iupdate' ).addClass( 'hide' );
