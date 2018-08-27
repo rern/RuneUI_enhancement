@@ -29,7 +29,7 @@ rm -v /srv/http/assets/css/{bootstrap.min,enhance,fontawesome.min,midori,pnotify
 rm -v /srv/http/assets/fonts/enhance*
 rm -v /srv/http/assets/img/{controls*,runelogo.svg,vu*}
 rm -v /srv/http/assets/js/{enhance,runeuisettings}.js
-rm -v /srv/http/assets/js/vendor/{jquery-ui.min,modernizr-custom,roundslider.min}.js
+rm -v /srv/http/assets/js/vendor/{jquery-ui.min,modernizr-custom,pnotify.custom.min,roundslider.min}.js
 rm /usr/share/bootsplash/{start,reboot,shutdown}-runeaudio.png
 
 mv /srv/http/app/coverart_ctl.php{.backup,}
