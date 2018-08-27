@@ -760,6 +760,7 @@ $( '#pl-manage-clear' ).click( function() {
 			sendCmd( 'clear' );
 			$( '#pl-count' ).html( '<a>PLAYLIST</a>' );
 			$( '#playlist-entries' ).empty();
+			$( '#playlist-warning' ).removeClass( 'hide' );
 		}
 	} );
 } );
@@ -1391,7 +1392,7 @@ function displayCommon() {
 	}
 }
 function displayAirPlay() {
-	$( '.playback-controls' ).css( 'visibility', 'hidden' );
+	$( '.playback-controls' ).addClass( 'hide' );
 	$( '#divartist, #divsong, #divalbum' ).removeClass( 'scroll-left' );
 	$( '#playlist-position span, #format-bitrate, #total' ).html( '&nbsp;' );
 	$( '#currentartist' ).html( GUI.json.currentartist );
@@ -1429,7 +1430,7 @@ function displayPlayback() {
 	}
 	$( '#imode' ).addClass( 'hide' );
 	$( '#iplayer' ).removeClass( 'fa-airplay' ).addClass( 'hide' );
-	if ( GUI.json.playlistlength != 0 ) $( '.playback-controls' ).css( 'visibility', 'visible' );
+	$( '.playback-controls' ).toggleClass( 'hide', GUI.json.playlistlength == 0 );
 	
 	if ( GUI.display.update != 0 ) {
 		if ( GUI.display.bars ) {
@@ -1451,7 +1452,6 @@ function displayPlayback() {
 		, '-webkit-order' : ''
 		, display         : ''
 	} );
-	$( '#play-group' ).css( 'visibility', '' );
 	$( '#time-knob, #play-group' ).toggleClass( 'hide', !GUI.display.time );
 	$( '#coverart, #share-group' ).toggleClass( 'hide', !GUI.display.coverart );
 	var volume = ( !GUI.display.volumempd || !GUI.display.volume ) ? 0 : 1;
@@ -2356,13 +2356,13 @@ function setPlaybackData() {
 		
 		// empty queue
 		if ( status.playlistlength == 0 ) {
-			$( '.playback-controls' ).css( 'visibility', 'hidden' );
+			$( '.playback-controls' ).addClass( 'hide' );
 			$( '#divartist, #divsong, #divalbum' ).removeClass( 'scroll-left' );
 			$( '#currentsong' ).html( '<i class="fa fa-plus-circle"></i>' );
 			$( '#playlist-position span' ).text( 'Add something from Library' );
 			$( '#currentartist, #currentalbum, #format-bitrate, #elapsed, #total' ).empty();
 			$( '#cover-art' ).css( {
-				  'background-image': 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
+				  'background-image': 'url("assets/img/cover-default-runeaudio.png")'
 				, 'border-radius': 0
 			} );
 			$( '#coverartoverlay' ).addClass( 'hide' );
@@ -2371,7 +2371,7 @@ function setPlaybackData() {
 		
 		GUI.json.radio = ( status.ext === 'radio' ? 1 : 0 );
 		setButton();
-		$( '.playback-controls' ).css( 'visibility', 'visible' );
+		$( '.playback-controls' ).removeClass( 'hide' );
 		$( '#currentartist' ).html( status.Artist );
 		$( '#currentsong' ).html( status.Title );
 		$( '#currentalbum' ).html( status.ext !== 'radio' ? status.Album : '<a>'+ status.Album +'</a>' ).promise().done( function() {
