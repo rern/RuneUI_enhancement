@@ -9,7 +9,6 @@
 	
 	<link rel="stylesheet" href="<?=$this->asset('/css/bootstrap.min.css')?>">
 	<link rel="stylesheet" href="<?=$this->asset('/css/fontawesome.min.css')?>">
-	<link rel="stylesheet" href="<?=$this->asset('/css/runeui.css')?>">
 	<link rel="stylesheet" href="<?=$this->asset('/css/pnotify.custom.css')?>">
 
 <?php if ( is_localhost() ) { ?>
@@ -51,6 +50,7 @@ if ( empty( $this->uri(1) ) ) { ?>
 <?php } else { ?>
 	<link rel="stylesheet" href="<?=$this->asset('/css/bootstrap-select.min.css')?>">
 	<link rel="stylesheet" href="<?=$this->asset('/css/toggle-switch.min.css')?>">
+	<link rel="stylesheet" href="<?=$this->asset('/css/rune.css')?>">
 <?php }
 if ( empty( $this->uri(1) ) ) { ?>
 	<link rel="apple-touch-icon" sizes="57x57" href="<?=$this->asset('/img/apple-touch-icon-57x57.png')?>">
