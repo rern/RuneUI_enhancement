@@ -1132,7 +1132,7 @@ $( '#pl-manage-list' ).click( function() {
 		} );
 		$( '#pl-editor' ).html( content +'<p></p>' ).promise().done( function() {
 			// fill bottom of list to mave last li movable to top
-			$( '#pl-editor p' ).css( 'min-height', window.innerHeight - ( GUI.display.bars ? 220 : 180 ) +'px' );
+			$( '#pl-editor p' ).css( 'min-height', window.innerHeight - ( GUI.display.bars ? 140 : 100 ) +'px' );
 			$( '#loader' ).addClass( 'hide' );
 			$( '#pl-currentpath, #pl-editor, #pl-index' ).removeClass( 'hide' );
 			$( 'html, body' ).scrollTop( GUI.plscrolltop );
@@ -2068,6 +2068,8 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 		}
 	}
 	$( '#database-entries' ).html( content +'<p></p>' ).promise().done( function() {
+		// fill bottom of list to mave last li movable to top
+		$( '#database-entries p' ).css( 'min-height', window.innerHeight - ( GUI.display.bars ? 140 : 100 ) +'px' );
 		displayIndex();
 	} );
 	
@@ -2132,9 +2134,7 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 		$( '#db-currentpath span' ).html( folderCrumb );
 	}
 	if ( querytype != 'childs' ) $( '#loader' ).addClass( 'hide' );
-	// fill bottom of list to mave last li movable to top
-	$( '#database-entries p' ).css( 'min-height', window.innerHeight - ( GUI.display.bars ? 220 : 180 ) +'px' );
-	// hide index bar in track list mode
+	// hide index bar in file mode
 	if ( $( '#database-entries li:eq( 0 )' ).hasClass( 'db-song' ) ) {
 		$( '#db-index' ).addClass( 'hide' );
 		$( '#database-entries' ).css( 'width', '100%' );
