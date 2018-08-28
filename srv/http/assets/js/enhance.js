@@ -1549,7 +1549,6 @@ function setPlaylistScroll() {
 	
 	var  wH = window.innerHeight;
 	$( '#playlist-entries p' ).css( 'min-height', wH - 140 +'px' );
-	$( 'html, body' ).scrollTop( 0 );
 	$( '#playlist-entries li' ).removeClass( 'active' );
 	var $liactive = $( '#pl-'+ GUI.status.Id );
 	$liactive.addClass( 'active' );
@@ -1557,6 +1556,7 @@ function setPlaylistScroll() {
 		GUI.noscroll = 0;
 		return;
 	}
+	$( 'html, body' ).scrollTop( 0 );
 	setTimeout( function() {
 		var scrollpos = $liactive.offset().top - $( '#playlist-entries' ).offset().top - ( 49 * 3 );
 		$( 'html, body' ).animate( { scrollTop: scrollpos } );
