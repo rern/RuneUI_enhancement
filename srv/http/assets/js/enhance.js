@@ -76,46 +76,6 @@ function sendCmd( cmd ) {
 	$.get( '/command/?cmd='+ cmd +'&clientUUID='+ GUI.clientUUID );
 }
 
-if ( 'hidden' in document ) {
-	var visibilityevent = 'visibilitychange';
-	var hiddenstate = 'hidden';
-} else { // cross-browser document.visibilityState must be prefixed
-	var prefixes = [ 'webkit', 'moz', 'ms', 'o' ];
-	for ( var i = 0; i < 4; i++ ) {
-		var p = prefixes[ i ];
-		if ( p +'Hidden' in document ) {
-			var visibilityevent = p +'visibilitychange';
-			var hiddenstate = p +'Hidden';
-			break;
-		}
-	}
-}
-var streams = [ pushstreamNotify, pushstreamLibrary, pushstreamDisplay, pushstreamPlaylist, pushstreamPlayback ];
-document.addEventListener( visibilityevent, function() {
-	if ( document[ hiddenstate ] ) {
-		$( '#elapsed' ).empty();
-		clearInterval( GUI.currentKnob );
-		clearInterval( GUI.countdown );
-		$.each( streams, function( i, stream ) {
-			stream.disconnect();
-		} );
-	} else {
-		if ( $( '#playback' ).hasClass( 'active' ) ) {
-			setPlaybackData();
-			displayPlayback();
-		} else if ( $( '#panel-dx' ).hasClass( 'active' ) && !GUI.pleditor ) {
-			setPlaylistScroll();
-		}
-		$.each( streams, function( i, stream ) {
-			stream.connect();
-		} );
-	}
-} );
-window.addEventListener( 'orientationchange', function() {
-	if ( ( $( '#panel-sx' ).hasClass( 'active' ) && $( '#home-blocks' ).hasClass( 'hide' ) )
-		|| !$( '#pl-editor' ).hasClass( 'hide' ) ) displayIndex();
-} );
-
 PNotify.prototype.options.styling = 'fontawesome';
 PNotify.prototype.options.stack = {
 	  dir1      : 'up'    // stack up
@@ -238,6 +198,46 @@ pushstreamPlayback.onstatuschange = function( status ) {
 };
 pushstreamPlayback.addChannel( 'playback' );
 pushstreamPlayback.connect();
+
+if ( 'hidden' in document ) {
+	var visibilityevent = 'visibilitychange';
+	var hiddenstate = 'hidden';
+} else { // cross-browser document.visibilityState must be prefixed
+	var prefixes = [ 'webkit', 'moz', 'ms', 'o' ];
+	for ( var i = 0; i < 4; i++ ) {
+		var p = prefixes[ i ];
+		if ( p +'Hidden' in document ) {
+			var visibilityevent = p +'visibilitychange';
+			var hiddenstate = p +'Hidden';
+			break;
+		}
+	}
+}
+var streams = [ pushstreamNotify, pushstreamLibrary, pushstreamDisplay, pushstreamPlaylist, pushstreamPlayback ];
+document.addEventListener( visibilityevent, function() {
+	if ( document[ hiddenstate ] ) {
+		$( '#elapsed' ).empty();
+		clearInterval( GUI.currentKnob );
+		clearInterval( GUI.countdown );
+		$.each( streams, function( i, stream ) {
+			stream.disconnect();
+		} );
+	} else {
+		if ( $( '#playback' ).hasClass( 'active' ) ) {
+			setPlaybackData();
+			displayPlayback();
+		} else if ( $( '#panel-dx' ).hasClass( 'active' ) && !GUI.pleditor ) {
+			setPlaylistScroll();
+		}
+		$.each( streams, function( i, stream ) {
+			stream.connect();
+		} );
+	}
+} );
+window.addEventListener( 'orientationchange', function() {
+	if ( ( $( '#panel-sx' ).hasClass( 'active' ) && $( '#home-blocks' ).hasClass( 'hide' ) )
+		|| !$( '#pl-editor' ).hasClass( 'hide' ) ) displayIndex();
+} );
 
 $( '#menu-settings' ).click( function() {
 	$( '#settings' ).toggleClass( 'hide' ).css( 'top', $( '#menu-top' ).is( ':hidden' ) ? 0 : '40px' );
