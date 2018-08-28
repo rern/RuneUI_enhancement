@@ -403,7 +403,7 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 	} else if ( $this.data( 'target' ) === 'webradio-add' ) {
 		webRadioNew();
 	} else {
-		if ( GUI.bookmarkedit ) return;
+		if ( GUI.bookmarkedit || ( $this[ 0 ].id === 'home-sd' && !GUI.libraryhome.localStorages ) ) return;
 		
 		mutationLibrary.observe( observerLibrary, observerOption );
 		var browsemode = $this.data( 'browsemode' );
