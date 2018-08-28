@@ -4,6 +4,7 @@ var GUI = {
 	, browsemode        : 'file'
 	, checkvol          : 0
 	, clientUUID        : null
+	, counts            : {}
 	, currentalbum      : null
 	, currentknob       : null
 	, currentpath       : ''
@@ -39,7 +40,6 @@ var GUI = {
 	, radioelapsed      : ''
 	, setmode         : 0
 	, setvolume       : 0
-	, songs           : 0
 	, stepVolumeDelta   : 0
 	, stepVolumeInt     : 0
 	, stream            : ''
@@ -61,7 +61,7 @@ $.post( 'enhance.php', { redis: JSON.stringify( command ) }, function( data ) {
 	GUI.display = data.display;
 	GUI.radioelapsed = GUI.display.radioelapsed;
 	GUI.activePlayer = data.activeplayer;
-	GUI.songs = data.songs;
+	GUI.counts = data.counts;
 	if ( GUI.activePlayer === 'Airplay' ) {
 		GUI.json = data.actplayerinfo; // available if 'activeplayer' is 'Airplay'
 		displayAirPlay();
@@ -1636,9 +1636,9 @@ function renderLibraryHome() {
 	var data = obj.webradio === 0 ? ' data-target="webradio-add"' : ' data-path="Webradio"';
 	content += divOpen +'<div id="home-webradio" class="home-block'+ toggleMPD +'"'+ data +'><i class="fa fa-webradio"></i><h4>Webradios <span>( '+ obj.webradio +' )</span></h4></div></div>';
 	// albums
-	content += divOpen +'<div id="home-albums" class="home-block'+ toggleMPD +'" data-path="Albums" data-browsemode="album"><i class="fa fa-album"></i><h4>Albums</h4></div></div>';
+	content += divOpen +'<div id="home-albums" class="home-block'+ toggleMPD +'" data-path="Albums" data-browsemode="album"><i class="fa fa-album"></i><h4>Albums <span>( '+ GUI.counts.Albums +' )</span></h4></div></div>';
 	// artist
-	content += divOpen +'<div id="home-artists" class="home-block'+ toggleMPD +'" data-path="Artists" data-browsemode="artist"><i class="fa fa-artist"></i><h4>Artists</h4></div></div>';
+	content += divOpen +'<div id="home-artists" class="home-block'+ toggleMPD +'" data-path="Artists" data-browsemode="artist"><i class="fa fa-artist"></i><h4>Artists <span>( '+ GUI.counts.Artists +' )</span></h4></div></div>';
 	// composer
 	content += divOpen +'<div id="home-composer" class="home-block'+ toggleMPD +'" data-path="Composer" data-browsemode="composer"><i class="fa fa-composer"></i><h4>Composers</h4></div></div>';
 	// genre
@@ -1663,7 +1663,7 @@ function renderLibraryHome() {
 	} );
 	$( '#loader' ).addClass( 'hide' );
 	//$( '#db-currentpath span' ).html( '<a>&ensp;LIBRARY</a>' );
-	$( '#db-currentpath span' ).html( '<a> LIBRARY</a><a id="li-count">&#8226;&ensp;<span>'+ parseInt( GUI.songs ).toLocaleString() +'</span><i class="fa fa-music"></i></a>' );
+	$( '#db-currentpath span' ).html( '<a> LIBRARY</a><a id="li-count">&#8226;&ensp;<span>'+ GUI.counts.Songs +'</span><i class="fa fa-music"></i></a>' );
 	// hide breadcrumb, index bar, edit bookmark
 	$( '#db-index, #db-level-up, #db-webradio-new, #db-homeSetup' ).addClass( 'hide' );
 	displayLibrary();
