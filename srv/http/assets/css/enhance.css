@@ -959,15 +959,15 @@ label {
 	padding-top: 80px;
 }
 #home-blocks {
-	margin: 0 0 20px
+	margin: 10px 5px
 }
 .home-block,
 .empty-block {
 	display: block;
 	position: relative;
-	margin: 10px 0;
+	margin: 7px -8px;
 	padding: 30px 30px 10px 30px;
-	background: #10161c;
+	background: #172029;
 	border-radius: 6px;
 	color: #587ca0;
 	text-align: center;
