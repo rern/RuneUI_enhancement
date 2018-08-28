@@ -39,6 +39,7 @@ var GUI = {
 	, radioelapsed      : ''
 	, setmode         : 0
 	, setvolume       : 0
+	, songs           : 0
 	, stepVolumeDelta   : 0
 	, stepVolumeInt     : 0
 	, stream            : ''
@@ -60,6 +61,7 @@ $.post( 'enhance.php', { redis: JSON.stringify( command ) }, function( data ) {
 	GUI.display = data.display;
 	GUI.radioelapsed = GUI.display.radioelapsed;
 	GUI.activePlayer = data.activeplayer;
+	GUI.songs = data.songs;
 	if ( GUI.activePlayer === 'Airplay' ) {
 		GUI.json = data.actplayerinfo; // available if 'activeplayer' is 'Airplay'
 		displayAirPlay();
@@ -1660,8 +1662,9 @@ function renderLibraryHome() {
 		$( 'html, body' ).scrollTop( 0 );
 	} );
 	$( '#loader' ).addClass( 'hide' );
-	$( '#db-currentpath span' ).html( '<a>&ensp;LIBRARY</a>' );
-// hide breadcrumb, index bar, edit bookmark
+	//$( '#db-currentpath span' ).html( '<a>&ensp;LIBRARY</a>' );
+	$( '#db-currentpath span' ).html( '<a> LIBRARY</a><a id="li-count">&#8226;&ensp;<span>'+ parseInt( GUI.songs ).toLocaleString() +'</span><i class="fa fa-music"></i></a>' );
+	// hide breadcrumb, index bar, edit bookmark
 	$( '#db-index, #db-level-up, #db-webradio-new, #db-homeSetup' ).addClass( 'hide' );
 	displayLibrary();
 }
