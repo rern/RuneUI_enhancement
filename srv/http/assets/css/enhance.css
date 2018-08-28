@@ -1315,6 +1315,13 @@ span.dbpath {
 	font-size: 24px;
 	line-height: 40px;
 }
+#li-count,
+#li-count i {
+	color: #587ca0 !important;
+}
+#li-count span {
+	color: #e0e7ee;
+}
 #pl-count {
 	display: inline-block;
 	margin: 0 0 0 13px;
@@ -1322,7 +1329,7 @@ span.dbpath {
 	height: 40px;
 	font-size: 18px;
 	line-height: 44px;
-	color: #587ca0
+	color: #587ca0;
 }
 #pl-count i {
 	font-size: 24px;
