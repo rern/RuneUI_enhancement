@@ -1614,7 +1614,7 @@ function renderLibraryHome() {
 	// Set active player
 	setPlaybackSource();
 	
-	var content = '<br>';
+	var content = '';
 	var divOpen = '<div class="col-lg-3 col-md-4 col-sm-6">';
 	// bookmark
 	var bookmarkL = obj.bookmarks.length;
