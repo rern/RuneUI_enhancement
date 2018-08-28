@@ -170,7 +170,7 @@ pushstreamNotify.addChannel( 'notify' );
 pushstreamNotify.connect();
 
 function libraryHome( text ) {
-	if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) {
+	if ( !$( '#home-blocks' ).hasClass( 'hide' ) || GUI.bookmarkedit ) {
 		GUI.libraryhome = text[ 0 ];
 		if ( GUI.libraryhome.clientUUID === GUI.clientUUID && GUI.plugin !== 'Dirble' && GUI.currentpath !== 'Webradio' ) {
 			renderLibraryHome(); // TODO: do it only while in home
@@ -283,7 +283,7 @@ $( '#open-panel-sx' ).click( function() {
 		displayLibrary();
 	} else {
 		var scrollpos = GUI.dbscrolltop[ $( '#db-currentpath' ).attr( 'path' ) ];
-		$( 'html, body' ).scrollTop( scrollpos !== 'undefined' ? scrollpos : 0 );
+		$( 'html, body' ).scrollTop( scrollpos ? scrollpos : 0 );
 	}
 } );
 $( '#open-playback' ).click( function() {
@@ -877,6 +877,7 @@ $( '.contextmenu a' ).click( function() {
 			$( '#random' ).data( 'cmd', 'pl-ashuffle-stop' ).addClass( 'btn-primary' );
 			break;
 		default:
+			if ( cmd === 'bookmark' ) GUI.bookmarkedit = 1;
 			$.post( '/db/?cmd='+ cmd, { path: GUI.DBentry.path }, function() {
 				renderPlaylist();
 			} );
@@ -1187,7 +1188,7 @@ var observerOption = { childList: true };
 var observerLibrary = document.getElementById( 'database-entries' );
 var mutationLibrary = new MutationObserver( function() { // on observed target changed
 	var scrollpos = GUI.dbscrolltop[ $( '#db-currentpath' ).attr( 'path' ) ];
-	$( 'html, body' ).scrollTop( scrollpos !== 'undefined' ? scrollpos : 0 );
+	$( 'html, body' ).scrollTop( scrollpos ? scrollpos : 0 );
 	mutationLibrary.disconnect();
 } );
 $( '#db-level-up' ).click( function() {
@@ -1588,11 +1589,8 @@ function setPlaybackSource() {
 		$( '#single' ).prop( 'disabled' );
 	}
 }
-function chkKey( key ) {
-	return ( key !== undefined && key !== '' );
-}
 function renderLibraryHome() {
-//	GUI.dbscrolltop = {}; // comment to always kepp scroll positions
+//	GUI.dbscrolltop = {}; // comment to always keep scroll positions
 	GUI.plugin = '';
 	$( '#db-currentpath' ).removeAttr( 'path' ).css( 'width', '' );
 	$( '#database-entries' ).empty();
@@ -1612,38 +1610,46 @@ function renderLibraryHome() {
 	
 	var content = '<br>';
 	var divOpen = '<div class="col-lg-3 col-md-4 col-sm-6">';
-	for ( i = 0; ( bookmark = obj.bookmarks[ i ] ); i++ ) {
-		content += divOpen +'<div id="home-bookmark-'+ bookmark.id +'" class="home-block home-bookmark'+ toggleMPD +'" data-path="'+ bookmark.path +'"><i class="fa fa-bookmark"></i><h4>' + bookmark.name + '</h4></div></div>';
+	// bookmark
+	var bookmarkL = obj.bookmarks.length;
+	if ( bookmarkL ) {
+		for ( i = 0; i < bookmarkL; i++ ) {
+			var bookmark = obj.bookmarks[ i ];
+			content += divOpen +'<div id="home-bookmark-'+ bookmark.id +'" class="home-block home-bookmark'+ toggleMPD +'" data-path="'+ bookmark.path +'"><i class="fa fa-bookmark"></i><h4>' + bookmark.name + '</h4></div></div>';
+		}
 	}
-	if ( chkKey( obj.networkMounts ) ) {
-		content += divOpen +'<a id="home-nas" class="home-block'+ toggleMPD +'"'+ ( obj.networkMounts === 0 ? ( notMPD ? '' : ' href="/sources/add/"' ) : ' data-path="NAS"' ) +'>';
-		content += '<i class="fa fa-network"></i><h4>Network drives <span>( '+ obj.networkMounts +' )</span></h4></a></div>';
-	}
-	if ( chkKey( obj.localStorages ) ) {
+	// nas
+	content += divOpen +'<a id="home-nas" class="home-block'+ toggleMPD +'"'+ ( obj.networkMounts === 0 ? ( notMPD ? '' : ' href="/sources/add/"' ) : ' data-path="NAS"' ) +'><i class="fa fa-network"></i><h4>Network drives <span>( '+ obj.networkMounts +' )</span></h4></a></div>';
+	// sd
+	if ( obj.localStorages ) {
 		content += ( obj.localStorages === 0 ) ? '' : divOpen +'<div id="home-local" class="home-block'+ toggleMPD +'" data-path="LocalStorage"><i class="fa fa-microsd"></i><h4>SD card <span>( '+ obj.localStorages +' )</span></h4></div></div>';
 	}
-	if ( chkKey( obj.USBMounts ) ) {
-		content += divOpen +'<div id="home-usb" class="home-block'+ toggleMPD +'"'+ ( obj.USBMounts === 0 ? ( notMPD ? '' : ' href="/sources/sources/"' ) : ' data-path="USB"' ) +'>';
-		content += '<i class="fa fa-usbdrive"></i><h4>USB drives <span>( '+ obj.USBMounts +' )</span></h4></div></div>';
+	// usb
+	if ( obj.USBMounts ) {
+		content += divOpen +'<div id="home-usb" class="home-block'+ toggleMPD +'"'+ ( obj.USBMounts === 0 ? ( notMPD ? '' : ' href="/sources/sources/"' ) : ' data-path="USB"' ) +'><i class="fa fa-usbdrive"></i><h4>USB drives <span>( '+ obj.USBMounts +' )</span></h4></div></div>';
 	}
-	if ( chkKey( obj.webradio ) ) {
-		var data = obj.webradio === 0 ? ' data-target="webradio-add"' : ' data-path="Webradio"';
-		content += divOpen +'<div id="home-webradio" class="home-block'+ toggleMPD +'"'+ data +'><i class="fa fa-webradio"></i><h4>Webradios <span>( '+ obj.webradio +' )</span></h4></div></div>';
-	}
+	// webradio
+	var data = obj.webradio === 0 ? ' data-target="webradio-add"' : ' data-path="Webradio"';
+	content += divOpen +'<div id="home-webradio" class="home-block'+ toggleMPD +'"'+ data +'><i class="fa fa-webradio"></i><h4>Webradios <span>( '+ obj.webradio +' )</span></h4></div></div>';
+	// albums
 	content += divOpen +'<div id="home-albums" class="home-block'+ toggleMPD +'" data-path="Albums" data-browsemode="album"><i class="fa fa-album"></i><h4>Albums</h4></div></div>';
+	// artist
 	content += divOpen +'<div id="home-artists" class="home-block'+ toggleMPD +'" data-path="Artists" data-browsemode="artist"><i class="fa fa-artist"></i><h4>Artists</h4></div></div>';
+	// composer
 	content += divOpen +'<div id="home-composer" class="home-block'+ toggleMPD +'" data-path="Composer" data-browsemode="composer"><i class="fa fa-composer"></i><h4>Composers</h4></div></div>';
+	// genre
 	content += divOpen +'<div id="home-genre" class="home-block'+ toggleMPD +'" data-path="Genres" data-browsemode="genre"><i class="fa fa-genre"></i><h4>Genres</h4></div></div>';
-	if ( chkKey( obj.Spotify ) && obj.Spotify !== '0' ) {
+	// spotify
+	if ( obj.Spotify && obj.Spotify !== '0' ) {
 		if (obj.ActivePlayer !== 'Spotify' ) {
 			content += divOpen +'<div id="home-spotify-switch" class="home-block"><i class="fa fa-spotify"></i><h4>Spotify</h4></div></div>';
 		} else {
 			content += divOpen +'<div id="home-spotify" class="home-block'+ toggleSpotify +'" data-plugin="Spotify" data-path="Spotify"><i class="fa fa-spotify"></i><h4>Spotify</h4></div></div>';
 		}
 	}
-	if ( chkKey( obj.Dirble ) ) {
-		content += divOpen +'<div id="home-dirble" class="home-block'+ toggleMPD +'" data-plugin="Dirble" data-path="Dirble"><i class="fa fa-dirble"></i><h4>Dirble</h4></div></div>';
-	}
+	// dirble
+	content += divOpen +'<div id="home-dirble" class="home-block'+ toggleMPD +'" data-plugin="Dirble" data-path="Dirble"><i class="fa fa-dirble"></i><h4>Dirble</h4></div></div>';
+	// jamendo
 	content += divOpen +'<div id="home-jamendo" class="home-block'+ toggleMPD +'" data-plugin="Jamendo" data-path="Jamendo"><i class="fa fa-jamendo"></i><h4>Jamendo<span id="home-count-jamendo"></span></h4></div></div>';
 
 	content += '</div>';
@@ -1758,14 +1764,14 @@ function parseResponse( inputArr, i, respType, inpath, querytype ) {
 			break;
 		case 'db':
 			if ( GUI.browsemode === 'file' ) {
-				if ( inpath === '' && inputArr.file !== undefined ) {
+				if ( inpath === '' && inputArr.file ) {
 					var file = inputArr.file
 					inpath = file.slice( 0, file.lastIndexOf( '/' ) );
 				}
-				if ( inputArr.file !== undefined || inpath === 'Webradio' ) {
+				if ( inputArr.file || inpath === 'Webradio' ) {
 					content = '<li id="db-'+ ( i + 1 ) +'" data-path="';
 					if ( inpath !== 'Webradio' ) {
-						if ( inputArr.Title !== undefined ) {
+						if ( inputArr.Title ) {
 							if ( $( '#db-search-keyword' ).val() ) {
 								var bl = inputArr.Artist +' - '+ inputArr.Album;
 							} else {
@@ -1791,7 +1797,7 @@ function parseResponse( inputArr, i, respType, inpath, querytype ) {
 						content += '</span><span class="bl">'+ inputArr.url;
 					}
 					content += '</span></li>';
-				} else if ( inputArr.playlist !== undefined ) {
+				} else if ( inputArr.playlist ) {
 					if ( inputArr.fileext === 'cue' ) {
 						content = '<li id="db-'+ ( i + 1 ) +'" data-path="';
 						content += inputArr.playlist;
@@ -1814,7 +1820,7 @@ function parseResponse( inputArr, i, respType, inpath, querytype ) {
 					content += '</span></li>';
 				}
 			} else if ( GUI.browsemode === 'album' || GUI.browsemode === 'albumfilter' ) {
-				if ( inputArr.file !== undefined ) {
+				if ( inputArr.file ) {
 					content = '<li id="db-'+ ( i + 1 ) +'" data-path="';
 					content += inputArr.file;
 					content += '"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i><span class="sn">';
@@ -1832,7 +1838,7 @@ function parseResponse( inputArr, i, respType, inpath, querytype ) {
 					content += '</span></li>';
 				}
 			} else if ( GUI.browsemode === 'artist' ) {
-				if ( inputArr.album !== undefined ) {
+				if ( inputArr.album ) {
 					content = '<li id="db-'+ ( i + 1 ) +'" class="db-folder" mode="album" data-path="';
 					content += inputArr.album;
 					content += '"><i class="fa fa-bars db-action" data-target="#context-menu-album"></i><span><i class="fa fa-album"></i>';
@@ -1846,7 +1852,7 @@ function parseResponse( inputArr, i, respType, inpath, querytype ) {
 					content += '</span></li>';
 				}
 			} else if ( GUI.browsemode === 'composer' ) {
-				if ( inputArr.file !== undefined ) {
+				if ( inputArr.file ) {
 					content = '<li id="db-'+ ( i + 1 ) +'" data-path="';
 					content += inputArr.file;
 					content += '"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i><span class="sn">';
@@ -1864,7 +1870,7 @@ function parseResponse( inputArr, i, respType, inpath, querytype ) {
 					content += '</span></li>';
 				}
 			} else if ( GUI.browsemode === 'genre' ) {
-				if ( inputArr.artist !== undefined ) {
+				if ( inputArr.artist ) {
 					content = '<li id="db-'+ ( i + 1 ) +'" class="db-folder" mode="artist" data-path="';
 					content += inputArr.artist;
 					content += '"><i class="fa fa-bars db-action" data-target="#context-menu-artist"></i><span><i class="fa fa-album"></i>';
@@ -2050,7 +2056,8 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 					var bdir = stripLeading( b[ 'directory' ].split( '/' ).pop() );
 					return adir.localeCompare( bdir, undefined, { numeric: true } );
 				} );
-				for ( i = 0; row = arraydir[ i ]; i++ ) content += parseResponse( row, i, 'db', path );
+				var arraydirL = arraydir.length;
+				for ( i = 0; i < arraydirL; i++ ) content += parseResponse( arraydir[ i ], i, 'db', path );
 				arrayfile.sort( function( a, b ) {
 					if ( !keyword ) {
 						return stripLeading( a[ 'file' ] ).localeCompare( stripLeading( b[ 'file' ] ), undefined, { numeric: true } );
@@ -2058,14 +2065,15 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 						return stripLeading( a[ 'Title' ] ).localeCompare( stripLeading( b[ 'Title' ] ), undefined, { numeric: true } );
 					}
 				} );
-				for ( i = 0; row = arrayfile[ i ]; i++ ) content += parseResponse( row, i, 'db', path );
+				var arrayfileL = arrayfile.length;
+				for ( i = 0; i < arrayfileL; i++ ) content += parseResponse( arrayfile[ i ], i, 'db', path );
 			} else {
 				data.sort( function( a, b ) {
 					if ( a[ prop ] === undefined ) prop = mode[ GUI.browsemode ];
 					return stripLeading( a[ prop ] ).localeCompare( stripLeading( b[ prop ] ), undefined, { numeric: true } );
 				} );
-				
-				for ( i = 0; row = data[ i ]; i++ ) content += parseResponse( row, i, 'db', path );
+				var dataL = data.length;
+				for ( i = 0; i < dataL; i++ ) content += parseResponse( data[ i ], i, 'db', path );
 			}
 			$( '#db-webradio-new' ).toggleClass( 'hide', path !== 'Webradio' );
 		}
@@ -2123,7 +2131,7 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 		var folder = path.split( '/' );
 		var folderPath = '';
 		var folderCrumb = icon[ folder[ 0 ] ];
-		if ( folderCrumb !== undefined ) {
+		if ( folderCrumb ) {
 			var ilength = folder.length;
 			for ( i = 0; i < ilength; i++ ) {
 				folderPath += ( i > 0 ? '/' : '' ) + folder[ i ];
