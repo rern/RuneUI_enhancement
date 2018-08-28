@@ -1125,7 +1125,7 @@ $( '#pl-manage-list' ).click( function() {
 		} );
 		var content = '';
 		arraypl.forEach( function( el ) {
-			content += '<li class="pl-folder" data-path="'+ el +'"><i class="fa fa-bars pl-action"></i><span>'+ el +'</span></li>';
+			content += '<li class="pl-folder" data-path="'+ el +'"><i class="fa fa-list-ul pl-icon"></i><i class="fa fa-bars pl-action"></i><span>'+ el +'</span></li>';
 		} );
 		$( '#pl-editor' ).html( content +'<p></p>' ).promise().done( function() {
 			GUI.pleditor = 1;
@@ -1782,11 +1782,11 @@ function parseResponse( inputArr, i, respType, inpath, querytype ) {
 								var bl = inputArr.file.split( '/' ).pop(); // filename
 							}
 							content += inputArr.file +'" class="db-song"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i>';
-							content += '<span class="sn">'+ inputArr.Title +'<span>'+ convertHMS( inputArr.Time ) +'</span></span>';
+							content += '<span class="sn">'+ inputArr.Title +'&ensp;<span>'+ convertHMS( inputArr.Time ) +'</span></span>';
 							content += '<span class="bl">'+ bl;
 						} else {
 							content += inputArr.file +'" class="db-song"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i>';
-							content += '<span class="sn">'+ inputArr.file.replace( inpath +'/', '' ) +' <span>' + convertHMS( inputArr.Time ) +'</span></span>';
+							content += '<span class="sn">'+ inputArr.file.replace( inpath +'/', '' ) +'&ensp;<span>' + convertHMS( inputArr.Time ) +'</span></span>';
 							content += '<span class="bl"> path: '+ inpath;
 						}
 					} else {
@@ -1808,12 +1808,12 @@ function parseResponse( inputArr, i, respType, inpath, querytype ) {
 					} else {
 						content += ' data-target="#context-menu-root"></i><i class="fa fa-hdd-o icon-root"></i>';
 					}
-					content += '<span>'+ inputArr.directory.replace( inpath +'/', '' ) +'</span></li>';
+					content += '<span class="dbpath">'+ inputArr.directory.replace( inpath +'/', '' ) +'</span></li>';
 				}
 			} else if ( GUI.browsemode === 'album' || GUI.browsemode === 'albumfilter' ) {
 				if ( inputArr.file ) {
 					content += inputArr.file +'"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i>';
-					content += '<span class="sn">'+ inputArr.Title +'<span>'+ convertHMS( inputArr.Time ) +'</span></span>';
+					content += '<span class="sn">'+ inputArr.Title +'&ensp;<span>'+ convertHMS( inputArr.Time ) +'</span></span>';
 					content += '<span class="bl">'+ inputArr.Album +' - '+ inputArr.Artist +'</span></li>';
 				} else if ( inputArr.album !== '' ) {
 					content += inputArr.album.replace( /\"/g, '&quot;' ) +'" class="db-folder" mode="album"><i class="fa fa-bars db-action" data-target="#context-menu-album"></i>';
@@ -1830,7 +1830,7 @@ function parseResponse( inputArr, i, respType, inpath, querytype ) {
 			} else if ( GUI.browsemode === 'composer' ) {
 				if ( inputArr.file ) {
 					content += inputArr.file +'"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i>';
-					content += '<span class="sn">'+ inputArr.Title +'<span>'+ convertHMS( inputArr.Time ) +'</span></span>';
+					content += '<span class="sn">'+ inputArr.Title +'&ensp;<span>'+ convertHMS( inputArr.Time ) +'</span></span>';
 					content += '<span class="bl">'+ inputArr.Artist +' - '+ inputArr.Album +'</span></li>';
 				} else if ( inputArr.composer !== '' ) {
 					content += inputArr.composer +'" class="db-folder" mode="composer"><i class="fa fa-bars db-action" data-target="#context-menu-composer"></i>';
@@ -1852,7 +1852,7 @@ function parseResponse( inputArr, i, respType, inpath, querytype ) {
 				content += '<span><i class="fa fa-genre"></i>'+ ( inputArr.name ? inputArr.name : 'Favorites' ) +' ( '+ inputArr.tracks +' )</span></li>';
 			} else if ( querytype === 'tracks' ) {
 				content += inputArr.index +'" data-plid="'+ inpath +'" data-type="spotify-track" mode="spotify"><i class="fa fa-bars db-action" data-target="#context-menu-spotify"></i><i class="fa fa-spotify db-icon"></i>';
-				content += '<span class="sn">'+ inputArr.Title +'<span>'+ convertHMS( inputArr.duration / 1000 ) +'</span></span>';
+				content += '<span class="sn">'+ inputArr.Title +'&ensp;<span>'+ convertHMS( inputArr.duration / 1000 ) +'</span></span>';
 				content += ' <span class="bl">'+ inputArr.artist +' - '+ inputArr.album +'</span></li>';
 			}
 			break;
@@ -1866,7 +1866,7 @@ function parseResponse( inputArr, i, respType, inpath, querytype ) {
 					break; // Filter stations with no streams
 				}
 				content += inputArr.name +' | '+ inputArr.streams[ 0 ].stream +'" class="db-radio" mode="dirble"><i class="fa fa-bars db-action" data-target="#context-menu-dirble"></i><i class="fa fa-webradio db-icon"></i>';
-				content += '<span class="sn">'+ inputArr.name +'<span>( '+ inputArr.country +' )</span></span>';
+				content += '<span class="sn">'+ inputArr.name +'&ensp;<span>( '+ inputArr.country +' )</span></span>';
 				content += '<span class="bl">'+ ( inputArr.website ? inputArr.website : '-no website-' ) +'</span></li>';
 			}
 			break;
@@ -2131,7 +2131,7 @@ function renderPlaylist() {
 				var title = pl.Title ? pl.Title : pl.file.split( '/' ).pop();
 				var track = pl.Track ? '#'+ pl.Track +' • ' : '';
 				var album = pl.Album ? ' • '+ pl.Album : '';
-				topline = title +'<span>'+ convertHMS( time ) +'</span>';
+				topline = title +'&ensp;<span>'+ convertHMS( time ) +'</span>';
 				bottomline = track + pl.Artist + album;
 				playlisttime += time;
 			}
@@ -2150,9 +2150,9 @@ function renderPlaylist() {
 		var counthtml = '<a>PLAYLIST</a><span>&ensp;&#8226;&ensp;</span><a>';
 		if ( countsong ) {
 			if ( countradio ) {
-				var totalhtml = '<span>'+ convertHMS( playlisttime ) +'</span>&emsp;<a>'+ countradio +'</a>&ensp; <i class="fa fa-webradio"></i>';
+				var totalhtml = '&ensp;<span>'+ convertHMS( playlisttime ) +'</span>&emsp;<a>'+ countradio +'</a>&ensp; <i class="fa fa-webradio"></i>';
 			} else {
-				var totalhtml = '<a>'+ convertHMS( playlisttime ) +'</a>';
+				var totalhtml = '&ensp;<a>'+ convertHMS( playlisttime ) +'</a>';
 			}
 			counthtml += countsong +'</a>&ensp;<i class="fa fa-music"></i>&ensp;'+ totalhtml;
 		} else {
