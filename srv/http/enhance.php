@@ -21,12 +21,14 @@ if ( isset( $_POST[ 'redis' ] ) ) {
 			$result[ $field ] = $redis->$command( $arg[ 1 ], $arg[ 2 ], $arg[ 3 ] );
 		}
 	}
+	$result[ 'songs' ] = exec( "mpc stats | grep Songs | tr -d ' ' | cut -d':' -f2" );
 	echo json_encode( $result );
 	
 	// broadcast to all clients on hmSet display or set volume
 	if ( !isset( $pushstream ) ) die();
 	
 	$result[ 'display' ] = $redis->hGetAll( 'display' );
+	
 	if ( isset( $airplay ) ) $result[ 'actplayerinfo' ] = $redis->get( 'act_player_info' );
 	$ch = curl_init( 'http://localhost/pub?id=display' );
 	curl_setopt( $ch, CURLOPT_HTTPHEADER, array( 'Content-Type:application/json' ) );
