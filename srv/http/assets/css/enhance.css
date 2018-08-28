@@ -1217,21 +1217,27 @@ label {
 	text-overflow: ellipsis;
 	cursor: pointer;
 }
+#database-entries li span i {
+	margin-right: 10px;
+}
 #database-entries li:hover,
 #playlist-entries li:hover,
 #pl-editor li:hover {
 	background: #10161c
 }
-#database-entries span i {
-	padding: 0 12px 0 2px;
-}
 #database-entries span,
 #playlist-entries span,
 #pl-editor span {
-	margin-left: 10px;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis
+}
+span.dbpath {
+	vertical-align: 15%;
+}
+#pl-editor span {
+	padding-left: 10px;
+	line-height: 47px;
 }
 #database-entries .active,
 #database-entries .active:hover,
@@ -1270,8 +1276,10 @@ label {
 #database-entries i,
 #playlist-entries i {
 	width: 40px;
-	font-size: 24px;
+	margin-top: 3px;
+	font-size: 26px;
 	line-height: 40px;
+	text-align: center;
 	color: #587ca0;
 }
 .db-icon,
@@ -1314,11 +1322,6 @@ label {
 #pl-count i {
 	font-size: 24px;
 }
-#pl-editor span:before {
-	font-family: 'enhance';
-	content: '\f509';
-	padding-right: 20px;
-}
 #pl-filter-results {
 	float: right;
 }
@@ -1329,7 +1332,6 @@ label {
 #playlist-entries li,
 #database-entries .sn span,
 #playlist-entries .sn span {
-	vertical-align: -5%;
 	font-size: 18px;
 	color: #587ca0;
 }
