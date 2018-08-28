@@ -956,7 +956,7 @@ label {
 }
 #database,
 #playlist {
-	padding: 80px 0
+	padding-top: 80px;
 }
 #home-blocks {
 	margin: 0 0 20px
@@ -1306,6 +1306,7 @@ label {
 	display: inline-block;
 	margin: 0 0 0 13px;
 	width: calc( 100% - 370px );
+	height: 40px;
 	font-size: 18px;
 	line-height: 44px;
 	color: #587ca0
@@ -1361,14 +1362,15 @@ w {
 #playlist-entries.playlist-spotify li:before {
 	content: "\f1bc";
 }
-#playlist-entries li.sortable-ghost:before {
-	line-height: 46px;
-	content: "\f568";
-	font-family: enhance;
-	color: #e0e7ee;
-}
 #playlist-entries li.sortable-ghost {
 	background: #34495e;
+}
+#playlist-entries li.sortable-ghost:before {
+	content: "\f568";
+	font-family: enhance;
+	margin-left: 13px;
+	line-height: 46px;
+	color: #e0e7ee;
 }
 .menu a.active {
 	background: #0095d8;
