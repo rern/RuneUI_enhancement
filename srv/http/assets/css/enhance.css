@@ -150,6 +150,11 @@ label {
 	width: 250px;
 	animation: blinkopaque 1.5s linear infinite;
 }
+#playback,
+#panel-sx,
+#panel-dx {
+	touch-action: manipulation; /* fix: Unable to preventDefault inside passive event listener */
+}
 .tab-content>.tab-pane {
 	display: block;
 }
