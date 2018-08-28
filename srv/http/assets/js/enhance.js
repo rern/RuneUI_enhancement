@@ -319,6 +319,7 @@ function tempFlag( flag, ms ) {
 	GUI[ flag ] = 1;
 	setTimeout( function() { GUI[ flag ] = 0 }, ms ? ms : 500 );
 }
+
 $( '#playback, #panel-sx, #panel-dx' ).on( 'swipeleft swiperight', function( e ) {
 	panelLR( e.type === 'swipeleft' ? 'left' : '' );
 	// fix: prevent taphold fire on swipe
@@ -1653,7 +1654,9 @@ function renderLibraryHome() {
 	content += divOpen +'<div id="home-jamendo" class="home-block'+ toggleMPD +'" data-plugin="Jamendo" data-path="Jamendo"><i class="fa fa-jamendo"></i><h4>Jamendo<span id="home-count-jamendo"></span></h4></div></div>';
 
 	content += '</div>';
-	$( '#home-blocks' ).html( content );
+	$( '#home-blocks' ).html( content ).promise().done( function() {
+		$( 'html, body' ).scrollTop( 0 );
+	} );
 	$( '#loader' ).addClass( 'hide' );
 	$( '#db-currentpath span' ).html( '<a>&ensp;LIBRARY</a>' );
 // hide breadcrumb, index bar, edit bookmark
@@ -2444,6 +2447,7 @@ function setPlaybackData() {
 		// stop <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 		if ( $( '#time-knob' ).hasClass( 'hide' ) ) return;
 		if ( status.state === 'stop' ) {
+			$( '#currentsong' ).css( 'color', '' );
 			$( '#elapsed' ).text( $( '#total' ).text() ).css( 'color', '#587ca0' );
 			$( '#total' ).empty();
 			return;
