@@ -1413,7 +1413,7 @@ w {
 #overlay-social ul li,
 #overlay-playsource ul li {
 	display: block;
-	height: 60px;
+	height: 50px;
 	line-height: 60px;
 	margin: 0;
 	padding: 0;
@@ -1484,7 +1484,7 @@ w {
 #overlay-social ul li a.inactive span,
 #overlay-currentartist ul li a.inactive span,
 #overlay-playsource ul li a.inactive span {
-	color: #587ca0
+	color: #e0e7ee;
 }
 .overlay-scale {
 	visibility: hidden;
