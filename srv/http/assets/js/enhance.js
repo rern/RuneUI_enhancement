@@ -50,18 +50,6 @@ var GUI = {
 
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-if ( document.location.hostname === 'localhost' ) $( '.osk-trigger' ).onScreenKeyboard( { 'draggable': true } );
-
-// UUID for the client
-var d = new Date().getTime();
-GUI.clientUUID = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace( /[xy]/g, function( c ) {
-	var r = ( d + Math.random() * 16 ) % 16 | 0;
-	return ( c=='x' ? r : ( r & 0x3 | 0x8 ) ).toString( 16 );
-} );
-// send a MPD playback control command
-function sendCmd( cmd ) {
-	$.get( '/command/?cmd='+ cmd +'&clientUUID='+ GUI.clientUUID );
-}
 // display toggle data
 var command = {
 	  display      : [ 'hGetAll', 'display' ]
@@ -77,6 +65,16 @@ $.post( 'enhance.php', { redis: JSON.stringify( command ) }, function( data ) {
 		displayAirPlay();
 	}
 }, 'json' );
+// UUID for the client
+var d = new Date().getTime();
+GUI.clientUUID = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace( /[xy]/g, function( c ) {
+	var r = ( d + Math.random() * 16 ) % 16 | 0;
+	return ( c=='x' ? r : ( r & 0x3 | 0x8 ) ).toString( 16 );
+} );
+// send a MPD playback control command
+function sendCmd( cmd ) {
+	$.get( '/command/?cmd='+ cmd +'&clientUUID='+ GUI.clientUUID );
+}
 
 if ( 'hidden' in document ) {
 	var visibilityevent = 'visibilitychange';
@@ -1167,14 +1165,19 @@ $( '#pl-filter-results' ).on( 'click', function() {
 
 var list = document.getElementById( 'playlist-entries' );
 new Sortable( list, {
-	ghostClass: 'sortable-ghost',
-	delay: 300,
-	onUpdate  : function ( e ) {
+	  ghostClass : 'sortable-ghost'
+	, delay      : 300
+	, onStart    : function( e ) {
+		$icon = $( e.item ).find( 'i' );
+		$icon.hide();
+	  }
+	, onEnd      : function() {
+		$icon.show();
+	  }
+	, onUpdate   : function ( e ) {
 		GUI.noscroll = 1;
-		var id = e.item.id;
-		var pos = $( '#' + id ).index();
-		id = parseInt( id.replace( 'pl-', '' ) );
-		$.post( 'enhance.php', { mpd: 'moveid '+ id +' '+ pos, pushstream: 'playlist' } );
+		var plid = parseInt( e.item.id.replace( 'pl-', '' ) );
+		$.post( 'enhance.php', { mpd: 'moveid '+ plid +' '+ e.newIndex, pushstream: 'playlist' } );
 	}
 } );
 					
@@ -1543,7 +1546,7 @@ function setPlaylistScroll() {
 	if ( GUI.pleditor ) return;
 	
 	var  wH = window.innerHeight;
-	$( '#playlist-entries p' ).css( 'min-height', wH - ( GUI.display.bars ? 220 : 140 ) +'px' );
+	$( '#playlist-entries p' ).css( 'min-height', wH - 140 +'px' );
 	$( 'html, body' ).scrollTop( 0 );
 	$( '#playlist-entries li' ).removeClass( 'active' );
 	var $liactive = $( '#pl-'+ GUI.status.Id );
@@ -2157,7 +2160,6 @@ function renderPlaylist() {
 		$( '#playlist-warning' ).css( 'margin-top', barhide ? '27px' : '67px' );
 		return;
 	}
-	console.log( GUI.pleditor )
 	
 	$( '#loader' ).removeClass( 'hide' );
 	
@@ -2457,10 +2459,12 @@ function setPlaybackData() {
 			} );
 		}
 		if ( status.state === 'pause' ) {
+			$( '#currentsong' ).css( 'color', '#587ca0' );
 			$( '#elapsed' ).css( 'color', '#0095d8' );
 			$( '#total' ).css( 'color', '#e0e7ee' );
 			return;
 		} else {
+			$( '#currentsong' ).css( 'color', '' );
 			$( '#elapsed' ).css( 'color', '' );
 			$( '#total' ).css( 'color', '' );
 		}
@@ -2503,5 +2507,7 @@ function convertHMS( second ) {
 	ss = mm ? ( ss > 9 ? ss : '0'+ ss ) : ss;
 	return ss ? hh + mm + ss : '';
 }
+
+if ( document.location.hostname === 'localhost' ) $( '.osk-trigger' ).onScreenKeyboard( { 'draggable': true } );
 
 } ); // document ready end <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
