@@ -24,6 +24,7 @@ fi
 echo -e "$bar Remove files ..."
 
 rm -v /srv/http/enhance*
+rm /srv/http/index.php
 rm -v /srv/http/app/templates/enhance*
 rm -v /srv/http/assets/css/{bootstrap.min,enhance,fontawesome.min,midori,pnotify.custom.min,roundslider.min,settings,toggle-switch.min}.css
 rm -v /srv/http/assets/fonts/enhance*
@@ -32,6 +33,7 @@ rm -v /srv/http/assets/js/{enhance,settings}.js
 rm -v /srv/http/assets/js/vendor/{jquery-ui.min,modernizr-custom,pnotify.custom.min,roundslider.min}.js
 rm /usr/share/bootsplash/{start,reboot,shutdown}-runeaudio.png
 
+mv /srv/http/index.php{.backup,}
 mv /srv/http/assets/js/vendor/pushstream.min.js{.backup,}
 mv /srv/http/assets/js/vendor/Sortable.min.js{.backup,}
 mv /srv/http/command/airplay_toggle{.backup,}
@@ -43,8 +45,6 @@ mv /usr/share/bootsplash/shutdown-runeaudio.png{.backup,}
 echo -e "$bar Restore modified files ..."
 
 files="
-/srv/http/app/templates/header.php
-/srv/http/app/templates/footer.php
 /srv/http/app/templates/mpd.php
 /srv/http/app/templates/settings.php
 /srv/http/db/index.php
