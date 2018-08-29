@@ -2374,7 +2374,7 @@ function setPlaybackData() {
 		} else {
 			if ( status.Album !== previousalbum ) {
 				var covercachenum = Math.floor( Math.random() * 1001 );
-				$( '#cover-art' ).css( 'background-image', 'url("/coverart/?v=' + covercachenum + '")' );
+				$( '#cover-art' ).css( 'background-image', 'url("/enhancecoverart/?v=' + covercachenum + '")' );
 				$( '#cover-art' ).css( 'border-radius', 0 );
 				$( '#coverartoverlay' ).addClass( 'hide' );
 			}
