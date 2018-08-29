@@ -32,7 +32,6 @@ rm -v /srv/http/assets/js/{enhance,settings}.js
 rm -v /srv/http/assets/js/vendor/{jquery-ui.min,modernizr-custom,pnotify.custom.min,roundslider.min}.js
 rm /usr/share/bootsplash/{start,reboot,shutdown}-runeaudio.png
 
-mv /srv/http/app/coverart_ctl.php{.backup,}
 mv /srv/http/app/templates/footer.php{.backup,}
 mv /srv/http/app/templates/header.php{.backup,}
 mv /srv/http/app/templates/playback.php{.backup,}
