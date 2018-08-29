@@ -24,7 +24,7 @@ fi
 echo -e "$bar Remove files ..."
 
 rm -v /srv/http/enhance*
-rm -v /srv/http/app/templates/{footer,header,playback}.php
+rm -v /srv/http/app/templates/enhance*
 rm -v /srv/http/assets/css/{bootstrap.min,enhance,fontawesome.min,midori,pnotify.custom.min,roundslider.min,settings,toggle-switch.min}.css
 rm -v /srv/http/assets/fonts/enhance*
 rm -v /srv/http/assets/img/{controls*,runelogo.svg,vu*}
@@ -32,9 +32,6 @@ rm -v /srv/http/assets/js/{enhance,settings}.js
 rm -v /srv/http/assets/js/vendor/{jquery-ui.min,modernizr-custom,pnotify.custom.min,roundslider.min}.js
 rm /usr/share/bootsplash/{start,reboot,shutdown}-runeaudio.png
 
-mv /srv/http/app/templates/footer.php{.backup,}
-mv /srv/http/app/templates/header.php{.backup,}
-mv /srv/http/app/templates/playback.php{.backup,}
 mv /srv/http/assets/js/vendor/pushstream.min.js{.backup,}
 mv /srv/http/assets/js/vendor/Sortable.min.js{.backup,}
 mv /srv/http/command/airplay_toggle{.backup,}
