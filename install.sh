@@ -18,6 +18,7 @@ rm -f /srv/http/assets/js/vendor/{hammer.min.js,propagating.js}
 sed -i '/hammer.min.js\|propagating.js/ d' /srv/http/app/templates/footer.php
 #1temp1
 
+mv /srv/http/index.php{,.backup}
 mv /srv/http/app/coverart_ctl.php{,.backup}
 mv /srv/http/app/templates/footer.php{,.backup}
 mv /srv/http/app/templates/header.php{,.backup}
