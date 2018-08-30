@@ -22,14 +22,12 @@ mv /srv/http/index.php{,.backup}
 mv /srv/http/assets/js/vendor/pushstream.min.js{,.backup}
 mv /srv/http/assets/js/vendor/Sortable.min.js{,.backup}
 mv /srv/http/command/airplay_toggle{,.backup}
-mv /usr/share/bootsplash/start-runeaudio.png{,.backup}
-mv /usr/share/bootsplash/reboot-runeaudio.png{,.backup}
-mv /usr/share/bootsplash/shutdown-runeaudio.png{,.backup}
 
 getinstallzip
 
-ln -s /usr/share/bootsplash/{start,reboot}-runeaudio.png
-ln -s /usr/share/bootsplash/{start,shutdown}-runeaudio.png
+ln -s /usr/share/bootsplash/reboot.png /srv/http/assets/img/bootsplash.png
+ln -s /usr/share/bootsplash/shutdown.png /srv/http/assets/img/bootsplash.png
+ln -s /usr/share/bootsplash/start.png /srv/http/assets/img/bootsplash.png
 
 echo -e "$bar Modify files ..."
 #----------------------------------------------------------------------------------
