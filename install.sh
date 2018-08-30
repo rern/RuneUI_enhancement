@@ -25,9 +25,9 @@ mv /srv/http/command/airplay_toggle{,.backup}
 
 getinstallzip
 
-ln -s /usr/share/bootsplash/reboot.png /srv/http/assets/img/bootsplash.png
-ln -s /usr/share/bootsplash/shutdown.png /srv/http/assets/img/bootsplash.png
-ln -s /usr/share/bootsplash/start.png /srv/http/assets/img/bootsplash.png
+ln -sf /usr/share/bootsplash/reboot.png /srv/http/assets/img/bootsplash.png
+ln -sf /usr/share/bootsplash/shutdown.png /srv/http/assets/img/bootsplash.png
+ln -sf /usr/share/bootsplash/start.png /srv/http/assets/img/bootsplash.png
 
 echo -e "$bar Modify files ..."
 #----------------------------------------------------------------------------------
