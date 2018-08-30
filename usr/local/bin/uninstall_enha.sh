@@ -37,9 +37,9 @@ mv /srv/http/index.php{.backup,}
 mv /srv/http/assets/js/vendor/pushstream.min.js{.backup,}
 mv /srv/http/assets/js/vendor/Sortable.min.js{.backup,}
 mv /srv/http/command/airplay_toggle{.backup,}
-ln -s /usr/share/bootsplash/reboot.png /usr/share/bootsplash/reboot-runeaudio.png
-ln -s /usr/share/bootsplash/shutdown.png /usr/share/bootsplash/shutdown-runeaudio.png
-ln -s /usr/share/bootsplash/start.png /usr/share/bootsplash/start-runeaudio.png
+ln -sf /usr/share/bootsplash/reboot.png /usr/share/bootsplash/reboot-runeaudio.png
+ln -sf /usr/share/bootsplash/shutdown.png /usr/share/bootsplash/shutdown-runeaudio.png
+ln -sf /usr/share/bootsplash/start.png /usr/share/bootsplash/start-runeaudio.png
 
 # restore modified files #######################################
 echo -e "$bar Restore modified files ..."
