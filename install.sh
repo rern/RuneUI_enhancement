@@ -178,6 +178,8 @@ hdmi_ignore_cec=1' >> $file
 file=/srv/http/app/templates/enhanceplayback.php  # for rune youtube
 [[ -e /usr/local/bin/uninstall_RuneYoutube.sh ]] && sed -i '/id="pl-import-youtube"/ {s/<!--//; s/-->//}' $file
 #----------------------------------------------------------------------------------
+# disable default shutdown
+systemctl disable rune_shutdown
 
 # correct version number
 [[ $( redis-cli get buildversion ) == 'beta-20160313' ]] && redis-cli set release 0.3 &> /dev/null
