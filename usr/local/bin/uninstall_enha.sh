@@ -32,15 +32,14 @@ rm -v /srv/http/assets/css/{bootstrap.min,enhance,fontawesome.min,midori,pnotify
 rm -v /srv/http/assets/img/{controls*,runelogo.svg,vu*}
 rm -v /srv/http/assets/js/{enhance,settings}.js
 rm -v /srv/http/assets/js/vendor/{jquery-ui.min,modernizr-custom,pnotify.custom.min,roundslider.min}.js
-rm /usr/share/bootsplash/{start,reboot,shutdown}-runeaudio.png
 
 mv /srv/http/index.php{.backup,}
 mv /srv/http/assets/js/vendor/pushstream.min.js{.backup,}
 mv /srv/http/assets/js/vendor/Sortable.min.js{.backup,}
 mv /srv/http/command/airplay_toggle{.backup,}
-mv /usr/share/bootsplash/start-runeaudio.png{.backup,}
-mv /usr/share/bootsplash/reboot-runeaudio.png{.backup,}
-mv /usr/share/bootsplash/shutdown-runeaudio.png{.backup,}
+ln -s /usr/share/bootsplash/reboot.png /usr/share/bootsplash/reboot-runeaudio.png
+ln -s /usr/share/bootsplash/shutdown.png /usr/share/bootsplash/shutdown-runeaudio.png
+ln -s /usr/share/bootsplash/start.png /usr/share/bootsplash/start-runeaudio.png
 
 # restore modified files #######################################
 echo -e "$bar Restore modified files ..."
