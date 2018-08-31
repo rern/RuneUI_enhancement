@@ -559,7 +559,7 @@ $( '#turnoff' ).click( function() {
 		, buttonlabel : 'Reboot'
 		, buttoncolor : '#de810e'
 		, button      : function() {
-			$.post( 'enhance.php', { 'power' : 'reboot' } );
+			$.post( 'enhance.php', { 'power' : 'reboot' }, function( data ) { console.log(data) } );
 			$( '#loader' ).removeClass( 'hide' );
 		}
 	} );
@@ -1636,13 +1636,13 @@ function renderLibraryHome() {
 	var data = obj.webradio === 0 ? ' data-target="webradio-add"' : ' data-path="Webradio"';
 	content += divOpen +'<div id="home-webradio" class="home-block'+ toggleMPD +'"'+ data +'><i class="fa fa-webradio"></i><h4>Webradios <span>( '+ obj.webradio +' )</span></h4></div></div>';
 	// albums
-	content += divOpen +'<div id="home-albums" class="home-block'+ toggleMPD +'" data-path="Albums" data-browsemode="album"><i class="fa fa-album"></i><h4>Albums <span>( '+ GUI.counts.Albums +' )</span></h4></div></div>';
+	content += divOpen +'<div id="home-albums" class="home-block'+ toggleMPD +'" data-path="Albums" data-browsemode="album"><i class="fa fa-album"></i><h4>Albums <span>( '+ GUI.counts.Album +' )</span></h4></div></div>';
 	// artist
-	content += divOpen +'<div id="home-artists" class="home-block'+ toggleMPD +'" data-path="Artists" data-browsemode="artist"><i class="fa fa-artist"></i><h4>Artists <span>( '+ GUI.counts.Artists +' )</span></h4></div></div>';
+	content += divOpen +'<div id="home-artists" class="home-block'+ toggleMPD +'" data-path="Artists" data-browsemode="artist"><i class="fa fa-artist"></i><h4>Artists <span>( '+ GUI.counts.Artist +' )</span></h4></div></div>';
 	// composer
-	content += divOpen +'<div id="home-composer" class="home-block'+ toggleMPD +'" data-path="Composer" data-browsemode="composer"><i class="fa fa-composer"></i><h4>Composers</h4></div></div>';
+	content += divOpen +'<div id="home-composer" class="home-block'+ toggleMPD +'" data-path="Composer" data-browsemode="composer"><i class="fa fa-composer"></i><h4>Composers <span>( '+ GUI.counts.composer +' )</span></h4></div></div>';
 	// genre
-	content += divOpen +'<div id="home-genre" class="home-block'+ toggleMPD +'" data-path="Genres" data-browsemode="genre"><i class="fa fa-genre"></i><h4>Genres</h4></div></div>';
+	content += divOpen +'<div id="home-genre" class="home-block'+ toggleMPD +'" data-path="Genres" data-browsemode="genre"><i class="fa fa-genre"></i><h4>Genres <span>( '+ GUI.counts.genre +' )</span></h4></div></div>';
 	// spotify
 	if ( obj.Spotify && obj.Spotify !== '0' ) {
 		if (obj.ActivePlayer !== 'Spotify' ) {
@@ -1663,7 +1663,7 @@ function renderLibraryHome() {
 	} );
 	$( '#loader' ).addClass( 'hide' );
 	//$( '#db-currentpath span' ).html( '<a>&ensp;LIBRARY</a>' );
-	$( '#db-currentpath span' ).html( '<a> LIBRARY</a><a id="li-count">&#8226;&ensp;<span>'+ GUI.counts.Songs +'</span><i class="fa fa-music"></i></a>' );
+	$( '#db-currentpath span' ).html( '<a> LIBRARY</a><a id="li-count">&#8226;&ensp;<span>'+ GUI.counts.Title +'</span><i class="fa fa-music"></i></a>' );
 	// hide breadcrumb, index bar, edit bookmark
 	$( '#db-index, #db-level-up, #db-webradio-new, #db-homeSetup' ).addClass( 'hide' );
 	displayLibrary();
