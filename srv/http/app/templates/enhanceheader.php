@@ -14,7 +14,7 @@
 <?php } ?>
 	<link rel="shortcut icon" href="<?=$this->asset( '/img/favicon.ico' )?>">
 	<link rel="stylesheet" href="<?=$this->asset( '/css/bootstrap.min.css' )?>">
-	<link rel="stylesheet" href="<?=$this->asset( '/css/pnotify.custom.css' )?>">
+	<link rel="stylesheet" href="<?=$this->asset( '/css/pnotify.custom.min.css' )?>">
 
 <?php if ( is_localhost() ) { ?>
 	<link rel="stylesheet" href="<?=$this->asset( '/css/onScreenKeyboard.css' )?>">
