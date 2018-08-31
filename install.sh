@@ -23,12 +23,9 @@ mv /srv/http/assets/js/vendor/pnotify.custom.min.js{,.backup}
 mv /srv/http/assets/js/vendor/pushstream.min.js{,.backup}
 mv /srv/http/assets/js/vendor/Sortable.min.js{,.backup}
 mv /srv/http/command/airplay_toggle{,.backup}
+ln -sf /usr/share/bootsplash/start.png /srv/http/assets/img/bootsplash.png
 
 getinstallzip
-
-ln -sf /usr/share/bootsplash/reboot.png /srv/http/assets/img/bootsplash.png
-ln -sf /usr/share/bootsplash/shutdown.png /srv/http/assets/img/bootsplash.png
-ln -sf /usr/share/bootsplash/start.png /srv/http/assets/img/bootsplash.png
 
 echo -e "$bar Modify files ..."
 #----------------------------------------------------------------------------------
