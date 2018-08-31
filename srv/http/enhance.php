@@ -24,9 +24,11 @@ if ( isset( $_POST[ 'redis' ] ) ) {
 		}
 	}
 	$types = array( 'Title', 'Album', 'Artist', 'composer', 'genre' );
-	foreach( $types as $type ) {
-		$result[ 'counts' ][ $type ] = number_format( exec( 'mpc list '.$type.' | awk NF | wc -l' ) );
-	}
+	$counts = shell_exec( 'for type in '.implode( ' ', $types ).'; do mpc list $type | awk NF | wc -l; done' );
+	$counts = explode( "\n", $counts );
+	array_pop( $counts ); // remove last blank
+	$result[ 'counts' ] = array_combine( $types, $counts );
+	
 	echo json_encode( $result );
 	
 	// broadcast to all clients on hmSet display or set volume
