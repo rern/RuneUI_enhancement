@@ -547,10 +547,10 @@ $( '#closebio' ).click( function() {
 // poweroff
 $( '#turnoff' ).click( function() {
 	info( {
-		  icon        : 'power-off'
+		  icon        : 'power'
 		, title       : 'Power'
 		, message     : 'Select mode:'
-		, oklabel     : 'Power off'
+		, oklabel     : 'Off'
 		, okcolor     : '#bb2828'
 		, ok          : function() {
 			$.post( 'enhance.php', { 'power' : 'shutdown' } );
