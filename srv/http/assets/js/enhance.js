@@ -1135,7 +1135,7 @@ $( '#pl-manage-list' ).click( function() {
 			// fill bottom of list to mave last li movable to top
 			$( '#pl-editor p' ).css( 'min-height', window.innerHeight - ( GUI.display.bars ? 140 : 100 ) +'px' );
 			$( '#loader' ).addClass( 'hide' );
-			var plcount = arrayplL ? '<a> • <span>'+ arrayplL +'</span> <i class="fa fa-list-ul"></i></a>' : '';
+			var plcount = arrayplL ? '<a> • <span>'+ numFormat( arrayplL ) +'</span> <i class="fa fa-list-ul"></i></a>' : '';
 			$( '#pl-currentpath' ).html( '&ensp;PLAYLISTS'+ plcount );
 			$( '#pl-currentpath, #pl-editor, #pl-index' ).removeClass( 'hide' );
 			$( 'html, body' ).scrollTop( GUI.plscrolltop );
@@ -1600,6 +1600,9 @@ function setPlaybackSource() {
 		$( '#single' ).prop( 'disabled' );
 	}
 }
+function numFormat( num ) {
+	return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 function renderLibraryHome() {
 //	GUI.dbscrolltop = {}; // comment to always keep scroll positions
 	GUI.plugin = '';
@@ -1637,15 +1640,15 @@ function renderLibraryHome() {
 	content += divOpen +'<div id="home-usb" class="home-block'+ toggleMPD +'"'+ ( obj.USBMounts === 0 ? ( notMPD ? '' : ' href="/sources/sources/"' ) : ' data-path="USB"' ) +'><i class="fa fa-usbdrive"></i><h4>USB drives <span>( '+ obj.USBMounts +' )</span></h4></div></div>';
 	// webradio
 	var data = obj.webradio === 0 ? ' data-target="webradio-add"' : ' data-path="Webradio"';
-	content += divOpen +'<div id="home-webradio" class="home-block'+ toggleMPD +'"'+ data +'><i class="fa fa-webradio"></i><h4>Webradios <span>( '+ obj.webradio +' )</span></h4></div></div>';
+	content += divOpen +'<div id="home-webradio" class="home-block'+ toggleMPD +'"'+ data +'><i class="fa fa-webradio"></i><h4>Webradios <span>( '+ numFormat( obj.webradio ) +' )</span></h4></div></div>';
 	// albums
-	content += divOpen +'<div id="home-albums" class="home-block'+ toggleMPD +'" data-path="Albums" data-browsemode="album"><i class="fa fa-album"></i><h4>Albums <span>( '+ GUI.counts.Album +' )</span></h4></div></div>';
+	content += divOpen +'<div id="home-albums" class="home-block'+ toggleMPD +'" data-path="Albums" data-browsemode="album"><i class="fa fa-album"></i><h4>Albums <span>( '+ numFormat( GUI.counts.Album ) +' )</span></h4></div></div>';
 	// artist
-	content += divOpen +'<div id="home-artists" class="home-block'+ toggleMPD +'" data-path="Artists" data-browsemode="artist"><i class="fa fa-artist"></i><h4>Artists <span>( '+ GUI.counts.Artist +' )</span></h4></div></div>';
+	content += divOpen +'<div id="home-artists" class="home-block'+ toggleMPD +'" data-path="Artists" data-browsemode="artist"><i class="fa fa-artist"></i><h4>Artists <span>( '+ numFormat( GUI.counts.Artist ) +' )</span></h4></div></div>';
 	// composer
-	content += divOpen +'<div id="home-composer" class="home-block'+ toggleMPD +'" data-path="Composer" data-browsemode="composer"><i class="fa fa-composer"></i><h4>Composers <span>( '+ GUI.counts.composer +' )</span></h4></div></div>';
+	content += divOpen +'<div id="home-composer" class="home-block'+ toggleMPD +'" data-path="Composer" data-browsemode="composer"><i class="fa fa-composer"></i><h4>Composers <span>( '+ numFormat( GUI.counts.composer ) +' )</span></h4></div></div>';
 	// genre
-	content += divOpen +'<div id="home-genre" class="home-block'+ toggleMPD +'" data-path="Genres" data-browsemode="genre"><i class="fa fa-genre"></i><h4>Genres <span>( '+ GUI.counts.genre +' )</span></h4></div></div>';
+	content += divOpen +'<div id="home-genre" class="home-block'+ toggleMPD +'" data-path="Genres" data-browsemode="genre"><i class="fa fa-genre"></i><h4>Genres <span>( '+ numFormat( GUI.counts.genre ) +' )</span></h4></div></div>';
 	// spotify
 	if ( obj.Spotify && obj.Spotify !== '0' ) {
 		if (obj.ActivePlayer !== 'Spotify' ) {
@@ -1666,7 +1669,7 @@ function renderLibraryHome() {
 	} );
 	$( '#loader' ).addClass( 'hide' );
 	//$( '#db-currentpath span' ).html( '<a>&ensp;LIBRARY</a>' );
-	$( '#db-currentpath span' ).html( '<a> LIBRARY</a><a id="li-count"> • &nbsp;<span>'+ GUI.counts.Title +'</span><i class="fa fa-music"></i></a>' );
+	$( '#db-currentpath span' ).html( '<a> LIBRARY</a><a id="li-count"> • &nbsp;<span>'+ numFormat( GUI.counts.Title ) +'</span><i class="fa fa-music"></i></a>' );
 	// hide breadcrumb, index bar, edit bookmark
 	$( '#db-index, #db-level-up, #db-webradio-new, #db-homeSetup' ).addClass( 'hide' );
 	displayLibrary();
@@ -2153,14 +2156,14 @@ function renderPlaylist() {
 				+'</li>';
 			classcurrent = classradio = '';
 		}
-		var counthtml = '<a>PLAYLIST</a><span>&ensp;&#8226;&ensp;</span><a>';
+		var counthtml = '<a>PLAYLIST</a><span> • </span><a>';
 		if ( countsong ) {
 			if ( countradio ) {
 				var totalhtml = '&ensp;<span>'+ convertHMS( playlisttime ) +'</span>&emsp;<a>'+ countradio +'</a>&ensp; <i class="fa fa-webradio"></i>';
 			} else {
 				var totalhtml = '&ensp;<a>'+ convertHMS( playlisttime ) +'</a>';
 			}
-			counthtml += countsong +'</a>&ensp;<i class="fa fa-music"></i>&ensp;'+ totalhtml;
+			counthtml += numFormat( countsong ) +'</a>&ensp;<i class="fa fa-music"></i>&ensp;'+ totalhtml;
 		} else {
 			counthtml += countradio +'</a>&ensp; <i class="fa fa-webradio"></i>';
 		}
