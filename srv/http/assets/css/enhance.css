@@ -1146,7 +1146,7 @@ label {
 }
 #db-search-results span,
 #pl-filter-results span {
-	    margin-left: 5px;
+	margin-left: 5px;
 	vertical-align: 12%;
 	font-size: 18px;
 }
@@ -1160,7 +1160,8 @@ label {
 }
 #db-currentpath span i {
 	margin: 0 10px;
-	vertical-align: -15%;
+	vertical-align: -10%;
+	font-size: 24px;
 	color: #e0e7ee;
 }
 #db-currentpath span a:last-of-type {
