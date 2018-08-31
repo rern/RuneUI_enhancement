@@ -1125,6 +1125,7 @@ $( '#pl-manage-list' ).click( function() {
 		arraypl.sort( function( a, b ) {
 			return stripLeading( a ).localeCompare( stripLeading( b ), undefined, { numeric: true } );
 		} );
+		var arrayplL = arraypl.length;
 		var content = '';
 		arraypl.forEach( function( el ) {
 			content += '<li class="pl-folder" data-path="'+ el +'"><i class="fa fa-list-ul pl-icon"></i><i class="fa fa-bars pl-action"></i><span>'+ el +'</span></li>';
@@ -1134,6 +1135,7 @@ $( '#pl-manage-list' ).click( function() {
 			// fill bottom of list to mave last li movable to top
 			$( '#pl-editor p' ).css( 'min-height', window.innerHeight - ( GUI.display.bars ? 140 : 100 ) +'px' );
 			$( '#loader' ).addClass( 'hide' );
+			$( '#pl-currentpath' ).html( '&ensp;PLAYLISTS<a> • </a><span>'+ arrayplL +'</span> <a><i class="fa fa-list-ul"></i></a>' );
 			$( '#pl-currentpath, #pl-editor, #pl-index' ).removeClass( 'hide' );
 			$( 'html, body' ).scrollTop( GUI.plscrolltop );
 			displayIndex();
