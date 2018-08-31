@@ -1587,6 +1587,31 @@ w {
 	cursor: default
 }
 
+/* bootstrap column */
+.home-bookmark h4 {
+	width: 100%;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+@media (max-width: 992px) {
+	#home-blocks .col-md-3 {
+		float: left;
+		width: 33.3333333%;
+	}
+}
+@media (max-width: 749px) {
+	#home-blocks .col-md-3 {
+		float: left;
+		width: 50%;
+	}
+}
+@media (max-width: 480px) {
+	#home-blocks .col-md-3 {
+		float: left;
+		width: 100%;
+	}
+}
 /* ---------------------- responsive ----------------------*/
 @media(max-width: 749px) {
 	#playback-row {
