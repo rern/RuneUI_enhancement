@@ -29,7 +29,7 @@ rm -v /srv/http/app/enhance*
 rm -v /srv/http/app/templates/enhance*
 rm -v /srv/http/assets/fonts/enhance*
 rm -v /srv/http/assets/css/{bootstrap.min,enhance,fontawesome.min,midori,pnotify.custom.min,roundslider.min,settings,toggle-switch.min}.css
-rm -v /srv/http/assets/img/{controls*,runelogo.svg,vu*}
+rm -v /srv/http/assets/img/{bootsplash.png,controls*,runelogo.svg,vu*}
 rm -v /srv/http/assets/js/{enhance,settings}.js
 rm -v /srv/http/assets/js/vendor/{jquery-ui.min,modernizr-custom,pnotify.custom.min,roundslider.min}.js
 
@@ -38,8 +38,6 @@ mv /srv/http/assets/js/vendor/pnotify.custom.min.js{.backup,}
 mv /srv/http/assets/js/vendor/pushstream.min.js{.backup,}
 mv /srv/http/assets/js/vendor/Sortable.min.js{.backup,}
 mv /srv/http/command/airplay_toggle{.backup,}
-ln -sf /usr/share/bootsplash/reboot.png /usr/share/bootsplash/reboot-runeaudio.png
-ln -sf /usr/share/bootsplash/shutdown.png /usr/share/bootsplash/shutdown-runeaudio.png
 ln -sf /usr/share/bootsplash/start.png /usr/share/bootsplash/start-runeaudio.png
 
 # restore modified files #######################################
