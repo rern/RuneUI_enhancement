@@ -1172,6 +1172,17 @@ label {
 	letter-spacing: 5px;
 	color: #0095d8;
 }
+#pl-currentpath span {
+	letter-spacing: normal;
+	color: #e0e7ee;
+}
+#pl-currentpath a {
+	color: #587ca0;
+}
+#pl-currentpath i {
+	font-size: 24px;
+	vertical-align: -10%;
+}
 .index {
 	position: fixed;
 	right: 0;
