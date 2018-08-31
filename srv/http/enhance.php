@@ -78,10 +78,10 @@ if ( isset( $_POST[ 'redis' ] ) ) {
 	$result = shell_exec( '/usr/bin/sudo '.$_POST[ 'bash' ] );
 	echo $result;
 } else if ( isset( $_POST[ 'power' ] ) ) {
-	$cmd = '';
-	if ( file_exists( '/root/gpiooff.py' ) ) $cmd.= '/root/gpiooff.py;';
-	if ( $redis->get( local_browser ) === '1' ) $cmd .= '/usr/binkillall Xorg; /usr/local/bin/ply-image /srv/http/assets/img/bootsplash.png;';
-	$cmd.= '/usr/bin/umount -f -a -t cifs nfs -l;';
-	$reboot = $_POST[ 'power' ] === 'reboot' ? '-r' : '-h';
-	exec( '/usr/bin/sudo '.$cmd.' /usr/bin/shutdown '.$reboot.' now' );
+	$sudo = '/usr/bin/sudo /usr/bin/';
+	if ( file_exists( '/root/gpiooff.py' ) ) $cmd.= '/usr/bin/sudo /root/gpiooff.py;';
+	if ( $redis->get( local_browser ) === '1' ) $cmd .= $sudo.'killall Xorg; /usr/local/bin/ply-image /srv/http/assets/img/bootsplash.png;';
+	$cmd.= $sudo.'umount -f -a -t cifs nfs -l;';
+	$cmd.= $sudo.'shutdown '.( $_POST[ 'power' ] === 'reboot' ? '-r' : '-h' ).' now';
+	exec( $cmd );
 }
