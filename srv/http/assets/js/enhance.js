@@ -1620,7 +1620,7 @@ function renderLibraryHome() {
 	setPlaybackSource();
 	
 	var content = '';
-	var divOpen = '<div class="col-lg-3 col-md-4 col-sm-6">';
+	var divOpen = '<div class="col-md-3">';
 	// bookmark
 	var bookmarkL = obj.bookmarks.length;
 	if ( bookmarkL ) {
