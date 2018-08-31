@@ -23,14 +23,10 @@ if ( isset( $_POST[ 'redis' ] ) ) {
 			$result[ $field ] = $redis->$command( $arg[ 1 ], $arg[ 2 ], $arg[ 3 ] );
 		}
 	}
-	$stats = shell_exec( "mpc stats | head -n 3 | tr -d ' '" );
-	$stats = explode( "\n", $stats );
-	foreach( $stats as $stat ) {
-		$kv = explode( ':', $stat );
-		// only with value
-		if ( $kv[ 1 ] ) $counts[ $kv[ 0 ] ] = number_format( $kv[ 1 ] );
+	$types = array( 'Title', 'Album', 'Artist', 'composer', 'genre' );
+	foreach( $types as $type ) {
+		$result[ 'counts' ][ $type ] = number_format( exec( 'mpc list '.$type.' | awk NF | wc -l' ) );
 	}
-	$result[ 'counts' ] = $counts;
 	echo json_encode( $result );
 	
 	// broadcast to all clients on hmSet display or set volume
