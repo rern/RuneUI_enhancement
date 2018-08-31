@@ -1135,7 +1135,7 @@ $( '#pl-manage-list' ).click( function() {
 			// fill bottom of list to mave last li movable to top
 			$( '#pl-editor p' ).css( 'min-height', window.innerHeight - ( GUI.display.bars ? 140 : 100 ) +'px' );
 			$( '#loader' ).addClass( 'hide' );
-			var plcount = arrayplL ? '<a> • </a><span>'+ arrayplL +'</span> <a><i class="fa fa-list-ul"></i></a>' : '';
+			var plcount = arrayplL ? '<a> • <span>'+ arrayplL +'</span> <i class="fa fa-list-ul"></i></a>' : '';
 			$( '#pl-currentpath' ).html( '&ensp;PLAYLISTS'+ plcount );
 			$( '#pl-currentpath, #pl-editor, #pl-index' ).removeClass( 'hide' );
 			$( 'html, body' ).scrollTop( GUI.plscrolltop );
@@ -1666,7 +1666,7 @@ function renderLibraryHome() {
 	} );
 	$( '#loader' ).addClass( 'hide' );
 	//$( '#db-currentpath span' ).html( '<a>&ensp;LIBRARY</a>' );
-	$( '#db-currentpath span' ).html( '<a> LIBRARY</a><a id="li-count">&#8226;&ensp;<span>'+ GUI.counts.Title +'</span><i class="fa fa-music"></i></a>' );
+	$( '#db-currentpath span' ).html( '<a> LIBRARY</a><a id="li-count"> • &nbsp;<span>'+ GUI.counts.Title +'</span><i class="fa fa-music"></i></a>' );
 	// hide breadcrumb, index bar, edit bookmark
 	$( '#db-index, #db-level-up, #db-webradio-new, #db-homeSetup' ).addClass( 'hide' );
 	displayLibrary();
