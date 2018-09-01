@@ -49,6 +49,7 @@ files="
 /srv/http/db/index.php
 /srv/http/app/libs/runeaudio.php
 /srv/http/app/settings_ctl.php
+/srv/http/command/rune_PL_wrk
 /root/.config/midori/config
 /root/.xinitrc
 "
@@ -57,3 +58,4 @@ restorefile $files
 uninstallfinish $@
 
 [[ $1 != u ]] && clearcache
+systemctl restart rune_PL_wrk
