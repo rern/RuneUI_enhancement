@@ -105,7 +105,7 @@ if ( $status[ 'state' ] === 'play' ) {
 	$bitdepth = ( $status[ 'ext' ] === 'radio' ) ? '' : $status[ 'bitdepth' ];
 	$sampling = samplingline( $bitdepth, $status[ 'samplerate' ], $status[ 'bitrate' ] );
 	$status[ 'sampling' ] = $sampling;
-	echo json_encode( $status );
+	echo json_encode( $status, JSON_NUMERIC_CHECK );
 	// save only webradio: update sampling database on each play
 	$redis->hSet( 'sampling', $name, $sampling );
 	die();
@@ -117,7 +117,7 @@ if ( $status[ 'ext' ] === 'radio' ) {
 	$webradios = $redis->hGetAll( 'webradios' );
 	$webradioname = array_flip( $webradios );
 	if ( $sampling = $redis->hGet( 'sampling', $name ) ) $status[ 'sampling' ] = $sampling;
-	echo json_encode( $status );
+	echo json_encode( $status, JSON_NUMERIC_CHECK );
 	die();
 }
 // file
@@ -149,4 +149,4 @@ if ( $ext === 'DSF' || $ext === 'DFF' ) {
 	$sampling = $bitrate ? samplingline( $bitdepth, $samplerate, $bitrate ) : '';
 }
 $status[ 'sampling' ] = $sampling;
-echo json_encode( $status );
+echo json_encode( $status, JSON_NUMERIC_CHECK );
