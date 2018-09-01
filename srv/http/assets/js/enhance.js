@@ -1135,8 +1135,8 @@ $( '#pl-manage-list' ).click( function() {
 			// fill bottom of list to mave last li movable to top
 			$( '#pl-editor p' ).css( 'min-height', window.innerHeight - ( GUI.display.bars ? 140 : 100 ) +'px' );
 			$( '#loader' ).addClass( 'hide' );
-			var plcount = arrayplL ? '<a> • <span>'+ numFormat( arrayplL ) +'</span> <i class="fa fa-list-ul"></i></a>' : '';
-			$( '#pl-currentpath' ).html( '&ensp;PLAYLISTS'+ plcount );
+			var plcount = arrayplL ? '&emsp;<a>P L A Y L I S T S</a>&emsp;<span>•</span>&ensp;<a>'+ numFormat( arrayplL ) +'</a>&ensp;<i class="fa fa-list-ul"></i>' : '';
+			$( '#pl-currentpath' ).html( plcount );
 			$( '#pl-currentpath, #pl-editor, #pl-index' ).removeClass( 'hide' );
 			$( 'html, body' ).scrollTop( GUI.plscrolltop );
 			displayIndex();
@@ -1607,6 +1607,7 @@ function renderLibraryHome() {
 //	GUI.dbscrolltop = {}; // comment to always keep scroll positions
 	GUI.plugin = '';
 	$( '#db-currentpath' ).removeAttr( 'path' ).css( 'width', '' );
+	$( '#db-currentpath span' ).html( '&emsp;<a>L I B R A R Y</a>&emsp;<a id="li-count">•<span>&ensp;'+ numFormat( GUI.counts.Title ) +'</span><i class="fa fa-music"></i></a>' );
 	$( '#database-entries' ).empty();
 	$( '#db-search-results' ).addClass( 'hide' );
 	$( '#db-search-keyword' ).val( '' );
@@ -1668,8 +1669,6 @@ function renderLibraryHome() {
 		$( 'html, body' ).scrollTop( 0 );
 	} );
 	$( '#loader' ).addClass( 'hide' );
-	//$( '#db-currentpath span' ).html( '<a>&ensp;LIBRARY</a>' );
-	$( '#db-currentpath span' ).html( '<a> LIBRARY</a><a id="li-count"> • &nbsp;<span>'+ numFormat( GUI.counts.Title ) +'</span><i class="fa fa-music"></i></a>' );
 	// hide breadcrumb, index bar, edit bookmark
 	$( '#db-index, #db-level-up, #db-webradio-new, #db-homeSetup' ).addClass( 'hide' );
 	displayLibrary();
@@ -2111,7 +2110,6 @@ function renderPlaylist() {
 	if ( ( GUI.json.playlistlength == 0 && !GUI.pleditor ) || GUI.plclear ) {
 		GUI.plclear = 0;
 		$( '.playlist' ).removeClass( 'hide' );
-		$( '#pl-count' ).html( '<a>PLAYLIST</a>' );
 		var barhide = !GUI.display.bars || window.innerWidth < 499 || window.innerHeight < 515;
 		$( '#playlist-warning' ).css( 'margin-top', barhide ? '27px' : '67px' );
 		return;
@@ -2123,7 +2121,7 @@ function renderPlaylist() {
 		var current = parseInt( GUI.json.song ) + 1;
 		var state = GUI.json.state;
 		var content = bottomline = classcurrent = classradio = hidetotal = '';
-		var id = totaltime = playlisttime = countsong = countradio = counttotal = i = 0;
+		var id = totaltime = playlisttime = countsong = countradio = i = 0;
 		var ilength = data.length;
 		for ( i = 0; i < ilength; i++ ) {
 			var pl = data[ i ];
@@ -2135,7 +2133,6 @@ function renderPlaylist() {
 				bottomline = pl.file;
 			} else {
 				var iconhtml = '<i class="fa fa-music pl-icon"></i>';
-				countsong++
 				time = parseInt( pl.Time );
 				var title = pl.Title ? pl.Title : pl.file.split( '/' ).pop();
 				var track = pl.Track ? '#'+ pl.Track +' • ' : '';
@@ -2144,8 +2141,7 @@ function renderPlaylist() {
 				bottomline = track + pl.Artist + album;
 				playlisttime += time;
 			}
-			counttotal++;
-			classcurrent = ( state !== 'stop' && counttotal === current ) ? 'active' : '';
+			classcurrent = ( state !== 'stop' && i === current ) ? 'active' : '';
 			cl = ' class="'+ classcurrent + ( classradio ? ' radio' : '' ) +'"';
 			cl = ( classcurrent || classradio ) ? cl : '';
 			content += '<li id="pl-'+ pl.Id +'"'+ cl +'>'
@@ -2156,16 +2152,17 @@ function renderPlaylist() {
 				+'</li>';
 			classcurrent = classradio = '';
 		}
-		var counthtml = '<a>PLAYLIST</a><span> • </span><a>';
+		var counthtml = '&emsp;<a>P L A Y L I S T</a>&emsp;<span>•</span>&ensp;<a>';
+		var countsong = ilength - countradio;
 		if ( countsong ) {
 			if ( countradio ) {
-				var totalhtml = '&ensp;<span>'+ convertHMS( playlisttime ) +'</span>&emsp;<a>'+ countradio +'</a>&ensp; <i class="fa fa-webradio"></i>';
+				var totalhtml = '<span>'+ convertHMS( playlisttime ) +'</span>&ensp;<a>'+ countradio +'</a>&ensp;<i class="fa fa-webradio"></i>';
 			} else {
-				var totalhtml = '&ensp;<a>'+ convertHMS( playlisttime ) +'</a>';
+				var totalhtml = '<a>'+ convertHMS( playlisttime ) +'</a>';
 			}
 			counthtml += numFormat( countsong ) +'</a>&ensp;<i class="fa fa-music"></i>&ensp;'+ totalhtml;
 		} else {
-			counthtml += countradio +'</a>&ensp; <i class="fa fa-webradio"></i>';
+			counthtml += countradio +'</a>&ensp;<i class="fa fa-webradio"></i>';
 		}
 		$( '#loader' ).addClass( 'hide' );
 		$( '.playlist' ).removeClass( 'hide' );
