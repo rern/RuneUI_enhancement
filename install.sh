@@ -205,4 +205,6 @@ fi
 [[ $( redis-cli get volume ) == 1 ]] && volume=1 || volume=''
 redis-cli hset display volumempd $volume &> /dev/null
 
+systemctl restart rune_PL_wrk
+
 reinitsystem
