@@ -1553,6 +1553,9 @@ function displayLibrary() {
 	toggleLiHome( 'jamendo' );
 	
 	displayCommon();
+	setTimeout( function() {
+		$( 'html, body' ).scrollTop( 0 );
+	}, 0 );
 }
 function setPlaylistScroll() {
 	if ( GUI.pleditor ) return;
