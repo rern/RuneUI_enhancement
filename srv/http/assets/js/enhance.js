@@ -154,7 +154,6 @@ pushstreamLibrary.connect();
 var pushstreamPlaylist = new PushStream( psOption );
 pushstreamPlaylist.onmessage = function() {
 	if ( $( '#panel-dx' ).hasClass( 'active' ) ) {
-		GUI.plscrolltop = $( window ).scrollTop();
 		GUI.pleditor ? $( '#pl-manage-list' ).click() : renderPlaylist();
 	}
 }
