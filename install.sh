@@ -64,6 +64,17 @@ EOF
 )
 append 'echo getPlayQueue($mpd)'
 #----------------------------------------------------------------------------------
+file=/srv/http/command/rune_PL_wrk
+echo $file
+
+comment -n +2 'JSON response for GUI'
+
+string=$( cat <<'EOF'
+                    ui_render('playback', 1);
+EOF
+)
+append -n +2 'JSON response for GUI'
+#----------------------------------------------------------------------------------
 file=/srv/http/app/libs/runeaudio.php
 echo $file
 
