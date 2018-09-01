@@ -1323,11 +1323,13 @@ span.dbpath {
 #pl-count,
 #pl-currentpath {
 	display: inline-block;
-	width: calc( 100% - 370px );
 	height: 40px;
 	font-size: 18px;
 	line-height: 44px;
 	color: #587ca0;
+}
+#pl-count {
+	width: calc( 100% - 370px );
 }
 #pl-count i {
 	font-size: 24px;
