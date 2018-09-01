@@ -1080,7 +1080,8 @@ label {
 #db-currentpath {
 	float: left;
 	width: calc( 100% - 230px );
-	line-height: 40px;
+	height: 40px;
+	line-height: 44px;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -1110,12 +1111,6 @@ label {
 #db-home:hover,
 #pl-home:hover {
 	background: #0072a5;
-}
-#db-currentpath a,
-#pl-currentpath {
-	font-size: 18px;
-	line-height: 40px;
-	color: #0095d8;
 }
 #db-search,
 #pl-search {
@@ -1169,16 +1164,8 @@ label {
 }
 #db-currentpath span a:first-of-type,
 #pl-count a:first-child,
-#pl-currentpath {
-	letter-spacing: 5px;
+#pl-currentpath a:first-child {
 	color: #0095d8;
-}
-#pl-currentpath span {
-	letter-spacing: normal;
-	color: #e0e7ee;
-}
-#pl-currentpath a {
-	color: #587ca0;
 }
 #pl-currentpath i {
 	font-size: 24px;
@@ -1333,9 +1320,9 @@ span.dbpath {
 #li-count span {
 	color: #e0e7ee;
 }
-#pl-count {
+#pl-count,
+#pl-currentpath {
 	display: inline-block;
-	margin: 0 0 0 13px;
 	width: calc( 100% - 370px );
 	height: 40px;
 	font-size: 18px;
@@ -1763,10 +1750,6 @@ w {
 	#db-currentpath span>*:not(:first-child),
 	.pl-icon { /* toggle */
 		display: none;
-	}
-	#db-currentpath span a:first-of-type,
-	#pl-currentpath {
-		letter-spacing: 0;
 	}
 	#db-search,
 	#pl-search {
