@@ -14,7 +14,6 @@ var GUI = {
 	, display      : {}
 	, imodedelay   : 0 // fix imode flashing on usb dac switching
 	, json         : 0
-	, libraryhome  : ''
 	, list         : {}
 	, mode         : 'websocket'
 	, noscroll     : 0
