@@ -125,6 +125,7 @@ pushstreamPlayback.onmessage = function( text ) {
 }
 pushstreamPlayback.onstatuschange = function( status ) {
 	if ( status === 2 ) {
+		$( '#loader' ).addClass( 'hide' );
 		setPlaybackData();
 	} else if ( status === 0 ) {
 		$( '#loader' ).removeClass( 'hide' );          
