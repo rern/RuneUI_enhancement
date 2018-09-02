@@ -1,4 +1,4 @@
-<div id="starter" class="hide"><img src="<?=$this->asset( '/img/runelogo.svg' )?>"></div>
+<div id="starter"><img src="<?=$this->asset( '/img/runelogo.svg' )?>"></div>
 <div id="loader" class="hide"><img src="<?=$this->asset( '/img/runelogo.svg' )?>"></div>
 
 <!-- pass cache busting assets to addonsbash.php and gpiosettings.php -->
