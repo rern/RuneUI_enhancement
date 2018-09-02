@@ -84,8 +84,8 @@ if ( isset( $_POST[ 'redis' ] ) ) {
 	include '/srv/http/app/libs/runeaudio.php';
 	$mpd = openMpdSocket('/run/mpd.sock');
 	$localStorages = countDirs( '/mnt/MPD/LocalStorage' );
-	$networkmounts = countDirs( '/mnt/MPD/NAS' );
-	$usbmounts = countDirs( '/mnt/MPD/USB' );
+	$networkmounts = exec( 'df | grep "/mnt/MPD/NAS" | wc -l' );
+	$usbmounts = exec( 'df | grep "/mnt/MPD/USB" | wc -l' );
 	$webradios = count( $redis->hKeys( 'webradios' ) );
 	$proxy = $redis->hGetall( 'proxy' );
 	$dirblecfg = $redis->hGetAll( 'dirble' );
