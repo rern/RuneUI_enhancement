@@ -1,6 +1,5 @@
-<div id="loader" class="hide">
-	<img src="<?=$this->asset( '/img/runelogo.svg' )?>">
-</div>
+<div id="starter" class="hide"><img src="<?=$this->asset( '/img/runelogo.svg' )?>"></div>
+<div id="loader" class="hide"><img src="<?=$this->asset( '/img/runelogo.svg' )?>"></div>
 
 <!-- pass cache busting assets to addonsbash.php and gpiosettings.php -->
 <?php if ( $this->uri(1) === 'addons' || file_exists( '/srv/http/assets/js/gpio.js' ) ) { ?>
