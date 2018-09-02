@@ -24,13 +24,10 @@ var GUI = {
 	, pleditor     : 0
 	, plscrolltop  : 0
 	, plugin       : ''
-	, prevnext     : 0 // disable 'btn-primary' - previous/next while stop
 	, status       : {}
-	, setbutton    : 0
 	, setmode      : 0
-	, setvolume    : 0
 	, swipe        : 0
-	,timeout       : ''
+	, timeout       : ''
 };
 
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -306,11 +303,13 @@ function setDisplayPlayback() {
 		, cancel       : 1
 		, ok           : function () {
 			// no: serializeArray() omit unchecked fields
-			var toggles = {};
+			//var toggles = {};
 			$( '#displaysaveplayback input' ).each( function() {
-				toggles[ this.name ] = this.checked ? 'checked' : '';
+				GUI.display[ this.name ] = this.checked ? 'checked' : '';
 			} );
-			var command = { set : [ 'hmSet', 'display', toggles ] };
+			var command = { set : [ 'hmSet', 'display', GUI.display ] };
+			displayPlayback();
+			tempFlag( 'setmode' );
 			$.post( 'enhance.php', { redis: JSON.stringify( command ) } );
 		}
 	} );
@@ -391,11 +390,12 @@ function setDisplayLibrary() {
 			+'</form>'
 		, cancel       : 1
 		, ok           : function () {
-			var toggles = {};
 			$( '#displaysavelibrary input' ).each( function() {
-				toggles[ this.name ] = this.checked ? 'checked' : '';
+				GUI.display[ this.name ] = this.checked ? 'checked' : '';
 			} );
-			var command = { set: [ 'hmSet', 'display', toggles ] };
+			var command = { set: [ 'hmSet', 'display', GUI.display ] };
+			displayLibrary();
+			tempFlag( 'setmode' );
 			$.post( 'enhance.php', { redis: JSON.stringify( command ) } );
 		}
 	} );
@@ -434,31 +434,23 @@ var btnctrl = {
 $( '.timemap, .covermap, .volmap' ).click( function() {
 	var id = this.id;
 	var cmd = btnctrl[ id ];
-	var ishow = !GUI.display.buttons && GUI.display.time;
-	tempFlag( 'setbutton' );
 	if ( cmd === 'toggle' ) {
 		$( '.controls, .controls1, .rs-tooltip, #imode' ).toggleClass( 'hide' );
 		return;
 	} else if ( cmd === 'menu' ) {
 		$( '#menu-settings' ).click();
 	} else if ( cmd === 'random' ) {
-		var onoff = GUI.status.random ? 0 : 1;
-		$.post( 'enhance.php', { mpd: 'random '+ onoff } );
-		if ( ishow ) $( '#irandom' ).toggleClass( 'hide', onoff === 0 );
+		$( '#random' ).click();
 	} else if ( cmd === 'repeat' ) {
 		if ( GUI.status.repeat ) {
 			if ( GUI.status.single ) {
-				var mpdcmd = 'command_list_begin\nrepeat 0\nsingle 0\ncommand_list_end';
-				if ( ishow ) $( '#irepeat' ).attr( 'class', 'fa hide' );
+				$( '#repeat, #single' ).click();
 			} else {
-				var mpdcmd = 'single 1';
-				if ( ishow ) $( '#irepeat' ).attr( 'class', 'fa fa-repeat-single' );
+				$( '#single' ).click();
 			}
 		} else {
-			var mpdcmd = 'repeat 1';
-			if ( ishow ) $( '#irepeat' ).attr( 'class', 'fa fa-repeat' );
+			$( '#repeat' ).click();
 		}
-		$.post( 'enhance.php', { mpd: mpdcmd } );
 	} else if ( cmd ) {
 		$( '#'+ cmd ).click();
 	}
@@ -712,7 +704,7 @@ $( '#pl-manage-clear' ).click( function() {
 		, cancel  : 1
 		, ok      : function() {
 			GUI.plclear = 1;
-			$.post( 'enhance.php', { mpd: 'clear' } );
+			$.post( 'enhance.php', { mpd: 'clear', pushstream: 'playlist' } );
 			$( '#pl-count' ).html( '&emsp;<a>P L A Y L I S T</a>' );
 			$( '#playlist-entries' ).empty();
 			$( '#playlist-warning' ).removeClass( 'hide' );
@@ -722,11 +714,11 @@ $( '#pl-manage-clear' ).click( function() {
 $( '#playlist-entries' ).on( 'click', 'li', function( e ) {
 	if ( $( e.target ).hasClass( 'pl-action' ) ) {
 		GUI.noscroll = 1; // prevent scroll to active li
-		$.post( 'enhance.php', { mpd: 'delete '+ $( this ).index() } );
+		$.post( 'enhance.php', { mpd: 'delete '+ $( this ).index(), pushstream: 'playlist' } );
 		$( this ).remove();
 		return
 	}
-	$.post( 'enhance.php', { mpd: 'play '+ $( this ).index() } );
+	$.post( 'enhance.php', { mpd: 'play '+ $( this ).index(), pushstream: 'playback' } );
 	$( '#playlist-entries li' ).removeClass( 'active' );
 	$( this ).addClass( 'active' );
 } );
@@ -1001,7 +993,7 @@ function playlistSaveVerify( name ) {
 				}
 			} );
 		} else {
-			$.post( 'enhance.php', { mpd: 'save "'+ name +'"' } );
+			$.post( 'enhance.php', { mpd: 'save "'+ name +'"', pushstream: 'playlist' } );
 		}
 	}, 'text' );
 }
@@ -1190,9 +1182,9 @@ function mpdSeek( seekto ) {
 	if ( GUI.status.state !== 'stop' ) {
 		clearInterval( GUI.currentKnob );
 		clearInterval( GUI.countdown );
-		$.post( 'enhance.php', { mpd: 'seekcur '+ seekto } );
+		$.post( 'enhance.php', { mpd: 'seekcur '+ seekto, pushstream: 'playback' } );
 	} else {
-		$.post( 'enhance.php', { mpd: 'command_list_begin\nplay\nseekcur '+ seekto +'\npause\ncommand_list_end' } );
+		$.post( 'enhance.php', { mpd: 'command_list_begin\nplay\nseekcur '+ seekto +'\npause\ncommand_list_end', pushstream: 'playback' } );
 	}
 }
 $( '#time' ).roundSlider( {
@@ -1258,7 +1250,7 @@ $( '#volume' ).roundSlider( {
 			$.post( 'enhance.php', { redis: JSON.stringify( command ) } );
 			unmuteColor();
 		}
-		tempFlag( 'setvolume', 1000 );
+		tempFlag( 'setmode', 1000 );
 	}
 	, start           : function( e ) { // on 'start drag'
 		// restore handle color immediately on start drag
@@ -1268,7 +1260,7 @@ $( '#volume' ).roundSlider( {
 		if ( e.value % 2 === 0 ) {
 			$.post( 'enhance.php', { mpd: 'setvol '+ e.value } );
 			$( e.handle.element ).rsRotate( - e.handle.angle );
-			GUI.setvolume = 1;
+			GUI.setmode = 1;
 		}
 	}
 	, stop            : function( e ) { // on 'stop drag'
@@ -2080,15 +2072,13 @@ function renderPlaylist() {
 $( '.btn-cmd' ).click( function() {
 	var $this = $( this );
 	var dataCmd = $this.data( 'cmd' );
-	tempFlag( 'setbutton' );
 	if ( $this.hasClass( 'btn-toggle' ) ) {
 		if ( GUI.status.ext === 'radio' ) return;
 		
-		tempFlag( 'setmode' );
 		if ( dataCmd === 'pl-ashuffle-stop' ) $.post( '/db/?cmd=pl-ashuffle-stop' );
 		var onoff = GUI.status[ this.id ] ? 0 : 1;
 		GUI.status[ this.id ] = onoff
-		$( this ).toggleClass( 'btn-primary' );
+		$this.toggleClass( 'btn-primary' );
 		dataCmd = dataCmd +' '+ onoff;
 	} else {
 		if ( dataCmd === 'play' ) {
@@ -2097,6 +2087,7 @@ $( '.btn-cmd' ).click( function() {
 			} else {
 				dataCmd = ( GUI.status.state === 'play' ) ? 'pause' : 'play';
 			}
+			GUI.status.state = dataCmd;
 		}
 		if ( dataCmd === 'pause' || dataCmd === 'stop' ) {
 			if ( GUI.status.ext === 'radio' ) $( '#currentsong' ).html( '&nbsp;' );
@@ -2127,14 +2118,14 @@ $( '.btn-cmd' ).click( function() {
 				$( '#stop' ).addClass( 'btn-primary' );
 			}
 			dataCmd = 'command_list_begin\nplay '+ pos + ( GUI.status.state !== 'play' ? '\nstop' : '' ) +'\ncommand_list_end';
-			tempFlag( 'prevnext' );
 		}
 	}
-	$.post( 'enhance.php', { mpd: dataCmd } );
+	setButton();
+	$.post( 'enhance.php', { mpd: dataCmd, pushstream: 'playback' } );
 } );
 // buttons and playlist
 function setButton() {
-	if ( GUI.setbutton || GUI.prevnext ) return; // disable for previous/next while stop
+	if ( GUI.setmode && GUI.display.buttons ) return; // disable for previous/next while stop
 	
 	$( '.playback-controls' ).toggleClass( 'hide', GUI.status.playlistlength === 0 );
 	$( '#pause' ).toggleClass( 'hide', GUI.display.pause === '' );
@@ -2207,7 +2198,7 @@ function scrollText() {
 	} );
 }
 function setPlaybackData() {
-	if ( GUI.setvolume ) return;
+	if ( GUI.setmode ) return;
 	
 	$.post( 'enhancestatus.php', function( status ) {
 		// 'gpio off' restarts mpd which makes data briefly unavailable
