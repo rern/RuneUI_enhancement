@@ -12,6 +12,7 @@ include '/srv/http/app/libs/runeaudio.php';
 $mpd = openMpdSocket('/run/mpd.sock');
 if ( !$mpd ) die();
 
+// current song
 function status2array( $lines ) {
 	$line = strtok( $lines, "\n" );
 	while ( $line !== false ) {

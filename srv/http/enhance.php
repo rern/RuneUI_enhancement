@@ -23,12 +23,7 @@ if ( isset( $_POST[ 'redis' ] ) ) {
 			$result[ $field ] = $redis->$command( $arg[ 1 ], $arg[ 2 ], $arg[ 3 ] );
 		}
 	}
-	$types = array( 'Title', 'Album', 'Artist', 'composer', 'genre' );
-	$counts = shell_exec( 'for type in '.implode( ' ', $types ).'; do mpc list $type | awk NF | wc -l; done' );
-	$counts = explode( "\n", $counts );
-	array_pop( $counts ); // remove last blank
-	$result[ 'counts' ] = array_combine( $types, $counts );
-	
+	sleep( 1 );
 	echo json_encode( $result );
 	
 	// broadcast to all clients on hmSet display or set volume
@@ -62,16 +57,6 @@ if ( isset( $_POST[ 'redis' ] ) ) {
 		$redis->set( 'volumemute', 0 );
 		echo $volumemute;
 	}
-} else if ( isset( $_POST[ 'mpd' ] ) ) {
-	include '/srv/http/app/libs/runeaudio.php';
-	$mpd = openMpdSocket('/run/mpd.sock');
-	sendMpdCommand( $mpd, $_POST[ 'mpd' ] );
-	$result = readMpdResponse( $mpd );
-	echo $result;
-	if ( isset( $_POST[ 'pushstream' ] ) ) {
-		$data = isset( $_POST[ 'getdata' ] ) ? $result : 1;
-		ui_render( $_POST[ 'pushstream' ], $data );
-	}
 } else if ( isset( $_POST[ 'bash' ] ) ) {
 	$result = shell_exec( '/usr/bin/sudo '.$_POST[ 'bash' ] );
 	echo $result;
@@ -82,4 +67,54 @@ if ( isset( $_POST[ 'redis' ] ) ) {
 	$cmd.= $sudo.'umount -f -a -t cifs nfs -l;';
 	$cmd.= $sudo.'shutdown '.( $_POST[ 'power' ] === 'reboot' ? '-r' : '-h' ).' now';
 	exec( $cmd );
+} else if ( isset( $_POST[ 'mpd' ] ) ) {
+	include '/srv/http/app/libs/runeaudio.php';
+	$mpd = openMpdSocket('/run/mpd.sock');
+	sendMpdCommand( $mpd, $_POST[ 'mpd' ] );
+	$result = readMpdResponse( $mpd );
+	echo $result;
+	if ( isset( $_POST[ 'pushstream' ] ) ) {
+		$data = isset( $_POST[ 'getdata' ] ) ? $result : 1;
+		ui_render( $_POST[ 'pushstream' ], $data );
+	}
+} else if ( isset( $_POST[ 'library' ] ) ) {
+	include '/srv/http/app/libs/runeaudio.php';
+	$mpd = openMpdSocket('/run/mpd.sock');
+	$localStorages = countDirs( '/mnt/MPD/LocalStorage' );
+	$networkmounts = countDirs( '/mnt/MPD/NAS' );
+	$usbmounts = countDirs( '/mnt/MPD/USB' );
+	$webradios = count( $redis->hKeys( 'webradios' ) );
+	$proxy = $redis->hGetall( 'proxy' );
+	$dirblecfg = $redis->hGetAll( 'dirble' );
+	$dirble = json_decode( curlGet( $dirblecfg[ 'baseurl' ].'amountStation/apikey/'.$dirblecfg[ 'apikey' ], $proxy ) );
+	$spotify = $redis->hGet( 'spotify', 'enable' );
+	$activePlayer = $redis->get( 'activePlayer' );
+	$redis_bookmarks = $redis->hGetAll( 'bookmarks' );
+	foreach ( $redis_bookmarks as $key => $data ) {
+		$bookmark = json_decode( $data );
+		$bookmarks[] = array(
+			  'id' => $key
+			, 'name' => $bookmark->name
+			, 'path' => $bookmark->path
+		);
+	}
+	
+	$types = array( 'Title', 'Album', 'Artist', 'composer', 'genre' );
+	$counts = shell_exec( 'for type in '.implode( ' ', $types ).'; do mpc list $type | awk NF | wc -l; done' );
+	$counts = explode( "\n", $counts );
+	array_pop( $counts ); // remove last blank
+	$counts = array_combine( $types, $counts );
+	$status = array( 
+		  'bookmarks'     => $bookmarks
+		, 'localStorages' => $localStorages
+		, 'networkMounts' => $networkmounts
+		, 'USBMounts'     => $usbmounts
+		, 'webradio'      => $webradios
+		, 'Spotify'       => $spotify
+		, 'Dirble'        => $dirble->amount
+		, 'ActivePlayer'  => $activePlayer
+		, 'clientUUID'    => $clientUUID
+		, 'counts'        => $counts
+	);
+	echo json_encode( $status, JSON_NUMERIC_CHECK );
 }
