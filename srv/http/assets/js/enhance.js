@@ -199,6 +199,8 @@ $( '#currentsong, #playlist-warning' ).on( 'click', 'i', function() {
 	$( '#open-panel-sx' ).click();
 } );
 $( '#open-panel-sx' ).click( function() {
+	if ( $.isEmptyObject( GUI.libraryhome ) ) return;
+	
 	if ( GUI.activePlayer === 'Airplay' || GUI.activePlayer === 'Spotify' ) {
 		$( '#overlay-playsource' ).addClass( 'open' );
 		return;
