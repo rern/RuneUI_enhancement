@@ -1,6 +1,6 @@
 <div class="tab-content" id="content">
 	<div id="playback" class="tab-pane active">
-		<div id="container-playback" class="hide">
+		<div id="container-playback">
 		
 			<div id="info">
 				<div id="divartist">
@@ -17,7 +17,7 @@
 					<span id="format-bitrate"></span>
 				</div>
 			</div>
-			<div class="row hide" id="playback-row">
+			<div class="row" id="playback-row">
 				<div id="time-knob">
 					<div id="time"></div>
 					<button id="overlay-playsource-open" class="btn btn-default btn-xs">MPD</button>
