@@ -132,7 +132,6 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 				</div>
 			</div>
 		</div>
-		<button id="db-homeSetup" class="btn btn-default hide" type="button"><i class="fa fa-gear"></i></button>
 	</div>
 	<div id="panel-dx" class="tab-pane hide" onclick=""> <!-- onclick fix ios safari not recognize click for e.target -->
 		<div class="btnlist btnlist-top">
