@@ -15,6 +15,7 @@ var GUI = {
 	, imodedelay   : 0 // fix imode flashing on usb dac switching
 	, json         : 0
 	, list         : {}
+	, libraryhome  : {}
 	, mode         : 'websocket'
 	, noscroll     : 0
 	, noticeUI     : {}
@@ -111,23 +112,19 @@ pushstreamDisplay.onmessage = function( data ) { // on receive broadcast
 }
 pushstreamDisplay.connect();
 
-function renderUI( text ) {
+// playback pushstream
+psOption.reconnectOnChannelUnavailableInterval = 5000;
+var pushstreamPlayback = new PushStream( psOption );
+pushstreamPlayback.onmessage = function( text ) {
 	$( '#loader' ).addClass( 'hide' );
-	if ( GUI.setvolume ) return;
-	
-	if ( text !== 1 ) GUI.json = text[ 0 ]; // airplay and spotify only
+//	if ( status.actPlayer === 'Spotify' || status.actPlayer === 'Airplay' ) GUI.json = status;
 
 	setPlaybackData();
 	// imodedelay fix imode flashing on usb dac switching
 	if ( $( '#playback' ).hasClass( 'active' ) && !GUI.imodedelay ) displayPlayback();
 }
-// playback pushstream
-psOption.reconnectOnChannelUnavailableInterval = 5000;
-var pushstreamPlayback = new PushStream( psOption );
-pushstreamPlayback.onmessage = renderUI;
 pushstreamPlayback.onstatuschange = function( status ) {
 	if ( status === 2 ) {
-		$( '#loader' ).addClass( 'hide' );
 		setPlaybackData();
 	} else if ( status === 0 ) {
 		$( '#loader' ).removeClass( 'hide' );          
@@ -275,16 +272,14 @@ $( '#playback' ).click( function( e ) {
 var command = {
 	  display      : [ 'hGetAll', 'display' ]
 	, volumemute   : [ 'get', 'volumemute' ]
-	, activeplayer : [ 'get', 'activePlayer' ]
 };
 $.post( 'enhance.php', { redis: JSON.stringify( command ) }, function( data ) {
 	GUI.display = data.display;
 	GUI.radioelapsed = GUI.display.radioelapsed;
-	GUI.activePlayer = data.activeplayer;
-	if ( GUI.activePlayer === 'Airplay' ) {
+	/*if ( GUI.activePlayer === 'Airplay' ) {
 		GUI.airplay = data.actplayerinfo; // available if 'activeplayer' is 'Airplay'
 		displayAirPlay();
-	}
+	}*/
 }, 'json' );
 
 function nameLabel( name, label ) {
@@ -1136,7 +1131,6 @@ new Sortable( list, {
 		$.post( 'enhance.php', { mpd: 'moveid '+ plid +' '+ e.newIndex, pushstream: 'playlist' } );
 	}
 } );
-					
 // MutationObserver - watch for '#database-entries' content changed then scroll to previous position
 var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 var observerOption = { childList: true };
@@ -1246,7 +1240,6 @@ $( '#volume' ).roundSlider( {
 			.rsRotate( - this._handle1.angle );  // initial rotate
 	}
 	, change          : function( e ) { // (not fire on 'setValue' ) value after click or 'stop drag'
-		tempFlag( 'setvolume' );
 		$.post( 'enhance.php', { volume: e.value } );
 		$( e.handle.element ).rsRotate( - e.handle.angle );
 		if ( e.preValue === 0 ) { // value before 'change'
@@ -1254,53 +1247,30 @@ $( '#volume' ).roundSlider( {
 			$.post( 'enhance.php', { redis: JSON.stringify( command ) } );
 			unmuteColor();
 		}
+		tempFlag( 'setvolume', 1000 );
 	}
 	, start           : function( e ) { // on 'start drag'
 		// restore handle color immediately on start drag
 		if ( e.value === 0 ) unmuteColor(); // value before 'start drag'
-		GUI.setvolume = 1;
 	}
 	, drag            : function ( e ) { // drag with no transition by default
 		if ( e.value % 2 === 0 ) {
-			setvol( e.value ); // fix: enhancevolume.sh delay
+			$.post( 'enhance.php', { mpd: 'setvol '+ e.value } );
 			$( e.handle.element ).rsRotate( - e.handle.angle );
+			GUI.setvolume = 1;
 		}
 	}
 	, stop            : function( e ) { // on 'stop drag'
 		$.post( 'enhance.php', { volume: e.value } );
-		setTimeout( function() { GUI.setvolume = 0 }, 500 );
 	}
 } );
 
 $( '#volmute, #volM' ).click( function() {
-	tempFlag( 'setvolume' );
-	var volumemute = $volumeRS.getValue();
-	
-	if ( volumemute ) {
-		$.post( 'enhance.php', { volume: -1 } );
-		$volumeRS.setValue( 0 );
-		// keep display level before mute
-		$volumetooltip.text( volumemute );
-		// rotate box-shadow back
-		$volumehandle.rsRotate( - $volumeRS._handle1.angle );
-		// change color after rotate finish
-		$( '#volume .rs-first' ).one( 'transitionend webkitTransitionEnd mozTransitionEnd', function() {
-			muteColor( volumemute );
-		} );
-	} else {
-		$.post( 'enhance.php', { volume: -1 }, function( data ) {
-			if ( data === 0 ) return;
-			$volumeRS.setValue( data );
-			$volumehandle.rsRotate( - $volumeRS._handle1.angle );
-			// restore color immediately on click
-			unmuteColor();
-		}, 'text' );
-	}
+	if ( $volumeRS.getValue() ) $.post( 'enhance.php', { volume: -1 } );
 } );
 $( '#volup, #voldn' ).click( function() {
 	var thisid = this.id;
 	var vol = $volumeRS.getValue();
-	tempFlag( 'setvolume' );
 	
 	if ( ( vol === 0 && ( thisid === 'voldn' ) )
 		|| ( vol === 100 && ( thisid === 'volup' ) ) )
@@ -1309,18 +1279,11 @@ $( '#volup, #voldn' ).click( function() {
 	if ( vol === 0 ) {
 		var command = { set: [ 'volumemute', 0 ] };
 		$.post( 'enhance.php', { redis: JSON.stringify( command ) } );
-		unmuteColor();
 	}
 	vol = ( thisid === 'volup' ) ? vol + 1 : vol - 1;
 	$.post( 'enhance.php', { volume: vol } );
-	$volumeRS.setValue( vol );
-	$volumehandle.rsRotate( - $volumeRS._handle1.angle );
 } );
 
-function setvol( vol ) {
-	GUI.volume = vol;
-	$.post( 'enhance.php', { mpd: 'setvol '+ vol } );
-}
 function muteColor( volumemute ) {
 	$volumetooltip.text( volumemute ).css( 'color', '#0095d8' );
 	$volumehandle.css( 'background', '#587ca0' );
@@ -1468,8 +1431,13 @@ function displayPlayback() {
 	displayCommon();
 	
 	setTimeout( function() {
+		$.post( 'enhance.php', { library: 1 }, function( status ) {
+			GUI.libraryhome = status;
+		}, 'json' );
+	}, 1000 );
+	setTimeout( function() {
 		$( '#container-playback, #playback-row, #imode' ).removeClass( 'hide' );
-		$( 'html, body' ).scrollTop( 0 );
+		$( '#starter' ).addClass( 'hide' );
 	}, 600 );
 }
 
@@ -1563,65 +1531,63 @@ function renderLibraryHome() {
 	if ( ( $( '#database-entries' ).hasClass( 'hide' ) && !GUI.bookmarkedit ) || $( '.home-block' ).length ) return;
 	
 	$( '#panel-sx .btnlist-top, database-entries' ).addClass( 'hide' );
-
-	$.post( 'enhance.php', { library: 1 }, function( status ) {
-		$( '#db-currentpath span' ).html( '&emsp;<a>L I B R A R Y</a>&emsp;<a id="li-count">•<span>&ensp;'+ numFormat( status.counts.Title ) +'</span><i class="fa fa-music"></i></a>' );
-		$( '#panel-sx .btnlist-top, #home-blocks' ).removeClass( 'hide' );
-		toggleSpotify = '',
-		notMPD = ( status.ActivePlayer === 'Spotify' || status.ActivePlayer === 'Airplay' );
-		toggleMPD = notMPD ? ' inactive' : '';
-		// Set active player
-		setPlaybackSource();
-		
-		var content = '';
-		var divOpen = '<div class="col-md-3">';
-		// bookmark
-		var bookmarkL = status.bookmarks.length;
-		if ( bookmarkL ) {
-			for ( i = 0; i < bookmarkL; i++ ) {
-				var bookmark = status.bookmarks[ i ];
-				content += divOpen +'<div id="home-bookmark-'+ bookmark.id +'" class="home-block home-bookmark'+ toggleMPD +'" data-path="'+ bookmark.path +'"><i class="fa fa-bookmark"></i><h4>' + bookmark.name + '</h4></div></div>';
-			}
+	var status = GUI.libraryhome;
+	$( '#db-currentpath span' ).html( '&emsp;<a>L I B R A R Y</a>&emsp;<a id="li-count">•<span>&ensp;'+ numFormat( status.counts.Title ) +'</span><i class="fa fa-music"></i></a>' );
+	$( '#panel-sx .btnlist-top, #home-blocks' ).removeClass( 'hide' );
+	toggleSpotify = '',
+	notMPD = ( status.ActivePlayer === 'Spotify' || status.ActivePlayer === 'Airplay' );
+	toggleMPD = notMPD ? ' inactive' : '';
+	// Set active player
+	setPlaybackSource();
+	
+	var content = '';
+	var divOpen = '<div class="col-md-3">';
+	// bookmark
+	var bookmarkL = status.bookmarks.length;
+	if ( bookmarkL ) {
+		for ( i = 0; i < bookmarkL; i++ ) {
+			var bookmark = status.bookmarks[ i ];
+			content += divOpen +'<div id="home-bookmark-'+ bookmark.id +'" class="home-block home-bookmark'+ toggleMPD +'" data-path="'+ bookmark.path +'"><i class="fa fa-bookmark"></i><h4>' + bookmark.name + '</h4></div></div>';
 		}
-		// nas
-		content += divOpen +'<a id="home-nas" class="home-block'+ toggleMPD +'"'+ ( !status.networkMounts ? ( notMPD ? '' : ' href="/sources/add/"' ) : ' data-path="NAS"' ) +'><i class="fa fa-network"></i><h4>Network drives <span>( '+ status.networkMounts +' )</span></h4></a></div>';
-		// sd
-		content += divOpen +'<div id="home-sd" class="home-block'+ toggleMPD +'" data-path="LocalStorage"><i class="fa fa-microsd"></i><h4>SD card <span>( '+ status.localStorages +' )</span></h4></div></div>';
-		// usb
-		content += divOpen +'<div id="home-usb" class="home-block'+ toggleMPD +'"'+ ( !status.USBMounts ? ( notMPD ? '' : ' href="/sources/sources/"' ) : ' data-path="USB"' ) +'><i class="fa fa-usbdrive"></i><h4>USB drives <span>( '+ status.USBMounts +' )</span></h4></div></div>';
-		// webradio
-		var data = !status.webradio ? ' data-target="webradio-add"' : ' data-path="Webradio"';
-		content += divOpen +'<div id="home-webradio" class="home-block'+ toggleMPD +'"'+ data +'><i class="fa fa-webradio"></i><h4>Webradios <span>( '+ numFormat( status.webradio ) +' )</span></h4></div></div>';
-		// albums
-		content += divOpen +'<div id="home-albums" class="home-block'+ toggleMPD +'" data-path="Albums" data-browsemode="album"><i class="fa fa-album"></i><h4>Albums <span>( '+ numFormat( status.counts.Album ) +' )</span></h4></div></div>';
-		// artist
-		content += divOpen +'<div id="home-artists" class="home-block'+ toggleMPD +'" data-path="Artists" data-browsemode="artist"><i class="fa fa-artist"></i><h4>Artists <span>( '+ numFormat( status.counts.Artist ) +' )</span></h4></div></div>';
-		// composer
-		content += divOpen +'<div id="home-composer" class="home-block'+ toggleMPD +'" data-path="Composer" data-browsemode="composer"><i class="fa fa-composer"></i><h4>Composers <span>( '+ numFormat( status.counts.composer ) +' )</span></h4></div></div>';
-		// genre
-		content += divOpen +'<div id="home-genre" class="home-block'+ toggleMPD +'" data-path="Genres" data-browsemode="genre"><i class="fa fa-genre"></i><h4>Genres <span>( '+ numFormat( status.counts.genre ) +' )</span></h4></div></div>';
-		// spotify
-		if ( status.Spotify && status.Spotify !== '0' ) {
-			if ( status.ActivePlayer !== 'Spotify' ) {
-				content += divOpen +'<div id="home-spotify-switch" class="home-block">';
-			} else {
-				content += divOpen +'<div id="home-spotify" class="home-block'+ toggleSpotify +'" data-plugin="Spotify" data-path="Spotify">';
-			}
-			content += '<i class="fa fa-spotify"></i><h4>Spotify</h4></div></div>';
+	}
+	// nas
+	content += divOpen +'<a id="home-nas" class="home-block'+ toggleMPD +'"'+ ( !status.networkMounts ? ( notMPD ? '' : ' href="/sources/add/"' ) : ' data-path="NAS"' ) +'><i class="fa fa-network"></i><h4>Network drives <span>( '+ status.networkMounts +' )</span></h4></a></div>';
+	// sd
+	content += divOpen +'<div id="home-sd" class="home-block'+ toggleMPD +'" data-path="LocalStorage"><i class="fa fa-microsd"></i><h4>SD card <span>( '+ status.localStorages +' )</span></h4></div></div>';
+	// usb
+	content += divOpen +'<div id="home-usb" class="home-block'+ toggleMPD +'"'+ ( !status.USBMounts ? ( notMPD ? '' : ' href="/sources/sources/"' ) : ' data-path="USB"' ) +'><i class="fa fa-usbdrive"></i><h4>USB drives <span>( '+ status.USBMounts +' )</span></h4></div></div>';
+	// webradio
+	var data = !status.webradio ? ' data-target="webradio-add"' : ' data-path="Webradio"';
+	content += divOpen +'<div id="home-webradio" class="home-block'+ toggleMPD +'"'+ data +'><i class="fa fa-webradio"></i><h4>Webradios <span>( '+ numFormat( status.webradio ) +' )</span></h4></div></div>';
+	// albums
+	content += divOpen +'<div id="home-albums" class="home-block'+ toggleMPD +'" data-path="Albums" data-browsemode="album"><i class="fa fa-album"></i><h4>Albums <span>( '+ numFormat( status.counts.Album ) +' )</span></h4></div></div>';
+	// artist
+	content += divOpen +'<div id="home-artists" class="home-block'+ toggleMPD +'" data-path="Artists" data-browsemode="artist"><i class="fa fa-artist"></i><h4>Artists <span>( '+ numFormat( status.counts.Artist ) +' )</span></h4></div></div>';
+	// composer
+	content += divOpen +'<div id="home-composer" class="home-block'+ toggleMPD +'" data-path="Composer" data-browsemode="composer"><i class="fa fa-composer"></i><h4>Composers <span>( '+ numFormat( status.counts.composer ) +' )</span></h4></div></div>';
+	// genre
+	content += divOpen +'<div id="home-genre" class="home-block'+ toggleMPD +'" data-path="Genres" data-browsemode="genre"><i class="fa fa-genre"></i><h4>Genres <span>( '+ numFormat( status.counts.genre ) +' )</span></h4></div></div>';
+	// spotify
+	if ( status.Spotify && status.Spotify !== '0' ) {
+		if ( status.ActivePlayer !== 'Spotify' ) {
+			content += divOpen +'<div id="home-spotify-switch" class="home-block">';
+		} else {
+			content += divOpen +'<div id="home-spotify" class="home-block'+ toggleSpotify +'" data-plugin="Spotify" data-path="Spotify">';
 		}
-		// dirble
-		content += divOpen +'<div id="home-dirble" class="home-block'+ toggleMPD +'" data-plugin="Dirble" data-path="Dirble"><i class="fa fa-dirble"></i><h4>Dirble</h4></div></div>';
-		// jamendo
-		content += divOpen +'<div id="home-jamendo" class="home-block'+ toggleMPD +'" data-plugin="Jamendo" data-path="Jamendo"><i class="fa fa-jamendo"></i><h4>Jamendo<span id="home-count-jamendo"></span></h4></div></div>';
+		content += '<i class="fa fa-spotify"></i><h4>Spotify</h4></div></div>';
+	}
+	// dirble
+	content += divOpen +'<div id="home-dirble" class="home-block'+ toggleMPD +'" data-plugin="Dirble" data-path="Dirble"><i class="fa fa-dirble"></i><h4>Dirble</h4></div></div>';
+	// jamendo
+	content += divOpen +'<div id="home-jamendo" class="home-block'+ toggleMPD +'" data-plugin="Jamendo" data-path="Jamendo"><i class="fa fa-jamendo"></i><h4>Jamendo<span id="home-count-jamendo"></span></h4></div></div>';
 
-		content += '</div>';
-		$( '#home-blocks' ).html( content ).promise().done( function() {
-			$( 'html, body' ).scrollTop( 0 );
-		} );
-		$( '#loader' ).addClass( 'hide' );
-		// hide breadcrumb, index bar, edit bookmark
-		displayLibrary();
-	}, 'json' );
+	content += '</div>';
+	$( '#home-blocks' ).html( content ).promise().done( function() {
+		$( 'html, body' ).scrollTop( 0 );
+	} );
+	$( '#loader' ).addClass( 'hide' );
+	// hide breadcrumb, index bar, edit bookmark
+	displayLibrary();
 }
 
 // launch the right AJAX call for Library rendering
@@ -2228,6 +2194,8 @@ function scrollText() {
 	} );
 }
 function setPlaybackData() {
+	if ( GUI.setvolume ) return;
+	
 	$.post( 'enhancestatus.php', function( status ) {
 		// 'gpio off' restarts mpd which makes data briefly unavailable
 		if( typeof status !== 'object' ) return;
