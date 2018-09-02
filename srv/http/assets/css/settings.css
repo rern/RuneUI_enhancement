@@ -32,6 +32,9 @@
 .fa-plus:before { content: "\f519" }
 .fa-check:before { content: "\f51B" }
 
+#starter {
+	display: none;
+}
 body {
 	font-family: "Lato";
 	font-size: 14px;
