@@ -75,11 +75,10 @@ if ( isset( $_POST[ 'redis' ] ) ) {
 	sendMpdCommand( $mpd, $_POST[ 'mpd' ] );
 	$result = readMpdResponse( $mpd );
 	echo $result;
-	refreshUI( 'playback' );
-/*	if ( isset( $_POST[ 'pushstream' ] ) ) {
+	if ( isset( $_POST[ 'pushstream' ] ) ) {
 		$data = isset( $_POST[ 'getdata' ] ) ? $result : 1;
 		refreshUI( $_POST[ 'pushstream' ], $data );
-	}*/
+	}
 } else if ( isset( $_POST[ 'library' ] ) ) {
 	include '/srv/http/app/libs/runeaudio.php';
 	$mpd = openMpdSocket('/run/mpd.sock');
