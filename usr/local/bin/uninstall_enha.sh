@@ -46,9 +46,10 @@ echo -e "$bar Restore modified files ..."
 files="
 /srv/http/app/templates/mpd.php
 /srv/http/app/templates/settings.php
-/srv/http/db/index.php
 /srv/http/app/libs/runeaudio.php
 /srv/http/app/settings_ctl.php
+/srv/http/command/rune_SY_wrk
+/srv/http/db/index.php
 /root/.config/midori/config
 /root/.xinitrc
 "
@@ -57,4 +58,4 @@ restorefile $files
 uninstallfinish $@
 
 [[ $1 != u ]] && clearcache
-systemctl restart rune_PL_wrk
+systemctl start rune_PL_wrk
