@@ -101,7 +101,7 @@
 				</div>
 			</div>
 			<div id="db-currentpath">
-				<div id="db-home"><i class="fa fa-library"></i></div> <span>LIBRARY</span>
+				<div id="db-home"><i class="fa fa-library"></i></div><span></span>
 				<i id="db-webradio-new" class="fa fa-plus-circle"></i>
 			</div>
 			<button id="db-search-results" class="btn hide" type="button"><i class="fa fa-times sx"></i></button>
@@ -184,7 +184,7 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 
 <div id="bio" class="hide">
 	<div class="container">
-		<h1>BIO</h1><a id="closebio"><i class="fa fa-times fa-2x"></i></a>
+		<h1>BIO</h1><a id="closebio"><i class="fa fa-times close-root"></i></a>
 		<div id="biocontent">
 			<div class="biosimilar"></div>
 		</div>
