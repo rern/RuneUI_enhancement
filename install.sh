@@ -130,6 +130,14 @@ echo $file
 
 commentH -n -1 'for="localSStime">' -n -2 'USB Automount'
 #----------------------------------------------------------------------------------
+file=/srv/http/command/rune_SY_wrk
+echo $file
+
+comment 'is-enabled rune_PL_wrk.service' 'enable rune_PL_wrk.service'
+
+systemctl stop rune_PL_wrk
+systemctl disable rune_PL_wrk
+#----------------------------------------------------------------------------------
 if [[ $1 != u ]]; then # keep range: 0.5 - 3.0
 	z=$1;
 	zoom=$( echo "0.5 $z 3" \
