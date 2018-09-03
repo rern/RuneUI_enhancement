@@ -2260,10 +2260,9 @@ function setPlaybackData() {
 		
 		if ( status.ext !== 'radio' ) {
 			if ( status.Album !== previousalbum ) {
-				var covercachenum = Math.floor( Math.random() * 1001 );
 				$( '#coverartoverlay' ).addClass( 'hide' );
 				$( '#cover-art' )
-					.attr( 'src', '/enhancecoverart/?v=' + covercachenum )
+					.attr( 'src', '/enhancecoverart/?v=' + Math.floor( Math.random() * 1001 ) )
 					.css( 'border-radius', 0 )
 					.one( 'load', setOneload );
 			}
