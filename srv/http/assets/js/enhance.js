@@ -1404,7 +1404,7 @@ function displayPlayback() {
 		var source = GUI.activePlayer.toLowerCase();
 		$( '#iplayer' ).addClass( 'fa-'+ source ).removeClass( 'hide' );
 	}
-	setButton();
+//	setButton();
 	displayCommon();
 	if ( !GUI.setmode ) $( 'html, body' ).scrollTop( 0 );
 }
@@ -2107,11 +2107,12 @@ $( '.btn-cmd' ).click( function() {
 		}
 	}
 	setButton();
+	tempFlag( 'setmode' );
 	$.post( 'enhance.php', { mpd: dataCmd, pushstream: 'playback' } );
 } );
 // buttons and playlist
 function setButton() {
-	if ( GUI.setmode && GUI.display.buttons ) return; // disable for previous/next while stop
+	if ( GUI.setmode ) return; // disable for previous/next while stop
 	
 	$( '.playback-controls' ).toggleClass( 'hide', GUI.status.playlistlength === 0 );
 	$( '#pause' ).toggleClass( 'hide', GUI.display.pause === '' );
