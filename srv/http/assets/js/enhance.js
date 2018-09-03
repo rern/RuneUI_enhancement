@@ -9,6 +9,7 @@ var GUI = {
 	, dbback       : 0
 	, dbbackdata   : []
 	, dbbrowsemode : ''
+	, dblist       : 0
 	, dbpath       : ''
 	, dbscrolltop  : {}
 	, display      : {}
@@ -90,7 +91,7 @@ pushstreamLibrary.connect();
 // playlist pushstream
 var pushstreamPlaylist = new PushStream( psOption );
 pushstreamPlaylist.onmessage = function() {
-	if ( !$( '#panel-dx' ).hasClass( 'active' ) ) return;
+	if ( !$( '#panel-playlist' ).hasClass( 'active' ) ) return;
 	
 	GUI.pleditor ? $( '#pl-manage-list' ).click() : renderPlaylist();
 }
@@ -101,9 +102,9 @@ var pushstreamDisplay = new PushStream( psOption );
 pushstreamDisplay.addChannel( 'display' );
 pushstreamDisplay.onmessage = function( data ) { // on receive broadcast
 	GUI.display = data[ 0 ].display;
-	if ( $( '#playback' ).hasClass( 'active' ) ) {
+	if ( $( '#panel-playback' ).hasClass( 'active' ) ) {
 		displayPlayback();
-	} else if ( $( '#panel-sx' ).hasClass( 'active' ) ) {
+	} else if ( $( '#panel-library' ).hasClass( 'active' ) ) {
 		displayLibrary();
 	} else {
 		displayCommon();
@@ -120,7 +121,7 @@ pushstreamPlayback.onmessage = function( text ) {
 
 	setPlaybackData();
 	// imodedelay fix imode flashing on usb dac switching
-	if ( $( '#playback' ).hasClass( 'active' ) && !GUI.imodedelay ) displayPlayback();
+	if ( $( '#panel-playback' ).hasClass( 'active' ) && !GUI.imodedelay ) displayPlayback();
 }
 pushstreamPlayback.onstatuschange = function( status ) {
 	if ( status === 2 ) {
@@ -157,10 +158,10 @@ document.addEventListener( visibilityevent, function() {
 			stream.disconnect();
 		} );
 	} else {
-		if ( $( '#playback' ).hasClass( 'active' ) ) {
+		if ( $( '#panel-playback' ).hasClass( 'active' ) ) {
 			setPlaybackData();
 			displayPlayback();
-		} else if ( $( '#panel-dx' ).hasClass( 'active' ) && !GUI.pleditor ) {
+		} else if ( $( '#panel-playlist' ).hasClass( 'active' ) && !GUI.pleditor ) {
 			setPlaylistScroll();
 		}
 		$.each( streams, function( i, stream ) {
@@ -169,7 +170,7 @@ document.addEventListener( visibilityevent, function() {
 	}
 } );
 window.addEventListener( 'orientationchange', function() {
-	if ( ( $( '#panel-sx' ).hasClass( 'active' ) && $( '#home-blocks' ).hasClass( 'hide' ) )
+	if ( ( $( '#panel-library' ).hasClass( 'active' ) && $( '#home-blocks' ).hasClass( 'hide' ) )
 		|| !$( '#pl-editor' ).hasClass( 'hide' ) ) displayIndex();
 } );
 
@@ -177,17 +178,18 @@ $( '#menu-settings' ).click( function() {
 	$( '#settings' ).toggleClass( 'hide' ).css( 'top', $( '#menu-top' ).is( ':hidden' ) ? 0 : '40px' );
 } );
 
-function menuBottom( elshow, elhide1, elhide2 ) {	
-	if ( $( '#panel-sx' ).hasClass( 'active' ) ) {
+function panelSelect( el ) {
+	if ( $( '#panel-library' ).hasClass( 'active' ) ) {
 		GUI.dbscrolltop[ $( '#db-currentpath' ).attr( 'path' ) ] = $( window ).scrollTop();
 		
-	} else if ( $( '#panel-dx' ).hasClass( 'active' ) && GUI.pleditor ) {
+	} else if ( $( '#panel-playlist' ).hasClass( 'active' ) && GUI.pleditor ) {
 		GUI.plscrolltop = $( window ).scrollTop();
 	}
-	$( '#'+ elhide1 +', #'+ elhide2 +', #open-'+ elhide1 +', #open-'+ elhide2 ).removeClass( 'active' );
-	$( '#'+ elshow +', #open-'+ elshow ).addClass( 'active' );
-	$( '#'+ elhide1 +', #'+ elhide2 ).addClass( 'hide' );
-	$( '#'+ elshow ).removeClass( 'hide' );
+	$( '.tab-pane, #menu-bottom li' ).removeClass( 'active' );
+	$( '.tab-pane' ).addClass( 'hide' );
+	el.removeClass( 'hide' );
+	var openid = el[ 0 ].id.replace( 'panel', 'open' );
+	el.add( '#'+ openid ).addClass( 'active' );
 	if ( !GUI.display.bars || window.innerWidth < 499 || window.innerHeight < 515 ) {
 		$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
 		$( '.btnlist-top' ).css( 'top', 0 );
@@ -196,22 +198,23 @@ function menuBottom( elshow, elhide1, elhide2 ) {
 }
 
 $( '#currentsong, #playlist-warning' ).on( 'click', 'i', function() {
-	$( '#open-panel-sx' ).click();
+	$( '#open-library' ).click();
 } );
-$( '#open-panel-sx' ).click( function() {
+$( '#open-library' ).click( function() {
 	if ( $.isEmptyObject( GUI.libraryhome ) ) return;
-	
+
 	if ( GUI.activePlayer === 'Airplay' || GUI.activePlayer === 'Spotify' ) {
 		$( '#overlay-playsource' ).addClass( 'open' );
 		return;
 	}
-	if ( $( this ).hasClass( 'active' ) && $( '#home-blocks' ).hasClass( 'hide' ) ) {
+	if ( $( this ).hasClass( 'active' ) && GUI.dblist ) {
+		GUI.dblist = 0;
 		GUI.dbback = 0;
 		GUI.dbbackdata = [];
 		renderLibraryHome();
 		return
 	}
-	menuBottom( 'panel-sx', 'playback', 'panel-dx' );
+	panelSelect( $( '#panel-library' ) );
 	if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) {
 		renderLibraryHome();
 		displayLibrary();
@@ -221,29 +224,28 @@ $( '#open-panel-sx' ).click( function() {
 	}
 } );
 $( '#open-playback' ).click( function() {
-	menuBottom( 'playback', 'panel-sx', 'panel-dx' );
+	panelSelect( $( '#panel-playback' ) );
 	setPlaybackData();
 	displayPlayback();
-	$( 'html, body' ).scrollTop( 0 );
 } );
-$( '#open-panel-dx' ).click( function() {
+$( '#open-playlist' ).click( function() {
 	if ( GUI.activePlayer === 'Airplay' || GUI.activePlayer === 'Spotify' ) {
 		$( '#overlay-playsource' ).addClass( 'open' );
 		return;
 	}
 	displayPlaylist();
-	menuBottom( 'panel-dx', 'playback', 'panel-sx' );
+	panelSelect( $( '#panel-playlist' ) );
 } );
 function panelLR( lr ) {
-	var pcurrent = $( '.tab-pane:visible' ).prop( 'id' );
-	if ( pcurrent === 'panel-sx' ) {
+	var pcurrent = $( '.tab-pane.active' ).prop( 'id' );
+	if ( pcurrent === 'panel-library' ) {
 		var $pL = $( '#open-playback' );
-		var $pR = $( '#open-panel-dx' );
-	} else if ( pcurrent === 'playback' ) {
-		var $pL = $( '#open-panel-dx' );
-		var $pR = $( '#open-panel-sx' );
+		var $pR = $( '#open-playlist' );
+	} else if ( pcurrent === 'panel-playback' ) {
+		var $pL = $( '#open-playlist' );
+		var $pR = $( '#open-library' );
 	} else {
-		var $pL = $( '#open-panel-sx' );
+		var $pL = $( '#open-library' );
 		var $pR = $( '#open-playback' );
 	}
 	
@@ -255,13 +257,13 @@ function tempFlag( flag, ms ) {
 	GUI.timeout = setTimeout( function() { GUI[ flag ] = 0 }, ms ? ms : 500 );
 }
 
-$( '#playback, #panel-sx, #panel-dx' ).on( 'swipeleft swiperight', function( e ) {
+$( '#panel-playback, #panel-library, #panel-playlist' ).on( 'swipeleft swiperight', function( e ) {
 	panelLR( e.type === 'swipeleft' ? 'left' : '' );
 	// fix: prevent taphold fire on swipe
 	tempFlag( 'swipe', 1000 );
 } );
 
-$( '#playback' ).click( function( e ) {
+$( '#panel-playback' ).click( function( e ) {
 	if ( $( e.target ).is( '.controls, .timemap, .covermap, .volmap' ) ) return;
 	
 	$( '.controls, #settings' ).addClass( 'hide' );
@@ -329,7 +331,7 @@ function setToggleButton( name, append ) {
 		.parent().css( 'color', '#7795b4' )
 		.append( append ? ' '+ append : ' (auto hide)' );
 }
-$( '#panel-sx' ).on( 'taphold', function( e ) {
+$( '#panel-library' ).on( 'taphold', function( e ) {
 	if ( GUI.swipe || GUI.bookmarkedit ) return;
 	
 	if ( !GUI.bookmarkedit ) setDisplayLibrary( e );
@@ -360,6 +362,7 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 	} else {
 		if ( GUI.bookmarkedit || ( $this[ 0 ].id === 'home-sd' && $('#home-sd span').text() === '( 0 )' ) ) return;
 		
+		GUI.dblist = 1;
 		mutationLibrary.observe( observerLibrary, observerOption );
 		var browsemode = $this.data( 'browsemode' );
 		GUI.plugin = $this.data( 'plugin' );
@@ -405,7 +408,7 @@ function setDisplayLibrary() {
 
 // playback buttons click go back to home page
 $( '.playback-controls' ).click( function() {
-	if ( !$( '#playback' ).hasClass( 'active' ) ) $( '#open-playback' ).click();
+	if ( !$( '#panel-playback' ).hasClass( 'active' ) ) $( '#open-playback' ).click();
 } );
 
 var btnctrl = {
@@ -463,35 +466,33 @@ $( '#menu-top, #menu-bottom, #settings' ).click( function( e ) {
 	$( '.controls1, .rs-tooltip, #imode' ).removeClass( 'hide' );
 } );
 
+function getBio( artist ) {
+	$( '#loader' ).removeClass( 'hide' );
+	$.get( 'enhancebio.php',
+		{ artist: artist },
+		function( data ) {
+			$( '#biocontent' ).html( data ).promise().done( function() {
+				$( '#bio' ).scrollTop( 0 );
+				bioShow();
+			} );
+		}
+	);
+}
 function bioShow() {
 	$( '#menu-top, #menu-bottom, #loader' ).addClass( 'hide' );
 	$( '#bio' ).removeClass( 'hide' );
 }
 $( '#currentartist, #songinfo-open' ).click( function() {
 	if ( GUI.status.ext === 'radio' ) return;
-	$( '#loader' ).removeClass( 'hide' );
 	
 	if ( $( '#bio legend' ).text() != GUI.status.Artist ) {
-		$.get( 'enhancebio.php',
-			{ artist: GUI.status.Artist },
-			function( data ) {
-				$( '#biocontent' ).html( data );
-				bioShow();
-		}, 'html' );
+		getBio( GUI.status.Artist );
 	} else {
 		bioShow();
 	}
 } );
 $( '#biocontent' ).delegate( '.biosimilar', 'click', function() {
-	$( '#loader' ).removeClass( 'hide' );
-	$.get( 'enhancebio.php',
-		{ artist: $( this ).find( 'p' ).text() },
-		function( data ) {
-			$( '#biocontent' ).html( data );
-			bioShow();
-			$( '#bio' ).scrollTop( 0 );
-		}
-	);
+	getBio( $( this ).find( 'p' ).text() )
 } );
 $( '#closebio' ).click( function() {
 	$( '#bio' ).addClass( 'hide' );
@@ -551,7 +552,7 @@ $( '#playsource-spotify' ).click( function() {
 
 // library directory path link
 $( '#db-home' ).click( function() {
-	$( '#open-panel-sx' ).click();
+	$( '#open-library' ).click();
 } );
 $( '#db-currentpath' ).on( 'click', 'a', function() {
 	if ( $( '#db-currentpath span a' ).length === 1 ) return;
@@ -1052,7 +1053,7 @@ function playlistDelete() {
 	} );
 }
 $( '#pl-home' ).click( function() {
-	$( '#open-panel-dx' ).click();
+	$( '#open-playlist' ).click();
 } );
 // playlist click go back to home page
 $( '#pl-entries' ).click( function( e ) {
@@ -1420,7 +1421,7 @@ function displayIndex() {
 		var indexoffset = $( '#menu-top' ).is( ':visible' ) ? 160 : 80;
 		var indexline = wH < 500 ? 13 : 27;
 		$( '.half' ).toggleClass( 'hide', wH < 500 );
-		$index = $( '#panel-sx' ).hasClass( 'active' ) ? $( '#db-index' ) : $( '#pl-index' );
+		$index = $( '#panel-library' ).hasClass( 'active' ) ? $( '#db-index' ) : $( '#pl-index' );
 		$index.css( 'line-height', ( ( wH - indexoffset ) / indexline ) +'px' );
 	}, 0 );
 }
@@ -1467,7 +1468,7 @@ function displayPlaylist() {
 	if ( !GUI.pleditor ) {
 		$( '#pl-entries li' ).length ? setPlaylistScroll() : renderPlaylist();
 	} else {
-		if ( $( '#panel-dx' ).hasClass( 'active' ) ) {
+		if ( $( '#panel-playlist' ).hasClass( 'active' ) ) {
 			GUI.pleditor = 0;
 			GUI.plclear = 0;
 			renderPlaylist();
@@ -1503,10 +1504,10 @@ function renderLibraryHome() {
 	$( '#db-search-keyword' ).val( '' );
 	if ( ( $( '#db-entries' ).hasClass( 'hide' ) && !GUI.bookmarkedit ) ) return;
 	
-	$( '#panel-sx .btnlist-top, db-entries' ).addClass( 'hide' );
+	$( '#panel-library .btnlist-top, db-entries' ).addClass( 'hide' );
 	var status = GUI.libraryhome;
 	$( '#db-currentpath span' ).html( '&emsp;<a class="title">L I B R A R Y</a><a id="li-count"><span class="title">&emsp;•&ensp;</span><span>'+ numFormat( status.counts.Title ) +'</span><i class="fa fa-music"></i></a>' );
-	$( '#panel-sx .btnlist-top, #home-blocks' ).removeClass( 'hide' );
+	$( '#panel-library .btnlist-top, #home-blocks' ).removeClass( 'hide' );
 	toggleSpotify = '',
 	notMPD = ( status.ActivePlayer === 'Spotify' || status.ActivePlayer === 'Airplay' );
 	toggleMPD = notMPD ? ' inactive' : '';
@@ -2149,10 +2150,10 @@ function setButton() {
 	$( '#imode i' ).addClass( 'hide' );
 	$( '#iplayer' ).attr( 'class', 'fa hide' );
 	if ( GUI.status.updating_db ) {
-		$( '#open-panel-sx i, #db-home i, #iupdate' ).addClass( 'blink' );
+		$( '#open-library i, #db-home i, #iupdate' ).addClass( 'blink' );
 		$( '#iupdate' ).toggleClass( 'hide', GUI.display.bars !== '' );
 	} else {
-		$( '#open-panel-sx i, #db-home i, #iupdate' ).removeClass( 'blink' );
+		$( '#open-library i, #db-home i, #iupdate' ).removeClass( 'blink' );
 		$( '#iupdate' ).addClass( 'hide' );
 	}
 	if ( GUI.display.buttons ) {
@@ -2365,7 +2366,7 @@ function setPlaybackData() {
 		// playlist current song ( and lyrics if installed )
 		if ( status.Title !== previoussong || status.Album !== previousalbum ) {
 			if ( $( '#lyricscontainer' ).length && $( '#lyricscontainer' ).is( ':visible' ) )  getlyrics();
-			if ( $( '#panel-dx' ).hasClass( 'active' ) && !GUI.pleditor ) setPlaylistScroll();
+			if ( $( '#panel-playlist' ).hasClass( 'active' ) && !GUI.pleditor ) setPlaylistScroll();
 		}
 	}, 'json' );
 }
