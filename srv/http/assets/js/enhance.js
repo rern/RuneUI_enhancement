@@ -1412,6 +1412,7 @@ function displayPlayback() {
 	}
 	setButton();
 	displayCommon();
+	if ( !GUI.setmode ) $( 'html, body' ).scrollTop( 0 );
 }
 
 function displayIndex() {
@@ -1986,7 +1987,7 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 		$( '#db-index' ).removeClass( 'hide' );
 		$( '#db-entries' ).css( 'width', '' );
 	}
-	$( 'html, body' ).scrollTop( 0 );
+	//$( 'html, body' ).scrollTop( 0 );
 }
 function renderPlaylist() {
 	$( '#pl-filter' ).val( '' );
