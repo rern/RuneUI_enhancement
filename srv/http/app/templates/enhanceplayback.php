@@ -108,7 +108,7 @@
 			<i id="db-level-up" class="fa fa-arrow-left"></i>
 		</div>
 		<div id="db-list">
-			<ul id="database-entries" class="database"></ul>
+			<ul id="db-entries" class="database"></ul>
 			<ul id="db-index" class="index hide">
 <?php
 $vu = $this->asset('/img/vu.gif');
@@ -157,7 +157,7 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 			<button id="pl-filter-results" class="btn hide" type="button"></button>
 		</div>
 		<div id="pl-list">
-			<ul id="playlist-entries" class="playlist"></ul>
+			<ul id="pl-entries" class="playlist"></ul>
 			<ul id="pl-editor" class="hide"></ul>
 			<ul id="pl-index" class="index hide">
 <?php
