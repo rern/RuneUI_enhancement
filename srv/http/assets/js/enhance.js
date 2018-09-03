@@ -2190,9 +2190,15 @@ function scrollText() {
 		}
 	} );
 }
+function setOneload() {
+	$( '#starter' ).remove();
+	$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // disable animation on load
+	$.post( 'enhance.php', { library: 1 }, function( status ) {
+		GUI.libraryhome = status;
+	}, 'json' );
+}
 function setPlaybackData() {
 	if ( GUI.setmode ) return;
-	
 	$.post( 'enhancestatus.php', function( status ) {
 		// 'gpio off' restarts mpd which makes data briefly unavailable
 		if( typeof status !== 'object' ) return;
@@ -2217,9 +2223,6 @@ function setPlaybackData() {
 			}
 		}
 		
-		// set mode buttons
-		if ( GUI.setmode ) return;
-
 		clearInterval( GUI.currentKnob );
 		clearInterval( GUI.countdown );
 		$( '#time' ).roundSlider( 'setValue', 0 );
@@ -2231,10 +2234,10 @@ function setPlaybackData() {
 			$( '#currentsong' ).html( '<i class="fa fa-plus-circle"></i>' );
 			$( '#playlist-position span' ).text( 'Add something from Library' );
 			$( '#currentartist, #currentalbum, #format-bitrate, #elapsed, #total' ).empty();
-			$( '#cover-art' ).css( {
-				  'background-image': 'url("assets/img/cover-default-runeaudio.png")'
-				, 'border-radius': 0
-			} );
+			$( '#cover-art' )
+				.attr( 'src', 'assets/img/cover-default-runeaudio.png' )
+				.css( 'border-radius', 0 )
+				.one( 'load', setOneload );
 			$( '#coverartoverlay' ).addClass( 'hide' );
 			return;
 		}
@@ -2262,31 +2265,21 @@ function setPlaybackData() {
 				$( '#cover-art' )
 					.attr( 'src', '/enhancecoverart/?v=' + covercachenum )
 					.css( 'border-radius', 0 )
-					.one( 'load', function() {
-						$( '#starter' ).remove();
-						$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // disable animation on load
-						$.post( 'enhance.php', { library: 1 }, function( status ) {
-							GUI.libraryhome = status;
-						}, 'json' );
-					} );
-
+					.one( 'load', setOneload );
 			}
 		} else {
-			var radiobg = $( '#cover-art' ).css( 'background-image' );
-			var radiourl = $( '#vu' ).val();
-			var radiourlstop = $( '#vustop' ).val();
-			
-			$( '#cover-art' ).css( 'border-radius', '18px' );
-			$( '#coverartoverlay' ).removeClass( 'hide' );
+			var radiosrc = $( '#cover-art' ).attr( 'src' );
+			var vu = $( '#vu' ).val();
+			var vustop = $( '#vustop' ).val();
 			if ( status.state === 'play' ) {
-				if ( radiobg !== radiourl ) {
-					$( '#cover-art' ).css( 'background-image', radiourl );
-				}
+				if ( radiosrc !== vu ) $( '#cover-art' ).attr( 'src', vu );
 			} else {
-				if ( radiobg !== radiourlstop ) {
-					$( '#cover-art' ).css( 'background-image', radiourlstop );
-				}
+				if ( radiosrc !== vustop ) $( '#cover-art' ).attr( 'src', vustop );
 			}
+			$( '#cover-art' )
+				.css( 'border-radius', '18px' )
+				.one( 'load', setOneload );
+			$( '#coverartoverlay' ).removeClass( 'hide' );
 			$( '#elapsed' ).html( status.state === 'play' ? blinkdot : '' );
 			$( '#total' ).empty();
 			// show / hide elapsed at total
