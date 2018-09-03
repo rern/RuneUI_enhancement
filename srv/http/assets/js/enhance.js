@@ -170,8 +170,7 @@ document.addEventListener( visibilityevent, function() {
 	}
 } );
 window.addEventListener( 'orientationchange', function() {
-	if ( ( $( '#panel-library' ).hasClass( 'active' ) && $( '#home-blocks' ).hasClass( 'hide' ) )
-		|| !$( '#pl-editor' ).hasClass( 'hide' ) ) displayIndex();
+	if ( GUI.dblist || !$( '#pl-editor' ).hasClass( 'hide' ) ) displayIndex();
 } );
 
 $( '#menu-settings' ).click( function() {
@@ -1421,7 +1420,7 @@ function displayIndex() {
 		var indexoffset = $( '#menu-top' ).is( ':visible' ) ? 160 : 80;
 		var indexline = wH < 500 ? 13 : 27;
 		$( '.half' ).toggleClass( 'hide', wH < 500 );
-		$index = $( '#panel-library' ).hasClass( 'active' ) ? $( '#db-index' ) : $( '#pl-index' );
+		$index = ( $( '#panel-library' ).hasClass( 'active' ) && GUI.dblist ) ? $( '#db-index' ) : $( '#pl-index' );
 		$index.css( 'line-height', ( ( wH - indexoffset ) / indexline ) +'px' );
 	}, 0 );
 }
@@ -1508,7 +1507,6 @@ function renderLibraryHome() {
 	var status = GUI.libraryhome;
 	$( '#db-currentpath span' ).html( '&emsp;<a class="title">L I B R A R Y</a><a id="li-count"><span class="title">&emsp;•&ensp;</span><span>'+ numFormat( status.counts.Title ) +'</span><i class="fa fa-music"></i></a>' );
 	$( '#panel-library .btnlist-top, #home-blocks' ).removeClass( 'hide' );
-	toggleSpotify = '',
 	notMPD = ( status.ActivePlayer === 'Spotify' || status.ActivePlayer === 'Airplay' );
 	toggleMPD = notMPD ? ' inactive' : '';
 	// Set active player
@@ -1542,13 +1540,13 @@ function renderLibraryHome() {
 	// genre
 	content += divOpen +'<div id="home-genre" class="home-block'+ toggleMPD +'" data-path="Genres" data-browsemode="genre"><i class="fa fa-genre"></i><h4>Genres <span>( '+ numFormat( status.counts.genre ) +' )</span></h4></div></div>';
 	// spotify
-	if ( status.Spotify && status.Spotify !== '0' ) {
+	if ( status.Spotify ) {
+		var sw, data = '';
 		if ( status.ActivePlayer !== 'Spotify' ) {
-			content += divOpen +'<div id="home-spotify-switch" class="home-block">';
-		} else {
-			content += divOpen +'<div id="home-spotify" class="home-block'+ toggleSpotify +'" data-plugin="Spotify" data-path="Spotify">';
+			sw = '-switch';
+			data = ' data-plugin="Spotify" data-path="Spotify"';
 		}
-		content += '<i class="fa fa-spotify"></i><h4>Spotify</h4></div></div>';
+		content += divOpen +'<div id="home-spotify'+ sw +'" class="home-block"'+ data +'><i class="fa fa-spotify"></i><h4>Spotify</h4></div></div>';
 	}
 	// dirble
 	content += divOpen +'<div id="home-dirble" class="home-block'+ toggleMPD +'" data-plugin="Dirble" data-path="Dirble"><i class="fa fa-dirble"></i><h4>Dirble</h4></div></div>';
