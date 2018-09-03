@@ -82,7 +82,7 @@ if ( isset( $_POST[ 'redis' ] ) ) {
 } else if ( isset( $_POST[ 'library' ] ) ) {
 	include '/srv/http/app/libs/runeaudio.php';
 	$mpd = openMpdSocket('/run/mpd.sock');
-	$localStorages = countDirs( '/mnt/MPD/LocalStorage' );
+	$localStorages = exec( 'mpc list title base LocalStorage | wc -l' );
 	$networkmounts = exec( 'df | grep "/mnt/MPD/NAS" | wc -l' );
 	$usbmounts = exec( 'df | grep "/mnt/MPD/USB" | wc -l' );
 	$webradios = count( $redis->hKeys( 'webradios' ) );
@@ -101,7 +101,7 @@ if ( isset( $_POST[ 'redis' ] ) ) {
 		);
 	}
 	
-	$types = array( 'Title', 'Album', 'Artist', 'composer', 'genre' );
+	$types = array( 'title', 'album', 'artist', 'composer', 'genre' );
 	$counts = shell_exec( 'for type in '.implode( ' ', $types ).'; do mpc list $type | awk NF | wc -l; done' );
 	$counts = explode( "\n", $counts );
 	array_pop( $counts ); // remove last blank
