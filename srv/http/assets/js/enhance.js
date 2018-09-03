@@ -2107,7 +2107,7 @@ $( '.btn-cmd' ).click( function() {
 		}
 	}
 	setButton();
-	tempFlag( 'setmode' );
+	tempFlag( 'setmode', 300 );
 	$.post( 'enhance.php', { mpd: dataCmd, pushstream: 'playback' } );
 } );
 // buttons and playlist
