@@ -157,9 +157,9 @@ label {
 #loader img {
 	animation: blinkopaque 1.5s linear infinite;
 }
-#playback,
-#panel-sx,
-#panel-dx {
+#panel-playback,
+#panel-library,
+#panel-playlist {
 	touch-action: manipulation; /* fix: Unable to preventDefault inside passive event listener */
 }
 .tab-content>.tab-pane {
@@ -357,14 +357,14 @@ label {
 	font-size: 28px;
 }
 /* ---------------------- middle window ----------------------*/
-#playback, #panel-sx, #panel-dx, #settings {
+#panel-playback, #panel-library, #panel-playlist, #settings {
 	-webkit-touch-callout: none; /* iOS Safari */
 	-webkit-user-select: none; /* Safari */
 	-moz-user-select: none; /* Firefox */
 	-ms-user-select: none; /* Internet Explorer/Edge */
 	user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
 }
-#playback {
+#panel-playback {
 	height: 100vh;
 	padding-top: 80px;
 }
@@ -705,7 +705,7 @@ label {
 	top: 149px;
 }
 
-#playback .btn-group button {
+#panel-playback .btn-group button {
 	margin: 0 0 10px 0;
 	padding: 0;
 	height: 40px;
@@ -713,14 +713,14 @@ label {
 	font-size:24px;
 	outline: none;
 }
-#playback .btn-group button i {
+#panel-playback .btn-group button i {
 	vertical-align: 5%;
 }
 /* button shadow */
-#playback .btn-group {
+#panel-playback .btn-group {
 	position: relative;
 }
-#playback .btn-group:before {
+#panel-playback .btn-group:before {
 	position: absolute;
 	content: '';
 	top: 0;
@@ -931,6 +931,7 @@ label {
 	font-size: 28px;
 	color: #0095d8;
 	text-decoration: none;
+	cursor: pointer;
 }
 #bio legend,
 #biocontent a:hover {
@@ -1713,7 +1714,7 @@ w {
 	#dot0 {
 		display: inline;
 	}
-	#playback {
+	#panel-playback {
 		padding-top: 40px;
 	}
 	#time-knob,
@@ -1820,7 +1821,7 @@ w {
 	}
 }
 @media(max-height: 560px) {
-	#playback {
+	#panel-playback {
 		padding-top: 60px;
 	}
 	#play-group,
@@ -1844,7 +1845,7 @@ w {
 	}
 }
 @media(max-height: 475px) {
-	#playback {
+	#panel-playback {
 		padding-top: 25px;
 	}
 	#sampling span,
@@ -1874,7 +1875,7 @@ w {
 	}
 }
 @media(max-height: 440px) and (max-width: 750px) {
-	#playback {
+	#panel-playback {
 		padding-top: 15px;
 	}
 	#divalbum {
@@ -1900,7 +1901,7 @@ w {
 }
 
 @media(max-height: 395px) {
-	#playback {
+	#panel-playback {
 		padding-top: 15px;
 	}
 	#divalbum {
@@ -1920,17 +1921,17 @@ w {
 
 /* single column */
 @media(max-width: 499px) and (max-height: 700px) {
-	#playback {
+	#panel-playback {
 		padding-top: 60px;
 	}
 }
 @media(max-width: 499px) and (max-height: 670px) {
-	#playback {
+	#panel-playback {
 		padding-top: 40px;
 	}
 }
 @media(max-width: 499px) and (max-height: 645px) {
-	#playback {
+	#panel-playback {
 		padding-top: 25px;
 	}
 	#sampling span,
