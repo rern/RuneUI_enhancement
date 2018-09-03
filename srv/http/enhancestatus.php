@@ -37,7 +37,7 @@ function status2array( $lines ) {
 		$sampling.= round( $status[ 'samplerate' ] / 1000, 1 ).' kHz '.$status[ 'bitrate' ].' kbit/s';
 		$status[ 'sampling' ] = $sampling;
 	} else {
-		$status[ 'sampling' ] = '&nbsp;';
+		$status[ 'sampling' ] = '';
 	}
 	return $status;
 }
@@ -88,7 +88,7 @@ $status[ 'ext' ] = ( substr($file, 0, 4 ) !== 'http' ) ? $ext : 'radio';
 if ( $status[ 'ext' ] === 'radio' ) {
 	// before 1st play: no 'Name:' but 'Title:'= value of 'Name:' instead
 	$status[ 'Artist' ] = isset( $status[ 'Name' ] ) ? $status[ 'Name' ] : $status[ 'Tile' ];
-	$status[ 'Title' ] = ( $status[ 'state' ] === 'stop' ) ? '&nbsp;' : $status[ 'Title' ];
+	$status[ 'Title' ] = ( $status[ 'state' ] === 'stop' ) ? '' : $status[ 'Title' ];
 	$status[ 'Album' ] = $file;
 	$status[ 'time' ] = '';
 }
@@ -124,7 +124,7 @@ if ( $status[ 'ext' ] === 'radio' ) {
 // file
 if ( !isset( $status[ 'Artist' ] ) ) $status[ 'Artist' ] = basename( $pathinfo[ 'dirname' ] );
 if ( !isset( $status[ 'Title' ] ) ) $status[ 'Title' ] = $pathinfo[ 'filename' ];
-if ( !isset( $status[ 'Album' ] ) ) $status[ 'Album' ] = '&nbsp;';
+if ( !isset( $status[ 'Album' ] ) ) $status[ 'Album' ] = '';
 
 $file = '/mnt/MPD/'.$file;
 if ( $ext === 'DSF' || $ext === 'DFF' ) {
