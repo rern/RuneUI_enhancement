@@ -1,8 +1,9 @@
 var GUI = {
-	  activePlayer : ''
+	  mode         : 'websocket' // !important
+	, activePlayer : ''
 	, airplay      : {}
 	, bookmarkedit : 0
-	, browsemode   : 'file'
+	, browsemode   : ''
 	, counts       : {}
 	, currentpath  : ''
 	, dbcurrent    : ''
@@ -13,11 +14,10 @@ var GUI = {
 	, dbpath       : ''
 	, dbscrolltop  : {}
 	, display      : {}
-	, imodedelay   : 0 // fix imode flashing on usb dac switching
+	, imodedelay   : 0
 	, json         : 0
 	, list         : {}
 	, libraryhome  : {}
-	, mode         : 'websocket'
 	, noscroll     : 0
 	, noticeUI     : {}
 	, plclear      : 0
@@ -28,7 +28,7 @@ var GUI = {
 	, status       : {}
 	, setmode      : 0
 	, swipe        : 0
-	, timeout       : ''
+	, timeout      : ''
 };
 
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -73,9 +73,9 @@ function renderMSG( text ) {
 	}
 }
 var psOption = {
-	host: window.location.hostname,
-	port: window.location.port,
-	modes: GUI.mode
+	  host: window.location.hostname
+	, port: window.location.port
+	, modes: 'websocket'
 };
 // notify pushstream
 var pushstreamNotify = new PushStream( psOption );
@@ -207,9 +207,11 @@ $( '#open-library' ).click( function() {
 		return;
 	}
 	if ( $( this ).hasClass( 'active' ) && GUI.dblist ) {
-		GUI.dblist = 0;
-		GUI.dbback = 0;
+		GUI.dblist = GUI.dbback = 0;
+		GUI.currentpath = GUI.browsemode = GUI.dbbrowsemode = ''
+		GUI.dbscrolltop = {};
 		GUI.dbbackdata = [];
+		
 		renderLibraryHome();
 		return
 	}
@@ -568,7 +570,6 @@ $( '#db-currentpath' ).on( 'click', 'a', function() {
 		, Dirble   : 'Dirble'
 	}
 	getDB( { browsemode: path2mode[ path ], path: path } );
-//	$( 'html, body' ).scrollTop( 0 );
 } );
 $( '#db-webradio-new' ).click( function() {
 	webRadioNew();
@@ -576,6 +577,7 @@ $( '#db-webradio-new' ).click( function() {
 $( '#searchbtn' ).click( function() {
 	var keyword = $( '#db-search-keyword' ).val();
 	if ( !keyword ) return;
+	GUI.dblist = 1;
 	getDB( {
 		  cmd : 'search'
 		, arg : keyword
@@ -1149,28 +1151,20 @@ $( '#db-level-up' ).click( function() {
 	mutationLibrary.observe( observerLibrary, observerOption ); // standard js - must be one on one element
 } );
 
-$( '#playsource-mpd' ).on( 'click', function() {
+$( '#playsource-mpd' ).click( function() {
 	$.post( 'enhance.php', { bash: '/usr/bin/systemctl restart shairport' } );
 	$( '#iplayer' ).removeClass( 'fa-airplay' ).addClass( 'hide' );
 	$( '#overlay-playsource' ).removeClass( 'open' );
 	$( '#playsource-mpd' ).removeClass( 'inactive' );
 	$( '#playsource-airplay' ).addClass( 'inactive' );
 } );
-$( '#db-search-results' ).on( 'click', function() {
+$( '#db-search-results' ).click( function() {
 	$( this ).addClass( 'hide' );
+	$( '#db-search-keyword' ).val( '' );
 	$( '#db-currentpath' ).css( 'width', '' );
-	var mode = {
-		  Artists  : 'artist'
-		, Albums   : 'album'
-		, Genres   : 'genre'
-		, Composer : 'composer'
-	}
 	if ( GUI.currentpath ) {
 		$( '#db-level-up' ).removeClass( 'hide' );
-		getDB( {
-			  browsemode : mode[ GUI.currentpath ]
-			, path       : GUI.currentpath
-		} );
+		getDB( GUI.dbbackdata.pop() );
 		
 		$( '#db-entries' ).removeAttr( 'style' );
 		mutationLibrary.observe( observerLibrary, observerOption );
@@ -1461,7 +1455,7 @@ function setPlaylistScroll() {
 	}
 	setTimeout( function() {
 		var scrollpos = $liactive.offset().top - $( '#pl-entries' ).offset().top - ( 49 * 3 );
-		$( 'html, body' ).animate( { scrollTop: scrollpos } );
+		$( 'html, body' ).scrollTop( scrollpos );
 	}, 0 );
 }
 function displayPlaylist() {
@@ -1526,7 +1520,7 @@ function renderLibraryHome() {
 	// nas
 	content += divOpen +'<a id="home-nas" class="home-block'+ toggleMPD +'"'+ ( !status.networkMounts ? ( notMPD ? '' : ' href="/sources/add/"' ) : ' data-path="NAS"' ) +'><i class="fa fa-network"></i><h4>Network drives <span>( '+ status.networkMounts +' )</span></h4></a></div>';
 	// sd
-	content += divOpen +'<div id="home-sd" class="home-block'+ toggleMPD +'" data-path="LocalStorage"><i class="fa fa-microsd"></i><h4>SD card <span>( '+ status.localStorages +' )</span></h4></div></div>';
+	content += divOpen +'<div id="home-sd" class="home-block'+ toggleMPD +'" data-path="LocalStorage"><i class="fa fa-microsd"></i><h4>SD card <span></span></h4></div></div>';
 	// usb
 	content += divOpen +'<div id="home-usb" class="home-block'+ toggleMPD +'"'+ ( !status.USBMounts ? ( notMPD ? '' : ' href="/sources/sources/"' ) : ' data-path="USB"' ) +'><i class="fa fa-usbdrive"></i><h4>USB drives <span>( '+ status.USBMounts +' )</span></h4></div></div>';
 	// webradio
@@ -1573,8 +1567,7 @@ function getDB( options ) {
 		plugin = options.plugin || '',
 		querytype = options.querytype || '',
 		args = options.args || '';
-	
-	if ( !GUI.dbback ) {
+	if ( !GUI.dbback && cmd !== 'search' ) {
 		if ( !plugin ) {
 			GUI.dbbackdata.push( {
 				  path       : path
