@@ -32,6 +32,28 @@
 .fa-plus:before { content: "\f519" }
 .fa-check:before { content: "\f51B" }
 
+/* pnotify mod */
+.ui-pnotify {
+	top: auto;
+	bottom: 60px;
+	left: 0;
+	box-shadow: -4px 4px 10px #000000;
+}
+.ui-pnotify .alert {
+	border: 0;
+	-webkit-border-radius: 0;
+	-moz-border-radius: 0;
+	border-radius: 0;
+	color: #e0e7ee;
+	background: #0095d8;
+	text-shadow: none
+}
+.ui-pnotify .alert h4 {
+	font-size: 16px;
+	font-weight: bold;
+	text-transform: uppercase;
+}
+
 #starter {
 	display: none;
 }

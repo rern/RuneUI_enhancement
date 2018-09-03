@@ -118,13 +118,34 @@
 .fa-question-circle:before { content: "\f560" }
 .fa-info-circle:before { content: "\f561" }
 .fa-warning:before { content: "\f562" }
-
+/* bootstrap mod */
 html,
 body {
 	height: 100%
 }
 label {
 	font-weight: normal;
+}
+/* pnotify mod */
+.ui-pnotify {
+	top: auto;
+	bottom: 60px;
+	left: 0;
+	box-shadow: -4px 4px 10px #000000;
+}
+.ui-pnotify .alert {
+	border: 0;
+	-webkit-border-radius: 0;
+	-moz-border-radius: 0;
+	border-radius: 0;
+	color: #e0e7ee;
+	background: #0095d8;
+	text-shadow: none
+}
+.ui-pnotify .alert h4 {
+	font-size: 16px;
+	font-weight: bold;
+	text-transform: uppercase;
 }
 
 @keyframes blinkopaque {
