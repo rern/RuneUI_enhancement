@@ -24,14 +24,15 @@ function status2array( $lines ) {
 		} else if ( $key === 'bitrate' ) {
 			$val = $val * 1000;
 		}
-		if ( $key !== 'O' ) $status[ $key ] = $val; // skip 'OK' lines
-		if ( $key === 'audio') {
+		$status[ $key ] = $val;
+		if ( $key === 'audio' ) {
 			$audio = explode( ':', $val );
 			$status[ 'bitdepth' ] = $audio[ 1 ];
 			$status[ 'samplerate' ] = $audio[ 0 ];
 		}
 		$line = strtok( "\n" );
 	}
+	unset( $status[ 'OK' ] );
 	if ( array_key_exists( 'bitrate', $status ) ) {
 		$sampling = substr( $status[ 'file' ], 0, 4 ) === 'http' ? '' : $status[ 'bitdepth' ].' bit ';
 		$sampling.= round( $status[ 'samplerate' ] / 1000, 1 ).' kHz '.$status[ 'bitrate' ].' kbit/s';
