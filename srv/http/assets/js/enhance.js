@@ -2190,9 +2190,14 @@ function scrollText() {
 		}
 	} );
 }
-function setOneload() {
+
+GUI.timeout = setTimeout( function() { // in case too long to get coverart
 	$( '#starter' ).remove();
-	$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // disable animation on load
+}, 3000 );
+function setOneload() {
+	clearTimeout( GUI.timeout );
+	$( '#starter' ).remove();
+	$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
 	$.post( 'enhance.php', { library: 1 }, function( status ) {
 		GUI.libraryhome = status;
 	}, 'json' );
