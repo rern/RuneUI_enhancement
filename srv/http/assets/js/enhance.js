@@ -1412,15 +1412,6 @@ function displayPlayback() {
 	}
 	setButton();
 	displayCommon();
-	
-	setTimeout( function() {
-		$( '#starter' ).addClass( 'hide' );
-	}, 666 );
-	setTimeout( function() {
-		$.post( 'enhance.php', { library: 1 }, function( status ) {
-			GUI.libraryhome = status;
-		}, 'json' );
-	}, 700 );
 }
 
 function displayIndex() {
@@ -2298,8 +2289,17 @@ function setPlaybackData() {
 		} else {
 			if ( status.Album !== previousalbum ) {
 				var covercachenum = Math.floor( Math.random() * 1001 );
-				$( '#cover-art' ).attr( 'src', '/enhancecoverart/?v=' + covercachenum ).css( 'border-radius', 0 );
 				$( '#coverartoverlay' ).addClass( 'hide' );
+				$( '#cover-art' )
+					.attr( 'src', '/enhancecoverart/?v=' + covercachenum )
+					.css( 'border-radius', 0 )
+					.one( 'load', function() {
+						$( '#starter' ).remove();
+						$.post( 'enhance.php', { library: 1 }, function( status ) {
+							GUI.libraryhome = status;
+						}, 'json' );
+					} );
+
 			}
 		}
 
