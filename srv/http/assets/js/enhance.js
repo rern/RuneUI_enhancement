@@ -2298,8 +2298,7 @@ function setPlaybackData() {
 		} else {
 			if ( status.Album !== previousalbum ) {
 				var covercachenum = Math.floor( Math.random() * 1001 );
-				$( '#cover-art' ).css( 'background-image', 'url("/enhancecoverart/?v=' + covercachenum + '")' );
-				$( '#cover-art' ).css( 'border-radius', 0 );
+				$( '#cover-art' ).attr( 'src', '/enhancecoverart/?v=' + covercachenum ).css( 'border-radius', 0 );
 				$( '#coverartoverlay' ).addClass( 'hide' );
 			}
 		}
