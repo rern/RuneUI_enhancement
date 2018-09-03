@@ -209,7 +209,7 @@ $( '#open-library' ).click( function() {
 	if ( $( this ).hasClass( 'active' ) && GUI.dblist ) {
 		GUI.dblist = GUI.dbback = 0;
 		GUI.currentpath = GUI.browsemode = GUI.dbbrowsemode = ''
-		GUI.dbscrolltop = {};
+//		GUI.dbscrolltop = {}; // comment to always keep scroll position unless refresh
 		GUI.dbbackdata = [];
 		
 		renderLibraryHome();
@@ -298,7 +298,6 @@ function setDisplayPlayback() {
 		, checkboxhtml : 
 			'<form id="displaysaveplayback">'
 				+ nameLabel( 'bars', 'Top-Bottom menu' )
-				+ nameLabel( 'pause', '<code><i class="fa fa-play"></i></code>&ensp;<code><i class="fa fa-pause"></i></code>&ensp;buttons' )
 				+ nameLabel( 'time', 'Time' )
 				+ nameLabel( 'radioelapsed', 'Webradio elapsed' )
 				+ nameLabel( 'coverart', 'Cover art' )
@@ -437,6 +436,9 @@ var btnctrl = {
 	, volR   : 'volup'
 	, volB   : 'voldn'
 }
+function cl( x ) {
+	return console.log( x );
+}
 $( '.timemap, .covermap, .volmap' ).click( function() {
 	var id = this.id;
 	var cmd = btnctrl[ id ];
@@ -448,9 +450,13 @@ $( '.timemap, .covermap, .volmap' ).click( function() {
 	} else if ( cmd === 'random' ) {
 		$( '#random' ).click();
 	} else if ( cmd === 'repeat' ) {
+		cl( GUI.status.repeat +' - '+ GUI.status.single)
 		if ( GUI.status.repeat ) {
 			if ( GUI.status.single ) {
-				$( '#repeat, #single' ).click();
+				$( '#repeat' ).click();
+				setTimeout( function() {
+					$( '#single' ).click();
+				}, 500 );
 			} else {
 				$( '#single' ).click();
 			}
@@ -2056,15 +2062,20 @@ function renderPlaylist() {
 }
 
 $( '.btn-cmd' ).click( function() {
+	if ( GUI.setmode ) return;
+	tempFlag( 'setmode' ); // prevent fast consecutive clicks
+	
 	var $this = $( this );
+	var id = this.id;
 	var dataCmd = $this.data( 'cmd' );
 	if ( $this.hasClass( 'btn-toggle' ) ) {
 		if ( GUI.status.ext === 'radio' ) return;
 		
 		if ( dataCmd === 'pl-ashuffle-stop' ) $.post( '/db/?cmd=pl-ashuffle-stop' );
-		var onoff = GUI.status[ this.id ] ? 0 : 1;
-		GUI.status[ this.id ] = onoff
+		var onoff = GUI.status[ id ] ? 0 : 1;
+		GUI.status[ id ] = onoff;
 		$this.toggleClass( 'btn-primary' );
+		setImode();
 		dataCmd = dataCmd +' '+ onoff;
 	} else {
 		if ( dataCmd === 'play' ) {
@@ -2073,9 +2084,10 @@ $( '.btn-cmd' ).click( function() {
 			} else {
 				dataCmd = ( GUI.status.state === 'play' ) ? 'pause' : 'play';
 			}
+			$( '.playback-controls .btn' ).removeClass( 'btn-primary' );
+			$( '#'+ dataCmd ).addClass( 'btn-primary' );
 			GUI.status.state = dataCmd;
-		}
-		if ( dataCmd === 'pause' || dataCmd === 'stop' ) {
+		} else if ( dataCmd === 'pause' || dataCmd === 'stop' ) {
 			if ( GUI.status.ext === 'radio' ) $( '#currentsong' ).html( '&nbsp;' );
 			clearInterval( GUI.currentKnob );
 			clearInterval( GUI.countdown );
@@ -2099,56 +2111,12 @@ $( '.btn-cmd' ).click( function() {
 					var pos = current !== last ? current : 0;
 				}
 			}
-			if ( GUI.status.state !== 'play' ) {
-				$( '#pause' ).removeClass( 'btn-primary' );
-				$( '#stop' ).addClass( 'btn-primary' );
-			}
 			dataCmd = 'command_list_begin\nplay '+ pos + ( GUI.status.state !== 'play' ? '\nstop' : '' ) +'\ncommand_list_end';
 		}
 	}
-	setButton();
-	tempFlag( 'setmode', 300 );
 	$.post( 'enhance.php', { mpd: dataCmd, pushstream: 'playback' } );
 } );
-// buttons and playlist
-function setButton() {
-	if ( GUI.setmode ) return; // disable for previous/next while stop
-	
-	$( '.playback-controls' ).toggleClass( 'hide', GUI.status.playlistlength === 0 );
-	$( '#pause' ).toggleClass( 'hide', GUI.display.pause === '' );
-	if ( GUI.status.state === 'stop' ) {
-		$( '#stop' ).addClass( 'btn-primary' );
-		$( '#play, #pause' ).removeClass( 'btn-primary' );
-		if ( $( '#pause' ).hasClass( 'hide' ) ) $( '#play i' ).removeClass( 'fa fa-pause' ).addClass( 'fa fa-play' );
-	} else {
-		if ( GUI.status.state === 'play' ) {
-			$( '#play' ).addClass( 'btn-primary' );
-			$( '#stop' ).removeClass( 'btn-primary' );
-			if ( $( '#pause' ).hasClass( 'hide' ) ) {
-				$( '#play i' ).removeClass( 'fa fa-pause' ).addClass( 'fa fa-play' );
-			} else {
-				$( '#pause' ).removeClass( 'btn-primary' );
-			}
-		} else if ( GUI.status.state === 'pause' ) {
-			$( '#stop' ).removeClass( 'btn-primary' );
-			if ( $( '#pause' ).hasClass( 'hide' ) ) {
-				$( '#play i' ).removeClass( 'fa fa-play' ).addClass( 'fa fa-pause' );
-			} else {
-				$( '#play' ).removeClass( 'btn-primary' );
-				$( '#pause' ).addClass( 'btn-primary' );
-			}
-		}
-	}
-	
-	$( '#imode i' ).addClass( 'hide' );
-	$( '#iplayer' ).attr( 'class', 'fa hide' );
-	if ( GUI.status.updating_db ) {
-		$( '#open-library i, #db-home i, #iupdate' ).addClass( 'blink' );
-		$( '#iupdate' ).toggleClass( 'hide', GUI.display.bars !== '' );
-	} else {
-		$( '#open-library i, #db-home i, #iupdate' ).removeClass( 'blink' );
-		$( '#iupdate' ).addClass( 'hide' );
-	}
+function setImode() {
 	if ( GUI.display.buttons ) {
 		$( '#repeat' ).toggleClass( 'btn-primary', GUI.status.repeat === 1 );
 		$( '#random' ).toggleClass( 'btn-primary', GUI.status.random === 1 );
@@ -2162,6 +2130,30 @@ function setButton() {
 				$( '#irepeat' ).attr( 'class', 'fa hide' );
 			}
 		}
+	}
+}
+function setButton() {
+	$( '.playback-controls' ).toggleClass( 'hide', GUI.status.playlistlength === 0 );
+	$( '#pause' ).toggleClass( 'hide', GUI.display.pause === '' );
+	var state = GUI.status.state;
+	
+	if ( state === 'stop' ) {
+		$( '#stop' ).addClass( 'btn-primary' );
+		$( '#play, #pause' ).removeClass( 'btn-primary' );
+	} else if ( state === 'play' ) {
+		$( '#stop, #pause' ).removeClass( 'btn-primary' );
+		$( '#play' ).addClass( 'btn-primary' );
+	} else if ( state === 'pause' ) {
+		$( '#stop, #play' ).removeClass( 'btn-primary' );
+		$( '#pause' ).addClass( 'btn-primary' );
+	}
+	setImode();
+	if ( GUI.status.updating_db ) {
+		$( '#open-library i, #db-home i, #iupdate' ).addClass( 'blink' );
+		$( '#iupdate' ).toggleClass( 'hide', GUI.display.bars !== '' );
+	} else {
+		$( '#open-library i, #db-home i, #iupdate' ).removeClass( 'blink' );
+		$( '#iupdate' ).addClass( 'hide' );
 	}
 	if ( GUI.display.update ) {
 		if ( GUI.display.bars ) {
@@ -2226,6 +2218,7 @@ function setPlaybackData() {
 		clearInterval( GUI.countdown );
 		$( '#time' ).roundSlider( 'setValue', 0 );
 		
+		setButton();
 		// empty queue
 		if ( !status.playlistlength ) {
 			$( '.playback-controls' ).addClass( 'hide' );
@@ -2241,7 +2234,6 @@ function setPlaybackData() {
 			return;
 		}
 		
-		setButton();
 		$( '.playback-controls' ).removeClass( 'hide' );
 		$( '#currentartist' ).html( status.Artist );
 		$( '#currentsong' ).html( status.Title );
@@ -2352,7 +2344,7 @@ function setPlaybackData() {
 			mmss = convertHMS( elapsed );
 			$( '#elapsed' ).text( mmss );
 		}, 1000 );
-	
+		
 		// playlist current song ( and lyrics if installed )
 		if ( status.Title !== previoussong || status.Album !== previousalbum ) {
 			if ( $( '#lyricscontainer' ).length && $( '#lyricscontainer' ).is( ':visible' ) )  getlyrics();
