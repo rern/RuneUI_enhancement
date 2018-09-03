@@ -974,8 +974,8 @@ label {
 .tab-pane {
 	height: 100vh;
 }
-#database,
-#playlist {
+#db-list,
+#pl-list {
 	padding-top: 80px;
 }
 #home-blocks {
@@ -1335,6 +1335,9 @@ span.dbpath {
 #li-count span {
 	color: #e0e7ee;
 }
+#li-count span.title {
+	color: #587ca0;
+}
 #pl-count,
 #pl-currentpath {
 	display: inline-block;
@@ -1666,10 +1669,10 @@ w {
 		display: none;
 	}
 }
-@media(max-width: 680px) and (min-width: 540px) {
-	#pl-count a:first-child,
+@media(max-width: 680px) {
+	.title,
 	#pl-count span:first-of-type {
-		display: none;
+		display: none !important;
 	}
 }
 @media(max-width: 666px) {
@@ -1684,8 +1687,8 @@ w {
 }
 @media(max-width: 540px) {
 	#pl-count span,
-	#pl-count i,
-	#pl-count a:not(:first-child) {
+	#pl-count a:first-child,
+	#pl-count a:last-child {
 		display: none;
 	}
 }
@@ -1751,41 +1754,41 @@ w {
 		order: 6;
 		-webkit-order: 6;
 	}
-	#playlist {
-		padding-top: 40px;
-	}
 	#db-currentpath {
-		width: calc( 100% - 220px );
+		width: calc( 100% - 180px );
 	}
 	#db-up,
 	#db-webradio-new {
 		right: 170px;
 	}
+	#db-search,
+	#pl-search {
+		width: 130px;
+	}
 }
 @media(max-width: 480px) {
-	#db-currentpath span span,
-	#db-currentpath span>*:not(:first-child),
+	.db-icon,
 	.pl-icon { /* toggle */
 		display: none;
 	}
-	#db-search,
-	#pl-search {
-		max-width: 150px;
-	}
-	#pl-count {
+	#pl-count span,
+	#pl-count a:first-child,
+	#pl-count a:last-child {
 		display: none;
-	}
-	#db-currentpath {
-		overflow: visible;
 	}
 	#database-entries li span .fa,
 	#database-entries li i.db-icon,
 	#pl-editor span:before {
 		display: none;
 	}
-	#database-entries li {
-		padding-left: 5px;
-		line-height: 45px;
+	#database-entries li,
+	#playlist-entries li,
+	#pl-editor li {
+		padding-left: 10px;
+	}
+	#database-entries li,
+	#pl-editor li {
+		line-height: 52px;
 	}
 	#database-entries span,
 	#database-entries span.sn,
@@ -1804,6 +1807,11 @@ w {
 	}
 	#pl-editor span {
 		line-height: 47px;
+	}
+}
+@media(max-width: 450px) {
+	#pl-count {
+		display: none;
 	}
 }
 @media(max-height: 600px) {
@@ -1830,9 +1838,6 @@ w {
 	#menu-top,
 	#menu-bottom {
 		display: none;
-	}
-	#playlist {
-		padding-top: 40px;
 	}
 	.container {
 		padding-top: 0;
