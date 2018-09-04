@@ -14,21 +14,20 @@ function refreshUI( $channel, $data = 1 ) {
 if ( isset( $_POST[ 'redis' ] ) ) { // only for get and set display
 	$redis = new Redis(); 
 	$redis->pconnect( '127.0.0.1' );
+	usleep( 100000 ); // !important - < 50000 hGetAll failed
 	$array = json_decode( $_POST[ 'redis' ], true );
 	foreach ( $array as $field => $arg ) {
+		if ( $arg[ 0 ] === 'hGetAll' ) break;
 		$count = count( $arg );
 		if ( $count === 2 ) {
-			$result[ $field ] = $redis->$arg[ 0 ]( $arg[ 1 ] );
+			$redis->$arg[ 0 ]( $arg[ 1 ] );
 		} else if ( $count === 3 ) {
-			$result[ $field ] = $redis->$arg[ 0 ]( $arg[ 1 ], $arg[ 2 ] );
-		} else if ( $count === 4 ) {
-			$result[ $field ] = $redis->$arg[ 0 ]( $arg[ 1 ], $arg[ 2 ], $arg[ 3 ] );
+			$redis->$arg[ 0 ]( $arg[ 1 ], $arg[ 2 ] );
 		}
 	}
-	usleep( 100000 ); // !important - < 50000 data broken
 	// broadcast to all clients on hmSet display or set volume
-	$result[ 'display' ] = $redis->hGetAll( 'display' );
-	refreshUI( 'display', $result );
+	$display = $arg[ 0 ] === 'hGetAll' ? $redis->hGetAll( 'display' ) : $arg[ 2 ];
+	refreshUI( 'display', $display );
 } else if ( isset( $_POST[ 'volume' ] ) ) {
 	$redis = new Redis(); 
 	$redis->pconnect( '127.0.0.1' );
