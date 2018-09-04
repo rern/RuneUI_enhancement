@@ -25,7 +25,7 @@ if ( isset( $_POST[ 'redis' ] ) ) {
 			$result[ $field ] = $redis->$arg[ 0 ]( $arg[ 1 ], $arg[ 2 ], $arg[ 3 ] );
 		}
 	}
-	usleep( 100000 );
+	usleep( 100000 ); // !important - < 50000 data broken
 	// broadcast to all clients on hmSet display or set volume
 	$result[ 'display' ] = $redis->hGetAll( 'display' );
 	refreshUI( 'display', $result );
