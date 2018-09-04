@@ -70,15 +70,9 @@ if ( isset( $_POST[ 'redis' ] ) ) {
 	$cmd.= $sudo.'shutdown '.( $_POST[ 'power' ] === 'reboot' ? '-r' : '-h' ).' now';
 	exec( $cmd );
 } else if ( isset( $_POST[ 'mpd' ] ) ) {
-	include '/srv/http/app/libs/runeaudio.php';
-	$mpd = openMpdSocket('/run/mpd.sock');
-	sendMpdCommand( $mpd, $_POST[ 'mpd' ] );
-	$result = readMpdResponse( $mpd );
-	echo $result;
-	if ( isset( $_POST[ 'pushstream' ] ) ) {
-		$data = isset( $_POST[ 'getdata' ] ) ? $result : 1;
-		refreshUI( $_POST[ 'pushstream' ], $data );
-	}
+	$result = shell_exec( '{ sleep 0.01; echo '.$_POST[ 'mpd' ].'; sleep 0.1; } | telnet localhost 6600' );
+	if ( isset( $_POST[ 'pushstream' ] ) ) refreshUI( $_POST[ 'pushstream' ], 1 );
+	if ( isset( $_POST[ 'getresult' ] ) ) echo $result;
 } else if ( isset( $_POST[ 'library' ] ) ) {
 	include '/srv/http/app/libs/runeaudio.php';
 	$mpd = openMpdSocket('/run/mpd.sock');
