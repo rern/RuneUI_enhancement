@@ -40,11 +40,10 @@ if ( isset( $_POST[ 'redis' ] ) ) {
 	$redis = new Redis(); 
 	$redis->pconnect( '127.0.0.1' );
 	$volume = $_POST[ 'volume' ];
-	$volumemute = $redis->get( 'volumemute' );
-	if ( $volume === '-1' ) {
+	$volumemute = $redis->hGet( 'display', 'volumemute' );
+	if ( $volume == '-1' ) {
 		if ( $volumemute == 0 ) {
 			$currentvol = exec( "{ sleep 0.01; echo status; sleep 0.01; } | telnet localhost 6600 | grep volume | cut -d' ' -f2" );
-//			$currentvol = mpdCounts( 'status', 'grep volume | cut -d" " -f2' );
 			$vol = 0;
 		} else {
 			$currentvol = 0;
@@ -54,7 +53,8 @@ if ( isset( $_POST[ 'redis' ] ) ) {
 		$currentvol = 0;
 		$vol = $volume;
 	}
-	$redis->set( 'volumemute', $currentvol );
+	echo $currentvol;
+	$redis->hSet( 'display', 'volumemute', $currentvol );
 	exec( '{ sleep 0.01; echo setvol '.$vol.'; sleep 0.01; } | telnet localhost 6600' );
 	refreshUI( 'playback' );
 } else if ( isset( $_POST[ 'mpd' ] ) ) {

@@ -95,14 +95,13 @@ if ( $status[ 'ext' ] === 'radio' ) {
 }
 
 $status[ 'activePlayer' ] = $activePlayer;
-$status[ 'volumemute' ] = $redis->get( 'volumemute' );
+$status[ 'display' ][ 'volumemute' ] = $redis->hGet( 'display', 'volumemute' );
 $webradios = $redis->hGetAll( "webradios" );
 $webradioname = array_flip( $webradios );
 $name = $webradioname[ $file ];
 
 // sampling >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 if ( $status[ 'state' ] === 'play' ) {
-	$status[ 'radioelapsed' ] = $redis->hGet( 'display', 'radioelapsed' );
 	// lossless - no bitdepth
 	$bitdepth = ( $status[ 'ext' ] === 'radio' ) ? '' : $status[ 'bitdepth' ];
 	$sampling = samplingline( $bitdepth, $status[ 'samplerate' ], $status[ 'bitrate' ] );
