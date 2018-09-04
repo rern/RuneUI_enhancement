@@ -1,6 +1,5 @@
 var GUI = {
-	  mode         : 'websocket' // !important
-	, activePlayer : ''
+	  activePlayer : ''
 	, airplay      : {}
 	, bookmarkedit : 0
 	, browsemode   : ''
@@ -30,48 +29,12 @@ var GUI = {
 	, swipe        : 0
 	, timeout      : ''
 };
-
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-PNotify.prototype.options.styling = 'fontawesome';
-PNotify.prototype.options.stack = {
-	  dir1      : 'up'    // stack up
-	, dir2      : 'right' // when full stack right
-	, firstpos1 : 60      // offset from border H
-	, firstpos2 : 0       // offset from border V
-	, spacing1  : 10      // space between dir1
-	, spacing2  : 10      // space between dir2
+function cl( x ) {
+	return console.log( x );
 }
-function renderMSG( text ) {
-	var notify = text[ 0 ];
-	var noticeOptions = {
-		  title       : notify.title ? notify.title : 'Info'
-		, text        : notify.text ? notify.text : ''
-		, icon        : notify.icon ? notify.icon : 'fa fa-check'
-		, opacity     : notify.opacity ? notify.opacity : 0.9
-		, hide        : !notify.hide && !notify.permanotice
-		, buttons     : {
-			  closer  : !notify.permanotice
-			, sticker : !notify.permanotice
-		}
-		, delay       : notify.delay ? notify.delay : 8000
-		, mouse_reset : false
-	};
-	if ( notify.permanotice ) {
-		if ( !GUI.noticeUI[ notify.permanotice ] ) {
-			GUI.noticeUI[ notify.permanotice ] = new PNotify( noticeOptions );
-		} else {
-			if ( notify.permaremove ) {
-				GUI.noticeUI[ notify.permanotice ].remove();
-				GUI.noticeUI[ notify.permanotice ] = 0;
-			} else {
-				GUI.noticeUI[ notify.permanoticeb].open();
-			}
-		}
-	} else {
-		new PNotify( noticeOptions );
-	}
-}
+
 var psOption = {
 	  host: window.location.hostname
 	, port: window.location.port
@@ -172,6 +135,45 @@ document.addEventListener( visibilityevent, function() {
 window.addEventListener( 'orientationchange', function() {
 	if ( GUI.dblist || !$( '#pl-editor' ).hasClass( 'hide' ) ) displayIndex();
 } );
+PNotify.prototype.options.styling = 'fontawesome';
+PNotify.prototype.options.stack = {
+	  dir1      : 'up'    // stack up
+	, dir2      : 'right' // when full stack right
+	, firstpos1 : 60      // offset from border H
+	, firstpos2 : 0       // offset from border V
+	, spacing1  : 10      // space between dir1
+	, spacing2  : 10      // space between dir2
+}
+function renderMSG( text ) {
+	var notify = text[ 0 ];
+	var noticeOptions = {
+		  title       : notify.title ? notify.title : 'Info'
+		, text        : notify.text ? notify.text : ''
+		, icon        : notify.icon ? notify.icon : 'fa fa-check'
+		, opacity     : notify.opacity ? notify.opacity : 0.9
+		, hide        : !notify.hide && !notify.permanotice
+		, buttons     : {
+			  closer  : !notify.permanotice
+			, sticker : !notify.permanotice
+		}
+		, delay       : notify.delay ? notify.delay : 8000
+		, mouse_reset : false
+	};
+	if ( notify.permanotice ) {
+		if ( !GUI.noticeUI[ notify.permanotice ] ) {
+			GUI.noticeUI[ notify.permanotice ] = new PNotify( noticeOptions );
+		} else {
+			if ( notify.permaremove ) {
+				GUI.noticeUI[ notify.permanotice ].remove();
+				GUI.noticeUI[ notify.permanotice ] = 0;
+			} else {
+				GUI.noticeUI[ notify.permanoticeb].open();
+			}
+		}
+	} else {
+		new PNotify( noticeOptions );
+	}
+}
 
 $( '#menu-settings' ).click( function() {
 	$( '#settings' ).toggleClass( 'hide' ).css( 'top', $( '#menu-top' ).is( ':hidden' ) ? 0 : '40px' );
@@ -436,9 +438,6 @@ var btnctrl = {
 	, volR   : 'volup'
 	, volB   : 'voldn'
 }
-function cl( x ) {
-	return console.log( x );
-}
 $( '.timemap, .covermap, .volmap' ).click( function() {
 	var id = this.id;
 	var cmd = btnctrl[ id ];
@@ -450,19 +449,17 @@ $( '.timemap, .covermap, .volmap' ).click( function() {
 	} else if ( cmd === 'random' ) {
 		$( '#random' ).click();
 	} else if ( cmd === 'repeat' ) {
-		cl( GUI.status.repeat +' - '+ GUI.status.single)
 		if ( GUI.status.repeat ) {
 			if ( GUI.status.single ) {
-				$( '#repeat' ).click();
-				setTimeout( function() {
-					$( '#single' ).click();
-				}, 500 );
+				$.post( 'enhance.php', { mpd: [ 'repeat 0', 'single 0' ], pushstream: 'playback' } );
 			} else {
 				$( '#single' ).click();
 			}
 		} else {
 			$( '#repeat' ).click();
 		}
+	} else if ( cmd === 'play' ) {
+		GUI.status.state === 'stop' ? $( '#play' ).click() : $( '#pause' ).click();
 	} else if ( cmd ) {
 		$( '#'+ cmd ).click();
 	}
@@ -987,13 +984,8 @@ function playlistSaveVerify( name ) {
 		} );
 		return;
 	} 
-	$.post( 'enhance.php', { mpd: 'listplaylists' }, function( data ) {
-		var pl = data.split( '\n' ).filter( function( el ) { return el.match( /^playlist/ ) } );
-		var exists = false;
-		pl.some( function( el ) {
-			return  exists = ( name === el.replace( 'playlist: ', '' ) );
-		} );
-		if ( exists ) {
+	$( '#pl-editor span' ).some( function( el ) {
+		if ( name === el.text() ) {
 			info( {
 				  icon    : 'warning'
 				, title   : 'Save Playlist'
@@ -1005,7 +997,7 @@ function playlistSaveVerify( name ) {
 		} else {
 			$.post( 'enhance.php', { mpd: 'save "'+ name +'"', pushstream: 'playlist' } );
 		}
-	}, 'text' );
+	} );
 }
 function playlistRename( name ) {
 	info( {
@@ -2032,7 +2024,7 @@ function renderPlaylist() {
 			cl = ( classcurrent || classradio ) ? cl : '';
 			content += '<li id="pl-'+ pl.Id +'"'+ cl +'>'
 				+ iconhtml
-				+'<i class="fa fa-minus-circle pl-action" title="Remove song from playlist"></i>'
+				+'<i class="fa fa-minus-circle pl-action"></i>'
 				+'<span class="sn">'+ topline +'</span>'
 				+'<span class="bl">'+ bottomline +'</span>'
 				+'</li>';
@@ -2062,36 +2054,34 @@ function renderPlaylist() {
 }
 
 $( '.btn-cmd' ).click( function() {
-	if ( GUI.setmode ) return;
-	tempFlag( 'setmode' ); // prevent fast consecutive clicks
-	
 	var $this = $( this );
+	var cmd = $this.data( 'cmd' );
 	var id = this.id;
-	var dataCmd = $this.data( 'cmd' );
 	if ( $this.hasClass( 'btn-toggle' ) ) {
 		if ( GUI.status.ext === 'radio' ) return;
 		
-		if ( dataCmd === 'pl-ashuffle-stop' ) $.post( '/db/?cmd=pl-ashuffle-stop' );
-		var onoff = GUI.status[ id ] ? 0 : 1;
-		GUI.status[ id ] = onoff;
-		$this.toggleClass( 'btn-primary' );
+		if ( cmd === 'pl-ashuffle-stop' ) {
+			$.post( '/db/?cmd=pl-ashuffle-stop' );
+			return;
+		}
+		var onoff = GUI.status[ cmd ] ? 0 : 1;
+		GUI.status[ cmd ] = onoff;
+		$this.toggleClass( 'btn-primary' ); // make button change immediate
 		setImode();
-		dataCmd = dataCmd +' '+ onoff;
+		cmd = cmd +' '+ onoff;
 	} else {
-		if ( dataCmd === 'play' ) {
-			if ( GUI.status.ext === 'radio' ) {
-				dataCmd = ( GUI.status.state === 'play' ) ? 'stop' : 'play';
-			} else {
-				dataCmd = ( GUI.status.state === 'play' ) ? 'pause' : 'play';
-			}
+		if ( GUI.display.bars && id !== 'previous' && id !== 'next' ) {
 			$( '.playback-controls .btn' ).removeClass( 'btn-primary' );
-			$( '#'+ dataCmd ).addClass( 'btn-primary' );
-			GUI.status.state = dataCmd;
-		} else if ( dataCmd === 'pause' || dataCmd === 'stop' ) {
-			if ( GUI.status.ext === 'radio' ) $( '#currentsong' ).html( '&nbsp;' );
+			$( '#'+ id ).addClass( 'btn-primary' );
+		}
+		if ( cmd === 'pause' || cmd === 'stop' ) {
 			clearInterval( GUI.currentKnob );
 			clearInterval( GUI.countdown );
-		} else if ( dataCmd === 'previous' || dataCmd === 'next' ) {
+			if ( GUI.status.ext === 'radio' ) {
+				cmd === 'stop';
+				$( '#currentsong' ).html( '&nbsp;' );
+			}
+		} else if ( cmd === 'previous' || cmd === 'next' ) {
 			// enable previous / next while stop
 			if ( GUI.status.playlistlength === 1 ) return;
 			
@@ -2105,16 +2095,16 @@ $( '.btn-cmd' ).click( function() {
 				// avoid same pos ( no pos-- or pos++ in ternary )
 				if ( pos === current - 1 ) pos = ( pos === last - 1 ) ? pos - 1 : pos + 1;
 			} else {
-				if ( dataCmd === 'previous' ) {
+				if ( cmd === 'previous' ) {
 					var pos = current !== 1 ? current - 2 : last - 1;
 				} else {
 					var pos = current !== last ? current : 0;
 				}
 			}
-			dataCmd = 'command_list_begin\nplay '+ pos + ( GUI.status.state !== 'play' ? '\nstop' : '' ) +'\ncommand_list_end';
+			cmd = GUI.status.state === 'play' ? 'play '+ pos : [ 'play '+ pos, 'stop' ];
 		}
 	}
-	$.post( 'enhance.php', { mpd: dataCmd, pushstream: 'playback' } );
+	$.post( 'enhance.php', { mpd: cmd, pushstream: 'playback' } );
 } );
 function setImode() {
 	if ( GUI.display.buttons ) {
