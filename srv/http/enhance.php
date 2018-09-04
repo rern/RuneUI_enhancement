@@ -41,9 +41,10 @@ if ( isset( $_POST[ 'redis' ] ) ) {
 	$redis->pconnect( '127.0.0.1' );
 	$volume = $_POST[ 'volume' ];
 	$volumemute = $redis->get( 'volumemute' );
-	if ( $volume == -1 ) {
+	if ( $volume === '-1' ) {
 		if ( $volumemute == 0 ) {
 			$currentvol = exec( "{ sleep 0.01; echo status; sleep 0.01; } | telnet localhost 6600 | grep volume | cut -d' ' -f2" );
+//			$currentvol = mpdCounts( 'status', 'grep volume | cut -d" " -f2' );
 			$vol = 0;
 		} else {
 			$currentvol = 0;
@@ -72,26 +73,46 @@ if ( isset( $_POST[ 'redis' ] ) ) {
 } else if ( isset( $_POST[ 'library' ] ) ) {
 	$redis = new Redis(); 
 	$redis->pconnect( '127.0.0.1' );
-	include '/srv/http/app/libs/runeaudio.php';
-	$mpd = openMpdSocket('/run/mpd.sock');
-	$localStorages = exec( 'mpc list title base LocalStorage | wc -l' );
+	$localStorages = exec( '{ sleep 0.01; echo list title base LocalStorage; sleep 0.1; } | telnet localhost 6600 | grep -c "^Title:"' );
 	$networkmounts = exec( 'df | grep "/mnt/MPD/NAS" | wc -l' );
 	$usbmounts = exec( 'df | grep "/mnt/MPD/USB" | wc -l' );
 	$webradios = count( $redis->hKeys( 'webradios' ) );
-	$proxy = $redis->hGetall( 'proxy' );
-	$dirblecfg = $redis->hGetAll( 'dirble' );
-	$dirble = json_decode( curlGet( $dirblecfg[ 'baseurl' ].'amountStation/apikey/'.$dirblecfg[ 'apikey' ], $proxy ) );
-	$spotify = $redis->hGet( 'spotify', 'enable' );
 	$activePlayer = $redis->get( 'activePlayer' );
 	$redis_bookmarks = $redis->hGetAll( 'bookmarks' );
 	foreach ( $redis_bookmarks as $key => $data ) {
 		$bookmark = json_decode( $data );
-		$bookmarks[] = array(
-			  'id' => $key
+		$path = $bookmark->path;
+		$count = exec( '{ sleep 0.01; echo \'list title base "'.$path.'"\'; sleep 0.1; } | telnet localhost 6600 | grep -c "^Title:"' );
+		$bk[] = array(
+			  'id'   => $key
 			, 'name' => $bookmark->name
-			, 'path' => $bookmark->path
+			, 'path' => $path
+			, 'count'=> $count
 		);
 	}
+	function curlGet($url, $proxy = null) {
+		$ch = curl_init($url);
+		@curl_setopt($ch, CURLOPT_HTTPHEADER, array("Connection: close"));
+		@curl_setopt($ch, CURLOPT_NOSIGNAL, 1);
+		@curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+		if (isset($proxy)) {
+			if ($proxy['enable'] === '1') {
+				$proxy['user'] === '' || @curl_setopt($ch, CURLOPT_PROXYUSERPWD, $proxy['user'].':'.$proxy['pass']);
+				@curl_setopt($ch, CURLOPT_PROXY, $proxy['host']);
+			}
+		}
+		@curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, 400);
+		@curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+		@curl_setopt($ch, CURLOPT_HEADER, 0);
+		@curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		$response = curl_exec($ch);
+		curl_close($ch);
+		return $response;
+	}
+	$proxy = $redis->hGetall( 'proxy' );
+	$dirblecfg = $redis->hGetAll( 'dirble' );
+	$dirble = json_decode( curlGet( $dirblecfg[ 'baseurl' ].'amountStation/apikey/'.$dirblecfg[ 'apikey' ], $proxy ) );
+	$spotify = $redis->hGet( 'spotify', 'enable' );
 	
 	$types = array( 'title', 'album', 'artist', 'composer', 'genre' );
 	$counts = shell_exec( 'for type in '.implode( ' ', $types ).'; do mpc list $type | awk NF | wc -l; done' );
@@ -99,7 +120,7 @@ if ( isset( $_POST[ 'redis' ] ) ) {
 	array_pop( $counts ); // remove last blank
 	$counts = array_combine( $types, $counts );
 	$status = array( 
-		  'bookmarks'     => $bookmarks
+		  'bookmarks'     => $bk
 		, 'localStorages' => $localStorages
 		, 'networkMounts' => $networkmounts
 		, 'USBMounts'     => $usbmounts
