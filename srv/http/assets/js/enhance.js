@@ -277,17 +277,9 @@ $( '#panel-playback' ).click( function( e ) {
 	setDisplayPlayback();
 } );
 // display toggle data
-var command = {
-	  display      : [ 'hGetAll', 'display' ]
-	, volumemute   : [ 'get', 'volumemute' ]
-};
+var command = { display: [ 'hGetAll', 'display' ] };
 $.post( 'enhance.php', { redis: JSON.stringify( command ) }, function( data ) {
 	GUI.display = data.display;
-	GUI.radioelapsed = GUI.display.radioelapsed;
-	/*if ( GUI.activePlayer === 'Airplay' ) {
-		GUI.airplay = data.actplayerinfo; // available if 'activeplayer' is 'Airplay'
-		displayAirPlay();
-	}*/
 }, 'json' );
 
 function nameLabel( name, label ) {
@@ -1241,11 +1233,8 @@ $( '#volume' ).roundSlider( {
 	, change          : function( e ) { // (not fire on 'setValue' ) value after click or 'stop drag'
 		$.post( 'enhance.php', { volume: e.value } );
 		$( e.handle.element ).rsRotate( - e.handle.angle );
-		if ( e.preValue === 0 ) { // value before 'change'
-			var command = { set: [ 'volumemute', 0 ] };
-			$.post( 'enhance.php', { redis: JSON.stringify( command ) } );
-			unmuteColor();
-		}
+		// value before 'change'
+		if ( e.preValue === 0 ) unmuteColor();
 		tempFlag( 'setmode', 1000 );
 	}
 	, start           : function( e ) { // on 'start drag'
@@ -1265,19 +1254,14 @@ $( '#volume' ).roundSlider( {
 } );
 
 $( '#volmute, #volM' ).click( function() {
-	$.post( 'enhance.php', { volume: -1 } );
+	$.post( 'enhance.php', { volume: -1 }, function( data ) {
+} );
 } );
 $( '#volup, #voldn' ).click( function() {
 	var thisid = this.id;
 	var vol = $volumeRS.getValue();
-	if ( ( vol === 0 && ( thisid === 'voldn' ) )
-		|| ( vol === 100 && ( thisid === 'volup' ) ) )
-			return;
+	if ( ( vol === 0 && ( thisid === 'voldn' ) ) || ( vol === 100 && ( thisid === 'volup' ) ) ) return;
 
-	if ( vol === 0 ) {
-		var command = { set: [ 'volumemute', 0 ] };
-		$.post( 'enhance.php', { redis: JSON.stringify( command ) } );
-	}
 	vol = ( thisid === 'volup' ) ? vol + 1 : vol - 1;
 	$.post( 'enhance.php', { volume: vol } );
 } );
@@ -1378,11 +1362,11 @@ function displayPlayback() {
 	} else if ( i === 1 ) {
 		$( '#time-knob, #coverart, #volume-knob, #play-group, #share-group, #vol-group' ).css( 'width', '60%' );
 	}
-	if ( GUI.display.radioelapsed !== GUI.radioelapsed ) {
-		GUI.radioelapsed = GUI.display.radioelapsed;
+	if ( GUI.display.radioelapsed !== GUI.display.radioelapsed ) {
+		GUI.display.radioelapsed = GUI.display.radioelapsed;
 		if ( GUI.status.ext === 'radio' && GUI.status.state === 'play' ) {
 			clearInterval( GUI.countdown );
-			if ( !GUI.radioelapsed ) {
+			if ( !GUI.display.radioelapsed ) {
 				$( '#total' ).empty();
 			} else {
 				$.post( 'enhancestatus.php', function( status ) {
@@ -1513,26 +1497,26 @@ function renderLibraryHome() {
 	if ( bookmarkL ) {
 		for ( i = 0; i < bookmarkL; i++ ) {
 			var bookmark = status.bookmarks[ i ];
-			content += divOpen +'<div id="home-bookmark-'+ bookmark.id +'" class="home-block home-bookmark'+ toggleMPD +'" data-path="'+ bookmark.path +'"><i class="fa fa-bookmark"></i><h4>' + bookmark.name + '</h4></div></div>';
+			content += divOpen +'<div id="home-bookmark-'+ bookmark.id +'" class="home-block home-bookmark'+ toggleMPD +'" data-path="'+ bookmark.path +'"><i class="fa fa-bookmark"></i><h4>' + bookmark.name +'<span> • '+ numFormat( bookmark.count ) +'</span></h4></div></div>';
 		}
 	}
 	// nas
-	content += divOpen +'<a id="home-nas" class="home-block'+ toggleMPD +'"'+ ( !status.networkMounts ? ( notMPD ? '' : ' href="/sources/add/"' ) : ' data-path="NAS"' ) +'><i class="fa fa-network"></i><h4>Network drives <span>( '+ status.networkMounts +' )</span></h4></a></div>';
+	content += divOpen +'<a id="home-nas" class="home-block'+ toggleMPD +'"'+ ( !status.networkMounts ? ( notMPD ? '' : ' href="/sources/add/"' ) : ' data-path="NAS"' ) +'><i class="fa fa-network"></i><h4>Network drives<span>&ensp;'+ status.networkMounts +'</span></h4></a></div>';
 	// sd
-	content += divOpen +'<div id="home-sd" class="home-block'+ toggleMPD +'" data-path="LocalStorage"><i class="fa fa-microsd"></i><h4>SD card <span></span></h4></div></div>';
+	content += divOpen +'<div id="home-sd" class="home-block'+ toggleMPD +'" data-path="LocalStorage"><i class="fa fa-microsd"></i><h4>SD card<span> • '+ numFormat( status.localStorages ) +'</span></h4></div></div>';
 	// usb
-	content += divOpen +'<div id="home-usb" class="home-block'+ toggleMPD +'"'+ ( !status.USBMounts ? ( notMPD ? '' : ' href="/sources/sources/"' ) : ' data-path="USB"' ) +'><i class="fa fa-usbdrive"></i><h4>USB drives <span>( '+ status.USBMounts +' )</span></h4></div></div>';
+	content += divOpen +'<div id="home-usb" class="home-block'+ toggleMPD +'"'+ ( !status.USBMounts ? ( notMPD ? '' : ' href="/sources/sources/"' ) : ' data-path="USB"' ) +'><i class="fa fa-usbdrive"></i><h4>USB drives<span>&ensp;'+ status.USBMounts +'</span></h4></div></div>';
 	// webradio
 	var data = !status.webradio ? ' data-target="webradio-add"' : ' data-path="Webradio"';
-	content += divOpen +'<div id="home-webradio" class="home-block'+ toggleMPD +'"'+ data +'><i class="fa fa-webradio"></i><h4>Webradios <span>( '+ numFormat( status.webradio ) +' )</span></h4></div></div>';
+	content += divOpen +'<div id="home-webradio" class="home-block'+ toggleMPD +'"'+ data +'><i class="fa fa-webradio"></i><h4>Webradios<span> • '+ numFormat( status.webradio ) +'</span></h4></div></div>';
 	// albums
-	content += divOpen +'<div id="home-albums" class="home-block'+ toggleMPD +'" data-path="Albums" data-browsemode="album"><i class="fa fa-album"></i><h4>Albums <span>( '+ numFormat( status.counts.album ) +' )</span></h4></div></div>';
+	content += divOpen +'<div id="home-albums" class="home-block'+ toggleMPD +'" data-path="Albums" data-browsemode="album"><i class="fa fa-album"></i><h4>Albums<span>&ensp;'+ numFormat( status.counts.album ) +'</span></h4></div></div>';
 	// artist
-	content += divOpen +'<div id="home-artists" class="home-block'+ toggleMPD +'" data-path="Artists" data-browsemode="artist"><i class="fa fa-artist"></i><h4>Artists <span>( '+ numFormat( status.counts.artist ) +' )</span></h4></div></div>';
+	content += divOpen +'<div id="home-artists" class="home-block'+ toggleMPD +'" data-path="Artists" data-browsemode="artist"><i class="fa fa-artist"></i><h4>Artists<span>&ensp;'+ numFormat( status.counts.artist ) +'</span></h4></div></div>';
 	// composer
-	content += divOpen +'<div id="home-composer" class="home-block'+ toggleMPD +'" data-path="Composer" data-browsemode="composer"><i class="fa fa-composer"></i><h4>Composers <span>( '+ numFormat( status.counts.composer ) +' )</span></h4></div></div>';
+	content += divOpen +'<div id="home-composer" class="home-block'+ toggleMPD +'" data-path="Composer" data-browsemode="composer"><i class="fa fa-composer"></i><h4>Composers<span>&ensp;'+ numFormat( status.counts.composer ) +'</span></h4></div></div>';
 	// genre
-	content += divOpen +'<div id="home-genre" class="home-block'+ toggleMPD +'" data-path="Genres" data-browsemode="genre"><i class="fa fa-genre"></i><h4>Genres <span>( '+ numFormat( status.counts.genre ) +' )</span></h4></div></div>';
+	content += divOpen +'<div id="home-genre" class="home-block'+ toggleMPD +'" data-path="Genres" data-browsemode="genre"><i class="fa fa-genre"></i><h4>Genres<span>&ensp;'+ numFormat( status.counts.genre ) +'</span></h4></div></div>';
 	// spotify
 	if ( status.Spotify ) {
 		var sw, data = '';
@@ -2198,8 +2182,8 @@ function setPlaybackData() {
 		$volumeRS.setValue( status.volume );
 		$volumehandle.rsRotate( - $volumeRS._handle1.angle );
 		if ( GUI.display.volume && GUI.display.volumempd ) {
-			if ( status.volumemute != 0 ) {
-				muteColor( status.volumemute );
+			if ( status.display.volumemute != 0 ) {
+				muteColor( status.display.volumemute );
 			} else {
 				unmuteColor();
 			}
