@@ -17,23 +17,16 @@ if ( isset( $_POST[ 'redis' ] ) ) {
 	$array = json_decode( $_POST[ 'redis' ], true );
 	foreach ( $array as $field => $arg ) {
 		$count = count( $arg );
-		$command = $arg[ 0 ];
-		if ( in_array( $command, [ 'hGetAll', 'hmSet', 'set' ] ) ) $pushstream = 1;
-		
 		if ( $count === 2 ) {
-			$result[ $field ] = $redis->$command( $arg[ 1 ] );
+			$result[ $field ] = $redis->$arg[ 0 ]( $arg[ 1 ] );
 		} else if ( $count === 3 ) {
-			$result[ $field ] = $redis->$command( $arg[ 1 ], $arg[ 2 ] );
+			$result[ $field ] = $redis->$arg[ 0 ]( $arg[ 1 ], $arg[ 2 ] );
 		} else if ( $count === 4 ) {
-			$result[ $field ] = $redis->$command( $arg[ 1 ], $arg[ 2 ], $arg[ 3 ] );
+			$result[ $field ] = $redis->$arg[ 0 ]( $arg[ 1 ], $arg[ 2 ], $arg[ 3 ] );
 		}
 	}
-	sleep( 1 );
-	echo json_encode( $result, JSON_NUMERIC_CHECK );
-	
+	usleep( 100000 );
 	// broadcast to all clients on hmSet display or set volume
-	if ( !isset( $pushstream ) ) die();
-	
 	$result[ 'display' ] = $redis->hGetAll( 'display' );
 	refreshUI( 'display', $result );
 } else if ( isset( $_POST[ 'volume' ] ) ) {
