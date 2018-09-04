@@ -1,4 +1,4 @@
-var GUI = {
+var GUI = { // outside '$( function() {' enable console.log access
 	  activePlayer : ''
 	, airplay      : {}
 	, bookmarkedit : 0
@@ -451,6 +451,8 @@ $( '.timemap, .covermap, .volmap' ).click( function() {
 	} else if ( cmd === 'repeat' ) {
 		if ( GUI.status.repeat ) {
 			if ( GUI.status.single ) {
+				$( '#repeat, #single' ).removeClass( 'btn-primary' );
+				$( '#irepeat' ).attr( 'class', 'fa hide' );
 				$.post( 'enhance.php', { mpd: [ 'repeat 0', 'single 0' ], pushstream: 'playback' } );
 			} else {
 				$( '#single' ).click();
@@ -1263,12 +1265,11 @@ $( '#volume' ).roundSlider( {
 } );
 
 $( '#volmute, #volM' ).click( function() {
-	if ( $volumeRS.getValue() ) $.post( 'enhance.php', { volume: -1 } );
+	$.post( 'enhance.php', { volume: -1 } );
 } );
 $( '#volup, #voldn' ).click( function() {
 	var thisid = this.id;
 	var vol = $volumeRS.getValue();
-	
 	if ( ( vol === 0 && ( thisid === 'voldn' ) )
 		|| ( vol === 100 && ( thisid === 'volup' ) ) )
 			return;
@@ -2066,7 +2067,7 @@ $( '.btn-cmd' ).click( function() {
 		}
 		var onoff = GUI.status[ cmd ] ? 0 : 1;
 		GUI.status[ cmd ] = onoff;
-		$this.toggleClass( 'btn-primary' ); // make button change immediate
+		$this.toggleClass( 'btn-primary' ); // make button change immediate - not wait for pushstream
 		setImode();
 		cmd = cmd +' '+ onoff;
 	} else {
