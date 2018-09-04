@@ -53,7 +53,6 @@ if ( isset( $_POST[ 'redis' ] ) ) {
 		$currentvol = 0;
 		$vol = $volume;
 	}
-	echo $currentvol;
 	$redis->hSet( 'display', 'volumemute', $currentvol );
 	exec( '{ sleep 0.01; echo setvol '.$vol.'; sleep 0.01; } | telnet localhost 6600' );
 	refreshUI( 'playback' );
