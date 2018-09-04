@@ -31,9 +31,8 @@ var GUI = { // outside '$( function() {' enable console.log access
 };
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-function cl( x ) {
-	return console.log( x );
-}
+// init display data pushstream
+$.post( 'enhance.php', { redis: JSON.stringify( { display: [ 'hGetAll' ] } ) } );
 
 var psOption = {
 	  host: window.location.hostname
@@ -64,7 +63,7 @@ pushstreamPlaylist.connect();
 var pushstreamDisplay = new PushStream( psOption );
 pushstreamDisplay.addChannel( 'display' );
 pushstreamDisplay.onmessage = function( data ) { // on receive broadcast
-	GUI.display = data[ 0 ].display;
+	GUI.display = data[ 0 ];
 	if ( $( '#panel-playback' ).hasClass( 'active' ) ) {
 		displayPlayback();
 	} else if ( $( '#panel-library' ).hasClass( 'active' ) ) {
@@ -276,11 +275,6 @@ $( '#panel-playback' ).click( function( e ) {
 	
 	setDisplayPlayback();
 } );
-// display toggle data
-var command = { display: [ 'hGetAll', 'display' ] };
-$.post( 'enhance.php', { redis: JSON.stringify( command ) }, function( data ) {
-	GUI.display = data.display;
-}, 'json' );
 
 function nameLabel( name, label ) {
 	return '<label><input name="'+ name +'" type="checkbox" '+ GUI.display[ name ] +'>&ensp;'+label+'</label><br>';
