@@ -70,7 +70,7 @@ if ( isset( $_POST[ 'redis' ] ) ) {
 			$command.= 'echo '.$cmd.';';
 		}
 	}
-	$result = shell_exec( '{ sleep 0.01; '.$command.' sleep 0.1; } | telnet localhost 6600' );
+	$result = shell_exec( '{ sleep 0.01; '.$command.' sleep 0.01; } | telnet localhost 6600' );
 	if ( isset( $_POST[ 'pushstream' ] ) ) refreshUI( $_POST[ 'pushstream' ], 1 );
 	if ( isset( $_POST[ 'getresult' ] ) ) echo $result;
 } else if ( isset( $_POST[ 'library' ] ) ) {
