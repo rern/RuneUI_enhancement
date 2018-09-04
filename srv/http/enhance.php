@@ -1,7 +1,8 @@
 <?php
-// redis  : command = { dataid: [ 'command', 'key', ['hash',] 'value' ] }
-// volume : N ... mute/unmute: N = -1 )
-// mpd    : mpd protocol command
+// js syntax:
+//   redis  : { dataid: [ 'command', 'key', ['hash',] 'value' ] }
+//   volume : N ... mute/unmute: N = -1 )
+//   mpd    : { mpd: command }  // mpd protocol command - multiples commands must be array
 
 function refreshUI( $channel, $data = 1 ) {
 	$ch = curl_init( 'http://localhost/pub?id='.$channel );
@@ -10,11 +11,9 @@ function refreshUI( $channel, $data = 1 ) {
 	curl_exec( $ch );
 	curl_close( $ch );
 }
-if ( !isset( $_POST[ 'mpd' ] ) ) {
+if ( isset( $_POST[ 'redis' ] ) ) {
 	$redis = new Redis(); 
 	$redis->pconnect( '127.0.0.1' );
-}
-if ( isset( $_POST[ 'redis' ] ) ) {
 	$array = json_decode( $_POST[ 'redis' ], true );
 	foreach ( $array as $field => $arg ) {
 		$count = count( $arg );
@@ -38,6 +37,8 @@ if ( isset( $_POST[ 'redis' ] ) ) {
 	$result[ 'display' ] = $redis->hGetAll( 'display' );
 	refreshUI( 'display', $result );
 } else if ( isset( $_POST[ 'volume' ] ) ) {
+	$redis = new Redis(); 
+	$redis->pconnect( '127.0.0.1' );
 	// normal
 	$volume = $_POST[ 'volume' ];
 	if ( $volume != -1 ) {
@@ -59,21 +60,22 @@ if ( isset( $_POST[ 'redis' ] ) ) {
 		echo $volumemute;
 	}
 	refreshUI( 'playback' );
-} else if ( isset( $_POST[ 'bash' ] ) ) {
-	$result = shell_exec( '/usr/bin/sudo '.$_POST[ 'bash' ] );
-	echo $result;
-} else if ( isset( $_POST[ 'power' ] ) ) {
-	$sudo = '/usr/bin/sudo /usr/bin/';
-	if ( file_exists( '/root/gpiooff.py' ) ) $cmd.= '/usr/bin/sudo /root/gpiooff.py;';
-	if ( $redis->get( local_browser ) === '1' ) $cmd .= $sudo.'killall Xorg; /usr/local/bin/ply-image /srv/http/assets/img/bootsplash.png;';
-	$cmd.= $sudo.'umount -f -a -t cifs nfs -l;';
-	$cmd.= $sudo.'shutdown '.( $_POST[ 'power' ] === 'reboot' ? '-r' : '-h' ).' now';
-	exec( $cmd );
 } else if ( isset( $_POST[ 'mpd' ] ) ) {
-	$result = shell_exec( '{ sleep 0.01; echo '.$_POST[ 'mpd' ].'; sleep 0.1; } | telnet localhost 6600' );
+	$mpd = $_POST[ 'mpd' ];
+	if ( !is_array( $mpd ) ) {
+		$command = 'echo '.$mpd.';';
+	} else {
+		$command = '';
+		foreach( $mpd as $cmd ) {
+			$command.= 'echo '.$cmd.';';
+		}
+	}
+	$result = shell_exec( '{ sleep 0.01; '.$command.' sleep 0.1; } | telnet localhost 6600' );
 	if ( isset( $_POST[ 'pushstream' ] ) ) refreshUI( $_POST[ 'pushstream' ], 1 );
 	if ( isset( $_POST[ 'getresult' ] ) ) echo $result;
 } else if ( isset( $_POST[ 'library' ] ) ) {
+	$redis = new Redis(); 
+	$redis->pconnect( '127.0.0.1' );
 	include '/srv/http/app/libs/runeaudio.php';
 	$mpd = openMpdSocket('/run/mpd.sock');
 	$localStorages = exec( 'mpc list title base LocalStorage | wc -l' );
@@ -113,4 +115,16 @@ if ( isset( $_POST[ 'redis' ] ) ) {
 		, 'counts'        => $counts
 	);
 	echo json_encode( $status, JSON_NUMERIC_CHECK );
+} else if ( isset( $_POST[ 'bash' ] ) ) {
+	$result = shell_exec( '/usr/bin/sudo '.$_POST[ 'bash' ] );
+	echo $result;
+} else if ( isset( $_POST[ 'power' ] ) ) {
+	$redis = new Redis(); 
+	$redis->pconnect( '127.0.0.1' );
+	$sudo = '/usr/bin/sudo /usr/bin/';
+	if ( file_exists( '/root/gpiooff.py' ) ) $cmd.= '/usr/bin/sudo /root/gpiooff.py;';
+	if ( $redis->get( local_browser ) === '1' ) $cmd .= $sudo.'killall Xorg; /usr/local/bin/ply-image /srv/http/assets/img/bootsplash.png;';
+	$cmd.= $sudo.'umount -f -a -t cifs nfs -l;';
+	$cmd.= $sudo.'shutdown '.( $_POST[ 'power' ] === 'reboot' ? '-r' : '-h' ).' now';
+	exec( $cmd );
 }
