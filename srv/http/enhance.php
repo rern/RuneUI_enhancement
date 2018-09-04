@@ -11,7 +11,7 @@ function refreshUI( $channel, $data = 1 ) {
 	curl_exec( $ch );
 	curl_close( $ch );
 }
-if ( isset( $_POST[ 'redis' ] ) ) {
+if ( isset( $_POST[ 'redis' ] ) ) { // only for get and set display
 	$redis = new Redis(); 
 	$redis->pconnect( '127.0.0.1' );
 	$array = json_decode( $_POST[ 'redis' ], true );
