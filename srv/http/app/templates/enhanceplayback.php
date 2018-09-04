@@ -82,9 +82,9 @@
 				</div>
 				<div id="vol-group">
 					<div class="btn-group">
-						<button id="voldn" class="btn btn-default btn-lg" type="button" title="Volume down"><i class="fa fa-minus"></i></button>
-						<button id="volmute" class="btn btn-default btn-lg" type="button" title="Volume mute/unmute"><i class="fa fa-volume"></i></button>
-						<button id="volup" class="btn btn-default btn-lg" type="button" title="Volume up"><i class="fa fa-plus"></i></button>
+						<button id="voldn" class="btn btn-default btn-lg" type="button"><i class="fa fa-minus"></i></button>
+						<button id="volmute" class="btn btn-default btn-lg" type="button"><i class="fa fa-volume"></i></button>
+						<button id="volup" class="btn btn-default btn-lg" type="button"><i class="fa fa-plus"></i></button>
 					</div>
 				</div>
 			</div>
@@ -96,7 +96,7 @@
 				<div class="input-group">
 					<input id="db-search-keyword" class="form-control osk-trigger" type="text">
 					<span class="input-group-btn">
-						<button id="searchbtn" class="btn btn-default" title="Search"><i class="fa fa-search"></i></button>
+						<button id="searchbtn" class="btn btn-default"><i class="fa fa-search"></i></button>
 					</span>
 				</div>
 			</div>
@@ -291,8 +291,8 @@ echo $menu;
     <nav>
         <ul>
             <li><span>Playback Source</span></li>
-			<li><a id="playsource-mpd" class="btn btn-default btn-lg btn-block" title="Switch to MPD"><i class="fa fa-mpd sx"></i> MPD</a></li>
-			<li><a id="playsource-spotify" class="btn btn-default btn-lg btn-block inactive" title="Switch to Spotify"><i class="fa fa-spotify sx"></i> <span>spop</span> Spotify</a></li>
+			<li><a id="playsource-mpd" class="btn btn-default btn-lg btn-block"><i class="fa fa-mpd sx"></i> MPD</a></li>
+			<li><a id="playsource-spotify" class="btn btn-default btn-lg btn-block inactive"><i class="fa fa-spotify sx"></i> <span>spop</span> Spotify</a></li>
 			<li><a id="playsource-airplay" class="btn btn-default btn-lg btn-block inactive"><i class="fa fa-airplay sx"></i> <span>ShairPort</span> Airplay</a></li>
 			<li><a id="playsource-dlna" class="btn btn-default btn-lg btn-block inactive"><i class="fa fa-dlna sx"></i> <span>upmpdcli</span> DLNA</a></li>
             <li><button id="overlay-playsource-close" class="btn btn-link" type="button"><i class="fa fa-times"></i> Close</button></li>
