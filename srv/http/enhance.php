@@ -39,26 +39,22 @@ if ( isset( $_POST[ 'redis' ] ) ) {
 } else if ( isset( $_POST[ 'volume' ] ) ) {
 	$redis = new Redis(); 
 	$redis->pconnect( '127.0.0.1' );
-	// normal
 	$volume = $_POST[ 'volume' ];
-	if ( $volume != -1 ) {
-		exec( 'mpc volume '.$volume );
-		$redis->set( 'volumemute', 0 );
-		refreshUI( 'playback' );
-		die();
-	}
-	// mute / unmute
 	$volumemute = $redis->get( 'volumemute' );
-	if ( $volumemute == 0 ) {
-		$currentvol = exec( "mpc volume | cut -d' ' -f2 | cut -d'%' -f1" );
-		$redis->set( 'volumemute', $currentvol );
-		exec( 'mpc volume 0' );
-		echo $currentvol;
+	if ( $volume == -1 ) {
+		if ( $volumemute == 0 ) {
+			$currentvol = exec( "{ sleep 0.01; echo status; sleep 0.01; } | telnet localhost 6600 | grep volume | cut -d' ' -f2" );
+			$vol = 0;
+		} else {
+			$currentvol = 0;
+			$vol = $volumemute;
+		}
 	} else {
-		exec( 'mpc volume '.$volumemute );
-		$redis->set( 'volumemute', 0 );
-		echo $volumemute;
+		$currentvol = 0;
+		$vol = $volume;
 	}
+	$redis->set( 'volumemute', $currentvol );
+	exec( '{ sleep 0.01; echo setvol '.$vol.'; sleep 0.01; } | telnet localhost 6600' );
 	refreshUI( 'playback' );
 } else if ( isset( $_POST[ 'mpd' ] ) ) {
 	$mpd = $_POST[ 'mpd' ];
