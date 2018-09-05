@@ -51,8 +51,8 @@
 				</div>
 				<div id="coverart">
 					<img id="cover-art" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
-					<input id="vu" type="hidden" value="url('..<?=$this->asset('/img/vu.gif')?>')">
-					<input id="vustop" type="hidden" value="url('..<?=$this->asset('/img/vustop.gif')?>')">
+					<input id="vu" type="hidden" value="<?=$this->asset('/img/vu.gif')?>">
+					<input id="vustop" type="hidden" value="<?=$this->asset('/img/vustop.gif')?>">
 					<div id="coverartoverlay"></div>
 					<img id="controls-cover" class="controls hide" src="<?=$this->asset('/img/controls.svg')?>">
 					<div id="coverTL" class="covermap t0 w50 h50 m-115"></div>
