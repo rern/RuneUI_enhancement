@@ -7,11 +7,6 @@ if ( $activePlayer === 'Airplay' ) {
 	echo json_encode( $status );
 	die();
 }
-
-include '/srv/http/app/libs/runeaudio.php';
-$mpd = openMpdSocket('/run/mpd.sock');
-if ( !$mpd ) die();
-
 // current song
 function status2array( $lines ) {
 	$line = strtok( $lines, "\n" );
@@ -32,7 +27,6 @@ function status2array( $lines ) {
 		}
 		$line = strtok( "\n" );
 	}
-	unset( $status[ 'OK' ] );
 	if ( array_key_exists( 'bitrate', $status ) ) {
 		$sampling = substr( $status[ 'file' ], 0, 4 ) === 'http' ? '' : $status[ 'bitdepth' ].' bit ';
 		$sampling.= round( $status[ 'samplerate' ] / 1000, 1 ).' kHz '.$status[ 'bitrate' ].' kbit/s';
@@ -57,28 +51,15 @@ function samplingline( $bitdepth, $samplerate, $bitrate ) {
 	return $bitdepth.$samplerate.$bitrate;
 }
 
-$cmdlist = "command_list_begin\n"
-	."clearerror\n"
-	."status\n"
-	."currentsong\n"
-	."command_list_end";
-sendMpdCommand( $mpd, $cmdlist );
-$status = readMpdResponse( $mpd );
+$status = shell_exec( '{ sleep 0.01; echo clearerror; echo status; echo currentsong; sleep 0.05; } | telnet localhost 6600 | sed "/^Trying\|Connected\|Escape\|OK\|Connection/ d"' );
 $status = status2array( $status );
 
 // fix: initially add song without play - currentsong = (blank)
 if ( !isset( $status[ 'file' ] ) ) {
-	sendMpdCommand( $mpd, 'playlistinfo 0' );
-	$status0 = readMpdResponse( $mpd );
+	$status0 = shell_exec( '{ sleep 0.01; echo playlistinfo 0; sleep 0.01; } | telnet localhost 6600' );
 	$status0 = status2array( $status0 );
 	$status = array_merge( $status, $status0 );
 	$status[ 'song' ] = 0;
-}
-
-if ( isset( $status[ 'error' ] ) && $status[ 'state' ] !== 'stop' ) {
-	sendMpdCommand( $mpd, 'stop' );
-	$output = array( 'icon' => 'fa fa-exclamation-circle', 'title' => 'MPD Error', 'text' => $status[ 'error' ] );
-	ui_render( 'notify', json_encode( $output ) );
 }
 
 $file = $status[ 'file' ];
@@ -95,7 +76,6 @@ if ( $status[ 'ext' ] === 'radio' ) {
 }
 
 $status[ 'activePlayer' ] = $activePlayer;
-$status[ 'display' ][ 'volumemute' ] = $redis->hGet( 'display', 'volumemute' );
 $webradios = $redis->hGetAll( "webradios" );
 $webradioname = array_flip( $webradios );
 $name = $webradioname[ $file ];
