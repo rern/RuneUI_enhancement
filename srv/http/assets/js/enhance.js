@@ -32,7 +32,7 @@ var GUI = { // outside '$( function() {' enable console.log access
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 // init display data pushstream
-$.post( 'enhance.php', { redis: JSON.stringify( { display: [ 'hGetAll' ] } ) } );
+$.post( 'enhance.php', { getdisplay: 1 } );
 
 var psOption = {
 	  host: window.location.hostname
@@ -301,10 +301,9 @@ function setDisplayPlayback() {
 			$( '#displaysaveplayback input' ).each( function() {
 				GUI.display[ this.name ] = this.checked ? 'checked' : '';
 			} );
-			var command = { set : [ 'hmSet', 'display', GUI.display ] };
 			displayPlayback();
 			tempFlag( 'setmode' );
-			$.post( 'enhance.php', { redis: JSON.stringify( command ) } );
+			$.post( 'enhance.php', { setdisplay: GUI.display } );
 		}
 	} );
 	// disable by mpd volume
@@ -388,10 +387,9 @@ function setDisplayLibrary() {
 			$( '#displaysavelibrary input' ).each( function() {
 				GUI.display[ this.name ] = this.checked ? 'checked' : '';
 			} );
-			var command = { set: [ 'hmSet', 'display', GUI.display ] };
 			displayLibrary();
 			tempFlag( 'setmode' );
-			$.post( 'enhance.php', { redis: JSON.stringify( command ) } );
+			$.post( 'enhance.php', { setdisplay: GUI.display } );
 		}
 	} );
 }
@@ -1484,7 +1482,7 @@ function renderLibraryHome() {
 	
 	$( '#panel-library .btnlist-top, db-entries' ).addClass( 'hide' );
 	var status = GUI.libraryhome;
-	$( '#db-currentpath span' ).html( '&emsp;<a class="title">L I B R A R Y</a><a id="li-count"><span class="title">&emsp;•&ensp;</span><span>'+ numFormat( status.counts.title ) +'</span><i class="fa fa-music"></i></a>' );
+	$( '#db-currentpath span' ).html( '&emsp;<a class="title">L I B R A R Y</a><a id="li-count"><span class="title">&emsp;•&ensp;</span><span>'+ numFormat( status.title ) +'</span><i class="fa fa-music"></i></a>' );
 	$( '#panel-library .btnlist-top, #home-blocks' ).removeClass( 'hide' );
 	notMPD = ( status.ActivePlayer === 'Spotify' || status.ActivePlayer === 'Airplay' );
 	toggleMPD = notMPD ? ' inactive' : '';
@@ -1511,13 +1509,13 @@ function renderLibraryHome() {
 	var data = !status.webradio ? ' data-target="webradio-add"' : ' data-path="Webradio"';
 	content += divOpen +'<div id="home-webradio" class="home-block'+ toggleMPD +'"'+ data +'><i class="fa fa-webradio"></i><h4>Webradios<span>&ensp;'+ numFormat( status.webradio ) +'</span></h4></div></div>';
 	// albums
-	content += divOpen +'<div id="home-albums" class="home-block'+ toggleMPD +'" data-path="Albums" data-browsemode="album"><i class="fa fa-album"></i><h4>Albums<span>&ensp;'+ numFormat( status.counts.album ) +'</span></h4></div></div>';
+	content += divOpen +'<div id="home-albums" class="home-block'+ toggleMPD +'" data-path="Albums" data-browsemode="album"><i class="fa fa-album"></i><h4>Albums<span>&ensp;'+ numFormat( status.album ) +'</span></h4></div></div>';
 	// artist
-	content += divOpen +'<div id="home-artists" class="home-block'+ toggleMPD +'" data-path="Artists" data-browsemode="artist"><i class="fa fa-artist"></i><h4>Artists<span>&ensp;'+ numFormat( status.counts.artist ) +'</span></h4></div></div>';
+	content += divOpen +'<div id="home-artists" class="home-block'+ toggleMPD +'" data-path="Artists" data-browsemode="artist"><i class="fa fa-artist"></i><h4>Artists<span>&ensp;'+ numFormat( status.artist ) +'</span></h4></div></div>';
 	// composer
-	content += divOpen +'<div id="home-composer" class="home-block'+ toggleMPD +'" data-path="Composer" data-browsemode="composer"><i class="fa fa-composer"></i><h4>Composers<span>&ensp;'+ numFormat( status.counts.composer ) +'</span></h4></div></div>';
+	content += divOpen +'<div id="home-composer" class="home-block'+ toggleMPD +'" data-path="Composer" data-browsemode="composer"><i class="fa fa-composer"></i><h4>Composers<span>&ensp;'+ numFormat( status.composer ) +'</span></h4></div></div>';
 	// genre
-	content += divOpen +'<div id="home-genre" class="home-block'+ toggleMPD +'" data-path="Genres" data-browsemode="genre"><i class="fa fa-genre"></i><h4>Genres<span>&ensp;'+ numFormat( status.counts.genre ) +'</span></h4></div></div>';
+	content += divOpen +'<div id="home-genre" class="home-block'+ toggleMPD +'" data-path="Genres" data-browsemode="genre"><i class="fa fa-genre"></i><h4>Genres<span>&ensp;'+ numFormat( status.genre ) +'</span></h4></div></div>';
 	// spotify
 	if ( status.Spotify ) {
 		var sw, data = '';
@@ -2160,9 +2158,19 @@ function setOneload() {
 	clearTimeout( GUI.timeout );
 	$( '#starter' ).remove();
 	$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
-	$.post( 'enhance.php', { library: 1 }, function( status ) {
-		GUI.libraryhome = status;
-	}, 'json' );
+	$.post( 'enhance.php', { library: 1 }, function( data ) {
+		var keys = [ 'networkMounts', 'localStorages', 'USBMounts', 'webradio', 'album', 'artist', 'composer', 'genre', 'title', 'Spotify', 'ActivePlayer' ];
+		var values = data.split( ' ' );
+		GUI.libraryhome.bookmarks = [];
+		$.each( keys, function( i, key ) {
+			var v = values[ i ];
+			GUI.libraryhome[ key ] = isNaN( v ) ? v : Number( v );
+		} );
+		values.splice( 0, 11 );
+		$.each( values, function( i, value ) {
+			GUI.libraryhome.bookmarks[ i ] = JSON.parse( values );
+		} );
+	}, 'text' );
 }
 function setPlaybackData() {
 	if ( GUI.setmode ) return;
