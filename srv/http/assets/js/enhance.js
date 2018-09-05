@@ -17,7 +17,6 @@ var GUI = { // outside '$( function() {' enable console.log access
 	, json         : 0
 	, list         : {}
 	, libraryhome  : {}
-	, noscroll     : 0
 	, noticeUI     : {}
 	, plclear      : 0
 	, plcurrent    : ''
@@ -447,7 +446,7 @@ $( '.timemap, .covermap, .volmap' ).click( function() {
 			$( '#repeat' ).click();
 		}
 	} else if ( cmd === 'play' ) {
-		GUI.status.state === 'stop' ? $( '#play' ).click() : $( '#pause' ).click();
+		GUI.status.state === 'play' ? $( '#pause' ).click() : $( '#play' ).click();
 	} else if ( cmd ) {
 		$( '#'+ cmd ).click();
 	}
@@ -708,7 +707,7 @@ $( '#pl-manage-clear' ).click( function() {
 } );
 $( '#pl-entries' ).on( 'click', 'li', function( e ) {
 	if ( $( e.target ).hasClass( 'pl-action' ) ) {
-		GUI.noscroll = 1; // prevent scroll to active li
+		tempFlag( 'setmode' );
 		$.post( 'enhance.php', { mpd: 'del '+ ( $( this ).index() + 1 ), pushstream: 'playlist' } );
 		$( this ).remove();
 		return
@@ -823,7 +822,7 @@ $( '.contextmenu a' ).click( function() {
 			$( '#random' ).data( 'cmd', 'pl-ashuffle-stop' ).addClass( 'btn-primary' );
 			break;
 		default:
-			if ( cmd === 'bookmark' ) GUI.bookmarkedit = 1;
+			GUI.bookmarkedit = cmd === 'bookmark' ? 1 : 0;
 			$.post( '/db/?cmd='+ cmd, { path: GUI.list.path }, function() {
 				renderPlaylist();
 			} );
@@ -1124,9 +1123,8 @@ new Sortable( list, {
 		$icon.show();
 	  }
 	, onUpdate   : function ( e ) {
-		GUI.noscroll = 1;
-		var plid = parseInt( e.item.id.replace( 'pl-', '' ) );
-		$.post( 'enhance.php', { mpd: 'move '+ plid +' '+ e.newIndex, pushstream: 'playlist' } );
+		tempFlag( 'setmode' );
+		$.post( 'enhance.php', { mpd: 'move '+ ( e.oldIndex +1 ) +' '+ ( e.newIndex + 1 ), pushstream: 'playlist' } );
 	}
 } );
 // MutationObserver - watch for '#db-entries' content changed then scroll to previous position
@@ -1431,10 +1429,7 @@ function setPlaylistScroll() {
 	$( '#pl-entries li' ).removeClass( 'active' );
 	var $liactive = $( '#pl-'+ GUI.status.Id );
 	$liactive.addClass( 'active' );
-	if ( GUI.noscroll ) {
-		GUI.noscroll = 0;
-		return;
-	}
+	if ( GUI.setmode ) return;
 	setTimeout( function() {
 		var scrollpos = $liactive.offset().top - $( '#pl-entries' ).offset().top - ( 49 * 3 );
 		$( 'html, body' ).scrollTop( scrollpos );
@@ -1568,7 +1563,7 @@ function getDB( options ) {
 		GUI.dbback = 0;
 	}
 		
-	$( '#loader' ).removeClass( 'hide' );
+//	$( '#loader' ).removeClass( 'hide' );
 	GUI.browsemode = browsemode;
 	
 	if ( plugin ) {
@@ -1621,8 +1616,13 @@ function getDB( options ) {
 				populateDB( data, path, '', '', uplevel );
 			}, 'json' );
 		} else {
-			$( '#loader' ).addClass( 'hide' );
-			$.post( '/db/?cmd='+ cmd, { path: path, querytype: querytype }, 'json');
+//			$( '#loader' ).addClass( 'hide' );
+			$.post( '/db/?cmd='+ cmd, { path: path, querytype: querytype }, function() {
+				if ( $.inArray( cmd, [ 'add', 'addplay', 'addreplaceplay' ] ) !== -1 ) {
+					tempFlag( 'setmode' );
+					renderPlaylist();
+				}
+			}, 'json');
 		}
 	}
 }
@@ -1977,8 +1977,8 @@ function renderPlaylist() {
 		$( '#playlist-warning' ).css( 'margin-top', barhide ? '27px' : '67px' );
 		return;
 	}
-	
-	$( '#loader' ).removeClass( 'hide' );
+
+	if ( !GUI.setmode ) $( '#loader' ).removeClass( 'hide' );
 	
 	$.get( '/db/?cmd=playlist', function( data ) {
 		var current = GUI.status.song + 1;
@@ -2032,7 +2032,7 @@ function renderPlaylist() {
 		$( '#pl-count' ).html( counthtml );
 		
 		$( '#pl-entries' ).html( content +'<p></p>' ).promise().done( function() {
-			setPlaylistScroll();
+			if ( !GUI.setmode ) setPlaylistScroll();
 		} );
 	}, 'json' );
 }
