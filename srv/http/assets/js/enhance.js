@@ -870,7 +870,9 @@ function webRadioNewVerify( name, url ) {
 			info( {
 				  icon    : 'warning'
 				, title   : 'Add Webradio'
-				, message : '<white>'+ ( nameexist ? name : url ) +'</white><br>already exists.'
+				, message : ( nameexist ? 'Name' : 'URL:' )
+							+'<br><white>'+ ( nameexist ? name : url ) +'</white>'
+							+'<br>already exists.'
 				, ok      : function() {
 					webRadioNew( name, url );
 				}
