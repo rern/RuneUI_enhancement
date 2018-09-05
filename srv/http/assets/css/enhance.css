@@ -405,9 +405,10 @@ gr {color: #587ca0; }
 	white-space: nowrap;
 }
 #currentsong {
+	height: 34px;
+	line-height: 34px;
 	font-size: 30px;
 	color: #0095d8;
-	line-height: 34px
 }
 #divartist, #divalbum {
 	height: 25px;
