@@ -148,6 +148,10 @@ label {
 	text-transform: uppercase;
 }
 
+wh { color: #e0e7ee; }
+bl { color: #e0e7ee; }
+gr {color: #587ca0; }
+
 @keyframes blinkopaque {
 	50% { opacity: 0; }
 }
@@ -1330,7 +1334,6 @@ span.dbpath {
 	margin-left: 15px;
 }
 .jamendo-cover {
-	float: left;
 	width: 33px;
 	height: 33px;
 	margin: 8px;
