@@ -709,11 +709,11 @@ $( '#pl-manage-clear' ).click( function() {
 $( '#pl-entries' ).on( 'click', 'li', function( e ) {
 	if ( $( e.target ).hasClass( 'pl-action' ) ) {
 		GUI.noscroll = 1; // prevent scroll to active li
-		$.post( 'enhance.php', { mpd: 'del '+ $( this ).index(), pushstream: 'playlist' } );
+		$.post( 'enhance.php', { mpd: 'del '+ ( $( this ).index() + 1 ), pushstream: 'playlist' } );
 		$( this ).remove();
 		return
 	}
-	$.post( 'enhance.php', { mpd: 'play '+ $( this ).index(), pushstream: 'playback' } );
+	$.post( 'enhance.php', { mpd: 'play '+ ( $( this ).index() + 1 ), pushstream: 'playback' } );
 	$( '#pl-entries li' ).removeClass( 'active' );
 	$( this ).addClass( 'active' );
 } );
