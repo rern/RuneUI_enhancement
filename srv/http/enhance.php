@@ -25,7 +25,7 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 } else if ( isset( $_POST[ 'library' ] ) ) {
 	echo exec( '/srv/http/enhancelibdata.sh' );
 } else if ( isset( $_POST[ 'bash' ] ) ) {
-	shell_exec( '/usr/bin/sudo '.$_POST[ 'bash' ] );
+	echo shell_exec( '/usr/bin/sudo '.$_POST[ 'bash' ] );
 } else if ( isset( $_POST[ 'volume' ] ) ) {
 	$redis = new Redis(); 
 	$redis->pconnect( '127.0.0.1' );
