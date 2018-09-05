@@ -1,8 +1,7 @@
 <?php
 // js syntax:
-//   redis  : { dataid: [ 'command', 'key', ['hash',] 'value' ] }
+//   mpd    : { mpc: command }  // multiples commands must be array
 //   volume : N ... mute/unmute: N = -1 )
-//   mpd    : { mpd: command }  // mpd protocol command - multiples commands must be array
 
 function refreshUI( $channel, $data = 1 ) {
 	$ch = curl_init( 'http://localhost/pub?id='.$channel );
