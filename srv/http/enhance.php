@@ -23,6 +23,10 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	$data = $_POST[ 'setdisplay' ];
 	$redis->hmSet( 'display', $data );
 	refreshUI( 'display', $data );
+} else if ( isset( $_POST[ 'library' ] ) ) {
+	echo exec( '/srv/http/enhancelibdata.sh' );
+} else if ( isset( $_POST[ 'bash' ] ) ) {
+	shell_exec( '/usr/bin/sudo '.$_POST[ 'bash' ] );
 } else if ( isset( $_POST[ 'volume' ] ) ) {
 	$redis = new Redis(); 
 	$redis->pconnect( '127.0.0.1' );
@@ -54,11 +58,6 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	}
 	if ( isset( $_POST[ 'pushstream' ] ) ) refreshUI( $_POST[ 'pushstream' ], 1 );
 	if ( isset( $_POST[ 'getresult' ] ) ) echo $result;
-} else if ( isset( $_POST[ 'library' ] ) ) {
-	echo exec( '/srv/http/enhancelibdata.sh' );
-} else if ( isset( $_POST[ 'bash' ] ) ) {
-	$result = shell_exec( '/usr/bin/sudo '.$_POST[ 'bash' ] );
-	echo $result;
 } else if ( isset( $_POST[ 'power' ] ) ) {
 	$redis = new Redis(); 
 	$redis->pconnect( '127.0.0.1' );
