@@ -1193,10 +1193,14 @@ gr {color: #587ca0; }
 	color: #587ca0;
 }
 #db-currentpath span i {
+	float: left;
 	margin: 0 10px;
-	vertical-align: -10%;
 	font-size: 24px;
+	line-height: 40px;
 	color: #e0e7ee;
+}
+#db-currentpath span i.fa-music {
+	float: unset;
 }
 #db-currentpath span a:last-of-type {
 	color: #e0e7ee;
@@ -1331,7 +1335,7 @@ span.dbpath {
 	text-align: center;
 }
 #db-currentpath .fa-dirble {
-	margin-left: 15px;
+	margin: 0 15px;
 }
 .jamendo-cover {
 	width: 33px;
