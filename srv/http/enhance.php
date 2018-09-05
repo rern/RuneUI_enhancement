@@ -14,7 +14,7 @@ function refreshUI( $channel, $data = 1 ) {
 if ( isset( $_POST[ 'redis' ] ) ) { // only for get and set display
 	$redis = new Redis(); 
 	$redis->pconnect( '127.0.0.1' );
-	usleep( 100000 ); // !important - < 50000 hGetAll failed
+	usleep( 100000 ); // !important - get data must wait at least 50000
 	$array = json_decode( $_POST[ 'redis' ], true );
 	foreach ( $array as $field => $arg ) {
 		if ( $arg[ 0 ] === 'hGetAll' ) break;
