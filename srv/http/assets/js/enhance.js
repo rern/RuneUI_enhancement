@@ -709,7 +709,7 @@ $( '#pl-manage-clear' ).click( function() {
 $( '#pl-entries' ).on( 'click', 'li', function( e ) {
 	if ( $( e.target ).hasClass( 'pl-action' ) ) {
 		GUI.noscroll = 1; // prevent scroll to active li
-		$.post( 'enhance.php', { mpd: 'delete '+ $( this ).index(), pushstream: 'playlist' } );
+		$.post( 'enhance.php', { mpd: 'del '+ $( this ).index(), pushstream: 'playlist' } );
 		$( this ).remove();
 		return
 	}
@@ -807,10 +807,10 @@ $( '.contextmenu a' ).click( function() {
 			$.post( 'enhance.php', { mpd: 'load "' + GUI.list.name +'"', pushstream: 'playlist' } );
 			break;
 		case 'plreplace': 
-			$.post( 'enhance.php', { mpd: 'command_list_begin\nclear\nload "'+ GUI.list.name +'"\ncommand_list_end', pushstream: 'playlist' } );
+			$.post( 'enhance.php', { mpd: [ 'clear', 'load "'+ GUI.list.name +'"' ], pushstream: 'playlist' } );
 			break;
 		case 'pladdreplaceplay':
-			$.post( 'enhance.php', { mpd: 'command_list_begin\nclear\nload "'+ GUI.list.name + '"\nplay\ncommand_list_end', pushstream: 'playlist' } );
+			$.post( 'enhance.php', { mpd: [ 'clear', 'load "'+ GUI.list.name + '"', 'play' ], pushstream: 'playlist' } );
 			break;
 		case 'plrename':
 			playlistRename();
@@ -1028,7 +1028,7 @@ function playlistRenameVerify( name, oldname ) {
 	}
 	GUI.list.li.find( 'span' ).text( name );
 	tempFlag( 'setmode' );
-	$.post( 'enhance.php', { mpd: 'rename "'+ oldname +'" "'+ name +'"', pushstream: 'playlist' } );
+	$.post( 'enhance.php', { mpd: [ 'rm "'+ oldname +'"', 'save "'+ name +'"' ], pushstream: 'playlist' } );
 }
 function playlistDelete() {
 	info( {
@@ -1126,7 +1126,7 @@ new Sortable( list, {
 	, onUpdate   : function ( e ) {
 		GUI.noscroll = 1;
 		var plid = parseInt( e.item.id.replace( 'pl-', '' ) );
-		$.post( 'enhance.php', { mpd: 'moveid '+ plid +' '+ e.newIndex, pushstream: 'playlist' } );
+		$.post( 'enhance.php', { mpd: 'move '+ plid +' '+ e.newIndex, pushstream: 'playlist' } );
 	}
 } );
 // MutationObserver - watch for '#db-entries' content changed then scroll to previous position
@@ -1169,9 +1169,9 @@ function mpdSeek( seekto ) {
 	if ( GUI.status.state !== 'stop' ) {
 		clearInterval( GUI.currentKnob );
 		clearInterval( GUI.countdown );
-		$.post( 'enhance.php', { mpd: 'seekcur '+ seekto, pushstream: 'playback' } );
+		$.post( 'enhance.php', { mpd: 'seek '+ seekto, pushstream: 'playback' } );
 	} else {
-		$.post( 'enhance.php', { mpd: 'command_list_begin\nplay\nseekcur '+ seekto +'\npause\ncommand_list_end', pushstream: 'playback' } );
+		$.post( 'enhance.php', { mpd: [ 'play', 'seek '+ seekto, 'pause' ], pushstream: 'playback' } );
 	}
 }
 $( '#time' ).roundSlider( {
@@ -1242,7 +1242,7 @@ $( '#volume' ).roundSlider( {
 	}
 	, drag            : function ( e ) { // drag with no transition by default
 		if ( e.value % 2 === 0 ) {
-			$.post( 'enhance.php', { mpd: 'setvol '+ e.value } );
+			$.post( 'enhance.php', { mpd: 'volume '+ e.value } );
 			$( e.handle.element ).rsRotate( - e.handle.angle );
 			GUI.setmode = 1;
 		}
@@ -2077,12 +2077,12 @@ $( '.btn-cmd' ).click( function() {
 				// Math.floor( Math.random() * ( max - min + 1 ) ) + min;
 				var pos = Math.floor( Math.random() * last );
 				// avoid same pos ( no pos-- or pos++ in ternary )
-				if ( pos === current - 1 ) pos = ( pos === last - 1 ) ? pos - 1 : pos + 1;
+				if ( pos === current ) pos = ( pos === last ) ? pos - 1 : pos + 1;
 			} else {
 				if ( cmd === 'previous' ) {
-					var pos = current !== 1 ? current - 2 : last - 1;
+					var pos = current !== 1 ? current - 1 : last;
 				} else {
-					var pos = current !== last ? current : 0;
+					var pos = current !== last ? current + 1 : 1;
 				}
 			}
 			cmd = GUI.status.state === 'play' ? 'play '+ pos : [ 'play '+ pos, 'stop' ];
