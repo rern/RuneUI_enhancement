@@ -857,7 +857,39 @@ function webRadioNewVerify( name, url ) {
 		} );
 		return;
 	}
-	if ( $( '#db-entries li[data-path="Webradio/'+ name +'.pls"]' ).length && GUI.libraryhome.webradio ) {
+	$.post( 'enhance.php', { bash: '/usr/bin/redis-cli hgetall webradios' }, function( data ) {
+		console.log(data)
+		var data = data.split( '\n' );
+		var wrname = wrurl = [];
+		$.each( data, function( i, val ) {
+			i % 2 ? wrname.push( val ) : wrurl.push( val );
+		} );
+		var nameexist = $.inArray( name, wrname ) !== -1;
+		var urlexist = $.inArray( url, wrurl ) !== -1;
+		if ( nameexist || urlexist ) {
+			info( {
+				  icon    : 'warning'
+				, title   : 'Add Webradio'
+				, message : '<white>'+ ( nameexist ? name : url ) +'</white><br>already exists.'
+				, ok      : function() {
+					webRadioNew( name, url );
+				}
+			} );
+		} else {
+			GUI.libraryhome.webradio++;
+			tempFlag( 'setmode', 2000 );
+			$.post( '/db/?cmd=addradio', {
+				  'radio[label]' : name
+				, 'radio[url]'   : url
+				}, function() {
+				setTimeout( function() {
+					getDB( { path: 'Webradio' } );
+				}, 200 );
+			} );
+		}
+	} );
+}
+/*	if ( $( '#db-entries li[data-path="Webradio/'+ name +'.pls"]' ).length && GUI.libraryhome.webradio ) {
 		info( {
 			  icon    : 'warning'
 			, title   : 'Add Webradio'
@@ -895,7 +927,7 @@ function webRadioRename( name ) {
 			webRadioRenameVerify( $( '#infoTextBox' ).val().trim(), GUI.list.name, GUI.list.url );
 		}
 	} );
-}
+}*/
 function webRadioRenameVerify( name, oldname, url ) {
 	if ( !name ) {
 		info( {
