@@ -44,25 +44,10 @@ var pushstreamNotify = new PushStream( psOption );
 pushstreamNotify.onmessage = renderMSG;
 pushstreamNotify.addChannel( 'notify' );
 pushstreamNotify.connect();
-
-// library pushstream
-var pushstreamLibrary = new PushStream( psOption );
-pushstreamLibrary.onmessage = renderLibraryHome;
-pushstreamLibrary.addChannel( 'library' );
-pushstreamLibrary.connect();
-// playlist pushstream
-var pushstreamPlaylist = new PushStream( psOption );
-pushstreamPlaylist.onmessage = function() {
-	if ( !$( '#panel-playlist' ).hasClass( 'active' ) ) return;
-	
-	GUI.pleditor ? $( '#pl-manage-list' ).click() : renderPlaylist();
-}
-pushstreamPlaylist.addChannel( 'playlist' );
-pushstreamPlaylist.connect();
 // display pushstream
 var pushstreamDisplay = new PushStream( psOption );
 pushstreamDisplay.addChannel( 'display' );
-pushstreamDisplay.onmessage = function( data ) { // on receive broadcast
+pushstreamDisplay.onmessage = function( data ) {
 	GUI.display = data[ 0 ];
 	if ( $( '#panel-playback' ).hasClass( 'active' ) ) {
 		displayPlayback();
@@ -73,7 +58,24 @@ pushstreamDisplay.onmessage = function( data ) { // on receive broadcast
 	}
 }
 pushstreamDisplay.connect();
-
+// library pushstream
+var pushstreamLibrary = new PushStream( psOption );
+pushstreamLibrary.onmessage = function() {
+	if ( GUI.setmode ) return;
+	
+	renderLibraryHome();
+}
+pushstreamLibrary.addChannel( 'library' );
+pushstreamLibrary.connect();
+// playlist pushstream
+var pushstreamPlaylist = new PushStream( psOption );
+pushstreamPlaylist.onmessage = function() {
+	if ( !$( '#panel-playlist' ).hasClass( 'active' ) || GUI.setmode ) return;
+	
+	GUI.pleditor ? $( '#pl-manage-list' ).click() : renderPlaylist();
+}
+pushstreamPlaylist.addChannel( 'playlist' );
+pushstreamPlaylist.connect();
 // playback pushstream
 psOption.reconnectOnChannelUnavailableInterval = 5000;
 var pushstreamPlayback = new PushStream( psOption );
@@ -762,7 +764,8 @@ $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 	var $this = $( this );
 	var $thisli = $this.parent();
 	var plname = $thisli.data( 'path' );
-	GUI.list.name = plname; // used in contextmenu
+	GUI.list.li = $thisli; // for contextmenu
+	GUI.list.name = plname;
 	$( '#pl-editor li' ).removeClass( 'active' );
 	$( '.contextmenu' ).addClass( 'hide' );
 	if ( plname === GUI.plcurrent ) {
@@ -857,14 +860,7 @@ function webRadioNewVerify( name, url ) {
 		} );
 		return;
 	}
-	var exists = false;
-	$( '#db-entries li span.sn' ).each( function( i, el ) {
-		if ( $( el ).text() === name ) {
-			exists = true;
-			return false;
-		}
-	} );
-	if ( exists ) {
+	if ( $( '#db-entries li[data-path="Webradio/'+ name +'.pls"]' ).length && GUI.libraryhome.webradio ) {
 		info( {
 			  icon    : 'warning'
 			, title   : 'Add Webradio'
@@ -873,12 +869,18 @@ function webRadioNewVerify( name, url ) {
 				webRadioNew( name, url );
 			}
 		} );
+		return;
 	} else {
+		GUI.libraryhome.webradio++;
+		tempFlag( 'setmode', 2000 );
 		$.post( '/db/?cmd=addradio', {
 			  'radio[label]' : name
 			, 'radio[url]'   : url
+			}, function() {
+			setTimeout( function() {
+				getDB( { path: 'Webradio' } );
+			}, 200 );
 		} );
-		getDB( { path: 'Webradio' } );
 	}
 }
 function webRadioRename( name ) {
@@ -909,14 +911,9 @@ function webRadioRenameVerify( name, oldname, url ) {
 		} );
 		return;
 	}
-	var exists = false;
-	$( '#db-entries li span.sn' ).each( function( i, el ) {
-		if ( $( el ).text() === name ) {
-			exists = true;
-			return false;
-		}
-	} );
-	if ( exists ) {
+//	var radio = $( '#db-entries li span.sn' ).map( function() { return this.innerText } );
+//	if ( $.inArray( name, radio ) ) {
+	if ( $( '#db-entries li[data-path='+ name +']' ).length ) {
 		info( {
 			  icon    : 'warning'
 			, title   : 'Rename Webradio'
@@ -925,7 +922,11 @@ function webRadioRenameVerify( name, oldname, url ) {
 				webRadioRename( name );
 			}
 		} );
+		return;
 	} else {
+		$( '#db-entries li.active span.sn').text( name );
+		$( '#db-entries li.active span.bl').text( url );
+		tempFlag( 'setmode', 2000 );
 		$.post( '/db/?cmd=editradio', {
 			  'radio[newlabel]' : name
 			, 'radio[label]'    : oldname
@@ -942,6 +943,9 @@ function webRadioDelete() {
 					+'<br>'+ GUI.list.url
 		, cancel  : 1
 		, ok      : function() {
+			$( '#db-entries li.active').remove();
+			GUI.libraryhome.webradio--;
+			tempFlag( 'setmode', 2000 );
 			$.post( '/db/?cmd=deleteradio', { 'radio[label]' : GUI.list.name +'.pls' } );
 		}
 	} );
@@ -952,7 +956,7 @@ function playlistSave( name ) {
 		, title     : 'Save Playlist'
 		, message   : 'Save this playlist as:'
 		, textlabel : 'Name'
-		, valuetext : name || ''
+		, textvalue : name || ''
 		, boxwidth  : 'max'
 		, cancel    : 1
 		, ok        : function() {
@@ -971,9 +975,9 @@ function playlistSaveVerify( name ) {
 			}
 		} );
 		return;
-	} 
-	$( '#pl-editor span' ).some( function( el ) {
-		if ( name === el.text() ) {
+	}
+	$.post( 'enhance.php', { mpd: 'listplaylists', getresult: 1 }, function( data ) {
+		if ( $.inArray( 'playlist: '+ name, data.split( '\n' ) ) ) {
 			info( {
 				  icon    : 'warning'
 				, title   : 'Save Playlist'
@@ -982,10 +986,11 @@ function playlistSaveVerify( name ) {
 					playlistSave( name );
 				}
 			} );
-		} else {
-			$.post( 'enhance.php', { mpd: 'save "'+ name +'"', pushstream: 'playlist' } );
+			return;
 		}
-	} );
+		tempFlag( 'setmode' );
+		$.post( 'enhance.php', { mpd: 'save "'+ name +'"', pushstream: 'playlist' } );
+	}, 'text' );
 }
 function playlistRename( name ) {
 	info( {
@@ -1023,9 +1028,11 @@ function playlistRenameVerify( name, oldname ) {
 				playlistRename( name );
 			}
 		} );
-	} else {
-		$.post( 'enhance.php', { mpd: 'rename "'+ oldname +'" "'+ name +'"', pushstream: 'playlist' } );
+		return;
 	}
+	GUI.list.li.find( 'span' ).text( name );
+	tempFlag( 'setmode' );
+	$.post( 'enhance.php', { mpd: 'rename "'+ oldname +'" "'+ name +'"', pushstream: 'playlist' } );
 }
 function playlistDelete() {
 	info( {
@@ -1035,6 +1042,8 @@ function playlistDelete() {
 					+'<br><white>'+ GUI.list.name +'</white>'
 		, cancel  : 1
 		, ok      : function() {
+			GUI.list.li.remove();
+			tempFlag( 'setmode' );
 			$.post( 'enhance.php', { mpd: 'rm "'+ GUI.list.name +'"', pushstream: 'playlist' } );
 		}
 	} );
@@ -1491,18 +1500,18 @@ function renderLibraryHome() {
 	if ( bookmarkL ) {
 		for ( i = 0; i < bookmarkL; i++ ) {
 			var bookmark = status.bookmarks[ i ];
-			content += divOpen +'<div id="home-bookmark-'+ bookmark.id +'" class="home-block home-bookmark'+ toggleMPD +'" data-path="'+ bookmark.path +'"><i class="fa fa-bookmark"></i><h4>' + bookmark.name +'<span> • '+ numFormat( bookmark.count ) +'</span></h4></div></div>';
+			content += divOpen +'<div id="home-bookmark-'+ bookmark.id +'" class="home-block home-bookmark'+ toggleMPD +'" data-path="'+ bookmark.path +'"><i class="fa fa-bookmark"></i><h4>' + bookmark.name +'<span>&ensp;'+ numFormat( bookmark.count ) +' ♫</span></h4></div></div>';
 		}
 	}
 	// nas
 	content += divOpen +'<a id="home-nas" class="home-block'+ toggleMPD +'"'+ ( !status.networkMounts ? ( notMPD ? '' : ' href="/sources/add/"' ) : ' data-path="NAS"' ) +'><i class="fa fa-network"></i><h4>Network drives<span>&ensp;'+ status.networkMounts +'</span></h4></a></div>';
 	// sd
-	content += divOpen +'<div id="home-sd" class="home-block'+ toggleMPD +'" data-path="LocalStorage"><i class="fa fa-microsd"></i><h4>SD card<span> • '+ numFormat( status.localStorages ) +'</span></h4></div></div>';
+	content += divOpen +'<div id="home-sd" class="home-block'+ toggleMPD +'" data-path="LocalStorage"><i class="fa fa-microsd"></i><h4>SD card<span>&ensp;'+ numFormat( status.localStorages ) +' ♫</span></h4></div></div>';
 	// usb
 	content += divOpen +'<div id="home-usb" class="home-block'+ toggleMPD +'"'+ ( !status.USBMounts ? ( notMPD ? '' : ' href="/sources/sources/"' ) : ' data-path="USB"' ) +'><i class="fa fa-usbdrive"></i><h4>USB drives<span>&ensp;'+ status.USBMounts +'</span></h4></div></div>';
 	// webradio
 	var data = !status.webradio ? ' data-target="webradio-add"' : ' data-path="Webradio"';
-	content += divOpen +'<div id="home-webradio" class="home-block'+ toggleMPD +'"'+ data +'><i class="fa fa-webradio"></i><h4>Webradios<span> • '+ numFormat( status.webradio ) +'</span></h4></div></div>';
+	content += divOpen +'<div id="home-webradio" class="home-block'+ toggleMPD +'"'+ data +'><i class="fa fa-webradio"></i><h4>Webradios<span>&ensp;'+ numFormat( status.webradio ) +'</span></h4></div></div>';
 	// albums
 	content += divOpen +'<div id="home-albums" class="home-block'+ toggleMPD +'" data-path="Albums" data-browsemode="album"><i class="fa fa-album"></i><h4>Albums<span>&ensp;'+ numFormat( status.counts.album ) +'</span></h4></div></div>';
 	// artist
@@ -1930,7 +1939,7 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 			var dot = albumartist ? '<a>'+ dot +'<span class="white">'+ albumartist +'</span></a>' : '';
 		}
 		$( '#db-currentpath' ).attr( 'path', path ); // for back navigation
-		$( '#db-currentpath span' ).html( icon[ GUI.browsemode ] +'&ensp;<a data-path="'+ mode[ GUI.browsemode ] +'">'+ name[ GUI.browsemode ] +'</a>'+ dot );
+		$( '#db-currentpath span' ).html( icon[ GUI.browsemode ] +' <a data-path="'+ mode[ GUI.browsemode ] +'">'+ name[ GUI.browsemode ] +'</a>'+ dot );
 	} else {
 		var folder = path.split( '/' );
 		var folderPath = '';
@@ -1939,7 +1948,7 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 			var ilength = folder.length;
 			for ( i = 0; i < ilength; i++ ) {
 				folderPath += ( i > 0 ? '/' : '' ) + folder[ i ];
-				folderCrumb += '<a data-path="'+ folderPath +'">'+ ( i > 0 ? '<w> / </w>' : '' ) + ( name[ folder[ i ] ] ? name[ folder[ i ] ] : folder[ i ] ) +'</a>';
+				folderCrumb += ' <a data-path="'+ folderPath +'">'+ ( i > 0 ? '<w> / </w>' : '' ) + ( name[ folder[ i ] ] ? name[ folder[ i ] ] : folder[ i ] ) +'</a>';
 				if ( i === ilength - 1 ) $( '#db-currentpath' ).attr( 'path', path );
 			} 
 		} else {
