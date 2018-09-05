@@ -30,7 +30,7 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	$volumemute = $redis->hGet( 'display', 'volumemute' );
 	if ( $volume == '-1' ) {
 		if ( $volumemute == 0 ) {
-			$currentvol = exec( "{ sleep 0.01; echo status; sleep 0.01; } | telnet localhost 6600 | grep volume | cut -d' ' -f2" );
+			$currentvol = exec( "mpc volume | tr -d ' %' | cut -d':' -f2" );
 			$vol = 0;
 		} else {
 			$currentvol = 0;
@@ -41,19 +41,17 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 		$vol = $volume;
 	}
 	$redis->hSet( 'display', 'volumemute', $currentvol );
-	exec( '{ sleep 0.01; echo setvol '.$vol.'; sleep 0.01; } | telnet localhost 6600' );
+	exec( 'mpc volume '.$vol );
 	refreshUI( 'playback' );
 } else if ( isset( $_POST[ 'mpd' ] ) ) {
 	$mpd = $_POST[ 'mpd' ];
 	if ( !is_array( $mpd ) ) {
-		$command = 'echo '.$mpd.';';
+		$result = shell_exec( 'mpc '.$mpd );
 	} else {
-		$command = '';
 		foreach( $mpd as $cmd ) {
-			$command.= 'echo '.$cmd.';';
+			$result = shell_exec( 'mpc '.$cmd );
 		}
 	}
-	$result = shell_exec( '{ sleep 0.01; '.$command.' sleep 0.01; } | telnet localhost 6600' );
 	if ( isset( $_POST[ 'pushstream' ] ) ) refreshUI( $_POST[ 'pushstream' ], 1 );
 	if ( isset( $_POST[ 'getresult' ] ) ) echo $result;
 } else if ( isset( $_POST[ 'library' ] ) ) {
