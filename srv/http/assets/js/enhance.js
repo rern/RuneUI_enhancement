@@ -2191,7 +2191,7 @@ function setPlaybackData() {
 		$volumeRS.setValue( status.volume );
 		$volumehandle.rsRotate( - $volumeRS._handle1.angle );
 		if ( GUI.display.volume && GUI.display.volumempd ) {
-			if ( status.display.volumemute != 0 ) {
+			if ( GUI.display.volumemute != 0 ) {
 				muteColor( status.display.volumemute );
 			} else {
 				unmuteColor();
