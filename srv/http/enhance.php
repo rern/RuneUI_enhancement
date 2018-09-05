@@ -11,23 +11,18 @@ function refreshUI( $channel, $data = 1 ) {
 	curl_exec( $ch );
 	curl_close( $ch );
 }
-if ( isset( $_POST[ 'redis' ] ) ) { // only for get and set display
+
+if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	$redis = new Redis(); 
 	$redis->pconnect( '127.0.0.1' );
 	usleep( 100000 ); // !important - get data must wait at least 50000
-	$array = json_decode( $_POST[ 'redis' ], true );
-	foreach ( $array as $field => $arg ) {
-		if ( $arg[ 0 ] === 'hGetAll' ) break;
-		$count = count( $arg );
-		if ( $count === 2 ) {
-			$redis->$arg[ 0 ]( $arg[ 1 ] );
-		} else if ( $count === 3 ) {
-			$redis->$arg[ 0 ]( $arg[ 1 ], $arg[ 2 ] );
-		}
-	}
-	// broadcast to all clients on hmSet display or set volume
-	$display = $arg[ 0 ] === 'hGetAll' ? $redis->hGetAll( 'display' ) : $arg[ 2 ];
-	refreshUI( 'display', $display );
+	refreshUI( 'display', $redis->hGetAll( 'display' ) );
+} else if ( isset( $_POST[ 'setdisplay' ] ) ) {
+	$redis = new Redis(); 
+	$redis->pconnect( '127.0.0.1' );
+	$data = $_POST[ 'setdisplay' ];
+	$redis->hmSet( 'display', $data );
+	refreshUI( 'display', $data );
 } else if ( isset( $_POST[ 'volume' ] ) ) {
 	$redis = new Redis(); 
 	$redis->pconnect( '127.0.0.1' );
@@ -62,67 +57,7 @@ if ( isset( $_POST[ 'redis' ] ) ) { // only for get and set display
 	if ( isset( $_POST[ 'pushstream' ] ) ) refreshUI( $_POST[ 'pushstream' ], 1 );
 	if ( isset( $_POST[ 'getresult' ] ) ) echo $result;
 } else if ( isset( $_POST[ 'library' ] ) ) {
-	$redis = new Redis(); 
-	$redis->pconnect( '127.0.0.1' );
-	$localStorages = exec( '{ sleep 0.01; echo list title base LocalStorage; sleep 0.1; } | telnet localhost 6600 | grep -c "^Title:"' );
-	$networkmounts = exec( 'df | grep "/mnt/MPD/NAS" | wc -l' );
-	$usbmounts = exec( 'df | grep "/mnt/MPD/USB" | wc -l' );
-	$webradios = count( $redis->hKeys( 'webradios' ) );
-	$activePlayer = $redis->get( 'activePlayer' );
-	$redis_bookmarks = $redis->hGetAll( 'bookmarks' );
-	foreach ( $redis_bookmarks as $key => $data ) {
-		$bookmark = json_decode( $data );
-		$path = $bookmark->path;
-		$count = exec( '{ sleep 0.01; echo \'list title base "'.$path.'"\'; sleep 0.1; } | telnet localhost 6600 | grep -c "^Title:"' );
-		$bk[] = array(
-			  'id'   => $key
-			, 'name' => $bookmark->name
-			, 'path' => $path
-			, 'count'=> $count
-		);
-	}
-	function curlGet($url, $proxy = null) {
-		$ch = curl_init($url);
-		@curl_setopt($ch, CURLOPT_HTTPHEADER, array("Connection: close"));
-		@curl_setopt($ch, CURLOPT_NOSIGNAL, 1);
-		@curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
-		if (isset($proxy)) {
-			if ($proxy['enable'] === '1') {
-				$proxy['user'] === '' || @curl_setopt($ch, CURLOPT_PROXYUSERPWD, $proxy['user'].':'.$proxy['pass']);
-				@curl_setopt($ch, CURLOPT_PROXY, $proxy['host']);
-			}
-		}
-		@curl_setopt($ch, CURLOPT_CONNECTTIMEOUT_MS, 400);
-		@curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-		@curl_setopt($ch, CURLOPT_HEADER, 0);
-		@curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		$response = curl_exec($ch);
-		curl_close($ch);
-		return $response;
-	}
-	$proxy = $redis->hGetall( 'proxy' );
-	$dirblecfg = $redis->hGetAll( 'dirble' );
-	$dirble = json_decode( curlGet( $dirblecfg[ 'baseurl' ].'amountStation/apikey/'.$dirblecfg[ 'apikey' ], $proxy ) );
-	$spotify = $redis->hGet( 'spotify', 'enable' );
-	
-	$types = array( 'title', 'album', 'artist', 'composer', 'genre' );
-	$counts = shell_exec( 'for type in '.implode( ' ', $types ).'; do mpc list $type | awk NF | wc -l; done' );
-	$counts = explode( "\n", $counts );
-	array_pop( $counts ); // remove last blank
-	$counts = array_combine( $types, $counts );
-	$status = array( 
-		  'bookmarks'     => $bk
-		, 'localStorages' => $localStorages
-		, 'networkMounts' => $networkmounts
-		, 'USBMounts'     => $usbmounts
-		, 'webradio'      => $webradios
-		, 'Spotify'       => $spotify
-		, 'Dirble'        => $dirble->amount
-		, 'ActivePlayer'  => $activePlayer
-		, 'clientUUID'    => $clientUUID
-		, 'counts'        => $counts
-	);
-	echo json_encode( $status, JSON_NUMERIC_CHECK );
+	echo exec( '/srv/http/enhancelibdata.sh' );
 } else if ( isset( $_POST[ 'bash' ] ) ) {
 	$result = shell_exec( '/usr/bin/sudo '.$_POST[ 'bash' ] );
 	echo $result;
