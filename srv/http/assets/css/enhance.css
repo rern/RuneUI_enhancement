@@ -1120,7 +1120,7 @@ gr {color: #587ca0; }
 	float: left;
 	width: calc( 100% - 230px );
 	height: 40px;
-	line-height: 44px;
+	line-height: 40px;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
