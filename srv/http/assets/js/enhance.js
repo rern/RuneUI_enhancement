@@ -1295,11 +1295,11 @@ function displayCommon() {
 function displayAirPlay() {
 	$( '.playback-controls' ).addClass( 'hide' );
 	$( '#divartist, #divsong, #divalbum' ).removeClass( 'scroll-left' );
-	$( '#playlist-position span, #format-bitrate, #total' ).html( '&nbsp;' );
+	$( '#playlist-position span, #format-bitrate, #total' ).empty();
 	$( '#currentartist' ).html( GUI.airplay.currentartist );
 	$( '#currentsong' ).html( GUI.airplay.currentsong );
 	$( '#currentalbum' ).html( GUI.airplay.currentalbum );
-	$( '#elapsed, #total' ).html( '&nbsp;' );
+	$( '#elapsed, #total' ).empty();
 	var time = new Date().getTime();
 	$( '#cover-art' ).css( {
 		  'background-image': 'url("assets/img/airplay-cover.jpg?v='+ time +'")'
@@ -2062,8 +2062,8 @@ $( '.btn-cmd' ).click( function() {
 			clearInterval( GUI.currentKnob );
 			clearInterval( GUI.countdown );
 			if ( GUI.status.ext === 'radio' ) {
-				cmd === 'stop';
-				$( '#currentsong' ).html( '&nbsp;' );
+				cmd = 'stop';
+				$( '#currentsong' ).empty();
 			}
 		} else if ( cmd === 'previous' || cmd === 'next' ) {
 			// enable previous / next while stop
