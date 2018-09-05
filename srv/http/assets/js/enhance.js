@@ -911,8 +911,6 @@ function webRadioRenameVerify( name, oldname, url ) {
 		} );
 		return;
 	}
-//	var radio = $( '#db-entries li span.sn' ).map( function() { return this.innerText } );
-//	if ( $.inArray( name, radio ) ) {
 	if ( $( '#db-entries li[data-path='+ name +']' ).length ) {
 		info( {
 			  icon    : 'warning'
