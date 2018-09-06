@@ -2068,7 +2068,7 @@ function renderPlaylist() {
 				var title = pl.Title ? pl.Title : pl.file.split( '/' ).pop();
 				var track = pl.Track ? '#'+ pl.Track +' • ' : '';
 				var album = pl.Album ? ' • '+ pl.Album : '';
-				topline = title +'&ensp;<wh class="time" time="'+ time +'">'+ convertHMS( time ) +'</wh>';
+				topline = title +'&ensp;<span class="time" time="'+ time +'">'+ convertHMS( time ) +'</span>';
 				bottomline = track + pl.Artist + album;
 				pltime += time;
 			}
