@@ -150,7 +150,7 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 				<i id="pl-manage-list" class="fa fa-folder-open fa-lg"></i>
 				<i id="plsave" class="fa fa-save fa-lg"></i>
 <?php if ( file_exists('/srv/http/assets/js/RuneYoutube.js') ) { ?>
-				<i id="pl-import-youtube" class="fa fa-youtube-play" data-toggle="modal" data-target="#modal-pl-youtube"></i>
+				<i id="pl-import-youtube" class="fa fa-youtube-play fa-lg" data-toggle="modal" data-target="#modal-pl-youtube"></i>
 <?php } ?>
 				<i id="pl-manage-clear" class="fa fa-minus-circle fa-lg"></i>
 			</div>
