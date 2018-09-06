@@ -1130,6 +1130,10 @@ wh, gr { font-weight: 300; }
 	text-overflow: ellipsis;
 	font-size: 18px;
 }
+#li-count,
+#countsong {
+	margin-left: 10px;
+}
 #db-currentpath > span > *,
 #li-count > *,
 #pl-currentpath > * {
@@ -1212,7 +1216,7 @@ wh, gr { font-weight: 300; }
 	color: #e0e7ee;
 }
 #db-currentpath span i.fa-music {
-	float: unset;
+	margin-left: 5px;
 }
 .index {
 	position: fixed;
