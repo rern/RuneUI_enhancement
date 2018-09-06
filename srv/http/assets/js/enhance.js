@@ -148,7 +148,7 @@ function renderMSG( text ) {
 	var notify = text[ 0 ];
 	var noticeOptions = {
 		  title       : notify.title ? notify.title : 'Info'
-		, text        : notify.text ? notify.text : ''
+		, text        : notify.text
 		, icon        : notify.icon ? notify.icon : 'fa fa-check'
 		, opacity     : notify.opacity ? notify.opacity : 0.9
 		, hide        : !notify.hide && !notify.permanotice
@@ -298,7 +298,6 @@ function setDisplayPlayback() {
 		, cancel       : 1
 		, ok           : function () {
 			// no: serializeArray() omit unchecked fields
-			//var toggles = {};
 			$( '#displaysaveplayback input' ).each( function() {
 				GUI.display[ this.name ] = this.checked ? 'checked' : '';
 			} );
@@ -343,7 +342,7 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 	var $this = $( this );
 	if ( $( e.target ).is( 'span.block-remove' ) ) {
 		var id = this.id.replace( 'home-bookmark-', '' );
-		var name = $this.find( 'h4' ).text();
+		var name = $this.data('path').split('/').pop();
 		$.post( '/db/?cmd=bookmark', { id: id, name: name }, function() {
 			$this.parent().remove();
 		} );
@@ -862,7 +861,7 @@ $( '.contextmenu a' ).click( function() {
 		default:
 			GUI.bookmarkedit = cmd === 'bookmark' ? 1 : 0;
 			$.post( '/db/?cmd='+ cmd, { path: GUI.list.path }, function() {
-				renderPlaylist();
+				if ( !GUI.bookmarkedit ) renderPlaylist();
 			} );
 			break;
 	}
@@ -1172,8 +1171,13 @@ new Sortable( list, {
 		$icon.show();
 	  }
 	, onUpdate   : function ( e ) {
+		if ( $( e.from ).hasClass( 'active' ) ) {
+			$( e.to ).removeClass( 'active' );
+			$( e.item ).addClass( 'active' )
+			GUI.status.Pos = $( e.item ).index();
+		}
 		tempFlag();
-		$.post( 'enhance.php', { mpd: 'move '+ ( e.oldIndex +1 ) +' '+ ( e.newIndex + 1 ), pushstream: 'playlist' }, function() {
+		$.post( 'enhance.php', { mpd: 'move '+ ( e.oldIndex + 1 ) +' '+ ( e.newIndex + 1 ), pushstream: 'playlist' }, function() {
 			if ( window.innerWidth  <= 480 ) $( e.item ).find( '.pl-icon' ).css( 'display', '' );
 		} );
 	}
@@ -2017,7 +2021,7 @@ function setPlaylistScroll() {
 	var  wH = window.innerHeight;
 	$( '#pl-entries p' ).css( 'min-height', wH - 140 +'px' );
 	$( '#pl-entries li' ).removeClass( 'active' );
-	var $liactive = $( '#pl-'+ GUI.status.song );
+	var $liactive = $( '#pl-entries li' ).eq( GUI.status.Pos );
 	$liactive.addClass( 'active' );
 	if ( GUI.setmode ) return;
 	setTimeout( function() {
@@ -2215,18 +2219,8 @@ function setOneload() {
 	$( '#starter' ).remove();
 	$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
 	$.post( 'enhance.php', { library: 1 }, function( data ) {
-		var keys = [ 'networkMounts', 'localStorages', 'USBMounts', 'webradio', 'album', 'artist', 'composer', 'genre', 'title', 'Spotify', 'ActivePlayer' ];
-		var values = data.split( ' ' );
-		GUI.libraryhome.bookmarks = [];
-		$.each( keys, function( i, key ) {
-			var v = values[ i ];
-			GUI.libraryhome[ key ] = isNaN( v ) ? v : Number( v );
-		} );
-		values.splice( 0, 11 );
-		$.each( values, function( i, value ) {
-			GUI.libraryhome.bookmarks[ i ] = JSON.parse( values );
-		} );
-	}, 'text' );
+		GUI.libraryhome = data;
+	}, 'json' );
 }
 function setPlaybackBlank() {
 	$( '.playback-controls' ).addClass( 'hide' );
