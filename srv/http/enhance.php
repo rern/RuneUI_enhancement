@@ -23,7 +23,42 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	$redis->hmSet( 'display', $data );
 	refreshUI( 'display', $data );
 } else if ( isset( $_POST[ 'library' ] ) ) {
-	echo exec( '/srv/http/enhancelibdata.sh' );
+	$redis = new Redis(); 
+	$redis->pconnect( '127.0.0.1' );
+	$localStorages = exec( 'mpc list title base LocalStorage | wc -l' );
+	$networkmounts = exec( 'df | grep "/mnt/MPD/NAS" | wc -l' );
+	$usbmounts = exec( 'df | grep "/mnt/MPD/USB" | wc -l' );
+	$webradios = count( $redis->hKeys( 'webradios' ) );
+	$activePlayer = $redis->get( 'activePlayer' );
+	$bookmarks = $redis->hGetAll( 'bookmarks' );
+	foreach ( $bookmarks as $key => $value ) {
+		$data = json_decode( $data );
+		$count = exec( 'mpc list title base "'.$data->path.'" | wc -l' );
+		$bookmarks[] = array(
+			  'id'   => $key
+			, 'name' => $data->name
+			, 'path' => $path
+			, 'count'=> $count
+		);
+	}
+	$spotify = $redis->hGet( 'spotify', 'enable' );
+	
+	$types = array( 'title', 'album', 'artist', 'composer', 'genre' );
+	$counts = shell_exec( 'for type in '.implode( ' ', $types ).'; do mpc list $type | awk NF | wc -l; done' );
+	$counts = explode( "\n", $counts );
+	array_pop( $counts ); // remove last blank
+	$mpccounts = array_combine( $types, $counts );
+	$data = array( 
+		  'bookmarks'     => $bookmarks
+		, 'localStorages' => $localStorages
+		, 'networkMounts' => $networkmounts
+		, 'USBMounts'     => $usbmounts
+		, 'webradio'      => $webradios
+		, 'Spotify'       => $spotify
+		, 'ActivePlayer'  => $activePlayer
+	);
+	$status = array_merge( $mpccounts, $data );
+	echo json_encode( $status, JSON_NUMERIC_CHECK );
 } else if ( isset( $_POST[ 'bash' ] ) ) {
 	echo shell_exec( '/usr/bin/sudo '.$_POST[ 'bash' ] );
 } else if ( isset( $_POST[ 'volume' ] ) ) {
