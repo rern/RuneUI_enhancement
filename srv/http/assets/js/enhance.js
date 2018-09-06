@@ -1711,11 +1711,11 @@ function parseResponse( inputArr, i, respType, inpath, querytype ) {
 								var bl = inputArr.file.split( '/' ).pop(); // filename
 							}
 							content += inputArr.file +'" class="db-song"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i>';
-							content += '<span class="sn">'+ inputArr.Title +'&ensp;<span>'+ convertHMS( inputArr.Time ) +'</span></span>';
+							content += '<span class="sn">'+ inputArr.Title +'&ensp;<span class="time">'+ convertHMS( inputArr.Time ) +'</span></span>';
 							content += '<span class="bl">'+ bl;
 						} else {
 							content += inputArr.file +'" class="db-song"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i>';
-							content += '<span class="sn">'+ inputArr.file.replace( inpath +'/', '' ) +'&ensp;<span>' + convertHMS( inputArr.Time ) +'</span></span>';
+							content += '<span class="sn">'+ inputArr.file.replace( inpath +'/', '' ) +'&ensp;<span class="time">' + convertHMS( inputArr.Time ) +'</span></span>';
 							content += '<span class="bl"> path: '+ inpath;
 						}
 					} else {
@@ -1742,7 +1742,7 @@ function parseResponse( inputArr, i, respType, inpath, querytype ) {
 			} else if ( GUI.browsemode === 'album' || GUI.browsemode === 'albumfilter' ) {
 				if ( inputArr.file ) {
 					content += inputArr.file +'"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i>';
-					content += '<span class="sn">'+ inputArr.Title +'&ensp;<span>'+ convertHMS( inputArr.Time ) +'</span></span>';
+					content += '<span class="sn">'+ inputArr.Title +'&ensp;<span class="time">'+ convertHMS( inputArr.Time ) +'</span></span>';
 					content += '<span class="bl">'+ inputArr.Album +' - '+ inputArr.Artist +'</span></li>';
 				} else if ( inputArr.album !== '' ) {
 					content += inputArr.album.replace( /\"/g, '&quot;' ) +'" class="db-folder" mode="album"><i class="fa fa-bars db-action" data-target="#context-menu-album"></i>';
@@ -1759,7 +1759,7 @@ function parseResponse( inputArr, i, respType, inpath, querytype ) {
 			} else if ( GUI.browsemode === 'composer' ) {
 				if ( inputArr.file ) {
 					content += inputArr.file +'"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i>';
-					content += '<span class="sn">'+ inputArr.Title +'&ensp;<span>'+ convertHMS( inputArr.Time ) +'</span></span>';
+					content += '<span class="sn">'+ inputArr.Title +'&ensp;<span class="time">'+ convertHMS( inputArr.Time ) +'</span></span>';
 					content += '<span class="bl">'+ inputArr.Artist +' - '+ inputArr.Album +'</span></li>';
 				} else if ( inputArr.composer !== '' ) {
 					content += inputArr.composer +'" class="db-folder" mode="composer"><i class="fa fa-bars db-action" data-target="#context-menu-composer"></i>';
@@ -1781,7 +1781,7 @@ function parseResponse( inputArr, i, respType, inpath, querytype ) {
 				content += '<span><i class="fa fa-genre"></i>'+ ( inputArr.name ? inputArr.name : 'Favorites' ) +' ( '+ inputArr.tracks +' )</span></li>';
 			} else if ( querytype === 'tracks' ) {
 				content += inputArr.index +'" data-plid="'+ inpath +'" data-type="spotify-track" mode="spotify"><i class="fa fa-bars db-action" data-target="#context-menu-spotify"></i><i class="fa fa-spotify db-icon"></i>';
-				content += '<span class="sn">'+ inputArr.Title +'&ensp;<span>'+ convertHMS( inputArr.duration / 1000 ) +'</span></span>';
+				content += '<span class="sn">'+ inputArr.Title +'&ensp;<span class="time">'+ convertHMS( inputArr.duration / 1000 ) +'</span></span>';
 				content += ' <span class="bl">'+ inputArr.artist +' - '+ inputArr.album +'</span></li>';
 			}
 			break;
