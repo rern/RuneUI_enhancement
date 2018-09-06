@@ -715,8 +715,9 @@ $( '#pl-manage-clear' ).click( function() {
 	} );
 } );
 $( '#pl-entries' ).on( 'click', 'li', function( e ) {
+	var songpos = $( this ).index() + 1;
 	if ( !$( e.target ).hasClass( 'pl-action' ) ) {
-		$.post( 'enhance.php', { mpd: 'play '+ ( $( this ).index() + 1 ), pushstream: 'playback' } );
+		$.post( 'enhance.php', { mpd: 'play '+ songpos, pushstream: 'playback' } );
 		$( '#pl-entries li' ).removeClass( 'active' );
 		$( this ).addClass( 'active' );
 		return
@@ -729,7 +730,6 @@ $( '#pl-entries' ).on( 'click', 'li', function( e ) {
 	}
 
 	var $this = $( this );
-	var delpos = $( this ).index() + 1;
 	var radio = $this.hasClass( 'radio' );
 	var $elcount = radio ? $( '#countradio' ) : $( '#countsong' );
 	var count = $elcount.attr( 'count' ) - 1;
@@ -744,7 +744,7 @@ $( '#pl-entries' ).on( 'click', 'li', function( e ) {
 	if ( $this.hasClass( 'active' ) ) $this.next().addClass( 'active' );
 	$this.remove();
 	tempFlag( 'setmode' );
-	$.post( 'enhance.php', { mpd: 'del '+ delpos, pushstream: 'playlist' } );
+	$.post( 'enhance.php', { mpd: 'del '+ songpos, pushstream: 'playlist' } );
 } );
 // context menus //////////////////////////////////////////////
 $( 'body' ).click( function( e ) {
