@@ -808,6 +808,12 @@ $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 		if ( targetB > wH + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + ( GUI.display.bars ? 42 : 0 ) } );
 	}
 } );
+function plCommand( cmd ) {
+	if( GUI.status.playlistlength === 0 ) tempFlag( GUI.status.playlistlength = 1 );
+	$.post( 'enhance.php', { mpd: cmd, pushstream: 'playlist' }, function() {
+		if ( !$( '#currentsong' ).text() ) setPlaybackData();
+	} );
+}
 $( '.contextmenu a' ).click( function() {
 	var cmd = $( this ).data( 'cmd' );
 	GUI.dbcurrent = '';
@@ -833,16 +839,13 @@ $( '.contextmenu a' ).click( function() {
 			break;
 		
 		case 'pladd':
-			if( GUI.status.playlistlength === 0 ) tempFlag( GUI.status.playlistlength = 1 );
-			$.post( 'enhance.php', { mpd: 'load "' + GUI.list.name +'"', pushstream: 'playlist' } );
+			plCommand( 'load "' + GUI.list.name +'"' );
 			break;
 		case 'plreplace':
-			if( GUI.status.playlistlength === 0 ) tempFlag( GUI.status.playlistlength = 1 );
-			$.post( 'enhance.php', { mpd: [ 'clear', 'load "'+ GUI.list.name +'"' ], pushstream: 'playlist' } );
+			plCommand( [ 'clear', 'load "'+ GUI.list.name +'"' ] );
 			break;
 		case 'pladdreplaceplay':
-			if( GUI.status.playlistlength === 0 ) tempFlag( GUI.status.playlistlength = 1 );
-			$.post( 'enhance.php', { mpd: [ 'clear', 'load "'+ GUI.list.name + '"', 'play' ], pushstream: 'playlist' } );
+			plCommand( [ 'clear', 'load "'+ GUI.list.name + '"', 'play' ] );
 			break;
 		case 'plrename':
 			playlistRename();
@@ -2249,6 +2252,7 @@ function setPlaybackBlank() {
 }
 function setPlaybackData() {
 	if ( GUI.setmode ) return;
+	
 	$.post( 'enhancestatus.php', function( status ) {
 		// 'gpio off' restarts mpd which makes data briefly unavailable
 		if( typeof status !== 'object' ) return;
