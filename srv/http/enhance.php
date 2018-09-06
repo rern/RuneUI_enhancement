@@ -30,9 +30,9 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	$usbmounts = exec( 'df | grep "/mnt/MPD/USB" | wc -l' );
 	$webradios = count( $redis->hKeys( 'webradios' ) );
 	$activePlayer = $redis->get( 'activePlayer' );
-	$bookmarks = $redis->hGetAll( 'bookmarks' );
-	foreach ( $bookmarks as $key => $value ) {
-		$data = json_decode( $data );
+	$rbookmarks = $redis->hGetAll( 'bookmarks' );
+	foreach ( $rbookmarks as $key => $value ) {
+		$data = json_decode( $value );
 		$count = exec( 'mpc list title base "'.$data->path.'" | wc -l' );
 		$bookmarks[] = array(
 			  'id'   => $key
