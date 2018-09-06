@@ -254,10 +254,12 @@ function panelLR( lr ) {
 	
 	$paneclick = ( lr === 'left' ) ? $pL.click() : $pR.click();
 }
-function tempFlag( flag, ms ) {
+function tempFlag( fl, ms ) {
+	var flag = fl || 'setmode';
+	var time = ms || 500;
 	GUI[ flag ] = 1;
 	clearTimeout( GUI.timeout );
-	GUI.timeout = setTimeout( function() { GUI[ flag ] = 0 }, ms ? ms : 500 );
+	GUI.timeout = setTimeout( function() { GUI[ flag ] = 0 }, time );
 }
 
 $( '#panel-playback, #panel-library, #panel-playlist' ).on( 'swipeleft swiperight', function( e ) {
@@ -301,7 +303,7 @@ function setDisplayPlayback() {
 				GUI.display[ this.name ] = this.checked ? 'checked' : '';
 			} );
 			displayPlayback();
-			tempFlag( 'setmode' );
+			tempFlag();
 			$.post( 'enhance.php', { setdisplay: GUI.display } );
 		}
 	} );
@@ -387,7 +389,7 @@ function setDisplayLibrary() {
 				GUI.display[ this.name ] = this.checked ? 'checked' : '';
 			} );
 			displayLibrary();
-			tempFlag( 'setmode' );
+			tempFlag();
 			$.post( 'enhance.php', { setdisplay: GUI.display } );
 		}
 	} );
@@ -743,7 +745,7 @@ $( '#pl-entries' ).on( 'click', 'li', function( e ) {
 	}
 	if ( $this.hasClass( 'active' ) ) $this.next().addClass( 'active' );
 	$this.remove();
-	tempFlag( 'setmode' );
+	tempFlag();
 	$.post( 'enhance.php', { mpd: 'del '+ songpos, pushstream: 'playlist' } );
 } );
 // context menus //////////////////////////////////////////////
@@ -894,7 +896,6 @@ function webRadioNewVerify( name, url ) {
 		return;
 	}
 	$.post( 'enhance.php', { bash: '/usr/bin/redis-cli hgetall webradios' }, function( data ) {
-		console.log(data)
 		var data = data.split( '\n' );
 		var wrname = wrurl = [];
 		$.each( data, function( i, val ) {
@@ -927,29 +928,6 @@ function webRadioNewVerify( name, url ) {
 		}
 	} );
 }
-/*	if ( $( '#db-entries li[data-path="Webradio/'+ name +'.pls"]' ).length && GUI.libraryhome.webradio ) {
-		info( {
-			  icon    : 'warning'
-			, title   : 'Add Webradio'
-			, message : '<white>'+ name +'</white> already exists.'
-			, ok      : function() {
-				webRadioNew( name, url );
-			}
-		} );
-		return;
-	} else {
-		GUI.libraryhome.webradio++;
-		tempFlag( 'setmode', 2000 );
-		$.post( '/db/?cmd=addradio', {
-			  'radio[label]' : name
-			, 'radio[url]'   : url
-			}, function() {
-			setTimeout( function() {
-				getDB( { path: 'Webradio' } );
-			}, 200 );
-		} );
-	}
-}
 function webRadioRename( name ) {
 	info( {
 		  icon      : 'edit-circle'
@@ -965,7 +943,7 @@ function webRadioRename( name ) {
 			webRadioRenameVerify( $( '#infoTextBox' ).val().trim(), GUI.list.name, GUI.list.url );
 		}
 	} );
-}*/
+}
 function webRadioRenameVerify( name, oldname, url ) {
 	if ( !name ) {
 		info( {
@@ -1053,7 +1031,7 @@ function playlistSaveVerify( name ) {
 			} );
 			return;
 		}
-		tempFlag( 'setmode' );
+		tempFlag();
 		$.post( 'enhance.php', { mpd: 'save "'+ name +'"', pushstream: 'playlist' } );
 	}, 'text' );
 }
@@ -1096,7 +1074,7 @@ function playlistRenameVerify( name, oldname ) {
 		return;
 	}
 	GUI.list.li.find( 'span' ).text( name );
-	tempFlag( 'setmode' );
+	tempFlag();
 	$.post( 'enhance.php', { mpd: [ 'rm "'+ oldname +'"', 'save "'+ name +'"' ], pushstream: 'playlist' } );
 }
 function playlistDelete() {
@@ -1109,7 +1087,7 @@ function playlistDelete() {
 		, ok      : function() {
 			$( '#pls-count' ).text( numFormat( $( '#pls-count' ).text() - 1 ) );
 			GUI.list.li.remove();
-			tempFlag( 'setmode' );
+			tempFlag();
 			$.post( 'enhance.php', { mpd: 'rm "'+ GUI.list.name +'"', pushstream: 'playlist' } );
 		}
 	} );
@@ -1194,7 +1172,7 @@ new Sortable( list, {
 		$icon.show();
 	  }
 	, onUpdate   : function ( e ) {
-		tempFlag( 'setmode' );
+		tempFlag();
 		$.post( 'enhance.php', { mpd: 'move '+ ( e.oldIndex +1 ) +' '+ ( e.newIndex + 1 ), pushstream: 'playlist' }, function() {
 			if ( window.innerWidth  <= 480 ) $( e.item ).find( '.pl-icon' ).css( 'display', '' );
 		} );
@@ -1324,8 +1302,20 @@ $( '#volume' ).roundSlider( {
 } );
 
 $( '#volmute, #volM' ).click( function() {
-	$.post( 'enhance.php', { volume: -1 }, function( data ) {
-} );
+	var vol = $volumeRS.getValue();
+	if ( vol ) {
+		$volumeRS.setValue( 0 );
+		$volumehandle.rsRotate( - $volumeRS._handle1.angle );
+		muteColor( vol )
+		GUI.display.volumemute = vol;
+	} else {
+		$volumeRS.setValue( GUI.display.volumemute );
+		$volumehandle.rsRotate( - $volumeRS._handle1.angle );
+		unmuteColor()
+		GUI.display.volumemute = 0;
+	}
+	tempFlag();
+	$.post( 'enhance.php', { volume: -1 } );
 } );
 $( '#volup, #voldn' ).click( function() {
 	var thisid = this.id;
@@ -1678,7 +1668,7 @@ function getDB( options ) {
 //			$( '#loader' ).addClass( 'hide' );
 			$.post( '/db/?cmd='+ cmd, { path: path, querytype: querytype }, function() {
 				if ( $.inArray( cmd, [ 'add', 'addplay', 'addreplaceplay' ] ) !== -1 ) {
-					tempFlag( 'setmode' );
+					tempFlag();
 					renderPlaylist();
 				}
 			}, 'json');
