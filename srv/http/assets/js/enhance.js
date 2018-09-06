@@ -696,7 +696,7 @@ $( '#plsave' ).click( function() {
 function setPlaylistBalnk() {
 	GUI.status.playlistlength = 0;
 	$.post( 'enhance.php', { mpd: 'clear', pushstream: 'playlist' } );
-	$( '#pl-count' ).html( '<bl>&emsp;P L A Y L I S T</bl>' );
+	$( '#pl-count' ).html( '<bl class="title">&emsp;P L A Y L I S T</bl>' );
 	$( '#pl-entries' ).empty();
 	$( '#playlist-warning' ).removeClass( 'hide' );
 }
@@ -1145,7 +1145,7 @@ $( '#pl-manage-list' ).click( function() {
 			// fill bottom of list to mave last li movable to top
 			$( '#pl-editor p' ).css( 'min-height', window.innerHeight - ( GUI.display.bars ? 140 : 100 ) +'px' );
 			$( '#loader' ).addClass( 'hide' );
-			var plcount = arrayplL ? '<bl>&emsp;P L A Y L I S T S</bl><gr>&emsp;•&ensp;</gr><wh id="pls-count">'+ numFormat( arrayplL ) +'</wh>&ensp;<i class="fa fa-list-ul"></i>' : '';
+			var plcount = arrayplL ? '<bl>&emsp;PLAYLISTS</bl><gr>&emsp;•&ensp;</gr><wh id="pls-count">'+ numFormat( arrayplL ) +'</wh>&ensp;<i class="fa fa-list-ul"></i>' : '';
 			$( '#pl-currentpath' ).html( plcount );
 			$( '#pl-currentpath, #pl-editor, #pl-index' ).removeClass( 'hide' );
 			$( 'html, body' ).scrollTop( GUI.plscrolltop );
@@ -1192,7 +1192,9 @@ new Sortable( list, {
 	  }
 	, onUpdate   : function ( e ) {
 		tempFlag( 'setmode' );
-		$.post( 'enhance.php', { mpd: 'move '+ ( e.oldIndex +1 ) +' '+ ( e.newIndex + 1 ), pushstream: 'playlist' } );
+		$.post( 'enhance.php', { mpd: 'move '+ ( e.oldIndex +1 ) +' '+ ( e.newIndex + 1 ), pushstream: 'playlist' }, function() {
+			if ( window.innerWidth  <= 480 ) $( e.item ).find( '.pl-icon' ).css( 'display', '' );
+		} );
 	}
 } );
 // MutationObserver - watch for '#db-entries' content changed then scroll to previous position
@@ -1531,7 +1533,7 @@ function renderLibraryHome() {
 	
 	$( '#panel-library .btnlist-top, db-entries' ).addClass( 'hide' );
 	var status = GUI.libraryhome;
-	$( '#db-currentpath span' ).html( '<bl>&emsp;L I B R A R Y</bl><a id="li-count"><gr>&emsp;•&ensp;</gr><wh>'+ numFormat( status.title ) +'</wh> <i class="fa fa-music"></i></a>' );
+	$( '#db-currentpath span' ).html( '<bl class="title">&emsp;L I B R A R Y</bl><a id="li-count"><gr>&emsp;•&ensp;</gr><wh>'+ numFormat( status.title ) +'</wh> <i class="fa fa-music"></i></a>' );
 	$( '#panel-library .btnlist-top, #home-blocks' ).removeClass( 'hide' );
 	notMPD = ( status.ActivePlayer === 'Spotify' || status.ActivePlayer === 'Airplay' );
 	toggleMPD = notMPD ? ' inactive' : '';
@@ -2037,7 +2039,7 @@ function renderPlaylist() {
 	
 	if ( ( !GUI.status.playlistlength && !GUI.pleditor ) || GUI.plclear ) {
 		GUI.plclear = 0;
-		'<bl>&emsp;P L A Y L I S T</bl>'
+		'<bl class="title">&emsp;P L A Y L I S T</bl>'
 		$( '.playlist' ).removeClass( 'hide' );
 		var barhide = !GUI.display.bars || window.innerWidth < 499 || window.innerHeight < 515;
 		$( '#playlist-warning' ).css( 'margin-top', barhide ? '27px' : '67px' );
@@ -2077,13 +2079,13 @@ function renderPlaylist() {
 				+'<span class="bl">'+ bottomline +'</span>'
 				+'</li>';
 		}
-		var counthtml = '<bl>&emsp;P L A Y L I S T</bl><gr>&emsp;•&ensp;</gr>';
+		var counthtml = '<bl class="title">&emsp;P L A Y L I S T<gr>&emsp;•</gr></bl>';
 		var countsong = ilength - countradio;
 		var countradiohtml = '<wh id="countradio" count="'+ countradio +'">'+ countradio +'</wh>&ensp;<i class="fa fa-webradio"></i>';
 		if ( countsong ) {
 			var pltimehtml = ' id="pltime" time="'+ pltime +'">'+ convertHMS( pltime );
 			var totalhtml = countradio ? '<gr'+ pltimehtml +'</gr>&ensp;'+ countradiohtml : '<wh'+ pltimehtml +'</wh>';
-			counthtml += '<wh id="countsong" count="'+ countsong +'">'+ numFormat( countsong ) +'</wh>&ensp;<i class="fa fa-music"></i>&ensp;'+ totalhtml;
+			counthtml += '&ensp;<wh id="countsong" count="'+ countsong +'">'+ numFormat( countsong ) +'</wh>&ensp;<i class="fa fa-music"></i>&ensp;'+ totalhtml;
 		} else {
 			counthtml += countradiohtml;
 		}
