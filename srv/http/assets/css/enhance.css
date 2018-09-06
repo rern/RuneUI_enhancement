@@ -1415,7 +1415,7 @@ w {
 #pl-entries li.active .sn span,
 #pl-editor li.active .fa-bars,
 #pl-editor li.active .fa-list-ul {
-	color: #34495e;
+	color: #34495e !important;
 }
 #pl-entries.playlist-spotify li:before {
 	content: "\f1bc";
