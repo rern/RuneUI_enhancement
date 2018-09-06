@@ -59,10 +59,9 @@ pushstreamDisplay.onmessage = function( data ) {
 pushstreamDisplay.connect();
 // library pushstream
 var pushstreamLibrary = new PushStream( psOption );
-pushstreamLibrary.onmessage = function() {
-	if ( GUI.setmode ) return;
-	
-	renderLibraryHome();
+pushstreamLibrary.onmessage = function( data ) {
+	GUI.libraryhome = data;
+	if ( !GUI.setmode && !GUI.bookmarkedit ) renderLibraryHome();
 }
 pushstreamLibrary.addChannel( 'library' );
 pushstreamLibrary.connect();
@@ -203,7 +202,15 @@ $( '#currentsong, #playlist-warning' ).on( 'click', 'i', function() {
 } );
 $( '#open-library' ).click( function() {
 	if ( $.isEmptyObject( GUI.libraryhome ) ) return;
-
+	
+	if ( GUI.bookmarkedit ) {
+		GUI.bookmarkedit = 0;
+		$.post( 'enhance.php', { library: 1, pushstream: 'library' }, function( data ) {
+			GUI.libraryhome = data;
+			renderLibraryHome();
+		}, 'json' );
+		return
+	}
 	if ( GUI.activePlayer === 'Airplay' || GUI.activePlayer === 'Spotify' ) {
 		$( '#overlay-playsource' ).addClass( 'open' );
 		return;
@@ -321,35 +328,34 @@ function setToggleButton( name, append ) {
 		.append( append ? ' '+ append : ' (auto hide)' );
 }
 $( '#panel-library' ).on( 'taphold', function( e ) {
-	if ( GUI.swipe || GUI.bookmarkedit ) return;
+	if ( GUI.swipe || GUI.setmode ) return;
 	
-	if ( !GUI.bookmarkedit ) setDisplayLibrary( e );
+	if ( !GUI.setmode ) setDisplayLibrary( e );
 } ).on( 'taphold', '.home-block', function( e ) {
 	if ( GUI.swipe ) return;
 	
 	if ( !$( e.target ).parent().hasClass( 'home-bookmark' ) && !$( e.target ).hasClass( 'home-bookmark' ) ) return;
 	
-	GUI.bookmarkedit = 1;
+	tempFlag();
 	$( '.home-bookmark' ).append( '<div class="home-block-remove"><span class="block-remove">&times;</span></div>' );
 } ).click( function( e ) {
 	if ( $( e.target ).parent().hasClass( 'home-bookmark' ) || $( e.target ).hasClass( 'home-bookmark' ) ) return;
 	
 	$( '.home-bookmark div.home-block-remove' ).remove();
-	setTimeout( function() { GUI.bookmarkedit = 0 }, 500 );
 } );
 
 $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 	var $this = $( this );
 	if ( $( e.target ).is( 'span.block-remove' ) ) {
+		$this.parent().remove();
+		GUI.bookmarkedit = 1;
 		var id = this.id.replace( 'home-bookmark-', '' );
-		var name = $this.data('path').split('/').pop();
-		$.post( '/db/?cmd=bookmark', { id: id, name: name }, function() {
-			$this.parent().remove();
-		} );
+		var name = $this.data( 'path' ).split( '/' ).pop();
+		$.post( '/db/?cmd=bookmark', { id: id, name: name } );
 	} else if ( $this.data( 'target' ) === 'webradio-add' ) {
 		webRadioNew();
 	} else {
-		if ( GUI.bookmarkedit || ( $this[ 0 ].id === 'home-sd' && $('#home-sd span').text() === '( 0 )' ) ) return;
+		if ( GUI.setmode || ( $this[ 0 ].id === 'home-sd' && $('#home-sd span').text() === '( 0 )' ) ) return;
 		
 		GUI.dblist = 1;
 		mutationLibrary.observe( observerLibrary, observerOption );
@@ -859,7 +865,7 @@ $( '.contextmenu a' ).click( function() {
 			$( '#random' ).data( 'cmd', 'pl-ashuffle-stop' ).addClass( 'btn-primary' );
 			break;
 		default:
-			GUI.bookmarkedit = cmd === 'bookmark' ? 1 : 0;
+			if ( cmd === 'bookmark' ) GUI.bookmarkedit = 1;
 			$.post( '/db/?cmd='+ cmd, { path: GUI.list.path }, function() {
 				if ( !GUI.bookmarkedit ) renderPlaylist();
 			} );
@@ -1520,19 +1526,20 @@ function numFormat( num ) {
 	return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 function renderLibraryHome() {
+	if ( GUI.bookmarkedit ) return;
 //	GUI.dbscrolltop = {}; // comment to always keep scroll positions
 	GUI.plugin = '';
 	$( '#db-currentpath' ).removeAttr( 'path' ).css( 'width', '' );
 	$( '#db-entries' ).empty();
 	$( '#db-search-results, #db-index, #db-level-up, #db-webradio-new' ).addClass( 'hide' );
 	$( '#db-search-keyword' ).val( '' );
-	if ( ( $( '#db-entries' ).hasClass( 'hide' ) && !GUI.bookmarkedit ) ) return;
+	if ( $( '#db-entries' ).hasClass( 'hide' ) ) return;
 	
 	$( '#panel-library .btnlist-top, db-entries' ).addClass( 'hide' );
 	var status = GUI.libraryhome;
 	$( '#db-currentpath span' ).html( '<bl class="title">&emsp;L I B R A R Y<gr>&emsp;•</gr></bl><a id="li-count"><wh>'+ numFormat( status.title ) +'</wh><i class="fa fa-music"></i></a>' );
 	$( '#panel-library .btnlist-top, #home-blocks' ).removeClass( 'hide' );
-	notMPD = ( status.ActivePlayer === 'Spotify' || status.ActivePlayer === 'Airplay' );
+	notMPD = ( status.activeplayer === 'Spotify' || status.activeplayer === 'Airplay' );
 	toggleMPD = notMPD ? ' inactive' : '';
 	// Set active player
 	setPlaybackSource();
@@ -1540,19 +1547,19 @@ function renderLibraryHome() {
 	var content = '';
 	var divOpen = '<div class="col-md-3">';
 	// bookmark
-	var bookmarkL = status.bookmarks.length;
-	if ( bookmarkL ) {
+	if ( status.bookmark !== null ) {
+		var bookmarkL = status.bookmarks.length;
 		for ( i = 0; i < bookmarkL; i++ ) {
 			var bookmark = status.bookmarks[ i ];
 			content += divOpen +'<div id="home-bookmark-'+ bookmark.id +'" class="home-block home-bookmark'+ toggleMPD +'" data-path="'+ bookmark.path +'"><i class="fa fa-bookmark"></i><h4>' + bookmark.name +'<span>&ensp;'+ numFormat( bookmark.count ) +' ♫</span></h4></div></div>';
 		}
 	}
 	// nas
-	content += divOpen +'<a id="home-nas" class="home-block'+ toggleMPD +'"'+ ( !status.networkMounts ? ( notMPD ? '' : ' href="/sources/add/"' ) : ' data-path="NAS"' ) +'><i class="fa fa-network"></i><h4>Network drives<span>&ensp;'+ status.networkMounts +'</span></h4></a></div>';
+	content += divOpen +'<a id="home-nas" class="home-block'+ toggleMPD +'"'+ ( !status.network ? ( notMPD ? '' : ' href="/sources/add/"' ) : ' data-path="NAS"' ) +'><i class="fa fa-network"></i><h4>Network drives<span>&ensp;'+ status.network +'</span></h4></a></div>';
 	// sd
-	content += divOpen +'<div id="home-sd" class="home-block'+ toggleMPD +'" data-path="LocalStorage"><i class="fa fa-microsd"></i><h4>SD card<span>&ensp;'+ numFormat( status.localStorages ) +' ♫</span></h4></div></div>';
+	content += divOpen +'<div id="home-sd" class="home-block'+ toggleMPD +'" data-path="LocalStorage"><i class="fa fa-microsd"></i><h4>SD card<span>&ensp;'+ numFormat( status.sd ) +' ♫</span></h4></div></div>';
 	// usb
-	content += divOpen +'<div id="home-usb" class="home-block'+ toggleMPD +'"'+ ( !status.USBMounts ? ( notMPD ? '' : ' href="/sources/sources/"' ) : ' data-path="USB"' ) +'><i class="fa fa-usbdrive"></i><h4>USB drives<span>&ensp;'+ status.USBMounts +'</span></h4></div></div>';
+	content += divOpen +'<div id="home-usb" class="home-block'+ toggleMPD +'"'+ ( !status.usb ? ( notMPD ? '' : ' href="/sources/sources/"' ) : ' data-path="USB"' ) +'><i class="fa fa-usbdrive"></i><h4>USB drives<span>&ensp;'+ status.usb +'</span></h4></div></div>';
 	// webradio
 	var data = !status.webradio ? ' data-target="webradio-add"' : ' data-path="Webradio"';
 	content += divOpen +'<div id="home-webradio" class="home-block'+ toggleMPD +'"'+ data +'><i class="fa fa-webradio"></i><h4>Webradios<span>&ensp;'+ numFormat( status.webradio ) +'</span></h4></div></div>';
@@ -1565,9 +1572,9 @@ function renderLibraryHome() {
 	// genre
 	content += divOpen +'<div id="home-genre" class="home-block'+ toggleMPD +'" data-path="Genres" data-browsemode="genre"><i class="fa fa-genre"></i><h4>Genres<span>&ensp;'+ numFormat( status.genre ) +'</span></h4></div></div>';
 	// spotify
-	if ( status.Spotify ) {
+	if ( status.spotify ) {
 		var sw, data = '';
-		if ( status.ActivePlayer !== 'Spotify' ) {
+		if ( status.activeplayer !== 'Spotify' ) {
 			sw = '-switch';
 			data = ' data-plugin="Spotify" data-path="Spotify"';
 		}
