@@ -956,7 +956,7 @@ function webRadioRenameVerify( name, oldname, url ) {
 		} );
 		return;
 	}
-	if ( $( '#db-entries li[data-path='+ name +']' ).length ) {
+	if ( $( '#db-entries li[data-path="Webradio/'+ name +'.pls"]' ).length ) {
 		info( {
 			  icon    : 'warning'
 			, title   : 'Rename Webradio'
