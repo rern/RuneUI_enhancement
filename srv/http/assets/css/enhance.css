@@ -1384,9 +1384,7 @@ span.dbpath {
 	margin-top: 9px;
 }
 #db-entries li,
-#pl-entries li,
-#db-entries .sn span,
-#pl-entries .sn span {
+#pl-entries li {
 	font-size: 18px;
 	color: #587ca0;
 }
@@ -1399,6 +1397,9 @@ w {
 #pl-entries .sn {
 	display: block;
 	padding: 5px 0 0 10px
+}
+.time {
+	color: #587ca0 !important;
 }
 #db-entries .bl,
 #pl-entries .bl {
@@ -1818,7 +1819,8 @@ w {
 	#pl-entries span,
 	#pl-entries span.sn,
 	#pl-entries span.bl,
-	#pl-editor span {
+	#pl-editor span,
+	.time {
 		padding-left: 5px;
 		font-size: 16px;
 		line-height: 19px;
