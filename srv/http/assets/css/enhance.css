@@ -96,6 +96,7 @@
 .fa-genre:before { content: "\f558" }
 .fa-dirble:before { content: "\f559" }
 .fa-jamendo:before { content: "\f55A" }
+.fa-youtube:before { content: "\f55B" }
 
 .fa-folder:before { content: "\f540" }
 .fa-folder-open:before { content: "\f541" }
@@ -1361,9 +1362,6 @@ span.dbpath {
 #li-count span {
 	color: #e0e7ee;
 }
-.title {
-	color: #587ca0;
-}
 #pl-count,
 #pl-currentpath {
 	display: inline-block;
@@ -1371,9 +1369,6 @@ span.dbpath {
 	line-height: 40px;
 	font-size: 18px;
 	color: #587ca0;
-}
-#pl-count {
-	width: calc( 100% - 370px );
 }
 #pl-count i {
 	font-size: 24px;
@@ -1689,16 +1684,13 @@ w {
 	#clock-display {
 		display: none;
 	}
+	.title {
+		display: none;
+	}
 }
 @media(max-width: 700px) {
 	.logo {
 		display: none;
-	}
-}
-@media(max-width: 680px) {
-	.title,
-	#pl-count span:first-of-type {
-		display: none !important;
 	}
 }
 @media(max-width: 666px) {
@@ -1711,10 +1703,14 @@ w {
 /*		min-width: 50%;*/
 	}
 }
+@media(max-width: 600px) {
+	#db-search,
+	#pl-search {
+		width: 130px;
+	}
+}
 @media(max-width: 540px) {
-	#pl-count span,
-	#pl-count a:first-child,
-	#pl-count a:last-child {
+	#pltime {
 		display: none;
 	}
 }
@@ -1786,10 +1782,6 @@ w {
 	#db-up,
 	#db-webradio-new {
 		right: 170px;
-	}
-	#db-search,
-	#pl-search {
-		width: 130px;
 	}
 }
 @media(max-width: 480px) {
