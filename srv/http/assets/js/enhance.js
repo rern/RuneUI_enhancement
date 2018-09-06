@@ -1533,7 +1533,7 @@ function renderLibraryHome() {
 	
 	$( '#panel-library .btnlist-top, db-entries' ).addClass( 'hide' );
 	var status = GUI.libraryhome;
-	$( '#db-currentpath span' ).html( '<bl class="title">&emsp;L I B R A R Y</bl><a id="li-count"><gr>&emsp;•&ensp;</gr><wh>'+ numFormat( status.title ) +'</wh> <i class="fa fa-music"></i></a>' );
+	$( '#db-currentpath span' ).html( '<bl class="title">&emsp;L I B R A R Y<gr>&emsp;•</gr></bl><a id="li-count"><wh>'+ numFormat( status.title ) +'</wh><i class="fa fa-music"></i></a>' );
 	$( '#panel-library .btnlist-top, #home-blocks' ).removeClass( 'hide' );
 	notMPD = ( status.ActivePlayer === 'Spotify' || status.ActivePlayer === 'Airplay' );
 	toggleMPD = notMPD ? ' inactive' : '';
@@ -2085,7 +2085,7 @@ function renderPlaylist() {
 		if ( countsong ) {
 			var pltimehtml = ' id="pltime" time="'+ pltime +'">'+ convertHMS( pltime );
 			var totalhtml = countradio ? '<gr'+ pltimehtml +'</gr>&ensp;'+ countradiohtml : '<wh'+ pltimehtml +'</wh>';
-			counthtml += '&ensp;<wh id="countsong" count="'+ countsong +'">'+ numFormat( countsong ) +'</wh>&ensp;<i class="fa fa-music"></i>&ensp;'+ totalhtml;
+			counthtml += '<wh id="countsong" count="'+ countsong +'">'+ numFormat( countsong ) +'</wh>&ensp;<i class="fa fa-music"></i>&ensp;'+ totalhtml;
 		} else {
 			counthtml += countradiohtml;
 		}
