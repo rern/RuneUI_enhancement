@@ -106,7 +106,7 @@ if ( empty( $this->uri(1) ) ) { ?>
 </div>
 <div id="menu-top" class="hide">
 <i id="menu-settings" class="fa fa-gear"></i>
-<div class="playback-controls">
+<div id="playback-controls">
 	<button id="previous" class="btn btn-default btn-cmd" data-cmd="previous"><i class="fa fa-step-backward"></i></button>
 	<button id="stop" class="btn btn-default btn-cmd" data-cmd="stop"><i class="fa fa-stop"></i></button>
 	<button id="play" class="btn btn-default btn-cmd" data-cmd="play"><i class="fa fa-play"></i></button>
