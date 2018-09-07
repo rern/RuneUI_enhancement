@@ -1426,7 +1426,7 @@ w {
 #pl-entries li.sortable-ghost:before {
 	content: "\f568";
 	font-family: enhance;
-	margin-left: 13px;
+	margin-left: -27px;
 	line-height: 46px;
 	color: #e0e7ee;
 }
