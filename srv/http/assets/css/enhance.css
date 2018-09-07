@@ -406,7 +406,8 @@ wh, gr { font-weight: 300; }
 	text-align: center;
 	white-space: nowrap;
 }
-#currentsong {
+#divsong {
+	height: 34px;
 	height: 34px;
 	line-height: 34px;
 	font-size: 30px;
