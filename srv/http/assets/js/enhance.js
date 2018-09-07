@@ -47,6 +47,8 @@ var pushstreamDisplay = new PushStream( psOption );
 pushstreamDisplay.addChannel( 'display' );
 pushstreamDisplay.onmessage = function( data ) {
 	GUI.display = data[ 0 ];
+	if ( GUI.setmode ) return;
+	
 	if ( $( '#panel-playback' ).hasClass( 'active' ) ) {
 		displayPlayback();
 	} else if ( $( '#panel-library' ).hasClass( 'active' ) ) {
@@ -60,14 +62,26 @@ pushstreamDisplay.connect();
 var pushstreamLibrary = new PushStream( psOption );
 pushstreamLibrary.onmessage = function( data ) {
 	GUI.libraryhome = data;
-	if ( !GUI.setmode && !GUI.bookmarkedit ) renderLibraryHome();
+	if ( GUI.setmode ) return;
+	
+	if ( !GUI.bookmarkedit ) renderLibraryHome();
 }
 pushstreamLibrary.addChannel( 'library' );
 pushstreamLibrary.connect();
 // playlist pushstream
 var pushstreamPlaylist = new PushStream( psOption );
 pushstreamPlaylist.onmessage = function( data ) {
-	if ( $( '#panel-playlist' ).hasClass( 'active' ) && !GUI.pleditor && !GUI.setmode ) setPlaylistData( data[ 0 ] );
+	if ( GUI.setmode ) return;
+	
+	if ( data[ 0 ] === 'clear' ) {
+		GUI.status.playlistlength = 0;
+		renderPlaylist();
+	} else if ( data[ 0 ] === 1 ) {
+		setFlag();
+		$.get( '/db/?cmd=playlist', 'json' );
+	} else if ( $( '#panel-playlist' ).hasClass( 'active' ) && !GUI.pleditor ) {
+		setPlaylistData( data[ 0 ] );
+	}
 }
 pushstreamPlaylist.addChannel( 'playlist' );
 pushstreamPlaylist.connect();
@@ -284,13 +298,6 @@ $( '#panel-playback' ).click( function( e ) {
 } ).on( 'taphold', function( e ) {
 	if ( GUI.swipe || $( e.target ).parents().hasClass( 'rs-transition' ) ) return;
 	
-	setDisplayPlayback();
-} );
-
-function nameLabel( name, label ) {
-	return '<label><input name="'+ name +'" type="checkbox" '+ GUI.display[ name ] +'>&ensp;'+label+'</label><br>';
-}
-function setDisplayPlayback() {
 	info( {
 		  title        : 'Playback'
 		, message      : 'Select items to show:'
@@ -321,6 +328,10 @@ function setDisplayPlayback() {
 	
 	if ( window.innerHeight <= 515 ) setToggleButton( 'bars' );
 	if ( window.innerHeight <= 320 ) setToggleButton( 'buttons' );
+} );
+
+function nameLabel( name, label ) {
+	return '<label><input name="'+ name +'" type="checkbox" '+ GUI.display[ name ] +'>&ensp;'+label+'</label><br>';
 }
 function setToggleButton( name, append ) {
 	$( 'input[name="'+ name +'"]' )
@@ -328,10 +339,36 @@ function setToggleButton( name, append ) {
 		.parent().css( 'color', '#7795b4' )
 		.append( append ? ' '+ append : ' (auto hide)' );
 }
-$( '#panel-library' ).on( 'taphold', function( e ) {
+$( '#panel-library' ).on( 'taphold', function() {
 	if ( GUI.swipe || GUI.setmode ) return;
 	
-	if ( !GUI.setmode ) setDisplayLibrary( e );
+	info( {
+		  title        : 'Libary Home'
+		, message      : 'Select items to show:'
+		, checkboxhtml : 
+			'<form id="displaysavelibrary">'
+				+ nameLabel( 'bars', 'Top-Bottom menu' )
+				+ nameLabel( 'nas', 'Network drives' )
+				+ nameLabel( 'sd', 'SD card' )
+				+ nameLabel( 'usb', 'USB drives' )
+				+ nameLabel( 'webradio', 'Webradios' )
+				+ nameLabel( 'albums', 'Albums' )
+				+ nameLabel( 'artists', 'Artists' )
+				+ nameLabel( 'composer', 'Composers' )
+				+ nameLabel( 'genre', 'Genres' )
+				+ nameLabel( 'dirble', 'Dirble' )
+				+ nameLabel( 'jamendo', 'Jamendo' )
+			+'</form>'
+		, cancel       : 1
+		, ok           : function () {
+			$( '#displaysavelibrary input' ).each( function() {
+				GUI.display[ this.name ] = this.checked ? 'checked' : '';
+			} );
+			displayLibrary();
+			tempFlag();
+			$.post( 'enhance.php', { setdisplay: GUI.display } );
+		}
+	} );
 } ).on( 'taphold', '.home-block', function( e ) {
 	if ( GUI.swipe ) return;
 	
@@ -370,35 +407,6 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 		} );
 	}
 } );
-function setDisplayLibrary() {
-	info( {
-		  title        : 'Libary Home'
-		, message      : 'Select items to show:'
-		, checkboxhtml : 
-			'<form id="displaysavelibrary">'
-				+ nameLabel( 'bars', 'Top-Bottom menu' )
-				+ nameLabel( 'nas', 'Network drives' )
-				+ nameLabel( 'sd', 'SD card' )
-				+ nameLabel( 'usb', 'USB drives' )
-				+ nameLabel( 'webradio', 'Webradios' )
-				+ nameLabel( 'albums', 'Albums' )
-				+ nameLabel( 'artists', 'Artists' )
-				+ nameLabel( 'composer', 'Composers' )
-				+ nameLabel( 'genre', 'Genres' )
-				+ nameLabel( 'dirble', 'Dirble' )
-				+ nameLabel( 'jamendo', 'Jamendo' )
-			+'</form>'
-		, cancel       : 1
-		, ok           : function () {
-			$( '#displaysavelibrary input' ).each( function() {
-				GUI.display[ this.name ] = this.checked ? 'checked' : '';
-			} );
-			displayLibrary();
-			tempFlag();
-			$.post( 'enhance.php', { setdisplay: GUI.display } );
-		}
-	} );
-}
 
 // playback buttons click go back to home page
 $( '#playback-controls' ).click( function() {
@@ -859,7 +867,7 @@ $( '.contextmenu a' ).click( function() {
 			$( '#random' ).data( 'cmd', 'pl-ashuffle-stop' ).addClass( 'btn-primary' );
 			break;
 		default:
-			if ( $.inArray( cmd, [ 'add', 'addreplace', 'addreplaceplay', 'add', 'addreplace', 'addreplaceplay' ] !== -1 ) ) $( '#playback-controls' ).removeClass( 'hide' );
+			if ( $.inArray( cmd, [ 'add', 'addreplace', 'addreplaceplay', 'wradd', 'wraddreplace', 'wraddreplaceplay' ] !== -1 ) ) $( '#playback-controls' ).removeClass( 'hide' );
 			if ( cmd === 'bookmark' ) GUI.bookmarkedit = 1;
 			$.post( '/db/?cmd='+ cmd, { path: GUI.list.path }, function() {
 				if ( !GUI.bookmarkedit ) renderPlaylist();
@@ -1295,7 +1303,7 @@ $( '#volume' ).roundSlider( {
 		if ( e.value % 2 === 0 ) {
 			$.post( 'enhance.php', { mpc: 'volume '+ e.value } );
 			$( e.handle.element ).rsRotate( - e.handle.angle );
-			GUI.setmode = 1;
+			GUI.setmode = 1; // cleared by 'change'
 		}
 	}
 	, stop            : function( e ) { // on 'stop drag'
@@ -1542,26 +1550,26 @@ function renderLibraryHome() {
 		var bookmarkL = status.bookmarks.length;
 		for ( i = 0; i < bookmarkL; i++ ) {
 			var bookmark = status.bookmarks[ i ];
-			content += divOpen +'<div id="home-bookmark-'+ bookmark.id +'" class="home-block home-bookmark'+ toggleMPD +'" data-path="'+ bookmark.path +'"><i class="fa fa-bookmark"></i><h4>' + bookmark.name +'<span>&ensp;'+ numFormat( bookmark.count ) +' ♫</span></h4></div></div>';
+			content += divOpen +'<div id="home-bookmark-'+ bookmark.id +'" class="home-block home-bookmark'+ toggleMPD +'" data-path="'+ bookmark.path +'"><i class="fa fa-bookmark"></i><h4><span>' + bookmark.name +'&ensp;<gr>'+ numFormat( bookmark.count ) +' ♫</gr></span></h4></div></div>';
 		}
 	}
 	// nas
-	content += divOpen +'<a id="home-nas" class="home-block'+ toggleMPD +'"'+ ( !status.network ? ( notMPD ? '' : ' href="/sources/add/"' ) : ' data-path="NAS"' ) +'><i class="fa fa-network"></i><h4>Network drives<span>&ensp;'+ status.network +'</span></h4></a></div>';
+	content += divOpen +'<a id="home-nas" class="home-block'+ toggleMPD +'"'+ ( !status.network ? ( notMPD ? '' : ' href="/sources/add/"' ) : ' data-path="NAS"' ) +'><i class="fa fa-network"></i><h4>Network drives<gr>&ensp;'+ status.network +'</gr></h4></a></div>';
 	// sd
-	content += divOpen +'<div id="home-sd" class="home-block'+ toggleMPD +'" data-path="LocalStorage"><i class="fa fa-microsd"></i><h4>SD card<span>&ensp;'+ numFormat( status.sd ) +' ♫</span></h4></div></div>';
+	content += divOpen +'<div id="home-sd" class="home-block'+ toggleMPD +'" data-path="LocalStorage"><i class="fa fa-microsd"></i><h4>SD card<gr>&ensp;'+ numFormat( status.sd ) +' ♫</gr></h4></div></div>';
 	// usb
-	content += divOpen +'<div id="home-usb" class="home-block'+ toggleMPD +'"'+ ( !status.usb ? ( notMPD ? '' : ' href="/sources/sources/"' ) : ' data-path="USB"' ) +'><i class="fa fa-usbdrive"></i><h4>USB drives<span>&ensp;'+ status.usb +'</span></h4></div></div>';
+	content += divOpen +'<div id="home-usb" class="home-block'+ toggleMPD +'"'+ ( !status.usb ? ( notMPD ? '' : ' href="/sources/sources/"' ) : ' data-path="USB"' ) +'><i class="fa fa-usbdrive"></i><h4>USB drives<gr>&ensp;'+ status.usb +'</gr></h4></div></div>';
 	// webradio
 	var data = !status.webradio ? ' data-target="webradio-add"' : ' data-path="Webradio"';
-	content += divOpen +'<div id="home-webradio" class="home-block'+ toggleMPD +'"'+ data +'><i class="fa fa-webradio"></i><h4>Webradios<span>&ensp;'+ numFormat( status.webradio ) +'</span></h4></div></div>';
+	content += divOpen +'<div id="home-webradio" class="home-block'+ toggleMPD +'"'+ data +'><i class="fa fa-webradio"></i><h4>Webradios<gr>&ensp;'+ numFormat( status.webradio ) +'</gr></h4></div></div>';
 	// albums
-	content += divOpen +'<div id="home-albums" class="home-block'+ toggleMPD +'" data-path="Albums" data-browsemode="album"><i class="fa fa-album"></i><h4>Albums<span>&ensp;'+ numFormat( status.album ) +'</span></h4></div></div>';
+	content += divOpen +'<div id="home-albums" class="home-block'+ toggleMPD +'" data-path="Albums" data-browsemode="album"><i class="fa fa-album"></i><h4>Albums<gr>&ensp;'+ numFormat( status.album ) +'</gr></h4></div></div>';
 	// artist
-	content += divOpen +'<div id="home-artists" class="home-block'+ toggleMPD +'" data-path="Artists" data-browsemode="artist"><i class="fa fa-artist"></i><h4>Artists<span>&ensp;'+ numFormat( status.artist ) +'</span></h4></div></div>';
+	content += divOpen +'<div id="home-artists" class="home-block'+ toggleMPD +'" data-path="Artists" data-browsemode="artist"><i class="fa fa-artist"></i><h4>Artists<gr>&ensp;'+ numFormat( status.artist ) +'</gr></h4></div></div>';
 	// composer
-	content += divOpen +'<div id="home-composer" class="home-block'+ toggleMPD +'" data-path="Composer" data-browsemode="composer"><i class="fa fa-composer"></i><h4>Composers<span>&ensp;'+ numFormat( status.composer ) +'</span></h4></div></div>';
+	content += divOpen +'<div id="home-composer" class="home-block'+ toggleMPD +'" data-path="Composer" data-browsemode="composer"><i class="fa fa-composer"></i><h4>Composers<gr>&ensp;'+ numFormat( status.composer ) +'</gr></h4></div></div>';
 	// genre
-	content += divOpen +'<div id="home-genre" class="home-block'+ toggleMPD +'" data-path="Genres" data-browsemode="genre"><i class="fa fa-genre"></i><h4>Genres<span>&ensp;'+ numFormat( status.genre ) +'</span></h4></div></div>';
+	content += divOpen +'<div id="home-genre" class="home-block'+ toggleMPD +'" data-path="Genres" data-browsemode="genre"><i class="fa fa-genre"></i><h4>Genres<gr>&ensp;'+ numFormat( status.genre ) +'</gr></h4></div></div>';
 	// spotify
 	if ( status.spotify ) {
 		var sw, data = '';
@@ -1574,11 +1582,20 @@ function renderLibraryHome() {
 	// dirble
 	content += divOpen +'<div id="home-dirble" class="home-block'+ toggleMPD +'" data-plugin="Dirble" data-path="Dirble"><i class="fa fa-dirble"></i><h4>Dirble</h4></div></div>';
 	// jamendo
-	content += divOpen +'<div id="home-jamendo" class="home-block'+ toggleMPD +'" data-plugin="Jamendo" data-path="Jamendo"><i class="fa fa-jamendo"></i><h4>Jamendo<span id="home-count-jamendo"></span></h4></div></div>';
+	content += divOpen +'<div id="home-jamendo" class="home-block'+ toggleMPD +'" data-plugin="Jamendo" data-path="Jamendo"><i class="fa fa-jamendo"></i><h4>Jamendo<gr id="home-count-jamendo"></gr></h4></div></div>';
 
 	content += '</div>';
 	$( '#home-blocks' ).html( content ).promise().done( function() {
 		$( 'html, body' ).scrollTop( 0 );
+		$( '.home-bookmark h4' ).each( function() {
+			var $this = $( this );
+			var html_org = $this.html();
+			var html_calc = '<span>'+ html_org +'</span>';
+			$this.html( html_calc );
+			var width = $this.find( 'span:first' ).width();
+			$this.html(html_org);
+			if ( width > $this.parent().width() ) $this.addClass( 'scroll-left' );
+		} );
 	} );
 	$( '#loader' ).addClass( 'hide' );
 	// hide breadcrumb, index bar, edit bookmark
@@ -2018,8 +2035,14 @@ function setPlaylistScroll() {
 	$( '#pl-entries p' ).css( 'min-height', wH - 140 +'px' );
 	$( '#pl-entries li' ).removeClass( 'active' );
 	var $liactive = $( '#pl-entries li' ).eq( GUI.status.Pos );
+	if ( !$liactive.length ) {
+		$liactive = $( '#pl-entries li' ).eq( 0 ).addClass( 'active' );
+		return;
+	}
+	
 	$liactive.addClass( 'active' );
 	if ( GUI.setmode ) return;
+	
 	setTimeout( function() {
 		var scrollpos = $liactive.offset().top - $( '#pl-entries' ).offset().top - ( 49 * 3 );
 		$( 'html, body' ).scrollTop( scrollpos );
@@ -2081,16 +2104,16 @@ function renderPlaylist() {
 	$( '#pl-filter-results' ).empty();
 	$( '#pl-currentpath, #pl-editor, #pl-index' ).addClass( 'hide' );
 	
-	if ( GUI.status.playlistlength ) {
-		$.get( '/db/?cmd=playlist', 'json' );
+	if ( !GUI.status.playlistlength ) {
+		$( '#pl-count' ).html( '<bl class="title">&emsp;P L A Y L I S T</bl>' );
+		$( '#pl-entries' ).empty();
+		$( '.playlist' ).removeClass( 'hide' );
+		var barhide = !GUI.display.bars || window.innerWidth < 499 || window.innerHeight < 515;
+		$( '#playlist-warning' ).css( 'margin-top', barhide ? '27px' : '67px' );
 		return;
 	}
 	
-	$( '#pl-count' ).html( '<bl class="title">&emsp;P L A Y L I S T</bl>' );
-	$( '#pl-entries' ).empty();
-	$( '.playlist' ).removeClass( 'hide' );
-	var barhide = !GUI.display.bars || window.innerWidth < 499 || window.innerHeight < 515;
-	$( '#playlist-warning' ).css( 'margin-top', barhide ? '27px' : '67px' );
+	$.get( '/db/?cmd=playlist', 'json' );
 }
 
 $( '.btn-cmd' ).click( function() {
