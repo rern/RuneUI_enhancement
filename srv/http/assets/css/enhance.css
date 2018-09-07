@@ -285,7 +285,7 @@ wh, gr { font-weight: 300; }
 .btn-cmd:focus {
 	outline: none;
 }
-#menu-top .playback-controls {
+#playback-controls {
 	display: block;
 	position: absolute;
 	top: 0;
@@ -294,10 +294,10 @@ wh, gr { font-weight: 300; }
 	margin: 0 0 0 -160px;
 	text-align: center
 }
-#menu-top .playback-controls button {
+#playback-controls button {
 	margin: 0 10px;
 }
-#menu-top .playback-controls i {
+#playback-controls i {
 	font-size:24px;
 	line-height: 40px;
 }
