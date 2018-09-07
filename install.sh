@@ -59,7 +59,7 @@ string=$( cat <<'EOF'
                     if ( $kv[ 0 ] !== 'OK' && $kv[ 0 ] ) $data[ $kv[ 0 ] ] = $kv[ 1 ];
                     $line = strtok( "\n" );
                 }
-                echo json_encode( $info );
+                ui_render( 'playlist', json_encode( $info ) );
 EOF
 )
 append 'echo getPlayQueue($mpd)'
