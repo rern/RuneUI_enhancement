@@ -67,7 +67,7 @@ pushstreamLibrary.connect();
 // playlist pushstream
 var pushstreamPlaylist = new PushStream( psOption );
 pushstreamPlaylist.onmessage = function( data ) {
-	if ( $( '#panel-playlist' ).hasClass( 'active' ) && !GUI.pleditor ) setPlaylistData( data[ 0 ] );
+	if ( $( '#panel-playlist' ).hasClass( 'active' ) && !GUI.pleditor && !GUI.setmode ) setPlaylistData( data[ 0 ] );
 }
 pushstreamPlaylist.addChannel( 'playlist' );
 pushstreamPlaylist.connect();
