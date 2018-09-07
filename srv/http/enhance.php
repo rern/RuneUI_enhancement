@@ -81,12 +81,16 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	$redis->hSet( 'display', 'volumemute', $currentvol );
 	exec( 'mpc volume '.$vol );
 	refreshUI( 'playback' );
-} else if ( isset( $_POST[ 'mpd' ] ) ) {
-	$mpd = $_POST[ 'mpd' ];
-	if ( !is_array( $mpd ) ) {
-		$result = shell_exec( 'mpc '.$mpd );
+} else if ( isset( $_POST[ 'mpc' ] ) ) {
+	$mpc = $_POST[ 'mpc' ];
+	if ( !is_array( $mpc ) ) {
+		if ( $mpc[ 0 ] !== '{' ) {
+			$result = shell_exec( 'mpc '.$mpc );
+		} else { // mpd protcol
+			$result = shell_exec( $mpc.' | telnet localhost 6600' );
+		}
 	} else {
-		foreach( $mpd as $cmd ) {
+		foreach( $mpc as $cmd ) {
 			$result = shell_exec( 'mpc '.$cmd );
 		}
 	}
