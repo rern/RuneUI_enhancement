@@ -18,6 +18,7 @@ var GUI = { // outside '$( function() {' enable console.log access
 	, list         : {}
 	, libraryhome  : {}
 	, noticeUI     : {}
+	, playlist     : {}
 	, plcurrent    : ''
 	, pleditor     : 0
 	, plscrolltop  : 0
@@ -62,46 +63,34 @@ pushstreamDisplay.connect();
 var pushstreamLibrary = new PushStream( psOption );
 pushstreamLibrary.onmessage = function( data ) {
 	GUI.libraryhome = data;
-	if ( GUI.setmode ) return;
-	
-	if ( !GUI.bookmarkedit ) renderLibraryHome();
+	if ( !GUI.setmode && !GUI.bookmarkedit ) renderLibraryHome();
 }
 pushstreamLibrary.addChannel( 'library' );
 pushstreamLibrary.connect();
 // playlist pushstream
 var pushstreamPlaylist = new PushStream( psOption );
 pushstreamPlaylist.onmessage = function( data ) {
-	if ( GUI.setmode ) return;
-	
-	if ( data[ 0 ] === 'clear' ) {
-		GUI.status.playlistlength = 0;
-		renderPlaylist();
-	} else if ( data[ 0 ] === 1 ) {
-		setFlag();
-		$.get( '/db/?cmd=playlist', 'json' );
-	} else if ( $( '#panel-playlist' ).hasClass( 'active' ) && !GUI.pleditor ) {
-		setPlaylistData( data[ 0 ] );
-	}
+	GUI.playlist = data[ 0 ];
+	if ( !GUI.pleditor ) displayPlaylist();
 }
 pushstreamPlaylist.addChannel( 'playlist' );
 pushstreamPlaylist.connect();
 // playback pushstream
 psOption.reconnectOnChannelUnavailableInterval = 5000;
 var pushstreamPlayback = new PushStream( psOption );
-pushstreamPlayback.onmessage = function( text ) {
+pushstreamPlayback.onmessage = function() {
 	$( '#loader' ).addClass( 'hide' );
 //	if ( status.actPlayer === 'Spotify' || status.actPlayer === 'Airplay' ) GUI.json = status;
-
-	setPlaybackData();
+	if ( $( '#panel-playback' ).hasClass( 'active' ) ) setPlaybackData();
 	// imodedelay fix imode flashing on usb dac switching
-	if ( $( '#panel-playback' ).hasClass( 'active' ) && !GUI.imodedelay ) displayPlayback();
+	if ( !GUI.imodedelay ) displayPlayback();
 }
-pushstreamPlayback.onstatuschange = function( status ) {
-	if ( status === 2 ) {
+pushstreamPlayback.onstatuschange = function( code ) {
+	if ( code === 2 ) {
 		$( '#loader' ).addClass( 'hide' );
-		setPlaybackData();
-	} else if ( status === 0 ) {
-		$( '#loader' ).removeClass( 'hide' );          
+		if ( $( '#panel-playback' ).hasClass( 'active' ) ) setPlaybackData();
+	} else if ( code === 0 ) {
+		$( '#loader' ).removeClass( 'hide' );
 	}
 };
 pushstreamPlayback.addChannel( 'playback' );
@@ -256,9 +245,9 @@ $( '#open-playlist' ).click( function() {
 		$( '#overlay-playsource' ).addClass( 'open' );
 		return;
 	}
-	
+	$.post( 'enhance.php', { getplaylist: 1 }, 'json' );
 //	if ( $( this ).hasClass( 'active' ) && GUI.pleditor ) GUI.pleditor = 0;
-	displayPlaylist();
+//	displayPlaylist();
 	panelSelect( $( '#panel-playlist' ) );
 } );
 function panelLR( lr ) {
@@ -348,9 +337,9 @@ $( '#panel-library' ).on( 'taphold', function() {
 		, checkboxhtml : 
 			'<form id="displaysavelibrary">'
 				+ nameLabel( 'bars', 'Top-Bottom menu' )
-				+ nameLabel( 'nas', 'Network drives' )
 				+ nameLabel( 'sd', 'SD card' )
 				+ nameLabel( 'usb', 'USB drives' )
+				+ nameLabel( 'nas', 'Network drives' )
 				+ nameLabel( 'webradio', 'Webradios' )
 				+ nameLabel( 'albums', 'Albums' )
 				+ nameLabel( 'artists', 'Artists' )
@@ -1439,8 +1428,9 @@ function displayPlayback() {
 			if ( !GUI.display.radioelapsed ) {
 				$( '#total' ).empty();
 			} else {
-				$.post( 'enhancestatus.php', function( status ) {
-					var elapsed = status.elapsed;
+				$.post( 'enhance.php', { mpd: 'status', filter: 'elapsed' }, function( data ) {
+//				$.post( 'enhancestatus.php', function( status ) {
+					var elapsed = Math.round( data );
 					GUI.countdown = setInterval( function() {
 						elapsed++
 						mmss = convertHMS( elapsed );
@@ -1546,19 +1536,23 @@ function renderLibraryHome() {
 	var content = '';
 	var divOpen = '<div class="col-md-3">';
 	// bookmark
-	if ( status.bookmark !== null ) {
-		var bookmarkL = status.bookmarks.length;
+	var bookmarks = status.bookmarks;
+	if ( bookmarks !== null ) {
+		bookmarks.sort( function( a, b ) {
+			return stripLeading( a.name ).localeCompare( stripLeading( b.name ), undefined, { numeric: true } );
+		} );
+		var bookmarkL = bookmarks.length;
 		for ( i = 0; i < bookmarkL; i++ ) {
-			var bookmark = status.bookmarks[ i ];
+			var bookmark = bookmarks[ i ];
 			content += divOpen +'<div id="home-bookmark-'+ bookmark.id +'" class="home-block home-bookmark'+ toggleMPD +'" data-path="'+ bookmark.path +'"><i class="fa fa-bookmark"></i><h4><span>' + bookmark.name +'&ensp;<gr>'+ numFormat( bookmark.count ) +' ♫</gr></span></h4></div></div>';
 		}
 	}
-	// nas
-	content += divOpen +'<a id="home-nas" class="home-block'+ toggleMPD +'"'+ ( !status.network ? ( notMPD ? '' : ' href="/sources/add/"' ) : ' data-path="NAS"' ) +'><i class="fa fa-network"></i><h4>Network drives<gr>&ensp;'+ status.network +'</gr></h4></a></div>';
 	// sd
 	content += divOpen +'<div id="home-sd" class="home-block'+ toggleMPD +'" data-path="LocalStorage"><i class="fa fa-microsd"></i><h4>SD card<gr>&ensp;'+ numFormat( status.sd ) +' ♫</gr></h4></div></div>';
 	// usb
 	content += divOpen +'<div id="home-usb" class="home-block'+ toggleMPD +'"'+ ( !status.usb ? ( notMPD ? '' : ' href="/sources/sources/"' ) : ' data-path="USB"' ) +'><i class="fa fa-usbdrive"></i><h4>USB drives<gr>&ensp;'+ status.usb +'</gr></h4></div></div>';
+	// nas
+	content += divOpen +'<a id="home-nas" class="home-block'+ toggleMPD +'"'+ ( !status.network ? ( notMPD ? '' : ' href="/sources/add/"' ) : ' data-path="NAS"' ) +'><i class="fa fa-network"></i><h4>Network drives<gr>&ensp;'+ status.network +'</gr></h4></a></div>';
 	// webradio
 	var data = !status.webradio ? ' data-target="webradio-add"' : ' data-path="Webradio"';
 	content += divOpen +'<div id="home-webradio" class="home-block'+ toggleMPD +'"'+ data +'><i class="fa fa-webradio"></i><h4>Webradios<gr>&ensp;'+ numFormat( status.webradio ) +'</gr></h4></div></div>';
@@ -2048,15 +2042,27 @@ function setPlaylistScroll() {
 		$( 'html, body' ).scrollTop( scrollpos );
 	}, 0 );
 }
-function setPlaylistData( data ) {
-	if ( !GUI.status.playlistlength ) return;
+function renderPlaylist() {
+	$( '#pl-filter' ).val( '' );
+	$( '#pl-filter-results' ).empty();
+	$( '#pl-currentpath, #pl-editor, #pl-index' ).addClass( 'hide' );
+	
+	if ( !GUI.status.playlistlength ) {
+		$( '#pl-count' ).html( '<bl class="title">&emsp;P L A Y L I S T</bl>' );
+		$( '#pl-entries' ).empty();
+		$( '.playlist' ).removeClass( 'hide' );
+		var barhide = !GUI.display.bars || window.innerWidth < 499 || window.innerHeight < 515;
+		$( '#playlist-warning' ).css( 'margin-top', barhide ? '27px' : '67px' );
+		return;
+	}
+	
 	var current = GUI.status.song + 1;
 	var content = bottomline = classradio = hidetotal = '';
 	var id = totaltime = pltime = countsong = countradio = i = 0;
-	var ilength = data.length;
+	var ilength = GUI.playlist.length;
 	GUI.status.playlistlength = ilength;
 	for ( i = 0; i < ilength; i++ ) {
-		var pl = data[ i ];
+		var pl = GUI.playlist[ i ];
 		if ( pl.file.slice( 0, 4 ) === 'http' ) {
 			var iconhtml = '<i class="fa fa-webradio pl-icon"></i>';
 			classradio = 1;
@@ -2098,22 +2104,6 @@ function setPlaylistData( data ) {
 	$( '#pl-entries' ).html( content +'<p></p>' ).promise().done( function() {
 		setPlaylistScroll();
 	} );
-}
-function renderPlaylist() {
-	$( '#pl-filter' ).val( '' );
-	$( '#pl-filter-results' ).empty();
-	$( '#pl-currentpath, #pl-editor, #pl-index' ).addClass( 'hide' );
-	
-	if ( !GUI.status.playlistlength ) {
-		$( '#pl-count' ).html( '<bl class="title">&emsp;P L A Y L I S T</bl>' );
-		$( '#pl-entries' ).empty();
-		$( '.playlist' ).removeClass( 'hide' );
-		var barhide = !GUI.display.bars || window.innerWidth < 499 || window.innerHeight < 515;
-		$( '#playlist-warning' ).css( 'margin-top', barhide ? '27px' : '67px' );
-		return;
-	}
-	
-	$.get( '/db/?cmd=playlist', 'json' );
 }
 
 $( '.btn-cmd' ).click( function() {
@@ -2170,10 +2160,11 @@ $( '.btn-cmd' ).click( function() {
 	$.post( 'enhance.php', { mpc: cmd, pushstream: 'playback' } );
 } );
 function setImode() {
-	if ( GUI.display.buttons ) {
+	if ( GUI.display.buttons && $( '#play-group' ).is( ':visible' ) ) {
 		$( '#repeat' ).toggleClass( 'btn-primary', GUI.status.repeat === 1 );
 		$( '#random' ).toggleClass( 'btn-primary', GUI.status.random === 1 );
 		$( '#single' ).toggleClass( 'btn-primary', GUI.status.single === 1 );
+		$( '#irandom, #irepeat' ).addClass( 'hide' );
 	} else {
 		if ( GUI.display.time ) {
 			$( '#irandom' ).toggleClass( 'hide', GUI.status.random === 0 );
