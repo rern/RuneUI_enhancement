@@ -7,60 +7,37 @@ if ( $activePlayer === 'Airplay' ) {
 	echo json_encode( $status );
 	die();
 }
-// current song
-function status2array( $lines ) {
-	$line = strtok( $lines, "\n" );
-	while ( $line !== false ) {
-		$pair = explode( ': ', $line, 2 );
-		$key = $pair[ 0 ];
-		$val = $pair[ 1 ];
-		if ( $key === 'elapsed' ) {
-			$val = round( $val );
-		} else if ( $key === 'bitrate' ) {
-			$val = $val * 1000;
-		}
+
+$lines = shell_exec( '{ sleep 0.01; echo clearerror; echo status; echo currentsong; sleep 0.05; } | telnet localhost 6600 | sed "/^Trying\|Connected\|Escape\|OK\|Connection/ d"' );
+if ( !preg_match( '/\nfile:/', $lines ) ) {
+	$lines = shell_exec( '{ sleep 0.01; echo status; echo playlistinfo 0; sleep 0.05; } | telnet localhost 6600 | sed "/^Trying\|Connected\|Escape\|OK\|Connection/ d"' );
+}
+$line = strtok( $lines, "\n" );
+while ( $line !== false ) {
+	$pair = explode( ': ', $line, 2 );
+	$key = $pair[ 0 ];
+	$val = $pair[ 1 ];
+	if ( $key === 'elapsed' ) {
+		$status[ $key ] = round( $val );
+	} else if ( $key === 'bitrate' ) {
+		$status[ $key ] = $val * 1000;
+	} else if ( $key === 'audio' ) {
+		$audio = explode( ':', $val );
+		$status[ 'bitdepth' ] = $audio[ 1 ];
+		$status[ 'samplerate' ] = $audio[ 0 ];
+	} else {
 		$status[ $key ] = $val;
-		if ( $key === 'audio' ) {
-			$audio = explode( ':', $val );
-			$status[ 'bitdepth' ] = $audio[ 1 ];
-			$status[ 'samplerate' ] = $audio[ 0 ];
-		}
-		$line = strtok( "\n" );
 	}
-	if ( array_key_exists( 'bitrate', $status ) ) {
-		$sampling = substr( $status[ 'file' ], 0, 4 ) === 'http' ? '' : $status[ 'bitdepth' ].' bit ';
-		$sampling.= round( $status[ 'samplerate' ] / 1000, 1 ).' kHz '.$status[ 'bitrate' ].' kbit/s';
-		$status[ 'sampling' ] = $sampling;
-	} else {
-		$status[ 'sampling' ] = '';
-	}
-	return $status;
+	$line = strtok( "\n" );
 }
-function samplingline( $bitdepth, $samplerate, $bitrate ) {
-	if ( $bitdepth == 'N/A' ) {
-		$bitdepth = ( $ext === 'WAV' || $ext === 'AIFF' ) ? ( $bitrate / $samplerate / 2 ).' bit ' : '';
-	} else {
-		$bitdepth = $bitdepth ? $bitdepth.' bit ' : '';
-	}
-	$samplerate = round( $samplerate / 1000, 1 ).' kHz ';
-	if ( $bitrate < 1000000 ) {
-		$bitrate = round( $bitrate / 1000 ).' kbit/s';
-	} else {
-		$bitrate = round( $bitrate / 1000000, 2 ).' Mbit/s';
-	}
-	return $bitdepth.$samplerate.$bitrate;
+if ( array_key_exists( 'bitrate', $status ) ) {
+	$sampling = substr( $status[ 'file' ], 0, 4 ) === 'http' ? '' : $status[ 'bitdepth' ].' bit ';
+	$sampling.= round( $status[ 'samplerate' ] / 1000, 1 ).' kHz '.$status[ 'bitrate' ].' kbit/s';
+	$status[ 'sampling' ] = $sampling;
+} else {
+	$status[ 'sampling' ] = '';
 }
-
-$status = shell_exec( '{ sleep 0.01; echo clearerror; echo status; echo currentsong; sleep 0.05; } | telnet localhost 6600 | sed "/^Trying\|Connected\|Escape\|OK\|Connection/ d"' );
-$status = status2array( $status );
-
-// fix: initially add song without play - currentsong = (blank)
-if ( !isset( $status[ 'file' ] ) ) {
-	$status0 = shell_exec( '{ sleep 0.01; echo playlistinfo 0; sleep 0.01; } | telnet localhost 6600' );
-	$status0 = status2array( $status0 );
-	$status = array_merge( $status, $status0 );
-	$status[ 'song' ] = 0;
-}
+if ( !array_key_exists( 'song', $status ) ) $status[ 'song' ] = 0;
 
 $file = $status[ 'file' ];
 $pathinfo = pathinfo( $file );
@@ -76,11 +53,25 @@ if ( $status[ 'ext' ] === 'radio' ) {
 }
 
 $status[ 'activePlayer' ] = $activePlayer;
-$webradios = $redis->hGetAll( "webradios" );
+$webradios = $redis->hGetAll( 'webradios' );
 $webradioname = array_flip( $webradios );
 $name = $webradioname[ $file ];
 
 // sampling >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+function samplingline( $bitdepth, $samplerate, $bitrate ) {
+	if ( $bitdepth == 'N/A' ) {
+		$bitdepth = ( $ext === 'WAV' || $ext === 'AIFF' ) ? ( $bitrate / $samplerate / 2 ).' bit ' : '';
+	} else {
+		$bitdepth = $bitdepth ? $bitdepth.' bit ' : '';
+	}
+	$samplerate = round( $samplerate / 1000, 1 ).' kHz ';
+	if ( $bitrate < 1000000 ) {
+		$bitrate = round( $bitrate / 1000 ).' kbit/s';
+	} else {
+		$bitrate = round( $bitrate / 1000000, 2 ).' Mbit/s';
+	}
+	return $bitdepth.$samplerate.$bitrate;
+}
 if ( $status[ 'state' ] === 'play' ) {
 	// lossless - no bitdepth
 	$bitdepth = ( $status[ 'ext' ] === 'radio' ) ? '' : $status[ 'bitdepth' ];
@@ -124,9 +115,9 @@ if ( $ext === 'DSF' || $ext === 'DFF' ) {
 } else {
 	$data = shell_exec( '/usr/bin/ffprobe -v quiet -select_streams a:0 -show_entries stream=bits_per_raw_sample,sample_rate -show_entries format=bit_rate -of default=noprint_wrappers=1:nokey=1 "'.$file.'"' );
 	$data = explode( "\n", $data );
-	$bitdepth = $data[1];
-	$samplerate = $data[0];
-	$bitrate = $data[2];
+	$bitdepth = $data[ 1 ];
+	$samplerate = $data[ 0 ];
+	$bitrate = $data[ 2 ];
 	$sampling = $bitrate ? samplingline( $bitdepth, $samplerate, $bitrate ) : '';
 }
 $status[ 'sampling' ] = $sampling;

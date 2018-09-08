@@ -90,24 +90,26 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 			$result = shell_exec( 'mpc '.$cmd );
 		}
 	}
+	echo $result;
 	$data = isset( $_POST[ 'getresult' ] ) ? $result : 1;
 	if ( $mpc === 'clear' ) $data = 'clear';
 	if ( isset( $_POST[ 'pushstream' ] ) ) refreshUI( $_POST[ 'pushstream' ], $data );
 } else if ( isset( $_POST[ 'getplaylist' ] ) ) {
-	$result = shell_exec( '{ sleep 0.01; echo playlistinfo; sleep 0.01; } | telnet localhost 6600 | grep "^Title\|^Time\|^Track\|^Artist\|^Album\|^file"' );
-	$result = explode( "\n", $result );
-	array_pop( $result );
-
-	foreach ( $result as $line ) {
-		$kv = explode( ': ', $line );
-		$key = $kv[ 0 ];
-		$pl[ $key ] = $kv[ 1 ];
+	$lines = shell_exec( '{ sleep 0.01; echo playlistinfo; sleep 0.01; } | telnet localhost 6600 | grep "^Title\|^Time\|^Track\|^Artist\|^Album\|^file"' );
+	$line = strtok( $lines, "\n" );
+	while ( $line !== false ) {
+		$pair = explode( ': ', $line, 2 );
+		$key = $pair[ 0 ];
+		$val = $pair[ 1 ];
+		$list[ $key ] = $val;
 		if ( $key === 'Time' ) {
-			$data[] = $pl;
-			$pl = [];
+			$data[] = $list;
+			$list = [];
 		}
+		$line = strtok( "\n" );
 	}
-	echo json_encode( $data, JSON_NUMERIC_CHECK );
+	//echo json_encode( $data, JSON_NUMERIC_CHECK );
+	refreshUI( 'playlist', $data );
 } else if ( isset( $_POST[ 'power' ] ) ) {
 	$redis = new Redis(); 
 	$redis->pconnect( '127.0.0.1' );
