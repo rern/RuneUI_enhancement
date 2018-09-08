@@ -1429,7 +1429,6 @@ function displayPlayback() {
 				$( '#total' ).empty();
 			} else {
 				$.post( 'enhance.php', { mpd: 'status', filter: 'elapsed' }, function( data ) {
-//				$.post( 'enhancestatus.php', function( status ) {
 					var elapsed = Math.round( data );
 					GUI.countdown = setInterval( function() {
 						elapsed++
@@ -2122,6 +2121,7 @@ $( '.btn-cmd' ).click( function() {
 		$this.toggleClass( 'btn-primary' ); // make button change immediate - not wait for pushstream
 		setImode();
 		cmd = cmd +' '+ onoff;
+		tempFlag();
 	} else {
 		if ( GUI.display.bars && id !== 'previous' && id !== 'next' ) {
 			$( '#playback-controls .btn' ).removeClass( 'btn-primary' );
