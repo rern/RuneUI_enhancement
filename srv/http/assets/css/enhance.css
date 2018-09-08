@@ -1627,19 +1627,37 @@ w {
 	overflow: hidden;
 	height: 19px;
 }
+@media (min-width: 1200px) {
+	#home-blocks .col-md-3 {
+		float: left;
+		width: 20%;
+	}
+}
+@media (min-width: 1500px) {
+	#home-blocks .col-md-3 {
+		float: left;
+		width: 16.666666%;
+	}
+}
 @media (max-width: 992px) {
 	#home-blocks .col-md-3 {
 		float: left;
-		width: 33.3333333%;
+		width: 25%;
 	}
 }
 @media (max-width: 749px) {
 	#home-blocks .col-md-3 {
 		float: left;
+		width: 33.3333333%;
+	}
+}
+@media (max-width: 560px) {
+	#home-blocks .col-md-3 {
+		float: left;
 		width: 50%;
 	}
 }
-@media (max-width: 480px) {
+@media (max-width: 380px) {
 	#home-blocks .col-md-3 {
 		float: left;
 		width: 100%;
