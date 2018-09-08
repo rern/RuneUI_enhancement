@@ -16,6 +16,7 @@ installstart $@
 sed -i 's/gifico|svg/gif|ico/' /etc/nginx/nginx.conf
 rm -f /srv/http/assets/js/vendor/{hammer.min.js,propagating.js}
 sed -i '/hammer.min.js\|propagating.js/ d' /srv/http/app/templates/footer.php
+redis-cli del volumemute &> /dev/null
 #1temp1
 
 mv /srv/http/index.php{,.backup}
@@ -193,14 +194,13 @@ systemctl disable rune_shutdown
 installfinish $@
 
 # set library home database
+[[ $( redis-cli get volume ) == 1 ]] && volumempd=1 || volumempd=''
+
 if [[ $1 != u ]]; then
-	redis-cli hmset display bars checked time checked coverart checked volume checked buttons checked \
+	redis-cli hmset display bars checked time checked coverart checked volume checked buttons checked radioelapsed 0 volumempd $volumempd volumemute 0\
 	\nas checked sd checked usb checked webradio checked albums checked artists checked composer checked genre checked \
 	\spotify checked dirble checked jamendo checked &> /dev/null
 fi
-
-[[ $( redis-cli get volume ) == 1 ]] && volume=1 || volume=''
-redis-cli hset display volumempd $volume &> /dev/null
 
 systemctl restart rune_PL_wrk
 
