@@ -1,6 +1,6 @@
 <?php
 // js syntax:
-//   mpd    : { mpc: command }  // multiples commands must be array
+//   mpc    : { mpc: command }  // multiples commands must be array
 //   volume : N ... mute/unmute: N = -1 )
 
 function refreshUI( $channel, $data = 1 ) {
@@ -94,6 +94,9 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	$data = isset( $_POST[ 'getresult' ] ) ? $result : 1;
 	if ( $mpc === 'clear' ) $data = 'clear';
 	if ( isset( $_POST[ 'pushstream' ] ) ) refreshUI( $_POST[ 'pushstream' ], $data );
+} else if ( isset( $_POST[ 'mpd' ] ) ) {
+	$data = shell_exec( '{ sleep 0.01; echo '.$_POST[ 'mpd' ].'; sleep 0.01; } | telnet localhost 6600 | grep "'.$_POST[ 'filter' ].'" | cut -d" " -f2' );
+	echo $data;
 } else if ( isset( $_POST[ 'getplaylist' ] ) ) {
 	$lines = shell_exec( '{ sleep 0.01; echo playlistinfo; sleep 0.01; } | telnet localhost 6600 | grep "^Title\|^Time\|^Track\|^Artist\|^Album\|^file"' );
 	$line = strtok( $lines, "\n" );
