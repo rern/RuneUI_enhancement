@@ -75,7 +75,6 @@ pushstreams[ 'playback' ].onmessage = function( data ) {
 	}
 }
 /*pushstreams[ 'playback' ].onstatuschange = function( code ) {
-	console.log('onstatuschange '+ code)
 	$( '#loader' ).toggleClass( 'hide', code !== 0 );
 //	if ( $( '#panel-playback' ).hasClass( 'active' ) ) setPlaybackData();
 }*/
@@ -1449,7 +1448,7 @@ function displayPlayback() {
 		var source = GUI.activePlayer.toLowerCase();
 		$( '#iplayer' ).addClass( 'fa-'+ source ).removeClass( 'hide' );
 	}
-//	setButton();
+	setButton();
 	displayCommon();
 	if ( !GUI.setmode ) $( 'html, body' ).scrollTop( 0 );
 }
