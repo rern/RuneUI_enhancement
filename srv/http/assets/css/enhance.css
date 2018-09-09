@@ -1433,10 +1433,6 @@ w {
 .menu a.active {
 	background: #0095d8;
 }
-.ui-pnotify-icon {
-	font-size: 18px;
-	margin-top: -3px;
-}
 
 /* overlay menus */
 #overlay-social,
