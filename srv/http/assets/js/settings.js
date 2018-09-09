@@ -6,8 +6,8 @@ $( '.selectpicker' ).selectpicker();
 
 if ( /\/sources/.test( location.pathname ) ) {
 	// get updating status on load
-	$.post( '/enhance.php', { mpd: 'status' }, function( status ) {
-		var updatingdb = status.match( /updating_db/ ) ? true : false;
+	$.post( 'enhance.php', { mpc: 'status' }, function( status ) {
+		var updatingdb = status.match( /Updating/ ) ? true : false;
 		$( '#updatempddb, #rescanmpddb' ).toggleClass( 'disabled', updatingdb );
 		$( '#updatempddb i, #rescanmpddb i' ).toggleClass( 'fa-spin', updatingdb );
 	} );
