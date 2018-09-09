@@ -44,6 +44,8 @@ $.each( streams, function( i, stream ) {
 	pushstreams[ stream ] = new PushStream( psOption );
 	pushstreams[ stream ].addChannel( stream );
 } );
+pushstreams[ 'playback' ].reconnectOnChannelUnavailableInterval = 5000;
+
 pushstreams[ 'notify' ].onmessage = renderMSG;
 pushstreams[ 'display' ].onmessage = function( data ) {
 	GUI.display = data[ 0 ];
@@ -61,25 +63,31 @@ pushstreams[ 'library' ].onmessage = function( data ) {
 	GUI.libraryhome = data;
 	if ( !GUI.setmode && !GUI.bookmarkedit ) renderLibraryHome();
 }
-pushstreams[ 'playback' ].reconnectOnChannelUnavailableInterval = 5000;
 pushstreams[ 'playback' ].onmessage = function( data ) {
-	$( '#loader' ).addClass( 'hide' );
+	GUI.status = data[ 0 ];
 //	if ( status.actPlayer === 'Spotify' || status.actPlayer === 'Airplay' ) GUI.json = status;
-	if ( $( '#panel-playback' ).hasClass( 'active' ) ) setPlaybackData();
-	// imodedelay fix imode flashing on usb dac switching
-	if ( !GUI.imodedelay ) displayPlayback();
-}
-pushstreams[ 'playback' ].onstatuschange = function( code ) {
-	if ( code === 2 ) {
-		$( '#loader' ).addClass( 'hide' );
-		if ( $( '#panel-playback' ).hasClass( 'active' ) ) setPlaybackData();
-	} else if ( code === 0 ) {
-		$( '#loader' ).removeClass( 'hide' );
+	if ( $( '#panel-playback' ).hasClass( 'active' ) ) {
+		setPlaybackData();
+		// imodedelay fix imode flashing on usb dac switching
+		if ( !GUI.imodedelay ) displayPlayback();
+	} else if ( $( '#panel-playlist' ).hasClass( 'active' ) && !GUI.pleditor ) {
+		setPlaylistScroll();
 	}
 }
+/*pushstreams[ 'playback' ].onstatuschange = function( code ) {
+	console.log('onstatuschange '+ code)
+	$( '#loader' ).toggleClass( 'hide', code !== 0 );
+//	if ( $( '#panel-playback' ).hasClass( 'active' ) ) setPlaybackData();
+}*/
 pushstreams[ 'playlist' ].onmessage = function( data ) {
 	GUI.playlist = data[ 0 ];
-	if ( !GUI.pleditor ) displayPlaylist();
+	if ( GUI.setmode || !$( '#panel-playlist' ).hasClass( 'active' ) ) return;
+	
+	if ( !GUI.pleditor ) {
+		$( '#pl-entries li' ).length ? setPlaylistScroll() : renderPlaylist();
+	} else {
+		$( '#pl-manage-list' ).click();
+	}
 }
 $.each( streams, function( i, stream ) {
 	pushstreams[ stream ].connect();
@@ -1004,8 +1012,8 @@ function playlistSaveVerify( name ) {
 		} );
 		return;
 	}
-	$.post( 'enhance.php', { mpc: 'listplaylists', getresult: 1 }, function( data ) {
-		if ( $.inArray( 'playlist: '+ name, data.split( '\n' ) ) ) {
+	$.post( 'enhance.php', { mpc: 'lsplaylists', getresult: 1 }, function( data ) {
+		if ( $.inArray( name, data.split( '\n' ) ) !== -1 ) {
 			info( {
 				  icon    : 'warning'
 				, title   : 'Save Playlist'
@@ -1016,6 +1024,11 @@ function playlistSaveVerify( name ) {
 			} );
 			return;
 		}
+		new PNotify( {
+			  icon  : 'fa fa-check'
+			, title : 'Playlist Saved'
+			, text  : name
+		} );
 		tempFlag();
 		$.post( 'enhance.php', { mpc: 'save "'+ name +'"', pushstream: 'playlist' } );
 	}, 'text' );
@@ -1070,8 +1083,11 @@ function playlistDelete() {
 					+'<br><white>'+ GUI.list.name +'</white>'
 		, cancel  : 1
 		, ok      : function() {
-			$( '#pls-count' ).text( numFormat( $( '#pls-count' ).text() - 1 ) );
+			var count = $( '#pls-count' ).text() - 1;
+			$( '#pls-count' ).text( numFormat( count ) );
+			if ( !count ) $( '#pl-currentpath' ).html( '<bl>&emsp;PLAYLISTS</bl>' );
 			GUI.list.li.remove();
+			
 			tempFlag();
 			$.post( 'enhance.php', { mpc: 'rm "'+ GUI.list.name +'"', pushstream: 'playlist' } );
 		}
@@ -1092,18 +1108,20 @@ $( '#pl-manage-list' ).click( function() {
 	$( '.playlist' ).addClass( 'hide' );
 	$( '#loader' ).removeClass( 'hide' );
 	
-	$.get( '/command/?cmd=listplaylists', function( data ) {
-		var pl = data.split( '\n' ).filter( function( el ) { return el.match( /^playlist/ ) } );
-		arraypl = [];
-		pl.forEach( function( el ) {
-			arraypl.push( el.replace( 'playlist: ', '' ) );
-		} );
-		arraypl.sort( function( a, b ) {
+	$.post( 'enhance.php', { mpc: 'lsplaylists', getresult: 1 }, function( data ) {
+		var pl = data.split( '\n' );
+		pl.pop(); // remove last blank
+		var plL = pl.length;
+		var plcounthtml = '<bl>&emsp;PLAYLISTS</bl>';
+		plcounthtml += plL ? '<gr>&emsp;•&ensp;</gr><wh id="pls-count">'+ numFormat( plL ) +'</wh>&ensp;<i class="fa fa-list-ul"></i>' : '';
+		$( '#pl-currentpath' ).html( plcounthtml );
+		$( '#pl-currentpath, #pl-editor, #pl-index' ).removeClass( 'hide' );
+		
+		pl.sort( function( a, b ) {
 			return stripLeading( a ).localeCompare( stripLeading( b ), undefined, { numeric: true } );
 		} );
-		var arrayplL = arraypl.length;
 		var content = '';
-		arraypl.forEach( function( el ) {
+		pl.forEach( function( el ) {
 			content += '<li class="pl-folder" data-path="'+ el +'"><i class="fa fa-list-ul pl-icon"></i><i class="fa fa-bars pl-action"></i><span>'+ el +'</span></li>';
 		} );
 		$( '#pl-editor' ).html( content +'<p></p>' ).promise().done( function() {
@@ -1111,9 +1129,6 @@ $( '#pl-manage-list' ).click( function() {
 			// fill bottom of list to mave last li movable to top
 			$( '#pl-editor p' ).css( 'min-height', window.innerHeight - ( GUI.display.bars ? 140 : 100 ) +'px' );
 			$( '#loader' ).addClass( 'hide' );
-			var plcount = arrayplL ? '<bl>&emsp;PLAYLISTS</bl><gr>&emsp;•&ensp;</gr><wh id="pls-count">'+ numFormat( arrayplL ) +'</wh>&ensp;<i class="fa fa-list-ul"></i>' : '';
-			$( '#pl-currentpath' ).html( plcount );
-			$( '#pl-currentpath, #pl-editor, #pl-index' ).removeClass( 'hide' );
 			$( 'html, body' ).scrollTop( GUI.plscrolltop );
 			displayIndex();
 		} );
@@ -1471,22 +1486,6 @@ function displayLibrary() {
 		$( 'html, body' ).scrollTop( 0 );
 	}, 0 );
 }
-function displayPlaylist() {
-	if ( !GUI.pleditor ) {
-		$( '#pl-entries li' ).length ? setPlaylistScroll() : renderPlaylist();
-	} else {
-		GUI.pleditor = 0;
-		if ( $( '#panel-playlist' ).hasClass( 'active' ) ) {
-			renderPlaylist();
-		} else {
-			setTimeout( function() {
-				$( 'html, body' ).scrollTop( GUI.plscrolltop );
-			}, 0 );
-		}
-	}
-	displayCommon();
-}
-
 function setPlaybackSource() {
 	var activePlayer = GUI.activePlayer;
 	$( '#overlay-playsource a' ).addClass( 'inactive' );
@@ -2015,7 +2014,7 @@ function setPlaylistScroll() {
 	var  wH = window.innerHeight;
 	$( '#pl-entries p' ).css( 'min-height', wH - 140 +'px' );
 	$( '#pl-entries li' ).removeClass( 'active' );
-	var $liactive = $( '#pl-entries li' ).eq( GUI.status.Pos );
+	var $liactive = $( '#pl-entries li' ).eq( GUI.status.song );
 	if ( !$liactive.length ) {
 		$liactive = $( '#pl-entries li' ).eq( 0 ).addClass( 'active' );
 		return;
@@ -2043,7 +2042,6 @@ function renderPlaylist() {
 		return;
 	}
 	
-	var current = GUI.status.song + 1;
 	var content = bottomline = classradio = hidetotal = '';
 	var id = totaltime = pltime = countsong = countradio = i = 0;
 	var ilength = GUI.playlist.length;
@@ -2388,6 +2386,7 @@ function setPlaybackData() {
 		}
 	}, 'json' );
 }
+setPlaybackData();
 function convertHMS( second ) {
 	if ( second <= 0 ) return '';
 	
