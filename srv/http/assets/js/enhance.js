@@ -38,15 +38,14 @@ var psOption = {
 	, port: window.location.port
 	, modes: 'websocket'
 };
-// notify pushstream
-var pushstreamNotify = new PushStream( psOption );
-pushstreamNotify.onmessage = renderMSG;
-pushstreamNotify.addChannel( 'notify' );
-pushstreamNotify.connect();
-// display pushstream
-var pushstreamDisplay = new PushStream( psOption );
-pushstreamDisplay.addChannel( 'display' );
-pushstreamDisplay.onmessage = function( data ) {
+var pushstreams = {};
+var streams = [ 'notify', 'library', 'display', 'playlist', 'playback' ];
+$.each( streams, function( i, stream ) {
+	pushstreams[ stream ] = new PushStream( psOption );
+	pushstreams[ stream ].addChannel( stream );
+} );
+pushstreams[ 'notify' ].onmessage = renderMSG;
+pushstreams[ 'display' ].onmessage = function( data ) {
 	GUI.display = data[ 0 ];
 	if ( GUI.setmode ) return;
 	
@@ -58,44 +57,33 @@ pushstreamDisplay.onmessage = function( data ) {
 		displayCommon();
 	}
 }
-pushstreamDisplay.connect();
-// library pushstream
-var pushstreamLibrary = new PushStream( psOption );
-pushstreamLibrary.onmessage = function( data ) {
+pushstreams[ 'library' ].onmessage = function( data ) {
 	GUI.libraryhome = data;
 	if ( !GUI.setmode && !GUI.bookmarkedit ) renderLibraryHome();
 }
-pushstreamLibrary.addChannel( 'library' );
-pushstreamLibrary.connect();
-// playlist pushstream
-var pushstreamPlaylist = new PushStream( psOption );
-pushstreamPlaylist.onmessage = function( data ) {
-	GUI.playlist = data[ 0 ];
-	if ( !GUI.pleditor ) displayPlaylist();
-}
-pushstreamPlaylist.addChannel( 'playlist' );
-pushstreamPlaylist.connect();
-// playback pushstream
-psOption.reconnectOnChannelUnavailableInterval = 5000;
-var pushstreamPlayback = new PushStream( psOption );
-pushstreamPlayback.onmessage = function() {
+pushstreams[ 'playback' ].reconnectOnChannelUnavailableInterval = 5000;
+pushstreams[ 'playback' ].onmessage = function( data ) {
 	$( '#loader' ).addClass( 'hide' );
 //	if ( status.actPlayer === 'Spotify' || status.actPlayer === 'Airplay' ) GUI.json = status;
 	if ( $( '#panel-playback' ).hasClass( 'active' ) ) setPlaybackData();
 	// imodedelay fix imode flashing on usb dac switching
 	if ( !GUI.imodedelay ) displayPlayback();
 }
-pushstreamPlayback.onstatuschange = function( code ) {
+pushstreams[ 'playback' ].onstatuschange = function( code ) {
 	if ( code === 2 ) {
 		$( '#loader' ).addClass( 'hide' );
 		if ( $( '#panel-playback' ).hasClass( 'active' ) ) setPlaybackData();
 	} else if ( code === 0 ) {
 		$( '#loader' ).removeClass( 'hide' );
 	}
-};
-pushstreamPlayback.addChannel( 'playback' );
-pushstreamPlayback.connect();
-
+}
+pushstreams[ 'playlist' ].onmessage = function( data ) {
+	GUI.playlist = data[ 0 ];
+	if ( !GUI.pleditor ) displayPlaylist();
+}
+$.each( streams, function( i, stream ) {
+	pushstreams[ stream ].connect();
+} );
 if ( 'hidden' in document ) {
 	var visibilityevent = 'visibilitychange';
 	var hiddenstate = 'hidden';
@@ -110,14 +98,13 @@ if ( 'hidden' in document ) {
 		}
 	}
 }
-var streams = [ pushstreamNotify, pushstreamLibrary, pushstreamDisplay, pushstreamPlaylist, pushstreamPlayback ];
 document.addEventListener( visibilityevent, function() {
 	if ( document[ hiddenstate ] ) {
 		$( '#elapsed' ).empty();
 		clearInterval( GUI.currentKnob );
 		clearInterval( GUI.countdown );
 		$.each( streams, function( i, stream ) {
-			stream.disconnect();
+			pushstreams[ stream ].disconnect();
 		} );
 	} else {
 		if ( $( '#panel-playback' ).hasClass( 'active' ) ) {
@@ -127,13 +114,14 @@ document.addEventListener( visibilityevent, function() {
 			setPlaylistScroll();
 		}
 		$.each( streams, function( i, stream ) {
-			stream.connect();
+			pushstreams[ stream ].connect();
 		} );
 	}
 } );
 window.addEventListener( 'orientationchange', function() {
 	if ( GUI.dblist || !$( '#pl-editor' ).hasClass( 'hide' ) ) displayIndex();
 } );
+
 PNotify.prototype.options.styling = 'fontawesome';
 PNotify.prototype.options.stack = {
 	  dir1      : 'up'    // stack up
