@@ -1,9 +1,8 @@
 <?php
-// js syntax:
 //   mpc    : { mpc: command }  // multiples commands must be array
 //   volume : N ... mute/unmute: N = -1 )
 
-function refreshUI( $channel, $data = 1 ) {
+function pushstream( $channel, $data = 1 ) {
 	$ch = curl_init( 'http://localhost/pub?id='.$channel );
 	curl_setopt( $ch, CURLOPT_HTTPHEADER, array( 'Content-Type:application/json' ) );
 	curl_setopt( $ch, CURLOPT_POSTFIELDS, json_encode( $data, JSON_NUMERIC_CHECK ) );
@@ -15,13 +14,13 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	$redis = new Redis(); 
 	$redis->pconnect( '127.0.0.1' );
 	usleep( 100000 ); // !important - get data must wait at least 50000
-	refreshUI( 'display', $redis->hGetAll( 'display' ) );
+	pushstream( 'display', $redis->hGetAll( 'display' ) );
 } else if ( isset( $_POST[ 'setdisplay' ] ) ) {
 	$redis = new Redis(); 
 	$redis->pconnect( '127.0.0.1' );
 	$data = $_POST[ 'setdisplay' ];
 	$redis->hmSet( 'display', $data );
-	refreshUI( 'display', $data );
+	pushstream( 'display', $data );
 } else if ( isset( $_POST[ 'library' ] ) ) {
 	$redis = new Redis(); 
 	$redis->pconnect( '127.0.0.1' );
@@ -80,7 +79,7 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	}
 	$redis->hSet( 'display', 'volumemute', $currentvol );
 	exec( 'mpc volume '.$vol );
-	refreshUI( 'playback' );
+	pushstream( 'playback' );
 } else if ( isset( $_POST[ 'mpc' ] ) ) {
 	$mpc = $_POST[ 'mpc' ];
 	if ( !is_array( $mpc ) ) {
@@ -93,7 +92,7 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	echo $result;
 	$data = isset( $_POST[ 'getresult' ] ) ? $result : 1;
 	if ( $mpc === 'clear' ) $data = 'clear';
-	if ( isset( $_POST[ 'pushstream' ] ) ) refreshUI( $_POST[ 'pushstream' ], $data );
+	if ( isset( $_POST[ 'pushstream' ] ) ) pushstream( $_POST[ 'pushstream' ], $data );
 } else if ( isset( $_POST[ 'mpd' ] ) ) {
 	$data = shell_exec( '{ sleep 0.01; echo '.$_POST[ 'mpd' ].'; sleep 0.01; } | telnet localhost 6600 | grep "'.$_POST[ 'filter' ].'" | cut -d" " -f2' );
 	echo $data;
@@ -112,7 +111,7 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 		$line = strtok( "\n" );
 	}
 	//echo json_encode( $data, JSON_NUMERIC_CHECK );
-	refreshUI( 'playlist', $data );
+	pushstream( 'playlist', $data );
 } else if ( isset( $_POST[ 'power' ] ) ) {
 	$redis = new Redis(); 
 	$redis->pconnect( '127.0.0.1' );
