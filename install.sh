@@ -142,7 +142,7 @@ systemctl disable rune_PL_wrk
 file=/srv/http/app/templates/dev.php
 echo $file
 
-commentH -n -1 'RuneAudio SYSTEM Worker' -n +3 'Restart rune_SY_wrk'
+commentH -n -1 'RuneAudio PLAYBACK Worker' -n +3 'Restart rune_PL_wrk'
 #----------------------------------------------------------------------------------
 if [[ $1 != u ]]; then # keep range: 0.5 - 3.0
 	z=$1;
