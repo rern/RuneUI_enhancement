@@ -62,3 +62,4 @@ uninstallfinish $@
 
 [[ $1 != u ]] && clearcache
 systemctl start rune_PL_wrk
+systemctl enable rune_PL_wrk
