@@ -139,6 +139,11 @@ comment 'is-enabled rune_PL_wrk.service' 'enable rune_PL_wrk.service'
 systemctl stop rune_PL_wrk
 systemctl disable rune_PL_wrk
 #----------------------------------------------------------------------------------
+file=/srv/http/app/templates/dev.php
+echo $file
+
+commentH -n -1 'RuneAudio SYSTEM Worker' -n +3 'Restart rune_SY_wrk'
+#----------------------------------------------------------------------------------
 if [[ $1 != u ]]; then # keep range: 0.5 - 3.0
 	z=$1;
 	zoom=$( echo "0.5 $z 3" \
