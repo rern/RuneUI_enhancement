@@ -64,5 +64,5 @@ clearcache
 
 [[ $1 == u ]] && exit
 
-systemctl start rune_PL_wrk
 systemctl enable rune_PL_wrk
+systemctl start rune_PL_wrk
