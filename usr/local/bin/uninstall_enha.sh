@@ -44,6 +44,7 @@ ln -sf /usr/share/bootsplash/start.png /usr/share/bootsplash/start-runeaudio.png
 echo -e "$bar Restore modified files ..."
 
 files="
+/srv/http/app/templates/dev.php
 /srv/http/app/templates/mpd.php
 /srv/http/app/templates/settings.php
 /srv/http/app/libs/runeaudio.php
