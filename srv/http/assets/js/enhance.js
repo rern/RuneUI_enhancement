@@ -66,7 +66,6 @@ pushstreams[ 'library' ].onmessage = function( data ) {
 pushstreams[ 'playback' ].onmessage = function( data ) {
 	if ( data[ 0 ] !== 1 ) GUI.status = data[ 0 ];
 	if ( GUI.local ) return;
-	local();
 //	if ( status.actPlayer === 'Spotify' || status.actPlayer === 'Airplay' ) GUI.json = status;
 	if ( $( '#panel-playback' ).hasClass( 'active' ) ) {
 		data[ 0 ] === 1 ? setPlaybackData() : renderPlayback();
