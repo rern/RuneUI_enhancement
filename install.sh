@@ -217,6 +217,4 @@ if [[ $1 != u ]]; then
 	\spotify checked dirble checked jamendo checked &> /dev/null
 fi
 
-systemctl restart rune_PL_wrk
-
 reinitsystem
