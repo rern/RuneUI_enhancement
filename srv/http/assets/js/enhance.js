@@ -2123,7 +2123,6 @@ function renderPlaylist() {
 $( '.btn-cmd' ).click( function() {
 	var $this = $( this );
 	var cmd = $this.data( 'cmd' );
-	var id = this.id;
 	if ( $this.hasClass( 'btn-toggle' ) ) {
 		if ( GUI.status.ext === 'radio' ) return;
 		
@@ -2138,10 +2137,6 @@ $( '.btn-cmd' ).click( function() {
 		cmd = cmd +' '+ onoff;
 		local();
 	} else {
-		if ( GUI.display.bars && id !== 'previous' && id !== 'next' ) {
-			$( '#playback-controls .btn' ).removeClass( 'btn-primary' );
-			$( '#'+ id ).addClass( 'btn-primary' );
-		}
 		if ( cmd === 'pause' || cmd === 'stop' ) {
 			clearInterval( GUI.currentKnob );
 			clearInterval( GUI.countdown );
@@ -2197,17 +2192,14 @@ function setButton() {
 	if ( GUI.local ) return;
 	
 	$( '#playback-controls' ).toggleClass( 'hide', GUI.status.playlistlength === 0 );
-	$( '#pause' ).toggleClass( 'hide', GUI.display.pause === '' );
 	var state = GUI.status.state;
 	
+	$( '#playback-controls button' ).removeClass( 'btn-primary' );
 	if ( state === 'stop' ) {
 		$( '#stop' ).addClass( 'btn-primary' );
-		$( '#play, #pause' ).removeClass( 'btn-primary' );
 	} else if ( state === 'play' ) {
-		$( '#stop, #pause' ).removeClass( 'btn-primary' );
 		$( '#play' ).addClass( 'btn-primary' );
 	} else if ( state === 'pause' ) {
-		$( '#stop, #play' ).removeClass( 'btn-primary' );
 		$( '#pause' ).addClass( 'btn-primary' );
 	}
 	setImode();
