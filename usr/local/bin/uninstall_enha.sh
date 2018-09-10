@@ -60,6 +60,9 @@ restorefile $files
 
 uninstallfinish $@
 
-[[ $1 != u ]] && clearcache
+clearcache
+
+[[ $1 == u ]] && exit
+
 systemctl start rune_PL_wrk
 systemctl enable rune_PL_wrk
