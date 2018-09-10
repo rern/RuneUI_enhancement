@@ -80,14 +80,16 @@ pushstreams[ 'playback' ].onmessage = function( data ) {
 //	if ( $( '#panel-playback' ).hasClass( 'active' ) ) setPlaybackData();
 }*/
 pushstreams[ 'playlist' ].onmessage = function( data ) {
-	if ( data != 1 ) GUI.playlist = data[ 0 ];
-	if ( !$( '#panel-playlist' ).hasClass( 'active' ) ) return;
-	
-	if ( GUI.pleditor ) {
-		renderPlaylist();
+	var data = data[ 0 ];
+	if ( !data || typeof data === 'string' ) {
+		GUI.playlist = {};
 	} else {
-		$( '#pl-entries li' ).length ? setPlaylistScroll() : renderPlaylist();
+		GUI.playlist = data;
+		GUI.status.playlistlength = GUI.playlist.length
 	}
+	if ( GUI.pleditor || GUI.local ) return;
+	
+	renderPlaylist();
 }
 $.each( streams, function( i, stream ) {
 	pushstreams[ stream ].connect();
@@ -236,13 +238,12 @@ $( '#open-playback' ).click( function() {
 	displayPlayback();
 } );
 $( '#open-playlist' ).click( function() {
+	$.post( 'enhance.php', { getplaylist: 1 }, 'json' );
+	if ( $( this ).hasClass( 'active' ) && GUI.pleditor ) GUI.pleditor = 0;
 	if ( GUI.activePlayer === 'Airplay' || GUI.activePlayer === 'Spotify' ) {
 		$( '#overlay-playsource' ).addClass( 'open' );
 		return;
 	}
-	$.post( 'enhance.php', { getplaylist: 1 }, 'json' );
-//	if ( $( this ).hasClass( 'active' ) && GUI.pleditor ) GUI.pleditor = 0;
-//	displayPlaylist();
 	panelSelect( $( '#panel-playlist' ) );
 } );
 function panelLR( lr ) {
@@ -268,7 +269,9 @@ function tempFlag( fl, ms ) {
 	GUI.timeout = setTimeout( function() { GUI[ flag ] = 0 }, time );
 }
 function local() {
-	tempFlag( 'local' );
+	GUI.local = 1;
+	clearTimeout( GUI.localtimeout );
+	GUI.localtimeout = setTimeout( function() { GUI.local = 0 }, 500 );
 }
 $( '#panel-playback, #panel-library, #panel-playlist' ).on( 'swipeleft swiperight', function( e ) {
 	panelLR( e.type === 'swipeleft' ? 'left' : '' );
@@ -707,7 +710,6 @@ $( '#pl-manage-clear' ).click( function() {
 			GUI.status.playlistlength = 0;
 			renderPlaylist();
 			setPlaybackBlank();
-			local();
 			$.post( 'enhance.php', { mpc: 'clear', pushstream: 'playlist' } );
 		}
 	} );
@@ -721,12 +723,6 @@ $( '#pl-entries' ).on( 'click', 'li', function( e ) {
 		return
 	}
 	
-	GUI.status.playlistlength--;
-	if ( !GUI.status.playlistlength ) {
-		renderPlaylist();
-		return
-	}
-
 	var $this = $( this );
 	var radio = $this.hasClass( 'radio' );
 	var $elcount = radio ? $( '#countradio' ) : $( '#countsong' );
@@ -734,6 +730,15 @@ $( '#pl-entries' ).on( 'click', 'li', function( e ) {
 	$elcount.attr( 'count', count ).text( count );
 	var time = +$( '#pltime' ).attr( 'time' ) - $this.find( '.time' ).attr( 'time' );
 	if ( !radio ) $( '#pltime' ).attr( 'time', time ).text( convertHMS( time ) );
+	if ( count === 0 ) {
+		$elcount.next().remove();
+		$elcount.remove();
+		if ( $elcount[ 0 ].id === 'countradio' ) {
+			$( '#pltime' ).css( 'color', '#e0e7ee' );
+		} else {
+			$( '#pltime' ).remove();
+		}
+	}
 	if ( $( '#countradio' ).attr( 'count' ) === '0' ) {
 		$( '#pltime' ).css( 'color', '#e0e7ee' );
 		$( '#countradio' ).next().remove();
@@ -743,6 +748,10 @@ $( '#pl-entries' ).on( 'click', 'li', function( e ) {
 	$this.remove();
 	local();
 	$.post( 'enhance.php', { mpc: 'del '+ songpos, pushstream: 'playlist' } );
+	if ( !$( '#countsong, #countradio' ).length ) {
+		GUI.status.playlistlength = 0;
+		renderPlaylist();
+	}
 } );
 // context menus //////////////////////////////////////////////
 $( 'body' ).click( function( e ) {
@@ -763,6 +772,7 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 	var $thisli = $this.parent();
 	GUI.dbpath = $thisli.data( 'path' );
 	GUI.list.path = GUI.dbpath; // used in contextmenu
+	GUI.list.issong = $thisli.hasClass( 'db-song' ); // used in contextmenu
 	if ( !$thisli.find( '.sn' ).length ) {
 		GUI.list.name = $thisli.text() ;
 	} else {
@@ -808,15 +818,36 @@ $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 	}
 } );
 function plCommand( cmd ) {
-	if ( !GUI.status.playlistlength ) GUI.status.playlistlength = 1; // flag for renderPlayliat()
+	if ( !GUI.status.playlistlength ) GUI.status.playlistlength = 1; // flag for renderPlaylist()
 	local();
 	$.post( 'enhance.php', { mpc: cmd, pushstream: 'playlist' }, function() {
 		if ( !$( '#currentsong' ).text() ) setPlaybackData();
 	} );
 }
 $( '.contextmenu a' ).click( function() {
-	var cmd = $( this ).data( 'cmd' );
 	GUI.dbcurrent = '';
+	var cmd = $( this ).data( 'cmd' );
+	if ( $.inArray( cmd, [ 'add', 'addplay', 'addreplaceplay' ] ) !== -1 ) {
+		var liCmd = GUI.list.issong ? 'mpc add "'+ GUI.list.path +'"' : 'ls "'+ GUI.list.path +'" | mpc add';
+	} else if ( $.inArray( cmd, [ 'wradd', 'wraddplay', 'wraddreplaceplay' ] ) !== -1 ) {
+		var pls = GUI.list.path;
+		cmd = cmd.replace( 'wr', 'pl' );
+	} else if ( $.inArray( cmd, [ 'pladd', 'pladdplay', 'pladdreplaceplay' ] ) !== -1 ) {
+		var pls = GUI.list.name;
+	}
+	var contextCommand = {
+		  add              : liCmd
+		, addreplace       : [ 'clear', liCmd ]
+		, addreplaceplay   : [ 'clear', liCmd, 'play' ]
+		, pladd            : 'load "' + pls +'"'
+		, plreplace        : [ 'clear', 'load "'+ pls +'"' ]
+		, pladdreplaceplay : [ 'clear', 'load "'+ pls + '"', 'play' ]
+	}
+	if ( typeof contextCommand[ cmd ] !== 'undefined' ) {
+		plCommand( contextCommand[ cmd ] );
+		return;
+	}
+	
 	switch( cmd ) {
 		case 'wradd':
 			getDB( { cmd: 'add', path: GUI.list.path } );
@@ -838,18 +869,6 @@ $( '.contextmenu a' ).click( function() {
 			$.post( '/db/?cmd=addradio', { 'radio[label]': GUI.list.name, 'radio[url]': GUI.list.url } );
 			break;
 		
-		case 'pladd':
-			plCommand( 'load "' + GUI.list.name +'"' );
-			break;
-		case 'plreplace':
-			plCommand( [ 'clear', 'load "'+ GUI.list.name +'"' ] );
-			break;
-		case 'pladdreplaceplay':
-			plCommand( [ 'clear', 'load "'+ GUI.list.name + '"', 'play' ] );
-			break;
-		case 'plrename':
-			playlistRename();
-			break;
 		case 'pldelete':
 			playlistDelete();
 			break;
@@ -2065,6 +2084,7 @@ function renderPlaylist() {
 			bottomline = pl.file;
 		} else {
 			var iconhtml = '<i class="fa fa-music pl-icon"></i>';
+			classradio = 0;
 			time = parseInt( pl.Time );
 			var title = pl.Title ? pl.Title : pl.file.split( '/' ).pop();
 			var track = pl.Track ? '#'+ pl.Track +' • ' : '';
@@ -2287,7 +2307,7 @@ function renderPlayback() {
 	$( '#playback-controls' ).removeClass( 'hide' );
 	$( '#currentartist' ).html( status.Artist );
 	$( '#currentsong' ).html( status.Title );
-	$( '#currentalbum' ).html( status.ext !== 'radio' ? status.Album : '<a>'+ status.Album +'</a>' ).promise().done( function() {
+	$( '#currentalbum' ).html( status.Album ).promise().done( function() {
 		// scroll info text
 		scrollText();
 	} );
