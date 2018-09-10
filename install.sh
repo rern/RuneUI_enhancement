@@ -144,6 +144,16 @@ echo $file
 
 commentH -n -1 'RuneAudio PLAYBACK Worker' -n +3 'Restart rune_PL_wrk'
 #----------------------------------------------------------------------------------
+file=/srv/http/command/orion_optimize.sh
+echo $file
+
+commentS 'rune_PL_wrk'
+#----------------------------------------------------------------------------------
+file=/srv/http/db/redis_datastore_setup
+echo $file
+
+comment 'rune_PL_wrk'
+#----------------------------------------------------------------------------------
 if [[ $1 != u ]]; then # keep range: 0.5 - 3.0
 	z=$1;
 	zoom=$( echo "0.5 $z 3" \
