@@ -82,12 +82,12 @@ pushstreams[ 'playback' ].onmessage = function( data ) {
 }*/
 pushstreams[ 'playlist' ].onmessage = function( data ) {
 	if ( data != 1 ) GUI.playlist = data[ 0 ];
-	if ( GUI.local || !$( '#panel-playlist' ).hasClass( 'active' ) ) return;
+	if ( !$( '#panel-playlist' ).hasClass( 'active' ) ) return;
 	
-	if ( !GUI.pleditor ) {
-		$( '#pl-entries li' ).length ? setPlaylistScroll() : renderPlaylist();
+	if ( GUI.pleditor ) {
+		renderPlaylist();
 	} else {
-		$( '#pl-manage-list' ).click();
+		$( '#pl-entries li' ).length ? setPlaylistScroll() : renderPlaylist();
 	}
 }
 $.each( streams, function( i, stream ) {
