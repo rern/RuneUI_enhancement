@@ -11,6 +11,8 @@
 <input id="addonsinfojs" type="hidden" value="<?=$this->asset( '/js/addonsinfo.js' )?>">
 <?php }
 if ( file_exists( '/srv/http/assets/js/gpio.js' ) ) { ?>
+<input id="bootstrapmincss" type="hidden" value="<?=$this->asset('/css/bootstrap.min.css')?>">
+<input id="bootstrapselectmincss" type="hidden" value="<?=$this->asset('/css/bootstrap-select.min.css')?>">
 <input id="gpiosettingscss" type="hidden" value="<?=$this->asset( '/css/gpiosettings.css' )?>">
 <input id="gpiosettingsjs" type="hidden" value="<?=$this->asset( '/js/gpiosettings.js' )?>">
 <input id="gpiopin" type="hidden" value="<?=$this->asset( '/img/RPi3_GPIO.svg' )?>">
