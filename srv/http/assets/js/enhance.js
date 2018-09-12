@@ -745,7 +745,14 @@ $( '#pl-entries' ).on( 'click', 'li', function( e ) {
 		$( '#countradio' ).next().remove();
 		$( '#countradio' ).remove();
 	}
-	if ( $this.hasClass( 'active' ) ) $this.next().addClass( 'active' );
+	if ( $this.hasClass( 'active' ) ) {
+		if ( $this.index() + 1 < $this.siblings().length ) {
+			$this.next().addClass( 'active' );
+		} else {
+			$( '#pl-entries li:eq( 0 )' ).addClass( 'active' );
+			$( 'html, body' ).scrollTop( 0 );
+		}
+	}
 	$this.remove();
 	local();
 	$.post( 'enhance.php', { mpc: 'del '+ songpos, pushstream: 'playlist' } );
@@ -2172,6 +2179,8 @@ $( '.contextmenu a' ).click( function() {
 		, pldelete         : playlistDelete
 		, wrrename         : webRadioEdit
 		, wrdelete         : webRadioDelete
+		, wrsave           : webRadioNewVerify
+		, bookmark         : bookmarkNew
 	}
 	var command = contextCommand[ cmd ];
 	if ( typeof command !== 'undefined' ) {
@@ -2195,22 +2204,16 @@ $( '.contextmenu a' ).click( function() {
 		return;
 	}
 	
-	if ( cmd === 'wrsave' ) { // in dirble
-			webRadioNewVerify( GUI.list.name, GUI.list.url );
-	} else if ( cmd === 'plashuffle' ) {
+	if ( cmd === 'plashuffle' ) {
 			$.post( '/db/?cmd=pl-ashuffle', { playlist: GUI.list.name } );
 			$( '#random' ).data( 'cmd', 'pl-ashuffle-stop' ).addClass( 'btn-primary' );
-	} else if ( cmd === 'bookmark' ) {
-		bookmarkNew( GUI.list.path );
 	} else {
-		$.post( '/db/?cmd='+ cmd, { path: GUI.list.path }, function() {
-			if ( !GUI.bookmarkedit ) renderPlaylist();
-		} );
+		$.post( '/db/?cmd='+ cmd, { path: GUI.list.path } );
 	}
 } );
 
-function bookmarkNew( path ) {
-	var name = path.split( '/' ).pop();
+function bookmarkNew() {
+	var name = GUI.list.path.split( '/' ).pop();
 	info( {
 		  icon       : 'edit-circle'
 		, title      : 'Add Bookmark'
