@@ -48,7 +48,7 @@ pushstreams[ 'playback' ].reconnectOnChannelUnavailableInterval = 5000;
 
 pushstreams[ 'notify' ].onmessage = renderMSG;
 pushstreams[ 'display' ].onmessage = function( data ) {
-	if ( data != 1 ) GUI.display = data[ 0 ];
+	if ( typeof data[ 0 ] === 'object' ) GUI.display = data[ 0 ];
 //	if ( GUI.local ) return;
 	
 	if ( $( '#panel-playback' ).hasClass( 'active' ) ) {
@@ -64,11 +64,12 @@ pushstreams[ 'library' ].onmessage = function( data ) {
 	if ( !GUI.local && !GUI.bookmarkedit ) renderLibraryHome();
 }
 pushstreams[ 'playback' ].onmessage = function( data ) {
-	if ( data[ 0 ] !== 1 ) GUI.status = data[ 0 ];
+	var data = data[ 0 ];
+	if ( data && typeof data[ 0 ] === 'object' ) GUI.status = data[ 0 ];
 	if ( GUI.local ) return;
 //	if ( status.actPlayer === 'Spotify' || status.actPlayer === 'Airplay' ) GUI.json = status;
 	if ( $( '#panel-playback' ).hasClass( 'active' ) ) {
-		data[ 0 ] === 1 ? setPlaybackData() : renderPlayback();
+		data === 1 ? setPlaybackData() : renderPlayback();
 		// imodedelay fix imode flashing on usb dac switching
 		if ( !GUI.imodedelay ) displayPlayback();
 	} else if ( $( '#panel-playlist' ).hasClass( 'active' ) && !GUI.pleditor ) {
@@ -81,11 +82,11 @@ pushstreams[ 'playback' ].onmessage = function( data ) {
 }*/
 pushstreams[ 'playlist' ].onmessage = function( data ) {
 	var data = data[ 0 ];
-	if ( !data || typeof data === 'string' ) {
-		GUI.playlist = {};
-	} else {
+	if ( data && typeof data === 'object' ) {
 		GUI.playlist = data;
 		GUI.status.playlistlength = GUI.playlist.length
+	} else {
+		GUI.playlist = {};
 	}
 	if ( GUI.pleditor || GUI.local ) return;
 	
@@ -126,6 +127,7 @@ document.addEventListener( visibilityevent, function() {
 		$.each( streams, function( i, stream ) {
 			pushstreams[ stream ].connect();
 		} );
+		$.post( 'enhance.php', { hddspinup: 1 } );
 	}
 } );
 window.addEventListener( 'orientationchange', function() {
@@ -361,19 +363,19 @@ $( '#panel-library' ).on( 'taphold', function() {
 } ).on( 'taphold', '.home-block', function( e ) {
 	if ( GUI.swipe ) return;
 	
-	if ( !$( e.target ).parent().hasClass( 'home-bookmark' ) && !$( e.target ).hasClass( 'home-bookmark' ) ) return;
+	if ( !$( e.target ).parents( '.home-bookmark' ) && !$( e.target ).hasClass( 'home-bookmark' ) ) return;
 	
 	local();
-	$( '.home-bookmark' ).append( '<div class="home-block-remove"><span class="block-remove">&times;</span></div>' );
+	$( '.home-bookmark' ).append( '<i class="home-block-remove fa fa-times"></i>' );
 } ).click( function( e ) {
-	if ( $( e.target ).parent().hasClass( 'home-bookmark' ) || $( e.target ).hasClass( 'home-bookmark' ) ) return;
+	if ( $( e.target ).parents( '.home-bookmark' ).length || $( e.target ).hasClass( 'home-bookmark' ) ) return;
 	
-	$( '.home-bookmark div.home-block-remove' ).remove();
+	$( '.home-block-remove' ).remove();
 } );
 
 $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 	var $this = $( this );
-	if ( $( e.target ).is( 'span.block-remove' ) ) {
+	if ( $( e.target ).is( 'i.home-block-remove' ) ) {
 		$this.parent().remove();
 		GUI.bookmarkedit = 1;
 		var id = this.id.replace( 'home-bookmark-', '' );
@@ -865,10 +867,12 @@ $( '.contextmenu a' ).click( function() {
 	}
 	
 	if ( cmd === 'wrsave' ) { // in dirble
-			$.post( '/db/?cmd=addradio', { 'radio[label]': GUI.list.name, 'radio[url]': GUI.list.url } );
+			webRadioNewVerify( GUI.list.name, GUI.list.url );
 	} else if ( cmd === 'plashuffle' ) {
 			$.post( '/db/?cmd=pl-ashuffle', { playlist: GUI.list.name } );
 			$( '#random' ).data( 'cmd', 'pl-ashuffle-stop' ).addClass( 'btn-primary' );
+//	} else if ( cmd === 'bookmark' ) {
+//		bookmarkNew( GUI.list.path );
 	} else {
 		if ( cmd === 'bookmark' ) GUI.bookmarkedit = 1;
 		$.post( '/db/?cmd='+ cmd, { path: GUI.list.path }, function() {
@@ -877,6 +881,73 @@ $( '.contextmenu a' ).click( function() {
 	}
 } );
 
+function bookmarkNew( path ) {
+	var name = path.split( '/' ).pop();
+	info( {
+		  icon       : 'edit-circle'
+		, title      : 'Add Bookmark'
+		, message    : 'Add<br><white>'+ path +'</white>'
+		, textlabel  : 'Name'
+		, textvalue  : name
+		, boxwidth   : 'max'
+		, cancel     : 1
+		, ok         : function() {
+			bookmarkNewVerify( $( '#infoTextBox' ).val().trim(), path );
+		}
+	} );
+}
+
+function bookmarkNewVerify( name, path ) {
+	if ( !name ) {
+		info( {
+			  icon    : 'warning'
+			, title   : 'Add Bookmark'
+			, message : 'Name cannot be blank.'
+			, ok      : function() {
+				bookmarkNew( npath );
+			}
+		} );
+		return;
+	}
+	$.post( 'enhance.php', { bash: '/usr/bin/redis-cli hgetall bookmarks' }, function( data ) {
+		var data = data.split( '\n' );
+		var bmname = bmpath = [];
+		$.each( data, function( i, val ) {
+			i % 2 ? bmname.push( val ) : bmpath.push( val );
+		} );
+		var nameexist = $.inArray( name, bmname ) !== -1;
+		var pathexist = $.inArray( path, bmpath ) !== -1;
+		if ( nameexist || pathexist ) {
+			info( {
+				  icon    : 'warning'
+				, title   : 'Add Bookmark'
+				, message : ( nameexist ? 'Name' : 'Path:' )
+							+'<br><white>'+ ( nameexist ? name : path ) +'</white>'
+							+'<br>already exists.'
+				, ok      : function() {
+					bookmarkNew( path );
+				}
+			} );
+		} else {
+			$.post( 'enhance.php', { bookmark: [ name, path ] } );
+		}
+	} );
+}
+function bookmarkDelete( $el ) {
+	var name = $el.data( 'path' ).split( '/' ).pop();
+	info( {
+		  icon    : 'minus-circle'
+		, title   : 'Delete Bookmark'
+		, message : 'Delete?'
+					+'<br><white>'+ name +'</white>'
+		, cancel  : 1
+		, ok      : function() {
+			$el.parent().remove();
+			GUI.bookmarkedit = 1;
+			$.post( 'enhance.php', { bookmark: [ name ] } );
+		}
+	} );
+}
 function webRadioNew( name, url ) {
 	info( {
 		  icon       : 'edit-circle'
