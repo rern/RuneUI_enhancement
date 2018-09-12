@@ -9,13 +9,6 @@ function pushstream( $channel, $data = 1 ) {
 	curl_exec( $ch );
 	curl_close( $ch );
 }
-function playingState() {
-	$state = exec( "mpc status | grep '\[playing\]' | wc -l" );
-	if ( !$state ) {
-		sleep( 1 );
-		playingState();
-	}
-}
 
 if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	$redis = new Redis(); 
@@ -96,7 +89,6 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 			$result = shell_exec( 'mpc '.$cmd );
 		}
 	}
-	if ( $mpc === 'play' ) playingState();
 	echo $result;
 	$data = isset( $_POST[ 'getresult' ] ) ? $result : 1;
 	if ( $mpc === 'clear' ) $data = 'clear';
@@ -125,6 +117,14 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	}
 	//echo json_encode( $data, JSON_NUMERIC_CHECK );
 	pushstream( 'playlist', $data );
+} else if ( isset( $_POST[ 'bookmark' ] ) ) {
+	$bookmark = $_POST[ 'bookmark' ];
+	if ( isset( $bookmarl[ 1 ] ) ) {
+		$redis->hSet( 'bookmarks', $bookmark[ 0 ], $bookmarl[ 1 ] );
+	} else {
+		$redis->hDel( 'bookmark', $bookmark[ 0 ] );
+	}
+	pushstream( 'library', 1 );
 } else if ( isset( $_POST[ 'power' ] ) ) {
 	$redis = new Redis(); 
 	$redis->pconnect( '127.0.0.1' );
@@ -134,4 +134,6 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	$cmd.= $sudo.'umount -f -a -t cifs nfs -l;';
 	$cmd.= $sudo.'shutdown '.( $_POST[ 'power' ] === 'reboot' ? '-r' : '-h' ).' now';
 	exec( $cmd );
+} else if ( isset( $_POST[ 'hddspinup' ] ) ) { // wake up usb hdd
+	exec( '/usr/bin/sudo /usr/bin/fdisk -l' );
 }
