@@ -10,7 +10,14 @@ function pushstream( $channel, $data = 1 ) {
 	curl_close( $ch );
 }
 
-if ( isset( $_POST[ 'getdisplay' ] ) ) {
+if ( isset( $_POST[ 'mpdmonitor' ] ) ) {
+	$cmd = '
+		while : ; do
+			mpc idle player
+			curl -s -v -X POST "http://localhost/pub?id=playback" -d 1
+		done > /dev/null &';
+	exec( $cmd );
+} else if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	$redis = new Redis(); 
 	$redis->pconnect( '127.0.0.1' );
 	usleep( 100000 ); // !important - get data must wait at least 50000
