@@ -18,18 +18,18 @@ if ( isset( $_POST[ 'mpdmonitor' ] ) ) {
 		done > /dev/null &';
 	exec( $cmd );
 } else if ( isset( $_POST[ 'getdisplay' ] ) ) {
-	$redis = new Redis(); 
+	$redis = new Redis();
 	$redis->pconnect( '127.0.0.1' );
 	usleep( 100000 ); // !important - get data must wait at least 50000
 	pushstream( 'display', $redis->hGetAll( 'display' ) );
 } else if ( isset( $_POST[ 'setdisplay' ] ) ) {
-	$redis = new Redis(); 
+	$redis = new Redis();
 	$redis->pconnect( '127.0.0.1' );
 	$data = $_POST[ 'setdisplay' ];
 	$redis->hmSet( 'display', $data );
 	pushstream( 'display', $data );
 } else if ( isset( $_POST[ 'library' ] ) ) {
-	$redis = new Redis(); 
+	$redis = new Redis();
 	$redis->pconnect( '127.0.0.1' );
 	$sd = exec( 'mpc list title base LocalStorage | wc -l' );
 	$network = exec( 'df | grep "/mnt/MPD/NAS" | wc -l' );
@@ -65,7 +65,7 @@ if ( isset( $_POST[ 'mpdmonitor' ] ) ) {
 } else if ( isset( $_POST[ 'bash' ] ) ) {
 	echo shell_exec( '/usr/bin/sudo '.$_POST[ 'bash' ] );
 } else if ( isset( $_POST[ 'volume' ] ) ) {
-	$redis = new Redis(); 
+	$redis = new Redis();
 	$redis->pconnect( '127.0.0.1' );
 	$volume = $_POST[ 'volume' ];
 	$volumemute = $redis->hGet( 'display', 'volumemute' );
@@ -153,7 +153,7 @@ if ( isset( $_POST[ 'mpdmonitor' ] ) ) {
 	if ( $key === 'webradios' ) exec( 'mpc update Webradio' );
 	pushstream( 'library', 1 );
 } else if ( isset( $_POST[ 'radio' ] ) ) {
-	$redis = new Redis(); 
+	$redis = new Redis();
 	$redis->pconnect( '127.0.0.1' );
 	$radio = $_POST[ 'radio' ];
 	$redis->hSet('webradios', $data->label, $data->url);
@@ -164,7 +164,7 @@ if ( isset( $_POST[ 'mpdmonitor' ] ) ) {
 	}
 	pushstream( 'library', 1 );
 } else if ( isset( $_POST[ 'power' ] ) ) {
-	$redis = new Redis(); 
+	$redis = new Redis();
 	$redis->pconnect( '127.0.0.1' );
 	$sudo = '/usr/bin/sudo /usr/bin/';
 	if ( file_exists( '/root/gpiooff.py' ) ) $cmd.= '/usr/bin/sudo /root/gpiooff.py;';
