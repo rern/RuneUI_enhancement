@@ -36,15 +36,12 @@ if ( isset( $_POST[ 'mpdmonitor' ] ) ) {
 	$usb = exec( 'df | grep "/mnt/MPD/USB" | wc -l' );
 	$webradio = count( $redis->hKeys( 'webradios' ) );
 	$activeplayer = $redis->get( 'activePlayer' );
-	$rbookmarks = $redis->hGetAll( 'bookmarks' );
-	foreach ( $rbookmarks as $key => $value ) {
-		$data = json_decode( $value );
-		$count = exec( 'mpc list title base "'.$data->path.'" | wc -l' );
+	$rbkmarks = $redis->hGetAll( 'bkmarks' );
+	foreach ( $rbkmarks as $name => $path ) {
 		$bookmarks[] = array(
-			  'id'    => $key
-			, 'name'  => $data->name
-			, 'path'  => $data->path
-			, 'count' => $count
+			  'name'  => $name
+			, 'path'  => $path
+			, 'count' => exec( 'mpc list title base "'.$path.'" | wc -l' )
 		);
 	}
 	$spotify = $redis->hGet( 'spotify', 'enable' );
@@ -124,12 +121,46 @@ if ( isset( $_POST[ 'mpdmonitor' ] ) ) {
 	}
 	//echo json_encode( $data, JSON_NUMERIC_CHECK );
 	pushstream( 'playlist', $data );
-} else if ( isset( $_POST[ 'bookmark' ] ) ) {
-	$bookmark = $_POST[ 'bookmark' ];
-	if ( isset( $bookmarl[ 1 ] ) ) {
-		$redis->hSet( 'bookmarks', $bookmark[ 0 ], $bookmarl[ 1 ] );
+} else if ( isset( $_POST[ 'bkmarks' ] ) || isset( $_POST[ 'webradios' ] ) ) {
+	$redis = new Redis();
+	$redis->pconnect( '127.0.0.1' );
+	if ( isset( $_POST[ 'bkmarks' ] ) ) {
+		$key = 'bkmarks';
+		$data = $_POST[ 'bkmarks' ];
 	} else {
-		$redis->hDel( 'bookmark', $bookmark[ 0 ] );
+		$key = 'webradios';
+		$data = $_POST[ 'webradios' ];
+	}
+	echo $key.' '.$data;
+	if ( !is_array( $data ) ) {
+		$redis->hDel( $key, $data );
+		if ( $key === 'webradios' ) unlink( '/mnt/MPD/Webradio/'.$data.'.pls' );
+	} else {
+		$name = $data[ 0 ];
+		$value = $data[ 1 ];
+		if ( count( $data ) === 3 ) $redis->hDel( $key, $data[ 2 ] );
+		$redis->hSet( $key, $name, $value );
+		if ( $key === 'webradios' ) {
+			$lines = '[playlist]
+					NumberOfEntries=1
+					File1='.$value.'
+					Title1='.$name;
+			$fopen = fopen( '/mnt/MPD/Webradio/'.$name.'.pls', 'w');
+			fwrite( $fopen, $lines );
+			fclose( $fopen );
+		}
+	}
+	if ( $key === 'webradios' ) exec( 'mpc update Webradio' );
+	pushstream( 'library', 1 );
+} else if ( isset( $_POST[ 'radio' ] ) ) {
+	$redis = new Redis(); 
+	$redis->pconnect( '127.0.0.1' );
+	$radio = $_POST[ 'radio' ];
+	$redis->hSet('webradios', $data->label, $data->url);
+	if ( is_array( $bkmark ) ) {
+		$redis->hSet( 'bkmarks', $bkmark[ 0 ], $bkmark[ 1 ] );
+	} else {
+		$redis->hDel( 'bkmarks', $bkmark );
 	}
 	pushstream( 'library', 1 );
 } else if ( isset( $_POST[ 'power' ] ) ) {
