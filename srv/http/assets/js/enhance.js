@@ -121,13 +121,13 @@ document.addEventListener( visibilityevent, function() {
 		if ( $( '#panel-playback' ).hasClass( 'active' ) ) {
 			setPlaybackData();
 			displayPlayback();
+			$.post( 'enhance.php', { hddspinup: 1 } );
 		} else if ( $( '#panel-playlist' ).hasClass( 'active' ) && !GUI.pleditor ) {
 			setPlaylistScroll();
 		}
 		$.each( streams, function( i, stream ) {
 			pushstreams[ stream ].connect();
 		} );
-		$.post( 'enhance.php', { hddspinup: 1 } );
 	}
 } );
 window.addEventListener( 'orientationchange', function() {
@@ -2335,6 +2335,19 @@ function setPlaybackBlank() {
 		.one( 'load', setOneload );
 	$( '#coverartoverlay' ).addClass( 'hide' );
 }
+function convertHMS( second ) {
+	if ( second <= 0 ) return '';
+	
+	var second = Math.round( second );
+	var hh = Math.floor( second / 3600 );
+	var mm = Math.floor( ( second % 3600 ) / 60 );
+	var ss = second % 60;
+	
+	hh = hh ? hh +':' : '';
+	mm = hh ? ( mm > 9 ? mm +':' : '0'+ mm +':' ) : ( mm ? mm +':' : '' );
+	ss = mm ? ( ss > 9 ? ss : '0'+ ss ) : ss;
+	return ss ? hh + mm + ss : '';
+}
 function setPlaybackData() {
 	$.post( 'enhancestatus.php', function( status ) {
 		// 'gpio off' restarts mpd which makes data briefly unavailable
@@ -2494,19 +2507,7 @@ function renderPlayback() {
 	}
 }
 setPlaybackData();
-function convertHMS( second ) {
-	if ( second <= 0 ) return '';
-	
-	var second = Math.round( second );
-	var hh = Math.floor( second / 3600 );
-	var mm = Math.floor( ( second % 3600 ) / 60 );
-	var ss = second % 60;
-	
-	hh = hh ? hh +':' : '';
-	mm = hh ? ( mm > 9 ? mm +':' : '0'+ mm +':' ) : ( mm ? mm +':' : '' );
-	ss = mm ? ( ss > 9 ? ss : '0'+ ss ) : ss;
-	return ss ? hh + mm + ss : '';
-}
+$.post( 'enhance.php', { mpdmonitor: 1 } );
 
 if ( document.location.hostname === 'localhost' ) $( '.osk-trigger' ).onScreenKeyboard( { 'draggable': true } );
 
