@@ -38,7 +38,7 @@ mv /srv/http/assets/js/vendor/pnotify.custom.min.js{.backup,}
 mv /srv/http/assets/js/vendor/pushstream.min.js{.backup,}
 mv /srv/http/assets/js/vendor/Sortable.min.js{.backup,}
 mv /srv/http/command/airplay_toggle{.backup,}
-ln -sf /usr/share/bootsplash/start.png /usr/share/bootsplash/start-runeaudio.png
+ln -sf /usr/share/bootsplash/start-runeaudio.png /usr/share/bootsplash/start.png
 
 # restore modified files #######################################
 echo -e "$bar Restore modified files ..."
