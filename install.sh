@@ -211,6 +211,22 @@ installfinish $@
 # set library home database
 [[ $( redis-cli get volume ) == 1 ]] && volumempd=1 || volumempd=''
 
+# convert bookmarks
+bkmarks=$( redis-cli keys bkmarks )
+if [[ ! $bkmarks ]]; then
+	bookmarks=$( redis-cli hgetall bookmarks | tr -d '"{}\\' )
+	readarray -t bookmarks <<<"$bookmarks"
+	ilength=${#bookmarks[*]}
+	for (( i=0; i < ilength; i++ )); do
+		if (( i % 2 )); then
+			kv=${bookmarks[ $i ]}
+			k=$( echo $kv | cut -d',' -f1 )
+			v=$( echo $kv | cut -d',' -f2 )
+			redis-cli hset bkmarks "${k/name:}" "${v/path:}" &> /dev/null
+		fi
+	done
+fi
+
 if [[ $1 != u ]]; then
 	redis-cli hmset display bars checked time checked coverart checked volume checked buttons checked radioelapsed 0 volumempd $volumempd volumemute 0\
 	\nas checked sd checked usb checked webradio checked albums checked artists checked composer checked genre checked \
