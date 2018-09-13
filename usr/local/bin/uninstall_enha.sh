@@ -58,6 +58,8 @@ files="
 "
 restorefile $files
 
+chown -R mpd:audio /mnt/MPD/Webradio
+
 uninstallfinish $@
 
 clearcache
