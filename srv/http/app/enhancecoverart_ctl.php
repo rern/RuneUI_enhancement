@@ -31,7 +31,7 @@ if ( $activePlayer === 'MPD' ) {
 		if ( file_exists( $local_cover_path ) ) {
 			headers( pathinfo( $local_cover_path, PATHINFO_EXTENSION ) );
 			readfile( $local_cover_path );
-			die();
+			exit();
 		}
 	}
 	$output = 0;
@@ -42,19 +42,20 @@ if ( $activePlayer === 'MPD' ) {
 	if (!empty($auinfo['comments']['picture'][0]['data'])) {
 		headers($auinfo['comments']['picture'][0]['image_mime']);
 		echo $auinfo['comments']['picture'][0]['data'];
-		die();
+		exit();
 	} 
 // 3. find coverart on Last.FM
-	$artist = $curTrack[0]['Artist'];
-	$album = $curTrack[0]['Album'];
+	$status['currentartist'] = $curTrack[0]['Artist'];
+	$status['currentalbum'] = $curTrack[0]['Album'];
 	$lastfm_apikey = $redis->get('lastfm_apikey');
 	$proxy = $redis->hGetall('proxy');
-	$cover_url = ui_lastFM_coverart($artist, $album, $lastfm_apikey, $proxy);
+	$cover_url = ui_lastFM_coverart($status['currentartist'], $status['currentalbum'], $lastfm_apikey, $proxy);
+	$bufferinfo = new finfo(FILEINFO_MIME);
 	if (!empty($cover_url)) {
 		$lastfm_img = curlGet($cover_url, $proxy);
 		$lastfm_img_mime = $bufferinfo->buffer($lastfm_img);
 	} else {
-		$cover_url = ui_lastFM_coverart($artist, '', $lastfm_apikey, $proxy);
+		$cover_url = ui_lastFM_coverart($status['currentartist'], '', $lastfm_apikey, $proxy);
 		if (!empty($cover_url)) {
 			$lastfm_img = curlGet($cover_url, $proxy);
 			$lastfm_img_mime = $bufferinfo->buffer($lastfm_img);
@@ -68,7 +69,7 @@ if ( $activePlayer === 'MPD' ) {
 		$filecover = fopen( $local_cover_root.'/cover.'.$filecoverext, 'w' );
 		fwrite( $filecover, $lastfm_img );
 		fclose( $filecover );
-		die();
+		exit();
 	}
 } else if ($activePlayer === 'Spotify') {
 	$spop = openSpopSocket('localhost', 6602, 1);
@@ -90,16 +91,16 @@ if ( $activePlayer === 'MPD' ) {
 		$spotify_cover_mime = $bufferinfo->buffer($spotify_cover);
 		headers($spotify_cover_mime);
 		echo $spotify_cover;
-		die();
+		exit();
 	}
 } else if ($activePlayer === 'Airplay') {
 	if (is_file($_SERVER['HOME'].'/assets/img/airplay-cover.jpg')) {
 		headers('image/jpg');
 		readfile($_SERVER['HOME'].'/assets/img/airplay-cover.jpg');
-		die();
+		exit();
 	}
 }
 
 // 4. default rune-cover image    
-headers( 'image/png' );
-readfile( $_SERVER['HOME'].'/assets/img/cover-default-runeaudio.png' );
+headers('image/png');
+readfile($_SERVER['HOME'].'/assets/img/cover-default-runeaudio.png');
