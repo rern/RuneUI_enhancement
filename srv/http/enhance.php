@@ -131,20 +131,22 @@ if ( isset( $_POST[ 'mpdmonitor' ] ) ) {
 		$key = 'webradios';
 		$data = $_POST[ 'webradios' ];
 	}
-	echo $key.' '.$data;
 	if ( !is_array( $data ) ) {
 		$redis->hDel( $key, $data );
 		if ( $key === 'webradios' ) unlink( '/mnt/MPD/Webradio/'.$data.'.pls' );
 	} else {
 		$name = $data[ 0 ];
 		$value = $data[ 1 ];
-		if ( count( $data ) === 3 ) $redis->hDel( $key, $data[ 2 ] );
+		if ( count( $data ) === 3 ) {
+			$redis->hDel( $key, $data[ 2 ] );
+			if ( $key === 'webradios' ) unlink( '/mnt/MPD/Webradio/'.$data[ 2 ].'.pls' );
+		}
 		$redis->hSet( $key, $name, $value );
 		if ( $key === 'webradios' ) {
-			$lines = '[playlist]
-					NumberOfEntries=1
-					File1='.$value.'
-					Title1='.$name;
+			$lines = '[playlist]'
+					.'NumberOfEntries=1'
+					.'File1='.$value
+					.'Title1='.$name;
 			$fopen = fopen( '/mnt/MPD/Webradio/'.$name.'.pls', 'w');
 			fwrite( $fopen, $lines );
 			fclose( $fopen );
@@ -173,5 +175,5 @@ if ( isset( $_POST[ 'mpdmonitor' ] ) ) {
 	$cmd.= $sudo.'shutdown '.( $_POST[ 'power' ] === 'reboot' ? '-r' : '-h' ).' now';
 	exec( $cmd );
 } else if ( isset( $_POST[ 'hddspinup' ] ) ) { // wake up usb hdd
-	exec( '/usr/bin/sudo /usr/bin/fdisk -l' );
+	exec( '/usr/bin/sudo /usr/bin/fdisk -l &' );
 }
