@@ -29,7 +29,7 @@ if ( $activePlayer === 'MPD' ) {
 	foreach( $files as $file ) {
 		$local_cover_path = $local_cover_root.'/'.$file;
 		if ( file_exists( $local_cover_path ) ) {
-			headers( mime_content_type( $local_cover_path ) );
+			headers( pathinfo( $local_cover_path, PATHINFO_EXTENSION ) );
 			readfile( $local_cover_path );
 			die();
 		}
@@ -68,10 +68,7 @@ if ( $activePlayer === 'MPD' ) {
 		$filecover = fopen( $local_cover_root.'/cover.'.$filecoverext, 'w' );
 		fwrite( $filecover, $lastfm_img );
 		fclose( $filecover );
-	} else {
-// 4. default rune-cover image    
-		headers('image/png');
-		readfile($_SERVER['HOME'].'/assets/img/cover-default-runeaudio.png');
+		die();
 	}
 } else if ($activePlayer === 'Spotify') {
 	$spop = openSpopSocket('localhost', 6602, 1);
@@ -88,16 +85,21 @@ if ( $activePlayer === 'MPD' ) {
 		}
 		$count++;
 	}
-	$bufferinfo = new finfo(FILEINFO_MIME);
-	$spotify_cover_mime = $bufferinfo->buffer($spotify_cover);
-	headers($spotify_cover_mime);
-	echo $spotify_cover;
+	if (!empty($spotify_cover)) {
+		$bufferinfo = new finfo(FILEINFO_MIME);
+		$spotify_cover_mime = $bufferinfo->buffer($spotify_cover);
+		headers($spotify_cover_mime);
+		echo $spotify_cover;
+		die();
+	}
 } else if ($activePlayer === 'Airplay') {
 	if (is_file($_SERVER['HOME'].'/assets/img/airplay-cover.jpg')) {
 		headers('image/jpg');
 		readfile($_SERVER['HOME'].'/assets/img/airplay-cover.jpg');
-	} else {
-		headers('image/png');
-		readfile($_SERVER['HOME'].'/assets/img/cover-default-runeaudio.png');
+		die();
 	}
 }
+
+// 4. default rune-cover image    
+headers( 'image/png' );
+readfile( $_SERVER['HOME'].'/assets/img/cover-default-runeaudio.png' );
