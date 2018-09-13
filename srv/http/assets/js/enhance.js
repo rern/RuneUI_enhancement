@@ -30,6 +30,8 @@ var GUI = { // outside '$( function() {' enable console.log access
 };
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+if ( document.location.hostname === 'localhost' ) $( '.osk-trigger' ).onScreenKeyboard( { 'draggable': true } );
+
 // init display data pushstream
 $.post( 'enhance.php', { getdisplay: 1 } );
 
@@ -61,7 +63,7 @@ pushstreams[ 'display' ].onmessage = function( data ) {
 }
 pushstreams[ 'library' ].onmessage = function( data ) {
 	if ( data != 1 ) GUI.libraryhome = data;
-	if ( !GUI.local && !GUI.bookmarkedit ) renderLibraryHome();
+	if ( !GUI.local && !GUI.bookmarkedit ) renderLibrary();
 }
 pushstreams[ 'playback' ].onmessage = function( data ) {
 	var data = data[ 0 ];
@@ -206,7 +208,7 @@ $( '#open-library' ).click( function() {
 		GUI.bookmarkedit = 0;
 		$.post( 'enhance.php', { library: 1, pushstream: 'library' }, function( data ) {
 			GUI.libraryhome = data;
-			renderLibraryHome();
+			renderLibrary();
 		}, 'json' );
 		return
 	}
@@ -221,13 +223,13 @@ $( '#open-library' ).click( function() {
 //		GUI.dbscrolltop = {}; // comment to always keep scroll position unless refresh
 		GUI.dbbackdata = [];
 		
-		renderLibraryHome();
+		renderLibrary();
 		return
 	}
 	
 	panelSelect( $( '#panel-library' ) );
 	if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) {
-		renderLibraryHome();
+		renderLibrary();
 		displayLibrary();
 	} else {
 		var scrollpos = GUI.dbscrolltop[ $( '#db-currentpath' ).attr( 'path' ) ];
@@ -367,16 +369,19 @@ $( '#panel-library' ).on( 'taphold', function() {
 	if ( !$( e.target ).parents( '.home-bookmark' ) && !$( e.target ).hasClass( 'home-bookmark' ) ) return;
 	
 	local();
-	$( '.home-bookmark' ).append( '<i class="home-block-remove fa fa-times"></i>' );
+	$( '.home-bookmark' ).append( '<i id="home-block-edit" class="fa fa-edit"></i><i id="home-block-remove" class="fa fa-minus-circle"></i>' );
 } ).click( function( e ) {
 	if ( $( e.target ).parents( '.home-bookmark' ).length || $( e.target ).hasClass( 'home-bookmark' ) ) return;
 	
-	$( '.home-block-remove' ).remove();
+	$( '#home-block-edit, #home-block-remove' ).remove();
 } );
 
 $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 	var $this = $( this );
-	if ( $( e.target ).is( 'i.home-block-remove' ) ) {
+	if ( e.target.id === 'home-block-edit' ) {
+		GUI.bookmarkedit = 1;
+		bookmarkRename( $this.data( 'name' ), $this.data( 'path' ) )
+	} else if ( e.target.id === 'home-block-remove' ) {
 		GUI.bookmarkedit = 1;
 		bookmarkDelete( $this.data( 'name' ), $this.parent() )
 	} else if ( $this.data( 'target' ) === 'webradio-add' ) {
@@ -586,7 +591,7 @@ $( '#db-search-keyword' ).on( 'keypress', function( e ) {
 $( '#db-level-up' ).on( 'click', function() {
 	// topmost of path
 	if ( $( '#db-currentpath span a' ).length === 1 ) {
-		renderLibraryHome();
+		renderLibrary();
 		return
 	}
 	if ( GUI.dbbrowsemode === 'file' ) {
@@ -945,7 +950,7 @@ $( '#db-search-results' ).click( function() {
 		$( '#db-entries' ).removeAttr( 'style' );
 		mutationLibrary.observe( observerLibrary, observerOption );
 	} else {
-		renderLibraryHome();
+		renderLibrary();
 	}
 } );
 
@@ -1237,7 +1242,7 @@ function setPlaybackSource() {
 function numFormat( num ) {
 	return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
-function renderLibraryHome() {
+function renderLibrary() {
 	if ( GUI.bookmarkedit ) return;
 //	GUI.dbscrolltop = {}; // comment to always keep scroll positions
 	GUI.plugin = '';
@@ -2213,13 +2218,17 @@ $( '.contextmenu a' ).click( function() {
 } );
 
 function bookmarkNew() {
-	var name = GUI.list.path.split( '/' ).pop();
+	var path = GUI.list.path;
+	var name = path.split( '/' ).pop();
 	info( {
 		  icon       : 'edit-circle'
 		, title      : 'Add Bookmark'
-		, message    : 'Add<br><white>'+ path +'</white>'
-		, textlabel  : 'Name'
+		, width      : 500
+		, message    : 'Bookmark:'
+						+'<br><white>'+ path +'</white>'
+		, textlabel  : 'As'
 		, textvalue  : name
+		, textalign  : 'center'
 		, boxwidth   : 'max'
 		, cancel     : 1
 		, ok         : function() {
@@ -2228,14 +2237,14 @@ function bookmarkNew() {
 	} );
 }
 
-function bookmarkNewVerify( name, path ) {
+function bookmarkNewVerify( name, path, edit ) {
 	if ( !name ) {
 		info( {
 			  icon    : 'warning'
-			, title   : 'Add Bookmark'
-			, message : 'Name cannot be blank.'
+			, title   : edit ? 'Rename Bookmark' :'Add Bookmark'
+			, message : '<white>Name</white> cannot be blank.'
 			, ok      : function() {
-				bookmarkNew( npath );
+				edit ? bookmarkRename( name, path ) : bookmarkNew( path );
 			}
 		} );
 		return;
@@ -2247,17 +2256,18 @@ function bookmarkNewVerify( name, path ) {
 		$.each( data, function( i, val ) {
 			i % 2 ? bmpath.push( val ) : bmname.push( val );
 		} );
-		var nameexist = $.inArray( name, bmname ) !== -1;
-		if ( nameexist ) {
+		var namei = $.inArray( name, bmname );
+		if ( namei !== -1 ) {
 			info( {
 				  icon        : 'warning'
-				, title       : 'Add Bookmark'
-				, message     : name
+				, title       : edit ? 'Rename Bookmark' :'Add Bookmark'
+				, width       : 500
+				, message     : '<white>'+ name +'</white>'
 							+'<br>Already exists for:'
-							+'<br>'+ path
+							+'<br>'+ bmpath[ namei ]
 				, cancellabel : 'Rename'
 				, cancel      : function() {
-					bookmarkNew( path );
+					edit ? bookmarkRename( name, path ) : bookmarkNew( path );
 				}
 				, oklabel     : 'Replace'
 				, ok          : function() {
@@ -2268,10 +2278,28 @@ function bookmarkNewVerify( name, path ) {
 			GUI.bookmarkedit = 1;
 			new PNotify( {
 				  icon  : 'fa fa-check'
-				, title : 'Add Bookmark'
+				, title : edit ? 'Rename Bookmark' :'Add Bookmark'
 				, text  : name
 			} );
 			$.post( 'enhance.php', { bkmarks: [ name, path ] } );
+		}
+	} );
+}
+function bookmarkRename( name, path ) {
+	info( {
+		  icon      : 'edit-circle'
+		, title     : 'Rename Bookmark'
+		, width     : 500
+		, message   : 'Rename:'
+					+'<br><white>'+ name +'</white>'
+					+'<br>'+ path
+		, textlabel : 'Name'
+		, textvalue : name
+		, textalign  : 'center'
+		, boxwidth  : 'max'
+		, cancel    : 1
+		, ok        : function() {
+			bookamrkNewVerify( $( '#infoTextBox' ).val().trim(), path, 'edit' );
 		}
 	} );
 }
@@ -2293,8 +2321,10 @@ function webRadioNew( name, url ) {
 	info( {
 		  icon       : 'edit-circle'
 		, title      : 'Add Webradio'
+		, width      : 500
 		, textlabel  : 'Name'
 		, textlabel2 : 'URL'
+		, textalign  : 'center'
 		, boxwidth   : 'max'
 		, cancel     : 1
 		, ok         : function() {
@@ -2307,7 +2337,7 @@ function webRadioNewVerify( name, url ) {
 		info( {
 			  icon    : 'warning'
 			, title   : 'Add Webradio'
-			, message : 'Name and URL cannot be blank.'
+			, message : '</white>Name</white> and <white>URL</white> cannot be blank.'
 			, ok      : function() {
 				webRadioNew( name, url );
 			}
@@ -2321,14 +2351,15 @@ function webRadioNewVerify( name, url ) {
 		$.each( data, function( i, val ) {
 			i % 2 ? wrurl.push( val ) : wrname.push( val );
 		} );
-		var nameexist = $.inArray( name, wrname ) !== -1;
-		if ( nameexist ) {
+		var namei = $.inArray( name, wrname );
+		if ( namei !== -1 ) {
 			info( {
 				  icon        : 'warning'
 				, title       : 'Add Webradio'
+				, width       : 500
 				, message     : '<white>'+ name +'</white>'
 							+'<br>Already exists for:'
-							+'<br>'+ url
+							+'<br>'+ wrurl[ namei ]
 				, cancellabel : 'Rename'
 				, cancel      : function() {
 					webRadioNew( name, url );
@@ -2352,18 +2383,20 @@ function webRadioNewVerify( name, url ) {
 }
 function webRadioEdit( name ) {
 	info( {
-		  icon      : 'edit-circle'
-		, title     : 'Edit Webradio'
-		, message   : 'Edit:'
+		  icon       : 'edit-circle'
+		, title      : 'Edit Webradio'
+		, width      : 500
+		, message    : 'Edit:'
 					+'<br><white>'+ GUI.list.name +'</white>'
 					+'<br>'+ GUI.list.url
-		, textlabel : 'To'
-		, textvalue : GUI.list.name
+		, textlabel  : 'Name'
+		, textvalue  : GUI.list.name
 		, textlabel2 : 'URL'
-		, textvalue : GUI.list.url
-		, boxwidth  : 'max'
-		, cancel    : 1
-		, ok        : function() {
+		, textvalue2 : GUI.list.url
+		, textalign  : 'center'
+		, boxwidth   : 'max'
+		, cancel     : 1
+		, ok         : function() {
 			webRadioEditVerify( $( '#infoTextBox' ).val().trim(), GUI.list.url, GUI.list.name );
 		}
 	} );
@@ -2373,7 +2406,7 @@ function webRadioEditVerify( name, url, oldname ) {
 		info( {
 			  icon    : 'warning'
 			, title   : 'Edit Webradio'
-			, message : 'Name cannot be blank.'
+			, message : '<white>Name</white> cannot be blank.'
 			, ok      : function() {
 				webRadioEdit();
 			}
@@ -2385,6 +2418,7 @@ function webRadioEditVerify( name, url, oldname ) {
 		info( {
 			  icon    : 'warning'
 			, title   : 'Edit Webradio'
+			, width   : 500
 			, message : '<white>'+ name +'</white>'
 						+'<br>Already exists for:'
 						+'<br>'+ url
@@ -2405,6 +2439,7 @@ function webRadioDelete() {
 	info( {
 		  icon    : 'minus-circle'
 		, title   : 'Delete Webradio'
+		, width   : 500
 		, message : 'Delete?'
 					+'<br><white>'+ GUI.list.name +'</white>'
 					+'<br>'+ GUI.list.url
@@ -2413,9 +2448,7 @@ function webRadioDelete() {
 			$( '#db-entries li.active').remove();
 			GUI.libraryhome.webradio--;
 			local();
-			$.post( 'enhance.php', { webradios: GUI.list.name }, function( data ) {
-				console.log(data)
-			} );
+			$.post( 'enhance.php', { webradios: GUI.list.name } );
 		}
 	} );
 }
@@ -2423,9 +2456,9 @@ function playlistSave( name ) {
 	info( {
 		  icon      : 'save'
 		, title     : 'Save Playlist'
-		, message   : 'Save this playlist as:'
+		, message   : 'Save current playlist as:'
 		, textlabel : 'Name'
-		, textvalue : name || ''
+		, textalign : 'center'
 		, boxwidth  : 'max'
 		, cancel    : 1
 		, ok        : function() {
@@ -2438,7 +2471,7 @@ function playlistSaveVerify( name ) {
 		info( {
 			  icon    : 'warning'
 			, title   : 'Save Playlist'
-			, message : 'Name cannot be blank.'
+			, message : '<white>Name</white> cannot be blank.'
 			, ok      : function() {
 				playlistSave();
 			}
@@ -2475,6 +2508,7 @@ function playlistRename( name ) {
 		             +'<br><white>'+ GUI.list.name +'</white>'
 		, textlabel : 'To'
 		, textvalue : GUI.list.name
+		, textalign : 'center'
 		, boxwidth  : 'max'
 		, cancel    : 1
 		, ok        : function() {
@@ -2487,7 +2521,7 @@ function playlistRenameVerify( name, oldname ) {
 		info( {
 			  icon    : 'warning'
 			, title   : 'Rename Playlist'
-			, message : 'Name cannot be blank.'
+			, message : '<white>Name</white> cannot be blank.'
 			, ok      : function() {
 				playlistRename();
 			}
@@ -2528,7 +2562,5 @@ function playlistDelete() {
 		}
 	} );
 }
-
-if ( document.location.hostname === 'localhost' ) $( '.osk-trigger' ).onScreenKeyboard( { 'draggable': true } );
 
 } ); // document ready end <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
