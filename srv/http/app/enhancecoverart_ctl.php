@@ -10,12 +10,14 @@ $tplfile = 0;
 ob_implicit_flush( 0 );
 ob_clean();
 flush();
+
+$activePlayer = $redis->get( 'activePlayer' );
 // --------------------- MPD ---------------------
 if ( $activePlayer === 'MPD' ) {
 	$mpd2 = openMpdSocket( '/run/mpd.sock', 0 );
 	$status = _parseStatusResponse( MpdStatus( $mpd2 ) );
 	$curTrack = getTrackInfo( $mpd2, $status[ 'song' ] );
-	$currentpath = '/mnt/MPD/'.$status[ 'file' ];
+	$currentpath = '/mnt/MPD/'.findPLposPath( $status[ 'song' ], $mpd2 );
 	closeMpdSocket( $mpd2 );
 // 1. local coverart
 	$local_cover_root = dirname( $currentpath );
@@ -32,19 +34,8 @@ if ( $activePlayer === 'MPD' ) {
 			die();
 		}
 	}
-	// output switch
 	$output = 0;
 	include('getid3/audioinfo.class.php');
-	$lastfm_apikey = $redis->get('lastfm_apikey');
-	$proxy = $redis->hGetall('proxy');
-	$request_uri = urldecode($_SERVER['REQUEST_URI']);
-	$request_folder = substr(substr($request_uri, 0, strrpos($request_uri, "/")), 10);
-	$request_coverfile = substr($request_uri, strrpos($request_uri, "/") + 1);
-	$current_mpd_folder = substr(substr($currentpath, 0, strrpos($currentpath, "/")), 9);
-} elseif ($redis->get('activePlayer') === 'Spotify') {
-	$spop = openSpopSocket('localhost', 6602, 1);
-}
-if ((substr($request_coverfile, 0, 2) === '?v' OR $current_mpd_folder ===  $request_folder) && $activePlayer === 'MPD') {
 // 2. extract from file (using GetID3 library)
 	$au = new AudioInfo();
 	$auinfo =  $au->Info($currentpath);
@@ -54,22 +45,19 @@ if ((substr($request_coverfile, 0, 2) === '?v' OR $current_mpd_folder ===  $requ
 		die();
 	} 
 // 3. find coverart on Last.FM
-	if (isset($curTrack[0]['Title'])) {
-		$status['currentartist'] = $curTrack[0]['Artist'];
-		$status['currentalbum'] = $curTrack[0]['Album'];
-	}
-	$cover_url = ui_lastFM_coverart($status['currentartist'], $status['currentalbum'], $lastfm_apikey, $proxy);
-	$bufferinfo = new finfo(FILEINFO_MIME);
+	$artist = $curTrack[0]['Artist'];
+	$album = $curTrack[0]['Album'];
+	$lastfm_apikey = $redis->get('lastfm_apikey');
+	$proxy = $redis->hGetall('proxy');
+	$cover_url = ui_lastFM_coverart($artist, $album, $lastfm_apikey, $proxy);
 	if (!empty($cover_url)) {
 		$lastfm_img = curlGet($cover_url, $proxy);
 		$lastfm_img_mime = $bufferinfo->buffer($lastfm_img);
 	} else {
-		$cover_url = ui_lastFM_coverart($status['currentartist'], '', $lastfm_apikey, $proxy);
+		$cover_url = ui_lastFM_coverart($artist, '', $lastfm_apikey, $proxy);
 		if (!empty($cover_url)) {
-			if (!empty($cover_url)) {
-				$lastfm_img = curlGet($cover_url, $proxy);
-				$lastfm_img_mime = $bufferinfo->buffer($lastfm_img);
-			}
+			$lastfm_img = curlGet($cover_url, $proxy);
+			$lastfm_img_mime = $bufferinfo->buffer($lastfm_img);
 		}
 	}
 	if (!empty($lastfm_img)) {
@@ -80,43 +68,36 @@ if ((substr($request_coverfile, 0, 2) === '?v' OR $current_mpd_folder ===  $requ
 		$filecover = fopen( $local_cover_root.'/cover.'.$filecoverext, 'w' );
 		fwrite( $filecover, $lastfm_img );
 		fclose( $filecover );
-		die();
-	}
-// 4. default rune-cover image    
-	headers('image/png');
-	readfile($_SERVER['HOME'].'/assets/img/cover-default-runeaudio.png');
-} else {
-	if ($activePlayer === 'Spotify') {
-		$count = 1;
-		do {
-			sendSpopCommand($spop, 'image');
-			unset($spotify_cover);
-			$spotify_cover = readSpopResponse($spop);
-			$spotify_cover = json_decode($spotify_cover);
-			usleep(500000);
-			if ($spotify_cover->status === 'ok') {
-				$spotify_cover = base64_decode($spotify_cover->data);
-				break;
-			}
-			$count++;
-		} while ($count !== 10);
-		$bufferinfo = new finfo(FILEINFO_MIME);
-		$spotify_cover_mime = $bufferinfo->buffer($spotify_cover);
-		headers($spotify_cover_mime);
-		echo $spotify_cover;
 	} else {
-		if ($activePlayer === 'Airplay') {
-			if (is_file($_SERVER['HOME'].'/assets/img/airplay-cover.jpg')) {
-				headers('image/jpg');
-				readfile($_SERVER['HOME'].'/assets/img/airplay-cover.jpg');
-			} else {
-				headers('image/png');
-				readfile($_SERVER['HOME'].'/assets/img/cover-default-runeaudio.png');
-			}
-		} else {
-			// redirect to /covers NGiNX location
-			$local_cover_url =  'http://'.$_SERVER["SERVER_ADDR"].'/covers/'.$request_folder.'/'.$request_coverfile;
-			header('Location: '.$local_cover_url, true, 301);
+// 4. default rune-cover image    
+		headers('image/png');
+		readfile($_SERVER['HOME'].'/assets/img/cover-default-runeaudio.png');
+	}
+} else if ($activePlayer === 'Spotify') {
+	$spop = openSpopSocket('localhost', 6602, 1);
+	$count = 1;
+	while ($count !== 10) {
+		sendSpopCommand($spop, 'image');
+		unset($spotify_cover);
+		$spotify_cover = readSpopResponse($spop);
+		$spotify_cover = json_decode($spotify_cover);
+		usleep(500000);
+		if ($spotify_cover->status === 'ok') {
+			$spotify_cover = base64_decode($spotify_cover->data);
+			break;
 		}
+		$count++;
+	}
+	$bufferinfo = new finfo(FILEINFO_MIME);
+	$spotify_cover_mime = $bufferinfo->buffer($spotify_cover);
+	headers($spotify_cover_mime);
+	echo $spotify_cover;
+} else if ($activePlayer === 'Airplay') {
+	if (is_file($_SERVER['HOME'].'/assets/img/airplay-cover.jpg')) {
+		headers('image/jpg');
+		readfile($_SERVER['HOME'].'/assets/img/airplay-cover.jpg');
+	} else {
+		headers('image/png');
+		readfile($_SERVER['HOME'].'/assets/img/cover-default-runeaudio.png');
 	}
 }
