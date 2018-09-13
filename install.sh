@@ -206,8 +206,6 @@ systemctl disable rune_shutdown
 # correct version number
 [[ $( redis-cli get buildversion ) == 'beta-20160313' ]] && redis-cli set release 0.3 &> /dev/null
 
-installfinish $@
-
 # set library home database
 [[ $( redis-cli get volume ) == 1 ]] && volumempd=1 || volumempd=''
 
@@ -232,5 +230,10 @@ if [[ $1 != u ]]; then
 	\nas checked sd checked usb checked webradio checked albums checked artists checked composer checked genre checked \
 	\spotify checked dirble checked jamendo checked &> /dev/null
 fi
+
+# fix webradio permission
+chown -R http:http /mnt/MPD/Webradio
+
+installfinish $@
 
 reinitsystem
