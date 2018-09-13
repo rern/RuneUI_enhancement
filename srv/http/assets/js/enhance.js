@@ -2193,7 +2193,7 @@ $( '.contextmenu a' ).click( function() {
 			new PNotify( {
 				  icon  : 'fa fa-check'
 				, title : 'Add to Playlist'
-				, text  : GUI.list.liname
+				, text  : GUI.list.name
 			} );
 			local();
 			$.post( 'enhance.php', { mpc: command, pushstream: 'playlist' }, function() {
