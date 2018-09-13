@@ -1044,14 +1044,20 @@ wh, gr { font-weight: 300; }
 	outline: none;
 	color: #587ca0
 }
-.home-block .home-block-remove {
+#home-block-edit,
+#home-block-remove {
 	position: absolute;
+	display: inline-block;
 	top: 0;
 	right: 0;
 	width: 40px;
 	height: 40px;
-	color: #0095d8;
-	font-size: 28px;
+	font-size: 24px;
+	text-align: center;
+	color: #e0e7ee;
+}
+#home-block-edit {
+	right: 40px;
 }
 /* ---------------------- breadcrumb and index ---------------------- */
 .btnlist-top {
