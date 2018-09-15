@@ -48,7 +48,7 @@ $dir = $pathinfo[ 'dirname' ];
 if ( $activePlayer === 'MPD' ) {
 	if ( !empty( $status[ 'Artist' ] ) ) {
 // 1. fastest - local coverart
-/*		$coverfiles = array(
+		$coverfiles = array(
 			  'cover.jpg', 'Cover.jpg', 'cover.png', 'Cover.png'
 			, 'folder.jpg', 'Folder.jpg', 'folder.png', 'Folder.png'
 			, 'front.jpg', 'Front.jpg', 'front.png', 'Front.png'
@@ -61,7 +61,7 @@ if ( $activePlayer === 'MPD' ) {
 				$status[ 'coverart' ] = 'data:image/'. $coverext.';base64,'.base64_encode( $data );
 				break;
 			}
-		}*/
+		}
 		if ( empty( $status[ 'coverart' ] ) ) {
 // 2. last.FM
 			function curlGet( $url ) {
@@ -72,22 +72,21 @@ if ( $activePlayer === 'MPD' ) {
 				curl_close($ch);
 				return $data;
 			}
-			$apikey = $redis->get( 'apikey' );
+			$apikey = $redis->get( 'lastfm_apikey' );
 			$artist = urlencode( $status[ 'Artist' ] );
 			$album = urlencode( $status[ 'Album' ] );
 			$url = 'http://ws.audioscrobbler.com/2.0/?api_key='.$apikey.'&autocorrect=1&format=json&method=album.getinfo&artist='.$artist.'&album='.$album;
-			$output = json_decode( curlGet( $url ), true );
-			$cover_url = $output[ 'album' ][ 'image' ][ 3 ][ '#text' ];
+			$data = json_decode( curlGet( $url ), true );
+			$cover_url = $data[ 'album' ][ 'image' ][ 3 ][ '#text' ];
 			
 			if ( !empty( $cover_url ) ) {
 				$cover = curlGet( $cover_url );
 			} else {
-				$url = 'http://ws.audioscrobbler.com/2.0/?api_key='.$apikey.'&autocorrect=1&format=json&method=album.getinfo&artist='.$artist;
-				$output = json_decode( curlGet( $url ), true );
-				$cover_url = $output[ 'album' ][ 'image' ][ 3 ][ '#text' ];
+				$url = 'http://ws.audioscrobbler.com/2.0/?api_key='.$apikey.'&autocorrect=1&format=json&method=artist.getinfo&artist='.$artist;
+				$data = json_decode( curlGet( $url ), true );
+				$cover_url = $data[ 'artist' ][ 'image' ][ 3 ][ '#text' ];
 				if ( !empty( $cover_url ) ) $cover = curlGet( $cover_url );
 			}
-			$status[ 'lastfm' ] = $cover_url;
 			if ( !empty( $cover ) ) {
 				$coverext = pathinfo( $cover_url, PATHINFO_EXTENSION );
 				$status[ 'coverart' ] = 'data:image/'. $coverext.';base64,'.base64_encode( $cover );
