@@ -120,7 +120,6 @@ document.addEventListener( visibilityevent, function() {
 			pushstreams[ stream ].disconnect();
 		} );
 	} else {
-		$.post( 'enhance.php', { hddspinup: 1 } );
 		if ( $( '#panel-playback' ).hasClass( 'active' ) ) {
 			setPlaybackData();
 			displayPlayback();
@@ -2020,8 +2019,8 @@ function renderPlayback() {
 	$volumeRS.setValue( status.volume );
 	$volumehandle.rsRotate( - $volumeRS._handle1.angle );
 	if ( GUI.display.volume && GUI.display.volumempd ) {
-		if ( GUI.display.volumemute != 0 ) {
-			muteColor( GUI.display.volumemute );
+		if ( status.volumemute != 0 ) {
+			muteColor( status.volumemute );
 		} else {
 			unmuteColor();
 		}
@@ -2056,8 +2055,9 @@ function renderPlayback() {
 	if ( status.ext !== 'radio' ) {
 		if ( status.Album !== previousalbum ) {
 			$( '#coverartoverlay' ).addClass( 'hide' );
+			var coverart = status.coverart ? status.coverart : 'assets/img/cover-default-runeaudio.png';
 			$( '#cover-art' )
-				.attr( 'src', '/enhancecoverart/?v=' + Math.floor( Math.random() * 1001 ) )
+				.attr( 'src', coverart )
 				.css( 'border-radius', 0 )
 				.one( 'load', setOneload );
 		}
