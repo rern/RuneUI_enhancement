@@ -174,6 +174,4 @@ if ( isset( $_POST[ 'mpdmonitor' ] ) ) {
 	$cmd.= $sudo.'umount -f -a -t cifs nfs -l;';
 	$cmd.= $sudo.'shutdown '.( $_POST[ 'power' ] === 'reboot' ? '-r' : '-h' ).' now';
 	exec( $cmd );
-} else if ( isset( $_POST[ 'hddspinup' ] ) ) { // wake up usb hdd
-	exec( '/usr/bin/sudo /usr/bin/fdisk -l &' );
 }
