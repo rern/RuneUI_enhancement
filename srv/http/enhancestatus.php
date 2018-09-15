@@ -90,6 +90,10 @@ if ( $activePlayer === 'MPD' && !empty( $status[ 'Artist' ] ) ) {
 		if ( !empty( $cover ) ) {
 			$coverext = pathinfo( $cover_url, PATHINFO_EXTENSION );
 			$status[ 'coverart' ] = 'data:image/'. $coverext.';base64,'.base64_encode( $cover );
+			// save to fetch faster next time
+			$fopen = fopen( $dir.'/cover.'.$coverext, 'w' );
+			fwrite( $fopen, $cover );
+			fclose( $fopen );
 		}
 	}
 // 3. slowest - id3tag * Need new version of getID3()
@@ -99,13 +103,15 @@ if ( $activePlayer === 'MPD' && !empty( $status[ 'Artist' ] ) ) {
 		$id3tag = $getID3->analyze( $file );
 		$id3cover = $id3tag[ 'comments' ][ 'picture' ][ 0 ];
 		$cover = $id3cover[ 'data' ];
-		$coverext = str_replace( 'image/', '', $id3cover[ 'image_mime' ] );
-		$status[ 'coverart' ] = 'data:image/'. $coverext.';base64,'.base64_encode( $cover );
+		if ( !empty( $cover ) ) {
+			$coverext = str_replace( 'image/', '', $id3cover[ 'image_mime' ] );
+			$status[ 'coverart' ] = 'data:image/'. $coverext.';base64,'.base64_encode( $cover );
+			// save to fetch faster next time
+			$fopen = fopen( $dir.'/cover.'.$coverext, 'w' );
+			fwrite( $fopen, $cover );
+			fclose( $fopen );
+		}
 	}
-	// save to fetch faster next time
-	$fopen = fopen( $dir.'/cover.'.$coverext, 'w' );
-	fwrite( $fopen, $cover );
-	fclose( $fopen );
 } else if ( $activePlayer === 'Spotify' ) {
 	include '/srv/http/app/libs/runeaudio.php';
 	$spop = openSpopSocket( 'localhost', 6602, 1 );
