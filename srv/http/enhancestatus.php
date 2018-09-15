@@ -3,6 +3,7 @@ $redis = new Redis();
 $redis->pconnect( '127.0.0.1' );
 $activePlayer = $redis->get( 'activePlayer' );
 $status[ 'activePlayer' ] = $activePlayer;
+$status[ 'volumemute' ] = $redis->hGet( 'display', 'volumemute' );
 
 if ( $activePlayer === 'Airplay' ) {
 	echo json_encode( $status );
@@ -45,56 +46,50 @@ $pathinfo = pathinfo( $file );
 $dir = $pathinfo[ 'dirname' ];
 
 // coverart
-if ( $activePlayer === 'MPD' ) {
-	if ( !empty( $status[ 'Artist' ] ) ) {
+if ( $activePlayer === 'MPD' && !empty( $status[ 'Artist' ] ) ) {
 // 1. fastest - local coverart
-		$coverfiles = array(
-			  'cover.jpg', 'Cover.jpg', 'cover.png', 'Cover.png'
-			, 'folder.jpg', 'Folder.jpg', 'folder.png', 'Folder.png'
-			, 'front.jpg', 'Front.jpg', 'front.png', 'Front.png'
-		);
-		foreach( $coverfiles as $cover ) {
-			$coverfile = $dir.'/'.$cover;
-			if ( file_exists( $coverfile ) ) {
-				$coverext = pathinfo( $cover, PATHINFO_EXTENSION );
-				$data = file_get_contents( $coverfile ) ;
-				$status[ 'coverart' ] = 'data:image/'. $coverext.';base64,'.base64_encode( $data );
-				break;
-			}
+	$coverfiles = array(
+		  'cover.jpg', 'Cover.jpg', 'cover.png', 'Cover.png'
+		, 'folder.jpg', 'Folder.jpg', 'folder.png', 'Folder.png'
+		, 'front.jpg', 'Front.jpg', 'front.png', 'Front.png'
+	);
+	foreach( $coverfiles as $cover ) {
+		$coverfile = $dir.'/'.$cover;
+		if ( file_exists( $coverfile ) ) {
+			$coverext = pathinfo( $cover, PATHINFO_EXTENSION );
+			$data = file_get_contents( $coverfile ) ;
+			$status[ 'coverart' ] = 'data:image/'. $coverext.';base64,'.base64_encode( $data );
+			break;
 		}
-		if ( empty( $status[ 'coverart' ] ) ) {
+	}
+	if ( empty( $status[ 'coverart' ] ) ) {
 // 2. last.FM
-			function curlGet( $url ) {
-				$ch = curl_init($url);
-				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-				curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
-				$data = curl_exec($ch);
-				curl_close($ch);
-				return $data;
-			}
-			$apikey = $redis->get( 'lastfm_apikey' );
-			$artist = urlencode( $status[ 'Artist' ] );
-			$album = urlencode( $status[ 'Album' ] );
-			$url = 'http://ws.audioscrobbler.com/2.0/?api_key='.$apikey.'&autocorrect=1&format=json&method=album.getinfo&artist='.$artist.'&album='.$album;
+		function curlGet( $url ) {
+			$ch = curl_init($url);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
+			$data = curl_exec($ch);
+			curl_close($ch);
+			return $data;
+		}
+		$apikey = $redis->get( 'lastfm_apikey' );
+		$artist = urlencode( $status[ 'Artist' ] );
+		$album = urlencode( $status[ 'Album' ] );
+		$url = 'http://ws.audioscrobbler.com/2.0/?api_key='.$apikey.'&autocorrect=1&format=json&method=album.getinfo&artist='.$artist.'&album='.$album;
+		$data = json_decode( curlGet( $url ), true );
+		$cover_url = $data[ 'album' ][ 'image' ][ 3 ][ '#text' ];
+		
+		if ( !empty( $cover_url ) ) {
+			$cover = curlGet( $cover_url );
+		} else {
+			$url = 'http://ws.audioscrobbler.com/2.0/?api_key='.$apikey.'&autocorrect=1&format=json&method=artist.getinfo&artist='.$artist;
 			$data = json_decode( curlGet( $url ), true );
-			$cover_url = $data[ 'album' ][ 'image' ][ 3 ][ '#text' ];
-			
-			if ( !empty( $cover_url ) ) {
-				$cover = curlGet( $cover_url );
-			} else {
-				$url = 'http://ws.audioscrobbler.com/2.0/?api_key='.$apikey.'&autocorrect=1&format=json&method=artist.getinfo&artist='.$artist;
-				$data = json_decode( curlGet( $url ), true );
-				$cover_url = $data[ 'artist' ][ 'image' ][ 3 ][ '#text' ];
-				if ( !empty( $cover_url ) ) $cover = curlGet( $cover_url );
-			}
-			if ( !empty( $cover ) ) {
-				$coverext = pathinfo( $cover_url, PATHINFO_EXTENSION );
-				$status[ 'coverart' ] = 'data:image/'. $coverext.';base64,'.base64_encode( $cover );
-				// save locally - no need to get online next time
-				$fopen = fopen( $dir.'/cover.'.$coverext, 'w' );
-				fwrite( $fopen, $cover );
-				fclose( $fopen );
-			}
+			$cover_url = $data[ 'artist' ][ 'image' ][ 3 ][ '#text' ];
+			if ( !empty( $cover_url ) ) $cover = curlGet( $cover_url );
+		}
+		if ( !empty( $cover ) ) {
+			$coverext = pathinfo( $cover_url, PATHINFO_EXTENSION );
+			$status[ 'coverart' ] = 'data:image/'. $coverext.';base64,'.base64_encode( $cover );
 		}
 	}
 // 3. slowest - id3tag * Need new version of getID3()
@@ -103,9 +98,14 @@ if ( $activePlayer === 'MPD' ) {
 		$getID3 = new getID3;
 		$id3tag = $getID3->analyze( $file );
 		$id3cover = $id3tag[ 'comments' ][ 'picture' ][ 0 ];
+		$cover = $id3cover[ 'data' ];
 		$coverext = str_replace( 'image/', '', $id3cover[ 'image_mime' ] );
-		$status[ 'coverart' ] = 'data:image/'. $coverext.';base64,'.base64_encode( $id3cover[ 'data' ] );
+		$status[ 'coverart' ] = 'data:image/'. $coverext.';base64,'.base64_encode( $cover );
 	}
+	// save to fetch faster next time
+	$fopen = fopen( $dir.'/cover.'.$coverext, 'w' );
+	fwrite( $fopen, $cover );
+	fclose( $fopen );
 } else if ( $activePlayer === 'Spotify' ) {
 	include '/srv/http/app/libs/runeaudio.php';
 	$spop = openSpopSocket( 'localhost', 6602, 1 );
