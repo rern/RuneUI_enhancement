@@ -1,11 +1,12 @@
 <?php
-$apikey = 'ba8ad00468a50732a3860832eaed0882';
-$artist = $_GET[ 'artist' ];
-$method = '&method=artist.getinfo&artist='.urlencode( $artist );
+$redis = new Redis(); 
+$redis->pconnect( '127.0.0.1' );
+$apikey = $redis->get( 'lastfm_apikey' );
+$artist = urlencode( $_GET[ 'artist' ] );
 
 $ch = curl_init();
-curl_setopt( $ch, CURLOPT_URL, 'http://ws.audioscrobbler.com/2.0/?autocorrect=1&format=json&api_key='.$apikey.$method );
-curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 ); //return the transfer as a string 
+curl_setopt( $ch, CURLOPT_URL, 'http://ws.audioscrobbler.com/2.0/?api_key='.$apikey.'&autocorrect=1&format=json&method=artist.getinfo&artist='.$artist );
+curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 ); //return the transfer as string 
 $data = curl_exec( $ch );
 curl_close( $ch );
 
