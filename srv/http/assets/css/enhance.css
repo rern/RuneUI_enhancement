@@ -945,7 +945,7 @@ wh, gr { font-weight: 300; }
 	z-index: 10;
 }
 #bio .container {
-	max-width: 750px;
+	max-width: 770px;
 	padding : 20px 40px;
 }
 #bio h1 {
@@ -990,7 +990,7 @@ wh, gr { font-weight: 300; }
 .biosimilar,
 .biosimilar img,
 .biosimilar p {
-	max-width: 45vw;
+	max-width: 170px;
 }
 @media(max-width: 540px) {
 	#bio .container {
