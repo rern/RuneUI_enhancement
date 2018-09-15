@@ -96,20 +96,17 @@ if ( $activePlayer === 'MPD' && !empty( $status[ 'Artist' ] ) ) {
 			fclose( $fopen );
 		}
 	}
-// 3. slowest - id3tag * Need new version of getID3()
+// 3. slowest - id3tag - for various albums in single  directory
 	if ( empty( $status[ 'coverart' ] ) ) {
-		require_once( '/srv/http/app/libs/vendor/getid3/getid3.php' );
-		$getID3 = new getID3;
-		$id3tag = $getID3->analyze( $file );
+		set_include_path( '/srv/http/app/libs/vendor/' );
+		require_once( 'getid3/audioinfo.class.php' );
+		$audioinfo = new AudioInfo();
+		$id3tag = $audioinfo->Info( $file );
 		$id3cover = $id3tag[ 'comments' ][ 'picture' ][ 0 ];
 		$cover = $id3cover[ 'data' ];
 		if ( !empty( $cover ) ) {
 			$coverext = str_replace( 'image/', '', $id3cover[ 'image_mime' ] );
 			$status[ 'coverart' ] = 'data:image/'. $coverext.';base64,'.base64_encode( $cover );
-			// save to fetch faster next time
-			$fopen = fopen( $dir.'/cover.'.$coverext, 'w' );
-			fwrite( $fopen, $cover );
-			fclose( $fopen );
 		}
 	}
 } else if ( $activePlayer === 'Spotify' ) {
