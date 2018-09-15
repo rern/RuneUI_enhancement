@@ -32,7 +32,6 @@ rm -v /srv/http/assets/css/{bootstrap.min,enhance,fontawesome.min,midori,pnotify
 rm -v /srv/http/assets/img/{bootsplash.png,controls*,runelogo.svg,vu*}
 rm -v /srv/http/assets/js/{enhance,settings}.js
 rm -v /srv/http/assets/js/vendor/{jquery-ui.min,modernizr-custom,pnotify.custom.min,roundslider.min}.js
-rm -r /srv/http/app/libs/vendor/getid3
 
 mv /srv/http/index.php{.backup,}
 mv /srv/http/app/libs/vendor/getid3{.backup,}
