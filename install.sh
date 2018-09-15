@@ -28,6 +28,10 @@ ln -sf /srv/http/assets/img/bootsplash.png /usr/share/bootsplash/start.png
 
 getinstallzip
 
+file=/srv/http/app/libs/vendor/getid3.tar.xz
+bsdtar -xf $file
+rm $file
+
 echo -e "$bar Modify files ..."
 #----------------------------------------------------------------------------------
 file=/srv/http/db/index.php
