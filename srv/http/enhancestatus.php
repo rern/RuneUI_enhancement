@@ -32,13 +32,6 @@ while ( $line !== false ) {
 	}
 	$line = strtok( "\n" );
 }
-if ( array_key_exists( 'bitrate', $status ) ) {
-	$sampling = substr( $status[ 'file' ], 0, 4 ) === 'http' ? '' : $status[ 'bitdepth' ].' bit ';
-	$sampling.= round( $status[ 'samplerate' ] / 1000, 1 ).' kHz '.$status[ 'bitrate' ].' kbit/s';
-	$status[ 'sampling' ] = $sampling;
-} else {
-	$status[ 'sampling' ] = '';
-}
 if ( !array_key_exists( 'song', $status ) ) $status[ 'song' ] = 0;
 
 $file = '/mnt/MPD/'.$status[ 'file' ];
@@ -134,12 +127,12 @@ if ( empty( $status[ 'Title' ] ) ) {
 	$status[ 'Album' ] = '';
 }
 $ext = strtoupper( $pathinfo[ 'extension' ] );
-$status[ 'ext' ] = ( substr($file, 0, 4 ) !== 'http' ) ? $ext : 'radio';
+$status[ 'ext' ] = ( substr($status[ 'file' ], 0, 4 ) !== 'http' ) ? $ext : 'radio';
 if ( $status[ 'ext' ] === 'radio' ) {
 	// before 1st play: no 'Name:' - use 'Title:' value instead
 	$status[ 'Artist' ] = isset( $status[ 'Name' ] ) ? $status[ 'Name' ] : $status[ 'Tile' ];
 	$status[ 'Title' ] = ( $status[ 'state' ] === 'stop' ) ? '' : $status[ 'Title' ];
-	$status[ 'Album' ] = $file;
+	$status[ 'Album' ] = $status[ 'file' ];
 	$status[ 'time' ] = '';
 }
 
@@ -149,7 +142,7 @@ $name = $webradioname[ $file ];
 
 // sampling >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 function samplingline( $bitdepth, $samplerate, $bitrate ) {
-	if ( $bitdepth == 'N/A' ) {
+	if ( $bitdepth === 'N/A' ) {
 		$bitdepth = ( $ext === 'WAV' || $ext === 'AIFF' ) ? ( $bitrate / $samplerate / 2 ).' bit ' : '';
 	} else {
 		$bitdepth = $bitdepth ? $bitdepth.' bit ' : '';
@@ -162,9 +155,11 @@ function samplingline( $bitdepth, $samplerate, $bitrate ) {
 	}
 	return $bitdepth.$samplerate.$bitrate;
 }
+
 if ( $status[ 'state' ] === 'play' ) {
 	// lossless - no bitdepth
 	$bitdepth = ( $status[ 'ext' ] === 'radio' ) ? '' : $status[ 'bitdepth' ];
+	if ( $bitdepth === 'dsd' ) $bitdepth = 1;
 	$sampling = samplingline( $bitdepth, $status[ 'samplerate' ], $status[ 'bitrate' ] );
 	$status[ 'sampling' ] = $sampling;
 	echo json_encode( $status, JSON_NUMERIC_CHECK );
