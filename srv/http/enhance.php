@@ -48,8 +48,7 @@ if ( isset( $_POST[ 'mpdmonitor' ] ) ) {
 	
 	$types = array( 'title', 'album', 'artist', 'composer', 'genre' );
 	$counts = shell_exec( 'for type in '.implode( ' ', $types ).'; do mpc list $type | awk NF | wc -l; done' );
-	$counts = explode( "\n", $counts );
-	array_pop( $counts ); // remove last blank
+	$counts = explode( "\n", rtrim( $counts ) ); // remove last blank
 	$mpccounts = array_combine( $types, $counts );
 	$data = array( 
 		  'bookmarks'    => $bookmarks
@@ -97,29 +96,18 @@ if ( isset( $_POST[ 'mpdmonitor' ] ) ) {
 	$data = isset( $_POST[ 'getresult' ] ) ? $result : 1;
 	if ( $mpc === 'clear' ) $data = 'clear';
 	if ( isset( $_POST[ 'pushstream' ] ) ) pushstream( $_POST[ 'pushstream' ], $data );
-} else if ( isset( $_POST[ 'mpd' ] ) ) {
-	$data = shell_exec( '{ sleep 0.01; echo '.$_POST[ 'mpd' ].'; sleep 0.01; } | telnet localhost 6600 | grep "'.$_POST[ 'filter' ].'" | cut -d" " -f2' );
-	echo $data;
 } else if ( isset( $_POST[ 'getplaylist' ] ) ) {
-	$lines = shell_exec( '{ sleep 0.01; echo playlistinfo; sleep 0.01; } | telnet localhost 6600 | grep "^Title\|^Time\|^Track\|^Artist\|^Album\|^file"' );
-	$lists = explode( 'file: ', $lines );
-	foreach( $lists as $lines ) {
-		$line = strtok( $lines, "\n" );
-		$list[ 'file' ] = $line;
-		$line = strtok( "\n" );
-		while ( $line !== false ) {
-			$pair = explode( ': ', $line, 2 );
-			$key = $pair[ 0 ];
-			$val = $pair[ 1 ];
-			$list[ $key ] = $val;
-			$line = strtok( "\n" );
-			if ( $line === false ) {
-				$data[] = $list;
-				$list = [];
-			}
-		}
+	$lines = shell_exec( 'mpc playlist -f "%title%,%time%,[##%track% • ]%artist%[ • %album%],%file%"' );
+	$lists = explode( "\n", rtrim( $lines ) );
+	foreach( $lists as $list ) {
+		$li = explode( ',', $list );
+		$pl[ 'title' ] = $li[ 0 ];
+		$pl[ 'time' ] = $li[ 1 ];
+		$pl[ 'track' ] = $li[ 2 ];
+		$pl[ 'file' ] = $li[ 3 ];
+		$data[] = $pl;
+		$pl = '';
 	}
-	//echo json_encode( $data, JSON_NUMERIC_CHECK );
 	pushstream( 'playlist', $data );
 } else if ( isset( $_POST[ 'bkmarks' ] ) || isset( $_POST[ 'webradios' ] ) ) {
 	$redis = new Redis();
