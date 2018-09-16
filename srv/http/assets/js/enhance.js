@@ -41,17 +41,48 @@ var psOption = {
 	, modes: 'websocket'
 };
 var pushstreams = {};
-var streams = [ 'notify', 'display', 'library', 'playlist', 'playback' ];
+var streams = [ 'idle', 'notify', 'display', 'library', 'playlist', 'playback' ];
 $.each( streams, function( i, stream ) {
 	pushstreams[ stream ] = new PushStream( psOption );
 	pushstreams[ stream ].addChannel( stream );
 } );
 pushstreams[ 'playback' ].reconnectOnChannelUnavailableInterval = 5000;
 
+pushstreams[ 'idle' ].onmessage = function( data ) {
+	var data = data[ 0 ];
+	if ( data === 'player' ) {
+		if ( GUI.local ) return;
+	//	if ( status.actPlayer === 'Spotify' || status.actPlayer === 'Airplay' ) GUI.json = status;
+		if ( $( '#panel-playback' ).hasClass( 'active' ) ) {
+			setPlaybackData();
+			// imodedelay fix imode flashing on usb dac switching
+			if ( !GUI.imodedelay ) displayPlayback();
+		} else if ( $( '#panel-playlist' ).hasClass( 'active' ) && !GUI.pleditor ) {
+			setPlaylistScroll();
+		}
+	} else if ( data === 'playlist' ) {
+		if ( GUI.pleditor || GUI.local ) return;
+		
+		$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
+			GUI.playlist = data;
+			renderPlaylist();
+		}, 'json' );
+	} else if ( data === 'options' ) {
+		if ( GUI.local ) return;
+		
+		$.post( 'enhance.php', { mpc: "status | tail -n1 | awk \'{print $4, $6, $8}\'" }, function( data ) {
+			var data = data.replace( '\n', '' ).split( ' ' ); // remove last newline
+			GUI.status.repeat = data[ 0 ] === 'on' ? 1 : 0;
+			GUI.status.random = data[ 1 ] === 'on' ? 1 : 0;
+			GUI.status.single = data[ 2 ] === 'on' ? 1 : 0;
+			setButtonToggle();
+		} );
+	}
+}
 pushstreams[ 'notify' ].onmessage = renderMSG;
 pushstreams[ 'display' ].onmessage = function( data ) {
 	if ( typeof data[ 0 ] === 'object' ) GUI.display = data[ 0 ];
-//	if ( GUI.local ) return;
+	if ( GUI.local ) return;
 	
 	if ( $( '#panel-playback' ).hasClass( 'active' ) ) {
 		displayPlayback();
@@ -66,7 +97,7 @@ pushstreams[ 'library' ].onmessage = function( data ) {
 	if ( !GUI.local && !GUI.bookmarkedit ) renderLibrary();
 }
 pushstreams[ 'playback' ].onmessage = function( data ) {
-	var data = data[ 0 ];
+/*	var data = data[ 0 ];
 	if ( data && typeof data[ 0 ] === 'object' ) GUI.status = data[ 0 ];
 	if ( GUI.local ) return;
 //	if ( status.actPlayer === 'Spotify' || status.actPlayer === 'Airplay' ) GUI.json = status;
@@ -76,14 +107,14 @@ pushstreams[ 'playback' ].onmessage = function( data ) {
 		if ( !GUI.imodedelay ) displayPlayback();
 	} else if ( $( '#panel-playlist' ).hasClass( 'active' ) && !GUI.pleditor ) {
 		setPlaylistScroll();
-	}
+	}*/
 }
 /*pushstreams[ 'playback' ].onstatuschange = function( code ) {
 	$( '#loader' ).toggleClass( 'hide', code !== 0 );
 //	if ( $( '#panel-playback' ).hasClass( 'active' ) ) setPlaybackData();
 }*/
 pushstreams[ 'playlist' ].onmessage = function( data ) {
-	var data = data[ 0 ];
+/*	var data = data[ 0 ];
 	if ( data && typeof data === 'object' ) {
 		GUI.playlist = data;
 		GUI.status.playlistlength = GUI.playlist.length
@@ -92,7 +123,7 @@ pushstreams[ 'playlist' ].onmessage = function( data ) {
 	}
 	if ( GUI.pleditor || GUI.local ) return;
 	
-	renderPlaylist();
+	renderPlaylist();*/
 }
 $.each( streams, function( i, stream ) {
 	pushstreams[ stream ].connect();
@@ -241,7 +272,10 @@ $( '#open-playback' ).click( function() {
 	displayPlayback();
 } );
 $( '#open-playlist' ).click( function() {
-	$.post( 'enhance.php', { getplaylist: 1 }, 'json' );
+	$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
+		GUI.playlist = data;
+		renderPlaylist();
+	}, 'json' );
 	if ( $( this ).hasClass( 'active' ) && GUI.pleditor ) GUI.pleditor = 0;
 	if ( GUI.activePlayer === 'Airplay' || GUI.activePlayer === 'Spotify' ) {
 		$( '#overlay-playsource' ).addClass( 'open' );
@@ -860,7 +894,8 @@ $( '#pl-manage-list' ).click( function() {
 	$( '.playlist' ).addClass( 'hide' );
 	$( '#loader' ).removeClass( 'hide' );
 	
-	$.post( 'enhance.php', { mpc: 'lsplaylists', getresult: 1 }, function( data ) {
+	$.post( 'enhance.php', { getsavedplaylist: 1 }, function( data ) {
+		console.log(data)
 		var pl = data.split( '\n' );
 		pl.pop(); // remove last blank
 		var plL = pl.length;
@@ -874,7 +909,7 @@ $( '#pl-manage-list' ).click( function() {
 		} );
 		var content = '';
 		pl.forEach( function( el ) {
-			content += '<li class="pl-folder" data-path="'+ el +'"><i class="fa fa-list-ul pl-icon"></i><i class="fa fa-bars pl-action"></i><span>'+ el +'</span></li>';
+			content += '<li class="pl-folder" data-path="'+ el +'"><i class="fa fa-list-ul pl-icon"></i><i class="fa fa-bars pl-action"></i><span><wh>'+ el +'</span></li>';
 		} );
 		$( '#pl-editor' ).html( content +'<p></p>' ).promise().done( function() {
 			GUI.pleditor = 1;
@@ -1860,7 +1895,7 @@ $( '.btn-cmd' ).click( function() {
 		var onoff = GUI.status[ cmd ] ? 0 : 1;
 		GUI.status[ cmd ] = onoff;
 		$this.toggleClass( 'btn-primary' ); // make button change immediate - not wait for pushstream
-		setImode();
+		setButtonToggle();
 		cmd = cmd +' '+ onoff;
 		local();
 	} else {
@@ -1896,7 +1931,7 @@ $( '.btn-cmd' ).click( function() {
 	}
 	$.post( 'enhance.php', { mpc: cmd, pushstream: 'playback' } );
 } );
-function setImode() {
+function setButtonToggle() {
 	if ( GUI.local ) return;
 	
 	if ( GUI.display.buttons && $( '#play-group' ).is( ':visible' ) ) {
@@ -1929,7 +1964,7 @@ function setButton() {
 	} else if ( state === 'pause' ) {
 		$( '#pause' ).addClass( 'btn-primary' );
 	}
-	setImode();
+	setButtonToggle();
 	if ( GUI.status.updating_db ) {
 		$( '#open-library i, #db-home i, #iupdate' ).addClass( 'blink' );
 		$( '#iupdate' ).toggleClass( 'hide', GUI.display.bars !== '' );
@@ -2053,7 +2088,6 @@ function renderPlayback() {
 	var dot = dot0.replace( ' id="dot0"', '' );
 	var ext = ( status.ext !== 'radio' ) ? dot + status.ext : '';
 	$( '#format-bitrate' ).html( dot0 + status.sampling + ext );
-	
 	if ( status.ext !== 'radio' ) {
 		if ( status.Album !== previousalbum ) {
 			$( '#coverartoverlay' ).addClass( 'hide' );
