@@ -10,14 +10,7 @@ function pushstream( $channel, $data = 1 ) {
 	curl_close( $ch );
 }
 
-if ( isset( $_POST[ 'mpdmonitor' ] ) ) {
-	$cmd = '
-		while : ; do
-			mpc idle player
-			curl -s -v -X POST "http://localhost/pub?id=playback" -d 1
-		done > /dev/null &';
-	exec( $cmd );
-} else if ( isset( $_POST[ 'getdisplay' ] ) ) {
+if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	$redis = new Redis();
 	$redis->pconnect( '127.0.0.1' );
 	usleep( 100000 ); // !important - get data must wait at least 50000
@@ -108,7 +101,17 @@ if ( isset( $_POST[ 'mpdmonitor' ] ) ) {
 		$data[] = $pl;
 		$pl = '';
 	}
-	pushstream( 'playlist', $data );
+	echo json_encode( $data, JSON_NUMERIC_CHECK );
+} else if ( isset( $_POST[ 'getsavedplaylist' ] ) ) {
+	$lists = shell_exec( 'mpc lsplaylists' );
+	$lists = explode( "\n", $lists );
+	array_pop( $lists );
+	$data = '';
+	foreach( $lists as $list ) {
+		$count = exec( 'mpc playlist '.$list.' | awk NF | wc -l' );
+		$data.= "$list</wh>&emsp;<gr>$count ♫</gr>\n";
+	}
+	echo $data;
 } else if ( isset( $_POST[ 'bkmarks' ] ) || isset( $_POST[ 'webradios' ] ) ) {
 	$redis = new Redis();
 	$redis->pconnect( '127.0.0.1' );
