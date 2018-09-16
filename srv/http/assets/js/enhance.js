@@ -1797,7 +1797,7 @@ function renderPlaylist() {
 		return;
 	}
 	
-	var content, iconhtml, topline, bottomline, classradio, hidetotal;
+	var content, pl, iconhtml, topline, bottomline, classradio, hidetotal;
 	content = iconhtml = topline =bottomline = classradio = hidetotal = '';
 	var id, totaltime, pltime, seconds, countsong, countradio;
 	id = totaltime = pltime = seconds = countsong = countradio = 0;
@@ -1815,10 +1815,10 @@ function renderPlaylist() {
 		} else {
 			iconhtml = '<i class="fa fa-music pl-icon"></i>';
 			classradio = 0;
-			seconds = convertSecond( pl.time );
-			topline = pl.title +'&ensp;<span class="time" time="'+ seconds +'">'+ pl.time +'</span>';
+			sec = convertSecond( pl.time );
+			topline = pl.title +'&ensp;<span class="time" time="'+ sec +'">'+ pl.time +'</span>';
 			bottomline = pl.track
-			pltime += seconds;
+			pltime += sec;
 		}
 		content += '<li id="pl-'+ i +'"'+ ( classradio ? ' class="radio"' : '' ) +'>'
 			+ iconhtml
@@ -1983,7 +1983,7 @@ function setPlaybackBlank() {
 	$( '#coverartoverlay' ).addClass( 'hide' );
 }
 function convertSecond( HMS ) {
-	return HMS.time.split( ':' ).reduce( ( acc, time ) => ( 60 * acc ) + +time );
+	return HMS.split( ':' ).reduce( ( acc, time ) => ( 60 * acc ) + +time );
 }
 function convertHMS( second ) {
 	if ( second <= 0 ) return '';
@@ -2168,6 +2168,7 @@ $( '.contextmenu a' ).click( function() {
 		var mpcCmd = GUI.list.issong ? 'add "'+ name +'"' : 'ls "'+ name +'" | mpc add';
 	} else if ( $.inArray( cmd, [ 'wradd', 'wraddplay', 'wraddreplaceplay' ] ) !== -1 ) {
 		var name = GUI.list.path;
+		console.log(name)
 		cmd = cmd.replace( 'wr', 'pl' );
 	} else if ( $.inArray( cmd, [ 'pladd', 'pladdplay', 'pladdreplaceplay' ] ) !== -1 ) {
 		var name = GUI.list.name;
