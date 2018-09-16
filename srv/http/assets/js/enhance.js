@@ -311,6 +311,23 @@ $( '#panel-playback' ).click( function( e ) {
 			displayPlayback();
 			local();
 			$.post( 'enhance.php', { setdisplay: GUI.display } );
+			// for set display to show radioelapsed
+			if ( GUI.status.ext === 'radio' ) {
+				if ( !GUI.display.radioelapsed ) {
+					$( '#total' ).empty();
+					return;
+				}
+				if ( GUI.status.state === 'play' && $( '#total' ).html() === '' ) {
+					clearInterval( GUI.countdown );
+					$.post( 'enhance.php', { mpc: "status | awk 'NR==2' | awk '{print $3}' | cut -d'/' -f1" }, function( HMS ) {
+						var elapsed = convertSecond( HMS );
+						GUI.countdown = setInterval( function() {
+							elapsed++
+							$( '#total' ).text( HMS );
+						}, 1000 );
+					}, 'json' );
+				}
+			}
 		}
 	} );
 	// disable by mpd volume
@@ -1161,23 +1178,6 @@ function displayPlayback() {
 		$( '#time-knob, #coverart, #volume-knob, #play-group, #share-group, #vol-group' ).css( 'width', '45%' );
 	} else if ( i === 1 ) {
 		$( '#time-knob, #coverart, #volume-knob, #play-group, #share-group, #vol-group' ).css( 'width', '60%' );
-	}
-	if ( GUI.display.radioelapsed !== GUI.display.radioelapsed ) {
-		GUI.display.radioelapsed = GUI.display.radioelapsed;
-		if ( GUI.status.ext === 'radio' && GUI.status.state === 'play' ) {
-			clearInterval( GUI.countdown );
-			if ( !GUI.display.radioelapsed ) {
-				$( '#total' ).empty();
-			} else {
-				$.post( 'enhance.php', { mpc: "status | awk 'NR==2' | awk '{print $3}' | cut -d'/' -f1" }, function( HMS ) {
-					var elapsed = convertSecond( HMS );
-					GUI.countdown = setInterval( function() {
-						elapsed++
-						$( '#total' ).text( HMS );
-					}, 1000 );
-				}, 'json' );
-			}
-		}
 	}
 	if ( !GUI.display.buttons || window.innerHeight <= 320 || window.innerWidth < 499 ) {
 		$( '#play-group, #share-group, #vol-group' ).addClass( 'hide' );
