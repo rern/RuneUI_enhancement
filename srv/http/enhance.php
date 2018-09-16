@@ -131,10 +131,7 @@ if ( isset( $_POST[ 'mpdmonitor' ] ) ) {
 		}
 		$redis->hSet( $key, $name, $value );
 		if ( $key === 'webradios' ) {
-			$lines = '[playlist]'
-					.'NumberOfEntries=1'
-					.'File1='.$value
-					.'Title1='.$name;
+			$lines = "[playlist]\nNumberOfEntries=1\nFile1=$value\nTitle1=$name";
 			$fopen = fopen( '/mnt/MPD/Webradio/'.$name.'.pls', 'w');
 			fwrite( $fopen, $lines );
 			fclose( $fopen );
