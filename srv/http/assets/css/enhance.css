@@ -1295,7 +1295,8 @@ span.dbpath {
 #db-entries .active:focus .bl,
 #pl-entries .active .bl,
 #pl-entries .active:hover .bl,
-#pl-entries .active:focus .bl {
+#pl-entries .active:focus .bl,
+#pl-editor li.active gr  {
 	color: #34495e
 }
 #db-entries .db-action,
