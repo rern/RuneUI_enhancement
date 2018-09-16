@@ -61,6 +61,10 @@ restorefile $files
 
 chown -R mpd:audio /mnt/MPD/Webradio
 
+systemctl disable mpcidle
+systemctl daemon-reload
+rm /etc/systemd/system/mpcidle.service
+
 uninstallfinish $@
 
 clearcache
