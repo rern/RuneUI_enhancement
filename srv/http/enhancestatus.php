@@ -62,8 +62,21 @@ if ( $activePlayer === 'MPD' && !empty( $status[ 'Artist' ] ) ) {
 			break;
 		}
 	}
+// 2. id3tag - for various albums in single  directory
 	if ( empty( $status[ 'coverart' ] ) ) {
-// 2. last.FM
+		set_include_path( '/srv/http/app/libs/vendor/' );
+		require_once( 'getid3/audioinfo.class.php' );
+		$audioinfo = new AudioInfo();
+		$id3tag = $audioinfo->Info( $file );
+		$id3cover = $id3tag[ 'comments' ][ 'picture' ][ 0 ];
+		$cover = $id3cover[ 'data' ];
+		if ( !empty( $cover ) ) {
+			$coverext = str_replace( 'image/', '', $id3cover[ 'image_mime' ] );
+			$status[ 'coverart' ] = 'data:image/'. $coverext.';base64,'.base64_encode( $cover );
+		}
+	}
+	if ( empty( $status[ 'coverart' ] ) ) {
+// 3. last.FM
 		function curlGet( $url ) {
 			$ch = curl_init($url);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -96,19 +109,6 @@ if ( $activePlayer === 'MPD' && !empty( $status[ 'Artist' ] ) ) {
 			fclose( $fopen );
 		}
 	}
-// 3. slowest - id3tag - for various albums in single  directory
-	if ( empty( $status[ 'coverart' ] ) ) {
-		set_include_path( '/srv/http/app/libs/vendor/' );
-		require_once( 'getid3/audioinfo.class.php' );
-		$audioinfo = new AudioInfo();
-		$id3tag = $audioinfo->Info( $file );
-		$id3cover = $id3tag[ 'comments' ][ 'picture' ][ 0 ];
-		$cover = $id3cover[ 'data' ];
-		if ( !empty( $cover ) ) {
-			$coverext = str_replace( 'image/', '', $id3cover[ 'image_mime' ] );
-			$status[ 'coverart' ] = 'data:image/'. $coverext.';base64,'.base64_encode( $cover );
-		}
-	}
 } else if ( $activePlayer === 'Spotify' ) {
 	include '/srv/http/app/libs/runeaudio.php';
 	$spop = openSpopSocket( 'localhost', 6602, 1 );
@@ -128,14 +128,15 @@ if ( $activePlayer === 'MPD' && !empty( $status[ 'Artist' ] ) ) {
 	}
 }
 // no id3tag
-if ( empty( $status[ 'Artist' ] ) ) $status[ 'Artist' ] = basename( $dir );
-if ( empty( $status[ 'Title' ] ) ) $status[ 'Title' ] = $pathinfo[ 'filename' ];
-if ( empty( $status[ 'Album' ] ) ) $status[ 'Album' ] = '';
-
+if ( empty( $status[ 'Title' ] ) ) {
+	$status[ 'Artist' ] = basename( $dir );
+	$status[ 'Title' ] = $pathinfo[ 'filename' ];
+	$status[ 'Album' ] = '';
+}
 $ext = strtoupper( $pathinfo[ 'extension' ] );
 $status[ 'ext' ] = ( substr($file, 0, 4 ) !== 'http' ) ? $ext : 'radio';
 if ( $status[ 'ext' ] === 'radio' ) {
-	// before 1st play: no 'Name:' but 'Title:'= value of 'Name:' instead
+	// before 1st play: no 'Name:' - use 'Title:' value instead
 	$status[ 'Artist' ] = isset( $status[ 'Name' ] ) ? $status[ 'Name' ] : $status[ 'Tile' ];
 	$status[ 'Title' ] = ( $status[ 'state' ] === 'stop' ) ? '' : $status[ 'Title' ];
 	$status[ 'Album' ] = $file;
