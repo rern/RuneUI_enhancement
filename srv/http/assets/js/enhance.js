@@ -1169,12 +1169,11 @@ function displayPlayback() {
 			if ( !GUI.display.radioelapsed ) {
 				$( '#total' ).empty();
 			} else {
-				$.post( 'enhance.php', { mpd: 'status', filter: 'elapsed' }, function( data ) {
-					var elapsed = Math.round( data );
+				$.post( 'enhance.php', { mpc: "status | awk 'NR==2' | awk '{print $3}' | cut -d'/' -f1" }, function( HMS ) {
+					var elapsed = convertSecond( HMS );
 					GUI.countdown = setInterval( function() {
 						elapsed++
-						mmss = convertHMS( elapsed );
-						$( '#total' ).text( mmss );
+						$( '#total' ).text( HMS );
 					}, 1000 );
 				}, 'json' );
 			}
@@ -1798,28 +1797,28 @@ function renderPlaylist() {
 		return;
 	}
 	
-	var content = bottomline = classradio = hidetotal = '';
-	var id = totaltime = pltime = countsong = countradio = i = 0;
+	var content, iconhtml, topline, bottomline, classradio, hidetotal;
+	content = iconhtml = topline =bottomline = classradio = hidetotal = '';
+	var id, totaltime, pltime, seconds, countsong, countradio;
+	id = totaltime = pltime = seconds = countsong = countradio = 0;
 	var ilength = GUI.playlist.length;
 	GUI.status.playlistlength = ilength;
+	var classradio
 	for ( i = 0; i < ilength; i++ ) {
 		var pl = GUI.playlist[ i ];
 		if ( pl.file.slice( 0, 4 ) === 'http' ) {
-			var iconhtml = '<i class="fa fa-webradio pl-icon"></i>';
+			iconhtml = '<i class="fa fa-webradio pl-icon"></i>';
 			classradio = 1;
 			countradio++
-			topline = pl.Title;
+			topline = pl.title;
 			bottomline = pl.file;
 		} else {
-			var iconhtml = '<i class="fa fa-music pl-icon"></i>';
+			iconhtml = '<i class="fa fa-music pl-icon"></i>';
 			classradio = 0;
-			time = parseInt( pl.Time );
-			var title = pl.Title ? pl.Title : pl.file.split( '/' ).pop();
-			var track = pl.Track ? '#'+ pl.Track +' • ' : '';
-			var album = pl.Album ? ' • '+ pl.Album : '';
-			topline = title +'&ensp;<span class="time" time="'+ time +'">'+ convertHMS( time ) +'</span>';
-			bottomline = track + pl.Artist + album;
-			pltime += time;
+			seconds = convertSecond( pl.time );
+			topline = pl.title +'&ensp;<span class="time" time="'+ seconds +'">'+ pl.time +'</span>';
+			bottomline = pl.track
+			pltime += seconds;
 		}
 		content += '<li id="pl-'+ i +'"'+ ( classradio ? ' class="radio"' : '' ) +'>'
 			+ iconhtml
@@ -1982,6 +1981,9 @@ function setPlaybackBlank() {
 		.css( 'border-radius', 0 )
 		.one( 'load', setOneload );
 	$( '#coverartoverlay' ).addClass( 'hide' );
+}
+function convertSecond( HMS ) {
+	return HMS.time.split( ':' ).reduce( ( acc, time ) => ( 60 * acc ) + +time );
 }
 function convertHMS( second ) {
 	if ( second <= 0 ) return '';
