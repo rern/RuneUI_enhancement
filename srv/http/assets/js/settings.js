@@ -4,25 +4,26 @@ if ( document.location.hostname === 'localhost' ) $( '.osk-trigger' ).onScreenKe
 
 $( '.selectpicker' ).selectpicker();
 
-if ( /\/sources/.test( location.pathname ) ) {
-	// get updating status on load
+function toggleUpdate() {
 	$.post( 'enhance.php', { mpc: 'status' }, function( status ) {
 		var updatingdb = status.match( /Updating/ ) ? true : false;
 		$( '#updatempddb, #rescanmpddb' ).toggleClass( 'disabled', updatingdb );
 		$( '#updatempddb i, #rescanmpddb i' ).toggleClass( 'fa-spin', updatingdb );
 	} );
+}
+if ( /\/sources/.test( location.pathname ) ) {
+	// get updating status on load
+	toggleUpdate();
 	// stop fa-spin when done updating
 	var pushstreamplayback = new PushStream( {
 		host: window.location.hostname,
 		port: window.location.port,
 		modes: 'websocket'
 	} );
-	pushstreamplayback.onmessage = function( text ) {
-		var updatingdb = text[ 0 ].updating_db ? true : false;
-		$( '#updatempddb, #rescanmpddb' ).toggleClass( 'disabled', updatingdb );
-		$( '#updatempddb i, #rescanmpddb i' ).toggleClass( 'fa-spin', updatingdb );
+	pushstreamplayback.onmessage = function( data ) {
+		if ( data[ 0 ] === 'update' ) toggleUpdate();
 	}
-	pushstreamplayback.addChannel( 'playback' );
+	pushstreamplayback.addChannel( 'idle' );
 	pushstreamplayback.connect();
 
 	// enable/disable CIFS auth section
