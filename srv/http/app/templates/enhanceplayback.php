@@ -196,9 +196,7 @@ function menuli( $command, $icon, $label, $type ) {
 	return '<a data-cmd="'.$command.'"'.$type.'><i class="fa fa-'.$icon.'"></i>'.$label.'</a>';
 }
 function menudiv( $id, $html ) {
-	$id = $id ? '-'.$id : '';
-	return '
-		<div id="context-menu'.$id.'" class="menu contextmenu hide">'.$html.'</div>';
+	return '<div id="context-menu-'.$id.'" class="menu contextmenu hide">'.$html.'</div>';
 }
 function menucommon( $add, $addplay, $replaceplay ) {
 	$htmlcommon = '<a class="menushadow"></a>';
@@ -220,7 +218,7 @@ $htmlcommon = menucommon( 'add', 'addplay', 'addreplaceplay' );
 $html = $htmlcommon;
 $html.= menuli( 'rescan',   'folder-refresh', 'Update this folder' );
 $html.= menuli( 'bookmark', 'star',           'Save as bookmark' );
-$menu.= menudiv( '', $html );
+$menu.= menudiv( 'folder', $html );
 $menudiv = '';
 
 $html = $htmlcommon;
