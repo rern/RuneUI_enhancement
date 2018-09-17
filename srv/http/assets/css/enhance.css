@@ -1277,6 +1277,10 @@ span.dbpath {
 #pl-editor span {
 	padding-left: 10px;
 	line-height: 47px;
+	font-size: 18px;
+}
+#pl-editor span gr {
+	font-weight: normal;
 }
 #db-entries .active,
 #db-entries .active:hover,
