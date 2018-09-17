@@ -321,7 +321,7 @@ function playlistVerify( name, oldname ) {
 		} );
 		return;
 	}
-	$.post( 'enhance.php', { mpc: 'lsplaylists', getresult: 1 }, function( data ) {
+	$.post( 'enhance.php', { mpc: 'lsplaylists' }, function( data ) {
 		if ( $.inArray( name, data.split( '\n' ) ) === -1 ) {
 			oldname ? addPlaylist( name, oldname ) : addPlaylist( name );
 		} else {
