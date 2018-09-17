@@ -887,10 +887,10 @@ $( '#pl-editor' ).on( 'click', 'li', function( e ) {
 		}
 		countsong = ilength - countradio;
 		var counthtml = '<wh><i class="fa fa-list-ul"></i></wh><bl class="title">'+ name +'<gr>&emsp;•</gr></bl>';
-		var countradiohtml = '<wh>&emsp;'+ countradio +'</wh>&ensp;<i class="fa fa-webradio"></i>';
+		var countradiohtml = '<wh>'+ countradio +'</wh>&ensp;<i class="fa fa-webradio"></i>';
 		if ( countsong ) {
 			var pltimehtml = ' id="pltime" time="'+ pltime +'">'+ convertHMS( pltime );
-			var totalhtml = countradio ? '<gr'+ pltimehtml +'</gr>'+ countradiohtml : '<wh'+ pltimehtml +'</wh>';
+			var totalhtml = countradio ? '<gr'+ pltimehtml +'</gr>'+ countradiohtml : '<wh'+ pltimehtml +'&emsp;</wh>';
 			counthtml += '<wh>'+ numFormat( countsong ) +'</wh>&ensp;<i class="fa fa-music"></i>&ensp;'+ totalhtml;
 		} else {
 			counthtml += countradiohtml;
@@ -1893,10 +1893,10 @@ function renderPlaylist() {
 	}
 	countsong = ilength - countradio;
 	var counthtml = '<bl class="title">&emsp;P L A Y L I S T<gr>&emsp;•</gr></bl>';
-	var countradiohtml = '<wh id="countradio" count="'+ countradio +'">&emsp;'+ countradio +'</wh>&ensp;<i class="fa fa-webradio"></i>';
+	var countradiohtml = '<wh id="countradio" count="'+ countradio +'">'+ countradio +'</wh>&ensp;<i class="fa fa-webradio"></i>';
 	if ( countsong ) {
-		var pltimehtml = ' id="pltime" time="'+ pltime +'">'+ convertHMS( pltime );
-		var totalhtml = countradio ? '<gr'+ pltimehtml +'</gr>'+ countradiohtml : '<wh'+ pltimehtml +'</wh>';
+		var pltimehtml = ' id="pltime" time="'+ pltime +'">'+ convertHMS( pltime ) +'&emsp;';
+		var totalhtml = countradio ? '<gr'+ pltimehtml +'</gr>'+ countradiohtml : '<wh'+ pltimehtml +'&emsp;</wh>';
 		counthtml += '<wh id="countsong" count="'+ countsong +'">'+ numFormat( countsong ) +'</wh>&ensp;<i class="fa fa-music"></i>&ensp;'+ totalhtml;
 	} else {
 		counthtml += countradiohtml;
