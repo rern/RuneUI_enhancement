@@ -36,6 +36,7 @@ if ( empty( $this->uri(1) ) ) { ?>
 <script src="<?=$this->asset( '/js/addonsmenu.js' )?>"></script>
 <script src="<?=$this->asset( '/js/vendor/roundslider.min.js' )?>"></script>
 <script src="<?=$this->asset( '/js/enhance.js' )?>"></script>
+<script src="<?=$this->asset( '/js/enhancecontext.js' )?>"></script>
 	<?php if ( file_exists( '/srv/http/assets/js/gpio.js' ) ) { ?> 
 <script src="<?=$this->asset( '/js/gpio.js' )?>"></script>
 	<?php }
