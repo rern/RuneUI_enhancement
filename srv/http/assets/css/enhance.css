@@ -945,8 +945,8 @@ wh, gr { font-weight: 300; }
 	z-index: 10;
 }
 #bio .container {
-	max-width: 770px;
-	padding : 20px 40px;
+	max-width: 750px;
+	padding : 20px 30px;
 }
 #bio h1 {
 	display: inline-block;
