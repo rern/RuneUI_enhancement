@@ -837,7 +837,7 @@ $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 	GUI.list.li = $thisli; // for contextmenu
 	GUI.list.name = plname;
 	GUI.list.path = plname;
-	GUI.list.issong = $thisli.find( 'i' ).eq( 0 ).hasClass( 'fa-music' );
+	GUI.list.issong = $thisli.hasClass( 'pl-song' ); // used in contextmenu
 	$( '#pl-editor li' ).removeClass( 'active' );
 	$( '.contextmenu' ).addClass( 'hide' );
 	if ( plname === GUI.plcurrent ) {
@@ -845,13 +845,12 @@ $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 	} else {
 		GUI.plcurrent = plname;
 		$thisli.addClass( 'active' );
-		$contextmenu = $( '#pl-currentpath i.pls-icon' ).hasClass( 'fa-folder' ) ? $( '#context-menu-playlist' ) : $( '#context-menu-file' );
+		$contextmenu = GUI.list.issong ? $( '#context-menu-file' ) : $( '#context-menu-playlist' );
 		$contextmenu.removeClass( 'hide' ).css( 'top', $this.position().top +'px' );
 		var targetB = $contextmenu.offset().top + 246;
 		var wH = window.innerHeight;
 		if ( targetB > wH + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + ( GUI.display.bars ? 42 : 0 ) } );
 	}
-	console.log( GUI.list.issong +' - '+ GUI.list.path )
 } );
 $( '#pl-editor' ).on( 'click', 'li', function( e ) {
 	$( '#loader' ).removeClass( 'hide' );
@@ -880,7 +879,7 @@ $( '#pl-editor' ).on( 'click', 'li', function( e ) {
 				bottomline = pl.track
 				pltime += sec;
 			}
-			content += '<li data-path="'+ pl.file +'">'
+			content += '<li data-path="'+ pl.file +'" class="pl-song">'
 				+ iconhtml
 				+'<i class="fa fa-bars pl-action" data-target="#context-menu-file"></i>'
 				+'<span class="sn">'+ topline +'</span>'
@@ -888,7 +887,7 @@ $( '#pl-editor' ).on( 'click', 'li', function( e ) {
 				+'</li>';
 		}
 		countsong = ilength - countradio;
-		var counthtml = '<wh><i class="fa fa-list-ul pls-icon"></i></wh><bl class="title">'+ name +'<gr>&emsp;•</gr></bl>';
+		var counthtml = '<wh><i class="fa fa-list-ul"></i></wh><bl class="title">'+ name +'<gr>&emsp;•</gr></bl>';
 		var countradiohtml = '<wh>&emsp;'+ countradio +'</wh>&ensp;<i class="fa fa-webradio"></i>';
 		if ( countsong ) {
 			var pltimehtml = ' id="pltime" time="'+ pltime +'">'+ convertHMS( pltime );
@@ -935,7 +934,7 @@ $( '#pl-manage-list' ).click( function() {
 		var pl = data.split( '\n' );
 		pl.pop(); // remove last blank
 		var plL = pl.length;
-		var plcounthtml = '<wh><i class="fa fa-folder pls-icon"></i></wh><bl>PLAYLISTS</bl>';
+		var plcounthtml = '<wh><i class="fa fa-folder"></i></wh><bl>PLAYLISTS</bl>';
 		plcounthtml += plL ? '<gr>&emsp;•&ensp;</gr><wh id="pls-count">'+ numFormat( plL ) +'</wh>&ensp;<i class="fa fa-list-ul"></i>' : '';
 		$( '#pl-currentpath' ).html( plcounthtml +'&emsp;<i class="fa fa-arrow-left plsbackroot"></i>' );
 		$( '#pl-currentpath, #pl-editor, #pl-index' ).removeClass( 'hide' );
