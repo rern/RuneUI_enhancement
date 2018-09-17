@@ -1149,7 +1149,7 @@ wh, gr { font-weight: 300; }
 }
 #pl-currentpath i {
 	width: 40px;
-	line-height: 40px;
+	line-height: 36px;
 	text-align: center;
 	font-size: 24px;
 }
@@ -1279,7 +1279,7 @@ span.dbpath {
 	padding-left: 10px;
 	font-size: 18px;
 }
-#pl-editor span.pl {
+#pl-editor span.pleditor {
 	line-height: 48px;
 }
 #pl-editor span gr {
@@ -1303,7 +1303,8 @@ span.dbpath {
 #pl-entries .active .bl,
 #pl-entries .active:hover .bl,
 #pl-entries .active:focus .bl,
-#pl-editor li.active gr  {
+#pl-editor li.active .bl,
+#pl-editor li.active .time {
 	color: #34495e
 }
 #db-entries .db-action,
@@ -1412,8 +1413,8 @@ w {
 #pl-entries li.active i,
 #db-entries li.active .sn span,
 #pl-entries li.active .sn span,
-#pl-editor li.active .fa-bars,
-#pl-editor li.active .fa-list-ul {
+#pl-editor li.active gr,
+#pl-editor li.active i {
 	color: #34495e !important;
 }
 #pl-entries.playlist-spotify li:before {
