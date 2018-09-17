@@ -6,7 +6,6 @@ $( '.contextmenu a' ).click( function() {
 		var mpcCmd = GUI.list.isfile ? 'add "'+ name +'"' : 'ls "'+ name +'" | mpc add';
 	} else if ( $.inArray( cmd, [ 'wradd', 'wraddplay', 'wraddreplaceplay' ] ) !== -1 ) {
 		var name = GUI.list.path;
-		console.log(name)
 		cmd = cmd.replace( 'wr', 'pl' );
 	} else if ( $.inArray( cmd, [ 'pladd', 'pladdplay', 'pladdreplaceplay' ] ) !== -1 ) {
 		var name = GUI.list.name;
@@ -36,10 +35,10 @@ $( '.contextmenu a' ).click( function() {
 				, title : 'Add to Playlist'
 				, text  : GUI.list.name
 			} );
-			local();
+			tempFlag( 'local' );
 			$.post( 'enhance.php', { mpc: command }, function() {
 				if ( !$( '#currentsong' ).text() ) {
-					setPlaybackData();
+					renderPlayback();
 					$( '#playback-controls' ).removeClass( 'hide' );
 				}
 			} );
@@ -198,7 +197,7 @@ function addWebradio( name, url, oldname ) {
 		GUI.libraryhome.webradio++;
 	}
 	var data = oldname ? [ name, url, oldname ] : [ name, url ];
-	local();
+	tempFlag( 'local' );
 	$.post( 'enhance.php', { webradios: data }, function() {
 		setTimeout( function() {
 			$( '#home-webradio' ).click();
@@ -259,7 +258,7 @@ function webRadioDelete() {
 		, ok      : function() {
 			$( '#db-entries li.active').remove();
 			GUI.libraryhome.webradio--;
-			local();
+			tempFlag( 'local' );
 			$.post( 'enhance.php', { webradios: GUI.list.name } );
 		}
 	} );
@@ -297,7 +296,7 @@ function playlistRename() {
 function addPlaylist( name, oldname ) {
 	if ( oldname ) {
 		GUI.list.li.find( 'span' ).text( name );
-		local();
+		tempFlag( 'local' );
 		$.post( 'enhance.php', { mpc: [ 'rm "'+ oldname +'"', 'save "'+ name +'"' ] } );
 	} else {
 		new PNotify( {
@@ -305,7 +304,7 @@ function addPlaylist( name, oldname ) {
 			, title : 'Playlist Saved'
 			, text  : name
 		} );
-		local();
+		tempFlag( 'local' );
 		$.post( 'enhance.php', { mpc: 'save "'+ name +'"' } );
 	}
 }
@@ -355,7 +354,7 @@ function playlistDelete() {
 			if ( !count ) $( '#pl-currentpath' ).html( '<bl>&emsp;PLAYLISTS</bl>' );
 			GUI.list.li.remove();
 			
-			local();
+			tempFlag( 'local' );
 			$.post( 'enhance.php', { mpc: 'rm "'+ GUI.list.name +'"' } );
 		}
 	} );
