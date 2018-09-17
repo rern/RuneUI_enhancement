@@ -1132,6 +1132,7 @@ wh, gr { font-weight: 300; }
 #db-currentpath i {
 	margin: 0;
 }
+.plsbackroot,
 .plsback,
 #db-currentpath a:first-of-type {
 	color: #0095d8;
