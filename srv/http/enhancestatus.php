@@ -145,7 +145,13 @@ function samplingline( $bitdepth, $samplerate, $bitrate ) {
 	if ( $bitdepth === 'N/A' ) {
 		$bitdepth = ( $ext === 'WAV' || $ext === 'AIFF' ) ? ( $bitrate / $samplerate / 2 ).' bit ' : '';
 	} else {
-		$bitdepth = $bitdepth ? $bitdepth.' bit ' : '';
+		if ( $bitdepth === 'dsd' ) {
+			$dsd = round( $bitrate / 44100 );
+			$bitrate = round( $bitrate / 1000000, 2 );
+			return 'DSD'.$dsd.' - '.$bitrate.' Mbit/s';
+		} else {
+			$bitdepth = $bitdepth ? $bitdepth.' bit ' : '';
+		}
 	}
 	$samplerate = round( $samplerate / 1000, 1 ).' kHz ';
 	if ( $bitrate < 1000000 ) {
@@ -159,7 +165,6 @@ function samplingline( $bitdepth, $samplerate, $bitrate ) {
 if ( $status[ 'state' ] === 'play' ) {
 	// lossless - no bitdepth
 	$bitdepth = ( $status[ 'ext' ] === 'radio' ) ? '' : $status[ 'bitdepth' ];
-	if ( $bitdepth === 'dsd' ) $bitdepth = 1;
 	$sampling = samplingline( $bitdepth, $status[ 'samplerate' ], $status[ 'bitrate' ] );
 	$status[ 'sampling' ] = $sampling;
 	echo json_encode( $status, JSON_NUMERIC_CHECK );
@@ -189,9 +194,9 @@ if ( $ext === 'DSF' || $ext === 'DFF' ) {
 		$hex = implode( '', $hex );
 	}
 	$bitrate = hexdec( $hex );
-	$dsd = $bitrate / 44100;
+	$dsd = round( $bitrate / 44100 );
 	$bitrate = round( $bitrate / 1000000, 2 );
-	$sampling = '1 bit DSD'.$dsd.' - '.$bitrate.' Mbit/s';
+	$sampling = 'DSD'.$dsd.' - '.$bitrate.' Mbit/s';
 } else {
 	$data = shell_exec( '/usr/bin/ffprobe -v quiet -select_streams a:0 -show_entries stream=bits_per_raw_sample,sample_rate -show_entries format=bit_rate -of default=noprint_wrappers=1:nokey=1 "'.$file.'"' );
 	$data = explode( "\n", $data );
