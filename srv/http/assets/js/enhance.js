@@ -648,7 +648,6 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	mutationLibrary.observe( observerLibrary, observerOption );
 	$( '#db-entries li' ).removeClass( 'active' );
 	$this.addClass( 'active' );
-	if ( !$this.hasClass( 'db-folder' ) ) return;
 	
 	var mode = $this.attr( 'mode' );
 	if ( [ 'dirble', 'jamendo', 'spotify' ].indexOf( mode ) === -1 ) {
@@ -810,9 +809,9 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 	GUI.list = {};
 	GUI.list.path = GUI.dbpath; // used in contextmenu
 	GUI.list.name = $thisli.attr( 'liname' );
-	GUI.list.issong = $thisli.hasClass( 'db-song' ); // used in contextmenu
+	GUI.list.isfile = $thisli.find( 'i.db-icon' ).hasClass( 'fa-music' ); // used in contextmenu
 	if ( $( '#db-currentpath' ).attr( 'path' ) === 'Webradio' ) GUI.list.url = $thisli.find( '.bl' ).text();
-	var $target = $( $this.data( 'target' ) );
+	var $menu = $( $this.data( 'target' ) );
 	$( '#db-entries li' ).removeClass( 'active' );
 	$( '.contextmenu' ).addClass( 'hide' );
 	if ( GUI.dbpath === GUI.dbcurrent ) {
@@ -820,10 +819,10 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 	} else {
 		GUI.dbcurrent = GUI.dbpath;
 		$thisli.addClass( 'active' );
-		$target.removeClass( 'hide' )
+		$menu.removeClass( 'hide' )
 			.css( 'top', $this.position().top +'px' )
-			.find( '.menushadow' ).css( 'height', $target.find( 'i' ).length * 41 );
-		var targetB = $target.offset().top + $target.height();
+			.find( '.menushadow' ).css( 'height', $menu.find( 'i' ).length * 41 );
+		var targetB = $menu.offset().top + $menu.height();
 		var wH = window.innerHeight;
 		if ( targetB > wH + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + ( GUI.display.bars ? 42 : 0 ) } );
 	}
@@ -837,7 +836,7 @@ $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 	GUI.list.li = $thisli; // for contextmenu
 	GUI.list.name = plname;
 	GUI.list.path = plname;
-	GUI.list.issong = $thisli.hasClass( 'pl-song' ); // used in contextmenu
+	GUI.list.isfile = $thisli.hasClass( 'pl-song' ); // used in contextmenu
 	$( '#pl-editor li' ).removeClass( 'active' );
 	$( '.contextmenu' ).addClass( 'hide' );
 	if ( plname === GUI.plcurrent ) {
@@ -845,7 +844,7 @@ $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 	} else {
 		GUI.plcurrent = plname;
 		$thisli.addClass( 'active' );
-		$contextmenu = GUI.list.issong ? $( '#context-menu-file' ) : $( '#context-menu-playlist' );
+		$contextmenu = GUI.list.isfile ? $( '#context-menu-file' ) : $( '#context-menu-playlist' );
 		$contextmenu.removeClass( 'hide' ).css( 'top', $this.position().top +'px' );
 		var targetB = $contextmenu.offset().top + 246;
 		var wH = window.innerHeight;
@@ -1508,37 +1507,31 @@ function parseResponse( inputArr, i, respType, inpath, querytype ) {
 								var bl = inputArr.file.split( '/' ).pop(); // filename
 							}
 							var liname = inputArr.Title
-							content += inputArr.file +'" class="db-song" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i>';
+							content += inputArr.file +'" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i>';
 							content += '<span class="sn">'+ liname +'&ensp;<span class="time">'+ convertHMS( inputArr.Time ) +'</span></span>';
 							content += '<span class="bl">'+ bl;
 						} else {
 							var liname = inputArr.file.replace( inpath +'/', '' );
-							content += inputArr.file +'" class="db-song" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i>';
+							content += inputArr.file +'" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i>';
 							content += '<span class="sn">'+ liname +'&ensp;<span class="time">' + convertHMS( inputArr.Time ) +'</span></span>';
 							content += '<span class="bl"> path: '+ inpath;
 						}
 					} else {
 						var liname = inputArr.playlist.replace( inpath +'/', '' ).replace( '.'+ inputArr.fileext, '' );
-						content += inputArr.playlist +'" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-webradio"></i><i class="fa fa-webradio db-icon db-radio"></i>';
+						content += inputArr.playlist +'" class="db-webradio" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-webradio"></i><i class="fa fa-webradio db-icon db-radio"></i>';
 						content += '<span class="sn">'+ liname +'</span>';
 						content += '<span class="bl">'+ inputArr.url;
 					}
 					content += '</span></li>';
-				} else if ( inputArr.playlist ) {
-					if ( inputArr.fileext === 'cue' ) {
-						var liname = inputArr.playlist.replace( inpath +'/', '' );
-						content += inputArr.playlist +'" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-file-text db-icon"></i>';
-						content += '<span class="sn">'+ liname +' <span>[CUE file]</span></span>';
-						content += '<span class="bl"> path: '+ inpath +'</span></li>';
-					}
+				} else if ( inputArr.playlist && inputArr.fileext === 'cue' ) {
+					var liname = inputArr.playlist.replace( inpath +'/', '' );
+					content += inputArr.playlist +'" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-file-text db-icon"></i>';
+					content += '<span class="sn">'+ liname +' <span>[CUE file]</span></span>';
+					content += '<span class="bl"> path: '+ inpath +'</span></li>';
 				} else {
 					var liname = inputArr.directory.replace( inpath +'/', '' );
-					content += inputArr.directory +'" class="db-folder" liname="'+ liname +'"><i class="fa fa-bars db-action"';
-					if (inpath !== '' ) {
-						content += ' data-target="#context-menu"></i><span><i class="fa fa-folder"></i>'
-					} else {
-						content += ' data-target="#context-menu-root"></i><i class="fa fa-hdd-o icon-root"></i>';
-					}
+					content += inputArr.directory +'" liname="'+ liname +'"><i class="fa fa-bars db-action"';
+					content += ' data-target="#context-menu-folder"></i><span><i class="fa fa-folder"></i>'
 					content += '<span class="dbpath">'+ liname +'</span></li>';
 				}
 			} else if ( GUI.browsemode === 'album' || GUI.browsemode === 'albumfilter' ) {
@@ -1549,17 +1542,17 @@ function parseResponse( inputArr, i, respType, inpath, querytype ) {
 					content += '<span class="bl">'+ inputArr.Album +' - '+ inputArr.Artist +'</span></li>';
 				} else if ( inputArr.album !== '' ) {
 					var liname = inputArr.album;
-					content += inputArr.album.replace( /\"/g, '&quot;' ) +'" class="db-folder" mode="album" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-album"></i>';
+					content += inputArr.album.replace( /\"/g, '&quot;' ) +'" mode="album" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-album"></i>';
 					content += '<span><i class="fa fa-album"></i>'+ liname +'</span></li>';
 				}
 			} else if ( GUI.browsemode === 'artist' ) {
 				if ( inputArr.album ) {
 					var liname = inputArr.album ? inputArr.album : 'Unknown album';
-					content += inputArr.album +'" class="db-folder" mode="album" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-album"></i>';
+					content += inputArr.album +'" mode="album" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-album"></i>';
 					content += '<span><i class="fa fa-album"></i>'+ liname +'</span></li>';
 				} else if ( inputArr.artist !== '' ) {
 					var liname = inputArr.artist;
-					content += inputArr.artist +'" class="db-folder" mode="artist" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-artist"></i>';
+					content += inputArr.artist +'" mode="artist" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-artist"></i>';
 					content += '<span><i class="fa fa-artist"></i>'+ liname +'</span></li>';
 				}
 			} else if ( GUI.browsemode === 'composer' ) {
@@ -1570,17 +1563,17 @@ function parseResponse( inputArr, i, respType, inpath, querytype ) {
 					content += '<span class="bl">'+ inputArr.Artist +' - '+ inputArr.Album +'</span></li>';
 				} else if ( inputArr.composer !== '' ) {
 					var liname = inputArr.composer;
-					content += inputArr.composer +'" class="db-folder" mode="composer" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-composer"></i>';
+					content += inputArr.composer +'" mode="composer" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-composer"></i>';
 					content += '<span><i class="fa fa-composer"></i>'+ inputArr.composer +'</span></li>';
 				}
 			} else if ( GUI.browsemode === 'genre' ) {
 				if ( inputArr.artist ) {
 					var liname = inputArr.artist ? inputArr.artist : 'Unknown artist';
-					content += inputArr.artist +'" class="db-folder" mode="artist" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-artist"></i>';
+					content += inputArr.artist +'" mode="artist" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-artist"></i>';
 					content += '<span><i class="fa fa-album"></i>'+ liname +'</span></li>';
 				} else if (inputArr.genre !== '' ) {
 					var liname = inputArr.genre ;
-					content += inputArr.genre +'" class="db-folder" mode="genre" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-genre"></i>';
+					content += inputArr.genre +'" mode="genre" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-genre"></i>';
 					content += '<span><i class="fa fa-genre"></i>'+ liname;+'</span></li>';
 				}
 			}
@@ -1588,7 +1581,7 @@ function parseResponse( inputArr, i, respType, inpath, querytype ) {
 		case 'Spotify':
 			if ( querytype === '' ) {
 				var liname = inputArr.name ? inputArr.name : 'Favorites';
-				content += inputArr.index +'" class="db-folder" mode="spotify" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-spotify-pl"></i>'
+				content += inputArr.index +'" mode="spotify" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-spotify-pl"></i>'
 				content += '<span><i class="fa fa-genre"></i>'+ liname +' ( '+ inputArr.tracks +' )</span></li>';
 			} else if ( querytype === 'tracks' ) {
 				var liname = inputArr.Title;
@@ -1601,21 +1594,21 @@ function parseResponse( inputArr, i, respType, inpath, querytype ) {
 			if ( querytype === '' || querytype === 'childs' ) {
 				var liname = inputArr.title;
 				var childClass = ( querytype === 'childs' ) ? ' db-dirble-child' : '';
-				content += inputArr.id +'" class="db-folder'+ childClass +'" mode="dirble" liname="'+ liname +'">'
+				content += inputArr.id +'" class="db-dirble'+ childClass +'" mode="dirble" liname="'+ liname +'">'
 				content += '<span><i class="fa fa-genre"></i>'+ liname +'</span></li>';
 			} else if ( querytype === 'search' || querytype === 'stations' || querytype === 'childs-stations' ) {
 				if ( !inputArr.streams.length ) {
 					break; // Filter stations with no streams
 				}
 				var liname = inputArr.name;
-				content += inputArr.name +' | '+ inputArr.streams[ 0 ].stream +'" class="db-radio" mode="dirble" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-dirble"></i><i class="fa fa-webradio db-icon"></i>';
+				content += inputArr.name +' | '+ inputArr.streams[ 0 ].stream +'" mode="dirble" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-dirble"></i><i class="fa fa-webradio db-icon"></i>';
 				content += '<span class="sn">'+ liname +'&ensp;<span>( '+ inputArr.country +' )</span></span>';
 				content += '<span class="bl">'+ ( inputArr.website ? inputArr.website : '-no website-' ) +'</span></li>';
 			}
 			break;
 		case 'Jamendo':
 			var liname = inputArr.dispname;
-			content += inputArr.stream +'" class="db-folder" mode="jamendo" liname="'+ liname +'"><img class="jamendo-cover" src="'+ inputArr.image +'" alt=""><i class="fa fa-bars db-action" data-target="#context-menu-file"></i>';
+			content += inputArr.stream +'" mode="jamendo" liname="'+ liname +'"><img class="jamendo-cover" src="'+ inputArr.image +'" alt=""><i class="fa fa-bars db-action" data-target="#context-menu-file"></i>';
 			content += '<span>'+ liname +'</span></div></li>';
 			break;
 	}
@@ -1828,7 +1821,7 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 	}
 	if ( querytype != 'childs' ) $( '#loader' ).addClass( 'hide' );
 	// hide index bar in file mode
-	if ( $( '#db-entries li:eq( 0 )' ).hasClass( 'db-song' ) ) {
+	if ( $( '#db-entries li:eq( 0 ) i.db-icon' ).hasClass( 'fa-music' ) ) {
 		$( '#db-index' ).addClass( 'hide' );
 		$( '#db-entries' ).css( 'width', '100%' );
 	} else {
@@ -2235,7 +2228,7 @@ $( '.contextmenu a' ).click( function() {
 	var cmd = $( this ).data( 'cmd' );
 	if ( $.inArray( cmd, [ 'add', 'addplay', 'addreplaceplay' ] ) !== -1 ) {
 		var name = GUI.list.path;
-		var mpcCmd = GUI.list.issong ? 'add "'+ name +'"' : 'ls "'+ name +'" | mpc add';
+		var mpcCmd = GUI.list.isfile ? 'add "'+ name +'"' : 'ls "'+ name +'" | mpc add';
 	} else if ( $.inArray( cmd, [ 'wradd', 'wraddplay', 'wraddreplaceplay' ] ) !== -1 ) {
 		var name = GUI.list.path;
 		console.log(name)
