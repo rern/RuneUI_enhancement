@@ -2287,9 +2287,9 @@ function bookmarkNew() {
 		  icon       : 'edit-circle'
 		, title      : 'Add Bookmark'
 		, width      : 500
-		, message    : 'Bookmark:'
+		, message    : 'Bookmark'
 						+'<br><white>'+ path +'</white>'
-		, textlabel  : 'As'
+						+'<br>As:'
 		, textvalue  : name
 		, textalign  : 'center'
 		, boxwidth   : 'max'
@@ -2304,10 +2304,10 @@ function bookmarkRename( name, path ) {
 		  icon      : 'edit-circle'
 		, title     : 'Rename Bookmark'
 		, width     : 500
-		, message   : 'Rename:'
+		, message   : 'Rename'
 					+'<br><white>'+ name +'</white>'
 					+'<br>'+ path
-		, textlabel : 'Name'
+					+'<br>To:'
 		, textvalue : name
 		, textalign  : 'center'
 		, boxwidth  : 'max'
@@ -2386,6 +2386,7 @@ function webRadioNew( name, url ) {
 		  icon       : 'edit-circle'
 		, title      : 'Add Webradio'
 		, width      : 500
+		, message    : 'Add new Webradio:'
 		, textlabel  : 'Name'
 		, textlabel2 : 'URL'
 		, textalign  : 'center'
@@ -2404,7 +2405,7 @@ function webRadioRename() {
 		, message    : 'Edit:'
 					+'<br><white>'+ GUI.list.name +'</white>'
 					+'<br>'+ GUI.list.url
-		, textlabel  : 'Name'
+					+'<br>To:'
 		, textvalue  : GUI.list.name
 		, textalign  : 'center'
 		, boxwidth   : 'max'
@@ -2507,8 +2508,8 @@ function playlistRename() {
 		  icon      : 'edit-circle'
 		, title     : 'Rename Playlist'
 		, message   : 'Rename:'
-		             +'<br><white>'+ GUI.list.name +'</white>'
-		, textlabel : 'To'
+					+'<br><white>'+ GUI.list.name +'</white>'
+					+'<br>To:'
 		, textvalue : GUI.list.name
 		, textalign : 'center'
 		, boxwidth  : 'max'
