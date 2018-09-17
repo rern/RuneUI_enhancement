@@ -90,11 +90,18 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	if ( $mpc === 'clear' ) $data = 'clear';
 	if ( isset( $_POST[ 'pushstream' ] ) ) pushstream( $_POST[ 'pushstream' ], $data );
 } else if ( isset( $_POST[ 'getplaylist' ] ) ) {
-	$lines = shell_exec( 'mpc playlist -f "%title%,%time%,[##%track% • ]%artist%[ • %album%],%file%"' );
+	$name = isset( $_POST[ 'name' ] ) ? $_POST[ 'name' ] : '';
+	$lines = shell_exec( 'mpc -f "%title%,%time%,[##%track% • ]%artist%[ • %album%],%file%" playlist '.$name );
+	if ( strpos( $lines, 'http' ) ) {
+		$redis = new Redis();
+		$redis->pconnect( '127.0.0.1' );
+		$webradios = $redis->hGetAll( 'webradios' );
+		$webradioname = array_flip( $webradios );
+	}
 	$lists = explode( "\n", rtrim( $lines ) );
 	foreach( $lists as $list ) {
 		$li = explode( ',', $list );
-		$pl[ 'title' ] = $li[ 0 ];
+		$pl[ 'title' ] = $li[ 0 ] ? $li[ 0 ] : $webradioname[ $li[ 3 ] ];
 		$pl[ 'time' ] = $li[ 1 ];
 		$pl[ 'track' ] = $li[ 2 ];
 		$pl[ 'file' ] = $li[ 3 ];
@@ -102,16 +109,6 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 		$pl = '';
 	}
 	echo json_encode( $data, JSON_NUMERIC_CHECK );
-} else if ( isset( $_POST[ 'getsavedplaylist' ] ) ) {
-	$lists = shell_exec( 'mpc lsplaylists' );
-	$lists = explode( "\n", $lists );
-	array_pop( $lists );
-	$data = '';
-	foreach( $lists as $list ) {
-		$count = exec( 'mpc playlist '.$list.' | awk NF | wc -l' );
-		$data.= "$list</wh>&emsp;<gr>$count ♫</gr>\n";
-	}
-	echo $data;
 } else if ( isset( $_POST[ 'bkmarks' ] ) || isset( $_POST[ 'webradios' ] ) ) {
 	$redis = new Redis();
 	$redis->pconnect( '127.0.0.1' );
