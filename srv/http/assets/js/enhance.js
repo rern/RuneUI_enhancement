@@ -922,14 +922,6 @@ $( '#pl-editor' ).on( 'click', 'li', function( e ) {
 		} else {
 			counthtml += countradiohtml;
 		}
-		
-		
-		
-/*		countsong = ilength - countradio;
-		var plcounthtml = '<wh><i class="fa fa-list-ul"></i></wh> <bl>'+ name +'</bl><gr>&emsp;•&ensp;</gr>';
-		if ( countsong ) plcounthtml += '<wh id="spls-count">'+ numFormat( countsong ) +'</wh>&ensp;<i class="fa fa-music"></i>';
-		if ( countradio ) plcounthtml += '<wh id="scountradio" count="'+ countradio +'">'+ countradio +'</wh>&ensp;<i class="fa fa-webradio"></i>';
-		plcounthtml += '&emsp;<i class="fa fa-arrow-left plsback"></i>';*/
 		$( '#pl-currentpath' ).html( counthtml +'&emsp;<i class="fa fa-arrow-left plsback"></i>' );
 		$( '#pl-currentpath, #pl-editor' ).removeClass( 'hide' );
 		$( '#pl-editor' ).html( content +'<p></p>' ).promise().done( function() {
