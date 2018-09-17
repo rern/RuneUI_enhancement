@@ -1817,7 +1817,7 @@ w {
 	#pl-entries span.bl {
 		font-size: 12px;
 	}
-	#pl-editor span {
+	#pl-editor span.pleditor {
 		line-height: 47px;
 	}
 }
