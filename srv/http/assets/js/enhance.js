@@ -41,12 +41,11 @@ var psOption = {
 	, modes: 'websocket'
 };
 var pushstreams = {};
-var streams = [ 'idle', 'notify', 'display', 'library', 'playlist', 'playback' ];
+var streams = [ 'idle', 'notify', 'display', 'library' ];
 $.each( streams, function( i, stream ) {
 	pushstreams[ stream ] = new PushStream( psOption );
 	pushstreams[ stream ].addChannel( stream );
 } );
-pushstreams[ 'playback' ].reconnectOnChannelUnavailableInterval = 5000;
 
 pushstreams[ 'idle' ].onmessage = function( data ) {
 	var data = data[ 0 ];
@@ -95,35 +94,6 @@ pushstreams[ 'display' ].onmessage = function( data ) {
 pushstreams[ 'library' ].onmessage = function( data ) {
 	if ( data != 1 ) GUI.libraryhome = data;
 	if ( !GUI.local && !GUI.bookmarkedit ) renderLibrary();
-}
-pushstreams[ 'playback' ].onmessage = function( data ) {
-/*	var data = data[ 0 ];
-	if ( data && typeof data[ 0 ] === 'object' ) GUI.status = data[ 0 ];
-	if ( GUI.local ) return;
-//	if ( status.actPlayer === 'Spotify' || status.actPlayer === 'Airplay' ) GUI.json = status;
-	if ( $( '#panel-playback' ).hasClass( 'active' ) ) {
-		data === 1 ? setPlaybackData() : renderPlayback();
-		// imodedelay fix imode flashing on usb dac switching
-		if ( !GUI.imodedelay ) displayPlayback();
-	} else if ( $( '#panel-playlist' ).hasClass( 'active' ) && !GUI.pleditor ) {
-		setPlaylistScroll();
-	}*/
-}
-/*pushstreams[ 'playback' ].onstatuschange = function( code ) {
-	$( '#loader' ).toggleClass( 'hide', code !== 0 );
-//	if ( $( '#panel-playback' ).hasClass( 'active' ) ) setPlaybackData();
-}*/
-pushstreams[ 'playlist' ].onmessage = function( data ) {
-/*	var data = data[ 0 ];
-	if ( data && typeof data === 'object' ) {
-		GUI.playlist = data;
-		GUI.status.playlistlength = GUI.playlist.length
-	} else {
-		GUI.playlist = {};
-	}
-	if ( GUI.pleditor || GUI.local ) return;
-	
-	renderPlaylist();*/
 }
 $.each( streams, function( i, stream ) {
 	pushstreams[ stream ].connect();
@@ -272,16 +242,19 @@ $( '#open-playback' ).click( function() {
 	displayPlayback();
 } );
 $( '#open-playlist' ).click( function() {
-	$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
-		GUI.playlist = data;
-		renderPlaylist();
-	}, 'json' );
+	
 	if ( $( this ).hasClass( 'active' ) && GUI.pleditor ) GUI.pleditor = 0;
 	if ( GUI.activePlayer === 'Airplay' || GUI.activePlayer === 'Spotify' ) {
 		$( '#overlay-playsource' ).addClass( 'open' );
 		return;
 	}
 	panelSelect( $( '#panel-playlist' ) );
+	if ( GUI.pleditor ) return;
+	
+	$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
+		GUI.playlist = data;
+		renderPlaylist();
+	}, 'json' );
 } );
 function panelLR( lr ) {
 	var pcurrent = $( '.tab-pane.active' ).prop( 'id' );
@@ -937,6 +910,9 @@ $( '#pl-editor' ).on( 'click', 'li', function( e ) {
 $( '#pl-currentpath' ).on( 'click', '.plsback', function() {
 	$( '#pl-manage-list' ).click();
 } );
+$( '#pl-currentpath' ).on( 'click', '.plsbackroot', function() {
+	$( '#open-playlist' ).click();
+} );
 
 $( '#pl-home' ).click( function() {
 	$( '#open-playlist' ).click();
@@ -959,7 +935,7 @@ $( '#pl-manage-list' ).click( function() {
 		var plL = pl.length;
 		var plcounthtml = '<wh><i class="fa fa-folder"></i></wh><bl>PLAYLISTS</bl>';
 		plcounthtml += plL ? '<gr>&emsp;•&ensp;</gr><wh id="pls-count">'+ numFormat( plL ) +'</wh>&ensp;<i class="fa fa-list-ul"></i>' : '';
-		$( '#pl-currentpath' ).html( plcounthtml );
+		$( '#pl-currentpath' ).html( plcounthtml +'&emsp;<i class="fa fa-arrow-left plsbackroot"></i>' );
 		$( '#pl-currentpath, #pl-editor, #pl-index' ).removeClass( 'hide' );
 		
 		pl.sort( function( a, b ) {
