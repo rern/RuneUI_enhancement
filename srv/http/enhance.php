@@ -1,7 +1,4 @@
 <?php
-//   mpc    : { mpc: command }  // multiples commands must be array
-//   volume : N ... mute/unmute: N = -1 )
-
 function pushstream( $channel, $data = 1 ) {
 	$ch = curl_init( 'http://localhost/pub?id='.$channel );
 	curl_setopt( $ch, CURLOPT_HTTPHEADER, array( 'Content-Type:application/json' ) );
@@ -10,20 +7,35 @@ function pushstream( $channel, $data = 1 ) {
 	curl_close( $ch );
 }
 
+// no redis
+if ( isset( $_POST[ 'mpc' ] ) ) {
+	$mpc = $_POST[ 'mpc' ];
+	if ( !is_array( $mpc ) ) { // multiples commands is array
+		$result = shell_exec( 'mpc '.$mpc );
+	} else {
+		foreach( $mpc as $cmd ) {
+			$result = shell_exec( 'mpc '.$cmd );
+		}
+	}
+	echo $result;
+	exit();
+} else if ( isset( $_POST[ 'bash' ] ) ) {
+	echo shell_exec( '/usr/bin/sudo '.$_POST[ 'bash' ] );
+	exit();
+}
+
+// with redis
+$redis = new Redis();
+$redis->pconnect( '127.0.0.1' );
+
 if ( isset( $_POST[ 'getdisplay' ] ) ) {
-	$redis = new Redis();
-	$redis->pconnect( '127.0.0.1' );
-	usleep( 100000 ); // !important - get data must wait at least 50000
+	usleep( 100000 ); // !important - get data must wait connection start at least (0.05s)
 	pushstream( 'display', $redis->hGetAll( 'display' ) );
 } else if ( isset( $_POST[ 'setdisplay' ] ) ) {
-	$redis = new Redis();
-	$redis->pconnect( '127.0.0.1' );
 	$data = $_POST[ 'setdisplay' ];
 	$redis->hmSet( 'display', $data );
 	pushstream( 'display', $data );
 } else if ( isset( $_POST[ 'library' ] ) ) {
-	$redis = new Redis();
-	$redis->pconnect( '127.0.0.1' );
 	$sd = exec( 'mpc list title base LocalStorage | wc -l' );
 	$network = exec( 'df | grep "/mnt/MPD/NAS" | wc -l' );
 	$usb = exec( 'df | grep "/mnt/MPD/USB" | wc -l' );
@@ -54,11 +66,7 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	);
 	$status = array_merge( $mpccounts, $data );
 	echo json_encode( $status, JSON_NUMERIC_CHECK );
-} else if ( isset( $_POST[ 'bash' ] ) ) {
-	echo shell_exec( '/usr/bin/sudo '.$_POST[ 'bash' ] );
 } else if ( isset( $_POST[ 'volume' ] ) ) {
-	$redis = new Redis();
-	$redis->pconnect( '127.0.0.1' );
 	$volume = $_POST[ 'volume' ];
 	$volumemute = $redis->hGet( 'display', 'volumemute' );
 	if ( $volume == '-1' ) {
@@ -76,28 +84,10 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	$redis->hSet( 'display', 'volumemute', $currentvol );
 	exec( 'mpc volume '.$vol );
 	pushstream( 'playback' );
-} else if ( isset( $_POST[ 'mpc' ] ) ) {
-	$mpc = $_POST[ 'mpc' ];
-	if ( !is_array( $mpc ) ) {
-		$result = shell_exec( 'mpc '.$mpc );
-	} else {
-		foreach( $mpc as $cmd ) {
-			$result = shell_exec( 'mpc '.$cmd );
-		}
-	}
-	echo $result;
-	$data = isset( $_POST[ 'getresult' ] ) ? $result : 1;
-	if ( $mpc === 'clear' ) $data = 'clear';
-	if ( isset( $_POST[ 'pushstream' ] ) ) pushstream( $_POST[ 'pushstream' ], $data );
 } else if ( isset( $_POST[ 'getplaylist' ] ) ) {
 	$name = isset( $_POST[ 'name' ] ) ? $_POST[ 'name' ] : '';
 	$lines = shell_exec( 'mpc -f "%title%,%time%,[##%track% • ]%artist%[ • %album%],%file%" playlist '.$name );
-	if ( strpos( $lines, 'http' ) ) {
-		$redis = new Redis();
-		$redis->pconnect( '127.0.0.1' );
-		$webradios = $redis->hGetAll( 'webradios' );
-		$webradioname = array_flip( $webradios );
-	}
+	if ( strpos( $lines, 'http' ) ) $webradioname = array_flip( $redis->hGetAll( 'webradios' ) );
 	$lists = explode( "\n", rtrim( $lines ) );
 	foreach( $lists as $list ) {
 		$li = explode( ',', $list );
@@ -110,8 +100,6 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	}
 	echo json_encode( $data, JSON_NUMERIC_CHECK );
 } else if ( isset( $_POST[ 'bkmarks' ] ) || isset( $_POST[ 'webradios' ] ) ) {
-	$redis = new Redis();
-	$redis->pconnect( '127.0.0.1' );
 	if ( isset( $_POST[ 'bkmarks' ] ) ) {
 		$key = 'bkmarks';
 		$data = $_POST[ 'bkmarks' ];
@@ -140,8 +128,6 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	if ( $key === 'webradios' ) exec( 'mpc update Webradio' );
 	pushstream( 'library', 1 );
 } else if ( isset( $_POST[ 'radio' ] ) ) {
-	$redis = new Redis();
-	$redis->pconnect( '127.0.0.1' );
 	$radio = $_POST[ 'radio' ];
 	$redis->hSet('webradios', $data->label, $data->url);
 	if ( is_array( $bkmark ) ) {
@@ -151,8 +137,6 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	}
 	pushstream( 'library', 1 );
 } else if ( isset( $_POST[ 'power' ] ) ) {
-	$redis = new Redis();
-	$redis->pconnect( '127.0.0.1' );
 	$sudo = '/usr/bin/sudo /usr/bin/';
 	if ( file_exists( '/root/gpiooff.py' ) ) $cmd.= '/usr/bin/sudo /root/gpiooff.py;';
 	if ( $redis->get( local_browser ) === '1' ) $cmd .= $sudo.'killall Xorg; /usr/local/bin/ply-image /srv/http/assets/img/bootsplash.png;';
