@@ -237,7 +237,7 @@ chown -R http:http /mnt/MPD/Webradio
 # set initial gpio #######################################
 string=$( cat <<'EOF'
 [Unit]
-Description=mpc idleloop
+Description=mpc idle loop
 After=mpd.service
 [Service]
 ExecStart=/srv/http/enhanceidle.sh
@@ -245,7 +245,7 @@ ExecStart=/srv/http/enhanceidle.sh
 WantedBy=multi-user.target
 EOF
 )
-echo "$string" > /etc/systemd/system/mpdidle.service
+echo "$string" > /etc/systemd/system/mpcidle.service
 
 systemctl enable mpcidle
 systemctl daemon-reload
