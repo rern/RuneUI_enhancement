@@ -882,38 +882,63 @@ $( '#pl-editor' ).on( 'click', 'li', function( e ) {
 	$( '#loader' ).removeClass( 'hide' );
 	
 	var name = $( this ).data( 'path' );
-	$.post( 'enhance.php', { getsavedpls: name }, function( data ) {
+	$.post( 'enhance.php', { getplaylist: 1, name: name }, function( data ) {
 		var countradio = 0;
-		var content, path, icon, plname;
-		content = path = icon = plname = '';
-		$.each( data, function( i, val ) {
-			if ( typeof val === 'object' ) {
-				icon = 'fa-webradio';
-				plname = val[ 1 ];
-				path = val[ 0 ]
-				countradio++;
+		var content, pl, iconhtml, topline, bottomline, classradio, hidetotal;
+		content = iconhtml = topline =bottomline = classradio = hidetotal = '';
+		var id, totaltime, pltime, seconds, countsong, countradio;
+		id = totaltime = pltime = seconds = countsong = countradio = 0;
+		var ilength = data.length;
+		for ( i = 0; i < ilength; i++ ) {
+			var pl = data[ i ];
+			if ( pl.file.slice( 0, 4 ) === 'http' ) {
+				iconhtml = '<i class="fa fa-webradio pl-icon"></i>';
+				classradio = 1;
+				countradio++
+				topline = pl.title;
+				bottomline = pl.file;
 			} else {
-				icon = 'fa-music';
-				plname = val;
-				path = val;
+				iconhtml = '<i class="fa fa-music pl-icon"></i>';
+				classradio = 0;
+				sec = convertSecond( pl.time );
+				topline = pl.title +'&ensp;<gr>'+ pl.time +'</gr>';
+				bottomline = pl.track
+				pltime += sec;
 			}
-			content += '<li data-path="'+ path +'"><i class="fa '+ icon +' pl-icon"></i><i class="fa fa-minus-circle pl-action"></i><span>'+ plname +'</span></li>';
-		} );
-		var plL = data.length;
-		var countsong = plL - countradio;
-		var plcounthtml = '<bl>&emsp;'+ name +'</bl><gr>&emsp;•&ensp;</gr>';
+			content += '<li data-path="'+ pl.file +'">'
+				+ iconhtml
+				+'<i class="fa fa-bars pl-action" data-target="#context-menu-file"></i>'
+				+'<span class="sn">'+ topline +'</span>'
+				+'<span class="bl">'+ bottomline +'</span>'
+				+'</li>';
+		}
+		countsong = ilength - countradio;
+		var counthtml = '<wh><i class="fa fa-list-ul"></i></wh><bl class="title">'+ name +'<gr>&emsp;•</gr></bl>';
+		var countradiohtml = '<wh>&emsp;'+ countradio +'</wh>&ensp;<i class="fa fa-webradio"></i>';
+		if ( countsong ) {
+			var pltimehtml = ' id="pltime" time="'+ pltime +'">'+ convertHMS( pltime );
+			var totalhtml = countradio ? '<gr'+ pltimehtml +'</gr>'+ countradiohtml : '<wh'+ pltimehtml +'</wh>';
+			counthtml += '<wh>'+ numFormat( countsong ) +'</wh>&ensp;<i class="fa fa-music"></i>&ensp;'+ totalhtml;
+		} else {
+			counthtml += countradiohtml;
+		}
+		
+		
+		
+/*		countsong = ilength - countradio;
+		var plcounthtml = '<wh><i class="fa fa-list-ul"></i></wh> <bl>'+ name +'</bl><gr>&emsp;•&ensp;</gr>';
 		if ( countsong ) plcounthtml += '<wh id="spls-count">'+ numFormat( countsong ) +'</wh>&ensp;<i class="fa fa-music"></i>';
 		if ( countradio ) plcounthtml += '<wh id="scountradio" count="'+ countradio +'">'+ countradio +'</wh>&ensp;<i class="fa fa-webradio"></i>';
-		plcounthtml += '&emsp;<i class="fa fa-arrow-left plsback"></i>';
-		$( '#pl-currentpath' ).html( plcounthtml );
-		$( '#pl-currentpath, #pl-editor, #pl-index' ).removeClass( 'hide' );
+		plcounthtml += '&emsp;<i class="fa fa-arrow-left plsback"></i>';*/
+		$( '#pl-currentpath' ).html( counthtml +'&emsp;<i class="fa fa-arrow-left plsback"></i>' );
+		$( '#pl-currentpath, #pl-editor' ).removeClass( 'hide' );
 		$( '#pl-editor' ).html( content +'<p></p>' ).promise().done( function() {
 			GUI.pleditor = 1;
 			// fill bottom of list to mave last li movable to top
 			$( '#pl-editor p' ).css( 'min-height', window.innerHeight - ( GUI.display.bars ? 140 : 100 ) +'px' );
-			$( '#loader' ).addClass( 'hide' );
+			$( '#pl-editor' ).css( 'width', '100%' );
+			$( '#loader, #pl-index' ).addClass( 'hide' );
 			$( 'html, body' ).scrollTop( GUI.plscrolltop );
-			displayIndex();
 		} );
 	}, 'json' );
 } );
@@ -940,7 +965,7 @@ $( '#pl-manage-list' ).click( function() {
 		var pl = data.split( '\n' );
 		pl.pop(); // remove last blank
 		var plL = pl.length;
-		var plcounthtml = '<bl>&emsp;PLAYLISTS</bl>';
+		var plcounthtml = '<wh><i class="fa fa-folder"></i></wh><bl>PLAYLISTS</bl>';
 		plcounthtml += plL ? '<gr>&emsp;•&ensp;</gr><wh id="pls-count">'+ numFormat( plL ) +'</wh>&ensp;<i class="fa fa-list-ul"></i>' : '';
 		$( '#pl-currentpath' ).html( plcounthtml );
 		$( '#pl-currentpath, #pl-editor, #pl-index' ).removeClass( 'hide' );
@@ -950,12 +975,13 @@ $( '#pl-manage-list' ).click( function() {
 		} );
 		var content = '';
 		pl.forEach( function( el ) {
-			content += '<li class="pl-folder" data-path="'+ el +'"><i class="fa fa-list-ul pl-icon"></i><i class="fa fa-bars pl-action"></i><span>'+ el +'</span></li>';
+			content += '<li class="pl-folder" data-path="'+ el +'"><i class="fa fa-list-ul pl-icon"></i><i class="fa fa-bars pl-action"></i><span class="pleditor">'+ el +'</span></li>';
 		} );
 		$( '#pl-editor' ).html( content +'<p></p>' ).promise().done( function() {
 			GUI.pleditor = 1;
 			// fill bottom of list to mave last li movable to top
 			$( '#pl-editor p' ).css( 'min-height', window.innerHeight - ( GUI.display.bars ? 140 : 100 ) +'px' );
+			$( '#pl-editor' ).css( 'width', '' );
 			$( '#loader' ).addClass( 'hide' );
 			$( 'html, body' ).scrollTop( GUI.plscrolltop );
 			displayIndex();
@@ -1903,12 +1929,12 @@ function renderPlaylist() {
 			+'<span class="bl">'+ bottomline +'</span>'
 			+'</li>';
 	}
+	countsong = ilength - countradio;
 	var counthtml = '<bl class="title">&emsp;P L A Y L I S T<gr>&emsp;•</gr></bl>';
-	var countsong = ilength - countradio;
-	var countradiohtml = '<wh id="countradio" count="'+ countradio +'">'+ countradio +'</wh>&ensp;<i class="fa fa-webradio"></i>';
+	var countradiohtml = '<wh id="countradio" count="'+ countradio +'">&emsp;'+ countradio +'</wh>&ensp;<i class="fa fa-webradio"></i>';
 	if ( countsong ) {
 		var pltimehtml = ' id="pltime" time="'+ pltime +'">'+ convertHMS( pltime );
-		var totalhtml = countradio ? '<gr'+ pltimehtml +'</gr>&ensp;'+ countradiohtml : '<wh'+ pltimehtml +'</wh>';
+		var totalhtml = countradio ? '<gr'+ pltimehtml +'</gr>'+ countradiohtml : '<wh'+ pltimehtml +'</wh>';
 		counthtml += '<wh id="countsong" count="'+ countsong +'">'+ numFormat( countsong ) +'</wh>&ensp;<i class="fa fa-music"></i>&ensp;'+ totalhtml;
 	} else {
 		counthtml += countradiohtml;
