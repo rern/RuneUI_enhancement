@@ -56,16 +56,7 @@ commentH -n -1 'for="localSStime">' -n -2 'USB Automount'
 file=/srv/http/command/rune_PL_wrk
 echo $file
 
-comment 'parseStatusResponse' 'errorcode === 0'
-
-string=$( cat <<'EOF'
-				while ( true ) {
-					$status = monitorMpdState( $socket );
-					if ( $status[ 'changed' ] ) ui_render( 'idle', '"'.$status[ 'changed' ].'"' );
-				}
-EOF
-)
-insert 'parseStatusResponse'
+comment 'parseStatusResponse' 'closeMpdSocket'
 
 systemctl restart rune_PL_wrk
 #----------------------------------------------------------------------------------
