@@ -30,7 +30,9 @@ $redis->pconnect( '127.0.0.1' );
 
 if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	usleep( 100000 ); // !important - get data must wait connection start at least (0.05s)
-	pushstream( 'display', $redis->hGetAll( 'display' ) );
+	$data = $redis->hGetAll( 'display' );
+	$data[ 'volumempd' ] = $redis->get( 'volume' );
+	pushstream( 'display', $data );
 } else if ( isset( $_POST[ 'setdisplay' ] ) ) {
 	$data = $_POST[ 'setdisplay' ];
 	$redis->hmSet( 'display', $data );
@@ -79,8 +81,13 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 		$data = $_POST[ 'webradios' ];
 	}
 	if ( !is_array( $data ) ) {
-		$redis->hDel( $key, $data );
-		if ( $key === 'webradios' ) unlink( '/mnt/MPD/Webradio/'.$data.'.pls' );
+		if ( $key === 'webradios' ) {
+			$redis->hDel( 'webradios', $data );
+			$redis->hDel( 'sampling', $data );
+			unlink( '/mnt/MPD/Webradio/'.$data.'.pls' );
+		} else {
+			$redis->hDel( 'bkmarks', $data );
+		}
 	} else {
 		$name = $data[ 0 ];
 		$value = $data[ 1 ];
