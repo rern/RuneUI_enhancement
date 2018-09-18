@@ -30,21 +30,6 @@ getinstallzip
 
 echo -e "$bar Modify files ..."
 #----------------------------------------------------------------------------------
-file=/srv/http/app/libs/runeaudio.php
-echo $file
-
-string=$( cat <<'EOF'
-                        $redis->hSet( 'display', 'volumempd', 1);
-EOF
-)
-append "set('volume', 1)"
-
-string=$( cat <<'EOF'
-                        $redis->hSet( 'display', 'volumempd', '');
-EOF
-)
-append "set('volume', 0)"
-#----------------------------------------------------------------------------------
 file=/srv/http/app/templates/mpd.php
 echo $file
 
@@ -81,6 +66,8 @@ string=$( cat <<'EOF'
 EOF
 )
 insert 'do {'
+
+systemctl restart rune_PL_wrk
 #----------------------------------------------------------------------------------
 if [[ $1 != u ]]; then # keep range: 0.5 - 3.0
 	z=$1;
