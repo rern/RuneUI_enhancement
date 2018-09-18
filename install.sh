@@ -30,41 +30,6 @@ getinstallzip
 
 echo -e "$bar Modify files ..."
 #----------------------------------------------------------------------------------
-file=/srv/http/db/index.php
-echo $file
-comment 'echo getPlayQueue($mpd)'
-
-string=$( cat <<'EOF'
-                $playlist = getPlayQueue( $mpd );
-                if ( preg_match( '/file: http/', $playlist ) ) {
-                    $redis = new Redis();
-                    $redis->pconnect( '127.0.0.1' );
-                }
-                $line = strtok( $playlist."\nfile", "\n" );
-                while ( $line !== false ) {
-                    if ( strpos( $line, 'file' ) === 0 && $data ) {
-                        $file = $data[ 'file' ];
-                        if ( substr( $file, 0, 4 ) === 'http' ) {
-                            $webradios = $redis->hGetAll( 'webradios' );
-                            $webradioname = array_flip( $webradios );
-                            $data[ 'Title' ] = $webradioname[ $file ];
-                        }
-                        $pathinfo = pathinfo( $file );
-                        if ( !isset( $data[ 'Artist' ] ) ) $data[ 'Artist' ] = basename( $pathinfo[ 'dirname' ] );
-                        if ( !isset( $data[ 'Title' ] ) ) $data[ 'Title' ] = $pathinfo[ 'filename' ];
-                        if ( !isset( $data[ 'Album' ] ) ) $data[ 'Album' ] = '';
-                        $info[] = $data;
-                        $data = NULL;
-                    }
-                    $kv = explode( ': ', $line, 2 );
-                    if ( $kv[ 0 ] !== 'OK' && $kv[ 0 ] ) $data[ $kv[ 0 ] ] = $kv[ 1 ];
-                    $line = strtok( "\n" );
-                }
-                ui_render( 'playlist', json_encode( $info ) );
-EOF
-)
-append 'echo getPlayQueue($mpd)'
-#----------------------------------------------------------------------------------
 file=/srv/http/app/libs/runeaudio.php
 echo $file
 
