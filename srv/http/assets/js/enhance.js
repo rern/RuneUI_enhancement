@@ -2165,11 +2165,11 @@ pushstreams[ 'idle' ].onmessage = function( data ) {
 	} else if ( data === 'options' ) {
 		if ( GUI.local ) return;
 		
-		$.post( 'enhance.php', { mpc: "status | tail -n1 | awk \'BEGIN {ORS=\"\"} {print $4, $6, $8}\'" }, function( data ) {
-			var data = data.split( ' ' ); // remove last newline
-			GUI.status.repeat = data[ 0 ] === 'on' ? 1 : 0;
-			GUI.status.random = data[ 1 ] === 'on' ? 1 : 0;
-			GUI.status.single = data[ 2 ] === 'on' ? 1 : 0;
+		$.post( 'enhance.php', { mpc: 'status | tail -n1' }, function( data ) {
+			var data = data.split( /  +/ ); // remove last newline
+			GUI.status.repeat = data[ 1 ].split( ' ' ).pop() === 'on' ? 1 : 0;
+			GUI.status.random = data[ 2 ].split( ' ' ).pop()  === 'on' ? 1 : 0;
+			GUI.status.single = data[ 3 ].split( ' ' ).pop()  === 'on' ? 1 : 0;
 			setButtonToggle();
 		} );
 	}
