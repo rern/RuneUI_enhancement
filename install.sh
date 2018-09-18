@@ -241,6 +241,7 @@ Description=mpc idle loop
 After=mpd.service
 [Service]
 ExecStart=/srv/http/enhanceidle.sh
+Restart=always
 [Install]
 WantedBy=multi-user.target
 EOF
