@@ -56,7 +56,7 @@ commentH -n -1 'for="localSStime">' -n -2 'USB Automount'
 file=/srv/http/command/rune_PL_wrk
 echo $file
 
-comment 'do {' 'errorcode === 0'
+comment 'parseStatusResponse' 'errorcode === 0'
 
 string=$( cat <<'EOF'
 				while ( true ) {
@@ -65,7 +65,7 @@ string=$( cat <<'EOF'
 				}
 EOF
 )
-insert 'do {'
+insert 'parseStatusResponse'
 
 systemctl restart rune_PL_wrk
 #----------------------------------------------------------------------------------
