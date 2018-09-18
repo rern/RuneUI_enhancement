@@ -147,5 +147,3 @@ fi
 chown -R http:http /mnt/MPD/Webradio
 
 installfinish $@
-
-reinitsystem
