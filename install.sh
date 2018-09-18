@@ -134,9 +134,6 @@ systemctl disable rune_shutdown
 # correct version number
 [[ $( redis-cli get buildversion ) == 'beta-20160313' ]] && redis-cli set release 0.3 &> /dev/null
 
-# set library home database
-[[ $( redis-cli get volume ) == 1 ]] && volumempd=1 || volumempd=''
-
 # convert bookmarks
 bkmarks=$( redis-cli keys bkmarks )
 if [[ ! $bkmarks ]]; then
@@ -154,7 +151,7 @@ if [[ ! $bkmarks ]]; then
 fi
 
 if [[ $1 != u ]]; then
-	redis-cli hmset display bars checked time checked coverart checked volume checked buttons checked radioelapsed 0 volumempd $volumempd volumemute 0\
+	redis-cli hmset display bars checked time checked coverart checked volume checked buttons checked radioelapsed 0 volumemute 0\
 	\nas checked sd checked usb checked webradio checked albums checked artists checked composer checked genre checked \
 	\spotify checked dirble checked jamendo checked &> /dev/null
 fi
