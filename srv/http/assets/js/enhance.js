@@ -1891,6 +1891,7 @@ function renderPlaylist() {
 	var ilength = GUI.playlist.length;
 	GUI.status.playlistlength = ilength;
 	var classradio
+	console.log(GUI.playlist)
 	for ( i = 0; i < ilength; i++ ) {
 		var pl = GUI.playlist[ i ];
 		if ( pl.file.slice( 0, 4 ) === 'http' ) {
