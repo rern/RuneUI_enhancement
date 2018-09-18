@@ -61,7 +61,7 @@ comment 'parseStatusResponse' 'errorcode === 0'
 string=$( cat <<'EOF'
 				while ( true ) {
 					$status = monitorMpdState( $socket );
-					ui_render( 'idle', '"'.$status[ 'changed' ].'"' );
+					if ( $status[ 'changed' ] ) ui_render( 'idle', '"'.$status[ 'changed' ].'"' );
 				}
 EOF
 )
