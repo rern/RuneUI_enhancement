@@ -979,16 +979,16 @@ $( '#volmute, #volM' ).click( function() {
 	if ( vol ) {
 		$volumeRS.setValue( 0 );
 		$volumehandle.rsRotate( - $volumeRS._handle1.angle );
-		muteColor( vol )
+		muteColor( vol );
 		GUI.display.volumemute = vol;
 	} else {
 		$volumeRS.setValue( GUI.display.volumemute );
 		$volumehandle.rsRotate( - $volumeRS._handle1.angle );
-		unmuteColor()
+		unmuteColor();
 		GUI.display.volumemute = 0;
 	}
 	tempFlag( 'local' );
-	$.post( 'enhance.php', { volume: -1 } );
+	$.post( 'enhance.php', { volume: 'setmute' } );
 } );
 $( '#volup, #voldn' ).click( function() {
 	var thisid = this.id;
@@ -2115,7 +2115,7 @@ var psOption = {
 	, modes: 'websocket'
 };
 var pushstreams = {};
-var streams = [ 'display', 'library', 'idle', 'notify' ];
+var streams = [ 'display', 'volume', 'library', 'idle', 'notify' ];
 $.each( streams, function( i, stream ) {
 	pushstreams[ stream ] = new PushStream( psOption );
 	pushstreams[ stream ].addChannel( stream );
@@ -2132,6 +2132,16 @@ pushstreams[ 'display' ].onmessage = function( data ) {
 	} else {
 		displayCommon();
 	}
+}
+pushstreams[ 'volume' ].onmessage = function( data ) {
+	if ( GUI.local ) return;
+	
+	var data = data[ 0 ];
+	var vol = data[ 0 ];
+	var volumemute = data[ 1 ];
+	$volumeRS.setValue( vol );
+	$volumehandle.rsRotate( - $volumeRS._handle1.angle );
+	volumemute ? muteColor( volumemute ) : unmuteColor();
 }
 pushstreams[ 'library' ].onmessage = function( data ) {
 	if ( data != 1 ) GUI.libraryhome = data;
@@ -2195,7 +2205,7 @@ function renderMSG( text ) {
 			  closer  : !notify.permanotice
 			, sticker : !notify.permanotice
 		}
-		, delay       : notify.delay ? notify.delay : 8000
+		, delay       : notify.delay ? notify.delay : 3000
 		, mouse_reset : false
 	};
 	if ( notify.permanotice ) {
