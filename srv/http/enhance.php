@@ -1,12 +1,4 @@
 <?php
-function pushstream( $channel, $data = 1 ) {
-	$ch = curl_init( 'http://localhost/pub?id='.$channel );
-	curl_setopt( $ch, CURLOPT_HTTPHEADER, array( 'Content-Type:application/json' ) );
-	curl_setopt( $ch, CURLOPT_POSTFIELDS, json_encode( $data, JSON_NUMERIC_CHECK ) );
-	curl_exec( $ch );
-	curl_close( $ch );
-}
-
 // no redis
 if ( isset( $_POST[ 'mpc' ] ) ) {
 	$mpc = $_POST[ 'mpc' ];
@@ -114,6 +106,13 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	exec( $cmd );
 }
 
+function pushstream( $channel, $data = 1 ) {
+	$ch = curl_init( 'http://localhost/pub?id='.$channel );
+	curl_setopt( $ch, CURLOPT_HTTPHEADER, array( 'Content-Type:application/json' ) );
+	curl_setopt( $ch, CURLOPT_POSTFIELDS, json_encode( $data, JSON_NUMERIC_CHECK ) );
+	curl_exec( $ch );
+	curl_close( $ch );
+}
 function getLibrary() {
 	$redis = new Redis();
 	$redis->pconnect( '127.0.0.1' );
