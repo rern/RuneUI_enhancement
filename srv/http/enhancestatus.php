@@ -34,6 +34,7 @@ while ( $line !== false ) {
 	$line = strtok( "\n" );
 }
 if ( !array_key_exists( 'song', $status ) ) $status[ 'song' ] = 0;
+if ( exec( 'pidof ashuffle' ) ) $status[ 'random' ] = 1;
 
 $file = '/mnt/MPD/'.$status[ 'file' ];
 $pathinfo = pathinfo( $file );
