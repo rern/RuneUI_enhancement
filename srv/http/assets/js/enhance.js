@@ -60,10 +60,7 @@ $( '#open-library' ).click( function() {
 	
 	if ( GUI.bookmarkedit ) {
 		GUI.bookmarkedit = 0;
-		$.post( 'enhance.php', { library: 1, pushstream: 'library' }, function( data ) {
-			GUI.libraryhome = data;
-			renderLibrary();
-		}, 'json' );
+		renderLibrary();
 		return
 	}
 	if ( GUI.activePlayer === 'Airplay' || GUI.activePlayer === 'Spotify' ) {
@@ -1875,9 +1872,7 @@ function setPlaybackOneload() {
 	clearTimeout( GUI.timeout );
 	$( '#starter' ).remove();
 	$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
-	$.post( 'enhance.php', { library: 1 }, function( data ) {
-		GUI.libraryhome = data;
-	}, 'json' );
+	$.post( 'enhance.php', { library: 1 } );
 }
 function setPlaybackBlank() {
 	$( '#playback-controls' ).addClass( 'hide' );
@@ -2053,6 +2048,9 @@ function renderPlayback() {
 		if ( $( '#panel-playlist' ).hasClass( 'active' ) && !GUI.pleditor ) setPlaylistScroll();
 	}
 }
+// init display data pushstream ( get data directly needs revised code )
+$.post( 'enhance.php', { getdisplay: 1 } );
+
 function getPlaybackStatus() {
 	$.post( 'enhancestatus.php', function( status ) {
 		// 'gpio off' restarts mpd which makes data briefly unavailable
@@ -2068,8 +2066,6 @@ function getPlaybackStatus() {
 	}, 'json' );
 }
 getPlaybackStatus();
-// init display data pushstream ( get data directly needs revised code )
-$.post( 'enhance.php', { getdisplay: 1 } );
 
 if ( 'hidden' in document ) {
 	var visibilityevent = 'visibilitychange';
@@ -2144,7 +2140,7 @@ pushstreams[ 'volume' ].onmessage = function( data ) {
 	volumemute ? muteColor( volumemute ) : unmuteColor();
 }
 pushstreams[ 'library' ].onmessage = function( data ) {
-	if ( data != 1 ) GUI.libraryhome = data;
+	GUI.libraryhome = data[ 0 ];
 	if ( !GUI.local && !GUI.bookmarkedit ) renderLibrary();
 }
 pushstreams[ 'idle' ].onmessage = function( data ) {
