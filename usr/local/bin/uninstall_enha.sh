@@ -23,12 +23,12 @@ fi
 # remove files #######################################
 echo -e "$bar Remove files ..."
 
-rm -v /srv/http/index.php
 rm -v /srv/http/enhance*
+rm -v /srv/http/index.php
 rm -v /srv/http/app/enhance*
 rm -v /srv/http/app/templates/enhance*
-rm -v /srv/http/assets/fonts/enhance*
 rm -v /srv/http/assets/css/{bootstrap.min,enhance,fontawesome.min,midori,pnotify.custom.min,roundslider.min,settings,toggle-switch.min}.css
+rm -v /srv/http/assets/fonts/enhance*
 rm -v /srv/http/assets/img/{bootsplash.png,controls*,runelogo.svg,vu*}
 rm -v /srv/http/assets/js/{enhance,enhancecontext,settings}.js
 rm -v /srv/http/assets/js/vendor/{jquery-ui.min,modernizr-custom,pnotify.custom.min,roundslider.min}.js
@@ -45,10 +45,10 @@ ln -sf /usr/share/bootsplash/start-runeaudio.png /usr/share/bootsplash/start.png
 echo -e "$bar Restore modified files ..."
 
 files="
-/srv/http/app/templates/mpd.php
-/srv/http/app/templates/settings.php
 /srv/http/app/libs/runeaudio.php
 /srv/http/app/settings_ctl.php
+/srv/http/app/templates/mpd.php
+/srv/http/app/templates/settings.php
 /srv/http/command/rune_PL_wrk
 /srv/http/db/index.php
 /root/.config/midori/config
@@ -58,15 +58,8 @@ restorefile $files
 
 chown -R mpd:audio /mnt/MPD/Webradio
 
-systemctl disable mpcidle
-systemctl daemon-reload
-rm /etc/systemd/system/mpcidle.service
-
 uninstallfinish $@
 
 clearcache
 
 [[ $1 == u ]] && exit
-
-systemctl enable rune_PL_wrk
-systemctl start rune_PL_wrk
