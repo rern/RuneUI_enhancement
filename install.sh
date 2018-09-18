@@ -131,23 +131,24 @@ echo $file
 
 commentH -n -1 'for="localSStime">' -n -2 'USB Automount'
 #----------------------------------------------------------------------------------
-file=/srv/http/command/rune_SY_wrk
-echo $file
-
-comment 'is-enabled rune_PL_wrk.service' 'enable rune_PL_wrk.service'
-
-systemctl stop rune_PL_wrk
-systemctl disable rune_PL_wrk
-#----------------------------------------------------------------------------------
 file=/srv/http/app/templates/dev.php
 echo $file
 
 commentH -n -1 'RuneAudio PLAYBACK Worker' -n +3 'Restart rune_PL_wrk'
 #----------------------------------------------------------------------------------
-file=/srv/http/command/orion_optimize.sh
+file=/srv/http/command/rune_PL_wrk
 echo $file
 
-commentS 'rune_PL_wrk'
+comment 'do {' 'errorcode === 0'
+
+string=$( cat <<'EOF'
+				while ( true ) {
+					$status = monitorMpdState( $socket );
+					ui_render( 'idle', '"'.$status[ 'changed' ].'"' );
+				}
+EOF
+)
+insert 'do {'
 #----------------------------------------------------------------------------------
 file=/srv/http/db/redis_datastore_setup
 echo $file
