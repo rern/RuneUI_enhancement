@@ -69,7 +69,7 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 } else if ( isset( $_POST[ 'volume' ] ) ) {
 	$volume = $_POST[ 'volume' ];
 	$volumemute = $redis->hGet( 'display', 'volumemute' );
-	if ( $volume == '-1' ) {
+	if ( $volume == 'setmute' ) {
 		if ( $volumemute == 0 ) {
 			$currentvol = exec( "mpc volume | tr -d ' %' | cut -d':' -f2" );
 			$vol = 0;
@@ -83,7 +83,7 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	}
 	$redis->hSet( 'display', 'volumemute', $currentvol );
 	exec( 'mpc volume '.$vol );
-	pushstream( 'playback' );
+	pushstream( 'volume', array( $vol, $currentvol ) );
 } else if ( isset( $_POST[ 'getplaylist' ] ) ) {
 	$name = isset( $_POST[ 'name' ] ) ? $_POST[ 'name' ] : '';
 	$lines = shell_exec( 'mpc -f "%title%,%time%,[##%track% • ]%artist%[ • %album%],%file%" playlist '.$name );
