@@ -50,7 +50,7 @@ files="
 /srv/http/app/templates/settings.php
 /srv/http/app/libs/runeaudio.php
 /srv/http/app/settings_ctl.php
-/srv/http/command/orion_optimize.sh
+/srv/http/command/rune_PL_wrk
 /srv/http/command/rune_SY_wrk
 /srv/http/db/redis_datastore_setup
 /srv/http/db/index.php
