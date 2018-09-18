@@ -45,7 +45,6 @@ ln -sf /usr/share/bootsplash/start-runeaudio.png /usr/share/bootsplash/start.png
 echo -e "$bar Restore modified files ..."
 
 files="
-/srv/http/app/libs/runeaudio.php
 /srv/http/app/settings_ctl.php
 /srv/http/app/templates/mpd.php
 /srv/http/app/templates/settings.php
@@ -56,10 +55,10 @@ files="
 "
 restorefile $files
 
+systemctl restart rune_PL_wrk
+
 chown -R mpd:audio /mnt/MPD/Webradio
 
 uninstallfinish $@
 
 clearcache
-
-[[ $1 == u ]] && exit
