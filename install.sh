@@ -146,4 +146,20 @@ fi
 # fix webradio permission
 chown -R http:http /mnt/MPD/Webradio
 
+# set mpc idle for status pushstream #######################################
+string=$( cat <<'EOF'
+[Unit]
+Description=mpc idle loop
+After=mpd.service
+[Service]
+ExecStart=/srv/http/enhanceidle.sh
+[Install]
+WantedBy=multi-user.target
+EOF
+)
+echo "$string" > /etc/systemd/system/mpcidle.service
+
+systemctl enable mpcidle
+systemctl daemon-reload
+
 installfinish $@
