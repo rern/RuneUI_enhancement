@@ -973,15 +973,15 @@ document.addEventListener( visibilityevent, function() {
 			pushstreams[ stream ].disconnect();
 		} );
 	} else {
+		$.each( streams, function( i, stream ) {
+			pushstreams[ stream ].connect();
+		} );
 		if ( $( '#panel-playback' ).hasClass( 'active' ) ) {
 			getPlaybackStatus();
 			displayPlayback();
 		} else if ( $( '#panel-playlist' ).hasClass( 'active' ) && !GUI.pleditor ) {
 			setPlaylistScroll();
 		}
-		$.each( streams, function( i, stream ) {
-			pushstreams[ stream ].connect();
-		} );
 	}
 } );
 window.addEventListener( 'orientationchange', function() {
