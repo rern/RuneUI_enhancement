@@ -1137,6 +1137,10 @@ wh, gr { font-weight: 300; }
 #db-currentpath a:first-of-type {
 	color: #0095d8;
 }
+.plsbackroot,
+.plsback {
+	margin-left: 20px;
+}
 #db-home,
 #pl-home {
 	float: left;
