@@ -4,13 +4,13 @@
 		
 			<div id="info">
 				<div id="divartist">
-					<span id="currentartist"></span>
+					<span id="artist"></span>
 				</div>
 				<div id="divsong">
-					<span id="currentsong"></i></span>
+					<span id="song"></i></span>
 				</div>
 				<div id="divalbum">
-					<span id="currentalbum"></span>
+					<span id="album"></span>
 				</div>
 				<div id="sampling">
 					<span id="playlist-position"><span></span></span>
@@ -68,7 +68,7 @@
 				<div id="share-group">
 					<div class="btn-group">
 						<button id="overlay-social-open" class="btn btn-default btn-lg" type="button"><i class="fa fa-share"></i></button>
-						<button id="songinfo-open" class="btn btn-default" type="button"><i class="fa fa-bio"></i></button>
+						<button id="bio-open" class="btn btn-default" type="button"><i class="fa fa-bio"></i></button>
 					</div>
 				</div>
 				<div id="volume-knob" class="<?=$this->volume['divclass'] ?>">
