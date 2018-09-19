@@ -1404,6 +1404,11 @@ w {
 	display: block;
 	padding: 5px 0 0 10px
 }
+#pl-entries .sn i {
+	width: 20px;
+	font-size: 17px;
+	line-height: 14px;
+}
 .time {
 	color: #587ca0 !important;
 }
