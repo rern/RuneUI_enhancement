@@ -416,8 +416,8 @@ wh, gr { font-weight: 300; }
 #divartist, #divalbum {
 	height: 25px;
 }
-#currentartist,
-#currentalbum {
+#artist,
+#album {
 	font-size: 18px
 }
 #sampling {
@@ -790,7 +790,7 @@ wh, gr { font-weight: 300; }
 	border-left: 1px solid #444444;
 }
 #single,
-#songinfo-open,
+#bio-open,
 #volup {
 	background: -webkit-radial-gradient(0% -50%, 400% 190%, hsla(0,0%,100%,.3) 50%, hsla(0,0%,100%,0) 53%); 
 	background: radial-gradient(300% 90% at 0% 0% ,hsla(0,0%,100%,.3) 50%,hsla(0,0%,100%,0) 55%);
@@ -1534,7 +1534,6 @@ w {
 	background: #c23321
 }
 #overlay-social ul li a i,
-#overlay-currentartist ul li i,
 #overlay-playsource ul li a i {
 	display: block;
 	float: left;
@@ -1543,13 +1542,11 @@ w {
 	text-align: center
 }
 #overlay-social ul li a span,
-#overlay-currentartist ul li a span,
 #overlay-playsource ul li a span {
 	padding-right: 5px;
 	font-size: 12px
 }
 #overlay-social ul li a.inactive span,
-#overlay-currentartist ul li a.inactive span,
 #overlay-playsource ul li a.inactive span {
 	color: #e0e7ee;
 }
