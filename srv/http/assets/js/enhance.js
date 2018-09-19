@@ -509,6 +509,7 @@ $( '#pl-entries' ).on( 'click', 'li', function( e ) {
 			$.post( 'enhance.php', { mpc: 'play '+ songpos } );
 			$( '#pl-entries li' ).removeClass( 'active' );
 			$( this ).addClass( 'active' );
+			$( '.elapsed' ).empty();
 		} else {
 			if ( $( this ).hasClass( 'active' ) ) {
 				state == 'play' ? $( '#pause' ).click() : $( '#play' ).click();
@@ -516,6 +517,7 @@ $( '#pl-entries' ).on( 'click', 'li', function( e ) {
 				$.post( 'enhance.php', { mpc: 'play '+ songpos } );
 				$( '#pl-entries li' ).removeClass( 'active' );
 				$( this ).addClass( 'active' );
+				$( '.elapsed' ).empty();
 			}
 		}
 		return
@@ -1860,14 +1862,13 @@ function setPlaylistScroll() {
 	$.post( 'enhance.php', { mpc: "status | awk 'NR==2' | awk '{print $3}' | cut -d'/' -f1" }, function( data ) {
 		var elapsed = HMS2Second( data );
 		var $elapsed = $( '#pl-'+ GUI.status.song +' .elapsed' );
-		$( '.elapsed' ).empty();
 		if ( state === 'pause' ) {
-			$elapsed.html( '&#10074;&#10074; '+ second2HMS( elapsed ) +' / ' );
+			$elapsed.html( '<i class="fa fa-pause"></i> '+ second2HMS( elapsed ) +' / ' );
 		} else if ( state === 'play' ) {
 			clearInterval( GUI.countdown );
 			GUI.countdown = setInterval( function() {
 				elapsed++
-				$elapsed.html( '&#9658; '+ second2HMS( elapsed ) +' / ' );
+				$elapsed.html( '<i class="fa fa-play"></i> '+ second2HMS( elapsed ) +' / ' );
 			}, 1000 );
 		}
 		
