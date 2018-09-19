@@ -15,6 +15,8 @@ var GUI = { // outside '$( function() {' enable console.log access
 	, display      : {}
 	, imodedelay   : 0
 	, json         : 0
+	, intElapsed   : ''
+	, intKnob      : ''
 	, list         : {}
 	, libraryhome  : {}
 	, local        : 0
@@ -35,7 +37,7 @@ $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 $( '#menu-settings, #badge' ).click( function() {
 	$( '#settings' ).toggleClass( 'hide' ).css( 'top', $( '#menu-top' ).is( ':hidden' ) ? 0 : '40px' );
 } );
-$( '#currentsong, #playlist-warning' ).on( 'click', 'i', function() {
+$( '#song, #playlist-warning' ).on( 'click', 'i', function() {
 	$( '#open-library' ).click();
 } );
 $( '#open-library' ).click( function() {
@@ -131,10 +133,10 @@ $( '#panel-playback' ).click( function( e ) {
 					return;
 				}
 				if ( GUI.status.state === 'play' && $( '#total' ).html() === '' ) {
-					clearInterval( GUI.countdown );
+					clearInterval( GUI.intElapsed );
 					$.post( 'enhance.php', { mpc: "status | awk 'NR==2' | awk '{print $3}' | cut -d'/' -f1" }, function( HMS ) {
 						var elapsed = HMS2Second( HMS );
-						GUI.countdown = setInterval( function() {
+						GUI.intElapsed = setInterval( function() {
 							elapsed++
 							$( '#total' ).text( HMS );
 						}, 1000 );
@@ -815,8 +817,8 @@ $( '#time' ).roundSlider( {
 	, start       : function () {
 		if ( GUI.status.ext === 'radio' ) return;
 		
-		clearInterval( GUI.currentKnob );
-		clearInterval( GUI.countdown );
+		clearInterval( GUI.intKnob );
+		clearInterval( GUI.intElapsed );
 	}
 	, drag        : function ( e ) { // drag with no transition by default
 		if ( GUI.status.ext === 'radio' ) return;
@@ -911,11 +913,11 @@ $( '.btn-cmd' ).click( function() {
 		cmd = cmd +' '+ onoff;
 	} else {
 		if ( cmd === 'pause' || cmd === 'stop' ) {
-			clearInterval( GUI.currentKnob );
-			clearInterval( GUI.countdown );
+			clearInterval( GUI.intKnob );
+			clearInterval( GUI.intElapsed );
 			if ( GUI.status.ext === 'radio' ) {
 				cmd = 'stop';
-				$( '#currentsong' ).empty();
+				$( '#song' ).empty();
 			}
 		} else if ( cmd === 'previous' || cmd === 'next' ) {
 			// enable previous / next while stop
@@ -967,8 +969,8 @@ if ( 'hidden' in document ) {
 document.addEventListener( visibilityevent, function() {
 	if ( document[ hiddenstate ] ) {
 		$( '#elapsed' ).empty();
-		clearInterval( GUI.currentKnob );
-		clearInterval( GUI.countdown );
+		clearInterval( GUI.intKnob );
+		clearInterval( GUI.intElapsed );
 		$.each( streams, function( i, stream ) {
 			pushstreams[ stream ].disconnect();
 		} );
@@ -1161,7 +1163,7 @@ function renderBio() {
 	$( '#menu-top, #menu-bottom, #loader' ).addClass( 'hide' );
 	$( '#bio' ).removeClass( 'hide' );
 }
-$( '#currentartist, #songinfo-open' ).click( function() {
+$( '#artist, #bio-open' ).click( function() {
 	if ( GUI.status.ext === 'radio' ) return;
 	
 	if ( $( '#bio legend' ).text() != GUI.status.Artist ) {
@@ -1172,8 +1174,8 @@ $( '#currentartist, #songinfo-open' ).click( function() {
 } );
 function mpdSeek( seekto ) {
 	if ( GUI.status.state !== 'stop' ) {
-		clearInterval( GUI.currentKnob );
-		clearInterval( GUI.countdown );
+		clearInterval( GUI.intKnob );
+		clearInterval( GUI.intElapsed );
 		$.post( 'enhance.php', { mpc: 'seek '+ seekto } );
 	} else {
 		$.post( 'enhance.php', { mpc: [ 'play', 'seek '+ seekto, 'pause' ] } );
@@ -1208,9 +1210,9 @@ function displayAirPlay() {
 	$( '#playback-controls' ).addClass( 'hide' );
 	$( '#divartist, #divsong, #divalbum' ).removeClass( 'scroll-left' );
 	$( '#playlist-position span, #format-bitrate, #total' ).empty();
-	$( '#currentartist' ).html( GUI.airplay.currentartist );
-	$( '#currentsong' ).html( GUI.airplay.currentsong );
-	$( '#currentalbum' ).html( GUI.airplay.currentalbum );
+	$( '#artist' ).html( GUI.airplay.currentartist );
+	$( '#song' ).html( GUI.airplay.currentsong );
+	$( '#album' ).html( GUI.airplay.currentalbum );
 	$( '#elapsed, #total' ).empty();
 	var time = new Date().getTime();
 	$( '#cover-art' ).css( {
@@ -1226,8 +1228,8 @@ function displayAirPlay() {
 	$( '#playsource-airplay' ).removeClass( 'inactive' );
 	if ( GUI.display.time ) {
 		$( '#time-knob, #play-group, #coverart, #share-group' ).css( 'width', '45%' );
-		clearInterval( GUI.currentKnob );
-		clearInterval( GUI.countdown );
+		clearInterval( GUI.intKnob );
+		clearInterval( GUI.intElapsed );
 		$( '#time' ).roundSlider( 'setValue', 0 );
 		$( '#elapsed' ).html( blinkdot );
 		$( '#total' ).empty();
@@ -1866,8 +1868,8 @@ function setPlaylistScroll() {
 		if ( state === 'pause' ) {
 			$elapsed.html( '<i class="fa fa-pause"></i> '+ second2HMS( elapsed ) +' / ' );
 		} else if ( state === 'play' ) {
-			clearInterval( GUI.countdown );
-			GUI.countdown = setInterval( function() {
+			clearInterval( GUI.intElapsed );
+			GUI.intElapsed = setInterval( function() {
 				elapsed++
 				$elapsed.html( '<i class="fa fa-play"></i> '+ second2HMS( elapsed ) +' / ' );
 			}, 1000 );
@@ -2009,9 +2011,9 @@ function setPlaybackOneload() {
 function setPlaybackBlank() {
 	$( '#playback-controls' ).addClass( 'hide' );
 	$( '#divartist, #divsong, #divalbum' ).removeClass( 'scroll-left' );
-	$( '#currentsong' ).html( '<i class="fa fa-plus-circle"></i>' );
+	$( '#song' ).html( '<i class="fa fa-plus-circle"></i>' );
 	$( '#playlist-position span' ).text( 'Add something from Library' );
-	$( '#currentartist, #currentalbum, #format-bitrate, #elapsed, #total' ).empty();
+	$( '#artist, #album, #format-bitrate, #elapsed, #total' ).empty();
 	$( '#cover-art' )
 		.attr( 'src', 'assets/img/cover-default-runeaudio.png' )
 		.css( 'border-radius', 0 )
@@ -2040,8 +2042,8 @@ function second2HMS( second ) {
 function renderPlayback() {
 	var status = GUI.status;
 	// song and album before update for song/album change detection
-	var previoussong = $( '#currentsong' ).text();
-	var previousalbum = $( '#currentalbum' ).text();
+	var previoussong = $( '#song' ).text();
+	var previousalbum = $( '#album' ).text();
 	// volume
 	$volumeRS.setValue( status.volume );
 	$volumehandle.rsRotate( - $volumeRS._handle1.angle );
@@ -2053,8 +2055,8 @@ function renderPlayback() {
 		}
 	}
 	
-	clearInterval( GUI.currentKnob );
-	clearInterval( GUI.countdown );
+	clearInterval( GUI.intKnob );
+	clearInterval( GUI.intElapsed );
 	$( '#time' ).roundSlider( 'setValue', 0 );
 	
 	setButton();
@@ -2065,9 +2067,9 @@ function renderPlayback() {
 	}
 	
 	$( '#playback-controls' ).removeClass( 'hide' );
-	$( '#currentartist' ).html( status.Artist );
-	$( '#currentsong' ).html( status.Title );
-	$( '#currentalbum' ).html( status.Album ).promise().done( function() {
+	$( '#artist' ).html( status.Artist );
+	$( '#song' ).html( status.Title );
+	$( '#album' ).html( status.Album ).promise().done( function() {
 		// scroll info text
 		scrollLongText();
 	} );
@@ -2107,7 +2109,7 @@ function renderPlayback() {
 			$( '#total' ).empty();
 		} else {
 			var elapsed = status.elapsed;
-			GUI.countdown = setInterval( function() {
+			GUI.intElapsed = setInterval( function() {
 				elapsed++
 				mmss = second2HMS( elapsed );
 				$( '#total' ).text( mmss ).css( 'color', '#587ca0' );
@@ -2121,7 +2123,7 @@ function renderPlayback() {
 	// stop <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	if ( $( '#time-knob' ).hasClass( 'hide' ) ) return;
 	if ( status.state === 'stop' ) {
-		$( '#currentsong' ).css( 'color', '' );
+		$( '#song' ).css( 'color', '' );
 		$( '#elapsed' ).text( $( '#total' ).text() ).css( 'color', '#587ca0' );
 		$( '#total' ).empty();
 		return;
@@ -2145,12 +2147,12 @@ function renderPlayback() {
 		} );
 	}
 	if ( status.state === 'pause' ) {
-		$( '#currentsong' ).css( 'color', '#587ca0' );
+		$( '#song' ).css( 'color', '#587ca0' );
 		$( '#elapsed' ).css( 'color', '#0095d8' );
 		$( '#total' ).css( 'color', '#e0e7ee' );
 		return;
 	} else {
-		$( '#currentsong' ).css( 'color', '' );
+		$( '#song' ).css( 'color', '' );
 		$( '#elapsed' ).css( 'color', '' );
 		$( '#total' ).css( 'color', '' );
 	}
@@ -2158,17 +2160,17 @@ function renderPlayback() {
 //		var step = 1 * localbrowser; // fix: reduce cpu cycle on local browser
 //	var step = 1;
 	
-	GUI.currentKnob = setInterval( function() {
+	GUI.intKnob = setInterval( function() {
 		position++;
 		if ( position === 1000 ) {
-			clearInterval( GUI.currentKnob );
-			clearInterval( GUI.countdown );
+			clearInterval( GUI.intKnob );
+			clearInterval( GUI.intElapsed );
 			$( '#elapsed' ).empty();
 		}
 		$( '#time' ).roundSlider( 'setValue', position );
 	}, time );
 	
-	GUI.countdown = setInterval( function() {
+	GUI.intElapsed = setInterval( function() {
 		elapsed++
 		$( '#elapsed' ).text( second2HMS( elapsed ) );
 	}, 1000 );
