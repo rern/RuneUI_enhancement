@@ -150,8 +150,8 @@ EOF
 )
 echo "$string" > /etc/systemd/system/mpcidle.service
 
-systemctl enable mpcidle
 systemctl daemon-reload
 systemctl start mpcidle
+systemctl enable mpcidle
 
 installfinish $@
