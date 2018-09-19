@@ -141,7 +141,7 @@ chown -R http:http /mnt/MPD/Webradio
 string=$( cat <<'EOF'
 [Unit]
 Description=mpc idle loop
-After=mpd.service
+After=network.target redis.target
 [Service]
 ExecStart=/srv/http/enhanceidle.sh
 [Install]
