@@ -1955,14 +1955,9 @@ function setButton() {
 	$( '#playback-controls' ).toggleClass( 'hide', GUI.status.playlistlength === 0 );
 	var state = GUI.status.state;
 	
-	$( '#playback-controls button' ).removeClass( 'btn-primary' );
-	if ( state === 'stop' ) {
-		$( '#stop' ).addClass( 'btn-primary' );
-	} else if ( state === 'play' ) {
-		$( '#play' ).addClass( 'btn-primary' );
-	} else if ( state === 'pause' ) {
-		$( '#pause' ).addClass( 'btn-primary' );
-	}
+	$( '#stop' ).toggleClass( 'btn-primary', state === 'stop' );
+	$( '#play' ).toggleClass( 'btn-primary', state === 'play' );
+	$( '#pause' ).toggleClass( 'btn-primary', state === 'pause' );
 	setButtonToggle();
 	if ( GUI.status.updating_db ) {
 		$( '#open-library i, #db-home i, #iupdate' ).addClass( 'blink' );
