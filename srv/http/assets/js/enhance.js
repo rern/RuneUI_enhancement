@@ -509,7 +509,6 @@ $( '#pl-entries' ).on( 'click', 'li', function( e ) {
 			$.post( 'enhance.php', { mpc: 'play '+ songpos } );
 			$( '#pl-entries li' ).removeClass( 'active' );
 			$( this ).addClass( 'active' );
-			$( '.elapsed' ).empty();
 		} else {
 			if ( $( this ).hasClass( 'active' ) ) {
 				state == 'play' ? $( '#pause' ).click() : $( '#play' ).click();
@@ -517,7 +516,6 @@ $( '#pl-entries' ).on( 'click', 'li', function( e ) {
 				$.post( 'enhance.php', { mpc: 'play '+ songpos } );
 				$( '#pl-entries li' ).removeClass( 'active' );
 				$( this ).addClass( 'active' );
-				$( '.elapsed' ).empty();
 			}
 		}
 		return
@@ -1848,7 +1846,10 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 function setPlaylistScroll() {
 	var  wH = window.innerHeight;
 	$( '#pl-entries p' ).css( 'min-height', wH - 140 +'px' );
-	$( '#pl-entries li' ).removeClass( 'active' );
+	if ( $( '#pl-entries li.active' ).index() !== GUI.status.song ) {
+		$( '#pl-entries li.active .elapsed' ).empty();
+		$( '#pl-entries li.active' ).removeClass( 'active' );
+	}
 	var $liactive = $( '#pl-entries li' ).eq( GUI.status.song );
 	if ( !$liactive.length ) {
 		$liactive = $( '#pl-entries li' ).eq( 0 ).addClass( 'active' );
@@ -1858,10 +1859,10 @@ function setPlaylistScroll() {
 	$liactive.addClass( 'active' );
 	if ( GUI.local ) return;
 	
-	var state = GUI.status.state;
 	$.post( 'enhance.php', { mpc: "status | awk 'NR==2' | awk '{print $3}' | cut -d'/' -f1" }, function( data ) {
-		var elapsed = HMS2Second( data );
+		var elapsed = data ? HMS2Second( data ) : 0;
 		var $elapsed = $( '#pl-'+ GUI.status.song +' .elapsed' );
+		var state = GUI.status.state;
 		if ( state === 'pause' ) {
 			$elapsed.html( '<i class="fa fa-pause"></i> '+ second2HMS( elapsed ) +' / ' );
 		} else if ( state === 'play' ) {
