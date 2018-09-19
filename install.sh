@@ -56,7 +56,7 @@ commentH -n -1 'for="localSStime">' -n -2 'USB Automount'
 file=/srv/http/command/rune_PL_wrk
 echo $file
 
-comment -n +2 'MPD playback engine' 'closeMpdSocket'
+comment -n +2 'MPD playback engine' 'errorcode === 0'
 
 systemctl restart rune_PL_wrk
 #----------------------------------------------------------------------------------
