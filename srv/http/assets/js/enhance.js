@@ -219,9 +219,6 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 		} );
 	}
 } );
-$( '#playback-controls' ).click( function() { // playback buttons click go back to home page
-	if ( !$( '#panel-playback' ).hasClass( 'active' ) ) $( '#open-playback' ).click();
-} );
 
 var btnctrl = {
 	  timeTL : 'overlay-playsource-open'
@@ -507,9 +504,20 @@ $( '#pl-manage-clear' ).click( function() {
 $( '#pl-entries' ).on( 'click', 'li', function( e ) {
 	var songpos = $( this ).index() + 1;
 	if ( !$( e.target ).hasClass( 'pl-action' ) ) {
-		$.post( 'enhance.php', { mpc: 'play '+ songpos } );
-		$( '#pl-entries li' ).removeClass( 'active' );
-		$( this ).addClass( 'active' );
+		var state = GUI.status.state;
+		if ( state == 'stop' ) {
+			$.post( 'enhance.php', { mpc: 'play '+ songpos } );
+			$( '#pl-entries li' ).removeClass( 'active' );
+			$( this ).addClass( 'active' );
+		} else {
+			if ( $( this ).hasClass( 'active' ) ) {
+				state == 'play' ? $( '#pause' ).click() : $( '#play' ).click();
+			} else {
+				$.post( 'enhance.php', { mpc: 'play '+ songpos } );
+				$( '#pl-entries li' ).removeClass( 'active' );
+				$( this ).addClass( 'active' );
+			}
+		}
 		return
 	}
 	
@@ -675,14 +683,6 @@ $( '#pl-currentpath' ).on( 'click', '.plsbackroot', function() {
 } );
 $( '#pl-home' ).click( function() {
 	$( '#open-playlist' ).click();
-} );
-// playlist click go back to home page
-$( '#pl-entries' ).click( function( e ) {
-	if ( e.target.nodeName === 'SPAN' ) {
-		$( '#open-playback a' ).click();
-		$( '#open-playback a' )[ 0 ].click();
-		$( '#menu-top, #menu-bottom' ).toggleClass( 'hide', ( window.innerWidth < 499 || window.innerHeight < 515 ) );
-	}
 } );
 $( '#pl-manage-list' ).click( function() {
 	$( '.playlist' ).addClass( 'hide' );
@@ -1031,14 +1031,7 @@ pushstreams[ 'library' ].onmessage = function( data ) {
 pushstreams[ 'idle' ].onmessage = function( data ) {
 	var data = data[ 0 ];
 	if ( data === 'player' ) {
-	//	if ( status.actPlayer === 'Spotify' || status.actPlayer === 'Airplay' ) GUI.json = status;
-		if ( $( '#panel-playback' ).hasClass( 'active' ) ) {
-			getPlaybackStatus();
-			// imodedelay fix imode flashing on usb dac switching
-			if ( !GUI.imodedelay ) displayPlayback();
-		} else if ( $( '#panel-playlist' ).hasClass( 'active' ) && !GUI.pleditor ) {
-			setPlaylistScroll();
-		}
+		getPlaybackStatus();
 	} else if ( data === 'playlist' ) {
 		if ( GUI.pleditor || GUI.local ) return;
 		
@@ -1863,10 +1856,24 @@ function setPlaylistScroll() {
 	$liactive.addClass( 'active' );
 	if ( GUI.local ) return;
 	
-	setTimeout( function() {
+	var state = GUI.status.state;
+	$.post( 'enhance.php', { mpc: "status | awk 'NR==2' | awk '{print $3}' | cut -d'/' -f1" }, function( data ) {
+		var elapsed = HMS2Second( data );
+		var $elapsed = $( '#pl-'+ GUI.status.song +' .elapsed' );
+		$( '.elapsed' ).empty();
+		if ( state === 'pause' ) {
+			$elapsed.html( '&#10074;&#10074; '+ second2HMS( elapsed ) +' / ' );
+		} else if ( state === 'play' ) {
+			clearInterval( GUI.countdown );
+			GUI.countdown = setInterval( function() {
+				elapsed++
+				$elapsed.html( '&#9658; '+ second2HMS( elapsed ) +' / ' );
+			}, 1000 );
+		}
+		
 		var scrollpos = $liactive.offset().top - $( '#pl-entries' ).offset().top - ( 49 * 3 );
 		$( 'html, body' ).scrollTop( scrollpos );
-	}, 0 );
+	} );
 }
 function renderPlaylist() {
 	$( '#pl-filter' ).val( '' );
@@ -1901,7 +1908,7 @@ function renderPlaylist() {
 			iconhtml = '<i class="fa fa-music pl-icon"></i>';
 			classradio = 0;
 			sec = HMS2Second( pl.time );
-			topline = pl.title +'&ensp;<span class="time" time="'+ sec +'">'+ pl.time +'</span>';
+			topline = pl.title +'&ensp;<span class="elapsed"></span><span class="time" time="'+ sec +'">'+ pl.time +'</span>';
 			bottomline = pl.track
 			pltime += sec;
 		}
@@ -2147,10 +2154,10 @@ function renderPlayback() {
 	}
 //		var localbrowser = ( location.hostname === 'localhost' || location.hostname === '127.0.0.1' ) ? 10 : 1;
 //		var step = 1 * localbrowser; // fix: reduce cpu cycle on local browser
-	var step = 1;
+//	var step = 1;
 	
 	GUI.currentKnob = setInterval( function() {
-		position = position + step;
+		position++;
 		if ( position === 1000 ) {
 			clearInterval( GUI.currentKnob );
 			clearInterval( GUI.countdown );
@@ -2161,8 +2168,7 @@ function renderPlayback() {
 	
 	GUI.countdown = setInterval( function() {
 		elapsed++
-		mmss = second2HMS( elapsed );
-		$( '#elapsed' ).text( mmss );
+		$( '#elapsed' ).text( second2HMS( elapsed ) );
 	}, 1000 );
 	
 	// playlist current song ( and lyrics if installed )
@@ -2173,7 +2179,7 @@ function renderPlayback() {
 }
 function getPlaybackStatus() {
 	$.post( 'enhancestatus.php', function( status ) {
-		// 'gpio off' restarts mpd which makes data briefly unavailable
+		// 'gpio off' > audio output switched > restarts mpd which makes status briefly unavailable
 		if( typeof status !== 'object' ) return;
 		
 		GUI.activePlayer = status.activePlayer;
@@ -2182,6 +2188,13 @@ function getPlaybackStatus() {
 			return;
 		}
 		GUI.status = status;
-		renderPlayback();
+		if ( $( '#panel-playback' ).hasClass( 'active' ) ) {
+			renderPlayback();
+			// imodedelay fix imode flashing on usb dac switching
+			if ( !GUI.imodedelay ) displayPlayback();
+		} else if ( $( '#panel-playlist' ).hasClass( 'active' ) && !GUI.pleditor ) {
+			setButton();
+			setPlaylistScroll();
+		}
 	}, 'json' );
 }
