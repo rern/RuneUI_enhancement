@@ -555,6 +555,7 @@ wh, gr { font-weight: 300; }
 #cover-art {
 	margin: 0 auto;
 	width: 230px;
+	height: 230px;
 	background-size: 100% 100%;
 	border: none;
 	border-radius: 0;
