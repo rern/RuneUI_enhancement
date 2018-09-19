@@ -647,15 +647,15 @@ $( '#pl-editor' ).on( 'click', 'li', function( e ) {
 		}
 		countsong = ilength - countradio;
 		var counthtml = '<wh><i class="fa fa-list-ul"></i></wh><bl class="title">'+ name +'<gr>&emsp;•</gr></bl>';
-		var countradiohtml = '<wh>'+ countradio +'</wh>&ensp;<i class="fa fa-webradio"></i>';
+		var countradiohtml = '<wh>&emsp;'+ countradio +'</wh>&ensp;<i class="fa fa-webradio"></i>';
 		if ( countsong ) {
 			var pltimehtml = ' id="pltime" time="'+ pltime +'">'+ second2HMS( pltime );
-			var totalhtml = countradio ? '<gr'+ pltimehtml +'</gr>'+ countradiohtml : '<wh'+ pltimehtml +'&emsp;</wh>';
+			var totalhtml = countradio ? '<gr'+ pltimehtml +'</gr>'+ countradiohtml : '<wh'+ pltimehtml +'</wh>';
 			counthtml += '<wh>'+ numFormat( countsong ) +'</wh>&ensp;<i class="fa fa-music"></i>&ensp;'+ totalhtml;
 		} else {
 			counthtml += countradiohtml;
 		}
-		$( '#pl-currentpath' ).html( counthtml +'&emsp;<i class="fa fa-arrow-left plsback"></i>' );
+		$( '#pl-currentpath' ).html( counthtml +'<i class="fa fa-arrow-left plsback"></i>' );
 		$( '#pl-currentpath, #pl-editor' ).removeClass( 'hide' );
 		$( '#pl-editor' ).html( content +'<p></p>' ).promise().done( function() {
 			GUI.pleditor = 1;
@@ -694,7 +694,7 @@ $( '#pl-manage-list' ).click( function() {
 		var plL = pl.length;
 		var plcounthtml = '<wh><i class="fa fa-folder"></i></wh><bl>PLAYLISTS</bl>';
 		plcounthtml += plL ? '<gr>&emsp;•&ensp;</gr><wh id="pls-count">'+ numFormat( plL ) +'</wh>&ensp;<i class="fa fa-list-ul"></i>' : '';
-		$( '#pl-currentpath' ).html( plcounthtml +'&emsp;<i class="fa fa-arrow-left plsbackroot"></i>' );
+		$( '#pl-currentpath' ).html( plcounthtml +'<i class="fa fa-arrow-left plsbackroot"></i>' );
 		$( '#pl-currentpath, #pl-editor, #pl-index' ).removeClass( 'hide' );
 		
 		pl.sort( function( a, b ) {
@@ -908,10 +908,7 @@ $( '.btn-cmd' ).click( function() {
 		}
 		var onoff = GUI.status[ cmd ] ? 0 : 1;
 		GUI.status[ cmd ] = onoff;
-		$this.toggleClass( 'btn-primary' ); // make button change immediate - not wait for pushstream
-		setButtonToggle();
 		cmd = cmd +' '+ onoff;
-		tempFlag( 'local' );
 	} else {
 		if ( cmd === 'pause' || cmd === 'stop' ) {
 			clearInterval( GUI.currentKnob );
@@ -1052,7 +1049,7 @@ pushstreams[ 'idle' ].onmessage = function( data ) {
 		if ( GUI.local ) return;
 		
 		$.post( 'enhance.php', { mpc: 'status | tail -n1' }, function( data ) {
-			var data = data.split( /  +/ ); // remove last newline
+			var data = data.split( /  +/ );
 			GUI.status.repeat = data[ 1 ].split( ' ' ).pop() === 'on' ? 1 : 0;
 			GUI.status.random = data[ 2 ].split( ' ' ).pop()  === 'on' ? 1 : 0;
 			GUI.status.single = data[ 3 ].split( ' ' ).pop()  === 'on' ? 1 : 0;
@@ -1891,7 +1888,6 @@ function renderPlaylist() {
 	var ilength = GUI.playlist.length;
 	GUI.status.playlistlength = ilength;
 	var classradio
-	console.log(GUI.playlist)
 	for ( i = 0; i < ilength; i++ ) {
 		var pl = GUI.playlist[ i ];
 		if ( pl.file.slice( 0, 4 ) === 'http' ) {
