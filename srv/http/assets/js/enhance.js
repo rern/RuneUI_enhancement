@@ -1858,9 +1858,17 @@ function setPlaylistScroll() {
 	$liactive.addClass( 'active' );
 	if ( GUI.local ) return;
 	
-	$.post( 'enhance.php', { mpc: "status | awk 'NR==2' | awk '{print $3}' | cut -d'/' -f1" }, function( data ) {
-		var elapsed = data ? HMS2Second( data ) : 0;
-		var $elapsed = $( '#pl-'+ GUI.status.song +' .elapsed' );
+	$.post( 'enhance.php', { mpc: "status | awk 'NR==2' | awk '{print $2\"^^\"$3}' | tr -d '#'" }, function( data ) {
+		var data = data.split( '^^' );
+		var songid = data[ 0 ].split( '/' )[ 0 ];
+		// for 'visibility - visible'
+		$liactive = $( '#pl-entries li' ).eq( songid - 1 );
+		if ( !$liactive.hasClass( 'active' ) ) $( '#pl-entries li' ).removeClass( 'active' );
+		$liactive.addClass( 'active' );
+		
+		var elapsed = data[ 1 ].split( '/' )[ 0 ];
+		var elapsed = elapsed ? HMS2Second( elapsed ) : 0;
+		var $elapsed = $liactive.find( ' .elapsed' );
 		if ( !$elapsed.html() ) $( '.elapsed' ).empty();
 		var state = GUI.status.state;
 		if ( state === 'pause' ) {
@@ -1876,9 +1884,10 @@ function setPlaylistScroll() {
 		} else if ( state === 'stop' ) {
 			$elapsed.empty();
 		}
-		
-		var scrollpos = $liactive.offset().top - $( '#pl-entries' ).offset().top - ( 49 * 3 );
-		$( 'html, body' ).scrollTop( scrollpos );
+		setTimeout( function() {
+			var scrollpos = $liactive.offset().top - $( '#pl-entries' ).offset().top - ( 49 * 3 );
+			$( 'html, body' ).scrollTop( scrollpos );
+		}, 0 );
 	} );
 }
 function renderPlaylist() {
