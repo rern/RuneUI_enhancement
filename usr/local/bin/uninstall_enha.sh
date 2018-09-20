@@ -47,7 +47,7 @@ files="
 /srv/http/app/libs/runeaudio.php
 /srv/http/app/templates/mpd.php
 /srv/http/app/templates/settings.php
-/srv/http/command/rune_SY_wrk
+/srv/http/command/rune_PL_wrk
 /srv/http/db/index.php
 /root/.config/midori/config
 /root/.xinitrc
