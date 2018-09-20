@@ -1848,31 +1848,33 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 function setPlaylistScroll() {
 	var  wH = window.innerHeight;
 	$( '#pl-entries p' ).css( 'min-height', wH - 140 +'px' );
-	if ( $( '#pl-entries li.active' ).index() !== GUI.status.song ) {
-		$( '#pl-entries li.active .elapsed' ).empty();
-		$( '#pl-entries li.active' ).removeClass( 'active' );
-	}
 	var $liactive = $( '#pl-entries li' ).eq( GUI.status.song );
 	if ( !$liactive.length ) {
 		$liactive = $( '#pl-entries li' ).eq( 0 ).addClass( 'active' );
 		return;
 	}
 	
+	if ( !$liactive.hasClass( 'active' ) ) $( '#pl-entries li' ).removeClass( 'active' );
 	$liactive.addClass( 'active' );
 	if ( GUI.local ) return;
 	
 	$.post( 'enhance.php', { mpc: "status | awk 'NR==2' | awk '{print $3}' | cut -d'/' -f1" }, function( data ) {
 		var elapsed = data ? HMS2Second( data ) : 0;
 		var $elapsed = $( '#pl-'+ GUI.status.song +' .elapsed' );
+		if ( !$elapsed.html() ) $( '.elapsed' ).empty();
 		var state = GUI.status.state;
 		if ( state === 'pause' ) {
-			$elapsed.html( '<i class="fa fa-pause"></i> '+ second2HMS( elapsed ) +' / ' );
+			var elapsedtxt = second2HMS( elapsed ) + ( GUI.status.ext === 'radio' ? '' : ' / ' );
+			$elapsed.html( '<i class="fa fa-pause"></i> '+ elapsedtxt );
 		} else if ( state === 'play' ) {
 			clearInterval( GUI.intElapsed );
 			GUI.intElapsed = setInterval( function() {
 				elapsed++
-				$elapsed.html( '<i class="fa fa-play"></i> '+ second2HMS( elapsed ) +' / ' );
+				var elapsedtxt = second2HMS( elapsed ) + ( GUI.status.ext === 'radio' ? '' : ' / ' );
+				$elapsed.html( '<i class="fa fa-play"></i> '+ elapsedtxt );
 			}, 1000 );
+		} else if ( state === 'stop' ) {
+			$elapsed.empty();
 		}
 		
 		var scrollpos = $liactive.offset().top - $( '#pl-entries' ).offset().top - ( 49 * 3 );
@@ -1906,7 +1908,7 @@ function renderPlaylist() {
 			iconhtml = '<i class="fa fa-webradio pl-icon"></i>';
 			classradio = 1;
 			countradio++
-			topline = pl.title;
+			topline = pl.title +'&ensp;<span class="elapsed"></span>';
 			bottomline = pl.file;
 		} else {
 			iconhtml = '<i class="fa fa-music pl-icon"></i>';
