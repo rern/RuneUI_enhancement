@@ -83,7 +83,7 @@ echo $file
 
 comment 'is-enabled rune_PL_wrk' 'systemctl enable rune_PL_wrk'
 
-systemctl restart rune_PL_wrk
+systemctl stop rune_PL_wrk
 #----------------------------------------------------------------------------------
 if [[ $1 != u ]]; then # keep range: 0.5 - 3.0
 	z=$1;
