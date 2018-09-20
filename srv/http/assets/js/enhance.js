@@ -83,10 +83,10 @@ $( '#open-playlist' ).click( function() {
 		$( '#overlay-playsource' ).addClass( 'open' );
 		return;
 	}
-	$( '#loader' ).removeClass( 'hide' );
 	setPanelActive( $( '#panel-playlist' ) );
 	if ( GUI.pleditor ) return;
 	
+	$( '#loader' ).removeClass( 'hide' );
 	$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
 		GUI.playlist = data;
 		renderPlaylist();
