@@ -162,6 +162,10 @@ Description=mpc idle loop
 After=network.target redis.target
 [Service]
 ExecStart=/srv/http/enhanceidle.sh
+Restart=always
+RestartSec=1
+StartLimitInterval=30
+StartLimitBurst=20
 [Install]
 WantedBy=multi-user.target
 EOF
