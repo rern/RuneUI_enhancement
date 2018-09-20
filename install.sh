@@ -177,7 +177,7 @@ string=$( cat <<'EOF'
             if ($activePlayer === 'Spotify') {
 EOF
 )
-insert -n +1 'closeMpdSocket'
+append -n +1 'closeMpdSocket'
 
 systemctl restart rune_PL_wrk
 systemctl daemon-reload
