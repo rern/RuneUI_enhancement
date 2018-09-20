@@ -1048,8 +1048,8 @@ pushstreams[ 'idle' ].onmessage = function( data ) {
 		$.post( 'enhance.php', { mpc: 'status | tail -n1' }, function( data ) {
 			var data = data.split( /  +/ );
 			GUI.status.repeat = data[ 1 ].split( ' ' ).pop() === 'on' ? 1 : 0;
-			GUI.status.random = data[ 2 ].split( ' ' ).pop()  === 'on' ? 1 : 0;
-			GUI.status.single = data[ 3 ].split( ' ' ).pop()  === 'on' ? 1 : 0;
+			GUI.status.random = data[ 2 ].split( ' ' ).pop() === 'on' ? 1 : 0;
+			GUI.status.single = data[ 3 ].split( ' ' ).pop() === 'on' ? 1 : 0;
 			setButtonToggle();
 		} );
 	}
