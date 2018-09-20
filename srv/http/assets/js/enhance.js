@@ -83,6 +83,7 @@ $( '#open-playlist' ).click( function() {
 		$( '#overlay-playsource' ).addClass( 'open' );
 		return;
 	}
+	$( '#loader' ).removeClass( 'hide' );
 	setPanelActive( $( '#panel-playlist' ) );
 	if ( GUI.pleditor ) return;
 	
@@ -1849,31 +1850,32 @@ function setPlaylistScroll() {
 	var  wH = window.innerHeight;
 	$( '#pl-entries p' ).css( 'min-height', wH - 140 +'px' );
 	var $licurrent = $( '#pl-entries li' ).eq( GUI.status.song );
-	$licurrent.addClass( 'active' );
-	if ( !$( '#pl-entries li.active' ).length ) {
+	if ( !$( '#pl-entries li' ).length ) {
 		$( '#pl-entries li' ).eq( 0 ).addClass( 'active' );
 		return;
 	}
 	
-	if ( !$licurrent.hasClass( 'active' ) ) $( '#pl-entries li' ).removeClass( 'active' );
+	$( '#pl-entries li' ).removeClass( 'active' );
 	$licurrent.addClass( 'active' );
 	if ( GUI.local ) return; // 'Sortable'
 	
 	setTimeout( function() {
 		var scrollpos = $( '#pl-entries li.active' ).offset().top - $( '#pl-entries' ).offset().top - ( 49 * 3 );
 		$( 'html, body' ).scrollTop( scrollpos );
+		$( '#loader' ).addClass( 'hide' );
 	}, 100 );
-	$.post( 'enhance.php', { mpc: "status | awk 'NR==2' | awk '{print $1\"^^\"$2\"^^\"$3}' | tr -d '[]#'" }, function( data ) {
+	$.post( 'enhance.php', { mpc: "status | awk 'NR==2' | awk '{print $1\"^\"$2\"^\"$3}' | tr -d '[]#'" }, function( data ) {
+		clearInterval( GUI.intElapsed );
 		if ( !data ) {
 			$( '.elapsed' ).empty();
 			return;
 		}
-		var data = data.split( '^^' );
+		var data = data.split( '^' );
 		var state = data[ 0 ];
 		var songid = data[ 1 ].split( '/' )[ 0 ];
 		// for 'visibilityevent - visible' and song has changed
 		var $liactive = $( '#pl-entries li' ).eq( songid - 1 );
-		if ( !$liactive.hasClass( 'active' ) ) $( '#pl-entries li' ).removeClass( 'active' );
+		$( '#pl-entries li' ).removeClass( 'active' );
 		$liactive.addClass( 'active' );
 		
 		var elapsed = data[ 2 ].split( '/' )[ 0 ];
@@ -1884,7 +1886,6 @@ function setPlaylistScroll() {
 			var elapsedtxt = second2HMS( elapsed ) + ( GUI.status.ext === 'radio' ? '' : ' / ' );
 			$elapsed.html( '<i class="fa fa-pause"></i> '+ elapsedtxt );
 		} else if ( state === 'playing' ) {
-			clearInterval( GUI.intElapsed );
 			GUI.intElapsed = setInterval( function() {
 				elapsed++
 				var elapsedtxt = second2HMS( elapsed ) + ( GUI.status.ext === 'radio' ? '' : ' / ' );
@@ -1947,7 +1948,6 @@ function renderPlaylist() {
 	} else {
 		counthtml += countradiohtml;
 	}
-	$( '#loader' ).addClass( 'hide' );
 	$( '.playlist' ).removeClass( 'hide' );
 	$( '#playlist-warning' ).addClass( 'hide' );
 	$( '#pl-count' ).html( counthtml );
