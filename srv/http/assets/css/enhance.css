@@ -1141,6 +1141,7 @@ wh, gr { font-weight: 300; }
 .plsbackroot,
 .plsback {
 	margin-left: 20px;
+	font-size: 28px !important;
 }
 #db-home,
 #pl-home {
