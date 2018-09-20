@@ -30,6 +30,31 @@ getinstallzip
 
 echo -e "$bar Modify files ..."
 #----------------------------------------------------------------------------------
+file=/srv/http/app/libs/runeaudio.php
+echo $file
+
+string=$( cat <<'EOF'
+        if ( preg_match( '/playlist: Webradio/', $plistLine ) ) {
+            $redis = new Redis();
+            $redis->pconnect( '127.0.0.1' );
+        }
+EOF
+)
+append 'browseMode = TRUE'
+
+comment 'parseFileStr($value'
+
+string=$( cat <<'EOF'
+                $pathinfo = pathinfo( $value );
+                $plistArray[ $plCounter ][ 'fileext' ] = $pathinfo[ 'extension' ];
+                if ( preg_match( '/^Webradio/', $value ) ) {
+                    $webradiourl = $redis->hGet( 'webradios', $pathinfo[ 'filename' ] );
+                    $plistArray[ $plCounter ][ 'url' ] = $webradiourl;
+                }
+EOF
+)
+insert 'parseFileStr($value'
+#----------------------------------------------------------------------------------
 file=/srv/http/app/templates/mpd.php
 echo $file
 
@@ -155,3 +180,5 @@ systemctl start mpcidle
 systemctl enable mpcidle
 
 installfinish $@
+
+reinitsystem
