@@ -168,12 +168,18 @@ EOF
 )
 echo "$string" > /etc/systemd/system/mpcidle.service
 #----------------------------------------------------------------------------------
-file=/srv/http/command/rune_SY_wrk
+file=/srv/http/command/rune_PL_wrk
 echo $file
 
-comment 'is-enabled rune_PL_wrk' 'systemctl enable rune_PL_wrk'
+comment 'MPD playback engine' -n +1 'closeMpdSocket'
 
-systemctl stop rune_PL_wrk
+string=$( cat <<'EOF'
+            if ($activePlayer === 'Spotify') {
+EOF
+)
+insert -n +1 'closeMpdSocket'
+
+systemctl restart rune_PL_wrk
 systemctl daemon-reload
 systemctl start mpcidle
 systemctl enable mpcidle
