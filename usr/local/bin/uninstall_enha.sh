@@ -56,10 +56,9 @@ restorefile $files
 
 systemctl stop mpcidle
 systemctl disable mpcidle
-systemctl restart rune_PL_wrk
-
 rm -v /etc/systemd/system/mpcidle.service
 systemctl daemon-reload
+systemctl restart rune_PL_wrk
 
 chown -R mpd:audio /mnt/MPD/Webradio
 
