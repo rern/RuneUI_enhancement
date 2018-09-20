@@ -1880,7 +1880,7 @@ function setPlaylistScroll() {
 		var elapsed = elapsed ? HMS2Second( elapsed ) : 0;
 		var $elapsed = $liactive.find( ' .elapsed' );
 		if ( !$elapsed.html() ) $( '.elapsed' ).empty();
-		if ( state === 'pauseed' ) {
+		if ( state === 'paused' ) {
 			var elapsedtxt = second2HMS( elapsed ) + ( GUI.status.ext === 'radio' ? '' : ' / ' );
 			$elapsed.html( '<i class="fa fa-pause"></i> '+ elapsedtxt );
 		} else if ( state === 'playing' ) {
