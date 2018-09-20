@@ -47,7 +47,7 @@ files="
 /srv/http/app/libs/runeaudio.php
 /srv/http/app/templates/mpd.php
 /srv/http/app/templates/settings.php
-/srv/http/command/rune_PL_wrk
+/srv/http/command/rune_SY_wrk
 /srv/http/db/index.php
 /root/.config/midori/config
 /root/.xinitrc
@@ -59,6 +59,7 @@ systemctl disable mpcidle
 systemctl restart rune_PL_wrk
 
 rm -v /etc/systemd/system/mpcidle.service
+systemctl daemon-reload
 
 chown -R mpd:audio /mnt/MPD/Webradio
 
