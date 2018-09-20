@@ -78,10 +78,10 @@ echo $file
 
 commentH -n -1 'for="localSStime">' -n -2 'USB Automount'
 #----------------------------------------------------------------------------------
-file=/srv/http/command/rune_PL_wrk
+file=/srv/http/command/rune_SY_wrk
 echo $file
 
-comment -n +2 'MPD playback engine' 'errorcode === 0'
+comment 'is-enabled rune_PL_wrk' 'systemctl enable rune_PL_wrk'
 
 systemctl restart rune_PL_wrk
 #----------------------------------------------------------------------------------
