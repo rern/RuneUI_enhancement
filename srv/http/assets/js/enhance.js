@@ -626,7 +626,7 @@ $( '#pl-editor' ).on( 'click', 'li', function( e ) {
 	$( '#loader' ).removeClass( 'hide' );
 	
 	var name = $( this ).data( 'path' );
-	$.post( 'enhance.php', { getplaylist: 1, name: name }, function( data ) {
+	$.post( 'enhance.php', { getplaylist: 1, name: '"'+ name +'"' }, function( data ) {
 		var countradio = 0;
 		var content, pl, iconhtml, topline, bottomline, classradio, hidetotal;
 		content = iconhtml = topline =bottomline = classradio = hidetotal = '';
