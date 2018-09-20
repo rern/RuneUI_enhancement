@@ -78,13 +78,6 @@ echo $file
 
 commentH -n -1 'for="localSStime">' -n -2 'USB Automount'
 #----------------------------------------------------------------------------------
-file=/srv/http/command/rune_SY_wrk
-echo $file
-
-comment 'is-enabled rune_PL_wrk' 'systemctl enable rune_PL_wrk'
-
-systemctl stop rune_PL_wrk
-#----------------------------------------------------------------------------------
 if [[ $1 != u ]]; then # keep range: 0.5 - 3.0
 	z=$1;
 	zoom=$( echo "0.5 $z 3" \
@@ -174,7 +167,13 @@ WantedBy=multi-user.target
 EOF
 )
 echo "$string" > /etc/systemd/system/mpcidle.service
+#----------------------------------------------------------------------------------
+file=/srv/http/command/rune_SY_wrk
+echo $file
 
+comment 'is-enabled rune_PL_wrk' 'systemctl enable rune_PL_wrk'
+
+systemctl stop rune_PL_wrk
 systemctl daemon-reload
 systemctl start mpcidle
 systemctl enable mpcidle
