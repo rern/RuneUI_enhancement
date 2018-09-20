@@ -1848,46 +1848,49 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 function setPlaylistScroll() {
 	var  wH = window.innerHeight;
 	$( '#pl-entries p' ).css( 'min-height', wH - 140 +'px' );
-	var $liactive = $( '#pl-entries li' ).eq( GUI.status.song );
-	if ( !$liactive.length ) {
-		$liactive = $( '#pl-entries li' ).eq( 0 ).addClass( 'active' );
+	var $licurrent = $( '#pl-entries li' ).eq( GUI.status.song );
+	$licurrent.addClass( 'active' );
+	if ( !$( '#pl-entries li.active' ).length ) {
+		$( '#pl-entries li' ).eq( 0 ).addClass( 'active' );
 		return;
 	}
 	
-	if ( !$liactive.hasClass( 'active' ) ) $( '#pl-entries li' ).removeClass( 'active' );
-	$liactive.addClass( 'active' );
-	if ( GUI.local ) return;
+	if ( !$licurrent.hasClass( 'active' ) ) $( '#pl-entries li' ).removeClass( 'active' );
+	$licurrent.addClass( 'active' );
+	if ( GUI.local ) return; // 'Sortable'
 	
-	$.post( 'enhance.php', { mpc: "status | awk 'NR==2' | awk '{print $2\"^^\"$3}' | tr -d '#'" }, function( data ) {
+	setTimeout( function() {
+		var scrollpos = $( '#pl-entries li.active' ).offset().top - $( '#pl-entries' ).offset().top - ( 49 * 3 );
+		$( 'html, body' ).scrollTop( scrollpos );
+	}, 100 );
+	$.post( 'enhance.php', { mpc: "status | awk 'NR==2' | awk '{print $1\"^^\"$2\"^^\"$3}' | tr -d '[]#'" }, function( data ) {
+		if ( !data ) {
+			$( '.elapsed' ).empty();
+			return;
+		}
 		var data = data.split( '^^' );
-		var songid = data[ 0 ].split( '/' )[ 0 ];
+		var state = data[ 0 ];
+		var songid = data[ 1 ].split( '/' )[ 0 ];
 		// for 'visibilityevent - visible' and song has changed
-		$liactive = $( '#pl-entries li' ).eq( songid - 1 );
+		var $liactive = $( '#pl-entries li' ).eq( songid - 1 );
 		if ( !$liactive.hasClass( 'active' ) ) $( '#pl-entries li' ).removeClass( 'active' );
 		$liactive.addClass( 'active' );
 		
-		var elapsed = data[ 1 ].split( '/' )[ 0 ];
+		var elapsed = data[ 2 ].split( '/' )[ 0 ];
 		var elapsed = elapsed ? HMS2Second( elapsed ) : 0;
 		var $elapsed = $liactive.find( ' .elapsed' );
 		if ( !$elapsed.html() ) $( '.elapsed' ).empty();
-		var state = GUI.status.state;
-		if ( state === 'pause' ) {
+		if ( state === 'pauseed' ) {
 			var elapsedtxt = second2HMS( elapsed ) + ( GUI.status.ext === 'radio' ? '' : ' / ' );
 			$elapsed.html( '<i class="fa fa-pause"></i> '+ elapsedtxt );
-		} else if ( state === 'play' ) {
+		} else if ( state === 'playing' ) {
 			clearInterval( GUI.intElapsed );
 			GUI.intElapsed = setInterval( function() {
 				elapsed++
 				var elapsedtxt = second2HMS( elapsed ) + ( GUI.status.ext === 'radio' ? '' : ' / ' );
 				$elapsed.html( '<i class="fa fa-play"></i> '+ elapsedtxt );
 			}, 1000 );
-		} else if ( state === 'stop' ) {
-			$elapsed.empty();
 		}
-		setTimeout( function() {
-			var scrollpos = $liactive.offset().top - $( '#pl-entries' ).offset().top - ( 49 * 3 );
-			$( 'html, body' ).scrollTop( scrollpos );
-		}, 0 );
 	} );
 }
 function renderPlaylist() {
