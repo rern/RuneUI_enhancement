@@ -24,17 +24,15 @@ fi
 echo -e "$bar Remove files ..."
 
 rm -v /srv/http/enhance*
-rm -v /srv/http/index.php
 rm -v /srv/http/app/enhance*
 rm -v /srv/http/app/templates/enhance*
 rm -v /srv/http/assets/css/{bootstrap.min,enhance,fontawesome.min,midori,pnotify.custom.min,roundslider.min,settings,toggle-switch.min}.css
 rm -v /srv/http/assets/fonts/enhance*
 rm -v /srv/http/assets/img/{bootsplash.png,controls*,runelogo.svg,vu*}
 rm -v /srv/http/assets/js/enhance*
-rm -v /srv/http/assets/js/vendor/{jquery-ui.min,modernizr-custom,pnotify.custom.min,roundslider.min}.js
+rm -v /srv/http/assets/js/vendor/{jquery-ui.min,modernizr-custom,roundslider.min}.js
 
 mv /srv/http/index.php{.backup,}
-mv /srv/http/app/libs/vendor/getid3{.backup,}
 mv /srv/http/assets/js/vendor/pnotify.custom.min.js{.backup,}
 mv /srv/http/assets/js/vendor/pushstream.min.js{.backup,}
 mv /srv/http/assets/js/vendor/Sortable.min.js{.backup,}
