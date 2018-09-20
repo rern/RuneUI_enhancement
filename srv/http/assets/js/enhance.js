@@ -1861,7 +1861,7 @@ function setPlaylistScroll() {
 	$.post( 'enhance.php', { mpc: "status | awk 'NR==2' | awk '{print $2\"^^\"$3}' | tr -d '#'" }, function( data ) {
 		var data = data.split( '^^' );
 		var songid = data[ 0 ].split( '/' )[ 0 ];
-		// for 'visibility - visible'
+		// for 'visibilityevent - visible' and song has changed
 		$liactive = $( '#pl-entries li' ).eq( songid - 1 );
 		if ( !$liactive.hasClass( 'active' ) ) $( '#pl-entries li' ).removeClass( 'active' );
 		$liactive.addClass( 'active' );
