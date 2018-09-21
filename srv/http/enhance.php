@@ -64,6 +64,15 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 		$pl = '';
 	}
 	echo json_encode( $data, JSON_NUMERIC_CHECK );
+} else if ( isset( $_POST[ 'getwebradios' ] ) ) {
+	$webradios = $redis->hGetAll( 'webradios' );
+	foreach( $webradios as $name => $url ) {
+		$li[ 'playlist' ] = 'Webradio/'.$name.'.pls';
+		$li[ 'url' ] = $url;
+		$data[] = $li;
+		$li = '';
+	}
+	echo json_encode( $data );
 } else if ( isset( $_POST[ 'bkmarks' ] ) || isset( $_POST[ 'webradios' ] ) ) {
 	if ( isset( $_POST[ 'bkmarks' ] ) ) {
 		$key = 'bkmarks';
@@ -95,8 +104,11 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 			fclose( $fopen );
 		}
 	}
-	if ( $key === 'webradios' ) exec( 'mpc update Webradio' );
-	getLibrary();
+	if ( $key === 'bkmarks' ) {
+		getLibrary();
+	} else {
+		exec( 'mpc update Webradio' );
+	}
 } else if ( isset( $_POST[ 'power' ] ) ) {
 	$sudo = '/usr/bin/sudo /usr/bin/';
 	if ( file_exists( '/root/gpiooff.py' ) ) $cmd.= '/usr/bin/sudo /root/gpiooff.py;';
