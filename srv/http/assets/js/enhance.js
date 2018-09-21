@@ -1483,6 +1483,12 @@ function getDB( options ) {
 				}, 'json' );
 			}
 		} else if ( cmd === 'browse' ) {
+			if ( path === 'Webradio' ) {
+				$.post( 'enhance.php', { getwebradios: 1 }, function( data ) {
+					populateDB( data, path, '', '', uplevel );
+				}, 'json' );
+				return;
+			}
 			$.post( '/db/?cmd=browse', { path: path, browsemode: GUI.browsemode }, function( data ) {
 				populateDB( data, path, '', '', uplevel );
 			}, 'json' );
@@ -1532,7 +1538,7 @@ function parseDBdata( inputArr, i, respType, inpath, querytype ) {
 							content += '<span class="sn">'+ liname +'&ensp;<span class="time">' + second2HMS( inputArr.Time ) +'</span></span>';
 							content += '<span class="bl"> path: '+ inpath;
 						}
-					} else {
+					} else { // Webradio
 						var liname = inputArr.playlist.replace( inpath +'/', '' ).replace( '.'+ inputArr.fileext, '' );
 						content += inputArr.playlist +'" class="db-webradio" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-webradio"></i><i class="fa fa-webradio db-icon db-radio"></i>';
 						content += '<span class="sn">'+ liname +'</span>';
@@ -1693,7 +1699,7 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 	} else {
 // normal MPD browsing
 		// show index bar
-		if ( ( path === '' && keyword === '' ) || !data.length ) {
+		if ( ( !path && !keyword ) || !data.length ) {
 			$( '#loader' ).addClass( 'hide' );
 			return;
 		} else {
