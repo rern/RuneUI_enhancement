@@ -904,7 +904,7 @@ $( '.btn-cmd' ).click( function() {
 		if ( GUI.status.ext === 'radio' ) return;
 		
 		if ( cmd === 'pl-ashuffle-stop' ) {
-			$.post( '/db/?cmd=pl-ashuffle-stop' );
+			$.post( 'enhance.php', { bash: '/usr/bin/killall ashuffle &' } );
 			return;
 		}
 		var onoff = GUI.status[ cmd ] ? 0 : 1;
@@ -1416,7 +1416,8 @@ function getDB( options ) {
 		uplevel = options.uplevel || '',
 		plugin = options.plugin || '',
 		querytype = options.querytype || '',
-		args = options.args || '';
+		args = options.args || '',
+		command;
 	if ( !GUI.dbback && cmd !== 'search' ) {
 		if ( !plugin ) {
 			GUI.dbbackdata.push( {
@@ -1471,36 +1472,40 @@ function getDB( options ) {
 		}
 	} else {
 	// normal browsing
+		var keyword = $( '#db-search-keyword' ).val();
+		var command = {
+			  file     : { mpc: "ls -f '%title%^^%time%^^%artist%^^%album%^^%file%' '"+ path +"'", list: 'file' }
+			, album    : { mpc: "find -f '%title%^^%time%^^%artist%^^%album%^^%file%' album '"+ path +"'", search: 1 } 
+			, artist   : { mpc: "list album artist '"+ path +"' | awk NF", list: 'album' }
+			, composer : { mpc: "search -f '%title%^^%time%^^%artist%^^%album%^^%file%' composer '"+ path +"'", search: 1 }
+			, genre    : { mpc: "list artist genre '"+ path +"' | awk NF", list: 'artist' }
+			, webradio : { getwebradios: 1 }
+			, type     : { mpc: 'list '+ GUI.browsemode +' | awk NF', list: GUI.browsemode }
+			, search   : { mpc: "search -f '%title%^^%time%^^%artist%^^%album%^^%file%' any '"+ keyword +"'", search: 1 }
+		}
 		if ( cmd === 'search' ) {
-			var keyword = $( '#db-search-keyword' ).val();
 			if ( path.match(/Dirble/)) {
 				$.post( '/db/?cmd=dirble', { querytype: 'search', args: keyword }, function( data ) {
 					populateDB( data, path, 'Dirble', 'search', uplevel );
 				}, 'json' );
+				return
 			} else {
-				$.post( '/db/?querytype='+ GUI.browsemode +'&cmd=search', { query: keyword }, function( data ) {
-					populateDB( data, path, '', '', uplevel, '', keyword );
-				}, 'json' );
+				var mode = 'search';
 			}
 		} else if ( cmd === 'browse' ) {
 			if ( path === 'Webradio' ) {
-				$.post( 'enhance.php', { getwebradios: 1 }, function( data ) {
-					populateDB( data, path, '', '', uplevel );
-				}, 'json' );
-				return;
-			}
-			$.post( '/db/?cmd=browse', { path: path, browsemode: GUI.browsemode }, function( data ) {
-				populateDB( data, path, '', '', uplevel );
-			}, 'json' );
-		} else {
-//			$( '#loader' ).addClass( 'hide' );
-			$.post( '/db/?cmd='+ cmd, { path: path, querytype: querytype }, function() {
-				if ( $.inArray( cmd, [ 'add', 'addplay', 'addreplaceplay' ] ) !== -1 ) {
-					//tempFlag( 'local' );
-					renderPlaylist();
+				var mode = 'webradio';
+			} else {
+				if ( $.inArray( path, [ 'Albums', 'Artists', 'Composer', 'Genres' ] ) !== -1 ) {
+					var mode = 'type';
+				} else {
+					var mode = GUI.browsemode;
 				}
-			}, 'json');
+			}
 		}
+		$.post( 'enhance.php', command[ mode ], function( data ) {
+			populateDB( data, path, '', '', uplevel );
+		}, 'json' );
 	}
 }
 function parseDBdata( inputArr, i, respType, inpath, querytype ) {
@@ -1511,11 +1516,9 @@ function parseDBdata( inputArr, i, respType, inpath, querytype ) {
 		querytype = querytype || '',
 		content = '<li id="db-'+ ( i + 1 ) +'" data-path="';
 	switch ( respType ) {
-		case 'playlist':
-			// code placeholder
-			break;
 		case 'db':
 			if ( GUI.browsemode === 'file' ) {
+				console.log(inputArr)
 				if ( inpath === '' && inputArr.file ) {
 					var file = inputArr.file
 					inpath = file.slice( 0, file.lastIndexOf( '/' ) );
@@ -1562,7 +1565,7 @@ function parseDBdata( inputArr, i, respType, inpath, querytype ) {
 					content += inputArr.file +'" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i>';
 					content += '<span class="sn">'+ liname +'&ensp;<span class="time">'+ second2HMS( inputArr.Time ) +'</span></span>';
 					content += '<span class="bl">'+ inputArr.Album +' - '+ inputArr.Artist +'</span></li>';
-				} else if ( inputArr.album !== '' ) {
+				} else {
 					var liname = inputArr.album;
 					content += inputArr.album.replace( /\"/g, '&quot;' ) +'" mode="album" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-album"></i>';
 					content += '<span><i class="fa fa-album"></i>'+ liname +'</span></li>';
@@ -1572,7 +1575,7 @@ function parseDBdata( inputArr, i, respType, inpath, querytype ) {
 					var liname = inputArr.album ? inputArr.album : 'Unknown album';
 					content += inputArr.album +'" mode="album" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-album"></i>';
 					content += '<span><i class="fa fa-album"></i>'+ liname +'</span></li>';
-				} else if ( inputArr.artist !== '' ) {
+				} else {
 					var liname = inputArr.artist;
 					content += inputArr.artist +'" mode="artist" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-artist"></i>';
 					content += '<span><i class="fa fa-artist"></i>'+ liname +'</span></li>';
@@ -1583,7 +1586,7 @@ function parseDBdata( inputArr, i, respType, inpath, querytype ) {
 					content += inputArr.file +'" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i>';
 					content += '<span class="sn">'+ liname +'&ensp;<span class="time">'+ second2HMS( inputArr.Time ) +'</span></span>';
 					content += '<span class="bl">'+ inputArr.Artist +' - '+ inputArr.Album +'</span></li>';
-				} else if ( inputArr.composer !== '' ) {
+				} else {
 					var liname = inputArr.composer;
 					content += inputArr.composer +'" mode="composer" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-composer"></i>';
 					content += '<span><i class="fa fa-composer"></i>'+ inputArr.composer +'</span></li>';
@@ -1592,8 +1595,8 @@ function parseDBdata( inputArr, i, respType, inpath, querytype ) {
 				if ( inputArr.artist ) {
 					var liname = inputArr.artist ? inputArr.artist : 'Unknown artist';
 					content += inputArr.artist +'" mode="artist" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-artist"></i>';
-					content += '<span><i class="fa fa-album"></i>'+ liname +'</span></li>';
-				} else if (inputArr.genre !== '' ) {
+					content += '<span><i class="fa fa-artist"></i>'+ liname +'</span></li>';
+				} else {
 					var liname = inputArr.genre ;
 					content += inputArr.genre +'" mode="genre" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-genre"></i>';
 					content += '<span><i class="fa fa-genre"></i>'+ liname;+'</span></li>';
@@ -1699,7 +1702,7 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 	} else {
 // normal MPD browsing
 		// show index bar
-		if ( ( !path && !keyword ) || !data.length ) {
+		if ( !data.length ) {
 			$( '#loader' ).addClass( 'hide' );
 			return;
 		} else {
@@ -1732,7 +1735,7 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 				return;
 			}
 			// browsing
-			if ( keyword ) {
+			if ( $( '#db-search-keyword' ).val() ) {
 			// search results
 				var results = ( data.length ) ? data.length : '0';
 				$( '#db-level-up, #db-index' ).addClass( 'hide' );
