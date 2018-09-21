@@ -1539,7 +1539,7 @@ function parseDBdata( inputArr, i, respType, inpath, querytype ) {
 							content += '<span class="bl"> path: '+ inpath;
 						}
 					} else { // Webradio
-						var liname = inputArr.playlist.replace( inpath +'/', '' ).replace( '.'+ inputArr.fileext, '' );
+						var liname = inputArr.playlist.replace( inpath +'/', '' ).replace( /.pls$/, '' );
 						content += inputArr.playlist +'" class="db-webradio" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-webradio"></i><i class="fa fa-webradio db-icon db-radio"></i>';
 						content += '<span class="sn">'+ liname +'</span>';
 						content += '<span class="bl">'+ inputArr.url;

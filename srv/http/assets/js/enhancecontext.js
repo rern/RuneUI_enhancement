@@ -177,9 +177,9 @@ function webRadioNew( name, url ) {
 function webRadioRename() {
 	info( {
 		  icon       : 'edit-circle'
-		, title      : 'Edit Webradio'
+		, title      : 'Rename Webradio'
 		, width      : 500
-		, message    : 'Edit:'
+		, message    : 'Rename:'
 					+'<br><white>'+ GUI.list.name +'</white>'
 					+'<br>'+ GUI.list.url
 					+'<br>To:'
@@ -193,18 +193,16 @@ function webRadioRename() {
 	} );
 }
 function addWebradio( name, url, oldname ) {
-	if ( oldname ) {
+/*	if ( oldname ) {
 		$( '#db-entries li.active span.sn').text( name );
 		$( '#db-entries li.active span.bl').text( url );
 	} else {
 		GUI.libraryhome.webradio++;
-	}
+	}*/
+	if ( !oldname ) GUI.libraryhome.webradio++;
 	var data = oldname ? [ name, url, oldname ] : [ name, url ];
-	tempFlag( 'local' );
 	$.post( 'enhance.php', { webradios: data }, function() {
-		setTimeout( function() {
-			$( '#home-webradio' ).click();
-		}, 500 );
+		$( '#home-webradio' ).click();
 	} );
 }
 function webRadioVerify( name, url, oldname ) {
