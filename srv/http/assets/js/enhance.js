@@ -184,26 +184,12 @@ $( '#panel-library' ).on( 'taphold', function() {
 			$.post( 'enhance.php', { setdisplay: GUI.display } );
 		}
 	} );
-} ).on( 'taphold', '.home-block', function( e ) {
-	tempFlag( 'taphold', 2000 );
-	if ( GUI.swipe ) return;
-	
-	if ( !$( e.target ).parents( '.home-bookmark' ) && !$( e.target ).hasClass( 'home-bookmark' ) ) return;
-	
-	tempFlag( 'local' );
-	$( '.home-bookmark' ).append( '<i id="home-block-edit" class="fa fa-edit"></i><i id="home-block-remove" class="fa fa-minus-circle"></i>' );
-} ).click( function( e ) {
-	if ( $( e.target ).parents( '.home-bookmark' ).length || $( e.target ).hasClass( 'home-bookmark' ) ) return;
-	
-	$( '#home-block-edit, #home-block-remove' ).remove();
 } );
 $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 	var $this = $( this );
 	if ( e.target.id === 'home-block-edit' ) {
-		GUI.bookmarkedit = 1;
-		bookmarkRename( $this.data( 'name' ), $this.data( 'path' ) )
+		bookmarkRename( $this.data( 'name' ), $this.data( 'path' ), $this )
 	} else if ( e.target.id === 'home-block-remove' ) {
-		GUI.bookmarkedit = 1;
 		bookmarkDelete( $this.data( 'name' ), $this.parent() )
 	} else if ( $this.data( 'target' ) === 'webradio-add' ) {
 		webRadioNew();
@@ -221,6 +207,18 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 			, plugin     : GUI.plugin
 		} );
 	}
+} ).on( 'taphold', '.home-block', function( e ) {
+	tempFlag( 'taphold', 2000 );
+	if ( GUI.swipe ) return;
+	
+	if ( !$( e.target ).parents( '.home-bookmark' ) && !$( e.target ).hasClass( 'home-bookmark' ) ) return;
+	
+	tempFlag( 'local' );
+	$( '.home-bookmark' ).append( '<i id="home-block-edit" class="fa fa-edit"></i><i id="home-block-remove" class="fa fa-minus-circle"></i>' );
+} ).click( function( e ) {
+	if ( $( e.target ).parents( '.home-bookmark' ).length || $( e.target ).hasClass( 'home-bookmark' ) ) return;
+	
+	$( '#home-block-edit, #home-block-remove' ).remove();
 } );
 
 var btnctrl = {
