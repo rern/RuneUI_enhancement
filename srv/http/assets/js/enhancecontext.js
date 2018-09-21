@@ -87,7 +87,7 @@ function bookmarkRename( name, path ) {
 		, boxwidth  : 'max'
 		, cancel    : 1
 		, ok        : function() {
-			bookamrkVerify( $( '#infoTextBox' ).val().trim(), path, name );
+			bookmarkVerify( $( '#infoTextBox' ).val().trim(), path, name );
 		}
 	} );
 }
@@ -112,14 +112,15 @@ function bookmarkVerify( name, path, oldname ) {
 		} );
 		var namei = $.inArray( name, bmname );
 		if ( namei === -1 ) {
-			GUI.bookmarkedit = 1;
 			new PNotify( {
 				  icon  : 'fa fa-check'
 				, title : oldname ? 'Rename Bookmark' :'Add Bookmark'
 				, text  : name
 			} );
 			var data = oldname ? [ name, path, oldname ] : [ name, path ];
-			$.post( 'enhance.php', { bkmarks: data } );
+			$.post( 'enhance.php', { bkmarks: data }, function() {
+				renderLibrary();
+			} );
 		} else {
 			info( {
 				  icon        : 'warning'
@@ -135,7 +136,9 @@ function bookmarkVerify( name, path, oldname ) {
 				, oklabel     : 'Replace'
 				, ok          : function() {
 					var data = oldname ? [ name, path, oldname ] : [ name, path ];
-					$.post( 'enhance.php', { bkmarks: data } );
+					$.post( 'enhance.php', { bkmarks: data }, function() {
+						renderLibrary();
+					} );
 				}
 			} );
 		}
