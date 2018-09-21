@@ -164,5 +164,3 @@ systemctl start mpcidle
 systemctl enable mpcidle
 
 installfinish $@
-
-reinitsystem
