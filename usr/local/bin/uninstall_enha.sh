@@ -44,7 +44,6 @@ echo -e "$bar Restore modified files ..."
 
 files="
 /srv/http/app/settings_ctl.php
-/srv/http/app/libs/runeaudio.php
 /srv/http/app/templates/mpd.php
 /srv/http/app/templates/settings.php
 /srv/http/command/rune_PL_wrk
@@ -64,5 +63,3 @@ chown -R mpd:audio /mnt/MPD/Webradio
 uninstallfinish $@
 
 clearcache
-
-reinitsystem
