@@ -1,6 +1,9 @@
 <?php
 // no redis
-if ( isset( $_POST[ 'mpc' ] ) ) {
+if ( isset( $_POST[ 'bash' ] ) ) {
+	echo shell_exec( '/usr/bin/sudo '.$_POST[ 'bash' ] );
+	exit();
+} else if ( isset( $_POST[ 'mpc' ] ) ) {
 	$mpc = $_POST[ 'mpc' ];
 	if ( !is_array( $mpc ) ) { // multiples commands is array
 		$result = shell_exec( 'mpc '.$mpc );
@@ -9,10 +12,46 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 			$result = shell_exec( 'mpc '.$cmd );
 		}
 	}
-	echo $result;
-	exit();
-} else if ( isset( $_POST[ 'bash' ] ) ) {
-	echo shell_exec( '/usr/bin/sudo '.$_POST[ 'bash' ] );
+	if ( isset( $_POST[ 'search' ] ) ) {
+		$lists = explode( "\n", rtrim( $result ) );
+		foreach( $lists as $list ) {
+			$list = explode( '^^', rtrim( $list ) );
+			$li[ 'Title' ] = $list[ 0 ];
+			$li[ 'Time' ] = $list[ 1 ];
+			$li[ 'Artist' ] = $list[ 2 ];
+			$li[ 'Album' ] = $list[ 3 ];
+			$li[ 'file' ] = $list[ 4 ];
+			$data[] = $li;
+			$li = '';
+		}
+		echo json_encode( $data );
+	} else if ( isset( $_POST[ 'list' ] ) ) {
+		$type = $_POST[ 'list' ];
+		$lists = explode( "\n", rtrim( $result ) );
+		if ( $type === 'file' ) {
+			foreach( $lists as $list ) {
+				if ( substr( $list, 0, 3 ) === 'USB' ) {
+					$data[] = array( 'directory' => $list );
+				} else {
+				$list = explode( '^^', rtrim( $list ) );
+				$li[ 'Title' ] = $list[ 0 ];
+				$li[ 'Time' ] = $list[ 1 ];
+				$li[ 'Artist' ] = $list[ 2 ];
+				$li[ 'Album' ] = $list[ 3 ];
+				$li[ 'file' ] = $list[ 4 ];
+				$data[] = $li;
+				$li = '';
+				}
+			}
+		} else {
+			foreach( $lists as $list ) {
+				$data[] = array( $type => $list );
+			}
+		}
+		echo json_encode( $data );
+	} else {
+		echo $result;
+	}
 	exit();
 }
 
