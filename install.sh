@@ -146,19 +146,7 @@ WantedBy=multi-user.target
 EOF
 )
 echo "$string" > /etc/systemd/system/mpcidle.service
-#----------------------------------------------------------------------------------
-file=/srv/http/command/rune_PL_wrk
-echo $file
 
-comment 'MPD playback engine' -n +1 'closeMpdSocket'
-
-string=$( cat <<'EOF'
-            if ($activePlayer === 'Spotify') {
-EOF
-)
-append -n +1 'closeMpdSocket'
-
-systemctl restart rune_PL_wrk
 systemctl daemon-reload
 systemctl start mpcidle
 systemctl enable mpcidle
