@@ -59,4 +59,4 @@ chown -R mpd:audio /mnt/MPD/Webradio
 
 uninstallfinish $@
 
-clearcache
+restartlocalbrowser
