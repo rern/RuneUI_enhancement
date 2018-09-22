@@ -31,7 +31,6 @@ rm -v /srv/http/assets/fonts/enhance*
 rm -v /srv/http/assets/img/{bootsplash.png,controls*,runelogo.svg,vu*}
 rm -v /srv/http/assets/js/enhance*
 rm -v /srv/http/assets/js/vendor/{jquery-ui.min,modernizr-custom,roundslider.min}.js
-[[ ! -e /srv/http/gpiosettings.php ]] && rm -v /srv/http/assets/css/bootstrap.min.css
 
 mv /srv/http/index.php{.backup,}
 mv /srv/http/assets/js/vendor/pnotify.custom.min.js{.backup,}
