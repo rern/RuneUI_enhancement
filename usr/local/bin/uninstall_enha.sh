@@ -46,15 +46,13 @@ files="
 /srv/http/app/settings_ctl.php
 /srv/http/app/templates/mpd.php
 /srv/http/app/templates/settings.php
+/srv/http/command/rune_PL_wrk
 /root/.config/midori/config
 /root/.xinitrc
 "
 restorefile $files
 
-systemctl stop mpcidle
-systemctl disable mpcidle
-rm -v /etc/systemd/system/mpcidle.service
-systemctl daemon-reload
+systemctl restart rune_PL_wrk
 
 chown -R mpd:audio /mnt/MPD/Webradio
 
