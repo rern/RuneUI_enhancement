@@ -30,6 +30,17 @@ getinstallzip
 
 echo -e "$bar Modify files ..."
 #----------------------------------------------------------------------------------
+file=/srv/http/command/rune_PL_wrk
+echo $file
+
+string=$( cat <<'EOF'
+                    ui_render( 'idle', json_encode( $status[ 'changed' ] ) );
+EOF
+)
+append 'monitorMpdState'
+
+systemctl restart rune_PL_wrk
+#----------------------------------------------------------------------------------
 file=/srv/http/app/templates/mpd.php
 echo $file
 
@@ -129,26 +140,5 @@ fi
 
 # fix webradio permission
 chown -R http:http /mnt/MPD/Webradio
-
-# set mpc idle for status pushstream #######################################
-string=$( cat <<'EOF'
-[Unit]
-Description=mpc idle loop
-After=network.target redis.target
-[Service]
-ExecStart=/srv/http/enhanceidle.sh
-Restart=always
-RestartSec=1
-StartLimitInterval=30
-StartLimitBurst=20
-[Install]
-WantedBy=multi-user.target
-EOF
-)
-echo "$string" > /etc/systemd/system/mpcidle.service
-
-systemctl daemon-reload
-systemctl start mpcidle
-systemctl enable mpcidle
 
 installfinish $@
