@@ -1065,14 +1065,10 @@ pushstreams[ 'idle' ].onmessage = function( data ) {
 				setButtonUpdate( data );
 			} );
 		}, 1000 );
-	} else if ( data === 'database\nchan' ) { // '\nchan' included by runeaudio.php
+	} else if ( data === 'database\nchan' ) { // for webradio rename ('\nchan' ?)
 		if ( GUI.local ) return;
 		
-		if ( $( '#db-currentpath' ).attr( 'path' ) === 'Webradio' ) {
-			$( '#home-webradio' ).click();
-		} else {
-			$( '#db-home' ).click();
-		}
+		if ( $( '#db-currentpath' ).attr( 'path' ) === 'Webradio' ) $( '#home-webradio' ).click();
 	}
 }
 pushstreams[ 'notify' ].onmessage = renderMSG;
