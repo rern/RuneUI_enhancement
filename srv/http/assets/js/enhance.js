@@ -415,6 +415,7 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	if ( [ 'dirble', 'jamendo', 'spotify' ].indexOf( mode ) === -1 ) {
 		getDB( {
 			  path       : path
+			, artist     : $this.data( 'artist' )
 			, uplevel    : 0
 			, browsemode : mode ? mode : 'file'
 		} );
@@ -1417,6 +1418,8 @@ function getDB( options ) {
 		plugin = options.plugin || '',
 		querytype = options.querytype || '',
 		args = options.args || '',
+		artist = options.artist || '',
+		mode,
 		command;
 	if ( !GUI.dbback && cmd !== 'search' ) {
 		if ( !plugin ) {
@@ -1437,51 +1440,21 @@ function getDB( options ) {
 		GUI.dbback = 0;
 	}
 	GUI.browsemode = browsemode;
+	var keyword = $( '#db-search-keyword' ).val();
 	
-	if ( plugin ) {
-		if ( plugin === 'Spotify' ) {
-			$.post( '/db/?cmd=spotify', { plid: args }, function( data ) {
-				populateDB( data, path, plugin, querytype, uplevel, arg );
-			}, 'json' );
-		} else if ( plugin === 'Dirble' ) {
-			if ( querytype === 'childs' ) {
-				$.post( '/db/?cmd=dirble', { querytype: 'childs', args: args }, function( data ) {
-					populateDB( data, path, plugin, 'childs', uplevel );
-				}, 'json' );
-				$.post( '/db/?cmd=dirble', { querytype: 'childs-stations', args: args }, function( data ) {
-					populateDB( data, path, plugin, 'childs-stations', uplevel );
-				}, 'json' );            
-			} else {
-				$.post( '/db/?cmd=dirble', { querytype: querytype ? querytype : 'categories', args: args }, function( data ) {
-					populateDB( data, path, plugin, querytype, uplevel );
-				}, 'json' );
-			}
-		} else if ( plugin === 'Jamendo' ) {
-			$.post( '/db/?cmd=jamendo', { querytype: querytype ? querytype : 'radio', args: args }, function( data ) {
-				if ( !data ) {
-					$( '#oader' ).addClass( 'hide' );
-					info( {
-						  icon    : 'warning'
-						, title   : 'Jamendo'
-						, message : 'Jamendo not response. Please try again later'
-					} );
-					return;
-				}
-				populateDB( data.results, path, plugin, querytype );
-			}, 'json' );
-		}
-	} else {
-	// normal browsing
-		var keyword = $( '#db-search-keyword' ).val();
+	if ( !plugin ) {
+		var currentpath = $( '#db-currentpath' ).attr( 'path' ); // for artist-album search
+		var artistalbum = artist || currentpath;
 		var command = {
 			  file     : { mpc: "ls -f '%title%^^%time%^^%artist%^^%album%^^%file%' '"+ path +"'", list: 'file' }
-			, album    : { mpc: "find -f '%title%^^%time%^^%artist%^^%album%^^%file%' album '"+ path +"'", search: 1 } 
+			, album    : { mpcalbum: path } 
+			, artistalbum    : { mpc: "find -f '%title%^^%time%^^%artist%^^%album%^^%file%' artist '"+ artistalbum +"' album '"+ path +"'", search: 1 } 
 			, artist   : { mpc: "list album artist '"+ path +"' | awk NF", list: 'album' }
-			, composer : { mpc: "search -f '%title%^^%time%^^%artist%^^%album%^^%file%' composer '"+ path +"'", search: 1 }
+			, composer : { mpc: "find -f '%title%^^%time%^^%artist%^^%album%^^%file%' composer '"+ path +"'", search: 1 }
 			, genre    : { mpc: "list artist genre '"+ path +"' | awk NF", list: 'artist' }
-			, webradio : { getwebradios: 1 }
 			, type     : { mpc: 'list '+ GUI.browsemode +' | awk NF', list: GUI.browsemode }
 			, search   : { mpc: "search -f '%title%^^%time%^^%artist%^^%album%^^%file%' any '"+ keyword +"'", search: 1 }
+			, Webradio : { getwebradios: 1 }
 		}
 		if ( cmd === 'search' ) {
 			if ( path.match(/Dirble/)) {
@@ -1490,21 +1463,54 @@ function getDB( options ) {
 				}, 'json' );
 				return
 			} else {
-				var mode = 'search';
+				mode = 'search';
 			}
 		} else if ( cmd === 'browse' ) {
-			if ( path === 'Webradio' ) {
-				var mode = 'webradio';
+			if ( $.inArray( path, [ 'Albums', 'Artists', 'Composer', 'Genres' ] ) !== -1 ) {
+				mode = 'type';
+			} else if ( path === 'Webradio' ) {
+				mode = 'Webradio';
+			} else if ( GUI.browsemode === 'album' && currentpath !== 'Albums' ) { // <li> in 'Artists' and 'Genres'
+				mode = 'artistalbum';
 			} else {
-				if ( $.inArray( path, [ 'Albums', 'Artists', 'Composer', 'Genres' ] ) !== -1 ) {
-					var mode = 'type';
-				} else {
-					var mode = GUI.browsemode;
-				}
+				mode = GUI.browsemode;
 			}
 		}
 		$.post( 'enhance.php', command[ mode ], function( data ) {
 			populateDB( data, path, '', '', uplevel );
+		}, 'json' );
+		return;
+	}
+	
+	if ( plugin === 'Spotify' ) {
+		$.post( '/db/?cmd=spotify', { plid: args }, function( data ) {
+			populateDB( data, path, plugin, querytype, uplevel, arg );
+		}, 'json' );
+	} else if ( plugin === 'Dirble' ) {
+		if ( querytype === 'childs' ) {
+			$.post( '/db/?cmd=dirble', { querytype: 'childs', args: args }, function( data ) {
+				populateDB( data, path, plugin, 'childs', uplevel );
+			}, 'json' );
+			$.post( '/db/?cmd=dirble', { querytype: 'childs-stations', args: args }, function( data ) {
+				populateDB( data, path, plugin, 'childs-stations', uplevel );
+			}, 'json' );            
+		} else {
+			$.post( '/db/?cmd=dirble', { querytype: querytype ? querytype : 'categories', args: args }, function( data ) {
+				populateDB( data, path, plugin, querytype, uplevel );
+			}, 'json' );
+		}
+	} else if ( plugin === 'Jamendo' ) {
+		$.post( '/db/?cmd=jamendo', { querytype: querytype ? querytype : 'radio', args: args }, function( data ) {
+			if ( !data ) {
+				$( '#oader' ).addClass( 'hide' );
+				info( {
+					  icon    : 'warning'
+					, title   : 'Jamendo'
+					, message : 'Jamendo not response. Please try again later'
+				} );
+				return;
+			}
+			populateDB( data.results, path, plugin, querytype );
 		}, 'json' );
 	}
 }
@@ -1518,7 +1524,6 @@ function parseDBdata( inputArr, i, respType, inpath, querytype ) {
 	switch ( respType ) {
 		case 'db':
 			if ( GUI.browsemode === 'file' ) {
-				console.log(inputArr)
 				if ( inpath === '' && inputArr.file ) {
 					var file = inputArr.file
 					inpath = file.slice( 0, file.lastIndexOf( '/' ) );
@@ -1567,8 +1572,16 @@ function parseDBdata( inputArr, i, respType, inpath, querytype ) {
 					content += '<span class="bl">'+ inputArr.Album +' - '+ inputArr.Artist +'</span></li>';
 				} else {
 					var liname = inputArr.album;
-					content += inputArr.album.replace( /\"/g, '&quot;' ) +'" mode="album" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-album"></i>';
-					content += '<span><i class="fa fa-album"></i>'+ liname +'</span></li>';
+					var artistalbum = inputArr.artistalbum;
+					if ( artistalbum ) {
+						var lialbum = artistalbum;
+						var dataartist = ' data-artist="'+ inputArr.artist +'"';
+					} else {
+						var lialbum = liname;
+						var dataartist = '';
+					}
+					content += inputArr.album.replace( /\"/g, '&quot;' ) +'"'+ dataartist +' mode="album" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-album"></i>';
+					content += '<span><i class="fa fa-album"></i>'+ lialbum +'</span></li>';
 				}
 			} else if ( GUI.browsemode === 'artist' ) {
 				if ( inputArr.album ) {
@@ -1723,6 +1736,7 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 			}
 			// undefined type are directory names
 			prop = type[ path ] ? type[ path ] : 'directory';
+			if ( data[ 0 ].artistalbum ) prop = 'artistalbum'; // for common albums like 'Greatest Hits'
 			// filter out blank and various
 			if ( prop === 'artist' || prop === 'genre' || prop === 'directory' ) {
 				data = data.filter( function( el ) {
@@ -1782,6 +1796,7 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 	$( '#db-entries' ).html( content +'<p></p>' ).promise().done( function() {
 		// fill bottom of list to mave last li movable to top
 		$( '#db-entries p' ).css( 'min-height', window.innerHeight - ( GUI.display.bars ? 140 : 100 ) +'px' );
+//		$( 'html, body' ).scrollTop( 0 );
 		displayIndexBar();
 	} );
 // breadcrumb directory path link
