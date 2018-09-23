@@ -3,6 +3,24 @@
 if ( isset( $_POST[ 'bash' ] ) ) {
 	echo shell_exec( '/usr/bin/sudo '.$_POST[ 'bash' ] );
 	exit();
+} else if ( isset( $_POST[ 'mpcalbum' ] ) ) {
+	$album = $_POST[ 'mpcalbum' ];
+	$result = shell_exec( "mpc find -f '%album%^^%artist%' album '".$album."' | awk '!a[$0]++'" );
+	$lists = explode( "\n", rtrim( $result ) );
+	if ( count( $lists ) === 1 ) {
+		$result = shell_exec( "mpc find -f '%title%^^%time%^^%artist%^^%album%^^%file%' album '".$album."'" );
+		$data = search2array( $result );
+	} else {
+		foreach( $lists as $list ) {
+			$list = explode( '^^', $list );
+			$li[ 'artistalbum' ] = $list[ 1 ].'<gr> • </gr>'.$list[ 0 ];
+			$li[ 'album' ] = $list[ 0 ];
+			$li[ 'artist' ] = $list[ 1 ];
+			$data[] = $li;
+			$li = '';
+		}
+	}
+	echo json_encode( $data );
 } else if ( isset( $_POST[ 'mpc' ] ) ) {
 	$mpc = $_POST[ 'mpc' ];
 	if ( !is_array( $mpc ) ) { // multiples commands is array
@@ -13,37 +31,14 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 		}
 	}
 	if ( isset( $_POST[ 'search' ] ) ) {
-		$lists = explode( "\n", rtrim( $result ) );
-		foreach( $lists as $list ) {
-			$list = explode( '^^', rtrim( $list ) );
-			$li[ 'Title' ] = $list[ 0 ];
-			$li[ 'Time' ] = $list[ 1 ];
-			$li[ 'Artist' ] = $list[ 2 ];
-			$li[ 'Album' ] = $list[ 3 ];
-			$li[ 'file' ] = $list[ 4 ];
-			$data[] = $li;
-			$li = '';
-		}
+		$data = search2array( $result );
 		echo json_encode( $data );
 	} else if ( isset( $_POST[ 'list' ] ) ) {
 		$type = $_POST[ 'list' ];
-		$lists = explode( "\n", rtrim( $result ) );
 		if ( $type === 'file' ) {
-			foreach( $lists as $list ) {
-				if ( substr( $list, 0, 3 ) === 'USB' ) {
-					$data[] = array( 'directory' => $list );
-				} else {
-				$list = explode( '^^', rtrim( $list ) );
-				$li[ 'Title' ] = $list[ 0 ];
-				$li[ 'Time' ] = $list[ 1 ];
-				$li[ 'Artist' ] = $list[ 2 ];
-				$li[ 'Album' ] = $list[ 3 ];
-				$li[ 'file' ] = $list[ 4 ];
-				$data[] = $li;
-				$li = '';
-				}
-			}
+			$data = search2array( $result );
 		} else {
+			$lists = explode( "\n", rtrim( $result ) );
 			foreach( $lists as $list ) {
 				$data[] = array( $type => $list );
 			}
@@ -157,6 +152,24 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	exec( $cmd );
 }
 
+function search2array( $result ) {
+	$lists = explode( "\n", rtrim( $result ) );
+	foreach( $lists as $list ) {
+		if ( substr( $list, 0, 3 ) === 'USB' ) {
+			$data[] = array( 'directory' => $list );
+		} else {
+		$list = explode( '^^', rtrim( $list ) );
+		$li[ 'Title' ] = $list[ 0 ];
+		$li[ 'Time' ] = $list[ 1 ];
+		$li[ 'Artist' ] = $list[ 2 ];
+		$li[ 'Album' ] = $list[ 3 ];
+		$li[ 'file' ] = $list[ 4 ];
+		$data[] = $li;
+		$li = '';
+		}
+	}
+	return $data;
+}
 function pushstream( $channel, $data = 1 ) {
 	$ch = curl_init( 'http://localhost/pub?id='.$channel );
 	curl_setopt( $ch, CURLOPT_HTTPHEADER, array( 'Content-Type:application/json' ) );
