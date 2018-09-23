@@ -193,17 +193,9 @@ function webRadioRename() {
 	} );
 }
 function addWebradio( name, url, oldname ) {
-/*	if ( oldname ) {
-		$( '#db-entries li.active span.sn').text( name );
-		$( '#db-entries li.active span.bl').text( url );
-	} else {
-		GUI.libraryhome.webradio++;
-	}*/
 	if ( !oldname ) GUI.libraryhome.webradio++;
 	var data = oldname ? [ name, url, oldname ] : [ name, url ];
-	$.post( 'enhance.php', { webradios: data }, function() {
-		$( '#home-webradio' ).click();
-	} );
+	$.post( 'enhance.php', { webradios: data } );
 }
 function webRadioVerify( name, url, oldname ) {
 	if ( !name || !url ) {
