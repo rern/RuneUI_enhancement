@@ -30,6 +30,17 @@ getinstallzip
 
 echo -e "$bar Modify files ..."
 #----------------------------------------------------------------------------------
+file=/srv/http/app/libs/runeaudio.php
+echo $file
+
+comment 'status..changed'
+
+string=$( cat <<'EOF'
+        $status[ 'changed' ] = explode( "\n", $change[ 1 ] )[ 0 ];
+EOF
+)
+append 'status..changed'
+#----------------------------------------------------------------------------------
 file=/srv/http/command/rune_PL_wrk
 echo $file
 
@@ -144,3 +155,5 @@ chown -R http:http /mnt/MPD/Webradio
 installfinish $@
 
 restartlocalbrowser
+
+reinitsystem
