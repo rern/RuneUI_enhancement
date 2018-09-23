@@ -1060,9 +1060,19 @@ pushstreams[ 'idle' ].onmessage = function( data ) {
 			setButtonToggle();
 		} );
 	} else if ( data === 'update' ) {
-		$.post( 'enhance.php', { mpc: "status | grep 'Updating DB'" }, function( data ) {
-			setButtonUpdate( data );
-		} );
+		setTimeout( function() { // omit if delete webradio
+			$.post( 'enhance.php', { mpc: "status | grep 'Updating DB'" }, function( data ) {
+				setButtonUpdate( data );
+			} );
+		}, 1000 );
+	} else if ( data === 'database\nchan' ) { // '\nchan' included by runeaudio.php
+		if ( GUI.local ) return;
+		
+		if ( $( '#db-currentpath' ).attr( 'path' ) === 'Webradio' ) {
+			$( '#home-webradio' ).click();
+		} else {
+			$( '#db-home' ).click();
+		}
 	}
 }
 pushstreams[ 'notify' ].onmessage = renderMSG;
