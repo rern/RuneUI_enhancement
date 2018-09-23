@@ -403,6 +403,14 @@ $( '#db-level-up' ).on( 'click', function() {
 } );
 $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	var $this = $( this );
+	var $dbicon = $this.find( 'i.db-icon' )
+	if ( $dbicon.hasClass( 'fa-music' ) || $dbicon.hasClass( 'fa-webradio' ) ) {
+		setTimeout( function() {
+			$this.find( 'i.db-action' ).click();
+		}, 0 );
+		return;
+	}
+	
 	var path = $this.data( 'path' );
 	// get scroll position for back navigation
 	var current = $( '#db-currentpath' ).attr( 'path' );
@@ -1050,6 +1058,10 @@ pushstreams[ 'idle' ].onmessage = function( data ) {
 			GUI.status.random = data[ 2 ].split( ' ' ).pop() === 'on' ? 1 : 0;
 			GUI.status.single = data[ 3 ].split( ' ' ).pop() === 'on' ? 1 : 0;
 			setButtonToggle();
+		} );
+	} else if ( data === 'update' ) {
+		$.post( 'enhance.php', { mpc: "status | grep 'Updating DB'" }, function( data ) {
+			setButtonUpdate( data );
 		} );
 	}
 }
@@ -1997,6 +2009,15 @@ function setButtonToggle() {
 		}
 	}
 }
+function setButtonUpdate( update ) {
+	if ( update ) {
+		$( '#open-library i, #db-home i, #iupdate' ).addClass( 'blink' );
+		$( '#iupdate' ).toggleClass( 'hide', GUI.display.bars !== '' );
+	} else {
+		$( '#open-library i, #db-home i, #iupdate' ).removeClass( 'blink' );
+		$( '#iupdate' ).addClass( 'hide' );
+	}
+}
 function setButton() {
 	if ( GUI.local ) return;
 	
@@ -2007,13 +2028,7 @@ function setButton() {
 	$( '#play' ).toggleClass( 'btn-primary', state === 'play' );
 	$( '#pause' ).toggleClass( 'btn-primary', state === 'pause' );
 	setButtonToggle();
-	if ( GUI.status.updating_db ) {
-		$( '#open-library i, #db-home i, #iupdate' ).addClass( 'blink' );
-		$( '#iupdate' ).toggleClass( 'hide', GUI.display.bars !== '' );
-	} else {
-		$( '#open-library i, #db-home i, #iupdate' ).removeClass( 'blink' );
-		$( '#iupdate' ).addClass( 'hide' );
-	}
+	setButtonUpdate( GUI.status.updating_db );
 	if ( GUI.display.update ) {
 		if ( GUI.display.bars ) {
 			$( '#badge' ).text( GUI.display.update ).show();
