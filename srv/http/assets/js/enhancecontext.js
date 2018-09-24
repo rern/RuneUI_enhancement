@@ -297,6 +297,8 @@ function addPlaylist( name, oldname ) {
 			, title : 'Playlist Saved'
 			, text  : name
 		} );
+		$( '#plopen' ).removeClass( 'disable' );
+		GUI.lsplaylists.push( name );
 		tempFlag( 'local' );
 		$.post( 'enhance.php', { mpc: 'save "'+ name +'"' } );
 	}
@@ -335,20 +337,25 @@ function playlistVerify( name, oldname ) {
 	}, 'text' );
 }
 function playlistDelete() {
+	var name = GUI.list.name;
 	info( {
 		  icon    : 'minus-circle'
 		, title   : 'Delete Playlist'
 		, message : 'Delete?'
-					+'<br><white>'+ GUI.list.name +'</white>'
+					+'<br><white>'+ name +'</white>'
 		, cancel  : 1
 		, ok      : function() {
-			var count = $( '#pls-count' ).text() - 1;
-			$( '#pls-count' ).text( numFormat( count ) );
-			if ( !count ) $( '#pl-currentpath' ).html( '<bl>&emsp;PLAYLISTS</bl>' );
 			GUI.list.li.remove();
-			
-			tempFlag( 'local' );
-			$.post( 'enhance.php', { mpc: 'rm "'+ GUI.list.name +'"' } );
+			var count = $( '#pls-count' ).text() - 1;
+			if ( count ) {
+				$( '#pls-count' ).text( numFormat( count ) );
+				var index = GUI.lsplaylists.indexOf( name );
+				GUI.lsplaylists.splice( index, 1 );
+			} else {
+				GUI.lsplaylists = [];
+				renderPlaylist();
+			}
+			$.post( 'enhance.php', { mpc: 'rm "'+ name +'"' } );
 		}
 	} );
 }
