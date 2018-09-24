@@ -497,6 +497,11 @@ $( '#plsave' ).click( function() {
 	
 	playlistNew();
 } );
+$( '#plcrop' ).click( function() {
+	if ( !GUI.status.playlistlength ) return;
+	
+	$.post( 'enhance.php', { mpc: 'crop' } );
+} );
 $( '#pl-manage-clear' ).click( function() {
 	if ( !GUI.status.playlistlength ) return;
 	
@@ -1041,16 +1046,16 @@ pushstreams.library.onmessage = function( data ) {
 }
 pushstreams.idle.onmessage = function( data ) {
 	var data = data[ 0 ];
-	if ( data === 'player' ) {
+	if ( data === 'player' ) { // on track changed
 		getPlaybackStatus();
-	} else if ( data === 'playlist' ) {
+	} else if ( data === 'playlist' ) { // on playlist changed
 		if ( GUI.pleditor || GUI.local ) return;
 		
 		$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
 			GUI.playlist = data;
 			renderPlaylist();
 		}, 'json' );
-	} else if ( data === 'options' ) {
+	} else if ( data === 'options' ) { // on mode toggled
 		if ( GUI.local ) return;
 		
 		$.post( 'enhance.php', { mpc: 'status | tail -n1' }, function( data ) {
@@ -1066,7 +1071,7 @@ pushstreams.idle.onmessage = function( data ) {
 				setButtonUpdate( data );
 			} );
 		}, 1000 );
-	} else if ( data === 'database' ) { // for webradio rename
+	} else if ( data === 'database' ) { // on files changed (for webradio rename)
 		if ( GUI.local ) return;
 		
 		if ( $( '#db-currentpath' ).attr( 'path' ) === 'Webradio' ) $( '#home-webradio' ).click();
@@ -1083,33 +1088,12 @@ PNotify.prototype.options.stack = {
 }
 pushstreams.notify.onmessage = function() {
 	var notify = data[ 0 ];
-	var notifyOptions = {
+	new PNotify( {
 		  title       : notify.title ? notify.title : 'Info'
 		, text        : notify.text
 		, icon        : notify.icon ? notify.icon : 'fa fa-check'
-		, opacity     : notify.opacity ? notify.opacity : 0.9
-		, hide        : !notify.hide && !notify.permanotice
-		, buttons     : {
-			  closer  : !notify.permanotice
-			, sticker : !notify.permanotice
-		}
 		, delay       : notify.delay ? notify.delay : 3000
-		, mouse_reset : false
-	};
-	if ( notify.permanotice ) {
-		if ( !GUI.noticeUI[ notify.permanotice ] ) {
-			GUI.noticeUI[ notify.permanotice ] = new PNotify( notifyOptions );
-		} else {
-			if ( notify.permaremove ) {
-				GUI.noticeUI[ notify.permanotice ].remove();
-				GUI.noticeUI[ notify.permanotice ] = 0;
-			} else {
-				GUI.noticeUI[ notify.permanoticeb].open();
-			}
-		}
-	} else {
-		new PNotify( notifyOptions );
-	}
+	} );
 }
 
 $.each( streams, function( i, stream ) {
