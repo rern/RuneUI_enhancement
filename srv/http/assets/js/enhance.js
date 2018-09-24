@@ -1889,9 +1889,6 @@ function setPlaylistScroll() {
 		var scrollpos = $( '#pl-entries li.active' ).offset().top - $( '#pl-entries' ).offset().top - ( 49 * 3 );
 		$( 'html, body' ).scrollTop( scrollpos );
 	}, 0 );
-	setTimeout( function() {
-		$( '#loader' ).addClass( 'hide' );
-	}, 200 );
 	$.post( 'enhance.php', { mpc: "status | awk 'NR==2' | awk '{print $1\"^\"$2\"^\"$3}' | tr -d '[]#'" }, function( data ) {
 		clearInterval( GUI.intElapsed );
 		if ( !data ) {
@@ -1938,7 +1935,6 @@ function renderPlaylist() {
 		return;
 	}
 	
-	$( '#loader' ).removeClass( 'hide' );
 	var content, pl, iconhtml, topline, bottomline, classradio, hidetotal;
 	content = iconhtml = topline =bottomline = classradio = hidetotal = '';
 	var id, totaltime, pltime, seconds, countsong, countradio;
