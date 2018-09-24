@@ -25,10 +25,16 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 	$mpc = $_POST[ 'mpc' ];
 	if ( !is_array( $mpc ) ) { // multiples commands is array
 		$result = shell_exec( 'mpc '.$mpc );
+		$cmd = $mpc;
 	} else {
 		foreach( $mpc as $cmd ) {
 			$result = shell_exec( 'mpc '.$cmd );
 		}
+	}
+	$cmdpl = explode( ' ', $cmd )[ 0 ];
+	if ( $cmdpl === 'save' || $cmdpl === 'rm' ) {
+		$data = lsPlaylists();
+		pushstream( 'playlist', $data );
 	}
 	if ( isset( $_POST[ 'search' ] ) ) {
 		$data = search2array( $result );
@@ -100,14 +106,7 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	$data[ 'playlist' ] = $playlist;
 	
 	if ( !isset( $_POST[ 'name' ] ) ) {
-		$lines = shell_exec( 'mpc lsplaylists' );
-		$lists = explode( "\n", rtrim( $lines ) );
-		if ( $lists[ 0 ] ) {
-			foreach( $lists as $list ) {
-				$lsplaylists[] = $list;
-			}
-			$data[ 'lsplaylists' ] = $lsplaylists;
-		}
+		$data[ 'lsplaylists' ] = lsplaylists();
 	}
 	echo json_encode( $data, JSON_NUMERIC_CHECK );
 } else if ( isset( $_POST[ 'getwebradios' ] ) ) {
@@ -222,4 +221,16 @@ function getLibrary() {
 	);
 	$status = array_merge( $mpccounts, $data );
 	pushstream( 'library', $status );
+}
+function lsPlaylists() {
+	$lines = shell_exec( 'mpc lsplaylists' );
+	$lists = explode( "\n", rtrim( $lines ) );
+	if ( $lists[ 0 ] ) {
+		foreach( $lists as $list ) {
+			$lsplaylists[] = $list;
+		}
+	} else {
+		$lsplaylists = '';
+	}
+	return $lsplaylists;
 }
