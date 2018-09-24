@@ -29,6 +29,7 @@ var GUI = { // outside '$( function() {' enable console.log access
 	, status       : {}
 	, swipe        : 0
 	, timeout      : ''
+	, updating     : 0
 };
 var blinkdot = '<a class="dot">.</a> <a class="dot dot2">.</a> <a class="dot dot3">.</a>';
 
@@ -1012,7 +1013,7 @@ $.each( streams, function( i, stream ) {
 	pushstreams[ stream ].addChannel( stream );
 } );
 
-pushstreams[ 'display' ].onmessage = function( data ) {
+pushstreams.display.onmessage = function( data ) {
 	if ( typeof data[ 0 ] === 'object' ) GUI.display = data[ 0 ];
 	if ( GUI.local ) return;
 	
@@ -1024,7 +1025,7 @@ pushstreams[ 'display' ].onmessage = function( data ) {
 		displayCommon();
 	}
 }
-pushstreams[ 'volume' ].onmessage = function( data ) {
+pushstreams.volume.onmessage = function( data ) {
 	if ( GUI.local ) return;
 	
 	var data = data[ 0 ];
@@ -1034,11 +1035,11 @@ pushstreams[ 'volume' ].onmessage = function( data ) {
 	$volumehandle.rsRotate( - $volumeRS._handle1.angle );
 	volumemute ? muteColor( volumemute ) : unmuteColor();
 }
-pushstreams[ 'library' ].onmessage = function( data ) {
+pushstreams.library.onmessage = function( data ) {
 	GUI.libraryhome = data[ 0 ];
 	if ( !GUI.local && !GUI.bookmarkedit ) renderLibrary();
 }
-pushstreams[ 'idle' ].onmessage = function( data ) {
+pushstreams.idle.onmessage = function( data ) {
 	var data = data[ 0 ];
 	if ( data === 'player' ) {
 		getPlaybackStatus();
@@ -1060,23 +1061,17 @@ pushstreams[ 'idle' ].onmessage = function( data ) {
 			setButtonToggle();
 		} );
 	} else if ( data === 'update' ) {
-		setTimeout( function() { // omit if delete webradio
+		setTimeout( function() { // omit on webradio delete
 			$.post( 'enhance.php', { mpc: "status | grep 'Updating DB'" }, function( data ) {
 				setButtonUpdate( data );
 			} );
 		}, 1000 );
-	} else if ( data === 'database\nchan' ) { // for webradio rename ('\nchan' ?)
+	} else if ( data.slice( 0, 8 ) === 'database' ) { // for webradio rename
 		if ( GUI.local ) return;
 		
 		if ( $( '#db-currentpath' ).attr( 'path' ) === 'Webradio' ) $( '#home-webradio' ).click();
 	}
 }
-pushstreams[ 'notify' ].onmessage = renderMSG;
-
-$.each( streams, function( i, stream ) {
-	pushstreams[ stream ].connect();
-} );
-
 PNotify.prototype.options.styling = 'fontawesome';
 PNotify.prototype.options.stack = {
 	  dir1      : 'up'    // stack up
@@ -1086,9 +1081,9 @@ PNotify.prototype.options.stack = {
 	, spacing1  : 10      // space between dir1
 	, spacing2  : 10      // space between dir2
 }
-function renderMSG( data ) {
+pushstreams.notify.onmessage = function() {
 	var notify = data[ 0 ];
-	var noticeOptions = {
+	var notifyOptions = {
 		  title       : notify.title ? notify.title : 'Info'
 		, text        : notify.text
 		, icon        : notify.icon ? notify.icon : 'fa fa-check'
@@ -1103,7 +1098,7 @@ function renderMSG( data ) {
 	};
 	if ( notify.permanotice ) {
 		if ( !GUI.noticeUI[ notify.permanotice ] ) {
-			GUI.noticeUI[ notify.permanotice ] = new PNotify( noticeOptions );
+			GUI.noticeUI[ notify.permanotice ] = new PNotify( notifyOptions );
 		} else {
 			if ( notify.permaremove ) {
 				GUI.noticeUI[ notify.permanotice ].remove();
@@ -1113,9 +1108,14 @@ function renderMSG( data ) {
 			}
 		}
 	} else {
-		new PNotify( noticeOptions );
+		new PNotify( notifyOptions );
 	}
 }
+
+$.each( streams, function( i, stream ) {
+	pushstreams[ stream ].connect();
+} );
+
 function setPanelActive( el ) {
 	if ( $( '#panel-library' ).hasClass( 'active' ) ) {
 		GUI.dbscrolltop[ $( '#db-currentpath' ).attr( 'path' ) ] = $( window ).scrollTop();
@@ -1852,13 +1852,13 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 	}
 	if ( GUI.browsemode !== 'file' ) {
 		if ( GUI.browsemode !== 'album' ) {
-			var dot = ( path === mode[ GUI.browsemode ] ) ? '' : '<a><gr> • </gr><span class="white">'+ path +'</span></a>';
+			var dotpath = ( path === mode[ GUI.browsemode ] ) ? '' : '<a><gr> • </gr><span class="white">'+ path +'</span></a>';
 		} else {
 			var albumartist = $( '#db-entries li:eq( 0 ) span.bl' ).text();
-			var dot = albumartist ? '<a><gr> • </gr><span class="white">'+ albumartist +'</span></a>' : '';
+			var dotpath = albumartist ? '<a><gr> • </gr><span class="white">'+ albumartist +'</span></a>' : '';
 		}
 		$( '#db-currentpath' ).attr( 'path', path ); // for back navigation
-		$( '#db-currentpath span' ).html( icon[ GUI.browsemode ] +' <a data-path="'+ mode[ GUI.browsemode ] +'">'+ name[ GUI.browsemode ] +'</a>'+ dot );
+		$( '#db-currentpath span' ).html( icon[ GUI.browsemode ] +' <a data-path="'+ mode[ GUI.browsemode ] +'">'+ name[ GUI.browsemode ] +'</a>'+ dotpath );
 	} else {
 		var folder = path.split( '/' );
 		var folderPath = '';
@@ -2017,9 +2017,12 @@ function setButtonToggle() {
 }
 function setButtonUpdate( update ) {
 	if ( update ) {
+		GUI.updating = 1;
 		$( '#open-library i, #db-home i, #iupdate' ).addClass( 'blink' );
 		$( '#iupdate' ).toggleClass( 'hide', GUI.display.bars !== '' );
 	} else {
+		if ( GUI.updating && $( '#db-currentpath' ).attr( 'path' ) ) $( '#open-library' ).click();
+		GUI.updating = 0;
 		$( '#open-library i, #db-home i, #iupdate' ).removeClass( 'blink' );
 		$( '#iupdate' ).addClass( 'hide' );
 	}
@@ -2133,10 +2136,8 @@ function renderPlayback() {
 	
 	$( '#playlist-position span' ).html( ( Number( status.song ) + 1 ) +'/'+ status.playlistlength );
 	
-	var dot0 = '<a id="dot0" style="color:#ffffff"> &#8226; </a>';
-	var dot = dot0.replace( ' id="dot0"', '' );
-	var ext = ( status.ext !== 'radio' ) ? dot + status.ext : '';
-	$( '#format-bitrate' ).html( dot0 + status.sampling + ext );
+	var ext = ( status.ext !== 'radio' ) ? '<wh> • </wh>' + status.ext : '';
+	$( '#format-bitrate' ).html( '<wh id="dot0"> • </wh>' + status.sampling + ext );
 	if ( status.ext !== 'radio' ) {
 		if ( status.Album !== previousalbum ) {
 			$( '#coverartoverlay' ).addClass( 'hide' );
