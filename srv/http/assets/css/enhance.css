@@ -154,7 +154,9 @@ w, wh { color: #e0e7ee; }
 bl { color: #0095d8; }
 gr {color: #587ca0; }
 wh, gr { font-weight: 300; }
-
+.disable {
+	color: #587ca0;
+}
 @keyframes blinkopaque {
 	50% { opacity: 0; }
 }
