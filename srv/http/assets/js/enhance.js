@@ -498,7 +498,7 @@ $( '#plsave' ).click( function() {
 	playlistNew();
 } );
 $( '#plcrop' ).click( function() {
-	if ( !GUI.status.playlistlength ) return;
+	if ( GUI.status.state === 'stop' || !GUI.status.playlistlength ) return;
 	
 	$.post( 'enhance.php', { mpc: 'crop' } );
 } );
@@ -2159,6 +2159,7 @@ function renderPlayback() {
 		}
 		return;
 	}
+	
 	// time
 	time = status.Time;
 	$( '#total' ).text( second2HMS( time ) );
@@ -2242,5 +2243,6 @@ function getPlaybackStatus() {
 			setButton();
 			setPlaylistScroll();
 		}
+		$( '#plcrop' ).toggleClass( 'disable', status.state === 'stop' );
 	}, 'json' );
 }
