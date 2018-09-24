@@ -1420,7 +1420,7 @@ w {
 #pl-entries .bl,
 #pl-editor .bl {
 	display: block;
-	padding: 0 50px 0 10px;
+	padding: 0 10px;
 	font-size: 12px;
 	color: #587ca0
 }
