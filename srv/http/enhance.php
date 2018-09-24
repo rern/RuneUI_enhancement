@@ -94,8 +94,20 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 		$pl[ 'time' ] = $li[ 1 ];
 		$pl[ 'track' ] = $li[ 2 ];
 		$pl[ 'file' ] = $li[ 3 ];
-		$data[] = $pl;
+		$playlist[] = $pl;
 		$pl = '';
+	}
+	$data[ 'playlist' ] = $playlist;
+	
+	if ( !isset( $_POST[ 'name' ] ) ) {
+		$lines = shell_exec( 'mpc lsplaylists' );
+		$lists = explode( "\n", rtrim( $lines ) );
+		if ( $lists[ 0 ] ) {
+			foreach( $lists as $list ) {
+				$lsplaylists[] = $list;
+			}
+			$data[ 'lsplaylists' ] = $lsplaylists;
+		}
 	}
 	echo json_encode( $data, JSON_NUMERIC_CHECK );
 } else if ( isset( $_POST[ 'getwebradios' ] ) ) {
