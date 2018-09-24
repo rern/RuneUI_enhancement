@@ -1066,7 +1066,7 @@ pushstreams.idle.onmessage = function( data ) {
 				setButtonUpdate( data );
 			} );
 		}, 1000 );
-	} else if ( data.slice( 0, 8 ) === 'database' ) { // for webradio rename
+	} else if ( data === 'database' ) { // for webradio rename
 		if ( GUI.local ) return;
 		
 		if ( $( '#db-currentpath' ).attr( 'path' ) === 'Webradio' ) $( '#home-webradio' ).click();
