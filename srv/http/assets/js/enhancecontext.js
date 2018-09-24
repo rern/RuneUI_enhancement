@@ -345,16 +345,12 @@ function playlistDelete() {
 					+'<br><white>'+ name +'</white>'
 		, cancel  : 1
 		, ok      : function() {
-			GUI.list.li.remove();
 			var count = $( '#pls-count' ).text() - 1;
-			if ( count ) {
-				$( '#pls-count' ).text( numFormat( count ) );
-				var index = GUI.lsplaylists.indexOf( name );
-				GUI.lsplaylists.splice( index, 1 );
-			} else {
-				GUI.lsplaylists = [];
-				renderPlaylist();
-			}
+			$( '#pls-count' ).text( numFormat( count ) );
+			if ( !count ) $( '#pl-currentpath' ).html( '<bl>&emsp;PLAYLISTS</bl>' );
+			GUI.list.li.remove();
+			
+			tempFlag( 'local' );
 			$.post( 'enhance.php', { mpc: 'rm "'+ name +'"' } );
 		}
 	} );

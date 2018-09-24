@@ -1018,7 +1018,7 @@ var psOption = {
 	, modes: 'websocket'
 };
 var pushstreams = {};
-var streams = [ 'display', 'volume', 'library', 'idle', 'notify' ];
+var streams = [ 'display', 'volume', 'library', 'playlist', 'idle', 'notify' ];
 $.each( streams, function( i, stream ) {
 	pushstreams[ stream ] = new PushStream( psOption );
 	pushstreams[ stream ].addChannel( stream );
@@ -1049,6 +1049,16 @@ pushstreams.volume.onmessage = function( data ) {
 pushstreams.library.onmessage = function( data ) {
 	GUI.libraryhome = data[ 0 ];
 	if ( !GUI.local && !GUI.bookmarkedit ) renderLibrary();
+}
+pushstreams.playlist.onmessage = function( data ) {
+	GUI.lsplaylists = data[ 0 ] || [];
+	if ( !$( '#panel-playlist' ).hasClass( 'active' ) ) return;
+	
+	if ( !$( '#pl-entries' ).hasClass( 'hide' ) || !GUI.lsplaylists.length ) {
+		renderPlaylist();
+	} else {
+		$( '#plopen' ).click();
+	}
 }
 pushstreams.idle.onmessage = function( data ) {
 	var data = data[ 0 ];
