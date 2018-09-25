@@ -33,7 +33,7 @@ echo -e "$bar Modify files ..."
 file=/srv/http/app/libs/runeaudio.php
 echo $file
 
-comment 'status..changed'
+comment 'ui_update('
 
 string=$( cat <<'EOF'
         $status[ 'changed' ] = explode( "\n", $change[ 1 ] )[ 0 ];
