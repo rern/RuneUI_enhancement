@@ -1841,10 +1841,6 @@ function setPlaylistScroll() {
 	$licurrent.addClass( 'active' );
 	if ( GUI.local ) return // 'Sortable'
 	
-	setTimeout( function() {
-		var scrollpos = $( '#pl-entries li.active' ).offset().top - $( '#pl-entries' ).offset().top - ( 49 * 3 );
-		$( 'html, body' ).scrollTop( scrollpos );
-	}, 0 );
 	$.post( 'enhancestatus.php', { filter: 1 }, function( status ) {
 		clearInterval( GUI.intElapsed );
 		if ( !status.elapsed ) {
@@ -1871,6 +1867,10 @@ function setPlaylistScroll() {
 			}, 1000 );
 		}
 	}, 'json' );
+	setTimeout( function() {
+		var scrollpos = $( '#pl-entries li.active' ).offset().top - $( '#pl-entries' ).offset().top - ( 49 * 3 );
+		$( 'html, body' ).scrollTop( scrollpos );
+	}, 300 );
 }
 function renderPlaylist() {
 	$( '#pl-filter' ).val( '' );
