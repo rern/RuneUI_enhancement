@@ -196,7 +196,7 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 	} else if ( $this.data( 'target' ) === 'webradio-add' ) {
 		webRadioNew();
 	} else {
-		if ( GUI.taphold || GUI.local || ( $this[ 0 ].id === 'home-sd' && $('#home-sd span').text() === '( 0 )' ) ) return
+		if ( GUI.taphold || GUI.local || ( $this[ 0 ].id === 'home-sd' && !GUI.libraryhome.sd ) ) return
 		
 		GUI.dblist = 1;
 		mutationLibrary.observe( observerLibrary, observerOption );
@@ -1310,7 +1310,7 @@ function renderLibrary() {
 	
 	$( '#panel-library .btnlist-top, db-entries' ).addClass( 'hide' );
 	var status = GUI.libraryhome;
-	$( '#db-currentpath span' ).html( '<bl class="title">&emsp;L I B R A R Y<gr>&emsp;•</gr></bl><a id="li-count"><wh>'+ numFormat( status.title ) +'</wh><i class="fa fa-music"></i></a>' );
+	$( '#db-currentpath span' ).html( '<bl class="title">&emsp;L I B R A R Y<gr>&emsp;•</gr></bl><a id="li-count"><wh>'+ numFormat( status.song ) +'</wh><i class="fa fa-music"></i></a>' );
 	$( '#panel-library .btnlist-top, #home-blocks' ).removeClass( 'hide' );
 	notMPD = ( status.activeplayer === 'Spotify' || status.activeplayer === 'Airplay' );
 	toggleMPD = notMPD ? ' inactive' : '';
