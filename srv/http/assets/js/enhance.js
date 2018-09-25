@@ -1845,35 +1845,32 @@ function setPlaylistScroll() {
 		var scrollpos = $( '#pl-entries li.active' ).offset().top - $( '#pl-entries' ).offset().top - ( 49 * 3 );
 		$( 'html, body' ).scrollTop( scrollpos );
 	}, 0 );
-	$.post( 'enhance.php', { mpc: "status | awk 'NR==2' | awk '{print $1\"^\"$2\"^\"$3}' | tr -d '[]#'" }, function( data ) {
+	$.post( 'enhancestatus.php', { filter: 1 }, function( status ) {
 		clearInterval( GUI.intElapsed );
-		if ( !data ) {
+		if ( !status.elapsed ) {
 			$( '.elapsed' ).empty();
 			return
 		}
-		var data = data.split( '^' );
-		var state = data[ 0 ];
-		var songid = data[ 1 ].split( '/' )[ 0 ];
 		// for 'visibilityevent - visible' and song has changed
-		var $liactive = $( '#pl-entries li' ).eq( songid - 1 );
+		var $liactive = $( '#pl-entries li' ).eq( status.song );
 		$( '#pl-entries li' ).removeClass( 'active' );
 		$liactive.addClass( 'active' );
 		
-		var elapsed = data[ 2 ].split( '/' )[ 0 ];
-		var elapsed = elapsed ? HMS2Second( elapsed ) : 0;
+		var state = status.state;
+		var elapsed = status.elapsed;
 		var $elapsed = $liactive.find( ' .elapsed' );
 		if ( !$elapsed.html() ) $( '.elapsed' ).empty();
-		if ( state === 'paused' ) {
+		if ( state === 'pause' ) {
 			var elapsedtxt = second2HMS( elapsed ) + ( GUI.status.ext === 'radio' ? '' : ' / ' );
 			$elapsed.html( '<i class="fa fa-pause"></i> '+ elapsedtxt );
-		} else if ( state === 'playing' ) {
+		} else if ( state === 'play' ) {
 			GUI.intElapsed = setInterval( function() {
 				elapsed++
 				var elapsedtxt = second2HMS( elapsed ) + ( GUI.status.ext === 'radio' ? '' : ' / ' );
 				$elapsed.html( '<i class="fa fa-play"></i> '+ elapsedtxt );
 			}, 1000 );
 		}
-	} );
+	}, 'json' );
 }
 function renderPlaylist() {
 	$( '#pl-filter' ).val( '' );
