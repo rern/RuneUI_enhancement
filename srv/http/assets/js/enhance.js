@@ -1054,7 +1054,7 @@ PNotify.prototype.options.stack = {
 	, spacing1  : 10      // space between dir1
 	, spacing2  : 10      // space between dir2
 }
-pushstreams.notify.onmessage = function() {
+pushstreams.notify.onmessage = function( data ) {
 	var notify = data[ 0 ];
 	new PNotify( {
 		  title       : notify.title ? notify.title : 'Info'
