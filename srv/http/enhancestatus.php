@@ -34,6 +34,10 @@ while ( $line !== false ) {
 	$line = strtok( "\n" );
 }
 if ( !array_key_exists( 'song', $status ) ) $status[ 'song' ] = 0;
+if ( isset( $_POST[ 'filter' ] ) ) {
+	echo json_encode( $status, JSON_NUMERIC_CHECK );
+	exit();
+}
 if ( exec( 'pidof ashuffle' ) ) $status[ 'random' ] = 1;
 
 $file = '/mnt/MPD/'.$status[ 'file' ];
