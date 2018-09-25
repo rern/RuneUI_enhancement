@@ -1841,7 +1841,7 @@ function setPlaylistScroll() {
 	$licurrent.addClass( 'active' );
 	if ( GUI.local ) return // 'Sortable'
 	
-	$.post( 'enhancestatus.php', { filter: 1 }, function( status ) {
+	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
 		clearInterval( GUI.intElapsed );
 		if ( !status.elapsed ) {
 			$( '.elapsed' ).empty();
