@@ -191,11 +191,6 @@ function pushstream( $channel, $data = 1 ) {
 function getLibrary() {
 	$redis = new Redis();
 	$redis->pconnect( '127.0.0.1' );
-	$sd = exec( '[[ $( ls /mnt/MPD/LocalStorage ) ]] && mpc list title base LocalStorage | wc -l || echo 0' );
-	$network = exec( 'df | grep "/mnt/MPD/NAS" | wc -l' );
-	$usb = exec( 'df | grep "/mnt/MPD/USB" | wc -l' );
-	$webradio = count( $redis->hKeys( 'webradios' ) );
-	$activeplayer = $redis->get( 'activePlayer' );
 	$rbkmarks = $redis->hGetAll( 'bkmarks' );
 	foreach ( $rbkmarks as $name => $path ) {
 		$bookmarks[] = array(
@@ -204,22 +199,22 @@ function getLibrary() {
 			, 'count' => exec( 'mpc list title base "'.$path.'" | wc -l' )
 		);
 	}
-	$spotify = $redis->hGet( 'spotify', 'enable' );
-	
-	$types = array( 'title', 'album', 'artist', 'composer', 'genre' );
-	$counts = shell_exec( 'for type in '.implode( ' ', $types ).'; do mpc list $type | awk NF | wc -l; done' );
-	$counts = explode( "\n", rtrim( $counts ) ); // remove last blank
-	$mpccounts = array_combine( $types, $counts );
-	$data = array( 
-		  'bookmarks'    => $bookmarks
-		, 'sd'           => $sd
-		, 'network'      => $network
-		, 'usb'          => $usb
-		, 'webradio'     => $webradio
-		, 'spotify'      => $spotify
-		, 'activeplayer' => $activeplayer
+	$count = exec( '/srv/http/enhancecount.sh' );
+	$count = explode( ' ', $count );
+	$status = array( 
+		 'bookmarks'    => $bookmarks
+		, 'artist'       => $count[ 0 ]
+		, 'album'        => $count[ 1 ]
+		, 'song'         => $count[ 2 ]
+		, 'composer'     => $count[ 3 ]
+		, 'genre'        => $count[ 4 ]
+		, 'network'      => $count[ 5 ]
+		, 'usb'          => $count[ 6 ]
+		, 'webradio'     => $count[ 7 ]
+		, 'sd'           => $count[ 8 ]
+		, 'spotify'      => $count[ 9 ]
+		, 'activeplayer' => $count[ 10 ]
 	);
-	$status = array_merge( $mpccounts, $data );
 	pushstream( 'library', $status );
 }
 function lsPlaylists() {
