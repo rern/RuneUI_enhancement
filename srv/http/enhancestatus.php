@@ -74,7 +74,11 @@ if ( $activePlayer === 'MPD' && !empty( $status[ 'Artist' ] ) ) {
 			$status[ 'coverart' ] = 'data:image/'. $coverext.';base64,'.base64_encode( $cover );
 		}
 		if ( !empty( $status[ 'coverart' ] ) ) break;
+		
 // 3. last.FM
+		// check internet connection
+		if ( !@fsockopen( 'ws.audioscrobbler.com', 80 ) ) break;
+		
 		function curlGet( $url ) {
 			$ch = curl_init($url);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
