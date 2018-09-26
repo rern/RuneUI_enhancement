@@ -37,7 +37,9 @@ Enhanced UI: Use some workarounds to get more informations and to do something b
 	Switch between main pages
 		- Swipe left/right
 	Top-bottom bars
-		- Larger i
+		- Larger new icons
+		- Add apuse button
+		- Show database updating as blinking icon (show as icon in Time knob while hidden) 
 	Playback control
 		- With Coverart / Time knob
 		- Can be used as a replacement while hide top-bottom bar and buttons
@@ -79,7 +81,7 @@ Enhanced UI: Use some workarounds to get more informations and to do something b
 	Buttons
 		- Show as icon in Time knob while hidden
 	Library
-		- Improved responsive layout
+		- Improve responsive layout
 		- New icons
 		- Add counts
 		- Improved and exclude leading A, An, The, ', " from sorting
@@ -88,5 +90,17 @@ Enhanced UI: Use some workarounds to get more informations and to do something b
 		- Improved Back button
 		- Maintain scroll position
 		- Albums with common name display with artist names
+		- Bookmarks can be renamed
 		- Show filenames or URL of webradio
+		- Changes reflect to all clients
+	Playlist
+		- Auto scroll to top after 3 previous songs
+		- Add elapsed time while play/pause
+		- Improve drag to rearrange
+		- Show track numbers
+		- Show webradio name
+		- Add crop current playing song
+		- Saved playlists can be renamed
+		- Add display each saved playlist
+		- Changes reflects to all clients
 ```
