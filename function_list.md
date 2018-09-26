@@ -28,10 +28,19 @@ Default UI: Rely on MPD supplied data which has some limitations.
 
 
 Enhanced UI: Use some workarounds to get more informations and to do something better.
+	Redesign
+		- Responsive layout
+		- Icons
+		- Time and Volume knobs
+		- Buttons
+		- Menus
 	Switch between main pages
 		- Swipe left/right
+	Top-bottom bars
+		- Larger i
 	Playback control
 		- With Coverart / Time knob
+		- Can be used as a replacement while hide top-bottom bar and buttons
 		- Show overlay guides by tapping top of each 
 	Toggle show/hide
 		- Top-bottom bars
@@ -42,6 +51,7 @@ Enhanced UI: Use some workarounds to get more informations and to do something b
 		- Library home items
 	Artist
 		- Improved artists' bio
+		- Similar artists are linked
     Song info - File
         - Extract sampling info from file while stop
     Song info - Webradio
@@ -64,8 +74,18 @@ Enhanced UI: Use some workarounds to get more informations and to do something b
         - Save the downloaded missing cover arts for local use
 		- Show VU meter in webradio - animated while play
     Volume
-        - Show pre-mute level on mute
+        - Show pre-mute level instead of 0 on mute
         - Maintain pre-mute level to and get from local database
 	Buttons
-		- 
+		- Show as icon in Time knob while hidden
+	Library
+		- Improved responsive layout
+		- New icons
+		- Add counts
+		- Improved and exclude leading A, An, The, ', " from sorting
+		- Add icon and breadcrumb heading while browsing
+		- Add index bar
+		- Improved Back button
+		- Maintain scroll position
+		- Albums with common name display with artist names
 ```
