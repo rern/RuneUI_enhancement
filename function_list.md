@@ -88,4 +88,5 @@ Enhanced UI: Use some workarounds to get more informations and to do something b
 		- Improved Back button
 		- Maintain scroll position
 		- Albums with common name display with artist names
+		- Show filenames or URL of webradio
 ```
