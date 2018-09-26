@@ -54,11 +54,9 @@ Enhanced UI: Use some workarounds to get more informations and to do something b
 	Artist
 		- Improved artists' bio
 		- Similar artists are linked
-    Song info - File
-        - Extract sampling info from file while stop
-    Song info - Webradio
-        - Get URLs for Library / Playlist from local database
-        - Show URL and sampling info in Playback
+    Song info
+		- Show sampling info while stop
+		- Working previous / next while stop
         - Get sampling info directly with MPD on play
         - Get sampling info from local database while stop (must be played once before available)
 		- Show song title in gray while pause
