@@ -46,23 +46,23 @@ $dir = $pathinfo[ 'dirname' ];
 
 // coverart
 if ( $activePlayer === 'MPD' && !empty( $status[ 'Artist' ] ) ) {
-// 1. fastest - local coverart
-	$coverfiles = array(
-		  'cover.jpg', 'Cover.jpg', 'cover.png', 'Cover.png'
-		, 'folder.jpg', 'Folder.jpg', 'folder.png', 'Folder.png'
-		, 'front.jpg', 'Front.jpg', 'front.png', 'Front.png'
-	);
-	foreach( $coverfiles as $cover ) {
-		$coverfile = $dir.'/'.$cover;
-		if ( file_exists( $coverfile ) ) {
-			$coverext = pathinfo( $cover, PATHINFO_EXTENSION );
-			$data = file_get_contents( $coverfile ) ;
-			$status[ 'coverart' ] = 'data:image/'. $coverext.';base64,'.base64_encode( $data );
-			break;
+	do {
+// 1. local coverart file
+		$coverfiles = array(
+			  'cover.png', 'cover.jpg', 'folder.png', 'folder.jpg', 'front.png', 'front.jpg'
+			, 'Cover.png', 'Coverjpg', 'Folder.png', 'Folder.jpg', 'Front.png', 'Front.jpg'
+		);
+		foreach( $coverfiles as $cover ) {
+			$coverfile = $dir.'/'.$cover;
+			if ( file_exists( $coverfile ) ) {
+				$coverext = pathinfo( $cover, PATHINFO_EXTENSION );
+				$data = file_get_contents( $coverfile ) ;
+				$status[ 'coverart' ] = 'data:image/'. $coverext.';base64,'.base64_encode( $data );
+				break;
+			}
 		}
-	}
-// 2. id3tag - for various albums in single  directory
-	if ( empty( $status[ 'coverart' ] ) ) {
+		if ( !empty( $status[ 'coverart' ] ) ) break;
+// 2. id3tag - for various albums in single directory
 		set_include_path( '/srv/http/app/libs/vendor/' );
 		require_once( 'getid3/audioinfo.class.php' );
 		$audioinfo = new AudioInfo();
@@ -73,8 +73,7 @@ if ( $activePlayer === 'MPD' && !empty( $status[ 'Artist' ] ) ) {
 			$coverext = str_replace( 'image/', '', $id3cover[ 'image_mime' ] );
 			$status[ 'coverart' ] = 'data:image/'. $coverext.';base64,'.base64_encode( $cover );
 		}
-	}
-	if ( empty( $status[ 'coverart' ] ) ) {
+		if ( !empty( $status[ 'coverart' ] ) ) break;
 // 3. last.FM
 		function curlGet( $url ) {
 			$ch = curl_init($url);
@@ -84,6 +83,17 @@ if ( $activePlayer === 'MPD' && !empty( $status[ 'Artist' ] ) ) {
 			curl_close($ch);
 			return $data;
 		}
+		function setCoverart( $cover_url, $dir ) {
+			$cover = curlGet( $cover_url );
+			if ( !$cover ) return NULL;
+			
+			$coverext = pathinfo( $cover_url, PATHINFO_EXTENSION );
+			// save to fetch faster next time
+			$fopen = fopen( $dir.'/cover.'.$coverext, 'w' );
+			fwrite( $fopen, $cover );
+			fclose( $fopen );
+			return 'data:image/'. $coverext.';base64,'.base64_encode( $cover );
+		}
 		$apikey = $redis->get( 'lastfm_apikey' );
 		$artist = urlencode( $status[ 'Artist' ] );
 		$album = urlencode( $status[ 'Album' ] );
@@ -92,22 +102,14 @@ if ( $activePlayer === 'MPD' && !empty( $status[ 'Artist' ] ) ) {
 		$cover_url = $data[ 'album' ][ 'image' ][ 3 ][ '#text' ];
 		
 		if ( !empty( $cover_url ) ) {
-			$cover = curlGet( $cover_url );
+			$status[ 'coverart' ] = setCoverart( $cover_url, $dir );
 		} else {
 			$url = 'http://ws.audioscrobbler.com/2.0/?api_key='.$apikey.'&autocorrect=1&format=json&method=artist.getinfo&artist='.$artist;
 			$data = json_decode( curlGet( $url ), true );
 			$cover_url = $data[ 'artist' ][ 'image' ][ 3 ][ '#text' ];
-			if ( !empty( $cover_url ) ) $cover = curlGet( $cover_url );
+			if ( !empty( $cover_url ) ) $status[ 'coverart' ] = setCoverart( $cover_url, $dir );
 		}
-		if ( !empty( $cover ) ) {
-			$coverext = pathinfo( $cover_url, PATHINFO_EXTENSION );
-			$status[ 'coverart' ] = 'data:image/'. $coverext.';base64,'.base64_encode( $cover );
-			// save to fetch faster next time
-			$fopen = fopen( $dir.'/cover.'.$coverext, 'w' );
-			fwrite( $fopen, $cover );
-			fclose( $fopen );
-		}
-	}
+	} while ( 0 );
 } else if ( $activePlayer === 'Spotify' ) {
 	include '/srv/http/app/libs/runeaudio.php';
 	$spop = openSpopSocket( 'localhost', 6602, 1 );
