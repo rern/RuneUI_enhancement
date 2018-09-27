@@ -22,6 +22,7 @@ $( '.contextmenu a' ).click( function() {
 		, wrrename         : webRadioRename
 		, wrdelete         : webRadioDelete
 		, wrsave           : webRadioVerify
+		, update           : 'update '+ name
 		, bookmark         : bookmarkNew
 	}
 	var command = contextCommand[ cmd ];
