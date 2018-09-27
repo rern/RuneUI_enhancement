@@ -1,6 +1,7 @@
 var GUI = { // outside '$( function() {' enable console.log access
 	  activePlayer : ''
 	, airplay      : {}
+	, artistalbum  : ''
 	, bookmarkedit : 0
 	, browsemode   : ''
 	, counts       : {}
@@ -382,31 +383,24 @@ $( '#db-search-keyword' ).on( 'keypress', function( e ) {
 } );
 $( '#db-level-up' ).on( 'click', function() {
 	// topmost of path
-	if ( $( '#db-currentpath span a' ).length === 1 ) {
+	if ( GUI.dbbrowsemode === 'file' ) {
+		if ( $( '#db-currentpath span a' ).length === 1 ) {
+			renderLibrary();
+		} else {
+			$( '#db-currentpath a:nth-last-child( 2 )' ).click();
+		}
+		return
+	}
+	
+	GUI.artistalbum = '';
+	GUI.dbbackdata.pop();
+	if ( !GUI.dbbackdata.length ) {
 		renderLibrary();
 		return
 	}
-	if ( GUI.dbbrowsemode === 'file' ) {
-		$( '#db-currentpath a:nth-last-child( 2 )' ).click();
-	} else {
-		if ( [ 'artist', 'genre', 'Dirble' ].indexOf( GUI.dbbrowsemode ) === -1 ) {
-			$( '#db-currentpath span a:eq( 0 )' ).click();
-		} else {
-			if ( GUI.browsemode === GUI.dbbrowsemode ) {
-				$( '#db-currentpath span a:eq( 0 )' ).click();
-				GUI.dbbackdata = [];
-				GUI.dbback = 0;
-			} else {
-				GUI.dbback = 1;
-				var dbbacklast = GUI.dbbackdata.pop();
-				if ( dbbacklast.path === GUI.currentpath ) {
-					getDB( GUI.dbbackdata.pop() );
-				} else {
-					getDB( dbbacklast );
-				}
-			}
-		}
-	}
+	
+	var dbbacklast = GUI.dbbackdata.pop();
+	getDB( dbbacklast );
 } );
 $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	var $this = $( this );
@@ -1554,6 +1548,7 @@ function setPlaybackSource() {
 	}
 }
 function renderLibrary() {
+	GUI.dbbackdata = [];
 	if ( GUI.bookmarkedit ) return
 //	GUI.dbscrolltop = {}; // comment to always keep scroll positions
 	GUI.plugin = '';
@@ -1644,21 +1639,15 @@ function getDB( options ) {
 		artist = options.artist || '',
 		mode,
 		command;
-	if ( !GUI.dbback && cmd !== 'search' ) {
-		if ( !plugin ) {
-			GUI.dbbackdata.push( {
-				  path       : path
-				, browsemode : browsemode
-				, uplevel    : uplevel
-			} );
-		} else {
-			GUI.dbbackdata.push( {
-				  path      : path
-				, plugin    : plugin
-				, args      : args
-				, querytype : querytype
-			} );
-		}
+	if ( !GUI.dbback && cmd !== 'search' && GUI.dbbrowsemode !== 'file' ) {
+		GUI.dbbackdata.push( {
+			  path       : path
+			, browsemode : browsemode
+			, uplevel    : uplevel
+			, plugin    : plugin
+			, args      : args
+			, querytype : querytype
+		} );
 	} else {
 		GUI.dbback = 0;
 	}
@@ -1693,8 +1682,9 @@ function getDB( options ) {
 				mode = 'type';
 			} else if ( path === 'Webradio' ) {
 				mode = 'Webradio';
-			} else if ( GUI.browsemode === 'album' && currentpath !== 'Albums' ) { // <li> in 'Artists' and 'Genres'
+			} else if ( GUI.browsemode === 'album' && currentpath !== 'Albums' && artist ) { // <li> in 'Artists' and 'Genres'
 				mode = 'artistalbum';
+				GUI.artistalbum = path +' - '+ artistalbum;
 			} else {
 				mode = GUI.browsemode;
 			}
@@ -1791,8 +1781,8 @@ function parseDBdata( inputArr, i, respType, inpath, querytype ) {
 				if ( inputArr.file ) {
 					var liname = inputArr.Title;
 					content += inputArr.file +'" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i>';
-					content += '<span class="sn">'+ liname +'&ensp;<span class="time">'+ second2HMS( inputArr.Time ) +'</span></span>';
-					content += '<span class="bl">'+ inputArr.Album +' - '+ inputArr.Artist +'</span></li>';
+					content += '<span class="sn">'+ liname +'&ensp;<span class="time">'+ inputArr.Time +'</span></span>';
+					content += '<span class="bl">'+ inputArr.file +'</span></li>';
 				} else {
 					var liname = inputArr.album;
 					var artistalbum = inputArr.artistalbum;
@@ -2050,10 +2040,11 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 	}
 	if ( GUI.browsemode !== 'file' ) {
 		if ( GUI.browsemode !== 'album' ) {
-			var dotpath = ( path === mode[ GUI.browsemode ] ) ? '' : '<a><gr> • </gr><span class="white">'+ path +'</span></a>';
+			var dotpath = ( path === mode[ GUI.browsemode ] ) ? '' : '<a id="artistalbum"><gr> • </gr><span class="white">'+ path +'</span></a>';
 		} else {
-			var albumartist = $( '#db-entries li:eq( 0 ) span.bl' ).text();
-			var dotpath = albumartist ? '<a><gr> • </gr><span class="white">'+ albumartist +'</span></a>' : '';
+			var albumpath = path === 'Albums' ? '' : path;
+			var albumtext = GUI.artistalbum ? GUI.artistalbum : albumpath;
+			var dotpath = albumtext ? '<a id="artistalbum"><gr> • </gr><span class="white">'+ albumtext +'</span></a>' : '';
 		}
 		$( '#db-currentpath' ).attr( 'path', path ); // for back navigation
 		$( '#db-currentpath span' ).html( icon[ GUI.browsemode ] +' <a data-path="'+ mode[ GUI.browsemode ] +'">'+ name[ GUI.browsemode ] +'</a>'+ dotpath );
