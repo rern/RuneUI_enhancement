@@ -381,7 +381,7 @@ $( '#searchbtn' ).click( function() {
 $( '#db-search-keyword' ).on( 'keypress', function( e ) {
 	if ( e.which === 13 ) $( '#searchbtn' ).click();
 } );
-$( '#db-level-up' ).on( 'click', function() {
+$( '#db-back' ).on( 'click', function() {
 	// topmost of path
 	if ( GUI.dbbrowsemode === 'file' ) {
 		if ( $( '#db-currentpath span a' ).length === 1 ) {
@@ -732,7 +732,7 @@ var mutationLibrary = new MutationObserver( function() { // on observed target c
 	$( 'html, body' ).scrollTop( scrollpos ? scrollpos : 0 );
 	mutationLibrary.disconnect();
 } );
-$( '#db-level-up' ).click( function() {
+$( '#db-back' ).click( function() {
 	mutationLibrary.observe( observerLibrary, observerOption ); // standard js - must be one on one element
 } );
 $( '#playsource-mpd' ).click( function() {
@@ -747,7 +747,7 @@ $( '#db-search-results' ).click( function() {
 	$( '#db-search-keyword' ).val( '' );
 	$( '#db-currentpath' ).css( 'width', '' );
 	if ( GUI.currentpath ) {
-		$( '#db-level-up' ).removeClass( 'hide' );
+		$( '#db-back' ).removeClass( 'hide' );
 		getDB( GUI.dbbackdata.pop() );
 		
 		$( '#db-entries' ).removeAttr( 'style' );
@@ -1554,7 +1554,7 @@ function renderLibrary() {
 	GUI.plugin = '';
 	$( '#db-currentpath' ).removeAttr( 'path' ).css( 'width', '' );
 	$( '#db-entries' ).empty();
-	$( '#db-search-results, #db-index, #db-level-up, #db-webradio-new' ).addClass( 'hide' );
+	$( '#db-search-results, #db-index, #db-back, #db-webradio-new' ).addClass( 'hide' );
 	$( '#db-search-keyword' ).val( '' );
 	if ( $( '#db-entries' ).hasClass( 'hide' ) ) return
 	
@@ -1884,7 +1884,7 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 
 	if ( path ) GUI.currentpath = path;
 	$( '#db-entries' ).empty();
-	$( '#db-entries, #db-level-up' ).removeClass( 'hide' );
+	$( '#db-entries, #db-back' ).removeClass( 'hide' );
 	$( ' #home-blocks ' ).addClass( 'hide' );
 
 	if ( plugin ) {
@@ -1960,7 +1960,7 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 		if ( $( '#db-search-keyword' ).val() ) {
 		// search results
 			var results = ( data.length ) ? data.length : '0';
-			$( '#db-level-up, #db-index' ).addClass( 'hide' );
+			$( '#db-back, #db-index' ).addClass( 'hide' );
 			$( '#db-entries' ).css( 'width', '100%' );
 			$( '#db-search-results' )
 				.removeClass( 'hide' )
