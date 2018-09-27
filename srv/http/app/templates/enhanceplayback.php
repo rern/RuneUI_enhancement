@@ -105,7 +105,7 @@
 				<i id="db-webradio-new" class="fa fa-plus-circle"></i>
 			</div>
 			<button id="db-search-results" class="btn hide" type="button"><i class="fa fa-times sx"></i></button>
-			<i id="db-level-up" class="fa fa-arrow-left"></i>
+			<i id="db-back" class="fa fa-arrow-left"></i>
 		</div>
 		<div id="db-list">
 			<ul id="db-entries" class="database"></ul>
