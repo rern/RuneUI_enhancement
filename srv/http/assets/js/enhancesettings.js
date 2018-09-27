@@ -11,7 +11,7 @@ function toggleUpdate() {
 		$( '#updatempddb i, #rescanmpddb i' ).toggleClass( 'fa-spin', updatingdb );
 	} );
 }
-if ( /\/sources/.test( location.pathname ) ) {
+if ( location.pathname === '/sources/' ) {
 	// get updating status on load
 	toggleUpdate();
 	// stop fa-spin when done updating
@@ -79,7 +79,7 @@ if ( /\/sources/.test( location.pathname ) ) {
 		$('#usb-umount-name').html(mountName);
 		$('#usb-umount').val(mountName);
 	});
-} else if ( /\/settings/.test( location.pathname ) ) {
+} else if ( location.pathname === '/settings/' ) {
 	
 	// show/hide AirPlay name form
 	$('#airplay').change(function(){
@@ -135,7 +135,7 @@ if ( /\/sources/.test( location.pathname ) ) {
 			$('#spotifyBox').removeClass('boxed-group');
 		}
 	});
-} else if ( /\/network/.test( location.pathname ) ) {
+} else if ( location.pathname === '/network/' ) {
 	
 	// show/hide static network configuration based on select value
 	var netManualConf = $('#network-manual-config');
@@ -265,7 +265,7 @@ if ( /\/sources/.test( location.pathname ) ) {
 		}
 	});
 
-} else if ( /\/accesspoint/.test( location.pathname ) ) {
+} else if ( location.pathname === '/accesspoint/' ) {
 	
 	// show/hide AP settings form
 	$('#accesspoint').change(function(){
@@ -287,7 +287,7 @@ if ( /\/sources/.test( location.pathname ) ) {
 		$('#dhcp-option-dns').val($('#ip-address').val());
 		$('#dhcp-option-router').val($('#ip-address').val());
 	});
-} else if ( /\/mpd/.test( location.pathname ) ) {
+} else if ( location.pathname === '/mpd/' ) {
 	
 	// output interface select
 	$('#audio-output-interface').change(function(){
@@ -308,7 +308,7 @@ if ( /\/sources/.test( location.pathname ) ) {
 		$('#mpdconf_editor').removeClass('hide');
 		$('#manual-edit-warning').addClass('hide');
 	});
-} else if ( /\/debug/.test( location.pathname ) ) {
+} else if ( location.pathname === '/debug/' ) {
 
 	ZeroClipboard.config({swfPath: '/assets/js/vendor/ZeroClipboard.swf'});
 	var client = new ZeroClipboard(document.getElementById('copy-to-clipboard'));
