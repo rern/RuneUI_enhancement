@@ -22,7 +22,7 @@ $( '.contextmenu a' ).click( function() {
 		, wrrename         : webRadioRename
 		, wrdelete         : webRadioDelete
 		, wrsave           : webRadioVerify
-		, update           : 'update '+ name
+		, update           : 'update '+ GUI.list.path
 		, bookmark         : bookmarkNew
 	}
 	var command = contextCommand[ cmd ];
@@ -31,11 +31,13 @@ $( '.contextmenu a' ).click( function() {
 			command();
 		} else {
 			if ( !GUI.status.playlistlength ) GUI.status.playlistlength = 1; // flag for renderPlaylist()
-			new PNotify( {
-				  icon  : 'fa fa-check'
-				, title : 'Add to Playlist'
-				, text  : GUI.list.name
-			} );
+			if ( cmd !== 'update' ) {
+				new PNotify( {
+					  icon  : 'fa fa-check'
+					, title : 'Add to Playlist'
+					, text  : GUI.list.name
+				} );
+			}
 			tempFlag( 'local' );
 			$.post( 'enhance.php', { mpc: command }, function() {
 				if ( !$( '#currentsong' ).text() ) {
