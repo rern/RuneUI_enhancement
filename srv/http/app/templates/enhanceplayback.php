@@ -217,7 +217,7 @@ $menu = '<div>';
 $htmlcommon = menucommon( 'add', 'addplay', 'addreplaceplay' );
 
 $html = $htmlcommon;
-$html.= menuli( 'rescan',   'folder-refresh', 'Update this folder' );
+$html.= menuli( 'update',   'folder-refresh', 'Update this folder' );
 $html.= menuli( 'bookmark', 'star',           'Save as bookmark' );
 $menu.= menudiv( 'folder', $html );
 $menudiv = '';
