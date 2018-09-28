@@ -9,7 +9,7 @@ if ( location.pathname === '/sources' ) {
 		$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
 			$( '#updatempddb, #rescanmpddb' ).toggleClass( 'disabled', status.updating_db );
 			$( '#updatempddb i, #rescanmpddb i' ).toggleClass( 'fa-spin', status.updating_db );
-		} );
+		}, 'json' );
 	}
 	if ( 'hidden' in document ) {
 		var visibilityevent = 'visibilitychange';
