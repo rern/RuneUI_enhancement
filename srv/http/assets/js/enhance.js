@@ -202,7 +202,7 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 	} else if ( $this.data( 'target' ) === 'webradio-add' ) {
 		webRadioNew();
 	} else {
-		if ( GUI.taphold || GUI.local || ( $this[ 0 ].id === 'home-sd' && !GUI.libraryhome.sd ) ) return
+		if ( GUI.taphold || GUI.local || ( $this[ 0 ].id === 'home-sd' && !GUI.libraryhome.sd ) || $this.attr( 'href' ) ) return
 		
 		GUI.dblist = 1;
 		mutationLibrary.observe( observerLibrary, observerOption );
