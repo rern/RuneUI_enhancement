@@ -45,6 +45,10 @@ $( '.contextmenu a' ).click( function() {
 			var pllength = GUI.status.playlistlength;
 			$.post( 'enhance.php', { mpc: command }, function() {
 				if ( !pllength ) getPlaybackStatus();
+				if ( cmd.slice( -4 ) === 'play' ) {
+					$( '#playback-controls .btn-primary' ).removeClass( 'btn-primary' );
+					$( '#play' ).addClass( 'btn-primary' );
+				}
 			} );
 		}
 	} else if ( cmd === 'plashuffle' ) {
