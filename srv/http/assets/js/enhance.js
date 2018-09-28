@@ -1018,11 +1018,11 @@ pushstreams.playlist.onmessage = function( data ) {
 	}
 }
 var timeoutUpdate;
-pushstreams.idle.onmessage = function( data ) {
-	var data = data[ 0 ];
-	if ( data === 'player' ) { // on track changed
+pushstreams.idle.onmessage = function( idle ) {
+	var idle = idle[ 0 ];
+	if ( idle === 'player' ) { // on track changed
 		getPlaybackStatus();
-	} else if ( data === 'playlist' ) { // on playlist changed
+	} else if ( idle === 'playlist' ) { // on playlist changed
 		if ( GUI.pleditor || GUI.local ) return
 		
 		$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
@@ -1030,17 +1030,16 @@ pushstreams.idle.onmessage = function( data ) {
 			GUI.playlist = data.playlist;
 			renderPlaylist();
 		}, 'json' );
-	} else if ( data === 'options' ) { // on mode toggled
+	} else if ( idle === 'options' ) { // on mode toggled
 		if ( GUI.local ) return
 		
-		$.post( 'enhance.php', { mpc: 'status | tail -n1' }, function( data ) {
-			var data = data.split( /  +/ );
-			GUI.status.repeat = data[ 1 ].split( ' ' ).pop() === 'on' ? 1 : 0;
-			GUI.status.random = data[ 2 ].split( ' ' ).pop() === 'on' ? 1 : 0;
-			GUI.status.single = data[ 3 ].split( ' ' ).pop() === 'on' ? 1 : 0;
+		$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
+			GUI.status.repeat = status.repeat;
+			GUI.status.random = status.random;
+			GUI.status.single = status.single;
 			setButtonToggle();
-		} );
-	} else if ( data === 'update' ) {
+		}, 'json' );
+	} else if ( idle === 'update' ) {
 		if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) {
 			$.post( 'enhance.php', { library: 1 } );
 			renderLibrary();
@@ -1062,7 +1061,7 @@ pushstreams.idle.onmessage = function( data ) {
 				}
 			}, 'json' );
 		}, 1000 );
-	} else if ( data === 'database' ) { // on files changed (for webradio rename)
+	} else if ( idle === 'database' ) { // on files changed (for webradio rename)
 		if ( GUI.local ) return
 		
 		if ( $( '#db-currentpath' ).attr( 'path' ) === 'Webradio' ) $( '#home-webradio' ).click();
@@ -1211,7 +1210,6 @@ function renderPlayback() {
 	clearInterval( GUI.intElapsed );
 	$( '#time' ).roundSlider( 'setValue', 0 );
 	
-	setButton();
 	// empty queue
 	if ( !status.playlistlength ) {
 		setPlaybackBlank();
@@ -1333,12 +1331,28 @@ function getPlaybackStatus() {
 			return
 		}
 		GUI.status = status;
+		
+		$( '#playback-controls' ).toggleClass( 'hide', status.playlistlength === 0 );
+		$( '#stop' ).toggleClass( 'btn-primary', status.state === 'stop' );
+		$( '#play' ).toggleClass( 'btn-primary', status.state === 'play' );
+		$( '#pause' ).toggleClass( 'btn-primary', status.state === 'pause' );
+		setButtonToggle();
+		setButtonUpdate();
+		if ( GUI.display.update ) {
+			if ( GUI.display.bars ) {
+				$( '#badge' ).text( GUI.display.update ).show();
+				$( '#iaddons' ).addClass( 'hide' );
+			} else {
+				$( '#iaddons' ).removeClass( 'hide' );
+			}
+		} else {
+			$( '#badge' ).empty().hide();
+		}
 		if ( $( '#panel-playback' ).hasClass( 'active' ) ) {
 			renderPlayback();
 			// imodedelay fix imode flashing on usb dac switching
 			if ( !GUI.imodedelay ) displayPlayback();
 		} else if ( $( '#panel-playlist' ).hasClass( 'active' ) && !GUI.pleditor ) {
-			setButton();
 			setPlaylistScroll();
 		}
 		$( '#plcrop' ).toggleClass( 'disable', status.state === 'stop' );
@@ -1519,7 +1533,6 @@ function displayPlayback() {
 		var source = GUI.activePlayer.toLowerCase();
 		$( '#iplayer' ).addClass( 'fa-'+ source ).removeClass( 'hide' );
 	}
-	setButton();
 	displayCommon();
 	if ( !GUI.local ) $( 'html, body' ).scrollTop( 0 );
 }

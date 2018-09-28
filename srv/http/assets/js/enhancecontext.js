@@ -42,12 +42,13 @@ $( '.contextmenu a' ).click( function() {
 					, text  : GUI.list.name
 				} );
 			}
-			tempFlag( 'local' );
+			if ( mode === 'wr' ) tempFlag( 'local' );
 			$.post( 'enhance.php', { mpc: command }, function() {
 				if ( !$( '#currentsong' ).text() ) {
 					renderPlayback();
 					$( '#playback-controls' ).removeClass( 'hide' );
 				}
+				if ( cmd.slice( -4 ) === 'play' ) getPlaybackStatus();
 			} );
 		}
 		return;
