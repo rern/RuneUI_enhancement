@@ -1,15 +1,16 @@
 <?php
-$redis = new Redis(); 
-$redis->pconnect( '127.0.0.1' );
-$activePlayer = $redis->get( 'activePlayer' );
-$status[ 'activePlayer' ] = $activePlayer;
-$status[ 'volumemute' ] = $redis->hGet( 'display', 'volumemute' );
+if ( !isset( $_POST[ 'statusonly' ] ) ) {
+	$redis = new Redis(); 
+	$redis->pconnect( '127.0.0.1' );
+	$activePlayer = $redis->get( 'activePlayer' );
+	$status[ 'activePlayer' ] = $activePlayer;
+	$status[ 'volumemute' ] = $redis->hGet( 'display', 'volumemute' );
 
-if ( $activePlayer === 'Airplay' ) {
-	echo json_encode( $status );
-	exit();
+	if ( $activePlayer === 'Airplay' ) {
+		echo json_encode( $status );
+		exit();
+	}
 }
-
 $mpdtelnet = ' | telnet localhost 6600 | sed "/^Trying\|Connected\|Escape\|OK\|Connection\|AlbumArtist\|Date\|Genre\|Last-Modified\|consume\|mixrampdb\|nextsong\|nextsongid/ d"';
 $lines = shell_exec( '{ sleep 0.01; echo clearerror; echo status; echo currentsong; sleep 0.05; }'.$mpdtelnet );
 // fix: initially add song without play - currentsong = (blank)
