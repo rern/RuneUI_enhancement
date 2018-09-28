@@ -26,7 +26,12 @@ if ( location.pathname === '/sources' ) {
 		}
 	}
 	document.addEventListener( visibilityevent, function() {
-		document[ hiddenstate ] ? pushstreamIdle.disconnect() : pushstreamIdle.connect();
+		if ( document[ hiddenstate ] ) {
+			pushstreamIdle.disconnect();
+		} else {
+			pushstreamIdle.connect();
+			toggleUpdate();
+		}
 	} );
 	// get updating status on load
 	toggleUpdate();
