@@ -1028,11 +1028,11 @@ pushstreams.idle.onmessage = function( data ) {
 			setButtonToggle();
 		} );
 	} else if ( data === 'update' ) {
-		setTimeout( function() { // omit on webradio delete
-			$.post( 'enhance.php', { mpc: "status | grep 'Updating DB'" }, function( data ) {
-				setButtonUpdate( data );
-			} );
-		}, 1000 );
+		setTimeout( function() { // skip on brief update
+			$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
+				setButtonUpdate( status.updating_db );
+			}, 'json' );
+		}, 3000 );
 	} else if ( data === 'database' ) { // on files changed (for webradio rename)
 		if ( GUI.local ) return
 		
@@ -1584,9 +1584,9 @@ function renderLibrary() {
 	// sd
 	content += divOpen +'<div id="home-sd" class="home-block'+ toggleMPD +'" data-path="LocalStorage"><i class="fa fa-microsd"></i><h4>SD card<gr>&ensp;'+ numFormat( status.sd ) +' ♫</gr></h4></div></div>';
 	// usb
-	content += divOpen +'<div id="home-usb" class="home-block'+ toggleMPD +'"'+ ( !status.usb ? ( notMPD ? '' : ' href="/sources/sources/"' ) : ' data-path="USB"' ) +'><i class="fa fa-usbdrive"></i><h4>USB drives<gr>&ensp;'+ status.usb +'</gr></h4></div></div>';
+	content += divOpen +'<div id="home-usb" class="home-block'+ toggleMPD +'"'+ ( !status.usb ? ( notMPD ? '' : ' href="/sources"' ) : ' data-path="USB"' ) +'><i class="fa fa-usbdrive"></i><h4>USB drives<gr>&ensp;'+ status.usb +'</gr></h4></div></div>';
 	// nas
-	content += divOpen +'<a id="home-nas" class="home-block'+ toggleMPD +'"'+ ( !status.network ? ( notMPD ? '' : ' href="/sources/add/"' ) : ' data-path="NAS"' ) +'><i class="fa fa-network"></i><h4>Network drives<gr>&ensp;'+ status.network +'</gr></h4></a></div>';
+	content += divOpen +'<a id="home-nas" class="home-block'+ toggleMPD +'"'+ ( !status.network ? ( notMPD ? '' : ' href="/sources/add"' ) : ' data-path="NAS"' ) +'><i class="fa fa-network"></i><h4>Network drives<gr>&ensp;'+ status.network +'</gr></h4></a></div>';
 	// webradio
 	var data = !status.webradio ? ' data-target="webradio-add"' : ' data-path="Webradio"';
 	content += divOpen +'<div id="home-webradio" class="home-block'+ toggleMPD +'"'+ data +'><i class="fa fa-webradio"></i><h4>Webradios<gr>&ensp;'+ numFormat( status.webradio ) +'</gr></h4></div></div>';
