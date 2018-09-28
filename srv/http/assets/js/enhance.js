@@ -2094,6 +2094,8 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 	$( '#loader' ).addClass( 'hide' );
 }
 function setPlaylistScroll() {
+	if ( GUI.local ) return // 'Sortable'
+	
 	var  wH = window.innerHeight;
 	$( '#pl-entries p' ).css( 'min-height', wH - 140 +'px' );
 	var $licurrent = $( '#pl-entries li' ).eq( GUI.status.song );
@@ -2104,13 +2106,15 @@ function setPlaylistScroll() {
 	
 	$( '#pl-entries li' ).removeClass( 'active' );
 	$licurrent.addClass( 'active' );
-	if ( GUI.local ) return // 'Sortable'
+	
+	clearInterval( GUI.intElapsed );
+	tempFlag( 'local' ); // fix event fired twice
 	
 	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
-		clearInterval( GUI.intElapsed );
 		// for 'visibilityevent - visible' and song has changed
 		$( '#pl-entries li' ).removeClass( 'active' );
-		var $liactive = $( '#pl-entries li' ).eq( status.song ).addClass( 'active' );
+		var $liactive = $( '#pl-entries li' ).eq( status.song );
+		$liactive.addClass( 'active' );
 		
 		var state = status.state;
 		var elapsed = status.elapsed;
@@ -2124,7 +2128,7 @@ function setPlaylistScroll() {
 				$elapsed.html( '<i class="fa fa-pause"></i> '+ elapsedtxt );
 			} else if ( state === 'play' ) {
 				GUI.intElapsed = setInterval( function() {
-					elapsed++
+					elapsed++;
 					var elapsedtxt = second2HMS( elapsed ) + ( GUI.status.ext === 'radio' ? '' : ' / ' );
 					$elapsed.html( '<i class="fa fa-play"></i> '+ elapsedtxt );
 				}, 1000 );
