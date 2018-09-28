@@ -1,20 +1,24 @@
 $( '.contextmenu a' ).click( function() {
 	GUI.dbcurrent = '';
 	var cmd = $( this ).data( 'cmd' );
-	if ( $.inArray( cmd, [ 'add', 'addplay', 'addreplaceplay' ] ) !== -1 ) {
-		var name = GUI.list.path;
+	var mode = cmd.replace( /addreplaceplay|addplay|add/, '' );
+	var modes = [ 'album', 'artist', 'composer', 'genre' ];
+	var name = GUI.list.path;
+	if ( !mode ) {
 		var mpcCmd = GUI.list.isfile ? 'add "'+ name +'"' : 'ls "'+ name +'" | mpc add';
-	} else if ( $.inArray( cmd, [ 'wradd', 'wraddplay', 'wraddreplaceplay' ] ) !== -1 ) {
-		var name = GUI.list.path;
+	} else if ( $.inArray( mode, [ 'album', 'artist', 'composer', 'genre' ] ) !== -1 ) {
+		var mpcCmd = 'findadd '+ mode +' "'+ name +'"';
+	} else if ( mode === 'wr' ) {
 		cmd = cmd.replace( 'wr', 'pl' );
-	} else if ( $.inArray( cmd, [ 'pladd', 'pladdplay', 'pladdreplaceplay' ] ) !== -1 ) {
+	} else if ( mode === 'pl' ) {
 		var name = GUI.list.name;
 	}
 	var contextCommand = {
 		  add              : mpcCmd
-		, addreplace       : [ 'clear', mpcCmd ]
+		, addplay          : [ mpcCmd, 'play' ]
 		, addreplaceplay   : [ 'clear', mpcCmd, 'play' ]
 		, pladd            : 'load "' + name +'"'
+		, pladdplay        : [ 'load "' + name +'"', 'play' ]
 		, plreplace        : [ 'clear', 'load "'+ name +'"' ]
 		, pladdreplaceplay : [ 'clear', 'load "'+ name + '"', 'play' ]
 		, plrename         : playlistRename
@@ -120,10 +124,9 @@ function bookmarkVerify( name, path, oldname ) {
 				, title : oldname ? 'Rename Bookmark' :'Add Bookmark'
 				, text  : name
 			} );
+			tempFlag( 'local' );
 			var data = oldname ? [ name, path, oldname ] : [ name, path ];
-			$.post( 'enhance.php', { bkmarks: data }, function() {
-				renderLibrary();
-			} );
+			$.post( 'enhance.php', { bkmarks: data } );
 		} else {
 			info( {
 				  icon        : 'warning'
