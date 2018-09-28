@@ -2108,34 +2108,31 @@ function setPlaylistScroll() {
 	
 	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
 		clearInterval( GUI.intElapsed );
-		if ( !status.elapsed ) {
-			$( '.elapsed' ).empty();
-			return
-		}
 		// for 'visibilityevent - visible' and song has changed
-		var $liactive = $( '#pl-entries li' ).eq( status.song );
 		$( '#pl-entries li' ).removeClass( 'active' );
-		$liactive.addClass( 'active' );
+		var $liactive = $( '#pl-entries li' ).eq( status.song ).addClass( 'active' );
 		
 		var state = status.state;
 		var elapsed = status.elapsed;
-		var $elapsed = $liactive.find( ' .elapsed' );
-		if ( !$elapsed.html() ) $( '.elapsed' ).empty();
-		if ( state === 'pause' ) {
-			var elapsedtxt = second2HMS( elapsed ) + ( GUI.status.ext === 'radio' ? '' : ' / ' );
-			$elapsed.html( '<i class="fa fa-pause"></i> '+ elapsedtxt );
-		} else if ( state === 'play' ) {
-			GUI.intElapsed = setInterval( function() {
-				elapsed++
+		var $elapsed = $( '#pl-entries li.active .elapsed' );
+		setTimeout( function() {
+			var scrollpos = $liactive.offset().top - $( '#pl-entries' ).offset().top - ( 49 * 3 );
+			$( 'html, body' ).scrollTop( scrollpos );
+			if ( !$elapsed.html() ) $( '.elapsed' ).empty();
+			if ( state === 'pause' ) {
 				var elapsedtxt = second2HMS( elapsed ) + ( GUI.status.ext === 'radio' ? '' : ' / ' );
-				$elapsed.html( '<i class="fa fa-play"></i> '+ elapsedtxt );
-			}, 1000 );
-		}
+				$elapsed.html( '<i class="fa fa-pause"></i> '+ elapsedtxt );
+			} else if ( state === 'play' ) {
+				GUI.intElapsed = setInterval( function() {
+					elapsed++
+					var elapsedtxt = second2HMS( elapsed ) + ( GUI.status.ext === 'radio' ? '' : ' / ' );
+					$elapsed.html( '<i class="fa fa-play"></i> '+ elapsedtxt );
+				}, 1000 );
+			} else {
+				$( '.elapsed' ).empty();
+			}
+		}, 300 );
 	}, 'json' );
-	setTimeout( function() {
-		var scrollpos = $( '#pl-entries li.active' ).offset().top - $( '#pl-entries' ).offset().top - ( 49 * 3 );
-		$( 'html, body' ).scrollTop( scrollpos );
-	}, 300 );
 }
 function renderPlaylist() {
 	$( '#pl-filter' ).val( '' );
