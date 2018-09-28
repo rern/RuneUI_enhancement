@@ -1,7 +1,7 @@
 $( '.contextmenu a' ).click( function() {
 	GUI.dbcurrent = '';
 	var cmd = $( this ).data( 'cmd' );
-	var mode = cmd.replace( /addreplaceplay|addplay|add/, '' );
+	var mode = cmd.replace( /replaceplay|replace|addplay|add/, '' );
 	var modes = [ 'album', 'artist', 'composer', 'genre' ];
 	var name = GUI.list.path;
 	if ( !mode ) {
@@ -16,17 +16,18 @@ $( '.contextmenu a' ).click( function() {
 	var contextCommand = {
 		  add              : mpcCmd
 		, addplay          : [ mpcCmd, 'play' ]
-		, addreplaceplay   : [ 'clear', mpcCmd, 'play' ]
+		, replace          : [ 'clear', mpcCmd ]
+		, replaceplay      : [ 'clear', mpcCmd, 'play' ]
 		, pladd            : 'load "' + name +'"'
 		, pladdplay        : [ 'load "' + name +'"', 'play' ]
 		, plreplace        : [ 'clear', 'load "'+ name +'"' ]
-		, pladdreplaceplay : [ 'clear', 'load "'+ name + '"', 'play' ]
+		, plreplaceplay    : [ 'clear', 'load "'+ name + '"', 'play' ]
+		, update           : 'update '+ GUI.list.path
 		, plrename         : playlistRename
 		, pldelete         : playlistDelete
 		, wrrename         : webRadioRename
 		, wrdelete         : webRadioDelete
 		, wrsave           : webRadioVerify
-		, update           : 'update '+ GUI.list.path
 		, bookmark         : bookmarkNew
 	}
 	var command = contextCommand[ cmd ];
@@ -35,9 +36,10 @@ $( '.contextmenu a' ).click( function() {
 			command();
 		} else {
 			if ( cmd !== 'update' ) {
+				var add = cmd.replace( 'pl', '' ).slice( 0, 3 ) === 'add';
 				new PNotify( {
 					  icon  : 'fa fa-check'
-					, title : 'Add to Playlist'
+					, title : add ? 'Add to Playlist' : 'Playlist replaced'
 					, text  : GUI.list.name
 				} );
 			}
