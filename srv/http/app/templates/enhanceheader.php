@@ -58,7 +58,7 @@ if ( empty( $this->uri(1) ) ) { ?>
 	<link rel="stylesheet" href="<?=$this->asset( '/css/fontawesome.min.css' )?>">
 	<link rel="stylesheet" href="<?=$this->asset( '/css/bootstrap-select.min.css' )?>">
 	<link rel="stylesheet" href="<?=$this->asset( '/css/toggle-switch.min.css' )?>">
-	<link rel="stylesheet" href="<?=$this->asset( '/css/settings.css' )?>">
+	<link rel="stylesheet" href="<?=$this->asset( '/css/enhancesettings.css' )?>">
 <?php }
 if ( empty( $this->uri(1) ) ) { ?>
 	<link rel="apple-touch-icon" sizes="57x57" href="<?=$this->asset( '/img/apple-touch-icon-57x57.png' )?>">
