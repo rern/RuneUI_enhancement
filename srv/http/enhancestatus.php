@@ -36,7 +36,7 @@ while ( $line !== false ) {
 }
 $status[ 'updating_db' ] = array_key_exists( 'updating_db', $status ) ? 1 : 0;
 if ( !array_key_exists( 'song', $status ) ) $status[ 'song' ] = 0;
-if ( isset( $_POST[ 'statusonly' ] ) ) {
+if ( isset( $_POST[ 'statusonly' ] ) || !$status[ 'playlistlength' ] ) {
 	echo json_encode( $status, JSON_NUMERIC_CHECK );
 	exit();
 }
