@@ -4,7 +4,7 @@ if ( !isset( $_POST[ 'statusonly' ] ) ) {
 	$redis->pconnect( '127.0.0.1' );
 	$activePlayer = $redis->get( 'activePlayer' );
 	$status[ 'activePlayer' ] = $activePlayer;
-	$status[ 'volumemute' ] = $redis->hGet( 'display', 'volumemute' );
+	$status[ 'volumemute' ] = $redis->hGet( 'display', 'volumemute' ) ? 1 : 0;
 
 	if ( $activePlayer === 'Airplay' ) {
 		echo json_encode( $status );
