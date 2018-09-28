@@ -198,7 +198,9 @@ function webRadioRename() {
 function addWebradio( name, url, oldname ) {
 	if ( !oldname ) GUI.libraryhome.webradio++;
 	var data = oldname ? [ name, url, oldname ] : [ name, url ];
-	$.post( 'enhance.php', { webradios: data } );
+	$.post( 'enhance.php', { webradios: data }, function() {
+		if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) $( '#home-webradio' ).click();
+	} );
 }
 function webRadioVerify( name, url, oldname ) {
 	if ( !name || !url ) {
