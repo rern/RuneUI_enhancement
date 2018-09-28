@@ -4,27 +4,43 @@ if ( document.location.hostname === 'localhost' ) $( '.osk-trigger' ).onScreenKe
 
 $( '.selectpicker' ).selectpicker();
 
-function toggleUpdate() {
-	$.post( 'enhance.php', { mpc: 'status' }, function( status ) {
-		var updatingdb = status.match( /Updating/ ) ? true : false;
-		$( '#updatempddb, #rescanmpddb' ).toggleClass( 'disabled', updatingdb );
-		$( '#updatempddb i, #rescanmpddb i' ).toggleClass( 'fa-spin', updatingdb );
-	} );
-}
 if ( location.pathname === '/sources/' ) {
+	function toggleUpdate() {
+		$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
+			$( '#updatempddb, #rescanmpddb' ).toggleClass( 'disabled', status.updating_db );
+			$( '#updatempddb i, #rescanmpddb i' ).toggleClass( 'fa-spin', status.updating_db );
+		} );
+	}
+	if ( 'hidden' in document ) {
+		var visibilityevent = 'visibilitychange';
+		var hiddenstate = 'hidden';
+	} else { // cross-browser document.visibilityState must be prefixed
+		var prefixes = [ 'webkit', 'moz', 'ms', 'o' ];
+		for ( var i = 0; i < 4; i++ ) {
+			var p = prefixes[ i ];
+			if ( p +'Hidden' in document ) {
+				var visibilityevent = p +'visibilitychange';
+				var hiddenstate = p +'Hidden';
+				break;
+			}
+		}
+	}
+	document.addEventListener( visibilityevent, function() {
+		document[ hiddenstate ] ? pushstreamIdle.disconnect() : pushstreamIdle.connect();
+	} );
 	// get updating status on load
 	toggleUpdate();
 	// stop fa-spin when done updating
-	var pushstreamplayback = new PushStream( {
+	var pushstreamIdle = new PushStream( {
 		host: window.location.hostname,
 		port: window.location.port,
 		modes: 'websocket'
 	} );
-	pushstreamplayback.onmessage = function( data ) {
+	pushstreamIdle.onmessage = function( data ) {
 		if ( data[ 0 ] === 'update' ) toggleUpdate();
 	}
-	pushstreamplayback.addChannel( 'idle' );
-	pushstreamplayback.connect();
+	pushstreamIdle.addChannel( 'idle' );
+	pushstreamIdle.connect();
 
 	// enable/disable CIFS auth section
 	if ($('#mount-type').val() === 'nfs') {
