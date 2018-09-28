@@ -202,13 +202,13 @@ function getLibrary() {
 	$count = exec( '/srv/http/enhancecount.sh' );
 	$count = explode( ' ', $count );
 	$status = array( 
-		 'bookmarks'    => $bookmarks
+		  'bookmark'     => $bookmarks
 		, 'artist'       => $count[ 0 ]
 		, 'album'        => $count[ 1 ]
 		, 'song'         => $count[ 2 ]
 		, 'composer'     => $count[ 3 ]
 		, 'genre'        => $count[ 4 ]
-		, 'network'      => $count[ 5 ]
+		, 'nas'          => $count[ 5 ]
 		, 'usb'          => $count[ 6 ]
 		, 'webradio'     => $count[ 7 ]
 		, 'sd'           => $count[ 8 ]
