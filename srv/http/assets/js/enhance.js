@@ -964,7 +964,11 @@ document.addEventListener( visibilityevent, function() {
 	}
 } );
 window.addEventListener( 'orientationchange', function() {
-	if ( GUI.dblist || !$( '#pl-editor' ).hasClass( 'hide' ) ) displayIndexBar();
+	if ( $( '#panel-playback' ).hasClass( 'active' ) ) {
+		scrollLongText();
+	} else {
+		if ( GUI.dblist || !$( '#pl-editor' ).hasClass( 'hide' ) ) displayIndexBar();
+	}
 } );
 
 } ); // document ready end <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
