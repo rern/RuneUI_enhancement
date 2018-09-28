@@ -70,7 +70,7 @@ $( '#open-library' ).click( function() {
 		return
 	}
 	
-	setPanelActive( $( '#panel-library' ) );
+	setPanelActive( 'panel-library' );
 	if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) {
 		renderLibrary();
 		displayLibrary();
@@ -80,9 +80,9 @@ $( '#open-library' ).click( function() {
 	}
 } );
 $( '#open-playback' ).click( function() {
-	setPanelActive( $( '#panel-playback' ) );
+	setPanelActive( 'panel-playback' );
 	getPlaybackStatus();
-	displayPlayback();
+	renderPlayback();
 } );
 $( '#open-playlist' ).click( function() {
 	
@@ -91,7 +91,7 @@ $( '#open-playlist' ).click( function() {
 		$( '#overlay-playsource' ).addClass( 'open' );
 		return
 	}
-	setPanelActive( $( '#panel-playlist' ) );
+	setPanelActive( 'panel-playlist' );
 	if ( GUI.pleditor ) return
 	
 	$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
@@ -1018,19 +1018,20 @@ pushstreams.playlist.onmessage = function( data ) {
 	}
 }
 var timeoutUpdate;
-pushstreams.idle.onmessage = function( idle ) {
-	var idle = idle[ 0 ];
-	if ( idle === 'player' ) { // on track changed
+pushstreams.idle.onmessage = function( changed ) {
+	console.log(changed[ 0 ])
+	var changed = changed[ 0 ];
+	if ( changed === 'player' ) { // on track changed
 		getPlaybackStatus();
-	} else if ( idle === 'playlist' ) { // on playlist changed
-		if ( GUI.pleditor || GUI.local ) return
-		getPlaybackStatus();
+	} else if ( changed === 'playlist' ) { // on playlist changed
+		if ( GUI.pleditor || GUI.local || !$( '#panel-playlist' ).hasClass( 'active' ) ) return
+		
 		$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
 			GUI.lsplaylists = data.lsplaylists;
 			GUI.playlist = data.playlist;
 			renderPlaylist();
 		}, 'json' );
-	} else if ( idle === 'options' ) { // on mode toggled
+	} else if ( changed === 'options' ) { // on mode toggled
 		if ( GUI.local ) return
 		
 		$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
@@ -1039,7 +1040,7 @@ pushstreams.idle.onmessage = function( idle ) {
 			GUI.status.single = status.single;
 			setButtonToggle();
 		}, 'json' );
-	} else if ( idle === 'update' ) {
+	} else if ( changed === 'update' ) {
 		if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) {
 			$.post( 'enhance.php', { library: 1 } );
 			renderLibrary();
@@ -1061,7 +1062,7 @@ pushstreams.idle.onmessage = function( idle ) {
 				}
 			}, 'json' );
 		}, 1000 );
-	} else if ( idle === 'database' ) { // on files changed (for webradio rename)
+	} else if ( changed === 'database' ) { // on files changed (for webradio rename)
 		if ( GUI.local ) return
 		
 		if ( $( '#db-currentpath' ).attr( 'path' ) === 'Webradio' ) $( '#home-webradio' ).click();
@@ -1114,7 +1115,6 @@ function setButtonUpdate() {
 		$( '#open-library i, #db-home i, #iupdate' ).addClass( 'blink' );
 		$( '#iupdate' ).toggleClass( 'hide', GUI.display.bars !== '' );
 	} else {
-		if ( $( '#db-currentpath' ).attr( 'path' ) ) $( '#open-library' ).click();
 		$( '#open-library i, #db-home i, #iupdate' ).removeClass( 'blink' );
 		$( '#iupdate' ).addClass( 'hide' );
 	}
@@ -1332,44 +1332,43 @@ function getPlaybackStatus() {
 		}
 		GUI.status = status;
 		
-		$( '#playback-controls' ).toggleClass( 'hide', status.playlistlength === 0 );
-		$( '#stop' ).toggleClass( 'btn-primary', status.state === 'stop' );
-		$( '#play' ).toggleClass( 'btn-primary', status.state === 'play' );
-		$( '#pause' ).toggleClass( 'btn-primary', status.state === 'pause' );
-		setButtonToggle();
-		setButtonUpdate();
-		if ( GUI.display.update ) {
-			if ( GUI.display.bars ) {
-				$( '#badge' ).text( GUI.display.update ).show();
-				$( '#iaddons' ).addClass( 'hide' );
-			} else {
-				$( '#iaddons' ).removeClass( 'hide' );
-			}
-		} else {
-			$( '#badge' ).empty().hide();
-		}
 		if ( $( '#panel-playback' ).hasClass( 'active' ) ) {
+			$( '#playback-controls' ).toggleClass( 'hide', status.playlistlength === 0 );
+			$( '#stop' ).toggleClass( 'btn-primary', status.state === 'stop' );
+			$( '#play' ).toggleClass( 'btn-primary', status.state === 'play' );
+			$( '#pause' ).toggleClass( 'btn-primary', status.state === 'pause' );
+			setButtonToggle();
+			setButtonUpdate();
+			if ( GUI.display.update ) {
+				if ( GUI.display.bars ) {
+					$( '#badge' ).text( GUI.display.update ).show();
+					$( '#iaddons' ).addClass( 'hide' );
+				} else {
+					$( '#iaddons' ).removeClass( 'hide' );
+				}
+			} else {
+				$( '#badge' ).empty().hide();
+			}
 			renderPlayback();
 			// imodedelay fix imode flashing on usb dac switching
 			if ( !GUI.imodedelay ) displayPlayback();
 		} else if ( $( '#panel-playlist' ).hasClass( 'active' ) && !GUI.pleditor ) {
 			setPlaylistScroll();
+			$( '#plcrop' ).toggleClass( 'disable', status.state === 'stop' );
 		}
-		$( '#plcrop' ).toggleClass( 'disable', status.state === 'stop' );
 	}, 'json' );
 }
-function setPanelActive( el ) {
-	if ( $( '#panel-library' ).hasClass( 'active' ) ) {
+function setPanelActive( id ) {
+	if ( id === 'panel-library' ) {
 		GUI.dbscrolltop[ $( '#db-currentpath' ).attr( 'path' ) ] = $( window ).scrollTop();
 		
-	} else if ( $( '#panel-playlist' ).hasClass( 'active' ) && GUI.pleditor ) {
+	} else if ( id === 'panel-playlist' && GUI.pleditor ) {
 		GUI.plscrolltop = $( window ).scrollTop();
 	}
 	$( '.tab-pane, #menu-bottom li' ).removeClass( 'active' );
 	$( '.tab-pane' ).addClass( 'hide' );
-	el.removeClass( 'hide' );
-	var openid = el[ 0 ].id.replace( 'panel', 'open' );
-	el.add( '#'+ openid ).addClass( 'active' );
+	$( '#'+ id ).removeClass( 'hide' );
+	$( '#'+ id +', #'+ id.replace( 'panel', 'open' ) ).addClass( 'active' );
 	if ( !GUI.display.bars || window.innerWidth < 499 || window.innerHeight < 515 ) {
 		$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
 		$( '.btnlist-top' ).css( 'top', 0 );
@@ -2215,6 +2214,8 @@ function renderPlaylist() {
 	$( '.playlist' ).removeClass( 'hide' );
 	$( '#playlist-warning' ).addClass( 'hide' );
 	$( '#pl-count' ).html( counthtml );
+	$( '#plsave, #plclear' ).removeClass( 'disable' );
+	$( '#plcrop' ).toggleClass( 'disable', GUI.status.state === 'stop' );
 	
 	$( '#pl-entries' ).html( content +'<p></p>' ).promise().done( function() {
 		setPlaylistScroll();

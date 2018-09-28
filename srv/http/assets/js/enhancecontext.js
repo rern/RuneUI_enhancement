@@ -34,7 +34,6 @@ $( '.contextmenu a' ).click( function() {
 		if ( typeof command === 'function' ) {
 			command();
 		} else {
-			if ( !GUI.status.playlistlength ) GUI.status.playlistlength = 1; // flag for renderPlaylist()
 			if ( cmd !== 'update' ) {
 				new PNotify( {
 					  icon  : 'fa fa-check'
@@ -43,12 +42,12 @@ $( '.contextmenu a' ).click( function() {
 				} );
 			}
 			if ( mode === 'wr' ) tempFlag( 'local' );
-			$.post( 'enhance.php', { mpc: command } );
+			var pllength = GUI.status.playlistlength;
+			$.post( 'enhance.php', { mpc: command }, function() {
+				if ( !pllength ) getPlaybackStatus();
+			} );
 		}
-		return;
-	}
-	
-	if ( cmd === 'plashuffle' ) {
+	} else if ( cmd === 'plashuffle' ) {
 			$.post( '/db/?cmd=pl-ashuffle', { playlist: GUI.list.name } );
 			$( '#random' ).data( 'cmd', 'pl-ashuffle-stop' ).addClass( 'btn-primary' );
 	} else {
