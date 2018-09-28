@@ -2115,10 +2115,10 @@ function setPlaylistScroll() {
 		var state = status.state;
 		var elapsed = status.elapsed;
 		var $elapsed = $( '#pl-entries li.active .elapsed' );
+		if ( !$elapsed.html() ) $( '.elapsed' ).empty();
 		setTimeout( function() {
 			var scrollpos = $liactive.offset().top - $( '#pl-entries' ).offset().top - ( 49 * 3 );
 			$( 'html, body' ).scrollTop( scrollpos );
-			if ( !$elapsed.html() ) $( '.elapsed' ).empty();
 			if ( state === 'pause' ) {
 				var elapsedtxt = second2HMS( elapsed ) + ( GUI.status.ext === 'radio' ? '' : ' / ' );
 				$elapsed.html( '<i class="fa fa-pause"></i> '+ elapsedtxt );
