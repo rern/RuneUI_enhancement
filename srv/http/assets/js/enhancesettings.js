@@ -7,8 +7,8 @@ $( '.selectpicker' ).selectpicker();
 if ( location.pathname === '/sources' ) {
 	function toggleUpdate() {
 		$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
-			$( '#updatempddb, #rescanmpddb' ).toggleClass( 'disabled', status.updating_db );
-			$( '#updatempddb i, #rescanmpddb i' ).toggleClass( 'fa-spin', status.updating_db );
+			$( '#updatempddb, #rescanmpddb' ).toggleClass( 'disabled', status.updating_db !== 0 );
+			$( '#updatempddb i, #rescanmpddb i' ).toggleClass( 'fa-spin', status.updating_db !== 0 );
 		}, 'json' );
 	}
 	if ( 'hidden' in document ) {
