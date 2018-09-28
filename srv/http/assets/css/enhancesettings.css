@@ -64,6 +64,10 @@ body {
 .fa {
 	font-family: enhance, Fontawesome;
 }
+.bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn){
+	width: auto;
+	min-width:220px
+}
 select.bs-select-hidden,
 select.selectpicker {
 	display: none !important
