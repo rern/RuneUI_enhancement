@@ -199,35 +199,36 @@ function menuli( $command, $icon, $label, $type ) {
 function menudiv( $id, $html ) {
 	return '<div id="context-menu-'.$id.'" class="menu contextmenu hide">'.$html.'</div>';
 }
-function menucommon( $add, $addplay, $replaceplay ) {
+function menucommon( $add, $addplay, $replace, $replaceplay ) {
 	$htmlcommon = '<a class="menushadow"></a>';
 	$htmlcommon.= menuli( $add,         'plus-o',            'Add' );
-	$htmlcommon.= menuli( $addplay,     'play-plus-o',       'Add and play' );
-	$htmlcommon.= menuli( $replaceplay, 'play-plus-refresh', 'Replace and play' );
+	$htmlcommon.= menuli( $addplay,     'play-plus-o',       'Add ► Play' );
+	$htmlcommon.= menuli( $replace,     'plus-refresh',      'Replace' );
+	$htmlcommon.= menuli( $replaceplay, 'play-plus-refresh', 'Replace ► Play' );
 	return $htmlcommon;
 }
 function menucommonsp( $type ) {
 	$htmlcommon = '<a class="menushadow"></a>';
 	$htmlcommon.= menuli( 'spadd',            'plus-o',            'Add',              $type );
-	$htmlcommon.= menuli( 'spaddplay',        'play-plus-o',       'Add and play',     $type );
-	$htmlcommon.= menuli( 'spaddreplaceplay', 'play-plus-refresh', 'Replace and play', $type );
+	$htmlcommon.= menuli( 'spaddplay',        'play-plus-o',       'Add ► Play',     $type );
+	$htmlcommon.= menuli( 'spreplaceplay', 'play-plus-refresh', 'Replace ► Play', $type );
 	return $htmlcommon;
 }
 $menu = '<div>';
-$htmlcommon = menucommon( 'add', 'addplay', 'addreplaceplay' );
+$htmlcommon = menucommon( 'add', 'addplay', 'replace', 'replaceplay' );
 
 $html = $htmlcommon;
-$html.= menuli( 'update',   'folder-refresh', 'Update this folder' );
-$html.= menuli( 'bookmark', 'star',           'Save as bookmark' );
+$html.= menuli( 'update',   'folder-refresh', 'Update' );
+$html.= menuli( 'bookmark', 'star',           'Bookmark' );
 $menu.= menudiv( 'folder', $html );
 $menudiv = '';
 
 $html = $htmlcommon;
-$html.= menuli( 'lastfmaddreplaceplay', 'lastfm', 'Last.fm playlist' );
+$html.= menuli( 'lastfmreplaceplay', 'lastfm', 'Last.fm playlist' );
 $menu.= menudiv( 'file', $html );
 $menudiv = '';
 
-$html = menucommon( 'wradd', 'wraddplay', 'wraddreplaceplay' );
+$html = menucommon( 'wradd', 'wraddplay', 'wrreplace', 'wrreplaceplay' );
 $html.= menuli( 'wrsave', 'save', 'Save in Webradios' );
 $menu.= menudiv( 'dirble', $html );
 $menudiv = '';
@@ -240,36 +241,37 @@ $html = menucommonsp( 'spotify-track' );
 $menu.= menudiv( 'spotify', $html );
 $menudiv = '';
 
-$html = menucommon( 'wradd', 'wraddplay', 'wraddreplaceplay' );
+$html = menucommon( 'wradd', 'wraddplay', 'wrreplace', 'wrreplaceplay' );
 $html.= menuli( 'wrrename', 'edit-circle',  'Rename' );
 $html.= menuli( 'wrdelete', 'minus-circle', 'Delete' );
 $menu.= menudiv( 'webradio', $html );
 $menudiv = '';
 
 $html = '<a class="menushadow"></a>';
-$html.= menuli( 'pladd',            'plus-o',            'Add' );
-$html.= menuli( 'plreplace',        'plus-refresh',      'Replace' );
-$html.= menuli( 'pladdreplaceplay', 'play-plus-refresh', 'Replace and play' );
-$html.= menuli( 'plashuffle',       'random',            'Add randomly' );
-$html.= menuli( 'plrename',         'edit-circle',       'Rename' );
-$html.= menuli( 'pldelete',         'minus-circle',      'Delete' );
+$html.= menuli( 'pladd',         'plus-o',            'Add' );
+$html.= menuli( 'plreplace',     'plus-refresh',      'Replace' );
+$html.= menuli( 'plreplaceplay', 'play-plus-refresh', 'Replace ► Play' );
+$html.= menuli( 'plashuffle',    'random',            'Add randomly' );
+$html.= menuli( 'plrename',      'edit-circle',       'Rename' );
+$html.= menuli( 'pldelete',      'minus-circle',      'Delete' );
 $menu.= menudiv( 'playlist', $html );
 $menudiv = '';
 
-$html = menucommon( 'albumadd', 'albumaddplay', 'albumaddreplaceplay' );
+$html = menucommon( 'albumadd', 'albumaddplay', 'albumreplace', 'albumreplaceplay' );
 $menu.= menudiv( 'album', $html );
 $menudiv = '';
 
-$html = menucommon( 'artistadd', 'artistaddplay', 'artistaddreplaceplay' );
+$html = menucommon( 'artistadd', 'artistaddplay', 'artisrreplace', 'artistreplaceplay' );
 $menu.= menudiv( 'artist', $html );
 $menudiv = '';
 
-$html = menucommon( 'genreadd', 'genreaddplay', 'genreaddreplaceplay' );
-$menu.= menudiv( 'genre', $html );
+$html = menucommon( 'composeradd', 'composeraddplay', 'composerreplace', 'composerreplaceplay' );
+$menu.= menudiv( 'composer', $html );
 $menudiv = '';
 
-$html = menucommon( 'composeradd', 'composeraddplay', 'composeraddreplaceplay' );
-$menu.= menudiv( 'composer', $html );
+$html = menucommon( 'genreadd', 'genreaddplay', 'genrereplace', 'genrereplaceplay' );
+$menu.= menudiv( 'genre', $html );
+
 $menu.= '</div>';
 
 echo $menu;
