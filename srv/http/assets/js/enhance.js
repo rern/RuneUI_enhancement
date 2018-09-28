@@ -1019,7 +1019,6 @@ pushstreams.playlist.onmessage = function( data ) {
 }
 var timeoutUpdate;
 pushstreams.idle.onmessage = function( changed ) {
-	console.log(changed[ 0 ])
 	var changed = changed[ 0 ];
 	if ( changed === 'player' ) { // on track changed
 		getPlaybackStatus();
@@ -1120,8 +1119,6 @@ function setButtonUpdate() {
 	}
 }
 function setButton() {
-	if ( GUI.local ) return
-	
 	$( '#playback-controls' ).toggleClass( 'hide', GUI.status.playlistlength === 0 );
 	var state = GUI.status.state;
 	
@@ -1310,8 +1307,8 @@ function renderPlayback() {
 	}, time );
 	
 	GUI.intElapsed = setInterval( function() {
-		second2HMS( elapsed++ );
-		$( '#elapsed' ).text( elapsed );
+		elapsed++;
+		$( '#elapsed' ).text( second2HMS( elapsed ) );
 	}, 1000 );
 	
 	// playlist current song ( and lyrics if installed )
@@ -1332,23 +1329,8 @@ function getPlaybackStatus() {
 		}
 		GUI.status = status;
 		
+		setButton();
 		if ( $( '#panel-playback' ).hasClass( 'active' ) ) {
-			$( '#playback-controls' ).toggleClass( 'hide', status.playlistlength === 0 );
-			$( '#stop' ).toggleClass( 'btn-primary', status.state === 'stop' );
-			$( '#play' ).toggleClass( 'btn-primary', status.state === 'play' );
-			$( '#pause' ).toggleClass( 'btn-primary', status.state === 'pause' );
-			setButtonToggle();
-			setButtonUpdate();
-			if ( GUI.display.update ) {
-				if ( GUI.display.bars ) {
-					$( '#badge' ).text( GUI.display.update ).show();
-					$( '#iaddons' ).addClass( 'hide' );
-				} else {
-					$( '#iaddons' ).removeClass( 'hide' );
-				}
-			} else {
-				$( '#badge' ).empty().hide();
-			}
 			renderPlayback();
 			// imodedelay fix imode flashing on usb dac switching
 			if ( !GUI.imodedelay ) displayPlayback();
