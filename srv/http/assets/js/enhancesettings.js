@@ -4,7 +4,7 @@ if ( document.location.hostname === 'localhost' ) $( '.osk-trigger' ).onScreenKe
 
 $( '.selectpicker' ).selectpicker();
 
-if ( location.pathname === '/sources/' ) {
+if ( location.pathname === '/sources' ) {
 	function toggleUpdate() {
 		$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
 			$( '#updatempddb, #rescanmpddb' ).toggleClass( 'disabled', status.updating_db );
@@ -42,6 +42,7 @@ if ( location.pathname === '/sources/' ) {
 	pushstreamIdle.addChannel( 'idle' );
 	pushstreamIdle.connect();
 
+} else if ( location.pathname === '/sources/add' ) {
 	// enable/disable CIFS auth section
 	if ($('#mount-type').val() === 'nfs') {
 		$('#mount-cifs').addClass('disabled').children('.disabler').removeClass('hide');
@@ -95,7 +96,28 @@ if ( location.pathname === '/sources/' ) {
 		$('#usb-umount-name').html(mountName);
 		$('#usb-umount').val(mountName);
 	});
-} else if ( location.pathname === '/settings/' ) {
+} else if ( location.pathname === '/mpd' ) {
+	
+	// output interface select
+	$('#audio-output-interface').change(function(){
+		renderMSG([{'title': 'Switching audio output', 'text': 'Please wait for the config update...', 'icon': 'fa fa-cog fa-spin', 'delay': 5000 }]);
+		var output = $(this).val();
+		$.ajax({
+			type: 'POST',
+			url: '/mpd/',
+			data: {
+				ao: output
+			},
+			cache: false
+		});
+	});
+	
+	// MPD config manual edit
+	$('.manual-edit-confirm').find('.btn-primary').click(function(){
+		$('#mpdconf_editor').removeClass('hide');
+		$('#manual-edit-warning').addClass('hide');
+	});
+} else if ( location.pathname === '/settings' ) {
 	
 	// show/hide AirPlay name form
 	$('#airplay').change(function(){
@@ -151,7 +173,7 @@ if ( location.pathname === '/sources/' ) {
 			$('#spotifyBox').removeClass('boxed-group');
 		}
 	});
-} else if ( location.pathname === '/network/' ) {
+} else if ( location.pathname === '/network' ) {
 	
 	// show/hide static network configuration based on select value
 	var netManualConf = $('#network-manual-config');
@@ -302,42 +324,6 @@ if ( location.pathname === '/sources/' ) {
 		$('#broadcast').val(parts.join('.'));
 		$('#dhcp-option-dns').val($('#ip-address').val());
 		$('#dhcp-option-router').val($('#ip-address').val());
-	});
-} else if ( location.pathname === '/mpd/' ) {
-	
-	// output interface select
-	$('#audio-output-interface').change(function(){
-		renderMSG([{'title': 'Switching audio output', 'text': 'Please wait for the config update...', 'icon': 'fa fa-cog fa-spin', 'delay': 5000 }]);
-		var output = $(this).val();
-		$.ajax({
-			type: 'POST',
-			url: '/mpd/',
-			data: {
-				ao: output
-			},
-			cache: false
-		});
-	});
-	
-	// MPD config manual edit
-	$('.manual-edit-confirm').find('.btn-primary').click(function(){
-		$('#mpdconf_editor').removeClass('hide');
-		$('#manual-edit-warning').addClass('hide');
-	});
-} else if ( location.pathname === '/debug/' ) {
-
-	ZeroClipboard.config({swfPath: '/assets/js/vendor/ZeroClipboard.swf'});
-	var client = new ZeroClipboard(document.getElementById('copy-to-clipboard'));
-	client.on('ready', function(readyEvent){
-		// alert('ZeroClipboard SWF is ready!');
-		client.on('aftercopy', function(event){
-			// alert('Copied text to clipboard: ' + event.data['text/plain']);
-			new PNotify({
-				title: 'Copied to clipboard',
-				text: 'The debug output was copied successfully in your clipboard.',
-				icon: 'fa fa-check'
-			});
-		});
 	});
 }
 
