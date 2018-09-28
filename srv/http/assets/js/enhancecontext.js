@@ -43,13 +43,7 @@ $( '.contextmenu a' ).click( function() {
 				} );
 			}
 			if ( mode === 'wr' ) tempFlag( 'local' );
-			$.post( 'enhance.php', { mpc: command }, function() {
-				if ( !$( '#currentsong' ).text() ) {
-					renderPlayback();
-					$( '#playback-controls' ).removeClass( 'hide' );
-				}
-				if ( cmd.slice( -4 ) === 'play' ) getPlaybackStatus();
-			} );
+			$.post( 'enhance.php', { mpc: command } );
 		}
 		return;
 	}

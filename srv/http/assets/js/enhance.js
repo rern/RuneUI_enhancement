@@ -1024,7 +1024,7 @@ pushstreams.idle.onmessage = function( idle ) {
 		getPlaybackStatus();
 	} else if ( idle === 'playlist' ) { // on playlist changed
 		if ( GUI.pleditor || GUI.local ) return
-		
+		getPlaybackStatus();
 		$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
 			GUI.lsplaylists = data.lsplaylists;
 			GUI.playlist = data.playlist;
@@ -2164,7 +2164,7 @@ function renderPlaylist() {
 	
 	if ( !GUI.status.playlistlength ) {
 		$( '#pl-count' ).html( '<bl class="title">&emsp;P L A Y L I S T</bl>' );
-		$( '#plsave, #plclear' ).addClass( 'disable' );
+		$( '#plsave, #plcrop, #plclear' ).addClass( 'disable' );
 		$( '#pl-entries' ).empty();
 		$( '.playlist' ).removeClass( 'hide' );
 		var barhide = !GUI.display.bars || window.innerWidth < 499 || window.innerHeight < 515;
