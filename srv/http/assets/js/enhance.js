@@ -231,7 +231,6 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 			, path       : $this.data( 'path' )
 			, plugin     : GUI.plugin
 		} );
-		$( '#loader' ).removeClass( 'hide' );
 	}
 } ).on( 'taphold', '.home-block', function( e ) {
 	if ( GUI.swipe ) return
@@ -1653,7 +1652,7 @@ function renderLibrary() {
 	displayLibrary();
 }
 function getDB( options ) {
-	// DEFAULTS
+	$( '#loader' ).removeClass( 'hide' );
 	var cmd = options.cmd || 'browse',
 		path = options.path || '',
 		browsemode = options.browsemode || 'file',
