@@ -91,7 +91,7 @@ if ( empty( $this->uri(1) ) ) { ?>
 	<a href="sources"><i class="fa fa-folder-open-cascade"></i>Sources</a>
 	<a href="mpd"><i class="fa fa-mpd"></i>MPD</a>
 	<a href="settings"><i class="fa fa-sliders"></i>Settings</a>
-	<a href="network"><i class="fa fa-sitemap"></i>Network</a>
+	<a href="network"><i class="fa fa-network"></i>Network</a>
 	<a href="credits"><i class="fa fa-rune"></i>Credits</a>
 	<a id="turnoff"><i class="fa fa-power"></i>Power</a>
 	<?php if ( $this->pwd_protection ) { ?>
