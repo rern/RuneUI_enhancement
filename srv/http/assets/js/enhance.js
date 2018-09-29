@@ -1170,14 +1170,16 @@ function second2HMS( second ) {
 	return ss ? hh + mm + ss : '';
 }
 function scrollLongText() {
-	$( '#divartist, #divsong, #divalbum' ).each( function() {
-		var $this = $( this );
-		if ( $this.find( 'span' ).width() > Math.floor( window.innerWidth * 0.975 ) ) {
-			$this.addClass( 'scroll-left' );
-		} else {
-			$this.removeClass( 'scroll-left' );
-		}
-	} );
+	setTimeout( function() {
+		$( '#divartist, #divsong, #divalbum' ).each( function() {
+			var $this = $( this );
+			if ( $this.find( 'span' ).width() > Math.floor( window.innerWidth * 0.975 ) ) {
+				$this.addClass( 'scroll-left' );
+			} else {
+				$this.removeClass( 'scroll-left' );
+			}
+		} );
+	}, 100 );
 }
 GUI.timeout = setTimeout( function() { // in case too long to get coverart
 	$( '#starter' ).remove();
@@ -1692,7 +1694,7 @@ function getDB( options ) {
 			, album    : { mpcalbum: path } 
 			, artistalbum    : { mpc: "find -f '%title%^^%time%^^%artist%^^%album%^^%file%' artist '"+ artistalbum +"' album '"+ path +"'", search: 1 } 
 			, artist   : { mpc: "list album artist '"+ path +"' | awk NF", list: 'album' }
-			, composer : { mpc: "find -f '%title%^^%time%^^%artist%^^%album%^^%file%' composer '"+ path +"'", search: 1 }
+			, composer : { mpc : "list album composer '"+ path +"' | awk NF", list: 'album' }
 			, genre    : { mpc: "list artist genre '"+ path +"' | awk NF", list: 'artist' }
 			, type     : { mpc: 'list '+ GUI.browsemode +' | awk NF', list: GUI.browsemode }
 			, search   : { mpc: "search -f '%title%^^%time%^^%artist%^^%album%^^%file%' any '"+ keyword +"'", search: 1 }
@@ -1717,6 +1719,7 @@ function getDB( options ) {
 				GUI.artistalbum = path +' - '+ artistalbum;
 			} else {
 				mode = GUI.browsemode;
+				if ( mode === 'composer' ) GUI.browsemode = 'composeralbum';
 			}
 		}
 		$.post( 'enhance.php', command[ mode ], function( data ) {
@@ -1826,7 +1829,7 @@ function parseDBdata( inputArr, i, respType, inpath, querytype ) {
 					content += inputArr.album.replace( /\"/g, '&quot;' ) +'"'+ dataartist +' mode="album" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-album"></i>';
 					content += '<span><i class="fa fa-album"></i>'+ lialbum +'</span></li>';
 				}
-			} else if ( GUI.browsemode === 'artist' ) {
+			} else if ( GUI.browsemode === 'artist' || GUI.browsemode === 'composeralbum' ) {
 				if ( inputArr.album ) {
 					var liname = inputArr.album ? inputArr.album : 'Unknown album';
 					content += inputArr.album +'" mode="album" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-album"></i>';
@@ -1968,11 +1971,12 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 			, Webradio     : 'playlist'
 		}
 		var mode = {
-			  file     : 'file'
-			, album    : 'file'
-			, artist   : 'album'
-			, genre    : 'artist'
-			, composer : 'file'
+			  file          : 'file'
+			, album         : 'file'
+			, artist        : 'album'
+			, genre         : 'artist'
+			, composer      : 'file'
+			, composeralbum : 'album'
 		}
 		// undefined type are directory names
 		prop = type[ path ] ? type[ path ] : 'directory';
@@ -2036,31 +2040,19 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 		displayIndexBar();
 	} );
 // breadcrumb directory path link
-	var icon = {
-		  USB          : '<i class="fa fa-usbdrive"></i>'
-		, LocalStorage : '<i class="fa fa-microsd"></i>'
-		, NAS          : '<i class="fa fa-network"></i>'
-		, Webradio     : '<i class="fa fa-webradio"></i>'
-		, Dirble       : '<i class="fa fa-dirble"></i>'
-		, Jamendo      : '<i class="fa fa-jamendo"></i>'
-		, Spotify      : '<i class="fa fa-spotify"></i>'
-		, album        : '<i class="fa fa-album"></i>'
-		, artist       : '<i class="fa fa-artist"></i>'
-		, genre        : '<i class="fa fa-genre"></i>'
-		, composer     : '<i class="fa fa-composer"></i>'
-	}
-	var name = {
-		  USB          : 'USB'
-		, LocalStorage : 'SD'
-		, NAS          : 'NETWORK'
-		, Webradio     : 'WEBRADIOS'
-		, Dirble       : ' DIRBLE'
-		, Jamendo      : 'JAMENDO'
-		, Spotify      : 'SPOTIFY'
-		, album        : 'ALBUMS'
-		, artist       : 'ARTISTS'
-		, genre        : 'GENRES'
-		, composer     : 'COMPOSERS'
+	var iconName = {
+		  LocalStorage  : [ '<i class="fa fa-microsd"></i>',  'SD' ]
+		, USB           : [ '<i class="fa fa-usbdrive"></i>', 'USB' ]
+		, NAS           : [ '<i class="fa fa-network"></i>',  'NETWORK' ]
+		, Webradio      : [ '<i class="fa fa-webradio"></i>', 'WEBRADIOS' ]
+		, album         : [ '<i class="fa fa-album"></i>',    'ALBUMS' ]
+		, artist        : [ '<i class="fa fa-artist"></i>',   'ARTISTS' ]
+		, genre         : [ '<i class="fa fa-genre"></i>',    'GENRES' ]
+		, composer      : [ '<i class="fa fa-composer"></i>', 'COMPOSERS' ]
+		, composeralbum : [ '<i class="fa fa-composer"></i>', 'COMPOSERS' ]
+		, Dirble        : [ '<i class="fa fa-dirble"></i>',   'DIRBLE' ]
+		, Jamendo       : [ '<i class="fa fa-jamendo"></i>',  'JAMENDO' ]
+		, Spotify       : [ '<i class="fa fa-spotify"></i>',  'SPOTIFY' ]
 	}
 	var mode = {
 		  album    : 'Albums'
@@ -2069,7 +2061,7 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 		, composer : 'Composer'
 	}
 	if ( GUI.browsemode !== 'file' ) {
-		if ( GUI.browsemode !== 'album' ) {
+		if ( GUI.browsemode !== 'album' && GUI.browsemode !== 'composeralbum') {
 			var dotpath = ( path === mode[ GUI.browsemode ] ) ? '' : '<a id="artistalbum"><gr> • </gr><span class="white">'+ path +'</span></a>';
 		} else {
 			var albumpath = path === 'Albums' ? '' : path;
@@ -2077,16 +2069,16 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 			var dotpath = albumtext ? '<a id="artistalbum"><gr> • </gr><span class="white">'+ albumtext +'</span></a>' : '';
 		}
 		$( '#db-currentpath' ).attr( 'path', path ); // for back navigation
-		$( '#db-currentpath span' ).html( icon[ GUI.browsemode ] +' <a data-path="'+ mode[ GUI.browsemode ] +'">'+ name[ GUI.browsemode ] +'</a>'+ dotpath );
+		$( '#db-currentpath span' ).html( iconName[ GUI.browsemode ][ 0 ] +' <a data-path="'+ mode[ GUI.browsemode ] +'">'+ iconName[ GUI.browsemode ][ 1 ] +'</a>'+ dotpath );
 	} else {
 		var folder = path.split( '/' );
 		var folderPath = '';
-		var folderCrumb = icon[ folder[ 0 ] ];
+		var folderCrumb = iconName[ folder[ 0 ] ][ 0 ];
 		if ( folderCrumb ) {
 			var ilength = folder.length;
 			for ( i = 0; i < ilength; i++ ) {
 				folderPath += ( i > 0 ? '/' : '' ) + folder[ i ];
-				folderCrumb += ' <a data-path="'+ folderPath +'">'+ ( i > 0 ? '<w> / </w>' : '' ) + ( name[ folder[ i ] ] ? name[ folder[ i ] ] : folder[ i ] ) +'</a>';
+				folderCrumb += ' <a data-path="'+ folderPath +'">'+ ( i > 0 ? '<w> / </w>' : '' ) + iconName[ folder[ i ] ][ 1 ] +'</a>';
 				if ( i === ilength - 1 ) $( '#db-currentpath' ).attr( 'path', path );
 			} 
 		} else {
