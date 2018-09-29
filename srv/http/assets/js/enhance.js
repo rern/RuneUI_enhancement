@@ -505,6 +505,14 @@ $( '#pl-index li' ).click( function() {
 	if ( matcharray.length ) $( 'html, body' ).scrollTop( matcharray[ 0 ].offsetTop - topoffset );
 } );
 $( '#pl-entries' ).on( 'click', 'li', function( e ) {
+	if ( $( e.target ).parent().hasClass( 'elapsed' )
+		|| $( e.target ).hasClass( 'elapsed' )
+		|| $( e.target ).hasClass( 'time' )
+	) {
+		$( '#stop' ).click();
+		return
+	}
+	
 	var songpos = $( this ).index() + 1;
 	if ( !$( e.target ).hasClass( 'pl-action' ) ) {
 		var state = GUI.status.state;
