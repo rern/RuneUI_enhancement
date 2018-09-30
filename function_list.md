@@ -1,5 +1,6 @@
-```
-Default UI: Rely on MPD supplied data which has some limitations.
+## Default UI
+
+Rely on MPD supplied data which has some limitations.
     Song info - File
         - No sampling info on stop
         - Show FLAC bitrate at play start / browser refresh, not average
@@ -27,8 +28,8 @@ Default UI: Rely on MPD supplied data which has some limitations.
         - Mic icons misplace in names
 
 
-Enhanced UI
----
+## Enhanced UI
+
 Overall:
 	Redesign
 		- Responsive layout
@@ -114,4 +115,3 @@ Playlist:
 		- Display each saved playlist
 		- Maintain scroll position
 		- Changes reflects to all clients
-```
