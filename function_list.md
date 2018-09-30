@@ -31,7 +31,7 @@ Rely on MPD supplied data which has some limitations.
 
 ## Enhanced UI
 
-# Overall:
+### Overall:
 - Redesign
 	- Responsive layout
 	- Icons
@@ -53,7 +53,7 @@ Rely on MPD supplied data which has some limitations.
 	- Buttons
 	- Library home items
 
-# Playback:
+### Playback:
 - Coverart / Time knob as playback controls
 		- Can be used as a replacement while hide top-bottom bars and buttons
 		- Show overlay guides by tapping center-top of Coverart / Time 
@@ -86,7 +86,7 @@ Rely on MPD supplied data which has some limitations.
 - Buttons
 		- Show as icon in Time knob while hidden
 		
-# Library:
+### Library:
 - Show counts
 - Show icon and breadcrumb heading while browsing
 - Show index bar
@@ -105,7 +105,7 @@ Rely on MPD supplied data which has some limitations.
 - Show filenames or URL of webradio
 - Changes reflect to all clients
 		
-# Playlist:
+### Playlist:
 - Auto scroll to top with 3 previous songs
 - Show elapsed time while play/pause
 - Tap to play/pause
