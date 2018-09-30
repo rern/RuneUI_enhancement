@@ -5,10 +5,10 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 	exit();
 } else if ( isset( $_POST[ 'mpcalbum' ] ) ) {
 	$album = $_POST[ 'mpcalbum' ];
-	$result = shell_exec( "mpc find -f '%album%^^%artist%' album '".$album."' | awk '!a[$0]++'" );
+	$result = shell_exec( 'mpc find -f "%album%^^%artist%" album "'.$album.'" | awk \'!a[$0]++\'' );
 	$lists = explode( "\n", rtrim( $result ) );
 	if ( count( $lists ) === 1 ) {
-		$result = shell_exec( "mpc find -f '%title%^^%time%^^%artist%^^%album%^^%file%' album '".$album."'" );
+		$result = shell_exec( 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%" album "'.$album.'"' );
 		$data = search2array( $result );
 	} else {
 		foreach( $lists as $list ) {
