@@ -21,7 +21,7 @@ Rely on MPD supplied data which has some limitations.
 		- Inconsistent sorting
 		- No alphabetic index browsing
 		- No breadcrumb for sub-directory browsing
-		- Not preserve scrolled page position across pages
+		- Not preserve page scroll position across pages
 		- No URLs but 'webradio' in Webradio library
 - Playlist
 		- Show URLs as names and URL itself incomplete until play
