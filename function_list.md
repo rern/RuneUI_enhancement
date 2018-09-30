@@ -1,56 +1,57 @@
 ## Default UI
 
 Rely on MPD supplied data which has some limitations.
+
 - Song info - File
-		- No sampling info on stop
-		- Show FLAC bitrate at play start / browser refresh, not average
-		- Show compressed format bit depth which is technically none
-		- Incorrect sampling info for DSD / DSF
-- Song info - Webradio 
-		- Add, not Add and play, to empty playlist show station name as current song
-		- Show last played song on stop / pause
-		- No sampling info on stop
+	- No sampling info on stop
+	- Show FLAC bitrate at play start / browser refresh, not average
+	- Show compressed format bit depth which is technically none
+	- Incorrect sampling info for DSD / DSF
+- Song info - Webradio
+	- Add, not Add and play, to empty playlist show station name as current song
+	- Show last played song on stop / pause
+	- No sampling info on stop
 - Time
-		- No duration on stop
-		- Time count not change with drag while stop and not set as start on play
+	- No duration on stop
+	- Time count not change with drag while stop and not set as start on play
 - Cover art
-		- Get missing cover arts online without save
+	- Get missing cover arts online without save
 - Volume
-		- Pre-mute level not showed and not preserved once refreshed
+	- Pre-mute level not showed and not preserved once refreshed
 - Library
-		- Inconsistent sorting
-		- No alphabetic index browsing
-		- No breadcrumb for sub-directory browsing
-		- Not preserve page scroll position across pages
-		- No URLs but 'webradio' in Webradio library
+	- Inconsistent sorting
+	- No alphabetic index browsing
+	- No breadcrumb for sub-directory browsing
+	- Not preserve page scroll position across pages
+	- No URLs but 'webradio' in Webradio library
 - Playlist
-		- Show URLs as names and URL itself incomplete until play
-		- Mic icons misplace in names
+	- Show URLs as names and URL itself incomplete until play
+	- Mic icons misplace in names
 
 
 ## Enhanced UI
 
 # Overall:
 - Redesign
-		- Responsive layout
-		- Icons
-		- Time and Volume knobs
-		- Coverart frame
-		- Buttons
-		- Menus
+	- Responsive layout
+	- Icons
+	- Time and Volume knobs
+	- Coverart frame
+	- Buttons
+	- Menus
 - Switch between main pages
-		- Swipe left/right
+	- Swipe left/right
 - Top-bottom bars
-		- Larger new icons
-		- Add apuse button
-		- Show database updating as blinking icon (show as icon in Time knob while hidden)
+	- Larger new icons
+	- Add apuse button
+	- Show database updating as blinking icon (show as icon in Time knob while hidden)
 - Toggle show/hide
-		- Top-bottom bars
-		- Time Knob
-		- Cover art
-		- Volume knob
-		- Buttons
-		- Library home items
+	- Top-bottom bars
+	- Time Knob
+	- Cover art
+	- Volume knob
+	- Buttons
+	- Library home items
 
 # Playback:
 - Coverart / Time knob as playback controls
