@@ -1716,7 +1716,7 @@ function getDB( options ) {
 				mode = 'Webradio';
 			} else if ( GUI.browsemode === 'album' && currentpath !== 'Albums' && artist ) { // <li> in 'Artists' and 'Genres'
 				mode = 'artistalbum';
-				GUI.artistalbum = path +' - '+ artistalbum;
+				GUI.artistalbum = path +'<gr> • </gr>'+ artistalbum;
 			} else {
 				mode = GUI.browsemode;
 				if ( mode === 'composer' ) GUI.browsemode = 'composeralbum';
@@ -1767,6 +1767,7 @@ function parseDBdata( inputArr, i, respType, inpath, querytype ) {
 		inpath = inpath || '',
 		querytype = querytype || '',
 		content = '<li id="db-'+ ( i + 1 ) +'" data-path="';
+	GUI.artistalbum = '';
 	switch ( respType ) {
 		case 'db':
 			if ( GUI.browsemode === 'file' ) {
@@ -1816,6 +1817,7 @@ function parseDBdata( inputArr, i, respType, inpath, querytype ) {
 					content += inputArr.file +'" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i>';
 					content += '<span class="sn">'+ liname +'&ensp;<span class="time">'+ inputArr.Time +'</span></span>';
 					content += '<span class="bl">'+ inputArr.file +'</span></li>';
+					if ( !GUI.artistalbum ) GUI.artistalbum = inputArr.Album +'<gr> • </gr>'+ inputArr.Artist;
 				} else {
 					var liname = inputArr.album;
 					var artistalbum = inputArr.artistalbum;
@@ -2044,7 +2046,6 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 		  LocalStorage  : '<i class="fa fa-microsd"></i>'
 		, USB           : '<i class="fa fa-usbdrive"></i>'
 		, NAS           : '<i class="fa fa-network"></i>'
-		, Webradio      : '<i class="fa fa-webradio"></i>'
 		, album         : [ '<i class="fa fa-album"></i>',    'ALBUMS' ]
 		, artist        : [ '<i class="fa fa-artist"></i>',   'ARTISTS' ]
 		, genre         : [ '<i class="fa fa-genre"></i>',    'GENRES' ]
@@ -2059,7 +2060,6 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 		, artist   : 'Artists'
 		, genre    : 'Genres'
 		, composer : 'Composer'
-		, composeralbum : 'Albums'
 	}
 	if ( GUI.browsemode !== 'file' ) {
 		if ( GUI.browsemode !== 'album' && GUI.browsemode !== 'composeralbum') {
@@ -2074,19 +2074,20 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 	} else {
 		var folder = path.split( '/' );
 		var folderRoot = folder[ 0 ];
-		var folderCrumb = iconName[ folderRoot ];
 		if ( folderRoot === 'Webradio' ) {
-			folderCrumb += ' <a>WEBRADIOS</a>';
+			$( '#db-currentpath span' ).html( '<i class="fa fa-webradio"></i> <a>WEBRADIOS</a>' );
 		} else {
+			var folderCrumb = iconName[ folderRoot ];
 			var folderPath = '';
 			var ilength = folder.length;
 			for ( i = 0; i < ilength; i++ ) {
 				folderPath += ( i > 0 ? '/' : '' ) + folder[ i ];
 				folderCrumb += ' <a data-path="'+ folderPath +'">'+ ( i > 0 ? '<w> / </w>' : '' ) + folder[ i ] +'</a>';
-				if ( i === ilength - 1 ) $( '#db-currentpath' ).attr( 'path', path );
 			}
+			$( '#db-currentpath' )
+				.attr( 'path', path )
+				.find( 'span' ).html( folderCrumb );
 		}
-		$( '#db-currentpath span' ).html( folderCrumb );
 	}
 	// hide index bar in file mode
 	if ( $( '#db-entries li:eq( 0 ) i.db-icon' ).hasClass( 'fa-music' ) ) {
