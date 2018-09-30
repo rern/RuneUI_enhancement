@@ -1690,14 +1690,14 @@ function getDB( options ) {
 		var currentpath = $( '#db-currentpath' ).attr( 'path' ); // for artist-album search
 		var artistalbum = artist || currentpath;
 		var command = {
-			  file     : { mpc: "ls -f '%title%^^%time%^^%artist%^^%album%^^%file%' '"+ path +"'", list: 'file' }
+			  file     : { mpc: 'ls -f "%title%^^%time%^^%artist%^^%album%^^%file%" "'+ path +'"', list: 'file' }
 			, album    : { mpcalbum: path } 
-			, artistalbum    : { mpc: "find -f '%title%^^%time%^^%artist%^^%album%^^%file%' artist '"+ artistalbum +"' album '"+ path +"'", search: 1 } 
-			, artist   : { mpc: "list album artist '"+ path +"' | awk NF", list: 'album' }
-			, composer : { mpc : "list album composer '"+ path +"' | awk NF", list: 'album' }
-			, genre    : { mpc: "list artist genre '"+ path +"' | awk NF", list: 'artist' }
+			, artistalbum    : { mpc: 'find -f "%title%^^%time%^^%artist%^^%album%^^%file%" artist "'+ artistalbum +'" album "'+ path +'"', search: 1 } 
+			, artist   : { mpc: 'list album artist "'+ path +'" | awk NF', list: 'album' }
+			, composer : { mpc : 'list album composer "'+ path +'" | awk NF', list: 'album' }
+			, genre    : { mpc: 'list artist genre "'+ path +'" | awk NF', list: 'artist' }
 			, type     : { mpc: 'list '+ GUI.browsemode +' | awk NF', list: GUI.browsemode }
-			, search   : { mpc: "search -f '%title%^^%time%^^%artist%^^%album%^^%file%' any '"+ keyword +"'", search: 1 }
+			, search   : { mpc: 'search -f "%title%^^%time%^^%artist%^^%album%^^%file%" any "'+ keyword +'"', search: 1 }
 			, Webradio : { getwebradios: 1 }
 		}
 		if ( cmd === 'search' ) {
