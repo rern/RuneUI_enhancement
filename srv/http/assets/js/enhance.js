@@ -2041,10 +2041,10 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 	} );
 // breadcrumb directory path link
 	var iconName = {
-		  LocalStorage  : [ '<i class="fa fa-microsd"></i>',  'SD' ]
-		, USB           : [ '<i class="fa fa-usbdrive"></i>', 'USB' ]
-		, NAS           : [ '<i class="fa fa-network"></i>',  'NETWORK' ]
-		, Webradio      : [ '<i class="fa fa-webradio"></i>', 'WEBRADIOS' ]
+		  LocalStorage  : '<i class="fa fa-microsd"></i>'
+		, USB           : '<i class="fa fa-usbdrive"></i>'
+		, NAS           : '<i class="fa fa-network"></i>'
+		, Webradio      : '<i class="fa fa-webradio"></i>'
 		, album         : [ '<i class="fa fa-album"></i>',    'ALBUMS' ]
 		, artist        : [ '<i class="fa fa-artist"></i>',   'ARTISTS' ]
 		, genre         : [ '<i class="fa fa-genre"></i>',    'GENRES' ]
@@ -2059,6 +2059,7 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 		, artist   : 'Artists'
 		, genre    : 'Genres'
 		, composer : 'Composer'
+		, composeralbum : 'Albums'
 	}
 	if ( GUI.browsemode !== 'file' ) {
 		if ( GUI.browsemode !== 'album' && GUI.browsemode !== 'composeralbum') {
@@ -2072,18 +2073,18 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 		$( '#db-currentpath span' ).html( iconName[ GUI.browsemode ][ 0 ] +' <a data-path="'+ mode[ GUI.browsemode ] +'">'+ iconName[ GUI.browsemode ][ 1 ] +'</a>'+ dotpath );
 	} else {
 		var folder = path.split( '/' );
-		var folderPath = '';
-		var folderCrumb = iconName[ folder[ 0 ] ][ 0 ];
-		if ( folderCrumb ) {
+		var folderRoot = folder[ 0 ];
+		var folderCrumb = iconName[ folderRoot ];
+		if ( folderRoot === 'Webradio' ) {
+			folderCrumb += ' <a>WEBRADIOS</a>';
+		} else {
+			var folderPath = '';
 			var ilength = folder.length;
 			for ( i = 0; i < ilength; i++ ) {
 				folderPath += ( i > 0 ? '/' : '' ) + folder[ i ];
-				folderCrumb += ' <a data-path="'+ folderPath +'">'+ ( i > 0 ? '<w> / </w>' : '' ) + iconName[ folder[ i ] ][ 1 ] +'</a>';
+				folderCrumb += ' <a data-path="'+ folderPath +'">'+ ( i > 0 ? '<w> / </w>' : '' ) + folder[ i ] +'</a>';
 				if ( i === ilength - 1 ) $( '#db-currentpath' ).attr( 'path', path );
-			} 
-		} else {
-			folderCrumb = '';
-			$( '#db-currentpath' ).css( 'width', '50px' );
+			}
 		}
 		$( '#db-currentpath span' ).html( folderCrumb );
 	}
