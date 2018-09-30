@@ -27,11 +27,14 @@ Default UI: Rely on MPD supplied data which has some limitations.
         - Mic icons misplace in names
 
 
-Enhanced UI: Use some workarounds to get more informations and to do something better.
+Enhanced UI
+---
+Overall:
 	Redesign
 		- Responsive layout
 		- Icons
 		- Time and Volume knobs
+		- Coverart frame
 		- Buttons
 		- Menus
 	Switch between main pages
@@ -39,11 +42,7 @@ Enhanced UI: Use some workarounds to get more informations and to do something b
 	Top-bottom bars
 		- Larger new icons
 		- Add apuse button
-		- Show database updating as blinking icon (show as icon in Time knob while hidden) 
-	Playback control
-		- With Coverart / Time knob
-		- Can be used as a replacement while hide top-bottom bar and buttons
-		- Show overlay guides by tapping top of each 
+		- Show database updating as blinking icon (show as icon in Time knob while hidden)
 	Toggle show/hide
 		- Top-bottom bars
 		- Time Knob
@@ -51,6 +50,11 @@ Enhanced UI: Use some workarounds to get more informations and to do something b
 		- Volume knob
 		- Buttons
 		- Library home items
+
+Playback:
+	Coverart / Time knob as playback controls
+		- Can be used as a replacement while hide top-bottom bars and buttons
+		- Show overlay guides by tapping center-top of Coverart / Time 
 	Artist
 		- Improved artists' bio
 		- Similar artists are linked
@@ -61,6 +65,7 @@ Enhanced UI: Use some workarounds to get more informations and to do something b
         - Get sampling info from local database while stop (must be played once before available)
 		- Show song title in gray while pause
 		- Hide webradio song title while stop
+		- Scroll long names
     Time
         - Get duration on stop with MPD protocol
 		- Show only duration while stop or blank in webradio
@@ -78,27 +83,35 @@ Enhanced UI: Use some workarounds to get more informations and to do something b
         - Maintain pre-mute level to and get from local database
 	Buttons
 		- Show as icon in Time knob while hidden
-	Library
-		- Improve responsive layout
-		- New icons
-		- Add counts
-		- Improved and exclude leading A, An, The, ', " from sorting
-		- Add icon and breadcrumb heading while browsing
-		- Add index bar
+		
+Library:
+		- Show counts
+		- Show icon and breadcrumb heading while browsing
+		- Show index bar
 		- Improved Back button
 		- Maintain scroll position
-		- Albums with common name display with artist names
+		- Improved sorting and exclude leading A, An, The, ', "
+		- Albums > names > songs
+		- Albums with duplicate name > album-artist > songs
+		- Artists > names > albums > songs
+		- Composers > names > albums > songs
+		- Genres > names > artists > albums > songs
+		- Show album heading with artist name
 		- Bookmarks can be renamed
 		- Show filenames or URL of webradio
 		- Changes reflect to all clients
-	Playlist
-		- Auto scroll to top after 3 previous songs
-		- Add elapsed time while play/pause
+		
+Playlist:
+		- Auto scroll to top with 3 previous songs
+		- Show elapsed time while play/pause
+		- Tap to play/pause
+		- Tap elapsed or time to stop
 		- Improve drag to rearrange
 		- Show track numbers
 		- Show webradio name
-		- Add crop current playing song
+		- Crop button to keep only current playing song
 		- Saved playlists can be renamed
-		- Add display each saved playlist
+		- Display each saved playlist
+		- Maintain scroll position
 		- Changes reflects to all clients
 ```
