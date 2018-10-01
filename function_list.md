@@ -55,36 +55,36 @@ Rely on MPD supplied data which has some limitations.
 
 ### Playback:
 - Coverart / Time knob as playback controls
-		- Can be used as a replacement while hide top-bottom bars and buttons
-		- Show overlay guides by tapping center-top of Coverart / Time 
+	- Can be used as a replacement while hide top-bottom bars and buttons
+	- Show overlay guides by tapping center-top of Coverart / Time 
 - Artist
-		- Improved artists' bio
-		- Similar artists are linked
+	- Improved artists' bio
+	- Similar artists are linked
 - Song info
-		- Show sampling info while stop
-		- Working previous / next while stop
-        - Get sampling info directly with MPD on play
-        - Get sampling info from local database while stop (must be played once before available)
-		- Show song title in gray while pause
-		- Hide webradio song title while stop
-		- Scroll long names
+	- Show sampling info while stop
+	- Working previous / next while stop
+	- Get sampling info directly with MPD on play
+	- Get sampling info from local database while stop (must be played once before available)
+	- Show song title in gray while pause
+	- Hide webradio song title while stop
+	- Scroll long names
 - Time
-        - Get duration on stop with MPD protocol
-		- Show only duration while stop or blank in webradio
-		- Selectable blinking dots or elapsed time in webradio
-        - Start time within song can be set while stop
-		- Show elapsed in gray while pause
+	- Get duration on stop with MPD protocol
+	- Show only duration while stop or blank in webradio
+	- Selectable blinking dots or elapsed time in webradio
+	- Start time within song can be set while stop
+	- Show elapsed in gray while pause
 - Coverart
-		- Get local files first (easiest to manage ang can be used to overide the ones in ID3tag)
-		- Extract from ID3tag if local files not available (used for songs from various albums in the same directory)
-		- Get from last.fm if not locally available
-        - Save the downloaded missing cover arts for local use
-		- Show VU meter in webradio - animated while play
+	- Get local files first (easiest to manage ang can be used to overide the ones in ID3tag)
+	- Extract from ID3tag if local files not available (used for songs from various albums in the same directory)
+	- Get from last.fm if not locally available
+	- Save the downloaded missing cover arts for local use
+	- Show VU meter in webradio - animated while play
 - Volume
-        - Show pre-mute level instead of 0 on mute
-        - Maintain pre-mute level to and get from local database
+	- Show pre-mute level instead of 0 on mute
+	- Maintain pre-mute level to and get from local database
 - Buttons
-		- Show as icon in Time knob while hidden
+	- Show as icon in Time knob while hidden
 		
 ### Library:
 - Show counts
