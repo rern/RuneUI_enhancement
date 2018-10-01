@@ -1242,7 +1242,7 @@ function renderPlayback() {
 	
 	var ext = ( status.ext !== 'radio' ) ? '<wh> • </wh>' + status.ext : '';
 	$( '#format-bitrate' ).html( '<wh id="dot0"> • </wh>' + status.sampling + ext );
-	if ( status.ext !== 'radio' || state.activePlayer === 'Spotify' ) {
+	if ( status.ext !== 'radio' || status.activePlayer === 'Spotify' ) {
 		if ( status.Album !== previousalbum ) {
 			$( '#coverartoverlay' ).addClass( 'hide' );
 			var coverart = status.coverart ? status.coverart : 'assets/img/cover-default-runeaudio.png';
