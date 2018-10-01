@@ -187,14 +187,14 @@ function webRadioRename() {
 		, width      : 500
 		, message    : 'Rename:'
 					+'<br><white>'+ GUI.list.name +'</white>'
-					+'<br>'+ GUI.list.url
+					+'<br>'+ GUI.list.path
 					+'<br>To:'
 		, textvalue  : GUI.list.name
 		, textalign  : 'center'
 		, boxwidth   : 'max'
 		, cancel     : 1
 		, ok         : function() {
-			webRadioVerify( $( '#infoTextBox' ).val().trim(), GUI.list.url, GUI.list.name );
+			webRadioVerify( $( '#infoTextBox' ).val().trim(), GUI.list.path, GUI.list.name );
 		}
 	} );
 }
@@ -254,7 +254,7 @@ function webRadioDelete() {
 		, width   : 500
 		, message : 'Delete?'
 					+'<br><white>'+ GUI.list.name +'</white>'
-					+'<br>'+ GUI.list.url
+					+'<br>'+ GUI.list.path
 		, cancel  : 1
 		, ok      : function() {
 			$( '#db-entries li.active').remove();
