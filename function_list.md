@@ -101,6 +101,7 @@ Rely on MPD supplied data which has some limitations.
 		- Genres > names > artists > albums > songs
 - Show album heading with artist name
 - Bookmarks can be renamed
+- Bookmarks and webradios can be named with ', " characters
 - Scroll long bookmark names
 - Show filenames or URL of webradio
 - Changes reflect to all clients
@@ -117,4 +118,4 @@ Rely on MPD supplied data which has some limitations.
 - Saved playlists can be renamed
 - Display each saved playlist
 - Maintain scroll position
-		- Changes reflects to all clients
+- Changes reflects to all clients
