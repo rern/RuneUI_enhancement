@@ -1154,7 +1154,10 @@ function numFormat( num ) {
 	return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 function HMS2Second( HMS ) {
-	return HMS.split( ':' ).reduce( ( acc, time ) => ( 60 * acc ) + +time );
+	var hhmmss = HMS.split( ':' ).reverse();
+	if ( !hhmmss[ 1 ] ) return +hhmmss[ 0 ];
+	if ( !hhmmss[ 2 ] ) return +hhmmss[ 0 ] + hhmmss[ 1 ] * 60;
+	return +hhmmss[ 0 ] + hhmmss[ 1 ] * 60 + hhmmss[ 2 ] * 3600;
 }
 function second2HMS( second ) {
 	if ( second <= 0 ) return '';
