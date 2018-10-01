@@ -1139,12 +1139,13 @@ wh, gr { font-weight: 300; }
 #countsong {
 	margin-left: 10px;
 }
-#db-currentpath > span > * {
-	margin-right: 3px;
-}
-#li-count > *,
+#db-currentpath .title,
+#li-count,
 #pl-currentpath > * {
 	float: left;
+	margin-right: 3px;
+}
+#db-currentpath > span {
 	margin-right: 3px;
 }
 #db-currentpath i {
@@ -1223,7 +1224,6 @@ wh, gr { font-weight: 300; }
 	color: #587ca0;
 }
 #db-currentpath span i {
-	float: left;
 	margin: 0 10px;
 	font-size: 24px;
 	line-height: 40px;
