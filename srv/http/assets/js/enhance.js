@@ -613,11 +613,10 @@ $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 	e.stopPropagation();
 	var $this = $( this );
 	var $thisli = $this.parent();
-	var plname = $thisli.data( 'path' );
+	var plname = $thisli.find( '.plname' ).text();
 	GUI.list = {};
 	GUI.list.li = $thisli; // for contextmenu
 	GUI.list.name = plname;
-	GUI.list.path = plname;
 	GUI.list.isfile = $thisli.hasClass( 'pl-song' ); // used in contextmenu
 	$( '#pl-editor li' ).removeClass( 'active' );
 	$( '.contextmenu' ).addClass( 'hide' );
@@ -664,7 +663,7 @@ $( '#plopen' ).click( function() {
 	} );
 	var content = '';
 	pl.forEach( function( el ) {
-		content += '<li class="pl-folder" data-path="'+ el +'"><i class="fa fa-list-ul pl-icon"></i><i class="fa fa-bars pl-action"></i><span class="pleditor">'+ el +'</span></li>';
+		content += '<li class="pl-folder"><i class="fa fa-list-ul pl-icon"></i><i class="fa fa-bars pl-action"></i><span class="plname">'+ el +'</span></li>';
 	} );
 	$( '#pl-editor' ).html( content +'<p></p>' ).promise().done( function() {
 		GUI.pleditor = 1;
@@ -1613,7 +1612,7 @@ function renderLibrary() {
 		bookmarks.sort( function( a, b ) {
 			return stripLeading( a.name ).localeCompare( stripLeading( b.name ), undefined, { numeric: true } );
 		} );
-		GUI.bkmarks = {};
+		GUI.bkmarks = {}; // for bookmarkRename
 		var bookmarkL = bookmarks.length;
 		for ( i = 0; i < bookmarkL; i++ ) {
 			var bookmark = bookmarks[ i ];

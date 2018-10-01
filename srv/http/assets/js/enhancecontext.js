@@ -1,3 +1,5 @@
+// mpc commands need '\\"' double backslash escape
+// phpredis commands need '\"' single backslash escape
 $( '.contextmenu a' ).click( function() {
 	GUI.dbcurrent = '';
 	var cmd = $( this ).data( 'cmd' );
@@ -280,7 +282,7 @@ function webRadioDelete() {
 function playlistNew() {
 	info( {
 		  icon      : 'save'
-		, title     : 'Add Playlist'
+		, title     : 'Save Playlist'
 		, message   : 'Save current playlist as:'
 		, textlabel : 'Name'
 		, textalign : 'center'
@@ -311,7 +313,7 @@ function playlistRename() {
 function addPlaylist( name, oldname ) {
 	if ( oldname ) {
 		tempFlag( 'local' );
-		$.post( 'enhance.php', { mpc: [ 'rm "'+ oldname.replace( /"/g, '\"' ) +'"', 'save "'+ name.replace( /"/g, '\"' ) +'"' ] } );
+		$.post( 'enhance.php', { mpc: [ 'rm "'+ oldname.replace( /"/g, '\\"' ) +'"', 'save "'+ name.replace( /"/g, '\\"' ) +'"' ] } );
 	} else {
 		new PNotify( {
 			  icon  : 'fa fa-check'
@@ -321,7 +323,7 @@ function addPlaylist( name, oldname ) {
 		$( '#plopen' ).removeClass( 'disable' );
 		GUI.lsplaylists.push( name );
 		tempFlag( 'local' );
-		$.post( 'enhance.php', { mpc: 'save "'+ name.replace( /"/g, '\"' ) +'"' } );
+		$.post( 'enhance.php', { mpc: 'save "'+ name.replace( /"/g, '\\"' ) +'"' } );
 	}
 }
 function playlistVerify( name, oldname ) {
@@ -358,11 +360,12 @@ function playlistVerify( name, oldname ) {
 	}, 'text' );
 }
 function playlistDelete() {
+	var name = GUI.list.name;
 	info( {
 		  icon    : 'minus-circle'
 		, title   : 'Delete Playlist'
 		, message : 'Delete?'
-					+'<br><white>'+ GUI.list.name +'</white>'
+					+'<br><white>'+ name +'</white>'
 		, cancel  : 1
 		, ok      : function() {
 			var count = $( '#pls-count' ).text() - 1;
@@ -371,7 +374,7 @@ function playlistDelete() {
 			GUI.list.li.remove();
 			
 			tempFlag( 'local' );
-			$.post( 'enhance.php', { mpc: 'rm "'+ name.replace( /"/g, '\"' ) +'"' } );
+			$.post( 'enhance.php', { mpc: 'rm "'+ name.replace( /"/g, '\\"' ) +'"' } );
 		}
 	} );
 }
