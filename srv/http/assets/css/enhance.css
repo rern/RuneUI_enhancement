@@ -923,18 +923,24 @@ wh, gr { font-weight: 300; }
 }
 
 @keyframes blinkdot {
-	50% { color: transparent }
+	50% { opacity: 0 }
+}
+@-webkit-keyframes blinkdot { /* midori */
+	50% { opacity: 0 }
 }
 .dot {
 	animation: 1s blinkdot infinite;
+	-webkit-animation: 1s blinkdot infinite;
 	line-height: 8px;
 	vertical-align: 100%;
 }
 .dot2 {
 	animation-delay: 250ms;
+	-webkit-animation-delay: 250ms;
 }
 .dot3 {
 	animation-delay: 500ms;
+	-webkit-animation-delay: 500ms;
 }
 #dot0 {
 	display: none;
