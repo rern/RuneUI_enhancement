@@ -144,7 +144,7 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 		$redis->hSet( $key, $name, $value );
 		if ( $key === 'webradios' ) {
 			$lines = "[playlist]\nNumberOfEntries=1\nFile1=$value\nTitle1=$name";
-			$fopen = fopen( '/mnt/MPD/Webradio/'.$name.'.pls', 'w');
+			$fopen = fopen( "/mnt/MPD/Webradio/$name.pls", 'w');
 			fwrite( $fopen, $lines );
 			fclose( $fopen );
 		}
