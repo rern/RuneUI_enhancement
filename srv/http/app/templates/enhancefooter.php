@@ -2,7 +2,7 @@
 <div id="loader" class="hide"><img src="<?=$this->asset( '/img/runelogo.svg' )?>"></div>
 
 <!-- pass cache busting assets to addonsbash.php and gpiosettings.php -->
-<?php if ( $this->uri(1) === 'addons' || file_exists( '/srv/http/assets/js/gpio.js' ) ) { ?>
+<?php if ( $this->uri(1) === 'addons' || file_exists( '/srv/http/gpiosettings.php' ) ) { ?>
 <input id="favicon" type="hidden" value="<?=$this->asset( '/img/favicon.ico' )?>">
 <input id="addonswoff" type="hidden" value="<?=$this->asset( '/fonts/addons.woff' )?>">
 <input id="addonsttf" type="hidden" value="<?=$this->asset( '/fonts/addons.ttf' )?>">
@@ -10,7 +10,7 @@
 <input id="addonscss" type="hidden" value="<?=$this->asset( '/css/addons.css' )?>">
 <input id="addonsinfojs" type="hidden" value="<?=$this->asset( '/js/addonsinfo.js' )?>">
 <?php }
-if ( file_exists( '/srv/http/assets/js/gpio.js' ) ) { ?>
+if ( file_exists( '/srv/http/gpiosettings.php' ) ) { ?>
 <input id="bootstrapmincss" type="hidden" value="<?=$this->asset('/css/bootstrap.min.css')?>">
 <input id="bootstrapselectmincss" type="hidden" value="<?=$this->asset('/css/bootstrap-select.min.css')?>">
 <input id="gpiosettingscss" type="hidden" value="<?=$this->asset( '/css/gpiosettings.css' )?>">
@@ -37,7 +37,7 @@ if ( empty( $this->uri(1) ) ) { ?>
 <script src="<?=$this->asset( '/js/vendor/roundslider.min.js' )?>"></script>
 <script src="<?=$this->asset( '/js/enhance.js' )?>"></script>
 <script src="<?=$this->asset( '/js/enhancecontext.js' )?>"></script>
-	<?php if ( file_exists( '/srv/http/assets/js/gpio.js' ) ) { ?> 
+	<?php if ( file_exists( '/srv/http/gpiosettings.php' ) ) { ?> 
 <script src="<?=$this->asset( '/js/gpio.js' )?>"></script>
 	<?php }
 	if ( file_exists( '/srv/http/assets/js/lyrics.js' ) ) { ?> 
