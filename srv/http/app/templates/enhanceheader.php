@@ -5,20 +5,26 @@
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="msapplication-tap-highlight" content="no" />
-<?php if ( empty( $this->uri(1) ) ) { ?>
+<?php 
+if ( empty( $this->uri(1) ) ) { ?>
 	<title>RuneUIe</title>
-<?php } else if ( $this->uri(1) === 'addons' ) { ?>
+<?php 
+} else if ( $this->uri(1) === 'addons' ) { ?>
 	<title>Rune Addons</title>
-<?php } else { ?>
+<?php 
+} else { ?>
 	<title>Rune Settings</title>
-<?php } ?>
+<?php 
+} ?>
 	<link rel="shortcut icon" href="<?=$this->asset( '/img/favicon.ico' )?>">
 	<link rel="stylesheet" href="<?=$this->asset( '/css/bootstrap.min.css' )?>">
 	<link rel="stylesheet" href="<?=$this->asset( '/css/pnotify.custom.min.css' )?>">
 
-<?php if ( is_localhost() ) { ?>
+<?php 
+if ( is_localhost() ) { ?>
 	<link rel="stylesheet" href="<?=$this->asset( '/css/onScreenKeyboard.css' )?>">
-<?php }
+<?php 
+}
 function fontface( $name, $_this ) {
 	$woff = $_this->asset( "/fonts/$name.woff" );
 	$ttf = $_this->asset( "/fonts/$name.ttf" );
@@ -41,25 +47,30 @@ if ( empty( $this->uri(1) ) ) { ?>
 	<link rel="stylesheet" href="<?=$this->asset( '/css/addonsinfo.css' )?>">
 	<link rel="stylesheet" href="<?=$this->asset( '/css/roundslider.min.css' )?>">
 	<link rel="stylesheet" href="<?=$this->asset( '/css/enhance.css' )?>">
-	<?php
+<?php
 	if ( strpos( $_SERVER['HTTP_USER_AGENT'], 'Midori' ) !== false ) { ?> 
 	<link rel="stylesheet" href="<?=$this->asset('/css/midori.css' )?>">
-	<?php }
+	<?php 
+	}
 	if ( file_exists( '/srv/http/assets/js/gpio.js' ) ) { ?> 
 	<link rel="stylesheet" href="<?=$this->asset( '/css/gpio.css' )?>">
-	<?php }
+	<?php 
+	}
 	if ( file_exists('/srv/http/assets/js/lyrics.js') ) { ?> 
 	<link rel="stylesheet" href="<?=$this->asset( '/css/lyrics.css' )?>">
-	<?php }
+	<?php 
+	}
 } else if ( $this->uri(1) === 'addons' ) { ?>
 	<link rel="stylesheet" href="<?=$this->asset( '/css/addonsinfo.css' )?>">
 	<link rel="stylesheet" href="<?=$this->asset( '/css/addons.css' )?>">
-<?php } else { ?>
+<?php 
+} else { ?>
 	<link rel="stylesheet" href="<?=$this->asset( '/css/fontawesome.min.css' )?>">
 	<link rel="stylesheet" href="<?=$this->asset( '/css/bootstrap-select.min.css' )?>">
 	<link rel="stylesheet" href="<?=$this->asset( '/css/toggle-switch.min.css' )?>">
 	<link rel="stylesheet" href="<?=$this->asset( '/css/enhancesettings.css' )?>">
-<?php }
+<?php 
+}
 if ( empty( $this->uri(1) ) ) { ?>
 	<link rel="apple-touch-icon" sizes="57x57" href="<?=$this->asset( '/img/apple-touch-icon-57x57.png' )?>">
 	<link rel="apple-touch-icon" sizes="114x114" href="<?=$this->asset( '/img/apple-touch-icon-114x114.png' )?>">
@@ -80,12 +91,14 @@ if ( empty( $this->uri(1) ) ) { ?>
 	<meta name="msapplication-TileImage" content="<?=$this->asset( '/img/mstile-144x144.png' )?>">
 	<meta name="msapplication-config" content="<?=$this->asset( '/img/browserconfig.xml' )?>">
 	<meta name="application-name" content="RuneAudio">
-<?php } ?>
+<?php 
+} ?>
 </head>
 
 <body>
 
-<?php if ( empty( $this->uri(1) ) ) { ?>
+<?php 
+if ( empty( $this->uri(1) ) ) { ?>
 <div id="settings" class="menu hide">
 	<a class="menushadow"></a>
 	<a href="sources"><i class="fa fa-folder-open-cascade"></i>Sources</a>
@@ -94,12 +107,15 @@ if ( empty( $this->uri(1) ) ) { ?>
 	<a href="network"><i class="fa fa-network"></i>Network</a>
 	<a href="credits"><i class="fa fa-rune"></i>Credits</a>
 	<a id="turnoff"><i class="fa fa-power"></i>Power</a>
-	<?php if ( $this->pwd_protection ) { ?>
+	<?php 
+	if ( $this->pwd_protection ) { ?>
 	<a href="logout.php"><i class="fa fa-sign-out"></i>Logout</a>
-	<?php }
+	<?php 
+	}
 	if ( file_exists('/srv/http/assets/js/gpio.js') ) { ?>
 	<a id="gpio"><i class="fa fa-gpio"></i>GPIO</a>
-	<?php } ?>
+	<?php 
+	} ?>
 	<a id="addons"><i class="fa fa-addons"></i>Addons</a>
 </div>
 <div id="menu-top" class="hide">
@@ -122,4 +138,5 @@ if ( empty( $this->uri(1) ) ) { ?>
 		<li id="open-playlist"><a><i class="fa fa-list-ul"></i></a></li>
 	</ul>
 </div>
-<?php } ?>
+<?php 
+} ?>
