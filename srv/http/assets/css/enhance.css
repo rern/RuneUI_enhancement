@@ -1137,7 +1137,9 @@ wh, gr { font-weight: 300; }
 #countsong {
 	margin-left: 10px;
 }
-#db-currentpath > span > *,
+#db-currentpath > span > * {
+	margin-right: 3px;
+}
 #li-count > *,
 #pl-currentpath > * {
 	float: left;
