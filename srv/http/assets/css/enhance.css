@@ -226,7 +226,7 @@ wh, gr { font-weight: 300; }
 }
 .menu i {
 	width: 40px;
-	vertical-align: -10%;
+	vertical-align: -5%;
 	text-align: center;
 	font-size: 22px;
 }
@@ -347,7 +347,7 @@ wh, gr { font-weight: 300; }
 	width: 160px;
 }
 #settings .menushadow {
-	height: 290px;
+	height: 286px;
 }
 /* ---------------------- menu-bottom ----------------------*/
 #menu-bottom {
