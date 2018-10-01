@@ -90,8 +90,8 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	exec( 'mpc volume '.$vol );
 	pushstream( 'volume', array( $vol, $currentvol ) );
 } else if ( isset( $_POST[ 'getplaylist' ] ) ) {
-	$name = isset( $_POST[ 'name' ] ) ? $_POST[ 'name' ] : '';
-	$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ]%artist%[ • %album%]^^%file%" playlist "'.$name.'"' );
+	$name = isset( $_POST[ 'name' ] ) ? '"'.$_POST[ 'name' ].'"' : '';
+	$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ]%artist%[ • %album%]^^%file%" playlist '.$name );
 	$webradioname = array_flip( $redis->hGetAll( 'webradios' ) );
 	$lists = explode( "\n", rtrim( $lines ) );
 	foreach( $lists as $list ) {
