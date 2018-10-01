@@ -116,6 +116,6 @@ Rely on MPD supplied data which has some limitations.
 - Show webradio name
 - Crop button to keep only current playing song
 - Saved playlists can be renamed
-- Display each saved playlist
+- Each saved playlist can be viewed
 - Maintain scroll position
 - Changes reflects to all clients
