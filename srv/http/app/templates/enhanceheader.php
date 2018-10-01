@@ -52,7 +52,7 @@ if ( empty( $this->uri(1) ) ) { ?>
 	<link rel="stylesheet" href="<?=$this->asset('/css/midori.css' )?>">
 	<?php 
 	}
-	if ( file_exists( '/srv/http/assets/js/gpio.js' ) ) { ?> 
+	if ( file_exists( '/srv/http/gpiosettings.php' ) ) { ?> 
 	<link rel="stylesheet" href="<?=$this->asset( '/css/gpio.css' )?>">
 	<?php 
 	}
