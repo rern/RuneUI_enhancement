@@ -6,7 +6,7 @@ count="$count $( mpc list composer | awk NF | wc -l )"
 count="$count $( mpc list genre | awk NF | wc -l )"
 count="$count $( df | grep "/mnt/MPD/NAS" | wc -l )"
 count="$count $( df | grep "/mnt/MPD/USB" | wc -l )"
-count="$count $( redis-cli hkeys webradios | wc -l )"
+count="$count $( redis-cli hkeys webradios | sed '/(empty list or set)/ d' | awk NF | wc -l )"
 if [[ -n $( find /mnt/MPD/LocalStorage -maxdepth 0 -type d -empty ) ]]; then
 	count="$count 0"
 else
