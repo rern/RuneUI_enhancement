@@ -217,12 +217,9 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 	}
 	
 	if ( e.target.id === 'home-block-edit' ) {
-		var name = $this.find( 'h4 wh' ).text();
-		var path = GUI.bkmarks[ name ];
-		bookmarkRename( name, path, $this )
+		bookmarkRename( $this.data( 'name' ), $this.data( 'path' ), $this )
 	} else if ( e.target.id === 'home-block-remove' ) {
-		var name = $this.find( 'h4 wh' ).text();
-		bookmarkDelete( name, $this.parent() )
+		bookmarkDelete( $this.data( 'name' ), $this.parent() )
 	} else {
 		GUI.dblist = 1;
 		mutationLibrary.observe( observerLibrary, observerOption );
@@ -613,10 +610,11 @@ $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 	e.stopPropagation();
 	var $this = $( this );
 	var $thisli = $this.parent();
-	var plname = $thisli.find( '.plname' ).text();
+	var plname = $thisli.data( 'path' );
 	GUI.list = {};
 	GUI.list.li = $thisli; // for contextmenu
 	GUI.list.name = plname;
+	GUI.list.path = plname;
 	GUI.list.isfile = $thisli.hasClass( 'pl-song' ); // used in contextmenu
 	$( '#pl-editor li' ).removeClass( 'active' );
 	$( '.contextmenu' ).addClass( 'hide' );
@@ -663,7 +661,7 @@ $( '#plopen' ).click( function() {
 	} );
 	var content = '';
 	pl.forEach( function( el ) {
-		content += '<li class="pl-folder"><i class="fa fa-list-ul pl-icon"></i><i class="fa fa-bars pl-action"></i><span class="plname">'+ el +'</span></li>';
+		content += '<li class="pl-folder" data-path="'+ el +'"><i class="fa fa-list-ul pl-icon"></i><i class="fa fa-bars pl-action"></i><span class="plname">'+ el +'</span></li>';
 	} );
 	$( '#pl-editor' ).html( content +'<p></p>' ).promise().done( function() {
 		GUI.pleditor = 1;
@@ -1612,12 +1610,10 @@ function renderLibrary() {
 		bookmarks.sort( function( a, b ) {
 			return stripLeading( a.name ).localeCompare( stripLeading( b.name ), undefined, { numeric: true } );
 		} );
-		GUI.bkmarks = {}; // for bookmarkRename
 		var bookmarkL = bookmarks.length;
 		for ( i = 0; i < bookmarkL; i++ ) {
 			var bookmark = bookmarks[ i ];
-			GUI.bkmarks[ bookmark.name ] = bookmark.path;
-			content += divOpen +'<div class="home-block home-bookmark"><i class="fa fa-bookmark"></i><h4><span><wh>' + bookmark.name +'</wh>&ensp;<gr>'+ numFormat( bookmark.count ) +' ♫</gr></span></h4></div></div>';
+			content += divOpen +'<div class="home-block home-bookmark" data-name="'+ bookmark.name +'" data-path="'+ bookmark.path +'"><i class="fa fa-bookmark"></i><h4><span>' + bookmark.name +'&ensp;<gr>'+ numFormat( bookmark.count ) +' ♫</gr></span></h4></div></div>';
 		}
 	}
 	// sd
