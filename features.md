@@ -100,7 +100,7 @@ Rely on MPD supplied data which has some limitations.
 	- Composers > names > albums > songs
 	- Genres > names > artists > albums > songs
 - Show album heading with artist name
-- Bookmarks can be renamed
+- Bookmarks and webradios can be renamed
 - Bookmarks and webradios can be named with ', " characters
 - Scroll long bookmark names
 - Show filenames or URL of webradio
