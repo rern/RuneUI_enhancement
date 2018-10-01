@@ -1072,11 +1072,13 @@ pushstreams.idle.onmessage = function( changed ) {
 					} );
 				}
 			}, 'json' );
-		}, 1000 );
+		}, 3000 );
 	} else if ( changed === 'database' ) { // on files changed (for webradio rename)
-		if ( GUI.local ) return
-		
-		if ( $( '#db-currentpath' ).attr( 'path' ) === 'Webradio' ) $( '#home-webradio' ).click();
+		if ( $( '#db-currentpath' ).attr( 'path' ) === 'Webradio' ) {
+			setTimeout( function() {
+				$( '#home-webradio' ).click();
+			}, 300 );
+		}
 	}
 }
 PNotify.prototype.options.styling = 'fontawesome';

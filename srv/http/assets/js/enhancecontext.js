@@ -212,9 +212,8 @@ function addWebradio( name, url, oldname ) {
 	var url = url.replace( /"/g, '\"' );
 	var oldname = oldname ? oldname.replace( /"/g, '\"' ) : '';
 	var data = oldname ? [ name, url, oldname ] : [ name, url ];
-	$.post( 'enhance.php', { webradios: data }, function() {
-		if ( $( '#db-currentpath' ).attr( 'path') === 'Webradio' ) $( '#home-webradio' ).click();
-	} );
+	tempFlag( 'local' );
+	$.post( 'enhance.php', { webradios: data } );
 }
 function webRadioVerify( name, url, oldname ) {
 	if ( !name || !url ) {
