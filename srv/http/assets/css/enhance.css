@@ -1303,7 +1303,7 @@ span.dbpath {
 	padding-left: 10px;
 	font-size: 18px;
 }
-#pl-editor span.pleditor {
+#pl-editor span.plname {
 	line-height: 48px;
 }
 #pl-editor span gr {
@@ -1843,7 +1843,7 @@ w {
 	#pl-entries span.bl {
 		font-size: 12px;
 	}
-	#pl-editor span.pleditor {
+	#pl-editor span.plname {
 		line-height: 47px;
 	}
 }
