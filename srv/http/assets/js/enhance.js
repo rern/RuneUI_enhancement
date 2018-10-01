@@ -217,9 +217,12 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 	}
 	
 	if ( e.target.id === 'home-block-edit' ) {
-		bookmarkRename( $this.data( 'name' ), $this.data( 'path' ), $this )
+		var name = $this.find( 'h4 wh' ).text();
+		var path = GUI.bkmarks[ name ];
+		bookmarkRename( name, path, $this )
 	} else if ( e.target.id === 'home-block-remove' ) {
-		bookmarkDelete( $this.data( 'name' ), $this.parent() )
+		var name = $this.find( 'h4 wh' ).text();
+		bookmarkDelete( name, $this.parent() )
 	} else {
 		GUI.dblist = 1;
 		mutationLibrary.observe( observerLibrary, observerOption );
@@ -1361,6 +1364,8 @@ function setPanelActive( id ) {
 		
 	} else if ( id === 'panel-playlist' && GUI.pleditor ) {
 		GUI.plscrolltop = $( window ).scrollTop();
+	} else {
+		$( 'html, body' ).scrollTop( 0 );
 	}
 	$( '.tab-pane, #menu-bottom li' ).removeClass( 'active' );
 	$( '.tab-pane' ).addClass( 'hide' );
@@ -1530,7 +1535,6 @@ function displayPlayback() {
 		$( '#iplayer' ).addClass( 'fa-'+ source ).removeClass( 'hide' );
 	}
 	displayCommon();
-	if ( !GUI.local ) $( 'html, body' ).scrollTop( 0 );
 }
 function displayIndexBar() {
 	setTimeout( function() {
@@ -1609,10 +1613,12 @@ function renderLibrary() {
 		bookmarks.sort( function( a, b ) {
 			return stripLeading( a.name ).localeCompare( stripLeading( b.name ), undefined, { numeric: true } );
 		} );
+		GUI.bkmarks = {};
 		var bookmarkL = bookmarks.length;
 		for ( i = 0; i < bookmarkL; i++ ) {
 			var bookmark = bookmarks[ i ];
-			content += divOpen +'<div class="home-block home-bookmark" data-name="'+ bookmark.name +'" data-path="'+ bookmark.path +'"><i class="fa fa-bookmark"></i><h4><span>' + bookmark.name +'&ensp;<gr>'+ numFormat( bookmark.count ) +' ♫</gr></span></h4></div></div>';
+			GUI.bkmarks[ bookmark.name ] = bookmark.path;
+			content += divOpen +'<div class="home-block home-bookmark"><i class="fa fa-bookmark"></i><h4><span><wh>' + bookmark.name +'</wh>&ensp;<gr>'+ numFormat( bookmark.count ) +' ♫</gr></span></h4></div></div>';
 		}
 	}
 	// sd

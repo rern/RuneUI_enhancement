@@ -126,11 +126,13 @@ function bookmarkVerify( name, path, oldname ) {
 				, text  : name
 			} );
 			tempFlag( 'local' );
-			var name = name.replace( /"/g, '\"' );
-			var path = path.replace( /"/g, '\"' );
-			var oldname = oldname ? oldname.replace( /"/g, '\"' ) : '';
-			var data = oldname ? [ name, path, oldname ] : [ name, path ];
-			$.post( 'enhance.php', { bkmarks: data } );
+			var bmname = name.replace( /"/g, '\"' );
+			var bmpath = path.replace( /"/g, '\"' );
+			var bmoldname = oldname ? oldname.replace( /"/g, '\"' ) : '';
+			var data = bmoldname ? [ bmname, bmpath, bmoldname ] : [ bmname, bmpath ];
+			$.post( 'enhance.php', { bkmarks: data }, function() {
+				if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) $( '#open-library' ).click();
+			} );
 		} else {
 			info( {
 				  icon        : 'warning'
@@ -145,9 +147,9 @@ function bookmarkVerify( name, path, oldname ) {
 				}
 				, oklabel     : 'Replace'
 				, ok          : function() {
-					var name = name.replace( /"/g, '\"' );
-					var path = path.replace( /"/g, '\"' );
-					var oldname = oldname ? oldname.replace( /"/g, '\"' ) : '';
+					name = name.replace( /"/g, '\"' );
+					path = path.replace( /"/g, '\"' );
+					oldname = oldname ? oldname.replace( /"/g, '\"' ) : '';
 					var data = oldname ? [ name, path, oldname ] : [ name, path ];
 					$.post( 'enhance.php', { bkmarks: data }, function() {
 						renderLibrary();
@@ -210,7 +212,6 @@ function webRadioRename() {
 function addWebradio( name, url, oldname ) {
 	if ( !oldname ) GUI.libraryhome.webradio++;
 	var name = name.replace( /"/g, '\"' );
-	var url = url.replace( /"/g, '\"' );
 	var oldname = oldname ? oldname.replace( /"/g, '\"' ) : '';
 	var data = oldname ? [ name, url, oldname ] : [ name, url ];
 	tempFlag( 'local' );
