@@ -2185,7 +2185,7 @@ function renderPlaylist() {
 			bottomline = pl.track
 			pltime += sec;
 		}
-		content += '<li id="pl-'+ i +'"'+ ( classradio ? ' class="radio"' : '' ) +'>'
+		content += classradio ? '<li class="radio">' : '<li>'
 			+ iconhtml
 			+'<i class="fa fa-minus-circle pl-action"></i>'
 			+'<span class="sn">'+ topline +'</span>'
