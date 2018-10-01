@@ -586,8 +586,8 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 	var $thisli = $this.parent();
 	GUI.dbpath = $thisli.data( 'path' );
 	GUI.list = {};
-	GUI.list.path = GUI.dbpath; // used in contextmenu
-	GUI.list.name = $thisli.attr( 'liname' );
+	GUI.list.path = $thisli.hasClass( 'db-webradio' ) ? $thisli.find( '.bl' ).text() : GUI.dbpath; // used in contextmenu
+	GUI.list.name = $thisli.hasClass( 'db-webradio' ) ? $thisli.find( '.sn' ).text() : $thisli.attr( 'liname' );
 	GUI.list.isfile = $thisli.find( 'i.db-icon' ).hasClass( 'fa-music' ); // used in contextmenu
 	if ( $( '#db-currentpath' ).attr( 'path' ) === 'Webradio' ) GUI.list.url = $thisli.find( '.bl' ).text();
 	var $menu = $( $this.data( 'target' ) );
@@ -1074,11 +1074,7 @@ pushstreams.idle.onmessage = function( changed ) {
 			}, 'json' );
 		}, 3000 );
 	} else if ( changed === 'database' ) { // on files changed (for webradio rename)
-		if ( $( '#db-currentpath' ).attr( 'path' ) === 'Webradio' ) {
-			setTimeout( function() {
-				$( '#home-webradio' ).click();
-			}, 300 );
-		}
+		if ( $( '#db-currentpath' ).attr( 'path' ) === 'Webradio' ) $( '#home-webradio' ).click();
 	}
 }
 PNotify.prototype.options.styling = 'fontawesome';
@@ -1772,8 +1768,7 @@ function parseDBdata( inputArr, i, respType, inpath, querytype ) {
 		i = i || 0,
 		respType = respType || '',
 		inpath = inpath || '',
-		querytype = querytype || '',
-		content = '<li id="db-'+ ( i + 1 ) +'" data-path="';
+		querytype = querytype || '';
 	GUI.artistalbum = '';
 	switch ( respType ) {
 		case 'db':
@@ -1791,37 +1786,37 @@ function parseDBdata( inputArr, i, respType, inpath, querytype ) {
 								var bl = inputArr.file.split( '/' ).pop(); // filename
 							}
 							var liname = inputArr.Title
-							content += inputArr.file +'" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i>';
+							content = '<li data-path="'+ inputArr.file +'" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i>';
 							content += '<span class="sn">'+ liname +'&ensp;<span class="time">'+ inputArr.Time +'</span></span>';
 							content += '<span class="bl">'+ bl;
 						} else {
 							var liname = inputArr.file.replace( inpath +'/', '' );
-							content += inputArr.file +'" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i>';
+							content = '<li data-path="'+ inputArr.file +'" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i>';
 							content += '<span class="sn">'+ liname +'&ensp;<span class="time">' + second2HMS( inputArr.Time ) +'</span></span>';
 							content += '<span class="bl"> path: '+ inpath;
 						}
 					} else { // Webradio
-						var liname = inputArr.playlist.replace( inpath +'/', '' ).replace( /.pls$/, '' );
-						content += inputArr.playlist +'" class="db-webradio" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-webradio"></i><i class="fa fa-webradio db-icon db-radio"></i>';
+						var liname = inputArr.playlist.replace( 'Webradio/', '' ).replace( /.pls$/, '' );
+						content = '<li class="db-webradio" ><i class="fa fa-bars db-action" data-target="#context-menu-webradio"></i><i class="fa fa-webradio db-icon db-radio"></i>';
 						content += '<span class="sn">'+ liname +'</span>';
 						content += '<span class="bl">'+ inputArr.url;
 					}
 					content += '</span></li>';
 				} else if ( inputArr.playlist && inputArr.fileext === 'cue' ) {
 					var liname = inputArr.playlist.replace( inpath +'/', '' );
-					content += inputArr.playlist +'" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-file-text db-icon"></i>';
+					content = '<li data-path="'+ inputArr.playlist +'" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-file-text db-icon"></i>';
 					content += '<span class="sn">'+ liname +' <span>[CUE file]</span></span>';
 					content += '<span class="bl"> path: '+ inpath +'</span></li>';
 				} else {
 					var liname = inputArr.directory.replace( inpath +'/', '' );
-					content += inputArr.directory +'" liname="'+ liname +'"><i class="fa fa-bars db-action"';
+					content = '<li data-path="'+ inputArr.directory +'" liname="'+ liname +'"><i class="fa fa-bars db-action"';
 					content += ' data-target="#context-menu-folder"></i><span><i class="fa fa-folder"></i>'
 					content += '<span class="dbpath">'+ liname +'</span></li>';
 				}
 			} else if ( GUI.browsemode === 'album' || GUI.browsemode === 'albumfilter' ) {
 				if ( inputArr.file ) {
 					var liname = inputArr.Title;
-					content += inputArr.file +'" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i>';
+					content = '<li data-path="'+ inputArr.file +'" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i>';
 					content += '<span class="sn">'+ liname +'&ensp;<span class="time">'+ inputArr.Time +'</span></span>';
 					content += '<span class="bl">'+ inputArr.file +'</span></li>';
 					if ( !GUI.artistalbum ) GUI.artistalbum = inputArr.Album +'<gr> • </gr>'+ inputArr.Artist;
@@ -1835,38 +1830,38 @@ function parseDBdata( inputArr, i, respType, inpath, querytype ) {
 						var lialbum = liname;
 						var dataartist = '';
 					}
-					content += inputArr.album.replace( /\"/g, '&quot;' ) +'"'+ dataartist +' mode="album" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-album"></i>';
+					content = '<li data-path="'+ inputArr.album.replace( /\"/g, '&quot;' ) +'"'+ dataartist +' mode="album" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-album"></i>';
 					content += '<span><i class="fa fa-album"></i>'+ lialbum +'</span></li>';
 				}
 			} else if ( GUI.browsemode === 'artist' || GUI.browsemode === 'composeralbum' ) {
 				if ( inputArr.album ) {
 					var liname = inputArr.album ? inputArr.album : 'Unknown album';
-					content += inputArr.album +'" mode="album" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-album"></i>';
+					content = '<li data-path="'+ inputArr.album +'" mode="album" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-album"></i>';
 					content += '<span><i class="fa fa-album"></i>'+ liname +'</span></li>';
 				} else {
 					var liname = inputArr.artist;
-					content += inputArr.artist +'" mode="artist" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-artist"></i>';
+					content = '<li data-path="'+ inputArr.artist +'" mode="artist" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-artist"></i>';
 					content += '<span><i class="fa fa-artist"></i>'+ liname +'</span></li>';
 				}
 			} else if ( GUI.browsemode === 'composer' ) {
 				if ( inputArr.file ) {
 					var liname = inputArr.Title;
-					content += inputArr.file +'" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i>';
+					content = '<li data-path="'+ inputArr.file +'" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i>';
 					content += '<span class="sn">'+ liname +'&ensp;<span class="time">'+ second2HMS( inputArr.Time ) +'</span></span>';
 					content += '<span class="bl">'+ inputArr.Artist +' - '+ inputArr.Album +'</span></li>';
 				} else {
 					var liname = inputArr.composer;
-					content += inputArr.composer +'" mode="composer" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-composer"></i>';
+					content = '<li data-path="'+ inputArr.composer +'" mode="composer" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-composer"></i>';
 					content += '<span><i class="fa fa-composer"></i>'+ inputArr.composer +'</span></li>';
 				}
 			} else if ( GUI.browsemode === 'genre' ) {
 				if ( inputArr.artist ) {
 					var liname = inputArr.artist ? inputArr.artist : 'Unknown artist';
-					content += inputArr.artist +'" mode="artist" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-artist"></i>';
+					content = '<li data-path="'+ inputArr.artist +'" mode="artist" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-artist"></i>';
 					content += '<span><i class="fa fa-artist"></i>'+ liname +'</span></li>';
 				} else {
 					var liname = inputArr.genre ;
-					content += inputArr.genre +'" mode="genre" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-genre"></i>';
+					content = '<li data-path="'+ inputArr.genre +'" mode="genre" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-genre"></i>';
 					content += '<span><i class="fa fa-genre"></i>'+ liname;+'</span></li>';
 				}
 			}
@@ -1874,11 +1869,11 @@ function parseDBdata( inputArr, i, respType, inpath, querytype ) {
 		case 'Spotify':
 			if ( querytype === '' ) {
 				var liname = inputArr.name ? inputArr.name : 'Favorites';
-				content += inputArr.index +'" mode="spotify" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-spotify-pl"></i>'
+				content = '<li data-path="'+ inputArr.index +'" mode="spotify" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-spotify-pl"></i>'
 				content += '<span><i class="fa fa-genre"></i>'+ liname +' ( '+ inputArr.tracks +' )</span></li>';
 			} else if ( querytype === 'tracks' ) {
 				var liname = inputArr.Title;
-				content += inputArr.index +'" data-plid="'+ inpath +'" data-type="spotify-track" mode="spotify" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-spotify"></i><i class="fa fa-spotify db-icon"></i>';
+				content = '<li data-path="'+ inputArr.index +'" data-plid="'+ inpath +'" data-type="spotify-track" mode="spotify" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-spotify"></i><i class="fa fa-spotify db-icon"></i>';
 				content += '<span class="sn">'+ liname +'&ensp;<span class="time">'+ second2HMS( inputArr.duration / 1000 ) +'</span></span>';
 				content += ' <span class="bl">'+ inputArr.artist +' - '+ inputArr.album +'</span></li>';
 			}
@@ -1887,21 +1882,21 @@ function parseDBdata( inputArr, i, respType, inpath, querytype ) {
 			if ( querytype === '' || querytype === 'childs' ) {
 				var liname = inputArr.title;
 				var childClass = ( querytype === 'childs' ) ? ' db-dirble-child' : '';
-				content += inputArr.id +'" class="db-dirble'+ childClass +'" mode="dirble" liname="'+ liname +'">'
+				content = '<li data-path="'+ inputArr.id +'" class="db-dirble'+ childClass +'" mode="dirble" liname="'+ liname +'">'
 				content += '<span><i class="fa fa-genre"></i>'+ liname +'</span></li>';
 			} else if ( querytype === 'search' || querytype === 'stations' || querytype === 'childs-stations' ) {
 				if ( !inputArr.streams.length ) {
 					break; // Filter stations with no streams
 				}
 				var liname = inputArr.name;
-				content += inputArr.name +' | '+ inputArr.streams[ 0 ].stream +'" mode="dirble" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-dirble"></i><i class="fa fa-webradio db-icon"></i>';
+				content = '<li data-path="'+ inputArr.name +' | '+ inputArr.streams[ 0 ].stream +'" mode="dirble" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-dirble"></i><i class="fa fa-webradio db-icon"></i>';
 				content += '<span class="sn">'+ liname +'&ensp;<span>( '+ inputArr.country +' )</span></span>';
 				content += '<span class="bl">'+ ( inputArr.website ? inputArr.website : '-no website-' ) +'</span></li>';
 			}
 			break;
 		case 'Jamendo':
 			var liname = inputArr.dispname;
-			content += inputArr.stream +'" mode="jamendo" liname="'+ liname +'"><img class="jamendo-cover" src="'+ inputArr.image +'" alt=""><i class="fa fa-bars db-action" data-target="#context-menu-file"></i>';
+			content = '<li data-path="'+ inputArr.stream +'" mode="jamendo" liname="'+ liname +'"><img class="jamendo-cover" src="'+ inputArr.image +'" alt=""><i class="fa fa-bars db-action" data-target="#context-menu-file"></i>';
 			content += '<span>'+ liname +'</span></div></li>';
 			break;
 	}

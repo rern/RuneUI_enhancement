@@ -10,8 +10,9 @@ $( '.contextmenu a' ).click( function() {
 		var mpcCmd = 'findadd '+ mode +' "'+ name +'"';
 	} else if ( mode === 'wr' ) {
 		cmd = cmd.replace( 'wr', 'pl' );
+		name = 'Webradio/'+ GUI.list.name.replace( /"/g, '\"' );
 	} else if ( mode === 'pl' ) {
-		var name = GUI.list.name ? GUI.list.name.replace( /"/g, '\"' ) : '';
+		name = GUI.list.name ? GUI.list.name.replace( /"/g, '\"' ) : '';
 	}
 	var contextCommand = {
 		  add              : mpcCmd
