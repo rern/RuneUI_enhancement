@@ -94,11 +94,11 @@ Rely on MPD supplied data which has some limitations.
 - Maintain scroll position
 - Improved sorting and exclude leading A, An, The, ', "
 - Modes
-		- Albums > names > songs
-		- Albums with duplicate name > album-artist > songs
-		- Artists > names > albums > songs
-		- Composers > names > albums > songs
-		- Genres > names > artists > albums > songs
+	- Albums > names > songs
+	- Albums with duplicate name > album-artist > songs
+	- Artists > names > albums > songs
+	- Composers > names > albums > songs
+	- Genres > names > artists > albums > songs
 - Show album heading with artist name
 - Bookmarks can be renamed
 - Bookmarks and webradios can be named with ', " characters
