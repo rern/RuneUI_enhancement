@@ -3,7 +3,7 @@ $( '.contextmenu a' ).click( function() {
 	var cmd = $( this ).data( 'cmd' );
 	var mode = cmd.replace( /replaceplay|replace|addplay|add/, '' );
 	var modes = [ 'album', 'artist', 'composer', 'genre' ];
-	var name = GUI.list.path;
+	var name = GUI.list.path ? GUI.list.path.replace( /"/g, '\"' ) : '';
 	if ( !mode ) {
 		var mpcCmd = GUI.list.isfile ? 'add "'+ name +'"' : 'ls "'+ name +'" | mpc add';
 	} else if ( $.inArray( mode, [ 'album', 'artist', 'composer', 'genre' ] ) !== -1 ) {
@@ -11,7 +11,7 @@ $( '.contextmenu a' ).click( function() {
 	} else if ( mode === 'wr' ) {
 		cmd = cmd.replace( 'wr', 'pl' );
 	} else if ( mode === 'pl' ) {
-		var name = GUI.list.name;
+		var name = GUI.list.name ? GUI.list.name.replace( /"/g, '\"' ) : '';
 	}
 	var contextCommand = {
 		  add              : mpcCmd
@@ -54,10 +54,10 @@ $( '.contextmenu a' ).click( function() {
 			} );
 		}
 	} else if ( cmd === 'plashuffle' ) {
-			$.post( '/db/?cmd=pl-ashuffle', { playlist: GUI.list.name } );
+			$.post( '/db/?cmd=pl-ashuffle', { playlist: name } );
 			$( '#random' ).data( 'cmd', 'pl-ashuffle-stop' ).addClass( 'btn-primary' );
 	} else {
-		$.post( '/db/?cmd='+ cmd, { path: GUI.list.path } );
+		$.post( '/db/?cmd='+ cmd, { path: name } );
 	}
 } );
 
@@ -125,6 +125,9 @@ function bookmarkVerify( name, path, oldname ) {
 				, text  : name
 			} );
 			tempFlag( 'local' );
+			var name = name.replace( /"/g, '\"' );
+			var path = path.replace( /"/g, '\"' );
+			var oldname = oldname ? oldname.replace( /"/g, '\"' ) : '';
 			var data = oldname ? [ name, path, oldname ] : [ name, path ];
 			$.post( 'enhance.php', { bkmarks: data } );
 		} else {
@@ -141,6 +144,9 @@ function bookmarkVerify( name, path, oldname ) {
 				}
 				, oklabel     : 'Replace'
 				, ok          : function() {
+					var name = name.replace( /"/g, '\"' );
+					var path = path.replace( /"/g, '\"' );
+					var oldname = oldname ? oldname.replace( /"/g, '\"' ) : '';
 					var data = oldname ? [ name, path, oldname ] : [ name, path ];
 					$.post( 'enhance.php', { bkmarks: data }, function() {
 						renderLibrary();
@@ -160,7 +166,7 @@ function bookmarkDelete( name, $block ) {
 		, ok      : function() {
 			$block.remove();
 			GUI.bookmarkedit = 1;
-			$.post( 'enhance.php', { bkmarks: name } );
+			$.post( 'enhance.php', { bkmarks: name.replace( /"/g, '\"' ) } );
 		}
 	} );
 }
@@ -181,28 +187,33 @@ function webRadioNew( name, url ) {
 	} );
 }
 function webRadioRename() {
+	var name = GUI.list.name;
+	var path = GUI.list.path;
 	info( {
 		  icon       : 'edit-circle'
 		, title      : 'Rename Webradio'
 		, width      : 500
 		, message    : 'Rename:'
-					+'<br><white>'+ GUI.list.name +'</white>'
-					+'<br>'+ GUI.list.path
+					+'<br><white>'+ name +'</white>'
+					+'<br>'+ path
 					+'<br>To:'
-		, textvalue  : GUI.list.name
+		, textvalue  : name
 		, textalign  : 'center'
 		, boxwidth   : 'max'
 		, cancel     : 1
 		, ok         : function() {
-			webRadioVerify( $( '#infoTextBox' ).val().trim(), GUI.list.path, GUI.list.name );
+			webRadioVerify( $( '#infoTextBox' ).val().trim(), path, name );
 		}
 	} );
 }
 function addWebradio( name, url, oldname ) {
 	if ( !oldname ) GUI.libraryhome.webradio++;
+	var name = name.replace( /"/g, '\"' );
+	var url = url.replace( /"/g, '\"' );
+	var oldname = oldname ? oldname.replace( /"/g, '\"' ) : '';
 	var data = oldname ? [ name, url, oldname ] : [ name, url ];
 	$.post( 'enhance.php', { webradios: data }, function() {
-		if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) $( '#home-webradio' ).click();
+		if ( $( '#db-currentpath' ).attr( 'path') === 'Webradio' ) $( '#home-webradio' ).click();
 	} );
 }
 function webRadioVerify( name, url, oldname ) {
@@ -248,19 +259,20 @@ function webRadioVerify( name, url, oldname ) {
 	} );
 }
 function webRadioDelete() {
+	var name = GUI.list.name;
 	info( {
 		  icon    : 'minus-circle'
 		, title   : 'Delete Webradio'
 		, width   : 500
 		, message : 'Delete?'
-					+'<br><white>'+ GUI.list.name +'</white>'
+					+'<br><white>'+ name +'</white>'
 					+'<br>'+ GUI.list.path
 		, cancel  : 1
 		, ok      : function() {
 			$( '#db-entries li.active').remove();
 			GUI.libraryhome.webradio--;
 			tempFlag( 'local' );
-			$.post( 'enhance.php', { webradios: GUI.list.name } );
+			$.post( 'enhance.php', { webradios: name.replace( /"/g, '\"' ) } );
 		}
 	} );
 }
@@ -279,26 +291,26 @@ function playlistNew() {
 	} );
 }
 function playlistRename() {
+	var name = GUI.list.name;
 	info( {
 		  icon      : 'edit-circle'
 		, title     : 'Rename Playlist'
 		, message   : 'Rename:'
-					+'<br><white>'+ GUI.list.name +'</white>'
+					+'<br><white>'+ name +'</white>'
 					+'<br>To:'
-		, textvalue : GUI.list.name
+		, textvalue : name
 		, textalign : 'center'
 		, boxwidth  : 'max'
 		, cancel    : 1
 		, ok        : function() {
-			playlistVerify( $( '#infoTextBox' ).val().trim(), GUI.list.name );
+			playlistVerify( $( '#infoTextBox' ).val().trim(), name );
 		}
 	} );
 }
 function addPlaylist( name, oldname ) {
 	if ( oldname ) {
-		GUI.list.li.find( 'span' ).text( name );
 		tempFlag( 'local' );
-		$.post( 'enhance.php', { mpc: [ 'rm "'+ oldname +'"', 'save "'+ name +'"' ] } );
+		$.post( 'enhance.php', { mpc: [ 'rm "'+ oldname.replace( /"/g, '\"' ) +'"', 'save "'+ name.replace( /"/g, '\"' ) +'"' ] } );
 	} else {
 		new PNotify( {
 			  icon  : 'fa fa-check'
@@ -308,7 +320,7 @@ function addPlaylist( name, oldname ) {
 		$( '#plopen' ).removeClass( 'disable' );
 		GUI.lsplaylists.push( name );
 		tempFlag( 'local' );
-		$.post( 'enhance.php', { mpc: 'save "'+ name +'"' } );
+		$.post( 'enhance.php', { mpc: 'save "'+ name.replace( /"/g, '\"' ) +'"' } );
 	}
 }
 function playlistVerify( name, oldname ) {
@@ -345,12 +357,11 @@ function playlistVerify( name, oldname ) {
 	}, 'text' );
 }
 function playlistDelete() {
-	var name = GUI.list.name;
 	info( {
 		  icon    : 'minus-circle'
 		, title   : 'Delete Playlist'
 		, message : 'Delete?'
-					+'<br><white>'+ name +'</white>'
+					+'<br><white>'+ GUI.list.name +'</white>'
 		, cancel  : 1
 		, ok      : function() {
 			var count = $( '#pls-count' ).text() - 1;
@@ -359,7 +370,7 @@ function playlistDelete() {
 			GUI.list.li.remove();
 			
 			tempFlag( 'local' );
-			$.post( 'enhance.php', { mpc: 'rm "'+ name +'"' } );
+			$.post( 'enhance.php', { mpc: 'rm "'+ name.replace( /"/g, '\"' ) +'"' } );
 		}
 	} );
 }

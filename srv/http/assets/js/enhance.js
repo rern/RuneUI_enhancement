@@ -1665,13 +1665,13 @@ function renderLibrary() {
 function getDB( options ) {
 	$( '#loader' ).removeClass( 'hide' );
 	var cmd = options.cmd || 'browse',
-		path = options.path || '',
+		path = options.path ? options.path.replace( /"/g, '\"' ) : '',
 		browsemode = options.browsemode || 'file',
 		uplevel = options.uplevel || '',
 		plugin = options.plugin || '',
 		querytype = options.querytype || '',
 		args = options.args || '',
-		artist = options.artist || '',
+		artist = options.artist ? options.artist.replace( /"/g, '\"' ) : '',
 		mode,
 		command;
 	if ( !GUI.dbback && cmd !== 'search' && GUI.dbbrowsemode !== 'file' ) {
@@ -1688,9 +1688,11 @@ function getDB( options ) {
 	}
 	GUI.browsemode = browsemode;
 	var keyword = $( '#db-search-keyword' ).val();
+	keyword = keyword ? keyword.replace( /"/g, '\"' ) : '';
 	
 	if ( !plugin ) {
 		var currentpath = $( '#db-currentpath' ).attr( 'path' ); // for artist-album search
+		currentpath = currentpath ? currentpath.replace( /"/g, '\"' ) : '';
 		var artistalbum = artist || currentpath;
 		var command = {
 			  file     : { mpc: 'ls -f "%title%^^%time%^^%artist%^^%album%^^%file%" "'+ path +'"', list: 'file' }
@@ -2078,7 +2080,7 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 		var folder = path.split( '/' );
 		var folderRoot = folder[ 0 ];
 		if ( folderRoot === 'Webradio' ) {
-			$( '#db-currentpath span' ).html( '<i class="fa fa-webradio"></i> <a>WEBRADIOS</a>' );
+			$( '#db-currentpath' ).attr( 'path', 'Webradio' ).find( 'span' ).html( '<i class="fa fa-webradio"></i> <a>WEBRADIOS</a>' );
 		} else {
 			var folderCrumb = iconName[ folderRoot ];
 			var folderPath = '';
