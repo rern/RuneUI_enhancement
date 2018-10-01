@@ -143,8 +143,8 @@ $( '#panel-playback' ).click( function( e ) {
 				}
 				if ( GUI.status.state === 'play' && $( '#total' ).html() === '' ) {
 					clearInterval( GUI.intElapsed );
-					$.post( 'enhance.php', { mpc: "status | awk 'NR==2' | awk '{print $3}' | cut -d'/' -f1" }, function( HMS ) {
-						var elapsed = HMS2Second( HMS );
+					$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
+						var elapsed = HMS2Second( status.elapsed );
 						GUI.intElapsed = setInterval( function() {
 							elapsed++
 							$( '#total' ).text( HMS );
