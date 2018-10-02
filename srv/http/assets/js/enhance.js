@@ -433,10 +433,12 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	$this.addClass( 'active' );
 	
 	var mode = $this.attr( 'mode' );
+	var currentpath = $( '#db-currentpath' ).attr( 'path' );
+	var artist = ( GUI.browsemode === 'artist' && currentpath !== 'Artists' ) ? currentpath : '';
 	if ( [ 'dirble', 'jamendo', 'spotify' ].indexOf( mode ) === -1 ) {
 		getDB( {
 			  path       : path
-			, artist     : $this.data( 'artist' )
+			, artist     : artist
 			, uplevel    : 0
 			, browsemode : mode ? mode : 'file'
 		} );
@@ -1666,13 +1668,13 @@ function renderLibrary() {
 function getDB( options ) {
 	$( '#loader' ).removeClass( 'hide' );
 	var cmd = options.cmd || 'browse',
-		path = options.path ? options.path.replace( /"/g, '\\"' ) : '',
+		path = options.path ? options.path.replace( /"/g, '\"' ) : '',
 		browsemode = options.browsemode || 'file',
 		uplevel = options.uplevel || '',
 		plugin = options.plugin || '',
 		querytype = options.querytype || '',
 		args = options.args || '',
-		artist = options.artist ? options.artist.replace( /"/g, '\\"' ) : '',
+		artist = options.artist ? options.artist.replace( /"/g, '\"' ) : '',
 		mode,
 		command;
 	if ( !GUI.dbback && cmd !== 'search' && GUI.dbbrowsemode !== 'file' ) {
@@ -1698,11 +1700,11 @@ function getDB( options ) {
 	}
 	GUI.browsemode = browsemode;
 	var keyword = $( '#db-search-keyword' ).val();
-	keyword = keyword ? keyword.replace( /"/g, '\\"' ) : '';
+	keyword = keyword ? keyword.replace( /"/g, '\"' ) : '';
 	
 	if ( !plugin ) {
 		var currentpath = $( '#db-currentpath' ).attr( 'path' ); // for artist-album search
-		currentpath = currentpath ? currentpath.replace( /"/g, '\\"' ) : '';
+		currentpath = currentpath ? currentpath.replace( /"/g, '\"' ) : '';
 		var artistalbum = artist || currentpath;
 		var command = {
 			  file        : { mpc: 'ls -f "%title%^^%time%^^%artist%^^%album%^^%file%" "'+ path +'"', list: 'file' }
@@ -1729,7 +1731,7 @@ function getDB( options ) {
 				mode = 'type';
 			} else if ( path === 'Webradio' ) {
 				mode = 'Webradio';
-			} else if ( GUI.browsemode === 'album' && currentpath !== 'Albums' && artistalbum ) { // <li> in 'Artists' and 'Genres'
+			} else if ( GUI.browsemode === 'album' && currentpath !== 'Albums' && artist ) { // <li> in 'Artists' and 'Genres'
 				mode = 'artistalbum';
 				GUI.artistalbum = path +'<gr> • </gr>'+ artistalbum;
 			} else {
@@ -2226,7 +2228,7 @@ function renderPlaylist() {
 	} );
 }
 function renderSavedPlaylist( name ) {
-	$.post( 'enhance.php', { getplaylist: 1, name: '"'+ name +'"' }, function( data ) {
+	$.post( 'enhance.php', { getplaylist: 1, name: name.replace( /"/g, '\\"' ) }, function( data ) {
 		var countradio = 0;
 		var content, pl, iconhtml, topline, bottomline, classradio, hidetotal;
 		content = iconhtml = topline =bottomline = classradio = hidetotal = '';
