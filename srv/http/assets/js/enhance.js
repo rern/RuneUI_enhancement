@@ -738,6 +738,7 @@ new Sortable( document.getElementById( 'pl-entries' ), {
 			$( e.to ).removeClass( 'active' );
 			$( e.item ).addClass( 'active' )
 			GUI.status.Pos = $( e.item ).index();
+			GUI.status.song = GUI.status.Pos;
 		}
 		tempFlag( 'local' );
 		$.post( 'enhance.php', { mpc: 'move '+ ( e.oldIndex + 1 ) +' '+ ( e.newIndex + 1 ) } );
