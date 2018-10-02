@@ -1728,7 +1728,7 @@ function getDB( options ) {
 				mode = 'type';
 			} else if ( path === 'Webradio' ) {
 				mode = 'Webradio';
-			} else if ( GUI.browsemode === 'album' && currentpath !== 'Albums' && artist ) { // <li> in 'Artists' and 'Genres'
+			} else if ( GUI.browsemode === 'album' && currentpath !== 'Albums' && artistalbum ) { // <li> in 'Artists' and 'Genres'
 				mode = 'artistalbum';
 				GUI.artistalbum = path +'<gr> • </gr>'+ artistalbum;
 			} else {
