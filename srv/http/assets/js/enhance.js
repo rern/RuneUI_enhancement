@@ -1041,7 +1041,11 @@ var timeoutUpdate;
 pushstreams.idle.onmessage = function( changed ) {
 	var changed = changed[ 0 ];
 	if ( changed === 'player' ) { // on track changed
-		getPlaybackStatus();
+		if ( $( '#panel-playlist' ).hasClass( 'active' ) ) {
+			if ( !GUI.pleditor ) setPlaylistScroll();
+		} else {
+			getPlaybackStatus();
+		}
 	} else if ( changed === 'playlist' ) { // on playlist changed
 		if ( GUI.pleditor || GUI.local || !$( '#panel-playlist' ).hasClass( 'active' ) ) return
 		
@@ -1353,14 +1357,9 @@ function getPlaybackStatus() {
 		GUI.status = status;
 		
 		setButton();
-		if ( $( '#panel-playback' ).hasClass( 'active' ) ) {
-			renderPlayback();
-			// imodedelay fix imode flashing on usb dac switching
-			if ( !GUI.imodedelay ) displayPlayback();
-		} else if ( $( '#panel-playlist' ).hasClass( 'active' ) && !GUI.pleditor ) {
-			setPlaylistScroll();
-			$( '#plcrop' ).toggleClass( 'disable', status.state === 'stop' );
-		}
+		renderPlayback();
+		// imodedelay fix imode flashing on usb dac switching
+		if ( !GUI.imodedelay ) displayPlayback();
 	}, 'json' );
 }
 function setPanelActive( id ) {
@@ -2139,10 +2138,13 @@ function setPlaylistScroll() {
 	
 	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
 		// for 'visibilityevent - visible' and song has changed
+		GUI.status = status;
+		
+		$( '#plcrop' ).toggleClass( 'disable', status.state === 'stop' );
 		$( '#pl-entries li' ).removeClass( 'active' );
 		var $liactive = $( '#pl-entries li' ).eq( status.song );
 		$liactive.addClass( 'active' );
-		
+		setButton();
 		var state = status.state;
 		var elapsed = status.elapsed;
 		var $elapsed = $( '#pl-entries li.active .elapsed' );
