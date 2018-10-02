@@ -123,6 +123,7 @@ $( '#panel-playback' ).click( function( e ) {
 				+ libraryLabel( 'time', 'Time' )
 				+ libraryLabel( 'radioelapsed', 'Webradio elapsed' )
 				+ libraryLabel( 'coverart', 'Cover art' )
+				+ libraryLabel( 'coverlarge', 'Large Cover art' )
 				+ libraryLabel( 'volume', 'Volume' )
 				+ libraryLabel( 'buttons', 'Buttons' )
 			+'</form>'
@@ -1534,6 +1535,7 @@ function displayPlayback() {
 	if ( !GUI.display.buttons || window.innerHeight <= 320 || window.innerWidth < 499 ) {
 		$( '#play-group, #share-group, #vol-group' ).addClass( 'hide' );
 	}
+	$( '#cover-art, #coverartoverlay, #controls-cover' ).toggleClass( 'coversmall', GUI.display.coverlarge === '' )
 	if ( GUI.activePlayer !== 'MPD' ) {
 		var source = GUI.activePlayer.toLowerCase();
 		$( '#iplayer' ).addClass( 'fa-'+ source ).removeClass( 'hide' );
