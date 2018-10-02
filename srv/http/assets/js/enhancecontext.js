@@ -37,7 +37,6 @@ $( '.contextmenu a' ).click( function() {
 		, update           : 'mpc update '+ GUI.list.path
 	}
 	var command = contextCommand[ cmd ];
-	console.log(command)
 	if ( typeof command !== 'undefined' ) {
 		if ( typeof command === 'function' ) {
 			command();
@@ -106,7 +105,6 @@ function bookmarkRename( name, path ) {
 	} );
 }
 function bookmarkVerify( name, path, oldname ) {
-console.log( name +' , '+ path +' , '+ oldname )
 	if ( !name ) {
 		info( {
 			  icon    : 'warning'
@@ -307,7 +305,6 @@ function playlistRename() {
 	} );
 }
 function addPlaylist( name, oldname ) {
-console.log( name +' , '+ oldname )
 	if ( oldname ) {
 		tempFlag( 'local' );
 		// rm or save: mpc rm "name's \"double\" quote"
