@@ -55,15 +55,15 @@
 					<input id="vustop" type="hidden" value="<?=$this->asset('/img/vustop.gif')?>">
 					<div id="coverartoverlay"></div>
 					<img id="controls-cover" class="controls hide" src="<?=$this->asset('/img/controls.svg')?>">
-					<div id="coverTL" class="covermap t0 w50 h50 m-115"></div>
-					<div id="coverT" class="covermap t0 w130 h50 m-65"></div>
-					<div id="coverTR" class="covermap t0 w50 h50 m65"></div>
-					<div id="coverL" class="covermap t50 w50 h130 m-115"></div>
-					<div id="coverM" class="covermap t50 w130 h130 m-65"></div>
-					<div id="coverR" class="covermap t50 w50 h130 m65"></div>
-					<div id="coverBL" class="covermap t180 w50 h50 m-115"></div>
-					<div id="coverB" class="covermap t180 w130 h50 m-65"></div>
-					<div id="coverBR" class="covermap t180 w50 h50 m65"></div>
+					<div id="coverTL" class="covermap r1 c1 ws hs"></div>
+					<div id="coverT" class="covermap r1 c2 wl hs"></div>
+					<div id="coverTR" class="covermap r1 c3 ws hs"></div>
+					<div id="coverL" class="covermap r2 c1 ws hl"></div>
+					<div id="coverM" class="covermap r2 c2 wl hl"></div>
+					<div id="coverR" class="covermap r2 c3 ws hl"></div>
+					<div id="coverBL" class="covermap r3 c1 ws hs"></div>
+					<div id="coverB" class="covermap r3 c2 wl hs"></div>
+					<div id="coverBR" class="covermap r3 c3 ws hs"></div>
 				</div>
 				<div id="share-group">
 					<div class="btn-group">
