@@ -1,46 +1,49 @@
+// quotes in mpc name arguments
+//     enclosed with double quotes + escape double quotes
+// example: mpc save "abc's \"xyz\"" << name.replace( /"/g, '\\"' )
 $( '.contextmenu a' ).click( function() {
 	GUI.dbcurrent = '';
 	var cmd = $( this ).data( 'cmd' );
 	var mode = cmd.replace( /replaceplay|replace|addplay|add/, '' );
 	var modes = [ 'album', 'artist', 'composer', 'genre' ];
 	if ( mode === 'wr' ) {
-		var name = 'Webradio/'+ GUI.list.name +'.pls';
+		var name = 'Webradio/'+ GUI.list.name.replace( /"/g, '\\"' ) +'.pls';
 	} else if ( mode === 'pl' ) {
-		var name = GUI.list.name;
+		var name = GUI.list.name.replace( /"/g, '\\"' );
 		cmd = cmd.replace( 'pl', 'wr' );
 	} else {
 		var name = GUI.list.path;
 	}
-	name = name.replace( /'/, "\\'" );
 	if ( !mode ) {
-		var mpcCmd = GUI.list.isfile ? "add '"+ name +"'" : "ls '"+ name +"' | mpc add";
+		var mpcCmd = GUI.list.isfile ? 'mpc add "'+ name +'"' : 'mpc ls "'+ name +'" | mpc add';
 	} else if ( $.inArray( mode, [ 'album', 'artist', 'composer', 'genre' ] ) !== -1 ) {
-		var mpcCmd = "findadd "+ mode +" '"+ name +"'";
+		var mpcCmd = 'mpc findadd '+ mode +' "'+ name +'"';
 	}
 	var contextCommand = {
 		  add              : mpcCmd
-		, addplay          : [ mpcCmd, 'play' ]
-		, replace          : [ 'clear', mpcCmd ]
-		, replaceplay      : [ 'clear', mpcCmd, 'play' ]
-		, wradd            : 'load '+ name
-		, wraddplay        : [ 'load '+ name, 'play' ]
-		, wrreplace        : [ 'clear', 'load '+ name ]
-		, wrreplaceplay    : [ 'clear', 'load '+ name, 'play' ]
+		, addplay          : [ mpcCmd, 'mpc play' ]
+		, replace          : [ 'mpc clear', mpcCmd ]
+		, replaceplay      : [ 'mpc clear', mpcCmd, 'mpc play' ]
+		, wradd            : 'mpc load "'+ name +'"'                              // pladd
+		, wraddplay        : [ 'mpc load "'+ name +'"', 'mpc play' ]              // pladdplay
+		, wrreplace        : [ 'mpc clear', 'mpc load "'+ name +'"' ]             // plreplace
+		, wrreplaceplay    : [ 'mpc clear', 'mpc load "'+ name +'"', 'mpc play' ] // plreplaceplay
 		, wrrename         : webRadioRename
 		, wrdelete         : webRadioDelete
 		, wrsave           : webRadioVerify
 		, plrename         : playlistRename
 		, pldelete         : playlistDelete
 		, bookmark         : bookmarkNew
-		, update           : 'update '+ GUI.list.path
+		, update           : 'mpc update '+ GUI.list.path
 	}
 	var command = contextCommand[ cmd ];
+	console.log(command)
 	if ( typeof command !== 'undefined' ) {
 		if ( typeof command === 'function' ) {
 			command();
 		} else {
 			if ( cmd !== 'update' ) {
-				var add = cmd.replace( 'pl', '' ).slice( 0, 3 ) === 'add';
+				var add = cmd.replace( 'wr', '' ).slice( 0, 3 ) === 'add';
 				new PNotify( {
 					  icon  : 'fa fa-check'
 					, title : add ? 'Add to Playlist' : 'Playlist replaced'
@@ -103,6 +106,7 @@ function bookmarkRename( name, path ) {
 	} );
 }
 function bookmarkVerify( name, path, oldname ) {
+console.log( name +' , '+ path +' , '+ oldname )
 	if ( !name ) {
 		info( {
 			  icon    : 'warning'
@@ -303,9 +307,11 @@ function playlistRename() {
 	} );
 }
 function addPlaylist( name, oldname ) {
+console.log( name +' , '+ oldname )
 	if ( oldname ) {
 		tempFlag( 'local' );
-		$.post( 'enhance.php', { mpc: [ "rm '"+ oldname.replace( /'/, "\\'" ) +"'", "save '"+ name.replace( /'/, "\\'" ) +"'" ] } );
+		// rm or save: mpc rm "name's \"double\" quote"
+		$.post( 'enhance.php', { mpc: [ 'mpc rm "'+ oldname.replace( /"/g, '\\"' ) +'"', 'mpc save "'+ name.replace( /"/g, '\\"' ) +'"' ] } );
 	} else {
 		new PNotify( {
 			  icon  : 'fa fa-check'
@@ -315,7 +321,7 @@ function addPlaylist( name, oldname ) {
 		$( '#plopen' ).removeClass( 'disable' );
 		GUI.lsplaylists.push( name );
 		tempFlag( 'local' );
-		$.post( 'enhance.php', { mpc: "save '"+ name.replace( /'/, "\\'" ) +"'" } );
+		$.post( 'enhance.php', { mpc: 'mpc save "'+ name.replace( /"/g, '\\"' ) +'"' } );
 	}
 }
 function playlistVerify( name, oldname ) {
@@ -330,7 +336,7 @@ function playlistVerify( name, oldname ) {
 		} );
 		return;
 	}
-	$.post( 'enhance.php', { mpc: 'lsplaylists' }, function( data ) {
+	$.post( 'enhance.php', { mpc: 'mpc lsplaylists' }, function( data ) {
 		if ( $.inArray( name, data.split( '\n' ) ) === -1 ) {
 			oldname ? addPlaylist( name, oldname ) : addPlaylist( name );
 		} else {
@@ -365,7 +371,7 @@ function playlistDelete() {
 			GUI.list.li.remove();
 			
 			tempFlag( 'local' );
-			$.post( 'enhance.php', { mpc: "rm '"+ GUI.list.name.replace( /'/, "\\'" ) +"'" } );
+			$.post( 'enhance.php', { mpc: 'mpc rm "'+ GUI.list.name.replace( /"/g, '\\"' ) +'"' } );
 		}
 	} );
 }
