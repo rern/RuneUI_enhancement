@@ -168,10 +168,15 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 
 function search2array( $result ) {
 	$lists = explode( "\n", rtrim( $result ) );
-	foreach( $lists as $list ) {
-		if ( substr( $list, 0, 3 ) === 'USB' ) {
+	$root = substr( $lists[ 0 ], 0, 3 );
+	if ( $root === 'USB' || $root === 'NAS' || $root === 'LocalStorage' ) {
+		foreach( $lists as $list ) {
 			$data[] = array( 'directory' => $list );
-		} else {
+		}
+		return $data;
+	}
+	
+	foreach( $lists as $list ) {
 		$list = explode( '^^', rtrim( $list ) );
 		$li[ 'Title' ] = $list[ 0 ];
 		$li[ 'Time' ] = $list[ 1 ];
@@ -180,7 +185,6 @@ function search2array( $result ) {
 		$li[ 'file' ] = $list[ 4 ];
 		$data[] = $li;
 		$li = '';
-		}
 	}
 	return $data;
 }
