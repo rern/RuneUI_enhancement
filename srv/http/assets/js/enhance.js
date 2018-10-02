@@ -769,6 +769,7 @@ $( '#db-search-results' ).click( function() {
 	if ( GUI.currentpath ) {
 		$( '#db-back' ).removeClass( 'hide' );
 		getDB( GUI.dbbackdata.pop() );
+		GUI.dbbackdata.pop();
 		
 		$( '#db-entries' ).removeAttr( 'style' );
 		mutationLibrary.observe( observerLibrary, observerOption );
@@ -1664,13 +1665,13 @@ function renderLibrary() {
 function getDB( options ) {
 	$( '#loader' ).removeClass( 'hide' );
 	var cmd = options.cmd || 'browse',
-		path = options.path ? options.path.replace( /"/g, '\"' ) : '',
+		path = options.path ? options.path.replace( /"/g, '\\"' ) : '',
 		browsemode = options.browsemode || 'file',
 		uplevel = options.uplevel || '',
 		plugin = options.plugin || '',
 		querytype = options.querytype || '',
 		args = options.args || '',
-		artist = options.artist ? options.artist.replace( /"/g, '\"' ) : '',
+		artist = options.artist ? options.artist.replace( /"/g, '\\"' ) : '',
 		mode,
 		command;
 	if ( !GUI.dbback && cmd !== 'search' && GUI.dbbrowsemode !== 'file' ) {
@@ -1678,31 +1679,40 @@ function getDB( options ) {
 			  path       : path
 			, browsemode : browsemode
 			, uplevel    : uplevel
-			, plugin    : plugin
-			, args      : args
-			, querytype : querytype
+			, plugin     : plugin
+			, args       : args
+			, querytype  : querytype
 		} );
+	} else if ( cmd === 'search' && $( '#db-currentpath' ).attr( 'path' ) ) {
+		if ( GUI.dbbackdata.length ) {
+			GUI.dbbackdata.push( GUI.dbbackdata[ GUI.dbbackdata.length - 1 ] );
+		} else {
+			GUI.dbbackdata.push( {
+				  path       : $( '#db-currentpath' ).attr( 'path' )
+				, browsemode : GUI.browsemode
+			} );
+		}
 	} else {
 		GUI.dbback = 0;
 	}
 	GUI.browsemode = browsemode;
 	var keyword = $( '#db-search-keyword' ).val();
-	keyword = keyword ? keyword.replace( /"/g, '\"' ) : '';
+	keyword = keyword ? keyword.replace( /"/g, '\\"' ) : '';
 	
 	if ( !plugin ) {
 		var currentpath = $( '#db-currentpath' ).attr( 'path' ); // for artist-album search
-		currentpath = currentpath ? currentpath.replace( /"/g, '\"' ) : '';
+		currentpath = currentpath ? currentpath.replace( /"/g, '\\"' ) : '';
 		var artistalbum = artist || currentpath;
 		var command = {
-			  file     : { mpc: 'ls -f "%title%^^%time%^^%artist%^^%album%^^%file%" "'+ path +'"', list: 'file' }
-			, album    : { mpcalbum: path } 
-			, artistalbum    : { mpc: 'find -f "%title%^^%time%^^%artist%^^%album%^^%file%" artist "'+ artistalbum +'" album "'+ path +'"', search: 1 } 
-			, artist   : { mpc: 'list album artist "'+ path +'" | awk NF', list: 'album' }
-			, composer : { mpc : 'list album composer "'+ path +'" | awk NF', list: 'album' }
-			, genre    : { mpc: 'list artist genre "'+ path +'" | awk NF', list: 'artist' }
-			, type     : { mpc: 'list '+ GUI.browsemode +' | awk NF', list: GUI.browsemode }
-			, search   : { mpc: 'search -f "%title%^^%time%^^%artist%^^%album%^^%file%" any "'+ keyword +'"', search: 1 }
-			, Webradio : { getwebradios: 1 }
+			  file        : { mpc: 'ls -f "%title%^^%time%^^%artist%^^%album%^^%file%" "'+ path +'"', list: 'file' }
+			, album       : { mpcalbum: path } 
+			, artistalbum : { mpc: 'find -f "%title%^^%time%^^%artist%^^%album%^^%file%" artist "'+ artistalbum +'" album "'+ path +'"', search: 1 } 
+			, artist      : { mpc: 'list album artist "'+ path +'" | awk NF', list: 'album' }
+			, composer    : { mpc: 'list album composer "'+ path +'" | awk NF', list: 'album' }
+			, genre       : { mpc: 'list artist genre "'+ path +'" | awk NF', list: 'artist' }
+			, type        : { mpc: 'list '+ GUI.browsemode +' | awk NF', list: GUI.browsemode }
+			, search      : { mpc: 'search -f "%title%^^%time%^^%artist%^^%album%^^%file%" any "'+ keyword +'"', search: 1 }
+			, Webradio    : { getwebradios: 1 }
 		}
 		if ( cmd === 'search' ) {
 			if ( path.match(/Dirble/)) {
@@ -1996,16 +2006,6 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 		if ( !data.length ) return
 		
 		// browsing
-		if ( $( '#db-search-keyword' ).val() ) {
-		// search results
-			var results = ( data.length ) ? data.length : '0';
-			$( '#db-back, #db-index' ).addClass( 'hide' );
-			$( '#db-entries' ).css( 'width', '100%' );
-			$( '#db-search-results' )
-				.removeClass( 'hide' )
-				.html( '<i class="fa fa-times sx"></i><span class="visible-xs-inline"></span>\
-					<span>' + results + ' <a>of</a> </span>' );
-		}
 		if ( data[ 0 ].directory || data[ 0 ].file ) {
 			var arraydir = [];
 			var arrayfile = [];
@@ -2077,7 +2077,18 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 	} else {
 		var folder = path.split( '/' );
 		var folderRoot = folder[ 0 ];
-		if ( folderRoot === 'Webradio' ) {
+		$( '#db-currentpath' ).css( 'width', '' );
+		if ( $( '#db-search-keyword' ).val() ) {
+		// search results
+			var results = ( data.length ) ? data.length : '0';
+			$( '#db-currentpath' ).css( 'width', '40px' );
+			$( '#db-back, #db-index' ).addClass( 'hide' );
+			$( '#db-entries' ).css( 'width', '100%' );
+			$( '#db-search-results' )
+				.removeClass( 'hide' )
+				.html( '<i class="fa fa-times sx"></i><span class="visible-xs-inline"></span>\
+					<span>' + results + ' <a>of</a> </span>' );
+		} else if ( folderRoot === 'Webradio' ) {
 			$( '#db-currentpath' ).attr( 'path', 'Webradio' ).find( 'span' ).html( '<i class="fa fa-webradio"></i> <a>WEBRADIOS</a>' );
 		} else {
 			var folderCrumb = iconName[ folderRoot ];
