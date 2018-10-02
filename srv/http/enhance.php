@@ -22,16 +22,17 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 	}
 	echo json_encode( $data );
 } else if ( isset( $_POST[ 'mpc' ] ) ) {
+// 
 	$mpc = $_POST[ 'mpc' ];
 	if ( !is_array( $mpc ) ) { // multiples commands is array
-		$result = shell_exec( 'mpc '.$mpc );
+		$result = shell_exec( $mpc );
 		$cmd = $mpc;
 	} else {
 		foreach( $mpc as $cmd ) {
-			$result = shell_exec( 'mpc '.$cmd );
+			$result = shell_exec( $cmd );
 		}
 	}
-	$cmdpl = explode( ' ', $cmd )[ 0 ];
+	$cmdpl = explode( ' ', $cmd )[ 1 ];
 	if ( $cmdpl === 'save' || $cmdpl === 'rm' ) {
 		$data = lsPlaylists();
 		pushstream( 'playlist', $data );
@@ -127,24 +128,26 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 		$data = $_POST[ 'webradios' ];
 	}
 	if ( !is_array( $data ) ) {
+		$rdname = str_replace( '"', '\"', $data );
 		if ( $key === 'webradios' ) {
-			$redis->hDel( 'webradios', $data );
-			$redis->hDel( 'sampling', $data );
+			$redis->hDel( 'webradios', $rdname );
+			$redis->hDel( 'sampling', $rdname );
 			unlink( '/mnt/MPD/Webradio/'.$data.'.pls' );
 		} else {
-			$redis->hDel( 'bkmarks', $data );
+			$redis->hDel( 'bkmarks', $rdname );
 		}
 	} else {
-		$name = $data[ 0 ];
-		$value = $data[ 1 ];
+		$rdname = str_replace( '"', '\"', $data[ 0 ] );
+		$rdoldname = str_replace( '"', '\"', $data[ 2 ] );
+		$rdvalue = str_replace( '"', '\"', $data[ 1 ] );
 		if ( count( $data ) === 3 ) {
-			$redis->hDel( $key, $data[ 2 ] );
+			$redis->hDel( $key, $rdoldname );
 			if ( $key === 'webradios' ) unlink( '/mnt/MPD/Webradio/'.$data[ 2 ].'.pls' );
 		}
-		$redis->hSet( $key, $name, $value );
+		$redis->hSet( $key, $rdname, $rdvalue );
 		if ( $key === 'webradios' ) {
-			$lines = "[playlist]\nNumberOfEntries=1\nFile1=$value\nTitle1=$name";
-			$fopen = fopen( "/mnt/MPD/Webradio/$name.pls", 'w');
+			$lines = "[playlist]\nNumberOfEntries=1\nFile1=".$data[ 1 ]."\nTitle1=".$data[ 0 ];
+			$fopen = fopen( '/mnt/MPD/Webradio/'.$data[ 0 ].'.pls', 'w');
 			fwrite( $fopen, $lines );
 			fclose( $fopen );
 		}
