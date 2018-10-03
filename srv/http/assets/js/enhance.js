@@ -1560,7 +1560,7 @@ function displayPlayback() {
 	}
 	$( '#cover-art, #coverartoverlay, #controls-cover' ).toggleClass( 'coversmall', GUI.display.coverlarge === '' )
 	$( '#sampling span' ).css( 'display', ( !GUI.display.time && GUI.display.coverlarge ) ? '' : 'display: inline' );
-	$( '#timepos' ).empty();
+	if ( GUI.display.time ) $( '#timepos' ).empty();
 	if ( GUI.activePlayer !== 'MPD' ) {
 		var source = GUI.activePlayer.toLowerCase();
 		$( '#iplayer' ).addClass( 'fa-'+ source ).removeClass( 'hide' );
