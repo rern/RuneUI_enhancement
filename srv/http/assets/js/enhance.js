@@ -1249,11 +1249,12 @@ function renderPlayback() {
 	} );
 	$( '#songposition' ).text( ( 1 + status.song ) +'/'+ status.playlistlength );
 	var ext = ( status.ext !== 'radio' ) ? '<wh> • </wh>' + status.ext : '';
-	if ( !GUI.display.time && GUI.display.coverlarge ) {
+	if ( !GUI.display.time ) {
 		var dot = '';
+		$( '#divpos, #format-bitrate' ).css( 'display', '' );
 	} else {
 		var dot = '<wh id="dot0"> • </wh>';
-		$( '#format-bitrate' ).css( 'display', window.innerWidth >= 500 ? '' : 'inline' );
+		$( '#divpos, #format-bitrate' ).css( 'display', 'inline' );
 	}
 	$( '#format-bitrate' ).html( dot + status.sampling + ext );
 	if ( status.ext !== 'radio' || status.activePlayer === 'Spotify' ) {
