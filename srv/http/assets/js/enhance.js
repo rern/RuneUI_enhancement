@@ -1206,7 +1206,7 @@ GUI.timeout = setTimeout( function() { // in case too long to get coverart
 }, 3000 );
 function setPlaybackOneload() {
 	clearTimeout( GUI.timeout );
-	if ( GUI.status.playlistlength ) $( '#starter' ).remove();
+	$( '#starter' ).remove();
 	$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
 }
 function setPlaybackBlank() {
@@ -1565,7 +1565,6 @@ function displayPlayback() {
 		$( '#play-group, #share-group, #vol-group' ).addClass( 'hide' );
 	}
 	// not scale webradio vu meter
-//	$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).toggleClass( 'coversmall', GUI.display.coverlarge === '' || $( '#album' ).text().slice( 0, 4 ) === 'http' );
 	if ( GUI.display.coverlarge === '' || $( '#album' ).text().slice( 0, 4 ) === 'http' ) {
 		$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).addClass( 'coversmall' )
 	} else {
@@ -1578,7 +1577,7 @@ function displayPlayback() {
 		var source = GUI.activePlayer.toLowerCase();
 		$( '#iplayer' ).addClass( 'fa-'+ source ).removeClass( 'hide' );
 	}
-	renderPlayback();
+//	renderPlayback();
 	displayCommon();
 }
 function displayIndexBar() {
