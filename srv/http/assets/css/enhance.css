@@ -1059,6 +1059,12 @@ wh, gr { font-weight: 300; }
 	font-weight: 300;
 	color: #e0e7ee;
 }
+#home-blocks h4 i {
+	font-size: 18px;
+	line-height: 18px;
+	width: unset;
+	height: unset;
+}
 .home-block:hover,
 .home-block:focus {
 	cursor: pointer;
