@@ -427,15 +427,20 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	
 	var path = $this.data( 'path' );
 	// get scroll position for back navigation
-	var current = $( '#db-currentpath' ).attr( 'path' );
-	GUI.dbscrolltop[ current ] = $( window ).scrollTop();
+	var currentpath = $( '#db-currentpath' ).attr( 'path' );
+	GUI.dbscrolltop[ currentpath ] = $( window ).scrollTop();
 	mutationLibrary.observe( observerLibrary, observerOption );
 	$( '#db-entries li' ).removeClass( 'active' );
 	$this.addClass( 'active' );
 	
+	if ( GUI.browsemode === 'artist' && currentpath !== 'Artists' ) {
+		var artist = currentpath;
+	} else if ( GUI.browsemode === 'album' ) {
+		var artist = $this.data( 'artist' ) || '';
+	} else {
+		var artist = '';
+	}
 	var mode = $this.attr( 'mode' );
-	var currentpath = $( '#db-currentpath' ).attr( 'path' );
-	var artist = ( GUI.browsemode === 'artist' && currentpath !== 'Artists' ) ? currentpath : '';
 	if ( [ 'dirble', 'jamendo', 'spotify' ].indexOf( mode ) === -1 ) {
 		getDB( {
 			  path       : path
@@ -1699,15 +1704,16 @@ function renderLibrary() {
 	displayLibrary();
 }
 function getDB( options ) {
+	console.log(options)
 	$( '#loader' ).removeClass( 'hide' );
 	var cmd = options.cmd || 'browse',
-		path = options.path ? options.path.replace( /"/g, '\"' ) : '',
+		path = options.path ? options.path.toString().replace( /"/g, '\"' ) : '',
 		browsemode = options.browsemode || 'file',
 		uplevel = options.uplevel || '',
 		plugin = options.plugin || '',
 		querytype = options.querytype || '',
 		args = options.args || '',
-		artist = options.artist ? options.artist.replace( /"/g, '\"' ) : '',
+		artist = options.artist ? options.artist.toString().replace( /"/g, '\"' ) : '',
 		mode,
 		command;
 	if ( !GUI.dbback && cmd !== 'search' && GUI.dbbrowsemode !== 'file' ) {
@@ -1733,11 +1739,11 @@ function getDB( options ) {
 	}
 	GUI.browsemode = browsemode;
 	var keyword = $( '#db-search-keyword' ).val();
-	keyword = keyword ? keyword.replace( /"/g, '\"' ) : '';
+	keyword = keyword ? keyword.toString().replace( /"/g, '\"' ) : '';
 	
 	if ( !plugin ) {
 		var currentpath = $( '#db-currentpath' ).attr( 'path' ); // for artist-album search
-		currentpath = currentpath ? currentpath.replace( /"/g, '\"' ) : '';
+		currentpath = currentpath ? currentpath.toString().replace( /"/g, '\"' ) : '';
 		var artistalbum = artist || currentpath;
 		var command = {
 			  file        : { mpc: 'mpc ls -f "%title%^^%time%^^%artist%^^%album%^^%file%" "'+ path +'"', list: 'file' }
@@ -2267,7 +2273,7 @@ function renderPlaylist() {
 	} );
 }
 function renderSavedPlaylist( name ) {
-	$.post( 'enhance.php', { getplaylist: 1, name: name.replace( /"/g, '\\"' ) }, function( data ) {
+	$.post( 'enhance.php', { getplaylist: 1, name: name.toString().replace( /"/g, '\\"' ) }, function( data ) {
 		var countradio = 0;
 		var content, pl, iconhtml, topline, bottomline, classradio, hidetotal;
 		content = iconhtml = topline =bottomline = classradio = hidetotal = '';
