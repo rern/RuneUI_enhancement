@@ -1251,10 +1251,9 @@ function renderPlayback() {
 	var ext = ( status.ext !== 'radio' ) ? '<wh> • </wh>' + status.ext : '';
 	if ( !GUI.display.time ) {
 		var dot = '';
-		$( '#divpos, #format-bitrate' ).css( 'display', '' );
 	} else {
 		var dot = '<wh id="dot0"> • </wh>';
-		$( '#divpos, #format-bitrate' ).css( 'display', 'inline' );
+		$( '#divpos, #format-bitrate' ).css( 'display', window.innerWidth < 500 ? 'inline' : '' );
 	}
 	$( '#format-bitrate' ).html( dot + status.sampling + ext );
 	if ( status.ext !== 'radio' || status.activePlayer === 'Spotify' ) {
