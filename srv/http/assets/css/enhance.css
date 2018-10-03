@@ -435,11 +435,13 @@ wh, gr { font-weight: 300; }
 	color: #587ca0
 }
 #sampling span {
-	display: inline-block;
 	padding: 0;
 }
-#format-bitrate {
-	display: block !important;
+#songposition, #timepos {
+	display: inline-block !important;
+}
+#timepos i {
+	color: #e0e7ee;
 }
 /* ---------------------- info scrolling ----------------------*/
 .scroll-left {
@@ -1764,7 +1766,6 @@ w {
 	#sampling {
 		height: 25px;
 	}
-	#sampling span,
 	#dot0 {
 		display: inline;
 	}
@@ -1774,7 +1775,7 @@ w {
 	#time-knob,
 	#coverart,
 	#volume-knob {
-		width: 55%;
+		width: 80%;
 		margin-bottom: 20px;
 	}
 	#share-group,
