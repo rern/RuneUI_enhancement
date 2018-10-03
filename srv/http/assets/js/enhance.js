@@ -1559,7 +1559,8 @@ function displayPlayback() {
 	if ( !GUI.display.buttons || window.innerHeight <= 320 || window.innerWidth < 499 ) {
 		$( '#play-group, #share-group, #vol-group' ).addClass( 'hide' );
 	}
-	$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).toggleClass( 'coversmall', GUI.display.coverlarge === '' )
+	// not scale webradio vu meter
+	$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).toggleClass( 'coversmall', GUI.display.coverlarge === '' || $( '#album' ).text().slice( 0, 4 ) === 'http' );
 	$( '#sampling span' ).css( 'display', ( !GUI.display.time && GUI.display.coverlarge ) ? '' : 'display: inline' );
 	if ( GUI.display.time ) $( '#timepos' ).empty();
 	if ( GUI.activePlayer !== 'MPD' ) {
