@@ -591,7 +591,8 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 	GUI.list = {};
 	GUI.list.path = $thisli.hasClass( 'db-webradio' ) ? $thisli.find( '.bl' ).text() : GUI.dbpath; // used in contextmenu
 	GUI.list.name = $thisli.hasClass( 'db-webradio' ) ? $thisli.find( '.sn' ).text() : $thisli.attr( 'liname' );
-	GUI.list.isfile = $thisli.find( 'i.db-icon' ).hasClass( 'fa-music' ); // used in contextmenu
+	var icon = $thisli.find( 'i.db-icon' );
+	GUI.list.isfile = icon.hasClass( 'fa-music' ) || icon.hasClass( 'fa-webradio' ); // file/dirble - used in contextmenu
 	if ( $( '#db-currentpath' ).attr( 'path' ) === 'Webradio' ) GUI.list.url = $thisli.find( '.bl' ).text();
 	var $menu = $( $this.data( 'target' ) );
 	$( '#db-entries li' ).removeClass( 'active' );
@@ -1924,6 +1925,7 @@ function parseDBdata( inputArr, i, respType, inpath, querytype ) {
 			}
 			break;
 		case 'Dirble':
+console.log(inputArr)
 			if ( querytype === '' || querytype === 'childs' ) {
 				var liname = inputArr.title;
 				var childClass = ( querytype === 'childs' ) ? ' db-dirble-child' : '';
@@ -1934,9 +1936,10 @@ function parseDBdata( inputArr, i, respType, inpath, querytype ) {
 					break; // Filter stations with no streams
 				}
 				var liname = inputArr.name;
-				content = '<li data-path="'+ inputArr.name +' | '+ inputArr.streams[ 0 ].stream +'" mode="dirble" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-dirble"></i><i class="fa fa-webradio db-icon"></i>';
+				var url = inputArr.streams[ 0 ].stream
+				content = '<li data-path="'+ url +'" mode="dirble" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-dirble"></i><i class="fa fa-webradio db-icon"></i>';
 				content += '<span class="sn">'+ liname +'&ensp;<span>( '+ inputArr.country +' )</span></span>';
-				content += '<span class="bl">'+ ( inputArr.website ? inputArr.website : '-no website-' ) +'</span></li>';
+				content += '<span class="bl">'+ url +'</span></li>';
 			}
 			break;
 		case 'Jamendo':
@@ -2181,12 +2184,12 @@ function setPlaylistScroll() {
 			var scrollpos = $liactive.offset().top - $( '#pl-entries' ).offset().top - ( 49 * 3 );
 			$( 'html, body' ).scrollTop( scrollpos );
 			if ( state === 'pause' ) {
-				var elapsedtxt = second2HMS( elapsed ) + ( GUI.status.ext === 'radio' ? '' : ' / ' );
+				var elapsedtxt = second2HMS( elapsed ) + ( $liactive.hasClass( 'radio' ) ? '' : ' / ' );
 				$elapsed.html( '<i class="fa fa-pause"></i> '+ elapsedtxt );
 			} else if ( state === 'play' ) {
 				GUI.intElapsed = setInterval( function() {
 					elapsed++;
-					var elapsedtxt = second2HMS( elapsed ) + ( GUI.status.ext === 'radio' ? '' : ' / ' );
+					var elapsedtxt = second2HMS( elapsed ) + ( $liactive.hasClass( 'radio' ) ? '' : ' / ' );
 					$elapsed.html( '<i class="fa fa-play"></i> '+ elapsedtxt );
 				}, 1000 );
 			} else {
@@ -2224,7 +2227,8 @@ function renderPlaylist() {
 			iconhtml = '<i class="fa fa-webradio pl-icon"></i>';
 			classradio = 1;
 			countradio++
-			topline = pl.title +'&ensp;<span class="elapsed"></span>';
+			var title = pl.title || pl.file;
+			topline =  title +'&ensp;<span class="elapsed"></span>';
 			bottomline = pl.file;
 		} else {
 			iconhtml = '<i class="fa fa-music pl-icon"></i>';
