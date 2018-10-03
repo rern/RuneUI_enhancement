@@ -1565,9 +1565,15 @@ function displayPlayback() {
 		$( '#play-group, #share-group, #vol-group' ).addClass( 'hide' );
 	}
 	// not scale webradio vu meter
-	$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).toggleClass( 'coversmall', GUI.display.coverlarge === '' || $( '#album' ).text().slice( 0, 4 ) === 'http' );
-	$( '#sampling span' ).css( 'display', ( !GUI.display.time && GUI.display.coverlarge ) ? '' : 'display: inline' );
+//	$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).toggleClass( 'coversmall', GUI.display.coverlarge === '' || $( '#album' ).text().slice( 0, 4 ) === 'http' );
+	if ( GUI.display.coverlarge === '' || $( '#album' ).text().slice( 0, 4 ) === 'http' ) {
+		$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).addClass( 'coversmall' )
+	} else {
+		$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).removeClass( 'coversmall' )
+		$( '#sampling span' ).css( 'display', !GUI.display.time ? '' : 'display: inline' );
+	}
 	if ( GUI.display.time ) $( '#timepos' ).empty();
+	if ( window.innerWidth < 500 ) $( '#playback-row' ).css( 'margin-top', GUI.display.time ? '10px' : '30px' );
 	if ( GUI.activePlayer !== 'MPD' ) {
 		var source = GUI.activePlayer.toLowerCase();
 		$( '#iplayer' ).addClass( 'fa-'+ source ).removeClass( 'hide' );
@@ -1704,7 +1710,6 @@ function renderLibrary() {
 	displayLibrary();
 }
 function getDB( options ) {
-	console.log(options)
 	$( '#loader' ).removeClass( 'hide' );
 	var cmd = options.cmd || 'browse',
 		path = options.path ? options.path.toString().replace( /"/g, '\"' ) : '',
