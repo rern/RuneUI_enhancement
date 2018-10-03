@@ -1677,7 +1677,7 @@ w {
 /* ---------------------- responsive ----------------------*/
 @media(max-width: 749px) {
 	#playback-row {
-		margin-top: 0;
+/*		margin-top: 0;*/
 	}
 	#time-knob,
 	#coverart,
