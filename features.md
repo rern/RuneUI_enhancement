@@ -74,6 +74,7 @@ Rely on MPD supplied data which has some limitations.
 	- Selectable blinking dots or elapsed time in webradio
 	- Start time within song can be set while stop
 	- Show elapsed in gray while pause
+	- Show elapsed and duration with song info while hidden
 - Coverart
 	- Set Large Coverart to scale up with page width
 	- Get local files first (easiest to manage ang can be used to overide the ones in ID3tag)
