@@ -45,7 +45,7 @@ Rely on MPD supplied data which has some limitations.
 	- Larger new icons
 	- Add apuse button
 	- Show database updating as blinking icon (show as icon in Time knob while hidden)
-- Toggle show/hide
+- Selectable show/hide
 	- Top-bottom bars
 	- Time Knob
 	- Cover art
@@ -56,7 +56,6 @@ Rely on MPD supplied data which has some limitations.
 ### Playback:
 - Coverart / Time knob as playback controls
 	- Can be used as a replacement while hide top-bottom bars and buttons
-	- Can be set to scale up with page width
 	- Show overlay guides by tapping center-top of Coverart / Time 
 - Artist
 	- Improved artists' bio
@@ -76,6 +75,7 @@ Rely on MPD supplied data which has some limitations.
 	- Start time within song can be set while stop
 	- Show elapsed in gray while pause
 - Coverart
+	- Can be set to scale up with page width
 	- Get local files first (easiest to manage ang can be used to overide the ones in ID3tag)
 	- Extract from ID3tag if local files not available (used for songs from various albums in the same directory)
 	- Get from last.fm if not locally available
