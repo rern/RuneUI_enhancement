@@ -56,6 +56,7 @@ Rely on MPD supplied data which has some limitations.
 ### Playback:
 - Coverart / Time knob as playback controls
 	- Can be used as a replacement while hide top-bottom bars and buttons
+	- Can be set to scale up with page width
 	- Show overlay guides by tapping center-top of Coverart / Time 
 - Artist
 	- Improved artists' bio
