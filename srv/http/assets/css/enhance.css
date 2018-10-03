@@ -1683,9 +1683,6 @@ w {
 @media (max-width: 374px) { #home-blocks .col-md-3 { width: 100%; } }
 /* ---------------------- responsive ----------------------*/
 @media(max-width: 749px) {
-	#playback-row {
-/*		margin-top: 0;*/
-	}
 	#time-knob,
 	#coverart,
 	#volume-knob,
@@ -1694,7 +1691,6 @@ w {
 	#vol-group	{
 		width: 45%;
 		min-width: 245px;
-		margin-top: 10px;
 	}
 	#time-knob {
 	    order: 1;
