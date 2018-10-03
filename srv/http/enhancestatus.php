@@ -144,15 +144,11 @@ $ext = strtoupper( $pathinfo[ 'extension' ] );
 $status[ 'ext' ] = ( substr($status[ 'file' ], 0, 4 ) !== 'http' ) ? $ext : 'radio';
 if ( $status[ 'ext' ] === 'radio' ) {
 	// before 1st play: no 'Name:' - use 'Title:' value instead
-	$status[ 'Artist' ] = isset( $status[ 'Name' ] ) ? $status[ 'Name' ] : $status[ 'Tile' ];
+	$status[ 'Artist' ] = isset( $status[ 'Name' ] ) ? $status[ 'Name' ] : $status[ 'Title' ];
 	$status[ 'Title' ] = ( $status[ 'state' ] === 'stop' ) ? '' : $status[ 'Title' ];
 	$status[ 'Album' ] = $status[ 'file' ];
 	$status[ 'time' ] = '';
 }
-
-$webradios = $redis->hGetAll( 'webradios' );
-$webradioname = array_flip( $webradios );
-$name = $webradioname[ $file ];
 
 // sampling >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 function samplingline( $bitdepth, $samplerate, $bitrate ) {
@@ -176,6 +172,9 @@ function samplingline( $bitdepth, $samplerate, $bitrate ) {
 	return $bitdepth.$samplerate.$bitrate;
 }
 
+$webradios = $redis->hGetAll( 'webradios' );
+$webradioname = array_flip( $webradios );
+$name = $webradioname[ $status[ 'file' ] ];
 if ( $status[ 'state' ] === 'play' ) {
 	// lossless - no bitdepth
 	$bitdepth = ( $status[ 'ext' ] === 'radio' ) ? '' : $status[ 'bitdepth' ];
@@ -190,9 +189,8 @@ if ( $status[ 'state' ] === 'play' ) {
 // state: stop / pause >>>>>>>>>>
 // webradio
 if ( $status[ 'ext' ] === 'radio' ) {
-	$webradios = $redis->hGetAll( 'webradios' );
-	$webradioname = array_flip( $webradios );
-	if ( $sampling = $redis->hGet( 'sampling', $name ) ) $status[ 'sampling' ] = $sampling;
+	$sampling = $redis->hGet( 'sampling', $name );
+	$status[ 'sampling' ] = $sampling ? $sampling : '&nbsp;';
 	echo json_encode( $status, JSON_NUMERIC_CHECK );
 	exit();
 }
