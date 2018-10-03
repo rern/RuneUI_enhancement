@@ -1515,7 +1515,7 @@ function displayAirPlay() {
 		$( '#total' ).empty();
 		$( '#iplayer' ).addClass( 'fa-airplay' ).removeClass( 'hide' );
 	} else {
-		$( '#coverart, #share-group' ).css( 'width', '60%' );
+		$( '#coverart, #share-group' ).css( 'width', '80%' );
 	}
 }
 function PlaybackCssOrder( el, ord ) {
@@ -1553,12 +1553,12 @@ function displayPlayback() {
 		$( '#playback-row' ).css( 'max-width', '900px' );
 		$( '#time-knob, #coverart, #volume-knob, #play-group, #share-group, #vol-group' ).css( 'width', '45%' );
 	} else if ( i === 1 ) {
-		$( '#time-knob, #coverart, #volume-knob, #play-group, #share-group, #vol-group' ).css( 'width', '60%' );
+		$( '#time-knob, #coverart, #volume-knob, #play-group, #share-group, #vol-group' ).css( 'width', '80%' );
 	}
 	if ( !GUI.display.buttons || window.innerHeight <= 320 || window.innerWidth < 499 ) {
 		$( '#play-group, #share-group, #vol-group' ).addClass( 'hide' );
 	}
-	$( '#cover-art, #coverartoverlay, #controls-cover' ).toggleClass( 'coversmall', GUI.display.coverlarge === '' )
+	$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).toggleClass( 'coversmall', GUI.display.coverlarge === '' )
 	$( '#sampling span' ).css( 'display', ( !GUI.display.time && GUI.display.coverlarge ) ? '' : 'display: inline' );
 	if ( GUI.display.time ) $( '#timepos' ).empty();
 	if ( GUI.activePlayer !== 'MPD' ) {
