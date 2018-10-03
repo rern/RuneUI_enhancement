@@ -1638,15 +1638,15 @@ function renderLibrary() {
 		var bookmarkL = bookmarks.length;
 		for ( i = 0; i < bookmarkL; i++ ) {
 			var bookmark = bookmarks[ i ];
-			content += divOpen +'<div class="home-block home-bookmark" data-name="'+ bookmark.name +'" data-path="'+ bookmark.path +'"><i class="fa fa-bookmark"></i><h4><span>' + bookmark.name +'&ensp;<gr>'+ numFormat( bookmark.count ) +' ♫</gr></span></h4></div></div>';
+			content += divOpen +'<div class="home-block home-bookmark" data-name="'+ bookmark.name +'" data-path="'+ bookmark.path +'"><i class="fa fa-bookmark"></i><h4><span>' + bookmark.name +'&ensp;<gr>'+ numFormat( bookmark.count ) +' <i class="fa fa-music"></i></gr></span></h4></div></div>';
 		}
 	}
 	// sd
-	content += divOpen +'<div id="home-sd" class="home-block" data-path="LocalStorage"><i class="fa fa-microsd"></i><h4>SD card<gr>&ensp;'+ numFormat( status.sd ) +' ♫</gr></h4></div></div>';
+	content += divOpen +'<div id="home-sd" class="home-block" data-path="LocalStorage"><i class="fa fa-microsd"></i><h4>SD card<gr>&ensp;'+ numFormat( status.sd ) +' <i class="fa fa-music"></i></gr></h4></div></div>';
 	// usb
 	content += divOpen +'<div id="home-usb" class="home-block" data-path="USB"><i class="fa fa-usbdrive"></i><h4>USB drives<gr>&ensp;'+ status.usb +'</gr></h4></div></div>';
 	// nas
-	content += divOpen +'<a id="home-nas" class="home-block" data-path="NAS"><i class="fa fa-network"></i><h4>Network drives<gr>&ensp;'+ status.nas +'</gr></h4></a></div>';
+	content += divOpen +'<a id="home-nas" class="home-block" data-path="NAS"><i class="fa fa-network"></i><h4>Network mounts<gr>&ensp;'+ status.nas +'</gr></h4></a></div>';
 	// webradio
 	content += divOpen +'<div id="home-webradio" class="home-block" data-path="Webradio"><i class="fa fa-webradio"></i><h4>Webradios<gr>&ensp;'+ numFormat( status.webradio ) +'</gr></h4></div></div>';
 	// albums
