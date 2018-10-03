@@ -1152,13 +1152,13 @@ function setButton() {
 	setButtonUpdate();
 	if ( GUI.display.update ) {
 		if ( GUI.display.bars ) {
-			$( '#badge' ).text( GUI.display.update ).show();
+			$( '#badge' ).text( GUI.display.update ).removeClass( 'hide' );
 			$( '#iaddons' ).addClass( 'hide' );
 		} else {
 			$( '#iaddons' ).removeClass( 'hide' );
 		}
 	} else {
-		$( '#badge' ).empty().hide();
+		$( '#badge' ).empty().addClass( 'hide' );
 	}
 }
 function numFormat( num ) {
