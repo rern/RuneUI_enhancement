@@ -231,7 +231,7 @@ $menu.= menudiv( 'file', $html );
 $menudiv = '';
 
 $html = menucommon( 'add', 'addplay', 'replace', 'replaceplay' );
-$html.= menuli( 'wrsave', 'save', 'Save in Webradios' );
+$html.= menuli( 'dirblesave', 'save', 'Save in Webradios' );
 $menu.= menudiv( 'dirble', $html );
 $menudiv = '';
 
