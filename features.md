@@ -76,7 +76,7 @@ Rely on MPD supplied data which has some limitations.
 	- Show elapsed in gray while pause
 	- Show elapsed and duration with song info while hidden
 - Coverart
-	- Set Large Coverart to scale up with page width
+	- Set Large Coverart to scale up with page width (except webradio vu meter)
 	- Get local files first (easiest to manage ang can be used to overide the ones in ID3tag)
 	- Extract from ID3tag if local files not available (used for songs from various albums in the same directory)
 	- Get from last.fm if not locally available
