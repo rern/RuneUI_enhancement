@@ -13,7 +13,7 @@
 					<span id="album"></span>
 				</div>
 				<div id="sampling">
-					<span id="playlist-position"><span></span></span>
+					<span id="songposition"></span><span id="timepos"></span>
 					<span id="format-bitrate"></span>
 				</div>
 			</div>
