@@ -1207,7 +1207,7 @@ function setPlaybackBlank() {
 	$( '#playback-controls' ).addClass( 'hide' );
 	$( '#divartist, #divsong, #divalbum' ).removeClass( 'scroll-left' );
 	$( '#song' ).html( '<i class="fa fa-plus-circle"></i>' );
-	$( '#playlist-position span' ).text( 'Add something from Library' );
+	$( '#songposition' ).text( 'Add something from Library' );
 	$( '#artist, #album, #format-bitrate, #elapsed, #total' ).empty();
 	$( '#cover-art' )
 		.attr( 'src', 'assets/img/cover-default-runeaudio.png' )
@@ -1230,11 +1230,9 @@ function renderPlayback() {
 			unmuteColor();
 		}
 	}
-	
 	clearInterval( GUI.intKnob );
 	clearInterval( GUI.intElapsed );
 	$( '#time' ).roundSlider( 'setValue', 0 );
-	
 	// empty queue
 	if ( !status.playlistlength ) {
 		setPlaybackBlank();
@@ -1248,9 +1246,7 @@ function renderPlayback() {
 		// scroll info text
 		scrollLongText();
 	} );
-	
-	$( '#playlist-position span' ).html( ( Number( status.song ) + 1 ) +'/'+ status.playlistlength );
-	
+	$( '#songposition' ).text( ( 1 + status.song ) +'/'+ status.playlistlength );
 	var ext = ( status.ext !== 'radio' ) ? '<wh> • </wh>' + status.ext : '';
 	$( '#format-bitrate' ).html( '<wh id="dot0"> • </wh>' + status.sampling + ext );
 	if ( status.ext !== 'radio' || status.activePlayer === 'Spotify' ) {
@@ -1292,53 +1288,72 @@ function renderPlayback() {
 	}
 	
 	// time
-	time = status.Time;
-	$( '#total' ).text( second2HMS( time ) );
+	var time = status.Time;
+	var timehms = second2HMS( time );
+	$( '#total' ).text( timehms );
 	// stop <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-	if ( $( '#time-knob' ).hasClass( 'hide' ) ) return
 	if ( status.state === 'stop' ) {
 		$( '#song' ).css( 'color', '' );
-		$( '#elapsed' ).text( $( '#total' ).text() ).css( 'color', '#587ca0' );
-		$( '#total' ).empty();
+		if ( GUI.display.time ) {
+			$( '#elapsed' ).text( timehms ).css( 'color', '#587ca0' );
+			$( '#total, #timepos' ).empty();
+		} else {
+			$( '#timepos' ).html( '&ensp;<i class="fa fa-stop"></i>&ensp;'+ timehms );
+		}
 		return
+		
 	} else {
 		$( '#elapsed, #total' ).css( 'color', '' );
 	}
 	
+	$( '#song' ).css( 'color', status.state === 'pause' ? '#587ca0' : '' );
+	
 	var elapsed = status.elapsed;
-	var position = Math.round( elapsed / time * 1000 );
-	$( '#time' ).roundSlider( 'setValue', position );
-	$( '#elapsed' ).text( second2HMS( elapsed ) );
+	var elapsedhms = second2HMS( elapsed );
 	// pause <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	if ( status.state === 'pause' ) {
-		$( '#song' ).css( 'color', '#587ca0' );
-		$( '#elapsed' ).css( 'color', '#0095d8' );
-		$( '#total' ).css( 'color', '#e0e7ee' );
+		if ( GUI.display.time ) {
+			var position = Math.round( elapsed / time * 1000 );
+			$( '#time' ).roundSlider( 'setValue', position );
+			$( '#elapsed' ).text( elapsedhms );
+			$( '#elapsed' ).css( 'color', '#0095d8' );
+			$( '#total' ).css( 'color', '#e0e7ee' );
+			$( '#timepos' ).empty();
+		} else {
+			$( '#timepos' ).html( '&ensp;<i class="fa fa-pause"></i>&ensp;'+ elapsedhms +' / '+ timehms );
+		}
 		return
+		
 	} else {
-		$( '#song' ).css( 'color', '' );
 		$( '#elapsed' ).css( 'color', '' );
 		$( '#total' ).css( 'color', '' );
 	}
 //		var localbrowser = ( location.hostname === 'localhost' || location.hostname === '127.0.0.1' ) ? 10 : 1;
 //		var step = 1 * localbrowser; // fix: reduce cpu cycle on local browser
 //	var step = 1;
-	
-	GUI.intKnob = setInterval( function() {
-		position++;
-		if ( position === 1000 ) {
-			clearInterval( GUI.intKnob );
-			clearInterval( GUI.intElapsed );
-			$( '#elapsed' ).empty();
-		}
-		$( '#time' ).roundSlider( 'setValue', position );
-	}, time );
-	
-	GUI.intElapsed = setInterval( function() {
-		elapsed++;
-		$( '#elapsed' ).text( second2HMS( elapsed ) );
-	}, 1000 );
-	
+	if ( GUI.display.time ) {
+		GUI.intKnob = setInterval( function() {
+			position++;
+			if ( position === 1000 ) {
+				clearInterval( GUI.intKnob );
+				clearInterval( GUI.intElapsed );
+				$( '#elapsed' ).empty();
+			}
+			$( '#time' ).roundSlider( 'setValue', position );
+		}, time );
+		
+		GUI.intElapsed = setInterval( function() {
+			elapsed++;
+			elapsedhms = second2HMS( elapsed );
+			$( '#elapsed' ).text( second2HMS( elapsedhms ) );
+		}, 1000 );
+	} else {
+		GUI.intElapsed = setInterval( function() {
+			elapsed++;
+			elapsedhms = second2HMS( elapsed );
+			$( '#timepos' ).html( '&ensp;<i class="fa fa-play"></i>&ensp;'+ elapsedhms +' / '+ timehms );
+		}, 1000 );
+	}
 	// playlist current song ( and lyrics if installed )
 	if ( status.Title !== previoussong || status.Album !== previousalbum ) {
 		if ( $( '#lyricscontainer' ).length && $( '#lyricscontainer' ).is( ':visible' ) )  getlyrics();
@@ -1466,7 +1481,7 @@ function displayCommon() {
 function displayAirPlay() {
 	$( '#playback-controls' ).addClass( 'hide' );
 	$( '#divartist, #divsong, #divalbum' ).removeClass( 'scroll-left' );
-	$( '#playlist-position span, #format-bitrate, #total' ).empty();
+	$( '#songposition, #format-bitrate, #total' ).empty();
 	$( '#artist' ).html( GUI.airplay.currentartist );
 	$( '#song' ).html( GUI.airplay.currentsong );
 	$( '#album' ).html( GUI.airplay.currentalbum );
@@ -1540,6 +1555,7 @@ function displayPlayback() {
 		var source = GUI.activePlayer.toLowerCase();
 		$( '#iplayer' ).addClass( 'fa-'+ source ).removeClass( 'hide' );
 	}
+	renderPlayback();
 	displayCommon();
 }
 function displayIndexBar() {
