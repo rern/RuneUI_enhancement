@@ -1232,10 +1232,11 @@ function renderPlayback() {
 	}
 	clearInterval( GUI.intKnob );
 	clearInterval( GUI.intElapsed );
-	$( '#time' ).roundSlider( 'setValue', 0 );
+//	$( '#time' ).roundSlider( 'setValue', 0 );
 	// empty queue
 	if ( !status.playlistlength ) {
 		setPlaybackBlank();
+		$( '#time' ).roundSlider( 'setValue', 0 );
 		return
 	}
 	
@@ -1248,7 +1249,13 @@ function renderPlayback() {
 	} );
 	$( '#songposition' ).text( ( 1 + status.song ) +'/'+ status.playlistlength );
 	var ext = ( status.ext !== 'radio' ) ? '<wh> • </wh>' + status.ext : '';
-	$( '#format-bitrate' ).html( '<wh id="dot0"> • </wh>' + status.sampling + ext );
+	if ( !GUI.display.time && GUI.display.coverlarge ) {
+		var dot = '';
+	} else {
+		var dot = '<wh id="dot0"> • </wh>';
+		$( '#format-bitrate' ).css( 'display', window.innerWidth >= 500 ? '' : 'inline' );
+	}
+	$( '#format-bitrate' ).html( dot + status.sampling + ext );
 	if ( status.ext !== 'radio' || status.activePlayer === 'Spotify' ) {
 		if ( status.Album !== previousalbum ) {
 			$( '#coverartoverlay' ).addClass( 'hide' );
@@ -1291,10 +1298,12 @@ function renderPlayback() {
 	var time = status.Time;
 	var timehms = second2HMS( time );
 	$( '#total' ).text( timehms );
+//	$( '#elapsed' ).empty();
 	// stop <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	if ( status.state === 'stop' ) {
 		$( '#song' ).css( 'color', '' );
 		if ( GUI.display.time ) {
+			$( '#time' ).roundSlider( 'setValue', 0 );
 			$( '#elapsed' ).text( timehms ).css( 'color', '#587ca0' );
 			$( '#total, #timepos' ).empty();
 		} else {
@@ -1310,10 +1319,10 @@ function renderPlayback() {
 	
 	var elapsed = status.elapsed;
 	var elapsedhms = second2HMS( elapsed );
+	var position = Math.round( elapsed / time * 1000 );
 	// pause <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	if ( status.state === 'pause' ) {
 		if ( GUI.display.time ) {
-			var position = Math.round( elapsed / time * 1000 );
 			$( '#time' ).roundSlider( 'setValue', position );
 			$( '#elapsed' ).text( elapsedhms );
 			$( '#elapsed' ).css( 'color', '#0095d8' );
@@ -1341,11 +1350,10 @@ function renderPlayback() {
 			}
 			$( '#time' ).roundSlider( 'setValue', position );
 		}, time );
-		
 		GUI.intElapsed = setInterval( function() {
 			elapsed++;
 			elapsedhms = second2HMS( elapsed );
-			$( '#elapsed' ).text( second2HMS( elapsedhms ) );
+			$( '#elapsed' ).text( elapsedhms );
 		}, 1000 );
 	} else {
 		GUI.intElapsed = setInterval( function() {
@@ -1551,6 +1559,8 @@ function displayPlayback() {
 		$( '#play-group, #share-group, #vol-group' ).addClass( 'hide' );
 	}
 	$( '#cover-art, #coverartoverlay, #controls-cover' ).toggleClass( 'coversmall', GUI.display.coverlarge === '' )
+	$( '#sampling span' ).css( 'display', ( !GUI.display.time && GUI.display.coverlarge ) ? '' : 'display: inline' );
+	$( '#timepos' ).empty();
 	if ( GUI.activePlayer !== 'MPD' ) {
 		var source = GUI.activePlayer.toLowerCase();
 		$( '#iplayer' ).addClass( 'fa-'+ source ).removeClass( 'hide' );
@@ -1644,19 +1654,19 @@ function renderLibrary() {
 	// sd
 	content += divOpen +'<div id="home-sd" class="home-block" data-path="LocalStorage"><i class="fa fa-microsd"></i><h4>SD<gr>&ensp;'+ numFormat( status.sd ) +' <i class="fa fa-music"></i></gr></h4></div></div>';
 	// usb
-	content += divOpen +'<div id="home-usb" class="home-block" data-path="USB"><i class="fa fa-usbdrive"></i><h4>USBs<gr>&ensp;'+ status.usb +'</gr></h4></div></div>';
+	content += divOpen +'<div id="home-usb" class="home-block" data-path="USB"><i class="fa fa-usbdrive"></i><h4>USB<gr>&ensp;'+ status.usb +'</gr></h4></div></div>';
 	// nas
-	content += divOpen +'<a id="home-nas" class="home-block" data-path="NAS"><i class="fa fa-network"></i><h4>Networks<gr>&ensp;'+ status.nas +'</gr></h4></a></div>';
+	content += divOpen +'<a id="home-nas" class="home-block" data-path="NAS"><i class="fa fa-network"></i><h4>Network<gr>&ensp;'+ status.nas +'</gr></h4></a></div>';
 	// webradio
-	content += divOpen +'<div id="home-webradio" class="home-block" data-path="Webradio"><i class="fa fa-webradio"></i><h4>Webradios<gr>&ensp;'+ numFormat( status.webradio ) +'</gr></h4></div></div>';
+	content += divOpen +'<div id="home-webradio" class="home-block" data-path="Webradio"><i class="fa fa-webradio"></i><h4>Webradio<gr>&ensp;'+ numFormat( status.webradio ) +'</gr></h4></div></div>';
 	// albums
-	content += divOpen +'<div id="home-album" class="home-block" data-path="Albums" data-browsemode="album"><i class="fa fa-album"></i><h4>Albums<gr>&ensp;'+ numFormat( status.album ) +'</gr></h4></div></div>';
+	content += divOpen +'<div id="home-album" class="home-block" data-path="Albums" data-browsemode="album"><i class="fa fa-album"></i><h4>Album<gr>&ensp;'+ numFormat( status.album ) +'</gr></h4></div></div>';
 	// artist
-	content += divOpen +'<div id="home-artist" class="home-block" data-path="Artists" data-browsemode="artist"><i class="fa fa-artist"></i><h4>Artists<gr>&ensp;'+ numFormat( status.artist ) +'</gr></h4></div></div>';
+	content += divOpen +'<div id="home-artist" class="home-block" data-path="Artists" data-browsemode="artist"><i class="fa fa-artist"></i><h4>Artist<gr>&ensp;'+ numFormat( status.artist ) +'</gr></h4></div></div>';
 	// composer
-	content += divOpen +'<div id="home-composer" class="home-block" data-path="Composer" data-browsemode="composer"><i class="fa fa-composer"></i><h4>Composers<gr>&ensp;'+ numFormat( status.composer ) +'</gr></h4></div></div>';
+	content += divOpen +'<div id="home-composer" class="home-block" data-path="Composer" data-browsemode="composer"><i class="fa fa-composer"></i><h4>Composer<gr>&ensp;'+ numFormat( status.composer ) +'</gr></h4></div></div>';
 	// genre
-	content += divOpen +'<div id="home-genre" class="home-block" data-path="Genres" data-browsemode="genre"><i class="fa fa-genre"></i><h4>Genres<gr>&ensp;'+ numFormat( status.genre ) +'</gr></h4></div></div>';
+	content += divOpen +'<div id="home-genre" class="home-block" data-path="Genres" data-browsemode="genre"><i class="fa fa-genre"></i><h4>Genre<gr>&ensp;'+ numFormat( status.genre ) +'</gr></h4></div></div>';
 	// spotify
 	if ( status.spotify ) {
 		var sw, data = '';
