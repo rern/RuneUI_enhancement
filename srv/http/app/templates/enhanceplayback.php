@@ -13,7 +13,7 @@
 					<span id="album"></span>
 				</div>
 				<div id="sampling">
-					<span id="songposition"></span><span id="timepos"></span>
+					<div id="divpos"><span id="songposition"></span><span id="timepos"></span></div>
 					<span id="format-bitrate"></span>
 				</div>
 			</div>
@@ -50,6 +50,7 @@
 					</div>
 				</div>
 				<div id="coverart">
+					<div id="divcover">
 					<img id="cover-art" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
 					<input id="vu" type="hidden" value="<?=$this->asset('/img/vu.gif')?>">
 					<input id="vustop" type="hidden" value="<?=$this->asset('/img/vustop.gif')?>">
@@ -64,6 +65,7 @@
 					<div id="coverBL" class="covermap r3 c1 ws hs"></div>
 					<div id="coverB" class="covermap r3 c2 wl hs"></div>
 					<div id="coverBR" class="covermap r3 c3 ws hs"></div>
+					</div>
 				</div>
 				<div id="share-group">
 					<div class="btn-group">
