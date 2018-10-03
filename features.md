@@ -84,7 +84,7 @@ Rely on MPD supplied data which has some limitations.
 	- Show VU meter in webradio - animated while play
 - Volume
 	- Show pre-mute level instead of 0 on mute
-	- Maintain pre-mute level to and get from local database
+	- Maintain pre-mute level across page refresh and clients
 - Buttons
 	- Show as icon in Time knob while hidden
 		
