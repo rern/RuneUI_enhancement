@@ -1200,7 +1200,7 @@ GUI.timeout = setTimeout( function() { // in case too long to get coverart
 }, 3000 );
 function setPlaybackOneload() {
 	clearTimeout( GUI.timeout );
-	$( '#starter' ).remove();
+	if ( GUI.status.playlistlength ) $( '#starter' ).remove();
 	$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
 }
 function setPlaybackBlank() {
@@ -1232,7 +1232,6 @@ function renderPlayback() {
 	}
 	clearInterval( GUI.intKnob );
 	clearInterval( GUI.intElapsed );
-//	$( '#time' ).roundSlider( 'setValue', 0 );
 	// empty queue
 	if ( !status.playlistlength ) {
 		setPlaybackBlank();
@@ -1319,6 +1318,7 @@ function renderPlayback() {
 	
 	var elapsed = status.elapsed;
 	var elapsedhms = second2HMS( elapsed );
+	if ( !elapsedhms ) $( '#elapsed' ).empty();
 	var position = Math.round( elapsed / time * 1000 );
 	// pause <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	if ( status.state === 'pause' ) {
