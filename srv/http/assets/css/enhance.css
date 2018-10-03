@@ -437,8 +437,8 @@ wh, gr { font-weight: 300; }
 #sampling span {
 	padding: 0;
 }
-#songposition, #timepos {
-	display: inline-block !important;
+#divpos span {
+	display: inline;
 }
 #timepos i {
 	color: #e0e7ee;
