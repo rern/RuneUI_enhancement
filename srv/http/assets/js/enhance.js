@@ -206,7 +206,8 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 	if ( GUI.local ) return
 	
 	var type = id.replace( 'home-', '' );
-	if ( !GUI.libraryhome[ type ] && !$this.hasClass( 'home-bookmark' ) ) {
+	GUI.plugin = $this.data( 'plugin' );
+	if ( !GUI.libraryhome[ type ] && !$this.hasClass( 'home-bookmark' ) && !GUI.plugin ) {
 		if ( type === 'usb' ) {
 			location.href = '/sources';
 		} else if ( type === 'nas' ) {
@@ -216,7 +217,7 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 		}
 		return
 	}
-	
+
 	if ( e.target.id === 'home-block-edit' ) {
 		bookmarkRename( $this.data( 'name' ), $this.data( 'path' ), $this )
 	} else if ( e.target.id === 'home-block-remove' ) {
@@ -225,7 +226,6 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 		GUI.dblist = 1;
 		mutationLibrary.observe( observerLibrary, observerOption );
 		var browsemode = $this.data( 'browsemode' );
-		GUI.plugin = $this.data( 'plugin' );
 		GUI.dbbrowsemode = browsemode ? browsemode : GUI.plugin ? GUI.plugin : 'file';
 		getDB( {
 			  browsemode : browsemode
@@ -1775,7 +1775,7 @@ function getDB( options ) {
 		}, 'json' );
 		return
 	}
-	
+
 	if ( plugin === 'Spotify' ) {
 		$.post( '/db/?cmd=spotify', { plid: args }, function( data ) {
 			populateDB( data, path, plugin, querytype, uplevel, arg );
@@ -2083,14 +2083,14 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 		  LocalStorage  : '<i class="fa fa-microsd"></i>'
 		, USB           : '<i class="fa fa-usbdrive"></i>'
 		, NAS           : '<i class="fa fa-network"></i>'
-		, album         : [ '<i class="fa fa-album"></i>',    'ALBUMS' ]
-		, artist        : [ '<i class="fa fa-artist"></i>',   'ARTISTS' ]
-		, genre         : [ '<i class="fa fa-genre"></i>',    'GENRES' ]
-		, composer      : [ '<i class="fa fa-composer"></i>', 'COMPOSERS' ]
-		, composeralbum : [ '<i class="fa fa-composer"></i>', 'COMPOSERS' ]
-		, Dirble        : [ '<i class="fa fa-dirble"></i>',   'DIRBLE' ]
-		, Jamendo       : [ '<i class="fa fa-jamendo"></i>',  'JAMENDO' ]
-		, Spotify       : [ '<i class="fa fa-spotify"></i>',  'SPOTIFY' ]
+		, album         : [ '<i class="fa fa-album"></i>',    'ALBUM' ]
+		, artist        : [ '<i class="fa fa-artist"></i>',   'ARTIST' ]
+		, genre         : [ '<i class="fa fa-genre"></i>',    'GENRE' ]
+		, composer      : [ '<i class="fa fa-composer"></i>', 'COMPOSER' ]
+		, composeralbum : [ '<i class="fa fa-composer"></i>', 'COMPOSER' ]
+		, Dirble        : '<i class="fa fa-dirble"></i>'
+		, Jamendo       : '<i class="fa fa-jamendo"></i>'
+		, Spotify       : '<i class="fa fa-spotify"></i>'
 	}
 	var mode = {
 		  album    : 'Albums'
