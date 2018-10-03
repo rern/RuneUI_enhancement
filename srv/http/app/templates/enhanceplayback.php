@@ -230,7 +230,7 @@ $html.= menuli( 'lastfmreplaceplay', 'lastfm', 'Last.fm playlist' );
 $menu.= menudiv( 'file', $html );
 $menudiv = '';
 
-$html = menucommon( 'wradd', 'wraddplay', 'wrreplace', 'wrreplaceplay' );
+$html = menucommon( 'add', 'addplay', 'replace', 'replaceplay' );
 $html.= menuli( 'wrsave', 'save', 'Save in Webradios' );
 $menu.= menudiv( 'dirble', $html );
 $menudiv = '';
