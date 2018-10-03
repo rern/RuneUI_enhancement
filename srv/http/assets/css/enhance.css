@@ -435,9 +435,12 @@ wh, gr { font-weight: 300; }
 	color: #587ca0
 }
 #sampling span {
+	display: inline-block;
 	padding: 0;
 }
-
+#format-bitrate {
+	display: block !important;
+}
 /* ---------------------- info scrolling ----------------------*/
 .scroll-left {
 	overflow: hidden;
@@ -522,7 +525,6 @@ wh, gr { font-weight: 300; }
 #time-knob {
 	order: 1;
 	-webkit-order: 1;
-	height: 230px;
 }
 #coverart {
 	order: 2;
@@ -586,6 +588,9 @@ wh, gr { font-weight: 300; }
 	left: 50%;
 	margin-left: -50%;
 	z-index: 5;
+}
+#cover-art {
+	max-width: 60vh;
 }
 .coversmall {
 	width: 230px !important;
