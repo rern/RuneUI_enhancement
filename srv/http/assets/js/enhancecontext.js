@@ -20,21 +20,20 @@ $( '.contextmenu a' ).click( function() {
 		var mpcCmd = 'mpc findadd '+ mode +' "'+ name +'"';
 	}
 	var contextCommand = {
-		  add              : mpcCmd
-		, addplay          : [ mpcCmd, 'mpc play' ]
-		, replace          : [ 'mpc clear', mpcCmd ]
-		, replaceplay      : [ 'mpc clear', mpcCmd, 'mpc play' ]
-		, wradd            : 'mpc load "'+ name +'"'                              // pladd
-		, wraddplay        : [ 'mpc load "'+ name +'"', 'mpc play' ]              // pladdplay
-		, wrreplace        : [ 'mpc clear', 'mpc load "'+ name +'"' ]             // plreplace
-		, wrreplaceplay    : [ 'mpc clear', 'mpc load "'+ name +'"', 'mpc play' ] // plreplaceplay
-		, wrrename         : webRadioRename
-		, wrdelete         : webRadioDelete
-		, wrsave           : webRadioVerify
-		, plrename         : playlistRename
-		, pldelete         : playlistDelete
-		, bookmark         : bookmarkNew
-		, update           : 'mpc update '+ GUI.list.path
+		  add           : mpcCmd
+		, addplay       : [ mpcCmd, 'mpc play' ]
+		, replace       : [ 'mpc clear', mpcCmd ]
+		, replaceplay   : [ 'mpc clear', mpcCmd, 'mpc play' ]
+		, wradd         : 'mpc load "'+ name +'"'                              // pladd
+		, wraddplay     : [ 'mpc load "'+ name +'"', 'mpc play' ]              // pladdplay
+		, wrreplace     : [ 'mpc clear', 'mpc load "'+ name +'"' ]             // plreplace
+		, wrreplaceplay : [ 'mpc clear', 'mpc load "'+ name +'"', 'mpc play' ] // plreplaceplay
+		, wrrename      : webRadioRename
+		, wrdelete      : webRadioDelete
+		, plrename      : playlistRename
+		, pldelete      : playlistDelete
+		, bookmark      : bookmarkNew
+		, update        : 'mpc update '+ GUI.list.path
 	}
 	var command = contextCommand[ cmd ];
 	if ( typeof command !== 'undefined' ) {
@@ -59,6 +58,8 @@ $( '.contextmenu a' ).click( function() {
 				}
 			} );
 		}
+	} else if ( cmd === 'dirblesave' ) {
+		webRadioNew( GUI.list.name, GUI.list.path );
 	} else if ( cmd === 'plashuffle' ) {
 			$.post( '/db/?cmd=pl-ashuffle', { playlist: name } );
 			$( '#random' ).data( 'cmd', 'pl-ashuffle-stop' ).addClass( 'btn-primary' );
@@ -176,7 +177,9 @@ function webRadioNew( name, url ) {
 		, width      : 500
 		, message    : 'Add new Webradio:'
 		, textlabel  : 'Name'
+		, textvalue  : name || ''
 		, textlabel2 : 'URL'
+		, textvalue2 : url || ''
 		, textalign  : 'center'
 		, boxwidth   : 'max'
 		, cancel     : 1
