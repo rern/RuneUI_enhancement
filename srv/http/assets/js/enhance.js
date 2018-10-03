@@ -1642,11 +1642,11 @@ function renderLibrary() {
 		}
 	}
 	// sd
-	content += divOpen +'<div id="home-sd" class="home-block" data-path="LocalStorage"><i class="fa fa-microsd"></i><h4>SD card<gr>&ensp;'+ numFormat( status.sd ) +' <i class="fa fa-music"></i></gr></h4></div></div>';
+	content += divOpen +'<div id="home-sd" class="home-block" data-path="LocalStorage"><i class="fa fa-microsd"></i><h4>SD<gr>&ensp;'+ numFormat( status.sd ) +' <i class="fa fa-music"></i></gr></h4></div></div>';
 	// usb
-	content += divOpen +'<div id="home-usb" class="home-block" data-path="USB"><i class="fa fa-usbdrive"></i><h4>USB drives<gr>&ensp;'+ status.usb +'</gr></h4></div></div>';
+	content += divOpen +'<div id="home-usb" class="home-block" data-path="USB"><i class="fa fa-usbdrive"></i><h4>USBs<gr>&ensp;'+ status.usb +'</gr></h4></div></div>';
 	// nas
-	content += divOpen +'<a id="home-nas" class="home-block" data-path="NAS"><i class="fa fa-network"></i><h4>Network mounts<gr>&ensp;'+ status.nas +'</gr></h4></a></div>';
+	content += divOpen +'<a id="home-nas" class="home-block" data-path="NAS"><i class="fa fa-network"></i><h4>Networks<gr>&ensp;'+ status.nas +'</gr></h4></a></div>';
 	// webradio
 	content += divOpen +'<div id="home-webradio" class="home-block" data-path="Webradio"><i class="fa fa-webradio"></i><h4>Webradios<gr>&ensp;'+ numFormat( status.webradio ) +'</gr></h4></div></div>';
 	// albums
