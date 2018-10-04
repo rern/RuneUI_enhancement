@@ -1059,15 +1059,22 @@ wh, gr { font-weight: 300; }
 	text-align: center;
 	color: #587ca0
 }
-#home-blocks h4 {
-	font-weight: 300;
-	color: #e0e7ee;
-}
-#home-blocks h4 i {
+#home-blocks gr {
+	margin-left: 14px;
 	font-size: 18px;
-	line-height: 18px;
+}
+#home-blocks gr i {
 	width: 18px;
 	height: 18px;
+	font-size: 18px;
+}
+#home-blocks wh {
+	display: block;
+	font-size: 18px;
+	font-weight: 300;
+	white-space: nowrap;
+	overflow: hidden;
+	line-height: 40px;
 }
 .home-block:hover,
 .home-block:focus {
@@ -1666,11 +1673,6 @@ w {
 }
 
 /* bootstrap column */
-.home-bookmark h4 {
-	white-space: nowrap;
-	overflow: hidden;
-	height: 19px;
-}
 #home-blocks .col-md-3 { float: left; }
 @media (min-width: 1200px) { #home-blocks .col-md-3 { width: 20%; } }
 @media (min-width: 1500px) { #home-blocks .col-md-3 { width: 16.666666%; } }
