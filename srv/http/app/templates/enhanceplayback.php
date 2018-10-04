@@ -20,7 +20,7 @@
 			<div class="row" id="playback-row">
 				<div id="time-knob">
 					<div id="time"></div>
-					<button id="overlay-playsource-open" class="btn btn-default btn-xs">MPD</button>
+					<button id="playsource-open" class="btn btn-default btn-xs">MPD</button>
 					<div id="imode">
 						<i id="iaddons" class="fa fa-addons hide"></i>
 						<i id="iupdate" class="fa fa-library hide"></i>
@@ -290,7 +290,7 @@ echo $menu;
         </ul>
     </nav>
 </div>
-<div id="overlay-playsource" class="overlay-scale">
+<div id="playsource" class="overlay-scale">
     <nav>
         <ul>
             <li><span>Playback Source</span></li>
@@ -298,7 +298,7 @@ echo $menu;
 			<li><a id="playsource-spotify" class="btn btn-default btn-lg btn-block inactive"><i class="fa fa-spotify sx"></i> <span>spop</span> Spotify</a></li>
 			<li><a id="playsource-airplay" class="btn btn-default btn-lg btn-block inactive"><i class="fa fa-airplay sx"></i> <span>ShairPort</span> Airplay</a></li>
 			<li><a id="playsource-dlna" class="btn btn-default btn-lg btn-block inactive"><i class="fa fa-dlna sx"></i> <span>upmpdcli</span> DLNA</a></li>
-            <li><button id="overlay-playsource-close" class="btn btn-link" type="button"><i class="fa fa-times"></i> Close</button></li>
+            <li><button id="playsource-close" class="btn btn-link" type="button"><i class="fa fa-times"></i> Close</button></li>
         </ul>
     </nav>
 </div>
