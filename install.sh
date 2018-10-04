@@ -147,7 +147,7 @@ fi
 
 if [[ $1 != u ]]; then
 	redis-cli hmset display bars checked time checked coverart checked volume checked buttons checked volumemute 0 \
-	\nas checked sd checked usb checked webradio checked albums checked artists checked composer checked genre checked \
+	\label checked nas checked sd checked usb checked webradio checked albums checked artists checked composer checked genre checked \
 	\spotify checked dirble checked jamendo checked &> /dev/null
 fi
 
