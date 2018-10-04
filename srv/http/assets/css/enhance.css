@@ -1062,6 +1062,7 @@ wh, gr { font-weight: 300; }
 #home-blocks gr {
 	margin-left: 14px;
 	font-size: 18px;
+	line-height: 18px;
 }
 #home-blocks gr i {
 	width: 18px;
