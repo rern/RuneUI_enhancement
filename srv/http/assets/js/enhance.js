@@ -42,8 +42,12 @@ $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 getPlaybackStatus();
 $.post( 'enhance.php', { library: 1 } );
 
+var menuH = $( '#settings' ).find( 'i' ).length * 41;
+$( '#settings .menushadow' ).css( 'height', menuH );
 $( '#menu-settings, #badge' ).click( function() {
-	$( '#settings' ).toggleClass( 'hide' ).css( 'top', $( '#menu-top' ).is( ':hidden' ) ? 0 : '40px' );
+	$( '#settings' )
+		.toggleClass( 'hide' )
+		.css( 'top', $( '#menu-top' ).is( ':hidden' ) ? 0 : '40px' );
 } );
 $( '#song, #playlist-warning' ).on( 'click', 'i', function() {
 	$( '#open-library' ).click();
@@ -134,25 +138,7 @@ $( '#panel-playback' ).click( function( e ) {
 				GUI.display[ this.name ] = this.checked ? 'checked' : '';
 			} );
 			displayPlayback();
-			tempFlag( 'local' );
 			$.post( 'enhance.php', { setdisplay: GUI.display } );
-			// for set display to show radioelapsed
-			if ( GUI.status.ext === 'radio' ) {
-				if ( !GUI.display.radioelapsed ) {
-					$( '#total' ).empty();
-					return
-				}
-				if ( GUI.status.state === 'play' && $( '#total' ).html() === '' ) {
-					clearInterval( GUI.intElapsed );
-					$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
-						var elapsed = HMS2Second( status.elapsed );
-						GUI.intElapsed = setInterval( function() {
-							elapsed++
-							$( '#total' ).text( HMS );
-						}, 1000 );
-					}, 'json' );
-				}
-			}
 		}
 	} );
 	// disable by mpd volume
@@ -831,7 +817,7 @@ $( '#volume' ).roundSlider( {
 	, endAngle        : 230
 	, editableTooltip : false
 	
-	, create          : function () { // preserve shadow angle of handle
+	, create          : function () { // maintain shadow angle of handle
 		$volumeRS = this;
 		$volumetransition = $( '#volume' ).find( '.rs-animation, .rs-transition' );
 		$volumetooltip = $( '#volume' ).find( '.rs-tooltip' );
@@ -1013,7 +999,11 @@ pushstreams.display.onmessage = function( data ) {
 	if ( GUI.local ) return
 	
 	if ( $( '#panel-playback' ).hasClass( 'active' ) ) {
-		displayPlayback();
+		//displayPlayback();
+		$.post( 'enhancestatus.php', function( status ) {
+			GUI.status = status;
+			renderPlayback();
+		}, 'json' );
 	} else if ( $( '#panel-library' ).hasClass( 'active' ) ) {
 		displayLibrary();
 	} else {
@@ -1276,26 +1266,36 @@ function renderPlayback() {
 		var vustop = $( '#vustop' ).val();
 		if ( status.state === 'play' ) {
 			if ( radiosrc !== vu ) $( '#cover-art' ).attr( 'src', vu );
+			$( '#elapsed' ).html( status.state === 'play' ? blinkdot : '' );
+			if ( !GUI.display.radioelapsed ) {
+				$( '#total, #timepos' ).empty();
+			} else {
+				var elapsed = status.elapsed;
+				if ( GUI.display.time ) {
+					$( '#timepos' ).empty();
+					GUI.intElapsed = setInterval( function() {
+						elapsed++;
+						elapsedhms = second2HMS( elapsed );
+						$( '#total' ).text( elapsedhms ).css( 'color', '#587ca0' );
+					}, 1000 );
+				} else {
+					$( '#total' ).empty();
+					GUI.intElapsed = setInterval( function() {
+						elapsed++;
+						elapsedhms = second2HMS( elapsed );
+					$( '#timepos' ).html( '&ensp;<i class="fa fa-play"></i>&ensp;'+ elapsedhms );
+					}, 1000 );
+				}
+			}
 		} else {
 			if ( radiosrc !== vustop ) $( '#cover-art' ).attr( 'src', vustop );
+			$( '#total, #timepos' ).empty();
 		}
 		$( '#cover-art' )
 			.css( 'border-radius', '18px' )
 			.one( 'load', setPlaybackOneload );
 		$( '#coverartoverlay' ).removeClass( 'hide' );
-		$( '#elapsed' ).html( status.state === 'play' ? blinkdot : '' );
-		$( '#total' ).empty();
 		// show / hide elapsed at total
-		if ( !status.radioelapsed ) {
-			$( '#total' ).empty();
-		} else {
-			var elapsed = status.elapsed;
-			GUI.intElapsed = setInterval( function() {
-				elapsed++
-				mmss = second2HMS( elapsed );
-				$( '#total' ).text( mmss ).css( 'color', '#587ca0' );
-			}, 1000 );
-		}
 		return
 	}
 	
@@ -1303,7 +1303,6 @@ function renderPlayback() {
 	var time = status.Time;
 	var timehms = second2HMS( time );
 	$( '#total' ).text( timehms );
-//	$( '#elapsed' ).empty();
 	// stop <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	if ( status.state === 'stop' ) {
 		$( '#song' ).css( 'color', '' );
