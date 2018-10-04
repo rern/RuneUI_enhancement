@@ -1659,25 +1659,25 @@ function renderLibrary() {
 		var bookmarkL = bookmarks.length;
 		for ( i = 0; i < bookmarkL; i++ ) {
 			var bookmark = bookmarks[ i ];
-			content += divOpen +'<div class="home-block home-bookmark" data-name="'+ bookmark.name +'" data-path="'+ bookmark.path +'"><i class="fa fa-bookmark"></i><h4><span>' + bookmark.name +'&ensp;<gr>'+ numFormat( bookmark.count ) +' <i class="fa fa-music"></i></gr></span></h4></div></div>';
+			content += divOpen +'<div class="home-block home-bookmark" data-name="'+ bookmark.name +'" data-path="'+ bookmark.path +'"><i class="fa fa-bookmark"></i><gr>'+ numFormat( bookmark.count ) +' <i class="fa fa-music"></i></gr><wh>' + bookmark.name +'</wh></div></div>';
 		}
 	}
 	// sd
-	content += divOpen +'<div id="home-sd" class="home-block" data-path="LocalStorage"><i class="fa fa-microsd"></i><h4>SD<gr>&ensp;'+ numFormat( status.sd ) +' <i class="fa fa-music"></i></gr></h4></div></div>';
+	content += divOpen +'<div id="home-sd" class="home-block" data-path="LocalStorage"><i class="fa fa-microsd"></i><gr>'+ numFormat( status.sd ) +' <i class="fa fa-music"></i></gr><wh>SD</wh></div></div>';
 	// usb
-	content += divOpen +'<div id="home-usb" class="home-block" data-path="USB"><i class="fa fa-usbdrive"></i><h4>USB<gr>&ensp;'+ status.usb +'</gr></h4></div></div>';
+	content += divOpen +'<div id="home-usb" class="home-block" data-path="USB"><i class="fa fa-usbdrive"></i><gr>'+ status.usb +'</gr><wh>USB</wh></div></div>';
 	// nas
-	content += divOpen +'<a id="home-nas" class="home-block" data-path="NAS"><i class="fa fa-network"></i><h4>Network<gr>&ensp;'+ status.nas +'</gr></h4></a></div>';
+	content += divOpen +'<a id="home-nas" class="home-block" data-path="NAS"><i class="fa fa-network"></i><gr>'+ status.nas +'</gr><wh>Network</wh></a></div>';
 	// webradio
-	content += divOpen +'<div id="home-webradio" class="home-block" data-path="Webradio"><i class="fa fa-webradio"></i><h4>Webradio<gr>&ensp;'+ numFormat( status.webradio ) +'</gr></h4></div></div>';
+	content += divOpen +'<div id="home-webradio" class="home-block" data-path="Webradio"><i class="fa fa-webradio"></i><gr>'+ numFormat( status.webradio ) +'</gr><wh>Webradio</wh></div></div>';
 	// albums
-	content += divOpen +'<div id="home-album" class="home-block" data-path="Albums" data-browsemode="album"><i class="fa fa-album"></i><h4>Album<gr>&ensp;'+ numFormat( status.album ) +'</gr></h4></div></div>';
+	content += divOpen +'<div id="home-album" class="home-block" data-path="Albums" data-browsemode="album"><i class="fa fa-album"></i><gr>'+ numFormat( status.album ) +'</gr><wh>Album</wh></div></div>';
 	// artist
-	content += divOpen +'<div id="home-artist" class="home-block" data-path="Artists" data-browsemode="artist"><i class="fa fa-artist"></i><h4>Artist<gr>&ensp;'+ numFormat( status.artist ) +'</gr></h4></div></div>';
+	content += divOpen +'<div id="home-artist" class="home-block" data-path="Artists" data-browsemode="artist"><i class="fa fa-artist"></i><gr>'+ numFormat( status.artist ) +'</gr><wh>Artist</wh></div></div>';
 	// composer
-	content += divOpen +'<div id="home-composer" class="home-block" data-path="Composer" data-browsemode="composer"><i class="fa fa-composer"></i><h4>Composer<gr>&ensp;'+ numFormat( status.composer ) +'</gr></h4></div></div>';
+	content += divOpen +'<div id="home-composer" class="home-block" data-path="Composer" data-browsemode="composer"><i class="fa fa-composer"></i><gr>'+ numFormat( status.composer ) +'</gr><wh>Composer</wh></div></div>';
 	// genre
-	content += divOpen +'<div id="home-genre" class="home-block" data-path="Genres" data-browsemode="genre"><i class="fa fa-genre"></i><h4>Genre<gr>&ensp;'+ numFormat( status.genre ) +'</gr></h4></div></div>';
+	content += divOpen +'<div id="home-genre" class="home-block" data-path="Genres" data-browsemode="genre"><i class="fa fa-genre"></i><gr>'+ numFormat( status.genre ) +'</gr><wh>Genre</wh></div></div>';
 	// spotify
 	if ( status.spotify ) {
 		var sw, data = '';
@@ -1685,12 +1685,12 @@ function renderLibrary() {
 			sw = '-switch';
 			data = ' data-plugin="Spotify" data-path="Spotify"';
 		}
-		content += divOpen +'<div id="home-spotify'+ sw +'" class="home-block"'+ data +'><i class="fa fa-spotify"></i><h4>Spotify</h4></div></div>';
+		content += divOpen +'<div id="home-spotify'+ sw +'" class="home-block"'+ data +'><i class="fa fa-spotify"></i><wh>Spotify</wh></div></div>';
 	}
 	// dirble
-	content += divOpen +'<div id="home-dirble" class="home-block" data-plugin="Dirble" data-path="Dirble"><i class="fa fa-dirble"></i><h4>Dirble</h4></div></div>';
+	content += divOpen +'<div id="home-dirble" class="home-block" data-plugin="Dirble" data-path="Dirble"><i class="fa fa-dirble"></i><wh>Dirble</wh></div></div>';
 	// jamendo
-	content += divOpen +'<div id="home-jamendo" class="home-block" data-plugin="Jamendo" data-path="Jamendo"><i class="fa fa-jamendo"></i><h4>Jamendo<gr id="home-count-jamendo"></gr></h4></div></div>';
+	content += divOpen +'<div id="home-jamendo" class="home-block" data-plugin="Jamendo" data-path="Jamendo"><i class="fa fa-jamendo"></i><wh>Jamendo</gr></wh></div></div>';
 
 	content += '</div>';
 	$( '#home-blocks' ).html( content ).promise().done( function() {
