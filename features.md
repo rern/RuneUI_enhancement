@@ -52,6 +52,7 @@ Rely on MPD supplied data which has some limitations.
 	- Volume knob
 	- Buttons
 	- Library home items
+	- Library labels
 
 ### Playback:
 - Coverart / Time knob as playback controls
