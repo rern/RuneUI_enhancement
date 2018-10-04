@@ -60,8 +60,8 @@ $( '#open-library' ).click( function() {
 		renderLibrary();
 		return
 	}
-	if ( GUI.activePlayer === 'Airplay' || GUI.activePlayer === 'Spotify' ) {
-		$( '#overlay-playsource' ).addClass( 'open' );
+	if ( GUI.activePlayer === 'Airplay' ) {
+		$( '#playsource' ).addClass( 'open' );
 		return
 	}
 	
@@ -91,8 +91,8 @@ $( '#open-playback' ).click( function() {
 $( '#open-playlist' ).click( function() {
 	
 	if ( $( this ).hasClass( 'active' ) && GUI.pleditor ) GUI.pleditor = 0;
-	if ( GUI.activePlayer === 'Airplay' || GUI.activePlayer === 'Spotify' ) {
-		$( '#overlay-playsource' ).addClass( 'open' );
+	if ( GUI.activePlayer === 'Airplay' ) {
+		$( '#playsource' ).addClass( 'open' );
 		return
 	}
 	setPanelActive( 'panel-playlist' );
@@ -209,6 +209,8 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 		bookmarkRename( $this.data( 'name' ), $this.data( 'path' ), $this )
 	} else if ( e.target.id === 'home-block-remove' ) {
 		bookmarkDelete( $this.data( 'name' ), $this.parent() )
+	} else if ( id === 'home-spotify' && GUI.activeplayer !== 'Spotify' ) {
+		$( '#playsource-open' ).click();
 	} else {
 		GUI.dblist = 1;
 		mutationLibrary.observe( observerLibrary, observerOption );
@@ -230,7 +232,7 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 } );
 
 var btnctrl = {
-	  timeTL : 'overlay-playsource-open'
+	  timeTL : 'playsource-open'
 	, timeT  : 'guide'
 	, timeTR : 'menu'
 	, timeL  : 'previous'
@@ -239,7 +241,7 @@ var btnctrl = {
 	, timeR  : 'next'
 	, timeB  : 'stop'
 	, timeBR : 'repeat'
-	, coverTL: 'overlay-playsource-open'
+	, coverTL: 'playsource-open'
 	, coverT : 'guide'
 	, coverTR: 'menu'
 	, coverL : 'previous'
@@ -315,11 +317,11 @@ $( '#turnoff' ).click( function() {
 		}
 	} );
 } );
-$( '#overlay-playsource-open' ).click( function() {
-	$( '#overlay-playsource' ).addClass( 'open' );
+$( '#playsource-open' ).click( function() {
+	$( '#playsource' ).addClass( 'open' );
 } );
-$( '#overlay-playsource-close' ).click( function() {
-	$( '#overlay-playsource' ).removeClass( 'open' );
+$( '#playsource-close' ).click( function() {
+	$( '#playsource' ).removeClass( 'open' );
 } );
 $( '#overlay-social-open' ).click( function() {
 	$( '#overlay-social' ).addClass( 'open' );
@@ -1558,9 +1560,9 @@ function displayPlayback() {
 	}
 	// not scale webradio vu meter
 	if ( GUI.display.coverlarge === '' || $( '#album' ).text().slice( 0, 4 ) === 'http' ) {
-		$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).addClass( 'coversmall' )
+		$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).addClass( 'coversmall' );
 	} else {
-		$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).removeClass( 'coversmall' )
+		$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).removeClass( 'coversmall' );
 		$( '#sampling span' ).css( 'display', !GUI.display.time ? '' : 'display: inline' );
 	}
 	if ( GUI.display.time ) $( '#timepos' ).empty();
@@ -1578,9 +1580,9 @@ function switchPlaysource( source ) {
 	$.get( '/command/?switchplayer='+ source, function() {
 		setTimeout( function() {
 			$( '#open-playback' ).click();
-			$( '#overlay-playsource li a' ).addClass( 'inactive' );
+			$( '#playsource li a' ).addClass( 'inactive' );
 			$( '#playsource-'+ source.toLowerCase() ).removeClass( 'inactive' )
-			$( '#overlay-playsource-close' ).click();
+			$( '#playsource-close' ).click();
 		}, 2000 );
 	} );
 }
@@ -1641,7 +1643,7 @@ function displayLibrary() {
 }
 function setPlaybackSource() {
 	var activePlayer = GUI.activePlayer;
-	$( '#overlay-playsource a' ).addClass( 'inactive' );
+	$( '#playsource a' ).addClass( 'inactive' );
 	var source = activePlayer.toLowerCase();
 	$( '#playsource-' + source).removeClass( 'inactive' );
 	
@@ -1700,12 +1702,7 @@ function renderLibrary() {
 	content += divOpen +'<div id="home-genre" class="home-block" data-path="Genres" data-browsemode="genre"><i class="fa fa-genre"></i><gr>'+ numFormat( status.genre ) +'</gr><wh>Genre</wh></div></div>';
 	// spotify
 	if ( status.spotify ) {
-		var sw, data = '';
-		if ( status.activeplayer !== 'Spotify' ) {
-			sw = '-switch';
-			data = ' data-plugin="Spotify" data-path="Spotify"';
-		}
-		content += divOpen +'<div id="home-spotify'+ sw +'" class="home-block"'+ data +'><i class="fa fa-spotify"></i><wh>Spotify</wh></div></div>';
+		content += divOpen +'<div id="home-spotify" class="home-block" data-plugin="Spotify" data-path="Spotify"><i class="fa fa-spotify"></i><wh>Spotify</wh></div></div>';
 	}
 	// dirble
 	content += divOpen +'<div id="home-dirble" class="home-block" data-plugin="Dirble" data-path="Dirble"><i class="fa fa-dirble"></i><wh>Dirble</wh></div></div>';
