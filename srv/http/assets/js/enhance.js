@@ -151,7 +151,7 @@ $( '#panel-playback' ).click( function( e ) {
 } );
 $( '#panel-library' ).on( 'taphold', function() {
 	if ( GUI.swipe || GUI.local ) return
-	
+	GUI.taphold = 1;
 	info( {
 		  title        : 'Libary Home'
 		, message      : 'Select items to show:'
@@ -1615,13 +1615,8 @@ function displayLibrary() {
 	toggleLibraryHome( 'dirble' );
 	toggleLibraryHome( 'jamendo' );
 	
-	if ( !GUI.display.label ) {
-		$( '.home-block wh' ).addClass( 'hide' );
-		$( '.home-block' ).css( 'padding-bottom', '30px' );
-	} else {
-		$( '.home-block wh' ).removeClass( 'hide' );
-		$( '.home-block' ).css( 'padding-bottom', '' );
-	}
+	$( '.home-block wh' ).toggleClass( 'hide', GUI.display.label === '' );
+	$( '.home-block' ).css( 'padding-bottom', GUI.display.label === '' ? '30px' : '' );
 	displayCommon();
 	setTimeout( function() {
 		$( 'html, body' ).scrollTop( 0 );
