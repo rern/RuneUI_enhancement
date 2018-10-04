@@ -269,7 +269,7 @@ $( '.timemap, .covermap, .volmap' ).click( function() {
 			if ( GUI.status.single ) {
 				GUI.status.repeat = GUI.status.single = 0;
 				$( '#repeat, #single' ).removeClass( 'btn-primary' );
-				$( '#irepeat' ).attr( 'class', 'fa hide' );
+				$( '#irepeat' ).attr( 'class', 'hide' );
 				tempFlag( 'local' );
 				$.post( 'enhance.php', { mpc: [ 'mpc repeat 0', 'mpc single 0' ] } );
 			} else {
@@ -329,23 +329,39 @@ $( '#overlay-social-open' ).click( function() {
 $( '#overlay-social-close' ).click( function() {
 	$( '#overlay-social' ).removeClass( 'open' );
 } );
+$( '#playsource-mpd' ).click( function() {
+	$.post( 'enhance.php', { bash: '/usr/bin/systemctl restart shairport' } );
+	if ( GUI.activePlayer === 'Spotify' ) {
+		$.get( '/command/?switchplayer=MPD', function() {
+			setTimeout( function() {
+				$( '#iplayer' ).removeClass().addClass( 'fa hide' );
+				$( '#open-playback' ).click();
+				$( '#overlay-playsource li a' ).addClass( 'inactive' );
+				$( '#playsource-mpd' ).removeClass( 'inactive' )
+				$( '#overlay-playsource-close' ).click();
+			}, 2000 );
+		} );
+	}
+} );
 $( '#playsource-spotify' ).click( function() {
-	if ( $( this ).hasClass( 'inactive' ) ) {
-		if ( GUI.activePlayer === 'Spotify' ) {
-			$.ajax( {
-				  url   : '/command/?switchplayer=Spotify'
-				, cache : false
+	$.post( 'enhance.php', { bash: '/usr/bin/redis-cli hget spotify enable' }, function( data ) {
+		if ( data ) {
+			$.get( '/command/?switchplayer=Spotify', function() {
+				setTimeout( function() {
+					$( '#open-playback' ).click();
+					$( '#overlay-playsource li a' ).addClass( 'inactive' );
+					$( '#playsource-spotify' ).removeClass( 'inactive' )
+					$( '#overlay-playsource-close' ).click();
+				}, 2000 );
 			} );
-			// close switch buttons layer
-			$( '#overlay-playsource-close' ).trigger( 'click' );
 		} else {
 			new PNotify( {
 				  title : 'Spotify not enabled'
-				, text  : 'Enable and configure it under the Settings screen'
+				, text  : 'Enable in Settings menu'
 				, icon  : 'fa fa-exclamation-circle'
 			} );
 		}
-	}
+	} );
 } );
 $( '#db-home' ).click( function() {
 	$( '#open-library' ).click();
@@ -751,13 +767,6 @@ var mutationLibrary = new MutationObserver( function() { // on observed target c
 $( '#db-back' ).click( function() {
 	mutationLibrary.observe( observerLibrary, observerOption ); // standard js - must be one on one element
 } );
-$( '#playsource-mpd' ).click( function() {
-	$.post( 'enhance.php', { bash: '/usr/bin/systemctl restart shairport' } );
-	$( '#iplayer' ).removeClass( 'fa-airplay' ).addClass( 'hide' );
-	$( '#overlay-playsource' ).removeClass( 'open' );
-	$( '#playsource-mpd' ).removeClass( 'inactive' );
-	$( '#playsource-airplay' ).addClass( 'inactive' );
-} );
 $( '#db-search-results' ).click( function() {
 	$( this ).addClass( 'hide' );
 	$( '#db-search-keyword' ).val( '' );
@@ -1122,9 +1131,9 @@ function setButtonToggle() {
 		if ( GUI.display.time ) {
 			$( '#irandom' ).toggleClass( 'hide', GUI.status.random === 0 );
 			if ( GUI.status.repeat ) {
-				$( '#irepeat' ).attr( 'class', ( GUI.status.single ? 'fa fa-repeat-single' : 'fa fa-repeat' ) );
+				$( '#irepeat' ).attr( 'class', ( GUI.status.single ? 'fa-repeat-single' : 'fa-repeat' ) );
 			} else {
-				$( '#irepeat' ).attr( 'class', 'fa hide' );
+				$( '#irepeat' ).attr( 'class', 'hide' );
 			}
 		}
 	}
