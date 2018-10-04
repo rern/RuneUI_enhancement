@@ -158,14 +158,15 @@ $( '#panel-library' ).on( 'taphold', function() {
 		, checkboxhtml : 
 			'<form id="displaysavelibrary">'
 				+ libraryLabel( 'bars', 'Top-Bottom menu' )
-				+ libraryLabel( 'sd', 'SD card' )
-				+ libraryLabel( 'usb', 'USB drives' )
-				+ libraryLabel( 'nas', 'Network drives' )
-				+ libraryLabel( 'webradio', 'Webradios' )
-				+ libraryLabel( 'albums', 'Albums' )
-				+ libraryLabel( 'artists', 'Artists' )
-				+ libraryLabel( 'composer', 'Composers' )
-				+ libraryLabel( 'genre', 'Genres' )
+				+ libraryLabel( 'label', 'Label' )
+				+ libraryLabel( 'sd', 'SD' )
+				+ libraryLabel( 'usb', 'USB' )
+				+ libraryLabel( 'nas', 'Network' )
+				+ libraryLabel( 'webradio', 'Webradio' )
+				+ libraryLabel( 'albums', 'Album' )
+				+ libraryLabel( 'artists', 'Artist' )
+				+ libraryLabel( 'composer', 'Composer' )
+				+ libraryLabel( 'genre', 'Genre' )
 				+ libraryLabel( 'dirble', 'Dirble' )
 				+ libraryLabel( 'jamendo', 'Jamendo' )
 			+'</form>'
@@ -1614,6 +1615,13 @@ function displayLibrary() {
 	toggleLibraryHome( 'dirble' );
 	toggleLibraryHome( 'jamendo' );
 	
+	if ( !GUI.display.label ) {
+		$( '.home-block wh' ).addClass( 'hide' );
+		$( '.home-block' ).css( 'padding-bottom', '30px' );
+	} else {
+		$( '.home-block wh' ).removeClass( 'hide' );
+		$( '.home-block' ).css( 'padding-bottom', '' );
+	}
 	displayCommon();
 	setTimeout( function() {
 		$( 'html, body' ).scrollTop( 0 );
