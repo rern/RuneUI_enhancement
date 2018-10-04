@@ -1066,8 +1066,8 @@ wh, gr { font-weight: 300; }
 #home-blocks h4 i {
 	font-size: 18px;
 	line-height: 18px;
-	width: unset;
-	height: unset;
+	width: 18px;
+	height: 18px;
 }
 .home-block:hover,
 .home-block:focus {
