@@ -1619,8 +1619,19 @@ function displayLibrary() {
 	toggleLibraryHome( 'dirble' );
 	toggleLibraryHome( 'jamendo' );
 	
-	$( '.home-block wh' ).toggleClass( 'hide', GUI.display.label === '' );
-	$( '.home-block' ).css( 'padding-bottom', GUI.display.label === '' ? '30px' : '' );
+	var txt = '';
+	if ( GUI.display.label ) {
+		$( '.home-block gr' ).css( 'color', '' );
+		$( '.home-block wh' ).removeClass( 'hide' );
+		$( '.home-block' ).css( 'padding-bottom', '' );
+	} else {
+		$( '.home-block gr' ).css( 'color', '#e0e7ee' );
+		$( '.home-block wh' ).addClass( 'hide' );
+		$( '.home-block' ).css( 'padding-bottom', '30px' );
+		$.each( $( '.home-bookmark' ), function() {
+			$( this ).find( 'gr' ).text( $( this ).find( 'wh' ).text() );
+		} );
+	}
 	displayCommon();
 	setTimeout( function() {
 		$( 'html, body' ).scrollTop( 0 );
