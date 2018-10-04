@@ -331,29 +331,12 @@ $( '#overlay-social-close' ).click( function() {
 } );
 $( '#playsource-mpd' ).click( function() {
 	$.post( 'enhance.php', { bash: '/usr/bin/systemctl restart shairport' } );
-	if ( GUI.activePlayer === 'Spotify' ) {
-		$.get( '/command/?switchplayer=MPD', function() {
-			setTimeout( function() {
-				$( '#iplayer' ).removeClass().addClass( 'fa hide' );
-				$( '#open-playback' ).click();
-				$( '#overlay-playsource li a' ).addClass( 'inactive' );
-				$( '#playsource-mpd' ).removeClass( 'inactive' )
-				$( '#overlay-playsource-close' ).click();
-			}, 2000 );
-		} );
-	}
+	if ( GUI.activePlayer !== 'MPD' ) switchPlaysource( 'MPD' );
 } );
 $( '#playsource-spotify' ).click( function() {
 	$.post( 'enhance.php', { bash: '/usr/bin/redis-cli hget spotify enable' }, function( data ) {
 		if ( data ) {
-			$.get( '/command/?switchplayer=Spotify', function() {
-				setTimeout( function() {
-					$( '#open-playback' ).click();
-					$( '#overlay-playsource li a' ).addClass( 'inactive' );
-					$( '#playsource-spotify' ).removeClass( 'inactive' )
-					$( '#overlay-playsource-close' ).click();
-				}, 2000 );
-			} );
+			switchPlaysource( 'Spotify' );
 		} else {
 			new PNotify( {
 				  title : 'Spotify not enabled'
@@ -1582,12 +1565,24 @@ function displayPlayback() {
 	}
 	if ( GUI.display.time ) $( '#timepos' ).empty();
 	if ( window.innerWidth < 500 ) $( '#playback-row' ).css( 'margin-top', GUI.display.time ? '10px' : '30px' );
-	if ( GUI.activePlayer !== 'MPD' ) {
+	if ( GUI.activePlayer === 'MPD' ) {
+		$( '#iplayer' ).removeClass().addClass( 'fa hide' );
+	} else {
 		var source = GUI.activePlayer.toLowerCase();
-		$( '#iplayer' ).addClass( 'fa-'+ source ).removeClass( 'hide' );
+		$( '#iplayer' ).removeClass().addClass( 'fa fa-'+ source );
 	}
 //	renderPlayback();
 	displayCommon();
+}
+function switchPlaysource( source ) {
+	$.get( '/command/?switchplayer='+ source, function() {
+		setTimeout( function() {
+			$( '#open-playback' ).click();
+			$( '#overlay-playsource li a' ).addClass( 'inactive' );
+			$( '#playsource-'+ source.toLowerCase() ).removeClass( 'inactive' )
+			$( '#overlay-playsource-close' ).click();
+		}, 2000 );
+	} );
 }
 function displayIndexBar() {
 	setTimeout( function() {
