@@ -481,7 +481,7 @@ wh, gr { font-weight: 300; }
 	}
 }
 /* ---------------------- knobs, buttons ----------------------*/
-#overlay-playsource-open { display: none; }
+#playsource-open { display: none; }
 #playback-row {
 	display: flex;
 	flex-flow: row wrap;
@@ -624,12 +624,12 @@ wh, gr { font-weight: 300; }
 #iupdate {
 	font-size: 14px;
 }
-#overlay-playsource-open,
+#playsource-open,
 #elapsed,
 #total {
 	z-index: 5;
 }
-#overlay-playsource {
+#playsource {
 	z-index: 10;
 }
 #elapsed,
@@ -1495,7 +1495,7 @@ w {
 
 /* overlay menus */
 #overlay-social,
-#overlay-playsource {
+#playsource {
 	position: fixed;
 	width: 100%;
 	height: 100%;
@@ -1504,7 +1504,7 @@ w {
 	background: #10161c
 }
 #overlay-social nav,
-#overlay-playsource nav {
+#playsource nav {
 	text-align: center;
 	position: relative;
 	top: 50%;
@@ -1513,7 +1513,7 @@ w {
 	transform: translateY(-50%)
 }
 #overlay-social ul,
-#overlay-playsource ul {
+#playsource ul {
 	list-style: none;
 	padding: 0;
 	margin: 0 auto;
@@ -1522,7 +1522,7 @@ w {
 	position: relative
 }
 #overlay-social ul li,
-#overlay-playsource ul li {
+#playsource ul li {
 	display: block;
 	height: 50px;
 	line-height: 60px;
@@ -1532,53 +1532,53 @@ w {
 	backface-visibility: hidden
 }
 #overlay-social ul li span,
-#overlay-playsource ul li span {
+#playsource ul li span {
 	font-size: 30px;
 	font-weight: 300
 }
 #overlay-social ul li:last-child,
-#overlay-playsource ul li:last-child {
+#playsource ul li:last-child {
 	height: 20px;
 	line-height: 20px
 }
 #overlay-social ul li a,
-#overlay-playsource ul li a {
+#playsource ul li a {
 	font-size: 16px;
 	text-align: right;
 	border: 0
 }
 #overlay-social ul li a.share-twitter,
-#overlay-playsource ul li a.share-twitter {
+#playsource ul li a.share-twitter {
 	background: #55ACEE
 }
 #overlay-social ul li a.share-twitter:hover,
-#overlay-playsource ul li a.share-twitter:hover,
+#playsource ul li a.share-twitter:hover,
 #overlay-social ul li a.share-twitter:focus,
-#overlay-playsource ul li a.share-twitter:focus {
+#playsource ul li a.share-twitter:focus {
 	background: #2795e9
 }
 #overlay-social ul li a.share-facebook,
-#overlay-playsource ul li a.share-facebook {
+#playsource ul li a.share-facebook {
 	background: #3B5998
 }
 #overlay-social ul li a.share-facebook:hover,
-#overlay-playsource ul li a.share-facebook:hover,
+#playsource ul li a.share-facebook:hover,
 #overlay-social ul li a.share-facebook:focus,
-#overlay-playsource ul li a.share-facebook:focus {
+#playsource ul li a.share-facebook:focus {
 	background: #2d4373
 }
 #overlay-social ul li a.share-google-plus,
-#overlay-playsource ul li a.share-google-plus {
+#playsource ul li a.share-google-plus {
 	background: #DD4B39
 }
 #overlay-social ul li a.share-google-plus:hover,
-#overlay-playsource ul li a.share-google-plus:hover,
+#playsource ul li a.share-google-plus:hover,
 #overlay-social ul li a.share-google-plus:focus,
-#overlay-playsource ul li a.share-google-plus:focus {
+#playsource ul li a.share-google-plus:focus {
 	background: #c23321
 }
 #overlay-social ul li a i,
-#overlay-playsource ul li a i {
+#playsource ul li a i {
 	display: block;
 	float: left;
 	margin: -1px 20px 0 -5px;
@@ -1586,12 +1586,12 @@ w {
 	text-align: center
 }
 #overlay-social ul li a span,
-#overlay-playsource ul li a span {
+#playsource ul li a span {
 	padding-right: 5px;
 	font-size: 12px
 }
 #overlay-social ul li a.inactive span,
-#overlay-playsource ul li a.inactive span {
+#playsource ul li a.inactive span {
 	color: #e0e7ee;
 }
 .overlay-scale {
@@ -1776,7 +1776,7 @@ w {
 	#time-knob,
 	#coverart,
 	#volume-knob {
-		width: 80%;
+		width: 90%;
 		margin-bottom: 20px;
 	}
 	#share-group,
