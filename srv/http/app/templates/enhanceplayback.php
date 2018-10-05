@@ -94,11 +94,12 @@
 	</div>
 	<div id="panel-library" class="tab-pane hide">
 		<div class="btnlist btnlist-top">
-			<div id="db-search" class="form-inline">
+			<i id="db-searchbtn" class="fa fa-search"></i>
+			<div id="db-search" class="form-inline hide">
 				<div class="input-group">
 					<input id="db-search-keyword" class="form-control osk-trigger" type="text">
 					<span class="input-group-btn">
-						<button id="searchbtn" class="btn btn-default"><i class="fa fa-search"></i></button>
+						<button id="dbsearchbtn" class="btn btn-default"><i class="fa fa-search"></i></button>
 					</span>
 				</div>
 			</div>
@@ -140,11 +141,12 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 			<div id="pl-home"><i class="fa fa-list-ul sx"></i></div>
 			<span id="pl-currentpath" class="hide"></span>
 			<span id="pl-count" class="playlist hide"></span>
-			<form id="pl-search" class="playlist form-inline" method="post" onSubmit="return false;" role="form">
+			<i id="pl-searchbtn" class="fa fa-search"></i>
+			<form id="pl-search" class="form-inline hide" method="post" onSubmit="return false;" role="form">
 				<div class="input-group">
 					<input id="pl-filter" class="form-control osk-trigger" type="text" data-placement="bottom" data-toggle="tooltip">
 					<span class="input-group-btn">
-						<button class="btn btn-default" type="button"><i class="fa fa-search"></i></button>
+						<button id="plsearchbtn" class="btn btn-default" type="button"><i class="fa fa-search"></i></button>
 					</span>
 				</div>
 			</form>
