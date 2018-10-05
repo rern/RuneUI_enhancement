@@ -97,7 +97,7 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	$lists = explode( "\n", rtrim( $lines ) );
 	foreach( $lists as $list ) {
 		$li = explode( '^^', $list );
-		$pl[ 'title' ] = $li[ 0 ] ? $li[ 0 ] : $webradioname[ $li[ 3 ] ];
+		$pl[ 'title' ] = $li[ 0 ] ? $li[ 0 ] : $webradioname[ $li[ 3 ] ] ?: $li[ 3 ];
 		$pl[ 'time' ] = $li[ 1 ];
 		$pl[ 'track' ] = $li[ 2 ];
 		$pl[ 'file' ] = $li[ 3 ];
