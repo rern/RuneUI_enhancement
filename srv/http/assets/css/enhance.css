@@ -1504,6 +1504,18 @@ w {
 	text-align: center;
 	color: #e0e7ee;
 }
+#playlist-warning {
+	text-align: center;
+}
+#playlist-warning i {
+	font-size: 30px;
+	color: #0095d8;
+	cursor: pointer;
+}
+#playlist-warning p {
+	margin-top: 27px;
+	color: #587ca0;
+}
 .menu a.active {
 	background: #0095d8;
 }
