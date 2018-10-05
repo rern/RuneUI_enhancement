@@ -375,14 +375,13 @@ $( '#pl-searchbtn, #plsearchbtn, #pl-filter-results' ).click( function() {
 } );
 $( '#db-searchbtn' ).click( function() {
 	$( '#db-search, #db-searchbtn' ).toggleClass( 'hide' );
-	if ( window.innerWidth < 540 ) $( '.title' ).addClass( 'hide' );
+	$( '#db-currentpath>span' ).addClass( 'hide' );
 } );
 $( '#dbsearchbtn' ).click( function() {
 	var keyword = $( '#db-search-keyword' ).val();
 	if ( !keyword ) {
 		$( '#db-search, #db-searchbtn' ).toggleClass( 'hide' );
-		$( '.title' ).removeClass( 'hide' );
-//		$( '#db-currentpath' ).css( 'width', '' );
+		$( '#db-currentpath>span' ).removeClass( 'hide' );
 		return
 	}
 	GUI.dblist = 1;
@@ -1677,7 +1676,7 @@ function renderLibrary() {
 	
 	$( '#panel-library .btnlist-top, db-entries' ).addClass( 'hide' );
 	var status = GUI.libraryhome;
-	$( '#db-currentpath span' ).html( '<bl class="title">&emsp;L I B R A R Y<gr>&emsp;•</gr></bl><a id="li-count"><wh>'+ numFormat( status.song ) +'</wh><i class="fa fa-music"></i></a>' );
+	$( '#db-currentpath span' ).html( '<bl class="title">&emsp;L I B R A R Y</bl><a id="li-count"><gr> • </gr><wh>'+ numFormat( status.song ) +'</wh><i class="fa fa-music"></i></a>' );
 	$( '#panel-library .btnlist-top, #home-blocks' ).removeClass( 'hide' );
 	// Set active player
 	setPlaybackSource();
@@ -2007,7 +2006,7 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 
 	if ( path ) GUI.currentpath = path;
 	$( '#db-entries' ).empty();
-	$( '#db-entries, #db-back' ).removeClass( 'hide' );
+	$( '#db-currentpath>span, #db-entries, #db-back' ).removeClass( 'hide' );
 	$( '#home-blocks' ).addClass( 'hide' );
 
 	if ( plugin ) {
