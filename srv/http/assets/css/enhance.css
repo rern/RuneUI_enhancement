@@ -1138,7 +1138,8 @@ wh, gr { font-weight: 300; }
 }
 #dbsearchbtn,
 #plsearchbtn {
-	padding: 4px 10px;
+	height: 32px;
+	padding: 5px 10px;
 }
 #dbsearchbtn i,
 #plsearchbtn i {
