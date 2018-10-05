@@ -1128,6 +1128,13 @@ wh, gr { font-weight: 300; }
 #db-search-results {
 	float: right;
 }
+#db-searchbtn,
+#pl-searchbtn {
+	float: right;
+	width: 40px;
+	line-height: 40px;
+	text-align: center;
+}
 .form-control:focus {
 	border: 2px solid #34495e;
 	border-radius: 6px;
@@ -1152,7 +1159,7 @@ wh, gr { font-weight: 300; }
 }
 #db-currentpath {
 	float: left;
-	width: calc( 100% - 230px );
+	width: calc( 100% - 85px );
 	height: 40px;
 	line-height: 40px;
 	white-space: nowrap;
