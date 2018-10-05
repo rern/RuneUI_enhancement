@@ -370,9 +370,20 @@ $( '#db-currentpath' ).on( 'click', 'a', function() {
 $( '#db-webradio-new' ).click( function() {
 	webRadioNew();
 } );
-$( '#searchbtn' ).click( function() {
+$( '#pl-searchbtn, #plsearchbtn, #pl-filter-results' ).click( function() {
+	$( '#pl-search, #pl-searchbtn, #pl-manage' ).toggleClass( 'hide' );
+} );
+$( '#db-searchbtn' ).click( function() {
+	$( '#db-search, #db-searchbtn' ).toggleClass( 'hide' );
+	$( '#db-currentpath' ).css( 'width', 'calc( 100% - 230px )' );
+} );
+$( '#dbsearchbtn' ).click( function() {
 	var keyword = $( '#db-search-keyword' ).val();
-	if ( !keyword ) return
+	if ( !keyword ) {
+		$( '#db-search, #db-searchbtn' ).toggleClass( 'hide' );
+		$( '#db-currentpath' ).css( 'width', '' );
+		return
+	}
 	GUI.dblist = 1;
 	getDB( {
 		  cmd : 'search'
@@ -380,9 +391,35 @@ $( '#searchbtn' ).click( function() {
 	} );
 } );
 $( '#db-search-keyword' ).on( 'keypress', function( e ) {
-	if ( e.which === 13 ) $( '#searchbtn' ).click();
+	if ( e.which === 13 ) $( '#dbsearchbtn' ).click();
+} );
+// MutationObserver - watch for '#db-entries' content changed then scroll to previous position
+var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+var observerOption = { childList: true };
+var observerLibrary = document.getElementById( 'db-entries' );
+var mutationLibrary = new MutationObserver( function() { // on observed target changed
+	var scrollpos = GUI.dbscrolltop[ $( '#db-currentpath' ).attr( 'path' ) ];
+	$( 'html, body' ).scrollTop( scrollpos ? scrollpos : 0 );
+	mutationLibrary.disconnect();
+} );
+$( '#db-search-results' ).click( function() {
+	$( this ).addClass( 'hide' );
+	$( '#db-search, #db-searchbtn' ).toggleClass( 'hide' );
+	$( '#db-search-keyword' ).val( '' );
+	$( '#db-currentpath' ).css( 'width', '' );
+	if ( GUI.currentpath ) {
+		$( '#db-back' ).removeClass( 'hide' );
+		getDB( GUI.dbbackdata.pop() );
+		GUI.dbbackdata.pop();
+		
+		$( '#db-entries' ).removeAttr( 'style' );
+		mutationLibrary.observe( observerLibrary, observerOption );
+	} else {
+		renderLibrary();
+	}
 } );
 $( '#db-back' ).on( 'click', function() {
+	mutationLibrary.observe( observerLibrary, observerOption ); // standard js - must be one on one element
 	// topmost of path
 	if ( GUI.dbbrowsemode === 'file' ) {
 		if ( $( '#db-currentpath span a' ).length === 1 ) {
@@ -628,7 +665,7 @@ $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 } );
 $( '#pl-editor' ).on( 'click', 'li', function( e ) {
 	$( '#loader' ).removeClass( 'hide' );
-	renderSavedPlaylist( $( this ).data( 'path' ) );
+	renderSavedPlaylist( $( this ).find( 'span' ).text() );
 } );
 $( '#pl-currentpath' ).on( 'click', '.plsback', function() {
 	$( '#plopen' ).click();
@@ -642,7 +679,7 @@ $( '#pl-home' ).click( function() {
 $( '#plopen' ).click( function() {
 	if ( !GUI.lsplaylists.length ) return
 	
-	$( '.playlist' ).addClass( 'hide' );
+	$( '.playlist, #pl-searchbtn' ).addClass( 'hide' );
 	$( '#loader' ).removeClass( 'hide' );
 	
 	var pl = GUI.lsplaylists;
@@ -738,33 +775,6 @@ new Sortable( document.getElementById( 'pl-entries' ), {
 		}
 		tempFlag( 'local' );
 		$.post( 'enhance.php', { mpc: 'mpc move '+ ( e.oldIndex + 1 ) +' '+ ( e.newIndex + 1 ) } );
-	}
-} );
-// MutationObserver - watch for '#db-entries' content changed then scroll to previous position
-var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
-var observerOption = { childList: true };
-var observerLibrary = document.getElementById( 'db-entries' );
-var mutationLibrary = new MutationObserver( function() { // on observed target changed
-	var scrollpos = GUI.dbscrolltop[ $( '#db-currentpath' ).attr( 'path' ) ];
-	$( 'html, body' ).scrollTop( scrollpos ? scrollpos : 0 );
-	mutationLibrary.disconnect();
-} );
-$( '#db-back' ).click( function() {
-	mutationLibrary.observe( observerLibrary, observerOption ); // standard js - must be one on one element
-} );
-$( '#db-search-results' ).click( function() {
-	$( this ).addClass( 'hide' );
-	$( '#db-search-keyword' ).val( '' );
-	$( '#db-currentpath' ).css( 'width', '' );
-	if ( GUI.currentpath ) {
-		$( '#db-back' ).removeClass( 'hide' );
-		getDB( GUI.dbbackdata.pop() );
-		GUI.dbbackdata.pop();
-		
-		$( '#db-entries' ).removeAttr( 'style' );
-		mutationLibrary.observe( observerLibrary, observerOption );
-	} else {
-		renderLibrary();
 	}
 } );
 $( '#time' ).roundSlider( {
@@ -1515,7 +1525,7 @@ function displayAirPlay() {
 		$( '#total' ).empty();
 		$( '#iplayer' ).addClass( 'fa-airplay' ).removeClass( 'hide' );
 	} else {
-		$( '#coverart, #share-group' ).css( 'width', '80%' );
+		$( '#coverart, #share-group' ).css( 'width', '90%' );
 	}
 }
 function PlaybackCssOrder( el, ord ) {
@@ -1553,7 +1563,7 @@ function displayPlayback() {
 		$( '#playback-row' ).css( 'max-width', '900px' );
 		$( '#time-knob, #coverart, #volume-knob, #play-group, #share-group, #vol-group' ).css( 'width', '45%' );
 	} else if ( i === 1 ) {
-		$( '#time-knob, #coverart, #volume-knob, #play-group, #share-group, #vol-group' ).css( 'width', '80%' );
+		$( '#time-knob, #coverart, #volume-knob, #play-group, #share-group, #vol-group' ).css( 'width', '90%' );
 	}
 	if ( !GUI.display.buttons || window.innerHeight <= 320 || window.innerWidth < 499 ) {
 		$( '#play-group, #share-group, #vol-group' ).addClass( 'hide' );
@@ -1659,7 +1669,8 @@ function renderLibrary() {
 	GUI.plugin = '';
 	$( '#db-currentpath' ).removeAttr( 'path' ).css( 'width', '' );
 	$( '#db-entries' ).empty();
-	$( '#db-search-results, #db-index, #db-back, #db-webradio-new' ).addClass( 'hide' );
+	$( '#db-search, #db-search-results, #db-index, #db-back, #db-webradio-new' ).addClass( 'hide' );
+	$( '#db-searchbtn' ).removeClass( 'hide' );
 	$( '#db-search-keyword' ).val( '' );
 	if ( $( '#db-entries' ).hasClass( 'hide' ) ) return
 	
@@ -1952,7 +1963,6 @@ function parseDBdata( inputArr, i, respType, inpath, querytype ) {
 			}
 			break;
 		case 'Dirble':
-console.log(inputArr)
 			if ( querytype === '' || querytype === 'childs' ) {
 				var liname = inputArr.title;
 				var childClass = ( querytype === 'childs' ) ? ' db-dirble-child' : '';
@@ -1997,7 +2007,7 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 	if ( path ) GUI.currentpath = path;
 	$( '#db-entries' ).empty();
 	$( '#db-entries, #db-back' ).removeClass( 'hide' );
-	$( ' #home-blocks ' ).addClass( 'hide' );
+	$( '#home-blocks' ).addClass( 'hide' );
 
 	if ( plugin ) {
 		if ( plugin === 'Spotify' ) {
@@ -2175,6 +2185,13 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 		$( '#db-index' ).removeClass( 'hide' );
 		$( '#db-entries' ).css( 'width', '' );
 	}
+	if( $( '#db-search-results' ).is( ':hidden' ) ) {
+		$( '#db-search' ).addClass( 'hide' );
+		$( '#db-searchbtn' ).removeClass( 'hide' );
+	} else {
+		$( '#db-search' ).removeClass( 'hide' );
+		$( '#db-searchbtn' ).addClass( 'hide' );
+	}
 	$( '#loader' ).addClass( 'hide' );
 }
 function setPlaylistScroll() {
@@ -2228,7 +2245,8 @@ function setPlaylistScroll() {
 function renderPlaylist() {
 	$( '#pl-filter' ).val( '' );
 	$( '#pl-filter-results' ).empty();
-	$( '#pl-currentpath, #pl-editor, #pl-index' ).addClass( 'hide' );
+	$( '#pl-currentpath, #pl-editor, #pl-index, #pl-search' ).addClass( 'hide' );
+	$( '#pl-searchbtn' ).removeClass( 'hide' );
 	$( '#plopen' ).toggleClass( 'disable', !GUI.lsplaylists.length );
 	
 	if ( !GUI.status.playlistlength ) {
