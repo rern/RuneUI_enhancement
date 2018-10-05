@@ -375,13 +375,14 @@ $( '#pl-searchbtn, #plsearchbtn, #pl-filter-results' ).click( function() {
 } );
 $( '#db-searchbtn' ).click( function() {
 	$( '#db-search, #db-searchbtn' ).toggleClass( 'hide' );
-	$( '#db-currentpath' ).css( 'width', 'calc( 100% - 230px )' );
+	if ( window.innerWidth < 540 ) $( '.title' ).addClass( 'hide' );
 } );
 $( '#dbsearchbtn' ).click( function() {
 	var keyword = $( '#db-search-keyword' ).val();
 	if ( !keyword ) {
 		$( '#db-search, #db-searchbtn' ).toggleClass( 'hide' );
-		$( '#db-currentpath' ).css( 'width', '' );
+		$( '.title' ).removeClass( 'hide' );
+//		$( '#db-currentpath' ).css( 'width', '' );
 		return
 	}
 	GUI.dblist = 1;
@@ -2073,8 +2074,8 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 		// filter out blank and various
 		if ( prop === 'artist' || prop === 'genre' || prop === 'directory' ) {
 			data = data.filter( function( el ) {
-				var key = ( el[ prop ] !== undefined ) ? prop : mode[ GUI.browsemode ];
-				return el[ key ].search( /^\s+$|^\(*various\)* *|^\(*va\)* */i ) === -1;
+				var name = el[ prop ] || el[ mode[ GUI.browsemode ] ];
+				if ( name ) return name.search( /^\s+$|^\(*various\)* *|^\(*va\)* */i ) === -1;
 			} );
 		}
 		if ( !data.length ) return
