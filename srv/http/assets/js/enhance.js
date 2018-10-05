@@ -2255,7 +2255,7 @@ function renderPlaylist() {
 		$( '#pl-entries' ).empty();
 		$( '.playlist' ).removeClass( 'hide' );
 		var barhide = !GUI.display.bars || window.innerWidth < 499 || window.innerHeight < 515;
-		$( '#playlist-warning' ).css( 'margin-top', barhide ? '27px' : '67px' );
+		$( '#playlist-warning' ).css( 'margin-top', barhide ? '67px' : '27px' );
 		return
 	}
 	
