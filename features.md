@@ -92,6 +92,7 @@ Rely on MPD supplied data which has some limitations.
 ### Library:
 - Show counts
 - Show icon and breadcrumb heading while browsing
+- Toggle search box
 - Show index bar
 - Improved Back button
 - Maintain scroll position
@@ -110,6 +111,7 @@ Rely on MPD supplied data which has some limitations.
 - Changes reflect to all clients
 		
 ### Playlist:
+- Toggle search box
 - Auto scroll to top with 3 previous songs
 - Show elapsed time while play/pause
 - Tap to play/pause
