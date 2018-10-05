@@ -1136,6 +1136,14 @@ wh, gr { font-weight: 300; }
 	line-height: 40px;
 	text-align: center;
 }
+#dbsearchbtn,
+#plsearchbtn {
+	padding: 4px 10px;
+}
+#dbsearchbtn i,
+#plsearchbtn i {
+	font-size: 22px;
+}
 .form-control:focus {
 	border: 2px solid #34495e;
 	border-radius: 6px;
