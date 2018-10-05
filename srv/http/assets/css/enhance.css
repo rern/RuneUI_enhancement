@@ -1120,9 +1120,6 @@ wh, gr { font-weight: 300; }
 .btnlist-top i {
 	font-size: 24px;
 }
-.btnlist-top .form-inline {
-	width: 180px;
-}
 .btnlist-top .form-inline i {
 	font-size: 18px;
 }
@@ -1169,7 +1166,8 @@ wh, gr { font-weight: 300; }
 }
 #db-currentpath {
 	float: left;
-	width: calc( 100% - 85px );
+	width: auto;
+	max-width: calc( 100% - 85px );
 	height: 40px;
 	line-height: 40px;
 	white-space: nowrap;
@@ -1227,9 +1225,9 @@ wh, gr { font-weight: 300; }
 #db-search,
 #pl-search {
 	display: block;
+	max-width: 200px;
 	white-space: nowrap;
 	float: right;
-	max-width: 180px;
 	margin-top: 4px;
 	z-index: 1001
 }
@@ -1737,9 +1735,6 @@ w {
 	#clock-display {
 		display: none;
 	}
-	.title {
-		display: none;
-	}
 }
 @media(max-width: 700px) {
 	.logo {
@@ -1754,12 +1749,6 @@ w {
 	#share-group,
 	#vol-group	{
 /*		min-width: 50%;*/
-	}
-}
-@media(max-width: 600px) {
-	#db-search,
-	#pl-search {
-		width: 130px;
 	}
 }
 @media(max-width: 540px) {
@@ -1828,8 +1817,9 @@ w {
 		order: 6;
 		-webkit-order: 6;
 	}
-	#db-currentpath {
-		width: calc( 100% - 180px );
+	#db-search,
+	#pl-search {
+		width: calc( 50% - 12px );
 	}
 	#db-up,
 	#db-webradio-new {
