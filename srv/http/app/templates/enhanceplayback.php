@@ -13,7 +13,12 @@
 					<span id="album"></span>
 				</div>
 				<div id="sampling">
-					<div id="divpos"><span id="songposition"></span><span id="timepos"></span></div>
+					<div id="divpos">
+						<span id="songposition"></span>
+						<span id="timepos"></span>
+						<i id="posrandom" class="fa fa-random"></i>
+						<i id="posrepeat"></i>
+					</div>
 					<span id="format-bitrate"></span>
 				</div>
 			</div>
@@ -24,9 +29,9 @@
 					<div id="imode">
 						<i id="iaddons" class="fa fa-addons hide"></i>
 						<i id="iupdate" class="fa fa-library hide"></i>
-						<i id="irandom" class="fa fa-random hide"></i>
-						<i id="irepeat" class="fa hide"></i>
-						<i id="iplayer" class="fa hide"></i>
+						<i id="irandom" class="fa fa-random"></i>
+						<i id="irepeat"></i>
+						<i id="iplayer"></i>
 						<i id="igpio" class="fa fa-gpio hide"></i>
 					</div>
 					<img id="controls-time" class="controls hide" src="<?=$this->asset('/img/controls-time.svg')?>">
