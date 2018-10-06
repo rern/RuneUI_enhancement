@@ -1568,7 +1568,10 @@ function displayPlayback() {
 		$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).removeClass( 'coversmall' );
 		$( '#sampling span' ).css( 'display', !GUI.display.time ? '' : 'display: inline' );
 	}
-	if ( GUI.display.time ) $( '#timepos' ).empty();
+	if ( GUI.display.time ) {
+		$( '#timepos' ).empty();
+		$( '#posrandom, #posrepeat' ).addClass( 'hide' );
+	}
 	if ( window.innerWidth < 500 ) $( '#playback-row' ).css( 'margin-top', GUI.display.time ? '10px' : '30px' );
 	if ( GUI.activePlayer === 'MPD' ) {
 		$( '#iplayer' ).removeClass().addClass( 'fa hide' );
