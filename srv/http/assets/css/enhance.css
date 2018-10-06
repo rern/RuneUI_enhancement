@@ -147,8 +147,8 @@ label {
 	text-transform: uppercase;
 }
 
-w, wh { color: #e0e7ee; }
-bl { color: #0095d8; }
+w, wh, .wh { color: #e0e7ee; }
+bl, .bl { color: #0095d8; }
 gr {color: #587ca0; }
 wh, gr { font-weight: 300; }
 .disable {
@@ -420,7 +420,8 @@ wh, gr { font-weight: 300; }
 	font-size: 30px;
 	color: #0095d8;
 }
-#divartist, #divalbum {
+#divartist,
+#divalbum {
 	height: 25px;
 }
 #artist,
@@ -440,6 +441,12 @@ wh, gr { font-weight: 300; }
 }
 #timepos i {
 	color: #e0e7ee;
+}
+#posrandom,
+#posrepeat {
+	width: 20px;
+	text-align: right;
+	color: #0095d8;
 }
 /* ---------------------- info scrolling ----------------------*/
 .scroll-left {
