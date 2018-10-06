@@ -35,11 +35,10 @@ var GUI = { // outside '$( function() {' enable console.log access
 };
 var blinkdot = '<a class="dot">.</a> <a class="dot dot2">.</a> <a class="dot dot3">.</a>';
 
-$.post( 'enhance.php', { getdisplay: 1 } ); // init display data > pushstream
+$.post( 'enhance.php', { getdisplay: 1 } ); // init display data > pushstream > getPlaybackStatus()
 
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-getPlaybackStatus();
 $.post( 'enhance.php', { library: 1 } );
 
 var menuH = $( '#settings' ).find( 'i' ).length * 41;
@@ -1007,7 +1006,7 @@ pushstreams.display.onmessage = function( data ) {
 	if ( GUI.local ) return
 	
 	if ( $( '#panel-playback' ).hasClass( 'active' ) ) {
-		//displayPlayback();
+		displayPlayback();
 		$.post( 'enhancestatus.php', function( status ) {
 			GUI.status = status;
 			renderPlayback();
@@ -1191,7 +1190,7 @@ function scrollLongText() {
 	setTimeout( function() {
 		$( '#divartist, #divsong, #divalbum' ).each( function() {
 			var $this = $( this );
-			$this.toggleClass( 'scroll-left', $this.find( 'span' ).width() > window.innerWidth * 0.975 );
+			$this.toggleClass( 'scroll-left', $this.find( 'span' ).width() > window.innerWidth * 0.98 );
 		} );
 	}, 100 );
 }
