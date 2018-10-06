@@ -27,13 +27,6 @@
 	font-style: italic;
 }
 @font-face {
-	font-family: Lato;
-	src: url( '../fonts/lato/lato-bolditalic-webfont.woff' ) format( 'woff' ),
-		url( '../fonts/lato/lato-bolditalic-webfont.ttf' ) format( 'truetype' );
-	font-weight: bold;
-	font-style: italic;
-}
-@font-face {
 	font-family: FontAwesome;
 	src: url( '../fonts/fontawesome-webfont.woff' ) format( 'woff' ),
 		url( '../fonts/fontawesome-webfont.ttf' ) format( 'truetype' );
