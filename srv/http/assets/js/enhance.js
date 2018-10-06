@@ -185,6 +185,7 @@ $( '#panel-library' ).on( 'taphold', function() {
 	
 	if ( e.target.id !== 'home-block-edit' && e.target.id !== 'home-block-remove' ) {
 		$( '#home-block-edit, #home-block-remove' ).remove();
+		$( '.home-bookmark' ).find( '.fa-bookmark, gr' ).css( 'opacity', '' );
 	}
 } );
 $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
@@ -228,7 +229,9 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 	if ( !$( e.target ).parents( '.home-bookmark' ) && !$( e.target ).hasClass( 'home-bookmark' ) ) return
 	
 	tempFlag( 'local' );
-	$( '.home-bookmark' ).append( '<i id="home-block-edit" class="fa fa-edit"></i><i id="home-block-remove" class="fa fa-minus-circle"></i>' );
+	$( '.home-bookmark' )
+		.append( '<i id="home-block-edit" class="fa fa-edit"></i><i id="home-block-remove" class="fa fa-minus-circle"></i>' )
+		.find( '.fa-bookmark, gr' ).css( 'opacity', 0.2 );
 } );
 
 var btnctrl = {
@@ -1188,11 +1191,7 @@ function scrollLongText() {
 	setTimeout( function() {
 		$( '#divartist, #divsong, #divalbum' ).each( function() {
 			var $this = $( this );
-			if ( $this.find( 'span' ).width() > Math.floor( window.innerWidth * 0.975 ) ) {
-				$this.addClass( 'scroll-left' );
-			} else {
-				$this.removeClass( 'scroll-left' );
-			}
+			$this.toggleClass( 'scroll-left', $this.find( 'span' ).width() > window.innerWidth * 0.975 );
 		} );
 	}, 100 );
 }
@@ -1635,21 +1634,16 @@ function displayLibrary() {
 	if ( GUI.display.label ) {
 		$( '.home-block gr' ).css( 'color', '' );
 		$( '.home-block wh' ).removeClass( 'hide' );
-		$( '.home-block' ).css( 'padding-bottom', '' );
+		$( '.home-block' ).css( 'padding', '' );
 		$( '.home-bookmark .fa-bookmark' ).css( { 'font-size': '', width: '' } );
 	} else {
 		$( '.home-block gr' ).css( 'color', '#e0e7ee' );
-		$( '.home-block wh' ).addClass( 'hide' );
+		$( '.home-block:not(.home-bookmark) wh' ).addClass( 'hide' );
 		$( '.home-block' ).css( 'padding-bottom', '30px' );
-		$( '.home-bookmark .fa-bookmark' ).css( { 'font-size': '28px', width: '15px' } );
-		$.each( $( '.home-bookmark' ), function() {
-			$( this ).find( 'gr' ).text( $( this ).find( 'wh' ).text() );
-		} );
+		$( '.home-bookmark .fa-bookmark' ).css( { 'font-size': '32px', width: '24px' } );
+		$( '.home-bookmark' ).css( 'padding', '15px 5px 5px 5px' );
 	}
 	displayCommon();
-	setTimeout( function() {
-		$( 'html, body' ).scrollTop( 0 );
-	}, 0 );
 }
 function setPlaybackSource() {
 	var activePlayer = GUI.activePlayer;
@@ -1692,7 +1686,8 @@ function renderLibrary() {
 		var bookmarkL = bookmarks.length;
 		for ( i = 0; i < bookmarkL; i++ ) {
 			var bookmark = bookmarks[ i ];
-			content += divOpen +'<div class="home-block home-bookmark" data-name="'+ bookmark.name +'" data-path="'+ bookmark.path +'"><i class="fa fa-bookmark"></i><gr>'+ numFormat( bookmark.count ) +' <i class="fa fa-music"></i></gr><wh>' + bookmark.name +'</wh></div></div>';
+			var name = bookmark.name.replace( /\\/g, '' );
+			content += divOpen +'<div class="home-block home-bookmark" data-path="'+ bookmark.path +'"><i class="fa fa-bookmark"></i><gr>'+ numFormat( bookmark.count ) +' <i class="fa fa-music"></i></gr><div class="divbklabel"><span class="bklabel">'+ name +'</span></div></div></div>';
 		}
 	}
 	// sd
@@ -1722,15 +1717,12 @@ function renderLibrary() {
 
 	content += '</div>';
 	$( '#home-blocks' ).html( content ).promise().done( function() {
-		$( 'html, body' ).scrollTop( 0 );
-		$( '.home-bookmark h4' ).each( function() {
+		setTimeout( function() {
+			$( 'html, body' ).scrollTop( 0 );
+		}, 0 );
+		$( '.bklabel' ).each( function() {
 			var $this = $( this );
-			var html_org = $this.html();
-			var html_calc = '<span>'+ html_org +'</span>';
-			$this.html( html_calc );
-			var width = $this.find( 'span:first' ).width();
-			$this.html(html_org);
-			if ( width > $this.parent().width() ) $this.addClass( 'scroll-left' );
+			if ( $this.width() > $this.parent().width() ) $this.addClass( 'bkscroll' );
 		} );
 	} );
 	displayLibrary();
@@ -1990,7 +1982,7 @@ function parseDBdata( inputArr, i, respType, inpath, querytype ) {
 // strip leading A|An|The|(|[|. (for sorting)
 function stripLeading( string ) {
 	if ( typeof string === 'number' ) string = string.toString();
-	return string.replace( /^A +|^An +|^The +|^\(\s*|^\[\s*|^\.\s*|^\'\s*|^\"\s*/i, '' );
+	return string.replace( /^A +|^An +|^The +|^\(\s*|^\[\s*|^\.\s*|^\'\s*|^\"\s*|\\/i, '' );
 }
 function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 	var data = data || '',
