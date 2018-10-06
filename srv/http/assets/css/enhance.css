@@ -1091,6 +1091,7 @@ wh, gr { font-weight: 300; }
 	font-weight: 300;
 	white-space: nowrap;
 	line-height: 40px;
+	margin: 0 auto;
 	color: #e0e7ee;
 }
 .bkscroll {
