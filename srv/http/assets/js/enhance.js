@@ -207,7 +207,7 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 	}
 
 	if ( e.target.id === 'home-block-edit' ) {
-		bookmarkRename( $this.data( 'name' ), $this.data( 'path' ), $this )
+		bookmarkRename( $this.find( '.bklabel' ).text(), $this.data( 'path' ), $this )
 	} else if ( e.target.id === 'home-block-remove' ) {
 		bookmarkDelete( $this.data( 'name' ), $this.parent() )
 	} else if ( id === 'home-spotify' && GUI.activeplayer !== 'Spotify' ) {
