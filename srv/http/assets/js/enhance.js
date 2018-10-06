@@ -273,7 +273,7 @@ $( '.timemap, .covermap, .volmap' ).click( function() {
 			if ( GUI.status.single ) {
 				GUI.status.repeat = GUI.status.single = 0;
 				$( '#repeat, #single' ).removeClass( 'btn-primary' );
-				$( '#irepeat' ).attr( 'class', 'hide' );
+				$( '#irepeat, #posrepeat' ).attr( 'class', 'fa hide' );
 				tempFlag( 'local' );
 				$.post( 'enhance.php', { mpc: [ 'mpc repeat 0', 'mpc single 0' ] } );
 			} else {
@@ -1006,11 +1006,8 @@ pushstreams.display.onmessage = function( data ) {
 	if ( GUI.local ) return
 	
 	if ( $( '#panel-playback' ).hasClass( 'active' ) ) {
+		getPlaybackStatus();
 		displayPlayback();
-		$.post( 'enhancestatus.php', function( status ) {
-			GUI.status = status;
-			renderPlayback();
-		}, 'json' );
 	} else if ( $( '#panel-library' ).hasClass( 'active' ) ) {
 		displayLibrary();
 	} else {
@@ -1118,21 +1115,31 @@ $.each( streams, function( i, stream ) {
 
 function setButtonToggle() {
 	if ( GUI.local ) return
-	
 	if ( GUI.display.buttons && $( '#play-group' ).is( ':visible' ) ) {
 		$( '#repeat' ).toggleClass( 'btn-primary', GUI.status.repeat === 1 );
 		$( '#random' ).toggleClass( 'btn-primary', GUI.status.random === 1 );
 		$( '#single' ).toggleClass( 'btn-primary', GUI.status.single === 1 );
-		$( '#irandom, #irepeat' ).addClass( 'hide' );
+		$( '#irandom, #posrandom' ).addClass( 'hide' );
+		$( '#irepeat, #posrepeat' ).attr( 'fa hide' );
 	} else {
-		if ( GUI.display.time ) {
-			$( '#irandom' ).toggleClass( 'hide', GUI.status.random === 0 );
+		var $random = GUI.display.time ? $( '#irandom' ) : $( '#posrandom' );
+		var $repeat = GUI.display.time ? $( '#irepeat' ) : $( '#posrepeat' );
+			$random.toggleClass( 'hide', GUI.status.random === 0 );
 			if ( GUI.status.repeat ) {
-				$( '#irepeat' ).attr( 'class', ( GUI.status.single ? 'fa-repeat-single' : 'fa-repeat' ) );
+				$repeat.attr( 'class', ( GUI.status.single ? 'fa fa-repeat-single' : 'fa fa-repeat' ) );
 			} else {
-				$( '#irepeat' ).attr( 'class', 'hide' );
+				$repeat.attr( 'class', 'fa hide' );
 			}
+	}
+	if ( GUI.display.update ) {
+		if ( GUI.display.bars ) {
+			$( '#badge' ).text( GUI.display.update ).removeClass( 'hide' );
+			$( '#iaddons' ).addClass( 'hide' );
+		} else {
+			$( '#iaddons' ).removeClass( 'hide' );
 		}
+	} else {
+		$( '#badge' ).empty().addClass( 'hide' );
 	}
 }
 function setButtonUpdate() {
@@ -1147,22 +1154,11 @@ function setButtonUpdate() {
 function setButton() {
 	$( '#playback-controls' ).toggleClass( 'hide', GUI.status.playlistlength === 0 );
 	var state = GUI.status.state;
-	
 	$( '#stop' ).toggleClass( 'btn-primary', state === 'stop' );
 	$( '#play' ).toggleClass( 'btn-primary', state === 'play' );
 	$( '#pause' ).toggleClass( 'btn-primary', state === 'pause' );
 	setButtonToggle();
 	setButtonUpdate();
-	if ( GUI.display.update ) {
-		if ( GUI.display.bars ) {
-			$( '#badge' ).text( GUI.display.update ).removeClass( 'hide' );
-			$( '#iaddons' ).addClass( 'hide' );
-		} else {
-			$( '#iaddons' ).removeClass( 'hide' );
-		}
-	} else {
-		$( '#badge' ).empty().addClass( 'hide' );
-	}
 }
 function numFormat( num ) {
 	return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -1387,7 +1383,6 @@ function getPlaybackStatus() {
 			return
 		}
 		GUI.status = status;
-		
 		setButton();
 		renderPlayback();
 		// imodedelay fix imode flashing on usb dac switching
@@ -1511,7 +1506,7 @@ function displayAirPlay() {
 	$( '#menu-top, #menu-bottom' ).toggleClass( 'hide', GUI.display.bars === '' );
 	$( '#playback-row' ).removeClass( 'hide' );
 	$( '#time-knob' ).toggleClass( 'hide', GUI.display.time === '' );
-	$( '#irandom, irepeat, #coverartoverlay, #volume-knob, #play-group, #share-group, #vol-group' ).addClass( 'hide' );
+	$( '#irandom, #irepeat, #posrandom, #posrepeat, #coverartoverlay, #volume-knob, #play-group, #share-group, #vol-group' ).addClass( 'hide' );
 	$( '#playsource-mpd' ).addClass( 'inactive' );
 	$( '#playsource-airplay' ).removeClass( 'inactive' );
 	if ( GUI.display.time ) {
