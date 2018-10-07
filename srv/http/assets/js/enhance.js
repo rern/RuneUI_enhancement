@@ -341,51 +341,6 @@ $( '.btn-cmd' ).click( function() {
 	}
 	$.post( 'enhance.php', { mpc: 'mpc '+ cmd } );
 } );
-$( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
-	var $this = $( this );
-	var id = this.id;
-	if ( GUI.local ) return
-	
-	var type = id.replace( 'home-', '' );
-	GUI.plugin = $this.data( 'plugin' );
-	if ( !GUI.libraryhome[ type ] && !$this.hasClass( 'home-bookmark' ) && !GUI.plugin ) {
-		if ( type === 'usb' ) {
-			location.href = '/sources';
-		} else if ( type === 'nas' ) {
-			location.href = '/sources/add';
-		} else if ( type === 'webradio' ) {
-			webRadioNew();
-		}
-		return
-	}
-
-	if ( e.target.id === 'home-block-edit' ) {
-		bookmarkRename( $this.find( '.bklabel' ).text(), $this.data( 'path' ), $this )
-	} else if ( e.target.id === 'home-block-remove' ) {
-		bookmarkDelete( $this.data( 'name' ), $this.parent() )
-	} else if ( id === 'home-spotify' && GUI.activeplayer !== 'Spotify' ) {
-		$( '#playsource' ).addClass( 'open' );
-	} else {
-		GUI.dblist = 1;
-		mutationLibrary.observe( observerLibrary, observerOption );
-		var browsemode = $this.data( 'browsemode' );
-		GUI.dbbrowsemode = browsemode ? browsemode : GUI.plugin ? GUI.plugin : 'file';
-		getDB( {
-			  browsemode : browsemode
-			, path       : $this.data( 'path' )
-			, plugin     : GUI.plugin
-		} );
-	}
-} ).on( 'taphold', '.home-block', function( e ) {
-	if ( GUI.swipe ) return
-	
-	if ( !$( e.target ).parents( '.home-bookmark' ) && !$( e.target ).hasClass( 'home-bookmark' ) ) return
-	
-	tempFlag( 'local' );
-	$( '.home-bookmark' )
-		.append( '<i id="home-block-edit" class="fa fa-edit"></i><i id="home-block-remove" class="fa fa-minus-circle"></i>' )
-		.find( '.fa-bookmark, gr' ).css( 'opacity', 0.2 );
-} );
 $( '#coverTL' ).click( function() {
 	if ( $( '#album' ).text().slice( 0, 4 ) === 'http' ) return;
 	
@@ -409,11 +364,12 @@ $( '#coverTL' ).click( function() {
 					GUI.display.volume = volume;
 				}
 			} else if ( $( '#time-knob' ).is( ':hidden' ) && $( '#volume-knob' ).is( ':hidden' ) ) {
-				GUI.display.coverlarge = coverlarge;
 				if ( GUI.display.time || GUI.display.volume ) {
+					GUI.display.coverlarge = coverlarge;
 					GUI.display.time = time;
 					GUI.display.volume = volume;
 				} else {
+					GUI.display.coverlarge = coverlarge ? '' : 'checked';
 					GUI.display.time = 'checked';
 					GUI.display.volume = 'checked';
 				}
@@ -558,6 +514,51 @@ $( '#playsource-spotify' ).click( function() {
 			} );
 		}
 	} );
+} );
+$( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
+	var $this = $( this );
+	var id = this.id;
+	if ( GUI.local ) return
+	
+	var type = id.replace( 'home-', '' );
+	GUI.plugin = $this.data( 'plugin' );
+	if ( !GUI.libraryhome[ type ] && !$this.hasClass( 'home-bookmark' ) && !GUI.plugin ) {
+		if ( type === 'usb' ) {
+			location.href = '/sources';
+		} else if ( type === 'nas' ) {
+			location.href = '/sources/add';
+		} else if ( type === 'webradio' ) {
+			webRadioNew();
+		}
+		return
+	}
+
+	if ( e.target.id === 'home-block-edit' ) {
+		bookmarkRename( $this.find( '.bklabel' ).text(), $this.data( 'path' ), $this )
+	} else if ( e.target.id === 'home-block-remove' ) {
+		bookmarkDelete( $this.data( 'name' ), $this.parent() )
+	} else if ( id === 'home-spotify' && GUI.activeplayer !== 'Spotify' ) {
+		$( '#playsource' ).addClass( 'open' );
+	} else {
+		GUI.dblist = 1;
+		mutationLibrary.observe( observerLibrary, observerOption );
+		var browsemode = $this.data( 'browsemode' );
+		GUI.dbbrowsemode = browsemode ? browsemode : GUI.plugin ? GUI.plugin : 'file';
+		getDB( {
+			  browsemode : browsemode
+			, path       : $this.data( 'path' )
+			, plugin     : GUI.plugin
+		} );
+	}
+} ).on( 'taphold', '.home-block', function( e ) {
+	if ( GUI.swipe ) return
+	
+	if ( !$( e.target ).parents( '.home-bookmark' ) && !$( e.target ).hasClass( 'home-bookmark' ) ) return
+	
+	tempFlag( 'local' );
+	$( '.home-bookmark' )
+		.append( '<i id="home-block-edit" class="fa fa-edit"></i><i id="home-block-remove" class="fa fa-minus-circle"></i>' )
+		.find( '.fa-bookmark, gr' ).css( 'opacity', 0.2 );
 } );
 $( '#db-home' ).click( function() {
 	$( '#open-library' ).click();
@@ -709,6 +710,33 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 		// } );
 	}
 } );
+$( '#db-entries' ).on( 'click', '.db-action', function( e ) {
+	e.stopPropagation();
+	var $this = $( this );
+	var $thisli = $this.parent();
+	GUI.dbpath = $thisli.data( 'path' );
+	GUI.list = {};
+	GUI.list.path = $thisli.hasClass( 'db-webradio' ) ? $thisli.find( '.bl' ).text() : GUI.dbpath; // used in contextmenu
+	GUI.list.name = $thisli.hasClass( 'db-webradio' ) ? $thisli.find( '.sn' ).text() : $thisli.attr( 'liname' );
+	var icon = $thisli.find( 'i.db-icon' );
+	GUI.list.isfile = icon.hasClass( 'fa-music' ) || icon.hasClass( 'fa-webradio' ); // file/dirble - used in contextmenu
+	if ( $( '#db-currentpath' ).attr( 'path' ) === 'Webradio' ) GUI.list.url = $thisli.find( '.bl' ).text();
+	var $menu = $( $this.data( 'target' ) );
+	$( '#db-entries li' ).removeClass( 'active' );
+	$( '.contextmenu' ).addClass( 'hide' );
+	if ( GUI.dbpath === GUI.dbcurrent ) {
+		GUI.dbcurrent = '';
+	} else {
+		GUI.dbcurrent = GUI.dbpath;
+		$thisli.addClass( 'active' );
+		$menu.removeClass( 'hide' )
+			.css( 'top', $this.position().top +'px' )
+			.find( '.menushadow' ).css( 'height', $menu.find( 'i' ).length * 41 );
+		var targetB = $menu.offset().top + $menu.height();
+		var wH = window.innerHeight;
+		if ( targetB > wH + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + ( GUI.display.bars ? 42 : 0 ) } );
+	}
+} );
 $( '#db-index li' ).click( function() {
 	var topoffset = GUI.display.bars ? 80 : 40;
 	var indextext = $( this ).text();
@@ -734,19 +762,6 @@ $( '#db-index li' ).click( function() {
 } );
 $( '#pl-searchbtn, #plsearchbtn, #pl-filter-results' ).click( function() {
 	$( '#pl-count, #pl-search, #pl-searchbtn, #pl-manage' ).toggleClass( 'hide' );
-} );
-$( '#pl-index li' ).click( function() {
-	var topoffset = GUI.display.bars ? 80 : 40;
-	var indextext = $( this ).text();
-	if ( indextext === '#' ) {
-		$( 'html, body' ).scrollTop( 0 );
-		return
-	}
-	var matcharray = $( '#pl-editor li' ).filter( function() {
-		var name = stripLeading( $( this ).data( 'path' ) );
-		return name.match( new RegExp( '^'+ indextext, 'i' ) );
-	} );
-	if ( matcharray.length ) $( 'html, body' ).scrollTop( matcharray[ 0 ].offsetTop - topoffset );
 } );
 $( '#pl-entries' ).on( 'click', 'li', function( e ) {
 	if ( $( e.target ).parent().hasClass( 'elapsed' )
@@ -813,33 +828,6 @@ $( '#pl-entries' ).on( 'click', 'li', function( e ) {
 		renderPlaylist();
 	}
 } );
-$( '#db-entries' ).on( 'click', '.db-action', function( e ) {
-	e.stopPropagation();
-	var $this = $( this );
-	var $thisli = $this.parent();
-	GUI.dbpath = $thisli.data( 'path' );
-	GUI.list = {};
-	GUI.list.path = $thisli.hasClass( 'db-webradio' ) ? $thisli.find( '.bl' ).text() : GUI.dbpath; // used in contextmenu
-	GUI.list.name = $thisli.hasClass( 'db-webradio' ) ? $thisli.find( '.sn' ).text() : $thisli.attr( 'liname' );
-	var icon = $thisli.find( 'i.db-icon' );
-	GUI.list.isfile = icon.hasClass( 'fa-music' ) || icon.hasClass( 'fa-webradio' ); // file/dirble - used in contextmenu
-	if ( $( '#db-currentpath' ).attr( 'path' ) === 'Webradio' ) GUI.list.url = $thisli.find( '.bl' ).text();
-	var $menu = $( $this.data( 'target' ) );
-	$( '#db-entries li' ).removeClass( 'active' );
-	$( '.contextmenu' ).addClass( 'hide' );
-	if ( GUI.dbpath === GUI.dbcurrent ) {
-		GUI.dbcurrent = '';
-	} else {
-		GUI.dbcurrent = GUI.dbpath;
-		$thisli.addClass( 'active' );
-		$menu.removeClass( 'hide' )
-			.css( 'top', $this.position().top +'px' )
-			.find( '.menushadow' ).css( 'height', $menu.find( 'i' ).length * 41 );
-		var targetB = $menu.offset().top + $menu.height();
-		var wH = window.innerHeight;
-		if ( targetB > wH + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + ( GUI.display.bars ? 42 : 0 ) } );
-	}
-} );
 $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 	e.stopPropagation();
 	var $this = $( this );
@@ -862,6 +850,19 @@ $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 		var wH = window.innerHeight;
 		if ( targetB > wH + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + ( GUI.display.bars ? 42 : 0 ) } );
 	}
+} );
+$( '#pl-index li' ).click( function() {
+	var topoffset = GUI.display.bars ? 80 : 40;
+	var indextext = $( this ).text();
+	if ( indextext === '#' ) {
+		$( 'html, body' ).scrollTop( 0 );
+		return
+	}
+	var matcharray = $( '#pl-editor li' ).filter( function() {
+		var name = stripLeading( $( this ).data( 'path' ) );
+		return name.match( new RegExp( '^'+ indextext, 'i' ) );
+	} );
+	if ( matcharray.length ) $( 'html, body' ).scrollTop( matcharray[ 0 ].offsetTop - topoffset );
 } );
 $( '#pl-editor' ).on( 'click', 'li', function( e ) {
 	$( '#loader' ).removeClass( 'hide' );
