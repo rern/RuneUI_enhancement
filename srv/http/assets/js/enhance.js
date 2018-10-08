@@ -85,7 +85,6 @@ $( '#open-library' ).click( function() {
 $( '#open-playback' ).click( function() {
 	setPanelActive( 'panel-playback' );
 	getPlaybackStatus();
-	displayPlayback();
 } );
 $( '#open-playlist' ).click( function() {
 	
@@ -1012,7 +1011,6 @@ document.addEventListener( visibilityevent, function() {
 		} );
 		if ( $( '#panel-playback' ).hasClass( 'active' ) ) {
 			getPlaybackStatus();
-			displayPlayback();
 		} else if ( $( '#panel-playlist' ).hasClass( 'active' ) ) {
 			if ( GUI.pleditor ) {
 				var name = $( '#pl-editor' ).attr( 'path' );
@@ -1055,7 +1053,6 @@ pushstreams.display.onmessage = function( data ) {
 	
 	if ( $( '#panel-playback' ).hasClass( 'active' ) ) {
 		getPlaybackStatus();
-		displayPlayback();
 	} else if ( $( '#panel-library' ).hasClass( 'active' ) ) {
 		displayLibrary();
 	} else {
@@ -1259,7 +1256,6 @@ function setPlaybackBlank() {
 	$( '#coverartoverlay' ).addClass( 'hide' );
 }
 function renderPlayback() {
-	console.log('renderPlayback')
 	var status = GUI.status;
 	// song and album before update for song/album change detection
 	var previoussong = $( '#song' ).text();
@@ -1439,6 +1435,7 @@ function getPlaybackStatus() {
 		GUI.status = status;
 		setButton();
 		renderPlayback();
+		displayPlayback();
 		// imodedelay fix imode flashing on usb dac switching
 		if ( !GUI.imodedelay ) displayPlayback();
 	}, 'json' );
@@ -2321,12 +2318,12 @@ function renderPlaylist() {
 			+'</li>';
 	}
 	countsong = ilength - countradio;
-	var counthtml = '<bl class="title">&emsp;P L A Y L I S T<gr>&emsp;•</gr></bl>';
+	var counthtml = '<bl class="title">&emsp;P L A Y L I S T</bl>';
 	var countradiohtml = '<wh id="countradio" count="'+ countradio +'">'+ countradio +'</wh>&ensp;<i class="fa fa-webradio"></i>';
 	if ( countsong ) {
 		var pltimehtml = ' id="pltime" time="'+ pltime +'">'+ second2HMS( pltime ) +'&emsp;';
 		var totalhtml = countradio ? '<gr'+ pltimehtml +'</gr>'+ countradiohtml : '<wh'+ pltimehtml +'&emsp;</wh>';
-		counthtml += '<wh id="countsong" count="'+ countsong +'">'+ numFormat( countsong ) +'</wh>&ensp;<i class="fa fa-music"></i>&ensp;'+ totalhtml;
+		counthtml += '<wh id="countsong" count="'+ countsong +'"><gr> • </gr>'+ numFormat( countsong ) +'</wh>&ensp;<i class="fa fa-music"></i>&ensp;'+ totalhtml;
 	} else {
 		counthtml += countradiohtml;
 	}
