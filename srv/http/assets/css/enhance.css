@@ -1185,8 +1185,10 @@ wh, gr { font-weight: 300; }
 	margin-left: 10px;
 }
 .title {
+	margin-left: 15px;
 	font-size: 28px;
 	font-weight: 300;
+	letter-spacing: 5px;
 }
 #db-currentpath .title,
 #li-count,
