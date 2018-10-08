@@ -1184,6 +1184,10 @@ wh, gr { font-weight: 300; }
 #countsong {
 	margin-left: 10px;
 }
+.title {
+	font-size: 28px;
+	font-weight: 300;
+}
 #db-currentpath .title,
 #li-count,
 #pl-currentpath > * {
@@ -1442,8 +1446,12 @@ span.dbpath {
 	font-size: 18px;
 	color: #587ca0;
 }
+#countsong,
+#pl-count i,
+#pltime {
+	vertical-align: 10%;
+}
 #pl-count i {
-	vertical-align: -10%;
 	font-size: 24px;
 }
 #pl-filter-results {
