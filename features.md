@@ -97,6 +97,7 @@ Rely on MPD supplied data which has some limitations.
 - Show index bar
 - Improved Back button
 - Maintain scroll position
+- Display special characters like ', " without errors
 - Improved sorting and exclude leading A, An, The, ', "
 - Modes
 	- Albums > names > songs
@@ -108,7 +109,7 @@ Rely on MPD supplied data which has some limitations.
 - Bookmarks and webradios can be renamed
 - Bookmarks and webradios can be named with ', " characters
 - Scroll long bookmark names
-- Show filenames or URL of webradio
+- Show filenames or URL of saved webradio before played
 - Changes reflect to all clients
 		
 ### Playlist:
@@ -121,6 +122,7 @@ Rely on MPD supplied data which has some limitations.
 - Show track numbers
 - Show webradio name
 - Crop button to keep only current playing song
+- Saved playlists can be named with ', " characters
 - Saved playlists can be renamed
 - Each saved playlist can be viewed
 - Maintain scroll position
