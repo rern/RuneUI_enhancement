@@ -97,7 +97,6 @@ Rely on MPD supplied data which has some limitations.
 - Show index bar
 - Improved Back button
 - Maintain scroll position
-- Display special characters like ', " without errors
 - Improved sorting and exclude leading A, An, The, ', ", ., (, [
 - Modes
 	- Albums > names > songs
