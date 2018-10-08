@@ -1719,7 +1719,7 @@ function renderLibrary() {
 	
 	$( '#panel-library .btnlist-top, db-entries' ).addClass( 'hide' );
 	var status = GUI.libraryhome;
-	$( '#db-currentpath span' ).html( '<bl class="title">LIBRARY</bl><a id="li-count"><gr> • </gr><wh>'+ numFormat( status.song ) +'</wh><i class="fa fa-music"></i></a>' );
+	$( '#db-currentpath span' ).html( '<bl class="title">LIBRARY<gr>·</gr></bl><a id="li-count"><wh>'+ numFormat( status.song ) +'</wh><i class="fa fa-music"></i></a>' );
 	$( '#panel-library .btnlist-top, #home-blocks' ).removeClass( 'hide' );
 	// Set active player
 	setPlaybackSource();
@@ -2319,12 +2319,12 @@ function renderPlaylist() {
 			+'</li>';
 	}
 	countsong = ilength - countradio;
-	var counthtml = '<bl class="title">PLAYLIST</bl>';
+	var counthtml = '<bl class="title">PLAYLIST<gr>·</gr></bl>';
 	var countradiohtml = '<wh id="countradio" count="'+ countradio +'">'+ countradio +'</wh>&ensp;<i class="fa fa-webradio"></i>';
 	if ( countsong ) {
 		var pltimehtml = ' id="pltime" time="'+ pltime +'">'+ second2HMS( pltime ) +'&emsp;';
 		var totalhtml = countradio ? '<gr'+ pltimehtml +'</gr>'+ countradiohtml : '<wh'+ pltimehtml +'&emsp;</wh>';
-		counthtml += '<wh id="countsong" count="'+ countsong +'"><gr> • </gr>'+ numFormat( countsong ) +'</wh>&ensp;<i class="fa fa-music"></i>&ensp;'+ totalhtml;
+		counthtml += '<wh id="countsong" count="'+ countsong +'">'+ numFormat( countsong ) +'</wh>&ensp;<i class="fa fa-music"></i>&ensp;'+ totalhtml;
 	} else {
 		counthtml += countradiohtml;
 	}
