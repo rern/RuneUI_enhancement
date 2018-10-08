@@ -395,6 +395,7 @@ $( '#coverTL' ).click( function() {
 		renderPlayback();
 		displayPlayback();
 		setButton();
+		if ( window.innerWidth < 500 ) $( '#format-bitrate' ).css( 'display', GUI.display.time ? 'inline' : 'block' );
 		GUI.display.coverlarge = coverlarge;
 		GUI.display.time = time;
 		GUI.display.volume = volume;
@@ -1617,7 +1618,7 @@ function displayPlayback() {
 		$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).addClass( 'coversmall' );
 	} else {
 		$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).removeClass( 'coversmall' );
-		$( '#sampling span' ).css( 'display', !GUI.display.time ? '' : 'display: inline' );
+		if ( window.innerWidth < 500 ) $( '#format-bitrate' ).css( 'display', GUI.display.time ? 'inline' : 'block' );
 	}
 	if ( GUI.display.time ) {
 		$( '#timepos' ).empty();
