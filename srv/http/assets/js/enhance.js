@@ -1718,7 +1718,7 @@ function renderLibrary() {
 	
 	$( '#panel-library .btnlist-top, db-entries' ).addClass( 'hide' );
 	var status = GUI.libraryhome;
-	$( '#db-currentpath span' ).html( '<bl class="title">&emsp;L I B R A R Y</bl><a id="li-count"><gr> • </gr><wh>'+ numFormat( status.song ) +'</wh><i class="fa fa-music"></i></a>' );
+	$( '#db-currentpath span' ).html( '<bl class="title">LIBRARY</bl><a id="li-count"><gr> • </gr><wh>'+ numFormat( status.song ) +'</wh><i class="fa fa-music"></i></a>' );
 	$( '#panel-library .btnlist-top, #home-blocks' ).removeClass( 'hide' );
 	// Set active player
 	setPlaybackSource();
@@ -2277,7 +2277,7 @@ function renderPlaylist() {
 	$( '#plopen' ).toggleClass( 'disable', !GUI.lsplaylists.length );
 	
 	if ( !GUI.status.playlistlength ) {
-		$( '#pl-count' ).html( '<bl class="title">&emsp;P L A Y L I S T</bl>' );
+		$( '#pl-count' ).html( '<bl class="title">PLAYLIST</bl>' );
 		$( '#plsave, #plcrop, #plclear' ).addClass( 'disable' );
 		$( '#pl-entries' ).empty();
 		$( '.playlist' ).removeClass( 'hide' );
@@ -2318,7 +2318,7 @@ function renderPlaylist() {
 			+'</li>';
 	}
 	countsong = ilength - countradio;
-	var counthtml = '<bl class="title">&emsp;P L A Y L I S T</bl>';
+	var counthtml = '<bl class="title">PLAYLIST</bl>';
 	var countradiohtml = '<wh id="countradio" count="'+ countradio +'">'+ countradio +'</wh>&ensp;<i class="fa fa-webradio"></i>';
 	if ( countsong ) {
 		var pltimehtml = ' id="pltime" time="'+ pltime +'">'+ second2HMS( pltime ) +'&emsp;';
