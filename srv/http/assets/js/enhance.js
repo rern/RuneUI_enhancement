@@ -342,6 +342,7 @@ $( '.btn-cmd' ).click( function() {
 	$.post( 'enhance.php', { mpc: 'mpc '+ cmd } );
 } );
 $( '#coverTL' ).click( function() {
+	$( '.controls' ).addClass( 'hide', !$( this ).hasClass( 'hide' ) );
 	if ( $( '#album' ).text().slice( 0, 4 ) === 'http' ) return;
 	
 	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
@@ -401,7 +402,8 @@ $( '#coverTL' ).click( function() {
 	}, 'json' );
 } );
 var btnctrl = {
-	  timeT  : 'guide'
+	  timeTL : 'playsource-open'
+	, timeT  : 'guide'
 	, timeTR : 'menu'
 	, timeL  : 'previous'
 	, timeM  : 'play'
@@ -485,7 +487,9 @@ $( '#turnoff' ).click( function() {
 	} );
 } );
 $( '#playsource-open' ).click( function() {
-//	$( '#playsource' ).addClass( 'open' );
+	$( '#playsource li a' ).addClass( 'inactive' );
+	$( '#playsource-'+ GUI.activePlayer.toLowerCase() ).removeClass( 'inactive' )
+	$( '#playsource' ).addClass( 'open' );
 } );
 $( '#playsource-close' ).click( function() {
 	$( '#playsource' ).removeClass( 'open' );
@@ -1255,6 +1259,7 @@ function setPlaybackBlank() {
 	$( '#coverartoverlay' ).addClass( 'hide' );
 }
 function renderPlayback() {
+	console.log('renderPlayback')
 	var status = GUI.status;
 	// song and album before update for song/album change detection
 	var previoussong = $( '#song' ).text();
@@ -1297,7 +1302,7 @@ function renderPlayback() {
 	if ( status.ext !== 'radio' || status.activePlayer === 'Spotify' ) {
 		if ( status.Album !== previousalbum ) {
 			$( '#coverartoverlay' ).addClass( 'hide' );
-			var coverart = status.coverart ? status.coverart : 'assets/img/cover-default-runeaudio.png';
+			var coverart = status.coverart || 'assets/img/cover-default-runeaudio.png';
 			$( '#cover-art' )
 				.attr( 'src', coverart )
 				.css( 'border-radius', 0 )
