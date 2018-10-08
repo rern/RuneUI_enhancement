@@ -1765,6 +1765,11 @@ w {
 		display: none;
 	}
 }
+@media(max-width: 640px) {
+	.title {
+		display: none;
+	}
+}
 @media(max-width: 540px) {
 	#pltime {
 		display: none;
@@ -1797,7 +1802,7 @@ w {
 	#coverart,
 	#volume-knob {
 		width: 90%;
-		margin-bottom: 20px;
+		margin: 20px 0;
 	}
 	#share-group,
 	#play-group,
