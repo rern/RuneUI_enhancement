@@ -85,6 +85,7 @@ $( '#open-library' ).click( function() {
 $( '#open-playback' ).click( function() {
 	setPanelActive( 'panel-playback' );
 	getPlaybackStatus();
+	displayPlayback();
 } );
 $( '#open-playlist' ).click( function() {
 	
