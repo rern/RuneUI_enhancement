@@ -17,6 +17,7 @@ sed -i 's/gifico|svg/gif|ico/' /etc/nginx/nginx.conf
 rm -f /srv/http/assets/js/vendor/{hammer.min.js,propagating.js}
 sed -i '/hammer.min.js\|propagating.js/ d' /srv/http/app/templates/footer.php
 redis-cli del volumemute &> /dev/null
+sed '/^disable_overscan=1\|^hdmi_ignore_cec=1/ d' /boot/config.txt
 #1temp1
 
 mv /srv/http/index.php{,.backup}
