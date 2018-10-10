@@ -212,7 +212,7 @@ function getLibrary() {
 	}
 		$count = exec( '/srv/http/enhancecount.sh' );
 		$count = explode( ' ', $count );
-	if ( $redis->hGet( 'display', 'label' ) ) {
+	if ( $redis->hGet( 'display', 'count' ) ) {
 		$status = array( 
 			  'bookmark'     => $bookmarks
 			, 'artist'       => $count[ 0 ]
