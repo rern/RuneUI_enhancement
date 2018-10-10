@@ -1009,7 +1009,8 @@ new Sortable( document.getElementById( 'pl-entries' ), {
 	}
 } );
 new Sortable( document.getElementById( 'home-blocks' ), {
-	  onStart    : function( e ) {
+	  delay      : 100
+	, onStart    : function( e ) {
 		$icon = $( e.item ).find( 'i' );
 		$icon.css( 'color', '#e0e7ee' );
 	  }
