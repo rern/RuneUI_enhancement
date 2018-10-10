@@ -157,10 +157,8 @@ $( '#panel-library' ).on( 'click', function( e ) {
 } ).on( 'taphold', function( e ) {
 	if ( GUI.swipe || GUI.local ) return
 	
-	GUI.taphold = 1;
 	if ( $( e.target ).hasClass( 'home-block' ) ) return
 	
-	var count = GUI.display.count;
 	info( {
 		  title        : 'Libary Home'
 		, message      : 'Select items to show:'
@@ -184,24 +182,17 @@ $( '#panel-library' ).on( 'click', function( e ) {
 			$( '#displaysavelibrary input' ).each( function() {
 				GUI.display[ this.name ] = this.checked ? 'checked' : '';
 			} );
-			tempFlag( 'local' );
+			//tempFlag( 'local' );
 			$.post( 'enhance.php', { setdisplay: GUI.display } );
-			if ( !GUI.display.count ) { 
-				GUI.libraryhome = {
-					  bookmark     : GUI.libraryhome.bookmark
-					, activeplayer : GUI.libraryhome.activeplayer
-					, spotify      : GUI.libraryhome.spotify
-				};
-			}
-			if ( GUI.display.count !== count && !count ) {
+//			if ( GUI.display.count !== count && !count ) {
 				$.post( 'enhance.php', { library: 1 }, function( data ) {
 					renderLibrary();
 					displayLibrary();
 				} );
-			} else {
+/*			} else {
 				renderLibrary();
 				displayLibrary();
-			}
+			}*/
 		}
 	} );
 } );
@@ -541,10 +532,7 @@ $( '#playsource-spotify' ).click( function() {
 $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 	var $this = $( this );
 	var id = this.id;
-	if ( GUI.local || GUI.taphold ) {
-		GUI.taphold = 0;
-		return
-	}
+	if ( GUI.local ) return
 	
 	var type = id.replace( 'home-', '' );
 	GUI.plugin = $this.data( 'plugin' );
@@ -1754,7 +1742,7 @@ function setLibraryBlock( id ) {
 	if ( id === 'spotify' && !status.spotify ) return '';
 
 	var iconmusic = id === 'sd' ? ' <i class="fa fa-music"></i>' : '';
-	var count = status[ id ] !== undefined ? ( '<gr>'+ numFormat( status[ id ] ) + iconmusic +'</gr>' ) : '';
+	var count = GUI.display.count && status[ id ] !== undefined ? ( '<gr>'+ numFormat( status[ id ] ) + iconmusic +'</gr>' ) : '';
 	var label = GUI.display.label ? ( '<wh>'+ namepath[ id ][ 0 ] +'</wh>' ) : '';
 	var browsemode = ( $.inArray( id, [ 'album', 'artist', 'composer', 'genre' ] ) !== -1 ) ? ' data-browsemode="'+ id +'"' : '';
 	var plugin = ( id === 'spotify' || id === 'dirble' || id === 'jamendo' ) ? ( ' data-plugin="'+ namepath[ id ][ 1 ] +'"' ) : '';
@@ -1779,9 +1767,7 @@ function renderLibrary() {
 	
 	$( '#panel-library .btnlist-top, db-entries' ).addClass( 'hide' );
 	var status = GUI.libraryhome;
-	var counts = status.song ? 1 : 0;
-	var labels = GUI.display.label ? 1 : 0;
-	if ( counts ) {
+	if ( GUI.display.count ) {
 		$( '#db-currentpath span' ).html( '<bl class="title">LIBRARY<gr>·</gr></bl><a id="li-count"><wh>'+ numFormat( status.song ) +'</wh><i class="fa fa-music"></i></a>' );
 	} else {
 		$( '#db-currentpath span' ).html( '<bl class="title">LIBRARY</bl></a>' );
@@ -1798,7 +1784,7 @@ function renderLibrary() {
 		} );
 		var bookmarkL = bookmarks.length;
 		$.each( bookmarks, function( i, bookmark ) {
-			var count = counts ? '<gr>'+ numFormat( bookmark.count ) +' <i class="fa fa-music"></i></gr>' : '';
+			var count = GUI.display.count ? '<gr>'+ numFormat( bookmark.count ) +' <i class="fa fa-music"></i></gr>' : '';
 			var name = bookmark.name.replace( /\\/g, '' );
 			content += '<div class="col-md-3"><div class="home-block home-bookmark" data-path="'+ bookmark.path +'"><i class="fa fa-bookmark"></i>'+ count +'<div class="divbklabel"><span class="bklabel">'+ name +'</span></div></div></div>';
 		} );
