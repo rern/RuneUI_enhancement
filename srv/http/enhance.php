@@ -138,9 +138,9 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 		}
 	} else {
 		$rdname = str_replace( '"', '\"', $data[ 0 ] );
-		$rdoldname = str_replace( '"', '\"', $data[ 2 ] );
 		$rdvalue = str_replace( '"', '\"', $data[ 1 ] );
 		if ( count( $data ) === 3 ) {
+			$rdoldname = str_replace( '"', '\"', $data[ 2 ] );
 			$redis->hDel( $key, $rdoldname );
 			if ( $key === 'webradios' ) unlink( '/mnt/MPD/Webradio/'.$data[ 2 ].'.pls' );
 		}
