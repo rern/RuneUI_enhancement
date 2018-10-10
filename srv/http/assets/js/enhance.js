@@ -157,12 +157,14 @@ $( '#panel-library' ).on( 'click', function( e ) {
 } ).on( 'taphold', function() {
 	if ( GUI.swipe || GUI.local ) return
 	GUI.taphold = 1;
+	var count = GUI.display.count;
 	info( {
 		  title        : 'Libary Home'
 		, message      : 'Select items to show:'
 		, checkboxhtml : 
 			'<form id="displaysavelibrary">'
 				+ libraryLabel( 'bars', 'Top-Bottom menu' )
+				+ libraryLabel( 'count', 'Count' )
 				+ libraryLabel( 'label', 'Label' )
 				+ libraryLabel( 'sd', 'SD' )
 				+ libraryLabel( 'usb', 'USB' )
@@ -180,9 +182,24 @@ $( '#panel-library' ).on( 'click', function( e ) {
 			$( '#displaysavelibrary input' ).each( function() {
 				GUI.display[ this.name ] = this.checked ? 'checked' : '';
 			} );
-			displayLibrary();
 			tempFlag( 'local' );
 			$.post( 'enhance.php', { setdisplay: GUI.display } );
+			if ( !GUI.display.count ) { 
+				GUI.libraryhome = {
+					  bookmark     : GUI.libraryhome.bookmark
+					, activeplayer : GUI.libraryhome.activeplayer
+					, spotify      : GUI.libraryhome.spotify
+				};
+			}
+			if ( GUI.display.count !== count && !count ) {
+				$.post( 'enhance.php', { library: 1 }, function( data ) {
+					renderLibrary();
+					displayLibrary();
+				} );
+			} else {
+				renderLibrary();
+				displayLibrary();
+			}
 		}
 	} );
 } );
@@ -1614,7 +1631,7 @@ function displayPlayback() {
 		$( '#play-group, #share-group, #vol-group' ).addClass( 'hide' );
 	}
 	// not scale webradio vu meter
-	if ( GUI.display.coverlarge === '' || $( '#album' ).text().slice( 0, 4 ) === 'http' ) {
+	if ( !GUI.display.coverlarge || $( '#album' ).text().slice( 0, 4 ) === 'http' ) {
 		$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).addClass( 'coversmall' );
 	} else {
 		$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).removeClass( 'coversmall' );
@@ -1682,12 +1699,10 @@ function displayLibrary() {
 	var txt = '';
 	if ( GUI.display.label ) {
 		$( '.home-block gr' ).css( 'color', '' );
-		$( '.home-block wh' ).removeClass( 'hide' );
 		$( '.home-block' ).css( 'padding', '' );
 		$( '.home-bookmark .fa-bookmark' ).css( { 'font-size': '', width: '' } );
 	} else {
 		$( '.home-block gr' ).css( 'color', '#e0e7ee' );
-		$( '.home-block:not(.home-bookmark) wh' ).addClass( 'hide' );
 		$( '.home-block' ).css( 'padding-bottom', '30px' );
 		$( '.home-bookmark .fa-bookmark' ).css( { 'font-size': '32px', width: '24px' } );
 		$( '.home-bookmark' ).css( 'padding', '15px 5px 5px 5px' );
@@ -1719,7 +1734,13 @@ function renderLibrary() {
 	
 	$( '#panel-library .btnlist-top, db-entries' ).addClass( 'hide' );
 	var status = GUI.libraryhome;
-	$( '#db-currentpath span' ).html( '<bl class="title">LIBRARY<gr>·</gr></bl><a id="li-count"><wh>'+ numFormat( status.song ) +'</wh><i class="fa fa-music"></i></a>' );
+	var counts = status.song ? 1 : 0;
+	var labels = GUI.display.label ? 1 : 0;
+	if ( counts ) {
+		$( '#db-currentpath span' ).html( '<bl class="title">LIBRARY<gr>·</gr></bl><a id="li-count"><wh>'+ numFormat( status.song ) +'</wh><i class="fa fa-music"></i></a>' );
+	} else {
+		$( '#db-currentpath span' ).html( '<bl class="title">LIBRARY</bl></a>' );
+	}
 	$( '#panel-library .btnlist-top, #home-blocks' ).removeClass( 'hide' );
 	// Set active player
 	setPlaybackSource();
@@ -1735,34 +1756,35 @@ function renderLibrary() {
 		var bookmarkL = bookmarks.length;
 		for ( i = 0; i < bookmarkL; i++ ) {
 			var bookmark = bookmarks[ i ];
+			var count = counts ? '<gr>'+ numFormat( bookmark.count ) +' <i class="fa fa-music"></i></gr>' : '';
 			var name = bookmark.name.replace( /\\/g, '' );
-			content += divOpen +'<div class="home-block home-bookmark" data-path="'+ bookmark.path +'"><i class="fa fa-bookmark"></i><gr>'+ numFormat( bookmark.count ) +' <i class="fa fa-music"></i></gr><div class="divbklabel"><span class="bklabel">'+ name +'</span></div></div></div>';
+			content += divOpen +'<div class="home-block home-bookmark" data-path="'+ bookmark.path +'"><i class="fa fa-bookmark"></i>'+ count +'<div class="divbklabel"><span class="bklabel">'+ name +'</span></div></div></div>';
 		}
 	}
-	// sd
-	content += divOpen +'<div id="home-sd" class="home-block" data-path="LocalStorage"><i class="fa fa-microsd"></i><gr>'+ numFormat( status.sd ) +' <i class="fa fa-music"></i></gr><wh>SD</wh></div></div>';
-	// usb
-	content += divOpen +'<div id="home-usb" class="home-block" data-path="USB"><i class="fa fa-usbdrive"></i><gr>'+ status.usb +'</gr><wh>USB</wh></div></div>';
-	// nas
-	content += divOpen +'<a id="home-nas" class="home-block" data-path="NAS"><i class="fa fa-network"></i><gr>'+ status.nas +'</gr><wh>Network</wh></a></div>';
-	// webradio
-	content += divOpen +'<div id="home-webradio" class="home-block" data-path="Webradio"><i class="fa fa-webradio"></i><gr>'+ numFormat( status.webradio ) +'</gr><wh>Webradio</wh></div></div>';
-	// albums
-	content += divOpen +'<div id="home-album" class="home-block" data-path="Albums" data-browsemode="album"><i class="fa fa-album"></i><gr>'+ numFormat( status.album ) +'</gr><wh>Album</wh></div></div>';
-	// artist
-	content += divOpen +'<div id="home-artist" class="home-block" data-path="Artists" data-browsemode="artist"><i class="fa fa-artist"></i><gr>'+ numFormat( status.artist ) +'</gr><wh>Artist</wh></div></div>';
-	// composer
-	content += divOpen +'<div id="home-composer" class="home-block" data-path="Composer" data-browsemode="composer"><i class="fa fa-composer"></i><gr>'+ numFormat( status.composer ) +'</gr><wh>Composer</wh></div></div>';
-	// genre
-	content += divOpen +'<div id="home-genre" class="home-block" data-path="Genres" data-browsemode="genre"><i class="fa fa-genre"></i><gr>'+ numFormat( status.genre ) +'</gr><wh>Genre</wh></div></div>';
+	var count = counts ? '<gr>'+ numFormat( status.sd ) +' <i class="fa fa-music"></i></gr>' : '';
+	content += divOpen +'<div id="home-sd" class="home-block" data-path="LocalStorage"><i class="fa fa-microsd"></i>'+ count + ( labels ? '<wh>SD</wh>' : '' ) +'</div></div>';
+	var count = counts ? '<gr>'+ status.usb +'</gr>' : '';
+	content += divOpen +'<div id="home-usb" class="home-block" data-path="USB"><i class="fa fa-usbdrive"></i>'+ count + ( labels ? '<wh>USB</wh>' : '' ) +'</div></div>';
+	var count = counts ? '<gr>'+ status.nas +'</gr>' : '';
+	content += divOpen +'<a id="home-nas" class="home-block" data-path="NAS"><i class="fa fa-network"></i>'+ count + ( labels ? '<wh>Network</wh>' : '' ) +'</a></div>';
+	var count = counts ? '<gr>'+ numFormat( status.webradio ) +'</gr>' : '';
+	content += divOpen +'<div id="home-webradio" class="home-block" data-path="Webradio"><i class="fa fa-webradio"></i>'+ count + ( labels ? '<wh>Webradio</wh>' : '' ) +'</div></div>';
+	var count = counts ? '<gr>'+ numFormat( status.album ) +'</gr>' : '';
+	content += divOpen +'<div id="home-album" class="home-block" data-path="Albums" data-browsemode="album"><i class="fa fa-album"></i>'+ count + ( labels ? '<wh>Album</wh>' : '' ) +'</div></div>';
+	var count = counts ? '<gr>'+ numFormat( status.artist ) +'</gr>' : '';
+	content += divOpen +'<div id="home-artist" class="home-block" data-path="Artists" data-browsemode="artist"><i class="fa fa-artist"></i>'+ count + ( labels ? '<wh>Artist</wh>' : '' ) +'</div></div>';
+	var count = counts ? '<gr>'+ numFormat( status.composer ) +'</gr>' : '';
+	content += divOpen +'<div id="home-composer" class="home-block" data-path="Composer" data-browsemode="composer"><i class="fa fa-composer"></i>'+ count + ( labels ? '<wh>Composer</wh>' : '' ) +'</div></div>';
+	var count = counts ? '<gr>'+ numFormat( status.genre ) +'</gr>' : '';
+	content += divOpen +'<div id="home-genre" class="home-block" data-path="Genres" data-browsemode="genre"><i class="fa fa-genre"></i>'+ count + ( labels ? '<wh>Genre</wh>' : '' ) +'</div></div>';
 	// spotify
 	if ( status.spotify ) {
-		content += divOpen +'<div id="home-spotify" class="home-block" data-plugin="Spotify" data-path="Spotify"><i class="fa fa-spotify"></i><wh>Spotify</wh></div></div>';
+		content += divOpen +'<div id="home-spotify" class="home-block" data-plugin="Spotify" data-path="Spotify"><i class="fa fa-spotify"></i>'+ ( labels ? '<wh>Spotify</wh>' : '' ) +'</div></div>';
 	}
 	// dirble
-	content += divOpen +'<div id="home-dirble" class="home-block" data-plugin="Dirble" data-path="Dirble"><i class="fa fa-dirble"></i><wh>Dirble</wh></div></div>';
+	content += divOpen +'<div id="home-dirble" class="home-block" data-plugin="Dirble" data-path="Dirble"><i class="fa fa-dirble"></i>'+ ( labels ? '<wh>Dirble</wh>' : '' ) +'</div></div>';
 	// jamendo
-	content += divOpen +'<div id="home-jamendo" class="home-block" data-plugin="Jamendo" data-path="Jamendo"><i class="fa fa-jamendo"></i><wh>Jamendo</gr></wh></div></div>';
+	content += divOpen +'<div id="home-jamendo" class="home-block" data-plugin="Jamendo" data-path="Jamendo"><i class="fa fa-jamendo"></i>'+ ( labels ? '<wh>Jamendo</wh>' : '' ) +'</div></div>';
 
 	content += '</div>';
 	$( '#home-blocks' ).html( content ).promise().done( function() {
