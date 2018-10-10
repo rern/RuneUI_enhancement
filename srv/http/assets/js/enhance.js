@@ -154,9 +154,12 @@ $( '#panel-library' ).on( 'click', function( e ) {
 		$( '#home-block-edit, #home-block-remove' ).remove();
 		$( '.home-bookmark' ).find( '.fa-bookmark, gr' ).css( 'opacity', '' );
 	}
-} ).on( 'taphold', function() {
+} ).on( 'taphold', function( e ) {
 	if ( GUI.swipe || GUI.local ) return
+	
 	GUI.taphold = 1;
+	if ( $( e.target ).hasClass( 'home-block' ) ) return
+	
 	var count = GUI.display.count;
 	info( {
 		  title        : 'Libary Home'
@@ -538,7 +541,10 @@ $( '#playsource-spotify' ).click( function() {
 $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 	var $this = $( this );
 	var id = this.id;
-	if ( GUI.local ) return
+	if ( GUI.local || GUI.taphold ) {
+		GUI.taphold = 0;
+		return
+	}
 	
 	var type = id.replace( 'home-', '' );
 	GUI.plugin = $this.data( 'plugin' );
@@ -1002,6 +1008,26 @@ new Sortable( document.getElementById( 'pl-entries' ), {
 		$.post( 'enhance.php', { mpc: 'mpc move '+ ( e.oldIndex + 1 ) +' '+ ( e.newIndex + 1 ) } );
 	}
 } );
+new Sortable( document.getElementById( 'home-blocks' ), {
+	  onStart    : function( e ) {
+		$icon = $( e.item ).find( 'i' );
+		$icon.css( 'color', '#e0e7ee' );
+	  }
+	, onEnd      : function() {
+		$icon.css( 'color', '' );
+	  }
+	, onUpdate   : function ( e ) {
+		var $blocks = $( '.home-block:not(.home-bookmark)' );
+		var homeorder = '';
+		$.each( $blocks, function( i, el ) {
+			homeorder += el.id.replace( 'home-', '' ) +',';
+		} );
+		homeorder = homeorder.slice( 0, -1 );
+		GUI.display.library = homeorder;
+		tempFlag( 'local' );
+		$.post( 'enhance.php', { homeorder: homeorder } );
+	}
+} );
 
 if ( document.location.hostname === 'localhost' ) $( '.osk-trigger' ).onScreenKeyboard( { 'draggable': true } );
 
@@ -1075,6 +1101,7 @@ pushstreams.display.onmessage = function( data ) {
 	if ( $( '#panel-playback' ).hasClass( 'active' ) ) {
 		getPlaybackStatus();
 	} else if ( $( '#panel-library' ).hasClass( 'active' ) ) {
+		if ( !GUI.local ) renderLibrary();
 		displayLibrary();
 	} else {
 		displayCommon();
@@ -1723,6 +1750,35 @@ function setPlaybackSource() {
 		$( '#single' ).prop( 'disabled' );
 	}
 }
+var namepath = {
+	  sd       : [ 'SD',       'LocalStorage', 'microsd' ]
+	, usb      : [ 'USB',      'USB',          'usbdrive' ]
+	, nas      : [ 'Network',  'NAS',          'network' ]
+	, webradio : [ 'Webradio', 'Webradio',     'webradio' ]
+	, album    : [ 'Album',    'Albums',       'album' ]
+	, artist   : [ 'Artist',   'Artists',      'artist' ]
+	, composer : [ 'Composer', 'Composer',     'composer' ]
+	, genre    : [ 'Genre',    'Genres',       'genre' ]
+	, spotify  : [ 'Spotify',  'Spotify',      'spotify' ]
+	, dirble   : [ 'Dirble',   'Dirble',       'dirble' ]
+	, jamendo  : [ 'Jamendo',  'Jamendo',      'jamendo' ]
+}
+function setLibraryBlock( id ) {
+	var status = GUI.libraryhome;
+	if ( id === 'spotify' && !status.spotify ) return '';
+
+	var iconmusic = id === 'sd' ? ' <i class="fa fa-music"></i>' : '';
+	var count = status[ id ] !== undefined ? ( '<gr>'+ numFormat( status[ id ] ) + iconmusic +'</gr>' ) : '';
+	var label = GUI.display.label ? ( '<wh>'+ namepath[ id ][ 0 ] +'</wh>' ) : '';
+	var browsemode = ( $.inArray( id, [ 'album', 'artist', 'composer', 'genre' ] ) !== -1 ) ? ' data-browsemode="'+ id +'"' : '';
+	var plugin = ( id === 'spotify' || id === 'dirble' || id === 'jamendo' ) ? ( ' data-plugin="'+ namepath[ id ][ 1 ] +'"' ) : '';
+	
+	return '<div class="col-md-3">'
+			+'<div id="home-'+ id +'" class="home-block" data-path="'+ namepath[ id ][ 1 ] +'"'+ browsemode +'>'
+				+'<i class="fa fa-'+ namepath[ id ][ 2 ] +'"></i>'+ count + label
+			+'</div>'
+		+'</div>';
+}
 function renderLibrary() {
 	GUI.dbbackdata = [];
 	if ( GUI.bookmarkedit ) return
@@ -1764,31 +1820,11 @@ function renderLibrary() {
 			content += divOpen +'<div class="home-block home-bookmark" data-path="'+ bookmark.path +'"><i class="fa fa-bookmark"></i>'+ count +'<div class="divbklabel"><span class="bklabel">'+ name +'</span></div></div></div>';
 		}
 	}
-	var count = counts ? '<gr>'+ numFormat( status.sd ) +' <i class="fa fa-music"></i></gr>' : '';
-	content += divOpen +'<div id="home-sd" class="home-block" data-path="LocalStorage"><i class="fa fa-microsd"></i>'+ count + ( labels ? '<wh>SD</wh>' : '' ) +'</div></div>';
-	var count = counts ? '<gr>'+ status.usb +'</gr>' : '';
-	content += divOpen +'<div id="home-usb" class="home-block" data-path="USB"><i class="fa fa-usbdrive"></i>'+ count + ( labels ? '<wh>USB</wh>' : '' ) +'</div></div>';
-	var count = counts ? '<gr>'+ status.nas +'</gr>' : '';
-	content += divOpen +'<a id="home-nas" class="home-block" data-path="NAS"><i class="fa fa-network"></i>'+ count + ( labels ? '<wh>Network</wh>' : '' ) +'</a></div>';
-	var count = counts ? '<gr>'+ numFormat( status.webradio ) +'</gr>' : '';
-	content += divOpen +'<div id="home-webradio" class="home-block" data-path="Webradio"><i class="fa fa-webradio"></i>'+ count + ( labels ? '<wh>Webradio</wh>' : '' ) +'</div></div>';
-	var count = counts ? '<gr>'+ numFormat( status.album ) +'</gr>' : '';
-	content += divOpen +'<div id="home-album" class="home-block" data-path="Albums" data-browsemode="album"><i class="fa fa-album"></i>'+ count + ( labels ? '<wh>Album</wh>' : '' ) +'</div></div>';
-	var count = counts ? '<gr>'+ numFormat( status.artist ) +'</gr>' : '';
-	content += divOpen +'<div id="home-artist" class="home-block" data-path="Artists" data-browsemode="artist"><i class="fa fa-artist"></i>'+ count + ( labels ? '<wh>Artist</wh>' : '' ) +'</div></div>';
-	var count = counts ? '<gr>'+ numFormat( status.composer ) +'</gr>' : '';
-	content += divOpen +'<div id="home-composer" class="home-block" data-path="Composer" data-browsemode="composer"><i class="fa fa-composer"></i>'+ count + ( labels ? '<wh>Composer</wh>' : '' ) +'</div></div>';
-	var count = counts ? '<gr>'+ numFormat( status.genre ) +'</gr>' : '';
-	content += divOpen +'<div id="home-genre" class="home-block" data-path="Genres" data-browsemode="genre"><i class="fa fa-genre"></i>'+ count + ( labels ? '<wh>Genre</wh>' : '' ) +'</div></div>';
-	// spotify
-	if ( status.spotify ) {
-		content += divOpen +'<div id="home-spotify" class="home-block" data-plugin="Spotify" data-path="Spotify"><i class="fa fa-spotify"></i>'+ ( labels ? '<wh>Spotify</wh>' : '' ) +'</div></div>';
-	}
-	// dirble
-	content += divOpen +'<div id="home-dirble" class="home-block" data-plugin="Dirble" data-path="Dirble"><i class="fa fa-dirble"></i>'+ ( labels ? '<wh>Dirble</wh>' : '' ) +'</div></div>';
-	// jamendo
-	content += divOpen +'<div id="home-jamendo" class="home-block" data-plugin="Jamendo" data-path="Jamendo"><i class="fa fa-jamendo"></i>'+ ( labels ? '<wh>Jamendo</wh>' : '' ) +'</div></div>';
-
+	var order = GUI.display.library || 'sd,usb,nas,webradio,album,artist,composer,genre,dirble,jamendo';
+	order = order.split( ',' );
+	$.each( order, function( i, val ) {
+		content += setLibraryBlock( val );
+	} );
 	content += '</div>';
 	$( '#home-blocks' ).html( content ).promise().done( function() {
 		setTimeout( function() {
