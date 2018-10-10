@@ -571,9 +571,7 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 		} );
 	}
 } ).on( 'taphold', '.home-block', function( e ) {
-	if ( GUI.swipe ) return
-	
-	if ( !$( e.target ).parents( '.home-bookmark' ) && !$( e.target ).hasClass( 'home-bookmark' ) ) return
+	if ( GUI.swipe || !$( this ).hasClass( 'home-bookmark' ) ) return
 	
 	tempFlag( 'local' );
 	$( '.home-bookmark' )
