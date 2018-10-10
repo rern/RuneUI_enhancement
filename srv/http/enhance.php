@@ -157,6 +157,10 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	} else {
 		exec( 'mpc update Webradio' );
 	}
+} else if ( isset( $_POST[ 'homeorder' ] ) ) {
+	$redis->hSet( 'display', 'library', $_POST[ 'homeorder' ] );
+	$data = $redis->hGetAll( 'display' );
+	pushstream( 'display', $data );
 } else if ( isset( $_POST[ 'power' ] ) ) {
 	$sudo = '/usr/bin/sudo /usr/bin/';
 	if ( file_exists( '/root/gpiooff.py' ) ) $cmd.= '/usr/bin/sudo /root/gpiooff.py;';
