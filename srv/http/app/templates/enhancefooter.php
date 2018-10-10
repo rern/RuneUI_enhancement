@@ -62,6 +62,9 @@ if ( empty( $this->uri(1) ) ) { ?>
 	if ( $this->uri(1) === 'sources' || $this->uri(1) === 'network' ) { ?>
 <script src="<?=$this->asset( '/js/vendor/pushstream.min.js' )?>"></script>
 <?php 
+	} else if ( $this->uri(1) === 'debug' ) { ?>
+<script src="<?=$this->asset('/js/vendor/ZeroClipboard.min.js' )?>"></script>
+<?php 
 	} ?>
 <script src="<?=$this->asset( '/js/vendor/bootstrap.min.js' )?>"></script>
 <script src="<?=$this->asset( '/js/vendor/pnotify.custom.min.js' )?>"></script>

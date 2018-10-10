@@ -106,6 +106,8 @@ if ( empty( $this->uri(1) ) ) { ?>
 	<a href="settings"><i class="fa fa-sliders"></i>Settings</a>
 	<a href="network"><i class="fa fa-network"></i>Network</a>
 	<a href="credits"><i class="fa fa-rune"></i>Credits</a>
+	<a id="debug" href="debug"><i class="fa fa-bug"></i>Debug</a>
+	<a id="dev" href="dev"><i class="fa fa-cogs"></i>Development</a>
 	<a id="turnoff"><i class="fa fa-power"></i>Power</a>
 	<?php 
 	if ( $this->pwd_protection ) { ?>
