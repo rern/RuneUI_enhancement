@@ -210,22 +210,30 @@ function getLibrary() {
 			, 'count' => exec( 'mpc list title base "'.$path.'" | wc -l' )
 		);
 	}
-	$count = exec( '/srv/http/enhancecount.sh' );
-	$count = explode( ' ', $count );
-	$status = array( 
-		  'bookmark'     => $bookmarks
-		, 'artist'       => $count[ 0 ]
-		, 'album'        => $count[ 1 ]
-		, 'song'         => $count[ 2 ]
-		, 'composer'     => $count[ 3 ]
-		, 'genre'        => $count[ 4 ]
-		, 'nas'          => $count[ 5 ]
-		, 'usb'          => $count[ 6 ]
-		, 'webradio'     => $count[ 7 ]
-		, 'sd'           => $count[ 8 ]
-		, 'spotify'      => $count[ 9 ]
-		, 'activeplayer' => $count[ 10 ]
-	);
+		$count = exec( '/srv/http/enhancecount.sh' );
+		$count = explode( ' ', $count );
+	if ( $redis->hGet( 'display', 'label' ) ) {
+		$status = array( 
+			  'bookmark'     => $bookmarks
+			, 'artist'       => $count[ 0 ]
+			, 'album'        => $count[ 1 ]
+			, 'song'         => $count[ 2 ]
+			, 'composer'     => $count[ 3 ]
+			, 'genre'        => $count[ 4 ]
+			, 'nas'          => $count[ 5 ]
+			, 'usb'          => $count[ 6 ]
+			, 'webradio'     => $count[ 7 ]
+			, 'sd'           => $count[ 8 ]
+			, 'spotify'      => $count[ 9 ]
+			, 'activeplayer' => $count[ 10 ]
+		);
+	} else {
+		$status = array( 
+			  'bookmark'     => $bookmarks
+			, 'spotify'      => $count[ 0 ]
+			, 'activeplayer' => $count[ 1 ]
+		);
+	}
 	pushstream( 'library', $status );
 }
 function lsPlaylists() {
