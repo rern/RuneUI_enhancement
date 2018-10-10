@@ -120,14 +120,14 @@ $( '#panel-playback' ).click( function( e ) {
 		, checkboxhtml : 
 			'<form id="displaysaveplayback">'
 				+ libraryLabel( 'bars',         'Top-Bottom menu' )
-				+ libraryLabel( 'debug',        'Debug menu' )
-				+ libraryLabel( 'dev',          'Development menu' )
 				+ libraryLabel( 'time',         'Time' )
 				+ libraryLabel( 'radioelapsed', 'Webradio elapsed' )
 				+ libraryLabel( 'coverart',     'Cover art' )
 				+ libraryLabel( 'coverlarge',   'Large Cover art' )
 				+ libraryLabel( 'volume',       'Volume' )
 				+ libraryLabel( 'buttons',      'Buttons' )
+				+ libraryLabel( 'debug',        'Debug menu' )
+				+ libraryLabel( 'dev',          'Development menu' )
 			+'</form>'
 		, cancel       : 1
 		, ok           : function () {
