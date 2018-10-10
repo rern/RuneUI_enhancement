@@ -935,8 +935,14 @@ $( '#plsave' ).click( function() {
 } );
 $( '#plcrop' ).click( function() {
 	if ( GUI.status.state === 'stop' || !GUI.status.playlistlength ) return
-	
-	$.post( 'enhance.php', { mpc: 'mpc crop' } );
+	info( {
+		  title    : 'Crop Playlist'
+		 , message : 'Clear this playlist except current song?'
+		, cancel   : 1
+		, ok       : function() {
+			$.post( 'enhance.php', { mpc: 'mpc crop' } );
+		}
+	} );
 } );
 $( '#plclear' ).click( function() {
 	if ( !GUI.status.playlistlength ) return
