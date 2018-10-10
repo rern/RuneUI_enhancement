@@ -1562,10 +1562,12 @@ function displayCommon() {
 		$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
 		$( '#db-list, #pl-list' ).css( 'padding', '40px 0' );
 		$( '.btnlist-top' ).css( 'top', 0 );
+		$( '#home-blocks' ).css( 'margin-top', '50px' );
 	} else {
 		$( '#menu-top, #menu-bottom' ).removeClass( 'hide' );
 		$( '#db-list, #pl-list' ).css( 'padding', '' );
 		$( '.btnlist-top' ).css( 'top', '40px' );
+		$( '#home-blocks' ).css( 'margin-top', '' );
 	}
 }
 function displayAirPlay() {
