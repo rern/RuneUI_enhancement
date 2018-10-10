@@ -91,13 +91,14 @@ Rely on MPD supplied data which has some limitations.
 	- Show as icon in Time knob while hidden
 		
 ### Library:
+- Drag to rearrange home blocks
 - Show counts
 - Show icon and breadcrumb heading while browsing
 - Toggle search box
 - Show index bar
 - Improved Back button
 - Maintain scroll position
-- Improved sorting and exclude leading A, An, The, ', ", ., (, [
+- Improved sorting and exclude leading A, An, The, ', ", ., (, \[
 - Modes
 	- Albums > names > songs
 	- Albums with duplicate name > album-artist > songs
