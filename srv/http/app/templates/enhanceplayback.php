@@ -115,6 +115,7 @@
 			<button id="db-search-results" class="btn hide" type="button"><i class="fa fa-times sx"></i></button>
 			<i id="db-back" class="fa fa-arrow-left"></i>
 		</div>
+		<div id="home-blocks" class="row"></div>
 		<div id="db-list">
 			<ul id="db-entries" class="database"></ul>
 			<ul id="db-index" class="index hide">
@@ -134,11 +135,6 @@ foreach( $indexarray as $i => $char ) {
 echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 ?>
 			</ul>
-			<div id="home-blocks" class="row">
-				<div class="col-sm-12">
-					<h1 class="txtmid"></h1>
-				</div>
-			</div>
 		</div>
 	</div>
 	<div id="panel-playlist" class="tab-pane hide" onclick=""> <!-- onclick fix ios safari not recognize click for e.target -->
