@@ -210,9 +210,9 @@ function getLibrary() {
 			, 'count' => exec( 'mpc list title base "'.$path.'" | wc -l' )
 		);
 	}
+	if ( $redis->hGet( 'display', 'count' ) ) {
 		$count = exec( '/srv/http/enhancecount.sh' );
 		$count = explode( ' ', $count );
-	if ( $redis->hGet( 'display', 'count' ) ) {
 		$status = array( 
 			  'bookmark'     => $bookmarks
 			, 'artist'       => $count[ 0 ]
@@ -230,8 +230,8 @@ function getLibrary() {
 	} else {
 		$status = array( 
 			  'bookmark'     => $bookmarks
-			, 'spotify'      => $count[ 0 ]
-			, 'activeplayer' => $count[ 1 ]
+			, 'spotify'      => $redis->hGet( 'spotify', 'enable' )
+			, 'activeplayer' => $redis->get( 'activePlayer' )
 		);
 	}
 	pushstream( 'library', $status );
