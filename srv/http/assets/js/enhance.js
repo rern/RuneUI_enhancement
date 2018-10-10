@@ -163,7 +163,6 @@ $( '#panel-library' ).on( 'click', function( e ) {
 		, message      : 'Select items to show:'
 		, checkboxhtml : 
 			'<form id="displaysavelibrary">'
-				+ libraryLabel( 'bars', 'Top-Bottom menu' )
 				+ libraryLabel( 'count', 'Count' )
 				+ libraryLabel( 'label', 'Label' )
 				+ libraryLabel( 'sd', 'SD' )
