@@ -1026,7 +1026,7 @@ wh, gr { font-weight: 300; }
 	padding-top: 80px;
 }
 #home-blocks {
-	margin: 10px 5px
+	margin: 50px 5px 10px;
 }
 .home-block,
 .empty-block {
@@ -1218,7 +1218,7 @@ wh, gr { font-weight: 300; }
 	display: inline-block;
 	width: 40px;
 	height: 40px;
-	line-height: 44px;
+	line-height: 46px;
 	text-align: center;
 	vertical-align: 0%;
 	background: #0095d8;
@@ -1449,9 +1449,8 @@ span.dbpath {
 	color: #587ca0;
 }
 #countsong,
-#pl-count i,
 #pltime {
-	vertical-align: 10%;
+	vertical-align: 5%;
 }
 #pl-count i {
 	font-size: 24px;
