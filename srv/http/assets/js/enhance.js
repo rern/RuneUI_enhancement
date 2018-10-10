@@ -41,8 +41,6 @@ $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 $.post( 'enhance.php', { library: 1 } );
 
-var menuH = $( '#settings' ).find( 'i' ).length * 41;
-$( '#settings .menushadow' ).css( 'height', menuH );
 $( '#menu-settings, #badge' ).click( function() {
 	$( '#settings' )
 		.toggleClass( 'hide' )
@@ -121,13 +119,15 @@ $( '#panel-playback' ).click( function( e ) {
 		, message      : 'Select items to show:'
 		, checkboxhtml : 
 			'<form id="displaysaveplayback">'
-				+ libraryLabel( 'bars', 'Top-Bottom menu' )
-				+ libraryLabel( 'time', 'Time' )
+				+ libraryLabel( 'bars',         'Top-Bottom menu' )
+				+ libraryLabel( 'debug',        'Debug menu' )
+				+ libraryLabel( 'dev',          'Development menu' )
+				+ libraryLabel( 'time',         'Time' )
 				+ libraryLabel( 'radioelapsed', 'Webradio elapsed' )
-				+ libraryLabel( 'coverart', 'Cover art' )
-				+ libraryLabel( 'coverlarge', 'Large Cover art' )
-				+ libraryLabel( 'volume', 'Volume' )
-				+ libraryLabel( 'buttons', 'Buttons' )
+				+ libraryLabel( 'coverart',     'Cover art' )
+				+ libraryLabel( 'coverlarge',   'Large Cover art' )
+				+ libraryLabel( 'volume',       'Volume' )
+				+ libraryLabel( 'buttons',      'Buttons' )
 			+'</form>'
 		, cancel       : 1
 		, ok           : function () {
@@ -1569,6 +1569,10 @@ function displayCommon() {
 		$( '.btnlist-top' ).css( 'top', '40px' );
 		$( '#home-blocks' ).css( 'margin-top', '' );
 	}
+	$( '#debug' ).toggleClass( 'hide', GUI.display.debug === '' );
+	$( '#dev' ).toggleClass( 'hide', GUI.display.dev === '' );
+	var menuH = ( $( '#settings i' ).length - $( '#settings a.hide' ).length ) * 41;
+	$( '#settings .menushadow' ).css( 'height', menuH );
 }
 function displayAirPlay() {
 	$( '#playback-controls' ).addClass( 'hide' );
