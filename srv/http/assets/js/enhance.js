@@ -562,7 +562,7 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 	if ( e.target.id === 'home-block-edit' ) {
 		bookmarkRename( $this.find( '.bklabel' ).text(), $this.data( 'path' ), $this )
 	} else if ( e.target.id === 'home-block-remove' ) {
-		bookmarkDelete( $this.data( 'name' ), $this.parent() )
+		bookmarkDelete( $this.find( '.bklabel' ).text(), $this )
 	} else if ( id === 'home-spotify' && GUI.activeplayer !== 'Spotify' ) {
 		$( '#playsource' ).addClass( 'open' );
 	} else {
@@ -1008,27 +1008,6 @@ new Sortable( document.getElementById( 'pl-entries' ), {
 		$.post( 'enhance.php', { mpc: 'mpc move '+ ( e.oldIndex + 1 ) +' '+ ( e.newIndex + 1 ) } );
 	}
 } );
-new Sortable( document.getElementById( 'home-blocks' ), {
-	  delay      : 100
-	, onStart    : function( e ) {
-		$icon = $( e.item ).find( 'i' );
-		$icon.css( 'color', '#e0e7ee' );
-	  }
-	, onEnd      : function() {
-		$icon.css( 'color', '' );
-	  }
-	, onUpdate   : function ( e ) {
-		var $blocks = $( '.home-block:not(.home-bookmark)' );
-		var homeorder = '';
-		$.each( $blocks, function( i, el ) {
-			homeorder += el.id.replace( 'home-', '' ) +',';
-		} );
-		homeorder = homeorder.slice( 0, -1 );
-		GUI.display.library = homeorder;
-		tempFlag( 'local' );
-		$.post( 'enhance.php', { homeorder: homeorder } );
-	}
-} );
 
 if ( document.location.hostname === 'localhost' ) $( '.osk-trigger' ).onScreenKeyboard( { 'draggable': true } );
 
@@ -1120,7 +1099,7 @@ pushstreams.volume.onmessage = function( data ) {
 }
 pushstreams.library.onmessage = function( data ) {
 	GUI.libraryhome = data[ 0 ];
-	if ( !GUI.local && !GUI.bookmarkedit ) renderLibrary();
+	if ( $( '#panel-library' ).hasClass( 'active' ) && !GUI.local && !GUI.bookmarkedit ) renderLibrary();
 }
 pushstreams.playlist.onmessage = function( data ) {
 	GUI.lsplaylists = data[ 0 ] || [];
@@ -1783,7 +1762,7 @@ function setLibraryBlock( id ) {
 function renderLibrary() {
 	GUI.dbbackdata = [];
 	if ( GUI.bookmarkedit ) return
-//	GUI.dbscrolltop = {}; // comment to always keep scroll positions
+//	GUI.dbscrolltop = {}; // comment out to always keep scroll positions
 	GUI.plugin = '';
 	$( '#db-currentpath' ).removeAttr( 'path' ).css( 'width', '' );
 	$( '#db-entries' ).empty();
@@ -1806,23 +1785,21 @@ function renderLibrary() {
 	setPlaybackSource();
 	
 	var content = '';
-	var divOpen = '<div class="col-md-3">';
-	// bookmark
 	var bookmarks = status.bookmark;
 	if ( bookmarks !== null ) {
 		bookmarks.sort( function( a, b ) {
 			return stripLeading( a.name ).localeCompare( stripLeading( b.name ), undefined, { numeric: true } );
 		} );
 		var bookmarkL = bookmarks.length;
-		for ( i = 0; i < bookmarkL; i++ ) {
-			var bookmark = bookmarks[ i ];
+		$.each( bookmarks, function( i, bookmark ) {
 			var count = counts ? '<gr>'+ numFormat( bookmark.count ) +' <i class="fa fa-music"></i></gr>' : '';
 			var name = bookmark.name.replace( /\\/g, '' );
-			content += divOpen +'<div class="home-block home-bookmark" data-path="'+ bookmark.path +'"><i class="fa fa-bookmark"></i>'+ count +'<div class="divbklabel"><span class="bklabel">'+ name +'</span></div></div></div>';
-		}
+			content += '<div class="col-md-3"><div class="home-block home-bookmark" data-path="'+ bookmark.path +'"><i class="fa fa-bookmark"></i>'+ count +'<div class="divbklabel"><span class="bklabel">'+ name +'</span></div></div></div>';
+		} );
 	}
 	var order = GUI.display.library || 'sd,usb,nas,webradio,album,artist,composer,genre,dirble,jamendo';
 	order = order.split( ',' );
+	content += '<div id="divhomeblocks">';
 	$.each( order, function( i, val ) {
 		content += setLibraryBlock( val );
 	} );
@@ -1831,9 +1808,32 @@ function renderLibrary() {
 		setTimeout( function() {
 			$( 'html, body' ).scrollTop( 0 );
 		}, 0 );
-		$( '.bklabel' ).each( function() {
-			var $this = $( this );
-			if ( $this.width() > $this.parent().width() ) $this.addClass( 'bkscroll' );
+		if ( GUI.display.label ) {
+			$( '.bklabel' ).each( function() {
+				var $this = $( this );
+				if ( $this.width() > $this.parent().width() ) $this.addClass( 'bkscroll' );
+			} );
+		}
+		new Sortable( document.getElementById( 'divhomeblocks' ), {
+			  delay      : 100
+			, onStart    : function( e ) {
+				$icon = $( e.item ).find( 'i' );
+				$icon.css( 'color', '#e0e7ee' );
+			  }
+			, onEnd      : function() {
+				$icon.css( 'color', '' );
+			  }
+			, onUpdate   : function ( e ) {
+				var $blocks = $( '.home-block:not(.home-bookmark)' );
+				var homeorder = '';
+				$.each( $blocks, function( i, el ) {
+					homeorder += el.id.replace( 'home-', '' ) +',';
+				} );
+				homeorder = homeorder.slice( 0, -1 );
+				GUI.display.library = homeorder;
+				tempFlag( 'local' );
+				$.post( 'enhance.php', { homeorder: homeorder } );
+			}
 		} );
 	} );
 	displayLibrary();
