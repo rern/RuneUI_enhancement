@@ -62,7 +62,6 @@ $( '.contextmenu a' ).click( function() {
 			}
 			if ( mode === 'wr' ) tempFlag( 'local' );
 			var pllength = GUI.status.playlistlength;
-			$( '#playback-controls' ).removeClass( 'hide' );
 			$.post( 'enhance.php', { mpc: command }, function() {
 				if ( !pllength ) getPlaybackStatus();
 				if ( cmd.slice( -4 ) === 'play' ) {
