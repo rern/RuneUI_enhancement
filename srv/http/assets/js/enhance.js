@@ -1177,8 +1177,9 @@ function setButtonToggle() {
 		$( '#irandom, #posrandom' ).addClass( 'hide' );
 		$( '#irepeat, #posrepeat' ).attr( 'fa hide' );
 	} else {
-		var $random = GUI.display.time ? $( '#irandom' ) : $( '#posrandom' );
-		var $repeat = GUI.display.time ? $( '#irepeat' ) : $( '#posrepeat' );
+		var timehide = $( '#time-knob' ).hasClass( 'hide' );
+		var $random = timehide ? $( '#posrandom' ) : $( '#irandom' );
+		var $repeat = timehide ? $( '#posrepeat' ) : $( '#irepeat' );
 			$random.toggleClass( 'hide', GUI.status.random === 0 );
 			if ( GUI.status.repeat ) {
 				$repeat.attr( 'class', ( GUI.status.single ? 'fa fa-repeat-single' : 'fa fa-repeat' ) );
@@ -1613,13 +1614,12 @@ function displayPlayback() {
 	if ( !GUI.display.coverlarge || $( '#album' ).text().slice( 0, 4 ) === 'http' ) {
 		$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).addClass( 'coversmall' );
 		$elements.css( 'width', '' );
-		$( '#divpos' ).css( 'font-size', '' );
 	} else {
 		$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).removeClass( 'coversmall' );
 		if ( window.innerWidth < 500 ) $( '#format-bitrate' ).css( 'display', GUI.display.time ? 'inline' : 'block' );
-		$( '#divpos' ).css( 'font-size', '20px' );
 	}
 	if ( GUI.display.time ) {
+		$( '#divpos' ).css( 'font-size', '' );
 		$( '#timepos' ).empty();
 		$( '#posrandom, #posrepeat' ).addClass( 'hide' );
 		if ( GUI.activePlayer === 'MPD' ) {
@@ -1627,6 +1627,8 @@ function displayPlayback() {
 		} else {
 			$( '#iplayer' ).attr( 'class', 'fa fa-'+ GUI.activePlayer.toLowerCase() );
 		}
+	} else {
+		$( '#divpos' ).css( 'font-size', '20px' );
 	}
 	if ( window.innerWidth < 500 ) $( '#playback-row' ).css( 'margin-top', GUI.display.time ? '10px' : '30px' );
 	displayCommon();
