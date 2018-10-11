@@ -182,17 +182,11 @@ $( '#panel-library' ).on( 'click', function( e ) {
 			$( '#displaysavelibrary input' ).each( function() {
 				GUI.display[ this.name ] = this.checked ? 'checked' : '';
 			} );
-			//tempFlag( 'local' );
 			$.post( 'enhance.php', { setdisplay: GUI.display } );
-//			if ( GUI.display.count !== count && !count ) {
-				$.post( 'enhance.php', { library: 1 }, function( data ) {
-					renderLibrary();
-					displayLibrary();
-				} );
-/*			} else {
+			$.post( 'enhance.php', { library: 1 }, function( data ) {
 				renderLibrary();
 				displayLibrary();
-			}*/
+			} );
 		}
 	} );
 } );
@@ -1277,7 +1271,6 @@ function renderPlayback() {
 	// song and album before update for song/album change detection
 	var previoussong = $( '#song' ).text();
 	var previousalbum = $( '#album' ).text();
-	// volume
 	if ( GUI.display.volume && GUI.display.volumempd ) {
 		$volumeRS.setValue( status.volume );
 		$volumehandle.rsRotate( - $volumeRS._handle1.angle );
@@ -1289,7 +1282,6 @@ function renderPlayback() {
 	}
 	clearInterval( GUI.intKnob );
 	clearInterval( GUI.intElapsed );
-	// empty queue
 	if ( !status.playlistlength ) {
 		setPlaybackBlank();
 		return
@@ -1299,7 +1291,6 @@ function renderPlayback() {
 	$( '#artist' ).html( status.Artist );
 	$( '#song' ).html( status.Title );
 	$( '#album' ).html( status.Album ).promise().done( function() {
-		// scroll info text
 		scrollLongText();
 	} );
 	$( '#songposition' ).text( ( 1 + status.song ) +'/'+ status.playlistlength );
@@ -1394,7 +1385,7 @@ function renderPlayback() {
 			$( '#total' ).css( 'color', '#e0e7ee' );
 			$( '#timepos' ).empty();
 		} else {
-			$( '#timepos' ).html( '&ensp;<i class="fa fa-pause"></i>&ensp;'+ elapsedhms +' / '+ timehms );
+			$( '#timepos' ).html( '&ensp;<i class="fa fa-pause"></i>&ensp;<bl>'+ elapsedhms +'</bl> / '+ timehms );
 		}
 		return
 		
@@ -1402,9 +1393,6 @@ function renderPlayback() {
 		$( '#elapsed' ).css( 'color', '' );
 		$( '#total' ).css( 'color', '' );
 	}
-//		var localbrowser = ( location.hostname === 'localhost' || location.hostname === '127.0.0.1' ) ? 10 : 1;
-//		var step = 1 * localbrowser; // fix: reduce cpu cycle on local browser
-//	var step = 1;
 	if ( GUI.display.time ) {
 		GUI.intKnob = setInterval( function() {
 			position++;
@@ -1424,7 +1412,7 @@ function renderPlayback() {
 		GUI.intElapsed = setInterval( function() {
 			elapsed++;
 			elapsedhms = second2HMS( elapsed );
-			$( '#timepos' ).html( '&ensp;<i class="fa fa-play"></i>&ensp;'+ elapsedhms +' / '+ timehms );
+			$( '#timepos' ).html( '&ensp;<i class="fa fa-play"></i>&ensp;<wh>'+ elapsedhms +'</wh> / '+ timehms );
 		}, 1000 );
 	}
 	// playlist current song ( and lyrics if installed )
@@ -1624,9 +1612,12 @@ function displayPlayback() {
 	// no scaling for webradio vu meter
 	if ( !GUI.display.coverlarge || $( '#album' ).text().slice( 0, 4 ) === 'http' ) {
 		$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).addClass( 'coversmall' );
+		$elements.css( 'width', '' );
+		$( '#divpos' ).css( 'font-size', '' );
 	} else {
 		$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).removeClass( 'coversmall' );
 		if ( window.innerWidth < 500 ) $( '#format-bitrate' ).css( 'display', GUI.display.time ? 'inline' : 'block' );
+		$( '#divpos' ).css( 'font-size', '20px' );
 	}
 	if ( GUI.display.time ) {
 		$( '#timepos' ).empty();
@@ -2297,8 +2288,8 @@ function setPlaylistScroll() {
 		} else if ( status.state === 'play' ) {
 			GUI.intElapsed = setInterval( function() {
 				elapsed++;
-				var elapsedtxt = second2HMS( elapsed ) + slash;
-				$elapsed.html( '<i class="fa fa-play"></i> '+ elapsedtxt );
+				var elapsedtxt = second2HMS( elapsed );
+				$elapsed.html( '<i class="fa fa-play"></i> <wh>'+ elapsedtxt +'</wh>'+ slash );
 			}, 1000 );
 		} else {
 			$( '.elapsed' ).empty();
