@@ -74,7 +74,6 @@ $( '#open-library' ).click( function() {
 	setPanelActive( 'panel-library' );
 	if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) {
 		renderLibrary();
-		displayLibrary();
 	} else {
 		var scrollpos = GUI.dbscrolltop[ $( '#db-currentpath' ).attr( 'path' ) ];
 		$( 'html, body' ).scrollTop( scrollpos ? scrollpos : 0 );
@@ -180,11 +179,8 @@ $( '#panel-library' ).on( 'click', function( e ) {
 			$( '#displaysavelibrary input' ).each( function() {
 				GUI.display[ this.name ] = this.checked ? 'checked' : '';
 			} );
+			renderLibrary();
 			$.post( 'enhance.php', { setdisplay: GUI.display } );
-			$.post( 'enhance.php', { library: 1 }, function( data ) {
-				renderLibrary();
-				displayLibrary();
-			} );
 		}
 	} );
 } );
@@ -1062,7 +1058,6 @@ pushstreams.display.onmessage = function( data ) {
 		getPlaybackStatus();
 	} else if ( $( '#panel-library' ).hasClass( 'active' ) ) {
 		if ( !GUI.local ) renderLibrary();
-		displayLibrary();
 	} else {
 		displayCommon();
 	}
