@@ -1745,6 +1745,7 @@ w {
 	#volume-knob {
 		order: 5;
 		-webkit-order: 5;
+		margin-top: 30px;
 	}
 	#play-group {
 		order: 3;
