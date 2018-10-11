@@ -126,8 +126,8 @@ $( '#panel-playback' ).click( function( e ) {
 				+ libraryLabel( 'coverlarge',   'Large Cover art' )
 				+ libraryLabel( 'volume',       'Volume' )
 				+ libraryLabel( 'buttons',      'Buttons' )
-				+ libraryLabel( 'debug',        'Debug menu' )
-				+ libraryLabel( 'dev',          'Development menu' )
+				+ libraryLabel( 'debug',        '<gray>menu</gray> Debug' )
+				+ libraryLabel( 'dev',          '<gray>menu</gray> Development' )
 			+'</form>'
 		, cancel       : 1
 		, ok           : function () {
@@ -162,8 +162,6 @@ $( '#panel-library' ).on( 'click', function( e ) {
 		, message      : 'Select items to show:'
 		, checkboxhtml : 
 			'<form id="displaysavelibrary">'
-				+ libraryLabel( 'count',    'Count' )
-				+ libraryLabel( 'label',    'Label' )
 				+ libraryLabel( 'sd',       'SD' )
 				+ libraryLabel( 'usb',      'USB' )
 				+ libraryLabel( 'nas',      'Network' )
@@ -174,6 +172,8 @@ $( '#panel-library' ).on( 'click', function( e ) {
 				+ libraryLabel( 'genre',    'Genre' )
 				+ libraryLabel( 'dirble',   'Dirble' )
 				+ libraryLabel( 'jamendo',  'Jamendo' )
+				+ libraryLabel( 'count',    '<gray>text</gray> Count' )
+				+ libraryLabel( 'label',    '<gray>text</gray> Label' )
 			+'</form>'
 		, cancel       : 1
 		, ok           : function () {
