@@ -1675,11 +1675,9 @@ function displayLibrary() {
 	if ( GUI.display.label ) {
 		$( '.home-block gr' ).css( 'color', '' );
 		$( '.home-block' ).css( 'padding', '' );
-		$( '.home-bookmark .fa-bookmark' ).css( { 'font-size': '', width: '36px' } );
 	} else {
 		$( '.home-block gr' ).css( 'color', '#e0e7ee' );
 		$( '.home-block' ).css( 'padding-bottom', '30px' );
-		$( '.home-bookmark .fa-bookmark' ).css( { 'font-size': '40px', width: '26px' } );
 		$( '.home-bookmark' ).css( 'padding', '15px 5px 5px 5px' );
 	}
 	displayCommon();
