@@ -62,6 +62,7 @@ $( '.contextmenu a' ).click( function() {
 			}
 			if ( mode === 'wr' ) tempFlag( 'local' );
 			var pllength = GUI.status.playlistlength;
+			$( '#playback-controls' ).removeClass( 'hide' );
 			$.post( 'enhance.php', { mpc: command }, function() {
 				if ( !pllength ) getPlaybackStatus();
 				if ( cmd.slice( -4 ) === 'play' ) {
@@ -76,6 +77,7 @@ $( '.contextmenu a' ).click( function() {
 			$.post( '/db/?cmd=pl-ashuffle', { playlist: name } );
 			$( '#random' ).data( 'cmd', 'pl-ashuffle-stop' ).addClass( 'btn-primary' );
 	} else {
+		$( '#playback-controls' ).removeClass( 'hide' );
 		$.post( '/db/?cmd='+ cmd, { path: name } );
 	}
 } );
