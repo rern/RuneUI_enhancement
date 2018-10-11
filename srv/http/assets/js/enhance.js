@@ -164,18 +164,18 @@ $( '#panel-library' ).on( 'click', function( e ) {
 		, message      : 'Select items to show:'
 		, checkboxhtml : 
 			'<form id="displaysavelibrary">'
-				+ libraryLabel( 'count', 'Count' )
-				+ libraryLabel( 'label', 'Label' )
-				+ libraryLabel( 'sd', 'SD' )
-				+ libraryLabel( 'usb', 'USB' )
-				+ libraryLabel( 'nas', 'Network' )
+				+ libraryLabel( 'count',    'Count' )
+				+ libraryLabel( 'label',    'Label' )
+				+ libraryLabel( 'sd',       'SD' )
+				+ libraryLabel( 'usb',      'USB' )
+				+ libraryLabel( 'nas',      'Network' )
 				+ libraryLabel( 'webradio', 'Webradio' )
-				+ libraryLabel( 'albums', 'Album' )
-				+ libraryLabel( 'artists', 'Artist' )
+				+ libraryLabel( 'album',    'Album' )
+				+ libraryLabel( 'artist',   'Artist' )
 				+ libraryLabel( 'composer', 'Composer' )
-				+ libraryLabel( 'genre', 'Genre' )
-				+ libraryLabel( 'dirble', 'Dirble' )
-				+ libraryLabel( 'jamendo', 'Jamendo' )
+				+ libraryLabel( 'genre',    'Genre' )
+				+ libraryLabel( 'dirble',   'Dirble' )
+				+ libraryLabel( 'jamendo',  'Jamendo' )
 			+'</form>'
 		, cancel       : 1
 		, ok           : function () {
@@ -577,10 +577,10 @@ $( '#db-currentpath' ).on( 'click', 'a', function() {
 	mutationLibrary.observe( observerLibrary, observerOption );
 	
 	var path2mode = {
-		  Artists  : 'artist'
-		, Albums   : 'album'
-		, Genres   : 'genre'
+		  Album    : 'album'
+		, Artist   : 'artist'
 		, Composer : 'composer'
+		, Genre    : 'genre'
 		, Dirble   : 'Dirble'
 	}
 	getDB( { browsemode: path2mode[ path ], path: path } );
@@ -673,7 +673,7 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	$( '#db-entries li' ).removeClass( 'active' );
 	$this.addClass( 'active' );
 	
-	if ( GUI.browsemode === 'artist' && currentpath !== 'Artists' ) {
+	if ( GUI.browsemode === 'artist' && currentpath !== 'Artist' ) {
 		var artist = currentpath;
 	} else if ( GUI.browsemode === 'album' ) {
 		var artist = $this.data( 'artist' ) || '';
@@ -1671,8 +1671,8 @@ function displayLibrary() {
 	toggleLibraryHome( 'sd' );
 	toggleLibraryHome( 'usb' );
 	toggleLibraryHome( 'webradio' );
-	toggleLibraryHome( 'albums' );
-	toggleLibraryHome( 'artists' );
+	toggleLibraryHome( 'album' );
+	toggleLibraryHome( 'artist' );
 	toggleLibraryHome( 'composer' );
 	toggleLibraryHome( 'genre' );
 	toggleLibraryHome( 'dirble' );
@@ -1707,10 +1707,10 @@ var namepath = {
 	, usb      : [ 'USB',      'USB',          'usbdrive' ]
 	, nas      : [ 'Network',  'NAS',          'network' ]
 	, webradio : [ 'Webradio', 'Webradio',     'webradio' ]
-	, album    : [ 'Album',    'Albums',       'album' ]
-	, artist   : [ 'Artist',   'Artists',      'artist' ]
+	, album    : [ 'Album',    'Album',        'album' ]
+	, artist   : [ 'Artist',   'Artist',       'artist' ]
 	, composer : [ 'Composer', 'Composer',     'composer' ]
-	, genre    : [ 'Genre',    'Genres',       'genre' ]
+	, genre    : [ 'Genre',    'Genre',        'genre' ]
 	, spotify  : [ 'Spotify',  'Spotify',      'spotify' ]
 	, dirble   : [ 'Dirble',   'Dirble',       'dirble' ]
 	, jamendo  : [ 'Jamendo',  'Jamendo',      'jamendo' ]
@@ -1870,11 +1870,11 @@ function getDB( options ) {
 				mode = 'search';
 			}
 		} else if ( cmd === 'browse' ) {
-			if ( $.inArray( path, [ 'Albums', 'Artists', 'Composer', 'Genres' ] ) !== -1 ) {
+			if ( $.inArray( path, [ 'Album', 'Artist', 'Composer', 'Genre' ] ) !== -1 ) {
 				mode = 'type';
 			} else if ( path === 'Webradio' ) {
 				mode = 'Webradio';
-			} else if ( GUI.browsemode === 'album' && currentpath !== 'Albums' && artist ) { // <li> in 'Artists' and 'Genres'
+			} else if ( GUI.browsemode === 'album' && currentpath !== 'Album' && artist ) { // <li> in 'Artist' and 'Genre'
 				mode = 'artistalbum';
 				GUI.artistalbum = path +'<gr> • </gr>'+ artistalbum;
 			} else {
@@ -2125,11 +2125,11 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 		if ( !data.length ) return
 		
 		var type = {
-			  Albums       : 'album'
-			, Artists      : 'artist'
+			  Album        : 'album'
+			, Artist       : 'artist'
 			, AlbumArtists : 'artist'
 			, Composer     : 'composer'
-			, Genres       : 'genre'
+			, Genre        : 'genre'
 			, Webradio     : 'playlist'
 		}
 		var mode = {
@@ -2206,16 +2206,16 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 		, Spotify       : '<i class="fa fa-spotify"></i>'
 	}
 	var mode = {
-		  album    : 'Albums'
-		, artist   : 'Artists'
-		, genre    : 'Genres'
+		  album    : 'Album'
+		, artist   : 'Artist'
+		, genre    : 'Genre'
 		, composer : 'Composer'
 	}
 	if ( GUI.browsemode !== 'file' ) {
 		if ( GUI.browsemode !== 'album' && GUI.browsemode !== 'composeralbum') {
 			var dotpath = ( path === mode[ GUI.browsemode ] ) ? '' : '<a id="artistalbum"><gr> • </gr><span class="white">'+ path +'</span></a>';
 		} else {
-			var albumpath = path === 'Albums' ? '' : path;
+			var albumpath = path === 'Album' ? '' : path;
 			var albumtext = GUI.artistalbum ? GUI.artistalbum : albumpath;
 			var dotpath = albumtext ? '<a id="artistalbum"><gr> • </gr><span class="white">'+ albumtext +'</span></a>' : '';
 		}
