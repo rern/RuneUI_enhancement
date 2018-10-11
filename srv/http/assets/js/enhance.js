@@ -1776,12 +1776,12 @@ function renderLibrary() {
 		setTimeout( function() {
 			$( 'html, body' ).scrollTop( 0 );
 		}, 0 );
-		if ( GUI.display.label ) {
-			$( '.bklabel' ).each( function() {
-				var $this = $( this );
-				if ( $this.width() > $this.parent().width() ) $this.addClass( 'bkscroll' );
-			} );
-		}
+		$( '.bklabel' ).each( function() {
+			var $this = $( this );
+			var tW = $this.width();
+			var pW = $this.parent().width();
+			if ( tW > pW ) $this.addClass( 'bkscroll' ).css( 'animation-duration', Math.round( 3 * tW / pW ) +'s' );
+		} );
 		new Sortable( document.getElementById( 'divhomeblocks' ), {
 			  delay      : 100
 			, onStart    : function( e ) {
