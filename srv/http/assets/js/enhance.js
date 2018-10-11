@@ -1270,6 +1270,7 @@ function setPlaybackBlank() {
 		.css( 'border-radius', 0 )
 		.one( 'load', setPlaybackOneload );
 	$( '#coverartoverlay' ).addClass( 'hide' );
+	if ( GUI.display.time ) $( '#time' ).roundSlider( 'setValue', 0 );
 }
 function renderPlayback() {
 	var status = GUI.status;
@@ -1277,9 +1278,9 @@ function renderPlayback() {
 	var previoussong = $( '#song' ).text();
 	var previousalbum = $( '#album' ).text();
 	// volume
-	$volumeRS.setValue( status.volume );
-	$volumehandle.rsRotate( - $volumeRS._handle1.angle );
 	if ( GUI.display.volume && GUI.display.volumempd ) {
+		$volumeRS.setValue( status.volume );
+		$volumehandle.rsRotate( - $volumeRS._handle1.angle );
 		if ( status.volumemute != 0 ) {
 			muteColor( status.volumemute );
 		} else {
@@ -1291,7 +1292,6 @@ function renderPlayback() {
 	// empty queue
 	if ( !status.playlistlength ) {
 		setPlaybackBlank();
-		$( '#time' ).roundSlider( 'setValue', 0 );
 		return
 	}
 	
@@ -1439,6 +1439,7 @@ function getPlaybackStatus() {
 		return
 	}
 	
+	displayPlayback();
 	$.post( 'enhancestatus.php', function( status ) {
 		// 'gpio off' > audio output switched > restarts mpd which makes status briefly unavailable
 		if( typeof status !== 'object' ) return
@@ -1451,8 +1452,7 @@ function getPlaybackStatus() {
 		GUI.status = status;
 		setButton();
 		renderPlayback();
-		displayPlayback();
-		// imodedelay fix imode flashing on usb dac switching
+		// imodedelay fix imode flashing on audio output switched
 		if ( !GUI.imodedelay ) displayPlayback();
 	}, 'json' );
 }
@@ -1598,43 +1598,30 @@ function PlaybackCssOrder( el, ord ) {
 	el.css( { order: ord, '-webkit-order': ord } );
 }
 function displayPlayback() {
-	if ( GUI.activePlayer === 'Airplay' ) {
-		displayAirPlay();
-		return
-	}
-	// reset to default css
-	$( '#playback-row, #time-knob, #coverart, #volume-knob, #play-group, #share-group, #vol-group' ).css( {
-		  margin          : ''
-		, width           : ''
-		, 'max-width'     : ''
-		, order           : ''
-		, '-webkit-order' : ''
-		, display         : ''
-	} );
 	$( '#time-knob, #play-group' ).toggleClass( 'hide', GUI.display.time === '' );
 	$( '#coverart, #share-group' ).toggleClass( 'hide', GUI.display.coverart === '' );
-	var volume = ( !GUI.display.volumempd || !GUI.display.volume ) ? false : true;
+	var volume = ( GUI.display.volumempd && GUI.display.volume ) ? 1 : 0;
 	$( '#volume-knob, #vol-group' ).toggleClass( 'hide', !volume );
 	
-	var i = ( GUI.display.time ? 1 : 0 ) + ( GUI.display.coverart ? 1 : 0 ) + volume;
-	if ( i === 2 && window.innerWidth > 499 ) {
-		if ( volume ) {
-			PlaybackCssOrder( $( '#time-knob' ), 1 );
-			PlaybackCssOrder( $( '#coverart' ), 2 );
-			PlaybackCssOrder( $( '#volume-knob' ), 3 );
-			PlaybackCssOrder( $( '#play-group' ), 4 );
-			PlaybackCssOrder( $( '#share-group' ), 5 );
-			PlaybackCssOrder( $( '#vol-group' ), 6 );
-		}
+	var column = ( GUI.display.time ? 1 : 0 ) + ( GUI.display.coverart ? 1 : 0 ) + volume;
+	var $elements = $( '#time-knob, #coverart, #volume-knob, #play-group, #share-group, #vol-group' );
+	if ( column === 2 && window.innerWidth > 499 ) {
+		PlaybackCssOrder( $( '#time-knob' ), volume ? 1 : '' );
+		PlaybackCssOrder( $( '#coverart' ), volume ? 2 : '' );
+		PlaybackCssOrder( $( '#volume-knob' ), volume ? 3 : '' );
+		PlaybackCssOrder( $( '#play-group' ), volume ? 4 : '' );
+		PlaybackCssOrder( $( '#share-group' ), volume ? 5 : '' );
+		PlaybackCssOrder( $( '#vol-group' ), volume ? 6 : '' );
 		$( '#playback-row' ).css( 'max-width', '900px' );
-		$( '#time-knob, #coverart, #volume-knob, #play-group, #share-group, #vol-group' ).css( 'width', '45%' );
-	} else if ( i === 1 ) {
-		$( '#time-knob, #coverart, #volume-knob, #play-group, #share-group, #vol-group' ).css( 'width', '90%' );
+		$elements.css( 'width', '45%' );
+	} else if ( column === 1 ) {
+		$( '#playback-row' ).css( 'max-width', '' );
+		$elements.css( 'width', '90%' );
 	}
 	if ( !GUI.display.buttons || window.innerHeight <= 320 || window.innerWidth < 499 ) {
 		$( '#play-group, #share-group, #vol-group' ).addClass( 'hide' );
 	}
-	// not scale webradio vu meter
+	// no scaling for webradio vu meter
 	if ( !GUI.display.coverlarge || $( '#album' ).text().slice( 0, 4 ) === 'http' ) {
 		$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).addClass( 'coversmall' );
 	} else {
@@ -1644,15 +1631,13 @@ function displayPlayback() {
 	if ( GUI.display.time ) {
 		$( '#timepos' ).empty();
 		$( '#posrandom, #posrepeat' ).addClass( 'hide' );
+		if ( GUI.activePlayer === 'MPD' ) {
+			$( '#iplayer' ).attr( 'class', 'fa hide' );
+		} else {
+			$( '#iplayer' ).attr( 'class', 'fa fa-'+ GUI.activePlayer.toLowerCase() );
+		}
 	}
 	if ( window.innerWidth < 500 ) $( '#playback-row' ).css( 'margin-top', GUI.display.time ? '10px' : '30px' );
-	if ( GUI.activePlayer === 'MPD' ) {
-		$( '#iplayer' ).removeClass().addClass( 'fa hide' );
-	} else {
-		var source = GUI.activePlayer.toLowerCase();
-		$( '#iplayer' ).removeClass().addClass( 'fa fa-'+ source );
-	}
-//	renderPlayback();
 	displayCommon();
 }
 function switchPlaysource( source ) {
@@ -1704,11 +1689,11 @@ function displayLibrary() {
 	if ( GUI.display.label ) {
 		$( '.home-block gr' ).css( 'color', '' );
 		$( '.home-block' ).css( 'padding', '' );
-		$( '.home-bookmark .fa-bookmark' ).css( { 'font-size': '', width: '' } );
+		$( '.home-bookmark .fa-bookmark' ).css( { 'font-size': '', width: '36px' } );
 	} else {
 		$( '.home-block gr' ).css( 'color', '#e0e7ee' );
 		$( '.home-block' ).css( 'padding-bottom', '30px' );
-		$( '.home-bookmark .fa-bookmark' ).css( { 'font-size': '40px', width: '30px' } );
+		$( '.home-bookmark .fa-bookmark' ).css( { 'font-size': '40px', width: '26px' } );
 		$( '.home-bookmark' ).css( 'padding', '15px 5px 5px 5px' );
 	}
 	displayCommon();
@@ -2298,7 +2283,7 @@ function setPlaylistScroll() {
 		} );
 		setButton();
 		var $liactive = $( '#pl-entries li' ).eq( status.song );
-		$( '#plcrop' ).toggleClass( 'disable', status.state === 'stop' );
+		$( '#plcrop' ).toggleClass( 'disable', ( status.state === 'stop' || GUI.status.playlistlength === 1 ) );
 		$( '#pl-entries li' ).removeClass( 'active' );
 		$liactive.addClass( 'active' );
 		var $elapsed = $( '#pl-entries li.active .elapsed' );
@@ -2386,7 +2371,7 @@ function renderPlaylist() {
 	$( '#playlist-warning' ).addClass( 'hide' );
 	$( '#pl-count' ).html( counthtml );
 	$( '#plsave, #plclear' ).removeClass( 'disable' );
-	$( '#plcrop' ).toggleClass( 'disable', GUI.status.state === 'stop' );
+//	$( '#plcrop' ).toggleClass( 'disable', GUI.status.state === 'stop' );
 	
 	$( '#pl-entries' ).html( content +'<p></p>' ).promise().done( function() {
 		$( '#pl-entries p' ).css( 'min-height', window.innerHeight - 140 +'px' );
