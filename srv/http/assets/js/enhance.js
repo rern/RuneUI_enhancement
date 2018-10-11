@@ -1768,15 +1768,16 @@ function renderLibrary() {
 	} );
 	content += '</div>';
 	$( '#home-blocks' ).html( content ).promise().done( function() {
-		setTimeout( function() {
-			$( 'html, body' ).scrollTop( 0 );
-		}, 0 );
+		displayLibrary();
 		$( '.bklabel' ).each( function() {
 			var $this = $( this );
 			var tW = $this.width();
 			var pW = $this.parent().width();
 			if ( tW > pW ) $this.addClass( 'bkscroll' ).css( 'animation-duration', Math.round( 3 * tW / pW ) +'s' );
 		} );
+		setTimeout( function() {
+			$( 'html, body' ).scrollTop( 0 );
+		}, 0 );
 		new Sortable( document.getElementById( 'divhomeblocks' ), {
 			  delay      : 100
 			, onStart    : function( e ) {
@@ -1799,7 +1800,6 @@ function renderLibrary() {
 			}
 		} );
 	} );
-	displayLibrary();
 }
 function getDB( options ) {
 	$( '#loader' ).removeClass( 'hide' );
