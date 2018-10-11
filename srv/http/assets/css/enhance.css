@@ -442,6 +442,10 @@ wh, gr { font-weight: 300; }
 #timepos i {
 	color: #e0e7ee;
 }
+#timepos wh,
+#pl-entries li .elapsed wh {
+	font-weight: normal;
+}
 #posrandom,
 #posrepeat {
 	width: 25px;
