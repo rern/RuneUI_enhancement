@@ -150,7 +150,13 @@ label {
 w, wh, .wh { color: #e0e7ee; }
 bl, .bl { color: #0095d8; }
 gr {color: #587ca0; }
+gray { color: #7795b4; }
 wh, gr { font-weight: 300; }
+#timepos wh,
+#pl-entries li .elapsed wh {
+	font-weight: normal;
+}
+
 .disable {
 	color: #587ca0;
 }
@@ -441,10 +447,6 @@ wh, gr { font-weight: 300; }
 }
 #timepos i {
 	color: #e0e7ee;
-}
-#timepos wh,
-#pl-entries li .elapsed wh {
-	font-weight: normal;
 }
 #posrandom,
 #posrepeat {
