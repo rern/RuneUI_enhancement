@@ -155,9 +155,7 @@ $( '#panel-library' ).on( 'click', function( e ) {
 		$( '.home-bookmark' ).find( '.fa-bookmark, gr' ).css( 'opacity', '' );
 	}
 } ).on( 'taphold', function( e ) {
-	if ( GUI.swipe || GUI.local ) return
-	
-	if ( $( e.target ).hasClass( 'home-block' ) ) return
+	if ( GUI.swipe || GUI.local || $( e.target ).parents( '.col-md-3' ).length ) return
 	
 	info( {
 		  title        : 'Libary Home'
