@@ -1171,21 +1171,7 @@ function setButtonToggle() {
 		$( '#irandom, #posrandom' ).addClass( 'hide' );
 		$( '#irepeat, #posrepeat' ).attr( 'fa hide' );
 	} else {
-		var timehide = !GUI.display.time || $( '#time-knob' ).hasClass( 'hide' );
-		if ( timehide ) {
-			$( '#playback-row' ).css( 'margin-top', '30px' );
-			$( '#divpos' ).css( 'font-size', '20px' );
-		} else {
-			$( '#playback-row' ).css( 'margin-top', '10px' );
-			$( '#divpos' ).css( 'font-size', '' );
-			$( '#timepos' ).empty();
-			$( '#posrandom, #posrepeat' ).addClass( 'hide' );
-			if ( GUI.activePlayer === 'MPD' ) {
-				$( '#iplayer' ).attr( 'class', 'fa hide' );
-			} else {
-				$( '#iplayer' ).attr( 'class', 'fa fa-'+ GUI.activePlayer.toLowerCase() );
-			}
-		}
+		var timehide = $( '#time-knob' ).hasClass( 'hide' );
 		var $random = timehide ? $( '#posrandom' ) : $( '#irandom' );
 		var $repeat = timehide ? $( '#posrepeat' ) : $( '#irepeat' );
 			$random.toggleClass( 'hide', GUI.status.random === 0 );
@@ -1266,7 +1252,7 @@ function setPlaybackBlank() {
 	$( '#playback-controls' ).addClass( 'hide' );
 	$( '#divartist, #divsong, #divalbum' ).removeClass( 'scroll-left' );
 	$( '#song' ).html( '<i class="fa fa-plus-circle"></i>' );
-	$( '#songposition' ).css( 'font-size', '' ).text( 'Add something from Library' );
+	$( '#songposition' ).css( 'font-size', '' ).text( 'Add music from Library' );
 	$( '#artist, #album, #timepos, #format-bitrate, #elapsed, #total' ).empty();
 	$( '#cover-art' )
 		.attr( 'src', 'assets/img/cover-default-runeaudio.png' )
@@ -1613,9 +1599,12 @@ function displayPlayback() {
 	} else if ( column === 1 ) {
 		$( '#playback-row' ).css( 'max-width', '' );
 		$elements.css( 'width', '90%' );
+	} else {
+		$elements.css( 'width', '' );
 	}
 	if ( !GUI.display.buttons || window.innerHeight <= 320 || window.innerWidth < 499 ) {
 		$( '#play-group, #share-group, #vol-group' ).addClass( 'hide' );
+		if ( GUI.display.time ) $( '#iplayer' ).attr( 'class', GUI.activePlayer === 'MPD' ? 'fa hide' : 'fa fa-'+ GUI.activePlayer.toLowerCase() );
 	}
 	// no scaling for webradio vu meter
 	if ( !GUI.display.coverlarge || $( '#album' ).text().slice( 0, 4 ) === 'http' ) {
@@ -1624,6 +1613,15 @@ function displayPlayback() {
 	} else {
 		$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).removeClass( 'coversmall' );
 		if ( window.innerWidth < 500 ) $( '#format-bitrate' ).css( 'display', GUI.display.time ? 'inline' : 'block' );
+	}
+	if ( GUI.display.time ) {
+		$( '#playback-row' ).css( 'margin-top', '10px' );
+		$( '#divpos' ).css( 'font-size', '' );
+		$( '#timepos' ).empty();
+		$( '#posrandom, #posrepeat' ).addClass( 'hide' );
+	} else {
+		$( '#playback-row' ).css( 'margin-top', '30px' );
+		$( '#divpos' ).css( 'font-size', '20px' );
 	}
 	displayCommon();
 }
