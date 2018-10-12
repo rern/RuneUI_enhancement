@@ -17,7 +17,6 @@ $( '.contextmenu a' ).click( function() {
 	GUI.dbcurrent = '';
 	var cmd = $( this ).data( 'cmd' );
 	var mode = cmd.replace( /replaceplay|replace|addplay|add/, '' );
-	var modes = [ 'album', 'artist', 'composer', 'genre' ];
 	if ( mode === 'wr' ) {
 		var name = 'Webradio/'+ GUI.list.name.replace( /"/g, '\\"' ) +'.pls';
 	} else if ( mode === 'pl' ) {
@@ -29,7 +28,12 @@ $( '.contextmenu a' ).click( function() {
 	if ( !mode ) {
 		var mpcCmd = GUI.list.isfile ? 'mpc add "'+ name +'"' : 'mpc ls "'+ name +'" | mpc add';
 	} else if ( $.inArray( mode, [ 'album', 'artist', 'composer', 'genre' ] ) !== -1 ) {
-		var mpcCmd = 'mpc findadd '+ mode +' "'+ name +'"';
+		if ( mode === 'album' && GUI.list.artist ) {
+			var mpcCmd = 'mpc findadd artist "'+ GUI.list.artist +'" album "'+ name +'"';
+			cmd = cmd.replace( 'album', '' );
+		} else {
+			var mpcCmd = 'mpc findadd '+ mode +' "'+ name +'"';
+		}
 	}
 	var contextCommand = {
 		  add           : mpcCmd
@@ -139,12 +143,14 @@ function bookmarkVerify( name, path, oldname ) {
 		} );
 		var namei = $.inArray( name, bmname );
 		if ( namei === -1 ) {
-			new PNotify( {
-				  icon  : 'fa fa-check'
-				, title : oldname ? 'Rename Bookmark' :'Add Bookmark'
-				, text  : name
-			} );
-			if ( !oldname ) tempFlag( 'local' );
+			if ( !oldname ) {
+				new PNotify( {
+					  icon  : 'fa fa-check'
+					, title : 'Add Bookmark'
+					, text  : name
+				} );
+				tempFlag( 'local' );
+			}
 			var data = oldname ? [ name, path, oldname ] : [ name, path ];
 			$.post( 'enhance.php', { bkmarks: data } );
 		} else {
