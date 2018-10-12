@@ -1171,7 +1171,21 @@ function setButtonToggle() {
 		$( '#irandom, #posrandom' ).addClass( 'hide' );
 		$( '#irepeat, #posrepeat' ).attr( 'fa hide' );
 	} else {
-		var timehide = $( '#time-knob' ).hasClass( 'hide' );
+		var timehide = !GUI.display.time || $( '#time-knob' ).hasClass( 'hide' );
+		if ( timehide ) {
+			$( '#playback-row' ).css( 'margin-top', '30px' );
+			$( '#divpos' ).css( 'font-size', '20px' );
+		} else {
+			$( '#playback-row' ).css( 'margin-top', '10px' );
+			$( '#divpos' ).css( 'font-size', '' );
+			$( '#timepos' ).empty();
+			$( '#posrandom, #posrepeat' ).addClass( 'hide' );
+			if ( GUI.activePlayer === 'MPD' ) {
+				$( '#iplayer' ).attr( 'class', 'fa hide' );
+			} else {
+				$( '#iplayer' ).attr( 'class', 'fa fa-'+ GUI.activePlayer.toLowerCase() );
+			}
+		}
 		var $random = timehide ? $( '#posrandom' ) : $( '#irandom' );
 		var $repeat = timehide ? $( '#posrepeat' ) : $( '#irepeat' );
 			$random.toggleClass( 'hide', GUI.status.random === 0 );
@@ -1252,7 +1266,7 @@ function setPlaybackBlank() {
 	$( '#playback-controls' ).addClass( 'hide' );
 	$( '#divartist, #divsong, #divalbum' ).removeClass( 'scroll-left' );
 	$( '#song' ).html( '<i class="fa fa-plus-circle"></i>' );
-	$( '#songposition' ).css( 'font-size', '14px' ).text( 'Add something from Library' );
+	$( '#songposition' ).css( 'font-size', '' ).text( 'Add something from Library' );
 	$( '#artist, #album, #timepos, #format-bitrate, #elapsed, #total' ).empty();
 	$( '#cover-art' )
 		.attr( 'src', 'assets/img/cover-default-runeaudio.png' )
@@ -1611,19 +1625,6 @@ function displayPlayback() {
 		$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).removeClass( 'coversmall' );
 		if ( window.innerWidth < 500 ) $( '#format-bitrate' ).css( 'display', GUI.display.time ? 'inline' : 'block' );
 	}
-	if ( GUI.display.time ) {
-		$( '#divpos' ).css( 'font-size', '' );
-		$( '#timepos' ).empty();
-		$( '#posrandom, #posrepeat' ).addClass( 'hide' );
-		if ( GUI.activePlayer === 'MPD' ) {
-			$( '#iplayer' ).attr( 'class', 'fa hide' );
-		} else {
-			$( '#iplayer' ).attr( 'class', 'fa fa-'+ GUI.activePlayer.toLowerCase() );
-		}
-	} else {
-		$( '#divpos' ).css( 'font-size', '20px' );
-	}
-	if ( window.innerWidth < 500 ) $( '#playback-row' ).css( 'margin-top', GUI.display.time ? '10px' : '30px' );
 	displayCommon();
 }
 function switchPlaysource( source ) {
