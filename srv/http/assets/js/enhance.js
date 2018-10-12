@@ -349,6 +349,7 @@ $( '#coverTL' ).click( function() {
 		var coverlarge = GUI.display.coverlarge;
 		var time = GUI.display.time;
 		var volume = GUI.display.volume;
+		var buttons = GUI.display.buttons;
 		GUI.display.coverlarge = $( '#divcover' ).hasClass( 'coversmall' ) ? 'checked' : '';
 		if ( GUI.display.volumempd ) {
 			if ( $( '#time-knob' ).is( ':visible' ) && $( '#volume-knob' ).is( ':visible' ) ) {
@@ -356,6 +357,7 @@ $( '#coverTL' ).click( function() {
 					GUI.display.coverlarge = 'checked';
 					GUI.display.time = '';
 					GUI.display.volume = '';
+					GUI.display.buttons = '';
 				} else {
 					GUI.display.coverlarge = coverlarge;
 					GUI.display.time = time;
@@ -379,12 +381,14 @@ $( '#coverTL' ).click( function() {
 					GUI.display.coverlarge = 'checked';
 					GUI.display.time = '';
 					GUI.display.volume = '';
+					GUI.display.buttons = '';
 				}
 			}
 		} else {
 			if ( $( '#time-knob' ).is( ':visible' ) ) {
 				GUI.display.coverlarge = 'checked';
 				GUI.display.time = '';
+				GUI.display.buttons = '';
 			} else {
 				GUI.display.coverlarge = coverlarge;
 				GUI.display.time = 'checked';
@@ -397,6 +401,7 @@ $( '#coverTL' ).click( function() {
 		GUI.display.coverlarge = coverlarge;
 		GUI.display.time = time;
 		GUI.display.volume = volume;
+		GUI.display.buttons = buttons;
 	}, 'json' );
 } );
 var btnctrl = {
@@ -463,7 +468,7 @@ $( '#biocontent' ).delegate( '.biosimilar', 'click', function() {
 } );
 $( '#closebio' ).click( function() {
 	$( '#bio' ).addClass( 'hide' );
-	displayCommon();
+	displayTopBottom();
 } );
 $( '#turnoff' ).click( function() {
 	info( {
@@ -1060,7 +1065,7 @@ pushstreams.display.onmessage = function( data ) {
 	} else if ( $( '#panel-library' ).hasClass( 'active' ) ) {
 		if ( !GUI.local ) renderLibrary();
 	} else {
-		displayCommon();
+		displayTopBottom();
 	}
 }
 pushstreams.volume.onmessage = function( data ) {
@@ -1523,7 +1528,7 @@ function unmuteColor() {
 	$( '#volmute' ).removeClass( 'btn-primary' )
 		.find( 'i' ).removeClass( 'fa-mute' ).addClass( 'fa-volume' );
 }
-function displayCommon() {
+function displayTopBottom() {
 	if ( !$( '#bio' ).hasClass( 'hide' ) ) return
 	
 	if ( !GUI.display.bars || window.innerWidth < 499 || window.innerHeight < 515 ) {
@@ -1607,21 +1612,32 @@ function displayPlayback() {
 	// no scaling for webradio vu meter
 	if ( !GUI.display.coverlarge || $( '#album' ).text().slice( 0, 4 ) === 'http' ) {
 		$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).addClass( 'coversmall' );
-		$elements.css( 'width', '' );
 	} else {
 		$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).removeClass( 'coversmall' );
 		if ( window.innerWidth < 500 ) $( '#format-bitrate' ).css( 'display', GUI.display.time ? 'inline' : 'block' );
+		if ( !GUI.display.time && !GUI.display.volume ) $( '#share-group' ).addClass( 'hide' );
 	}
 	if ( GUI.display.time ) {
-		$( '#playback-row' ).css( 'margin-top', '10px' );
+		$( '#playback-row' ).css( 'margin-top', '20px' );
 		$( '#divpos' ).css( 'font-size', '' );
 		$( '#timepos' ).empty();
 		$( '#posrandom, #posrepeat' ).addClass( 'hide' );
 	} else {
-		$( '#playback-row' ).css( 'margin-top', '30px' );
+		$( '#playback-row' ).css( 'margin-top', '40px' );
 		$( '#divpos' ).css( 'font-size', '20px' );
 	}
-	displayCommon();
+	displayTopBottom();
+}
+function setPlaybackSource() {
+	var activePlayer = GUI.activePlayer;
+	$( '#playsource a' ).addClass( 'inactive' );
+	var source = activePlayer.toLowerCase();
+	$( '#playsource-' + source).removeClass( 'inactive' );
+	
+	if ( activePlayer === 'Spotify' || activePlayer === 'Airplay' ) {
+//		$( '#volume-knob, #vol-group' ).addClass( 'hide' );
+		$( '#single' ).prop( 'disabled' );
+	}
 }
 function switchPlaysource( source ) {
 	$.get( '/command/?switchplayer='+ source, function() {
@@ -1654,41 +1670,6 @@ function libraryLabel( name, label ) {
 }
 function toggleLibraryHome( name ) {
 	$( '#home-'+ name ).parent().toggleClass( 'hide', GUI.display[ name ] === '' );
-}
-function displayLibrary() {
-	// no 'id'
-	toggleLibraryHome( 'nas' );
-	toggleLibraryHome( 'sd' );
-	toggleLibraryHome( 'usb' );
-	toggleLibraryHome( 'webradio' );
-	toggleLibraryHome( 'album' );
-	toggleLibraryHome( 'artist' );
-	toggleLibraryHome( 'composer' );
-	toggleLibraryHome( 'genre' );
-	toggleLibraryHome( 'dirble' );
-	toggleLibraryHome( 'jamendo' );
-	
-	var txt = '';
-	if ( GUI.display.label ) {
-		$( '.home-block gr' ).css( 'color', '' );
-		$( '.home-block' ).css( 'padding', '' );
-	} else {
-		$( '.home-block gr' ).css( 'color', '#e0e7ee' );
-		$( '.home-block' ).css( 'padding-bottom', '30px' );
-		$( '.home-bookmark' ).css( 'padding', '15px 5px 5px 5px' );
-	}
-	displayCommon();
-}
-function setPlaybackSource() {
-	var activePlayer = GUI.activePlayer;
-	$( '#playsource a' ).addClass( 'inactive' );
-	var source = activePlayer.toLowerCase();
-	$( '#playsource-' + source).removeClass( 'inactive' );
-	
-	if ( activePlayer === 'Spotify' || activePlayer === 'Airplay' ) {
-//		$( '#volume-knob, #vol-group' ).addClass( 'hide' );
-		$( '#single' ).prop( 'disabled' );
-	}
 }
 var namepath = {
 	  sd       : [ 'SD',       'LocalStorage', 'microsd' ]
@@ -1763,7 +1744,27 @@ function renderLibrary() {
 	} );
 	content += '</div>';
 	$( '#home-blocks' ).html( content ).promise().done( function() {
-		displayLibrary();
+		toggleLibraryHome( 'nas' );
+		toggleLibraryHome( 'sd' );
+		toggleLibraryHome( 'usb' );
+		toggleLibraryHome( 'webradio' );
+		toggleLibraryHome( 'album' );
+		toggleLibraryHome( 'artist' );
+		toggleLibraryHome( 'composer' );
+		toggleLibraryHome( 'genre' );
+		toggleLibraryHome( 'dirble' );
+		toggleLibraryHome( 'jamendo' );
+		
+		var txt = '';
+		if ( GUI.display.label ) {
+			$( '.home-block gr' ).css( 'color', '' );
+			$( '.home-block' ).css( 'padding', '' );
+		} else {
+			$( '.home-block gr' ).css( 'color', '#e0e7ee' );
+			$( '.home-block' ).css( 'padding-bottom', '30px' );
+			$( '.home-bookmark' ).css( 'padding', '15px 5px 5px 5px' );
+		}
+		displayTopBottom();
 		$( '.bklabel' ).each( function() {
 			var $this = $( this );
 			var tW = $this.width();
@@ -1773,6 +1774,7 @@ function renderLibrary() {
 		setTimeout( function() {
 			$( 'html, body' ).scrollTop( 0 );
 		}, 0 );
+		
 		new Sortable( document.getElementById( 'divhomeblocks' ), {
 			  delay      : 100
 			, onStart    : function( e ) {
