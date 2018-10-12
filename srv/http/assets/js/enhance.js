@@ -718,6 +718,7 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 	GUI.list = {};
 	GUI.list.path = $thisli.hasClass( 'db-webradio' ) ? $thisli.find( '.bl' ).text() : GUI.dbpath; // used in contextmenu
 	GUI.list.name = $thisli.hasClass( 'db-webradio' ) ? $thisli.find( '.sn' ).text() : $thisli.attr( 'liname' );
+	GUI.list.artist = $thisli.data( 'artist' ) || '';
 	var icon = $thisli.find( 'i.db-icon' );
 	GUI.list.isfile = icon.hasClass( 'fa-music' ) || icon.hasClass( 'fa-webradio' ); // file/dirble - used in contextmenu
 	if ( $( '#db-currentpath' ).attr( 'path' ) === 'Webradio' ) GUI.list.url = $thisli.find( '.bl' ).text();
@@ -1251,13 +1252,13 @@ function setPlaybackBlank() {
 	$( '#playback-controls' ).addClass( 'hide' );
 	$( '#divartist, #divsong, #divalbum' ).removeClass( 'scroll-left' );
 	$( '#song' ).html( '<i class="fa fa-plus-circle"></i>' );
-	$( '#songposition' ).text( 'Add something from Library' );
+	$( '#songposition' ).css( 'font-size', '14px' ).text( 'Add something from Library' );
 	$( '#artist, #album, #timepos, #format-bitrate, #elapsed, #total' ).empty();
 	$( '#cover-art' )
 		.attr( 'src', 'assets/img/cover-default-runeaudio.png' )
 		.css( 'border-radius', 0 )
 		.one( 'load', setPlaybackOneload );
-	$( '#coverartoverlay' ).addClass( 'hide' );
+	$( '#coverartoverlay, #posrandom' ).addClass( 'hide' );
 	if ( GUI.display.time ) $( '#time' ).roundSlider( 'setValue', 0 );
 }
 function renderPlayback() {
@@ -1421,7 +1422,6 @@ function getPlaybackStatus() {
 		return
 	}
 	
-	displayPlayback();
 	$.post( 'enhancestatus.php', function( status ) {
 		// 'gpio off' > audio output switched > restarts mpd which makes status briefly unavailable
 		if( typeof status !== 'object' ) return
