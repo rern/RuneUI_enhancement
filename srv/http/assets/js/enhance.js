@@ -1164,7 +1164,7 @@ $.each( streams, function( i, stream ) {
 
 function setButtonToggle() {
 	if ( GUI.local ) return
-	if ( GUI.display.buttons && $( '#play-group' ).is( ':visible' ) ) {
+	if ( GUI.display.buttons ) {
 		$( '#repeat' ).toggleClass( 'btn-primary', GUI.status.repeat === 1 );
 		$( '#random' ).toggleClass( 'btn-primary', GUI.status.random === 1 );
 		$( '#single' ).toggleClass( 'btn-primary', GUI.status.single === 1 );
@@ -1174,12 +1174,8 @@ function setButtonToggle() {
 		var timehide = $( '#time-knob' ).hasClass( 'hide' );
 		var $random = timehide ? $( '#posrandom' ) : $( '#irandom' );
 		var $repeat = timehide ? $( '#posrepeat' ) : $( '#irepeat' );
-			$random.toggleClass( 'hide', GUI.status.random === 0 );
-			if ( GUI.status.repeat ) {
-				$repeat.attr( 'class', ( GUI.status.single ? 'fa fa-repeat-single' : 'fa fa-repeat' ) );
-			} else {
-				$repeat.attr( 'class', 'fa hide' );
-			}
+		$random.toggleClass( 'hide', GUI.status.random === 0 );
+		$repeat.attr( 'class', GUI.status.repeat ? ( GUI.status.single ? 'fa fa-repeat-single' : 'fa fa-repeat' ) : 'fa hide' );
 	}
 	if ( GUI.display.update ) {
 		if ( GUI.display.bars ) {
@@ -1204,9 +1200,11 @@ function setButtonUpdate() {
 function setButton() {
 	$( '#playback-controls' ).toggleClass( 'hide', GUI.status.playlistlength === 0 );
 	var state = GUI.status.state;
-	$( '#stop' ).toggleClass( 'btn-primary', state === 'stop' );
-	$( '#play' ).toggleClass( 'btn-primary', state === 'play' );
-	$( '#pause' ).toggleClass( 'btn-primary', state === 'pause' );
+	if ( GUI.display.bars ) {
+		$( '#stop' ).toggleClass( 'btn-primary', state === 'stop' );
+		$( '#play' ).toggleClass( 'btn-primary', state === 'play' );
+		$( '#pause' ).toggleClass( 'btn-primary', state === 'pause' );
+	}
 	setButtonToggle();
 	setButtonUpdate();
 }
