@@ -35,19 +35,31 @@ while ( $line !== false ) {
 	$line = strtok( "\n" );
 }
 $status[ 'updating_db' ] = array_key_exists( 'updating_db', $status ) ? 1 : 0;
+if ( exec( 'pidof ashuffle' ) ) $status[ 'random' ] = 1;
 if ( !array_key_exists( 'song', $status ) ) $status[ 'song' ] = 0;
-if ( isset( $_POST[ 'statusonly' ] ) || !$status[ 'playlistlength' ] ) {
+
+
+$previoussong = $_POST[ 'song' ];
+$previousalbum = $_POST[ 'album' ];
+if ( isset( $_POST[ 'statusonly' ] )
+	|| !$status[ 'playlistlength' ]
+	|| ( $status[ 'Title' ] === $previoussong && $status[ 'Album' ] === $previousalbum )
+) {
 	echo json_encode( $status, JSON_NUMERIC_CHECK );
 	exit();
 }
-if ( exec( 'pidof ashuffle' ) ) $status[ 'random' ] = 1;
 
 $file = '/mnt/MPD/'.$status[ 'file' ];
 $pathinfo = pathinfo( $file );
 $dir = $pathinfo[ 'dirname' ];
+$ext = strtoupper( $pathinfo[ 'extension' ] );
+$status[ 'ext' ] = ( substr($status[ 'file' ], 0, 4 ) !== 'http' ) ? $ext : 'radio';
 
 // coverart
-if ( $activePlayer === 'MPD' && !empty( $status[ 'Artist' ] ) ) {
+if ( $activePlayer === 'MPD'
+	&& !empty( $status[ 'Artist' ] )
+	&& $status[ 'ext' ] !== 'radio'
+) {
 	do {
 // 1. local coverart file
 		$coverfiles = array(
@@ -140,8 +152,6 @@ if ( empty( $status[ 'Title' ] ) ) {
 	$status[ 'Title' ] = $pathinfo[ 'filename' ];
 	$status[ 'Album' ] = '';
 }
-$ext = strtoupper( $pathinfo[ 'extension' ] );
-$status[ 'ext' ] = ( substr($status[ 'file' ], 0, 4 ) !== 'http' ) ? $ext : 'radio';
 if ( $status[ 'ext' ] === 'radio' ) {
 	// before 1st play: no 'Name:' - use 'Title:' value instead
 	$status[ 'Artist' ] = isset( $status[ 'Name' ] ) ? $status[ 'Name' ] : $status[ 'Title' ];
