@@ -1412,7 +1412,7 @@ function renderPlayback() {
 	}
 }
 function getPlaybackStatus() {
-	if ( GUI.local ) return; // suppress 2nd firing
+	if ( GUI.local ) return; // suppress 2nd firing from 'pushstreams.idle.onmessage'
 	
 	if ( $( '#panel-playlist' ).hasClass( 'active' ) ) {
 		setPlaylistScroll();
