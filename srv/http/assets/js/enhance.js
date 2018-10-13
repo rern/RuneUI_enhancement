@@ -1177,11 +1177,14 @@ function setButtonToggle() {
 		$( '#irandom, #posrandom' ).addClass( 'hide' );
 		$( '#irepeat, #posrepeat' ).attr( 'fa hide' );
 	} else {
-		var timehide = $( '#time-knob' ).hasClass( 'hide' );
-		var $random = timehide ? $( '#posrandom' ) : $( '#irandom' );
-		var $repeat = timehide ? $( '#posrepeat' ) : $( '#irepeat' );
-		$random.toggleClass( 'hide', GUI.status.random === 0 );
-		$repeat.attr( 'class', GUI.status.repeat ? ( GUI.status.single ? 'fa fa-repeat-single' : 'fa fa-repeat' ) : 'fa hide' );
+		if ( $( '#time-knob' ).hasClass( 'hide' ) ) {
+			$( '#posrandom' ).toggleClass( 'hide', GUI.status.random === 0 );
+			$( '#posrepeat' ).attr( 'class', GUI.status.repeat ? ( GUI.status.single ? 'fa fa-repeat-single' : 'fa fa-repeat' ) : 'fa hide' );
+		} else {
+			$( '#posrandom, #posrepeat' ).addClass( 'hide' )
+			$( '#irandom' ).toggleClass( 'hide', GUI.status.random === 0 );
+			$( '#irepeat' ).attr( 'class', GUI.status.repeat ? ( GUI.status.single ? 'fa fa-repeat-single' : 'fa fa-repeat' ) : 'fa hide' );
+		}
 	}
 	if ( GUI.display.update ) {
 		if ( GUI.display.bars ) {
@@ -1618,7 +1621,6 @@ function displayPlayback() {
 		$( '#playback-row' ).css( 'margin-top', '20px' );
 		$( '#divpos' ).css( 'font-size', '' );
 		$( '#timepos' ).empty();
-		$( '#posrandom, #posrepeat' ).addClass( 'hide' );
 	} else {
 		$( '#playback-row' ).css( 'margin-top', '40px' );
 		$( '#divpos' ).css( 'font-size', '20px' );
