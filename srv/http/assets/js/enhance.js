@@ -1425,7 +1425,7 @@ function getPlaybackStatus() {
 		return
 	}
 	
-	$.post( 'enhancestatus.php', function( status ) {
+	$.post( 'enhancestatus.php', { song: $( '#song' ).text(), album: $( '#album' ).text() }, function( status ) {
 		// 'gpio off' > audio output switched > restarts mpd which makes status briefly unavailable
 		if( typeof status !== 'object' ) return
 		
@@ -1434,7 +1434,10 @@ function getPlaybackStatus() {
 			displayAirPlay();
 			return
 		}
-		GUI.status = status;
+		$.each( status, function( key, value ) {
+			GUI.status[ key ] = value;
+		} );
+//		GUI.status = status;
 		setButton();
 		renderPlayback();
 		// imodedelay fix imode flashing on audio output switched
