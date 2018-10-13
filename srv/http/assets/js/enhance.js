@@ -1425,7 +1425,7 @@ function getPlaybackStatus() {
 		return
 	}
 	
-	$.post( 'enhancestatus.php', { song: $( '#song' ).text(), album: $( '#album' ).text() }, function( status ) {
+	$.post( 'enhancestatus.php', { artist: $( '#artist' ).text(), album: $( '#album' ).text() }, function( status ) {
 		// 'gpio off' > audio output switched > restarts mpd which makes status briefly unavailable
 		if( typeof status !== 'object' ) return
 		
