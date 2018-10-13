@@ -35,7 +35,7 @@ var GUI = { // outside '$( function() {' enable console.log access
 };
 var blinkdot = '<a class="dot">.</a> <a class="dot dot2">.</a> <a class="dot dot3">.</a>';
 
-$.post( 'enhance.php', { getdisplay: 1 } ); // init display data > pushstream > getPlaybackStatus()
+$.post( 'enhance.php', { getdisplay: 1 } ); // display data > pushstream > getPlaybackStatus()
 
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -1019,7 +1019,7 @@ document.addEventListener( visibilityevent, function() {
 			pushstreams[ stream ].connect();
 		} );
 		if ( $( '#panel-playback' ).hasClass( 'active' ) ) {
-			getPlaybackStatus();
+			$.post( 'enhance.php', { getdisplay: 1 } ); // display data > pushstream > getPlaybackStatus()
 		} else if ( $( '#panel-playlist' ).hasClass( 'active' ) ) {
 			if ( GUI.pleditor ) {
 				var name = $( '#pl-editor' ).attr( 'path' );
