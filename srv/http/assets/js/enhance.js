@@ -1100,6 +1100,7 @@ pushstreams.idle.onmessage = function( changed ) {
 			if ( !GUI.pleditor ) setPlaylistScroll();
 		} else {
 			getPlaybackStatus();
+			tempFlag( 'local' ); // suppress 2nd firing
 		}
 	} else if ( changed === 'playlist' ) { // on playlist changed
 		if ( GUI.pleditor || GUI.local || !$( '#panel-playlist' ).hasClass( 'active' ) ) return
@@ -1223,7 +1224,7 @@ function HMS2Second( HMS ) {
 	return +hhmmss[ 0 ] + hhmmss[ 1 ] * 60 + hhmmss[ 2 ] * 3600;
 }
 function second2HMS( second ) {
-	if ( second <= 0 ) return '';
+	if ( second <= 0 ) return 0;
 	
 	var second = Math.round( second );
 	var hh = Math.floor( second / 3600 );
@@ -1265,6 +1266,8 @@ function setPlaybackBlank() {
 	if ( GUI.display.time ) $( '#time' ).roundSlider( 'setValue', 0 );
 }
 function renderPlayback() {
+	clearInterval( GUI.intKnob );
+	clearInterval( GUI.intElapsed );
 	var status = GUI.status;
 	// song and album before update for song/album change detection
 	var previoussong = $( '#song' ).text();
@@ -1278,8 +1281,6 @@ function renderPlayback() {
 			unmuteColor();
 		}
 	}
-	clearInterval( GUI.intKnob );
-	clearInterval( GUI.intElapsed );
 	if ( !status.playlistlength ) {
 		setPlaybackBlank();
 		return
@@ -1301,6 +1302,70 @@ function renderPlayback() {
 	}
 	$( '#format-bitrate' ).html( dot + status.sampling + ext );
 	if ( status.ext !== 'radio' || status.activePlayer === 'Spotify' ) {
+		// time
+		var time = status.Time;
+		var timehms = second2HMS( time );
+		$( '#total' ).text( timehms );
+		// stop <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+		if ( status.state === 'stop' ) {
+			$( '#song' ).css( 'color', '' );
+			if ( GUI.display.time ) {
+				$( '#time' ).roundSlider( 'setValue', 0 );
+				$( '#elapsed' ).text( timehms ).css( 'color', '#587ca0' );
+				$( '#total, #timepos' ).empty();
+			} else {
+				$( '#timepos' ).html( '&ensp;<i class="fa fa-stop"></i>&ensp;'+ timehms );
+			}
+		} else {
+			$( '#elapsed, #total' ).css( 'color', '' );
+			$( '#song' ).css( 'color', status.state === 'pause' ? '#587ca0' : '' );
+			var elapsed = status.elapsed || 0;
+			var elapsedhms = second2HMS( elapsed );
+			if ( !elapsedhms ) $( '#elapsed' ).empty();
+			var position = Math.round( elapsed / time * 1000 );
+			// pause <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+			if ( status.state === 'pause' ) {
+				if ( GUI.display.time ) {
+					$( '#time' ).roundSlider( 'setValue', position );
+					$( '#elapsed' ).text( elapsedhms );
+					$( '#elapsed' ).css( 'color', '#0095d8' );
+					$( '#total' ).css( 'color', '#e0e7ee' );
+					$( '#timepos' ).empty();
+				} else {
+					$( '#timepos' ).html( '&ensp;<i class="fa fa-pause"></i>&ensp;<bl>'+ elapsedhms +'</bl> / '+ timehms );
+				}
+			} else {
+				$( '#elapsed' ).css( 'color', '' );
+				$( '#total' ).css( 'color', '' );
+				if ( GUI.display.time ) {
+					GUI.intElapsed = setInterval( function() {
+						elapsed++;
+						elapsedhms = second2HMS( elapsed );
+						$( '#elapsed' ).text( elapsedhms );
+					}, 1000 );
+					GUI.intKnob = setInterval( function() {
+						position++;
+						if ( position === 1000 ) {
+							clearInterval( GUI.intKnob );
+							clearInterval( GUI.intElapsed );
+							$( '#elapsed' ).empty();
+						}
+						$( '#time' ).roundSlider( 'setValue', position );
+					}, time );
+				} else {
+					GUI.intElapsed = setInterval( function() {
+						elapsed++;
+						elapsedhms = second2HMS( elapsed );
+						$( '#timepos' ).html( '&ensp;<i class="fa fa-play"></i>&ensp;<wh>'+ elapsedhms +'</wh> / '+ timehms );
+					}, 1000 );
+				}
+				// playlist current song ( and lyrics if installed )
+				if ( status.Title !== previoussong || status.Album !== previousalbum ) {
+					if ( $( '#lyricscontainer' ).length && $( '#lyricscontainer' ).is( ':visible' ) )  getlyrics();
+					if ( $( '#panel-playlist' ).hasClass( 'active' ) && !GUI.pleditor ) setPlaylistScroll();
+				}
+			}
+		}
 		if ( status.Album !== previousalbum ) {
 			$( '#coverartoverlay' ).addClass( 'hide' );
 			var coverart = status.coverart || 'assets/img/cover-default-runeaudio.png';
@@ -1344,82 +1409,11 @@ function renderPlayback() {
 			.css( 'border-radius', '18px' )
 			.one( 'load', setPlaybackOneload );
 		$( '#coverartoverlay' ).removeClass( 'hide' );
-		// show / hide elapsed at total
-		return
-	}
-	
-	// time
-	var time = status.Time;
-	var timehms = second2HMS( time );
-	$( '#total' ).text( timehms );
-	// stop <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-	if ( status.state === 'stop' ) {
-		$( '#song' ).css( 'color', '' );
-		if ( GUI.display.time ) {
-			$( '#time' ).roundSlider( 'setValue', 0 );
-			$( '#elapsed' ).text( timehms ).css( 'color', '#587ca0' );
-			$( '#total, #timepos' ).empty();
-		} else {
-			$( '#timepos' ).html( '&ensp;<i class="fa fa-stop"></i>&ensp;'+ timehms );
-		}
-		return
-		
-	} else {
-		$( '#elapsed, #total' ).css( 'color', '' );
-	}
-	
-	$( '#song' ).css( 'color', status.state === 'pause' ? '#587ca0' : '' );
-	
-	var elapsed = status.elapsed;
-	var elapsedhms = second2HMS( elapsed );
-	if ( !elapsedhms ) $( '#elapsed' ).empty();
-	var position = Math.round( elapsed / time * 1000 );
-	// pause <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-	if ( status.state === 'pause' ) {
-		if ( GUI.display.time ) {
-			$( '#time' ).roundSlider( 'setValue', position );
-			$( '#elapsed' ).text( elapsedhms );
-			$( '#elapsed' ).css( 'color', '#0095d8' );
-			$( '#total' ).css( 'color', '#e0e7ee' );
-			$( '#timepos' ).empty();
-		} else {
-			$( '#timepos' ).html( '&ensp;<i class="fa fa-pause"></i>&ensp;<bl>'+ elapsedhms +'</bl> / '+ timehms );
-		}
-		return
-		
-	} else {
-		$( '#elapsed' ).css( 'color', '' );
-		$( '#total' ).css( 'color', '' );
-	}
-	if ( GUI.display.time ) {
-		GUI.intKnob = setInterval( function() {
-			position++;
-			if ( position === 1000 ) {
-				clearInterval( GUI.intKnob );
-				clearInterval( GUI.intElapsed );
-				$( '#elapsed' ).empty();
-			}
-			$( '#time' ).roundSlider( 'setValue', position );
-		}, time );
-		GUI.intElapsed = setInterval( function() {
-			elapsed++;
-			elapsedhms = second2HMS( elapsed );
-			$( '#elapsed' ).text( elapsedhms );
-		}, 1000 );
-	} else {
-		GUI.intElapsed = setInterval( function() {
-			elapsed++;
-			elapsedhms = second2HMS( elapsed );
-			$( '#timepos' ).html( '&ensp;<i class="fa fa-play"></i>&ensp;<wh>'+ elapsedhms +'</wh> / '+ timehms );
-		}, 1000 );
-	}
-	// playlist current song ( and lyrics if installed )
-	if ( status.Title !== previoussong || status.Album !== previousalbum ) {
-		if ( $( '#lyricscontainer' ).length && $( '#lyricscontainer' ).is( ':visible' ) )  getlyrics();
-		if ( $( '#panel-playlist' ).hasClass( 'active' ) && !GUI.pleditor ) setPlaylistScroll();
 	}
 }
 function getPlaybackStatus() {
+	if ( GUI.local ) return; // suppress 2nd firing
+	
 	if ( $( '#panel-playlist' ).hasClass( 'active' ) ) {
 		setPlaylistScroll();
 		return
@@ -1434,10 +1428,10 @@ function getPlaybackStatus() {
 			displayAirPlay();
 			return
 		}
+		
 		$.each( status, function( key, value ) {
 			GUI.status[ key ] = value;
 		} );
-//		GUI.status = status;
 		setButton();
 		renderPlayback();
 		// imodedelay fix imode flashing on audio output switched
