@@ -339,7 +339,6 @@ $( '.btn-cmd' ).click( function() {
 	$.post( 'enhance.php', { mpc: 'mpc '+ cmd } );
 } );
 $( '#coverTL' ).click( function() {
-	$( '.controls' ).toggleClass( 'hide', !$( this ).hasClass( 'hide' ) );
 	if ( $( '#album' ).text().slice( 0, 4 ) === 'http' ) return;
 	
 	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
