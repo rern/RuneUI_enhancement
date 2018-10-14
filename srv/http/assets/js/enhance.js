@@ -118,15 +118,15 @@ $( '#panel-playback' ).click( function( e ) {
 		, message      : 'Select items to show:'
 		, checkboxhtml : 
 			'<form id="displaysaveplayback">'
-				+ libraryLabel( 'bars',         'Top-Bottom menu' )
-				+ libraryLabel( 'time',         'Time' )
-				+ libraryLabel( 'radioelapsed', 'Webradio elapsed' )
-				+ libraryLabel( 'coverart',     'Cover art' )
-				+ libraryLabel( 'coverlarge',   'Large Cover art' )
-				+ libraryLabel( 'volume',       'Volume' )
-				+ libraryLabel( 'buttons',      'Buttons' )
-				+ libraryLabel( 'debug',        '<gray>menu</gray> Debug' )
-				+ libraryLabel( 'dev',          '<gray>menu</gray> Development' )
+				+ displayCheckbox( 'bars',         'Top-Bottom menu' )
+				+ displayCheckbox( 'time',         'Time' )
+				+ displayCheckbox( 'radioelapsed', 'Webradio elapsed' )
+				+ displayCheckbox( 'coverart',     'Cover art' )
+				+ displayCheckbox( 'coverlarge',   'Large Cover art' )
+				+ displayCheckbox( 'volume',       'Volume' )
+				+ displayCheckbox( 'buttons',      'Buttons' )
+				+ displayCheckbox( 'debug',        '<gray>menu</gray> Debug' )
+				+ displayCheckbox( 'dev',          '<gray>menu</gray> Development' )
 			+'</form>'
 		, cancel       : 1
 		, ok           : function () {
@@ -161,18 +161,18 @@ $( '#panel-library' ).on( 'click', function( e ) {
 		, message      : 'Select items to show:'
 		, checkboxhtml : 
 			'<form id="displaysavelibrary">'
-				+ libraryLabel( 'sd',       'SD' )
-				+ libraryLabel( 'usb',      'USB' )
-				+ libraryLabel( 'nas',      'Network' )
-				+ libraryLabel( 'webradio', 'Webradio' )
-				+ libraryLabel( 'album',    'Album' )
-				+ libraryLabel( 'artist',   'Artist' )
-				+ libraryLabel( 'composer', 'Composer' )
-				+ libraryLabel( 'genre',    'Genre' )
-				+ libraryLabel( 'dirble',   'Dirble' )
-				+ libraryLabel( 'jamendo',  'Jamendo' )
-				+ libraryLabel( 'count',    '<gray>text</gray> Count' )
-				+ libraryLabel( 'label',    '<gray>text</gray> Label' )
+				+ displayCheckbox( 'sd',       'SD' )
+				+ displayCheckbox( 'usb',      'USB' )
+				+ displayCheckbox( 'nas',      'Network' )
+				+ displayCheckbox( 'webradio', 'Webradio' )
+				+ displayCheckbox( 'album',    'Album' )
+				+ displayCheckbox( 'artist',   'Artist' )
+				+ displayCheckbox( 'composer', 'Composer' )
+				+ displayCheckbox( 'genre',    'Genre' )
+				+ displayCheckbox( 'dirble',   'Dirble' )
+				+ displayCheckbox( 'jamendo',  'Jamendo' )
+				+ displayCheckbox( 'count',    '<gray>text</gray> Count' )
+				+ displayCheckbox( 'label',    '<gray>text</gray> Label' )
 			+'</form>'
 		, cancel       : 1
 		, ok           : function () {
@@ -1664,7 +1664,7 @@ function setToggleButton( name, append ) {
 		.parent().css( 'color', '#7795b4' )
 		.append( append ? ' '+ append : ' (auto hide)' );
 }
-function libraryLabel( name, label ) {
+function displayCheckbox( name, label ) {
 	return '<label><input name="'+ name +'" type="checkbox" '+ GUI.display[ name ] +'>&ensp;'+label+'</label><br>';
 }
 function toggleLibraryHome( name ) {
