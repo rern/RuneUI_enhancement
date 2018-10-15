@@ -185,7 +185,9 @@ function bookmarkDelete( name, $block ) {
 		, ok      : function() {
 			$block.remove();
 			GUI.bookmarkedit = 1;
-			$.post( 'enhance.php', { bkmarks: name } );
+			$.post( 'enhance.php', { bkmarks: name }, function() {
+				$( '#open-library' ).click();
+			} );
 		}
 	} );
 }
