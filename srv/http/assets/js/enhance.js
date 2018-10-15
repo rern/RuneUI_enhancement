@@ -1268,33 +1268,41 @@ function setPlaybackBlank() {
 	if ( GUI.display.time ) $( '#time' ).roundSlider( 'setValue', 0 );
 }
 function renderPlayback() {
-	clearInterval( GUI.intKnob );
-	clearInterval( GUI.intElapsed );
+	console.log('renderPlayback')
 	var status = GUI.status;
 	// song and album before update for song/album change detection
 	var previoussong = $( '#song' ).text();
 	var previousalbum = $( '#album' ).text();
+	// volume
+	$volumeRS.setValue( status.volume );
+	$volumehandle.rsRotate( - $volumeRS._handle1.angle );
+//		$volumetooltip.add( $volumehandle ).removeClass( 'hide' ); // show after 'setValue'
 	if ( GUI.display.volume && GUI.display.volumempd ) {
-		$volumeRS.setValue( status.volume );
-		$volumehandle.rsRotate( - $volumeRS._handle1.angle );
-		if ( status.volumemute != 0 ) {
-			muteColor( status.volumemute );
-		} else {
-			unmuteColor();
-		}
-	}
-	if ( !status.playlistlength ) {
-		setPlaybackBlank();
-		return
+		status.volumemute != 0 ? muteColor( status.volumemute ) : unmuteColor();
 	}
 	
-	$( '#playback-controls' ).removeClass( 'hide' );
+	// set mode buttons
+	if ( GUI.setmode ) return;
+
+	clearInterval( GUI.intKnob );
+	clearInterval( GUI.intElapsed );
+	$( '#time' ).roundSlider( 'setValue', 0 );
+	
+	// empty queue
+	if ( status.playlistlength == 0 ) {
+		setPlaybackBlank();
+		return;
+	}
+	
+	GUI.json.radio = ( status.ext === 'radio' ? 1 : 0 );
+	$( '.playback-controls' ).css( 'visibility', 'visible' );
 	$( '#artist' ).html( status.Artist );
 	$( '#song' ).html( status.Title );
-	$( '#album' ).html( status.Album ).promise().done( function() {
+	$( '#album' ).html( status.ext !== 'radio' ? status.Album : '<a>'+ status.Album +'</a>' ).promise().done( function() {
 		scrollLongText();
 	} );
-	$( '#songposition' ).text( ( 1 + status.song ) +'/'+ status.playlistlength );
+	
+	$( '#songposition' ).text( ( +status.song + 1 ) +'/'+ status.playlistlength );
 	var ext = ( status.ext !== 'radio' ) ? '<wh> • </wh>' + status.ext : '';
 	if ( !GUI.display.time ) {
 		var dot = '';
@@ -1303,80 +1311,8 @@ function renderPlayback() {
 		$( '#divpos, #format-bitrate' ).css( 'display', window.innerWidth < 500 ? 'inline' : '' );
 	}
 	$( '#format-bitrate' ).html( dot + status.sampling + ext );
-	if ( status.ext !== 'radio' || status.activePlayer === 'Spotify' ) {
-		// time
-		var time = status.Time;
-		var timehms = second2HMS( time );
-		$( '#total' ).text( timehms );
-		// stop <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-		if ( status.state === 'stop' ) {
-			$( '#song' ).css( 'color', '' );
-			if ( GUI.display.time ) {
-				$( '#time' ).roundSlider( 'setValue', 0 );
-				$( '#elapsed' ).text( timehms ).css( 'color', '#587ca0' );
-				$( '#total, #timepos' ).empty();
-			} else {
-				$( '#timepos' ).html( '&ensp;<i class="fa fa-stop"></i>&ensp;'+ timehms );
-			}
-		} else {
-			$( '#elapsed, #total' ).css( 'color', '' );
-			$( '#song' ).css( 'color', status.state === 'pause' ? '#587ca0' : '' );
-			var elapsed = status.elapsed || 0;
-			var elapsedhms = second2HMS( elapsed );
-			if ( !elapsedhms ) $( '#elapsed' ).empty();
-			var position = Math.round( elapsed / time * 1000 );
-			// pause <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-			if ( status.state === 'pause' ) {
-				if ( GUI.display.time ) {
-					$( '#time' ).roundSlider( 'setValue', position );
-					$( '#elapsed' ).text( elapsedhms );
-					$( '#elapsed' ).css( 'color', '#0095d8' );
-					$( '#total' ).css( 'color', '#e0e7ee' );
-					$( '#timepos' ).empty();
-				} else {
-					$( '#timepos' ).html( '&ensp;<i class="fa fa-pause"></i>&ensp;<bl>'+ elapsedhms +'</bl> / '+ timehms );
-				}
-			} else {
-				$( '#elapsed' ).css( 'color', '' );
-				$( '#total' ).css( 'color', '' );
-				if ( GUI.display.time ) {
-					GUI.intElapsed = setInterval( function() {
-						elapsed++;
-						elapsedhms = second2HMS( elapsed );
-						$( '#elapsed' ).text( elapsedhms );
-					}, 1000 );
-					GUI.intKnob = setInterval( function() {
-						position++;
-						if ( position === 1000 ) {
-							clearInterval( GUI.intKnob );
-							clearInterval( GUI.intElapsed );
-							$( '#elapsed' ).empty();
-						}
-						$( '#time' ).roundSlider( 'setValue', position );
-					}, time );
-				} else {
-					GUI.intElapsed = setInterval( function() {
-						elapsed++;
-						elapsedhms = second2HMS( elapsed );
-						$( '#timepos' ).html( '&ensp;<i class="fa fa-play"></i>&ensp;<wh>'+ elapsedhms +'</wh> / '+ timehms );
-					}, 1000 );
-				}
-				// playlist current song ( and lyrics if installed )
-				if ( status.Title !== previoussong || status.Album !== previousalbum ) {
-					if ( $( '#lyricscontainer' ).length && $( '#lyricscontainer' ).is( ':visible' ) )  getlyrics();
-					if ( $( '#panel-playlist' ).hasClass( 'active' ) && !GUI.pleditor ) setPlaylistScroll();
-				}
-			}
-		}
-		if ( status.Album !== previousalbum ) {
-			$( '#coverartoverlay' ).addClass( 'hide' );
-			var coverart = status.coverart || 'assets/img/cover-default-runeaudio.png';
-			$( '#cover-art' )
-				.attr( 'src', coverart )
-				.css( 'border-radius', 0 )
-				.one( 'load', setPlaybackOneload );
-		}
-	} else {
+	
+	if ( status.ext === 'radio' ) {
 		var radiosrc = $( '#cover-art' ).attr( 'src' );
 		var vu = $( '#vu' ).val();
 		var vustop = $( '#vustop' ).val();
@@ -1411,8 +1347,87 @@ function renderPlayback() {
 			.css( 'border-radius', '18px' )
 			.one( 'load', setPlaybackOneload );
 		$( '#coverartoverlay' ).removeClass( 'hide' );
+		return;
+	}
+	
+	$( '#cover-art' ).css( 'border-radius', '' );
+	$( '#coverartoverlay' ).addClass( 'hide' );
+	if ( status.Album !== previousalbum ) {
+		var coverart = status.coverart || 'assets/img/cover-default-runeaudio.png';
+		$( '#cover-art' )
+			.attr( 'src', coverart )
+			.css( 'border-radius', 0 )
+			.one( 'load', setPlaybackOneload );
+	}
+	// time
+	time = status.Time;
+	var timehms = second2HMS( time );
+	$( '#total' ).text( timehms );
+	// stop <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+	if ( status.state === 'stop' ) {
+		$( '#song' ).css( 'color', '' );
+		if ( GUI.display.time ) {
+			$( '#time' ).roundSlider( 'setValue', 0 );
+			$( '#elapsed' ).text( timehms ).css( 'color', '#587ca0' );
+			$( '#total, #timepos' ).empty();
+		} else {
+			$( '#timepos' ).html( '&ensp;<i class="fa fa-stop"></i>&ensp;'+ timehms );
+		}
+		return;
+	}
+	
+	$( '#elapsed, #total' ).css( 'color', '' );
+	$( '#song' ).css( 'color', status.state === 'pause' ? '#587ca0' : '' );
+	var elapsed = status.elapsed || 0;
+	var elapsedhms = second2HMS( elapsed );
+	if ( !elapsedhms ) $( '#elapsed' ).empty();
+	var position = Math.round( elapsed / time * 1000 );
+	// pause <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+	if ( status.state === 'pause' ) {
+		if ( GUI.display.time ) {
+			$( '#time' ).roundSlider( 'setValue', position );
+			$( '#elapsed' ).text( elapsedhms );
+			$( '#elapsed' ).css( 'color', '#0095d8' );
+			$( '#total' ).css( 'color', '#e0e7ee' );
+			$( '#timepos' ).empty();
+		} else {
+			$( '#timepos' ).html( '&ensp;<i class="fa fa-pause"></i>&ensp;<bl>'+ elapsedhms +'</bl> / '+ timehms );
+		}
+		return;
+	}
+	
+	$( '#elapsed' ).css( 'color', '' );
+	$( '#total' ).css( 'color', '' );		
+	if ( GUI.display.time ) {
+		GUI.intElapsed = setInterval( function() {
+			elapsed++;
+			elapsedhms = second2HMS( elapsed );
+			$( '#elapsed' ).text( elapsedhms );
+		}, 1000 );
+		GUI.intKnob = setInterval( function() {
+			position++;
+			if ( position === 1000 ) {
+				clearInterval( GUI.intKnob );
+				clearInterval( GUI.intElapsed );
+				$( '#elapsed' ).empty();
+			}
+			$( '#time' ).roundSlider( 'setValue', position );
+		}, time );
+	} else {
+		GUI.intElapsed = setInterval( function() {
+			elapsed++;
+			elapsedhms = second2HMS( elapsed );
+			$( '#timepos' ).html( '&ensp;<i class="fa fa-play"></i>&ensp;<wh>'+ elapsedhms +'</wh> / '+ timehms );
+		}, 1000 );
+	}
+
+	// playlist current song ( and lyrics if installed )
+	if ( status.Title !== previoussong || status.Album !== previousalbum ) {
+		if ( $( '#panel-playlist' ).hasClass( 'active' ) && !GUI.pleditor ) setPlaylistScroll();
+		if ( $( '#lyricscontainer' ).length && $( '#lyricscontainer' ).is( ':visible' ) )  getlyrics();
 	}
 }
+
 function getPlaybackStatus() {
 	if ( GUI.local ) return; // suppress 2nd firing from 'pushstreams.idle.onmessage'
 	
