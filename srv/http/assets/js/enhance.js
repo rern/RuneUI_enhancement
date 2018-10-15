@@ -102,7 +102,8 @@ $( '#open-playlist' ).click( function() {
 $( '#panel-playback, #panel-library, #panel-playlist' ).on( 'swipeleft swiperight', function( e ) {
 	panelLR( e.type === 'swipeleft' ? 'left' : '' );
 	// fix: prevent taphold fire on swipe
-	tempFlag( 'swipe', 1000 );
+	GUI.swipe = 1;
+	setTimeout( function() { GUI.swipe = 0 }, 1000 );
 } );
 
 $( '#panel-playback' ).click( function( e ) {
@@ -239,8 +240,9 @@ $( '#volume' ).roundSlider( {
 		$( '.rs-transition' ).css( 'transition-property', 'none' ); // disable animation on load
 	}
 	, change          : function( e ) { // (not fire on 'setValue' ) value after click or 'stop drag'
-		tempFlag( 'local' );
+		GUI.local = 1;
 		$.post( 'enhance.php', { volume: e.value } );
+		setTimeout( function() { GUI.local = 0 }, 500 );
 		$( e.handle.element ).rsRotate( - e.handle.angle );
 		// value before 'change'
 		if ( e.preValue === 0 ) unmuteColor();
@@ -257,8 +259,9 @@ $( '#volume' ).roundSlider( {
 		}
 	}
 	, stop            : function( e ) { // on 'stop drag'
-//		tempFlag( 'local' );
+//		GUI.local = 1;
 //		$.post( 'enhance.php', { volume: e.value } );
+//		setTimeout( function() { GUI.local = 0 }, 500 );
 	}
 } );
 $( '#volmute, #volM' ).click( function() {
@@ -274,8 +277,9 @@ $( '#volmute, #volM' ).click( function() {
 		unmuteColor();
 		GUI.display.volumemute = 0;
 	}
-	tempFlag( 'local' );
+	GUI.local = 1;
 	$.post( 'enhance.php', { volume: 'setmute' } );
+	setTimeout( function() { GUI.local = 0 }, 500 );
 } );
 $( '#volup, #voldn' ).click( function() {
 	var thisid = this.id;
@@ -284,8 +288,9 @@ $( '#volup, #voldn' ).click( function() {
 
 	vol = ( thisid === 'volup' ) ? vol + 1 : vol - 1;
 	$volumeRS.setValue( vol );
-	tempFlag( 'local' );
+	GUI.local = 1;
 	$.post( 'enhance.php', { volume: vol } );
+	setTimeout( function() { GUI.local = 0 }, 500 );
 } );
 $( '.btn-cmd' ).click( function() {
 	var $this = $( this );
@@ -443,8 +448,9 @@ $( '.timemap, .covermap, .volmap' ).click( function() {
 				GUI.status.repeat = GUI.status.single = 0;
 				$( '#repeat, #single' ).removeClass( 'btn-primary' );
 				$( '#irepeat, #posrepeat' ).attr( 'class', 'fa hide' );
-				tempFlag( 'local' );
+				GUI.local = 1;
 				$.post( 'enhance.php', { mpc: [ 'mpc repeat 0', 'mpc single 0' ] } );
+				setTimeout( function() { GUI.local = 0 }, 500 );
 			} else {
 				$( '#single' ).click();
 			}
@@ -559,10 +565,11 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 } ).on( 'taphold', '.home-block', function( e ) {
 	if ( GUI.swipe || !$( this ).hasClass( 'home-bookmark' ) ) return
 	
-	tempFlag( 'local' );
+	GUI.local = 1;
 	$( '.home-bookmark' )
 		.append( '<i id="home-block-edit" class="fa fa-edit"></i><i id="home-block-remove" class="fa fa-minus-circle"></i>' )
 		.find( '.fa-bookmark, gr' ).css( 'opacity', 0.2 );
+	setTimeout( function() { GUI.local = 0 }, 500 );
 } );
 $( '#db-home' ).click( function() {
 	$( '#open-library' ).click();
@@ -826,8 +833,9 @@ $( '#pl-entries' ).on( 'click', 'li', function( e ) {
 		}
 	}
 	$this.remove();
-	tempFlag( 'local' );
+	GUI.local = 1;
 	$.post( 'enhance.php', { mpc: 'mpc del '+ songpos } );
+	setTimeout( function() { GUI.local = 0 }, 500 );
 	if ( !$( '#countsong, #countradio' ).length ) {
 		GUI.status.playlistlength = 0;
 		renderPlaylist();
@@ -985,8 +993,9 @@ new Sortable( document.getElementById( 'pl-entries' ), {
 			GUI.status.Pos = $( e.item ).index();
 			GUI.status.song = GUI.status.Pos;
 		}
-		tempFlag( 'local' );
+		GUI.local = 1;
 		$.post( 'enhance.php', { mpc: 'mpc move '+ ( e.oldIndex + 1 ) +' '+ ( e.newIndex + 1 ) } );
+		setTimeout( function() { GUI.local = 0 }, 500 );
 	}
 } );
 
@@ -1098,8 +1107,12 @@ pushstreams.idle.onmessage = function( changed ) {
 		if ( $( '#panel-playlist' ).hasClass( 'active' ) ) {
 			if ( !GUI.pleditor ) setPlaylistScroll();
 		} else {
-			getPlaybackStatus();
-			tempFlag( 'local' ); // suppress 2nd firing
+			if ( !GUI.player ) {
+				console.log(changed);
+				GUI.player = 1;
+				getPlaybackStatus();
+				setTimeout( function() { GUI.player = 0 }, 500 );
+			}
 		}
 	} else if ( changed === 'playlist' ) { // on playlist changed
 		if ( GUI.pleditor || GUI.local || !$( '#panel-playlist' ).hasClass( 'active' ) ) return
@@ -1268,7 +1281,6 @@ function setPlaybackBlank() {
 	if ( GUI.display.time ) $( '#time' ).roundSlider( 'setValue', 0 );
 }
 function renderPlayback() {
-	console.log('renderPlayback')
 	var status = GUI.status;
 	// song and album before update for song/album change detection
 	var previoussong = $( '#song' ).text();
@@ -1276,7 +1288,6 @@ function renderPlayback() {
 	// volume
 	$volumeRS.setValue( status.volume );
 	$volumehandle.rsRotate( - $volumeRS._handle1.angle );
-//		$volumetooltip.add( $volumehandle ).removeClass( 'hide' ); // show after 'setValue'
 	if ( GUI.display.volume && GUI.display.volumempd ) {
 		status.volumemute != 0 ? muteColor( status.volumemute ) : unmuteColor();
 	}
@@ -1429,8 +1440,7 @@ function renderPlayback() {
 }
 
 function getPlaybackStatus() {
-	if ( GUI.local ) return; // suppress 2nd firing from 'pushstreams.idle.onmessage'
-	
+	//if ( GUI.local ) return; // suppress 2nd firing from 'pushstreams.idle.onmessage'
 	if ( $( '#panel-playlist' ).hasClass( 'active' ) ) {
 		setPlaylistScroll();
 		return
@@ -1488,13 +1498,6 @@ function panelLR( lr ) {
 	}
 	
 	$paneclick = ( lr === 'left' ) ? $pL.click() : $pR.click();
-}
-function tempFlag( fl, ms ) {
-	var flag = fl || 'local';
-	var time = ms || 500;
-	GUI[ flag ] = 1;
-	clearTimeout( GUI.timeout );
-	GUI.timeout = setTimeout( function() { GUI[ flag ] = 0 }, time );
 }
 function getBio( artist ) {
 	$( '#loader' ).removeClass( 'hide' );
@@ -1805,8 +1808,9 @@ function renderLibrary() {
 				} );
 				homeorder = homeorder.slice( 0, -1 );
 				GUI.display.library = homeorder;
-				tempFlag( 'local' );
+				GUI.local = 1;
 				$.post( 'enhance.php', { homeorder: homeorder } );
+				setTimeout( function() { GUI.local = 0 }, 500 );
 			}
 		} );
 	} );
