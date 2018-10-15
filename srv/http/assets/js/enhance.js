@@ -344,6 +344,7 @@ $( '.btn-cmd' ).click( function() {
 	$.post( 'enhance.php', { mpc: 'mpc '+ cmd } );
 } );
 $( '#coverTL' ).click( function() {
+	if ( !$( '#controls-cover' ).hasClass( 'hide' ) ) $( '#control-time, #controls-cover, #control-vol' ).addClass( 'hide' );
 	if ( $( '#album' ).text().slice( 0, 4 ) === 'http' ) return;
 	
 	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
@@ -1108,7 +1109,6 @@ pushstreams.idle.onmessage = function( changed ) {
 			if ( !GUI.pleditor ) setPlaylistScroll();
 		} else {
 			if ( !GUI.player ) {
-				console.log(changed);
 				GUI.player = 1;
 				getPlaybackStatus();
 				setTimeout( function() { GUI.player = 0 }, 500 );
@@ -1182,7 +1182,7 @@ $.each( streams, function( i, stream ) {
 
 function setButtonToggle() {
 	if ( GUI.local ) return
-	if ( GUI.display.buttons ) {
+	if ( GUI.display.buttons && !$( '#time-knob' ).hasClass( 'hide' ) ) {
 		$( '#repeat' ).toggleClass( 'btn-primary', GUI.status.repeat === 1 );
 		$( '#random' ).toggleClass( 'btn-primary', GUI.status.random === 1 );
 		$( '#single' ).toggleClass( 'btn-primary', GUI.status.single === 1 );
