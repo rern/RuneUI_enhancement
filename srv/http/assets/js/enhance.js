@@ -44,7 +44,7 @@ $.post( 'enhance.php', { library: 1 } );
 $( '#menu-settings, #badge' ).click( function() {
 	$( '#settings' )
 		.toggleClass( 'hide' )
-		.css( 'top', $( '#menu-top' ).is( ':hidden' ) ? 0 : '40px' );
+		.css( 'top', $( '#menu-top' ).hasClass( 'hide' ) ? 0 : '40px' );
 } );
 $( '#song, #playlist-warning' ).on( 'click', 'i', function() {
 	$( '#open-library' ).click();
@@ -344,7 +344,7 @@ $( '.btn-cmd' ).click( function() {
 	$.post( 'enhance.php', { mpc: 'mpc '+ cmd } );
 } );
 $( '#coverTL' ).click( function() {
-	$( '#controls-time, #controls-cover, #controls-vol' ).addClass( 'hide' );
+	if ( !$( '#controls-cover' ).hasClass( 'hide' ) ) $( '.controls, .controls1, .rs-tooltip, #imode' ).toggleClass( 'hide' );
 	if ( $( '#album' ).text().slice( 0, 4 ) === 'http' ) return;
 	
 	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
@@ -357,7 +357,7 @@ $( '#coverTL' ).click( function() {
 		var buttons = GUI.display.buttons;
 		GUI.display.coverlarge = $( '#divcover' ).hasClass( 'coversmall' ) ? 'checked' : '';
 		if ( GUI.display.volumempd ) {
-			if ( $( '#time-knob' ).is( ':visible' ) && $( '#volume-knob' ).is( ':visible' ) ) {
+			if ( !$( '#time-knob' ).hasClass( 'hide' ) && !$( '#volume-knob' ).hasClass( 'hide' ) ) {
 				if ( GUI.display.volume && GUI.display.time ) {
 					GUI.display.coverlarge = 'checked';
 					GUI.display.time = '';
@@ -368,7 +368,7 @@ $( '#coverTL' ).click( function() {
 					GUI.display.time = time;
 					GUI.display.volume = volume;
 				}
-			} else if ( $( '#time-knob' ).is( ':hidden' ) && $( '#volume-knob' ).is( ':hidden' ) ) {
+			} else if ( $( '#time-knob' ).hasClass( 'hide' ) && $( '#volume-knob' ).hasClass( 'hide' ) ) {
 				if ( GUI.display.time || GUI.display.volume ) {
 					GUI.display.coverlarge = coverlarge;
 					GUI.display.time = time;
@@ -390,7 +390,7 @@ $( '#coverTL' ).click( function() {
 				}
 			}
 		} else {
-			if ( $( '#time-knob' ).is( ':visible' ) ) {
+			if ( !$( '#time-knob' ).hasClass( 'hide' ) ) {
 				GUI.display.coverlarge = 'checked';
 				GUI.display.time = '';
 				GUI.display.buttons = '';
@@ -1259,14 +1259,6 @@ function scrollLongText() {
 		} );
 	}, 100 );
 }
-GUI.timeout = setTimeout( function() { // in case too long to get coverart
-	$( '#starter' ).remove();
-}, 3000 );
-function setPlaybackOneload() {
-	clearTimeout( GUI.timeout );
-	$( '#starter' ).remove();
-	$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
-}
 function setPlaybackBlank() {
 	$( '#playback-controls' ).addClass( 'hide' );
 	$( '#divartist, #divsong, #divalbum' ).removeClass( 'scroll-left' );
@@ -1364,11 +1356,14 @@ function renderPlayback() {
 	$( '#cover-art' ).css( 'border-radius', '' );
 	$( '#coverartoverlay' ).addClass( 'hide' );
 	if ( status.Album !== previousalbum ) {
-		var coverart = status.coverart || 'assets/img/cover-default-runeaudio.png';
-		$( '#cover-art' )
-			.attr( 'src', coverart )
-			.css( 'border-radius', 0 )
-			.one( 'load', setPlaybackOneload );
+		if ( status.activePlayer === 'MPD' ) {
+			$( '#cover-art' ).css( 'background-image', 'url("enhancecover.php?v=' + Math.floor( Math.random() * 1001 ) + '")' );
+		} else if ( status.activePlayer === 'Spotify' ) {
+			$( '#cover-art' ).css( 'background-image', 'url("cover/?v=' + Math.floor( Math.random() * 1001 ) + '")' );
+		}
+		setTimeout( function() {
+			$( '#starter' ).remove();
+		}, 500 );
 	}
 	// time
 	time = status.Time;
@@ -1600,6 +1595,7 @@ function PlaybackCssOrder( el, ord ) {
 	el.css( { order: ord, '-webkit-order': ord } );
 }
 function displayPlayback() {
+	$( 'html, body' ).scrollTop( 0 );
 	$( '#time-knob, #play-group' ).toggleClass( 'hide', GUI.display.time === '' );
 	$( '#coverart, #share-group' ).toggleClass( 'hide', GUI.display.coverart === '' );
 	var volume = ( GUI.display.volumempd && GUI.display.volume ) ? 1 : 0;
@@ -1668,7 +1664,7 @@ function switchPlaysource( source ) {
 function displayIndexBar() {
 	setTimeout( function() {
 		var wH = window.innerHeight;
-		var indexoffset = $( '#menu-top' ).is( ':visible' ) ? 160 : 80;
+		var indexoffset = $( '#menu-top' ).hasClass( 'hide' ) ? 80 : 160;
 		var indexline = wH < 500 ? 13 : 27;
 		$( '.half' ).toggleClass( 'hide', wH < 500 );
 		$index = ( $( '#panel-library' ).hasClass( 'active' ) && GUI.dblist ) ? $( '#db-index' ) : $( '#pl-index' );
@@ -1789,7 +1785,7 @@ function renderLibrary() {
 		} );
 		setTimeout( function() {
 			$( 'html, body' ).scrollTop( 0 );
-		}, 0 );
+		}, 100 );
 		
 		new Sortable( document.getElementById( 'divhomeblocks' ), {
 			  delay      : 100
@@ -2265,7 +2261,7 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 		$( '#db-index' ).removeClass( 'hide' );
 		$( '#db-entries' ).css( 'width', '' );
 	}
-	if( $( '#db-search-results' ).is( ':hidden' ) ) {
+	if( $( '#db-search-results' ).hasClass( 'hide' ) ) {
 		$( '#db-search' ).addClass( 'hide' );
 		$( '#db-searchbtn' ).removeClass( 'hide' );
 	} else {
