@@ -54,7 +54,7 @@ $pathinfo = pathinfo( $file );
 $dir = $pathinfo[ 'dirname' ];
 $ext = strtoupper( $pathinfo[ 'extension' ] );
 $status[ 'ext' ] = ( substr($status[ 'file' ], 0, 4 ) !== 'http' ) ? $ext : 'radio';
-
+/*
 // coverart
 if ( $activePlayer === 'MPD'
 	&& !empty( $status[ 'Artist' ] )
@@ -145,7 +145,7 @@ if ( $activePlayer === 'MPD'
 		}
 		$count++;
 	}
-}
+}*/
 // no id3tag
 if ( empty( $status[ 'Title' ] ) ) {
 	$status[ 'Artist' ] = basename( $dir );
