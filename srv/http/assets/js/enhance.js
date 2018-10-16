@@ -93,6 +93,10 @@ $( '#open-playlist' ).click( function() {
 	setPanelActive( 'panel-playlist' );
 	if ( GUI.pleditor ) return
 	
+	if ( !GUI.status.playlistlength ) {
+		renderPlaylist();
+		return
+	}
 	$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
 		GUI.lsplaylists = data.lsplaylists || [];
 		GUI.playlist = data.playlist;
@@ -1106,6 +1110,7 @@ pushstreams.playlist.onmessage = function( data ) {
 var timeoutUpdate;
 pushstreams.idle.onmessage = function( changed ) {
 	var changed = changed[ 0 ];
+	console.log( changed )
 	if ( changed === 'player' ) { // on track changed
 		if ( $( '#panel-playlist' ).hasClass( 'active' ) ) {
 			if ( !GUI.pleditor ) setPlaylistScroll();
@@ -1117,13 +1122,22 @@ pushstreams.idle.onmessage = function( changed ) {
 			}
 		}
 	} else if ( changed === 'playlist' ) { // on playlist changed
-		if ( GUI.pleditor || GUI.local || !$( '#panel-playlist' ).hasClass( 'active' ) ) return
+		if ( GUI.pleditor || GUI.local ) return
 		
-		$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
-			GUI.lsplaylists = data.lsplaylists;
-			GUI.playlist = data.playlist;
-			renderPlaylist();
-		}, 'json' );
+		if ( $( '#panel-playlist' ).hasClass( 'active' ) ) {
+			$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
+				if ( !data ) {
+					GUI.status.playlistlength = 0;
+					renderPlaylist();
+					return
+				}
+				GUI.lsplaylists = data.lsplaylists || [];
+				GUI.playlist = data.playlist;
+				renderPlaylist();
+			}, 'json' );
+		} else if ( $( '#panel-playback' ).hasClass( 'active' ) ) {
+			getPlaybackStatus();
+		}
 	} else if ( changed === 'options' ) { // on mode toggled
 		if ( GUI.local ) return
 		
