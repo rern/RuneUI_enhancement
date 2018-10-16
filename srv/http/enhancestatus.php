@@ -14,7 +14,7 @@ if ( !isset( $_POST[ 'statusonly' ] ) ) {
 $mpdtelnet = ' | telnet localhost 6600 | sed "/^Trying\|Connected\|Escape\|OK\|Connection\|AlbumArtist\|Date\|Genre\|Last-Modified\|consume\|mixrampdb\|nextsong\|nextsongid/ d"';
 $lines = shell_exec( '{ sleep 0.01; echo clearerror; echo status; echo currentsong; sleep 0.05; }'.$mpdtelnet );
 // fix: initially add song without play - currentsong = (blank)
-if ( !preg_match( '/\nfile:/', $lines ) ) $lines = shell_exec( '{ sleep 0.01; echo status; echo playlistinfo 0; sleep 0.05; }'.$mpdtelnet );
+if ( !preg_match( '/^file:/', $lines ) ) $lines = shell_exec( '{ sleep 0.01; echo status; echo playlistinfo 0; sleep 0.05; }'.$mpdtelnet );
 
 $line = strtok( $lines, "\n" );
 while ( $line !== false ) {
