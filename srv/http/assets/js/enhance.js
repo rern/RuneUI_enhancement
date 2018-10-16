@@ -1050,7 +1050,9 @@ window.addEventListener( 'orientationchange', function() {
 		if ( GUI.dblist || !$( '#pl-editor' ).hasClass( 'hide' ) ) displayIndexBar();
 	}
 } );
-
+$(window).on('beforeunload', function(){
+    socket.close();
+});
 } ); // document ready end <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 var psOption = {
@@ -1263,16 +1265,19 @@ function setPlaybackBlank() {
 	$( '#playback-controls' ).addClass( 'hide' );
 	$( '#divartist, #divsong, #divalbum' ).removeClass( 'scroll-left' );
 	$( '#song' ).html( '<i class="fa fa-plus-circle"></i>' );
-	$( '#songposition' ).css( 'font-size', '' ).text( 'Add music from Library' );
+	$( '#songposition' ).text( 'Add music from Library' );
 	$( '#artist, #album, #timepos, #format-bitrate, #elapsed, #total' ).empty();
 	$( '#cover-art' ).css( {
 		  'background-image': 'url( "assets/img/cover-default-runeaudio.png" )'
 		, 'border-radius': 0
 	} );
-	$( '#starter, #coverartoverlay, #posrandom' ).addClass( 'hide' );
+	$( '#coverartoverlay, #posrandom' ).addClass( 'hide' );
 	if ( GUI.display.time ) $( '#time' ).roundSlider( 'setValue', 0 );
 }
 function renderPlayback() {
+	setTimeout( function() {
+		$( '#starter' ).remove();
+	}, 500 );
 	var status = GUI.status;
 	// song and album before update for song/album change detection
 	var previoussong = $( '#song' ).text();
@@ -1361,9 +1366,6 @@ function renderPlayback() {
 		} else if ( status.activePlayer === 'Spotify' ) {
 			$( '#cover-art' ).css( 'background-image', 'url("cover/?v=' + Math.floor( Math.random() * 1001 ) + '")' );
 		}
-		setTimeout( function() {
-			$( '#starter' ).remove();
-		}, 500 );
 	}
 	// time
 	time = status.Time;
@@ -1636,7 +1638,7 @@ function displayPlayback() {
 		$( '#timepos' ).empty();
 	} else {
 		$( '#playback-row' ).css( 'margin-top', '40px' );
-		$( '#divpos' ).css( 'font-size', '20px' );
+		$( '#divpos' ).css( 'font-size', GUI.playlistlength ? '20px' : '' );
 	}
 	displayTopBottom();
 }
