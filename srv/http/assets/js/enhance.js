@@ -1265,11 +1265,11 @@ function setPlaybackBlank() {
 	$( '#song' ).html( '<i class="fa fa-plus-circle"></i>' );
 	$( '#songposition' ).css( 'font-size', '' ).text( 'Add music from Library' );
 	$( '#artist, #album, #timepos, #format-bitrate, #elapsed, #total' ).empty();
-	$( '#cover-art' )
-		.attr( 'src', 'assets/img/cover-default-runeaudio.png' )
-		.css( 'border-radius', 0 )
-		.one( 'load', setPlaybackOneload );
-	$( '#coverartoverlay, #posrandom' ).addClass( 'hide' );
+	$( '#cover-art' ).css( {
+		  'background-image': 'url( "assets/img/cover-default-runeaudio.png" )'
+		, 'border-radius': 0
+	} );
+	$( '#starter, #coverartoverlay, #posrandom' ).addClass( 'hide' );
 	if ( GUI.display.time ) $( '#time' ).roundSlider( 'setValue', 0 );
 }
 function renderPlayback() {
