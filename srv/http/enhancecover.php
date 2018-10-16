@@ -85,4 +85,4 @@ if ( !empty( $cover_url ) ) {
 }
 // 4. default
 headers( 'image/png' );
-readfile( '/srv/http/assets/img/cover-default.png');
+readfile( '/srv/http/assets/img/cover-default-runeaudio.png');
