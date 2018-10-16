@@ -19,6 +19,7 @@ $controllers = array(
 	'accesspoint',
 	'addons',
 	'alsamixer',
+	'cover',
 	'credits',
 	'dev',
 	'debug',
