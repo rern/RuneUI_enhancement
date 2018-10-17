@@ -16,7 +16,7 @@
 					<div id="divpos">
 						<span id="songposition"></span>
 						<span id="timepos"></span>
-						<i id="posrandom" class="fa fa-random"></i>
+						<i id="posrandom" class="fa fa-random hide"></i>
 						<i id="posrepeat"></i>
 					</div>
 					<span id="format-bitrate"></span>
@@ -29,7 +29,7 @@
 					<div id="imode">
 						<i id="iaddons" class="fa fa-addons hide"></i>
 						<i id="iupdate" class="fa fa-library hide"></i>
-						<i id="irandom" class="fa fa-random"></i>
+						<i id="irandom" class="fa fa-random hide"></i>
 						<i id="irepeat"></i>
 						<i id="iplayer"></i>
 						<i id="igpio" class="fa fa-gpio hide"></i>
@@ -59,7 +59,7 @@
 					<img id="cover-art" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
 					<input id="vu" type="hidden" value="<?=$this->asset('/img/vu.gif')?>">
 					<input id="vustop" type="hidden" value="<?=$this->asset('/img/vustop.gif')?>">
-					<div id="coverartoverlay"></div>
+					<div id="coverartoverlay" class="hide"></div>
 					<img id="controls-cover" class="controls hide" src="<?=$this->asset('/img/controls.svg')?>">
 					<div id="coverTL" class="covermap r1 c1 ws hs"></div>
 					<div id="coverT" class="covermap r1 c2 wl hs"></div>
