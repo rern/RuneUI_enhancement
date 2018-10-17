@@ -1290,6 +1290,7 @@ function setPlaybackBlank() {
 }
 function renderPlayback() {
 	setTimeout( function() {
+		$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
 		$( '#starter' ).remove();
 	}, 500 );
 	var status = GUI.status;
@@ -1365,9 +1366,7 @@ function renderPlayback() {
 			if ( radiosrc !== vustop ) $( '#cover-art' ).attr( 'src', vustop );
 			$( '#total, #timepos' ).empty();
 		}
-		$( '#cover-art' )
-			.css( 'border-radius', '18px' )
-			.one( 'load', setPlaybackOneload );
+		$( '#cover-art' ).css( 'border-radius', '18px' );
 		$( '#coverartoverlay' ).removeClass( 'hide' );
 		return;
 	}
