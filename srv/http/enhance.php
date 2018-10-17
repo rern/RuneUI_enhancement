@@ -72,7 +72,9 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	$redis->hmSet( 'display', $data );
 	pushstream( 'display', $data );
 } else if ( isset( $_POST[ 'library' ] ) ) {
-	getLibrary();
+	$status = getLibrary();
+	if ( isset( $_POST[ 'data' ] ) ) echo json_encode( $status, JSON_NUMERIC_CHECK );
+	pushstream( 'library', $status );
 } else if ( isset( $_POST[ 'volume' ] ) ) {
 	$volume = $_POST[ 'volume' ];
 	$volumemute = $redis->hGet( 'display', 'volumemute' );
@@ -158,7 +160,8 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 		}
 	}
 	if ( $key === 'bkmarks' ) {
-		getLibrary();
+		$status = getLibrary();
+		pushstream( 'library', $status );
 	} else {
 		exec( 'mpc update Webradio' );
 	}
@@ -235,7 +238,9 @@ function getLibrary() {
 		, 'spotify'      => $count[ 9 ]
 		, 'activeplayer' => $count[ 10 ]
 	);
-	pushstream( 'library', $status );
+//	echo json_encode( $status, JSON_NUMERIC_CHECK );
+//	pushstream( 'library', $status );
+	return $status;
 }
 function lsPlaylists() {
 	$lines = shell_exec( 'mpc lsplaylists' );
