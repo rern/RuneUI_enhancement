@@ -1054,9 +1054,6 @@ window.addEventListener( 'orientationchange', function() {
 		if ( GUI.dblist || !$( '#pl-editor' ).hasClass( 'hide' ) ) displayIndexBar();
 	}
 } );
-$(window).on('beforeunload', function(){
-    socket.close();
-});
 } ); // document ready end <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 var psOption = {
