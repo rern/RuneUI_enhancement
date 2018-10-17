@@ -1753,7 +1753,7 @@ function renderLibrary() {
 	
 	var content = '';
 	var bookmarks = status.bookmark;
-	if ( bookmarks !== null ) {
+	if ( bookmarks ) {
 		bookmarks.sort( function( a, b ) {
 			return stripLeading( a.name ).localeCompare( stripLeading( b.name ), undefined, { numeric: true } );
 		} );
