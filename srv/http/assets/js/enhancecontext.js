@@ -64,7 +64,10 @@ $( '.contextmenu a' ).click( function() {
 					, text  : GUI.list.name
 				} );
 			}
-			if ( mode === 'wr' ) tempFlag( 'local' );
+			if ( mode === 'wr' ) {
+				GUI.local = 1;
+				setTimeout( function() { GUI.local = 0 }, 500 );
+			}
 			$.post( 'enhance.php', { mpc: command }, function() {
 				if ( !GUI.status.playlistlength ) getPlaybackStatus();
 				if ( cmd.slice( -4 ) === 'play' ) {
@@ -135,13 +138,17 @@ function bookmarkVerify( name, path, oldname ) {
 		return;
 	}
 	$.post( 'enhance.php', { bash: '/usr/bin/redis-cli hgetall bkmarks' }, function( data ) {
-		var data = data.split( '\n' );
-		var bmname = [];
-		var bmpath = [];
-		$.each( data, function( i, val ) {
-			i % 2 ? bmpath.push( val ) : bmname.push( val );
-		} );
-		var namei = $.inArray( name, bmname );
+		if ( data ) {
+			var data = data.split( '\n' );
+			var bmname = [];
+			var bmpath = [];
+			$.each( data, function( i, val ) {
+				i % 2 ? bmpath.push( val ) : bmname.push( val );
+			} );
+			var namei = $.inArray( name, bmname );
+		} else {
+			var namei = -1;
+		}
 		if ( namei === -1 ) {
 			if ( !oldname ) {
 				new PNotify( {
@@ -149,7 +156,8 @@ function bookmarkVerify( name, path, oldname ) {
 					, title : 'Add Bookmark'
 					, text  : name
 				} );
-				tempFlag( 'local' );
+				GUI.local = 1;
+				setTimeout( function() { GUI.local = 0 }, 500 );
 			}
 			var data = oldname ? [ name, path, oldname ] : [ name, path ];
 			$.post( 'enhance.php', { bkmarks: data } );
@@ -167,7 +175,10 @@ function bookmarkVerify( name, path, oldname ) {
 				}
 				, oklabel     : 'Replace'
 				, ok          : function() {
-					if ( !oldname ) tempFlag( 'local' );
+					if ( !oldname ) {
+						GUI.local = 1;
+						setTimeout( function() { GUI.local = 0 }, 500 );
+					}
 					var data = oldname ? [ name, path, oldname ] : [ name, path ];
 					$.post( 'enhance.php', { bkmarks: data } );
 				}
@@ -234,7 +245,8 @@ function addWebradio( name, url, oldname ) {
 	var name = name;
 	var oldname = oldname ? oldname : '';
 	var data = oldname ? [ name, url, oldname ] : [ name, url ];
-	tempFlag( 'local' );
+	GUI.local = 1;
+	setTimeout( function() { GUI.local = 0 }, 500 );
 	$.post( 'enhance.php', { webradios: data } );
 }
 function webRadioVerify( name, url, oldname ) {
@@ -292,7 +304,8 @@ function webRadioDelete() {
 		, ok      : function() {
 			$( '#db-entries li.active').remove();
 			GUI.libraryhome.webradio--;
-			tempFlag( 'local' );
+			GUI.local = 1;
+			setTimeout( function() { GUI.local = 0 }, 500 );
 			$.post( 'enhance.php', { webradios: name } );
 		}
 	} );
@@ -330,7 +343,8 @@ function playlistRename() {
 }
 function addPlaylist( name, oldname ) {
 	if ( oldname ) {
-		tempFlag( 'local' );
+		GUI.local = 1;
+		setTimeout( function() { GUI.local = 0 }, 500 );
 		// rm or save: mpc rm "name's \"double\" quote"
 		$.post( 'enhance.php', { mpc: [ 'mpc rm "'+ oldname.replace( /"/g, '\\"' ) +'"', 'mpc save "'+ name.replace( /"/g, '\\"' ) +'"' ] } );
 	} else {
@@ -341,7 +355,8 @@ function addPlaylist( name, oldname ) {
 		} );
 		$( '#plopen' ).removeClass( 'disable' );
 		GUI.lsplaylists.push( name );
-		tempFlag( 'local' );
+		GUI.local = 1;
+				setTimeout( function() { GUI.local = 0 }, 500 );
 		$.post( 'enhance.php', { mpc: 'mpc save "'+ name.replace( /"/g, '\\"' ) +'"' } );
 	}
 }
@@ -391,7 +406,8 @@ function playlistDelete() {
 			if ( !count ) $( '#pl-currentpath' ).html( '<bl>&emsp;PLAYLISTS</bl>' );
 			GUI.list.li.remove();
 			
-			tempFlag( 'local' );
+			GUI.local = 1;
+			setTimeout( function() { GUI.local = 0 }, 500 );
 			$.post( 'enhance.php', { mpc: 'mpc rm "'+ GUI.list.name.replace( /"/g, '\\"' ) +'"' } );
 		}
 	} );
