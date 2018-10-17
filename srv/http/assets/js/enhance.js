@@ -1612,7 +1612,7 @@ function displayAirPlay() {
 		$( '#time' ).roundSlider( 'setValue', 0 );
 		$( '#elapsed' ).html( blinkdot );
 		$( '#total' ).empty();
-		$( '#iplayer' ).addClass( 'fa-airplay' ).removeClass( 'hide' );
+		$( '#iplayer' ).attr( 'class', 'fa fa-airplay' );
 	} else {
 		$( '#coverart, #share-group' ).css( 'width', '90%' );
 	}
@@ -1646,7 +1646,7 @@ function displayPlayback() {
 	}
 	if ( !GUI.display.buttons || window.innerHeight <= 320 || window.innerWidth < 499 ) {
 		$( '#play-group, #share-group, #vol-group' ).addClass( 'hide' );
-		if ( GUI.display.time ) $( '#iplayer' ).attr( 'class', GUI.activePlayer === 'MPD' ? 'fa hide' : 'fa fa-'+ GUI.activePlayer.toLowerCase() );
+		if ( GUI.display.time ) $( '#iplayer' ).attr( 'class', GUI.status.activePlayer === 'MPD' ? 'fa hide' : 'fa fa-'+ GUI.status.activePlayer.toLowerCase() );
 	}
 	// no scaling for webradio vu meter
 	if ( !GUI.display.coverlarge || $( '#album' ).text().slice( 0, 4 ) === 'http' ) {
@@ -2345,6 +2345,7 @@ function renderPlaylist() {
 		$( '.playlist' ).removeClass( 'hide' );
 		var barhide = !GUI.display.bars || window.innerWidth < 499 || window.innerHeight < 515;
 		$( '#playlist-warning' ).css( 'margin-top', barhide ? '67px' : '27px' );
+		$( 'html, body' ).scrollTop( 0 );
 		return
 	}
 	
