@@ -21,6 +21,7 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 		}
 	}
 	echo json_encode( $data );
+	exit();
 } else if ( isset( $_POST[ 'mpc' ] ) ) {
 // 
 	$mpc = $_POST[ 'mpc' ];
