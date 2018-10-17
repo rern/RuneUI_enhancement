@@ -208,12 +208,16 @@ function getLibrary() {
 	$redis = new Redis();
 	$redis->pconnect( '127.0.0.1' );
 	$rbkmarks = $redis->hGetAll( 'bkmarks' );
-	foreach ( $rbkmarks as $name => $path ) {
-		$bookmarks[] = array(
-			  'name'  => $name
-			, 'path'  => $path
-			, 'count' => exec( 'mpc list title base "'.$path.'" | wc -l' )
-		);
+	if ( $rbkmarks ) {
+		foreach ( $rbkmarks as $name => $path ) {
+			$bookmarks[] = array(
+				  'name'  => $name
+				, 'path'  => $path
+				, 'count' => exec( 'mpc list title base "'.$path.'" | wc -l' )
+			);
+		}
+	} else {
+		$bookmarks = 0;
 	}
 	$count = exec( '/srv/http/enhancecount.sh' );
 	$count = explode( ' ', $count );
