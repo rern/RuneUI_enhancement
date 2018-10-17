@@ -1652,7 +1652,7 @@ function displayPlayback() {
 		$( '#timepos' ).empty();
 	} else {
 		$( '#playback-row' ).css( 'margin-top', '40px' );
-		$( '#divpos' ).css( 'font-size', GUI.playlistlength ? '20px' : '' );
+		$( '#divpos' ).css( 'font-size', GUI.status.playlistlength ? '20px' : '' );
 	}
 	displayTopBottom();
 }
