@@ -35,11 +35,23 @@ var GUI = { // outside '$( function() {' enable console.log access
 };
 var blinkdot = '<a class="dot">.</a> <a class="dot dot2">.</a> <a class="dot dot3">.</a>';
 
-$.post( 'enhance.php', { getdisplay: 1 } ); // display data > pushstream > getPlaybackStatus()
+GUI.local = 1;
+setTimeout( function() { GUI.local = 0 }, 500 );
+$.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
+	GUI.display = data;
+	$.post( 'enhancestatus.php', function( status ) {
+		GUI.status = status;
+		setButton();
+		renderPlayback();
+		displayPlayback();
+		
+		$.post( 'enhance.php', { library: 1, data: 1 }, function( data ) {
+			GUI.libraryhome = data;
+		}, 'json' );
+	}, 'json' );
+}, 'json' );
 
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-$.post( 'enhance.php', { library: 1 } );
 
 $( '#menu-settings, #badge' ).click( function() {
 	$( '#settings' )
@@ -50,8 +62,6 @@ $( '#song, #playlist-warning' ).on( 'click', 'i', function() {
 	$( '#open-library' ).click();
 } );
 $( '#open-library' ).click( function() {
-	if ( $.isEmptyObject( GUI.libraryhome ) ) return
-	
 	if ( GUI.bookmarkedit ) {
 		GUI.bookmarkedit = 0;
 		renderLibrary();
@@ -245,8 +255,8 @@ $( '#volume' ).roundSlider( {
 	}
 	, change          : function( e ) { // (not fire on 'setValue' ) value after click or 'stop drag'
 		GUI.local = 1;
-		$.post( 'enhance.php', { volume: e.value } );
 		setTimeout( function() { GUI.local = 0 }, 500 );
+		$.post( 'enhance.php', { volume: e.value } );
 		$( e.handle.element ).rsRotate( - e.handle.angle );
 		// value before 'change'
 		if ( e.preValue === 0 ) unmuteColor();
@@ -264,8 +274,8 @@ $( '#volume' ).roundSlider( {
 	}
 	, stop            : function( e ) { // on 'stop drag'
 //		GUI.local = 1;
-//		$.post( 'enhance.php', { volume: e.value } );
 //		setTimeout( function() { GUI.local = 0 }, 500 );
+//		$.post( 'enhance.php', { volume: e.value } );
 	}
 } );
 $( '#volmute, #volM' ).click( function() {
@@ -282,8 +292,8 @@ $( '#volmute, #volM' ).click( function() {
 		GUI.display.volumemute = 0;
 	}
 	GUI.local = 1;
-	$.post( 'enhance.php', { volume: 'setmute' } );
 	setTimeout( function() { GUI.local = 0 }, 500 );
+	$.post( 'enhance.php', { volume: 'setmute' } );
 } );
 $( '#volup, #voldn' ).click( function() {
 	var thisid = this.id;
@@ -293,8 +303,8 @@ $( '#volup, #voldn' ).click( function() {
 	vol = ( thisid === 'volup' ) ? vol + 1 : vol - 1;
 	$volumeRS.setValue( vol );
 	GUI.local = 1;
-	$.post( 'enhance.php', { volume: vol } );
 	setTimeout( function() { GUI.local = 0 }, 500 );
+	$.post( 'enhance.php', { volume: vol } );
 } );
 $( '.btn-cmd' ).click( function() {
 	var $this = $( this );
@@ -454,8 +464,8 @@ $( '.timemap, .covermap, .volmap' ).click( function() {
 				$( '#repeat, #single' ).removeClass( 'btn-primary' );
 				$( '#irepeat, #posrepeat' ).attr( 'class', 'fa hide' );
 				GUI.local = 1;
-				$.post( 'enhance.php', { mpc: [ 'mpc repeat 0', 'mpc single 0' ] } );
 				setTimeout( function() { GUI.local = 0 }, 500 );
+				$.post( 'enhance.php', { mpc: [ 'mpc repeat 0', 'mpc single 0' ] } );
 			} else {
 				$( '#single' ).click();
 			}
@@ -571,10 +581,10 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 	if ( GUI.swipe || !$( this ).hasClass( 'home-bookmark' ) ) return
 	
 	GUI.local = 1;
+	setTimeout( function() { GUI.local = 0 }, 500 );
 	$( '.home-bookmark' )
 		.append( '<i id="home-block-edit" class="fa fa-edit"></i><i id="home-block-remove" class="fa fa-minus-circle"></i>' )
 		.find( '.fa-bookmark, gr' ).css( 'opacity', 0.2 );
-	setTimeout( function() { GUI.local = 0 }, 500 );
 } );
 $( '#db-home' ).click( function() {
 	$( '#open-library' ).click();
@@ -839,8 +849,8 @@ $( '#pl-entries' ).on( 'click', 'li', function( e ) {
 	}
 	$this.remove();
 	GUI.local = 1;
-	$.post( 'enhance.php', { mpc: 'mpc del '+ songpos } );
 	setTimeout( function() { GUI.local = 0 }, 500 );
+	$.post( 'enhance.php', { mpc: 'mpc del '+ songpos } );
 	if ( !$( '#countsong, #countradio' ).length ) {
 		GUI.status.playlistlength = 0;
 		renderPlaylist();
@@ -999,8 +1009,8 @@ new Sortable( document.getElementById( 'pl-entries' ), {
 			GUI.status.song = GUI.status.Pos;
 		}
 		GUI.local = 1;
-		$.post( 'enhance.php', { mpc: 'mpc move '+ ( e.oldIndex + 1 ) +' '+ ( e.newIndex + 1 ) } );
 		setTimeout( function() { GUI.local = 0 }, 500 );
+		$.post( 'enhance.php', { mpc: 'mpc move '+ ( e.oldIndex + 1 ) +' '+ ( e.newIndex + 1 ) } );
 	}
 } );
 
@@ -1054,6 +1064,7 @@ window.addEventListener( 'orientationchange', function() {
 		if ( GUI.dblist || !$( '#pl-editor' ).hasClass( 'hide' ) ) displayIndexBar();
 	}
 } );
+
 } ); // document ready end <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 var psOption = {
@@ -1107,7 +1118,6 @@ pushstreams.playlist.onmessage = function( data ) {
 var timeoutUpdate;
 pushstreams.idle.onmessage = function( changed ) {
 	var changed = changed[ 0 ];
-	console.log( changed )
 	if ( changed === 'player' ) { // on track changed
 		if ( $( '#panel-playlist' ).hasClass( 'active' ) ) {
 			if ( !GUI.pleditor ) setPlaylistScroll();
@@ -1192,6 +1202,9 @@ pushstreams.notify.onmessage = function( data ) {
 $.each( streams, function( i, stream ) {
 	pushstreams[ stream ].connect();
 } );
+/*setTimeout( function() {
+$.post( 'enhance.php', { getdisplay: 1 } ); // display data > pushstream > getPlaybackStatus()
+}, 2000 );*/
 
 function setButtonToggle() {
 	if ( GUI.local ) return
@@ -1472,6 +1485,7 @@ function getPlaybackStatus() {
 		if ( !GUI.imodedelay ) displayPlayback();
 	}, 'json' );
 }
+
 function setPanelActive( id ) {
 	if ( id === 'panel-library' ) {
 		GUI.dbscrolltop[ $( '#db-currentpath' ).attr( 'path' ) ] = $( window ).scrollTop();
@@ -1817,8 +1831,8 @@ function renderLibrary() {
 				homeorder = homeorder.slice( 0, -1 );
 				GUI.display.library = homeorder;
 				GUI.local = 1;
-				$.post( 'enhance.php', { homeorder: homeorder } );
 				setTimeout( function() { GUI.local = 0 }, 500 );
+				$.post( 'enhance.php', { homeorder: homeorder } );
 			}
 		} );
 	} );
