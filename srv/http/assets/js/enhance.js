@@ -1299,10 +1299,12 @@ function setPlaybackBlank() {
 	if ( GUI.display.time ) $( '#time' ).roundSlider( 'setValue', 0 );
 }
 function renderPlayback() {
-	setTimeout( function() {
-		$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
-		$( '#starter' ).remove();
-	}, 500 );
+	if ( $( '#starter' ).length ) { // in case too long to get coverart
+		setTimeout( function() {
+			$( '#starter' ).remove();
+			$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
+		}, 2000 );
+	}
 	var status = GUI.status;
 	// song and album before update for song/album change detection
 	var previoussong = $( '#song' ).text();
@@ -1376,7 +1378,12 @@ function renderPlayback() {
 			if ( radiosrc !== vustop ) $( '#cover-art' ).attr( 'src', vustop );
 			$( '#total, #timepos' ).empty();
 		}
-		$( '#cover-art' ).css( 'border-radius', '18px' );
+		$( '#cover-art' )
+			.css( 'border-radius', '18px' )
+			.one( 'load', function() {
+				$( '#starter' ).remove();
+				$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
+		} );
 		$( '#coverartoverlay' ).removeClass( 'hide' );
 		return;
 	}
@@ -1384,11 +1391,14 @@ function renderPlayback() {
 	$( '#cover-art' ).css( 'border-radius', '' );
 	$( '#coverartoverlay' ).addClass( 'hide' );
 	if ( status.Album !== previousalbum ) {
-		if ( status.activePlayer === 'MPD' ) {
-			$( '#cover-art' ).css( 'background-image', 'url("enhancecover.php?v=' + Math.floor( Math.random() * 1001 ) + '")' );
-		} else if ( status.activePlayer === 'Spotify' ) {
-			$( '#cover-art' ).css( 'background-image', 'url("cover/?v=' + Math.floor( Math.random() * 1001 ) + '")' );
-		}
+		var coverart = status.coverart || 'assets/img/cover-default-runeaudio.png';
+		$( '#cover-art' )
+			.attr( 'src', coverart )
+			.css( 'border-radius', 0 )
+			.one( 'load', function() {
+				$( '#starter' ).remove();
+				$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
+		} );
 	}
 	// time
 	time = status.Time;
