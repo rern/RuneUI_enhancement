@@ -56,7 +56,7 @@
 				</div>
 				<div id="coverart">
 					<div id="divcover">
-					<img id="cover-art" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
+					<img id="cover-art">
 					<input id="vu" type="hidden" value="<?=$this->asset('/img/vu.gif')?>">
 					<input id="vustop" type="hidden" value="<?=$this->asset('/img/vustop.gif')?>">
 					<div id="coverartoverlay" class="hide"></div>
