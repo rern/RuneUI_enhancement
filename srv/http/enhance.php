@@ -181,23 +181,20 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 
 function search2array( $result ) {
 	$lists = explode( "\n", rtrim( $result ) );
-	$root = substr( $lists[ 0 ], 0, 3 );
-	if ( $root === 'USB' || $root === 'NAS' || $root === 'LocalStorage' ) {
-		foreach( $lists as $list ) {
-			$data[] = array( 'directory' => $list );
-		}
-		return $data;
-	}
-	
 	foreach( $lists as $list ) {
-		$list = explode( '^^', rtrim( $list ) );
-		$li[ 'Title' ] = $list[ 0 ];
-		$li[ 'Time' ] = $list[ 1 ];
-		$li[ 'Artist' ] = $list[ 2 ];
-		$li[ 'Album' ] = $list[ 3 ];
-		$li[ 'file' ] = $list[ 4 ];
-		$data[] = $li;
-		$li = '';
+		$root = substr( $list, 0, 4 );
+		if ( $root === 'USB/' || $root === 'NAS/' || $root === 'LocalStorage/' ) {
+				$data[] = array( 'directory' => $list );
+		} else {
+			$list = explode( '^^', rtrim( $list ) );
+			$li[ 'Title' ] = $list[ 0 ];
+			$li[ 'Time' ] = $list[ 1 ];
+			$li[ 'Artist' ] = $list[ 2 ];
+			$li[ 'Album' ] = $list[ 3 ];
+			$li[ 'file' ] = $list[ 4 ];
+			$data[] = $li;
+			$li = '';
+		}
 	}
 	return $data;
 }
