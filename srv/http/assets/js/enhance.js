@@ -92,6 +92,7 @@ $( '#open-library' ).click( function() {
 $( '#open-playback' ).click( function() {
 	setPanelActive( 'panel-playback' );
 	getPlaybackStatus();
+	if ( GUI.status.state === 'play' ) $( '#elapsed' ).empty(); // hide flashing
 } );
 $( '#open-playlist' ).click( function() {
 	
@@ -1310,6 +1311,7 @@ function renderPlayback() {
 		}, 2000 );
 	}
 	var status = GUI.status;
+	$( 'html, body' ).scrollTop( 0 );
 	// song and album before update for song/album change detection
 	var previoussong = $( '#song' ).text();
 	var previousalbum = $( '#album' ).text();
@@ -1319,14 +1321,8 @@ function renderPlayback() {
 	if ( GUI.display.volume && GUI.display.volumempd ) {
 		status.volumemute != 0 ? muteColor( status.volumemute ) : unmuteColor();
 	}
-	
-	// set mode buttons
-	if ( GUI.setmode ) return;
-
 	clearInterval( GUI.intKnob );
 	clearInterval( GUI.intElapsed );
-	$( '#time' ).roundSlider( 'setValue', 0 );
-	
 	// empty queue
 	if ( status.playlistlength == 0 ) {
 		setPlaybackBlank();
@@ -1435,8 +1431,7 @@ function renderPlayback() {
 		return;
 	}
 	
-	$( '#elapsed' ).css( 'color', '' );
-	$( '#total' ).css( 'color', '' );		
+	$( '#elapsed, #total' ).css( 'color', '' );
 	if ( GUI.display.time ) {
 		GUI.intElapsed = setInterval( function() {
 			elapsed++;
@@ -1495,13 +1490,11 @@ function getPlaybackStatus() {
 }
 
 function setPanelActive( id ) {
-	if ( id === 'panel-library' ) {
-		GUI.dbscrolltop[ $( '#db-currentpath' ).attr( 'path' ) ] = $( window ).scrollTop();
-	} else if ( id === 'panel-playlist' && GUI.pleditor ) {
+	if ( $( '#open-library' ).hasClass( 'active' ) && $( '#home-blocks' ).hasClass( 'hide' ) ) {
+		var path = $( '#db-currentpath' ).attr( 'path' );
+		if ( path ) GUI.dbscrolltop[ path ] = $( window ).scrollTop();
+	} else if ( $( '#open-playlist' ).hasClass( 'active' ) && GUI.pleditor ) {
 		GUI.plscrolltop = $( window ).scrollTop();
-	} else {
-		$( 'html, body' ).scrollTop( 0 );
-		if ( GUI.status.state === 'play' ) $( '#elapsed' ).empty();
 	}
 	$( '.tab-pane, #menu-bottom li' ).removeClass( 'active' );
 	$( '.tab-pane' ).addClass( 'hide' );
