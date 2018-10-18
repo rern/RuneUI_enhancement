@@ -1285,16 +1285,20 @@ function scrollLongText() {
 		} );
 	}, 100 );
 }
+function removeSplash() {
+	$( '#starter' ).remove();
+	$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
+}
 function setPlaybackBlank() {
 	$( '#playback-controls' ).addClass( 'hide' );
 	$( '#divartist, #divsong, #divalbum' ).removeClass( 'scroll-left' );
 	$( '#song' ).html( '<i class="fa fa-plus-circle"></i>' );
 	$( '#songposition' ).text( 'Add music from Library' );
 	$( '#artist, #album, #timepos, #format-bitrate, #elapsed, #total' ).empty();
-	$( '#cover-art' ).css( {
-		  'background-image': 'url( "assets/img/cover-default-runeaudio.png" )'
-		, 'border-radius': 0
-	} );
+	$( '#cover-art' )
+		.attr( 'src', 'assets/img/cover-default-runeaudio.png' )
+		.css( 'border-radius', 0 )
+		.one( 'load', removeSplash );
 	$( '#coverartoverlay, #posrandom' ).addClass( 'hide' );
 	if ( GUI.display.time ) $( '#time' ).roundSlider( 'setValue', 0 );
 }
@@ -1380,10 +1384,7 @@ function renderPlayback() {
 		}
 		$( '#cover-art' )
 			.css( 'border-radius', '18px' )
-			.one( 'load', function() {
-				$( '#starter' ).remove();
-				$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
-		} );
+			.one( 'load', removeSplash );
 		$( '#coverartoverlay' ).removeClass( 'hide' );
 		return;
 	}
@@ -1395,10 +1396,7 @@ function renderPlayback() {
 		$( '#cover-art' )
 			.attr( 'src', coverart )
 			.css( 'border-radius', 0 )
-			.one( 'load', function() {
-				$( '#starter' ).remove();
-				$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
-		} );
+			.one( 'load', removeSplash );
 	}
 	// time
 	time = status.Time;
@@ -1831,6 +1829,7 @@ function renderLibrary() {
 			  }
 			, onEnd      : function() {
 				$icon.css( 'color', '' );
+				console.log(1)
 			  }
 			, onUpdate   : function ( e ) {
 				var $blocks = $( '.home-block:not(.home-bookmark)' );
