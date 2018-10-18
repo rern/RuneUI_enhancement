@@ -1286,7 +1286,7 @@ function scrollLongText() {
 	}, 100 );
 }
 function removeSplash() {
-	$( '#starter' ).remove();
+	$( '#splash' ).remove();
 	$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
 }
 function setPlaybackBlank() {
@@ -1303,9 +1303,9 @@ function setPlaybackBlank() {
 	if ( GUI.display.time ) $( '#time' ).roundSlider( 'setValue', 0 );
 }
 function renderPlayback() {
-	if ( $( '#starter' ).length ) { // in case too long to get coverart
+	if ( $( '#splash' ).length ) { // in case too long to get coverart
 		setTimeout( function() {
-			$( '#starter' ).remove();
+			$( '#splash' ).remove();
 			$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
 		}, 2000 );
 	}
