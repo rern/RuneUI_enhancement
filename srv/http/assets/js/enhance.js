@@ -1296,7 +1296,7 @@ function setPlaybackBlank() {
 	$( '#songposition' ).text( 'Add music from Library' );
 	$( '#artist, #album, #timepos, #format-bitrate, #elapsed, #total' ).empty();
 	$( '#cover-art' )
-		.attr( 'src', 'assets/img/cover-default-runeaudio.png' )
+		.attr( 'src', $( '#cover' ).val() )
 		.css( 'border-radius', 0 )
 		.one( 'load', removeSplash );
 	$( '#coverartoverlay, #posrandom' ).addClass( 'hide' );
@@ -1392,7 +1392,7 @@ function renderPlayback() {
 	$( '#cover-art' ).css( 'border-radius', '' );
 	$( '#coverartoverlay' ).addClass( 'hide' );
 	if ( status.Album !== previousalbum ) {
-		var coverart = status.coverart || 'assets/img/cover-default-runeaudio.png';
+		var coverart = status.coverart || $( '#cover' ).val();
 		$( '#cover-art' )
 			.attr( 'src', coverart )
 			.css( 'border-radius', 0 )
