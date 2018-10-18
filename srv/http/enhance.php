@@ -184,7 +184,7 @@ function search2array( $result ) {
 	foreach( $lists as $list ) {
 		$root = substr( $list, 0, 4 );
 		if ( $root === 'USB/' || $root === 'NAS/' || $root === 'LocalStorage/' ) {
-				$data[] = array( 'directory' => $list );
+			$data[] = array( 'directory' => $list );
 		} else {
 			$list = explode( '^^', rtrim( $list ) );
 			$li[ 'Title' ] = $list[ 0 ];
