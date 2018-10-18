@@ -166,7 +166,7 @@ wh, gr { font-weight: 300; }
 .blink {
 	animation: blinkopaque 1.5s linear infinite;
 }
-#starter,
+#splash,
 #loader {
 	position: fixed;
 	top: 0;
@@ -182,7 +182,7 @@ wh, gr { font-weight: 300; }
 #loader {
 	background: rgba(0, 0, 0, 0.8);
 }
-#starter img,
+#splash img,
 #loader img {
 	margin-top: 40vh;
 	width: 250px;
