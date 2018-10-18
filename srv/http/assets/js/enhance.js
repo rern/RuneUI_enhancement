@@ -1829,7 +1829,6 @@ function renderLibrary() {
 			  }
 			, onEnd      : function() {
 				$icon.css( 'color', '' );
-				console.log(1)
 			  }
 			, onUpdate   : function ( e ) {
 				var $blocks = $( '.home-block:not(.home-bookmark)' );
