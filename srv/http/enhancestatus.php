@@ -39,8 +39,8 @@ if ( exec( 'pidof ashuffle' ) ) $status[ 'random' ] = 1;
 if ( !array_key_exists( 'song', $status ) ) $status[ 'song' ] = 0;
 
 
-$previousartist = $_POST[ 'artist' ];
-$previousalbum = $_POST[ 'album' ];
+$previousartist = isset( $_POST[ 'artist' ] ) ? $_POST[ 'artist' ] : '';
+$previousalbum = isset( $_POST[ 'album' ] ) ? $_POST[ 'album' ] : '';
 if ( isset( $_POST[ 'statusonly' ] )
 	|| !$status[ 'playlistlength' ]
 	|| ( $status[ 'Artist' ] === $previousartist && $status[ 'Album' ] === $previousalbum )
