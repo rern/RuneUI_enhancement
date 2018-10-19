@@ -2451,6 +2451,7 @@ function renderSavedPlaylist( name ) {
 		}
 		$( '#pl-currentpath' ).html( counthtml +'<i class="fa fa-arrow-left plsback"></i>' );
 		$( '#pl-currentpath, #pl-editor' ).removeClass( 'hide' );
+		$( '#pl-currentpath bl' ).removeClass( 'title' );
 		$( '#pl-editor' ).html( content +'<p></p>' ).promise().done( function() {
 			GUI.pleditor = 1;
 			// fill bottom of list to mave last li movable to top
