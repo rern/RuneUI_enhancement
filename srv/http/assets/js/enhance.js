@@ -1326,14 +1326,13 @@ function renderPlayback() {
 	// empty queue
 	if ( status.playlistlength == 0 ) {
 		setPlaybackBlank();
-		return;
+		return
 	}
 	
-	GUI.json.radio = ( status.ext === 'radio' ? 1 : 0 );
 	$( '.playback-controls' ).css( 'visibility', 'visible' );
 	$( '#artist' ).html( status.Artist );
 	$( '#song' ).html( status.Title );
-	$( '#album' ).html( status.ext !== 'radio' ? status.Album : '<a>'+ status.Album +'</a>' ).promise().done( function() {
+	$( '#album' ).html( status.ext !== 'radio' ? status.Album : '<gray>'+ status.Album +'</gray>' ).promise().done( function() {
 		scrollLongText();
 	} );
 	
@@ -1346,7 +1345,6 @@ function renderPlayback() {
 		$( '#divpos, #format-bitrate' ).css( 'display', window.innerWidth < 500 ? 'inline' : '' );
 	}
 	$( '#format-bitrate' ).html( dot + status.sampling + ext );
-	
 	if ( status.ext === 'radio' ) {
 		var radiosrc = $( '#cover-art' ).attr( 'src' );
 		var vu = $( '#vu' ).val();
@@ -1354,25 +1352,25 @@ function renderPlayback() {
 		if ( status.state === 'play' ) {
 			if ( radiosrc !== vu ) $( '#cover-art' ).attr( 'src', vu );
 			$( '#elapsed' ).html( status.state === 'play' ? blinkdot : '' );
-			if ( !GUI.display.radioelapsed ) {
-				$( '#total, #timepos' ).empty();
-			} else {
-				var elapsed = status.elapsed;
-				if ( GUI.display.time ) {
-					$( '#timepos' ).empty();
+			var elapsed = status.elapsed;
+			if ( GUI.display.time ) {
+				$( '#timepos' ).empty();
+				if ( !GUI.display.radioelapsed ) {
+					$( '#total' ).empty();
+				} else {
 					GUI.intElapsed = setInterval( function() {
 						elapsed++;
 						elapsedhms = second2HMS( elapsed );
 						$( '#total' ).text( elapsedhms ).css( 'color', '#587ca0' );
 					}, 1000 );
-				} else {
-					$( '#total' ).empty();
-					GUI.intElapsed = setInterval( function() {
-						elapsed++;
-						elapsedhms = second2HMS( elapsed );
-					$( '#timepos' ).html( '&ensp;<i class="fa fa-play"></i>&ensp;'+ elapsedhms );
-					}, 1000 );
 				}
+			} else {
+				$( '#total' ).empty();
+				GUI.intElapsed = setInterval( function() {
+					elapsed++;
+					elapsedhms = second2HMS( elapsed );
+				$( '#timepos' ).html( '&ensp;<i class="fa fa-play"></i>&ensp;'+ elapsedhms );
+				}, 1000 );
 			}
 		} else {
 			if ( radiosrc !== vustop ) $( '#cover-art' ).attr( 'src', vustop );
@@ -1382,7 +1380,7 @@ function renderPlayback() {
 			.css( 'border-radius', '18px' )
 			.one( 'load', removeSplash );
 		$( '#coverartoverlay' ).removeClass( 'hide' );
-		return;
+		return
 	}
 	
 	$( '#cover-art' ).css( 'border-radius', '' );
@@ -1408,7 +1406,7 @@ function renderPlayback() {
 		} else {
 			$( '#timepos' ).html( '&ensp;<i class="fa fa-stop"></i>&ensp;'+ timehms );
 		}
-		return;
+		return
 	}
 	
 	$( '#elapsed, #total' ).css( 'color', '' );
@@ -1428,7 +1426,7 @@ function renderPlayback() {
 		} else {
 			$( '#timepos' ).html( '&ensp;<i class="fa fa-pause"></i>&ensp;<bl>'+ elapsedhms +'</bl> / '+ timehms );
 		}
-		return;
+		return
 	}
 	
 	$( '#elapsed, #total' ).css( 'color', '' );
