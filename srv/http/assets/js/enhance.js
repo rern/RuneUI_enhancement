@@ -1880,14 +1880,14 @@ function getDB( options ) {
 		currentpath = currentpath ? currentpath.toString().replace( /"/g, '\"' ) : '';
 		var artistalbum = artist || currentpath;
 		var command = {
-			  file        : { mpc: 'mpc ls -f "%title%^^%time%^^%artist%^^%album%^^%file%" "'+ path +'"', list: 'file' }
+			  file        : { mpc: 'mpc ls -f "%title%^^%time%^^%artist%^^%album%^^%file%" "'+ path +'" 2> /dev/null', list: 'file' }
 			, album       : { mpcalbum: path } 
-			, artistalbum : { mpc: 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%" artist "'+ artistalbum +'" album "'+ path +'"', search: 1 } 
+			, artistalbum : { mpc: 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%" artist "'+ artistalbum +'" album "'+ path +'"', list: 'file' } 
 			, artist      : { mpc: 'mpc list album artist "'+ path +'" | awk NF', list: 'album' }
 			, composer    : { mpc: 'mpc list album composer "'+ path +'" | awk NF', list: 'album' }
 			, genre       : { mpc: 'mpc list artist genre "'+ path +'" | awk NF', list: 'artist' }
 			, type        : { mpc: 'mpc list '+ GUI.browsemode +' | awk NF', list: GUI.browsemode }
-			, search      : { mpc: 'mpc search -f "%title%^^%time%^^%artist%^^%album%^^%file%" any "'+ keyword +'"', search: 1 }
+			, search      : { mpc: 'mpc search -f "%title%^^%time%^^%artist%^^%album%^^%file%" any "'+ keyword +'"', list: 'file' }
 			, Webradio    : { getwebradios: 1 }
 		}
 		if ( cmd === 'search' ) {
@@ -1913,7 +1913,12 @@ function getDB( options ) {
 			}
 		}
 		$.post( 'enhance.php', command[ mode ], function( data ) {
-			populateDB( data, path, '', '', uplevel );
+			if ( data ) {
+				populateDB( data, path, '', '', uplevel );
+			} else {
+				$( '#loader' ).addClass( 'hide' );
+				info( 'No data in this location.' );
+			}
 		}, 'json' );
 		return
 	}
@@ -2096,7 +2101,7 @@ function stripLeading( string ) {
 	return string.replace( /^A +|^An +|^The +|^\(\s*|^\[\s*|^\.\s*|^\'\s*|^\"\s*|\\/i, '' );
 }
 function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
-	var data = data || '',
+	var data = data,
 		path = path || '',
 		plugin = plugin || '',
 		querytype = querytype || '',
