@@ -1295,7 +1295,7 @@ function setPlaybackBlank() {
 	$( '#divartist, #divsong, #divalbum' ).removeClass( 'scroll-left' );
 	$( '#song' ).html( '<i class="fa fa-plus-circle"></i>' );
 	$( '#format-bitrate' ).text( 'Add music from Library' );
-	$( '#artist, #album, songposition, #timepos, #elapsed, #total' ).empty();
+	$( '#artist, #album, #songposition, #timepos, #elapsed, #total' ).empty();
 	$( '#cover-art' )
 		.attr( 'src', $( '#cover' ).val() )
 		.css( 'border-radius', 0 )
