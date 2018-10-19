@@ -1203,9 +1203,6 @@ pushstreams.notify.onmessage = function( data ) {
 $.each( streams, function( i, stream ) {
 	pushstreams[ stream ].connect();
 } );
-/*setTimeout( function() {
-$.post( 'enhance.php', { getdisplay: 1 } ); // display data > pushstream > getPlaybackStatus()
-}, 2000 );*/
 
 function setButtonToggle() {
 	if ( GUI.local ) return
@@ -1280,8 +1277,10 @@ function setButton() {
 		$( '#play' ).toggleClass( 'btn-primary', state === 'play' );
 		$( '#pause' ).toggleClass( 'btn-primary', state === 'pause' );
 	}
-	setButtonToggle();
-	setButtonUpdate();
+	setTimeout( function() {
+		setButtonToggle();
+		setButtonUpdate();
+	}, 0 );
 }
 function numFormat( num ) {
 	return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
