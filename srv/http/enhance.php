@@ -38,9 +38,8 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 		$data = lsPlaylists();
 		pushstream( 'playlist', $data );
 	}
-	if ( isset( $_POST[ 'search' ] ) ) {
-		$data = search2array( $result );
-		echo json_encode( $data );
+	if ( !$result ) {
+		echo 0;
 	} else if ( isset( $_POST[ 'list' ] ) ) {
 		$type = $_POST[ 'list' ];
 		if ( $type === 'file' ) {
