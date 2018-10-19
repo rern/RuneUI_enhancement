@@ -1209,10 +1209,12 @@ $.post( 'enhance.php', { getdisplay: 1 } ); // display data > pushstream > getPl
 
 function setButtonToggle() {
 	if ( GUI.local ) return
+	
+	var timehide = $( '#time-knob' ).hasClass( 'hide' );
 	if ( GUI.display.buttons ) {
 		$( '#irandom' ).addClass( 'hide' )
 		$( '#irepeat' ).attr( 'class', 'fa hide' );
-		if ( $( '#time-knob' ).hasClass( 'hide' ) ) {
+		if ( timehide ) {
 			$( '#posrandom' ).toggleClass( 'hide', GUI.status.random === 0 );
 			$( '#posrepeat' ).attr( 'class', GUI.status.repeat ? ( GUI.status.single ? 'fa fa-repeat-single' : 'fa fa-repeat' ) : 'fa hide' );
 		} else {
@@ -1223,7 +1225,7 @@ function setButtonToggle() {
 			$( '#posrepeat' ).attr( 'class', 'fa hide' );
 		}
 	} else {
-		if ( $( '#time-knob' ).hasClass( 'hide' ) ) {
+		if ( timehide ) {
 			$( '#irandom' ).addClass( 'hide' )
 			$( '#irepeat' ).attr( 'class', 'fa hide' );
 			$( '#posrandom' ).toggleClass( 'hide', GUI.status.random === 0 );
@@ -1240,19 +1242,34 @@ function setButtonToggle() {
 			$( '#badge' ).text( GUI.display.update ).removeClass( 'hide' );
 			$( '#iaddons' ).addClass( 'hide' );
 		} else {
-			$( '#iaddons' ).removeClass( 'hide' );
+			if ( timehide ) {
+				$( '#posaddons' ).removeClass( 'hide' );
+				$( '#iaddons' ).addClass( 'hide' );
+			} else {
+				$( '#posaddons' ).addClass( 'hide' );
+				$( '#iaddons' ).removeClass( 'hide' );
+			}
 		}
 	} else {
-		$( '#badge' ).empty().addClass( 'hide' );
+		$( '#badge' ).empty();
+		$( '#badge, #posaddons, #iaddons' ).addClass( 'hide' );
 	}
 }
 function setButtonUpdate() {
 	if ( GUI.status.updating_db ) {
-		$( '#open-library i, #db-home i, #iupdate' ).addClass( 'blink' );
-		$( '#iupdate' ).toggleClass( 'hide', GUI.display.bars !== '' );
+		$( '#open-library i, #db-home i' ).addClass( 'blink' );
+		if ( !GUI.display.bars ) {
+			if ( $( '#time-knob' ).hasClass( 'hide' ) ) {
+				$( '#posupdate' ).removeClass( 'hide' );
+				$( '#iupdate' ).addClass( 'hide' );
+			} else {
+				$( '#posupdate' ).addClass( 'hide' );
+				$( '#iupdate' ).removeClass( 'hide' );
+			}
+		}
 	} else {
-		$( '#open-library i, #db-home i, #iupdate' ).removeClass( 'blink' );
-		$( '#iupdate' ).addClass( 'hide' );
+		$( '#open-library i, #db-home i' ).removeClass( 'blink' );
+		$( '#posupdate, #iupdate' ).addClass( 'hide' );
 	}
 }
 function setButton() {
