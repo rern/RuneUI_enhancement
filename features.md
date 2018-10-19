@@ -14,8 +14,6 @@ Rely on MPD supplied data which has some limitations.
 - Time
 	- No duration on stop
 	- Time count not change with drag while stop and not set as start on play
-- Cover art
-	- Get missing cover arts online without save
 - Volume
 	- Pre-mute level not showed and not preserved once refreshed
 - Library
@@ -79,10 +77,9 @@ Rely on MPD supplied data which has some limitations.
 - Coverart
 	- Set Large Coverart to scale up with page width (except webradio vu meter)
 	- Toggle scaling temporarily by tapping top-left corner (Restored on song changed or refresh.)
-	- Get local files first (easiest to manage ang can be used to overide the ones in ID3tag)
+	- Get local files first (easiest to manage and can be used to overide the embedded ID3)
 	- Extract from ID3tag if local files not available (used for songs from various albums in the same directory)
 	- Get from last.fm if not locally available
-	- Save the downloaded missing cover arts for local use
 	- Show VU meter in webradio - animated while play
 - Volume
 	- Show pre-mute level instead of 0 on mute
@@ -91,7 +88,7 @@ Rely on MPD supplied data which has some limitations.
 	- Show as icon in Time knob while hidden
 		
 ### Library:
-- Drag to rearrange home blocks
+- Drag to rearrange home blocks except bookmarks
 - Show counts
 - Show icon and breadcrumb heading while browsing
 - Toggle search box
