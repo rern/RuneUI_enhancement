@@ -80,6 +80,14 @@ Rely on MPD supplied data which has some limitations.
 	- Get local files first (easiest to manage and can be used to overide the embedded ID3)
 	- Extract from ID3tag if local files not available (used for songs from various albums in the same directory)
 	- Get from last.fm if not locally available
+	- Cover art use case in a directory:
+		- No embedded ID3 cover art
+			- Single artist + single album : place 1 cover art file in the directory
+			- Various : add each embedded ID3 cover art
+			- Various in a playlist: with cover art files in each directory 
+		- With embedded ID3 cover art
+			- Single artist + single album : override embedded ones by placing 1 cover art file in the directory
+			- Various : existing embedded ones
 	- Show VU meter in webradio - animated while play
 - Volume
 	- Show pre-mute level instead of 0 on mute
