@@ -74,20 +74,19 @@ if ( $activePlayer === 'MPD'
 				break;
 			}
 		}
-		if ( !empty( $status[ 'coverart' ] ) ) break;
+		if ( isset( $status[ 'coverart' ] ) ) break;
 // 2. id3tag - for various albums in single directory
 		set_include_path( '/srv/http/app/libs/vendor/' );
 		require_once( 'getid3/audioinfo.class.php' );
 		$audioinfo = new AudioInfo();
 		$id3tag = $audioinfo->Info( $file );
-		$id3cover = $id3tag[ 'comments' ][ 'picture' ][ 0 ];
-		$cover = $id3cover[ 'data' ];
-		if ( !empty( $cover ) ) {
+		if ( isset( $id3tag[ 'comments' ][ 'picture' ][ 0 ][ 'data' ] ) ) {
+			$id3cover = $id3tag[ 'comments' ][ 'picture' ][ 0 ];
+			$cover = $id3cover[ 'data' ];
 			$coverext = str_replace( 'image/', '', $id3cover[ 'image_mime' ] );
 			$status[ 'coverart' ] = 'data:image/'. $coverext.';base64,'.base64_encode( $cover );
 		}
-		if ( !empty( $status[ 'coverart' ] ) ) break;
-		
+		if ( isset( $status[ 'coverart' ] ) ) break;
 // 3. last.FM
 		// check internet connection
 		if ( !@fsockopen( 'ws.audioscrobbler.com', 80 ) ) break;
@@ -100,32 +99,18 @@ if ( $activePlayer === 'MPD'
 			curl_close($ch);
 			return $data;
 		}
-		function setCoverart( $cover_url, $dir ) {
-			$cover = curlGet( $cover_url );
-			if ( !$cover ) return NULL;
-			
-			$coverext = pathinfo( $cover_url, PATHINFO_EXTENSION );
-			// save to fetch faster next time
-			$fopen = fopen( $dir.'/cover.'.$coverext, 'w' );
-			fwrite( $fopen, $cover );
-			fclose( $fopen );
-			return 'data:image/'. $coverext.';base64,'.base64_encode( $cover );
-		}
 		$apikey = $redis->get( 'lastfm_apikey' );
 		$artist = urlencode( $status[ 'Artist' ] );
 		$album = urlencode( $status[ 'Album' ] );
 		$url = 'http://ws.audioscrobbler.com/2.0/?api_key='.$apikey.'&autocorrect=1&format=json&method=album.getinfo&artist='.$artist.'&album='.$album;
 		$data = json_decode( curlGet( $url ), true );
 		$cover_url = $data[ 'album' ][ 'image' ][ 3 ][ '#text' ];
-		
-		if ( !empty( $cover_url ) ) {
-			$status[ 'coverart' ] = setCoverart( $cover_url, $dir );
-		} else {
+		if ( empty( $cover_url ) ) {
 			$url = 'http://ws.audioscrobbler.com/2.0/?api_key='.$apikey.'&autocorrect=1&format=json&method=artist.getinfo&artist='.$artist;
 			$data = json_decode( curlGet( $url ), true );
 			$cover_url = $data[ 'artist' ][ 'image' ][ 3 ][ '#text' ];
-			if ( !empty( $cover_url ) ) $status[ 'coverart' ] = setCoverart( $cover_url, $dir );
 		}
+		if ( !empty( $cover_url ) ) $status[ 'coverart' ] = $cover_url;
 	} while ( 0 );
 } else if ( $activePlayer === 'Spotify' ) {
 	include '/srv/http/app/libs/runeaudio.php';
