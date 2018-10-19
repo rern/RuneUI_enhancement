@@ -2,7 +2,9 @@ RuneUI enhancement
 ---
 _Tested on RuneAudio 0.3 and 0.4b_   
 
-![glossy](https://github.com/rern/_assets/raw/master/RuneUI_enhancement/new_knob-800px.jpg)
+![playback](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/xtreme/playback.gif)
+![library](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/xtreme/library.gif)
+![playlist](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/xtreme/playlist.gif)
 
 Features
 ---
