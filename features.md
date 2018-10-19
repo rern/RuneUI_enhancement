@@ -58,7 +58,7 @@ Rely on MPD supplied data which has some limitations.
 	- Show overlay guides by tapping center-top of Coverart / Time 
 - Artist
 	- Improved artists' bio
-	- Similar artists are linked
+	- Show similar artists with images and linked
 - Song info
 	- Show sampling info while stop
 	- Working previous / next while stop
@@ -75,8 +75,9 @@ Rely on MPD supplied data which has some limitations.
 	- Show elapsed in gray while pause
 	- Show elapsed and duration with song info while hidden
 - Coverart
-	- Set Large Coverart to scale up with page width (except webradio vu meter)
+	- Set **Large Cover art** to scale up with page width (except webradio vu meter)
 	- Toggle scaling temporarily by tapping top-left corner (Restored on song changed or refresh.)
+	- New default cover art
 	- Get local files first (easiest to manage and can be used to overide the embedded ID3)
 	- Extract from ID3tag if local files not available (used for songs from various albums in the same directory)
 	- Get from last.fm if not locally available
