@@ -1,119 +1,121 @@
 RuneUI enhancement
 ---
-_Tested on RuneAudio 0.3 and 0.4b_   
+_Tested on RuneAudio 0.4b_   
 
-![playback](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/xtreme/playback.gif)
-
-Features
----
-- More minimalism
-- Even more minimal by selectable show/hide items
-- More responsive layout
-- Fit all in one phone screen (with 'Add to Home Screen')
-- Swipeable
-- Improved song info
-- Library breadcrumb path links to each directory
-- Library index bar
-- Fix Library sorting
-- Coverart override
-- Start/stop local browser right after settings saved (default needs system restart)
-- 0.4b fixes:
-	- Prevent `coverarts` update on play / pause in the same song
-	- Use local `jquery-ui.min.js` instead of online
-	- Fix missing `lato-bolditalic-webfont`
-
->[Install](#install)  
->[Functional](#functional)  
->[Visual](#visual)  
-
-Try it (to be updated) - [**Demo**](https://rern.github.io/RuneUI_GPIO/)  
+### Overall:
+- Redesign
+	- Responsive layout
+	- Icons
+	- Time and Volume knobs
+	- Coverart frame
+	- Buttons
+	- Menus
+- Switch between main pages
+	- Swipe left/right
+- Top-bottom bars
+	- Larger new icons
+	- Add apuse button
+	- Show database updating as blinking icon (show as icon in Time knob while hidden)
+- Selectable show/hide
+	- Top-bottom bars
+	- Time Knob
+	- Cover art
+	- Volume knob
+	- Buttons
+	- Library home items
+	- Library labels
 
 Install
 ---
 from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)  
-  
 
-Functional
----
 
-### Playback
-- Long-press empty area = show/hide items setting
-- `cover-art`, `time-knob` - all playback controls
-- Swipe to switch between pages
-- Mouse hover top/bottom of screen = toggle top/bottom menu bars (if hidden)
-- Tap `artist` or `bio` button = show improved bio
-- Tap `playlist item` also go back to playback page
+![playback](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/xtreme/playback.gif)
+
+### Playback:
+- Coverart / Time knob as playback controls
+	- Can be used as a replacement while hide top-bottom bars and buttons
+	- Show overlay guides by tapping center-top of Coverart / Time 
+- Artist
+	- Improved artists' bio
+	- Show similar artists with images and linked
+- Song info
+	- Show sampling info while stop
+	- Working previous / next while stop
+	- Get sampling info directly with MPD on play
+	- Get sampling info from local database while stop (must be played once before available)
+	- Show song title in gray while pause
+	- Hide webradio song title while stop
+	- Scroll long names
+- Time
+	- Get duration on stop with MPD protocol
+	- Show only duration while stop or blank in webradio
+	- Selectable blinking dots or elapsed time in webradio
+	- Start time within song can be set while stop
+	- Show elapsed in gray while pause
+	- Show elapsed and duration with song info while hidden
+- Coverart
+	- Set **Large Cover art** to scale up with page width (except webradio vu meter)
+	- Toggle scaling temporarily by tapping top-left corner (Restored on song changed or refresh.)
+	- New default cover art
+	- Get local files first (easiest to manage and can be used to overide the embedded ID3)
+	- Extract from ID3tag if local files not available (used for songs from various albums in the same directory)
+	- Get from last.fm if not locally available
+	- Cover art use case in a directory:
+		- No embedded ID3 cover art
+			- Single artist + single album : place 1 cover art file in the directory
+			- Various : add each embedded ID3 cover art
+			- Various in a playlist : with cover art files in each directory, no need of embedding 
+		- With embedded ID3 cover art
+			- Single artist + single album : override embedded ones by placing 1 cover art file in the directory
+			- Various : existing embedded ones
+	- Show VU meter in webradio - animated while play
+- Volume
+	- Show pre-mute level instead of 0 on mute
+	- Maintain pre-mute level across page refresh and clients
+- Buttons
+	- Show as icon in Time knob while hidden
+
 
 ![library](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/xtreme/library.gif)
 
-### Library
-- Long-press = show/hide items setting
-- **Breadcrumb path links** = shortcut jump to any **directory** in the path
-- **Index bar** = quick scroll to directories
-- **Sorting** - fix incorrect:
-	- Sort **non-english** language
-	- Some of MPD default sorting
-	- After [**Webradio import**](https://github.com/rern/RuneAudio/tree/master/webradio)
-	- After [**MPD Upgrade**](https://github.com/rern/RuneAudio/tree/master/mpd)
-	- (Songs in albums still, by default, be sorted by filename)
-- Long-press `bookmark` = edit bookmarks
+### Library:
+- Drag to rearrange home blocks except bookmarks
+- Show counts
+- Show icon and breadcrumb heading while browsing
+- Toggle search box
+- Show index bar
+- Improved Back button
+- Maintain scroll position
+- Improved sorting and exclude leading A, An, The, ', ", ., (, \[
+- Modes
+	- Albums > names > songs
+	- Albums with duplicate name > album-artist > songs
+	- Artists > names > albums > songs
+	- Composers > names > albums > songs
+	- Genres > names > artists > albums > songs
+- Show album heading with artist name
+- Bookmarks and webradios can be renamed
+- Bookmarks and webradios can be named with " characters
+- Scroll long bookmark names
+- Show filenames or URL of saved webradio before played
+- Changes reflect to all clients
 
-### Playlist
-- Fix drag to arrange order on touch device
-	
-Visual
----
-
-### Playback
-**Top Bar:**
-- Auto hide on height < 530px
-- Change `logo` to svg
-- Separate pause from play buttons (selectable)
-- Full height `buttons` and center aligned
-- Change `Settings` icons and remove text label
-- New and improved icons
-- Add box shadow for layer depth
-- Add `Development` to `Settings` menu
-- Coverart priority:
-    - coverart files in directories
-	- embedded id3 metadata
-	- fetch from last.fm and save to that directory
-	- override or change displayed coverart by changing the coverart files
-	    - filename: cover, Cover, folder, Folder, front, Front
-	    - format: jpg, png
-
-**Middle:**
-- Rearrange all to more efficient and responsive layout
-- Improve sampling data display (calculate from raw data)
-- Show DSD info
-- Show file format
-- Scroll long text on overflow
-- Hide artist and album text on width < 500px
-- All new icons
-- Move `play source` inside `time`
-- Improved artist bio
-
-**Bottom Bar:**
-- Auto hide on height < 500px
-- Change icons and remove text labels
-- All new icons
-- Add box shadow for layer depth
-- No more tooltips
-
-### Library
-- Add index bar
-- All new icons
-- Add Home folder button for Library home page
-- Move `add webradio` list to top bar button
-- Move path from bottom bar to top bar
-- Change and relocate `back` button
-- Fix sorting
-- Preserve scroll position
 
 ![playlist](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/xtreme/playlist.gif)
 
-### Playlist
-- Change and relocate `back` button
-- Move `manage` buttons from bottom bar to top bar
-- Fix drag to arrange order on touch devices
-- Always scroll current song to the top
+### Playlist:
+- Toggle search box
+- Auto scroll to top with 3 previous songs
+- Show elapsed time while play/pause
+- Tap to play/pause
+- Tap elapsed or time to stop
+- Improve drag to rearrange
+- Show track numbers
+- Show webradio name
+- Crop button to keep only current playing song
+- Saved playlists can be named with " characters
+- Saved playlists can be renamed
+- Each saved playlist can be viewed
+- Maintain scroll position
+- Changes reflects to all clients
