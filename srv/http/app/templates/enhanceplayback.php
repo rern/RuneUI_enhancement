@@ -16,6 +16,8 @@
 					<div id="divpos">
 						<span id="songposition"></span>
 						<span id="timepos"></span>
+						<i id="posaddons" class="fa fa-addons hide"></i>
+						<i id="posupdate" class="fa fa-library blink hide"></i>
 						<i id="posrandom" class="fa fa-random hide"></i>
 						<i id="posrepeat"></i>
 					</div>
@@ -28,7 +30,7 @@
 					<button id="playsource-open" class="btn btn-default btn-xs">MPD</button>
 					<div id="imode">
 						<i id="iaddons" class="fa fa-addons hide"></i>
-						<i id="iupdate" class="fa fa-library hide"></i>
+						<i id="iupdate" class="fa fa-library blink hide"></i>
 						<i id="irandom" class="fa fa-random hide"></i>
 						<i id="irepeat"></i>
 						<i id="iplayer"></i>
