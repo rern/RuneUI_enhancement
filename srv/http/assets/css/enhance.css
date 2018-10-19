@@ -448,6 +448,8 @@ wh, gr { font-weight: 300; }
 #timepos i {
 	color: #e0e7ee;
 }
+#posaddons,
+#posupdate,
 #posrandom,
 #posrepeat {
 	width: 25px;
