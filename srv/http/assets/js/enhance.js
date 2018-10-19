@@ -1366,11 +1366,15 @@ function renderPlayback() {
 				}
 			} else {
 				$( '#total' ).empty();
-				GUI.intElapsed = setInterval( function() {
-					elapsed++;
-					elapsedhms = second2HMS( elapsed );
-				$( '#timepos' ).html( '&ensp;<i class="fa fa-play"></i>&ensp;'+ elapsedhms );
-				}, 1000 );
+				if ( GUI.display.radioelapsed ) {
+					GUI.intElapsed = setInterval( function() {
+						elapsed++;
+						elapsedhms = second2HMS( elapsed );
+					$( '#timepos' ).html( '&ensp;<i class="fa fa-play"></i>&ensp;'+ elapsedhms );
+					}, 1000 );
+				} else {
+					$( '#timepos' ).empty();
+				}
 			}
 		} else {
 			if ( radiosrc !== vustop ) $( '#cover-art' ).attr( 'src', vustop );
