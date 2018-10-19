@@ -1209,18 +1209,28 @@ $.post( 'enhance.php', { getdisplay: 1 } ); // display data > pushstream > getPl
 
 function setButtonToggle() {
 	if ( GUI.local ) return
-	if ( GUI.display.buttons && !$( '#time-knob' ).hasClass( 'hide' ) ) {
-		$( '#repeat' ).toggleClass( 'btn-primary', GUI.status.repeat === 1 );
-		$( '#random' ).toggleClass( 'btn-primary', GUI.status.random === 1 );
-		$( '#single' ).toggleClass( 'btn-primary', GUI.status.single === 1 );
-		$( '#irandom, #posrandom' ).addClass( 'hide' );
-		$( '#irepeat, #posrepeat' ).attr( 'fa hide' );
-	} else {
+	if ( GUI.display.buttons ) {
+		$( '#irandom' ).addClass( 'hide' )
+		$( '#irepeat' ).attr( 'class', 'fa hide' );
 		if ( $( '#time-knob' ).hasClass( 'hide' ) ) {
 			$( '#posrandom' ).toggleClass( 'hide', GUI.status.random === 0 );
 			$( '#posrepeat' ).attr( 'class', GUI.status.repeat ? ( GUI.status.single ? 'fa fa-repeat-single' : 'fa fa-repeat' ) : 'fa hide' );
 		} else {
-			$( '#posrandom, #posrepeat' ).addClass( 'hide' )
+			$( '#random' ).toggleClass( 'btn-primary', GUI.status.random === 1 );
+			$( '#repeat' ).toggleClass( 'btn-primary', GUI.status.repeat === 1 );
+			$( '#single' ).toggleClass( 'btn-primary', GUI.status.single === 1 );
+			$( '#posrandom' ).addClass( 'hide' );
+			$( '#posrepeat' ).attr( 'class', 'fa hide' );
+		}
+	} else {
+		if ( $( '#time-knob' ).hasClass( 'hide' ) ) {
+			$( '#irandom' ).addClass( 'hide' )
+			$( '#irepeat' ).attr( 'class', 'fa hide' );
+			$( '#posrandom' ).toggleClass( 'hide', GUI.status.random === 0 );
+			$( '#posrepeat' ).attr( 'class', GUI.status.repeat ? ( GUI.status.single ? 'fa fa-repeat-single' : 'fa fa-repeat' ) : 'fa hide' );
+		} else {
+			$( '#posrandom' ).addClass( 'hide' )
+			$( '#posrepeat' ).attr( 'class', 'fa hide' );
 			$( '#irandom' ).toggleClass( 'hide', GUI.status.random === 0 );
 			$( '#irepeat' ).attr( 'class', GUI.status.repeat ? ( GUI.status.single ? 'fa fa-repeat-single' : 'fa fa-repeat' ) : 'fa hide' );
 		}
