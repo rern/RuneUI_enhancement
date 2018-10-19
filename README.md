@@ -3,8 +3,6 @@ RuneUI enhancement
 _Tested on RuneAudio 0.3 and 0.4b_   
 
 ![playback](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/xtreme/playback.gif)
-![library](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/xtreme/library.gif)
-![playlist](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/xtreme/playlist.gif)
 
 Features
 ---
@@ -46,7 +44,7 @@ Functional
 - Tap `artist` or `bio` button = show improved bio
 - Tap `playlist item` also go back to playback page
 
-![layout](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/RuneUImod1.gif)
+![library](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/xtreme/library.gif)
 
 ### Library
 - Long-press = show/hide items setting
@@ -84,8 +82,6 @@ Visual
 	    - filename: cover, Cover, folder, Folder, front, Front
 	    - format: jpg, png
 
-![shadow](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/shadow.jpg)
-
 **Middle:**
 - Rearrange all to more efficient and responsive layout
 - Improve sampling data display (calculate from raw data)
@@ -114,7 +110,9 @@ Visual
 - Fix sorting
 - Preserve scroll position
 
-### Queue
+![playlist](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/xtreme/playlist.gif)
+
+### Playlist
 - Change and relocate `back` button
 - Move `manage` buttons from bottom bar to top bar
 - Fix drag to arrange order on touch devices
