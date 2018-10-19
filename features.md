@@ -84,7 +84,7 @@ Rely on MPD supplied data which has some limitations.
 		- No embedded ID3 cover art
 			- Single artist + single album : place 1 cover art file in the directory
 			- Various : add each embedded ID3 cover art
-			- Various in a playlist: with cover art files in each directory 
+			- Various in a playlist : with cover art files in each directory, no need of embedding 
 		- With embedded ID3 cover art
 			- Single artist + single album : override embedded ones by placing 1 cover art file in the directory
 			- Various : existing embedded ones
