@@ -4,27 +4,50 @@ if ( document.location.hostname === 'localhost' ) $( '.osk-trigger' ).onScreenKe
 
 $( '.selectpicker' ).selectpicker();
 
-if ( /\/sources\//.test( location.pathname ) ) {
-	// get updating status on load
-	$.post( '/enhance.php', { mpd: 'status' }, function( status ) {
-		var updatingdb = status.match( /updating_db/ ) ? true : false;
-		$( '#updatempddb, #rescanmpddb' ).toggleClass( 'disabled', updatingdb );
-		$( '#updatempddb i, #rescanmpddb i' ).toggleClass( 'fa-spin', updatingdb );
+if ( location.pathname === '/sources' ) {
+	function toggleUpdate() {
+		$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
+			$( '#updatempddb, #rescanmpddb' ).toggleClass( 'disabled', status.updating_db !== 0 );
+			$( '#updatempddb i, #rescanmpddb i' ).toggleClass( 'fa-spin', status.updating_db !== 0 );
+		}, 'json' );
+	}
+	if ( 'hidden' in document ) {
+		var visibilityevent = 'visibilitychange';
+		var hiddenstate = 'hidden';
+	} else { // cross-browser document.visibilityState must be prefixed
+		var prefixes = [ 'webkit', 'moz', 'ms', 'o' ];
+		for ( var i = 0; i < 4; i++ ) {
+			var p = prefixes[ i ];
+			if ( p +'Hidden' in document ) {
+				var visibilityevent = p +'visibilitychange';
+				var hiddenstate = p +'Hidden';
+				break;
+			}
+		}
+	}
+	document.addEventListener( visibilityevent, function() {
+		if ( document[ hiddenstate ] ) {
+			pushstreamIdle.disconnect();
+		} else {
+			pushstreamIdle.connect();
+			toggleUpdate();
+		}
 	} );
+	// get updating status on load
+	toggleUpdate();
 	// stop fa-spin when done updating
-	var pushstreamplayback = new PushStream( {
+	var pushstreamIdle = new PushStream( {
 		host: window.location.hostname,
 		port: window.location.port,
 		modes: 'websocket'
 	} );
-	pushstreamplayback.onmessage = function( text ) {
-		var updatingdb = text[ 0 ].updating_db ? true : false;
-		$( '#updatempddb, #rescanmpddb' ).toggleClass( 'disabled', updatingdb );
-		$( '#updatempddb i, #rescanmpddb i' ).toggleClass( 'fa-spin', updatingdb );
+	pushstreamIdle.onmessage = function( data ) {
+		if ( data[ 0 ] === 'update' ) toggleUpdate();
 	}
-	pushstreamplayback.addChannel( 'playback' );
-	pushstreamplayback.connect();
+	pushstreamIdle.addChannel( 'idle' );
+	pushstreamIdle.connect();
 
+} else if ( location.pathname === '/sources/add' ) {
 	// enable/disable CIFS auth section
 	if ($('#mount-type').val() === 'nfs') {
 		$('#mount-cifs').addClass('disabled').children('.disabler').removeClass('hide');
@@ -78,7 +101,28 @@ if ( /\/sources\//.test( location.pathname ) ) {
 		$('#usb-umount-name').html(mountName);
 		$('#usb-umount').val(mountName);
 	});
-} else if ( /\/settings\//.test( location.pathname ) ) {
+} else if ( location.pathname === '/mpd' ) {
+	
+	// output interface select
+	$('#audio-output-interface').change(function(){
+		renderMSG([{'title': 'Switching audio output', 'text': 'Please wait for the config update...', 'icon': 'fa fa-cog fa-spin', 'delay': 5000 }]);
+		var output = $(this).val();
+		$.ajax({
+			type: 'POST',
+			url: '/mpd/',
+			data: {
+				ao: output
+			},
+			cache: false
+		});
+	});
+	
+	// MPD config manual edit
+	$('.manual-edit-confirm').find('.btn-primary').click(function(){
+		$('#mpdconf_editor').removeClass('hide');
+		$('#manual-edit-warning').addClass('hide');
+	});
+} else if ( location.pathname === '/settings' ) {
 	
 	// show/hide AirPlay name form
 	$('#airplay').change(function(){
@@ -134,7 +178,7 @@ if ( /\/sources\//.test( location.pathname ) ) {
 			$('#spotifyBox').removeClass('boxed-group');
 		}
 	});
-} else if ( /\/network\//.test( location.pathname ) ) {
+} else if ( location.pathname === '/network' ) {
 	
 	// show/hide static network configuration based on select value
 	var netManualConf = $('#network-manual-config');
@@ -264,7 +308,7 @@ if ( /\/sources\//.test( location.pathname ) ) {
 		}
 	});
 
-} else if ( /\/accesspoint\//.test( location.pathname ) ) {
+} else if ( location.pathname === '/accesspoint/' ) {
 	
 	// show/hide AP settings form
 	$('#accesspoint').change(function(){
@@ -285,42 +329,6 @@ if ( /\/sources\//.test( location.pathname ) ) {
 		$('#broadcast').val(parts.join('.'));
 		$('#dhcp-option-dns').val($('#ip-address').val());
 		$('#dhcp-option-router').val($('#ip-address').val());
-	});
-} else if ( /\/mpd\//.test( location.pathname ) ) {
-	
-	// output interface select
-	$('#audio-output-interface').change(function(){
-		renderMSG([{'title': 'Switching audio output', 'text': 'Please wait for the config update...', 'icon': 'fa fa-cog fa-spin', 'delay': 5000 }]);
-		var output = $(this).val();
-		$.ajax({
-			type: 'POST',
-			url: '/mpd/',
-			data: {
-				ao: output
-			},
-			cache: false
-		});
-	});
-	
-	// MPD config manual edit
-	$('.manual-edit-confirm').find('.btn-primary').click(function(){
-		$('#mpdconf_editor').removeClass('hide');
-		$('#manual-edit-warning').addClass('hide');
-	});
-} else if ( /\/debug\//.test( location.pathname ) ) {
-
-	ZeroClipboard.config({swfPath: '/assets/js/vendor/ZeroClipboard.swf'});
-	var client = new ZeroClipboard(document.getElementById('copy-to-clipboard'));
-	client.on('ready', function(readyEvent){
-		// alert('ZeroClipboard SWF is ready!');
-		client.on('aftercopy', function(event){
-			// alert('Copied text to clipboard: ' + event.data['text/plain']);
-			new PNotify({
-				title: 'Copied to clipboard',
-				text: 'The debug output was copied successfully in your clipboard.',
-				icon: 'fa fa-check'
-			});
-		});
 	});
 }
 

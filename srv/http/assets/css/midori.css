@@ -9,7 +9,7 @@
 	background: linear-gradient(to bottom, hsla(0,0%,100%,.3) 0%, hsla(0,0%,100%,.3) 45%, rgba(0,0,0,0) 56%,rgba(0,0,0,0) 100%);
 	background-color: #34495e;
 }
-#single, #songinfo-open, #volup {
+#single, #bio-open, #volup {
 	background: radial-gradient(500% 90% at 20% -205% ,hsla(0,0%,100%,.3) 50%,hsla(0,0%,100%,0) 51.5%);
 	background-color: #34495e;
 }

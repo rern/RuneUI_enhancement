@@ -1,50 +1,161 @@
 <?php
-$redis = new Redis(); 
-$redis->pconnect( '127.0.0.1' );
-$activePlayer = $redis->get( 'activePlayer' );
-if ( $activePlayer === 'Airplay' ) {
+if ( !isset( $_POST[ 'statusonly' ] ) ) {
+	$redis = new Redis(); 
+	$redis->pconnect( '127.0.0.1' );
+	$activePlayer = $redis->get( 'activePlayer' );
 	$status[ 'activePlayer' ] = $activePlayer;
-	echo json_encode( $status );
-	die();
-}
+	$status[ 'volumemute' ] = $redis->hGet( 'display', 'volumemute' );
 
-include '/srv/http/app/libs/runeaudio.php';
-$mpd = openMpdSocket('/run/mpd.sock');
-if ( !$mpd ) die();
-
-function status2array( $lines ) {
-	$line = strtok( $lines, "\n" );
-	while ( $line !== false ) {
-		$pair = explode( ': ', $line, 2 );
-		$key = $pair[ 0 ];
-		$val = $pair[ 1 ];
-		if ( $key === 'elapsed' ) {
-			$val = round( $val );
-		} else if ( $key === 'bitrate' ) {
-			$val = $val * 1000;
-		}
-		if ( $key !== 'O' ) $status[ $key ] = $val; // skip 'OK' lines
-		if ( $key === 'audio') {
-			$audio = explode( ':', $val );
-			$status[ 'bitdepth' ] = $audio[ 1 ];
-			$status[ 'samplerate' ] = $audio[ 0 ];
-		}
-		$line = strtok( "\n" );
+	if ( $activePlayer === 'Airplay' ) {
+		echo json_encode( $status );
+		exit();
 	}
-	if ( array_key_exists( 'bitrate', $status ) ) {
-		$sampling = substr( $status[ 'file' ], 0, 4 ) === 'http' ? '' : $status[ 'bitdepth' ].' bit ';
-		$sampling.= round( $status[ 'samplerate' ] / 1000, 1 ).' kHz '.$status[ 'bitrate' ].' kbit/s';
-		$status[ 'sampling' ] = $sampling;
+}
+$mpdtelnet = ' | telnet localhost 6600 | sed "/^Trying\|Connected\|Escape\|OK\|Connection\|AlbumArtist\|Date\|Genre\|Last-Modified\|consume\|mixrampdb\|nextsong\|nextsongid/ d"';
+$lines = shell_exec( '{ sleep 0.01; echo clearerror; echo status; echo currentsong; sleep 0.05; }'.$mpdtelnet );
+// fix: initially add song without play - currentsong = (blank)
+if ( strpos( $lines, 'file:' ) === false ) $lines = shell_exec( '{ sleep 0.01; echo status; echo playlistinfo 0; sleep 0.05; }'.$mpdtelnet );
+
+$line = strtok( $lines, "\n" );
+while ( $line !== false ) {
+	$pair = explode( ': ', $line, 2 );
+	$key = $pair[ 0 ];
+	$val = $pair[ 1 ];
+	if ( $key === 'elapsed' ) {
+		$status[ $key ] = round( $val );
+	} else if ( $key === 'bitrate' ) {
+		$status[ $key ] = $val * 1000;
+	} else if ( $key === 'audio' ) {
+		$audio = explode( ':', $val );
+		$status[ 'bitdepth' ] = $audio[ 1 ];
+		$status[ 'samplerate' ] = $audio[ 0 ];
 	} else {
-		$status[ 'sampling' ] = '&nbsp;';
+		$status[ $key ] = $val;
 	}
-	return $status;
+	$line = strtok( "\n" );
 }
+$status[ 'updating_db' ] = array_key_exists( 'updating_db', $status ) ? 1 : 0;
+if ( exec( 'pidof ashuffle' ) ) $status[ 'random' ] = 1;
+if ( !array_key_exists( 'song', $status ) ) $status[ 'song' ] = 0;
+
+
+$previousartist = isset( $_POST[ 'artist' ] ) ? $_POST[ 'artist' ] : '';
+$previousalbum = isset( $_POST[ 'album' ] ) ? $_POST[ 'album' ] : '';
+if ( isset( $_POST[ 'statusonly' ] )
+	|| !$status[ 'playlistlength' ]
+	|| ( $status[ 'Artist' ] === $previousartist && $status[ 'Album' ] === $previousalbum )
+) {
+	echo json_encode( $status, JSON_NUMERIC_CHECK );
+	exit();
+}
+
+$file = '/mnt/MPD/'.$status[ 'file' ];
+$pathinfo = pathinfo( $file );
+$dir = $pathinfo[ 'dirname' ];
+$ext = strtoupper( $pathinfo[ 'extension' ] );
+$status[ 'ext' ] = ( substr($status[ 'file' ], 0, 4 ) !== 'http' ) ? $ext : 'radio';
+// coverart
+if ( $activePlayer === 'MPD'
+	&& !empty( $status[ 'Artist' ] )
+	&& $status[ 'ext' ] !== 'radio'
+) {
+	do {
+// 1. local coverart file
+		$coverfiles = array(
+			  'cover.png', 'cover.jpg', 'folder.png', 'folder.jpg', 'front.png', 'front.jpg'
+			, 'Cover.png', 'Coverjpg', 'Folder.png', 'Folder.jpg', 'Front.png', 'Front.jpg'
+		);
+		foreach( $coverfiles as $cover ) {
+			$coverfile = $dir.'/'.$cover;
+			if ( file_exists( $coverfile ) ) {
+				$coverext = pathinfo( $cover, PATHINFO_EXTENSION );
+				$data = file_get_contents( $coverfile ) ;
+				$status[ 'coverart' ] = 'data:image/'. $coverext.';base64,'.base64_encode( $data );
+				break;
+			}
+		}
+		if ( isset( $status[ 'coverart' ] ) ) break;
+// 2. id3tag - for various albums in single directory
+		set_include_path( '/srv/http/app/libs/vendor/' );
+		require_once( 'getid3/audioinfo.class.php' );
+		$audioinfo = new AudioInfo();
+		$id3tag = $audioinfo->Info( $file );
+		if ( isset( $id3tag[ 'comments' ][ 'picture' ][ 0 ][ 'data' ] ) ) {
+			$id3cover = $id3tag[ 'comments' ][ 'picture' ][ 0 ];
+			$cover = $id3cover[ 'data' ];
+			$coverext = str_replace( 'image/', '', $id3cover[ 'image_mime' ] );
+			$status[ 'coverart' ] = 'data:image/'. $coverext.';base64,'.base64_encode( $cover );
+		}
+		if ( isset( $status[ 'coverart' ] ) ) break;
+// 3. last.FM
+		// check internet connection
+		if ( !@fsockopen( 'ws.audioscrobbler.com', 80 ) ) break;
+		
+		function curlGet( $url ) {
+			$ch = curl_init($url);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
+			$data = curl_exec($ch);
+			curl_close($ch);
+			return $data;
+		}
+		$apikey = $redis->get( 'lastfm_apikey' );
+		$artist = urlencode( $status[ 'Artist' ] );
+		$album = urlencode( $status[ 'Album' ] );
+		$url = 'http://ws.audioscrobbler.com/2.0/?api_key='.$apikey.'&autocorrect=1&format=json&method=album.getinfo&artist='.$artist.'&album='.$album;
+		$data = json_decode( curlGet( $url ), true );
+		$cover_url = $data[ 'album' ][ 'image' ][ 3 ][ '#text' ];
+		if ( empty( $cover_url ) ) {
+			$url = 'http://ws.audioscrobbler.com/2.0/?api_key='.$apikey.'&autocorrect=1&format=json&method=artist.getinfo&artist='.$artist;
+			$data = json_decode( curlGet( $url ), true );
+			$cover_url = $data[ 'artist' ][ 'image' ][ 3 ][ '#text' ];
+		}
+		if ( !empty( $cover_url ) ) $status[ 'coverart' ] = $cover_url;
+	} while ( 0 );
+} else if ( $activePlayer === 'Spotify' ) {
+	include '/srv/http/app/libs/runeaudio.php';
+	$spop = openSpopSocket( 'localhost', 6602, 1 );
+	$count = 1;
+	while ( $count < 10 ) {
+		sendSpopCommand( $spop, 'image' );
+		$cover = json_decode( readSpopResponse( $spop ) );
+		usleep( 500000 );
+		if ( $cover->status === 'ok' ) {
+			$cover = $cover->data; // base64
+			$bufferinfo = new finfo( FILEINFO_MIME );
+			$coverext = $bufferinfo->buffer( $cover );
+			$status[ 'coverart' ] = 'data:image/'. $coverext.';base64,'.$cover;
+			break;
+		}
+		$count++;
+	}
+}
+// no id3tag
+if ( empty( $status[ 'Title' ] ) ) {
+	$status[ 'Artist' ] = basename( $dir );
+	$status[ 'Title' ] = $pathinfo[ 'filename' ];
+	$status[ 'Album' ] = '';
+}
+if ( $status[ 'ext' ] === 'radio' ) {
+	// before 1st play: no 'Name:' - use 'Title:' value instead
+	$status[ 'Artist' ] = isset( $status[ 'Name' ] ) ? $status[ 'Name' ] : $status[ 'Title' ];
+	$status[ 'Title' ] = ( $status[ 'state' ] === 'stop' ) ? '' : $status[ 'Title' ];
+	$status[ 'Album' ] = $status[ 'file' ];
+	$status[ 'time' ] = '';
+}
+
+// sampling >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 function samplingline( $bitdepth, $samplerate, $bitrate ) {
-	if ( $bitdepth == 'N/A' ) {
+	if ( $bitdepth === 'N/A' ) {
 		$bitdepth = ( $ext === 'WAV' || $ext === 'AIFF' ) ? ( $bitrate / $samplerate / 2 ).' bit ' : '';
 	} else {
-		$bitdepth = $bitdepth ? $bitdepth.' bit ' : '';
+		if ( $bitdepth === 'dsd' ) {
+			$dsd = round( $bitrate / 44100 );
+			$bitrate = round( $bitrate / 1000000, 2 );
+			return 'DSD'.$dsd.' - '.$bitrate.' Mbit/s';
+		} else {
+			$bitdepth = $bitdepth ? $bitdepth.' bit ' : '';
+		}
 	}
 	$samplerate = round( $samplerate / 1000, 1 ).' kHz ';
 	if ( $bitrate < 1000000 ) {
@@ -55,77 +166,29 @@ function samplingline( $bitdepth, $samplerate, $bitrate ) {
 	return $bitdepth.$samplerate.$bitrate;
 }
 
-$cmdlist = "command_list_begin\n"
-	."clearerror\n"
-	."status\n"
-	."currentsong\n"
-	."command_list_end";
-sendMpdCommand( $mpd, $cmdlist );
-$status = readMpdResponse( $mpd );
-$status = status2array( $status );
-
-// fix: initially add song without play - currentsong = (blank)
-if ( !isset( $status[ 'file' ] ) ) {
-	sendMpdCommand( $mpd, 'playlistinfo 0' );
-	$status0 = readMpdResponse( $mpd );
-	$status0 = status2array( $status0 );
-	$status = array_merge( $status, $status0 );
-	$status[ 'song' ] = 0;
-}
-
-if ( isset( $status[ 'error' ] ) && $status[ 'state' ] !== 'stop' ) {
-	sendMpdCommand( $mpd, 'stop' );
-	$output = array( 'icon' => 'fa fa-exclamation-circle', 'title' => 'MPD Error', 'text' => $status[ 'error' ] );
-	ui_render( 'notify', json_encode( $output ) );
-}
-
-$file = $status[ 'file' ];
-$pathinfo = pathinfo( $file );
-$ext = strtoupper( $pathinfo[ 'extension' ] );
-$status[ 'ext' ] = ( substr($file, 0, 4 ) !== 'http' ) ? $ext : 'radio';
-
-if ( $status[ 'ext' ] === 'radio' ) {
-	// before 1st play: no 'Name:' but 'Title:'= value of 'Name:' instead
-	$status[ 'Artist' ] = isset( $status[ 'Name' ] ) ? $status[ 'Name' ] : $status[ 'Tile' ];
-	$status[ 'Title' ] = ( $status[ 'state' ] === 'stop' ) ? '&nbsp;' : $status[ 'Title' ];
-	$status[ 'Album' ] = $file;
-	$status[ 'time' ] = '';
-}
-
-$status[ 'activePlayer' ] = $activePlayer;
-$status[ 'volumemute' ] = $redis->get( 'volumemute' );
-$webradios = $redis->hGetAll( "webradios" );
+$webradios = $redis->hGetAll( 'webradios' );
 $webradioname = array_flip( $webradios );
-$name = $webradioname[ $file ];
-
-// sampling >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+$name = $webradioname[ $status[ 'file' ] ];
 if ( $status[ 'state' ] === 'play' ) {
-	$status[ 'radioelapsed' ] = $redis->hGet( 'display', 'radioelapsed' );
 	// lossless - no bitdepth
 	$bitdepth = ( $status[ 'ext' ] === 'radio' ) ? '' : $status[ 'bitdepth' ];
 	$sampling = samplingline( $bitdepth, $status[ 'samplerate' ], $status[ 'bitrate' ] );
 	$status[ 'sampling' ] = $sampling;
-	echo json_encode( $status );
+	echo json_encode( $status, JSON_NUMERIC_CHECK );
 	// save only webradio: update sampling database on each play
 	$redis->hSet( 'sampling', $name, $sampling );
-	die();
+	exit();
 }
 
 // state: stop / pause >>>>>>>>>>
 // webradio
 if ( $status[ 'ext' ] === 'radio' ) {
-	$webradios = $redis->hGetAll( 'webradios' );
-	$webradioname = array_flip( $webradios );
-	if ( $sampling = $redis->hGet( 'sampling', $name ) ) $status[ 'sampling' ] = $sampling;
-	echo json_encode( $status );
-	die();
+	$sampling = $redis->hGet( 'sampling', $name );
+	$status[ 'sampling' ] = $sampling ? $sampling : '&nbsp;';
+	echo json_encode( $status, JSON_NUMERIC_CHECK );
+	exit();
 }
-// file
-if ( !isset( $status[ 'Artist' ] ) ) $status[ 'Artist' ] = basename( $pathinfo[ 'dirname' ] );
-if ( !isset( $status[ 'Title' ] ) ) $status[ 'Title' ] = $pathinfo[ 'filename' ];
-if ( !isset( $status[ 'Album' ] ) ) $status[ 'Album' ] = '&nbsp;';
-
-$file = '/mnt/MPD/'.$file;
+// while stop no mpd info
 if ( $ext === 'DSF' || $ext === 'DFF' ) {
 	// DSF: byte# 56+4 ? DSF: byte# 60+4
 	$byte = ( $ext === 'DSF' ) ? 56 : 60;
@@ -137,16 +200,17 @@ if ( $ext === 'DSF' || $ext === 'DFF' ) {
 		$hex = implode( '', $hex );
 	}
 	$bitrate = hexdec( $hex );
-	$dsd = $bitrate / 44100;
+	$dsd = round( $bitrate / 44100 );
 	$bitrate = round( $bitrate / 1000000, 2 );
-	$sampling = '1 bit DSD'.$dsd.' - '.$bitrate.' Mbit/s';
+	$sampling = 'DSD'.$dsd.' - '.$bitrate.' Mbit/s';
 } else {
 	$data = shell_exec( '/usr/bin/ffprobe -v quiet -select_streams a:0 -show_entries stream=bits_per_raw_sample,sample_rate -show_entries format=bit_rate -of default=noprint_wrappers=1:nokey=1 "'.$file.'"' );
 	$data = explode( "\n", $data );
-	$bitdepth = $data[1];
-	$samplerate = $data[0];
-	$bitrate = $data[2];
+	$bitdepth = $data[ 1 ];
+	$samplerate = $data[ 0 ];
+	$bitrate = $data[ 2 ];
 	$sampling = $bitrate ? samplingline( $bitdepth, $samplerate, $bitrate ) : '';
 }
 $status[ 'sampling' ] = $sampling;
-echo json_encode( $status );
+
+echo json_encode( $status, JSON_NUMERIC_CHECK );

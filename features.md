@@ -1,6 +1,33 @@
-RuneUI enhancement
----
-_Tested on RuneAudio 0.4b_   
+## Default UI
+
+Rely on MPD supplied data which has some limitations.
+
+- Song info - File
+	- No sampling info on stop
+	- Show FLAC bitrate at play start / browser refresh, not average
+	- Show compressed format bit depth which is technically none
+	- Incorrect sampling info for DSD / DSF
+- Song info - Webradio
+	- Add, not Add and play, to empty playlist show station name as current song
+	- Show last played song on stop / pause
+	- No sampling info on stop
+- Time
+	- No duration on stop
+	- Time count not change with drag while stop and not set as start on play
+- Volume
+	- Pre-mute level not showed and not preserved once refreshed
+- Library
+	- Inconsistent sorting
+	- No alphabetic index browsing
+	- No breadcrumb for sub-directory browsing
+	- Not maintain page scroll position across pages
+	- No URLs but 'webradio' in Webradio library
+- Playlist
+	- Show URLs as names and URL itself incomplete until play
+	- Mic icons misplace in names
+
+
+## Enhanced UI
 
 ### Overall:
 - Redesign
@@ -24,13 +51,6 @@ _Tested on RuneAudio 0.4b_
 	- Buttons
 	- Library home items
 	- Library labels
-
-Install
----
-from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)  
-
-
-![playback](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/xtreme/playback.gif)
 
 ### Playback:
 - Coverart / Time knob as playback controls
@@ -75,10 +95,7 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 	- Maintain pre-mute level across page refresh and clients
 - Buttons
 	- Show as icon in Time knob while hidden
-
-
-![library](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/xtreme/library.gif)
-
+		
 ### Library:
 - Drag to rearrange home blocks except bookmarks
 - Show counts
@@ -100,10 +117,7 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 - Scroll long bookmark names
 - Show filenames or URL of saved webradio before played
 - Changes reflect to all clients
-
-
-![playlist](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/xtreme/playlist.gif)
-
+		
 ### Playlist:
 - Toggle search box
 - Auto scroll to top with 3 previous songs

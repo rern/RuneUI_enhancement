@@ -16,103 +16,45 @@ installstart $@
 sed -i 's/gifico|svg/gif|ico/' /etc/nginx/nginx.conf
 rm -f /srv/http/assets/js/vendor/{hammer.min.js,propagating.js}
 sed -i '/hammer.min.js\|propagating.js/ d' /srv/http/app/templates/footer.php
+redis-cli del volumemute &> /dev/null
+sed -i '/^disable_overscan=1\|^hdmi_ignore_cec=1/ d' /boot/config.txt
+rm -f /srv/http/app/enhancecoverart_ctl.php
 #1temp1
 
-mv /srv/http/app/coverart_ctl.php{,.backup}
-mv /srv/http/app/templates/footer.php{,.backup}
-mv /srv/http/app/templates/header.php{,.backup}
-mv /srv/http/app/templates/playback.php{,.backup}
+mv /srv/http/index.php{,.backup}
+mv /srv/http/assets/js/vendor/pnotify.custom.min.js{,.backup}
 mv /srv/http/assets/js/vendor/pushstream.min.js{,.backup}
 mv /srv/http/assets/js/vendor/Sortable.min.js{,.backup}
 mv /srv/http/command/airplay_toggle{,.backup}
-mv /usr/share/bootsplash/start-runeaudio.png{,.backup}
-mv /usr/share/bootsplash/reboot-runeaudio.png{,.backup}
-mv /usr/share/bootsplash/shutdown-runeaudio.png{,.backup}
+ln -sf /srv/http/assets/img/bootsplash.png /usr/share/bootsplash/start.png
 
 getinstallzip
 
-ln -s /usr/share/bootsplash/{start,reboot}-runeaudio.png
-ln -s /usr/share/bootsplash/{start,shutdown}-runeaudio.png
-
 echo -e "$bar Modify files ..."
-#----------------------------------------------------------------------------------
-file=/srv/http/db/index.php
-echo $file
-comment 'echo getPlayQueue($mpd)'
-
-string=$( cat <<'EOF'
-                $playlist = getPlayQueue( $mpd );
-                if ( preg_match( '/file: http/', $playlist ) ) {
-                    $redis = new Redis();
-                    $redis->pconnect( '127.0.0.1' );
-                }
-                $line = strtok( $playlist."\nfile", "\n" );
-                while ( $line !== false ) {
-                    if ( strpos( $line, 'file' ) === 0 && $data ) {
-                        $file = $data[ 'file' ];
-                        if ( substr( $file, 0, 4 ) === 'http' ) {
-                            $webradios = $redis->hGetAll( 'webradios' );
-                            $webradioname = array_flip( $webradios );
-                            $data[ 'Title' ] = $webradioname[ $file ];
-                        }
-                        $pathinfo = pathinfo( $file );
-                        if ( !isset( $data[ 'Artist' ] ) ) $data[ 'Artist' ] = basename( $pathinfo[ 'dirname' ] );
-                        if ( !isset( $data[ 'Title' ] ) ) $data[ 'Title' ] = $pathinfo[ 'filename' ];
-                        if ( !isset( $data[ 'Album' ] ) ) $data[ 'Album' ] = '';
-                        $info[] = $data;
-                        $data = NULL;
-                    }
-                    $kv = explode( ': ', $line, 2 );
-                    if ( $kv[ 0 ] !== 'OK' && $kv[ 0 ] ) $data[ $kv[ 0 ] ] = $kv[ 1 ];
-                    $line = strtok( "\n" );
-                }
-                echo json_encode( $info );
-EOF
-)
-append 'echo getPlayQueue($mpd)'
 #----------------------------------------------------------------------------------
 file=/srv/http/app/libs/runeaudio.php
 echo $file
 
-string=$( cat <<'EOF'
-        if ( preg_match( '/playlist: Webradio/', $plistLine ) ) {
-            $redis = new Redis();
-            $redis->pconnect( '127.0.0.1' );
-        }
-EOF
-)
-append 'browseMode = TRUE'
-
-comment 'parseFileStr($value'
+comment -n +2 'ui_update('
 
 string=$( cat <<'EOF'
-                $pathinfo = pathinfo( $value );
-                $plistArray[ $plCounter ][ 'fileext' ] = $pathinfo[ 'extension' ];
-                if ( preg_match( '/^Webradio/', $value ) ) {
-                    $webradiourl = $redis->hGet( 'webradios', $pathinfo[ 'filename' ] );
-                    $plistArray[ $plCounter ][ 'url' ] = $webradiourl;
-                }
+        $status[ 'changed' ] = explode( "\n", $change[ 1 ] )[ 0 ];
 EOF
 )
-append 'parseFileStr($value'
+append 'status..changed'
+#----------------------------------------------------------------------------------
+file=/srv/http/command/rune_PL_wrk
+echo $file
+
+comment 'ui_update('
 
 string=$( cat <<'EOF'
-            $redis->hDel('sampling', $label);
+                    ui_render( 'idle', json_encode( $status[ 'changed' ] ) );
 EOF
 )
-append 'hDel(.webradios., $label)'
+append 'monitorMpdState'
 
-string=$( cat <<'EOF'
-                        $redis->hSet( 'display', 'volumempd', 1);
-EOF
-)
-append "set('volume', 1)"
-
-string=$( cat <<'EOF'
-                        $redis->hSet( 'display', 'volumempd', '');
-EOF
-)
-append "set('volume', 0)"
+systemctl restart rune_PL_wrk
 #----------------------------------------------------------------------------------
 file=/srv/http/app/templates/mpd.php
 echo $file
@@ -177,26 +119,51 @@ fi
 #----------------------------------------------------------------------------------
 file=/boot/config.txt
 echo $file
-echo 'disable_overscan=1
-hdmi_ignore_cec=1' >> $file
+
+string=$( cat <<EOF
+disable_overscan=1
+hdmi_ignore_cec=1
+EOF
+)
+appendS '$'
 #----------------------------------------------------------------------------------
 file=/srv/http/app/templates/enhanceplayback.php  # for rune youtube
 [[ -e /usr/local/bin/uninstall_RuneYoutube.sh ]] && sed -i '/id="pl-import-youtube"/ {s/<!--//; s/-->//}' $file
 #----------------------------------------------------------------------------------
+# disable default shutdown
+systemctl disable rune_shutdown
 
 # correct version number
 [[ $( redis-cli get buildversion ) == 'beta-20160313' ]] && redis-cli set release 0.3 &> /dev/null
 
-installfinish $@
-
-# set library home database
-if [[ $1 != u ]]; then
-	redis-cli hmset display bars checked pause checked time checked coverart checked volume checked buttons checked \
-	\nas checked sd checked usb checked webradio checked albums checked artists checked composer checked genre checked \
-	\spotify checked dirble checked jamendo checked &> /dev/null
+# convert bookmarks
+bkmarks=$( redis-cli keys bkmarks )
+if [[ ! $bkmarks ]]; then
+	bookmarks=$( redis-cli hgetall bookmarks | tr -d '"{}\\' )
+	readarray -t bookmarks <<<"$bookmarks"
+	ilength=${#bookmarks[*]}
+	for (( i=0; i < ilength; i++ )); do
+		if (( i % 2 )); then
+			kv=${bookmarks[ $i ]}
+			k=$( echo $kv | cut -d',' -f1 )
+			v=$( echo $kv | cut -d',' -f2 )
+			redis-cli hset bkmarks "${k/name:}" "${v/path:}" &> /dev/null
+		fi
+	done
 fi
 
-[[ $( redis-cli get volume ) == 1 ]] && volume=1 || volume=''
-redis-cli hset display volumempd $volume &> /dev/null
+if [[ $1 != u ]]; then
+	redis-cli hmset display bars checked time checked coverart checked volume checked buttons checked volumemute 0 \
+	\count checked label checked nas checked sd checked usb checked webradio checked album checked artist checked composer checked genre checked \
+	\spotify checked dirble checked jamendo checked &> /dev/null
+else
+	redis-cli hmset display debug '' dev '' count checked label checked &> /dev/null
+fi
+# fix webradio permission
+chown -R http:http /mnt/MPD/Webradio
+
+installfinish $@
+
+restartlocalbrowser
 
 reinitsystem

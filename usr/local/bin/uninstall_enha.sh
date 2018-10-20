@@ -24,41 +24,42 @@ fi
 echo -e "$bar Remove files ..."
 
 rm -v /srv/http/enhance*
-rm -v /srv/http/app/templates/{footer,header,playback}.php
-rm -v /srv/http/assets/css/{enhance,midori,runeui.min,roundslider.min}.css
+rm -v /srv/http/app/templates/enhance*
+rm -v /srv/http/assets/css/{enhance*,fontawesome.min,midori,pnotify.custom.min,roundslider.min,toggle-switch.min}.css
 rm -v /srv/http/assets/fonts/enhance*
-rm -v /srv/http/assets/img/{controls*,runelogo.svg,vu*}
-rm -v /srv/http/assets/js/{enhance,runeuisettings}.js
+rm -v /srv/http/assets/img/{bootsplash.png,controls*,runelogo.svg,vu*}
+rm -v /srv/http/assets/js/enhance*
 rm -v /srv/http/assets/js/vendor/{jquery-ui.min,modernizr-custom,roundslider.min}.js
-rm /usr/share/bootsplash/{start,reboot,shutdown}-runeaudio.png
+[[ ! -e /srv/http/gpiosettings.php ]] && rm -v /srv/http/assets/css/{bootstrap,bootstrap.select}.min.css
 
-mv /srv/http/app/coverart_ctl.php{.backup,}
-mv /srv/http/app/templates/footer.php{.backup,}
-mv /srv/http/app/templates/header.php{.backup,}
-mv /srv/http/app/templates/playback.php{.backup,}
+mv /srv/http/index.php{.backup,}
+mv /srv/http/assets/js/vendor/pnotify.custom.min.js{.backup,}
 mv /srv/http/assets/js/vendor/pushstream.min.js{.backup,}
 mv /srv/http/assets/js/vendor/Sortable.min.js{.backup,}
 mv /srv/http/command/airplay_toggle{.backup,}
-mv /usr/share/bootsplash/start-runeaudio.png{.backup,}
-mv /usr/share/bootsplash/reboot-runeaudio.png{.backup,}
-mv /usr/share/bootsplash/shutdown-runeaudio.png{.backup,}
+ln -sf /usr/share/bootsplash/start-runeaudio.png /usr/share/bootsplash/start.png
 
 # restore modified files #######################################
 echo -e "$bar Restore modified files ..."
 
 files="
-/srv/http/app/templates/header.php
-/srv/http/app/templates/footer.php
+/boot/config.txt
+/srv/http/app/settings_ctl.php
+/srv/http/app/libs/runeaudio.php
 /srv/http/app/templates/mpd.php
 /srv/http/app/templates/settings.php
-/srv/http/db/index.php
-/srv/http/app/libs/runeaudio.php
-/srv/http/app/settings_ctl.php
+/srv/http/command/rune_PL_wrk
 /root/.config/midori/config
 /root/.xinitrc
 "
 restorefile $files
 
+systemctl restart rune_PL_wrk
+
+chown -R mpd:audio /mnt/MPD/Webradio
+
 uninstallfinish $@
 
-[[ $1 != u ]] && clearcache
+restartlocalbrowser
+
+reinitsystem

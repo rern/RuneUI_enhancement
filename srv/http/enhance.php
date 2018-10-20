@@ -1,71 +1,253 @@
 <?php
-// redis  : command = { dataid: [ 'command', 'key', ['hash',] 'value' ] }
-// volume : N ... mute/unmute: N = -1 )
-// mpd    : mpd protocol command
-
-if ( isset( $_POST[ 'redis' ] ) ) {
-	$redis = new Redis(); 
-	$redis->pconnect( '127.0.0.1' );
-	$array = json_decode( $_POST[ 'redis' ], true );
-	foreach ( $array as $field => $arg ) {
-		$count = count( $arg );
-		$command = $arg[ 0 ];
-		if ( in_array( $command, [ 'hGetAll', 'hmSet', 'set' ] ) ) $pushstream = 1;
-		
-		if ( $count === 2 ) {
-			$result[ $field ] = $redis->$command( $arg[ 1 ] );
-		} else if ( $count === 3 ) {
-			$result[ $field ] = $redis->$command( $arg[ 1 ], $arg[ 2 ] );
-			if ( $arg[ 2 ] === 'activePlayer' && $result[ $field ] === 'Airplay' ) $airplay = 1;
-		} else if ( $count === 4 ) {
-			$result[ $field ] = $redis->$command( $arg[ 1 ], $arg[ 2 ], $arg[ 3 ] );
+// no redis
+if ( isset( $_POST[ 'bash' ] ) ) {
+	echo shell_exec( '/usr/bin/sudo '.$_POST[ 'bash' ] );
+	exit();
+} else if ( isset( $_POST[ 'mpcalbum' ] ) ) {
+	$album = $_POST[ 'mpcalbum' ];
+	$result = shell_exec( 'mpc find -f "%album%^^%artist%" album "'.$album.'" | awk \'!a[$0]++\'' );
+	$lists = explode( "\n", rtrim( $result ) );
+	if ( count( $lists ) === 1 ) {
+		$result = shell_exec( 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%" album "'.$album.'"' );
+		$data = search2array( $result );
+	} else {
+		foreach( $lists as $list ) {
+			$list = explode( '^^', $list );
+			$li[ 'artistalbum' ] = $list[ 1 ].'<gr> • </gr>'.$list[ 0 ];
+			$li[ 'album' ] = $list[ 0 ];
+			$li[ 'artist' ] = $list[ 1 ];
+			$data[] = $li;
+			$li = '';
 		}
 	}
-	echo json_encode( $result );
+	echo json_encode( $data );
+	exit();
+} else if ( isset( $_POST[ 'mpc' ] ) ) {
+// 
+	$mpc = $_POST[ 'mpc' ];
+	if ( !is_array( $mpc ) ) { // multiples commands is array
+		$result = shell_exec( $mpc );
+		$cmd = $mpc;
+	} else {
+		foreach( $mpc as $cmd ) {
+			$result = shell_exec( $cmd );
+		}
+	}
+	$cmdpl = explode( ' ', $cmd )[ 1 ];
+	if ( $cmdpl === 'save' || $cmdpl === 'rm' ) {
+		$data = lsPlaylists();
+		pushstream( 'playlist', $data );
+	}
+	if ( !$result ) {
+		echo 0;
+	} else if ( isset( $_POST[ 'list' ] ) ) {
+		$type = $_POST[ 'list' ];
+		if ( $type === 'file' ) {
+			$data = search2array( $result );
+		} else {
+			$lists = explode( "\n", rtrim( $result ) );
+			foreach( $lists as $list ) {
+				$data[] = array( $type => $list );
+			}
+		}
+		echo json_encode( $data );
+	} else {
+		echo $result;
+	}
+	exit();
+}
+
+// with redis
+$redis = new Redis();
+$redis->pconnect( '127.0.0.1' );
+
+if ( isset( $_POST[ 'getdisplay' ] ) ) {
+	usleep( 100000 ); // !important - get data must wait connection start at least (0.05s)
+	$data = $redis->hGetAll( 'display' );
+	$data[ 'volumempd' ] = $redis->get( 'volume' );
+	if ( isset( $_POST[ 'data' ] ) ) echo json_encode( $data, JSON_NUMERIC_CHECK );
+	pushstream( 'display', $data );
+} else if ( isset( $_POST[ 'setdisplay' ] ) ) {
+	$data = $_POST[ 'setdisplay' ];
+	$redis->hmSet( 'display', $data );
+	pushstream( 'display', $data );
+} else if ( isset( $_POST[ 'library' ] ) ) {
+	$status = getLibrary();
+	if ( isset( $_POST[ 'data' ] ) ) echo json_encode( $status, JSON_NUMERIC_CHECK );
+	pushstream( 'library', $status );
+} else if ( isset( $_POST[ 'volume' ] ) ) {
+	$volume = $_POST[ 'volume' ];
+	$volumemute = $redis->hGet( 'display', 'volumemute' );
+	if ( $volume == 'setmute' ) {
+		if ( $volumemute == 0 ) {
+			$currentvol = exec( "mpc volume | tr -d ' %' | cut -d':' -f2" );
+			$vol = 0;
+		} else {
+			$currentvol = 0;
+			$vol = $volumemute;
+		}
+	} else {
+		$currentvol = 0;
+		$vol = $volume;
+	}
+	$redis->hSet( 'display', 'volumemute', $currentvol );
+	exec( 'mpc volume '.$vol );
+	pushstream( 'volume', array( $vol, $currentvol ) );
+} else if ( isset( $_POST[ 'getplaylist' ] ) ) {
+	$name = isset( $_POST[ 'name' ] ) ? '"'.$_POST[ 'name' ].'"' : '';
+	$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ]%artist%[ • %album%]^^%file%" playlist '.$name );
+	if ( !$lines ) {
+		echo 0;
+		exit();
+	}
+	$webradioname = array_flip( $redis->hGetAll( 'webradios' ) );
+	$lists = explode( "\n", rtrim( $lines ) );
+	foreach( $lists as $list ) {
+		$li = explode( '^^', $list );
+		$pl[ 'title' ] = $li[ 0 ] ? $li[ 0 ] : $webradioname[ $li[ 3 ] ] ?: $li[ 3 ];
+		$pl[ 'time' ] = $li[ 1 ];
+		$pl[ 'track' ] = $li[ 2 ];
+		$pl[ 'file' ] = $li[ 3 ];
+		$playlist[] = $pl;
+		$pl = '';
+	}
+	$data[ 'playlist' ] = $playlist;
 	
-	// broadcast to all clients on hmSet display or set volume
-	if ( !isset( $pushstream ) ) die();
-	
-	$result[ 'display' ] = $redis->hGetAll( 'display' );
-	if ( isset( $airplay ) ) $result[ 'actplayerinfo' ] = $redis->get( 'act_player_info' );
-	$ch = curl_init( 'http://localhost/pub?id=display' );
+	if ( !isset( $_POST[ 'name' ] ) ) {
+		$data[ 'lsplaylists' ] = lsplaylists();
+	}
+	echo json_encode( $data, JSON_NUMERIC_CHECK );
+} else if ( isset( $_POST[ 'getwebradios' ] ) ) {
+	$webradios = $redis->hGetAll( 'webradios' );
+	foreach( $webradios as $name => $url ) {
+		$li[ 'playlist' ] = 'Webradio/'.$name.'.pls';
+		$li[ 'url' ] = $url;
+		$data[] = $li;
+		$li = '';
+	}
+	echo json_encode( $data );
+} else if ( isset( $_POST[ 'bkmarks' ] ) || isset( $_POST[ 'webradios' ] ) ) {
+	if ( isset( $_POST[ 'bkmarks' ] ) ) {
+		$key = 'bkmarks';
+		$data = $_POST[ 'bkmarks' ];
+	} else {
+		$key = 'webradios';
+		$data = $_POST[ 'webradios' ];
+	}
+	if ( !is_array( $data ) ) {
+		$rdname = str_replace( '"', '\"', $data );
+		if ( $key === 'webradios' ) {
+			$redis->hDel( 'webradios', $rdname );
+			$redis->hDel( 'sampling', $rdname );
+			unlink( '/mnt/MPD/Webradio/'.$data.'.pls' );
+		} else {
+			$redis->hDel( 'bkmarks', $rdname );
+		}
+	} else {
+		$rdname = str_replace( '"', '\"', $data[ 0 ] );
+		$rdvalue = str_replace( '"', '\"', $data[ 1 ] );
+		if ( count( $data ) === 3 ) {
+			$rdoldname = str_replace( '"', '\"', $data[ 2 ] );
+			$redis->hDel( $key, $rdoldname );
+			if ( $key === 'webradios' ) unlink( '/mnt/MPD/Webradio/'.$data[ 2 ].'.pls' );
+		}
+		$redis->hSet( $key, $rdname, $rdvalue );
+		if ( $key === 'webradios' ) {
+			$lines = "[playlist]\nNumberOfEntries=1\nFile1=".$data[ 1 ]."\nTitle1=".$data[ 0 ];
+			$fopen = fopen( '/mnt/MPD/Webradio/'.$data[ 0 ].'.pls', 'w');
+			fwrite( $fopen, $lines );
+			fclose( $fopen );
+		}
+	}
+	if ( $key === 'bkmarks' ) {
+		$status = getLibrary();
+		pushstream( 'library', $status );
+	} else {
+		exec( 'mpc update Webradio' );
+	}
+} else if ( isset( $_POST[ 'homeorder' ] ) ) {
+	$redis->hSet( 'display', 'library', $_POST[ 'homeorder' ] );
+	$data = $redis->hGetAll( 'display' );
+	pushstream( 'display', $data );
+} else if ( isset( $_POST[ 'power' ] ) ) {
+	$sudo = '/usr/bin/sudo /usr/bin/';
+	if ( file_exists( '/root/gpiooff.py' ) ) $cmd.= '/usr/bin/sudo /root/gpiooff.py;';
+	if ( $redis->get( local_browser ) === '1' ) $cmd .= $sudo.'killall Xorg; /usr/local/bin/ply-image /srv/http/assets/img/bootsplash.png;';
+	$cmd.= $sudo.'umount -f -a -t cifs nfs -l;';
+	$cmd.= $sudo.'shutdown '.( $_POST[ 'power' ] === 'reboot' ? '-r' : '-h' ).' now';
+	exec( $cmd );
+}
+
+function search2array( $result ) {
+	$lists = explode( "\n", rtrim( $result ) );
+	foreach( $lists as $list ) {
+		$root = substr( $list, 0, 4 );
+		if ( $root === 'USB/' || $root === 'NAS/' || $root === 'LocalStorage/' ) {
+			$data[] = array( 'directory' => $list );
+		} else {
+			$list = explode( '^^', rtrim( $list ) );
+			$li[ 'Title' ] = $list[ 0 ];
+			$li[ 'Time' ] = $list[ 1 ];
+			$li[ 'Artist' ] = $list[ 2 ];
+			$li[ 'Album' ] = $list[ 3 ];
+			$li[ 'file' ] = $list[ 4 ];
+			$data[] = $li;
+			$li = '';
+		}
+	}
+	return $data;
+}
+function pushstream( $channel, $data = 1 ) {
+	$ch = curl_init( 'http://localhost/pub?id='.$channel );
 	curl_setopt( $ch, CURLOPT_HTTPHEADER, array( 'Content-Type:application/json' ) );
-	curl_setopt( $ch, CURLOPT_POSTFIELDS, json_encode( $result ) );
+	curl_setopt( $ch, CURLOPT_POSTFIELDS, json_encode( $data, JSON_NUMERIC_CHECK ) );
 	curl_exec( $ch );
 	curl_close( $ch );
-} else if ( isset( $_POST[ 'volume' ] ) ) {
-	$redis = new Redis(); 
+}
+function getLibrary() {
+	$redis = new Redis();
 	$redis->pconnect( '127.0.0.1' );
-	// normal
-	$volume = $_POST[ 'volume' ];
-	if ( $volume != -1 ) {
-		exec( 'mpc volume '.$volume );
-		$redis->set( 'volumemute', 0 );
-		die();
-	}
-	// mute / unmute
-	$volumemute = $redis->get( 'volumemute' );
-	if ( $volumemute == 0 ) {
-		$currentvol = exec( "mpc volume | cut -d' ' -f2 | cut -d'%' -f1" );
-		$redis->set( 'volumemute', $currentvol );
-		exec( 'mpc volume 0' );
-		echo $currentvol;
+	$rbkmarks = $redis->hGetAll( 'bkmarks' );
+	if ( $rbkmarks ) {
+		foreach ( $rbkmarks as $name => $path ) {
+			$bookmarks[] = array(
+				  'name'  => $name
+				, 'path'  => $path
+				, 'count' => exec( 'mpc list title base "'.$path.'" | wc -l' )
+			);
+		}
 	} else {
-		exec( 'mpc volume '.$volumemute );
-		$redis->set( 'volumemute', 0 );
-		echo $volumemute;
+		$bookmarks = 0;
 	}
-} else if ( isset( $_POST[ 'mpd' ] ) ) {
-	include '/srv/http/app/libs/runeaudio.php';
-	$mpd = openMpdSocket('/run/mpd.sock');
-	sendMpdCommand( $mpd, $_POST[ 'mpd' ] );
-	$result = readMpdResponse( $mpd );
-	echo $result;
-	if ( isset( $_POST[ 'pushstream' ] ) ) {
-		$data = isset( $_POST[ 'getdata' ] ) ? $result : 1;
-		ui_render( $_POST[ 'pushstream' ], $data );
+	$count = exec( '/srv/http/enhancecount.sh' );
+	$count = explode( ' ', $count );
+	$status = array( 
+		  'bookmark'     => $bookmarks
+		, 'artist'       => $count[ 0 ]
+		, 'album'        => $count[ 1 ]
+		, 'song'         => $count[ 2 ]
+		, 'composer'     => $count[ 3 ]
+		, 'genre'        => $count[ 4 ]
+		, 'nas'          => $count[ 5 ]
+		, 'usb'          => $count[ 6 ]
+		, 'webradio'     => $count[ 7 ]
+		, 'sd'           => $count[ 8 ]
+		, 'spotify'      => $count[ 9 ]
+		, 'activeplayer' => $count[ 10 ]
+	);
+//	echo json_encode( $status, JSON_NUMERIC_CHECK );
+//	pushstream( 'library', $status );
+	return $status;
+}
+function lsPlaylists() {
+	$lines = shell_exec( 'mpc lsplaylists' );
+	$lists = explode( "\n", rtrim( $lines ) );
+	if ( $lists[ 0 ] ) {
+		foreach( $lists as $list ) {
+			$lsplaylists[] = $list;
+		}
+	} else {
+		$lsplaylists = '';
 	}
-} else if ( isset( $_POST[ 'bash' ] ) ) {
-	$result = shell_exec( '/usr/bin/sudo '.$_POST[ 'bash' ] );
-	echo $result;
+	return $lsplaylists;
 }
