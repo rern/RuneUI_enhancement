@@ -156,8 +156,10 @@ function setButtonToggle() {
 		if ( timehide ) {
 			$( '#irandom' ).addClass( 'hide' )
 			$( '#irepeat' ).attr( 'class', 'fa hide' );
-			$( '#posrandom' ).toggleClass( 'hide', GUI.status.random === 0 );
-			$( '#posrepeat' ).attr( 'class', GUI.status.repeat ? ( GUI.status.single ? 'fa fa-repeat-single' : 'fa fa-repeat' ) : 'fa hide' );
+			if ( GUI.status.playlistlength ) {
+				$( '#posrandom' ).toggleClass( 'hide', GUI.status.random === 0 );
+				$( '#posrepeat' ).attr( 'class', GUI.status.repeat ? ( GUI.status.single ? 'fa fa-repeat-single' : 'fa fa-repeat' ) : 'fa hide' );
+			}
 		} else {
 			$( '#posrandom' ).addClass( 'hide' )
 			$( '#posrepeat' ).attr( 'class', 'fa hide' );
@@ -251,13 +253,14 @@ function setPlaybackBlank() {
 	$( '#playback-controls' ).addClass( 'hide' );
 	$( '#divartist, #divsong, #divalbum' ).removeClass( 'scroll-left' );
 	$( '#song' ).html( '<i class="fa fa-plus-circle"></i>' );
-	$( '#format-bitrate' ).text( 'Add music from Library' );
+	$( '#divpos i' ).addClass( 'hide' );
 	$( '#artist, #album, #songposition, #timepos, #elapsed, #total' ).empty();
+	$( '#format-bitrate' ).text( 'Add music from Library' );
 	$( '#cover-art' )
 		.attr( 'src', $( '#cover' ).val() )
 		.css( 'border-radius', 0 )
 		.one( 'load', removeSplash );
-	$( '#coverartoverlay, #posrandom' ).addClass( 'hide' );
+	$( '#coverartoverlay' ).addClass( 'hide' );
 	if ( GUI.display.time ) $( '#time' ).roundSlider( 'setValue', 0 );
 }
 function renderPlayback() {
@@ -281,7 +284,7 @@ function renderPlayback() {
 	clearInterval( GUI.intKnob );
 	clearInterval( GUI.intElapsed );
 	// empty queue
-	if ( status.playlistlength == 0 ) {
+	if ( !status.playlistlength ) {
 		setPlaybackBlank();
 		return
 	}
