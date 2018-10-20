@@ -141,8 +141,8 @@ $( '#panel-playback' ).click( function( e ) {
 				+ displayCheckbox( 'coverlarge',   'Large Cover art' )
 				+ displayCheckbox( 'volume',       'Volume' )
 				+ displayCheckbox( 'buttons',      'Buttons' )
-				+ displayCheckbox( 'debug',        '<gray>menu</gray> Debug' )
-				+ displayCheckbox( 'dev',          '<gray>menu</gray> Development' )
+				+ displayCheckbox( 'debug',        '<gr>menu</gr> Debug' )
+				+ displayCheckbox( 'dev',          '<gr>menu</gr> Development' )
 			+'</form>'
 		, cancel       : 1
 		, ok           : function () {
@@ -187,8 +187,8 @@ $( '#panel-library' ).on( 'click', function( e ) {
 				+ displayCheckbox( 'genre',    'Genre' )
 				+ displayCheckbox( 'dirble',   'Dirble' )
 				+ displayCheckbox( 'jamendo',  'Jamendo' )
-				+ displayCheckbox( 'count',    '<gray>text</gray> Count' )
-				+ displayCheckbox( 'label',    '<gray>text</gray> Label' )
+				+ displayCheckbox( 'count',    '<gr>text</gr> Count' )
+				+ displayCheckbox( 'label',    '<gr>text</gr> Label' )
 			+'</form>'
 		, cancel       : 1
 		, ok           : function () {
@@ -1359,7 +1359,7 @@ function renderPlayback() {
 	$( '.playback-controls' ).css( 'visibility', 'visible' );
 	$( '#artist' ).html( status.Artist );
 	$( '#song' ).html( status.Title );
-	$( '#album' ).html( status.ext !== 'radio' ? status.Album : '<gray>'+ status.Album +'</gray>' ).promise().done( function() {
+	$( '#album' ).html( status.ext !== 'radio' ? status.Album : '<gr>'+ status.Album +'</gr>' ).promise().done( function() {
 		scrollLongText();
 	} );
 	
