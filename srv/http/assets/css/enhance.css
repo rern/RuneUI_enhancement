@@ -46,7 +46,6 @@
 .fa-dlna:before { content: "\f525" }
 .fa-rune:before { content: "\f526" }
 .fa-output:before { content: "\f52B" }
-.fa-sliders:before { content: "\f52C" }
 
 .fa-step-backward:before { content: "\f501" }
 .fa-stop:before { content: "\f502" }
@@ -74,10 +73,13 @@
 .fa-mute:before { content: "\f517" }
 .fa-plus:before { content: "\f519" }
 
-.fa-gear:before { content: "\f506" }
-.fa-library:before { content: "\f507" }
-.fa-play-circle:before { content: "\f508" }
-.fa-list-ul:before { content: "\f509"; }
+.fa-library:before { content: "\f506" }
+.fa-play-circle:before { content: "\f507" }
+.fa-list-ul:before { content: "\f508"; }
+.fa-gear:before { content: "\f509" }
+.fa-gears:before { content: "\f50A" }
+.fa-sliders:before { content: "\f50B" }
+.fa-code:before { content: "\f50C" }
 
 .fa-bookmark:before { content: "\f550" }
 .fa-network:before { content: "\f551" }
