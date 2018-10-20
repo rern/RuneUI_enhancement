@@ -24,7 +24,6 @@ fi
 echo -e "$bar Remove files ..."
 
 rm -v /srv/http/enhance*
-rm -v /srv/http/app/enhance*
 rm -v /srv/http/app/templates/enhance*
 rm -v /srv/http/assets/css/{enhance*,fontawesome.min,midori,pnotify.custom.min,roundslider.min,toggle-switch.min}.css
 rm -v /srv/http/assets/fonts/enhance*
