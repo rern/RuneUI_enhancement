@@ -456,7 +456,6 @@ wh, gr { font-weight: 300; }
 #posrandom,
 #posrepeat {
 	width: 25px;
-	text-align: right;
 	color: #0095d8;
 }
 /* ---------------------- info scrolling ----------------------*/
