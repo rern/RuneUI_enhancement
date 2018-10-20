@@ -17,6 +17,8 @@ sed -i 's/gifico|svg/gif|ico/' /etc/nginx/nginx.conf
 rm -f /srv/http/assets/js/vendor/{hammer.min.js,propagating.js}
 sed -i '/hammer.min.js\|propagating.js/ d' /srv/http/app/templates/footer.php
 redis-cli del volumemute &> /dev/null
+redis-cli hdel display albums artists &> /dev/null
+redis-cli hmset display album checked artist checked &> /dev/null
 sed -i '/^disable_overscan=1\|^hdmi_ignore_cec=1/ d' /boot/config.txt
 rm -f /srv/http/app/enhancecoverart_ctl.php
 #1temp1
@@ -157,8 +159,7 @@ if [[ $1 != u ]]; then
 	\count checked label checked nas checked sd checked usb checked webradio checked album checked artist checked composer checked genre checked \
 	\spotify checked dirble checked jamendo checked &> /dev/null
 else
-	redis-cli hdel display albums artists &> /dev/null
-	redis-cli hmset display debug '' dev '' count checked label checked album checked artist checked &> /dev/null
+	redis-cli hmset display debug '' dev '' count checked label checked &> /dev/null
 fi
 # fix webradio permission
 chown -R http:http /mnt/MPD/Webradio
