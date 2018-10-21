@@ -13,4 +13,7 @@ if [[ $( find /mnt/MPD/LocalStorage -type f | wc -l ) ]]; then
 else
 	count="$count 0"
 fi
+count="$count $( mpc list albumartist | awk NF | wc -l )"
+count="$count $( redis-cli hget spotify enable )"
+count="$count $( redis-cli get activePlayer )"
 echo $count
