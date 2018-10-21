@@ -550,7 +550,8 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 	if ( GUI.local ) return
 	
 	var type = id.replace( 'home-', '' );
-	GUI.plugin = $this.data( 'plugin' );
+	var path = $this.data( 'path' );
+	GUI.plugin = ( path === 'Spotify' || path === 'Dirble' || path === 'Jamendo' ) ? path : '';
 	if ( !GUI.libraryhome[ type ] && !$this.hasClass( 'home-bookmark' ) && !GUI.plugin ) {
 		if ( type === 'usb' ) {
 			location.href = '/sources';
@@ -563,7 +564,7 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 	}
 
 	if ( e.target.id === 'home-block-edit' ) {
-		bookmarkRename( $this.find( '.bklabel' ).text(), $this.data( 'path' ), $this )
+		bookmarkRename( $this.find( '.bklabel' ).text(), path, $this )
 	} else if ( e.target.id === 'home-block-remove' ) {
 		bookmarkDelete( $this.find( '.bklabel' ).text(), $this )
 	} else if ( id === 'home-spotify' && GUI.activeplayer !== 'Spotify' ) {
@@ -575,7 +576,7 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 		GUI.dbbrowsemode = browsemode ? browsemode : GUI.plugin ? GUI.plugin : 'file';
 		getDB( {
 			  browsemode : browsemode
-			, path       : $this.data( 'path' )
+			, path       : path
 			, plugin     : GUI.plugin
 		} );
 	}

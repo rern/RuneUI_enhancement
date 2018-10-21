@@ -693,7 +693,6 @@ function setLibraryBlock( id ) {
 	var count = GUI.display.count && status[ id ] !== undefined ? ( '<gr>'+ numFormat( status[ id ] ) + iconmusic +'</gr>' ) : '';
 	var label = GUI.display.label ? ( '<wh>'+ namepath[ id ][ 0 ] +'</wh>' ) : '';
 	var browsemode = ( $.inArray( id, [ 'album', 'artist', 'composer', 'genre' ] ) !== -1 ) ? ' data-browsemode="'+ id +'"' : '';
-	var plugin = ( id === 'spotify' || id === 'dirble' || id === 'jamendo' ) ? ( ' data-plugin="'+ namepath[ id ][ 1 ] +'"' ) : '';
 	
 	return '<div class="col-md-3">'
 			+'<div id="home-'+ id +'" class="home-block" data-path="'+ namepath[ id ][ 1 ] +'"'+ browsemode +'>'
@@ -905,11 +904,11 @@ function getDB( options ) {
 	} else if ( plugin === 'Jamendo' ) {
 		$.post( '/db/?cmd=jamendo', { querytype: querytype ? querytype : 'radio', args: args }, function( data ) {
 			if ( !data ) {
-				$( '#oader' ).addClass( 'hide' );
+				$( '#loader' ).addClass( 'hide' );
 				info( {
 					  icon    : 'warning'
 					, title   : 'Jamendo'
-					, message : 'Jamendo not response. Please try again later'
+					, message : 'Jamendo not response. Please try again.'
 				} );
 				return
 			}
