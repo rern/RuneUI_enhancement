@@ -448,13 +448,14 @@ var btnctrl = {
 	, volR   : 'volup'
 	, volB   : 'voldn'
 }
-$( '.timemap, .covermap, .volmap' ).click( function() {
+$( '.timemap, .covermap, .volmap' ).click( function( e ) {
 	var id = this.id;
 	var cmd = btnctrl[ id ];
 	if ( cmd === 'guide' ) {
 		$( '.controls, .controls1, .rs-tooltip, #imode' ).toggleClass( 'hide' );
 		return
 	} else if ( cmd === 'menu' ) {
+		e.stopPropagation();
 		$( '#menu-settings' ).click();
 	} else if ( cmd === 'random' ) {
 		$( '#random' ).click();
