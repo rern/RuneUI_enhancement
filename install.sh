@@ -154,7 +154,8 @@ if [[ $1 != u ]]; then
 	\count checked label checked nas checked sd checked usb checked webradio checked album checked artist checked albumartist checked composer checked genre checked \
 	\spotify checked dirble checked jamendo checked &> /dev/null
 else
-	redis-cli hmset display debug '' dev '' count checked label checked &> /dev/null
+	redis-cli hdel display albums artists
+	redis-cli hmset display album checked artist checked albumartist checked debug '' dev '' count checked label checked &> /dev/null
 fi
 # fix webradio permission
 chown -R http:http /mnt/MPD/Webradio
