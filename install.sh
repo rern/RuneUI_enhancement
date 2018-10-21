@@ -150,13 +150,9 @@ if [[ ! $bkmarks ]]; then
 	done
 fi
 
-if [[ $1 != u ]]; then
-	redis-cli hmset display bars checked time checked coverart checked volume checked buttons checked volumemute 0 \
-	\count checked label checked nas checked sd checked usb checked webradio checked album checked artist checked albumartist checked composer checked genre checked \
-	\dirble checked jamendo checked &> /dev/null
-else
-	redis-cli hmset display album checked artist checked albumartist checked &> /dev/null
-fi
+for item in bars time coverart volume buttons nas sd usb webradio album artist albumartist composer genre dirble jamendo count label; do
+	[[ $( redis-cli hexists display $item ) == 0 ]] && redis-cli hset display $item checked &> /dev/null
+done
 # fix webradio permission
 chown -R http:http /mnt/MPD/Webradio
 
