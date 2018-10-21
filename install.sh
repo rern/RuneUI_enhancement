@@ -16,7 +16,7 @@ installstart $@
 redis-cli del volumemute &> /dev/null
 sed -i '/^disable_overscan=1\|^hdmi_ignore_cec=1/ d' /boot/config.txt
 rm -f /srv/http/app/enhancecoverart_ctl.php
-redis-cli hdel display albums artists
+redis-cli hdel display albums artists &> /dev/null
 #1temp1
 
 mv /srv/http/index.php{,.backup}
