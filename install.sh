@@ -16,6 +16,7 @@ installstart $@
 redis-cli del volumemute &> /dev/null
 sed -i '/^disable_overscan=1\|^hdmi_ignore_cec=1/ d' /boot/config.txt
 rm -f /srv/http/app/enhancecoverart_ctl.php
+redis-cli hdel display albums artists
 #1temp1
 
 mv /srv/http/index.php{,.backup}
@@ -152,10 +153,9 @@ fi
 if [[ $1 != u ]]; then
 	redis-cli hmset display bars checked time checked coverart checked volume checked buttons checked volumemute 0 \
 	\count checked label checked nas checked sd checked usb checked webradio checked album checked artist checked albumartist checked composer checked genre checked \
-	\spotify checked dirble checked jamendo checked &> /dev/null
+	\dirble checked jamendo checked &> /dev/null
 else
-	redis-cli hdel display albums artists
-	redis-cli hmset display album checked artist checked albumartist checked debug '' dev '' count checked label checked &> /dev/null
+	redis-cli hmset display album checked artist checked albumartist checked &> /dev/null
 fi
 # fix webradio permission
 chown -R http:http /mnt/MPD/Webradio
