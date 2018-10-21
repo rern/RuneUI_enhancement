@@ -1139,15 +1139,6 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 		// undefined type are directory names
 		prop = type[ path ] ? type[ path ] : 'directory';
 		if ( data[ 0 ].artistalbum ) prop = 'artistalbum'; // for common albums like 'Greatest Hits'
-		// filter out blank and various
-		if ( prop === 'artist' || prop === 'genre' || prop === 'directory' ) {
-			data = data.filter( function( el ) {
-				var name = el[ prop ] || el[ mode[ GUI.browsemode ] ];
-				if ( name ) return name.search( /^\s+$|^\(*various\)* *|^\(*va\)* */i ) === -1;
-			} );
-		}
-		if ( !data.length ) return
-		
 		// browsing
 		if ( data[ 0 ].directory || data[ 0 ].file ) {
 			var arraydir = [];
