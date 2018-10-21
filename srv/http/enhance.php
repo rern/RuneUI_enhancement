@@ -23,6 +23,7 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 	echo json_encode( $data );
 	exit();
 } else if ( isset( $_POST[ 'mpc' ] ) ) {
+// 
 	$mpc = $_POST[ 'mpc' ];
 	if ( !is_array( $mpc ) ) { // multiples commands is array
 		$result = shell_exec( $mpc );
@@ -55,11 +56,9 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 	}
 	exit();
 }
-
 // with redis
 $redis = new Redis();
 $redis->pconnect( '127.0.0.1' );
-
 if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	usleep( 100000 ); // !important - get data must wait connection start at least (0.05s)
 	$data = $redis->hGetAll( 'display' );
@@ -176,7 +175,6 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	$cmd.= $sudo.'shutdown '.( $_POST[ 'power' ] === 'reboot' ? '-r' : '-h' ).' now';
 	exec( $cmd );
 }
-
 function search2array( $result ) {
 	$lists = explode( "\n", rtrim( $result ) );
 	foreach( $lists as $list ) {
@@ -231,9 +229,8 @@ function getLibrary() {
 		, 'usb'          => $count[ 6 ]
 		, 'webradio'     => $count[ 7 ]
 		, 'sd'           => $count[ 8 ]
-		, 'albumartist'  => $count[ 9 ]
-		, 'spotify'      => $count[ 10 ]
-		, 'activeplayer' => $count[ 11 ]
+		, 'spotify'      => $count[ 9 ]
+		, 'activeplayer' => $count[ 10 ]
 	);
 //	echo json_encode( $status, JSON_NUMERIC_CHECK );
 //	pushstream( 'library', $status );
