@@ -13,14 +13,12 @@ alias=enha
 installstart $@
 
 #0temp0 remove uninstall leftover
-sed -i 's/gifico|svg/gif|ico/' /etc/nginx/nginx.conf
-rm -f /srv/http/assets/js/vendor/{hammer.min.js,propagating.js}
-sed -i '/hammer.min.js\|propagating.js/ d' /srv/http/app/templates/footer.php
 redis-cli del volumemute &> /dev/null
 redis-cli hdel display albums artists &> /dev/null
 redis-cli hmset display album checked artist checked debug '' dev '' count checked label checked &> /dev/null
 sed -i '/^disable_overscan=1\|^hdmi_ignore_cec=1/ d' /boot/config.txt
 rm -f /srv/http/app/enhancecoverart_ctl.php
+redis-cli hdel display albums artists &> /dev/null
 #1temp1
 
 mv /srv/http/index.php{,.backup}
@@ -154,11 +152,9 @@ if [[ ! $bkmarks ]]; then
 	done
 fi
 
-if [[ $1 != u ]]; then
-	redis-cli hmset display bars checked time checked coverart checked volume checked buttons checked volumemute 0 \
-	\count checked label checked nas checked sd checked usb checked webradio checked album checked artist checked composer checked genre checked \
-	\spotify checked dirble checked jamendo checked &> /dev/null
-fi
+for item in bars time coverart volume buttons nas sd usb webradio album artist albumartist composer genre dirble jamendo count label; do
+	[[ $( redis-cli hexists display $item ) == 0 ]] && redis-cli hset display $item checked &> /dev/null
+done
 # fix webradio permission
 chown -R http:http /mnt/MPD/Webradio
 

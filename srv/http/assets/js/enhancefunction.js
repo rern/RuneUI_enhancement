@@ -545,7 +545,7 @@ function displayTopBottom() {
 	}
 	$( '#debug' ).toggleClass( 'hide', GUI.display.debug === '' );
 	$( '#dev' ).toggleClass( 'hide', GUI.display.dev === '' );
-	var menuH = ( $( '#settings i' ).length - $( '#settings a.hide' ).length ) * 41;
+	var menuH = ( $( '#settings a' ).length - $( '#settings a.hide' ).length ) * 41;
 	$( '#settings .menushadow' ).css( 'height', menuH );
 }
 function displayAirPlay() {
@@ -673,17 +673,18 @@ function toggleLibraryHome( name ) {
 	$( '#home-'+ name ).parent().toggleClass( 'hide', GUI.display[ name ] === '' );
 }
 var namepath = {
-	  sd       : [ 'SD',       'LocalStorage', 'microsd' ]
-	, usb      : [ 'USB',      'USB',          'usbdrive' ]
-	, nas      : [ 'Network',  'NAS',          'network' ]
-	, webradio : [ 'Webradio', 'Webradio',     'webradio' ]
-	, album    : [ 'Album',    'Album',        'album' ]
-	, artist   : [ 'Artist',   'Artist',       'artist' ]
-	, composer : [ 'Composer', 'Composer',     'composer' ]
-	, genre    : [ 'Genre',    'Genre',        'genre' ]
-	, spotify  : [ 'Spotify',  'Spotify',      'spotify' ]
-	, dirble   : [ 'Dirble',   'Dirble',       'dirble' ]
-	, jamendo  : [ 'Jamendo',  'Jamendo',      'jamendo' ]
+	  sd          : [ 'SD',           'LocalStorage', 'microsd' ]
+	, usb         : [ 'USB',          'USB',          'usbdrive' ]
+	, nas         : [ 'Network',      'NAS',          'network' ]
+	, webradio    : [ 'Webradio',     'Webradio',     'webradio' ]
+	, album       : [ 'Album',        'Album',        'album' ]
+	, artist      : [ 'Artist',       'Artist',       'artist' ]
+	, albumartist : [ 'Album Artist', 'AlbumArtist',  'albumartist' ]
+	, composer    : [ 'Composer',     'Composer',     'composer' ]
+	, genre       : [ 'Genre',        'Genre',        'genre' ]
+	, spotify     : [ 'Spotify',      'Spotify',      'spotify' ]
+	, dirble      : [ 'Dirble',       'Dirble',       'dirble' ]
+	, jamendo     : [ 'Jamendo',      'Jamendo',      'jamendo' ]
 }
 function setLibraryBlock( id ) {
 	var status = GUI.libraryhome;
@@ -692,7 +693,7 @@ function setLibraryBlock( id ) {
 	var iconmusic = id === 'sd' ? ' <i class="fa fa-music"></i>' : '';
 	var count = GUI.display.count && status[ id ] !== undefined ? ( '<gr>'+ numFormat( status[ id ] ) + iconmusic +'</gr>' ) : '';
 	var label = GUI.display.label ? ( '<wh>'+ namepath[ id ][ 0 ] +'</wh>' ) : '';
-	var browsemode = ( $.inArray( id, [ 'album', 'artist', 'composer', 'genre' ] ) !== -1 ) ? ' data-browsemode="'+ id +'"' : '';
+	var browsemode = ( $.inArray( id, [ 'album', 'artist', 'albumartist', 'composer', 'genre' ] ) !== -1 ) ? ' data-browsemode="'+ id +'"' : '';
 	var plugin = ( id === 'spotify' || id === 'dirble' || id === 'jamendo' ) ? ( ' data-plugin="'+ namepath[ id ][ 1 ] +'"' ) : '';
 	
 	return '<div class="col-md-3">'
@@ -737,7 +738,7 @@ function renderLibrary() {
 			content += '<div class="col-md-3"><div class="home-block home-bookmark" data-path="'+ bookmark.path +'"><i class="fa fa-bookmark"></i>'+ count +'<div class="divbklabel"><span class="bklabel">'+ name +'</span></div></div></div>';
 		} );
 	}
-	var order = GUI.display.library || 'sd,usb,nas,webradio,album,artist,composer,genre,dirble,jamendo';
+	var order = GUI.display.library || 'sd,usb,nas,webradio,album,artist,albumartist,composer,genre,dirble,jamendo';
 	order = order.split( ',' );
 	content += '<div id="divhomeblocks">';
 	$.each( order, function( i, val ) {
@@ -751,6 +752,7 @@ function renderLibrary() {
 		toggleLibraryHome( 'webradio' );
 		toggleLibraryHome( 'album' );
 		toggleLibraryHome( 'artist' );
+		toggleLibraryHome( 'albumartist' );
 		toggleLibraryHome( 'composer' );
 		toggleLibraryHome( 'genre' );
 		toggleLibraryHome( 'dirble' );
@@ -777,7 +779,7 @@ function renderLibrary() {
 		}, 100 );
 		
 		new Sortable( document.getElementById( 'divhomeblocks' ), {
-			  delay      : 100
+			  delay      : 500
 			, onStart    : function( e ) {
 				$icon = $( e.item ).find( 'i' );
 				$icon.css( 'color', '#e0e7ee' );
@@ -846,6 +848,7 @@ function getDB( options ) {
 			, album       : { mpcalbum: path } 
 			, artistalbum : { mpc: 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%" artist "'+ artistalbum +'" album "'+ path +'"', list: 'file' } 
 			, artist      : { mpc: 'mpc list album artist "'+ path +'" | awk NF', list: 'album' }
+			, albumartist : { mpc: 'mpc list album albumartist "'+ path +'" | awk NF', list: 'album' }
 			, composer    : { mpc: 'mpc list album composer "'+ path +'" | awk NF', list: 'album' }
 			, genre       : { mpc: 'mpc list artist genre "'+ path +'" | awk NF', list: 'artist' }
 			, type        : { mpc: 'mpc list '+ GUI.browsemode +' | awk NF', list: GUI.browsemode }
@@ -862,7 +865,7 @@ function getDB( options ) {
 				mode = 'search';
 			}
 		} else if ( cmd === 'browse' ) {
-			if ( $.inArray( path, [ 'Album', 'Artist', 'Composer', 'Genre' ] ) !== -1 ) {
+			if ( $.inArray( path, [ 'Album', 'Artist', 'AlbumArtist', 'Composer', 'Genre' ] ) !== -1 ) {
 				mode = 'type';
 			} else if ( path === 'Webradio' ) {
 				mode = 'Webradio';
@@ -997,6 +1000,16 @@ function parseDBdata( inputArr, i, respType, inpath, querytype ) {
 					content = '<li data-path="'+ inputArr.artist +'" mode="artist" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-artist"></i>';
 					content += '<span><i class="fa fa-artist"></i>'+ liname +'</span></li>';
 				}
+			} else if ( GUI.browsemode === 'albumartist' ) {
+				if ( inputArr.album ) {
+					var liname = inputArr.album ? inputArr.album : 'Unknown album';
+					content = '<li data-path="'+ inputArr.album +'" mode="album" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-album"></i>';
+					content += '<span><i class="fa fa-album"></i>'+ liname +'</span></li>';
+				} else {
+					var liname = inputArr.albumartist;
+					content = '<li data-path="'+ inputArr.albumartist +'" mode="albumartist" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-artist"></i>';
+					content += '<span><i class="fa fa-albumartist"></i>'+ liname +'</span></li>';
+				}
 			} else if ( GUI.browsemode === 'composer' ) {
 				if ( inputArr.file ) {
 					var liname = inputArr.Title;
@@ -1124,7 +1137,7 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 		var type = {
 			  Album        : 'album'
 			, Artist       : 'artist'
-			, AlbumArtists : 'artist'
+			, AlbumArtist  : 'albumartist'
 			, Composer     : 'composer'
 			, Genre        : 'genre'
 			, Webradio     : 'playlist'
@@ -1133,6 +1146,7 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 			  file          : 'file'
 			, album         : 'file'
 			, artist        : 'album'
+			, albumartist   : 'album'
 			, genre         : 'artist'
 			, composer      : 'file'
 			, composeralbum : 'album'
@@ -1140,15 +1154,6 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 		// undefined type are directory names
 		prop = type[ path ] ? type[ path ] : 'directory';
 		if ( data[ 0 ].artistalbum ) prop = 'artistalbum'; // for common albums like 'Greatest Hits'
-		// filter out blank and various
-		if ( prop === 'artist' || prop === 'genre' || prop === 'directory' ) {
-			data = data.filter( function( el ) {
-				var name = el[ prop ] || el[ mode[ GUI.browsemode ] ];
-				if ( name ) return name.search( /^\s+$|^\(*various\)* *|^\(*va\)* */i ) === -1;
-			} );
-		}
-		if ( !data.length ) return
-		
 		// browsing
 		if ( data[ 0 ].directory || data[ 0 ].file ) {
 			var arraydir = [];
@@ -1193,23 +1198,25 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 		  LocalStorage  : '<i class="fa fa-microsd"></i>'
 		, USB           : '<i class="fa fa-usbdrive"></i>'
 		, NAS           : '<i class="fa fa-network"></i>'
-		, album         : [ '<i class="fa fa-album"></i>',    'ALBUM' ]
-		, artist        : [ '<i class="fa fa-artist"></i>',   'ARTIST' ]
-		, genre         : [ '<i class="fa fa-genre"></i>',    'GENRE' ]
-		, composer      : [ '<i class="fa fa-composer"></i>', 'COMPOSER' ]
-		, composeralbum : [ '<i class="fa fa-composer"></i>', 'COMPOSER' ]
+		, album         : [ '<i class="fa fa-album"></i>',       'ALBUM' ]
+		, artist        : [ '<i class="fa fa-artist"></i>',      'ARTIST' ]
+		, albumartist   : [ '<i class="fa fa-albumartist"></i>', 'ALBUM ARTIST' ]
+		, genre         : [ '<i class="fa fa-genre"></i>',       'GENRE' ]
+		, composer      : [ '<i class="fa fa-composer"></i>',    'COMPOSER' ]
+		, composeralbum : [ '<i class="fa fa-composer"></i>',    'ALBUM COMPOSER' ]
 		, Dirble        : '<i class="fa fa-dirble"></i>'
 		, Jamendo       : '<i class="fa fa-jamendo"></i>'
 		, Spotify       : '<i class="fa fa-spotify"></i>'
 	}
 	var mode = {
-		  album    : 'Album'
-		, artist   : 'Artist'
-		, genre    : 'Genre'
-		, composer : 'Composer'
+		  album       : 'Album'
+		, artist      : 'Artist'
+		, albumartist : 'AlbumArtist'
+		, genre       : 'Genre'
+		, composer    : 'Composer'
 	}
 	if ( GUI.browsemode !== 'file' ) {
-		if ( GUI.browsemode !== 'album' && GUI.browsemode !== 'composeralbum') {
+		if ( GUI.browsemode !== 'album' && GUI.browsemode !== 'composeralbum' ) {
 			var dotpath = ( path === mode[ GUI.browsemode ] ) ? '' : '<a id="artistalbum"><gr> • </gr><span class="white">'+ path +'</span></a>';
 		} else {
 			var albumpath = path === 'Album' ? '' : path;

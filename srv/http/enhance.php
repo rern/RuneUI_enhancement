@@ -23,7 +23,6 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 	echo json_encode( $data );
 	exit();
 } else if ( isset( $_POST[ 'mpc' ] ) ) {
-// 
 	$mpc = $_POST[ 'mpc' ];
 	if ( !is_array( $mpc ) ) { // multiples commands is array
 		$result = shell_exec( $mpc );
@@ -229,8 +228,9 @@ function getLibrary() {
 		, 'usb'          => $count[ 6 ]
 		, 'webradio'     => $count[ 7 ]
 		, 'sd'           => $count[ 8 ]
-		, 'spotify'      => $count[ 9 ]
-		, 'activeplayer' => $count[ 10 ]
+		, 'albumartist'  => $count[ 9 ]
+		, 'spotify'      => $count[ 10 ]
+		, 'activeplayer' => $count[ 11 ]
 	);
 //	echo json_encode( $status, JSON_NUMERIC_CHECK );
 //	pushstream( 'library', $status );

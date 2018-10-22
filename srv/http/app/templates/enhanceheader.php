@@ -100,7 +100,7 @@ if ( empty( $this->uri(1) ) ) { ?>
 <?php 
 if ( empty( $this->uri(1) ) ) { ?>
 <div id="settings" class="menu hide">
-	<a class="menushadow"></a>
+	<span class="menushadow"></span>
 	<a href="sources"><i class="fa fa-folder-open-cascade"></i>Sources</a>
 	<a href="mpd"><i class="fa fa-mpd"></i>MPD</a>
 	<a href="settings"><i class="fa fa-sliders"></i>Settings</a>
@@ -118,6 +118,8 @@ if ( empty( $this->uri(1) ) ) { ?>
 	<a id="gpio"><i class="fa fa-gpio"></i>GPIO</a>
 	<?php 
 	} ?>
+	<a id="displaylibrary"><i class="fa fa-library gr"></i>Library Items</a>
+	<a id="displayplayback"><i class="fa fa-play-circle gr"></i>Playback Items</a>
 	<a id="addons"><i class="fa fa-addons"></i>Addons</a>
 </div>
 <div id="menu-top" class="hide">

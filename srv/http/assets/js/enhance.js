@@ -29,7 +29,6 @@ var GUI = { // outside '$( function() {' enable console.log access
 	, plscrolltop  : 0
 	, plugin       : ''
 	, status       : {}
-	, swipe        : 0
 	, timeout      : ''
 	, updating     : 0
 };
@@ -116,9 +115,6 @@ $( '#open-playlist' ).click( function() {
 } );
 $( '#panel-playback, #panel-library, #panel-playlist' ).on( 'swipeleft swiperight', function( e ) {
 	panelLR( e.type === 'swipeleft' ? 'left' : '' );
-	// fix: prevent taphold fire on swipe
-	GUI.swipe = 1;
-	setTimeout( function() { GUI.swipe = 0 }, 1000 );
 } );
 
 $( '#panel-playback' ).click( function( e ) {
@@ -126,11 +122,11 @@ $( '#panel-playback' ).click( function( e ) {
 	
 	$( '.controls, #settings' ).addClass( 'hide' );
 	$( '.controls1, .rs-tooltip, #imode' ).removeClass( 'hide' );
-} ).on( 'taphold', function( e ) {
-	if ( GUI.swipe || $( e.target ).parents().hasClass( 'rs-transition' ) ) return
-	
+} );
+$( '#displayplayback' ).click( function() {
 	info( {
-		  title        : 'Playback'
+		  icon         : 'play-circle'
+		, title        : 'Playback'
 		, message      : 'Select items to show:'
 		, checkboxhtml : 
 			'<form id="displaysaveplayback">'
@@ -169,11 +165,11 @@ $( '#panel-library' ).on( 'click', function( e ) {
 		$( '#home-block-edit, #home-block-remove' ).remove();
 		$( '.home-bookmark' ).find( '.fa-bookmark, gr' ).css( 'opacity', '' );
 	}
-} ).on( 'taphold', function( e ) {
-	if ( GUI.swipe || GUI.local || $( e.target ).parents( '.col-md-3' ).length ) return
-	
+} );
+$( '#displaylibrary' ).click( function() {
 	info( {
-		  title        : 'Libary Home'
+		  icon         : 'library'
+		, title        : 'Libary Home'
 		, message      : 'Select items to show:'
 		, checkboxhtml : 
 			'<form id="displaysavelibrary">'
@@ -360,8 +356,6 @@ $( '.btn-cmd' ).click( function() {
 } );
 $( '#coverTL' ).click( function() {
 	if ( !$( '#controls-cover' ).hasClass( 'hide' ) ) $( '.controls, .controls1, .rs-tooltip, #imode' ).toggleClass( 'hide' );
-	if ( $( '#album' ).text().slice( 0, 4 ) === 'http' ) return;
-	
 	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
 		$.each( status, function( key, value ) {
 			GUI.status[ key ] = value;
@@ -371,25 +365,26 @@ $( '#coverTL' ).click( function() {
 		var volume = GUI.display.volume;
 		var buttons = GUI.display.buttons;
 		GUI.display.coverlarge = $( '#divcover' ).hasClass( 'coversmall' ) ? 'checked' : '';
+		var radio = $( '#album' ).text().slice( 0, 4 ) === 'http';
 		if ( GUI.display.volumempd ) {
 			if ( !$( '#time-knob' ).hasClass( 'hide' ) && !$( '#volume-knob' ).hasClass( 'hide' ) ) {
 				if ( GUI.display.volume && GUI.display.time ) {
-					GUI.display.coverlarge = 'checked';
+					if ( !radio ) GUI.display.coverlarge = 'checked';
 					GUI.display.time = '';
 					GUI.display.volume = '';
 					GUI.display.buttons = '';
 				} else {
-					GUI.display.coverlarge = coverlarge;
+					if ( !radio ) GUI.display.coverlarge = coverlarge;
 					GUI.display.time = time;
 					GUI.display.volume = volume;
 				}
 			} else if ( $( '#time-knob' ).hasClass( 'hide' ) && $( '#volume-knob' ).hasClass( 'hide' ) ) {
 				if ( GUI.display.time || GUI.display.volume ) {
-					GUI.display.coverlarge = coverlarge;
+					if ( !radio ) GUI.display.coverlarge = coverlarge;
 					GUI.display.time = time;
 					GUI.display.volume = volume;
 				} else {
-					GUI.display.coverlarge = coverlarge ? '' : 'checked';
+					if ( !radio ) GUI.display.coverlarge = coverlarge ? '' : 'checked';
 					GUI.display.time = 'checked';
 					GUI.display.volume = 'checked';
 				}
@@ -398,7 +393,7 @@ $( '#coverTL' ).click( function() {
 					GUI.display.time = 'checked';
 					GUI.display.volume = 'checked';
 				} else {
-					GUI.display.coverlarge = 'checked';
+					if ( !radio ) GUI.display.coverlarge = 'checked';
 					GUI.display.time = '';
 					GUI.display.volume = '';
 					GUI.display.buttons = '';
@@ -406,11 +401,11 @@ $( '#coverTL' ).click( function() {
 			}
 		} else {
 			if ( !$( '#time-knob' ).hasClass( 'hide' ) ) {
-				GUI.display.coverlarge = 'checked';
+				if ( !radio ) GUI.display.coverlarge = 'checked';
 				GUI.display.time = '';
 				GUI.display.buttons = '';
 			} else {
-				GUI.display.coverlarge = coverlarge;
+				if ( !radio ) GUI.display.coverlarge = coverlarge;
 				GUI.display.time = 'checked';
 			}
 		}
@@ -579,7 +574,7 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 		} );
 	}
 } ).on( 'taphold', '.home-block', function( e ) {
-	if ( GUI.swipe || !$( this ).hasClass( 'home-bookmark' ) ) return
+	if ( !$( this ).hasClass( 'home-bookmark' ) ) return
 	
 	GUI.local = 1;
 	setTimeout( function() { GUI.local = 0 }, 500 );
@@ -694,7 +689,9 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	$( '#db-entries li' ).removeClass( 'active' );
 	$this.addClass( 'active' );
 	
-	if ( GUI.browsemode === 'artist' && currentpath !== 'Artist' ) {
+	if ( ( GUI.browsemode === 'artist' && currentpath !== 'Artist' )
+		|| ( GUI.browsemode === 'albumartist' && currentpath !== 'AlbumArtist' )
+	) {
 		var artist = currentpath;
 	} else if ( GUI.browsemode === 'album' ) {
 		var artist = $this.data( 'artist' ) || '';
@@ -994,7 +991,7 @@ $( '#pl-filter-results' ).on( 'click', function() {
 } );
 new Sortable( document.getElementById( 'pl-entries' ), {
 	  ghostClass : 'sortable-ghost'
-	, delay      : 100
+	, delay      : 500
 	, onStart    : function( e ) {
 		$icon = $( e.item ).find( 'i' );
 		$icon.css( 'visibility', 'hidden' );
