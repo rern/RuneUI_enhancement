@@ -238,6 +238,9 @@ wh, gr { font-weight: 300; }
 	text-align: center;
 	font-size: 22px;
 }
+#settings .gr {
+	font-size: 20px;
+}
 .menushadow {
 	position: absolute;
 	box-shadow: -4px 4px 10px #000000;
