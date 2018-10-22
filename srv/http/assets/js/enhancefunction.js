@@ -545,7 +545,7 @@ function displayTopBottom() {
 	}
 	$( '#debug' ).toggleClass( 'hide', GUI.display.debug === '' );
 	$( '#dev' ).toggleClass( 'hide', GUI.display.dev === '' );
-	var menuH = ( $( '#settings i' ).length - $( '#settings a.hide' ).length ) * 41;
+	var menuH = ( $( '#settings a' ).length - $( '#settings a.hide' ).length ) * 41;
 	$( '#settings .menushadow' ).css( 'height', menuH );
 }
 function displayAirPlay() {

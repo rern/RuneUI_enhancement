@@ -29,7 +29,6 @@ var GUI = { // outside '$( function() {' enable console.log access
 	, plscrolltop  : 0
 	, plugin       : ''
 	, status       : {}
-	, swipe        : 0
 	, timeout      : ''
 	, updating     : 0
 };
@@ -116,9 +115,6 @@ $( '#open-playlist' ).click( function() {
 } );
 $( '#panel-playback, #panel-library, #panel-playlist' ).on( 'swipeleft swiperight', function( e ) {
 	panelLR( e.type === 'swipeleft' ? 'left' : '' );
-	// fix: prevent taphold fire on swipe
-	GUI.swipe = 1;
-	setTimeout( function() { GUI.swipe = 0 }, 1000 );
 } );
 
 $( '#panel-playback' ).click( function( e ) {
@@ -126,11 +122,11 @@ $( '#panel-playback' ).click( function( e ) {
 	
 	$( '.controls, #settings' ).addClass( 'hide' );
 	$( '.controls1, .rs-tooltip, #imode' ).removeClass( 'hide' );
-} ).on( 'taphold', function( e ) {
-	if ( GUI.swipe || $( e.target ).parents().hasClass( 'rs-transition' ) ) return
-	
+} );
+$( '#displayplayback' ).click( function() {
 	info( {
-		  title        : 'Playback'
+		  icon         : 'play-circle'
+		, title        : 'Playback'
 		, message      : 'Select items to show:'
 		, checkboxhtml : 
 			'<form id="displaysaveplayback">'
@@ -169,11 +165,11 @@ $( '#panel-library' ).on( 'click', function( e ) {
 		$( '#home-block-edit, #home-block-remove' ).remove();
 		$( '.home-bookmark' ).find( '.fa-bookmark, gr' ).css( 'opacity', '' );
 	}
-} ).on( 'taphold', function( e ) {
-	if ( GUI.swipe || GUI.local || $( e.target ).parents( '.col-md-3' ).length ) return
-	
+} );
+$( '#displaylibrary' ).click( function() {
 	info( {
-		  title        : 'Libary Home'
+		  icon         : 'library'
+		, title        : 'Libary Home'
 		, message      : 'Select items to show:'
 		, checkboxhtml : 
 			'<form id="displaysavelibrary">'
@@ -578,7 +574,7 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 		} );
 	}
 } ).on( 'taphold', '.home-block', function( e ) {
-	if ( GUI.swipe || !$( this ).hasClass( 'home-bookmark' ) ) return
+	if ( !$( this ).hasClass( 'home-bookmark' ) ) return
 	
 	GUI.local = 1;
 	setTimeout( function() { GUI.local = 0 }, 500 );
