@@ -152,7 +152,7 @@ label {
 
 w, wh, .wh { color: #e0e7ee; }
 bl, .bl { color: #0095d8; }
-gr {color: #587ca0; }
+gr, .gr {color: #7795b4; }
 wh, gr { font-weight: 300; }
 #album gr,
 #infoContent gr,
@@ -225,7 +225,7 @@ wh, gr { font-weight: 300; }
 	text-decoration: none;
 	cursor: pointer;
 }
-.menu a:nth-of-type( 2 ) {
+.menu a:nth-of-type( 1 ) {
 	border-top: none;
 }
 .menu a:hover {
@@ -233,6 +233,7 @@ wh, gr { font-weight: 300; }
 }
 .menu i {
 	width: 40px;
+	line-height: 40px;
 	vertical-align: -5%;
 	text-align: center;
 	font-size: 22px;
