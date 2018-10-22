@@ -448,14 +448,13 @@ var btnctrl = {
 	, volR   : 'volup'
 	, volB   : 'voldn'
 }
-$( '.timemap, .covermap, .volmap' ).click( function( e ) {
+$( '.timemap, .covermap, .volmap' ).click( function() {
 	var id = this.id;
 	var cmd = btnctrl[ id ];
 	if ( cmd === 'guide' ) {
 		$( '.controls, .controls1, .rs-tooltip, #imode' ).toggleClass( 'hide' );
 		return
 	} else if ( cmd === 'menu' ) {
-		e.stopPropagation();
 		$( '#menu-settings' ).click();
 	} else if ( cmd === 'random' ) {
 		$( '#random' ).click();
@@ -550,8 +549,7 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 	if ( GUI.local ) return
 	
 	var type = id.replace( 'home-', '' );
-	var path = $this.data( 'path' );
-	GUI.plugin = ( path === 'Spotify' || path === 'Dirble' || path === 'Jamendo' ) ? path : '';
+	GUI.plugin = $this.data( 'plugin' );
 	if ( !GUI.libraryhome[ type ] && !$this.hasClass( 'home-bookmark' ) && !GUI.plugin ) {
 		if ( type === 'usb' ) {
 			location.href = '/sources';
@@ -564,7 +562,7 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 	}
 
 	if ( e.target.id === 'home-block-edit' ) {
-		bookmarkRename( $this.find( '.bklabel' ).text(), path, $this )
+		bookmarkRename( $this.find( '.bklabel' ).text(), $this.data( 'path' ), $this )
 	} else if ( e.target.id === 'home-block-remove' ) {
 		bookmarkDelete( $this.find( '.bklabel' ).text(), $this )
 	} else if ( id === 'home-spotify' && GUI.activeplayer !== 'Spotify' ) {
@@ -576,7 +574,7 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 		GUI.dbbrowsemode = browsemode ? browsemode : GUI.plugin ? GUI.plugin : 'file';
 		getDB( {
 			  browsemode : browsemode
-			, path       : path
+			, path       : $this.data( 'path' )
 			, plugin     : GUI.plugin
 		} );
 	}
@@ -696,7 +694,9 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	$( '#db-entries li' ).removeClass( 'active' );
 	$this.addClass( 'active' );
 	
-	if ( GUI.browsemode === 'artist' && currentpath !== 'Artist' ) {
+	if ( ( GUI.browsemode === 'artist' && currentpath !== 'Artist' )
+		|| ( GUI.browsemode === 'albumartist' && currentpath !== 'AlbumArtist' )
+	) {
 		var artist = currentpath;
 	} else if ( GUI.browsemode === 'album' ) {
 		var artist = $this.data( 'artist' ) || '';
@@ -704,6 +704,7 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 		var artist = '';
 	}
 	var mode = $this.attr( 'mode' );
+	console.log(path +' - '+ artist +' - '+ mode )
 	if ( [ 'dirble', 'jamendo', 'spotify' ].indexOf( mode ) === -1 ) {
 		getDB( {
 			  path       : path
@@ -996,7 +997,7 @@ $( '#pl-filter-results' ).on( 'click', function() {
 } );
 new Sortable( document.getElementById( 'pl-entries' ), {
 	  ghostClass : 'sortable-ghost'
-	, delay      : 100
+	, delay      : 500
 	, onStart    : function( e ) {
 		$icon = $( e.item ).find( 'i' );
 		$icon.css( 'visibility', 'hidden' );
