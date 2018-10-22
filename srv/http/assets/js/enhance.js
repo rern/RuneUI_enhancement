@@ -360,8 +360,6 @@ $( '.btn-cmd' ).click( function() {
 } );
 $( '#coverTL' ).click( function() {
 	if ( !$( '#controls-cover' ).hasClass( 'hide' ) ) $( '.controls, .controls1, .rs-tooltip, #imode' ).toggleClass( 'hide' );
-	if ( $( '#album' ).text().slice( 0, 4 ) === 'http' ) return;
-	
 	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
 		$.each( status, function( key, value ) {
 			GUI.status[ key ] = value;
@@ -371,25 +369,26 @@ $( '#coverTL' ).click( function() {
 		var volume = GUI.display.volume;
 		var buttons = GUI.display.buttons;
 		GUI.display.coverlarge = $( '#divcover' ).hasClass( 'coversmall' ) ? 'checked' : '';
+		var radio = $( '#album' ).text().slice( 0, 4 ) === 'http';
 		if ( GUI.display.volumempd ) {
 			if ( !$( '#time-knob' ).hasClass( 'hide' ) && !$( '#volume-knob' ).hasClass( 'hide' ) ) {
 				if ( GUI.display.volume && GUI.display.time ) {
-					GUI.display.coverlarge = 'checked';
+					if ( !radio ) GUI.display.coverlarge = 'checked';
 					GUI.display.time = '';
 					GUI.display.volume = '';
 					GUI.display.buttons = '';
 				} else {
-					GUI.display.coverlarge = coverlarge;
+					if ( !radio ) GUI.display.coverlarge = coverlarge;
 					GUI.display.time = time;
 					GUI.display.volume = volume;
 				}
 			} else if ( $( '#time-knob' ).hasClass( 'hide' ) && $( '#volume-knob' ).hasClass( 'hide' ) ) {
 				if ( GUI.display.time || GUI.display.volume ) {
-					GUI.display.coverlarge = coverlarge;
+					if ( !radio ) GUI.display.coverlarge = coverlarge;
 					GUI.display.time = time;
 					GUI.display.volume = volume;
 				} else {
-					GUI.display.coverlarge = coverlarge ? '' : 'checked';
+					if ( !radio ) GUI.display.coverlarge = coverlarge ? '' : 'checked';
 					GUI.display.time = 'checked';
 					GUI.display.volume = 'checked';
 				}
@@ -398,7 +397,7 @@ $( '#coverTL' ).click( function() {
 					GUI.display.time = 'checked';
 					GUI.display.volume = 'checked';
 				} else {
-					GUI.display.coverlarge = 'checked';
+					if ( !radio ) GUI.display.coverlarge = 'checked';
 					GUI.display.time = '';
 					GUI.display.volume = '';
 					GUI.display.buttons = '';
@@ -406,11 +405,11 @@ $( '#coverTL' ).click( function() {
 			}
 		} else {
 			if ( !$( '#time-knob' ).hasClass( 'hide' ) ) {
-				GUI.display.coverlarge = 'checked';
+				if ( !radio ) GUI.display.coverlarge = 'checked';
 				GUI.display.time = '';
 				GUI.display.buttons = '';
 			} else {
-				GUI.display.coverlarge = coverlarge;
+				if ( !radio ) GUI.display.coverlarge = coverlarge;
 				GUI.display.time = 'checked';
 			}
 		}
