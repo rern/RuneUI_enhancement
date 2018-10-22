@@ -704,7 +704,6 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 		var artist = '';
 	}
 	var mode = $this.attr( 'mode' );
-	console.log(path +' - '+ artist +' - '+ mode )
 	if ( [ 'dirble', 'jamendo', 'spotify' ].indexOf( mode ) === -1 ) {
 		getDB( {
 			  path       : path

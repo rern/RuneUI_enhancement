@@ -1215,7 +1215,6 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 		, genre       : 'Genre'
 		, composer    : 'Composer'
 	}
-	console.log(GUI.browsemode +' - '+ path)
 	if ( GUI.browsemode !== 'file' ) {
 		if ( GUI.browsemode !== 'album' && GUI.browsemode !== 'composeralbum' ) {
 			var dotpath = ( path === mode[ GUI.browsemode ] ) ? '' : '<a id="artistalbum"><gr> • </gr><span class="white">'+ path +'</span></a>';
