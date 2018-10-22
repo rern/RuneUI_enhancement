@@ -803,7 +803,6 @@ function renderLibrary() {
 	} );
 }
 function getDB( options ) {
-	console.log(options)
 	$( '#loader' ).removeClass( 'hide' );
 	var cmd = options.cmd || 'browse',
 		path = options.path ? options.path.toString().replace( /"/g, '\"' ) : '',
@@ -915,6 +914,7 @@ function getDB( options ) {
 					, title   : 'Jamendo'
 					, message : 'Jamendo not response. Please try again later'
 				} );
+				GUI.dbbackdata.pop();
 				return
 			}
 			populateDB( data.results, path, plugin, querytype );
