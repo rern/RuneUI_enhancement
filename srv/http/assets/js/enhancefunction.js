@@ -697,7 +697,7 @@ function setLibraryBlock( id ) {
 	var plugin = ( id === 'spotify' || id === 'dirble' || id === 'jamendo' ) ? ( ' data-plugin="'+ namepath[ id ][ 1 ] +'"' ) : '';
 	
 	return '<div class="col-md-3">'
-			+'<div id="home-'+ id +'" class="home-block" data-path="'+ namepath[ id ][ 1 ] +'"'+ browsemode +'>'
+			+'<div id="home-'+ id +'" class="home-block" data-path="'+ namepath[ id ][ 1 ] +'"'+ browsemode + plugin +'>'
 				+'<i class="fa fa-'+ namepath[ id ][ 2 ] +'"></i>'+ count + label
 			+'</div>'
 		+'</div>';
@@ -803,6 +803,7 @@ function renderLibrary() {
 	} );
 }
 function getDB( options ) {
+	console.log(options)
 	$( '#loader' ).removeClass( 'hide' );
 	var cmd = options.cmd || 'browse',
 		path = options.path ? options.path.toString().replace( /"/g, '\"' ) : '',
