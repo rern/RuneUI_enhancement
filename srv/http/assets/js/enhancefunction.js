@@ -848,7 +848,7 @@ function getDB( options ) {
 		var command = {
 			  file        : { mpc: 'mpc ls -f "%title%^^%time%^^%artist%^^%album%^^%file%" "'+ path +'" 2> /dev/null', list: 'file' }
 			, album       : { mpcalbum: path } 
-			, artistalbum : { mpc: 'mpc find -f "%title%^^%time%^^%artist%^^%albumartist%^^%album%^^%file%"'+ artistalbum +' album "'+ path +'"', list: 'file' } 
+			, artistalbum : { mpc: 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%albumartist%"'+ artistalbum +' album "'+ path +'"', list: 'file' } 
 			, artist      : { mpc: 'mpc list album artist "'+ path +'" | awk NF', list: 'album' }
 			, albumartist : { mpc: 'mpc list album albumartist "'+ path +'" | awk NF', list: 'album' }
 			, composer    : { mpc: 'mpc list album composer "'+ path +'" | awk NF', list: 'album' }
