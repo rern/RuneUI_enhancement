@@ -274,7 +274,7 @@ if ( location.pathname === '/sources' ) {
 		}
 	});
 	
-} else if ( location.pathname === '/accesspoint/' ) {
+} else if ( location.pathname === '/accesspoint' ) {
 	$('#accesspoint').change(function(){
 		if ($(this).prop('checked')) {
 			$('#accesspointSettings').removeClass('hide');
@@ -294,7 +294,7 @@ if ( location.pathname === '/sources' ) {
 		$('#dhcp-option-router').val($('#ip-address').val());
 	});
 	
-} else if ( location.pathname === '/debug/' ) {
+} else if ( location.pathname === '/debug' ) {
 	ZeroClipboard.config({swfPath: '/assets/js/vendor/ZeroClipboard.swf'});
 	var client = new ZeroClipboard(document.getElementById('copy-to-clipboard'));
 	client.on('ready', function(readyEvent){
