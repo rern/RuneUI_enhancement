@@ -840,11 +840,15 @@ function getDB( options ) {
 	if ( !plugin ) {
 		var currentpath = $( '#db-currentpath' ).attr( 'path' ); // for artist-album search
 		currentpath = currentpath ? currentpath.toString().replace( /"/g, '\"' ) : '';
-		var artistalbum = artist || currentpath;
+		if ( $.inArray( artist.toLowerCase(), [ 'va', 'various', 'various artist', 'various artists' ] ) !== -1 ) {
+			var artistalbum = '';
+		} else {
+			var artistalbum = ' artist "'+ artist +'"' || ' artist "'+ currentpath +'"';
+		}
 		var command = {
 			  file        : { mpc: 'mpc ls -f "%title%^^%time%^^%artist%^^%album%^^%file%" "'+ path +'" 2> /dev/null', list: 'file' }
 			, album       : { mpcalbum: path } 
-			, artistalbum : { mpc: 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%" artist "'+ artistalbum +'" album "'+ path +'"', list: 'file' } 
+			, artistalbum : { mpc: 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%"'+ artistalbum +' album "'+ path +'"', list: 'file' } 
 			, artist      : { mpc: 'mpc list album artist "'+ path +'" | awk NF', list: 'album' }
 			, albumartist : { mpc: 'mpc list album albumartist "'+ path +'" | awk NF', list: 'album' }
 			, composer    : { mpc: 'mpc list album composer "'+ path +'" | awk NF', list: 'album' }
