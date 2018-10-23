@@ -33,9 +33,7 @@ if ( location.pathname === '/sources' ) {
 			toggleUpdate();
 		}
 	} );
-	// get updating status on load
 	toggleUpdate();
-	// stop fa-spin when done updating
 	var pushstreamIdle = new PushStream( {
 		host: window.location.hostname,
 		port: window.location.port,
@@ -48,7 +46,6 @@ if ( location.pathname === '/sources' ) {
 	pushstreamIdle.connect();
 
 } else if ( location.pathname === '/sources/add' ) {
-	// enable/disable CIFS auth section
 	if ($('#mount-type').val() === 'nfs') {
 		$('#mount-cifs').addClass('disabled').children('.disabler').removeClass('hide');
 	}
@@ -60,19 +57,13 @@ if ( location.pathname === '/sources' ) {
 			$('#mount-cifs').addClass('disabled').children('.disabler').removeClass('hide');
 		}
 	});
-	
-	// enable/disable CIFS user and password fields
 	$('#nas-guest').change(function(){
 		if ($(this).prop('checked')) {
-			//console.log('checked');
 			$('#mount-auth').addClass('disabled').children('.disabler').removeClass('hide');
 		} else {
-			//console.log('unchecked');
 			$('#mount-auth').removeClass('disabled').children('.disabler').addClass('hide');
 		}
 	});
-	
-	// show advanced options
 	$('#nas-advanced').change(function(){
 		if ($(this).prop('checked')) {
 			$('#mount-advanced-config').removeClass('hide');
@@ -80,7 +71,6 @@ if ( location.pathname === '/sources' ) {
 			$('#mount-advanced-config').addClass('hide');
 		}
 	});
-	
 	$('#show-mount-advanced-config').click(function(e){
 		e.preventDefault();
 		if ($(this).hasClass('active')) {
@@ -95,15 +85,13 @@ if ( location.pathname === '/sources' ) {
 			$(this).find('span').html('hide advanced options');
 		}
 	});
-	
 	$('#usb-mount-list a').click(function(){
 		var mountName = $(this).data('mount');
 		$('#usb-umount-name').html(mountName);
 		$('#usb-umount').val(mountName);
 	});
-} else if ( location.pathname === '/mpd' ) {
 	
-	// output interface select
+} else if ( location.pathname === '/mpd' ) {
 	$('#audio-output-interface').change(function(){
 		renderMSG([{'title': 'Switching audio output', 'text': 'Please wait for the config update...', 'icon': 'fa fa-cog fa-spin', 'delay': 5000 }]);
 		var output = $(this).val();
@@ -116,15 +104,12 @@ if ( location.pathname === '/sources' ) {
 			cache: false
 		});
 	});
-	
-	// MPD config manual edit
 	$('.manual-edit-confirm').find('.btn-primary').click(function(){
 		$('#mpdconf_editor').removeClass('hide');
 		$('#manual-edit-warning').addClass('hide');
 	});
-} else if ( location.pathname === '/settings' ) {
 	
-	// show/hide AirPlay name form
+} else if ( location.pathname === '/settings' ) {
 	$('#airplay').change(function(){
 		if ($(this).prop('checked')) {
 			$('#airplayName').removeClass('hide');
@@ -134,8 +119,6 @@ if ( location.pathname === '/sources' ) {
 			$('#airplayBox').removeClass('boxed-group');
 		}
 	});
-	
-	// show/hide Last.fm auth form  
 	$('#scrobbling-lastfm').change(function(){
 		if ($(this).prop('checked')) {
 			$('#lastfmAuth').removeClass('hide');
@@ -145,8 +128,6 @@ if ( location.pathname === '/sources' ) {
 			$('#lastfmBox').removeClass('boxed-group');
 		}
 	});
-	
-	// show/hide proxy settings form  
 	$('#proxy').change(function(){
 		if ($(this).prop('checked')) {
 			$('#proxyAuth').removeClass('hide');
@@ -156,8 +137,6 @@ if ( location.pathname === '/sources' ) {
 			$('#proxyBox').removeClass('boxed-group');
 		}
 	});
-	
-	// show/hide UPnP/dlna name form
 	$('#dlna').change(function(){
 		if ($(this).prop('checked')) {
 			$('#dlnaName').removeClass('hide');
@@ -167,8 +146,6 @@ if ( location.pathname === '/sources' ) {
 			$('#dlnaBox').removeClass('boxed-group');
 		}
 	});
-	
-	// show/hide Spotify auth form
 	$('#spotify').change(function(){
 		if ($(this).prop('checked')) {
 			$('#spotifyAuth').removeClass('hide');
@@ -178,9 +155,8 @@ if ( location.pathname === '/sources' ) {
 			$('#spotifyBox').removeClass('boxed-group');
 		}
 	});
-} else if ( location.pathname === '/network' ) {
 	
-	// show/hide static network configuration based on select value
+} else if ( location.pathname === '/network' ) {
 	var netManualConf = $('#network-manual-config');
 	if ($('#dhcp').val() === '0') {
 		netManualConf.removeClass('hide');
@@ -193,8 +169,6 @@ if ( location.pathname === '/sources' ) {
 			netManualConf.addClass('hide');
 		}
 	});
-	
-	// show/hide WiFi security configuration based on select value
 	var WiFiKey = $('#wifi-security-key');
 	if ($('#wifi-security').val() !== 'open') {
 		WiFiKey.removeClass('hide');
@@ -207,10 +181,7 @@ if ( location.pathname === '/sources' ) {
 			WiFiKey.addClass('hide');
 		}
 	});
-	
-	// refresh in range Wi-Fi networks list
 	if ($('#wifiNetworks').length) {
-		// list of in range wlans
 		function listWLANs(text) {
 			var i = 0, content = '', inrange = '', stored = '', wlans = text[0];
 			//console.log(wlans);
@@ -261,11 +232,8 @@ if ( location.pathname === '/sources' ) {
 			url: '/command/?cmd=wifiscan',
 			cache: false
 		});
-		
-		// draw the NICs details table
 		function nicsDetails(text) {
 			var i = 0, content = '', nics = text[0];
-			// console.log(nics);
 			$.each(nics, function(i) {
 				if (i === $('#nic-details').data('name')) {
 					content += '<tr><th>Name:</th><td><strong>' + i + '<strong></td></tr>';
@@ -298,8 +266,6 @@ if ( location.pathname === '/sources' ) {
 		pushstream.addChannel('nics');
 		pushstream.connect();
 	}
-	
-	// show/hide WiFi stored profile box
 	$('#wifiProfiles').change(function(){
 		if ($(this).prop('checked')) {
 			$('#wifiProfilesBox').addClass('hide');
@@ -307,10 +273,8 @@ if ( location.pathname === '/sources' ) {
 			$('#wifiProfilesBox').removeClass('hide');
 		}
 	});
-
-} else if ( location.pathname === '/accesspoint/' ) {
 	
-	// show/hide AP settings form
+} else if ( location.pathname === '/accesspoint/' ) {
 	$('#accesspoint').change(function(){
 		if ($(this).prop('checked')) {
 			$('#accesspointSettings').removeClass('hide');
@@ -320,7 +284,6 @@ if ( location.pathname === '/sources' ) {
 			$('#accesspointBox').removeClass('boxed-group');
 		}
 	});
-
 	$('#ip-address').change(function(){
 		var parts = $('#ip-address').val().split('.');
 		parts[3]++;
@@ -329,6 +292,19 @@ if ( location.pathname === '/sources' ) {
 		$('#broadcast').val(parts.join('.'));
 		$('#dhcp-option-dns').val($('#ip-address').val());
 		$('#dhcp-option-router').val($('#ip-address').val());
+	});
+	
+} else if ( location.pathname === '/debug/' ) {
+	ZeroClipboard.config({swfPath: '/assets/js/vendor/ZeroClipboard.swf'});
+	var client = new ZeroClipboard(document.getElementById('copy-to-clipboard'));
+	client.on('ready', function(readyEvent){
+		client.on('aftercopy', function(event){
+			new PNotify({
+				title: 'Copied to clipboard',
+				text: 'The debug output was copied successfully in your clipboard.',
+				icon: 'fa fa-check'
+			});
+		});
 	});
 }
 

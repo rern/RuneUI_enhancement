@@ -34,7 +34,7 @@ var GUI = { // outside '$( function() {' enable console.log access
 };
 var blinkdot = '<a class="dot">.</a> <a class="dot dot2">.</a> <a class="dot dot3">.</a>';
 
-GUI.local = 1;
+GUI.local = 1; // suppress 2nd getPlaybackStatus() on load
 setTimeout( function() { GUI.local = 0 }, 500 );
 $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 	GUI.display = data;
