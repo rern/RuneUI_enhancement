@@ -848,7 +848,7 @@ function getDB( options ) {
 		var command = {
 			  file        : { mpc: 'mpc ls -f "%title%^^%time%^^%artist%^^%album%^^%file%" "'+ path +'" 2> /dev/null', list: 'file' }
 			, album       : { mpcalbum: path } 
-			, artistalbum : { mpc: 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%"'+ artistalbum +' album "'+ path +'"', list: 'file' } 
+			, artistalbum : { mpc: 'mpc find -f "%title%^^%time%^^%artist%^^%albumartist%^^%album%^^%file%"'+ artistalbum +' album "'+ path +'"', list: 'file' } 
 			, artist      : { mpc: 'mpc list album artist "'+ path +'" | awk NF', list: 'album' }
 			, albumartist : { mpc: 'mpc list album albumartist "'+ path +'" | awk NF', list: 'album' }
 			, composer    : { mpc: 'mpc list album composer "'+ path +'" | awk NF', list: 'album' }
@@ -979,7 +979,9 @@ function parseDBdata( inputArr, i, respType, inpath, querytype ) {
 					content = '<li data-path="'+ inputArr.file +'" liname="'+ liname +'"><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i>';
 					content += '<span class="sn">'+ liname +'&ensp;<span class="time">'+ inputArr.Time +'</span></span>';
 					content += '<span class="bl">'+ inputArr.file +'</span></li>';
-					if ( !GUI.artistalbum ) GUI.artistalbum = inputArr.Album +'<gr> • </gr>'+ inputArr.Artist;
+					var artist = inputArr.AlbumArtist || inputArr.Artist;
+					GUI.artistalbum = GUI.artistalbum || inputArr.Album +'<gr> • </gr>'+ artist;
+					
 				} else {
 					var liname = inputArr.album;
 					var artistalbum = inputArr.artistalbum;
