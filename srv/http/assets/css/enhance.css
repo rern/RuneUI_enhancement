@@ -1918,6 +1918,9 @@ w {
 	#menu-bottom {
 		display: none;
 	}
+	#settings {
+		position: absolute;
+	}
 	.container {
 		padding-top: 0;
 	}
