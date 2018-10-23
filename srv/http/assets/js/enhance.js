@@ -173,18 +173,19 @@ $( '#displaylibrary' ).click( function() {
 		, message      : 'Select items to show:'
 		, checkboxhtml : 
 			'<form id="displaysavelibrary">'
-				+ displayCheckbox( 'sd',       'SD' )
-				+ displayCheckbox( 'usb',      'USB' )
-				+ displayCheckbox( 'nas',      'Network' )
-				+ displayCheckbox( 'webradio', 'Webradio' )
-				+ displayCheckbox( 'album',    'Album' )
-				+ displayCheckbox( 'artist',   'Artist' )
-				+ displayCheckbox( 'composer', 'Composer' )
-				+ displayCheckbox( 'genre',    'Genre' )
-				+ displayCheckbox( 'dirble',   'Dirble' )
-				+ displayCheckbox( 'jamendo',  'Jamendo' )
-				+ displayCheckbox( 'count',    '<gr>text</gr> Count' )
-				+ displayCheckbox( 'label',    '<gr>text</gr> Label' )
+				+ displayCheckbox( 'sd',          'SD' )
+				+ displayCheckbox( 'usb',         'USB' )
+				+ displayCheckbox( 'nas',         'Network' )
+				+ displayCheckbox( 'webradio',    'Webradio' )
+				+ displayCheckbox( 'album',       'Album' )
+				+ displayCheckbox( 'artist',      'Artist' )
+				+ displayCheckbox( 'albumartist', 'Album artist' )
+				+ displayCheckbox( 'composer',    'Composer' )
+				+ displayCheckbox( 'genre',       'Genre' )
+				+ displayCheckbox( 'dirble',      'Dirble' )
+				+ displayCheckbox( 'jamendo',     'Jamendo' )
+				+ displayCheckbox( 'count',       '<gr>text</gr> Count' )
+				+ displayCheckbox( 'label',       '<gr>text</gr> Label' )
 			+'</form>'
 		, cancel       : 1
 		, ok           : function () {

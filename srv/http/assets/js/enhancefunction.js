@@ -138,7 +138,6 @@ function setButtonToggle() {
 	if ( GUI.local ) return
 	
 	var timehide = $( '#time-knob' ).hasClass( 'hide' );
-//	if ( GUI.display.buttons ) {
 	if ( GUI.display.buttons && !$( '#play-group' ).hasClass( 'hide' ) ) {
 		$( '#irandom' ).addClass( 'hide' )
 		$( '#irepeat' ).attr( 'class', 'fa hide' );
@@ -697,7 +696,7 @@ function setLibraryBlock( id ) {
 	var plugin = ( id === 'spotify' || id === 'dirble' || id === 'jamendo' ) ? ( ' data-plugin="'+ namepath[ id ][ 1 ] +'"' ) : '';
 	
 	return '<div class="col-md-3">'
-			+'<div id="home-'+ id +'" class="home-block" data-path="'+ namepath[ id ][ 1 ] +'"'+ browsemode +'>'
+			+'<div id="home-'+ id +'" class="home-block" data-path="'+ namepath[ id ][ 1 ] +'"'+ browsemode + plugin +'>'
 				+'<i class="fa fa-'+ namepath[ id ][ 2 ] +'"></i>'+ count + label
 			+'</div>'
 		+'</div>';
@@ -705,7 +704,6 @@ function setLibraryBlock( id ) {
 function renderLibrary() {
 	GUI.dbbackdata = [];
 	if ( GUI.bookmarkedit ) return
-//	GUI.dbscrolltop = {}; // comment out to always keep scroll positions
 	GUI.plugin = '';
 	$( '#db-currentpath' ).removeAttr( 'path' ).css( 'width', '' );
 	$( '#db-entries' ).empty();
@@ -914,6 +912,7 @@ function getDB( options ) {
 					, title   : 'Jamendo'
 					, message : 'Jamendo not response. Please try again later'
 				} );
+				GUI.dbbackdata.pop();
 				return
 			}
 			populateDB( data.results, path, plugin, querytype );
@@ -1070,7 +1069,7 @@ function parseDBdata( inputArr, i, respType, inpath, querytype ) {
 	}
 	return content;
 }
-// strip leading A|An|The|(|[|. (for sorting)
+// strip leading A|An|The|(|[|.|'|"|\ (for sorting)
 function stripLeading( string ) {
 	if ( typeof string === 'number' ) string = string.toString();
 	return string.replace( /^A +|^An +|^The +|^\(\s*|^\[\s*|^\.\s*|^\'\s*|^\"\s*|\\/i, '' );
@@ -1104,7 +1103,7 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 					return 0;
 				}
 			} );
-			for (i = 0; (row = data[i]); i += 1) content += parseDBdata( row, i, 'Spotify', arg, querytype );
+			for ( i = 0; ( row = data[ i ] ); i++ ) content += parseDBdata( row, i, 'Spotify', arg, querytype );
 		} else if ( plugin === 'Dirble' ) {
 			if ( querytype === 'childs-stations' ) {
 				content = $( '#db-entries' ).html();
@@ -1118,7 +1117,7 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 						return 0;
 					}
 				} );
-				for (i = 0; (row = data[i]); i += 1) content += parseDBdata( row, i, 'Dirble', '', querytype );
+				for ( i = 0; ( row = data[ i ] ); i++ ) content += parseDBdata( row, i, 'Dirble', '', querytype );
 			}
 		} else if ( plugin === 'Jamendo' ) {
 			data.sort( function( a, b ) {
@@ -1128,7 +1127,7 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 					return 0;
 				}
 			} );
-			for (i = 0; (row = data[i]); i += 1) content += parseDBdata( row, i, 'Jamendo', '', querytype );
+			for (i = 0; ( row = data[ i ] ); i++ ) content += parseDBdata( row, i, 'Jamendo', '', querytype );
 		}
 	} else {
 // normal MPD browsing
@@ -1369,8 +1368,6 @@ function renderPlaylist() {
 	$( '#playlist-warning' ).addClass( 'hide' );
 	$( '#pl-count' ).html( counthtml );
 	$( '#plsave, #plclear' ).removeClass( 'disable' );
-//	$( '#plcrop' ).toggleClass( 'disable', GUI.status.state === 'stop' );
-	
 	$( '#pl-entries' ).html( content +'<p></p>' ).promise().done( function() {
 		$( '#pl-entries p' ).css( 'min-height', window.innerHeight - 140 +'px' );
 		setPlaylistScroll();
