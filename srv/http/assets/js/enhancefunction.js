@@ -1091,7 +1091,62 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 	$( '#db-currentpath>span, #db-entries, #db-back' ).removeClass( 'hide' );
 	$( '#home-blocks' ).addClass( 'hide' );
 
-	if ( plugin ) {
+	if ( !plugin ) {
+		if ( !data.length ) return
+		
+		var type = {
+			  Album        : 'album'
+			, Artist       : 'artist'
+			, AlbumArtist  : 'albumartist'
+			, Composer     : 'composer'
+			, Genre        : 'genre'
+			, Webradio     : 'playlist'
+		}
+		var mode = {
+			  file          : 'file'
+			, album         : 'file'
+			, artist        : 'album'
+			, albumartist   : 'album'
+			, genre         : 'artist'
+			, composer      : 'file'
+			, composeralbum : 'album'
+		}
+		// undefined type are directory names
+		prop = type[ path ] ? type[ path ] : 'directory';
+		if ( data[ 0 ].artistalbum ) prop = 'artistalbum'; // for common albums like 'Greatest Hits'
+		if ( data[ 0 ].directory || data[ 0 ].file ) {
+			var arraydir = [];
+			var arrayfile = [];
+			$.each( data, function( index, value ) {
+				value.directory ? arraydir.push( value ) : arrayfile.push( value );
+			} );
+			
+			arraydir.sort( function( a, b ) {
+				var adir = stripLeading( a[ 'directory' ].split( '/' ).pop() );
+				var bdir = stripLeading( b[ 'directory' ].split( '/' ).pop() );
+				return adir.localeCompare( bdir, undefined, { numeric: true } );
+			} );
+			var arraydirL = arraydir.length;
+			for ( i = 0; i < arraydirL; i++ ) content += parseDBdata( arraydir[ i ], i, 'db', path );
+			arrayfile.sort( function( a, b ) {
+				if ( !keyword ) {
+					return stripLeading( a[ 'file' ] ).localeCompare( stripLeading( b[ 'file' ] ), undefined, { numeric: true } );
+				} else {
+					return stripLeading( a[ 'Title' ] ).localeCompare( stripLeading( b[ 'Title' ] ), undefined, { numeric: true } );
+				}
+			} );
+			var arrayfileL = arrayfile.length;
+			for ( i = 0; i < arrayfileL; i++ ) content += parseDBdata( arrayfile[ i ], i, 'db', path );
+		} else {
+			data.sort( function( a, b ) {
+				if ( a[ prop ] === undefined ) prop = mode[ GUI.browsemode ];
+				return stripLeading( a[ prop ] ).localeCompare( stripLeading( b[ prop ] ), undefined, { numeric: true } );
+			} );
+			var dataL = data.length;
+			for ( i = 0; i < dataL; i++ ) content += parseDBdata( data[ i ], i, 'db', path );
+		}
+		$( '#db-webradio-new' ).toggleClass( 'hide', path !== 'Webradio' );
+	} else {
 		if ( plugin === 'Spotify' ) {
 			data = ( querytype === 'tracks' ) ? data.tracks : data.playlists;
 			data.sort( function( a, b ) {
@@ -1129,63 +1184,6 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 			} );
 			for (i = 0; ( row = data[ i ] ); i++ ) content += parseDBdata( row, i, 'Jamendo', '', querytype );
 		}
-	} else {
-// normal MPD browsing
-		if ( !data.length ) return
-		
-		var type = {
-			  Album        : 'album'
-			, Artist       : 'artist'
-			, AlbumArtist  : 'albumartist'
-			, Composer     : 'composer'
-			, Genre        : 'genre'
-			, Webradio     : 'playlist'
-		}
-		var mode = {
-			  file          : 'file'
-			, album         : 'file'
-			, artist        : 'album'
-			, albumartist   : 'album'
-			, genre         : 'artist'
-			, composer      : 'file'
-			, composeralbum : 'album'
-		}
-		// undefined type are directory names
-		prop = type[ path ] ? type[ path ] : 'directory';
-		if ( data[ 0 ].artistalbum ) prop = 'artistalbum'; // for common albums like 'Greatest Hits'
-		// browsing
-		if ( data[ 0 ].directory || data[ 0 ].file ) {
-			var arraydir = [];
-			var arrayfile = [];
-			$.each( data, function( index, value ) {
-				value.directory ? arraydir.push( value ) : arrayfile.push( value );
-			} );
-			
-			arraydir.sort( function( a, b ) {
-				var adir = stripLeading( a[ 'directory' ].split( '/' ).pop() );
-				var bdir = stripLeading( b[ 'directory' ].split( '/' ).pop() );
-				return adir.localeCompare( bdir, undefined, { numeric: true } );
-			} );
-			var arraydirL = arraydir.length;
-			for ( i = 0; i < arraydirL; i++ ) content += parseDBdata( arraydir[ i ], i, 'db', path );
-			arrayfile.sort( function( a, b ) {
-				if ( !keyword ) {
-					return stripLeading( a[ 'file' ] ).localeCompare( stripLeading( b[ 'file' ] ), undefined, { numeric: true } );
-				} else {
-					return stripLeading( a[ 'Title' ] ).localeCompare( stripLeading( b[ 'Title' ] ), undefined, { numeric: true } );
-				}
-			} );
-			var arrayfileL = arrayfile.length;
-			for ( i = 0; i < arrayfileL; i++ ) content += parseDBdata( arrayfile[ i ], i, 'db', path );
-		} else {
-			data.sort( function( a, b ) {
-				if ( a[ prop ] === undefined ) prop = mode[ GUI.browsemode ];
-				return stripLeading( a[ prop ] ).localeCompare( stripLeading( b[ prop ] ), undefined, { numeric: true } );
-			} );
-			var dataL = data.length;
-			for ( i = 0; i < dataL; i++ ) content += parseDBdata( data[ i ], i, 'db', path );
-		}
-		$( '#db-webradio-new' ).toggleClass( 'hide', path !== 'Webradio' );
 	}
 	$( '#db-entries' ).html( content +'<p></p>' ).promise().done( function() {
 		// fill bottom of list to mave last li movable to top
