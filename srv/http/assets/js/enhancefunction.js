@@ -873,7 +873,7 @@ function getDB( options ) {
 				mode = 'Webradio';
 			} else if ( GUI.browsemode === 'album' && currentpath !== 'Album' && artist ) { // <li> in 'Artist' and 'Genre'
 				mode = 'artistalbum';
-				GUI.artistalbum = path +'<gr> • </gr>'+ artistalbum;
+				GUI.albumartist = path +'<gr> • </gr>'+ artistalbum;
 			} else {
 				mode = GUI.browsemode;
 				if ( mode === 'composer' ) GUI.browsemode = 'composeralbum';
@@ -929,7 +929,7 @@ function parseDBdata( inputArr, i, respType, inpath, querytype ) {
 		respType = respType || '',
 		inpath = inpath || '',
 		querytype = querytype || '';
-	GUI.artistalbum = '';
+	GUI.albumartist = '';
 	switch ( respType ) {
 		case 'db':
 			if ( GUI.browsemode === 'file' ) {
@@ -980,7 +980,7 @@ function parseDBdata( inputArr, i, respType, inpath, querytype ) {
 					content += '<span class="sn">'+ liname +'&ensp;<span class="time">'+ inputArr.Time +'</span></span>';
 					content += '<span class="bl">'+ inputArr.file +'</span></li>';
 					var artist = inputArr.AlbumArtist || inputArr.Artist;
-					GUI.artistalbum = GUI.artistalbum || inputArr.Album +'<gr> • </gr>'+ artist;
+					if ( !GUI.albumartist ) GUI.albumartist = inputArr.Album +'<gr> • </gr>'+ artist;
 					
 				} else {
 					var liname = inputArr.album;
@@ -1223,7 +1223,7 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 			var dotpath = ( path === mode[ GUI.browsemode ] ) ? '' : '<a id="artistalbum"><gr> • </gr><span class="white">'+ path +'</span></a>';
 		} else {
 			var albumpath = path === 'Album' ? '' : path;
-			var albumtext = GUI.artistalbum ? GUI.artistalbum : albumpath;
+			var albumtext = GUI.albumartist ? GUI.albumartist : albumpath;
 			var dotpath = albumtext ? '<a id="artistalbum"><gr> • </gr><span class="white">'+ albumtext +'</span></a>' : '';
 		}
 		$( '#db-currentpath' ).attr( 'path', path ); // for back navigation
