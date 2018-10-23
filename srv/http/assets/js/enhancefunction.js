@@ -348,7 +348,7 @@ function renderPlayback() {
 	
 	$( '#cover-art' ).css( 'border-radius', '' );
 	$( '#coverartoverlay' ).addClass( 'hide' );
-	if ( status.Album !== previousalbum ) {
+	if ( status.Album !== previousalbum || !status.Album ) {
 		var coverart = status.coverart || $( '#cover' ).val();
 		$( '#cover-art' )
 			.attr( 'src', coverart )
