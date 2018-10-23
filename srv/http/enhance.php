@@ -185,9 +185,9 @@ function search2array( $result ) {
 			$li[ 'Title' ] = $list[ 0 ];
 			$li[ 'Time' ] = $list[ 1 ];
 			$li[ 'Artist' ] = $list[ 2 ];
-			$li[ 'AlbumArtist' ] = $list[ 3 ];
-			$li[ 'Album' ] = $list[ 4 ];
-			$li[ 'file' ] = $list[ 5 ];
+			$li[ 'Album' ] = $list[ 3 ];
+			$li[ 'file' ] = $list[ 4 ];
+			if ( !empty( $list[ 5 ] ) ) $li[ 'AlbumArtist' ] = $list[ 5 ];
 			$data[] = $li;
 			$li = '';
 		}
