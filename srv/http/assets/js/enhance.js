@@ -197,6 +197,8 @@ $( '#turnoff' ).click( function() {
 	} );
 } );
 $( '#open-library' ).click( function() {
+	if ( !GUI.libraryhome.song ) return // wait for mpc data 
+	
 	if ( GUI.bookmarkedit ) {
 		GUI.bookmarkedit = 0;
 		renderLibrary();

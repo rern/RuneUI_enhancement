@@ -840,10 +840,10 @@ function getDB( options ) {
 	if ( !plugin ) {
 		var currentpath = $( '#db-currentpath' ).attr( 'path' ); // for artist-album search
 		currentpath = currentpath ? currentpath.toString().replace( /"/g, '\"' ) : '';
-		if ( $.inArray( artist.toLowerCase(), [ 'va', 'various', 'various artist', 'various artists' ] ) !== -1 ) {
-			var artistalbum = '';
+		if ( $( '#rootpath' ).data( 'path' ) !== 'AlbumArtist' ) {
+			var artistalbum = ' artist "'+ ( artist ? artist : currentpath ) +'"';
 		} else {
-			var artistalbum = ' artist "'+ artist +'"' || ' artist "'+ currentpath +'"';
+			var artistalbum = '';
 		}
 		var command = {
 			  file        : { mpc: 'mpc ls -f "%title%^^%time%^^%artist%^^%album%^^%file%" "'+ path +'" 2> /dev/null', list: 'file' }
@@ -1225,7 +1225,7 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 			var dotpath = albumtext ? '<a id="artistalbum"><gr> • </gr><span class="white">'+ albumtext +'</span></a>' : '';
 		}
 		$( '#db-currentpath' ).attr( 'path', path ); // for back navigation
-		$( '#db-currentpath span' ).html( iconName[ GUI.browsemode ][ 0 ] +' <a data-path="'+ mode[ GUI.browsemode ] +'">'+ iconName[ GUI.browsemode ][ 1 ] +'</a>'+ dotpath );
+		$( '#db-currentpath span' ).html( iconName[ GUI.browsemode ][ 0 ] +' <a id="rootpath" data-path="'+ mode[ GUI.browsemode ] +'">'+ iconName[ GUI.browsemode ][ 1 ] +'</a>'+ dotpath );
 	} else {
 		var folder = path.split( '/' );
 		var folderRoot = folder[ 0 ];
