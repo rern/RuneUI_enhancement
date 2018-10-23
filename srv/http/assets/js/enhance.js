@@ -52,76 +52,95 @@ $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+if ( document.location.hostname === 'localhost' ) $( '.osk-trigger' ).onScreenKeyboard( { 'draggable': true } );
+
+// PLAYBACK /////////////////////////////////////////////////////////////////////////////////////
+$( '.btn-cmd' ).click( function() {
+	var $this = $( this );
+	var cmd = $this.data( 'cmd' );
+	if ( $this.hasClass( 'btn-toggle' ) ) {
+		if ( GUI.status.ext === 'radio' ) return
+		
+		if ( cmd === 'pl-ashuffle-stop' ) {
+			$.post( 'enhance.php', { bash: '/usr/bin/killall ashuffle &' } );
+			return
+		}
+		var onoff = GUI.status[ cmd ] ? 0 : 1;
+		GUI.status[ cmd ] = onoff;
+		cmd = cmd +' '+ onoff;
+	} else {
+		if ( cmd === 'pause' || cmd === 'stop' ) {
+			clearInterval( GUI.intKnob );
+			clearInterval( GUI.intElapsed );
+			if ( GUI.status.ext === 'radio' ) {
+				cmd = 'stop';
+				$( '#song' ).empty();
+			}
+		} else if ( cmd === 'previous' || cmd === 'next' ) {
+			// enable previous / next while stop
+			if ( GUI.status.playlistlength === 1 ) return
+			
+			var current = GUI.status.song + 1;
+			var last = GUI.status.playlistlength;
+			
+			if ( GUI.status.random === 1 ) {
+				// improve: repeat pattern of mpd random
+				// Math.floor( Math.random() * ( max - min + 1 ) ) + min;
+				var pos = Math.floor( Math.random() * last );
+				// avoid same pos ( no pos-- or pos++ in ternary )
+				if ( pos === current ) pos = ( pos === last ) ? pos - 1 : pos + 1;
+			} else {
+				if ( cmd === 'previous' ) {
+					var pos = current !== 1 ? current - 1 : last;
+				} else {
+					var pos = current !== last ? current + 1 : 1;
+				}
+			}
+			if ( GUI.status.state === 'play' ) {
+				cmd = 'play '+ pos;
+			} else {
+				$.post( 'enhance.php', { mpc: [ 'mpc play '+ pos, 'mpc stop' ] } );
+				return
+			}
+		}
+	}
+	$.post( 'enhance.php', { mpc: 'mpc '+ cmd } );
+} );
 $( '#menu-settings, #badge' ).click( function() {
 	$( '#settings' )
 		.toggleClass( 'hide' )
 		.css( 'top', $( '#menu-top' ).hasClass( 'hide' ) ? 0 : '40px' );
 } );
-$( '#song, #playlist-warning' ).on( 'click', 'i', function() {
-	$( '#open-library' ).click();
-} );
-$( '#open-library' ).click( function() {
-	if ( GUI.bookmarkedit ) {
-		GUI.bookmarkedit = 0;
-		renderLibrary();
-		return
-	}
-	if ( GUI.activePlayer === 'Airplay' ) {
-		$( '#playsource' ).addClass( 'open' );
-		return
-	}
-	
-	if ( $( this ).hasClass( 'active' ) && GUI.dblist ) {
-		GUI.dblist = GUI.dbback = 0;
-		GUI.currentpath = GUI.browsemode = GUI.dbbrowsemode = ''
-		GUI.dbbackdata = [];
-		
-		renderLibrary();
-		return
-	}
-	
-	setPanelActive( 'panel-library' );
-	if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) {
-		renderLibrary();
-	} else {
-		var scrollpos = GUI.dbscrolltop[ $( '#db-currentpath' ).attr( 'path' ) ];
-		$( 'html, body' ).scrollTop( scrollpos ? scrollpos : 0 );
-	}
-} );
-$( '#open-playback' ).click( function() {
-	setPanelActive( 'panel-playback' );
-	getPlaybackStatus();
-	if ( GUI.status.state === 'play' ) $( '#elapsed' ).empty(); // hide flashing
-} );
-$( '#open-playlist' ).click( function() {
-	
-	if ( $( this ).hasClass( 'active' ) && GUI.pleditor ) GUI.pleditor = 0;
-	if ( GUI.activePlayer === 'Airplay' ) {
-		$( '#playsource' ).addClass( 'open' );
-		return
-	}
-	setPanelActive( 'panel-playlist' );
-	if ( GUI.pleditor ) return
-	
-	if ( !GUI.status.playlistlength ) {
-		renderPlaylist();
-		return
-	}
-	$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
-		GUI.lsplaylists = data.lsplaylists || [];
-		GUI.playlist = data.playlist;
-		renderPlaylist();
-	}, 'json' );
-} );
-$( '#panel-playback, #panel-library, #panel-playlist' ).on( 'swipeleft swiperight', function( e ) {
-	panelLR( e.type === 'swipeleft' ? 'left' : '' );
-} );
-
-$( '#panel-playback' ).click( function( e ) {
-	if ( $( e.target ).is( '.controls, .timemap, .covermap, .volmap' ) ) return
-	
-	$( '.controls, #settings' ).addClass( 'hide' );
-	$( '.controls1, .rs-tooltip, #imode' ).removeClass( 'hide' );
+$( '#displaylibrary' ).click( function() {
+	info( {
+		  icon         : 'library'
+		, title        : 'Libary Home'
+		, message      : 'Select items to show:'
+		, checkboxhtml : 
+			'<form id="displaysavelibrary">'
+				+ displayCheckbox( 'sd',          'SD' )
+				+ displayCheckbox( 'usb',         'USB' )
+				+ displayCheckbox( 'nas',         'Network' )
+				+ displayCheckbox( 'webradio',    'Webradio' )
+				+ displayCheckbox( 'album',       'Album' )
+				+ displayCheckbox( 'artist',      'Artist' )
+				+ displayCheckbox( 'albumartist', 'Album artist' )
+				+ displayCheckbox( 'composer',    'Composer' )
+				+ displayCheckbox( 'genre',       'Genre' )
+				+ displayCheckbox( 'dirble',      'Dirble' )
+				+ displayCheckbox( 'jamendo',     'Jamendo' )
+				+ displayCheckbox( 'count',       '<gr>text</gr> Count' )
+				+ displayCheckbox( 'label',       '<gr>text</gr> Label' )
+			+'</form>'
+		, cancel       : 1
+		, ok           : function () {
+			$( '#displaysavelibrary input' ).each( function() {
+				GUI.display[ this.name ] = this.checked ? 'checked' : '';
+			} );
+			renderLibrary();
+			$.post( 'enhance.php', { setdisplay: GUI.display } );
+		}
+	} );
 } );
 $( '#displayplayback' ).click( function() {
 	info( {
@@ -158,6 +177,87 @@ $( '#displayplayback' ).click( function() {
 	if ( window.innerHeight <= 515 ) setToggleButton( 'bars' );
 	if ( window.innerHeight <= 320 ) setToggleButton( 'buttons' );
 } );
+$( '#turnoff' ).click( function() {
+	info( {
+		  icon        : 'power'
+		, title       : 'Power'
+		, message     : 'Select mode:'
+		, oklabel     : 'Off'
+		, okcolor     : '#bb2828'
+		, ok          : function() {
+			$.post( 'enhance.php', { 'power' : 'shutdown' } );
+			$( '#loader' ).removeClass( 'hide' );
+		}
+		, buttonlabel : 'Reboot'
+		, buttoncolor : '#de810e'
+		, button      : function() {
+			$.post( 'enhance.php', { 'power' : 'reboot' } );
+			$( '#loader' ).removeClass( 'hide' );
+		}
+	} );
+} );
+$( '#open-library' ).click( function() {
+	if ( GUI.bookmarkedit ) {
+		GUI.bookmarkedit = 0;
+		renderLibrary();
+		return
+	}
+	if ( GUI.activePlayer === 'Airplay' ) {
+		$( '#playsource' ).addClass( 'open' );
+		return
+	}
+	
+	if ( $( this ).hasClass( 'active' ) && GUI.dblist ) {
+		GUI.dblist = GUI.dbback = 0;
+		GUI.currentpath = GUI.browsemode = GUI.dbbrowsemode = ''
+		GUI.dbbackdata = [];
+		
+		renderLibrary();
+		return
+	}
+	
+	setPanelActive( 'panel-library' );
+	if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) {
+		renderLibrary();
+	} else {
+		var scrollpos = GUI.dbscrolltop[ $( '#db-currentpath' ).attr( 'path' ) ];
+		$( 'html, body' ).scrollTop( scrollpos ? scrollpos : 0 );
+	}
+} );
+$( '#open-playback' ).click( function() {
+	setPanelActive( 'panel-playback' );
+	getPlaybackStatus();
+	if ( GUI.status.state === 'play' ) $( '#elapsed' ).empty(); // hide flashing
+} );
+$( '#open-playlist' ).click( function() {
+	if ( $( this ).hasClass( 'active' ) && GUI.pleditor ) GUI.pleditor = 0;
+	if ( GUI.activePlayer === 'Airplay' ) {
+		$( '#playsource' ).addClass( 'open' );
+		return
+	}
+	
+	setPanelActive( 'panel-playlist' );
+	if ( GUI.pleditor ) return
+	
+	if ( !GUI.status.playlistlength ) {
+		renderPlaylist();
+		return
+	}
+	$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
+		GUI.lsplaylists = data.lsplaylists || [];
+		GUI.playlist = data.playlist;
+		renderPlaylist();
+	}, 'json' );
+} );
+$( '#panel-playback, #panel-library, #panel-playlist' ).on( 'swipeleft swiperight', function( e ) {
+	panelLR( e.type === 'swipeleft' ? 'left' : '' );
+} );
+$( '#panel-playback' ).click( function( e ) {
+	if ( $( e.target ).is( '.controls, .timemap, .covermap, .volmap' ) ) return
+	
+	$( '.controls, #settings' ).addClass( 'hide' );
+	$( '.controls1, .rs-tooltip, #imode' ).removeClass( 'hide' );
+} );
 $( '#panel-library' ).on( 'click', function( e ) {
 	if ( GUI.local ) return
 	
@@ -166,36 +266,8 @@ $( '#panel-library' ).on( 'click', function( e ) {
 		$( '.home-bookmark' ).find( '.fa-bookmark, gr' ).css( 'opacity', '' );
 	}
 } );
-$( '#displaylibrary' ).click( function() {
-	info( {
-		  icon         : 'library'
-		, title        : 'Libary Home'
-		, message      : 'Select items to show:'
-		, checkboxhtml : 
-			'<form id="displaysavelibrary">'
-				+ displayCheckbox( 'sd',          'SD' )
-				+ displayCheckbox( 'usb',         'USB' )
-				+ displayCheckbox( 'nas',         'Network' )
-				+ displayCheckbox( 'webradio',    'Webradio' )
-				+ displayCheckbox( 'album',       'Album' )
-				+ displayCheckbox( 'artist',      'Artist' )
-				+ displayCheckbox( 'albumartist', 'Album artist' )
-				+ displayCheckbox( 'composer',    'Composer' )
-				+ displayCheckbox( 'genre',       'Genre' )
-				+ displayCheckbox( 'dirble',      'Dirble' )
-				+ displayCheckbox( 'jamendo',     'Jamendo' )
-				+ displayCheckbox( 'count',       '<gr>text</gr> Count' )
-				+ displayCheckbox( 'label',       '<gr>text</gr> Label' )
-			+'</form>'
-		, cancel       : 1
-		, ok           : function () {
-			$( '#displaysavelibrary input' ).each( function() {
-				GUI.display[ this.name ] = this.checked ? 'checked' : '';
-			} );
-			renderLibrary();
-			$.post( 'enhance.php', { setdisplay: GUI.display } );
-		}
-	} );
+$( '#song, #playlist-warning' ).on( 'click', 'i', function() {
+	$( '#open-library' ).click();
 } );
 $( '#time' ).roundSlider( {
 	  sliderType  : 'min-range'
@@ -303,57 +375,6 @@ $( '#volup, #voldn' ).click( function() {
 	GUI.local = 1;
 	setTimeout( function() { GUI.local = 0 }, 500 );
 	$.post( 'enhance.php', { volume: vol } );
-} );
-$( '.btn-cmd' ).click( function() {
-	var $this = $( this );
-	var cmd = $this.data( 'cmd' );
-	if ( $this.hasClass( 'btn-toggle' ) ) {
-		if ( GUI.status.ext === 'radio' ) return
-		
-		if ( cmd === 'pl-ashuffle-stop' ) {
-			$.post( 'enhance.php', { bash: '/usr/bin/killall ashuffle &' } );
-			return
-		}
-		var onoff = GUI.status[ cmd ] ? 0 : 1;
-		GUI.status[ cmd ] = onoff;
-		cmd = cmd +' '+ onoff;
-	} else {
-		if ( cmd === 'pause' || cmd === 'stop' ) {
-			clearInterval( GUI.intKnob );
-			clearInterval( GUI.intElapsed );
-			if ( GUI.status.ext === 'radio' ) {
-				cmd = 'stop';
-				$( '#song' ).empty();
-			}
-		} else if ( cmd === 'previous' || cmd === 'next' ) {
-			// enable previous / next while stop
-			if ( GUI.status.playlistlength === 1 ) return
-			
-			var current = GUI.status.song + 1;
-			var last = GUI.status.playlistlength;
-			
-			if ( GUI.status.random === 1 ) {
-				// improve: repeat pattern of mpd random
-				// Math.floor( Math.random() * ( max - min + 1 ) ) + min;
-				var pos = Math.floor( Math.random() * last );
-				// avoid same pos ( no pos-- or pos++ in ternary )
-				if ( pos === current ) pos = ( pos === last ) ? pos - 1 : pos + 1;
-			} else {
-				if ( cmd === 'previous' ) {
-					var pos = current !== 1 ? current - 1 : last;
-				} else {
-					var pos = current !== last ? current + 1 : 1;
-				}
-			}
-			if ( GUI.status.state === 'play' ) {
-				cmd = 'play '+ pos;
-			} else {
-				$.post( 'enhance.php', { mpc: [ 'mpc play '+ pos, 'mpc stop' ] } );
-				return
-			}
-		}
-	}
-	$.post( 'enhance.php', { mpc: 'mpc '+ cmd } );
 } );
 $( '#coverTL' ).click( function() {
 	if ( !$( '#controls-cover' ).hasClass( 'hide' ) ) $( '.controls, .controls1, .rs-tooltip, #imode' ).toggleClass( 'hide' );
@@ -480,32 +501,6 @@ $( '#menu-top, #menu-bottom, #settings' ).click( function( e ) {
 	$( '.controls' ).addClass( 'hide' );
 	$( '.controls1, .rs-tooltip, #imode' ).removeClass( 'hide' );
 } );
-$( '#biocontent' ).delegate( '.biosimilar', 'click', function() {
-	getBio( $( this ).find( 'p' ).text() )
-} );
-$( '#closebio' ).click( function() {
-	$( '#bio' ).addClass( 'hide' );
-	displayTopBottom();
-} );
-$( '#turnoff' ).click( function() {
-	info( {
-		  icon        : 'power'
-		, title       : 'Power'
-		, message     : 'Select mode:'
-		, oklabel     : 'Off'
-		, okcolor     : '#bb2828'
-		, ok          : function() {
-			$.post( 'enhance.php', { 'power' : 'shutdown' } );
-			$( '#loader' ).removeClass( 'hide' );
-		}
-		, buttonlabel : 'Reboot'
-		, buttoncolor : '#de810e'
-		, button      : function() {
-			$.post( 'enhance.php', { 'power' : 'reboot' } );
-			$( '#loader' ).removeClass( 'hide' );
-		}
-	} );
-} );
 $( '#playsource-open' ).click( function() {
 	$( '#playsource li a' ).addClass( 'inactive' );
 	$( '#playsource-'+ GUI.activePlayer.toLowerCase() ).removeClass( 'inactive' )
@@ -539,6 +534,14 @@ $( '#playsource-spotify' ).click( function() {
 		}
 	} );
 } );
+$( '#biocontent' ).delegate( '.biosimilar', 'click', function() {
+	getBio( $( this ).find( 'p' ).text() )
+} );
+$( '#closebio' ).click( function() {
+	$( '#bio' ).addClass( 'hide' );
+	displayTopBottom();
+} );
+// LIBRARY /////////////////////////////////////////////////////////////////////////////////////
 $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 	var $this = $( this );
 	var id = this.id;
@@ -786,6 +789,7 @@ $( '#db-index li' ).click( function() {
 	} );
 	if ( matcharray.length ) $( 'html, body' ).scrollTop( matcharray[ 0 ].offsetTop - topoffset );
 } );
+// PLAYLIST /////////////////////////////////////////////////////////////////////////////////////
 $( '#pl-searchbtn, #plsearchbtn, #pl-filter-results' ).click( function() {
 	$( '#pl-count, #pl-search, #pl-searchbtn, #pl-manage' ).toggleClass( 'hide' );
 } );
@@ -1013,7 +1017,6 @@ new Sortable( document.getElementById( 'pl-entries' ), {
 	}
 } );
 
-if ( document.location.hostname === 'localhost' ) $( '.osk-trigger' ).onScreenKeyboard( { 'draggable': true } );
 
 if ( 'hidden' in document ) {
 	var visibilityevent = 'visibilitychange';
