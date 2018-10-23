@@ -4,7 +4,8 @@ if ( document.location.hostname === 'localhost' ) $( '.osk-trigger' ).onScreenKe
 
 $( '.selectpicker' ).selectpicker();
 
-if ( location.pathname === '/sources' ) {
+var path = location.pathname;
+if ( path === '/sources' ) {
 	function toggleUpdate() {
 		$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
 			$( '#updatempddb, #rescanmpddb' ).toggleClass( 'disabled', status.updating_db !== 0 );
@@ -45,7 +46,7 @@ if ( location.pathname === '/sources' ) {
 	pushstreamIdle.addChannel( 'idle' );
 	pushstreamIdle.connect();
 
-} else if ( location.pathname === '/sources/add' ) {
+} else if ( path === '/sources/add' ) {
 	if ($('#mount-type').val() === 'nfs') {
 		$('#mount-cifs').addClass('disabled').children('.disabler').removeClass('hide');
 	}
@@ -91,7 +92,7 @@ if ( location.pathname === '/sources' ) {
 		$('#usb-umount').val(mountName);
 	});
 	
-} else if ( location.pathname === '/mpd' ) {
+} else if ( path === '/mpd' ) {
 	$('#audio-output-interface').change(function(){
 		renderMSG([{'title': 'Switching audio output', 'text': 'Please wait for the config update...', 'icon': 'fa fa-cog fa-spin', 'delay': 5000 }]);
 		var output = $(this).val();
@@ -109,7 +110,7 @@ if ( location.pathname === '/sources' ) {
 		$('#manual-edit-warning').addClass('hide');
 	});
 	
-} else if ( location.pathname === '/settings' ) {
+} else if ( path === '/settings' ) {
 	$('#airplay').change(function(){
 		if ($(this).prop('checked')) {
 			$('#airplayName').removeClass('hide');
@@ -156,7 +157,7 @@ if ( location.pathname === '/sources' ) {
 		}
 	});
 	
-} else if ( location.pathname === '/network' ) {
+} else if ( path === '/network' ) {
 	var netManualConf = $('#network-manual-config');
 	if ($('#dhcp').val() === '0') {
 		netManualConf.removeClass('hide');
@@ -274,7 +275,7 @@ if ( location.pathname === '/sources' ) {
 		}
 	});
 	
-} else if ( location.pathname === '/accesspoint' ) {
+} else if ( path === '/accesspoint' ) {
 	$('#accesspoint').change(function(){
 		if ($(this).prop('checked')) {
 			$('#accesspointSettings').removeClass('hide');
@@ -294,7 +295,7 @@ if ( location.pathname === '/sources' ) {
 		$('#dhcp-option-router').val($('#ip-address').val());
 	});
 	
-} else if ( location.pathname === '/debug' ) {
+} else if ( path === '/debug' ) { // *** Important! ZeroClipboard will freeze if run while in DevTools mode ***
 	ZeroClipboard.config({swfPath: '/assets/js/vendor/ZeroClipboard.swf'});
 	var client = new ZeroClipboard(document.getElementById('copy-to-clipboard'));
 	client.on('ready', function(readyEvent){
