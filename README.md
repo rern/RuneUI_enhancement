@@ -92,6 +92,7 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 	- Albums > names > songs
 	- Albums with duplicate name > album-artist > songs
 	- Artists > names > albums > songs
+	- Album Artists > names > albums > songs
 	- Composers > names > albums > songs
 	- Genres > names > artists > albums > songs
 - Show album heading with artist name
