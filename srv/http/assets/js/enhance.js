@@ -111,7 +111,6 @@ $( '#menu-settings, #badge' ).click( function() {
 		.css( 'top', $( '#menu-top' ).hasClass( 'hide' ) ? 0 : '40px' );
 } );
 $( '#displaylibrary' ).click( function() {
-	$( '#open-library' ).click();
 	info( {
 		  icon         : 'library'
 		, title        : 'Libary Home'
@@ -137,6 +136,7 @@ $( '#displaylibrary' ).click( function() {
 			$( '#displaysavelibrary input' ).each( function() {
 				GUI.display[ this.name ] = this.checked ? 'checked' : '';
 			} );
+			if ( !$( '#panel-library' ).hasClass( 'active' ) ) $( '#open-library' ).click();
 			renderLibrary();
 			$.post( 'enhance.php', { setdisplay: GUI.display } );
 		}
@@ -165,6 +165,7 @@ $( '#displayplayback' ).click( function() {
 			$( '#displaysaveplayback input' ).each( function() {
 				GUI.display[ this.name ] = this.checked ? 'checked' : '';
 			} );
+			if ( !$( '#panel-playback' ).hasClass( 'active' ) ) $( '#open-playback' ).click();
 			displayPlayback();
 			$.post( 'enhance.php', { setdisplay: GUI.display } );
 		}
