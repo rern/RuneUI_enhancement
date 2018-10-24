@@ -23,7 +23,11 @@ $( '.contextmenu a' ).click( function() {
 		var name = GUI.list.name.replace( /"/g, '\\"' );
 		cmd = ( cmd === 'plrename' || cmd === 'pldelete' ) ? cmd : cmd.replace( 'pl', 'wr' );
 	} else {
-		var name = GUI.list.path.replace( /"/g, '\\"' );
+		if ( $( '#panel-playlist' ).hasClass( 'active' ) && $( '#pl-currentpath .lipath' ).length ) {
+			var name = GUI.list.li.find( '.liname' ).text().replace( /"/g, '\\"' );
+		} else {
+			var name = GUI.list.path.replace( /"/g, '\\"' );
+		}
 	}
 	if ( !mode ) {
 		var mpcCmd = GUI.list.isfile ? 'mpc add "'+ name +'"' : 'mpc ls "'+ name +'" | mpc add';
