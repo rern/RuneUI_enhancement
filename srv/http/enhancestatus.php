@@ -110,7 +110,11 @@ if ( $activePlayer === 'MPD'
 			$data = json_decode( curlGet( $url ), true );
 			$cover_url = $data[ 'artist' ][ 'image' ][ 3 ][ '#text' ];
 		}
-		if ( !empty( $cover_url ) ) $status[ 'coverart' ] = $cover_url;
+		if ( !empty( $cover_url ) ) {
+			$status[ 'coverart' ] = $cover_url;
+		} else {
+			$status[ 'coverart' ] = '';
+		}
 	} while ( 0 );
 } else if ( $activePlayer === 'Spotify' ) {
 	include '/srv/http/app/libs/runeaudio.php';
