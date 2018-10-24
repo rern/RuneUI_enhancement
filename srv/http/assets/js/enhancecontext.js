@@ -343,10 +343,14 @@ function playlistRename() {
 }
 function addPlaylist( name, oldname ) {
 	if ( oldname ) {
-		GUI.local = 1;
-		setTimeout( function() { GUI.local = 0 }, 500 );
-		// rm or save: mpc rm "name's \"double\" quote"
-		$.post( 'enhance.php', { mpc: [ 'mpc rm "'+ oldname.replace( /"/g, '\\"' ) +'"', 'mpc save "'+ name.replace( /"/g, '\\"' ) +'"' ] } );
+		var oldname = ' "/var/lib/mpd/playlists/'+ oldname.replace( /"/g, '\\"' ) +'.m3u"';
+		var name = ' "/var/lib/mpd/playlists/'+ name.replace( /"/g, '\\"' ) +'.m3u"';
+		$.post( 'enhance.php', { bash: '/usr/bin/mv'+ oldname + name }, function() {
+			$.post( 'enhance.php', { lsplaylists: 1 }, function( data ) {
+				GUI.lsplaylists = data;
+				$( '#plopen' ).click();
+			}, 'json' );
+		} );
 	} else {
 		new PNotify( {
 			  icon  : 'fa fa-check'
