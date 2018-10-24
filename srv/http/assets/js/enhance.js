@@ -11,7 +11,6 @@ var GUI = { // outside '$( function() {' enable console.log access
 	, dbbackdata   : []
 	, dbbrowsemode : ''
 	, dblist       : 0
-	, dbpath       : ''
 	, dbscrolltop  : {}
 	, display      : {}
 	, imodedelay   : 0
@@ -746,8 +745,8 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 	e.stopPropagation();
 	var $this = $( this );
 	var $thisli = $this.parent();
-	GUI.dbpath = $thisli.find( '.lipath' ).text();
 	GUI.list = {};
+	GUI.list.path = $thisli.find( '.lipath' ).text();
 	GUI.list.name = $thisli.find( '.liname' ).text();
 	GUI.list.artist = $thisli.find( '.artist' ) || '';
 	var icon = $thisli.find( 'i.db-icon' );
@@ -756,10 +755,10 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 	var $menu = $( $this.data( 'target' ) );
 	$( '#db-entries li' ).removeClass( 'active' );
 	$( '.contextmenu' ).addClass( 'hide' );
-	if ( GUI.dbpath === GUI.dbcurrent ) {
+	if ( GUI.list.path === GUI.dbcurrent ) {
 		GUI.dbcurrent = '';
 	} else {
-		GUI.dbcurrent = GUI.dbpath;
+		GUI.dbcurrent = GUI.list.path;
 		$thisli.addClass( 'active' );
 		$menu.removeClass( 'hide' )
 			.css( 'top', $this.position().top +'px' )

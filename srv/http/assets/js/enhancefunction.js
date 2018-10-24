@@ -972,7 +972,7 @@ function parseDBdata( inputArr, i, respType, inpath, querytype ) {
 					var liname = inputArr.directory.replace( inpath +'/', '' );
 					content = '<li><a class="lipath">'+ inputArr.directory +'</a><a class="liname">'+ liname +'</a><i class="fa fa-bars db-action"';
 					content += ' data-target="#context-menu-folder"></i><span><i class="fa fa-folder"></i>'
-					content += '<span class="dbpath">'+ liname +'</span></li>';
+					content += '<span>'+ liname +'</span></li>';
 				}
 			} else if ( GUI.browsemode === 'album' || GUI.browsemode === 'albumfilter' ) {
 				if ( inputArr.file ) {

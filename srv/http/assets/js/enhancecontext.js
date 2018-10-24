@@ -23,7 +23,7 @@ $( '.contextmenu a' ).click( function() {
 		var name = GUI.list.name.replace( /"/g, '\\"' );
 		cmd = cmd.replace( 'pl', 'wr' );
 	} else {
-		var name = GUI.list.path;
+		var name = GUI.list.path.replace( /"/g, '\\"' );
 	}
 	if ( !mode ) {
 		var mpcCmd = GUI.list.isfile ? 'mpc add "'+ name +'"' : 'mpc ls "'+ name +'" | mpc add';
