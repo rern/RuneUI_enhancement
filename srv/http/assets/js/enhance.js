@@ -614,6 +614,7 @@ $( '#db-webradio-new' ).click( function() {
 $( '#db-searchbtn' ).click( function() {
 	$( '#db-search, #db-searchbtn' ).toggleClass( 'hide' );
 	$( '#db-currentpath>span' ).addClass( 'hide' );
+	if ( !$( '#db-search' ).hasClass( 'hide' ) ) $( '#db-search-keyword' ).focus();
 } );
 $( '#dbsearchbtn' ).click( function() {
 	var keyword = $( '#db-search-keyword' ).val();
@@ -794,6 +795,7 @@ $( '#db-index li' ).click( function() {
 // PLAYLIST /////////////////////////////////////////////////////////////////////////////////////
 $( '#pl-searchbtn, #plsearchbtn, #pl-filter-results' ).click( function() {
 	$( '#pl-count, #pl-search, #pl-searchbtn, #pl-manage' ).toggleClass( 'hide' );
+	if ( !$( '#pl-search' ).hasClass( 'hide' ) ) $( '#pl-filter' ).focus();
 } );
 $( '#pl-entries' ).on( 'click', 'li', function( e ) {
 	if ( $( e.target ).parent().hasClass( 'elapsed' )
