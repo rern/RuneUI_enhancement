@@ -16,12 +16,12 @@ $( 'body' ).click( function( e ) {
 $( '.contextmenu a' ).click( function() {
 	GUI.dbcurrent = '';
 	var cmd = $( this ).data( 'cmd' );
-	var mode = cmd.replace( /replaceplay|replace|addplay|add/, '' );
+	var mode = cmd.slice( 0, 2 );
 	if ( mode === 'wr' ) {
 		var name = 'Webradio/'+ GUI.list.name.replace( /"/g, '\\"' ) +'.pls';
 	} else if ( mode === 'pl' ) {
 		var name = GUI.list.name.replace( /"/g, '\\"' );
-		cmd = cmd.replace( 'pl', 'wr' );
+		cmd = ( cmd === 'plrename' || cmd === 'pldelete' ) ? cmd : cmd.replace( 'pl', 'wr' );
 	} else {
 		var name = GUI.list.path.replace( /"/g, '\\"' );
 	}
