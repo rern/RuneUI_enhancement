@@ -924,6 +924,7 @@ function getDB( options ) {
 		}, 'json' );
 	}
 }
+// set path, name, artist as text to avoid double quote escape
 function parseDBdata( inputArr, i, respType, inpath, querytype ) {
 	var inputArr = inputArr || '',
 		i = i || 0,
