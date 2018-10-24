@@ -734,7 +734,7 @@ function renderLibrary() {
 		$.each( bookmarks, function( i, bookmark ) {
 			var count = GUI.display.count ? '<gr>'+ numFormat( bookmark.count ) +' <i class="fa fa-music"></i></gr>' : '';
 			var name = bookmark.name.replace( /\\/g, '' );
-			content += '<div class="col-md-3"><div class="home-block home-bookmark" data-path="'+ bookmark.path +'"><a class="lipath">'+ bookmark.path +'</a><i class="fa fa-bookmark"></i>'+ count +'<div class="divbklabel"><span class="bklabel">'+ name +'</span></div></div></div>';
+			content += '<div class="col-md-3"><div class="home-block home-bookmark"><a class="lipath">'+ bookmark.path +'</a><i class="fa fa-bookmark"></i>'+ count +'<div class="divbklabel"><span class="bklabel">'+ name +'</span></div></div></div>';
 		} );
 	}
 	var order = GUI.display.library || 'sd,usb,nas,webradio,album,artist,albumartist,composer,genre,dirble,jamendo';
@@ -999,17 +999,17 @@ function parseDBdata( inputArr, i, respType, inpath, querytype ) {
 			} else if ( GUI.browsemode === 'artist' || GUI.browsemode === 'composeralbum' ) {
 				if ( inputArr.album ) {
 					var liname = inputArr.album ? inputArr.album : 'Unknown album';
-					content = '<li data-path="'+ inputArr.album +'" mode="album" liname="'+ liname +'"><a class="lipath">'+ inputArr.album +'</a><a class="liname">'+ liname +'</a><i class="fa fa-bars db-action" data-target="#context-menu-album"></i>';
+					content = '<li mode="album"><a class="lipath">'+ inputArr.album +'</a><a class="liname">'+ liname +'</a><i class="fa fa-bars db-action" data-target="#context-menu-album"></i>';
 					content += '<span><i class="fa fa-album"></i>'+ liname +'</span></li>';
 				} else {
 					var liname = inputArr.artist;
-					content = '<li data-path="'+ inputArr.artist +'" mode="artist" liname="'+ liname +'"><a class="lipath">'+ inputArr.artist +'</a><a class="liname">'+ liname +'</a><i class="fa fa-bars db-action" data-target="#context-menu-artist"></i>';
+					content = '<li mode="artist"><a class="lipath">'+ inputArr.artist +'</a><a class="liname">'+ liname +'</a><i class="fa fa-bars db-action" data-target="#context-menu-artist"></i>';
 					content += '<span><i class="fa fa-artist"></i>'+ liname +'</span></li>';
 				}
 			} else if ( GUI.browsemode === 'albumartist' ) {
 				if ( inputArr.album ) {
 					var liname = inputArr.album ? inputArr.album : 'Unknown album';
-					content = '<li data-path="'+ inputArr.album +'" mode="album" liname="'+ liname +'"><a class="lipath">'+ inputArr.album +'</a><a class="liname">'+ liname +'</a><i class="fa fa-bars db-action" data-target="#context-menu-album"></i>';
+					content = '<li mode="album"><a class="lipath">'+ inputArr.album +'</a><a class="liname">'+ liname +'</a><i class="fa fa-bars db-action" data-target="#context-menu-album"></i>';
 					content += '<span><i class="fa fa-album"></i>'+ liname +'</span></li>';
 				} else {
 					var liname = inputArr.albumartist;
@@ -1403,7 +1403,7 @@ function renderSavedPlaylist( name ) {
 				bottomline = pl.track
 				pltime += sec;
 			}
-			content += '<li data-path="'+ pl.file +'" class="pl-song"><a class="liname">'+ pl.file +'</a>'
+			content += '<li class="pl-song"><a class="liname">'+ pl.file +'</a>'
 				+ iconhtml
 				+'<i class="fa fa-bars pl-action" data-target="#context-menu-file"></i>'
 				+'<span class="sn">'+ topline +'</span>'
