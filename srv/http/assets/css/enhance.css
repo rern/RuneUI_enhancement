@@ -119,9 +119,8 @@
 .fa-info-circle:before { content: "\f561" }
 .fa-warning:before { content: "\f562" }
 /* bootstrap mod */
-html,
-body {
-	height: 100%
+.tab-pane {
+	height: 100vh;
 }
 label {
 	font-weight: normal;
@@ -152,7 +151,7 @@ label {
 
 w, wh, .wh { color: #e0e7ee; }
 bl, .bl { color: #0095d8; }
-gr, .gr {color: #7795b4; }
+gr, .gr { color: #7795b4; }
 wh, gr { font-weight: 300; }
 #album gr,
 #infoContent gr,
@@ -160,7 +159,11 @@ wh, gr { font-weight: 300; }
 #pl-entries li .elapsed wh {
 	font-weight: normal;
 }
-
+#displaysavelibrary i {
+	    margin: 0 10px 0 4px;
+	font-size: 22px;
+	color: #7795b4;
+}
 .disable {
 	color: #587ca0;
 }
@@ -407,7 +410,6 @@ wh, gr { font-weight: 300; }
 	user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
 }
 #panel-playback {
-	height: 100vh;
 	padding-top: 80px;
 }
 #coverart {
@@ -1033,15 +1035,13 @@ wh, gr { font-weight: 300; }
 	}
 }
 /* ---------------------- library and queue ---------------------- */
-.tab-pane {
-	height: 100vh;
-}
 #db-list,
 #pl-list {
 	padding-top: 80px;
 }
 #home-blocks {
-	margin: 90px 5px 10px;
+	margin: 0 5px 10px;
+	padding-top: 90px;
 }
 .home-block,
 .empty-block {
@@ -1362,6 +1362,11 @@ wh, gr { font-weight: 300; }
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis
+}
+.lipath,
+.liname,
+.liartist {
+	display: none;
 }
 span.dbpath {
 	vertical-align: 15%;

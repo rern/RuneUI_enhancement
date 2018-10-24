@@ -114,6 +114,9 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 		$data[ 'lsplaylists' ] = lsplaylists();
 	}
 	echo json_encode( $data, JSON_NUMERIC_CHECK );
+} else if ( isset( $_POST[ 'lsplaylists' ] ) ) {
+	$data = lsplaylists();
+	echo json_encode( $data );
 } else if ( isset( $_POST[ 'getwebradios' ] ) ) {
 	$webradios = $redis->hGetAll( 'webradios' );
 	foreach( $webradios as $name => $url ) {
@@ -187,6 +190,7 @@ function search2array( $result ) {
 			$li[ 'Artist' ] = $list[ 2 ];
 			$li[ 'Album' ] = $list[ 3 ];
 			$li[ 'file' ] = $list[ 4 ];
+			if ( !empty( $list[ 5 ] ) ) $li[ 'AlbumArtist' ] = $list[ 5 ];
 			$data[] = $li;
 			$li = '';
 		}

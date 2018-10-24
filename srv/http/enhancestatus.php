@@ -10,7 +10,11 @@ if ( !isset( $_POST[ 'statusonly' ] ) ) {
 		echo json_encode( $status );
 		exit();
 	}
+	
+	
 }
+
+
 $mpdtelnet = ' | telnet localhost 6600 | sed "/^Trying\|Connected\|Escape\|OK\|Connection\|AlbumArtist\|Date\|Genre\|Last-Modified\|consume\|mixrampdb\|nextsong\|nextsongid/ d"';
 $lines = shell_exec( '{ sleep 0.01; echo clearerror; echo status; echo currentsong; sleep 0.05; }'.$mpdtelnet );
 // fix: initially add song without play - currentsong = (blank)
@@ -110,7 +114,11 @@ if ( $activePlayer === 'MPD'
 			$data = json_decode( curlGet( $url ), true );
 			$cover_url = $data[ 'artist' ][ 'image' ][ 3 ][ '#text' ];
 		}
-		if ( !empty( $cover_url ) ) $status[ 'coverart' ] = $cover_url;
+		if ( !empty( $cover_url ) ) {
+			$status[ 'coverart' ] = $cover_url;
+		} else {
+			$status[ 'coverart' ] = '';
+		}
 	} while ( 0 );
 } else if ( $activePlayer === 'Spotify' ) {
 	include '/srv/http/app/libs/runeaudio.php';
@@ -212,5 +220,7 @@ if ( $ext === 'DSF' || $ext === 'DFF' ) {
 	$sampling = $bitrate ? samplingline( $bitdepth, $samplerate, $bitrate ) : '';
 }
 $status[ 'sampling' ] = $sampling;
+$elapsed = exec( '{ sleep 0.01; echo status; sleep 0.01; } | telnet localhost 6600 | grep elapsed | cut -d" " -f2' );
+$status[ 'elapsed' ] = round( $elapsed ); // refetch after coverart fetch
 
 echo json_encode( $status, JSON_NUMERIC_CHECK );

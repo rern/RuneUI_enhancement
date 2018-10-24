@@ -16,14 +16,18 @@ $( 'body' ).click( function( e ) {
 $( '.contextmenu a' ).click( function() {
 	GUI.dbcurrent = '';
 	var cmd = $( this ).data( 'cmd' );
-	var mode = cmd.replace( /replaceplay|replace|addplay|add/, '' );
+	var mode = cmd.slice( 0, 2 );
 	if ( mode === 'wr' ) {
 		var name = 'Webradio/'+ GUI.list.name.replace( /"/g, '\\"' ) +'.pls';
 	} else if ( mode === 'pl' ) {
 		var name = GUI.list.name.replace( /"/g, '\\"' );
-		cmd = cmd.replace( 'pl', 'wr' );
+		cmd = ( cmd === 'plrename' || cmd === 'pldelete' ) ? cmd : cmd.replace( 'pl', 'wr' );
 	} else {
-		var name = GUI.list.path;
+		if ( $( '#panel-playlist' ).hasClass( 'active' ) && $( '#pl-currentpath .lipath' ).length ) {
+			var name = GUI.list.li.find( '.liname' ).text().replace( /"/g, '\\"' );
+		} else {
+			var name = GUI.list.path.replace( /"/g, '\\"' );
+		}
 	}
 	if ( !mode ) {
 		var mpcCmd = GUI.list.isfile ? 'mpc add "'+ name +'"' : 'mpc ls "'+ name +'" | mpc add';
@@ -343,10 +347,14 @@ function playlistRename() {
 }
 function addPlaylist( name, oldname ) {
 	if ( oldname ) {
-		GUI.local = 1;
-		setTimeout( function() { GUI.local = 0 }, 500 );
-		// rm or save: mpc rm "name's \"double\" quote"
-		$.post( 'enhance.php', { mpc: [ 'mpc rm "'+ oldname.replace( /"/g, '\\"' ) +'"', 'mpc save "'+ name.replace( /"/g, '\\"' ) +'"' ] } );
+		var oldfile = ' "/var/lib/mpd/playlists/'+ oldname.replace( /"/g, '\\"' ) +'.m3u"';
+		var newfile = ' "/var/lib/mpd/playlists/'+ name.replace( /"/g, '\\"' ) +'.m3u"';
+		$.post( 'enhance.php', { bash: '/usr/bin/mv'+ oldfile + newfile }, function() {
+			$.post( 'enhance.php', { lsplaylists: 1 }, function( data ) {
+				GUI.lsplaylists = data;
+				$( '#plopen' ).click();
+			}, 'json' );
+		} );
 	} else {
 		new PNotify( {
 			  icon  : 'fa fa-check'

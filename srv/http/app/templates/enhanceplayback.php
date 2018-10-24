@@ -112,6 +112,7 @@
 				</div>
 			</div>
 			<div id="db-currentpath">
+				<a class="lipath"></a>
 				<div id="db-home"><i class="fa fa-library"></i></div><span></span>
 				<i id="db-webradio-new" class="fa fa-plus-circle"></i>
 			</div>
