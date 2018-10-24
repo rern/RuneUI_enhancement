@@ -117,17 +117,17 @@ $( '#displaylibrary' ).click( function() {
 		, message      : 'Select items to show:'
 		, checkboxhtml : 
 			'<form id="displaysavelibrary">'
-				+ displayCheckbox( 'sd',          'SD' )
-				+ displayCheckbox( 'usb',         'USB' )
-				+ displayCheckbox( 'nas',         'Network' )
-				+ displayCheckbox( 'webradio',    'Webradio' )
-				+ displayCheckbox( 'album',       'Album' )
-				+ displayCheckbox( 'artist',      'Artist' )
-				+ displayCheckbox( 'albumartist', 'Album artist' )
-				+ displayCheckbox( 'composer',    'Composer' )
-				+ displayCheckbox( 'genre',       'Genre' )
-				+ displayCheckbox( 'dirble',      'Dirble' )
-				+ displayCheckbox( 'jamendo',     'Jamendo' )
+				+ displayCheckbox( 'sd',          '<i class="fa fa-microsd"></i>SD' )
+				+ displayCheckbox( 'usb',         '<i class="fa fa-usbdrive"></i>USB' )
+				+ displayCheckbox( 'nas',         '<i class="fa fa-network"></i>Network' )
+				+ displayCheckbox( 'webradio',    '<i class="fa fa-webradio"></i>Webradio' )
+				+ displayCheckbox( 'album',       '<i class="fa fa-album"></i>Album' )
+				+ displayCheckbox( 'artist',      '<i class="fa fa-artist"></i>Artist' )
+				+ displayCheckbox( 'albumartist', '<i class="fa fa-albumartist"></i>Album artist' )
+				+ displayCheckbox( 'composer',    '<i class="fa fa-composer"></i>Composer' )
+				+ displayCheckbox( 'genre',       '<i class="fa fa-genre"></i>Genre' )
+				+ displayCheckbox( 'dirble',      '<i class="fa fa-dirble"></i>Dirble' )
+				+ displayCheckbox( 'jamendo',     '<i class="fa fa-jamendo"></i>Jamendo' )
 				+ displayCheckbox( 'count',       '<gr>text</gr> Count' )
 				+ displayCheckbox( 'label',       '<gr>text</gr> Label' )
 			+'</form>'
