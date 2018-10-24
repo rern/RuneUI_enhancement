@@ -867,7 +867,7 @@ $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 	e.stopPropagation();
 	var $this = $( this );
 	var $thisli = $this.parent();
-	var plname = $thisli.find( '.plname' ).text();
+	var plname = $thisli.find( '.liname' ).text();
 	GUI.list = {};
 	GUI.list.li = $thisli; // for contextmenu
 	GUI.list.name = plname;
@@ -930,7 +930,7 @@ $( '#plopen' ).click( function() {
 	} );
 	var content = '';
 	pl.forEach( function( el ) {
-		content += '<li class="pl-folder"><i class="fa fa-list-ul pl-icon"></i><i class="fa fa-bars pl-action"></i><span class="plname">'+ el +'</span></li>';
+		content += '<li class="pl-folder"><i class="fa fa-list-ul pl-icon"><a class="liname">'+ el +'</a></i><i class="fa fa-bars pl-action"></i><span class="plname">'+ el +'</span></li>';
 	} );
 	$( '#pl-editor' ).html( content +'<p></p>' ).promise().done( function() {
 		GUI.pleditor = 1;

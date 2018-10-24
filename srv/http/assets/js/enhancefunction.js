@@ -1403,7 +1403,7 @@ function renderSavedPlaylist( name ) {
 				bottomline = pl.track
 				pltime += sec;
 			}
-			content += '<li data-path="'+ pl.file +'" class="pl-song">'
+			content += '<li data-path="'+ pl.file +'" class="pl-song"><a class="liname">'+ pl.file +'</a>'
 				+ iconhtml
 				+'<i class="fa fa-bars pl-action" data-target="#context-menu-file"></i>'
 				+'<span class="sn">'+ topline +'</span>'
