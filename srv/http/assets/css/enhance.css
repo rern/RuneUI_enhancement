@@ -1363,6 +1363,11 @@ wh, gr { font-weight: 300; }
 	overflow: hidden;
 	text-overflow: ellipsis
 }
+.lipath,
+.liname,
+.liartist {
+	display: none;
+}
 span.dbpath {
 	vertical-align: 15%;
 }
