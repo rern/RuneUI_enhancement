@@ -343,9 +343,9 @@ function playlistRename() {
 }
 function addPlaylist( name, oldname ) {
 	if ( oldname ) {
-		var oldname = ' "/var/lib/mpd/playlists/'+ oldname.replace( /"/g, '\\"' ) +'.m3u"';
-		var name = ' "/var/lib/mpd/playlists/'+ name.replace( /"/g, '\\"' ) +'.m3u"';
-		$.post( 'enhance.php', { bash: '/usr/bin/mv'+ oldname + name }, function() {
+		var oldfile = ' "/var/lib/mpd/playlists/'+ oldname.replace( /"/g, '\\"' ) +'.m3u"';
+		var newfile = ' "/var/lib/mpd/playlists/'+ name.replace( /"/g, '\\"' ) +'.m3u"';
+		$.post( 'enhance.php', { bash: '/usr/bin/mv'+ oldfile + newfile }, function() {
 			$.post( 'enhance.php', { lsplaylists: 1 }, function( data ) {
 				GUI.lsplaylists = data;
 				$( '#plopen' ).click();

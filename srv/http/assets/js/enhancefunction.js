@@ -813,6 +813,8 @@ function getDB( options ) {
 		artist = options.artist ? options.artist.toString().replace( /"/g, '\"' ) : '',
 		mode,
 		command;
+	var currentpath = $( '#db-currentpath .lipath' ).text();
+	currentpath = currentpath ? currentpath.toString().replace( /"/g, '\"' ) : '';
 	if ( !GUI.dbback && cmd !== 'search' && GUI.dbbrowsemode !== 'file' ) {
 		GUI.dbbackdata.push( {
 			  path       : path
@@ -822,12 +824,12 @@ function getDB( options ) {
 			, args       : args
 			, querytype  : querytype
 		} );
-	} else if ( cmd === 'search' && $( '#db-currentpath .lipath' ).text() ) {
+	} else if ( cmd === 'search' && currentpath ) {
 		if ( GUI.dbbackdata.length ) {
 			GUI.dbbackdata.push( GUI.dbbackdata[ GUI.dbbackdata.length - 1 ] );
 		} else {
 			GUI.dbbackdata.push( {
-				  path       : $( '#db-currentpath .lipath' ).text()
+				  path       : currentpath
 				, browsemode : GUI.browsemode
 			} );
 		}
@@ -837,10 +839,7 @@ function getDB( options ) {
 	GUI.browsemode = browsemode;
 	var keyword = $( '#db-search-keyword' ).val();
 	keyword = keyword ? keyword.toString().replace( /"/g, '\"' ) : '';
-	
 	if ( !plugin ) {
-		var currentpath = $( '#db-currentpath .lipath' ).text(); // for artist-album search
-		currentpath = currentpath ? currentpath.toString().replace( /"/g, '\"' ) : '';
 		if ( $( '#rootpath' ).data( 'path' ) !== 'AlbumArtist' ) {
 			var artistalbum = ' artist "'+ ( artist ? artist : currentpath ) +'"';
 		} else {
