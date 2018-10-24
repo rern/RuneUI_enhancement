@@ -111,6 +111,7 @@ $( '#menu-settings, #badge' ).click( function() {
 		.css( 'top', $( '#menu-top' ).hasClass( 'hide' ) ? 0 : '40px' );
 } );
 $( '#displaylibrary' ).click( function() {
+	$( '#open-library' ).click();
 	info( {
 		  icon         : 'library'
 		, title        : 'Libary Home'
