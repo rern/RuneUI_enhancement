@@ -114,6 +114,9 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 		$data[ 'lsplaylists' ] = lsplaylists();
 	}
 	echo json_encode( $data, JSON_NUMERIC_CHECK );
+} else if ( isset( $_POST[ 'lsplaylists' ] ) ) {
+	$data = lsplaylists();
+	echo json_encode( $data );
 } else if ( isset( $_POST[ 'getwebradios' ] ) ) {
 	$webradios = $redis->hGetAll( 'webradios' );
 	foreach( $webradios as $name => $url ) {
