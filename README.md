@@ -1,6 +1,6 @@
 RuneUI enhancement
 ---
-_Tested on RuneAudio 0.4b_   
+_Tested on RuneAudio 0.4b, 0.5_   
 
 ### Overall:
 - Redesign
