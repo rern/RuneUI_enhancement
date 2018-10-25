@@ -151,7 +151,10 @@ if [[ ! $bkmarks ]]; then
 fi
 
 for item in bars debug dev time coverart volume buttons nas sd usb webradio album artist albumartist composer genre dirble jamendo count label; do
-	[[ $( redis-cli hexists display $item ) == 0 ]] && redis-cli hset display $item checked &> /dev/null
+	if [[ $( redis-cli hexists display $item ) == 0 ]]; then
+		[[ $item == debug || $item == dev ]] && chk='' || chk=checked
+		redis-cli hset display $item $chk &> /dev/null
+	fi
 done
 # fix webradio permission
 chown -R http:http /mnt/MPD/Webradio
