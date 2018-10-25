@@ -57,7 +57,7 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 }
 // with redis
 $redis = new Redis();
-$redis->pconnect( '127.0.0.1' );
+$redis->connect( '127.0.0.1' );
 if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	usleep( 100000 ); // !important - get data must wait connection start at least (0.05s)
 	$data = $redis->hGetAll( 'display' );
@@ -69,7 +69,8 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	$redis->hmSet( 'display', $data );
 	pushstream( 'display', $data );
 } else if ( isset( $_POST[ 'library' ] ) ) {
-	$status = getLibrary();
+	$rbkmarks = $redis->hGetAll( 'bkmarks' );
+	$status = getLibrary( $rbkmarks );
 	if ( isset( $_POST[ 'data' ] ) ) echo json_encode( $status, JSON_NUMERIC_CHECK );
 	pushstream( 'library', $status );
 } else if ( isset( $_POST[ 'volume' ] ) ) {
@@ -160,7 +161,8 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 		}
 	}
 	if ( $key === 'bkmarks' ) {
-		$status = getLibrary();
+		$rbkmarks = $redis->hGetAll( 'bkmarks' );
+		$status = getLibrary( $rbkmarks );
 		pushstream( 'library', $status );
 	} else {
 		exec( 'mpc update Webradio' );
@@ -204,10 +206,7 @@ function pushstream( $channel, $data = 1 ) {
 	curl_exec( $ch );
 	curl_close( $ch );
 }
-function getLibrary() {
-	$redis = new Redis();
-	$redis->pconnect( '127.0.0.1' );
-	$rbkmarks = $redis->hGetAll( 'bkmarks' );
+function getLibrary( $rbkmarks ) {
 	if ( $rbkmarks ) {
 		foreach ( $rbkmarks as $name => $path ) {
 			$bookmarks[] = array(
@@ -236,8 +235,6 @@ function getLibrary() {
 		, 'spotify'      => $count[ 10 ]
 		, 'activeplayer' => $count[ 11 ]
 	);
-//	echo json_encode( $status, JSON_NUMERIC_CHECK );
-//	pushstream( 'library', $status );
 	return $status;
 }
 function lsPlaylists() {

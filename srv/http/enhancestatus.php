@@ -1,7 +1,7 @@
 <?php
 if ( !isset( $_POST[ 'statusonly' ] ) ) {
 	$redis = new Redis(); 
-	$redis->pconnect( '127.0.0.1' );
+	$redis->connect( '127.0.0.1' );
 	$activePlayer = $redis->get( 'activePlayer' );
 	$status[ 'activePlayer' ] = $activePlayer;
 	$status[ 'volumemute' ] = $redis->hGet( 'display', 'volumemute' );
