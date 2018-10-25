@@ -1276,7 +1276,7 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 	$( '#loader' ).addClass( 'hide' );
 }
 function setPlaylistScroll() {
-	if ( GUI.local ) return // 'skip for Sortable'
+	if ( GUI.local || !GUI.status.playlistlength ) return // 'skip for Sortable' and blank
 	
 	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
 		$.each( status, function( key, value ) {
