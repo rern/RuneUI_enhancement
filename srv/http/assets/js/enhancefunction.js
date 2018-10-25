@@ -1079,7 +1079,7 @@ function parseDBdata( inputArr, i, respType, inpath, querytype ) {
 // strip leading A|An|The|(|[|.|'|"|\ (for sorting)
 function stripLeading( string ) {
 	if ( typeof string === 'number' ) string = string.toString();
-	return string.replace( /^A +|^An +|^The +|^\(\s*|^\[\s*|^\.\s*|^\'\s*|^\"\s*|\\/i, '' );
+	return string.replace( /^A +|^An +|^The +|^\s*|^\(\s*|^\[\s*|^\.\s*|^\'\s*|^\"\s*|\\/i, '' );
 }
 function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 	var data = data,
