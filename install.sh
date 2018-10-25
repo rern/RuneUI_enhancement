@@ -138,16 +138,18 @@ systemctl disable rune_shutdown
 bkmarks=$( redis-cli keys bkmarks )
 if [[ ! $bkmarks ]]; then
 	bookmarks=$( redis-cli hgetall bookmarks | tr -d '"{}\\' )
-	readarray -t bookmarks <<<"$bookmarks"
-	ilength=${#bookmarks[*]}
-	for (( i=0; i < ilength; i++ )); do
-		if (( i % 2 )); then
-			kv=${bookmarks[ $i ]}
-			k=$( echo $kv | cut -d',' -f1 )
-			v=$( echo $kv | cut -d',' -f2 )
-			redis-cli hset bkmarks "${k/name:}" "${v/path:}" &> /dev/null
-		fi
-	done
+	if [[ $bookmarks ]]; then
+		readarray -t bookmarks <<<"$bookmarks"
+		ilength=${#bookmarks[*]}
+		for (( i=0; i < ilength; i++ )); do
+			if (( i % 2 )); then
+				kv=${bookmarks[ $i ]}
+				k=$( echo $kv | cut -d',' -f1 )
+				v=$( echo $kv | cut -d',' -f2 )
+				redis-cli hset bkmarks "${k/name:}" "${v/path:}" &> /dev/null
+			fi
+		done
+	fi
 fi
 
 for item in bars debug dev time coverart volume buttons nas sd usb webradio album artist albumartist composer genre dirble jamendo count label; do
