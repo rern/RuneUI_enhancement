@@ -109,8 +109,8 @@ EOF
 	appendS 'settings'
 else
 #----------------------------------------------------------------------------------
-	file=/root/.xinitrc
-	echo $file
+	file=/etc/X11/xinit/start_chromium.sh
+	[[ ! -e $file ]] && file=/root/.xinitrc
 	
 	sed -i "s/\(force-device-scale-factor=\).*/\1$zoom/" $file
 fi
