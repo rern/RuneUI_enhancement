@@ -601,7 +601,8 @@ wh, gr { font-weight: 300; }
 #divcover,
 #cover-art {
 	margin: 0 auto;
-	max-width: 60vh;
+	max-width: 50vh;
+	max-height: 50vh;
 }
 .coversmall {
 	width: 230px !important;
