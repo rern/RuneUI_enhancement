@@ -150,7 +150,7 @@ if [[ ! $bkmarks ]]; then
 	done
 fi
 
-for item in bars time coverart volume buttons nas sd usb webradio album artist albumartist composer genre dirble jamendo count label; do
+for item in bars debug dev time coverart volume buttons nas sd usb webradio album artist albumartist composer genre dirble jamendo count label; do
 	[[ $( redis-cli hexists display $item ) == 0 ]] && redis-cli hset display $item checked &> /dev/null
 done
 # fix webradio permission
