@@ -130,8 +130,7 @@ label {
 	top: auto;
 	bottom: 60px;
 	left: 0;
-}
-.ui-pnotify-shadow {
+	background: #0095d8;
 	box-shadow: 4px 4px 10px #000000 !important;
 }
 .ui-pnotify .alert {
