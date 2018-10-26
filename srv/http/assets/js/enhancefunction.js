@@ -619,11 +619,9 @@ function displayPlayback() {
 		if ( !GUI.display.time && !GUI.display.volume ) $( '#share-group' ).addClass( 'hide' );
 	}
 	if ( GUI.display.time ) {
-		if ( window.innerHeight > 535 ) $( '#playback-row' ).css( 'margin-top', '20px' );
 		$( '#divpos' ).css( 'font-size', '' );
 		$( '#timepos' ).empty();
 	} else {
-		if ( window.innerHeight > 535 ) $( '#playback-row' ).css( 'margin-top', '40px' );
 		$( '#divpos' ).css( 'font-size', '20px' );
 	}
 	displayTopBottom();
