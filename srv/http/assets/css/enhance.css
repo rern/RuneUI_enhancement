@@ -2019,7 +2019,7 @@ w {
 		display: inline;
 	}
 	#playback-row {
-		margin-top: 10px;
+		margin-top: 40px;
 	}
 }
 @media(max-width: 499px) and (max-height: 630px) {
