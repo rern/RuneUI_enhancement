@@ -498,7 +498,7 @@ wh, gr { font-weight: 300; }
 	-webkit-flex-wrap: wrap;
 	-webkit-align-items: center;
 	-webkit-justify-content: center;
-	margin: 20px auto;
+	margin: 40px auto;
 	padding: 0;
 	width: 100vw;
 	max-width: 1200px;
@@ -1931,6 +1931,9 @@ w {
 	}
 	.container {
 		padding-top: 0;
+	}
+	#playback-row {
+		margin-top: 10px;
 	}
 }
 @media(max-height: 475px) {
