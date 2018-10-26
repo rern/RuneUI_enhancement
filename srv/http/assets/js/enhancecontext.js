@@ -16,7 +16,8 @@ $( 'body' ).click( function( e ) {
 $( '.contextmenu a' ).click( function() {
 	GUI.dbcurrent = '';
 	var cmd = $( this ).data( 'cmd' );
-	var mode = cmd.slice( 0, 2 );
+//	var mode = cmd.slice( 0, 2 );
+	var mode = cmd.replace( /replaceplay|replace|addplay|add/, '' );
 	if ( mode === 'wr' ) {
 		var name = 'Webradio/'+ GUI.list.name.replace( /"/g, '\\"' ) +'.pls';
 	} else if ( mode === 'pl' ) {
@@ -32,9 +33,9 @@ $( '.contextmenu a' ).click( function() {
 	if ( !mode ) {
 		var mpcCmd = GUI.list.isfile ? 'mpc add "'+ name +'"' : 'mpc ls "'+ name +'" | mpc add';
 	} else if ( $.inArray( mode, [ 'album', 'artist', 'composer', 'genre' ] ) !== -1 ) {
+		cmd = cmd.replace( /album|artist|composer|genre/, '' );
 		if ( mode === 'album' && GUI.list.artist ) {
 			var mpcCmd = 'mpc findadd artist "'+ GUI.list.artist +'" album "'+ name +'"';
-			cmd = cmd.replace( 'album', '' );
 		} else {
 			var mpcCmd = 'mpc findadd '+ mode +' "'+ name +'"';
 		}
@@ -74,9 +75,14 @@ $( '.contextmenu a' ).click( function() {
 			}
 			$.post( 'enhance.php', { mpc: command }, function() {
 				if ( !GUI.status.playlistlength ) getPlaybackStatus();
-				if ( cmd.slice( -4 ) === 'play' ) {
-					$( '#playback-controls .btn-primary' ).removeClass( 'btn-primary' );
-					$( '#play' ).addClass( 'btn-primary' );
+				if ( GUI.display.bars ) {
+					if ( cmd.slice( -4 ) === 'play' ) {
+						$( '#stop, #pause' ).removeClass( 'btn-primary' );
+						$( '#play' ).addClass( 'btn-primary' );
+					} else if ( cmd.slice( -7 ) === 'replace' ) {
+						$( '#play, #pause' ).removeClass( 'btn-primary' );
+						$( '#stop' ).addClass( 'btn-primary' );
+					}
 				}
 			} );
 		}
