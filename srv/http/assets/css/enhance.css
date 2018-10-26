@@ -130,7 +130,8 @@ label {
 	top: auto;
 	bottom: 60px;
 	left: 0;
-	background: #0095d8;
+}
+.ui-pnotify-shadow {
 	box-shadow: 4px 4px 10px #000000 !important;
 }
 .ui-pnotify .alert {
@@ -159,8 +160,7 @@ wh, gr { font-weight: 300; }
 	font-weight: normal;
 }
 #displaysavelibrary i {
-	margin: 0 10px 0 4px;
-	vertical-align: -15%;
+	    margin: 0 10px 0 4px;
 	font-size: 22px;
 	color: #7795b4;
 }
@@ -287,7 +287,6 @@ wh, gr { font-weight: 300; }
 #menu-top {
 	padding: 0 20px 0 30px;
 	box-shadow: 0px 4px 10px #000000;
-	transition: all 0.3s ease;
 }
 #menu-top button, #menu-bottom a {
 	height: 40px;
@@ -1918,6 +1917,9 @@ w {
 	#playback-row {
 		margin: 10px auto;
 	}
+	#format-bitrate {
+		display: none !important;
+	}
 }
 @media(max-height: 515px) {
 	#menu-top,
@@ -1962,9 +1964,6 @@ w {
 	#panel-playback {
 		padding-top: 15px;
 	}
-	#divalbum {
-		display: none;
-	}
 }
 @media(max-height: 405px) and (max-width: 750px) {
 	#play-group,
@@ -1974,9 +1973,6 @@ w {
 	}
 }
 @media(max-height: 350px) and (max-width: 750px) {
-	#sampling {
-		display: none;
-	}
 	#time-knob,
 	#coverart,
 	#volume-knob {
@@ -1987,9 +1983,6 @@ w {
 @media(max-height: 395px) {
 	#panel-playback {
 		padding-top: 15px;
-	}
-	#divalbum {
-		display: none;
 	}
 }
 @media(max-height: 360px) {
