@@ -27,7 +27,7 @@ rm -v /srv/http/enhance*
 rm -v /srv/http/app/templates/enhance*
 rm -v /srv/http/assets/css/{enhance*,fontawesome.min,midori,pnotify.custom.min,roundslider.min,toggle-switch.min}.css
 rm -v /srv/http/assets/fonts/enhance*
-rm -v /srv/http/assets/img/{bootsplash.png,controls*,runelogo.svg,vu*}
+rm -v /srv/http/assets/img/{bootsplash.png,controls*,cover.svg,runelogo.svg,vu*}
 rm -v /srv/http/assets/js/enhance*
 rm -v /srv/http/assets/js/vendor/{jquery-ui.min,modernizr-custom,roundslider.min}.js
 [[ ! -e /srv/http/gpiosettings.php ]] && rm -v /srv/http/assets/css/{bootstrap,bootstrap.select}.min.css
