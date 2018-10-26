@@ -1067,7 +1067,12 @@ document.addEventListener( visibilityevent, function() {
 } );
 window.addEventListener( 'orientationchange', function() {
 	if ( $( '#panel-playback' ).hasClass( 'active' ) ) {
-		scrollLongText();
+		$( '#playback-row' ).addClass( 'hide' );
+		setTimeout( function() {
+			displayPlayback()
+			scrollLongText();
+			$( '#playback-row' ).removeClass( 'hide' );
+		}, 300 );
 	} else {
 		if ( GUI.dblist || !$( '#pl-editor' ).hasClass( 'hide' ) ) displayIndexBar();
 	}

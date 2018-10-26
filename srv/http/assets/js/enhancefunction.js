@@ -530,13 +530,16 @@ function unmuteColor() {
 function displayTopBottom() {
 	if ( !$( '#bio' ).hasClass( 'hide' ) ) return
 	
-	if ( !GUI.display.bars || window.innerWidth < 499 || window.innerHeight < 515 ) {
+	var wH = window.innerHeight;
+	if ( !GUI.display.bars ) {
 		$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
+		$( '#panel-playback' ).css( 'padding-top', wH > 600 ? '60px' : '40px' );
 		$( '#db-list, #pl-list' ).css( 'padding', '40px 0' );
 		$( '.btnlist-top' ).css( 'top', 0 );
 		$( '#home-blocks' ).css( 'padding-top', '50px' );
 	} else {
 		$( '#menu-top, #menu-bottom' ).removeClass( 'hide' );
+		$( '#panel-playback' ).css( 'padding-top', '' );
 		$( '#db-list, #pl-list' ).css( 'padding', '' );
 		$( '.btnlist-top' ).css( 'top', '40px' );
 		$( '#home-blocks' ).css( 'padding-top', '' );
@@ -605,24 +608,31 @@ function displayPlayback() {
 	} else {
 		$elements.css( 'width', '' );
 	}
-	if ( !GUI.display.buttons || window.innerHeight <= 320 || window.innerWidth < 499 ) {
+	var wW = window.innerWidth;
+	var wH = window.innerHeight;
+	if ( !GUI.display.buttons ) {
 		$( '#play-group, #share-group, #vol-group' ).addClass( 'hide' );
 		if ( GUI.display.time ) $( '#iplayer' ).attr( 'class', GUI.status.activePlayer === 'MPD' ? 'fa hide' : 'fa fa-'+ GUI.status.activePlayer.toLowerCase() );
 	}
 	// no scaling for webradio vu meter
 	if ( !GUI.display.coverlarge || $( '#album' ).text().slice( 0, 4 ) === 'http' ) {
 		$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).addClass( 'coversmall' );
+		if ( wW < 500 ) $( '#divcover, #cover-art' ).css( { 'max-width': '100%', 'max-height': '100%' } );
 	} else {
 		$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).removeClass( 'coversmall' );
-		$( '#playback-row' ).css( 'transform', 'none' );
-		if ( window.innerWidth < 500 ) $( '#format-bitrate' ).css( 'display', GUI.display.time ? 'inline' : 'block' );
+		var maxW = GUI.display.bars ? '45vh' : '55vh';
+		$( '#divcover, #cover-art' ).css( { 'max-width': maxW, 'max-height': maxW } );
+		if ( wW < 500 ) $( '#format-bitrate' ).css( 'display', GUI.display.time ? 'inline' : 'block' );
 		if ( !GUI.display.time && !GUI.display.volume ) $( '#share-group' ).addClass( 'hide' );
 	}
 	if ( GUI.display.time ) {
 		$( '#divpos' ).css( 'font-size', '' );
 		$( '#timepos' ).empty();
+		$( '#playback-row' ).css( 'margin-top', '' );
 	} else {
 		$( '#divpos' ).css( 'font-size', '20px' );
+		$( '#format-bitrate' ).css( 'display', 'block' );
+		$( '#playback-row' ).css( 'margin-top', '30px' );
 	}
 	displayTopBottom();
 }
