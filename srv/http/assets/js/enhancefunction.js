@@ -461,8 +461,7 @@ function setPanelActive( id ) {
 	$( '.tab-pane' ).addClass( 'hide' );
 	$( '#'+ id ).removeClass( 'hide' );
 	$( '#'+ id +', #'+ id.replace( 'panel', 'open' ) ).addClass( 'active' );
-	if ( !GUI.display.bars || window.innerWidth < 499 || window.innerHeight < 515 ) {
-		$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
+	if ( !GUI.display.bars ) {
 		$( '.btnlist-top' ).css( 'top', 0 );
 		$( '#db-list' ).css( 'padding-top', '40px' );
 	}
@@ -615,15 +614,16 @@ function displayPlayback() {
 		$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).addClass( 'coversmall' );
 	} else {
 		$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).removeClass( 'coversmall' );
+		$( '#playback-row' ).css( 'transform', 'none' );
 		if ( window.innerWidth < 500 ) $( '#format-bitrate' ).css( 'display', GUI.display.time ? 'inline' : 'block' );
 		if ( !GUI.display.time && !GUI.display.volume ) $( '#share-group' ).addClass( 'hide' );
 	}
 	if ( GUI.display.time ) {
-		$( '#playback-row' ).css( 'margin-top', '20px' );
+		if ( window.innerHeight > 535 ) $( '#playback-row' ).css( 'margin-top', '20px' );
 		$( '#divpos' ).css( 'font-size', '' );
 		$( '#timepos' ).empty();
 	} else {
-		$( '#playback-row' ).css( 'margin-top', '40px' );
+		if ( window.innerHeight > 535 ) $( '#playback-row' ).css( 'margin-top', '40px' );
 		$( '#divpos' ).css( 'font-size', '20px' );
 	}
 	displayTopBottom();
