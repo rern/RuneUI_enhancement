@@ -434,8 +434,7 @@ function getPlaybackStatus() {
 		// 'gpio off' > audio output switched > restarts mpd which makes status briefly unavailable
 		if( typeof status !== 'object' ) return
 		
-		GUI.activePlayer = status.activePlayer;
-		if ( GUI.activePlayer === 'Airplay' ) {
+		if ( status.activePlayer === 'Airplay' ) {
 			displayAirPlay();
 			return
 		}
@@ -636,17 +635,6 @@ function displayPlayback() {
 	}
 	displayTopBottom();
 }
-function setPlaybackSource() {
-	var activePlayer = GUI.activePlayer;
-	$( '#playsource a' ).addClass( 'inactive' );
-	var source = activePlayer.toLowerCase();
-	$( '#playsource-' + source).removeClass( 'inactive' );
-	
-	if ( activePlayer === 'Spotify' || activePlayer === 'Airplay' ) {
-//		$( '#volume-knob, #vol-group' ).addClass( 'hide' );
-		$( '#single' ).prop( 'disabled' );
-	}
-}
 function switchPlaysource( source ) {
 	$.get( '/command/?switchplayer='+ source, function() {
 		setTimeout( function() {
@@ -729,9 +717,6 @@ function renderLibrary() {
 		$( '#db-currentpath span' ).html( '<bl class="title">LIBRARY</bl></a>' );
 	}
 	$( '#panel-library .btnlist-top, #home-blocks' ).removeClass( 'hide' );
-	// Set active player
-	setPlaybackSource();
-	
 	var content = '';
 	var bookmarks = status.bookmark;
 	if ( bookmarks ) {

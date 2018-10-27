@@ -205,7 +205,7 @@ $( '#open-library' ).click( function() {
 		renderLibrary();
 		return
 	}
-	if ( GUI.activePlayer === 'Airplay' ) {
+	if ( GUI.status.activePlayer === 'Airplay' ) {
 		$( '#playsource' ).addClass( 'open' );
 		return
 	}
@@ -234,7 +234,7 @@ $( '#open-playback' ).click( function() {
 } );
 $( '#open-playlist' ).click( function() {
 	if ( $( this ).hasClass( 'active' ) && GUI.pleditor ) GUI.pleditor = 0;
-	if ( GUI.activePlayer === 'Airplay' ) {
+	if ( GUI.status.activePlayer === 'Airplay' ) {
 		$( '#playsource' ).addClass( 'open' );
 		return
 	}
@@ -506,7 +506,7 @@ $( '#menu-top, #menu-bottom, #settings' ).click( function( e ) {
 } );
 $( '#playsource-open' ).click( function() {
 	$( '#playsource li a' ).addClass( 'inactive' );
-	$( '#playsource-'+ GUI.activePlayer.toLowerCase() ).removeClass( 'inactive' )
+	$( '#playsource-'+ GUI.status.activePlayer.toLowerCase() ).removeClass( 'inactive' )
 	$( '#playsource' ).addClass( 'open' );
 } );
 $( '#playsource-close' ).click( function() {
@@ -522,7 +522,7 @@ $( '#overlay-social-close' ).click( function() {
 } );
 $( '#playsource-mpd' ).click( function() {
 	$.post( 'enhance.php', { bash: '/usr/bin/systemctl restart shairport' } );
-	if ( GUI.activePlayer !== 'MPD' ) switchPlaysource( 'MPD' );
+	if ( GUI.status.activePlayer !== 'MPD' ) switchPlaysource( 'MPD' );
 } );
 $( '#playsource-spotify' ).click( function() {
 	$.post( 'enhance.php', { bash: '/usr/bin/redis-cli hget spotify enable' }, function( data ) {
@@ -569,7 +569,7 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 		bookmarkRename( name, path, $this );
 	} else if ( e.target.id === 'home-block-remove' ) {
 		bookmarkDelete( name, $this );
-	} else if ( id === 'home-spotify' && GUI.activeplayer !== 'Spotify' ) {
+	} else if ( id === 'home-spotify' && GUI.status.activePlayer !== 'Spotify' ) {
 		$( '#playsource' ).addClass( 'open' );
 	} else {
 		GUI.dblist = 1;
