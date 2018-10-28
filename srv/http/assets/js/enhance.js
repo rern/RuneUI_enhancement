@@ -184,6 +184,11 @@ $( '#displayplayback' ).click( function() {
 	// disable by mpd volume
 	if ( !GUI.display.volumempd ) setToggleButton( 'volume', '(disabled)' );
 	// disable by autohide
+	if ( !GUI.display.time && !GUI.display.volume ) {
+		setToggleButton( 'coverart', '(auto)' );
+		setToggleButton( 'coverlarge', '(auto)' );
+		setToggleButton( 'buttons', '(auto)' );
+	}
 	if ( window.innerWidth >= 500 ) return
 	
 	if ( window.innerHeight <= 515 ) setToggleButton( 'bars' );
@@ -420,7 +425,7 @@ $( '#coverTL' ).click( function() {
 					GUI.display.time = time;
 					GUI.display.volume = volume;
 				} else {
-					if ( !radio ) GUI.display.coverlarge = coverlarge ? '' : 'checked';
+					GUI.display.coverlarge = '';
 					GUI.display.time = 'checked';
 					GUI.display.volume = 'checked';
 				}

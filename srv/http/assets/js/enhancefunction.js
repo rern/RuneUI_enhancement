@@ -605,15 +605,18 @@ function displayPlayback() {
 		if ( GUI.display.time ) $( '#iplayer' ).attr( 'class', GUI.status.activePlayer === 'MPD' ? 'fa hide' : 'fa fa-'+ GUI.status.activePlayer.toLowerCase() );
 	}
 	// no scaling for webradio vu meter
-	if ( !GUI.display.coverlarge || $( '#album' ).text().slice( 0, 4 ) === 'http' ) {
-		$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).addClass( 'coversmall' );
-		if ( wW < 500 ) $( '#divcover, #cover-art' ).css( { 'max-width': '100%', 'max-height': '100%' } );
-	} else {
+	if ( GUI.display.coverlarge
+		&& $( '#album' ).text().slice( 0, 4 ) !== 'http'
+		|| ( !GUI.display.time && !GUI.display.volume )
+	) {
 		$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).removeClass( 'coversmall' );
 		var maxW = GUI.display.bars ? '45vh' : '55vh';
 		$( '#divcover, #cover-art' ).css( { 'max-width': maxW, 'max-height': maxW } );
 		if ( wW < 500 ) $( '#format-bitrate' ).css( 'display', GUI.display.time ? 'inline' : 'block' );
 		if ( !GUI.display.time && !GUI.display.volume ) $( '#share-group' ).addClass( 'hide' );
+	} else {
+		$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).addClass( 'coversmall' );
+		if ( wW < 500 ) $( '#divcover, #cover-art' ).css( { 'max-width': '100%', 'max-height': '100%' } );
 	}
 	if ( GUI.display.time ) {
 		$( '#divpos' ).css( 'font-size', '' );
