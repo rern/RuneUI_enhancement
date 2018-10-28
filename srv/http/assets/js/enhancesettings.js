@@ -14,8 +14,15 @@ var path = location.pathname;
 if ( path === '/sources' ) {
 	function toggleUpdate() {
 		$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
-			$( '#updatempddb, #rescanmpddb' ).toggleClass( 'disabled', status.updating_db !== 0 );
-			$( '#updatempddb i, #rescanmpddb i' ).toggleClass( 'fa-spin', status.updating_db !== 0 );
+			$( '#updatempddb, #rescanmpddb' ).toggleClass( 'hide', status.updating_db !== 0 );
+			$( '#updatempddb' ).parent().after( status.updating_db !== 0 ? '<i class="fa fa-library blink"></i>' : '' );
+			if ( status.updating_db ) {
+				$( '#updatempddb, #rescanmpddb' ).hide();
+				$( '#updatempddb' ).parent().after( '<a id="update"><i class="fa fa-library fa-2x blink"></i>&emsp;Updating...</a>' );
+			} else {
+				$( '#update' ).remove();
+				$( '#updatempddb, #rescanmpddb' ).show();
+			}
 		}, 'json' );
 	}
 	if ( 'hidden' in document ) {
