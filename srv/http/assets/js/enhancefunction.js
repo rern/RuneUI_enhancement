@@ -328,7 +328,7 @@ function renderPlayback() {
 			}
 		} else {
 			if ( radiosrc !== vustop ) $( '#cover-art' ).attr( 'src', vustop );
-			$( '#total, #timepos' ).empty();
+			$( '#elapsed, #total, #timepos' ).empty();
 		}
 		$( '#cover-art' )
 			.css( 'border-radius', '18px' )
