@@ -1,19 +1,15 @@
 <?php
 if ( !isset( $_POST[ 'statusonly' ] ) ) {
 	$redis = new Redis(); 
-	$redis->connect( '127.0.0.1' );
+	$redis->pconnect( '127.0.0.1' );
 	$activePlayer = $redis->get( 'activePlayer' );
 	$status[ 'activePlayer' ] = $activePlayer;
 	$status[ 'volumemute' ] = $redis->hGet( 'display', 'volumemute' );
-
 	if ( $activePlayer === 'Airplay' ) {
 		echo json_encode( $status );
 		exit();
 	}
-	
-	
 }
-
 
 $mpdtelnet = ' | telnet localhost 6600 | sed "/^Trying\|Connected\|Escape\|OK\|Connection\|AlbumArtist\|Date\|Genre\|Last-Modified\|consume\|mixrampdb\|nextsong\|nextsongid/ d"';
 $lines = shell_exec( '{ sleep 0.01; echo clearerror; echo status; echo currentsong; sleep 0.05; }'.$mpdtelnet );
@@ -41,8 +37,6 @@ while ( $line !== false ) {
 $status[ 'updating_db' ] = array_key_exists( 'updating_db', $status ) ? 1 : 0;
 if ( exec( 'pidof ashuffle' ) ) $status[ 'random' ] = 1;
 if ( !array_key_exists( 'song', $status ) ) $status[ 'song' ] = 0;
-
-
 $previousartist = isset( $_POST[ 'artist' ] ) ? $_POST[ 'artist' ] : '';
 $previousalbum = isset( $_POST[ 'album' ] ) ? $_POST[ 'album' ] : '';
 if ( isset( $_POST[ 'statusonly' ] )
