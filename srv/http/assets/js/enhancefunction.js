@@ -202,7 +202,7 @@ function setButton() {
 	setTimeout( function() {
 		setButtonToggle();
 		setButtonUpdate();
-	}, 0 );
+	}, 100 );
 }
 function numFormat( num ) {
 	return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
