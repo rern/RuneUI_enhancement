@@ -155,7 +155,7 @@ fi
 for item in bars debug dev time coverart volume buttons nas sd usb webradio album artist albumartist composer genre dirble jamendo count label; do
 	if [[ $( redis-cli hexists display $item ) == 0 ]]; then
 		[[ $item == debug || $item == dev ]] && chk='' || chk=checked
-		redis-cli hset display $item $chk &> /dev/null
+		redis-cli hset display $item "$chk" &> /dev/null
 	fi
 done
 # fix webradio permission
