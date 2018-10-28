@@ -1,5 +1,11 @@
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-	
+
+var psOption = {
+	  host: window.location.hostname
+	, port: window.location.port
+	, modes: 'websocket'
+};
+
 if ( document.location.hostname === 'localhost' ) $( '.osk-trigger' ).onScreenKeyboard( { 'draggable': true } );
 
 $( '.selectpicker' ).selectpicker();
@@ -35,11 +41,7 @@ if ( path === '/sources' ) {
 		}
 	} );
 	toggleUpdate();
-	var pushstreamIdle = new PushStream( {
-		host: window.location.hostname,
-		port: window.location.port,
-		modes: 'websocket'
-	} );
+	var pushstreamIdle = new PushStream( psOption );
 	pushstreamIdle.onmessage = function( data ) {
 		if ( data[ 0 ] === 'update' ) toggleUpdate();
 	}
@@ -94,11 +96,7 @@ if ( path === '/sources' ) {
 	
 } else if ( path === '/mpd' ) {
 	$('#audio-output-interface').change(function(){
-		new PNotify( {
-			  title : 'Switch audio output'
-			, text  : 'Please wait for config update...'
-			, icon  : 'fa fa-cog fa-spin'
-		} );
+		renderMSG([{'title': 'Switching audio output', 'text': 'Please wait for the config update...', 'icon': 'fa fa-cog fa-spin', 'delay': 5000 }]);
 		var output = $(this).val();
 		$.ajax({
 			type: 'POST',
@@ -225,14 +223,10 @@ if ( path === '/sources' ) {
 				cache: false
 			});
 		}
-		var pushstream = new PushStream({
-			host: window.location.hostname,
-			port: window.location.port,
-			modes: 'websocket'
-		});
-		pushstream.onmessage = listWLANs;
-		pushstream.addChannel('wlans');
-		pushstream.connect();
+		var pushstreamWlans = new PushStream( psOption );
+		pushstreamWlans.onmessage = listWLANs;
+		pushstreamWlans.addChannel('wlans');
+		pushstreamWlans.connect();
 		$.ajax({
 			url: '/command/?cmd=wifiscan',
 			cache: false
@@ -262,14 +256,10 @@ if ( path === '/sources' ) {
 			});
 			$('#nic-details tbody').html(content);
 		}
-		var pushstream = new PushStream({
-			host: window.location.hostname,
-			port: window.location.port,
-			modes: 'websocket'
-		});
-		pushstream.onmessage = nicsDetails;
-		pushstream.addChannel('nics');
-		pushstream.connect();
+		var pushstreamNics = new PushStream( psOption );
+		pushstreamNics.onmessage = nicsDetails;
+		pushstreamNics.addChannel('nics');
+		pushstreamNics.connect();
 	}
 	$('#wifiProfiles').change(function(){
 		if ($(this).prop('checked')) {
@@ -307,7 +297,6 @@ if ( path === '/sources' ) {
 			new PNotify({
 				title: 'Copied to clipboard',
 				text: 'The debug output was copied successfully in your clipboard.',
-				icon: 'fa fa-check'
 			});
 		});
 	});

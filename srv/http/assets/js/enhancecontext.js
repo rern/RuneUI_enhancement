@@ -16,7 +16,6 @@ $( 'body' ).click( function( e ) {
 $( '.contextmenu a' ).click( function() {
 	GUI.dbcurrent = '';
 	var cmd = $( this ).data( 'cmd' );
-//	var mode = cmd.slice( 0, 2 );
 	var mode = cmd.replace( /replaceplay|replace|addplay|add/, '' );
 	if ( mode === 'wr' ) {
 		var name = 'Webradio/'+ GUI.list.name.replace( /"/g, '\\"' ) +'.pls';
@@ -64,8 +63,7 @@ $( '.contextmenu a' ).click( function() {
 			if ( cmd !== 'update' ) {
 				var add = cmd.replace( 'wr', '' ).slice( 0, 3 ) === 'add';
 				new PNotify( {
-					  icon  : 'fa fa-check'
-					, title : add ? 'Add to Playlist' : 'Playlist replaced'
+					  title : add ? 'Add to Playlist' : 'Playlist replaced'
 					, text  : GUI.list.name
 				} );
 			}
@@ -162,8 +160,7 @@ function bookmarkVerify( name, path, oldname ) {
 		if ( namei === -1 ) {
 			if ( !oldname ) {
 				new PNotify( {
-					  icon  : 'fa fa-check'
-					, title : 'Add Bookmark'
+					  title : 'Add Bookmark'
 					, text  : name
 				} );
 				GUI.local = 1;
@@ -363,8 +360,7 @@ function addPlaylist( name, oldname ) {
 		} );
 	} else {
 		new PNotify( {
-			  icon  : 'fa fa-check'
-			, title : 'Playlist Saved'
+			  title : 'Playlist Saved'
 			, text  : name
 		} );
 		$( '#plopen' ).removeClass( 'disable' );

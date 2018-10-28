@@ -31,6 +31,17 @@ var GUI = { // outside '$( function() {' enable console.log access
 	, timeout      : ''
 	, updating     : 0
 };
+PNotify.prototype.options.delay = 3000;
+PNotify.prototype.options.styling = 'fontawesome';
+PNotify.prototype.options.icon = 'fa fa-check';
+PNotify.prototype.options.stack = {
+	  dir1      : 'up'    // stack up
+	, dir2      : 'right' // when full stack right
+	, firstpos1 : 60      // offset from border H
+	, firstpos2 : 0       // offset from border V
+	, spacing1  : 10      // space between dir1
+	, spacing2  : 10      // space between dir2
+}
 var blinkdot = '<a class="dot">.</a> <a class="dot dot2">.</a> <a class="dot dot3">.</a>';
 
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -50,7 +61,7 @@ $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 		}, 'json' );
 	}, 'json' );
 }, 'json' );
-
+    
 if ( document.location.hostname === 'localhost' ) $( '.osk-trigger' ).onScreenKeyboard( { 'draggable': true } );
 
 // PLAYBACK /////////////////////////////////////////////////////////////////////////////////////
@@ -530,9 +541,9 @@ $( '#playsource-spotify' ).click( function() {
 			switchPlaysource( 'Spotify' );
 		} else {
 			new PNotify( {
-				  title : 'Spotify not enabled'
+				  icon  : 'fa fa-exclamation-circle'
+				, title : 'Spotify not enabled'
 				, text  : 'Enable in Settings menu'
-				, icon  : 'fa fa-exclamation-circle'
 			} );
 		}
 	} );

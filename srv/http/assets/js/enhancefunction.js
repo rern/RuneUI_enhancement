@@ -111,22 +111,12 @@ pushstreams.idle.onmessage = function( changed ) {
 		if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) $( '#home-webradio' ).click();
 	}
 }
-PNotify.prototype.options.styling = 'fontawesome';
-PNotify.prototype.options.stack = {
-	  dir1      : 'up'    // stack up
-	, dir2      : 'right' // when full stack right
-	, firstpos1 : 60      // offset from border H
-	, firstpos2 : 0       // offset from border V
-	, spacing1  : 10      // space between dir1
-	, spacing2  : 10      // space between dir2
-}
 pushstreams.notify.onmessage = function( data ) {
 	var notify = data[ 0 ];
 	new PNotify( {
-		  title       : notify.title ? notify.title : 'Info'
+		  icon        : notify.icon || 'fa fa-check'
+		, title       : notify.title || 'Info'
 		, text        : notify.text
-		, icon        : notify.icon ? notify.icon : 'fa fa-check'
-		, delay       : notify.delay ? notify.delay : 4000
 	} );
 }
 
@@ -242,7 +232,7 @@ function scrollLongText() {
 			var $this = $( this );
 			$this.toggleClass( 'scroll-left', $this.find( 'span' ).width() > window.innerWidth * 0.98 );
 		} );
-	}, 100 );
+	}, 300 );
 }
 function removeSplash() {
 	$( '#splash' ).remove();
@@ -314,6 +304,7 @@ function renderPlayback() {
 			var elapsed = status.elapsed;
 			if ( GUI.display.time ) {
 				$( '#timepos' ).empty();
+				$( '#time' ).roundSlider( 'setValue', 0 );
 				if ( !GUI.display.radioelapsed ) {
 					$( '#total' ).empty();
 				} else {
@@ -923,7 +914,6 @@ function parseDBdata( inputArr, i, respType, inpath, querytype ) {
 		respType = respType || '',
 		inpath = inpath || '',
 		querytype = querytype || '';
-	GUI.albumartist = '';
 	switch ( respType ) {
 		case 'db':
 			if ( GUI.browsemode === 'file' ) {
@@ -975,7 +965,6 @@ function parseDBdata( inputArr, i, respType, inpath, querytype ) {
 					content += '<span class="bl">'+ inputArr.file +'</span></li>';
 					var artist = inputArr.AlbumArtist || inputArr.Artist;
 					if ( !GUI.albumartist ) GUI.albumartist = inputArr.Album +'<gr> • </gr>'+ artist;
-					
 				} else {
 					var liname = inputArr.album;
 					var artistalbum = inputArr.artistalbum;
@@ -1085,7 +1074,8 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 		content = '',
 		i = 0,
 		row = [];
-
+	GUI.albumartist = '';
+	
 	if ( path ) GUI.currentpath = path;
 	$( '#db-entries, #db-currentpath .lipath' ).empty();
 	$( '#db-currentpath span, #db-entries, #db-back' ).removeClass( 'hide' );
