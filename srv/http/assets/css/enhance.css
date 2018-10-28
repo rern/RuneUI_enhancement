@@ -1919,6 +1919,9 @@ w {
 	}
 }
 @media(max-height: 475px) {
+	#settings {
+		position: absolute;
+	}
 	#playback-row {
 		margin-top: 0;
 	}
