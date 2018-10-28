@@ -109,8 +109,8 @@ EOF
 	appendS 'settings'
 else
 #----------------------------------------------------------------------------------
-	file=/root/.xinitrc
-	echo $file
+	file=/etc/X11/xinit/start_chromium.sh
+	[[ ! -e $file ]] && file=/root/.xinitrc
 	
 	sed -i "s/\(force-device-scale-factor=\).*/\1$zoom/" $file
 fi
@@ -138,20 +138,25 @@ systemctl disable rune_shutdown
 bkmarks=$( redis-cli keys bkmarks )
 if [[ ! $bkmarks ]]; then
 	bookmarks=$( redis-cli hgetall bookmarks | tr -d '"{}\\' )
-	readarray -t bookmarks <<<"$bookmarks"
-	ilength=${#bookmarks[*]}
-	for (( i=0; i < ilength; i++ )); do
-		if (( i % 2 )); then
-			kv=${bookmarks[ $i ]}
-			k=$( echo $kv | cut -d',' -f1 )
-			v=$( echo $kv | cut -d',' -f2 )
-			redis-cli hset bkmarks "${k/name:}" "${v/path:}" &> /dev/null
-		fi
-	done
+	if [[ $bookmarks ]]; then
+		readarray -t bookmarks <<<"$bookmarks"
+		ilength=${#bookmarks[*]}
+		for (( i=0; i < ilength; i++ )); do
+			if (( i % 2 )); then
+				kv=${bookmarks[ $i ]}
+				k=$( echo $kv | cut -d',' -f1 )
+				v=$( echo $kv | cut -d',' -f2 )
+				redis-cli hset bkmarks "${k/name:}" "${v/path:}" &> /dev/null
+			fi
+		done
+	fi
 fi
 
-for item in bars time coverart volume buttons nas sd usb webradio album artist albumartist composer genre dirble jamendo count label; do
-	[[ $( redis-cli hexists display $item ) == 0 ]] && redis-cli hset display $item checked &> /dev/null
+for item in bars debug dev time coverart volume buttons nas sd usb webradio album artist albumartist composer genre dirble jamendo count label; do
+	if [[ $( redis-cli hexists display $item ) == 0 ]]; then
+		[[ $item == debug || $item == dev ]] && chk='' || chk=checked
+		redis-cli hset display $item $chk &> /dev/null
+	fi
 done
 # fix webradio permission
 chown -R http:http /mnt/MPD/Webradio

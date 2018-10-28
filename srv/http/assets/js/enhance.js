@@ -31,7 +31,20 @@ var GUI = { // outside '$( function() {' enable console.log access
 	, timeout      : ''
 	, updating     : 0
 };
+PNotify.prototype.options.delay = 3000;
+PNotify.prototype.options.styling = 'fontawesome';
+PNotify.prototype.options.icon = 'fa fa-check';
+PNotify.prototype.options.stack = {
+	  dir1      : 'up'    // stack up
+	, dir2      : 'right' // when full stack right
+	, firstpos1 : 60      // offset from border H
+	, firstpos2 : 0       // offset from border V
+	, spacing1  : 10      // space between dir1
+	, spacing2  : 10      // space between dir2
+}
 var blinkdot = '<a class="dot">.</a> <a class="dot dot2">.</a> <a class="dot dot3">.</a>';
+
+$( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 GUI.local = 1; // suppress 2nd getPlaybackStatus() on load
 setTimeout( function() { GUI.local = 0 }, 500 );
@@ -48,9 +61,7 @@ $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 		}, 'json' );
 	}, 'json' );
 }, 'json' );
-
-$( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
+    
 if ( document.location.hostname === 'localhost' ) $( '.osk-trigger' ).onScreenKeyboard( { 'draggable': true } );
 
 // PLAYBACK /////////////////////////////////////////////////////////////////////////////////////
@@ -173,6 +184,11 @@ $( '#displayplayback' ).click( function() {
 	// disable by mpd volume
 	if ( !GUI.display.volumempd ) setToggleButton( 'volume', '(disabled)' );
 	// disable by autohide
+	if ( !GUI.display.time && !GUI.display.volume ) {
+		setToggleButton( 'coverart', '(auto)' );
+		setToggleButton( 'coverlarge', '(auto)' );
+		setToggleButton( 'buttons', '(auto)' );
+	}
 	if ( window.innerWidth >= 500 ) return
 	
 	if ( window.innerHeight <= 515 ) setToggleButton( 'bars' );
@@ -205,7 +221,7 @@ $( '#open-library' ).click( function() {
 		renderLibrary();
 		return
 	}
-	if ( GUI.activePlayer === 'Airplay' ) {
+	if ( GUI.status.activePlayer === 'Airplay' ) {
 		$( '#playsource' ).addClass( 'open' );
 		return
 	}
@@ -234,7 +250,7 @@ $( '#open-playback' ).click( function() {
 } );
 $( '#open-playlist' ).click( function() {
 	if ( $( this ).hasClass( 'active' ) && GUI.pleditor ) GUI.pleditor = 0;
-	if ( GUI.activePlayer === 'Airplay' ) {
+	if ( GUI.status.activePlayer === 'Airplay' ) {
 		$( '#playsource' ).addClass( 'open' );
 		return
 	}
@@ -409,7 +425,7 @@ $( '#coverTL' ).click( function() {
 					GUI.display.time = time;
 					GUI.display.volume = volume;
 				} else {
-					if ( !radio ) GUI.display.coverlarge = coverlarge ? '' : 'checked';
+					GUI.display.coverlarge = '';
 					GUI.display.time = 'checked';
 					GUI.display.volume = 'checked';
 				}
@@ -506,7 +522,7 @@ $( '#menu-top, #menu-bottom, #settings' ).click( function( e ) {
 } );
 $( '#playsource-open' ).click( function() {
 	$( '#playsource li a' ).addClass( 'inactive' );
-	$( '#playsource-'+ GUI.activePlayer.toLowerCase() ).removeClass( 'inactive' )
+	$( '#playsource-'+ GUI.status.activePlayer.toLowerCase() ).removeClass( 'inactive' )
 	$( '#playsource' ).addClass( 'open' );
 } );
 $( '#playsource-close' ).click( function() {
@@ -522,7 +538,7 @@ $( '#overlay-social-close' ).click( function() {
 } );
 $( '#playsource-mpd' ).click( function() {
 	$.post( 'enhance.php', { bash: '/usr/bin/systemctl restart shairport' } );
-	if ( GUI.activePlayer !== 'MPD' ) switchPlaysource( 'MPD' );
+	if ( GUI.status.activePlayer !== 'MPD' ) switchPlaysource( 'MPD' );
 } );
 $( '#playsource-spotify' ).click( function() {
 	$.post( 'enhance.php', { bash: '/usr/bin/redis-cli hget spotify enable' }, function( data ) {
@@ -530,9 +546,9 @@ $( '#playsource-spotify' ).click( function() {
 			switchPlaysource( 'Spotify' );
 		} else {
 			new PNotify( {
-				  title : 'Spotify not enabled'
+				  icon  : 'fa fa-exclamation-circle'
+				, title : 'Spotify not enabled'
 				, text  : 'Enable in Settings menu'
-				, icon  : 'fa fa-exclamation-circle'
 			} );
 		}
 	} );
@@ -569,7 +585,7 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 		bookmarkRename( name, path, $this );
 	} else if ( e.target.id === 'home-block-remove' ) {
 		bookmarkDelete( name, $this );
-	} else if ( id === 'home-spotify' && GUI.activeplayer !== 'Spotify' ) {
+	} else if ( id === 'home-spotify' && GUI.status.activePlayer !== 'Spotify' ) {
 		$( '#playsource' ).addClass( 'open' );
 	} else {
 		GUI.dblist = 1;
@@ -751,7 +767,7 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 	GUI.list = {};
 	GUI.list.path = $thisli.find( '.lipath' ).text();
 	GUI.list.name = $thisli.find( '.liname' ).text();
-	GUI.list.artist = $thisli.find( '.artist' ) || '';
+	GUI.list.artist = $thisli.find( '.artist' ).text() || '';
 	var icon = $thisli.find( 'i.db-icon' );
 	GUI.list.isfile = icon.hasClass( 'fa-music' ) || icon.hasClass( 'fa-webradio' ); // file/dirble - used in contextmenu
 	if ( $( '#db-currentpath' ).find( '.lipath' ).text() === 'Webradio' ) GUI.list.url = $thisli.find( '.bl' ).text();
@@ -1067,7 +1083,12 @@ document.addEventListener( visibilityevent, function() {
 } );
 window.addEventListener( 'orientationchange', function() {
 	if ( $( '#panel-playback' ).hasClass( 'active' ) ) {
-		scrollLongText();
+		$( '#playback-row' ).addClass( 'hide' );
+		setTimeout( function() {
+			displayPlayback()
+			scrollLongText();
+			$( '#playback-row' ).removeClass( 'hide' );
+		}, 300 );
 	} else {
 		if ( GUI.dblist || !$( '#pl-editor' ).hasClass( 'hide' ) ) displayIndexBar();
 	}

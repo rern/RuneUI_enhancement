@@ -31,7 +31,18 @@
 .fa-refresh:before { content: "\f563" }
 .fa-plus:before { content: "\f519" }
 .fa-check:before { content: "\f51B" }
+.fa-library:before { content: "\f506" }
 
+#update {
+	animation: blinkopaque 1.5s linear infinite;
+}
+#update i {
+	font-size: 28px;
+	vertical-align: -15%;
+}
+@keyframes blinkopaque {
+	50% { opacity: 0; }
+}
 /* pnotify mod */
 .ui-pnotify {
 	top: auto;

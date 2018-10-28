@@ -5,10 +5,13 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 	exit();
 } else if ( isset( $_POST[ 'mpcalbum' ] ) ) {
 	$album = $_POST[ 'mpcalbum' ];
-	$result = shell_exec( 'mpc find -f "%album%^^%artist%" album "'.$album.'" | awk \'!a[$0]++\'' );
-	$lists = explode( "\n", rtrim( $result ) );
-	if ( count( $lists ) === 1 ) {
-		$result = shell_exec( 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%" album "'.$album.'"' );
+	$result0 = shell_exec( 'mpc find -f "%album%^^%artist%" album "'.$album.'" | awk \'!a[$0]++\'' );
+	$result1 = shell_exec( 'mpc find -f "%album%^^%albumartist%" album "'.$album.'" | awk \'!a[$0]++\'' );
+	$lists0 = explode( "\n", rtrim( $result0 ) );
+	$lists1 = explode( "\n", rtrim( $result1 ) );
+	// single album: either same artist or same album artist
+	if ( count( $lists0 ) === 1 || count( $lists1 ) === 1 ) {
+		$result = shell_exec( 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%albumartist%" album "'.$album.'"' );
 		$data = search2array( $result );
 	} else {
 		foreach( $lists as $list ) {
@@ -190,11 +193,13 @@ function search2array( $result ) {
 			$li[ 'Artist' ] = $list[ 2 ];
 			$li[ 'Album' ] = $list[ 3 ];
 			$li[ 'file' ] = $list[ 4 ];
-			if ( !empty( $list[ 5 ] ) ) $li[ 'AlbumArtist' ] = $list[ 5 ];
+			if ( isset( $list[ 5 ] ) ) $li[ 'AlbumArtist' ] = $list[ 5 ];
 			$data[] = $li;
 			$li = '';
+			$artist[] = $list[ 2 ];
 		}
 	}
+	
 	return $data;
 }
 function pushstream( $channel, $data = 1 ) {

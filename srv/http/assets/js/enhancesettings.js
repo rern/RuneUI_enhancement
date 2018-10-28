@@ -1,5 +1,11 @@
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-	
+
+var psOption = {
+	  host: window.location.hostname
+	, port: window.location.port
+	, modes: 'websocket'
+};
+
 if ( document.location.hostname === 'localhost' ) $( '.osk-trigger' ).onScreenKeyboard( { 'draggable': true } );
 
 $( '.selectpicker' ).selectpicker();
@@ -8,8 +14,13 @@ var path = location.pathname;
 if ( path === '/sources' ) {
 	function toggleUpdate() {
 		$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
-			$( '#updatempddb, #rescanmpddb' ).toggleClass( 'disabled', status.updating_db !== 0 );
-			$( '#updatempddb i, #rescanmpddb i' ).toggleClass( 'fa-spin', status.updating_db !== 0 );
+			if ( status.updating_db ) {
+				$( '#updatempddb, #rescanmpddb' ).hide();
+				$( '#updatempddb' ).parent().after( '<span id="update"><i class="fa fa-library"></i>&emsp;Library updating...</span>' );
+			} else {
+				$( '#update' ).remove();
+				$( '#updatempddb, #rescanmpddb' ).show();
+			}
 		}, 'json' );
 	}
 	if ( 'hidden' in document ) {
@@ -35,11 +46,7 @@ if ( path === '/sources' ) {
 		}
 	} );
 	toggleUpdate();
-	var pushstreamIdle = new PushStream( {
-		host: window.location.hostname,
-		port: window.location.port,
-		modes: 'websocket'
-	} );
+	var pushstreamIdle = new PushStream( psOption );
 	pushstreamIdle.onmessage = function( data ) {
 		if ( data[ 0 ] === 'update' ) toggleUpdate();
 	}
@@ -221,14 +228,10 @@ if ( path === '/sources' ) {
 				cache: false
 			});
 		}
-		var pushstream = new PushStream({
-			host: window.location.hostname,
-			port: window.location.port,
-			modes: 'websocket'
-		});
-		pushstream.onmessage = listWLANs;
-		pushstream.addChannel('wlans');
-		pushstream.connect();
+		var pushstreamWlans = new PushStream( psOption );
+		pushstreamWlans.onmessage = listWLANs;
+		pushstreamWlans.addChannel('wlans');
+		pushstreamWlans.connect();
 		$.ajax({
 			url: '/command/?cmd=wifiscan',
 			cache: false
@@ -258,14 +261,10 @@ if ( path === '/sources' ) {
 			});
 			$('#nic-details tbody').html(content);
 		}
-		var pushstream = new PushStream({
-			host: window.location.hostname,
-			port: window.location.port,
-			modes: 'websocket'
-		});
-		pushstream.onmessage = nicsDetails;
-		pushstream.addChannel('nics');
-		pushstream.connect();
+		var pushstreamNics = new PushStream( psOption );
+		pushstreamNics.onmessage = nicsDetails;
+		pushstreamNics.addChannel('nics');
+		pushstreamNics.connect();
 	}
 	$('#wifiProfiles').change(function(){
 		if ($(this).prop('checked')) {
@@ -303,7 +302,6 @@ if ( path === '/sources' ) {
 			new PNotify({
 				title: 'Copied to clipboard',
 				text: 'The debug output was copied successfully in your clipboard.',
-				icon: 'fa fa-check'
 			});
 		});
 	});

@@ -95,7 +95,7 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 	- Album Artists > names > albums > songs
 	- Composers > names > albums > songs
 	- Genres > names > artists > albums > songs
-- Show album heading with artist name
+- Show album heading with artist name (various artists album without album artist tag > 1st track artist)
 - Bookmarks and webradios can be renamed
 - Bookmarks and webradios can be named with " characters
 - Scroll long bookmark names

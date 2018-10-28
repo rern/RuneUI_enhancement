@@ -5,15 +5,11 @@ if ( !isset( $_POST[ 'statusonly' ] ) ) {
 	$activePlayer = $redis->get( 'activePlayer' );
 	$status[ 'activePlayer' ] = $activePlayer;
 	$status[ 'volumemute' ] = $redis->hGet( 'display', 'volumemute' );
-
 	if ( $activePlayer === 'Airplay' ) {
 		echo json_encode( $status );
 		exit();
 	}
-	
-	
 }
-
 
 $mpdtelnet = ' | telnet localhost 6600 | sed "/^Trying\|Connected\|Escape\|OK\|Connection\|AlbumArtist\|Date\|Genre\|Last-Modified\|consume\|mixrampdb\|nextsong\|nextsongid/ d"';
 $lines = shell_exec( '{ sleep 0.01; echo clearerror; echo status; echo currentsong; sleep 0.05; }'.$mpdtelnet );
@@ -41,8 +37,6 @@ while ( $line !== false ) {
 $status[ 'updating_db' ] = array_key_exists( 'updating_db', $status ) ? 1 : 0;
 if ( exec( 'pidof ashuffle' ) ) $status[ 'random' ] = 1;
 if ( !array_key_exists( 'song', $status ) ) $status[ 'song' ] = 0;
-
-
 $previousartist = isset( $_POST[ 'artist' ] ) ? $_POST[ 'artist' ] : '';
 $previousalbum = isset( $_POST[ 'album' ] ) ? $_POST[ 'album' ] : '';
 if ( isset( $_POST[ 'statusonly' ] )
@@ -200,14 +194,10 @@ if ( $status[ 'ext' ] === 'radio' ) {
 if ( $ext === 'DSF' || $ext === 'DFF' ) {
 	// DSF: byte# 56+4 ? DSF: byte# 60+4
 	$byte = ( $ext === 'DSF' ) ? 56 : 60;
-	$bin = file_get_contents( $file, false, NULL, $byte, 4 );
-	$hex = bin2hex( $bin );
-	if ( $ext === 'DSF' ) {
-		$hex = str_split( $hex, 2 );
-		$hex = array_reverse( $hex );
-		$hex = implode( '', $hex );
-	}
-	$bitrate = hexdec( $hex );
+	exec( 'hexdump -x -s'.$byte.' -n4 "'.$file.'"', $bin );
+	$hex = preg_replace( '/ +/', ' ', $bin[ 0 ] );
+	$hex = explode( ' ', $hex );
+	$bitrate = hexdec(  $hex[ 2 ].$hex[ 1 ] );
 	$dsd = round( $bitrate / 44100 );
 	$bitrate = round( $bitrate / 1000000, 2 );
 	$sampling = 'DSD'.$dsd.' - '.$bitrate.' Mbit/s';

@@ -111,22 +111,12 @@ pushstreams.idle.onmessage = function( changed ) {
 		if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) $( '#home-webradio' ).click();
 	}
 }
-PNotify.prototype.options.styling = 'fontawesome';
-PNotify.prototype.options.stack = {
-	  dir1      : 'up'    // stack up
-	, dir2      : 'right' // when full stack right
-	, firstpos1 : 60      // offset from border H
-	, firstpos2 : 0       // offset from border V
-	, spacing1  : 10      // space between dir1
-	, spacing2  : 10      // space between dir2
-}
 pushstreams.notify.onmessage = function( data ) {
 	var notify = data[ 0 ];
 	new PNotify( {
-		  title       : notify.title ? notify.title : 'Info'
+		  icon        : notify.icon || 'fa fa-check'
+		, title       : notify.title || 'Info'
 		, text        : notify.text
-		, icon        : notify.icon ? notify.icon : 'fa fa-check'
-		, delay       : notify.delay ? notify.delay : 4000
 	} );
 }
 
@@ -212,7 +202,7 @@ function setButton() {
 	setTimeout( function() {
 		setButtonToggle();
 		setButtonUpdate();
-	}, 0 );
+	}, 100 );
 }
 function numFormat( num ) {
 	return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -242,7 +232,7 @@ function scrollLongText() {
 			var $this = $( this );
 			$this.toggleClass( 'scroll-left', $this.find( 'span' ).width() > window.innerWidth * 0.98 );
 		} );
-	}, 100 );
+	}, 300 );
 }
 function removeSplash() {
 	$( '#splash' ).remove();
@@ -314,6 +304,7 @@ function renderPlayback() {
 			var elapsed = status.elapsed;
 			if ( GUI.display.time ) {
 				$( '#timepos' ).empty();
+				$( '#time' ).roundSlider( 'setValue', 0 );
 				if ( !GUI.display.radioelapsed ) {
 					$( '#total' ).empty();
 				} else {
@@ -337,7 +328,7 @@ function renderPlayback() {
 			}
 		} else {
 			if ( radiosrc !== vustop ) $( '#cover-art' ).attr( 'src', vustop );
-			$( '#total, #timepos' ).empty();
+			$( '#elapsed, #total, #timepos' ).empty();
 		}
 		$( '#cover-art' )
 			.css( 'border-radius', '18px' )
@@ -434,8 +425,7 @@ function getPlaybackStatus() {
 		// 'gpio off' > audio output switched > restarts mpd which makes status briefly unavailable
 		if( typeof status !== 'object' ) return
 		
-		GUI.activePlayer = status.activePlayer;
-		if ( GUI.activePlayer === 'Airplay' ) {
+		if ( status.activePlayer === 'Airplay' ) {
 			displayAirPlay();
 			return
 		}
@@ -461,8 +451,7 @@ function setPanelActive( id ) {
 	$( '.tab-pane' ).addClass( 'hide' );
 	$( '#'+ id ).removeClass( 'hide' );
 	$( '#'+ id +', #'+ id.replace( 'panel', 'open' ) ).addClass( 'active' );
-	if ( !GUI.display.bars || window.innerWidth < 499 || window.innerHeight < 515 ) {
-		$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
+	if ( !GUI.display.bars ) {
 		$( '.btnlist-top' ).css( 'top', 0 );
 		$( '#db-list' ).css( 'padding-top', '40px' );
 	}
@@ -531,13 +520,16 @@ function unmuteColor() {
 function displayTopBottom() {
 	if ( !$( '#bio' ).hasClass( 'hide' ) ) return
 	
-	if ( !GUI.display.bars || window.innerWidth < 499 || window.innerHeight < 515 ) {
+	var wH = window.innerHeight;
+	if ( !GUI.display.bars ) {
 		$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
+		$( '#panel-playback' ).css( 'padding-top', wH > 600 ? '60px' : '40px' );
 		$( '#db-list, #pl-list' ).css( 'padding', '40px 0' );
 		$( '.btnlist-top' ).css( 'top', 0 );
 		$( '#home-blocks' ).css( 'padding-top', '50px' );
 	} else {
 		$( '#menu-top, #menu-bottom' ).removeClass( 'hide' );
+		$( '#panel-playback' ).css( 'padding-top', '' );
 		$( '#db-list, #pl-list' ).css( 'padding', '' );
 		$( '.btnlist-top' ).css( 'top', '40px' );
 		$( '#home-blocks' ).css( 'padding-top', '' );
@@ -606,38 +598,36 @@ function displayPlayback() {
 	} else {
 		$elements.css( 'width', '' );
 	}
-	if ( !GUI.display.buttons || window.innerHeight <= 320 || window.innerWidth < 499 ) {
+	var wW = window.innerWidth;
+	var wH = window.innerHeight;
+	if ( !GUI.display.buttons ) {
 		$( '#play-group, #share-group, #vol-group' ).addClass( 'hide' );
 		if ( GUI.display.time ) $( '#iplayer' ).attr( 'class', GUI.status.activePlayer === 'MPD' ? 'fa hide' : 'fa fa-'+ GUI.status.activePlayer.toLowerCase() );
 	}
 	// no scaling for webradio vu meter
-	if ( !GUI.display.coverlarge || $( '#album' ).text().slice( 0, 4 ) === 'http' ) {
-		$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).addClass( 'coversmall' );
-	} else {
+	if ( GUI.display.coverlarge
+		&& $( '#album' ).text().slice( 0, 4 ) !== 'http'
+		|| ( !GUI.display.time && !GUI.display.volume )
+	) {
 		$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).removeClass( 'coversmall' );
-		if ( window.innerWidth < 500 ) $( '#format-bitrate' ).css( 'display', GUI.display.time ? 'inline' : 'block' );
+		var maxW = GUI.display.bars ? '45vh' : '55vh';
+		$( '#divcover, #cover-art' ).css( { 'max-width': maxW, 'max-height': maxW } );
+		if ( wW < 500 ) $( '#format-bitrate' ).css( 'display', GUI.display.time ? 'inline' : 'block' );
 		if ( !GUI.display.time && !GUI.display.volume ) $( '#share-group' ).addClass( 'hide' );
+	} else {
+		$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).addClass( 'coversmall' );
+		if ( wW < 500 ) $( '#divcover, #cover-art' ).css( { 'max-width': '100%', 'max-height': '100%' } );
 	}
 	if ( GUI.display.time ) {
-		$( '#playback-row' ).css( 'margin-top', '20px' );
 		$( '#divpos' ).css( 'font-size', '' );
 		$( '#timepos' ).empty();
+		$( '#playback-row' ).css( 'margin-top', '' );
 	} else {
-		$( '#playback-row' ).css( 'margin-top', '40px' );
 		$( '#divpos' ).css( 'font-size', '20px' );
+		$( '#format-bitrate' ).css( 'display', 'block' );
+		$( '#playback-row' ).css( 'margin-top', '30px' );
 	}
 	displayTopBottom();
-}
-function setPlaybackSource() {
-	var activePlayer = GUI.activePlayer;
-	$( '#playsource a' ).addClass( 'inactive' );
-	var source = activePlayer.toLowerCase();
-	$( '#playsource-' + source).removeClass( 'inactive' );
-	
-	if ( activePlayer === 'Spotify' || activePlayer === 'Airplay' ) {
-//		$( '#volume-knob, #vol-group' ).addClass( 'hide' );
-		$( '#single' ).prop( 'disabled' );
-	}
 }
 function switchPlaysource( source ) {
 	$.get( '/command/?switchplayer='+ source, function() {
@@ -721,9 +711,6 @@ function renderLibrary() {
 		$( '#db-currentpath span' ).html( '<bl class="title">LIBRARY</bl></a>' );
 	}
 	$( '#panel-library .btnlist-top, #home-blocks' ).removeClass( 'hide' );
-	// Set active player
-	setPlaybackSource();
-	
 	var content = '';
 	var bookmarks = status.bookmark;
 	if ( bookmarks ) {
@@ -930,7 +917,6 @@ function parseDBdata( inputArr, i, respType, inpath, querytype ) {
 		respType = respType || '',
 		inpath = inpath || '',
 		querytype = querytype || '';
-	GUI.albumartist = '';
 	switch ( respType ) {
 		case 'db':
 			if ( GUI.browsemode === 'file' ) {
@@ -982,7 +968,6 @@ function parseDBdata( inputArr, i, respType, inpath, querytype ) {
 					content += '<span class="bl">'+ inputArr.file +'</span></li>';
 					var artist = inputArr.AlbumArtist || inputArr.Artist;
 					if ( !GUI.albumartist ) GUI.albumartist = inputArr.Album +'<gr> • </gr>'+ artist;
-					
 				} else {
 					var liname = inputArr.album;
 					var artistalbum = inputArr.artistalbum;
@@ -1092,7 +1077,8 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 		content = '',
 		i = 0,
 		row = [];
-
+	GUI.albumartist = '';
+	
 	if ( path ) GUI.currentpath = path;
 	$( '#db-entries, #db-currentpath .lipath' ).empty();
 	$( '#db-currentpath span, #db-entries, #db-back' ).removeClass( 'hide' );
