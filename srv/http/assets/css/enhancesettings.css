@@ -31,14 +31,20 @@
 .fa-refresh:before { content: "\f563" }
 .fa-plus:before { content: "\f519" }
 .fa-check:before { content: "\f51B" }
+.fa-library:before { content: "\f506" }
 
+@keyframes blinkopaque {
+	50% { opacity: 0; }
+}
+.blink {
+	animation: blinkopaque 1.5s linear infinite;
+}
 /* pnotify mod */
 .ui-pnotify {
 	top: auto;
 	bottom: 60px;
 	left: 0;
-	background: #0095d8;
-	box-shadow: 4px 4px 10px #000000 !important;
+	box-shadow: -4px 4px 10px #000000;
 }
 .ui-pnotify .alert {
 	border: 0;
