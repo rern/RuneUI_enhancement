@@ -14,11 +14,9 @@ var path = location.pathname;
 if ( path === '/sources' ) {
 	function toggleUpdate() {
 		$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
-			$( '#updatempddb, #rescanmpddb' ).toggleClass( 'hide', status.updating_db !== 0 );
-			$( '#updatempddb' ).parent().after( status.updating_db !== 0 ? '<i class="fa fa-library blink"></i>' : '' );
 			if ( status.updating_db ) {
 				$( '#updatempddb, #rescanmpddb' ).hide();
-				$( '#updatempddb' ).parent().after( '<a id="update"><i class="fa fa-library fa-2x blink"></i>&emsp;Updating...</a>' );
+				$( '#updatempddb' ).parent().after( '<span id="update"><i class="fa fa-library"></i>&emsp;Library updating...</span>' );
 			} else {
 				$( '#update' ).remove();
 				$( '#updatempddb, #rescanmpddb' ).show();
