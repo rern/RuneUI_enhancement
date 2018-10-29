@@ -154,7 +154,7 @@ function samplingline( $bitdepth, $samplerate, $bitrate ) {
 		if ( $bitdepth === 'dsd' ) {
 			$dsd = round( $bitrate / 44100 );
 			$bitrate = round( $bitrate / 1000000, 2 );
-			return 'DSD'.$dsd.' - '.$bitrate.' Mbit/s';
+			return 'DSD'.$dsd.' • '.$bitrate.' Mbit/s';
 		} else {
 			$bitdepth = $bitdepth ? $bitdepth.' bit ' : '';
 		}
@@ -200,7 +200,7 @@ if ( $ext === 'DSF' || $ext === 'DFF' ) {
 	$bitrate = hexdec(  $hex[ 2 ].$hex[ 1 ] );
 	$dsd = round( $bitrate / 44100 );
 	$bitrate = round( $bitrate / 1000000, 2 );
-	$sampling = 'DSD'.$dsd.' - '.$bitrate.' Mbit/s';
+	$sampling = 'DSD'.$dsd.' • '.$bitrate.' Mbit/s';
 } else {
 	$data = shell_exec( '/usr/bin/ffprobe -v quiet -select_streams a:0 -show_entries stream=bits_per_raw_sample,sample_rate -show_entries format=bit_rate -of default=noprint_wrappers=1:nokey=1 "'.$file.'"' );
 	$data = explode( "\n", $data );
