@@ -440,7 +440,9 @@ function getPlaybackStatus() {
 }
 
 function setPanelActive( panel ) {
-	if ( panel === 'playback' ) $( 'html, body' ).scrollTop( 0 );
+	if ( panel === 'playback'
+		|| ( panel === 'library' && !$( '#home-block' ).hasClass( 'hide' ) )
+	) $( 'html, body' ).scrollTop( 0 );
 	if ( panel !== 'playlist' ) $( '#pl-entries li' ).removeClass( 'active' );
 	if ( !$( '#open-library' ).hasClass( 'hide' ) && $( '#home-blocks' ).hasClass( 'hide' ) ) {
 		var path = $( '#db-currentpath .lipath' ).text();
@@ -745,9 +747,6 @@ function renderLibrary() {
 			var pW = $this.parent().width();
 			if ( tW > pW ) $this.addClass( 'bkscroll' ).css( 'animation-duration', Math.round( 3 * tW / pW ) +'s' );
 		} );
-		setTimeout( function() {
-			$( 'html, body' ).scrollTop( 0 );
-		}, 100 );
 		
 		new Sortable( document.getElementById( 'divhomeblocks' ), {
 			  delay      : 500
