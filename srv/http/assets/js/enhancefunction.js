@@ -260,7 +260,6 @@ function renderPlayback() {
 		}, 2000 );
 	}
 	var status = GUI.status;
-//	$( 'html, body' ).scrollTop( 0 );
 	// song and album before update for song/album change detection
 	var previoussong = $( '#song' ).text();
 	var previousalbum = $( '#album' ).text();
@@ -441,6 +440,8 @@ function getPlaybackStatus() {
 }
 
 function setPanelActive( panel ) {
+	if ( panel === 'playback' ) $( 'html, body' ).scrollTop( 0 );
+	if ( panel !== 'playlist' ) $( '#pl-entries li' ).removeClass( 'active' );
 	if ( !$( '#open-library' ).hasClass( 'hide' ) && $( '#home-blocks' ).hasClass( 'hide' ) ) {
 		var path = $( '#db-currentpath .lipath' ).text();
 		if ( path ) GUI.dbscrolltop[ path ] = $( window ).scrollTop();
@@ -560,7 +561,6 @@ function PlaybackCssOrder( el, ord ) {
 	el.css( { order: ord, '-webkit-order': ord } );
 }
 function displayPlayback() {
-	if ( !$( '#panel-playback' ).hasClass( 'hide' ) ) $( 'html, body' ).scrollTop( 0 );
 	$( '#time-knob, #play-group' ).toggleClass( 'hide', GUI.display.time === '' );
 	$( '#coverart, #share-group' ).toggleClass( 'hide', GUI.display.coverart === '' );
 	var volume = ( GUI.display.volumempd && GUI.display.volume ) ? 1 : 0;
@@ -1256,7 +1256,7 @@ function setPlaylistScroll() {
 		setButton();
 		var $liactive = $( '#pl-entries li' ).eq( status.song );
 		$( '#plcrop' ).toggleClass( 'disable', ( status.state === 'stop' || GUI.status.playlistlength === 1 ) );
-		$( '#pl-entries li' ).removeClass( 'active' );
+//		if ( !$liactive.hasClass( 'active' ) ) $( '#pl-entries li' ).removeClass( 'active' );
 		$liactive.addClass( 'active' );
 		var $elapsed = $( '#pl-entries li.active .elapsed' );
 		if ( !$elapsed.html() ) $( '.elapsed' ).empty();
