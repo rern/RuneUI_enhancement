@@ -1,5 +1,5 @@
 <div class="tab-content" id="content">
-	<div id="panel-playback" class="tab-pane active">
+	<div id="panel-playback" class="tab-pane">
 		<div id="container-playback">
 		
 			<div id="info">
