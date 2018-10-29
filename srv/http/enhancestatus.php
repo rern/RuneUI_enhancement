@@ -155,6 +155,8 @@ function samplingline( $bitdepth, $samplerate, $bitrate ) {
 			$dsd = round( $bitrate / 44100 );
 			$bitrate = round( $bitrate / 1000000, 2 );
 			return 'DSD'.$dsd.' • '.$bitrate.' Mbit/s';
+		} else if ( $ext === 'MP3' || $ext === 'AAC' ) {
+			$bitdepth = '';
 		} else {
 			$bitdepth = $bitdepth ? $bitdepth.' bit ' : '';
 		}
