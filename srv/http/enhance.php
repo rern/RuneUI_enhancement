@@ -5,15 +5,15 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 	exit();
 } else if ( isset( $_POST[ 'mpcalbum' ] ) ) {
 	$album = $_POST[ 'mpcalbum' ];
-	$result0 = shell_exec( 'mpc find -f "%album%^^%artist%" album "'.$album.'" | awk \'!a[$0]++\'' );
-	$result1 = shell_exec( 'mpc find -f "%album%^^%albumartist%" album "'.$album.'" | awk \'!a[$0]++\'' );
-	$lists0 = explode( "\n", rtrim( $result0 ) );
-	$lists1 = explode( "\n", rtrim( $result1 ) );
+	$countartist = exec( "mpc find -f '%album%^^%artist%' album '".$album."' | awk '!a[$0]++' | wc -l" );
+	$countalbumartist = exec( "mpc find -f '%album%^^%albumartist%' album '".$album."' | awk '!a[$0]++' | wc -l" );
 	// single album: either same artist or same album artist
-	if ( count( $lists0 ) === 1 || count( $lists1 ) === 1 ) {
-		$result = shell_exec( 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%albumartist%" album "'.$album.'"' );
+	if ( $countartist <= 1 && $countalbumartist <= 1 ) {
+		$result = shell_exec( "mpc find -f '%title%^^%time%^^%artist%^^%album%^^%file%^^%albumartist%' album '".$album."'" );
 		$data = search2array( $result );
 	} else {
+		$result = shell_exec( "mpc find -f '%album%^^%artist%' album '".$album."' | awk '!a[$0]++'" );
+		$lists = explode( "\n", rtrim( $result ) );
 		foreach( $lists as $list ) {
 			$list = explode( '^^', $list );
 			$li[ 'artistalbum' ] = $list[ 1 ].'<gr> • </gr>'.$list[ 0 ];
