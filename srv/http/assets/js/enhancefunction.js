@@ -1308,8 +1308,7 @@ function renderPlaylist() {
 		$( '#plsave, #plcrop, #plclear' ).addClass( 'disable' );
 		$( '#pl-entries' ).empty();
 		$( '.playlist' ).removeClass( 'hide' );
-		var barhide = !GUI.display.bars || window.innerWidth < 499 || window.innerHeight < 515;
-		$( '#playlist-warning' ).css( 'margin-top', barhide ? '67px' : '27px' );
+		$( '#playlist-warning' ).css( 'margin-top', GUI.display.bars ? '27px' : '47px' );
 		$( 'html, body' ).scrollTop( 0 );
 		return
 	}
