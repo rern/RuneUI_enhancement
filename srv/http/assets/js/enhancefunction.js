@@ -260,7 +260,7 @@ function renderPlayback() {
 		}, 2000 );
 	}
 	var status = GUI.status;
-	$( 'html, body' ).scrollTop( 0 );
+//	$( 'html, body' ).scrollTop( 0 );
 	// song and album before update for song/album change detection
 	var previoussong = $( '#song' ).text();
 	var previousalbum = $( '#album' ).text();
@@ -575,7 +575,7 @@ function PlaybackCssOrder( el, ord ) {
 	el.css( { order: ord, '-webkit-order': ord } );
 }
 function displayPlayback() {
-	$( 'html, body' ).scrollTop( 0 );
+	if ( $( '#panel-playback' ).hasClass( 'active' ) ) $( 'html, body' ).scrollTop( 0 );
 	$( '#time-knob, #play-group' ).toggleClass( 'hide', GUI.display.time === '' );
 	$( '#coverart, #share-group' ).toggleClass( 'hide', GUI.display.coverart === '' );
 	var volume = ( GUI.display.volumempd && GUI.display.volume ) ? 1 : 0;
