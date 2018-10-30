@@ -1,5 +1,5 @@
 <div class="tab-content" id="content">
-	<div id="playback" class="tab-pane">
+	<div id="page-playback" class="page">
 		<div id="container-playback">
 		
 			<div id="info">
@@ -100,7 +100,7 @@
 			</div>
 		</div>
 	</div>
-	<div id="library" class="tab-pane hide">
+	<div id="page-library" class="page hide">
 		<div class="btnlist btnlist-top">
 			<i id="db-searchbtn" class="fa fa-search"></i>
 			<div id="db-search" class="form-inline hide">
@@ -141,7 +141,7 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 			</ul>
 		</div>
 	</div>
-	<div id="playlist" class="tab-pane hide" onclick=""> <!-- onclick fix ios safari not recognize click for e.target -->
+	<div id="page-playlist" class="page hide" onclick=""> <!-- onclick fix ios safari not recognize click for e.target -->
 		<div class="btnlist btnlist-top">
 			<div id="pl-home"><i class="fa fa-list-ul sx"></i></div>
 			<span id="pl-currentpath" class="hide"></span>
