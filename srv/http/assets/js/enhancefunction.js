@@ -14,9 +14,9 @@ pushstreams.display.onmessage = function( data ) {
 	if ( typeof data[ 0 ] === 'object' ) GUI.display = data[ 0 ];
 	if ( GUI.local ) return
 	
-	if ( $( '#panel-playback' ).hasClass( 'active' ) ) {
+	if ( $( '#page-playback' ).hasClass( 'active' ) ) {
 		getPlaybackStatus();
-	} else if ( $( '#panel-library' ).hasClass( 'active' ) ) {
+	} else if ( $( '#page-library' ).hasClass( 'active' ) ) {
 		if ( !GUI.local ) renderLibrary();
 	} else {
 		displayTopBottom();
@@ -34,11 +34,11 @@ pushstreams.volume.onmessage = function( data ) {
 }
 pushstreams.library.onmessage = function( data ) {
 	GUI.libraryhome = data[ 0 ];
-	if ( $( '#panel-library' ).hasClass( 'active' ) && !GUI.local && !GUI.bookmarkedit ) renderLibrary();
+	if ( $( '#page-library' ).hasClass( 'active' ) && !GUI.local && !GUI.bookmarkedit ) renderLibrary();
 }
 pushstreams.playlist.onmessage = function( data ) {
 	GUI.lsplaylists = data[ 0 ] || [];
-	if ( !$( '#panel-playlist' ).hasClass( 'active' ) ) return
+	if ( !$( '#page-playlist' ).hasClass( 'active' ) ) return
 	
 	if ( !$( '#pl-entries' ).hasClass( 'hide' ) || !GUI.lsplaylists.length ) {
 		renderPlaylist();
@@ -50,7 +50,7 @@ var timeoutUpdate;
 pushstreams.idle.onmessage = function( changed ) {
 	var changed = changed[ 0 ];
 	if ( changed === 'player' ) { // on track changed
-		if ( $( '#panel-playlist' ).hasClass( 'active' ) ) {
+		if ( $( '#page-playlist' ).hasClass( 'active' ) ) {
 			if ( !GUI.pleditor ) setPlaylistScroll();
 		} else {
 			if ( !GUI.player ) {
@@ -62,7 +62,7 @@ pushstreams.idle.onmessage = function( changed ) {
 	} else if ( changed === 'playlist' ) { // on playlist changed
 		if ( GUI.pleditor || GUI.local ) return
 		
-		if ( $( '#panel-playlist' ).hasClass( 'active' ) ) {
+		if ( $( '#page-playlist' ).hasClass( 'active' ) ) {
 			$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
 				if ( !data ) {
 					GUI.status.playlistlength = 0;
@@ -73,7 +73,7 @@ pushstreams.idle.onmessage = function( changed ) {
 				GUI.playlist = data.playlist;
 				renderPlaylist();
 			}, 'json' );
-		} else if ( $( '#panel-playback' ).hasClass( 'active' ) ) {
+		} else if ( $( '#page-playback' ).hasClass( 'active' ) ) {
 			getPlaybackStatus();
 		}
 	} else if ( changed === 'options' ) { // on mode toggled
@@ -176,7 +176,7 @@ function setButtonToggle() {
 }
 function setButtonUpdate() {
 	if ( GUI.status.updating_db ) {
-		$( '#open-library i, #db-home i' ).addClass( 'blink' );
+		$( '#tab-library i, #db-home i' ).addClass( 'blink' );
 		if ( !GUI.display.bars ) {
 			if ( $( '#time-knob' ).hasClass( 'hide' ) ) {
 				$( '#posupdate' ).removeClass( 'hide' );
@@ -187,7 +187,7 @@ function setButtonUpdate() {
 			}
 		}
 	} else {
-		$( '#open-library i, #db-home i' ).removeClass( 'blink' );
+		$( '#tab-library i, #db-home i' ).removeClass( 'blink' );
 		$( '#posupdate, #iupdate' ).addClass( 'hide' );
 	}
 }
@@ -260,7 +260,6 @@ function renderPlayback() {
 		}, 2000 );
 	}
 	var status = GUI.status;
-//	$( 'html, body' ).scrollTop( 0 );
 	// song and album before update for song/album change detection
 	var previoussong = $( '#song' ).text();
 	var previousalbum = $( '#album' ).text();
@@ -409,14 +408,14 @@ function renderPlayback() {
 
 	// playlist current song ( and lyrics if installed )
 	if ( status.Title !== previoussong || status.Album !== previousalbum ) {
-		if ( $( '#panel-playlist' ).hasClass( 'active' ) && !GUI.pleditor ) setPlaylistScroll();
+		if ( $( '#page-playlist' ).hasClass( 'active' ) && !GUI.pleditor ) setPlaylistScroll();
 		if ( $( '#lyricscontainer' ).length && $( '#lyricscontainer' ).is( ':visible' ) )  getlyrics();
 	}
 }
 
 function getPlaybackStatus() {
 	//if ( GUI.local ) return; // suppress 2nd firing from 'pushstreams.idle.onmessage'
-	if ( $( '#panel-playlist' ).hasClass( 'active' ) ) {
+	if ( $( '#page-playlist' ).hasClass( 'active' ) ) {
 		setPlaylistScroll();
 		return
 	}
@@ -441,36 +440,36 @@ function getPlaybackStatus() {
 }
 
 function setPanelActive( panel ) {
-	if ( panel === 'playback'
-		|| ( panel === 'library' && !$( '#home-block' ).hasClass( 'hide' ) )
-	) $( 'html, body' ).scrollTop( 0 );
-	if ( panel !== 'playlist' ) $( '#pl-entries li' ).removeClass( 'active' );
-	if ( $( '#open-library' ).hasClass( 'active' ) && $( '#home-blocks' ).hasClass( 'hide' ) ) {
+	if ( $( '#tab-library' ).hasClass( 'active' ) && $( '#home-blocks' ).hasClass( 'hide' ) ) {
 		var path = $( '#db-currentpath .lipath' ).text();
 		if ( path ) GUI.dbscrolltop[ path ] = $( window ).scrollTop();
-	} else if ( $( '#open-playlist' ).hasClass( 'active' ) && GUI.pleditor ) {
+	} else if ( $( '#tab-playlist' ).hasClass( 'active' ) && GUI.pleditor ) {
 		GUI.plscrolltop = $( window ).scrollTop();
 	}
-	$( '.tab-pane, #menu-bottom li' ).removeClass( 'active' );
-	$( '.tab-pane' ).addClass( 'hide' );
-	$( '#panel-'+ panel ).removeClass( 'hide' );
-	$( '#panel-'+ panel +', #open-'+ panel ).addClass( 'active' );
+	$( '.page, #menu-bottom li' ).removeClass( 'active' );
+	$( '.page' ).addClass( 'hide' );
+	$( '#page-'+ panel ).removeClass( 'hide' );
+	$( '#page-'+ panel +', #tab-'+ panel ).addClass( 'active' );
 	if ( !GUI.display.bars ) {
 		$( '.btnlist-top' ).css( 'top', 0 );
 		$( '#db-list' ).css( 'padding-top', '40px' );
 	}
+	if ( panel === 'playback'
+		|| ( panel === 'library' && !$( '#home-block' ).hasClass( 'hide' ) )
+	) $( 'html, body' ).scrollTop( 0 );
+	if ( panel !== 'playlist' ) $( '#pl-entries li' ).removeClass( 'active' );
 }
 function panelLR( lr ) {
-	var pcurrent = $( '.tab-pane.active' ).prop( 'id' );
-	if ( pcurrent === 'panel-library' ) {
-		var $pL = $( '#open-playback' );
-		var $pR = $( '#open-playlist' );
-	} else if ( pcurrent === 'panel-playback' ) {
-		var $pL = $( '#open-playlist' );
-		var $pR = $( '#open-library' );
+	var pcurrent = $( '.page.active' ).prop( 'id' );
+	if ( pcurrent === 'page-library' ) {
+		var $pL = $( '#tab-playback' );
+		var $pR = $( '#tab-playlist' );
+	} else if ( pcurrent === 'page-playback' ) {
+		var $pL = $( '#tab-playlist' );
+		var $pR = $( '#tab-library' );
 	} else {
-		var $pL = $( '#open-library' );
-		var $pR = $( '#open-playback' );
+		var $pL = $( '#tab-library' );
+		var $pR = $( '#tab-playback' );
 	}
 	
 	$paneclick = ( lr === 'left' ) ? $pL.click() : $pR.click();
@@ -527,13 +526,13 @@ function displayTopBottom() {
 	var wH = window.innerHeight;
 	if ( !GUI.display.bars ) {
 		$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
-		$( '#panel-playback' ).css( 'padding-top', wH > 600 ? '60px' : '40px' );
+		$( '#page-playback' ).css( 'padding-top', wH > 600 ? '60px' : '40px' );
 		$( '#db-list, #pl-list' ).css( 'padding', '40px 0' );
 		$( '.btnlist-top' ).css( 'top', 0 );
 		$( '#home-blocks' ).css( 'padding-top', '50px' );
 	} else {
 		$( '#menu-top, #menu-bottom' ).removeClass( 'hide' );
-		$( '#panel-playback' ).css( 'padding-top', '' );
+		$( '#page-playback' ).css( 'padding-top', '' );
 		$( '#db-list, #pl-list' ).css( 'padding', '' );
 		$( '.btnlist-top' ).css( 'top', '40px' );
 		$( '#home-blocks' ).css( 'padding-top', '' );
@@ -635,7 +634,7 @@ function displayPlayback() {
 function switchPlaysource( source ) {
 	$.get( '/command/?switchplayer='+ source, function() {
 		setTimeout( function() {
-			$( '#open-playback' ).click();
+			$( '#tab-playback' ).click();
 			$( '#playsource li a' ).addClass( 'inactive' );
 			$( '#playsource-'+ source.toLowerCase() ).removeClass( 'inactive' )
 			$( '#playsource-close' ).click();
@@ -648,7 +647,7 @@ function displayIndexBar() {
 		var indexoffset = $( '#menu-top' ).hasClass( 'hide' ) ? 80 : 160;
 		var indexline = wH < 500 ? 13 : 27;
 		$( '.half' ).toggleClass( 'hide', wH < 500 );
-		$index = ( $( '#panel-library' ).hasClass( 'active' ) && GUI.dblist ) ? $( '#db-index' ) : $( '#pl-index' );
+		$index = ( $( '#page-library' ).hasClass( 'active' ) && GUI.dblist ) ? $( '#db-index' ) : $( '#pl-index' );
 		$index.css( 'line-height', ( ( wH - indexoffset ) / indexline ) +'px' );
 	}, 0 );
 }
@@ -706,14 +705,14 @@ function renderLibrary() {
 	$( '#db-search-keyword' ).val( '' );
 	if ( $( '#db-entries' ).hasClass( 'hide' ) ) return
 	
-	$( '#panel-library .btnlist-top, db-entries' ).addClass( 'hide' );
+	$( '#page-library .btnlist-top, db-entries' ).addClass( 'hide' );
 	var status = GUI.libraryhome;
 	if ( GUI.display.count ) {
 		$( '#db-currentpath span' ).html( '<bl class="title">LIBRARY<gr>·</gr></bl><a id="li-count"><wh>'+ numFormat( status.song ) +'</wh><i class="fa fa-music"></i></a>' );
 	} else {
 		$( '#db-currentpath span' ).html( '<bl class="title">LIBRARY</bl></a>' );
 	}
-	$( '#panel-library .btnlist-top, #home-blocks' ).removeClass( 'hide' );
+	$( '#page-library .btnlist-top, #home-blocks' ).removeClass( 'hide' );
 	var content = '';
 	var bookmarks = status.bookmark;
 	if ( bookmarks ) {
