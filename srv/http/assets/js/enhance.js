@@ -147,7 +147,7 @@ $( '#displaylibrary' ).click( function() {
 			$( '#displaysavelibrary input' ).each( function() {
 				GUI.display[ this.name ] = this.checked ? 'checked' : '';
 			} );
-			if ( $( '#panel-library' ).hasClass( 'hide' ) ) $( '#open-library' ).click();
+			if ( $( '#library' ).hasClass( 'hide' ) ) $( '#tab-library' ).click();
 			renderLibrary();
 			$.post( 'enhance.php', { setdisplay: GUI.display } );
 		}
@@ -176,7 +176,7 @@ $( '#displayplayback' ).click( function() {
 			$( '#displaysaveplayback input' ).each( function() {
 				GUI.display[ this.name ] = this.checked ? 'checked' : '';
 			} );
-			if ( $( '#panel-playback' ).hasClass( 'hide' ) ) $( '#open-playback' ).click();
+			if ( $( '#playback' ).hasClass( 'hide' ) ) $( '#tab-playback' ).click();
 			displayPlayback();
 			$.post( 'enhance.php', { setdisplay: GUI.display } );
 		}
@@ -213,7 +213,7 @@ $( '#turnoff' ).click( function() {
 		}
 	} );
 } );
-$( '#open-library' ).click( function() {
+$( '#tab-library' ).click( function() {
 	if ( !GUI.libraryhome.song ) return // wait for mpc data 
 	
 	if ( GUI.bookmarkedit ) {
@@ -243,12 +243,12 @@ $( '#open-library' ).click( function() {
 		$( 'html, body' ).scrollTop( scrollpos ? scrollpos : 0 );
 	}
 } );
-$( '#open-playback' ).click( function() {
+$( '#tab-playback' ).click( function() {
 	setPanelActive( 'playback' );
 	getPlaybackStatus();
 	if ( GUI.status.state === 'play' ) $( '#elapsed' ).empty(); // hide flashing
 } );
-$( '#open-playlist' ).click( function() {
+$( '#tab-playlist' ).click( function() {
 	if ( !$( this ).hasClass( 'hide' ) && GUI.pleditor ) GUI.pleditor = 0;
 	if ( GUI.status.activePlayer === 'Airplay' ) {
 		$( '#playsource' ).addClass( 'open' );
@@ -268,27 +268,27 @@ $( '#open-playlist' ).click( function() {
 		renderPlaylist();
 	}, 'json' );
 } );
-$( '#panel-playback, #panel-library, #panel-playlist' ).on( 'swipeleft swiperight', function( e ) {
+$( '#playback, #library, #playlist' ).on( 'swipeleft swiperight', function( e ) {
 	var pcurrent = $( '#menu-bottom li.active' ).prop( 'id' );
-	if ( pcurrent === 'open-library' ) {
-		var $pL = $( '#open-playback' );
-		var $pR = $( '#open-playlist' );
-	} else if ( pcurrent === 'open-playback' ) {
-		var $pL = $( '#open-playlist' );
-		var $pR = $( '#open-library' );
+	if ( pcurrent === 'tab-library' ) {
+		var $pL = $( '#tab-playback' );
+		var $pR = $( '#tab-playlist' );
+	} else if ( pcurrent === 'tab-playback' ) {
+		var $pL = $( '#tab-playlist' );
+		var $pR = $( '#tab-library' );
 	} else {
-		var $pL = $( '#open-library' );
-		var $pR = $( '#open-playback' );
+		var $pL = $( '#tab-library' );
+		var $pR = $( '#tab-playback' );
 	}
 	e.type === 'swipeleft' ? $pL.click() : $pR.click();
 } );
-$( '#panel-playback' ).click( function( e ) {
+$( '#playback' ).click( function( e ) {
 	if ( $( e.target ).is( '.controls, .timemap, .covermap, .volmap' ) ) return
 	
 	$( '.controls, #settings' ).addClass( 'hide' );
 	$( '.controls1, .rs-tooltip, #imode' ).removeClass( 'hide' );
 } );
-$( '#panel-library' ).on( 'click', function( e ) {
+$( '#library' ).on( 'click', function( e ) {
 	if ( GUI.local ) return
 	
 	if ( e.target.id !== 'home-block-edit' && e.target.id !== 'home-block-remove' ) {
@@ -297,7 +297,7 @@ $( '#panel-library' ).on( 'click', function( e ) {
 	}
 } );
 $( '#song, #playlist-warning' ).on( 'click', 'i', function() {
-	$( '#open-library' ).click();
+	$( '#tab-library' ).click();
 } );
 $( '#time' ).roundSlider( {
 	  sliderType  : 'min-range'
@@ -619,7 +619,7 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 		.find( '.fa-bookmark, gr' ).css( 'opacity', 0.2 );
 } );
 $( '#db-home' ).click( function() {
-	$( '#open-library' ).click();
+	$( '#tab-library' ).click();
 } );
 $( '#db-currentpath' ).on( 'click', 'a', function() {
 	if ( $( '#db-currentpath span a' ).length === 1 ) return
@@ -823,13 +823,13 @@ $( '#db-index li' ).click( function() {
 } );
 // PLAYLIST /////////////////////////////////////////////////////////////////////////////////////
 $( '#pl-home' ).click( function() {
-	$( '#open-playlist' ).click();
+	$( '#tab-playlist' ).click();
 } );
 $( '#pl-currentpath' ).on( 'click', '.plsback', function() {
 	$( '#plopen' ).click();
 } );
 $( '#pl-currentpath' ).on( 'click', '.plsbackroot', function() {
-	$( '#open-playlist' ).click();
+	$( '#tab-playlist' ).click();
 } );
 $( '#plopen' ).click( function() {
 	if ( !GUI.lsplaylists.length ) return
@@ -1076,9 +1076,9 @@ document.addEventListener( visibilityevent, function() {
 		$.each( streams, function( i, stream ) {
 			pushstreams[ stream ].connect();
 		} );
-		if ( !$( '#panel-playback' ).hasClass( 'hide' ) ) {
+		if ( !$( '#playback' ).hasClass( 'hide' ) ) {
 			$.post( 'enhance.php', { getdisplay: 1 } ); // display data > pushstream > getPlaybackStatus()
-		} else if ( !$( '#panel-playlist' ).hasClass( 'hide' ) ) {
+		} else if ( !$( '#playlist' ).hasClass( 'hide' ) ) {
 			if ( GUI.pleditor ) {
 				var name = $( '#pl-currentpath .lipath' ).text();
 				if ( name ) {
@@ -1093,7 +1093,7 @@ document.addEventListener( visibilityevent, function() {
 	}
 } );
 window.addEventListener( 'orientationchange', function() {
-	if ( !$( '#panel-playback' ).hasClass( 'hide' ) ) {
+	if ( !$( '#playback' ).hasClass( 'hide' ) ) {
 		$( '#playback-row' ).addClass( 'hide' );
 		setTimeout( function() {
 			displayPlayback()
