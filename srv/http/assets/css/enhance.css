@@ -196,9 +196,9 @@ wh, gr { font-weight: 300; }
 #loader img {
 	animation: blinkopaque 1.5s linear infinite;
 }
-#panel-playback,
-#panel-library,
-#panel-playlist {
+#playback,
+#library,
+#playlist {
 	touch-action: manipulation; /* fix: Unable to preventDefault inside passive event listener */
 }
 .tab-content>.tab-pane {
@@ -375,7 +375,7 @@ wh, gr { font-weight: 300; }
 	text-align: center;
 	color: #e0e7ee
 }
-#open-playback a {
+#tab-playback a {
 	width: 34%;
 	background: #2b3c4e
 }
@@ -400,14 +400,14 @@ wh, gr { font-weight: 300; }
 	font-size: 28px;
 }
 /* ---------------------- middle window ----------------------*/
-#panel-playback, #panel-library, #panel-playlist, #settings {
+#playback, #library, #playlist, #settings {
 	-webkit-touch-callout: none; /* iOS Safari */
 	-webkit-user-select: none; /* Safari */
 	-moz-user-select: none; /* Firefox */
 	-ms-user-select: none; /* Internet Explorer/Edge */
 	user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
 }
-#panel-playback {
+#playback {
 	padding-top: 80px;
 }
 #coverart {
@@ -781,7 +781,7 @@ wh, gr { font-weight: 300; }
 	top: 149px;
 }
 
-#panel-playback .btn-group button {
+#playback .btn-group button {
 	margin: 0 0 10px 0;
 	padding: 0;
 	height: 40px;
@@ -789,14 +789,14 @@ wh, gr { font-weight: 300; }
 	font-size:24px;
 	outline: none;
 }
-#panel-playback .btn-group button i {
+#playback .btn-group button i {
 	vertical-align: 5%;
 }
 /* button shadow */
-#panel-playback .btn-group {
+#playback .btn-group {
 	position: relative;
 }
-#panel-playback .btn-group:before {
+#playback .btn-group:before {
 	position: absolute;
 	content: '';
 	top: 0;
@@ -1906,7 +1906,7 @@ w {
 }
 
 @media(max-height: 590px) {
-	#panel-playback {
+	#playback {
 		padding-top: 60px;
 	}
 	#playback-row {
