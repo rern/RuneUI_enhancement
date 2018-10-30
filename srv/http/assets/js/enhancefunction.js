@@ -944,7 +944,7 @@ function parseDBdata( inputArr, i, respType, inpath, querytype ) {
 					content += ' data-target="#context-menu-folder"></i><span><i class="fa fa-folder"></i>'
 					content += '<span>'+ liname +'</span></li>';
 				}
-			} else if ( GUI.browsemode === 'album' || GUI.browsemode === 'albumfilter' ) {
+			} else if ( GUI.browsemode === 'album' ) {
 				if ( inputArr.file ) {
 					var liname = inputArr.Title;
 					content = '<li><a class="lipath">'+ inputArr.file +'</a><a class="liname">'+ liname +'</a><i class="fa fa-bars db-action" data-target="#context-menu-file"></i><i class="fa fa-music db-icon"></i>';
