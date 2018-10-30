@@ -226,7 +226,7 @@ $( '#tab-library' ).click( function() {
 		return
 	}
 	
-	if ( !$( '#open-library' ).hasClass( 'hide' ) && GUI.dblist ) {
+	if ( !$( '#page-library' ).hasClass( 'hide' ) && GUI.dblist ) {
 		GUI.dblist = GUI.dbback = 0;
 		GUI.currentpath = GUI.browsemode = GUI.dbbrowsemode = ''
 		GUI.dbbackdata = [];
@@ -249,7 +249,7 @@ $( '#tab-playback' ).click( function() {
 	if ( GUI.status.state === 'play' ) $( '#elapsed' ).empty(); // hide flashing
 } );
 $( '#tab-playlist' ).click( function() {
-	if ( !$( '#open-playlist' ).hasClass( 'hide' ) && GUI.pleditor ) GUI.pleditor = 0;
+	if ( !$( '#page-playlist' ).hasClass( 'hide' ) && GUI.pleditor ) GUI.pleditor = 0;
 	if ( GUI.status.activePlayer === 'Airplay' ) {
 		$( '#playsource' ).addClass( 'open' );
 		return
