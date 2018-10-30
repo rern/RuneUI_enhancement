@@ -831,7 +831,7 @@ function getDB( options ) {
 		if ( cmd === 'search' ) {
 			if ( path.match(/Dirble/)) {
 				$.post( '/db/?cmd=dirble', { querytype: 'search', args: keyword }, function( data ) {
-					populateDB( data, path, 'Dirble', 'search', uplevel );
+					dataSort( data, path, 'Dirble', 'search' );
 				}, 'json' );
 				return
 			} else {
@@ -852,7 +852,7 @@ function getDB( options ) {
 		}
 		$.post( 'enhance.php', command[ mode ], function( data ) {
 			if ( data ) {
-				populateDB( data, path, '', '', uplevel );
+				dataSort( data, path );
 			} else {
 				$( '#loader' ).addClass( 'hide' );
 				info( 'No data in this location.' );
@@ -863,19 +863,19 @@ function getDB( options ) {
 
 	if ( plugin === 'Spotify' ) {
 		$.post( '/db/?cmd=spotify', { plid: args }, function( data ) {
-			populateDB( data, path, plugin, querytype, uplevel, arg );
+			dataSort( data, path, plugin, querytype, arg );
 		}, 'json' );
 	} else if ( plugin === 'Dirble' ) {
 		if ( querytype === 'childs' ) {
 			$.post( '/db/?cmd=dirble', { querytype: 'childs', args: args }, function( data ) {
-				populateDB( data, path, plugin, 'childs', uplevel );
+				dataSort( data, path, plugin, 'childs' );
 			}, 'json' );
 			$.post( '/db/?cmd=dirble', { querytype: 'childs-stations', args: args }, function( data ) {
-				populateDB( data, path, plugin, 'childs-stations', uplevel );
+				dataSort( data, path, plugin, 'childs-stations' );
 			}, 'json' );            
 		} else {
 			$.post( '/db/?cmd=dirble', { querytype: querytype ? querytype : 'categories', args: args }, function( data ) {
-				populateDB( data, path, plugin, querytype, uplevel );
+				dataSort( data, path, plugin, querytype );
 			}, 'json' );
 		}
 	} else if ( plugin === 'Jamendo' ) {
@@ -890,12 +890,12 @@ function getDB( options ) {
 				GUI.dbbackdata.pop();
 				return
 			}
-			populateDB( data.results, path, plugin, querytype );
+			dataSort( data.results, path, plugin, querytype );
 		}, 'json' );
 	}
 }
 // set path, name, artist as text to avoid double quote escape
-function parseDBdata( inputArr, i, respType, inpath, querytype ) {
+function data2html( inputArr, i, respType, inpath, querytype ) {
 	var inputArr = inputArr || '',
 		i = i || 0,
 		respType = respType || '',
@@ -1050,14 +1050,12 @@ function stripLeading( string ) {
 	if ( typeof string === 'number' ) string = string.toString();
 	return string.replace( /^A +|^An +|^The +|^\(\s*|^\[\s*|^\.\s*|^\'\s*|^\"\s*|\\/i, '' );
 }
-function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
+function dataSort( data, path, plugin, querytype, arg ) {
 	var data = data,
 		path = path || '',
 		plugin = plugin || '',
 		querytype = querytype || '',
-		uplevel = uplevel || 0,
 		args = args || '',
-		keyword = keyword || '',
 		content = '',
 		i = 0,
 		row = [];
@@ -1104,23 +1102,19 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 				return adir.localeCompare( bdir, undefined, { numeric: true } );
 			} );
 			var arraydirL = arraydir.length;
-			for ( i = 0; i < arraydirL; i++ ) content += parseDBdata( arraydir[ i ], i, 'db', path );
+			for ( i = 0; i < arraydirL; i++ ) content += data2html( arraydir[ i ], i, 'db', path );
 			arrayfile.sort( function( a, b ) {
-				if ( !keyword ) {
-					return stripLeading( a[ 'file' ] ).localeCompare( stripLeading( b[ 'file' ] ), undefined, { numeric: true } );
-				} else {
-					return stripLeading( a[ 'Title' ] ).localeCompare( stripLeading( b[ 'Title' ] ), undefined, { numeric: true } );
-				}
+				return stripLeading( a[ 'Title' ] ).localeCompare( stripLeading( b[ 'Title' ] ), undefined, { numeric: true } );
 			} );
 			var arrayfileL = arrayfile.length;
-			for ( i = 0; i < arrayfileL; i++ ) content += parseDBdata( arrayfile[ i ], i, 'db', path );
+			for ( i = 0; i < arrayfileL; i++ ) content += data2html( arrayfile[ i ], i, 'db', path );
 		} else {
 			data.sort( function( a, b ) {
 				if ( a[ prop ] === undefined ) prop = mode[ GUI.browsemode ];
 				return stripLeading( a[ prop ] ).localeCompare( stripLeading( b[ prop ] ), undefined, { numeric: true } );
 			} );
 			var dataL = data.length;
-			for ( i = 0; i < dataL; i++ ) content += parseDBdata( data[ i ], i, 'db', path );
+			for ( i = 0; i < dataL; i++ ) content += data2html( data[ i ], i, 'db', path );
 		}
 		$( '#db-webradio-new' ).toggleClass( 'hide', path !== 'Webradio' );
 	} else {
@@ -1135,7 +1129,7 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 					return 0;
 				}
 			} );
-			for ( i = 0; ( row = data[ i ] ); i++ ) content += parseDBdata( row, i, 'Spotify', arg, querytype );
+			for ( i = 0; ( row = data[ i ] ); i++ ) content += data2html( row, i, 'Spotify', arg, querytype );
 		} else if ( plugin === 'Dirble' ) {
 			if ( querytype === 'childs-stations' ) {
 				content = $( '#db-entries' ).html();
@@ -1149,7 +1143,7 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 						return 0;
 					}
 				} );
-				for ( i = 0; ( row = data[ i ] ); i++ ) content += parseDBdata( row, i, 'Dirble', '', querytype );
+				for ( i = 0; ( row = data[ i ] ); i++ ) content += data2html( row, i, 'Dirble', '', querytype );
 			}
 		} else if ( plugin === 'Jamendo' ) {
 			data.sort( function( a, b ) {
@@ -1159,7 +1153,7 @@ function populateDB( data, path, plugin, querytype, uplevel, arg, keyword ) {
 					return 0;
 				}
 			} );
-			for (i = 0; ( row = data[ i ] ); i++ ) content += parseDBdata( row, i, 'Jamendo', '', querytype );
+			for (i = 0; ( row = data[ i ] ); i++ ) content += data2html( row, i, 'Jamendo', '', querytype );
 		}
 	}
 	$( '#db-entries' ).html( content +'<p></p>' ).promise().done( function() {
