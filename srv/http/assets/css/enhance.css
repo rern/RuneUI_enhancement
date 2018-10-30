@@ -201,9 +201,6 @@ wh, gr { font-weight: 300; }
 #page-playlist {
 	touch-action: manipulation; /* fix: Unable to preventDefault inside passive event listener */
 }
-.tab-content>.page {
-	display: block;
-}
 .menu {
 	position: absolute;
 	float: right;
