@@ -137,9 +137,9 @@ if ( empty( $this->uri(1) ) ) { ?>
 </div>
 <div id="menu-bottom" class="hide">
 	<ul>
-		<li id="open-library"><a><i class="fa fa-library"></i></a></li>
-		<li id="open-playback" class="active"><a><i class="fa fa-play-circle"></i></a></li>
-		<li id="open-playlist"><a><i class="fa fa-list-ul"></i></a></li>
+		<li id="tab-library"><a><i class="fa fa-library"></i></a></li>
+		<li id="tab-playback" class="active"><a><i class="fa fa-play-circle"></i></a></li>
+		<li id="tab-playlist"><a><i class="fa fa-list-ul"></i></a></li>
 	</ul>
 </div>
 <?php 
