@@ -147,7 +147,7 @@ $( '#displaylibrary' ).click( function() {
 			$( '#displaysavelibrary input' ).each( function() {
 				GUI.display[ this.name ] = this.checked ? 'checked' : '';
 			} );
-			if ( !$( '#page-library' ).hasClass( 'active' ) ) $( '#tab-library' ).click();
+			if ( $( '#page-library' ).hasClass( 'hide' ) ) $( '#tab-library' ).click();
 			renderLibrary();
 			$.post( 'enhance.php', { setdisplay: GUI.display } );
 		}
@@ -176,7 +176,7 @@ $( '#displayplayback' ).click( function() {
 			$( '#displaysaveplayback input' ).each( function() {
 				GUI.display[ this.name ] = this.checked ? 'checked' : '';
 			} );
-			if ( !$( '#page-playback' ).hasClass( 'active' ) ) $( '#tab-playback' ).click();
+			if ( $( '#page-playback' ).hasClass( 'hide' ) ) $( '#tab-playback' ).click();
 			displayPlayback();
 			$.post( 'enhance.php', { setdisplay: GUI.display } );
 		}
@@ -226,7 +226,7 @@ $( '#tab-library' ).click( function() {
 		return
 	}
 	
-	if ( $( this ).hasClass( 'active' ) && GUI.dblist ) {
+	if ( !$( '#open-library' ).hasClass( 'hide' ) && GUI.dblist ) {
 		GUI.dblist = GUI.dbback = 0;
 		GUI.currentpath = GUI.browsemode = GUI.dbbrowsemode = ''
 		GUI.dbbackdata = [];
@@ -235,7 +235,7 @@ $( '#tab-library' ).click( function() {
 		return
 	}
 	
-	setPanelActive( 'library' );
+	setPageCurrent( 'library' );
 	if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) {
 		renderLibrary();
 	} else {
@@ -244,18 +244,18 @@ $( '#tab-library' ).click( function() {
 	}
 } );
 $( '#tab-playback' ).click( function() {
-	setPanelActive( 'playback' );
+	setPageCurrent( 'playback' );
 	getPlaybackStatus();
 	if ( GUI.status.state === 'play' ) $( '#elapsed' ).empty(); // hide flashing
 } );
 $( '#tab-playlist' ).click( function() {
-	if ( $( this ).hasClass( 'active' ) && GUI.pleditor ) GUI.pleditor = 0;
+	if ( !$( '#open-playlist' ).hasClass( 'hide' ) && GUI.pleditor ) GUI.pleditor = 0;
 	if ( GUI.status.activePlayer === 'Airplay' ) {
 		$( '#playsource' ).addClass( 'open' );
 		return
 	}
 	
-	setPanelActive( 'playlist' );
+	setPageCurrent( 'playlist' );
 	if ( GUI.pleditor ) return
 	
 	if ( !GUI.status.playlistlength ) {
@@ -269,7 +269,18 @@ $( '#tab-playlist' ).click( function() {
 	}, 'json' );
 } );
 $( '#page-playback, #page-library, #page-playlist' ).on( 'swipeleft swiperight', function( e ) {
-	panelLR( e.type === 'swipeleft' ? 'left' : '' );
+	var pcurrent = this.id
+	if ( pcurrent === 'page-library' ) {
+		var $pL = $( '#tab-playback' );
+		var $pR = $( '#tab-playlist' );
+	} else if ( pcurrent === 'page-playback' ) {
+		var $pL = $( '#tab-playlist' );
+		var $pR = $( '#tab-library' );
+	} else {
+		var $pL = $( '#tab-library' );
+		var $pR = $( '#tab-playback' );
+	}
+	e.type === 'swipeleft' ? $pL.click() : $pR.click();
 } );
 $( '#page-playback' ).click( function( e ) {
 	if ( $( e.target ).is( '.controls, .timemap, .covermap, .volmap' ) ) return
@@ -1065,9 +1076,9 @@ document.addEventListener( visibilityevent, function() {
 		$.each( streams, function( i, stream ) {
 			pushstreams[ stream ].connect();
 		} );
-		if ( $( '#page-playback' ).hasClass( 'active' ) ) {
+		if ( !$( '#page-playback' ).hasClass( 'hide' ) ) {
 			$.post( 'enhance.php', { getdisplay: 1 } ); // display data > pushstream > getPlaybackStatus()
-		} else if ( $( '#page-playlist' ).hasClass( 'active' ) ) {
+		} else if ( !$( '#page-playlist' ).hasClass( 'hide' ) ) {
 			if ( GUI.pleditor ) {
 				var name = $( '#pl-currentpath .lipath' ).text();
 				if ( name ) {
@@ -1082,7 +1093,7 @@ document.addEventListener( visibilityevent, function() {
 	}
 } );
 window.addEventListener( 'orientationchange', function() {
-	if ( $( '#page-playback' ).hasClass( 'active' ) ) {
+	if ( !$( '#page-playback' ).hasClass( 'hide' ) ) {
 		$( '#playback-row' ).addClass( 'hide' );
 		setTimeout( function() {
 			displayPlayback()

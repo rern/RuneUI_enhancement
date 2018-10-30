@@ -23,7 +23,7 @@ $( '.contextmenu a' ).click( function() {
 		var name = GUI.list.name.replace( /"/g, '\\"' );
 		cmd = ( cmd === 'plrename' || cmd === 'pldelete' ) ? cmd : cmd.replace( 'pl', 'wr' );
 	} else {
-		if ( $( '#page-playlist' ).hasClass( 'active' ) && $( '#pl-currentpath .lipath' ).length ) {
+		if ( !$( '#page-playlist' ).hasClass( 'hide' ) && $( '#pl-currentpath .lipath' ).length ) {
 			var name = GUI.list.li.find( '.liname' ).text().replace( /"/g, '\\"' );
 		} else {
 			var name = GUI.list.path.replace( /"/g, '\\"' );

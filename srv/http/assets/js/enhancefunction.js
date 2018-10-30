@@ -14,9 +14,9 @@ pushstreams.display.onmessage = function( data ) {
 	if ( typeof data[ 0 ] === 'object' ) GUI.display = data[ 0 ];
 	if ( GUI.local ) return
 	
-	if ( $( '#page-playback' ).hasClass( 'active' ) ) {
+	if ( !$( '#page-playback' ).hasClass( 'hide' ) ) {
 		getPlaybackStatus();
-	} else if ( $( '#page-library' ).hasClass( 'active' ) ) {
+	} else if ( !$( '#page-library' ).hasClass( 'hide' ) ) {
 		if ( !GUI.local ) renderLibrary();
 	} else {
 		displayTopBottom();
@@ -34,11 +34,11 @@ pushstreams.volume.onmessage = function( data ) {
 }
 pushstreams.library.onmessage = function( data ) {
 	GUI.libraryhome = data[ 0 ];
-	if ( $( '#page-library' ).hasClass( 'active' ) && !GUI.local && !GUI.bookmarkedit ) renderLibrary();
+	if ( !$( '#page-library' ).hasClass( 'hide' ) && !GUI.local && !GUI.bookmarkedit ) renderLibrary();
 }
 pushstreams.playlist.onmessage = function( data ) {
 	GUI.lsplaylists = data[ 0 ] || [];
-	if ( !$( '#page-playlist' ).hasClass( 'active' ) ) return
+	if ( $( '#page-playlist' ).hasClass( 'hide' ) ) return
 	
 	if ( !$( '#pl-entries' ).hasClass( 'hide' ) || !GUI.lsplaylists.length ) {
 		renderPlaylist();
@@ -50,7 +50,7 @@ var timeoutUpdate;
 pushstreams.idle.onmessage = function( changed ) {
 	var changed = changed[ 0 ];
 	if ( changed === 'player' ) { // on track changed
-		if ( $( '#page-playlist' ).hasClass( 'active' ) ) {
+		if ( !$( '#page-playlist' ).hasClass( 'hide' ) ) {
 			if ( !GUI.pleditor ) setPlaylistScroll();
 		} else {
 			if ( !GUI.player ) {
@@ -62,7 +62,7 @@ pushstreams.idle.onmessage = function( changed ) {
 	} else if ( changed === 'playlist' ) { // on playlist changed
 		if ( GUI.pleditor || GUI.local ) return
 		
-		if ( $( '#page-playlist' ).hasClass( 'active' ) ) {
+		if ( !$( '#page-playlist' ).hasClass( 'hide' ) ) {
 			$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
 				if ( !data ) {
 					GUI.status.playlistlength = 0;
@@ -73,7 +73,7 @@ pushstreams.idle.onmessage = function( changed ) {
 				GUI.playlist = data.playlist;
 				renderPlaylist();
 			}, 'json' );
-		} else if ( $( '#page-playback' ).hasClass( 'active' ) ) {
+		} else if ( !$( '#page-playback' ).hasClass( 'hide' ) ) {
 			getPlaybackStatus();
 		}
 	} else if ( changed === 'options' ) { // on mode toggled
@@ -408,14 +408,14 @@ function renderPlayback() {
 
 	// playlist current song ( and lyrics if installed )
 	if ( status.Title !== previoussong || status.Album !== previousalbum ) {
-		if ( $( '#page-playlist' ).hasClass( 'active' ) && !GUI.pleditor ) setPlaylistScroll();
+		if ( !$( '#page-playlist' ).hasClass( 'hide' ) && !GUI.pleditor ) setPlaylistScroll();
 		if ( $( '#lyricscontainer' ).length && $( '#lyricscontainer' ).is( ':visible' ) )  getlyrics();
 	}
 }
 
 function getPlaybackStatus() {
 	//if ( GUI.local ) return; // suppress 2nd firing from 'pushstreams.idle.onmessage'
-	if ( $( '#page-playlist' ).hasClass( 'active' ) ) {
+	if ( !$( '#page-playlist' ).hasClass( 'hide' ) ) {
 		setPlaylistScroll();
 		return
 	}
@@ -439,17 +439,17 @@ function getPlaybackStatus() {
 	}, 'json' );
 }
 
-function setPanelActive( panel ) {
-	if ( $( '#tab-library' ).hasClass( 'active' ) && $( '#home-blocks' ).hasClass( 'hide' ) ) {
+function setPageCurrent( panel ) {
+	if ( !$( '#page-library' ).hasClass( 'hide' ) && $( '#home-blocks' ).hasClass( 'hide' ) ) {
 		var path = $( '#db-currentpath .lipath' ).text();
 		if ( path ) GUI.dbscrolltop[ path ] = $( window ).scrollTop();
-	} else if ( $( '#tab-playlist' ).hasClass( 'active' ) && GUI.pleditor ) {
+	} else if ( !$( '#page-playlist' ).hasClass( 'hide' ) && GUI.pleditor ) {
 		GUI.plscrolltop = $( window ).scrollTop();
 	}
-	$( '.page, #menu-bottom li' ).removeClass( 'active' );
+	$( '#menu-bottom li' ).removeClass( 'active' );
 	$( '.page' ).addClass( 'hide' );
 	$( '#page-'+ panel ).removeClass( 'hide' );
-	$( '#page-'+ panel +', #tab-'+ panel ).addClass( 'active' );
+	$( '#tab-'+ panel ).addClass( 'active' );
 	if ( !GUI.display.bars ) {
 		$( '.btnlist-top' ).css( 'top', 0 );
 		$( '#db-list' ).css( 'padding-top', '40px' );
@@ -458,21 +458,6 @@ function setPanelActive( panel ) {
 		|| ( panel === 'library' && !$( '#home-block' ).hasClass( 'hide' ) )
 	) $( 'html, body' ).scrollTop( 0 );
 	if ( panel !== 'playlist' ) $( '#pl-entries li' ).removeClass( 'active' );
-}
-function panelLR( lr ) {
-	var pcurrent = $( '.page.active' ).prop( 'id' );
-	if ( pcurrent === 'page-library' ) {
-		var $pL = $( '#tab-playback' );
-		var $pR = $( '#tab-playlist' );
-	} else if ( pcurrent === 'page-playback' ) {
-		var $pL = $( '#tab-playlist' );
-		var $pR = $( '#tab-library' );
-	} else {
-		var $pL = $( '#tab-library' );
-		var $pR = $( '#tab-playback' );
-	}
-	
-	$paneclick = ( lr === 'left' ) ? $pL.click() : $pR.click();
 }
 function getBio( artist ) {
 	$( '#loader' ).removeClass( 'hide' );
@@ -647,7 +632,7 @@ function displayIndexBar() {
 		var indexoffset = $( '#menu-top' ).hasClass( 'hide' ) ? 80 : 160;
 		var indexline = wH < 500 ? 13 : 27;
 		$( '.half' ).toggleClass( 'hide', wH < 500 );
-		$index = ( $( '#page-library' ).hasClass( 'active' ) && GUI.dblist ) ? $( '#db-index' ) : $( '#pl-index' );
+		$index = ( !$( '#page-library' ).hasClass( 'hide' ) && GUI.dblist ) ? $( '#db-index' ) : $( '#pl-index' );
 		$index.css( 'line-height', ( ( wH - indexoffset ) / indexline ) +'px' );
 	}, 0 );
 }
