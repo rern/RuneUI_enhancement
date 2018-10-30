@@ -23,7 +23,7 @@ $( '.contextmenu a' ).click( function() {
 		var name = GUI.list.name.replace( /"/g, '\\"' );
 		cmd = ( cmd === 'plrename' || cmd === 'pldelete' ) ? cmd : cmd.replace( 'pl', 'wr' );
 	} else {
-		if ( $( '#panel-playlist' ).hasClass( 'active' ) && $( '#pl-currentpath .lipath' ).length ) {
+		if ( $( '#playlist' ).hasClass( 'active' ) && $( '#pl-currentpath .lipath' ).length ) {
 			var name = GUI.list.li.find( '.liname' ).text().replace( /"/g, '\\"' );
 		} else {
 			var name = GUI.list.path.replace( /"/g, '\\"' );
@@ -204,7 +204,7 @@ function bookmarkDelete( name, $block ) {
 			$block.remove();
 			GUI.bookmarkedit = 1;
 			$.post( 'enhance.php', { bkmarks: name }, function() {
-				$( '#open-library' ).click();
+				$( '#tab-library' ).click();
 			} );
 		}
 	} );
