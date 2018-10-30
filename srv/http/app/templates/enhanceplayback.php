@@ -1,4 +1,4 @@
-<div id="page-playback" class="page active">
+<div id="page-playback" class="page">
 	<div id="info">
 		<div id="divartist">
 			<span id="artist"></span>
