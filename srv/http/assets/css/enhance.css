@@ -118,7 +118,7 @@
 .fa-info-circle:before { content: "\f561" }
 .fa-warning:before { content: "\f562" }
 /* bootstrap mod */
-.tab-pane {
+.page {
 	height: 100vh;
 }
 label {
@@ -196,12 +196,12 @@ wh, gr { font-weight: 300; }
 #loader img {
 	animation: blinkopaque 1.5s linear infinite;
 }
-#playback,
-#library,
-#playlist {
+#page-playback,
+#page-library,
+#page-playlist {
 	touch-action: manipulation; /* fix: Unable to preventDefault inside passive event listener */
 }
-.tab-content>.tab-pane {
+.tab-content>.page {
 	display: block;
 }
 .menu {
@@ -400,14 +400,14 @@ wh, gr { font-weight: 300; }
 	font-size: 28px;
 }
 /* ---------------------- middle window ----------------------*/
-#playback, #library, #playlist, #settings {
+.page, #settings {
 	-webkit-touch-callout: none; /* iOS Safari */
-	-webkit-user-select: none; /* Safari */
-	-moz-user-select: none; /* Firefox */
-	-ms-user-select: none; /* Internet Explorer/Edge */
-	user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+	-webkit-user-select: none;   /* Safari */
+	-moz-user-select: none;      /* Firefox */
+	-ms-user-select: none;       /* Internet Explorer and Edge */
+	user-select: none;           /* Non-prefixed version, currently supported by Chrome and Opera */
 }
-#playback {
+#page-playback {
 	padding-top: 80px;
 }
 #coverart {
@@ -781,7 +781,7 @@ wh, gr { font-weight: 300; }
 	top: 149px;
 }
 
-#playback .btn-group button {
+#page-playback .btn-group button {
 	margin: 0 0 10px 0;
 	padding: 0;
 	height: 40px;
@@ -789,14 +789,14 @@ wh, gr { font-weight: 300; }
 	font-size:24px;
 	outline: none;
 }
-#playback .btn-group button i {
+#page-playback .btn-group button i {
 	vertical-align: 5%;
 }
 /* button shadow */
-#playback .btn-group {
+#page-playback .btn-group {
 	position: relative;
 }
-#playback .btn-group:before {
+#page-playback .btn-group:before {
 	position: absolute;
 	content: '';
 	top: 0;
@@ -1906,7 +1906,7 @@ w {
 }
 
 @media(max-height: 590px) {
-	#playback {
+	#page-playback {
 		padding-top: 60px;
 	}
 	#playback-row {
