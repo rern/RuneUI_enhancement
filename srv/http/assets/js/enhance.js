@@ -271,9 +271,9 @@ $( '#tab-playlist' ).click( function() {
 function libraryClick() { $( '#tab-library' ).click() }
 function playbackClick() { $( '#tab-playback' ).click() }
 function playlistClick() { $( '#tab-playlist' ).click() }
-$( '#page-library' ).on( 'swiperight', playlistClick ).on( 'swipeleft', playbackClick );
-$( '#page-playback' ).on( 'swiperight', libraryClick ).on( 'swipeleft', playlistClick );
-$( '#page-playlist' ).on( 'swiperight', playbackClick ).on( 'swipeleft', libraryClick );
+$( '#page-library' ).swiperight( playlistClick ).swipeleft( playbackClick );
+$( '#page-playback' ).swiperight( libraryClick ).swipeleft( playlistClick );
+$( '#page-playlist' ).swiperight( playbackClick ).swipeleft( libraryClick );
 
 $( '#page-playback' ).click( function( e ) {
 	if ( $( e.target ).is( '.controls, .timemap, .covermap, .volmap' ) ) return
