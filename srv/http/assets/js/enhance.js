@@ -55,7 +55,7 @@ $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 		setButton();
 		renderPlayback();
 		displayPlayback();
-		
+		$( 'html, body' ).scrollTop( 0 );
 		$.post( 'enhance.php', { library: 1, data: 1 }, function( data ) {
 			GUI.libraryhome = data;
 		}, 'json' );
@@ -268,20 +268,13 @@ $( '#tab-playlist' ).click( function() {
 		renderPlaylist();
 	}, 'json' );
 } );
-$( '#page-playback, #page-library, #page-playlist' ).on( 'swipeleft swiperight', function( e ) {
-	var pcurrent = this.id
-	if ( pcurrent === 'page-library' ) {
-		var $pL = $( '#tab-playback' );
-		var $pR = $( '#tab-playlist' );
-	} else if ( pcurrent === 'page-playback' ) {
-		var $pL = $( '#tab-playlist' );
-		var $pR = $( '#tab-library' );
-	} else {
-		var $pL = $( '#tab-library' );
-		var $pR = $( '#tab-playback' );
-	}
-	e.type === 'swipeleft' ? $pL.click() : $pR.click();
-} );
+function libraryClick() { $( '#tab-library' ).click() }
+function playbackClick() { $( '#tab-playback' ).click() }
+function playlistClick() { $( '#tab-playlist' ).click() }
+$( '#page-library' ).on( 'swiperight', playlistClick ).on( 'swipeleft', playbackClick );
+$( '#page-playback' ).on( 'swiperight', libraryClick ).on( 'swipeleft', playlistClick );
+$( '#page-playlist' ).on( 'swiperight', playbackClick ).on( 'swipeleft', libraryClick );
+
 $( '#page-playback' ).click( function( e ) {
 	if ( $( e.target ).is( '.controls, .timemap, .covermap, .volmap' ) ) return
 	
