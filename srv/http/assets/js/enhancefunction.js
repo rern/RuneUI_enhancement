@@ -34,7 +34,7 @@ pushstreams.volume.onmessage = function( data ) {
 }
 pushstreams.library.onmessage = function( data ) {
 	GUI.libraryhome = data[ 0 ];
-	if ( !$( '#page-library' ).hasClass( 'hide' ) && !GUI.local && !GUI.bookmarkedit ) renderLibrary();
+	if ( !$( '#home-blocks' ).hasClass( 'hide' ) && !GUI.local && !GUI.bookmarkedit ) renderLibrary();
 }
 pushstreams.playlist.onmessage = function( data ) {
 	GUI.lsplaylists = data[ 0 ] || [];
