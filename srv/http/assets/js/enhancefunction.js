@@ -1280,7 +1280,6 @@ function renderPlaylist() {
 	$( '#pl-currentpath, #pl-editor, #pl-index, #pl-search' ).addClass( 'hide' );
 	$( '#db-currentpath>span, #pl-searchbtn' ).removeClass( 'hide' );
 	$( '#plopen' ).toggleClass( 'disable', !GUI.lsplaylists.length );
-	
 	if ( !GUI.status.playlistlength ) {
 		$( '#pl-count' ).html( '<bl class="title">PLAYLIST</bl>' );
 		$( '#plsave, #plcrop, #plclear' ).addClass( 'disable' );

@@ -258,10 +258,6 @@ $( '#tab-playlist' ).click( function() {
 	setPageCurrent( 'playlist' );
 	if ( GUI.pleditor ) return
 	
-	if ( !GUI.status.playlistlength ) {
-		renderPlaylist();
-		return
-	}
 	$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
 		GUI.lsplaylists = data.lsplaylists || [];
 		GUI.playlist = data.playlist;
@@ -1013,18 +1009,18 @@ $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 	e.stopPropagation();
 	var $this = $( this );
 	var $thisli = $this.parent();
-	var plname = $thisli.find( '.liname' ).text();
 	GUI.list = {};
 	GUI.list.li = $thisli; // for contextmenu
-	GUI.list.name = plname;
+	GUI.list.name = $thisli.find( '.liname' ).text();
+	GUI.list.path = GUI.list.name;
 	GUI.list.isfile = $thisli.hasClass( 'pl-song' ); // used in contextmenu
 	$( '#pl-editor li' ).removeClass( 'active' );
 	$( '.contextmenu' ).addClass( 'hide' );
 	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
-	if ( plname === GUI.plcurrent ) {
+	if ( GUI.list.name === GUI.plcurrent ) {
 		GUI.plcurrent = '';
 	} else {
-		GUI.plcurrent = plname;
+		GUI.plcurrent = GUI.list.name;
 		$thisli.addClass( 'active' );
 		var $contextmenu = GUI.list.isfile ? $( '#context-menu-file' ) : $( '#context-menu-playlist' );
 		var contextnum = $contextmenu.find( 'a:not(.hide)' ).length - 1;
