@@ -39,15 +39,17 @@ $( '.contextmenu a' ).click( function() {
 			var mpcCmd = 'mpc findadd '+ mode +' "'+ name +'"';
 		}
 	}
+	// pl... share commands with wr...
+	var addplaypos = GUI.status.playlistlength + 1;
 	var contextCommand = {
 		  add           : mpcCmd
-		, addplay       : [ mpcCmd, 'mpc play' ]
+		, addplay       : [ mpcCmd, 'mpc play '+ addplaypos ]
 		, replace       : [ 'mpc clear', mpcCmd ]
 		, replaceplay   : [ 'mpc clear', mpcCmd, 'mpc play' ]
-		, wradd         : 'mpc load "'+ name +'"'                              // pladd
-		, wraddplay     : [ 'mpc load "'+ name +'"', 'mpc play' ]              // pladdplay
-		, wrreplace     : [ 'mpc clear', 'mpc load "'+ name +'"' ]             // plreplace
-		, wrreplaceplay : [ 'mpc clear', 'mpc load "'+ name +'"', 'mpc play' ] // plreplaceplay
+		, wradd         : 'mpc load "'+ name +'"'
+		, wraddplay     : [ 'mpc load "'+ name +'"', 'mpc play '+ addplaypos ]
+		, wrreplace     : [ 'mpc clear', 'mpc load "'+ name +'"' ]
+		, wrreplaceplay : [ 'mpc clear', 'mpc load "'+ name +'"', 'mpc play' ]
 		, wrrename      : webRadioRename
 		, wrdelete      : webRadioDelete
 		, plrename      : playlistRename
