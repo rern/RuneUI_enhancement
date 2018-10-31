@@ -778,14 +778,17 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 	var $menu = $( $this.data( 'target' ) );
 	$( '#db-entries li' ).removeClass( 'active' );
 	$( '.contextmenu' ).addClass( 'hide' );
+	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
+	var contextnum = $menu.find( 'a:not(.hide)' ).length - 1;
+	$( '.menushadow' ).css( 'height', contextnum * 41 );
 	if ( GUI.list.path === GUI.dbcurrent ) {
 		GUI.dbcurrent = '';
 	} else {
 		GUI.dbcurrent = GUI.list.path;
 		$thisli.addClass( 'active' );
-		$menu.removeClass( 'hide' )
-			.css( 'top', $this.position().top +'px' )
-			.find( '.menushadow' ).css( 'height', $menu.find( 'i' ).length * 41 );
+		$menu
+			.removeClass( 'hide' )
+			.css( 'top', $this.position().top +'px' );
 		var targetB = $menu.offset().top + $menu.height();
 		var wH = window.innerHeight;
 		if ( targetB > wH + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + ( GUI.display.bars ? 42 : 0 ) } );
@@ -1017,13 +1020,18 @@ $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 	GUI.list.isfile = $thisli.hasClass( 'pl-song' ); // used in contextmenu
 	$( '#pl-editor li' ).removeClass( 'active' );
 	$( '.contextmenu' ).addClass( 'hide' );
+	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
 	if ( plname === GUI.plcurrent ) {
 		GUI.plcurrent = '';
 	} else {
 		GUI.plcurrent = plname;
 		$thisli.addClass( 'active' );
-		$contextmenu = GUI.list.isfile ? $( '#context-menu-file' ) : $( '#context-menu-playlist' );
-		$contextmenu.removeClass( 'hide' ).css( 'top', $this.position().top +'px' );
+		var $contextmenu = GUI.list.isfile ? $( '#context-menu-file' ) : $( '#context-menu-playlist' );
+		var contextnum = $contextmenu.find( 'a:not(.hide)' ).length - 1;
+		$( '.menushadow' ).css( 'height', contextnum * 41 );
+		$contextmenu
+			.removeClass( 'hide' )
+			.css( 'top', $this.position().top +'px' );
 		var targetB = $contextmenu.offset().top + 246;
 		var wH = window.innerHeight;
 		if ( targetB > wH + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + ( GUI.display.bars ? 42 : 0 ) } );
