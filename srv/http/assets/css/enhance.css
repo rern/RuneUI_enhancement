@@ -248,9 +248,6 @@ wh, gr { font-weight: 300; }
 #context-menu-file {
 	right: 50px;
 }
-#context-menu-playlist .menushadow {
-	height: 246px;
-}
 /* ---------------------- menu-top ----------------------*/
 #menu-top,
 #menu-bottom {
