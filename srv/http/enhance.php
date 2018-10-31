@@ -96,25 +96,22 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 } else if ( isset( $_POST[ 'getplaylist' ] ) ) {
 	$name = isset( $_POST[ 'name' ] ) ? '"'.$_POST[ 'name' ].'"' : '';
 	$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ]%artist%[ • %album%]^^%file%" playlist '.$name );
+	if ( !isset( $_POST[ 'name' ] ) ) $data[ 'lsplaylists' ] = lsplaylists();
 	if ( !$lines ) {
-		echo 0;
-		exit();
-	}
-	$webradioname = array_flip( $redis->hGetAll( 'webradios' ) );
-	$lists = explode( "\n", rtrim( $lines ) );
-	foreach( $lists as $list ) {
-		$li = explode( '^^', $list );
-		$pl[ 'title' ] = $li[ 0 ] ? $li[ 0 ] : $webradioname[ $li[ 3 ] ] ?: $li[ 3 ];
-		$pl[ 'time' ] = $li[ 1 ];
-		$pl[ 'track' ] = $li[ 2 ];
-		$pl[ 'file' ] = $li[ 3 ];
-		$playlist[] = $pl;
-		$pl = '';
-	}
-	$data[ 'playlist' ] = $playlist;
-	
-	if ( !isset( $_POST[ 'name' ] ) ) {
-		$data[ 'lsplaylists' ] = lsplaylists();
+		$data[ 'playlist' ] = '';
+	} else {
+		$webradioname = array_flip( $redis->hGetAll( 'webradios' ) );
+		$lists = explode( "\n", rtrim( $lines ) );
+		foreach( $lists as $list ) {
+			$li = explode( '^^', $list );
+			$pl[ 'title' ] = $li[ 0 ] ? $li[ 0 ] : $webradioname[ $li[ 3 ] ] ?: $li[ 3 ];
+			$pl[ 'time' ] = $li[ 1 ];
+			$pl[ 'track' ] = $li[ 2 ];
+			$pl[ 'file' ] = $li[ 3 ];
+			$playlist[] = $pl;
+			$pl = '';
+		}
+		$data[ 'playlist' ] = $playlist;
 	}
 	echo json_encode( $data, JSON_NUMERIC_CHECK );
 } else if ( isset( $_POST[ 'lsplaylists' ] ) ) {
@@ -241,8 +238,6 @@ function getLibrary() {
 		, 'spotify'      => $count[ 10 ]
 		, 'activeplayer' => $count[ 11 ]
 	);
-//	echo json_encode( $status, JSON_NUMERIC_CHECK );
-//	pushstream( 'library', $status );
 	return $status;
 }
 function lsPlaylists() {
