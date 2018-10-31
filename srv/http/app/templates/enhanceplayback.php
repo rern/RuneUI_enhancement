@@ -254,6 +254,7 @@ $menudiv = '';
 
 $html = '<a class="menushadow"></a>';
 $html.= menuli( 'pladd',         'plus-o',            'Add' );
+$html.= menuli( 'pladdplay',     'play-plus-o',       'Add ► Play' );
 $html.= menuli( 'plreplace',     'plus-refresh',      'Replace' );
 $html.= menuli( 'plreplaceplay', 'play-plus-refresh', 'Replace ► Play' );
 $html.= menuli( 'plashuffle',    'random',            'Add randomly' );
