@@ -53,7 +53,7 @@ $( '.contextmenu a' ).click( function() {
 		, plrename      : playlistRename
 		, pldelete      : playlistDelete
 		, bookmark      : bookmarkNew
-		, update        : 'mpc update '+ GUI.list.path
+		, update        : 'mpc update "'+ GUI.list.path +'"'
 	}
 	var command = contextCommand[ cmd ];
 	if ( typeof command !== 'undefined' ) {
