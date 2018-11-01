@@ -257,7 +257,6 @@ $html.= menuli( 'pladd',         'plus-o',            'Add' );
 $html.= menuli( 'pladdplay',     'play-plus-o',       'Add ► Play' );
 $html.= menuli( 'plreplace',     'plus-refresh',      'Replace' );
 $html.= menuli( 'plreplaceplay', 'play-plus-refresh', 'Replace ► Play' );
-$html.= menuli( 'plashuffle',    'random',            'Add randomly' );
 $html.= menuli( 'plrename',      'edit-circle',       'Rename' );
 $html.= menuli( 'pldelete',      'minus-circle',      'Delete' );
 $menu.= menudiv( 'playlist', $html );
