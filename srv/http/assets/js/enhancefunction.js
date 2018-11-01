@@ -511,7 +511,6 @@ function displayTopBottom() {
 	var wH = window.innerHeight;
 	if ( !GUI.display.bars ) {
 		$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
-		$( '#page-playback' ).css( 'padding-top', wH > 600 ? '60px' : '40px' );
 		$( '#db-list, #pl-list' ).css( 'padding', '40px 0' );
 		$( '.btnlist-top' ).css( 'top', 0 );
 		$( '#home-blocks' ).css( 'padding-top', '50px' );
@@ -563,6 +562,29 @@ function PlaybackCssOrder( el, ord ) {
 	el.css( { order: ord, '-webkit-order': ord } );
 }
 function displayPlayback() {
+	var wW = window.innerWidth;
+	var wH = window.innerHeight;
+	if ( wW < 750 && wW > wH ) {
+		var scale = wW / 800;
+		$( '#page-playback' ).css( {
+			  transform          : 'scale( '+ scale +', '+ scale +' )'
+			, 'transform-origin' : 'top'
+			, 'padding-top'      : 60 * scale +'px'
+		} );
+		$( '#playback-row' ).css( {
+			  width         : 100 / scale +'%'
+			, 'margin-left' : ( 100 / scale - 100 ) / -2 +'%'
+		} );
+	} else {
+		$( '#page-playback' ).css( {
+			  transform          : ''
+			, 'padding-top'      : ''
+		} );
+		$( '#playback-row' ).css( {
+			  width         : ''
+			, 'margin-left' : ''
+		} );
+	}
 	$( '#time-knob, #play-group' ).toggleClass( 'hide', GUI.display.time === '' );
 	$( '#coverart, #share-group' ).toggleClass( 'hide', GUI.display.coverart === '' );
 	var volume = ( GUI.display.volumempd && GUI.display.volume ) ? 1 : 0;
@@ -585,8 +607,6 @@ function displayPlayback() {
 	} else {
 		$elements.css( 'width', '' );
 	}
-	var wW = window.innerWidth;
-	var wH = window.innerHeight;
 	if ( !GUI.display.buttons ) {
 		$( '#play-group, #share-group, #vol-group' ).addClass( 'hide' );
 		if ( GUI.display.time ) $( '#iplayer' ).attr( 'class', GUI.status.activePlayer === 'MPD' ? 'fa hide' : 'fa fa-'+ GUI.status.activePlayer.toLowerCase() );
@@ -731,6 +751,33 @@ function renderLibrary() {
 		toggleLibraryHome( 'dirble' );
 		toggleLibraryHome( 'jamendo' );
 		
+		$( '.home-bookmark' ).each( function() {
+			var $hammer = new Hammer( this );
+			var $this = $( this )
+			$hammer.on( 'press', function( e ) {
+				GUI.local = 1;
+				setTimeout( function() { GUI.local = 0 }, 1000 );
+				$( '.home-bookmark' )
+					.append( '<i id="home-block-edit" class="fa fa-edit"></i><i id="home-block-remove" class="fa fa-minus-circle"></i>' )
+					.find( '.fa-bookmark, gr' ).css( 'opacity', 0.2 );
+			} ).on( 'tap', function( e ) {
+				var path = $this.find( '.lipath' ).text();
+				var name = $this.find( '.bklabel' ).text();
+				if ( e.target.id === 'home-block-edit' ) {
+					bookmarkRename( name, path, $this );
+				} else if ( e.target.id === 'home-block-remove' ) {
+					bookmarkDelete( name, $this );
+				} else {
+					GUI.dblist = 1;
+		//			mutationLibrary.observe( observerLibrary, observerOption );
+					GUI.dbbrowsemode = 'file';
+					getDB( {
+						  browsemode : 'file'
+						, path       : path
+					} );
+				}
+			} );
+		} );
 		var txt = '';
 		if ( GUI.display.label ) {
 			$( '.home-block gr' ).css( 'color', '' );

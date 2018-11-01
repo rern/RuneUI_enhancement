@@ -267,9 +267,12 @@ $( '#tab-playlist' ).click( function() {
 function libraryClick() { $( '#tab-library' ).click() }
 function playbackClick() { $( '#tab-playback' ).click() }
 function playlistClick() { $( '#tab-playlist' ).click() }
-$( '#page-library' ).swiperight( playlistClick ).swipeleft( playbackClick );
-$( '#page-playback' ).swiperight( libraryClick ).swipeleft( playlistClick );
-$( '#page-playlist' ).swiperight( playbackClick ).swipeleft( libraryClick );
+var $hammerLibrary = new Hammer( document.getElementById( 'page-library' ) );
+var $hammerPlayback = new Hammer( document.getElementById( 'page-playback' ) );
+var $hammerPlaylist = new Hammer( document.getElementById( 'page-playlist' ) );
+$hammerLibrary.on( 'swiperight', playlistClick ).on( 'swipeleft', playbackClick );
+$hammerPlayback.on( 'swiperight', libraryClick ).on( 'swipeleft', playlistClick );
+$hammerPlaylist.on( 'swiperight', playbackClick ).on( 'swipeleft', libraryClick );
 
 $( '#page-playback' ).click( function( e ) {
 	if ( $( e.target ).is( '.controls, .timemap, .covermap, .volmap' ) ) return
@@ -564,7 +567,7 @@ $( '#closebio' ).click( function() {
 $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 	var $this = $( this );
 	var id = this.id;
-	if ( GUI.local ) return
+	if ( GUI.local || $this.hasClass( 'home-bookmark' ) ) return
 	
 	var type = id.replace( 'home-', '' );
 	GUI.plugin = $this.data( 'plugin' );
@@ -581,11 +584,7 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 	
 	var path = $this.find( '.lipath' ).text();
 	var name = $this.find( '.bklabel' ).text();
-	if ( e.target.id === 'home-block-edit' ) {
-		bookmarkRename( name, path, $this );
-	} else if ( e.target.id === 'home-block-remove' ) {
-		bookmarkDelete( name, $this );
-	} else if ( id === 'home-spotify' && GUI.status.activePlayer !== 'Spotify' ) {
+	if ( id === 'home-spotify' && GUI.status.activePlayer !== 'Spotify' ) {
 		$( '#playsource' ).addClass( 'open' );
 	} else {
 		GUI.dblist = 1;
@@ -598,15 +597,8 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 			, plugin     : GUI.plugin
 		} );
 	}
-} ).on( 'taphold', '.home-block', function( e ) {
-	if ( !$( this ).hasClass( 'home-bookmark' ) ) return
-	
-	GUI.local = 1;
-	setTimeout( function() { GUI.local = 0 }, 500 );
-	$( '.home-bookmark' )
-		.append( '<i id="home-block-edit" class="fa fa-edit"></i><i id="home-block-remove" class="fa fa-minus-circle"></i>' )
-		.find( '.fa-bookmark, gr' ).css( 'opacity', 0.2 );
 } );
+
 $( '#db-home' ).click( function() {
 	$( '#tab-library' ).click();
 } );
