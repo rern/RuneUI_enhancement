@@ -564,8 +564,8 @@ function PlaybackCssOrder( el, ord ) {
 function displayPlayback() {
 	var wW = window.innerWidth;
 	var wH = window.innerHeight;
-	if ( wW < 750 && wW > wH ) {
-		var scale = wW / 800;
+	if ( ( wW < 750 && wW ) > wH || wH < 475 ) {
+		var scale = wH > 475 ? wW / 800 : wH / 450;
 		$( '#page-playback' ).css( {
 			  transform          : 'scale( '+ scale +', '+ scale +' )'
 			, 'transform-origin' : 'top'
@@ -647,6 +647,8 @@ function switchPlaysource( source ) {
 	} );
 }
 function displayIndexBar() {
+		console.log(1)
+	
 	setTimeout( function() {
 		var wH = window.innerHeight;
 		var indexoffset = $( '#menu-top' ).hasClass( 'hide' ) ? 80 : 160;
@@ -654,7 +656,7 @@ function displayIndexBar() {
 		$( '.half' ).toggleClass( 'hide', wH < 500 );
 		$index = ( !$( '#page-library' ).hasClass( 'hide' ) && GUI.dblist ) ? $( '#db-index' ) : $( '#pl-index' );
 		$index.css( 'line-height', ( ( wH - indexoffset ) / indexline ) +'px' );
-	}, 0 );
+	}, 50 );
 }
 function setToggleButton( name, append ) {
 	$( 'input[name="'+ name +'"]' )
