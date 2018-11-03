@@ -758,8 +758,7 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 	GUI.list.path = $thisli.find( '.lipath' ).text();
 	GUI.list.name = $thisli.find( '.liname' ).text();
 	GUI.list.artist = $thisli.find( '.artist' ).text() || '';
-	var icon = $thisli.find( 'i.db-icon' );
-	GUI.list.isfile = icon.hasClass( 'fa-music' ) || icon.hasClass( 'fa-webradio' ); // file/dirble - used in contextmenu
+	GUI.list.isfile = $thisli.hasClass( 'file' ); // file/dirble - used in contextmenu
 	if ( $( '#db-currentpath' ).find( '.lipath' ).text() === 'Webradio' ) GUI.list.url = $thisli.find( '.bl' ).text();
 	var $menu = $( $this.data( 'target' ) );
 	$( '#db-entries li' ).removeClass( 'active' );
