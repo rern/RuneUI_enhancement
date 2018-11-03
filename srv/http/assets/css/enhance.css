@@ -1371,7 +1371,7 @@ wh, gr { font-weight: 300; }
 	text-overflow: ellipsis;
 }
 #db-entries .single {
-	vertical-align: 15%;
+	vertical-align: 10%;
 }
 .lipath,
 .liname,
