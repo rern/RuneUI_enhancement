@@ -35,6 +35,7 @@ if ( empty( $this->uri(1) ) ) { ?>
 <script src="<?=$this->asset( '/js/vendor/pnotify.custom.min.js' )?>"></script>
 <script src="<?=$this->asset( '/js/vendor/openwebapp.js' )?>"></script>
 <script src="<?=$this->asset( '/js/vendor/modernizr-custom.js' )?>"></script>
+<script src="<?=$this->asset( '/js/vendor/hammer.min.js' )?>"></script>
 <script src="<?=$this->asset( '/js/addonsinfo.js' )?>"></script>
 <script src="<?=$this->asset( '/js/addonsmenu.js' )?>"></script>
 <script src="<?=$this->asset( '/js/vendor/roundslider.min.js' )?>"></script>

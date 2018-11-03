@@ -5,17 +5,17 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 	exit();
 } else if ( isset( $_POST[ 'mpcalbum' ] ) ) {
 	$album = $_POST[ 'mpcalbum' ];
-	$result0 = shell_exec( 'mpc find -f "%album%^^%artist%" album "'.$album.'" | awk \'!a[$0]++\'' );
-	$result1 = shell_exec( 'mpc find -f "%album%^^%albumartist%" album "'.$album.'" | awk \'!a[$0]++\'' );
-	$lists0 = explode( "\n", rtrim( $result0 ) );
-	$lists1 = explode( "\n", rtrim( $result1 ) );
+	$albums = shell_exec( "mpc find -f '%album%^^%artist%' album '".$album."' | awk '!a[$0]++'" );
+	$lines = explode( "\n", rtrim( $albums ) );
+	$byartist = count( $lines );
+	$byalbumartist = exec( "mpc find -f '%album%^^%albumartist%' album '".$album."' | awk '!a[$0]++' | wc -l" );
 	// single album: either same artist or same album artist
-	if ( count( $lists0 ) === 1 || count( $lists1 ) === 1 ) {
-		$result = shell_exec( 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%albumartist%" album "'.$album.'"' );
-		$data = search2array( $result );
+	if ( $byartist <= 1 && $byalbumartist <= 1 ) {
+		$albums = shell_exec( "mpc find -f '%title%^^%time%^^%artist%^^%album%^^%file%^^%albumartist%' album '".$album."'" );
+		$data = search2array( $albums );
 	} else {
-		foreach( $lists as $list ) {
-			$list = explode( '^^', $list );
+		foreach( $lines as $line ) {
+			$list = explode( '^^', $line );
 			$li[ 'artistalbum' ] = $list[ 1 ].'<gr> • </gr>'.$list[ 0 ];
 			$li[ 'album' ] = $list[ 0 ];
 			$li[ 'artist' ] = $list[ 1 ];
@@ -41,7 +41,8 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 		pushstream( 'playlist', $data );
 	}
 	if ( !$result ) {
-		echo 0;
+		$none = $cmdpl === 'lsplaylists' ? '' : 0;
+		echo $none;
 	} else if ( isset( $_POST[ 'list' ] ) ) {
 		$type = $_POST[ 'list' ];
 		if ( $type === 'file' ) {
@@ -96,30 +97,24 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 } else if ( isset( $_POST[ 'getplaylist' ] ) ) {
 	$name = isset( $_POST[ 'name' ] ) ? '"'.$_POST[ 'name' ].'"' : '';
 	$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ]%artist%[ • %album%]^^%file%" playlist '.$name );
+	if ( !isset( $_POST[ 'name' ] ) ) $data[ 'lsplaylists' ] = lsplaylists();
 	if ( !$lines ) {
-		echo 0;
-		exit();
-	}
-	$webradioname = array_flip( $redis->hGetAll( 'webradios' ) );
-	$lists = explode( "\n", rtrim( $lines ) );
-	foreach( $lists as $list ) {
-		$li = explode( '^^', $list );
-		$pl[ 'title' ] = $li[ 0 ] ? $li[ 0 ] : $webradioname[ $li[ 3 ] ] ?: $li[ 3 ];
-		$pl[ 'time' ] = $li[ 1 ];
-		$pl[ 'track' ] = $li[ 2 ];
-		$pl[ 'file' ] = $li[ 3 ];
-		$playlist[] = $pl;
-		$pl = '';
-	}
-	$data[ 'playlist' ] = $playlist;
-	
-	if ( !isset( $_POST[ 'name' ] ) ) {
-		$data[ 'lsplaylists' ] = lsplaylists();
+		$data[ 'playlist' ] = '';
+	} else {
+		$webradioname = array_flip( $redis->hGetAll( 'webradios' ) );
+		$lists = explode( "\n", rtrim( $lines ) );
+		foreach( $lists as $list ) {
+			$li = explode( '^^', $list );
+			$pl[ 'title' ] = $li[ 0 ] ? $li[ 0 ] : $webradioname[ $li[ 3 ] ] ?: $li[ 3 ];
+			$pl[ 'time' ] = $li[ 1 ];
+			$pl[ 'track' ] = $li[ 2 ];
+			$pl[ 'file' ] = $li[ 3 ];
+			$playlist[] = $pl;
+			$pl = '';
+		}
+		$data[ 'playlist' ] = $playlist;
 	}
 	echo json_encode( $data, JSON_NUMERIC_CHECK );
-} else if ( isset( $_POST[ 'lsplaylists' ] ) ) {
-	$data = lsplaylists();
-	echo json_encode( $data );
 } else if ( isset( $_POST[ 'getwebradios' ] ) ) {
 	$webradios = $redis->hGetAll( 'webradios' );
 	foreach( $webradios as $name => $url ) {
@@ -185,7 +180,15 @@ function search2array( $result ) {
 	foreach( $lists as $list ) {
 		$root = substr( $list, 0, 4 );
 		if ( $root === 'USB/' || $root === 'NAS/' || $root === 'LocalStorage/' ) {
-			$data[] = array( 'directory' => $list );
+			$ext = substr( $list, -4 );
+			if ( $ext === '.m3u' || $ext === '.cue' || $ext === '.pls') {
+				$li[ 'playlist' ] = basename( $list, $ext );
+				$li[ 'filepl' ] = $list;
+				$data[] = $li;
+				$li = '';
+			} else {
+				$data[] = array( 'directory' => $list );
+			}
 		} else {
 			$list = explode( '^^', rtrim( $list ) );
 			$li[ 'Title' ] = $list[ 0 ];
@@ -241,19 +244,17 @@ function getLibrary() {
 		, 'spotify'      => $count[ 10 ]
 		, 'activeplayer' => $count[ 11 ]
 	);
-//	echo json_encode( $status, JSON_NUMERIC_CHECK );
-//	pushstream( 'library', $status );
 	return $status;
 }
 function lsPlaylists() {
 	$lines = shell_exec( 'mpc lsplaylists' );
-	$lists = explode( "\n", rtrim( $lines ) );
-	if ( $lists[ 0 ] ) {
+	if ( $lines ) {
+		$lists = explode( "\n", rtrim( $lines ) );
 		foreach( $lists as $list ) {
 			$lsplaylists[] = $list;
 		}
+		return $lsplaylists;
 	} else {
-		$lsplaylists = '';
+		return 0;
 	}
-	return $lsplaylists;
 }

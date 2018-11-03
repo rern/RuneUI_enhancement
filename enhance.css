@@ -1368,10 +1368,7 @@ wh, gr { font-weight: 300; }
 #pl-editor span {
 	white-space: nowrap;
 	overflow: hidden;
-	text-overflow: ellipsis;
-}
-#db-entries .single {
-	vertical-align: 10%;
+	text-overflow: ellipsis
 }
 .lipath,
 .liname,
