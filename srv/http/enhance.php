@@ -182,7 +182,15 @@ function search2array( $result ) {
 	foreach( $lists as $list ) {
 		$root = substr( $list, 0, 4 );
 		if ( $root === 'USB/' || $root === 'NAS/' || $root === 'LocalStorage/' ) {
-			$data[] = array( 'directory' => $list );
+			$ext = substr( $list, -4 );
+			if ( $ext === '.m3u' || $ext === '.cue' || $ext === '.pls') {
+				$li[ 'playlist' ] = basename( $list, $ext );
+				$li[ 'filepl' ] = $list;
+				$data[] = $li;
+				$li = '';
+			} else {
+				$data[] = array( 'directory' => $list );
+			}
 		} else {
 			$list = explode( '^^', rtrim( $list ) );
 			$li[ 'Title' ] = $list[ 0 ];
