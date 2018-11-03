@@ -17,11 +17,11 @@ $( '.contextmenu a' ).click( function() {
 	GUI.dbcurrent = '';
 	var cmd = $( this ).data( 'cmd' );
 	var mode = cmd.replace( /replaceplay|replace|addplay|add/, '' );
+	// get name
 	if ( mode === 'wr' ) {
 		var name = 'Webradio/'+ GUI.list.name.replace( /"/g, '\\"' ) +'.pls';
 	} else if ( mode === 'pl' ) {
 		var name = GUI.list.name.replace( /"/g, '\\"' );
-		cmd = ( cmd === 'plrename' || cmd === 'pldelete' ) ? cmd : cmd.replace( 'pl', 'wr' );
 	} else {
 		if ( !$( '#page-playlist' ).hasClass( 'hide' ) && $( '#pl-currentpath .lipath' ).length ) {
 			var name = GUI.list.li.find( '.liname' ).text().replace( /"/g, '\\"' );
@@ -29,27 +29,35 @@ $( '.contextmenu a' ).click( function() {
 			var name = GUI.list.path.replace( /"/g, '\\"' );
 		}
 	}
+	// compose command
 	if ( !mode ) {
-		var mpcCmd = GUI.list.isfile ? 'mpc add "'+ name +'"' : 'mpc ls "'+ name +'" | mpc add';
-	} else if ( $.inArray( mode, [ 'album', 'artist', 'composer', 'genre' ] ) !== -1 ) {
-		cmd = cmd.replace( /album|artist|composer|genre/, '' );
-		if ( mode === 'album' && GUI.list.artist ) {
-			var mpcCmd = 'mpc findadd artist "'+ GUI.list.artist +'" album "'+ name +'"';
+		var ext = GUI.list.path.slice( -3 ).toLowerCase();
+		if ( ext === 'm3u' ) {
+			var mpcCmd = 'cat "/mnt/MPD/'+ GUI.list.path +'" | mpc add';
+		} else if ( ext === 'cue' || ext === 'pls' ) {
+			var mpcCmd = 'mpc load "'+ name +'"';
 		} else {
-			var mpcCmd = 'mpc findadd '+ mode +' "'+ name +'"';
+			var mpcCmd = GUI.list.isfile ? 'mpc add "'+ name +'"' : 'mpc ls "'+ name +'" | mpc add';
+		}
+	} else {
+		if ( $.inArray( mode, [ 'album', 'artist', 'composer', 'genre' ] ) !== -1 ) {
+			if ( mode === 'album' && GUI.list.artist ) {
+				var mpcCmd = 'mpc findadd artist "'+ GUI.list.artist +'" album "'+ name +'"';
+			} else {
+				var mpcCmd = 'mpc findadd '+ mode +' "'+ name +'"';
+			}
+			cmd = cmd.replace( /album|artist|composer|genre/, '' );
+		} else {
+			var mpcCmd = 'mpc load "'+ name +'"';
+			if ( $.inArray( mode, [ 'wrrename', 'wrdelete', 'plrename', 'wrdelete' ] ) === -1 ) cmd = cmd.replace( /pl|wr/, '' );
 		}
 	}
-	// pl... share commands with wr...
 	var addplaypos = GUI.status.playlistlength + 1;
 	var contextCommand = {
 		  add           : mpcCmd
 		, addplay       : [ mpcCmd, 'mpc play '+ addplaypos ]
 		, replace       : [ 'mpc clear', mpcCmd ]
 		, replaceplay   : [ 'mpc clear', mpcCmd, 'mpc play' ]
-		, wradd         : 'mpc load "'+ name +'"'
-		, wraddplay     : [ 'mpc load "'+ name +'"', 'mpc play '+ addplaypos ]
-		, wrreplace     : [ 'mpc clear', 'mpc load "'+ name +'"' ]
-		, wrreplaceplay : [ 'mpc clear', 'mpc load "'+ name +'"', 'mpc play' ]
 		, wrrename      : webRadioRename
 		, wrdelete      : webRadioDelete
 		, plrename      : playlistRename
@@ -73,7 +81,7 @@ $( '.contextmenu a' ).click( function() {
 				GUI.local = 1;
 				setTimeout( function() { GUI.local = 0 }, 500 );
 			}
-			$.post( 'enhance.php', { mpc: command }, function() {
+			$.post( 'enhance.php', { mpc: command }, function(data) {
 				if ( !GUI.status.playlistlength ) getPlaybackStatus();
 				if ( GUI.display.bars ) {
 					if ( cmd.slice( -4 ) === 'play' ) {

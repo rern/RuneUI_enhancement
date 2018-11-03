@@ -691,8 +691,7 @@ $( '#db-back' ).on( 'click', function() {
 } );
 $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	var $this = $( this );
-	var $dbicon = $this.find( 'i.db-icon' )
-	if ( $dbicon.hasClass( 'fa-music' ) || $dbicon.hasClass( 'fa-webradio' ) ) {
+	if ( $this.hasClass( 'file' ) ) {
 		setTimeout( function() {
 			$this.find( 'i.db-action' ).click();
 		}, 0 );
@@ -706,7 +705,6 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	mutationLibrary.observe( observerLibrary, observerOption );
 	$( '#db-entries li' ).removeClass( 'active' );
 	$this.addClass( 'active' );
-	
 	if ( ( GUI.browsemode === 'artist' && currentpath !== 'Artist' )
 		|| ( GUI.browsemode === 'albumartist' && currentpath !== 'AlbumArtist' )
 	) {
