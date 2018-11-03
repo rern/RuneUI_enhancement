@@ -115,8 +115,7 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	}
 	echo json_encode( $data, JSON_NUMERIC_CHECK );
 } else if ( isset( $_POST[ 'lsplaylists' ] ) ) {
-	$data = lsplaylists();
-	echo json_encode( $data );
+	echo shell_exec( 'mpc lsplaylists' );
 } else if ( isset( $_POST[ 'getwebradios' ] ) ) {
 	$webradios = $redis->hGetAll( 'webradios' );
 	foreach( $webradios as $name => $url ) {
@@ -255,8 +254,8 @@ function lsPlaylists() {
 		foreach( $lists as $list ) {
 			$lsplaylists[] = $list;
 		}
+		return $lsplaylists;
 	} else {
-		$lsplaylists = '';
+		return 0;
 	}
-	return $lsplaylists;
 }
