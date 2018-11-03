@@ -1193,12 +1193,12 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 					var liname = inputArr.playlist;
 					content = '<li class="file"><a class="lipath">'+ inputArr.filepl +'</a><a class="liname">'+ liname +'</a><i class="fa fa-bars db-action"';
 					content += ' data-target="#context-menu-filepl"></i><span><i class="fa fa-list-ul"></i>'
-					content += '<span>'+ liname +'</span></span></li>';
+					content += '<span class="single">'+ liname +'</span></span></li>';
 				} else {
 					var liname = inputArr.directory.replace( inpath +'/', '' );
 					content = '<li><a class="lipath">'+ inputArr.directory +'</a><a class="liname">'+ liname +'</a><i class="fa fa-bars db-action"';
 					content += ' data-target="#context-menu-folder"></i><span><i class="fa fa-folder"></i>'
-					content += '<span>'+ liname +'</span></span></li>';
+					content += '<span class="single">'+ liname +'</span></span></li>';
 				}
 			} else if ( GUI.browsemode === 'album' ) {
 				if ( inputArr.file ) {
