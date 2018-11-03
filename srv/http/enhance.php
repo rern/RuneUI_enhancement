@@ -41,7 +41,8 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 		pushstream( 'playlist', $data );
 	}
 	if ( !$result ) {
-		echo 0;
+		$none = $cmdpl === 'lsplaylists' ? '' : 0;
+		echo $none;
 	} else if ( isset( $_POST[ 'list' ] ) ) {
 		$type = $_POST[ 'list' ];
 		if ( $type === 'file' ) {
@@ -114,8 +115,6 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 		$data[ 'playlist' ] = $playlist;
 	}
 	echo json_encode( $data, JSON_NUMERIC_CHECK );
-} else if ( isset( $_POST[ 'lsplaylists' ] ) ) {
-	echo shell_exec( 'mpc lsplaylists' );
 } else if ( isset( $_POST[ 'getwebradios' ] ) ) {
 	$webradios = $redis->hGetAll( 'webradios' );
 	foreach( $webradios as $name => $url ) {
