@@ -392,8 +392,8 @@ function playlistVerify( name, oldname ) {
 		} );
 		return;
 	}
-	$.post( 'enhance.php', { mpc: 'mpc lsplaylists' }, function( data ) {
-		if ( data == 0 || $.inArray( name, data.split( '\n' ) ) === -1 ) {
+	$.post( 'enhance.php', { lsplaylists: 1 }, function( data ) {
+		if ( !data || $.inArray( name, data.split( '\n' ) ) === -1 ) {
 			oldname ? addPlaylist( name, oldname ) : addPlaylist( name );
 		} else {
 			info( {
@@ -411,7 +411,7 @@ function playlistVerify( name, oldname ) {
 				}
 			} );
 		}
-	}, 'text' );
+	} );
 }
 function playlistDelete() {
 	info( {
