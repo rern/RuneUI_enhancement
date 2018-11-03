@@ -250,8 +250,8 @@ function getLibrary() {
 }
 function lsPlaylists() {
 	$lines = shell_exec( 'mpc lsplaylists' );
-	$lists = explode( "\n", rtrim( $lines ) );
-	if ( $lists[ 0 ] ) {
+	if ( $lines ) {
+		$lists = explode( "\n", rtrim( $lines ) );
 		foreach( $lists as $list ) {
 			$lsplaylists[] = $list;
 		}
