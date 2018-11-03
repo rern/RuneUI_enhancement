@@ -1368,7 +1368,10 @@ wh, gr { font-weight: 300; }
 #pl-editor span {
 	white-space: nowrap;
 	overflow: hidden;
-	text-overflow: ellipsis
+	text-overflow: ellipsis;
+}
+#db-entries .single {
+	vertical-align: 15%;
 }
 .lipath,
 .liname,
@@ -1742,7 +1745,28 @@ w {
 @media (max-width: 749px) { #home-blocks .col-md-3 { width: 33.3333333%; } }
 @media (max-width: 560px) { #home-blocks .col-md-3 { width: 50%; } }
 @media (max-width: 374px) { #home-blocks .col-md-3 { width: 100%; } }
-/* ---------------------- responsive ----------------------*/
+/* height */
+@media(max-height: 590px) {
+	#playback-row {
+		margin-top: 0;
+	}
+	#play-group,
+	#share-group,
+	#vol-group {
+		display: none;
+	}
+}
+@media(max-height: 475px) {
+	#settings {
+		position: absolute;
+	}
+	#divpos,
+	#sampling span,
+	#dot0 {
+		display: inline;
+	}
+}
+/* width */
 @media(max-width: 735px) {
 	#clock-display {
 		display: none;
@@ -1871,23 +1895,5 @@ w {
 @media(max-width: 360px) {
 	#playback-controls button {
 		margin: 0;
-	}
-}
-/* height */
-@media(max-height: 590px) {
-	#play-group,
-	#share-group,
-	#vol-group {
-		display: none;
-	}
-}
-@media(max-height: 475px) {
-	#settings {
-		position: absolute;
-	}
-	#divpos,
-	#sampling span,
-	#dot0 {
-		display: inline;
 	}
 }
