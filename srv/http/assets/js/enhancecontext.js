@@ -49,7 +49,7 @@ $( '.contextmenu a' ).click( function() {
 			cmd = cmd.replace( /album|artist|composer|genre/, '' );
 		} else {
 			var mpcCmd = 'mpc load "'+ name +'"';
-			if ( $.inArray( mode, [ 'wrrename', 'wrdelete', 'plrename', 'wrdelete' ] ) === -1 ) cmd = cmd.replace( /pl|wr/, '' );
+			if ( $.inArray( mode, [ 'wrrename', 'wrdelete', 'plrename', 'pldelete' ] ) === -1 ) cmd = cmd.replace( /pl|wr/, '' );
 		}
 	}
 	var addplaypos = GUI.status.playlistlength + 1;
