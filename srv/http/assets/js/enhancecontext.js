@@ -81,7 +81,7 @@ $( '.contextmenu a' ).click( function() {
 				GUI.local = 1;
 				setTimeout( function() { GUI.local = 0 }, 500 );
 			}
-			$.post( 'enhance.php', { mpc: command }, function(data) {
+			$.post( 'enhance.php', { mpc: command }, function() {
 				if ( !GUI.status.playlistlength ) getPlaybackStatus();
 				if ( GUI.display.bars ) {
 					if ( cmd.slice( -4 ) === 'play' ) {
@@ -392,7 +392,7 @@ function playlistVerify( name, oldname ) {
 		} );
 		return;
 	}
-	$.post( 'enhance.php', { mpc: 'mpc lsplaylists' }, function( data ) {
+	$.post( 'enhance.php', { mpc: 'mpc lsplaylists', result: 1 }, function( data ) {
 		if ( !data || $.inArray( name, data.split( '\n' ) ) === -1 ) {
 			oldname ? addPlaylist( name, oldname ) : addPlaylist( name );
 		} else {
@@ -402,7 +402,7 @@ function playlistVerify( name, oldname ) {
 				, message     : '<white>'+ name +'</white>'
 							+'<br>Already exists.'
 				, cancellabel : 'Back'
-				, cancle      : function() {
+				, cancel      : function() {
 					playlistNew();
 				}
 				, oklabel     : 'Replace'
