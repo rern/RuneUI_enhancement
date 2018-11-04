@@ -40,10 +40,7 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 		$data = lsPlaylists();
 		pushstream( 'playlist', $data );
 	}
-	if ( !$result ) {
-		$none = $cmdpl === 'lsplaylists' ? '' : 0;
-		echo $none;
-	} else if ( isset( $_POST[ 'list' ] ) ) {
+	if ( isset( $_POST[ 'list' ] ) ) {
 		$type = $_POST[ 'list' ];
 		if ( $type === 'file' ) {
 			$data = search2array( $result );
@@ -54,7 +51,7 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 			}
 		}
 		echo json_encode( $data );
-	} else {
+	} else if ( isset( $_POST[ 'result' ] ) ) {
 		echo $result;
 	}
 	exit();
