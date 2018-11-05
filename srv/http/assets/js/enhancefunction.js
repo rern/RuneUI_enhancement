@@ -128,7 +128,7 @@ function setButtonToggle() {
 	if ( GUI.local ) return
 	
 	var timehide = $( '#time-knob' ).hasClass( 'hide' );
-	if ( GUI.display.buttons && !$( '#play-group' ).hasClass( 'hide' ) ) {
+	if ( $( '#play-group' ).is( ':visible' ) ) {
 		$( '#irandom' ).addClass( 'hide' )
 		$( '#irepeat' ).attr( 'class', 'fa hide' );
 		if ( timehide ) {
@@ -769,7 +769,6 @@ function renderLibrary() {
 					bookmarkDelete( name, $this );
 				} else {
 					GUI.dblist = 1;
-		//			mutationLibrary.observe( observerLibrary, observerOption );
 					GUI.dbbrowsemode = 'file';
 					getDB( {
 						  browsemode : 'file'
@@ -824,7 +823,6 @@ function getDB( options ) {
 	var cmd = options.cmd || 'browse',
 		path = options.path ? options.path.toString().replace( /"/g, '\"' ) : '',
 		browsemode = options.browsemode || 'file',
-		uplevel = options.uplevel || '',
 		plugin = options.plugin || '',
 		querytype = options.querytype || '',
 		args = options.args || '',
@@ -837,7 +835,6 @@ function getDB( options ) {
 		GUI.dbbackdata.push( {
 			  path       : path
 			, browsemode : browsemode
-			, uplevel    : uplevel
 			, plugin     : plugin
 			, args       : args
 			, querytype  : querytype
