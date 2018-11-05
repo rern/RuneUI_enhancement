@@ -198,7 +198,7 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 // context menus
 function menuli( $command, $icon, $label, $type ) {
 	$type = $type ? ' data-type="'.$type.'"' : '';
-	$classreplace = substr( $icon, -7 ) === 'refresh' ? ' class="replace"' : '';
+	$classreplace = $icon !== 'folder-refresh' && substr( $icon, -7 ) === 'refresh' ? ' class="replace"' : '';
 	return '<a data-cmd="'.$command.'"'.$type.$classreplace.'><i class="fa fa-'.$icon.'"></i>'.$label.'</a>';
 }
 function menudiv( $id, $html ) {
