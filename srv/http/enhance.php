@@ -55,6 +55,22 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 		echo $result;
 	}
 	exit();
+} else if ( isset( $_POST[ 'cue' ] ) ) {
+	$file = $_POST[ 'cue' ];
+	$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%" playlist "'.$file.'"' );
+	$data = list2array( $lines );
+	echo json_encode( $data, JSON_NUMERIC_CHECK );
+	exit();
+} else if ( isset( $_POST[ 'm3u' ] ) ) {
+	$file = $_POST[ 'm3u' ];
+	$pathinfo = pathinfo( $file );
+	$filename = pathinfo( $file, PATHINFO_FILENAME );
+	exec( 'ln -s "$file" /var/lib/mpd/playlists/' );
+	$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ]%artist%[ • %album%]^^%file%" playlist "'.$filename.'"' );
+	exec( 'rm "/var/lib/mpd/playlists/$filename"' );
+	$data = list2array( $lines );
+	echo json_encode( $data, JSON_NUMERIC_CHECK );
+	exit();
 }
 // with redis
 $redis = new Redis();
@@ -93,7 +109,7 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	pushstream( 'volume', array( $vol, $currentvol ) );
 } else if ( isset( $_POST[ 'getplaylist' ] ) ) {
 	$name = isset( $_POST[ 'name' ] ) ? '"'.$_POST[ 'name' ].'"' : '';
-	$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ]%artist%[ • %album%]^^%file%" playlist '.$name );
+	$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%" playlist '.$name );
 	if ( !isset( $_POST[ 'name' ] ) ) $data[ 'lsplaylists' ] = lsplaylists();
 	if ( !$lines ) {
 		$data[ 'playlist' ] = '';
@@ -201,6 +217,20 @@ function search2array( $result ) {
 	}
 	
 	return $data;
+}
+function list2array( $lines ) {
+	$lists = explode( "\n", rtrim( $lines ) );
+	foreach( $lists as $list ) {
+		$li = explode( '^^', $list );
+		$pl[ 'title' ] = $li[ 0 ];
+		$pl[ 'time' ] = $li[ 1 ];
+		$pl[ 'track' ] = $li[ 2 ];
+		$pl[ 'file' ] = $li[ 3 ];
+		$playlist[] = $pl;
+		$pl = '';
+	}
+//	$data[ 'playlist' ] = $playlist;
+//	return $data;
 }
 function pushstream( $channel, $data = 1 ) {
 	$ch = curl_init( 'http://localhost/pub?id='.$channel );
