@@ -719,7 +719,6 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 		getDB( {
 			  path       : path
 			, artist     : artist
-			, uplevel    : 0
 			, browsemode : mode ? mode : 'file'
 		} );
 		return
@@ -764,6 +763,7 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 	$( '#db-entries li' ).removeClass( 'active' );
 	$( '.contextmenu' ).addClass( 'hide' );
 	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
+	$( '.update' ).toggleClass( 'hide', GUI.status.updating_db !== 0 );
 	var contextnum = $menu.find( 'a:not(.hide)' ).length - 1;
 	$( '.menushadow' ).css( 'height', contextnum * 41 );
 	if ( GUI.list.path === GUI.dbcurrent ) {
