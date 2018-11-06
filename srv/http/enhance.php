@@ -55,21 +55,20 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 		echo $result;
 	}
 	exit();
-} else if ( isset( $_POST[ 'cue' ] ) ) {
-	$file = $_POST[ 'cue' ];
-	$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%" playlist "'.$file.'"' );
+} else if ( isset( $_POST[ 'playlist' ] ) ) {
+	$path = $_POST[ 'playlist' ];
+	$ext = substr( $path, -3 );
+	if ( $ext === 'm3u' ) {
+		$file = '/mnt/MPD/'.$path;
+		$symlink = '/var/lib/mpd/playlists/'.basename( $file );
+		symlink( $file, $symlink );
+		$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ]%artist%[ • %album%]^^%file%" playlist "'.basename( $file, $ext ).'"' );
+		unlink( $symlink );
+	} else {
+		$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%" playlist "'.$path.'"' );
+	}
 	$data = list2array( $lines );
-	echo json_encode( $data, JSON_NUMERIC_CHECK );
-	exit();
-} else if ( isset( $_POST[ 'm3u' ] ) ) {
-	$file = $_POST[ 'm3u' ];
-	$pathinfo = pathinfo( $file );
-	$filename = pathinfo( $file, PATHINFO_FILENAME );
-	exec( 'ln -s "$file" /var/lib/mpd/playlists/' );
-	$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ]%artist%[ • %album%]^^%file%" playlist "'.$filename.'"' );
-	exec( 'rm "/var/lib/mpd/playlists/$filename"' );
-	$data = list2array( $lines );
-	echo json_encode( $data, JSON_NUMERIC_CHECK );
+	echo json_encode( $data );
 	exit();
 }
 // with redis
@@ -127,7 +126,7 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 		}
 		$data[ 'playlist' ] = $playlist;
 	}
-	echo json_encode( $data, JSON_NUMERIC_CHECK );
+	echo json_encode( $data );
 } else if ( isset( $_POST[ 'getwebradios' ] ) ) {
 	$webradios = $redis->hGetAll( 'webradios' );
 	foreach( $webradios as $name => $url ) {
@@ -195,7 +194,7 @@ function search2array( $result ) {
 		if ( $root === 'USB/' || $root === 'NAS/' || $root === 'LocalStorage/' ) {
 			$ext = substr( $list, -4 );
 			if ( $ext === '.m3u' || $ext === '.cue' || $ext === '.pls') {
-				$li[ 'playlist' ] = basename( $list, $ext );
+				$li[ 'playlist' ] = basename( $list );
 				$li[ 'filepl' ] = $list;
 				$data[] = $li;
 				$li = '';
@@ -226,11 +225,10 @@ function list2array( $lines ) {
 		$pl[ 'time' ] = $li[ 1 ];
 		$pl[ 'track' ] = $li[ 2 ];
 		$pl[ 'file' ] = $li[ 3 ];
-		$playlist[] = $pl;
+		$data[] = $pl;
 		$pl = '';
 	}
-//	$data[ 'playlist' ] = $playlist;
-//	return $data;
+	return $data;
 }
 function pushstream( $channel, $data = 1 ) {
 	$ch = curl_init( 'http://localhost/pub?id='.$channel );
