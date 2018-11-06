@@ -60,10 +60,9 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 	$ext = substr( $path, -3 );
 	if ( $ext === 'm3u' ) {
 		$file = '/mnt/MPD/'.$path;
-		$symlink = '/var/lib/mpd/playlists/'.basename( $file );
-		symlink( $file, $symlink );
-		$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ]%artist%[ • %album%]^^%file%" playlist "'.basename( $file, $ext ).'"' );
-		unlink( $symlink );
+		exec( '/usr/bin/sudo /usr/bin/ln -s "'.$file.'" /var/lib/mpd/playlists/' );
+		$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ]%artist%[ • %album%]^^%file%" playlist "'.basename( $file, '.m3u' ).'"' );
+		exec( '/usr/bin/sudo /usr/bin/rm "/var/lib/mpd/playlists/'.basename( $file ).'"' );
 	} else {
 		$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%" playlist "'.$path.'"' );
 	}
