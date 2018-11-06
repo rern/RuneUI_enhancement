@@ -689,7 +689,7 @@ function setLibraryBlock( id ) {
 	var iconmusic = id === 'sd' ? ' <i class="fa fa-music"></i>' : '';
 	var count = GUI.display.count && status[ id ] !== undefined ? ( '<gr>'+ numFormat( status[ id ] ) + iconmusic +'</gr>' ) : '';
 	var label = GUI.display.label ? ( '<wh>'+ namepath[ id ][ 0 ] +'</wh>' ) : '';
-	var browsemode = ( $.inArray( id, [ 'album', 'artist', 'albumartist', 'composer', 'genre' ] ) !== -1 ) ? ' data-browsemode="'+ id +'"' : '';
+	var browsemode = ( [ 'album', 'artist', 'albumartist', 'composer', 'genre' ].indexOf( id ) !== -1 ) ? ' data-browsemode="'+ id +'"' : '';
 	var plugin = ( id === 'spotify' || id === 'dirble' || id === 'jamendo' ) ? ( ' data-plugin="'+ namepath[ id ][ 1 ] +'"' ) : '';
 	
 	return '<div class="col-md-3">'
@@ -884,14 +884,14 @@ function getDB( options ) {
 			}
 		} else if ( cmd === 'browse' ) {
 			var ext = path.slice( -3 ).toLowerCase();
-			if ( $.inArray( path, [ 'Album', 'Artist', 'AlbumArtist', 'Composer', 'Genre' ] ) !== -1 ) {
+			if ( [ 'Album', 'Artist', 'AlbumArtist', 'Composer', 'Genre' ].indexOf( path ) !== -1 ) {
 				mode = 'type';
 			} else if ( path === 'Webradio' ) {
 				mode = 'Webradio';
 			} else if ( GUI.browsemode === 'album' && currentpath !== 'Album' && artist ) { // <li> in 'Artist' and 'Genre'
 				mode = 'artistalbum';
 				GUI.albumartist = path +'<gr> • </gr>'+ artistalbum;
-			} else if ( $.inArray( ext, [ 'm3u', 'pls', 'cue' ] ) !== -1 ) {
+			} else if ( [ 'm3u', 'pls', 'cue' ].indexOf( ext ) !== -1 ) {
 				mode = 'playlist';
 			} else {
 				mode = GUI.browsemode;
@@ -1188,7 +1188,7 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 					content += '</span></li>';
 				} else if ( inputArr.playlist ) {
 					var liname = inputArr.playlist;
-					content = '<li class="file"><a class="lipath">'+ inputArr.filepl +'</a><a class="liname">'+ liname +'</a><i class="fa fa-bars db-action"';
+					content = '<li class="playlist"><a class="lipath">'+ inputArr.filepl +'</a><a class="liname">'+ liname +'</a><i class="fa fa-bars db-action"';
 					content += ' data-target="#context-menu-filepl"></i><span><i class="fa fa-list-ul"></i>'
 					content += '<span class="single">'+ liname +'</span></span></li>';
 				} else {
