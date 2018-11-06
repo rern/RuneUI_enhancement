@@ -40,7 +40,7 @@ $( '.contextmenu a' ).click( function() {
 			var mpcCmd = GUI.list.isfile ? 'mpc add "'+ name +'"' : 'mpc ls "'+ name +'" | mpc add';
 		}
 	} else {
-		if ( $.inArray( mode, [ 'album', 'artist', 'composer', 'genre' ] ) !== -1 ) {
+		if ( [ 'album', 'artist', 'composer', 'genre' ].indexOf( mode ) !== -1 ) {
 			if ( mode === 'album' && GUI.list.artist ) {
 				var mpcCmd = 'mpc findadd artist "'+ GUI.list.artist +'" album "'+ name +'"';
 			} else {
@@ -49,7 +49,7 @@ $( '.contextmenu a' ).click( function() {
 			cmd = cmd.replace( /album|artist|composer|genre/, '' );
 		} else {
 			var mpcCmd = 'mpc load "'+ name +'"';
-			if ( $.inArray( mode, [ 'wrrename', 'wrdelete', 'plrename', 'pldelete' ] ) === -1 ) cmd = cmd.replace( /pl|wr/, '' );
+			if ( [ 'wrrename', 'wrdelete', 'plrename', 'pldelete' ].indexOf( mode ) === -1 ) cmd = cmd.replace( /pl|wr/, '' );
 		}
 	}
 	var addplaypos = GUI.status.playlistlength + 1;
@@ -81,7 +81,7 @@ $( '.contextmenu a' ).click( function() {
 				GUI.local = 1;
 				setTimeout( function() { GUI.local = 0 }, 500 );
 			}
-			$.post( 'enhance.php', { mpc: command }, function(data) {
+			$.post( 'enhance.php', { mpc: command }, function() {
 				if ( !GUI.status.playlistlength ) getPlaybackStatus();
 				if ( GUI.display.bars ) {
 					if ( cmd.slice( -4 ) === 'play' ) {
@@ -135,7 +135,7 @@ function bookmarkRename( name, path ) {
 					+'<br>'+ path
 					+'<br>To:'
 		, textvalue : name
-		, textalign  : 'center'
+		, textalign : 'center'
 		, boxwidth  : 'max'
 		, cancel    : 1
 		, ok        : function() {
@@ -163,7 +163,7 @@ function bookmarkVerify( name, path, oldname ) {
 			$.each( data, function( i, val ) {
 				i % 2 ? bmpath.push( val ) : bmname.push( val );
 			} );
-			var namei = $.inArray( name, bmname );
+			var namei = bmname.indexOf( name );
 		} else {
 			var namei = -1;
 		}
@@ -285,7 +285,7 @@ function webRadioVerify( name, url, oldname ) {
 		$.each( data, function( i, val ) {
 			i % 2 ? wrurl.push( val ) : wrname.push( val );
 		} );
-		var namei = $.inArray( name, wrname );
+		var namei = wrname.indexOf( name );
 		if ( namei === -1 ) {
 			oldname ? addWebradio( name, url, oldname ) : addWebradio( name, url );
 		} else {
@@ -392,8 +392,8 @@ function playlistVerify( name, oldname ) {
 		} );
 		return;
 	}
-	$.post( 'enhance.php', { mpc: 'mpc lsplaylists' }, function( data ) {
-		if ( !data || $.inArray( name, data.split( '\n' ) ) === -1 ) {
+	$.post( 'enhance.php', { mpc: 'mpc lsplaylists', result: 1 }, function( data ) {
+		if ( !data || data.split( '\n' ).indexOf( name ) === -1 ) {
 			oldname ? addPlaylist( name, oldname ) : addPlaylist( name );
 		} else {
 			info( {
@@ -402,7 +402,7 @@ function playlistVerify( name, oldname ) {
 				, message     : '<white>'+ name +'</white>'
 							+'<br>Already exists.'
 				, cancellabel : 'Back'
-				, cancle      : function() {
+				, cancel      : function() {
 					playlistNew();
 				}
 				, oklabel     : 'Replace'

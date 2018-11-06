@@ -40,10 +40,7 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 		$data = lsPlaylists();
 		pushstream( 'playlist', $data );
 	}
-	if ( !$result ) {
-		$none = $cmdpl === 'lsplaylists' ? '' : 0;
-		echo $none;
-	} else if ( isset( $_POST[ 'list' ] ) ) {
+	if ( isset( $_POST[ 'list' ] ) ) {
 		$type = $_POST[ 'list' ];
 		if ( $type === 'file' ) {
 			$data = search2array( $result );
@@ -54,9 +51,24 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 			}
 		}
 		echo json_encode( $data );
-	} else {
+	} else if ( isset( $_POST[ 'result' ] ) ) {
 		echo $result;
 	}
+	exit();
+} else if ( isset( $_POST[ 'playlist' ] ) ) {
+	$path = $_POST[ 'playlist' ];
+	$ext = substr( $path, -3 );
+	if ( $ext === 'm3u' ) {
+		$file = '/mnt/MPD/'.$path;
+		$symlink = '/var/lib/mpd/playlists/'.basename( $file );
+		symlink( $file, $symlink );
+		$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ]%artist%[ • %album%]^^%file%" playlist "'.basename( $file, $ext ).'"' );
+		unlink( $symlink );
+	} else {
+		$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%" playlist "'.$path.'"' );
+	}
+	$data = list2array( $lines );
+	echo json_encode( $data );
 	exit();
 }
 // with redis
@@ -96,7 +108,7 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	pushstream( 'volume', array( $vol, $currentvol ) );
 } else if ( isset( $_POST[ 'getplaylist' ] ) ) {
 	$name = isset( $_POST[ 'name' ] ) ? '"'.$_POST[ 'name' ].'"' : '';
-	$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ]%artist%[ • %album%]^^%file%" playlist '.$name );
+	$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%" playlist '.$name );
 	if ( !isset( $_POST[ 'name' ] ) ) $data[ 'lsplaylists' ] = lsplaylists();
 	if ( !$lines ) {
 		$data[ 'playlist' ] = '';
@@ -114,7 +126,7 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 		}
 		$data[ 'playlist' ] = $playlist;
 	}
-	echo json_encode( $data, JSON_NUMERIC_CHECK );
+	echo json_encode( $data );
 } else if ( isset( $_POST[ 'getwebradios' ] ) ) {
 	$webradios = $redis->hGetAll( 'webradios' );
 	foreach( $webradios as $name => $url ) {
@@ -182,7 +194,7 @@ function search2array( $result ) {
 		if ( $root === 'USB/' || $root === 'NAS/' || $root === 'LocalStorage/' ) {
 			$ext = substr( $list, -4 );
 			if ( $ext === '.m3u' || $ext === '.cue' || $ext === '.pls') {
-				$li[ 'playlist' ] = basename( $list, $ext );
+				$li[ 'playlist' ] = basename( $list );
 				$li[ 'filepl' ] = $list;
 				$data[] = $li;
 				$li = '';
@@ -203,6 +215,19 @@ function search2array( $result ) {
 		}
 	}
 	
+	return $data;
+}
+function list2array( $lines ) {
+	$lists = explode( "\n", rtrim( $lines ) );
+	foreach( $lists as $list ) {
+		$li = explode( '^^', $list );
+		$pl[ 'title' ] = $li[ 0 ];
+		$pl[ 'time' ] = $li[ 1 ];
+		$pl[ 'track' ] = $li[ 2 ];
+		$pl[ 'file' ] = $li[ 3 ];
+		$data[] = $pl;
+		$pl = '';
+	}
 	return $data;
 }
 function pushstream( $channel, $data = 1 ) {

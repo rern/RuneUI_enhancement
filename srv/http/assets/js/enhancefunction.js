@@ -128,7 +128,7 @@ function setButtonToggle() {
 	if ( GUI.local ) return
 	
 	var timehide = $( '#time-knob' ).hasClass( 'hide' );
-	if ( GUI.display.buttons && !$( '#play-group' ).hasClass( 'hide' ) ) {
+	if ( $( '#play-group' ).is( ':visible' ) ) {
 		$( '#irandom' ).addClass( 'hide' )
 		$( '#irepeat' ).attr( 'class', 'fa hide' );
 		if ( timehide ) {
@@ -689,7 +689,7 @@ function setLibraryBlock( id ) {
 	var iconmusic = id === 'sd' ? ' <i class="fa fa-music"></i>' : '';
 	var count = GUI.display.count && status[ id ] !== undefined ? ( '<gr>'+ numFormat( status[ id ] ) + iconmusic +'</gr>' ) : '';
 	var label = GUI.display.label ? ( '<wh>'+ namepath[ id ][ 0 ] +'</wh>' ) : '';
-	var browsemode = ( $.inArray( id, [ 'album', 'artist', 'albumartist', 'composer', 'genre' ] ) !== -1 ) ? ' data-browsemode="'+ id +'"' : '';
+	var browsemode = ( [ 'album', 'artist', 'albumartist', 'composer', 'genre' ].indexOf( id ) !== -1 ) ? ' data-browsemode="'+ id +'"' : '';
 	var plugin = ( id === 'spotify' || id === 'dirble' || id === 'jamendo' ) ? ( ' data-plugin="'+ namepath[ id ][ 1 ] +'"' ) : '';
 	
 	return '<div class="col-md-3">'
@@ -769,7 +769,6 @@ function renderLibrary() {
 					bookmarkDelete( name, $this );
 				} else {
 					GUI.dblist = 1;
-		//			mutationLibrary.observe( observerLibrary, observerOption );
 					GUI.dbbrowsemode = 'file';
 					getDB( {
 						  browsemode : 'file'
@@ -824,7 +823,6 @@ function getDB( options ) {
 	var cmd = options.cmd || 'browse',
 		path = options.path ? options.path.toString().replace( /"/g, '\"' ) : '',
 		browsemode = options.browsemode || 'file',
-		uplevel = options.uplevel || '',
 		plugin = options.plugin || '',
 		querytype = options.querytype || '',
 		args = options.args || '',
@@ -837,7 +835,6 @@ function getDB( options ) {
 		GUI.dbbackdata.push( {
 			  path       : path
 			, browsemode : browsemode
-			, uplevel    : uplevel
 			, plugin     : plugin
 			, args       : args
 			, querytype  : querytype
@@ -865,7 +862,7 @@ function getDB( options ) {
 		}
 		var command = {
 			  file        : { mpc: 'mpc ls -f "%title%^^%time%^^%artist%^^%album%^^%file%" "'+ path +'" 2> /dev/null', list: 'file' }
-			, playlist    : { mpc: 'mpc load "'+ path +'"' }
+			, playlist    : { playlist: path }
 			, album       : { mpcalbum: path } 
 			, artistalbum : { mpc: 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%albumartist%"'+ artistalbum +' album "'+ path +'"', list: 'file' } 
 			, artist      : { mpc: 'mpc list album artist "'+ path +'" | awk NF', list: 'album' }
@@ -886,15 +883,14 @@ function getDB( options ) {
 				mode = 'search';
 			}
 		} else if ( cmd === 'browse' ) {
-			var ext = path.slice( -3 ).toLowerCase();
-			if ( $.inArray( path, [ 'Album', 'Artist', 'AlbumArtist', 'Composer', 'Genre' ] ) !== -1 ) {
+			if ( [ 'Album', 'Artist', 'AlbumArtist', 'Composer', 'Genre' ].indexOf( path ) !== -1 ) {
 				mode = 'type';
 			} else if ( path === 'Webradio' ) {
 				mode = 'Webradio';
 			} else if ( GUI.browsemode === 'album' && currentpath !== 'Album' && artist ) { // <li> in 'Artist' and 'Genre'
 				mode = 'artistalbum';
 				GUI.albumartist = path +'<gr> • </gr>'+ artistalbum;
-			} else if ( $.inArray( ext, [ 'm3u', 'pls', 'cue' ] ) !== -1 ) {
+			} else if ( [ 'm3u', 'pls', 'cue' ].indexOf( path.slice( -3 ) ) !== -1 ) {
 				mode = 'playlist';
 			} else {
 				mode = GUI.browsemode;
@@ -960,8 +956,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		i = 0,
 		row = [];
 	GUI.albumartist = '';
-	
-	if ( path ) GUI.currentpath = path;
+	GUI.currentpath = path;
 	$( '#db-entries, #db-currentpath .lipath' ).empty();
 	$( '#db-currentpath span, #db-entries, #db-back' ).removeClass( 'hide' );
 	$( '#home-blocks' ).addClass( 'hide' );
@@ -989,7 +984,11 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		// undefined type are directory names
 		prop = type[ path ] ? type[ path ] : 'directory';
 		if ( data[ 0 ].artistalbum ) prop = 'artistalbum'; // for common albums like 'Greatest Hits'
-		if ( data[ 0 ].directory || data[ 0 ].file || data[ 0 ].playlist ) {
+		var fileplaylist = [ 'cue', 'm3u', 'pls' ].indexOf( path.slice( -3 ) ) !== -1;
+		if ( fileplaylist ) {
+			var data = htmlPlaylist( data, 'library' );
+			content = data.content;
+		} else if ( data[ 0 ].directory || data[ 0 ].file || data[ 0 ].playlist ) {
 			var arraydir = [];
 			var arrayfile = [];
 			var arraypl = [];
@@ -1070,7 +1069,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 	$( '#db-entries' ).html( content +'<p></p>' ).promise().done( function() {
 		// fill bottom of list to mave last li movable to top
 		$( '#db-entries p' ).css( 'min-height', window.innerHeight - ( GUI.display.bars ? 140 : 100 ) +'px' );
-		displayIndexBar();
+		if ( !fileplaylist ) displayIndexBar();
 	} );
 // breadcrumb directory path link
 	var iconName = {
@@ -1134,7 +1133,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		}
 	}
 	// hide index bar in file mode
-	if ( $( '#db-entries li:eq( 0 ) i.db-icon' ).hasClass( 'fa-music' ) ) {
+	if ( $( '#db-entries li:eq( 0 ) i.db-icon' ).hasClass( 'fa-music' ) || fileplaylist ) {
 		$( '#db-index' ).addClass( 'hide' );
 		$( '#db-entries' ).css( 'width', '100%' );
 	} else {
@@ -1191,7 +1190,7 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 					content += '</span></li>';
 				} else if ( inputArr.playlist ) {
 					var liname = inputArr.playlist;
-					content = '<li class="file"><a class="lipath">'+ inputArr.filepl +'</a><a class="liname">'+ liname +'</a><i class="fa fa-bars db-action"';
+					content = '<li class="playlist"><a class="lipath">'+ inputArr.filepl +'</a><a class="liname">'+ liname +'</a><i class="fa fa-bars db-action"';
 					content += ' data-target="#context-menu-filepl"></i><span><i class="fa fa-list-ul"></i>'
 					content += '<span class="single">'+ liname +'</span></span></li>';
 				} else {
@@ -1336,6 +1335,42 @@ function setPlaylistScroll() {
 		}, 300 );
 	}, 'json' );
 }
+function htmlPlaylist( data, library ) {
+	var content = pl = iconhtml = topline = bottomline = classradio = '';
+	var countradio = countsong = pltime = 0;
+	var ilength = data.length;
+	for ( i = 0; i < ilength; i++ ) {
+		var pl = data[ i ];
+		if ( pl.file.slice( 0, 4 ) === 'http' ) {
+			iconhtml = '<i class="fa fa-webradio pl-icon"></i>';
+			classradio = 1;
+			countradio++;
+			var title = pl.title || pl.file;
+			topline = title +'&ensp;<span class="elapsed"></span>';
+			bottomline = pl.file;
+		} else {
+			iconhtml = '<i class="fa fa-music pl-icon"></i>';
+			classradio = 0;
+			sec = HMS2Second( pl.time );
+			topline = pl.title +'&ensp;<span class="elapsed"></span><span class="time" time="'+ sec +'">'+ pl.time +'</span>';
+			bottomline = pl.track
+			pltime += sec;
+		}
+		content += ( classradio ? '<li class="radio">' : '<li>' )
+			+ iconhtml
+			+ ( library ? '' : '<i class="fa fa-minus-circle pl-action"></i>' )
+			+'<span class="sn">'+ topline +'</span>'
+			+'<span class="bl">'+ bottomline +'</span>'
+			+'</li>';
+		countsong = ilength - countradio;
+	}
+	return {
+		  content    : content
+		, countradio : countradio
+		, pltime     : pltime
+		, countsong  : countsong
+	}
+}
 function renderPlaylist() {
 	$( '#pl-filter' ).val( '' );
 	$( '#pl-filter-results' ).empty();
@@ -1352,44 +1387,14 @@ function renderPlaylist() {
 		return
 	}
 	
-	var content, pl, iconhtml, topline, bottomline, classradio, hidetotal;
-	content = iconhtml = topline =bottomline = classradio = hidetotal = '';
-	var id, totaltime, pltime, seconds, countsong, countradio;
-	id = totaltime = pltime = seconds = countsong = countradio = 0;
-	var ilength = GUI.playlist.length;
-	GUI.status.playlistlength = ilength;
-	var classradio
-	for ( i = 0; i < ilength; i++ ) {
-		var pl = GUI.playlist[ i ];
-		if ( pl.file.slice( 0, 4 ) === 'http' ) {
-			iconhtml = '<i class="fa fa-webradio pl-icon"></i>';
-			classradio = 1;
-			countradio++
-			var title = pl.title || pl.file;
-			topline =  title +'&ensp;<span class="elapsed"></span>';
-			bottomline = pl.file;
-		} else {
-			iconhtml = '<i class="fa fa-music pl-icon"></i>';
-			classradio = 0;
-			sec = HMS2Second( pl.time );
-			topline = pl.title +'&ensp;<span class="elapsed"></span><span class="time" time="'+ sec +'">'+ pl.time +'</span>';
-			bottomline = pl.track
-			pltime += sec;
-		}
-		content += ( classradio ? '<li class="radio">' : '<li>' )
-			+ iconhtml
-			+'<i class="fa fa-minus-circle pl-action"></i>'
-			+'<span class="sn">'+ topline +'</span>'
-			+'<span class="bl">'+ bottomline +'</span>'
-			+'</li>';
-	}
-	countsong = ilength - countradio;
+	GUI.status.playlistlength = GUI.playlist.length;
+	var data = htmlPlaylist( GUI.playlist );
 	var counthtml = '<bl class="title">PLAYLIST<gr>·</gr></bl>';
-	var countradiohtml = '<wh id="countradio" count="'+ countradio +'">'+ countradio +'</wh>&ensp;<i class="fa fa-webradio"></i>';
-	if ( countsong ) {
-		var pltimehtml = ' id="pltime" time="'+ pltime +'">'+ second2HMS( pltime ) +'&emsp;';
-		var totalhtml = countradio ? '<gr'+ pltimehtml +'</gr>'+ countradiohtml : '<wh'+ pltimehtml +'&emsp;</wh>';
-		counthtml += '<wh id="countsong" count="'+ countsong +'">'+ numFormat( countsong ) +'</wh>&ensp;<i class="fa fa-music"></i>&ensp;'+ totalhtml;
+	var countradiohtml = '<wh id="countradio" count="'+ data.countradio +'">'+ data.countradio +'</wh>&ensp;<i class="fa fa-webradio"></i>';
+	if ( data.countsong ) {
+		var pltimehtml = ' id="pltime" time="'+ data.pltime +'">'+ second2HMS( data.pltime ) +'&emsp;';
+		var totalhtml = data.countradio ? '<gr'+ pltimehtml +'</gr>'+ countradiohtml : '<wh'+ pltimehtml +'&emsp;</wh>';
+		counthtml += '<wh id="countsong" count="'+ data.countsong +'">'+ numFormat( data.countsong ) +'</wh>&ensp;<i class="fa fa-music"></i>&ensp;'+ totalhtml;
 	} else {
 		counthtml += countradiohtml;
 	}
@@ -1397,57 +1402,27 @@ function renderPlaylist() {
 	$( '#playlist-warning' ).addClass( 'hide' );
 	$( '#pl-count' ).html( counthtml );
 	$( '#plsave, #plclear' ).removeClass( 'disable' );
-	$( '#pl-entries' ).html( content +'<p></p>' ).promise().done( function() {
+	$( '#pl-entries' ).html( data.content +'<p></p>' ).promise().done( function() {
 		$( '#pl-entries p' ).css( 'min-height', window.innerHeight - 140 +'px' );
 		setPlaylistScroll();
 	} );
 }
 function renderSavedPlaylist( name ) {
-	$.post( 'enhance.php', { getplaylist: 1, name: name.toString().replace( /"/g, '\\"' ) }, function( data ) {
-		var countradio = 0;
-		var content, pl, iconhtml, topline, bottomline, classradio, hidetotal;
-		content = iconhtml = topline =bottomline = classradio = hidetotal = '';
-		var id, totaltime, pltime, seconds, countsong, countradio;
-		id = totaltime = pltime = seconds = countsong = countradio = 0;
-		data = data.playlist;
-		var ilength = data.length;
-		for ( i = 0; i < ilength; i++ ) {
-			var pl = data[ i ];
-			if ( pl.file.slice( 0, 4 ) === 'http' ) {
-				iconhtml = '<i class="fa fa-webradio pl-icon"></i>';
-				classradio = 1;
-				countradio++
-				topline = pl.title;
-				bottomline = pl.file;
-			} else {
-				iconhtml = '<i class="fa fa-music pl-icon"></i>';
-				classradio = 0;
-				sec = HMS2Second( pl.time );
-				topline = pl.title +'&ensp;<gr>'+ pl.time +'</gr>';
-				bottomline = pl.track
-				pltime += sec;
-			}
-			content += '<li class="pl-song"><a class="liname">'+ pl.file +'</a>'
-				+ iconhtml
-				+'<i class="fa fa-bars pl-action" data-target="#context-menu-file"></i>'
-				+'<span class="sn">'+ topline +'</span>'
-				+'<span class="bl">'+ bottomline +'</span>'
-				+'</li>';
-		}
-		countsong = ilength - countradio;
+	$.post( 'enhance.php', { getplaylist: 1, name: name.toString().replace( /"/g, '\\"' ) }, function( list ) {
+		var data = htmlPlaylist( list.playlist );
 		var counthtml = '<wh><i class="fa fa-list-ul"></i></wh><bl class="title">'+ name +'<gr>&emsp;•</gr></bl>';
-		var countradiohtml = '<wh>&emsp;'+ countradio +'</wh>&ensp;<i class="fa fa-webradio"></i>';
-		if ( countsong ) {
-			var pltimehtml = ' id="pltime" time="'+ pltime +'">'+ second2HMS( pltime );
-			var totalhtml = countradio ? '<gr'+ pltimehtml +'</gr>'+ countradiohtml : '<wh'+ pltimehtml +'</wh>';
-			counthtml += '<wh>'+ numFormat( countsong ) +'</wh>&ensp;<i class="fa fa-music"></i>&ensp;'+ totalhtml;
+		var countradiohtml = '<wh>&emsp;'+ data.countradio +'</wh>&ensp;<i class="fa fa-webradio"></i>';
+		if ( data.countsong ) {
+			var pltimehtml = ' id="pltime" time="'+ data.pltime +'">'+ second2HMS( data.pltime );
+			var totalhtml = data.countradio ? '<gr'+ pltimehtml +'</gr>'+ countradiohtml : '<wh'+ pltimehtml +'</wh>';
+			counthtml += '<wh>'+ numFormat( data.countsong ) +'</wh>&ensp;<i class="fa fa-music"></i>&ensp;'+ totalhtml;
 		} else {
 			counthtml += countradiohtml;
 		}
 		$( '#pl-currentpath' ).html( '<a class="lipath">'+ name +'</a></ul>'+ counthtml +'<i class="fa fa-arrow-left plsback"></i>' );
 		$( '#pl-currentpath, #pl-editor' ).removeClass( 'hide' );
 		$( '#pl-currentpath bl' ).removeClass( 'title' );
-		$( '#pl-editor' ).html( content +'<p></p>' ).promise().done( function() {
+		$( '#pl-editor' ).html( data.content +'<p></p>' ).promise().done( function() {
 			GUI.pleditor = 1;
 			// fill bottom of list to mave last li movable to top
 			$( '#pl-editor p' ).css( 'min-height', window.innerHeight - ( GUI.display.bars ? 140 : 100 ) +'px' );
