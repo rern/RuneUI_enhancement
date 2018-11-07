@@ -14,21 +14,18 @@ var GUI = { // outside '$( function() {' enable console.log access
 	, dbscrolltop  : {}
 	, display      : {}
 	, imodedelay   : 0
-	, json         : 0
 	, intElapsed   : ''
 	, intKnob      : ''
 	, list         : {}
 	, libraryhome  : {}
 	, local        : 0
 	, lsplaylists  : []
-	, noticeUI     : {}
 	, playlist     : {}
 	, plcurrent    : ''
 	, pleditor     : 0
 	, plscrolltop  : 0
 	, plugin       : ''
 	, status       : {}
-	, timeout      : ''
 	, updating     : 0
 };
 PNotify.prototype.options.delay = 3000;
@@ -280,7 +277,7 @@ $( '#page-playback' ).click( function( e ) {
 	$( '.controls, #settings' ).addClass( 'hide' );
 	$( '.controls1, .rs-tooltip, #imode' ).removeClass( 'hide' );
 } );
-$( '#page-library' ).on( 'click', function( e ) {
+$( '#page-library' ).click( function( e ) {
 	if ( GUI.local ) return
 	
 	if ( e.target.id !== 'home-block-edit' && e.target.id !== 'home-block-remove' ) {
@@ -667,7 +664,7 @@ $( '#db-search-results' ).click( function() {
 		renderLibrary();
 	}
 } );
-$( '#db-back' ).on( 'click', function() {
+$( '#db-back' ).click( function() {
 	mutationLibrary.observe( observerLibrary, observerOption ); // standard js - must be one on one element
 	// topmost of path
 	if ( GUI.dbbrowsemode === 'file' ) {
@@ -892,7 +889,7 @@ $( '#pl-filter' ).on( 'keyup', function() {
 		$( '#pl-filter-results' ).addClass( 'hide' ).empty();
 	}
 } );
-$( '#pl-filter-results' ).on( 'click', function() {
+$( '#pl-filter-results' ).click( function() {
 	$( this ).addClass( 'hide' ).empty();
 	$( '#pl-manage, #pl-count, #pl-entries li' ).removeClass( 'hide' );
 	$( '#pl-filter' ).val( '' );
