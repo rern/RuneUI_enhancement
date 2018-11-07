@@ -453,7 +453,8 @@ wh, gr { font-weight: 300; }
 #posaddons,
 #posupdate,
 #posrandom,
-#posrepeat {
+#posrepeat,
+#posgpio {
 	width: 25px;
 	color: #0095d8;
 }
