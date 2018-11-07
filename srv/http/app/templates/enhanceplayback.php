@@ -17,8 +17,6 @@
 				<i id="posupdate" class="fa fa-library blink hide"></i>
 				<i id="posrandom" class="fa fa-random hide"></i>
 				<i id="posrepeat"></i>
-				<i id="posplayer"></i>
-				<i id="posgpio" class="fa fa-gpio hide"></i>
 			</div>
 			<span id="format-bitrate"></span>
 		</div>
