@@ -83,7 +83,7 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 - Drag to rearrange home blocks except bookmarks
 - Show counts
 - Show icon and breadcrumb heading while browsing
-- Show list in playlist files, \*.cue, \*.pls, \*.m3u
+- Show list in playlist files (\*.cue, \*.pls, \*.m3u)
 - Toggle search box
 - Show index bar
 - Improved Back button
