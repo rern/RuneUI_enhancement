@@ -179,11 +179,16 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	$data = $redis->hGetAll( 'display' );
 	pushstream( 'display', $data );
 } else if ( isset( $_POST[ 'power' ] ) ) {
+	$mode = $_POST[ 'power' ];
 	$sudo = '/usr/bin/sudo /usr/bin/';
 	if ( file_exists( '/root/gpiooff.py' ) ) $cmd.= '/usr/bin/sudo /root/gpiooff.py;';
 	if ( $redis->get( local_browser ) === '1' ) $cmd .= $sudo.'killall Xorg; /usr/local/bin/ply-image /srv/http/assets/img/bootsplash.png;';
 	$cmd.= $sudo.'umount -f -a -t cifs nfs -l;';
-	$cmd.= $sudo.'shutdown '.( $_POST[ 'power' ] === 'reboot' ? '-r' : '-h' ).' now';
+	if ( $mode !== 'screenoff' ) {
+		$cmd.= $sudo.'shutdown '.( $mode === 'reboot' ? '-r' : '-h' ).' now';
+	} else {
+		$cmd.= $sudo.'export DISPLAY=:0; xset dpms force off';
+	}
 	exec( $cmd );
 }
 function search2array( $result ) {
