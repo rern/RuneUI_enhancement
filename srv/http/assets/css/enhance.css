@@ -1878,6 +1878,10 @@ w {
 		font-size: 16px;
 		line-height: 19px;
 	}
+	#db-entries span.single,
+	#pl-entries span.single {
+		padding-left: 0;
+	}
 	#db-entries span.bl,
 	#pl-entries span.bl {
 		font-size: 12px;
