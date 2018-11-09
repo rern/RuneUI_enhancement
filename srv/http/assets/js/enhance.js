@@ -192,6 +192,7 @@ $( '#displayplayback' ).click( function() {
 	if ( window.innerHeight <= 320 ) setToggleButton( 'buttons' );
 } );
 $( '#turnoff' ).click( function() {
+	var localhost = document.location.hostname === 'localhost';
 	info( {
 		  icon        : 'power'
 		, title       : 'Power'
@@ -199,14 +200,18 @@ $( '#turnoff' ).click( function() {
 		, oklabel     : 'Off'
 		, okcolor     : '#bb2828'
 		, ok          : function() {
-			$.post( 'enhance.php', { 'power' : 'shutdown' } );
+			$.post( 'enhance.php', { power: 'shutdown' } );
 			$( '#loader' ).removeClass( 'hide' );
 		}
 		, buttonlabel : 'Reboot'
 		, buttoncolor : '#de810e'
 		, button      : function() {
-			$.post( 'enhance.php', { 'power' : 'reboot' } );
+			$.post( 'enhance.php', { power: 'reboot' } );
 			$( '#loader' ).removeClass( 'hide' );
+		}
+		, cancellabel : !localhost ? '' : 'Screen off'
+		, cancel      : !localhost ? '' : function() {
+			$.post( 'enhance.php', { power: 'screenoff' } );
 		}
 	} );
 } );
@@ -360,11 +365,6 @@ $( '#volume' ).roundSlider( {
 			$.post( 'enhance.php', { mpc: 'mpc volume '+ e.value } );
 			$( e.handle.element ).rsRotate( - e.handle.angle );
 		}
-	}
-	, stop            : function( e ) { // on 'stop drag'
-//		GUI.local = 1;
-//		setTimeout( function() { GUI.local = 0 }, 500 );
-//		$.post( 'enhance.php', { volume: e.value } );
 	}
 } );
 $( '#volmute, #volM' ).click( function() {
