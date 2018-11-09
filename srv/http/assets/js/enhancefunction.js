@@ -55,8 +55,8 @@ pushstreams.idle.onmessage = function( changed ) {
 		} else {
 			if ( !GUI.player ) {
 				GUI.player = 1;
-				getPlaybackStatus();
 				setTimeout( function() { GUI.player = 0 }, 500 );
+				getPlaybackStatus();
 			}
 		}
 	} else if ( changed === 'playlist' ) { // on playlist changed
@@ -1323,6 +1323,10 @@ function setPlaylistScroll() {
 		} else if ( status.state === 'play' ) {
 			GUI.intElapsed = setInterval( function() {
 				elapsed++;
+				if ( elapsed > status.time ) {
+					clearInterval( GUI.intElapsed );
+					setPlaylistScroll();
+				}
 				var elapsedtxt = second2HMS( elapsed );
 				$elapsed.html( '<i class="fa fa-play"></i> <wh>'+ elapsedtxt +'</wh>'+ slash );
 			}, 1000 );
