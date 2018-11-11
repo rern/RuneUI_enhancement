@@ -453,6 +453,7 @@ $( '#coverTL' ).click( function() {
 		renderPlayback();
 		displayPlayback();
 		setButton();
+		setButtonToggle();
 		if ( window.innerWidth < 500 ) $( '#format-bitrate' ).css( 'display', GUI.display.time ? 'inline' : 'block' );
 		GUI.display.coverlarge = coverlarge;
 		GUI.display.time = time;
