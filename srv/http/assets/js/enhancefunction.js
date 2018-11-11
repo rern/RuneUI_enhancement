@@ -173,6 +173,12 @@ function setButtonToggle() {
 		$( '#badge' ).empty();
 		$( '#badge, #posaddons, #iaddons' ).addClass( 'hide' );
 	}
+	if ( timehide ) {
+		$( '#posgpio' ).toggleClass( 'hide', GUI.gpio !== 'ON' );
+	} else {
+		$( '#posgpio' ).addClass( 'hide' );
+		$( '#igpio' ).toggleClass( 'hide', GUI.gpio !== 'ON' );
+	}
 }
 function setButtonUpdate() {
 	if ( GUI.status.updating_db ) {
@@ -811,8 +817,8 @@ function renderLibrary() {
 				} );
 				homeorder = homeorder.slice( 0, -1 );
 				GUI.display.library = homeorder;
-				GUI.local = 1;
-				setTimeout( function() { GUI.local = 0 }, 500 );
+				GUI.sortable = 1;
+				setTimeout( function() { GUI.sortable = 0 }, 500 );
 				$.post( 'enhance.php', { homeorder: homeorder } );
 			}
 		} );
@@ -1301,8 +1307,9 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 	return content;
 }
 function setPlaylistScroll() {
-	if ( GUI.local ) return // 'skip for Sortable'
+	if ( GUI.sortable ) return // 'skip for Sortable'
 	
+	var song = $( '#song' ).text();
 	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
 		$.each( status, function( key, value ) {
 			GUI.status[ key ] = value;
@@ -1323,9 +1330,10 @@ function setPlaylistScroll() {
 		} else if ( status.state === 'play' ) {
 			GUI.intElapsed = setInterval( function() {
 				elapsed++;
-				if ( elapsed > status.time ) {
+				if ( elapsed > status.time ) { // fix: force track changed
 					clearInterval( GUI.intElapsed );
 					setPlaylistScroll();
+					return
 				}
 				var elapsedtxt = second2HMS( elapsed );
 				$elapsed.html( '<i class="fa fa-play"></i> <wh>'+ elapsedtxt +'</wh>'+ slash );
