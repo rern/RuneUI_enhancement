@@ -757,6 +757,7 @@ function renderLibrary() {
 		toggleLibraryHome( 'dirble' );
 		toggleLibraryHome( 'jamendo' );
 		
+		$( 'html, body' ).scrollTop( 0 );
 		$( '.home-bookmark' ).each( function() {
 			var $hammer = new Hammer( this );
 			var $this = $( this )
