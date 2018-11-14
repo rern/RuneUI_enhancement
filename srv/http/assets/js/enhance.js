@@ -783,6 +783,7 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 $( '#db-index li' ).click( function() {
 	var topoffset = GUI.display.bars ? 80 : 40;
 	var indextext = $( this ).text();
+	var match = 0;
 	if ( indextext === '#' ) {
 		$( 'html, body' ).scrollTop( 0 );
 		return
@@ -790,9 +791,11 @@ $( '#db-index li' ).click( function() {
 	$.each( $( '#db-entries li' ), function( i, el ) {
 		if ( $( el ).find( '.lisort' ).text()[ 0 ] === indextext ) {
 			$( 'html, body' ).scrollTop( el.offsetTop - topoffset );
+			match = 1;
 			return false
 		}
 	} );
+	if ( !match ) info( 'No entries for index <wh>'+ indextext +'</wh>' );
 } );
 // PLAYLIST /////////////////////////////////////////////////////////////////////////////////////
 $( '#pl-home' ).click( function() {
@@ -983,6 +986,9 @@ $( '#pl-entries' ).on( 'click', 'li', function( e ) {
 	}
 } );
 $( '#pl-editor' ).on( 'click', 'li', function( e ) {
+	// disable on list of saved playlist
+	if ( $( '#pl-currentpath .fa-arrow-left' ).hasClass( 'plsback' ) ) return
+	
 	$( '#loader' ).removeClass( 'hide' );
 	renderSavedPlaylist( $( this ).find( 'span' ).text() );
 } );
