@@ -453,7 +453,6 @@ $( '#coverTL' ).click( function() {
 		renderPlayback();
 		displayPlayback();
 		setButton();
-		setButtonToggle();
 		if ( window.innerWidth < 500 ) $( '#format-bitrate' ).css( 'display', GUI.display.time ? 'inline' : 'block' );
 		GUI.display.coverlarge = coverlarge;
 		GUI.display.time = time;
@@ -784,7 +783,7 @@ $( '#db-index li' ).click( function() {
 		$( 'html, body' ).scrollTop( 0 );
 		return
 	}
-	var usbpath = GUI.currentpath.slice( 0, 3 ) === 'USB' ? 1 : 0;
+	var usbpath = GUI.currentpath.indexOf( '/' ) !== -1 ? 1 : 0;
 	var datapathindex, name;
 	var matcharray = $( '#db-entries li' ).filter( function() {
 		var $this = $( this );
