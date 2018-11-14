@@ -1268,7 +1268,7 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 					var liname = inputArr.albumartist;
 					content  = '<li mode="albumartist">';
 					content += '<i class="fa fa-albumartist db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-artist"></i>';
-					content += '<span class="single">'+ liname +'</span></li>';
+					content += '<span class="single">'+ liname +'</span>';
 					content += '<a class="lipath">'+ inputArr.albumartist +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>';
 					content += '</li>';
 				}
