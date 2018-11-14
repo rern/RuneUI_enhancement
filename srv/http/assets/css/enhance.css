@@ -204,7 +204,6 @@ wh, gr { font-weight: 300; }
 .menu {
 	position: absolute;
 	float: right;
-	right: 90px;
 	padding: 0;
 	z-index: 11;
 }
@@ -1356,6 +1355,8 @@ wh, gr { font-weight: 300; }
 	text-overflow: ellipsis;
 	cursor: pointer;
 }
+.db-icon,
+.pl-icon,
 #db-entries li span i {
 	margin-right: 10px;
 }
@@ -1372,10 +1373,12 @@ wh, gr { font-weight: 300; }
 	text-overflow: ellipsis;
 }
 #db-entries .single {
-	vertical-align: 10%;
+	line-height: 48px;
+	vertical-align: 5%;
 }
 .lipath,
 .liname,
+.lisort,
 .liartist {
 	display: none;
 }
@@ -1449,7 +1452,7 @@ span.dbpath {
 .jamendo-cover {
 	width: 33px;
 	height: 33px;
-	margin: 8px;
+	margin: 0 10px 7px 7px;
 }
 #pl-entries li.radio {
 	margin: 0;
@@ -1507,7 +1510,7 @@ w {
 #pl-entries .sn,
 #pl-editor .sn {
 	display: block;
-	padding: 5px 0 0 10px
+	padding-top: 5px;
 }
 #pl-entries .sn i {
 	width: 20px;
@@ -1521,7 +1524,6 @@ w {
 #pl-entries .bl,
 #pl-editor .bl {
 	display: block;
-	padding: 0 10px;
 	font-size: 12px;
 	color: #587ca0
 }
