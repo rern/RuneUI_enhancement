@@ -200,11 +200,12 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 // context menus
 function menuli( $command, $icon, $label, $type ) {
 	$type = $type ? ' data-type="'.$type.'"' : '';
-	$class = $icon !== 'folder-refresh' && substr( $icon, -7 ) === 'refresh' ? ' class="replace"' : '';
 	if ( $icon === 'folder-refresh' ) {
 		$class = ' class="update"';
 	} else if ( substr( $icon, -7 ) === 'refresh' ) {
 		$class = ' class="replace"';
+	} else if ( $icon === 'lastfm' ) {
+		$class = ' class="lastfm"';
 	}
 	return '<a data-cmd="'.$command.'"'.$type.$class.'><i class="fa fa-'.$icon.'"></i>'.$label.'</a>';
 }
