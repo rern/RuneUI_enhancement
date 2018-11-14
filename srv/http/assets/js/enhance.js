@@ -4,7 +4,6 @@ var GUI = { // outside '$( function() {' enable console.log access
 	, artistalbum  : ''
 	, bookmarkedit : 0
 	, browsemode   : ''
-	, counts       : {}
 	, currentpath  : ''
 	, dbcurrent    : ''
 	, dbback       : 0
@@ -14,8 +13,6 @@ var GUI = { // outside '$( function() {' enable console.log access
 	, dbscrolltop  : {}
 	, display      : {}
 	, imodedelay   : 0
-	, intElapsed   : ''
-	, intKnob      : ''
 	, list         : {}
 	, libraryhome  : {}
 	, local        : 0
@@ -26,7 +23,6 @@ var GUI = { // outside '$( function() {' enable console.log access
 	, plscrolltop  : 0
 	, plugin       : ''
 	, status       : {}
-	, updating     : 0
 };
 PNotify.prototype.options.delay = 3000;
 PNotify.prototype.options.styling = 'fontawesome';

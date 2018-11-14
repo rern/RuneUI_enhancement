@@ -1361,26 +1361,25 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 function setPlaylistScroll() {
 	if ( GUI.sortable ) return // 'skip for Sortable'
 	
-	clearInterval( GUI.intElapsed );
+	clearInterval( GUI.intElapsedPl );
 	$( '.elapsed' ).empty();
-	var song = $( '#song' ).text();
 	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
 		$.each( status, function( key, value ) {
 			GUI.status[ key ] = value;
 		} );
 		setButton();
-		var $liactive = $( '#pl-entries li' ).eq( status.song );
 		$( '#plcrop' ).toggleClass( 'disable', ( status.state === 'stop' || GUI.status.playlistlength === 1 ) );
 		$( '#pl-entries li' ).removeClass( 'active' );
+		var $liactive = $( '#pl-entries li' ).eq( status.song );
+		var $elapsed = $liactive.find( '.elapsed' );
 		$liactive.addClass( 'active' );
-		var $elapsed = $( '#pl-entries li.active .elapsed' );
 		var elapsed = status.elapsed;
 		var slash = $liactive.hasClass( 'radio' ) ? '' : ' / ';
 		if ( status.state === 'pause' ) {
 			var elapsedtxt = second2HMS( elapsed ) + slash;
 			$elapsed.html( '<i class="fa fa-pause"></i> '+ elapsedtxt );
 		} else if ( status.state === 'play' ) {
-			GUI.intElapsed = setInterval( function() {
+			GUI.intElapsedPl = setInterval( function() {
 				elapsed++;
 				var elapsedtxt = second2HMS( elapsed );
 				$elapsed.html( '<i class="fa fa-play"></i> <wh>'+ elapsedtxt +'</wh>'+ slash );
