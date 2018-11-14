@@ -1064,12 +1064,7 @@ document.addEventListener( visibilityevent, function() {
 			$.post( 'enhance.php', { getdisplay: 1 } ); // display data > pushstream > getPlaybackStatus()
 		} else if ( !$( '#page-playlist' ).hasClass( 'hide' ) ) {
 			if ( GUI.pleditor ) {
-				var name = $( '#pl-currentpath .lipath' ).text();
-				if ( name ) {
-					renderSavedPlaylist( name );
-				} else {
-					$( '#plopen' ).click();
-				}
+				$( '#pl-currentpath .lipath' ).text() ? renderSavedPlaylist( name ) : $( '#plopen' ).click();
 			} else {
 				setPlaylistScroll();
 			}

@@ -50,14 +50,14 @@ var timeoutUpdate;
 pushstreams.idle.onmessage = function( changed ) {
 	var changed = changed[ 0 ];
 	if ( changed === 'player' ) { // on track changed
-		if ( !$( '#page-playlist' ).hasClass( 'hide' ) ) {
-			if ( !GUI.pleditor ) setPlaylistScroll();
-		} else {
-			if ( !GUI.player ) {
-				GUI.player = 1;
-				setTimeout( function() { GUI.player = 0 }, 500 );
-				getPlaybackStatus();
-			}
+		if ( GUI.player ) return
+		
+		GUI.player = 1;
+		setTimeout( function() { GUI.player = 0 }, 500 );
+		if ( !$( '#page-playback' ).hasClass( 'hide' ) ) {
+			getPlaybackStatus();
+		} else if ( !$( '#page-playlist' ).hasClass( 'hide' ) && !GUI.pleditor ) {
+			setPlaylistScroll();
 		}
 	} else if ( changed === 'playlist' ) { // on playlist changed
 		if ( GUI.pleditor || GUI.local ) return
@@ -1361,6 +1361,8 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 function setPlaylistScroll() {
 	if ( GUI.sortable ) return // 'skip for Sortable'
 	
+	clearInterval( GUI.intElapsed );
+	$( '.elapsed' ).empty();
 	var song = $( '#song' ).text();
 	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
 		$.each( status, function( key, value ) {
@@ -1372,8 +1374,6 @@ function setPlaylistScroll() {
 		$( '#pl-entries li' ).removeClass( 'active' );
 		$liactive.addClass( 'active' );
 		var $elapsed = $( '#pl-entries li.active .elapsed' );
-		if ( !$elapsed.html() ) $( '.elapsed' ).empty();
-		clearInterval( GUI.intElapsed );
 		var elapsed = status.elapsed;
 		var slash = $liactive.hasClass( 'radio' ) ? '' : ' / ';
 		if ( status.state === 'pause' ) {
@@ -1382,11 +1382,6 @@ function setPlaylistScroll() {
 		} else if ( status.state === 'play' ) {
 			GUI.intElapsed = setInterval( function() {
 				elapsed++;
-				if ( elapsed > status.time ) { // fix: force track changed
-					clearInterval( GUI.intElapsed );
-					setPlaylistScroll();
-					return
-				}
 				var elapsedtxt = second2HMS( elapsed );
 				$elapsed.html( '<i class="fa fa-play"></i> <wh>'+ elapsedtxt +'</wh>'+ slash );
 			}, 1000 );
