@@ -761,6 +761,7 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 	$( '.contextmenu' ).addClass( 'hide' );
 	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
 	$( '.update' ).toggleClass( 'hide', GUI.status.updating_db !== 0 );
+	$( '.lastfm' ).toggleClass( 'hide', GUI.list.name.slice( -4, -3 ) === '.' );
 	var contextnum = $menu.find( 'a:not(.hide)' ).length - 1;
 	$( '.menushadow' ).css( 'height', contextnum * 41 );
 	if ( GUI.list.path === GUI.dbcurrent ) {
@@ -770,7 +771,10 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 		$thisli.addClass( 'active' );
 		$menu
 			.removeClass( 'hide' )
-			.css( 'top', $this.position().top +'px' );
+			.css( {
+				  top   : $this.position().top +'px'
+				, right : $( '#db-index' ).hasClass( 'hide' ) ? '50px' : '90px'
+			} );
 		var targetB = $menu.offset().top + $menu.height();
 		var wH = window.innerHeight;
 		if ( targetB > wH + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + ( GUI.display.bars ? 42 : 0 ) } );
@@ -783,21 +787,12 @@ $( '#db-index li' ).click( function() {
 		$( 'html, body' ).scrollTop( 0 );
 		return
 	}
-	var usbpath = GUI.currentpath.indexOf( '/' ) !== -1 ? 1 : 0;
-	var datapathindex, name;
-	var matcharray = $( '#db-entries li' ).filter( function() {
-		var $this = $( this );
-		if ( usbpath ) {
-			name = $this.find( '.lipath' ).text().replace( /^.*\//, '' );
-			name = GUI.currentpath +'/'+  stripLeading( name );
-			datapathindex = GUI.currentpath +'/'+ indextext;
-		} else {
-			name = stripLeading( $this.find( '.lipath' ).text() );
-			datapathindex = '^'+ indextext;
+	$.each( $( '#db-entries li' ), function( i, el ) {
+		if ( $( el ).find( '.lisort' ).text()[ 0 ] === indextext ) {
+			$( 'html, body' ).scrollTop( el.offsetTop - topoffset );
+			return false
 		}
-		return name.match( new RegExp( datapathindex, 'i' ) );
 	} );
-	if ( matcharray.length ) $( 'html, body' ).scrollTop( matcharray[ 0 ].offsetTop - topoffset );
 } );
 // PLAYLIST /////////////////////////////////////////////////////////////////////////////////////
 $( '#pl-home' ).click( function() {
