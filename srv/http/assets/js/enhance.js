@@ -254,7 +254,10 @@ $( '#tab-playlist' ).click( function() {
 	}
 	
 	setPageCurrent( 'playlist' );
-	if ( GUI.pleditor ) return
+	if ( GUI.pleditor ) {
+		$( 'html, body' ).scrollTop( GUI.plscrolltop );
+		return
+	}
 	
 	$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
 		GUI.lsplaylists = data.lsplaylists || [];
