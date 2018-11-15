@@ -255,7 +255,8 @@ $( '#tab-playlist' ).click( function() {
 	
 	setPageCurrent( 'playlist' );
 	if ( GUI.pleditor ) {
-		$( 'html, body' ).scrollTop( GUI.plscrolltop );
+		var top = $( '#pl-currentpath .fa-arrow-left' ).hasClass( 'plsbackroot' ) ? GUI.plscrolltop : GUI.listplscrolltop;
+		$( 'html, body' ).scrollTop( top );
 		return
 	}
 	

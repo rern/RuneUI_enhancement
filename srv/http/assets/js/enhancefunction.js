@@ -450,7 +450,11 @@ function setPageCurrent( panel ) {
 		var path = $( '#db-currentpath .lipath' ).text();
 		if ( path ) GUI.dbscrolltop[ path ] = $( window ).scrollTop();
 	} else if ( !$( '#page-playlist' ).hasClass( 'hide' ) && GUI.pleditor ) {
-		GUI.plscrolltop = $( window ).scrollTop();
+		if ( $( '#pl-currentpath .fa-arrow-left' ).hasClass( 'plsbackroot' ) ) {
+			GUI.plscrolltop = $( window ).scrollTop();
+		} else {
+			GUI.listplscrolltop = $( window ).scrollTop();
+		}
 	}
 	$( '#menu-bottom li' ).removeClass( 'active' );
 	$( '.page' ).addClass( 'hide' );
