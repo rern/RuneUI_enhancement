@@ -1179,53 +1179,47 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 							var bl = $( '#db-search-keyword' ).val() ? inputArr.Artist +' - '+ inputArr.Album : inputArr.file.split( '/' ).pop();;
 							var liname = inputArr.Title
 							content = '<li class="file">'
+									 +'<a class="lipath">'+ inputArr.file +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
 									 +'<i class="fa fa-music db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-file"></i>'
 									 +'<span class="sn">'+ liname +'&ensp;<span class="time">'+ inputArr.Time +'</span></span>'
 									 +'<span class="bl">'+ bl +'</span>'
-									 +'<a class="lipath">'+ inputArr.file +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
-									 +'</li>';
 						} else {
 							var liname = inputArr.file.split( '/' ).pop(); // filename
 							content = '<li class="file">'
+									 +'<a class="lipath">'+ inputArr.file +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
 									 +'<i class="fa fa-music db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-file"></i>'
 									 +'<span class="sn">'+ liname +'&ensp;<span class="time">' + second2HMS( inputArr.Time ) +'</span></span>'
 									 +'<span class="bl">'+ inpath +'</span>'
-									 +'<a class="lipath">'+ inputArr.file +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
-									 +'</li>';
 						}
 					} else { // Webradio
 						var liname = inputArr.playlist.replace( /Webradio\/|\\|.pls$/g, '' );
 						content = '<li class="db-webradio file" >'
+								 +'<a class="lipath">'+ inputArr.url +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
 								 +'<i class="fa fa-webradio db-icon db-radio"></i><i class="fa fa-bars db-action" data-target="#context-menu-webradio"></i>'
 								 +'<span class="sn">'+ liname +'</span>'
 								 +'<span class="bl">'+ inputArr.url +'</span>'
-								 +'<a class="lipath">'+ inputArr.url +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
-								 +'</li>';
 					}
 				} else if ( inputArr.playlist ) {
 					var liname = inputArr.playlist;
 					content = '<li class="playlist">'
+							 +'<a class="lipath">'+ inputArr.filepl +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
 							 +'<i class="fa fa-list-ul db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-filepl"></i>'
 							 +'<span class="single">'+ liname +'</span>'
-							 +'<a class="lipath">'+ inputArr.filepl +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
-							 +'</li>';
 				} else {
 					var liname = inputArr.directory.replace( inpath +'/', '' );
 					content = '<li>'
+							 +'<a class="lipath">'+ inputArr.directory +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
 							 +'<i class="fa fa-folder db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-folder"></i>'
 							 +'<span class="single">'+ liname +'</span>'
-							 +'<a class="lipath">'+ inputArr.directory +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
-							 +'</li>';
 				}
 			} else if ( GUI.browsemode === 'album' ) {
 				if ( inputArr.file ) {
 					var liname = inputArr.Title;
 					content = '<li>'
+							 +'<a class="lipath">'+ inputArr.file +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
 							 +'<i class="fa fa-music db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-file"></i>'
 							 +'<span class="sn">'+ liname +'&ensp;<span class="time">'+ inputArr.Time +'</span></span>'
 							 +'<span class="bl">'+ inputArr.file +'</span>'
-							 +'<a class="lipath">'+ inputArr.file +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
-							 +'</li>';
 					var artist = inputArr.AlbumArtist || inputArr.Artist;
 					if ( !GUI.albumartist ) GUI.albumartist = inputArr.Album +'<gr> • </gr>'+ artist;
 				} else {
@@ -1239,75 +1233,66 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 						var dataartist = '';
 					}
 					content = '<li mode="album">'
+							 +'<a class="lipath">'+ inputArr.album +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'+ dataartist
 							 +'<i class="fa fa-album db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-album"></i>'
 							 +'<span class="single">'+ lialbum +'</span>'
-							 +'<a class="lipath">'+ inputArr.album +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'+ dataartist
-							 +'</li>';
 				}
 			} else if ( GUI.browsemode === 'artist' || GUI.browsemode === 'composeralbum' ) {
 				if ( inputArr.album ) {
 					var liname = inputArr.album;
 					content = '<li mode="album">'
+							 +'<a class="lipath">'+ inputArr.album +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
 							 +'<i class="fa fa-album db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-album"></i>'
 							 +'<span class="single">'+ liname +'</span>'
-							 +'<a class="lipath">'+ inputArr.album +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
-							 +'</li>';
 				} else {
 					var liname = inputArr.artist;
 					content = '<li mode="artist">'
+							 +'<a class="lipath">'+ inputArr.artist +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
 							 +'<i class="fa fa-artist db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-artist"></i>'
 							 +'<span class="single">'+ liname +'</span>'
-							 +'<a class="lipath">'+ inputArr.artist +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
-							 +'</li>';
 				}
 			} else if ( GUI.browsemode === 'albumartist' ) {
 				if ( inputArr.album ) {
 					var liname = inputArr.album;
 					content = '<li mode="album">'
+							 +'<a class="lipath">'+ inputArr.album +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
 							 +'<i class="fa fa-album db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-album"></i>'
 							 +'<span class="single">'+ liname +'</span>'
-							 +'<a class="lipath">'+ inputArr.album +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
-							 +'</li>';
 				} else {
 					var liname = inputArr.albumartist;
 					content = '<li mode="albumartist">'
+							 +'<a class="lipath">'+ inputArr.albumartist +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
 							 +'<i class="fa fa-albumartist db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-artist"></i>'
 							 +'<span class="single">'+ liname +'</span>'
-							 +'<a class="lipath">'+ inputArr.albumartist +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
-							 +'</li>';
 				}
 			} else if ( GUI.browsemode === 'composer' ) {
 				if ( inputArr.file ) {
 					var liname = inputArr.Title;
 					content = '<li>'
+							 +'<a class="lipath">'+ inputArr.file +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
 							 +'<i class="fa fa-music db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-file"></i>'
 							 +'<span class="sn">'+ liname +'&ensp;<span class="time">'+ second2HMS( inputArr.Time ) +'</span></span>'
 							 +'<span class="bl">'+ inputArr.Artist +' - '+ inputArr.Album +'</span>'
-							 +'<a class="lipath">'+ inputArr.file +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
-							 +'</li>';
 				} else {
 					var liname = inputArr.composer;
 					content = '<li mode="composer">'
+							 +'<a class="lipath">'+ inputArr.composer +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
 							 +'<i class="fa fa-composer db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-composer"></i>'
 							 +'<span class="single">'+ inputArr.composer +'</span>'
-							 +'<a class="lipath">'+ inputArr.composer +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
-							 +'</li>';
 				}
 			} else if ( GUI.browsemode === 'genre' ) {
 				if ( inputArr.artist ) {
 					var liname = inputArr.artist;
 					content = '<li mode="artist">'
+							 +'<a class="lipath">'+ inputArr.artist +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
 							 +'<i class="fa fa-artist db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-artist"></i>'
 							 +'<span class="single">'+ liname +'</span>'
-							 +'<a class="lipath">'+ inputArr.artist +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
-							 +'</li>';
 				} else {
 					var liname = inputArr.genre ;
 					content = '<li mode="genre">'
+							 +'<a class="lipath">'+ inputArr.genre +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
 							 +'<i class="fa fa-genre db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-genre"></i>'
 							 +'<span class="single">'+ liname;+'</span>'
-							 +'<a class="lipath">'+ inputArr.genre +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
-							 +'</li>';
 				}
 			}
 			break;
@@ -1315,18 +1300,16 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 			if ( querytype === '' ) {
 				var liname = inputArr.name ? inputArr.name : 'Favorites';
 				content = '<li mode="spotify">'
+						 +'<a class="lipath">'+ inputArr.index +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
 						 +'<i class="fa fa-genre db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-spotify-pl"></i>'
 						 +'<span class="single">'+ liname +' ( '+ inputArr.tracks +' )</span>'
-						 +'<a class="lipath">'+ inputArr.index +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
-						 +'</li>';
 			} else if ( querytype === 'tracks' ) {
 				var liname = inputArr.Title;
 				content = '<li data-plid="'+ inpath +'" data-type="spotify-track" mode="spotify">'
+						 +'<a class="lipath">'+ inputArr.index +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
 						 +'<i class="fa fa-spotify db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-spotify"></i>'
 						 +'<span class="sn">'+ liname +'&ensp;<span class="time">'+ second2HMS( inputArr.duration / 1000 ) +'</span></span>'
 						 +'<span class="bl">'+ inputArr.artist +' - '+ inputArr.album +'</span>'
-						 +'<a class="lipath">'+ inputArr.index +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
-						 +'</li>';
 			}
 			break;
 		case 'Dirble':
@@ -1334,33 +1317,30 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 				var liname = inputArr.title;
 				var childClass = ( querytype === 'childs' ) ? ' db-dirble-child' : '';
 				content = '<li class="db-dirble'+ childClass +'" mode="dirble">'
+						 +'<a class="lipath">'+ inputArr.id +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
 						 +'<i class="fa fa-genre db-icon"></i>'
 						 +'<span class="single">'+ liname +'</span>'
-						 +'<a class="lipath">'+ inputArr.id +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
-						 +'</li>';
 			} else if ( querytype === 'search' || querytype === 'stations' || querytype === 'childs-stations' ) {
 				if ( !inputArr.streams.length ) break; // Filter stations with no streams
 				
 				var liname = inputArr.name;
 				var url = inputArr.streams[ 0 ].stream
 				content = '<li mode="dirble">'
+						 +'<a class="lipath">'+ url +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
 						 +'<i class="fa fa-webradio db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-dirble"></i>'
 						 +'<span class="sn">'+ liname +'&ensp;<span>( '+ inputArr.country +' )</span></span>'
 						 +'<span class="bl">'+ url +'</span>'
-						 +'<a class="lipath">'+ url +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
-						 +'</li>';
 			}
 			break;
 		case 'Jamendo':
 			var liname = inputArr.dispname;
 			content = '<li mode="jamendo">'
-					 +'<img class="jamendo-cover" src="'+ inputArr.image +'" alt=""><i class="fa fa-bars db-action" data-target="#context-menu-file"></i>'
-					 +'<span class="single">'+ liname +'</span></div>'
 					 +'<a class="lipath">'+ inputArr.stream +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
-					 +'</li>';
+					 +'<img class="jamendo-cover" src="'+ inputArr.image +'" alt=""><i class="fa fa-bars db-action" data-target="#context-menu-file"></i>'
+					 +'<span class="single">'+ liname +'</span>'
 			break;
 	}
-	return content;
+	return content +'</li>';
 }
 function setPlaylistScroll() {
 	if ( GUI.sortable ) return // 'skip for Sortable'
@@ -1406,23 +1386,23 @@ function htmlPlaylist( data ) {
 		var pl = data[ i ];
 		if ( pl.file.slice( 0, 4 ) === 'http' ) {
 			var title = pl.title || pl.file;
-			content += '<li class="radio"><i class="fa fa-webradio pl-icon"></i>'+ ( $( '#page-library' ).hasClass( 'hide' ) ? '<i class="fa fa-minus-circle pl-action"></i>' : '' )
+			content += '<li class="radio">'
+					 +'<i class="fa fa-webradio pl-icon"></i>'+ ( $( '#page-library' ).hasClass( 'hide' ) ? '<i class="fa fa-minus-circle pl-action"></i>' : '' )
 					 +'<span class="sn">'+ title +'&ensp;<span class="elapsed"></span></span>'
 					 +'<span class="bl">'+ pl.file +'</span>'
-					 +'</li>';
 			countradio++;
 		} else {
 			sec = HMS2Second( pl.time );
-			content += '<li><i class="fa fa-music pl-icon"></i>'+ ( $( '#page-library' ).hasClass( 'hide' ) ? '<i class="fa fa-minus-circle pl-action"></i>' : '' )
+			content += '<li>'
+					 +'<i class="fa fa-music pl-icon"></i>'+ ( $( '#page-library' ).hasClass( 'hide' ) ? '<i class="fa fa-minus-circle pl-action"></i>' : '' )
 					 +'<span class="sn">'+ pl.title +'&ensp;<span class="elapsed"></span><span class="time" time="'+ sec +'">'+ pl.time +'</span></span>'
 					 +'<span class="bl">'+ pl.track +'</span>'
-					 +'</li>';
 			pltime += sec;
 		}
 		countsong = ilength - countradio;
 	}
 	return {
-		  content    : content
+		  content    : content +'</li>'
 		, countradio : countradio
 		, pltime     : pltime
 		, countsong  : countsong
