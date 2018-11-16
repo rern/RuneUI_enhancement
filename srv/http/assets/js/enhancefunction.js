@@ -992,7 +992,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		if ( data[ 0 ].artistalbum ) prop = 'artistalbum'; // for common albums like 'Greatest Hits'
 		var fileplaylist = [ 'cue', 'm3u', 'pls' ].indexOf( path.slice( -3 ) ) !== -1;
 		if ( fileplaylist ) {
-			var data = htmlPlaylist( data, 'library' );
+			var data = htmlPlaylist( data );
 			content = data.content;
 		} else if ( data[ 0 ].directory || data[ 0 ].file || data[ 0 ].playlist ) {
 			var arraydir = [];
@@ -1397,24 +1397,23 @@ function setPlaylistScroll() {
 		}, 300 );
 	}, 'json' );
 }
-function htmlPlaylist( data, library ) {
+function htmlPlaylist( data ) {
 	var content, pl, iconhtml, topline, bottomline, countradio, countsong, pltime;
 	content = pl = iconhtml = topline = bottomline = '';
 	countradio = countsong = pltime = 0;
-	var plaction = library ? '' : '<i class="fa fa-minus-circle pl-action"></i>';
 	var ilength = data.length;
 	for ( i = 0; i < ilength; i++ ) {
 		var pl = data[ i ];
 		if ( pl.file.slice( 0, 4 ) === 'http' ) {
 			var title = pl.title || pl.file;
-			content += '<li class="radio"><i class="fa fa-webradio pl-icon"></i>'+ plaction
+			content += '<li class="radio"><i class="fa fa-webradio pl-icon"></i>'+ ( $( '#page-library' ).hasClass( 'hide' ) ? '<i class="fa fa-minus-circle pl-action"></i>' : '' )
 					 +'<span class="sn">'+ title +'&ensp;<span class="elapsed"></span></span>'
 					 +'<span class="bl">'+ pl.file +'</span>'
 					 +'</li>';
 			countradio++;
 		} else {
 			sec = HMS2Second( pl.time );
-			content += '<li><i class="fa fa-music pl-icon"></i>'+ plaction
+			content += '<li><i class="fa fa-music pl-icon"></i>'+ ( $( '#page-library' ).hasClass( 'hide' ) ? '<i class="fa fa-minus-circle pl-action"></i>' : '' )
 					 +'<span class="sn">'+ pl.title +'&ensp;<span class="elapsed"></span><span class="time" time="'+ sec +'">'+ pl.time +'</span></span>'
 					 +'<span class="bl">'+ pl.track +'</span>'
 					 +'</li>';
