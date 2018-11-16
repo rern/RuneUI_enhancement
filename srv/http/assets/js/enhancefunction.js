@@ -830,6 +830,7 @@ function renderLibrary() {
 	} );
 }
 function getDB( options ) {
+	console.log(options)
 	$( '#loader' ).removeClass( 'hide' );
 	var cmd = options.cmd || 'browse',
 		path = options.path ? options.path.toString().replace( /"/g, '\"' ) : '',
@@ -903,6 +904,7 @@ function getDB( options ) {
 				if ( mode === 'composer' ) GUI.browsemode = 'composeralbum';
 			}
 		}
+		console.log(command[ mode ])
 		$.post( 'enhance.php', command[ mode ], function( data ) {
 			if ( data ) {
 				dataSort( data, path );
@@ -1091,17 +1093,18 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		, albumartist   : [ '<i class="fa fa-albumartist"></i>', 'ALBUM ARTIST' ]
 		, genre         : [ '<i class="fa fa-genre"></i>',       'GENRE' ]
 		, composer      : [ '<i class="fa fa-composer"></i>',    'COMPOSER' ]
-		, composeralbum : [ '<i class="fa fa-composer"></i>',    'ALBUM COMPOSER' ]
+		, composeralbum : [ '<i class="fa fa-composer"></i>',    'COMPOSER' ]
 		, Dirble        : '<i class="fa fa-dirble"></i>'
 		, Jamendo       : '<i class="fa fa-jamendo"></i>'
 		, Spotify       : '<i class="fa fa-spotify"></i>'
 	}
 	var mode = {
-		  album       : 'Album'
-		, artist      : 'Artist'
-		, albumartist : 'AlbumArtist'
-		, genre       : 'Genre'
-		, composer    : 'Composer'
+		  album         : 'Album'
+		, artist        : 'Artist'
+		, albumartist   : 'AlbumArtist'
+		, genre         : 'Genre'
+		, composer      : 'Composer'
+		, composeralbum : 'Composer'
 	}
 	if ( GUI.browsemode !== 'file' ) {
 		if ( GUI.browsemode !== 'album' && GUI.browsemode !== 'composeralbum' ) {

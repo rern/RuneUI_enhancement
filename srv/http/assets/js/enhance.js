@@ -601,19 +601,26 @@ $( '#db-home' ).click( function() {
 } );
 $( '#db-currentpath' ).on( 'click', 'a', function() {
 	if ( $( '#db-currentpath span a' ).length === 1 ) return
-	if ( [ 'album', 'artist', 'albumartist', 'composer', 'genre' ].indexOf( GUI.browsemode ) !== -1 ) return
+	var rootpath = this.id === 'rootpath';
+	if ( [ 'album', 'artist', 'albumartist', 'composer', 'genre' ].indexOf( GUI.browsemode ) !== -1 && !rootpath ) return
 	
-	var path = $( this ).find( '.lipath' ).text();
+	if ( rootpath ) {
+		GUI.dbbackdata = [];
+		var path = $( this ).data( 'path' );
+	} else {
+		var path = $( this ).find( '.lipath' ).text();
+	}
 	// get scroll position for back navigation
 	GUI.dbscrolltop[ $( '#db-currentpath' ).find( '.lipath' ).text() ] = $( window ).scrollTop();
 	mutationLibrary.observe( observerLibrary, observerOption );
 	
 	var path2mode = {
-		  Album    : 'album'
-		, Artist   : 'artist'
-		, Composer : 'composer'
-		, Genre    : 'genre'
-		, Dirble   : 'Dirble'
+		  Album       : 'album'
+		, Artist      : 'artist'
+		, AlbumArtist : 'albumartist'
+		, Composer    : 'composer'
+		, Genre       : 'genre'
+		, Dirble      : 'Dirble'
 	}
 	getDB( { browsemode: path2mode[ path ], path: path } );
 } );
