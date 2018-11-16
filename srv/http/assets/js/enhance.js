@@ -601,10 +601,9 @@ $( '#db-home' ).click( function() {
 } );
 $( '#db-currentpath' ).on( 'click', 'a', function() {
 	if ( $( '#db-currentpath span a' ).length === 1 ) return
-	var rootpath = this.id === 'rootpath';
-	if ( [ 'album', 'artist', 'albumartist', 'composer', 'genre' ].indexOf( GUI.browsemode ) !== -1 && !rootpath ) return
+	if ( [ 'album', 'artist', 'albumartist', 'composer', 'genre' ].indexOf( GUI.browsemode ) !== -1 ) return
 	
-	var path = rootpath ? $( this ).data( 'path' ) : $( this ).find( '.lipath' ).text();
+	var path = $( this ).find( '.lipath' ).text();
 	// get scroll position for back navigation
 	GUI.dbscrolltop[ $( '#db-currentpath' ).find( '.lipath' ).text() ] = $( window ).scrollTop();
 	mutationLibrary.observe( observerLibrary, observerOption );

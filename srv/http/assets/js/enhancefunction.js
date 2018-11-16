@@ -1112,7 +1112,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			var dotpath = albumtext ? '<a id="artistalbum"><gr> • </gr><span class="white">'+ albumtext +'</span></a>' : '';
 		}
 		$( '#db-currentpath .lipath' ).text( path ); // for back navigation
-		$( '#db-currentpath span' ).html( '<a id="rootpath" data-path="'+ mode[ GUI.browsemode ] +'">'+ iconName[ GUI.browsemode ][ 0 ] +' '+ iconName[ GUI.browsemode ][ 1 ] +'</a>'+ dotpath );
+		$( '#db-currentpath span' ).html( iconName[ GUI.browsemode ][ 0 ] +' <a id="rootpath" data-path="'+ mode[ GUI.browsemode ] +'">'+ iconName[ GUI.browsemode ][ 1 ] +'</a>'+ dotpath );
 	} else {
 		var folder = path.split( '/' );
 		var folderRoot = folder[ 0 ];
