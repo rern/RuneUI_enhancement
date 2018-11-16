@@ -830,7 +830,6 @@ function renderLibrary() {
 	} );
 }
 function getDB( options ) {
-	console.log(options)
 	$( '#loader' ).removeClass( 'hide' );
 	var cmd = options.cmd || 'browse',
 		path = options.path ? options.path.toString().replace( /"/g, '\"' ) : '',
@@ -904,7 +903,6 @@ function getDB( options ) {
 				if ( mode === 'composer' ) GUI.browsemode = 'composeralbum';
 			}
 		}
-		console.log(command[ mode ])
 		$.post( 'enhance.php', command[ mode ], function( data ) {
 			if ( data ) {
 				dataSort( data, path );
