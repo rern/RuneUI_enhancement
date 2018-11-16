@@ -10,16 +10,23 @@ if ( document.location.hostname === 'localhost' ) $( '.osk-trigger' ).onScreenKe
 
 $( '.selectpicker' ).selectpicker();
 
+var intUpdate = false;
 var path = location.pathname;
 if ( path === '/sources' ) {
 	function toggleUpdate() {
 		$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
 			if ( status.updating_db ) {
-				$( '#updatempddb, #rescanmpddb' ).hide();
-				$( '#updatempddb' ).parent().after( '<span id="update"><i class="fa fa-library"></i>&emsp;Library updating...</span>' );
+				if ( !intUpdate ) {
+					$( '#updatempddb, #rescanmpddb' ).hide();
+					$( '#updatempddb' ).parent().after( '<span id="update"><i class="fa fa-library"></i>&emsp;Library updating...</span>' );
+					intUpdate = setInterval( function() { // fix: force status fetching
+						toggleUpdate();
+					}, 10000 );
+				}
 			} else {
 				$( '#update' ).remove();
 				$( '#updatempddb, #rescanmpddb' ).show();
+				clearInterval( intUpdate );
 			}
 		}, 'json' );
 	}

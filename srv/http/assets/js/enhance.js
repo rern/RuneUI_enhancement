@@ -4,7 +4,6 @@ var GUI = { // outside '$( function() {' enable console.log access
 	, artistalbum  : ''
 	, bookmarkedit : 0
 	, browsemode   : ''
-	, counts       : {}
 	, currentpath  : ''
 	, dbcurrent    : ''
 	, dbback       : 0
@@ -14,22 +13,16 @@ var GUI = { // outside '$( function() {' enable console.log access
 	, dbscrolltop  : {}
 	, display      : {}
 	, imodedelay   : 0
-	, json         : 0
-	, intElapsed   : ''
-	, intKnob      : ''
 	, list         : {}
 	, libraryhome  : {}
 	, local        : 0
 	, lsplaylists  : []
-	, noticeUI     : {}
 	, playlist     : {}
 	, plcurrent    : ''
 	, pleditor     : 0
 	, plscrolltop  : 0
 	, plugin       : ''
 	, status       : {}
-	, timeout      : ''
-	, updating     : 0
 };
 PNotify.prototype.options.delay = 3000;
 PNotify.prototype.options.styling = 'fontawesome';
@@ -195,6 +188,7 @@ $( '#displayplayback' ).click( function() {
 	if ( window.innerHeight <= 320 ) setToggleButton( 'buttons' );
 } );
 $( '#turnoff' ).click( function() {
+	var localhost = document.location.hostname === 'localhost';
 	info( {
 		  icon        : 'power'
 		, title       : 'Power'
@@ -202,14 +196,18 @@ $( '#turnoff' ).click( function() {
 		, oklabel     : 'Off'
 		, okcolor     : '#bb2828'
 		, ok          : function() {
-			$.post( 'enhance.php', { 'power' : 'shutdown' } );
+			$.post( 'enhance.php', { power: 'shutdown' } );
 			$( '#loader' ).removeClass( 'hide' );
 		}
 		, buttonlabel : 'Reboot'
 		, buttoncolor : '#de810e'
 		, button      : function() {
-			$.post( 'enhance.php', { 'power' : 'reboot' } );
+			$.post( 'enhance.php', { power: 'reboot' } );
 			$( '#loader' ).removeClass( 'hide' );
+		}
+		, cancellabel : !localhost ? '' : 'Screen off'
+		, cancel      : !localhost ? '' : function() {
+			$.post( 'enhance.php', { power: 'screenoff' } );
 		}
 	} );
 } );
@@ -256,7 +254,11 @@ $( '#tab-playlist' ).click( function() {
 	}
 	
 	setPageCurrent( 'playlist' );
-	if ( GUI.pleditor ) return
+	if ( GUI.pleditor ) {
+		var top = $( '#pl-currentpath .fa-arrow-left' ).hasClass( 'plsbackroot' ) ? GUI.plscrolltop : GUI.listplscrolltop;
+		$( 'html, body' ).scrollTop( top );
+		return
+	}
 	
 	$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
 		GUI.lsplaylists = data.lsplaylists || [];
@@ -280,7 +282,7 @@ $( '#page-playback' ).click( function( e ) {
 	$( '.controls, #settings' ).addClass( 'hide' );
 	$( '.controls1, .rs-tooltip, #imode' ).removeClass( 'hide' );
 } );
-$( '#page-library' ).on( 'click', function( e ) {
+$( '#page-library' ).click( function( e ) {
 	if ( GUI.local ) return
 	
 	if ( e.target.id !== 'home-block-edit' && e.target.id !== 'home-block-remove' ) {
@@ -363,11 +365,6 @@ $( '#volume' ).roundSlider( {
 			$.post( 'enhance.php', { mpc: 'mpc volume '+ e.value } );
 			$( e.handle.element ).rsRotate( - e.handle.angle );
 		}
-	}
-	, stop            : function( e ) { // on 'stop drag'
-//		GUI.local = 1;
-//		setTimeout( function() { GUI.local = 0 }, 500 );
-//		$.post( 'enhance.php', { volume: e.value } );
 	}
 } );
 $( '#volmute, #volM' ).click( function() {
@@ -604,17 +601,26 @@ $( '#db-home' ).click( function() {
 } );
 $( '#db-currentpath' ).on( 'click', 'a', function() {
 	if ( $( '#db-currentpath span a' ).length === 1 ) return
-	var path = $( this ).find( '.lipath' ).text();
+	var rootpath = this.id === 'rootpath';
+	if ( [ 'album', 'artist', 'albumartist', 'composer', 'genre' ].indexOf( GUI.browsemode ) !== -1 && !rootpath ) return
+	
+	if ( rootpath ) {
+		GUI.dbbackdata = [];
+		var path = $( this ).data( 'path' );
+	} else {
+		var path = $( this ).find( '.lipath' ).text();
+	}
 	// get scroll position for back navigation
 	GUI.dbscrolltop[ $( '#db-currentpath' ).find( '.lipath' ).text() ] = $( window ).scrollTop();
 	mutationLibrary.observe( observerLibrary, observerOption );
 	
 	var path2mode = {
-		  Album    : 'album'
-		, Artist   : 'artist'
-		, Composer : 'composer'
-		, Genre    : 'genre'
-		, Dirble   : 'Dirble'
+		  Album       : 'album'
+		, Artist      : 'artist'
+		, AlbumArtist : 'albumartist'
+		, Composer    : 'composer'
+		, Genre       : 'genre'
+		, Dirble      : 'Dirble'
 	}
 	getDB( { browsemode: path2mode[ path ], path: path } );
 } );
@@ -667,7 +673,7 @@ $( '#db-search-results' ).click( function() {
 		renderLibrary();
 	}
 } );
-$( '#db-back' ).on( 'click', function() {
+$( '#db-back' ).click( function() {
 	mutationLibrary.observe( observerLibrary, observerOption ); // standard js - must be one on one element
 	// topmost of path
 	if ( GUI.dbbrowsemode === 'file' ) {
@@ -764,6 +770,7 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 	$( '.contextmenu' ).addClass( 'hide' );
 	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
 	$( '.update' ).toggleClass( 'hide', GUI.status.updating_db !== 0 );
+	$( '.lastfm' ).toggleClass( 'hide', GUI.list.name.slice( -4, -3 ) === '.' );
 	var contextnum = $menu.find( 'a:not(.hide)' ).length - 1;
 	$( '.menushadow' ).css( 'height', contextnum * 41 );
 	if ( GUI.list.path === GUI.dbcurrent ) {
@@ -773,7 +780,10 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 		$thisli.addClass( 'active' );
 		$menu
 			.removeClass( 'hide' )
-			.css( 'top', $this.position().top +'px' );
+			.css( {
+				  top   : $this.position().top +'px'
+				, right : $( '#db-index' ).hasClass( 'hide' ) ? '50px' : '90px'
+			} );
 		var targetB = $menu.offset().top + $menu.height();
 		var wH = window.innerHeight;
 		if ( targetB > wH + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + ( GUI.display.bars ? 42 : 0 ) } );
@@ -782,25 +792,19 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 $( '#db-index li' ).click( function() {
 	var topoffset = GUI.display.bars ? 80 : 40;
 	var indextext = $( this ).text();
+	var match = 0;
 	if ( indextext === '#' ) {
 		$( 'html, body' ).scrollTop( 0 );
 		return
 	}
-	var usbpath = GUI.currentpath.slice( 0, 3 ) === 'USB' ? 1 : 0;
-	var datapathindex, name;
-	var matcharray = $( '#db-entries li' ).filter( function() {
-		var $this = $( this );
-		if ( usbpath ) {
-			name = $this.find( '.lipath' ).text().replace( /^.*\//, '' );
-			name = GUI.currentpath +'/'+  stripLeading( name );
-			datapathindex = GUI.currentpath +'/'+ indextext;
-		} else {
-			name = stripLeading( $this.find( '.lipath' ).text() );
-			datapathindex = '^'+ indextext;
+	$.each( $( '#db-entries li' ), function( i, el ) {
+		if ( $( el ).find( '.lisort' ).text()[ 0 ] === indextext ) {
+			$( 'html, body' ).scrollTop( el.offsetTop - topoffset );
+			match = 1;
+			return false
 		}
-		return name.match( new RegExp( datapathindex, 'i' ) );
 	} );
-	if ( matcharray.length ) $( 'html, body' ).scrollTop( matcharray[ 0 ].offsetTop - topoffset );
+	if ( !match ) info( 'No entries for index <wh>'+ indextext +'</wh>' );
 } );
 // PLAYLIST /////////////////////////////////////////////////////////////////////////////////////
 $( '#pl-home' ).click( function() {
@@ -892,7 +896,7 @@ $( '#pl-filter' ).on( 'keyup', function() {
 		$( '#pl-filter-results' ).addClass( 'hide' ).empty();
 	}
 } );
-$( '#pl-filter-results' ).on( 'click', function() {
+$( '#pl-filter-results' ).click( function() {
 	$( this ).addClass( 'hide' ).empty();
 	$( '#pl-manage, #pl-count, #pl-entries li' ).removeClass( 'hide' );
 	$( '#pl-filter' ).val( '' );
@@ -991,6 +995,9 @@ $( '#pl-entries' ).on( 'click', 'li', function( e ) {
 	}
 } );
 $( '#pl-editor' ).on( 'click', 'li', function( e ) {
+	// disable on list of saved playlist
+	if ( $( '#pl-currentpath .fa-arrow-left' ).hasClass( 'plsback' ) ) return
+	
 	$( '#loader' ).removeClass( 'hide' );
 	renderSavedPlaylist( $( this ).find( 'span' ).text() );
 } );
@@ -1066,12 +1073,7 @@ document.addEventListener( visibilityevent, function() {
 			$.post( 'enhance.php', { getdisplay: 1 } ); // display data > pushstream > getPlaybackStatus()
 		} else if ( !$( '#page-playlist' ).hasClass( 'hide' ) ) {
 			if ( GUI.pleditor ) {
-				var name = $( '#pl-currentpath .lipath' ).text();
-				if ( name ) {
-					renderSavedPlaylist( name );
-				} else {
-					$( '#plopen' ).click();
-				}
+				$( '#pl-currentpath .lipath' ).text() ? renderSavedPlaylist( name ) : $( '#plopen' ).click();
 			} else {
 				setPlaylistScroll();
 			}
