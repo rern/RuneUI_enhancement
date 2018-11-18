@@ -18,9 +18,11 @@ if ( empty( $this->uri(1) ) ) { ?>
 } ?>
 	<link rel="shortcut icon" href="<?=$this->asset( '/img/favicon.ico' )?>">
 	<link rel="stylesheet" href="<?=$this->asset( '/css/bootstrap.min.css' )?>">
-	<link rel="stylesheet" href="<?=$this->asset( '/css/pnotify.custom.min.css' )?>">
-
 <?php 
+if ( $this->uri(1) === 'mpd' || $this->uri(1) === 'debug' ) { ?>
+	<link rel="stylesheet" href="<?=$this->asset( '/css/pnotify.custom.min.css' )?>">
+<?php
+}
 if ( is_localhost() ) { ?>
 	<link rel="stylesheet" href="<?=$this->asset( '/css/onScreenKeyboard.css' )?>">
 <?php 
