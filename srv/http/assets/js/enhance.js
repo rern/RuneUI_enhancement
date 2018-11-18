@@ -804,7 +804,11 @@ $( '#db-index li' ).click( function() {
 			return false
 		}
 	} );
-	if ( !match ) info( 'No entries for index <wh>'+ indextext +'</wh>' );
+	if ( !match ) {
+		var $this = $( this );
+		$this.css( 'color', '#000000' );
+		if ( $this.text() !== '#' ) $this.prev().click();
+	}
 } );
 // PLAYLIST /////////////////////////////////////////////////////////////////////////////////////
 $( '#pl-home' ).click( function() {
