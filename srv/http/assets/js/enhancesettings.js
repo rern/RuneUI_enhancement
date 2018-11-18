@@ -108,7 +108,13 @@ if ( path === '/sources' ) {
 	
 } else if ( path === '/mpd' ) {
 	$('#audio-output-interface').change(function(){
-		renderMSG([{'title': 'Switching audio output', 'text': 'Please wait for the config update...', 'icon': 'fa fa-cog fa-spin', 'delay': 5000 }]);
+		PNotify.prototype.options.styling = 'fontawesome';
+		new PNotify( {
+			  icon  : 'fa fa-cog fa-spin'
+			, title : 'Switching audio output'
+			, text  : 'Please wait for the config update...'
+			, delay : 55000
+		} );
 		var output = $(this).val();
 		$.ajax({
 			type: 'POST',
@@ -306,6 +312,7 @@ if ( path === '/sources' ) {
 	var client = new ZeroClipboard(document.getElementById('copy-to-clipboard'));
 	client.on('ready', function(readyEvent){
 		client.on('aftercopy', function(event){
+			PNotify.prototype.options.styling = 'fontawesome';
 			new PNotify({
 				title: 'Copied to clipboard',
 				text: 'The debug output was copied successfully in your clipboard.',
