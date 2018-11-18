@@ -19,7 +19,7 @@ if ( empty( $this->uri(1) ) ) { ?>
 	<link rel="shortcut icon" href="<?=$this->asset( '/img/favicon.ico' )?>">
 	<link rel="stylesheet" href="<?=$this->asset( '/css/bootstrap.min.css' )?>">
 <?php 
-if ( $this->uri(1) === 'mpd' || $this->uri(1) === 'debug' ) { ?>
+if ( empty( $this->uri(1) ) || $this->uri(1) === 'mpd' || $this->uri(1) === 'debug' ) { ?>
 	<link rel="stylesheet" href="<?=$this->asset( '/css/pnotify.custom.min.css' )?>">
 <?php
 }
