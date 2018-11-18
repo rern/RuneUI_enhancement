@@ -807,7 +807,7 @@ $( '#db-index li' ).click( function() {
 	if ( !match ) {
 		var $this = $( this );
 		$this.css( 'color', '#000000' );
-		if ( $this.text() !== '#' ) $this.prev().click();
+		if ( $this.text() !== 'Z' ) $this.next().click();
 	}
 } );
 // PLAYLIST /////////////////////////////////////////////////////////////////////////////////////
