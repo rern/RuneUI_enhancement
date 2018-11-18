@@ -715,7 +715,7 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 		|| ( GUI.browsemode === 'albumartist' && currentpath !== 'AlbumArtist' )
 	) {
 		var artist = currentpath;
-	} else if ( GUI.browsemode === 'album' ) {
+	} else if ( GUI.browsemode === 'album' || GUI.browsemode === 'genre' ) {
 		var artist = $this.find( '.liartist' ).text() || '';
 	} else {
 		var artist = '';
