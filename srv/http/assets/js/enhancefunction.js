@@ -98,13 +98,14 @@ pushstreams.idle.onmessage = function( changed ) {
 			$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
 				if ( status.updating_db ) {
 					GUI.status.updating_db = 1;
-					setButtonUpdate();
 				} else {
+					GUI.status.updating_db = 0;
 					new PNotify( {
 						  title : 'Update Database'
 						, text  : 'Database updated.'
 					} );
 				}
+				setButtonUpdate();
 			}, 'json' );
 		}, 3000 );
 	} else if ( changed === 'database' ) { // on files changed (for webradio rename)
@@ -865,16 +866,16 @@ function getDB( options ) {
 	if ( !plugin ) {
 		var command = {
 			  file        : { mpc: 'mpc ls -f "%title%^^%time%^^%artist%^^%album%^^%file%" "'+ path +'" 2> /dev/null', list: 'file' }
-			, playlist    : { playlist: path }
-			, album       : { mpcalbum: path } 
-			, artistalbum : { mpc: 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%albumartist%"'+ ( artist ? ' artist "'+ artist +'"' : '' ) +' album "'+ path +'"', list: 'file' } 
+			, artistalbum : { mpc: 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%albumartist%"'+ ( artist ? ' albumartist "'+ artist +'"' : '' ) +' album "'+ path +'"', list: 'file' }
+			, album       : { album: 'mpc find -f "%album%^^[%albumartist%||%artist%]" album "'+ path +'" | awk \'!a[$0]++\'', name: path }
+			, genre       : { album: 'mpc find -f "%album%^^[%albumartist%||%artist%]" genre "'+ path +'" | awk \'!a[$0]++\'' }
 			, artist      : { mpc: 'mpc list album artist "'+ path +'" | awk NF', list: 'album' }
 			, albumartist : { mpc: 'mpc list album albumartist "'+ path +'" | awk NF', list: 'album' }
 			, composer    : { mpc: 'mpc list album composer "'+ path +'" | awk NF', list: 'album' }
-			, genre       : { mpc: 'mpc list artist genre "'+ path +'" | awk NF', list: 'artist' }
 			, type        : { mpc: 'mpc list '+ GUI.browsemode +' | awk NF', list: GUI.browsemode }
 			, search      : { mpc: 'mpc search -f "%title%^^%time%^^%artist%^^%album%^^%file%" any "'+ keyword +'"', list: 'file' }
 			, Webradio    : { getwebradios: 1 }
+			, playlist    : { playlist: path }
 		}
 		if ( cmd === 'search' ) {
 			if ( path.match(/Dirble/)) {
@@ -890,9 +891,11 @@ function getDB( options ) {
 				mode = 'type';
 			} else if ( path === 'Webradio' ) {
 				mode = 'Webradio';
-			} else if ( GUI.browsemode === 'album' && currentpath !== 'Album' && artist ) { // <li> in 'Artist' and 'Genre'
+			} else if ( // <li> in 'Album' and 'Genre'
+				( GUI.browsemode === 'album' && currentpath !== 'Album' && artist )
+				|| ( GUI.browsemode === 'genre' && currentpath !== 'Genre' && artist )
+			) {
 				mode = 'artistalbum';
-				GUI.albumartist = path +'<gr> • </gr>'+ artistalbum;
 			} else if ( [ 'm3u', 'pls', 'cue' ].indexOf( path.slice( -3 ) ) !== -1 ) {
 				mode = 'playlist';
 			} else {
@@ -980,7 +983,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			, album         : 'file'
 			, artist        : 'album'
 			, albumartist   : 'album'
-			, genre         : 'artist'
+			, genre         : 'album'
 			, composer      : 'file'
 			, composeralbum : 'album'
 		}
@@ -1140,6 +1143,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			$( '#db-currentpath' ).find( 'span' ).html( folderCrumb );
 		}
 	}
+	$( '#db-index li' ).css( 'color', '' );
 	// hide index bar in file mode
 	if ( $( '#db-entries li:eq( 0 ) i.db-icon' ).hasClass( 'fa-music' ) || fileplaylist ) {
 		$( '#db-index' ).addClass( 'hide' );
@@ -1279,11 +1283,11 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 							 +'<span class="single">'+ inputArr.composer +'</span>'
 				}
 			} else if ( GUI.browsemode === 'genre' ) {
-				if ( inputArr.artist ) {
-					var liname = inputArr.artist;
-					content = '<li mode="artist">'
-							 +'<a class="lipath">'+ inputArr.artist +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
-							 +'<i class="fa fa-artist db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-artist"></i>'
+				if ( inputArr.album ) {
+					var liname = inputArr.artistalbum;
+					content = '<li mode="album">'
+							 +'<a class="lipath">'+ inputArr.album +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a><a class="liartist">'+ inputArr.artist +'</a>'
+							 +'<i class="fa fa-album db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-album"></i>'
 							 +'<span class="single">'+ liname +'</span>'
 				} else {
 					var liname = inputArr.genre ;

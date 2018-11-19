@@ -48,7 +48,9 @@
 	top: auto;
 	bottom: 60px;
 	left: 0;
-	box-shadow: -4px 4px 10px #000000;
+}
+.ui-pnotify-shadow {
+	box-shadow: 4px 4px 10px #000000 !important;
 }
 .ui-pnotify .alert {
 	border: 0;

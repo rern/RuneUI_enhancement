@@ -3,20 +3,22 @@
 if ( isset( $_POST[ 'bash' ] ) ) {
 	echo shell_exec( '/usr/bin/sudo '.$_POST[ 'bash' ] );
 	exit();
-} else if ( isset( $_POST[ 'mpcalbum' ] ) ) {
-	$album = $_POST[ 'mpcalbum' ];
-	$albums = shell_exec( "mpc find -f '%album%^^%artist%' album '".$album."' | awk '!a[$0]++'" );
+} else if ( isset( $_POST[ 'album' ] ) ) {
+	$albums = shell_exec( $_POST[ 'album' ] );
+	$name = isset( $_POST[ 'name' ] ) ? $_POST[ 'name' ] : '';
 	$lines = explode( "\n", rtrim( $albums ) );
-	$byartist = count( $lines );
-	$byalbumartist = exec( "mpc find -f '%album%^^%albumartist%' album '".$album."' | awk '!a[$0]++' | wc -l" );
-	// single album: either same artist or same album artist
-	if ( $byartist <= 1 && $byalbumartist <= 1 ) {
-		$albums = shell_exec( "mpc find -f '%title%^^%time%^^%artist%^^%album%^^%file%^^%albumartist%' album '".$album."'" );
+	$count = count( $lines );
+	if ( $count === 1 ) {
+		$albums = shell_exec( "mpc find -f '%title%^^%time%^^%artist%^^%album%^^%file%^^%albumartist%' album '".$name."'" );
 		$data = search2array( $albums );
 	} else {
 		foreach( $lines as $line ) {
 			$list = explode( '^^', $line );
-			$li[ 'artistalbum' ] = $list[ 1 ].'<gr> • </gr>'.$list[ 0 ];
+			if ( $name ) {
+				$li[ 'artistalbum' ] = $list[ 1 ].'<gr> • </gr>'.$list[ 0 ]; // album: artist - album
+			} else {
+				$li[ 'artistalbum' ] = $list[ 0 ].'<gr> • </gr>'.$list[ 1 ]; // genre: album - artist
+			}
 			$li[ 'album' ] = $list[ 0 ];
 			$li[ 'artist' ] = $list[ 1 ];
 			$data[] = $li;
@@ -41,6 +43,10 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 		pushstream( 'playlist', $data );
 	}
 	if ( isset( $_POST[ 'list' ] ) ) {
+		if ( !$result ) {
+			echo 0;
+			exit();
+		}
 		$type = $_POST[ 'list' ];
 		if ( $type === 'file' ) {
 			$data = search2array( $result );

@@ -268,14 +268,6 @@ wh, gr { font-weight: 300; }
 	height: 35px;
 	margin: 2px 20px 10px 0;
 }
-#clock-display {
-	margin-right: 10px;
-	font-size: 30px;
-	font-weight: 300;
-}
-#clock-display:empty { /* fix margin or padding of hidden elements still take space*/
-	display: none;
-}
 #menu-top {
 	padding: 0 20px 0 30px;
 	box-shadow: 0px 4px 10px #000000;
@@ -366,19 +358,19 @@ wh, gr { font-weight: 300; }
 	font-size: 30px;
 	text-decoration: none;
 	text-align: center;
-	color: #e0e7ee
+	color: #e0e7ee;
 }
 #tab-playback a {
 	width: 34%;
-	background: #2b3c4e
+	background: #2b3c4e;
 }
 #menu-bottom ul,
 #menu-bottom li {
 	display: block;
-	padding: 0
+	padding: 0;
 }
 #menu-bottom li.active a {
-	background: #0095d8
+	background: #0095d8;
 }
 #menu-bottom li.active a:hover {
 	background-color: #0072a5;
@@ -603,6 +595,8 @@ wh, gr { font-weight: 300; }
 #controls-cover {
 	width: 100%;
 	height: 100%;
+	min-width: 230px;
+	min-height: 230px;
 }
 #coverartoverlay,
 .controls {
@@ -1576,7 +1570,7 @@ w {
 	height: 100%;
 	top: 0;
 	left: 0;
-	background: #10161c
+	background: #10161c;
 }
 #overlay-social nav,
 #playsource nav {
@@ -1585,7 +1579,7 @@ w {
 	top: 50%;
 	height: 60%;
 	-webkit-transform: translateY(-50%);
-	transform: translateY(-50%)
+	transform: translateY(-50%);
 }
 #overlay-social ul,
 #playsource ul {
@@ -1594,7 +1588,7 @@ w {
 	margin: 0 auto;
 	display: inline-block;
 	height: 340px;
-	position: relative
+	position: relative;
 }
 #overlay-social ul li,
 #playsource ul li {
@@ -1604,53 +1598,53 @@ w {
 	margin: 0;
 	padding: 0;
 	-webkit-backface-visibility: hidden;
-	backface-visibility: hidden
+	backface-visibility: hidden;
 }
 #overlay-social ul li span,
 #playsource ul li span {
 	font-size: 30px;
-	font-weight: 300
+	font-weight: 300;
 }
 #overlay-social ul li:last-child,
 #playsource ul li:last-child {
 	height: 20px;
-	line-height: 20px
+	line-height: 20px;
 }
 #overlay-social ul li a,
 #playsource ul li a {
 	font-size: 16px;
 	text-align: right;
-	border: 0
+	border: 0;
 }
 #overlay-social ul li a.share-twitter,
 #playsource ul li a.share-twitter {
-	background: #55ACEE
+	background: #55acee;
 }
 #overlay-social ul li a.share-twitter:hover,
 #playsource ul li a.share-twitter:hover,
 #overlay-social ul li a.share-twitter:focus,
 #playsource ul li a.share-twitter:focus {
-	background: #2795e9
+	background: #2795e9;
 }
 #overlay-social ul li a.share-facebook,
 #playsource ul li a.share-facebook {
-	background: #3B5998
+	background: #3B5998;
 }
 #overlay-social ul li a.share-facebook:hover,
 #playsource ul li a.share-facebook:hover,
 #overlay-social ul li a.share-facebook:focus,
 #playsource ul li a.share-facebook:focus {
-	background: #2d4373
+	background: #2d4373;
 }
 #overlay-social ul li a.share-google-plus,
 #playsource ul li a.share-google-plus {
-	background: #DD4B39
+	background: #DD4B39;
 }
 #overlay-social ul li a.share-google-plus:hover,
 #playsource ul li a.share-google-plus:hover,
 #overlay-social ul li a.share-google-plus:focus,
 #playsource ul li a.share-google-plus:focus {
-	background: #c23321
+	background: #c23321;
 }
 #overlay-social ul li a i,
 #playsource ul li a i {
@@ -1658,12 +1652,12 @@ w {
 	float: left;
 	margin: -1px 20px 0 -5px;
 	font-size: 26px;
-	text-align: center
+	text-align: center;
 }
 #overlay-social ul li a span,
 #playsource ul li a span {
 	padding-right: 5px;
-	font-size: 12px
+	font-size: 12px;
 }
 #overlay-social ul li a.inactive span,
 #playsource ul li a.inactive span {
@@ -1679,65 +1673,65 @@ w {
 }
 .overlay-scale .btn-link:hover,
 .overlay-scale .btn-link:focus {
-	text-decoration: none
+	text-decoration: none;
 }
 #playsource-airplay {
 	background: #666;
-	outline: none
+	outline: none;
 }
 #playsource-airplay:hover,
 #playsource-airplay:focus {
 	background: #4d4d4d;
-	cursor: default
+	cursor: default;
 }
 #playsource-dlna {
-	background: #4CA943;
-	outline: none
+	background: #4ca943;
+	outline: none;
 }
 #playsource-dlna:hover,
 #playsource-dlna:focus {
 	background: #3c8435;
-	cursor: default
+	cursor: default;
 }
 #playsource-mpd {
-	background: #003D88
+	background: #003d88;
 }
 #playsource-mpd:hover,
 #playsource-mpd.inactive:hover,
 #playsource-mpd:focus {
-	background: #002655
+	background: #002655;
 }
 #playsource-spotify {
-	background: #81b900
+	background: #81b900;
 }
 #playsource-spotify:hover,
 #playsource-spotify.inactive:hover,
 #playsource-spotify:focus {
-	background: #5d8600
+	background: #5d8600;
 }
 #playsource-airplay.inactive,
 #playsource-dlna.inactive,
 #playsource-mpd.inactive,
 #playsource-spotify.inactive {
 	opacity: 0.5;
-	background: #222f3d
+	background: #222f3d;
 }
 #playsource-mpd.inactive,
 #playsource-spotify.inactive {
 	opacity: 0.5;
-	background: #222f3d
+	background: #222f3d;
 }
 #playsource-mpd.inactive:hover,
 #playsource-spotify.inactive:hover {
-	opacity: 1
+	opacity: 1;
 }
 #playsource-mpd.inactive:hover span,
 #playsource-spotify.inactive:hover span {
-	color: #e0e7ee
+	color: #e0e7ee;
 }
 #player-airplay.inactive:hover,
 #player-dlna.inactive:hover {
-	cursor: default
+	cursor: default;
 }
 
 /* bootstrap column */
