@@ -1143,6 +1143,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			$( '#db-currentpath' ).find( 'span' ).html( folderCrumb );
 		}
 	}
+	$( '#db-index li' ).css( 'color', '' );
 	// hide index bar in file mode
 	if ( $( '#db-entries li:eq( 0 ) i.db-icon' ).hasClass( 'fa-music' ) || fileplaylist ) {
 		$( '#db-index' ).addClass( 'hide' );
