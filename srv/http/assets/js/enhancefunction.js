@@ -537,38 +537,6 @@ function displayTopBottom() {
 	var menuH = ( $( '#settings a' ).length - $( '#settings a.hide' ).length ) * 41 - 1;
 	$( '#settings .menushadow' ).css( 'height', menuH +'px' );
 }
-function displayAirPlay() {
-	$( '#playback-controls' ).addClass( 'hide' );
-	$( '#divartist, #divsong, #divalbum' ).removeClass( 'scroll-left' );
-	$( '#songposition, #format-bitrate, #total' ).empty();
-	$( '#artist' ).html( GUI.airplay.currentartist );
-	$( '#song' ).html( GUI.airplay.currentsong );
-	$( '#album' ).html( GUI.airplay.currentalbum );
-	$( '#elapsed, #total' ).empty();
-	var time = new Date().getTime();
-	$( '#cover-art' ).css( {
-		  'background-image': 'url("assets/img/airplay-cover.jpg?v='+ time +'")'
-		, 'border-radius': 0
-	} );
-	scrollLongText();
-	$( '#menu-top, #menu-bottom' ).toggleClass( 'hide', GUI.display.bars === '' );
-	$( '#playback-row' ).removeClass( 'hide' );
-	$( '#time-knob' ).toggleClass( 'hide', GUI.display.time === '' );
-	$( '#irandom, #irepeat, #posrandom, #posrepeat, #coverartoverlay, #volume-knob, #play-group, #share-group, #vol-group' ).addClass( 'hide' );
-	$( '#playsource-mpd' ).addClass( 'inactive' );
-	$( '#playsource-airplay' ).removeClass( 'inactive' );
-	if ( GUI.display.time ) {
-		$( '#time-knob, #play-group, #coverart, #share-group' ).css( 'width', '45%' );
-		clearInterval( GUI.intKnob );
-		clearInterval( GUI.intElapsed );
-		$( '#time' ).roundSlider( 'setValue', 0 );
-		$( '#elapsed' ).html( blinkdot );
-		$( '#total' ).empty();
-		$( '#iplayer' ).attr( 'class', 'fa fa-airplay' );
-	} else {
-		$( '#coverart, #share-group' ).css( 'width', '90%' );
-	}
-}
 function PlaybackCssOrder( el, ord ) {
 	el.css( { order: ord, '-webkit-order': ord } );
 }
@@ -623,7 +591,10 @@ function displayPlayback() {
 		if ( GUI.display.time ) $( '#iplayer' ).attr( 'class', GUI.status.activePlayer === 'MPD' ? 'fa hide' : 'fa fa-'+ GUI.status.activePlayer.toLowerCase() );
 	}
 	// no scaling for webradio vu meter
-	if ( $( '#album' ).text().slice( 0, 4 ) !== 'http' ) {
+	console.log( GUI.display.coverlarge +' && '+ $( '#album' ).text().slice( 0, 4 ) !== 'http' )
+	if ( ( GUI.display.coverlarge || ( !GUI.display.time && !GUI.display.volume ) )
+		&& $( '#album' ).text().slice( 0, 4 ) !== 'http'
+	) {
 		$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).removeClass( 'coversmall' );
 		var maxW = GUI.display.bars ? '45vh' : '55vh';
 		$( '#divcover, #cover-art' ).css( { 'max-width': maxW, 'max-height': maxW } );
@@ -643,6 +614,38 @@ function displayPlayback() {
 		$( '#playback-row' ).css( 'margin-top', '30px' );
 	}
 	displayTopBottom();
+}
+function displayAirPlay() {
+	$( '#playback-controls' ).addClass( 'hide' );
+	$( '#divartist, #divsong, #divalbum' ).removeClass( 'scroll-left' );
+	$( '#songposition, #format-bitrate, #total' ).empty();
+	$( '#artist' ).html( GUI.airplay.currentartist );
+	$( '#song' ).html( GUI.airplay.currentsong );
+	$( '#album' ).html( GUI.airplay.currentalbum );
+	$( '#elapsed, #total' ).empty();
+	var time = new Date().getTime();
+	$( '#cover-art' ).css( {
+		  'background-image': 'url("assets/img/airplay-cover.jpg?v='+ time +'")'
+		, 'border-radius': 0
+	} );
+	scrollLongText();
+	$( '#menu-top, #menu-bottom' ).toggleClass( 'hide', GUI.display.bars === '' );
+	$( '#playback-row' ).removeClass( 'hide' );
+	$( '#time-knob' ).toggleClass( 'hide', GUI.display.time === '' );
+	$( '#irandom, #irepeat, #posrandom, #posrepeat, #coverartoverlay, #volume-knob, #play-group, #share-group, #vol-group' ).addClass( 'hide' );
+	$( '#playsource-mpd' ).addClass( 'inactive' );
+	$( '#playsource-airplay' ).removeClass( 'inactive' );
+	if ( GUI.display.time ) {
+		$( '#time-knob, #play-group, #coverart, #share-group' ).css( 'width', '45%' );
+		clearInterval( GUI.intKnob );
+		clearInterval( GUI.intElapsed );
+		$( '#time' ).roundSlider( 'setValue', 0 );
+		$( '#elapsed' ).html( blinkdot );
+		$( '#total' ).empty();
+		$( '#iplayer' ).attr( 'class', 'fa fa-airplay' );
+	} else {
+		$( '#coverart, #share-group' ).css( 'width', '90%' );
+	}
 }
 function switchPlaysource( source ) {
 	$.get( '/command/?switchplayer='+ source, function() {
