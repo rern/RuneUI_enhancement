@@ -43,6 +43,10 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 		pushstream( 'playlist', $data );
 	}
 	if ( isset( $_POST[ 'list' ] ) ) {
+		if ( !$result ) {
+			echo 0;
+			exit();
+		}
 		$type = $_POST[ 'list' ];
 		if ( $type === 'file' ) {
 			$data = search2array( $result );
