@@ -792,9 +792,11 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 $( '#db-index li' ).click( function() {
 	var topoffset = GUI.display.bars ? 80 : 40;
 	var indextext = $( this ).text();
+	var $this = $( this );
 	var match = 0;
 	if ( indextext === '#' ) {
 		$( 'html, body' ).scrollTop( 0 );
+		if ( $( '#db-entries .lisort:eq( 0 )' ).text()[ 0 ] === 'A' ) $this.css( 'color', '#000000' );
 		return
 	}
 	$.each( $( '#db-entries li' ), function( i, el ) {
@@ -805,7 +807,6 @@ $( '#db-index li' ).click( function() {
 		}
 	} );
 	if ( !match ) {
-		var $this = $( this );
 		$this.css( 'color', '#000000' );
 		if ( $this.text() !== 'Z' ) $this.next().click();
 	}
