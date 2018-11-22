@@ -78,9 +78,10 @@ if ( empty( $this->uri(1) ) ) { ?>
 <script src="<?=$this->asset( '/js/enhancesettings.js' )?>"></script>
 <script>
 // no top-bottom bars - use close icon
+	var href = location.pathname.slice( 0, 9 ) === '/network/' ? 'javascript:history.back()' : '/';
 	$( 'div.container' )
 		.css( 'padding-top', '0' )
-		.find( 'h1' ).before( '<a href="javascript:history.back()" style="float: right; margin-top: 20px;"><i class="fa fa-times fa-2x"></i></a>' );
+		.find( 'h1' ).before( '<a href="'+ href +'" style="float: right; margin-top: 20px;"><i class="fa fa-times fa-2x"></i></a>' );
 </script>
 <?php 
 } ?>
