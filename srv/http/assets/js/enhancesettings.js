@@ -177,7 +177,7 @@ if ( path === '/sources' ) {
 		}
 	});
 	
-} else if ( path === '/network' ) {
+} else if ( path.slice( 0, 8 ) === '/network' ) {
 	var netManualConf = $('#network-manual-config');
 	if ($('#dhcp').val() === '0') {
 		netManualConf.removeClass('hide');
