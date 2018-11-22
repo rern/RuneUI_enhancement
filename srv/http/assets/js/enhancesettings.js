@@ -106,7 +106,7 @@ if ( path === '/sources' ) {
 		$('#usb-umount').val(mountName);
 	});
 	
-} else if ( path === '/mpd' ) {
+} else if ( path.slice( 0, 4 ) === '/mpd' ) {
 	$('#audio-output-interface').change(function(){
 		new PNotify( {
 			  icon  : 'fa fa-cog fa-spin'
