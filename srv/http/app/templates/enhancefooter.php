@@ -80,7 +80,7 @@ if ( empty( $this->uri(1) ) ) { ?>
 // no top-bottom bars - use close icon
 	$( 'div.container' )
 		.css( 'padding-top', '0' )
-		.find( 'h1' ).before( '<a href="/" style="	float: right; margin-top: 20px;"><i class="fa fa-times fa-2x"></i></a>' );
+		.find( 'h1' ).before( '<a href="javascript:history.back()" style="float: right; margin-top: 20px;"><i class="fa fa-times fa-2x"></i></a>' );
 </script>
 <?php 
 } ?>

@@ -120,11 +120,37 @@ pushstreams.notify.onmessage = function( data ) {
 		, text        : notify.text
 	} );
 }
-
 $.each( streams, function( i, stream ) {
 	pushstreams[ stream ].connect();
 } );
 
+function setPageCurrent( panel ) {
+	clearInterval( GUI.intKnob );
+	clearInterval( GUI.intElapsed );
+	clearInterval( GUI.intElapsedPl );
+	if ( !$( '#page-library' ).hasClass( 'hide' ) && $( '#home-blocks' ).hasClass( 'hide' ) ) {
+		var path = $( '#db-currentpath .lipath' ).text();
+		if ( path ) GUI.dbscrolltop[ path ] = $( window ).scrollTop();
+	} else if ( !$( '#page-playlist' ).hasClass( 'hide' ) && GUI.pleditor ) {
+		if ( $( '#pl-currentpath .fa-arrow-left' ).hasClass( 'plsbackroot' ) ) {
+			GUI.plscrolltop = $( window ).scrollTop();
+		} else {
+			GUI.listplscrolltop = $( window ).scrollTop();
+		}
+	}
+	$( '#menu-bottom li' ).removeClass( 'active' );
+	$( '.page' ).addClass( 'hide' );
+	$( '#page-'+ panel ).removeClass( 'hide' );
+	$( '#tab-'+ panel ).addClass( 'active' );
+	if ( !GUI.display.bars ) {
+		$( '.btnlist-top' ).css( 'top', 0 );
+		$( '#db-list' ).css( 'padding-top', '40px' );
+	}
+	if ( panel === 'playback'
+		|| ( panel === 'library' && !$( '#home-block' ).hasClass( 'hide' ) )
+	) $( 'html, body' ).scrollTop( 0 );
+	if ( panel !== 'playlist' ) $( '#pl-entries li' ).removeClass( 'active' );
+}
 function setButtonToggle() {
 	if ( GUI.local ) return
 	
@@ -444,31 +470,6 @@ function getPlaybackStatus() {
 		// imodedelay fix imode flashing on audio output switched
 		if ( !GUI.imodedelay ) displayPlayback();
 	}, 'json' );
-}
-
-function setPageCurrent( panel ) {
-	if ( !$( '#page-library' ).hasClass( 'hide' ) && $( '#home-blocks' ).hasClass( 'hide' ) ) {
-		var path = $( '#db-currentpath .lipath' ).text();
-		if ( path ) GUI.dbscrolltop[ path ] = $( window ).scrollTop();
-	} else if ( !$( '#page-playlist' ).hasClass( 'hide' ) && GUI.pleditor ) {
-		if ( $( '#pl-currentpath .fa-arrow-left' ).hasClass( 'plsbackroot' ) ) {
-			GUI.plscrolltop = $( window ).scrollTop();
-		} else {
-			GUI.listplscrolltop = $( window ).scrollTop();
-		}
-	}
-	$( '#menu-bottom li' ).removeClass( 'active' );
-	$( '.page' ).addClass( 'hide' );
-	$( '#page-'+ panel ).removeClass( 'hide' );
-	$( '#tab-'+ panel ).addClass( 'active' );
-	if ( !GUI.display.bars ) {
-		$( '.btnlist-top' ).css( 'top', 0 );
-		$( '#db-list' ).css( 'padding-top', '40px' );
-	}
-	if ( panel === 'playback'
-		|| ( panel === 'library' && !$( '#home-block' ).hasClass( 'hide' ) )
-	) $( 'html, body' ).scrollTop( 0 );
-	if ( panel !== 'playlist' ) $( '#pl-entries li' ).removeClass( 'active' );
 }
 function getBio( artist ) {
 	$( '#loader' ).removeClass( 'hide' );
