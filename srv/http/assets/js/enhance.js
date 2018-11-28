@@ -1049,17 +1049,18 @@ $( '#pl-index li' ).click( function() {
 } );
 
 document.addEventListener( 'visibilitychange', function() {
+	console.log( document.visibilityState )
 	if ( document.hidden ) {
 		clearInterval( GUI.intKnob );
 		clearInterval( GUI.intElapsed );
 		clearInterval( GUI.intElapsedPl );
-		$.each( streams, function( i, stream ) {
+/*		$.each( streams, function( i, stream ) {
 			pushstreams[ stream ].disconnect();
-		} );
+		} );*/
 	} else {
-		$.each( streams, function( i, stream ) {
+/*		$.each( streams, function( i, stream ) {
 			pushstreams[ stream ].connect();
-		} );
+		} );*/
 		if ( !$( '#page-playback' ).hasClass( 'hide' ) ) {
 			$.post( 'enhance.php', { getdisplay: 1 } ); // display data > pushstream > getPlaybackStatus()
 		} else if ( !$( '#page-playlist' ).hasClass( 'hide' ) ) {
