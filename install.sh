@@ -13,10 +13,6 @@ alias=enha
 installstart $@
 
 #0temp0 remove uninstall leftover
-redis-cli del volumemute &> /dev/null
-redis-cli hdel display albums artists &> /dev/null
-sed -i '/^disable_overscan=1\|^hdmi_ignore_cec=1/ d' /boot/config.txt
-rm -f /srv/http/app/enhancecoverart_ctl.php
 rm /srv/http/assets/enhancesettings.js
 #1temp1
 
