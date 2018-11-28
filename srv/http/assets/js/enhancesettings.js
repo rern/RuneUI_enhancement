@@ -24,27 +24,8 @@ if ( path === '/sources' ) {
 			}
 		}, 'json' );
 	}
-	if ( 'hidden' in document ) {
-		var visibilityevent = 'visibilitychange';
-		var hiddenstate = 'hidden';
-	} else { // cross-browser document.visibilityState must be prefixed
-		var prefixes = [ 'webkit', 'moz', 'ms', 'o' ];
-		for ( var i = 0; i < 4; i++ ) {
-			var p = prefixes[ i ];
-			if ( p +'Hidden' in document ) {
-				var visibilityevent = p +'visibilitychange';
-				var hiddenstate = p +'Hidden';
-				break;
-			}
-		}
-	}
-	document.addEventListener( visibilityevent, function() {
-		if ( document[ hiddenstate ] ) {
-			pushstreamIdle.disconnect();
-		} else {
-			pushstreamIdle.connect();
-			toggleUpdate();
-		}
+	document.addEventListener( 'visibilitychange', function() {
+		if ( !document.hidden ) toggleUpdate();
 	} );
 	toggleUpdate();
 	var pushstreamIdle = new PushStream( { modes: 'websocket' } );
