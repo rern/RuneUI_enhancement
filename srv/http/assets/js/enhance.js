@@ -212,7 +212,7 @@ $( '#turnoff' ).click( function() {
 	} );
 } );
 $( '#tab-library' ).click( function() {
-	if ( !GUI.libraryhome.song ) return // wait for mpc data 
+	if ( !Object.keys( GUI.libraryhome ).length ) return // wait for mpc data 
 	
 	if ( GUI.bookmarkedit ) {
 		GUI.bookmarkedit = 0;
@@ -1049,7 +1049,6 @@ $( '#pl-index li' ).click( function() {
 } );
 
 document.addEventListener( 'visibilitychange', function() {
-	console.log( document.visibilityState )
 	if ( document.hidden ) {
 		clearInterval( GUI.intKnob );
 		clearInterval( GUI.intElapsed );
