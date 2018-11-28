@@ -1,11 +1,5 @@
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-var psOption = {
-	  host: window.location.hostname
-	, port: window.location.port
-	, modes: 'websocket'
-};
-
 if ( document.location.hostname === 'localhost' ) $( '.osk-trigger' ).onScreenKeyboard( { 'draggable': true } );
 
 $( '.selectpicker' ).selectpicker();
@@ -53,7 +47,7 @@ if ( path === '/sources' ) {
 		}
 	} );
 	toggleUpdate();
-	var pushstreamIdle = new PushStream( psOption );
+	var pushstreamIdle = new PushStream( { modes: 'websocket' } );
 	pushstreamIdle.onmessage = function( data ) {
 		if ( data[ 0 ] === 'update' ) toggleUpdate();
 	}
@@ -241,7 +235,7 @@ if ( path === '/sources' ) {
 				cache: false
 			});
 		}
-		var pushstreamWlans = new PushStream( psOption );
+		var pushstreamWlans = new PushStream( { modes: 'websocket' } );
 		pushstreamWlans.onmessage = listWLANs;
 		pushstreamWlans.addChannel('wlans');
 		pushstreamWlans.connect();
@@ -274,7 +268,7 @@ if ( path === '/sources' ) {
 			});
 			$('#nic-details tbody').html(content);
 		}
-		var pushstreamNics = new PushStream( psOption );
+		var pushstreamNics = new PushStream( { modes: 'websocket' } );
 		pushstreamNics.onmessage = nicsDetails;
 		pushstreamNics.addChannel('nics');
 		pushstreamNics.connect();
