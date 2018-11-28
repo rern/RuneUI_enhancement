@@ -1,12 +1,7 @@
-var psOption = {
-	  host: window.location.hostname
-	, port: window.location.port
-	, modes: 'websocket'
-};
 var pushstreams = {};
 var streams = [ 'display', 'volume', 'library', 'playlist', 'idle', 'notify' ];
 $.each( streams, function( i, stream ) {
-	pushstreams[ stream ] = new PushStream( psOption );
+	pushstreams[ stream ] = new PushStream( { modes: 'websocket' } );
 	pushstreams[ stream ].addChannel( stream );
 } );
 
