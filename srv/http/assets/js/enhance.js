@@ -1048,25 +1048,11 @@ $( '#pl-index li' ).click( function() {
 	if ( matcharray.length ) $( 'html, body' ).scrollTop( matcharray[ 0 ].offsetTop - topoffset );
 } );
 
-
-if ( 'hidden' in document ) {
-	var visibilityevent = 'visibilitychange';
-	var hiddenstate = 'hidden';
-} else { // cross-browser document.visibilityState must be prefixed
-	var prefixes = [ 'webkit', 'moz', 'ms', 'o' ];
-	for ( var i = 0; i < 4; i++ ) {
-		var p = prefixes[ i ];
-		if ( p +'Hidden' in document ) {
-			var visibilityevent = p +'visibilitychange';
-			var hiddenstate = p +'Hidden';
-			break;
-		}
-	}
-}
-document.addEventListener( visibilityevent, function() {
-	if ( document[ hiddenstate ] ) {
+document.addEventListener( 'visibilitychange', function() {
+	if ( document.hidden ) {
 		clearInterval( GUI.intKnob );
 		clearInterval( GUI.intElapsed );
+		clearInterval( GUI.intElapsedPl );
 		$.each( streams, function( i, stream ) {
 			pushstreams[ stream ].disconnect();
 		} );
