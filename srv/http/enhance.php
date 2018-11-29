@@ -200,8 +200,7 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 function search2array( $result ) {
 	$lists = explode( "\n", rtrim( $result ) );
 	foreach( $lists as $list ) {
-		$root = substr( $list, 0, 4 );
-		if ( $root === 'USB/' || $root === 'NAS/' || $root === 'LocalStorage/' ) {
+		if ( substr( $list, 0, 4 ) === 'USB/' || substr( $list, 0, 4 ) === 'NAS/' || substr( $list, 0, 13 ) === 'LocalStorage/' ) {
 			$ext = substr( $list, -4 );
 			if ( $ext === '.m3u' || $ext === '.cue' || $ext === '.pls') {
 				$li[ 'playlist' ] = basename( $list );
