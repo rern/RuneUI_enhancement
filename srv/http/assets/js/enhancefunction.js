@@ -692,7 +692,7 @@ function setLibraryBlock( id ) {
 	var status = GUI.libraryhome;
 	if ( id === 'spotify' && !status.spotify ) return '';
 
-	var count = GUI.display.count && status[ id ] !== undefined ? ( '<gr>'+ numFormat( status[ id ] ) +'</gr>' ) : '';
+	var count = ( !GUI.display.count || status[ id ] === undefined ) ? '' : '<gr>'+ numFormat( status[ id ] ) +'</gr>';
 	var label = GUI.display.label ? ( '<wh>'+ namepath[ id ][ 0 ] +'</wh>' ) : '';
 	var browsemode = ( [ 'album', 'artist', 'albumartist', 'composer', 'genre' ].indexOf( id ) !== -1 ) ? ' data-browsemode="'+ id +'"' : '';
 	var plugin = ( id === 'spotify' || id === 'dirble' || id === 'jamendo' ) ? ( ' data-plugin="'+ namepath[ id ][ 1 ] +'"' ) : '';
@@ -731,9 +731,8 @@ function renderLibrary() {
 		} );
 		var bookmarkL = bookmarks.length;
 		$.each( bookmarks, function( i, bookmark ) {
-			var count = GUI.display.count ? '<gr>'+ numFormat( bookmark.count ) +' <i class="fa fa-music"></i></gr>' : '';
 			var name = bookmark.name.replace( /\\/g, '' );
-			content += '<div class="col-md-3"><div class="home-block home-bookmark"><a class="lipath">'+ bookmark.path +'</a><i class="fa fa-bookmark"></i>'+ count +'<div class="divbklabel"><span class="bklabel">'+ name +'</span></div></div></div>';
+			content += '<div class="col-md-3"><div class="home-block home-bookmark"><a class="lipath">'+ bookmark.path +'</a><i class="fa fa-bookmark"></i><div class="divbklabel"><span class="bklabel">'+ name +'</span></div></div></div>';
 		} );
 	}
 	var order = GUI.display.library || 'sd,usb,nas,webradio,album,artist,albumartist,composer,genre,dirble,jamendo';

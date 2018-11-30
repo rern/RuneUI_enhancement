@@ -567,20 +567,20 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 	if ( GUI.local || $this.hasClass( 'home-bookmark' ) ) return
 	
 	var type = id.replace( 'home-', '' );
-	GUI.plugin = $this.data( 'plugin' );
-	if ( !GUI.libraryhome[ type ] && !$this.hasClass( 'home-bookmark' ) && !GUI.plugin ) {
-		if ( type === 'usb' ) {
-			location.href = '/sources';
-		} else if ( type === 'nas' ) {
-			location.href = '/sources/add';
-		} else if ( type === 'webradio' ) {
-			webRadioNew();
-		}
+	if ( type === 'usb' && !GUI.libraryhome.usb ) {
+		location.href = '/sources';
+		return
+	} else if ( type === 'nas' && !GUI.libraryhome.nas ) {
+		location.href = '/sources/add';
+		return
+	} else if ( type === 'webradio' && !GUI.libraryhome.webradio ) {
+		webRadioNew();
 		return
 	}
 	
 	var path = $this.find( '.lipath' ).text();
 	var name = $this.find( '.bklabel' ).text();
+	GUI.plugin = $this.data( 'plugin' );
 	if ( id === 'home-spotify' && GUI.status.activePlayer !== 'Spotify' ) {
 		$( '#playsource' ).addClass( 'open' );
 	} else {
