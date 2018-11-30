@@ -200,7 +200,8 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 function search2array( $result ) {
 	$lists = explode( "\n", rtrim( $result ) );
 	foreach( $lists as $list ) {
-		if ( substr( $list, 0, 4 ) === 'USB/' || substr( $list, 0, 4 ) === 'NAS/' || substr( $list, 0, 13 ) === 'LocalStorage/' ) {
+		$root = substr( $list, 0, 4 );
+		if ( $root === 'USB/' || $root === 'NAS/' || substr( $list, 0, 13 ) === 'LocalStorage/' ) {
 			$ext = substr( $list, -4 );
 			if ( $ext === '.m3u' || $ext === '.cue' || $ext === '.pls') {
 				$li[ 'playlist' ] = basename( $list );
@@ -255,7 +256,6 @@ function getLibrary() {
 			$bookmarks[] = array(
 				  'name'  => $name
 				, 'path'  => $path
-				, 'count' => exec( 'mpc list title base "'.$path.'" | wc -l' )
 			);
 		}
 	} else {
@@ -268,15 +268,14 @@ function getLibrary() {
 		, 'artist'       => $count[ 0 ]
 		, 'album'        => $count[ 1 ]
 		, 'song'         => $count[ 2 ]
-		, 'composer'     => $count[ 3 ]
-		, 'genre'        => $count[ 4 ]
-		, 'nas'          => $count[ 5 ]
-		, 'usb'          => $count[ 6 ]
-		, 'webradio'     => $count[ 7 ]
-		, 'sd'           => $count[ 8 ]
-		, 'albumartist'  => $count[ 9 ]
-		, 'spotify'      => $count[ 10 ]
-		, 'activeplayer' => $count[ 11 ]
+		, 'albumartist'  => $count[ 3 ]
+		, 'composer'     => $count[ 4 ]
+		, 'genre'        => $count[ 5 ]
+		, 'nas'          => $count[ 6 ]
+		, 'usb'          => $count[ 7 ]
+		, 'webradio'     => $count[ 8 ]
+		, 'spotify'      => $count[ 9 ]
+		, 'activeplayer' => $count[ 10 ]
 	);
 	return $status;
 }
