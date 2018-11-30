@@ -78,7 +78,8 @@ if ( empty( $this->uri(1) ) ) { ?>
 <script src="<?=$this->asset( '/js/enhancesettings.js' )?>"></script>
 <script>
 // no top-bottom bars - use close icon
-	var href = location.pathname.match( /\//g ).length > 1 ? 'javascript:history.back()' : '/';
+	var pathname = location.pathname;
+	var href = pathname.substring( 0, pathname.lastIndexOf( '/' ) ) || '/';
 	$( 'div.container' )
 		.css( 'padding-top', '0' )
 		.find( 'h1' ).before( '<a href="'+ href +'" style="float: right; margin-top: 20px;"><i class="fa fa-times fa-2x"></i></a>' );
