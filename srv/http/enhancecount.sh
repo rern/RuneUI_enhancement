@@ -8,11 +8,7 @@ count="$count $( mpc list genre | awk NF | wc -l )"
 count="$count $( df | grep "/mnt/MPD/NAS" | wc -l )"
 count="$count $( df | grep "/mnt/MPD/USB" | wc -l )"
 count="$count $( redis-cli hkeys webradios | sed '/(empty list or set)/ d' | awk NF | wc -l )"
-if [[ $( find /mnt/MPD/LocalStorage -type f | wc -l ) ]]; then
-	count="$count $( mpc list title base LocalStorage 2> /dev/null | wc -l )"
-else
-	count="$count 0"
-fi
+count="$count 1"
 count="$count $( mpc list albumartist | awk NF | wc -l )"
 count="$count $( redis-cli hget spotify enable )"
 count="$count $( redis-cli get activePlayer )"
