@@ -1053,15 +1053,10 @@ document.addEventListener( 'visibilitychange', function() {
 		clearInterval( GUI.intKnob );
 		clearInterval( GUI.intElapsed );
 		clearInterval( GUI.intElapsedPl );
-/*		$.each( streams, function( i, stream ) {
-			pushstreams[ stream ].disconnect();
-		} );*/
 	} else {
-/*		$.each( streams, function( i, stream ) {
-			pushstreams[ stream ].connect();
-		} );*/
 		if ( !$( '#page-playback' ).hasClass( 'hide' ) ) {
-			$.post( 'enhance.php', { getdisplay: 1 } ); // display data > pushstream > getPlaybackStatus()
+			$.post( 'enhance.php', { getdisplay: 1 } );
+			getPlaybackStatus(); // pushsteam cannot reconnect soon enough
 		} else if ( !$( '#page-playlist' ).hasClass( 'hide' ) ) {
 			if ( GUI.pleditor ) {
 				$( '#pl-currentpath .lipath' ).text() ? renderSavedPlaylist( name ) : $( '#plopen' ).click();
