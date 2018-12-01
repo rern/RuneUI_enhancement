@@ -13,7 +13,7 @@ alias=enha
 installstart $@
 
 #0temp0 remove uninstall leftover
-rm /srv/http/assets/enhancesettings.js
+rm -f /srv/http/assets/enhancesettings.js
 #1temp1
 
 mv /srv/http/index.php{,.backup}
