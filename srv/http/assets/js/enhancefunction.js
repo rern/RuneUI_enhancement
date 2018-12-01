@@ -107,6 +107,13 @@ pushstreams.idle.onmessage = function( changed ) {
 		if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) $( '#home-webradio' ).click();
 	}
 }
+pushstreams.idle.onstatuschange = function( data ) {
+	if ( !$( '#page-playback' ).hasClass( 'hide' ) ) {
+		getPlaybackStatus();
+	} else if ( !$( '#page-playlist' ).hasClass( 'hide' ) && !GUI.pleditor ) {
+		setPlaylistScroll();
+	}
+}
 pushstreams.notify.onmessage = function( data ) {
 	var notify = data[ 0 ];
 	new PNotify( {
