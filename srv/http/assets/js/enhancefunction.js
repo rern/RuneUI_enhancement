@@ -272,6 +272,7 @@ function scrollLongText() {
 function removeSplash() {
 	$( '#splash' ).remove();
 	$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
+	$( '#page-playback' ).removeClass( 'hide' );
 }
 function setPlaybackBlank() {
 	$( '#playback-controls' ).addClass( 'hide' );
