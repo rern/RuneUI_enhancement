@@ -14,7 +14,7 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 	if ( $count === 1 ) {
 		$albums = shell_exec( "mpc find -f '%title%^^%time%^^%artist%^^%album%^^%file%^^%albumartist%' album '".$name."'" );
 		$data = search2array( $albums );
-		if ( $redis->hGet( 'display', 'librarycover' ) ) {
+		if ( $redis->hGet( 'display', 'coverfile' ) ) {
 			$cover = getCover( $data );
 			if ( $cover ) $data[][ 'coverart' ] = $cover;
 		}
@@ -57,7 +57,7 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 		$type = $_POST[ 'list' ];
 		if ( $type === 'file' ) {
 			$data = search2array( $result );
-			if ( $redis->hGet( 'display', 'librarycover' ) ) {
+			if ( $redis->hGet( 'display', 'coverfile' ) ) {
 				$cover = getCover( $data );
 				if ( $cover ) $data[][ 'coverart' ] = $cover;
 			}
