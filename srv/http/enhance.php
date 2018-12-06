@@ -1,5 +1,21 @@
 <?php
 // no redis
+function getCover( $data ) {
+	$dir = '/mnt/MPD/'.dirname( $data[ 0 ][ 'file' ] );
+	$coverfiles = array(
+		  'cover.png', 'cover.jpg', 'folder.png', 'folder.jpg', 'front.png', 'front.jpg'
+		, 'Cover.png', 'Coverjpg', 'Folder.png', 'Folder.jpg', 'Front.png', 'Front.jpg'
+	);
+	foreach( $coverfiles as $cover ) {
+		$coverfile = $dir.'/'.$cover;
+		if ( file_exists( $coverfile ) ) {
+			$coverext = pathinfo( $cover, PATHINFO_EXTENSION );
+			$coverart = file_get_contents( $coverfile ) ;
+			return 'data:image/'. $coverext.';base64,'.base64_encode( $coverart );
+			break;
+		}
+	}
+}
 if ( isset( $_POST[ 'bash' ] ) ) {
 	echo shell_exec( '/usr/bin/sudo '.$_POST[ 'bash' ] );
 	exit();
@@ -11,6 +27,8 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 	if ( $count === 1 ) {
 		$albums = shell_exec( "mpc find -f '%title%^^%time%^^%artist%^^%album%^^%file%^^%albumartist%' album '".$name."'" );
 		$data = search2array( $albums );
+		$cover = getCover( $data );
+		if ( $cover ) $data[][ 'coverart' ] = $cover;
 	} else {
 		foreach( $lines as $line ) {
 			$list = explode( '^^', $line );
@@ -50,6 +68,8 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 		$type = $_POST[ 'list' ];
 		if ( $type === 'file' ) {
 			$data = search2array( $result );
+			$cover = getCover( $data );
+			if ( $cover ) $data[][ 'coverart' ] = $cover;
 		} else {
 			$lists = explode( "\n", rtrim( $result ) );
 			foreach( $lists as $list ) {
