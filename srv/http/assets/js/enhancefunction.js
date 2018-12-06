@@ -965,6 +965,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		content = '',
 		i = 0,
 		row = [];
+	GUI.coverart = '';
 	GUI.albumartist = '';
 	GUI.currentpath = path;
 	$( '#db-entries, #db-currentpath .lipath' ).empty();
@@ -1003,7 +1004,9 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			var arrayfile = [];
 			var arraypl = [];
 			$.each( data, function( index, value ) {
-				if ( value.directory ) {
+				if ( value.coverart ) {
+					GUI.coverart = value.coverart;
+				} else if ( value.directory ) {
 					value.lisort = stripLeading( value.directory.replace( /^.*\//, '' ) );
 					arraydir.push( value );
 				} else if ( value.file ) {
@@ -1014,6 +1017,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 					arraypl.push( value );
 				}
 			} );
+			if ( GUI.coverart ) content += '<div class="licover"><img src="'+ GUI.coverart +'" class="coversmall"></div>';
 			arraydir.sort( function( a, b ) {
 				return a[ 'lisort' ].localeCompare( b[ 'lisort' ], undefined, { numeric: true } );
 			} );
