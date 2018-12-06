@@ -1316,6 +1316,10 @@ wh, gr { font-weight: 300; }
 .index li:hover {
 	background: #34495e;
 }
+.licover .coversmall {
+	margin-left: 40px;
+	box-shadow: #555555 0 0 8px 2px
+}
 #db-entries,
 #pl-editor {
 	float: left;
