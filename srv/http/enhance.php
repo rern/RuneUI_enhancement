@@ -237,7 +237,8 @@ function search2array( $result ) {
 	return $data;
 }
 function getCover( $data ) {
-	$dir = '/mnt/MPD/'.dirname( $data[ 0 ][ 'file' ] );
+	$file = '/mnt/MPD/'.$data[ 0 ][ 'file' ];
+	$dir = dirname( $file );
 	$coverfiles = array(
 		  'cover.png', 'cover.jpg', 'folder.png', 'folder.jpg', 'front.png', 'front.jpg'
 		, 'Cover.png', 'Coverjpg', 'Folder.png', 'Folder.jpg', 'Front.png', 'Front.jpg'
@@ -248,8 +249,17 @@ function getCover( $data ) {
 			$coverext = pathinfo( $cover, PATHINFO_EXTENSION );
 			$coverart = file_get_contents( $coverfile ) ;
 			return 'data:image/'. $coverext.';base64,'.base64_encode( $coverart );
-			break;
 		}
+	}
+	set_include_path( '/srv/http/app/libs/vendor/' );
+	require_once( 'getid3/audioinfo.class.php' );
+	$audioinfo = new AudioInfo();
+	$id3tag = $audioinfo->Info( $file );
+	if ( isset( $id3tag[ 'comments' ][ 'picture' ][ 0 ][ 'data' ] ) ) {
+		$id3cover = $id3tag[ 'comments' ][ 'picture' ][ 0 ];
+		$coverart = $id3cover[ 'data' ];
+		$coverext = str_replace( 'image/', '', $id3cover[ 'image_mime' ] );
+		return 'data:image/'. $coverext.';base64,'.base64_encode( $coverart );
 	}
 }
 function list2array( $lines ) {

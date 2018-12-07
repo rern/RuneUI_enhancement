@@ -67,8 +67,8 @@ if ( $activePlayer === 'MPD'
 			$coverfile = $dir.'/'.$cover;
 			if ( file_exists( $coverfile ) ) {
 				$coverext = pathinfo( $cover, PATHINFO_EXTENSION );
-				$data = file_get_contents( $coverfile ) ;
-				$status[ 'coverart' ] = 'data:image/'. $coverext.';base64,'.base64_encode( $data );
+				$coverart = file_get_contents( $coverfile ) ;
+				$status[ 'coverart' ] = 'data:image/'. $coverext.';base64,'.base64_encode( $coverart );
 				break;
 			}
 		}
@@ -80,9 +80,9 @@ if ( $activePlayer === 'MPD'
 		$id3tag = $audioinfo->Info( $file );
 		if ( isset( $id3tag[ 'comments' ][ 'picture' ][ 0 ][ 'data' ] ) ) {
 			$id3cover = $id3tag[ 'comments' ][ 'picture' ][ 0 ];
-			$cover = $id3cover[ 'data' ];
+			$coverart = $id3cover[ 'data' ];
 			$coverext = str_replace( 'image/', '', $id3cover[ 'image_mime' ] );
-			$status[ 'coverart' ] = 'data:image/'. $coverext.';base64,'.base64_encode( $cover );
+			$status[ 'coverart' ] = 'data:image/'. $coverext.';base64,'.base64_encode( $coverart );
 		}
 		if ( isset( $status[ 'coverart' ] ) ) break;
 // 3. last.FM
