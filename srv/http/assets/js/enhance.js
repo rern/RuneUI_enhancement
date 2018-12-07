@@ -5,7 +5,6 @@ var GUI = { // outside '$( function() {' enable console.log access
 	, bookmarkedit : 0
 	, browsemode   : ''
 	, currentpath  : ''
-	, dbcurrent    : ''
 	, dbback       : 0
 	, dbbackdata   : []
 	, dbbrowsemode : ''
@@ -774,21 +773,16 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 	$( '.lastfm' ).toggleClass( 'hide', GUI.list.name.slice( -4, -3 ) === '.' );
 	var contextnum = $menu.find( 'a:not(.hide)' ).length - 1;
 	$( '.menushadow' ).css( 'height', contextnum * 41 );
-	if ( GUI.list.path === GUI.dbcurrent ) {
-		GUI.dbcurrent = '';
-	} else {
-		GUI.dbcurrent = GUI.list.path;
-		$thisli.addClass( 'active' );
-		$menu
-			.removeClass( 'hide' )
-			.css( {
-				  top   : $thisli.hasClass( 'licover' ) ? '220px' : $this.position().top +'px'
-				, right : $( '#db-index' ).hasClass( 'hide' ) ? '50px' : '90px'
-			} );
-		var targetB = $menu.offset().top + $menu.height();
-		var wH = window.innerHeight;
-		if ( targetB > wH + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + ( GUI.display.bars ? 42 : 0 ) } );
-	}
+	$thisli.addClass( 'active' );
+	$menu
+		.removeClass( 'hide' )
+		.css( {
+			  top   : $thisli.hasClass( 'licover' ) ? '220px' : $this.position().top +'px'
+			, right : $( '#db-index' ).hasClass( 'hide' ) ? '50px' : '90px'
+		} );
+	var targetB = $menu.offset().top + $menu.height();
+	var wH = window.innerHeight;
+	if ( targetB > wH + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + ( GUI.display.bars ? 42 : 0 ) } );
 } );
 $( '#db-index li' ).click( function() {
 	var topoffset = GUI.display.bars ? 80 : 40;

@@ -133,6 +133,7 @@ function setPageCurrent( panel ) {
 	if ( !$( '#page-library' ).hasClass( 'hide' ) && $( '#home-blocks' ).hasClass( 'hide' ) ) {
 		var path = $( '#db-currentpath .lipath' ).text();
 		if ( path ) GUI.dbscrolltop[ path ] = $( window ).scrollTop();
+		$( '#db-entries li' ).removeClass( 'active' );
 	} else if ( !$( '#page-playlist' ).hasClass( 'hide' ) && GUI.pleditor ) {
 		if ( $( '#pl-currentpath .fa-arrow-left' ).hasClass( 'plsbackroot' ) ) {
 			GUI.plscrolltop = $( window ).scrollTop();

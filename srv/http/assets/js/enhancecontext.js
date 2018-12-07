@@ -14,7 +14,6 @@ $( 'body' ).click( function( e ) {
 	}
 } );
 $( '.contextmenu a' ).click( function() {
-	GUI.dbcurrent = '';
 	var cmd = $( this ).data( 'cmd' );
 	var mode = cmd.replace( /replaceplay|replace|addplay|add/, '' );
 	// get name
