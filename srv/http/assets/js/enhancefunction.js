@@ -871,7 +871,7 @@ function getDB( options ) {
 	if ( !plugin ) {
 		var command = {
 			  file        : { mpc: 'mpc ls -f "%title%^^%time%^^%artist%^^%album%^^%file%" "'+ path +'" 2> /dev/null', list: 'file' }
-			, artistalbum : { mpc: 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%albumartist%"'+ ( artist ? ' albumartist "'+ artist +'"' : '' ) +' album "'+ path +'"', list: 'file' }
+			, artistalbum : { mpc: 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%albumartist%"'+ ( artist ? ' albumartist "'+ artist +'"' : '' ) +' album "'+ path +'"', list: 'file', name: path }
 			, album       : { album: 'mpc find -f "%album%^^[%albumartist%||%artist%]" album "'+ path +'" | awk \'!a[$0]++\'', name: path }
 			, genre       : { album: 'mpc find -f "%album%^^[%albumartist%||%artist%]" genre "'+ path +'" | awk \'!a[$0]++\'' }
 			, artist      : { mpc: 'mpc list album artist "'+ path +'" | awk NF', list: 'album' }
