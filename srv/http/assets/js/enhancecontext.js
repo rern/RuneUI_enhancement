@@ -2,17 +2,6 @@
 //     enclosed with double quotes + escape double quotes
 // example: mpc save "abc's \"xyz\"" << name.replace( /"/g, '\\"' )
 
-$( 'body' ).click( function( e ) {
-	if ( e.target.id !== 'menu-settings'
-		&& e.target.id !== 'badge'
-		&& e.target.id !== 'coverTR'
-		&& !$( e.target ).hasClass( 'db-action' )
-		&& !$( e.target ).hasClass( 'pl-action' )
-	) {
-		GUI.plcurrent = '';
-		$( '.menu, .contextmenu' ).addClass( 'hide' );
-	}
-} );
 $( '.contextmenu a' ).click( function() {
 	var cmd = $( this ).data( 'cmd' );
 	var mode = cmd.replace( /replaceplay|replace|addplay|add/, '' );

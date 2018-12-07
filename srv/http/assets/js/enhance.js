@@ -714,7 +714,7 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	if ( ( GUI.browsemode === 'artist' && currentpath !== 'Artist' )
 		|| ( GUI.browsemode === 'albumartist' && currentpath !== 'AlbumArtist' )
 	) {
-		var artist = $this.attr('mode') === 'album' ? '' : currentpath;
+		var artist = currentpath;
 	} else if ( GUI.browsemode === 'album' || GUI.browsemode === 'genre' ) {
 		var artist = $this.find( '.liartist' ).text() || '';
 	} else {
@@ -783,7 +783,7 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 	$menu
 		.removeClass( 'hide' )
 		.css( {
-			  top   : $thisli.hasClass( 'licover' ) ? '220px' : $this.position().top +'px'
+			  top   : $thisli.hasClass( 'licover' ) ? '221px' : $this.position().top +'px'
 			, right : $( '#db-index' ).hasClass( 'hide' ) ? '50px' : '90px'
 		} );
 	var targetB = $menu.offset().top + $menu.height();

@@ -142,7 +142,7 @@ function setPageCurrent( panel ) {
 		}
 	}
 	$( '#menu-bottom li' ).removeClass( 'active' );
-	$( '.page' ).addClass( 'hide' );
+	$( '.page, .menu' ).addClass( 'hide' );
 	$( '#page-'+ panel ).removeClass( 'hide' );
 	$( '#tab-'+ panel ).addClass( 'active' );
 	if ( !GUI.display.bars ) {
