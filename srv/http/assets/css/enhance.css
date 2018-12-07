@@ -1321,10 +1321,13 @@ wh, gr { font-weight: 300; }
 }
 .licover .coversmall {
 	margin-left: 40px;
-	box-shadow: #555555 0 0 8px 2px
+	box-shadow: #555555 0 0 8px 2px;
 }
 .licover .db-action {
 	margin-top: 180px !important;
+}
+.licover.active {
+	background: linear-gradient( to bottom, #0000 78.5%, #0095d8 21.5% ) !important;
 }
 #db-entries,
 #pl-editor {
