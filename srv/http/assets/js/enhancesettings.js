@@ -12,7 +12,7 @@ if ( path === '/sources' ) {
 			if ( status.updating_db ) {
 				if ( !intUpdate ) {
 					$( '#updatempddb, #rescanmpddb' ).hide();
-					$( '#updatempddb' ).parent().after( '<span id="update"><i class="fa fa-library"></i>&emsp;Library updating...</span>' );
+					$( '#updatempddb' ).parent().after( '<span id="update"><i class="fa fa-library bl"></i>&emsp;Library updating...</span>' );
 					intUpdate = setInterval( function() { // fix: force status fetching
 						toggleUpdate();
 					}, 10000 );
