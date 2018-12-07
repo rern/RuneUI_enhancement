@@ -1316,9 +1316,15 @@ wh, gr { font-weight: 300; }
 .index li:hover {
 	background: #34495e;
 }
+.licover {
+	height: 230px !important;
+}
 .licover .coversmall {
 	margin-left: 40px;
 	box-shadow: #555555 0 0 8px 2px
+}
+.licover .db-action {
+	margin-top: 180px !important;
 }
 #db-entries,
 #pl-editor {
