@@ -82,7 +82,7 @@ $( '.contextmenu a' ).click( function() {
 				setTimeout( function() { GUI.local = 0 }, 500 );
 			}
 			$.post( 'enhance.php', { mpc: command }, function() {
-				if ( !GUI.status.playlistlength ) getPlaybackStatus();
+//				if ( !GUI.status.playlistlength ) getPlaybackStatus();
 				if ( GUI.display.bars ) {
 					if ( cmd.slice( -4 ) === 'play' ) {
 						$( '#stop, #pause' ).removeClass( 'btn-primary' );

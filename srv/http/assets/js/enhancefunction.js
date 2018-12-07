@@ -1017,7 +1017,12 @@ function dataSort( data, path, plugin, querytype, arg ) {
 					arraypl.push( value );
 				}
 			} );
-			if ( GUI.coverart ) content += '<div class="licover"><img src="'+ GUI.coverart +'" class="coversmall"></div>';
+			if ( GUI.coverart ) {
+				content += '<li class="licover">'
+						  +'<img src="'+ GUI.coverart +'" class="coversmall"><i class="fa fa-bars db-action" data-target="#context-menu-'+ GUI.browsemode +'"></i>'
+						  +'<a class="lipath">'+ path +'</a><a class="liname">'+ path.replace(/^.*\//, '') +'</a>'
+						  +'</li>';
+			}
 			arraydir.sort( function( a, b ) {
 				return a[ 'lisort' ].localeCompare( b[ 'lisort' ], undefined, { numeric: true } );
 			} );

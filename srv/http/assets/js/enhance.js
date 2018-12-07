@@ -698,7 +698,7 @@ $( '#db-back' ).click( function() {
 } );
 $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	var $this = $( this );
-	if ( $this.hasClass( 'file' ) ) {
+	if ( $this.hasClass( 'file' ) || $this.hasClass( 'licover' ) ) {
 		setTimeout( function() {
 			$this.find( 'i.db-action' ).click();
 		}, 0 );
@@ -782,7 +782,7 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 		$menu
 			.removeClass( 'hide' )
 			.css( {
-				  top   : $this.position().top +'px'
+				  top   : $thisli.hasClass( 'licover' ) ? '220px' : $this.position().top +'px'
 				, right : $( '#db-index' ).hasClass( 'hide' ) ? '50px' : '90px'
 			} );
 		var targetB = $menu.offset().top + $menu.height();
