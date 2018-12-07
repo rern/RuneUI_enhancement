@@ -38,6 +38,9 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 	$mpc = $_POST[ 'mpc' ];
 	if ( !is_array( $mpc ) ) { // multiples commands is array
 		$result = shell_exec( $mpc );
+		if ( !$result ) {
+			$result = shell_exec( 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%albumartist%" album "'.$_POST[ 'name' ].'"' );
+		}
 		$cmd = $mpc;
 	} else {
 		foreach( $mpc as $cmd ) {
