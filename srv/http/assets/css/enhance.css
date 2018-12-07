@@ -1327,7 +1327,7 @@ wh, gr { font-weight: 300; }
 	margin-top: 180px !important;
 }
 .licover.active {
-	background: linear-gradient( to bottom, #0000 78.5%, #0095d8 21.5% ) !important;
+	background: linear-gradient( #0000 78.5%, #0095d8 21.5% ) !important;
 }
 #db-entries,
 #pl-editor {
