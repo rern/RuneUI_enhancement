@@ -759,6 +759,12 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 	e.stopPropagation();
 	var $this = $( this );
 	var $thisli = $this.parent();
+	if ( $thisli.hasClass( 'active' ) ) {
+		$thisli.removeClass( 'active' );
+		$( '.contextmenu' ).addClass( 'hide' );
+		return
+	}
+	
 	GUI.list = {};
 	GUI.list.path = $thisli.find( '.lipath' ).text();
 	GUI.list.name = $thisli.find( '.liname' ).text();
