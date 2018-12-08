@@ -16,13 +16,13 @@ var GUI = { // outside '$( function() {' enable console.log access
 	, libraryhome  : {}
 	, local        : 0
 	, lsplaylists  : []
+	, midori       : navigator.userAgent.indexOf( 'Midori' ) !== -1
 	, playlist     : {}
 	, plcurrent    : ''
 	, pleditor     : 0
 	, plscrolltop  : 0
 	, plugin       : ''
 	, status       : {}
-	, touch        : 'ontouchstart' in window || navigator.msMaxTouchPoints
 };
 
 PNotify.prototype.options.delay = 3000;
@@ -272,10 +272,10 @@ $( '#tab-playlist' ).click( function() {
 function libraryClick() { $( '#tab-library' ).click() }
 function playbackClick() { $( '#tab-playback' ).click() }
 function playlistClick() { $( '#tab-playlist' ).click() }
-// fix hammer: use jquery.mobile swipe for non-touch device
-var $pageLibrary = GUI.touch ? new Hammer( document.getElementById( 'page-library' ) ) : $( '#page-library' );
-var $pagePlayback = GUI.touch ? new Hammer( document.getElementById( 'page-playback' ) ) : $( '#page-playback' );
-var $pagePlaylist = GUI.touch ? new Hammer( document.getElementById( 'page-playlist' ) ) : $( '#page-playlist' );
+// fix jquery.mobile swipe not work with Midori
+var $pageLibrary = GUI.midori ? new Hammer( document.getElementById( 'page-library' ) ) : $( '#page-library' );
+var $pagePlayback = GUI.midori ? new Hammer( document.getElementById( 'page-playback' ) ) : $( '#page-playback' );
+var $pagePlaylist = GUI.midori ? new Hammer( document.getElementById( 'page-playlist' ) ) : $( '#page-playlist' );
 $pageLibrary.on( 'swiperight', playlistClick ).on( 'swipeleft', playbackClick );
 $pagePlayback.on( 'swiperight', libraryClick ).on( 'swipeleft', playlistClick );
 $pagePlaylist.on( 'swiperight', playbackClick ).on( 'swipeleft', libraryClick );
