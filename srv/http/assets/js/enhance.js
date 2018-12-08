@@ -22,7 +22,9 @@ var GUI = { // outside '$( function() {' enable console.log access
 	, plscrolltop  : 0
 	, plugin       : ''
 	, status       : {}
+	, touch        : 'ontouchstart' in window || navigator.msMaxTouchPoints
 };
+
 PNotify.prototype.options.delay = 3000;
 PNotify.prototype.options.styling = 'fontawesome';
 PNotify.prototype.options.icon = 'fa fa-check';
@@ -37,6 +39,7 @@ PNotify.prototype.options.stack = {
 var blinkdot = '<a class="dot">.</a> <a class="dot dot2">.</a> <a class="dot dot3">.</a>';
 
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
 
 GUI.local = 1; // suppress 2nd getPlaybackStatus() on load
 setTimeout( function() { GUI.local = 0 }, 500 );
@@ -275,9 +278,6 @@ var $hammerPlaylist = new Hammer( document.getElementById( 'page-playlist' ) );
 $hammerLibrary.on( 'swiperight', playlistClick ).on( 'swipeleft', playbackClick );
 $hammerPlayback.on( 'swiperight', libraryClick ).on( 'swipeleft', playlistClick );
 $hammerPlaylist.on( 'swiperight', playbackClick ).on( 'swipeleft', libraryClick );
-
-var $hammerLibrary = new Hammer( document.getElementById( 'db-entries' ) );
-
 
 $( '#page-playback' ).click( function( e ) {
 	if ( $( e.target ).is( '.controls, .timemap, .covermap, .volmap' ) ) return
@@ -787,7 +787,7 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 	$menu
 		.removeClass( 'hide' )
 		.css( {
-			  top   : $thisli.hasClass( 'licover' ) ? ( GUI.display.bars ? '261px' : '221px' ) : $this.position().top +'px'
+			  top   : $thisli.hasClass( 'licover' ) ? ( !GUI.display.bars && GUI.touch ? '221px' : '261px' ) : $this.position().top +'px'
 			, right : $( '#db-index' ).hasClass( 'hide' ) ? '50px' : '90px'
 		} );
 	var targetB = $menu.offset().top + $menu.height();
