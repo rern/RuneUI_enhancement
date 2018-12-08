@@ -156,7 +156,7 @@ $( '#displayplayback' ).click( function() {
 		, message      : 'Select items to show:'
 		, checkboxhtml : 
 			'<form id="displaysaveplayback">'
-				+ displayCheckbox( 'bars',         'Top-Bottom menu' )
+				+ displayCheckbox( 'bars',         'Top-Bottom bars' )
 				+ displayCheckbox( 'time',         'Time' )
 				+ displayCheckbox( 'radioelapsed', 'Webradio elapsed' )
 				+ displayCheckbox( 'coverart',     'Cover art' )
@@ -185,6 +185,8 @@ $( '#displayplayback' ).click( function() {
 		setToggleButton( 'coverlarge', '(auto)' );
 		setToggleButton( 'buttons', '(auto)' );
 	}
+	// disable by touch
+	if ( !GUI.touch ) setToggleButton( 'bars', '(touch only)' );
 	if ( window.innerWidth >= 500 ) return
 	
 	if ( window.innerHeight <= 515 ) setToggleButton( 'bars' );
