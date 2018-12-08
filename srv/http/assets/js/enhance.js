@@ -697,7 +697,8 @@ $( '#db-back' ).click( function() {
 } );
 $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	var $this = $( this );
-	if ( $this.hasClass( 'file' ) || $this.hasClass( 'licover' ) ) {
+	$( '.contextmenu' ).addClass( 'hide' );
+	if ( $this.hasClass( 'licover' ) || $this.find( '.fa-music' ).length || $this.find( '.fa-webradio' ).length ) {
 		setTimeout( function() {
 			$this.find( 'i.db-action' ).click();
 		}, 0 );
@@ -759,9 +760,9 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 	e.stopPropagation();
 	var $this = $( this );
 	var $thisli = $this.parent();
+	$( '.contextmenu' ).addClass( 'hide' );
 	if ( $thisli.hasClass( 'active' ) ) {
 		$thisli.removeClass( 'active' );
-		$( '.contextmenu' ).addClass( 'hide' );
 		return
 	}
 	
@@ -773,7 +774,6 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 	if ( $( '#db-currentpath' ).find( '.lipath' ).text() === 'Webradio' ) GUI.list.url = $thisli.find( '.bl' ).text();
 	var $menu = $( $this.data( 'target' ) );
 	$( '#db-entries li' ).removeClass( 'active' );
-	$( '.contextmenu' ).addClass( 'hide' );
 	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
 	$( '.update' ).toggleClass( 'hide', GUI.status.updating_db !== 0 );
 	$( '.lastfm' ).toggleClass( 'hide', GUI.list.name.slice( -4, -3 ) === '.' );
@@ -783,7 +783,7 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 	$menu
 		.removeClass( 'hide' )
 		.css( {
-			  top   : $thisli.hasClass( 'licover' ) ? '221px' : $this.position().top +'px'
+			  top   : $thisli.hasClass( 'licover' ) ? ( GUI.display.bars ? '261px' : '221px' ) : $this.position().top +'px'
 			, right : $( '#db-index' ).hasClass( 'hide' ) ? '50px' : '90px'
 		} );
 	var targetB = $menu.offset().top + $menu.height();
