@@ -276,6 +276,9 @@ $hammerLibrary.on( 'swiperight', playlistClick ).on( 'swipeleft', playbackClick 
 $hammerPlayback.on( 'swiperight', libraryClick ).on( 'swipeleft', playlistClick );
 $hammerPlaylist.on( 'swiperight', playbackClick ).on( 'swipeleft', libraryClick );
 
+var $hammerLibrary = new Hammer( document.getElementById( 'db-entries' ) );
+
+
 $( '#page-playback' ).click( function( e ) {
 	if ( $( e.target ).is( '.controls, .timemap, .covermap, .volmap' ) ) return
 	
@@ -598,6 +601,7 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 
 $( '#db-home' ).click( function() {
 	$( '#tab-library' ).click();
+	$( '.menu' ).addClass( 'hide' );
 } );
 $( '#db-currentpath' ).on( 'click', 'a', function() {
 	if ( $( '#db-currentpath span a' ).length === 1 ) return
@@ -697,7 +701,7 @@ $( '#db-back' ).click( function() {
 } );
 $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	var $this = $( this );
-	$( '.contextmenu' ).addClass( 'hide' );
+	$( '.menu' ).addClass( 'hide' );
 	if ( $this.hasClass( 'licover' ) || $this.find( '.fa-music' ).length || $this.find( '.fa-webradio' ).length ) {
 		setTimeout( function() {
 			$this.find( 'i.db-action' ).click();
@@ -760,7 +764,7 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 	e.stopPropagation();
 	var $this = $( this );
 	var $thisli = $this.parent();
-	$( '.contextmenu' ).addClass( 'hide' );
+	$( '.menu' ).addClass( 'hide' );
 	if ( $thisli.hasClass( 'active' ) ) {
 		$thisli.removeClass( 'active' );
 		return
@@ -1017,7 +1021,7 @@ $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 	GUI.list.path = GUI.list.name;
 	GUI.list.isfile = $thisli.hasClass( 'pl-song' ); // used in contextmenu
 	$( '#pl-editor li' ).removeClass( 'active' );
-	$( '.contextmenu' ).addClass( 'hide' );
+	$( '.menu' ).addClass( 'hide' );
 	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
 	if ( GUI.list.name === GUI.plcurrent ) {
 		GUI.plcurrent = '';
