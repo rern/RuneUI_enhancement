@@ -541,6 +541,7 @@ function displayTopBottom() {
 	$( '#dev' ).toggleClass( 'hide', GUI.display.dev === '' );
 	var menuH = ( $( '#settings a' ).length - $( '#settings a.hide' ).length ) * 41 - 1;
 	$( '#settings .menushadow' ).css( 'height', menuH +'px' );
+	$( '.menu' ).addClass( 'hide' );
 }
 function PlaybackCssOrder( el, ord ) {
 	el.css( { order: ord, '-webkit-order': ord } );
