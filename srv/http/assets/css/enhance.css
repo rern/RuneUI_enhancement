@@ -1871,6 +1871,9 @@ w {
 	#pl-editor li {
 		padding-left: 10px;
 	}
+	#db-entries li.licover {
+		padding-left: 0;
+	}
 	#db-entries li,
 	#pl-editor li {
 		line-height: 52px;
