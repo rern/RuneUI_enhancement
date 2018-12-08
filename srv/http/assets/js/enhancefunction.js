@@ -525,7 +525,7 @@ function displayTopBottom() {
 	if ( !$( '#bio' ).hasClass( 'hide' ) ) return
 	
 	var wH = window.innerHeight;
-	if ( !GUI.display.bars && GUI.touch ) {
+	if ( !GUI.display.bars ) {
 		$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
 		$( '#db-list, #pl-list' ).css( 'padding', '40px 0' );
 		$( '.btnlist-top' ).css( 'top', 0 );

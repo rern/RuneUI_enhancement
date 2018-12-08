@@ -185,8 +185,6 @@ $( '#displayplayback' ).click( function() {
 		setToggleButton( 'coverlarge', '(auto)' );
 		setToggleButton( 'buttons', '(auto)' );
 	}
-	// disable by touch
-	if ( !GUI.touch ) setToggleButton( 'bars', '(touch only)' );
 	if ( window.innerWidth >= 500 ) return
 	
 	if ( window.innerHeight <= 515 ) setToggleButton( 'bars' );
@@ -274,12 +272,13 @@ $( '#tab-playlist' ).click( function() {
 function libraryClick() { $( '#tab-library' ).click() }
 function playbackClick() { $( '#tab-playback' ).click() }
 function playlistClick() { $( '#tab-playlist' ).click() }
-var $hammerLibrary = new Hammer( document.getElementById( 'page-library' ) );
-var $hammerPlayback = new Hammer( document.getElementById( 'page-playback' ) );
-var $hammerPlaylist = new Hammer( document.getElementById( 'page-playlist' ) );
-$hammerLibrary.on( 'swiperight', playlistClick ).on( 'swipeleft', playbackClick );
-$hammerPlayback.on( 'swiperight', libraryClick ).on( 'swipeleft', playlistClick );
-$hammerPlaylist.on( 'swiperight', playbackClick ).on( 'swipeleft', libraryClick );
+// fix hammer: use jquery.mobile swipe for non-touch device
+var $pageLibrary = GUI.touch ? new Hammer( document.getElementById( 'page-library' ) ) : $( '#page-library' );
+var $pagePlayback = GUI.touch ? new Hammer( document.getElementById( 'page-playback' ) ) : $( '#page-playback' );
+var $pagePlaylist = GUI.touch ? new Hammer( document.getElementById( 'page-playlist' ) ) : $( '#page-playlist' );
+$pageLibrary.on( 'swiperight', playlistClick ).on( 'swipeleft', playbackClick );
+$pagePlayback.on( 'swiperight', libraryClick ).on( 'swipeleft', playlistClick );
+$pagePlaylist.on( 'swiperight', playbackClick ).on( 'swipeleft', libraryClick );
 
 $( '#page-playback' ).click( function( e ) {
 	if ( $( e.target ).is( '.controls, .timemap, .covermap, .volmap' ) ) return
@@ -789,7 +788,7 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 	$menu
 		.removeClass( 'hide' )
 		.css( {
-			  top   : $thisli.hasClass( 'licover' ) ? ( !GUI.display.bars && GUI.touch ? '221px' : '261px' ) : $this.position().top +'px'
+			  top   : $thisli.hasClass( 'licover' ) ? ( GUI.display.bars ? '261px' : '221px' ) : $this.position().top +'px'
 			, right : $( '#db-index' ).hasClass( 'hide' ) ? '50px' : '90px'
 		} );
 	var targetB = $menu.offset().top + $menu.height();
