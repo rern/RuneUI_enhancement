@@ -12,11 +12,18 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 	$lines = explode( "\n", rtrim( $albums ) );
 	$count = count( $lines );
 	if ( $count === 1 ) {
-		$albums = shell_exec( 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%albumartist%" album "'.$name.'"' );
+		$albums = shell_exec( 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%[^^%genre%]" album "'.$name.'"' );
 		$data = search2array( $albums );
+		if ( isset( $data[ 'genre' ] ) ) {
+			$genre = $data[ 'genre' ];
+			unset( $data[ 'genre' ] );
+		}
 		if ( $redis->hGet( 'display', 'coverfile' ) ) {
 			$cover = getCover( $data );
-			if ( $cover ) $data[][ 'coverart' ] = $cover;
+			if ( $cover ) {
+				$data[][ 'coverart' ] = $cover;
+				$data[][ 'genre' ] = $genre;
+			}
 		}
 	} else {
 		foreach( $lines as $line ) {
@@ -38,8 +45,9 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 	$mpc = $_POST[ 'mpc' ];
 	if ( !is_array( $mpc ) ) { // multiples commands is array
 		$result = shell_exec( $mpc );
+		// query 'various artist album' with 'artist name' > requery without
 		if ( !$result ) {
-			$result = shell_exec( 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%albumartist%" album "'.$_POST[ 'name' ].'"' );
+			$result = shell_exec( 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%[^^%albumartist%]" album "'.$_POST[ 'name' ].'"' );
 		}
 		$cmd = $mpc;
 	} else {
@@ -60,9 +68,16 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 		$type = $_POST[ 'list' ];
 		if ( $type === 'file' ) {
 			$data = search2array( $result );
+			if ( isset( $data[ 'genre' ] ) ) {
+				$genre = $data[ 'genre' ];
+				unset( $data[ 'genre' ] );
+			}
 			if ( $redis->hGet( 'display', 'coverfile' ) ) {
 				$cover = getCover( $data );
-				if ( $cover ) $data[][ 'coverart' ] = $cover;
+				if ( $cover ) {
+					$data[][ 'coverart' ] = $cover;
+					$data[][ 'genre' ] = $genre;
+				}
 			}
 		} else {
 			$lists = explode( "\n", rtrim( $result ) );
@@ -211,6 +226,7 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 }
 function search2array( $result ) {
 	$lists = explode( "\n", rtrim( $result ) );
+	$genre = 0;
 	foreach( $lists as $list ) {
 		$root = substr( $list, 0, 4 );
 		if ( $root === 'USB/' || $root === 'NAS/' || substr( $list, 0, 13 ) === 'LocalStorage/' ) {
@@ -230,13 +246,14 @@ function search2array( $result ) {
 			$li[ 'Artist' ] = $list[ 2 ];
 			$li[ 'Album' ] = $list[ 3 ];
 			$li[ 'file' ] = $list[ 4 ];
-			if ( isset( $list[ 5 ] ) ) $li[ 'AlbumArtist' ] = $list[ 5 ];
+			if ( !$genre && isset( $list[ 5 ] ) ) {
+				$genre = 1;
+				$data[ 'genre' ] = $list[ 5 ];
+			}
 			$data[] = $li;
 			$li = '';
-			$artist[] = $list[ 2 ];
 		}
 	}
-	
 	return $data;
 }
 function getCover( $data ) {
