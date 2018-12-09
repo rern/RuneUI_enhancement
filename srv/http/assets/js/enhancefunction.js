@@ -866,19 +866,19 @@ function getDB( options ) {
 	} else {
 		GUI.dbback = 0;
 	}
-	GUI.browsemode = browsemode;
 	var keyword = $( '#db-search-keyword' ).val();
 	keyword = keyword ? keyword.toString().replace( /"/g, '\"' ) : '';
+	GUI.browsemode = browsemode;
 	if ( !plugin ) {
 		var command = {
 			  file        : { mpc: 'mpc ls -f "%title%^^%time%^^%artist%^^%album%^^%file%" "'+ path +'" 2> /dev/null', list: 'file' }
-			, artistalbum : { mpc: 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%albumartist%"'+ ( artist ? ' albumartist "'+ artist +'"' : '' ) +' album "'+ path +'"', list: 'file', name: path }
+			, artistalbum : { mpc: 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%albumartist%"'+ ( artist ? ' artist "'+ artist +'"' : '' ) +' album "'+ path +'"', list: 'file', name: path }
 			, album       : { album: 'mpc find -f "%album%^^[%albumartist%||%artist%]" album "'+ path +'" | awk \'!a[$0]++\'', name: path }
 			, genre       : { album: 'mpc find -f "%album%^^[%albumartist%||%artist%]" genre "'+ path +'" | awk \'!a[$0]++\'' }
 			, artist      : { mpc: 'mpc list album artist "'+ path +'" | awk NF', list: 'album' }
 			, albumartist : { mpc: 'mpc list album albumartist "'+ path +'" | awk NF', list: 'album' }
 			, composer    : { mpc: 'mpc list album composer "'+ path +'" | awk NF', list: 'album' }
-			, type        : { mpc: 'mpc list '+ GUI.browsemode +' | awk NF', list: GUI.browsemode }
+			, type        : { mpc: 'mpc list '+ browsemode +' | awk NF', list: browsemode }
 			, search      : { mpc: 'mpc search -f "%title%^^%time%^^%artist%^^%album%^^%file%" any "'+ keyword +'"', list: 'file' }
 			, Webradio    : { getwebradios: 1 }
 			, playlist    : { playlist: path }
@@ -898,14 +898,14 @@ function getDB( options ) {
 			} else if ( path === 'Webradio' ) {
 				mode = 'Webradio';
 			} else if ( // <li> in 'Album' and 'Genre'
-				( GUI.browsemode === 'album' && currentpath !== 'Album' && artist )
-				|| ( GUI.browsemode === 'genre' && currentpath !== 'Genre' && artist )
+				( browsemode === 'album' && currentpath !== 'Album' && artist )
+				|| ( browsemode === 'genre' && currentpath !== 'Genre' && artist )
 			) {
 				mode = 'artistalbum';
 			} else if ( [ 'm3u', 'pls', 'cue' ].indexOf( path.slice( -3 ) ) !== -1 ) {
 				mode = 'playlist';
 			} else {
-				mode = GUI.browsemode;
+				mode = browsemode;
 				if ( mode === 'composer' ) GUI.browsemode = 'composeralbum';
 			}
 		}
