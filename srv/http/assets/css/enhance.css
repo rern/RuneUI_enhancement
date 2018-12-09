@@ -1332,9 +1332,11 @@ wh, gr { font-weight: 300; }
 .liinfo {
 	vertical-align: 85px;
 	margin-left: 10px;
+	font-weight: 300;
 }
 .liinfo i {
 	margin: 0 !important;
+	vertical-align: -2px;
 }
 #db-entries,
 #pl-editor {
@@ -1541,7 +1543,7 @@ w {
 	font-size: 12px;
 	color: #587ca0
 }
-#db-entries li.licover.active i {
+#db-entries li.active .liinfo i {
 	color: #587ca0 !important;
 }
 .menu a.active i,
