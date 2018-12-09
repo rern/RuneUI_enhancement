@@ -782,8 +782,8 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
 	$( '.update' ).toggleClass( 'hide', GUI.status.updating_db !== 0 );
 	$( '.lastfm' ).toggleClass( 'hide', GUI.list.name.slice( -4, -3 ) === '.' );
-	var contextnum = $menu.find( 'a:not(.hide)' ).length - 1;
-	$( '.menushadow' ).css( 'height', contextnum * 41 );
+	var contextnum = $menu.find( 'a:not(.hide)' ).length;
+	$( '.menushadow' ).css( 'height', contextnum * 41 - 1 );
 	$thisli.addClass( 'active' );
 	$menu
 		.removeClass( 'hide' )
