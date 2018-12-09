@@ -1329,6 +1329,13 @@ wh, gr { font-weight: 300; }
 .licover.active {
 	background: linear-gradient( #0000 181px, #0095d8 49px ) !important;
 }
+.liinfo {
+	vertical-align: 85px;
+	margin-left: 10px;
+}
+.liinfo i {
+	margin: 0 !important;
+}
 #db-entries,
 #pl-editor {
 	float: left;
