@@ -22,7 +22,7 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 			$cover = getCover( $data );
 			if ( $cover ) {
 				$data[][ 'coverart' ] = $cover;
-				$data[][ 'genre' ] = $genre;
+				if ( isset( $genre ) ) $data[][ 'genre' ] = $genre;
 			}
 		}
 	} else {
@@ -76,7 +76,7 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 				$cover = getCover( $data );
 				if ( $cover ) {
 					$data[][ 'coverart' ] = $cover;
-					$data[][ 'genre' ] = $genre;
+					if ( isset( $genre ) ) $data[][ 'genre' ] = $genre;
 				}
 			}
 		} else {
