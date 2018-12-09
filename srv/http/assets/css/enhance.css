@@ -1541,7 +1541,10 @@ w {
 	font-size: 12px;
 	color: #587ca0
 }
-.menu a.active i,	
+#db-entries li.licover.active i {
+	color: #587ca0 !important;
+}
+.menu a.active i,
 #db-entries li.active i,
 #pl-entries li.active i,
 #db-entries li.active .sn span,
@@ -1796,7 +1799,8 @@ w {
 	}
 }
 @media(max-width: 700px) {
-	.logo {
+	.logo,
+	.liinfo {
 		display: none;
 	}
 }
