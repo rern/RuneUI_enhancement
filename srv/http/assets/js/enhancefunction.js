@@ -969,6 +969,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		i = 0,
 		row = [];
 	GUI.coverart = '';
+	GUI.genre = '';
 	GUI.albumartist = '';
 	GUI.currentpath = path;
 	$( '#db-entries, #db-currentpath .lipath' ).empty();
@@ -1027,9 +1028,10 @@ function dataSort( data, path, plugin, querytype, arg ) {
 				}
 			} );
 			if ( GUI.coverart ) {
+				var genrehtml = GUI.genre ? '<i class="fa fa-genre"></i>'+ GUI.genre : '';
 				content += '<li class="licover">'
 						  +'<img src="'+ GUI.coverart +'" class="coversmall">'
-						  +'<span class="liinfo"><i class="fa fa-genre"></i>'+ GUI.genre +'<gr> • </gr>'+ arrayfile.length +'<i class="fa fa-music"></i>'+ second2HMS( litime ) +'</span>'
+						  +'<span class="liinfo">'+ genrehtml +'<gr> • </gr>'+ arrayfile.length +'<i class="fa fa-music"></i>'+ second2HMS( litime ) +'</span>'
 						  +'<a class="lipath">'+ path +'</a><a class="liname">'+ path.replace(/^.*\//, '') +'</a>'
 						  +'<i class="fa fa-bars db-action" data-target="#context-menu-'+ GUI.browsemode +'"></i>'
 						  +'</li>';
