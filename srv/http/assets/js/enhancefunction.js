@@ -871,8 +871,8 @@ function getDB( options ) {
 	GUI.browsemode = browsemode;
 	if ( !plugin ) {
 		var command = {
-			  file        : { mpc: 'mpc ls -f "%title%^^%time%^^%artist%^^%album%^^%file%" "'+ path +'" 2> /dev/null', list: 'file' }
-			, artistalbum : { mpc: 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%albumartist%"'+ ( artist ? ' artist "'+ artist +'"' : '' ) +' album "'+ path +'"', list: 'file', name: path }
+			  file        : { mpc: 'mpc ls -f "%title%^^%time%^^%artist%^^%album%^^%file%[^^%genre%]" "'+ path +'" 2> /dev/null', list: 'file' }
+			, artistalbum : { mpc: 'mpc find -f "%title%^^%time%^^[%artist%||%albumartist%]^^%album%^^%file%[^^%genre%]"'+ ( artist ? ' artist "'+ artist +'"' : '' ) +' album "'+ path +'"', list: 'file', name: path }
 			, album       : { album: 'mpc find -f "%album%^^[%albumartist%||%artist%]" album "'+ path +'" | awk \'!a[$0]++\'', name: path }
 			, genre       : { album: 'mpc find -f "%album%^^[%albumartist%||%artist%]" genre "'+ path +'" | awk \'!a[$0]++\'' }
 			, artist      : { mpc: 'mpc list album artist "'+ path +'" | awk NF', list: 'album' }
@@ -910,6 +910,7 @@ function getDB( options ) {
 			}
 		}
 		$.post( 'enhance.php', command[ mode ], function( data ) {
+			console.log(data)
 			if ( data ) {
 				dataSort( data, path );
 			} else {
@@ -1005,15 +1006,21 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			var arraydir = [];
 			var arrayfile = [];
 			var arraypl = [];
+			var litime = 0;
+			var sec = 0;
 			$.each( data, function( index, value ) {
 				if ( value.coverart ) {
 					GUI.coverart = value.coverart;
+				} else if ( value.genre ) {
+					GUI.genre = value.genre;
 				} else if ( value.directory ) {
 					value.lisort = stripLeading( value.directory.replace( /^.*\//, '' ) );
 					arraydir.push( value );
 				} else if ( value.file ) {
 					value.lisort = stripLeading( value.file.replace( /^.*\//, '' ) );
 					arrayfile.push( value );
+					sec = HMS2Second( value.Time );
+					litime += sec;
 				} else {
 					value.lisort = stripLeading( value.playlist.replace( /^.*\//, '' ) );
 					arraypl.push( value );
@@ -1021,8 +1028,10 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			} );
 			if ( GUI.coverart ) {
 				content += '<li class="licover">'
-						  +'<img src="'+ GUI.coverart +'" class="coversmall"><i class="fa fa-bars db-action" data-target="#context-menu-'+ GUI.browsemode +'"></i>'
+						  +'<img src="'+ GUI.coverart +'" class="coversmall">'
+						  +'<span class="liinfo"><i class="fa fa-genre"></i>'+ GUI.genre +'<gr> • </gr>'+ arrayfile.length +'<i class="fa fa-music"></i>'+ second2HMS( litime ) +'</span>'
 						  +'<a class="lipath">'+ path +'</a><a class="liname">'+ path.replace(/^.*\//, '') +'</a>'
+						  +'<i class="fa fa-bars db-action" data-target="#context-menu-'+ GUI.browsemode +'"></i>'
 						  +'</li>';
 			}
 			arraydir.sort( function( a, b ) {
@@ -1237,7 +1246,7 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 							 +'<i class="fa fa-music db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-file"></i>'
 							 +'<span class="sn">'+ liname +'&ensp;<span class="time">'+ inputArr.Time +'</span></span>'
 							 +'<span class="bl">'+ inputArr.file +'</span>'
-					var artist = inputArr.AlbumArtist || inputArr.Artist;
+					var artist = inputArr.Artist;
 					if ( !GUI.albumartist ) GUI.albumartist = inputArr.Album +'<gr> • </gr>'+ artist;
 				} else {
 					var liname = inputArr.album;
@@ -1395,9 +1404,9 @@ function setPlaylistScroll() {
 	}, 'json' );
 }
 function htmlPlaylist( data ) {
-	var content, pl, iconhtml, topline, bottomline, countradio, countsong, pltime;
+	var content, pl, iconhtml, topline, bottomline, countradio, countsong, pltime, sec;
 	content = pl = iconhtml = topline = bottomline = '';
-	countradio = countsong = pltime = 0;
+	countradio = countsong = pltime = sec = 0;
 	var ilength = data.length;
 	for ( i = 0; i < ilength; i++ ) {
 		var pl = data[ i ];
@@ -1410,11 +1419,11 @@ function htmlPlaylist( data ) {
 			countradio++;
 		} else {
 			sec = HMS2Second( pl.time );
+			pltime += sec;
 			content += '<li>'
 					 +'<i class="fa fa-music pl-icon"></i>'+ ( $( '#page-library' ).hasClass( 'hide' ) ? '<i class="fa fa-minus-circle pl-action"></i>' : '' )
 					 +'<span class="sn">'+ pl.title +'&ensp;<span class="elapsed"></span><span class="time" time="'+ sec +'">'+ pl.time +'</span></span>'
 					 +'<span class="bl">'+ pl.track +'</span>'
-			pltime += sec;
 		}
 		countsong = ilength - countradio;
 	}
