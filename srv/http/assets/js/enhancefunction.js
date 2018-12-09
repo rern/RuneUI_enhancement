@@ -910,7 +910,6 @@ function getDB( options ) {
 			}
 		}
 		$.post( 'enhance.php', command[ mode ], function( data ) {
-			console.log(data)
 			if ( data ) {
 				dataSort( data, path );
 			} else {
@@ -966,10 +965,10 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		querytype = querytype || '',
 		args = args || '',
 		content = '',
+		coverart = '',
+		genre = '',
 		i = 0,
 		row = [];
-	GUI.coverart = '';
-	GUI.genre = '';
 	GUI.albumartist = '';
 	GUI.currentpath = path;
 	$( '#db-entries, #db-currentpath .lipath' ).empty();
@@ -1011,9 +1010,9 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			var sec = 0;
 			$.each( data, function( index, value ) {
 				if ( value.coverart ) {
-					GUI.coverart = value.coverart;
+					coverart = value.coverart;
 				} else if ( value.genre ) {
-					GUI.genre = value.genre;
+					genre = value.genre;
 				} else if ( value.directory ) {
 					value.lisort = stripLeading( value.directory.replace( /^.*\//, '' ) );
 					arraydir.push( value );
@@ -1027,10 +1026,10 @@ function dataSort( data, path, plugin, querytype, arg ) {
 					arraypl.push( value );
 				}
 			} );
-			if ( GUI.coverart ) {
-				var genrehtml = GUI.genre ? '<i class="fa fa-genre"></i>'+ GUI.genre : '';
+			if ( coverart ) {
+				var genrehtml = genre ? '<i class="fa fa-genre"></i>'+ genre : '';
 				content += '<li class="licover">'
-						  +'<img src="'+ GUI.coverart +'" class="coversmall">'
+						  +'<img src="'+ coverart +'" class="coversmall">'
 						  +'<span class="liinfo">'+ genrehtml +'<gr> • </gr>'+ arrayfile.length +'<i class="fa fa-music"></i>'+ second2HMS( litime ) +'</span>'
 						  +'<a class="lipath">'+ path +'</a><a class="liname">'+ path.replace(/^.*\//, '') +'</a>'
 						  +'<i class="fa fa-bars db-action" data-target="#context-menu-'+ GUI.browsemode +'"></i>'
