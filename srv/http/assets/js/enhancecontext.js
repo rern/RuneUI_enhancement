@@ -3,6 +3,7 @@
 // example: mpc save "abc's \"xyz\"" << name.replace( /"/g, '\\"' )
 
 $( '.contextmenu a' ).click( function() {
+	$( '.menu' ).addClass( 'hide' );
 	var cmd = $( this ).data( 'cmd' );
 	var mode = cmd.replace( /replaceplay|replace|addplay|add/, '' );
 	// get name
