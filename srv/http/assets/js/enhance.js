@@ -817,6 +817,10 @@ $( '#db-index li' ).click( function() {
 		if ( $this.text() !== 'Z' ) $this.next().click();
 	}
 } );
+$( '#db-entries, #pl-editor' ).on( 'click', 'p', function() {
+	$( '.menu' ).addClass( 'hide' );
+	$( '#db-entries li, #pl-editor li' ).removeClass( 'active' );
+} );
 // PLAYLIST /////////////////////////////////////////////////////////////////////////////////////
 $( '#pl-home' ).click( function() {
 	$( '#tab-playlist' ).click();
@@ -1030,11 +1034,11 @@ $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 		GUI.plcurrent = GUI.list.name;
 		$thisli.addClass( 'active' );
 		var $contextmenu = GUI.list.isfile ? $( '#context-menu-file' ) : $( '#context-menu-playlist' );
-		var contextnum = $contextmenu.find( 'a:not(.hide)' ).length - 1;
-		$( '.menushadow' ).css( 'height', contextnum * 41 );
+		var contextnum = $contextmenu.find( 'a:not(.hide)' ).length;
+		$( '.menushadow' ).css( 'height', contextnum * 41 - 1 );
 		$contextmenu
 			.removeClass( 'hide' )
-			.css( 'top', $this.position().top +'px' );
+			.css( { top: $this.position().top +'px', right: '90px' } );
 		var targetB = $contextmenu.offset().top + 246;
 		var wH = window.innerHeight;
 		if ( targetB > wH + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + ( GUI.display.bars ? 42 : 0 ) } );
