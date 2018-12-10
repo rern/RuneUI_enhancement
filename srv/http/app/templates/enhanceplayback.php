@@ -264,7 +264,7 @@ $html.= menuli( 'wrdelete', 'minus-circle', 'Delete' );
 $menu.= menudiv( 'webradio', $html );
 $menudiv = '';
 
-$html = '<a class="menushadow"></a>';
+$html = '<span class="menushadow"></span>';
 $html.= menuli( 'pladd',         'plus-o',            'Add' );
 $html.= menuli( 'pladdplay',     'play-plus-o',       'Add ► Play' );
 $html.= menuli( 'plreplace',     'plus-refresh',      'Replace' );
