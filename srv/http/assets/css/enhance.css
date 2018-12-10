@@ -1322,25 +1322,26 @@ wh, gr { font-weight: 300; }
 	box-shadow: #555555 0 0 8px 2px;
 }
 .licover .db-action {
-	margin-top: 185px !important;
+	margin-top: 184px !important;
 }
 .licover.active {
-	background: linear-gradient( #0000 190px, #0095d8 40px ) !important;
+	background: linear-gradient( #0000 189px, #0095d8 41px ) !important;
 }
 .liinfo {
 	display: inline-block;
 	vertical-align: bottom;
-	margin-bottom: 3px;
+	margin-bottom: 5px;
 	width: calc( 100% - 335px );
 	line-height: 33px;
 	font-weight: 300;
 }
 .lialbum {
-	white-space: normal;
+	font-size: 22px;
 	font-weight: normal;
+	white-space: normal;
 }
 .liinfo i {
-	margin: 0 0 !important;
+	margin: 0 !important;
 	text-align: left !important;
 	vertical-align: -2px;
 	line-height: 33px !important;
