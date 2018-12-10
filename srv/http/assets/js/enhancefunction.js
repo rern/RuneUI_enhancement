@@ -966,6 +966,8 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		args = args || '',
 		content = '',
 		coverart = '',
+		album = '',
+		artist = '',
 		genre = '',
 		i = 0,
 		row = [];
@@ -1011,6 +1013,10 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			$.each( data, function( index, value ) {
 				if ( value.coverart ) {
 					coverart = value.coverart;
+				} else if ( value.album ) {
+					album = value.album;
+				} else if ( value.artist ) {
+					artist = value.artist;
 				} else if ( value.genre ) {
 					genre = value.genre;
 				} else if ( value.directory ) {
@@ -1021,18 +1027,23 @@ function dataSort( data, path, plugin, querytype, arg ) {
 					arrayfile.push( value );
 					sec = HMS2Second( value.Time );
 					litime += sec;
-				} else {
+				} else if ( value.lisort ) {
 					value.lisort = stripLeading( value.playlist.replace( /^.*\//, '' ) );
 					arraypl.push( value );
 				}
 			} );
 			if ( coverart ) {
-				var genrehtml = genre ? '<i class="fa fa-genre"></i>'+ genre : '';
+				var genrehtml = genre ? '<i class="fa fa-genre"></i>'+ genre +'<br>' : '';
 				content += '<li class="licover">'
-						  +'<i class="fa fa-bars db-action" data-target="#context-menu-'+ GUI.browsemode +'"></i>'
 						  +'<a class="lipath">'+ path +'</a><a class="liname">'+ path.replace(/^.*\//, '') +'</a>'
 						  +'<img src="'+ coverart +'" class="coversmall">'
-						  +'<span class="liinfo">'+ genrehtml +'<gr> • </gr>'+ arrayfile.length +'<i class="fa fa-music"></i>'+ second2HMS( litime ) +'</span>'
+						  +'<span class="liinfo">'
+						  +'<bl class="lialbum">'+ album +'</bl><br>'
+						  +'<i class="fa fa-artist"></i>'+ artist +'<br>'
+						  + genrehtml
+						  +'<i class="fa fa-music"></i>'+ arrayfile.length +'<gr> • </gr>'+ second2HMS( litime )
+						  +'</span>'
+						  +'<i class="fa fa-bars db-action" data-target="#context-menu-'+ GUI.browsemode +'"></i>'
 						  +'</li>';
 			}
 			arraydir.sort( function( a, b ) {
@@ -1140,6 +1151,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		}
 		$( '#db-currentpath .lipath' ).text( path ); // for back navigation
 		$( '#db-currentpath span' ).html( iconName[ GUI.browsemode ][ 0 ] +' <a id="rootpath" data-path="'+ mode[ GUI.browsemode ] +'">'+ iconName[ GUI.browsemode ][ 1 ] +'</a>'+ dotpath );
+		$( '#artistalbum' ).toggleClass( 'hide', coverart !== '' );
 	} else {
 		var folder = path.split( '/' );
 		var folderRoot = folder[ 0 ];

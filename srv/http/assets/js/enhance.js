@@ -788,7 +788,7 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 	$menu
 		.removeClass( 'hide' )
 		.css( {
-			  top   : $thisli.hasClass( 'licover' ) ? ( GUI.display.bars ? '261px' : '221px' ) : $this.position().top +'px'
+			  top   : $thisli.hasClass( 'licover' ) ? ( GUI.display.bars ? '270px' : '230px' ) : $this.position().top +'px'
 			, right : $( '#db-index' ).hasClass( 'hide' ) ? '50px' : '90px'
 		} );
 	var targetB = $menu.offset().top + $menu.height();
