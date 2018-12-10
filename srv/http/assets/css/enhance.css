@@ -1792,6 +1792,35 @@ w {
 	}
 }
 /* width */
+@media(max-width: 749px) {
+	#time-knob {
+		order: 1;
+		-webkit-order: 1;
+	}
+	#coverart {
+		order: 2;
+		-webkit-order: 2;
+		display: block;
+	}
+	#volume-knob {
+		order: 5;
+		-webkit-order: 5;
+		margin-top: 20px;
+	}
+	#play-group {
+		order: 3;
+		-webkit-order: 3;
+	}
+	#share-group {
+		order: 4;
+		-webkit-order: 4;
+	}
+	#vol-group {
+		order: 6;
+		-webkit-order: 6;
+		margin-top: 20px;
+	}
+}
 @media(max-width: 735px) {
 	#clock-display {
 		display: none;
@@ -1811,7 +1840,7 @@ w {
 		padding-top: 40px;
 	}
 	#playback-row {
-		margin-top: 0;
+		margin-top: 20px;
 	}
 	#time-knob,
 	#coverart,
@@ -1821,7 +1850,6 @@ w {
 	#vol-group	{
 		width: 45%;
 		min-width: 245px;
-		margin-top: 10px;
 	}
 	#share-group,
 	#play-group,
@@ -1855,6 +1883,7 @@ w {
 	#volume-knob {
 		order: 3;
 		-webkit-order: 3;
+		margin-top: 0;
 	}
 	#db-currentpath {
 		width: calc( 100% - 180px );
