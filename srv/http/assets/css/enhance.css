@@ -148,6 +148,10 @@ label {
 	text-transform: uppercase;
 }
 
+a,
+a:hover {
+	text-decoration: none;
+}
 w, wh, .wh { color: #e0e7ee; }
 bl, .bl { color: #0095d8; }
 gr, .gr { color: #7795b4; }
@@ -220,7 +224,6 @@ wh, gr { font-weight: 300; }
 	color: #e0e7ee;
 	background: #34495e;
 	border-top: 1px solid #222f3d;
-	text-decoration: none;
 	cursor: pointer;
 }
 .menu a:nth-of-type( 1 ) {
@@ -356,7 +359,6 @@ wh, gr { font-weight: 300; }
 	padding: 0;
 	background: #34495e;
 	font-size: 30px;
-	text-decoration: none;
 	text-align: center;
 	color: #e0e7ee;
 }
@@ -1000,13 +1002,10 @@ wh, gr { font-weight: 300; }
 	line-height: 40px;
 	font-size: 28px;
 	color: #0095d8;
-	text-decoration: none;
 	cursor: pointer;
 }
-#bio legend,
 #biocontent a:hover {
 	color: #0095d8;
-	text-decoration: none;
 }
 #biocontent span {
 	color: #587ca0;
@@ -1136,7 +1135,6 @@ wh, gr { font-weight: 300; }
 .btnlist a {
 	font-size: 18px;
 	color: #e0e7ee;
-	text-decoration: none;
 }
 .btnlist-top i {
 	font-size: 24px;
@@ -1320,23 +1318,32 @@ wh, gr { font-weight: 300; }
 	height: 230px !important;
 }
 .licover .coversmall {
-	margin-left: 40px;
+	margin: 0 15px 0 40px;
 	box-shadow: #555555 0 0 8px 2px;
 }
 .licover .db-action {
-	margin-top: 180px !important;
+	margin-top: 185px !important;
 }
 .licover.active {
-	background: linear-gradient( #0000 181px, #0095d8 49px ) !important;
+	background: linear-gradient( #0000 190px, #0095d8 40px ) !important;
 }
 .liinfo {
-	vertical-align: 85px;
-	margin-left: 10px;
+	display: inline-block;
+	vertical-align: bottom;
+	margin-bottom: 3px;
+	width: calc( 100% - 335px );
+	line-height: 33px;
 	font-weight: 300;
 }
+.lialbum {
+	white-space: normal;
+	font-weight: normal;
+}
 .liinfo i {
-	margin: 0 !important;
+	margin: 0 0 !important;
+	text-align: left !important;
 	vertical-align: -2px;
+	line-height: 33px !important;
 }
 #db-entries,
 #pl-editor {
