@@ -1029,10 +1029,10 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			if ( coverart ) {
 				var genrehtml = genre ? '<i class="fa fa-genre"></i>'+ genre : '';
 				content += '<li class="licover">'
+						  +'<i class="fa fa-bars db-action" data-target="#context-menu-'+ GUI.browsemode +'"></i>'
+						  +'<a class="lipath">'+ path +'</a><a class="liname">'+ path.replace(/^.*\//, '') +'</a>'
 						  +'<img src="'+ coverart +'" class="coversmall">'
 						  +'<span class="liinfo">'+ genrehtml +'<gr> • </gr>'+ arrayfile.length +'<i class="fa fa-music"></i>'+ second2HMS( litime ) +'</span>'
-						  +'<a class="lipath">'+ path +'</a><a class="liname">'+ path.replace(/^.*\//, '') +'</a>'
-						  +'<i class="fa fa-bars db-action" data-target="#context-menu-'+ GUI.browsemode +'"></i>'
 						  +'</li>';
 			}
 			arraydir.sort( function( a, b ) {
@@ -1105,6 +1105,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		// fill bottom of list to mave last li movable to top
 		$( '#db-entries p' ).css( 'min-height', window.innerHeight - ( GUI.display.bars ? 140 : 100 ) +'px' );
 		if ( !fileplaylist ) displayIndexBar();
+		$( '.menu' ).addClass( 'hide' );
 	} );
 // breadcrumb directory path link
 	var iconName = {
