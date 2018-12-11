@@ -874,8 +874,8 @@ function getDB( options ) {
 			  file          : { mpc: 'mpc ls -f "%title%^^%time%^^%artist%^^%album%^^%file%[^^%genre%]" "'+ path +'" 2> /dev/null', list: 'file' }
 			, artistalbum   : { mpc: 'mpc find -f "%title%^^%time%^^[%artist%||%albumartist%]^^%album%^^%file%^^%genre%"'+ ( artist ? ' artist "'+ artist +'"' : '' ) +' album "'+ path +'"', list: 'file', name: path }
 			, composeralbum : { mpc: 'mpc find -f "%title%^^%time%^^[%artist%||%albumartist%]^^%album%^^%file%^^%genre%" composer "'+ composer +'" album "'+ path +'"', list: 'file' }
-			, album         : { album: 'mpc find -f "%album%^^[%albumartist%||%artist%]" album "'+ path +'" | awk \'!a[$0]++\'', name: path }
-			, genre         : { album: 'mpc find -f "%album%^^[%albumartist%||%artist%]" genre "'+ path +'" | awk \'!a[$0]++\'' }
+			, album         : { album: 'mpc find -f "%album%^^[%albumartist%||%artist%]" album "'+ path +'" | awk \'!a[$0]++\'', albumname: path }
+			, genre         : { album: 'mpc find -f "%album%^^[%albumartist%||%artist%]" genre "'+ path +'" | awk \'!a[$0]++\'', genrename: path }
 			, artist        : { mpc: 'mpc list album artist "'+ path +'" | awk NF', list: 'album' }
 			, albumartist   : { mpc: 'mpc list album albumartist "'+ path +'" | awk NF', list: 'album' }
 			, composer      : { mpc: 'mpc list album composer "'+ path +'" | awk NF', list: 'album' }
@@ -1316,20 +1316,20 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 							 +'<span class="single">'+ liname +'</span>'
 				}
 			} else if ( GUI.browsemode === 'composer' ) {
-				if ( inputArr.file ) {
+/*				if ( inputArr.file ) {
 					var liname = inputArr.Title;
 					content = '<li>'
 							 +'<a class="lipath">'+ inputArr.file +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
 							 +'<i class="fa fa-music db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-file"></i>'
-							 +'<span class="sn">'+ liname +'&ensp;<span class="time">'+ second2HMS( inputArr.Time ) +'</span></span>'
+							 +'<span class="sn">'+ liname +'&ensp;<span class="time">'+ inputArr.Time +'</span></span>'
 							 +'<span class="bl">'+ inputArr.Artist +' - '+ inputArr.Album +'</span>'
-				} else {
+				} else {*/
 					var liname = inputArr.composer;
 					content = '<li mode="composer">'
 							 +'<a class="lipath">'+ inputArr.composer +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
 							 +'<i class="fa fa-composer db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-composer"></i>'
 							 +'<span class="single">'+ inputArr.composer +'</span>'
-				}
+//				}
 			} else if ( GUI.browsemode === 'genre' ) {
 				if ( inputArr.album ) {
 					var liname = inputArr.artistalbum;
@@ -1337,6 +1337,13 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 							 +'<a class="lipath">'+ inputArr.album +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a><a class="liartist">'+ inputArr.artist +'</a>'
 							 +'<i class="fa fa-album db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-album"></i>'
 							 +'<span class="single">'+ liname +'</span>'
+				} else if ( inputArr.file ) {
+					var liname = inputArr.Title;
+					content = '<li>'
+							 +'<a class="lipath">'+ inputArr.file +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
+							 +'<i class="fa fa-music db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-file"></i>'
+							 +'<span class="sn">'+ liname +'&ensp;<span class="time">'+ inputArr.Time +'</span></span>'
+							 +'<span class="bl">'+ inputArr.Artist +' - '+ inputArr.Album +'</span>'
 				} else {
 					var liname = inputArr.genre ;
 					content = '<li mode="genre">'
