@@ -18,7 +18,6 @@ var GUI = { // outside '$( function() {' enable console.log access
 	, lsplaylists  : []
 	, midori       : navigator.userAgent.indexOf( 'Midori' ) !== -1
 	, playlist     : {}
-	, plcurrent    : ''
 	, pleditor     : 0
 	, plscrolltop  : 0
 	, plugin       : ''
@@ -778,12 +777,12 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 	GUI.list.isfile = $thisli.hasClass( 'file' ); // file/dirble - used in contextmenu
 	if ( $( '#db-currentpath' ).find( '.lipath' ).text() === 'Webradio' ) GUI.list.url = $thisli.find( '.bl' ).text();
 	var $menu = $( $this.data( 'target' ) );
-	$( '#db-entries li' ).removeClass( 'active' );
 	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
 	$( '.update' ).toggleClass( 'hide', GUI.status.updating_db !== 0 );
 	$( '.lastfm' ).toggleClass( 'hide', GUI.list.name.slice( -4, -3 ) === '.' );
 	var contextnum = $menu.find( 'a:not(.hide)' ).length;
 	$( '.menushadow' ).css( 'height', contextnum * 41 - 1 );
+	$( '#db-entries li' ).removeClass( 'active' );
 	$thisli.addClass( 'active' );
 	$menu
 		.removeClass( 'hide' )
@@ -1025,24 +1024,23 @@ $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 	GUI.list.name = $thisli.find( '.liname' ).text();
 	GUI.list.path = GUI.list.name;
 	GUI.list.isfile = $thisli.hasClass( 'pl-song' ); // used in contextmenu
-	$( '#pl-editor li' ).removeClass( 'active' );
 	$( '.menu' ).addClass( 'hide' );
-	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
-	if ( GUI.list.name === GUI.plcurrent ) {
-		GUI.plcurrent = '';
-	} else {
-		GUI.plcurrent = GUI.list.name;
-		$thisli.addClass( 'active' );
-		var $contextmenu = GUI.list.isfile ? $( '#context-menu-file' ) : $( '#context-menu-playlist' );
-		var contextnum = $contextmenu.find( 'a:not(.hide)' ).length;
-		$( '.menushadow' ).css( 'height', contextnum * 41 - 1 );
-		$contextmenu
-			.removeClass( 'hide' )
-			.css( { top: $this.position().top +'px', right: '90px' } );
-		var targetB = $contextmenu.offset().top + 246;
-		var wH = window.innerHeight;
-		if ( targetB > wH + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + ( GUI.display.bars ? 42 : 0 ) } );
+	if ( $thisli.hasClass( 'active' ) ) {
+		$thisli.removeClass( 'active' );
+		return
 	}
+	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
+	var $contextmenu = GUI.list.isfile ? $( '#context-menu-file' ) : $( '#context-menu-playlist' );
+	var contextnum = $contextmenu.find( 'a:not(.hide)' ).length;
+	$( '.menushadow' ).css( 'height', contextnum * 41 - 1 );
+	$( '#pl-editor li' ).removeClass( 'active' );
+	$thisli.addClass( 'active' );
+	$contextmenu
+		.removeClass( 'hide' )
+		.css( { top: $this.position().top +'px', right: '90px' } );
+	var targetB = $contextmenu.offset().top + 246;
+	var wH = window.innerHeight;
+	if ( targetB > wH + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + ( GUI.display.bars ? 42 : 0 ) } );
 } );
 $( '#pl-index li' ).click( function() {
 	var topoffset = GUI.display.bars ? 80 : 40;

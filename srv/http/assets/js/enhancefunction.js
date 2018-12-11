@@ -133,7 +133,6 @@ function setPageCurrent( panel ) {
 	if ( !$( '#page-library' ).hasClass( 'hide' ) && $( '#home-blocks' ).hasClass( 'hide' ) ) {
 		var path = $( '#db-currentpath .lipath' ).text();
 		if ( path ) GUI.dbscrolltop[ path ] = $( window ).scrollTop();
-		$( '#db-entries li' ).removeClass( 'active' );
 	} else if ( !$( '#page-playlist' ).hasClass( 'hide' ) && GUI.pleditor ) {
 		if ( $( '#pl-currentpath .fa-arrow-left' ).hasClass( 'plsbackroot' ) ) {
 			GUI.plscrolltop = $( window ).scrollTop();
@@ -141,7 +140,7 @@ function setPageCurrent( panel ) {
 			GUI.listplscrolltop = $( window ).scrollTop();
 		}
 	}
-	$( '#menu-bottom li' ).removeClass( 'active' );
+	$( '#menu-bottom li, #db-entries li, #pl-editor li' ).removeClass( 'active' );
 	$( '.page, .menu' ).addClass( 'hide' );
 	$( '#page-'+ panel ).removeClass( 'hide' );
 	$( '#tab-'+ panel ).addClass( 'active' );
