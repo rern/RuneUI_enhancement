@@ -12,7 +12,7 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 	$lines = explode( "\n", rtrim( $albums ) );
 	$count = count( $lines );
 	if ( $count === 1 ) {
-		$albums = shell_exec( 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%[^^%genre%]" album "'.$name.'"' );
+		$albums = shell_exec( 'mpc find -f "%title%^^%time%^^[%artist%||%albumartist%]^^%album%^^%file%^^%genre%^^%composer%" album "'.$name.'"' );
 		$data = search2array( $albums );
 		if ( $redis->hGet( 'display', 'coverfile' ) ) {
 			$cover = getCover( $data );
@@ -40,7 +40,7 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 		$result = shell_exec( $mpc );
 		// query 'various artist album' with 'artist name' > requery without
 		if ( !$result ) {
-			$result = shell_exec( 'mpc find -f "%title%^^%time%^^[%artist%||%albumartist%]^^%album%^^%file%[^^%genre%]" album "'.$_POST[ 'name' ].'"' );
+			$result = shell_exec( 'mpc find -f "%title%^^%time%^^[%artist%||%albumartist%]^^%album%^^%file%^^%genre%^^%composer%" album "'.$_POST[ 'name' ].'"' );
 		}
 		$cmd = $mpc;
 	} else {
@@ -213,6 +213,7 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 function search2array( $result ) {
 	$lists = explode( "\n", rtrim( $result ) );
 	$genre = '';
+	$composer = '';
 	foreach( $lists as $list ) {
 		$root = substr( $list, 0, 4 );
 		if ( $root === 'USB/' || $root === 'NAS/' || substr( $list, 0, 13 ) === 'LocalStorage/' ) {
@@ -232,11 +233,13 @@ function search2array( $result ) {
 			$li[ 'Artist' ] = $list[ 2 ];
 			$li[ 'Album' ] = $list[ 3 ];
 			$li[ 'file' ] = $list[ 4 ];
-			if ( !$genre && isset( $list[ 5 ] ) ) $genre = $list[ 5 ];
+			if ( !$composer && $list[ 6 ] !== '' ) $composer = $list[ 6 ];
+			if ( !$genre && $list[ 5 ] !== '' ) $genre = $list[ 5 ];
 			$data[] = $li;
 			$li = '';
 		}
 	}
+	if ( $composer ) $data[][ 'composer' ] = $composer;
 	if ( $genre ) $data[][ 'genre' ] = $genre;
 	$data[][ 'artist' ] = $data[ 0 ][ 'Artist' ];
 	$data[][ 'album' ] = $data[ 0 ][ 'Album' ];
