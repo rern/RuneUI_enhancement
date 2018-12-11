@@ -1042,7 +1042,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 						  +'<img src="'+ coverart +'" class="coversmall">'
 						  +'<span class="liinfo">'
 						  +'<bl class="lialbum">'+ album +'</bl><br>'
-						  + composerhtml
+//						  + composerhtml
 						  +'<i class="fa fa-artist"></i>'+ artist +'<br>'
 						  + genrehtml
 						  +'<i class="fa fa-music"></i>'+ arrayfile.length +'<gr> • </gr>'+ second2HMS( litime )
