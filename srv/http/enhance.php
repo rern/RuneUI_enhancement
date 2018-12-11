@@ -8,11 +8,20 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 	exit();
 } else if ( isset( $_POST[ 'album' ] ) ) {
 	$albums = shell_exec( $_POST[ 'album' ] );
-	$name = isset( $_POST[ 'name' ] ) ? $_POST[ 'name' ] : '';
+	$name = isset( $_POST[ 'albumname' ] ) ? $_POST[ 'albumname' ] : '';
+	if ( isset( $_POST[ 'albumname' ] ) ) {
+		$type = 'album';
+		$name = $_POST[ 'albumname' ];
+	} else if ( isset( $_POST[ 'genrename' ] ) ) {
+		$type = 'genre';
+		$name = $_POST[ 'genrename' ];
+	} else {
+		$name = '';
+	}
 	$lines = explode( "\n", rtrim( $albums ) );
 	$count = count( $lines );
 	if ( $count === 1 ) {
-		$albums = shell_exec( 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%" album "'.$name.'"' );
+		$albums = shell_exec( 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%" '.$type.' "'.$name.'"' );
 		$data = search2array( $albums );
 		if ( $redis->hGet( 'display', 'coverfile' ) ) {
 			$cover = getCover( $data );
