@@ -764,6 +764,8 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 	e.stopPropagation();
 	var $this = $( this );
 	var $thisli = $this.parent();
+	// *.cue, *.m3u
+	if ( $thisli.hasClass( 'licover' ) && $( '#db-entries li i.fa-list-ul' ).length ) $thisli = $thisli.next();
 	$( '.menu' ).addClass( 'hide' );
 	if ( $thisli.hasClass( 'active' ) ) {
 		$thisli.removeClass( 'active' );
@@ -784,10 +786,11 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 	$( '.menushadow' ).css( 'height', contextnum * 41 - 1 );
 	$( '#db-entries li' ).removeClass( 'active' );
 	$thisli.addClass( 'active' );
+	var menutop =
 	$menu
 		.removeClass( 'hide' )
 		.css( {
-			  top   : $thisli.hasClass( 'licover' ) ? ( GUI.display.bars ? '269px' : '229px' ) : $this.position().top +'px'
+			  top   : $thisli.hasClass( 'licover' ) ? ( GUI.display.bars ? '269px' : '229px' ) : $thisli.position().top +'px'
 			, right : $( '#db-index' ).hasClass( 'hide' ) ? '50px' : '90px'
 		} );
 	var targetB = $menu.offset().top + $menu.height();
