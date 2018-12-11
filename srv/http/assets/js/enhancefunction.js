@@ -844,6 +844,7 @@ function getDB( options ) {
 		mode,
 		command;
 	var currentpath = $( '#db-currentpath .lipath' ).text();
+	var composer = $( '#rootpath' ).data( 'path' ) === 'Composer' ? $( '#artistalbum span' ).text() : '';
 	currentpath = currentpath ? currentpath.toString().replace( /"/g, '\"' ) : '';
 	if ( !GUI.dbback && cmd !== 'search' && GUI.dbbrowsemode !== 'file' ) {
 		GUI.dbbackdata.push( {
@@ -870,17 +871,18 @@ function getDB( options ) {
 	GUI.browsemode = browsemode;
 	if ( !plugin ) {
 		var command = {
-			  file        : { mpc: 'mpc ls -f "%title%^^%time%^^%artist%^^%album%^^%file%[^^%genre%]" "'+ path +'" 2> /dev/null', list: 'file' }
-			, artistalbum : { mpc: 'mpc find -f "%title%^^%time%^^[%artist%||%albumartist%]^^%album%^^%file%^^%genre%"'+ ( artist ? ' artist "'+ artist +'"' : '' ) +' album "'+ path +'"', list: 'file', name: path }
-			, album       : { album: 'mpc find -f "%album%^^[%albumartist%||%artist%]" album "'+ path +'" | awk \'!a[$0]++\'', name: path }
-			, genre       : { album: 'mpc find -f "%album%^^[%albumartist%||%artist%]" genre "'+ path +'" | awk \'!a[$0]++\'' }
-			, artist      : { mpc: 'mpc list album artist "'+ path +'" | awk NF', list: 'album' }
-			, albumartist : { mpc: 'mpc list album albumartist "'+ path +'" | awk NF', list: 'album' }
-			, composer    : { mpc: 'mpc list album composer "'+ path +'" | awk NF', list: 'album' }
-			, type        : { mpc: 'mpc list '+ browsemode +' | awk NF', list: browsemode }
-			, search      : { mpc: 'mpc search -f "%title%^^%time%^^%artist%^^%album%^^%file%" any "'+ keyword +'"', list: 'file' }
-			, Webradio    : { getwebradios: 1 }
-			, playlist    : { playlist: path }
+			  file          : { mpc: 'mpc ls -f "%title%^^%time%^^%artist%^^%album%^^%file%[^^%genre%]" "'+ path +'" 2> /dev/null', list: 'file' }
+			, artistalbum   : { mpc: 'mpc find -f "%title%^^%time%^^[%artist%||%albumartist%]^^%album%^^%file%^^%genre%"'+ ( artist ? ' artist "'+ artist +'"' : '' ) +' album "'+ path +'"', list: 'file', name: path }
+			, composeralbum : { mpc: 'mpc find -f "%title%^^%time%^^[%artist%||%albumartist%]^^%album%^^%file%^^%genre%" composer "'+ composer +'" album "'+ path +'"', list: 'file' }
+			, album         : { album: 'mpc find -f "%album%^^[%albumartist%||%artist%]" album "'+ path +'" | awk \'!a[$0]++\'', name: path }
+			, genre         : { album: 'mpc find -f "%album%^^[%albumartist%||%artist%]" genre "'+ path +'" | awk \'!a[$0]++\'' }
+			, artist        : { mpc: 'mpc list album artist "'+ path +'" | awk NF', list: 'album' }
+			, albumartist   : { mpc: 'mpc list album albumartist "'+ path +'" | awk NF', list: 'album' }
+			, composer      : { mpc: 'mpc list album composer "'+ path +'" | awk NF', list: 'album' }
+			, type          : { mpc: 'mpc list '+ browsemode +' | awk NF', list: browsemode }
+			, search        : { mpc: 'mpc search -f "%title%^^%time%^^%artist%^^%album%^^%file%" any "'+ keyword +'"', list: 'file' }
+			, Webradio      : { getwebradios: 1 }
+			, playlist      : { playlist: path }
 		}
 		if ( cmd === 'search' ) {
 			if ( path.match(/Dirble/)) {
@@ -904,8 +906,12 @@ function getDB( options ) {
 			} else if ( [ 'm3u', 'pls', 'cue' ].indexOf( path.slice( -3 ) ) !== -1 ) {
 				mode = 'playlist';
 			} else {
-				mode = browsemode;
-				if ( browsemode === 'composer' ) GUI.browsemode = 'composeralbum';
+				if ( composer ) {
+					mode = 'composeralbum';
+				} else {
+					mode = browsemode;
+					if ( browsemode === 'composer' ) GUI.browsemode = 'composeralbum';
+				}
 			}
 		}
 		$.post( 'enhance.php', command[ mode ], function( data ) {
