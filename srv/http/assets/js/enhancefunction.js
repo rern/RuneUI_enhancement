@@ -1035,7 +1035,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 					arrayfile.push( value );
 					sec = HMS2Second( value.Time );
 					litime += sec;
-				} else if ( value.lisort ) {
+				} else if ( value.playlist ) {
 					value.lisort = stripLeading( value.playlist.replace( /^.*\//, '' ) );
 					arraypl.push( value );
 				}
