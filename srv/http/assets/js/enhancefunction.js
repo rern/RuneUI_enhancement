@@ -871,7 +871,7 @@ function getDB( options ) {
 	if ( !plugin ) {
 		var command = {
 			  file        : { mpc: 'mpc ls -f "%title%^^%time%^^%artist%^^%album%^^%file%[^^%genre%]" "'+ path +'" 2> /dev/null', list: 'file' }
-			, artistalbum : { mpc: 'mpc find -f "%title%^^%time%^^[%artist%||%albumartist%]^^%album%^^%file%[^^%genre%]"'+ ( artist ? ' artist "'+ artist +'"' : '' ) +' album "'+ path +'"', list: 'file', name: path }
+			, artistalbum : { mpc: 'mpc find -f "%title%^^%time%^^[%artist%||%albumartist%]^^%album%^^%file%^^%genre%"'+ ( artist ? ' artist "'+ artist +'"' : '' ) +' album "'+ path +'"', list: 'file', name: path }
 			, album       : { album: 'mpc find -f "%album%^^[%albumartist%||%artist%]" album "'+ path +'" | awk \'!a[$0]++\'', name: path }
 			, genre       : { album: 'mpc find -f "%album%^^[%albumartist%||%artist%]" genre "'+ path +'" | awk \'!a[$0]++\'' }
 			, artist      : { mpc: 'mpc list album artist "'+ path +'" | awk NF', list: 'album' }
@@ -967,6 +967,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		coverart = '',
 		album = '',
 		artist = '',
+		composer = '',
 		genre = '',
 		i = 0,
 		row = [];
@@ -1009,6 +1010,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			var arraypl = [];
 			var litime = 0;
 			var sec = 0;
+			console.log(data)
 			$.each( data, function( index, value ) {
 				if ( value.coverart ) {
 					coverart = value.coverart;
@@ -1016,6 +1018,8 @@ function dataSort( data, path, plugin, querytype, arg ) {
 					album = value.album;
 				} else if ( value.artist ) {
 					artist = value.artist;
+				} else if ( value.composer ) {
+					composer = value.composer;
 				} else if ( value.genre ) {
 					genre = value.genre;
 				} else if ( value.directory ) {
@@ -1032,12 +1036,14 @@ function dataSort( data, path, plugin, querytype, arg ) {
 				}
 			} );
 			if ( coverart ) {
+				var composerhtml = composer ? '<i class="fa fa-composer"></i>'+ composer +'<br>' : '';
 				var genrehtml = genre ? '<i class="fa fa-genre"></i>'+ genre +'<br>' : '';
 				content += '<li class="licover">'
 						  +'<a class="lipath">'+ path +'</a><a class="liname">'+ path.replace(/^.*\//, '') +'</a>'
 						  +'<img src="'+ coverart +'" class="coversmall">'
 						  +'<span class="liinfo">'
 						  +'<bl class="lialbum">'+ album +'</bl><br>'
+						  + composerhtml
 						  +'<i class="fa fa-artist"></i>'+ artist +'<br>'
 						  + genrehtml
 						  +'<i class="fa fa-music"></i>'+ arrayfile.length +'<gr> • </gr>'+ second2HMS( litime )
