@@ -905,7 +905,7 @@ function getDB( options ) {
 				mode = 'playlist';
 			} else {
 				mode = browsemode;
-				if ( mode === 'composer' ) GUI.browsemode = 'composeralbum';
+				if ( browsemode === 'composer' ) GUI.browsemode = 'composeralbum';
 			}
 		}
 		$.post( 'enhance.php', command[ mode ], function( data ) {
@@ -1010,7 +1010,6 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			var arraypl = [];
 			var litime = 0;
 			var sec = 0;
-			console.log(data)
 			$.each( data, function( index, value ) {
 				if ( value.coverart ) {
 					coverart = value.coverart;
