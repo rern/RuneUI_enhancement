@@ -873,7 +873,7 @@ function getDB( options ) {
 		var command = {
 			  file          : { mpc: 'mpc ls -f "%title%^^%time%^^%artist%^^%album%^^%file%[^^%genre%]" "'+ path +'" 2> /dev/null', list: 'file' }
 			, artistalbum   : { mpc: 'mpc find -f "%title%^^%time%^^[%artist%||%albumartist%]^^%album%^^%file%^^%genre%"'+ ( artist ? ' artist "'+ artist +'"' : '' ) +' album "'+ path +'"', list: 'file', name: path }
-			, composeralbum : { mpc: 'mpc find -f "%title%^^%time%^^[%artist%||%albumartist%]^^%album%^^%file%^^%genre%" composer "'+ composer +'" album "'+ path +'"', list: 'file' }
+			, composeralbum : { mpc: 'mpc find -f "%title%^^%time%^^[%artist%||%albumartist%]^^%album%^^%file%^^%genre%^^%composer%" composer "'+ composer +'" album "'+ path +'"', list: 'file' }
 			, album         : { album: 'mpc find -f "%album%^^[%albumartist%||%artist%]" album "'+ path +'" | awk \'!a[$0]++\'', albumname: path }
 			, genre         : { album: 'mpc find -f "%album%^^[%albumartist%||%artist%]" genre "'+ path +'" | awk \'!a[$0]++\'', genrename: path }
 			, artist        : { mpc: 'mpc list album artist "'+ path +'" | awk NF', list: 'album' }
@@ -1041,14 +1041,14 @@ function dataSort( data, path, plugin, querytype, arg ) {
 				}
 			} );
 			if ( coverart ) {
-				var composerhtml = composer ? '<i class="fa fa-composer"></i>'+ composer +'<br>' : '';
-				var genrehtml = genre ? '<i class="fa fa-genre"></i>'+ genre +'<br>' : '';
+				var composerhtml = ( composer && GUI.dbbackdata[ 0 ].browsemode == 'composer' ) ? '<span><i class="fa fa-composer"></i>'+ composer +'</span><br>' : '';
+				var genrehtml = genre ? '<span><i class="fa fa-genre"></i>'+ genre +'</span><br>' : '';
 				content += '<li class="licover">'
 						  +'<a class="lipath">'+ path +'</a><a class="liname">'+ path.replace(/^.*\//, '') +'</a>'
 						  +'<img src="'+ coverart +'" class="coversmall">'
 						  +'<span class="liinfo">'
 						  +'<bl class="lialbum">'+ album +'</bl><br>'
-//						  + composerhtml
+						  + composerhtml
 						  +'<i class="fa fa-artist"></i>'+ artist +'<br>'
 						  + genrehtml
 						  +'<i class="fa fa-music"></i>'+ arrayfile.length +'<gr> • </gr>'+ second2HMS( litime )
@@ -1160,7 +1160,13 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			var dotpath = albumtext ? '<a id="artistalbum"><gr> • </gr><span class="white">'+ albumtext +'</span></a>' : '';
 		}
 		$( '#db-currentpath .lipath' ).text( path ); // for back navigation
-		$( '#db-currentpath span' ).html( iconName[ GUI.browsemode ][ 0 ] +' <a id="rootpath" data-path="'+ mode[ GUI.browsemode ] +'">'+ iconName[ GUI.browsemode ][ 1 ] +'</a>'+ dotpath );
+		// fix: 1 li in genre list
+		if ( $( '.licover' ).length ) {
+			var type = GUI.dbbackdata[ 0 ].browsemode;
+			$( '#db-currentpath span' ).html( iconName[ type ][ 0 ] +' <a>'+ iconName[ type ][ 1 ] +'</a>' );
+		} else {
+			$( '#db-currentpath span' ).html( iconName[ GUI.browsemode ][ 0 ] +' <a id="rootpath" data-path="'+ mode[ GUI.browsemode ] +'">'+ iconName[ GUI.browsemode ][ 1 ] +'</a>'+ dotpath );
+		}
 		$( '#artistalbum' ).toggleClass( 'hide', coverart !== '' );
 	} else {
 		var folder = path.split( '/' );
