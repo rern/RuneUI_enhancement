@@ -204,7 +204,13 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	if ( $redis->get( local_browser ) === '1' ) $cmd .= $sudo.'killall Xorg; /usr/local/bin/ply-image /srv/http/assets/img/bootsplash.png;';
 	$cmd.= $sudo.'umount -f -a -t cifs nfs -l;';
 	if ( $mode !== 'screenoff' ) {
-		$cmd.= $sudo.'shutdown '.( $mode === 'reboot' ? '-r' : '-h' ).' now';
+		if ( $mode === 'reboot' ) {
+			// dual boot
+			exec( $sudo.'mount | grep -q mmcblk0p8 && echo 8 > /sys/module/bcm2709/parameters/reboot_part' );
+			$cmd.= $sudo.'shutdown -r now';
+		} else {
+			$cmd.= $sudo.'shutdown -h now';
+		}
 	} else {
 		$cmd.= $sudo.'export DISPLAY=:0; xset dpms force off';
 	}
