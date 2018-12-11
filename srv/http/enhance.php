@@ -12,7 +12,7 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 	$lines = explode( "\n", rtrim( $albums ) );
 	$count = count( $lines );
 	if ( $count === 1 ) {
-		$albums = shell_exec( 'mpc find -f "%title%^^%time%^^[%artist%||%albumartist%]^^%album%^^%file%^^%genre%^^%composer%" album "'.$name.'"' );
+		$albums = shell_exec( 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%" album "'.$name.'"' );
 		$data = search2array( $albums );
 		if ( $redis->hGet( 'display', 'coverfile' ) ) {
 			$cover = getCover( $data );
