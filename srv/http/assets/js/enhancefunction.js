@@ -490,15 +490,6 @@ function renderBio() {
 	$( '#menu-top, #menu-bottom, #loader' ).addClass( 'hide' );
 	$( '#bio' ).removeClass( 'hide' );
 }
-$( '#artist, #bio-open' ).click( function() {
-	if ( GUI.status.ext === 'radio' ) return
-	
-	if ( $( '#bio legend' ).text() != GUI.status.Artist ) {
-		getBio( GUI.status.Artist );
-	} else {
-		renderBio();
-	}
-} );
 function mpdSeek( seekto ) {
 	if ( GUI.status.state !== 'stop' ) {
 		clearInterval( GUI.intKnob );
@@ -1049,7 +1040,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 						  +'<span class="liinfo">'
 							  +'<bl class="lialbum">'+ album +'</bl><br>'
 							  + composerhtml
-							  +'<i class="fa fa-albumartist"></i>'+ artist +'<br>'
+							  +'<span class="artist"><i class="fa fa-albumartist"></i>'+ artist +'</span><br>'
 							  + genrehtml
 							  +'<i class="fa fa-music"></i>'+ arrayfile.length +'<gr> • </gr>'+ second2HMS( litime )
 						  +'</span>'
@@ -1481,7 +1472,7 @@ function htmlPlaylist( data ) {
 				  +'<span class="liinfo">'
 					  +'<bl class="lialbum">'+ album +'</bl><br>'
 					  + composerhtml
-					  +'<i class="fa fa-albumartist"></i>'+ artist +'<br>'
+					  +'<span class="artist"><i class="fa fa-albumartist"></i>'+ artist +'</span><br>'
 					  + genrehtml
 					  +'<i class="fa fa-music"></i>'+ countsong +'<gr> • </gr>'+ second2HMS( pltime )
 				  +'</span>'

@@ -296,6 +296,15 @@ $( '#page-library' ).click( function( e ) {
 $( '#song, #playlist-warning' ).on( 'click', 'i', function() {
 	$( '#tab-library' ).click();
 } );
+$( '#artist, #bio-open' ).click( function() {
+	if ( GUI.status.ext === 'radio' ) return
+	
+	if ( $( '#bio legend' ).text() != GUI.status.Artist ) {
+		getBio( GUI.status.Artist );
+	} else {
+		renderBio();
+	}
+} );
 $( '#time' ).roundSlider( {
 	  sliderType  : 'min-range'
 	, max         : 1000
@@ -702,6 +711,10 @@ $( '#db-back' ).click( function() {
 $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	var $this = $( this );
 	if ( !$this.find( '.db-action' ).length ) return
+	if ( $( e.target ).hasClass( 'artist' ) ) {
+		getBio( $this.find( '.artist' ).text() );
+		return
+	}
 	
 	$( '.menu' ).addClass( 'hide' );
 	if ( $this.hasClass( 'licover' ) || $this.find( '.fa-music' ).length || $this.find( '.fa-webradio' ).length ) {
