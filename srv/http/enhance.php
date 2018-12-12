@@ -21,7 +21,7 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 	$lines = explode( "\n", rtrim( $albums ) );
 	$count = count( $lines );
 	if ( $count === 1 ) {
-		$albums = shell_exec( 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%" '.$type.' "'.$name.'"' );
+		$albums = shell_exec( 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" '.$type.' "'.$name.'"' );
 		$data = search2array( $albums );
 		if ( $redis->hGet( 'display', 'coverfile' ) && !isPlaylist( $data ) ) {
 			$cover = getCover( $data );
@@ -49,7 +49,7 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 		$result = shell_exec( $mpc );
 		// query 'various artist album' with 'artist name' > requery without
 		if ( !$result ) {
-			$result = shell_exec( 'mpc find -f "%title%^^%time%^^[%artist%||%albumartist%]^^%album%^^%file%^^%genre%^^%composer%" album "'.$_POST[ 'name' ].'"' );
+			$result = shell_exec( 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" album "'.$_POST[ 'name' ].'"' );
 		}
 		$cmd = $mpc;
 	} else {
@@ -91,10 +91,10 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 	if ( $ext === 'm3u' ) {
 		$file = '/mnt/MPD/'.$path;
 		exec( '/usr/bin/sudo /usr/bin/ln -s "'.$file.'" /var/lib/mpd/playlists/' );
-		$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%albumartist%||%artist%][ • %album%]^^%file%^^[%albumartist%||%artist%]^^%album%^^%genre%^^%composer%" playlist "'.basename( $file, '.m3u' ).'"' );
+		$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%^^[%albumartist%||%artist%]^^%album%^^%genre%^^%composer%" playlist "'.basename( $file, '.m3u' ).'"' );
 		exec( '/usr/bin/sudo /usr/bin/rm "/var/lib/mpd/playlists/'.basename( $file ).'"' );
 	} else {
-		$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%albumartist%||%artist%][ • %album%]^^%file%^^[%albumartist%||%artist%]^^%album%^^%genre%^^%composer%" playlist "'.$path.'"' );
+		$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%^^[%albumartist%||%artist%]^^%album%^^%genre%^^%composer%" playlist "'.$path.'"' );
 	}
 	$data = list2array( $lines );
 	$data[][ 'path' ] = $path;
@@ -234,6 +234,7 @@ function search2array( $result ) {
 	$lists = explode( "\n", rtrim( $result ) );
 	$genre = '';
 	$composer = '';
+	$albumartist = '';
 	foreach( $lists as $list ) {
 		$root = substr( $list, 0, 4 );
 		if ( $root === 'USB/' || $root === 'NAS/' || substr( $list, 0, 13 ) === 'LocalStorage/' ) {
@@ -255,13 +256,14 @@ function search2array( $result ) {
 			$li[ 'file' ] = $list[ 4 ];
 			if ( !$genre && $list[ 5 ] !== '' ) $genre = $list[ 5 ];
 			if ( !$composer && $list[ 6 ] !== '' ) $composer = $list[ 6 ];
+			if ( !$albumartist && $list[ 7 ] !== '' ) $albumartist = $list[ 7 ];
 			$data[] = $li;
 			$li = '';
 		}
 	}
 	if ( $genre ) $data[][ 'genre' ] = $genre;
 	if ( $composer ) $data[][ 'composer' ] = $composer;
-	$data[][ 'artist' ] = $data[ 0 ][ 'Artist' ];
+	$data[][ 'artist' ] = $albumartist ?: $data[ 0 ][ 'Artist' ];
 	$data[][ 'album' ] = $data[ 0 ][ 'Album' ];
 	return $data;
 }
