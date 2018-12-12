@@ -1322,20 +1322,11 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 							 +'<span class="single">'+ liname +'</span>'
 				}
 			} else if ( GUI.browsemode === 'composer' ) {
-/*				if ( inputArr.file ) {
-					var liname = inputArr.Title;
-					content = '<li>'
-							 +'<a class="lipath">'+ inputArr.file +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
-							 +'<i class="fa fa-music db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-file"></i>'
-							 +'<span class="sn">'+ liname +'&ensp;<span class="time">'+ inputArr.Time +'</span></span>'
-							 +'<span class="bl">'+ inputArr.Artist +' - '+ inputArr.Album +'</span>'
-				} else {*/
-					var liname = inputArr.composer;
-					content = '<li mode="composer">'
-							 +'<a class="lipath">'+ inputArr.composer +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
-							 +'<i class="fa fa-composer db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-composer"></i>'
-							 +'<span class="single">'+ inputArr.composer +'</span>'
-//				}
+				var liname = inputArr.composer;
+				content = '<li mode="composer">'
+						 +'<a class="lipath">'+ inputArr.composer +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
+						 +'<i class="fa fa-composer db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-composer"></i>'
+						 +'<span class="single">'+ inputArr.composer +'</span>'
 			} else if ( GUI.browsemode === 'genre' ) {
 				if ( inputArr.album ) {
 					var liname = inputArr.artistalbum;
@@ -1464,29 +1455,23 @@ function htmlPlaylist( data ) {
 			genre = value.genre;
 		} else if ( value.path ) {
 			path = value.path;
-		}
-	} );
-	var ilength = data.length;
-	for ( i = 0; i < ilength; i++ ) {
-		var pl = data[ i ];
-		if ( pl.file && pl.file.slice( 0, 4 ) === 'http' ) {
-			var title = pl.title || pl.file;
+		} else if ( value.file && value.file.slice( 0, 4 ) === 'http' ) {
+			var title = value.title || value.file;
 			content += '<li class="radio">'
 					 +'<i class="fa fa-webradio pl-icon"></i>'+ ( $( '#page-library' ).hasClass( 'hide' ) ? '<i class="fa fa-minus-circle pl-action"></i>' : '' )
 					 +'<span class="sn">'+ title +'&ensp;<span class="elapsed"></span></span>'
-					 +'<span class="bl">'+ pl.file +'</span>'
+					 +'<span class="bl">'+ value.file +'</span>'
 			countradio++;
-		} else if ( pl.title ) {
-			sec = HMS2Second( pl.time );
+		} else if ( value.title ) {
+			sec = HMS2Second( value.time );
 			pltime += sec;
 			content += '<li>'
 					 +'<i class="fa fa-music pl-icon"></i>'+ ( $( '#page-library' ).hasClass( 'hide' ) ? '<i class="fa fa-minus-circle pl-action"></i>' : '' )
-					 +'<span class="sn">'+ pl.title +'&ensp;<span class="elapsed"></span><span class="time" time="'+ sec +'">'+ pl.time +'</span></span>'
-					 +'<span class="bl">'+ pl.track +'</span>'
+					 +'<span class="sn">'+ value.title +'&ensp;<span class="elapsed"></span><span class="time" time="'+ sec +'">'+ value.time +'</span></span>'
+					 +'<span class="bl">'+ value.track +'</span>'
 			countsong++;
 		}
-		countsong = countsong - countradio;
-	}
+	} );
 	if ( coverart ) {
 		var composerhtml = ( composer && GUI.dbbackdata[ 0 ].browsemode == 'composer' ) ? '<span><i class="fa fa-composer"></i>'+ composer +'</span><br>' : '';
 		var genrehtml = genre ? '<span><i class="fa fa-genre"></i>'+ genre +'</span><br>' : '';
