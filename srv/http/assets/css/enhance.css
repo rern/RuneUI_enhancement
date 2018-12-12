@@ -1340,9 +1340,11 @@ wh, gr { font-weight: 300; }
 	font-weight: normal;
 	white-space: normal;
 }
+.liinfo bl {
+	margin-left: 5px;
+}
 .liinfo i {
 	margin: 0 !important;
-	text-align: left !important;
 	vertical-align: -2px;
 	line-height: 33px !important;
 }
