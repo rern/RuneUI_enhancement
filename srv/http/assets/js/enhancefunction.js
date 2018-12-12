@@ -1016,7 +1016,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			var arraypl = [];
 			var litime = 0;
 			var sec = 0;
-			$.each( data, function( index, value ) {
+			$.each( data, function( i, value ) {
 				if ( value.coverart ) {
 					coverart = value.coverart;
 				} else if ( value.album ) {
@@ -1047,11 +1047,11 @@ function dataSort( data, path, plugin, querytype, arg ) {
 						  +'<a class="lipath">'+ path +'</a><a class="liname">'+ path.replace(/^.*\//, '') +'</a>'
 						  +'<img src="'+ coverart +'" class="coversmall">'
 						  +'<span class="liinfo">'
-						  +'<bl class="lialbum">'+ album +'</bl><br>'
-						  + composerhtml
-						  +'<i class="fa fa-artist"></i>'+ artist +'<br>'
-						  + genrehtml
-						  +'<i class="fa fa-music"></i>'+ arrayfile.length +'<gr> • </gr>'+ second2HMS( litime )
+							  +'<bl class="lialbum">'+ album +'</bl><br>'
+							  + composerhtml
+							  +'<i class="fa fa-artist"></i>'+ artist +'<br>'
+							  + genrehtml
+							  +'<i class="fa fa-music"></i>'+ arrayfile.length +'<gr> • </gr>'+ second2HMS( litime )
 						  +'</span>'
 						  +'<i class="fa fa-bars db-action" data-target="#context-menu-'+ GUI.browsemode +'"></i>'
 						  +'</li>';
@@ -1442,30 +1442,69 @@ function setPlaylistScroll() {
 }
 function htmlPlaylist( data ) {
 	var content, pl, iconhtml, topline, bottomline, countradio, countsong, pltime, sec;
+	var licover = '',
+		coverart = '',
+		album = '',
+		artist = '',
+		composer = '',
+		genre = '',
+		path = '';
 	content = pl = iconhtml = topline = bottomline = '';
 	countradio = countsong = pltime = sec = 0;
+	$.each( data, function( i, value ) {
+		if ( value.coverart ) {
+			coverart = value.coverart;
+		} else if ( value.album ) {
+			album = value.album;
+		} else if ( value.artist ) {
+			artist = value.artist;
+		} else if ( value.composer ) {
+			composer = value.composer;
+		} else if ( value.genre ) {
+			genre = value.genre;
+		} else if ( value.path ) {
+			path = value.path;
+		}
+	} );
 	var ilength = data.length;
 	for ( i = 0; i < ilength; i++ ) {
 		var pl = data[ i ];
-		if ( pl.file.slice( 0, 4 ) === 'http' ) {
+		if ( pl.file && pl.file.slice( 0, 4 ) === 'http' ) {
 			var title = pl.title || pl.file;
 			content += '<li class="radio">'
 					 +'<i class="fa fa-webradio pl-icon"></i>'+ ( $( '#page-library' ).hasClass( 'hide' ) ? '<i class="fa fa-minus-circle pl-action"></i>' : '' )
 					 +'<span class="sn">'+ title +'&ensp;<span class="elapsed"></span></span>'
 					 +'<span class="bl">'+ pl.file +'</span>'
 			countradio++;
-		} else {
+		} else if ( pl.title ) {
 			sec = HMS2Second( pl.time );
 			pltime += sec;
 			content += '<li>'
 					 +'<i class="fa fa-music pl-icon"></i>'+ ( $( '#page-library' ).hasClass( 'hide' ) ? '<i class="fa fa-minus-circle pl-action"></i>' : '' )
 					 +'<span class="sn">'+ pl.title +'&ensp;<span class="elapsed"></span><span class="time" time="'+ sec +'">'+ pl.time +'</span></span>'
 					 +'<span class="bl">'+ pl.track +'</span>'
+			countsong++;
 		}
-		countsong = ilength - countradio;
+		countsong = countsong - countradio;
+	}
+	if ( coverart ) {
+		var composerhtml = ( composer && GUI.dbbackdata[ 0 ].browsemode == 'composer' ) ? '<span><i class="fa fa-composer"></i>'+ composer +'</span><br>' : '';
+		var genrehtml = genre ? '<span><i class="fa fa-genre"></i>'+ genre +'</span><br>' : '';
+		var licover = '<li class="licover">'
+				  +'<a class="lipath">'+ path +'</a><a class="liname">'+ path.replace(/^.*\//, '') +'</a>'
+				  +'<img src="'+ coverart +'" class="coversmall">'
+				  +'<span class="liinfo">'
+					  +'<bl class="lialbum">'+ album +'</bl><br>'
+					  + composerhtml
+					  +'<i class="fa fa-artist"></i>'+ artist +'<br>'
+					  + genrehtml
+					  +'<i class="fa fa-music"></i>'+ countsong +'<gr> • </gr>'+ second2HMS( pltime )
+				  +'</span>'
+				  +'<i class="fa fa-bars db-action" data-target="#context-menu-filepl"></i>'
+				  +'</li>';
 	}
 	return {
-		  content    : content +'</li>'
+		  content    : licover + content +'</li>'
 		, countradio : countradio
 		, pltime     : pltime
 		, countsong  : countsong
