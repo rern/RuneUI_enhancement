@@ -23,7 +23,7 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 	if ( $count === 1 ) {
 		$albums = shell_exec( 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%" '.$type.' "'.$name.'"' );
 		$data = search2array( $albums );
-		if ( $redis->hGet( 'display', 'coverfile' ) ) {
+		if ( $redis->hGet( 'display', 'coverfile' ) && !isPlaylist( $data ) ) {
 			$cover = getCover( $data );
 			if ( $cover ) $data[][ 'coverart' ] = $cover;
 		}
@@ -70,7 +70,7 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 		$type = $_POST[ 'list' ];
 		if ( $type === 'file' ) {
 			$data = search2array( $result );
-			if ( $redis->hGet( 'display', 'coverfile' ) ) {
+			if ( $redis->hGet( 'display', 'coverfile' ) && !isPlaylist( $data ) ) {
 				$cover = getCover( $data );
 				if ( $cover ) $data[][ 'coverart' ] = $cover;
 			}
@@ -91,12 +91,17 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 	if ( $ext === 'm3u' ) {
 		$file = '/mnt/MPD/'.$path;
 		exec( '/usr/bin/sudo /usr/bin/ln -s "'.$file.'" /var/lib/mpd/playlists/' );
-		$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ]%artist%[ • %album%]^^%file%" playlist "'.basename( $file, '.m3u' ).'"' );
+		$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%albumartist%||%artist%][ • %album%]^^%file%^^[%albumartist%||%artist%]^^%album%^^%genre%^^%composer%" playlist "'.basename( $file, '.m3u' ).'"' );
 		exec( '/usr/bin/sudo /usr/bin/rm "/var/lib/mpd/playlists/'.basename( $file ).'"' );
 	} else {
-		$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%" playlist "'.$path.'"' );
+		$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%albumartist%||%artist%][ • %album%]^^%file%^^[%albumartist%||%artist%]^^%album%^^%genre%^^%composer%" playlist "'.$path.'"' );
 	}
 	$data = list2array( $lines );
+	$data[][ 'path' ] = $path;
+	if ( $redis->hGet( 'display', 'coverfile' ) ) {
+		$cover = getCover( $data );
+		if ( $cover ) $data[][ 'coverart' ] = $cover;
+	}
 	echo json_encode( $data );
 	exit();
 }
@@ -248,17 +253,49 @@ function search2array( $result ) {
 			$li[ 'Artist' ] = $list[ 2 ];
 			$li[ 'Album' ] = $list[ 3 ];
 			$li[ 'file' ] = $list[ 4 ];
-			if ( !$composer && $list[ 6 ] !== '' ) $composer = $list[ 6 ];
 			if ( !$genre && $list[ 5 ] !== '' ) $genre = $list[ 5 ];
+			if ( !$composer && $list[ 6 ] !== '' ) $composer = $list[ 6 ];
 			$data[] = $li;
 			$li = '';
 		}
 	}
-	if ( $composer ) $data[][ 'composer' ] = $composer;
 	if ( $genre ) $data[][ 'genre' ] = $genre;
+	if ( $composer ) $data[][ 'composer' ] = $composer;
 	$data[][ 'artist' ] = $data[ 0 ][ 'Artist' ];
 	$data[][ 'album' ] = $data[ 0 ][ 'Album' ];
 	return $data;
+}
+function list2array( $result ) {
+	$lists = explode( "\n", rtrim( $result ) );
+	$artist = '';
+	$album = '';
+	$genre = '';
+	$composer = '';
+	foreach( $lists as $list ) {
+		$list = explode( '^^', rtrim( $list ) );
+		$li[ 'title' ] = $list[ 0 ];
+		$li[ 'time' ] = $list[ 1 ];
+		$li[ 'track' ] = $list[ 2 ];
+		$li[ 'file' ] = $list[ 3 ];
+		if ( !$artist && $list[ 4 ] !== '' ) $artist = $list[ 4 ];
+		if ( !$album && $list[ 5 ] !== '' ) $album = $list[ 5 ];
+		if ( !$genre && $list[ 6 ] !== '' ) $genre = $list[ 6 ];
+		if ( !$composer && $list[ 7 ] !== '' ) $composer = $list[ 7 ];
+		$data[] = $li;
+		$li = '';
+	}
+	$data[][ 'artist' ] = $artist;
+	$data[][ 'album' ] = $album;
+	if ( $genre ) $data[][ 'genre' ] = $genre;
+	if ( $composer ) $data[][ 'composer' ] = $composer;
+	return $data;
+}
+function isPlaylist( $data ) {
+	foreach( $data as $list ) {
+		if ( array_key_exists( 'playlist', $list ) ) {
+			return 1;
+		}
+	}
 }
 function getCover( $data ) {
 	$file = '/mnt/MPD/'.$data[ 0 ][ 'file' ];
@@ -285,19 +322,6 @@ function getCover( $data ) {
 		$coverext = str_replace( 'image/', '', $id3cover[ 'image_mime' ] );
 		return 'data:image/'. $coverext.';base64,'.base64_encode( $coverart );
 	}
-}
-function list2array( $lines ) {
-	$lists = explode( "\n", rtrim( $lines ) );
-	foreach( $lists as $list ) {
-		$li = explode( '^^', $list );
-		$pl[ 'title' ] = $li[ 0 ];
-		$pl[ 'time' ] = $li[ 1 ];
-		$pl[ 'track' ] = $li[ 2 ];
-		$pl[ 'file' ] = $li[ 3 ];
-		$data[] = $pl;
-		$pl = '';
-	}
-	return $data;
 }
 function pushstream( $channel, $data = 1 ) {
 	$ch = curl_init( 'http://localhost/pub?id='.$channel );
