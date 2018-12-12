@@ -985,7 +985,7 @@ wh, gr { font-weight: 300; }
 	background: #000000;
 	overflow-y: auto;
 	-webkit-overflow-scrolling: touch;
-	z-index: 10;
+	z-index: 100;
 }
 #bio .container {
 	max-width: 750px;
