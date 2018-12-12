@@ -871,16 +871,16 @@ function getDB( options ) {
 	GUI.browsemode = browsemode;
 	if ( !plugin ) {
 		var command = {
-			  file          : { mpc: 'mpc ls -f "%title%^^%time%^^%artist%^^%album%^^%file%[^^%genre%]" "'+ path +'" 2> /dev/null', list: 'file' }
-			, artistalbum   : { mpc: 'mpc find -f "%title%^^%time%^^[%artist%||%albumartist%]^^%album%^^%file%^^%genre%"'+ ( artist ? ' artist "'+ artist +'"' : '' ) +' album "'+ path +'"', list: 'file', name: path }
-			, composeralbum : { mpc: 'mpc find -f "%title%^^%time%^^[%artist%||%albumartist%]^^%album%^^%file%^^%genre%^^%composer%" composer "'+ composer +'" album "'+ path +'"', list: 'file' }
-			, album         : { album: 'mpc find -f "%album%^^[%albumartist%||%artist%]" album "'+ path +'" | awk \'!a[$0]++\'', albumname: path }
-			, genre         : { album: 'mpc find -f "%album%^^[%albumartist%||%artist%]" genre "'+ path +'" | awk \'!a[$0]++\'', genrename: path }
+			  file          : { mpc: 'mpc ls -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" "'+ path +'" 2> /dev/null', list: 'file' }
+			, artistalbum   : { mpc: 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%"'+ ( artist ? ' artist "'+ artist +'"' : '' ) +' album "'+ path +'"', list: 'file', name: path }
+			, composeralbum : { mpc: 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" composer "'+ composer +'" album "'+ path +'"', list: 'file' }
+			, album         : { album: 'mpc find -f "%album%^^%albumartist%" album "'+ path +'" | awk \'!a[$0]++\'', albumname: path }
+			, genre         : { album: 'mpc find -f "%album%^^%artist%" genre "'+ path +'" | awk \'!a[$0]++\'', genrename: path }
 			, artist        : { mpc: 'mpc list album artist "'+ path +'" | awk NF', list: 'album' }
 			, albumartist   : { mpc: 'mpc list album albumartist "'+ path +'" | awk NF', list: 'album' }
 			, composer      : { mpc: 'mpc list album composer "'+ path +'" | awk NF', list: 'album' }
 			, type          : { mpc: 'mpc list '+ browsemode +' | awk NF', list: browsemode }
-			, search        : { mpc: 'mpc search -f "%title%^^%time%^^%artist%^^%album%^^%file%" any "'+ keyword +'"', list: 'file' }
+			, search        : { mpc: 'mpc search -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" any "'+ keyword +'"', list: 'file' }
 			, Webradio      : { getwebradios: 1 }
 			, playlist      : { playlist: path }
 		}
@@ -1049,7 +1049,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 						  +'<span class="liinfo">'
 							  +'<bl class="lialbum">'+ album +'</bl><br>'
 							  + composerhtml
-							  +'<i class="fa fa-artist"></i>'+ artist +'<br>'
+							  +'<i class="fa fa-albumartist"></i>'+ artist +'<br>'
 							  + genrehtml
 							  +'<i class="fa fa-music"></i>'+ arrayfile.length +'<gr> • </gr>'+ second2HMS( litime )
 						  +'</span>'
@@ -1481,7 +1481,7 @@ function htmlPlaylist( data ) {
 				  +'<span class="liinfo">'
 					  +'<bl class="lialbum">'+ album +'</bl><br>'
 					  + composerhtml
-					  +'<i class="fa fa-artist"></i>'+ artist +'<br>'
+					  +'<i class="fa fa-albumartist"></i>'+ artist +'<br>'
 					  + genrehtml
 					  +'<i class="fa fa-music"></i>'+ countsong +'<gr> • </gr>'+ second2HMS( pltime )
 				  +'</span>'
