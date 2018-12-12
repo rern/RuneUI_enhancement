@@ -701,6 +701,8 @@ $( '#db-back' ).click( function() {
 } );
 $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	var $this = $( this );
+	if ( !$this.find( '.db-action' ).length ) return
+	
 	$( '.menu' ).addClass( 'hide' );
 	if ( $this.hasClass( 'licover' ) || $this.find( '.fa-music' ).length || $this.find( '.fa-webradio' ).length ) {
 		setTimeout( function() {
