@@ -80,6 +80,13 @@ if ( empty( $this->uri(1) ) ) { ?>
 	setTimeout( function() {
 	var pathname = location.pathname;
 	var href = ( pathname.match( /\//g ).length > 1 || pathname === '/accesspoint' ) ? 'javascript:history.back()' : '/';
+	if ( pathname.match( /\//g ).length > 1 ) {
+		var href = 'javascript:history.back()';
+	} else if ( pathname === '/accesspoint' ) {
+		var href = '/network';
+	} else {
+		var href = '/';
+	}
 	$( 'div.container' )
 		.css( 'padding-top', '0' )
 		.find( 'h1' ).before( '<a href="'+ href +'" style="float: right; margin-top: 20px;"><i class="fa fa-times fa-2x"></i></a>' );
