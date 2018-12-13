@@ -1040,7 +1040,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 						  +'<span class="liinfo">'
 							  +'<bl class="lialbum">'+ album +'</bl><br>'
 							  + composerhtml
-							  +'<span class="artist"><i class="fa fa-albumartist"></i>'+ artist +'</span><br>'
+							  +'<i class="fa fa-albumartist"></i><span class="artist">'+ artist +'</span><br>'
 							  + genrehtml
 							  +'<i class="fa fa-music"></i>'+ arrayfile.length +'<gr> • </gr>'+ second2HMS( litime )
 						  +'</span>'
@@ -1472,7 +1472,7 @@ function htmlPlaylist( data ) {
 				  +'<span class="liinfo">'
 					  +'<bl class="lialbum">'+ album +'</bl><br>'
 					  + composerhtml
-					  +'<span class="artist"><i class="fa fa-albumartist"></i>'+ artist +'</span><br>'
+					  +'<i class="fa fa-albumartist"></i><span class="artist">'+ artist +'</span><br>'
 					  + genrehtml
 					  +'<i class="fa fa-music"></i>'+ countsong +'<gr> • </gr>'+ second2HMS( pltime )
 				  +'</span>'

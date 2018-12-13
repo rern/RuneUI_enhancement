@@ -305,6 +305,9 @@ $( '#artist, #bio-open' ).click( function() {
 		renderBio();
 	}
 } );
+$( '#album' ).click( function() {
+	if ( GUI.status.ext !== 'radio' || location.hostname !== 'localhost' ) window.open( 'https://www.last.fm/music/'+ GUI.status.Artist +'/'+ GUI.status.Album, '_blank' );
+} );
 $( '#time' ).roundSlider( {
 	  sliderType  : 'min-range'
 	, max         : 1000
@@ -711,8 +714,11 @@ $( '#db-back' ).click( function() {
 $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	var $this = $( this );
 	if ( !$this.find( '.db-action' ).length ) return
-	if ( $( e.target ).hasClass( 'artist' ) ) {
+	if ( $( e.target ).hasClass( 'artist' ) || $( e.target ).hasClass( 'fa-albumartist' ) ) {
 		getBio( $this.find( '.artist' ).text() );
+		return
+	} else if ( $( e.target ).hasClass( 'lialbum' ) ) {
+		window.open( 'https://www.last.fm/music/'+ $this.find( '.artist' ).text() +'/'+ $this.find( '.lialbum' ).text(), '_blank' );
 		return
 	}
 	
