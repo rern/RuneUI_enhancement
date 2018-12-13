@@ -1032,7 +1032,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 				}
 			} );
 			if ( coverart ) {
-				var composerhtml = ( composer && GUI.dbbackdata[ 0 ].browsemode == 'composer' ) ? '<span><i class="fa fa-composer"></i>'+ composer +'</span><br>' : '';
+				var composerhtml = ( GUI.browsemode !== 'file' && composer && GUI.dbbackdata[ 0 ].browsemode == 'composer' ) ? '<span><i class="fa fa-composer"></i>'+ composer +'</span><br>' : '';
 				var genrehtml = genre ? '<span><i class="fa fa-genre"></i>'+ genre +'</span><br>' : '';
 				content += '<li class="licover">'
 						  +'<a class="lipath">'+ path +'</a><a class="liname">'+ path.replace(/^.*\//, '') +'</a>'
