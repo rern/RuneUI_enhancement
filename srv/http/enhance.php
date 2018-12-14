@@ -230,11 +230,9 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	}
 	exec( $cmd );
 }
-function search2array( $result ) {
+function search2array( $result, $playlist = '' ) {
 	$lists = explode( "\n", rtrim( $result ) );
-	$genre = '';
-	$composer = '';
-	$albumartist = '';
+	$genre = $composer = $albumartist = '';
 	foreach( $lists as $list ) {
 		$root = substr( $list, 0, 4 );
 		if ( $root === 'USB/' || $root === 'NAS/' || substr( $list, 0, 13 ) === 'LocalStorage/' ) {
@@ -270,10 +268,7 @@ function search2array( $result ) {
 }
 function list2array( $result ) {
 	$lists = explode( "\n", rtrim( $result ) );
-	$artist = '';
-	$album = '';
-	$genre = '';
-	$composer = '';
+	$artist = $album = $genre = $composer = $albumartist = '';
 	foreach( $lists as $list ) {
 		$list = explode( '^^', rtrim( $list ) );
 		$li[ 'title' ] = $list[ 0 ];
@@ -289,6 +284,7 @@ function list2array( $result ) {
 	}
 	$data[][ 'artist' ] = $artist;
 	$data[][ 'album' ] = $album;
+	$data[][ 'albumartist' ] = $albumartist ?: $data[ 0 ][ 'Artist' ];
 	if ( $genre ) $data[][ 'genre' ] = $genre;
 	if ( $composer ) $data[][ 'composer' ] = $composer;
 	return $data;
