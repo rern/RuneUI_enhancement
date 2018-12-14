@@ -865,7 +865,7 @@ function getDB( options ) {
 			  file          : { mpc: 'mpc ls -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" "'+ path +'" 2> /dev/null', list: 'file' }
 			, artistalbum   : { mpc: 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%"'+ ( artist ? ' artist "'+ artist +'"' : '' ) +' album "'+ path +'"', list: 'file', name: path }
 			, composeralbum : { mpc: 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" composer "'+ composer +'" album "'+ path +'"', list: 'file' }
-			, album         : { album: 'mpc find -f "%album%^^%albumartist%" album "'+ path +'" | awk \'!a[$0]++\'', albumname: path }
+			, album         : { album: 'mpc find -f "%album%^^[%albumartist%||%artist%]" album "'+ path +'" | awk \'!a[$0]++\'', albumname: path }
 			, genre         : { album: 'mpc find -f "%album%^^%artist%" genre "'+ path +'" | awk \'!a[$0]++\'', genrename: path }
 			, artist        : { mpc: 'mpc list album artist "'+ path +'" | awk NF', list: 'album' }
 			, albumartist   : { mpc: 'mpc list album albumartist "'+ path +'" | awk NF', list: 'album' }
@@ -1008,7 +1008,6 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			var arraypl = [];
 			var litime = 0;
 			var sec = 0;
-			console.log(data)
 			$.each( data, function( i, value ) {
 				if ( value.coverart ) {
 					coverart = value.coverart;
@@ -1159,8 +1158,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		$( '#db-currentpath .lipath' ).text( path ); // for back navigation
 		// fix: 1 li in genre list
 		if ( $( '.licover' ).length ) {
-			var type = GUI.dbbackdata.length ? GUI.dbbackdata[ 0 ].browsemode : '';
-			$( '#db-currentpath span' ).html( iconName[ type ][ 0 ] +' <a>'+ iconName[ type ][ 1 ] +'</a>' );
+			$( '#db-currentpath span' ).html( iconName[ browsemode ][ 0 ] +' <a>'+ iconName[ browsemode ][ 1 ] +'</a>' );
 		} else {
 			$( '#db-currentpath span' ).html( iconName[ GUI.browsemode ][ 0 ] +' <a id="rootpath" data-path="'+ mode[ GUI.browsemode ] +'">'+ iconName[ GUI.browsemode ][ 1 ] +'</a>'+ dotpath );
 		}
