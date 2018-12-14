@@ -966,6 +966,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		artist = '',
 		composer = '',
 		genre = '',
+		albumartist = '',
 		i = 0,
 		row = [];
 	GUI.albumartist = '';
@@ -1018,6 +1019,8 @@ function dataSort( data, path, plugin, querytype, arg ) {
 					composer = value.composer;
 				} else if ( value.genre ) {
 					genre = value.genre;
+				} else if ( value.albumartist ) {
+					albumartist = value.albumartist;
 				} else if ( value.directory ) {
 					value.lisort = stripLeading( value.directory.replace( /^.*\//, '' ) );
 					arraydir.push( value );
@@ -1032,7 +1035,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 				}
 			} );
 			if ( coverart ) {
-				var composerhtml = ( composer && GUI.dbbackdata.length && GUI.dbbackdata[ 0 ].browsemode == 'composer' ) ? '<span><i class="fa fa-composer"></i>'+ composer +'</span><br>' : '';
+				var composerhtml = ( composer && GUI.dbbackdata.length && mode === 'composer' ) ? '<span><i class="fa fa-composer"></i>'+ composer +'</span><br>' : '';
 				var genrehtml = genre ? '<span><i class="fa fa-genre"></i>'+ genre +'</span><br>' : '';
 				content += '<li class="licover">'
 						  +'<a class="lipath">'+ path +'</a><a class="liname">'+ path.replace(/^.*\//, '') +'</a>'
@@ -1040,7 +1043,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 						  +'<span class="liinfo">'
 							  +'<bl class="lialbum">'+ album +'</bl><br>'
 							  + composerhtml
-							  +'<i class="fa fa-albumartist"></i><span class="artist">'+ artist +'</span><br>'
+							  +'<i class="fa fa-'+ ( mode === 'artist' ? 'artist' : 'albumartist' ) +'"></i><span class="artist">'+ ( mode === 'artist' ? artist : albumartist ) +'</span><br>'
 							  + genrehtml
 							  +'<i class="fa fa-music"></i>'+ arrayfile.length +'<gr> • </gr>'+ second2HMS( litime )
 						  +'</span>'

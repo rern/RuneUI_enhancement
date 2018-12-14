@@ -4,6 +4,7 @@
 
 $( '.contextmenu a' ).click( function() {
 	$( '.menu' ).addClass( 'hide' );
+	$( '#db-entries li, #pl-entries li' ).removeClass( 'active' );
 	var cmd = $( this ).data( 'cmd' );
 	var mode = cmd.replace( /replaceplay|replace|addplay|add/, '' );
 	// get name
@@ -29,17 +30,16 @@ $( '.contextmenu a' ).click( function() {
 			var mpcCmd = GUI.list.isfile ? 'mpc add "'+ name +'"' : 'mpc ls "'+ name +'" | mpc add';
 		}
 	} else {
-		if ( [ 'album', 'artist', 'composer', 'genre' ].indexOf( mode ) !== -1 ) {
-			if ( mode === 'album' && GUI.list.artist ) {
-				var mpcCmd = 'mpc findadd artist "'+ GUI.list.artist +'" album "'+ name +'"';
-			} else {
-				var mpcCmd = 'mpc findadd '+ mode +' "'+ name +'"';
-			}
-			cmd = cmd.replace( /album|artist|composer|genre/, '' );
+		var browsemode = GUI.dbbackdata.length ? GUI.dbbackdata[ 0 ].browsemode : '';
+		if ( [ 'album', 'albumartist' ].indexOf( browsemode ) !== -1 ) {
+			var mpcCmd = 'mpc findadd'+ ( GUI.list.artist ? ' artist "'+ GUI.list.artist : '' )  +'" album "'+ name +'"';
+		} else if ( [ 'artist', 'composer', 'genre' ].indexOf( browsemode ) !== -1 ) {
+			var mpcCmd = 'mpc add '+ GUI.filelist;
 		} else {
 			var mpcCmd = 'mpc load "'+ name +'"';
 			if ( [ 'wrrename', 'wrdelete', 'plrename', 'pldelete' ].indexOf( mode ) === -1 ) cmd = cmd.replace( /pl|wr/, '' );
 		}
+		cmd = cmd.replace( /album|artist|composer|genre/, '' );
 	}
 	var addplaypos = GUI.status.playlistlength + 1;
 	var contextCommand = {
@@ -71,7 +71,6 @@ $( '.contextmenu a' ).click( function() {
 				setTimeout( function() { GUI.local = 0 }, 500 );
 			}
 			$.post( 'enhance.php', { mpc: command }, function() {
-//				if ( !GUI.status.playlistlength ) getPlaybackStatus();
 				if ( GUI.display.bars ) {
 					if ( cmd.slice( -4 ) === 'play' ) {
 						$( '#stop, #pause' ).removeClass( 'btn-primary' );

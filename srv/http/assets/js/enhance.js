@@ -721,8 +721,17 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 		window.open( 'https://www.last.fm/music/'+ $this.find( '.artist' ).text() +'/'+ $this.find( '.lialbum' ).text(), '_blank' );
 		return
 	}
-	
 	$( '.menu' ).addClass( 'hide' );
+	// get file list in 'artist', 'composer', 'genre' mode (non-album)
+	if ( $this.hasClass( 'licover' ) && GUI.dbbackdata.length ) {
+		var browsemode = GUI.dbbackdata[ 0 ].browsemode;
+		if ( [ 'artist', 'composer', 'genre' ].indexOf( browsemode ) !== -1 ) {
+			GUI.filelist = '';
+			$.each( $( '#db-entries li .lipath' ).slice( 1 ), function( i, el ) {
+				GUI.filelist += '"'+ el.text.replace( /"/g, '\"' ) +'" ';
+			} );
+		}
+	}
 	if ( $this.hasClass( 'licover' ) || $this.find( '.fa-music' ).length || $this.find( '.fa-webradio' ).length ) {
 		setTimeout( function() {
 			$this.find( 'i.db-action' ).click();
