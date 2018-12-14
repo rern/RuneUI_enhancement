@@ -724,8 +724,7 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	$( '.menu' ).addClass( 'hide' );
 	// get file list in 'artist', 'composer', 'genre' mode (non-album)
 	if ( $this.hasClass( 'licover' ) && GUI.dbbackdata.length ) {
-		var browsemode = GUI.dbbackdata[ 0 ].browsemode;
-		if ( [ 'artist', 'composer', 'genre' ].indexOf( browsemode ) !== -1 ) {
+		if ( [ 'artist', 'composer', 'genre' ].indexOf( GUI.dbbackdata[ 0 ].browsemode ) !== -1 ) {
 			GUI.filelist = '';
 			$.each( $( '#db-entries li .lipath' ).slice( 1 ), function( i, el ) {
 				GUI.filelist += '"'+ el.text.replace( /"/g, '\"' ) +'" ';

@@ -1008,6 +1008,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			var arraypl = [];
 			var litime = 0;
 			var sec = 0;
+			console.log(data)
 			$.each( data, function( i, value ) {
 				if ( value.coverart ) {
 					coverart = value.coverart;
@@ -1035,7 +1036,9 @@ function dataSort( data, path, plugin, querytype, arg ) {
 				}
 			} );
 			if ( coverart ) {
-				var composerhtml = ( composer && GUI.dbbackdata.length && mode === 'composer' ) ? '<span><i class="fa fa-composer"></i>'+ composer +'</span><br>' : '';
+				var browsemode = GUI.dbbackdata.length ? GUI.dbbackdata[ 0 ].browsemode : '';
+				var artistmode = [ 'artist', 'composer', 'genre' ].indexOf( browsemode ) !== -1 ? 1 : 0;
+				var composerhtml = ( composer && browsemode === 'composer' ) ? '<span><i class="fa fa-composer"></i>'+ composer +'</span><br>' : '';
 				var genrehtml = genre ? '<span><i class="fa fa-genre"></i>'+ genre +'</span><br>' : '';
 				content += '<li class="licover">'
 						  +'<a class="lipath">'+ path +'</a><a class="liname">'+ path.replace(/^.*\//, '') +'</a>'
@@ -1043,7 +1046,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 						  +'<span class="liinfo">'
 							  +'<bl class="lialbum">'+ album +'</bl><br>'
 							  + composerhtml
-							  +'<i class="fa fa-'+ ( mode === 'artist' ? 'artist' : 'albumartist' ) +'"></i><span class="artist">'+ ( mode === 'artist' ? artist : albumartist ) +'</span><br>'
+							  +'<i class="fa fa-'+ ( artistmode ? 'artist' : 'albumartist' ) +'"></i><span class="artist">'+ ( artistmode ? artist : albumartist ) +'</span><br>'
 							  + genrehtml
 							  +'<i class="fa fa-music"></i>'+ arrayfile.length +'<gr> • </gr>'+ second2HMS( litime )
 						  +'</span>'
@@ -1156,7 +1159,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		$( '#db-currentpath .lipath' ).text( path ); // for back navigation
 		// fix: 1 li in genre list
 		if ( $( '.licover' ).length ) {
-			var type = GUI.dbbackdata[ 0 ].browsemode;
+			var type = GUI.dbbackdata.length ? GUI.dbbackdata[ 0 ].browsemode : '';
 			$( '#db-currentpath span' ).html( iconName[ type ][ 0 ] +' <a>'+ iconName[ type ][ 1 ] +'</a>' );
 		} else {
 			$( '#db-currentpath span' ).html( iconName[ GUI.browsemode ][ 0 ] +' <a id="rootpath" data-path="'+ mode[ GUI.browsemode ] +'">'+ iconName[ GUI.browsemode ][ 1 ] +'</a>'+ dotpath );
@@ -1467,7 +1470,8 @@ function htmlPlaylist( data ) {
 		}
 	} );
 	if ( coverart ) {
-		var composerhtml = ( composer && GUI.dbbackdata[ 0 ].browsemode == 'composer' ) ? '<span><i class="fa fa-composer"></i>'+ composer +'</span><br>' : '';
+		var browsemode = GUI.dbbackdata.length ? GUI.dbbackdata[ 0 ].browsemode : '';
+		var composerhtml = ( composer && browsemode == 'composer' ) ? '<span><i class="fa fa-composer"></i>'+ composer +'</span><br>' : '';
 		var genrehtml = genre ? '<span><i class="fa fa-genre"></i>'+ genre +'</span><br>' : '';
 		var licover = '<li class="licover">'
 				  +'<a class="lipath">'+ path +'</a><a class="liname">'+ path.replace(/^.*\//, '') +'</a>'
