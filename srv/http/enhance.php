@@ -261,10 +261,11 @@ function search2array( $result ) {
 			$li = '';
 		}
 	}
+	$data[][ 'artist' ] = $data[ 0 ][ 'Artist' ];
+	$data[][ 'album' ] = $data[ 0 ][ 'Album' ];
+	$data[][ 'albumartist' ] = $albumartist ?: $data[ 0 ][ 'Artist' ];
 	if ( $genre ) $data[][ 'genre' ] = $genre;
 	if ( $composer ) $data[][ 'composer' ] = $composer;
-	$data[][ 'artist' ] = $albumartist ?: $data[ 0 ][ 'Artist' ];
-	$data[][ 'album' ] = $data[ 0 ][ 'Album' ];
 	return $data;
 }
 function list2array( $result ) {
