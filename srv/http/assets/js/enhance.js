@@ -718,8 +718,13 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	var $this = $( this );
 	if ( !$this.find( '.db-action' ).length ) return
 	
-	if ( $( e.target ).hasClass( 'artist' ) || $( e.target ).hasClass( 'fa-albumartist' ) || $( e.target ).hasClass( 'composer' ) ) {
-		var name = $( e.target ).hasClass( 'composer' ) ? $this.find( '.composer' ).text() : $this.find( '.artist' ).text();
+	if ( $( e.target ).hasClass( 'artist' )
+	  || $( e.target ).hasClass( 'fa-artist' )
+	  || $( e.target ).hasClass( 'fa-albumartist' )
+	  || $( e.target ).hasClass( 'composer' )
+	  || $( e.target ).hasClass( 'fa-composer' )
+	 ) {
+		var name = ( $( e.target ).hasClass( 'composer' ) || $( e.target ).hasClass( 'fa-composer' ) ) ? $this.find( '.composer' ).text() : $this.find( '.artist' ).text();
 		getBio( name );
 		return
 	} else if ( $( e.target ).hasClass( 'lialbum' ) ) {
