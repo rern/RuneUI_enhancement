@@ -279,6 +279,9 @@ $pageLibrary.on( 'swiperight', playlistClick ).on( 'swipeleft', playbackClick );
 $pagePlayback.on( 'swiperight', libraryClick ).on( 'swipeleft', playlistClick );
 $pagePlaylist.on( 'swiperight', playbackClick ).on( 'swipeleft', libraryClick );
 
+$( '#page-library, #page-playback, #page-playlist' ).click( function() {
+	$( '#settings' ).addClass( 'hide' );
+} );
 $( '#page-playback' ).click( function( e ) {
 	if ( $( e.target ).is( '.controls, .timemap, .covermap, .volmap' ) ) return
 	
@@ -292,9 +295,6 @@ $( '#page-library' ).click( function( e ) {
 		$( '#home-block-edit, #home-block-remove' ).remove();
 		$( '.home-bookmark' ).find( '.fa-bookmark, gr' ).css( 'opacity', '' );
 	}
-} );
-$( '#page-library, #page-playback, #page-playlist' ).click( function( e ) {
-	$( '#settings' ).addClass( 'hide' );
 } );
 $( '#song, #playlist-warning' ).on( 'click', 'i', function() {
 	$( '#tab-library' ).click();
