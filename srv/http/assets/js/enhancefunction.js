@@ -1032,7 +1032,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			if ( coverart ) {
 				var browsemode = GUI.dbbackdata.length ? GUI.dbbackdata[ 0 ].browsemode : '';
 				var artistmode = [ 'artist', 'composer', 'genre' ].indexOf( browsemode ) !== -1 ? 1 : 0;
-				var composerhtml = ( composer && browsemode === 'composer' ) ? '<span><i class="fa fa-composer"></i>'+ composer +'</span><br>' : '';
+				var composerhtml = ( composer && browsemode === 'composer' ) ? '<i class="fa fa-composer"></i><span class="composer">'+ composer +'</span><br>' : '';
 				var genrehtml = genre ? '<span><i class="fa fa-genre"></i>'+ genre +'</span><br>' : '';
 				content += '<li class="licover">'
 						  +'<a class="lipath">'+ path +'</a><a class="liname">'+ path.replace(/^.*\//, '') +'</a>'

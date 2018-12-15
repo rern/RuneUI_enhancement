@@ -717,8 +717,10 @@ $( '#db-back' ).click( function() {
 $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	var $this = $( this );
 	if ( !$this.find( '.db-action' ).length ) return
-	if ( $( e.target ).hasClass( 'artist' ) || $( e.target ).hasClass( 'fa-albumartist' ) ) {
-		getBio( $this.find( '.artist' ).text() );
+	
+	if ( $( e.target ).hasClass( 'artist' ) || $( e.target ).hasClass( 'fa-albumartist' ) || $( e.target ).hasClass( 'composer' ) ) {
+		var name = $( e.target ).hasClass( 'composer' ) ? $this.find( '.composer' ).text() : $this.find( '.artist' ).text();
+		getBio( name );
 		return
 	} else if ( $( e.target ).hasClass( 'lialbum' ) ) {
 		window.open( 'https://www.last.fm/music/'+ $this.find( '.artist' ).text() +'/'+ $this.find( '.lialbum' ).text(), '_blank' );
