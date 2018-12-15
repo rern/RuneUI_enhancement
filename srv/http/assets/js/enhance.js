@@ -282,7 +282,7 @@ $pagePlaylist.on( 'swiperight', playbackClick ).on( 'swipeleft', libraryClick );
 $( '#page-playback' ).click( function( e ) {
 	if ( $( e.target ).is( '.controls, .timemap, .covermap, .volmap' ) ) return
 	
-	$( '.controls, #settings' ).addClass( 'hide' );
+	$( '.controls' ).addClass( 'hide' );
 	$( '.controls1, .rs-tooltip, #imode' ).removeClass( 'hide' );
 } );
 $( '#page-library' ).click( function( e ) {
@@ -292,6 +292,9 @@ $( '#page-library' ).click( function( e ) {
 		$( '#home-block-edit, #home-block-remove' ).remove();
 		$( '.home-bookmark' ).find( '.fa-bookmark, gr' ).css( 'opacity', '' );
 	}
+} );
+$( '#page-library, #page-playback, #page-playlist' ).click( function( e ) {
+	$( '#settings' ).addClass( 'hide' );
 } );
 $( '#song, #playlist-warning' ).on( 'click', 'i', function() {
 	$( '#tab-library' ).click();
