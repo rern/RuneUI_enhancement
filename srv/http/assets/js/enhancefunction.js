@@ -45,15 +45,8 @@ var timeoutUpdate;
 pushstreams.idle.onmessage = function( changed ) {
 	var changed = changed[ 0 ];
 	if ( changed === 'player' ) { // on track changed
-		if ( GUI.player ) return
-		
-		GUI.player = 1;
-		setTimeout( function() { GUI.player = 0 }, 500 );
-		if ( !$( '#page-playback' ).hasClass( 'hide' ) ) {
-			getPlaybackStatus();
-		} else if ( !$( '#page-playlist' ).hasClass( 'hide' ) && !GUI.pleditor ) {
-			setPlaylistScroll();
-		}
+		getPlaybackStatus();
+		if ( !$( '#page-playlist' ).hasClass( 'hide' ) && !GUI.pleditor ) setPlaylistScroll();
 	} else if ( changed === 'playlist' ) { // on playlist changed
 		if ( GUI.pleditor || GUI.local ) return
 		
@@ -469,6 +462,8 @@ function getPlaybackStatus() {
 			GUI.status[ key ] = value;
 		} );
 		setButton();
+		if ( $( '#page-playback' ).hasClass( 'hide' ) ) return
+		
 		renderPlayback();
 		// imodedelay fix imode flashing on audio output switched
 		if ( !GUI.imodedelay ) displayPlayback();
