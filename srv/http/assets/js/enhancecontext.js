@@ -71,15 +71,7 @@ $( '.contextmenu a' ).click( function() {
 				setTimeout( function() { GUI.local = 0 }, 500 );
 			}
 			$.post( 'enhance.php', { mpc: command }, function() {
-				if ( GUI.display.bars ) {
-					if ( cmd.slice( -4 ) === 'play' ) {
-						$( '#stop, #pause' ).removeClass( 'btn-primary' );
-						$( '#play' ).addClass( 'btn-primary' );
-					} else if ( cmd.slice( -7 ) === 'replace' ) {
-						$( '#play, #pause' ).removeClass( 'btn-primary' );
-						$( '#stop' ).addClass( 'btn-primary' );
-					}
-				}
+				getPlaybackStatus();
 			} );
 		}
 	} else if ( cmd === 'dirblesave' ) {
