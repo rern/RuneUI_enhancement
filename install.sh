@@ -93,7 +93,7 @@ fi
 
 #----------------------------------------------------------------------------------
 file=/root/.config/midori/config
-if ! grep '^chromium' $file &> /dev/null; then
+if [[ -e $file ]] && ! grep '^chromium' $file &> /dev/null; then
 	echo $file
 	
 	commentS 'zoom-level'
