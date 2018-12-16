@@ -22,7 +22,10 @@ $( '.contextmenu a' ).click( function() {
 	// compose command
 	if ( !mode ) {
 		var ext = GUI.list.path.slice( -3 ).toLowerCase();
-		if ( ext === 'm3u' ) {
+		if ( !GUI.list.path ) {
+			var cuefile = $( '.licover .lipath' ).text().replace( /"/g, '\\"' );
+			var mpcCmd = '/srv/http/enhancecue.sh "'+ cuefile +'" '+ GUI.list.pos
+		} else if ( ext === 'm3u' ) {
 			var mpcCmd = 'cat "/mnt/MPD/'+ GUI.list.path +'" | mpc add';
 		} else if ( ext === 'cue' || ext === 'pls' ) {
 			var mpcCmd = 'mpc load "'+ name +'"';

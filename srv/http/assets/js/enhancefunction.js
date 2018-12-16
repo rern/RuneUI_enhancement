@@ -1456,7 +1456,7 @@ function htmlPlaylist( data ) {
 			sec = HMS2Second( value.time );
 			pltime += sec;
 			content += '<li>'
-					 +'<i class="fa fa-music pl-icon"></i>'+ ( $( '#page-library' ).hasClass( 'hide' ) ? '<i class="fa fa-minus-circle pl-action"></i>' : '' )
+					 +'<i class="fa fa-music pl-icon"></i>'+ ( $( '#page-library' ).hasClass( 'hide' ) ? '<i class="fa fa-minus-circle pl-action"></i>' : '<i class="fa fa-bars db-action" data-target="#context-menu-file"></i><a class="liname">'+ value.title +'</a>' )
 					 +'<span class="sn">'+ value.title +'&ensp;<span class="elapsed"></span><span class="time" time="'+ sec +'">'+ value.time +'</span></span>'
 					 +'<span class="bl">'+ value.track +'</span>'
 			countsong++;

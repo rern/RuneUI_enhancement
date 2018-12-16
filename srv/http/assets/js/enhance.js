@@ -716,7 +716,7 @@ $( '#db-back' ).click( function() {
 } );
 $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	var $this = $( this );
-	if ( !$this.find( '.db-action' ).length ) return
+//	if ( !$this.find( '.db-action' ).length ) return
 	
 	if ( $( e.target ).hasClass( 'artist' )
 	  || $( e.target ).hasClass( 'fa-artist' )
@@ -812,8 +812,9 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 	}
 	
 	GUI.list = {};
-	GUI.list.path = $thisli.find( '.lipath' ).text();
-	GUI.list.name = $thisli.find( '.liname' ).text();
+	GUI.list.pos = $thisli.index();
+	GUI.list.path = $thisli.find( '.lipath' ).text() || '';
+	GUI.list.name = $thisli.find( '.liname' ).text() || '';
 	GUI.list.artist = $thisli.find( '.artist' ).text() || '';
 	GUI.list.isfile = $thisli.hasClass( 'file' ); // file/dirble - used in contextmenu
 	if ( $( '#db-currentpath' ).find( '.lipath' ).text() === 'Webradio' ) GUI.list.url = $thisli.find( '.bl' ).text();
