@@ -698,6 +698,9 @@ $( '#db-back' ).click( function() {
 	if ( GUI.dbbrowsemode === 'file' ) {
 		if ( $( '#db-currentpath span a' ).length === 1 ) {
 			renderLibrary();
+		} else if ( GUI.cuefile ) {
+			GUI.cuefile = 0;
+			$( '#db-currentpath a:nth-last-child( 3 )' ).click();
 		} else {
 			$( '#db-currentpath a:nth-last-child( 2 )' ).click();
 		}
@@ -711,8 +714,7 @@ $( '#db-back' ).click( function() {
 		return
 	}
 	
-	var dbbacklast = GUI.dbbackdata.pop();
-	getDB( dbbacklast );
+	getDB( GUI.dbbackdata.pop() );
 } );
 $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	var $this = $( this );

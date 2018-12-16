@@ -966,6 +966,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		row = [];
 	GUI.albumartist = '';
 	GUI.currentpath = path;
+	GUI.cufile = 0;
 	$( '#db-entries, #db-currentpath .lipath' ).empty();
 	$( '#db-currentpath span, #db-entries, #db-back' ).removeClass( 'hide' );
 	$( '#home-blocks' ).addClass( 'hide' );
@@ -1056,6 +1057,11 @@ function dataSort( data, path, plugin, querytype, arg ) {
 				return a[ 'lisort' ].localeCompare( b[ 'lisort' ], undefined, { numeric: true } );
 			} );
 			var arrayplL = arraypl.length;
+			if ( arrayplL === 1 ) { // single *.cue only
+				GUI.cuefile = 1;
+				getDB( { path: arraypl[ 0 ].filepl } )
+				return
+			}
 			for ( i = 0; i < arrayplL; i++ ) content += data2html( arraypl[ i ], i, 'db', path );
 			arrayfile.sort( function( a, b ) {
 				return a[ 'lisort' ].localeCompare( b[ 'lisort' ], undefined, { numeric: true } );
