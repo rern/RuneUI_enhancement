@@ -716,7 +716,6 @@ $( '#db-back' ).click( function() {
 } );
 $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	var $this = $( this );
-//	if ( !$this.find( '.db-action' ).length ) return
 	
 	if ( $( e.target ).hasClass( 'artist' )
 	  || $( e.target ).hasClass( 'fa-artist' )
@@ -741,7 +740,7 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 			} );
 		}
 	}
-	if ( $this.hasClass( 'licover' ) || $this.find( '.fa-music' ).length || $this.find( '.fa-webradio' ).length ) {
+	if ( $this.find( '.fa-music' ).length || $this.find( '.fa-webradio' ).length ) {
 		setTimeout( function() {
 			$this.find( 'i.db-action' ).click();
 		}, 0 );
