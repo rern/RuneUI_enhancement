@@ -100,7 +100,7 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 	} else {
 		$lines = '';
 		foreach( $path as $cue ) {
-			$lines.= shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%^^[%albumartist%||%artist%]^^%album%^^%genre%^^%composer%" playlist "'.$cue.'"' );
+			$lines.= shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^'.$cue.'^^[%albumartist%||%artist%]^^%album%^^%genre%^^%composer%" playlist "'.$cue.'"' );
 		}
 		$path = $path[ 0 ];
 	}
@@ -277,12 +277,18 @@ function search2array( $result, $playlist = '' ) {
 function list2array( $result ) {
 	$lists = explode( "\n", rtrim( $result ) );
 	$artist = $album = $genre = $composer = $albumartist = '';
+	$file = '';
 	foreach( $lists as $list ) {
 		$list = explode( '^^', rtrim( $list ) );
 		$li[ 'Title' ] = $list[ 0 ];
 		$li[ 'Time' ] = $list[ 1 ];
 		$li[ 'track' ] = $list[ 2 ];
 		$li[ 'file' ] = $list[ 3 ];
+		if ( $li[ 'file' ] !== $file ) {
+			$file = $li[ 'file' ];
+			$i = 1;
+		}
+		$li[ 'index' ] = $i++;
 		if ( !$artist && $list[ 4 ] !== '' ) $artist = $list[ 4 ];
 		if ( !$album && $list[ 5 ] !== '' ) $album = $list[ 5 ];
 		if ( !$genre && $list[ 6 ] !== '' ) $genre = $list[ 6 ];
