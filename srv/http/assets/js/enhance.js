@@ -279,8 +279,8 @@ $pageLibrary.on( 'swiperight', playlistClick ).on( 'swipeleft', playbackClick );
 $pagePlayback.on( 'swiperight', libraryClick ).on( 'swipeleft', playlistClick );
 $pagePlaylist.on( 'swiperight', playbackClick ).on( 'swipeleft', libraryClick );
 
-$( '#page-library, #page-playback, #page-playlist' ).click( function() {
-	$( '#settings' ).addClass( 'hide' );
+$( '#page-library, #page-playback, #page-playlist' ).click( function( e ) {
+	if ( e.target.id !== 'coverTR' && e.target.id !== 'timeTR' ) $( '#settings' ).addClass( 'hide' );
 } );
 $( '#page-playback' ).click( function( e ) {
 	if ( $( e.target ).is( '.controls, .timemap, .covermap, .volmap' ) ) return
