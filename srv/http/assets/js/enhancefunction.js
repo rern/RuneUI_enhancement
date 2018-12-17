@@ -820,8 +820,24 @@ function renderLibrary() {
 }
 function getDB( options ) {
 	$( '#loader' ).removeClass( 'hide' );
+	if ( !Array.isArray( options.path ) ) {
+		var path = options.path ? options.path.toString().replace( /"/g, '\"' ) : '';
+	} else {
+		var path = [];
+		$.each( options.path, function( i, val ) {
+			path.push( val.toString().replace( /"/g, '\"' ) );
+		} );
+		$.post( 'enhance.php', { playlist: path }, function( data ) {
+			if ( data ) {
+				dataSort( data, path[ 0 ] );
+			} else {
+				$( '#loader' ).addClass( 'hide' );
+				info( 'No data in this location.' );
+			}
+		}, 'json' );
+		return
+	}
 	var cmd = options.cmd || 'browse',
-		path = options.path ? options.path.toString().replace( /"/g, '\"' ) : '',
 		browsemode = options.browsemode || 'file',
 		plugin = options.plugin || '',
 		querytype = options.querytype || '',
@@ -889,7 +905,7 @@ function getDB( options ) {
 				|| ( browsemode === 'genre' && currentpath !== 'Genre' && artist )
 			) {
 				mode = 'artistalbum';
-			} else if ( [ 'm3u', 'pls', 'cue' ].indexOf( path.slice( -3 ) ) !== -1 ) {
+			} else if ( Array.isArray( path ) || [ 'm3u', 'pls' ].indexOf( path.slice( -3 ) ) !== -1 ) {
 				mode = 'playlist';
 			} else {
 				if ( composer ) {
@@ -1055,14 +1071,16 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			arraypl.sort( function( a, b ) {
 				return a[ 'lisort' ].localeCompare( b[ 'lisort' ], undefined, { numeric: true } );
 			} );
-			var arrayplL = arraypl.length;
-			if ( arrayplL === 1 ) { // single *.cue > skip to > 'mpc load *.cue'
-				var filepl = arraypl[ 0 ].filepl
-				if ( filepl.slice( -3 ) === 'cue' ) {
-					getDB( { path: filepl } );
-					return
-				}
+			var filecue = [];
+			$.each( arraypl, function( i, val ) {
+				if ( val.filepl.slice( -3 ) === 'cue' ) filecue.push( val.filepl );
+			} );
+			if ( filecue.length ) {
+				getDB( { path: filecue } );
+				return
 			}
+			
+			var arrayplL = arraypl.length;
 			for ( i = 0; i < arrayplL; i++ ) content += data2html( arraypl[ i ], i, 'db', path );
 			arrayfile.sort( function( a, b ) {
 				return a[ 'lisort' ].localeCompare( b[ 'lisort' ], undefined, { numeric: true } );
@@ -1455,18 +1473,18 @@ function htmlPlaylist( data ) {
 		} else if ( value.path ) {
 			path = value.path;
 		} else if ( value.file && value.file.slice( 0, 4 ) === 'http' ) {
-			var title = value.title || value.file;
+			var title = value.Title || value.file;
 			content += '<li class="radio">'
 					 +'<i class="fa fa-webradio pl-icon"></i>'+ ( $( '#page-library' ).hasClass( 'hide' ) ? '<i class="fa fa-minus-circle pl-action"></i>' : '' )
 					 +'<span class="sn">'+ title +'&ensp;<span class="elapsed"></span></span>'
 					 +'<span class="bl">'+ value.file +'</span>'
 			countradio++;
-		} else if ( value.title ) {
-			sec = HMS2Second( value.time );
+		} else if ( value.Title ) {
+			sec = HMS2Second( value.Time );
 			pltime += sec;
 			content += '<li>'
-					 +'<i class="fa fa-music pl-icon"></i>'+ ( $( '#page-library' ).hasClass( 'hide' ) ? '<i class="fa fa-minus-circle pl-action"></i>' : '<i class="fa fa-bars db-action" data-target="#context-menu-file"></i><a class="liname">'+ value.title +'</a>' )
-					 +'<span class="sn">'+ value.title +'&ensp;<span class="elapsed"></span><span class="time" time="'+ sec +'">'+ value.time +'</span></span>'
+					 +'<i class="fa fa-music pl-icon"></i>'+ ( $( '#page-library' ).hasClass( 'hide' ) ? '<i class="fa fa-minus-circle pl-action"></i>' : '<i class="fa fa-bars db-action" data-target="#context-menu-file"></i><a class="liname">'+ value.Title +'</a>' )
+					 +'<span class="sn">'+ value.Title +'&ensp;<span class="elapsed"></span><span class="time" time="'+ sec +'">'+ value.Time +'</span></span>'
 					 +'<span class="bl">'+ value.track +'</span>'
 			countsong++;
 		}
