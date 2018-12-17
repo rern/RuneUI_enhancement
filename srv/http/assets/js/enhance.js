@@ -115,6 +115,9 @@ $( '#menu-settings, #badge' ).click( function() {
 		.toggleClass( 'hide' )
 		.css( 'top', $( '#menu-top' ).hasClass( 'hide' ) ? 0 : '40px' );
 } );
+$( '#page-library, #page-playback, #page-playlist' ).click( function( e ) {
+	if ( [ 'coverTR', 'timeTR' ].indexOf( e.target.id ) === -1 ) $( '#settings' ).addClass( 'hide' );
+} );
 $( '#displaylibrary' ).click( function() {
 	info( {
 		  icon         : 'library'
@@ -279,9 +282,6 @@ $pageLibrary.on( 'swiperight', playlistClick ).on( 'swipeleft', playbackClick );
 $pagePlayback.on( 'swiperight', libraryClick ).on( 'swipeleft', playlistClick );
 $pagePlaylist.on( 'swiperight', playbackClick ).on( 'swipeleft', libraryClick );
 
-$( '#page-library, #page-playback, #page-playlist' ).click( function( e ) {
-	if ( e.target.id !== 'coverTR' && e.target.id !== 'timeTR' ) $( '#settings' ).addClass( 'hide' );
-} );
 $( '#page-playback' ).click( function( e ) {
 	if ( $( e.target ).is( '.controls, .timemap, .covermap, .volmap' ) ) return
 	
