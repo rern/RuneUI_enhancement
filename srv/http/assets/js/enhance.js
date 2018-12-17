@@ -116,7 +116,7 @@ $( '#menu-settings, #badge' ).click( function() {
 		.css( 'top', $( '#menu-top' ).hasClass( 'hide' ) ? 0 : '40px' );
 } );
 $( '#page-library, #page-playback, #page-playlist' ).click( function( e ) {
-	if ( [ 'coverTR', 'timeTR' ].indexOf( e.target.id ) === -1 ) $( '#settings' ).addClass( 'hide' );
+	if ( !$( '#settings' ).hasClass( 'hide' ) && [ 'coverTR', 'timeTR' ].indexOf( e.target.id ) === -1 ) $( '#settings' ).addClass( 'hide' );
 } );
 $( '#displaylibrary' ).click( function() {
 	info( {
