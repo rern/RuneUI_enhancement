@@ -22,9 +22,9 @@ $( '.contextmenu a' ).click( function() {
 	// compose command
 	if ( !mode ) {
 		var ext = GUI.list.path.slice( -3 ).toLowerCase();
-		if ( !GUI.list.path ) {
-			var cuefile = $( '.licover .lipath' ).text().replace( /"/g, '\\"' );
-			var mpcCmd = '/srv/http/enhancecue.sh "'+ cuefile +'" '+ GUI.list.pos
+		if ( GUI.list.index ) {
+			var cuefile = GUI.list.path.replace( /"/g, '\\"' );
+			var mpcCmd = '/srv/http/enhancecue.sh "'+ cuefile +'" '+ GUI.list.index;
 		} else if ( ext === 'm3u' ) {
 			var mpcCmd = 'cat "/mnt/MPD/'+ GUI.list.path +'" | mpc add';
 		} else if ( ext === 'cue' || ext === 'pls' ) {

@@ -810,7 +810,7 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 	}
 	
 	GUI.list = {};
-	GUI.list.pos = $thisli.index();
+	GUI.list.index = $thisli.find( '.liindex' ).text() || '';
 	GUI.list.path = $thisli.find( '.lipath' ).text() || '';
 	GUI.list.name = $thisli.find( '.liname' ).text() || '';
 	GUI.list.artist = $thisli.find( '.artist' ).text() || '';

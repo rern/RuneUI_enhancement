@@ -1482,8 +1482,17 @@ function htmlPlaylist( data ) {
 		} else if ( value.Title ) {
 			sec = HMS2Second( value.Time );
 			pltime += sec;
+			if ( $( '#page-library' ).hasClass( 'hide' ) ) {
+				var actionhtml = '<i class="fa fa-minus-circle pl-action"></i>'
+			} else {
+				var actionhtml = '<i class="fa fa-bars db-action" data-target="#context-menu-file"></i>'
+								+'<a class="lipath">'+ value.file +'</a>'
+								+'<a class="liname">'+ value.Title +'</a>'
+								+'<a class="liindex">'+ value.index +'</a>';
+			}
 			content += '<li>'
-					 +'<i class="fa fa-music pl-icon"></i>'+ ( $( '#page-library' ).hasClass( 'hide' ) ? '<i class="fa fa-minus-circle pl-action"></i>' : '<i class="fa fa-bars db-action" data-target="#context-menu-file"></i><a class="liname">'+ value.Title +'</a>' )
+					 +'<i class="fa fa-music pl-icon"></i>'
+					 + actionhtml
 					 +'<span class="sn">'+ value.Title +'&ensp;<span class="elapsed"></span><span class="time" time="'+ sec +'">'+ value.Time +'</span></span>'
 					 +'<span class="bl">'+ value.track +'</span>'
 			countsong++;
