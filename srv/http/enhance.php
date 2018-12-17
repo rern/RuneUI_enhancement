@@ -87,14 +87,22 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 	exit();
 } else if ( isset( $_POST[ 'playlist' ] ) ) {
 	$path = $_POST[ 'playlist' ];
-	$ext = substr( $path, -3 );
-	if ( $ext === 'm3u' ) {
-		$file = '/mnt/MPD/'.$path;
-		exec( '/usr/bin/sudo /usr/bin/ln -s "'.$file.'" /var/lib/mpd/playlists/' );
-		$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%^^[%albumartist%||%artist%]^^%album%^^%genre%^^%composer%" playlist "'.basename( $file, '.m3u' ).'"' );
-		exec( '/usr/bin/sudo /usr/bin/rm "/var/lib/mpd/playlists/'.basename( $file ).'"' );
+	if ( !is_array( $path ) ) {
+		$ext = substr( $path, -3 );
+		if ( $ext === 'm3u' ) {
+			$file = '/mnt/MPD/'.$path;
+			exec( '/usr/bin/sudo /usr/bin/ln -s "'.$file.'" /var/lib/mpd/playlists/' );
+			$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%^^[%albumartist%||%artist%]^^%album%^^%genre%^^%composer%" playlist "'.basename( $file, '.m3u' ).'"' );
+			exec( '/usr/bin/sudo /usr/bin/rm "/var/lib/mpd/playlists/'.basename( $file ).'"' );
+		} else {
+			$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%^^[%albumartist%||%artist%]^^%album%^^%genre%^^%composer%" playlist "'.$path.'"' );
+		}
 	} else {
-		$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%^^[%albumartist%||%artist%]^^%album%^^%genre%^^%composer%" playlist "'.$path.'"' );
+		$lines = '';
+		foreach( $path as $cue ) {
+			$lines.= shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%^^[%albumartist%||%artist%]^^%album%^^%genre%^^%composer%" playlist "'.$cue.'"' );
+		}
+		$path = $path[ 0 ];
 	}
 	$data = list2array( $lines );
 	$data[][ 'path' ] = $path;
@@ -149,8 +157,8 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 		$lists = explode( "\n", rtrim( $lines ) );
 		foreach( $lists as $list ) {
 			$li = explode( '^^', $list );
-			$pl[ 'title' ] = $li[ 0 ] ? $li[ 0 ] : $webradioname[ $li[ 3 ] ] ?: $li[ 3 ];
-			$pl[ 'time' ] = $li[ 1 ];
+			$pl[ 'Title' ] = $li[ 0 ] ? $li[ 0 ] : $webradioname[ $li[ 3 ] ] ?: $li[ 3 ];
+			$pl[ 'Time' ] = $li[ 1 ];
 			$pl[ 'track' ] = $li[ 2 ];
 			$pl[ 'file' ] = $li[ 3 ];
 			$playlist[] = $pl;
@@ -237,7 +245,7 @@ function search2array( $result, $playlist = '' ) {
 		$root = substr( $list, 0, 4 );
 		if ( $root === 'USB/' || $root === 'NAS/' || substr( $list, 0, 13 ) === 'LocalStorage/' ) {
 			$ext = substr( $list, -4 );
-			if ( $ext === '.m3u' || $ext === '.cue' || $ext === '.pls') {
+			if ( $ext === '.cue' || $ext === '.m3u' || $ext === '.pls' ) {
 				$li[ 'playlist' ] = basename( $list );
 				$li[ 'filepl' ] = $list;
 				$data[] = $li;
@@ -271,8 +279,8 @@ function list2array( $result ) {
 	$artist = $album = $genre = $composer = $albumartist = '';
 	foreach( $lists as $list ) {
 		$list = explode( '^^', rtrim( $list ) );
-		$li[ 'title' ] = $list[ 0 ];
-		$li[ 'time' ] = $list[ 1 ];
+		$li[ 'Title' ] = $list[ 0 ];
+		$li[ 'Time' ] = $list[ 1 ];
 		$li[ 'track' ] = $list[ 2 ];
 		$li[ 'file' ] = $list[ 3 ];
 		if ( !$artist && $list[ 4 ] !== '' ) $artist = $list[ 4 ];
