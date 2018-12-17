@@ -4,7 +4,6 @@ var GUI = { // outside '$( function() {' enable console.log access
 	, artistalbum  : ''
 	, bookmarkedit : 0
 	, browsemode   : ''
-	, cuefile      : 0
 	, currentpath  : ''
 	, dbback       : 0
 	, dbbackdata   : []
@@ -616,12 +615,10 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 } );
 
 $( '#db-home' ).click( function() {
-	GUI.cuefile = 0;
 	$( '#tab-library' ).click();
 	$( '.menu' ).addClass( 'hide' );
 } );
 $( '#db-currentpath' ).on( 'click', 'a', function() {
-	GUI.cuefile = 0;
 	if ( $( '#db-currentpath span a' ).length === 1 ) return
 	var rootpath = this.id === 'rootpath';
 	if ( [ 'album', 'artist', 'albumartist', 'composer', 'genre' ].indexOf( GUI.browsemode ) !== -1 && !rootpath ) return
@@ -701,9 +698,6 @@ $( '#db-back' ).click( function() {
 	if ( GUI.dbbrowsemode === 'file' ) {
 		if ( $( '#db-currentpath span a' ).length === 1 ) {
 			renderLibrary();
-		} else if ( GUI.cuefile ) {
-			GUI.cuefile = 0;
-			$( '#db-currentpath a:nth-last-child( 3 )' ).click();
 		} else {
 			$( '#db-currentpath a:nth-last-child( 2 )' ).click();
 		}

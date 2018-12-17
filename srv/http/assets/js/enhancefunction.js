@@ -1056,10 +1056,12 @@ function dataSort( data, path, plugin, querytype, arg ) {
 				return a[ 'lisort' ].localeCompare( b[ 'lisort' ], undefined, { numeric: true } );
 			} );
 			var arrayplL = arraypl.length;
-			if ( arrayplL === 1 ) { // single *.cue 'mpc load *.cue'
-				GUI.cuefile = 1;
-				getDB( { path: arraypl[ 0 ].filepl } )
-				return
+			if ( arrayplL === 1 ) { // single *.cue > skip to > 'mpc load *.cue'
+				var filepl = arraypl[ 0 ].filepl
+				if ( filepl.slice( -3 ) === 'cue' ) {
+					getDB( { path: filepl } );
+					return
+				}
 			}
 			for ( i = 0; i < arrayplL; i++ ) content += data2html( arraypl[ i ], i, 'db', path );
 			arrayfile.sort( function( a, b ) {
@@ -1185,6 +1187,8 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			var folderPath = '';
 			var ilength = folder.length;
 			for ( i = 0; i < ilength; i++ ) {
+				if ( folder[ i ].slice( -3 ) === 'cue' ) continue
+				
 				folderPath += ( i > 0 ? '/' : '' ) + folder[ i ];
 				folderCrumb += ' <a>'+ ( i > 0 ? '<w> / </w>' : '' ) + folder[ i ] +'<span class="lipath">'+ folderPath +'</span></a>';
 			}
