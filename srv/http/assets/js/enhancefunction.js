@@ -1494,7 +1494,7 @@ function htmlPlaylist( data ) {
 					 +'<i class="fa fa-music pl-icon"></i>'
 					 + actionhtml
 					 +'<span class="sn">'+ value.Title +'&ensp;<span class="elapsed"></span><span class="time" time="'+ sec +'">'+ value.Time +'</span></span>'
-					 +'<span class="bl">'+ value.track +'</span>'
+					 +'<span class="bl">'+ ( $( '#page-library' ).hasClass( 'hide' ) ? value.track : value.file ) +'</span>'
 			countsong++;
 		}
 	} );
