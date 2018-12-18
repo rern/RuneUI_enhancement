@@ -337,7 +337,7 @@ function getCover( $data ) {
 	$dir = dirname( $file );
 	$coverfiles = array(
 		  'cover.png', 'cover.jpg', 'folder.png', 'folder.jpg', 'front.png', 'front.jpg'
-		, 'Cover.png', 'Coverjpg', 'Folder.png', 'Folder.jpg', 'Front.png', 'Front.jpg'
+		, 'Cover.png', 'Cover.jpg', 'Folder.png', 'Folder.jpg', 'Front.png', 'Front.jpg'
 	);
 	foreach( $coverfiles as $cover ) {
 		$coverfile = $dir.'/'.$cover;
