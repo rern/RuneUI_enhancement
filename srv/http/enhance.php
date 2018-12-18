@@ -46,6 +46,8 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 } else if ( isset( $_POST[ 'mpc' ] ) ) {
 	$mpc = $_POST[ 'mpc' ];
 	if ( !is_array( $mpc ) ) { // multiples commands is array
+		if ( loadCue( $mpc ) ) exit();
+		
 		$result = shell_exec( $mpc );
 		// query 'various artist album' with 'artist name' > requery without
 		if ( !$result ) {
@@ -54,8 +56,13 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 		$cmd = $mpc;
 	} else {
 		foreach( $mpc as $cmd ) {
+			if ( loadCue( $cmd ) ) {
+				$loadCue = 1;
+				continue;
+			}
 			$result = shell_exec( $cmd );
 		}
+		if ( isset( $loadCue ) ) exit();
 	}
 	$cmdpl = explode( ' ', $cmd )[ 1 ];
 	if ( $cmdpl === 'save' || $cmdpl === 'rm' ) {
@@ -102,7 +109,7 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 		foreach( $path as $cue ) {
 			$lines.= shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^'.$cue.'^^[%albumartist%||%artist%]^^%album%^^%genre%^^%composer%" playlist "'.$cue.'"' );
 		}
-		$path = $path[ 0 ];
+		$path = dirname( $path[ 0 ] );
 	}
 	$data = list2array( $lines );
 	$data[][ 'path' ] = $path;
@@ -302,6 +309,21 @@ function list2array( $result ) {
 	if ( $genre ) $data[][ 'genre' ] = $genre;
 	if ( $composer ) $data[][ 'composer' ] = $composer;
 	return $data;
+}
+function loadCue( $mpc ) { // 'mpc ls "path" | mpc add' from enhancecontext.js
+	if ( substr( $mpc, 0, 8 ) !== 'mpc ls "' ) return;
+	
+	$ls = chop( $mpc, ' | mpc add' );
+	$result = shell_exec( $ls );
+	$lists = explode( "\n", rtrim( $result ) );
+	$cuefiles = preg_grep( '/.cue$/', $lists );
+	if ( count( $cuefiles ) ) {
+		asort( $cuefiles );
+		foreach( $cuefiles as $cue ) {
+			shell_exec( 'mpc load "'.$cue.'" | mpc add' );
+		}
+		return 1;
+	}
 }
 function isPlaylist( $data ) {
 	foreach( $data as $list ) {
