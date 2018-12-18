@@ -1060,7 +1060,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 							  + genrehtml
 							  +'<i class="fa fa-music"></i>'+ arrayfile.length +'<gr> • </gr>'+ second2HMS( litime )
 						  +'</span>'
-						  +'<i class="fa fa-bars db-action" data-target="#context-menu-'+ GUI.browsemode +'"></i>'
+						  +'<i class="fa fa-bars db-action" data-target="#context-menu-'+ ( GUI.browsemode !== 'file' ? GUI.browsemode : 'folder' ) +'"></i>'
 						  +'</li>';
 			}
 			arraydir.sort( function( a, b ) {
