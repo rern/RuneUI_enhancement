@@ -136,7 +136,7 @@ $( '#displaylibrary' ).click( function() {
 				+ displayCheckbox( 'genre',       '<i class="fa fa-genre"></i>Genre' )
 				+ displayCheckbox( 'dirble',      '<i class="fa fa-dirble"></i>Dirble' )
 				+ displayCheckbox( 'jamendo',     '<i class="fa fa-jamendo"></i>Jamendo' )
-				+ displayCheckbox( 'coverfile',   'Cover art file' )
+				+ displayCheckbox( 'coverfile',   'Cover art' )
 				+ displayCheckbox( 'count',       '<gr>text</gr> Count' )
 				+ displayCheckbox( 'label',       '<gr>text</gr> Label' )
 			+'</form>'
