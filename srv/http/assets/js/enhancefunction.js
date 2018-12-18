@@ -1075,7 +1075,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			$.each( arraypl, function( i, val ) {
 				if ( val.filepl.slice( -3 ) === 'cue' ) filecue.push( val.filepl );
 			} );
-			if ( filecue.length ) {
+			if ( filecue.length && !arraydirL ) {
 				getDB( { path: filecue } );
 				return
 			}
