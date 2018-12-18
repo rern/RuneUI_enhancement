@@ -918,8 +918,6 @@ $( '#plcrop' ).click( function() {
 	} );
 } );
 $( '#plclear' ).click( function() {
-	if ( !GUI.status.playlistlength ) return
-	
 	info( {
 		  title   : 'Clear Playlist'
 		, message : 'Clear this playlist?'

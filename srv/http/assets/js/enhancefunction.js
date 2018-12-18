@@ -274,12 +274,12 @@ function setPlaybackBlank() {
 	$( '#divpos i' ).addClass( 'hide' );
 	$( '#artist, #album, #songposition, #timepos, #elapsed, #total' ).empty();
 	$( '#format-bitrate' ).text( 'Add music from Library' );
+	if ( GUI.display.time ) $( '#time' ).roundSlider( 'setValue', 0 );
+	$( '#coverartoverlay' ).addClass( 'hide' );
 	$( '#cover-art' )
 		.attr( 'src', $( '#cover' ).val() )
-		.css( 'border-radius', 0 )
-		.one( 'load', removeSplash );
-	$( '#coverartoverlay' ).addClass( 'hide' );
-	if ( GUI.display.time ) $( '#time' ).roundSlider( 'setValue', 0 );
+		.css( 'border-radius', 0 );
+	if ( $( '#splash' ).length ) $( '#cover-art' ).one( 'load', removeSplash );
 }
 function renderPlayback() {
 	if ( $( '#splash' ).length ) { // in case too long to get coverart
@@ -1530,7 +1530,7 @@ function renderPlaylist() {
 	$( '#plopen' ).toggleClass( 'disable', !GUI.lsplaylists.length );
 	if ( !GUI.status.playlistlength ) {
 		$( '#pl-count' ).html( '<bl class="title">PLAYLIST</bl>' );
-		$( '#plsave, #plcrop, #plclear' ).addClass( 'disable' );
+		$( '#plsave, #plcrop, #plclear, #pl-searchbtn' ).addClass( 'disable' );
 		$( '#pl-entries' ).empty();
 		$( '.playlist' ).removeClass( 'hide' );
 		$( '#playlist-warning' ).css( 'margin-top', GUI.display.bars ? '27px' : '47px' );
@@ -1552,7 +1552,7 @@ function renderPlaylist() {
 	$( '.playlist' ).removeClass( 'hide' );
 	$( '#playlist-warning' ).addClass( 'hide' );
 	$( '#pl-count' ).html( counthtml );
-	$( '#plsave, #plclear' ).removeClass( 'disable' );
+	$( '#plsave, #plclear, #pl-searchbtn' ).removeClass( 'disable' );
 	$( '#pl-entries' ).html( data.content +'<p></p>' ).promise().done( function() {
 		$( '#pl-entries p' ).css( 'min-height', window.innerHeight - 140 +'px' );
 		setPlaylistScroll();
