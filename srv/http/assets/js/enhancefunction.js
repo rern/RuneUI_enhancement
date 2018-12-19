@@ -54,8 +54,11 @@ var timeoutUpdate;
 pushstreams.idle.onmessage = function( changed ) {
 	var changed = changed[ 0 ];
 	if ( changed === 'player' ) { // on track changed
-		getPlaybackStatus();
-		if ( !$( '#page-playlist' ).hasClass( 'hide' ) && !GUI.pleditor ) setPlaylistScroll();
+		if ( !$( '#page-playlist' ).hasClass( 'hide' ) && !GUI.pleditor ) {
+			setPlaylistScroll();
+		} else {
+			getPlaybackStatus();
+		}
 	} else if ( changed === 'playlist' ) { // on playlist changed
 		if ( GUI.pleditor || GUI.local ) return
 		
@@ -1436,6 +1439,7 @@ function setPlaylistScroll() {
 		$( '#pl-entries li' ).removeClass( 'active' );
 		var $liactive = $( '#pl-entries li' ).eq( status.song );
 		var $elapsed = $liactive.find( '.elapsed' );
+		$elapsed.empty();
 		$liactive.addClass( 'active' );
 		var elapsed = status.elapsed;
 		var slash = $liactive.hasClass( 'radio' ) ? '' : ' / ';
@@ -1443,10 +1447,16 @@ function setPlaylistScroll() {
 			var elapsedtxt = second2HMS( elapsed ) + slash;
 			$elapsed.html( '<i class="fa fa-pause"></i> '+ elapsedtxt );
 		} else if ( status.state === 'play' ) {
+			var time = status.Time;
 			GUI.intElapsedPl = setInterval( function() {
 				elapsed++;
-				var elapsedtxt = second2HMS( elapsed );
-				$elapsed.html( '<i class="fa fa-play"></i> <wh>'+ elapsedtxt +'</wh>'+ slash );
+				if ( elapsed < time ) {
+					var elapsedtxt = second2HMS( elapsed );
+					$elapsed.html( '<i class="fa fa-play"></i> <wh>'+ elapsedtxt +'</wh>'+ slash );
+				} else {
+					clearInterval( GUI.intElapsedPl );
+					$elapsed.empty();
+				}
 			}, 1000 );
 		} else {
 			$( '.elapsed' ).empty();
@@ -1495,7 +1505,7 @@ function htmlPlaylist( data ) {
 				var actionhtml = '<i class="fa fa-minus-circle pl-action"></i>'
 			} else {
 				var actionhtml = '<i class="fa fa-bars db-action" data-target="#context-menu-file"></i>'
-								+'<a class="lipath">'+ value.file +'</a>'
+								+'<a class="lipath">'+ ( value.cue || value.file ) +'</a>'
 								+'<a class="liname">'+ value.Title +'</a>'
 								+'<a class="liindex">'+ value.index +'</a>';
 			}
