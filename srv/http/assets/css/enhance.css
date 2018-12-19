@@ -1789,6 +1789,11 @@ w {
 		display: none;
 	}
 }
+@media(max-height: 520px) {
+	#page-playback {
+		padding-top: 40px;
+	}
+}
 @media(max-height: 475px) {
 	#settings {
 		position: absolute;
@@ -1800,6 +1805,14 @@ w {
 	#sampling span,
 	#dot0 {
 		display: inline;
+	}
+}
+/* height - width */
+@media(max-height: 590px),
+@media(max-width: 500px) {
+	#menu-top,
+	#menu-bottom { 
+		display: none;
 	}
 }
 /* width */
@@ -1872,6 +1885,10 @@ w {
 	}
 }
 @media(max-width: 500px) {
+	#menu-top,
+	#menu-bottom { 
+		display: none;
+	}
 	#divpos,
 	#sampling span,
 	#dot0 {
