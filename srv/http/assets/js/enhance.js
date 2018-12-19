@@ -147,13 +147,7 @@ $( '#displaylibrary' ).click( function() {
 			$( '#displaysavelibrary input' ).each( function() {
 				var checked = this.checked;
 				GUI.display[ this.name ] = checked ? 'checked' : '';
-				if ( this.name === 'coverfile' ) {
-					if ( coverfile === 'checked' ) {
-						GUI.coverfile = checked ? 0 : 1;
-					} else {
-						GUI.coverfile = checked ? 1 : 0;
-					}
-				}
+				if ( this.name === 'coverfile' ) GUI.coverfile = ( coverfile === 'checked' ) ? ( checked ? 0 : 1 ) : ( checked ? 1 : 0 );
 			} );
 			$.post( 'enhance.php', { setdisplay: GUI.display } );
 		}
