@@ -6,15 +6,24 @@ $.each( streams, function( i, stream ) {
 } );
 
 pushstreams.display.onmessage = function( data ) {
+	var current = GUI.display;
 	if ( typeof data[ 0 ] === 'object' ) GUI.display = data[ 0 ];
 	if ( GUI.local ) return
 	
 	if ( !$( '#page-playback' ).hasClass( 'hide' ) ) {
 		getPlaybackStatus();
-	} else if ( !$( '#page-library' ).hasClass( 'hide' ) ) {
-		if ( !GUI.local ) renderLibrary();
+	} else if ( !$( '#page-library' ).hasClass( 'hide' ) && !$( '#home-blocks' ).hasClass( 'hide' ) ) {
+			renderLibrary();
 	} else {
 		displayTopBottom();
+	}
+	if ( GUI.coverfile && $( '#home-blocks' ).hasClass( 'hide' ) ) {
+		if ( GUI.display.coverfile ) {
+			if ( !$( '.licover' ).length ) $( '#db-currentpath a:last-child' ).click();
+		} else {
+			$( '.licover' ).remove();
+		}
+		if ( $( '#page-library' ).hasClass( 'hide' ) ) $( '#tab-library' ).click();
 	}
 }
 pushstreams.volume.onmessage = function( data ) {
