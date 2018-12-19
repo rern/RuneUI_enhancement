@@ -119,6 +119,7 @@ $( '#page-library, #page-playback, #page-playlist' ).click( function( e ) {
 	if ( !$( '#settings' ).hasClass( 'hide' ) && [ 'coverTR', 'timeTR' ].indexOf( e.target.id ) === -1 ) $( '#settings' ).addClass( 'hide' );
 } );
 $( '#displaylibrary' ).click( function() {
+	if( $( '#page-library' ).hasClass( 'hide' ) ) $( '#tab-library' ).click();
 	var coverfile = GUI.display.coverfile;
 	info( {
 		  icon         : 'library'
@@ -144,17 +145,16 @@ $( '#displaylibrary' ).click( function() {
 		, cancel       : 1
 		, ok           : function () {
 			$( '#displaysavelibrary input' ).each( function() {
+				var checked = this.checked;
+				GUI.display[ this.name ] = checked ? 'checked' : '';
 				if ( this.name === 'coverfile' ) {
 					if ( coverfile === 'checked' ) {
-						GUI.coverfile = this.checked ? 0 : 1;
+						GUI.coverfile = checked ? 0 : 1;
 					} else {
-						GUI.coverfile = this.checked ? 1 : 0;
+						GUI.coverfile = checked ? 1 : 0;
 					}
 				}
-				GUI.display[ this.name ] = this.checked ? 'checked' : '';
 			} );
-			if ( ( GUI.coverfile && $( '#home-blocks' ).hasClass( 'hide' ) )
-			     && $( '#page-library' ).hasClass( 'hide' ) && !$( '#home-blocks' ).hasClass( 'hide' ) ) $( '#tab-library' ).click();
 			$.post( 'enhance.php', { setdisplay: GUI.display } );
 		}
 	} );
