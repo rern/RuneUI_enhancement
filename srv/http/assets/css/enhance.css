@@ -1332,6 +1332,7 @@ wh, gr { font-weight: 300; }
 	vertical-align: bottom;
 	margin-bottom: 5px;
 	width: calc( 100% - 335px );
+	line-height: 33px;
 	font-weight: 300;
 }
 .lialbum {
@@ -1345,8 +1346,8 @@ wh, gr { font-weight: 300; }
 .liinfo i {
 	margin: 0 10px 0 0 !important;
 	width: 28px !important;
-	vertical-align: -2px;
 	line-height: 33px !important;
+	vertical-align: -10%;
 }
 #db-entries,
 #pl-editor {
