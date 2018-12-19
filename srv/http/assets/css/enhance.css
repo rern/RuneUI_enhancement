@@ -1332,7 +1332,6 @@ wh, gr { font-weight: 300; }
 	vertical-align: bottom;
 	margin-bottom: 5px;
 	width: calc( 100% - 335px );
-	line-height: 33px;
 	font-weight: 300;
 }
 .lialbum {
@@ -1340,11 +1339,12 @@ wh, gr { font-weight: 300; }
 	font-weight: normal;
 	white-space: normal;
 }
-.liinfo bl {
-	margin-left: 7px;
+.liinfo i:nth-child( 3 ) {
+	margin-top: 10px !important;
 }
 .liinfo i {
-	margin: 0 !important;
+	margin: 0 10px 0 0 !important;
+	width: 28px !important;
 	vertical-align: -2px;
 	line-height: 33px !important;
 }
