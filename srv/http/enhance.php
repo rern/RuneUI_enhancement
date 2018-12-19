@@ -107,7 +107,7 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 	} else {
 		$lines = '';
 		foreach( $path as $cue ) {
-			$lines.= shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^'.$cue.'^^[%albumartist%||%artist%]^^%album%^^%genre%^^%composer%" playlist "'.$cue.'"' );
+			$lines.= shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%^^[%albumartist%||%artist%]^^%album%^^%genre%^^%composer%" playlist "'.$cue.'"' );
 		}
 		$path = dirname( $path[ 0 ] );
 	}
