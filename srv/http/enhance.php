@@ -107,7 +107,8 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 	} else {
 		$lines = '';
 		foreach( $path as $cue ) {
-			$lines.= shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^'.$cue.'^^[%albumartist%||%artist%]^^%album%^^%genre%^^%composer%" playlist "'.$cue.'"' );
+			$cuefile = str_replace( '&', '#&', $cue ); // escape '&' in %file%
+			$lines.= shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%^^[%albumartist%||%artist%]^^%album%^^%genre%^^%composer%^^'.$cuefile.'" playlist "'.$cue.'"' );
 		}
 		$path = dirname( $path[ 0 ] );
 	}
@@ -300,6 +301,7 @@ function list2array( $result ) {
 		if ( !$album && $list[ 5 ] !== '' ) $album = $list[ 5 ];
 		if ( !$genre && $list[ 6 ] !== '' ) $genre = $list[ 6 ];
 		if ( !$composer && $list[ 7 ] !== '' ) $composer = $list[ 7 ];
+		if ( isset( $list[ 8 ] ) ) $li[ 'cue' ] = $list[ 8 ];
 		$data[] = $li;
 		$li = '';
 	}
