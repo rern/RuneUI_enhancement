@@ -1430,7 +1430,6 @@ function setPlaylistScroll() {
 	if ( GUI.sortable ) return // 'skip for Sortable'
 	
 	clearInterval( GUI.intElapsedPl );
-	$( '.elapsed' ).empty();
 	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
 		$.each( status, function( key, value ) {
 			GUI.status[ key ] = value;
@@ -1440,7 +1439,6 @@ function setPlaylistScroll() {
 		$( '#pl-entries li' ).removeClass( 'active' );
 		var $liactive = $( '#pl-entries li' ).eq( status.song );
 		var $elapsed = $liactive.find( '.elapsed' );
-		$elapsed.empty();
 		$liactive.addClass( 'active' );
 		var elapsed = status.elapsed;
 		var slash = $liactive.hasClass( 'radio' ) ? '' : ' / ';

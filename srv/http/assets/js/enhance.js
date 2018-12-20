@@ -1006,6 +1006,7 @@ $( '#pl-entries' ).on( 'click', 'li', function( e ) {
 				$.post( 'enhance.php', { mpc: 'mpc play '+ songpos } );
 				$( '#pl-entries li' ).removeClass( 'active' );
 				$( this ).addClass( 'active' );
+				$( '.elapsed' ).empty();
 			}
 		}
 		return
@@ -1102,7 +1103,6 @@ document.addEventListener( 'visibilitychange', function() {
 		clearInterval( GUI.intKnob );
 		clearInterval( GUI.intElapsed );
 		clearInterval( GUI.intElapsedPl );
-		$( '.elapsed' ).empty();
 	} else {
 		if ( !$( '#page-playback' ).hasClass( 'hide' ) ) {
 			$.post( 'enhance.php', { getdisplay: 1 } );
