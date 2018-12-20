@@ -1442,7 +1442,9 @@ function setPlaylistScroll() {
 		$liactive.addClass( 'active' );
 		var elapsed = status.elapsed;
 		var slash = $liactive.hasClass( 'radio' ) ? '' : ' / ';
-		if ( status.state === 'pause' ) {
+		if ( status.state === 'stop' ) {
+			$( '.elapsed' ).empty();
+		} else if ( status.state === 'pause' ) {
 			var elapsedtxt = second2HMS( elapsed ) + slash;
 			$elapsed.html( '<i class="fa fa-pause"></i> '+ elapsedtxt );
 		} else if ( status.state === 'play' ) {
@@ -1458,8 +1460,6 @@ function setPlaylistScroll() {
 					$( '#pl-entries li' ).removeClass( 'active' );
 				}
 			}, 1000 );
-		} else {
-			$( '.elapsed' ).empty();
 		}
 		setTimeout( function() {
 			var scrollpos = $liactive.offset().top - $( '#pl-entries' ).offset().top - ( 49 * 3 );
