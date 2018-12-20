@@ -268,7 +268,11 @@ function search2array( $result, $playlist = '' ) {
 			$li[ 'Artist' ] = $list[ 2 ];
 			$li[ 'Album' ] = $list[ 3 ];
 			$li[ 'file' ] = $list[ 4 ];
-			if ( !$genre && $list[ 5 ] !== '' ) $genre = $list[ 5 ];
+			if ( !$genre ) {
+				if ( $list[ 5 ] !== '' ) $genre = $list[ 5 ];
+			} else {
+				if ( $list[ 5 ] !== $genre ) $genre = -1;
+			}
 			if ( !$composer && $list[ 6 ] !== '' ) $composer = $list[ 6 ];
 			if ( !$albumartist && $list[ 7 ] !== '' ) $albumartist = $list[ 7 ];
 			$data[] = $li;
@@ -299,7 +303,11 @@ function list2array( $result ) {
 		$li[ 'index' ] = $i++;
 		if ( !$artist && $list[ 4 ] !== '' ) $artist = $list[ 4 ];
 		if ( !$album && $list[ 5 ] !== '' ) $album = $list[ 5 ];
-		if ( !$genre && $list[ 6 ] !== '' ) $genre = $list[ 6 ];
+		if ( !$genre ) {
+			if ( $list[ 6 ] !== '' ) $genre = $list[ 6 ];
+		} else {
+			if ( $list[ 6 ] !== $genre ) $genre = -1;
+		}
 		if ( !$composer && $list[ 7 ] !== '' ) $composer = $list[ 7 ];
 		if ( isset( $list[ 8 ] ) ) $li[ 'cue' ] = $list[ 8 ];
 		$data[] = $li;
