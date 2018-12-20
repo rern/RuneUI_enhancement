@@ -107,7 +107,7 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 	} else {
 		$lines = '';
 		foreach( $path as $cue ) {
-			$cuefile = str_replace( '&', '#&', $cue ); // escape '&' in %file%
+			$cuefile = preg_replace( '/([&\[\]])/', '#$1', $cue ); // escape literal &, [, ] in %file% (operation characters)
 			$lines.= shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%^^[%albumartist%|%artist%]^^%album%^^%genre%^^%composer%^^'.$cuefile.'" playlist "'.$cue.'"' );
 		}
 		$path = dirname( $path[ 0 ] );
