@@ -1336,6 +1336,8 @@ wh, gr { font-weight: 300; }
 	font-weight: 300;
 }
 .lialbum {
+	display: inline-block;
+	line-height: 24px;
 	font-size: 22px;
 	font-weight: normal;
 	white-space: normal;
