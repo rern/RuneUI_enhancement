@@ -104,6 +104,7 @@ pushstreams.idle.onmessage = function( changed ) {
 						  title : 'Update Database'
 						, text  : 'Database updated.'
 					} );
+					if ( !$( '#page-library' ).hasClass( 'hide' ) && $( '.licover' ).length ) $( '#db-currentpath a:last-child' ).click();
 				}
 				setButtonUpdate();
 			}, 'json' );
@@ -1456,6 +1457,7 @@ function setPlaylistScroll() {
 				} else {
 					clearInterval( GUI.intElapsedPl );
 					$elapsed.empty();
+					$( '#pl-entries li' ).removeClass( 'active' );
 				}
 			}, 1000 );
 		} else {
