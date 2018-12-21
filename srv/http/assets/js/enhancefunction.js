@@ -1429,18 +1429,18 @@ function setPlaylistScroll() {
 	if ( GUI.sortable ) return // 'skip for Sortable'
 	
 	clearInterval( GUI.intElapsedPl );
-	$( '.elapsed' ).empty();
+	var $liactive = '';
+	var $elapsed = '';
 	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
 		$.each( status, function( key, value ) {
 			GUI.status[ key ] = value;
 		} );
 		setButton();
-		$( '#plcrop' ).toggleClass( 'disable', ( status.state === 'stop' || GUI.status.playlistlength === 1 ) );
 		$( '#pl-entries li' ).removeClass( 'active' );
-		var $liactive = $( '#pl-entries li' ).eq( status.song );
-		var $elapsed = $liactive.find( '.elapsed' );
-		$elapsed.empty();
+		$liactive = $( '#pl-entries li' ).eq( status.song );
 		$liactive.addClass( 'active' );
+		$( '#pl-entries li:not( .active )' ).find( '.elapsed' ).empty();
+		$elapsed = $liactive.find( '.elapsed' );
 		var elapsed = status.elapsed;
 		var slash = $liactive.hasClass( 'radio' ) ? '' : ' / ';
 		if ( status.state === 'pause' ) {
@@ -1448,19 +1448,16 @@ function setPlaylistScroll() {
 			$elapsed.html( '<i class="fa fa-pause"></i> '+ elapsedtxt );
 		} else if ( status.state === 'play' ) {
 			var time = status.Time;
+			clearInterval( GUI.intElapsedPl );
 			GUI.intElapsedPl = setInterval( function() {
 				elapsed++;
-				if ( elapsed < time ) {
-					var elapsedtxt = second2HMS( elapsed );
-					$elapsed.html( '<i class="fa fa-play"></i> <wh>'+ elapsedtxt +'</wh>'+ slash );
-				} else {
-					clearInterval( GUI.intElapsedPl );
-					$elapsed.empty();
-				}
+				var elapsedtxt = second2HMS( elapsed );
+				$elapsed.html( '<i class="fa fa-play"></i> <wh>'+ elapsedtxt +'</wh>'+ slash );
 			}, 1000 );
 		} else {
 			$( '.elapsed' ).empty();
 		}
+		$( '#plcrop' ).toggleClass( 'disable', ( status.state === 'stop' || GUI.status.playlistlength === 1 ) );
 		setTimeout( function() {
 			var scrollpos = $liactive.offset().top - $( '#pl-entries' ).offset().top - ( 49 * 3 );
 			$( 'html, body' ).scrollTop( scrollpos );
