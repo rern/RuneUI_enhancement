@@ -984,7 +984,6 @@ new Sortable( document.getElementById( 'pl-entries' ), {
 	}
 } );
 $( '#pl-entries' ).on( 'click', 'li', function( e ) {
-	GUI.local
 	if ( $( e.target ).parent().hasClass( 'elapsed' )
 		|| $( e.target ).hasClass( 'elapsed' )
 		|| $( e.target ).hasClass( 'time' )
