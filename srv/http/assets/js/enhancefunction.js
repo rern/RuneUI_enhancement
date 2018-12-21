@@ -1528,7 +1528,7 @@ function htmlPlaylist( data ) {
 					  + genrehtml
 					  +'<i class="fa fa-music"></i>'+ countsong +'<gr> • </gr>'+ second2HMS( pltime )
 				  +'</span>'
-				  +'<i class="fa fa-bars db-action" data-target="#context-menu-filepl"></i>'
+				  +'<i class="fa fa-bars db-action" data-target="#context-menu-folder"></i>'
 				  +'</li>';
 	}
 	return {
