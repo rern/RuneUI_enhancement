@@ -63,19 +63,19 @@ $( '.contextmenu a' ).click( function() {
 			command();
 		} else {
 			if ( cmd !== 'update' ) {
-				var add = cmd.replace( 'wr', '' ).slice( 0, 3 ) === 'add';
-				new PNotify( {
-					  title : add ? 'Add to Playlist' : 'Playlist replaced'
-					, text  : GUI.list.name
-				} );
+				if ( cmd.replace( 'wr', '' ).slice( 0, 3 ) === 'add' ) {
+					addReplace( mode, command, 'Add to Playlist' );
+				} else {
+					info( {
+						  title   : 'Replace Playlist'
+						, message : 'Replace current Playlist?'
+						, cancel  : 1
+						, ok      : function() {
+							addReplace( mode, command, 'Playlist replaced' );
+						}
+					} );
+				}
 			}
-			if ( mode === 'wr' ) {
-				GUI.local = 1;
-				setTimeout( function() { GUI.local = 0 }, 500 );
-			}
-			$.post( 'enhance.php', { mpc: command }, function() {
-				getPlaybackStatus();
-			} );
 		}
 	} else if ( cmd === 'dirblesave' ) {
 		webRadioNew( GUI.list.name, GUI.list.path );
@@ -89,6 +89,19 @@ $( '.contextmenu a' ).click( function() {
 	}
 } );
 
+function addReplace( mode, command, title ) {
+	if ( mode === 'wr' ) {
+		GUI.local = 1;
+		setTimeout( function() { GUI.local = 0 }, 500 );
+	}
+	$.post( 'enhance.php', { mpc: command }, function() {
+		getPlaybackStatus();
+	} );
+	new PNotify( {
+		  title : title
+		, text  : GUI.list.name
+	} );
+}
 function bookmarkNew() {
 	var path = GUI.list.path;
 	var name = path.split( '/' ).pop();
