@@ -984,6 +984,7 @@ new Sortable( document.getElementById( 'pl-entries' ), {
 	}
 } );
 $( '#pl-entries' ).on( 'click', 'li', function( e ) {
+	GUI.local
 	if ( $( e.target ).parent().hasClass( 'elapsed' )
 		|| $( e.target ).hasClass( 'elapsed' )
 		|| $( e.target ).hasClass( 'time' )
@@ -997,16 +998,11 @@ $( '#pl-entries' ).on( 'click', 'li', function( e ) {
 		var state = GUI.status.state;
 		if ( state == 'stop' ) {
 			$.post( 'enhance.php', { mpc: 'mpc play '+ songpos } );
-			$( '#pl-entries li' ).removeClass( 'active' );
-			$( this ).addClass( 'active' );
 		} else {
 			if ( $( this ).hasClass( 'active' ) ) {
 				state == 'play' ? $( '#pause' ).click() : $( '#play' ).click();
 			} else {
 				$.post( 'enhance.php', { mpc: 'mpc play '+ songpos } );
-				$( '#pl-entries li' ).removeClass( 'active' );
-				$( this ).addClass( 'active' );
-				$( '.elapsed' ).empty();
 			}
 		}
 		return

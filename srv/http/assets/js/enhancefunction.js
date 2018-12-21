@@ -457,7 +457,7 @@ function renderPlayback() {
 
 function getPlaybackStatus() {
 	//if ( GUI.local ) return; // suppress 2nd firing from 'pushstreams.idle.onmessage'
-	if ( !$( '#page-playlist' ).hasClass( 'hide' ) ) {
+	if ( !$( '#page-playlist' ).hasClass( 'hide' ) && !GUI.pleditor ) {
 		setPlaylistScroll();
 		return
 	}
@@ -1434,34 +1434,35 @@ function setPlaylistScroll() {
 		$.each( status, function( key, value ) {
 			GUI.status[ key ] = value;
 		} );
-		setButton();
-		$( '#plcrop' ).toggleClass( 'disable', ( status.state === 'stop' || GUI.status.playlistlength === 1 ) );
-		$( '#pl-entries li' ).removeClass( 'active' );
-		var $liactive = $( '#pl-entries li' ).eq( status.song );
-		var $elapsed = $liactive.find( '.elapsed' );
-		$liactive.addClass( 'active' );
-		var elapsed = status.elapsed;
-		var slash = $liactive.hasClass( 'radio' ) ? '' : ' / ';
-		if ( status.state === 'stop' ) {
-			$( '.elapsed' ).empty();
-		} else if ( status.state === 'pause' ) {
-			var elapsedtxt = second2HMS( elapsed ) + slash;
-			$elapsed.html( '<i class="fa fa-pause"></i> '+ elapsedtxt );
-		} else if ( status.state === 'play' ) {
-			var time = status.Time;
-			GUI.intElapsedPl = setInterval( function() {
-				elapsed++;
-				if ( elapsed < time ) {
-					var elapsedtxt = second2HMS( elapsed );
-					$elapsed.html( '<i class="fa fa-play"></i> <wh>'+ elapsedtxt +'</wh>'+ slash );
-				} else {
-					clearInterval( GUI.intElapsedPl );
-					$elapsed.empty();
-					$( '#pl-entries li' ).removeClass( 'active' );
-				}
-			}, 1000 );
-		}
 		setTimeout( function() {
+			setButton();
+			$( '#plcrop' ).toggleClass( 'disable', ( status.state === 'stop' || GUI.status.playlistlength === 1 ) );
+			$( '#pl-entries li' ).removeClass( 'active' );
+			var $liactive = $( '#pl-entries li' ).eq( status.song );
+			var $elapsed = $liactive.find( '.elapsed' );
+			$liactive.addClass( 'active' );
+			$( '#pl-entries li:not( .active )' ).find( '.elapsed' ).empty()
+			var elapsed = status.elapsed;
+			var slash = $liactive.hasClass( 'radio' ) ? '' : ' / ';
+			if ( status.state === 'stop' ) {
+				$( '.elapsed' ).empty();
+			} else if ( status.state === 'pause' ) {
+				var elapsedtxt = second2HMS( elapsed ) + slash;
+				$elapsed.html( '<i class="fa fa-pause"></i> '+ elapsedtxt );
+			} else if ( status.state === 'play' ) {
+				var time = status.Time;
+				GUI.intElapsedPl = setInterval( function() {
+					elapsed++;
+					if ( elapsed < time ) {
+						var elapsedtxt = second2HMS( elapsed );
+						$elapsed.html( '<i class="fa fa-play"></i> <wh>'+ elapsedtxt +'</wh>'+ slash );
+					} else {
+						clearInterval( GUI.intElapsedPl );
+						$elapsed.empty();
+						$( '#pl-entries li' ).removeClass( 'active' );
+					}
+				}, 1000 );
+			}
 			var scrollpos = $liactive.offset().top - $( '#pl-entries' ).offset().top - ( 49 * 3 );
 			$( 'html, body' ).scrollTop( scrollpos );
 		}, 300 );
