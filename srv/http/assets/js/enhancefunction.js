@@ -1430,6 +1430,9 @@ function setPlaylistScroll() {
 	if ( GUI.sortable ) return // 'skip for Sortable'
 	
 	clearInterval( GUI.intElapsedPl );
+	$( '#pl-entries li' ).removeClass( 'active' );
+	var $liactive = '';
+	var $elapsed = '';
 	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
 		$.each( status, function( key, value ) {
 			GUI.status[ key ] = value;
@@ -1437,9 +1440,8 @@ function setPlaylistScroll() {
 		setTimeout( function() {
 			setButton();
 			$( '#plcrop' ).toggleClass( 'disable', ( status.state === 'stop' || GUI.status.playlistlength === 1 ) );
-			$( '#pl-entries li' ).removeClass( 'active' );
-			var $liactive = $( '#pl-entries li' ).eq( status.song );
-			var $elapsed = $liactive.find( '.elapsed' );
+			$liactive = $( '#pl-entries li' ).eq( status.song );
+			$elapsed = $liactive.find( '.elapsed' );
 			$liactive.addClass( 'active' );
 			$( '#pl-entries li:not( .active )' ).find( '.elapsed' ).empty()
 			var elapsed = status.elapsed;
