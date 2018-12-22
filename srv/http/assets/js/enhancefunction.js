@@ -521,8 +521,7 @@ function unmuteColor() {
 function displayTopBottom() {
 	if ( !$( '#bio' ).hasClass( 'hide' ) ) return
 	
-	var wH = window.innerHeight;
-	if ( !GUI.display.bars ) {
+	if ( !GUI.display.bars || ( window.innerHeight < 590 || window.innerWidth < 500 ) ) {
 		$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
 		$( '#db-list, #pl-list' ).css( 'padding', '40px 0' );
 		$( '.btnlist-top' ).css( 'top', 0 );
@@ -546,7 +545,7 @@ function PlaybackCssOrder( el, ord ) {
 function displayPlayback() {
 	var wW = window.innerWidth;
 	var wH = window.innerHeight;
-	if ( ( wW < 750 && wW ) > wH || wH < 475 ) {
+	if ( ( wW < 750 && wW  > wH ) || wH < 475 ) {
 		var scale = wH > 475 ? wW / 800 : wH / 450;
 		$( '#page-playback' ).css( {
 			  transform          : 'scale( '+ scale +' )'
