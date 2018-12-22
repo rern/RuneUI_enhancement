@@ -1810,14 +1810,6 @@ w {
 		display: inline;
 	}
 }
-/* height - width */
-@media(max-height: 590px),
-@media(max-width: 500px) {
-	#menu-top,
-	#menu-bottom { 
-		display: none;
-	}
-}
 /* width */
 @media(max-width: 749px) {
 	#time-knob {
