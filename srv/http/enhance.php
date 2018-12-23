@@ -156,22 +156,13 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	pushstream( 'volume', array( $vol, $currentvol ) );
 } else if ( isset( $_POST[ 'getplaylist' ] ) ) {
 	$name = isset( $_POST[ 'name' ] ) ? '"'.$_POST[ 'name' ].'"' : '';
-	$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%" playlist '.$name );
+	$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%^^[%albumartist%|%artist%]^^%album%^^%genre%^^%composer%" playlist '.$name );
 	if ( !isset( $_POST[ 'name' ] ) ) $data[ 'lsplaylists' ] = lsplaylists();
 	if ( !$lines ) {
 		$data[ 'playlist' ] = '';
 	} else {
 		$webradioname = array_flip( $redis->hGetAll( 'webradios' ) );
-		$lists = explode( "\n", rtrim( $lines ) );
-		foreach( $lists as $list ) {
-			$li = explode( '^^', $list );
-			$pl[ 'Title' ] = $li[ 0 ] ? $li[ 0 ] : $webradioname[ $li[ 3 ] ] ?: $li[ 3 ];
-			$pl[ 'Time' ] = $li[ 1 ];
-			$pl[ 'track' ] = $li[ 2 ];
-			$pl[ 'file' ] = $li[ 3 ];
-			$playlist[] = $pl;
-			$pl = '';
-		}
+		$playlist = list2array( $lines, $webradioname );
 		$data[ 'playlist' ] = $playlist;
 	}
 	echo json_encode( $data );
@@ -286,13 +277,13 @@ function search2array( $result, $playlist = '' ) {
 	if ( $composer ) $data[][ 'composer' ] = $composer;
 	return $data;
 }
-function list2array( $result ) {
+function list2array( $result, $webradioname = null ) {
 	$lists = explode( "\n", rtrim( $result ) );
-	$artist = $album = $genre = $composer = $albumartist = '';
-	$file = '';
+	$artist = $album = $genre = $composer = $albumartist = $file = '';
 	foreach( $lists as $list ) {
 		$list = explode( '^^', rtrim( $list ) );
-		$li[ 'Title' ] = $list[ 0 ];
+		$li[ 'Title' ] = $list[ 0 ] ? $list[ 0 ] : $webradioname[ $li[ 3 ] ] ?: $li[ 3 ];
+		if ( !$li[ 'Title' ] ) continue;
 		$li[ 'Time' ] = $list[ 1 ];
 		$li[ 'track' ] = $list[ 2 ];
 		$li[ 'file' ] = $list[ 3 ];
