@@ -75,6 +75,8 @@ $( '.contextmenu a' ).click( function() {
 						}
 					} );
 				}
+			} else {
+				$.post( 'enhance.php', { mpc: command } );
 			}
 		}
 	} else if ( cmd === 'dirblesave' ) {
