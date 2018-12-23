@@ -163,7 +163,7 @@ wh, gr { font-weight: 300; }
 	font-weight: normal;
 }
 #displaysavelibrary i {
-	    margin: 0 10px 0 4px;
+	margin: 0 10px 0 4px;
 	font-size: 22px;
 	color: #7795b4;
 }
@@ -207,7 +207,7 @@ wh, gr { font-weight: 300; }
 }
 .menu {
 	position: absolute;
-	float: right;
+	left: 40px;
 	padding: 0;
 	z-index: 11;
 }
@@ -1916,8 +1916,8 @@ w {
 	}
 }
 @media(max-width: 480px) {
-	.db-icon,
-	.pl-icon { /* toggle */
+	.db-action,
+	#pl-editor .pl-action { /* toggle */
 		display: none;
 	}
 	#pl-count span,
@@ -1926,14 +1926,8 @@ w {
 		display: none;
 	}
 	#db-entries li span .fa,
-	#db-entries li i.db-icon,
 	#pl-editor span:before {
 		display: none;
-	}
-	#db-entries li,
-	#pl-entries li,
-	#pl-editor li {
-		padding-left: 10px;
 	}
 	#db-entries li.licover {
 		padding-left: 0;
