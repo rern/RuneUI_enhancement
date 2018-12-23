@@ -717,7 +717,6 @@ $( '#db-back' ).click( function() {
 } );
 $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	var $this = $( this );
-	
 	if ( $( e.target ).hasClass( 'artist' )
 	  || $( e.target ).hasClass( 'fa-artist' )
 	  || $( e.target ).hasClass( 'fa-albumartist' )
@@ -730,7 +729,17 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	} else if ( $( e.target ).hasClass( 'lialbum' ) ) {
 		window.open( 'https://www.last.fm/music/'+ $this.find( '.artist' ).text() +'/'+ $this.find( '.lialbum' ).text(), '_blank' );
 		return
+	} else if ( $( e.target ).hasClass( 'fa-music' ) || $( e.target ).hasClass( 'fa-webradio' ) ) {
+		GUI.list = {};
+		GUI.list.index = $this.find( '.liindex' ).text() || '';
+		GUI.list.path = $this.find( '.lipath' ).text() || '';
+		GUI.list.name = $this.find( '.liname' ).text() || '';
+		GUI.list.artist = $this.find( '.artist' ).text() || '';
+		GUI.list.isfile = $this.hasClass( 'file' ); // file/dirble - used in contextmenu
+		$( '#context-menu-file a:eq( 1 )' ).click();
+		return
 	}
+	
 	$( '.menu' ).addClass( 'hide' );
 	// get file list in 'artist', 'composer', 'genre' mode (non-album)
 	if ( $this.hasClass( 'licover' ) && GUI.dbbackdata.length ) {
@@ -868,6 +877,7 @@ $( '#pl-home' ).click( function() {
 	$( '#tab-playlist' ).click();
 } );
 $( '#pl-currentpath' ).on( 'click', '.plsback', function() {
+	$( '.menu' ).addClass( 'hide' );
 	$( '#plopen' ).click();
 } );
 $( '#pl-currentpath' ).on( 'click', '.plsbackroot', function() {
@@ -1046,8 +1056,21 @@ $( '#pl-entries' ).on( 'click', 'li', function( e ) {
 	}
 } );
 $( '#pl-editor' ).on( 'click', 'li', function( e ) {
-	// disable on list of saved playlist
-	if ( $( '#pl-currentpath .fa-arrow-left' ).hasClass( 'plsback' ) ) return
+	// in saved playlist
+	$thisli = $( this );
+	if ( $( '#pl-currentpath .fa-arrow-left' ).hasClass( 'plsback' ) ) {
+		if ( $( e.target ).hasClass( 'fa-music' ) || $( e.target ).hasClass( 'fa-webradio' ) ) {
+			GUI.list = {};
+			GUI.list.li = $thisli; // for contextmenu
+			GUI.list.name = $thisli.find( '.liname' ).text();
+			GUI.list.path = $thisli.find( '.lipath' ).text();
+			GUI.list.isfile = $thisli.find( '.fa-music' ).length; // used in contextmenu
+			$( '#context-menu-file a:eq( 1 )' ).click();
+			return
+		}
+		$thisli.find( '.pl-action' ).click();
+		return
+	}
 	
 	$( '#loader' ).removeClass( 'hide' );
 	renderSavedPlaylist( $( this ).find( 'span' ).text() );
@@ -1059,8 +1082,8 @@ $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 	GUI.list = {};
 	GUI.list.li = $thisli; // for contextmenu
 	GUI.list.name = $thisli.find( '.liname' ).text();
-	GUI.list.path = GUI.list.name;
-	GUI.list.isfile = $thisli.hasClass( 'pl-song' ); // used in contextmenu
+	GUI.list.path = $thisli.find( '.lipath' ).text() || GUI.list.name;
+	GUI.list.isfile = $thisli.find( '.fa-music' ).length; // used in contextmenu
 	$( '.menu' ).addClass( 'hide' );
 	if ( $thisli.hasClass( 'active' ) ) {
 		$thisli.removeClass( 'active' );
@@ -1074,7 +1097,7 @@ $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 	$thisli.addClass( 'active' );
 	$contextmenu
 		.removeClass( 'hide' )
-		.css( { top: $this.position().top +'px', right: '90px' } );
+		.css( { top: $this.position().top +'px', right: $( '#pl-index' ).hasClass( 'hide' ) ? '50px' : '90px' } );
 	var targetB = $contextmenu.offset().top + 246;
 	var wH = window.innerHeight;
 	if ( targetB > wH + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + ( GUI.display.bars ? 42 : 0 ) } );

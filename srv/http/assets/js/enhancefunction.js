@@ -1498,7 +1498,15 @@ function htmlPlaylist( data ) {
 			sec = HMS2Second( value.Time );
 			pltime += sec;
 			if ( $( '#page-library' ).hasClass( 'hide' ) ) {
-				var actionhtml = '<i class="fa fa-minus-circle pl-action"></i>'
+				var actionhtml = '<i class="fa '+ ( GUI.pleditor ? 'fa-list-ul' : 'fa-minus-circle' ) +' pl-action"></i>';
+				if ( !GUI.pleditor ) {
+					var actionhtml = '<i class="fa fa-minus-circle pl-action"></i>';
+				} else {
+					var actionhtml = '<i class="fa fa-list-ul pl-action"></i>'
+									+'<a class="lipath">'+ ( value.cue || value.file ) +'</a>'
+									+'<a class="liname">'+ value.Title +'</a>'
+									+'<a class="liindex">'+ value.index +'</a>';
+				}
 			} else {
 				var actionhtml = '<i class="fa fa-bars db-action" data-target="#context-menu-file"></i>'
 								+'<a class="lipath">'+ ( value.cue || value.file ) +'</a>'
@@ -1508,7 +1516,7 @@ function htmlPlaylist( data ) {
 			content += '<li>'
 					 +'<i class="fa fa-music pl-icon"></i>'
 					 + actionhtml
-					 +'<span class="sn">'+ value.Title +'&ensp;<span class="elapsed"></span><span class="time" time="'+ sec +'">'+ value.Time +'</span></span>'
+					 +'<span class="sn">'+ value.Title + ( GUI.pleditor ? '&ensp;' : '&ensp;<span class="elapsed"></span>' ) +'<span class="time" time="'+ sec +'">'+ value.Time +'</span></span>'
 					 +'<span class="bl">'+ ( $( '#page-library' ).hasClass( 'hide' ) ? value.track : value.file ) +'</span>'
 			countsong++;
 		}
@@ -1574,6 +1582,7 @@ function renderPlaylist() {
 	} );
 }
 function renderSavedPlaylist( name ) {
+	$( '.menu' ).addClass( 'hide' );
 	$.post( 'enhance.php', { getplaylist: 1, name: name.toString().replace( /"/g, '\\"' ) }, function( list ) {
 		var data = htmlPlaylist( list.playlist );
 		var counthtml = '<wh><i class="fa fa-list-ul"></i></wh><bl class="title">'+ name +'<gr>&emsp;•</gr></bl>';

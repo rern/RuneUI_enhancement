@@ -14,7 +14,7 @@ $( '.contextmenu a' ).click( function() {
 		var name = GUI.list.name.replace( /"/g, '\\"' );
 	} else {
 		if ( !$( '#page-playlist' ).hasClass( 'hide' ) && $( '#pl-currentpath .lipath' ).length ) {
-			var name = GUI.list.li.find( '.liname' ).text().replace( /"/g, '\\"' );
+			var name = GUI.list.li.find( '.lipath' ).text().replace( /"/g, '\\"' );
 		} else {
 			var name = GUI.list.path.replace( /"/g, '\\"' );
 		}
