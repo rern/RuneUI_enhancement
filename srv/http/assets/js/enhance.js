@@ -44,6 +44,7 @@ GUI.local = 1; // suppress 2nd getPlaybackStatus() on load
 setTimeout( function() { GUI.local = 0 }, 500 );
 $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 	GUI.display = data;
+	if ( !GUI.display.contexticon ) $( 'head' ).append( '<style id="contexticoncss">.db-action, #pl-editor .pl-action { display: none }</style>' );
 	$.post( 'enhancestatus.php', function( status ) {
 		GUI.status = status;
 		setButton();
@@ -138,9 +139,10 @@ $( '#displaylibrary' ).click( function() {
 				+ displayCheckbox( 'genre',       '<i class="fa fa-genre"></i>Genre' )
 				+ displayCheckbox( 'dirble',      '<i class="fa fa-dirble"></i>Dirble' )
 				+ displayCheckbox( 'jamendo',     '<i class="fa fa-jamendo"></i>Jamendo' )
-				+ displayCheckbox( 'coverfile',   'Cover art' )
 				+ displayCheckbox( 'count',       '<gr>text</gr> Count' )
 				+ displayCheckbox( 'label',       '<gr>text</gr> Label' )
+				+ displayCheckbox( 'coverfile',   'Cover art' )
+				+ displayCheckbox( 'contexticon', '<i class="fa fa-bars"></i>Context icon' )
 			+'</form>'
 		, cancel       : 1
 		, ok           : function () {
@@ -148,6 +150,13 @@ $( '#displaylibrary' ).click( function() {
 				var checked = this.checked;
 				GUI.display[ this.name ] = checked ? 'checked' : '';
 				if ( this.name === 'coverfile' ) GUI.coverfile = ( coverfile === 'checked' ) ? ( checked ? 0 : 1 ) : ( checked ? 1 : 0 );
+				if ( GUI.display.contexticon ) {
+					$( '#contexticoncss' ).remove();
+					$( '.db-action' ).show();
+				} else {
+					if ( !$( '#contexticoncss' ).length ) $( 'head' ).append( '<style id="contexticoncss">.db-action, #pl-editor .pl-action { display: none }</style>' );
+					$( '.db-action' ).hide();
+				}
 			} );
 			$.post( 'enhance.php', { setdisplay: GUI.display } );
 		}
@@ -729,14 +738,8 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	} else if ( $( e.target ).hasClass( 'lialbum' ) ) {
 		window.open( 'https://www.last.fm/music/'+ $this.find( '.artist' ).text() +'/'+ $this.find( '.lialbum' ).text(), '_blank' );
 		return
-	} else if ( $( e.target ).hasClass( 'fa-music' ) || $( e.target ).hasClass( 'fa-webradio' ) ) {
-		GUI.list = {};
-		GUI.list.index = $this.find( '.liindex' ).text() || '';
-		GUI.list.path = $this.find( '.lipath' ).text() || '';
-		GUI.list.name = $this.find( '.liname' ).text() || '';
-		GUI.list.artist = $this.find( '.artist' ).text() || '';
-		GUI.list.isfile = $this.hasClass( 'file' ); // file/dirble - used in contextmenu
-		$( '#context-menu-file a:eq( 1 )' ).click();
+	} else if ( $( e.target ).hasClass( 'db-icon' ) ) {
+		$this.find( '.db-action' ).click();
 		return
 	}
 	
@@ -839,8 +842,7 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 	$menu
 		.removeClass( 'hide' )
 		.css( {
-			  top   : $thisli.hasClass( 'licover' ) ? ( GUI.display.bars ? '269px' : '229px' ) : $thisli.position().top +'px'
-			, right : $( '#db-index' ).hasClass( 'hide' ) ? '50px' : '90px'
+			  top   : $thisli.hasClass( 'licover' ) ? ( GUI.display.bars ? '310px' : '270px' ) : ( $thisli.position().top + 49 ) +'px'
 		} );
 	var targetB = $menu.offset().top + $menu.height();
 	var wH = window.innerHeight;
@@ -1058,18 +1060,9 @@ $( '#pl-entries' ).on( 'click', 'li', function( e ) {
 $( '#pl-editor' ).on( 'click', 'li', function( e ) {
 	// in saved playlist
 	$thisli = $( this );
-	if ( $( '#pl-currentpath .fa-arrow-left' ).hasClass( 'plsback' ) ) {
-		if ( $( e.target ).hasClass( 'fa-music' ) || $( e.target ).hasClass( 'fa-webradio' ) ) {
-			GUI.list = {};
-			GUI.list.li = $thisli; // for contextmenu
-			GUI.list.name = $thisli.find( '.liname' ).text();
-			GUI.list.path = $thisli.find( '.lipath' ).text();
-			GUI.list.isfile = $thisli.find( '.fa-music' ).length; // used in contextmenu
-			$( '#context-menu-file a:eq( 1 )' ).click();
+		if ( $( e.target ).hasClass( 'pl-icon' ) || $thisli.find( '.fa-music' ).length ) {
+			$thisli.find( '.pl-action' ).click();
 			return
-		}
-		$thisli.find( '.pl-action' ).click();
-		return
 	}
 	
 	$( '#loader' ).removeClass( 'hide' );
@@ -1097,7 +1090,7 @@ $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 	$thisli.addClass( 'active' );
 	$contextmenu
 		.removeClass( 'hide' )
-		.css( { top: $this.position().top +'px', right: $( '#pl-index' ).hasClass( 'hide' ) ? '50px' : '90px' } );
+		.css( 'top', ( $thisli.position().top + 49 ) +'px' );
 	var targetB = $contextmenu.offset().top + 246;
 	var wH = window.innerHeight;
 	if ( targetB > wH + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + ( GUI.display.bars ? 42 : 0 ) } );
