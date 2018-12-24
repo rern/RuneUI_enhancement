@@ -87,8 +87,10 @@ if ( $activePlayer === 'MPD'
 		if ( isset( $status[ 'coverart' ] ) ) break;
 // 3. last.FM
 		// check internet connection
-		if ( !@fsockopen( 'ws.audioscrobbler.com', 80 ) ) break;
-		
+		if ( !@fsockopen( 'ws.audioscrobbler.com', 80 ) ) {
+			$status[ 'coverart' ] = '';
+			break;
+		}
 		function curlGet( $url ) {
 			$ch = curl_init($url);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
