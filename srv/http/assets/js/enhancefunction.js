@@ -1084,7 +1084,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			} );
 			var filecue = [];
 			$.each( arraypl, function( i, val ) {
-				if ( val.filepl.slice( -3 ) === 'cue' ) filecue.push( val.filepl );
+				if ( val.filepl && val.filepl.slice( -3 ) === 'cue' ) filecue.push( val.filepl );
 			} );
 			if ( filecue.length ) {
 				getDB( { path: filecue } );

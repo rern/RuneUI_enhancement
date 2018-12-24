@@ -77,7 +77,7 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 		$type = $_POST[ 'list' ];
 		if ( $type === 'file' ) {
 			$data = search2array( $result );
-			if ( $redis->hGet( 'display', 'coverfile' ) && !isPlaylist( $data ) ) {
+			if ( $redis->hGet( 'display', 'coverfile' ) && !isPlaylist( $data ) && substr( $mpc, 0, 10 ) !== 'mpc search' ) {
 				$cover = getCover( $data );
 				if ( $cover ) $data[][ 'coverart' ] = $cover;
 			}
