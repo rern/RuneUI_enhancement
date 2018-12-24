@@ -1120,7 +1120,7 @@ document.addEventListener( 'visibilitychange', function() {
 			getPlaybackStatus(); // pushsteam cannot reconnect soon enough
 		} else if ( !$( '#page-playlist' ).hasClass( 'hide' ) ) {
 			if ( GUI.pleditor ) {
-				$( '#pl-currentpath .lipath' ).text() ? renderSavedPlaylist( name ) : $( '#plopen' ).click();
+				$( '#pl-currentpath .lipath' ).text() ? renderSavedPlaylist( $( '#pl-currentpath .lipath' ).text() ) : $( '#plopen' ).click();
 			} else {
 				setPlaylistScroll();
 			}
