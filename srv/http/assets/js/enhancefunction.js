@@ -1,25 +1,29 @@
-var psOption = {
-	  host: window.location.hostname
-	, port: window.location.port
-	, modes: 'websocket'
-};
 var pushstreams = {};
 var streams = [ 'display', 'volume', 'library', 'playlist', 'idle', 'notify' ];
 $.each( streams, function( i, stream ) {
-	pushstreams[ stream ] = new PushStream( psOption );
+	pushstreams[ stream ] = new PushStream( { modes: 'websocket' } );
 	pushstreams[ stream ].addChannel( stream );
 } );
 
 pushstreams.display.onmessage = function( data ) {
+	var current = GUI.display;
 	if ( typeof data[ 0 ] === 'object' ) GUI.display = data[ 0 ];
 	if ( GUI.local ) return
 	
 	if ( !$( '#page-playback' ).hasClass( 'hide' ) ) {
 		getPlaybackStatus();
-	} else if ( !$( '#page-library' ).hasClass( 'hide' ) ) {
-		if ( !GUI.local ) renderLibrary();
+	} else if ( !$( '#page-library' ).hasClass( 'hide' ) && !$( '#home-blocks' ).hasClass( 'hide' ) ) {
+			renderLibrary();
 	} else {
 		displayTopBottom();
+	}
+	if ( GUI.coverfile && $( '#home-blocks' ).hasClass( 'hide' ) ) {
+		if ( GUI.display.coverfile ) {
+			if ( !$( '.licover' ).length ) $( '#db-currentpath a:last-child' ).click();
+		} else {
+			$( '.licover' ).remove();
+		}
+		if ( $( '#page-library' ).hasClass( 'hide' ) ) $( '#tab-library' ).click();
 	}
 }
 pushstreams.volume.onmessage = function( data ) {
@@ -50,14 +54,10 @@ var timeoutUpdate;
 pushstreams.idle.onmessage = function( changed ) {
 	var changed = changed[ 0 ];
 	if ( changed === 'player' ) { // on track changed
-		if ( GUI.player ) return
-		
-		GUI.player = 1;
-		setTimeout( function() { GUI.player = 0 }, 500 );
-		if ( !$( '#page-playback' ).hasClass( 'hide' ) ) {
-			getPlaybackStatus();
-		} else if ( !$( '#page-playlist' ).hasClass( 'hide' ) && !GUI.pleditor ) {
+		if ( !$( '#page-playlist' ).hasClass( 'hide' ) && !GUI.pleditor ) {
 			setPlaylistScroll();
+		} else {
+			getPlaybackStatus();
 		}
 	} else if ( changed === 'playlist' ) { // on playlist changed
 		if ( GUI.pleditor || GUI.local ) return
@@ -112,6 +112,13 @@ pushstreams.idle.onmessage = function( changed ) {
 		if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) $( '#home-webradio' ).click();
 	}
 }
+pushstreams.idle.onstatuschange = function( data ) {
+	if ( !$( '#page-playback' ).hasClass( 'hide' ) ) {
+		getPlaybackStatus();
+	} else if ( !$( '#page-playlist' ).hasClass( 'hide' ) && !GUI.pleditor ) {
+		setPlaylistScroll();
+	}
+}
 pushstreams.notify.onmessage = function( data ) {
 	var notify = data[ 0 ];
 	new PNotify( {
@@ -138,8 +145,8 @@ function setPageCurrent( panel ) {
 			GUI.listplscrolltop = $( window ).scrollTop();
 		}
 	}
-	$( '#menu-bottom li' ).removeClass( 'active' );
-	$( '.page' ).addClass( 'hide' );
+	$( '#menu-bottom li, #db-entries li, #pl-editor li' ).removeClass( 'active' );
+	$( '.page, .menu' ).addClass( 'hide' );
 	$( '#page-'+ panel ).removeClass( 'hide' );
 	$( '#tab-'+ panel ).addClass( 'active' );
 	if ( !GUI.display.bars ) {
@@ -270,6 +277,7 @@ function scrollLongText() {
 function removeSplash() {
 	$( '#splash' ).remove();
 	$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
+	$( '#page-playback' ).removeClass( 'hide' );
 }
 function setPlaybackBlank() {
 	$( '#playback-controls' ).addClass( 'hide' );
@@ -278,12 +286,12 @@ function setPlaybackBlank() {
 	$( '#divpos i' ).addClass( 'hide' );
 	$( '#artist, #album, #songposition, #timepos, #elapsed, #total' ).empty();
 	$( '#format-bitrate' ).text( 'Add music from Library' );
+	if ( GUI.display.time ) $( '#time' ).roundSlider( 'setValue', 0 );
+	$( '#coverartoverlay' ).addClass( 'hide' );
 	$( '#cover-art' )
 		.attr( 'src', $( '#cover' ).val() )
-		.css( 'border-radius', 0 )
-		.one( 'load', removeSplash );
-	$( '#coverartoverlay' ).addClass( 'hide' );
-	if ( GUI.display.time ) $( '#time' ).roundSlider( 'setValue', 0 );
+		.css( 'border-radius', 0 );
+	if ( $( '#splash' ).length ) $( '#cover-art' ).one( 'load', removeSplash );
 }
 function renderPlayback() {
 	if ( $( '#splash' ).length ) { // in case too long to get coverart
@@ -448,7 +456,7 @@ function renderPlayback() {
 
 function getPlaybackStatus() {
 	//if ( GUI.local ) return; // suppress 2nd firing from 'pushstreams.idle.onmessage'
-	if ( !$( '#page-playlist' ).hasClass( 'hide' ) ) {
+	if ( !$( '#page-playlist' ).hasClass( 'hide' ) && !GUI.pleditor ) {
 		setPlaylistScroll();
 		return
 	}
@@ -466,6 +474,8 @@ function getPlaybackStatus() {
 			GUI.status[ key ] = value;
 		} );
 		setButton();
+		if ( $( '#page-playback' ).hasClass( 'hide' ) ) return
+		
 		renderPlayback();
 		// imodedelay fix imode flashing on audio output switched
 		if ( !GUI.imodedelay ) displayPlayback();
@@ -487,15 +497,6 @@ function renderBio() {
 	$( '#menu-top, #menu-bottom, #loader' ).addClass( 'hide' );
 	$( '#bio' ).removeClass( 'hide' );
 }
-$( '#artist, #bio-open' ).click( function() {
-	if ( GUI.status.ext === 'radio' ) return
-	
-	if ( $( '#bio legend' ).text() != GUI.status.Artist ) {
-		getBio( GUI.status.Artist );
-	} else {
-		renderBio();
-	}
-} );
 function mpdSeek( seekto ) {
 	if ( GUI.status.state !== 'stop' ) {
 		clearInterval( GUI.intKnob );
@@ -520,8 +521,7 @@ function unmuteColor() {
 function displayTopBottom() {
 	if ( !$( '#bio' ).hasClass( 'hide' ) ) return
 	
-	var wH = window.innerHeight;
-	if ( !GUI.display.bars ) {
+	if ( !GUI.display.bars || ( window.innerHeight < 590 || window.innerWidth < 500 ) ) {
 		$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
 		$( '#db-list, #pl-list' ).css( 'padding', '40px 0' );
 		$( '.btnlist-top' ).css( 'top', 0 );
@@ -537,6 +537,7 @@ function displayTopBottom() {
 	$( '#dev' ).toggleClass( 'hide', GUI.display.dev === '' );
 	var menuH = ( $( '#settings a' ).length - $( '#settings a.hide' ).length ) * 41 - 1;
 	$( '#settings .menushadow' ).css( 'height', menuH +'px' );
+	$( '.menu' ).addClass( 'hide' );
 }
 function PlaybackCssOrder( el, ord ) {
 	el.css( { order: ord, '-webkit-order': ord } );
@@ -544,7 +545,7 @@ function PlaybackCssOrder( el, ord ) {
 function displayPlayback() {
 	var wW = window.innerWidth;
 	var wH = window.innerHeight;
-	if ( ( wW < 750 && wW ) > wH || wH < 475 ) {
+	if ( ( wW < 750 && wW  > wH ) || wH < 475 ) {
 		var scale = wH > 475 ? wW / 800 : wH / 450;
 		$( '#page-playback' ).css( {
 			  transform          : 'scale( '+ scale +' )'
@@ -697,8 +698,7 @@ function setLibraryBlock( id ) {
 	var status = GUI.libraryhome;
 	if ( id === 'spotify' && !status.spotify ) return '';
 
-	var iconmusic = id === 'sd' ? ' <i class="fa fa-music"></i>' : '';
-	var count = GUI.display.count && status[ id ] !== undefined ? ( '<gr>'+ numFormat( status[ id ] ) + iconmusic +'</gr>' ) : '';
+	var count = ( !GUI.display.count || status[ id ] === undefined ) ? '' : '<gr>'+ numFormat( status[ id ] ) +'</gr>';
 	var label = GUI.display.label ? ( '<wh>'+ namepath[ id ][ 0 ] +'</wh>' ) : '';
 	var browsemode = ( [ 'album', 'artist', 'albumartist', 'composer', 'genre' ].indexOf( id ) !== -1 ) ? ' data-browsemode="'+ id +'"' : '';
 	var plugin = ( id === 'spotify' || id === 'dirble' || id === 'jamendo' ) ? ( ' data-plugin="'+ namepath[ id ][ 1 ] +'"' ) : '';
@@ -737,9 +737,8 @@ function renderLibrary() {
 		} );
 		var bookmarkL = bookmarks.length;
 		$.each( bookmarks, function( i, bookmark ) {
-			var count = GUI.display.count ? '<gr>'+ numFormat( bookmark.count ) +' <i class="fa fa-music"></i></gr>' : '';
 			var name = bookmark.name.replace( /\\/g, '' );
-			content += '<div class="col-md-3"><div class="home-block home-bookmark"><a class="lipath">'+ bookmark.path +'</a><i class="fa fa-bookmark"></i>'+ count +'<div class="divbklabel"><span class="bklabel">'+ name +'</span></div></div></div>';
+			content += '<div class="col-md-3"><div class="home-block home-bookmark"><a class="lipath">'+ bookmark.path +'</a><i class="fa fa-bookmark"></i><div class="divbklabel"><span class="bklabel">'+ name +'</span></div></div></div>';
 		} );
 	}
 	var order = GUI.display.library || 'sd,usb,nas,webradio,album,artist,albumartist,composer,genre,dirble,jamendo';
@@ -832,8 +831,24 @@ function renderLibrary() {
 }
 function getDB( options ) {
 	$( '#loader' ).removeClass( 'hide' );
+	if ( !Array.isArray( options.path ) ) {
+		var path = options.path ? options.path.toString().replace( /"/g, '\"' ) : '';
+	} else {
+		var path = [];
+		$.each( options.path, function( i, val ) {
+			path.push( val.toString().replace( /"/g, '\"' ) );
+		} );
+		$.post( 'enhance.php', { playlist: path }, function( data ) {
+			if ( data ) {
+				dataSort( data, path[ 0 ] );
+			} else {
+				$( '#loader' ).addClass( 'hide' );
+				info( 'No data in this location.' );
+			}
+		}, 'json' );
+		return
+	}
 	var cmd = options.cmd || 'browse',
-		path = options.path ? options.path.toString().replace( /"/g, '\"' ) : '',
 		browsemode = options.browsemode || 'file',
 		plugin = options.plugin || '',
 		querytype = options.querytype || '',
@@ -842,6 +857,7 @@ function getDB( options ) {
 		mode,
 		command;
 	var currentpath = $( '#db-currentpath .lipath' ).text();
+	var composer = $( '#rootpath' ).data( 'path' ) === 'Composer' ? $( '#artistalbum span' ).text() : '';
 	currentpath = currentpath ? currentpath.toString().replace( /"/g, '\"' ) : '';
 	if ( !GUI.dbback && cmd !== 'search' && GUI.dbbrowsemode !== 'file' ) {
 		GUI.dbbackdata.push( {
@@ -863,22 +879,23 @@ function getDB( options ) {
 	} else {
 		GUI.dbback = 0;
 	}
-	GUI.browsemode = browsemode;
 	var keyword = $( '#db-search-keyword' ).val();
 	keyword = keyword ? keyword.toString().replace( /"/g, '\"' ) : '';
+	GUI.browsemode = browsemode;
 	if ( !plugin ) {
 		var command = {
-			  file        : { mpc: 'mpc ls -f "%title%^^%time%^^%artist%^^%album%^^%file%" "'+ path +'" 2> /dev/null', list: 'file' }
-			, artistalbum : { mpc: 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%albumartist%"'+ ( artist ? ' albumartist "'+ artist +'"' : '' ) +' album "'+ path +'"', list: 'file' }
-			, album       : { album: 'mpc find -f "%album%^^[%albumartist%||%artist%]" album "'+ path +'" | awk \'!a[$0]++\'', name: path }
-			, genre       : { album: 'mpc find -f "%album%^^[%albumartist%||%artist%]" genre "'+ path +'" | awk \'!a[$0]++\'' }
-			, artist      : { mpc: 'mpc list album artist "'+ path +'" | awk NF', list: 'album' }
-			, albumartist : { mpc: 'mpc list album albumartist "'+ path +'" | awk NF', list: 'album' }
-			, composer    : { mpc: 'mpc list album composer "'+ path +'" | awk NF', list: 'album' }
-			, type        : { mpc: 'mpc list '+ GUI.browsemode +' | awk NF', list: GUI.browsemode }
-			, search      : { mpc: 'mpc search -f "%title%^^%time%^^%artist%^^%album%^^%file%" any "'+ keyword +'"', list: 'file' }
-			, Webradio    : { getwebradios: 1 }
-			, playlist    : { playlist: path }
+			  file          : { mpc: 'mpc ls -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" "'+ path +'" 2> /dev/null', list: 'file' }
+			, artistalbum   : { mpc: 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%"'+ ( artist ? ' artist "'+ artist +'"' : '' ) +' album "'+ path +'"', list: 'file', name: path }
+			, composeralbum : { mpc: 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" composer "'+ composer +'" album "'+ path +'"', list: 'file' }
+			, album         : { album: 'mpc find -f "%album%^^[%albumartist%|%artist%]" album "'+ path +'" | awk \'!a[$0]++\'', albumname: path }
+			, genre         : { album: 'mpc find -f "%album%^^%artist%" genre "'+ path +'" | awk \'!a[$0]++\'', genrename: path }
+			, artist        : { mpc: 'mpc list album artist "'+ path +'" | awk NF', list: 'album' }
+			, albumartist   : { mpc: 'mpc list album albumartist "'+ path +'" | awk NF', list: 'album' }
+			, composer      : { mpc: 'mpc list album composer "'+ path +'" | awk NF', list: 'album' }
+			, type          : { mpc: 'mpc list '+ browsemode +' | awk NF', list: browsemode }
+			, search        : { mpc: 'mpc search -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" any "'+ keyword +'"', list: 'file' }
+			, Webradio      : { getwebradios: 1 }
+			, playlist      : { playlist: path }
 		}
 		if ( cmd === 'search' ) {
 			if ( path.match(/Dirble/)) {
@@ -895,15 +912,19 @@ function getDB( options ) {
 			} else if ( path === 'Webradio' ) {
 				mode = 'Webradio';
 			} else if ( // <li> in 'Album' and 'Genre'
-				( GUI.browsemode === 'album' && currentpath !== 'Album' && artist )
-				|| ( GUI.browsemode === 'genre' && currentpath !== 'Genre' && artist )
+				( browsemode === 'album' && currentpath !== 'Album' && artist )
+				|| ( browsemode === 'genre' && currentpath !== 'Genre' && artist )
 			) {
 				mode = 'artistalbum';
-			} else if ( [ 'm3u', 'pls', 'cue' ].indexOf( path.slice( -3 ) ) !== -1 ) {
+			} else if ( Array.isArray( path ) || [ 'm3u', 'pls' ].indexOf( path.slice( -3 ) ) !== -1 ) {
 				mode = 'playlist';
 			} else {
-				mode = GUI.browsemode;
-				if ( mode === 'composer' ) GUI.browsemode = 'composeralbum';
+				if ( composer ) {
+					mode = 'composeralbum';
+				} else {
+					mode = browsemode;
+					if ( browsemode === 'composer' ) GUI.browsemode = 'composeralbum';
+				}
 			}
 		}
 		$.post( 'enhance.php', command[ mode ], function( data ) {
@@ -962,6 +983,12 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		querytype = querytype || '',
 		args = args || '',
 		content = '',
+		coverart = '',
+		album = '',
+		artist = '',
+		composer = '',
+		genre = '',
+		albumartist = '',
 		i = 0,
 		row = [];
 	GUI.albumartist = '';
@@ -1001,18 +1028,52 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			var arraydir = [];
 			var arrayfile = [];
 			var arraypl = [];
-			$.each( data, function( index, value ) {
-				if ( value.directory ) {
+			var litime = 0;
+			var sec = 0;
+			$.each( data, function( i, value ) {
+				if ( value.coverart ) {
+					coverart = value.coverart;
+				} else if ( value.album ) {
+					album = value.album;
+				} else if ( value.artist ) {
+					artist = value.artist;
+				} else if ( value.composer ) {
+					composer = value.composer;
+				} else if ( value.genre ) {
+					genre = value.genre;
+				} else if ( value.albumartist ) {
+					albumartist = value.albumartist;
+				} else if ( value.directory ) {
 					value.lisort = stripLeading( value.directory.replace( /^.*\//, '' ) );
 					arraydir.push( value );
 				} else if ( value.file ) {
 					value.lisort = stripLeading( value.file.replace( /^.*\//, '' ) );
 					arrayfile.push( value );
-				} else {
+					sec = HMS2Second( value.Time );
+					litime += sec;
+				} else if ( value.playlist ) {
 					value.lisort = stripLeading( value.playlist.replace( /^.*\//, '' ) );
 					arraypl.push( value );
 				}
 			} );
+			if ( coverart ) {
+				var browsemode = GUI.dbbackdata.length ? GUI.dbbackdata[ 0 ].browsemode : '';
+				var artistmode = [ 'artist', 'composer', 'genre' ].indexOf( browsemode ) !== -1 ? 1 : 0;
+				var composerhtml = ( composer && browsemode === 'composer' ) ? '<i class="fa fa-composer"></i><span class="composer">'+ composer +'</span><br>' : '';
+				var genrehtml = genre && genre !== -1 ? '<span><i class="fa fa-genre"></i>'+ genre +'</span><br>' : '';
+				content += '<li class="licover">'
+						  +'<a class="lipath">'+ path +'</a><a class="liname">'+ path.replace(/^.*\//, '') +'</a>'
+						  +'<img src="'+ coverart +'" class="coversmall">'
+						  +'<span class="liinfo">'
+							  +'<bl class="lialbum">'+ album +'</bl><br>'
+							  + composerhtml
+							  +'<i class="fa fa-'+ ( artistmode ? 'artist' : 'albumartist' ) +'"></i><span class="artist">'+ ( artistmode ? artist : albumartist ) +'</span><br>'
+							  + genrehtml
+							  +'<i class="fa fa-music"></i>'+ arrayfile.length +'<gr> • </gr>'+ second2HMS( litime )
+						  +'</span>'
+						  +'<i class="fa fa-bars db-action" data-target="#context-menu-'+ ( GUI.browsemode !== 'file' ? GUI.browsemode : 'folder' ) +'"></i>'
+						  +'</li>';
+			}
 			arraydir.sort( function( a, b ) {
 				return a[ 'lisort' ].localeCompare( b[ 'lisort' ], undefined, { numeric: true } );
 			} );
@@ -1021,6 +1082,15 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			arraypl.sort( function( a, b ) {
 				return a[ 'lisort' ].localeCompare( b[ 'lisort' ], undefined, { numeric: true } );
 			} );
+			var filecue = [];
+			$.each( arraypl, function( i, val ) {
+				if ( val.filepl.slice( -3 ) === 'cue' ) filecue.push( val.filepl );
+			} );
+			if ( filecue.length ) {
+				getDB( { path: filecue } );
+				return
+			}
+			
 			var arrayplL = arraypl.length;
 			for ( i = 0; i < arrayplL; i++ ) content += data2html( arraypl[ i ], i, 'db', path );
 			arrayfile.sort( function( a, b ) {
@@ -1083,6 +1153,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		// fill bottom of list to mave last li movable to top
 		$( '#db-entries p' ).css( 'min-height', window.innerHeight - ( GUI.display.bars ? 140 : 100 ) +'px' );
 		if ( !fileplaylist ) displayIndexBar();
+		$( '.menu' ).addClass( 'hide' );
 	} );
 // breadcrumb directory path link
 	var iconName = {
@@ -1116,7 +1187,13 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			var dotpath = albumtext ? '<a id="artistalbum"><gr> • </gr><span class="white">'+ albumtext +'</span></a>' : '';
 		}
 		$( '#db-currentpath .lipath' ).text( path ); // for back navigation
-		$( '#db-currentpath span' ).html( iconName[ GUI.browsemode ][ 0 ] +' <a id="rootpath" data-path="'+ mode[ GUI.browsemode ] +'">'+ iconName[ GUI.browsemode ][ 1 ] +'</a>'+ dotpath );
+		// fix: 1 li in genre list
+		if ( $( '.licover' ).length ) {
+			$( '#db-currentpath span' ).html( iconName[ browsemode ][ 0 ] +' <a>'+ iconName[ browsemode ][ 1 ] +'</a>' );
+		} else {
+			$( '#db-currentpath span' ).html( iconName[ GUI.browsemode ][ 0 ] +' <a id="rootpath" data-path="'+ mode[ GUI.browsemode ] +'">'+ iconName[ GUI.browsemode ][ 1 ] +'</a>'+ dotpath );
+		}
+		$( '#artistalbum' ).toggleClass( 'hide', coverart !== '' );
 	} else {
 		var folder = path.split( '/' );
 		var folderRoot = folder[ 0 ];
@@ -1139,6 +1216,8 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			var folderPath = '';
 			var ilength = folder.length;
 			for ( i = 0; i < ilength; i++ ) {
+				if ( folder[ i ].slice( -3 ) === 'cue' ) continue
+				
 				folderPath += ( i > 0 ? '/' : '' ) + folder[ i ];
 				folderCrumb += ' <a>'+ ( i > 0 ? '<w> / </w>' : '' ) + folder[ i ] +'<span class="lipath">'+ folderPath +'</span></a>';
 			}
@@ -1225,7 +1304,7 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 							 +'<i class="fa fa-music db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-file"></i>'
 							 +'<span class="sn">'+ liname +'&ensp;<span class="time">'+ inputArr.Time +'</span></span>'
 							 +'<span class="bl">'+ inputArr.file +'</span>'
-					var artist = inputArr.AlbumArtist || inputArr.Artist;
+					var artist = inputArr.Artist;
 					if ( !GUI.albumartist ) GUI.albumartist = inputArr.Album +'<gr> • </gr>'+ artist;
 				} else {
 					var liname = inputArr.album;
@@ -1271,20 +1350,11 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 							 +'<span class="single">'+ liname +'</span>'
 				}
 			} else if ( GUI.browsemode === 'composer' ) {
-				if ( inputArr.file ) {
-					var liname = inputArr.Title;
-					content = '<li>'
-							 +'<a class="lipath">'+ inputArr.file +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
-							 +'<i class="fa fa-music db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-file"></i>'
-							 +'<span class="sn">'+ liname +'&ensp;<span class="time">'+ second2HMS( inputArr.Time ) +'</span></span>'
-							 +'<span class="bl">'+ inputArr.Artist +' - '+ inputArr.Album +'</span>'
-				} else {
-					var liname = inputArr.composer;
-					content = '<li mode="composer">'
-							 +'<a class="lipath">'+ inputArr.composer +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
-							 +'<i class="fa fa-composer db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-composer"></i>'
-							 +'<span class="single">'+ inputArr.composer +'</span>'
-				}
+				var liname = inputArr.composer;
+				content = '<li mode="composer">'
+						 +'<a class="lipath">'+ inputArr.composer +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
+						 +'<i class="fa fa-composer db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-composer"></i>'
+						 +'<span class="single">'+ inputArr.composer +'</span>'
 			} else if ( GUI.browsemode === 'genre' ) {
 				if ( inputArr.album ) {
 					var liname = inputArr.artistalbum;
@@ -1292,6 +1362,13 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 							 +'<a class="lipath">'+ inputArr.album +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a><a class="liartist">'+ inputArr.artist +'</a>'
 							 +'<i class="fa fa-album db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-album"></i>'
 							 +'<span class="single">'+ liname +'</span>'
+				} else if ( inputArr.file ) {
+					var liname = inputArr.Title;
+					content = '<li>'
+							 +'<a class="lipath">'+ inputArr.file +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
+							 +'<i class="fa fa-music db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-file"></i>'
+							 +'<span class="sn">'+ liname +'&ensp;<span class="time">'+ inputArr.Time +'</span></span>'
+							 +'<span class="bl">'+ inputArr.Artist +' - '+ inputArr.Album +'</span>'
 				} else {
 					var liname = inputArr.genre ;
 					content = '<li mode="genre">'
@@ -1351,23 +1428,26 @@ function setPlaylistScroll() {
 	if ( GUI.sortable ) return // 'skip for Sortable'
 	
 	clearInterval( GUI.intElapsedPl );
-	$( '.elapsed' ).empty();
+	var $liactive = '';
+	var $elapsed = '';
 	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
 		$.each( status, function( key, value ) {
 			GUI.status[ key ] = value;
 		} );
 		setButton();
-		$( '#plcrop' ).toggleClass( 'disable', ( status.state === 'stop' || GUI.status.playlistlength === 1 ) );
 		$( '#pl-entries li' ).removeClass( 'active' );
-		var $liactive = $( '#pl-entries li' ).eq( status.song );
-		var $elapsed = $liactive.find( '.elapsed' );
+		$liactive = $( '#pl-entries li' ).eq( status.song );
 		$liactive.addClass( 'active' );
+		$( '#pl-entries li:not( .active )' ).find( '.elapsed' ).empty();
+		$elapsed = $liactive.find( '.elapsed' );
 		var elapsed = status.elapsed;
 		var slash = $liactive.hasClass( 'radio' ) ? '' : ' / ';
 		if ( status.state === 'pause' ) {
 			var elapsedtxt = second2HMS( elapsed ) + slash;
 			$elapsed.html( '<i class="fa fa-pause"></i> '+ elapsedtxt );
 		} else if ( status.state === 'play' ) {
+			var time = status.Time;
+			clearInterval( GUI.intElapsedPl ); // fix: some GUI.intElapsedPl not properly cleared
 			GUI.intElapsedPl = setInterval( function() {
 				elapsed++;
 				var elapsedtxt = second2HMS( elapsed );
@@ -1376,6 +1456,7 @@ function setPlaylistScroll() {
 		} else {
 			$( '.elapsed' ).empty();
 		}
+		$( '#plcrop' ).toggleClass( 'disable', ( status.state === 'stop' || GUI.status.playlistlength === 1 ) );
 		setTimeout( function() {
 			var scrollpos = $liactive.offset().top - $( '#pl-entries' ).offset().top - ( 49 * 3 );
 			$( 'html, body' ).scrollTop( scrollpos );
@@ -1383,31 +1464,82 @@ function setPlaylistScroll() {
 	}, 'json' );
 }
 function htmlPlaylist( data ) {
-	var content, pl, iconhtml, topline, bottomline, countradio, countsong, pltime;
+	var content, pl, iconhtml, topline, bottomline, countradio, countsong, pltime, sec;
+	var licover = '',
+		coverart = '',
+		album = '',
+		artist = '',
+		composer = '',
+		genre = '',
+		path = '';
 	content = pl = iconhtml = topline = bottomline = '';
-	countradio = countsong = pltime = 0;
-	var ilength = data.length;
-	for ( i = 0; i < ilength; i++ ) {
-		var pl = data[ i ];
-		if ( pl.file.slice( 0, 4 ) === 'http' ) {
-			var title = pl.title || pl.file;
+	countradio = countsong = pltime = sec = 0;
+	$.each( data, function( i, value ) {
+		if ( value.coverart ) {
+			coverart = value.coverart;
+		} else if ( value.album ) {
+			album = value.album;
+		} else if ( value.artist ) {
+			artist = value.artist;
+		} else if ( value.composer ) {
+			composer = value.composer;
+		} else if ( value.genre ) {
+			genre = value.genre;
+		} else if ( value.path ) {
+			path = value.path;
+		} else if ( value.file && value.file.slice( 0, 4 ) === 'http' ) {
+			var title = value.Title || value.file;
 			content += '<li class="radio">'
 					 +'<i class="fa fa-webradio pl-icon"></i>'+ ( $( '#page-library' ).hasClass( 'hide' ) ? '<i class="fa fa-minus-circle pl-action"></i>' : '' )
 					 +'<span class="sn">'+ title +'&ensp;<span class="elapsed"></span></span>'
-					 +'<span class="bl">'+ pl.file +'</span>'
+					 +'<span class="bl">'+ value.file +'</span>'
 			countradio++;
-		} else {
-			sec = HMS2Second( pl.time );
-			content += '<li>'
-					 +'<i class="fa fa-music pl-icon"></i>'+ ( $( '#page-library' ).hasClass( 'hide' ) ? '<i class="fa fa-minus-circle pl-action"></i>' : '' )
-					 +'<span class="sn">'+ pl.title +'&ensp;<span class="elapsed"></span><span class="time" time="'+ sec +'">'+ pl.time +'</span></span>'
-					 +'<span class="bl">'+ pl.track +'</span>'
+		} else if ( value.Title ) {
+			sec = HMS2Second( value.Time );
 			pltime += sec;
+			if ( $( '#page-library' ).hasClass( 'hide' ) ) {
+				var actionhtml = '<i class="fa '+ ( GUI.pleditor ? 'fa-list-ul' : 'fa-minus-circle' ) +' pl-action"></i>';
+				if ( !GUI.pleditor ) {
+					var actionhtml = '<i class="fa fa-minus-circle pl-action"></i>';
+				} else {
+					var actionhtml = '<i class="fa fa-list-ul pl-action"></i>'
+									+'<a class="lipath">'+ ( value.cue || value.file ) +'</a>'
+									+'<a class="liname">'+ value.Title +'</a>'
+									+'<a class="liindex">'+ value.index +'</a>';
+				}
+			} else {
+				var actionhtml = '<i class="fa fa-bars db-action" data-target="#context-menu-file"></i>'
+								+'<a class="lipath">'+ ( value.cue || value.file ) +'</a>'
+								+'<a class="liname">'+ value.Title +'</a>'
+								+'<a class="liindex">'+ value.index +'</a>';
+			}
+			content += '<li>'
+					 +'<i class="fa fa-music pl-icon"></i>'
+					 + actionhtml
+					 +'<span class="sn">'+ value.Title + ( GUI.pleditor ? '&ensp;' : '&ensp;<span class="elapsed"></span>' ) +'<span class="time" time="'+ sec +'">'+ value.Time +'</span></span>'
+					 +'<span class="bl">'+ ( $( '#page-library' ).hasClass( 'hide' ) ? value.track : value.file ) +'</span>'
+			countsong++;
 		}
-		countsong = ilength - countradio;
+	} );
+	if ( coverart ) {
+		var browsemode = GUI.dbbackdata.length ? GUI.dbbackdata[ 0 ].browsemode : '';
+		var composerhtml = ( composer && browsemode == 'composer' ) ? '<i class="fa fa-composer"></i><spanspan class="composer">'+ composer +'</span><br>' : '';
+		var genrehtml = genre && genre !== -1 ? '<span><i class="fa fa-genre"></i>'+ genre +'</span><br>' : '';
+		var licover = '<li class="licover">'
+				  +'<a class="lipath">'+ path +'</a><a class="liname">'+ path.replace(/^.*\//, '') +'</a>'
+				  +'<img src="'+ coverart +'" class="coversmall">'
+				  +'<span class="liinfo">'
+					  +'<bl class="lialbum">'+ album +'</bl><br>'
+					  + composerhtml
+					  +'<i class="fa fa-albumartist"></i><span class="artist">'+ artist +'</span><br>'
+					  + genrehtml
+					  +'<i class="fa fa-music"></i>'+ countsong +'<gr> • </gr>'+ second2HMS( pltime )
+				  +'</span>'
+				  +'<i class="fa fa-bars db-action" data-target="#context-menu-folder"></i>'
+				  +'</li>';
 	}
 	return {
-		  content    : content +'</li>'
+		  content    : licover + content +'</li>'
 		, countradio : countradio
 		, pltime     : pltime
 		, countsong  : countsong
@@ -1421,7 +1553,7 @@ function renderPlaylist() {
 	$( '#plopen' ).toggleClass( 'disable', !GUI.lsplaylists.length );
 	if ( !GUI.status.playlistlength ) {
 		$( '#pl-count' ).html( '<bl class="title">PLAYLIST</bl>' );
-		$( '#plsave, #plcrop, #plclear' ).addClass( 'disable' );
+		$( '#plsave, #plcrop, #plclear, #pl-searchbtn' ).addClass( 'disable' );
 		$( '#pl-entries' ).empty();
 		$( '.playlist' ).removeClass( 'hide' );
 		$( '#playlist-warning' ).css( 'margin-top', GUI.display.bars ? '27px' : '47px' );
@@ -1443,13 +1575,14 @@ function renderPlaylist() {
 	$( '.playlist' ).removeClass( 'hide' );
 	$( '#playlist-warning' ).addClass( 'hide' );
 	$( '#pl-count' ).html( counthtml );
-	$( '#plsave, #plclear' ).removeClass( 'disable' );
+	$( '#plsave, #plclear, #pl-searchbtn' ).removeClass( 'disable' );
 	$( '#pl-entries' ).html( data.content +'<p></p>' ).promise().done( function() {
 		$( '#pl-entries p' ).css( 'min-height', window.innerHeight - 140 +'px' );
 		setPlaylistScroll();
 	} );
 }
 function renderSavedPlaylist( name ) {
+	$( '.menu' ).addClass( 'hide' );
 	$.post( 'enhance.php', { getplaylist: 1, name: name.toString().replace( /"/g, '\\"' ) }, function( list ) {
 		var data = htmlPlaylist( list.playlist );
 		var counthtml = '<wh><i class="fa fa-list-ul"></i></wh><bl class="title">'+ name +'<gr>&emsp;•</gr></bl>';

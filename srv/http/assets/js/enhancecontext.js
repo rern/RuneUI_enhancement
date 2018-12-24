@@ -2,19 +2,9 @@
 //     enclosed with double quotes + escape double quotes
 // example: mpc save "abc's \"xyz\"" << name.replace( /"/g, '\\"' )
 
-$( 'body' ).click( function( e ) {
-	if ( e.target.id !== 'menu-settings'
-		&& e.target.id !== 'badge'
-		&& e.target.id !== 'coverTR'
-		&& !$( e.target ).hasClass( 'db-action' )
-		&& !$( e.target ).hasClass( 'pl-action' )
-	) {
-		GUI.plcurrent = '';
-		$( '.menu, .contextmenu' ).addClass( 'hide' );
-	}
-} );
 $( '.contextmenu a' ).click( function() {
-	GUI.dbcurrent = '';
+	$( '.menu' ).addClass( 'hide' );
+	$( '#db-entries li, #pl-entries li' ).removeClass( 'active' );
 	var cmd = $( this ).data( 'cmd' );
 	var mode = cmd.replace( /replaceplay|replace|addplay|add/, '' );
 	// get name
@@ -24,7 +14,7 @@ $( '.contextmenu a' ).click( function() {
 		var name = GUI.list.name.replace( /"/g, '\\"' );
 	} else {
 		if ( !$( '#page-playlist' ).hasClass( 'hide' ) && $( '#pl-currentpath .lipath' ).length ) {
-			var name = GUI.list.li.find( '.liname' ).text().replace( /"/g, '\\"' );
+			var name = GUI.list.li.find( '.lipath' ).text().replace( /"/g, '\\"' );
 		} else {
 			var name = GUI.list.path.replace( /"/g, '\\"' );
 		}
@@ -32,7 +22,10 @@ $( '.contextmenu a' ).click( function() {
 	// compose command
 	if ( !mode ) {
 		var ext = GUI.list.path.slice( -3 ).toLowerCase();
-		if ( ext === 'm3u' ) {
+		if ( GUI.list.index ) {
+			var cuefile = GUI.list.path.replace( /"/g, '\\"' );
+			var mpcCmd = '/srv/http/enhancecue.sh "'+ cuefile +'" '+ GUI.list.index;
+		} else if ( ext === 'm3u' ) {
 			var mpcCmd = 'cat "/mnt/MPD/'+ GUI.list.path +'" | mpc add';
 		} else if ( ext === 'cue' || ext === 'pls' ) {
 			var mpcCmd = 'mpc load "'+ name +'"';
@@ -40,17 +33,16 @@ $( '.contextmenu a' ).click( function() {
 			var mpcCmd = GUI.list.isfile ? 'mpc add "'+ name +'"' : 'mpc ls "'+ name +'" | mpc add';
 		}
 	} else {
-		if ( [ 'album', 'artist', 'composer', 'genre' ].indexOf( mode ) !== -1 ) {
-			if ( mode === 'album' && GUI.list.artist ) {
-				var mpcCmd = 'mpc findadd artist "'+ GUI.list.artist +'" album "'+ name +'"';
-			} else {
-				var mpcCmd = 'mpc findadd '+ mode +' "'+ name +'"';
-			}
-			cmd = cmd.replace( /album|artist|composer|genre/, '' );
+		var browsemode = GUI.dbbackdata.length ? GUI.dbbackdata[ 0 ].browsemode : '';
+		if ( [ 'album', 'albumartist' ].indexOf( browsemode ) !== -1 ) {
+			var mpcCmd = 'mpc findadd'+ ( GUI.list.artist ? ' artist "'+ GUI.list.artist : '' )  +'" album "'+ name +'"';
+		} else if ( [ 'artist', 'composer', 'genre' ].indexOf( browsemode ) !== -1 ) {
+			var mpcCmd = 'mpc add '+ GUI.filelist;
 		} else {
 			var mpcCmd = 'mpc load "'+ name +'"';
 			if ( [ 'wrrename', 'wrdelete', 'plrename', 'pldelete' ].indexOf( mode ) === -1 ) cmd = cmd.replace( /pl|wr/, '' );
 		}
+		cmd = cmd.replace( /album|artist|composer|genre/, '' );
 	}
 	var addplaypos = GUI.status.playlistlength + 1;
 	var contextCommand = {
@@ -71,28 +63,21 @@ $( '.contextmenu a' ).click( function() {
 			command();
 		} else {
 			if ( cmd !== 'update' ) {
-				var add = cmd.replace( 'wr', '' ).slice( 0, 3 ) === 'add';
-				new PNotify( {
-					  title : add ? 'Add to Playlist' : 'Playlist replaced'
-					, text  : GUI.list.name
-				} );
-			}
-			if ( mode === 'wr' ) {
-				GUI.local = 1;
-				setTimeout( function() { GUI.local = 0 }, 500 );
-			}
-			$.post( 'enhance.php', { mpc: command }, function() {
-				if ( !GUI.status.playlistlength ) getPlaybackStatus();
-				if ( GUI.display.bars ) {
-					if ( cmd.slice( -4 ) === 'play' ) {
-						$( '#stop, #pause' ).removeClass( 'btn-primary' );
-						$( '#play' ).addClass( 'btn-primary' );
-					} else if ( cmd.slice( -7 ) === 'replace' ) {
-						$( '#play, #pause' ).removeClass( 'btn-primary' );
-						$( '#stop' ).addClass( 'btn-primary' );
-					}
+				if ( cmd.replace( 'wr', '' ).slice( 0, 3 ) === 'add' ) {
+					addReplace( mode, command, 'Add to Playlist' );
+				} else {
+					info( {
+						  title   : 'Replace Playlist'
+						, message : 'Replace current Playlist?'
+						, cancel  : 1
+						, ok      : function() {
+							addReplace( mode, command, 'Playlist replaced' );
+						}
+					} );
 				}
-			} );
+			} else {
+				$.post( 'enhance.php', { mpc: command } );
+			}
 		}
 	} else if ( cmd === 'dirblesave' ) {
 		webRadioNew( GUI.list.name, GUI.list.path );
@@ -106,6 +91,19 @@ $( '.contextmenu a' ).click( function() {
 	}
 } );
 
+function addReplace( mode, command, title ) {
+	if ( mode === 'wr' ) {
+		GUI.local = 1;
+		setTimeout( function() { GUI.local = 0 }, 500 );
+	}
+	$.post( 'enhance.php', { mpc: command }, function() {
+		getPlaybackStatus();
+	} );
+	new PNotify( {
+		  title : title
+		, text  : GUI.list.name
+	} );
+}
 function bookmarkNew() {
 	var path = GUI.list.path;
 	var name = path.split( '/' ).pop();

@@ -13,10 +13,7 @@ alias=enha
 installstart $@
 
 #0temp0 remove uninstall leftover
-redis-cli del volumemute &> /dev/null
-redis-cli hdel display albums artists &> /dev/null
-sed -i '/^disable_overscan=1\|^hdmi_ignore_cec=1/ d' /boot/config.txt
-rm -f /srv/http/app/enhancecoverart_ctl.php
+rm -f /srv/http/assets/enhancesettings.js
 #1temp1
 
 mv /srv/http/index.php{,.backup}
@@ -96,7 +93,7 @@ fi
 
 #----------------------------------------------------------------------------------
 file=/root/.config/midori/config
-if ! grep '^chromium' $file &> /dev/null; then
+if [[ -e $file ]] && ! grep '^chromium' $file &> /dev/null; then
 	echo $file
 	
 	commentS 'zoom-level'
@@ -152,7 +149,7 @@ if [[ ! $bkmarks ]]; then
 	fi
 fi
 
-for item in bars debug dev time coverart volume buttons nas sd usb webradio album artist albumartist composer genre dirble jamendo count label; do
+for item in bars debug dev time coverart volume buttons nas sd usb webradio album artist albumartist composer genre dirble jamendo count label coverfile contexticon; do
 	if [[ $( redis-cli hexists display $item ) == 0 ]]; then
 		[[ $item == debug || $item == dev ]] && chk='' || chk=checked
 		redis-cli hset display $item "$chk" &> /dev/null

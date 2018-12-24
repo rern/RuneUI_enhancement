@@ -33,12 +33,10 @@
 .fa-check:before { content: "\f51B" }
 .fa-library:before { content: "\f506" }
 
-#update {
-	animation: blinkopaque 1.5s linear infinite;
-}
 #update i {
 	font-size: 28px;
 	vertical-align: -15%;
+	animation: blinkopaque 1.5s linear infinite;
 }
 @keyframes blinkopaque {
 	50% { opacity: 0; }
@@ -66,7 +64,7 @@
 	font-weight: bold;
 	text-transform: uppercase;
 }
-
+.bl { color: #0095d8; }
 #splash {
 	display: none;
 }

@@ -1,4 +1,4 @@
-<div id="page-playback" class="page">
+<div id="page-playback" class="page hide">
 	<div id="info">
 		<div id="divartist">
 			<span id="artist"></span>
@@ -213,7 +213,7 @@ function menudiv( $id, $html ) {
 	return '<div id="context-menu-'.$id.'" class="menu contextmenu hide">'.$html.'</div>';
 }
 function menucommon( $add, $addplay, $replace, $replaceplay ) {
-	$htmlcommon = '<a class="menushadow"></a>';
+	$htmlcommon = '<span class="menushadow"></span>';
 	$htmlcommon.= menuli( $add,         'plus-o',            'Add' );
 	$htmlcommon.= menuli( $addplay,     'play-plus-o',       'Add ► Play' );
 	$htmlcommon.= menuli( $replace,     'plus-refresh',      'Replace' );
@@ -221,7 +221,7 @@ function menucommon( $add, $addplay, $replace, $replaceplay ) {
 	return $htmlcommon;
 }
 function menucommonsp( $type ) {
-	$htmlcommon = '<a class="menushadow"></a>';
+	$htmlcommon = '<span class="menushadow"></span>';
 	$htmlcommon.= menuli( 'spadd',            'plus-o',            'Add',              $type );
 	$htmlcommon.= menuli( 'spaddplay',        'play-plus-o',       'Add ► Play',     $type );
 	$htmlcommon.= menuli( 'spreplaceplay', 'play-plus-refresh', 'Replace ► Play', $type );
@@ -264,7 +264,7 @@ $html.= menuli( 'wrdelete', 'minus-circle', 'Delete' );
 $menu.= menudiv( 'webradio', $html );
 $menudiv = '';
 
-$html = '<a class="menushadow"></a>';
+$html = '<span class="menushadow"></span>';
 $html.= menuli( 'pladd',         'plus-o',            'Add' );
 $html.= menuli( 'pladdplay',     'play-plus-o',       'Add ► Play' );
 $html.= menuli( 'plreplace',     'plus-refresh',      'Replace' );

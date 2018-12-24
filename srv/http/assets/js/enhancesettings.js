@@ -1,11 +1,5 @@
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-var psOption = {
-	  host: window.location.hostname
-	, port: window.location.port
-	, modes: 'websocket'
-};
-
 if ( document.location.hostname === 'localhost' ) $( '.osk-trigger' ).onScreenKeyboard( { 'draggable': true } );
 
 $( '.selectpicker' ).selectpicker();
@@ -18,7 +12,7 @@ if ( path === '/sources' ) {
 			if ( status.updating_db ) {
 				if ( !intUpdate ) {
 					$( '#updatempddb, #rescanmpddb' ).hide();
-					$( '#updatempddb' ).parent().after( '<span id="update"><i class="fa fa-library"></i>&emsp;Library updating...</span>' );
+					$( '#updatempddb' ).parent().after( '<span id="update"><i class="fa fa-library bl"></i>&emsp;Library updating...</span>' );
 					intUpdate = setInterval( function() { // fix: force status fetching
 						toggleUpdate();
 					}, 10000 );
@@ -30,30 +24,11 @@ if ( path === '/sources' ) {
 			}
 		}, 'json' );
 	}
-	if ( 'hidden' in document ) {
-		var visibilityevent = 'visibilitychange';
-		var hiddenstate = 'hidden';
-	} else { // cross-browser document.visibilityState must be prefixed
-		var prefixes = [ 'webkit', 'moz', 'ms', 'o' ];
-		for ( var i = 0; i < 4; i++ ) {
-			var p = prefixes[ i ];
-			if ( p +'Hidden' in document ) {
-				var visibilityevent = p +'visibilitychange';
-				var hiddenstate = p +'Hidden';
-				break;
-			}
-		}
-	}
-	document.addEventListener( visibilityevent, function() {
-		if ( document[ hiddenstate ] ) {
-			pushstreamIdle.disconnect();
-		} else {
-			pushstreamIdle.connect();
-			toggleUpdate();
-		}
+	document.addEventListener( 'visibilitychange', function() {
+		if ( !document.hidden ) toggleUpdate();
 	} );
 	toggleUpdate();
-	var pushstreamIdle = new PushStream( psOption );
+	var pushstreamIdle = new PushStream( { modes: 'websocket' } );
 	pushstreamIdle.onmessage = function( data ) {
 		if ( data[ 0 ] === 'update' ) toggleUpdate();
 	}
@@ -241,7 +216,7 @@ if ( path === '/sources' ) {
 				cache: false
 			});
 		}
-		var pushstreamWlans = new PushStream( psOption );
+		var pushstreamWlans = new PushStream( { modes: 'websocket' } );
 		pushstreamWlans.onmessage = listWLANs;
 		pushstreamWlans.addChannel('wlans');
 		pushstreamWlans.connect();
@@ -274,7 +249,7 @@ if ( path === '/sources' ) {
 			});
 			$('#nic-details tbody').html(content);
 		}
-		var pushstreamNics = new PushStream( psOption );
+		var pushstreamNics = new PushStream( { modes: 'websocket' } );
 		pushstreamNics.onmessage = nicsDetails;
 		pushstreamNics.addChannel('nics');
 		pushstreamNics.connect();
