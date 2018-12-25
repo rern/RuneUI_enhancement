@@ -823,11 +823,12 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 		return
 	}
 	GUI.list = {};
-	GUI.list.index = $thisli.find( '.liindex' ).text() || $( '#db-entries li' ).index( $thisli );
+	GUI.list.index = $thisli.find( '.liindex' ).text() || '';
 	GUI.list.path = $thisli.find( '.lipath' ).text() || '';
 	GUI.list.name = $thisli.find( '.liname' ).text() || '';
 	GUI.list.artist = $thisli.find( '.artist' ).text() || '';
 	GUI.list.isfile = $thisli.hasClass( 'file' ); // file/dirble - used in contextmenu
+	GUI.list.pos = $( '#db-entries li' ).index( $thisli ); // for webradio delete
 	if ( $( '#db-currentpath' ).find( '.lipath' ).text() === 'Webradio' ) GUI.list.url = $thisli.find( '.bl' ).text();
 	var $menu = $( $this.data( 'target' ) );
 	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
