@@ -233,6 +233,10 @@ $( '#turnoff' ).click( function() {
 	} );
 } );
 $( '#tab-library' ).click( function() {
+	if ( GUI.local ) return
+	
+	GUI.local = 1; // suppress 2nd firing
+	setTimeout( function() { GUI.local = 0 }, 500 );
 	if ( !Object.keys( GUI.libraryhome ).length ) return // wait for mpc data 
 	
 	if ( GUI.bookmarkedit ) {
@@ -263,11 +267,19 @@ $( '#tab-library' ).click( function() {
 	}
 } );
 $( '#tab-playback' ).click( function() {
+	if ( GUI.local ) return
+	
+	GUI.local = 1; // suppress 2nd firing
+	setTimeout( function() { GUI.local = 0 }, 500 );
 	setPageCurrent( 'playback' );
 	getPlaybackStatus();
 	if ( GUI.status.state === 'play' ) $( '#elapsed' ).empty(); // hide flashing
 } );
 $( '#tab-playlist' ).click( function() {
+	if ( GUI.local ) return
+	
+	GUI.local = 1; // suppress 2nd firing
+	setTimeout( function() { GUI.local = 0 }, 500 );
 	if ( !$( '#page-playlist' ).hasClass( 'hide' ) && GUI.pleditor ) GUI.pleditor = 0;
 	if ( GUI.status.activePlayer === 'Airplay' ) {
 		$( '#playsource' ).addClass( 'open' );

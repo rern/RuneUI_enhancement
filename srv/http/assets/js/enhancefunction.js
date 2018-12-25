@@ -519,11 +519,14 @@ function unmuteColor() {
 		.find( 'i' ).removeClass( 'fa-mute' ).addClass( 'fa-volume' );
 }
 function displayTopBottom() {
+	GUI.local = 1; // suppress 2nd firing
+	setTimeout( function() { GUI.local = 0 }, 500 );
 	if ( !$( '#bio' ).hasClass( 'hide' ) ) return
 	
 	var screenS = ( window.innerHeight < 590 || window.innerWidth < 500 );
 	if ( !GUI.display.bars || ( screenS && !GUI.display.barsauto ) ) {
 		$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
+		$( '#page-playback' ).css( 'padding-top', '' );
 		$( '#db-list, #pl-list' ).css( 'padding', '40px 0' );
 		$( '.btnlist-top' ).css( 'top', 0 );
 		$( '#home-blocks' ).css( 'padding-top', '50px' );
@@ -535,6 +538,7 @@ function displayTopBottom() {
 		$pagePlaylist.on( 'swiperight', playbackClick ).on( 'swipeleft', libraryClick );
 	} else {
 		$( '#menu-top, #menu-bottom' ).removeClass( 'hide' );
+		$( '#page-playback' ).css( 'padding-top', '40px' );
 		$( '#page-playback' ).css( 'padding-top', '' );
 		$( '#db-list, #pl-list' ).css( 'padding', '' );
 		$( '.btnlist-top' ).css( 'top', '40px' );
@@ -543,7 +547,6 @@ function displayTopBottom() {
 		$pagePlayback.off( 'swiperight swipeleft' );
 		$pagePlaylist.off( 'swiperight swipeleft' );
 	}
-	$( '#page-playback' ).css( 'padding-top', $( '#menu-top, #menu-bottom' ).hasClass( 'hide' ) ? '40px' : '' );
 	$( '#debug' ).toggleClass( 'hide', GUI.display.debug === '' );
 	$( '#dev' ).toggleClass( 'hide', GUI.display.dev === '' );
 	var menuH = ( $( '#settings a' ).length - $( '#settings a.hide' ).length ) * 41 - 1;
