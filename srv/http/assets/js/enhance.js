@@ -23,6 +23,10 @@ var GUI = { // outside '$( function() {' enable console.log access
 	, plugin       : ''
 	, status       : {}
 };
+// fix jquery.mobile swipe not work with Midori
+var $pageLibrary = GUI.midori ? new Hammer( document.getElementById( 'page-library' ) ) : $( '#page-library' );
+var $pagePlayback = GUI.midori ? new Hammer( document.getElementById( 'page-playback' ) ) : $( '#page-playback' );
+var $pagePlaylist = GUI.midori ? new Hammer( document.getElementById( 'page-playlist' ) ) : $( '#page-playlist' );
 
 PNotify.prototype.options.delay = 3000;
 PNotify.prototype.options.styling = 'fontawesome';
@@ -170,6 +174,7 @@ $( '#displayplayback' ).click( function() {
 		, checkboxhtml : 
 			'<form id="displaysaveplayback">'
 				+ displayCheckbox( 'bars',         'Top-Bottom bars' )
+				+ ( GUI.display.bars ? displayCheckbox( 'barsauto',     'Bars on small screen' ) : '' )
 				+ displayCheckbox( 'time',         'Time' )
 				+ displayCheckbox( 'radioelapsed', 'Webradio elapsed' )
 				+ displayCheckbox( 'coverart',     'Cover art' )
@@ -282,17 +287,6 @@ $( '#tab-playlist' ).click( function() {
 		renderPlaylist();
 	}, 'json' );
 } );
-function libraryClick() { $( '#tab-library' ).click() }
-function playbackClick() { $( '#tab-playback' ).click() }
-function playlistClick() { $( '#tab-playlist' ).click() }
-// fix jquery.mobile swipe not work with Midori
-var $pageLibrary = GUI.midori ? new Hammer( document.getElementById( 'page-library' ) ) : $( '#page-library' );
-var $pagePlayback = GUI.midori ? new Hammer( document.getElementById( 'page-playback' ) ) : $( '#page-playback' );
-var $pagePlaylist = GUI.midori ? new Hammer( document.getElementById( 'page-playlist' ) ) : $( '#page-playlist' );
-$pageLibrary.on( 'swiperight', playlistClick ).on( 'swipeleft', playbackClick );
-$pagePlayback.on( 'swiperight', libraryClick ).on( 'swipeleft', playlistClick );
-$pagePlaylist.on( 'swiperight', playbackClick ).on( 'swipeleft', libraryClick );
-
 $( '#page-playback' ).click( function( e ) {
 	if ( $( e.target ).is( '.controls, .timemap, .covermap, .volmap' ) ) return
 	
@@ -823,12 +817,12 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 		return
 	}
 	GUI.list = {};
-	GUI.list.index = $thisli.find( '.liindex' ).text() || '';
 	GUI.list.path = $thisli.find( '.lipath' ).text() || '';
 	GUI.list.name = $thisli.find( '.liname' ).text() || '';
 	GUI.list.artist = $thisli.find( '.artist' ).text() || '';
-	GUI.list.isfile = $thisli.hasClass( 'file' ); // file/dirble - used in contextmenu
-	GUI.list.pos = $( '#db-entries li' ).index( $thisli ); // for webradio delete
+	GUI.list.isfile = $thisli.hasClass( 'file' );              // file/dirble - in contextmenu
+	GUI.list.index = $thisli.find( '.liindex' ).text() || '';  // cue - in contextmenu
+	GUI.list.liindex = $( '#db-entries li' ).index( $thisli ); // for webradio delete - in contextmenu
 	if ( $( '#db-currentpath' ).find( '.lipath' ).text() === 'Webradio' ) GUI.list.url = $thisli.find( '.bl' ).text();
 	var $menu = $( $this.data( 'target' ) );
 	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );

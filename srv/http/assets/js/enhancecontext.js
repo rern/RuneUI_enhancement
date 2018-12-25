@@ -317,7 +317,7 @@ function webRadioDelete() {
 					+'<br>'+ GUI.list.path
 		, cancel  : 1
 		, ok      : function() {
-			$( '#db-entries li').eq( GUI.list.pos ).remove();
+			$( '#db-entries li').eq( GUI.list.liindex ).remove();
 			GUI.libraryhome.webradio--;
 			GUI.local = 1;
 			setTimeout( function() { GUI.local = 0 }, 500 );
