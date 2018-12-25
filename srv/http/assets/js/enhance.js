@@ -718,28 +718,8 @@ $( '#db-back' ).click( function() {
 	
 	getDB( GUI.dbbackdata.pop() );
 } );
-$( '#db-entries' ).on( 'dblclick', 'li', function() {
-	$thisli = $( this );
-	if ( $thisli.hasClass( 'licover' ) ) return
-	
-	GUI.list = {};
-	GUI.list.path = $thisli.find( '.lipath' ).text() || '';
-	GUI.list.name = $thisli.find( '.liname' ).text() || '';
-	GUI.list.index = $thisli.find( '.liindex' ).text() || '';  // cue - in contextmenu
-	var contextmenu = $thisli.find( '.db-action' ).data( 'target' );
-	$( contextmenu ).find( 'a:eq( 1 )' ).click();
-	setTimeout( function() {
-		$thisli.removeClass( 'active' );
-		$( contextmenu ).addClass( 'hide' );
-	}, 100 );
-} );
 $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	var $this = $( this );
-	if ( $this.find( '.fa-music, .fa-webradio' ).length
-		&& !$( e.target ).is( '.fa-music, .fa-webradio' )
-		&& !$this.hasClass( 'licover' )
-	) return
-	
 	if ( $( e.target ).is( '.artist, .fa-artist, .fa-albumartist, .composer, .fa-composer' ) ) {
 		var name = ( $( e.target ).is( '.composer, .fa-composer' ) ) ? $this.find( '.composer' ).text() : $this.find( '.artist' ).text();
 		getBio( name );
@@ -820,6 +800,28 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 		// } );
 	}
 } );
+// enable dblclick only non-touch device
+var isTouchDevice = 'ontouchstart' in window
+	|| window.DocumentTouch && document instanceof window.DocumentTouch
+	|| navigator.maxTouchPoints > 0
+	|| window.navigator.msMaxTouchPoints > 0;
+if ( !isTouchDevice ) {
+	$( '#db-entries' ).on( 'dblclick', 'li', function( e ) {
+		$thisli = $( this );
+		if ( $thisli.hasClass( 'licover' ) || !$thisli.find( '.fa-music, .fa-webradio' ).length ) return
+		
+		GUI.list = {};
+		GUI.list.path = $thisli.find( '.lipath' ).text();
+		GUI.list.name = $thisli.find( '.liname' ).text();
+		GUI.list.index = $thisli.find( '.liindex' ).text() || '';  // cue - in contextmenu
+		var contextmenu = $thisli.find( '.db-action' ).data( 'target' );
+		$( contextmenu ).find( 'a:eq( 1 )' ).click();
+		setTimeout( function() {
+			$thisli.removeClass( 'active' );
+			$( contextmenu ).addClass( 'hide' );
+		}, 0 );
+	} );
+}
 $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 	e.stopPropagation();
 	var $this = $( this );
