@@ -655,20 +655,19 @@ wh, gr { font-weight: 300; }
 	color: #e0e7ee;
 	opacity: 1; /* fix volume text color */
 }
-#elapsed {
+#elapsed,
+#total {
 	position: absolute;
-	top: 92px;
 	left: 50%;
-	margin-left: -50%;
-	width: 100%;
+	margin-left: -75px;
+	width: 150px;
+}
+#elapsed {
+	top: 92px;
 	line-height: 50px;
 }
 #total {
-	position: absolute;
 	top: 136px;
-	left: 50%;
-	margin-left: -50px;
-	width: 100px;
 	color: #587ca0;
 }
 #volume,
