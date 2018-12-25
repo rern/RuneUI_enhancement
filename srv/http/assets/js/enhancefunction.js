@@ -64,13 +64,13 @@ pushstreams.idle.onmessage = function( changed ) {
 		
 		if ( !$( '#page-playlist' ).hasClass( 'hide' ) ) {
 			$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
-				if ( !data ) {
+				if ( data.playlist.length ) {
+					GUI.status.playlistlength = data.playlist.length;
+					GUI.lsplaylists = data.lsplaylists || [];
+					GUI.playlist = data.playlist;
+				} else {
 					GUI.status.playlistlength = 0;
-					renderPlaylist();
-					return
 				}
-				GUI.lsplaylists = data.lsplaylists || [];
-				GUI.playlist = data.playlist;
 				renderPlaylist();
 			}, 'json' );
 		} else if ( !$( '#page-playback' ).hasClass( 'hide' ) ) {
@@ -1560,7 +1560,6 @@ function renderPlaylist() {
 		$( 'html, body' ).scrollTop( 0 );
 		return
 	}
-	
 	GUI.status.playlistlength = GUI.playlist.length;
 	var data = htmlPlaylist( GUI.playlist );
 	var counthtml = '<bl class="title">PLAYLIST<gr>·</gr></bl>';
