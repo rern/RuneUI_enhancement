@@ -718,15 +718,30 @@ $( '#db-back' ).click( function() {
 	
 	getDB( GUI.dbbackdata.pop() );
 } );
+$( '#db-entries' ).on( 'dblclick', 'li', function() {
+	$thisli = $( this );
+	if ( $thisli.hasClass( 'licover' ) ) return
+	
+	GUI.list = {};
+	GUI.list.path = $thisli.find( '.lipath' ).text() || '';
+	GUI.list.name = $thisli.find( '.liname' ).text() || '';
+	GUI.list.index = $thisli.find( '.liindex' ).text() || '';  // cue - in contextmenu
+	var contextmenu = $thisli.find( '.db-action' ).data( 'target' );
+	$( contextmenu ).find( 'a:eq( 1 )' ).click();
+	setTimeout( function() {
+		$thisli.removeClass( 'active' );
+		$( contextmenu ).addClass( 'hide' );
+	}, 100 );
+} );
 $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	var $this = $( this );
-	if ( $( e.target ).hasClass( 'artist' )
-	  || $( e.target ).hasClass( 'fa-artist' )
-	  || $( e.target ).hasClass( 'fa-albumartist' )
-	  || $( e.target ).hasClass( 'composer' )
-	  || $( e.target ).hasClass( 'fa-composer' )
-	 ) {
-		var name = ( $( e.target ).hasClass( 'composer' ) || $( e.target ).hasClass( 'fa-composer' ) ) ? $this.find( '.composer' ).text() : $this.find( '.artist' ).text();
+	if ( $this.find( '.fa-music, .fa-webradio' ).length
+		&& !$( e.target ).is( '.fa-music, .fa-webradio' )
+		&& !$this.hasClass( 'licover' )
+	) return
+	
+	if ( $( e.target ).is( '.artist, .fa-artist, .fa-albumartist, .composer, .fa-composer' ) ) {
+		var name = ( $( e.target ).is( '.composer, .fa-composer' ) ) ? $this.find( '.composer' ).text() : $this.find( '.artist' ).text();
 		getBio( name );
 		return
 	} else if ( $( e.target ).hasClass( 'lialbum' ) ) {
@@ -816,6 +831,7 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 		$thisli.removeClass( 'active' );
 		return
 	}
+	
 	GUI.list = {};
 	GUI.list.path = $thisli.find( '.lipath' ).text() || '';
 	GUI.list.name = $thisli.find( '.liname' ).text() || '';
@@ -991,8 +1007,7 @@ new Sortable( document.getElementById( 'pl-entries' ), {
 } );
 $( '#pl-entries' ).on( 'click', 'li', function( e ) {
 	if ( $( e.target ).parent().hasClass( 'elapsed' )
-		|| $( e.target ).hasClass( 'elapsed' )
-		|| $( e.target ).hasClass( 'time' )
+		|| $( e.target ).is( '.elapsed, .time' )
 	) {
 		$( '#stop' ).click();
 		return

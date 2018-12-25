@@ -712,7 +712,7 @@ function setLibraryBlock( id ) {
 	var count = ( !GUI.display.count || status[ id ] === undefined ) ? '' : '<gr>'+ numFormat( status[ id ] ) +'</gr>';
 	var label = GUI.display.label ? ( '<wh>'+ namepath[ id ][ 0 ] +'</wh>' ) : '';
 	var browsemode = ( [ 'album', 'artist', 'albumartist', 'composer', 'genre' ].indexOf( id ) !== -1 ) ? ' data-browsemode="'+ id +'"' : '';
-	var plugin = ( id === 'spotify' || id === 'dirble' || id === 'jamendo' ) ? ( ' data-plugin="'+ namepath[ id ][ 1 ] +'"' ) : '';
+	var plugin = ( [ 'spotify', 'dirble', 'jamendo' ].indexOf( id ) !== -1 ) ? ( ' data-plugin="'+ namepath[ id ][ 1 ] +'"' ) : '';
 	
 	return '<div class="col-md-3">'
 			+'<div id="home-'+ id +'" class="home-block"'+ browsemode + plugin +'><a class="lipath">'+ namepath[ id ][ 1 ] +'</a>'
@@ -1413,7 +1413,7 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 						 +'<a class="lipath">'+ inputArr.id +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
 						 +'<i class="fa fa-genre db-icon"></i>'
 						 +'<span class="single">'+ liname +'</span>'
-			} else if ( querytype === 'search' || querytype === 'stations' || querytype === 'childs-stations' ) {
+			} else if ( [ 'search', 'stations', 'childs-stations' ].indexOf( querytype ) !== -1 ) {
 				if ( !inputArr.streams.length ) break; // Filter stations with no streams
 				
 				var liname = inputArr.name;
