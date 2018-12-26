@@ -66,14 +66,18 @@ $( '.contextmenu a' ).click( function() {
 				if ( cmd.replace( 'wr', '' ).slice( 0, 3 ) === 'add' ) {
 					addReplace( mode, command, 'Add to Playlist' );
 				} else {
-					info( {
-						  title   : 'Replace Playlist'
-						, message : 'Replace current Playlist?'
-						, cancel  : 1
-						, ok      : function() {
-							addReplace( mode, command, 'Playlist replaced' );
-						}
-					} );
+					if ( GUI.display.plclear ) {
+						info( {
+							  title   : 'Replace Playlist'
+							, message : 'Replace current Playlist?'
+							, cancel  : 1
+							, ok      : function() {
+								addReplace( mode, command, 'Playlist replaced' );
+							}
+						} );
+					} else {
+						addReplace( mode, command, 'Playlist replaced' );
+					}
 				}
 			} else {
 				$.post( 'enhance.php', { mpc: command } );

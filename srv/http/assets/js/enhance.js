@@ -153,7 +153,7 @@ $( '#displaylibrary' ).click( function() {
 				+ displayCheckbox( 'count',       '<gr>text</gr> Count' )
 				+ displayCheckbox( 'label',       '<gr>text</gr> Label' )
 				+ displayCheckbox( 'coverfile',   'Cover art' )
-				+ displayCheckbox( 'contexticon', '<i class="fa fa-bars"></i>Context icon' )
+				+ displayCheckbox( 'plclear',     'Clear Playlist confirmation' )
 			+'</form>'
 		, cancel       : 1
 		, ok           : function () {
@@ -961,17 +961,24 @@ $( '#plcrop' ).click( function() {
 	} );
 } );
 $( '#plclear' ).click( function() {
-	info( {
-		  title   : 'Clear Playlist'
-		, message : 'Clear this playlist?'
-		, cancel  : 1
-		, ok      : function() {
-			GUI.status.playlistlength = 0;
-			renderPlaylist();
-			setPlaybackBlank();
-			$.post( 'enhance.php', { mpc: 'mpc clear' } );
-		}
-	} );
+	if ( GUI.display.plclear ) {
+		info( {
+			  title   : 'Clear Playlist'
+			, message : 'Clear this playlist?'
+			, cancel  : 1
+			, ok      : function() {
+				GUI.status.playlistlength = 0;
+				renderPlaylist();
+				setPlaybackBlank();
+				$.post( 'enhance.php', { mpc: 'mpc clear' } );
+			}
+		} );
+	} else {
+		GUI.status.playlistlength = 0;
+		renderPlaylist();
+		setPlaybackBlank();
+		$.post( 'enhance.php', { mpc: 'mpc clear' } );
+	}
 } );
 $( '#pl-filter' ).on( 'keyup', function() {
 	var search = $(this).val();
