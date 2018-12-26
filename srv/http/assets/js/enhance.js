@@ -181,7 +181,7 @@ $( '#displayplayback' ).click( function() {
 		, checkboxhtml : 
 			'<form id="displaysaveplayback">'
 				+ displayCheckbox( 'bars',         'Top-Bottom bars' )
-				+ ( GUI.display.bars ? displayCheckbox( 'barsauto',     'Bars on small screen' ) : '' )
+				+ displayCheckbox( 'barsauto',     'Bars on small screen' )
 				+ displayCheckbox( 'time',         'Time' )
 				+ displayCheckbox( 'radioelapsed', 'Webradio elapsed' )
 				+ displayCheckbox( 'coverart',     'Cover art' )
@@ -210,6 +210,8 @@ $( '#displayplayback' ).click( function() {
 			$.post( 'enhance.php', { setdisplay: GUI.display } );
 		}
 	} );
+	// disable by bars hide
+	if ( !GUI.display.bars ) setToggleButton( 'barsauto', '(auto)' );
 	// disable by mpd volume
 	if ( !GUI.display.volumempd ) setToggleButton( 'volume', '(disabled)' );
 	// disable by autohide
@@ -218,9 +220,6 @@ $( '#displayplayback' ).click( function() {
 		setToggleButton( 'coverlarge', '(auto)' );
 		setToggleButton( 'buttons', '(auto)' );
 	}
-	if ( window.innerWidth >= 500 ) return
-	
-	if ( window.innerHeight <= 515 ) setToggleButton( 'bars' );
 	if ( window.innerHeight <= 320 ) setToggleButton( 'buttons' );
 } );
 $( '#turnoff' ).click( function() {
@@ -500,33 +499,36 @@ $( '#coverTL' ).click( function() {
 } );
 var btnctrl = {
 	  timeTL : 'playsource-open'
-	, timeT  : 'guide'
-	, timeTR : 'menu'
-	, timeL  : 'previous'
-	, timeM  : 'play'
-	, timeBL : 'random'
-	, timeR  : 'next'
-	, timeB  : 'stop'
-	, timeBR : 'repeat'
-	, coverT : 'guide'
-	, coverTR: 'menu'
-	, coverL : 'previous'
-	, coverM : 'play'
-	, coverR : 'next'
-	, coverBL: 'random'
-	, coverB : 'stop'
-	, coverBR: 'repeat'
-	, volT   : 'volup'
-	, volL   : 'voldn'
-	, volM   : 'volumemute'
-	, volR   : 'volup'
-	, volB   : 'voldn'
+	, timeT   : 'guide'
+	, timeTR  : 'menu'
+	, timeL   : 'previous'
+	, timeM   : 'play'
+	, timeR   : 'next'
+	, timeBL  : 'random'
+	, timeB   : 'stop'
+	, timeBR  : 'repeat'
+	, coverTL : ''
+	, coverT  : 'guide'
+	, coverTR : 'menu'
+	, coverL  : 'previous'
+	, coverM  : 'play'
+	, coverR  : 'next'
+	, coverBL : 'random'
+	, coverB  : 'stop'
+	, coverBR : 'repeat'
+	, volT    : 'volup'
+	, volL    : 'voldn'
+	, volM    : 'volumemute'
+	, volR    : 'volup'
+	, volB    : 'voldn'
 }
 $( '.timemap, .covermap, .volmap' ).click( function() {
-	var id = this.id;
-	var cmd = btnctrl[ id ];
+	var cmd = btnctrl[ this.id ];
+	if ( GUI.display.coverart && $( this ).hasClass( 'timemap' ) || !cmd ) return
+	
 	if ( cmd === 'guide' ) {
-		$( '.controls, .controls1, .rs-tooltip, #imode' ).toggleClass( 'hide' );
+		$( '#controls-cover, #controls-vol, .rs-tooltip, #imode' ).toggleClass( 'hide' );
+		if ( !GUI.display.coverart ) $( '#controls-time, .controls1' ).toggleClass( 'hide' );
 		return
 	} else if ( cmd === 'menu' ) {
 		$( '#menu-settings' ).click();
