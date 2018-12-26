@@ -23,10 +23,6 @@ var GUI = { // outside '$( function() {' enable console.log access
 	, plugin       : ''
 	, status       : {}
 };
-// fix jquery.mobile swipe not work with Midori
-var $pageLibrary = GUI.midori ? new Hammer( document.getElementById( 'page-library' ) ) : $( '#page-library' );
-var $pagePlayback = GUI.midori ? new Hammer( document.getElementById( 'page-playback' ) ) : $( '#page-playback' );
-var $pagePlaylist = GUI.midori ? new Hammer( document.getElementById( 'page-playlist' ) ) : $( '#page-playlist' );
 
 PNotify.prototype.options.delay = 3000;
 PNotify.prototype.options.styling = 'fontawesome';
@@ -43,12 +39,24 @@ var blinkdot = '<a class="dot">.</a> <a class="dot dot2">.</a> <a class="dot dot
 
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+// fix jquery.mobile swipe not work with Midori - use hammer.js instead
+$pageLibrary = GUI.midori ? new Hammer( document.getElementById( 'page-library' ) ) : $( '#page-library' );
+$pagePlayback = GUI.midori ? new Hammer( document.getElementById( 'page-playback' ) ) : $( '#page-playback' );
+$pagePlaylist = GUI.midori ? new Hammer( document.getElementById( 'page-playlist' ) ) : $( '#page-playlist' );
+function libraryClick() { $( '#tab-library' ).click() }
+function playbackClick() { $( '#tab-playback' ).click() }
+function playlistClick() { $( '#tab-playlist' ).click() }
 
 GUI.local = 1; // suppress 2nd getPlaybackStatus() on load
 setTimeout( function() { GUI.local = 0 }, 500 );
 $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 	GUI.display = data;
 	if ( !GUI.display.contexticon ) $( 'head' ).append( '<style id="contexticoncss">.db-action, #pl-editor .pl-action { display: none }</style>' );
+	if ( !GUI.display.bars ) {
+		$pageLibrary.on( 'swiperight', playlistClick ).on( 'swipeleft', playbackClick );
+		$pagePlayback.on( 'swiperight', libraryClick ).on( 'swipeleft', playlistClick );
+		$pagePlaylist.on( 'swiperight', playbackClick ).on( 'swipeleft', libraryClick );
+	}
 	$.post( 'enhancestatus.php', function( status ) {
 		GUI.status = status;
 		setButton();
@@ -62,7 +70,6 @@ $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 }, 'json' );
     
 if ( document.location.hostname === 'localhost' ) $( '.osk-trigger' ).onScreenKeyboard( { 'draggable': true } );
-
 // PLAYBACK /////////////////////////////////////////////////////////////////////////////////////
 $( '.btn-cmd' ).click( function() {
 	var $this = $( this );
@@ -192,6 +199,14 @@ $( '#displayplayback' ).click( function() {
 			} );
 			if ( $( '#page-playback' ).hasClass( 'hide' ) ) $( '#tab-playback' ).click();
 			displayPlayback();
+			$pageLibrary.off( 'swiperight swipeleft' );
+			$pagePlayback.off( 'swiperight swipeleft' );
+			$pagePlaylist.off( 'swiperight swipeleft' );
+			if ( !GUI.display.bars ) {
+				$pageLibrary.on( 'swiperight', playlistClick ).on( 'swipeleft', playbackClick );
+				$pagePlayback.on( 'swiperight', libraryClick ).on( 'swipeleft', playlistClick );
+				$pagePlaylist.on( 'swiperight', playbackClick ).on( 'swipeleft', libraryClick );
+			}
 			$.post( 'enhance.php', { setdisplay: GUI.display } );
 		}
 	} );
@@ -233,10 +248,6 @@ $( '#turnoff' ).click( function() {
 	} );
 } );
 $( '#tab-library' ).click( function() {
-	if ( GUI.local ) return
-	
-	GUI.local = 1; // suppress 2nd firing
-	setTimeout( function() { GUI.local = 0 }, 500 );
 	if ( !Object.keys( GUI.libraryhome ).length ) return // wait for mpc data 
 	
 	if ( GUI.bookmarkedit ) {
@@ -267,19 +278,11 @@ $( '#tab-library' ).click( function() {
 	}
 } );
 $( '#tab-playback' ).click( function() {
-	if ( GUI.local ) return
-	
-	GUI.local = 1; // suppress 2nd firing
-	setTimeout( function() { GUI.local = 0 }, 500 );
 	setPageCurrent( 'playback' );
 	getPlaybackStatus();
 	if ( GUI.status.state === 'play' ) $( '#elapsed' ).empty(); // hide flashing
 } );
 $( '#tab-playlist' ).click( function() {
-	if ( GUI.local ) return
-	
-	GUI.local = 1; // suppress 2nd firing
-	setTimeout( function() { GUI.local = 0 }, 500 );
 	if ( !$( '#page-playlist' ).hasClass( 'hide' ) && GUI.pleditor ) GUI.pleditor = 0;
 	if ( GUI.status.activePlayer === 'Airplay' ) {
 		$( '#playsource' ).addClass( 'open' );

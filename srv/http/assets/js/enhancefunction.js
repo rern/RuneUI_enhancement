@@ -530,12 +530,6 @@ function displayTopBottom() {
 		$( '#db-list, #pl-list' ).css( 'padding', '40px 0' );
 		$( '.btnlist-top' ).css( 'top', 0 );
 		$( '#home-blocks' ).css( 'padding-top', '50px' );
-		function libraryClick() { $( '#tab-library' ).click() }
-		function playbackClick() { $( '#tab-playback' ).click() }
-		function playlistClick() { $( '#tab-playlist' ).click() }
-		$pageLibrary.on( 'swiperight', playlistClick ).on( 'swipeleft', playbackClick );
-		$pagePlayback.on( 'swiperight', libraryClick ).on( 'swipeleft', playlistClick );
-		$pagePlaylist.on( 'swiperight', playbackClick ).on( 'swipeleft', libraryClick );
 	} else {
 		$( '#menu-top, #menu-bottom' ).removeClass( 'hide' );
 		$( '#page-playback' ).css( 'padding-top', '40px' );
@@ -543,9 +537,6 @@ function displayTopBottom() {
 		$( '#db-list, #pl-list' ).css( 'padding', '' );
 		$( '.btnlist-top' ).css( 'top', '40px' );
 		$( '#home-blocks' ).css( 'padding-top', '' );
-		$pageLibrary.off( 'swiperight swipeleft' );
-		$pagePlayback.off( 'swiperight swipeleft' );
-		$pagePlaylist.off( 'swiperight swipeleft' );
 	}
 	$( '#debug' ).toggleClass( 'hide', GUI.display.debug === '' );
 	$( '#dev' ).toggleClass( 'hide', GUI.display.dev === '' );
