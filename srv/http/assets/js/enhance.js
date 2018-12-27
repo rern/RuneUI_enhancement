@@ -131,7 +131,6 @@ $( '#page-library, #page-playback, #page-playlist' ).click( function( e ) {
 	if ( !$( '#settings' ).hasClass( 'hide' ) && [ 'coverTR', 'timeTR' ].indexOf( e.target.id ) === -1 ) $( '#settings' ).addClass( 'hide' );
 } );
 $( '#displaylibrary' ).click( function() {
-	if( $( '#page-library' ).hasClass( 'hide' ) ) $( '#tab-library' ).click();
 	var coverfile = GUI.display.coverfile;
 	info( {
 		  icon         : 'library'
@@ -154,7 +153,7 @@ $( '#displaylibrary' ).click( function() {
 				+ displayCheckbox( 'label',       '<gr>text</gr> Label' )
 				+ displayCheckbox( 'contexticon', '<i class="fa fa-bars"></i>Context menu icon' )
 				+ displayCheckbox( 'coverfile',   'Cover art' )
-				+ displayCheckbox( 'tapaddplay',  'Tap Add <gr>►</gr> Play a song' )
+				+ displayCheckbox( 'tapaddplay',  'Tap Add <gr>►</gr> Play <gr>a song</gr>' )
 				+ displayCheckbox( 'plclear',     'Clear Playlist confirmation' )
 			+'</form>'
 		, cancel       : 1
@@ -171,6 +170,7 @@ $( '#displaylibrary' ).click( function() {
 					$( '.db-action' ).hide();
 				}
 			} );
+			if ( $( '#page-library' ).hasClass( 'hide' ) ) $( '#tab-library' ).click();
 			$.post( 'enhance.php', { setdisplay: GUI.display } );
 		}
 	} );
@@ -1048,12 +1048,12 @@ $( '#pl-entries' ).on( 'click', 'li', function( e ) {
 	}
 	
 	var $this = $( this );
-	var radio = $this.hasClass( 'radio' );
-	var $elcount = radio ? $( '#countradio' ) : $( '#countsong' );
+	var webradio = $this.hasClass( 'webradio' );
+	var $elcount = webradio ? $( '#countradio' ) : $( '#countsong' );
 	var count = $elcount.attr( 'count' ) - 1;
 	$elcount.attr( 'count', count ).text( count );
 	var time = +$( '#pltime' ).attr( 'time' ) - $this.find( '.time' ).attr( 'time' );
-	if ( !radio ) $( '#pltime' ).attr( 'time', time ).text( second2HMS( time ) );
+	if ( !webradio ) $( '#pltime' ).attr( 'time', time ).text( second2HMS( time ) );
 	if ( count === 0 ) {
 		$elcount.next().remove();
 		$elcount.remove();
@@ -1087,14 +1087,30 @@ $( '#pl-entries' ).on( 'click', 'li', function( e ) {
 } );
 $( '#pl-editor' ).on( 'click', 'li', function( e ) {
 	// in saved playlist
-	$thisli = $( this );
-		if ( $( e.target ).hasClass( 'pl-icon' ) || $thisli.find( '.fa-music' ).length ) {
+	var $thisli = $( this );
+	if ( $thisli.find( '.fa-music' ).length || $thisli.find( '.fa-webradio' ).length ) {
+		if ( !GUI.display.tapaddplay || $( e.target ).hasClass( 'pl-icon' ) ) {
 			$thisli.find( '.pl-action' ).click();
-			return
+		} else {
+			GUI.list = {};
+			GUI.list.li = $thisli; // for contextmenu
+			GUI.list.name = $thisli.find( '.liname' ).text();
+			GUI.list.path = $thisli.find( '.lipath' ).text();
+			var contextmenu = $thisli.find( '.pl-action' ).data( 'target' );
+			$( contextmenu ).find( 'a:eq( 1 )' ).click();
+			setTimeout( function() {
+				$thisli.removeClass( 'active' );
+				$( contextmenu ).addClass( 'hide' );
+			}, 0 );
+		}
+		return
 	}
 	
-	$( '#loader' ).removeClass( 'hide' );
-	renderSavedPlaylist( $( this ).find( 'span' ).text() );
+	if ( $( e.target ).hasClass( 'pl-icon' ) ) {
+		$thisli.find( '.pl-action' ).click();
+	} else {
+		renderSavedPlaylist( $( this ).find( 'span' ).text() );
+	}
 } );
 $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 	e.stopPropagation();

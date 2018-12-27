@@ -1494,20 +1494,20 @@ function htmlPlaylist( data ) {
 			path = value.path;
 		} else if ( value.file && value.file.slice( 0, 4 ) === 'http' ) {
 			var title = value.Title || value.file;
-			content += '<li class="radio">'
-					 +'<i class="fa fa-webradio '+ ( $( '#page-library' ).hasClass( 'hide' ) ? 'pl-icon' : 'db-icon' ) +'"></i>'+ ( $( '#page-library' ).hasClass( 'hide' ) ? '<i class="fa fa-minus-circle pl-action"></i>' : '' )
-					 +'<span class="sn">'+ title +'&ensp;<span class="elapsed"></span></span>'
-					 +'<span class="bl">'+ value.file +'</span>'
+			content += '<li class="webradio">'
+					  +'<i class="fa fa-webradio '+ ( $( '#page-library' ).hasClass( 'hide' ) ? 'pl-icon' : 'db-icon' ) +'"></i>'
+					  + ( $( '#page-library' ).hasClass( 'hide' ) ? '<i class="fa fa-minus-circle pl-action"></i>' : '' )
+					  +'<span class="sn">'+ title +'&ensp;<span class="elapsed"></span></span>'
+					  +'<span class="bl">'+ value.file +'</span>'
 			countradio++;
 		} else if ( value.Title ) {
 			sec = HMS2Second( value.Time );
 			pltime += sec;
 			if ( $( '#page-library' ).hasClass( 'hide' ) ) {
-				var actionhtml = '<i class="fa '+ ( GUI.pleditor ? 'fa-list-ul' : 'fa-minus-circle' ) +' pl-action"></i>';
 				if ( !GUI.pleditor ) {
 					var actionhtml = '<i class="fa fa-music pl-icon"></i><i class="fa fa-minus-circle pl-action"></i>';
 				} else {
-					var actionhtml = '<i class="fa fa-music pl-icon"></i><i class="fa fa-list-ul pl-action"></i>'
+					var actionhtml = '<i class="fa fa-music pl-icon"></i><i class="fa fa-list-ul pl-action" data-target="#context-menu-file"></i>'
 									+'<a class="lipath">'+ ( value.cue || value.file ) +'</a>'
 									+'<a class="liname">'+ value.Title +'</a>'
 									+'<a class="liindex">'+ value.index +'</a>';
@@ -1587,6 +1587,7 @@ function renderPlaylist() {
 function renderSavedPlaylist( name ) {
 	$( '.menu' ).addClass( 'hide' );
 	$.post( 'enhance.php', { getplaylist: 1, name: name.toString().replace( /"/g, '\\"' ) }, function( list ) {
+		console.log(list)
 		var data = htmlPlaylist( list.playlist );
 		var counthtml = '<wh><i class="fa fa-list-ul"></i></wh><bl class="title">'+ name +'<gr>&emsp;•</gr></bl>';
 		var countradiohtml = '<wh>&emsp;'+ data.countradio +'</wh>&ensp;<i class="fa fa-webradio"></i>';
