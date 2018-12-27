@@ -7,11 +7,11 @@ $( '.close-page' ).click( function() {
 	var path = location.pathname;
 	if ( path.match( /\/sources\/./ ) ) {
 		location.href = '/sources';
-	} else if ( path.match( /\/mpd\/*$/ ) && !$( '#mpdconf_editor' ).hasClass( 'hide' ) ) {
+	} else if ( $( '#mpdconf_editor' ).length && !$( '#mpdconf_editor' ).hasClass( 'hide' ) ) {
 		location.href = '/mpd';
 	} else if ( path.match( /\/network\/./ ) ) {
 		location.href = '/network';
-	} else if ( path.match( /\/accesspoint\/*$/ ) ) {
+	} else if ( path.match( /\/accesspoint/ ) ) {
 		location.href = '/network';
 	} else {
 		location.href = '/';
@@ -52,7 +52,7 @@ if ( path.match( /\/sources\/*$/ ) ) {
 	pushstreamIdle.addChannel( 'idle' );
 	pushstreamIdle.connect();
 
-} else if ( path.match( /\/sources\/add\/*$/ ) ) {
+} else if ( path.match( /\/sources\/add/ ) ) {
 	if ($('#mount-type').val() === 'nfs') {
 		$('#mount-cifs').addClass('disabled').children('.disabler').removeClass('hide');
 	}
@@ -98,7 +98,7 @@ if ( path.match( /\/sources\/*$/ ) ) {
 		$('#usb-umount').val(mountName);
 	});
 	
-} else if ( path.match( /\/mpd\/*$/ ) ) {
+} else if ( path.match( /\/mpd/ ) ) {
 	$('#audio-output-interface').change(function(){
 		new PNotify( {
 			  icon  : 'fa fa-cog fa-spin'
@@ -122,7 +122,7 @@ if ( path.match( /\/sources\/*$/ ) ) {
 		$('#manual-edit-warning').addClass('hide');
 	});
 	
-} else if ( path.match( /\/settings\/*$/ ) ) {
+} else if ( path.match( /\/settings/ ) ) {
 	$('#airplay').change(function(){
 		if ($(this).prop('checked')) {
 			$('#airplayName').removeClass('hide');
@@ -169,7 +169,7 @@ if ( path.match( /\/sources\/*$/ ) ) {
 		}
 	});
 	
-} else if ( path.match( /\/network\/*$/ ) ) {
+} else if ( path.match( /\/network/ ) ) { // all '/network/paths'
 	var netManualConf = $('#network-manual-config');
 	if ($('#dhcp').val() === '0') {
 		netManualConf.removeClass('hide');
@@ -279,7 +279,7 @@ if ( path.match( /\/sources\/*$/ ) ) {
 		}
 	});
 	
-} else if ( path.match( /\/accesspoint\/*$/ ) ) {
+} else if ( path.match( /\/accesspoint/ ) ) {
 	$('#accesspoint').change(function(){
 		if ($(this).prop('checked')) {
 			$('#accesspointSettings').removeClass('hide');
@@ -299,7 +299,7 @@ if ( path.match( /\/sources\/*$/ ) ) {
 		$('#dhcp-option-router').val($('#ip-address').val());
 	});
 	
-} else if ( path.match( /\/debug\/*$/ ) ) { // *** Important! ZeroClipboard will freeze if run while in browser DevTools mode ***
+} else if ( path.match( /\/debug/ ) ) { // *** Important! ZeroClipboard will freeze if run while in browser DevTools mode ***
 	ZeroClipboard.config({swfPath: '/assets/js/vendor/ZeroClipboard.swf'});
 	var client = new ZeroClipboard(document.getElementById('copy-to-clipboard'));
 	client.on('ready', function(readyEvent){
