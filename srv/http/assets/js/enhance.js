@@ -152,6 +152,7 @@ $( '#displaylibrary' ).click( function() {
 				+ displayCheckbox( 'jamendo',     '<i class="fa fa-jamendo"></i>Jamendo' )
 				+ displayCheckbox( 'count',       '<gr>text</gr> Count' )
 				+ displayCheckbox( 'label',       '<gr>text</gr> Label' )
+				+ displayCheckbox( 'contexticon', '<i class="fa fa-bars"></i>Context menu icon' )
 				+ displayCheckbox( 'coverfile',   'Cover art' )
 				+ displayCheckbox( 'plclear',     'Clear Playlist confirmation' )
 			+'</form>'
