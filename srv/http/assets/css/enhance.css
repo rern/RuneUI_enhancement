@@ -1853,9 +1853,6 @@ w {
 	}
 }
 @media(max-width: 540px) {
-	#page-playback {
-		padding-top: 40px;
-	}
 	#playback-row {
 		margin-top: 20px;
 	}
@@ -1878,10 +1875,6 @@ w {
 	}
 }
 @media(max-width: 500px) {
-	#menu-top,
-	#menu-bottom { 
-		display: none;
-	}
 	#divpos,
 	#sampling span,
 	#dot0 {
