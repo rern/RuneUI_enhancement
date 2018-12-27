@@ -576,8 +576,13 @@ function displayPlayback() {
 	} else {
 		var screenS = ( window.innerHeight < 590 || window.innerWidth < 500 );
 		if ( !GUI.display.bars || ( screenS && !GUI.display.barsauto ) ) {
-			var padding = '40px';
-			var margin = GUI.display.time ? 0 : '30px';
+			if ( screenS && !GUI.display.barsauto ) {
+				var padding = '40px';
+				var margin = GUI.display.time ? 0 : '30px';
+			} else {
+				var padding = '';
+				var margin = GUI.display.time ? '' : '30px';
+			}
 		} else {
 			var padding = '';
 			var margin = '';
