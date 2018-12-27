@@ -75,6 +75,12 @@ body {
 .fa {
 	font-family: enhance, Fontawesome;
 }
+.close-page {
+	float: right;
+	margin-top: 20px;
+	color: #0095d8;
+	cursor: pointer;
+}
 .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn){
 	width: auto;
 	min-width:220px
