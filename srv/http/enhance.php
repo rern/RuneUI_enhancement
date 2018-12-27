@@ -282,8 +282,9 @@ function list2array( $result, $webradioname = null ) {
 	$artist = $album = $genre = $composer = $albumartist = $file = '';
 	foreach( $lists as $list ) {
 		$list = explode( '^^', rtrim( $list ) );
-		$li[ 'Title' ] = $list[ 0 ] ? $list[ 0 ] : $webradioname[ $li[ 3 ] ] ?: $li[ 3 ];
+		$li[ 'Title' ] = $list[ 0 ] ? $list[ 0 ] : $webradioname[ $list[ 3 ] ];
 		if ( !$li[ 'Title' ] ) continue;
+		
 		$li[ 'Time' ] = $list[ 1 ];
 		$li[ 'track' ] = $list[ 2 ];
 		$li[ 'file' ] = $list[ 3 ];
