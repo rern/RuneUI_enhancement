@@ -13,7 +13,7 @@ pushstreams.display.onmessage = function( data ) {
 	if ( !$( '#page-playback' ).hasClass( 'hide' ) ) {
 		getPlaybackStatus();
 	} else if ( !$( '#page-library' ).hasClass( 'hide' ) && !$( '#home-blocks' ).hasClass( 'hide' ) ) {
-			renderLibrary();
+		renderLibrary();
 	} else {
 		displayTopBottom();
 	}
@@ -39,6 +39,8 @@ pushstreams.volume.onmessage = function( data ) {
 }
 pushstreams.library.onmessage = function( data ) {
 	GUI.libraryhome = data[ 0 ];
+	if ( GUI.local ) return
+	
 	if ( !$( '#home-blocks' ).hasClass( 'hide' ) && !GUI.local && !GUI.bookmarkedit ) renderLibrary();
 }
 pushstreams.playlist.onmessage = function( data ) {
@@ -534,10 +536,8 @@ function unmuteColor() {
 		.find( 'i' ).removeClass( 'fa-mute' ).addClass( 'fa-volume' );
 }
 function displayTopBottom() {
-	if ( GUI.local || !$( '#bio' ).hasClass( 'hide' ) ) return
+	if ( !$( '#bio' ).hasClass( 'hide' ) ) return
 	
-	GUI.local = 1; // suppress 2nd firing
-	setTimeout( function() { GUI.local = 0 }, 500 );
 	var screenS = ( window.innerHeight < 590 || window.innerWidth < 500 );
 	if ( !GUI.display.bars || ( screenS && !GUI.display.barsauto ) ) {
 		$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
@@ -550,6 +550,13 @@ function displayTopBottom() {
 		$( '.btnlist-top' ).css( 'top', '40px' );
 		$( '#home-blocks' ).css( 'padding-top', '' );
 	}
+	$( '#debug' ).toggleClass( 'hide', GUI.display.debug === '' );
+	$( '#dev' ).toggleClass( 'hide', GUI.display.dev === '' );
+	var menuH = ( $( '#settings a' ).length - $( '#settings a.hide' ).length ) * 41 - 1;
+	$( '#settings .menushadow' ).css( 'height', menuH +'px' );
+	$( '.menu' ).addClass( 'hide' );
+	
+	if ( $( '#page-playback' ).hasClass( 'hide' ) ) return
 	var screenS = ( window.innerHeight < 590 || window.innerWidth < 500 );
 	if ( $( '#menu-top' ).hasClass( 'hide' ) ) {
 		var padding = screenS ? '30px' : '';
@@ -567,30 +574,11 @@ function displayTopBottom() {
 		, 'margin-left' : ''
 		, 'margin-top'  : margin
 	} );
-	$( '#debug' ).toggleClass( 'hide', GUI.display.debug === '' );
-	$( '#dev' ).toggleClass( 'hide', GUI.display.dev === '' );
-	var menuH = ( $( '#settings a' ).length - $( '#settings a.hide' ).length ) * 41 - 1;
-	$( '#settings .menushadow' ).css( 'height', menuH +'px' );
-	$( '.menu' ).addClass( 'hide' );
 }
 function PlaybackCssOrder( el, ord ) {
 	el.css( { order: ord, '-webkit-order': ord } );
 }
 function displayPlayback() {
-	var wW = window.innerWidth;
-	var wH = window.innerHeight;
-	if ( ( wW < 750 && wW  > wH ) || wH < 475 ) {
-		var scale = wH > 475 ? wW / 800 : wH / 450;
-		$( '#page-playback' ).css( {
-			  transform          : 'scale( '+ scale +' )'
-			, 'transform-origin' : 'top'
-			, 'padding-top'      : 60 * scale +'px'
-		} );
-		$( '#playback-row' ).css( {
-			  width         : 100 / scale +'%'
-			, 'margin-left' : ( 100 / scale - 100 ) / -2 +'%'
-		} );
-	}
 	$( '#time-knob, #play-group' ).toggleClass( 'hide', GUI.display.time === '' );
 	$( '#coverart, #share-group' ).toggleClass( 'hide', GUI.display.coverart === '' );
 	var volume = ( GUI.display.volumempd && GUI.display.volume ) ? 1 : 0;
@@ -638,6 +626,20 @@ function displayPlayback() {
 		$( '#format-bitrate' ).css( 'display', 'block' );
 	}
 	displayTopBottom();
+	var wW = window.innerWidth;
+	var wH = window.innerHeight;
+	if ( ( wW < 750 && wW  > wH ) || wH < 475 ) {
+		var scale = wH > 475 ? wW / 800 : wH / 450;
+		$( '#page-playback' ).css( {
+			  transform          : 'scale( '+ scale +' )'
+			, 'transform-origin' : 'top'
+			, 'padding-top'      : 40 * scale +'px'
+		} );
+		$( '#playback-row' ).css( {
+			  width         : 100 / scale +'%'
+			, 'margin-left' : ( 100 / scale - 100 ) / -2 +'%'
+		} );
+	}
 }
 function displayAirPlay() {
 	$( '#playback-controls' ).addClass( 'hide' );
