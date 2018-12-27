@@ -154,6 +154,7 @@ $( '#displaylibrary' ).click( function() {
 				+ displayCheckbox( 'label',       '<gr>text</gr> Label' )
 				+ displayCheckbox( 'contexticon', '<i class="fa fa-bars"></i>Context menu icon' )
 				+ displayCheckbox( 'coverfile',   'Cover art' )
+				+ displayCheckbox( 'tapaddplay',  'Tap Add <gr>►</gr> Play a song' )
 				+ displayCheckbox( 'plclear',     'Clear Playlist confirmation' )
 			+'</form>'
 		, cancel       : 1
@@ -761,9 +762,22 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 		}
 	}
 	if ( $this.find( '.fa-music' ).length || $this.find( '.fa-webradio' ).length ) {
-		setTimeout( function() {
+		if ( !GUI.display.tapaddplay ) {
 			$this.find( 'i.db-action' ).click();
-		}, 0 );
+		} else {
+			$thisli = $( this );
+			if ( $thisli.hasClass( 'licover' ) || !$thisli.find( '.fa-music, .fa-webradio' ).length ) return
+			GUI.list = {};
+			GUI.list.path = $thisli.find( '.lipath' ).text();
+			GUI.list.name = $thisli.find( '.liname' ).text();
+			GUI.list.index = $thisli.find( '.liindex' ).text() || '';  // cue - in contextmenu
+			var contextmenu = $thisli.find( '.db-action' ).data( 'target' );
+			$( contextmenu ).find( 'a:eq( 1 )' ).click();
+			setTimeout( function() {
+				$thisli.removeClass( 'active' );
+				$( contextmenu ).addClass( 'hide' );
+			}, 0 );
+		}
 		return
 	}
 	
