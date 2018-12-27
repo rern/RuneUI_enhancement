@@ -626,11 +626,11 @@ function displayPlayback() {
 	var wH = window.innerHeight;
 	if ( ( wW < 750 && wW  > wH ) || wH < 475 ) {
 		var scale = wH > 475 ? wW / 800 : wH / 450;
-		var padding = $( '#menu-top' ).hasClass( 'hide' ) ? Math.round( 40 * scale ) : Math.round( 80 * scale );
+		var padding = $( '#menu-top' ).hasClass( 'hide' ) ? '40px' : '70px';
 		csspage[ 'transform' ] = 'scale( '+ scale +' )';
 		csspage[ 'transform-origin' ] = 'top';
-		csspage[ 'padding-top' ] = padding +'px';
-		csspage[ 'height' ] = 'calc( 100vh + '+ padding +'px )';
+		csspage[ 'padding-top' ] = padding;
+		csspage[ 'height' ] = 'calc( 100vh + '+ padding +' )';
 		cssrow[ 'width' ] = 100 / scale +'%';
 		cssrow[ 'margin-left' ] = ( 100 / scale - 100 ) / -2 +'%';
 	}
