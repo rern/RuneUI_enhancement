@@ -555,25 +555,6 @@ function displayTopBottom() {
 	var menuH = ( $( '#settings a' ).length - $( '#settings a.hide' ).length ) * 41 - 1;
 	$( '#settings .menushadow' ).css( 'height', menuH +'px' );
 	$( '.menu' ).addClass( 'hide' );
-	
-	if ( $( '#page-playback' ).hasClass( 'hide' ) ) return
-	var screenS = ( window.innerHeight < 590 || window.innerWidth < 500 );
-	if ( $( '#menu-top' ).hasClass( 'hide' ) ) {
-		var padding = screenS ? '30px' : '';
-		var margin = GUI.display.time ? ( screenS ? 0 : '' ) : '30px';
-	} else {
-		var padding = screenS ? '60px' : '';
-		var margin = GUI.display.time ? ( screenS ? 0 : '' ) : '30px';
-	}
-	$( '#page-playback' ).css( {
-		  transform          : ''
-		, 'padding-top'      : padding
-	} );
-	$( '#playback-row' ).css( {
-		  width         : ''
-		, 'margin-left' : ''
-		, 'margin-top'  : margin
-	} );
 }
 function PlaybackCssOrder( el, ord ) {
 	el.css( { order: ord, '-webkit-order': ord } );
@@ -626,6 +607,23 @@ function displayPlayback() {
 		$( '#format-bitrate' ).css( 'display', 'block' );
 	}
 	displayTopBottom();
+	var screenS = ( window.innerHeight < 590 || window.innerWidth < 500 );
+	if ( $( '#menu-top' ).hasClass( 'hide' ) ) {
+		var padding = screenS ? '30px' : '';
+		var margin = GUI.display.time ? ( screenS ? 0 : '' ) : '30px';
+	} else {
+		var padding = screenS ? '60px' : '';
+		var margin = GUI.display.time ? ( screenS ? 0 : '' ) : '30px';
+	}
+	$( '#page-playback' ).css( {
+		  transform          : ''
+		, 'padding-top'      : padding
+	} );
+	$( '#playback-row' ).css( {
+		  width         : ''
+		, 'margin-left' : ''
+		, 'margin-top'  : margin
+	} );
 	var wW = window.innerWidth;
 	var wH = window.innerHeight;
 	if ( ( wW < 750 && wW  > wH ) || wH < 475 ) {
@@ -633,7 +631,7 @@ function displayPlayback() {
 		$( '#page-playback' ).css( {
 			  transform          : 'scale( '+ scale +' )'
 			, 'transform-origin' : 'top'
-			, 'padding-top'      : 40 * scale +'px'
+			, 'padding-top'      : ( $( '#menu-top' ).hasClass( 'hide' ) ? 40 : 80 ) * scale +'px'
 		} );
 		$( '#playback-row' ).css( {
 			  width         : 100 / scale +'%'
