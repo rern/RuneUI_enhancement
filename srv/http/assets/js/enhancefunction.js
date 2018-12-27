@@ -519,20 +519,20 @@ function unmuteColor() {
 		.find( 'i' ).removeClass( 'fa-mute' ).addClass( 'fa-volume' );
 }
 function displayTopBottom() {
+	if ( GUI.local || !$( '#bio' ).hasClass( 'hide' ) ) return
+	
 	GUI.local = 1; // suppress 2nd firing
 	setTimeout( function() { GUI.local = 0 }, 500 );
-	if ( !$( '#bio' ).hasClass( 'hide' ) ) return
-	
 	var screenS = ( window.innerHeight < 590 || window.innerWidth < 500 );
 	if ( !GUI.display.bars || ( screenS && !GUI.display.barsauto ) ) {
 		$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
-		$( '#page-playback' ).css( 'padding-top', '' );
+		$( '#page-playback' ).css( 'padding-top', '40px' );
 		$( '#db-list, #pl-list' ).css( 'padding', '40px 0' );
 		$( '.btnlist-top' ).css( 'top', 0 );
 		$( '#home-blocks' ).css( 'padding-top', '50px' );
 	} else {
 		$( '#menu-top, #menu-bottom' ).removeClass( 'hide' );
-		$( '#page-playback' ).css( 'padding-top', '40px' );
+		$( '#page-playback' ).css( 'padding-top', '' );
 		$( '#page-playback' ).css( 'padding-top', '' );
 		$( '#db-list, #pl-list' ).css( 'padding', '' );
 		$( '.btnlist-top' ).css( 'top', '40px' );
@@ -635,7 +635,6 @@ function displayAirPlay() {
 		, 'border-radius': 0
 	} );
 	scrollLongText();
-	$( '#menu-top, #menu-bottom' ).toggleClass( 'hide', GUI.display.bars === '' );
 	$( '#playback-row' ).removeClass( 'hide' );
 	$( '#time-knob' ).toggleClass( 'hide', GUI.display.time === '' );
 	$( '#irandom, #irepeat, #posrandom, #posrepeat, #coverartoverlay, #volume-knob, #play-group, #share-group, #vol-group' ).addClass( 'hide' );
