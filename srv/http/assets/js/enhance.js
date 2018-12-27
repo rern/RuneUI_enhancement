@@ -21,7 +21,6 @@ var GUI = { // outside '$( function() {' enable console.log access
 	, pleditor     : 0
 	, plscrolltop  : 0
 	, plugin       : ''
-	, screenS      : ( window.innerHeight < 590 || window.innerWidth < 500 )
 	, status       : {}
 };
 
@@ -47,15 +46,16 @@ $pagePlaylist = GUI.midori ? new Hammer( document.getElementById( 'page-playlist
 
 GUI.local = 1; // suppress 2nd getPlaybackStatus() on load
 setTimeout( function() { GUI.local = 0 }, 500 );
-$.post( 'enhance.php', { getdisplay: 1, data: 1, onload : 1 }, function( data ) {
+$.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 	GUI.display = data;
 	if ( !GUI.display.contexticon ) $( 'head' ).append( '<style id="contexticoncss">.db-action, #pl-editor .pl-action { display: none }</style>' );
+	var screenS = ( window.innerHeight < 590 || window.innerWidth < 500 );
+	if ( !GUI.display.bars || ( screenS && !GUI.display.barsauto ) ) setSwipe();
 	$.post( 'enhancestatus.php', function( status ) {
 		GUI.status = status;
 		setButton();
 		renderPlayback();
 		displayPlayback();
-		if ( $( '#menu-top' ).hasClass( 'hide' ) ) setSwipe()
 		$( 'html, body' ).scrollTop( 0 );
 		$.post( 'enhance.php', { library: 1, data: 1 }, function( data ) {
 			GUI.libraryhome = data;
@@ -193,10 +193,11 @@ $( '#displayplayback' ).click( function() {
 			$( '#displaysaveplayback input' ).each( function() {
 				GUI.display[ this.name ] = this.checked ? 'checked' : '';
 			} );
+			$.post( 'enhance.php', { setdisplay: GUI.display }, function() {
+				displayPlayback();
+			} );
 			if ( $( '#page-playback' ).hasClass( 'hide' ) ) $( '#tab-playback' ).click();
-			displayPlayback();
 			setSwipe();
-			$.post( 'enhance.php', { setdisplay: GUI.display } );
 		}
 	} );
 	// disable by bars hide

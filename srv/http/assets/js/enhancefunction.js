@@ -13,12 +13,10 @@ pushstreams.display.onmessage = function( data ) {
 	if ( !$( '#page-playback' ).hasClass( 'hide' ) ) {
 		getPlaybackStatus();
 	} else if ( !$( '#page-library' ).hasClass( 'hide' ) && !$( '#home-blocks' ).hasClass( 'hide' ) ) {
-		renderLibrary();
-	}
-	setTimeout( function() {
+			renderLibrary();
+	} else {
 		displayTopBottom();
-		setSwipe();
-	}, 300 ); // fix: $( '#page-playback' ).css( 'padding-top', ...
+	}
 	if ( GUI.coverfile && $( '#home-blocks' ).hasClass( 'hide' ) ) {
 		if ( GUI.display.coverfile ) {
 			if ( !$( '.licover' ).length ) $( '#db-currentpath a:last-child' ).click();
@@ -27,6 +25,7 @@ pushstreams.display.onmessage = function( data ) {
 		}
 		if ( $( '#page-library' ).hasClass( 'hide' ) ) $( '#tab-library' ).click();
 	}
+	setSwipe();
 }
 pushstreams.volume.onmessage = function( data ) {
 	if ( GUI.local ) return
@@ -140,7 +139,8 @@ function setSwipe() {
 	$pageLibrary.off( 'swiperight swipeleft' );
 	$pagePlayback.off( 'swiperight swipeleft' );
 	$pagePlaylist.off( 'swiperight swipeleft' );
-	if ( $( '#menu-top' ).hasClass( 'hide' ) ) {
+	var screenS = ( window.innerHeight < 590 || window.innerWidth < 500 );
+	if ( !GUI.display.bars || ( screenS && !GUI.display.barsauto ) ) {
 		$pageLibrary.on( 'swiperight', playlistClick ).on( 'swipeleft', playbackClick );
 		$pagePlayback.on( 'swiperight', libraryClick ).on( 'swipeleft', playlistClick );
 		$pagePlaylist.on( 'swiperight', playbackClick ).on( 'swipeleft', libraryClick );
@@ -538,15 +538,14 @@ function displayTopBottom() {
 	
 	GUI.local = 1; // suppress 2nd firing
 	setTimeout( function() { GUI.local = 0 }, 500 );
-	if ( !GUI.display.bars || ( GUI.screenS && !GUI.display.barsauto ) ) {
+	var screenS = ( window.innerHeight < 590 || window.innerWidth < 500 );
+	if ( !GUI.display.bars || ( screenS && !GUI.display.barsauto ) ) {
 		$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
-		$( '#page-playback' ).css( 'padding-top', GUI.screenS ? '40px' : '' );
 		$( '#db-list, #pl-list' ).css( 'padding', '40px 0' );
 		$( '.btnlist-top' ).css( 'top', 0 );
 		$( '#home-blocks' ).css( 'padding-top', '50px' );
 	} else {
 		$( '#menu-top, #menu-bottom' ).removeClass( 'hide' );
-		$( '#page-playback' ).css( 'padding-top', '' );
 		$( '#db-list, #pl-list' ).css( 'padding', '' );
 		$( '.btnlist-top' ).css( 'top', '40px' );
 		$( '#home-blocks' ).css( 'padding-top', '' );
@@ -575,13 +574,22 @@ function displayPlayback() {
 			, 'margin-left' : ( 100 / scale - 100 ) / -2 +'%'
 		} );
 	} else {
+		var screenS = ( window.innerHeight < 590 || window.innerWidth < 500 );
+		if ( !GUI.display.bars || ( screenS && !GUI.display.barsauto ) ) {
+			var padding = '40px';
+			var margin = GUI.display.time ? 0 : '30px';
+		} else {
+			var padding = '';
+			var margin = '';
+		}
 		$( '#page-playback' ).css( {
 			  transform          : ''
-			, 'padding-top'      : ''
+			, 'padding-top'      : padding
 		} );
 		$( '#playback-row' ).css( {
 			  width         : ''
 			, 'margin-left' : ''
+			, 'margin-top'  : margin
 		} );
 	}
 	$( '#time-knob, #play-group' ).toggleClass( 'hide', GUI.display.time === '' );
@@ -626,11 +634,11 @@ function displayPlayback() {
 	if ( GUI.display.time ) {
 		$( '#divpos' ).css( 'font-size', '' );
 		$( '#timepos' ).empty();
-		$( '#playback-row' ).css( 'margin-top', '' );
+//		$( '#playback-row' ).css( 'margin-top', '' );
 	} else {
 		$( '#divpos' ).css( 'font-size', '20px' );
 		$( '#format-bitrate' ).css( 'display', 'block' );
-		$( '#playback-row' ).css( 'margin-top', '30px' );
+//		$( '#playback-row' ).css( 'margin-top', '30px' );
 	}
 	displayTopBottom();
 }
@@ -1599,7 +1607,6 @@ function renderPlaylist() {
 function renderSavedPlaylist( name ) {
 	$( '.menu' ).addClass( 'hide' );
 	$.post( 'enhance.php', { getplaylist: 1, name: name.toString().replace( /"/g, '\\"' ) }, function( list ) {
-		console.log(list)
 		var data = htmlPlaylist( list.playlist );
 		var counthtml = '<wh><i class="fa fa-list-ul"></i></wh><bl class="title">'+ name +'<gr>&emsp;•</gr></bl>';
 		var countradiohtml = '<wh>&emsp;'+ data.countradio +'</wh>&ensp;<i class="fa fa-webradio"></i>';
