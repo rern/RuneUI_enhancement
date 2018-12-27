@@ -1957,6 +1957,10 @@ w {
 	}
 }
 @media(max-width: 400px) {
+	#playback-controls {
+		width: 270px;
+		margin: 0 0 0 -135px;
+	}
 	#playback-controls button {
 		margin: 0 5px;
 	}
