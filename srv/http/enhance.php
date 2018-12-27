@@ -137,8 +137,11 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	pushstream( 'display', $data );
 } else if ( isset( $_POST[ 'library' ] ) ) {
 	$status = getLibrary();
-	if ( isset( $_POST[ 'data' ] ) ) echo json_encode( $status, JSON_NUMERIC_CHECK );
-	pushstream( 'library', $status );
+	if ( isset( $_POST[ 'data' ] ) ) {
+		echo json_encode( $status, JSON_NUMERIC_CHECK );
+	} else {
+		pushstream( 'library', $status );
+	}
 } else if ( isset( $_POST[ 'volume' ] ) ) {
 	$volume = $_POST[ 'volume' ];
 	$volumemute = $redis->hGet( 'display', 'volumemute' );
