@@ -283,7 +283,7 @@ function list2array( $result, $webradioname = null ) {
 	foreach( $lists as $list ) {
 		$list = explode( '^^', rtrim( $list ) );
 		$li[ 'Title' ] = $list[ 0 ] ? $list[ 0 ] : $webradioname[ $list[ 3 ] ];
-		if ( !$li[ 'Title' ] ) continue;
+		if ( !$li[ 'Title' ] ) continue; // skip *.cue
 		
 		$li[ 'Time' ] = $list[ 1 ];
 		$li[ 'track' ] = $list[ 2 ];
