@@ -550,6 +550,23 @@ function displayTopBottom() {
 		$( '.btnlist-top' ).css( 'top', '40px' );
 		$( '#home-blocks' ).css( 'padding-top', '' );
 	}
+	var screenS = ( window.innerHeight < 590 || window.innerWidth < 500 );
+	if ( $( '#menu-top' ).hasClass( 'hide' ) ) {
+		var padding = screenS ? '30px' : '';
+		var margin = GUI.display.time ? ( screenS ? 0 : '' ) : '30px';
+	} else {
+		var padding = screenS ? '60px' : '';
+		var margin = GUI.display.time ? ( screenS ? 0 : '' ) : '30px';
+	}
+	$( '#page-playback' ).css( {
+		  transform          : ''
+		, 'padding-top'      : padding
+	} );
+	$( '#playback-row' ).css( {
+		  width         : ''
+		, 'margin-left' : ''
+		, 'margin-top'  : margin
+	} );
 	$( '#debug' ).toggleClass( 'hide', GUI.display.debug === '' );
 	$( '#dev' ).toggleClass( 'hide', GUI.display.dev === '' );
 	var menuH = ( $( '#settings a' ).length - $( '#settings a.hide' ).length ) * 41 - 1;
@@ -572,29 +589,6 @@ function displayPlayback() {
 		$( '#playback-row' ).css( {
 			  width         : 100 / scale +'%'
 			, 'margin-left' : ( 100 / scale - 100 ) / -2 +'%'
-		} );
-	} else {
-		var screenS = ( window.innerHeight < 590 || window.innerWidth < 500 );
-		if ( !GUI.display.bars || ( screenS && !GUI.display.barsauto ) ) {
-			if ( screenS && !GUI.display.barsauto ) {
-				var padding = '40px';
-				var margin = GUI.display.time ? 0 : '30px';
-			} else {
-				var padding = '';
-				var margin = GUI.display.time ? '' : '30px';
-			}
-		} else {
-			var padding = '';
-			var margin = '';
-		}
-		$( '#page-playback' ).css( {
-			  transform          : ''
-			, 'padding-top'      : padding
-		} );
-		$( '#playback-row' ).css( {
-			  width         : ''
-			, 'margin-left' : ''
-			, 'margin-top'  : margin
 		} );
 	}
 	$( '#time-knob, #play-group' ).toggleClass( 'hide', GUI.display.time === '' );
@@ -639,11 +633,9 @@ function displayPlayback() {
 	if ( GUI.display.time ) {
 		$( '#divpos' ).css( 'font-size', '' );
 		$( '#timepos' ).empty();
-//		$( '#playback-row' ).css( 'margin-top', '' );
 	} else {
 		$( '#divpos' ).css( 'font-size', '20px' );
 		$( '#format-bitrate' ).css( 'display', 'block' );
-//		$( '#playback-row' ).css( 'margin-top', '30px' );
 	}
 	displayTopBottom();
 }
