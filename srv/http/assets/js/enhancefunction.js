@@ -13,10 +13,12 @@ pushstreams.display.onmessage = function( data ) {
 	if ( !$( '#page-playback' ).hasClass( 'hide' ) ) {
 		getPlaybackStatus();
 	} else if ( !$( '#page-library' ).hasClass( 'hide' ) && !$( '#home-blocks' ).hasClass( 'hide' ) ) {
-			renderLibrary();
-	} else {
-		displayTopBottom();
+		renderLibrary();
 	}
+	setTimeout( function() {
+		displayTopBottom();
+		setSwipe();
+	}, 300 ); // fix: $( '#page-playback' ).css( 'padding-top', ...
 	if ( GUI.coverfile && $( '#home-blocks' ).hasClass( 'hide' ) ) {
 		if ( GUI.display.coverfile ) {
 			if ( !$( '.licover' ).length ) $( '#db-currentpath a:last-child' ).click();
@@ -131,6 +133,19 @@ $.each( streams, function( i, stream ) {
 	pushstreams[ stream ].connect();
 } );
 
+function libraryClick() { $( '#tab-library' ).click() }
+function playbackClick() { $( '#tab-playback' ).click() }
+function playlistClick() { $( '#tab-playlist' ).click() }
+function setSwipe() {
+	$pageLibrary.off( 'swiperight swipeleft' );
+	$pagePlayback.off( 'swiperight swipeleft' );
+	$pagePlaylist.off( 'swiperight swipeleft' );
+	if ( $( '#menu-top' ).hasClass( 'hide' ) ) {
+		$pageLibrary.on( 'swiperight', playlistClick ).on( 'swipeleft', playbackClick );
+		$pagePlayback.on( 'swiperight', libraryClick ).on( 'swipeleft', playlistClick );
+		$pagePlaylist.on( 'swiperight', playbackClick ).on( 'swipeleft', libraryClick );
+	}
+}
 function setPageCurrent( panel ) {
 	clearInterval( GUI.intKnob );
 	clearInterval( GUI.intElapsed );
@@ -523,16 +538,14 @@ function displayTopBottom() {
 	
 	GUI.local = 1; // suppress 2nd firing
 	setTimeout( function() { GUI.local = 0 }, 500 );
-	var screenS = ( window.innerHeight < 590 || window.innerWidth < 500 );
-	if ( !GUI.display.bars || ( screenS && !GUI.display.barsauto ) ) {
+	if ( !GUI.display.bars || ( GUI.screenS && !GUI.display.barsauto ) ) {
 		$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
-		$( '#page-playback' ).css( 'padding-top', '40px' );
+		$( '#page-playback' ).css( 'padding-top', GUI.screenS ? '40px' : '' );
 		$( '#db-list, #pl-list' ).css( 'padding', '40px 0' );
 		$( '.btnlist-top' ).css( 'top', 0 );
 		$( '#home-blocks' ).css( 'padding-top', '50px' );
 	} else {
 		$( '#menu-top, #menu-bottom' ).removeClass( 'hide' );
-		$( '#page-playback' ).css( 'padding-top', '' );
 		$( '#page-playback' ).css( 'padding-top', '' );
 		$( '#db-list, #pl-list' ).css( 'padding', '' );
 		$( '.btnlist-top' ).css( 'top', '40px' );

@@ -21,6 +21,7 @@ var GUI = { // outside '$( function() {' enable console.log access
 	, pleditor     : 0
 	, plscrolltop  : 0
 	, plugin       : ''
+	, screenS      : ( window.innerHeight < 590 || window.innerWidth < 500 )
 	, status       : {}
 };
 
@@ -43,25 +44,18 @@ $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 $pageLibrary = GUI.midori ? new Hammer( document.getElementById( 'page-library' ) ) : $( '#page-library' );
 $pagePlayback = GUI.midori ? new Hammer( document.getElementById( 'page-playback' ) ) : $( '#page-playback' );
 $pagePlaylist = GUI.midori ? new Hammer( document.getElementById( 'page-playlist' ) ) : $( '#page-playlist' );
-function libraryClick() { $( '#tab-library' ).click() }
-function playbackClick() { $( '#tab-playback' ).click() }
-function playlistClick() { $( '#tab-playlist' ).click() }
 
 GUI.local = 1; // suppress 2nd getPlaybackStatus() on load
 setTimeout( function() { GUI.local = 0 }, 500 );
-$.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
+$.post( 'enhance.php', { getdisplay: 1, data: 1, onload : 1 }, function( data ) {
 	GUI.display = data;
 	if ( !GUI.display.contexticon ) $( 'head' ).append( '<style id="contexticoncss">.db-action, #pl-editor .pl-action { display: none }</style>' );
-	if ( !GUI.display.bars || ( window.innerHeight < 590 || window.innerWidth < 500 ) ) {
-		$pageLibrary.on( 'swiperight', playlistClick ).on( 'swipeleft', playbackClick );
-		$pagePlayback.on( 'swiperight', libraryClick ).on( 'swipeleft', playlistClick );
-		$pagePlaylist.on( 'swiperight', playbackClick ).on( 'swipeleft', libraryClick );
-	}
 	$.post( 'enhancestatus.php', function( status ) {
 		GUI.status = status;
 		setButton();
 		renderPlayback();
 		displayPlayback();
+		if ( $( '#menu-top' ).hasClass( 'hide' ) ) setSwipe()
 		$( 'html, body' ).scrollTop( 0 );
 		$.post( 'enhance.php', { library: 1, data: 1 }, function( data ) {
 			GUI.libraryhome = data;
@@ -201,14 +195,7 @@ $( '#displayplayback' ).click( function() {
 			} );
 			if ( $( '#page-playback' ).hasClass( 'hide' ) ) $( '#tab-playback' ).click();
 			displayPlayback();
-			$pageLibrary.off( 'swiperight swipeleft' );
-			$pagePlayback.off( 'swiperight swipeleft' );
-			$pagePlaylist.off( 'swiperight swipeleft' );
-			if ( !GUI.display.bars ) {
-				$pageLibrary.on( 'swiperight', playlistClick ).on( 'swipeleft', playbackClick );
-				$pagePlayback.on( 'swiperight', libraryClick ).on( 'swipeleft', playlistClick );
-				$pagePlaylist.on( 'swiperight', playbackClick ).on( 'swipeleft', libraryClick );
-			}
+			setSwipe();
 			$.post( 'enhance.php', { setdisplay: GUI.display } );
 		}
 	} );
