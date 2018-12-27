@@ -127,7 +127,7 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	$data = $redis->hGetAll( 'display' );
 	$data[ 'volumempd' ] = $redis->get( 'volume' );
 	if ( isset( $_POST[ 'data' ] ) ) echo json_encode( $data, JSON_NUMERIC_CHECK );
-	// suppress initial page load
+	// suppress initial page load on other devices
 	if ( !isset( $_POST[ 'onload' ] ) ) pushstream( 'display', $data );
 } else if ( isset( $_POST[ 'setdisplay' ] ) ) {
 	$data = $_POST[ 'setdisplay' ];
