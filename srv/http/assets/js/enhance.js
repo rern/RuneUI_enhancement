@@ -52,7 +52,7 @@ setTimeout( function() { GUI.local = 0 }, 500 );
 $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 	GUI.display = data;
 	if ( !GUI.display.contexticon ) $( 'head' ).append( '<style id="contexticoncss">.db-action, #pl-editor .pl-action { display: none }</style>' );
-	if ( !GUI.display.bars ) {
+	if ( !GUI.display.bars || ( window.innerHeight < 590 || window.innerWidth < 500 ) ) {
 		$pageLibrary.on( 'swiperight', playlistClick ).on( 'swipeleft', playbackClick );
 		$pagePlayback.on( 'swiperight', libraryClick ).on( 'swipeleft', playlistClick );
 		$pagePlaylist.on( 'swiperight', playbackClick ).on( 'swipeleft', libraryClick );
