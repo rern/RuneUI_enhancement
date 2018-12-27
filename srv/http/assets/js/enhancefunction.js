@@ -615,29 +615,25 @@ function displayPlayback() {
 		var padding = screenS ? '60px' : '';
 		var margin = GUI.display.time ? ( screenS ? 0 : '' ) : '30px';
 	}
-	$( '#page-playback' ).css( {
-		  transform          : ''
-		, 'padding-top'      : padding
-	} );
-	$( '#playback-row' ).css( {
-		  width         : ''
-		, 'margin-left' : ''
-		, 'margin-top'  : margin
-	} );
+	var csspage = {};
+	var cssrow = {};
+	csspage[ 'transform' ] = '';
+	csspage[ 'padding-top' ] = padding;
+	cssrow[ 'width' ] = '';
+	cssrow[ 'margin-left' ] = '';
+	cssrow[ 'margin-top' ] = margin;
 	var wW = window.innerWidth;
 	var wH = window.innerHeight;
 	if ( ( wW < 750 && wW  > wH ) || wH < 475 ) {
 		var scale = wH > 475 ? wW / 800 : wH / 450;
-		$( '#page-playback' ).css( {
-			  transform          : 'scale( '+ scale +' )'
-			, 'transform-origin' : 'top'
-			, 'padding-top'      : ( $( '#menu-top' ).hasClass( 'hide' ) ? 40 : 80 ) * scale +'px'
-		} );
-		$( '#playback-row' ).css( {
-			  width         : 100 / scale +'%'
-			, 'margin-left' : ( 100 / scale - 100 ) / -2 +'%'
-		} );
+		csspage[ 'transform' ] = 'scale( '+ scale +' )';
+		csspage[ 'transform-origin' ] = 'top';
+		csspage[ 'padding-top' ] = ( $( '#menu-top' ).hasClass( 'hide' ) ? 40 : 80 ) * scale +'px';
+		cssrow[ 'width' ] = 100 / scale +'%';
+		cssrow[ 'margin-left' ] = ( 100 / scale - 100 ) / -2 +'%';
 	}
+	$( '#page-playback' ).css( csspage );
+	$( '#playback-row' ).css( cssrow );
 }
 function displayAirPlay() {
 	$( '#playback-controls' ).addClass( 'hide' );
