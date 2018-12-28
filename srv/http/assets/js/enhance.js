@@ -1034,6 +1034,7 @@ $( '#pl-entries' ).on( 'click', 'li', function( e ) {
 	var time = +$( '#pltime' ).attr( 'time' ) - $this.find( '.time' ).attr( 'time' );
 	if ( !webradio ) $( '#pltime' ).attr( 'time', time ).text( second2HMS( time ) );
 	if ( count === 0 ) {
+		$( '#pl-count' ).find( 'gr:contains(•)' ).remove();
 		$elcount.next().remove();
 		$elcount.remove();
 		if ( $elcount[ 0 ].id === 'countradio' ) {
@@ -1041,11 +1042,6 @@ $( '#pl-entries' ).on( 'click', 'li', function( e ) {
 		} else {
 			$( '#pltime' ).remove();
 		}
-	}
-	if ( $( '#countradio' ).attr( 'count' ) === '0' ) {
-		$( '#pltime' ).css( 'color', '#e0e7ee' );
-		$( '#countradio' ).next().remove();
-		$( '#countradio' ).remove();
 	}
 	if ( $this.hasClass( 'active' ) ) {
 		if ( $this.index() + 1 < $this.siblings().length ) {
@@ -1106,15 +1102,15 @@ $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 		return
 	}
 	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
-	var $contextmenu = GUI.list.isfile ? $( '#context-menu-file' ) : $( '#context-menu-playlist' );
-	var contextnum = $contextmenu.find( 'a:not(.hide)' ).length;
+	var contextmenu = $thisli.find( '.pl-action' ).data( 'target' );
+	var contextnum = $( contextmenu ).find( 'a:not(.hide)' ).length;
 	$( '.menushadow' ).css( 'height', contextnum * 41 - 1 );
 	$( '#pl-editor li' ).removeClass( 'active' );
 	$thisli.addClass( 'active' );
-	$contextmenu
+	$( contextmenu )
 		.removeClass( 'hide' )
 		.css( 'top', ( $thisli.position().top + 49 ) +'px' );
-	var targetB = $contextmenu.offset().top + 246;
+	var targetB = $( contextmenu ).offset().top + 246;
 	var wH = window.innerHeight;
 	if ( targetB > wH + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + ( GUI.display.bars ? 42 : 0 ) } );
 } );

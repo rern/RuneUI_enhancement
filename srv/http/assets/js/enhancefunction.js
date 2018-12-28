@@ -1517,8 +1517,8 @@ function htmlPlaylist( data ) {
 		} else if ( value.file && value.file.slice( 0, 4 ) === 'http' ) {
 			var title = value.Title || value.file;
 			content += '<li class="webradio">'
-					  +'<i class="fa fa-webradio '+ ( $( '#page-library' ).hasClass( 'hide' ) ? 'pl-icon' : 'db-icon' ) +'"></i>'
-					  + ( $( '#page-library' ).hasClass( 'hide' ) ? '<i class="fa fa-minus-circle pl-action"></i>' : '' )
+					  +'<i class="fa fa-webradio pl-icon"></i>'
+					  + ( GUI.pleditor ? '<i class="fa fa-bars pl-action" data-target="#context-menu-webradiopl"></i>' : '<i class="fa fa-minus-circle pl-action"></i>' )
 					  +'<span class="sn">'+ title +'&ensp;<span class="elapsed"></span></span>'
 					  +'<span class="bl">'+ value.file +'</span>'
 			countradio++;
@@ -1529,7 +1529,7 @@ function htmlPlaylist( data ) {
 				if ( !GUI.pleditor ) {
 					var actionhtml = '<i class="fa fa-music pl-icon"></i><i class="fa fa-minus-circle pl-action"></i>';
 				} else {
-					var actionhtml = '<i class="fa fa-music pl-icon"></i><i class="fa fa-list-ul pl-action" data-target="#context-menu-file"></i>'
+					var actionhtml = '<i class="fa fa-music pl-icon"></i><i class="fa fa-bars pl-action" data-target="#context-menu-file"></i>'
 									+'<a class="lipath">'+ ( value.cue || value.file ) +'</a>'
 									+'<a class="liname">'+ value.Title +'</a>'
 									+'<a class="liindex">'+ value.index +'</a>';
@@ -1591,8 +1591,8 @@ function renderPlaylist() {
 	var counthtml = '<bl class="title">PLAYLIST<gr>·</gr></bl>';
 	var countradiohtml = '<wh id="countradio" count="'+ data.countradio +'">'+ data.countradio +'</wh>&ensp;<i class="fa fa-webradio"></i>';
 	if ( data.countsong ) {
-		var pltimehtml = ' id="pltime" time="'+ data.pltime +'">'+ second2HMS( data.pltime ) +'&emsp;';
-		var totalhtml = data.countradio ? '<gr'+ pltimehtml +'</gr>'+ countradiohtml : '<wh'+ pltimehtml +'&emsp;</wh>';
+		var pltimehtml = ' id="pltime" time="'+ data.pltime +'">'+ second2HMS( data.pltime );
+		var totalhtml = data.countradio ? '<gr'+ pltimehtml +'</gr> <gr>•</gr> '+ countradiohtml : '<wh'+ pltimehtml +'</wh>';
 		counthtml += '<wh id="countsong" count="'+ data.countsong +'">'+ numFormat( data.countsong ) +'</wh>&ensp;<i class="fa fa-music"></i>&ensp;'+ totalhtml;
 	} else {
 		counthtml += countradiohtml;
