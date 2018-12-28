@@ -1242,6 +1242,10 @@ wh, gr { font-weight: 300; }
 	text-align: center;
 	font-size: 24px;
 }
+#pl-currentpath .fa-music,
+#pl-currentpath .fa-webradio {
+	width: 24px;
+}
 #db-home:hover,
 #pl-home:hover {
 	background: #0072a5;
