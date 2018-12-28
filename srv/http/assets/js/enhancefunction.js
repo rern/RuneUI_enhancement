@@ -56,11 +56,13 @@ pushstreams.playlist.onmessage = function( data ) {
 var timeoutUpdate;
 pushstreams.idle.onmessage = function( changed ) {
 	var changed = changed[ 0 ];
+	console.log(changed)
 	if ( changed === 'player' ) { // on track changed
 		if ( !$( '#page-playlist' ).hasClass( 'hide' ) && !GUI.pleditor ) {
 			setPlaylistScroll();
 		} else {
 			getPlaybackStatus();
+			$( '#previous, #next' ).removeClass( 'btn-primary' );
 		}
 	} else if ( changed === 'playlist' ) { // on playlist changed
 		if ( GUI.pleditor || GUI.local ) return
@@ -475,7 +477,10 @@ function renderPlayback() {
 }
 
 function getPlaybackStatus() {
-	//if ( GUI.local ) return; // suppress 2nd firing from 'pushstreams.idle.onmessage'
+	if ( GUI.local ) return; // suppress 2nd firing from initial 'pushstreams.idle.onmessage'
+	
+	GUI.local = 1;
+	setTimeout( function() { GUI.local = 0 }, 500 );
 	if ( !$( '#page-playlist' ).hasClass( 'hide' ) && !GUI.pleditor ) {
 		setPlaylistScroll();
 		return
