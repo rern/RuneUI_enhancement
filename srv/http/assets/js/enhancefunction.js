@@ -179,7 +179,7 @@ function setButtonToggle() {
 	if ( GUI.local ) return
 	
 	var timehide = $( '#time-knob' ).hasClass( 'hide' );
-	if ( $( '#play-group' ).is( ':visible' ) ) {
+	if ( !$( '#play-group' ).hasClass( 'hide' ) ) {
 		$( '#irandom' ).addClass( 'hide' )
 		$( '#irepeat' ).attr( 'class', 'fa hide' );
 		if ( timehide ) {
