@@ -222,8 +222,8 @@ function menucommon( $add, $addplay, $replace, $replaceplay ) {
 }
 function menucommonsp( $type ) {
 	$htmlcommon = '<span class="menushadow"></span>';
-	$htmlcommon.= menuli( 'spadd',            'plus-o',            'Add',              $type );
-	$htmlcommon.= menuli( 'spaddplay',        'play-plus-o',       'Add ► Play',     $type );
+	$htmlcommon.= menuli( 'spadd',         'plus-o',            'Add',            $type );
+	$htmlcommon.= menuli( 'spaddplay',     'play-plus-o',       'Add ► Play',     $type );
 	$htmlcommon.= menuli( 'spreplaceplay', 'play-plus-refresh', 'Replace ► Play', $type );
 	return $htmlcommon;
 }
@@ -262,6 +262,10 @@ $html = menucommon( 'wradd', 'wraddplay', 'wrreplace', 'wrreplaceplay' );
 $html.= menuli( 'wrrename', 'edit-circle',  'Rename' );
 $html.= menuli( 'wrdelete', 'minus-circle', 'Delete' );
 $menu.= menudiv( 'webradio', $html );
+$menudiv = '';
+
+$html = menucommon( 'wradd', 'wraddplay', 'wrreplace', 'wrreplaceplay' );
+$menu.= menudiv( 'webradiopl', $html );
 $menudiv = '';
 
 $html = '<span class="menushadow"></span>';
