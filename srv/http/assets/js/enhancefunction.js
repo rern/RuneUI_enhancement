@@ -56,7 +56,6 @@ pushstreams.playlist.onmessage = function( data ) {
 var timeoutUpdate;
 pushstreams.idle.onmessage = function( changed ) {
 	var changed = changed[ 0 ];
-	console.log(changed)
 	if ( changed === 'player' ) { // on track changed
 		if ( !$( '#page-playlist' ).hasClass( 'hide' ) && !GUI.pleditor ) {
 			setPlaylistScroll();
