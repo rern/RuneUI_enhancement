@@ -50,9 +50,9 @@
 		</div>
 		<div id="play-group">
 			<div class="btn-group">
-				<button id="repeat" class="btn btn-default btn-lg btn-cmd btn-toggle" type="button" data-cmd="repeat"><i class="fa fa-repeat"></i></button>
-				<button id="random" class="btn btn-default btn-lg btn-cmd btn-toggle" type="button" data-cmd="random"><i class="fa fa-random"></i></button>
-				<button id="single" class="btn btn-default btn-lg btn-cmd btn-toggle <?php if ($this->activePlayer === 'Spotify'): ?>disabled<?php endif; ?>" type="button" data-cmd="single"><i class="fa fa-single"></i></button>
+				<button id="repeat" class="btn btn-default btn-lg btn-cmd btn-toggle" type="button"><i class="fa fa-repeat"></i></button>
+				<button id="random" class="btn btn-default btn-lg btn-cmd btn-toggle" type="button"><i class="fa fa-random"></i></button>
+				<button id="single" class="btn btn-default btn-lg btn-cmd btn-toggle <?php if ($this->activePlayer === 'Spotify'): ?>disabled<?php endif; ?>" type="button"><i class="fa fa-single"></i></button>
 			</div>
 		</div>
 		<div id="coverart">
@@ -267,6 +267,7 @@ $menudiv = '';
 $html = '<span class="menushadow"></span>';
 $html.= menuli( 'pladd',         'plus-o',            'Add' );
 $html.= menuli( 'pladdplay',     'play-plus-o',       'Add ► Play' );
+$html.= menuli( 'plashuffle',    'random',            '+Random ► Play' );
 $html.= menuli( 'plreplace',     'plus-refresh',      'Replace' );
 $html.= menuli( 'plreplaceplay', 'play-plus-refresh', 'Replace ► Play' );
 $html.= menuli( 'plrename',      'edit-circle',       'Rename' );

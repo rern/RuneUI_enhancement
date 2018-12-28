@@ -127,11 +127,11 @@ if ( empty( $this->uri(1) ) ) { ?>
 <div id="menu-top" class="hide">
 <i id="menu-settings" class="fa fa-gear"></i><span id="badge" class="hide"></span>
 <div id="playback-controls">
-	<button id="previous" class="btn btn-default btn-cmd" data-cmd="previous"><i class="fa fa-step-backward"></i></button>
-	<button id="stop" class="btn btn-default btn-cmd" data-cmd="stop"><i class="fa fa-stop"></i></button>
-	<button id="play" class="btn btn-default btn-cmd" data-cmd="play"><i class="fa fa-play"></i></button>
-	<button id="pause" class="btn btn-default btn-cmd" data-cmd="pause"><i class="fa fa-pause"></i></button>
-	<button id="next" class="btn btn-default btn-cmd" data-cmd="next"><i class="fa fa-step-forward"></i></button>
+	<button id="previous" class="btn btn-default btn-cmd"><i class="fa fa-step-backward"></i></button>
+	<button id="stop" class="btn btn-default btn-cmd"><i class="fa fa-stop"></i></button>
+	<button id="play" class="btn btn-default btn-cmd"><i class="fa fa-play"></i></button>
+	<button id="pause" class="btn btn-default btn-cmd"><i class="fa fa-pause"></i></button>
+	<button id="next" class="btn btn-default btn-cmd"><i class="fa fa-step-forward"></i></button>
 	</div>
 	<a href="http://www.runeaudio.com/forum/raspberry-pi-f7.html" target="_blank">
 		<img class="logo" src="<?=$this->asset( '/img/runelogo.svg' )?>">
