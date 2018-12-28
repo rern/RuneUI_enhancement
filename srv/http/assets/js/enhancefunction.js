@@ -789,32 +789,6 @@ function renderLibrary() {
 		toggleLibraryHome( 'jamendo' );
 		
 		$( 'html, body' ).scrollTop( 0 );
-		$( '.home-bookmark' ).each( function() {
-			var $hammer = new Hammer( this );
-			var $this = $( this )
-			$hammer.on( 'press', function( e ) {
-				GUI.local = 1;
-				setTimeout( function() { GUI.local = 0 }, 1000 );
-				$( '.home-bookmark' )
-					.append( '<i id="home-block-edit" class="fa fa-edit"></i><i id="home-block-remove" class="fa fa-minus-circle"></i>' )
-					.find( '.fa-bookmark, gr' ).css( 'opacity', 0.2 );
-			} ).on( 'tap', function( e ) {
-				var path = $this.find( '.lipath' ).text();
-				var name = $this.find( '.bklabel' ).text();
-				if ( e.target.id === 'home-block-edit' ) {
-					bookmarkRename( name, path, $this );
-				} else if ( e.target.id === 'home-block-remove' ) {
-					bookmarkDelete( name, $this );
-				} else {
-					GUI.dblist = 1;
-					GUI.dbbrowsemode = 'file';
-					getDB( {
-						  browsemode : 'file'
-						, path       : path
-					} );
-				}
-			} );
-		} );
 		var txt = '';
 		if ( GUI.display.label ) {
 			$( '.home-block gr' ).css( 'color', '' );

@@ -582,7 +582,7 @@ $( '#closebio' ).click( function() {
 	displayTopBottom();
 } );
 // LIBRARY /////////////////////////////////////////////////////////////////////////////////////
-$( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
+$( '#home-blocks' ).on( 'click', '.home-block', function() {
 	var $this = $( this );
 	var id = this.id;
 	if ( GUI.local || $this.hasClass( 'home-bookmark' ) ) return
@@ -615,6 +615,28 @@ $( '#home-blocks' ).on( 'click', '.home-block', function( e ) {
 			, plugin     : GUI.plugin
 		} );
 	}
+} ).on( 'click', '.home-bookmark', function( e ) {
+	$this = $( this );
+	var path = $this.find( '.lipath' ).text();
+	var name = $this.find( '.bklabel' ).text();
+	if ( e.target.id === 'home-block-edit' ) {
+		bookmarkRename( name, path, $this );
+	} else if ( e.target.id === 'home-block-remove' ) {
+		bookmarkDelete( name, $this );
+	} else {
+		GUI.dblist = 1;
+		GUI.dbbrowsemode = 'file';
+		getDB( {
+			  browsemode : 'file'
+			, path       : path
+		} );
+	}
+} ).on( 'taphold', '.home-bookmark', function() {
+	GUI.local = 1;
+	setTimeout( function() { GUI.local = 0 }, 1000 );
+	$( '.home-bookmark' )
+		.append( '<i id="home-block-edit" class="fa fa-edit"></i><i id="home-block-remove" class="fa fa-minus-circle"></i>' )
+		.find( '.fa-bookmark, gr' ).css( 'opacity', 0.2 );
 } );
 
 $( '#db-home' ).click( function() {

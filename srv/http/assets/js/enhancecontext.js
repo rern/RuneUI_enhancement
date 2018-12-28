@@ -139,7 +139,10 @@ function bookmarkRename( name, path ) {
 		, textvalue : name
 		, textalign : 'center'
 		, boxwidth  : 'max'
-		, cancel    : 1
+		, cancel    : function() {
+			$( '#home-block-edit, #home-block-remove' ).remove();
+			$( '.home-bookmark' ).find( '.fa-bookmark, gr' ).css( 'opacity', '' );
+		}
 		, ok        : function() {
 			bookmarkVerify( $( '#infoTextBox' ).val().trim(), path, name );
 		}
