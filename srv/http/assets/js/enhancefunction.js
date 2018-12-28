@@ -1610,11 +1610,11 @@ function renderSavedPlaylist( name ) {
 	$( '.menu' ).addClass( 'hide' );
 	$.post( 'enhance.php', { getplaylist: 1, name: name.toString().replace( /"/g, '\\"' ) }, function( list ) {
 		var data = htmlPlaylist( list.playlist );
-		var counthtml = '<wh><i class="fa fa-list-ul"></i></wh><bl class="title">'+ name +'<gr>&emsp;•</gr></bl>';
-		var countradiohtml = '<wh>&emsp;'+ data.countradio +'</wh>&ensp;<i class="fa fa-webradio"></i>';
+		var counthtml = '<wh><i class="fa fa-list-ul"></i></wh><bl class="title">'+ name +'<gr>&ensp;·&emsp;</gr></bl>';
+		var countradiohtml = '<wh>'+ data.countradio +'</wh>&ensp;<i class="fa fa-webradio"></i>';
 		if ( data.countsong ) {
 			var pltimehtml = ' id="pltime" time="'+ data.pltime +'">'+ second2HMS( data.pltime );
-			var totalhtml = data.countradio ? '<gr'+ pltimehtml +'</gr>'+ countradiohtml : '<wh'+ pltimehtml +'</wh>';
+			var totalhtml = data.countradio ? '<gr'+ pltimehtml +'</gr> <gr>•</gr> '+ countradiohtml : '<wh'+ pltimehtml +'</wh>';
 			counthtml += '<wh>'+ numFormat( data.countsong ) +'</wh>&ensp;<i class="fa fa-music"></i>&ensp;'+ totalhtml;
 		} else {
 			counthtml += countradiohtml;
