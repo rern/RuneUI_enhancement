@@ -67,38 +67,35 @@ if ( document.location.hostname === 'localhost' ) $( '.osk-trigger' ).onScreenKe
 // PLAYBACK /////////////////////////////////////////////////////////////////////////////////////
 $( '.btn-cmd' ).click( function() {
 	var $this = $( this );
-	var cmd = $this.data( 'cmd' );
+	var cmd = this.id;
 	if ( $this.hasClass( 'btn-toggle' ) ) {
 		if ( GUI.status.ext === 'radio' ) return
 		
-		if ( cmd === 'pl-ashuffle-stop' ) {
+		if ( cmd === 'random' && $this.hasClass( 'ashuffle' ) ) {
 			$.post( 'enhance.php', { bash: '/usr/bin/killall ashuffle &' } );
+			$this.removeClass( 'btn-primary ashuffle' );
 			return
 		}
+		
 		var onoff = GUI.status[ cmd ] ? 0 : 1;
 		GUI.status[ cmd ] = onoff;
-		cmd = cmd +' '+ onoff;
+		cmd = 'mpc '+ cmd +' '+ onoff;
 	} else {
-		if ( cmd === 'pause' || cmd === 'stop' ) {
-			clearInterval( GUI.intKnob );
-			clearInterval( GUI.intElapsed );
-			if ( GUI.status.ext === 'radio' ) {
-				cmd = 'stop';
-				$( '#song' ).empty();
-			}
+		if ( cmd === 'stop' ) {
+			cmd = 'mpc stop';
+			if ( GUI.status.ext === 'radio' ) $( '#song' ).empty();
 		} else if ( cmd === 'previous' || cmd === 'next' ) {
+			$this.addClass( 'btn-primary' );
+			setTimeout( function() {
+				$this.removeClass( 'btn-primary' );
+			}, 100 );
 			// enable previous / next while stop
-			if ( GUI.status.playlistlength === 1 ) return
-			
 			var current = GUI.status.song + 1;
 			var last = GUI.status.playlistlength;
-			
 			if ( GUI.status.random === 1 ) {
 				// improve: repeat pattern of mpd random
-				// Math.floor( Math.random() * ( max - min + 1 ) ) + min;
-				var pos = Math.floor( Math.random() * last );
-				// avoid same pos ( no pos-- or pos++ in ternary )
-				if ( pos === current ) pos = ( pos === last ) ? pos - 1 : pos + 1;
+				var pos = Math.floor( Math.random() * last ); // Math.floor( Math.random() * ( max - min + 1 ) ) + min;
+				if ( pos === current ) pos = ( pos === last ) ? pos - 1 : pos + 1; // avoid same pos ( no pos-- or pos++ in ternary )
 			} else {
 				if ( cmd === 'previous' ) {
 					var pos = current !== 1 ? current - 1 : last;
@@ -106,15 +103,12 @@ $( '.btn-cmd' ).click( function() {
 					var pos = current !== last ? current + 1 : 1;
 				}
 			}
-			if ( GUI.status.state === 'play' ) {
-				cmd = 'play '+ pos;
-			} else {
-				$.post( 'enhance.php', { mpc: [ 'mpc play '+ pos, 'mpc stop' ] } );
-				return
-			}
+			cmd = GUI.status.state === 'play' ? 'mpc play '+ pos : [ 'mpc play '+ pos, 'mpc stop' ];
+		} else {
+			cmd = 'mpc toggle';
 		}
 	}
-	$.post( 'enhance.php', { mpc: 'mpc '+ cmd } );
+	$.post( 'enhance.php', { mpc: cmd } );
 } );
 $( '#menu-settings, #badge' ).click( function() {
 	$( '#settings' )

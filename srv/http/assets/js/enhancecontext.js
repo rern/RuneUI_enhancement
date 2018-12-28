@@ -86,8 +86,8 @@ $( '.contextmenu a' ).click( function() {
 	} else if ( cmd === 'dirblesave' ) {
 		webRadioNew( GUI.list.name, GUI.list.path );
 	} else if ( cmd === 'plashuffle' ) {
-			$.post( '/db/?cmd=pl-ashuffle', { playlist: name } );
-			$( '#random' ).data( 'cmd', 'pl-ashuffle-stop' ).addClass( 'btn-primary' );
+		$.post( '/db/?cmd=pl-ashuffle', { playlist: name } );
+		$( '#random' ).addClass( 'btn-primary ashuffle' );
 	} else {
 		$.post( '/db/?cmd='+ cmd, { path: name }, function() {
 			if ( !GUI.status.playlistlength ) getPlaybackStatus();
