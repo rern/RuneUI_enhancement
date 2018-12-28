@@ -86,7 +86,7 @@ pushstreams.idle.onmessage = function( changed ) {
 			$.each( status, function( key, value ) {
 				GUI.status[ key ] = value;
 			} );
-			setButtonToggle();
+			if ( !$( '#page-playback' ).hasClass( 'hide' ) ) setButtonToggle();
 		}, 'json' );
 	} else if ( changed === 'update' ) {
 		if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) {
@@ -209,7 +209,6 @@ function setButtonToggle() {
 	}
 	if ( GUI.display.update ) {
 		if ( GUI.display.bars ) {
-			$( '#badge' ).text( GUI.display.update ).removeClass( 'hide' );
 			$( '#iaddons' ).addClass( 'hide' );
 		} else {
 			if ( timehide ) {
@@ -221,8 +220,7 @@ function setButtonToggle() {
 			}
 		}
 	} else {
-		$( '#badge' ).empty();
-		$( '#badge, #posaddons, #iaddons' ).addClass( 'hide' );
+		$( '#posaddons, #iaddons' ).addClass( 'hide' );
 	}
 	if ( timehide ) {
 		$( '#posgpio' ).toggleClass( 'hide', GUI.gpio !== 'ON' );
@@ -234,7 +232,7 @@ function setButtonToggle() {
 function setButtonUpdate() {
 	if ( GUI.status.updating_db ) {
 		$( '#tab-library i, #db-home i' ).addClass( 'blink' );
-		if ( !GUI.display.bars ) {
+		if ( !$( '#page-playback' ).hasClass( 'hide' ) && !GUI.display.bars ) {
 			if ( $( '#time-knob' ).hasClass( 'hide' ) ) {
 				$( '#posupdate' ).removeClass( 'hide' );
 				$( '#iupdate' ).addClass( 'hide' );
@@ -256,8 +254,13 @@ function setButton() {
 		$( '#play' ).toggleClass( 'btn-primary', state === 'play' );
 		$( '#pause' ).toggleClass( 'btn-primary', state === 'pause' );
 	}
+	if ( GUI.display.update ) {
+		if ( GUI.display.bars ) $( '#badge' ).text( GUI.display.update ).removeClass( 'hide' );
+	} else {
+		$( '#badge' ).empty().addClass( 'hide' );
+	}
 	setTimeout( function() {
-		setButtonToggle();
+		if ( !$( '#page-playback' ).hasClass( 'hide' ) ) setButtonToggle();
 		setButtonUpdate();
 	}, 100 );
 }
