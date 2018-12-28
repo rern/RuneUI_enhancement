@@ -79,16 +79,13 @@ $( '.btn-cmd' ).click( function() {
 		
 		var onoff = GUI.status[ cmd ] ? 0 : 1;
 		GUI.status[ cmd ] = onoff;
-		cmd = 'mpc '+ cmd +' '+ onoff;
+		command = 'mpc '+ cmd +' '+ onoff;
 	} else {
 		if ( cmd === 'stop' ) {
-			cmd = 'mpc stop';
+			command = 'mpc stop';
 			if ( GUI.status.ext === 'radio' ) $( '#song' ).empty();
 		} else if ( cmd === 'previous' || cmd === 'next' ) {
-			$this.addClass( 'btn-primary' );
-			setTimeout( function() {
-				$this.removeClass( 'btn-primary' );
-			}, 100 );
+			if ( !$( '#page-playback' ).hasClass( 'hide' ) ) $this.addClass( 'btn-primary' );
 			// enable previous / next while stop
 			var current = GUI.status.song + 1;
 			var last = GUI.status.playlistlength;
@@ -103,12 +100,12 @@ $( '.btn-cmd' ).click( function() {
 					var pos = current !== last ? current + 1 : 1;
 				}
 			}
-			cmd = GUI.status.state === 'play' ? 'mpc play '+ pos : [ 'mpc play '+ pos, 'mpc stop' ];
+			command = GUI.status.state === 'play' ? 'mpc play '+ pos : [ 'mpc play '+ pos, 'mpc stop' ];
 		} else {
-			cmd = 'mpc toggle';
+			command = 'mpc toggle';
 		}
 	}
-	$.post( 'enhance.php', { mpc: cmd } );
+	$.post( 'enhance.php', { mpc: command } );
 } );
 $( '#menu-settings, #badge' ).click( function() {
 	$( '#settings' )
