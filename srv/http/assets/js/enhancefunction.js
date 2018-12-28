@@ -467,7 +467,7 @@ function renderPlayback() {
 	// playlist current song ( and lyrics if installed )
 	if ( status.Title !== previoussong || status.Album !== previousalbum ) {
 		if ( !$( '#page-playlist' ).hasClass( 'hide' ) && !GUI.pleditor ) setPlaylistScroll();
-		if ( $( '#lyricscontainer' ).length && $( '#lyricscontainer' ).is( ':visible' ) )  getlyrics();
+		if ( $( '#lyricscontainer' ).length && !$( '#lyricscontainer' ).hasClass( 'hide' ) )  getlyrics();
 	}
 }
 
