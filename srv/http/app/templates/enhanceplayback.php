@@ -112,7 +112,7 @@
 		<div id="db-currentpath">
 			<a class="lipath"></a>
 			<div id="db-home"><i class="fa fa-library"></i></div><span></span>
-			<i id="db-webradio-new" class="fa fa-plus-circle"></i>
+			<i id="db-webradio-new" class="fa fa-plus-circle hide"></i>
 		</div>
 		<button id="db-search-results" class="btn hide" type="button"><i class="fa fa-times sx"></i></button>
 		<i id="db-back" class="fa fa-arrow-left"></i>
