@@ -174,16 +174,12 @@ function setPageCurrent( page ) {
 	$( '#tab-'+ page ).addClass( 'active' );
 	GUI.library = GUI.playback = GUI.playlist = 0;
 	GUI[ page ] = 1;
+	if ( GUI.playback ) return
+	
 	if ( !GUI.display.bars ) {
 		$( '.btnlist-top' ).css( 'top', 0 );
 		$( '#db-list' ).css( 'padding-top', '40px' );
 	}
-	if ( GUI.display.coverfile ) {
-		if ( !$( '.licover' ).length ) $( '#db-currentpath a:last-child' ).click();
-	} else {
-		$( '.licover' ).remove();
-	}
-	if ( !GUI.pllist ) $( '#pl-entries li' ).removeClass( 'active' );
 	// restore page scroll
 	setTimeout( function() {
 		if ( GUI.library ) {
@@ -192,10 +188,18 @@ function setPageCurrent( page ) {
 			} else {
 				var scrollpos = GUI.dbscrolltop[ GUI.currentpath ] || 0;
 				$( 'html, body' ).scrollTop( scrollpos );
+				if ( GUI.display.coverfile ) {
+					if ( !$( '.licover' ).length ) $( '#db-currentpath a:last-child' ).click();
+				} else {
+					$( '.licover' ).remove();
+				}
 			}
-		} else if ( GUI.playlist && GUI.pleditor ) {
-			var top = $( '#pl-currentpath .fa-arrow-left' ).hasClass( 'plsbackroot' ) ? GUI.plscrolltop : GUI.listplscrolltop;
-			$( 'html, body' ).scrollTop( top );
+		} else if ( GUI.playlist ) {
+			if ( GUI.pleditor ) {
+				var top = $( '#pl-currentpath .fa-arrow-left' ).hasClass( 'plsbackroot' ) ? GUI.plscrolltop : GUI.listplscrolltop;
+				$( 'html, body' ).scrollTop( top );
+			}
+			if ( !GUI.pllist ) $( '#pl-entries li' ).removeClass( 'active' );
 		}
 	}, 200 );
 }

@@ -102,6 +102,7 @@ function addReplace( mode, command, title ) {
 	}
 	$.post( 'enhance.php', { mpc: command }, function() {
 		getPlaybackStatus();
+		setPlaybackBlank();
 	} );
 	new PNotify( {
 		  title : title

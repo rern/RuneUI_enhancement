@@ -267,6 +267,8 @@ $( '#tab-playlist' ).click( function() {
 	}
 	
 	setPageCurrent( 'playlist' );
+	if ( GUI.pleditor ) return
+	
 	$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
 		GUI.lsplaylists = data.lsplaylists || [];
 		GUI.pllist = data.playlist;
