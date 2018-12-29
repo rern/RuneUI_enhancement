@@ -253,12 +253,6 @@ $( '#tab-library' ).click( function() {
 	}
 	
 	setPageCurrent( 'library' );
-	if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) {
-		renderLibrary();
-	} else {
-		var scrollpos = GUI.dbscrolltop[ $( '#db-currentpath' ).find( '.lipath' ).text() ];
-		$( 'html, body' ).scrollTop( scrollpos ? scrollpos : 0 );
-	}
 } );
 $( '#tab-playback' ).click( function() {
 	setPageCurrent( 'playback' );
@@ -273,12 +267,6 @@ $( '#tab-playlist' ).click( function() {
 	}
 	
 	setPageCurrent( 'playlist' );
-	if ( GUI.pleditor ) {
-		var top = $( '#pl-currentpath .fa-arrow-left' ).hasClass( 'plsbackroot' ) ? GUI.plscrolltop : GUI.listplscrolltop;
-		$( 'html, body' ).scrollTop( top );
-		return
-	}
-	
 	$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
 		GUI.lsplaylists = data.lsplaylists || [];
 		GUI.pllist = data.playlist;
@@ -914,7 +902,7 @@ $( '#plopen' ).click( function() {
 	
 	var pl = GUI.lsplaylists;
 	var plL = pl.length;
-	var plcounthtml = '<wh><i class="fa fa-folder"></i></wh><bl>PLAYLISTS</bl>';
+	var plcounthtml = '<wh><i class="fa fa-microsd"></i></wh><bl>PLAYLIST</bl>';
 	plcounthtml += plL ? '<gr>&ensp;·&emsp;</gr> <wh id="pls-count">'+ numFormat( plL ) +'</wh>&ensp;<i class="fa fa-list-ul"></i>' : '';
 	$( '#pl-currentpath' ).html( plcounthtml +'<i class="fa fa-arrow-left plsbackroot"></i>' );
 	$( '#pl-currentpath, #pl-editor, #pl-index' ).removeClass( 'hide' );
