@@ -10,20 +10,20 @@ pushstreams.display.onmessage = function( data ) {
 	if ( typeof data[ 0 ] === 'object' ) GUI.display = data[ 0 ];
 	if ( GUI.local ) return
 	
-	if ( !$( '#page-playback' ).hasClass( 'hide' ) ) {
+	if ( GUI.playback ) {
 		getPlaybackStatus();
-	} else if ( !$( '#page-library' ).hasClass( 'hide' ) && !$( '#home-blocks' ).hasClass( 'hide' ) ) {
-		renderLibrary();
+	} else if ( GUI.library ) {
+		if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) {
+			renderLibrary();
+		} else {
+			if ( GUI.display.coverfile ) {
+				if ( !$( '.licover' ).length ) $( '#db-currentpath a:last-child' ).click();
+			} else {
+				$( '.licover' ).remove();
+			}
+		}
 	} else {
 		displayTopBottom();
-	}
-	if ( GUI.coverfile && $( '#home-blocks' ).hasClass( 'hide' ) ) {
-		if ( GUI.display.coverfile ) {
-			if ( !$( '.licover' ).length ) $( '#db-currentpath a:last-child' ).click();
-		} else {
-			$( '.licover' ).remove();
-		}
-		if ( $( '#page-library' ).hasClass( 'hide' ) ) $( '#tab-library' ).click();
 	}
 	setSwipe();
 }
@@ -39,13 +39,14 @@ pushstreams.volume.onmessage = function( data ) {
 }
 pushstreams.library.onmessage = function( data ) {
 	GUI.libraryhome = data[ 0 ];
-	if ( GUI.local ) return
-	
-	if ( !$( '#home-blocks' ).hasClass( 'hide' ) && !GUI.local && !GUI.bookmarkedit ) renderLibrary();
+	if ( !GUI.local
+		&& !$( '#home-blocks' ).hasClass( 'hide' )
+		&& !GUI.local && !GUI.bookmarkedit
+	) renderLibrary();
 }
 pushstreams.playlist.onmessage = function( data ) {
 	GUI.lsplaylists = data[ 0 ] || [];
-	if ( $( '#page-playlist' ).hasClass( 'hide' ) ) return
+	if ( !GUI.playlist ) return
 	
 	if ( !$( '#pl-entries' ).hasClass( 'hide' ) || !GUI.lsplaylists.length ) {
 		renderPlaylist();
@@ -57,7 +58,7 @@ var timeoutUpdate;
 pushstreams.idle.onmessage = function( changed ) {
 	var changed = changed[ 0 ];
 	if ( changed === 'player' ) { // on track changed
-		if ( !$( '#page-playlist' ).hasClass( 'hide' ) && !GUI.pleditor ) {
+		if ( GUI.playlist && !GUI.pleditor ) {
 			setPlaylistScroll();
 		} else {
 			getPlaybackStatus();
@@ -66,28 +67,30 @@ pushstreams.idle.onmessage = function( changed ) {
 	} else if ( changed === 'playlist' ) { // on playlist changed
 		if ( GUI.pleditor || GUI.local ) return
 		
-		if ( !$( '#page-playlist' ).hasClass( 'hide' ) ) {
+		if ( GUI.playlist ) {
 			$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
 				if ( data.playlist.length ) {
 					GUI.status.playlistlength = data.playlist.length;
 					GUI.lsplaylists = data.lsplaylists || [];
-					GUI.playlist = data.playlist;
+					GUI.pllist = data.playlist;
 				} else {
 					GUI.status.playlistlength = 0;
 				}
 				renderPlaylist();
 			}, 'json' );
-		} else if ( !$( '#page-playback' ).hasClass( 'hide' ) ) {
+		} else if ( GUI.playback ) {
 			getPlaybackStatus();
 		}
 	} else if ( changed === 'options' ) { // on mode toggled
-		if ( GUI.local ) return
+		if ( GUI.local ) return // suppress 2nd 'repeat + single'
 		
+		GUI.local = 1;
+		setTimeout( function() { GUI.local = 0 }, 500 );
 		$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
 			$.each( status, function( key, value ) {
 				GUI.status[ key ] = value;
 			} );
-			if ( !$( '#page-playback' ).hasClass( 'hide' ) ) setButtonToggle();
+			if ( GUI.playback ) setButtonToggle();
 		}, 'json' );
 	} else if ( changed === 'update' ) {
 		if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) {
@@ -116,13 +119,15 @@ pushstreams.idle.onmessage = function( changed ) {
 		if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) $( '#home-webradio' ).click();
 	}
 }
-pushstreams.idle.onstatuschange = function( data ) {
-	if ( !$( '#page-playback' ).hasClass( 'hide' ) ) {
-		getPlaybackStatus();
-	} else if ( !$( '#page-playlist' ).hasClass( 'hide' ) && !GUI.pleditor ) {
-		setPlaylistScroll();
+/*pushstreams.idle.onstatuschange = function( data ) {
+	if ( data === 2 ) {
+		if ( GUI.playback ) {
+			getPlaybackStatus();
+		} else if ( GUI.playlist && !GUI.pleditor ) {
+			setPlaylistScroll();
+		}
 	}
-}
+}*/
 pushstreams.notify.onmessage = function( data ) {
 	var notify = data[ 0 ];
 	new PNotify( {
@@ -149,14 +154,16 @@ function setSwipe() {
 		$pagePlaylist.on( 'swiperight', playbackClick ).on( 'swipeleft', libraryClick );
 	}
 }
-function setPageCurrent( panel ) {
+function setPageCurrent( page ) {
+	GUI.library = GUI.playback = GUI.playlist = 0;
+	GUI[ page ] = 1;
 	clearInterval( GUI.intKnob );
 	clearInterval( GUI.intElapsed );
 	clearInterval( GUI.intElapsedPl );
-	if ( !$( '#page-library' ).hasClass( 'hide' ) && $( '#home-blocks' ).hasClass( 'hide' ) ) {
+	if ( GUI.library && $( '#home-blocks' ).hasClass( 'hide' ) ) {
 		var path = $( '#db-currentpath .lipath' ).text();
 		if ( path ) GUI.dbscrolltop[ path ] = $( window ).scrollTop();
-	} else if ( !$( '#page-playlist' ).hasClass( 'hide' ) && GUI.pleditor ) {
+	} else if ( GUI.playlist && GUI.pleditor ) {
 		if ( $( '#pl-currentpath .fa-arrow-left' ).hasClass( 'plsbackroot' ) ) {
 			GUI.plscrolltop = $( window ).scrollTop();
 		} else {
@@ -165,20 +172,23 @@ function setPageCurrent( panel ) {
 	}
 	$( '#menu-bottom li, #db-entries li, #pl-editor li' ).removeClass( 'active' );
 	$( '.page, .menu' ).addClass( 'hide' );
-	$( '#page-'+ panel ).removeClass( 'hide' );
-	$( '#tab-'+ panel ).addClass( 'active' );
+	$( '#page-'+ page ).removeClass( 'hide' );
+	$( '#tab-'+ page ).addClass( 'active' );
 	if ( !GUI.display.bars ) {
 		$( '.btnlist-top' ).css( 'top', 0 );
 		$( '#db-list' ).css( 'padding-top', '40px' );
 	}
-	if ( panel === 'playback'
-		|| ( panel === 'library' && !$( '#home-block' ).hasClass( 'hide' ) )
+	if ( GUI.playback
+		|| ( GUI.library && !$( '#home-block' ).hasClass( 'hide' ) )
 	) $( 'html, body' ).scrollTop( 0 );
-	if ( panel !== 'playlist' ) $( '#pl-entries li' ).removeClass( 'active' );
+	if ( GUI.display.coverfile ) {
+		if ( !$( '.licover' ).length ) $( '#db-currentpath a:last-child' ).click();
+	} else {
+		$( '.licover' ).remove();
+	}
+	if ( !GUI.pllist ) $( '#pl-entries li' ).removeClass( 'active' );
 }
 function setButtonToggle() {
-	if ( GUI.local ) return
-	
 	var timehide = $( '#time-knob' ).hasClass( 'hide' );
 	if ( !$( '#play-group' ).hasClass( 'hide' ) ) {
 		$( '#irandom' ).addClass( 'hide' )
@@ -233,7 +243,7 @@ function setButtonToggle() {
 function setButtonUpdate() {
 	if ( GUI.status.updating_db ) {
 		$( '#tab-library i, #db-home i' ).addClass( 'blink' );
-		if ( !$( '#page-playback' ).hasClass( 'hide' ) && !GUI.display.bars ) {
+		if ( GUI.playback && !GUI.display.bars ) {
 			if ( $( '#time-knob' ).hasClass( 'hide' ) ) {
 				$( '#posupdate' ).removeClass( 'hide' );
 				$( '#iupdate' ).addClass( 'hide' );
@@ -261,7 +271,7 @@ function setButton() {
 		$( '#badge' ).empty().addClass( 'hide' );
 	}
 	setTimeout( function() {
-		if ( !$( '#page-playback' ).hasClass( 'hide' ) ) setButtonToggle();
+		if ( GUI.playback ) setButtonToggle();
 		setButtonUpdate();
 	}, 100 );
 }
@@ -359,13 +369,13 @@ function renderPlayback() {
 		var radiosrc = $( '#cover-art' ).attr( 'src' );
 		var vu = $( '#vu' ).val();
 		var vustop = $( '#vustop' ).val();
+		$( '#time' ).roundSlider( 'setValue', 0 );
 		if ( status.state === 'play' ) {
 			if ( radiosrc !== vu ) $( '#cover-art' ).attr( 'src', vu );
 			$( '#elapsed' ).html( status.state === 'play' ? blinkdot : '' );
 			var elapsed = status.elapsed;
 			if ( GUI.display.time ) {
 				$( '#timepos' ).empty();
-				$( '#time' ).roundSlider( 'setValue', 0 );
 				if ( !GUI.display.radioelapsed ) {
 					$( '#total' ).empty();
 				} else {
@@ -470,17 +480,14 @@ function renderPlayback() {
 
 	// playlist current song ( and lyrics if installed )
 	if ( status.Title !== previoussong || status.Album !== previousalbum ) {
-		if ( !$( '#page-playlist' ).hasClass( 'hide' ) && !GUI.pleditor ) setPlaylistScroll();
-		if ( $( '#lyricscontainer' ).length && !$( '#lyricscontainer' ).hasClass( 'hide' ) )  getlyrics();
+		if ( GUI.playlist && !GUI.pleditor ) setPlaylistScroll();
+		if ( $( '#lyricscontainer' ).length && !$( '#lyricscontainer' ).hasClass( 'hide' ) ) getlyrics();
 	}
 }
 
 function getPlaybackStatus() {
-	if ( GUI.local ) return; // suppress 2nd firing from initial 'pushstreams.idle.onmessage'
-	
-	GUI.local = 1;
-	setTimeout( function() { GUI.local = 0 }, 500 );
-	if ( !$( '#page-playlist' ).hasClass( 'hide' ) && !GUI.pleditor ) {
+	console.log('getPlaybackStatus')
+	if ( GUI.playlist && !GUI.pleditor ) {
 		setPlaylistScroll();
 		return
 	}
@@ -498,7 +505,7 @@ function getPlaybackStatus() {
 			GUI.status[ key ] = value;
 		} );
 		setButton();
-		if ( $( '#page-playback' ).hasClass( 'hide' ) ) return
+		if ( !GUI.playback ) return
 		
 		renderPlayback();
 		// imodedelay fix imode flashing on audio output switched
@@ -691,7 +698,7 @@ function displayIndexBar() {
 		var indexoffset = $( '#menu-top' ).hasClass( 'hide' ) ? 80 : 160;
 		var indexline = wH < 500 ? 13 : 27;
 		$( '.half' ).toggleClass( 'hide', wH < 500 );
-		$index = ( !$( '#page-library' ).hasClass( 'hide' ) && GUI.dblist ) ? $( '#db-index' ) : $( '#pl-index' );
+		$index = ( GUI.library && GUI.dblist ) ? $( '#db-index' ) : $( '#pl-index' );
 		$index.css( 'line-height', ( ( wH - indexoffset ) / indexline ) +'px' );
 	}, 50 );
 }
@@ -1499,7 +1506,7 @@ function htmlPlaylist( data ) {
 		} else if ( value.Title ) {
 			sec = HMS2Second( value.Time );
 			pltime += sec;
-			if ( $( '#page-library' ).hasClass( 'hide' ) ) {
+			if ( GUI.playlist ) {
 				if ( !GUI.pleditor ) {
 					var actionhtml = '<i class="fa fa-music pl-icon"></i><i class="fa fa-minus-circle pl-action"></i>';
 				} else {
@@ -1517,7 +1524,7 @@ function htmlPlaylist( data ) {
 			content += '<li>'
 					 + actionhtml
 					 +'<span class="sn">'+ value.Title + ( GUI.pleditor ? '&ensp;' : '&ensp;<span class="elapsed"></span>' ) +'<span class="time" time="'+ sec +'">'+ value.Time +'</span></span>'
-					 +'<span class="bl">'+ ( $( '#page-library' ).hasClass( 'hide' ) ? value.track : value.file ) +'</span>'
+					 +'<span class="bl">'+ ( GUI.playlist ? value.track : value.file ) +'</span>'
 			countsong++;
 		}
 	} );
@@ -1560,8 +1567,8 @@ function renderPlaylist() {
 		$( 'html, body' ).scrollTop( 0 );
 		return
 	}
-	GUI.status.playlistlength = GUI.playlist.length;
-	var data = htmlPlaylist( GUI.playlist );
+	GUI.status.playlistlength = GUI.pllist.length;
+	var data = htmlPlaylist( GUI.pllist );
 	var counthtml = '<bl class="title">PLAYLIST<gr>·</gr></bl>';
 	var countradiohtml = '<wh id="countradio" count="'+ data.countradio +'">'+ data.countradio +'</wh>&ensp;<i class="fa fa-webradio"></i>';
 	if ( data.countsong ) {

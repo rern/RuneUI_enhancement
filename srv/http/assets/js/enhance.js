@@ -13,12 +13,15 @@ var GUI = { // outside '$( function() {' enable console.log access
 	, display      : {}
 	, imodedelay   : 0
 	, list         : {}
+	, library      : 0
 	, libraryhome  : {}
 	, local        : 0
 	, lsplaylists  : []
 	, midori       : navigator.userAgent.indexOf( 'Midori' ) !== -1
-	, playlist     : {}
+	, playback     : 1
+	, playlist     : 0
 	, pleditor     : 0
+	, pllist     : {}
 	, plscrolltop  : 0
 	, plugin       : ''
 	, status       : {}
@@ -85,7 +88,7 @@ $( '.btn-cmd' ).click( function() {
 			command = 'mpc stop';
 			if ( GUI.status.ext === 'radio' ) $( '#song' ).empty();
 		} else if ( cmd === 'previous' || cmd === 'next' ) {
-			if ( !$( '#page-playback' ).hasClass( 'hide' ) ) $this.addClass( 'btn-primary' );
+			if ( GUI.display.bars ) $this.addClass( 'btn-primary' );
 			// enable previous / next while stop
 			var current = GUI.status.song + 1;
 			var last = GUI.status.playlistlength;
@@ -155,7 +158,7 @@ $( '#displaylibrary' ).click( function() {
 					$( '.db-action' ).hide();
 				}
 			} );
-			if ( $( '#page-library' ).hasClass( 'hide' ) ) $( '#tab-library' ).click();
+			if ( !GUI.library ) $( '#tab-library' ).click();
 			$.post( 'enhance.php', { setdisplay: GUI.display } );
 		}
 	} );
@@ -187,7 +190,7 @@ $( '#displayplayback' ).click( function() {
 			$.post( 'enhance.php', { setdisplay: GUI.display }, function() {
 				displayPlayback();
 			} );
-			if ( $( '#page-playback' ).hasClass( 'hide' ) ) $( '#tab-playback' ).click();
+			if ( !GUI.playback ) $( '#tab-playback' ).click();
 			setSwipe();
 		}
 	} );
@@ -240,7 +243,7 @@ $( '#tab-library' ).click( function() {
 		return
 	}
 	
-	if ( !$( '#page-library' ).hasClass( 'hide' ) && GUI.dblist ) {
+	if ( GUI.library && GUI.dblist ) {
 		GUI.dblist = GUI.dbback = 0;
 		GUI.currentpath = GUI.browsemode = GUI.dbbrowsemode = ''
 		GUI.dbbackdata = [];
@@ -263,7 +266,7 @@ $( '#tab-playback' ).click( function() {
 	if ( GUI.status.state === 'play' ) $( '#elapsed' ).empty(); // hide flashing
 } );
 $( '#tab-playlist' ).click( function() {
-	if ( !$( '#page-playlist' ).hasClass( 'hide' ) && GUI.pleditor ) GUI.pleditor = 0;
+	if ( GUI.playlist && GUI.pleditor ) GUI.pleditor = 0;
 	if ( GUI.status.activePlayer === 'Airplay' ) {
 		$( '#playsource' ).addClass( 'open' );
 		return
@@ -278,7 +281,7 @@ $( '#tab-playlist' ).click( function() {
 	
 	$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
 		GUI.lsplaylists = data.lsplaylists || [];
-		GUI.playlist = data.playlist;
+		GUI.pllist = data.playlist;
 		renderPlaylist();
 	}, 'json' );
 } );
@@ -518,11 +521,6 @@ $( '.timemap, .covermap, .volmap' ).click( function() {
 	} else if ( cmd === 'repeat' ) {
 		if ( GUI.status.repeat ) {
 			if ( GUI.status.single ) {
-				GUI.status.repeat = GUI.status.single = 0;
-				$( '#repeat, #single' ).removeClass( 'btn-primary' );
-				$( '#irepeat, #posrepeat' ).attr( 'class', 'fa hide' );
-				GUI.local = 1;
-				setTimeout( function() { GUI.local = 0 }, 500 );
 				$.post( 'enhance.php', { mpc: [ 'mpc repeat 0', 'mpc single 0' ] } );
 			} else {
 				$( '#single' ).click();
@@ -1156,10 +1154,14 @@ document.addEventListener( 'visibilitychange', function() {
 		clearInterval( GUI.intElapsed );
 		clearInterval( GUI.intElapsedPl );
 	} else {
-		if ( !$( '#page-playback' ).hasClass( 'hide' ) ) {
-			$.post( 'enhance.php', { getdisplay: 1 } );
-			getPlaybackStatus(); // pushsteam cannot reconnect soon enough
-		} else if ( !$( '#page-playlist' ).hasClass( 'hide' ) ) {
+		if ( GUI.playback ) {
+			getPlaybackStatus();
+		} else if ( GUI.library && !$( '#home-blocks' ).hasClass( 'hide' ) ) {
+			renderLibrary();
+		} else {
+			displayTopBottom();
+		}
+		if ( GUI.playlist ) {
 			if ( GUI.pleditor ) {
 				$( '#pl-currentpath .lipath' ).text() ? renderSavedPlaylist( $( '#pl-currentpath .lipath' ).text() ) : $( '#plopen' ).click();
 			} else {
@@ -1169,7 +1171,7 @@ document.addEventListener( 'visibilitychange', function() {
 	}
 } );
 window.addEventListener( 'orientationchange', function() {
-	if ( !$( '#page-playback' ).hasClass( 'hide' ) ) {
+	if ( GUI.playback ) {
 		$( '#playback-row' ).addClass( 'hide' );
 		setTimeout( function() {
 			displayPlayback()

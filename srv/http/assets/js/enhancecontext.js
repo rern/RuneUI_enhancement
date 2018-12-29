@@ -13,7 +13,7 @@ $( '.contextmenu a' ).click( function() {
 	} else if ( mode === 'pl' ) {
 		var name = GUI.list.name.replace( /"/g, '\\"' );
 	} else {
-		if ( !$( '#page-playlist' ).hasClass( 'hide' ) && $( '#pl-currentpath .lipath' ).length ) {
+		if ( GUI.playlist && $( '#pl-currentpath .lipath' ).length ) {
 			var name = GUI.list.li.find( '.lipath' ).text().replace( /"/g, '\\"' );
 		} else {
 			var name = GUI.list.path.replace( /"/g, '\\"' );
