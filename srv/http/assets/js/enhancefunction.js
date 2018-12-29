@@ -159,13 +159,9 @@ function setPageCurrent( page ) {
 	clearInterval( GUI.intElapsed );
 	clearInterval( GUI.intElapsedPl );
 	if ( GUI.library && $( '#home-blocks' ).hasClass( 'hide' ) ) {
-		if ( GUI.currentpath ) GUI.dbscrolltop[ GUI.currentpath ] = $( window ).scrollTop();
+		GUI.libraryscrolltop = GUI.currentpath ? $( window ).scrollTop() : 0;
 	} else if ( GUI.playlist && GUI.pleditor ) {
-		if ( $( '#pl-currentpath .fa-arrow-left' ).hasClass( 'plsbackroot' ) ) {
-			GUI.plscrolltop = $( window ).scrollTop();
-		} else {
-			GUI.listplscrolltop = $( window ).scrollTop();
-		}
+		GUI.playlistscrolltop = $( window ).scrollTop();
 	}
 	$( '#menu-bottom li, #db-entries li, #pl-editor li' ).removeClass( 'active' );
 	$( '.page, .menu' ).addClass( 'hide' );
@@ -181,27 +177,20 @@ function setPageCurrent( page ) {
 		$( '#db-list' ).css( 'padding-top', '40px' );
 	}
 	// restore page scroll
-	setTimeout( function() {
-		if ( GUI.library ) {
-			if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) {
-				renderLibrary();
+	if ( GUI.library ) {
+		if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) {
+			renderLibrary();
+		} else {
+			$( 'html, body' ).scrollTop( GUI.libraryscrolltop );
+			if ( GUI.display.coverfile ) {
+				if ( !$( '.licover' ).length ) $( '#db-currentpath a:last-child' ).click();
 			} else {
-				var scrollpos = GUI.dbscrolltop[ GUI.currentpath ] || 0;
-				$( 'html, body' ).scrollTop( scrollpos );
-				if ( GUI.display.coverfile ) {
-					if ( !$( '.licover' ).length ) $( '#db-currentpath a:last-child' ).click();
-				} else {
-					$( '.licover' ).remove();
-				}
+				$( '.licover' ).remove();
 			}
-		} else if ( GUI.playlist ) {
-			if ( GUI.pleditor ) {
-				var top = $( '#pl-currentpath .fa-arrow-left' ).hasClass( 'plsbackroot' ) ? GUI.plscrolltop : GUI.listplscrolltop;
-				$( 'html, body' ).scrollTop( top );
-			}
-			if ( !GUI.pllist ) $( '#pl-entries li' ).removeClass( 'active' );
 		}
-	}, 200 );
+	} else if ( GUI.playlist && GUI.pleditor ) {
+		$( 'html, body' ).scrollTop( GUI.playlistscrolltop );
+	}
 }
 function setButtonToggle() {
 	var timehide = $( '#time-knob' ).hasClass( 'hide' );
