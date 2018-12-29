@@ -179,7 +179,7 @@ function setPageCurrent( page ) {
 		$( '#db-list' ).css( 'padding-top', '40px' );
 	}
 	if ( GUI.playback
-		|| ( GUI.library && !$( '#home-block' ).hasClass( 'hide' ) )
+		|| ( GUI.library && !$( '#home-blocks' ).hasClass( 'hide' ) )
 	) $( 'html, body' ).scrollTop( 0 );
 	if ( GUI.display.coverfile ) {
 		if ( !$( '.licover' ).length ) $( '#db-currentpath a:last-child' ).click();
