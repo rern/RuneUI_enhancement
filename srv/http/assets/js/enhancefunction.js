@@ -1457,7 +1457,7 @@ function setPlaylistScroll() {
 		$( '#pl-entries li:not( .active )' ).find( '.elapsed' ).empty();
 		$elapsed = $liactive.find( '.elapsed' );
 		var elapsed = status.elapsed;
-		var slash = $liactive.hasClass( 'radio' ) ? '' : ' / ';
+		var slash = $liactive.hasClass( 'webradio' ) ? '' : ' / ';
 		if ( status.state === 'pause' ) {
 			var elapsedtxt = second2HMS( elapsed ) + slash;
 			$elapsed.html( '<i class="fa fa-pause"></i> '+ elapsedtxt );
