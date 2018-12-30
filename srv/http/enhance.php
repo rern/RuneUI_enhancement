@@ -42,7 +42,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		if ( $type === 'file' ) {
 			$data = search2array( $result );
 			if ( $redis->hGet( 'display', 'coverfile' ) && !isPlaylist( $data ) && substr( $mpc, 0, 10 ) !== 'mpc search' ) {
-				$cover = getCover( $data );
+				$cover = getCover( $data[ 0 ][ 'file' ] );
 				if ( $cover ) $data[][ 'coverart' ] = $cover;
 			}
 		} else {
@@ -132,7 +132,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$albums = shell_exec( 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" '.$type.' "'.$name.'"' );
 		$data = search2array( $albums );
 		if ( $redis->hGet( 'display', 'coverfile' ) && !isPlaylist( $data ) ) {
-			$cover = getCover( $data );
+			$cover = getCover( $data[ 0 ][ 'file' ] );
 			if ( $cover ) $data[][ 'coverart' ] = $cover;
 		}
 	} else {
@@ -185,7 +185,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$data = list2array( $lines );
 	$data[][ 'path' ] = $path;
 	if ( $redis->hGet( 'display', 'coverfile' ) ) {
-		$cover = getCover( $data );
+		$cover = getCover( $data[ 0 ][ 'file' ] );
 		if ( $cover ) $data[][ 'coverart' ] = $cover;
 	}
 	echo json_encode( $data );
@@ -337,8 +337,8 @@ function isPlaylist( $data ) {
 		}
 	}
 }
-function getCover( $data ) {
-	$file = '/mnt/MPD/'.$data[ 0 ][ 'file' ];
+function getCover( $path ) {
+	$file = '/mnt/MPD/'.$path;
 	$dir = dirname( $file );
 	$coverfiles = array(
 		  'cover.png', 'cover.jpg', 'folder.png', 'folder.jpg', 'front.png', 'front.jpg'
@@ -352,6 +352,8 @@ function getCover( $data ) {
 			return 'data:image/'. $coverext.';base64,'.base64_encode( $coverart );
 		}
 	}
+	if ( basename( $file ) === 'x' ) return;
+	
 	set_include_path( '/srv/http/app/libs/vendor/' );
 	require_once( 'getid3/audioinfo.class.php' );
 	$audioinfo = new AudioInfo();
@@ -376,9 +378,11 @@ function getLibrary() {
 	$rbkmarks = $redis->hGetAll( 'bkmarks' );
 	if ( $rbkmarks ) {
 		foreach ( $rbkmarks as $name => $path ) {
+			$coverart = getCover( $path.'/x' ) ?: '';
 			$bookmarks[] = array(
 				  'name'  => $name
 				, 'path'  => $path
+				, 'coverart' => $coverart
 			);
 		}
 	} else {
