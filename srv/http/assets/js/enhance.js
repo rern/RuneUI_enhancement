@@ -570,7 +570,8 @@ $( '#closebio' ).click( function() {
 	displayTopBottom();
 } );
 // LIBRARY /////////////////////////////////////////////////////////////////////////////////////
-$( '#home-blocks' ).on( 'click', '.home-block', function() {
+$.event.special.tap.emitTapOnTaphold = false; // suppress tap on taphold
+$( '#home-blocks' ).on( 'tap', '.home-block', function() {
 	var $this = $( this );
 	var id = this.id;
 	if ( GUI.local || $this.hasClass( 'home-bookmark' ) ) return
@@ -603,7 +604,7 @@ $( '#home-blocks' ).on( 'click', '.home-block', function() {
 			, plugin     : GUI.plugin
 		} );
 	}
-} ).on( 'click', '.home-bookmark', function( e ) {
+} ).on( 'tap', '.home-bookmark', function( e ) {
 	$this = $( this );
 	var path = $this.find( '.lipath' ).text();
 	var name = $this.find( '.bklabel' ).text();
