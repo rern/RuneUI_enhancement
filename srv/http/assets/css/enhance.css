@@ -1052,8 +1052,9 @@ wh, gr { font-weight: 300; }
 .empty-block {
 	display: block;
 	position: relative;
+	height: 110px;
 	margin: 7px -8px;
-	padding: 30px 5px 10px 5px;
+	padding: 25px 5px 10px 5px;
 	background: #172029;
 	border-radius: 6px;
 	color: #587ca0;
@@ -1087,6 +1088,15 @@ wh, gr { font-weight: 300; }
 }
 .divbklabel {
 	overflow: hidden;
+}
+.bkcoverart {
+	position: absolute;
+	width: 100px;
+	height: 100px;
+	margin-top: -50px;
+	margin-left: -50px;
+	top: 50%;
+	left: 50%;
 }
 .bklabel {
 	display: table; /* allow get width */
