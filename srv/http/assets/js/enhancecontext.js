@@ -369,12 +369,10 @@ function addPlaylist( name, oldname ) {
 	if ( oldname ) {
 		var oldfile = ' "/var/lib/mpd/playlists/'+ oldname.replace( /"/g, '\\"' ) +'.m3u"';
 		var newfile = ' "/var/lib/mpd/playlists/'+ name.replace( /"/g, '\\"' ) +'.m3u"';
-		$.post( 'enhance.php', { bash: '/usr/bin/mv'+ oldfile + newfile }, function() {
-			$.post( 'enhance.php', { getplaylist: 1, getsavedonly: 1 }, function( data ) {
-				GUI.lsplaylists = data.lsplaylists;
-				$( '#plopen' ).click();
-			}, 'json' );
-		} );
+		$.post( 'enhance.php', { bash: '/usr/bin/mv'+ oldfile + newfile } );
+		GUI.lsplaylists.splice( GUI.lsplaylists.indexOf( oldname ), 1 );
+		GUI.lsplaylists.push( name );
+		$( '#plopen' ).click();
 	} else {
 		new PNotify( {
 			  title : 'Playlist Saved'
