@@ -352,7 +352,7 @@ function getCover( $path ) {
 			return 'data:image/'. $coverext.';base64,'.base64_encode( $coverart );
 		}
 	}
-	if ( basename( $file ) === 'x' ) return;
+	if ( basename( $file ) === 'bookmark' ) return;
 	
 	set_include_path( '/srv/http/app/libs/vendor/' );
 	require_once( 'getid3/audioinfo.class.php' );
@@ -378,7 +378,7 @@ function getLibrary() {
 	$rbkmarks = $redis->hGetAll( 'bkmarks' );
 	if ( $rbkmarks ) {
 		foreach ( $rbkmarks as $name => $path ) {
-			$coverart = getCover( $path.'/x' ) ?: '';
+			$coverart = getCover( $path.'/bookmark' ) ?: '';
 			$bookmarks[] = array(
 				  'name'  => $name
 				, 'path'  => $path
