@@ -775,8 +775,12 @@ function renderLibrary() {
 		} );
 		var bookmarkL = bookmarks.length;
 		$.each( bookmarks, function( i, bookmark ) {
+			var coverarthtml = bookmark.coverart ? '<img class="bkcoverart" src="'+ bookmark.coverart +'">' : '<i class="fa fa-bookmark"></i>';
 			var name = bookmark.name.replace( /\\/g, '' );
-			content += '<div class="col-md-3"><div class="home-block home-bookmark"><a class="lipath">'+ bookmark.path +'</a><i class="fa fa-bookmark"></i><div class="divbklabel"><span class="bklabel">'+ name +'</span></div></div></div>';
+			var namehtml = bookmark.coverart ? '' : '<div class="divbklabel"><span class="bklabel">'+ bookmark.name.replace( /\\/g, '' ) +'</span></div>';
+			content += '<div class="col-md-3"><div class="home-block home-bookmark">'
+					  +'<a class="lipath">'+ bookmark.path +'</a>'+ coverarthtml + namehtml
+					  +'</div></div>';
 		} );
 	}
 	var order = GUI.display.library || 'sd,usb,nas,webradio,album,artist,albumartist,composer,genre,dirble,jamendo';
@@ -806,8 +810,8 @@ function renderLibrary() {
 			$( '.home-block' ).css( 'padding', '' );
 		} else {
 			$( '.home-block gr' ).css( 'color', '#e0e7ee' );
-			$( '.home-block' ).css( 'padding-bottom', '30px' );
-			$( '.home-bookmark' ).css( 'padding', '15px 5px 5px 5px' );
+			$( '.home-block' ).css( 'padding-top', '35px' );
+			$( '.home-bookmark' ).css( 'padding', '20px 5px 5px 5px' );
 		}
 		displayTopBottom();
 		$( '.bklabel' ).each( function() {
