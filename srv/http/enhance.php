@@ -152,8 +152,14 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	echo json_encode( $data );
 } else if ( isset( $_POST[ 'getplaylist' ] ) ) {
 	$name = isset( $_POST[ 'name' ] ) ? '"'.$_POST[ 'name' ].'"' : '';
+	if ( !$name ) {
+		$data[ 'lsplaylists' ] = lsplaylists();
+		if ( isset( $_POST[ 'getsavedonly' ] ) ) {
+			echo json_encode( $data );
+			exit();
+		}
+	}
 	$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%^^[%albumartist%|%artist%]^^%album%^^%genre%^^%composer%" playlist '.$name );
-	if ( !isset( $_POST[ 'name' ] ) ) $data[ 'lsplaylists' ] = lsplaylists();
 	if ( !$lines ) {
 		$data[ 'playlist' ] = '';
 	} else {
