@@ -105,7 +105,7 @@ $( '.btn-cmd' ).click( function() {
 			}
 			command = GUI.status.state === 'play' ? 'mpc play '+ pos : [ 'mpc play '+ pos, 'mpc stop' ];
 		} else {
-			command = 'mpc toggle';
+			command = ( GUI.status.ext === 'radio' && GUI.status.state === 'play' ) ? 'mpc stop' : 'mpc toggle';
 		}
 	}
 	$.post( 'enhance.php', { mpc: command } );
@@ -850,12 +850,14 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 	$( '.menushadow' ).css( 'height', contextnum * 41 - 1 );
 	$( '#db-entries li' ).removeClass( 'active' );
 	$thisli.addClass( 'active' );
-	var menutop =
+	if ( $thisli.hasClass( 'licover' ) ) {
+		var menutop = $( '#menu-top' ).hasClass( 'hide' ) ? '270px' : '310px';
+	} else {
+		var menutop = ( $thisli.position().top + 49 ) +'px';
+	}
 	$menu
-		.removeClass( 'hide' )
-		.css( {
-			  top   : $thisli.hasClass( 'licover' ) ? ( GUI.display.bars ? '310px' : '270px' ) : ( $thisli.position().top + 49 ) +'px'
-		} );
+		.css( 'top',  menutop )
+		.removeClass( 'hide' );
 	var targetB = $menu.offset().top + $menu.height();
 	var wH = window.innerHeight;
 	if ( targetB > wH + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + ( GUI.display.bars ? 42 : 0 ) } );

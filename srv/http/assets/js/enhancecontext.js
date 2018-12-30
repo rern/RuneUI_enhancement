@@ -370,8 +370,8 @@ function addPlaylist( name, oldname ) {
 		var oldfile = ' "/var/lib/mpd/playlists/'+ oldname.replace( /"/g, '\\"' ) +'.m3u"';
 		var newfile = ' "/var/lib/mpd/playlists/'+ name.replace( /"/g, '\\"' ) +'.m3u"';
 		$.post( 'enhance.php', { bash: '/usr/bin/mv'+ oldfile + newfile }, function() {
-			$.post( 'enhance.php', { lsplaylists: 1 }, function( data ) {
-				GUI.lsplaylists = data;
+			$.post( 'enhance.php', { getplaylist: 1, getsavedonly: 1 }, function( data ) {
+				GUI.lsplaylists = data.lsplaylists;
 				$( '#plopen' ).click();
 			}, 'json' );
 		} );
