@@ -14,7 +14,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		
 		$result = shell_exec( $mpc );
 		// query 'various artist album' with 'artist name' > requery without
-		if ( !$result ) {
+		if ( !$result && isset( $_POST[ 'name' ] ) ) {
 			$result = shell_exec( 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" album "'.$_POST[ 'name' ].'"' );
 		}
 		$cmd = $mpc;
