@@ -1074,8 +1074,7 @@ $( '#pl-entries' ).on( 'click', '.pl-icon', function( e ) {
 			$contextlist.eq( 1 ).toggleClass( 'hide', state !== 'play' || $( e.target ).hasClass( 'fa-webradio' ) );
 			$contextlist.eq( 2 ).toggleClass( 'hide', state === 'stop' );
 		} else {
-			$contextlist.eq( 1 ).addClass( 'hide' );
-			$contextlist.eq( 2 ).addClass( 'hide' );
+			$contextlist.eq( 1 ).add( $contextlist.eq( 2 ) ).addClass( 'hide' );
 		}
 	} else {
 		$contextlist.not( ':eq( 3 )' ).addClass( 'hide' );
