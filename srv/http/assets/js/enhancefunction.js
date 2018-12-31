@@ -25,7 +25,6 @@ pushstreams.display.onmessage = function( data ) {
 	} else {
 		displayTopBottom();
 	}
-	setSwipe();
 }
 pushstreams.volume.onmessage = function( data ) {
 	if ( GUI.local ) return
@@ -140,20 +139,6 @@ $.each( streams, function( i, stream ) {
 	pushstreams[ stream ].connect();
 } );
 
-function libraryClick() { $( '#tab-library' ).click() }
-function playbackClick() { $( '#tab-playback' ).click() }
-function playlistClick() { $( '#tab-playlist' ).click() }
-function setSwipe() {
-	$pageLibrary.off( 'swiperight swipeleft' );
-	$pagePlayback.off( 'swiperight swipeleft' );
-	$pagePlaylist.off( 'swiperight swipeleft' );
-	var screenS = ( window.innerHeight < 590 || window.innerWidth < 500 );
-	if ( !GUI.display.bars || ( screenS && !GUI.display.barsauto ) ) {
-		$pageLibrary.on( 'swiperight', playlistClick ).on( 'swipeleft', playbackClick );
-		$pagePlayback.on( 'swiperight', libraryClick ).on( 'swipeleft', playlistClick );
-		$pagePlaylist.on( 'swiperight', playbackClick ).on( 'swipeleft', libraryClick );
-	}
-}
 function setPageCurrent( page ) {
 	clearInterval( GUI.intKnob );
 	clearInterval( GUI.intElapsed );
@@ -170,6 +155,7 @@ function setPageCurrent( page ) {
 	$( '#tab-'+ page ).addClass( 'active' );
 	GUI.library = GUI.playback = GUI.playlist = 0;
 	GUI[ page ] = 1;
+	GUI.currentpage = page;
 	if ( GUI.playback ) return
 	
 	if ( !GUI.display.bars ) {
@@ -1242,8 +1228,9 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		}
 	}
 	$( '#db-index li' ).css( 'color', '' );
-	// hide index bar in file mode
-	if ( $( '#db-entries li:eq( 0 ) i.db-icon' ).hasClass( 'fa-music' ) || fileplaylist ) {
+	// hide index bar in directories with files only
+	var lieq = $( '#db-entries .licover' ).length ? 1 : 0;
+	if ( $( '#db-entries li:eq( '+ lieq +' ) i.db-icon' ).hasClass( 'fa-music' ) || fileplaylist ) {
 		$( '#db-index' ).addClass( 'hide' );
 		$( '#db-entries' ).css( 'width', '100%' );
 	} else {

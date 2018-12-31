@@ -4,6 +4,7 @@ var GUI = { // outside '$( function() {' enable console.log access
 	, artistalbum  : ''
 	, bookmarkedit : 0
 	, browsemode   : ''
+	, currentpage  : 'playback'
 	, currentpath  : ''
 	, dbback       : 0
 	, dbbackdata   : []
@@ -42,18 +43,12 @@ var blinkdot = '<a class="dot">.</a> <a class="dot dot2">.</a> <a class="dot dot
 
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-// fix jquery.mobile swipe not work with Midori - use hammer.js instead
-$pageLibrary = GUI.midori ? new Hammer( document.getElementById( 'page-library' ) ) : $( '#page-library' );
-$pagePlayback = GUI.midori ? new Hammer( document.getElementById( 'page-playback' ) ) : $( '#page-playback' );
-$pagePlaylist = GUI.midori ? new Hammer( document.getElementById( 'page-playlist' ) ) : $( '#page-playlist' );
-
 GUI.local = 1; // suppress 2nd getPlaybackStatus() on load
 setTimeout( function() { GUI.local = 0 }, 500 );
 $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 	GUI.display = data;
 	if ( !GUI.display.contexticon ) $( 'head' ).append( '<style id="contexticoncss">.db-action, #pl-editor .pl-action { display: none }</style>' );
 	var screenS = ( window.innerHeight < 590 || window.innerWidth < 500 );
-	if ( !GUI.display.bars || ( screenS && !GUI.display.barsauto ) ) setSwipe();
 	$.post( 'enhancestatus.php', function( status ) {
 		GUI.status = status;
 		setButton();
@@ -191,7 +186,6 @@ $( '#displayplayback' ).click( function() {
 				displayPlayback();
 			} );
 			if ( !GUI.playback ) $( '#tab-playback' ).click();
-			setSwipe();
 		}
 	} );
 	// disable by bars hide
@@ -229,6 +223,17 @@ $( '#turnoff' ).click( function() {
 			$.post( 'enhance.php', { power: 'screenoff' } );
 		}
 	} );
+} );
+// fix jquery.mobile swipe not work with Midori - use hammer.js instead
+$swipebar = GUI.midori ? new Hammer( document.getElementById( 'swipebar' ) ) : $( '#swipebar' );
+$swipebar.on( 'swipeleft swiperight', function( e ) {
+	var swipeleft = e.type === 'swipeleft';
+	var $target = {
+		  library  : swipeleft ? $( '#tab-playback' ) : $( '#tab-playlist' )
+		, playback : swipeleft ? $( '#tab-playlist' ) : $( '#tab-library' )
+		, playlist : swipeleft ? $( '#tab-library' )  : $( '#tab-playback' )
+	}
+	$target[ GUI.currentpage  ].click();
 } );
 $( '#tab-library' ).click( function() {
 	if ( !Object.keys( GUI.libraryhome ).length ) return // wait for mpc data 
@@ -752,10 +757,10 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 		}
 	}
 	if ( $this.find( '.fa-music' ).length || $this.find( '.fa-webradio' ).length ) {
-		if ( !GUI.display.tapaddplay ) {
+		if ( !GUI.display.tapaddplay || $this.hasClass( 'licover' ) ) {
 			$this.find( 'i.db-action' ).click();
 		} else {
-			$thisli = $( this );
+			$thisli = $this;
 			if ( $thisli.hasClass( 'licover' ) || !$thisli.find( '.fa-music, .fa-webradio' ).length ) return
 			GUI.list = {};
 			GUI.list.path = $thisli.find( '.lipath' ).text();
