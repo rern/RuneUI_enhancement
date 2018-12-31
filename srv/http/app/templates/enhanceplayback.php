@@ -230,6 +230,14 @@ function menucommonsp( $type ) {
 $menu = '<div>';
 $htmlcommon = menucommon( 'add', 'addplay', 'replace', 'replaceplay' );
 
+$html = '<span class="menushadow"></span>';
+$html.= menuli( 'play',   'play',        'Play' );
+$html.= menuli( 'pause',  'pause',       'Pause' );
+$html.= menuli( 'stop',   'stop',         'Stop' );
+$html.= menuli( 'remove', 'minus-circle', 'Remove' );
+$menu.= menudiv( 'plaction', $html );
+$menudiv = '';
+
 $html = $htmlcommon;
 $html.= menuli( 'update',   'folder-refresh', 'Update' );
 $html.= menuli( 'bookmark', 'star',           'Bookmark' );
