@@ -27,6 +27,7 @@ var GUI = { // outside '$( function() {' enable console.log access
 	, plugin       : ''
 	, status       : {}
 };
+$swipe = ( !GUI.display.bars || ( screenS && !GUI.display.barsauto ) ) ? $( '#swipebar, .page' ) : $( '#swipebar' );
 
 PNotify.prototype.options.delay = 3000;
 PNotify.prototype.options.styling = 'fontawesome';
@@ -48,7 +49,13 @@ setTimeout( function() { GUI.local = 0 }, 500 );
 $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 	GUI.display = data;
 	if ( !GUI.display.contexticon ) $( 'head' ).append( '<style id="contexticoncss">.db-action, .pl-action { display: none }</style>' );
+	$.event.special.swipe.horizontalDistanceThreshold = 80; // pixel to swipe
 	var screenS = ( window.innerHeight < 590 || window.innerWidth < 500 );
+	if ( !GUI.display.bars || ( screenS && !GUI.display.barsauto ) ) {
+		$swipe.on( 'swipeleft swiperight', function( e ) {
+			setSwipe( e.type );
+		} );
+	}
 	$.post( 'enhancestatus.php', function( status ) {
 		GUI.status = status;
 		setButton();
@@ -184,6 +191,13 @@ $( '#displayplayback' ).click( function() {
 			} );
 			$.post( 'enhance.php', { setdisplay: GUI.display }, function() {
 				displayPlayback();
+				$swipe.off( 'swipeleft swiperight' );
+				var screenS = ( window.innerHeight < 590 || window.innerWidth < 500 );
+				if ( !GUI.display.bars || ( screenS && !GUI.display.barsauto ) ) {
+					$swipe.on( 'swipeleft swiperight', function( e ) {
+						setSwipe( e.type );
+					} );
+				}
 			} );
 			if ( !GUI.playback ) $( '#tab-playback' ).click();
 		}
@@ -226,8 +240,11 @@ $( '#turnoff' ).click( function() {
 } );
 // fix jquery.mobile swipe not work with Midori - use hammer.js instead
 //$swipebar = GUI.midori ? new Hammer( document.getElementById( 'swipebar' ) ) : $( '#swipebar' );
+/*var screenS = ( window.innerHeight < 590 || window.innerWidth < 500 );
+console.log( !GUI.display.bars +' || ( '+ screenS +' && ! '+ GUI.display.barsauto +' )' )
+$swipe = ( !GUI.display.bars || ( screenS && !GUI.display.barsauto ) ) ? $( '#swipebar, .page' ) : $( '#swipebar' );
 $.event.special.swipe.horizontalDistanceThreshold = 80; // pixel to swipe
-$( '#swipebar, .page' ).on( 'swipeleft swiperight', function( e ) {
+$swipe.on( 'swipeleft swiperight', function( e ) {
 	var swipeleft = e.type === 'swipeleft';
 	var $target = {
 		  library  : swipeleft ? $( '#tab-playback' ) : $( '#tab-playlist' )
@@ -235,7 +252,7 @@ $( '#swipebar, .page' ).on( 'swipeleft swiperight', function( e ) {
 		, playlist : swipeleft ? $( '#tab-library' )  : $( '#tab-playback' )
 	}
 	$target[ GUI.currentpage  ].click();
-} );
+} );*/
 $( '#tab-library' ).click( function() {
 	if ( !Object.keys( GUI.libraryhome ).length ) return // wait for mpc data 
 	

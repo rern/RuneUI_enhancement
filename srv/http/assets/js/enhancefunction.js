@@ -139,6 +139,15 @@ $.each( streams, function( i, stream ) {
 	pushstreams[ stream ].connect();
 } );
 
+function setSwipe( type ) {
+	var swipeleft = type === 'swipeleft';
+	var $target = {
+		  library  : swipeleft ? $( '#tab-playback' ) : $( '#tab-playlist' )
+		, playback : swipeleft ? $( '#tab-playlist' ) : $( '#tab-library' )
+		, playlist : swipeleft ? $( '#tab-library' )  : $( '#tab-playback' )
+	}
+	$target[ GUI.currentpage  ].click();
+}
 function setPageCurrent( page ) {
 	clearInterval( GUI.intKnob );
 	clearInterval( GUI.intElapsed );
