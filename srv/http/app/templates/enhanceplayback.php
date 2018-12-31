@@ -97,6 +97,7 @@
 			</div>
 		</div>
 	</div>
+	<p class="filler"></p>
 </div>
 <div id="page-library" class="page hide">
 	<div class="btnlist btnlist-top">
