@@ -8,8 +8,10 @@ $( '.contextmenu a' ).click( function() {
 	if ( [ 'play', 'pause', 'stop', 'remove' ].indexOf( cmd ) !== -1 ) {
 		if ( cmd === 'remove' ) {
 			GUI.list.li.find( '.pl-action' ).click();
+		} else if ( cmd === 'stop' ) {
+			GUI.list.li.find( '.time' ).tap(); // jquery.mobile
 		} else {
-			$.post( 'enhance.php', { mpc: 'mpc '+ cmd } );
+			GUI.list.li.tap(); // jquery.mobile
 		}
 		return
 	}

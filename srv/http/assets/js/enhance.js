@@ -1032,20 +1032,7 @@ $( '#pl-entries' ).on ( 'swipeleft', 'li', function( e ) {
 	) {
 		$( '#stop' ).click();
 		return
-	} else if ( $( e.target ).hasClass( 'pl-icon' ) ) {
-		GUI.list.li = $this;
-		var menutop = ( $this.position().top + 49 ) +'px';
-		if ( !$( '#context-menu-plaction' ).hasClass( 'hide' ) && $( '#context-menu-plaction' ).css( 'top' ) === menutop ) {
-			$( '#context-menu-plaction' ).addClass( 'hide' );
-			return
-		}
-		$( '#context-menu-plaction' )
-			.removeClass( 'hide' )
-			.css( 'top', menutop );
-		$( '#context-menu-plaction a:not(:last-child)' ).toggle( $( '#menu-top' ).hasClass( 'hide' ) );
-		$( '#context-menu-plaction a:eq( 0 )' ).toggle( GUI.status.state !== 'play' );
-		$( '#context-menu-plaction a:eq( 1 )' ).toggle( GUI.status.state === 'play' );
-		$( '#context-menu-plaction a:eq( 2 )' ).toggle( GUI.status.state !== 'stop' );
+	} else if ( $( e.target ).hasClass( 'pl-icon' ) || $( e.target ).hasClass( 'pl-action' ) ) {
 		return
 	}
 	
@@ -1064,7 +1051,36 @@ $( '#pl-entries' ).on ( 'swipeleft', 'li', function( e ) {
 		}
 	}
 } );
-$( '#pl-entries' ).on( 'click', '.pl-action', function() {
+$( '#pl-entries' ).on( 'click', '.pl-icon', function( e ) {
+	$thisli = $( this ).parent();
+	GUI.list.li = $thisli;
+	var menutop = ( $thisli.position().top + 49 ) +'px';
+	if ( !$( '#context-menu-plaction' ).hasClass( 'hide' ) 
+		&& $( '#context-menu-plaction' ).css( 'top' ) === menutop
+	) {
+		$( '#context-menu-plaction' ).addClass( 'hide' );
+		return
+	}
+	
+	$( '#context-menu-plaction' )
+		.removeClass( 'hide' )
+		.css( 'top', menutop );
+	var state = GUI.status.state;
+	if ( $( '#menu-top' ).hasClass( 'hide' ) ) {
+		if ( $thisli.hasClass( 'active' ) ) {
+			$( '#context-menu-plaction a:eq( 0 )' ).toggleClass( 'hide', state === 'play' );
+			$( '#context-menu-plaction a:eq( 1 )' ).toggleClass( 'hide', state !== 'play' || $( e.target ).hasClass( 'fa-webradio' ) );
+			$( '#context-menu-plaction a:eq( 2 )' ).toggleClass( 'hide', state === 'stop' );
+		} else {
+			$( '#context-menu-plaction a:eq( 0 )' ).removeClass( 'hide' );
+			$( '#context-menu-plaction a:eq( 1 )' ).addClass( 'hide' );
+			$( '#context-menu-plaction a:eq( 2 )' ).addClass( 'hide' );
+		}
+	} else {
+		$( '#context-menu-plaction a:not(:first-child, :last-child)' ).addClass( 'hide' );
+	}
+} );
+$( '#pl-entries' ).on( 'click', '.pl-action', function() { // remove
 	var $this = $( this ).parent();
 	var webradio = $this.hasClass( 'webradio' );
 	var $elcount = webradio ? $( '#countradio' ) : $( '#countsong' );
