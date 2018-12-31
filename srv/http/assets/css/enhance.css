@@ -1477,6 +1477,9 @@ span.dbpath {
 	font-size: 18px;
 	text-align: center;
 }
+#pl-entries .pl-action {
+	font-size: 24px;
+}
 .db-icon,
 .pl-icon,
 #pl-editor span:before,
