@@ -226,6 +226,7 @@ $( '#turnoff' ).click( function() {
 } );
 // fix jquery.mobile swipe not work with Midori - use hammer.js instead
 $swipebar = GUI.midori ? new Hammer( document.getElementById( 'swipebar' ) ) : $( '#swipebar' );
+$.event.special.swipe.horizontalDistanceThreshold = 100; // 100px swipe
 $swipebar.on( 'swipeleft swiperight', function( e ) {
 	var swipeleft = e.type === 'swipeleft';
 	var $target = {
@@ -1022,7 +1023,7 @@ new Sortable( document.getElementById( 'pl-entries' ), {
 	}
 } );
 $.event.special.tap.emitTapOnSwipeLeft = false; // suppress tap on swipeleft
-$( '#pl-entries' ).on ( 'swipeleft', 'li', function() {
+$( '#pl-entries' ).on ( 'swipeleft', 'li', function( e ) {
 	$( this ).find( '.pl-action' ).click();
 } ).on( 'tap', 'li', function( e ) {
 	$this = $( this );
