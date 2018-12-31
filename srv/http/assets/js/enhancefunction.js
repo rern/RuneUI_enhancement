@@ -1429,6 +1429,7 @@ function setPlaylistScroll() {
 	if ( GUI.sortable ) return // 'skip for Sortable'
 	
 	clearInterval( GUI.intElapsedPl );
+	$( '#context-menu-plaction' ).addClass( 'hide' );
 	var $liactive = '';
 	var $elapsed = '';
 	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
