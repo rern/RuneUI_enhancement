@@ -226,7 +226,7 @@ $( '#turnoff' ).click( function() {
 } );
 // fix jquery.mobile swipe not work with Midori - use hammer.js instead
 $swipebar = GUI.midori ? new Hammer( document.getElementById( 'swipebar' ) ) : $( '#swipebar' );
-$.event.special.swipe.horizontalDistanceThreshold = 100; // 100px swipe
+$.event.special.swipe.horizontalDistanceThreshold = 80; // pixel to swipe
 $swipebar.on( 'swipeleft swiperight', function( e ) {
 	var swipeleft = e.type === 'swipeleft';
 	var $target = {
@@ -1025,6 +1025,7 @@ new Sortable( document.getElementById( 'pl-entries' ), {
 } );
 $.event.special.tap.emitTapOnSwipe = false; // suppress tap on swipeleft
 $( '#pl-entries' ).on ( 'swipe', 'li', function( e ) {
+	$( '#context-menu-plaction' ).addClass( 'hide' );
 	$( '#pl-entries .pl-action' ).toggle();
 } ).on( 'tap', 'li', function( e ) {
 	$this = $( this );
@@ -1056,30 +1057,34 @@ $( '#pl-entries' ).on( 'click', '.pl-icon', function( e ) {
 	$thisli = $( this ).parent();
 	GUI.list.li = $thisli;
 	var menutop = ( $thisli.position().top + 49 ) +'px';
-	if ( !$( '#context-menu-plaction' ).hasClass( 'hide' ) 
-		&& $( '#context-menu-plaction' ).css( 'top' ) === menutop
+	var $contextmenu = $( '#context-menu-plaction' );
+	var $contextlist = $( '#context-menu-plaction a' );
+	if ( !$contextmenu.hasClass( 'hide' ) 
+		&& $contextmenu.css( 'top' ) === menutop
 	) {
-		$( '#context-menu-plaction' ).addClass( 'hide' );
+		$contextmenu.addClass( 'hide' );
 		return
 	}
 	
-	$( '#context-menu-plaction' )
-		.removeClass( 'hide' )
-		.css( 'top', menutop );
 	var state = GUI.status.state;
+	$contextlist.removeClass( 'hide' );
 	if ( $( '#menu-top' ).hasClass( 'hide' ) ) {
 		if ( $thisli.hasClass( 'active' ) ) {
-			$( '#context-menu-plaction a:eq( 0 )' ).toggleClass( 'hide', state === 'play' );
-			$( '#context-menu-plaction a:eq( 1 )' ).toggleClass( 'hide', state !== 'play' || $( e.target ).hasClass( 'fa-webradio' ) );
-			$( '#context-menu-plaction a:eq( 2 )' ).toggleClass( 'hide', state === 'stop' );
+			$contextlist.eq( 0 ).toggleClass( 'hide', state === 'play' );
+			$contextlist.eq( 1 ).toggleClass( 'hide', state !== 'play' || $( e.target ).hasClass( 'fa-webradio' ) );
+			$contextlist.eq( 2 ).toggleClass( 'hide', state === 'stop' );
 		} else {
-			$( '#context-menu-plaction a:eq( 0 )' ).removeClass( 'hide' );
-			$( '#context-menu-plaction a:eq( 1 )' ).addClass( 'hide' );
-			$( '#context-menu-plaction a:eq( 2 )' ).addClass( 'hide' );
+			$contextlist.eq( 1 ).addClass( 'hide' );
+			$contextlist.eq( 2 ).addClass( 'hide' );
 		}
 	} else {
-		$( '#context-menu-plaction a:not(:first-child, :last-child)' ).addClass( 'hide' );
+		$contextlist.not( ':eq( 3 )' ).addClass( 'hide' );
 	}
+	var contextnum = $contextmenu.find( 'a:not(.hide)' ).length;
+	$( '.menushadow' ).css( 'height', contextnum * 41 - 1 );
+	$contextmenu
+		.removeClass( 'hide' )
+		.css( 'top', menutop );
 } );
 $( '#pl-entries' ).on( 'click', '.pl-action', function() { // remove
 	var $this = $( this ).parent();
