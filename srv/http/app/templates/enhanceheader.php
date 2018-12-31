@@ -137,6 +137,7 @@ if ( empty( $this->uri(1) ) ) { ?>
 		<img class="logo" src="<?=$this->asset( '/img/runelogo.svg' )?>">
 	</a>
 </div>
+<div id="swipebar"></div>
 <div id="menu-bottom" class="hide">
 	<ul>
 		<li id="tab-library"><a><i class="fa fa-library"></i></a></li>
