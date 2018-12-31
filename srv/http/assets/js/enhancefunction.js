@@ -150,6 +150,7 @@ function setPageCurrent( page ) {
 	}
 	$( '#menu-bottom li, #db-entries li, #pl-editor li' ).removeClass( 'active' );
 	$( '.page, .menu' ).addClass( 'hide' );
+	$( '#pl-entries .pl-action' ).hide();
 	$( 'html, body' ).scrollTop( 0 );
 	$( '#page-'+ page ).removeClass( 'hide' );
 	$( '#tab-'+ page ).addClass( 'active' );
@@ -830,6 +831,14 @@ function renderLibrary() {
 		} );
 	} );
 }
+function infoNoData() {
+	$( '#loader' ).addClass( 'hide' );
+	info( {
+		  icon      : 'info-circle'
+		, message   : 'No data in this location.'
+		, autoclose : 4000
+	} );
+}
 function getDB( options ) {
 	$( '#loader' ).removeClass( 'hide' );
 	if ( !Array.isArray( options.path ) ) {
@@ -840,12 +849,7 @@ function getDB( options ) {
 			path.push( val.toString().replace( /"/g, '\"' ) );
 		} );
 		$.post( 'enhance.php', { playlist: path }, function( data ) {
-			if ( data ) {
-				dataSort( data, path[ 0 ] );
-			} else {
-				$( '#loader' ).addClass( 'hide' );
-				info( 'No data in this location.' );
-			}
+			data ? dataSort( data, path[ 0 ] ) : infoNoData();
 		}, 'json' );
 		return
 	}
@@ -929,12 +933,7 @@ function getDB( options ) {
 			}
 		}
 		$.post( 'enhance.php', command[ mode ], function( data ) {
-			if ( data ) {
-				dataSort( data, path );
-			} else {
-				$( '#loader' ).addClass( 'hide' );
-				info( 'No data in this location.' );
-			}
+			data ? dataSort( data, path ) : infoNoData();
 		}, 'json' );
 		return
 	}

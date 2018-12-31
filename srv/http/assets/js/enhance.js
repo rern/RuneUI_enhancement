@@ -892,6 +892,7 @@ $( '#db-index li' ).click( function() {
 } );
 $( '#db-entries, #pl-entries, #pl-editor' ).on( 'click', 'p', function() {
 	$( '.menu' ).addClass( 'hide' );
+	$( '#pl-entries .pl-action' ).hide();
 	$( '#db-entries li, #pl-editor li' ).removeClass( 'active' );
 } );
 // PLAYLIST /////////////////////////////////////////////////////////////////////////////////////
@@ -1022,9 +1023,9 @@ new Sortable( document.getElementById( 'pl-entries' ), {
 		$.post( 'enhance.php', { mpc: 'mpc move '+ ( e.oldIndex + 1 ) +' '+ ( e.newIndex + 1 ) } );
 	}
 } );
-$.event.special.tap.emitTapOnSwipeLeft = false; // suppress tap on swipeleft
-$( '#pl-entries' ).on ( 'swipeleft', 'li', function( e ) {
-	$( this ).find( '.pl-action' ).click();
+$.event.special.tap.emitTapOnSwipe = false; // suppress tap on swipeleft
+$( '#pl-entries' ).on ( 'swipe', 'li', function( e ) {
+	$( '#pl-entries .pl-action' ).toggle();
 } ).on( 'tap', 'li', function( e ) {
 	$this = $( this );
 	if ( $( e.target ).parent().hasClass( 'elapsed' )
