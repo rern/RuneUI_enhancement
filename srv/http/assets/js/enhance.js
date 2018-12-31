@@ -909,7 +909,7 @@ $( '#pl-currentpath' ).on( 'click', '.plsbackroot', function() {
 $( '#plopen' ).click( function() {
 	if ( !GUI.lsplaylists.length ) return
 	
-	$( '.playlist, #pl-searchbtn' ).addClass( 'hide' );
+	$( '.playlist, #pl-searchbtn, #context-menu-plaction' ).addClass( 'hide' );
 	$( '#loader' ).removeClass( 'hide' );
 	
 	var pl = GUI.lsplaylists;
