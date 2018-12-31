@@ -252,7 +252,8 @@ wh, gr { font-weight: 300; }
 }
 /* ---------------------- menu-top ----------------------*/
 #menu-top,
-#menu-bottom {
+#menu-bottom,
+#swipebar {
 	position: fixed;
 	left: 0;
 	width: 100%;
@@ -263,8 +264,12 @@ wh, gr { font-weight: 300; }
 #menu-top {
 	top: 0
 }
-#menu-bottom {
+#menu-bottom,
+#swipebar {
 	bottom: 0
+}
+#swipebar {
+	background: none;
 }
 
 .logo {
