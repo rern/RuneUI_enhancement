@@ -159,10 +159,6 @@ function setPageCurrent( page ) {
 	GUI.currentpage = page;
 	if ( GUI.playback ) return
 	
-	if ( !GUI.display.bars ) {
-		$( '.btnlist-top' ).css( 'top', 0 );
-		$( '#db-list' ).css( 'padding-top', '40px' );
-	}
 	// restore page scroll
 	if ( GUI.library ) {
 		if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) {
@@ -545,14 +541,18 @@ function displayTopBottom() {
 	var screenS = ( window.innerHeight < 590 || window.innerWidth < 500 );
 	if ( !GUI.display.bars || ( screenS && !GUI.display.barsauto ) ) {
 		$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
-		$( '#db-list, #pl-list' ).css( 'padding', '40px 0' );
-		$( '.btnlist-top' ).css( 'top', 0 );
-		$( '#home-blocks' ).css( 'padding-top', '50px' );
+		if ( !GUI.playback ) {
+			$( '#db-list, #pl-list' ).css( 'padding', '40px 0' );
+			$( '.btnlist-top' ).css( 'top', 0 );
+			$( '#home-blocks' ).css( 'padding-top', '50px' );
+		}
 	} else {
 		$( '#menu-top, #menu-bottom' ).removeClass( 'hide' );
-		$( '#db-list, #pl-list' ).css( 'padding', '' );
-		$( '.btnlist-top' ).css( 'top', '40px' );
-		$( '#home-blocks' ).css( 'padding-top', '' );
+		if ( !GUI.playback ) {
+			$( '#db-list, #pl-list' ).css( 'padding', '' );
+			$( '.btnlist-top' ).css( 'top', '40px' );
+			$( '#home-blocks' ).css( 'padding-top', '' );
+		}
 	}
 	$( '#debug' ).toggleClass( 'hide', GUI.display.debug === '' );
 	$( '#dev' ).toggleClass( 'hide', GUI.display.dev === '' );
@@ -1429,6 +1429,7 @@ function setPlaylistScroll() {
 	if ( GUI.sortable ) return // 'skip for Sortable'
 	
 	clearInterval( GUI.intElapsedPl );
+	displayTopBottom();
 	$( '#context-menu-plaction' ).addClass( 'hide' );
 	var $liactive = '';
 	var $elapsed = '';

@@ -225,9 +225,9 @@ $( '#turnoff' ).click( function() {
 	} );
 } );
 // fix jquery.mobile swipe not work with Midori - use hammer.js instead
-$swipebar = GUI.midori ? new Hammer( document.getElementById( 'swipebar' ) ) : $( '#swipebar' );
+//$swipebar = GUI.midori ? new Hammer( document.getElementById( 'swipebar' ) ) : $( '#swipebar' );
 $.event.special.swipe.horizontalDistanceThreshold = 80; // pixel to swipe
-$swipebar.on( 'swipeleft swiperight', function( e ) {
+$( '#swipebar, .page' ).on( 'swipeleft swiperight', function( e ) {
 	var swipeleft = e.type === 'swipeleft';
 	var $target = {
 		  library  : swipeleft ? $( '#tab-playback' ) : $( '#tab-playlist' )
@@ -910,6 +910,7 @@ $( '#plopen' ).click( function() {
 	if ( !GUI.lsplaylists.length ) return
 	
 	$( '.playlist, #pl-searchbtn, #context-menu-plaction' ).addClass( 'hide' );
+	$( '#context-menu-plaction' ).addClass( 'hide' );
 	$( '#loader' ).removeClass( 'hide' );
 	
 	var pl = GUI.lsplaylists;
