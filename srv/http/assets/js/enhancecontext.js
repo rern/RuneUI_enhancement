@@ -4,8 +4,17 @@
 
 $( '.contextmenu a' ).click( function() {
 	$( '.menu' ).addClass( 'hide' );
-	$( '#db-entries li, #pl-entries li' ).removeClass( 'active' );
 	var cmd = $( this ).data( 'cmd' );
+	if ( [ 'play', 'pause', 'stop', 'remove' ].indexOf( cmd ) !== -1 ) {
+		if ( cmd === 'remove' ) {
+			GUI.list.li.find( '.pl-action' ).click();
+		} else {
+			$.post( 'enhance.php', { mpc: 'mpc '+ cmd } );
+		}
+		return
+	}
+	
+	$( '#db-entries li, #pl-entries li' ).removeClass( 'active' );
 	var mode = cmd.replace( /replaceplay|replace|addplay|add/, '' );
 	// get name
 	if ( mode === 'wr' ) {

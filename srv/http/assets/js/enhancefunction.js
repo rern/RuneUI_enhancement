@@ -476,7 +476,6 @@ function renderPlayback() {
 }
 
 function getPlaybackStatus() {
-	console.log('getPlaybackStatus')
 	if ( GUI.playlist && !GUI.pleditor ) {
 		setPlaylistScroll();
 		return
@@ -1503,7 +1502,7 @@ function htmlPlaylist( data ) {
 			pltime += sec;
 			if ( GUI.playlist ) {
 				if ( !GUI.pleditor ) {
-					var actionhtml = '<i class="fa fa-music pl-icon"></i><i class="fa fa-minus-circle pl-action"></i>';
+					var actionhtml = '<i class="fa fa-music pl-icon"></i><i class="fa fa-minus-circle pl-action" data-target="#context-menu-plaction"></i>';
 				} else {
 					var actionhtml = '<i class="fa fa-music pl-icon"></i><i class="fa fa-bars pl-action" data-target="#context-menu-file"></i>'
 									+'<a class="lipath">'+ ( value.cue || value.file ) +'</a>'
