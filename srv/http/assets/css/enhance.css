@@ -272,9 +272,14 @@ wh, gr { font-weight: 300; }
 	bottom: 0
 }
 #swipebar {
-	background: none;
+	font-size: 36px;
+	line-height: 36px;
+	text-align: center;
+	background: #35495e;
 }
-
+.transparent {
+	opacity: 0;
+}
 .logo {
 	height: 35px;
 	margin: 2px 20px 10px 0;
