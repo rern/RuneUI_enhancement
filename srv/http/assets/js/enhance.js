@@ -329,7 +329,7 @@ $( '#page-library' ).click( function( e ) {
 	
 	if ( e.target.id !== 'home-block-edit' && e.target.id !== 'home-block-remove' ) {
 		$( '#home-block-edit, #home-block-remove' ).remove();
-		$( '.home-bookmark' ).find( '.fa-bookmark, gr' ).css( 'opacity', '' );
+		$( '.home-bookmark' ).find( '.fa-bookmark, .bklabel, img' ).css( 'opacity', '' );
 	}
 } );
 $( '#song, #playlist-warning' ).on( 'click', 'i', function() {
@@ -667,8 +667,8 @@ $( '#home-blocks' ).on( 'tap', '.home-block', function() {
 	GUI.local = 1;
 	setTimeout( function() { GUI.local = 0 }, 1000 );
 	$( '.home-bookmark' )
-		.append( '<i id="home-block-edit" class="fa fa-edit"></i><i id="home-block-remove" class="fa fa-minus-circle"></i>' )
-		.find( '.fa-bookmark, gr' ).css( 'opacity', 0.2 );
+		.append( '<i id="home-block-edit" class="fa fa-edit-circle"></i><i id="home-block-remove" class="fa fa-minus-circle"></i>' )
+		.find( '.fa-bookmark, .bklabel, img' ).css( 'opacity', 0.2 );
 } );
 
 $( '#db-home' ).click( function() {
