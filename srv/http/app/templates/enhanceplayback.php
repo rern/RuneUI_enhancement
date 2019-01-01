@@ -318,8 +318,8 @@ $menudiv = '';
 
 $html = '<span class="menushadow"></span>';
 $html.= menuli( 'pladd',         'plus-o',            'Add' );
-$html.= menuli( 'pladdplay',     'play-plus-o',       'Add ► Play' );
-$html.= menuli( 'plashuffle',    'random',            '+Random ► Play' );
+$html.= menuli( 'pladdplay',     'play-plus',       'Add ► Play' );
+$html.= menuli( 'plashuffle',    'play-random',    '+Random ► Play' );
 $html.= menuli( 'plreplace',     'plus-refresh',      'Replace' );
 $html.= menuli( 'plreplaceplay', 'play-plus-refresh', 'Replace ► Play' );
 $html.= menuli( 'plrename',      'edit-circle',       'Rename' );
