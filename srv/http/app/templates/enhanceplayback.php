@@ -117,7 +117,47 @@
 		<button id="db-search-results" class="btn hide" type="button"><i class="fa fa-times sx"></i></button>
 		<i id="db-back" class="fa fa-arrow-left"></i>
 	</div>
-	<div id="home-blocks" class="row"></div>
+	<div id="home-blocks" class="row">
+		<div id="divbookmarks"></div>
+		<div id="divhomeblocks">
+			<div class="col-md-3">
+				<div id="home-nas" class="home-block"><a class="lipath">NAS</a><i class="fa fa-network"></i><wh>Network</wh></div>
+			</div>
+			<div class="col-md-3">
+				<div id="home-sd" class="home-block"><a class="lipath">LocalStorage</a><i class="fa fa-microsd"></i><wh>SD</wh></div>
+			</div>
+			<div class="col-md-3">
+				<div id="home-webradio" class="home-block"><a class="lipath">Webradio</a><i class="fa fa-webradio"></i><wh>Webradio</wh></div>
+			</div>
+			<div class="col-md-3">
+				<div id="home-usb" class="home-block"><a class="lipath">USB</a><i class="fa fa-usbdrive"></i><wh>USB</wh></div>
+			</div>
+			<div class="col-md-3">
+				<div id="home-album" class="home-block" data-browsemode="album"><a class="lipath">Album</a><i class="fa fa-album"></i><wh>Album</wh></div>
+			</div>
+			<div class="col-md-3">
+				<div id="home-artist" class="home-block" data-browsemode="artist"><a class="lipath">Artist</a><i class="fa fa-artist"></i><wh>Artist</wh></div>
+			</div>
+			<div class="col-md-3">
+				<div id="home-albumartist" class="home-block" data-browsemode="albumartist"><a class="lipath">AlbumArtist</a><i class="fa fa-albumartist"></i><wh>Album Artist</wh></div>
+			</div>
+			<div class="col-md-3">
+				<div id="home-composer" class="home-block" data-browsemode="composer"><a class="lipath">Composer</a><i class="fa fa-composer"></i><wh>Composer</wh></div>
+			</div>
+			<div class="col-md-3">
+				<div id="home-genre" class="home-block" data-browsemode="genre"><a class="lipath">Genre</a><i class="fa fa-genre"></i><wh>Genre</wh></div>
+			</div>
+			<div class="col-md-3">
+				<div id="home-jamendo" class="home-block" data-plugin="Jamendo"><a class="lipath">Jamendo</a><i class="fa fa-jamendo"></i><wh>Jamendo</wh></div>
+			</div>
+			<div class="col-md-3">
+				<div id="home-dirble" class="home-block" data-plugin="Dirble"><a class="lipath">Dirble</a><i class="fa fa-dirble"></i><wh>Dirble</wh></div>
+			</div>
+			<div class="col-md-3 hide">
+				<div id="home-spotify" class="home-block" data-plugin="Spotify"><a class="lipath">Dirble</a><i class="fa fa-spotify"></i><wh>Spotify</wh></div>
+			</div>
+		</div>
+	</div>
 	<div id="db-list">
 		<ul id="db-entries" class="database"></ul>
 		<ul id="db-index" class="index hide">
