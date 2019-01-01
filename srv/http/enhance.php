@@ -65,6 +65,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 } else if ( isset( $_POST[ 'homeorder' ] ) ) {
 	$redis->hSet( 'display', 'library', $_POST[ 'homeorder' ] );
 	$data = $redis->hGetAll( 'display' );
+	$data[ 'volumempd' ] = $redis->get( 'volume' );
 	pushstream( 'display', $data );
 } else if ( isset( $_POST[ 'bkmarks' ] ) || isset( $_POST[ 'webradios' ] ) ) {
 	if ( isset( $_POST[ 'bkmarks' ] ) ) {
