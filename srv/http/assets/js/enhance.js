@@ -177,12 +177,11 @@ $( '#displaylibrary' ).click( function() {
 			} );
 			if ( GUI.display.contexticon ) {
 				$( '#contexticoncss' ).remove();
-			} else {
-				if ( !$( '#contexticoncss' ).length ) $( 'head' ).append( '<style id="contexticoncss">.db-action, .pl-action { display: none }</style>' );
+			} else if ( !$( '#contexticoncss' ).length ) {
+				$( 'head' ).append( '<style id="contexticoncss">.db-action, .pl-action { display: none }</style>' );
 			}
 			if ( !GUI.library ) $( '#tab-library' ).click();
-			$.post( 'enhance.php', { setdisplay: GUI.display }, function() {
-			} );
+			$.post( 'enhance.php', { setdisplay: GUI.display } );
 		}
 	} );
 } );
