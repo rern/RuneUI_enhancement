@@ -174,16 +174,15 @@ $( '#displaylibrary' ).click( function() {
 				var checked = this.checked;
 				GUI.display[ this.name ] = checked ? 'checked' : '';
 				if ( this.name === 'coverfile' ) GUI.coverfile = ( coverfile === 'checked' ) ? ( checked ? 0 : 1 ) : ( checked ? 1 : 0 );
-				if ( GUI.display.contexticon ) {
-					$( '#contexticoncss' ).remove();
-					$( '.db-action' ).show();
-				} else {
-					if ( !$( '#contexticoncss' ).length ) $( 'head' ).append( '<style id="contexticoncss">.db-action, #pl-editor .pl-action { display: none }</style>' );
-					$( '.db-action' ).hide();
-				}
 			} );
+			if ( GUI.display.contexticon ) {
+				$( '#contexticoncss' ).remove();
+			} else {
+				if ( !$( '#contexticoncss' ).length ) $( 'head' ).append( '<style id="contexticoncss">.db-action, .pl-action { display: none }</style>' );
+			}
 			if ( !GUI.library ) $( '#tab-library' ).click();
-			$.post( 'enhance.php', { setdisplay: GUI.display } );
+			$.post( 'enhance.php', { setdisplay: GUI.display }, function() {
+			} );
 		}
 	} );
 } );
