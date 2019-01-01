@@ -265,17 +265,16 @@ wh, gr { font-weight: 300; }
 	z-index: 1000;
 }
 #menu-top {
-	top: 0
+	top: 0;
 }
 #menu-bottom,
 #swipebar {
-	bottom: 0
-}
-#swipebar {
-	font-size: 36px;
-	line-height: 36px;
+	bottom: 0;
 	text-align: center;
-	background: #35495e;
+}
+#swipebar img {
+	margin-top: 5px;
+	height: 40px;
 }
 .transparent {
 	opacity: 0;
