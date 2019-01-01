@@ -270,7 +270,10 @@ wh, gr { font-weight: 300; }
 #menu-bottom,
 #swipebar {
 	bottom: 0;
+}
+#swipebar {
 	text-align: center;
+	background: rgba( 52, 73, 94, 0.5 );
 }
 #swipebar img {
 	margin-top: 5px;
