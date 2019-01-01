@@ -273,7 +273,7 @@ function webRadioRename() {
 	} );
 }
 function addWebradio( name, url, oldname ) {
-	if ( !oldname ) GUI.libraryhome.webradio++;
+	if ( !oldname ) GUI.libraryblock.webradio++;
 	var name = name;
 	var oldname = oldname ? oldname : '';
 	var data = oldname ? [ name, url, oldname ] : [ name, url ];
@@ -335,7 +335,7 @@ function webRadioDelete() {
 		, cancel  : 1
 		, ok      : function() {
 			$( '#db-entries li').eq( GUI.list.liindex ).remove();
-			GUI.libraryhome.webradio--;
+			GUI.libraryblock.webradio--;
 			GUI.local = 1;
 			setTimeout( function() { GUI.local = 0 }, 500 );
 			$.post( 'enhance.php', { webradios: name } );

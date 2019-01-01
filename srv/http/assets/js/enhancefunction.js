@@ -147,6 +147,7 @@ function setSwipe( type ) {
 		, playlist : swipeleft ? $( '#tab-library' )  : $( '#tab-playback' )
 	}
 	$target[ GUI.currentpage  ].click();
+	$( '#swipebar' ).addClass( 'transparent' );
 }
 function setPageCurrent( page ) {
 	clearInterval( GUI.intKnob );

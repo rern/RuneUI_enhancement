@@ -323,6 +323,7 @@ $( '#page-playback' ).click( function( e ) {
 	
 	$( '.controls' ).addClass( 'hide' );
 	$( '.controls1, .rs-tooltip, #imode' ).removeClass( 'hide' );
+	$( '#swipebar' ).addClass( 'transparent' );
 } );
 $( '#page-library' ).click( function( e ) {
 	if ( GUI.local ) return
@@ -450,7 +451,10 @@ $( '#volup, #voldn' ).click( function() {
 	$.post( 'enhance.php', { volume: vol } );
 } );
 $( '#coverTL' ).click( function() {
-	if ( !$( '#controls-cover' ).hasClass( 'hide' ) ) $( '.controls, .controls1, .rs-tooltip, #imode' ).toggleClass( 'hide' );
+	if ( !$( '#controls-cover' ).hasClass( 'hide' ) ) {
+		$( '.controls, .controls1, .rs-tooltip, #imode' ).toggleClass( 'hide' );
+		$( '#swipebar' ).toggleClass( 'transparent' );
+	}
 	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
 		$.each( status, function( key, value ) {
 			GUI.status[ key ] = value;
@@ -546,6 +550,7 @@ $( '.timemap, .covermap, .volmap' ).click( function() {
 	if ( cmd === 'guide' ) {
 		$( '#controls-cover, #controls-vol, .rs-tooltip, #imode' ).toggleClass( 'hide' );
 		if ( !GUI.display.coverart ) $( '#controls-time, .controls1' ).toggleClass( 'hide' );
+		if ( $( '#menu-top' ).hasClass( 'hide' ) ) $( '#swipebar' ).toggleClass( 'transparent' );
 		return
 	} else if ( cmd === 'menu' ) {
 		$( '#menu-settings' ).click();
