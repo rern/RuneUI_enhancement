@@ -57,9 +57,10 @@
 .fa-plus-o:before { content: "\f530" }
 .fa-edit-circle:before { content: "\f535" }
 .fa-plus-refresh:before { content: "\f531" }
-.fa-play-plus-o:before { content: "\f532" }
+.fa-play-plus:before { content: "\f532" }
 .fa-play-plus-refresh:before { content: "\f533" }
 .fa-folder-refresh:before { content: "\f534" }
+.fa-play-random:before { content: "\f539" }
 
 .fa-repeat-single:before { content: "\f510" }
 .fa-repeat:before { content: "\f511" }
