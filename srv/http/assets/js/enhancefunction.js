@@ -710,41 +710,10 @@ function setToggleButton( name, append ) {
 function displayCheckbox( name, label ) {
 	return '<label><input name="'+ name +'" type="checkbox" '+ GUI.display[ name ] +'>&ensp;'+label+'</label><br>';
 }
-function toggleLibraryHome( name ) {
-	$( '#home-'+ name ).parent().toggleClass( 'hide', GUI.display[ name ] === '' );
-}
-var namepath = {
-	  sd          : [ 'SD',           'LocalStorage', 'microsd' ]
-	, usb         : [ 'USB',          'USB',          'usbdrive' ]
-	, nas         : [ 'Network',      'NAS',          'network' ]
-	, webradio    : [ 'Webradio',     'Webradio',     'webradio' ]
-	, album       : [ 'Album',        'Album',        'album' ]
-	, artist      : [ 'Artist',       'Artist',       'artist' ]
-	, albumartist : [ 'Album Artist', 'AlbumArtist',  'albumartist' ]
-	, composer    : [ 'Composer',     'Composer',     'composer' ]
-	, genre       : [ 'Genre',        'Genre',        'genre' ]
-	, spotify     : [ 'Spotify',      'Spotify',      'spotify' ]
-	, dirble      : [ 'Dirble',       'Dirble',       'dirble' ]
-	, jamendo     : [ 'Jamendo',      'Jamendo',      'jamendo' ]
-}
-function setLibraryBlock( id ) {
-	var status = GUI.libraryhome;
-	if ( id === 'spotify' && !status.spotify ) return '';
-
-	var count = ( !GUI.display.count || status[ id ] === undefined ) ? '' : '<gr>'+ numFormat( status[ id ] ) +'</gr>';
-	var label = GUI.display.label ? ( '<wh>'+ namepath[ id ][ 0 ] +'</wh>' ) : '';
-	var browsemode = ( [ 'album', 'artist', 'albumartist', 'composer', 'genre' ].indexOf( id ) !== -1 ) ? ' data-browsemode="'+ id +'"' : '';
-	var plugin = ( [ 'spotify', 'dirble', 'jamendo' ].indexOf( id ) !== -1 ) ? ( ' data-plugin="'+ namepath[ id ][ 1 ] +'"' ) : '';
-	
-	return '<div class="col-md-3">'
-			+'<div id="home-'+ id +'" class="home-block"'+ browsemode + plugin +'><a class="lipath">'+ namepath[ id ][ 1 ] +'</a>'
-				+'<i class="fa fa-'+ namepath[ id ][ 2 ] +'"></i>'+ count + label
-			+'</div>'
-		+'</div>';
-}
 function renderLibrary() {
 	GUI.dbbackdata = [];
 	if ( GUI.bookmarkedit ) return
+	
 	GUI.plugin = '';
 	$( '#db-currentpath' ).css( 'width', '' );
 	$( '#db-currentpath .lipath' ).empty()
@@ -778,67 +747,36 @@ function renderLibrary() {
 					  +'</div></div>';
 		} );
 	}
+	$( '#divbookmarks' ).html( content );
 	var order = GUI.display.library || 'sd,usb,nas,webradio,album,artist,albumartist,composer,genre,dirble,jamendo';
 	order = order.split( ',' );
-	content += '<div id="divhomeblocks">';
-	$.each( order, function( i, val ) {
-		content += setLibraryBlock( val );
+	$( '.home-block' ).find( 'gr' ).remove();
+	$.each( order, function( i, name ) {
+		if ( GUI.display.count ) $( '#home-'+ name ).find( 'i' ).after( GUI.libraryhome[ name ] ? '<gr>'+ GUI.libraryhome[ name ] +'</gr>' : '' );
+		var $block = $( '#home-'+ name ).parent();
+		$block
+			.toggleClass( 'hide', GUI.display[ name ] === '' )
+			.remove();
+		$( '#divhomeblocks' ).append( $block );
 	} );
-	content += '</div>';
-	$( '#home-blocks' ).html( content ).promise().done( function() {
-		toggleLibraryHome( 'nas' );
-		toggleLibraryHome( 'sd' );
-		toggleLibraryHome( 'usb' );
-		toggleLibraryHome( 'webradio' );
-		toggleLibraryHome( 'album' );
-		toggleLibraryHome( 'artist' );
-		toggleLibraryHome( 'albumartist' );
-		toggleLibraryHome( 'composer' );
-		toggleLibraryHome( 'genre' );
-		toggleLibraryHome( 'dirble' );
-		toggleLibraryHome( 'jamendo' );
-		
-		$( 'html, body' ).scrollTop( 0 );
-		var txt = '';
-		if ( GUI.display.label ) {
-			$( '.home-block gr' ).css( 'color', '' );
-			$( '.home-block' ).css( 'padding', '' );
-		} else {
-			$( '.home-block gr' ).css( 'color', '#e0e7ee' );
-			$( '.home-block' ).css( 'padding-top', '35px' );
-			$( '.home-bookmark' ).css( 'padding', '20px 5px 5px 5px' );
-		}
-		displayTopBottom();
-		$( '.bklabel' ).each( function() {
-			var $this = $( this );
-			var tW = $this.width();
-			var pW = $this.parent().width();
-			if ( tW > pW ) $this.addClass( 'bkscroll' ).css( 'animation-duration', Math.round( 3 * tW / pW ) +'s' );
-		} );
-		
-		new Sortable( document.getElementById( 'divhomeblocks' ), {
-			  delay      : 500
-			, onStart    : function( e ) {
-				$icon = $( e.item ).find( 'i' );
-				$icon.css( 'color', '#e0e7ee' );
-			  }
-			, onEnd      : function() {
-				$icon.css( 'color', '' );
-			  }
-			, onUpdate   : function ( e ) {
-				var $blocks = $( '.home-block:not(.home-bookmark)' );
-				var homeorder = '';
-				$.each( $blocks, function( i, el ) {
-					homeorder += el.id.replace( 'home-', '' ) +',';
-				} );
-				homeorder = homeorder.slice( 0, -1 );
-				GUI.display.library = homeorder;
-				GUI.sortable = 1;
-				setTimeout( function() { GUI.sortable = 0 }, 500 );
-				$.post( 'enhance.php', { homeorder: homeorder } );
-			}
-		} );
+	$( '#home-spotify' ).parent().toggleClass( 'hide', !GUI.libraryhome.spotify );
+	$( '#divhomeblocks wh' ).toggle( GUI.display.label !== '' );
+	if ( GUI.display.label ) {
+		$( '.home-block gr' ).css( 'color', '' );
+		$( '.home-block' ).css( 'padding', '' );
+	} else {
+		$( '.home-block gr' ).css( 'color', '#e0e7ee' );
+		$( '.home-block' ).css( 'padding-top', '35px' );
+		$( '.home-bookmark' ).css( 'padding', '20px 5px 5px 5px' );
+	}
+	displayTopBottom();
+	$( '.bklabel:not(.hide)' ).each( function() {
+		var $this = $( this );
+		var tW = $this.width();
+		var pW = $this.parent().width();
+		if ( tW > pW ) $this.addClass( 'bkscroll' ).css( 'animation-duration', Math.round( 3 * tW / pW ) +'s' );
 	} );
+	$( 'html, body' ).scrollTop( 0 );
 }
 function infoNoData() {
 	$( '#loader' ).addClass( 'hide' );

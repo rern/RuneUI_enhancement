@@ -120,6 +120,28 @@ $( '#menu-settings, #badge' ).click( function() {
 $( '#page-library, #page-playback, #page-playlist' ).click( function( e ) {
 	if ( !$( '#settings' ).hasClass( 'hide' ) && [ 'coverTR', 'timeTR' ].indexOf( e.target.id ) === -1 ) $( '#settings' ).addClass( 'hide' );
 } );
+GUI.sortableli = new Sortable( document.getElementById( 'divhomeblocks' ), {
+	  delay      : 500
+	, onStart    : function( e ) {
+		$icon = $( e.item ).find( 'i' );
+		$icon.css( 'color', '#e0e7ee' );
+	  }
+	, onEnd      : function() {
+		$icon.css( 'color', '' );
+	  }
+	, onUpdate   : function ( e ) {
+		var $blocks = $( '.home-block:not(.home-bookmark)' );
+		var homeorder = '';
+		$.each( $blocks, function( i, el ) {
+			homeorder += el.id.replace( 'home-', '' ) +',';
+		} );
+		homeorder = homeorder.slice( 0, -1 );
+		GUI.display.library = homeorder;
+		GUI.sortable = 1;
+		setTimeout( function() { GUI.sortable = 0 }, 500 );
+		$.post( 'enhance.php', { homeorder: homeorder } );
+	}
+} );
 $( '#displaylibrary' ).click( function() {
 	var coverfile = GUI.display.coverfile;
 	info( {
