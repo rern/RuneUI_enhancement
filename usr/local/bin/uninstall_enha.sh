@@ -29,14 +29,14 @@ rm -v /srv/http/assets/css/{enhance*,fontawesome.min,midori,pnotify.custom.min,r
 rm -v /srv/http/assets/fonts/enhance*
 rm -v /srv/http/assets/img/{bootsplash.png,controls*,cover.svg,runelogo.svg,swipe.svg,vu*}
 rm -v /srv/http/assets/js/enhance*
-rm -v /srv/http/assets/js/vendor/{hammer.min,jquery-ui.min,roundslider.min}.js
+rm -v /srv/http/assets/js/vendor/{jquery-ui.min,roundslider.min}.js
 [[ ! -e /srv/http/gpiosettings.php ]] && rm -v /srv/http/assets/css/{bootstrap,bootstrap.select}.min.css
 
-mv /srv/http/index.php{.backup,}
-mv /srv/http/assets/js/vendor/pnotify.custom.min.js{.backup,}
-mv /srv/http/assets/js/vendor/pushstream.min.js{.backup,}
-mv /srv/http/assets/js/vendor/Sortable.min.js{.backup,}
-mv /srv/http/command/airplay_toggle{.backup,}
+mv -f /srv/http/index.php{.backup,}
+mv -f /srv/http/assets/js/vendor/pnotify.custom.min.js{.backup,}
+mv -f /srv/http/assets/js/vendor/pushstream.min.js{.backup,}
+mv -f /srv/http/assets/js/vendor/Sortable.min.js{.backup,}
+mv -f /srv/http/command/airplay_toggle{.backup,}
 ln -sf /usr/share/bootsplash/start-runeaudio.png /usr/share/bootsplash/start.png
 
 # restore modified files #######################################
