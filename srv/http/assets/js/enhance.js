@@ -28,7 +28,6 @@ var GUI = { // outside '$( function() {' enable console.log access
 	, screenS      : ( window.innerHeight < 590 || window.innerWidth < 500 )
 	, status       : {}
 };
-$swipe = ( !GUI.display.bars || ( GUI.screenS && !GUI.display.barsauto ) ) ? $( '#swipebar, .page' ) : $( '#swipebar' );
 
 PNotify.prototype.options.delay = 3000;
 PNotify.prototype.options.styling = 'fontawesome';
@@ -51,14 +50,13 @@ $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 	GUI.display = data;
 	if ( !GUI.display.contexticon ) $( 'head' ).append( '<style id="contexticoncss">.db-action, .pl-action { display: none }</style>' );
 	$.event.special.swipe.horizontalDistanceThreshold = 80; // pixel to swipe
-	if ( !GUI.display.bars || ( GUI.screenS && !GUI.display.barsauto ) ) {
-		$swipe.on( 'swipeleft swiperight', function( e ) {
-			// swipe show remove in playlist
-			if ( $( e.target ).parents( '#pl-entries li' ).length ) return
-			
-			setSwipe( e.type );
-		} );
-	}
+	$swipe = ( !GUI.display.bars || ( GUI.screenS && !GUI.display.barsauto ) ) ? $( '#swipebar, .page' ) : $( '#swipebar' );
+	$swipe.on( 'swipeleft swiperight', function( e ) {
+		// skip if swipe to show remove in playlist
+		if ( $( e.target ).parents( '#pl-entries li' ).length ) return
+		
+		setSwipe( e.type );
+	} );
 	$.post( 'enhancestatus.php', function( status ) {
 		GUI.status = status;
 		setButton();
