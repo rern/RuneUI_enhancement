@@ -53,6 +53,9 @@ $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 	var screenS = ( window.innerHeight < 590 || window.innerWidth < 500 );
 	if ( !GUI.display.bars || ( screenS && !GUI.display.barsauto ) ) {
 		$swipe.on( 'swipeleft swiperight', function( e ) {
+			// swipe show remove in playlist
+			if ( $( e.target ).parents( '#pl-entries li' ).length ) return
+			
 			setSwipe( e.type );
 		} );
 	}
@@ -997,17 +1000,35 @@ $( '#plcrop' ).click( function() {
 } );
 $( '#plclear' ).click( function() {
 	if ( GUI.display.plclear ) {
-		info( {
-			  title   : 'Clear Playlist'
-			, message : 'Clear this playlist?'
-			, cancel  : 1
-			, ok      : function() {
-				GUI.status.playlistlength = 0;
-				renderPlaylist();
-				setPlaybackBlank();
-				$.post( 'enhance.php', { mpc: 'mpc clear' } );
-			}
-		} );
+		if ( GUI.display.contexticon ) {
+			info( {
+				  title   : 'Clear Playlist'
+				, message : 'Clear this playlist?'
+				, cancel  : 1
+				, ok      : function() {
+					GUI.status.playlistlength = 0;
+					renderPlaylist();
+					setPlaybackBlank();
+					$.post( 'enhance.php', { mpc: 'mpc clear' } );
+				}
+			} );
+		} else {
+			info( {
+				  title       : 'Clear Playlist'
+				, message     : 'Select single remove / clear all :'
+				, cancellabel : 'Single'
+				, cancel  : function() {
+					$( '#pl-entries .pl-action' ).show();
+				}
+				, oklabel    : 'All'
+				, ok         : function() {
+					GUI.status.playlistlength = 0;
+					renderPlaylist();
+					setPlaybackBlank();
+					$.post( 'enhance.php', { mpc: 'mpc clear' } );
+				}
+			} );
+		}
 	} else {
 		GUI.status.playlistlength = 0;
 		renderPlaylist();
@@ -1068,6 +1089,8 @@ new Sortable( document.getElementById( 'pl-entries' ), {
 } );
 $.event.special.tap.emitTapOnSwipe = false; // suppress tap on swipeleft
 $( '#pl-entries' ).on ( 'swipe', 'li', function( e ) {
+	if ( GUI.display.contexticon ) return
+	
 	$( '#context-menu-plaction' ).addClass( 'hide' );
 	$( '#pl-entries .pl-action' ).toggle();
 } ).on( 'tap', 'li', function( e ) {
