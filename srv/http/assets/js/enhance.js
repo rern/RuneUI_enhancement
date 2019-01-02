@@ -18,7 +18,7 @@ var GUI = { // outside '$( function() {' enable console.log access
 	, libraryhome  : {}
 	, local        : 0
 	, lsplaylists  : []
-	, midori       : navigator.userAgent.indexOf( 'Midori' ) !== -1
+//	, midori       : navigator.userAgent.indexOf( 'Midori' ) !== -1
 	, playback     : 1
 	, playlist     : 0
 	, pleditor     : 0
@@ -142,32 +142,32 @@ GUI.sortableli = new Sortable( document.getElementById( 'divhomeblocks' ), {
 		$.post( 'enhance.php', { homeorder: homeorder } );
 	}
 } );
+var chklibrary = {
+	  sd          : '<i class="fa fa-microsd"></i>SD'
+	, usb         : '<i class="fa fa-usbdrive"></i>USB'
+	, nas         : '<i class="fa fa-network"></i>Network'
+	, webradio    : '<i class="fa fa-webradio"></i>Webradio'
+	, album       : '<i class="fa fa-album"></i>Album'
+	, artist      : '<i class="fa fa-artist"></i>Artist'
+	, albumartist : '<i class="fa fa-albumartist"></i>Album artist'
+	, composer    : '<i class="fa fa-composer"></i>Composer'
+	, genre       : '<i class="fa fa-genre"></i>Genre'
+	, dirble      : '<i class="fa fa-dirble"></i>Dirble'
+	, jamendo     : '<i class="fa fa-jamendo"></i>Jamendo'
+	, count       : '<gr>text</gr> Count'
+	, label       : '<gr>text</gr> Label'
+	, contexticon : '<i class="fa fa-bars"></i>Context menu icon'
+	, coverfile   : 'Cover art'
+	, plclear     : 'Confirm - clear Playlist'
+	, tapaddplay  : 'Tap song <i class="fa fa-play-plus"></i>Add <gr>►</gr> Play'
+}
 $( '#displaylibrary' ).click( function() {
 	var coverfile = GUI.display.coverfile;
 	info( {
 		  icon         : 'library'
-		, title        : 'Libary Home'
+		, title        : 'Libary Home Items'
 		, message      : 'Select items to show:'
-		, checkboxhtml : 
-			'<form id="displaysavelibrary">'
-				+ displayCheckbox( 'sd',          '<i class="fa fa-microsd"></i>SD' )
-				+ displayCheckbox( 'usb',         '<i class="fa fa-usbdrive"></i>USB' )
-				+ displayCheckbox( 'nas',         '<i class="fa fa-network"></i>Network' )
-				+ displayCheckbox( 'webradio',    '<i class="fa fa-webradio"></i>Webradio' )
-				+ displayCheckbox( 'album',       '<i class="fa fa-album"></i>Album' )
-				+ displayCheckbox( 'artist',      '<i class="fa fa-artist"></i>Artist' )
-				+ displayCheckbox( 'albumartist', '<i class="fa fa-albumartist"></i>Album artist' )
-				+ displayCheckbox( 'composer',    '<i class="fa fa-composer"></i>Composer' )
-				+ displayCheckbox( 'genre',       '<i class="fa fa-genre"></i>Genre' )
-				+ displayCheckbox( 'dirble',      '<i class="fa fa-dirble"></i>Dirble' )
-				+ displayCheckbox( 'jamendo',     '<i class="fa fa-jamendo"></i>Jamendo' )
-				+ displayCheckbox( 'count',       '<gr>text</gr> Count' )
-				+ displayCheckbox( 'label',       '<gr>text</gr> Label' )
-				+ displayCheckbox( 'contexticon', '<i class="fa fa-bars"></i>Context menu icon' )
-				+ displayCheckbox( 'coverfile',   'Cover art' )
-				+ displayCheckbox( 'tapaddplay',  'Tap Add <gr>►</gr> Play <gr>a song</gr>' )
-				+ displayCheckbox( 'plclear',     'Clear Playlist confirmation' )
-			+'</form>'
+		, checkboxhtml : '<form id="displaysavelibrary">'+ displayCheckbox( chklibrary ) +'</form>'
 		, cancel       : 1
 		, ok           : function () {
 			$( '#displaysavelibrary input' ).each( function() {
@@ -185,24 +185,24 @@ $( '#displaylibrary' ).click( function() {
 		}
 	} );
 } );
+var chkplayback = {
+	  bars         : 'Top-Bottom bars'
+	, barsauto     : 'Bars on small screen'
+	, time         : 'Time'
+	, radioelapsed : 'Webradio elapsed'
+	, coverart     : 'Cover art'
+	, coverlarge   : 'Large Cover art'
+	, volume       : 'Volume'
+	, buttons      : 'Buttons'
+	, debug        : '<gr>menu</gr> Debug'
+	, dev          : '<gr>menu</gr> Development'
+}
 $( '#displayplayback' ).click( function() {
 	info( {
 		  icon         : 'play-circle'
-		, title        : 'Playback'
+		, title        : 'Playback Items'
 		, message      : 'Select items to show:'
-		, checkboxhtml : 
-			'<form id="displaysaveplayback">'
-				+ displayCheckbox( 'bars',         'Top-Bottom bars' )
-				+ displayCheckbox( 'barsauto',     'Bars on small screen' )
-				+ displayCheckbox( 'time',         'Time' )
-				+ displayCheckbox( 'radioelapsed', 'Webradio elapsed' )
-				+ displayCheckbox( 'coverart',     'Cover art' )
-				+ displayCheckbox( 'coverlarge',   'Large Cover art' )
-				+ displayCheckbox( 'volume',       'Volume' )
-				+ displayCheckbox( 'buttons',      'Buttons' )
-				+ displayCheckbox( 'debug',        '<gr>menu</gr> Debug' )
-				+ displayCheckbox( 'dev',          '<gr>menu</gr> Development' )
-			+'</form>'
+		, checkboxhtml : '<form id="displaysaveplayback">'+ displayCheckbox( chkplayback ) +'</form>'
 		, cancel       : 1
 		, ok           : function () {
 			// no: serializeArray() omit unchecked fields
@@ -326,7 +326,8 @@ $( '#artist, #bio-open' ).click( function() {
 	if ( $( '#bio legend' ).text() != GUI.status.Artist ) {
 		getBio( GUI.status.Artist );
 	} else {
-		renderBio();
+		$( '#menu-top, #menu-bottom, #loader' ).addClass( 'hide' );
+		$( '#bio' ).removeClass( 'hide' );
 	}
 } );
 $( '#album' ).click( function() {

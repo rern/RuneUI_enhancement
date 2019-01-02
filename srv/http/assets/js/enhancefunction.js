@@ -515,14 +515,11 @@ function getBio( artist ) {
 		function( data ) {
 			$( '#biocontent' ).html( data ).promise().done( function() {
 				$( '#bio' ).scrollTop( 0 );
-				renderBio();
+				$( '#menu-top, #menu-bottom, #loader' ).addClass( 'hide' );
+				$( '#bio' ).removeClass( 'hide' );
 			} );
 		}
 	);
-}
-function renderBio() {
-	$( '#menu-top, #menu-bottom, #loader' ).addClass( 'hide' );
-	$( '#bio' ).removeClass( 'hide' );
 }
 function mpdSeek( seekto ) {
 	if ( GUI.status.state !== 'stop' ) {
@@ -566,9 +563,6 @@ function displayTopBottom() {
 	$( '#settings .menushadow' ).css( 'height', menuH +'px' );
 	$( '.menu' ).addClass( 'hide' );
 }
-function PlaybackCssOrder( el, ord ) {
-	el.css( { order: ord, '-webkit-order': ord } );
-}
 function displayPlayback() {
 	displayTopBottom();
 	$( '#time-knob, #play-group' ).toggleClass( 'hide', GUI.display.time === '' );
@@ -579,12 +573,13 @@ function displayPlayback() {
 	var column = ( GUI.display.time ? 1 : 0 ) + ( GUI.display.coverart ? 1 : 0 ) + volume;
 	var $elements = $( '#time-knob, #coverart, #volume-knob, #play-group, #share-group, #vol-group' );
 	if ( column === 2 && window.innerWidth > 499 ) {
-		PlaybackCssOrder( $( '#time-knob' ), volume ? 1 : '' );
-		PlaybackCssOrder( $( '#coverart' ), volume ? 2 : '' );
-		PlaybackCssOrder( $( '#volume-knob' ), volume ? 3 : '' );
-		PlaybackCssOrder( $( '#play-group' ), volume ? 4 : '' );
-		PlaybackCssOrder( $( '#share-group' ), volume ? 5 : '' );
-		PlaybackCssOrder( $( '#vol-group' ), volume ? 6 : '' );
+		if ( volume ) {
+			$elements.css( { order: '', '-webkit-order': '' } );
+		} else {
+			$.each( $elements, function( i, $el ) {
+				$el.css( { order: i, '-webkit-order': i } );
+			} );
+		}
 		$( '#playback-row' ).css( 'max-width', '900px' );
 		$elements.css( 'width', '45%' );
 	} else if ( column === 1 ) {
@@ -703,8 +698,12 @@ function setToggleButton( name, append ) {
 		.parent().css( 'color', '#7795b4' )
 		.append( append ? ' '+ append : ' (auto hide)' );
 }
-function displayCheckbox( name, label ) {
-	return '<label><input name="'+ name +'" type="checkbox" '+ GUI.display[ name ] +'>&ensp;'+label+'</label><br>';
+function displayCheckbox( checkboxes ) {
+	var html = '';
+	$.each( checkboxes, function( key, val ) {
+		html += '<label><input name="'+ key +'" type="checkbox" '+ GUI.display[ key ] +'>&ensp;'+ val +'</label><br>';
+	} );
+	return html;
 }
 function renderLibrary() {
 	GUI.dbbackdata = [];
