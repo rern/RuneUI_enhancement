@@ -25,9 +25,10 @@ var GUI = { // outside '$( function() {' enable console.log access
 	, pllist     : {}
 	, plscrolltop  : 0
 	, plugin       : ''
+	, screenS      : ( window.innerHeight < 590 || window.innerWidth < 500 )
 	, status       : {}
 };
-$swipe = ( !GUI.display.bars || ( screenS && !GUI.display.barsauto ) ) ? $( '#swipebar, .page' ) : $( '#swipebar' );
+$swipe = ( !GUI.display.bars || ( GUI.screenS && !GUI.display.barsauto ) ) ? $( '#swipebar, .page' ) : $( '#swipebar' );
 
 PNotify.prototype.options.delay = 3000;
 PNotify.prototype.options.styling = 'fontawesome';
@@ -50,8 +51,7 @@ $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 	GUI.display = data;
 	if ( !GUI.display.contexticon ) $( 'head' ).append( '<style id="contexticoncss">.db-action, .pl-action { display: none }</style>' );
 	$.event.special.swipe.horizontalDistanceThreshold = 80; // pixel to swipe
-	var screenS = ( window.innerHeight < 590 || window.innerWidth < 500 );
-	if ( !GUI.display.bars || ( screenS && !GUI.display.barsauto ) ) {
+	if ( !GUI.display.bars || ( GUI.screenS && !GUI.display.barsauto ) ) {
 		$swipe.on( 'swipeleft swiperight', function( e ) {
 			// swipe show remove in playlist
 			if ( $( e.target ).parents( '#pl-entries li' ).length ) return
@@ -93,7 +93,7 @@ $( '.btn-cmd' ).click( function() {
 			command = 'mpc stop';
 			if ( GUI.status.ext === 'radio' ) $( '#song' ).empty();
 		} else if ( cmd === 'previous' || cmd === 'next' ) {
-			if ( GUI.display.bars ) $this.addClass( 'btn-primary' );
+			if ( GUI.bars ) $this.addClass( 'btn-primary' );
 			// enable previous / next while stop
 			var current = GUI.status.song + 1;
 			var last = GUI.status.playlistlength;
@@ -118,7 +118,7 @@ $( '.btn-cmd' ).click( function() {
 $( '#menu-settings, #badge' ).click( function() {
 	$( '#settings' )
 		.toggleClass( 'hide' )
-		.css( 'top', $( '#menu-top' ).hasClass( 'hide' ) ? 0 : '40px' );
+		.css( 'top', ( GUI.bars ? '40px' : 0 ) );
 } );
 $( '#page-library, #page-playback, #page-playlist' ).click( function( e ) {
 	if ( !$( '#settings' ).hasClass( 'hide' ) && [ 'coverTR', 'timeTR' ].indexOf( e.target.id ) === -1 ) $( '#settings' ).addClass( 'hide' );
@@ -215,8 +215,7 @@ $( '#displayplayback' ).click( function() {
 			$.post( 'enhance.php', { setdisplay: GUI.display }, function() {
 				displayPlayback();
 				$swipe.off( 'swipeleft swiperight' );
-				var screenS = ( window.innerHeight < 590 || window.innerWidth < 500 );
-				if ( !GUI.display.bars || ( screenS && !GUI.display.barsauto ) ) {
+				if ( !GUI.display.bars || ( GUI.screenS && !GUI.display.barsauto ) ) {
 					$swipe.on( 'swipeleft swiperight', function( e ) {
 						setSwipe( e.type );
 					} );
@@ -263,9 +262,7 @@ $( '#turnoff' ).click( function() {
 } );
 // fix jquery.mobile swipe not work with Midori - use hammer.js instead
 //$swipebar = GUI.midori ? new Hammer( document.getElementById( 'swipebar' ) ) : $( '#swipebar' );
-/*var screenS = ( window.innerHeight < 590 || window.innerWidth < 500 );
-console.log( !GUI.display.bars +' || ( '+ screenS +' && ! '+ GUI.display.barsauto +' )' )
-$swipe = ( !GUI.display.bars || ( screenS && !GUI.display.barsauto ) ) ? $( '#swipebar, .page' ) : $( '#swipebar' );
+/*$swipe = ( !GUI.display.bars || ( GUI.screenS && !GUI.display.barsauto ) ) ? $( '#swipebar, .page' ) : $( '#swipebar' );
 $.event.special.swipe.horizontalDistanceThreshold = 80; // pixel to swipe
 $swipe.on( 'swipeleft swiperight', function( e ) {
 	var swipeleft = e.type === 'swipeleft';
@@ -553,7 +550,7 @@ $( '.timemap, .covermap, .volmap' ).click( function() {
 	if ( cmd === 'guide' ) {
 		$( '#controls-cover, #controls-vol, .rs-tooltip, #imode' ).toggleClass( 'hide' );
 		if ( !GUI.display.coverart ) $( '#controls-time, .controls1' ).toggleClass( 'hide' );
-		if ( $( '#menu-top' ).hasClass( 'hide' ) ) $( '#swipebar' ).toggleClass( 'transparent' );
+		if ( !GUI.bars ) $( '#swipebar' ).toggleClass( 'transparent' );
 		return
 	} else if ( cmd === 'menu' ) {
 		$( '#menu-settings' ).click();
@@ -902,7 +899,7 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 	$( '#db-entries li' ).removeClass( 'active' );
 	$thisli.addClass( 'active' );
 	if ( $thisli.hasClass( 'licover' ) ) {
-		var menutop = $( '#menu-top' ).hasClass( 'hide' ) ? '270px' : '310px';
+		var menutop = GUI.bars ? '310px' : '270px';
 	} else {
 		var menutop = ( $thisli.position().top + 49 ) +'px';
 	}
@@ -911,10 +908,10 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 		.removeClass( 'hide' );
 	var targetB = $menu.offset().top + $menu.height();
 	var wH = window.innerHeight;
-	if ( targetB > wH + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + ( GUI.display.bars ? 42 : 0 ) } );
+	if ( targetB > wH + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + ( GUI.bars ? 42 : 0 ) } );
 } );
 $( '#db-index li' ).click( function() {
-	var topoffset = GUI.display.bars ? 80 : 40;
+	var topoffset = GUI.bars ? 80 : 40;
 	var indextext = $( this ).text();
 	var $this = $( this );
 	var match = 0;
@@ -975,7 +972,7 @@ $( '#plopen' ).click( function() {
 	$( '#pl-editor' ).html( content +'<p></p>' ).promise().done( function() {
 		GUI.pleditor = 1;
 		// fill bottom of list to mave last li movable to top
-		$( '#pl-editor p' ).css( 'min-height', window.innerHeight - ( GUI.display.bars ? 140 : 100 ) +'px' );
+		$( '#pl-editor p' ).css( 'min-height', window.innerHeight - ( GUI.bars ? 140 : 100 ) +'px' );
 		$( '#pl-editor' ).css( 'width', '' );
 		$( '#loader' ).addClass( 'hide' );
 		$( 'html, body' ).scrollTop( GUI.plscrolltop );
@@ -1134,7 +1131,7 @@ $( '#pl-entries' ).on( 'click', '.pl-icon', function( e ) {
 	
 	var state = GUI.status.state;
 	$contextlist.removeClass( 'hide' );
-	if ( $( '#menu-top' ).hasClass( 'hide' ) ) {
+	if ( !GUI.bars ) {
 		if ( $thisli.hasClass( 'active' ) ) {
 			$contextlist.eq( 0 ).toggleClass( 'hide', state === 'play' );
 			$contextlist.eq( 1 ).toggleClass( 'hide', state !== 'play' || $( e.target ).hasClass( 'fa-webradio' ) );
@@ -1239,10 +1236,9 @@ $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 		.css( 'top', ( $thisli.position().top + 49 ) +'px' );
 	var targetB = $( contextmenu ).offset().top + 246;
 	var wH = window.innerHeight;
-	if ( targetB > wH + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + ( GUI.display.bars ? 42 : 0 ) } );
+	if ( targetB > wH + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + ( GUI.bars ? 42 : 0 ) } );
 } );
 $( '#pl-index li' ).click( function() {
-	var topoffset = GUI.display.bars ? 80 : 40;
 	var indextext = $( this ).text();
 	if ( indextext === '#' ) {
 		$( 'html, body' ).scrollTop( 0 );
@@ -1252,7 +1248,7 @@ $( '#pl-index li' ).click( function() {
 		var name = stripLeading( $( this ).find( '.lipath' ).text() );
 		return name.match( new RegExp( '^'+ indextext, 'i' ) );
 	} );
-	if ( matcharray.length ) $( 'html, body' ).scrollTop( matcharray[ 0 ].offsetTop - topoffset );
+	if ( matcharray.length ) $( 'html, body' ).scrollTop( matcharray[ 0 ].offsetTop - ( GUI.bars ? 80 : 40 ) );
 } );
 
 document.addEventListener( 'visibilitychange', function() {

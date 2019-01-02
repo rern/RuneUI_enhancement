@@ -216,7 +216,7 @@ function setButtonToggle() {
 		}
 	}
 	if ( GUI.display.update ) {
-		if ( GUI.display.bars ) {
+		if ( GUI.bars ) {
 			$( '#iaddons' ).addClass( 'hide' );
 		} else {
 			if ( timehide ) {
@@ -240,7 +240,7 @@ function setButtonToggle() {
 function setButtonUpdate() {
 	if ( GUI.status.updating_db ) {
 		$( '#tab-library i, #db-home i' ).addClass( 'blink' );
-		if ( GUI.playback && !GUI.display.bars ) {
+		if ( GUI.playback && !GUI.bars ) {
 			if ( $( '#time-knob' ).hasClass( 'hide' ) ) {
 				$( '#posupdate' ).removeClass( 'hide' );
 				$( '#iupdate' ).addClass( 'hide' );
@@ -257,13 +257,13 @@ function setButtonUpdate() {
 function setButton() {
 	$( '#playback-controls' ).toggleClass( 'hide', GUI.status.playlistlength === 0 );
 	var state = GUI.status.state;
-	if ( GUI.display.bars ) {
+	if ( !GUI.bars ) {
 		$( '#stop' ).toggleClass( 'btn-primary', state === 'stop' );
 		$( '#play' ).toggleClass( 'btn-primary', state === 'play' );
 		$( '#pause' ).toggleClass( 'btn-primary', state === 'pause' );
 	}
 	if ( GUI.display.update ) {
-		if ( GUI.display.bars ) $( '#badge' ).text( GUI.display.update ).removeClass( 'hide' );
+		if ( !GUI.bars ) $( '#badge' ).text( GUI.display.update ).removeClass( 'hide' );
 	} else {
 		$( '#badge' ).empty().addClass( 'hide' );
 	}
@@ -547,22 +547,18 @@ function unmuteColor() {
 }
 function displayTopBottom() {
 	if ( !$( '#bio' ).hasClass( 'hide' ) ) return
-	
-	var screenS = ( window.innerHeight < 590 || window.innerWidth < 500 );
-	if ( !GUI.display.bars || ( screenS && !GUI.display.barsauto ) ) {
+	if ( !GUI.display.bars || ( GUI.screenS && !GUI.display.barsauto ) ) {
+		GUI.bars = 0;
 		$( '#menu-top, #menu-bottom' ).addClass( 'hide' );
-		if ( !GUI.playback ) {
-			$( '#db-list, #pl-list' ).css( 'padding', '40px 0' );
-			$( '.btnlist-top' ).css( 'top', 0 );
-			$( '#home-blocks' ).css( 'padding-top', '50px' );
-		}
+		$( '#db-list, #pl-list' ).css( 'padding', '40px 0' );
+		$( '.btnlist-top' ).css( 'top', 0 );
+		$( '#home-blocks' ).css( 'padding-top', '50px' );
 	} else {
+		GUI.bars = 1;
 		$( '#menu-top, #menu-bottom' ).removeClass( 'hide' );
-		if ( !GUI.playback ) {
-			$( '#db-list, #pl-list' ).css( 'padding', '' );
-			$( '.btnlist-top' ).css( 'top', '40px' );
-			$( '#home-blocks' ).css( 'padding-top', '' );
-		}
+		$( '#db-list, #pl-list' ).css( 'padding', '' );
+		$( '.btnlist-top' ).css( 'top', '40px' );
+		$( '#home-blocks' ).css( 'padding-top', '' );
 	}
 	$( '#debug' ).toggleClass( 'hide', GUI.display.debug === '' );
 	$( '#dev' ).toggleClass( 'hide', GUI.display.dev === '' );
@@ -574,6 +570,7 @@ function PlaybackCssOrder( el, ord ) {
 	el.css( { order: ord, '-webkit-order': ord } );
 }
 function displayPlayback() {
+	displayTopBottom();
 	$( '#time-knob, #play-group' ).toggleClass( 'hide', GUI.display.time === '' );
 	$( '#coverart, #share-group' ).toggleClass( 'hide', GUI.display.coverart === '' );
 	var volume = ( GUI.display.volumempd && GUI.display.volume ) ? 1 : 0;
@@ -605,7 +602,7 @@ function displayPlayback() {
 		&& $( '#album' ).text().slice( 0, 4 ) !== 'http'
 	) {
 		$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).removeClass( 'coversmall' );
-		var maxW = GUI.display.bars ? '45vh' : '55vh';
+		var maxW = GUI.bars ? '45vh' : '55vh';
 		$( '#divcover, #cover-art' ).css( { 'max-width': maxW, 'max-height': maxW } );
 		if ( wW < 500 ) $( '#format-bitrate' ).css( 'display', GUI.display.time ? 'inline' : 'block' );
 		if ( !GUI.display.time && !GUI.display.volume ) $( '#share-group' ).addClass( 'hide' );
@@ -620,14 +617,12 @@ function displayPlayback() {
 		$( '#divpos' ).css( 'font-size', '20px' );
 		$( '#format-bitrate' ).css( 'display', 'block' );
 	}
-	displayTopBottom();
-	var screenS = ( window.innerHeight < 590 || window.innerWidth < 500 );
-	if ( $( '#menu-top' ).hasClass( 'hide' ) ) {
-		var padding = screenS ? '30px' : '';
-		var margin = GUI.display.time ? ( screenS ? 0 : '' ) : '30px';
+	if ( GUI.bars ) {
+		var padding = GUI.screenS ? '60px' : '';
+		var margin = GUI.display.time ? ( GUI.screenS ? 0 : '' ) : '30px';
 	} else {
-		var padding = screenS ? '60px' : '';
-		var margin = GUI.display.time ? ( screenS ? 0 : '' ) : '30px';
+		var padding = GUI.screenS ? '30px' : '';
+		var margin = GUI.display.time ? ( GUI.screenS ? 0 : '' ) : '30px';
 	}
 	var csspage = {};
 	var cssrow = {};
@@ -640,7 +635,7 @@ function displayPlayback() {
 	var wH = window.innerHeight;
 	if ( ( wW < 750 && wW  > wH ) || wH < 475 ) {
 		var scale = wH > 475 ? wW / 800 : wH / 450;
-		var padding = $( '#menu-top' ).hasClass( 'hide' ) ? '40px' : '70px';
+		var padding = GUI.bars ? '70px' : '40px';
 		csspage[ 'transform' ] = 'scale( '+ scale +' )';
 		csspage[ 'transform-origin' ] = 'top';
 		csspage[ 'padding-top' ] = padding;
@@ -695,7 +690,7 @@ function switchPlaysource( source ) {
 function displayIndexBar() {
 	setTimeout( function() {
 		var wH = window.innerHeight;
-		var indexoffset = $( '#menu-top' ).hasClass( 'hide' ) ? 80 : 160;
+		var indexoffset = GUI.bars ? 160 : 80;
 		var indexline = wH < 500 ? 13 : 27;
 		$( '.half' ).toggleClass( 'hide', wH < 500 );
 		$index = ( GUI.library && GUI.dblist ) ? $( '#db-index' ) : $( '#pl-index' );
@@ -1099,7 +1094,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 	}
 	$( '#db-entries' ).html( content +'<p></p>' ).promise().done( function() {
 		// fill bottom of list to mave last li movable to top
-		$( '#db-entries p' ).css( 'min-height', window.innerHeight - ( GUI.display.bars ? 140 : 100 ) +'px' );
+		$( '#db-entries p' ).css( 'min-height', window.innerHeight - ( GUI.bars ? 140 : 100 ) +'px' );
 		if ( !fileplaylist ) displayIndexBar();
 		$( '.menu' ).addClass( 'hide' );
 	} );
@@ -1506,7 +1501,7 @@ function renderPlaylist() {
 		$( '#plsave, #plcrop, #plclear, #pl-searchbtn' ).addClass( 'disable' );
 		$( '#pl-entries' ).empty();
 		$( '.playlist' ).removeClass( 'hide' );
-		$( '#playlist-warning' ).css( 'margin-top', GUI.display.bars ? '27px' : '47px' );
+		$( '#playlist-warning' ).css( 'margin-top', ( GUI.bars ? 27 : 47 ) +'px' );
 		$( 'html, body' ).scrollTop( 0 );
 		return
 	}
@@ -1549,7 +1544,7 @@ function renderSavedPlaylist( name ) {
 		$( '#pl-editor' ).html( data.content +'<p></p>' ).promise().done( function() {
 			GUI.pleditor = 1;
 			// fill bottom of list to mave last li movable to top
-			$( '#pl-editor p' ).css( 'min-height', window.innerHeight - ( GUI.display.bars ? 140 : 100 ) +'px' );
+			$( '#pl-editor p' ).css( 'min-height', window.innerHeight - ( GUI.bars ? 140 : 100 ) +'px' );
 			$( '#pl-editor' ).css( 'width', '100%' );
 			$( '#loader, #pl-index' ).addClass( 'hide' );
 			$( 'html, body' ).scrollTop( GUI.plscrolltop );
