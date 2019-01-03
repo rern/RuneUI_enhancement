@@ -72,9 +72,9 @@ append '$'
 file=/srv/http/app/templates/settings.php
 echo $file
 
-if ! grep -q 'local_browseronoff' $file; then
-	commentH -n -1 'for="localSStime">' -n -2 'USB Automount'
-fi
+commentH -n -1 'for="localSStime">' -n +5 'for="localSStime">'
+
+commentH -n -1 'for="remoteSStime">' -n +5 'for="remoteSStime">'
 #----------------------------------------------------------------------------------
 if [[ $1 != u ]]; then # keep range: 0.5 - 3.0
 	z=$1;
