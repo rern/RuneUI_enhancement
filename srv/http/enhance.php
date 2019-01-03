@@ -286,16 +286,18 @@ function list2array( $result, $webradioname = null ) {
 	$artist = $album = $genre = $composer = $albumartist = $file = '';
 	foreach( $lists as $list ) {
 		$list = explode( '^^', rtrim( $list ) );
-		$li[ 'Title' ] = $list[ 0 ] ? $list[ 0 ] : $webradioname[ $list[ 3 ] ];
-		if ( !$li[ 'Title' ] ) continue; // skip *.cue
-		
-		$li[ 'Time' ] = $list[ 1 ];
-		$li[ 'track' ] = $list[ 2 ];
 		$li[ 'file' ] = $list[ 3 ];
 		if ( $li[ 'file' ] !== $file ) {
 			$file = $li[ 'file' ];
 			$i = 1;
 		}
+		if ( $list[ 0 ] ) {
+			$li[ 'Title' ] = $list[ 0 ];
+		} else {
+			$li[ 'Title' ] = substr( $li[ 'file' ], 0, 4 ) === 'http' ? $webradioname[ $list[ 3 ] ] : basename( $li[ 'file' ] );
+		}
+		$li[ 'Time' ] = $list[ 1 ];
+		$li[ 'track' ] = $list[ 2 ] ?: dirname( $li[ 'file' ] );
 		$li[ 'index' ] = $i++;
 		if ( !$artist && $list[ 4 ] !== '' ) $artist = $list[ 4 ];
 		if ( !$album && $list[ 5 ] !== '' ) $album = $list[ 5 ];
