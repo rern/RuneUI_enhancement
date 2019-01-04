@@ -743,7 +743,7 @@ function renderLibrary() {
 		} );
 	}
 	$( '#divbookmarks' ).html( content );
-	var order = GUI.display.library || 'sd,usb,nas,webradio,album,artist,albumartist,composer,genre,dirble,jamendo';
+	var order = GUI.display.library || 'sd,usb,nas,webradio,album,artist,albumartist,composer,genre,dirble,jamendo,spotify';
 	order = order.split( ',' );
 	$( '.home-block' ).find( 'gr' ).remove();
 	$.each( order, function( i, name ) {
