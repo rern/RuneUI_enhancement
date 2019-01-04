@@ -14,6 +14,7 @@ installstart $@
 
 #0temp0 remove uninstall leftover
 redis-cli hset display contexticon ''
+rm -f /srv/http/enhance.css
 rm -f /srv/http/assets/enhancesettings.js
 #1temp1
 
