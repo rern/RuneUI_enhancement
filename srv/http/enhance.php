@@ -73,7 +73,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$data = $_POST[ 'bkmarks' ];
 	} else {
 		$key = 'webradios';
-		$rdname = $_POST[ 'webradios' ];
+		$data = $_POST[ 'webradios' ];
 	}
 	if ( !is_array( $data ) ) {
 		$rdname = $data;
