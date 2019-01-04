@@ -73,10 +73,10 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$data = $_POST[ 'bkmarks' ];
 	} else {
 		$key = 'webradios';
-		$data = $_POST[ 'webradios' ];
+		$rdname = $_POST[ 'webradios' ];
 	}
 	if ( !is_array( $data ) ) {
-		$rdname = str_replace( '"', '\"', $data );
+		$rdname = $data;
 		if ( $key === 'webradios' ) {
 			$redis->hDel( 'webradios', $rdname );
 			$redis->hDel( 'sampling', $rdname );
@@ -85,10 +85,10 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 			$redis->hDel( 'bkmarks', $rdname );
 		}
 	} else {
-		$rdname = str_replace( '"', '\"', $data[ 0 ] );
-		$rdvalue = str_replace( '"', '\"', $data[ 1 ] );
+		$rdname = $data[ 0 ];
+		$rdvalue = $data[ 1 ];
 		if ( count( $data ) === 3 ) {
-			$rdoldname = str_replace( '"', '\"', $data[ 2 ] );
+			$rdoldname = $data[ 2 ];
 			$redis->hDel( $key, $rdoldname );
 			if ( $key === 'webradios' ) unlink( '/mnt/MPD/Webradio/'.$data[ 2 ].'.pls' );
 		}
