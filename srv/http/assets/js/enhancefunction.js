@@ -115,7 +115,7 @@ pushstreams.idle.onmessage = function( changed ) {
 			}, 'json' );
 		}, 3000 );
 	} else if ( changed === 'database' ) { // on files changed (for webradio rename)
-		if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) $( '#home-webradio' ).click();
+		if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) $( '#home-webradio' ).tap();
 	}
 }
 /*pushstreams.idle.onstatuschange = function( data ) {
