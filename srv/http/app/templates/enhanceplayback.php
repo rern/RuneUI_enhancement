@@ -133,7 +133,7 @@ $blocks = array( // 'id' => array( 'path', 'icon', 'name' );
 	, 'genre'       => array( 'Genre',        'genre',        'Genre' )
 	, 'spotify'     => array( 'Spotify',      'spotify',      'Spotify' )
 	, 'dirble'      => array( 'Dirble',       'dirble',       'Dirble' )
-	, 'jamendo'     => array( 'jamendo',      'Jamendo',      'Jamendo' )
+	, 'jamendo'     => array( 'Jamendo',      'jamendo',      'Jamendo' )
 );
 $blockhtml = '';
 foreach( $blocks as $id => $value ) {
