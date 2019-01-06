@@ -8,7 +8,7 @@ $.each( streams, function( i, stream ) {
 pushstreams.display.onmessage = function( data ) {
 	var current = GUI.display;
 	if ( typeof data[ 0 ] === 'object' ) GUI.display = data[ 0 ];
-	if ( GUI.local ) return
+	if ( GUI.tempFlag ) return
 	
 	if ( GUI.playback ) {
 		getPlaybackStatus();
@@ -27,7 +27,7 @@ pushstreams.display.onmessage = function( data ) {
 	}
 }
 pushstreams.volume.onmessage = function( data ) {
-	if ( GUI.local ) return
+	if ( GUI.tempFlag ) return
 	
 	var data = data[ 0 ];
 	var vol = data[ 0 ];
@@ -38,9 +38,9 @@ pushstreams.volume.onmessage = function( data ) {
 }
 pushstreams.library.onmessage = function( data ) {
 	GUI.libraryhome = data[ 0 ];
-	if ( !GUI.local
+	if ( !GUI.tempFlag
 		&& !$( '#home-blocks' ).hasClass( 'hide' )
-		&& !GUI.local && !GUI.bookmarkedit
+		&& !GUI.bookmarkedit
 	) renderLibrary();
 }
 pushstreams.playlist.onmessage = function( data ) {
@@ -64,7 +64,7 @@ pushstreams.idle.onmessage = function( changed ) {
 			$( '#previous, #next' ).removeClass( 'btn-primary' );
 		}
 	} else if ( changed === 'playlist' ) { // on playlist changed
-		if ( GUI.pleditor || GUI.local ) return
+		if ( GUI.pleditor || GUI.tempFlag ) return
 		
 		if ( GUI.playlist ) {
 			$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
@@ -81,10 +81,8 @@ pushstreams.idle.onmessage = function( changed ) {
 			getPlaybackStatus();
 		}
 	} else if ( changed === 'options' ) { // on mode toggled
-		if ( GUI.local ) return // suppress 2nd 'repeat + single'
+		if ( multipleCalls() ) return // suppress 2nd 'repeat + single'
 		
-		GUI.local = 1;
-		setTimeout( function() { GUI.local = 0 }, 500 );
 		$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
 			$.each( status, function( key, value ) {
 				GUI.status[ key ] = value;
@@ -149,7 +147,7 @@ function setSwipe( type ) {
 	$target[ GUI.currentpage  ].click();
 	$( '#swipebar' ).addClass( 'transparent' );
 }
-function setPageCurrent( page ) {
+function switchPage( page ) {
 	clearInterval( GUI.intKnob );
 	clearInterval( GUI.intElapsed );
 	clearInterval( GUI.intElapsedPl );
@@ -186,6 +184,7 @@ function setPageCurrent( page ) {
 	}
 }
 function setButtonToggle() {
+	tempFlag();
 	var timehide = $( '#time-knob' ).hasClass( 'hide' );
 	if ( !$( '#play-group' ).hasClass( 'hide' ) ) {
 		$( '#irandom' ).addClass( 'hide' )
@@ -238,6 +237,7 @@ function setButtonToggle() {
 	}
 }
 function setButtonUpdate() {
+	tempFlag();
 	if ( GUI.status.updating_db ) {
 		$( '#tab-library i, #db-home i' ).addClass( 'blink' );
 		if ( GUI.playback && !GUI.bars ) {
@@ -255,12 +255,12 @@ function setButtonUpdate() {
 	}
 }
 function setButton() {
+	tempFlag();
 	$( '#playback-controls' ).toggleClass( 'hide', GUI.status.playlistlength === 0 );
 	var state = GUI.status.state;
-	if ( !GUI.bars ) {
-		$( '#stop' ).toggleClass( 'btn-primary', state === 'stop' );
-		$( '#play' ).toggleClass( 'btn-primary', state === 'play' );
-		$( '#pause' ).toggleClass( 'btn-primary', state === 'pause' );
+	if ( GUI.bars ) {
+		$( '#stop, #play, #pause' ).removeClass( 'btn-primary' );
+		$( '#'+ state ).addClass( 'btn-primary' );
 	}
 	if ( GUI.display.update ) {
 		if ( !GUI.bars ) $( '#badge' ).text( GUI.display.update ).removeClass( 'hide' );
@@ -268,8 +268,8 @@ function setButton() {
 		$( '#badge' ).empty().addClass( 'hide' );
 	}
 	setTimeout( function() {
-		if ( GUI.playback ) setButtonToggle();
 		setButtonUpdate();
+		if ( GUI.playback ) setButtonToggle();
 	}, 100 );
 }
 function numFormat( num ) {
@@ -481,10 +481,19 @@ function renderPlayback() {
 		if ( $( '#lyricscontainer' ).length && !$( '#lyricscontainer' ).hasClass( 'hide' ) ) getlyrics();
 	}
 }
-
+function tempFlag() {
+	if ( GUI.tempFlag ) {
+		return 1
+	} else {
+		GUI.tempFlag = 1;
+		setTimeout( function() { GUI.tempFlag = 0 }, 500 );
+	}
+}
 function getPlaybackStatus() {
+	if ( tempFlag() ) return
+	
 	if ( GUI.playlist && !GUI.pleditor ) {
-		setPlaylistScroll();
+		$( '#tab-playlist' ).click();
 		return
 	}
 	
@@ -1373,9 +1382,15 @@ function setPlaylistScroll() {
 	clearInterval( GUI.intElapsedPl );
 	displayTopBottom();
 	$( '#context-menu-plaction' ).addClass( 'hide' );
+	$( '#pl-entries li.webradio' ).each( function() {
+		$this = $( this );
+		$this.find( '.sn .name' ).text( $this.find( '.bl .name' ).text() );
+		$( '.elapsed' ).empty();
+	} );
 	var $liactive = '';
 	var $elapsed = '';
 	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
+		console.log(status.Title)
 		$.each( status, function( key, value ) {
 			GUI.status[ key ] = value;
 		} );
@@ -1398,6 +1413,7 @@ function setPlaylistScroll() {
 				var elapsedtxt = second2HMS( elapsed );
 				$elapsed.html( '<i class="fa fa-play"></i> <wh>'+ elapsedtxt +'</wh>'+ slash );
 			}, 1000 );
+			if ( $liactive.hasClass( 'webradio' ) ) $liactive.find( '.sn .name' ).text( GUI.status.Title.replace( /\s*$/, '' ) );
 		} else {
 			$( '.elapsed' ).empty();
 		}
@@ -1432,12 +1448,11 @@ function htmlPlaylist( data ) {
 			genre = value.genre;
 		} else if ( value.path ) {
 			path = value.path;
-		} else if ( value.file && value.file.slice( 0, 4 ) === 'http' ) {
-			var title = value.Title || value.file;
+		} else if ( value.track === 'http:' ) {
 			content += '<li class="webradio">'
 					  +'<i class="fa fa-webradio pl-icon"></i>'
 					  + ( GUI.pleditor ? '<i class="fa fa-bars pl-action" data-target="#context-menu-webradiopl"></i>' : '<i class="fa fa-minus-circle pl-action"></i>' )
-					  +'<span class="sn">'+ title +'&ensp;<span class="elapsed"></span></span>'
+					  +'<span class="sn"><wh class="name">'+ value.Title +'</wh><span class="elapsed"></span></span>'
 					  +'<span class="bl">'+ value.file +'</span>'
 			countradio++;
 		} else if ( value.Title ) {
@@ -1460,7 +1475,7 @@ function htmlPlaylist( data ) {
 			}
 			content += '<li>'
 					 + actionhtml
-					 +'<span class="sn">'+ value.Title + ( GUI.pleditor ? '&ensp;' : '&ensp;<span class="elapsed"></span>' ) +'<span class="time" time="'+ sec +'">'+ value.Time +'</span></span>'
+					 +'<span class="sn">'+ value.Title + ( GUI.pleditor ? '' : '<span class="elapsed"></span>' ) +'<span class="time" time="'+ sec +'">'+ value.Time +'</span></span>'
 					 +'<span class="bl">'+ ( GUI.playlist ? value.track : value.file ) +'</span>'
 			countsong++;
 		}

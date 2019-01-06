@@ -16,7 +16,6 @@ var GUI = { // outside '$( function() {' enable console.log access
 	, list         : {}
 	, library      : 0
 	, libraryhome  : {}
-	, local        : 0
 	, lsplaylists  : []
 //	, midori       : navigator.userAgent.indexOf( 'Midori' ) !== -1
 	, playback     : 1
@@ -27,6 +26,7 @@ var GUI = { // outside '$( function() {' enable console.log access
 	, plugin       : ''
 	, screenS      : ( window.innerHeight < 590 || window.innerWidth < 500 )
 	, status       : {}
+	, tempFlag     : 0
 };
 
 PNotify.prototype.options.delay = 3000;
@@ -44,8 +44,6 @@ var blinkdot = '<a class="dot">.</a> <a class="dot dot2">.</a> <a class="dot dot
 
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-GUI.local = 1; // suppress 2nd getPlaybackStatus() on load
-setTimeout( function() { GUI.local = 0 }, 500 );
 $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 	GUI.display = data;
 	if ( !GUI.display.contexticon ) $( 'head' ).append( '<style id="contexticoncss">.db-action, .pl-action { display: none }</style>' );
@@ -58,9 +56,9 @@ $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 	}
 	$.post( 'enhancestatus.php', function( status ) {
 		GUI.status = status;
-		setButton();
 		renderPlayback();
 		displayPlayback();
+		setButton();
 		$( 'html, body' ).scrollTop( 0 );
 		$.post( 'enhance.php', { library: 1, data: 1 }, function( data ) {
 			GUI.libraryhome = data;
@@ -279,10 +277,10 @@ $( '#tab-library' ).click( function() {
 		return
 	}
 	
-	setPageCurrent( 'library' );
+	switchPage( 'library' );
 } );
 $( '#tab-playback' ).click( function() {
-	setPageCurrent( 'playback' );
+	switchPage( 'playback' );
 	getPlaybackStatus();
 	if ( GUI.status.state === 'play' ) $( '#elapsed' ).empty(); // hide flashing
 } );
@@ -293,7 +291,7 @@ $( '#tab-playlist' ).click( function() {
 		return
 	}
 	
-	setPageCurrent( 'playlist' );
+	switchPage( 'playlist' );
 	if ( GUI.pleditor ) return
 	
 	$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
@@ -310,7 +308,7 @@ $( '#page-playback' ).click( function( e ) {
 	$( '#swipebar' ).addClass( 'transparent' );
 } );
 $( '#page-library' ).click( function( e ) {
-	if ( GUI.local ) return
+	if ( GUI.tempFlag ) return
 	
 	if ( e.target.id !== 'home-block-edit' && e.target.id !== 'home-block-remove' ) {
 		$( '#home-block-edit, #home-block-remove' ).remove();
@@ -388,8 +386,7 @@ $( '#volume' ).roundSlider( {
 		$( '.rs-transition' ).css( 'transition-property', 'none' ); // disable animation on load
 	}
 	, change          : function( e ) { // (not fire on 'setValue' ) value after click or 'stop drag'
-		GUI.local = 1;
-		setTimeout( function() { GUI.local = 0 }, 500 );
+		tempFlag();
 		$.post( 'enhance.php', { volume: e.value } );
 		$( e.handle.element ).rsRotate( - e.handle.angle );
 		// value before 'change'
@@ -401,7 +398,7 @@ $( '#volume' ).roundSlider( {
 	}
 	, drag            : function ( e ) { // drag with no transition by default
 		if ( e.value % 2 === 0 ) {
-			GUI.local = 1; // cleared by 'change'
+			GUI.tempFlag = 1; // cleared by 'change'
 			$.post( 'enhance.php', { mpc: 'mpc volume '+ e.value } );
 			$( e.handle.element ).rsRotate( - e.handle.angle );
 		}
@@ -420,8 +417,7 @@ $( '#volmute, #volM' ).click( function() {
 		unmuteColor();
 		GUI.display.volumemute = 0;
 	}
-	GUI.local = 1;
-	setTimeout( function() { GUI.local = 0 }, 500 );
+	tempFlag();
 	$.post( 'enhance.php', { volume: 'setmute' } );
 } );
 $( '#volup, #voldn' ).click( function() {
@@ -431,8 +427,7 @@ $( '#volup, #voldn' ).click( function() {
 
 	vol = ( thisid === 'volup' ) ? vol + 1 : vol - 1;
 	$volumeRS.setValue( vol );
-	GUI.local = 1;
-	setTimeout( function() { GUI.local = 0 }, 500 );
+	tempFlag();
 	$.post( 'enhance.php', { volume: vol } );
 } );
 $( '#coverTL' ).click( function() {
@@ -607,7 +602,7 @@ $.event.special.tap.emitTapOnTaphold = false; // suppress tap on taphold
 $( '#home-blocks' ).on( 'tap', '.home-block', function() {
 	var $this = $( this );
 	var id = this.id;
-	if ( GUI.local || $this.hasClass( 'home-bookmark' ) ) return
+	if ( GUI.tempFlag || $this.hasClass( 'home-bookmark' ) ) return
 	
 	var type = id.replace( 'home-', '' );
 	if ( type === 'usb' && !GUI.libraryhome.usb ) {
@@ -654,8 +649,7 @@ $( '#home-blocks' ).on( 'tap', '.home-block', function() {
 		} );
 	}
 } ).on( 'taphold', '.home-bookmark', function() {
-	GUI.local = 1;
-	setTimeout( function() { GUI.local = 0 }, 1000 );
+	tempFlag();
 	$( '.home-bookmark' )
 		.append( '<i id="home-block-edit" class="fa fa-edit-circle"></i><i id="home-block-remove" class="fa fa-minus-circle"></i>' )
 		.find( '.fa-bookmark, .bklabel, img' ).css( 'opacity', 0.2 );
@@ -1064,8 +1058,7 @@ new Sortable( document.getElementById( 'pl-entries' ), {
 			GUI.status.Pos = $( e.item ).index();
 			GUI.status.song = GUI.status.Pos;
 		}
-		GUI.local = 1;
-		setTimeout( function() { GUI.local = 0 }, 500 );
+		tempFlag();
 		$.post( 'enhance.php', { mpc: 'mpc move '+ ( e.oldIndex + 1 ) +' '+ ( e.newIndex + 1 ) } );
 	}
 } );
@@ -1159,8 +1152,7 @@ $( '#pl-entries' ).on( 'click', '.pl-action', function() { // remove
 			$( 'html, body' ).scrollTop( 0 );
 		}
 	}
-	GUI.local = 1;
-	setTimeout( function() { GUI.local = 0 }, 500 );
+	tempFlag();
 	var songpos = $this.index() + 1;
 	$this.remove();
 	$.post( 'enhance.php', { mpc: 'mpc del '+ songpos } );
@@ -1244,12 +1236,10 @@ document.addEventListener( 'visibilitychange', function() {
 	} else {
 		if ( GUI.playback ) {
 			getPlaybackStatus();
-		} else if ( GUI.library && !$( '#home-blocks' ).hasClass( 'hide' ) ) {
-			renderLibrary();
+		} else if ( GUI.library ) {
+			if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) renderLibrary();
 		} else {
 			displayTopBottom();
-		}
-		if ( GUI.playlist ) {
 			if ( GUI.pleditor ) {
 				$( '#pl-currentpath .lipath' ).text() ? renderSavedPlaylist( $( '#pl-currentpath .lipath' ).text() ) : $( '#plopen' ).click();
 			} else {
