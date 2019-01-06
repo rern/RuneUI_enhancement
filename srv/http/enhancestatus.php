@@ -12,9 +12,9 @@ if ( !isset( $_POST[ 'statusonly' ] ) ) {
 }
 
 $mpdtelnet = ' | telnet localhost 6600 | sed "/^Trying\|Connected\|Escape\|OK\|Connection\|AlbumArtist\|Date\|Genre\|Last-Modified\|consume\|mixrampdb\|nextsong\|nextsongid/ d"';
-$lines = shell_exec( '{ sleep 0.01; echo clearerror; echo status; echo currentsong; sleep 0.05; }'.$mpdtelnet );
+$lines = shell_exec( '{ sleep 0.05; echo clearerror; echo status; echo currentsong; sleep 0.05; }'.$mpdtelnet );
 // fix: initially add song without play - currentsong = (blank)
-if ( strpos( $lines, 'file:' ) === false ) $lines = shell_exec( '{ sleep 0.01; echo status; echo playlistinfo 0; sleep 0.05; }'.$mpdtelnet );
+if ( strpos( $lines, 'file:' ) === false ) $lines = shell_exec( '{ sleep 0.05; echo status; echo playlistinfo 0; sleep 0.05; }'.$mpdtelnet );
 
 $line = strtok( $lines, "\n" );
 while ( $line !== false ) {
@@ -135,13 +135,14 @@ if ( $activePlayer === 'MPD'
 		$count++;
 	}
 }
-// no id3tag
-if ( empty( $status[ 'Title' ] ) ) {
-	$status[ 'Artist' ] = basename( $dir );
-	$status[ 'Title' ] = $pathinfo[ 'filename' ];
-	$status[ 'Album' ] = '';
-}
-if ( $status[ 'ext' ] === 'radio' ) {
+if ( $status[ 'ext' ] !== 'radio' ) {
+	// no id3tag
+	if ( empty( $status[ 'Title' ] ) ) {
+		$status[ 'Artist' ] = basename( $dir );
+		$status[ 'Title' ] = $pathinfo[ 'filename' ];
+		$status[ 'Album' ] = '';
+	}
+} else {
 	// before 1st play: no 'Name:' - use 'Title:' value instead
 	$status[ 'Artist' ] = isset( $status[ 'Name' ] ) ? $status[ 'Name' ] : $status[ 'Title' ];
 	$status[ 'Title' ] = ( $status[ 'state' ] === 'stop' ) ? '' : $status[ 'Title' ];
