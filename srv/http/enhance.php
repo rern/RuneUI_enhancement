@@ -291,13 +291,14 @@ function list2array( $result, $webradioname = null ) {
 			$file = $li[ 'file' ];
 			$i = 1;
 		}
-		if ( $list[ 0 ] ) {
+		$li[ 'track' ] = $list[ 2 ] ?: dirname( $li[ 'file' ] );
+		if ( $list[ 0 ] && $li[ 'track' ] !== 'http:' ) {
 			$li[ 'Title' ] = $list[ 0 ];
 		} else {
-			$li[ 'Title' ] = substr( $li[ 'file' ], 0, 4 ) === 'http' ? $webradioname[ $list[ 3 ] ] : basename( $li[ 'file' ] );
+			$li[ 'Title' ] = $li[ 'track' ] ? $webradioname[ $list[ 3 ] ] : basename( $li[ 'file' ] );
 		}
+		if ( $li[ 'track' ] === 'http:' ) $li[ 'file' ] = '<span class="name">'.$li[ 'Title' ].'</span> • '.$li[ 'file' ];
 		$li[ 'Time' ] = $list[ 1 ];
-		$li[ 'track' ] = $list[ 2 ] ?: dirname( $li[ 'file' ] );
 		$li[ 'index' ] = $i++;
 		if ( !$artist && $list[ 4 ] !== '' ) $artist = $list[ 4 ];
 		if ( !$album && $list[ 5 ] !== '' ) $album = $list[ 5 ];
@@ -311,11 +312,13 @@ function list2array( $result, $webradioname = null ) {
 		$data[] = $li;
 		$li = '';
 	}
-	$data[][ 'artist' ] = $artist;
-	$data[][ 'album' ] = $album;
-	$data[][ 'albumartist' ] = $albumartist ?: $data[ 0 ][ 'Artist' ];
-	if ( $genre ) $data[][ 'genre' ] = $genre;
-	if ( $composer ) $data[][ 'composer' ] = $composer;
+	if ( !$webradioname ) {
+		$data[][ 'artist' ] = $artist;
+		$data[][ 'album' ] = $album;
+		$data[][ 'albumartist' ] = $albumartist ?: $data[ 0 ][ 'Artist' ];
+		if ( $genre ) $data[][ 'genre' ] = $genre;
+		if ( $composer ) $data[][ 'composer' ] = $composer;
+	}
 	return $data;
 }
 function loadCue( $mpc ) { // 'mpc ls "path" | mpc add' from enhancecontext.js
