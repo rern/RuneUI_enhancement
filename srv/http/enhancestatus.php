@@ -35,23 +35,24 @@ while ( $line !== false ) {
 	$line = strtok( "\n" );
 }
 $status[ 'updating_db' ] = array_key_exists( 'updating_db', $status ) ? 1 : 0;
-if ( exec( 'pidof ashuffle' ) ) $status[ 'random' ] = 1;
-if ( !array_key_exists( 'song', $status ) ) $status[ 'song' ] = 0;
-$previousartist = isset( $_POST[ 'artist' ] ) ? $_POST[ 'artist' ] : '';
-$previousalbum = isset( $_POST[ 'album' ] ) ? $_POST[ 'album' ] : '';
-if ( isset( $_POST[ 'statusonly' ] )
-	|| !$status[ 'playlistlength' ]
-	|| ( $status[ 'Artist' ] === $previousartist && $status[ 'Album' ] === $previousalbum )
-) {
-	echo json_encode( $status, JSON_NUMERIC_CHECK );
-	exit();
-}
-
 $file = '/mnt/MPD/'.$status[ 'file' ];
 $pathinfo = pathinfo( $file );
 $dir = $pathinfo[ 'dirname' ];
 $ext = strtoupper( $pathinfo[ 'extension' ] );
 $status[ 'ext' ] = ( substr($status[ 'file' ], 0, 4 ) !== 'http' ) ? $ext : 'radio';
+if ( exec( 'pidof ashuffle' ) ) $status[ 'random' ] = 1;
+if ( !array_key_exists( 'song', $status ) ) $status[ 'song' ] = 0;
+$previousartist = isset( $_POST[ 'artist' ] ) ? $_POST[ 'artist' ] : '';
+$previousalbum = isset( $_POST[ 'album' ] ) ? $_POST[ 'album' ] : '';
+if ( isset( $_POST[ 'statusonly' ] )
+		|| !$status[ 'playlistlength' ]
+		|| ( $status[ 'Artist' ] === $previousartist && $status[ 'Album' ] === $previousalbum )
+		|| $status[ 'ext' ] !== 'radio'
+) {
+	echo json_encode( $status, JSON_NUMERIC_CHECK );
+	exit();
+}
+
 // coverart
 if ( $activePlayer === 'MPD'
 	&& !empty( $status[ 'Artist' ] )
@@ -147,31 +148,6 @@ if ( $status[ 'ext' ] === 'radio' ) {
 	$status[ 'Album' ] = $status[ 'file' ];
 	$status[ 'time' ] = '';
 }
-
-// sampling >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-function samplingline( $bitdepth, $samplerate, $bitrate ) {
-	if ( $bitdepth === 'N/A' ) {
-		$bitdepth = ( $ext === 'WAV' || $ext === 'AIFF' ) ? ( $bitrate / $samplerate / 2 ).' bit ' : '';
-	} else {
-		if ( $bitdepth === 'dsd' ) {
-			$dsd = round( $bitrate / 44100 );
-			$bitrate = round( $bitrate / 1000000, 2 );
-			return 'DSD'.$dsd.' • '.$bitrate.' Mbit/s';
-		} else if ( $ext === 'MP3' || $ext === 'AAC' ) {
-			$bitdepth = '';
-		} else {
-			$bitdepth = $bitdepth ? $bitdepth.' bit ' : '';
-		}
-	}
-	$samplerate = round( $samplerate / 1000, 1 ).' kHz ';
-	if ( $bitrate < 1000000 ) {
-		$bitrate = round( $bitrate / 1000 ).' kbit/s';
-	} else {
-		$bitrate = round( $bitrate / 1000000, 2 ).' Mbit/s';
-	}
-	return $bitdepth.$samplerate.$bitrate;
-}
-
 $webradios = $redis->hGetAll( 'webradios' );
 $webradioname = array_flip( $webradios );
 $name = $webradioname[ $status[ 'file' ] ];
@@ -218,3 +194,26 @@ $elapsed = exec( '{ sleep 0.01; echo status; sleep 0.01; } | telnet localhost 66
 $status[ 'elapsed' ] = round( $elapsed ); // refetch after coverart fetch
 
 echo json_encode( $status, JSON_NUMERIC_CHECK );
+
+function samplingline( $bitdepth, $samplerate, $bitrate ) {
+	if ( $bitdepth === 'N/A' ) {
+		$bitdepth = ( $ext === 'WAV' || $ext === 'AIFF' ) ? ( $bitrate / $samplerate / 2 ).' bit ' : '';
+	} else {
+		if ( $bitdepth === 'dsd' ) {
+			$dsd = round( $bitrate / 44100 );
+			$bitrate = round( $bitrate / 1000000, 2 );
+			return 'DSD'.$dsd.' • '.$bitrate.' Mbit/s';
+		} else if ( $ext === 'MP3' || $ext === 'AAC' ) {
+			$bitdepth = '';
+		} else {
+			$bitdepth = $bitdepth ? $bitdepth.' bit ' : '';
+		}
+	}
+	$samplerate = round( $samplerate / 1000, 1 ).' kHz ';
+	if ( $bitrate < 1000000 ) {
+		$bitrate = round( $bitrate / 1000 ).' kbit/s';
+	} else {
+		$bitrate = round( $bitrate / 1000000, 2 ).' Mbit/s';
+	}
+	return $bitdepth.$samplerate.$bitrate;
+}
