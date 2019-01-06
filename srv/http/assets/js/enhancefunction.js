@@ -186,7 +186,11 @@ function switchPage( page ) {
 	}
 }
 function setButtonToggle() {
-	tempFlag();
+	if ( GUI.local ) return
+	
+	GUI.local = 1;
+	setTimeout( function() { GUI.local = 0 }, 500 );
+	
 	var timehide = $( '#time-knob' ).hasClass( 'hide' );
 	if ( !$( '#play-group' ).hasClass( 'hide' ) ) {
 		$( '#irandom' ).addClass( 'hide' )
@@ -239,7 +243,11 @@ function setButtonToggle() {
 	}
 }
 function setButtonUpdate() {
-	tempFlag();
+	if ( GUI.local ) return
+	
+	GUI.local = 1;
+	setTimeout( function() { GUI.local = 0 }, 500 );
+	
 	if ( GUI.status.updating_db ) {
 		$( '#tab-library i, #db-home i' ).addClass( 'blink' );
 		if ( GUI.playback && !GUI.bars ) {
@@ -257,7 +265,11 @@ function setButtonUpdate() {
 	}
 }
 function setButton() {
-	tempFlag();
+	if ( GUI.local ) return
+	
+	GUI.local = 1;
+	setTimeout( function() { GUI.local = 0 }, 500 );
+	
 	$( '#playback-controls' ).toggleClass( 'hide', GUI.status.playlistlength === 0 );
 	var state = GUI.status.state;
 	if ( GUI.bars ) {
@@ -483,16 +495,11 @@ function renderPlayback() {
 		if ( $( '#lyricscontainer' ).length && !$( '#lyricscontainer' ).hasClass( 'hide' ) ) getlyrics();
 	}
 }
-function tempFlag() {
-	if ( GUI.tempFlag ) {
-		return 1
-	} else {
-		GUI.tempFlag = 1;
-		setTimeout( function() { GUI.tempFlag = 0 }, 500 );
-	}
-}
 function getPlaybackStatus() {
-	if ( tempFlag() ) return
+	if ( GUI.local ) return
+	
+	GUI.local = 1;
+	setTimeout( function() { GUI.local = 0 }, 500 );
 	
 	if ( GUI.playlist && !GUI.pleditor ) {
 		$( '#tab-playlist' ).click();

@@ -389,12 +389,13 @@ $( '#volume' ).roundSlider( {
 		$( '.rs-transition' ).css( 'transition-property', 'none' ); // disable animation on load
 	}
 	, change          : function( e ) { // (not fire on 'setValue' ) value after click or 'stop drag'
-		GUI.local = 1;
-		setTimeout( function() { GUI.local = 0 }, 500 );
-		$.post( 'enhance.php', { volume: e.value } );
 		$( e.handle.element ).rsRotate( - e.handle.angle );
 		// value before 'change'
 		if ( e.preValue === 0 ) unmuteColor();
+		GUI.local = 1;
+		setTimeout( function() { GUI.local = 0 }, 500 );
+		
+		$.post( 'enhance.php', { volume: e.value } );
 	}
 	, start           : function( e ) { // on 'start drag'
 		// restore handle color immediately on start drag
@@ -423,6 +424,7 @@ $( '#volmute, #volM' ).click( function() {
 	}
 	GUI.local = 1;
 	setTimeout( function() { GUI.local = 0 }, 500 );
+	
 	$.post( 'enhance.php', { volume: 'setmute' } );
 } );
 $( '#volup, #voldn' ).click( function() {
@@ -432,8 +434,10 @@ $( '#volup, #voldn' ).click( function() {
 
 	vol = ( thisid === 'volup' ) ? vol + 1 : vol - 1;
 	$volumeRS.setValue( vol );
+	
 	GUI.local = 1;
 	setTimeout( function() { GUI.local = 0 }, 500 );
+	
 	$.post( 'enhance.php', { volume: vol } );
 } );
 $( '#coverTL' ).click( function() {
@@ -657,6 +661,7 @@ $( '#home-blocks' ).on( 'tap', '.home-block', function() {
 } ).on( 'taphold', '.home-bookmark', function() {
 	GUI.local = 1;
 	setTimeout( function() { GUI.local = 0 }, 1000 );
+	
 	$( '.home-bookmark' )
 		.append( '<i id="home-block-edit" class="fa fa-edit-circle"></i><i id="home-block-remove" class="fa fa-minus-circle"></i>' )
 		.find( '.fa-bookmark, .bklabel, img' ).css( 'opacity', 0.2 );
@@ -1067,6 +1072,7 @@ new Sortable( document.getElementById( 'pl-entries' ), {
 		}
 		GUI.local = 1;
 		setTimeout( function() { GUI.local = 0 }, 500 );
+		
 		$.post( 'enhance.php', { mpc: 'mpc move '+ ( e.oldIndex + 1 ) +' '+ ( e.newIndex + 1 ) } );
 	}
 } );
@@ -1160,10 +1166,12 @@ $( '#pl-entries' ).on( 'click', '.pl-action', function() { // remove
 			$( 'html, body' ).scrollTop( 0 );
 		}
 	}
-	GUI.local = 1;
-	setTimeout( function() { GUI.local = 0 }, 500 );
 	var songpos = $this.index() + 1;
 	$this.remove();
+	
+	GUI.local = 1;
+	setTimeout( function() { GUI.local = 0 }, 500 );
+	
 	$.post( 'enhance.php', { mpc: 'mpc del '+ songpos } );
 	if ( !$( '#countsong, #countradio' ).length ) {
 		GUI.status.playlistlength = 0;

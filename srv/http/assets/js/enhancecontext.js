@@ -277,8 +277,10 @@ function addWebradio( name, url, oldname ) {
 	var name = name;
 	var oldname = oldname ? oldname : '';
 	var data = oldname ? [ name, url, oldname ] : [ name, url ];
+	
 	GUI.local = 1;
 	setTimeout( function() { GUI.local = 0 }, 500 );
+	
 	$.post( 'enhance.php', { webradios: data } );
 }
 function webRadioVerify( name, url, oldname ) {
@@ -336,8 +338,10 @@ function webRadioDelete() {
 		, ok      : function() {
 			$( '#db-entries li').eq( GUI.list.liindex ).remove();
 			GUI.libraryhome.webradio--;
+			
 			GUI.local = 1;
 			setTimeout( function() { GUI.local = 0 }, 500 );
+			
 			$.post( 'enhance.php', { webradios: name } );
 		}
 	} );
@@ -388,8 +392,10 @@ function addPlaylist( name, oldname ) {
 		} );
 		$( '#plopen' ).removeClass( 'disable' );
 		GUI.lsplaylists.push( name );
+		
 		GUI.local = 1;
 		setTimeout( function() { GUI.local = 0 }, 500 );
+		
 		$.post( 'enhance.php', { mpc: 'mpc save "'+ name.replace( /"/g, '\\"' ) +'"' } );
 	}
 }
@@ -438,8 +444,10 @@ function playlistDelete() {
 			$( '#pls-count' ).text( numFormat( count ) );
 			if ( !count ) $( '#pl-currentpath' ).html( '<bl>&emsp;PLAYLISTS</bl>' );
 			GUI.list.li.remove();
+			
 			GUI.local = 1;
 			setTimeout( function() { GUI.local = 0 }, 500 );
+			
 			$.post( 'enhance.php', { mpc: 'mpc rm "'+ GUI.list.name.replace( /"/g, '\\"' ) +'"' } );
 		}
 	} );
