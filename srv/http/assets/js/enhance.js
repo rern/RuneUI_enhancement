@@ -88,7 +88,6 @@ $( '.btn-cmd' ).click( function() {
 			command = 'mpc stop';
 			if ( GUI.status.ext === 'radio' ) $( '#song' ).empty();
 		} else if ( cmd === 'previous' || cmd === 'next' ) {
-			if ( GUI.bars ) $this.addClass( 'btn-primary' );
 			// enable previous / next while stop
 			var current = GUI.status.song + 1;
 			var last = GUI.status.playlistlength;
@@ -107,6 +106,10 @@ $( '.btn-cmd' ).click( function() {
 		} else {
 			command = ( GUI.status.ext === 'radio' && GUI.status.state === 'play' ) ? 'mpc stop' : 'mpc toggle';
 		}
+	}
+	if ( GUI.bars ) {
+		$( '.btn-cmd' ).removeClass( 'btn-primary' );
+		$this.addClass( 'btn-primary' );
 	}
 	$.post( 'enhance.php', { mpc: command } );
 } );
