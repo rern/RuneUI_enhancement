@@ -47,7 +47,7 @@ $previousalbum = isset( $_POST[ 'album' ] ) ? $_POST[ 'album' ] : '';
 if ( isset( $_POST[ 'statusonly' ] )
 		|| !$status[ 'playlistlength' ]
 		|| ( $status[ 'Artist' ] === $previousartist && $status[ 'Album' ] === $previousalbum )
-		|| $status[ 'ext' ] !== 'radio'
+		&& $status[ 'ext' ] !== 'radio'
 ) {
 	echo json_encode( $status, JSON_NUMERIC_CHECK );
 	exit();
