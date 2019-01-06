@@ -160,7 +160,7 @@ wh, gr { font-weight: 300; }
 #album gr,
 #infoContent gr,
 #timepos wh,
-#pl-entries li .elapsed wh {
+#pl-entries wh {
 	font-weight: normal;
 }
 #displaysavelibrary i {
@@ -1579,6 +1579,9 @@ w {
 	width: 20px;
 	font-size: 17px;
 	line-height: 14px;
+}
+#pl-entries .elapsed {
+	margin-left: 10px;
 }
 .time {
 	color: #587ca0 !important;
