@@ -186,11 +186,6 @@ function switchPage( page ) {
 	}
 }
 function setButtonToggle() {
-	if ( GUI.local ) return
-	
-	GUI.local = 1;
-	setTimeout( function() { GUI.local = 0 }, 500 );
-	
 	var timehide = $( '#time-knob' ).hasClass( 'hide' );
 	if ( !$( '#play-group' ).hasClass( 'hide' ) ) {
 		$( '#irandom' ).addClass( 'hide' )
@@ -243,11 +238,6 @@ function setButtonToggle() {
 	}
 }
 function setButtonUpdate() {
-	if ( GUI.local ) return
-	
-	GUI.local = 1;
-	setTimeout( function() { GUI.local = 0 }, 500 );
-	
 	if ( GUI.status.updating_db ) {
 		$( '#tab-library i, #db-home i' ).addClass( 'blink' );
 		if ( GUI.playback && !GUI.bars ) {
@@ -265,11 +255,6 @@ function setButtonUpdate() {
 	}
 }
 function setButton() {
-	if ( GUI.local ) return
-	
-	GUI.local = 1;
-	setTimeout( function() { GUI.local = 0 }, 500 );
-	
 	$( '#playback-controls' ).toggleClass( 'hide', GUI.status.playlistlength === 0 );
 	var state = GUI.status.state;
 	if ( GUI.bars ) {
