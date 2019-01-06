@@ -110,7 +110,8 @@ $( '.contextmenu a' ).click( function() {
 
 function addReplace( mode, command, title ) {
 	if ( mode === 'wr' ) {
-		tempFlag();
+		GUI.local = 1;
+		setTimeout( function() { GUI.local = 0 }, 500 );
 	}
 	$.post( 'enhance.php', { mpc: command }, function() {
 		getPlaybackStatus();
@@ -187,7 +188,8 @@ function bookmarkVerify( name, path, oldname ) {
 					  title : 'Add Bookmark'
 					, text  : name
 				} );
-				tempFlag();
+				GUI.local = 1;
+				setTimeout( function() { GUI.local = 0 }, 500 );
 			}
 			var data = oldname ? [ name, path, oldname ] : [ name, path ];
 			$.post( 'enhance.php', { bkmarks: data } );
@@ -206,7 +208,8 @@ function bookmarkVerify( name, path, oldname ) {
 				, oklabel     : 'Replace'
 				, ok          : function() {
 					if ( !oldname ) {
-						tempFlag();
+						GUI.local = 1;
+						setTimeout( function() { GUI.local = 0 }, 500 );
 					}
 					var data = oldname ? [ name, path, oldname ] : [ name, path ];
 					$.post( 'enhance.php', { bkmarks: data } );
@@ -274,7 +277,8 @@ function addWebradio( name, url, oldname ) {
 	var name = name;
 	var oldname = oldname ? oldname : '';
 	var data = oldname ? [ name, url, oldname ] : [ name, url ];
-	tempFlag();
+	GUI.local = 1;
+	setTimeout( function() { GUI.local = 0 }, 500 );
 	$.post( 'enhance.php', { webradios: data } );
 }
 function webRadioVerify( name, url, oldname ) {
@@ -332,7 +336,8 @@ function webRadioDelete() {
 		, ok      : function() {
 			$( '#db-entries li').eq( GUI.list.liindex ).remove();
 			GUI.libraryhome.webradio--;
-			tempFlag();
+			GUI.local = 1;
+			setTimeout( function() { GUI.local = 0 }, 500 );
 			$.post( 'enhance.php', { webradios: name } );
 		}
 	} );
@@ -383,7 +388,8 @@ function addPlaylist( name, oldname ) {
 		} );
 		$( '#plopen' ).removeClass( 'disable' );
 		GUI.lsplaylists.push( name );
-		tempFlag();
+		GUI.local = 1;
+		setTimeout( function() { GUI.local = 0 }, 500 );
 		$.post( 'enhance.php', { mpc: 'mpc save "'+ name.replace( /"/g, '\\"' ) +'"' } );
 	}
 }
@@ -432,7 +438,8 @@ function playlistDelete() {
 			$( '#pls-count' ).text( numFormat( count ) );
 			if ( !count ) $( '#pl-currentpath' ).html( '<bl>&emsp;PLAYLISTS</bl>' );
 			GUI.list.li.remove();
-			tempFlag();
+			GUI.local = 1;
+			setTimeout( function() { GUI.local = 0 }, 500 );
 			$.post( 'enhance.php', { mpc: 'mpc rm "'+ GUI.list.name.replace( /"/g, '\\"' ) +'"' } );
 		}
 	} );

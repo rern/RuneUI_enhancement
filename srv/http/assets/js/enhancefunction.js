@@ -8,7 +8,7 @@ $.each( streams, function( i, stream ) {
 pushstreams.display.onmessage = function( data ) {
 	var current = GUI.display;
 	if ( typeof data[ 0 ] === 'object' ) GUI.display = data[ 0 ];
-	if ( GUI.tempFlag ) return
+	if ( GUI.local ) return
 	
 	if ( GUI.playback ) {
 		getPlaybackStatus();
@@ -27,7 +27,7 @@ pushstreams.display.onmessage = function( data ) {
 	}
 }
 pushstreams.volume.onmessage = function( data ) {
-	if ( GUI.tempFlag ) return
+	if ( GUI.local ) return
 	
 	var data = data[ 0 ];
 	var vol = data[ 0 ];
@@ -38,7 +38,7 @@ pushstreams.volume.onmessage = function( data ) {
 }
 pushstreams.library.onmessage = function( data ) {
 	GUI.libraryhome = data[ 0 ];
-	if ( !GUI.tempFlag
+	if ( !GUI.local
 		&& !$( '#home-blocks' ).hasClass( 'hide' )
 		&& !GUI.bookmarkedit
 	) renderLibrary();
@@ -64,7 +64,7 @@ pushstreams.idle.onmessage = function( changed ) {
 			$( '#previous, #next' ).removeClass( 'btn-primary' );
 		}
 	} else if ( changed === 'playlist' ) { // on playlist changed
-		if ( GUI.pleditor || GUI.tempFlag ) return
+		if ( GUI.pleditor || GUI.local ) return
 		
 		if ( GUI.playlist ) {
 			$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
@@ -81,8 +81,10 @@ pushstreams.idle.onmessage = function( changed ) {
 			getPlaybackStatus();
 		}
 	} else if ( changed === 'options' ) { // on mode toggled
-		if ( multipleCalls() ) return // suppress 2nd 'repeat + single'
+		if ( GUI.local ) return // suppress 2nd 'repeat + single'
 		
+		GUI.local = 1;
+		setTimeout( function() { GUI.local = 0 }, 500 );
 		$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
 			$.each( status, function( key, value ) {
 				GUI.status[ key ] = value;

@@ -16,6 +16,7 @@ var GUI = { // outside '$( function() {' enable console.log access
 	, list         : {}
 	, library      : 0
 	, libraryhome  : {}
+	, local        : 0
 	, lsplaylists  : []
 //	, midori       : navigator.userAgent.indexOf( 'Midori' ) !== -1
 	, playback     : 1
@@ -26,7 +27,6 @@ var GUI = { // outside '$( function() {' enable console.log access
 	, plugin       : ''
 	, screenS      : ( window.innerHeight < 590 || window.innerWidth < 500 )
 	, status       : {}
-	, tempFlag     : 0
 };
 
 PNotify.prototype.options.delay = 3000;
@@ -311,7 +311,7 @@ $( '#page-playback' ).click( function( e ) {
 	$( '#swipebar' ).addClass( 'transparent' );
 } );
 $( '#page-library' ).click( function( e ) {
-	if ( GUI.tempFlag ) return
+	if ( GUI.local ) return
 	
 	if ( e.target.id !== 'home-block-edit' && e.target.id !== 'home-block-remove' ) {
 		$( '#home-block-edit, #home-block-remove' ).remove();
@@ -389,7 +389,8 @@ $( '#volume' ).roundSlider( {
 		$( '.rs-transition' ).css( 'transition-property', 'none' ); // disable animation on load
 	}
 	, change          : function( e ) { // (not fire on 'setValue' ) value after click or 'stop drag'
-		tempFlag();
+		GUI.local = 1;
+		setTimeout( function() { GUI.local = 0 }, 500 );
 		$.post( 'enhance.php', { volume: e.value } );
 		$( e.handle.element ).rsRotate( - e.handle.angle );
 		// value before 'change'
@@ -401,7 +402,7 @@ $( '#volume' ).roundSlider( {
 	}
 	, drag            : function ( e ) { // drag with no transition by default
 		if ( e.value % 2 === 0 ) {
-			GUI.tempFlag = 1; // cleared by 'change'
+			GUI.local = 1; // cleared by 'change'
 			$.post( 'enhance.php', { mpc: 'mpc volume '+ e.value } );
 			$( e.handle.element ).rsRotate( - e.handle.angle );
 		}
@@ -420,7 +421,8 @@ $( '#volmute, #volM' ).click( function() {
 		unmuteColor();
 		GUI.display.volumemute = 0;
 	}
-	tempFlag();
+	GUI.local = 1;
+	setTimeout( function() { GUI.local = 0 }, 500 );
 	$.post( 'enhance.php', { volume: 'setmute' } );
 } );
 $( '#volup, #voldn' ).click( function() {
@@ -430,7 +432,8 @@ $( '#volup, #voldn' ).click( function() {
 
 	vol = ( thisid === 'volup' ) ? vol + 1 : vol - 1;
 	$volumeRS.setValue( vol );
-	tempFlag();
+	GUI.local = 1;
+	setTimeout( function() { GUI.local = 0 }, 500 );
 	$.post( 'enhance.php', { volume: vol } );
 } );
 $( '#coverTL' ).click( function() {
@@ -605,7 +608,7 @@ $.event.special.tap.emitTapOnTaphold = false; // suppress tap on taphold
 $( '#home-blocks' ).on( 'tap', '.home-block', function() {
 	var $this = $( this );
 	var id = this.id;
-	if ( GUI.tempFlag || $this.hasClass( 'home-bookmark' ) ) return
+	if ( GUI.local || $this.hasClass( 'home-bookmark' ) ) return
 	
 	var type = id.replace( 'home-', '' );
 	if ( type === 'usb' && !GUI.libraryhome.usb ) {
@@ -652,7 +655,8 @@ $( '#home-blocks' ).on( 'tap', '.home-block', function() {
 		} );
 	}
 } ).on( 'taphold', '.home-bookmark', function() {
-	tempFlag();
+	GUI.local = 1;
+	setTimeout( function() { GUI.local = 0 }, 1000 );
 	$( '.home-bookmark' )
 		.append( '<i id="home-block-edit" class="fa fa-edit-circle"></i><i id="home-block-remove" class="fa fa-minus-circle"></i>' )
 		.find( '.fa-bookmark, .bklabel, img' ).css( 'opacity', 0.2 );
@@ -1061,7 +1065,8 @@ new Sortable( document.getElementById( 'pl-entries' ), {
 			GUI.status.Pos = $( e.item ).index();
 			GUI.status.song = GUI.status.Pos;
 		}
-		tempFlag();
+		GUI.local = 1;
+		setTimeout( function() { GUI.local = 0 }, 500 );
 		$.post( 'enhance.php', { mpc: 'mpc move '+ ( e.oldIndex + 1 ) +' '+ ( e.newIndex + 1 ) } );
 	}
 } );
@@ -1155,7 +1160,8 @@ $( '#pl-entries' ).on( 'click', '.pl-action', function() { // remove
 			$( 'html, body' ).scrollTop( 0 );
 		}
 	}
-	tempFlag();
+	GUI.local = 1;
+	setTimeout( function() { GUI.local = 0 }, 500 );
 	var songpos = $this.index() + 1;
 	$this.remove();
 	$.post( 'enhance.php', { mpc: 'mpc del '+ songpos } );
