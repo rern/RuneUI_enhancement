@@ -1390,7 +1390,6 @@ function setPlaylistScroll() {
 	var $liactive = '';
 	var $elapsed = '';
 	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
-		console.log(status.Title)
 		$.each( status, function( key, value ) {
 			GUI.status[ key ] = value;
 		} );
