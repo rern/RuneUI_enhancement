@@ -1575,10 +1575,11 @@ w {
 #pl-entries a {
 	color: #e0e7ee;
 }
-#pl-entries .sn i {
+#pl-entries .elapsed i {
+	margin-right: 5px;
 	width: 20px;
-	font-size: 17px;
-	line-height: 14px;
+	font-size: 18px;
+	line-height: 12px;
 }
 #pl-entries .elapsed {
 	margin-left: 10px;
