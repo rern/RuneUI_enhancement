@@ -1398,7 +1398,7 @@ function setPlaylistScroll() {
 			GUI.intElapsedPl = setInterval( function() {
 				elapsed++;
 				var elapsedtxt = second2HMS( elapsed );
-				$elapsed.html( '<i class="fa fa-play"></i><wh>'+ elapsedtxt +'</wh>'+ slash );
+				$elapsed.html( '<i class="fa fa-play"></i><a>'+ elapsedtxt +'</a>'+ slash );
 			}, 1000 );
 			if ( $liactive.hasClass( 'webradio' ) ) {
 				$liactive.find( '.name' ).addClass( 'hide' );
