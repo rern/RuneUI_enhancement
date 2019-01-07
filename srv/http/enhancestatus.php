@@ -30,7 +30,7 @@ while ( $line !== false ) {
 		$status[ 'bitdepth' ] = $audio[ 1 ];
 		$status[ 'samplerate' ] = $audio[ 0 ];
 	} else {
-		$status[ $key ] = $val;
+		$status[ $key ] = trim( $val );
 	}
 	$line = strtok( "\n" );
 }

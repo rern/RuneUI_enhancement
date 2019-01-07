@@ -297,7 +297,7 @@ function list2array( $result, $webradioname = null ) {
 		} else {
 			$li[ 'Title' ] = $li[ 'track' ] ? $webradioname[ $list[ 3 ] ] : basename( $li[ 'file' ] );
 		}
-		if ( $li[ 'track' ] === 'http:' ) $li[ 'file' ] = '<span class="name">'.$li[ 'Title' ].'</span> • '.$li[ 'file' ];
+		if ( $li[ 'track' ] === 'http:' ) $li[ 'file' ] = $li[ 'Title' ].' • '.$li[ 'file' ];
 		$li[ 'Time' ] = $list[ 1 ];
 		$li[ 'index' ] = $i++;
 		if ( !$artist && $list[ 4 ] !== '' ) $artist = $list[ 4 ];
