@@ -61,7 +61,6 @@ pushstreams.idle.onmessage = function( changed ) {
 			setPlaylistScroll();
 		} else {
 			getPlaybackStatus();
-			$( '#previous, #next' ).removeClass( 'btn-primary' );
 		}
 	} else if ( changed === 'playlist' ) { // on playlist changed
 		if ( GUI.pleditor || GUI.local ) return
@@ -258,7 +257,7 @@ function setButton() {
 	$( '#playback-controls' ).toggleClass( 'hide', GUI.status.playlistlength === 0 );
 	var state = GUI.status.state;
 	if ( GUI.bars ) {
-		$( '#stop, #play, #pause' ).removeClass( 'btn-primary' );
+		$( '#playback-controls button' ).removeClass( 'btn-primary' );
 		$( '#'+ state ).addClass( 'btn-primary' );
 	}
 	if ( GUI.display.update ) {
@@ -1380,7 +1379,6 @@ function setPlaylistScroll() {
 	var $liactive = '';
 	var $elapsed = '';
 	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
-		setButton();
 		$linotactive = $( '#pl-entries li:not(:eq( '+ status.song +' ) )' );
 		$linotactive.removeClass( 'active' ).find( '.elapsed, .song' ).empty();
 		$linotactive.find( '.name' ).removeClass( 'hide' );
@@ -1415,6 +1413,7 @@ function setPlaylistScroll() {
 		$.each( status, function( key, value ) {
 			GUI.status[ key ] = value;
 		} );
+		setButton();
 	}, 'json' );
 }
 function htmlPlaylist( data ) {
