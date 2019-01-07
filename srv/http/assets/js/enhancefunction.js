@@ -1376,22 +1376,16 @@ function setPlaylistScroll() {
 	clearInterval( GUI.intElapsedPl );
 	displayTopBottom();
 	$( '#context-menu-plaction' ).addClass( 'hide' );
-	$( '#pl-entries li.webradio' ).each( function() {
-		$this = $( this );
-		$this.find( '.sn .name' ).text( $this.find( '.bl .name' ).text() );
-		$( '.elapsed' ).empty();
-	} );
+	var $linotactive = '';
 	var $liactive = '';
 	var $elapsed = '';
 	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
-		$.each( status, function( key, value ) {
-			GUI.status[ key ] = value;
-		} );
 		setButton();
-		$( '#pl-entries li' ).removeClass( 'active' );
+		$linotactive = $( '#pl-entries li:not(:eq( '+ status.song +' ) )' );
+		$linotactive.removeClass( 'active' ).find( '.elapsed, .song' ).empty();
+		$linotactive.find( '.name' ).removeClass( 'hide' );
 		$liactive = $( '#pl-entries li' ).eq( status.song );
 		$liactive.addClass( 'active' );
-		$( '#pl-entries li:not( .active )' ).find( '.elapsed' ).empty();
 		$elapsed = $liactive.find( '.elapsed' );
 		var elapsed = status.elapsed;
 		var slash = $liactive.hasClass( 'webradio' ) ? '' : ' / ';
@@ -1404,17 +1398,23 @@ function setPlaylistScroll() {
 			GUI.intElapsedPl = setInterval( function() {
 				elapsed++;
 				var elapsedtxt = second2HMS( elapsed );
-				$elapsed.html( '<i class="fa fa-play"></i> <wh>'+ elapsedtxt +'</wh>'+ slash );
+				$elapsed.html( '<i class="fa fa-play"></i><wh>'+ elapsedtxt +'</wh>'+ slash );
 			}, 1000 );
-			if ( $liactive.hasClass( 'webradio' ) ) $liactive.find( '.sn .name' ).text( GUI.status.Title.replace( /\s*$/, '' ) );
+			if ( $liactive.hasClass( 'webradio' ) ) {
+				$liactive.find( '.name' ).addClass( 'hide' );
+				$liactive.find( '.song' ).text( status.Title );
+			}
 		} else {
 			$( '.elapsed' ).empty();
 		}
-		$( '#plcrop' ).toggleClass( 'disable', ( status.state === 'stop' || GUI.status.playlistlength === 1 ) );
+		$( '#plcrop' ).toggleClass( 'disable', ( status.state === 'stop' || status.playlistlength === 1 ) );
 		setTimeout( function() {
 			var scrollpos = $liactive.offset().top - $( '#pl-entries' ).offset().top - ( 49 * 3 );
 			$( 'html, body' ).scrollTop( scrollpos );
 		}, 300 );
+		$.each( status, function( key, value ) {
+			GUI.status[ key ] = value;
+		} );
 	}, 'json' );
 }
 function htmlPlaylist( data ) {
@@ -1445,7 +1445,7 @@ function htmlPlaylist( data ) {
 			content += '<li class="webradio">'
 					  +'<i class="fa fa-webradio pl-icon"></i>'
 					  + ( GUI.pleditor ? '<i class="fa fa-bars pl-action" data-target="#context-menu-webradiopl"></i>' : '<i class="fa fa-minus-circle pl-action"></i>' )
-					  +'<span class="sn"><wh class="name">'+ value.Title +'</wh><span class="elapsed"></span></span>'
+					  +'<span class="sn"><a class="name">'+ value.Title +'</a><a class="song"></a><a class="elapsed"></a></span>'
 					  +'<span class="bl">'+ value.file +'</span>'
 			countradio++;
 		} else if ( value.Title ) {

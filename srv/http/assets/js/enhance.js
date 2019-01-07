@@ -87,6 +87,7 @@ $( '.btn-cmd' ).click( function() {
 		if ( cmd === 'stop' ) {
 			command = 'mpc stop';
 			if ( GUI.status.ext === 'radio' ) $( '#song' ).empty();
+			$( '#pl-entries .elapsed' ).empty();
 		} else if ( cmd === 'previous' || cmd === 'next' ) {
 			// enable previous / next while stop
 			var current = GUI.status.song + 1;
