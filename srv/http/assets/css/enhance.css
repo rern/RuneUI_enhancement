@@ -160,9 +160,6 @@ wh, gr { font-weight: 300; }
 #album gr,
 #infoContent gr,
 #timepos wh,
-#pl-entries wh {
-	font-weight: normal;
-}
 #displaysavelibrary i {
 	margin: 0 10px 0 4px;
 	font-size: 22px;
@@ -1574,6 +1571,9 @@ w {
 #pl-editor .sn {
 	display: block;
 	padding-top: 5px;
+}
+#pl-entries a {
+	color: #e0e7ee;
 }
 #pl-entries .sn i {
 	width: 20px;
