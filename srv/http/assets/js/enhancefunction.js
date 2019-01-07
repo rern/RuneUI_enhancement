@@ -737,11 +737,10 @@ function renderLibrary() {
 		var bookmarkL = bookmarks.length;
 		$.each( bookmarks, function( i, bookmark ) {
 			var coverarthtml = bookmark.coverart ? '<img class="bkcoverart" src="'+ bookmark.coverart +'">' : '<i class="fa fa-bookmark"></i>';
-			var name = bookmark.name.replace( /\\/g, '' );
 			var namehtml = '<div class="divbklabel"><span class="bklabel'+ ( bookmark.coverart ? ' hide' : '' ) +'">'+ bookmark.name.replace( /\\/g, '' ) +'</span></div>';
-			content += '<div class="col-md-3"><div class="home-block home-bookmark">'
-					  +'<a class="lipath">'+ bookmark.path +'</a>'+ coverarthtml + namehtml
-					  +'</div></div>';
+			content += '<div class="col-md-3">'
+					  +'	<div class="home-block home-bookmark"><a class="lipath">'+ bookmark.path +'</a>'+ coverarthtml + namehtml +'</div>'
+					  +'</div>';
 		} );
 	}
 	$( '#divbookmarks' ).html( content );
@@ -1467,7 +1466,7 @@ function htmlPlaylist( data ) {
 			}
 			content += '<li>'
 					 + actionhtml
-					 +'<span class="sn">'+ value.Title + ( GUI.pleditor ? '' : '<span class="elapsed"></span>' ) +'<span class="time" time="'+ sec +'">'+ value.Time +'</span></span>'
+					 +'<span class="sn">'+ value.Title + ( GUI.pleditor ? '' : '<span class="elapsed"></span>' ) +'<span class="time" time="'+ sec +'" onclick="">'+ value.Time +'</span></span>'
 					 +'<span class="bl">'+ ( GUI.playlist ? value.track : value.file ) +'</span>'
 			countsong++;
 		}

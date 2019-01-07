@@ -1087,6 +1087,7 @@ $( '#pl-entries' ).on ( 'swipe', 'li', function( e ) {
 	$this = $( this );
 	if ( $( e.target ).parent().hasClass( 'elapsed' )
 		|| $( e.target ).is( '.elapsed, .time' )
+		&& GUI.status.state !== 'stop'
 	) {
 		$( '#stop' ).click();
 		return
