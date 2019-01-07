@@ -170,7 +170,7 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 		</ul>
 	</div>
 </div>
-<div id="page-playlist" class="page hide" onclick=""> <!-- onclick fix ios safari not recognize click for e.target -->
+<div id="page-playlist" class="page hide">
 	<div class="btnlist btnlist-top">
 		<div id="pl-home"><i class="fa fa-list-ul sx"></i></div>
 		<span id="pl-currentpath" class="hide"></span>
