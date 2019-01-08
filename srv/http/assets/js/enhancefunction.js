@@ -377,7 +377,7 @@ function renderPlayback() {
 					GUI.intElapsed = setInterval( function() {
 						elapsed++;
 						elapsedhms = second2HMS( elapsed );
-						$( '#total' ).text( elapsedhms ).css( 'color', '#587ca0' );
+						$( '#total' ).text( elapsedhms ).css( 'color', '#7795b4' );
 					}, 1000 );
 				}
 			} else {
@@ -421,7 +421,7 @@ function renderPlayback() {
 		$( '#song' ).css( 'color', '' );
 		if ( GUI.display.time ) {
 			$( '#time' ).roundSlider( 'setValue', 0 );
-			$( '#elapsed' ).text( timehms ).css( 'color', '#587ca0' );
+			$( '#elapsed' ).text( timehms ).css( 'color', '#7795b4' );
 			$( '#total, #timepos' ).empty();
 		} else {
 			$( '#timepos' ).html( '&ensp;<i class="fa fa-stop"></i>&ensp;'+ timehms );
@@ -430,7 +430,7 @@ function renderPlayback() {
 	}
 	
 	$( '#elapsed, #total' ).css( 'color', '' );
-	$( '#song' ).css( 'color', status.state === 'pause' ? '#587ca0' : '' );
+	$( '#song' ).css( 'color', status.state === 'pause' ? '#7795b4' : '' );
 	var elapsed = status.elapsed || 0;
 	var elapsedhms = second2HMS( elapsed );
 	if ( !elapsedhms ) $( '#elapsed' ).empty();
@@ -534,7 +534,7 @@ function mpdSeek( seekto ) {
 }
 function muteColor( volumemute ) {
 	$volumetooltip.text( volumemute ).css( 'color', '#0095d8' );
-	$volumehandle.css( 'background', '#587ca0' );
+	$volumehandle.css( 'background', '#7795b4' );
 	$( '#volmute' ).addClass( 'btn-primary' )
 		.find( 'i' ).removeClass( 'fa-volume' ).addClass( 'fa-mute' );
 }
