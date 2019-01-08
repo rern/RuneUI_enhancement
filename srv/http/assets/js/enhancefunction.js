@@ -723,7 +723,7 @@ function renderLibrary() {
 	$( '#page-library .btnlist-top, db-entries' ).addClass( 'hide' );
 	var status = GUI.libraryhome;
 	if ( GUI.display.count ) {
-		$( '#db-currentpath span' ).html( '<bl class="title">LIBRARY<gr>·</gr></bl><a id="li-count"><wh>'+ numFormat( status.song ) +'</wh><i class="fa fa-music"></i></a>' );
+		$( '#db-currentpath span' ).html( '<bl class="title">LIBRARY<gr>·</gr></bl><a id="li-count"><wh>'+ numFormat( status.song ) +'</wh> <i class="fa fa-music"></i></a>' );
 	} else {
 		$( '#db-currentpath span' ).html( '<bl class="title">LIBRARY</bl></a>' );
 	}
@@ -748,7 +748,7 @@ function renderLibrary() {
 	order = order.split( ',' );
 	$( '.home-block' ).find( 'gr' ).remove();
 	$.each( order, function( i, name ) {
-		if ( GUI.display.count ) $( '#home-'+ name ).find( 'i' ).after( GUI.libraryhome[ name ] ? '<gr>'+ GUI.libraryhome[ name ] +'</gr>' : '' );
+		if ( GUI.display.count ) $( '#home-'+ name ).find( 'i' ).after( GUI.libraryhome[ name ] ? '<gr>'+ numFormat( GUI.libraryhome[ name ] ) +'</gr>' : '' );
 		var $block = $( '#home-'+ name ).parent();
 		$block
 			.toggleClass( 'hide', GUI.display[ name ] === '' )
