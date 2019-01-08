@@ -1468,16 +1468,6 @@ span.dbpath {
 	color: #e0e7ee;
 	background: #0095d8
 }
-#db-entries .active .bl,
-#db-entries .active:hover .bl,
-#db-entries .active:focus .bl,
-#pl-entries .active .bl,
-#pl-entries .active:hover .bl,
-#pl-entries .active:focus .bl,
-#pl-editor li.active .bl,
-#pl-editor li.active .time {
-	color: #34495e
-}
 #db-entries .db-action,
 #pl-entries .pl-action,
 #pl-editor .pl-action {
@@ -1602,16 +1592,11 @@ w {
 	font-size: 12px;
 	color: #7795b4
 }
-#db-entries li.active .liinfo i {
-	color: #7795b4 !important;
-}
 .menu a.active i,
-#db-entries li.active i,
-#pl-entries li.active i,
-#db-entries li.active .sn span,
-#pl-entries li.active .sn span,
-#pl-editor li.active gr,
-#pl-editor li.active i {
+li.active i,
+li.active .bl,
+li.active gr,
+li.active .time {
 	color: #34495e !important;
 }
 #pl-entries.playlist-spotify li:before {
