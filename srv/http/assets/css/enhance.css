@@ -1573,7 +1573,8 @@ w {
 	display: block;
 	padding-top: 5px;
 }
-#db-entries .time {
+#db-entries .time,
+#pl-editor .time {
 	margin-left: 10px;
 }
 #pl-entries a {
