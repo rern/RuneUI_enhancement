@@ -1209,14 +1209,14 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 							content = '<li class="file">'
 									 +'<a class="lipath">'+ inputArr.file +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
 									 +'<i class="fa fa-music db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-file"></i>'
-									 +'<span class="sn">'+ liname +'&ensp;<span class="time">'+ inputArr.Time +'</span></span>'
+									 +'<span class="sn">'+ liname +'<span class="time">'+ inputArr.Time +'</span></span>'
 									 +'<span class="bl">'+ bl +'</span>'
 						} else {
 							var liname = inputArr.file.split( '/' ).pop(); // filename
 							content = '<li class="file">'
 									 +'<a class="lipath">'+ inputArr.file +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
 									 +'<i class="fa fa-music db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-file"></i>'
-									 +'<span class="sn">'+ liname +'&ensp;<span class="time">' + second2HMS( inputArr.Time ) +'</span></span>'
+									 +'<span class="sn">'+ liname +'<span class="time">' + second2HMS( inputArr.Time ) +'</span></span>'
 									 +'<span class="bl">'+ inpath +'</span>'
 						}
 					} else { // Webradio
@@ -1246,7 +1246,7 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 					content = '<li>'
 							 +'<a class="lipath">'+ inputArr.file +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
 							 +'<i class="fa fa-music db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-file"></i>'
-							 +'<span class="sn">'+ liname +'&ensp;<span class="time">'+ inputArr.Time +'</span></span>'
+							 +'<span class="sn">'+ liname +'<span class="time">'+ inputArr.Time +'</span></span>'
 							 +'<span class="bl">'+ inputArr.file +'</span>'
 					var artist = inputArr.Artist;
 					if ( !GUI.albumartist ) GUI.albumartist = inputArr.Album +'<gr> • </gr>'+ artist;
@@ -1311,7 +1311,7 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 					content = '<li>'
 							 +'<a class="lipath">'+ inputArr.file +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
 							 +'<i class="fa fa-music db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-file"></i>'
-							 +'<span class="sn">'+ liname +'&ensp;<span class="time">'+ inputArr.Time +'</span></span>'
+							 +'<span class="sn">'+ liname +'<span class="time">'+ inputArr.Time +'</span></span>'
 							 +'<span class="bl">'+ inputArr.Artist +' - '+ inputArr.Album +'</span>'
 				} else {
 					var liname = inputArr.genre ;
@@ -1334,7 +1334,7 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 				content = '<li data-plid="'+ inpath +'" data-type="spotify-track" mode="spotify">'
 						 +'<a class="lipath">'+ inputArr.index +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
 						 +'<i class="fa fa-spotify db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-spotify"></i>'
-						 +'<span class="sn">'+ liname +'&ensp;<span class="time">'+ second2HMS( inputArr.duration / 1000 ) +'</span></span>'
+						 +'<span class="sn">'+ liname +'<span class="time">'+ second2HMS( inputArr.duration / 1000 ) +'</span></span>'
 						 +'<span class="bl">'+ inputArr.artist +' - '+ inputArr.album +'</span>'
 			}
 			break;
@@ -1469,7 +1469,7 @@ function htmlPlaylist( data ) {
 			}
 			content += '<li>'
 					 + actionhtml
-					 +'<span class="sn">'+ value.Title + ( GUI.pleditor ? '' : '<span class="elapsed"></span>' ) +'<span class="time" time="'+ sec +'" onclick="">'+ value.Time +'</span></span>'
+					 +'<span class="sn">'+ value.Title + ( GUI.playlist && !GUI.pleditor ? '<span class="elapsed"></span>' : '' ) +'<span class="time" time="'+ sec +'">'+ value.Time +'</span></span>'
 					 +'<span class="bl">'+ ( GUI.playlist ? value.track : value.file ) +'</span>'
 			countsong++;
 		}
