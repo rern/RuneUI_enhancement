@@ -1599,6 +1599,12 @@ li.active gr,
 li.active .time {
 	color: #34495e !important;
 }
+.licover .fa-composer,
+.licover .fa-albumartist,
+.licover .fa-artist,
+.licover .fa-genre {
+	color: #7795b4 !important;
+}
 #pl-entries.playlist-spotify li:before {
 	content: "\f1bc";
 }
