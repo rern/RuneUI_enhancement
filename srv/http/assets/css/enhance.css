@@ -1223,6 +1223,9 @@ wh, gr { font-weight: 300; }
 #countsong {
 	margin-left: 10px;
 }
+#li-count {
+	line-height: 44px;
+}
 .title {
 	margin-left: 15px;
 	font-size: 26px;
