@@ -138,7 +138,7 @@ $blocks = array( // 'id' => array( 'path', 'icon', 'name' );
 $blockhtml = '';
 foreach( $blocks as $id => $value ) {
 	$browsemode = in_array( $id, array( 'album', 'artist', 'albumartist', 'composer', 'genre' ) ) ? ' data-browsemode="'.$id.'"' : '';
-	$plugin = in_array( $id, array( 'spotify', 'dirble', 'jamendo' ) ) ? ' data-plugin="'.$value[ 1 ].'"' : '';
+	$plugin = in_array( $id, array( 'spotify', 'dirble', 'jamendo' ) ) ? ' data-plugin="'.$value[ 0 ].'"' : '';
 	$blockhtml.= '
 			<div class="col-md-3">
 				<div id="home-'.$id.'" class="home-block"'.$browsemode.$plugin.'><a class="lipath">'.$value[ 0 ].'</a><i class="fa fa-'.$value[ 1 ].'"></i><wh>'.$value[ 2 ].'</wh></div>
