@@ -1,56 +1,20 @@
 <?php
+if ( isset( $_POST[ 'bash' ] ) ) {
+	echo shell_exec( '/usr/bin/sudo '.$_POST[ 'bash' ] );
+	exit();
+}
 // with redis
 $redis = new Redis();
 $redis->pconnect( '127.0.0.1' );
 
-if ( isset( $_POST[ 'bash' ] ) ) {
-	echo shell_exec( '/usr/bin/sudo '.$_POST[ 'bash' ] );
-	exit();
-} else if ( isset( $_POST[ 'album' ] ) ) {
-	$albums = shell_exec( $_POST[ 'album' ] );
-	$name = isset( $_POST[ 'albumname' ] ) ? $_POST[ 'albumname' ] : '';
-	if ( isset( $_POST[ 'albumname' ] ) ) {
-		$type = 'album';
-		$name = $_POST[ 'albumname' ];
-	} else if ( isset( $_POST[ 'genrename' ] ) ) {
-		$type = 'genre';
-		$name = $_POST[ 'genrename' ];
-	} else {
-		$name = '';
-	}
-	$lines = explode( "\n", rtrim( $albums ) );
-	$count = count( $lines );
-	if ( $count === 1 ) {
-		$albums = shell_exec( 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" '.$type.' "'.$name.'"' );
-		$data = search2array( $albums );
-		if ( $redis->hGet( 'display', 'coverfile' ) && !isPlaylist( $data ) ) {
-			$cover = getCover( $data );
-			if ( $cover ) $data[][ 'coverart' ] = $cover;
-		}
-	} else {
-		foreach( $lines as $line ) {
-			$list = explode( '^^', $line );
-			if ( $name ) {
-				$li[ 'artistalbum' ] = $list[ 1 ].'<gr> • </gr>'.$list[ 0 ]; // album: artist - album
-			} else {
-				$li[ 'artistalbum' ] = $list[ 0 ].'<gr> • </gr>'.$list[ 1 ]; // genre: album - artist
-			}
-			$li[ 'album' ] = $list[ 0 ];
-			$li[ 'artist' ] = $list[ 1 ];
-			$data[] = $li;
-			$li = '';
-		}
-	}
-	echo json_encode( $data );
-	exit();
-} else if ( isset( $_POST[ 'mpc' ] ) ) {
+if ( isset( $_POST[ 'mpc' ] ) ) {
 	$mpc = $_POST[ 'mpc' ];
 	if ( !is_array( $mpc ) ) { // multiples commands is array
 		if ( loadCue( $mpc ) ) exit();
 		
 		$result = shell_exec( $mpc );
 		// query 'various artist album' with 'artist name' > requery without
-		if ( !$result ) {
+		if ( !$result && isset( $_POST[ 'name' ] ) ) {
 			$result = shell_exec( 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" album "'.$_POST[ 'name' ].'"' );
 		}
 		$cmd = $mpc;
@@ -78,7 +42,7 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 		if ( $type === 'file' ) {
 			$data = search2array( $result );
 			if ( $redis->hGet( 'display', 'coverfile' ) && !isPlaylist( $data ) && substr( $mpc, 0, 10 ) !== 'mpc search' ) {
-				$cover = getCover( $data );
+				$cover = getCover( $data[ 0 ][ 'file' ] );
 				if ( $cover ) $data[][ 'coverart' ] = $cover;
 			}
 		} else {
@@ -91,7 +55,114 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 	} else if ( isset( $_POST[ 'result' ] ) ) {
 		echo $result;
 	}
-	exit();
+} else if ( isset( $_POST[ 'library' ] ) ) {
+	$status = getLibrary();
+	if ( isset( $_POST[ 'data' ] ) ) {
+		echo json_encode( $status, JSON_NUMERIC_CHECK );
+	} else {
+		pushstream( 'library', $status );
+	}
+} else if ( isset( $_POST[ 'homeorder' ] ) ) {
+	$redis->hSet( 'display', 'library', $_POST[ 'homeorder' ] );
+	$data = $redis->hGetAll( 'display' );
+	$data[ 'volumempd' ] = $redis->get( 'volume' );
+	pushstream( 'display', $data );
+} else if ( isset( $_POST[ 'bkmarks' ] ) || isset( $_POST[ 'webradios' ] ) ) {
+	if ( isset( $_POST[ 'bkmarks' ] ) ) {
+		$key = 'bkmarks';
+		$data = $_POST[ 'bkmarks' ];
+	} else {
+		$key = 'webradios';
+		$data = $_POST[ 'webradios' ];
+	}
+	if ( !is_array( $data ) ) {
+		$rdname = $data;
+		if ( $key === 'webradios' ) {
+			$redis->hDel( 'webradios', $rdname );
+			$redis->hDel( 'sampling', $rdname );
+			unlink( '/mnt/MPD/Webradio/'.$data.'.pls' );
+		} else {
+			$redis->hDel( 'bkmarks', $rdname );
+		}
+	} else {
+		$rdname = $data[ 0 ];
+		$rdvalue = $data[ 1 ];
+		if ( count( $data ) === 3 ) {
+			$rdoldname = $data[ 2 ];
+			$redis->hDel( $key, $rdoldname );
+			if ( $key === 'webradios' ) unlink( '/mnt/MPD/Webradio/'.$data[ 2 ].'.pls' );
+		}
+		$redis->hSet( $key, $rdname, $rdvalue );
+		if ( $key === 'webradios' ) {
+			$lines = "[playlist]\nNumberOfEntries=1\nFile1=".$data[ 1 ]."\nTitle1=".$data[ 0 ];
+			$fopen = fopen( '/mnt/MPD/Webradio/'.$data[ 0 ].'.pls', 'w');
+			fwrite( $fopen, $lines );
+			fclose( $fopen );
+		}
+	}
+	if ( $key === 'bkmarks' ) {
+		$status = getLibrary();
+		pushstream( 'library', $status );
+	} else {
+		exec( 'mpc update Webradio' );
+	}
+} else if ( isset( $_POST[ 'getwebradios' ] ) ) {
+	$webradios = $redis->hGetAll( 'webradios' );
+	foreach( $webradios as $name => $url ) {
+		$li[ 'playlist' ] = 'Webradio/'.$name.'.pls';
+		$li[ 'url' ] = $url;
+		$data[] = $li;
+		$li = '';
+	}
+	echo json_encode( $data );
+} else if ( isset( $_POST[ 'album' ] ) ) {
+	$albums = shell_exec( $_POST[ 'album' ] );
+	$name = isset( $_POST[ 'albumname' ] ) ? $_POST[ 'albumname' ] : '';
+	if ( isset( $_POST[ 'albumname' ] ) ) {
+		$type = 'album';
+		$name = $_POST[ 'albumname' ];
+	} else if ( isset( $_POST[ 'genrename' ] ) ) {
+		$type = 'genre';
+		$name = $_POST[ 'genrename' ];
+	} else {
+		$name = '';
+	}
+	$lines = explode( "\n", rtrim( $albums ) );
+	$count = count( $lines );
+	if ( $count === 1 ) {
+		$albums = shell_exec( 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" '.$type.' "'.$name.'"' );
+		$data = search2array( $albums );
+		if ( $redis->hGet( 'display', 'coverfile' ) && !isPlaylist( $data ) ) {
+			$cover = getCover( $data[ 0 ][ 'file' ] );
+			if ( $cover ) $data[][ 'coverart' ] = $cover;
+		}
+	} else {
+		foreach( $lines as $line ) {
+			$list = explode( '^^', $line );
+			if ( $name ) {
+				$li[ 'artistalbum' ] = $list[ 1 ].'<gr> • </gr>'.$list[ 0 ]; // album: artist - album
+			} else {
+				$li[ 'artistalbum' ] = $list[ 0 ].'<gr> • </gr>'.$list[ 1 ]; // genre: album - artist
+			}
+			$li[ 'album' ] = $list[ 0 ];
+			$li[ 'artist' ] = $list[ 1 ];
+			$data[] = $li;
+			$li = '';
+		}
+	}
+	echo json_encode( $data );
+} else if ( isset( $_POST[ 'getplaylist' ] ) ) {
+	$name = isset( $_POST[ 'name' ] ) ? '"'.$_POST[ 'name' ].'"' : '';
+	if ( !$name ) $data[ 'lsplaylists' ] = lsplaylists();
+	$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%^^[%albumartist%|%artist%]^^%album%^^%genre%^^%composer%" playlist '.$name );
+	if ( !$lines ) {
+		$data[ 'playlist' ] = '';
+	} else {
+		$webradioname = array_flip( $redis->hGetAll( 'webradios' ) );
+		$playlist = list2array( $lines, $webradioname );
+		$data[ 'playlist' ] = $playlist;
+	}
+	echo json_encode( $data );
 } else if ( isset( $_POST[ 'playlist' ] ) ) {
 	$path = $_POST[ 'playlist' ];
 	if ( !is_array( $path ) ) {
@@ -115,27 +186,23 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 	$data = list2array( $lines );
 	$data[][ 'path' ] = $path;
 	if ( $redis->hGet( 'display', 'coverfile' ) ) {
-		$cover = getCover( $data );
+		$cover = getCover( $data[ 0 ][ 'file' ] );
 		if ( $cover ) $data[][ 'coverart' ] = $cover;
 	}
 	echo json_encode( $data );
-	exit();
-}
-
-if ( isset( $_POST[ 'getdisplay' ] ) ) {
+} else if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	usleep( 100000 ); // !important - get data must wait connection start at least (0.05s)
 	$data = $redis->hGetAll( 'display' );
 	$data[ 'volumempd' ] = $redis->get( 'volume' );
-	if ( isset( $_POST[ 'data' ] ) ) echo json_encode( $data, JSON_NUMERIC_CHECK );
-	pushstream( 'display', $data );
+	if ( isset( $_POST[ 'data' ] ) ) {
+		echo json_encode( $data, JSON_NUMERIC_CHECK );
+	} else {
+		pushstream( 'display', $data );
+	}
 } else if ( isset( $_POST[ 'setdisplay' ] ) ) {
 	$data = $_POST[ 'setdisplay' ];
 	$redis->hmSet( 'display', $data );
 	pushstream( 'display', $data );
-} else if ( isset( $_POST[ 'library' ] ) ) {
-	$status = getLibrary();
-	if ( isset( $_POST[ 'data' ] ) ) echo json_encode( $status, JSON_NUMERIC_CHECK );
-	pushstream( 'library', $status );
 } else if ( isset( $_POST[ 'volume' ] ) ) {
 	$volume = $_POST[ 'volume' ];
 	$volumemute = $redis->hGet( 'display', 'volumemute' );
@@ -154,70 +221,6 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	$redis->hSet( 'display', 'volumemute', $currentvol );
 	exec( 'mpc volume '.$vol );
 	pushstream( 'volume', array( $vol, $currentvol ) );
-} else if ( isset( $_POST[ 'getplaylist' ] ) ) {
-	$name = isset( $_POST[ 'name' ] ) ? '"'.$_POST[ 'name' ].'"' : '';
-	$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%^^[%albumartist%|%artist%]^^%album%^^%genre%^^%composer%" playlist '.$name );
-	if ( !isset( $_POST[ 'name' ] ) ) $data[ 'lsplaylists' ] = lsplaylists();
-	if ( !$lines ) {
-		$data[ 'playlist' ] = '';
-	} else {
-		$webradioname = array_flip( $redis->hGetAll( 'webradios' ) );
-		$playlist = list2array( $lines, $webradioname );
-		$data[ 'playlist' ] = $playlist;
-	}
-	echo json_encode( $data );
-} else if ( isset( $_POST[ 'getwebradios' ] ) ) {
-	$webradios = $redis->hGetAll( 'webradios' );
-	foreach( $webradios as $name => $url ) {
-		$li[ 'playlist' ] = 'Webradio/'.$name.'.pls';
-		$li[ 'url' ] = $url;
-		$data[] = $li;
-		$li = '';
-	}
-	echo json_encode( $data );
-} else if ( isset( $_POST[ 'bkmarks' ] ) || isset( $_POST[ 'webradios' ] ) ) {
-	if ( isset( $_POST[ 'bkmarks' ] ) ) {
-		$key = 'bkmarks';
-		$data = $_POST[ 'bkmarks' ];
-	} else {
-		$key = 'webradios';
-		$data = $_POST[ 'webradios' ];
-	}
-	if ( !is_array( $data ) ) {
-		$rdname = str_replace( '"', '\"', $data );
-		if ( $key === 'webradios' ) {
-			$redis->hDel( 'webradios', $rdname );
-			$redis->hDel( 'sampling', $rdname );
-			unlink( '/mnt/MPD/Webradio/'.$data.'.pls' );
-		} else {
-			$redis->hDel( 'bkmarks', $rdname );
-		}
-	} else {
-		$rdname = str_replace( '"', '\"', $data[ 0 ] );
-		$rdvalue = str_replace( '"', '\"', $data[ 1 ] );
-		if ( count( $data ) === 3 ) {
-			$rdoldname = str_replace( '"', '\"', $data[ 2 ] );
-			$redis->hDel( $key, $rdoldname );
-			if ( $key === 'webradios' ) unlink( '/mnt/MPD/Webradio/'.$data[ 2 ].'.pls' );
-		}
-		$redis->hSet( $key, $rdname, $rdvalue );
-		if ( $key === 'webradios' ) {
-			$lines = "[playlist]\nNumberOfEntries=1\nFile1=".$data[ 1 ]."\nTitle1=".$data[ 0 ];
-			$fopen = fopen( '/mnt/MPD/Webradio/'.$data[ 0 ].'.pls', 'w');
-			fwrite( $fopen, $lines );
-			fclose( $fopen );
-		}
-	}
-	if ( $key === 'bkmarks' ) {
-		$status = getLibrary();
-		pushstream( 'library', $status );
-	} else {
-		exec( 'mpc update Webradio' );
-	}
-} else if ( isset( $_POST[ 'homeorder' ] ) ) {
-	$redis->hSet( 'display', 'library', $_POST[ 'homeorder' ] );
-	$data = $redis->hGetAll( 'display' );
-	pushstream( 'display', $data );
 } else if ( isset( $_POST[ 'power' ] ) ) {
 	$mode = $_POST[ 'power' ];
 	$sudo = '/usr/bin/sudo /usr/bin/';
@@ -237,6 +240,7 @@ if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	}
 	exec( $cmd );
 }
+
 function search2array( $result, $playlist = '' ) {
 	$lists = explode( "\n", rtrim( $result ) );
 	$genre = $composer = $albumartist = '';
@@ -282,15 +286,19 @@ function list2array( $result, $webradioname = null ) {
 	$artist = $album = $genre = $composer = $albumartist = $file = '';
 	foreach( $lists as $list ) {
 		$list = explode( '^^', rtrim( $list ) );
-		$li[ 'Title' ] = $list[ 0 ] ? $list[ 0 ] : $webradioname[ $li[ 3 ] ] ?: $li[ 3 ];
-		if ( !$li[ 'Title' ] ) continue;
-		$li[ 'Time' ] = $list[ 1 ];
-		$li[ 'track' ] = $list[ 2 ];
 		$li[ 'file' ] = $list[ 3 ];
 		if ( $li[ 'file' ] !== $file ) {
 			$file = $li[ 'file' ];
 			$i = 1;
 		}
+		$li[ 'track' ] = $list[ 2 ] ?: dirname( $li[ 'file' ] );
+		if ( $list[ 0 ] && $li[ 'track' ] !== 'http:' ) {
+			$li[ 'Title' ] = $list[ 0 ];
+		} else {
+			$li[ 'Title' ] = $li[ 'track' ] ? $webradioname[ $list[ 3 ] ] : basename( $li[ 'file' ] );
+		}
+		if ( $li[ 'track' ] === 'http:' ) $li[ 'file' ] = $li[ 'Title' ].' • '.$li[ 'file' ];
+		$li[ 'Time' ] = $list[ 1 ];
 		$li[ 'index' ] = $i++;
 		if ( !$artist && $list[ 4 ] !== '' ) $artist = $list[ 4 ];
 		if ( !$album && $list[ 5 ] !== '' ) $album = $list[ 5 ];
@@ -304,11 +312,13 @@ function list2array( $result, $webradioname = null ) {
 		$data[] = $li;
 		$li = '';
 	}
-	$data[][ 'artist' ] = $artist;
-	$data[][ 'album' ] = $album;
-	$data[][ 'albumartist' ] = $albumartist ?: $data[ 0 ][ 'Artist' ];
-	if ( $genre ) $data[][ 'genre' ] = $genre;
-	if ( $composer ) $data[][ 'composer' ] = $composer;
+	if ( !$webradioname ) {
+		$data[][ 'artist' ] = $artist;
+		$data[][ 'album' ] = $album;
+		$data[][ 'albumartist' ] = $albumartist ?: $data[ 0 ][ 'Artist' ];
+		if ( $genre ) $data[][ 'genre' ] = $genre;
+		if ( $composer ) $data[][ 'composer' ] = $composer;
+	}
 	return $data;
 }
 function loadCue( $mpc ) { // 'mpc ls "path" | mpc add' from enhancecontext.js
@@ -333,8 +343,8 @@ function isPlaylist( $data ) {
 		}
 	}
 }
-function getCover( $data ) {
-	$file = '/mnt/MPD/'.$data[ 0 ][ 'file' ];
+function getCover( $path ) {
+	$file = '/mnt/MPD/'.$path;
 	$dir = dirname( $file );
 	$coverfiles = array(
 		  'cover.png', 'cover.jpg', 'folder.png', 'folder.jpg', 'front.png', 'front.jpg'
@@ -348,6 +358,8 @@ function getCover( $data ) {
 			return 'data:image/'. $coverext.';base64,'.base64_encode( $coverart );
 		}
 	}
+	if ( basename( $file ) === 'bookmark' ) return;
+	
 	set_include_path( '/srv/http/app/libs/vendor/' );
 	require_once( 'getid3/audioinfo.class.php' );
 	$audioinfo = new AudioInfo();
@@ -372,9 +384,11 @@ function getLibrary() {
 	$rbkmarks = $redis->hGetAll( 'bkmarks' );
 	if ( $rbkmarks ) {
 		foreach ( $rbkmarks as $name => $path ) {
+			$coverart = getCover( $path.'/bookmark' ) ?: '';
 			$bookmarks[] = array(
 				  'name'  => $name
 				, 'path'  => $path
+				, 'coverart' => $coverart
 			);
 		}
 	} else {

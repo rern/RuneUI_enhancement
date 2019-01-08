@@ -57,9 +57,10 @@
 .fa-plus-o:before { content: "\f530" }
 .fa-edit-circle:before { content: "\f535" }
 .fa-plus-refresh:before { content: "\f531" }
-.fa-play-plus-o:before { content: "\f532" }
+.fa-play-plus:before { content: "\f532" }
 .fa-play-plus-refresh:before { content: "\f533" }
 .fa-folder-refresh:before { content: "\f534" }
+.fa-play-random:before { content: "\f539" }
 
 .fa-repeat-single:before { content: "\f510" }
 .fa-repeat:before { content: "\f511" }
@@ -156,19 +157,17 @@ w, wh, .wh { color: #e0e7ee; }
 bl, .bl { color: #0095d8; }
 gr, .gr { color: #7795b4; }
 wh, gr { font-weight: 300; }
-#album gr,
-#infoContent gr,
 #timepos wh,
-#pl-entries li .elapsed wh {
-	font-weight: normal;
-}
 #displaysavelibrary i {
 	margin: 0 10px 0 4px;
 	font-size: 22px;
 	color: #7795b4;
 }
+#album gr {
+	font-weight: normal;
+ }
 .disable {
-	color: #587ca0;
+	color: #7795b4;
 }
 @keyframes blinkopaque {
 	50% { opacity: 0; }
@@ -244,15 +243,19 @@ wh, gr { font-weight: 300; }
 }
 .menushadow {
 	position: absolute;
-	box-shadow: -4px 4px 10px #000000;
+	box-shadow: 4px 4px 10px #000000;
 	z-index: -100;
+}
+#settings .menushadow {
+	box-shadow: -4px 4px 10px #000000;
 }
 #context-menu-file {
 	right: 50px;
 }
 /* ---------------------- menu-top ----------------------*/
 #menu-top,
-#menu-bottom {
+#menu-bottom,
+#swipebar {
 	position: fixed;
 	left: 0;
 	width: 100%;
@@ -261,12 +264,23 @@ wh, gr { font-weight: 300; }
 	z-index: 1000;
 }
 #menu-top {
-	top: 0
+	top: 0;
 }
-#menu-bottom {
-	bottom: 0
+#menu-bottom,
+#swipebar {
+	bottom: 0;
 }
-
+#swipebar {
+	text-align: center;
+	background: rgba( 52, 73, 94, 0.5 );
+}
+#swipebar img {
+	margin-top: 5px;
+	height: 40px;
+}
+.transparent {
+	opacity: 0;
+}
 .logo {
 	height: 35px;
 	margin: 2px 20px 10px 0;
@@ -387,7 +401,9 @@ wh, gr { font-weight: 300; }
 	font-size: 28px;
 }
 /* ---------------------- middle window ----------------------*/
-.page, #settings {
+.page,
+#settings,
+#swipebar {
 	-webkit-touch-callout: none; /* iOS Safari */
 	-webkit-user-select: none;   /* Safari */
 	-moz-user-select: none;      /* Firefox */
@@ -432,7 +448,7 @@ wh, gr { font-weight: 300; }
 #sampling {
 	height: 40px;
 	text-align: center;
-	color: #587ca0
+	color: #7795b4
 }
 #sampling span {
 	padding: 0;
@@ -655,21 +671,20 @@ wh, gr { font-weight: 300; }
 	color: #e0e7ee;
 	opacity: 1; /* fix volume text color */
 }
-#elapsed {
+#elapsed,
+#total {
 	position: absolute;
-	top: 92px;
 	left: 50%;
-	margin-left: -50%;
-	width: 100%;
+	margin-left: -75px;
+	width: 150px;
+}
+#elapsed {
+	top: 92px;
 	line-height: 50px;
 }
 #total {
-	position: absolute;
 	top: 136px;
-	left: 50%;
-	margin-left: -50px;
-	width: 100px;
-	color: #587ca0;
+	color: #7795b4;
 }
 #volume,
 #total {
@@ -1008,7 +1023,7 @@ wh, gr { font-weight: 300; }
 	color: #0095d8;
 }
 #biocontent span {
-	color: #587ca0;
+	color: #7795b4;
 }
 
 #bioimg {
@@ -1053,11 +1068,12 @@ wh, gr { font-weight: 300; }
 .empty-block {
 	display: block;
 	position: relative;
+	height: 110px;
 	margin: 7px -8px;
-	padding: 30px 5px 10px 5px;
+	padding: 25px 5px 10px 5px;
 	background: #172029;
 	border-radius: 6px;
-	color: #587ca0;
+	color: #7795b4;
 	text-align: center;
 }
 .home-block i,
@@ -1068,7 +1084,7 @@ wh, gr { font-weight: 300; }
 	line-height: 40px;
 	font-size: 48px;
 	text-align: center;
-	color: #587ca0
+	color: #7795b4
 }
 #home-blocks gr {
 	margin-left: 14px;
@@ -1089,6 +1105,15 @@ wh, gr { font-weight: 300; }
 .divbklabel {
 	overflow: hidden;
 }
+.bkcoverart {
+	position: absolute;
+	width: 100px;
+	height: 100px;
+	margin-top: -50px;
+	margin-left: -50px;
+	top: 50%;
+	left: 50%;
+}
 .bklabel {
 	display: table; /* allow get width */
 	font-size: 18px;
@@ -1104,7 +1129,7 @@ wh, gr { font-weight: 300; }
 	background: #222f3d;
 	text-decoration: none;
 	outline: none;
-	color: #587ca0
+	color: #7795b4
 }
 #home-block-edit,
 #home-block-remove {
@@ -1119,7 +1144,7 @@ wh, gr { font-weight: 300; }
 	color: #e0e7ee;
 }
 #home-block-edit {
-	right: 40px;
+	top: 35px;
 }
 /* ---------------------- breadcrumb and index ---------------------- */
 .btnlist-top {
@@ -1198,6 +1223,9 @@ wh, gr { font-weight: 300; }
 #countsong {
 	margin-left: 10px;
 }
+#li-count {
+	line-height: 44px;
+}
 .title {
 	margin-left: 15px;
 	font-size: 26px;
@@ -1243,6 +1271,10 @@ wh, gr { font-weight: 300; }
 	text-align: center;
 	font-size: 24px;
 }
+#pl-currentpath .fa-music,
+#pl-currentpath .fa-webradio {
+	width: 30px;
+}
 #db-home:hover,
 #pl-home:hover {
 	background: #0072a5;
@@ -1286,7 +1318,7 @@ wh, gr { font-weight: 300; }
 }
 #db-search-results span a,
 #pl-filter-results span a {
-	color: #587ca0;
+	color: #7795b4;
 }
 #db-currentpath span i {
 	margin: 0 10px;
@@ -1456,6 +1488,9 @@ span.dbpath {
 	font-size: 18px;
 	text-align: center;
 }
+#pl-entries .pl-action {
+	font-size: 24px;
+}
 .db-icon,
 .pl-icon,
 #pl-editor span:before,
@@ -1467,7 +1502,7 @@ span.dbpath {
 	font-size: 26px;
 	line-height: 40px;
 	text-align: center;
-	color: #587ca0;
+	color: #7795b4;
 }
 .db-icon,
 .pl-icon {
@@ -1498,7 +1533,7 @@ span.dbpath {
 }
 #li-count,
 #li-count i {
-	color: #587ca0 !important;
+	color: #7795b4 !important;
 }
 #li-count span {
 	color: #e0e7ee;
@@ -1509,7 +1544,7 @@ span.dbpath {
 	height: 40px;
 	line-height: 40px;
 	font-size: 18px;
-	color: #587ca0;
+	color: #7795b4;
 }
 #countsong,
 #pltime,
@@ -1528,7 +1563,7 @@ span.dbpath {
 #db-entries li,
 #pl-entries li {
 	font-size: 18px;
-	color: #587ca0;
+	color: #7795b4;
 }
 #db-entries li span,
 .sn,
@@ -1541,23 +1576,34 @@ w {
 	display: block;
 	padding-top: 5px;
 }
-#pl-entries .sn i {
+#db-entries .time,
+#pl-editor .time {
+	margin-left: 10px;
+}
+#pl-entries a {
+	color: #e0e7ee;
+}
+#pl-entries .elapsed i {
+	margin-right: 5px;
 	width: 20px;
-	font-size: 17px;
-	line-height: 14px;
+	font-size: 18px;
+	line-height: 12px;
+}
+#pl-entries .elapsed {
+	margin-left: 10px;
 }
 .time {
-	color: #587ca0 !important;
+	color: #7795b4 !important;
 }
 #db-entries .bl,
 #pl-entries .bl,
 #pl-editor .bl {
 	display: block;
 	font-size: 12px;
-	color: #587ca0
+	color: #7795b4
 }
 #db-entries li.active .liinfo i {
-	color: #587ca0 !important;
+	color: #7795b4 !important;
 }
 .menu a.active i,
 #db-entries li.active i,
@@ -1594,7 +1640,7 @@ w {
 }
 #playlist-warning p {
 	margin-top: 27px;
-	color: #587ca0;
+	color: #7795b4;
 }
 .menu a.active {
 	background: #0095d8;
@@ -1854,9 +1900,6 @@ w {
 	}
 }
 @media(max-width: 540px) {
-	#page-playback {
-		padding-top: 40px;
-	}
 	#playback-row {
 		margin-top: 20px;
 	}
@@ -1879,10 +1922,6 @@ w {
 	}
 }
 @media(max-width: 500px) {
-	#menu-top,
-	#menu-bottom { 
-		display: none;
-	}
 	#divpos,
 	#sampling span,
 	#dot0 {
@@ -1965,6 +2004,10 @@ w {
 	}
 }
 @media(max-width: 400px) {
+	#playback-controls {
+		width: 270px;
+		margin: 0 0 0 -135px;
+	}
 	#playback-controls button {
 		margin: 0 5px;
 	}

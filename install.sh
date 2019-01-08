@@ -13,6 +13,8 @@ alias=enha
 installstart $@
 
 #0temp0 remove uninstall leftover
+redis-cli hset display contexticon '' &> /dev/null
+rm -f /srv/http/enhance.css
 rm -f /srv/http/assets/enhancesettings.js
 #1temp1
 
@@ -72,7 +74,9 @@ append '$'
 file=/srv/http/app/templates/settings.php
 echo $file
 
-commentH -n -1 'for="localSStime">' -n -2 'USB Automount'
+commentH -n -1 'for="localSStime">' -n +5 'for="localSStime">'
+
+commentH -n -1 'for="remoteSStime">' -n +5 'for="remoteSStime">'
 #----------------------------------------------------------------------------------
 if [[ $1 != u ]]; then # keep range: 0.5 - 3.0
 	z=$1;
@@ -149,7 +153,7 @@ if [[ ! $bkmarks ]]; then
 	fi
 fi
 
-for item in bars debug dev time coverart volume buttons nas sd usb webradio album artist albumartist composer genre dirble jamendo count label coverfile contexticon; do
+for item in bars debug dev time coverart volume buttons nas sd usb webradio album artist albumartist composer genre dirble jamendo count label coverfile plclear; do
 	if [[ $( redis-cli hexists display $item ) == 0 ]]; then
 		[[ $item == debug || $item == dev ]] && chk='' || chk=checked
 		redis-cli hset display $item "$chk" &> /dev/null

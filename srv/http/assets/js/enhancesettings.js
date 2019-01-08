@@ -1,12 +1,29 @@
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-if ( document.location.hostname === 'localhost' ) $( '.osk-trigger' ).onScreenKeyboard( { 'draggable': true } );
+$( 'div.container' )
+	.css( 'padding-top', '0' )
+	.find( 'h1' ).before( '<i class="close-page fa fa-times fa-2x"></i>' );
+$( '.close-page' ).click( function() {
+	var path = location.pathname;
+	if ( path.match( /\/sources\/./ ) ) {
+		location.href = '/sources';
+	} else if ( $( '#mpdconf_editor' ).length && !$( '#mpdconf_editor' ).hasClass( 'hide' ) ) {
+		location.href = '/mpd';
+	} else if ( path.match( /\/network\/./ ) ) {
+		location.href = '/network';
+	} else if ( path.match( /\/accesspoint/ ) ) {
+		location.href = '/network';
+	} else {
+		location.href = '/';
+	}
+} );
 
+if ( document.location.hostname === 'localhost' ) $( '.osk-trigger' ).onScreenKeyboard( { 'draggable': true } );
 $( '.selectpicker' ).selectpicker();
 
 var intUpdate = false;
 var path = location.pathname;
-if ( path === '/sources' ) {
+if ( path.match( /\/sources\/*$/ ) ) {
 	function toggleUpdate() {
 		$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
 			if ( status.updating_db ) {
@@ -35,7 +52,7 @@ if ( path === '/sources' ) {
 	pushstreamIdle.addChannel( 'idle' );
 	pushstreamIdle.connect();
 
-} else if ( path === '/sources/add' ) {
+} else if ( path.match( /\/sources\/add/ ) ) {
 	if ($('#mount-type').val() === 'nfs') {
 		$('#mount-cifs').addClass('disabled').children('.disabler').removeClass('hide');
 	}
@@ -81,7 +98,7 @@ if ( path === '/sources' ) {
 		$('#usb-umount').val(mountName);
 	});
 	
-} else if ( path.slice( 0, 4 ) === '/mpd' ) {
+} else if ( path.match( /\/mpd/ ) ) {
 	$('#audio-output-interface').change(function(){
 		new PNotify( {
 			  icon  : 'fa fa-cog fa-spin'
@@ -105,7 +122,7 @@ if ( path === '/sources' ) {
 		$('#manual-edit-warning').addClass('hide');
 	});
 	
-} else if ( path === '/settings' ) {
+} else if ( path.match( /\/settings/ ) ) {
 	$('#airplay').change(function(){
 		if ($(this).prop('checked')) {
 			$('#airplayName').removeClass('hide');
@@ -152,7 +169,7 @@ if ( path === '/sources' ) {
 		}
 	});
 	
-} else if ( path.slice( 0, 8 ) === '/network' ) {
+} else if ( path.match( /\/network/ ) ) { // all '/network/paths'
 	var netManualConf = $('#network-manual-config');
 	if ($('#dhcp').val() === '0') {
 		netManualConf.removeClass('hide');
@@ -262,7 +279,7 @@ if ( path === '/sources' ) {
 		}
 	});
 	
-} else if ( path === '/accesspoint' ) {
+} else if ( path.match( /\/accesspoint/ ) ) {
 	$('#accesspoint').change(function(){
 		if ($(this).prop('checked')) {
 			$('#accesspointSettings').removeClass('hide');
@@ -282,7 +299,7 @@ if ( path === '/sources' ) {
 		$('#dhcp-option-router').val($('#ip-address').val());
 	});
 	
-} else if ( path === '/debug' ) { // *** Important! ZeroClipboard will freeze if run while in DevTools mode ***
+} else if ( path.match( /\/debug/ ) ) { // *** Important! ZeroClipboard will freeze if run while in browser DevTools mode ***
 	ZeroClipboard.config({swfPath: '/assets/js/vendor/ZeroClipboard.swf'});
 	var client = new ZeroClipboard(document.getElementById('copy-to-clipboard'));
 	client.on('ready', function(readyEvent){

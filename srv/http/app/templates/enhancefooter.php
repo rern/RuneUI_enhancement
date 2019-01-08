@@ -25,6 +25,7 @@ if ( file_exists( '/srv/http/gpiosettings.php' ) ) { ?>
 if ( is_localhost() ) { ?>
 <script src="<?=$this->asset( '/js/vendor/jquery.onScreenKeyboard.js' )?>"></script>
 <script src="<?=$this->asset( '/js/vendor/jquery-ui.min.js' )?>"></script>
+<script src="<?=$this->asset( '/js/vendor/hammer.min.js' )?>"></script>
 <?php
 }
 if ( empty( $this->uri(1) ) ) { ?>
@@ -34,7 +35,6 @@ if ( empty( $this->uri(1) ) ) { ?>
 <script src="<?=$this->asset( '/js/vendor/Sortable.min.js' )?>"></script>
 <script src="<?=$this->asset( '/js/vendor/pnotify.custom.min.js' )?>"></script>
 <script src="<?=$this->asset( '/js/vendor/openwebapp.js' )?>"></script>
-<script src="<?=$this->asset( '/js/vendor/hammer.min.js' )?>"></script>
 <script src="<?=$this->asset( '/js/addonsinfo.js' )?>"></script>
 <script src="<?=$this->asset( '/js/addonsmenu.js' )?>"></script>
 <script src="<?=$this->asset( '/js/vendor/roundslider.min.js' )?>"></script>
@@ -75,22 +75,5 @@ if ( empty( $this->uri(1) ) ) { ?>
 <script src="<?=$this->asset( '/js/vendor/bootstrap-select.min.js' )?>"></script>
 <script src="<?=$this->asset( '/js/vendor/parsley.min.js' )?>"></script>
 <script src="<?=$this->asset( '/js/enhancesettings.js' )?>"></script>
-<script>
-// no top-bottom bars - use close icon
-	setTimeout( function() {
-	var pathname = location.pathname;
-	var href = ( pathname.match( /\//g ).length > 1 || pathname === '/accesspoint' ) ? 'javascript:history.back()' : '/';
-	if ( pathname.match( /\//g ).length > 1 ) {
-		var href = 'javascript:history.back()';
-	} else if ( pathname === '/accesspoint' ) {
-		var href = '/network';
-	} else {
-		var href = '/';
-	}
-	$( 'div.container' )
-		.css( 'padding-top', '0' )
-		.find( 'h1' ).before( '<a href="'+ href +'" style="float: right; margin-top: 20px;"><i class="fa fa-times fa-2x"></i></a>' );
-	}, 300 );
-</script>
 <?php 
 } ?>

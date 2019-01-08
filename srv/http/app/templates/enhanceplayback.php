@@ -50,9 +50,9 @@
 		</div>
 		<div id="play-group">
 			<div class="btn-group">
-				<button id="repeat" class="btn btn-default btn-lg btn-cmd btn-toggle" type="button" data-cmd="repeat"><i class="fa fa-repeat"></i></button>
-				<button id="random" class="btn btn-default btn-lg btn-cmd btn-toggle" type="button" data-cmd="random"><i class="fa fa-random"></i></button>
-				<button id="single" class="btn btn-default btn-lg btn-cmd btn-toggle <?php if ($this->activePlayer === 'Spotify'): ?>disabled<?php endif; ?>" type="button" data-cmd="single"><i class="fa fa-single"></i></button>
+				<button id="repeat" class="btn btn-default btn-lg btn-cmd btn-toggle" type="button"><i class="fa fa-repeat"></i></button>
+				<button id="random" class="btn btn-default btn-lg btn-cmd btn-toggle" type="button"><i class="fa fa-random"></i></button>
+				<button id="single" class="btn btn-default btn-lg btn-cmd btn-toggle" type="button"><i class="fa fa-single"></i></button>
 			</div>
 		</div>
 		<div id="coverart">
@@ -112,12 +112,43 @@
 		<div id="db-currentpath">
 			<a class="lipath"></a>
 			<div id="db-home"><i class="fa fa-library"></i></div><span></span>
-			<i id="db-webradio-new" class="fa fa-plus-circle"></i>
+			<i id="db-webradio-new" class="fa fa-plus-circle hide"></i>
 		</div>
 		<button id="db-search-results" class="btn hide" type="button"><i class="fa fa-times sx"></i></button>
 		<i id="db-back" class="fa fa-arrow-left"></i>
 	</div>
-	<div id="home-blocks" class="row"></div>
+	<div id="home-blocks" class="row">
+		<div id="divbookmarks"></div>
+		<div id="divhomeblocks">
+<?php
+$blocks = array( // 'id' => array( 'path', 'icon', 'name' );
+	  'sd'          => array( 'LocalStorage', 'microsd',      'SD' )
+	, 'usb'         => array( 'USB',          'usbdrive',     'USB' )
+	, 'nas'         => array( 'NAS',          'network',      'Network' )
+	, 'webradio'    => array( 'Webradio',     'webradio',     'Webradio' )
+	, 'album'       => array( 'Album',        'album',        'Album' )
+	, 'artist'      => array( 'Artist',       'artist',       'Artist' )
+	, 'albumartist' => array( 'AlbumArtist',  'albumartist',  'Album Artist' )
+	, 'composer'    => array( 'Composer',     'composer',     'Composer' )
+	, 'genre'       => array( 'Genre',        'genre',        'Genre' )
+	, 'spotify'     => array( 'Spotify',      'spotify',      'Spotify' )
+	, 'dirble'      => array( 'Dirble',       'dirble',       'Dirble' )
+	, 'jamendo'     => array( 'Jamendo',      'jamendo',      'Jamendo' )
+);
+$blockhtml = '';
+foreach( $blocks as $id => $value ) {
+	$browsemode = in_array( $id, array( 'album', 'artist', 'albumartist', 'composer', 'genre' ) ) ? ' data-browsemode="'.$id.'"' : '';
+	$plugin = in_array( $id, array( 'spotify', 'dirble', 'jamendo' ) ) ? ' data-plugin="'.$value[ 1 ].'"' : '';
+	$blockhtml.= '
+			<div class="col-md-3">
+				<div id="home-'.$id.'" class="home-block"'.$browsemode.$plugin.'><a class="lipath">'.$value[ 0 ].'</a><i class="fa fa-'.$value[ 1 ].'"></i><wh>'.$value[ 2 ].'</wh></div>
+			</div>
+	';
+}
+echo $blockhtml;
+?>
+		</div>
+	</div>
 	<div id="db-list">
 		<ul id="db-entries" class="database"></ul>
 		<ul id="db-index" class="index hide">
@@ -138,7 +169,7 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 		</ul>
 	</div>
 </div>
-<div id="page-playlist" class="page hide" onclick=""> <!-- onclick fix ios safari not recognize click for e.target -->
+<div id="page-playlist" class="page hide">
 	<div class="btnlist btnlist-top">
 		<div id="pl-home"><i class="fa fa-list-ul sx"></i></div>
 		<span id="pl-currentpath" class="hide"></span>
@@ -214,20 +245,29 @@ function menudiv( $id, $html ) {
 function menucommon( $add, $addplay, $replace, $replaceplay ) {
 	$htmlcommon = '<span class="menushadow"></span>';
 	$htmlcommon.= menuli( $add,         'plus-o',            'Add' );
-	$htmlcommon.= menuli( $addplay,     'play-plus-o',       'Add ► Play' );
+	$htmlcommon.= menuli( $addplay,     'play-plus',       'Add ► Play' );
 	$htmlcommon.= menuli( $replace,     'plus-refresh',      'Replace' );
 	$htmlcommon.= menuli( $replaceplay, 'play-plus-refresh', 'Replace ► Play' );
 	return $htmlcommon;
 }
 function menucommonsp( $type ) {
 	$htmlcommon = '<span class="menushadow"></span>';
-	$htmlcommon.= menuli( 'spadd',            'plus-o',            'Add',              $type );
-	$htmlcommon.= menuli( 'spaddplay',        'play-plus-o',       'Add ► Play',     $type );
+	$htmlcommon.= menuli( 'spadd',         'plus-o',            'Add',            $type );
+	$htmlcommon.= menuli( 'spaddplay',     'play-plus',       'Add ► Play',     $type );
 	$htmlcommon.= menuli( 'spreplaceplay', 'play-plus-refresh', 'Replace ► Play', $type );
 	return $htmlcommon;
 }
 $menu = '<div>';
 $htmlcommon = menucommon( 'add', 'addplay', 'replace', 'replaceplay' );
+
+$html = '<span class="menushadow"></span>';
+$html.= menuli( 'play',   'play',        'Play' );
+$html.= menuli( 'pause',  'pause',       'Pause' );
+$html.= menuli( 'stop',   'stop',         'Stop' );
+$html.= menuli( 'remove', 'minus-circle', 'Remove' );
+$menu.= menudiv( 'plaction', $html );
+$menudiv = '';
+
 $html = $htmlcommon;
 $html.= menuli( 'update',   'folder-refresh', 'Update' );
 $html.= menuli( 'bookmark', 'star',           'Bookmark' );
@@ -255,9 +295,15 @@ $html.= menuli( 'wrrename', 'edit-circle',  'Rename' );
 $html.= menuli( 'wrdelete', 'minus-circle', 'Delete' );
 $menu.= menudiv( 'webradio', $html );
 $menudiv = '';
+
+$html = menucommon( 'wradd', 'wraddplay', 'wrreplace', 'wrreplaceplay' );
+$menu.= menudiv( 'webradiopl', $html );
+$menudiv = '';
+
 $html = '<span class="menushadow"></span>';
 $html.= menuli( 'pladd',         'plus-o',            'Add' );
-$html.= menuli( 'pladdplay',     'play-plus-o',       'Add ► Play' );
+$html.= menuli( 'pladdplay',     'play-plus',       'Add ► Play' );
+$html.= menuli( 'plashuffle',    'play-random',    '+Random ► Play' );
 $html.= menuli( 'plreplace',     'plus-refresh',      'Replace' );
 $html.= menuli( 'plreplaceplay', 'play-plus-refresh', 'Replace ► Play' );
 $html.= menuli( 'plrename',      'edit-circle',       'Rename' );
