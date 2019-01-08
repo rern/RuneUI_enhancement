@@ -158,7 +158,6 @@ bl, .bl { color: #0095d8; }
 gr, .gr { color: #7795b4; }
 wh, gr { font-weight: 300; }
 #album gr,
-#infoContent gr,
 #timepos wh,
 #displaysavelibrary i {
 	margin: 0 10px 0 4px;
