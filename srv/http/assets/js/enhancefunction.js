@@ -1378,9 +1378,11 @@ function setPlaylistScroll() {
 	var $liactive = '';
 	var $elapsed = '';
 	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
+		// avoid flash if still current song
 		$linotactive = $( '#pl-entries li:not(:eq( '+ status.song +' ) )' );
 		$linotactive.removeClass( 'active' ).find( '.elapsed, .song' ).empty();
 		$linotactive.find( '.name' ).removeClass( 'hide' );
+		
 		$liactive = $( '#pl-entries li' ).eq( status.song );
 		$liactive.addClass( 'active' );
 		$elapsed = $liactive.find( '.elapsed' );
@@ -1401,8 +1403,9 @@ function setPlaylistScroll() {
 				$liactive.find( '.name' ).addClass( 'hide' );
 				$liactive.find( '.song' ).text( status.Title );
 			}
-		} else {
-			$( '.elapsed' ).empty();
+		} else { // stop
+			$( '.elapsed, .song' ).empty();
+			$( '.name' ).removeClass( 'hide' );
 		}
 		$( '#plcrop' ).toggleClass( 'disable', ( status.state === 'stop' || status.playlistlength === 1 ) );
 		setTimeout( function() {

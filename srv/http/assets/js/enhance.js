@@ -558,7 +558,11 @@ $( '.timemap, .covermap, .volmap' ).click( function() {
 			$( '#repeat' ).click();
 		}
 	} else if ( cmd === 'play' ) {
-		GUI.status.state === 'play' ? $( '#pause' ).click() : $( '#play' ).click();
+		if ( GUI.status.state === 'play' ) {
+			GUI.status.ext === 'radio' ? $( '#stop' ).click() : $( '#pause' ).click();
+		} else {
+			$( '#play' ).click();
+		}
 	} else if ( cmd ) {
 		$( '#'+ cmd ).click();
 	}
@@ -1103,7 +1107,11 @@ $( '#pl-entries' ).on ( 'swipe', 'li', function( e ) {
 			$.post( 'enhance.php', { mpc: 'mpc play '+ songpos } );
 		} else {
 			if ( $this.hasClass( 'active' ) ) {
-				state == 'play' ? $( '#pause' ).click() : $( '#play' ).click();
+				if ( state == 'play' ) {
+					$this.hasClass( 'webradio' ) ? $( '#stop' ).click() : $( '#play' ).click();
+				} else {
+					$( '#play' ).click();
+				}
 			} else {
 				$.post( 'enhance.php', { mpc: 'mpc play '+ songpos } );
 			}
