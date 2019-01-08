@@ -303,6 +303,9 @@ wh, gr { font-weight: 300; }
 	border: none;
 	border-radius: 0;
 }
+#menu-bottom i {
+	color: #e0e7ee !important;
+}
 .btn-cmd:focus {
 	outline: none;
 }
@@ -1592,7 +1595,6 @@ w {
 	font-size: 12px;
 	color: #7795b4
 }
-.menu a.active i,
 li.active i,
 li.active .bl,
 li.active gr,
