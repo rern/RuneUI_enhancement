@@ -208,7 +208,7 @@ select.mobile-device {
 	padding-right: 30px;
 	font-weight: normal;
 	text-align: right;
-	color: #587ca0
+	color: #7795b4
 }
 .info-table td {
 	font-size: 16px
@@ -236,7 +236,7 @@ select.mobile-device {
 	margin: 6px 0
 }
 #modal-sysinfo p {
-	color: #587ca0
+	color: #7795b4
 }
 .container.help,
 .container.credits {
@@ -253,7 +253,7 @@ select.mobile-device {
 #license {
 	line-height: 20px;
 	font-size: 13px;
-	color: #587ca0
+	color: #7795b4
 }
 #form-paypal {
 	text-align: center
@@ -471,7 +471,7 @@ fieldset[disabled] .form-control {
 }
 .help-block,
 .help-inline {
-	color: #587ca0;
+	color: #7795b4;
 	font-size: 13px
 }
 .help-block strong,

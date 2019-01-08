@@ -167,7 +167,7 @@ wh, gr { font-weight: 300; }
 	font-weight: normal;
  }
 .disable {
-	color: #587ca0;
+	color: #7795b4;
 }
 @keyframes blinkopaque {
 	50% { opacity: 0; }
@@ -448,7 +448,7 @@ wh, gr { font-weight: 300; }
 #sampling {
 	height: 40px;
 	text-align: center;
-	color: #587ca0
+	color: #7795b4
 }
 #sampling span {
 	padding: 0;
@@ -684,7 +684,7 @@ wh, gr { font-weight: 300; }
 }
 #total {
 	top: 136px;
-	color: #587ca0;
+	color: #7795b4;
 }
 #volume,
 #total {
@@ -1023,7 +1023,7 @@ wh, gr { font-weight: 300; }
 	color: #0095d8;
 }
 #biocontent span {
-	color: #587ca0;
+	color: #7795b4;
 }
 
 #bioimg {
@@ -1073,7 +1073,7 @@ wh, gr { font-weight: 300; }
 	padding: 25px 5px 10px 5px;
 	background: #172029;
 	border-radius: 6px;
-	color: #587ca0;
+	color: #7795b4;
 	text-align: center;
 }
 .home-block i,
@@ -1084,7 +1084,7 @@ wh, gr { font-weight: 300; }
 	line-height: 40px;
 	font-size: 48px;
 	text-align: center;
-	color: #587ca0
+	color: #7795b4
 }
 #home-blocks gr {
 	margin-left: 14px;
@@ -1129,7 +1129,7 @@ wh, gr { font-weight: 300; }
 	background: #222f3d;
 	text-decoration: none;
 	outline: none;
-	color: #587ca0
+	color: #7795b4
 }
 #home-block-edit,
 #home-block-remove {
@@ -1315,7 +1315,7 @@ wh, gr { font-weight: 300; }
 }
 #db-search-results span a,
 #pl-filter-results span a {
-	color: #587ca0;
+	color: #7795b4;
 }
 #db-currentpath span i {
 	margin: 0 10px;
@@ -1499,7 +1499,7 @@ span.dbpath {
 	font-size: 26px;
 	line-height: 40px;
 	text-align: center;
-	color: #587ca0;
+	color: #7795b4;
 }
 .db-icon,
 .pl-icon {
@@ -1530,7 +1530,7 @@ span.dbpath {
 }
 #li-count,
 #li-count i {
-	color: #587ca0 !important;
+	color: #7795b4 !important;
 }
 #li-count span {
 	color: #e0e7ee;
@@ -1541,7 +1541,7 @@ span.dbpath {
 	height: 40px;
 	line-height: 40px;
 	font-size: 18px;
-	color: #587ca0;
+	color: #7795b4;
 }
 #countsong,
 #pltime,
@@ -1560,7 +1560,7 @@ span.dbpath {
 #db-entries li,
 #pl-entries li {
 	font-size: 18px;
-	color: #587ca0;
+	color: #7795b4;
 }
 #db-entries li span,
 .sn,
@@ -1586,17 +1586,17 @@ w {
 	margin-left: 10px;
 }
 .time {
-	color: #587ca0 !important;
+	color: #7795b4 !important;
 }
 #db-entries .bl,
 #pl-entries .bl,
 #pl-editor .bl {
 	display: block;
 	font-size: 12px;
-	color: #587ca0
+	color: #7795b4
 }
 #db-entries li.active .liinfo i {
-	color: #587ca0 !important;
+	color: #7795b4 !important;
 }
 .menu a.active i,
 #db-entries li.active i,
@@ -1633,7 +1633,7 @@ w {
 }
 #playlist-warning p {
 	margin-top: 27px;
-	color: #587ca0;
+	color: #7795b4;
 }
 .menu a.active {
 	background: #0095d8;
