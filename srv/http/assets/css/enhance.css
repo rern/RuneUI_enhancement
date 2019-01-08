@@ -157,13 +157,15 @@ w, wh, .wh { color: #e0e7ee; }
 bl, .bl { color: #0095d8; }
 gr, .gr { color: #7795b4; }
 wh, gr { font-weight: 300; }
-#album gr,
 #timepos wh,
 #displaysavelibrary i {
 	margin: 0 10px 0 4px;
 	font-size: 22px;
 	color: #7795b4;
 }
+#album gr {
+	font-weight: normal;
+ }
 .disable {
 	color: #587ca0;
 }
