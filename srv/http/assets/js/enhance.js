@@ -1185,10 +1185,10 @@ $( '#pl-entries' ).on( 'click', '.pl-action', function() { // remove
 	GUI.local = 1;
 	setTimeout( function() { GUI.local = 0 }, 500 );
 	
-	if ( !$this.hasClass( 'fa-webradio' ) ) {
+	if ( !$this.hasClass( 'webradio' ) ) {
 		$.post( 'enhance.php', { mpc: 'mpc del '+ songpos } );
 	} else {
-		$.post( 'enhance.php', { mpc: [ 'mpc del '+ songpos, '/usr/bin/redis-cli hdel "'+ $this.find( '.lipath' ).text() +'"' ] } );
+		$.post( 'enhance.php', { mpc: [ 'mpc del '+ songpos, '/usr/bin/redis-cli hdel webradiopl "'+ $this.find( '.lipath' ).text() +'"' ] } );
 	}
 	if ( !$( '#countsong, #countradio' ).length ) {
 		GUI.status.playlistlength = 0;
