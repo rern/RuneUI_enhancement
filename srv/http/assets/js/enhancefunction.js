@@ -578,8 +578,10 @@ function displayPlayback() {
 		if ( volume ) {
 			$elements.css( { order: '', '-webkit-order': '' } );
 		} else {
-			$.each( $elements, function( i, $el ) {
-				$el.css( { order: i, '-webkit-order': i } );
+			var i = 0;
+			$elements.each( function() {
+				$( this ).css( { order: i, '-webkit-order': i } );
+				i++;
 			} );
 		}
 		$( '#playback-row' ).css( 'max-width', '900px' );

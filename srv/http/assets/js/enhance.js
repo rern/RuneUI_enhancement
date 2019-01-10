@@ -134,8 +134,8 @@ GUI.sortableli = new Sortable( document.getElementById( 'divhomeblocks' ), {
 	, onUpdate   : function ( e ) {
 		var $blocks = $( '.home-block:not(.home-bookmark)' );
 		var homeorder = '';
-		$.each( $blocks, function( i, el ) {
-			homeorder += el.id.replace( 'home-', '' ) +',';
+		$blocks.each( function() {
+			homeorder += this.id.replace( 'home-', '' ) +',';
 		} );
 		homeorder = homeorder.slice( 0, -1 );
 		GUI.display.library = homeorder;
@@ -791,9 +791,11 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	if ( $this.hasClass( 'licover' ) && GUI.dbbackdata.length ) {
 		if ( [ 'artist', 'composer', 'genre' ].indexOf( GUI.dbbackdata[ 0 ].browsemode ) !== -1 ) {
 			GUI.filelist = '';
-			$.each( $( '#db-entries li .lipath' ).slice( 1 ), function( i, el ) {
-				GUI.filelist += '"'+ el.text.replace( /"/g, '\"' ) +'" ';
+			$( '#db-entries li .lipath' ).slice( 1 ).each( function() {
+				var path = $( this ).text();
+				GUI.filelist += '"'+ path.replace( /"/g, '\"' ) +'" ';
 			} );
+			console.log(GUI.filelist)
 		}
 	}
 	if ( $this.find( '.fa-music' ).length || $this.find( '.fa-webradio' ).length ) {
@@ -917,9 +919,9 @@ $( '#db-index li' ).click( function() {
 		if ( $( '#db-entries .lisort:eq( 0 )' ).text()[ 0 ] === 'A' ) $this.css( 'color', '#000000' );
 		return
 	}
-	$.each( $( '#db-entries li' ), function( i, el ) {
-		if ( $( el ).find( '.lisort' ).text()[ 0 ] === indextext ) {
-			$( 'html, body' ).scrollTop( el.offsetTop - topoffset );
+	$( '#db-entries li' ).each( function() {
+		if ( $( this ).find( '.lisort' ).text()[ 0 ] === indextext ) {
+			$( 'html, body' ).scrollTop( this.offsetTop - topoffset );
 			match = 1;
 			return false
 		}
@@ -963,8 +965,8 @@ $( '#plopen' ).click( function() {
 		return stripLeading( a ).localeCompare( stripLeading( b ), undefined, { numeric: true } );
 	} );
 	var content = '';
-	pl.forEach( function( el ) {
-		content += '<li class="pl-folder"><i class="fa fa-list-ul pl-icon"><a class="liname">'+ el +'</a></i><i class="fa fa-bars pl-action" data-target="#context-menu-playlist"></i><span class="plname">'+ el +'</span></li>';
+	$.each( pl, function( i, val ) {
+		content += '<li class="pl-folder"><i class="fa fa-list-ul pl-icon"><a class="liname">'+ val +'</a></i><i class="fa fa-bars pl-action" data-target="#context-menu-playlist"></i><span class="plname">'+ val +'</span></li>';
 	} );
 	$( '#pl-editor' ).html( content +'<p></p>' ).promise().done( function() {
 		GUI.pleditor = 1;
