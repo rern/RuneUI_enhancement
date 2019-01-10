@@ -571,6 +571,7 @@ $( '#menu-top, #menu-bottom, #settings' ).click( function( e ) {
 	if ( e.target.id !== 'menu-settings' && e.target.id !== 'badge' ) $( '#settings' ).addClass( 'hide' );
 	$( '.controls' ).addClass( 'hide' );
 	$( '.controls1, .rs-tooltip, #imode' ).removeClass( 'hide' );
+	$( '#swipebar' ).addClass( 'transparent' );
 } );
 $( '#playsource-open' ).click( function() {
 	$( '#playsource li a' ).addClass( 'inactive' );
