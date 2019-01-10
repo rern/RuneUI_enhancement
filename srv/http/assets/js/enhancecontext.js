@@ -63,7 +63,7 @@ $( '.contextmenu a' ).click( function() {
 		, addplay       : [ mpcCmd, 'mpc play '+ addplaypos ]
 		, replace       : [ 'mpc clear', mpcCmd ]
 		, replaceplay   : [ 'mpc clear', mpcCmd, 'mpc play' ]
-		, radiosave     : webRadioNew( GUI.list.name, GUI.list.path )
+		, radiosave     : webRadioNew
 		, wrrename      : webRadioRename
 		, wrdelete      : webRadioDelete
 		, plrename      : playlistRename
@@ -74,7 +74,7 @@ $( '.contextmenu a' ).click( function() {
 	var command = contextCommand[ cmd ];
 	if ( typeof command !== 'undefined' ) {
 		if ( typeof command === 'function' ) {
-			command();
+			cmd !== 'radiosave' ? command() : webRadioNew( GUI.list.name, GUI.list.path );
 		} else {
 			if ( cmd !== 'update' ) {
 				if ( cmd.replace( 'wr', '' ).slice( 0, 3 ) === 'add' ) {
@@ -282,7 +282,9 @@ function addWebradio( name, url, oldname ) {
 	GUI.local = 1;
 	setTimeout( function() { GUI.local = 0 }, 500 );
 	
-	$.post( 'enhance.php', { webradios: data } );
+	$.post( 'enhance.php', { webradios: data }, function() {
+		if ( GUI.playlist ) $( '#tab-playlist' ).click();
+	} );
 }
 function webRadioVerify( name, url, oldname ) {
 	if ( !name || !url ) {

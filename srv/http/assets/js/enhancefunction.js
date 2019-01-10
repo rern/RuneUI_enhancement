@@ -1453,7 +1453,7 @@ function htmlPlaylist( data ) {
 					  +'<span class="sn"><a class="name">'+ ( value.Title || '(Webradio - unsaved)' ) +'</a><a class="song"></a><a class="elapsed"></a></span>'
 					  +'<span class="bl">'+ value.file +'</span>'
 			countradio++;
-		} else if ( value.Title ) {
+		} else {
 			sec = HMS2Second( value.Time );
 			pltime += sec;
 			if ( GUI.playlist ) {

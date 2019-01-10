@@ -1147,6 +1147,11 @@ $( '#pl-entries' ).on( 'click', '.pl-icon', function( e ) {
 	} else {
 		$contextlist.not( ':eq( 3 )' ).addClass( 'hide' );
 	}
+	if ( $thisli.find( '.name' ).text() === '(Webradio - unsaved)' ) {
+		var unsaved = 1;
+		GUI.list.path = $thisli.find( '.bl' ).text();
+	}
+	$contextlist.eq( 3 ).toggleClass( 'hide', !unsaved );
 	var contextnum = $contextmenu.find( 'a:not(.hide)' ).length;
 	$( '.menushadow' ).css( 'height', contextnum * 41 - 1 );
 	$contextmenu
