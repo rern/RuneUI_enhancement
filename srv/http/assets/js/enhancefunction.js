@@ -614,6 +614,10 @@ function displayPlayback() {
 		$( '#divpos' ).css( 'font-size', '20px' );
 		$( '#format-bitrate' ).css( 'display', 'block' );
 	}
+	var wW = window.innerWidth;
+	var wH = window.innerHeight;
+	if ( $( '.playback-block.hide' ).length && wH > 420 ) return
+	
 	if ( GUI.bars ) {
 		var padding = GUI.screenS ? '60px' : '';
 		var margin = GUI.display.time ? ( GUI.screenS ? 0 : '' ) : '30px';
@@ -621,10 +625,6 @@ function displayPlayback() {
 		var padding = GUI.screenS ? '30px' : '';
 		var margin = GUI.display.time ? ( GUI.screenS ? 0 : '' ) : '30px';
 	}
-	var wW = window.innerWidth;
-	var wH = window.innerHeight;
-	if ( $( '.playback-block.hide' ).length && wH > 420 ) return
-	
 	var csspage = {};
 	var cssrow = {};
 	csspage[ 'transform' ] = '';

@@ -1280,6 +1280,15 @@ window.addEventListener( 'orientationchange', function() {
 	if ( GUI.playback ) {
 		$( '#playback-row' ).addClass( 'hide' );
 		setTimeout( function() {
+			if ( $( '.playback-block.hide' ).length && window.innerHeight > 420 ) {
+				$( '#page-playback, #playback-row' ).css( {
+					  'transform'   : ''
+					, 'padding-top' : ''
+					, 'width'       : ''
+					, 'height'      : ''
+					, 'margin'      : ''
+				} );
+			}
 			displayPlayback()
 			scrollLongText();
 			$( '#playback-row' ).removeClass( 'hide' );
