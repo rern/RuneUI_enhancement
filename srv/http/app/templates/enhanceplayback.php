@@ -264,7 +264,6 @@ $html = '<span class="menushadow"></span>';
 $html.= menuli( 'play',      'play',         'Play' );
 $html.= menuli( 'pause',     'pause',        'Pause' );
 $html.= menuli( 'stop',      'stop',         'Stop' );
-$html.= menuli( 'radiosave', 'save',         'Save in Webradios' );
 $html.= menuli( 'remove',    'minus-circle', 'Remove' );
 $menu.= menudiv( 'plaction', $html );
 $menudiv = '';
