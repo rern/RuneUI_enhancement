@@ -41,7 +41,8 @@ $( '.contextmenu a' ).click( function() {
 		} else if ( ext === 'cue' || ext === 'pls' ) {
 			var mpcCmd = 'mpc load "'+ name +'"';
 		} else if ( GUI.plugin ) {
-			var mpcCmd = 'mpc add "'+ name +'"';
+			var radioname = GUI.list.name.replace( /"/g, '\\"' );
+			var mpcCmd = [ 'mpc add "'+ GUI.list.path +'"', '/usr/bin/redis-cli hset webradiopl '+ GUI.list.path +' "'+ radioname +'"' ];
 		} else {
 			var mpcCmd = GUI.list.isfile ? 'mpc add "'+ name +'"' : 'mpc ls "'+ name +'" | mpc add';
 		}

@@ -780,6 +780,8 @@ function renderLibrary() {
 }
 function infoNoData() {
 	$( '#loader' ).addClass( 'hide' );
+	if ( GUI.plugin ) return
+	
 	info( {
 		  icon      : 'info-circle'
 		, message   : 'No data in this location.'
@@ -1447,11 +1449,13 @@ function htmlPlaylist( data ) {
 		} else if ( value.path ) {
 			path = value.path;
 		} else if ( value.track.slice( 0, 4 ) === 'http' ) {
+			var title = value.Title || '';
 			content += '<li class="webradio">'
 					  +'<i class="fa fa-webradio pl-icon"></i>'
 					  + ( GUI.pleditor ? '<i class="fa fa-bars pl-action" data-target="#context-menu-webradiopl"></i>' : '<i class="fa fa-minus-circle pl-action"></i>' )
-					  +'<span class="sn"><a class="name">'+ ( value.Title || '(Webradio - unsaved)' ) +'</a><a class="song"></a><a class="elapsed"></a></span>'
-					  +'<span class="bl">'+ value.file +'</span>'
+					  +'<a class="lipath">'+ value.file +'</a>'
+					  +'<span class="sn"><a class="name">'+ ( title || '(Webradio)' ) +'</a><a class="song"></a><a class="elapsed"></a></span>'
+					  +'<span class="bl">'+ ( title ? title +' • ' : '' ) + value.file +'</span>'
 			countradio++;
 		} else {
 			sec = HMS2Second( value.Time );

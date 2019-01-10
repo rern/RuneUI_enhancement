@@ -1147,11 +1147,6 @@ $( '#pl-entries' ).on( 'click', '.pl-icon', function( e ) {
 	} else {
 		$contextlist.not( ':eq( 3 )' ).addClass( 'hide' );
 	}
-	if ( $thisli.find( '.name' ).text() === '(Webradio - unsaved)' ) {
-		var unsaved = 1;
-		GUI.list.path = $thisli.find( '.bl' ).text();
-	}
-	$contextlist.eq( 3 ).toggleClass( 'hide', !unsaved );
 	var contextnum = $contextmenu.find( 'a:not(.hide)' ).length;
 	$( '.menushadow' ).css( 'height', contextnum * 41 - 1 );
 	$contextmenu
@@ -1190,7 +1185,11 @@ $( '#pl-entries' ).on( 'click', '.pl-action', function() { // remove
 	GUI.local = 1;
 	setTimeout( function() { GUI.local = 0 }, 500 );
 	
-	$.post( 'enhance.php', { mpc: 'mpc del '+ songpos } );
+	if ( !$this.hasClass( 'fa-webradio' ) ) {
+		$.post( 'enhance.php', { mpc: 'mpc del '+ songpos } );
+	} else {
+		$.post( 'enhance.php', { mpc: [ 'mpc del '+ songpos, '/usr/bin/redis-cli hdel "'+ $this.find( '.lipath' ).text() +'"' ] } );
+	}
 	if ( !$( '#countsong, #countradio' ).length ) {
 		GUI.status.playlistlength = 0;
 		renderPlaylist();
