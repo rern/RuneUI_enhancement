@@ -17,7 +17,7 @@ if [[ $1 == u ]]; then
 		fi
 	fi
 else
-	redis-cli del display webradiosampling zoomlevel &> /dev/null
+	redis-cli del display webradiosampling webradiopl zoomlevel &> /dev/null
 fi
 
 # remove files #######################################
