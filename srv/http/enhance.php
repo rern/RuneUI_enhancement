@@ -292,12 +292,14 @@ function list2array( $result, $webradioname = null ) {
 			$i = 1;
 		}
 		$li[ 'track' ] = $list[ 2 ] ?: dirname( $li[ 'file' ] );
-		if ( $list[ 0 ] && $li[ 'track' ] !== 'http:' ) {
+		if ( substr( $li[ 'track' ], 0, 4 ) === 'http' ) {
+			$li[ 'Title' ] = $li[ 'track' ] ? $webradioname[ $list[ 3 ] ] : basename( $li[ 'file' ] );
+			$li[ 'file' ] = $li[ 'Title' ] ? $li[ 'Title' ].' • '.$li[ 'file' ] : $li[ 'file' ];
+		} else if ( $list[ 0 ] ) {
 			$li[ 'Title' ] = $list[ 0 ];
 		} else {
-			$li[ 'Title' ] = $li[ 'track' ] ? $webradioname[ $list[ 3 ] ] : basename( $li[ 'file' ] );
+			$li[ 'Title' ] = basename( $li[ 'file' ] );
 		}
-		if ( substr( $li[ 'track' ], 0, 4 ) === 'http' ) $li[ 'file' ] = $li[ 'Title' ] ? $li[ 'Title' ].' • '.$li[ 'file' ] : $li[ 'file' ];
 		$li[ 'Time' ] = $list[ 1 ];
 		$li[ 'index' ] = $i++;
 		if ( !$artist && $list[ 4 ] !== '' ) $artist = $list[ 4 ];
