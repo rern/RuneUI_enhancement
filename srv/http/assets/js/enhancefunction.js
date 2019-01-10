@@ -1189,7 +1189,6 @@ function dataSort( data, path, plugin, querytype, arg ) {
 }
 // set path, name, artist as text to avoid double quote escape
 function data2html( inputArr, i, respType, inpath, querytype ) {
-	console.log(inputArr)
 	var inputArr = inputArr || '',
 		i = i || 0,
 		respType = respType || '',
