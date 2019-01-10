@@ -858,12 +858,12 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 		} );
 		GUI.plugin = 'Dirble';
 	} else if ( $this.attr( 'mode' ) === 'jamendo' ) {
-		// getDB( {
-			//   path      : GUI.currentpath +'/'+ $this.find( 'span' ).text()
-			// , plugin    : 'Jamendo'
-			// , querytype : 'radio'
-			// , args      : path
-		// } );
+/*		getDB( {
+			  path      : GUI.currentpath +'/'+ $this.find( 'span' ).text()
+			, plugin    : 'Jamendo'
+			, querytype : 'radio'
+			, args      : path
+		} );*/
 	}
 } );
 $( '#db-entries' ).on( 'click', '.db-action', function( e ) {

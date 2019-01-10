@@ -40,6 +40,8 @@ $( '.contextmenu a' ).click( function() {
 			var mpcCmd = 'cat "/mnt/MPD/'+ GUI.list.path +'" | mpc add';
 		} else if ( ext === 'cue' || ext === 'pls' ) {
 			var mpcCmd = 'mpc load "'+ name +'"';
+		} else if ( GUI.plugin ) {
+			var mpcCmd = 'mpc add "'+ name +'"';
 		} else {
 			var mpcCmd = GUI.list.isfile ? 'mpc add "'+ name +'"' : 'mpc ls "'+ name +'" | mpc add';
 		}
@@ -61,6 +63,7 @@ $( '.contextmenu a' ).click( function() {
 		, addplay       : [ mpcCmd, 'mpc play '+ addplaypos ]
 		, replace       : [ 'mpc clear', mpcCmd ]
 		, replaceplay   : [ 'mpc clear', mpcCmd, 'mpc play' ]
+		, radiosave     : webRadioNew( GUI.list.name, GUI.list.path )
 		, wrrename      : webRadioRename
 		, wrdelete      : webRadioDelete
 		, plrename      : playlistRename
@@ -96,8 +99,6 @@ $( '.contextmenu a' ).click( function() {
 				$.post( 'enhance.php', { mpc: command } );
 			}
 		}
-	} else if ( cmd === 'dirblesave' ) {
-		webRadioNew( GUI.list.name, GUI.list.path );
 	} else if ( cmd === 'plashuffle' ) {
 		$.post( '/db/?cmd=pl-ashuffle', { playlist: name } );
 		$( '#random' ).addClass( 'btn-primary ashuffle' );

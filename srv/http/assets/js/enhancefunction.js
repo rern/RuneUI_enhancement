@@ -880,7 +880,7 @@ function getDB( options ) {
 		}, 'json' );
 		return
 	}
-
+	
 	if ( plugin === 'Spotify' ) {
 		$.post( '/db/?cmd=spotify', { plid: args }, function( data ) {
 			dataSort( data, path, plugin, querytype, arg );
@@ -1189,6 +1189,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 }
 // set path, name, artist as text to avoid double quote escape
 function data2html( inputArr, i, respType, inpath, querytype ) {
+	console.log(inputArr)
 	var inputArr = inputArr || '',
 		i = i || 0,
 		respType = respType || '',
@@ -1353,7 +1354,7 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 				var url = inputArr.streams[ 0 ].stream
 				content = '<li mode="dirble">'
 						 +'<a class="lipath">'+ url +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
-						 +'<i class="fa fa-webradio db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-dirble"></i>'
+						 +'<i class="fa fa-webradio db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-radio"></i>'
 						 +'<span class="sn">'+ liname +'&ensp;<span>( '+ inputArr.country +' )</span></span>'
 						 +'<span class="bl">'+ url +'</span>'
 			}
@@ -1362,7 +1363,7 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 			var liname = inputArr.dispname;
 			content = '<li mode="jamendo">'
 					 +'<a class="lipath">'+ inputArr.stream +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
-					 +'<img class="jamendo-cover" src="'+ inputArr.image +'" alt=""><i class="fa fa-bars db-action" data-target="#context-menu-file"></i>'
+					 +'<img class="jamendo-cover" src="'+ inputArr.image +'" alt=""><i class="fa fa-bars db-action" data-target="#context-menu-radio"></i>'
 					 +'<span class="single">'+ liname +'</span>'
 			break;
 	}
@@ -1442,11 +1443,11 @@ function htmlPlaylist( data ) {
 			genre = value.genre;
 		} else if ( value.path ) {
 			path = value.path;
-		} else if ( value.track === 'http:' ) {
+		} else if ( value.track.slice( 0, 4 ) === 'http' ) {
 			content += '<li class="webradio">'
 					  +'<i class="fa fa-webradio pl-icon"></i>'
 					  + ( GUI.pleditor ? '<i class="fa fa-bars pl-action" data-target="#context-menu-webradiopl"></i>' : '<i class="fa fa-minus-circle pl-action"></i>' )
-					  +'<span class="sn"><a class="name">'+ value.Title +'</a><a class="song"></a><a class="elapsed"></a></span>'
+					  +'<span class="sn"><a class="name">'+ ( value.Title || '(Webradio - unsaved)' ) +'</a><a class="song"></a><a class="elapsed"></a></span>'
 					  +'<span class="bl">'+ value.file +'</span>'
 			countradio++;
 		} else if ( value.Title ) {
