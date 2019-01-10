@@ -621,6 +621,10 @@ function displayPlayback() {
 		var padding = GUI.screenS ? '30px' : '';
 		var margin = GUI.display.time ? ( GUI.screenS ? 0 : '' ) : '30px';
 	}
+	var wW = window.innerWidth;
+	var wH = window.innerHeight;
+	if ( $( '.playback-block.hide' ).length && wH > 420 ) return
+	
 	var csspage = {};
 	var cssrow = {};
 	csspage[ 'transform' ] = '';
@@ -628,8 +632,6 @@ function displayPlayback() {
 	cssrow[ 'width' ] = '';
 	cssrow[ 'margin-left' ] = '';
 	cssrow[ 'margin-top' ] = margin;
-	var wW = window.innerWidth;
-	var wH = window.innerHeight;
 	if ( ( wW < 750 && wW  > wH ) || wH < 475 ) {
 		var scale = wH > 475 ? wW / 800 : wH / 450;
 		var padding = GUI.bars ? '70px' : '40px';
