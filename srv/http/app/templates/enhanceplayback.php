@@ -24,7 +24,7 @@
 		</div>
 	</div>
 	<div class="row" id="playback-row">
-		<div id="time-knob">
+		<div id="time-knob" class="playback-block">
 			<div id="time"></div>
 			<button id="playsource-open" class="btn btn-default btn-xs">MPD</button>
 			<div id="imode">
@@ -55,7 +55,7 @@
 				<button id="single" class="btn btn-default btn-lg btn-cmd btn-toggle" type="button"><i class="fa fa-single"></i></button>
 			</div>
 		</div>
-		<div id="coverart">
+		<div id="coverart" class="playback-block">
 			<div id="divcover">
 			<img id="cover-art">
 			<input id="cover" type="hidden" value="<?=$this->asset('/img/cover.svg')?>">
@@ -80,7 +80,7 @@
 				<button id="bio-open" class="btn btn-default" type="button"><i class="fa fa-bio"></i></button>
 			</div>
 		</div>
-		<div id="volume-knob" class="<?=$this->volume['divclass'] ?>">
+		<div id="volume-knob" class="playback-block<?=$this->volume['divclass'] ?>">
 			<div id="volume" data-dynamic="<?=$this->volume['dynamic'] ?>"></div>
 			<div id="volT" class="volmap"></div>
 			<div id="volL" class="volmap"></div>
