@@ -158,7 +158,9 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	if ( !$lines ) {
 		$data[ 'playlist' ] = '';
 	} else {
-		$webradioname = array_flip( $redis->hGetAll( 'webradios' ) );
+		$webradios = array_flip( $redis->hGetAll( 'webradios' ) );
+		$webradiopl = $redis->hGetAll( 'webradiopl' );
+		$webradioname = array_merge( $webradiopl, $webradios );
 		$playlist = list2array( $lines, $webradioname );
 		$data[ 'playlist' ] = $playlist;
 	}
@@ -294,7 +296,6 @@ function list2array( $result, $webradioname = null ) {
 		$li[ 'track' ] = $list[ 2 ] ?: dirname( $li[ 'file' ] );
 		if ( substr( $li[ 'track' ], 0, 4 ) === 'http' ) {
 			$li[ 'Title' ] = $li[ 'track' ] ? $webradioname[ $list[ 3 ] ] : basename( $li[ 'file' ] );
-			$li[ 'file' ] = $li[ 'Title' ] ? $li[ 'Title' ].' • '.$li[ 'file' ] : $li[ 'file' ];
 		} else if ( $list[ 0 ] ) {
 			$li[ 'Title' ] = $list[ 0 ];
 		} else {
