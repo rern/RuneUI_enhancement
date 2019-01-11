@@ -1021,7 +1021,7 @@ $( '#plclear' ).click( function() {
 					GUI.status.playlistlength = 0;
 					renderPlaylist();
 					setPlaybackBlank();
-					$.post( 'enhance.php', { mpc: 'mpc clear' } );
+					$.post( 'enhance.php', { mpc: [ 'mpc clear', '/usr/bin/redis-cli del webradiopl' ] } );
 				}
 			} );
 		}
@@ -1145,7 +1145,14 @@ $( '#pl-entries' ).on( 'click', '.pl-icon', function( e ) {
 			$contextlist.eq( 1 ).add( $contextlist.eq( 2 ) ).addClass( 'hide' );
 		}
 	} else {
-		$contextlist.not( ':eq( 3 )' ).addClass( 'hide' );
+		$contextlist.not( ':eq( 4 )' ).addClass( 'hide' );
+	}
+	if ( $thisli.hasClass( 'webradio' ) && $thisli.find( '.unsaved' ).length ) {
+		GUI.list.name = $thisli.find( '.name' ).text();
+		GUI.list.path = $thisli.find( '.lipath' ).text();
+		$contextlist.eq( 3 ).removeClass( 'hide' );
+	} else {
+		$contextlist.eq( 3 ).addClass( 'hide' );
 	}
 	var contextnum = $contextmenu.find( 'a:not(.hide)' ).length;
 	$( '.menushadow' ).css( 'height', contextnum * 41 - 1 );
