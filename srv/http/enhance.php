@@ -76,29 +76,30 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$data = $_POST[ 'webradios' ];
 	}
 	if ( !is_array( $data ) ) {
-		$rdname = $data;
+		$name = $data;
 		if ( $key === 'webradios' ) {
-			$redis->hDel( 'webradios', $rdname );
-			$redis->hDel( 'sampling', $rdname );
+			$redis->hDel( 'webradios', $name );
+			$redis->hDel( 'sampling', $name );
 			unlink( '/mnt/MPD/Webradio/'.$data.'.pls' );
 		} else {
-			$redis->hDel( 'bkmarks', $rdname );
+			$redis->hDel( 'bkmarks', $name );
 		}
 	} else {
-		$rdname = $data[ 0 ];
-		$rdvalue = $data[ 1 ];
+		$name = $data[ 0 ];
+		$value = $data[ 1 ];
 		if ( count( $data ) === 3 ) {
-			$rdoldname = $data[ 2 ];
-			$redis->hDel( $key, $rdoldname );
-			if ( $key === 'webradios' ) unlink( '/mnt/MPD/Webradio/'.$data[ 2 ].'.pls' );
+			$oldname = $data[ 2 ];
+			$redis->hDel( $key, $oldname );
+			if ( $key === 'webradios' ) unlink( '/mnt/MPD/Webradio/'.$oldname.'.pls' );
 		}
-		$redis->hSet( $key, $rdname, $rdvalue );
+		$redis->hSet( $key, $name, $value );
 		if ( $key === 'webradios' ) {
-			$lines = "[playlist]\nNumberOfEntries=1\nFile1=".$data[ 1 ]."\nTitle1=".$data[ 0 ];
-			$fopen = fopen( '/mnt/MPD/Webradio/'.$data[ 0 ].'.pls', 'w');
+			$lines = "[playlist]\nNumberOfEntries=1\nFile1=".$value."\nTitle1=".$name;
+			$fopen = fopen( '/mnt/MPD/Webradio/'.$name.'.pls', 'w');
 			fwrite( $fopen, $lines );
 			fclose( $fopen );
 		}
+		$redis->hDel( 'webradiopl', $value );
 	}
 	if ( $key === 'bkmarks' ) {
 		$status = getLibrary();
