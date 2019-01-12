@@ -76,29 +76,30 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$data = $_POST[ 'webradios' ];
 	}
 	if ( !is_array( $data ) ) {
-		$rdname = $data;
+		$name = $data;
 		if ( $key === 'webradios' ) {
-			$redis->hDel( 'webradios', $rdname );
-			$redis->hDel( 'sampling', $rdname );
+			$redis->hDel( 'webradios', $name );
+			$redis->hDel( 'sampling', $name );
 			unlink( '/mnt/MPD/Webradio/'.$data.'.pls' );
 		} else {
-			$redis->hDel( 'bkmarks', $rdname );
+			$redis->hDel( 'bkmarks', $name );
 		}
 	} else {
-		$rdname = $data[ 0 ];
-		$rdvalue = $data[ 1 ];
+		$name = $data[ 0 ];
+		$value = $data[ 1 ];
 		if ( count( $data ) === 3 ) {
-			$rdoldname = $data[ 2 ];
-			$redis->hDel( $key, $rdoldname );
-			if ( $key === 'webradios' ) unlink( '/mnt/MPD/Webradio/'.$data[ 2 ].'.pls' );
+			$oldname = $data[ 2 ];
+			$redis->hDel( $key, $oldname );
+			if ( $key === 'webradios' ) unlink( '/mnt/MPD/Webradio/'.$oldname.'.pls' );
 		}
-		$redis->hSet( $key, $rdname, $rdvalue );
+		$redis->hSet( $key, $name, $value );
 		if ( $key === 'webradios' ) {
-			$lines = "[playlist]\nNumberOfEntries=1\nFile1=".$data[ 1 ]."\nTitle1=".$data[ 0 ];
-			$fopen = fopen( '/mnt/MPD/Webradio/'.$data[ 0 ].'.pls', 'w');
+			$lines = "[playlist]\nNumberOfEntries=1\nFile1=".$value."\nTitle1=".$name;
+			$fopen = fopen( '/mnt/MPD/Webradio/'.$name.'.pls', 'w');
 			fwrite( $fopen, $lines );
 			fclose( $fopen );
 		}
+		$redis->hDel( 'webradiopl', $value );
 	}
 	if ( $key === 'bkmarks' ) {
 		$status = getLibrary();
@@ -158,7 +159,9 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	if ( !$lines ) {
 		$data[ 'playlist' ] = '';
 	} else {
-		$webradioname = array_flip( $redis->hGetAll( 'webradios' ) );
+		$webradios = array_flip( $redis->hGetAll( 'webradios' ) );
+		$webradiopl = $redis->hGetAll( 'webradiopl' );
+		$webradioname = array_merge( $webradiopl, $webradios );
 		$playlist = list2array( $lines, $webradioname );
 		$data[ 'playlist' ] = $playlist;
 	}
@@ -292,12 +295,13 @@ function list2array( $result, $webradioname = null ) {
 			$i = 1;
 		}
 		$li[ 'track' ] = $list[ 2 ] ?: dirname( $li[ 'file' ] );
-		if ( $list[ 0 ] && $li[ 'track' ] !== 'http:' ) {
+		if ( substr( $li[ 'track' ], 0, 4 ) === 'http' ) {
+			$li[ 'Title' ] = $li[ 'track' ] ? $webradioname[ $list[ 3 ] ] : basename( $li[ 'file' ] );
+		} else if ( $list[ 0 ] ) {
 			$li[ 'Title' ] = $list[ 0 ];
 		} else {
-			$li[ 'Title' ] = $li[ 'track' ] ? $webradioname[ $list[ 3 ] ] : basename( $li[ 'file' ] );
+			$li[ 'Title' ] = basename( $li[ 'file' ] );
 		}
-		if ( $li[ 'track' ] === 'http:' ) $li[ 'file' ] = $li[ 'Title' ].' • '.$li[ 'file' ];
 		$li[ 'Time' ] = $list[ 1 ];
 		$li[ 'index' ] = $i++;
 		if ( !$artist && $list[ 4 ] !== '' ) $artist = $list[ 4 ];
@@ -384,11 +388,11 @@ function getLibrary() {
 	$rbkmarks = $redis->hGetAll( 'bkmarks' );
 	if ( $rbkmarks ) {
 		foreach ( $rbkmarks as $name => $path ) {
-			$coverart = getCover( $path.'/bookmark' ) ?: '';
+//			$coverart = getCover( $path.'/bookmark' ) ?: '';
 			$bookmarks[] = array(
 				  'name'  => $name
 				, 'path'  => $path
-				, 'coverart' => $coverart
+//				, 'coverart' => $coverart
 			);
 		}
 	} else {

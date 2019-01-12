@@ -578,8 +578,10 @@ function displayPlayback() {
 		if ( volume ) {
 			$elements.css( { order: '', '-webkit-order': '' } );
 		} else {
-			$.each( $elements, function( i, $el ) {
-				$el.css( { order: i, '-webkit-order': i } );
+			var i = 0;
+			$elements.each( function() {
+				$( this ).css( { order: i, '-webkit-order': i } );
+				i++;
 			} );
 		}
 		$( '#playback-row' ).css( 'max-width', '900px' );
@@ -614,6 +616,10 @@ function displayPlayback() {
 		$( '#divpos' ).css( 'font-size', '20px' );
 		$( '#format-bitrate' ).css( 'display', 'block' );
 	}
+	var wW = window.innerWidth;
+	var wH = window.innerHeight;
+	if ( $( '.playback-block.hide' ).length && wH > 420 ) return
+	
 	if ( GUI.bars ) {
 		var padding = GUI.screenS ? '60px' : '';
 		var margin = GUI.display.time ? ( GUI.screenS ? 0 : '' ) : '30px';
@@ -628,8 +634,6 @@ function displayPlayback() {
 	cssrow[ 'width' ] = '';
 	cssrow[ 'margin-left' ] = '';
 	cssrow[ 'margin-top' ] = margin;
-	var wW = window.innerWidth;
-	var wH = window.innerHeight;
 	if ( ( wW < 750 && wW  > wH ) || wH < 475 ) {
 		var scale = wH > 475 ? wW / 800 : wH / 450;
 		var padding = GUI.bars ? '70px' : '40px';
@@ -776,6 +780,8 @@ function renderLibrary() {
 }
 function infoNoData() {
 	$( '#loader' ).addClass( 'hide' );
+	if ( GUI.plugin ) return
+	
 	info( {
 		  icon      : 'info-circle'
 		, message   : 'No data in this location.'
@@ -880,7 +886,7 @@ function getDB( options ) {
 		}, 'json' );
 		return
 	}
-
+	
 	if ( plugin === 'Spotify' ) {
 		$.post( '/db/?cmd=spotify', { plid: args }, function( data ) {
 			dataSort( data, path, plugin, querytype, arg );
@@ -1209,23 +1215,23 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 							content = '<li class="file">'
 									 +'<a class="lipath">'+ inputArr.file +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
 									 +'<i class="fa fa-music db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-file"></i>'
-									 +'<span class="sn">'+ liname +'<span class="time">'+ inputArr.Time +'</span></span>'
-									 +'<span class="bl">'+ bl +'</span>'
+									 +'<span class="li1">'+ liname +'<span class="time">'+ inputArr.Time +'</span></span>'
+									 +'<span class="li2">'+ bl +'</span>'
 						} else {
 							var liname = inputArr.file.split( '/' ).pop(); // filename
 							content = '<li class="file">'
 									 +'<a class="lipath">'+ inputArr.file +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
 									 +'<i class="fa fa-music db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-file"></i>'
-									 +'<span class="sn">'+ liname +'<span class="time">' + second2HMS( inputArr.Time ) +'</span></span>'
-									 +'<span class="bl">'+ inpath +'</span>'
+									 +'<span class="li1">'+ liname +'<span class="time">' + second2HMS( inputArr.Time ) +'</span></span>'
+									 +'<span class="li2">'+ inpath +'</span>'
 						}
 					} else { // Webradio
 						var liname = inputArr.playlist.replace( /Webradio\/|\\|.pls$/g, '' );
 						content = '<li class="db-webradio file" >'
 								 +'<a class="lipath">'+ inputArr.url +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
 								 +'<i class="fa fa-webradio db-icon db-radio"></i><i class="fa fa-bars db-action" data-target="#context-menu-webradio"></i>'
-								 +'<span class="sn">'+ liname +'</span>'
-								 +'<span class="bl">'+ inputArr.url +'</span>'
+								 +'<span class="li1">'+ liname +'</span>'
+								 +'<span class="li2">'+ inputArr.url +'</span>'
 					}
 				} else if ( inputArr.playlist ) {
 					var liname = inputArr.playlist;
@@ -1246,8 +1252,8 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 					content = '<li>'
 							 +'<a class="lipath">'+ inputArr.file +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
 							 +'<i class="fa fa-music db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-file"></i>'
-							 +'<span class="sn">'+ liname +'<span class="time">'+ inputArr.Time +'</span></span>'
-							 +'<span class="bl">'+ inputArr.file +'</span>'
+							 +'<span class="li1">'+ liname +'<span class="time">'+ inputArr.Time +'</span></span>'
+							 +'<span class="li2">'+ inputArr.file +'</span>'
 					var artist = inputArr.Artist;
 					if ( !GUI.albumartist ) GUI.albumartist = inputArr.Album +'<gr> • </gr>'+ artist;
 				} else {
@@ -1311,8 +1317,8 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 					content = '<li>'
 							 +'<a class="lipath">'+ inputArr.file +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
 							 +'<i class="fa fa-music db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-file"></i>'
-							 +'<span class="sn">'+ liname +'<span class="time">'+ inputArr.Time +'</span></span>'
-							 +'<span class="bl">'+ inputArr.Artist +' - '+ inputArr.Album +'</span>'
+							 +'<span class="li1">'+ liname +'<span class="time">'+ inputArr.Time +'</span></span>'
+							 +'<span class="li2">'+ inputArr.Artist +' - '+ inputArr.Album +'</span>'
 				} else {
 					var liname = inputArr.genre ;
 					content = '<li mode="genre">'
@@ -1334,8 +1340,8 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 				content = '<li data-plid="'+ inpath +'" data-type="spotify-track" mode="spotify">'
 						 +'<a class="lipath">'+ inputArr.index +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
 						 +'<i class="fa fa-spotify db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-spotify"></i>'
-						 +'<span class="sn">'+ liname +'<span class="time">'+ second2HMS( inputArr.duration / 1000 ) +'</span></span>'
-						 +'<span class="bl">'+ inputArr.artist +' - '+ inputArr.album +'</span>'
+						 +'<span class="li1">'+ liname +'<span class="time">'+ second2HMS( inputArr.duration / 1000 ) +'</span></span>'
+						 +'<span class="li2">'+ inputArr.artist +' - '+ inputArr.album +'</span>'
 			}
 			break;
 		case 'Dirble':
@@ -1353,16 +1359,16 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 				var url = inputArr.streams[ 0 ].stream
 				content = '<li mode="dirble">'
 						 +'<a class="lipath">'+ url +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
-						 +'<i class="fa fa-webradio db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-dirble"></i>'
-						 +'<span class="sn">'+ liname +'&ensp;<span>( '+ inputArr.country +' )</span></span>'
-						 +'<span class="bl">'+ url +'</span>'
+						 +'<i class="fa fa-webradio db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-radio"></i>'
+						 +'<span class="li1">'+ liname +'&ensp;<span>( '+ inputArr.country +' )</span></span>'
+						 +'<span class="li2">'+ url +'</span>'
 			}
 			break;
 		case 'Jamendo':
 			var liname = inputArr.dispname;
 			content = '<li mode="jamendo">'
 					 +'<a class="lipath">'+ inputArr.stream +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
-					 +'<img class="jamendo-cover" src="'+ inputArr.image +'" alt=""><i class="fa fa-bars db-action" data-target="#context-menu-file"></i>'
+					 +'<img class="jamendo-cover" src="'+ inputArr.image +'" alt=""><i class="fa fa-bars db-action" data-target="#context-menu-radio"></i>'
 					 +'<span class="single">'+ liname +'</span>'
 			break;
 	}
@@ -1442,15 +1448,18 @@ function htmlPlaylist( data ) {
 			genre = value.genre;
 		} else if ( value.path ) {
 			path = value.path;
-		} else if ( value.track === 'http:' ) {
+		} else if ( value.track && value.track.slice( 0, 4 ) === 'http' ) {
+			var title = value.Title && value.Title || '';
+			var name = title.replace( '*', '' );
 			content += '<li class="webradio">'
-					  +'<i class="fa fa-webradio pl-icon"></i>'
+					  +'<i class="fa fa-webradio pl-icon'+ ( title[ 0 ] === '*' ? ' unsaved' : '' ) +'"></i>'
 					  + ( GUI.pleditor ? '<i class="fa fa-bars pl-action" data-target="#context-menu-webradiopl"></i>' : '<i class="fa fa-minus-circle pl-action"></i>' )
-					  +'<span class="sn"><a class="name">'+ value.Title +'</a><a class="song"></a><a class="elapsed"></a></span>'
-					  +'<span class="bl">'+ value.file +'</span>'
+					  +'<a class="lipath">'+ value.file +'</a>'
+					  +'<span class="li1"><a class="name">'+ ( name || '(Webradio)' ) +'</a><a class="song"></a><a class="elapsed"></a></span>'
+					  +'<span class="li2">'+ ( name ? name +' • ' : '' ) + value.file +'</span>'
 			countradio++;
-		} else if ( value.Title ) {
-			sec = HMS2Second( value.Time );
+		} else {
+			sec = value.Time ? HMS2Second( value.Time ) : 0;
 			pltime += sec;
 			if ( GUI.playlist ) {
 				if ( !GUI.pleditor ) {
@@ -1469,8 +1478,8 @@ function htmlPlaylist( data ) {
 			}
 			content += '<li>'
 					 + actionhtml
-					 +'<span class="sn">'+ value.Title + ( GUI.playlist && !GUI.pleditor ? '<span class="elapsed"></span>' : '' ) +'<span class="time" time="'+ sec +'">'+ value.Time +'</span></span>'
-					 +'<span class="bl">'+ ( GUI.playlist ? value.track : value.file ) +'</span>'
+					 +'<span class="li1">'+ value.Title + ( GUI.playlist && !GUI.pleditor ? '<span class="elapsed"></span>' : '' ) +'<span class="time" time="'+ sec +'">'+ value.Time +'</span></span>'
+					 +'<span class="li2">'+ ( GUI.playlist ? value.track : value.file ) +'</span>'
 			countsong++;
 		}
 	} );

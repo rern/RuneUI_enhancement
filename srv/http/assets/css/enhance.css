@@ -1509,7 +1509,7 @@ span.dbpath {
 .jamendo-cover {
 	width: 33px;
 	height: 33px;
-	margin: 0 10px 7px 7px;
+	margin: 7px 10px 7px 7px;
 }
 #pl-entries li.radio {
 	margin: 0;
@@ -1559,13 +1559,13 @@ span.dbpath {
 	color: #7795b4;
 }
 #db-entries li span,
-.sn,
+.li1,
 w {
 	color: #e0e7ee;
 }
-#db-entries .sn,
-#pl-entries .sn,
-#pl-editor .sn {
+#db-entries .li1,
+#pl-entries .li1,
+#pl-editor .li1 {
 	display: block;
 	padding-top: 5px;
 }
@@ -1588,15 +1588,18 @@ w {
 .time {
 	color: #7795b4 !important;
 }
-#db-entries .bl,
-#pl-entries .bl,
-#pl-editor .bl {
+#db-entries .li2,
+#pl-entries .li2,
+#pl-editor .li2 {
 	display: block;
 	font-size: 12px;
 	color: #7795b4
 }
+#pl-entries .unsaved {
+	color: #e0e7ee;
+}
 li.active i,
-li.active .bl,
+li.active .li2,
 li.active gr,
 li.active .time {
 	color: #34495e !important;
@@ -1966,11 +1969,11 @@ li.active .time {
 		line-height: 52px;
 	}
 	#db-entries span,
-	#db-entries span.sn,
-	#db-entries span.bl,
+	#db-entries .li1,
+	#db-entries .li2,
 	#pl-entries span,
-	#pl-entries span.sn,
-	#pl-entries span.bl,
+	#pl-entries .li1,
+	#pl-entries .li2,
 	#pl-editor span,
 	.time {
 		font-size: 16px;
@@ -1980,8 +1983,8 @@ li.active .time {
 	#pl-entries span.single {
 		padding-left: 0;
 	}
-	#db-entries span.bl,
-	#pl-entries span.bl {
+	#db-entries .li2,
+	#pl-entries .li2 {
 		font-size: 12px;
 	}
 	#pl-editor span.pleditor {

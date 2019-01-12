@@ -17,7 +17,7 @@ if [[ $1 == u ]]; then
 		fi
 	fi
 else
-	redis-cli del display webradiosampling zoomlevel &> /dev/null
+	redis-cli del display webradiosampling webradiopl zoomlevel &> /dev/null
 fi
 
 # remove files #######################################
@@ -49,6 +49,8 @@ files="
 /srv/http/app/templates/mpd.php
 /srv/http/app/templates/settings.php
 /srv/http/command/rune_PL_wrk
+"
+[[ ! -e /etc/X11/xinit/start_chromium.sh ]] && files="$files\
 /root/.config/midori/config
 /root/.xinitrc
 "

@@ -24,7 +24,7 @@
 		</div>
 	</div>
 	<div class="row" id="playback-row">
-		<div id="time-knob">
+		<div id="time-knob" class="playback-block">
 			<div id="time"></div>
 			<button id="playsource-open" class="btn btn-default btn-xs">MPD</button>
 			<div id="imode">
@@ -55,7 +55,7 @@
 				<button id="single" class="btn btn-default btn-lg btn-cmd btn-toggle" type="button"><i class="fa fa-single"></i></button>
 			</div>
 		</div>
-		<div id="coverart">
+		<div id="coverart" class="playback-block">
 			<div id="divcover">
 			<img id="cover-art">
 			<input id="cover" type="hidden" value="<?=$this->asset('/img/cover.svg')?>">
@@ -80,7 +80,7 @@
 				<button id="bio-open" class="btn btn-default" type="button"><i class="fa fa-bio"></i></button>
 			</div>
 		</div>
-		<div id="volume-knob" class="<?=$this->volume['divclass'] ?>">
+		<div id="volume-knob" class="playback-block<?=$this->volume['divclass'] ?>">
 			<div id="volume" data-dynamic="<?=$this->volume['dynamic'] ?>"></div>
 			<div id="volT" class="volmap"></div>
 			<div id="volL" class="volmap"></div>
@@ -138,7 +138,7 @@ $blocks = array( // 'id' => array( 'path', 'icon', 'name' );
 $blockhtml = '';
 foreach( $blocks as $id => $value ) {
 	$browsemode = in_array( $id, array( 'album', 'artist', 'albumartist', 'composer', 'genre' ) ) ? ' data-browsemode="'.$id.'"' : '';
-	$plugin = in_array( $id, array( 'spotify', 'dirble', 'jamendo' ) ) ? ' data-plugin="'.$value[ 1 ].'"' : '';
+	$plugin = in_array( $id, array( 'spotify', 'dirble', 'jamendo' ) ) ? ' data-plugin="'.$value[ 0 ].'"' : '';
 	$blockhtml.= '
 			<div class="col-md-3">
 				<div id="home-'.$id.'" class="home-block"'.$browsemode.$plugin.'><a class="lipath">'.$value[ 0 ].'</a><i class="fa fa-'.$value[ 1 ].'"></i><wh>'.$value[ 2 ].'</wh></div>
@@ -261,10 +261,11 @@ $menu = '<div>';
 $htmlcommon = menucommon( 'add', 'addplay', 'replace', 'replaceplay' );
 
 $html = '<span class="menushadow"></span>';
-$html.= menuli( 'play',   'play',        'Play' );
-$html.= menuli( 'pause',  'pause',       'Pause' );
-$html.= menuli( 'stop',   'stop',         'Stop' );
-$html.= menuli( 'remove', 'minus-circle', 'Remove' );
+$html.= menuli( 'play',      'play',         'Play' );
+$html.= menuli( 'pause',     'pause',        'Pause' );
+$html.= menuli( 'stop',      'stop',         'Stop' );
+$html.= menuli( 'radiosave', 'save',         'Save in Webradios' );
+$html.= menuli( 'remove',    'minus-circle', 'Remove' );
 $menu.= menudiv( 'plaction', $html );
 $menudiv = '';
 
@@ -281,8 +282,8 @@ $html = $htmlcommon;
 $menu.= menudiv( 'filepl', $html );
 $menudiv = '';
 $html = menucommon( 'add', 'addplay', 'replace', 'replaceplay' );
-$html.= menuli( 'dirblesave', 'save', 'Save in Webradios' );
-$menu.= menudiv( 'dirble', $html );
+$html.= menuli( 'radiosave', 'save', 'Save in Webradios' );
+$menu.= menudiv( 'radio', $html );
 $menudiv = '';
 $html = menucommonsp( 'spotify-playlist' );
 $menu.= menudiv( 'spotify-pl', $html );

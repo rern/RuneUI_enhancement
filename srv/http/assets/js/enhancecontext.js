@@ -40,6 +40,9 @@ $( '.contextmenu a' ).click( function() {
 			var mpcCmd = 'cat "/mnt/MPD/'+ GUI.list.path +'" | mpc add';
 		} else if ( ext === 'cue' || ext === 'pls' ) {
 			var mpcCmd = 'mpc load "'+ name +'"';
+		} else if ( GUI.plugin ) {
+			var radioname = GUI.list.name.replace( /"/g, '\\"' );
+			var mpcCmd = [ 'mpc add "'+ GUI.list.path +'"', '/usr/bin/redis-cli hset webradiopl '+ GUI.list.path +' "*'+ radioname +'"' ];
 		} else {
 			var mpcCmd = GUI.list.isfile ? 'mpc add "'+ name +'"' : 'mpc ls "'+ name +'" | mpc add';
 		}
@@ -61,6 +64,7 @@ $( '.contextmenu a' ).click( function() {
 		, addplay       : [ mpcCmd, 'mpc play '+ addplaypos ]
 		, replace       : [ 'mpc clear', mpcCmd ]
 		, replaceplay   : [ 'mpc clear', mpcCmd, 'mpc play' ]
+		, radiosave     : webRadioNew
 		, wrrename      : webRadioRename
 		, wrdelete      : webRadioDelete
 		, plrename      : playlistRename
@@ -71,7 +75,7 @@ $( '.contextmenu a' ).click( function() {
 	var command = contextCommand[ cmd ];
 	if ( typeof command !== 'undefined' ) {
 		if ( typeof command === 'function' ) {
-			command();
+			cmd !== 'radiosave' ? command() : webRadioNew( GUI.list.name, GUI.list.path );
 		} else {
 			if ( cmd !== 'update' ) {
 				if ( cmd.replace( 'wr', '' ).slice( 0, 3 ) === 'add' ) {
@@ -96,8 +100,6 @@ $( '.contextmenu a' ).click( function() {
 				$.post( 'enhance.php', { mpc: command } );
 			}
 		}
-	} else if ( cmd === 'dirblesave' ) {
-		webRadioNew( GUI.list.name, GUI.list.path );
 	} else if ( cmd === 'plashuffle' ) {
 		$.post( '/db/?cmd=pl-ashuffle', { playlist: name } );
 		$( '#random' ).addClass( 'btn-primary ashuffle' );
@@ -281,7 +283,9 @@ function addWebradio( name, url, oldname ) {
 	GUI.local = 1;
 	setTimeout( function() { GUI.local = 0 }, 500 );
 	
-	$.post( 'enhance.php', { webradios: data } );
+	$.post( 'enhance.php', { webradios: data }, function() {
+		if ( GUI.playlist ) $( '#tab-playlist' ).click();
+	} );
 }
 function webRadioVerify( name, url, oldname ) {
 	if ( !name || !url ) {

@@ -134,8 +134,8 @@ GUI.sortableli = new Sortable( document.getElementById( 'divhomeblocks' ), {
 	, onUpdate   : function ( e ) {
 		var $blocks = $( '.home-block:not(.home-bookmark)' );
 		var homeorder = '';
-		$.each( $blocks, function( i, el ) {
-			homeorder += el.id.replace( 'home-', '' ) +',';
+		$blocks.each( function() {
+			homeorder += this.id.replace( 'home-', '' ) +',';
 		} );
 		homeorder = homeorder.slice( 0, -1 );
 		GUI.display.library = homeorder;
@@ -571,6 +571,7 @@ $( '#menu-top, #menu-bottom, #settings' ).click( function( e ) {
 	if ( e.target.id !== 'menu-settings' && e.target.id !== 'badge' ) $( '#settings' ).addClass( 'hide' );
 	$( '.controls' ).addClass( 'hide' );
 	$( '.controls1, .rs-tooltip, #imode' ).removeClass( 'hide' );
+	$( '#swipebar' ).addClass( 'transparent' );
 } );
 $( '#playsource-open' ).click( function() {
 	$( '#playsource li a' ).addClass( 'inactive' );
@@ -790,9 +791,11 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	if ( $this.hasClass( 'licover' ) && GUI.dbbackdata.length ) {
 		if ( [ 'artist', 'composer', 'genre' ].indexOf( GUI.dbbackdata[ 0 ].browsemode ) !== -1 ) {
 			GUI.filelist = '';
-			$.each( $( '#db-entries li .lipath' ).slice( 1 ), function( i, el ) {
-				GUI.filelist += '"'+ el.text.replace( /"/g, '\"' ) +'" ';
+			$( '#db-entries li .lipath' ).slice( 1 ).each( function() {
+				var path = $( this ).text();
+				GUI.filelist += '"'+ path.replace( /"/g, '\"' ) +'" ';
 			} );
+			console.log(GUI.filelist)
 		}
 	}
 	if ( $this.find( '.fa-music' ).length || $this.find( '.fa-webradio' ).length ) {
@@ -858,12 +861,12 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 		} );
 		GUI.plugin = 'Dirble';
 	} else if ( $this.attr( 'mode' ) === 'jamendo' ) {
-		// getDB( {
-			//   path      : GUI.currentpath +'/'+ $this.find( 'span' ).text()
-			// , plugin    : 'Jamendo'
-			// , querytype : 'radio'
-			// , args      : path
-		// } );
+/*		getDB( {
+			  path      : GUI.currentpath +'/'+ $this.find( 'span' ).text()
+			, plugin    : 'Jamendo'
+			, querytype : 'radio'
+			, args      : path
+		} );*/
 	}
 } );
 $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
@@ -916,9 +919,9 @@ $( '#db-index li' ).click( function() {
 		if ( $( '#db-entries .lisort:eq( 0 )' ).text()[ 0 ] === 'A' ) $this.css( 'color', '#000000' );
 		return
 	}
-	$.each( $( '#db-entries li' ), function( i, el ) {
-		if ( $( el ).find( '.lisort' ).text()[ 0 ] === indextext ) {
-			$( 'html, body' ).scrollTop( el.offsetTop - topoffset );
+	$( '#db-entries li' ).each( function() {
+		if ( $( this ).find( '.lisort' ).text()[ 0 ] === indextext ) {
+			$( 'html, body' ).scrollTop( this.offsetTop - topoffset );
 			match = 1;
 			return false
 		}
@@ -962,8 +965,8 @@ $( '#plopen' ).click( function() {
 		return stripLeading( a ).localeCompare( stripLeading( b ), undefined, { numeric: true } );
 	} );
 	var content = '';
-	pl.forEach( function( el ) {
-		content += '<li class="pl-folder"><i class="fa fa-list-ul pl-icon"><a class="liname">'+ el +'</a></i><i class="fa fa-bars pl-action" data-target="#context-menu-playlist"></i><span class="plname">'+ el +'</span></li>';
+	$.each( pl, function( i, val ) {
+		content += '<li class="pl-folder"><i class="fa fa-list-ul pl-icon"><a class="liname">'+ val +'</a></i><i class="fa fa-bars pl-action" data-target="#context-menu-playlist"></i><span class="plname">'+ val +'</span></li>';
 	} );
 	$( '#pl-editor' ).html( content +'<p></p>' ).promise().done( function() {
 		GUI.pleditor = 1;
@@ -1018,7 +1021,7 @@ $( '#plclear' ).click( function() {
 					GUI.status.playlistlength = 0;
 					renderPlaylist();
 					setPlaybackBlank();
-					$.post( 'enhance.php', { mpc: 'mpc clear' } );
+					$.post( 'enhance.php', { mpc: [ 'mpc clear', '/usr/bin/redis-cli del webradiopl' ] } );
 				}
 			} );
 		}
@@ -1142,7 +1145,14 @@ $( '#pl-entries' ).on( 'click', '.pl-icon', function( e ) {
 			$contextlist.eq( 1 ).add( $contextlist.eq( 2 ) ).addClass( 'hide' );
 		}
 	} else {
-		$contextlist.not( ':eq( 3 )' ).addClass( 'hide' );
+		$contextlist.not( ':eq( 4 )' ).addClass( 'hide' );
+	}
+	if ( $thisli.hasClass( 'webradio' ) && $thisli.find( '.unsaved' ).length ) {
+		GUI.list.name = $thisli.find( '.name' ).text();
+		GUI.list.path = $thisli.find( '.lipath' ).text();
+		$contextlist.eq( 3 ).removeClass( 'hide' );
+	} else {
+		$contextlist.eq( 3 ).addClass( 'hide' );
 	}
 	var contextnum = $contextmenu.find( 'a:not(.hide)' ).length;
 	$( '.menushadow' ).css( 'height', contextnum * 41 - 1 );
@@ -1182,7 +1192,11 @@ $( '#pl-entries' ).on( 'click', '.pl-action', function() { // remove
 	GUI.local = 1;
 	setTimeout( function() { GUI.local = 0 }, 500 );
 	
-	$.post( 'enhance.php', { mpc: 'mpc del '+ songpos } );
+	if ( !$this.hasClass( 'webradio' ) ) {
+		$.post( 'enhance.php', { mpc: 'mpc del '+ songpos } );
+	} else {
+		$.post( 'enhance.php', { mpc: [ 'mpc del '+ songpos, '/usr/bin/redis-cli hdel webradiopl "'+ $this.find( '.lipath' ).text() +'"' ] } );
+	}
 	if ( !$( '#countsong, #countradio' ).length ) {
 		GUI.status.playlistlength = 0;
 		renderPlaylist();
@@ -1279,6 +1293,15 @@ window.addEventListener( 'orientationchange', function() {
 	if ( GUI.playback ) {
 		$( '#playback-row' ).addClass( 'hide' );
 		setTimeout( function() {
+			if ( $( '.playback-block.hide' ).length && window.innerHeight > 420 ) {
+				$( '#page-playback, #playback-row' ).css( {
+					  'transform'   : ''
+					, 'padding-top' : ''
+					, 'width'       : ''
+					, 'height'      : ''
+					, 'margin'      : ''
+				} );
+			}
 			displayPlayback()
 			scrollLongText();
 			$( '#playback-row' ).removeClass( 'hide' );
