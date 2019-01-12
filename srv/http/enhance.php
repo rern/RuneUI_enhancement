@@ -388,11 +388,11 @@ function getLibrary() {
 	$rbkmarks = $redis->hGetAll( 'bkmarks' );
 	if ( $rbkmarks ) {
 		foreach ( $rbkmarks as $name => $path ) {
-			$coverart = getCover( $path.'/bookmark' ) ?: '';
+//			$coverart = getCover( $path.'/bookmark' ) ?: '';
 			$bookmarks[] = array(
 				  'name'  => $name
 				, 'path'  => $path
-				, 'coverart' => $coverart
+//				, 'coverart' => $coverart
 			);
 		}
 	} else {
