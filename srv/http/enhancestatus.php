@@ -44,10 +44,10 @@ if ( exec( 'pidof ashuffle' ) ) $status[ 'random' ] = 1;
 if ( !array_key_exists( 'song', $status ) ) $status[ 'song' ] = 0;
 $previousartist = isset( $_POST[ 'artist' ] ) ? $_POST[ 'artist' ] : '';
 $previousalbum = isset( $_POST[ 'album' ] ) ? $_POST[ 'album' ] : '';
-if ( $status[ 'ext' ] !== 'radio'
-	&& isset( $_POST[ 'statusonly' ] )
+if ( isset( $_POST[ 'statusonly' ] )
 	|| !$status[ 'playlistlength' ]
 	|| ( $status[ 'Artist' ] === $previousartist && $status[ 'Album' ] === $previousalbum )
+	&& $status[ 'ext' ] !== 'radio'
 ) {
 	echo json_encode( $status, JSON_NUMERIC_CHECK );
 	exit();
