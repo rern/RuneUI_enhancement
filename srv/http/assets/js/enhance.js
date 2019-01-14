@@ -1179,6 +1179,10 @@ $( '#pl-entries' ).on( 'click', '.pl-action', function() { // remove
 		} else {
 			$( '#pl-entries li:eq( 0 )' ).addClass( 'active' );
 			$( 'html, body' ).scrollTop( 0 );
+			if ( GUI.bars ) {
+				$( '#playback-controls button' ).removeClass( 'btn-primary' );
+				$( '#stop' ).addClass( 'btn-primary' );
+			}
 		}
 	}
 	var songpos = $this.index() + 1;
