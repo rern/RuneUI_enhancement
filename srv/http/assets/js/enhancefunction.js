@@ -1102,7 +1102,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		// fill bottom of list to mave last li movable to top
 		$( '#db-entries p' ).css( 'min-height', window.innerHeight - ( GUI.bars ? 140 : 100 ) +'px' );
 		if ( !fileplaylist ) displayIndexBar();
-		$( '.menu' ).addClass( 'hide' );
+		$( '#loader, .menu' ).addClass( 'hide' );
 	} );
 // breadcrumb directory path link
 	var iconName = {
@@ -1191,7 +1191,6 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		$( '#db-search' ).removeClass( 'hide' );
 		$( '#db-searchbtn' ).addClass( 'hide' );
 	}
-	$( '#loader' ).addClass( 'hide' );
 }
 // set path, name, artist as text to avoid double quote escape
 function data2html( inputArr, i, respType, inpath, querytype ) {
@@ -1209,7 +1208,7 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 				}
 				if ( ( inputArr.file && !inputArr.playlist ) || inpath === 'Webradio' ) {
 					if ( inpath !== 'Webradio' ) {
-						if ( inputArr.Title ) {
+						if ( 'Title' in inputArr ) {
 							var bl = $( '#db-search-keyword' ).val() ? inputArr.Artist +' - '+ inputArr.Album : inputArr.file.split( '/' ).pop();;
 							var liname = inputArr.Title
 							content = '<li class="file">'
@@ -1233,7 +1232,7 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 								 +'<span class="li1">'+ liname +'</span>'
 								 +'<span class="li2">'+ inputArr.url +'</span>'
 					}
-				} else if ( inputArr.playlist ) {
+				} else if ( 'playlist' in inputArr ) {
 					var liname = inputArr.playlist;
 					content = '<li class="playlist">'
 							 +'<a class="lipath">'+ inputArr.filepl +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
@@ -1247,7 +1246,7 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 							 +'<span class="single">'+ liname +'</span>'
 				}
 			} else if ( GUI.browsemode === 'album' ) {
-				if ( inputArr.file ) {
+				if ( 'file' in inputArr ) {
 					var liname = inputArr.Title;
 					content = '<li>'
 							 +'<a class="lipath">'+ inputArr.file +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
@@ -1272,7 +1271,7 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 							 +'<span class="single">'+ lialbum +'</span>'
 				}
 			} else if ( GUI.browsemode === 'artist' || GUI.browsemode === 'composeralbum' ) {
-				if ( inputArr.album ) {
+				if ( 'album' in inputArr ) {
 					var liname = inputArr.album;
 					content = '<li mode="album">'
 							 +'<a class="lipath">'+ inputArr.album +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
@@ -1286,7 +1285,7 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 							 +'<span class="single">'+ liname +'</span>'
 				}
 			} else if ( GUI.browsemode === 'albumartist' ) {
-				if ( inputArr.album ) {
+				if ( 'album' in inputArr ) {
 					var liname = inputArr.album;
 					content = '<li mode="album">'
 							 +'<a class="lipath">'+ inputArr.album +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
@@ -1306,13 +1305,13 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 						 +'<i class="fa fa-composer db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-composer"></i>'
 						 +'<span class="single">'+ inputArr.composer +'</span>'
 			} else if ( GUI.browsemode === 'genre' ) {
-				if ( inputArr.album ) {
+				if ( 'album' in inputArr ) {
 					var liname = inputArr.artistalbum;
 					content = '<li mode="album">'
 							 +'<a class="lipath">'+ inputArr.album +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a><a class="liartist">'+ inputArr.artist +'</a>'
 							 +'<i class="fa fa-album db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-album"></i>'
 							 +'<span class="single">'+ liname +'</span>'
-				} else if ( inputArr.file ) {
+				} else if ( 'file' in inputArr ) {
 					var liname = inputArr.Title;
 					content = '<li>'
 							 +'<a class="lipath">'+ inputArr.file +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
@@ -1429,6 +1428,7 @@ function htmlPlaylist( data ) {
 	var licover = '',
 		coverart = '',
 		album = '',
+		albumartist = '',
 		artist = '',
 		composer = '',
 		genre = '',
@@ -1436,17 +1436,19 @@ function htmlPlaylist( data ) {
 	content = pl = iconhtml = topline = bottomline = '';
 	countradio = countsong = pltime = sec = 0;
 	$.each( data, function( i, value ) {
-		if ( value.coverart ) {
+		if ( 'coverart' in value ) {
 			coverart = value.coverart;
-		} else if ( value.album ) {
+		} else if ( 'album' in value ) {
 			album = value.album;
-		} else if ( value.artist ) {
+		} else if ( 'albumartist' in value ) {
+			albumartist = value.albumartist;
+		} else if ( 'artist' in value ) {
 			artist = value.artist;
-		} else if ( value.composer ) {
+		} else if ( 'composer' in value ) {
 			composer = value.composer;
-		} else if ( value.genre ) {
+		} else if ( 'genre' in value ) {
 			genre = value.genre;
-		} else if ( value.path ) {
+		} else if ( 'path' in value ) {
 			path = value.path;
 		} else if ( value.track && value.track.slice( 0, 4 ) === 'http' ) {
 			var title = value.Title && value.Title || '';

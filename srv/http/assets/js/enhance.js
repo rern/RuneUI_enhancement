@@ -966,7 +966,11 @@ $( '#plopen' ).click( function() {
 	} );
 	var content = '';
 	$.each( pl, function( i, val ) {
-		content += '<li class="pl-folder"><i class="fa fa-list-ul pl-icon"><a class="liname">'+ val +'</a></i><i class="fa fa-bars pl-action" data-target="#context-menu-playlist"></i><span class="plname">'+ val +'</span></li>';
+		content += '<li class="pl-folder">'
+				  +'	<i class="fa fa-list-ul pl-icon"><a class="liname">'+ val +'</a></i>'
+				  +'	<span class="plname">'+ val +'</span>'
+				  +'	<i class="fa fa-bars pl-action" data-target="#context-menu-playlist"></i>'
+				  +'</li>';
 	} );
 	$( '#pl-editor' ).html( content +'<p></p>' ).promise().done( function() {
 		GUI.pleditor = 1;
