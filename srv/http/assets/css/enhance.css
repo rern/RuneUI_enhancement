@@ -1557,6 +1557,7 @@ span.dbpath {
 }
 #db-entries li span,
 .li1,
+.li1 a,
 w {
 	color: #e0e7ee;
 }
