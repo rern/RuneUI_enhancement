@@ -1595,7 +1595,7 @@ w {
 #pl-entries .unsaved {
 	color: #e0e7ee;
 }
-li.active i,
+li.active i:not( .unsaved ),
 li.active .li2,
 li.active gr,
 li.active .time {
