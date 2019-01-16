@@ -1452,7 +1452,7 @@ function htmlPlaylist( data ) {
 			path = value.path;
 		} else if ( value.track && value.track.slice( 0, 4 ) === 'http' ) {
 			var title = value.Title && value.Title || '';
-			var name = title.replace( '*', '' );
+			var name = title.toString().replace( '*', '' );
 			content += '<li class="webradio">'
 					  +'<i class="fa fa-webradio pl-icon'+ ( title[ 0 ] === '*' ? ' unsaved' : '' ) +'"></i>'
 					  + ( GUI.pleditor ? '<i class="fa fa-bars pl-action" data-target="#context-menu-webradiopl"></i>' : '<i class="fa fa-minus-circle pl-action"></i>' )
