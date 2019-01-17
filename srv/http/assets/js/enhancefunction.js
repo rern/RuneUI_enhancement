@@ -293,10 +293,8 @@ function second2HMS( second ) {
 	return ss ? hh + mm + ss : '';
 }
 function scrollLongText() {
-	$el = $( '#artist, #song, #album' );
-	$el
-		.css( 'animation-duration', '' )
-		.removeClass( 'scrollleft' ).hide();
+	var $el = $( '#artist, #song, #album' );
+	$el.css( 'animation-duration', '' );
 	var wW = window.innerWidth * 0.98;
 	var tWmax = 0;
 	setTimeout( function() {
@@ -307,7 +305,6 @@ function scrollLongText() {
 			if ( tW > wW ) $this.addClass( 'scrollleft' );
 		} );
 		if ( tWmax ) $( '.scrollleft' ).css( 'animation-duration', Math.round( 10 * tWmax / wW ) +'s' );
-		$el.show();
 	}, ( $( '#album' ).text().slice( 0, 4 ) === 'http' ? 300 : 0 ) );
 }
 function removeSplash() {
