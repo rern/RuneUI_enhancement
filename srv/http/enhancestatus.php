@@ -45,18 +45,19 @@ if ( !array_key_exists( 'song', $status ) ) $status[ 'song' ] = 0;
 $previousartist = isset( $_POST[ 'artist' ] ) ? $_POST[ 'artist' ] : '';
 $previousalbum = isset( $_POST[ 'album' ] ) ? $_POST[ 'album' ] : '';
 if ( isset( $_POST[ 'statusonly' ] )
-		|| !$status[ 'playlistlength' ]
-		|| ( $status[ 'Artist' ] === $previousartist && $status[ 'Album' ] === $previousalbum )
-		&& $status[ 'ext' ] !== 'radio'
+	|| !$status[ 'playlistlength' ]
+	|| ( $status[ 'Artist' ] === $previousartist && $status[ 'Album' ] === $previousalbum )
+	&& $status[ 'ext' ] !== 'radio'
 ) {
 	echo json_encode( $status, JSON_NUMERIC_CHECK );
 	exit();
 }
 
 // coverart
-if ( $activePlayer === 'MPD'
+$status[ 'coverart' ] = '';
+if ( $status[ 'ext' ] !== 'radio'
+	&& $activePlayer === 'MPD'
 	&& !empty( $status[ 'Artist' ] )
-	&& $status[ 'ext' ] !== 'radio'
 ) {
 	do {
 // 1. local coverart file

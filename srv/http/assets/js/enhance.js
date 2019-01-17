@@ -72,8 +72,6 @@ $( '.btn-cmd' ).click( function() {
 	var $this = $( this );
 	var cmd = this.id;
 	if ( $this.hasClass( 'btn-toggle' ) ) {
-		if ( GUI.status.ext === 'radio' ) return
-		
 		if ( cmd === 'random' && $this.hasClass( 'ashuffle' ) ) {
 			$.post( 'enhance.php', { bash: '/usr/bin/killall ashuffle &' } );
 			$this.removeClass( 'btn-primary ashuffle' );
@@ -84,6 +82,10 @@ $( '.btn-cmd' ).click( function() {
 		GUI.status[ cmd ] = onoff;
 		command = 'mpc '+ cmd +' '+ onoff;
 	} else {
+		if ( GUI.bars ) {
+			$( '#playback-controls .btn-cmd' ).removeClass( 'btn-primary' );
+			$this.addClass( 'btn-primary' );
+		}
 		if ( cmd === 'stop' ) {
 			command = 'mpc stop';
 			if ( GUI.status.ext === 'radio' ) $( '#song' ).empty();
@@ -103,14 +105,11 @@ $( '.btn-cmd' ).click( function() {
 					var pos = current !== last ? current + 1 : 1;
 				}
 			}
+			pos = pos || 1;
 			command = GUI.status.state === 'play' ? 'mpc play '+ pos : [ 'mpc play '+ pos, 'mpc stop' ];
 		} else {
 			command = ( GUI.status.ext === 'radio' && GUI.status.state === 'play' ) ? 'mpc stop' : 'mpc toggle';
 		}
-	}
-	if ( GUI.bars ) {
-		$( '.btn-cmd' ).removeClass( 'btn-primary' );
-		$this.addClass( 'btn-primary' );
 	}
 	$.post( 'enhance.php', { mpc: command } );
 } );
@@ -233,7 +232,7 @@ $( '#displayplayback' ).click( function() {
 		setToggleButton( 'coverlarge', '(auto)' );
 		setToggleButton( 'buttons', '(auto)' );
 	}
-	if ( window.innerHeight <= 320 ) setToggleButton( 'buttons' );
+	if ( $( '#play-group' ).is( ':hidden' ) ) setToggleButton( 'buttons' );
 } );
 $( '#turnoff' ).click( function() {
 	var localhost = document.location.hostname === 'localhost';
@@ -966,7 +965,11 @@ $( '#plopen' ).click( function() {
 	} );
 	var content = '';
 	$.each( pl, function( i, val ) {
-		content += '<li class="pl-folder"><i class="fa fa-list-ul pl-icon"><a class="liname">'+ val +'</a></i><i class="fa fa-bars pl-action" data-target="#context-menu-playlist"></i><span class="plname">'+ val +'</span></li>';
+		content += '<li class="pl-folder">'
+				  +'	<i class="fa fa-list-ul pl-icon"><a class="liname">'+ val +'</a></i>'
+				  +'	<span class="plname">'+ val +'</span>'
+				  +'	<i class="fa fa-bars pl-action" data-target="#context-menu-playlist"></i>'
+				  +'</li>';
 	} );
 	$( '#pl-editor' ).html( content +'<p></p>' ).promise().done( function() {
 		GUI.pleditor = 1;
@@ -1092,15 +1095,7 @@ $( '#pl-entries' ).on ( 'swipe', 'li', function( e ) {
 	$( '#pl-entries .pl-action' ).toggle();
 } ).on( 'tap', 'li', function( e ) {
 	$this = $( this );
-	if ( $( e.target ).parent().hasClass( 'elapsed' )
-		|| $( e.target ).is( '.elapsed, .time' )
-		&& GUI.status.state !== 'stop'
-	) {
-		$( '#stop' ).click();
-		return
-	} else if ( $( e.target ).hasClass( 'pl-icon' ) || $( e.target ).hasClass( 'pl-action' ) ) {
-		return
-	}
+	if ( $( e.target ).hasClass( 'fa' ) ) return
 	
 	var songpos = $this.index() + 1;
 	$( '#context-menu-plaction' ).addClass( 'hide' );
@@ -1120,6 +1115,9 @@ $( '#pl-entries' ).on ( 'swipe', 'li', function( e ) {
 			}
 		}
 	}
+} );
+$( '#pl-entries' ).on( 'click', '.elapsed, .time', function( e ) {
+	$( '#stop' ).click();
 } );
 $( '#pl-entries' ).on( 'click', '.pl-icon', function( e ) {
 	$thisli = $( this ).parent();
@@ -1184,6 +1182,10 @@ $( '#pl-entries' ).on( 'click', '.pl-action', function() { // remove
 		} else {
 			$( '#pl-entries li:eq( 0 )' ).addClass( 'active' );
 			$( 'html, body' ).scrollTop( 0 );
+			if ( GUI.bars ) {
+				$( '#play, #pause' ).removeClass( 'btn-primary' );
+				$( '#stop' ).addClass( 'btn-primary' );
+			}
 		}
 	}
 	var songpos = $this.index() + 1;

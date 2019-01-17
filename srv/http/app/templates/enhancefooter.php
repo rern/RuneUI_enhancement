@@ -17,7 +17,8 @@ if ( file_exists( '/srv/http/gpiosettings.php' ) ) { ?>
 <input id="bootstrapselectmincss" type="hidden" value="<?=$this->asset('/css/bootstrap-select.min.css')?>">
 <input id="gpiosettingscss" type="hidden" value="<?=$this->asset( '/css/gpiosettings.css' )?>">
 <input id="gpiosettingsjs" type="hidden" value="<?=$this->asset( '/js/gpiosettings.js' )?>">
-<input id="gpiopin" type="hidden" value="<?=$this->asset( '/img/RPi3_GPIO.svg' )?>">
+<input id="gpiopin" type="hidden" value="<?=$this->asset( '/img/RPi3_GPIO-flip.svg' )?>">
+<input id="gpiopin1" type="hidden" value="<?=$this->asset( '/img/RPi3_GPIO.svg' )?>">
 <?php
 } ?>
 <script src="<?=$this->asset( '/js/vendor/jquery-2.1.0.min.js' )?>"></script>
