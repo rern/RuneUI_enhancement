@@ -484,6 +484,7 @@ wh, gr { font-weight: 300; }
 	-moz-animation    : scrollleft 10s linear infinite;
 	-webkit-animation : scrollleft 10s linear infinite;
 	animation         : scrollleft 10s linear infinite;
+	backface-visibility: hidden;
 }
 @-moz-keyframes scrollleft {
 	0%   { -moz-transform : translateX( 100% ); }
