@@ -295,13 +295,16 @@ function second2HMS( second ) {
 function scrollLongText() {
 	$el = $( '#artist, #song, #album' );
 	$el.removeClass( 'scrollleft' ).hide();
+	var wW = window.innerWidth * 0.9;
+	var tWmax = 0;
 	setTimeout( function() {
 		$el.each( function() {
 			var $this = $( this );
 			var tW = $this.width();
-			var wW = window.innerWidth * 0.9;
-			if ( tW > wW ) $this.addClass( 'scrollleft' ).css( 'animation-duration', Math.round( 5 * tW / wW ) +'s' );
+			if ( tW > tWmax ) tWmax = tW;
+			if ( tW > wW ) $this.addClass( 'scrollleft' );
 		} );
+		if ( tWmax ) $( '.scrollleft' ).css( 'animation-duration', Math.round( 5 * tWmax / wW ) +'s' );
 		$el.show();
 	}, ( $( '#album' ).text().slice( 0, 4 ) === 'http' ? 300 : 0 ) );
 }
