@@ -1460,14 +1460,14 @@ function htmlPlaylist( data ) {
 			genre = value.genre;
 		} else if ( 'path' in value ) {
 			path = value.path;
-		} else if ( value.track && value.track.slice( 0, 4 ) === 'http' ) {
-			var title = value.Title && value.Title || '· · ·';
+		} else if ( 'track' in value && value.track.slice( 0, 4 ) === 'http' ) {
+			var title = value.Title && value.Title || '';
 			var name = title.toString().replace( '*', '' );
 			content += '<li class="webradio">'
 					  +'<i class="fa fa-webradio pl-icon'+ ( title[ 0 ] === '*' ? ' unsaved' : '' ) +'"></i>'
 					  + ( GUI.pleditor ? '<i class="fa fa-bars pl-action" data-target="#context-menu-webradiopl"></i>' : '<i class="fa fa-minus-circle pl-action"></i>' )
 					  +'<a class="lipath">'+ value.file +'</a>'
-					  +'<span class="li1"><a class="name">'+ ( name || '(Webradio)' ) +'</a><a class="song"></a><a class="elapsed"></a></span>'
+					  +'<span class="li1"><a class="name">'+ name +'</a><a class="song"></a><a class="elapsed"></a></span>'
 					  +'<span class="li2">'+ ( name ? name +' • ' : '' ) + value.file +'</span>'
 			countradio++;
 		} else {
