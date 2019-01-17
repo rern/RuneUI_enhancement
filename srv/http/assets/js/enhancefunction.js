@@ -186,7 +186,7 @@ function switchPage( page ) {
 }
 function setButtonToggle() {
 	var timehide = $( '#time-knob' ).hasClass( 'hide' );
-	if ( !$( '#play-group' ).hasClass( 'hide' ) ) {
+	if ( $( '#play-group' ).is( ':visible' ) ) {
 		$( '#irandom' ).addClass( 'hide' )
 		$( '#irepeat' ).attr( 'class', 'fa hide' );
 		if ( timehide ) {
