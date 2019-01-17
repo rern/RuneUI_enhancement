@@ -293,12 +293,17 @@ function second2HMS( second ) {
 	return ss ? hh + mm + ss : '';
 }
 function scrollLongText() {
+	$el = $( '#artist, #song, #album' );
+	$el.removeClass( 'scrollleft' ).hide();
 	setTimeout( function() {
-		$( '#divartist, #divsong, #divalbum' ).each( function() {
+		$el.each( function() {
 			var $this = $( this );
-			$this.toggleClass( 'scroll-left', $this.find( 'span' ).width() > window.innerWidth * 0.98 );
+			var tW = $this.width();
+			var pW = $this.parent().width();
+			if ( tW > pW ) $this.addClass( 'scrollleft' ).css( 'animation-duration', Math.round( 5 * tW / pW ) +'s' );
 		} );
-	}, 300 );
+		$el.show();
+	}, 0 );
 }
 function removeSplash() {
 	$( '#splash' ).remove();
@@ -774,7 +779,7 @@ function renderLibrary() {
 		var $this = $( this );
 		var tW = $this.width();
 		var pW = $this.parent().width();
-		if ( tW > pW ) $this.addClass( 'bkscroll' ).css( 'animation-duration', Math.round( 3 * tW / pW ) +'s' );
+		if ( tW > pW ) $this.addClass( 'scrollleft' ).css( 'animation-duration', Math.round( 3 * tW / pW ) +'s' );
 	} );
 	$( 'html, body' ).scrollTop( 0 );
 }
