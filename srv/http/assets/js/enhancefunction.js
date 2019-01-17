@@ -306,7 +306,7 @@ function scrollLongText() {
 			if ( tW > tWmax ) tWmax = tW;
 			if ( tW > wW ) $this.addClass( 'scrollleft' );
 		} );
-		if ( tWmax ) $( '.scrollleft' ).css( 'animation-duration', Math.round( 5 * tWmax / wW ) +'s' );
+		if ( tWmax ) $( '.scrollleft' ).css( 'animation-duration', Math.round( 10 * tWmax / wW ) +'s' );
 		$el.show();
 	}, ( $( '#album' ).text().slice( 0, 4 ) === 'http' ? 300 : 0 ) );
 }
