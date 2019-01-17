@@ -471,28 +471,19 @@ wh, gr { font-weight: 300; }
 	color: #0095d8;
 }
 /* ---------------------- info scrolling ----------------------*/
-.scroll-left {
-	overflow: hidden;
+#divartist,
+#divsong,
+#divalbum {
 	position: relative;
+	overflow: hidden;
 }
-.scroll-left span {
-	position: absolute;
-	width: auto;
-	height: 100%;
+.scrollleft {
 	-moz-transform    :translateX( 100% );
 	-webkit-transform :translateX( 100% );
 	transform         :translateX( 100% );
 	-moz-animation    : scroll-left 10s linear infinite;
 	-webkit-animation : scroll-left 10s linear infinite;
 	animation         : scroll-left 10s linear infinite;
-}
-.bkscroll {
-	-moz-transform    :translateX( 100% );
-	-webkit-transform :translateX( 100% );
-	transform         :translateX( 100% );
-	-moz-animation    : scroll-left 3s linear infinite;
-	-webkit-animation : scroll-left 3s linear infinite;
-	animation         : scroll-left 3s linear infinite;
 }
 @-moz-keyframes scroll-left {
 	0%   { -moz-transform : translateX( 100% ); }
