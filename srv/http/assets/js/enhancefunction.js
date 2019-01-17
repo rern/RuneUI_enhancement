@@ -294,7 +294,9 @@ function second2HMS( second ) {
 }
 function scrollLongText() {
 	$el = $( '#artist, #song, #album' );
-	$el.removeClass( 'scrollleft' ).hide();
+	$el
+		.css( 'animation-duration', '' )
+		.removeClass( 'scrollleft' ).hide();
 	var wW = window.innerWidth * 0.9;
 	var tWmax = 0;
 	setTimeout( function() {
@@ -782,7 +784,7 @@ function renderLibrary() {
 		var $this = $( this );
 		var tW = $this.width();
 		var pW = $this.parent().width();
-		if ( tW > pW ) $this.addClass( 'scrollleft' ).css( 'animation-duration', Math.round( 3 * tW / pW ) +'s' );
+		if ( tW > pW ) $this.addClass( 'scrollleft' ).css( 'animation-duration', Math.round( 5 * tW / pW ) +'s' );
 	} );
 	$( 'html, body' ).scrollTop( 0 );
 }
