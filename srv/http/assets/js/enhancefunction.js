@@ -1461,7 +1461,7 @@ function htmlPlaylist( data ) {
 		} else if ( 'path' in value ) {
 			path = value.path;
 		} else if ( value.track && value.track.slice( 0, 4 ) === 'http' ) {
-			var title = value.Title && value.Title || '';
+			var title = value.Title && value.Title || '· · ·';
 			var name = title.toString().replace( '*', '' );
 			content += '<li class="webradio">'
 					  +'<i class="fa fa-webradio pl-icon'+ ( title[ 0 ] === '*' ? ' unsaved' : '' ) +'"></i>'
