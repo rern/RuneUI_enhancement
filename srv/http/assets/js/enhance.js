@@ -232,7 +232,7 @@ $( '#displayplayback' ).click( function() {
 		setToggleButton( 'coverlarge', '(auto)' );
 		setToggleButton( 'buttons', '(auto)' );
 	}
-	if ( window.innerHeight <= 320 ) setToggleButton( 'buttons' );
+	if ( $( '#play-group' ).is( ':hidden' ) ) setToggleButton( 'buttons' );
 } );
 $( '#turnoff' ).click( function() {
 	var localhost = document.location.hostname === 'localhost';
