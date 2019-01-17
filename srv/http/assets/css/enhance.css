@@ -478,13 +478,10 @@ wh, gr { font-weight: 300; }
 	overflow: hidden;
 }
 .scrollleft {
-	-moz-transform    :translateX( 100% );
-	-webkit-transform :translateX( 100% );
-	transform         :translateX( 100% );
-	-moz-animation    : scrollleft 10s linear infinite;
-	-webkit-animation : scrollleft 10s linear infinite;
-	animation         : scrollleft 10s linear infinite;
-	backface-visibility: hidden;
+	-moz-animation      : scrollleft linear infinite;
+	-webkit-animation   : scrollleft linear infinite;
+	animation           : scrollleft linear infinite;
+	backface-visibility : hidden; /* for less flickering */
 }
 @-moz-keyframes scrollleft {
 	0%   { -moz-transform : translateX( 100% ); }
