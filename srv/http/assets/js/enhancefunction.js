@@ -299,11 +299,11 @@ function scrollLongText() {
 		$el.each( function() {
 			var $this = $( this );
 			var tW = $this.width();
-			var pW = $this.parent().width();
-			if ( tW > pW ) $this.addClass( 'scrollleft' ).css( 'animation-duration', Math.round( 5 * tW / pW ) +'s' );
+			var wW = window.innerWidth * 0.9;
+			if ( tW > wW ) $this.addClass( 'scrollleft' ).css( 'animation-duration', Math.round( 5 * tW / wW ) +'s' );
 		} );
 		$el.show();
-	}, 0 );
+	}, ( $( '#album' ).text().slice( 0, 4 ) === 'http' ? 300 : 0 ) );
 }
 function removeSplash() {
 	$( '#splash' ).remove();
