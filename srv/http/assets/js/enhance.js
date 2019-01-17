@@ -72,8 +72,6 @@ $( '.btn-cmd' ).click( function() {
 	var $this = $( this );
 	var cmd = this.id;
 	if ( $this.hasClass( 'btn-toggle' ) ) {
-		if ( GUI.status.ext === 'radio' ) return
-		
 		if ( cmd === 'random' && $this.hasClass( 'ashuffle' ) ) {
 			$.post( 'enhance.php', { bash: '/usr/bin/killall ashuffle &' } );
 			$this.removeClass( 'btn-primary ashuffle' );
@@ -103,6 +101,7 @@ $( '.btn-cmd' ).click( function() {
 					var pos = current !== last ? current + 1 : 1;
 				}
 			}
+			pos = pos || 1;
 			command = GUI.status.state === 'play' ? 'mpc play '+ pos : [ 'mpc play '+ pos, 'mpc stop' ];
 		} else {
 			command = ( GUI.status.ext === 'radio' && GUI.status.state === 'play' ) ? 'mpc stop' : 'mpc toggle';
@@ -112,6 +111,7 @@ $( '.btn-cmd' ).click( function() {
 		$( '.btn-cmd' ).removeClass( 'btn-primary' );
 		$this.addClass( 'btn-primary' );
 	}
+	console.log(command)
 	$.post( 'enhance.php', { mpc: command } );
 } );
 $( '#menu-settings, #badge' ).click( function() {
