@@ -82,6 +82,10 @@ $( '.btn-cmd' ).click( function() {
 		GUI.status[ cmd ] = onoff;
 		command = 'mpc '+ cmd +' '+ onoff;
 	} else {
+		if ( GUI.bars ) {
+			$( '#playback-controls .btn-cmd' ).removeClass( 'btn-primary' );
+			$this.addClass( 'btn-primary' );
+		}
 		if ( cmd === 'stop' ) {
 			command = 'mpc stop';
 			if ( GUI.status.ext === 'radio' ) $( '#song' ).empty();
@@ -107,11 +111,6 @@ $( '.btn-cmd' ).click( function() {
 			command = ( GUI.status.ext === 'radio' && GUI.status.state === 'play' ) ? 'mpc stop' : 'mpc toggle';
 		}
 	}
-	if ( GUI.bars ) {
-		$( '.btn-cmd' ).removeClass( 'btn-primary' );
-		$this.addClass( 'btn-primary' );
-	}
-	console.log(command)
 	$.post( 'enhance.php', { mpc: command } );
 } );
 $( '#menu-settings, #badge' ).click( function() {
