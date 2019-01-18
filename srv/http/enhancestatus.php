@@ -54,11 +54,7 @@ if ( isset( $_POST[ 'statusonly' ] )
 }
 
 // coverart
-$status[ 'coverart' ] = '';
-if ( $status[ 'ext' ] !== 'radio'
-	&& $activePlayer === 'MPD'
-	&& !empty( $status[ 'Artist' ] )
-) {
+if ( $status[ 'ext' ] !== 'radio' && $activePlayer === 'MPD' ) {
 	do {
 // 1. local coverart file
 		$coverfiles = array(
