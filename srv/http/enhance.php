@@ -234,9 +234,9 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		if ( $mode === 'reboot' ) {
 			// dual boot
 			exec( $sudo.'/usr/bin/mount | /usr/bin/grep -q mmcblk0p8 && /usr/bin/echo 8 > /sys/module/bcm2709/parameters/reboot_part' );
-			$cmd.= $sudo.'shutdown -r now';
+			$cmd.= $sudo.'/usr/bin/shutdown -r now';
 		} else {
-			$cmd.= $sudo.'shutdown -h now';
+			$cmd.= $sudo.'/usr/bin/shutdown -h now';
 		}
 	} else {
 		$cmd.= $sudo.'export DISPLAY=:0; xset dpms force off';
