@@ -227,17 +227,14 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 } else if ( isset( $_POST[ 'power' ] ) ) {
 	$mode = $_POST[ 'power' ];
 	$sudo = '/usr/bin/sudo /usr/bin/';
-	if ( file_exists( '/srv/http/gpio/gpiooff.py' ) ) $cmd.= '/usr/bin/sudo /srv/http/gpio/gpiooff.py;';
-	if ( $redis->get( local_browser ) === '1' ) $cmd .= $sudo.'/usr/bin/killall Xorg; /usr/local/bin/ply-image /srv/http/assets/img/bootsplash.png;';
+	$sudosrv = '/usr/bin/sudo /srv/http/';
+	if ( file_exists( '/srv/http/gpio/gpiooff.py' ) ) $cmd.= $sudosrv.'gpio/gpiooff.py;';
+	if ( $redis->get( local_browser ) === '1' ) $cmd .= $sudo.'killall Xorg; /usr/local/bin/ply-image /srv/http/assets/img/bootsplash.png;';
 	$cmd.= $sudo.'umount -f -a -t cifs nfs -l;';
 	if ( $mode !== 'screenoff' ) {
 		// dual boot
-		exec( $sudo.'/usr/bin/mount | /usr/bin/grep -q mmcblk0p8 && /usr/bin/echo 8 > /sys/module/bcm2709/parameters/reboot_part' );
-		if ( $mode === 'reboot' ) {
-			$cmd.= $sudo.'/usr/bin/shutdown -r now';
-		} else {
-			$cmd.= $sudo.'/usr/bin/shutdown -h now';
-		}
+		exec( $sudo.'mount | /usr/bin/grep -q mmcblk0p8 && /usr/bin/echo 8 > /sys/module/bcm2709/parameters/reboot_part' );
+		$cmd.= $sudo.'shutdown '.( $mode === 'reboot' ? '-r' : '-h' ).' now';
 	} else {
 		$cmd.= $sudo.'export DISPLAY=:0; xset dpms force off';
 	}
