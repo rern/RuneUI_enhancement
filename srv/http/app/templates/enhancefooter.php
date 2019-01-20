@@ -4,7 +4,7 @@
 <!-- pass cache busting assets to addonsbash.php and gpiosettings.php -->
 <?php
 $addons = $this->uri(1) === 'addons';
-$gpio = file_exists( '/srv/http/gpiosettings.php' );
+$gpio = file_exists( '/srv/http/gpio/gpiosettings.php' );
 if ( $addons || $gpio ) { ?>
 <input id="favicon" type="hidden" value="<?=$this->asset( '/img/favicon.ico' )?>">
 <input id="addonswoff" type="hidden" value="<?=$this->asset( '/fonts/addons.woff' )?>">

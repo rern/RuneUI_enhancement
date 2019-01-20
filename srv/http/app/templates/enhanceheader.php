@@ -54,7 +54,7 @@ if ( $root ) { ?>
 <?php
 	if ( strpos( $_SERVER['HTTP_USER_AGENT'], 'Midori' ) !== false ) { ?> 
 	<link rel="stylesheet" href="<?=$this->asset('/css/midori.css' )?>">
-	<?php 
+	<?php
 	}
 	if ( file_exists( '/srv/http/gpio/gpiosettings.php' ) ) { ?> 
 	<link rel="stylesheet" href="<?=$this->asset( '/css/gpio.css' )?>">
