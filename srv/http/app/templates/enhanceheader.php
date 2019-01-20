@@ -56,7 +56,7 @@ if ( $root ) { ?>
 	<link rel="stylesheet" href="<?=$this->asset('/css/midori.css' )?>">
 	<?php 
 	}
-	if ( file_exists( '/srv/http/gpiosettings.php' ) ) { ?> 
+	if ( file_exists( '/srv/http/gpio/gpiosettings.php' ) ) { ?> 
 	<link rel="stylesheet" href="<?=$this->asset( '/css/gpio.css' )?>">
 	<?php 
 	}
