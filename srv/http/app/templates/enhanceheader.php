@@ -8,6 +8,7 @@
 <?php
 $root =  empty( $this->uri(1) );
 $addons = $this->uri(1) === 'addons';
+$gpio = file_exists( '/srv/http/gpio/gpiosettings.php' );
 if ( $root ) { ?>
 	<title>RuneUIe</title>
 <?php 
@@ -56,8 +57,8 @@ if ( $root ) { ?>
 	<link rel="stylesheet" href="<?=$this->asset('/css/midori.css' )?>">
 	<?php
 	}
-	if ( file_exists( '/srv/http/gpio/gpiosettings.php' ) ) { ?> 
-	<link rel="stylesheet" href="<?=$this->asset( '/css/gpio.css' )?>">
+	if ( $gpio ) { ?> 
+	<link rel="stylesheet" href="/gpio/gpio.<?=time()?>.css">
 	<?php 
 	}
 	if ( file_exists('/srv/http/assets/js/lyrics.js') ) { ?> 
@@ -118,7 +119,7 @@ if ( $root ) { ?>
 	<a href="logout.php"><i class="fa fa-sign-out"></i>Logout</a>
 	<?php 
 	}
-	if ( file_exists('/srv/http/assets/js/gpio.js') ) { ?>
+	if ( $gpio ) { ?>
 	<a id="gpio"><i class="fa fa-gpio"></i>GPIO</a>
 	<?php 
 	} ?>
