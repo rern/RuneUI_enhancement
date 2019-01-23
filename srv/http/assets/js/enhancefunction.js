@@ -294,6 +294,7 @@ function second2HMS( second ) {
 }
 function scrollLongText() {
 	var $el = $( '#artist, #song, #album' );
+	$el.css( 'visibility', 'hidden' );
 	$( '.scrollleft' ).css( {
 		  width                : ''
 		, 'animation-duration' : ''
@@ -313,6 +314,7 @@ function scrollLongText() {
 				, 'animation-duration' : Math.round( 10 * tWmax / wW ) +'s'
 			} );
 		}
+		$el.css( 'visibility', 'visible' );
 	}, 0 );
 }
 function removeSplash() {
