@@ -88,12 +88,10 @@ $( '.contextmenu a' ).click( function() {
 							, cancel  : 1
 							, ok      : function() {
 								addReplace( mode, command, 'Playlist replaced' );
-								setPlaybackBlank();
 							}
 						} );
 					} else {
 						addReplace( mode, command, 'Playlist replaced' );
-						setPlaybackBlank();
 					}
 				}
 			} else {
