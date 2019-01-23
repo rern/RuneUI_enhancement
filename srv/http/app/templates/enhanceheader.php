@@ -5,10 +5,10 @@
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="msapplication-tap-highlight" content="no" />
-<?php
-$root =  empty( $this->uri(1) );
+<?php 
+$root = empty( $this->uri(1) );
 $addons = $this->uri(1) === 'addons';
-$gpio = file_exists( '/srv/http/gpio/gpiosettings.php' );
+$gpio = file_exists( '/srv/http/gpiosettings.php' );
 if ( $root ) { ?>
 	<title>RuneUIe</title>
 <?php 
@@ -55,10 +55,10 @@ if ( $root ) { ?>
 <?php
 	if ( strpos( $_SERVER['HTTP_USER_AGENT'], 'Midori' ) !== false ) { ?> 
 	<link rel="stylesheet" href="<?=$this->asset('/css/midori.css' )?>">
-	<?php
+	<?php 
 	}
 	if ( $gpio ) { ?> 
-	<link rel="stylesheet" href="/gpio/gpio.<?=time()?>.css">
+	<link rel="stylesheet" href="<?=$this->asset( '/css/gpio.css' )?>">
 	<?php 
 	}
 	if ( file_exists('/srv/http/assets/js/lyrics.js') ) { ?> 
