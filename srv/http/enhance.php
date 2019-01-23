@@ -232,7 +232,6 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	if ( $redis->get( local_browser ) === '1' ) $cmd .= $sudo.'killall Xorg; /usr/local/bin/ply-image /srv/http/assets/img/bootsplash.png;';
 	$cmd.= $sudo.'umount -f -a -t cifs nfs -l;';
 	if ( $mode !== 'screenoff' ) {
-		// dual boot
 		exec( $sudo.'mount | /usr/bin/grep -q mmcblk0p8 && /usr/bin/echo 8 > /sys/module/bcm2709/parameters/reboot_part' );
 		$cmd.= $sudo.'shutdown '.( $mode === 'reboot' ? '-r' : '-h' ).' now';
 	} else {
