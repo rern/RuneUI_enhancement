@@ -54,11 +54,7 @@ if ( isset( $_POST[ 'statusonly' ] )
 }
 
 // coverart
-$status[ 'coverart' ] = '';
-if ( $status[ 'ext' ] !== 'radio'
-	&& $activePlayer === 'MPD'
-	&& !empty( $status[ 'Artist' ] )
-) {
+if ( $status[ 'ext' ] !== 'radio' && $activePlayer === 'MPD' ) {
 	do {
 // 1. local coverart file
 		$coverfiles = array(
@@ -88,8 +84,8 @@ if ( $status[ 'ext' ] !== 'radio'
 		}
 		if ( isset( $status[ 'coverart' ] ) ) break;
 // 3. last.FM
-		// check internet connection
-		if ( !@fsockopen( 'ws.audioscrobbler.com', 80 ) ) {
+		// check internet connection, artist name
+		if ( !@fsockopen( 'ws.audioscrobbler.com', 80 ) || empty( $status[ 'Artist' ] ) ) {
 			$status[ 'coverart' ] = '';
 			break;
 		}

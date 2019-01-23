@@ -80,8 +80,8 @@
 				<button id="bio-open" class="btn btn-default" type="button"><i class="fa fa-bio"></i></button>
 			</div>
 		</div>
-		<div id="volume-knob" class="playback-block<?=$this->volume['divclass'] ?>">
-			<div id="volume" data-dynamic="<?=$this->volume['dynamic'] ?>"></div>
+		<div id="volume-knob" class="playback-block">
+			<div id="volume"></div>
 			<div id="volT" class="volmap"></div>
 			<div id="volL" class="volmap"></div>
 			<div id="volM" class="volmap"></div>
@@ -153,8 +153,6 @@ echo $blockhtml;
 		<ul id="db-entries" class="database"></ul>
 		<ul id="db-index" class="index hide">
 <?php
-$vu = $this->asset('/img/vu.gif');
-$vustop = $this->asset('/img/vustop.gif');
 $indexarray = range( 'A', 'Z' );
 $li = '<li>#</li>';
 foreach( $indexarray as $i => $char ) {

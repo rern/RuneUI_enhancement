@@ -6,10 +6,13 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="msapplication-tap-highlight" content="no" />
 <?php 
-if ( empty( $this->uri(1) ) ) { ?>
+$root = empty( $this->uri(1) );
+$addons = $this->uri(1) === 'addons';
+$gpio = file_exists( '/srv/http/gpiosettings.php' );
+if ( $root ) { ?>
 	<title>RuneUIe</title>
 <?php 
-} else if ( $this->uri(1) === 'addons' ) { ?>
+} else if ( $addons ) { ?>
 	<title>Rune Addons</title>
 <?php 
 } else { ?>
@@ -19,7 +22,7 @@ if ( empty( $this->uri(1) ) ) { ?>
 	<link rel="shortcut icon" href="<?=$this->asset( '/img/favicon.ico' )?>">
 	<link rel="stylesheet" href="<?=$this->asset( '/css/bootstrap.min.css' )?>">
 <?php 
-if ( empty( $this->uri(1) ) || $this->uri(1) === 'mpd' || $this->uri(1) === 'debug' ) { ?>
+if ( $root || $this->uri(1) === 'mpd' || $this->uri(1) === 'debug' ) { ?>
 	<link rel="stylesheet" href="<?=$this->asset( '/css/pnotify.custom.min.css' )?>">
 <?php
 }
@@ -38,13 +41,13 @@ function fontface( $name, $_this ) {
 		font-style : normal;
 	}";
 }
-if ( empty( $this->uri(1) ) || $this->uri(1) === 'addons' ) {
+if ( $root || $addons ) {
 	$font = fontface( 'addons', $this );
 	$font.= fontface( 'enhance', $this );
 	echo "
 	<style>$font</style>";
 }
-if ( empty( $this->uri(1) ) ) { ?>
+if ( $root ) { ?>
 	<link rel="stylesheet" href="<?=$this->asset( '/css/fontawesome.min.css' )?>">
 	<link rel="stylesheet" href="<?=$this->asset( '/css/addonsinfo.css' )?>">
 	<link rel="stylesheet" href="<?=$this->asset( '/css/roundslider.min.css' )?>">
@@ -54,7 +57,7 @@ if ( empty( $this->uri(1) ) ) { ?>
 	<link rel="stylesheet" href="<?=$this->asset('/css/midori.css' )?>">
 	<?php 
 	}
-	if ( file_exists( '/srv/http/gpiosettings.php' ) ) { ?> 
+	if ( $gpio ) { ?> 
 	<link rel="stylesheet" href="<?=$this->asset( '/css/gpio.css' )?>">
 	<?php 
 	}
@@ -62,7 +65,7 @@ if ( empty( $this->uri(1) ) ) { ?>
 	<link rel="stylesheet" href="<?=$this->asset( '/css/lyrics.css' )?>">
 	<?php 
 	}
-} else if ( $this->uri(1) === 'addons' ) { ?>
+} else if ( $addons ) { ?>
 	<link rel="stylesheet" href="<?=$this->asset( '/css/addonsinfo.css' )?>">
 	<link rel="stylesheet" href="<?=$this->asset( '/css/addons.css' )?>">
 <?php 
@@ -73,7 +76,7 @@ if ( empty( $this->uri(1) ) ) { ?>
 	<link rel="stylesheet" href="<?=$this->asset( '/css/enhancesettings.css' )?>">
 <?php 
 }
-if ( empty( $this->uri(1) ) ) { ?>
+if ( $root ) { ?>
 	<link rel="apple-touch-icon" sizes="57x57" href="<?=$this->asset( '/img/apple-touch-icon-57x57.png' )?>">
 	<link rel="apple-touch-icon" sizes="114x114" href="<?=$this->asset( '/img/apple-touch-icon-114x114.png' )?>">
 	<link rel="apple-touch-icon" sizes="72x72" href="<?=$this->asset( '/img/apple-touch-icon-72x72.png' )?>">
@@ -100,7 +103,7 @@ if ( empty( $this->uri(1) ) ) { ?>
 <body>
 
 <?php 
-if ( empty( $this->uri(1) ) ) { ?>
+if ( $root ) { ?>
 <div id="settings" class="menu hide">
 	<span class="menushadow"></span>
 	<a href="sources"><i class="fa fa-folder-open-cascade"></i>Sources</a>
@@ -116,7 +119,7 @@ if ( empty( $this->uri(1) ) ) { ?>
 	<a href="logout.php"><i class="fa fa-sign-out"></i>Logout</a>
 	<?php 
 	}
-	if ( file_exists('/srv/http/assets/js/gpio.js') ) { ?>
+	if ( $gpio ) { ?>
 	<a id="gpio"><i class="fa fa-gpio"></i>GPIO</a>
 	<?php 
 	} ?>

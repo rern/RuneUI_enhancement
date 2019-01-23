@@ -294,7 +294,11 @@ function second2HMS( second ) {
 }
 function scrollLongText() {
 	var $el = $( '#artist, #song, #album' );
-	$el.css( 'animation-duration', '' );
+	$el.css( 'visibility', 'hidden' );
+	$( '.scrollleft' ).css( {
+		  width                : ''
+		, 'animation-duration' : ''
+	} );
 	var wW = window.innerWidth * 0.98;
 	var tWmax = 0;
 	setTimeout( function() {
@@ -302,10 +306,16 @@ function scrollLongText() {
 			var $this = $( this );
 			var tW = $this.width();
 			if ( tW > tWmax ) tWmax = tW;
-			if ( tW > wW ) $this.addClass( 'scrollleft' );
+			$this.toggleClass( 'scrollleft', tW > wW );
 		} );
-		if ( tWmax ) $( '.scrollleft' ).css( 'animation-duration', Math.round( 10 * tWmax / wW ) +'s' );
-	}, ( $( '#album' ).text().slice( 0, 4 ) === 'http' ? 300 : 0 ) );
+		if ( tWmax ) {
+			$( '.scrollleft' ).css( {
+				  width                : tWmax +'px'
+				, 'animation-duration' : Math.round( 10 * tWmax / wW ) +'s'
+			} );
+		}
+		$el.css( 'visibility', 'visible' );
+	}, 0 );
 }
 function removeSplash() {
 	$( '#splash' ).remove();
