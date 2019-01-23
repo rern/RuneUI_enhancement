@@ -484,8 +484,8 @@ wh, gr { font-weight: 300; }
 	backface-visibility : hidden; /* for less flickering */
 }
 @-moz-keyframes scrollleft {
-	0%   { -moz-transform : translateX( 100% ) }
-	100% { -moz-transform : translateX( -100% ) }
+	0%   { -moz-transform    : translateX( 100% ) }
+	100% { -moz-transform    : translateX( -100% ) }
 }
 @-webkit-keyframes scrollleft {
 	0%   { -webkit-transform : translateX( 100% ) }
