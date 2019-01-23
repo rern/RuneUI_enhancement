@@ -313,7 +313,7 @@ function scrollLongText() {
 				, 'animation-duration' : Math.round( 10 * tWmax / wW ) +'s'
 			} );
 		}
-	}, ( $( '#album' ).text().slice( 0, 4 ) === 'http' ? 300 : 0 ) );
+	}, 0 );
 }
 function removeSplash() {
 	$( '#splash' ).remove();
