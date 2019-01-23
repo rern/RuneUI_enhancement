@@ -6,10 +6,9 @@
 if ( is_localhost() ) { ?>
 <script src="<?=$this->asset( '/js/vendor/jquery.onScreenKeyboard.js' )?>"></script>
 <script src="<?=$this->asset( '/js/vendor/jquery-ui.min.js' )?>"></script>
+<script src="<?=$this->asset( '/js/vendor/hammer.min.js' )?>"></script>
 <?php
 }
-$addons = $this->uri(1) === 'addons';
-$gpio = file_exists( '/srv/http/gpio/gpiosettings.php' );
 if ( empty( $this->uri(1) ) ) { ?>
 <script src="<?=$this->asset( '/js/vendor/jquery.mobile.custom.min.js' )?>"></script>
 <script src="<?=$this->asset( '/js/vendor/pushstream.min.js' )?>"></script>
@@ -24,15 +23,15 @@ if ( empty( $this->uri(1) ) ) { ?>
 <script src="<?=$this->asset( '/js/enhance.js' )?>"></script>
 <script src="<?=$this->asset( '/js/enhancecontext.js' )?>"></script>
 <?php
-	if ( $gpio ) { ?> 
-<script src="/gpio/gpio.<?=time()?>.js"></script>
+	if ( file_exists( '/srv/http/gpiosettings.php' ) ) { ?> 
+<script src="<?=$this->asset( '/js/gpio.js' )?>"></script>
 <?php 
 	}
 	if ( file_exists( '/srv/http/assets/js/lyrics.js' ) ) { ?> 
 <script src="<?=$this->asset( '/js/lyrics.js' )?>"></script>
 <?php
 	}
-} else if ( $addons ) { ?>
+} else if ( $this->uri(1) === 'addons' ) { ?>
 <script src="<?=$this->asset( '/js/vendor/jquery.mobile.custom.min.js' )?>"></script>
 <script src="<?=$this->asset( '/js/addonsinfo.js' )?>"></script>
 <script src="<?=$this->asset( '/js/addons.js' )?>"></script>
