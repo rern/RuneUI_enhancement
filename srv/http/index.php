@@ -16,9 +16,7 @@ $engine->loadExtension(new League\Plates\Extension\URI($_SERVER['REQUEST_URI']))
 $template = new League\Plates\Template($engine);
 $template->dev = $devmode;
 $controllers = array(
-	'addons',
 	'accesspoint',
-	'addons',
 	'alsamixer',
 	'cover',
 	'credits',
