@@ -1225,7 +1225,7 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 				}
 				if ( ( inputArr.file && !inputArr.playlist ) || inpath === 'Webradio' ) {
 					if ( inpath !== 'Webradio' ) {
-						if ( 'Title' in inputArr ) {
+						if ( inputArr.Title ) {
 							var bl = $( '#db-search-keyword' ).val() ? inputArr.Artist +' - '+ inputArr.Album : inputArr.file.split( '/' ).pop();;
 							var liname = inputArr.Title
 							content = '<li class="file">'
