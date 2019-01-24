@@ -7,13 +7,9 @@
 	<meta name="msapplication-tap-highlight" content="no" />
 <?php 
 $root = empty( $this->uri(1) );
-$addons = $this->uri(1) === 'addons';
 $gpio = file_exists( '/srv/http/gpiosettings.php' );
 if ( $root ) { ?>
 	<title>RuneUIe</title>
-<?php 
-} else if ( $addons ) { ?>
-	<title>Rune Addons</title>
 <?php 
 } else { ?>
 	<title>Rune Settings</title>
@@ -34,18 +30,19 @@ function fontface( $name, $_this ) {
 	$woff = $_this->asset( "/fonts/$name.woff" );
 	$ttf = $_this->asset( "/fonts/$name.ttf" );
 	return "
-	@font-face {
-		font-family: $name;
-		src        : url( '$woff' ) format( 'woff' ), url( '$ttf' ) format( 'truetype' );
-		font-weight: normal;
-		font-style : normal;
-	}";
+		@font-face {
+			font-family: $name;
+			src        : url( '$woff' ) format( 'woff' ), url( '$ttf' ) format( 'truetype' );
+			font-weight: normal;
+			font-style : normal;
+		}";
 }
-if ( $root || $addons ) {
-	$font = fontface( 'addons', $this );
-	$font.= fontface( 'enhance', $this );
-	echo "
-	<style>$font</style>";
+if ( $root ) {
+	echo
+	'<style>'
+		.fontface( 'addons', $this )
+		.fontface( 'enhance', $this )
+	.'</style>';
 }
 if ( $root ) { ?>
 	<link rel="stylesheet" href="<?=$this->asset( '/css/fontawesome.min.css' )?>">
@@ -65,10 +62,6 @@ if ( $root ) { ?>
 	<link rel="stylesheet" href="<?=$this->asset( '/css/lyrics.css' )?>">
 	<?php 
 	}
-} else if ( $addons ) { ?>
-	<link rel="stylesheet" href="<?=$this->asset( '/css/addonsinfo.css' )?>">
-	<link rel="stylesheet" href="<?=$this->asset( '/css/addons.css' )?>">
-<?php 
 } else { ?>
 	<link rel="stylesheet" href="<?=$this->asset( '/css/fontawesome.min.css' )?>">
 	<link rel="stylesheet" href="<?=$this->asset( '/css/bootstrap-select.min.css' )?>">
