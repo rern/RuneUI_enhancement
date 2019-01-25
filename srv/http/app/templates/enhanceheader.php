@@ -7,8 +7,8 @@
 	<meta name="msapplication-tap-highlight" content="no" />
 <?php 
 $root = empty( $this->uri(1) );
-$addons = file_exists( '/srv/http/addons.php' );
-$gpio = file_exists( '/srv/http/gpiosettings.php' );
+$addons = file_exists( '/srv/http/assets/fonts/addons.ttf' );
+$gpio = file_exists( '/srv/http/assets/css/gpio.css' );
 if ( $root ) { ?>
 	<title>RuneUIe</title>
 <?php 
