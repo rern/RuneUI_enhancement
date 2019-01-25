@@ -1,3 +1,137 @@
+<?php
+$blocks = array( // 'id' => array( 'path', 'icon', 'name' );
+	  'sd'          => array( 'LocalStorage', 'microsd',      'SD' )
+	, 'usb'         => array( 'USB',          'usbdrive',     'USB' )
+	, 'nas'         => array( 'NAS',          'network',      'Network' )
+	, 'webradio'    => array( 'Webradio',     'webradio',     'Webradio' )
+	, 'album'       => array( 'Album',        'album',        'Album' )
+	, 'artist'      => array( 'Artist',       'artist',       'Artist' )
+	, 'albumartist' => array( 'AlbumArtist',  'albumartist',  'Album Artist' )
+	, 'composer'    => array( 'Composer',     'composer',     'Composer' )
+	, 'genre'       => array( 'Genre',        'genre',        'Genre' )
+	, 'spotify'     => array( 'Spotify',      'spotify',      'Spotify' )
+	, 'dirble'      => array( 'Dirble',       'dirble',       'Dirble' )
+	, 'jamendo'     => array( 'Jamendo',      'jamendo',      'Jamendo' )
+);
+$blockhtml = '';
+foreach( $blocks as $id => $value ) {
+	$browsemode = in_array( $id, array( 'album', 'artist', 'albumartist', 'composer', 'genre' ) ) ? ' data-browsemode="'.$id.'"' : '';
+	$plugin = in_array( $id, array( 'spotify', 'dirble', 'jamendo' ) ) ? ' data-plugin="'.$value[ 0 ].'"' : '';
+	$blockhtml.= '
+	<div class="col-md-3">
+	<div id="home-'.$id.'" class="home-block"'.$browsemode.$plugin.'><a class="lipath">'.$value[ 0 ].'</a><i class="fa fa-'.$value[ 1 ].'"></i><wh>'.$value[ 2 ].'</wh></div>
+	</div>
+		';
+}
+$indexarray = range( 'A', 'Z' );
+$li = '<li>#</li>';
+foreach( $indexarray as $i => $char ) {
+if ( $i % 2 === 0 ) {
+	$li.= '<li>'.$char."</li>\n";
+} else {
+	$li.= '<li class="half">'.$char."</li>\n";
+}
+}
+$index = $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
+
+// context menus
+function menuli( $command, $icon, $label, $type ) {
+	$type = $type ? ' data-type="'.$type.'"' : '';
+	if ( $icon === 'folder-refresh' ) {
+		$class = ' class="update"';
+	} else if ( substr( $icon, -7 ) === 'refresh' ) {
+		$class = ' class="replace"';
+	} else if ( $icon === 'lastfm' ) {
+		$class = ' class="lastfm"';
+	}
+	return '<a data-cmd="'.$command.'"'.$type.$class.'><i class="fa fa-'.$icon.'"></i>'.$label.'</a>';
+}
+function menudiv( $id, $html ) {
+	return '<div id="context-menu-'.$id.'" class="menu contextmenu hide">'.$html.'</div>';
+}
+function menucommon( $add, $addplay, $replace, $replaceplay ) {
+	$htmlcommon = '<span class="menushadow"></span>';
+	$htmlcommon.= menuli( $add,         'plus-o',            'Add' );
+	$htmlcommon.= menuli( $addplay,     'play-plus',       'Add ► Play' );
+	$htmlcommon.= menuli( $replace,     'plus-refresh',      'Replace' );
+	$htmlcommon.= menuli( $replaceplay, 'play-plus-refresh', 'Replace ► Play' );
+	return $htmlcommon;
+}
+function menucommonsp( $type ) {
+	$htmlcommon = '<span class="menushadow"></span>';
+	$htmlcommon.= menuli( 'spadd',         'plus-o',            'Add',            $type );
+	$htmlcommon.= menuli( 'spaddplay',     'play-plus',       'Add ► Play',     $type );
+	$htmlcommon.= menuli( 'spreplaceplay', 'play-plus-refresh', 'Replace ► Play', $type );
+	return $htmlcommon;
+}
+$menu = '<div>';
+$htmlcommon = menucommon( 'add', 'addplay', 'replace', 'replaceplay' );
+
+$html = '<span class="menushadow"></span>';
+$html.= menuli( 'play',      'play',         'Play' );
+$html.= menuli( 'pause',     'pause',        'Pause' );
+$html.= menuli( 'stop',      'stop',         'Stop' );
+$html.= menuli( 'radiosave', 'save',         'Save in Webradios' );
+$html.= menuli( 'remove',    'minus-circle', 'Remove' );
+$menu.= menudiv( 'plaction', $html );
+$menudiv = '';
+
+$html = $htmlcommon;
+$html.= menuli( 'update',   'folder-refresh', 'Update' );
+$html.= menuli( 'bookmark', 'star',           'Bookmark' );
+$menu.= menudiv( 'folder', $html );
+$menudiv = '';
+$html = $htmlcommon;
+$html.= menuli( 'lastfmreplaceplay', 'lastfm', 'Last.fm playlist' );
+$menu.= menudiv( 'file', $html );
+$menudiv = '';
+$html = $htmlcommon;
+$menu.= menudiv( 'filepl', $html );
+$menudiv = '';
+$html = menucommon( 'add', 'addplay', 'replace', 'replaceplay' );
+$html.= menuli( 'radiosave', 'save', 'Save in Webradios' );
+$menu.= menudiv( 'radio', $html );
+$menudiv = '';
+$html = menucommonsp( 'spotify-playlist' );
+$menu.= menudiv( 'spotify-pl', $html );
+$menudiv = '';
+$html = menucommonsp( 'spotify-track' );
+$menu.= menudiv( 'spotify', $html );
+$menudiv = '';
+$html = menucommon( 'wradd', 'wraddplay', 'wrreplace', 'wrreplaceplay' );
+$html.= menuli( 'wrrename', 'edit-circle',  'Rename' );
+$html.= menuli( 'wrdelete', 'minus-circle', 'Delete' );
+$menu.= menudiv( 'webradio', $html );
+$menudiv = '';
+
+$html = menucommon( 'wradd', 'wraddplay', 'wrreplace', 'wrreplaceplay' );
+$menu.= menudiv( 'webradiopl', $html );
+$menudiv = '';
+
+$html = '<span class="menushadow"></span>';
+$html.= menuli( 'pladd',         'plus-o',            'Add' );
+$html.= menuli( 'pladdplay',     'play-plus',       'Add ► Play' );
+$html.= menuli( 'plashuffle',    'play-random',    '+Random ► Play' );
+$html.= menuli( 'plreplace',     'plus-refresh',      'Replace' );
+$html.= menuli( 'plreplaceplay', 'play-plus-refresh', 'Replace ► Play' );
+$html.= menuli( 'plrename',      'edit-circle',       'Rename' );
+$html.= menuli( 'pldelete',      'minus-circle',      'Delete' );
+$menu.= menudiv( 'playlist', $html );
+$menudiv = '';
+$html = menucommon( 'albumadd', 'albumaddplay', 'albumreplace', 'albumreplaceplay' );
+$menu.= menudiv( 'album', $html );
+$menudiv = '';
+$html = menucommon( 'artistadd', 'artistaddplay', 'artisrreplace', 'artistreplaceplay' );
+$menu.= menudiv( 'artist', $html );
+$menudiv = '';
+$html = menucommon( 'composeradd', 'composeraddplay', 'composerreplace', 'composerreplaceplay' );
+$menu.= menudiv( 'composer', $html );
+$menudiv = '';
+$html = menucommon( 'genreadd', 'genreaddplay', 'genrereplace', 'genrereplaceplay' );
+$menu.= menudiv( 'genre', $html );
+$menu.= '</div>';
+?>
+
 <div id="page-playback" class="page hide">
 	<div id="info">
 		<div id="divartist">
@@ -120,50 +254,13 @@
 	<div id="home-blocks" class="row">
 		<div id="divbookmarks"></div>
 		<div id="divhomeblocks">
-<?php
-$blocks = array( // 'id' => array( 'path', 'icon', 'name' );
-	  'sd'          => array( 'LocalStorage', 'microsd',      'SD' )
-	, 'usb'         => array( 'USB',          'usbdrive',     'USB' )
-	, 'nas'         => array( 'NAS',          'network',      'Network' )
-	, 'webradio'    => array( 'Webradio',     'webradio',     'Webradio' )
-	, 'album'       => array( 'Album',        'album',        'Album' )
-	, 'artist'      => array( 'Artist',       'artist',       'Artist' )
-	, 'albumartist' => array( 'AlbumArtist',  'albumartist',  'Album Artist' )
-	, 'composer'    => array( 'Composer',     'composer',     'Composer' )
-	, 'genre'       => array( 'Genre',        'genre',        'Genre' )
-	, 'spotify'     => array( 'Spotify',      'spotify',      'Spotify' )
-	, 'dirble'      => array( 'Dirble',       'dirble',       'Dirble' )
-	, 'jamendo'     => array( 'Jamendo',      'jamendo',      'Jamendo' )
-);
-$blockhtml = '';
-foreach( $blocks as $id => $value ) {
-	$browsemode = in_array( $id, array( 'album', 'artist', 'albumartist', 'composer', 'genre' ) ) ? ' data-browsemode="'.$id.'"' : '';
-	$plugin = in_array( $id, array( 'spotify', 'dirble', 'jamendo' ) ) ? ' data-plugin="'.$value[ 0 ].'"' : '';
-	$blockhtml.= '
-			<div class="col-md-3">
-				<div id="home-'.$id.'" class="home-block"'.$browsemode.$plugin.'><a class="lipath">'.$value[ 0 ].'</a><i class="fa fa-'.$value[ 1 ].'"></i><wh>'.$value[ 2 ].'</wh></div>
-			</div>
-	';
-}
-echo $blockhtml;
-?>
+			<?=$blockhtml?>
 		</div>
 	</div>
 	<div id="db-list">
 		<ul id="db-entries" class="database"></ul>
 		<ul id="db-index" class="index hide">
-<?php
-$indexarray = range( 'A', 'Z' );
-$li = '<li>#</li>';
-foreach( $indexarray as $i => $char ) {
-if ( $i % 2 === 0 ) {
-	$li.= '<li>'.$char."</li>\n";
-} else {
-	$li.= '<li class="half">'.$char."</li>\n";
-}
-}
-echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
-?>
+			<?=$index?>
 		</ul>
 	</div>
 </div>
@@ -185,9 +282,9 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 			<i id="plopen" class="fa fa-folder-open fa-lg"></i>
 			<i id="plsave" class="fa fa-save fa-lg"></i>
 			<i id="plcrop" class="fa fa-crop fa-lg"></i>
-<?php if ( file_exists('/srv/http/assets/js/RuneYoutube.js') ) { ?>
+				<?php if ( file_exists('/srv/http/assets/js/RuneYoutube.js') ) { ?>
 			<i id="pl-import-youtube" class="fa fa-youtube-play fa-lg" data-toggle="modal" data-target="#modal-pl-youtube"></i>
-<?php } ?>
+				<?php } ?>
 			<i id="plclear" class="fa fa-minus-circle fa-lg"></i>
 		</div>
 		<button id="pl-filter-results" class="btn hide" type="button"></button>
@@ -196,18 +293,7 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 		<ul id="pl-entries" class="playlist"></ul>
 		<ul id="pl-editor" class="hide"></ul>
 		<ul id="pl-index" class="index hide">
-<?php
-$indexarray = range( 'A', 'Z' );
-$li = '<li>#</li>';
-foreach( $indexarray as $i => $char ) {
-if ( $i % 2 === 0 ) {
-	$li.= '<li>'.$char."</li>\n";
-} else {
-	$li.= '<li class="half">'.$char."</li>\n";
-}
-}
-echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
-?>
+			<?=$index?>
 		</ul>
 		<div id="playlist-warning" class="playlist hide">
 			<i class="fa fa-plus-circle"></i><br>
@@ -224,105 +310,7 @@ echo $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 		</div>
 	</div>
 </div>
-<?php
-// context menus
-function menuli( $command, $icon, $label, $type ) {
-	$type = $type ? ' data-type="'.$type.'"' : '';
-	if ( $icon === 'folder-refresh' ) {
-		$class = ' class="update"';
-	} else if ( substr( $icon, -7 ) === 'refresh' ) {
-		$class = ' class="replace"';
-	} else if ( $icon === 'lastfm' ) {
-		$class = ' class="lastfm"';
-	}
-	return '<a data-cmd="'.$command.'"'.$type.$class.'><i class="fa fa-'.$icon.'"></i>'.$label.'</a>';
-}
-function menudiv( $id, $html ) {
-	return '<div id="context-menu-'.$id.'" class="menu contextmenu hide">'.$html.'</div>';
-}
-function menucommon( $add, $addplay, $replace, $replaceplay ) {
-	$htmlcommon = '<span class="menushadow"></span>';
-	$htmlcommon.= menuli( $add,         'plus-o',            'Add' );
-	$htmlcommon.= menuli( $addplay,     'play-plus',       'Add ► Play' );
-	$htmlcommon.= menuli( $replace,     'plus-refresh',      'Replace' );
-	$htmlcommon.= menuli( $replaceplay, 'play-plus-refresh', 'Replace ► Play' );
-	return $htmlcommon;
-}
-function menucommonsp( $type ) {
-	$htmlcommon = '<span class="menushadow"></span>';
-	$htmlcommon.= menuli( 'spadd',         'plus-o',            'Add',            $type );
-	$htmlcommon.= menuli( 'spaddplay',     'play-plus',       'Add ► Play',     $type );
-	$htmlcommon.= menuli( 'spreplaceplay', 'play-plus-refresh', 'Replace ► Play', $type );
-	return $htmlcommon;
-}
-$menu = '<div>';
-$htmlcommon = menucommon( 'add', 'addplay', 'replace', 'replaceplay' );
-
-$html = '<span class="menushadow"></span>';
-$html.= menuli( 'play',      'play',         'Play' );
-$html.= menuli( 'pause',     'pause',        'Pause' );
-$html.= menuli( 'stop',      'stop',         'Stop' );
-$html.= menuli( 'radiosave', 'save',         'Save in Webradios' );
-$html.= menuli( 'remove',    'minus-circle', 'Remove' );
-$menu.= menudiv( 'plaction', $html );
-$menudiv = '';
-
-$html = $htmlcommon;
-$html.= menuli( 'update',   'folder-refresh', 'Update' );
-$html.= menuli( 'bookmark', 'star',           'Bookmark' );
-$menu.= menudiv( 'folder', $html );
-$menudiv = '';
-$html = $htmlcommon;
-$html.= menuli( 'lastfmreplaceplay', 'lastfm', 'Last.fm playlist' );
-$menu.= menudiv( 'file', $html );
-$menudiv = '';
-$html = $htmlcommon;
-$menu.= menudiv( 'filepl', $html );
-$menudiv = '';
-$html = menucommon( 'add', 'addplay', 'replace', 'replaceplay' );
-$html.= menuli( 'radiosave', 'save', 'Save in Webradios' );
-$menu.= menudiv( 'radio', $html );
-$menudiv = '';
-$html = menucommonsp( 'spotify-playlist' );
-$menu.= menudiv( 'spotify-pl', $html );
-$menudiv = '';
-$html = menucommonsp( 'spotify-track' );
-$menu.= menudiv( 'spotify', $html );
-$menudiv = '';
-$html = menucommon( 'wradd', 'wraddplay', 'wrreplace', 'wrreplaceplay' );
-$html.= menuli( 'wrrename', 'edit-circle',  'Rename' );
-$html.= menuli( 'wrdelete', 'minus-circle', 'Delete' );
-$menu.= menudiv( 'webradio', $html );
-$menudiv = '';
-
-$html = menucommon( 'wradd', 'wraddplay', 'wrreplace', 'wrreplaceplay' );
-$menu.= menudiv( 'webradiopl', $html );
-$menudiv = '';
-
-$html = '<span class="menushadow"></span>';
-$html.= menuli( 'pladd',         'plus-o',            'Add' );
-$html.= menuli( 'pladdplay',     'play-plus',       'Add ► Play' );
-$html.= menuli( 'plashuffle',    'play-random',    '+Random ► Play' );
-$html.= menuli( 'plreplace',     'plus-refresh',      'Replace' );
-$html.= menuli( 'plreplaceplay', 'play-plus-refresh', 'Replace ► Play' );
-$html.= menuli( 'plrename',      'edit-circle',       'Rename' );
-$html.= menuli( 'pldelete',      'minus-circle',      'Delete' );
-$menu.= menudiv( 'playlist', $html );
-$menudiv = '';
-$html = menucommon( 'albumadd', 'albumaddplay', 'albumreplace', 'albumreplaceplay' );
-$menu.= menudiv( 'album', $html );
-$menudiv = '';
-$html = menucommon( 'artistadd', 'artistaddplay', 'artisrreplace', 'artistreplaceplay' );
-$menu.= menudiv( 'artist', $html );
-$menudiv = '';
-$html = menucommon( 'composeradd', 'composeraddplay', 'composerreplace', 'composerreplaceplay' );
-$menu.= menudiv( 'composer', $html );
-$menudiv = '';
-$html = menucommon( 'genreadd', 'genreaddplay', 'genrereplace', 'genrereplaceplay' );
-$menu.= menudiv( 'genre', $html );
-$menu.= '</div>';
-echo $menu;
-?>
+<?=$menu?>
 <div id="overlay-social" class="overlay-scale">
     <nav>
         <ul>
@@ -347,4 +335,6 @@ echo $menu;
         </ul>
     </nav>
 </div>
-<?php if ( file_exists('/srv/http/assets/js/lyrics.js') ) include 'lyricscontainer.php';?>
+<?php
+if ( file_exists('/srv/http/assets/js/lyrics.js') ) include 'lyricscontainer.php';
+?>
