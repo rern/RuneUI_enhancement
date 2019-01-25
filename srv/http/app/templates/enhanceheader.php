@@ -119,7 +119,11 @@ if ( $root ) { ?>
 	} ?>
 	<a id="displaylibrary"><i class="fa fa-library gr"></i>Library Items</a>
 	<a id="displayplayback"><i class="fa fa-play-circle gr"></i>Playback Items</a>
+	<?php
+	if ( file_exists( '/srv/http/addons.php' ) ) { ?> 
 	<a id="addons"><i class="fa fa-addons"></i>Addons</a>
+	<?php 
+	} ?>
 </div>
 <div id="menu-top" class="hide">
 <i id="menu-settings" class="fa fa-gear"></i><span id="badge" class="hide"></span>
