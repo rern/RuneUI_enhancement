@@ -232,6 +232,7 @@ $( '#displayplayback' ).click( function() {
 		setToggleButton( 'coverlarge', '(auto)' );
 		setToggleButton( 'buttons', '(auto)' );
 	}
+	if ( $( '#play-group' ).is( ':hidden' ) ) setToggleButton( 'buttons' );
 } );
 $( '#turnoff' ).click( function() {
 	var localhost = document.location.hostname === 'localhost';
@@ -793,7 +794,6 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 				var path = $( this ).text();
 				GUI.filelist += '"'+ path.replace( /"/g, '\"' ) +'" ';
 			} );
-			console.log(GUI.filelist)
 		}
 	}
 	if ( $this.find( '.fa-music' ).length || $this.find( '.fa-webradio' ).length ) {
