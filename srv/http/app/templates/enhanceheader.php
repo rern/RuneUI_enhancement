@@ -38,9 +38,10 @@ function fontface( $name, $_this ) {
 		}";
 }
 if ( $root ) {
+	$fontaddons = file_exists( '/srv/http/addons.php' ) ? fontface( 'addons', $this ) : '';
 	echo
 	'<style>'
-		.fontface( 'addons', $this )
+		.$fontaddons
 		.fontface( 'enhance', $this )
 	.'</style>';
 }

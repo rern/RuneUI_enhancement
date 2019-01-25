@@ -16,12 +16,15 @@ if ( empty( $this->uri(1) ) ) { ?>
 <script src="<?=$this->asset( '/js/vendor/pnotify.custom.min.js' )?>"></script>
 <script src="<?=$this->asset( '/js/vendor/openwebapp.js' )?>"></script>
 <script src="<?=$this->asset( '/js/addonsinfo.js' )?>"></script>
-<script src="<?=$this->asset( '/js/addonsmenu.js' )?>"></script>
 <script src="<?=$this->asset( '/js/vendor/roundslider.min.js' )?>"></script>
 <script src="<?=$this->asset( '/js/enhancefunction.js' )?>"></script>
 <script src="<?=$this->asset( '/js/enhance.js' )?>"></script>
 <script src="<?=$this->asset( '/js/enhancecontext.js' )?>"></script>
 <?php
+	if ( file_exists( '/srv/http/addons.php' ) ) { ?> 
+<script src="<?=$this->asset( '/js/addonsmenu.js' )?>"></script>
+<?php
+	}
 	if ( file_exists( '/srv/http/gpiosettings.php' ) ) { ?> 
 <script src="<?=$this->asset( '/js/gpio.js' )?>"></script>
 <?php 
