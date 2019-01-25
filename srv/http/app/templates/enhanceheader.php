@@ -7,6 +7,7 @@
 	<meta name="msapplication-tap-highlight" content="no" />
 <?php 
 $root = empty( $this->uri(1) );
+$addons = file_exists( '/srv/http/addons.php' );
 $gpio = file_exists( '/srv/http/gpiosettings.php' );
 if ( $root ) { ?>
 	<title>RuneUIe</title>
@@ -38,7 +39,7 @@ function fontface( $name, $_this ) {
 		}";
 }
 if ( $root ) {
-	$fontaddons = file_exists( '/srv/http/addons.php' ) ? fontface( 'addons', $this ) : '';
+	$fontaddons = $addons ? fontface( 'addons', $this ) : '';
 	echo
 	'<style>'
 		.$fontaddons
@@ -120,7 +121,7 @@ if ( $root ) { ?>
 	<a id="displaylibrary"><i class="fa fa-library gr"></i>Library Items</a>
 	<a id="displayplayback"><i class="fa fa-play-circle gr"></i>Playback Items</a>
 	<?php
-	if ( file_exists( '/srv/http/addons.php' ) ) { ?> 
+	if ( $addons ) { ?> 
 	<a id="addons"><i class="fa fa-addons"></i>Addons</a>
 	<?php 
 	} ?>
