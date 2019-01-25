@@ -988,7 +988,7 @@ $( '#plsave' ).click( function() {
 $( '#plcrop' ).click( function() {
 	if ( GUI.status.state === 'stop' || !GUI.status.playlistlength ) return
 	info( {
-		  title    : 'Crop Playlist'
+		   title   : 'Crop Playlist'
 		 , message : 'Clear this playlist except current song?'
 		, cancel   : 1
 		, ok       : function() {
