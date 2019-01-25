@@ -30,7 +30,8 @@ rm -v /srv/http/assets/fonts/enhance*
 rm -v /srv/http/assets/img/{bootsplash.png,controls*,cover.svg,runelogo.svg,swipe.svg,vu*}
 rm -v /srv/http/assets/js/enhance*
 rm -v /srv/http/assets/js/vendor/{jquery-ui.min,roundslider.min}.js
-[[ ! -e /srv/http/gpiosettings.php ]] && rm -v /srv/http/assets/css/{bootstrap,bootstrap.select}.min.css
+[[ ! -e /srv/http/gpiosettings.php ]] && rm -v /srv/http/assets/css/{bootstrap.select}.min.css
+# DO NOT remove bootstrap.min.css - used by Addons
 
 mv -f /srv/http/index.php{.backup,}
 mv -f /srv/http/assets/js/vendor/pnotify.custom.min.js{.backup,}
