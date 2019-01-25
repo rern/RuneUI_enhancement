@@ -13,6 +13,11 @@ alias=enha
 installstart $@
 
 #0temp0 remove uninstall leftover
+# 20190125
+rm -rf /srv/http/addons
+sed -i '/#0temp0/,/#1temp1/ d' /etc/nginx/nginx.conf
+restartnginx
+
 redis-cli hset display contexticon '' &> /dev/null
 rm -f /srv/http/enhance.css
 rm -f /srv/http/assets/enhancesettings.js
