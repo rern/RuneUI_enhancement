@@ -44,8 +44,6 @@ if (in_array($template->uri(1), $controllers) OR empty($template->uri(1))) {
 		$_SESSION['controller'] = $template->uri(1);
 	} else {
 		$template->section = 'index';
-		$template->content = 'enhancebody';
-		$_SESSION['controller'] = 'enhancebody';
 	}
 } else {
 	$template->section = 'error';
@@ -61,8 +59,4 @@ if ($activePlayer === 'MPD') {
 } elseif ($activePlayer === 'Spotify') {
 	closeSpopSocket($spop);
 }
-$notifications = $redis->hGetAll('notifications');
-if (!empty($notifications)) 
-	foreach ($notifications as $raw_notification)
-		wrk_control($redis, 'newjob', $data = array('wrkcmd' => 'ui_notify', 'args' => $notifications, 'delay_us' => 450000));
 session_write_close();
