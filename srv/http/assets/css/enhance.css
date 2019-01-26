@@ -1,45 +1,36 @@
 @font-face {
 	font-family: Lato;
-	src: url( '../fonts/lato/lato-regular-webfont.woff' ) format( 'woff' ),
-		url( '../fonts/lato/lato-regular-webfont.ttf' ) format( 'truetype' );
+	src: url( '/fonts/lato/lato-regular-webfont.woff' ) format( 'woff' ),
+	     url( '/fonts/lato/lato-regular-webfont.ttf' ) format( 'truetype' );
 	font-weight: normal;
 	font-style: normal;
 }
 @font-face {
 	font-family: Lato;
-	src: url( '../fonts/lato/lato-light-webfont.woff' ) format( 'woff' ),
-		url( '../fonts/lato/lato-light-webfont.ttf' ) format( 'truetype' );
+	src: url( '/fonts/lato/lato-light-webfont.woff' ) format( 'woff' ),
+	     url( '/fonts/lato/lato-light-webfont.ttf' ) format( 'truetype' );
 	font-weight: 300;
 	font-style: normal;
 }
 @font-face {
 	font-family: Lato;
-	src: url( '../fonts/lato/lato-bold-webfont.woff' ) format( 'woff' ),
-		url( '../fonts/lato/lato-bold-webfont.ttf' ) format( 'truetype' );
+	src: url( '/fonts/lato/lato-bold-webfont.woff' ) format( 'woff' ),
+	     url( '/fonts/lato/lato-bold-webfont.ttf' ) format( 'truetype' );
 	font-weight: bold;
 	font-style: normal;
 }
 @font-face {
 	font-family: Lato;
-	src: url( '../fonts/lato/lato-italic-webfont.woff' ) format( 'woff' ),
-		url( '../fonts/lato/lato-italic-webfont.ttf' ) format( 'truetype' );
+	src: url( '/fonts/lato/lato-italic-webfont.woff' ) format( 'woff' ),
+	     url( '/fonts/lato/lato-italic-webfont.ttf' ) format( 'truetype' );
 	font-weight: normal;
 	font-style: italic;
-}
-@font-face {
-	font-family: FontAwesome;
-	src: url( '../fonts/fontawesome-webfont.woff' ) format( 'woff' ),
-		url( '../fonts/fontawesome-webfont.ttf' ) format( 'truetype' );
-	font-weight: normal;
-	font-style: normal;
 }
 /* ---------------------- fontawesome mod ---------------------- */
 /* 'enhance' declared in <head> for cache busting */
 .fa {
-	font-family: enhance, addons, FontAwesome;
+	font-family: enhance, addons;
 }
-#pl-entries li:before { content: none; } /* remove default css */
-
 .fa-mpd:before { content: "\f522" }
 .fa-spotify:before { content: "\f523" }
 .fa-airplay:before { content: "\f524" }
