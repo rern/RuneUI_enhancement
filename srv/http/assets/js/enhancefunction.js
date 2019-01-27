@@ -154,7 +154,9 @@ function second2HMS( second ) {
 }
 function scrollLongText() {
 	var $el = $( '#artist, #song, #album' );
-	$el.css( 'visibility', 'hidden' );
+	$el
+		.css( 'visibility', 'hidden' )
+		.removeClass( 'scrollleft' );
 	$( '.scrollleft' ).css( {
 		  width                : ''
 		, 'animation-duration' : ''
@@ -166,7 +168,7 @@ function scrollLongText() {
 			var $this = $( this );
 			var tW = $this.width();
 			if ( tW > tWmax ) tWmax = tW;
-			$this.toggleClass( 'scrollleft', tW > wW );
+			if ( tW > wW ) $this.addClass( 'scrollleft' );
 		} );
 		if ( tWmax ) {
 			$( '.scrollleft' ).css( {
