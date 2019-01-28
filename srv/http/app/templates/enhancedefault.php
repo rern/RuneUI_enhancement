@@ -7,7 +7,7 @@
 	echo '
 </head>
 <body>';
-	$this->insert('enhancebody');
+	$this->insert($this->content);
 	$this->insert('enhancescript');
 	?>
 </body>
