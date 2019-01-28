@@ -41,10 +41,6 @@
 <link rel="stylesheet" href="<?=$this->asset( '/css/pnotify.custom.min.css' )?>">
 	<?php
 	}
-	if ( is_localhost() ) { ?>
-<link rel="stylesheet" href="<?=$this->asset( '/css/onScreenKeyboard.css' )?>">
-	<?php 
-	}
 	function fontface( $name, $_this ) {
 		$woff = $_this->asset( "/fonts/$name.woff" );
 		$ttf = $_this->asset( "/fonts/$name.ttf" );

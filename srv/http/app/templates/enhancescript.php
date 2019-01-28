@@ -1,10 +1,5 @@
 <script src="<?=$this->asset( '/js/vendor/jquery-2.1.0.min.js' )?>"></script>
 	<?php 
-	if ( is_localhost() ) { ?>
-<script src="<?=$this->asset( '/js/vendor/jquery.onScreenKeyboard.js' )?>"></script>
-<script src="<?=$this->asset( '/js/vendor/jquery-ui.min.js' )?>"></script>
-	<?php
-	}
 	if ( empty( $this->uri(1) ) ) { ?>
 <script src="<?=$this->asset( '/js/vendor/jquery.mobile.custom.min.js' )?>"></script>
 <script src="<?=$this->asset( '/js/vendor/pushstream.min.js' )?>"></script>
