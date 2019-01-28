@@ -291,7 +291,7 @@ $menu.= '</div>';
 		<i id="db-searchbtn" class="fa fa-search"></i>
 		<div id="db-search" class="form-inline hide">
 			<div class="input-group">
-				<input id="db-search-keyword" class="form-control osk-trigger" type="text">
+				<input id="db-search-keyword" class="form-control" type="text">
 				<span class="input-group-btn">
 					<button id="dbsearchbtn" class="btn btn-default"><i class="fa fa-search"></i></button>
 				</span>
@@ -326,7 +326,7 @@ $menu.= '</div>';
 		<i id="pl-searchbtn" class="fa fa-search"></i>
 		<form id="pl-search" class="form-inline hide" method="post" onSubmit="return false;" role="form">
 			<div class="input-group">
-				<input id="pl-filter" class="form-control osk-trigger" type="text" data-placement="bottom" data-toggle="tooltip">
+				<input id="pl-filter" class="form-control" type="text" data-placement="bottom" data-toggle="tooltip">
 				<span class="input-group-btn">
 					<button id="plsearchbtn" class="btn btn-default" type="button"><i class="fa fa-search"></i></button>
 				</span>
