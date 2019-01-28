@@ -497,8 +497,6 @@ $( '#coverTL' ).click( function() {
 				GUI.display.time = 'checked';
 			}
 		}
-		$( '#page-playback' ).css( 'padding-top', '' );
-		$( '#playback-row' ).css( 'margin-top', '' );
 		renderPlayback();
 		displayPlayback();
 		setButton();
