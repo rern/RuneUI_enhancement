@@ -446,6 +446,7 @@ $( '#coverTL' ).click( function() {
 		$.each( status, function( key, value ) {
 			GUI.status[ key ] = value;
 		} );
+		if ( GUI.status.ext === 'radio' && GUI.status.state === 'stop' ) GUI.status.Title = '';
 		var coverlarge = GUI.display.coverlarge;
 		var time = GUI.display.time;
 		var volume = GUI.display.volume;
