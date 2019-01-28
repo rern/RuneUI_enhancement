@@ -241,8 +241,6 @@ function renderPlayback() {
 	$( '#format-bitrate' ).html( dot + status.sampling + ext );
 	if ( status.ext === 'radio' ) {
 		var radiosrc = $( '#cover-art' ).attr( 'src' );
-		var vu = $( '#vu' ).val();
-		var vustop = $( '#vustop' ).val();
 		$( '#time' ).roundSlider( 'setValue', 0 );
 		if ( status.state === 'play' ) {
 			if ( radiosrc !== vu ) $( '#cover-art' ).attr( 'src', vu );
