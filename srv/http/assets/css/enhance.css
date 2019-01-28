@@ -418,15 +418,8 @@ wh, gr { font-weight: 300; }
 #info span {
 	display: table; /* allow get width */
 	margin: 0 auto;
-	padding: 0 10px;
 	text-align: center;
 	white-space: nowrap;
-}
-#divsong,
-#artist,
-#album {
-	overflow: hidden;
-	position: relative;
 }
 #divsong {
 	height: 34px;
@@ -438,6 +431,12 @@ wh, gr { font-weight: 300; }
 #divartist,
 #divalbum {
 	height: 25px;
+}
+#song,
+#artist,
+#album {
+	overflow: hidden;
+	position: relative;
 }
 #artist,
 #album {
