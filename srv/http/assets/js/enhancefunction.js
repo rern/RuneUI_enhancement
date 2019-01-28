@@ -155,20 +155,20 @@ function second2HMS( second ) {
 function scrollLongText() {
 	var $el = $( '#artist, #song, #album' );
 	$el
-		.css( 'visibility', 'hidden' )
-		.removeClass( 'scrollleft' );
-	$( '.scrollleft' ).css( {
-		  width                : ''
-		, 'animation-duration' : ''
-	} );
-	var wW = window.innerWidth * 0.98;
+		.removeClass( 'scrollleft' )
+		.css( {
+			  width                : ''
+			, 'animation-duration' : ''
+			, visibility           : 'hidden'
+		} );
+	var wW = window.innerWidth;
 	var tWmax = 0;
 	setTimeout( function() {
 		$el.each( function() {
 			var $this = $( this );
 			var tW = $this.width();
 			if ( tW > tWmax ) tWmax = tW;
-			if ( tW > wW ) $this.addClass( 'scrollleft' );
+			if ( tW > wW * 0.98 ) $this.addClass( 'scrollleft' );
 		} );
 		if ( tWmax ) {
 			$( '.scrollleft' ).css( {
@@ -177,7 +177,7 @@ function scrollLongText() {
 			} );
 		}
 		$el.css( 'visibility', 'visible' );
-	}, 0 );
+	}, GUI.status.ext === 'radio' ? 300 : 0 );
 }
 function removeSplash() {
 	$( '#splash' ).remove();

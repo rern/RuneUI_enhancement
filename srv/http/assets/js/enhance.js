@@ -65,8 +65,6 @@ $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 		}, 'json' );
 	}, 'json' );
 }, 'json' );
-    
-if ( document.location.hostname === 'localhost' ) $( '.osk-trigger' ).onScreenKeyboard( { 'draggable': true } );
 // PLAYBACK /////////////////////////////////////////////////////////////////////////////////////
 $( '.btn-cmd' ).click( function() {
 	var $this = $( this );
@@ -497,6 +495,8 @@ $( '#coverTL' ).click( function() {
 				GUI.display.time = 'checked';
 			}
 		}
+		$( '#page-playback' ).css( 'padding-top', '' );
+		$( '#playback-row' ).css( 'margin-top', '' );
 		renderPlayback();
 		displayPlayback();
 		setButton();
