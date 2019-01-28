@@ -247,8 +247,6 @@ $menu.= '</div>';
 			<div id="divcover">
 			<img id="cover-art">
 			<input id="cover" type="hidden" value="<?=$this->asset('/img/cover.svg')?>">
-			<input id="vu" type="hidden" value="<?=$this->asset('/img/vu.gif')?>">
-			<input id="vustop" type="hidden" value="<?=$this->asset('/img/vustop.gif')?>">
 			<div id="coverartoverlay" class="hide"></div>
 			<img id="controls-cover" class="controls hide" src="<?=$this->asset('/img/controls.svg')?>">
 			<div id="coverTL" class="covermap r1 c1 ws hs"></div>

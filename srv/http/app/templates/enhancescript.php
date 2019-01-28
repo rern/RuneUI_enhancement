@@ -1,3 +1,7 @@
+<script>
+	var vu = "<?=$this->asset('/img/vu.gif')?>";
+	var vustop = "<?=$this->asset('/img/vustop.gif')?>";
+</script>
 <script src="<?=$this->asset( '/js/vendor/jquery-2.1.0.min.js' )?>"></script>
 	<?php 
 	if ( empty( $this->uri(1) ) ) { ?>
