@@ -40,7 +40,7 @@ PNotify.prototype.options.stack = {
 	, spacing1  : 10      // space between dir1
 	, spacing2  : 10      // space between dir2
 }
-var blinkdot = '<a class="dot">.</a> <a class="dot dot2">.</a> <a class="dot dot3">.</a>';
+var blinkdot = '<a class="dot">·</a>&ensp;<a class="dot dot2">·</a>&ensp;<a class="dot dot3">·</a>';
 
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 

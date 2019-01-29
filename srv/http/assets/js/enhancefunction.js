@@ -243,6 +243,7 @@ function renderPlayback() {
 		var radiosrc = $( '#cover-art' ).attr( 'src' );
 		$( '#time' ).roundSlider( 'setValue', 0 );
 		if ( status.state === 'play' ) {
+			if ( !status.Title ) $( '#song' ).html( blinkdot );
 			if ( radiosrc !== vu ) $( '#cover-art' ).attr( 'src', vu );
 			$( '#elapsed' ).html( status.state === 'play' ? blinkdot : '' );
 			var elapsed = status.elapsed;
@@ -270,6 +271,7 @@ function renderPlayback() {
 				}
 			}
 		} else {
+			$( '#song' ).html( '· &ensp;· &ensp;·' );
 			if ( radiosrc !== vustop ) $( '#cover-art' ).attr( 'src', vustop );
 			$( '#elapsed, #total, #timepos' ).empty();
 		}
