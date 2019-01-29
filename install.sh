@@ -42,21 +42,6 @@ EOF
 )
 append 'status..changed'
 #----------------------------------------------------------------------------------
-file=/srv/http/command/rune_PL_wrk
-echo $file
-
-comment 'ui_update('
-comment '^\x*runelog'
-comment "ui_render('playback'"
-
-string=$( cat <<'EOF'
-                    ui_render( 'idle', json_encode( $status[ 'changed' ] ) );
-EOF
-)
-append 'monitorMpdState'
-
-systemctl restart rune_PL_wrk
-#----------------------------------------------------------------------------------
 file=/srv/http/app/templates/mpd.php
 echo $file
 
@@ -133,9 +118,6 @@ appendS '$'
 file=/srv/http/app/templates/enhanceplayback.php  # for rune youtube
 [[ -e /usr/local/bin/uninstall_RuneYoutube.sh ]] && sed -i '/id="pl-import-youtube"/ {s/<!--//; s/-->//}' $file
 #----------------------------------------------------------------------------------
-# disable default shutdown
-systemctl disable rune_shutdown
-
 # correct version number
 [[ $( redis-cli get buildversion ) == 'beta-20160313' ]] && redis-cli set release 0.3 &> /dev/null
 
@@ -165,6 +147,11 @@ for item in bars debug dev time coverart volume buttons nas sd usb webradio albu
 done
 # fix webradio permission
 chown -R http:http /mnt/MPD/Webradio
+
+# disable default shutdown
+systemctl disable rune_shutdown
+
+systemctl restart rune_PL_wrk
 
 installfinish $@
 
