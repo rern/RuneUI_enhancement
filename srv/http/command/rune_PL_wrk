@@ -1,39 +1,30 @@
 #!/usr/bin/php
 <?php 
-include('/srv/http/app/libs/runeaudio.php');
+include( '/srv/http/app/libs/runeaudio.php' );
 
-while (1) {
+while ( 1 ) {
 	$redis = new Redis();
-	$redis->pconnect('/tmp/redis.sock');
-	$socket = openMpdSocket('/run/mpd.sock');
-	if (!$socket) {
-		sleep(3);
+	$redis->pconnect( '/tmp/redis.sock' );
+	$socket = openMpdSocket( '/run/mpd.sock' );
+	if ( !$socket ) {
+		sleep( 3 );
 	} else {
-		$status = _parseStatusResponse(MpdStatus($socket));
-		$redis->set('nextsongid', $status['nextsongid']);
-		$redis->set('lastsongid', $status['songid']);
-		$redis->set('pl_length', $status['playlistlength']);
 		do {
-			$status = monitorMpdState($socket);
-			ui_render( 'idle', json_encode( $status[ 'changed' ] ) );
-			$redis->set('nextsongid', $status['nextsongid']);
-			$redis->set('lastsongid', $status['songid']);
-			$redis->set('pl_length', $status['playlistlength']);
-			$status = ui_status($socket, $status);
-			if ($status['changed'] === 'mixer') {
-				if ($redis->get('ao') === 'PianoDACPlus' && $redis->hget('mpdconf', 'mixer_type') === 'hardware') {
-					sysCmd('amixer -D '.json_decode($redis->hget('acards', 'PianoDACPlus'))->mixer_device.' set Subwoofer '.$status['volume'].'%');
-				}
+			$status = monitorMpdState( $socket );
+			$changed = $status[ 'changed' ];
+			ui_render( 'idle', json_encode( $changed ) );
+			$status = ui_status( $socket, $status );
+			if ( $changed === 'mixer'
+				&& $redis->get( 'ao' ) === 'PianoDACPlus'
+				&& $redis->hget( 'mpdconf', 'mixer_type' ) === 'hardware'
+			) {
+				$volume = exec( 'mpc volume | cut -d' ' -f2' );
+				sysCmd( 'amixer -D '.json_decode( $redis->hget( 'acards', 'PianoDACPlus' ) )->mixer_device.' set Subwoofer '.$volume );
 			}
-			// ashuffle runs
-			$retval = sysCmd('pidof ashuffle');
-			if (intval($retval[0]) > 0) $status['random'] = '1';
-			$status['actPlayer'] = "MPD";
-			$redis->set('act_player_info', json_encode($status));
-			$errorcode = socket_last_error($socket);
-		} while ($errorcode === 0);
+			$errorcode = socket_last_error( $socket );
+		} while ( !$errorcode );
 		$redis->close();
-		closeMpdSocket($socket);
+		closeMpdSocket( $socket );
 		$redis->close();
 	}
 }
