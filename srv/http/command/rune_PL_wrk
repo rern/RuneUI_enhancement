@@ -1,5 +1,5 @@
 #!/usr/bin/php
-<?php 
+<?php
 ini_set( 'display_errors', '1' );
 ini_set( 'error_reporting', -1 );
 ini_set( 'error_log', '/var/log/runeaudio/rune_PL_wrk.log' );
@@ -7,19 +7,18 @@ include( '/var/www/app/libs/runeaudio.php' );
 error_reporting( E_ALL & ~E_NOTICE );
 
 while ( 1 ) {
-    $redis = new Redis();
-    $redis->pconnect( '/tmp/redis.sock' );
-    $activePlayer = $redis->get( 'activePlayer' );
-    if ( $activePlayer === 'MPD' ) $socket = openMpdSocket( '/run/mpd.sock' );
-    if ( !$socket ) {
-        sleep( 3 );
-    } else {
+	$redis = new Redis();
+	$redis->pconnect( '/tmp/redis.sock' );
+	$activePlayer = $redis->get( 'activePlayer' );
+	if ( $activePlayer === 'MPD' ) $socket = openMpdSocket( '/run/mpd.sock' );
+	if ( !$socket ) {
+		sleep( 3 );
+	} else {
 		if ( $activePlayer === 'MPD' ) {
 			do {
 				$status = monitorMpdState( $socket );
 				$changed = $status[ 'changed' ];
 				ui_render( 'idle', json_encode( $status[ 'changed' ] ) );
-				$status = ui_status($socket, $status);
 				if ( $changed === 'mixer'
 					&& $redis->get( 'ao' ) === 'PianoDACPlus'
 					&& $redis->hget( 'mpdconf', 'mixer_type' ) === 'hardware'
@@ -30,9 +29,8 @@ while ( 1 ) {
 				}
 				$errorcode = socket_last_error( $socket );
 			} while ( !$errorcode );
-			$redis->close();
 			closeMpdSocket( $socket );
+			$redis->close();
 		}
-    }
-    $redis->close();
+	}
 }
