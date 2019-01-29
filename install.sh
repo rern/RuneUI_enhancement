@@ -20,6 +20,7 @@ restartnginx
 #1temp1
 
 mv /srv/http/index.php{,.backup}
+mv /srv/http/command/rune_PL_wrk{,.backup}
 mv /srv/http/assets/js/vendor/pnotify.custom.min.js{,.backup}
 mv /srv/http/assets/js/vendor/pushstream.min.js{,.backup}
 mv /srv/http/assets/js/vendor/Sortable.min.js{,.backup}
