@@ -45,6 +45,8 @@ file=/srv/http/command/rune_PL_wrk
 echo $file
 
 comment 'ui_update('
+comment '^\x*runelog'
+comment "ui_render('playback'"
 
 string=$( cat <<'EOF'
                     ui_render( 'idle', json_encode( $status[ 'changed' ] ) );
