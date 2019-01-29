@@ -953,8 +953,6 @@ wh, gr { font-weight: 300; }
 .dot {
 	animation: 1s blinkdot infinite;
 	-webkit-animation: 1s blinkdot infinite;
-	line-height: 8px;
-	vertical-align: 100%;
 }
 .dot2 {
 	animation-delay: 250ms;
