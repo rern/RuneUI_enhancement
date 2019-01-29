@@ -432,6 +432,7 @@ function displayTopBottom() {
 	} else {
 		GUI.bars = 1;
 		$( '#menu-top, #menu-bottom' ).removeClass( 'hide' );
+		$( '#pause' ).toggleClass( 'hide', GUI.status.ext === 'radio' );
 		$( '#db-list, #pl-list' ).css( 'padding', '' );
 		$( '.btnlist-top' ).css( 'top', '40px' );
 		$( '#home-blocks' ).css( 'padding-top', '' );
