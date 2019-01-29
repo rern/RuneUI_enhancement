@@ -271,7 +271,7 @@ function renderPlayback() {
 				}
 			}
 		} else {
-			$( '#song' ).html( '· &ensp;· &ensp;·' );
+			$( '#song' ).html( '·&ensp;·&ensp;·' );
 			if ( radiosrc !== vustop ) $( '#cover-art' ).attr( 'src', vustop );
 			$( '#elapsed, #total, #timepos' ).empty();
 		}
