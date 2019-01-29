@@ -29,7 +29,7 @@ rm -v /srv/http/assets/css/{enhance*,fontawesome.min,midori,pnotify.custom.min,r
 rm -v /srv/http/assets/fonts/enhance*
 rm -v /srv/http/assets/img/{bootsplash.png,controls*,cover.svg,runelogo.svg,swipe.svg,vu*}
 rm -v /srv/http/assets/js/enhance*
-rm -v /srv/http/assets/js/vendor/{jquery-ui.min,roundslider.min}.js
+rm -v /srv/http/assets/js/vendor/roundslider.min.js
 # DO NOT remove - used by other addons
 # bootstrap.min.css, bootstrap-select.min.css
 
