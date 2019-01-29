@@ -13,13 +13,13 @@ while ( 1 ) {
 			$status = monitorMpdState( $socket );
 			$changed = $status[ 'changed' ];
 			ui_render( 'idle', json_encode( $changed ) );
-			$status = ui_status( $socket, $status );
 			if ( $changed === 'mixer'
 				&& $redis->get( 'ao' ) === 'PianoDACPlus'
 				&& $redis->hget( 'mpdconf', 'mixer_type' ) === 'hardware'
 			) {
 				$volume = exec( 'mpc volume | cut -d' ' -f2' );
-				sysCmd( 'amixer -D '.json_decode( $redis->hget( 'acards', 'PianoDACPlus' ) )->mixer_device.' set Subwoofer '.$volume );
+				$acard = json_decode( $redis->hget( 'acards', 'PianoDACPlus' );
+				sysCmd( 'amixer -D '.$acard )->mixer_device.' set Subwoofer '.$volume );
 			}
 			$errorcode = socket_last_error( $socket );
 		} while ( !$errorcode );
