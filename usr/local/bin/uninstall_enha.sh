@@ -34,6 +34,7 @@ rm -v /srv/http/assets/js/vendor/{jquery-ui.min,roundslider.min}.js
 # bootstrap.min.css, bootstrap-select.min.css
 
 mv -f /srv/http/index.php{.backup,}
+mv -f /srv/http/command/rune_PL_wrk{.backup,}
 mv -f /srv/http/assets/js/vendor/pnotify.custom.min.js{.backup,}
 mv -f /srv/http/assets/js/vendor/pushstream.min.js{.backup,}
 mv -f /srv/http/assets/js/vendor/Sortable.min.js{.backup,}
