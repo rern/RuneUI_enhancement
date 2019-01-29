@@ -7,27 +7,32 @@ include( '/var/www/app/libs/runeaudio.php' );
 error_reporting( E_ALL & ~E_NOTICE );
 
 while ( 1 ) {
-	$redis = new Redis();
-	$redis->pconnect( '/tmp/redis.sock' );
-	if ( $redis->get( 'activePlayer' ) === 'MPD' ) {
-		$socket = openMpdSocket('/run/mpd.sock');
-		if ( !$socket ) sleep( 3 );
-		do {
-			$status = monitorMpdState( $socket );
-			$changed = $status[ 'changed' ];
-			ui_render( 'idle', json_encode( $changed ) );
-			if ( $changed === 'mixer'
-				&& $redis->get( 'ao' ) === 'PianoDACPlus'
-				&& $redis->hget( 'mpdconf', 'mixer_type' ) === 'hardware'
-			) {
-				$volume = exec( 'mpc volume | cut -d" " -f2' );
-				$acard = json_decode( $redis->hget( 'acards', 'PianoDACPlus' ) );
-				sysCmd( 'amixer -D '.$acard->mixer_device.' set Subwoofer '.$volume );
-			}
-			$errorcode = socket_last_error( $socket );
-		} while ( !$errorcode );
-		$redis->close();
-		closeMpdSocket( $socket );
-		$redis->close();
-	}
+    $redis = new Redis();
+    $redis->pconnect( '/tmp/redis.sock' );
+    $activePlayer = $redis->get( 'activePlayer' );
+    if ( $activePlayer === 'MPD' ) $socket = openMpdSocket( '/run/mpd.sock' );
+    if ( !$socket ) {
+        sleep( 3 );
+    } else {
+		if ( $activePlayer === 'MPD' ) {
+			do {
+				$status = monitorMpdState( $socket );
+				$changed = $status[ 'changed' ];
+				ui_render( 'idle', json_encode( $status[ 'changed' ] ) );
+				$status = ui_status($socket, $status);
+				if ( $changed === 'mixer'
+					&& $redis->get( 'ao' ) === 'PianoDACPlus'
+					&& $redis->hget( 'mpdconf', 'mixer_type' ) === 'hardware'
+				) {
+					$volume = exec( 'mpc volume | cut -d" " -f2' );
+					$acard = json_decode( $redis->hget( 'acards', 'PianoDACPlus' ) );
+					sysCmd( 'amixer -D '.$acard->mixer_device.' set Subwoofer '.$volume );
+				}
+				$errorcode = socket_last_error( $socket );
+			} while ( !$errorcode );
+			$redis->close();
+			closeMpdSocket( $socket );
+		}
+    }
+    $redis->close();
 }
