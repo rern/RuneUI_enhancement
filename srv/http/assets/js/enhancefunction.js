@@ -1289,7 +1289,7 @@ function setPlaylistScroll() {
 			}, 1000 );
 			if ( $liactive.hasClass( 'webradio' ) ) {
 				$liactive.find( '.name' ).addClass( 'hide' );
-				$liactive.find( '.song' ).text( status.Title );
+				$liactive.find( '.song' ).html( status.Title || blinkdot );
 			}
 		} else { // stop
 			$( '.elapsed, .song' ).empty();
