@@ -20,7 +20,6 @@ restartnginx
 #1temp1
 
 mv /srv/http/index.php{,.backup}
-mv /srv/http/command/rune_PL_wrk{,.backup}
 mv /srv/http/assets/js/vendor/pnotify.custom.min.js{,.backup}
 mv /srv/http/assets/js/vendor/pushstream.min.js{,.backup}
 mv /srv/http/assets/js/vendor/Sortable.min.js{,.backup}
@@ -41,6 +40,19 @@ string=$( cat <<'EOF'
 EOF
 )
 append 'status..changed'
+#----------------------------------------------------------------------------------
+file=/srv/http/command/rune_PL_wrk
+echo $file
+
+comment 'ui_update('
+
+string=$( cat <<'EOF'
+                    ui_render( 'idle', json_encode( $status[ 'changed' ] ) );
+EOF
+)
+append 'monitorMpdState'
+
+systemctl restart rune_PL_wrk
 #----------------------------------------------------------------------------------
 file=/srv/http/app/templates/mpd.php
 echo $file
@@ -150,8 +162,7 @@ chown -R http:http /mnt/MPD/Webradio
 
 # disable default shutdown
 systemctl disable rune_shutdown
-
-systemctl restart rune_PL_wrk
+systemctl stop rune_shutdown
 
 installfinish $@
 
