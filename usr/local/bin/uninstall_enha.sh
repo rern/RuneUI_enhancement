@@ -17,7 +17,8 @@ if [[ $1 == u ]]; then
 		fi
 	fi
 else
-	redis-cli del display webradiosampling zoomlevel &> /dev/null
+	systemctl enable rune_shutdown
+	systemctl start rune_shutdown
 fi
 
 # remove files #######################################
@@ -58,8 +59,6 @@ files="
 restorefile $files
 
 systemctl restart rune_PL_wrk
-systemctl enable rune_shutdown
-systemctl start rune_shutdown
 
 chown -R mpd:audio /mnt/MPD/Webradio
 
