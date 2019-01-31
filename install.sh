@@ -12,13 +12,6 @@ alias=enha
 
 installstart $@
 
-#0temp0 remove uninstall leftover
-# 20190125
-rm -rf /srv/http/addons
-sed -i '/#0temp0/,/#1temp1/ d' /etc/nginx/nginx.conf
-restartnginx
-#1temp1
-
 mv /srv/http/index.php{,.backup}
 mv /srv/http/assets/js/vendor/pnotify.custom.min.js{,.backup}
 mv /srv/http/assets/js/vendor/pushstream.min.js{,.backup}
