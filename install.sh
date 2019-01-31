@@ -10,6 +10,15 @@ alias=enha
 . /srv/http/addonstitle.sh
 . /srv/http/addonsedit.sh
 
+#0temp0
+# 20190126
+rm -rf /srv/http/addons
+if grep -q 0temp0; then
+	sed -i '/#0temp0/,/#1temp1/ d' /etc/nginx/nginx.conf
+	restartnginx
+fi
+#1temp1
+
 installstart $@
 
 mv /srv/http/index.php{,.backup}
