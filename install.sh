@@ -13,7 +13,7 @@ alias=enha
 #0temp0
 # 20190126
 rm -rf /srv/http/addons
-if grep -q 0temp0; then
+if grep -q 0temp0 /etc/nginx/nginx.conf; then
 	sed -i '/#0temp0/,/#1temp1/ d' /etc/nginx/nginx.conf
 	restartnginx
 fi
