@@ -110,6 +110,7 @@
 .fa-info-circle:before { content: "\f561" }
 .fa-check:before { content: "\f51B" }
 .fa-warning:before { content: "\f562" }
+.fa-refresh:before { content: "\f563" }
 /* bootstrap mod */
 .page {
 	height: 100vh;
