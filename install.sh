@@ -153,6 +153,9 @@ done
 # fix webradio permission
 chown -R http:http /mnt/MPD/Webradio
 
+echo -e "$bar Disable ACC/ALAC support ..."
+redis-cli hset mpdconf ffmpeg no
+
 # disable default shutdown
 systemctl disable rune_shutdown
 systemctl stop rune_shutdown
