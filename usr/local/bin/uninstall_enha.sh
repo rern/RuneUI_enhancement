@@ -7,20 +7,6 @@ alias=enha
 
 uninstallstart $@
 
-if [[ $1 == u ]]; then
-	zoom=$( redis-cli get zoomlevel )
-	if [[ -z $zoom ]]; then
-		if ! pacman -Q chromium &> /dev/null; then
-			zoom=$( grep '^zoom' /root/.config/midori/config | cut -d'=' -f2 )
-		else
-			zoom=$( grep '^force-device-scale-factor' /root/.xinitrc | cut -d'=' -f2 )
-		fi
-	fi
-else
-	systemctl enable rune_shutdown
-	systemctl start rune_shutdown
-fi
-
 # remove files #######################################
 echo -e "$bar Remove files ..."
 
@@ -59,6 +45,11 @@ files="
 restorefile $files
 
 systemctl restart rune_PL_wrk
+if [[ $1 != u ]]; then
+	redis-cli del display sampling &> /dev/null
+	systemctl enable rune_shutdown
+	systemctl start rune_shutdown
+fi
 
 chown -R mpd:audio /mnt/MPD/Webradio
 
