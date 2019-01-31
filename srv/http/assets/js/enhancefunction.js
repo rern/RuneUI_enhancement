@@ -232,12 +232,8 @@ function renderPlayback() {
 	
 	$( '#songposition' ).text( ( +status.song + 1 ) +'/'+ status.playlistlength );
 	var ext = ( status.ext !== 'radio' ) ? '<wh> • </wh>' + status.ext : '';
-	if ( !GUI.display.time ) {
-		$( '#format-bitrate' ).html( status.sampling + ext );
-	} else {
-		$( '#format-bitrate' ).html( '<wh id="dot0"> • </wh>' + status.sampling + ext );
-		$( '#divpos, #format-bitrate' ).css( 'display', window.innerWidth < 500 ? 'inline' : '' );
-	}
+	var dot = GUI.display.time ? '<wh id="dot0"> • </wh>' : '';
+	$( '#format-bitrate' ).html( dot + status.sampling + ext );
 	if ( status.ext === 'radio' ) {
 		var radiosrc = $( '#cover-art' ).attr( 'src' );
 		$( '#time' ).roundSlider( 'setValue', 0 );
