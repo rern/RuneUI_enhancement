@@ -1275,6 +1275,8 @@ function setPlaylistScroll() {
 			var elapsedtxt = second2HMS( elapsed );
 			$liactive.addClass( 'activeplay' );
 			$elapsed.html( '<i class="fa fa-pause"></i> '+ elapsedtxt );
+			var px = elapsed < 60 ? 165 : ( elapsed < 600 ? 180 : 195 );
+			$( '#pl-entries li.activeplay .name' ).css( 'max-width', 'calc( 100% - '+ px +'px )' );
 		} else if ( status.state === 'play' ) {
 			$liactive.addClass( 'activeplay' );
 			var time = status.Time;
@@ -1283,6 +1285,8 @@ function setPlaylistScroll() {
 				elapsed++;
 				var elapsedtxt = second2HMS( elapsed );
 				$elapsed.html( '<i class="fa fa-play"></i>'+ elapsedtxt );
+				var px = elapsed < 60 ? 165 : ( elapsed < 600 ? 180 : 195 );
+				$( '#pl-entries li.activeplay .name' ).css( 'max-width', 'calc( 100% - '+ px +'px )' );
 			}, 1000 );
 			if ( $liactive.hasClass( 'webradio' ) ) {
 				$liactive.find( '.name' ).addClass( 'hide' );
@@ -1292,6 +1296,7 @@ function setPlaylistScroll() {
 			$liactive.removeClass( 'activeplay' );
 			$( '.elapsed, .song' ).empty();
 			$( '.name' ).removeClass( 'hide' );
+			$( '#pl-entries li.active .name' ).css( 'max-width', '' );
 		}
 		$( '#plcrop' ).toggleClass( 'disable', ( status.state === 'stop' || status.playlistlength === 1 ) );
 		setTimeout( function() {
