@@ -1093,7 +1093,10 @@ $( '#pl-entries' ).on ( 'swipe', 'li', function( e ) {
 	$( '#pl-entries .pl-action' ).toggle();
 } ).on( 'tap', 'li', function( e ) {
 	$this = $( this );
-	if ( $( e.target ).is( '.fa, .elapsed, .time' ) ) return
+	if ( !$( e.target ).is( '.li2, .name' ) ) {
+		$( '#stop' ).click();
+		return
+	}
 	
 	var songpos = $this.index() + 1;
 	$( '#context-menu-plaction' ).addClass( 'hide' );
@@ -1113,9 +1116,6 @@ $( '#pl-entries' ).on ( 'swipe', 'li', function( e ) {
 			}
 		}
 	}
-} );
-$( '#pl-entries' ).on( 'click', '.elapsed, .time', function( e ) {
-	$( '#stop' ).click();
 } );
 $( '#pl-entries' ).on( 'click', '.pl-icon', function( e ) {
 	$thisli = $( this ).parent();
