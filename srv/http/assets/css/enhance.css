@@ -1455,6 +1455,11 @@ span.dbpath {
 }
 #pl-entries .pl-action {
 	font-size: 24px;
+	line-height: 45px;
+	background: #000000;
+}
+#pl-entries li.active .pl-action {
+	background: #0095d8;
 }
 .db-icon,
 .pl-icon,
@@ -1544,7 +1549,8 @@ w {
 }
 #pl-entries .li1 a {
 	display: inline-block;
-	line-height: 14px;
+	line-height: 18px;
+	vertical-align: middle;
 }
 #pl-entries .name {
 	max-width: calc( 100% - 105px );
