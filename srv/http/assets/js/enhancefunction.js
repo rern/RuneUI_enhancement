@@ -1271,23 +1271,25 @@ function setPlaylistScroll() {
 		$liactive.addClass( 'active' );
 		$elapsed = $liactive.find( '.elapsed' );
 		var elapsed = status.elapsed;
-		var slash = $liactive.hasClass( 'webradio' ) ? '' : ' / ';
 		if ( status.state === 'pause' ) {
-			var elapsedtxt = second2HMS( elapsed ) + slash;
+			var elapsedtxt = second2HMS( elapsed );
+			$liactive.addClass( 'activeplay' );
 			$elapsed.html( '<i class="fa fa-pause"></i> '+ elapsedtxt );
 		} else if ( status.state === 'play' ) {
+			$liactive.addClass( 'activeplay' );
 			var time = status.Time;
 			clearInterval( GUI.intElapsedPl ); // fix: some GUI.intElapsedPl not properly cleared
 			GUI.intElapsedPl = setInterval( function() {
 				elapsed++;
 				var elapsedtxt = second2HMS( elapsed );
-				$elapsed.html( '<i class="fa fa-play"></i><a>'+ elapsedtxt +'</a>'+ slash );
+				$elapsed.html( '<i class="fa fa-play"></i><a>'+ elapsedtxt +'</a>' );
 			}, 1000 );
 			if ( $liactive.hasClass( 'webradio' ) ) {
 				$liactive.find( '.name' ).addClass( 'hide' );
 				$liactive.find( '.song' ).html( status.Title || blinkdot );
 			}
 		} else { // stop
+			$liactive.removeClass( 'activeplay' );
 			$( '.elapsed, .song' ).empty();
 			$( '.name' ).removeClass( 'hide' );
 		}
@@ -1359,7 +1361,7 @@ function htmlPlaylist( data ) {
 			}
 			content += '<li>'
 					 + actionhtml
-					 +'<span class="li1">'+ value.Title + ( GUI.playlist && !GUI.pleditor ? '<span class="elapsed"></span>' : '' ) +'<span class="time" time="'+ sec +'">'+ value.Time +'</span></span>'
+					 +'<span class="li1"><a class="name">'+ value.Title +'</a>'+ ( GUI.playlist && !GUI.pleditor ? '<a class="elapsed"></a>' : '' ) +'<a class="time" time="'+ sec +'">'+ value.Time +'</a></span>'
 					 +'<span class="li2">'+ ( GUI.playlist ? value.track : value.file ) +'</span>'
 			countsong++;
 		}

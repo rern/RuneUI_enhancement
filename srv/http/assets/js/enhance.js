@@ -1093,7 +1093,7 @@ $( '#pl-entries' ).on ( 'swipe', 'li', function( e ) {
 	$( '#pl-entries .pl-action' ).toggle();
 } ).on( 'tap', 'li', function( e ) {
 	$this = $( this );
-	if ( $( e.target ).hasClass( 'fa' ) ) return
+	if ( $( e.target ).is( '.fa, .elapsed, .time' ) ) return
 	
 	var songpos = $this.index() + 1;
 	$( '#context-menu-plaction' ).addClass( 'hide' );
