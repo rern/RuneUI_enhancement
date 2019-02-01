@@ -1555,9 +1555,6 @@ w {
 #pl-entries .name {
 	max-width: calc( 100% - 105px );
 }
-#pl-entries li.activeplay .name {
-	max-width: calc( 100% - 175px );
-}
 .activeplay .time:before {
 	content: '/ ';
 }
