@@ -1137,16 +1137,12 @@ $( '#pl-entries' ).on( 'click', '.pl-icon', function( e ) {
 	
 	var state = GUI.status.state;
 	$contextlist.removeClass( 'hide' );
-	if ( !GUI.bars ) {
-		if ( $thisli.hasClass( 'active' ) ) {
-			$contextlist.eq( 0 ).toggleClass( 'hide', state === 'play' );
-			$contextlist.eq( 1 ).toggleClass( 'hide', state !== 'play' || $( e.target ).hasClass( 'fa-webradio' ) );
-			$contextlist.eq( 2 ).toggleClass( 'hide', state === 'stop' );
-		} else {
-			$contextlist.eq( 1 ).add( $contextlist.eq( 2 ) ).addClass( 'hide' );
-		}
+	if ( $thisli.hasClass( 'active' ) ) {
+		$contextlist.eq( 0 ).toggleClass( 'hide', state === 'play' );
+		$contextlist.eq( 1 ).toggleClass( 'hide', state !== 'play' || $( e.target ).hasClass( 'fa-webradio' ) );
+		$contextlist.eq( 2 ).toggleClass( 'hide', state === 'stop' );
 	} else {
-		$contextlist.not( ':eq( 4 )' ).addClass( 'hide' );
+		$contextlist.eq( 1 ).add( $contextlist.eq( 2 ) ).addClass( 'hide' );
 	}
 	if ( $thisli.hasClass( 'webradio' ) && $thisli.find( '.unsaved' ).length ) {
 		GUI.list.name = $thisli.find( '.name' ).text();
