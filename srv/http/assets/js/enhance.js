@@ -1085,15 +1085,20 @@ new Sortable( document.getElementById( 'pl-entries' ), {
 		$.post( 'enhance.php', { mpc: 'mpc move '+ ( e.oldIndex + 1 ) +' '+ ( e.newIndex + 1 ) } );
 	}
 } );
-$.event.special.tap.emitTapOnSwipe = false; // suppress tap on swipeleft
 $( '#pl-entries' ).on ( 'swipe', 'li', function( e ) {
+	GUI.swipe = 1;
+	setTimeout( function() { GUI.swipe = 0 }, 500 );
 	if ( GUI.display.contexticon ) return
 	
 	$( '#context-menu-plaction' ).addClass( 'hide' );
 	$( '#pl-entries .pl-action' ).toggle();
 } ).on( 'tap', 'li', function( e ) {
+	if ( GUI.swipe ) return
+	
 	$this = $( this );
-	if ( !$( e.target ).is( '.li2, .name' ) ) {
+	if ( $( e.target ).hasClass( 'pl-icon' ) ) return
+
+	if ( !$( e.target ).is( '.li1, .li2, .name' ) ) {
 		$( '#stop' ).click();
 		return
 	}
