@@ -1401,7 +1401,8 @@ wh, gr { font-weight: 300; }
 	background: #10161c
 }
 #db-entries span,
-#pl-entries span,
+#pl-entries .li1 .name,
+#pl-entries .li2,
 #pl-editor span {
 	white-space: nowrap;
 	overflow: hidden;
@@ -1541,6 +1542,19 @@ w {
 	display: block;
 	padding-top: 5px;
 }
+#pl-entries .li1 a {
+	display: inline-block;
+	line-height: 14px;
+}
+#pl-entries .name {
+	max-width: calc( 100vw - 125px );
+}
+#pl-entries li.activeplay .name {
+	max-width: calc( 100vw - 195px );
+}
+.activeplay .time:before {
+	content: '/ ';
+}
 #db-entries .time,
 #pl-editor .time {
 	margin-left: 10px;
@@ -1555,7 +1569,7 @@ w {
 	line-height: 12px;
 }
 #pl-entries .elapsed {
-	margin-left: 10px;
+	margin: 0 5px;
 }
 .time {
 	color: #7795b4 !important;
