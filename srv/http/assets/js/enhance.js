@@ -1098,10 +1098,10 @@ $( '#pl-entries' ).on ( 'swipe', 'li', function( e ) {
 	$this = $( this );
 	if ( $( e.target ).hasClass( 'pl-icon' ) ) return
 
-	if ( !$( e.target ).is( '.li1, .li2, .name' ) ) {
+/*	if ( $( e.target ).hasClass( 'elapsed' ) || $( e.target ).hasClass( 'time' ) ) {
 		$( '#stop' ).click();
 		return
-	}
+	}*/
 	
 	var songpos = $this.index() + 1;
 	$( '#context-menu-plaction' ).addClass( 'hide' );

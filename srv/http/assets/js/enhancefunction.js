@@ -1252,6 +1252,11 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 	}
 	return content +'</li>';
 }
+function setNameWidth( $liactive, elapsed ) {
+	var px = elapsed < 60 ? 165 : ( elapsed < 600 ? 180 : 195 );
+	px -= radio ? 30 : 0;
+	$liactive.find( GUI.status.ext === 'radio' ? '.song' : '.name' ).css( 'max-width', 'calc( 100% - '+ px +'px )' );
+}
 function setPlaylistScroll() {
 	if ( GUI.sortable ) return // 'skip for Sortable'
 	
@@ -1262,6 +1267,10 @@ function setPlaylistScroll() {
 	var $liactive = '';
 	var $elapsed = '';
 	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
+		$.each( status, function( key, value ) {
+			GUI.status[ key ] = value;
+		} );
+		if ( GUI.bars ) setButton();
 		// avoid flash if still current song
 		$linotactive = $( '#pl-entries li:not(:eq( '+ status.song +' ) )' );
 		$linotactive.removeClass( 'active activeplay' ).find( '.elapsed, .song' ).empty();
@@ -1269,44 +1278,46 @@ function setPlaylistScroll() {
 		
 		$liactive = $( '#pl-entries li' ).eq( status.song );
 		$liactive.addClass( 'active' );
+		$name = $liactive.find( '.name' );
+		$song = $liactive.find( '.song' );
 		$elapsed = $liactive.find( '.elapsed' );
 		var elapsed = status.elapsed;
+		var radio = GUI.status.ext === 'radio';
+		var slash = radio ? '' : ' <gr>/</gr>';
 		if ( status.state === 'pause' ) {
 			var elapsedtxt = second2HMS( elapsed );
-			$liactive.addClass( 'activeplay' );
-			$elapsed.html( '<i class="fa fa-pause"></i> '+ elapsedtxt );
-			var px = elapsed < 60 ? 165 : ( elapsed < 600 ? 180 : 195 );
-			$( '#pl-entries li.activeplay .name' ).css( 'max-width', 'calc( 100% - '+ px +'px )' );
+			$elapsed.html( '<i class="fa fa-pause"></i> '+ elapsedtxt + slash);
+			setNameWidth( $liactive, elapsed );
 		} else if ( status.state === 'play' ) {
-			$liactive.addClass( 'activeplay' );
 			var time = status.Time;
 			clearInterval( GUI.intElapsedPl ); // fix: some GUI.intElapsedPl not properly cleared
 			GUI.intElapsedPl = setInterval( function() {
 				elapsed++;
 				var elapsedtxt = second2HMS( elapsed );
-				$elapsed.html( '<i class="fa fa-play"></i>'+ elapsedtxt );
-				var px = elapsed < 60 ? 165 : ( elapsed < 600 ? 180 : 195 );
-				$( '#pl-entries li.activeplay .name' ).css( 'max-width', 'calc( 100% - '+ px +'px )' );
+				$elapsed.html( '<i class="fa fa-play"></i>'+ elapsedtxt + slash );
+				setNameWidth( $liactive, elapsed )
 			}, 1000 );
-			if ( $liactive.hasClass( 'webradio' ) ) {
-				$liactive.find( '.name' ).addClass( 'hide' );
-				$liactive.find( '.song' ).html( status.Title || blinkdot );
+			if ( radio ) {
+				$name.addClass( 'hide' );
+				$song.html( status.Title || blinkdot );
+			} else {
+				$name.removeClass( 'hide' );
+				$song.empty();
 			}
 		} else { // stop
-			$liactive.removeClass( 'activeplay' );
-			$( '.elapsed, .song' ).empty();
-			$( '.name' ).removeClass( 'hide' );
-			$( '#pl-entries li.active .name' ).css( 'max-width', '' );
+			$name
+				.removeClass( 'hide' )
+				.css( 'max-width', '' );
+			$song
+				.empty()
+				.css( 'max-width', '' );
+			$elapsed.empty();
 		}
 		$( '#plcrop' ).toggleClass( 'disable', ( status.state === 'stop' || status.playlistlength === 1 ) );
 		setTimeout( function() {
 			var scrollpos = $liactive.offset().top - $( '#pl-entries' ).offset().top - ( 49 * 3 );
 			$( 'html, body' ).scrollTop( scrollpos );
 		}, 300 );
-		$.each( status, function( key, value ) {
-			GUI.status[ key ] = value;
-		} );
-		setButton();
 	}, 'json' );
 }
 function htmlPlaylist( data ) {
