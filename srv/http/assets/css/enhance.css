@@ -1555,9 +1555,6 @@ w {
 #pl-entries .name {
 	max-width: calc( 100% - 105px );
 }
-.activeplay .time:before {
-	content: '/ ';
-}
 #db-entries .time,
 #pl-editor .time {
 	margin-left: 10px;
@@ -1572,7 +1569,7 @@ w {
 	line-height: 12px;
 }
 #pl-entries .elapsed {
-	margin: 0 5px;
+	margin: 0 3px 0 7px;
 }
 .time {
 	color: #7795b4 !important;
