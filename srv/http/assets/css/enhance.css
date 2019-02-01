@@ -1547,10 +1547,10 @@ w {
 	line-height: 14px;
 }
 #pl-entries .name {
-	max-width: calc( 100vw - 125px );
+	max-width: calc( 100% - 105px );
 }
 #pl-entries li.activeplay .name {
-	max-width: calc( 100vw - 195px );
+	max-width: calc( 100% - 175px );
 }
 .activeplay .time:before {
 	content: '/ ';
