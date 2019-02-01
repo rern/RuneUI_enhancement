@@ -1264,7 +1264,7 @@ function setPlaylistScroll() {
 	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
 		// avoid flash if still current song
 		$linotactive = $( '#pl-entries li:not(:eq( '+ status.song +' ) )' );
-		$linotactive.removeClass( 'active' ).find( '.elapsed, .song' ).empty();
+		$linotactive.removeClass( 'active activeplay' ).find( '.elapsed, .song' ).empty();
 		$linotactive.find( '.name' ).removeClass( 'hide' );
 		
 		$liactive = $( '#pl-entries li' ).eq( status.song );
@@ -1282,7 +1282,7 @@ function setPlaylistScroll() {
 			GUI.intElapsedPl = setInterval( function() {
 				elapsed++;
 				var elapsedtxt = second2HMS( elapsed );
-				$elapsed.html( '<i class="fa fa-play"></i><a>'+ elapsedtxt +'</a>' );
+				$elapsed.html( '<i class="fa fa-play"></i>'+ elapsedtxt );
 			}, 1000 );
 			if ( $liactive.hasClass( 'webradio' ) ) {
 				$liactive.find( '.name' ).addClass( 'hide' );
