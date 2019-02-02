@@ -1025,7 +1025,9 @@ function dataSort( data, path, plugin, querytype, arg ) {
 	} else {
 		var folder = path.split( '/' );
 		var folderRoot = folder[ 0 ];
-		$( '#db-currentpath' ).css( 'width', '' );
+		$( '#db-currentpath' )
+			.removeClass( 'webradio' )
+			.css( 'width', '' );
 		if ( $( '#db-search-keyword' ).val() ) {
 		// search results
 			var results = ( data.length ) ? data.length : '0';
@@ -1038,7 +1040,9 @@ function dataSort( data, path, plugin, querytype, arg ) {
 					<span>' + results + ' <a>of</a> </span>' );
 		} else if ( folderRoot === 'Webradio' ) {
 			$( '#db-currentpath .lipath' ).text( 'Webradio' );
-			$( '#db-currentpath' ).find( 'span' ).html( '<i class="fa fa-webradio"></i> <a>WEBRADIOS</a>' );
+			$( '#db-currentpath' )
+				.addClass( 'webradio' )
+				.find( 'span' ).html( '<i class="fa fa-webradio"></i> <a>WEBRADIOS</a>' );
 		} else {
 			var folderCrumb = iconName[ folderRoot ];
 			var folderPath = '';

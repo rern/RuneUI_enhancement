@@ -705,14 +705,15 @@ $( '#db-webradio-new' ).click( function() {
 } );
 $( '#db-searchbtn' ).click( function() {
 	$( '#db-search, #db-searchbtn' ).toggleClass( 'hide' );
-	$( '#db-currentpath>span' ).addClass( 'hide' );
+//	if ( $( '#db-currentpath' ).hasClass( 'webradio' ) ) $( '#db-webradio-new' ).toggleClass( 'hide' );
+	$( '#db-currentpath>span, #db-currentpath>i' ).addClass( 'hide' );
 	if ( !$( '#db-search' ).hasClass( 'hide' ) ) $( '#db-search-keyword' ).focus();
 } );
 $( '#dbsearchbtn' ).click( function() {
 	var keyword = $( '#db-search-keyword' ).val();
 	if ( !keyword ) {
 		$( '#db-search, #db-searchbtn' ).toggleClass( 'hide' );
-		$( '#db-currentpath>span' ).removeClass( 'hide' );
+		$( '#db-currentpath>span, #db-currentpath>i' ).removeClass( 'hide' );
 		return
 	}
 	GUI.dblist = 1;
