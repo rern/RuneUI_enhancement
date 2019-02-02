@@ -1252,7 +1252,7 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 	}
 	return content +'</li>';
 }
-function setNameWidth( $liactive, elapsed, radio ) {
+function setNameWidth( $title, elapsed, radio ) {
 	var px;
 	if ( elapsed < 10 ) {
 		px = 155;
@@ -1265,13 +1265,8 @@ function setNameWidth( $liactive, elapsed, radio ) {
 	} else {
 		px = 205;
 	}
-	if ( radio ) {
-		px -= 53;
-		$name = $liactive.find( '.song' )
-	} else {
-		$name = $liactive.find( '.name' )
-	}
-	$name.css( 'max-width', 'calc( 100% - '+ px +'px )' );
+	if ( radio ) px -= 53;
+	$title.css( 'max-width', 'calc( 100% - '+ px +'px )' );
 }
 function setPlaylistScroll() {
 	if ( GUI.sortable ) return // 'skip for Sortable'
@@ -1285,23 +1280,27 @@ function setPlaylistScroll() {
 			GUI.status[ key ] = value;
 		} );
 		if ( GUI.bars ) setButton();
-		// avoid flash if still current song
+		$( '#plcrop' ).toggleClass( 'disable', ( status.state === 'stop' || status.playlistlength === 1 ) );
+		setTimeout( function() {
+			var scrollpos = $liactive.offset().top - $( '#pl-entries' ).offset().top - ( 49 * 3 );
+			$( 'html, body' ).scrollTop( scrollpos );
+		}, 300 );
+		var elapsed = status.elapsed;
+		var radio = GUI.status.ext === 'radio';
+		var slash = radio ? '' : ' <gr>/</gr>';
 		$linotactive = $( '#pl-entries li:not(:eq( '+ status.song +' ) )' );
 		$linotactive.removeClass( 'active activeplay' ).find( '.elapsed, .song' ).empty();
 		$linotactive.find( '.name' ).removeClass( 'hide' );
-		
 		$liactive = $( '#pl-entries li' ).eq( status.song );
 		$liactive.addClass( 'active' );
 		$name = $liactive.find( '.name' );
 		$song = $liactive.find( '.song' );
+		$title = radio ? $song : $name;
 		$elapsed = $liactive.find( '.elapsed' );
-		var elapsed = status.elapsed;
-		var radio = GUI.status.ext === 'radio';
-		var slash = radio ? '' : ' <gr>/</gr>';
 		if ( status.state === 'pause' ) {
 			elapsedtxt = second2HMS( elapsed );
 			$elapsed.html( '<i class="fa fa-pause"></i> '+ elapsedtxt + slash);
-			setNameWidth( $liactive, elapsed, radio );
+			setNameWidth( $title, elapsed, radio );
 		} else if ( status.state === 'play' ) {
 			if ( radio ) {
 				$name.addClass( 'hide' );
@@ -1315,7 +1314,7 @@ function setPlaylistScroll() {
 				elapsed++;
 				elapsedtxt = second2HMS( elapsed );
 				$elapsed.html( '<i class="fa fa-play"></i>'+ elapsedtxt + slash );
-				setNameWidth( $liactive, elapsed, radio )
+				setNameWidth( $title, elapsed, radio )
 			}, 1000 );
 		} else { // stop
 			$name
@@ -1326,11 +1325,6 @@ function setPlaylistScroll() {
 				.css( 'max-width', '' );
 			$elapsed.empty();
 		}
-		$( '#plcrop' ).toggleClass( 'disable', ( status.state === 'stop' || status.playlistlength === 1 ) );
-		setTimeout( function() {
-			var scrollpos = $liactive.offset().top - $( '#pl-entries' ).offset().top - ( 49 * 3 );
-			$( 'html, body' ).scrollTop( scrollpos );
-		}, 300 );
 	}, 'json' );
 }
 function htmlPlaylist( data ) {
