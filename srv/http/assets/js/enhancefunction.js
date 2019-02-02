@@ -1259,13 +1259,13 @@ function setNameWidth( $title, elapsed, radio ) {
 	} else if ( elapsed < 60 ) {
 		px = 157;
 	} else if ( elapsed < 600 ) {
-		px = 171;
+		px = 170;
 	} else if ( elapsed < 3600 ) {
 		px = 180;
 	} else {
-		px = 194;
+		px = 193;
 	}
-	if ( radio ) px -= 50;
+	if ( radio ) px -= 44;
 	$title.css( 'max-width', 'calc( 100% - '+ px +'px )' );
 }
 function setPlaylistScroll() {

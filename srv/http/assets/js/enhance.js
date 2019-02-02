@@ -1309,8 +1309,13 @@ window.addEventListener( 'orientationchange', function() {
 			scrollLongText();
 			$( '#playback-row' ).removeClass( 'hide' );
 		}, 300 );
+	} else if ( GUI.playlist && !GUI.pleditor ) {
+		setTimeout( function() {
+			var scrollpos = $( '#pl-entries li.active' ).offset().top - $( '#pl-entries' ).offset().top - ( 49 * 3 );
+			$( 'html, body' ).scrollTop( scrollpos );
+		}, 500 );
 	} else {
-		if ( GUI.dblist || !$( '#pl-editor' ).hasClass( 'hide' ) ) displayIndexBar();
+		if ( GUI.dblist || GUI.pleditor ) displayIndexBar();
 	}
 } );
 
@@ -1433,15 +1438,6 @@ pushstreams.idle.onmessage = function( changed ) {
 		if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) $( '#home-webradio' ).tap();
 	}
 }
-/*pushstreams.idle.onstatuschange = function( data ) {
-	if ( data === 2 ) {
-		if ( GUI.playback ) {
-			getPlaybackStatus();
-		} else if ( GUI.playlist && !GUI.pleditor ) {
-			setPlaylistScroll();
-		}
-	}
-}*/
 pushstreams.notify.onmessage = function( data ) {
 	var notify = data[ 0 ];
 	new PNotify( {
