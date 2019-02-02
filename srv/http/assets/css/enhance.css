@@ -1306,6 +1306,7 @@ wh, gr { font-weight: 300; }
 	padding: 20px 0 0 0;
 	list-style: none;
 	background: #172029;
+	box-shadow: -4px 0px 10px rgba(0, 0, 0, 0.6);
 }
 .index li {
 	text-align: center;
