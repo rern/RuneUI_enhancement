@@ -1270,15 +1270,9 @@ wh, gr { font-weight: 300; }
 	border-bottom-right-radius: 0;
 	border-top-right-radius: 0
 }
-
 #db-search-results,
 #pl-filter-results {
 	background-color: transparent;
-	-webkit-box-shadow: none;
-	box-shadow: none;
-	-webkit-box-shadow: none, 0 0 0 rgba(0, 0, 0, 0), 0 0 0 rgba(0, 0, 0, 0);
-	-moz-box-shadow: none, 0 0 0 rgba(0, 0, 0, 0), 0 0 0 rgba(0, 0, 0, 0);
-	box-shadow: none, 0 0 0 rgba(0, 0, 0, 0), 0 0 0 rgba(0, 0, 0, 0)
 }
 #db-search-results span,
 #pl-filter-results span {
