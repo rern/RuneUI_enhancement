@@ -1401,8 +1401,8 @@ wh, gr { font-weight: 300; }
 	background: #10161c
 }
 #db-entries span,
-#pl-entries .li1 .name,
-#pl-entries .li1 .song,
+#pl-entries .name,
+#pl-entries .song,
 #pl-entries .li2,
 #pl-editor span {
 	white-space: nowrap;
