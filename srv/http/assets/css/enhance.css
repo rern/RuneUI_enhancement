@@ -477,18 +477,19 @@ wh, gr { font-weight: 300; }
 	-moz-animation      : scrollleft linear infinite;
 	-webkit-animation   : scrollleft linear infinite;
 	animation           : scrollleft linear infinite;
+	animation-delay     : 0;
 	backface-visibility : hidden; /* for less flickering */
 }
 @-moz-keyframes scrollleft {
-	0%   { -moz-transform    : translateX( 100% ) }
+	0%   { -moz-transform    : translateX( 100vw ) }
 	100% { -moz-transform    : translateX( -100% ) }
 }
 @-webkit-keyframes scrollleft {
-	0%   { -webkit-transform : translateX( 100% ) }
+	0%   { -webkit-transform : translateX( 100vw ) }
 	100% { -webkit-transform : translateX( -100% ) }
 }
 @keyframes scrollleft {
-	0%   { transform         : translateX( 100% ) }
+	0%   { transform         : translateX( 100vw ) }
 	100% { transform         : translateX( -100% ) }
 }
 /* ---------------------- knobs, buttons ----------------------*/
