@@ -1255,17 +1255,17 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 function setNameWidth( $title, elapsed, radio ) {
 	var px;
 	if ( elapsed < 10 ) {
-		px = 155;
+		px = 148;
 	} else if ( elapsed < 60 ) {
-		px = 165;
+		px = 157;
 	} else if ( elapsed < 600 ) {
-		px = 180;
+		px = 171;
 	} else if ( elapsed < 3600 ) {
-		px = 190;
+		px = 180;
 	} else {
-		px = 205;
+		px = 194;
 	}
-	if ( radio ) px -= 53;
+	if ( radio ) px -= 50;
 	$title.css( 'max-width', 'calc( 100% - '+ px +'px )' );
 }
 function setPlaylistScroll() {
