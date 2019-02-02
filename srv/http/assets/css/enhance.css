@@ -269,6 +269,7 @@ wh, gr { font-weight: 300; }
 #swipebar {
 	text-align: center;
 	background: rgba( 52, 73, 94, 0.5 );
+	touch-action: manipulation; /* fix: Unable to preventDefault inside passive event listener */
 }
 #swipebar img {
 	margin-top: 5px;
