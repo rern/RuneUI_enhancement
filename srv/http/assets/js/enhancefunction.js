@@ -1279,9 +1279,7 @@ function setPlaylistScroll() {
 	clearInterval( GUI.intElapsedPl );
 	displayTopBottom();
 	$( '#context-menu-plaction' ).addClass( 'hide' );
-	var $linotactive = '';
-	var $liactive = '';
-	var $elapsed = '';
+	var $linotactive, $liactive, $name, $song, $elapsed, elapsedtxt;
 	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
 		$.each( status, function( key, value ) {
 			GUI.status[ key ] = value;
@@ -1301,7 +1299,7 @@ function setPlaylistScroll() {
 		var radio = GUI.status.ext === 'radio';
 		var slash = radio ? '' : ' <gr>/</gr>';
 		if ( status.state === 'pause' ) {
-			var elapsedtxt = second2HMS( elapsed );
+			elapsedtxt = second2HMS( elapsed );
 			$elapsed.html( '<i class="fa fa-pause"></i> '+ elapsedtxt + slash);
 			setNameWidth( $liactive, elapsed, radio );
 		} else if ( status.state === 'play' ) {
@@ -1312,11 +1310,10 @@ function setPlaylistScroll() {
 				$name.removeClass( 'hide' );
 				$song.empty();
 			}
-			var time = status.Time;
 			clearInterval( GUI.intElapsedPl ); // fix: some GUI.intElapsedPl not properly cleared
 			GUI.intElapsedPl = setInterval( function() {
 				elapsed++;
-				var elapsedtxt = second2HMS( elapsed );
+				elapsedtxt = second2HMS( elapsed );
 				$elapsed.html( '<i class="fa fa-play"></i>'+ elapsedtxt + slash );
 				setNameWidth( $liactive, elapsed, radio )
 			}, 1000 );
