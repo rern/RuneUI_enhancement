@@ -1198,6 +1198,9 @@ wh, gr { font-weight: 300; }
 	text-overflow: ellipsis;
 	font-size: 18px;
 }
+#db-currentpath.webradio {
+	max-width: none;
+}
 #li-count,
 #countsong {
 	margin-left: 10px;
@@ -1924,6 +1927,9 @@ li.active .time {
 	}
 	#db-currentpath {
 		width: calc( 100% - 180px );
+	}
+	#db-currentpath.webradio {
+		width: unset;
 	}
 	#db-up,
 	#db-webradio-new {
