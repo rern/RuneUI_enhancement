@@ -1408,6 +1408,12 @@ wh, gr { font-weight: 300; }
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
+#pl-entries .name {
+	max-width: calc( 100% - 105px );
+}
+#pl-entries .song {
+	max-width: calc( 100% - 60px );
+}
 #db-entries .single {
 	line-height: 48px;
 	vertical-align: 5%;
@@ -1551,9 +1557,6 @@ w {
 	display: inline-block;
 	line-height: 18px;
 	vertical-align: middle;
-}
-#pl-entries .name {
-	max-width: calc( 100% - 105px );
 }
 #db-entries .time,
 #pl-editor .time {
