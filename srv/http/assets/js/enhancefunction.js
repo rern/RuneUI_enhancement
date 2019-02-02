@@ -1252,10 +1252,10 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 	}
 	return content +'</li>';
 }
-function setNameWidth( $liactive, elapsed ) {
-	var px = elapsed < 60 ? 165 : ( elapsed < 600 ? 180 : 195 );
-	px -= radio ? 30 : 0;
-	$liactive.find( GUI.status.ext === 'radio' ? '.song' : '.name' ).css( 'max-width', 'calc( 100% - '+ px +'px )' );
+function setNameWidth( $liactive, elapsed, radio ) {
+	var px = elapsed < 60 ? 165 : ( elapsed < 600 ? 180 : ( elapsed < 3600 ? 190 : 205 ) );
+	px -= radio ? 53 : 0;
+	$liactive.find( radio ? '.song' : '.name' ).css( 'max-width', 'calc( 100% - '+ px +'px )' );
 }
 function setPlaylistScroll() {
 	if ( GUI.sortable ) return // 'skip for Sortable'
@@ -1287,16 +1287,8 @@ function setPlaylistScroll() {
 		if ( status.state === 'pause' ) {
 			var elapsedtxt = second2HMS( elapsed );
 			$elapsed.html( '<i class="fa fa-pause"></i> '+ elapsedtxt + slash);
-			setNameWidth( $liactive, elapsed );
+			setNameWidth( $liactive, elapsed, radio );
 		} else if ( status.state === 'play' ) {
-			var time = status.Time;
-			clearInterval( GUI.intElapsedPl ); // fix: some GUI.intElapsedPl not properly cleared
-			GUI.intElapsedPl = setInterval( function() {
-				elapsed++;
-				var elapsedtxt = second2HMS( elapsed );
-				$elapsed.html( '<i class="fa fa-play"></i>'+ elapsedtxt + slash );
-				setNameWidth( $liactive, elapsed )
-			}, 1000 );
 			if ( radio ) {
 				$name.addClass( 'hide' );
 				$song.html( status.Title || blinkdot );
@@ -1304,6 +1296,14 @@ function setPlaylistScroll() {
 				$name.removeClass( 'hide' );
 				$song.empty();
 			}
+			var time = status.Time;
+			clearInterval( GUI.intElapsedPl ); // fix: some GUI.intElapsedPl not properly cleared
+			GUI.intElapsedPl = setInterval( function() {
+				elapsed++;
+				var elapsedtxt = second2HMS( elapsed );
+				$elapsed.html( '<i class="fa fa-play"></i>'+ elapsedtxt + slash );
+				setNameWidth( $liactive, elapsed, radio )
+			}, 1000 );
 		} else { // stop
 			$name
 				.removeClass( 'hide' )
