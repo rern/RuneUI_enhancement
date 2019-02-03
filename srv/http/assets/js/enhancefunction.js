@@ -176,7 +176,7 @@ function scrollLongText() {
 				, 'animation-duration' : Math.round( 10 * tWmax / wW ) +'s'
 			} );
 		}
-		$el.css( 'visibility', 'visible' );
+		$el.css( 'visibility', '' );
 	}, GUI.status.ext === 'radio' ? 300 : 0 );
 }
 function removeSplash() {
@@ -1256,21 +1256,12 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 	}
 	return content +'</li>';
 }
-function setNameWidth( $title, elapsed, radio ) {
-	var px;
-	if ( elapsed < 10 ) {
-		px = 148;
-	} else if ( elapsed < 60 ) {
-		px = 157;
-	} else if ( elapsed < 600 ) {
-		px = 170;
-	} else if ( elapsed < 3600 ) {
-		px = 180;
-	} else {
-		px = 193;
-	}
-	if ( radio ) px -= 44;
-	$title.css( 'max-width', 'calc( 100% - '+ px +'px )' );
+function setNameWidth() {
+	var iWdW = 70 + $duration.width();
+	if ( pltW + iWdW < plwW ) return
+	
+	$title.css( 'max-width', plwW - iWdW +'px' );
+	$duration.addClass( 'duration-right' );
 }
 function setPlaylistScroll() {
 	if ( GUI.sortable ) return // 'skip for Sortable'
@@ -1278,6 +1269,11 @@ function setPlaylistScroll() {
 	clearInterval( GUI.intElapsedPl );
 	displayTopBottom();
 	$( '#context-menu-plaction' ).addClass( 'hide' );
+	plwW = window.innerWidth;
+	$.each( $( '#pl-entries .name' ), function() {
+		var $this = $( this );
+		if ( $this.width() + 160 > plwW ) $this.next().addClass( 'duration-right' );
+	} );
 	var $linotactive, $liactive, $name, $song, $elapsed, elapsedtxt;
 	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
 		$.each( status, function( key, value ) {
@@ -1295,16 +1291,19 @@ function setPlaylistScroll() {
 		$linotactive = $( '#pl-entries li:not(:eq( '+ status.song +' ) )' );
 		$linotactive.removeClass( 'active activeplay' ).find( '.elapsed, .song' ).empty();
 		$linotactive.find( '.name' ).removeClass( 'hide' );
+		$linotactive.find( '.name, .song' ).css( 'max-width', '' );
 		$liactive = $( '#pl-entries li' ).eq( status.song );
 		$liactive.addClass( 'active' );
 		$name = $liactive.find( '.name' );
 		$song = $liactive.find( '.song' );
 		$title = radio ? $song : $name;
+		pltW = $title.width();
+		$duration = $liactive.find( '.duration' );
 		$elapsed = $liactive.find( '.elapsed' );
 		if ( status.state === 'pause' ) {
 			elapsedtxt = second2HMS( elapsed );
-			$elapsed.html( '<i class="fa fa-pause"></i> '+ elapsedtxt + slash);
-			setNameWidth( $title, elapsed, radio );
+			$elapsed.html( '<i class="fa fa-pause"></i> '+ elapsedtxt + slash );
+			setNameWidth();
 		} else if ( status.state === 'play' ) {
 			if ( radio ) {
 				$name.addClass( 'hide' );
@@ -1318,7 +1317,7 @@ function setPlaylistScroll() {
 				elapsed++;
 				elapsedtxt = second2HMS( elapsed );
 				$elapsed.html( '<i class="fa fa-play"></i>'+ elapsedtxt + slash );
-				setNameWidth( $title, elapsed, radio )
+				setNameWidth()
 			}, 1000 );
 		} else { // stop
 			$name
@@ -1382,7 +1381,7 @@ function htmlPlaylist( data ) {
 			}
 			content += '<li>'
 						 + actionhtml
-						 +'<span class="li1"><a class="name">'+ value.Title +'</a>'+ ( GUI.playlist && !GUI.pleditor ? '<a class="elapsed"></a>' : '' ) +'<a class="time" time="'+ sec +'">'+ value.Time +'</a></span>'
+						 +'<span class="li1"><a class="name">'+ value.Title +'</a><span class="duration">'+ ( GUI.playlist && !GUI.pleditor ? '<a class="elapsed"></a>' : '' ) +'<a class="time" time="'+ sec +'">'+ value.Time +'</a></span></span>'
 						 +'<span class="li2">'+ ( GUI.playlist ? value.track : value.file ) +'</span>'
 					 +'</li>';
 			countsong++;
