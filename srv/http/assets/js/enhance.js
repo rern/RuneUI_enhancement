@@ -705,7 +705,7 @@ $( '#db-webradio-new' ).click( function() {
 } );
 $( '#db-searchbtn' ).click( function() {
 	$( '#db-search, #db-searchbtn' ).toggleClass( 'hide' );
-	$( '#db-currentpath' ).css( 'width', '40px' );
+	$( '#db-currentpath' ).css( 'max-width', '40px' );
 	$( '#db-currentpath>span, #db-currentpath>i' ).addClass( 'hide' );
 	if ( !$( '#db-search' ).hasClass( 'hide' ) ) $( '#db-search-keyword' ).focus();
 } );
@@ -713,7 +713,7 @@ $( '#dbsearchbtn' ).click( function() {
 	var keyword = $( '#db-search-keyword' ).val();
 	if ( !keyword ) {
 		$( '#db-search, #db-searchbtn' ).toggleClass( 'hide' );
-		$( '#db-currentpath' ).css( 'width', '' );
+		$( '#db-currentpath' ).css( 'max-width', '' );
 		$( '#db-currentpath>span, #db-currentpath>i' ).removeClass( 'hide' );
 		return
 	}
@@ -739,7 +739,7 @@ $( '#db-search-results' ).click( function() {
 	$( this ).addClass( 'hide' );
 	$( '#db-search, #db-searchbtn' ).toggleClass( 'hide' );
 	$( '#db-search-keyword' ).val( '' );
-	$( '#db-currentpath' ).css( 'width', '' );
+	$( '#db-currentpath' ).css( 'max-width', '' );
 	if ( GUI.currentpath ) {
 		$( '#db-back' ).removeClass( 'hide' );
 		getDB( GUI.dbbackdata.pop() );
