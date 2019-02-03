@@ -986,13 +986,12 @@ $( '#plsave' ).click( function() {
 	playlistNew();
 } );
 $( '#plcrop' ).click( function() {
-	if ( GUI.status.state === 'stop' || !GUI.status.playlistlength ) return
 	info( {
 		   title   : 'Crop Playlist'
 		 , message : 'Clear this playlist except current song?'
 		, cancel   : 1
 		, ok       : function() {
-			$.post( 'enhance.php', { mpc: 'mpc crop' } );
+			$.post( 'enhance.php', { mpc: GUI.status.state === 'stop' ? 'mpc play; mpc crop; mpc stop' : 'mpc crop' } );
 		}
 	} );
 } );

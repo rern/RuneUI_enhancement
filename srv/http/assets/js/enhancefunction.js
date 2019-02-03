@@ -1271,7 +1271,7 @@ function getNameWidth() {
 function setNameWidth() {
 	var iWdW = 60 + $duration.width();
 	if ( pltW + iWdW < plwW ) {
-		$title.css( 'max-width', '' );
+		$title.css(  'max-width', '' );
 		$duration.removeClass( 'duration-right' );
 	} else {
 		$title.css( 'max-width', plwW - iWdW +'px' );
@@ -1295,7 +1295,6 @@ function setPlaylistScroll() {
 			GUI.status[ key ] = value;
 		} );
 		if ( GUI.bars ) setButton();
-		$( '#plcrop' ).toggleClass( 'disable', ( status.state === 'stop' || status.playlistlength === 1 ) );
 		setTimeout( function() {
 			var scrollpos = $liactive.offset().top - $( '#pl-entries' ).offset().top - ( 49 * 3 );
 			$( 'html, body' ).scrollTop( scrollpos );
@@ -1433,7 +1432,7 @@ function renderPlaylist() {
 	$( '#pl-currentpath, #pl-editor, #pl-index, #pl-search' ).addClass( 'hide' );
 	$( '#db-currentpath>span, #pl-searchbtn' ).removeClass( 'hide' );
 	$( '#plopen' ).toggleClass( 'disable', !GUI.lsplaylists.length );
-	if ( !GUI.status.playlistlength ) {
+	if ( !GUI.pllist.length ) {
 		$( '#pl-count' ).html( '<bl class="title">PLAYLIST</bl>' );
 		$( '#plsave, #plcrop, #plclear, #pl-searchbtn' ).addClass( 'disable' );
 		$( '#pl-entries' ).empty();
@@ -1442,6 +1441,8 @@ function renderPlaylist() {
 		$( 'html, body' ).scrollTop( 0 );
 		return
 	}
+	
+	$( '#plcrop' ).toggleClass( 'disable', GUI.pllist.length < 2 );
 	GUI.status.playlistlength = GUI.pllist.length;
 	var data = htmlPlaylist( GUI.pllist );
 	var counthtml = '<bl class="title">PLAYLIST<gr>·</gr></bl>';
