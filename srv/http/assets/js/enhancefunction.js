@@ -1260,7 +1260,10 @@ function setNameWidth() {
 	var iWdW = 70 + $duration.width();
 	if ( pltW + iWdW < plwW ) return
 	
-	$title.css( 'max-width', plwW - iWdW +'px' );
+	$title.css( {
+		  'max-width' : plwW - iWdW +'px'
+		, visibility  : 'visible'
+	} );
 	$duration.addClass( 'duration-right' );
 }
 function setPlaylistScroll() {
@@ -1297,7 +1300,17 @@ function setPlaylistScroll() {
 		$name = $liactive.find( '.name' );
 		$song = $liactive.find( '.song' );
 		$title = radio ? $song : $name;
+		// get width
+		$title.find( '.name, .song' ).css( {
+			  'max-width' : 'none'
+			, visibility  : 'hidden'
+		} );
 		pltW = $title.width();
+		$title.find( '.name, .song' ).css( {
+			  'max-width' : ''
+			, visibility  : ''
+		} );
+		
 		$duration = $liactive.find( '.duration' );
 		$elapsed = $liactive.find( '.elapsed' );
 		if ( status.state === 'pause' ) {
@@ -1364,7 +1377,7 @@ function htmlPlaylist( data ) {
 						  +'<i class="fa fa-webradio pl-icon'+ ( title[ 0 ] === '*' ? ' unsaved' : '' ) +'"></i>'
 						  + ( GUI.pleditor ? '<i class="fa fa-bars pl-action" data-target="#context-menu-webradiopl"></i>' : '<i class="fa fa-minus-circle pl-action"></i>' )
 						  +'<a class="lipath">'+ value.file +'</a>'
-						  +'<span class="li1"><a class="name">'+ name +'</a><a class="song"></a><a class="elapsed"></a></span>'
+						  +'<span class="li1"><a class="name">'+ name +'</a><a class="song"></a><span class="duration"><a class="elapsed"></a></span></span>'
 						  +'<span class="li2">'+ ( name ? name +' • ' : '' ) + value.file +'</span>'
 					  +'</li>';
 			countradio++;
