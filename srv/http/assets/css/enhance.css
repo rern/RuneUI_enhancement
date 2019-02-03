@@ -1409,7 +1409,7 @@ wh, gr { font-weight: 300; }
 	text-overflow: ellipsis;
 }
 #pl-entries .name {
-	max-width: calc( 100% - 105px );
+	max-width: calc( 100% - 90px );
 }
 #pl-entries .song {
 	max-width: calc( 100% - 60px );
@@ -1555,8 +1555,12 @@ w {
 }
 #pl-entries .li1 a {
 	display: inline-block;
-	line-height: 18px;
 	vertical-align: middle;
+}
+.duration-right {
+	position: absolute;
+	float: right;
+	right: 10px;
 }
 #db-entries .time,
 #pl-editor .time {
