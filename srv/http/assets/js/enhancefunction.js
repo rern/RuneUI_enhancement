@@ -1012,6 +1012,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			var dotpath = albumtext ? '<a id="artistalbum"><gr> • </gr><span class="white">'+ albumtext +'</span></a>' : '';
 		}
 		$( '#db-currentpath .lipath' ).text( path ); // for back navigation
+		$( '#db-currentpath' ).addClass( 'noellipse' );
 		// fix: 1 li in genre list
 		if ( $( '.licover' ).length ) {
 			$( '#db-currentpath span' ).html( iconName[ browsemode ][ 0 ] +' <a>'+ iconName[ browsemode ][ 1 ] +'</a>' );
@@ -1022,9 +1023,6 @@ function dataSort( data, path, plugin, querytype, arg ) {
 	} else {
 		var folder = path.split( '/' );
 		var folderRoot = folder[ 0 ];
-		$( '#db-currentpath' )
-			.removeClass( 'webradio' )
-			.css( 'width', '' );
 		if ( $( '#db-search-keyword' ).val() ) {
 		// search results
 			var results = ( data.length ) ? data.length : '0';
@@ -1037,9 +1035,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 					<span>' + results + ' <a>of</a> </span>' );
 		} else if ( folderRoot === 'Webradio' ) {
 			$( '#db-currentpath .lipath' ).text( 'Webradio' );
-			$( '#db-currentpath' )
-				.addClass( 'webradio' )
-				.find( 'span' ).html( '<i class="fa fa-webradio"></i> <a>WEBRADIOS</a>' );
+			$( '#db-currentpath span' ).html( '<i class="fa fa-webradio"></i> <a>WEBRADIOS</a>' );
 		} else {
 			var folderCrumb = iconName[ folderRoot ];
 			var folderPath = '';
