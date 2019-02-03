@@ -489,8 +489,16 @@ wh, gr { font-weight: 300; }
 	100% { -webkit-transform : translateX( -100% ) }
 }
 @keyframes scrollleft {
-	0%   { transform         : translateX( 100vw ) }
-	100% { transform         : translateX( -100% ) }
+	0%   {
+		-moz-transform    : translateX( 100vw ); /* Browser bug fix */
+		-webkit-transform : translateX( 100vw ); /* Browser bug fix */
+		transform         : translateX( 100vw );
+	}
+	100% {
+		-moz-transform    : translateX( -100% ); /* Browser bug fix */
+		-webkit-transform : translateX( -100% ); /* Browser bug fix */
+		transform         : translateX( -100% ); 
+	}
 }
 /* ---------------------- knobs, buttons ----------------------*/
 #playsource-open { display: none; }
