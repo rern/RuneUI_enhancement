@@ -495,20 +495,14 @@ function displayPlayback() {
 	var wH = window.innerHeight;
 	if ( $( '.playback-block.hide' ).length && wH > 420 ) return
 	
-	if ( GUI.bars ) {
-		var padding = GUI.screenS ? '60px' : '';
-		var margin = GUI.display.time ? ( GUI.screenS ? 0 : '' ) : '30px';
-	} else {
-		var padding = GUI.screenS ? '30px' : '';
-		var margin = GUI.display.time ? ( GUI.screenS ? 0 : '' ) : '30px';
-	}
 	if ( ( wW < 750 && wW  > wH ) || wH < 475 ) {
 		var scale = wH > 475 ? wW / 800 : wH / 450;
 		var padding = GUI.bars ? '70px' : '40px';
 		$( '#page-playback' ).css( {
 			  transform          : 'scale( '+ scale +' )'
 			, 'transform-origin' : 'top'
-			, 'height'           : 'calc( 100vh + '+ padding +' )'
+			, height             : 'calc( 100vh + '+ padding +' )'
+			, 'padding-top'      : ''
 		} );
 		$( '#playback-row' ).css( {
 			  width         : 100 / scale +'%'
@@ -518,7 +512,8 @@ function displayPlayback() {
 		$( '#page-playback' ).css( {
 			  transform          : ''
 			, 'transform-origin' : ''
-			, 'height'           : ''
+			, height             : ''
+			, 'padding-top'      : GUI.bars || !GUI.screenS ? '' : '40px'
 		} );
 		$( '#playback-row' ).css( {
 			  width         : ''
