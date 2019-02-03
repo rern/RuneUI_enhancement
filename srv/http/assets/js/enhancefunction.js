@@ -509,15 +509,17 @@ function displayPlayback() {
 			, 'margin-left' : ( 100 / scale - 100 ) / -2 +'%'
 		} );
 	} else {
+		var compact = GUI.bars || !GUI.screenS;
 		$( '#page-playback' ).css( {
 			  transform          : ''
 			, 'transform-origin' : ''
 			, height             : ''
-			, 'padding-top'      : GUI.bars || !GUI.screenS ? '' : '40px'
+			, 'padding-top'      : compact ? '' : '40px'
 		} );
 		$( '#playback-row' ).css( {
 			  width         : ''
 			, 'margin-left' : ''
+			, 'margin-top'      : compact ? '' : 0
 		} );
 	}
 }
