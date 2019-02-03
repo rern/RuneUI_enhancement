@@ -1312,6 +1312,8 @@ window.addEventListener( 'orientationchange', function() {
 		}, 300 );
 	} else if ( GUI.playlist && !GUI.pleditor ) {
 		setTimeout( function() {
+			getNameWidth();
+			setNameWidth();
 			var scrollpos = $( '#pl-entries li.active' ).offset().top - $( '#pl-entries' ).offset().top - ( 49 * 3 );
 			$( 'html, body' ).scrollTop( scrollpos );
 		}, 500 );

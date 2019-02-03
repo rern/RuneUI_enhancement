@@ -177,7 +177,7 @@ function scrollLongText() {
 			} );
 		}
 		$el.css( 'visibility', '' );
-	}, GUI.status.ext === 'radio' ? 300 : 0 );
+	}, GUI.status.ext === 'radio' ? 300 : 50 );
 }
 function removeSplash() {
 	$( '#splash' ).remove();
@@ -1256,15 +1256,27 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 	}
 	return content +'</li>';
 }
-function setNameWidth() {
-	var iWdW = 70 + $duration.width();
-	if ( pltW + iWdW < plwW ) return
-	
+function getNameWidth() {
+	plwW = $( window ).width();
 	$title.css( {
-		  'max-width' : plwW - iWdW +'px'
-		, visibility  : 'visible'
+		  'max-width' : 'none'
+		, visibility  : 'hidden'
 	} );
-	$duration.addClass( 'duration-right' );
+	pltW = $title.width();
+	$title.css( {
+		  'max-width' : ''
+		, visibility  : ''
+	} );
+}
+function setNameWidth() {
+	var iWdW = 60 + $duration.width();
+	if ( pltW + iWdW < plwW ) {
+		$title.css( 'max-width', '' );
+		$duration.removeClass( 'duration-right' );
+	} else {
+		$title.css( 'max-width', plwW - iWdW +'px' );
+		$duration.addClass( 'duration-right' );
+	}
 }
 function setPlaylistScroll() {
 	if ( GUI.sortable ) return // 'skip for Sortable'
@@ -1272,10 +1284,10 @@ function setPlaylistScroll() {
 	clearInterval( GUI.intElapsedPl );
 	displayTopBottom();
 	$( '#context-menu-plaction' ).addClass( 'hide' );
-	plwW = window.innerWidth;
+	var wW = window.innerWidth;
 	$.each( $( '#pl-entries .name' ), function() {
 		var $this = $( this );
-		if ( $this.width() + 160 > plwW ) $this.next().addClass( 'duration-right' );
+		if ( $this.width() + 160 > wW ) $this.next().addClass( 'duration-right' );
 	} );
 	var $linotactive, $liactive, $name, $song, $elapsed, elapsedtxt;
 	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
@@ -1300,22 +1312,12 @@ function setPlaylistScroll() {
 		$name = $liactive.find( '.name' );
 		$song = $liactive.find( '.song' );
 		$title = radio ? $song : $name;
-		// get width
-		$title.find( '.name, .song' ).css( {
-			  'max-width' : 'none'
-			, visibility  : 'hidden'
-		} );
-		pltW = $title.width();
-		$title.find( '.name, .song' ).css( {
-			  'max-width' : ''
-			, visibility  : ''
-		} );
-		
 		$duration = $liactive.find( '.duration' );
 		$elapsed = $liactive.find( '.elapsed' );
 		if ( status.state === 'pause' ) {
 			elapsedtxt = second2HMS( elapsed );
 			$elapsed.html( '<i class="fa fa-pause"></i> '+ elapsedtxt + slash );
+			getNameWidth();
 			setNameWidth();
 		} else if ( status.state === 'play' ) {
 			if ( radio ) {
@@ -1325,12 +1327,13 @@ function setPlaylistScroll() {
 				$name.removeClass( 'hide' );
 				$song.empty();
 			}
+			getNameWidth();
 			clearInterval( GUI.intElapsedPl ); // fix: some GUI.intElapsedPl not properly cleared
 			GUI.intElapsedPl = setInterval( function() {
 				elapsed++;
 				elapsedtxt = second2HMS( elapsed );
 				$elapsed.html( '<i class="fa fa-play"></i>'+ elapsedtxt + slash );
-				setNameWidth()
+				setNameWidth();
 			}, 1000 );
 		} else { // stop
 			$name
