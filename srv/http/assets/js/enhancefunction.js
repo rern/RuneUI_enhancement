@@ -177,7 +177,7 @@ function scrollLongText() {
 			} );
 		}
 		$el.css( 'visibility', '' );
-	}, GUI.status.ext === 'radio' ? 300 : 50 );
+	}, 100 );
 }
 function removeSplash() {
 	$( '#splash' ).remove();
