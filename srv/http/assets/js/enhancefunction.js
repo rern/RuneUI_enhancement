@@ -1444,7 +1444,7 @@ function renderPlaylist() {
 	var countradiohtml = '<wh id="countradio" count="'+ data.countradio +'">'+ data.countradio +'</wh>&ensp;<i class="fa fa-webradio"></i>';
 	if ( data.countsong ) {
 		var pltimehtml = ' id="pltime" time="'+ data.pltime +'">'+ second2HMS( data.pltime );
-		var totalhtml = data.countradio ? '<gr'+ pltimehtml +'</gr> <gr>•</gr> '+ countradiohtml : '<wh'+ pltimehtml +'</wh>';
+		var totalhtml = data.countradio ? '<gr'+ pltimehtml +'</gr>&ensp;<gr>•</gr>'+ countradiohtml : '<wh'+ pltimehtml +'</wh>';
 		counthtml += '<wh id="countsong" count="'+ data.countsong +'">'+ numFormat( data.countsong ) +'</wh>&ensp;<i class="fa fa-music"></i>&ensp;'+ totalhtml;
 	} else {
 		counthtml += countradiohtml;
