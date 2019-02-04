@@ -172,16 +172,16 @@ function scrollLongText() {
 			if ( tW > tWmax ) tWmax = tW;
 			if ( tW > wW * 0.98 ) $this.addClass( 'scrollleft' );
 		} );
-		if ( tWmax ) {
-			var sec = Math.round( 10 * tWmax / wW ) +'s';
-			$( '.scrollleft' ).css( {
-				  width                        : tWmax +'px'
-				, '-moz-animation-duration'    : sec
-				, '-webkit-animation-duration' : sec
-				, 'animation-duration'         : sec
-			} );
-		}
 		$el.css( 'visibility', '' );
+		if ( !$( '#info .scrollleft' ).length ) return
+		
+		var sec = Math.round( 10 * tWmax / wW ) +'s';
+		$( '.scrollleft' ).css( {
+			  width                        : tWmax +'px'
+			, '-moz-animation-duration'    : sec
+			, '-webkit-animation-duration' : sec
+			, 'animation-duration'         : sec
+		} );
 	}, 100 );
 }
 function removeSplash() {
