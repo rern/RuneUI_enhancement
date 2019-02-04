@@ -157,9 +157,11 @@ function scrollLongText() {
 	$el
 		.removeClass( 'scrollleft' )
 		.css( {
-			  width                : ''
-			, 'animation-duration' : ''
-			, visibility           : 'hidden'
+			  width                        : ''
+			, '-moz-animation-duration'    : ''
+			, '-webkit-animation-duration' : ''
+			, 'animation-duration'         : ''
+			, visibility                   : 'hidden'
 		} );
 	var wW = window.innerWidth;
 	var tWmax = 0;
@@ -171,9 +173,12 @@ function scrollLongText() {
 			if ( tW > wW * 0.98 ) $this.addClass( 'scrollleft' );
 		} );
 		if ( tWmax ) {
+			var sec = Math.round( 10 * tWmax / wW ) +'s';
 			$( '.scrollleft' ).css( {
-				  width                : tWmax +'px'
-				, 'animation-duration' : Math.round( 10 * tWmax / wW ) +'s'
+				  width                        : tWmax +'px'
+				, '-moz-animation-duration'    : sec
+				, '-webkit-animation-duration' : sec
+				, 'animation-duration'         : sec
 			} );
 		}
 		$el.css( 'visibility', '' );
