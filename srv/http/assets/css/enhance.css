@@ -84,7 +84,8 @@
 .fa-genre:before { content: "\f559" }
 .fa-dirble:before { content: "\f55A" }
 .fa-jamendo:before { content: "\f55B" }
-.fa-youtube:before { content: "\f55C" }
+.fa-lastfm:before { content: "\f55C" }
+.fa-youtube:before { content: "\f55D" }
 
 .fa-folder:before { content: "\f540" }
 .fa-folder-open:before { content: "\f541" }
