@@ -1,5 +1,4 @@
-// quotes in mpc name arguments
-//     enclosed with double quotes + escape double quotes
+// single quotes in mpc name arguments - enclosed with double quotes + escape double quotes
 // example: mpc save "abc's \"xyz\"" << name.replace( /"/g, '\\"' )
 
 $( '.contextmenu a' ).click( function() {

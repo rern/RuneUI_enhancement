@@ -42,29 +42,32 @@ PNotify.prototype.options.stack = {
 }
 var blinkdot = '<a class="dot">·</a>&ensp;<a class="dot dot2">·</a>&ensp;<a class="dot dot3">·</a>';
 
-$( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-$.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
-	GUI.display = data;
-	if ( !GUI.display.contexticon ) $( 'head' ).append( '<style id="contexticoncss">.db-action, .pl-action { display: none }</style>' );
-	$.event.special.swipe.horizontalDistanceThreshold = 80; // pixel to swipe
-	if ( !GUI.display.bars || ( GUI.screenS && !GUI.display.barsauto ) ) {
-		$( '#swipebar, .page' ).on( 'swipeleft swiperight', function( e ) {
-			// skip if swipe to show remove in playlist
-			if ( !$( e.target ).parents( '#pl-entries li' ).length ) setSwipe( e.type );
-		} );
-	}
-	$.post( 'enhancestatus.php', function( status ) {
-		GUI.status = status;
-		renderPlayback();
-		displayPlayback();
-		setButton();
-		$( 'html, body' ).scrollTop( 0 );
-		$.post( 'enhance.php', { library: 1, data: 1 }, function( data ) {
-			GUI.libraryhome = data;
+// get library, display, status
+$.post( 'enhance.php', { library: 1, data: 1 }, function( data ) {
+	GUI.libraryhome = data;
+	$.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
+		GUI.display = data;
+		if ( !GUI.display.contexticon ) $( 'head' ).append( '<style id="contexticoncss">.db-action, .pl-action { display: none }</style>' );
+		$.event.special.swipe.horizontalDistanceThreshold = 80; // pixel to swipe
+		if ( !GUI.display.bars || ( GUI.screenS && !GUI.display.barsauto ) ) {
+			$( '#swipebar, .page' ).on( 'swipeleft swiperight', function( e ) {
+				// skip if swipe to show remove in playlist
+				if ( !$( e.target ).parents( '#pl-entries li' ).length ) setSwipe( e.type );
+			} );
+		}
+		$.post( 'enhancestatus.php', function( status ) {
+			//alert(JSON.stringify(status))
+			GUI.status = status;
+			renderPlayback();
+			displayPlayback();
+			setButton();
+			$( 'html, body' ).scrollTop( 0 );
 		}, 'json' );
 	}, 'json' );
 }, 'json' );
+
+$( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
 // PLAYBACK /////////////////////////////////////////////////////////////////////////////////////
 $( '.btn-cmd' ).click( function() {
 	var $this = $( this );
@@ -257,28 +260,19 @@ $( '#turnoff' ).click( function() {
 	} );
 } );
 $( '#tab-library' ).click( function() {
-	if ( !Object.keys( GUI.libraryhome ).length ) return // wait for mpc data 
-	
 	if ( GUI.bookmarkedit ) {
 		GUI.bookmarkedit = 0;
 		renderLibrary();
-		return
-	}
-	if ( GUI.status.activePlayer === 'Airplay' ) {
-		$( '#playsource' ).addClass( 'open' );
-		return
-	}
-	
-	if ( GUI.library && GUI.dblist ) {
+	} else if ( GUI.library && GUI.dblist ) {
 		GUI.dblist = GUI.dbback = 0;
 		GUI.currentpath = GUI.browsemode = GUI.dbbrowsemode = ''
 		GUI.dbbackdata = [];
-		
 		renderLibrary();
-		return
+	} else if ( GUI.status.activePlayer === 'Airplay' ) {
+		$( '#playsource' ).addClass( 'open' );
+	} else {
+		switchPage( 'library' );
 	}
-	
-	switchPage( 'library' );
 } );
 $( '#tab-playback' ).click( function() {
 	switchPage( 'playback' );
@@ -340,7 +334,6 @@ $( '#time' ).roundSlider( {
 	, startAngle  : 90
 	, endAngle    : 450
 	, showTooltip : false
-	
 	, create      : function ( e ) {
 		$timeRS = this;
 	}
@@ -376,7 +369,6 @@ $( '#volume' ).roundSlider( {
 	, startAngle      : -50
 	, endAngle        : 230
 	, editableTooltip : false
-	
 	, create          : function () { // maintain shadow angle of handle
 		$volumeRS = this;
 		$volumetransition = $( '#volume' ).find( '.rs-animation, .rs-transition' );
@@ -420,6 +412,7 @@ $( '#volmute, #volM' ).click( function() {
 		unmuteColor();
 		GUI.display.volumemute = 0;
 	}
+	
 	GUI.local = 1;
 	setTimeout( function() { GUI.local = 0 }, 500 );
 	
@@ -517,7 +510,7 @@ var btnctrl = {
 	, timeBL  : 'random'
 	, timeB   : 'stop'
 	, timeBR  : 'repeat'
-	, coverTL : ''
+//	, coverTL : ''
 	, coverT  : 'guide'
 	, coverTR : 'menu'
 	, coverL  : 'previous'
@@ -561,7 +554,7 @@ $( '.timemap, .covermap, .volmap' ).click( function() {
 		} else {
 			$( '#play' ).click();
 		}
-	} else if ( cmd ) {
+	} else {
 		$( '#'+ cmd ).click();
 	}
 } );
@@ -1124,7 +1117,8 @@ $( '#pl-entries' ).on ( 'swipe', 'li', function( e ) {
 	}
 } );
 $( '#pl-entries' ).on( 'click', '.pl-icon', function( e ) {
-	$thisli = $( this ).parent();
+	$this = $( this );
+	$thisli = $this.parent();
 	GUI.list.li = $thisli;
 	var menutop = ( $thisli.position().top + 49 ) +'px';
 	var $contextmenu = $( '#context-menu-plaction' );
@@ -1145,7 +1139,7 @@ $( '#pl-entries' ).on( 'click', '.pl-icon', function( e ) {
 	} else {
 		$contextlist.eq( 1 ).add( $contextlist.eq( 2 ) ).addClass( 'hide' );
 	}
-	if ( $thisli.hasClass( 'webradio' ) && $thisli.find( '.unsaved' ).length ) {
+	if ( $this.hasClass( 'fa-webradio' ) && $thisli.find( '.unsaved' ).length ) {
 		GUI.list.name = $thisli.find( '.name' ).text();
 		GUI.list.path = $thisli.find( '.lipath' ).text();
 		$contextlist.eq( 3 ).removeClass( 'hide' );

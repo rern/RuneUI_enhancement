@@ -1371,7 +1371,7 @@ function htmlPlaylist( data ) {
 			var title = value.Title && value.Title || '';
 			var name = title.toString().replace( '*', '' );
 			content += '<li>'
-						  +'<i class="fa fa-webradio pl-icon'+ ( title[ 0 ] === '*' ? ' unsaved' : '' ) +'"></i>'
+						  +'<i class="fa fa-webradio pl-icon'+ ( title[ 0 ] === '*' || !title ? ' unsaved' : '' ) +'"></i>'
 						  + ( GUI.pleditor ? '<i class="fa fa-bars pl-action" data-target="#context-menu-webradiopl"></i>' : '<i class="fa fa-minus-circle pl-action"></i>' )
 						  +'<a class="lipath">'+ value.file +'</a>'
 						  +'<span class="li1"><a class="name">'+ name +'</a><a class="song"></a><span class="duration"><a class="elapsed"></a></span></span>'
