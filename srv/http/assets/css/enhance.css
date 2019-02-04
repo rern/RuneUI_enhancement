@@ -1207,7 +1207,8 @@ wh, gr { font-weight: 300; }
 	font-size: 18px;
 }
 #li-count,
-#countsong {
+#countsong,
+#countradio {
 	margin-left: 10px;
 }
 .title {
