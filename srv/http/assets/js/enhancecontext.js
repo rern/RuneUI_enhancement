@@ -106,16 +106,18 @@ $( '.contextmenu a' ).click( function() {
 } );
 
 function addReplace( mode, cmd, command, title ) {
-	console.log( mode)
 	if ( mode === 'wr' ) {
 		GUI.local = 1;
 		setTimeout( function() { GUI.local = 0 }, 500 );
 	}
 	$.post( 'enhance.php', { mpc: command }, function() {
 		if ( cmd === 'addplay' || cmd === 'replaceplay' ) {
-			setTimeout( function() {
-				$( '#tab-playback' ).click();
-			}, mode === 'wr' ? 1000 : 0 );
+			$( '#tab-playback' ).click();
+			if ( mode === 'wr' ) {
+				setTimeout( function() {
+					$( '#tab-playback' ).click();
+				}, 2000 );
+			}
 		} else {
 			getPlaybackStatus();
 		}
