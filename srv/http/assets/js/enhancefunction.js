@@ -362,7 +362,7 @@ function getPlaybackStatus() {
 	if ( GUI.local ) return
 	
 	GUI.local = 1;
-	setTimeout( function() { GUI.local = 0 }, 500 );
+	setTimeout( function() { GUI.local = 0 }, 200 );
 	
 	if ( GUI.playlist && !GUI.pleditor ) {
 		$( '#tab-playlist' ).click();
