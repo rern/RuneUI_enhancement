@@ -84,11 +84,11 @@ $( '.contextmenu a' ).click( function() {
 							, message : 'Replace current Playlist?'
 							, cancel  : 1
 							, ok      : function() {
-								addReplace( mode, command, 'Playlist replaced' );
+								addReplace( mode, cmd, command, 'Playlist replaced' );
 							}
 						} );
 					} else {
-						addReplace( mode, command, 'Playlist replaced' );
+						addReplace( mode, cmd, command, 'Playlist replaced' );
 					}
 				}
 			} else {
@@ -105,13 +105,20 @@ $( '.contextmenu a' ).click( function() {
 	}
 } );
 
-function addReplace( mode, command, title ) {
+function addReplace( mode, cmd, command, title ) {
+	console.log( mode)
 	if ( mode === 'wr' ) {
 		GUI.local = 1;
 		setTimeout( function() { GUI.local = 0 }, 500 );
 	}
 	$.post( 'enhance.php', { mpc: command }, function() {
-		getPlaybackStatus();
+		if ( cmd === 'addplay' || cmd === 'replaceplay' ) {
+			setTimeout( function() {
+				$( '#tab-playback' ).click();
+			}, mode === 'wr' ? 1000 : 0 );
+		} else {
+			getPlaybackStatus();
+		}
 	} );
 	new PNotify( {
 		  title : title
