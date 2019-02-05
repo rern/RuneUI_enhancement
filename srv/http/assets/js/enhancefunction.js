@@ -156,7 +156,7 @@ function scrollLongText() {
 	var $el = $( '#artist, #song, #album' );
 	$el
 		.removeClass( 'scrollleft' )
-		.prop( 'style', '' )
+		.removeAttr( 'style' )
 		.css( 'visibility', 'hidden' );
 	var wW = window.innerWidth * 0.98;
 	var tWmax = 0;
@@ -591,7 +591,9 @@ function displayCheckbox( checkboxes ) {
 }
 function bookmarkScroll() {
 	$( '#keyframes' ).remove();
-	$( '.bklabel' ).attr( 'style', '' );
+	$( '.bklabel' )
+		.removeClass( 'bkscrollleft' )
+		.removeAttr( 'style' );
 	var hbW = 'transform : translateX( '+ $( '.home-block' ).width() +'px )';
 	var hbW100 = 'transform : translateX( calc( -100% + 10px ) )';
 	$( 'head' ).append(
