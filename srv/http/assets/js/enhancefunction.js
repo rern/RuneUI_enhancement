@@ -168,7 +168,7 @@ function scrollLongText() {
 			var $this = $( this );
 			var tW = $this.width();
 			if ( tW > wW ) {
-				if ( tW > tWmax ) tWmax = tW; // move at same speed
+				if ( tW > tWmax ) tWmax = tW; // same width > same speed scrolling
 				$this.addClass( 'scrollleft' );
 			}
 		} );
@@ -593,29 +593,29 @@ function displayCheckbox( checkboxes ) {
 	return html;
 }
 function setBookmarkScrollCSS() {
-	var hbW = 'translateX( '+ $( '.home-block' ).width() +'px )';
-	var hbW100 = 'translateX( calc( -100% + 10px ) )';
+	var hbW = 'transform : translateX( '+ $( '.home-block' ).width() +'px )';
+	var hbW100 = 'transform : translateX( calc( -100% + 10px ) )';
 	$( '#keyframes' ).remove();
 	$( 'head' ).append(
 		 '<style id="keyframes">'
 			+'@-moz-keyframes bkscrollleft {'
-				+'0%   { -moz-transform : '+ hbW +' }'
-				+'100% { -moz-transform : '+ hbW100 +' }'
+				+'0%   { -moz-'+ hbW +' }'
+				+'100% { -moz-'+ hbW100 +' }'
 			+'}'
 			+'@-webkit-keyframes bkscrollleft {'
-				+'0%   { -webkit-transform : '+ hbW +' }'
-				+'100% { -webkit-transform : '+ hbW100 +' }'
+				+'0%   { -webkit-'+ hbW +' }'
+				+'100% { -webkit-'+ hbW100 +' }'
 			+'}'
 			+'@keyframes bkscrollleft {'
 				+'0%   {'
-					+'-moz-transform    : '+ hbW +';'
-					+'-webkit-transform : '+ hbW +';'
-					+'transform         : '+ hbW +';'
+					+'-moz-'+ hbW +';'
+					+'-webkit-'+ hbW +';'
+					+ hbW +';'
 				+'}'
 				+'100% {'
-					+'-moz-transform    : '+ hbW100 +';'
-					+'-webkit-transform : '+ hbW100 +';'
-					+'transform         : '+ hbW100 +';'
+					+'-moz-'+ hbW100 +';'
+					+'-webkit-'+ hbW100 +';'
+					+ hbW100 +';'
 				+'}'
 			+'}'
 		+'</style>'
