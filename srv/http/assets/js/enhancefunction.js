@@ -592,10 +592,11 @@ function displayCheckbox( checkboxes ) {
 	} );
 	return html;
 }
-function setBookmarkScrollCSS() {
+function bookmarkScroll() {
+	$( '#keyframes' ).remove();
+	$( '.bklabel' ).attr( 'style', '' );
 	var hbW = 'transform : translateX( '+ $( '.home-block' ).width() +'px )';
 	var hbW100 = 'transform : translateX( calc( -100% + 10px ) )';
-	$( '#keyframes' ).remove();
 	$( 'head' ).append(
 		 '<style id="keyframes">'
 			+'@-moz-keyframes bkscrollleft {'
@@ -620,6 +621,17 @@ function setBookmarkScrollCSS() {
 			+'}'
 		+'</style>'
 	);
+	$( '.bklabel:not(.hide)' ).each( function() {
+		var $this = $( this );
+		var tW = $this.width();
+		var pW = $this.parent().width();
+		var cssanimation = Math.round( 5 * tW / pW ) +'s infinite bkscrollleft linear';
+		if ( tW > pW ) $this.addClass( 'bkscrollleft' ).css( {
+				  '-moz-animation'    : cssanimation
+				, '-webkit-animation' : cssanimation
+				, animation           : cssanimation
+			} );
+	} );
 }
 function renderLibrary() {
 	GUI.dbbackdata = [];
@@ -660,20 +672,8 @@ function renderLibrary() {
 		} );
 	}
 	$( '#divbookmarks' ).html( content ).promise().done( function() {
-		$( '.bklabel:not(.hide)' ).each( function() {
-			var $this = $( this );
-			var tW = $this.width();
-			var pW = $this.parent().width();
-			var cssanimation = Math.round( 3 * tW / pW ) +'s infinite bkscrollleft linear';
-			if ( tW > pW ) $this.addClass( 'scrollleft' ).css( {
-					  '-moz-animation'    : cssanimation
-					, '-webkit-animation' : cssanimation
-					, animation           : cssanimation
-				} );
-		} );
+		bookmarkScroll();
 	} );
-	setBookmarkScrollCSS();
-
 	var order = GUI.display.library || 'sd,usb,nas,webradio,album,artist,albumartist,composer,genre,dirble,jamendo,spotify';
 	order = order.split( ',' );
 	$( '.home-block' ).find( 'gr' ).remove();

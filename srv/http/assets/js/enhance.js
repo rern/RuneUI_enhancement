@@ -1311,11 +1311,11 @@ window.addEventListener( 'orientationchange', function() {
 			var scrollpos = $( '#pl-entries li.active' ).offset().top - $( '#pl-entries' ).offset().top - ( 49 * 3 );
 			$( 'html, body' ).scrollTop( scrollpos );
 		}, 500 );
-	} else { // library
+	} else if ( GUI.library && !$( '#home-blocks' ).hasClass( 'hide' ) ) {
+		bookmarkScroll();
+	} else {
 		if ( GUI.dblist || GUI.pleditor ) {
 			displayIndexBar();
-		} else {
-			setTimeout( setBookmarkScrollCSS, 500 );
 		}
 	}
 } );
