@@ -156,11 +156,8 @@ function scrollLongText() {
 	var $el = $( '#artist, #song, #album' );
 	$el
 		.removeClass( 'scrollleft' )
-		.css( {
-			  animation  : ''
-			, width      : ''
-			, visibility : 'hidden'
-		} );
+		.prop( 'style', '' )
+		.css( 'visibility', 'hidden' );
 	var wW = window.innerWidth * 0.98;
 	var tWmax = 0;
 	setTimeout( function() {
@@ -168,7 +165,7 @@ function scrollLongText() {
 			var $this = $( this );
 			var tW = $this.width();
 			if ( tW > wW ) {
-				if ( tW > tWmax ) tWmax = tW; // same width > same speed scrolling
+				if ( tW > tWmax ) tWmax = tW; // same width > scroll together (same speed)
 				$this.addClass( 'scrollleft' );
 			}
 		} );
