@@ -512,17 +512,9 @@ function displayPlayback() {
 		} );
 	} else {
 		var compact = GUI.bars || !GUI.screenS;
-		$( '#page-playback' ).css( {
-			  transform          : ''
-			, 'transform-origin' : ''
-			, height             : ''
-			, 'padding-top'      : compact ? '' : '40px'
-		} );
-		$( '#playback-row' ).css( {
-			  width         : ''
-			, 'margin-left' : ''
-			, 'margin-top'      : compact ? '' : 0
-		} );
+		$( '#page-playback, #playback-row' ).removeAttr( 'style' );
+		$( '#page-playback' ).css( 'padding-top', compact ? '' : '40px' );
+		$( '#playback-row' ).css( 'margin-top', compact ? '' : 0 )
 	}
 }
 function displayAirPlay() {
@@ -1299,10 +1291,7 @@ function getNameWidth() {
 		, visibility  : 'hidden'
 	} );
 	pltW = $title.width();
-	$title.css( {
-		  'max-width' : ''
-		, visibility  : ''
-	} );
+	$title.removeAttr( 'style' );
 }
 function setNameWidth() {
 	var iWdW = 60 + $duration.width();
