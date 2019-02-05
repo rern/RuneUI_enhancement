@@ -708,6 +708,7 @@ $( '#dbsearchbtn' ).click( function() {
 		$( '#db-search, #db-searchbtn' ).toggleClass( 'hide' );
 		$( '#db-currentpath' ).css( 'max-width', '' );
 		$( '#db-currentpath>span, #db-currentpath>i' ).removeClass( 'hide' );
+		$( '#db-webradio-new' ).addClass( 'hide' );
 		return
 	}
 	GUI.dblist = 1;
@@ -716,8 +717,10 @@ $( '#dbsearchbtn' ).click( function() {
 		, arg : keyword
 	} );
 } );
-$( '#db-search-keyword' ).on( 'keypress', function( e ) {
+$( '#db-search-keyword' ).keypress( function( e ) {
 	if ( e.which === 13 ) $( '#dbsearchbtn' ).click();
+} ).keyup( function() {
+	$( '#db-search-close' ).removeClass( 'hide' );
 } );
 // MutationObserver - watch for '#db-entries' content changed then scroll to previous position
 var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
@@ -728,7 +731,7 @@ var mutationLibrary = new MutationObserver( function() { // on observed target c
 	$( 'html, body' ).scrollTop( scrollpos ? scrollpos : 0 );
 	mutationLibrary.disconnect();
 } );
-$( '#db-search-results' ).click( function() {
+$( '#db-search-close' ).click( function() {
 	$( this ).addClass( 'hide' );
 	$( '#db-search, #db-searchbtn' ).toggleClass( 'hide' );
 	$( '#db-search-keyword' ).val( '' );
@@ -1027,7 +1030,7 @@ $( '#plclear' ).click( function() {
 		$.post( 'enhance.php', { mpc: 'mpc clear' } );
 	}
 } );
-$( '#pl-filter' ).on( 'keyup', function() {
+$( '#pl-filter' ).keyup( function() {
 	var search = $(this).val();
 	var count = 0;
 	$( '#pl-entries li' ).each( function() {
@@ -1038,23 +1041,24 @@ $( '#pl-filter' ).on( 'keyup', function() {
 	} );
 	if ( search ) {
 		$( '#pl-manage, #pl-count' ).addClass( 'hide' );
-		$( '#pl-filter-results' ).removeClass( 'hide' ).html( 
+		$( '#pl-search-close' ).removeClass( 'hide' ).html( 
 			'<i class="fa fa-times sx"></i><span>'+ count +' <a>of</a> </span>'
 		);
 	} else {
 		$( '#pl-manage, #pl-count' ).removeClass( 'hide' );
-		$( '#pl-filter-results' ).addClass( 'hide' ).empty();
+		$( '#pl-search-close' ).addClass( 'hide' ).empty();
 	}
 } );
-$( '#pl-filter-results' ).click( function() {
-	$( this ).addClass( 'hide' ).empty();
-	$( '#pl-manage, #pl-count, #pl-entries li' ).removeClass( 'hide' );
+$( '#pl-search-close, #plsearchbtn' ).click( function() {
+	$( '#pl-search-close, #pl-search, #plsearchbtn' ).addClass( 'hide' );
+	$( '#pl-count, #pl-manage, #pl-searchbtn, #pl-entries li' ).removeClass( 'hide' );
 	$( '#pl-filter' ).val( '' );
 	$( '#pl-entries li' ).show();
 } );
-$( '#pl-searchbtn, #plsearchbtn, #pl-filter-results' ).click( function() {
-	$( '#pl-count, #pl-search, #pl-searchbtn, #pl-manage' ).toggleClass( 'hide' );
-	if ( !$( '#pl-search' ).hasClass( 'hide' ) ) $( '#pl-filter' ).focus();
+$( '#pl-searchbtn' ).click( function() {
+	$( '#pl-search, #plsearchbtn' ).removeClass( 'hide' );
+	$( '#pl-count, #pl-manage, #pl-searchbtn' ).addClass( 'hide' );
+	$( '#pl-filter' ).focus();
 } );
 new Sortable( document.getElementById( 'pl-entries' ), {
 	  ghostClass : 'sortable-ghost'

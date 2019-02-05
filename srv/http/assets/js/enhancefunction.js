@@ -634,7 +634,7 @@ function renderLibrary() {
 	$( '#db-currentpath .lipath' ).empty()
 	$( '#db-search, #db-searchbtn' ).toggleClass( 'hide' );
 	$( '#db-entries' ).empty();
-	$( '#db-search, #db-search-results, #db-index, #db-back, #db-webradio-new' ).addClass( 'hide' );
+	$( '#db-search, #db-search-close, #db-index, #db-back, #db-webradio-new' ).addClass( 'hide' );
 	$( '#db-searchbtn' ).removeClass( 'hide' );
 	$( '#db-search-keyword' ).val( '' );
 	if ( $( '#db-entries' ).hasClass( 'hide' ) ) return
@@ -1064,7 +1064,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			$( '#db-currentpath' ).css( 'max-width', '40px' );
 			$( '#db-back, #db-index' ).addClass( 'hide' );
 			$( '#db-entries' ).css( 'width', '100%' );
-			$( '#db-search-results' )
+			$( '#db-search-close' )
 				.removeClass( 'hide' )
 				.html( '<i class="fa fa-times sx"></i><span class="visible-xs-inline"></span>\
 					<span>' + results + ' <a>of</a> </span>' );
@@ -1095,7 +1095,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		$( '#db-index' ).removeClass( 'hide' );
 		$( '#db-entries' ).css( 'width', '' );
 	}
-	if( $( '#db-search-results' ).hasClass( 'hide' ) ) {
+	if( $( '#db-search-close' ).hasClass( 'hide' ) ) {
 		$( '#db-search' ).addClass( 'hide' );
 		$( '#db-searchbtn' ).removeClass( 'hide' );
 	} else {
@@ -1453,7 +1453,7 @@ function htmlPlaylist( data ) {
 }
 function renderPlaylist() {
 	$( '#pl-filter' ).val( '' );
-	$( '#pl-filter-results' ).empty();
+	$( '#pl-search-close' ).empty();
 	$( '#pl-currentpath, #pl-editor, #pl-index, #pl-search' ).addClass( 'hide' );
 	$( '#db-currentpath>span, #pl-searchbtn' ).removeClass( 'hide' );
 	$( '#plopen' ).toggleClass( 'disable', !GUI.lsplaylists.length );

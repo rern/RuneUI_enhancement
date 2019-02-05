@@ -76,7 +76,7 @@ $( '.contextmenu a' ).click( function() {
 		} else {
 			if ( cmd !== 'update' ) {
 				if ( cmd.replace( 'wr', '' ).slice( 0, 3 ) === 'add' ) {
-					addReplace( mode, command, 'Add to Playlist' );
+					addReplace( mode, cmd, command, 'Add to Playlist' );
 				} else {
 					if ( GUI.display.plclear ) {
 						info( {
