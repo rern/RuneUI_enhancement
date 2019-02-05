@@ -157,30 +157,30 @@ function scrollLongText() {
 	$el
 		.removeClass( 'scrollleft' )
 		.css( {
-			  width                        : ''
-			, '-moz-animation-duration'    : ''
-			, '-webkit-animation-duration' : ''
-			, 'animation-duration'         : ''
-			, visibility                   : 'hidden'
+			  animation  : ''
+			, width      : ''
+			, visibility : 'hidden'
 		} );
-	var wW = window.innerWidth;
+	var wW = window.innerWidth * 0.98;
 	var tWmax = 0;
 	setTimeout( function() {
 		$el.each( function() {
 			var $this = $( this );
 			var tW = $this.width();
-			if ( tW > tWmax ) tWmax = tW;
-			if ( tW > wW * 0.98 ) $this.addClass( 'scrollleft' );
+			if ( tW > wW ) {
+				if ( tW > tWmax ) tWmax = tW; // move at same speed
+				$this.addClass( 'scrollleft' );
+			}
 		} );
 		$el.css( 'visibility', '' );
-		if ( !$( '#info .scrollleft' ).length ) return
+		if ( !$( '.scrollleft' ).length ) return
 		
-		var sec = Math.round( 10 * tWmax / wW ) +'s';
+		var cssanimation = Math.round( 10 * tWmax / wW ) +'s infinite scrollleft linear';
 		$( '.scrollleft' ).css( {
-			  width                        : tWmax +'px'
-			, '-moz-animation-duration'    : sec
-			, '-webkit-animation-duration' : sec
-			, 'animation-duration'         : sec
+			  '-moz-animation'    : cssanimation
+			, '-webkit-animation' : cssanimation
+			, animation           : cssanimation
+			, width               : tWmax +'px'
 		} );
 	}, 100 );
 }
@@ -592,6 +592,35 @@ function displayCheckbox( checkboxes ) {
 	} );
 	return html;
 }
+function setBookmarkScrollCSS() {
+	var hbW = 'translateX( '+ $( '.home-block' ).width() +'px )';
+	var hbW100 = 'translateX( calc( -100% + 10px ) )';
+	$( '#keyframes' ).remove();
+	$( 'head' ).append(
+		 '<style id="keyframes">'
+			+'@-moz-keyframes bkscrollleft {'
+				+'0%   { -moz-transform : '+ hbW +' }'
+				+'100% { -moz-transform : '+ hbW100 +' }'
+			+'}'
+			+'@-webkit-keyframes bkscrollleft {'
+				+'0%   { -webkit-transform : '+ hbW +' }'
+				+'100% { -webkit-transform : '+ hbW100 +' }'
+			+'}'
+			+'@keyframes bkscrollleft {'
+				+'0%   {'
+					+'-moz-transform    : '+ hbW +';'
+					+'-webkit-transform : '+ hbW +';'
+					+'transform         : '+ hbW +';'
+				+'}'
+				+'100% {'
+					+'-moz-transform    : '+ hbW100 +';'
+					+'-webkit-transform : '+ hbW100 +';'
+					+'transform         : '+ hbW100 +';'
+				+'}'
+			+'}'
+		+'</style>'
+	);
+}
 function renderLibrary() {
 	GUI.dbbackdata = [];
 	if ( GUI.bookmarkedit ) return
@@ -630,7 +659,21 @@ function renderLibrary() {
 					  +'</div>';
 		} );
 	}
-	$( '#divbookmarks' ).html( content );
+	$( '#divbookmarks' ).html( content ).promise().done( function() {
+		$( '.bklabel:not(.hide)' ).each( function() {
+			var $this = $( this );
+			var tW = $this.width();
+			var pW = $this.parent().width();
+			var cssanimation = Math.round( 3 * tW / pW ) +'s infinite bkscrollleft linear';
+			if ( tW > pW ) $this.addClass( 'scrollleft' ).css( {
+					  '-moz-animation'    : cssanimation
+					, '-webkit-animation' : cssanimation
+					, animation           : cssanimation
+				} );
+		} );
+	} );
+	setBookmarkScrollCSS();
+
 	var order = GUI.display.library || 'sd,usb,nas,webradio,album,artist,albumartist,composer,genre,dirble,jamendo,spotify';
 	order = order.split( ',' );
 	$( '.home-block' ).find( 'gr' ).remove();
@@ -653,12 +696,6 @@ function renderLibrary() {
 		$( '.home-bookmark' ).css( 'padding', '20px 5px 5px 5px' );
 	}
 	displayTopBottom();
-	$( '.bklabel:not(.hide)' ).each( function() {
-		var $this = $( this );
-		var tW = $this.width();
-		var pW = $this.parent().width();
-		if ( tW > pW ) $this.addClass( 'scrollleft' ).css( 'animation-duration', Math.round( 5 * tW / pW ) +'s' );
-	} );
 	$( 'html, body' ).scrollTop( 0 );
 }
 function infoNoData() {
