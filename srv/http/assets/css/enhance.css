@@ -67,6 +67,7 @@
 .fa-library:before { content: "\f506" }
 .fa-play-circle:before { content: "\f507" }
 .fa-list-ul:before { content: "\f508"; }
+.fa-swipe:before { content: "\f54A" }
 .fa-gear:before { content: "\f509" }
 .fa-gears:before { content: "\f50A" }
 .fa-sliders:before { content: "\f50B" }
@@ -268,13 +269,13 @@ wh, gr { font-weight: 300; }
 	bottom: 0;
 }
 #swipebar {
+	line-height: 50px;
 	text-align: center;
 	background: rgba( 52, 73, 94, 0.5 );
 	touch-action: manipulation; /* fix: Unable to preventDefault inside passive event listener */
 }
-#swipebar img {
-	margin-top: 5px;
-	height: 40px;
+#swipebar i {
+	width: 60px;
 }
 .transparent {
 	opacity: 0;
