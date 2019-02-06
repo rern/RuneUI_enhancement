@@ -1295,7 +1295,7 @@ function getNameWidth() {
 	$title.removeAttr( 'style' );
 }
 function setNameWidth() {
-	var iWdW = ( GUI.display.contexticon ? 105 : 60 ) + $duration.width();
+	var iWdW = ( GUI.display.contexticon === '' ? 105 : 60 ) + $duration.width();
 	if ( pltW + iWdW < plwW ) {
 		$title.css(  'max-width', '' );
 		$duration.removeClass( 'duration-right' );
@@ -1314,9 +1314,9 @@ function setPlaylistScroll() {
 	var wW = window.innerWidth;
 	$.each( $( '#pl-entries .name' ), function() {
 		var $name = $( this );
-		var $duration = $name.next();
+		var $dur = $name.next();
 		var contexticonW = GUI.display.contexticon === '' ? 105 : 60;
-		if ( $name.width() + $duration.width() + contexticonW > wW ) $duration.addClass( 'duration-right' );
+		if ( $name.width() + $dur.width() + contexticonW > wW ) $dur.addClass( 'duration-right' );
 	} );
 	var $linotactive, $liactive, $name, $song, $elapsed, elapsedtxt;
 	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
