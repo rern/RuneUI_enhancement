@@ -1295,7 +1295,7 @@ function getNameWidth() {
 	$title.removeAttr( 'style' );
 }
 function setNameWidth() {
-	var iWdW = 60 + $duration.width();
+	var iWdW = ( GUI.display.contexticon ? 105 : 60 ) + $duration.width();
 	if ( pltW + iWdW < plwW ) {
 		$title.css(  'max-width', '' );
 		$duration.removeClass( 'duration-right' );
@@ -1303,6 +1303,7 @@ function setNameWidth() {
 		$title.css( 'max-width', plwW - iWdW +'px' );
 		$duration.addClass( 'duration-right' );
 	}
+	$( '.duration-right' ).css( 'right', GUI.display.contexticon ? '55px' : '' );
 }
 function setPlaylistScroll() {
 	if ( GUI.sortable ) return // 'skip for Sortable'
