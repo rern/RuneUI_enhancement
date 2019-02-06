@@ -172,7 +172,7 @@ $menu.= '</div>';
 		<?php 
 		} ?>
 </div>
-<div id="swipebar" class="transparent"><img src="<?=$this->asset( '/img/swipe.svg' )?>"></div>
+<div id="swipebar" class="transparent"><i class="fa fa-swipe fa-2x"></i><i class="fa fa-gear fa-2x"></i></div>
 <div id="menu-bottom" class="hide">
 	<ul>
 		<li id="tab-library"><a><i class="fa fa-library"></i></a></li>
