@@ -1456,11 +1456,13 @@ span.dbpath {
 #pl-entries .pl-action,
 #pl-editor .pl-action {
 	float: right;
+	position: relative;
 	width: 50px;
 	margin: 0;
 	line-height: 49px;
 	font-size: 18px;
 	text-align: center;
+	z-index: 1;
 }
 #pl-entries .pl-action {
 	font-size: 24px;
