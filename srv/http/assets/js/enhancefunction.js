@@ -1315,7 +1315,8 @@ function setPlaylistScroll() {
 	$.each( $( '#pl-entries .name' ), function() {
 		var $name = $( this );
 		var $duration = $name.next();
-		if ( $name.width() + $duration.width() + ( GUI.display.contexticon === '' ? 105 : 60 ) > wW ) $duration.addClass( 'duration-right' );
+		var contexticonW = GUI.display.contexticon === '' ? 105 : 60;
+		if ( $name.width() + $duration.width() + contexticonW > wW ) $duration.addClass( 'duration-right' );
 	} );
 	var $linotactive, $liactive, $name, $song, $elapsed, elapsedtxt;
 	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
