@@ -7,19 +7,6 @@ alias=enha
 
 uninstallstart $@
 
-if [[ $1 == u ]]; then
-	zoom=$( redis-cli get zoomlevel )
-	if [[ -z $zoom ]]; then
-		if ! pacman -Q chromium &> /dev/null; then
-			zoom=$( grep '^zoom' /root/.config/midori/config | cut -d'=' -f2 )
-		else
-			zoom=$( grep '^force-device-scale-factor' /root/.xinitrc | cut -d'=' -f2 )
-		fi
-	fi
-else
-	redis-cli del display webradiosampling zoomlevel &> /dev/null
-fi
-
 # remove files #######################################
 echo -e "$bar Remove files ..."
 
@@ -29,8 +16,9 @@ rm -v /srv/http/assets/css/{enhance*,fontawesome.min,midori,pnotify.custom.min,r
 rm -v /srv/http/assets/fonts/enhance*
 rm -v /srv/http/assets/img/{bootsplash.png,controls*,cover.svg,runelogo.svg,swipe.svg,vu*}
 rm -v /srv/http/assets/js/enhance*
-rm -v /srv/http/assets/js/vendor/{jquery-ui.min,roundslider.min}.js
-[[ ! -e /srv/http/gpiosettings.php ]] && rm -v /srv/http/assets/css/{bootstrap,bootstrap.select}.min.css
+rm -v /srv/http/assets/js/vendor/roundslider.min.js
+# DO NOT remove - used by other addons
+# bootstrap.min.css, bootstrap-select.min.css
 
 mv -f /srv/http/index.php{.backup,}
 mv -f /srv/http/assets/js/vendor/pnotify.custom.min.js{.backup,}
@@ -57,6 +45,11 @@ files="
 restorefile $files
 
 systemctl restart rune_PL_wrk
+if [[ $1 != u ]]; then
+	redis-cli del display sampling &> /dev/null
+	systemctl enable rune_shutdown
+	systemctl start rune_shutdown
+fi
 
 chown -R mpd:audio /mnt/MPD/Webradio
 

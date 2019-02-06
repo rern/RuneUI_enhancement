@@ -1,5 +1,4 @@
-// quotes in mpc name arguments
-//     enclosed with double quotes + escape double quotes
+// single quotes in mpc name arguments - enclosed with double quotes + escape double quotes
 // example: mpc save "abc's \"xyz\"" << name.replace( /"/g, '\\"' )
 
 $( '.contextmenu a' ).click( function() {
@@ -8,10 +7,8 @@ $( '.contextmenu a' ).click( function() {
 	if ( [ 'play', 'pause', 'stop', 'remove' ].indexOf( cmd ) !== -1 ) {
 		if ( cmd === 'remove' ) {
 			GUI.list.li.find( '.pl-action' ).click();
-		} else if ( cmd === 'stop' ) {
-			GUI.list.li.find( '.time' ).tap(); // jquery.mobile
 		} else {
-			GUI.list.li.tap(); // jquery.mobile
+			$( '#'+ cmd ).click();
 		}
 		return
 	}
@@ -79,7 +76,7 @@ $( '.contextmenu a' ).click( function() {
 		} else {
 			if ( cmd !== 'update' ) {
 				if ( cmd.replace( 'wr', '' ).slice( 0, 3 ) === 'add' ) {
-					addReplace( mode, command, 'Add to Playlist' );
+					addReplace( mode, cmd, command, 'Add to Playlist' );
 				} else {
 					if ( GUI.display.plclear ) {
 						info( {
@@ -87,11 +84,11 @@ $( '.contextmenu a' ).click( function() {
 							, message : 'Replace current Playlist?'
 							, cancel  : 1
 							, ok      : function() {
-								addReplace( mode, command, 'Playlist replaced' );
+								addReplace( mode, cmd, command, 'Playlist replaced' );
 							}
 						} );
 					} else {
-						addReplace( mode, command, 'Playlist replaced' );
+						addReplace( mode, cmd, command, 'Playlist replaced' );
 					}
 				}
 			} else {
@@ -108,13 +105,13 @@ $( '.contextmenu a' ).click( function() {
 	}
 } );
 
-function addReplace( mode, command, title ) {
-	if ( mode === 'wr' ) {
-		GUI.local = 1;
-		setTimeout( function() { GUI.local = 0 }, 500 );
-	}
+function addReplace( mode, cmd, command, title ) {
 	$.post( 'enhance.php', { mpc: command }, function() {
-		getPlaybackStatus();
+		if ( cmd === 'addplay' || cmd === 'replaceplay' ) {
+			$( '#tab-playback' ).click();
+		} else {
+			getPlaybackStatus();
+		}
 	} );
 	new PNotify( {
 		  title : title

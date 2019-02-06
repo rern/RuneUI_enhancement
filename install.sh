@@ -12,12 +12,6 @@ alias=enha
 
 installstart $@
 
-#0temp0 remove uninstall leftover
-redis-cli hset display contexticon '' &> /dev/null
-rm -f /srv/http/enhance.css
-rm -f /srv/http/assets/enhancesettings.js
-#1temp1
-
 mv /srv/http/index.php{,.backup}
 mv /srv/http/assets/js/vendor/pnotify.custom.min.js{,.backup}
 mv /srv/http/assets/js/vendor/pushstream.min.js{,.backup}
@@ -129,9 +123,6 @@ appendS '$'
 file=/srv/http/app/templates/enhanceplayback.php  # for rune youtube
 [[ -e /usr/local/bin/uninstall_RuneYoutube.sh ]] && sed -i '/id="pl-import-youtube"/ {s/<!--//; s/-->//}' $file
 #----------------------------------------------------------------------------------
-# disable default shutdown
-systemctl disable rune_shutdown
-
 # correct version number
 [[ $( redis-cli get buildversion ) == 'beta-20160313' ]] && redis-cli set release 0.3 &> /dev/null
 
@@ -153,14 +144,21 @@ if [[ ! $bkmarks ]]; then
 	fi
 fi
 
-for item in bars debug dev time coverart volume buttons nas sd usb webradio album artist albumartist composer genre dirble jamendo count label coverfile plclear; do
+for item in bars debug dev time coverart volume buttons nas sd usb webradio album artist albumartist composer genre dirble jamendo count label contexticon coverfile plclear tapaddplay; do
 	if [[ $( redis-cli hexists display $item ) == 0 ]]; then
-		[[ $item == debug || $item == dev ]] && chk='' || chk=checked
+		[[ $item == debug || $item == dev || $item == contexticon || $item == tapaddplay ]] && chk='' || chk=checked
 		redis-cli hset display $item "$chk" &> /dev/null
 	fi
 done
 # fix webradio permission
 chown -R http:http /mnt/MPD/Webradio
+
+echo -e "$bar Disable ACC/ALAC support ..."
+redis-cli hset mpdconf ffmpeg no
+
+# disable default shutdown
+systemctl disable rune_shutdown
+systemctl stop rune_shutdown
 
 installfinish $@
 

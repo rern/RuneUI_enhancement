@@ -1,45 +1,36 @@
 @font-face {
 	font-family: Lato;
-	src: url( '../fonts/lato/lato-regular-webfont.woff' ) format( 'woff' ),
-		url( '../fonts/lato/lato-regular-webfont.ttf' ) format( 'truetype' );
+	src: url( '/fonts/lato/lato-regular-webfont.woff' ) format( 'woff' ),
+	     url( '/fonts/lato/lato-regular-webfont.ttf' ) format( 'truetype' );
 	font-weight: normal;
 	font-style: normal;
 }
 @font-face {
 	font-family: Lato;
-	src: url( '../fonts/lato/lato-light-webfont.woff' ) format( 'woff' ),
-		url( '../fonts/lato/lato-light-webfont.ttf' ) format( 'truetype' );
+	src: url( '/fonts/lato/lato-light-webfont.woff' ) format( 'woff' ),
+	     url( '/fonts/lato/lato-light-webfont.ttf' ) format( 'truetype' );
 	font-weight: 300;
 	font-style: normal;
 }
 @font-face {
 	font-family: Lato;
-	src: url( '../fonts/lato/lato-bold-webfont.woff' ) format( 'woff' ),
-		url( '../fonts/lato/lato-bold-webfont.ttf' ) format( 'truetype' );
+	src: url( '/fonts/lato/lato-bold-webfont.woff' ) format( 'woff' ),
+	     url( '/fonts/lato/lato-bold-webfont.ttf' ) format( 'truetype' );
 	font-weight: bold;
 	font-style: normal;
 }
 @font-face {
 	font-family: Lato;
-	src: url( '../fonts/lato/lato-italic-webfont.woff' ) format( 'woff' ),
-		url( '../fonts/lato/lato-italic-webfont.ttf' ) format( 'truetype' );
+	src: url( '/fonts/lato/lato-italic-webfont.woff' ) format( 'woff' ),
+	     url( '/fonts/lato/lato-italic-webfont.ttf' ) format( 'truetype' );
 	font-weight: normal;
 	font-style: italic;
-}
-@font-face {
-	font-family: FontAwesome;
-	src: url( '../fonts/fontawesome-webfont.woff' ) format( 'woff' ),
-		url( '../fonts/fontawesome-webfont.ttf' ) format( 'truetype' );
-	font-weight: normal;
-	font-style: normal;
 }
 /* ---------------------- fontawesome mod ---------------------- */
 /* 'enhance' declared in <head> for cache busting */
 .fa {
-	font-family: enhance, addons, FontAwesome;
+	font-family: enhance, addons;
 }
-#pl-entries li:before { content: none; } /* remove default css */
-
 .fa-mpd:before { content: "\f522" }
 .fa-spotify:before { content: "\f523" }
 .fa-airplay:before { content: "\f524" }
@@ -76,6 +67,7 @@
 .fa-library:before { content: "\f506" }
 .fa-play-circle:before { content: "\f507" }
 .fa-list-ul:before { content: "\f508"; }
+.fa-swipe:before { content: "\f54A" }
 .fa-gear:before { content: "\f509" }
 .fa-gears:before { content: "\f50A" }
 .fa-sliders:before { content: "\f50B" }
@@ -93,7 +85,8 @@
 .fa-genre:before { content: "\f559" }
 .fa-dirble:before { content: "\f55A" }
 .fa-jamendo:before { content: "\f55B" }
-.fa-youtube:before { content: "\f55C" }
+.fa-lastfm:before { content: "\f55C" }
+.fa-youtube:before { content: "\f55D" }
 
 .fa-folder:before { content: "\f540" }
 .fa-folder-open:before { content: "\f541" }
@@ -117,7 +110,9 @@
 .fa-times:before { content: "\f51A" }
 .fa-question-circle:before { content: "\f560" }
 .fa-info-circle:before { content: "\f561" }
+.fa-check:before { content: "\f51B" }
 .fa-warning:before { content: "\f562" }
+.fa-refresh:before { content: "\f563" }
 /* bootstrap mod */
 .page {
 	height: 100vh;
@@ -143,9 +138,12 @@ label {
 	background: #0095d8;
 	text-shadow: none
 }
+.ui-pnotify-icon {
+	font-size: 1.3em;
+}
 .ui-pnotify .alert h4 {
 	font-size: 16px;
-	font-weight: bold;
+	font-weight: 300;
 	text-transform: uppercase;
 }
 
@@ -271,12 +269,19 @@ wh, gr { font-weight: 300; }
 	bottom: 0;
 }
 #swipebar {
+	line-height: 50px;
 	text-align: center;
 	background: rgba( 52, 73, 94, 0.5 );
+	touch-action: manipulation; /* fix: Unable to preventDefault inside passive event listener */
 }
-#swipebar img {
-	margin-top: 5px;
+#swipebar .fa-swipe {
+	width: 90px;
+}
+#swipebar .fa-gear {
+	width: 60px;
 	height: 40px;
+	line-height: 40px;
+	border-left: 2px solid #e0e7ee;
 }
 .transparent {
 	opacity: 0;
@@ -423,15 +428,8 @@ wh, gr { font-weight: 300; }
 #info span {
 	display: table; /* allow get width */
 	margin: 0 auto;
-	padding: 0 10px;
 	text-align: center;
 	white-space: nowrap;
-}
-#divsong,
-#artist,
-#album {
-	overflow: hidden;
-	position: relative;
 }
 #divsong {
 	height: 34px;
@@ -443,6 +441,12 @@ wh, gr { font-weight: 300; }
 #divartist,
 #divalbum {
 	height: 25px;
+}
+#song,
+#artist,
+#album {
+	overflow: hidden;
+	position: relative;
 }
 #artist,
 #album {
@@ -478,22 +482,27 @@ wh, gr { font-weight: 300; }
 	overflow: hidden;
 }
 .scrollleft {
-	-moz-animation      : scrollleft linear infinite;
-	-webkit-animation   : scrollleft linear infinite;
-	animation           : scrollleft linear infinite;
 	backface-visibility : hidden; /* for less flickering */
 }
 @-moz-keyframes scrollleft {
-	0%   { -moz-transform    : translateX( 100% ) }
-	100% { -moz-transform    : translateX( -100% ) }
+	0%   { -moz-transform : translateX( 100vw ) } /* move right 100vw = viewport = visible text width */
+	100% { -moz-transform : translateX( -100% ) } /* move left  100%  = window   = full text width */
 }
 @-webkit-keyframes scrollleft {
-	0%   { -webkit-transform : translateX( 100% ) }
+	0%   { -webkit-transform : translateX( 100vw ) }
 	100% { -webkit-transform : translateX( -100% ) }
 }
 @keyframes scrollleft {
-	0%   { transform         : translateX( 100% ) }
-	100% { transform         : translateX( -100% ) }
+	0%   { 
+		-moz-transform    : translateX( 100vw ); /* Browser bug fix */
+		-webkit-transform : translateX( 100vw ); /* Browser bug fix */
+		transform         : translateX( 100vw );
+	}
+	100% {
+		-moz-transform    : translateX( -100% );
+		-webkit-transform : translateX( -100% );
+		transform         : translateX( -100% );
+	}
 }
 /* ---------------------- knobs, buttons ----------------------*/
 #playsource-open { display: none; }
@@ -959,8 +968,6 @@ wh, gr { font-weight: 300; }
 .dot {
 	animation: 1s blinkdot infinite;
 	-webkit-animation: 1s blinkdot infinite;
-	line-height: 8px;
-	vertical-align: 100%;
 }
 .dot2 {
 	animation-delay: 250ms;
@@ -1151,7 +1158,7 @@ wh, gr { font-weight: 300; }
 .btnlist-top .form-inline i {
 	font-size: 18px;
 }
-#db-search-results {
+#db-search-close {
 	float: right;
 }
 #db-searchbtn,
@@ -1204,7 +1211,8 @@ wh, gr { font-weight: 300; }
 	font-size: 18px;
 }
 #li-count,
-#countsong {
+#countsong,
+#countradio {
 	margin-left: 10px;
 }
 .title {
@@ -1277,28 +1285,22 @@ wh, gr { font-weight: 300; }
 	border-bottom-right-radius: 0;
 	border-top-right-radius: 0
 }
-
-#db-search-results,
-#pl-filter-results {
+#db-search-close,
+#pl-search-close {
 	background-color: transparent;
-	-webkit-box-shadow: none;
-	box-shadow: none;
-	-webkit-box-shadow: none, 0 0 0 rgba(0, 0, 0, 0), 0 0 0 rgba(0, 0, 0, 0);
-	-moz-box-shadow: none, 0 0 0 rgba(0, 0, 0, 0), 0 0 0 rgba(0, 0, 0, 0);
-	box-shadow: none, 0 0 0 rgba(0, 0, 0, 0), 0 0 0 rgba(0, 0, 0, 0)
 }
-#db-search-results span,
-#pl-filter-results span {
+#db-search-close span,
+#pl-search-close span {
 	margin-left: 5px;
 	vertical-align: 12%;
 	font-size: 18px;
 }
-#db-search-results i,
-#pl-filter-results i {
+#db-search-close i,
+#pl-search-close i {
 	color: #0095d8;
 }
-#db-search-results span a,
-#pl-filter-results span a {
+#db-search-close span a,
+#pl-search-close span a {
 	color: #7795b4;
 }
 #db-currentpath span i {
@@ -1408,11 +1410,19 @@ wh, gr { font-weight: 300; }
 	background: #10161c
 }
 #db-entries span,
-#pl-entries span,
+#pl-entries .name,
+#pl-entries .song,
+#pl-entries .li2,
 #pl-editor span {
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+}
+#pl-entries .name {
+	max-width: calc( 100% - 95px );
+}
+#pl-entries .song {
+	max-width: calc( 100% - 60px );
 }
 #db-entries .single {
 	line-height: 48px;
@@ -1453,14 +1463,21 @@ span.dbpath {
 #pl-entries .pl-action,
 #pl-editor .pl-action {
 	float: right;
+	position: relative;
 	width: 50px;
 	margin: 0;
 	line-height: 49px;
 	font-size: 18px;
 	text-align: center;
+	z-index: 1;
 }
 #pl-entries .pl-action {
 	font-size: 24px;
+	line-height: 45px;
+	background: #000000;
+}
+#pl-entries li.active .pl-action {
+	background: #0095d8;
 }
 .db-icon,
 .pl-icon,
@@ -1525,7 +1542,7 @@ span.dbpath {
 #pl-count i {
 	font-size: 24px;
 }
-#pl-filter-results {
+#pl-search-close {
 	float: right;
 }
 #pl-entries li:before {
@@ -1548,6 +1565,15 @@ w {
 	display: block;
 	padding-top: 5px;
 }
+#pl-entries .li1 a {
+	display: inline-block;
+	vertical-align: middle;
+}
+.duration-right {
+	position: absolute;
+	float: right;
+	right: 10px;
+}
 #db-entries .time,
 #pl-editor .time {
 	margin-left: 10px;
@@ -1562,7 +1588,7 @@ w {
 	line-height: 12px;
 }
 #pl-entries .elapsed {
-	margin-left: 10px;
+	margin: 0 3px 0 7px;
 }
 .time {
 	color: #7795b4 !important;
@@ -1919,7 +1945,7 @@ li.active .time {
 		margin-top: 0;
 	}
 	#db-currentpath {
-		width: calc( 100% - 180px );
+		width: calc( 100% - 90px );
 	}
 	#db-up,
 	#db-webradio-new {
