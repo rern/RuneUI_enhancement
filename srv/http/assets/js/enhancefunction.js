@@ -1313,8 +1313,9 @@ function setPlaylistScroll() {
 	$( '#context-menu-plaction' ).addClass( 'hide' );
 	var wW = window.innerWidth;
 	$.each( $( '#pl-entries .name' ), function() {
-		var $this = $( this );
-		if ( $this.width() + 160 > wW ) $this.next().addClass( 'duration-right' );
+		var $name = $( this );
+		var $duration = $name.next();
+		if ( $name.width() + $duration.width() + ( GUI.display.contexticon === '' ? 105 : 60 ) > wW ) $duration.addClass( 'duration-right' );
 	} );
 	var $linotactive, $liactive, $name, $song, $elapsed, elapsedtxt;
 	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
