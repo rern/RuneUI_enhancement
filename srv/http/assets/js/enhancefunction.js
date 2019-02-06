@@ -1300,7 +1300,23 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 	}
 	return content +'</li>';
 }
-function getNameWidth() {
+function setNameWidth() {
+	var wW = window.innerWidth;
+	$.each( $( '#pl-entries li:not(.active) .name' ), function() {
+		var $name = $( this );
+		var $dur =  $name.next();
+		// pl-icon + margin + duration + margin + pl-action
+		var iWdW = 40 + 10 + $dur.width() + 10 + ( GUI.display.contexticon ? 45 : 0 );
+		if ( iWdW + $name.width() < wW ) {
+			$dur.removeClass( 'duration-right' );
+			$name.css( 'max-width', '' );
+		} else {
+			$dur.addClass( 'duration-right' );
+			$name.css( 'max-width', wW - iWdW +'px' );
+		}
+	} );
+}
+function getTitleWidth() {
 	plwW = $( window ).width();
 	$title.css( {
 		  'max-width' : 'none'
@@ -1309,9 +1325,9 @@ function getNameWidth() {
 	pltW = $title.width();
 	$title.removeAttr( 'style' );
 }
-function setNameWidth() {
+function setTitleWidth() {
 	// pl-icon + margin + duration + margin + pl-action
-	var iWdW = 40 + 10 + $duration.width() + 10 + ( GUI.display.contexticon === '' ? 45 : 0 );
+	var iWdW = 40 + 10 + $duration.width() + 10 + ( GUI.display.contexticon ? 45 : 0 );
 	if ( iWdW + pltW < plwW ) {
 		$title.css(  'max-width', '' );
 		$duration.removeClass( 'duration-right' );
@@ -1327,14 +1343,7 @@ function setPlaylistScroll() {
 	clearInterval( GUI.intElapsedPl );
 	displayTopBottom();
 	$( '#context-menu-plaction' ).addClass( 'hide' );
-	var wW = window.innerWidth;
-	$.each( $( '#pl-entries .name' ), function() {
-		var $name = $( this );
-		var $dur = $name.next();
-		// pl-icon + margin + name + duration + margin + pl-action
-		var allW = 40 + 10 + $name.width() + $dur.width() + 10 + ( GUI.display.contexticon === '' ? 45 :0 );
-		$dur.toggleClass( 'duration-right', allW > wW );
-	} );
+	setNameWidth();
 	var $linotactive, $liactive, $name, $song, $elapsed, elapsedtxt;
 	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
 		$.each( status, function( key, value ) {
@@ -1351,7 +1360,7 @@ function setPlaylistScroll() {
 		$linotactive = $( '#pl-entries li:not(:eq( '+ status.song +' ) )' );
 		$linotactive.removeClass( 'active activeplay' ).find( '.elapsed, .song' ).empty();
 		$linotactive.find( '.name' ).removeClass( 'hide' );
-		$linotactive.find( '.name, .song' ).css( 'max-width', '' );
+		$linotactive.find( '.song' ).css( 'max-width', '' );
 		$liactive = $( '#pl-entries li' ).eq( status.song );
 		$liactive.addClass( 'active' );
 		$name = $liactive.find( '.name' );
@@ -1362,8 +1371,8 @@ function setPlaylistScroll() {
 		if ( status.state === 'pause' ) {
 			elapsedtxt = second2HMS( elapsed );
 			$elapsed.html( '<i class="fa fa-pause"></i> '+ elapsedtxt + slash );
-			getNameWidth();
-			setNameWidth();
+			getTitleWidth();
+			setTitleWidth();
 		} else if ( status.state === 'play' ) {
 			if ( radio ) {
 				$name.addClass( 'hide' );
@@ -1372,13 +1381,13 @@ function setPlaylistScroll() {
 				$name.removeClass( 'hide' );
 				$song.empty();
 			}
-			getNameWidth();
+			getTitleWidth();
 			clearInterval( GUI.intElapsedPl ); // fix: some GUI.intElapsedPl not properly cleared
 			GUI.intElapsedPl = setInterval( function() {
 				elapsed++;
 				elapsedtxt = second2HMS( elapsed );
 				$elapsed.html( '<i class="fa fa-play"></i>'+ elapsedtxt + slash );
-				setNameWidth();
+				setTitleWidth();
 			}, 1000 );
 		} else { // stop
 			$name

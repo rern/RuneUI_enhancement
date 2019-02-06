@@ -46,7 +46,7 @@ $.post( 'enhance.php', { library: 1, data: 1 }, function( data ) {
 	GUI.libraryhome = data;
 	$.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 		GUI.display = data;
-		if ( !GUI.display.contexticon ) $( 'head' ).append( '<style id="contexticoncss">.db-action, .pl-action { display: none }</style>' );
+		if ( GUI.display.contexticon ) $( 'head' ).append( '<style id="csscontexticon">.db-action, .pl-action { display: block }</style>' );
 		$.event.special.swipe.horizontalDistanceThreshold = 80; // pixel to swipe
 		if ( !GUI.display.bars || ( GUI.screenS && !GUI.display.barsauto ) ) {
 			$( '#swipebar, .page' ).on( 'swipeleft swiperight', function( e ) {
@@ -178,9 +178,9 @@ $( '#displaylibrary' ).click( function() {
 				if ( this.name === 'coverfile' ) GUI.coverfile = ( coverfile === 'checked' ) ? ( checked ? 0 : 1 ) : ( checked ? 1 : 0 );
 			} );
 			if ( GUI.display.contexticon ) {
-				$( '#contexticoncss' ).remove();
-			} else if ( !$( '#contexticoncss' ).length ) {
-				$( 'head' ).append( '<style id="contexticoncss">.db-action, .pl-action { display: none }</style>' );
+				if ( !$( '#csscontexticon' ).length ) $( 'head' ).append( '<style id="csscontexticon">.db-action, .pl-action { display: block }</style>' );
+			} else {
+				$( '#csscontexticon' ).remove();
 			}
 			if ( !GUI.library ) $( '#tab-library' ).click();
 			$.post( 'enhance.php', { setdisplay: GUI.display } );
@@ -1318,11 +1318,12 @@ window.addEventListener( 'orientationchange', function() {
 		}, 300 );
 	} else if ( GUI.playlist && !GUI.pleditor ) {
 		setTimeout( function() {
-			getNameWidth();
 			setNameWidth();
+			getTitleWidth();
+			setTitleWidth();
 			var scrollpos = $( '#pl-entries li.active' ).offset().top - $( '#pl-entries' ).offset().top - ( 49 * 3 );
 			$( 'html, body' ).scrollTop( scrollpos );
-		}, 500 );
+		}, 300 );
 	} else if ( GUI.library && !$( '#home-blocks' ).hasClass( 'hide' ) ) {
 		bookmarkScroll();
 	} else {
