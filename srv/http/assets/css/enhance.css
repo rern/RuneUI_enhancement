@@ -274,8 +274,14 @@ wh, gr { font-weight: 300; }
 	background: rgba( 52, 73, 94, 0.5 );
 	touch-action: manipulation; /* fix: Unable to preventDefault inside passive event listener */
 }
-#swipebar i {
+#swipebar .fa-swipe {
+	width: 90px;
+}
+#swipebar .fa-gear {
 	width: 60px;
+	height: 40px;
+	line-height: 40px;
+	border-left: 2px solid #e0e7ee;
 }
 .transparent {
 	opacity: 0;
