@@ -1432,7 +1432,9 @@ wh, gr { font-weight: 300; }
 .liname,
 .liindex,
 .lisort,
-.liartist {
+.liartist,
+.db-action,
+.pl-action {
 	display: none;
 }
 span.dbpath {
@@ -1597,6 +1599,7 @@ w {
 #pl-entries .li2,
 #pl-editor .li2 {
 	display: block;
+	max-width: calc( 100vw - 60px );
 	font-size: 12px;
 	color: #7795b4
 }
