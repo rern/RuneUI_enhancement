@@ -51,6 +51,9 @@ $.post( 'enhance.php', { library: 1, data: 1 }, function( data ) {
 		$.event.special.swipe.horizontalDistanceThreshold = 80; // pixel to swipe
 		if ( !GUI.display.bars || ( GUI.screenS && !GUI.display.barsauto ) ) {
 			$( '#swipebar, .page' ).on( 'swipeleft swiperight', function( e ) {
+				GUI.swipe = 1;
+				setTimeout( function() { GUI.swipe = 0 }, 500 );
+				
 				// skip if swipe to show remove in playlist
 				if ( !$( e.target ).parents( '#pl-entries li' ).length ) setSwipe( e.type );
 			} );
@@ -214,6 +217,9 @@ $( '#displayplayback' ).click( function() {
 				$( '#swipebar, .page' ).off( 'swipeleft swiperight' );
 				if ( !GUI.display.bars || ( GUI.screenS && !GUI.display.barsauto ) ) {
 					$( '#swipebar, .page' ).on( 'swipeleft swiperight', function( e ) {
+						GUI.swipe = 1;
+						setTimeout( function() { GUI.swipe = 0 }, 500 );
+						
 						if ( !$( e.target ).parents( '#pl-entries li' ).length ) setSwipe( e.type );
 					} );
 				}
@@ -291,6 +297,9 @@ $( '#tab-playlist' ).click( function() {
 		GUI.pllist = data.playlist;
 		renderPlaylist();
 	}, 'json' );
+} );
+$( '#swipebar' ).click( function() {
+	if ( !GUI.swipe ) $( '#menu-settings' ).click();
 } );
 $( '#page-playback' ).click( function( e ) {
 	if ( $( e.target ).is( '.controls, .timemap, .covermap, .volmap' ) ) return
