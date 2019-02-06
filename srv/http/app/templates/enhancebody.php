@@ -339,7 +339,7 @@ $menu.= '</div>';
 				<?php } ?>
 			<i id="plclear" class="fa fa-minus-circle fa-lg"></i>
 		</div>
-		<button id="pl-search-close" class="btn hide" type="button"></button>
+		<button id="pl-search-close" class="btn hide" type="button"><i class="fa fa-times sx"></i><span></span></button>
 	</div>
 	<div id="pl-list">
 		<ul id="pl-entries" class="playlist"></ul>
