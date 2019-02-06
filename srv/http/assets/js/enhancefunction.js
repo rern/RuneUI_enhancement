@@ -420,6 +420,20 @@ function unmuteColor() {
 	$( '#volmute' ).removeClass( 'btn-primary' )
 		.find( 'i' ).removeClass( 'fa-mute' ).addClass( 'fa-volume' );
 }
+function cssNotify() {
+	if ( GUI.bars ) {
+		PNotify.prototype.options.stack.firstpos1 = 60;
+		$( '#cssnotify' ).remove();
+	} else {
+		PNotify.prototype.options.stack.firstpos1 = 20;
+		if ( !$( '#cssnotify' ).length ) $( 'head' ).append( 
+			'<style id="cssnotify">'
+				+'.ui-pnotify { bottom: 20px; }'
+				+'.pnotify_custom { top: 20px !important; }'
+			+'</style>' 
+		);
+	}
+}
 function displayTopBottom() {
 	if ( !$( '#bio' ).hasClass( 'hide' ) ) return
 	if ( !GUI.display.bars || ( GUI.screenS && !GUI.display.barsauto ) ) {
@@ -436,6 +450,7 @@ function displayTopBottom() {
 		$( '.btnlist-top' ).css( 'top', '40px' );
 		$( '#home-blocks' ).css( 'padding-top', '' );
 	}
+	cssNotify();
 	$( '#debug' ).toggleClass( 'hide', GUI.display.debug === '' );
 	$( '#dev' ).toggleClass( 'hide', GUI.display.dev === '' );
 	var menuH = ( $( '#settings a' ).length - $( '#settings a.hide' ).length ) * 41 - 1;

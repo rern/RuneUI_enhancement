@@ -28,7 +28,6 @@ var GUI = { // outside '$( function() {' enable console.log access
 	, screenS      : ( window.innerHeight < 590 || window.innerWidth < 500 )
 	, status       : {}
 };
-
 PNotify.prototype.options.delay = 3000;
 PNotify.prototype.options.styling = 'fontawesome';
 PNotify.prototype.options.icon = 'fa fa-check';
@@ -216,13 +215,17 @@ $( '#displayplayback' ).click( function() {
 				displayPlayback();
 				$( '#swipebar, .page' ).off( 'swipeleft swiperight' );
 				if ( !GUI.display.bars || ( GUI.screenS && !GUI.display.barsauto ) ) {
+					GUI.bars = 0;
 					$( '#swipebar, .page' ).on( 'swipeleft swiperight', function( e ) {
 						GUI.swipe = 1;
 						setTimeout( function() { GUI.swipe = 0 }, 500 );
 						
 						if ( !$( e.target ).parents( '#pl-entries li' ).length ) setSwipe( e.type );
 					} );
+				} else {
+					GUI.bars = 1;
 				}
+				cssNotify();
 			} );
 			if ( !GUI.playback ) $( '#tab-playback' ).click();
 		}
