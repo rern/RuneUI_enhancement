@@ -120,11 +120,6 @@ $( '#menu-settings, #badge' ).click( function() {
 		.toggleClass( 'hide' )
 		.css( 'top', ( GUI.bars ? '40px' : 0 ) );
 } );
-$( '#page-library, #page-playback, #page-playlist' ).click( function( e ) {
-	if ( [ 'coverTR', 'timeTR' ].indexOf( e.target.id ) === -1 ) {
-		$( '#settings' ).addClass( 'hide' );
-	}
-} );
 GUI.sortableli = new Sortable( document.getElementById( 'divhomeblocks' ), {
 	  delay      : 500
 	, onStart    : function( e ) {
@@ -310,6 +305,14 @@ $( '#page-library' ).click( function( e ) {
 	if ( e.target.id !== 'home-block-edit' && e.target.id !== 'home-block-remove' ) {
 		$( '#home-block-edit, #home-block-remove' ).remove();
 		$( '.home-bookmark' ).find( '.fa-bookmark, .bklabel, img' ).css( 'opacity', '' );
+	}
+} );
+$( '#page-library, #page-playback, #page-playlist' ).click( function( e ) {
+	if ( [ 'coverTR', 'timeTR' ].indexOf( e.target.id ) === -1 ) $( '#settings' ).addClass( 'hide' );
+	if ( GUI.library ) {
+		if ( e.target.id !== 'db-searchbtn' && !$( '#db-search-close' ).hasClass( 'hide' ) ) $( '#db-search-close' ).click();
+	} else if ( GUI.playlist ) {
+		if ( e.target.id !== 'pl-searchbtn' && !$( '#pl-search-close' ).hasClass( 'hide' ) ) $( '#pl-search-close' ).click();
 	}
 } );
 $( '#song, #playlist-warning' ).on( 'click', 'i', function() {
