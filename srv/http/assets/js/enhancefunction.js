@@ -853,7 +853,8 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		row = [];
 	GUI.albumartist = '';
 	GUI.currentpath = path;
-	$( '#db-entries, #db-currentpath .lipath' ).empty();
+	$( '#db-entries' ).empty();
+	if ( $( '#dbsearchbtn' ).hasClass( 'hide' ) ) $( '#db-currentpath .lipath' ).empty();
 	$( '#db-currentpath span, #db-entries, #db-back' ).removeClass( 'hide' );
 	$( '#home-blocks' ).addClass( 'hide' );
 

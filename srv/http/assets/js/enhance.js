@@ -699,10 +699,9 @@ $( '#db-webradio-new' ).click( function() {
 	webRadioNew();
 } );
 $( '#db-searchbtn' ).click( function() {
-	$( '#db-currentpath span, #db-searchbtn' ).addClass( 'hide' );
+	$( '#db-currentpath span, #db-back, #db-searchbtn' ).addClass( 'hide' );
 	$( '#db-search-close, #db-search, #dbsearchbtn' ).removeClass( 'hide' );
 	$( '#db-currentpath' ).css( 'max-width', '40px' );
-	if ( $( '#home-blocks' ).hasClass( 'hide' ) ) $( '#db-back' ).addClass( 'hide' );
 	$( '#db-search-keyword' ).focus();
 } );
 $( '#dbsearchbtn' ).click( function() {
@@ -722,16 +721,25 @@ $( '#db-search-close' ).click( function() {
 	$( '#db-currentpath span, #db-searchbtn' ).removeClass( 'hide' );
 	$( '#db-currentpath' ).css( 'max-width', '' );
 	$( '#db-search-close span' ).empty();
-	if ( $( '#db-search-keyword' ).val() && GUI.dbbackdata.length ) {
-		$( '#db-search-keyword' ).val( '' );
-		getDB( GUI.dbbackdata.pop() );
-		GUI.dbbackdata.pop();
-		mutationLibrary.observe( observerLibrary, observerOption );
-	} else if ( !$( '#home-blocks' ).hasClass( 'hide' ) || !GUI.dbbackdata.length ) {
+	if ( $( '#db-currentpath .lipath').text() ) $( '#db-back' ).removeClass( 'hide' );
+	if ( !$( '#db-search-keyword' ).val() ) return
+	
+	$( '#db-search-keyword' ).val( '' );
+	var path = $( '#db-currentpath .lipath:last').text();
+	if ( !path ) {
 		$( '#db-entries' ).empty();
-		$( '#db-back' ).addClass( 'hide' )
-		$( '#home-blocks' ).removeClass( 'hide' )
+		$( '#home-blocks' ).removeClass( 'hide' );
+		return
 	}
+	
+	if ( GUI.dbbackdata.length ) {
+		var data = GUI.dbbackdata.pop();
+		GUI.dbbackdata.pop();
+	} else {
+		var data = { path: path };
+	}
+	getDB( data );
+	mutationLibrary.observe( observerLibrary, observerOption );
 } );
 $( '#db-search-keyword' ).keypress( function( e ) {
 	if ( e.which === 13 ) $( '#dbsearchbtn' ).click();
