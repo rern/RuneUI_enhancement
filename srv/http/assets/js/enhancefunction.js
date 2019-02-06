@@ -1295,8 +1295,9 @@ function getNameWidth() {
 	$title.removeAttr( 'style' );
 }
 function setNameWidth() {
-	var iWdW = ( GUI.display.contexticon === '' ? 105 : 60 ) + $duration.width();
-	if ( pltW + iWdW < plwW ) {
+	// pl-icon + margin + duration + margin + pl-action
+	var iWdW = 40 + 10 + $duration.width() + 10 + ( GUI.display.contexticon === '' ? 45 : 0 );
+	if ( iWdW + pltW < plwW ) {
 		$title.css(  'max-width', '' );
 		$duration.removeClass( 'duration-right' );
 	} else {
@@ -1315,8 +1316,9 @@ function setPlaylistScroll() {
 	$.each( $( '#pl-entries .name' ), function() {
 		var $name = $( this );
 		var $dur = $name.next();
-		var contexticonW = GUI.display.contexticon === '' ? 105 : 60;
-		if ( $name.width() + $dur.width() + contexticonW > wW ) $dur.addClass( 'duration-right' );
+		// pl-icon + margin + name + duration + margin + pl-action
+		var allW = 40 + 10 + $name.width() + $dur.width() + 10 + ( GUI.display.contexticon === '' ? 45 :0 );
+		$dur.toggleClass( 'duration-right', allW > wW );
 	} );
 	var $linotactive, $liactive, $name, $song, $elapsed, elapsedtxt;
 	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
