@@ -937,7 +937,7 @@ $( '#db-index li' ).click( function() {
 } );
 $( '#db-entries, #pl-entries, #pl-editor' ).on( 'click', 'p', function() {
 	$( '.menu' ).addClass( 'hide' );
-	$( '#pl-entries .pl-action' ).hide();
+	if ( !GUI.display.contexticon ) $( '#pl-entries .pl-action' ).hide();
 	$( '#db-entries li, #pl-editor li' ).removeClass( 'active' );
 } );
 // PLAYLIST /////////////////////////////////////////////////////////////////////////////////////

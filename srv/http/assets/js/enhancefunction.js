@@ -19,7 +19,7 @@ function switchPage( page ) {
 	}
 	$( '#menu-bottom li, #db-entries li, #pl-editor li' ).removeClass( 'active' );
 	$( '.page, .menu' ).addClass( 'hide' );
-	$( '#pl-entries .pl-action' ).hide();
+	if ( !GUI.display.contexticon ) $( '#pl-entries .pl-action' ).hide();
 	$( 'html, body' ).scrollTop( 0 );
 	$( '#page-'+ page ).removeClass( 'hide' );
 	$( '#tab-'+ page ).addClass( 'active' );
