@@ -625,9 +625,9 @@ function bookmarkScroll() {
 	} );
 }
 function renderLibrary() {
-	GUI.dbbackdata = [];
 	if ( GUI.bookmarkedit ) return
 	
+	GUI.dbbackdata = [];
 	GUI.plugin = '';
 	$( '#db-currentpath' ).css( 'max-width', '' );
 	$( '#db-currentpath>span, #db-currentpath>i' ).removeClass( 'hide' );
@@ -721,7 +721,7 @@ function getDB( options ) {
 		artist = options.artist ? options.artist.toString().replace( /"/g, '\"' ) : '',
 		mode,
 		command;
-	var currentpath = $( '#db-currentpath .lipath' ).text();
+	var currentpath = $( '#db-currentpath .lipath:last' ).text();
 	var composer = $( '#rootpath' ).data( 'path' ) === 'Composer' ? $( '#artistalbum span' ).text() : '';
 	currentpath = currentpath ? currentpath.toString().replace( /"/g, '\"' ) : '';
 	if ( !GUI.dbback && cmd !== 'search' && GUI.dbbrowsemode !== 'file' ) {
@@ -1453,7 +1453,6 @@ function htmlPlaylist( data ) {
 }
 function renderPlaylist() {
 	$( '#pl-filter' ).val( '' );
-	$( '#pl-search-close' ).empty();
 	$( '#pl-currentpath, #pl-editor, #pl-index, #pl-search' ).addClass( 'hide' );
 	$( '#db-currentpath>span, #pl-searchbtn' ).removeClass( 'hide' );
 	$( '#plopen' ).toggleClass( 'disable', !GUI.lsplaylists.length );

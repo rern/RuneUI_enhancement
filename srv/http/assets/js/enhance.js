@@ -121,7 +121,9 @@ $( '#menu-settings, #badge' ).click( function() {
 		.css( 'top', ( GUI.bars ? '40px' : 0 ) );
 } );
 $( '#page-library, #page-playback, #page-playlist' ).click( function( e ) {
-	if ( !$( '#settings' ).hasClass( 'hide' ) && [ 'coverTR', 'timeTR' ].indexOf( e.target.id ) === -1 ) $( '#settings' ).addClass( 'hide' );
+	if ( [ 'coverTR', 'timeTR' ].indexOf( e.target.id ) === -1 ) {
+		$( '#settings' ).addClass( 'hide' );
+	}
 } );
 GUI.sortableli = new Sortable( document.getElementById( 'divhomeblocks' ), {
 	  delay      : 500
@@ -697,30 +699,42 @@ $( '#db-webradio-new' ).click( function() {
 	webRadioNew();
 } );
 $( '#db-searchbtn' ).click( function() {
-	$( '#db-search, #db-searchbtn' ).toggleClass( 'hide' );
+	$( '#db-currentpath span, #db-searchbtn' ).addClass( 'hide' );
+	$( '#db-search-close, #db-search, #dbsearchbtn' ).removeClass( 'hide' );
 	$( '#db-currentpath' ).css( 'max-width', '40px' );
-	$( '#db-currentpath>span, #db-currentpath>i' ).addClass( 'hide' );
-	if ( !$( '#db-search' ).hasClass( 'hide' ) ) $( '#db-search-keyword' ).focus();
+	if ( $( '#home-blocks' ).hasClass( 'hide' ) ) $( '#db-back' ).addClass( 'hide' );
+	$( '#db-search-keyword' ).focus();
 } );
 $( '#dbsearchbtn' ).click( function() {
 	var keyword = $( '#db-search-keyword' ).val();
 	if ( !keyword ) {
-		$( '#db-search, #db-searchbtn' ).toggleClass( 'hide' );
-		$( '#db-currentpath' ).css( 'max-width', '' );
-		$( '#db-currentpath>span, #db-currentpath>i' ).removeClass( 'hide' );
-		$( '#db-webradio-new' ).addClass( 'hide' );
-		return
+		$( '#db-search-close' ).click();
+	} else {
+		GUI.dblist = 1;
+		getDB( {
+			  cmd : 'search'
+			, arg : keyword
+		} );
 	}
-	GUI.dblist = 1;
-	getDB( {
-		  cmd : 'search'
-		, arg : keyword
-	} );
+} );
+$( '#db-search-close' ).click( function() {
+	$( '#db-search-close, #db-search, #dbsearchbtn' ).addClass( 'hide' );
+	$( '#db-currentpath span, #db-searchbtn' ).removeClass( 'hide' );
+	$( '#db-currentpath' ).css( 'max-width', '' );
+	$( '#db-search-close span' ).empty();
+	if ( $( '#db-search-keyword' ).val() && GUI.dbbackdata.length ) {
+		$( '#db-search-keyword' ).val( '' );
+		getDB( GUI.dbbackdata.pop() );
+		GUI.dbbackdata.pop();
+		mutationLibrary.observe( observerLibrary, observerOption );
+	} else if ( !$( '#home-blocks' ).hasClass( 'hide' ) || !GUI.dbbackdata.length ) {
+		$( '#db-entries' ).empty();
+		$( '#db-back' ).addClass( 'hide' )
+		$( '#home-blocks' ).removeClass( 'hide' )
+	}
 } );
 $( '#db-search-keyword' ).keypress( function( e ) {
 	if ( e.which === 13 ) $( '#dbsearchbtn' ).click();
-} ).keyup( function() {
-	$( '#db-search-close' ).removeClass( 'hide' );
 } );
 // MutationObserver - watch for '#db-entries' content changed then scroll to previous position
 var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
@@ -730,22 +744,6 @@ var mutationLibrary = new MutationObserver( function() { // on observed target c
 	var scrollpos = GUI.dbscrolltop[ $( '#db-currentpath' ).find( '.lipath' ).text() ];
 	$( 'html, body' ).scrollTop( scrollpos ? scrollpos : 0 );
 	mutationLibrary.disconnect();
-} );
-$( '#db-search-close' ).click( function() {
-	$( this ).addClass( 'hide' );
-	$( '#db-search, #db-searchbtn' ).toggleClass( 'hide' );
-	$( '#db-search-keyword' ).val( '' );
-	$( '#db-currentpath' ).css( 'max-width', '' );
-	if ( GUI.currentpath ) {
-		$( '#db-back' ).removeClass( 'hide' );
-		getDB( GUI.dbbackdata.pop() );
-		GUI.dbbackdata.pop();
-		
-		$( '#db-entries' ).removeAttr( 'style' );
-		mutationLibrary.observe( observerLibrary, observerOption );
-	} else {
-		renderLibrary();
-	}
 } );
 $( '#db-back' ).click( function() {
 	mutationLibrary.observe( observerLibrary, observerOption ); // standard js - must be one on one element
@@ -1031,32 +1029,27 @@ $( '#plclear' ).click( function() {
 	}
 } );
 $( '#pl-filter' ).keyup( function() {
-	var search = $(this).val();
+	var keyword = $( this ).val();
 	var count = 0;
 	$( '#pl-entries li' ).each( function() {
 		var $this = $( this );
-		var match = ( $this.text().search( new RegExp( search, 'i' ) ) >= 0 ) ? true : false;
+		var match = ( $this.text().search( new RegExp( keyword, 'i' ) ) !== -1 ) ? true : false;
 		count = match ? ( count + 1 ) : count;
-		$this.toggle( match );
+		$this.toggleClass( 'hide', !match );
 	} );
-	if ( search ) {
-		$( '#pl-manage, #pl-count' ).addClass( 'hide' );
-		$( '#pl-search-close' ).removeClass( 'hide' ).html( 
-			'<i class="fa fa-times sx"></i><span>'+ count +' <a>of</a> </span>'
-		);
+	if ( keyword ) {
+		$( '#pl-search-close span' ).html( count +' <a>of</a> ' );
 	} else {
-		$( '#pl-manage, #pl-count' ).removeClass( 'hide' );
-		$( '#pl-search-close' ).addClass( 'hide' ).empty();
+		$( '#pl-search-close span' ).empty();
 	}
 } );
 $( '#pl-search-close, #plsearchbtn' ).click( function() {
 	$( '#pl-search-close, #pl-search, #plsearchbtn' ).addClass( 'hide' );
 	$( '#pl-count, #pl-manage, #pl-searchbtn, #pl-entries li' ).removeClass( 'hide' );
 	$( '#pl-filter' ).val( '' );
-	$( '#pl-entries li' ).show();
 } );
 $( '#pl-searchbtn' ).click( function() {
-	$( '#pl-search, #plsearchbtn' ).removeClass( 'hide' );
+	$( '#pl-search-close, #pl-search, #plsearchbtn' ).removeClass( 'hide' );
 	$( '#pl-count, #pl-manage, #pl-searchbtn' ).addClass( 'hide' );
 	$( '#pl-filter' ).focus();
 } );
