@@ -34,13 +34,12 @@ PNotify.prototype.options.styling = 'fontawesome';
 PNotify.prototype.options.icon = 'fa fa-check';
 PNotify.prototype.options.stack = {
 	  dir1      : 'up'    // stack up
-	, dir2      : 'right' // when full stack right
-	, firstpos1 : 60      // offset from border H
-	, firstpos2 : 0       // offset from border V
-	, spacing1  : 10      // space between dir1
-	, spacing2  : 10      // space between dir2
+	, dir2      : 'right' // shift right when fill height
+	, firstpos1 : 60      // top offset from border H
+	, firstpos2 : 0       // left offset from border V
+	, spacing1  : 10      // space between each
+	, spacing2  : 10      // space between column( or row if dir1: right/left )
 }
-var blinkdot = '<a class="dot">·</a>&ensp;<a class="dot dot2">·</a>&ensp;<a class="dot dot3">·</a>';
 var cssnotify = 
 	 '<style id="cssnotify">'
 		+'.ui-pnotify { bottom: 20px; }'
@@ -51,6 +50,7 @@ var csscontexticon =
 		+'.db-action, .pl-action { display: block }'
 		+'.duration-right { right: 60px }'
 	+'</style>';
+var blinkdot = '<a class="dot">·</a>&ensp;<a class="dot dot2">·</a>&ensp;<a class="dot dot3">·</a>';
 
 // get library, display, status
 $.post( 'enhance.php', { library: 1, data: 1 }, function( data ) {
