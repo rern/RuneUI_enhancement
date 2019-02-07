@@ -41,6 +41,16 @@ PNotify.prototype.options.stack = {
 	, spacing2  : 10      // space between dir2
 }
 var blinkdot = '<a class="dot">·</a>&ensp;<a class="dot dot2">·</a>&ensp;<a class="dot dot3">·</a>';
+var cssnotify = 
+	 '<style id="cssnotify">'
+		+'.ui-pnotify { bottom: 20px; }'
+		+'.pnotify_custom { top: 20px !important; }'
+	+'</style>';
+var csscontexticon = 
+	 '<style id="csscontexticon">'
+		+'.db-action, .pl-action { display: block }'
+		+'.duration-right { right: 60px }'
+	+'</style>';
 
 // get library, display, status
 $.post( 'enhance.php', { library: 1, data: 1 }, function( data ) {

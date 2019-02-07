@@ -4,26 +4,14 @@ function cssNotify() {
 		$( '#cssnotify' ).remove();
 	} else {
 		PNotify.prototype.options.stack.firstpos1 = 20;
-		if ( !$( '#cssnotify' ).length )
-			$( 'head' ).append(
-				 '<style id="cssnotify">'
-					+'.ui-pnotify { bottom: 20px; }'
-					+'.pnotify_custom { top: 20px !important; }'
-				+'</style>'
-			);
+		if ( !$( '#cssnotify' ).length ) $( 'head' ).append( cssnotify );
 	}
 }
 function cssContextIcon() {
 	if ( !GUI.display.contexticon ) {
 		$( '#csscontexticon' ).remove();
 	} else {
-		if ( !$( '#csscontexticon' ).length ) 
-			$( 'head' ).append(
-				 '<style id="csscontexticon">'
-					+'.db-action, .pl-action { display: block }'
-					+'.duration-right { right: 60px }'
-				+'</style>'
-			);
+		if ( !$( '#csscontexticon' ).length ) $( 'head' ).append( csscontexticon );
 	}
 }
 function cssKeyframes( name, trx0, trx100 ) {
