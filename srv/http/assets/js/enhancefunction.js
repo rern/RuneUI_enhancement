@@ -4,47 +4,46 @@ function cssNotify() {
 		$( '#cssnotify' ).remove();
 	} else {
 		PNotify.prototype.options.stack.firstpos1 = 20;
-		if ( !$( '#cssnotify' ).length ) $( 'head' ).append( 
-			'<style id="cssnotify">'
-				+'.ui-pnotify { bottom: 20px; }'
-				+'.pnotify_custom { top: 20px !important; }'
-			+'</style>' 
-		);
+		if ( !$( '#cssnotify' ).length )
+			$( 'head' ).append(
+				 '<style id="cssnotify">'
+					+'.ui-pnotify { bottom: 20px; }'
+					+'.pnotify_custom { top: 20px !important; }'
+				+'</style>'
+			);
 	}
 }
 function cssContextIcon() {
-	if ( GUI.display.contexticon ) {
-		if ( !$( '#csscontexticon' ).length ) $( 'head' ).append( 
-			 '<style id="csscontexticon">'
-				+'.db-action, .pl-action { display: block }'
-				+'.duration-right { right: 60px }'
-			+'</style>' );
-	} else {
+	if ( !GUI.display.contexticon ) {
 		$( '#csscontexticon' ).remove();
+	} else {
+		if ( !$( '#csscontexticon' ).length ) 
+			$( 'head' ).append(
+				 '<style id="csscontexticon">'
+					+'.db-action, .pl-action { display: block }'
+					+'.duration-right { right: 60px }'
+				+'</style>'
+			);
 	}
 }
-function cssKeyframes( name, hbW, hbW100 ) {
+function cssKeyframes( name, trx0, trx100 ) {
+	var moz = '-moz-'+ trx0;
+	var moz100 = '-moz-'+ trx100;
+	var webkit = '-webkit-'+ trx0;
+	var webkit100 = '-webkit-'+ trx100;
 	$( 'head' ).append(
 		 '<style id="'+ name +'">'
 			+'@-moz-keyframes '+ name +' {'
-				+'0%   { -moz-'+ hbW +' }'
-				+'100% { -moz-'+ hbW100 +' }'
+				+'0%   { '+ moz +' }'
+				+'100% { '+ moz100 +' }'
 			+'}'
 			+'@-webkit-keyframes '+ name +' {'
-				+'0%   { -webkit-'+ hbW +' }'
-				+'100% { -webkit-'+ hbW100 +' }'
+				+'0%   { '+ webkit +' }'
+				+'100% { '+ webkit100 +' }'
 			+'}'
 			+'@keyframes '+ name +' {'
-				+'0%   {'
-					+'-moz-'+ hbW +';'
-					+'-webkit-'+ hbW +';'
-					+ hbW +';'
-				+'}'
-				+'100% {'
-					+'-moz-'+ hbW100 +';'
-					+'-webkit-'+ hbW100 +';'
-					+ hbW100 +';'
-				+'}'
+				+'0%   {'+ moz + moz100 + trx0 +'}'
+				+'100% {' + webkit + webkit100 + trx100 +'}'
 			+'}'
 		+'</style>'
 	);
@@ -237,6 +236,7 @@ function scrollLongText() {
 		$el.css( 'visibility', '' );
 		if ( !$( '.scrollleft' ).length ) return
 		
+		$( '#scrollleft' ).remove();
 		if ( GUI.scale !== 1 ) {
 			var vW = 'transform : translateX( '+ Math.round( wW / GUI.scale ) +'px )'
 			cssKeyframes( 'scrollleft', vW, 'transform : translateX( -100% )' );
@@ -659,20 +659,24 @@ function bookmarkScroll() {
 	$( '.bklabel' )
 		.removeClass( 'bkscrollleft' )
 		.removeAttr( 'style' );
-	var hbW = 'transform : translateX( '+ $( '.home-block' ).width() +'px )';
-	var hbW100 = 'transform : translateX( calc( -100% + 10px ) )';
-	cssKeyframes( 'bkscrollleft', hbW, hbW100 );
+	var hbW = 'transform : translateX( '+ $( '.home-block' ).width() +'px );';
+	var hbW100 = 'transform : translateX( calc( -100% + 10px ) );';
 	$( '.bklabel:not(.hide)' ).each( function() {
 		var $this = $( this );
 		var tW = $this.width();
 		var pW = $this.parent().width();
 		var cssanimation = Math.round( 5 * tW / pW ) +'s infinite bkscrollleft linear';
-		if ( tW > pW ) $this.addClass( 'bkscrollleft' ).css( {
-				  '-moz-animation'    : cssanimation
-				, '-webkit-animation' : cssanimation
-				, animation           : cssanimation
-			} );
+		if ( tW > pW ) {
+			$this
+				.addClass( 'bkscrollleft' )
+				.css( {
+					  '-moz-animation'    : cssanimation
+					, '-webkit-animation' : cssanimation
+					, animation           : cssanimation
+				} );
+		}
 	} );
+	if ( $( '.bkscrollleft' ).length ) cssKeyframes( 'bkscrollleft', hbW, hbW100 );
 }
 function renderLibrary() {
 	if ( GUI.bookmarkedit ) return
