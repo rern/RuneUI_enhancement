@@ -25,6 +25,7 @@ var GUI = { // outside '$( function() {' enable console.log access
 	, pllist     : {}
 	, plscrolltop  : 0
 	, plugin       : ''
+	, scale        : 1
 	, screenS      : ( window.innerHeight < 590 || window.innerWidth < 500 )
 	, status       : {}
 };
@@ -46,17 +47,9 @@ $.post( 'enhance.php', { library: 1, data: 1 }, function( data ) {
 	GUI.libraryhome = data;
 	$.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 		GUI.display = data;
-		if ( GUI.display.contexticon ) $( 'head' ).append( '<style id="csscontexticon">.db-action, .pl-action { display: block }</style>' );
 		$.event.special.swipe.horizontalDistanceThreshold = 80; // pixel to swipe
-		if ( !GUI.display.bars || ( GUI.screenS && !GUI.display.barsauto ) ) {
-			$( '#swipebar, .page' ).on( 'swipeleft swiperight', function( e ) {
-				GUI.swipe = 1;
-				setTimeout( function() { GUI.swipe = 0 }, 500 );
-				
-				// skip if swipe to show remove in playlist
-				if ( !$( e.target ).parents( '#pl-entries li' ).length ) setSwipe( e.type );
-			} );
-		}
+		setSwipe();
+		cssContextIcon();
 		$.post( 'enhancestatus.php', function( status ) {
 			//alert(JSON.stringify(status))
 			GUI.status = status;
@@ -177,11 +170,7 @@ $( '#displaylibrary' ).click( function() {
 				GUI.display[ this.name ] = checked ? 'checked' : '';
 				if ( this.name === 'coverfile' ) GUI.coverfile = ( coverfile === 'checked' ) ? ( checked ? 0 : 1 ) : ( checked ? 1 : 0 );
 			} );
-			if ( GUI.display.contexticon ) {
-				if ( !$( '#csscontexticon' ).length ) $( 'head' ).append( '<style id="csscontexticon">.db-action, .pl-action { display: block }</style>' );
-			} else {
-				$( '#csscontexticon' ).remove();
-			}
+			cssContextIcon();
 			if ( !GUI.library ) $( '#tab-library' ).click();
 			$.post( 'enhance.php', { setdisplay: GUI.display } );
 		}
@@ -214,17 +203,7 @@ $( '#displayplayback' ).click( function() {
 			$.post( 'enhance.php', { setdisplay: GUI.display }, function() {
 				displayPlayback();
 				$( '#swipebar, .page' ).off( 'swipeleft swiperight' );
-				if ( !GUI.display.bars || ( GUI.screenS && !GUI.display.barsauto ) ) {
-					GUI.bars = 0;
-					$( '#swipebar, .page' ).on( 'swipeleft swiperight', function( e ) {
-						GUI.swipe = 1;
-						setTimeout( function() { GUI.swipe = 0 }, 500 );
-						
-						if ( !$( e.target ).parents( '#pl-entries li' ).length ) setSwipe( e.type );
-					} );
-				} else {
-					GUI.bars = 1;
-				}
+				setSwipe();
 				cssNotify();
 			} );
 			if ( !GUI.playback ) $( '#tab-playback' ).click();

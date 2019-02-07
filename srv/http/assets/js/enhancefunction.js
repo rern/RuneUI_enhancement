@@ -1,4 +1,68 @@
-function setSwipe( type ) {
+function cssNotify() {
+	if ( GUI.bars ) {
+		PNotify.prototype.options.stack.firstpos1 = 60;
+		$( '#cssnotify' ).remove();
+	} else {
+		PNotify.prototype.options.stack.firstpos1 = 20;
+		if ( !$( '#cssnotify' ).length ) $( 'head' ).append( 
+			'<style id="cssnotify">'
+				+'.ui-pnotify { bottom: 20px; }'
+				+'.pnotify_custom { top: 20px !important; }'
+			+'</style>' 
+		);
+	}
+}
+function cssContextIcon() {
+	if ( GUI.display.contexticon ) {
+		if ( !$( '#csscontexticon' ).length ) $( 'head' ).append( 
+			 '<style id="csscontexticon">'
+				+'.db-action, .pl-action { display: block }'
+				+'.duration-right { right: 60px }'
+			+'</style>' );
+	} else {
+		$( '#csscontexticon' ).remove();
+	}
+}
+function cssKeyframes( name, hbW, hbW100 ) {
+	$( 'head' ).append(
+		 '<style id="'+ name +'">'
+			+'@-moz-keyframes '+ name +' {'
+				+'0%   { -moz-'+ hbW +' }'
+				+'100% { -moz-'+ hbW100 +' }'
+			+'}'
+			+'@-webkit-keyframes '+ name +' {'
+				+'0%   { -webkit-'+ hbW +' }'
+				+'100% { -webkit-'+ hbW100 +' }'
+			+'}'
+			+'@keyframes '+ name +' {'
+				+'0%   {'
+					+'-moz-'+ hbW +';'
+					+'-webkit-'+ hbW +';'
+					+ hbW +';'
+				+'}'
+				+'100% {'
+					+'-moz-'+ hbW100 +';'
+					+'-webkit-'+ hbW100 +';'
+					+ hbW100 +';'
+				+'}'
+			+'}'
+		+'</style>'
+	);
+}
+function setSwipe() {
+	if ( !GUI.display.bars || ( GUI.screenS && !GUI.display.barsauto ) ) {
+		GUI.bars = 0;
+		$( '#swipebar, .page' ).on( 'swipeleft swiperight', function( e ) {
+			GUI.swipe = 1;
+			setTimeout( function() { GUI.swipe = 0 }, 500 );
+			// skip if swipe to show remove in playlist
+			if ( !$( e.target ).parents( '#pl-entries li' ).length ) setPageSwipe( e.type );
+		} );
+	} else {
+		GUI.bars = 1;
+	}
+}
+function setPageSwipe( type ) {
 	var swipeleft = type === 'swipeleft';
 	var $target = {
 		  library  : swipeleft ? $( '#tab-playback' ) : $( '#tab-playlist' )
@@ -158,13 +222,14 @@ function scrollLongText() {
 		.removeClass( 'scrollleft' )
 		.removeAttr( 'style' )
 		.css( 'visibility', 'hidden' );
-	var wW = window.innerWidth * 0.98;
+	$( '#scrollleft' ).remove();
+	var wW = window.innerWidth;
 	var tWmax = 0;
 	setTimeout( function() {
 		$el.each( function() {
 			var $this = $( this );
-			var tW = $this.width();
-			if ( tW > wW ) {
+			var tW = $this.width() * GUI.scale;
+			if ( tW > wW * 0.98 ) {
 				if ( tW > tWmax ) tWmax = tW; // same width > scroll together (same speed)
 				$this.addClass( 'scrollleft' );
 			}
@@ -172,6 +237,10 @@ function scrollLongText() {
 		$el.css( 'visibility', '' );
 		if ( !$( '.scrollleft' ).length ) return
 		
+		if ( GUI.scale !== 1 ) {
+			var vW = 'transform : translateX( '+ Math.round( wW / GUI.scale ) +'px )'
+			cssKeyframes( 'scrollleft', vW, 'transform : translateX( -100% )' );
+		}
 		var cssanimation = Math.round( 10 * tWmax / wW ) +'s infinite scrollleft linear';
 		$( '.scrollleft' ).css( {
 			  '-moz-animation'    : cssanimation
@@ -420,20 +489,6 @@ function unmuteColor() {
 	$( '#volmute' ).removeClass( 'btn-primary' )
 		.find( 'i' ).removeClass( 'fa-mute' ).addClass( 'fa-volume' );
 }
-function cssNotify() {
-	if ( GUI.bars ) {
-		PNotify.prototype.options.stack.firstpos1 = 60;
-		$( '#cssnotify' ).remove();
-	} else {
-		PNotify.prototype.options.stack.firstpos1 = 20;
-		if ( !$( '#cssnotify' ).length ) $( 'head' ).append( 
-			'<style id="cssnotify">'
-				+'.ui-pnotify { bottom: 20px; }'
-				+'.pnotify_custom { top: 20px !important; }'
-			+'</style>' 
-		);
-	}
-}
 function displayTopBottom() {
 	if ( !$( '#bio' ).hasClass( 'hide' ) ) return
 	if ( !GUI.display.bars || ( GUI.screenS && !GUI.display.barsauto ) ) {
@@ -513,23 +568,26 @@ function displayPlayback() {
 	if ( $( '.playback-block.hide' ).length && wH > 420 ) return
 	
 	if ( ( wW < 750 && wW  > wH ) || wH < 475 ) {
-		var scale = wH > 475 ? wW / 800 : wH / 450;
+		GUI.scale = wH > 475 ? wW / 800 : wH / 450;
 		var padding = GUI.bars ? '70px' : '40px';
 		$( '#page-playback' ).css( {
-			  transform          : 'scale( '+ scale +' )'
+			  transform          : 'scale( '+ GUI.scale +' )'
 			, 'transform-origin' : 'top'
 			, height             : 'calc( 100vh + '+ padding +' )'
 			, 'padding-top'      : ''
 		} );
-		$( '#playback-row' ).css( {
-			  width         : 100 / scale +'%'
-			, 'margin-left' : ( 100 / scale - 100 ) / -2 +'%'
+		var width = Math.round( 100 / GUI.scale ) +'%';
+		$( '#info, #playback-row' ).css( {
+			  width         : width
+			, 'margin-left' : ( 100 / GUI.scale - 100 ) / -2 +'%'
 		} );
 	} else {
+		GUI.scale = 1;
 		var compact = GUI.bars || !GUI.screenS;
-		$( '#page-playback, #playback-row' ).removeAttr( 'style' );
+		$( '#page-playback, #info, #playback-row' ).removeAttr( 'style' );
 		$( '#page-playback' ).css( 'padding-top', compact ? '' : '40px' );
 		$( '#playback-row' ).css( 'margin-top', compact ? '' : 0 )
+		$( '#csskeyframesS' ).remove();
 	}
 }
 function displayAirPlay() {
@@ -597,36 +655,13 @@ function displayCheckbox( checkboxes ) {
 	return html;
 }
 function bookmarkScroll() {
-	$( '#keyframes' ).remove();
+	$( '#bkscrollleft' ).remove();
 	$( '.bklabel' )
 		.removeClass( 'bkscrollleft' )
 		.removeAttr( 'style' );
 	var hbW = 'transform : translateX( '+ $( '.home-block' ).width() +'px )';
 	var hbW100 = 'transform : translateX( calc( -100% + 10px ) )';
-	$( 'head' ).append(
-		 '<style id="keyframes">'
-			+'@-moz-keyframes bkscrollleft {'
-				+'0%   { -moz-'+ hbW +' }'
-				+'100% { -moz-'+ hbW100 +' }'
-			+'}'
-			+'@-webkit-keyframes bkscrollleft {'
-				+'0%   { -webkit-'+ hbW +' }'
-				+'100% { -webkit-'+ hbW100 +' }'
-			+'}'
-			+'@keyframes bkscrollleft {'
-				+'0%   {'
-					+'-moz-'+ hbW +';'
-					+'-webkit-'+ hbW +';'
-					+ hbW +';'
-				+'}'
-				+'100% {'
-					+'-moz-'+ hbW100 +';'
-					+'-webkit-'+ hbW100 +';'
-					+ hbW100 +';'
-				+'}'
-			+'}'
-		+'</style>'
-	);
+	cssKeyframes( 'bkscrollleft', hbW, hbW100 );
 	$( '.bklabel:not(.hide)' ).each( function() {
 		var $this = $( this );
 		var tW = $this.width();
@@ -1302,11 +1337,11 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 }
 function setNameWidth() {
 	var wW = window.innerWidth;
-	$.each( $( '#pl-entries li:not(.active) .name' ), function() {
+	$.each( $( '#pl-entries .name' ), function() {
 		var $name = $( this );
 		var $dur =  $name.next();
 		// pl-icon + margin + duration + margin + pl-action
-		var iWdW = 40 + 10 + $dur.width() + 10 + ( GUI.display.contexticon ? 45 : 0 );
+		var iWdW = 40 + 10 + $dur.width() + ( GUI.display.contexticon ? 50 : 0 );
 		if ( iWdW + $name.width() < wW ) {
 			$dur.removeClass( 'duration-right' );
 			$name.css( 'max-width', '' );
@@ -1390,9 +1425,7 @@ function setPlaylistScroll() {
 				setTitleWidth();
 			}, 1000 );
 		} else { // stop
-			$name
-				.removeClass( 'hide' )
-				.css( 'max-width', '' );
+			$name.removeClass( 'hide' );
 			$song
 				.empty()
 				.css( 'max-width', '' );
