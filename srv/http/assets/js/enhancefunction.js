@@ -238,8 +238,8 @@ function scrollLongText() {
 		
 		$( '#scrollleft' ).remove();
 		if ( GUI.scale !== 1 ) {
-			var vW = 'transform : translateX( '+ Math.round( wW / GUI.scale ) +'px )'
-			cssKeyframes( 'scrollleft', vW, 'transform : translateX( -100% )' );
+			var trx0 = 'transform : translateX( '+ Math.round( wW / GUI.scale ) +'px );'
+			cssKeyframes( 'scrollleft', trx0, 'transform : translateX( -100% );' );
 		}
 		var cssanimation = Math.round( 10 * tWmax / wW ) +'s infinite scrollleft linear';
 		$( '.scrollleft' ).css( {
@@ -659,8 +659,6 @@ function bookmarkScroll() {
 	$( '.bklabel' )
 		.removeClass( 'bkscrollleft' )
 		.removeAttr( 'style' );
-	var hbW = 'transform : translateX( '+ $( '.home-block' ).width() +'px );';
-	var hbW100 = 'transform : translateX( calc( -100% + 10px ) );';
 	$( '.bklabel:not(.hide)' ).each( function() {
 		var $this = $( this );
 		var tW = $this.width();
@@ -676,7 +674,9 @@ function bookmarkScroll() {
 				} );
 		}
 	} );
-	if ( $( '.bkscrollleft' ).length ) cssKeyframes( 'bkscrollleft', hbW, hbW100 );
+	var trx0 = 'transform : translateX( '+ $( '.home-block' ).width() +'px );';
+	var trx100 = 'transform : translateX( calc( -100% + 10px ) );';
+	if ( $( '.bkscrollleft' ).length ) cssKeyframes( 'bkscrollleft', trx0, trx100 );
 }
 function renderLibrary() {
 	if ( GUI.bookmarkedit ) return
