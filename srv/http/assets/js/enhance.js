@@ -1,4 +1,4 @@
-var GUI = { // outside '$( function() {' enable console.log access
+var GUI = {
 	  activePlayer : ''
 	, airplay      : {}
 	, artistalbum  : ''
@@ -51,7 +51,6 @@ $.post( 'enhance.php', { library: 1, data: 1 }, function( data ) {
 		setSwipe();
 		cssContextIcon();
 		$.post( 'enhancestatus.php', function( status ) {
-			//alert(JSON.stringify(status))
 			GUI.status = status;
 			renderPlayback();
 			displayPlayback();
