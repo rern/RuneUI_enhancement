@@ -1565,7 +1565,7 @@ w {
 #pl-entries .li1,
 #pl-editor .li1 {
 	display: block;
-	padding-top: 5px;
+	padding: 5px 10px 0 0;
 }
 #pl-entries .li1 a {
 	display: inline-block;
