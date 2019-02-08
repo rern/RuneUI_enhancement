@@ -280,8 +280,6 @@ wh, gr { font-weight: 300; }
 #swipebar .fa-gear {
 	width: 60px;
 	height: 40px;
-	line-height: 40px;
-	border-left: 2px solid #e0e7ee;
 }
 .transparent {
 	opacity: 0;
