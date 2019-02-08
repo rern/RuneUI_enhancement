@@ -53,19 +53,20 @@ var csscontexticon =
 var blinkdot = '<a class="dot">·</a>&ensp;<a class="dot dot2">·</a>&ensp;<a class="dot dot3">·</a>';
 
 // get library, display, status
-$.post( 'enhance.php', { library: 1, data: 1 }, function( data ) {
-	GUI.libraryhome = data;
-	$.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
-		GUI.display = data;
-		$.event.special.swipe.horizontalDistanceThreshold = 80; // pixel to swipe
-		setSwipe();
-		cssContextIcon();
-		$.post( 'enhancestatus.php', function( status ) {
-			GUI.status = status;
-			renderPlayback();
-			displayPlayback();
-			setButton();
-			$( 'html, body' ).scrollTop( 0 );
+$.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
+	GUI.display = data;
+	$.event.special.swipe.horizontalDistanceThreshold = 80; // pixel to swipe
+	setSwipe();
+	cssContextIcon();
+	$.post( 'enhancestatus.php', function( status ) {
+		GUI.status = status;
+		renderPlayback();
+		displayPlayback();
+		setButton();
+		$( 'html, body' ).scrollTop( 0 );
+		$.post( 'enhance.php', { library: 1, data: 1 }, function( data ) {
+			GUI.libraryhome = data;
+			$( '#loader' ).addClass( 'hide' ); // from unhided by #tab-library
 		}, 'json' );
 	}, 'json' );
 }, 'json' );
@@ -261,7 +262,10 @@ $( '#turnoff' ).click( function() {
 	} );
 } );
 $( '#tab-library' ).click( function() {
-	if ( !Object.keys( GUI.libraryhome ).length ) return // wait for mpc data
+	if ( !Object.keys( GUI.libraryhome ).length ) { // wait for mpc data
+		$( '#loader' ).removeClass( 'hide' );
+		return
+	}
 	
 	if ( GUI.bookmarkedit ) {
 		GUI.bookmarkedit = 0;
