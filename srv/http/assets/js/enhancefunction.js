@@ -1542,6 +1542,12 @@ function renderPlaylist() {
 		setPlaylistScroll();
 	} );
 }
+function clearPlaylist() {
+	GUI.status.playlistlength = 0;
+	GUI.pllist = {};
+	renderPlaylist();
+	setPlaybackBlank();
+}
 function renderSavedPlaylist( name ) {
 	$( '.menu' ).addClass( 'hide' );
 	$.post( 'enhance.php', { getplaylist: 1, name: name.toString().replace( /"/g, '\\"' ) }, function( list ) {

@@ -1009,9 +1009,7 @@ $( '#plclear' ).click( function() {
 				, message : 'Clear this playlist?'
 				, cancel  : 1
 				, ok      : function() {
-					GUI.status.playlistlength = 0;
-					renderPlaylist();
-					setPlaybackBlank();
+					clearPlaylist();
 					$.post( 'enhance.php', { mpc: 'mpc clear' } );
 				}
 			} );
@@ -1025,17 +1023,13 @@ $( '#plclear' ).click( function() {
 				}
 				, oklabel    : 'All'
 				, ok         : function() {
-					GUI.status.playlistlength = 0;
-					renderPlaylist();
-					setPlaybackBlank();
+					clearPlaylist();
 					$.post( 'enhance.php', { mpc: [ 'mpc clear', '/usr/bin/redis-cli del webradiopl' ] } );
 				}
 			} );
 		}
 	} else {
-		GUI.status.playlistlength = 0;
-		renderPlaylist();
-		setPlaybackBlank();
+		clearPlaylist();
 		$.post( 'enhance.php', { mpc: 'mpc clear' } );
 	}
 } );
