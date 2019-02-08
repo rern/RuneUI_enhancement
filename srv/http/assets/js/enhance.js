@@ -180,8 +180,15 @@ $( '#displaylibrary' ).click( function() {
 				if ( this.name === 'coverfile' ) GUI.coverfile = ( coverfile === 'checked' ) ? ( checked ? 0 : 1 ) : ( checked ? 1 : 0 );
 			} );
 			cssContextIcon();
-			if ( !GUI.library ) $( '#tab-library' ).click();
 			$.post( 'enhance.php', { setdisplay: GUI.display } );
+			if ( GUI.display.count ) {
+				$.post( 'enhance.php', { library: 1, data: 1 }, function( data ) {
+					GUI.libraryhome = data;
+					if ( !GUI.library ) $( '#tab-library' ).click();
+				}, 'json' );
+			} else {
+				if ( !GUI.library ) $( '#tab-library' ).click();
+			}
 		}
 	} );
 } );
@@ -254,6 +261,8 @@ $( '#turnoff' ).click( function() {
 	} );
 } );
 $( '#tab-library' ).click( function() {
+	if ( !Object.keys( GUI.libraryhome ).length ) return // wait for mpc data
+	
 	if ( GUI.bookmarkedit ) {
 		GUI.bookmarkedit = 0;
 		renderLibrary();
