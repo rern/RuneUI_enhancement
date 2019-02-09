@@ -182,6 +182,12 @@ for item in bars debug dev time coverart volume buttons nas sd usb webradio albu
 		redis-cli hset display $item "$chk" &> /dev/null
 	fi
 done
+# pre-count albumartist, composer, genre
+albumartist=$( mpc list albumartist | awk NF | wc -l )
+composer=$( mpc list composer | awk NF | wc -l )
+genre=$( mpc list genre | awk NF | wc -l )
+redis-cli hmset mpddb albumartist $albumartist composer $composer genre $genre
+
 # fix webradio permission
 chown -R http:http /mnt/MPD/Webradio
 
