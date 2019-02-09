@@ -47,6 +47,13 @@ append 'monitorMpdState'
 
 systemctl restart rune_PL_wrk
 #----------------------------------------------------------------------------------
+file=/srv/http/app/templates/dev.php
+echo $file
+
+commentH -n -2 'DevTeam functions' -n -3 'System commands'
+
+connentH -n -1 'Update RuneUI' -n +5 'Update RuneUI'
+#----------------------------------------------------------------------------------
 file=/srv/http/app/templates/mpd.php
 echo $file
 
@@ -71,13 +78,6 @@ echo $file
 commentH -n -1 'for="localSStime">' -n +5 'for="localSStime">'
 
 commentH -n -1 'for="remoteSStime">' -n +5 'for="remoteSStime">'
-#----------------------------------------------------------------------------------
-file=/srv/http/app/templates/dev.php
-echo $file
-
-commentH -n -2 'DevTeam functions' -n -3 'System commands'
-
-connentH -n -1 'Update RuneUI' -n +5 'Update RuneUI'
 #----------------------------------------------------------------------------------
 if [[ $1 != u ]]; then # keep range: 0.5 - 3.0
 	z=$1;
