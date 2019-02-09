@@ -37,6 +37,7 @@ files="
 /srv/http/app/templates/dev.php
 /srv/http/app/templates/mpd.php
 /srv/http/app/templates/settings.php
+/srv/http/app/templates/sources.php
 /srv/http/command/rune_PL_wrk
 "
 [[ ! -e /etc/X11/xinit/start_chromium.sh ]] && files="$files\
