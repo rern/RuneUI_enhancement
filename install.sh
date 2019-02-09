@@ -98,7 +98,7 @@ string=$( cat <<'EOF'
 	This section lets you configure your local sources, telling <a href="http://www.musicpd.org/" title="Music Player Daemon" rel="nofollow" target="_blank">MPD</a> to scan the contents of <strong>network mounts</strong> and <strong>USB mounts</strong>.</p>
 	<button class="btn btn-lg btn-primary" id="update"><i class="fa fa-refresh sx"></i>Update</button>&ensp;
 	<button class="btn btn-lg btn-primary" id="rescan"><i class="fa fa-refresh sx"></i>Rebuild</button>
-	<span id="updateing"><i class="fa fa-library bl"></i>&emsp;Library updating...</span>
+	<span id="updating"><i class="fa fa-library bl"></i>&emsp;Library updating...</span>
 	<span class="help-block">Update: Only changed data &emsp; Rebuild: Rescan all data</span>
 EOF
 )
