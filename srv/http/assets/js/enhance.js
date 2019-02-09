@@ -148,23 +148,23 @@ GUI.sortableli = new Sortable( document.getElementById( 'divhomeblocks' ), {
 	}
 } );
 var chklibrary = {
-	  sd          : '<i class="fa fa-microsd"></i>SD'
+	  sd          : '<i class="fa fa-microsd"></i>SD_'
 	, usb         : '<i class="fa fa-usbdrive"></i>USB'
-	, nas         : '<i class="fa fa-network"></i>Network'
+	, nas         : '<i class="fa fa-network"></i>Network_'
 	, webradio    : '<i class="fa fa-webradio"></i>Webradio'
-	, album       : '<i class="fa fa-album"></i>Album'
+	, album       : '<i class="fa fa-album"></i>Album_'
 	, artist      : '<i class="fa fa-artist"></i>Artist'
+	, composer    : '<i class="fa fa-composer"></i>Composer_'
 	, albumartist : '<i class="fa fa-albumartist"></i>Album artist'
-	, composer    : '<i class="fa fa-composer"></i>Composer'
-	, genre       : '<i class="fa fa-genre"></i>Genre'
+	, genre       : '<i class="fa fa-genre"></i>Genre_'
 	, dirble      : '<i class="fa fa-dirble"></i>Dirble'
-	, jamendo     : '<i class="fa fa-jamendo"></i>Jamendo'
-	, count       : '<gr>text</gr> Count'
+	, jamendo     : '<i class="fa fa-jamendo"></i>Jamendo_'
+	, contexticon : '<i class="fa fa-bars"></i>Context icon'
+	, count       : '<gr>text</gr> Count_'
 	, label       : '<gr>text</gr> Label'
-	, contexticon : '<i class="fa fa-bars"></i>Context menu icon'
-	, coverfile   : 'Cover art'
-	, plclear     : 'Confirm - clear Playlist'
-	, tapaddplay  : 'Tap song <i class="fa fa-play-plus"></i>Add <gr>►</gr> Play'
+	, coverfile   : 'Cover art in album/folder'
+	, plclear     : 'Confirmation - Clear Playlist'
+	, tapaddplay  : 'Single tap song&ensp;<i class="fa fa-play-plus"></i>Add <gr>►</gr> Play'
 }
 $( '#displaylibrary' ).click( function() {
 	var coverfile = GUI.display.coverfile;

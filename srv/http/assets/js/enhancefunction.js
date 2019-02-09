@@ -637,8 +637,17 @@ function setToggleButton( name, append ) {
 }
 function displayCheckbox( checkboxes ) {
 	var html = '';
+	var col,br;
 	$.each( checkboxes, function( key, val ) {
-		html += '<label><input name="'+ key +'" type="checkbox" '+ GUI.display[ key ] +'>&ensp;'+ val +'</label><br>';
+		if ( val.slice( -1 ) === '_' ) {
+			col = ' class="infocol"';
+			br = '';
+			val = val.replace( /_/, '' );
+		} else {
+			col = '';
+			br = '<br>';
+		}
+		html += '<label'+ col +'><input name="'+ key +'" type="checkbox" '+ GUI.display[ key ] +'>&ensp;'+ val +'</label>'+ br;
 	} );
 	return html;
 }
