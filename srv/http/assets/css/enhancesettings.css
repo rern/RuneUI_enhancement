@@ -33,7 +33,7 @@
 .fa-check:before { content: "\f51B" }
 .fa-library:before { content: "\f506" }
 
-#update i {
+#updating i {
 	font-size: 28px;
 	vertical-align: -15%;
 	animation: blinkopaque 1.5s linear infinite;
