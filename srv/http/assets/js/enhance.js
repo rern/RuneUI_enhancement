@@ -1329,7 +1329,7 @@ window.addEventListener( 'orientationchange', function() {
 } );
 
 var pushstreams = {};
-var streams = [ 'display', 'volume', 'library', 'playlist', 'idle', 'notify' ];
+var streams = [ 'display', 'volume', 'library', 'count', 'playlist', 'idle', 'notify' ];
 $.each( streams, function( i, stream ) {
 	pushstreams[ stream ] = new PushStream( { modes: 'websocket' } );
 	pushstreams[ stream ].addChannel( stream );
@@ -1369,6 +1369,16 @@ pushstreams.volume.onmessage = function( data ) {
 pushstreams.library.onmessage = function( data ) {
 	GUI.libraryhome = data[ 0 ];
 	if ( !GUI.local
+		&& !$( '#home-blocks' ).hasClass( 'hide' )
+		&& !GUI.bookmarkedit
+	) renderLibrary();
+}
+pushstreams.count.onmessage = function( data ) {
+	var data = data[ 0 ].split( ' ' );
+	GUI.libraryhome.artistalbum = data[ 0 ];
+	GUI.libraryhome.composer = data[ 1 ];
+	GUI.libraryhome.genre = data[ 2 ];
+	if ( GUI.library
 		&& !$( '#home-blocks' ).hasClass( 'hide' )
 		&& !GUI.bookmarkedit
 	) renderLibrary();
