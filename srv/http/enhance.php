@@ -406,12 +406,12 @@ function getLibrary() {
 			  'artist'       => $count[ 2 ]
 			, 'album'        => $count[ 3 ]
 			, 'song'         => $count[ 4 ]
-			, 'albumartist'  => $count[ 5 ]
-			, 'composer'     => $count[ 6 ]
-			, 'genre'        => $count[ 7 ]
-			, 'nas'          => $count[ 8 ]
-			, 'usb'          => $count[ 9 ]
-			, 'webradio'     => $count[ 10 ]
+			, 'nas'          => $count[ 5 ]
+			, 'usb'          => $count[ 6 ]
+			, 'webradio'     => $count[ 7 ]
+			, 'albumartist'  => $count[ 8 ]
+			, 'composer'     => $count[ 9 ]
+			, 'genre'        => $count[ 10 ]
 		);
 	}
 	return $status;
