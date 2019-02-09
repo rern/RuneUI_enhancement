@@ -52,7 +52,7 @@ var csscontexticon =
 	+'</style>';
 var blinkdot = '<a class="dot">·</a>&ensp;<a class="dot dot2">·</a>&ensp;<a class="dot dot3">·</a>';
 
-// get library, display, status
+// get display, status, library
 $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 	GUI.display = data;
 	$.event.special.swipe.horizontalDistanceThreshold = 80; // pixel to swipe
@@ -148,23 +148,24 @@ GUI.sortableli = new Sortable( document.getElementById( 'divhomeblocks' ), {
 	}
 } );
 var chklibrary = {
-	  sd          : '<i class="fa fa-microsd"></i>SD_'
-	, usb         : '<i class="fa fa-usbdrive"></i>USB'
-	, nas         : '<i class="fa fa-network"></i>Network_'
-	, webradio    : '<i class="fa fa-webradio"></i>Webradio'
-	, album       : '<i class="fa fa-album"></i>Album_'
-	, artist      : '<i class="fa fa-artist"></i>Artist'
-	, composer    : '<i class="fa fa-composer"></i>Composer_'
-	, albumartist : '<i class="fa fa-albumartist"></i>Album artist'
-	, genre       : '<i class="fa fa-genre"></i>Genre_'
-	, dirble      : '<i class="fa fa-dirble"></i>Dirble'
-	, jamendo     : '<i class="fa fa-jamendo"></i>Jamendo_'
-	, contexticon : '<i class="fa fa-bars"></i>Context icon'
-	, count       : '<gr>text</gr> Count_'
-	, label       : '<gr>text</gr> Label'
-	, coverfile   : 'Cover art in album/folder'
-	, plclear     : 'Confirmation - Clear Playlist'
-	, tapaddplay  : 'Single tap song&ensp;<i class="fa fa-play-plus"></i>Add <gr>►</gr> Play'
+	  sd             : '<i class="fa fa-microsd"></i>SD_'
+	, usb            : '<i class="fa fa-usbdrive"></i>USB'
+	, nas            : '<i class="fa fa-network"></i>Network_'
+	, webradio       : '<i class="fa fa-webradio"></i>Webradio'
+	, album          : '<i class="fa fa-album"></i>Album_'
+	, artist         : '<i class="fa fa-artist"></i>Artist'
+	, composer       : '<i class="fa fa-composer"></i>Composer_'
+	, albumartist    : '<i class="fa fa-albumartist"></i>Album artist'
+	, genre          : '<i class="fa fa-genre"></i>Genre_'
+	, dirble         : '<i class="fa fa-dirble"></i>Dirble'
+	, jamendo        : '<i class="fa fa-jamendo"></i>Jamendo_'
+	, contexticon    : '<i class="fa fa-bars"></i>Context icon'
+	, count          : '<gr>text</gr> Count_'
+	, label          : '<gr>text</gr> Label'
+	, coverfile      : 'Cover art in album/folder'
+	, plclear        : 'Confirmation - Clear Playlist'
+	, playbackswitch : 'Add/Replace <gr>►</gr> Play > Open Playback'
+	, tapaddplay     : 'Single tap song&ensp;<i class="fa fa-play-plus"></i>Add <gr>►</gr> Play'
 }
 $( '#displaylibrary' ).click( function() {
 	var coverfile = GUI.display.coverfile;

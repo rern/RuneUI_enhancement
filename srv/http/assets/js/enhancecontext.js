@@ -107,7 +107,9 @@ $( '.contextmenu a' ).click( function() {
 
 function addReplace( mode, cmd, command, title ) {
 	$.post( 'enhance.php', { mpc: command }, function() {
-		if ( cmd === 'addplay' || cmd === 'replaceplay' ) {
+		if ( GUI.display.playbackswitch
+			&& ( cmd === 'addplay' || cmd === 'replaceplay' ) 
+		) {
 			$( '#tab-playback' ).click();
 		} else {
 			getPlaybackStatus();
