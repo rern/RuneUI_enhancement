@@ -29,14 +29,14 @@ if ( path.match( /\/sources\/*$/ ) ) {
 			if ( status.updating_db ) {
 				if ( !intUpdate ) {
 					$( '#updatempddb, #rescanmpddb' ).hide();
-					$( '#updatempddb' ).parent().after( '<span id="update"><i class="fa fa-library bl"></i>&emsp;Library updating...</span>' );
+					$( '#update' ).show();
 					intUpdate = setInterval( function() { // fix: force status fetching
 						toggleUpdate();
 					}, 10000 );
 				}
 			} else {
-				$( '#update' ).remove();
 				$( '#updatempddb, #rescanmpddb' ).show();
+				$( '#update' ).hide();
 				clearInterval( intUpdate );
 			}
 		}, 'json' );
