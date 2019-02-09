@@ -48,7 +48,7 @@ restorefile $files
 
 systemctl restart rune_PL_wrk
 if [[ $1 != u ]]; then
-	redis-cli del display sampling &> /dev/null
+	redis-cli del display sampling mpddb &> /dev/null
 	systemctl enable rune_shutdown
 	systemctl start rune_shutdown
 fi
