@@ -34,6 +34,7 @@ files="
 /boot/config.txt
 /srv/http/app/settings_ctl.php
 /srv/http/app/libs/runeaudio.php
+/srv/http/app/templates/dev.php
 /srv/http/app/templates/mpd.php
 /srv/http/app/templates/settings.php
 /srv/http/command/rune_PL_wrk
