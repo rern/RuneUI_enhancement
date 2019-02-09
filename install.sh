@@ -75,9 +75,33 @@ append '$'
 file=/srv/http/app/templates/settings.php
 echo $file
 
-commentH -n -1 'for="localSStime">' -n +5 'for="localSStime">'
+commentH -n -1 'for="localSStime">' -n -1 '<h2>Network mounts'
 
-commentH -n -1 'for="remoteSStime">' -n +5 'for="remoteSStime">'
+string=$( cat <<'EOF'
+if ( $template->local_browser ) {
+    exec( '/usr/bin/sudo /usr/bin/xinit &> /dev/null &' );
+} else {
+    exec( '/usr/bin/sudo /usr/bin/killall Xorg' );
+}
+EOF
+)
+append '$'
+#----------------------------------------------------------------------------------
+file=/srv/http/app/templates/sources.php
+echo $file
+
+commentH -n -1 'music library' -n -1 '<h2>Network mounts'
+
+string=$( cat <<'EOF'
+	<legend>Library database</legend>
+	<p>Your <a href="/#panel-sx">music library</a> is composed by two main content types: <strong>local sources</strong> and streaming sources.<br>
+	This section lets you configure your local sources, telling <a href="http://www.musicpd.org/" title="Music Player Daemon" rel="nofollow" target="_blank">MPD</a> to scan the contents of <strong>network mounts</strong> and <strong>USB mounts</strong>.</p>
+	<button class="btn btn-lg btn-primary" id="updatempddb"><i class="fa fa-refresh sx"></i>Update</button>&ensp;
+	<button class="btn btn-lg btn-primary" id="rescanmpddb"><i class="fa fa-refresh sx"></i>Rebuild</button>
+	<span class="help-block">Update: Only changed data &emsp; Rebuild: Rescan all data</span>
+EOF
+)
+insertH '<h2>Network mounts'
 #----------------------------------------------------------------------------------
 if [[ $1 != u ]]; then # keep range: 0.5 - 3.0
 	z=$1;
