@@ -176,9 +176,12 @@ if [[ ! $bkmarks ]]; then
 	fi
 fi
 
-for item in bars debug dev time coverart volume buttons nas sd usb webradio album artist albumartist composer genre dirble jamendo label contexticon coverfile plclear tapaddplay; do
+playback="bars debug dev time coverart volume buttons"
+library="nas sd usb webradio album artist albumartist composer genre dirble jamendo"
+miscel="count label contexticon coverfile plclear playbackswitch tapaddplay"
+for item in $playback $library $miscel; do
 	if [[ $( redis-cli hexists display $item ) == 0 ]]; then
-		[[ $item == debug || $item == dev || $item == count || $item == contexticon || $item == tapaddplay ]] && chk='' || chk=checked
+		[[ $item == debug || $item == dev || $item == contexticon || $item == tapaddplay ]] && chk='' || chk=checked
 		redis-cli hset display $item "$chk" &> /dev/null
 	fi
 done
