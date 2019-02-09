@@ -186,7 +186,7 @@ done
 albumartist=$( mpc list albumartist | awk NF | wc -l )
 composer=$( mpc list composer | awk NF | wc -l )
 genre=$( mpc list genre | awk NF | wc -l )
-redis-cli set mpddb $albumartist $composer $genre &> /dev/null
+redis-cli set mpddb "$albumartist $composer $genre" &> /dev/null
 
 # fix webradio permission
 chown -R http:http /mnt/MPD/Webradio
