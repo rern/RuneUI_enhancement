@@ -157,9 +157,14 @@ gr, .gr { color: #7795b4; }
 wh, gr { font-weight: 300; }
 #timepos wh,
 #displaysavelibrary i {
-	margin: 0 10px 0 4px;
+	width: 25px;
+	margin-right: 5px;
+	text-align: center;
 	font-size: 22px;
 	color: #7795b4;
+}
+.infocol {
+	width: 140px;
 }
 #album gr {
 	font-weight: normal;
