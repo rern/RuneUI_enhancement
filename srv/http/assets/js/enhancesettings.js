@@ -28,15 +28,15 @@ if ( path.match( /\/sources\/*$/ ) ) {
 		$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
 			if ( status.updating_db ) {
 				if ( !intUpdate ) {
-					$( '#updatempddb, #rescanmpddb' ).hide();
-					$( '#update' ).show();
+					$( '#update, #rescan' ).hide();
+					$( '#updating' ).show();
 					intUpdate = setInterval( function() { // fix: force status fetching
 						toggleUpdate();
 					}, 10000 );
 				}
 			} else {
-				$( '#updatempddb, #rescanmpddb' ).show();
-				$( '#update' ).hide();
+				$( '#update, #rescan' ).show();
+				$( '#updating' ).hide();
 				clearInterval( intUpdate );
 			}
 		}, 'json' );
@@ -51,7 +51,9 @@ if ( path.match( /\/sources\/*$/ ) ) {
 	}
 	pushstreamIdle.addChannel( 'idle' );
 	pushstreamIdle.connect();
-
+	$( '#update, #rescan' )..click( function() {
+		$.post( 'enhance.php', { mpc: 'mpc '+ this.id +'&' } );
+	} );
 } else if ( path.match( /\/sources\/add/ ) ) {
 	if ($('#mount-type').val() === 'nfs') {
 		$('#mount-cifs').addClass('disabled').children('.disabler').removeClass('hide');
