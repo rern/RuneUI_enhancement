@@ -60,6 +60,7 @@ $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 	cssContextIcon();
 	$.post( 'enhancestatus.php', function( status ) {
 		GUI.status = status;
+		$( '#artist, #song, #album' ).css( 'visibility', 'hidden' ); // prevent flash by scrollLongText()
 		renderPlayback();
 		displayPlayback();
 		setButton();

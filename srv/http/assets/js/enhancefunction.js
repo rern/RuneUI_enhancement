@@ -77,7 +77,10 @@ function switchPage( page ) {
 	GUI.library = GUI.playback = GUI.playlist = 0;
 	GUI[ page ] = 1;
 	GUI.currentpage = page;
-	if ( GUI.playback ) return
+	if ( GUI.playback ) {
+		$( '#artist, #song, #album' ).css( 'visibility', 'hidden' ); // prevent flash by scrollLongText()
+		return
+	}
 	
 	// restore page scroll
 	if ( GUI.library ) {
@@ -205,10 +208,7 @@ function second2HMS( second ) {
 }
 function scrollLongText() {
 	var $el = $( '#artist, #song, #album' );
-	$el
-		.removeClass( 'scrollleft' )
-		.removeAttr( 'style' )
-		.css( 'visibility', 'hidden' );
+	$el.removeClass( 'scrollleft' );
 	$( '#scrollleft' ).remove();
 	var wW = window.innerWidth;
 	var tWmax = 0;
@@ -221,10 +221,9 @@ function scrollLongText() {
 				$this.addClass( 'scrollleft' );
 			}
 		} );
-		$el.css( 'visibility', '' );
+		$el.removeAttr( 'style' );
 		if ( !$( '.scrollleft' ).length ) return
 		
-		$( '#scrollleft' ).remove();
 		if ( GUI.scale !== 1 ) {
 			var trx0 = 'transform : translateX( '+ Math.round( wW / GUI.scale ) +'px );'
 			cssKeyframes( 'scrollleft', trx0, 'transform : translateX( -100% );' );
@@ -236,7 +235,7 @@ function scrollLongText() {
 			, animation           : cssanimation
 			, width               : tWmax +'px'
 		} );
-	}, 100 );
+	}, 50 );
 }
 function removeSplash() {
 	$( '#splash' ).remove();
@@ -714,16 +713,16 @@ function renderLibrary() {
 	$( '#divbookmarks' ).html( content ).promise().done( function() {
 		bookmarkScroll();
 	} );
-	var order = GUI.display.library || 'sd,usb,nas,webradio,album,artist,albumartist,composer,genre,dirble,jamendo,spotify';
-	order = order.split( ',' );
+	var order = GUI.display.library || [ 'sd', 'usb', 'nas', 'webradio', 'album', 'artist', 'albumartist', 'composer', 'genre', 'dirble', 'jamendo', 'spotify' ];
 	$( '.home-block' ).find( 'gr' ).remove();
 	$.each( order, function( i, name ) {
 		if ( GUI.display.count ) $( '#home-'+ name ).find( 'i' ).after( GUI.libraryhome[ name ] ? '<gr>'+ numFormat( GUI.libraryhome[ name ] ) +'</gr>' : '' );
 		var $block = $( '#home-'+ name ).parent();
-		$block
-			.toggleClass( 'hide', GUI.display[ name ] === '' )
-			.remove();
-		$( '#divhomeblocks' ).append( $block );
+		$block.toggleClass( 'hide', GUI.display[ name ] === '' );
+		if ( GUI.display.library ) {
+			$block.detach();
+			$( '#divhomeblocks' ).append( $block );
+		}
 	} );
 	$( '#home-spotify' ).parent().toggleClass( 'hide', !GUI.libraryhome.spotify );
 	$( '#divhomeblocks wh' ).toggle( GUI.display.label !== '' );
