@@ -1,4 +1,4 @@
-var GUI = { // outside '$( function() {' enable console.log access
+var GUI = {
 	  activePlayer : ''
 	, airplay      : {}
 	, artistalbum  : ''
@@ -25,6 +25,7 @@ var GUI = { // outside '$( function() {' enable console.log access
 	, pllist     : {}
 	, plscrolltop  : 0
 	, plugin       : ''
+	, scale        : 1
 	, screenS      : ( window.innerHeight < 590 || window.innerWidth < 500 )
 	, status       : {}
 };
@@ -33,37 +34,41 @@ PNotify.prototype.options.styling = 'fontawesome';
 PNotify.prototype.options.icon = 'fa fa-check';
 PNotify.prototype.options.stack = {
 	  dir1      : 'up'    // stack up
-	, dir2      : 'right' // when full stack right
-	, firstpos1 : 60      // offset from border H
-	, firstpos2 : 0       // offset from border V
-	, spacing1  : 10      // space between dir1
-	, spacing2  : 10      // space between dir2
+	, dir2      : 'right' // shift right when fill height
+	, firstpos1 : 60      // top offset from border H
+	, firstpos2 : 0       // left offset from border V
+	, spacing1  : 10      // space between each
+	, spacing2  : 10      // space between column( or row if dir1: right/left )
 }
+var cssnotify = 
+	 '<style id="cssnotify">'
+		+'.ui-pnotify { bottom: 20px; }'
+		+'.pnotify_custom { top: 20px !important; }'
+	+'</style>';
+var csscontexticon = 
+	 '<style id="csscontexticon">'
+		+'.db-action, .pl-action { display: block }'
+		+'.duration-right { right: 60px }'
+	+'</style>';
 var blinkdot = '<a class="dot">·</a>&ensp;<a class="dot dot2">·</a>&ensp;<a class="dot dot3">·</a>';
 
-// get library, display, status
-$.post( 'enhance.php', { library: 1, data: 1 }, function( data ) {
-	GUI.libraryhome = data;
-	$.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
-		GUI.display = data;
-		if ( !GUI.display.contexticon ) $( 'head' ).append( '<style id="contexticoncss">.db-action, .pl-action { display: none }</style>' );
-		$.event.special.swipe.horizontalDistanceThreshold = 80; // pixel to swipe
-		if ( !GUI.display.bars || ( GUI.screenS && !GUI.display.barsauto ) ) {
-			$( '#swipebar, .page' ).on( 'swipeleft swiperight', function( e ) {
-				GUI.swipe = 1;
-				setTimeout( function() { GUI.swipe = 0 }, 500 );
-				
-				// skip if swipe to show remove in playlist
-				if ( !$( e.target ).parents( '#pl-entries li' ).length ) setSwipe( e.type );
-			} );
-		}
-		$.post( 'enhancestatus.php', function( status ) {
-			//alert(JSON.stringify(status))
-			GUI.status = status;
-			renderPlayback();
-			displayPlayback();
-			setButton();
-			$( 'html, body' ).scrollTop( 0 );
+// get display, status, library
+$.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
+	GUI.display = data;
+	// prevent flash by scrollLongText()
+	GUI.init = 1;
+	$( '#artist, #song, #album' ).css( 'visibility', 'hidden' );
+	$.event.special.swipe.horizontalDistanceThreshold = 80; // pixel to swipe
+	setSwipe();
+	cssContextIcon();
+	$.post( 'enhancestatus.php', function( status ) {
+		GUI.status = status;
+		renderPlayback();
+		displayPlayback();
+		setButton();
+		$( 'html, body' ).scrollTop( 0 );
+		$.post( 'enhance.php', { library: 1, data: 1 }, function( data ) {
+			GUI.libraryhome = data;
 		}, 'json' );
 	}, 'json' );
 }, 'json' );
@@ -145,23 +150,24 @@ GUI.sortableli = new Sortable( document.getElementById( 'divhomeblocks' ), {
 	}
 } );
 var chklibrary = {
-	  sd          : '<i class="fa fa-microsd"></i>SD'
-	, usb         : '<i class="fa fa-usbdrive"></i>USB'
-	, nas         : '<i class="fa fa-network"></i>Network'
-	, webradio    : '<i class="fa fa-webradio"></i>Webradio'
-	, album       : '<i class="fa fa-album"></i>Album'
-	, artist      : '<i class="fa fa-artist"></i>Artist'
-	, albumartist : '<i class="fa fa-albumartist"></i>Album artist'
-	, composer    : '<i class="fa fa-composer"></i>Composer'
-	, genre       : '<i class="fa fa-genre"></i>Genre'
-	, dirble      : '<i class="fa fa-dirble"></i>Dirble'
-	, jamendo     : '<i class="fa fa-jamendo"></i>Jamendo'
-	, count       : '<gr>text</gr> Count'
-	, label       : '<gr>text</gr> Label'
-	, contexticon : '<i class="fa fa-bars"></i>Context menu icon'
-	, coverfile   : 'Cover art'
-	, plclear     : 'Confirm - clear Playlist'
-	, tapaddplay  : 'Tap song <i class="fa fa-play-plus"></i>Add <gr>►</gr> Play'
+	  sd             : '<i class="fa fa-microsd"></i>SD_'
+	, usb            : '<i class="fa fa-usbdrive"></i>USB'
+	, nas            : '<i class="fa fa-network"></i>Network_'
+	, webradio       : '<i class="fa fa-webradio"></i>Webradio'
+	, album          : '<i class="fa fa-album"></i>Album_'
+	, artist         : '<i class="fa fa-artist"></i>Artist'
+	, composer       : '<i class="fa fa-composer"></i>Composer_'
+	, albumartist    : '<i class="fa fa-albumartist"></i>Album artist'
+	, genre          : '<i class="fa fa-genre"></i>Genre_'
+	, dirble         : '<i class="fa fa-dirble"></i>Dirble'
+	, jamendo        : '<i class="fa fa-jamendo"></i>Jamendo_'
+	, contexticon    : '<i class="fa fa-bars"></i>Context icon'
+	, count          : '<gr>text</gr> Count_'
+	, label          : '<gr>text</gr> Label'
+	, coverfile      : 'Cover art <gr>in album/folder</gr>'
+	, plclear        : 'Confirmation <gr>on clear Playlist</gr>'
+	, playbackswitch : 'Open Playback <gr>on</gr> <i class="fa fa-play-plus"></i>Add <gr>►</gr> Play'
+	, tapaddplay     : 'Single tap song <gr>=</gr> <i class="fa fa-play-plus"></i>Add <gr>►</gr> Play'
 }
 $( '#displaylibrary' ).click( function() {
 	var coverfile = GUI.display.coverfile;
@@ -177,13 +183,16 @@ $( '#displaylibrary' ).click( function() {
 				GUI.display[ this.name ] = checked ? 'checked' : '';
 				if ( this.name === 'coverfile' ) GUI.coverfile = ( coverfile === 'checked' ) ? ( checked ? 0 : 1 ) : ( checked ? 1 : 0 );
 			} );
-			if ( GUI.display.contexticon ) {
-				$( '#contexticoncss' ).remove();
-			} else if ( !$( '#contexticoncss' ).length ) {
-				$( 'head' ).append( '<style id="contexticoncss">.db-action, .pl-action { display: none }</style>' );
-			}
-			if ( !GUI.library ) $( '#tab-library' ).click();
+			cssContextIcon();
 			$.post( 'enhance.php', { setdisplay: GUI.display } );
+			if ( GUI.display.count ) {
+				$.post( 'enhance.php', { library: 1, data: 1 }, function( data ) {
+					GUI.libraryhome = data;
+					if ( !GUI.library ) $( '#tab-library' ).click();
+				}, 'json' );
+			} else {
+				if ( !GUI.library ) $( '#tab-library' ).click();
+			}
 		}
 	} );
 } );
@@ -214,17 +223,7 @@ $( '#displayplayback' ).click( function() {
 			$.post( 'enhance.php', { setdisplay: GUI.display }, function() {
 				displayPlayback();
 				$( '#swipebar, .page' ).off( 'swipeleft swiperight' );
-				if ( !GUI.display.bars || ( GUI.screenS && !GUI.display.barsauto ) ) {
-					GUI.bars = 0;
-					$( '#swipebar, .page' ).on( 'swipeleft swiperight', function( e ) {
-						GUI.swipe = 1;
-						setTimeout( function() { GUI.swipe = 0 }, 500 );
-						
-						if ( !$( e.target ).parents( '#pl-entries li' ).length ) setSwipe( e.type );
-					} );
-				} else {
-					GUI.bars = 1;
-				}
+				setSwipe();
 				cssNotify();
 			} );
 			if ( !GUI.playback ) $( '#tab-playback' ).click();
@@ -266,6 +265,9 @@ $( '#turnoff' ).click( function() {
 	} );
 } );
 $( '#tab-library' ).click( function() {
+	if ( !Object.keys( GUI.libraryhome ).length ) return // wait for mpc data
+	
+	$( '#db-search-close span' ).empty();
 	if ( GUI.bookmarkedit ) {
 		GUI.bookmarkedit = 0;
 		renderLibrary();
@@ -321,11 +323,6 @@ $( '#page-library' ).click( function( e ) {
 } );
 $( '#page-library, #page-playback, #page-playlist' ).click( function( e ) {
 	if ( [ 'coverTR', 'timeTR' ].indexOf( e.target.id ) === -1 ) $( '#settings' ).addClass( 'hide' );
-	if ( GUI.library ) {
-		if ( e.target.id !== 'db-searchbtn' && !$( '#db-search-close' ).hasClass( 'hide' ) ) $( '#db-search-close' ).click();
-	} else if ( GUI.playlist ) {
-		if ( e.target.id !== 'pl-searchbtn' && !$( '#pl-search-close' ).hasClass( 'hide' ) ) $( '#pl-search-close' ).click();
-	}
 } );
 $( '#song, #playlist-warning' ).on( 'click', 'i', function() {
 	$( '#tab-library' ).click();
@@ -1021,9 +1018,7 @@ $( '#plclear' ).click( function() {
 				, message : 'Clear this playlist?'
 				, cancel  : 1
 				, ok      : function() {
-					GUI.status.playlistlength = 0;
-					renderPlaylist();
-					setPlaybackBlank();
+					clearPlaylist();
 					$.post( 'enhance.php', { mpc: 'mpc clear' } );
 				}
 			} );
@@ -1037,17 +1032,13 @@ $( '#plclear' ).click( function() {
 				}
 				, oklabel    : 'All'
 				, ok         : function() {
-					GUI.status.playlistlength = 0;
-					renderPlaylist();
-					setPlaybackBlank();
+					clearPlaylist();
 					$.post( 'enhance.php', { mpc: [ 'mpc clear', '/usr/bin/redis-cli del webradiopl' ] } );
 				}
 			} );
 		}
 	} else {
-		GUI.status.playlistlength = 0;
-		renderPlaylist();
-		setPlaybackBlank();
+		clearPlaylist();
 		$.post( 'enhance.php', { mpc: 'mpc clear' } );
 	}
 } );
@@ -1318,11 +1309,12 @@ window.addEventListener( 'orientationchange', function() {
 		}, 300 );
 	} else if ( GUI.playlist && !GUI.pleditor ) {
 		setTimeout( function() {
-			getNameWidth();
 			setNameWidth();
+			getTitleWidth();
+			setTitleWidth();
 			var scrollpos = $( '#pl-entries li.active' ).offset().top - $( '#pl-entries' ).offset().top - ( 49 * 3 );
 			$( 'html, body' ).scrollTop( scrollpos );
-		}, 500 );
+		}, 300 );
 	} else if ( GUI.library && !$( '#home-blocks' ).hasClass( 'hide' ) ) {
 		bookmarkScroll();
 	} else {
@@ -1333,7 +1325,7 @@ window.addEventListener( 'orientationchange', function() {
 } );
 
 var pushstreams = {};
-var streams = [ 'display', 'volume', 'library', 'playlist', 'idle', 'notify' ];
+var streams = [ 'display', 'volume', 'library', 'count', 'playlist', 'idle', 'notify' ];
 $.each( streams, function( i, stream ) {
 	pushstreams[ stream ] = new PushStream( { modes: 'websocket' } );
 	pushstreams[ stream ].addChannel( stream );
@@ -1373,6 +1365,16 @@ pushstreams.volume.onmessage = function( data ) {
 pushstreams.library.onmessage = function( data ) {
 	GUI.libraryhome = data[ 0 ];
 	if ( !GUI.local
+		&& !$( '#home-blocks' ).hasClass( 'hide' )
+		&& !GUI.bookmarkedit
+	) renderLibrary();
+}
+pushstreams.count.onmessage = function( data ) {
+	var data = data[ 0 ].split( ' ' );
+	GUI.libraryhome.artistalbum = data[ 0 ];
+	GUI.libraryhome.composer = data[ 1 ];
+	GUI.libraryhome.genre = data[ 2 ];
+	if ( GUI.library
 		&& !$( '#home-blocks' ).hasClass( 'hide' )
 		&& !GUI.bookmarkedit
 	) renderLibrary();

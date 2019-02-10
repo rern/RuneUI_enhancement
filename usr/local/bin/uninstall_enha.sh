@@ -34,8 +34,10 @@ files="
 /boot/config.txt
 /srv/http/app/settings_ctl.php
 /srv/http/app/libs/runeaudio.php
+/srv/http/app/templates/dev.php
 /srv/http/app/templates/mpd.php
 /srv/http/app/templates/settings.php
+/srv/http/app/templates/sources.php
 /srv/http/command/rune_PL_wrk
 "
 [[ ! -e /etc/X11/xinit/start_chromium.sh ]] && files="$files\
@@ -46,7 +48,7 @@ restorefile $files
 
 systemctl restart rune_PL_wrk
 if [[ $1 != u ]]; then
-	redis-cli del display sampling &> /dev/null
+	redis-cli del display sampling mpddb &> /dev/null
 	systemctl enable rune_shutdown
 	systemctl start rune_shutdown
 fi

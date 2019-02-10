@@ -47,6 +47,13 @@ append 'monitorMpdState'
 
 systemctl restart rune_PL_wrk
 #----------------------------------------------------------------------------------
+file=/srv/http/app/templates/dev.php
+echo $file
+
+commentH -n -2 'DevTeam functions' -n -3 'System commands'
+
+commentH -n -1 'Update RuneUI' -n +5 'Update RuneUI'
+#----------------------------------------------------------------------------------
 file=/srv/http/app/templates/mpd.php
 echo $file
 
@@ -71,6 +78,23 @@ echo $file
 commentH -n -1 'for="localSStime">' -n +5 'for="localSStime">'
 
 commentH -n -1 'for="remoteSStime">' -n +5 'for="remoteSStime">'
+#----------------------------------------------------------------------------------
+file=/srv/http/app/templates/sources.php
+echo $file
+
+commentH -n -1 'music library' -n -1 '<h2>Network mounts'
+
+string=$( cat <<'EOF'
+	<legend>Library database</legend>
+	<p>Your <a href="/#panel-sx">music library</a> is composed by two main content types: <strong>local sources</strong> and streaming sources.<br>
+	This section lets you configure your local sources, telling <a href="http://www.musicpd.org/" title="Music Player Daemon" rel="nofollow" target="_blank">MPD</a> to scan the contents of <strong>network mounts</strong> and <strong>USB mounts</strong>.</p>
+	<button class="btn btn-lg btn-primary" id="update"><i class="fa fa-refresh sx"></i>Update</button>
+	<button class="btn btn-lg btn-primary" id="rescan"><i class="fa fa-refresh sx"></i>Rescan</button>
+	<button class="btn btn-default btn-lg" id="updating"><i class="fa fa-library bl"></i>&emsp;Library updating...</button>
+	<span class="help-block">Update: Only changed data and files &emsp; Rescan: All data and files</span>
+EOF
+)
+insertH '<h2>Network mounts'
 #----------------------------------------------------------------------------------
 if [[ $1 != u ]]; then # keep range: 0.5 - 3.0
 	z=$1;
@@ -153,11 +177,17 @@ for item in $playback $library $miscel; do
 		redis-cli hset display $item "$chk" &> /dev/null
 	fi
 done
+# pre-count albumartist, composer, genre
+albumartist=$( mpc list albumartist | awk NF | wc -l )
+composer=$( mpc list composer | awk NF | wc -l )
+genre=$( mpc list genre | awk NF | wc -l )
+redis-cli set mpddb "$albumartist $composer $genre" &> /dev/null
+
 # fix webradio permission
 chown -R http:http /mnt/MPD/Webradio
 
 echo -e "$bar Disable ACC/ALAC support ..."
-redis-cli hset mpdconf ffmpeg no
+redis-cli hset mpdconf ffmpeg no &> /dev/null
 
 # disable default shutdown
 systemctl disable rune_shutdown

@@ -157,9 +157,14 @@ gr, .gr { color: #7795b4; }
 wh, gr { font-weight: 300; }
 #timepos wh,
 #displaysavelibrary i {
-	margin: 0 10px 0 4px;
+	width: 25px;
+	margin-right: 5px;
+	text-align: center;
 	font-size: 22px;
 	color: #7795b4;
+}
+.infocol {
+	width: 150px;
 }
 #album gr {
 	font-weight: normal;
@@ -280,8 +285,6 @@ wh, gr { font-weight: 300; }
 #swipebar .fa-gear {
 	width: 60px;
 	height: 40px;
-	line-height: 40px;
-	border-left: 2px solid #e0e7ee;
 }
 .transparent {
 	opacity: 0;
@@ -1055,9 +1058,7 @@ wh, gr { font-weight: 300; }
 	margin: 0 5px 10px;
 	padding-top: 90px;
 }
-.home-block,
-.empty-block {
-	display: block;
+.home-block {
 	position: relative;
 	height: 110px;
 	margin: 7px -8px;
@@ -1067,8 +1068,7 @@ wh, gr { font-weight: 300; }
 	color: #7795b4;
 	text-align: center;
 }
-.home-block i,
-.empty-block i {
+.home-block i {
 	display: inline-block;
 	width: 40px;
 	height: 40px;
@@ -1432,7 +1432,9 @@ wh, gr { font-weight: 300; }
 .liname,
 .liindex,
 .lisort,
-.liartist {
+.liartist,
+.db-action,
+.pl-action {
 	display: none;
 }
 span.dbpath {
@@ -1563,7 +1565,7 @@ w {
 #pl-entries .li1,
 #pl-editor .li1 {
 	display: block;
-	padding-top: 5px;
+	padding: 5px 10px 0 0;
 }
 #pl-entries .li1 a {
 	display: inline-block;
@@ -1597,6 +1599,7 @@ w {
 #pl-entries .li2,
 #pl-editor .li2 {
 	display: block;
+	max-width: calc( 100vw - 60px );
 	font-size: 12px;
 	color: #7795b4
 }
@@ -1817,13 +1820,16 @@ li.active .time {
 }
 
 /* bootstrap column */
-#home-blocks .col-md-3 { float: left; }
-@media (min-width: 1200px) { #home-blocks .col-md-3 { width: 20%; } }
-@media (min-width: 1500px) { #home-blocks .col-md-3 { width: 16.666666%; } }
-@media (max-width: 992px) { #home-blocks .col-md-3 { width: 25%; } }
-@media (max-width: 749px) { #home-blocks .col-md-3 { width: 33.3333333%; } }
-@media (max-width: 560px) { #home-blocks .col-md-3 { width: 50%; } }
-@media (max-width: 374px) { #home-blocks .col-md-3 { width: 100%; } }
+.divblock {
+	float: left;
+	width: 16.666666%;
+	padding: 0 15px;
+}
+@media (max-width: 1000px) { .divblock { width: 20%; } }
+@media (max-width: 768px) { .divblock { width: 25%; } }
+@media (max-width: 640px) { .divblock { width: 33.3333333%; } }
+@media (max-width: 450px) { .divblock { width: 50%; } }
+@media (max-width: 320px) { .divblock { width: 100%; } }
 /* height */
 @media(max-height: 590px) {
 	#playback-row {
@@ -2013,5 +2019,10 @@ li.active .time {
 @media(max-width: 360px) {
 	#playback-controls button {
 		margin: 0;
+	}
+}
+@media(max-width: 330px) {
+	.infocol {
+		width: 140px;
 	}
 }

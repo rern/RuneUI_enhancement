@@ -34,14 +34,32 @@ while ( $line !== false ) {
 	}
 	$line = strtok( "\n" );
 }
+
 $status[ 'updating_db' ] = array_key_exists( 'updating_db', $status ) ? 1 : 0;
 $file = '/mnt/MPD/'.$status[ 'file' ];
 $pathinfo = pathinfo( $file );
 $dir = $pathinfo[ 'dirname' ];
 $ext = strtoupper( $pathinfo[ 'extension' ] );
 $status[ 'ext' ] = ( substr($status[ 'file' ], 0, 4 ) !== 'http' ) ? $ext : 'radio';
+
+if ( $status[ 'ext' ] !== 'radio' ) {
+	// no id3tag
+	if ( empty( $status[ 'Title' ] ) ) {
+		$status[ 'Artist' ] = basename( $dir );
+		$status[ 'Title' ] = $pathinfo[ 'filename' ];
+		$status[ 'Album' ] = '';
+	}
+} else {
+	// before 1st play: no 'Name:' - use 'Title:' value instead
+	$status[ 'Artist' ] = isset( $status[ 'Name' ] ) ? $status[ 'Name' ] : $status[ 'Title' ];
+	$status[ 'Title' ] = ( $status[ 'state' ] === 'stop' ) ? '' : $status[ 'Title' ];
+	$status[ 'Album' ] = $status[ 'file' ];
+	$status[ 'time' ] = '';
+}
+
 if ( exec( 'pidof ashuffle' ) ) $status[ 'random' ] = 1;
 if ( !array_key_exists( 'song', $status ) ) $status[ 'song' ] = 0;
+
 $previousartist = isset( $_POST[ 'artist' ] ) ? $_POST[ 'artist' ] : '';
 $previousalbum = isset( $_POST[ 'album' ] ) ? $_POST[ 'album' ] : '';
 if ( isset( $_POST[ 'statusonly' ] )
@@ -132,20 +150,7 @@ if ( $status[ 'ext' ] !== 'radio' && $activePlayer === 'MPD' ) {
 		$count++;
 	}
 }
-if ( $status[ 'ext' ] !== 'radio' ) {
-	// no id3tag
-	if ( empty( $status[ 'Title' ] ) ) {
-		$status[ 'Artist' ] = basename( $dir );
-		$status[ 'Title' ] = $pathinfo[ 'filename' ];
-		$status[ 'Album' ] = '';
-	}
-} else {
-	// before 1st play: no 'Name:' - use 'Title:' value instead
-	$status[ 'Artist' ] = isset( $status[ 'Name' ] ) ? $status[ 'Name' ] : $status[ 'Title' ];
-	$status[ 'Title' ] = ( $status[ 'state' ] === 'stop' ) ? '' : $status[ 'Title' ];
-	$status[ 'Album' ] = $status[ 'file' ];
-	$status[ 'time' ] = '';
-}
+
 $webradios = $redis->hGetAll( 'webradios' );
 $webradioname = array_flip( $webradios );
 $name = $webradioname[ $status[ 'file' ] ];
