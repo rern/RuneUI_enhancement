@@ -1058,9 +1058,7 @@ wh, gr { font-weight: 300; }
 	margin: 0 5px 10px;
 	padding-top: 90px;
 }
-.home-block,
-.empty-block {
-	display: block;
+.home-block {
 	position: relative;
 	height: 110px;
 	margin: 7px -8px;
@@ -1070,8 +1068,7 @@ wh, gr { font-weight: 300; }
 	color: #7795b4;
 	text-align: center;
 }
-.home-block i,
-.empty-block i {
+.home-block i {
 	display: inline-block;
 	width: 40px;
 	height: 40px;
@@ -1823,16 +1820,16 @@ li.active .time {
 }
 
 /* bootstrap column */
-.divhomeblock {
+.divblock {
 	float: left;
 	width: 16.666666%;
 	padding: 0 15px;
 }
-@media (max-width: 1000px) { .divhomeblock { width: 20%; } }
-@media (max-width: 768px) { .divhomeblock { width: 25%; } }
-@media (max-width: 640px) { .divhomeblock { width: 33.3333333%; } }
-@media (max-width: 450px) { .divhomeblock { width: 50%; } }
-@media (max-width: 320px) { .divhomeblock { width: 100%; } }
+@media (max-width: 1000px) { .divblock { width: 20%; } }
+@media (max-width: 768px) { .divblock { width: 25%; } }
+@media (max-width: 640px) { .divblock { width: 33.3333333%; } }
+@media (max-width: 450px) { .divblock { width: 50%; } }
+@media (max-width: 320px) { .divblock { width: 100%; } }
 /* height */
 @media(max-height: 590px) {
 	#playback-row {
