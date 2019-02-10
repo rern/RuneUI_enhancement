@@ -219,7 +219,10 @@ function scrollLongText() {
 				$this.addClass( 'scrollleft' );
 			}
 		} );
-		if ( !$( '.scrollleft' ).length ) return
+		if ( !$( '.scrollleft' ).length ) {
+			$el.css( 'visibility', 'visible' ); // for initial hidden
+			return
+		}
 		
 		if ( GUI.scale !== 1 ) {
 			var trx0 = 'transform : translateX( '+ Math.round( wW / GUI.scale ) +'px );'
@@ -709,7 +712,8 @@ function renderLibrary() {
 					  +'</div>';
 		} );
 	}
-	$( '#divbookmarks' ).html( content ).promise().done( function() {
+	$( '.home-bookmark' ).remove();
+	$( '#divhomeblocks' ).prepend( content ).promise().done( function() {
 		bookmarkScroll();
 	} );
 	var order = GUI.display.library || 'sd,usb,nas,webradio,album,artist,albumartist,composer,genre,dirble,jamendo,spotify';
@@ -1062,6 +1066,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 	} );
 	if ( $( '#db-search-btn' ).hasClass( 'hide' ) ) return
 	
+	$( '#db-back' ).removeClass( 'hide' );
 // breadcrumb directory path link
 	var iconName = {
 		  LocalStorage  : '<i class="fa fa-microsd"></i>'

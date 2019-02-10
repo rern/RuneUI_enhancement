@@ -137,7 +137,7 @@ GUI.sortableli = new Sortable( document.getElementById( 'divhomeblocks' ), {
 		$icon.css( 'color', '' );
 	  }
 	, onUpdate   : function ( e ) {
-		var $blocks = $( '.home-block:not(.home-bookmark)' );
+		var $blocks = $( '.home-block' );
 		var homeorder = '';
 		$blocks.each( function() {
 			homeorder += this.id.replace( 'home-', '' ) +',';
@@ -676,6 +676,9 @@ $( '#home-blocks' ).on( 'tap', '.home-block', function() {
 	$( '.home-bookmark' )
 		.append( '<i id="home-block-edit" class="fa fa-edit-circle"></i><i id="home-block-remove" class="fa fa-minus-circle"></i>' )
 		.find( '.fa-bookmark, .bklabel, img' ).css( 'opacity', 0.2 );
+} ).on( 'vmousemove', '.home-bookmark', function() {
+	$( '#home-block-edit, #home-block-remove' ).remove();
+	$( '.home-bookmark' ).find( '.fa-bookmark, .bklabel, img' ).css( 'opacity', '' );
 } );
 
 $( '#db-home' ).click( function() {
