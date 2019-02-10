@@ -1823,13 +1823,16 @@ li.active .time {
 }
 
 /* bootstrap column */
-#home-blocks .col-md-3 { float: left; }
-@media (min-width: 1200px) { #home-blocks .col-md-3 { width: 20%; } }
-@media (min-width: 1500px) { #home-blocks .col-md-3 { width: 16.666666%; } }
-@media (max-width: 992px) { #home-blocks .col-md-3 { width: 25%; } }
-@media (max-width: 749px) { #home-blocks .col-md-3 { width: 33.3333333%; } }
-@media (max-width: 560px) { #home-blocks .col-md-3 { width: 50%; } }
-@media (max-width: 374px) { #home-blocks .col-md-3 { width: 100%; } }
+.divhomeblock {
+	float: left;
+	width: 16.666666%;
+	padding: 0 15px;
+}
+@media (max-width: 1000px) { .divhomeblock { width: 20%; } }
+@media (max-width: 768px) { .divhomeblock { width: 25%; } }
+@media (max-width: 640px) { .divhomeblock { width: 33.3333333%; } }
+@media (max-width: 450px) { .divhomeblock { width: 50%; } }
+@media (max-width: 320px) { .divhomeblock { width: 100%; } }
 /* height */
 @media(max-height: 590px) {
 	#playback-row {
