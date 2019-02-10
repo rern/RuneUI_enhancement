@@ -52,7 +52,7 @@ echo $file
 
 commentH -n -2 'DevTeam functions' -n -3 'System commands'
 
-connentH -n -1 'Update RuneUI' -n +5 'Update RuneUI'
+commentH -n -1 'Update RuneUI' -n +5 'Update RuneUI'
 #----------------------------------------------------------------------------------
 file=/srv/http/app/templates/mpd.php
 echo $file
