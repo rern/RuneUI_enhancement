@@ -164,7 +164,7 @@ wh, gr { font-weight: 300; }
 	color: #7795b4;
 }
 .infocol {
-	width: 140px;
+	width: 150px;
 }
 #album gr {
 	font-weight: normal;
@@ -2019,5 +2019,10 @@ li.active .time {
 @media(max-width: 360px) {
 	#playback-controls button {
 		margin: 0;
+	}
+}
+@media(max-width: 330px) {
+	.infocol {
+		width: 140px;
 	}
 }
