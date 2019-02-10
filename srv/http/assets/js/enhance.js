@@ -66,7 +66,6 @@ $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 		$( 'html, body' ).scrollTop( 0 );
 		$.post( 'enhance.php', { library: 1, data: 1 }, function( data ) {
 			GUI.libraryhome = data;
-			$( '#loader' ).addClass( 'hide' ); // from unhided by #tab-library
 		}, 'json' );
 	}, 'json' );
 }, 'json' );
@@ -263,11 +262,9 @@ $( '#turnoff' ).click( function() {
 	} );
 } );
 $( '#tab-library' ).click( function() {
-	if ( !Object.keys( GUI.libraryhome ).length ) { // wait for mpc data
-		$( '#loader' ).removeClass( 'hide' );
-		return
-	}
+	if ( !Object.keys( GUI.libraryhome ).length ) return // wait for mpc data
 	
+	$( '#db-search-close span' ).empty();
 	if ( GUI.bookmarkedit ) {
 		GUI.bookmarkedit = 0;
 		renderLibrary();
@@ -323,11 +320,6 @@ $( '#page-library' ).click( function( e ) {
 } );
 $( '#page-library, #page-playback, #page-playlist' ).click( function( e ) {
 	if ( [ 'coverTR', 'timeTR' ].indexOf( e.target.id ) === -1 ) $( '#settings' ).addClass( 'hide' );
-	if ( GUI.library ) {
-		if ( e.target.id !== 'db-searchbtn' && !$( '#db-search-close' ).hasClass( 'hide' ) ) $( '#db-search-close' ).click();
-	} else if ( GUI.playlist ) {
-		if ( e.target.id !== 'pl-searchbtn' && !$( '#pl-search-close' ).hasClass( 'hide' ) ) $( '#pl-search-close' ).click();
-	}
 } );
 $( '#song, #playlist-warning' ).on( 'click', 'i', function() {
 	$( '#tab-library' ).click();

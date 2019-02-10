@@ -681,12 +681,10 @@ function renderLibrary() {
 	GUI.dbbackdata = [];
 	GUI.plugin = '';
 	$( '#db-currentpath' ).css( 'max-width', '' );
-	$( '#db-currentpath>span, #db-currentpath>i' ).removeClass( 'hide' );
+	$( '#db-currentpath>span, #db-currentpath>i, #db-searchbtn' ).removeClass( 'hide' );
 	$( '#db-currentpath .lipath' ).empty()
-	$( '#db-search, #db-searchbtn' ).toggleClass( 'hide' );
 	$( '#db-entries' ).empty();
 	$( '#db-search, #db-search-close, #db-index, #db-back, #db-webradio-new' ).addClass( 'hide' );
-	$( '#db-searchbtn' ).removeClass( 'hide' );
 	$( '#db-search-keyword' ).val( '' );
 	if ( $( '#db-entries' ).hasClass( 'hide' ) ) return
 	
@@ -904,9 +902,6 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		row = [];
 	GUI.albumartist = '';
 	GUI.currentpath = path;
-	$( '#db-entries' ).empty();
-	if ( $( '#dbsearchbtn' ).hasClass( 'hide' ) ) $( '#db-currentpath .lipath' ).empty();
-	$( '#db-currentpath span, #db-entries, #db-back' ).removeClass( 'hide' );
 	$( '#home-blocks' ).addClass( 'hide' );
 
 	if ( !plugin ) {
@@ -1067,6 +1062,8 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		if ( !fileplaylist ) displayIndexBar();
 		$( '#loader, .menu' ).addClass( 'hide' );
 	} );
+	if ( $( '#db-search-btn' ).hasClass( 'hide' ) ) return
+	
 // breadcrumb directory path link
 	var iconName = {
 		  LocalStorage  : '<i class="fa fa-microsd"></i>'
@@ -1146,13 +1143,6 @@ function dataSort( data, path, plugin, querytype, arg ) {
 	} else {
 		$( '#db-index' ).removeClass( 'hide' );
 		$( '#db-entries' ).css( 'width', '' );
-	}
-	if( $( '#db-search-close' ).hasClass( 'hide' ) ) {
-		$( '#db-search' ).addClass( 'hide' );
-		$( '#db-searchbtn' ).removeClass( 'hide' );
-	} else {
-		$( '#db-search' ).removeClass( 'hide' );
-		$( '#db-searchbtn' ).addClass( 'hide' );
 	}
 }
 // set path, name, artist as text to avoid double quote escape
