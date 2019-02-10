@@ -712,8 +712,8 @@ function renderLibrary() {
 	$( '#divbookmarks' ).html( content ).promise().done( function() {
 		bookmarkScroll();
 	} );
-	var order = GUI.display.library || [ 'sd', 'usb', 'nas', 'webradio', 'album', 'artist', 'albumartist', 'composer', 'genre', 'dirble', 'jamendo', 'spotify' ];
-	$( '.home-block' ).find( 'gr' ).remove();
+	var order = GUI.display.library || 'sd,usb,nas,webradio,album,artist,albumartist,composer,genre,dirble,jamendo,spotify';
+	order = order.split( ',' );$( '.home-block' ).find( 'gr' ).remove();
 	$.each( order, function( i, name ) {
 		if ( GUI.display.count ) $( '#home-'+ name ).find( 'i' ).after( GUI.libraryhome[ name ] ? '<gr>'+ numFormat( GUI.libraryhome[ name ] ) +'</gr>' : '' );
 		var $block = $( '#home-'+ name ).parent();
