@@ -75,7 +75,9 @@ append '$'
 file=/srv/http/app/templates/settings.php
 echo $file
 
-commentH -n -1 'for="localSStime">' -n -1 '<h2>Network mounts'
+commentH -n -1 'for="localSStime">' -n +5 'for="localSStime">'
+
+commentH -n -1 'for="remoteSStime">' -n +5 'for="remoteSStime">'
 
 string=$( cat <<'EOF'
 if ( $template->local_browser ) {
