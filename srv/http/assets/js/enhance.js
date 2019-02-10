@@ -161,9 +161,9 @@ var chklibrary = {
 	, contexticon    : '<i class="fa fa-bars"></i>Context icon'
 	, count          : '<gr>text</gr> Count_'
 	, label          : '<gr>text</gr> Label'
-	, coverfile      : 'Cover art in album/folder'
-	, plclear        : 'Confirmation - Clear Playlist'
-	, playbackswitch : '<i class="fa fa-play-plus"></i>Add <gr>►</gr> Play > Open Playback'
+	, coverfile      : 'Cover art <gr>- album/folder</gr>'
+	, plclear        : 'Confirmation <gr>- clear Playlist</gr>'
+	, playbackswitch : '<i class="fa fa-play-plus"></i>Add <gr>►</gr> Play - Open Playback'
 	, tapaddplay     : 'Single tap song&ensp;<i class="fa fa-play-plus"></i>Add <gr>►</gr> Play'
 }
 $( '#displaylibrary' ).click( function() {

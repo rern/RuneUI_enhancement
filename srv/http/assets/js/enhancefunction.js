@@ -706,7 +706,7 @@ function renderLibrary() {
 		$.each( bookmarks, function( i, bookmark ) {
 			var coverarthtml = bookmark.coverart ? '<img class="bkcoverart" src="'+ bookmark.coverart +'">' : '<i class="fa fa-bookmark"></i>';
 			var namehtml = '<div class="divbklabel"><span class="bklabel'+ ( bookmark.coverart ? ' hide' : '' ) +'">'+ bookmark.name.replace( /\\/g, '' ) +'</span></div>';
-			content += '<div class="col-md-3">'
+			content += '<div class="divhomeblock">'
 					  +'	<div class="home-block home-bookmark"><a class="lipath">'+ bookmark.path +'</a>'+ coverarthtml + namehtml +'</div>'
 					  +'</div>';
 		} );
