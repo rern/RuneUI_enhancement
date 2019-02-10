@@ -78,16 +78,6 @@ echo $file
 commentH -n -1 'for="localSStime">' -n +5 'for="localSStime">'
 
 commentH -n -1 'for="remoteSStime">' -n +5 'for="remoteSStime">'
-
-string=$( cat <<'EOF'
-if ( $template->local_browser ) {
-    exec( '/usr/bin/sudo /usr/bin/xinit &> /dev/null &' );
-} else {
-    exec( '/usr/bin/sudo /usr/bin/killall Xorg' );
-}
-EOF
-)
-append '$'
 #----------------------------------------------------------------------------------
 file=/srv/http/app/templates/sources.php
 echo $file
