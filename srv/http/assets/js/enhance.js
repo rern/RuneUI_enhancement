@@ -163,7 +163,7 @@ var chklibrary = {
 	, label          : '<gr>text</gr> Label'
 	, coverfile      : 'Cover art in album/folder'
 	, plclear        : 'Confirmation - Clear Playlist'
-	, playbackswitch : 'Add/Replace <gr>►</gr> Play > Open Playback'
+	, playbackswitch : '<i class="fa fa-play-plus"></i>Add <gr>►</gr> Play > Open Playback'
 	, tapaddplay     : 'Single tap song&ensp;<i class="fa fa-play-plus"></i>Add <gr>►</gr> Play'
 }
 $( '#displaylibrary' ).click( function() {
