@@ -55,12 +55,14 @@ var blinkdot = '<a class="dot">·</a>&ensp;<a class="dot dot2">·</a>&ensp;<a cl
 // get display, status, library
 $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 	GUI.display = data;
+	// prevent flash by scrollLongText()
+	GUI.init = 1;
+	$( '#artist, #song, #album' ).css( 'visibility', 'hidden' );
 	$.event.special.swipe.horizontalDistanceThreshold = 80; // pixel to swipe
 	setSwipe();
 	cssContextIcon();
 	$.post( 'enhancestatus.php', function( status ) {
 		GUI.status = status;
-		$( '#artist, #song, #album' ).css( 'visibility', 'hidden' ); // prevent flash by scrollLongText()
 		renderPlayback();
 		displayPlayback();
 		setButton();

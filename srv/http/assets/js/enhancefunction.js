@@ -77,10 +77,7 @@ function switchPage( page ) {
 	GUI.library = GUI.playback = GUI.playlist = 0;
 	GUI[ page ] = 1;
 	GUI.currentpage = page;
-	if ( GUI.playback ) {
-		$( '#artist, #song, #album' ).css( 'visibility', 'hidden' ); // prevent flash by scrollLongText()
-		return
-	}
+	if ( GUI.playback ) return
 	
 	// restore page scroll
 	if ( GUI.library ) {
@@ -209,6 +206,7 @@ function second2HMS( second ) {
 function scrollLongText() {
 	var $el = $( '#artist, #song, #album' );
 	$el.removeClass( 'scrollleft' );
+	if ( !GUI.init ) $el.removeAttr( 'style' );
 	$( '#scrollleft' ).remove();
 	var wW = window.innerWidth;
 	var tWmax = 0;
@@ -221,7 +219,6 @@ function scrollLongText() {
 				$this.addClass( 'scrollleft' );
 			}
 		} );
-		$el.removeAttr( 'style' );
 		if ( !$( '.scrollleft' ).length ) return
 		
 		if ( GUI.scale !== 1 ) {
@@ -235,9 +232,11 @@ function scrollLongText() {
 			, animation           : cssanimation
 			, width               : tWmax +'px'
 		} );
-	}, 50 );
+		$el.css( 'visibility', 'visible' ); // for initial hidden
+	}, GUI.init ? 50 : 0 ); // delay on initial load only
 }
 function removeSplash() {
+	GUI.init = 0;
 	$( '#splash' ).remove();
 	$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
 	$( '#page-playback' ).removeClass( 'hide' );
