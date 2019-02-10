@@ -656,6 +656,8 @@ function bookmarkScroll() {
 	$( '.bklabel' )
 		.removeClass( 'bkscrollleft' )
 		.removeAttr( 'style' );
+	var trx0 = 'transform : translateX( '+ $( '.home-block' ).width() +'px );';
+	var trx100 = 'transform : translateX( calc( -100% + 10px ) );';
 	$( '.bklabel:not(.hide)' ).each( function() {
 		var $this = $( this );
 		var tW = $this.width();
@@ -671,8 +673,6 @@ function bookmarkScroll() {
 				} );
 		}
 	} );
-	var trx0 = 'transform : translateX( '+ $( '.home-block' ).width() +'px );';
-	var trx100 = 'transform : translateX( calc( -100% + 10px ) );';
 	if ( $( '.bkscrollleft' ).length ) cssKeyframes( 'bkscrollleft', trx0, trx100 );
 }
 function renderLibrary() {
