@@ -161,10 +161,10 @@ var chklibrary = {
 	, contexticon    : '<i class="fa fa-bars"></i>Context icon'
 	, count          : '<gr>text</gr> Count_'
 	, label          : '<gr>text</gr> Label'
-	, coverfile      : 'Cover art <gr>- album/folder</gr>'
-	, plclear        : 'Confirmation <gr>- clear Playlist</gr>'
-	, playbackswitch : '<i class="fa fa-play-plus"></i>Add <gr>►</gr> Play - Open Playback'
-	, tapaddplay     : 'Single tap song&ensp;<i class="fa fa-play-plus"></i>Add <gr>►</gr> Play'
+	, coverfile      : 'Cover art <gr>in album/folder</gr>'
+	, plclear        : 'Confirmation <gr>on clear Playlist</gr>'
+	, playbackswitch : 'Open Playback <gr>on</gr> <i class="fa fa-play-plus"></i>Add <gr>►</gr> Play'
+	, tapaddplay     : 'Single tap song <gr>=</gr> <i class="fa fa-play-plus"></i>Add <gr>►</gr> Play'
 }
 $( '#displaylibrary' ).click( function() {
 	var coverfile = GUI.display.coverfile;
