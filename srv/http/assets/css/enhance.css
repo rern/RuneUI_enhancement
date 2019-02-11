@@ -1122,19 +1122,15 @@ wh, gr { font-weight: 300; }
 	outline: none;
 	color: #7795b4
 }
-#home-block-edit,
-#home-block-remove {
+.home-block-edit,
+.home-block-remove {
 	position: absolute;
-	display: inline-block;
 	top: 0;
 	right: 0;
-	width: 40px;
-	height: 40px;
-	font-size: 24px;
-	text-align: center;
-	color: #e0e7ee;
+	font-size: 24px !important;
+	color: #e0e7ee !important;
 }
-#home-block-edit {
+.home-block-edit {
 	top: 35px;
 }
 /* ---------------------- breadcrumb and index ---------------------- */
