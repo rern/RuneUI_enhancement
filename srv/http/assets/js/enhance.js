@@ -791,14 +791,15 @@ $( '#db-back' ).click( function() {
 } );
 $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	var $this = $( this );
-	if ( $( e.target ).is( '.artist, .fa-artist, .fa-albumartist, .composer, .fa-composer' ) ) {
-		var name = ( $( e.target ).is( '.composer, .fa-composer' ) ) ? $this.find( '.composer' ).text() : $this.find( '.artist' ).text();
+	var $target = $( e.target )
+	if ( $this.index() === 0 && $target.is( '.artist, .fa-artist, .fa-albumartist, .composer, .fa-composer' ) ) {
+		var name = ( $target.is( '.composer, .fa-composer' ) ) ? $this.find( '.composer' ).text() : $this.find( '.artist' ).text();
 		getBio( name );
 		return
-	} else if ( $( e.target ).hasClass( 'lialbum' ) ) {
+	} else if ( $target.hasClass( 'lialbum' ) ) {
 		window.open( 'https://www.last.fm/music/'+ $this.find( '.artist' ).text() +'/'+ $this.find( '.lialbum' ).text(), '_blank' );
 		return
-	} else if ( $( e.target ).hasClass( 'db-icon' ) ) {
+	} else if ( $target.hasClass( 'db-icon' ) ) {
 		$this.find( '.db-action' ).click();
 		return
 	}

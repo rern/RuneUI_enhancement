@@ -45,15 +45,12 @@ $( '.contextmenu a' ).click( function() {
 		}
 	} else {
 		var browsemode = GUI.dbbackdata.length ? GUI.dbbackdata[ 0 ].browsemode : '';
-		if ( [ 'album', 'albumartist' ].indexOf( browsemode ) !== -1 ) {
-			var mpcCmd = 'mpc findadd'+ ( GUI.list.artist ? ' artist "'+ GUI.list.artist : '' )  +'" album "'+ name +'"';
-		} else if ( [ 'artist', 'composer', 'genre' ].indexOf( browsemode ) !== -1 ) {
-			var mpcCmd = 'mpc add '+ GUI.filelist;
+		if ( [ 'album', 'artist', 'albumartist', 'composer', 'genre' ].indexOf( browsemode ) !== -1 ) {
+			var mpcCmd = 'mpc findadd '+ browsemode +' "'+ name +'"';
 		} else {
 			var mpcCmd = 'mpc load "'+ name +'"';
-			if ( [ 'wrrename', 'wrdelete', 'plrename', 'pldelete' ].indexOf( mode ) === -1 ) cmd = cmd.replace( /pl|wr/, '' );
 		}
-		cmd = cmd.replace( /album|artist|composer|genre/, '' );
+		cmd = cmd.replace( /album|artist|composer|genre|pl|wr/, '' );
 	}
 	var addplaypos = GUI.status.playlistlength + 1;
 	var contextCommand = {
@@ -70,6 +67,7 @@ $( '.contextmenu a' ).click( function() {
 		, update        : 'mpc update "'+ GUI.list.path +'"'
 	}
 	var command = contextCommand[ cmd ];
+	console.log(command)
 	if ( typeof command !== 'undefined' ) {
 		if ( typeof command === 'function' ) {
 			cmd !== 'radiosave' ? command() : webRadioNew( GUI.list.name, GUI.list.path );
