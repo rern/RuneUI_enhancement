@@ -304,7 +304,6 @@ $menu.= '</div>';
 		<i id="db-back" class="fa fa-arrow-left"></i>
 	</div>
 	<div id="home-blocks" class="row">
-		<div id="divbookmarks"></div>
 		<div id="divhomeblocks">
 			<?=$blockhtml?>
 		</div>

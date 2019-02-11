@@ -398,22 +398,18 @@ function getLibrary() {
 	$count = explode( ' ', $count );
 	$status = array(
 		  'bookmark'     => $bookmarks
-		, 'spotify'      => $count[ 0 ]
-		, 'activeplayer' => $count[ 1 ]
+		, 'artist'       => $count[ 0 ]
+		, 'album'        => $count[ 1 ]
+		, 'song'         => $count[ 2 ]
+		, 'albumartist'  => $count[ 3 ]
+		, 'composer'     => $count[ 4 ]
+		, 'genre'        => $count[ 5 ]
+		, 'nas'          => $count[ 6 ]
+		, 'usb'          => $count[ 7 ]
+		, 'webradio'     => $count[ 8 ]
+		, 'spotify'      => $count[ 9 ]
+		, 'activeplayer' => $count[ 10 ]
 	);
-	if ( count( $count ) > 2 ) {
-		$status += array( 
-			  'artist'       => $count[ 2 ]
-			, 'album'        => $count[ 3 ]
-			, 'song'         => $count[ 4 ]
-			, 'nas'          => $count[ 5 ]
-			, 'usb'          => $count[ 6 ]
-			, 'webradio'     => $count[ 7 ]
-			, 'albumartist'  => $count[ 8 ]
-			, 'composer'     => $count[ 9 ]
-			, 'genre'        => $count[ 10 ]
-		);
-	}
 	return $status;
 }
 function lsPlaylists() {
