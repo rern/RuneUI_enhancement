@@ -1105,7 +1105,7 @@ $( '#pl-entries' ).on ( 'swipe', 'li', function( e ) {
 } ).on( 'tap', 'li', function( e ) {
 	if ( GUI.swipe ) return
 	
-	$this = $( this );
+	var $this = $( this );
 	if ( $( e.target ).hasClass( 'pl-icon' ) ) return
 
 /*	if ( $( e.target ).hasClass( 'elapsed' ) || $( e.target ).hasClass( 'time' ) ) {
@@ -1133,8 +1133,8 @@ $( '#pl-entries' ).on ( 'swipe', 'li', function( e ) {
 	}
 } );
 $( '#pl-entries' ).on( 'click', '.pl-icon', function( e ) {
-	$this = $( this );
-	$thisli = $this.parent();
+	var $this = $( this );
+	var $thisli = $this.parent();
 	GUI.list.li = $thisli;
 	var menutop = ( $thisli.position().top + 49 ) +'px';
 	var $contextmenu = $( '#context-menu-plaction' );
@@ -1321,7 +1321,7 @@ window.addEventListener( 'orientationchange', function() {
 			$( 'html, body' ).scrollTop( scrollpos );
 		}, 300 );
 	} else if ( GUI.library && !$( '#home-blocks' ).hasClass( 'hide' ) ) {
-		bookmarkScroll();
+		setTimeout( bookmarkScroll, 100 );
 	} else {
 		if ( GUI.dblist || GUI.pleditor ) {
 			displayIndexBar();

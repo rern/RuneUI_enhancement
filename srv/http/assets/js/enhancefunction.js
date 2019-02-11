@@ -225,16 +225,9 @@ function scrollLongText() {
 		}
 		
 		if ( GUI.scale !== 1 ) {
-			var trx0 = 'transform : translateX( '+ Math.round( wW / GUI.scale ) +'px );'
-			cssKeyframes( 'scrollleft', trx0, 'transform : translateX( -100% );' );
+			cssKeyframes( 'scrollleft', 'transform : translateX( '+ Math.round( wW / GUI.scale ) +'px );', 'transform : translateX( -100% );' );
 		}
-		var cssanimation = Math.round( 10 * tWmax / wW ) +'s infinite scrollleft linear';
-		$( '.scrollleft' ).css( {
-			  '-moz-animation'    : cssanimation
-			, '-webkit-animation' : cssanimation
-			, animation           : cssanimation
-			, width               : tWmax +'px'
-		} );
+		$( '.scrollleft' ).css( 'width', tWmax +'px' );
 		$el.css( 'visibility', 'visible' ); // for initial hidden
 	}, GUI.init ? 50 : 0 ); // delay on initial load only
 }
@@ -653,28 +646,16 @@ function displayCheckbox( checkboxes ) {
 	return html;
 }
 function bookmarkScroll() {
-	$( '#bkscrollleft' ).remove();
-	$( '.bklabel' )
-		.removeClass( 'bkscrollleft' )
-		.removeAttr( 'style' );
-	var trx0 = 'transform : translateX( '+ $( '.home-block' ).width() +'px );';
-	var trx100 = 'transform : translateX( calc( -100% + 10px ) );';
-	$( '.bklabel:not(.hide)' ).each( function() {
+	var bW = $( '.home-block:eq( 0 )' ).width();
+	$( '.bklabel' ).each( function() {
 		var $this = $( this );
 		var tW = $this.width();
-		var pW = $this.parent().width();
-		var cssanimation = Math.round( 5 * tW / pW ) +'s infinite bkscrollleft linear';
-		if ( tW > pW ) {
-			$this
-				.addClass( 'bkscrollleft' )
-				.css( {
-					  '-moz-animation'    : cssanimation
-					, '-webkit-animation' : cssanimation
-					, animation           : cssanimation
-				} );
-		}
+		$this.toggleClass( 'bkscrollleft', tW > bW );
 	} );
-	if ( $( '.bkscrollleft' ).length ) cssKeyframes( 'bkscrollleft', trx0, trx100 );
+	$( '#bkscrollleft' ).remove();
+	if ( $( '.bkscrollleft' ).length ) {
+		cssKeyframes( 'bkscrollleft', 'transform : translateX( '+ bW +'px );', 'transform : translateX( calc( -100% + 10px ) );' );
+	}
 }
 function renderLibrary() {
 	if ( GUI.bookmarkedit ) return
