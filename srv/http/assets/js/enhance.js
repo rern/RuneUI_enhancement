@@ -1434,8 +1434,6 @@ pushstreams.idle.onmessage = function( changed ) {
 			if ( GUI.playback ) setButtonToggle();
 		}, 'json' );
 	} else if ( changed === 'update' ) {
-		// count for not manual update
-		$.post( 'enhance.php', { bash: '/srv/http/enhancecount.sh count &' } );
 		if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) {
 			$.post( 'enhance.php', { library: 1 } );
 			renderLibrary();
