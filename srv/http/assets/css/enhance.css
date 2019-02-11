@@ -485,6 +485,15 @@ wh, gr { font-weight: 300; }
 	overflow: hidden;
 }
 .scrollleft {
+	-moz-animation      : 10s infinite scrollleft linear;
+	-webkit-animation   : 10s infinite scrollleft linear;
+	animation           : 10s infinite scrollleft linear;
+	backface-visibility : hidden; /* for less flickering */
+}
+.bkscrollleft {
+	-moz-animation      : 5s infinite bkscrollleft linear;
+	-webkit-animation   : 5s infinite bkscrollleft linear;
+	animation           : 5s infinite bkscrollleft linear;
 	backface-visibility : hidden; /* for less flickering */
 }
 @-moz-keyframes scrollleft {
