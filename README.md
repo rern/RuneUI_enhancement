@@ -80,7 +80,7 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 ![library](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/xtreme/library.gif)
 
 ### Library:
-- Drag to rearrange home blocks except bookmarks
+- Drag to rearrange home blocks
 - Show counts
 - Show icon and breadcrumb heading while browsing
 - Show list in playlist files (\*.cue, \*.pls, \*.m3u)
