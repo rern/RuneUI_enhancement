@@ -57,12 +57,13 @@ $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 	GUI.display = data;
 	// prevent flash by scrollLongText()
 	GUI.init = 1;
-	$( '#artist, #song, #album' ).css( 'visibility', 'hidden' );
 	$.event.special.swipe.horizontalDistanceThreshold = 80; // pixel to swipe
 	setSwipe();
 	cssContextIcon();
 	$.post( 'enhancestatus.php', function( status ) {
+		console.log(status.playlistlength)
 		GUI.status = status;
+		if ( status.playlistlength !== 0 ) $( '#artist, #song, #album' ).css( 'visibility', 'hidden' );
 		renderPlayback();
 		displayPlayback();
 		setButton();
