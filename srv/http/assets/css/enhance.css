@@ -141,9 +141,9 @@ label {
 .ui-pnotify-icon {
 	font-size: 1.3em;
 }
-.ui-pnotify .alert h4 {
-	font-size: 16px;
-	font-weight: 300;
+.ui-pnotify-icon,
+.ui-pnotify-title {
+	color: #34495e !important;
 	text-transform: uppercase;
 }
 
