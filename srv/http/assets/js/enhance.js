@@ -132,6 +132,8 @@ GUI.sortableli = new Sortable( document.getElementById( 'divhomeblocks' ), {
 	, onStart    : function( e ) {
 		$icon = $( e.item ).find( 'i' );
 		$icon.css( 'color', '#e0e7ee' );
+		$( '.home-block-edit, .home-block-remove' ).remove();
+		$( '.home-bookmark' ).find( '.fa-bookmark, .bklabel, img' ).css( 'opacity', '' );
 	  }
 	, onEnd      : function() {
 		$icon.css( 'color', '' );
@@ -316,8 +318,9 @@ $( '#page-playback' ).click( function( e ) {
 $( '#page-library' ).click( function( e ) {
 	if ( GUI.local ) return
 	
-	if ( e.target.id !== 'home-block-edit' && e.target.id !== 'home-block-remove' ) {
-		$( '#home-block-edit, #home-block-remove' ).remove();
+	var $target = $( e.target );
+	if ( !$target.is( '.home-block-edit' ) && !$target.is( '.home-block-remove' ) ) {
+		$( '.home-block-edit, .home-block-remove' ).remove();
 		$( '.home-bookmark' ).find( '.fa-bookmark, .bklabel, img' ).css( 'opacity', '' );
 	}
 } );
@@ -654,12 +657,13 @@ $( '#home-blocks' ).on( 'tap', '.home-block', function() {
 		} );
 	}
 } ).on( 'tap', '.home-bookmark', function( e ) {
-	$this = $( this );
+	var $this = $( this );
+	var $target = $( e.target );
 	var path = $this.find( '.lipath' ).text();
 	var name = $this.find( '.bklabel' ).text();
-	if ( e.target.id === 'home-block-edit' ) {
+	if ( $target.is( '.home-block-edit' ) ) {
 		bookmarkRename( name, path, $this );
-	} else if ( e.target.id === 'home-block-remove' ) {
+	} else if ( $target.is( '.home-block-remove' ) ) {
 		bookmarkDelete( name, $this );
 	} else {
 		GUI.dblist = 1;
@@ -674,11 +678,8 @@ $( '#home-blocks' ).on( 'tap', '.home-block', function() {
 	setTimeout( function() { GUI.local = 0 }, 1000 );
 	
 	$( '.home-bookmark' )
-		.append( '<i id="home-block-edit" class="fa fa-edit-circle"></i><i id="home-block-remove" class="fa fa-minus-circle"></i>' )
+		.append( '<i class="home-block-edit fa fa-edit-circle"></i><i class="home-block-remove fa fa-minus-circle"></i>' )
 		.find( '.fa-bookmark, .bklabel, img' ).css( 'opacity', 0.2 );
-} ).on( 'vmousemove', '.home-bookmark', function() {
-	$( '#home-block-edit, #home-block-remove' ).remove();
-	$( '.home-bookmark' ).find( '.fa-bookmark, .bklabel, img' ).css( 'opacity', '' );
 } );
 
 $( '#db-home' ).click( function() {
