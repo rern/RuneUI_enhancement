@@ -187,11 +187,11 @@ redis-cli set mpddb "$albumartist $composer $genre" &> /dev/null
 chown -R http:http /mnt/MPD/Webradio
 
 echo -e "$bar Disable ACC/ALAC support ..."
-echo 'Re-enable in MPD > FFmpeg setting'
+echo 'Re-enable in MPD > FFmpeg option'
 redis-cli hset mpdconf ffmpeg no &> /dev/null
 
 echo -e "$bar Disable USB drive auto scan database ..."
-echo 'Re-enable in Sources > Library auto rebuild'
+echo 'Re-enable in Sources > Library auto rebuild switch'
 redis-cli set usb_db_autorebuild 0 &> /dev/null
 
 # disable default shutdown
