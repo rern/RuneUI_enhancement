@@ -448,6 +448,7 @@ wh, gr { font-weight: 300; }
 #song,
 #artist,
 #album {
+	visibility: hidden; /* fix - flashed by scrollLongText() */
 	overflow: hidden;
 	position: relative;
 }
