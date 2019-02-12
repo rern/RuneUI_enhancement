@@ -62,7 +62,6 @@ $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 	cssContextIcon();
 	$.post( 'enhancestatus.php', function( status ) {
 		GUI.status = status;
-		if ( status.playlistlength !== 0 ) $( '#artist, #song, #album' ).css( 'visibility', 'hidden' );
 		renderPlayback();
 		displayPlayback();
 		setButton();
@@ -285,8 +284,8 @@ $( '#tab-library' ).click( function() {
 	}
 } );
 $( '#tab-playback' ).click( function() {
-	switchPage( 'playback' );
 	getPlaybackStatus();
+	switchPage( 'playback' );
 	if ( GUI.status.state === 'play' ) $( '#elapsed' ).empty(); // hide flashing
 } );
 $( '#tab-playlist' ).click( function() {

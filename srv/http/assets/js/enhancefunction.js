@@ -220,7 +220,7 @@ function scrollLongText() {
 			}
 		} );
 		if ( !$( '.scrollleft' ).length ) {
-			$el.css( 'visibility', 'visible' ); // for initial hidden
+			$el.css( 'visibility', 'visible' ); // from initial hidden
 			return
 		}
 		
@@ -228,10 +228,12 @@ function scrollLongText() {
 			cssKeyframes( 'scrollleft', 'transform : translateX( '+ Math.round( wW / GUI.scale ) +'px );', 'transform : translateX( -100% );' );
 		}
 		$( '.scrollleft' ).css( 'width', tWmax +'px' );
-		$el.css( 'visibility', 'visible' ); // for initial hidden
-	}, GUI.init ? 50 : 0 ); // delay on initial load only
+		$el.css( 'visibility', 'visible' ); // from initial hidden
+	}, 0 );
 }
 function removeSplash() {
+	if ( !GUI.init ) return
+	
 	GUI.init = 0;
 	$( '#splash' ).remove();
 	$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
@@ -249,7 +251,6 @@ function setPlaybackBlank() {
 	$( '#cover-art' )
 		.attr( 'src', coverrune )
 		.css( 'border-radius', 0 );
-	if ( $( '#splash' ).length ) $( '#cover-art' ).one( 'load', removeSplash );
 }
 function renderPlayback() {
 	if ( $( '#splash' ).length ) { // in case too long to get coverart
@@ -273,6 +274,7 @@ function renderPlayback() {
 	// empty queue
 	if ( !status.playlistlength ) {
 		setPlaybackBlank();
+		removeSplash();
 		return
 	}
 	
@@ -323,10 +325,9 @@ function renderPlayback() {
 			if ( radiosrc !== vustop ) $( '#cover-art' ).attr( 'src', vustop );
 			$( '#elapsed, #total, #timepos' ).empty();
 		}
-		$( '#cover-art' )
-			.css( 'border-radius', '18px' )
-			.one( 'load', removeSplash );
+		$( '#cover-art' ).css( 'border-radius', '18px' );
 		$( '#coverartoverlay' ).removeClass( 'hide' );
+		removeSplash();
 		return
 	}
 	
@@ -336,8 +337,8 @@ function renderPlayback() {
 		var coverart = status.coverart || coverrune;
 		$( '#cover-art' )
 			.attr( 'src', coverart )
-			.css( 'border-radius', 0 )
-			.one( 'load', removeSplash );
+			.css( 'border-radius', 0 );
+		removeSplash();
 	}
 	// time
 	time = status.Time;
