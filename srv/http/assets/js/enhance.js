@@ -61,7 +61,6 @@ $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 	setSwipe();
 	cssContextIcon();
 	$.post( 'enhancestatus.php', function( status ) {
-		console.log(status.playlistlength)
 		GUI.status = status;
 		if ( status.playlistlength !== 0 ) $( '#artist, #song, #album' ).css( 'visibility', 'hidden' );
 		renderPlayback();
