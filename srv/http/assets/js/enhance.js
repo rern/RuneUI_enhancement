@@ -27,6 +27,7 @@ var GUI = {
 	, plugin       : ''
 	, scale        : 1
 	, screenS      : ( window.innerHeight < 590 || window.innerWidth < 500 )
+	, scrollspeed  : 80 // pixel/s
 	, status       : {}
 };
 PNotify.prototype.options.delay = 3000;

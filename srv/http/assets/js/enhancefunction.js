@@ -205,7 +205,14 @@ function second2HMS( second ) {
 }
 function scrollLongText() {
 	var $el = $( '#artist, #song, #album' );
-	$el.removeClass( 'scrollleft' );
+	$el
+		.removeClass( 'scrollleft' )
+		.css( {
+			  width                        : ''
+			, '-moz-animation-duration'    : ''
+			, '-webkit-animation-duration' : ''
+			, 'animation-duration'         : ''
+		} )
 	$( '#scrollleft' ).remove();
 	var wW = window.innerWidth;
 	var tWmax = 0;
@@ -221,10 +228,17 @@ function scrollLongText() {
 		$el.css( 'visibility', 'visible' ); // from initial hidden
 		if ( !$( '.scrollleft' ).length ) return
 		
+		// varied with only when scaled
 		if ( GUI.scale !== 1 ) {
 			cssKeyframes( 'scrollleft', 'transform : translateX( '+ Math.round( wW / GUI.scale ) +'px );', 'transform : translateX( -100% );' );
 		}
-		$( '.scrollleft' ).css( 'width', tWmax +'px' );
+		var sec = ( wW + tWmax ) / GUI.scrollspeed +'s'; // calculate to same speed
+		$( '.scrollleft' ).css( {
+			  width                        : tWmax +'px'
+			, '-moz-animation-duration'    : sec
+			, '-webkit-animation-duration' : sec
+			, 'animation-duration'         : sec
+		} )
 	}, 0 );
 }
 function removeSplash() {
@@ -650,15 +664,24 @@ function displayCheckbox( checkboxes ) {
 }
 function bookmarkScroll() {
 	var bW = $( '.home-block:eq( 0 )' ).width();
+	var tW;
 	$( '.bklabel' ).each( function() {
 		var $this = $( this );
-		var tW = $this.width();
+		tW = $this.width();
 		$this.toggleClass( 'bkscrollleft', tW > bW );
 	} );
 	$( '#bkscrollleft' ).remove();
-	if ( $( '.bkscrollleft' ).length ) {
-		cssKeyframes( 'bkscrollleft', 'transform : translateX( '+ bW +'px );', 'transform : translateX( calc( -100% + 10px ) );' );
-	}
+	if ( !$( '.bkscrollleft' ).length ) return
+	
+	// varied width
+	cssKeyframes( 'bkscrollleft', 'transform : translateX( '+ bW +'px );', 'transform : translateX( calc( -100% + 10px ) );' );
+	var sec = ( bW + tW ) / GUI.scrollspeed +'s'; // calculate to same speed
+	$( '.scrollleft' ).css( {
+		  width                        : tW +'px'
+		, '-moz-animation-duration'    : sec
+		, '-webkit-animation-duration' : sec
+		, 'animation-duration'         : sec
+	} )
 }
 function renderLibrary() {
 	if ( GUI.bookmarkedit ) return
