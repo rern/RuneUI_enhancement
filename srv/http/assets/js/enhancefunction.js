@@ -232,12 +232,12 @@ function scrollLongText() {
 		if ( GUI.scale !== 1 ) {
 			cssKeyframes( 'scrollleft', 'transform : translateX( '+ Math.round( wW / GUI.scale ) +'px );', 'transform : translateX( -100% );' );
 		}
-		var sec = ( wW + tWmax ) / GUI.scrollspeed +'s'; // calculate to same speed
+		var cssanimate = ( wW + tWmax ) / GUI.scrollspeed +'s infinite scrollleft linear'; // calculate to same speed
 		$( '.scrollleft' ).css( {
-			  width                        : tWmax +'px'
-			, '-moz-animation-duration'    : sec
-			, '-webkit-animation-duration' : sec
-			, 'animation-duration'         : sec
+			  width               : tWmax +'px'
+			, animation           : cssanimate
+			, '-moz-animation'    : cssanimate
+			, '-webkit-animation' : cssanimate
 		} )
 	}, 0 );
 }
@@ -663,7 +663,7 @@ function displayCheckbox( checkboxes ) {
 	return html;
 }
 function bookmarkScroll() {
-	var bW = $( '.home-block:eq( 0 )' ).width();
+	var bW = $( '.home-block:eq( 0 )' ).width() - 10;
 	var tW;
 	$( '.bklabel' ).each( function() {
 		var $this = $( this );
@@ -675,12 +675,12 @@ function bookmarkScroll() {
 	
 	// varied width
 	cssKeyframes( 'bkscrollleft', 'transform : translateX( '+ bW +'px );', 'transform : translateX( calc( -100% + 10px ) );' );
-	var sec = ( bW + tW ) / GUI.scrollspeed +'s'; // calculate to same speed
+	var cssanimate = ( bW + tW ) / GUI.scrollspeed +'s infinite bkscrollleft linear'; // calculate to same speed
 	$( '.scrollleft' ).css( {
-		  width                        : tW +'px'
-		, '-moz-animation-duration'    : sec
-		, '-webkit-animation-duration' : sec
-		, 'animation-duration'         : sec
+		  width               : tW +'px'
+		, animation           : cssanimate
+		, '-moz-animation'    : cssanimate
+		, '-webkit-animation' : cssanimate
 	} )
 }
 function renderLibrary() {
