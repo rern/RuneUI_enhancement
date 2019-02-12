@@ -233,7 +233,7 @@ function removeSplash() {
 	GUI.init = 0;
 	$( '#splash' ).remove();
 	$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
-//	$( '#artist, #song, #album' ).css( 'visibility', 'visible' );
+	$( '#artist, #song, #album' ).css( 'visibility', 'visible' );
 	$( '#page-playback' ).removeClass( 'hide' );
 }
 function setPlaybackBlank() {
@@ -248,7 +248,6 @@ function setPlaybackBlank() {
 	$( '#cover-art' )
 		.attr( 'src', coverrune )
 		.css( 'border-radius', 0 );
-	if ( GUI.init ) $el.removeAttr( 'style' );
 }
 function renderPlayback() {
 	if ( $( '#splash' ).length ) { // in case too long to get coverart
