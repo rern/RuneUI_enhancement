@@ -247,7 +247,7 @@ function setPlaybackBlank() {
 	if ( GUI.display.time ) $( '#time' ).roundSlider( 'setValue', 0 );
 	$( '#coverartoverlay' ).addClass( 'hide' );
 	$( '#cover-art' )
-		.attr( 'src', $( '#cover' ).val() )
+		.attr( 'src', coverrune )
 		.css( 'border-radius', 0 );
 	if ( $( '#splash' ).length ) $( '#cover-art' ).one( 'load', removeSplash );
 }
@@ -332,8 +332,8 @@ function renderPlayback() {
 	
 	$( '#cover-art' ).css( 'border-radius', '' );
 	$( '#coverartoverlay' ).addClass( 'hide' );
-	if ( status.Album !== previousalbum || !status.Album ) {
-		var coverart = status.coverart || $( '#cover' ).val();
+	if ( status.Title !== previoussong || status.Album !== previousalbum || !status.Album ) {
+		var coverart = status.coverart || coverrune;
 		$( '#cover-art' )
 			.attr( 'src', coverart )
 			.css( 'border-radius', 0 )
