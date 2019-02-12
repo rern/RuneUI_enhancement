@@ -246,7 +246,6 @@ $menu.= '</div>';
 		<div id="coverart" class="playback-block">
 			<div id="divcover">
 			<img id="cover-art">
-			<input id="cover" type="hidden" value="<?=$this->asset('/img/cover.svg')?>">
 			<div id="coverartoverlay" class="hide"></div>
 			<img id="controls-cover" class="controls hide" src="<?=$this->asset('/img/controls.svg')?>">
 			<div id="coverTL" class="covermap r1 c1 ws hs"></div>
