@@ -44,11 +44,9 @@ $status[ 'ext' ] = ( substr($status[ 'file' ], 0, 4 ) !== 'http' ) ? $ext : 'rad
 
 if ( $status[ 'ext' ] !== 'radio' ) {
 	// no id3tag
-	if ( empty( $status[ 'Title' ] ) ) {
-		$status[ 'Artist' ] = basename( $dir );
-		$status[ 'Title' ] = $pathinfo[ 'filename' ];
-		$status[ 'Album' ] = '';
-	}
+	if ( empty( $status[ 'Artist' ] ) ) $status[ 'Artist' ] = basename( $dir );
+	if ( empty( $status[ 'Title' ] ) ) $status[ 'Title' ] = $pathinfo[ 'filename' ];
+	if ( empty( $status[ 'Album' ] ) ) $status[ 'Album' ] = '';
 } else {
 	// before 1st play: no 'Name:' - use 'Title:' value instead
 	$status[ 'Artist' ] = isset( $status[ 'Name' ] ) ? $status[ 'Name' ] : $status[ 'Title' ];
