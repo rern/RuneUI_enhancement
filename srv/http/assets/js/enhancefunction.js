@@ -664,24 +664,29 @@ function displayCheckbox( checkboxes ) {
 }
 function bookmarkScroll() {
 	var bW = $( '.home-block:eq( 0 )' ).width() - 10;
-	var tW;
 	$( '.bklabel' ).each( function() {
 		var $this = $( this );
-		tW = $this.width();
-		$this.toggleClass( 'bkscrollleft', tW > bW );
+		var tW = $this.width();
+		if ( tW > bW ) {
+			var cssanimate = ( bW + tW ) / GUI.scrollspeed +'s infinite bkscrollleft linear'; // calculate to 	same speed
+			$this
+				.addClass( 'bkscrollleft' )
+				.css( {
+					  width               : tW +'px'
+					, animation           : cssanimate
+					, '-moz-animation'    : cssanimate
+					, '-webkit-animation' : cssanimate
+				} );
+		} else {
+			$this
+				.removeClass( 'bkscrollleft' )
+				.removeAttr( 'style' );
+		}
 	} );
 	$( '#bkscrollleft' ).remove();
-	if ( !$( '.bkscrollleft' ).length ) return
-	
-	// varied width
-	cssKeyframes( 'bkscrollleft', 'transform : translateX( '+ bW +'px );', 'transform : translateX( calc( -100% + 10px ) );' );
-	var cssanimate = ( bW + tW ) / GUI.scrollspeed +'s infinite bkscrollleft linear'; // calculate to same speed
-	$( '.scrollleft' ).css( {
-		  width               : tW +'px'
-		, animation           : cssanimate
-		, '-moz-animation'    : cssanimate
-		, '-webkit-animation' : cssanimate
-	} )
+	if ( $( '.bkscrollleft' ).length ) {
+		cssKeyframes( 'bkscrollleft', 'transform : translateX( '+ bW +'px );', 'transform : translateX( calc( -100% + 10px ) );' );
+	}
 }
 function renderLibrary() {
 	if ( GUI.bookmarkedit ) return
