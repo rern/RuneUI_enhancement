@@ -43,12 +43,12 @@ $ext = strtoupper( $pathinfo[ 'extension' ] );
 $status[ 'ext' ] = ( substr($status[ 'file' ], 0, 4 ) !== 'http' ) ? $ext : 'radio';
 
 if ( $status[ 'ext' ] !== 'radio' ) {
-	// no id3tag
+	// missing id3tags
 	if ( empty( $status[ 'Artist' ] ) ) $status[ 'Artist' ] = basename( $dir );
 	if ( empty( $status[ 'Title' ] ) ) $status[ 'Title' ] = $pathinfo[ 'filename' ];
 	if ( empty( $status[ 'Album' ] ) ) $status[ 'Album' ] = '';
 } else {
-	// before 1st play: no 'Name:' - use 'Title:' value instead
+	// before webradios play: no 'Name:' - use 'Title:' value instead
 	$status[ 'Artist' ] = isset( $status[ 'Name' ] ) ? $status[ 'Name' ] : $status[ 'Title' ];
 	$status[ 'Title' ] = ( $status[ 'state' ] === 'stop' ) ? '' : $status[ 'Title' ];
 	$status[ 'Album' ] = $status[ 'file' ];
