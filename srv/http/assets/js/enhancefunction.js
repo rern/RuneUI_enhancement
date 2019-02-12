@@ -206,7 +206,6 @@ function second2HMS( second ) {
 function scrollLongText() {
 	var $el = $( '#artist, #song, #album' );
 	$el.removeClass( 'scrollleft' );
-	if ( !GUI.init ) $el.removeAttr( 'style' );
 	$( '#scrollleft' ).remove();
 	var wW = window.innerWidth;
 	var tWmax = 0;
@@ -219,16 +218,13 @@ function scrollLongText() {
 				$this.addClass( 'scrollleft' );
 			}
 		} );
-		if ( !$( '.scrollleft' ).length ) {
-			$el.css( 'visibility', 'visible' ); // from initial hidden
-			return
-		}
+		$el.css( 'visibility', 'visible' ); // from initial hidden
+		if ( !$( '.scrollleft' ).length ) return
 		
 		if ( GUI.scale !== 1 ) {
 			cssKeyframes( 'scrollleft', 'transform : translateX( '+ Math.round( wW / GUI.scale ) +'px );', 'transform : translateX( -100% );' );
 		}
 		$( '.scrollleft' ).css( 'width', tWmax +'px' );
-		$el.css( 'visibility', 'visible' ); // from initial hidden
 	}, 0 );
 }
 function removeSplash() {
@@ -237,7 +233,7 @@ function removeSplash() {
 	GUI.init = 0;
 	$( '#splash' ).remove();
 	$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
-	$( '#artist, #song, #album' ).css( 'visibility', 'visible' );
+//	$( '#artist, #song, #album' ).css( 'visibility', 'visible' );
 	$( '#page-playback' ).removeClass( 'hide' );
 }
 function setPlaybackBlank() {
@@ -252,6 +248,7 @@ function setPlaybackBlank() {
 	$( '#cover-art' )
 		.attr( 'src', coverrune )
 		.css( 'border-radius', 0 );
+	if ( GUI.init ) $el.removeAttr( 'style' );
 }
 function renderPlayback() {
 	if ( $( '#splash' ).length ) { // in case too long to get coverart
