@@ -793,12 +793,12 @@ $( '#db-back' ).click( function() {
 $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	var $this = $( this );
 	var $target = $( e.target )
-	if ( $this.index() === 0 && $target.is( '.artist, .fa-artist, .fa-albumartist, .composer, .fa-composer' ) ) {
-		var name = ( $target.is( '.composer, .fa-composer' ) ) ? $this.find( '.composer' ).text() : $this.find( '.artist' ).text();
+	if ( $this.index() === 0 && $target.is( '.bioartist, .fa-artist, .fa-albumartist, .biocomposer, .fa-composer' ) ) {
+		var name = ( $target.is( '.biocomposer, .fa-composer' ) ) ? $this.find( '.biocomposer' ).text() : $this.find( '.bioartist' ).text();
 		getBio( name );
 		return
 	} else if ( $target.hasClass( 'lialbum' ) ) {
-		window.open( 'https://www.last.fm/music/'+ $this.find( '.artist' ).text() +'/'+ $this.find( '.lialbum' ).text(), '_blank' );
+		window.open( 'https://www.last.fm/music/'+ $this.find( '.bioartist' ).text() +'/'+ $this.find( '.lialbum' ).text(), '_blank' );
 		return
 	} else if ( $target.hasClass( 'db-icon' ) ) {
 		$this.find( '.db-action' ).click();
@@ -903,7 +903,8 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 	GUI.list.mode = $thisli.find( '.db-icon' ).prop( 'class' ).replace( /fa fa-| db-icon/g, '' );
 	GUI.list.path = $thisli.find( '.lipath' ).text() || '';
 	GUI.list.name = $thisli.find( '.liname' ).text() || '';
-	GUI.list.artist = $thisli.find( '.artist' ).text() || '';
+	GUI.list.bioartist = $thisli.find( '.bioartist' ).text() || '';
+	GUI.list.artist = $thisli.find( '.liartist' ).text() || '';
 	GUI.list.isfile = $thisli.hasClass( 'file' );              // file/dirble - in contextmenu
 	GUI.list.index = $thisli.find( '.liindex' ).text() || '';  // cue - in contextmenu
 	GUI.list.liindex = $( '#db-entries li' ).index( $thisli ); // for webradio delete - in contextmenu

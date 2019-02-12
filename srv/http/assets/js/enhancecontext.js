@@ -45,7 +45,8 @@ $( '.contextmenu a' ).click( function() {
 			var mpcCmd = GUI.list.isfile ? 'mpc add "'+ name +'"' : 'mpc ls "'+ name +'" | mpc add';
 		}
 	} else {
-		var artist = $( '#artistalbum span' ).text().replace( /"/g, '\\"' );
+		var artist = GUI.list.artist || $( '#artistalbum span' ).text();
+		artist = artist.replace( /"/g, '\\"' );
 		if ( [ 'album', 'artist', 'albumartist', 'composer', 'genre' ].indexOf( GUI.list.mode ) !== -1 ) {
 			var mpcCmd = 'mpc findadd '+ GUI.list.mode +' "'+ name +'"'+ ( artist ? ' artist "'+ artist +'"' : '' );
 		} else {

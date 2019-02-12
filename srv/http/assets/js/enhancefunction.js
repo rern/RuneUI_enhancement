@@ -949,7 +949,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			if ( coverart ) {
 				var browsemode = GUI.dbbackdata.length ? GUI.dbbackdata[ 0 ].browsemode : '';
 				var artistmode = [ 'artist', 'composer', 'genre' ].indexOf( browsemode ) !== -1 ? 1 : 0;
-				var composerhtml = ( composer && browsemode === 'composer' ) ? '<i class="fa fa-composer"></i><span class="composer">'+ composer +'</span><br>' : '';
+				var composerhtml = ( composer && browsemode === 'composer' ) ? '<i class="fa fa-composer"></i><span class="biocomposer">'+ composer +'</span><br>' : '';
 				var genrehtml = genre && genre !== -1 ? '<span><i class="fa fa-genre"></i>'+ genre +'</span><br>' : '';
 				content += '<li class="licover">'
 						  +'<a class="lipath">'+ path +'</a><a class="liname">'+ path.replace(/^.*\//, '') +'</a>'
@@ -957,7 +957,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 						  +'<span class="liinfo">'
 							  +'<bl class="lialbum">'+ album +'</bl><br>'
 							  + composerhtml
-							  +'<i class="fa fa-'+ ( artistmode ? 'artist' : 'albumartist' ) +'"></i><span class="artist">'+ ( artistmode ? artist : albumartist ) +'</span><br>'
+							  +'<i class="fa fa-'+ ( artistmode ? 'artist' : 'albumartist' ) +'"></i><span class="bioartist">'+ ( artistmode ? artist : albumartist ) +'</span><br>'
 							  + genrehtml
 							  +'<i class="fa fa-music"></i>'+ arrayfile.length +'<gr> • </gr>'+ second2HMS( litime )
 						  +'</span>'
@@ -1467,7 +1467,7 @@ function htmlPlaylist( data ) {
 	} );
 	if ( coverart ) {
 		var browsemode = GUI.dbbackdata.length ? GUI.dbbackdata[ 0 ].browsemode : '';
-		var composerhtml = ( composer && browsemode == 'composer' ) ? '<i class="fa fa-composer"></i><spanspan class="composer">'+ composer +'</span><br>' : '';
+		var composerhtml = ( composer && browsemode == 'composer' ) ? '<i class="fa fa-composer"></i><spanspan class="biocomposer">'+ composer +'</span><br>' : '';
 		var genrehtml = genre && genre !== -1 ? '<span><i class="fa fa-genre"></i>'+ genre +'</span><br>' : '';
 		var licover = '<li class="licover">'
 						 +'<a class="lipath">'+ path +'</a><a class="liname">'+ path.replace(/^.*\//, '') +'</a>'
@@ -1475,7 +1475,7 @@ function htmlPlaylist( data ) {
 						 +'<span class="liinfo">'
 							+'<bl class="lialbum">'+ album +'</bl><br>'
 							+ composerhtml
-							+'<i class="fa fa-albumartist"></i><span class="artist">'+ artist +'</span><br>'
+							+'<i class="fa fa-albumartist"></i><span class="bioartist">'+ artist +'</span><br>'
 							+ genrehtml
 							+'<i class="fa fa-music"></i>'+ countsong +'<gr> • </gr>'+ second2HMS( pltime )
 						 +'</span>'
