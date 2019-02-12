@@ -486,9 +486,9 @@ wh, gr { font-weight: 300; }
 	overflow: hidden;
 }
 .scrollleft {
-	-moz-animation      : 10s infinite scrollleft linear;
-	-webkit-animation   : 10s infinite scrollleft linear;
-	animation           : 10s infinite scrollleft linear;
+	-moz-animation      : 12s infinite scrollleft linear;
+	-webkit-animation   : 12s infinite scrollleft linear;
+	animation           : 12s infinite scrollleft linear;
 	backface-visibility : hidden; /* for less flickering */
 }
 .bkscrollleft {
