@@ -3,7 +3,8 @@
 
 $( '.contextmenu a' ).click( function() {
 	$( '.menu' ).addClass( 'hide' );
-	var cmd = $( this ).data( 'cmd' );
+	var $this = $( this );
+	var cmd = $this.data( 'cmd' );
 	if ( [ 'play', 'pause', 'stop', 'remove' ].indexOf( cmd ) !== -1 ) {
 		if ( cmd === 'remove' ) {
 			GUI.list.li.find( '.pl-action' ).click();
@@ -44,16 +45,14 @@ $( '.contextmenu a' ).click( function() {
 			var mpcCmd = GUI.list.isfile ? 'mpc add "'+ name +'"' : 'mpc ls "'+ name +'" | mpc add';
 		}
 	} else {
-		var browsemode = GUI.dbbackdata.length ? GUI.dbbackdata[ 0 ].browsemode : '';
-		if ( [ 'album', 'albumartist' ].indexOf( browsemode ) !== -1 ) {
-			var mpcCmd = 'mpc findadd'+ ( GUI.list.artist ? ' artist "'+ GUI.list.artist : '' )  +'" album "'+ name +'"';
-		} else if ( [ 'artist', 'composer', 'genre' ].indexOf( browsemode ) !== -1 ) {
-			var mpcCmd = 'mpc add '+ GUI.filelist;
+		var artist = GUI.list.artist || $( '#artistalbum span' ).text();
+		artist = artist.replace( /"/g, '\\"' );
+		if ( [ 'album', 'artist', 'albumartist', 'composer', 'genre' ].indexOf( GUI.list.mode ) !== -1 ) {
+			var mpcCmd = 'mpc findadd '+ GUI.list.mode +' "'+ name +'"'+ ( artist ? ' artist "'+ artist +'"' : '' );
 		} else {
 			var mpcCmd = 'mpc load "'+ name +'"';
-			if ( [ 'wrrename', 'wrdelete', 'plrename', 'pldelete' ].indexOf( mode ) === -1 ) cmd = cmd.replace( /pl|wr/, '' );
 		}
-		cmd = cmd.replace( /album|artist|composer|genre/, '' );
+		cmd = cmd.replace( /album|artist|composer|genre|pl|wr/, '' );
 	}
 	var addplaypos = GUI.status.playlistlength + 1;
 	var contextCommand = {
@@ -115,9 +114,10 @@ function addReplace( mode, cmd, command, title ) {
 			getPlaybackStatus();
 		}
 	} );
+	var artist = $( '#artistalbum span' ).text();
 	new PNotify( {
 		  title : title
-		, text  : GUI.list.name
+		, text  : GUI.list.name + ( artist ? ' • '+ artist : '' )
 	} );
 }
 function bookmarkNew() {

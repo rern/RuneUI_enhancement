@@ -1,4 +1,5 @@
 <script>
+	var coverrune = "<?=$this->asset('/img/cover.svg')?>";
 	var vu = "<?=$this->asset('/img/vu.gif')?>";
 	var vustop = "<?=$this->asset('/img/vustop.gif')?>";
 </script>

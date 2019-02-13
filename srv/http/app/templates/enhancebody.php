@@ -35,7 +35,7 @@ if ( $i % 2 === 0 ) {
 $index = $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 
 // context menus
-function menuli( $command, $icon, $label, $type ) {
+function menuli( $command, $icon, $label, $type = '' ) {
 	$type = $type ? ' data-type="'.$type.'"' : '';
 	if ( $icon === 'folder-refresh' ) {
 		$class = ' class="update"';
@@ -121,7 +121,7 @@ $menudiv = '';
 $html = menucommon( 'albumadd', 'albumaddplay', 'albumreplace', 'albumreplaceplay' );
 $menu.= menudiv( 'album', $html );
 $menudiv = '';
-$html = menucommon( 'artistadd', 'artistaddplay', 'artisrreplace', 'artistreplaceplay' );
+$html = menucommon( 'artistadd', 'artistaddplay', 'artistreplace', 'artistreplaceplay' );
 $menu.= menudiv( 'artist', $html );
 $menudiv = '';
 $html = menucommon( 'composeradd', 'composeraddplay', 'composerreplace', 'composerreplaceplay' );
@@ -246,7 +246,6 @@ $menu.= '</div>';
 		<div id="coverart" class="playback-block">
 			<div id="divcover">
 			<img id="cover-art">
-			<input id="cover" type="hidden" value="<?=$this->asset('/img/cover.svg')?>">
 			<div id="coverartoverlay" class="hide"></div>
 			<img id="controls-cover" class="controls hide" src="<?=$this->asset('/img/controls.svg')?>">
 			<div id="coverTL" class="covermap r1 c1 ws hs"></div>

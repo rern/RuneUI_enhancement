@@ -27,6 +27,7 @@ var GUI = {
 	, plugin       : ''
 	, scale        : 1
 	, screenS      : ( window.innerHeight < 590 || window.innerWidth < 500 )
+	, scrollspeed  : 80 // pixel/s
 	, status       : {}
 };
 PNotify.prototype.options.delay = 3000;
@@ -55,9 +56,6 @@ var blinkdot = '<a class="dot">·</a>&ensp;<a class="dot dot2">·</a>&ensp;<a cl
 // get display, status, library
 $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 	GUI.display = data;
-	// prevent flash by scrollLongText()
-	GUI.init = 1;
-	$( '#artist, #song, #album' ).css( 'visibility', 'hidden' );
 	$.event.special.swipe.horizontalDistanceThreshold = 80; // pixel to swipe
 	setSwipe();
 	cssContextIcon();
@@ -132,6 +130,8 @@ GUI.sortableli = new Sortable( document.getElementById( 'divhomeblocks' ), {
 	, onStart    : function( e ) {
 		$icon = $( e.item ).find( 'i' );
 		$icon.css( 'color', '#e0e7ee' );
+		$( '.home-block-edit, .home-block-remove' ).remove();
+		$( '.home-bookmark' ).find( '.fa-bookmark, .bklabel, img' ).css( 'opacity', '' );
 	  }
 	, onEnd      : function() {
 		$icon.css( 'color', '' );
@@ -283,9 +283,9 @@ $( '#tab-library' ).click( function() {
 	}
 } );
 $( '#tab-playback' ).click( function() {
-	switchPage( 'playback' );
 	getPlaybackStatus();
-	if ( GUI.status.state === 'play' ) $( '#elapsed' ).empty(); // hide flashing
+	switchPage( 'playback' );
+	if ( GUI.status.state === 'play' && GUI.status.ext !== 'radio' ) $( '#elapsed' ).empty(); // hide flashing
 } );
 $( '#tab-playlist' ).click( function() {
 	if ( GUI.playlist && GUI.pleditor ) GUI.pleditor = 0;
@@ -316,8 +316,9 @@ $( '#page-playback' ).click( function( e ) {
 $( '#page-library' ).click( function( e ) {
 	if ( GUI.local ) return
 	
-	if ( e.target.id !== 'home-block-edit' && e.target.id !== 'home-block-remove' ) {
-		$( '#home-block-edit, #home-block-remove' ).remove();
+	var $target = $( e.target );
+	if ( !$target.is( '.home-block-edit' ) && !$target.is( '.home-block-remove' ) ) {
+		$( '.home-block-edit, .home-block-remove' ).remove();
 		$( '.home-bookmark' ).find( '.fa-bookmark, .bklabel, img' ).css( 'opacity', '' );
 	}
 } );
@@ -654,12 +655,13 @@ $( '#home-blocks' ).on( 'tap', '.home-block', function() {
 		} );
 	}
 } ).on( 'tap', '.home-bookmark', function( e ) {
-	$this = $( this );
+	var $this = $( this );
+	var $target = $( e.target );
 	var path = $this.find( '.lipath' ).text();
 	var name = $this.find( '.bklabel' ).text();
-	if ( e.target.id === 'home-block-edit' ) {
+	if ( $target.is( '.home-block-edit' ) ) {
 		bookmarkRename( name, path, $this );
-	} else if ( e.target.id === 'home-block-remove' ) {
+	} else if ( $target.is( '.home-block-remove' ) ) {
 		bookmarkDelete( name, $this );
 	} else {
 		GUI.dblist = 1;
@@ -674,11 +676,8 @@ $( '#home-blocks' ).on( 'tap', '.home-block', function() {
 	setTimeout( function() { GUI.local = 0 }, 1000 );
 	
 	$( '.home-bookmark' )
-		.append( '<i id="home-block-edit" class="fa fa-edit-circle"></i><i id="home-block-remove" class="fa fa-minus-circle"></i>' )
+		.append( '<i class="home-block-edit fa fa-edit-circle"></i><i class="home-block-remove fa fa-minus-circle"></i>' )
 		.find( '.fa-bookmark, .bklabel, img' ).css( 'opacity', 0.2 );
-} ).on( 'vmousemove', '.home-bookmark', function() {
-	$( '#home-block-edit, #home-block-remove' ).remove();
-	$( '.home-bookmark' ).find( '.fa-bookmark, .bklabel, img' ).css( 'opacity', '' );
 } );
 
 $( '#db-home' ).click( function() {
@@ -791,14 +790,15 @@ $( '#db-back' ).click( function() {
 } );
 $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	var $this = $( this );
-	if ( $( e.target ).is( '.artist, .fa-artist, .fa-albumartist, .composer, .fa-composer' ) ) {
-		var name = ( $( e.target ).is( '.composer, .fa-composer' ) ) ? $this.find( '.composer' ).text() : $this.find( '.artist' ).text();
+	var $target = $( e.target )
+	if ( $this.index() === 0 && $target.is( '.bioartist, .fa-artist, .fa-albumartist, .biocomposer, .fa-composer' ) ) {
+		var name = ( $target.is( '.biocomposer, .fa-composer' ) ) ? $this.find( '.biocomposer' ).text() : $this.find( '.bioartist' ).text();
 		getBio( name );
 		return
-	} else if ( $( e.target ).hasClass( 'lialbum' ) ) {
-		window.open( 'https://www.last.fm/music/'+ $this.find( '.artist' ).text() +'/'+ $this.find( '.lialbum' ).text(), '_blank' );
+	} else if ( $target.hasClass( 'lialbum' ) ) {
+		window.open( 'https://www.last.fm/music/'+ $this.find( '.bioartist' ).text() +'/'+ $this.find( '.lialbum' ).text(), '_blank' );
 		return
-	} else if ( $( e.target ).hasClass( 'db-icon' ) ) {
+	} else if ( $target.hasClass( 'db-icon' ) ) {
 		$this.find( '.db-action' ).click();
 		return
 	}
@@ -898,9 +898,11 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 	}
 	
 	GUI.list = {};
+	GUI.list.mode = $thisli.find( '.db-icon' ).prop( 'class' ).replace( /fa fa-| db-icon/g, '' );
 	GUI.list.path = $thisli.find( '.lipath' ).text() || '';
 	GUI.list.name = $thisli.find( '.liname' ).text() || '';
-	GUI.list.artist = $thisli.find( '.artist' ).text() || '';
+	GUI.list.bioartist = $thisli.find( '.bioartist' ).text() || '';
+	GUI.list.artist = $thisli.find( '.liartist' ).text() || '';
 	GUI.list.isfile = $thisli.hasClass( 'file' );              // file/dirble - in contextmenu
 	GUI.list.index = $thisli.find( '.liindex' ).text() || '';  // cue - in contextmenu
 	GUI.list.liindex = $( '#db-entries li' ).index( $thisli ); // for webradio delete - in contextmenu
@@ -1103,7 +1105,7 @@ $( '#pl-entries' ).on ( 'swipe', 'li', function( e ) {
 } ).on( 'tap', 'li', function( e ) {
 	if ( GUI.swipe ) return
 	
-	$this = $( this );
+	var $this = $( this );
 	if ( $( e.target ).hasClass( 'pl-icon' ) ) return
 
 /*	if ( $( e.target ).hasClass( 'elapsed' ) || $( e.target ).hasClass( 'time' ) ) {
@@ -1131,8 +1133,8 @@ $( '#pl-entries' ).on ( 'swipe', 'li', function( e ) {
 	}
 } );
 $( '#pl-entries' ).on( 'click', '.pl-icon', function( e ) {
-	$this = $( this );
-	$thisli = $this.parent();
+	var $this = $( this );
+	var $thisli = $this.parent();
 	GUI.list.li = $thisli;
 	var menutop = ( $thisli.position().top + 49 ) +'px';
 	var $contextmenu = $( '#context-menu-plaction' );
@@ -1319,7 +1321,7 @@ window.addEventListener( 'orientationchange', function() {
 			$( 'html, body' ).scrollTop( scrollpos );
 		}, 300 );
 	} else if ( GUI.library && !$( '#home-blocks' ).hasClass( 'hide' ) ) {
-		bookmarkScroll();
+		setTimeout( bookmarkScroll, 100 );
 	} else {
 		if ( GUI.dblist || GUI.pleditor ) {
 			displayIndexBar();
