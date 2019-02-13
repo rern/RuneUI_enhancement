@@ -70,26 +70,26 @@ function switchPage( page ) {
 	}
 	$( '#menu-bottom li, #db-entries li, #pl-editor li' ).removeClass( 'active' );
 	$( '.page, .menu' ).addClass( 'hide' );
-	if ( !GUI.display.contexticon ) $( '#pl-entries .pl-action' ).hide();
-	$( 'html, body' ).scrollTop( 0 );
 	$( '#page-'+ page ).removeClass( 'hide' );
 	$( '#tab-'+ page ).addClass( 'active' );
 	GUI.library = GUI.playback = GUI.playlist = 0;
 	GUI[ page ] = 1;
 	GUI.currentpage = page;
-	if ( GUI.playback ) return
-	
 	// restore page scroll
-	if ( GUI.library ) {
+	if ( GUI.playback ) {
+		renderPlayback();
+		$( 'html, body' ).scrollTop( 0 );
+	} else if ( GUI.library ) {
 		if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) {
 			renderLibrary();
+			$( 'html, body' ).scrollTop( 0 );
 		} else {
-			$( 'html, body' ).scrollTop( GUI.libraryscrolltop );
 			if ( GUI.display.coverfile ) {
 				if ( !$( '.licover' ).length ) $( '#db-currentpath a:last-child' ).click();
 			} else {
 				$( '.licover' ).remove();
 			}
+			$( 'html, body' ).scrollTop( GUI.libraryscrolltop );
 		}
 	} else if ( GUI.playlist && GUI.pleditor ) {
 		$( 'html, body' ).scrollTop( GUI.playlistscrolltop );
@@ -207,13 +207,7 @@ function scrollLongText() {
 	var $el = $( '#artist, #song, #album' );
 	$el
 		.removeClass( 'scrollleft' )
-		.css( {
-			  width                        : ''
-			, '-moz-animation-duration'    : ''
-			, '-webkit-animation-duration' : ''
-			, 'animation-duration'         : ''
-		} )
-	$( '#scrollleft' ).remove();
+		.removeAttr( 'style' ); // fix - iOS needs whole style removed
 	var wW = window.innerWidth;
 	var tWmax = 0;
 	setTimeout( function() {
@@ -226,6 +220,7 @@ function scrollLongText() {
 			}
 		} );
 		$el.css( 'visibility', 'visible' ); // from initial hidden
+		$( '#scrollleft' ).remove();
 		if ( !$( '.scrollleft' ).length ) return
 		
 		// varied with only when scaled
@@ -239,12 +234,9 @@ function scrollLongText() {
 			, '-moz-animation'    : cssanimate
 			, '-webkit-animation' : cssanimate
 		} )
-	}, 0 );
+	}, 50 );
 }
 function removeSplash() {
-	if ( !GUI.init ) return
-	
-	GUI.init = 0;
 	$( '#splash' ).remove();
 	$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
 	$( '#page-playback' ).removeClass( 'hide' );
@@ -260,13 +252,12 @@ function setPlaybackBlank() {
 	$( '#coverartoverlay' ).addClass( 'hide' );
 	$( '#cover-art' )
 		.attr( 'src', coverrune )
-		.css( 'border-radius', 0 );
+		.css( 'border-radius', 0 )
+		.one( 'load', removeSplash );
 	$( '#artist, #song, #album' )
 		.removeClass( 'scrollleft' )
-		.css( {
-			  visibility : 'visible'
-			, width      : ''
-		} );
+		.removeAttr( 'style' )
+		.css( 'visibility', 'visible' );
 }
 function renderPlayback() {
 	if ( $( '#splash' ).length ) { // in case too long to get coverart
@@ -288,13 +279,14 @@ function renderPlayback() {
 	clearInterval( GUI.intKnob );
 	clearInterval( GUI.intElapsed );
 	// empty queue
+	console.log( status.playlistlength )
 	if ( !status.playlistlength ) {
 		setPlaybackBlank();
-		removeSplash();
 		return
 	}
 	
 	$( '.playback-controls' ).css( 'visibility', 'visible' );
+	$( '#artist, #song, #album' ).css( 'width', '' );
 	$( '#artist' ).html( status.Artist );
 	$( '#song' ).html( status.Title );
 	$( '#album' ).html( status.ext !== 'radio' ? status.Album : '<gr>'+ status.Album +'</gr>' ).promise().done( function() {
@@ -306,11 +298,9 @@ function renderPlayback() {
 	var dot = GUI.display.time ? '<wh id="dot0"> • </wh>' : '';
 	$( '#format-bitrate' ).html( dot + status.sampling + ext );
 	if ( status.ext === 'radio' ) {
-		var radiosrc = $( '#cover-art' ).attr( 'src' );
 		$( '#time' ).roundSlider( 'setValue', 0 );
 		if ( status.state === 'play' ) {
 			if ( !status.Title ) $( '#song' ).html( blinkdot );
-			if ( radiosrc !== vu ) $( '#cover-art' ).attr( 'src', vu );
 			$( '#elapsed' ).html( status.state === 'play' ? blinkdot : '' );
 			var elapsed = status.elapsed;
 			if ( GUI.display.time ) {
@@ -338,12 +328,13 @@ function renderPlayback() {
 			}
 		} else {
 			$( '#song' ).html( '·&ensp;·&ensp;·' );
-			if ( radiosrc !== vustop ) $( '#cover-art' ).attr( 'src', vustop );
 			$( '#elapsed, #total, #timepos' ).empty();
 		}
+		$( '#cover-art' )
+			.attr( 'src', status.state === 'play' ? vu : vustop )
+			.one( 'load', removeSplash );
 		$( '#cover-art' ).css( 'border-radius', '18px' );
 		$( '#coverartoverlay' ).removeClass( 'hide' );
-		removeSplash();
 		return
 	}
 	
@@ -353,8 +344,8 @@ function renderPlayback() {
 		var coverart = status.coverart || coverrune;
 		$( '#cover-art' )
 			.attr( 'src', coverart )
-			.css( 'border-radius', 0 );
-		removeSplash();
+			.css( 'border-radius', 0 )
+			.one( 'load', removeSplash );
 	}
 	// time
 	time = status.Time;
@@ -663,8 +654,11 @@ function displayCheckbox( checkboxes ) {
 	return html;
 }
 function bookmarkScroll() {
+	$( '.bklabel' )
+		.removeClass( 'bkscrollleft' )
+		.removeAttr( 'style' ); // fix - iOS needs whole style removed
 	var bW = $( '.home-block:eq( 0 )' ).width() - 10;
-	$( '.bklabel' ).each( function() {
+	$( '.bklabel:not(.hide)' ).each( function() {
 		var $this = $( this );
 		var tW = $this.width();
 		if ( tW > bW ) {
@@ -677,10 +671,6 @@ function bookmarkScroll() {
 					, '-moz-animation'    : cssanimate
 					, '-webkit-animation' : cssanimate
 				} );
-		} else {
-			$this
-				.removeClass( 'bkscrollleft' )
-				.removeAttr( 'style' );
 		}
 	} );
 	$( '#bkscrollleft' ).remove();
@@ -1559,8 +1549,7 @@ function renderPlaylist() {
 function clearPlaylist() {
 	GUI.status.playlistlength = 0;
 	GUI.pllist = {};
-	renderPlaylist();
-	setPlaybackBlank();
+	$( '#tab-playback' ).click();
 }
 function renderSavedPlaylist( name ) {
 	$( '.menu' ).addClass( 'hide' );
