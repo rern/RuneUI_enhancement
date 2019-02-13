@@ -354,12 +354,10 @@ function getCover( $path ) {
 		$coverfile = $dir.'/'.$cover;
 		if ( file_exists( $coverfile ) ) {
 			$coverext = pathinfo( $cover, PATHINFO_EXTENSION );
-			$coverart = file_get_contents( $coverfile ) ;
+			$coverart = file_get_contents( $coverfile );
 			return 'data:image/'. $coverext.';base64,'.base64_encode( $coverart );
 		}
 	}
-	if ( basename( $file ) === 'bookmark' ) return;
-	
 	set_include_path( '/srv/http/app/libs/vendor/' );
 	require_once( 'getid3/audioinfo.class.php' );
 	$audioinfo = new AudioInfo();
@@ -384,11 +382,17 @@ function getLibrary() {
 	$rbkmarks = $redis->hGetAll( 'bkmarks' );
 	if ( $rbkmarks ) {
 		foreach ( $rbkmarks as $name => $path ) {
-//			$coverart = getCover( $path.'/bookmark' ) ?: '';
+			$thumbfile = '/mnt/MPD/'.$path.'/thumbnail.jpg';
+			if ( file_exists( $thumbfile ) ) {
+				$thumbnail = file_get_contents( $thumbfile );
+				$coverart = 'data:image/jpg;base64,'.base64_encode( $thumbnail );
+			} else {
+				$coverart = '';
+			}
 			$bookmarks[] = array(
-				  'name'  => $name
-				, 'path'  => $path
-//				, 'coverart' => $coverart
+				  'name'     => $name
+				, 'path'     => $path
+				, 'coverart' => $coverart
 			);
 		}
 	} else {
