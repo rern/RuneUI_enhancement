@@ -1304,18 +1304,20 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 		case 'Dirble':
 			if ( querytype === '' || querytype === 'childs' ) {
 				var liname = inputArr.title;
+				var lisort = stripLeading( liname );
 				var childClass = ( querytype === 'childs' ) ? ' db-dirble-child' : '';
 				content = '<li class="db-dirble'+ childClass +'" mode="dirble">'
-						 +'<a class="lipath">'+ inputArr.id +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
+						 +'<a class="lipath">'+ inputArr.id +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ lisort +'</a>'
 						 +'<i class="fa fa-genre db-icon"></i>'
 						 +'<span class="single">'+ liname +'</span>'
 			} else if ( [ 'search', 'stations', 'childs-stations' ].indexOf( querytype ) !== -1 ) {
 				if ( !inputArr.streams.length ) break; // Filter stations with no streams
 				
 				var liname = inputArr.name;
+				var lisort = stripLeading( liname );
 				var url = inputArr.streams[ 0 ].stream
 				content = '<li mode="dirble">'
-						 +'<a class="lipath">'+ url +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
+						 +'<a class="lipath">'+ url +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ lisort +'</a>'
 						 +'<i class="fa fa-webradio db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-radio"></i>'
 						 +'<span class="li1">'+ liname +'&ensp;<span>( '+ inputArr.country +' )</span></span>'
 						 +'<span class="li2">'+ url +'</span>'
