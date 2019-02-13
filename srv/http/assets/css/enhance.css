@@ -1064,7 +1064,7 @@ wh, gr { font-weight: 300; }
 	position: relative;
 	height: 110px;
 	padding: 25px 5px 10px 5px;
-	background: #172029;
+	background: #1e2935;
 	border-radius: 10px;
 	color: #7795b4;
 	text-align: center;
@@ -1076,7 +1076,8 @@ wh, gr { font-weight: 300; }
 	line-height: 40px;
 	font-size: 48px;
 	text-align: center;
-	color: #7795b4
+	color: #7795b4;
+	text-shadow: 2px 2px 4px #000000;
 }
 #home-blocks gr {
 	margin-left: 14px;
@@ -1139,7 +1140,7 @@ wh, gr { font-weight: 300; }
 	position: fixed;
 	width: 100%;
 	height: 40px;
-	background: #172029;
+	background: #1e2935;
 	top: 0;
 	padding-right: 10px;
 	box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.6);
