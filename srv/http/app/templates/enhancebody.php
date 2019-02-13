@@ -35,7 +35,7 @@ if ( $i % 2 === 0 ) {
 $index = $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 
 // context menus
-function menuli( $command, $icon, $label, $type ) {
+function menuli( $command, $icon, $label, $type = '' ) {
 	$type = $type ? ' data-type="'.$type.'"' : '';
 	if ( $icon === 'folder-refresh' ) {
 		$class = ' class="update"';
