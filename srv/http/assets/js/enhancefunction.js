@@ -237,6 +237,9 @@ function scrollLongText() {
 	}, 50 );
 }
 function removeSplash() {
+	if ( GUI.nosplash ) return
+	
+	GUI.nosplash = 1;
 	$( '#splash' ).remove();
 	$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
 	$( '#page-playback' ).removeClass( 'hide' );
@@ -253,7 +256,7 @@ function setPlaybackBlank() {
 	$( '#cover-art' )
 		.attr( 'src', coverrune )
 		.css( 'border-radius', 0 )
-		.one( 'load', removeSplash );
+		.on( 'load', removeSplash );
 	$( '#artist, #song, #album' )
 		.removeClass( 'scrollleft' )
 		.removeAttr( 'style' )
@@ -279,7 +282,6 @@ function renderPlayback() {
 	clearInterval( GUI.intKnob );
 	clearInterval( GUI.intElapsed );
 	// empty queue
-	console.log( status.playlistlength )
 	if ( !status.playlistlength ) {
 		setPlaybackBlank();
 		return
@@ -332,7 +334,7 @@ function renderPlayback() {
 		}
 		$( '#cover-art' )
 			.attr( 'src', status.state === 'play' ? vu : vustop )
-			.one( 'load', removeSplash );
+			.on( 'load', removeSplash );
 		$( '#cover-art' ).css( 'border-radius', '18px' );
 		$( '#coverartoverlay' ).removeClass( 'hide' );
 		return
@@ -657,7 +659,7 @@ function bookmarkScroll() {
 	$( '.bklabel' )
 		.removeClass( 'bkscrollleft' )
 		.removeAttr( 'style' ); // fix - iOS needs whole style removed
-	var bW = $( '.home-block:eq( 0 )' ).width() - 10;
+	var bW = $( '.home-block:eq( 0 )' ).width();
 	$( '.bklabel:not(.hide)' ).each( function() {
 		var $this = $( this );
 		var tW = $this.width();

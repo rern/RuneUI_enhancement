@@ -56,8 +56,6 @@ var blinkdot = '<a class="dot">·</a>&ensp;<a class="dot dot2">·</a>&ensp;<a cl
 // get display, status, library
 $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 	GUI.display = data;
-	// prevent flash by scrollLongText()
-	GUI.init = 1;
 	$.event.special.swipe.horizontalDistanceThreshold = 80; // pixel to swipe
 	setSwipe();
 	cssContextIcon();
@@ -287,7 +285,7 @@ $( '#tab-library' ).click( function() {
 $( '#tab-playback' ).click( function() {
 	getPlaybackStatus();
 	switchPage( 'playback' );
-	if ( GUI.status.state === 'play' ) $( '#elapsed' ).empty(); // hide flashing
+	if ( GUI.status.state === 'play' && GUI.status.ext !== 'radio' ) $( '#elapsed' ).empty(); // hide flashing
 } );
 $( '#tab-playlist' ).click( function() {
 	if ( GUI.playlist && GUI.pleditor ) GUI.pleditor = 0;
