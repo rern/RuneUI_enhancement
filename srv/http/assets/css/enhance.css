@@ -141,9 +141,9 @@ label {
 .ui-pnotify-icon {
 	font-size: 1.3em;
 }
-.ui-pnotify .alert h4 {
-	font-size: 16px;
-	font-weight: 300;
+.ui-pnotify-icon,
+.ui-pnotify-title {
+	color: #34495e !important;
 	text-transform: uppercase;
 }
 
@@ -448,6 +448,7 @@ wh, gr { font-weight: 300; }
 #song,
 #artist,
 #album {
+	visibility: hidden; /* fix - flashed by scrollLongText() */
 	overflow: hidden;
 	position: relative;
 }
@@ -484,7 +485,8 @@ wh, gr { font-weight: 300; }
 	position: relative;
 	overflow: hidden;
 }
-.scrollleft {
+.scrollleft,
+.bkscrollleft {
 	backface-visibility : hidden; /* for less flickering */
 }
 @-moz-keyframes scrollleft {
@@ -1061,10 +1063,9 @@ wh, gr { font-weight: 300; }
 .home-block {
 	position: relative;
 	height: 110px;
-	margin: 7px -8px;
 	padding: 25px 5px 10px 5px;
-	background: #172029;
-	border-radius: 6px;
+	background: #1e2935;
+	border-radius: 10px;
 	color: #7795b4;
 	text-align: center;
 }
@@ -1075,7 +1076,8 @@ wh, gr { font-weight: 300; }
 	line-height: 40px;
 	font-size: 48px;
 	text-align: center;
-	color: #7795b4
+	color: #7795b4;
+	text-shadow: 2px 2px 4px #000000;
 }
 #home-blocks gr {
 	margin-left: 14px;
@@ -1122,19 +1124,15 @@ wh, gr { font-weight: 300; }
 	outline: none;
 	color: #7795b4
 }
-#home-block-edit,
-#home-block-remove {
+.home-block-edit,
+.home-block-remove {
 	position: absolute;
-	display: inline-block;
 	top: 0;
 	right: 0;
-	width: 40px;
-	height: 40px;
-	font-size: 24px;
-	text-align: center;
-	color: #e0e7ee;
+	font-size: 24px !important;
+	color: #e0e7ee !important;
 }
-#home-block-edit {
+.home-block-edit {
 	top: 35px;
 }
 /* ---------------------- breadcrumb and index ---------------------- */
@@ -1142,7 +1140,7 @@ wh, gr { font-weight: 300; }
 	position: fixed;
 	width: 100%;
 	height: 40px;
-	background: #172029;
+	background: #1e2935;
 	top: 0;
 	padding-right: 10px;
 	box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.6);
@@ -1823,13 +1821,13 @@ li.active .time {
 .divblock {
 	float: left;
 	width: 16.666666%;
-	padding: 0 15px;
+	padding: 3px;
 }
-@media (max-width: 1000px) { .divblock { width: 20%; } }
-@media (max-width: 768px) { .divblock { width: 25%; } }
-@media (max-width: 640px) { .divblock { width: 33.3333333%; } }
-@media (max-width: 450px) { .divblock { width: 50%; } }
-@media (max-width: 320px) { .divblock { width: 100%; } }
+@media (max-width: 900px) { .divblock { width: 20%; } }
+@media (max-width: 700px) { .divblock { width: 25%; } }
+@media (max-width: 560px) { .divblock { width: 33.3333333%; } }
+@media (max-width: 410px) { .divblock { width: 50%; } }
+@media (max-width: 280px) { .divblock { width: 100%; } }
 /* height */
 @media(max-height: 590px) {
 	#playback-row {
