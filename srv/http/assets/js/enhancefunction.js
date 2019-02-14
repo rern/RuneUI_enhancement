@@ -711,7 +711,7 @@ function renderLibrary() {
 		$.each( bookmarks, function( i, bookmark ) {
 			var coverarthtml = bookmark.coverart ? '<img class="bkcoverart" src="'+ bookmark.coverart +'">' : '<i class="fa fa-bookmark"></i>';
 			var name = bookmark.name.replace( /\\/g, '' );
-			var id = name.replace( / /g, '' );
+			var id = name.replace( / /g, '_' ).replace( /[^A-Za-z0-9_-]+/g, '-' );
 			var namehtml = '<div class="divbklabel"><span class="bklabel'+ ( bookmark.coverart ? ' hide' : '' ) +'">'+ name +'</span></div>';
 			content += '<div class="divblock bookmark">'
 					  +'	<div id="home-bk-'+ id +'" class="home-block home-bookmark"><a class="lipath">'+ bookmark.path +'</a>'+ coverarthtml + namehtml +'</div>'
