@@ -285,7 +285,6 @@ $( '#tab-library' ).click( function() {
 $( '#tab-playback' ).click( function() {
 	getPlaybackStatus();
 	switchPage( 'playback' );
-	if ( GUI.status.state === 'play' && GUI.status.ext !== 'radio' ) $( '#elapsed' ).empty(); // hide flashing
 } );
 $( '#tab-playlist' ).click( function() {
 	if ( GUI.playlist && GUI.pleditor ) GUI.pleditor = 0;
@@ -1108,11 +1107,6 @@ $( '#pl-entries' ).on ( 'swipe', 'li', function( e ) {
 	var $this = $( this );
 	if ( $( e.target ).hasClass( 'pl-icon' ) ) return
 
-/*	if ( $( e.target ).hasClass( 'elapsed' ) || $( e.target ).hasClass( 'time' ) ) {
-		$( '#stop' ).click();
-		return
-	}*/
-	
 	var songpos = $this.index() + 1;
 	$( '#context-menu-plaction' ).addClass( 'hide' );
 	if ( !$( e.target ).hasClass( 'pl-action' ) ) {
@@ -1398,11 +1392,8 @@ var timeoutUpdate;
 pushstreams.idle.onmessage = function( changed ) {
 	var changed = changed[ 0 ];
 	if ( changed === 'player' ) { // on track changed
-		if ( GUI.playlist && !GUI.pleditor ) {
-			setPlaylistScroll();
-		} else {
-			getPlaybackStatus();
-		}
+		getPlaybackStatus();
+		if ( GUI.playlist && !GUI.pleditor ) setPlaylistScroll();
 	} else if ( changed === 'playlist' ) { // on playlist changed
 		if ( GUI.pleditor || GUI.local ) return
 		

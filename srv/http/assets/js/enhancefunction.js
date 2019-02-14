@@ -78,6 +78,7 @@ function switchPage( page ) {
 	// restore page scroll
 	if ( GUI.playback ) {
 		renderPlayback();
+		if ( GUI.status.state === 'play' && GUI.status.ext !== 'radio' ) $( '#elapsed' ).empty(); // hide flashing
 		$( 'html, body' ).scrollTop( 0 );
 	} else if ( GUI.library ) {
 		if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) {
@@ -263,12 +264,6 @@ function setPlaybackBlank() {
 		.css( 'visibility', 'visible' );
 }
 function renderPlayback() {
-	if ( $( '#splash' ).length ) { // in case too long to get coverart
-		setTimeout( function() {
-			$( '#splash' ).remove();
-			$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
-		}, 2000 );
-	}
 	var status = GUI.status;
 	// song and album before update for song/album change detection
 	var previoussong = $( '#song' ).text();
@@ -348,6 +343,8 @@ function renderPlayback() {
 			.attr( 'src', coverart )
 			.css( 'border-radius', 0 )
 			.one( 'load', removeSplash );
+		// in case too long to get coverart 
+		setTimeout( removeSplash, 2000 );
 	}
 	// time
 	time = status.Time;
@@ -422,11 +419,6 @@ function getPlaybackStatus() {
 	GUI.local = 1;
 	setTimeout( function() { GUI.local = 0 }, 200 );
 	
-	if ( GUI.playlist && !GUI.pleditor ) {
-		$( '#tab-playlist' ).click();
-		return
-	}
-	
 	$.post( 'enhancestatus.php', { artist: $( '#artist' ).text(), album: $( '#album' ).text() }, function( status ) {
 		// 'gpio off' > audio output switched > restarts mpd which makes status briefly unavailable
 		if( typeof status !== 'object' ) return
@@ -440,11 +432,11 @@ function getPlaybackStatus() {
 			GUI.status[ key ] = value;
 		} );
 		setButton();
-		if ( !GUI.playback ) return
-		
-		renderPlayback();
-		// imodedelay fix imode flashing on audio output switched
-		if ( !GUI.imodedelay ) displayPlayback();
+		if ( GUI.playback ) {
+			renderPlayback();
+			// imodedelay fix imode flashing on audio output switched
+			if ( !GUI.imodedelay ) displayPlayback();
+		}
 	}, 'json' );
 }
 function getBio( artist ) {
