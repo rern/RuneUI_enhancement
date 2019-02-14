@@ -121,17 +121,15 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$thumbfile = '/mnt/MPD/'.$value.'/thumbnail.jpg';
 		$dir = dirname( $thumbfile );
 		if ( !file_exists( $thumbfile ) ) {
-			do {
-				foreach( $coverfiles as $cover ) {
-					$coverfile = $dir.'/'.$cover;
-					if ( file_exists( $coverfile ) ) {
-						exec( '/usr/bin/sudo /usr/bin/convert "'.$coverfile.'" -thumbnail 200x200 -unsharp 0x.5 "'.$thumbfile.'"' );
-						$coverart = 1;
-						break;
-					}
+			foreach( $coverfiles as $cover ) {
+				$coverfile = $dir.'/'.$cover;
+				if ( file_exists( $coverfile ) ) {
+					exec( '/usr/bin/sudo /usr/bin/convert "'.$coverfile.'" -thumbnail 200x200 -unsharp 0x.5 "'.$thumbfile.'"' );
+					$thumbnail = 1;
+					break;
 				}
-				if ( isset( $coverart ) ) break;
-				
+			}
+			if ( !isset( $thumbnail ) ) {
 				set_include_path( '/srv/http/app/libs/vendor/' );
 				require_once( 'getid3/audioinfo.class.php' );
 				$audioinfo = new AudioInfo();
@@ -147,7 +145,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 					exec( '/usr/bin/sudo /usr/bin/convert "'.$coverfile.'" -thumbnail 200x200 -unsharp 0x.5 "'.$thumbfile.'"' );
 					exec( '/usr/bin/sudo /usr/bin/mv "'.$coverfile.'" "'.$dir.'"' );
 				}
-			} while ( 0 );
+			}
 		}
 		$status = getLibrary();
 		pushstream( 'library', $status );
