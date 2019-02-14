@@ -147,6 +147,9 @@ label {
 	text-transform: uppercase;
 }
 
+html {
+	padding: env( safe-area-inset );
+}
 a,
 a:hover {
 	text-decoration: none;
