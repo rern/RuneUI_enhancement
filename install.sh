@@ -27,7 +27,7 @@ pkg=$( pacman -Ss '^imagemagick$' | head -n1 )
 installed=$( echo $pkg | cut -d' ' -f3 )
 if [[ $installed != '[installed]' ]]; then
 	echo -e "$bar Install ImageMagick for coverart resizing ..."
-	pacman -Sy --noconfirm imagemagick libpng zlib
+	pacman -Sy --noconfirm imagemagick libpng zlib glibc
 fi
 
 getinstallzip
