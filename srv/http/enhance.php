@@ -7,6 +7,11 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 $redis = new Redis();
 $redis->pconnect( '127.0.0.1' );
 
+$coverfiles = array(
+	  'cover.png', 'cover.jpg', 'folder.png', 'folder.jpg', 'front.png', 'front.jpg'
+	, 'Cover.png', 'Cover.jpg', 'Folder.png', 'Folder.jpg', 'Front.png', 'Front.jpg'
+);
+
 if ( isset( $_POST[ 'mpc' ] ) ) {
 	$mpc = $_POST[ 'mpc' ];
 	if ( !is_array( $mpc ) ) { // multiples commands is array
@@ -42,7 +47,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		if ( $type === 'file' ) {
 			$data = search2array( $result );
 			if ( $redis->hGet( 'display', 'coverfile' ) && !isPlaylist( $data ) && substr( $mpc, 0, 10 ) !== 'mpc search' ) {
-				$cover = getCover( $data[ 0 ][ 'file' ] );
+				$cover = getCover( $coverfiles, $data[ 0 ][ 'file' ] );
 				if ( $cover ) $data[][ 'coverart' ] = $cover;
 			}
 		} else {
@@ -62,8 +67,8 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	} else {
 		pushstream( 'library', $status );
 	}
-} else if ( isset( $_POST[ 'homeorder' ] ) ) {
-	$redis->hSet( 'display', 'library', $_POST[ 'homeorder' ] );
+} else if ( isset( $_POST[ 'order' ] ) ) {
+	$redis->hSet( 'display', 'order', $_POST[ 'order' ] );
 	$data = $redis->hGetAll( 'display' );
 	$data[ 'volumempd' ] = $redis->get( 'volume' );
 	pushstream( 'display', $data );
@@ -82,7 +87,12 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 			$redis->hDel( 'sampling', $name );
 			unlink( '/mnt/MPD/Webradio/'.$data.'.pls' );
 		} else {
+			$bknew = 0;
 			$redis->hDel( 'bkmarks', $name );
+			$order = $redis->hGet( 'display', 'order' );
+			$id = str_replace( ' ', '', $name );
+			$order = str_replace( 'bk-'.$id.'^^', '', $order );
+			$redis->hSet( 'display', 'order', $order );
 		}
 	} else {
 		$name = $data[ 0 ];
@@ -98,10 +108,28 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 			$fopen = fopen( '/mnt/MPD/Webradio/'.$name.'.pls', 'w');
 			fwrite( $fopen, $lines );
 			fclose( $fopen );
+		} else {
+			$order = $redis->hGet( 'display', 'order' );
+			$id = str_replace( ' ', '', $name );
+			$oldid = str_replace( ' ', '', $oldname );
+			$order = str_replace( $oldid, $id, $order );
+			$redis->hSet( 'display', 'order', $order );
 		}
 		$redis->hDel( 'webradiopl', $value );
 	}
-	if ( $key === 'bkmarks' ) {
+	if ( $key === 'bkmarks' && count( $data ) === 2 ) {
+		$thumbfile = '/mnt/MPD/'.$value.'/thumbnail.jpg';
+		$dir = dirname( $thumbfile );
+		if ( !file_exists( $thumbfile ) ) {
+			foreach( $coverfiles as $cover ) {
+				$coverfile = $dir.'/'.$cover;
+				if ( file_exists( $coverfile ) ) {
+					exec( '/usr/bin/sudo /usr/bin/convert "'.$coverfile.'" -resize 100x100 "'.$thumbfile.'"' );
+					sleep( 3 );
+					break;
+				}
+			}
+		}
 		$status = getLibrary();
 		pushstream( 'library', $status );
 	} else {
@@ -134,7 +162,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$albums = shell_exec( 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" '.$type.' "'.$name.'"' );
 		$data = search2array( $albums );
 		if ( $redis->hGet( 'display', 'coverfile' ) && !isPlaylist( $data ) ) {
-			$cover = getCover( $data[ 0 ][ 'file' ] );
+			$cover = getCover( $coverfiles, $data[ 0 ][ 'file' ] );
 			if ( $cover ) $data[][ 'coverart' ] = $cover;
 		}
 	} else {
@@ -189,7 +217,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$data = list2array( $lines );
 	$data[][ 'path' ] = $path;
 	if ( $redis->hGet( 'display', 'coverfile' ) ) {
-		$cover = getCover( $data[ 0 ][ 'file' ] );
+		$cover = getCover( $coverfiles, $data[ 0 ][ 'file' ] );
 		if ( $cover ) $data[][ 'coverart' ] = $cover;
 	}
 	echo json_encode( $data );
@@ -343,13 +371,9 @@ function isPlaylist( $data ) {
 		}
 	}
 }
-function getCover( $path ) {
+function getCover( $coverfiles, $path ) {
 	$file = '/mnt/MPD/'.$path;
 	$dir = dirname( $file );
-	$coverfiles = array(
-		  'cover.png', 'cover.jpg', 'folder.png', 'folder.jpg', 'front.png', 'front.jpg'
-		, 'Cover.png', 'Cover.jpg', 'Folder.png', 'Folder.jpg', 'Front.png', 'Front.jpg'
-	);
 	foreach( $coverfiles as $cover ) {
 		$coverfile = $dir.'/'.$cover;
 		if ( file_exists( $coverfile ) ) {
