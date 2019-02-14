@@ -718,7 +718,6 @@ function renderLibrary() {
 	order = order.split( '^^' );
 	$( '.home-block' ).find( 'gr' ).remove();
 	$.each( order, function( i, name ) {
-		console.log('#home-'+ name)
 		if ( GUI.display.count ) $( '#home-'+ name ).find( 'i' ).after( GUI.libraryhome[ name ] ? '<gr>'+ numFormat( GUI.libraryhome[ name ] ) +'</gr>' : '' );
 		var $block = $( '#home-'+ name ).parent();
 		$block.toggleClass( 'hide', GUI.display[ name ] === '' );
