@@ -125,26 +125,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 				$coverfile = $dir.'/'.$cover;
 				if ( file_exists( $coverfile ) ) {
 					exec( '/usr/bin/sudo /usr/bin/convert "'.$coverfile.'" -thumbnail 200x200 -unsharp 0x.5 "'.$thumbfile.'"' );
-					$thumbnail = 1;
 					break;
-				}
-			}
-			if ( !isset( $thumbnail ) ) {
-				set_include_path( '/srv/http/app/libs/vendor/' );
-				require_once( 'getid3/audioinfo.class.php' );
-				$audioinfo = new AudioInfo();
-				$file = scandir( $dir )[ 2 ];
-				$id3tag = $audioinfo->Info( $dir.'/'.$file );
-				if ( isset( $id3tag[ 'comments' ][ 'picture' ][ 0 ][ 'data' ] ) ) {
-					$id3cover = $id3tag[ 'comments' ][ 'picture' ][ 0 ];
-					$coverart = $id3cover[ 'data' ];
-					$coverext = str_replace( 'image/', '', $id3cover[ 'image_mime' ] );
-					$ext = $coverext === 'jpeg' ? 'jpg' : $coverext;
-					$coverfile = '/srv/http/tmp/cover.'.$ext;
-					file_put_contents( $coverfile, $coverart );
-					exec( '/usr/bin/sudo /usr/bin/convert "'.$coverfile.'" -thumbnail 200x200 -unsharp 0x.5 "'.$thumbfile.'"' );
-					unlink( $coverfile );
-//					exec( '/usr/bin/sudo /usr/bin/mv "'.$coverfile.'" "'.$dir.'"' );
 				}
 			}
 		}
