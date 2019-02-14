@@ -68,7 +68,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		pushstream( 'library', $status );
 	}
 } else if ( isset( $_POST[ 'order' ] ) ) {
-	$redis->hSet( 'display', 'order', $_POST[ 'order' ] );
+	$redis->hSet( 'display', 'order', htmlspecialchars( $_POST[ 'order' ] ) );
 	$data = $redis->hGetAll( 'display' );
 	$data[ 'volumempd' ] = $redis->get( 'volume' );
 	pushstream( 'display', $data );
@@ -90,7 +90,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 			$bknew = 0;
 			$redis->hDel( 'bkmarks', $name );
 			$order = $redis->hGet( 'display', 'order' );
-			$id = str_replace( ' ', '', $name );
+			$id = preg_replace( '/[^A-Za-z0-9_-]+/', '-', str_replace( ' ', '_', $name ) );
 			$order = str_replace( 'bk-'.$id.'^^', '', $order );
 			$redis->hSet( 'display', 'order', $order );
 		}
@@ -110,8 +110,8 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 			fclose( $fopen );
 		} else {
 			$order = $redis->hGet( 'display', 'order' );
-			$id = str_replace( ' ', '', $name );
-			$oldid = str_replace( ' ', '', $oldname );
+			$id = str_replace( ' ', '_', $name );
+			$oldid = str_replace( ' ', '_', $oldname );
 			$order = str_replace( $oldid, $id, $order );
 			$redis->hSet( 'display', 'order', $order );
 		}
