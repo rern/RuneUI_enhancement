@@ -10,6 +10,10 @@ alias=enha
 . /srv/http/addonstitle.sh
 . /srv/http/addonsedit.sh
 
+#0temp0
+redis-cli hdel display library &> /dev/null
+#1temp1
+
 installstart $@
 
 mv /srv/http/index.php{,.backup}
