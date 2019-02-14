@@ -124,8 +124,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 			foreach( $coverfiles as $cover ) {
 				$coverfile = $dir.'/'.$cover;
 				if ( file_exists( $coverfile ) ) {
-					exec( '/usr/bin/sudo /usr/bin/convert "'.$coverfile.'" -resize 100x100 "'.$thumbfile.'"' );
-					sleep( 3 );
+					exec( '/usr/bin/sudo /usr/bin/convert "'.$coverfile.'" -thumbnail 200x200 -unsharp 0x.5 "'.$thumbfile.'"' );
 					break;
 				}
 			}
