@@ -138,15 +138,15 @@ GUI.sortableli = new Sortable( document.getElementById( 'divhomeblocks' ), {
 	  }
 	, onUpdate   : function ( e ) {
 		var $blocks = $( '.home-block' );
-		var homeorder = '';
+		var order = '';
 		$blocks.each( function() {
-			homeorder += this.id.replace( 'home-', '' ) +',';
+			order += this.id.replace( 'home-', '' ) +'^^';
 		} );
-		homeorder = homeorder.slice( 0, -1 );
-		GUI.display.library = homeorder;
+		order = order.slice( 0, -2 );
+		GUI.display.order = order;
 		GUI.sortable = 1;
 		setTimeout( function() { GUI.sortable = 0 }, 500 );
-		$.post( 'enhance.php', { homeorder: homeorder } );
+		$.post( 'enhance.php', { order: order } );
 	}
 } );
 var chklibrary = {
