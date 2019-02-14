@@ -985,7 +985,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 							  + composerhtml
 							  +'<i class="fa fa-'+ ( artistmode ? 'artist' : 'albumartist' ) +'"></i><span class="bioartist">'+ ( artistmode ? artist : albumartist ) +'</span><br>'
 							  + genrehtml
-							  +'<i class="fa fa-music"></i>'+ arrayfile.length +'<gr> • </gr>'+ second2HMS( litime )
+							  +'<i class="fa fa-music db-icon"></i>'+ arrayfile.length +'<gr> • </gr>'+ second2HMS( litime )
 						  +'</span>'
 						  +'<i class="fa fa-bars db-action" data-target="#context-menu-'+ ( GUI.browsemode !== 'file' ? GUI.browsemode : 'folder' ) +'"></i>'
 						  +'</li>';
@@ -1505,7 +1505,7 @@ function htmlPlaylist( data ) {
 							+ composerhtml
 							+'<i class="fa fa-albumartist"></i><span class="bioartist">'+ artist +'</span><br>'
 							+ genrehtml
-							+'<i class="fa fa-music"></i>'+ countsong +'<gr> • </gr>'+ second2HMS( pltime )
+							+'<i class="fa fa-music db-icon"></i>'+ countsong +'<gr> • </gr>'+ second2HMS( pltime )
 						 +'</span>'
 						 +'<i class="fa fa-bars db-action" data-target="#context-menu-folder"></i>'
 					 +'</li>';
