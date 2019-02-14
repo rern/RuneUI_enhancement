@@ -19,6 +19,9 @@ mv /srv/http/assets/js/vendor/Sortable.min.js{,.backup}
 mv /srv/http/command/airplay_toggle{,.backup}
 ln -sf /srv/http/assets/img/bootsplash.png /usr/share/bootsplash/start.png
 
+echo -e "$bar Install ImageMagick for coverart resizing ..."
+pacman -Sy --noconfirm imagemagick libpng zlib
+
 getinstallzip
 
 echo -e "$bar Modify files ..."
