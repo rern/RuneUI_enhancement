@@ -143,7 +143,8 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 					$coverfile = '/srv/http/tmp/cover.'.$ext;
 					file_put_contents( $coverfile, $coverart );
 					exec( '/usr/bin/sudo /usr/bin/convert "'.$coverfile.'" -thumbnail 200x200 -unsharp 0x.5 "'.$thumbfile.'"' );
-					exec( '/usr/bin/sudo /usr/bin/mv "'.$coverfile.'" "'.$dir.'"' );
+					unlink( $coverfile );
+//					exec( '/usr/bin/sudo /usr/bin/mv "'.$coverfile.'" "'.$dir.'"' );
 				}
 			}
 		}
