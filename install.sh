@@ -197,17 +197,12 @@ redis-cli set mpddb "$albumartist $composer $genre" &> /dev/null
 # fix webradio permission
 chown -R http:http /mnt/MPD/Webradio
 
-echo -e "$bar Disable AAC/ALAC support ..."
-echo 'Re-enable in MPD > FFmpeg option'
+# disable AAC/ALAC support ..."
 redis-cli hset mpdconf ffmpeg no &> /dev/null
-
-echo -e "$bar Disable USB drive auto scan database ..."
-echo 'Re-enable in Sources > Library auto rebuild switch'
+# disable USB drive auto scan database ..."
 redis-cli set usb_db_autorebuild 0 &> /dev/null
-
-echo -e "$bar Disable GB and DE locale ..."
+# disable GB and DE locale ..."
 sed -i '/^de_DE.UTF-8\|^en_GB.UTF-8/ s/^/#/' /etc/locale.gen
-
 # disable default shutdown
 systemctl disable rune_shutdown
 #systemctl stop rune_shutdown
