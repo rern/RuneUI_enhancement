@@ -197,7 +197,7 @@ redis-cli set mpddb "$albumartist $composer $genre" &> /dev/null
 # fix webradio permission
 chown -R http:http /mnt/MPD/Webradio
 
-echo -e "$bar Disable ACC/ALAC support ..."
+echo -e "$bar Disable AAC/ALAC support ..."
 echo 'Re-enable in MPD > FFmpeg option'
 redis-cli hset mpdconf ffmpeg no &> /dev/null
 
