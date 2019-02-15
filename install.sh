@@ -205,6 +205,9 @@ echo -e "$bar Disable USB drive auto scan database ..."
 echo 'Re-enable in Sources > Library auto rebuild switch'
 redis-cli set usb_db_autorebuild 0 &> /dev/null
 
+echo -e "$bar Disable GB and DE locale ..."
+sed -i '/^de_DE.UTF-8\|^en_GB.UTF-8/ s/^/#/' /etc/locale.gen
+
 # disable default shutdown
 systemctl disable rune_shutdown
 #systemctl stop rune_shutdown
