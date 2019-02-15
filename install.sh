@@ -196,7 +196,7 @@ redis-cli set usb_db_autorebuild 0 &> /dev/null
 
 # disable default shutdown
 systemctl disable rune_shutdown
-systemctl stop rune_shutdown
+#systemctl stop rune_shutdown
 
 installfinish $@
 
