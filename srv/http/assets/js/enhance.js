@@ -126,28 +126,6 @@ $( '#menu-settings, #badge' ).click( function() {
 		.toggleClass( 'hide' )
 		.css( 'top', ( GUI.bars ? '40px' : 0 ) );
 } );
-GUI.sortableli = new Sortable( document.getElementById( 'divhomeblocks' ), {
-	  ghostClass : 'db-sortable-ghost'
-	, delay      : 500
-	, onStart    : function( e ) {
-		GUI.drag = 1;
-	  }
-	, onEnd      : function() {
-		GUI.drag = 0;
-	  }
-	, onUpdate   : function ( e ) {
-		var $blocks = $( '.home-block' );
-		var order = '';
-		$blocks.each( function() {
-			order += this.id.replace( 'home-', '' ) +'^^';
-		} );
-		order = order.slice( 0, -2 );
-		GUI.display.order = order;
-		GUI.sortable = 1;
-		setTimeout( function() { GUI.sortable = 0 }, 500 );
-		$.post( 'enhance.php', { order: order } );
-	}
-} );
 var chklibrary = {
 	  sd             : '<i class="fa fa-microsd"></i>SD_'
 	, usb            : '<i class="fa fa-usbdrive"></i>USB'
@@ -675,6 +653,7 @@ $( '#home-blocks' ).on( 'tap', '.home-block', function() {
 } ).on( 'taphold', '.home-bookmark', function() {
 	if ( GUI.drag ) return
 	
+	$( this ).removeClass( 'db-sortable-ghost' );
 	GUI.local = 1;
 	setTimeout( function() { GUI.local = 0 }, 1000 );
 	
@@ -682,7 +661,26 @@ $( '#home-blocks' ).on( 'tap', '.home-block', function() {
 		.append( '<i class="home-block-edit fa fa-edit-circle"></i><i class="home-block-remove fa fa-minus-circle"></i>' )
 		.find( '.fa-bookmark, .bklabel, img' ).css( 'opacity', 0.2 );
 } );
-
+var sortablelibrary = new Sortable( document.getElementById( 'divhomeblocks' ), {
+	  ghostClass : 'db-sortable-ghost'
+	, delay      : 500
+	, onStart    : function() {
+		GUI.drag = 1;
+	  }
+	, onEnd      : function() {
+		GUI.drag = 0;
+	  }
+	, onUpdate   : function () {
+		var $blocks = $( '.home-block' );
+		var order = '';
+		$blocks.each( function() {
+			order += this.id.replace( 'home-', '' ) +'^^';
+		} );
+		order = order.slice( 0, -2 );
+		GUI.display.order = order;
+		$.post( 'enhance.php', { order: order } );
+	}
+} );
 $( '#db-home' ).click( function() {
 	$( '#tab-library' ).click();
 	$( '.menu' ).addClass( 'hide' );
@@ -1075,7 +1073,7 @@ $( '#pl-searchbtn' ).click( function() {
 	$( '#pl-count, #pl-manage, #pl-searchbtn' ).addClass( 'hide' );
 	$( '#pl-filter' ).focus();
 } );
-new Sortable( document.getElementById( 'pl-entries' ), {
+var sortableplaylist = new Sortable( document.getElementById( 'pl-entries' ), {
 	  ghostClass : 'pl-sortable-ghost'
 	, delay      : 500
 	, onUpdate   : function ( e ) {
