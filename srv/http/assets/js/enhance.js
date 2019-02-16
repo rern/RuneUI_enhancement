@@ -127,21 +127,13 @@ $( '#menu-settings, #badge' ).click( function() {
 		.css( 'top', ( GUI.bars ? '40px' : 0 ) );
 } );
 GUI.sortableli = new Sortable( document.getElementById( 'divhomeblocks' ), {
-	  delay      : 500
+	  ghostClass : 'db-sortable-ghost'
+	, delay      : 500
 	, onStart    : function( e ) {
 		GUI.drag = 1;
-		var $this = $( e.item );
-		$this.find( '.home-block' )
-			.css( 'background', '#7795b4' )
-			.append( '<i class="home-block-move fa fa-up-down"></i>' );
-		$this.find( 'i, img, gr, wh, .bklabel' ).css( 'opacity', 0.5 );
 	  }
 	, onEnd      : function() {
 		GUI.drag = 0;
-		$( '.home-block' )
-			.css( 'background', '' )
-			.children().css( 'opacity', '' );
-		$( '.home-block-move' ).remove();
 	  }
 	, onUpdate   : function ( e ) {
 		var $blocks = $( '.home-block' );
@@ -1081,15 +1073,8 @@ $( '#pl-searchbtn' ).click( function() {
 	$( '#pl-filter' ).focus();
 } );
 new Sortable( document.getElementById( 'pl-entries' ), {
-	  ghostClass : 'sortable-ghost'
+	  ghostClass : 'pl-sortable-ghost'
 	, delay      : 500
-	, onStart    : function( e ) {
-		$icon = $( e.item ).find( 'i' );
-		$icon.css( 'visibility', 'hidden' );
-	  }
-	, onEnd      : function() {
-		$icon.css( 'visibility', '' );
-	  }
 	, onUpdate   : function ( e ) {
 		if ( $( e.from ).hasClass( 'active' ) ) {
 			$( e.to ).removeClass( 'active' );
