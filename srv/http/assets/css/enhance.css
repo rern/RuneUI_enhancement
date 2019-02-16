@@ -1129,6 +1129,9 @@ wh, gr { font-weight: 300; }
 	outline: none;
 	color: #7795b4
 }
+.home-bookmark .fa-bookmark {
+	color: #0095d8;
+}
 .home-block-edit,
 .home-block-remove {
 	position: absolute;
