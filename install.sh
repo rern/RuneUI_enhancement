@@ -212,7 +212,7 @@ if mount | grep -q '/dev/sda1'; then
 	mnt=$( mount | grep '/dev/sda1' | cut -d' ' -f3 )
 	path=$mnt/coverarts
 else
-	path=/mnt/MPD/LocalStorage/coverarts
+	path=/mnt/MPD/coverarts
 fi
 mkdir -p $path
 chown http:http $path
