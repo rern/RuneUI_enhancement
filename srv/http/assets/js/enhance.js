@@ -618,6 +618,9 @@ $( '#closebio' ).click( function() {
 	displayTopBottom();
 } );
 // LIBRARY /////////////////////////////////////////////////////////////////////////////////////
+$( '#home-blocks' ).contextmenu( function( e ) { // disable default image context menu
+	e.preventDefault();
+} );
 $.event.special.tap.emitTapOnTaphold = false; // suppress tap on taphold
 $( '#home-blocks' ).on( 'tap', '.home-block', function() {
 	var $this = $( this );
