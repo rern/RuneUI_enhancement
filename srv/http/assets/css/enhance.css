@@ -1627,26 +1627,40 @@ li.active .time {
 #pl-entries.playlist-spotify li:before {
 	content: "\f1bc";
 }
-.home-block-move {
+.db-sortable-ghost .home-block:after {
 	position: absolute;
-	left: 0;
-	top: 0;
-	width: 100% !important;
-	font-size: 36px !important;
-	line-height: 116px !important;
-	color: #e0e7ee !important;
-	opacity: 1 !important;
-}
-#pl-entries li.sortable-ghost {
-	background: #34495e;
-}
-#pl-entries .sortable-ghost:before {
 	content: "\f568";
 	font-family: enhance;
-	width: 46px;
-	margin-left: -29px;
+	left: 0;
+	top: 0;
+	width: 100%;
+	font-size: 36px;
+	line-height: 116px;
+	color: #e0e7ee;
+}
+.db-sortable-ghost .home-block {
+	background: #7795b4;
+}
+.db-sortable-ghost .home-block > * {
+	opacity: 0.5;
+}
+.pl-sortable-ghost {
+	background: #7795b4;
+}
+.pl-sortable-ghost .pl-icon {
+	visibility: hidden;
+}
+.pl-sortable-ghost a,
+.pl-sortable-ghost .li2 {
+	color: #34495e !important;
+}
+.pl-sortable-ghost:before {
+	position: absolute;
+	content: "\f568";
+	font-family: enhance;
+	width: 40px;
 	font-size: 22px;
-	line-height: 46px;
+	line-height: 30px;
 	text-align: center;
 	color: #e0e7ee;
 }
