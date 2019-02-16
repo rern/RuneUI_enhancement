@@ -148,7 +148,15 @@ label {
 }
 
 html {
-	padding: env( safe-area-inset );
+	padding: env( safe-area-inset ); /* disable iPhone X rounded corner padding */
+}
+body {
+	overscroll-behavior: none; /* disable android pull-down refresh */
+}
+#page-playback,
+#home-blocks {
+	position: fixed;
+	overflow: hidden;
 }
 a,
 a:hover {
