@@ -57,6 +57,7 @@ var blinkdot = '<a class="dot">·</a>&ensp;<a class="dot dot2">·</a>&ensp;<a cl
 $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 	GUI.display = data;
 	$.event.special.swipe.horizontalDistanceThreshold = 80; // pixel to swipe
+	$.event.special.tap.tapholdThreshold = 1000;
 	setSwipe();
 	cssContextIcon();
 	$.post( 'enhancestatus.php', function( status ) {
@@ -128,13 +129,19 @@ $( '#menu-settings, #badge' ).click( function() {
 GUI.sortableli = new Sortable( document.getElementById( 'divhomeblocks' ), {
 	  delay      : 500
 	, onStart    : function( e ) {
-		$icon = $( e.item ).find( 'i' );
-		$icon.css( 'color', '#e0e7ee' );
-		$( '.home-block-edit, .home-block-remove' ).remove();
-		$( '.home-bookmark' ).find( '.fa-bookmark, .bklabel, img' ).css( 'opacity', '' );
+		GUI.drag = 1;
+		var $this = $( e.item );
+		$this.find( '.home-block' )
+			.css( 'background', '#7795b4' )
+			.append( '<i class="home-block-move fa fa-up-down"></i>' );
+		$this.find( 'i, img, gr, wh, .bklabel' ).css( 'opacity', 0.5 );
 	  }
 	, onEnd      : function() {
-		$icon.css( 'color', '' );
+		GUI.drag = 0;
+		$( '.home-block' )
+			.css( 'background', '' )
+			.children().css( 'opacity', '' );
+		$( '.home-block-move' ).remove();
 	  }
 	, onUpdate   : function ( e ) {
 		var $blocks = $( '.home-block' );
@@ -671,6 +678,8 @@ $( '#home-blocks' ).on( 'tap', '.home-block', function() {
 		} );
 	}
 } ).on( 'taphold', '.home-bookmark', function() {
+	if ( GUI.drag ) return
+	
 	GUI.local = 1;
 	setTimeout( function() { GUI.local = 0 }, 1000 );
 	
