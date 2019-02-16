@@ -11,6 +11,12 @@ $paths = array( '/mnt/MPD/LocalStorage', '/mnt/MPD/NAS', '/mnt/MPD/USB' );
 foreach( $paths as $path ) {
 	createThumbnail( $path );
 }
+$ch = curl_init( 'http://localhost/pub?id=coverarts' );
+curl_setopt( $ch, CURLOPT_HTTPHEADER, array( 'Content-Type:application/json' ) );
+curl_setopt( $ch, CURLOPT_POSTFIELDS, json_encode( 1 ) );
+curl_exec( $ch );
+curl_close( $ch );
+
 function createThumbnail( $path, $pathcoverarts ) {
 	$dirs = array_slice( scandir( $path ), 2 ); // remove ., ..
 	if ( !count( $dirs ) ) return;
