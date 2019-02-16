@@ -103,7 +103,6 @@
 .fa-edit:before { content: "\f536" }
 .fa-undo:before { content: "\f537" }
 .fa-bars:before { content: "\f538" }
-.fa-up-down:before { content: "\f568" }
 .fa-crop:before { content: "\f569" }
 .fa-search:before { content: "\f56A" }
 
@@ -1624,7 +1623,7 @@ li.active .time {
 }
 .db-sortable-ghost .home-block:after {
 	position: absolute;
-	content: "\f568";
+	content: "\f56E";
 	font-family: enhance;
 	left: 0;
 	top: 0;
