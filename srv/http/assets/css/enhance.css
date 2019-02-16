@@ -1627,10 +1627,20 @@ li.active .time {
 #pl-entries.playlist-spotify li:before {
 	content: "\f1bc";
 }
+.home-block-move {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100% !important;
+	font-size: 36px !important;
+	line-height: 116px !important;
+	color: #e0e7ee !important;
+	opacity: 1 !important;
+}
 #pl-entries li.sortable-ghost {
 	background: #34495e;
 }
-#pl-entries li.sortable-ghost:before {
+#pl-entries .sortable-ghost:before {
 	content: "\f568";
 	font-family: enhance;
 	width: 46px;
