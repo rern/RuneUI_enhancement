@@ -120,12 +120,41 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	if ( $key === 'bkmarks' && count( $data ) === 2 ) {
 		$thumbfile = '/mnt/MPD/'.$value.'/thumbnail.jpg';
 		$dir = dirname( $thumbfile );
+		// create thumbnail from coverart file
 		if ( !file_exists( $thumbfile ) ) {
 			foreach( $coverfiles as $cover ) {
 				$coverfile = $dir.'/'.$cover;
 				if ( file_exists( $coverfile ) ) {
 					exec( '/usr/bin/sudo /usr/bin/convert "'.$coverfile.'" -thumbnail 200x200 -unsharp 0x.5 "'.$thumbfile.'"' );
+					$thumbnail = 1;
 					break;
+				}
+			}
+			// create thumbnail from embedded coverart
+			if ( !isset( $thumbnail ) ) {
+				$files = array_slice( scandir( $dir ), 2 ); // remove ., ..
+				foreach( $files as $file ) {
+					$file = $dir.'/'.$file;
+					if ( !is_file( $file ) ) continue;
+					
+					$mime = mime_content_type( $file );
+					if ( strpos( $mime, 'audio' ) === 0 ) { // only audio file
+						set_include_path( '/srv/http/app/libs/vendor/' );
+						require_once( 'getid3/audioinfo.class.php' );
+						$audioinfo = new AudioInfo();
+						$id3tag = $audioinfo->Info( $file );
+						if ( isset( $id3tag[ 'comments' ][ 'picture' ][ 0 ][ 'data' ] ) ) {
+							$id3cover = $id3tag[ 'comments' ][ 'picture' ][ 0 ];
+							$coverart = $id3cover[ 'data' ];
+							$coverext = str_replace( 'image/', '', $id3cover[ 'image_mime' ] );
+							$ext = $coverext === 'jpeg' ? 'jpg' : $coverext;
+							$coverfile = '/srv/http/tmp/cover.'.$ext;
+							file_put_contents( $coverfile, $coverart );
+							exec( '/usr/bin/sudo /usr/bin/convert "'.$coverfile.'" -thumbnail 200x200 -unsharp 0x.5 "'.$thumbfile.'"' );
+							unlink( $coverfile );
+						}
+						break;
+					}
 				}
 			}
 		}
