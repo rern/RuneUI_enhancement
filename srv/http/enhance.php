@@ -131,34 +131,34 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 			$coverfile = $dir.'/'.$cover;
 			if ( file_exists( $coverfile ) ) {
 				exec( '/usr/bin/sudo /usr/bin/convert "'.$coverfile.'" -thumbnail 200x200 -unsharp 0x.5 "'.$thumbfile.'"' );
-				$thumbnail = 1;
-				break;
+				$status = getLibrary();
+				pushstream( 'library', $status );
+				exit();
 			}
 		}
+		
 		// create thumbnail from embedded coverart
-		if ( !isset( $thumbnail ) ) {
-			$files = array_slice( scandir( $dir ), 2 ); // remove ., ..
-			foreach( $files as $file ) {
-				$file = "$dir/$file";
-				if ( !is_file( $file ) ) continue;
-				
-				$mime = mime_content_type( $file );
-				if ( strpos( $mime, 'audio' ) === 0 ) { // only audio file
-					set_include_path( '/srv/http/app/libs/vendor/' );
-					require_once( 'getid3/audioinfo.class.php' );
-					$audioinfo = new AudioInfo();
-					$id3tag = $audioinfo->Info( $file );
-					if ( isset( $id3tag[ 'comments' ][ 'picture' ][ 0 ][ 'data' ] ) ) {
-						$id3cover = $id3tag[ 'comments' ][ 'picture' ][ 0 ];
-						$coverart = $id3cover[ 'data' ];
-						$coverext = str_replace( 'image/', '', $id3cover[ 'image_mime' ] );
-						$coverfile = "/srv/http/tmp/cover.$coverext";
-						file_put_contents( $coverfile, $coverart );
-						exec( '/usr/bin/sudo /usr/bin/convert "'.$coverfile.'" -thumbnail 200x200 -unsharp 0x.5 "'.$thumbfile.'"' );
-						unlink( $coverfile );
-					}
-					break;
+		$files = array_slice( scandir( $dir ), 2 ); // remove ., ..
+		foreach( $files as $file ) {
+			$file = "$dir/$file";
+			if ( !is_file( $file ) ) continue;
+			
+			$mime = mime_content_type( $file );
+			if ( strpos( $mime, 'audio' ) === 0 ) { // only audio file
+				set_include_path( '/srv/http/app/libs/vendor/' );
+				require_once( 'getid3/audioinfo.class.php' );
+				$audioinfo = new AudioInfo();
+				$id3tag = $audioinfo->Info( $file );
+				if ( isset( $id3tag[ 'comments' ][ 'picture' ][ 0 ][ 'data' ] ) ) {
+					$id3cover = $id3tag[ 'comments' ][ 'picture' ][ 0 ];
+					$coverart = $id3cover[ 'data' ];
+					$coverext = str_replace( 'image/', '', $id3cover[ 'image_mime' ] );
+					$coverfile = "/srv/http/tmp/cover.$coverext";
+					file_put_contents( $coverfile, $coverart );
+					exec( '/usr/bin/sudo /usr/bin/convert "'.$coverfile.'" -thumbnail 200x200 -unsharp 0x.5 "'.$thumbfile.'"' );
+					unlink( $coverfile );
 				}
+				break;
 			}
 		}
 		$status = getLibrary();
