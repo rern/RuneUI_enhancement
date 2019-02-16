@@ -1,12 +1,17 @@
+#!/usr/bin/php
 <?php
 set_include_path( '/srv/http/app/libs/vendor/' );
 require_once( 'getid3/audioinfo.class.php' );
 
-createThumbnail( '/mnt/MPD/LocalStorage' );
-createThumbnail( '/mnt/MPD/NAS' );
-createThumbnail( '/mnt/MPD/USB' );
+$redis = new Redis(); 
+$redis->pconnect( '127.0.0.1' );
+$pathcoverarts = $redis->Get( 'pathcoverarts' );
 
-function createThumbnail( $path ) {
+$paths = array( '/mnt/MPD/LocalStorage', '/mnt/MPD/NAS', '/mnt/MPD/USB' );
+foreach( $paths as $path ) {
+	createThumbnail( $path );
+}
+function createThumbnail( $path, $pathcoverarts ) {
 	$dirs = array_slice( scandir( $path ), 2 ); // remove ., ..
 	if ( !count( $dirs ) ) return;
 	
@@ -32,8 +37,7 @@ function createThumbnail( $path ) {
 				$tags = $id3tag[ 'tags' ][ 'vorbiscomment' ];
 				$album = $tags[ 'album' ][ 0 ];
 				$artist = $tags[ 'artist' ][ 0 ];
-// ??? best locaion
-				$thumbfile = "/mnt/MPD/coverarts/$album^^$artist.jpg";
+				$thumbfile = "$pathcoverarts/$album^^$artist.jpg";
 				if ( file_exists( $thumbfile ) ) break; // skip if already exists - end foreach $files
 				
 				// create thumbnail from coverart file
@@ -41,11 +45,11 @@ function createThumbnail( $path ) {
 					$coverfile = "$dir/$cover";
 					if ( file_exists( $coverfile ) ) {
 						exec( '/usr/bin/sudo /usr/bin/convert "'.$coverfile.'" -thumbnail 200x200 -unsharp 0x.5 "'.$thumbfile.'"' );
-						$thumbnail = 1;
+						$created = 1;
 						break; // end foreach $coverfiles
 					}
 				}
-				if ( isset( $thumbnail ) || !isset( $id3tag[ 'comments' ][ 'picture' ][ 0 ][ 'data' ] ) ) break; // end foreach $files
+				if ( isset( $created ) || !isset( $id3tag[ 'comments' ][ 'picture' ][ 0 ][ 'data' ] ) ) break; // end foreach $files
 				
 				// create thumbnail from embedded coverart
 				$id3cover = $id3tag[ 'comments' ][ 'picture' ][ 0 ];
