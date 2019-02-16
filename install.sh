@@ -207,6 +207,19 @@ sed -i '/^de_DE.UTF-8\|^en_GB.UTF-8/ s/^/#/' /etc/locale.gen
 systemctl disable rune_shutdown
 #systemctl stop rune_shutdown
 
+# album coverarts directory
+if mount | grep -q '/dev/sda1'; then
+	mnt=$( mount | grep '/dev/sda1' | cut -d' ' -f3 )
+	path=$mnt/coverarts
+else
+	path=/mnt/MPD/LocalStorage/coverarts
+fi
+mkdir -p $path
+chown http:http $path
+chmod 755 $path
+
+redis-cli set pathcoverarts $path &> /dev/null
+
 installfinish $@
 
 restartlocalbrowser
