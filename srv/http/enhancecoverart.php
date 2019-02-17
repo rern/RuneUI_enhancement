@@ -9,7 +9,7 @@ $pathcoverarts = $redis->Get( 'pathcoverarts' );
 
 $paths = array( '/mnt/MPD/LocalStorage', '/mnt/MPD/NAS', '/mnt/MPD/USB' );
 foreach( $paths as $path ) {
-	createThumbnail( $path );
+	createThumbnail( $path, $pathcoverarts );
 }
 $ch = curl_init( 'http://localhost/pub?id=coverarts' );
 curl_setopt( $ch, CURLOPT_HTTPHEADER, array( 'Content-Type:application/json' ) );
