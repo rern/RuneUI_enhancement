@@ -602,8 +602,8 @@ wh, gr { font-weight: 300; }
 	margin: 0 auto;
 	background-size: 100% 100%;
 	border: none;
-	-webkit-box-shadow: #555555 0 0 8px 2px;
-	box-shadow: #555555 0 0 8px 2px;
+	-webkit-box-shadow: #555555 0 0 4px 0;
+	box-shadow: #555555 0 0 4px 0;
 }
 #coverartoverlay {
 	border-radius: 18px;
@@ -1111,6 +1111,8 @@ wh, gr { font-weight: 300; }
 	margin-left: -50px;
 	top: 50%;
 	left: 50%;
+	-webkit-box-shadow: #555555 0 0 2px 0;
+	box-shadow: #555555 0 0 2px 0;
 }
 .bklabel {
 	display: table; /* allow get width */
