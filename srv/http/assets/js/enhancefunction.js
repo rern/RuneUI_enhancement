@@ -703,7 +703,9 @@ function renderLibrary() {
 		$.each( bookmarks, function( i, bookmark ) {
 			var coverarthtml = bookmark.coverart ? '<img class="bkcoverart" src="'+ bookmark.coverart +'">' : '<i class="fa fa-bookmark"></i>';
 			var name = bookmark.name.replace( /\\/g, '' );
-			var id = name.replace( / /g, '_' ).replace( /[^A-Za-z0-9_-]+/g, '-' );
+			var id = name
+				.replace( / /g, '_' )
+				.replace( /[^A-Za-z0-9_-]+/g, '-' );
 			var namehtml = '<div class="divbklabel"><span class="bklabel'+ ( bookmark.coverart ? ' hide' : '' ) +'">'+ name +'</span></div>';
 			content += '<div class="divblock bookmark">'
 					  +'	<div id="home-bk-'+ id +'" class="home-block home-bookmark"><a class="lipath">'+ bookmark.path +'</a>'+ coverarthtml + namehtml +'</div>'
@@ -711,11 +713,15 @@ function renderLibrary() {
 		} );
 	}
 	$( '.bookmark' ).remove();
-	$( '#divhomeblocks' ).prepend( content ).promise().done( function() {
+	$( '#divhomeblocks' ).append( content ).promise().done( function() {
 		bookmarkScroll();
 	} );
 	var order = GUI.display.order || 'sd^^usb^^nas^^webradio^^album^^artist^^albumartist^^composer^^genre^^dirble^^jamendo^^spotify';
 	order = order.split( '^^' );
+	$( '.home-bookmark' ).each( function() {
+		var id = this.id.replace( 'home-', '' );
+		if ( order.indexOf( id ) === -1 ) order.push( id );
+	} );
 	$( '.home-block' ).find( 'gr' ).remove();
 	$.each( order, function( i, name ) {
 		if ( GUI.display.count ) $( '#home-'+ name ).find( 'i' ).after( GUI.libraryhome[ name ] ? '<gr>'+ numFormat( GUI.libraryhome[ name ] ) +'</gr>' : '' );
