@@ -93,6 +93,9 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 			$id = preg_replace( '/[^A-Za-z0-9_-]+/', '-', str_replace( ' ', '_', $name ) );
 			$order = str_replace( 'bk-'.$id.'^^', '', $order );
 			$redis->hSet( 'display', 'order', $order );
+			$data = $redis->hGetAll( 'display' );
+			$data[ 'volumempd' ] = $redis->get( 'volume' );
+			pushstream( 'display', $data );
 		}
 	} else {
 		$name = $data[ 0 ];
