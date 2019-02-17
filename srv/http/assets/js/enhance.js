@@ -290,14 +290,13 @@ $( '#page-playback' ).click( function( e ) {
 	$( '#swipebar' ).addClass( 'transparent' );
 } );
 $( '#page-library' ).click( function( e ) {
-	if ( GUI.local ) return
-	
 	var $target = $( e.target );
-	if ( !$target.is( '.home-block-edit' ) && !$target.is( '.home-block-remove' ) ) {
+	if ( GUI.bookmarkedit
+		&& !( $target.parents().is( '.home-bookmark' ) || $target.is( '.home-bookmark' ) )
+	) {
 		$( '.home-block-edit, .home-block-remove' ).remove();
 		$( '.home-bookmark' ).find( '.fa-bookmark, .bklabel, img' ).css( 'opacity', '' );
-	}
-} );
+	}} );
 $( '#page-library, #page-playback, #page-playlist' ).click( function( e ) {
 	if ( [ 'coverTR', 'timeTR' ].indexOf( e.target.id ) === -1 ) $( '#settings' ).addClass( 'hide' );
 } );
@@ -653,19 +652,33 @@ $( '#home-blocks' ).on( 'tap', '.home-block', function() {
 } ).on( 'taphold', '.home-bookmark', function() {
 	if ( GUI.drag ) return
 	
-	$( this ).removeClass( 'db-sortable-ghost' );
-	GUI.local = 1;
-	setTimeout( function() { GUI.local = 0 }, 1000 );
-	
+	GUI.bookmarkedit = 1;
 	$( '.home-bookmark' )
 		.append( '<i class="home-block-edit fa fa-edit-circle"></i><i class="home-block-remove fa fa-minus-circle"></i>' )
 		.find( '.fa-bookmark, .bklabel, img' ).css( 'opacity', 0.2 );
+//	sortablelibrary.option( 'disabled', true );
+} ).on( 'vmousedown', '.home-bookmark', function( e ) {
+	GUI.mdown = 1;
+	dX = e.pageX;
+	dY = e.pageY;
 } );
 var sortablelibrary = new Sortable( document.getElementById( 'divhomeblocks' ), {
 	  ghostClass : 'db-sortable-ghost'
-	, delay      : 500
-	, onStart    : function() {
+	, delay      : 400
+	, onStart    : function( e ) {
 		GUI.drag = 1;
+		var pos = $( e.item ).offset();
+		posX = pos.left;
+		posY = pos.top;
+	  }
+	, onMove    : function( e, oe ) {
+		if ( GUI.bookmarkedit ) {
+			if ( Math.abs( oe.clientX - posX ) > 5 || Math.abs( oe.clientY - posY ) > 5 ) {
+				GUI.bookmarkedit = 0;
+				$( '.home-block-edit, .home-block-remove' ).remove();
+				$( '.home-bookmark' ).find( '.fa-bookmark, .bklabel, img' ).css( 'opacity', '' );
+			}
+		}
 	  }
 	, onEnd      : function() {
 		GUI.drag = 0;
@@ -1075,7 +1088,7 @@ $( '#pl-searchbtn' ).click( function() {
 } );
 var sortableplaylist = new Sortable( document.getElementById( 'pl-entries' ), {
 	  ghostClass : 'pl-sortable-ghost'
-	, delay      : 500
+	, delay      : 400
 	, onUpdate   : function ( e ) {
 		if ( $( e.from ).hasClass( 'active' ) ) {
 			$( e.to ).removeClass( 'active' );
