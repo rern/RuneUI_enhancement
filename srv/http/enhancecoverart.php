@@ -28,7 +28,7 @@ function createThumbnail( $path, $pathcoverarts ) {
 	// each directory
 	foreach( $dirs as $dir ) { // >>> dir
 		$dir = "$path/$dir";
-		if ( !is_dir( $dir ) ) continue;
+		if ( !is_dir( $dir ) || $dir === $pathcoverarts ) continue;
 		
 		$files = array_slice( scandir( $dir ), 2 ); // remove ., ..
 		// each file - process only 1st audio file
