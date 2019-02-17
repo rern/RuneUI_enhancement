@@ -657,10 +657,6 @@ $( '#home-blocks' ).on( 'tap', '.home-block', function() {
 		.append( '<i class="home-block-edit fa fa-edit-circle"></i><i class="home-block-remove fa fa-minus-circle"></i>' )
 		.find( '.fa-bookmark, .bklabel, img' ).css( 'opacity', 0.2 );
 //	sortablelibrary.option( 'disabled', true );
-} ).on( 'vmousedown', '.home-bookmark', function( e ) {
-	GUI.mdown = 1;
-	dX = e.pageX;
-	dY = e.pageY;
 } );
 var sortablelibrary = new Sortable( document.getElementById( 'divhomeblocks' ), {
 	  ghostClass : 'db-sortable-ghost'
