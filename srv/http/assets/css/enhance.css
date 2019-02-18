@@ -1337,6 +1337,10 @@ wh, gr { font-weight: 300; }
 .index li:hover {
 	background: #34495e;
 }
+.coverart {
+	border-right: #000000 1px solid;
+	border-bottom: #000000 1px solid;
+}
 .licover {
 	height: 230px !important;
 }
