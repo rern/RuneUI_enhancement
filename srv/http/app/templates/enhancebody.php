@@ -1,4 +1,5 @@
 <?php
+$pathcoverarts = '/srv/http/assets/img/coverarts';
 $blocks = array( // 'id' => array( 'path', 'icon', 'name' );
 	  'sd'          => array( 'LocalStorage', 'microsd',      'SD' )
 	, 'usb'         => array( 'USB',          'usbdrive',     'USB' )
@@ -12,10 +13,11 @@ $blocks = array( // 'id' => array( 'path', 'icon', 'name' );
 	, 'spotify'     => array( 'Spotify',      'spotify',      'Spotify' )
 	, 'dirble'      => array( 'Dirble',       'dirble',       'Dirble' )
 	, 'jamendo'     => array( 'Jamendo',      'jamendo',      'Jamendo' )
+	, 'coverart'     => array( $pathcoverarts,      'album',      'CoverArt' )
 );
 $blockhtml = '';
 foreach( $blocks as $id => $value ) {
-	$browsemode = in_array( $id, array( 'album', 'artist', 'albumartist', 'composer', 'genre' ) ) ? ' data-browsemode="'.$id.'"' : '';
+	$browsemode = in_array( $id, array( 'album', 'artist', 'albumartist', 'composer', 'genre', 'coverart' ) ) ? ' data-browsemode="'.$id.'"' : '';
 	$plugin = in_array( $id, array( 'spotify', 'dirble', 'jamendo' ) ) ? ' data-plugin="'.$value[ 0 ].'"' : '';
 	$blockhtml.= '
 	<div class="divblock">
@@ -23,6 +25,17 @@ foreach( $blocks as $id => $value ) {
 	</div>
 		';
 }
+// coverarts
+$coverhtml = '';
+$coverarts = array_slice( scandir( $pathcoverarts ), 2 ); // remove ., ..
+foreach( $coverarts as $cover ) {
+	$filename = preg_replace( '/\..*$/', '', $coverarts[ 0 ] );
+	$tag = explode( '^^', $filename );
+	$coverhtml.= '
+		<img class="coverart" src="'.$pathcoverarts.'/'.$cover.'">
+	';
+}
+
 $indexarray = range( 'A', 'Z' );
 $li = '<li>#</li>';
 foreach( $indexarray as $i => $char ) {
@@ -312,6 +325,9 @@ $menu.= '</div>';
 		<ul id="db-index" class="index hide">
 			<?=$index?>
 		</ul>
+		<div id="divcoverarts" class="hide">
+			<?=$coverhtml?>
+		</div>
 	</div>
 </div>
 <div id="page-playlist" class="page hide">
