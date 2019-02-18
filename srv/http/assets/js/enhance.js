@@ -600,11 +600,15 @@ $( '#closebio' ).click( function() {
 $( '#home-blocks' ).contextmenu( function( e ) { // disable default image context menu
 	e.preventDefault();
 } );
+$( '#home-coverart' ).click( function() {
+	$( '#home-blocks' ).addClass( 'hide' );
+	$( '#divcoverarts' ).removeClass( 'hide' );
+} );
 $.event.special.tap.emitTapOnTaphold = false; // suppress tap on taphold
 $( '#home-blocks' ).on( 'tap', '.home-block', function() {
 	var $this = $( this );
 	var id = this.id;
-	if ( GUI.local || $this.hasClass( 'home-bookmark' ) ) return
+	if ( GUI.local || $this.hasClass( 'home-bookmark' ) || id === 'home-coverart' ) return
 	
 	var type = id.replace( 'home-', '' );
 	if ( type === 'usb' && !GUI.libraryhome.usb ) {
@@ -615,10 +619,6 @@ $( '#home-blocks' ).on( 'tap', '.home-block', function() {
 		return
 	} else if ( type === 'webradio' && !GUI.libraryhome.webradio ) {
 		webRadioNew();
-		return
-	} else if ( type === 'coverart' ) {
-		$( '#home-blocks' ).addClass( 'hide' );
-		$( '#divcoverarts' ).removeClass( 'hide' );
 		return
 	}
 	
@@ -809,7 +809,6 @@ $( '#divcoverarts img' ).click( function() {
 	var filename = src.substring( src.lastIndexOf( '/' ) + 1, src.lastIndexOf( '.' ) );
 	filename = filename.replace( '|', '/' );
 	var tag = decodeURI( filename ).split( '^^' );
-	console.log( tag );
 	getDB( {
 		  path      : tag[ 0 ]
 		, artist     : tag [ 1 ]
