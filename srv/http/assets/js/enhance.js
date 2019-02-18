@@ -244,6 +244,7 @@ $( '#turnoff' ).click( function() {
 $( '#tab-library' ).click( function() {
 	if ( !Object.keys( GUI.libraryhome ).length ) return // wait for mpc data
 	
+	GUI.dbbrowsemode = '';
 	$( '#divcoverarts' ).addClass( 'hide' );
 	$( '#home-blocks' ).removeClass( 'hide' );
 	$( '#db-search-close span' ).empty();
@@ -597,12 +598,121 @@ $( '#closebio' ).click( function() {
 	displayTopBottom();
 } );
 // LIBRARY /////////////////////////////////////////////////////////////////////////////////////
+$( '#db-home' ).click( function() {
+	$( '#tab-library' ).click();
+	$( '.menu' ).addClass( 'hide' );
+} );
+$( '#db-currentpath' ).on( 'click', 'a', function() {
+	if ( $( '#db-currentpath span a' ).length === 1 ) return
+	var rootpath = this.id === 'rootpath';
+	if ( [ 'album', 'artist', 'albumartist', 'composer', 'genre' ].indexOf( GUI.browsemode ) !== -1 && !rootpath ) return
+	
+	if ( rootpath ) {
+		GUI.dbbackdata = [];
+		var path = $( this ).data( 'path' );
+	} else {
+		var path = $( this ).find( '.lipath' ).text();
+	}
+	// get scroll position for back navigation
+	GUI.dbscrolltop[ $( '#db-currentpath' ).find( '.lipath' ).text() ] = $( window ).scrollTop();
+	mutationLibrary.observe( observerLibrary, observerOption );
+	
+	var path2mode = {
+		  Album       : 'album'
+		, Artist      : 'artist'
+		, AlbumArtist : 'albumartist'
+		, Composer    : 'composer'
+		, Genre       : 'genre'
+		, Dirble      : 'Dirble'
+	}
+	getDB( { browsemode: path2mode[ path ], path: path } );
+} );
+$( '#db-webradio-new' ).click( function() {
+	webRadioNew();
+} );
+$( '#db-searchbtn' ).click( function() {
+	$( '#db-currentpath span, #db-back, #db-searchbtn' ).addClass( 'hide' );
+	$( '#db-search-close, #db-search, #dbsearchbtn' ).removeClass( 'hide' );
+	$( '#db-currentpath' ).css( 'max-width', '40px' );
+	$( '#db-search-keyword' ).focus();
+} );
+$( '#dbsearchbtn' ).click( function() {
+	var keyword = $( '#db-search-keyword' ).val();
+	if ( !keyword ) {
+		$( '#db-search-close' ).click();
+	} else {
+		GUI.dblist = 1;
+		getDB( {
+			  cmd : 'search'
+			, arg : keyword
+		} );
+	}
+} );
+$( '#db-search-close' ).click( function() {
+	$( '#db-search-close, #db-search, #dbsearchbtn' ).addClass( 'hide' );
+	$( '#db-currentpath span, #db-searchbtn' ).removeClass( 'hide' );
+	$( '#db-currentpath' ).css( 'max-width', '' );
+	$( '#db-search-close span' ).empty();
+	if ( $( '#db-currentpath .lipath').text() ) $( '#db-back' ).removeClass( 'hide' );
+	if ( !$( '#db-search-keyword' ).val() ) return
+	
+	$( '#db-search-keyword' ).val( '' );
+	var path = $( '#db-currentpath .lipath:last').text();
+	if ( !path ) {
+		$( '#db-entries' ).empty();
+		$( '#home-blocks' ).removeClass( 'hide' );
+		return
+	}
+	
+	if ( GUI.dbbackdata.length ) {
+		var data = GUI.dbbackdata.pop();
+		GUI.dbbackdata.pop();
+	} else {
+		var data = { path: path };
+	}
+	getDB( data );
+	mutationLibrary.observe( observerLibrary, observerOption );
+} );
+$( '#db-search-keyword' ).keypress( function( e ) {
+	if ( e.which === 13 ) $( '#dbsearchbtn' ).click();
+} );
+// MutationObserver - watch for '#db-entries' content changed then scroll to previous position
+var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+var observerOption = { childList: true };
+var observerLibrary = document.getElementById( 'db-entries' );
+var mutationLibrary = new MutationObserver( function() { // on observed target changed
+	var scrollpos = GUI.dbscrolltop[ $( '#db-currentpath' ).find( '.lipath' ).text() ];
+	$( 'html, body' ).scrollTop( scrollpos ? scrollpos : 0 );
+	mutationLibrary.disconnect();
+} );
+$( '#db-back' ).click( function() {
+	$( '.menu' ).addClass( 'hide' );
+	mutationLibrary.observe( observerLibrary, observerOption ); // standard js - must be one on one element
+	// topmost of path
+	if ( GUI.dbbrowsemode === 'file' || !GUI.dbbackdata.length ) {
+		if ( $( '#db-currentpath span a' ).length === 1 ) {
+			renderLibrary();
+		} else {
+			$( '#db-currentpath a:nth-last-child( 2 )' ).click();
+		}
+		return
+	} else if ( GUI.dbbrowsemode === 'coverart' ) {
+		GUI.dbbackdata = [];
+		$( '#home-coverart' ).click();
+		$( '#db-entries' ).empty();
+		return
+	}
+	GUI.artistalbum = '';
+	GUI.dbbackdata.pop();
+	if ( !GUI.dbbackdata.length ) {
+		renderLibrary();
+		return
+	}
+	
+	getDB( GUI.dbbackdata.pop() );
+} );
 $( '#home-blocks' ).contextmenu( function( e ) { // disable default image context menu
 	e.preventDefault();
-} );
-$( '#home-coverart' ).click( function() {
-	$( '#home-blocks' ).addClass( 'hide' );
-	$( '#divcoverarts' ).removeClass( 'hide' );
 } );
 $.event.special.tap.emitTapOnTaphold = false; // suppress tap on taphold
 $( '#home-blocks' ).on( 'tap', '.home-block', function() {
@@ -696,115 +806,13 @@ var sortablelibrary = new Sortable( document.getElementById( 'divhomeblocks' ), 
 		$.post( 'enhance.php', { order: order } );
 	}
 } );
-$( '#db-home' ).click( function() {
-	$( '#tab-library' ).click();
-	$( '.menu' ).addClass( 'hide' );
+$( '#home-coverart' ).click( function() {
+	GUI.dbbrowsemode = 'coverart';
+	$( '#db-currentpath span' ).html( '<i class="fa fa-album"></i> <a>COVERART</a>' );
+	$( '#home-blocks' ).addClass( 'hide' );
+	$( '#divcoverarts, #db-back' ).removeClass( 'hide' );
 } );
-$( '#db-currentpath' ).on( 'click', 'a', function() {
-	if ( $( '#db-currentpath span a' ).length === 1 ) return
-	var rootpath = this.id === 'rootpath';
-	if ( [ 'album', 'artist', 'albumartist', 'composer', 'genre' ].indexOf( GUI.browsemode ) !== -1 && !rootpath ) return
-	
-	if ( rootpath ) {
-		GUI.dbbackdata = [];
-		var path = $( this ).data( 'path' );
-	} else {
-		var path = $( this ).find( '.lipath' ).text();
-	}
-	// get scroll position for back navigation
-	GUI.dbscrolltop[ $( '#db-currentpath' ).find( '.lipath' ).text() ] = $( window ).scrollTop();
-	mutationLibrary.observe( observerLibrary, observerOption );
-	
-	var path2mode = {
-		  Album       : 'album'
-		, Artist      : 'artist'
-		, AlbumArtist : 'albumartist'
-		, Composer    : 'composer'
-		, Genre       : 'genre'
-		, Dirble      : 'Dirble'
-	}
-	getDB( { browsemode: path2mode[ path ], path: path } );
-} );
-$( '#db-webradio-new' ).click( function() {
-	webRadioNew();
-} );
-$( '#db-searchbtn' ).click( function() {
-	$( '#db-currentpath span, #db-back, #db-searchbtn' ).addClass( 'hide' );
-	$( '#db-search-close, #db-search, #dbsearchbtn' ).removeClass( 'hide' );
-	$( '#db-currentpath' ).css( 'max-width', '40px' );
-	$( '#db-search-keyword' ).focus();
-} );
-$( '#dbsearchbtn' ).click( function() {
-	var keyword = $( '#db-search-keyword' ).val();
-	if ( !keyword ) {
-		$( '#db-search-close' ).click();
-	} else {
-		GUI.dblist = 1;
-		getDB( {
-			  cmd : 'search'
-			, arg : keyword
-		} );
-	}
-} );
-$( '#db-search-close' ).click( function() {
-	$( '#db-search-close, #db-search, #dbsearchbtn' ).addClass( 'hide' );
-	$( '#db-currentpath span, #db-searchbtn' ).removeClass( 'hide' );
-	$( '#db-currentpath' ).css( 'max-width', '' );
-	$( '#db-search-close span' ).empty();
-	if ( $( '#db-currentpath .lipath').text() ) $( '#db-back' ).removeClass( 'hide' );
-	if ( !$( '#db-search-keyword' ).val() ) return
-	
-	$( '#db-search-keyword' ).val( '' );
-	var path = $( '#db-currentpath .lipath:last').text();
-	if ( !path ) {
-		$( '#db-entries' ).empty();
-		$( '#home-blocks' ).removeClass( 'hide' );
-		return
-	}
-	
-	if ( GUI.dbbackdata.length ) {
-		var data = GUI.dbbackdata.pop();
-		GUI.dbbackdata.pop();
-	} else {
-		var data = { path: path };
-	}
-	getDB( data );
-	mutationLibrary.observe( observerLibrary, observerOption );
-} );
-$( '#db-search-keyword' ).keypress( function( e ) {
-	if ( e.which === 13 ) $( '#dbsearchbtn' ).click();
-} );
-// MutationObserver - watch for '#db-entries' content changed then scroll to previous position
-var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
-var observerOption = { childList: true };
-var observerLibrary = document.getElementById( 'db-entries' );
-var mutationLibrary = new MutationObserver( function() { // on observed target changed
-	var scrollpos = GUI.dbscrolltop[ $( '#db-currentpath' ).find( '.lipath' ).text() ];
-	$( 'html, body' ).scrollTop( scrollpos ? scrollpos : 0 );
-	mutationLibrary.disconnect();
-} );
-$( '#db-back' ).click( function() {
-	mutationLibrary.observe( observerLibrary, observerOption ); // standard js - must be one on one element
-	// topmost of path
-	if ( GUI.dbbrowsemode === 'file' ) {
-		if ( $( '#db-currentpath span a' ).length === 1 ) {
-			renderLibrary();
-		} else {
-			$( '#db-currentpath a:nth-last-child( 2 )' ).click();
-		}
-		return
-	}
-	
-	GUI.artistalbum = '';
-	GUI.dbbackdata.pop();
-	if ( !GUI.dbbackdata.length ) {
-		renderLibrary();
-		return
-	}
-	
-	getDB( GUI.dbbackdata.pop() );
-} );
-$( '#divcoverarts img' ).click( function() {
+$( '.coverart' ).click( function() {
 	var src = $( this ).prop( 'src' );
 	var filename = src.substring( src.lastIndexOf( '/' ) + 1, src.lastIndexOf( '.' ) );
 	filename = filename.replace( '|', '/' );

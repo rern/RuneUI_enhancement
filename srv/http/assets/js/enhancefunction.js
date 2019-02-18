@@ -681,7 +681,7 @@ function renderLibrary() {
 	$( '#db-currentpath>span, #db-currentpath>i, #db-searchbtn' ).removeClass( 'hide' );
 	$( '#db-currentpath .lipath' ).empty()
 	$( '#db-entries' ).empty();
-	$( '#db-search, #db-search-close, #db-index, #db-back, #db-webradio-new' ).addClass( 'hide' );
+	$( '#db-search, #db-search-close, #db-index, #db-back, #db-webradio-new, #divcoverarts' ).addClass( 'hide' );
 	$( '#db-search-keyword' ).val( '' );
 	if ( $( '#db-entries' ).hasClass( 'hide' ) ) return
 	
