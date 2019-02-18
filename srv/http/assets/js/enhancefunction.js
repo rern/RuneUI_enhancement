@@ -683,6 +683,7 @@ function renderLibrary() {
 	$( '#db-entries' ).empty();
 	$( '#db-search, #db-search-close, #db-index, #db-back, #db-webradio-new, #divcoverarts' ).addClass( 'hide' );
 	$( '#db-search-keyword' ).val( '' );
+	if ( !$( '#divcoverarts' ).children().length ) $( '#home-coverart' ).parent().hide();
 	if ( $( '#db-entries' ).hasClass( 'hide' ) ) return
 	
 	$( '#page-library .btnlist-top, db-entries' ).addClass( 'hide' );
@@ -716,7 +717,7 @@ function renderLibrary() {
 	$( '#divhomeblocks' ).append( content ).promise().done( function() {
 		bookmarkScroll();
 	} );
-	var order = GUI.display.order || 'sd^^usb^^nas^^webradio^^album^^artist^^albumartist^^composer^^genre^^dirble^^jamendo^^spotify';
+	var order = GUI.display.order || 'sd^^usb^^nas^^webradio^^coverart^^album^^artist^^albumartist^^composer^^genre^^dirble^^jamendo^^spotify';
 	order = order.split( '^^' );
 	$( '.home-bookmark' ).each( function() {
 		var id = this.id.replace( 'home-', '' );
