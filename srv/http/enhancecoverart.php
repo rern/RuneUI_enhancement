@@ -23,7 +23,7 @@ $redis = new Redis();
 $redis->pconnect( '127.0.0.1' );
 $pathcoverarts = $redis->Get( 'pathcoverarts' );
 
-$paths = array( '/mnt/MPD/LocalStorage', '/mnt/MPD/NAS', '/mnt/MPD/USB' );
+$paths = array( '/mnt/MPD/USB/hdd/Music/0' );
 foreach( $paths as $path ) {
 	createThumbnail( $path, $pathcoverarts );
 }
@@ -33,8 +33,20 @@ curl_setopt( $ch, CURLOPT_POSTFIELDS, json_encode( 1 ) );
 curl_exec( $ch );
 curl_close( $ch );
 
+function listDirs( $path, $pathcoverarts ) {
+	$dirs = array();
+	$rootdirs = array_slice( scandir( $path ), 2 ); // remove ., ..
+	foreach( $rootdirs as $dir ) {
+		$dir = "$path/$dir";
+		if ( !is_dir( $dir ) || $dir === $pathcoverarts ) continue;
+		
+		$dirs[] = $dir;
+		$dirs = array_merge( $dirs, listDirs( $dir, $pathcoverarts ) );
+	}
+	return $dirs;
+}
 function createThumbnail( $path, $pathcoverarts ) {
-	$dirs = array_slice( scandir( $path ), 2 ); // remove ., ..
+	$dirs = listDirs( $path, $pathcoverarts );
 	if ( !count( $dirs ) ) return;
 	
 	$coverfiles = array(
@@ -44,9 +56,6 @@ function createThumbnail( $path, $pathcoverarts ) {
 	// each directory
 	foreach( $dirs as $dir ) { // >>> dir
 		$created = 0;
-		$dir = "$path/$dir";
-		if ( !is_dir( $dir ) || $dir === $pathcoverarts ) continue;
-		
 		$files = array_slice( scandir( $dir ), 2 ); // remove ., ..
 		// each file - process only 1st audio file
 		foreach( $files as $file ) { // >> files
@@ -54,7 +63,7 @@ function createThumbnail( $path, $pathcoverarts ) {
 			if ( !is_file( $file ) ) continue;
 				
 			$mime = mime_content_type( $file );
-			if ( strpos( $mime, 'audio' ) === 0 ) { // only audio file
+			if ( strpos( $mime, 'audio' ) === 0 ) { // only audio file ($mime = 'audio/xxx')
 				$audioinfo = new AudioInfo();
 				$id3tag = $audioinfo->Info( $file );
 				$tags = $id3tag[ 'tags' ][ 'vorbiscomment' ] ?: ( $id3tag[ 'tags' ][ 'vorbiscomment' ] ?: $id3tag[ 'tags' ][ 'id3v1' ] );
