@@ -220,8 +220,6 @@ ln -sf $path /srv/http/assets/img/coverarts
 chown http:http $path $pathcoverarts
 chmod 755 $path $pathcoverarts
 
-redis-cli set pathcoverarts $path &> /dev/null
-
 installfinish $@
 
 restartlocalbrowser
