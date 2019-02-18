@@ -244,6 +244,8 @@ $( '#turnoff' ).click( function() {
 $( '#tab-library' ).click( function() {
 	if ( !Object.keys( GUI.libraryhome ).length ) return // wait for mpc data
 	
+	$( '#divcoverarts' ).addClass( 'hide' );
+	$( '#home-blocks' ).removeClass( 'hide' );
 	$( '#db-search-close span' ).empty();
 	if ( GUI.bookmarkedit ) {
 		GUI.bookmarkedit = 0;
@@ -614,6 +616,10 @@ $( '#home-blocks' ).on( 'tap', '.home-block', function() {
 	} else if ( type === 'webradio' && !GUI.libraryhome.webradio ) {
 		webRadioNew();
 		return
+	} else if ( type === 'coverart' ) {
+		$( '#home-blocks' ).addClass( 'hide' );
+		$( '#divcoverarts' ).removeClass( 'hide' );
+		return
 	}
 	
 	var path = $this.find( '.lipath' ).text();
@@ -797,6 +803,18 @@ $( '#db-back' ).click( function() {
 	}
 	
 	getDB( GUI.dbbackdata.pop() );
+} );
+$( '#divcoverarts img' ).click( function() {
+	var src = $( this ).prop( 'src' );
+	var filename = src.substring( src.lastIndexOf( '/' ) + 1, src.lastIndexOf( '.' ) );
+	filename = filename.replace( '|', '/' );
+	var tag = decodeURI( filename ).split( '^^' );
+	console.log( tag );
+	getDB( {
+		  path      : tag[ 0 ]
+		, artist     : tag [ 1 ]
+		, browsemode : 'album'
+	} );
 } );
 $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	var $this = $( this );
