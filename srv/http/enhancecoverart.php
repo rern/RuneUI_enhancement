@@ -66,7 +66,7 @@ function createThumbnail( $path, $pathcoverarts ) {
 			if ( strpos( $mime, 'audio' ) === 0 ) { // only audio file ($mime = 'audio/xxx')
 				$audioinfo = new AudioInfo();
 				$id3tag = $audioinfo->Info( $file );
-				$tags = $id3tag[ 'tags' ][ 'vorbiscomment' ] ?: ( $id3tag[ 'tags' ][ 'vorbiscomment' ] ?: $id3tag[ 'tags' ][ 'id3v1' ] );
+				$tags = $id3tag[ 'tags' ][ 'id3v2' ] ?: ( $id3tag[ 'tags' ][ 'vorbiscomment' ] ?: $id3tag[ 'tags' ][ 'id3v1' ] ); // mp3 > flac > very old id3v1
 				if ( !$tags ) break; // no tags - end foreach $files
 				
 				$album = str_replace( '/', '|', $tags[ 'album' ][ 0 ] );
