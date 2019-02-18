@@ -215,8 +215,10 @@ else
 	path=/mnt/MPD/LocalStorage/coverarts
 fi
 mkdir -p $path
-chown http:http $path
-chmod 755 $path
+pathcoverarts=/srv/http/assets/img/coverarts
+ln -sf $path /srv/http/assets/img/coverarts
+chown http:http $path $pathcoverarts
+chmod 755 $path $pathcoverarts
 
 redis-cli set pathcoverarts $path &> /dev/null
 
