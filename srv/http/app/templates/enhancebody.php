@@ -1,5 +1,4 @@
 <?php
-$pathcoverarts = '/srv/http/assets/img/coverarts';
 $blocks = array( // 'id' => array( 'path', 'icon', 'name' );
 	  'sd'          => array( 'LocalStorage', 'microsd',      'SD' )
 	, 'usb'         => array( 'USB',          'usbdrive',     'USB' )
@@ -26,6 +25,7 @@ foreach( $blocks as $id => $value ) {
 		';
 }
 // coverarts
+$pathcoverarts = '/srv/http/assets/img/coverarts';
 $coverhtml = '';
 $coverarts = array_slice( scandir( $pathcoverarts ), 2 ); // remove ., ..
 foreach( $coverarts as $cover ) {
