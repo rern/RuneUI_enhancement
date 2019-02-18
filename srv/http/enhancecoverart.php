@@ -19,10 +19,7 @@
 set_include_path( '/srv/http/app/libs/vendor/' );
 require_once( 'getid3/audioinfo.class.php' );
 
-$redis = new Redis(); 
-$redis->pconnect( '127.0.0.1' );
-$pathcoverarts = $redis->Get( 'pathcoverarts' );
-
+$pathcoverarts = '/srv/http/assets/img/coverarts';
 $paths = array( '/mnt/MPD/LocalStorage', '/mnt/MPD/NAS', '/mnt/MPD/USB' );
 foreach( $paths as $path ) {
 	createThumbnail( $path, $pathcoverarts );
