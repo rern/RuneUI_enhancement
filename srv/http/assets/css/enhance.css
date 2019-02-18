@@ -2047,6 +2047,9 @@ li.active .time {
 	#playback-controls button {
 		margin: 0 5px;
 	}
+	.coverart {
+		width: 50%;
+	}
 }
 @media(max-width: 360px) {
 	#playback-controls button {
