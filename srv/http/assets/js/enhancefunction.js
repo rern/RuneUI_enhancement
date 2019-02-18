@@ -1068,7 +1068,8 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		// fill bottom of list to mave last li movable to top
 		$( '#db-entries p' ).css( 'min-height', window.innerHeight - ( GUI.bars ? 140 : 100 ) +'px' );
 		if ( !fileplaylist ) displayIndexBar();
-		$( '#loader, .menu' ).addClass( 'hide' );
+		$( '#loader, .menu, #divcoverarts' ).addClass( 'hide' );
+
 	} );
 	if ( $( '#db-search-btn' ).hasClass( 'hide' ) ) return
 	
