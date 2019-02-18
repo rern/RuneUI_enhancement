@@ -28,10 +28,11 @@ foreach( $blocks as $id => $value ) {
 $pathcoverarts = '/srv/http/assets/img/coverarts';
 $coverhtml = '';
 $coverarts = array_slice( scandir( $pathcoverarts ), 2 ); // remove ., ..
-foreach( $coverarts as $cover ) {
-	$coverhtml.= '<img class="coverart" src="'.$pathcoverarts.'/'.$cover.'">';
+if ( count( $coverarts ) ) {
+	foreach( $coverarts as $cover ) {
+		$coverhtml.= '<img class="coverart" src="'.$pathcoverarts.'/'.$cover.'">';
+	}
 }
-
 $indexarray = range( 'A', 'Z' );
 $li = '<li>#</li>';
 foreach( $indexarray as $i => $char ) {
