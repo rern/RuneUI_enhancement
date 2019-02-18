@@ -29,11 +29,7 @@ foreach( $blocks as $id => $value ) {
 $coverhtml = '';
 $coverarts = array_slice( scandir( $pathcoverarts ), 2 ); // remove ., ..
 foreach( $coverarts as $cover ) {
-	$filename = preg_replace( '/\..*$/', '', $coverarts[ 0 ] );
-	$tag = explode( '^^', $filename );
-	$coverhtml.= '
-		<img class="coverart" src="'.$pathcoverarts.'/'.$cover.'">
-	';
+	$coverhtml.= '<img class="coverart" src="'.$pathcoverarts.'/'.$cover.'">';
 }
 
 $indexarray = range( 'A', 'Z' );
