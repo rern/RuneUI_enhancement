@@ -12,7 +12,7 @@ $blocks = array( // 'id' => array( 'path', 'icon', 'name' );
 	, 'spotify'     => array( 'Spotify',      'spotify',      'Spotify' )
 	, 'dirble'      => array( 'Dirble',       'dirble',       'Dirble' )
 	, 'jamendo'     => array( 'Jamendo',      'jamendo',      'Jamendo' )
-	, 'coverart'     => array( 'Coverart',    'album',        'CoverArt' )
+	, 'coverart'     => array( 'Coverart',    'grid',        'CoverArt' )
 );
 $blockhtml = '';
 foreach( $blocks as $id => $value ) {
