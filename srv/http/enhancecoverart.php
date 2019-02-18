@@ -23,7 +23,7 @@ $redis = new Redis();
 $redis->pconnect( '127.0.0.1' );
 $pathcoverarts = $redis->Get( 'pathcoverarts' );
 
-$paths = array( '/mnt/MPD/USB/hdd/Music/0' );
+$paths = array( '/mnt/MPD/LocalStorage', '/mnt/MPD/NAS', '/mnt/MPD/USB' );
 foreach( $paths as $path ) {
 	createThumbnail( $path, $pathcoverarts );
 }
