@@ -772,7 +772,6 @@ $( '#home-blocks' ).on( 'tap', '.home-block', function() {
 	$( '.home-bookmark' )
 		.append( '<i class="home-block-edit fa fa-edit-circle"></i><i class="home-block-remove fa fa-minus-circle"></i>' )
 		.find( '.fa-bookmark, .bklabel, img' ).css( 'opacity', 0.2 );
-//	sortablelibrary.option( 'disabled', true );
 } );
 var sortablelibrary = new Sortable( document.getElementById( 'divhomeblocks' ), {
 	  ghostClass : 'db-sortable-ghost'
@@ -1117,8 +1116,8 @@ var sortableplaylist = new Sortable( document.getElementById( 'pl-entries' ), {
 			GUI.status.Pos = $( e.item ).index();
 			GUI.status.song = GUI.status.Pos;
 		}
-		GUI.local = 1;
-		setTimeout( function() { GUI.local = 0 }, 500 );
+		GUI.sortable = 1;
+		setTimeout( function() { GUI.sortable = 0 }, 500 );
 		
 		$.post( 'enhance.php', { mpc: 'mpc move '+ ( e.oldIndex + 1 ) +' '+ ( e.newIndex + 1 ) } );
 	}

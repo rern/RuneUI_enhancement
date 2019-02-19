@@ -1383,7 +1383,7 @@ function setTitleWidth() {
 	$( '.duration-right' ).css( 'right', GUI.display.contexticon ? '55px' : '' );
 }
 function setPlaylistScroll() {
-	if ( GUI.local ) return // 'skip for Sortable'
+	if ( GUI.sortable ) return // 'skip for Sortable'
 	
 	clearInterval( GUI.intElapsedPl );
 	displayTopBottom();
