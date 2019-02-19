@@ -208,11 +208,14 @@ systemctl disable rune_shutdown
 #systemctl stop rune_shutdown
 
 # album coverarts directory
-if mount | grep -q '/dev/sda1'; then
-	mnt=$( mount | grep '/dev/sda1' | cut -d' ' -f3 )
+path=/mnt/MPD/LocalStorage/coverarts
+if mount | grep -q '/mnt/MPD/USB'; then
+	mnt=$( df | grep '/mnt/MPD/USB' | awk '{ print $NF }' )
 	path=$mnt/coverarts
-else
-	path=/mnt/MPD/LocalStorage/coverarts
+elif mount | grep -q '/mnt/MPD/NAS'; then
+	mnt=$( df | grep '/mnt/MPD/NAS' | awk '{ print $NF }' )
+	acl=$( getfacl $mnt | grep user | cut -d':' -f3 )
+	[[ ${acl:0:2} == rw ]] && path=$mnt/coverarts
 fi
 mkdir -p $path
 pathcoverarts=/srv/http/assets/img/coverarts
