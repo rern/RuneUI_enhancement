@@ -1338,7 +1338,11 @@ wh, gr { font-weight: 300; }
 .index li:hover {
 	background: #34495e;
 }
+#divcoverarts {
+	text-align: center;
+}
 .coverart {
+	max-width: 200px;
 	border-right: #000000 1px solid;
 	border-bottom: #000000 1px solid;
 }
@@ -1862,11 +1866,16 @@ li.active .time {
 	width: 16.666666%;
 	padding: 3px;
 }
-@media (max-width: 900px) { .divblock { width: 20%; } }
-@media (max-width: 700px) { .divblock { width: 25%; } }
-@media (max-width: 560px) { .divblock { width: 33.3333333%; } }
-@media (max-width: 410px) { .divblock { width: 50%; } }
-@media (max-width: 280px) { .divblock { width: 100%; } }
+@media (max-width: 900px) { .divblock { width: 20% } }
+@media (max-width: 700px) { .divblock { width: 25% } }
+@media (max-width: 560px) { .divblock { width: 33.3333333% } }
+@media (max-width: 410px) { .divblock { width: 50% } }
+@media (max-width: 280px) { .divblock { width: 100% } }
+
+@media(max-width: 1000px) { .coverart { width: 20% } }
+@media(max-width: 800px) { .coverart { width: 25% } }
+@media(max-width: 600px) { .coverart { width: 33.3333333% } }
+@media(max-width: 400px) { .coverart { width: 50% } }
 /* height */
 @media(max-height: 590px) {
 	#playback-row {
@@ -2051,9 +2060,6 @@ li.active .time {
 	}
 	#playback-controls button {
 		margin: 0 5px;
-	}
-	.coverart {
-		width: 50%;
 	}
 }
 @media(max-width: 360px) {
