@@ -22,7 +22,7 @@ require_once( 'getid3/audioinfo.class.php' );
 $redis = new Redis();
 $redis->pconnect( '127.0.0.1' );
 $pathcoverarts = $redis->get( 'pathcoverarts' );
-$paths = array( '/mnt/MPD/LocalStorage', '/mnt/MPD/NAS', '/mnt/MPD/USB/hdd/Music/0' );
+$paths = array( '/mnt/MPD/LocalStorage', '/mnt/MPD/NAS', '/mnt/MPD/USB' );
 foreach( $paths as $path ) {
 	createThumbnail( $path, $pathcoverarts );
 }
