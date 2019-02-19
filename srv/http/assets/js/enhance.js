@@ -682,7 +682,8 @@ var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 var observerOption = { childList: true };
 var observerLibrary = document.getElementById( 'db-entries' );
 var mutationLibrary = new MutationObserver( function() { // on observed target changed
-	var scrollpos = GUI.dbscrolltop[ $( '#db-currentpath' ).find( '.lipath' ).text() ];
+	var lipath = $( '#db-currentpath' ).find( '.lipath' ).text();
+	var scrollpos = GUI.dbscrolltop[ lipath ];
 	console.log(scrollpos)
 	$( 'html, body' ).scrollTop( scrollpos ? scrollpos : 0 );
 	mutationLibrary.disconnect();
