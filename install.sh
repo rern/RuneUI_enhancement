@@ -218,7 +218,7 @@ mkdir -p $path
 pathcoverarts=/srv/http/assets/img/coverarts
 ln -sf $path /srv/http/assets/img/coverarts
 chown http:http $path $pathcoverarts
-chmod 755 $path $pathcoverarts
+chmod 644 $path $pathcoverarts
 
 installfinish $@
 
