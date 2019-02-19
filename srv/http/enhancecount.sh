@@ -15,8 +15,8 @@ fi
 count=
 count="$count $( mpc stats | head -n3 | awk '{print $2,$4,$6}' )"
 count="$count $( redis-cli get mpddb )"
-count="$count $( df | grep "/mnt/MPD/NAS" | wc -l )"
-count="$count $( df | grep "/mnt/MPD/USB" | wc -l )"
+count="$count $( df | grep '/mnt/MPD/NAS' | wc -l )"
+count="$count $( df | grep '/mnt/MPD/USB' | wc -l )"
 count="$count $( redis-cli hkeys webradios | sed '/(empty list or set)/ d' | awk NF | wc -l )"
 count="$count $( redis-cli hget spotify enable )"
 count="$count $( redis-cli get activePlayer )"
