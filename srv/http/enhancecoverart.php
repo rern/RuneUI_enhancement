@@ -16,9 +16,6 @@
 //     create from text
 //         create dummy thumbnail - next directory >>
 
-set_include_path( '/srv/http/app/libs/vendor/' );
-require_once( 'getid3/audioinfo.class.php' );
-
 $redis = new Redis();
 $redis->pconnect( '127.0.0.1' );
 $pathcoverarts = $redis->get( 'pathcoverarts' );
@@ -63,14 +60,12 @@ function createThumbnail( $path, $pathcoverarts ) {
 				
 			$mime = mime_content_type( $file );
 			if ( strpos( $mime, 'audio' ) === 0 ) { // only audio file ($mime = 'audio/xxx')
-				$audioinfo = new AudioInfo();
-				$id3tag = $audioinfo->Info( $file );
-				$tags = $id3tag[ 'tags' ][ 'id3v2' ] ?: ( $id3tag[ 'tags' ][ 'vorbiscomment' ] ?: $id3tag[ 'tags' ][ 'id3v1' ] ); // mp3 > flac > very old id3v1
+				$filename = str_replace( '/mnt/MPD/', '', $file );
+				$tags = exec( 'mpc find -f "%album%^^%albumartist%" filename "'.$filename.'"' );
 				if ( !$tags ) break; // no tags - end foreach $files
 				
-				$album = str_replace( '/', '|', $tags[ 'album' ][ 0 ] ); // slash "/" character not allowed in filename
-				$artist = str_replace( '/', '|', $tags[ 'artist' ][ 0 ] );
-				$thumbfile = "$pathcoverarts/$album^^$artist.jpg";
+				$tags = str_replace( '/', '|', $tags ); // slash "/" character not allowed in filename
+				$thumbfile = "$pathcoverarts/$tags.jpg";
 				if ( file_exists( $thumbfile ) ) break; // thumnail exists - end foreach $files
 				
 				// create thumbnail from coverart file
@@ -90,6 +85,10 @@ function createThumbnail( $path, $pathcoverarts ) {
 				if ( $created ) break; // end foreach $files
 				
 				// create thumbnail from embedded coverart
+				set_include_path( '/srv/http/app/libs/vendor/' );
+				require_once( 'getid3/audioinfo.class.php' );
+				$audioinfo = new AudioInfo();
+				$id3tag = $audioinfo->Info( $file );
 				if ( isset( $id3tag[ 'comments' ][ 'picture' ][ 0 ][ 'data' ] ) ) {
 					$id3cover = $id3tag[ 'comments' ][ 'picture' ][ 0 ];
 					$coverart = $id3cover[ 'data' ];
@@ -100,13 +99,14 @@ function createThumbnail( $path, $pathcoverarts ) {
 					unlink( $coverfile );
 					break; // extracted > converted - end foreach $files
 				}
+				$anotate =  str_replace( '^^', '\n', $tags );
 				exec( '
 					/usr/bin/sudo convert /srv/http/assets/img/cover.svg \
 					-resize 200x200 \
 					-font /srv/http/assets/fonts/lato/lato-regular-webfont.ttf \
 					-pointsize 16 \
 					-fill "#e0e7ee" \
-					-annotate +10+50 "'.$album.'\n'.$artist.'" \
+					-annotate +10+50 "'.$anotate.'" \
 					"'.$thumbfile.'"
 				' );
 				break; // end foreach $files
