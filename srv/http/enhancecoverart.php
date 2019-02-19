@@ -99,14 +99,14 @@ function createThumbnail( $path, $pathcoverarts ) {
 					unlink( $coverfile );
 					break; // extracted > converted - end foreach $files
 				}
-				$anotate =  str_replace( '^^', '\n', $tags );
+				$anotate =  str_replace( '^^', '\n', $tags ).'\n'.$filename;
 				exec( '
-					/usr/bin/sudo convert /srv/http/assets/img/cover.svg \
+					/usr/bin/sudo convert /srv/http/assets/img/cover-dummy.svg \
 					-resize 200x200 \
 					-font /srv/http/assets/fonts/lato/lato-regular-webfont.ttf \
 					-pointsize 16 \
 					-fill "#e0e7ee" \
-					-annotate +10+50 "'.$anotate.'" \
+					-annotate +10+85 "'.$anotate.'" \
 					"'.$thumbfile.'"
 				' );
 				break; // end foreach $files
