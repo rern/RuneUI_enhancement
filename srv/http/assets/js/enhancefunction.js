@@ -247,7 +247,9 @@ function removeSplash() {
 	$.post( 'enhance.php', { getcoverarts: 1 }, function( data ) {
 		var coverartshtml = '';
 		data.forEach( function( cover ) {
-			coverartshtml += '<img class="coverart" src="/srv/http/assets/img/coverarts/'+ cover +'">';
+			var tag = cover.substring( cover.lastIndexOf( '/' ) + 1, cover.lastIndexOf( '.' ) );
+			var coveruri = encodeURIComponent( cover );
+			coverartshtml += '<img class="coverart" src="/srv/http/assets/img/coverarts/'+ coveruri +'" tag="'+ tag +'">';
 		} );
 		$( '#divcoverarts' ).html( coverartshtml );
 	}, 'json' );
@@ -813,18 +815,19 @@ function getDB( options ) {
 	GUI.browsemode = browsemode;
 	if ( !plugin ) {
 		var command = {
-			  file          : { mpc: 'mpc ls -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" "'+ path +'" 2> /dev/null', list: 'file' }
-			, artistalbum   : { mpc: 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%"'+ ( artist ? ' artist "'+ artist +'"' : '' ) +' album "'+ path +'"', list: 'file', name: path }
-			, composeralbum : { mpc: 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" composer "'+ composer +'" album "'+ path +'"', list: 'file' }
-			, album         : { album: 'mpc find -f "%album%^^[%albumartist%|%artist%]" album "'+ path +'" | awk \'!a[$0]++\'', albumname: path }
-			, genre         : { album: 'mpc find -f "%album%^^%artist%" genre "'+ path +'" | awk \'!a[$0]++\'', genrename: path }
-			, artist        : { mpc: 'mpc list album artist "'+ path +'" | awk NF', list: 'album' }
-			, albumartist   : { mpc: 'mpc list album albumartist "'+ path +'" | awk NF', list: 'album' }
-			, composer      : { mpc: 'mpc list album composer "'+ path +'" | awk NF', list: 'album' }
-			, type          : { mpc: 'mpc list '+ browsemode +' | awk NF', list: browsemode }
-			, search        : { mpc: 'mpc search -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" any "'+ keyword +'"', list: 'file' }
-			, Webradio      : { getwebradios: 1 }
-			, playlist      : { playlist: path }
+			  file          : { mpc   : 'mpc ls -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" "'+ path +'" 2> /dev/null', list: 'file' }
+			, artistalbum   : { mpc   : 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%"'+ ( artist ? ' artist "'+ artist +'"' : '' ) +' album "'+ path +'"', list: 'file', name: path }
+			, composeralbum : { mpc   : 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" composer "'+ composer +'" album "'+ path +'"', list: 'file' }
+			, album         : { album : 'mpc find -f "%album%^^[%albumartist%|%artist%]" album "'+ path +'" | awk \'!a[$0]++\'', albumname: path }
+			, genre         : { album : 'mpc find -f "%album%^^%artist%" genre "'+ path +'" | awk \'!a[$0]++\'', genrename: path }
+			, artist        : { mpc   : 'mpc list album artist "'+ path +'" | awk NF', list: 'album' }
+			, albumartist   : { mpc   : 'mpc list album albumartist "'+ path +'" | awk NF', list: 'album' }
+			, composer      : { mpc   : 'mpc list album composer "'+ path +'" | awk NF', list: 'album' }
+			, type          : { mpc   : 'mpc list '+ browsemode +' | awk NF', list: browsemode }
+			, search        : { mpc   : 'mpc search -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" any "'+ keyword +'"', list: 'file' }
+			, Webradio      : { getwebradios  : 1 }
+			, playlist      : { playlist      : path }
+			, coverart      : { coverartalbum : path, artist: artist }
 		}
 		if ( cmd === 'search' ) {
 			if ( path.match(/Dirble/)) {
@@ -838,6 +841,9 @@ function getDB( options ) {
 		} else if ( cmd === 'browse' ) {
 			if ( [ 'Album', 'Artist', 'AlbumArtist', 'Composer', 'Genre' ].indexOf( path ) !== -1 ) {
 				mode = 'type';
+			} else if ( browsemode === 'coverart' ) {
+				mode = 'coverart';
+				GUI.browsemode = 'album';
 			} else if ( path === 'Webradio' ) {
 				mode = 'Webradio';
 			} else if ( // <li> in 'Album' and 'Genre'
@@ -1089,6 +1095,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		, album         : [ '<i class="fa fa-album"></i>',       'ALBUM' ]
 		, artist        : [ '<i class="fa fa-artist"></i>',      'ARTIST' ]
 		, albumartist   : [ '<i class="fa fa-albumartist"></i>', 'ALBUM ARTIST' ]
+		, coverart      : [ '<i class="fa fa-grid"></i>',        'COVERART' ]
 		, genre         : [ '<i class="fa fa-genre"></i>',       'GENRE' ]
 		, composer      : [ '<i class="fa fa-composer"></i>',    'COMPOSER' ]
 		, composeralbum : [ '<i class="fa fa-composer"></i>',    'COMPOSER' ]

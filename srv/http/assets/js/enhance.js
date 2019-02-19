@@ -807,19 +807,16 @@ var sortablelibrary = new Sortable( document.getElementById( 'divhomeblocks' ), 
 } );
 $( '#home-coverart' ).click( function() {
 	GUI.dbbrowsemode = 'coverart';
-	$( '#db-currentpath span' ).html( '<i class="fa fa-album"></i> <a>COVERART</a>' );
+	$( '#db-currentpath span' ).html( '<i class="fa fa-grid"></i> <a>COVERART</a>' );
 	$( '#home-blocks' ).addClass( 'hide' );
 	$( '#divcoverarts, #db-back' ).removeClass( 'hide' );
 } );
 $( '#divcoverarts' ).on( 'click', '.coverart', function() {
-	var src = $( this ).prop( 'src' );
-	var filename = src.substring( src.lastIndexOf( '/' ) + 1, src.lastIndexOf( '.' ) );
-	filename = filename.replace( '|', '/' );
-	var tag = decodeURI( filename ).split( '^^' );
+	var tag = $( this ).attr( 'tag' ).replace( '|', '/' ).split( '^^' );
 	getDB( {
 		  path      : tag[ 0 ]
 		, artist     : tag [ 1 ]
-		, browsemode : 'album'
+		, browsemode : 'coverart'
 	} );
 } );
 $( '#db-entries' ).on( 'click', 'li', function( e ) {
