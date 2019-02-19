@@ -244,6 +244,13 @@ function removeSplash() {
 	$( '#splash' ).remove();
 	$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
 	$( '#page-playback' ).removeClass( 'hide' );
+	$.post( 'enhance.php', { getcoverarts: 1 }, function( data ) {
+		var coverartshtml = '';
+		data.forEach( function( cover ) {
+			coverartshtml += '<img class="coverart" src="/srv/http/assets/img/coverarts/'+ cover +'">';
+		} );
+		$( '#divcoverarts' ).html( coverartshtml );
+	}, 'json' );
 }
 function setPlaybackBlank() {
 	$( '#playback-controls' ).addClass( 'hide' );

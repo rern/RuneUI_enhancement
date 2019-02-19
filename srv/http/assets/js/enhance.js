@@ -812,7 +812,7 @@ $( '#home-coverart' ).click( function() {
 	$( '#home-blocks' ).addClass( 'hide' );
 	$( '#divcoverarts, #db-back' ).removeClass( 'hide' );
 } );
-$( '.coverart' ).click( function() {
+$( '#divcoverarts' ).on( 'click', '.coverart', function() {
 	var src = $( this ).prop( 'src' );
 	var filename = src.substring( src.lastIndexOf( '/' ) + 1, src.lastIndexOf( '.' ) );
 	filename = filename.replace( '|', '/' );
