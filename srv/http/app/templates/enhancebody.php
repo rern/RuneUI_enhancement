@@ -24,15 +24,6 @@ foreach( $blocks as $id => $value ) {
 	</div>
 		';
 }
-// coverarts
-$pathcoverarts = '/srv/http/assets/img/coverarts';
-$coverhtml = '';
-$coverarts = array_slice( scandir( $pathcoverarts ), 2 ); // remove ., ..
-if ( count( $coverarts ) ) {
-	foreach( $coverarts as $cover ) {
-		$coverhtml.= '<img class="coverart" src="'.$pathcoverarts.'/'.$cover.'">';
-	}
-}
 $indexarray = range( 'A', 'Z' );
 $li = '<li>#</li>';
 foreach( $indexarray as $i => $char ) {
@@ -322,9 +313,7 @@ $menu.= '</div>';
 		<ul id="db-index" class="index hide">
 			<?=$index?>
 		</ul>
-		<div id="divcoverarts" class="hide">
-			<?=$coverhtml?>
-		</div>
+		<div id="divcoverarts" class="hide"></div>
 	</div>
 </div>
 <div id="page-playlist" class="page hide">
