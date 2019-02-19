@@ -614,7 +614,8 @@ $( '#db-currentpath' ).on( 'click', 'a', function() {
 		var path = $( this ).find( '.lipath' ).text();
 	}
 	// get scroll position for back navigation
-	GUI.dbscrolltop[ $( '#db-currentpath' ).find( '.lipath' ).text() ] = $( window ).scrollTop();
+	var currentpath =  $( '#db-currentpath' ).find( '.lipath' ).text();
+	GUI.dbscrolltop[ currentpath ] = $( window ).scrollTop();
 	mutationLibrary.observe( observerLibrary, observerOption );
 	
 	var path2mode = {
@@ -682,6 +683,7 @@ var observerOption = { childList: true };
 var observerLibrary = document.getElementById( 'db-entries' );
 var mutationLibrary = new MutationObserver( function() { // on observed target changed
 	var scrollpos = GUI.dbscrolltop[ $( '#db-currentpath' ).find( '.lipath' ).text() ];
+	console.log(scrollpos)
 	$( 'html, body' ).scrollTop( scrollpos ? scrollpos : 0 );
 	mutationLibrary.disconnect();
 } );
@@ -697,6 +699,8 @@ $( '#db-back' ).click( function() {
 		}
 		return
 	} else if ( GUI.dbbrowsemode === 'coverart' ) {
+		var currentpath =  $( '#db-currentpath' ).find( '.lipath' ).text();
+		GUI.dbscrolltop[ currentpath ] = $( window ).scrollTop();
 		GUI.dbbackdata = [];
 		$( '#home-coverart' ).click();
 		$( '#db-entries' ).empty();
@@ -808,10 +812,13 @@ var sortablelibrary = new Sortable( document.getElementById( 'divhomeblocks' ), 
 $( '#home-coverart' ).click( function() {
 	GUI.dbbrowsemode = 'coverart';
 	$( '#db-currentpath span' ).html( '<i class="fa fa-grid"></i> <a>COVERART</a>' );
+	$( '#db-currentpath .lipath' ).text( 'coverart' );
 	$( '#home-blocks' ).addClass( 'hide' );
 	$( '#divcoverarts, #db-back' ).removeClass( 'hide' );
 } );
 $( '#divcoverarts' ).on( 'click', '.coverart', function() {
+	mutationLibrary.observe( observerLibrary, observerOption ); // standard js - must be one on one element
+	GUI.dbscrolltop.coverart = $( window ).scrollTop();
 	var tag = $( this ).attr( 'tag' ).replace( '|', '/' ).split( '^^' );
 	getDB( {
 		  path      : tag[ 0 ]
