@@ -211,20 +211,22 @@ systemctl disable rune_shutdown
 df=$( df )
 dfUSB=$( echo "$df" | grep '/mnt/MPD/USB' | head -n1 )
 dfNAS=$( echo "$df" | grep '/mnt/MPD/NAS' | head -n1 )
-path=/mnt/MPD/LocalStorage/coverarts
+pathcoverarts=/mnt/MPD/LocalStorage/coverarts
 if [[ $dfUSB ]]; then
 	mnt=$( echo $dfUSB | awk '{ print $NF }' )
-	path=$mnt/coverarts
+	pathcoverarts=$mnt/coverarts
 elif [[ $dfNAS ]]; then
 	mnt=$( echo $dfNAS | awk '{ print $NF }' )
 	acl=$( getfacl $mnt | grep user | cut -d':' -f3 )
-	[[ ${acl:0:2} == rw ]] && path=$mnt/coverarts
+	[[ ${acl:0:2} == rw ]] && pathcoverarts=$mnt/coverarts
 fi
-mkdir -p $path
-pathcoverarts=/srv/http/assets/img/coverarts
+mkdir -p $pathcoverarts
+pathlink=/srv/http/assets/img/coverarts
 ln -sf $path /srv/http/assets/img/coverarts
-chown http:http $path $pathcoverarts
-chmod 644 $path $pathcoverarts
+chown http:http $pathcoverarts $pathlink
+chmod 644 $pathcoverarts pathlink
+
+redis-cli set pathcoverarts $pathcoverarts$path
 
 installfinish $@
 
