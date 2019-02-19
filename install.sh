@@ -209,8 +209,8 @@ systemctl disable rune_shutdown
 
 # album coverarts directory
 df=$( df )
-dfUSB=$( echo $df | grep '/mnt/MPD/USB' )
-dfNAS=$( echo $df | grep '/mnt/MPD/NAS' )
+dfUSB=$( echo "$df" | grep '/mnt/MPD/USB' | head -n1 )
+dfNAS=$( echo "$df" | grep '/mnt/MPD/NAS' | head -n1 )
 path=/mnt/MPD/LocalStorage/coverarts
 if [[ $dfUSB ]]; then
 	mnt=$( echo $dfUSB | awk '{ print $NF }' )
