@@ -60,6 +60,22 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	} else if ( isset( $_POST[ 'result' ] ) ) {
 		echo $result;
 	}
+} else if ( isset( $_POST[ 'coverartalbum' ] ) ) {
+	$album = $_POST[ 'coverartalbum' ];
+	$albums = shell_exec( 'mpc find -f "%album% - %albumartist%" album "'.$album.'" | awk \'!a[$0]++\'' );
+	$count = count( explode( "\n", rtrim( $albums ) ) );
+	$cmd = 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" album "'.$album.'"';
+	if ( $count === 1 ) {
+		$result = shell_exec( $cmd );
+	} else {
+		$result = shell_exec( $cmd.' artist "'.$_POST[ 'artist' ].'"' );
+	}
+	$data = search2array( $result );
+	if ( $redis->hGet( 'display', 'coverfile' ) && !isPlaylist( $data ) && substr( $mpc, 0, 10 ) !== 'mpc search' ) {
+		$cover = getCover( $coverfiles, $data[ 0 ][ 'file' ] );
+		if ( $cover ) $data[][ 'coverart' ] = $cover;
+	}
+	echo json_encode( $data );
 } else if ( isset( $_POST[ 'library' ] ) ) {
 	$status = getLibrary();
 	if ( isset( $_POST[ 'data' ] ) ) {
