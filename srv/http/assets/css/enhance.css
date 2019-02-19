@@ -1338,9 +1338,6 @@ wh, gr { font-weight: 300; }
 .index li:hover {
 	background: #34495e;
 }
-#divcoverarts {
-	text-align: center;
-}
 .coverart {
 	max-width: 200px;
 	border-right: #000000 1px solid;
