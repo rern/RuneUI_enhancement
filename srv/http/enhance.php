@@ -169,6 +169,9 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	} else {
 		exec( 'mpc update Webradio' );
 	}
+} else if ( isset( $_POST[ 'getcoverarts' ] ) ) {
+	$data = array_slice( scandir( '/srv/http/assets/img/coverarts' ), 2 );
+	echo json_encode( $data ); 
 } else if ( isset( $_POST[ 'getwebradios' ] ) ) {
 	$webradios = $redis->hGetAll( 'webradios' );
 	foreach( $webradios as $name => $url ) {
