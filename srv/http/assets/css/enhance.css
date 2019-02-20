@@ -1349,7 +1349,7 @@ wh, gr { font-weight: 300; }
 }
 .licover .coversmall {
 	margin: 0 15px 0 40px;
-	box-shadow: #555555 0 0 8px 2px;
+	box-shadow: #555555 0 0 4px 0;
 }
 .licover .db-action {
 	margin-top: 184px !important;
