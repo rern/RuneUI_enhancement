@@ -1339,8 +1339,13 @@ wh, gr { font-weight: 300; }
 	background: #34495e;
 }
 .coverart {
+	display: inline-block;
 	border-right: #000000 1px solid;
 	border-bottom: #000000 1px solid;
+}
+.coverart img {
+	width: 100%;
+	height: 100%;
 }
 .licover {
 	height: 230px !important;
