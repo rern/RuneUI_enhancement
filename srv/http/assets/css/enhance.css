@@ -1870,6 +1870,10 @@ li.active .time {
 @media (max-width: 410px) { .divblock { width: 50% } }
 @media (max-width: 280px) { .divblock { width: 100% } }
 
+@media(max-width: 2000px) { .coverart { width: 10%;         height: calc( 100vw * 0.1 ); } }
+@media(max-width: 1800px) { .coverart { width: 12.5%;       height: calc( 100vw * 0.125 ); } }
+@media(max-width: 1600px) { .coverart { width: 14.2857143%; height: calc( 100vw * 0.142857143 ); } }
+@media(max-width: 1200px) { .coverart { width: 16.6666667%; height: calc( 100vw * 0.166666667 ); } }
 @media(max-width: 1000px) { .coverart { width: 20%;         height: calc( 100vw * 0.2 ); } }
 @media(max-width: 800px)  { .coverart { width: 25%;         height: calc( 100vw * 0.25 ); } }
 @media(max-width: 600px)  { .coverart { width: 33.3333333%; height: calc( 100vw * 0.333333333 ); } }
