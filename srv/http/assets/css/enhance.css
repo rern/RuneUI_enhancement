@@ -1339,8 +1339,6 @@ wh, gr { font-weight: 300; }
 	background: #34495e;
 }
 .coverart {
-	width: 200px;
-	height: 200px;
 	border-right: #000000 1px solid;
 	border-bottom: #000000 1px solid;
 }
@@ -1870,6 +1868,7 @@ li.active .time {
 @media (max-width: 410px) { .divblock { width: 50% } }
 @media (max-width: 280px) { .divblock { width: 100% } }
 
+@media(min-width: 2000px) { .coverart { width: 200px;       height: 200px; } }
 @media(max-width: 2000px) { .coverart { width: 10%;         height: calc( 100vw * 0.1 ); } }
 @media(max-width: 1800px) { .coverart { width: 12.5%;       height: calc( 100vw * 0.125 ); } }
 @media(max-width: 1600px) { .coverart { width: 14.2857143%; height: calc( 100vw * 0.142857143 ); } }
