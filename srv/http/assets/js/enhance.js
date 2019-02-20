@@ -819,10 +819,10 @@ $( '#home-coverart' ).click( function() {
 $( '#divcoverarts' ).on( 'click', '.coverart', function() {
 	mutationLibrary.observe( observerLibrary, observerOption ); // standard js - must be one on one element
 	GUI.dbscrolltop.coverart = $( window ).scrollTop();
-	var tag = $( this ).attr( 'tag' ).replace( '|', '/' ).split( '^^' );
+	$this = $( this );
 	getDB( {
-		  path      : tag[ 0 ]
-		, artist     : tag [ 1 ]
+		  path       : $this.find( '.lipath' ).text()
+		, artist     : $this.find( '.liartist' ).text()
 		, browsemode : 'coverart'
 	} );
 } );

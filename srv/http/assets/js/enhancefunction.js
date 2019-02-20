@@ -252,10 +252,14 @@ function removeSplash() {
 		data.forEach( function( cover ) {
 			var tag = cover.substring( cover.lastIndexOf( '/' ) + 1, cover.lastIndexOf( '.' ) );
 			var tags = tag.split( '^^' );
+			var album = tags[ 0 ];
+			var artist = tags[ 1 ];
 			var coveruri = encodeURIComponent( cover );
 			coverartshtml += '<div class="coverart">'
-								+'<img src="/srv/http/assets/img/coverarts/'+ coveruri +'" tag="'+ tag +'"><br>'
-								+'<span class="coverarttitle">'+ tag.replace( '^^', '<br><gr>' ) +'</gr></span>'
+								+'<a class="lipath">'+ album +'</a>'
+								+'<a class="liartist">'+ artist +'</a>'
+								+'<img src="/srv/http/assets/img/coverarts/'+ coveruri +'"><br>'
+								+'<span class="coverarttitle">'+ album +'<br><gr>'+ artist +'</gr></span>'
 							+'</div>';
 		} );
 		$( '#divcoverarts' ).html( coverartshtml );
