@@ -43,31 +43,42 @@ function listDirs( $path, $pathcoverarts ) {
 }
 function createThumbnail( $path, $pathcoverarts ) {
 	$dirs = listDirs( $path, $pathcoverarts );
-	if ( !count( $dirs ) ) return;
+	$countdirs = count( $dirs );
+	if ( !$countdirs ) return;
 	
 	$coverfiles = array(
 		  'cover.png', 'cover.jpg', 'folder.png', 'folder.jpg', 'front.png', 'front.jpg'
 		, 'Cover.png', 'Cover.jpg', 'Folder.png', 'Folder.jpg', 'Front.png', 'Front.jpg'
 	);
+	echo "Find coverarts in $countdirs directories ...\n\n";
 	// each directory
+	$dirnum = 0;
 	foreach( $dirs as $dir ) { // >>> dir
+		$dirnum++;
 		$created = 0;
-		$files = array_slice( scandir( $dir ), 2 ); // remove ., ..
+		$filenames = array_slice( scandir( $dir ), 2 ); // remove ., ..
+		echo "$dirnum/$countdirs : ".str_replace( '/mnt/MPD/', '', $dir )."\n";
 		// each file - process only 1st audio file
-		foreach( $files as $file ) { // >> files
-			$file = "$dir/$file";
+		foreach( $filenames as $filename ) { // >> files
+			$file = "$dir/$filename";
 			if ( !is_file( $file ) ) continue;
 				
 			$mime = mime_content_type( $file );
-			if ( strpos( $mime, 'audio' ) === 0 ) { // only audio file ($mime = 'audio/xxx')
-				$filename = str_replace( '/mnt/MPD/', '', $file );
-				$tags = exec( 'mpc find -f "%album%^^%albumartist%" filename "'.$filename.'"' );
-				if ( !$tags ) break; // no tags - end foreach $files
-				
+			// only audio file: mimetype 'audio/xxx' or extension 'mp3'(for wrong-mimetype mp3)
+			if ( strpos( $mime, 'audio' ) === 0 || pathinfo( $file, PATHINFO_EXTENSION ) === 'mp3' ) {
+				$filenamempd = str_replace( '/mnt/MPD/', '', $file );
+				$tags = exec( 'mpc find -f "%album%^^%albumartist%" filename "'.$filenamempd.'"' );
+				if ( !$tags ) {
+					echo "  No ID3 data found.\n\n";
+					break; // no tags - end foreach $files
+				}
 				$tags = str_replace( '/', '|', $tags ); // slash "/" character not allowed in filename
+				echo '  '.str_replace( '^^', ' - ', $tags )."\n";
 				$thumbfile = "$pathcoverarts/$tags.jpg";
-				if ( file_exists( $thumbfile ) ) break; // thumnail exists - end foreach $files
-				
+				if ( file_exists( $thumbfile ) ) {
+					echo "  Thumbnail already exists.\n\n";
+					break; // thumnail exists - end foreach $files
+				}
 				// create thumbnail from coverart file
 				foreach( $coverfiles as $cover ) { // > cover
 					$coverfile = "$dir/$cover";
@@ -82,8 +93,10 @@ function createThumbnail( $path, $pathcoverarts ) {
 						break; // found > converted - end foreach $coverfiles
 					}
 				}                                  // > cover
-				if ( $created ) break; // end foreach $files
-				
+				if ( $created ) {
+					echo "  Thumbnail created from file: $filename\n\n";
+					break; // end foreach $files
+				}
 				// create thumbnail from embedded coverart
 				set_include_path( '/srv/http/app/libs/vendor/' );
 				require_once( 'getid3/audioinfo.class.php' );
@@ -97,6 +110,7 @@ function createThumbnail( $path, $pathcoverarts ) {
 					file_put_contents( $coverfile, $coverart );
 					exec( '/usr/bin/sudo /usr/bin/convert "'.$coverfile.'" -thumbnail 200x200 -unsharp 0x.5 "'.$thumbfile.'"' );
 					unlink( $coverfile );
+					echo "  Thumbnail created from embedded ID3: $filename\n\n";
 					break; // extracted > converted - end foreach $files
 				}
 				$anotate =  str_replace( '^^', '\n', $tags ).'\n'.$filename;
@@ -109,6 +123,7 @@ function createThumbnail( $path, $pathcoverarts ) {
 					-annotate +10+85 "'.$anotate.'" \
 					"'.$thumbfile.'"
 				' );
+				echo "  Coverart not found. Dummy thumbnail created.\n\n";
 				break; // end foreach $files
 			}
 		}                            // >> files
