@@ -245,11 +245,18 @@ function removeSplash() {
 	$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
 	$( '#page-playback' ).removeClass( 'hide' );
 	$.post( 'enhance.php', { getcoverarts: 1 }, function( data ) {
+		data.sort( function( a, b ) {
+			return stripLeading( a ).localeCompare( stripLeading( b ), undefined, { numeric: true } );
+		} );
 		var coverartshtml = '';
 		data.forEach( function( cover ) {
 			var tag = cover.substring( cover.lastIndexOf( '/' ) + 1, cover.lastIndexOf( '.' ) );
+			var tags = tag.split( '^^' );
 			var coveruri = encodeURIComponent( cover );
-			coverartshtml += '<img class="coverart" src="/srv/http/assets/img/coverarts/'+ coveruri +'" tag="'+ tag +'">';
+			coverartshtml += '<div class="coverart">'
+								+'<img src="/srv/http/assets/img/coverarts/'+ coveruri +'" tag="'+ tag +'"><br>'
+								+'<span class="coverarttitle">'+ tag.replace( '^^', '<br><gr>' ) +'</gr></span>'
+							+'</div>';
 		} );
 		$( '#divcoverarts' ).html( coverartshtml );
 	}, 'json' );
