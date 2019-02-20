@@ -23,9 +23,16 @@ $paths = array( '/mnt/MPD/LocalStorage', '/mnt/MPD/NAS', '/mnt/MPD/USB' );
 foreach( $paths as $path ) {
 	createThumbnail( $path, $pathcoverarts );
 }
-$ch = curl_init( 'http://localhost/pub?id=coverarts' );
+echo "Thumbnails created and saved at $pathcoverarts\n\n";
+
+$ch = curl_init( 'http://localhost/pub?id=notify' );
 curl_setopt( $ch, CURLOPT_HTTPHEADER, array( 'Content-Type:application/json' ) );
-curl_setopt( $ch, CURLOPT_POSTFIELDS, json_encode( 1 ) );
+curl_setopt( $ch, CURLOPT_POSTFIELDS, json_encode( 
+	array( 
+		  'title' => 'Coverart Thumbnails'
+		, 'text'  => 'Thumbnails updated / created.'
+	) 
+) );
 curl_exec( $ch );
 curl_close( $ch );
 
@@ -84,7 +91,7 @@ function createThumbnail( $path, $pathcoverarts ) {
 					$coverfile = "$dir/$cover";
 					if ( file_exists( $coverfile ) ) {
 						exec( '
-							/usr/bin/sudo /usr/bin/convert "'.$coverfile.'" \
+							convert "'.$coverfile.'" \
 								-thumbnail 200x200 \
 								-unsharp 0x.5 \
 								"'.$thumbfile.'"
@@ -108,14 +115,14 @@ function createThumbnail( $path, $pathcoverarts ) {
 					$coverext = str_replace( 'image/', '', $id3cover[ 'image_mime' ] );
 					$coverfile = "/srv/http/tmp/cover.$coverext";
 					file_put_contents( $coverfile, $coverart );
-					exec( '/usr/bin/sudo /usr/bin/convert "'.$coverfile.'" -thumbnail 200x200 -unsharp 0x.5 "'.$thumbfile.'"' );
+					exec( 'convert "'.$coverfile.'" -thumbnail 200x200 -unsharp 0x.5 "'.$thumbfile.'"' );
 					unlink( $coverfile );
 					echo "  Thumbnail created from embedded ID3: $filename\n\n";
 					break; // extracted > converted - end foreach $files
 				}
 				$anotate =  str_replace( '^^', '\n', $tags ).'\n'.$filename;
 				exec( '
-					/usr/bin/sudo convert /srv/http/assets/img/cover-dummy.svg \
+					convert /srv/http/assets/img/cover-dummy.svg \
 					-resize 200x200 \
 					-font /srv/http/assets/fonts/lato/lato-regular-webfont.ttf \
 					-pointsize 16 \
