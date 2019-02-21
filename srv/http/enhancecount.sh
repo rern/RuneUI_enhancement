@@ -20,4 +20,6 @@ count="$count $( df | grep '/mnt/MPD/USB' | wc -l )"
 count="$count $( redis-cli hkeys webradios | sed '/(empty list or set)/ d' | awk NF | wc -l )"
 count="$count $( redis-cli hget spotify enable )"
 count="$count $( redis-cli get activePlayer )"
+countalbum=$( redis-cli get countalbum )
+[[ $countalbum ]] && count="$count $countalbum"
 echo $count
