@@ -816,7 +816,7 @@ $( '#home-coverart' ).click( function() {
 	$( '#db-currentpath span' ).html( '<i class="fa fa-grid"></i> <a>COVERART</a>' );
 	$( '#db-currentpath .lipath' ).text( 'coverart' );
 	$( '#home-blocks' ).addClass( 'hide' );
-	$( '#divcoverarts, #db-back' ).removeClass( 'hide' );
+	$( '#divcoverarts, #db-back, #db-index' ).removeClass( 'hide' );
 } );
 $( '#divcoverarts' ).on( 'click', '.coverart', function() {
 	mutationLibrary.observe( observerLibrary, observerOption ); // standard js - must be one on one element
@@ -977,13 +977,31 @@ $( '#db-index li' ).click( function() {
 		if ( $( '#db-entries .lisort:eq( 0 )' ).text()[ 0 ] === 'A' ) $this.css( 'color', '#000000' );
 		return
 	}
-	$( '#db-entries li' ).each( function() {
+	var $el = $( '#divcoverarts' ).hasClass( 'hide' ) ? $( '#db-entries li' ) : $( '.coverart' );
+	$el.each( function() {
 		if ( $( this ).find( '.lisort' ).text()[ 0 ] === indextext ) {
 			$( 'html, body' ).scrollTop( this.offsetTop - topoffset );
 			match = 1;
 			return false
 		}
 	} );
+/*	if ( $( '#divcoverarts' ).hasClass( 'hide' ) ) {
+		$( '#db-entries li' ).each( function() {
+			if ( $( this ).find( '.lisort' ).text()[ 0 ] === indextext ) {
+				$( 'html, body' ).scrollTop( this.offsetTop - topoffset );
+				match = 1;
+				return false
+			}
+		} );
+	} else {
+		$( '.coverart' ).each( function() {
+			if ( $( this ).find( '.lisort' ).text()[ 0 ] === indextext ) {
+				$( 'html, body' ).scrollTop( this.offsetTop - topoffset );
+				match = 1;
+				return false
+			}
+		} );
+	}*/
 	if ( !match ) {
 		$this.css( 'color', '#000000' );
 		if ( $this.text() !== 'Z' ) $this.next().click();

@@ -254,8 +254,10 @@ function removeSplash() {
 			var tags = tag.split( '^^' );
 			var album = tags[ 0 ];
 			var artist = tags[ 1 ];
+			var lisort = stripLeading( album );
 			var coveruri = encodeURIComponent( cover );
 			coverartshtml += '<div class="coverart">'
+								+'<a class="lisort">'+ lisort +'</a>'
 								+'<a class="lipath">'+ album +'</a>'
 								+'<a class="liartist">'+ artist +'</a>'
 								+'<img src="/srv/http/assets/img/coverarts/'+ coveruri +'"><br>'
