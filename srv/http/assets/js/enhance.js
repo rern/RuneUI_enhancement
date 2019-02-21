@@ -1396,7 +1396,6 @@ pushstreams.volume.onmessage = function( data ) {
 	volumemute ? muteColor( volumemute ) : unmuteColor();
 }
 pushstreams.library.onmessage = function( data ) {
-	console.log(data[0])
 	GUI.libraryhome = data[ 0 ];
 	if ( !GUI.local && !$( '#home-blocks' ).hasClass( 'hide' ) ) renderLibrary();
 }
