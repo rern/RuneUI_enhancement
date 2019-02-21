@@ -12,10 +12,11 @@ $blocks = array( // 'id' => array( 'path', 'icon', 'name' );
 	, 'spotify'     => array( 'Spotify',      'spotify',      'Spotify' )
 	, 'dirble'      => array( 'Dirble',       'dirble',       'Dirble' )
 	, 'jamendo'     => array( 'Jamendo',      'jamendo',      'Jamendo' )
+	, 'coverart'     => array( 'Coverart',    'grid',        'CoverArt' )
 );
 $blockhtml = '';
 foreach( $blocks as $id => $value ) {
-	$browsemode = in_array( $id, array( 'album', 'artist', 'albumartist', 'composer', 'genre' ) ) ? ' data-browsemode="'.$id.'"' : '';
+	$browsemode = in_array( $id, array( 'album', 'artist', 'albumartist', 'composer', 'genre', 'coverart' ) ) ? ' data-browsemode="'.$id.'"' : '';
 	$plugin = in_array( $id, array( 'spotify', 'dirble', 'jamendo' ) ) ? ' data-plugin="'.$value[ 0 ].'"' : '';
 	$blockhtml.= '
 	<div class="divblock">
@@ -312,6 +313,7 @@ $menu.= '</div>';
 		<ul id="db-index" class="index hide">
 			<?=$index?>
 		</ul>
+		<div id="divcoverarts" class="hide"></div>
 	</div>
 </div>
 <div id="page-playlist" class="page hide">

@@ -78,6 +78,7 @@ function switchPage( page ) {
 	// restore page scroll
 	if ( GUI.playback ) {
 		renderPlayback();
+		if ( GUI.status.state === 'play' && GUI.status.ext !== 'radio' ) $( '#elapsed' ).empty(); // hide flashing
 		$( 'html, body' ).scrollTop( 0 );
 	} else if ( GUI.library ) {
 		if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) {
@@ -243,6 +244,26 @@ function removeSplash() {
 	$( '#splash' ).remove();
 	$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
 	$( '#page-playback' ).removeClass( 'hide' );
+	$.post( 'enhance.php', { getcoverarts: 1 }, function( data ) {
+		data.sort( function( a, b ) {
+			return stripLeading( a ).localeCompare( stripLeading( b ), undefined, { numeric: true } );
+		} );
+		var coverartshtml = '';
+		data.forEach( function( cover ) {
+			var tag = cover.substring( cover.lastIndexOf( '/' ) + 1, cover.lastIndexOf( '.' ) );
+			var tags = tag.split( '^^' );
+			var album = tags[ 0 ];
+			var artist = tags[ 1 ];
+			var coveruri = encodeURIComponent( cover );
+			coverartshtml += '<div class="coverart">'
+								+'<a class="lipath">'+ album +'</a>'
+								+'<a class="liartist">'+ artist +'</a>'
+								+'<img src="/srv/http/assets/img/coverarts/'+ coveruri +'"><br>'
+								+'<span class="coverarttitle">'+ album +'<br><gr>'+ artist +'</gr></span>'
+							+'</div>';
+		} );
+		$( '#divcoverarts' ).html( coverartshtml );
+	}, 'json' );
 }
 function setPlaybackBlank() {
 	$( '#playback-controls' ).addClass( 'hide' );
@@ -263,12 +284,6 @@ function setPlaybackBlank() {
 		.css( 'visibility', 'visible' );
 }
 function renderPlayback() {
-	if ( $( '#splash' ).length ) { // in case too long to get coverart
-		setTimeout( function() {
-			$( '#splash' ).remove();
-			$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
-		}, 2000 );
-	}
 	var status = GUI.status;
 	// song and album before update for song/album change detection
 	var previoussong = $( '#song' ).text();
@@ -348,6 +363,8 @@ function renderPlayback() {
 			.attr( 'src', coverart )
 			.css( 'border-radius', 0 )
 			.one( 'load', removeSplash );
+		// in case too long to get coverart 
+		setTimeout( removeSplash, 2000 );
 	}
 	// time
 	time = status.Time;
@@ -422,11 +439,6 @@ function getPlaybackStatus() {
 	GUI.local = 1;
 	setTimeout( function() { GUI.local = 0 }, 200 );
 	
-	if ( GUI.playlist && !GUI.pleditor ) {
-		$( '#tab-playlist' ).click();
-		return
-	}
-	
 	$.post( 'enhancestatus.php', { artist: $( '#artist' ).text(), album: $( '#album' ).text() }, function( status ) {
 		// 'gpio off' > audio output switched > restarts mpd which makes status briefly unavailable
 		if( typeof status !== 'object' ) return
@@ -440,11 +452,11 @@ function getPlaybackStatus() {
 			GUI.status[ key ] = value;
 		} );
 		setButton();
-		if ( !GUI.playback ) return
-		
-		renderPlayback();
-		// imodedelay fix imode flashing on audio output switched
-		if ( !GUI.imodedelay ) displayPlayback();
+		if ( GUI.playback ) {
+			renderPlayback();
+			// imodedelay fix imode flashing on audio output switched
+			if ( !GUI.imodedelay ) displayPlayback();
+		}
 	}, 'json' );
 }
 function getBio( artist ) {
@@ -689,8 +701,9 @@ function renderLibrary() {
 	$( '#db-currentpath>span, #db-currentpath>i, #db-searchbtn' ).removeClass( 'hide' );
 	$( '#db-currentpath .lipath' ).empty()
 	$( '#db-entries' ).empty();
-	$( '#db-search, #db-search-close, #db-index, #db-back, #db-webradio-new' ).addClass( 'hide' );
+	$( '#db-search, #db-search-close, #db-index, #db-back, #db-webradio-new, #divcoverarts' ).addClass( 'hide' );
 	$( '#db-search-keyword' ).val( '' );
+	if ( !$( '#divcoverarts' ).children().length ) $( '#home-coverart' ).parent().hide();
 	if ( $( '#db-entries' ).hasClass( 'hide' ) ) return
 	
 	$( '#page-library .btnlist-top, db-entries' ).addClass( 'hide' );
@@ -710,23 +723,32 @@ function renderLibrary() {
 		var bookmarkL = bookmarks.length;
 		$.each( bookmarks, function( i, bookmark ) {
 			var coverarthtml = bookmark.coverart ? '<img class="bkcoverart" src="'+ bookmark.coverart +'">' : '<i class="fa fa-bookmark"></i>';
-			var namehtml = '<div class="divbklabel"><span class="bklabel'+ ( bookmark.coverart ? ' hide' : '' ) +'">'+ bookmark.name.replace( /\\/g, '' ) +'</span></div>';
+			var name = bookmark.name.replace( /\\/g, '' );
+			var id = name
+				.replace( / /g, '_' )
+				.replace( /[^A-Za-z0-9_-]+/g, '-' );
+			var namehtml = '<div class="divbklabel"><span class="bklabel'+ ( bookmark.coverart ? ' hide' : '' ) +'">'+ name +'</span></div>';
 			content += '<div class="divblock bookmark">'
-					  +'	<div id="home-bk'+ i +'" class="home-block home-bookmark"><a class="lipath">'+ bookmark.path +'</a>'+ coverarthtml + namehtml +'</div>'
+					  +'	<div id="home-bk-'+ id +'" class="home-block home-bookmark"><a class="lipath">'+ bookmark.path +'</a>'+ coverarthtml + namehtml +'</div>'
 					  +'</div>';
 		} );
 	}
 	$( '.bookmark' ).remove();
-	$( '#divhomeblocks' ).prepend( content ).promise().done( function() {
+	$( '#divhomeblocks' ).append( content ).promise().done( function() {
 		bookmarkScroll();
 	} );
-	var order = GUI.display.library || 'sd,usb,nas,webradio,album,artist,albumartist,composer,genre,dirble,jamendo,spotify';
-	order = order.split( ',' );$( '.home-block' ).find( 'gr' ).remove();
+	var order = GUI.display.order || 'sd^^usb^^nas^^webradio^^coverart^^album^^artist^^albumartist^^composer^^genre^^dirble^^jamendo^^spotify';
+	order = order.split( '^^' );
+	$( '.home-bookmark' ).each( function() {
+		var id = this.id.replace( 'home-', '' );
+		if ( order.indexOf( id ) === -1 ) order.push( id );
+	} );
+	$( '.home-block' ).find( 'gr' ).remove();
 	$.each( order, function( i, name ) {
 		if ( GUI.display.count ) $( '#home-'+ name ).find( 'i' ).after( GUI.libraryhome[ name ] ? '<gr>'+ numFormat( GUI.libraryhome[ name ] ) +'</gr>' : '' );
 		var $block = $( '#home-'+ name ).parent();
 		$block.toggleClass( 'hide', GUI.display[ name ] === '' );
-		if ( GUI.display.library ) {
+		if ( GUI.display.order ) {
 			$block.detach();
 			$( '#divhomeblocks' ).append( $block );
 		}
@@ -804,18 +826,19 @@ function getDB( options ) {
 	GUI.browsemode = browsemode;
 	if ( !plugin ) {
 		var command = {
-			  file          : { mpc: 'mpc ls -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" "'+ path +'" 2> /dev/null', list: 'file' }
-			, artistalbum   : { mpc: 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%"'+ ( artist ? ' artist "'+ artist +'"' : '' ) +' album "'+ path +'"', list: 'file', name: path }
-			, composeralbum : { mpc: 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" composer "'+ composer +'" album "'+ path +'"', list: 'file' }
-			, album         : { album: 'mpc find -f "%album%^^[%albumartist%|%artist%]" album "'+ path +'" | awk \'!a[$0]++\'', albumname: path }
-			, genre         : { album: 'mpc find -f "%album%^^%artist%" genre "'+ path +'" | awk \'!a[$0]++\'', genrename: path }
-			, artist        : { mpc: 'mpc list album artist "'+ path +'" | awk NF', list: 'album' }
-			, albumartist   : { mpc: 'mpc list album albumartist "'+ path +'" | awk NF', list: 'album' }
-			, composer      : { mpc: 'mpc list album composer "'+ path +'" | awk NF', list: 'album' }
-			, type          : { mpc: 'mpc list '+ browsemode +' | awk NF', list: browsemode }
-			, search        : { mpc: 'mpc search -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" any "'+ keyword +'"', list: 'file' }
-			, Webradio      : { getwebradios: 1 }
-			, playlist      : { playlist: path }
+			  file          : { mpc   : 'mpc ls -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" "'+ path +'" 2> /dev/null', list: 'file' }
+			, artistalbum   : { mpc   : 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%"'+ ( artist ? ' artist "'+ artist +'"' : '' ) +' album "'+ path +'"', list: 'file', name: path }
+			, composeralbum : { mpc   : 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" composer "'+ composer +'" album "'+ path +'"', list: 'file' }
+			, album         : { album : 'mpc find -f "%album%^^[%albumartist%|%artist%]" album "'+ path +'" | awk \'!a[$0]++\'', albumname: path }
+			, genre         : { album : 'mpc find -f "%album%^^%artist%" genre "'+ path +'" | awk \'!a[$0]++\'', genrename: path }
+			, artist        : { mpc   : 'mpc list album artist "'+ path +'" | awk NF', list: 'album' }
+			, albumartist   : { mpc   : 'mpc list album albumartist "'+ path +'" | awk NF', list: 'album' }
+			, composer      : { mpc   : 'mpc list album composer "'+ path +'" | awk NF', list: 'album' }
+			, type          : { mpc   : 'mpc list '+ browsemode +' | awk NF', list: browsemode }
+			, search        : { mpc   : 'mpc search -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" any "'+ keyword +'"', list: 'file' }
+			, Webradio      : { getwebradios  : 1 }
+			, playlist      : { playlist      : path }
+			, coverart      : { coverartalbum : path, artist: artist }
 		}
 		if ( cmd === 'search' ) {
 			if ( path.match(/Dirble/)) {
@@ -829,6 +852,9 @@ function getDB( options ) {
 		} else if ( cmd === 'browse' ) {
 			if ( [ 'Album', 'Artist', 'AlbumArtist', 'Composer', 'Genre' ].indexOf( path ) !== -1 ) {
 				mode = 'type';
+			} else if ( browsemode === 'coverart' ) {
+				mode = 'coverart';
+				GUI.browsemode = 'album';
 			} else if ( path === 'Webradio' ) {
 				mode = 'Webradio';
 			} else if ( // <li> in 'Album' and 'Genre'
@@ -982,7 +1008,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 							  + composerhtml
 							  +'<i class="fa fa-'+ ( artistmode ? 'artist' : 'albumartist' ) +'"></i><span class="bioartist">'+ ( artistmode ? artist : albumartist ) +'</span><br>'
 							  + genrehtml
-							  +'<i class="fa fa-music"></i>'+ arrayfile.length +'<gr> • </gr>'+ second2HMS( litime )
+							  +'<i class="fa fa-music db-icon"></i>'+ arrayfile.length +'<gr> • </gr>'+ second2HMS( litime )
 						  +'</span>'
 						  +'<i class="fa fa-bars db-action" data-target="#context-menu-'+ ( GUI.browsemode !== 'file' ? GUI.browsemode : 'folder' ) +'"></i>'
 						  +'</li>';
@@ -1066,7 +1092,8 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		// fill bottom of list to mave last li movable to top
 		$( '#db-entries p' ).css( 'min-height', window.innerHeight - ( GUI.bars ? 140 : 100 ) +'px' );
 		if ( !fileplaylist ) displayIndexBar();
-		$( '#loader, .menu' ).addClass( 'hide' );
+		$( '#loader, .menu, #divcoverarts' ).addClass( 'hide' );
+
 	} );
 	if ( $( '#db-search-btn' ).hasClass( 'hide' ) ) return
 	
@@ -1079,6 +1106,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		, album         : [ '<i class="fa fa-album"></i>',       'ALBUM' ]
 		, artist        : [ '<i class="fa fa-artist"></i>',      'ARTIST' ]
 		, albumartist   : [ '<i class="fa fa-albumartist"></i>', 'ALBUM ARTIST' ]
+		, coverart      : [ '<i class="fa fa-grid"></i>',        'COVERART' ]
 		, genre         : [ '<i class="fa fa-genre"></i>',       'GENRE' ]
 		, composer      : [ '<i class="fa fa-composer"></i>',    'COMPOSER' ]
 		, composeralbum : [ '<i class="fa fa-composer"></i>',    'COMPOSER' ]
@@ -1502,7 +1530,7 @@ function htmlPlaylist( data ) {
 							+ composerhtml
 							+'<i class="fa fa-albumartist"></i><span class="bioartist">'+ artist +'</span><br>'
 							+ genrehtml
-							+'<i class="fa fa-music"></i>'+ countsong +'<gr> • </gr>'+ second2HMS( pltime )
+							+'<i class="fa fa-music db-icon"></i>'+ countsong +'<gr> • </gr>'+ second2HMS( pltime )
 						 +'</span>'
 						 +'<i class="fa fa-bars db-action" data-target="#context-menu-folder"></i>'
 					 +'</li>';

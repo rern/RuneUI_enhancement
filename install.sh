@@ -10,6 +10,10 @@ alias=enha
 . /srv/http/addonstitle.sh
 . /srv/http/addonsedit.sh
 
+#0temp0
+redis-cli hdel display library &> /dev/null
+#1temp1
+
 installstart $@
 
 mv /srv/http/index.php{,.backup}
@@ -18,6 +22,13 @@ mv /srv/http/assets/js/vendor/pushstream.min.js{,.backup}
 mv /srv/http/assets/js/vendor/Sortable.min.js{,.backup}
 mv /srv/http/command/airplay_toggle{,.backup}
 ln -sf /srv/http/assets/img/bootsplash.png /usr/share/bootsplash/start.png
+
+pkg=$( pacman -Ss '^imagemagick$' | head -n1 )
+installed=$( echo $pkg | cut -d' ' -f3 )
+if [[ $installed != '[installed]' ]]; then
+	echo -e "$bar Install ImageMagick for coverart resizing ..."
+	pacman -Sy --noconfirm imagemagick libpng zlib glibc
+fi
 
 getinstallzip
 
@@ -186,17 +197,36 @@ redis-cli set mpddb "$albumartist $composer $genre" &> /dev/null
 # fix webradio permission
 chown -R http:http /mnt/MPD/Webradio
 
-echo -e "$bar Disable ACC/ALAC support ..."
-echo 'Re-enable in MPD > FFmpeg option'
+# disable AAC/ALAC support ..."
 redis-cli hset mpdconf ffmpeg no &> /dev/null
-
-echo -e "$bar Disable USB drive auto scan database ..."
-echo 'Re-enable in Sources > Library auto rebuild switch'
+# disable USB drive auto scan database ..."
 redis-cli set usb_db_autorebuild 0 &> /dev/null
-
+# disable GB and DE locale ..."
+sed -i '/^de_DE.UTF-8\|^en_GB.UTF-8/ s/^/#/' /etc/locale.gen
 # disable default shutdown
 systemctl disable rune_shutdown
 #systemctl stop rune_shutdown
+
+# album coverarts directory
+df=$( df )
+dfUSB=$( echo "$df" | grep '/mnt/MPD/USB' | head -n1 )
+dfNAS=$( echo "$df" | grep '/mnt/MPD/NAS' | head -n1 )
+pathcoverarts=/mnt/MPD/LocalStorage/coverarts
+if [[ $dfUSB ]]; then
+	mnt=$( echo $dfUSB | awk '{ print $NF }' )
+	pathcoverarts=$mnt/coverarts
+elif [[ $dfNAS ]]; then
+	mnt=$( echo $dfNAS | awk '{ print $NF }' )
+	acl=$( getfacl $mnt | grep user | cut -d':' -f3 )
+	[[ ${acl:0:2} == rw ]] && pathcoverarts=$mnt/coverarts
+fi
+mkdir -p $pathcoverarts
+pathlink=/srv/http/assets/img/coverarts
+ln -sf $path /srv/http/assets/img/coverarts
+chown http:http $pathcoverarts $pathlink
+chmod 644 $pathcoverarts pathlink
+
+redis-cli set pathcoverarts $pathcoverarts$path
 
 installfinish $@
 
