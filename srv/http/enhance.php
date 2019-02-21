@@ -320,7 +320,6 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	}
 	exec( $cmd );
 }
-
 function search2array( $result, $playlist = '' ) {
 	$lists = explode( "\n", rtrim( $result ) );
 	$genre = $composer = $albumartist = '';
