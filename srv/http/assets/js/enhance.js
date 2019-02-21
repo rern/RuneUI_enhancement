@@ -817,6 +817,7 @@ $( '#home-coverart' ).click( function() {
 	$( '#db-currentpath .lipath' ).text( 'coverart' );
 	$( '#home-blocks' ).addClass( 'hide' );
 	$( '#divcoverarts, #db-back, #db-index' ).removeClass( 'hide' );
+	displayIndexBar();
 } );
 $( '#divcoverarts' ).on( 'click', '.coverart', function() {
 	mutationLibrary.observe( observerLibrary, observerOption ); // standard js - must be one on one element
@@ -985,23 +986,6 @@ $( '#db-index li' ).click( function() {
 			return false
 		}
 	} );
-/*	if ( $( '#divcoverarts' ).hasClass( 'hide' ) ) {
-		$( '#db-entries li' ).each( function() {
-			if ( $( this ).find( '.lisort' ).text()[ 0 ] === indextext ) {
-				$( 'html, body' ).scrollTop( this.offsetTop - topoffset );
-				match = 1;
-				return false
-			}
-		} );
-	} else {
-		$( '.coverart' ).each( function() {
-			if ( $( this ).find( '.lisort' ).text()[ 0 ] === indextext ) {
-				$( 'html, body' ).scrollTop( this.offsetTop - topoffset );
-				match = 1;
-				return false
-			}
-		} );
-	}*/
 	if ( !match ) {
 		$this.css( 'color', '#000000' );
 		if ( $this.text() !== 'Z' ) $this.next().click();
@@ -1368,10 +1352,8 @@ window.addEventListener( 'orientationchange', function() {
 		}, 300 );
 	} else if ( GUI.library && !$( '#home-blocks' ).hasClass( 'hide' ) ) {
 		setTimeout( bookmarkScroll, 100 );
-	} else {
-		if ( GUI.dblist || GUI.pleditor ) {
-			displayIndexBar();
-		}
+	} else if ( GUI.dblist || GUI.pleditor  || !$( '#divcoverarts' ).hasClass( 'hide' ) ) {
+		displayIndexBar();
 	}
 } );
 
