@@ -693,8 +693,6 @@ function bookmarkScroll() {
 	}
 }
 function renderLibrary() {
-	if ( GUI.bookmarkedit ) return
-	
 	GUI.dbbackdata = [];
 	GUI.plugin = '';
 	$( '#db-currentpath' ).css( 'max-width', '' );

@@ -758,7 +758,9 @@ $( '#home-blocks' ).on( 'tap', '.home-block', function() {
 	var path = $this.find( '.lipath' ).text();
 	var name = $this.find( '.bklabel' ).text();
 	if ( $target.is( '.home-block-edit' ) ) {
-		bookmarkRename( name, path, $this );
+		setTimeout( function() { // fix: info close icon appears too fast
+			bookmarkRename( name, path, $this );
+		}, 100 );
 	} else if ( $target.is( '.home-block-remove' ) ) {
 		bookmarkDelete( name, $this );
 	} else {
@@ -1394,11 +1396,9 @@ pushstreams.volume.onmessage = function( data ) {
 	volumemute ? muteColor( volumemute ) : unmuteColor();
 }
 pushstreams.library.onmessage = function( data ) {
+	console.log(data[0])
 	GUI.libraryhome = data[ 0 ];
-	if ( !GUI.local
-		&& !$( '#home-blocks' ).hasClass( 'hide' )
-		&& !GUI.bookmarkedit
-	) renderLibrary();
+	if ( !GUI.local && !$( '#home-blocks' ).hasClass( 'hide' ) ) renderLibrary();
 }
 pushstreams.count.onmessage = function( data ) {
 	var data = data[ 0 ].split( ' ' );
