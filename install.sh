@@ -224,9 +224,9 @@ mkdir -p $pathcoverarts
 pathlink=/srv/http/assets/img/coverarts
 ln -sf $path /srv/http/assets/img/coverarts
 chown http:http $pathcoverarts $pathlink
-chmod 644 $pathcoverarts pathlink
+chmod 644 $pathcoverarts $pathlink
 
-redis-cli set pathcoverarts $pathcoverarts$path
+redis-cli set pathcoverarts $pathcoverarts &> /dev/null
 
 installfinish $@
 
