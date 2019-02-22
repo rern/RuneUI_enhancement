@@ -679,7 +679,7 @@ function bookmarkScroll() {
 	$( '.bklabel' )
 		.removeClass( 'bkscrollleft' )
 		.removeAttr( 'style' ); // fix - iOS needs whole style removed
-	var bW = $( '.home-block:eq( 0 )' ).width();
+	var bW = $( '.divblock' ).width() - 10;
 	$( '.bklabel:not(.hide)' ).each( function() {
 		var $this = $( this );
 		var tW = $this.width();
