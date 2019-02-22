@@ -160,12 +160,13 @@ function setButtonUpdate() {
 				$( '#iupdate' ).removeClass( 'hide' );
 			}
 		}
-		setTimeout( function() {
+		GUI.intUpdate = setInterval( function() {
 			setButtonUpdate()
 		}, 10000 );
 	} else {
 		$( '#tab-library i, #db-home i' ).removeClass( 'blink' );
 		$( '#posupdate, #iupdate' ).addClass( 'hide' );
+		clearInterval( GUI.intUpdate );
 	}
 }
 function setButton() {
