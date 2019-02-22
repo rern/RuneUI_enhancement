@@ -251,8 +251,11 @@ function removeSplash() {
 	$.post( 'enhance.php', { getcoverarts: 1 }, function( data ) {
 		if ( !data.length ) return
 		
+		var albumA, balbumB;
 		data.sort( function( a, b ) {
-			return stripLeading( a ).localeCompare( stripLeading( b ), undefined, { numeric: true } );
+			albumA = a.split( '^^' ).shift();
+			balbumB = b.split( '^^' ).shift();
+			return stripLeading( albumA ).localeCompare( stripLeading( balbumB ), undefined, { numeric: true } );
 		} );
 		var coverartshtml = '';
 		data.forEach( function( cover ) {
@@ -1064,9 +1067,9 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			data = ( querytype === 'tracks' ) ? data.tracks : data.playlists;
 			data.sort( function( a, b ) {
 				if ( path === 'Spotify' && querytype === '' ) {
-					return stripLeading( a[ 'name' ] ).localeCompare( stripLeading( b[ 'name' ] ), undefined, { numeric: true } )
+					return stripLeading( a.name ).localeCompare( stripLeading( b.name ), undefined, { numeric: true } )
 				} else if ( querytype === 'tracks' ) {
-					return stripLeading( a[ 'title' ]) .localeCompare( stripLeading( b[ 'title' ] ), undefined, { numeric: true } )
+					return stripLeading( a.title ) .localeCompare( stripLeading( b.title ), undefined, { numeric: true } )
 				} else {
 					return 0;
 				}
@@ -1078,9 +1081,9 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			} else {
 				data.sort( function( a, b ) {
 					if ( !querytype || querytype === 'childs' || querytype === 'categories' ) {
-						return stripLeading( a[ 'title' ] ).localeCompare( stripLeading( b[ 'title' ] ), undefined, { numeric: true } )
+						return stripLeading( a.title ).localeCompare( stripLeading( b.title ), undefined, { numeric: true } )
 					} else if ( querytype === 'childs-stations' || querytype === 'stations' ) {
-						return stripLeading( a[ 'name' ] ).localeCompare( stripLeading( b[ 'name' ] ), undefined, { numeric: true } )
+						return stripLeading( a.name ).localeCompare( stripLeading( b.name ), undefined, { numeric: true } )
 				   } else {
 						return 0;
 					}
@@ -1090,7 +1093,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		} else if ( plugin === 'Jamendo' ) {
 			data.sort( function( a, b ) {
 				if ( path === 'Jamendo' && querytype === '' ) {
-					return stripLeading( a[ 'dispname' ] ).localeCompare( stripLeading( b[ 'dispname' ] ), undefined, { numeric: true } )
+					return stripLeading( a.dispname ).localeCompare( stripLeading( b.dispname ), undefined, { numeric: true } )
 				} else {
 					return 0;
 				}
