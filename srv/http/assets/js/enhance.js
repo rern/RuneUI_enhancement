@@ -950,7 +950,11 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 	}
 	
 	GUI.list = {};
-	GUI.list.mode = $thisli.find( '.db-icon' ).prop( 'class' ).replace( /fa fa-| db-icon/g, '' );
+	if ( $thisli.hasClass( 'licover' ) ) {
+		GUI.list.mode = 'album'
+	} else {
+		GUI.list.mode = $thisli.find( '.db-icon' ).prop( 'class' ).replace( /fa fa-| db-icon/g, '' );
+	}
 	GUI.list.path = $thisli.find( '.lipath' ).text() || '';
 	GUI.list.name = $thisli.find( '.liname' ).text() || '';
 	GUI.list.bioartist = $thisli.find( '.bioartist' ).text() || '';
