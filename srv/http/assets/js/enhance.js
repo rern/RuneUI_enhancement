@@ -817,9 +817,11 @@ $( '#home-coverart' ).click( function() {
 	$( '#db-currentpath .lipath' ).text( 'coverart' );
 	$( '#home-blocks' ).addClass( 'hide' );
 	$( '#divcoverarts, #db-back, #db-index' ).removeClass( 'hide' );
-	var cH = window.innerHeight - $( '.coverart' ).height() - 98;
-	$( '#divcoverarts p' ).css( 'height', cH +'px' );
 	displayIndexBar();
+	setTimeout( function() {
+		var cH = window.innerHeight - $( '.coverart' ).height() + 98;
+		$( '#divcoverarts p' ).css( 'height', cH +'px' );
+	}, 50 );
 } );
 $( '#divcoverarts' ).on( 'click', '.coverart', function() {
 	mutationLibrary.observe( observerLibrary, observerOption ); // standard js - must be one on one element
