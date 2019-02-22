@@ -160,6 +160,9 @@ function setButtonUpdate() {
 				$( '#iupdate' ).removeClass( 'hide' );
 			}
 		}
+		setTimeout( function() {
+			setButtonUpdate()
+		}, 10000 );
 	} else {
 		$( '#tab-library i, #db-home i' ).removeClass( 'blink' );
 		$( '#posupdate, #iupdate' ).addClass( 'hide' );
