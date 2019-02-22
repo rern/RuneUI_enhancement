@@ -1,6 +1,7 @@
 <?php
 $blocks = array( // 'id' => array( 'path', 'icon', 'name' );
-	  'sd'          => array( 'LocalStorage', 'microsd',      'SD' )
+	  'coverart'    => array( 'Coverart',     'grid',         'CoverArt' )
+	, 'sd'          => array( 'LocalStorage', 'microsd',      'SD' )
 	, 'usb'         => array( 'USB',          'usbdrive',     'USB' )
 	, 'nas'         => array( 'NAS',          'network',      'Network' )
 	, 'webradio'    => array( 'Webradio',     'webradio',     'Webradio' )
@@ -12,7 +13,6 @@ $blocks = array( // 'id' => array( 'path', 'icon', 'name' );
 	, 'spotify'     => array( 'Spotify',      'spotify',      'Spotify' )
 	, 'dirble'      => array( 'Dirble',       'dirble',       'Dirble' )
 	, 'jamendo'     => array( 'Jamendo',      'jamendo',      'Jamendo' )
-	, 'coverart'     => array( 'Coverart',    'grid',        'CoverArt' )
 );
 $blockhtml = '';
 foreach( $blocks as $id => $value ) {
