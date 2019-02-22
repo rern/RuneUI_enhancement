@@ -827,11 +827,18 @@ $( '#divcoverarts' ).on( 'click', '.coverart', function() {
 	mutationLibrary.observe( observerLibrary, observerOption ); // standard js - must be one on one element
 	GUI.dbscrolltop.coverart = $( window ).scrollTop();
 	$this = $( this );
-	getDB( {
-		  path       : $this.find( '.lipath' ).text()
-		, artist     : $this.find( '.liartist' ).text()
-		, browsemode : 'coverart'
-	} );
+	if ( $this.find( '.licue' ).length ) {
+		getDB( {
+			  path       : $this.find( '.licue' ).text()
+			, browsemode : 'file'
+		} );
+	} else {
+		getDB( {
+			  path       : $this.find( '.lipath' ).text()
+			, artist     : $this.find( '.liartist' ).text()
+			, browsemode : 'coverart'
+		} );
+	}
 } );
 $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	var $this = $( this );

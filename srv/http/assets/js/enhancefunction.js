@@ -256,18 +256,21 @@ function removeSplash() {
 		} );
 		var coverartshtml = '';
 		data.forEach( function( cover ) {
-			var tag = cover.substring( cover.lastIndexOf( '/' ) + 1, cover.lastIndexOf( '.' ) );
-			var tags = tag.split( '^^' );
-			var album = tags[ 0 ];
-			var artist = tags[ 1 ];
+			var filename = cover.substring( cover.lastIndexOf( '/' ) + 1, cover.lastIndexOf( '.' ) );
+			var names = filename.replace( /\|/g, '/' ).split( '^^' );
+			var licue = names[ 2 ] ? '<a class="licue">'+ names[ 2 ] +'</a>' : '';
+			var album = names[ 0 ];
+			var artist = names[ 1 ];
 			var lisort = stripLeading( album );
 			var coveruri = encodeURIComponent( cover );
 			coverartshtml += '<div class="coverart">'
+								+ licue
 								+'<a class="lisort">'+ lisort +'</a>'
 								+'<a class="lipath">'+ album +'</a>'
 								+'<a class="liartist">'+ artist +'</a>'
 								+'<div><img src="/srv/http/assets/img/coverarts/'+ coveruri +'"></div>'
-								+'<span class="coverarttitle">'+ album +'<br><gr>'+ artist +'</gr></span>'
+								+'<span class="coverarttitle">'+ album +'<br>'
+									+'<gr>'+ artist +'</gr></span>'
 							+'</div>';
 		} );
 		$( '#divcoverarts' ).html( coverartshtml +'<p></p>' );
