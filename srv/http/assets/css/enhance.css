@@ -152,6 +152,10 @@ html {
 }
 body {
 	overscroll-behavior: none; /* disable android pull-down refresh */
+	-ms-overflow-style: none;  /* hide scrollbar - ie */
+}
+body::-webkit-scrollbar {
+	width: 0 !important; /* hide scrollbar - chrome and safari */
 }
 a,
 a:hover {
@@ -1343,10 +1347,6 @@ wh, gr { font-weight: 300; }
 	border-right: #000000 1px solid;
 	border-bottom: #000000 1px solid;
 }
-.coverart img {
-	width: 100%;
-	height: 100%;
-}
 .coverarttitle {
 	display: block;
 	height: 35px;
@@ -1397,7 +1397,7 @@ wh, gr { font-weight: 300; }
 #db-entries,
 #pl-editor {
 	float: left;
-	width: calc( 100% - 38px );
+	width: calc( 100vw - 38px );
 	padding-bottom: 80px;
 }
 #db-entries,
@@ -1877,21 +1877,54 @@ li.active .time {
 	width: 16.666666%;
 	padding: 3px;
 }
+
+.coverart img {
+	width: 100%;
+	height: 100%;
+}
+@media(min-width: 2000px) {
+	.coverart { width: 200px }
+	.coverart div { height: 200px }
+}
+@media(max-width: 2000px) {
+	.coverart { width: calc( ( 100vw - 38px ) * 0.1 ) }
+	.coverart div { height: calc( ( 100vw - 38px ) * 0.1 ) }
+}
+@media(max-width: 1800px) {
+	.coverart { width: calc( ( 100vw - 38px ) * 0.125 ) }
+	.coverart div { height: calc( ( 100vw - 38px ) * 0.125 ) }
+}
+@media(max-width: 1600px) {
+	.coverart { width: calc( ( 100vw - 38px ) * 0.142857143 ) }
+	.coverart div { height: calc( ( 100vw - 38px ) * 0.142857143 ) }
+}
+@media(max-width: 1200px) {
+	.coverart { width: calc( ( 100vw - 38px ) * 0.166666667 ) }
+	.coverart div { height: calc( ( 100vw - 38px ) * 0.166666667 ) }
+}
+@media(max-width: 1000px) {
+	.coverart { width: calc( ( 100vw - 38px ) * 0.2 ) }
+	.coverart div { height: calc( ( 100vw - 38px ) * 0.2 ) }
+}
+@media(max-width: 800px)  {
+	.coverart { width: calc( ( 100vw - 38px ) * 0.25 ) }
+	.coverart div { height: calc( ( 100vw - 38px ) * 0.25 ) }
+}
+@media(max-width: 600px)  {
+	.coverart { width: calc( ( 100vw - 38px ) * 0.333333333 ) }
+	.coverart div { height: calc( ( 100vw - 38px ) * 0.333333333 ) }
+}
+@media(max-width: 400px)  {
+	.coverart { width: calc( ( 100vw - 38px ) * 0.5 ) }
+	.coverart div { height: calc( ( 100vw - 38px ) * 0.5 ) }
+}
+
 @media (max-width: 900px) { .divblock { width: 20% } }
 @media (max-width: 700px) { .divblock { width: 25% } }
 @media (max-width: 560px) { .divblock { width: 33.3333333% } }
 @media (max-width: 410px) { .divblock { width: 50% } }
 @media (max-width: 280px) { .divblock { width: 100% } }
 
-@media(min-width: 2000px) { .coverart { width: 200px;       height: 200px; } }
-@media(max-width: 2000px) { .coverart { width: calc( ( 100% - 38px ) * 0.1 );         height: calc( ( 100% - 38px ) * 0.1 ); } }
-@media(max-width: 1800px) { .coverart { width: calc( ( 100% - 38px ) * 0.125 );       height: calc( ( 100% - 38px ) * 0.125 ); } }
-@media(max-width: 1600px) { .coverart { width: calc( ( 100% - 38px ) * 0.142857143 ); height: calc( ( 100% - 38px ) * 0.142857143 ); } }
-@media(max-width: 1200px) { .coverart { width: calc( ( 100% - 38px ) * 0.166666667 ); height: calc( ( 100% - 38px ) * 0.166666667 ); } }
-@media(max-width: 1000px) { .coverart { width: calc( ( 100% - 38px ) * 0.2 );         height: calc( ( 100% - 38px ) * 0.2 ); } }
-@media(max-width: 800px)  { .coverart { width: calc( ( 100% - 38px ) * 0.25 );        height: calc( ( 100% - 38px ) * 0.25 ); } }
-@media(max-width: 600px)  { .coverart { width: calc( ( 100% - 38px ) * 0.333333333 ); height: calc( ( 100% - 38px ) * 0.333333333 ); } }
-@media(max-width: 400px)  { .coverart { width: calc( ( 100% - 38px ) * 0.5 );         height: calc( ( 100% - 38px ) * 0.5 ); } }
 /* height */
 @media(max-height: 590px) {
 	#playback-row {
