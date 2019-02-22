@@ -817,7 +817,7 @@ $( '#home-coverart' ).click( function() {
 	$( '#db-currentpath .lipath' ).text( 'coverart' );
 	$( '#home-blocks' ).addClass( 'hide' );
 	$( '#divcoverarts, #db-back, #db-index' ).removeClass( 'hide' );
-	var cH = window.innerHeight - $( '.coverart' ).height() - 102;
+	var cH = window.innerHeight - $( '.coverart' ).height() - 98;
 	$( '#divcoverarts p' ).css( 'height', cH +'px' );
 	displayIndexBar();
 } );
