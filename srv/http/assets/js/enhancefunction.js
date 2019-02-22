@@ -266,7 +266,7 @@ function removeSplash() {
 								+'<a class="lisort">'+ lisort +'</a>'
 								+'<a class="lipath">'+ album +'</a>'
 								+'<a class="liartist">'+ artist +'</a>'
-								+'<img src="/srv/http/assets/img/coverarts/'+ coveruri +'"><br>'
+								+'<div><img src="/srv/http/assets/img/coverarts/'+ coveruri +'"></div>'
 								+'<span class="coverarttitle">'+ album +'<br><gr>'+ artist +'</gr></span>'
 							+'</div>';
 		} );
