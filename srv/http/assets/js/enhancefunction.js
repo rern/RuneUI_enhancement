@@ -248,6 +248,8 @@ function removeSplash() {
 	$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
 	$( '#page-playback' ).removeClass( 'hide' );
 	$.post( 'enhance.php', { getcoverarts: 1 }, function( data ) {
+		if ( !data.length ) return
+		
 		data.sort( function( a, b ) {
 			return stripLeading( a ).localeCompare( stripLeading( b ), undefined, { numeric: true } );
 		} );
