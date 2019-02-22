@@ -264,7 +264,7 @@ function removeSplash() {
 								+'<span class="coverarttitle">'+ album +'<br><gr>'+ artist +'</gr></span>'
 							+'</div>';
 		} );
-		$( '#divcoverarts' ).html( coverartshtml );
+		$( '#divcoverarts' ).html( coverartshtml +'<p></p>' );
 	}, 'json' );
 }
 function setPlaybackBlank() {
