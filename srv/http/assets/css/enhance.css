@@ -1108,6 +1108,9 @@ wh, gr { font-weight: 300; }
 .divbklabel {
 	overflow: hidden;
 }
+.coverart div {
+	position: relative;
+}
 .bkcoverart {
 	position: absolute;
 	width: 100px;
@@ -1141,7 +1144,9 @@ wh, gr { font-weight: 300; }
 	color: #0095d8;
 }
 .home-block-edit,
-.home-block-remove {
+.home-block-remove,
+.coverart-edit,
+.coverart-remove {
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -1150,6 +1155,14 @@ wh, gr { font-weight: 300; }
 }
 .home-block-edit {
 	top: 35px;
+}
+.coverart-remove {
+	top: 15px;
+	right: 15px;
+}
+.coverart-edit {
+	top: 50px;
+	right: 15px;
 }
 /* ---------------------- breadcrumb and index ---------------------- */
 .btnlist-top {
