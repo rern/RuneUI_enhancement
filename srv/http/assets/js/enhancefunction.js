@@ -257,6 +257,7 @@ function removeSplash() {
 			balbumB = b.split( '^^' ).shift();
 			return stripLeading( albumA ).localeCompare( stripLeading( balbumB ), undefined, { numeric: true } );
 		} );
+		const observer = lozad(); // lazy loads elements with default selector as '.lozad'
 		var coverartshtml = '';
 		data.forEach( function( cover ) {
 			var filename = cover.substring( cover.lastIndexOf( '/' ) + 1, cover.lastIndexOf( '.' ) );
@@ -277,7 +278,6 @@ function removeSplash() {
 							+'</div>';
 		} );
  		$( '#divcoverarts' ).html( coverartshtml +'<p></p>' );
- 		const observer = lozad(); // lazy loads elements with default selector as '.lozad'
 		observer.observe();
 	}, 'json' );
 }
