@@ -856,9 +856,22 @@ $( '#divcoverarts' ).on( 'tap', '.coverart', function( e ) {
 } );
 $( '#divcoverarts' ).on( 'tap', '.coverart-remove', function() {
 	var $this = $( this );
-	var coverfile = $this.siblings( 'img' ).prop( 'src' ).split( '/' ).pop();
-	$.post( 'enhance.php', { coverfile: coverfile }, function() {
-		$this.parent().parent().remove();
+	var img = $this.siblings( 'img' ).prop( 'src' );
+	var coverfile = img.split( '/' ).pop();
+	var name = decodeURIComponent( coverfile ).split( '^^' );
+	info( {
+		  icon    : 'minus-circle'
+		, title   : 'Remove Thumbnail'
+		, message : 'Remove?'
+					+'<br><img style="margin: 10px" src="'+ img +'">'
+					+'<br><wh>'+ name[ 0 ] +'</wh>'
+					+'<br>'+ name[ 1 ].slice( 0, -4 )
+		, cancel  : 1
+		, oklabel : 'Remove'
+		, ok      : function() {
+			$this.parent().parent().remove();
+			$.post( 'enhance.php', { coverfile: coverfile } );
+		}
 	} );
 } );
 $( '#db-entries' ).on( 'click', 'li', function( e ) {

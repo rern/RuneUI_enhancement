@@ -152,6 +152,7 @@ function bookmarkRename( name, path ) {
 		, textalign : 'center'
 		, boxwidth  : 'max'
 		, cancel    : 1
+		, oklabel   : 'Rename'
 		, ok        : function() {
 			bookmarkVerify( $( '#infoTextBox' ).val().trim(), path, name );
 		}
@@ -226,6 +227,7 @@ function bookmarkDelete( name, $block ) {
 		, message : 'Delete?'
 					+'<br><white>'+ name +'</white>'
 		, cancel  : 1
+		, oklabel : 'Delete'
 		, ok      : function() {
 			$block.remove();
 			GUI.bookmarkedit = 1;
@@ -268,6 +270,7 @@ function webRadioRename() {
 		, textalign  : 'center'
 		, boxwidth   : 'max'
 		, cancel     : 1
+		, oklabel    : 'Rename'
 		, ok         : function() {
 			webRadioVerify( $( '#infoTextBox' ).val().trim(), path, name );
 		}
@@ -338,6 +341,7 @@ function webRadioDelete() {
 					+'<br><white>'+ name +'</white>'
 					+'<br>'+ GUI.list.path
 		, cancel  : 1
+		, oklabel : 'Delete'
 		, ok      : function() {
 			$( '#db-entries li').eq( GUI.list.liindex ).remove();
 			GUI.libraryhome.webradio--;
@@ -375,6 +379,7 @@ function playlistRename() {
 		, textalign : 'center'
 		, boxwidth  : 'max'
 		, cancel    : 1
+		, oklabel   : 'Rename'
 		, ok        : function() {
 			playlistVerify( $( '#infoTextBox' ).val().trim(), name );
 		}
@@ -442,6 +447,7 @@ function playlistDelete() {
 		, message : 'Delete?'
 					+'<br><white>'+ GUI.list.name +'</white>'
 		, cancel  : 1
+		, oklabel : 'Delete'
 		, ok      : function() {
 			var count = $( '#pls-count' ).text() - 1;
 			$( '#pls-count' ).text( numFormat( count ) );
