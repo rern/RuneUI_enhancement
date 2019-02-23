@@ -16,8 +16,15 @@ redis-cli hdel display library &> /dev/null
 
 installstart $@
 
-echo -e "$bar Prefetch packages ..."
-pacman -Syw --noconfirm imagemagick libpng zlib glibc
+pkg=$( pacman -Ss '^imagemagick$' | head -n1 )
+installed=$( echo $pkg | cut -d' ' -f3 )
+if [[ $installed != '[installed]' ]]; then
+	echo -e "$bar Prefetch packages ..."
+	pacman -Syw --noconfirm imagemagick libpng zlib glibc
+	
+	echo -e "$bar Install ImageMagick for coverart resizing ..."
+	pacman -S --noconfirm imagemagick libpng zlib glibc
+fi
 
 mv /srv/http/index.php{,.backup}
 mv /srv/http/assets/js/vendor/pnotify.custom.min.js{,.backup}
@@ -25,13 +32,6 @@ mv /srv/http/assets/js/vendor/pushstream.min.js{,.backup}
 mv /srv/http/assets/js/vendor/Sortable.min.js{,.backup}
 mv /srv/http/command/airplay_toggle{,.backup}
 ln -sf /srv/http/assets/img/bootsplash.png /usr/share/bootsplash/start.png
-
-pkg=$( pacman -Ss '^imagemagick$' | head -n1 )
-installed=$( echo $pkg | cut -d' ' -f3 )
-if [[ $installed != '[installed]' ]]; then
-	echo -e "$bar Install ImageMagick for coverart resizing ..."
-	pacman -S --noconfirm imagemagick libpng zlib glibc
-fi
 
 getinstallzip
 
