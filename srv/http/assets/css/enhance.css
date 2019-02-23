@@ -73,6 +73,7 @@
 .fa-sliders:before { content: "\f50B" }
 .fa-code:before { content: "\f50C" }
 
+.fa-coverart:before { content: "\f55E" }
 .fa-bookmark:before { content: "\f550" }
 .fa-network:before { content: "\f551" }
 .fa-microsd:before { content: "\f552" }
@@ -85,7 +86,6 @@
 .fa-genre:before { content: "\f559" }
 .fa-dirble:before { content: "\f55A" }
 .fa-jamendo:before { content: "\f55B" }
-.fa-grid:before { content: "\f55E" }
 .fa-lastfm:before { content: "\f55C" }
 .fa-youtube:before { content: "\f55D" }
 
@@ -1136,7 +1136,8 @@ wh, gr { font-weight: 300; }
 	outline: none;
 	color: #7795b4
 }
-.home-bookmark .fa-bookmark {
+.home-block .fa-coverart,
+.home-block .fa-bookmark {
 	color: #0095d8;
 }
 .home-block-edit,
