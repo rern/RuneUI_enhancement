@@ -89,6 +89,8 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 - Drag to rearrange home blocks
 - Show counts
 - Browse by CoverArt
+	- Create / update thumbnails with RuneUIe - Coverart Browsing addon
+	- Long-press for remove dialog
 - Show icon and breadcrumb heading while browsing
 - Show list in playlist files (\*.cue, \*.pls, \*.m3u)
 - Toggle search box
