@@ -191,6 +191,11 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 } else if ( isset( $_POST[ 'coverfile' ] ) ) {
 	$coverfile = '/srv/http/assets/img/coverarts/'.urldecode( $_POST[ 'coverfile' ] );
 	exec( '/usr/bin/sudo /usr/bin/rm "'.$coverfile.'"' );
+	if ( isset( $_POST[ 'change' ] ) ) {
+/*		$fopen = fopen( $coverfile, 'w' );
+		fwrite( $coverupload );
+		fclose( $fopen );*/
+	}
 } else if ( isset( $_POST[ 'getwebradios' ] ) ) {
 	$webradios = $redis->hGetAll( 'webradios' );
 	foreach( $webradios as $name => $url ) {
