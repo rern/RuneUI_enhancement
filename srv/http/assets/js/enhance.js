@@ -865,7 +865,7 @@ $( '#divcoverarts' ).on( 'tap', 'i', function() {
 		  icon    : remove ? 'minus-circle' : 'edit-circle'
 		, title   : remove ? 'Remove Thumbnail' : 'Change Thumbnail'
 		, message : ( remove ? 'Remove?' : 'Change?' )
-					+'<br><img style="width: 100px; margin: 10px;" src="'+ img +'">'
+					+'<br><img src="'+ img +'">'
 					+'<br><wh>'+ name[ 0 ] +'</wh>'
 					+'<br>'+ name[ 1 ].slice( 0, -4 )
 		, cancel  : 1
