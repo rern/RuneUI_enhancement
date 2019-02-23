@@ -2,7 +2,7 @@ RuneUI enhancement
 ---
 _Tested on RuneAudio 0.4b, 0.5_   
 
-### Overall:
+### Improvements:
 - Redesign
 	- Responsive layout
 	- Icons
@@ -10,12 +10,16 @@ _Tested on RuneAudio 0.4b, 0.5_
 	- Coverart frame
 	- Buttons
 	- Menus
-- Switch between main pages
-	- Swipe left/right
 - Top-bottom bars
 	- Larger new icons
 	- Add apuse button
 	- Show database updating as blinking icon (show as icon in Time knob while hidden)
+	
+### New Features
+- Browse by CoverArt
+- Coverart bookmarks
+- Coverart in album view
+- Index bar
 - Selectable show/hide
 	- Top-bottom bars
 	- Time Knob
@@ -24,6 +28,8 @@ _Tested on RuneAudio 0.4b, 0.5_
 	- Buttons
 	- Library home items
 	- Library labels
+- Switch between main pages
+	- Swipe left/right
 
 Install
 ---
@@ -82,6 +88,7 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 ### Library:
 - Drag to rearrange home blocks
 - Show counts
+- Browse by CoverArt
 - Show icon and breadcrumb heading while browsing
 - Show list in playlist files (\*.cue, \*.pls, \*.m3u)
 - Toggle search box
