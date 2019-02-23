@@ -1111,6 +1111,10 @@ wh, gr { font-weight: 300; }
 .coverart div {
 	position: relative;
 }
+#infoMessage img {
+	margin: 10px;
+	width: 100px;
+}
 .bkcoverart {
 	position: absolute;
 	width: 100px;
