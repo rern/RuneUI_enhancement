@@ -816,7 +816,7 @@ var sortablelibrary = new Sortable( document.getElementById( 'divhomeblocks' ), 
 } );
 $( '#home-coverart' ).click( function() {
 	GUI.dbbrowsemode = 'coverart';
-	$( '#db-currentpath span' ).html( '<i class="fa fa-grid"></i> <a>COVERART</a>' );
+	$( '#db-currentpath span' ).html( '<i class="fa fa-coverart"></i> <a>COVERART</a>' );
 	$( '#db-currentpath .lipath' ).text( 'coverart' );
 	$( '#home-blocks' ).addClass( 'hide' );
 	$( '#divcoverarts, #db-back, #db-index' ).removeClass( 'hide' );
@@ -854,23 +854,29 @@ $( '#divcoverarts' ).on( 'tap', '.coverart', function( e ) {
 		.append( '<i class="coverart-edit fa fa-edit-circle"></i><i class="coverart-remove fa fa-minus-circle"></i>' )
 		.find( 'img' ).css( 'opacity', 0.4 );
 } );
-$( '#divcoverarts' ).on( 'tap', '.coverart-remove', function() {
+$( '#divcoverarts' ).on( 'tap', 'i', function() {
 	var $this = $( this );
 	var img = $this.siblings( 'img' ).prop( 'src' );
 	var coverfile = img.split( '/' ).pop();
 	var name = decodeURIComponent( coverfile ).split( '^^' );
+	var remove = $this.is( '.coverart-remove' );
+	console.log( remove )
 	info( {
-		  icon    : 'minus-circle'
-		, title   : 'Remove Thumbnail'
-		, message : 'Remove?'
-					+'<br><img style="margin: 10px" src="'+ img +'">'
+		  icon    : remove ? 'minus-circle' : 'edit-circle'
+		, title   : remove ? 'Remove Thumbnail' : 'Change Thumbnail'
+		, message : ( remove ? 'Remove?' : 'Change?' )
+					+'<br><img style="width: 100px; margin: 10px;" src="'+ img +'">'
 					+'<br><wh>'+ name[ 0 ] +'</wh>'
 					+'<br>'+ name[ 1 ].slice( 0, -4 )
 		, cancel  : 1
-		, oklabel : 'Remove'
+		, oklabel : remove ? 'Remove' : 'Change'
 		, ok      : function() {
-			$this.parent().parent().remove();
-			$.post( 'enhance.php', { coverfile: coverfile } );
+			if ( remove ) {
+				$this.parent().parent().remove();
+				$.post( 'enhance.php', { coverfile: coverfile } );
+			} else {
+				
+			}
 		}
 	} );
 } );
