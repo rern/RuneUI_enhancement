@@ -227,7 +227,7 @@ mkdir -p $pathcoverarts
 pathlink=/srv/http/assets/img/coverarts
 ln -sf $pathcoverarts $pathlink
 chown -R http:http $pathcoverarts $pathlink
-chmod -R 660 $pathcoverarts $pathlink
+chmod -R 666 $pathcoverarts $pathlink
 
 redis-cli set pathcoverarts $pathcoverarts &> /dev/null
 
