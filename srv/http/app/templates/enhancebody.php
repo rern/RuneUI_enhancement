@@ -1,6 +1,6 @@
 <?php
 $blocks = array( // 'id' => array( 'path', 'icon', 'name' );
-	  'coverart'    => array( 'Coverart',     'grid',         'CoverArt' )
+	  'coverart'    => array( 'Coverart',     'coverart',     'CoverArt' )
 	, 'sd'          => array( 'LocalStorage', 'microsd',      'SD' )
 	, 'usb'         => array( 'USB',          'usbdrive',     'USB' )
 	, 'nas'         => array( 'NAS',          'network',      'Network' )
