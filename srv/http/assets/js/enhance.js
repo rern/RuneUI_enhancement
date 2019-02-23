@@ -300,7 +300,7 @@ $( '#page-library' ).click( function( e ) {
 		&& !$target.closest( '.coverart' ).length
 	) {
 		GUI.bookmarkedit = 0;
-		$( '.home-block-edit, .home-block-remove, .coverart-edit, .coverart-remove' ).remove();
+		$( '.home-block-edit, .home-block-remove, .coverart-remove' ).remove();
 		$( '.home-bookmark' ).find( '.fa-bookmark, .bklabel, img' ).css( 'opacity', '' );
 		$( '.coverart img' ).css( 'opacity', '' );
 	}} );
@@ -831,7 +831,7 @@ $( '#divcoverarts' ).on( 'tap', '.coverart', function( e ) {
 	if ( $( e.target ).is( 'i' ) ) return
 	
 	$( '.coverart img' ).css( 'opacity', '' );
-	$( '.coverart-remove, .coverart-edit' ).remove();
+	$( '.coverart-remove' ).remove();
 	mutationLibrary.observe( observerLibrary, observerOption ); // standard js - must be one on one element
 	GUI.dbscrolltop.coverart = $( window ).scrollTop();
 	$this = $( this );
@@ -850,34 +850,28 @@ $( '#divcoverarts' ).on( 'tap', '.coverart', function( e ) {
 } ).on( 'taphold', '.coverart', function() {
 	GUI.bookmarkedit = 1;
 	$( '.coverart img' ).css( 'opacity', '' );
-	$( '.coverart-remove, .coverart-edit' ).remove();
+	$( '.coverart-remove' ).remove();
 	$( this ).find( 'div' )
-		.append( '<i class="coverart-edit fa fa-edit-circle"></i><i class="coverart-remove fa fa-minus-circle"></i>' )
+		.append( '<i class="coverart-remove fa fa-minus-circle"></i>' )
 		.find( 'img' ).css( 'opacity', 0.4 );
 } );
-$( '#divcoverarts' ).on( 'tap', 'i', function() {
+$( '#divcoverarts' ).on( 'tap', '.coverart-remove', function() {
 	var $this = $( this );
 	var img = $this.siblings( 'img' ).prop( 'src' );
 	var coverfile = img.split( '/' ).pop();
 	var name = decodeURIComponent( coverfile ).split( '^^' );
-	var remove = $this.is( '.coverart-remove' );
-	console.log( remove )
 	info( {
-		  icon    : remove ? 'minus-circle' : 'edit-circle'
-		, title   : remove ? 'Remove Thumbnail' : 'Change Thumbnail'
-		, message : ( remove ? 'Remove?' : 'Change?' )
+		  icon    : 'minus-circle'
+		, title   : 'Remove Thumbnail'
+		, message : 'Remove?'
 					+'<br><img src="'+ img +'">'
 					+'<br><wh>'+ name[ 0 ] +'</wh>'
 					+'<br>'+ name[ 1 ].slice( 0, -4 )
 		, cancel  : 1
-		, oklabel : remove ? 'Remove' : 'Change'
+		, oklabel : 'Remove'
 		, ok      : function() {
-			if ( remove ) {
-				$this.parent().parent().remove();
-				$.post( 'enhance.php', { coverfile: coverfile } );
-			} else {
-				
-			}
+			$this.parent().parent().remove();
+			$.post( 'enhance.php', { coverfile: coverfile } );
 		}
 	} );
 } );
