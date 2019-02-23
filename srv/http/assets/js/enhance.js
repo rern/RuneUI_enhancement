@@ -295,10 +295,13 @@ $( '#page-playback' ).click( function( e ) {
 $( '#page-library' ).click( function( e ) {
 	var $target = $( e.target );
 	if ( GUI.bookmarkedit
-		&& !( $target.parents().is( '.home-bookmark' ) || $target.is( '.home-bookmark' ) )
+		&& !$target.closest( '.home-bookmark' ).length
+		&& !$target.closest( '.coverart' ).length
 	) {
-		$( '.home-block-edit, .home-block-remove' ).remove();
+		GUI.bookmarkedit = 0;
+		$( '.home-block-edit, .home-block-remove, .coverart-edit, .coverart-remove' ).remove();
 		$( '.home-bookmark' ).find( '.fa-bookmark, .bklabel, img' ).css( 'opacity', '' );
+		$( '.coverart img' ).css( 'opacity', '' );
 	}} );
 $( '#page-library, #page-playback, #page-playlist' ).click( function( e ) {
 	if ( [ 'coverTR', 'timeTR' ].indexOf( e.target.id ) === -1 ) $( '#settings' ).addClass( 'hide' );
@@ -699,11 +702,10 @@ $( '#db-back' ).click( function() {
 		}
 		return
 	} else if ( GUI.dbbrowsemode === 'coverart' ) {
-		console.log(9)
 		var currentpath =  $( '#db-currentpath' ).find( '.lipath' ).text();
 		GUI.dbscrolltop[ currentpath ] = $( window ).scrollTop();
 		GUI.dbbackdata = [];
-		$( '#home-coverart' ).tap();
+		$( '#home-coverart' ).click();
 		$( '#db-entries' ).empty();
 		return
 	}
@@ -812,7 +814,7 @@ var sortablelibrary = new Sortable( document.getElementById( 'divhomeblocks' ), 
 		$.post( 'enhance.php', { order: order } );
 	}
 } );
-$( '#home-coverart' ).tap( function() {
+$( '#home-coverart' ).click( function() {
 	GUI.dbbrowsemode = 'coverart';
 	$( '#db-currentpath span' ).html( '<i class="fa fa-grid"></i> <a>COVERART</a>' );
 	$( '#db-currentpath .lipath' ).text( 'coverart' );
@@ -823,11 +825,12 @@ $( '#home-coverart' ).tap( function() {
 		var cH = window.innerHeight - $( '.coverart' ).height() + 98;
 		$( '#divcoverarts p' ).css( 'height', cH +'px' );
 	}, 50 );
-} ).taphold( function() {
-	$( this ).append( '<i class="home-block-edit fa fa-edit-circle"></i><i class="home-block-remove fa fa-minus-circle"></i>' )
-		.find( 'img' ).css( 'opacity', 0.2 );
 } );
-$( '#divcoverarts' ).on( 'click', '.coverart', function() {
+$( '#divcoverarts' ).on( 'tap', '.coverart', function( e ) {
+	if ( $( e.target ).is( 'i' ) ) return
+	
+	$( '.coverart img' ).css( 'opacity', '' );
+	$( '.coverart-remove, .coverart-edit' ).remove();
 	mutationLibrary.observe( observerLibrary, observerOption ); // standard js - must be one on one element
 	GUI.dbscrolltop.coverart = $( window ).scrollTop();
 	$this = $( this );
@@ -843,6 +846,20 @@ $( '#divcoverarts' ).on( 'click', '.coverart', function() {
 			, browsemode : 'coverart'
 		} );
 	}
+} ).on( 'taphold', '.coverart', function() {
+	GUI.bookmarkedit = 1;
+	$( '.coverart img' ).css( 'opacity', '' );
+	$( '.coverart-remove, .coverart-edit' ).remove();
+	$( this ).find( 'div' )
+		.append( '<i class="coverart-edit fa fa-edit-circle"></i><i class="coverart-remove fa fa-minus-circle"></i>' )
+		.find( 'img' ).css( 'opacity', 0.4 );
+} );
+$( '#divcoverarts' ).on( 'tap', '.coverart-remove', function() {
+	var $this = $( this );
+	var coverfile = $this.siblings( 'img' ).prop( 'src' ).split( '/' ).pop();
+	$.post( 'enhance.php', { coverfile: coverfile }, function() {
+		$this.parent().parent().remove();
+	} );
 } );
 $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	var $this = $( this );
