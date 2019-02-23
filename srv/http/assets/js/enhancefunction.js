@@ -271,12 +271,14 @@ function removeSplash() {
 								+'<a class="lisort">'+ lisort +'</a>'
 								+'<a class="lipath">'+ album +'</a>'
 								+'<a class="liartist">'+ artist +'</a>'
-								+'<div><img src="/srv/http/assets/img/coverarts/'+ coveruri +'"></div>'
+								+'<div><img class="lozad" data-src="/srv/http/assets/img/coverarts/'+ coveruri +'"></div>'
 								+'<span class="coverarttitle">'+ album +'<br>'
 									+'<gr>'+ artist +'</gr></span>'
 							+'</div>';
 		} );
-		$( '#divcoverarts' ).html( coverartshtml +'<p></p>' );
+ 		$( '#divcoverarts' ).html( coverartshtml +'<p></p>' );
+ 		const observer = lozad(); // lazy loads elements with default selector as '.lozad'
+		observer.observe();
 	}, 'json' );
 }
 function setPlaybackBlank() {
