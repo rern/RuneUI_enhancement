@@ -1119,7 +1119,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		, album         : [ '<i class="fa fa-album"></i>',       'ALBUM' ]
 		, artist        : [ '<i class="fa fa-artist"></i>',      'ARTIST' ]
 		, albumartist   : [ '<i class="fa fa-albumartist"></i>', 'ALBUM ARTIST' ]
-		, coverart      : [ '<i class="fa fa-grid"></i>',        'COVERART' ]
+		, coverart      : [ '<i class="fa fa-coverart"></i>',        'COVERART' ]
 		, genre         : [ '<i class="fa fa-genre"></i>',       'GENRE' ]
 		, composer      : [ '<i class="fa fa-composer"></i>',    'COMPOSER' ]
 		, composeralbum : [ '<i class="fa fa-composer"></i>',    'COMPOSER' ]

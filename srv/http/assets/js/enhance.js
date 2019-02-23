@@ -699,10 +699,11 @@ $( '#db-back' ).click( function() {
 		}
 		return
 	} else if ( GUI.dbbrowsemode === 'coverart' ) {
+		console.log(9)
 		var currentpath =  $( '#db-currentpath' ).find( '.lipath' ).text();
 		GUI.dbscrolltop[ currentpath ] = $( window ).scrollTop();
 		GUI.dbbackdata = [];
-		$( '#home-coverart' ).click();
+		$( '#home-coverart' ).tap();
 		$( '#db-entries' ).empty();
 		return
 	}
@@ -811,7 +812,7 @@ var sortablelibrary = new Sortable( document.getElementById( 'divhomeblocks' ), 
 		$.post( 'enhance.php', { order: order } );
 	}
 } );
-$( '#home-coverart' ).click( function() {
+$( '#home-coverart' ).tap( function() {
 	GUI.dbbrowsemode = 'coverart';
 	$( '#db-currentpath span' ).html( '<i class="fa fa-grid"></i> <a>COVERART</a>' );
 	$( '#db-currentpath .lipath' ).text( 'coverart' );
@@ -822,6 +823,9 @@ $( '#home-coverart' ).click( function() {
 		var cH = window.innerHeight - $( '.coverart' ).height() + 98;
 		$( '#divcoverarts p' ).css( 'height', cH +'px' );
 	}, 50 );
+} ).taphold( function() {
+	$( this ).append( '<i class="home-block-edit fa fa-edit-circle"></i><i class="home-block-remove fa fa-minus-circle"></i>' )
+		.find( 'img' ).css( 'opacity', 0.2 );
 } );
 $( '#divcoverarts' ).on( 'click', '.coverart', function() {
 	mutationLibrary.observe( observerLibrary, observerOption ); // standard js - must be one on one element
