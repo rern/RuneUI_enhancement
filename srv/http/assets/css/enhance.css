@@ -1149,7 +1149,6 @@ wh, gr { font-weight: 300; }
 }
 .home-block-edit,
 .home-block-remove,
-.coverart-edit,
 .coverart-remove {
 	position: absolute;
 	top: 0;
@@ -1162,10 +1161,6 @@ wh, gr { font-weight: 300; }
 }
 .coverart-remove {
 	top: 15px;
-	right: 15px;
-}
-.coverart-edit {
-	top: 50px;
 	right: 15px;
 }
 /* ---------------------- breadcrumb and index ---------------------- */
