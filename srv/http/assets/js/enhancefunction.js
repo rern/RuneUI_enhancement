@@ -695,6 +695,10 @@ function displayCheckbox( checkboxes ) {
 	return html;
 }
 function bookmarkScroll() {
+	if ( GUI.local ) return
+	
+	GUI.local = 1;
+	setTimeout( function() { GUI.local = 0 }, 1000 );
 	$( '.bklabel' )
 		.removeClass( 'bkscrollleft' )
 		.removeAttr( 'style' ); // fix - iOS needs whole style removed
@@ -745,7 +749,6 @@ function renderLibrary() {
 		bookmarks.sort( function( a, b ) {
 			return stripLeading( a.name ).localeCompare( stripLeading( b.name ), undefined, { numeric: true } );
 		} );
-		var bookmarkL = bookmarks.length;
 		$.each( bookmarks, function( i, bookmark ) {
 			var coverarthtml = bookmark.coverart ? '<img class="bkcoverart" src="'+ bookmark.coverart +'">' : '<i class="fa fa-bookmark"></i>';
 			var name = bookmark.name.replace( /\\/g, '' );
