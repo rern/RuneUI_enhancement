@@ -152,10 +152,6 @@ html {
 }
 body {
 	overscroll-behavior: none; /* disable android pull-down refresh */
-	-ms-overflow-style: none;  /* hide scrollbar - ie */
-}
-body::-webkit-scrollbar {
-	width: 0 !important; /* hide scrollbar - chrome and safari */
 }
 a,
 a:hover {
@@ -1906,8 +1902,8 @@ li.active .time {
 	.coverart div { height: calc( ( 100vw - 38px ) * 0.1 ) }
 }
 @media(max-width: 1800px) {
-	.coverart { width: calc( ( 100vw - 38px ) * 0.125 ) }
-	.coverart div { height: calc( ( 100vw - 38px ) * 0.125 ) }
+	.coverart { width: calc( ( 100vw - 38px ) * 0.111111111 ) }
+	.coverart div { height: calc( ( 100vw - 38px ) * 0.111111111 ) }
 }
 @media(max-width: 1600px) {
 	.coverart { width: calc( ( 100vw - 38px ) * 0.142857143 ) }
