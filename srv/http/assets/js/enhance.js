@@ -759,7 +759,10 @@ $( '#home-blocks' ).on( 'tap', '.home-block', function() {
 } ).on( 'tap', '.home-bookmark', function( e ) {
 	var $this = $( this );
 	var $target = $( e.target );
-	if ( $( '.home-block-edit' ).length ) {
+	if ( $( '.home-block-edit' ).length
+		&& !$target.hasClass( 'home-block-edit' )
+		&& !$target.hasClass( 'home-block-remove' )
+	) {
 		$( '.home-block-edit, .home-block-remove' ).remove();
 		$( '.home-bookmark' ).find( '.fa-bookmark, .bklabel, img' ).css( 'opacity', '' );
 		return
