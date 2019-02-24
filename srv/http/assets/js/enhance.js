@@ -74,7 +74,6 @@ $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-//document.addEventListener( 'DOMContentLoaded', yall );
 // PLAYBACK /////////////////////////////////////////////////////////////////////////////////////
 $( '.btn-cmd' ).click( function() {
 	var $this = $( this );
