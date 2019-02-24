@@ -759,6 +759,12 @@ $( '#home-blocks' ).on( 'tap', '.home-block', function() {
 } ).on( 'tap', '.home-bookmark', function( e ) {
 	var $this = $( this );
 	var $target = $( e.target );
+	if ( $( '.home-block-edit' ).length ) {
+		$( '.home-block-edit, .home-block-remove' ).remove();
+		$( '.home-bookmark' ).find( '.fa-bookmark, .bklabel, img' ).css( 'opacity', '' );
+		return
+	}
+	
 	var path = $this.find( '.lipath' ).text();
 	var name = $this.find( '.bklabel' ).text();
 	if ( $target.is( '.home-block-edit' ) ) {
@@ -828,10 +834,14 @@ $( '#home-coverart' ).click( function() {
 	}, 50 );
 } );
 $( '#divcoverarts' ).on( 'tap', '.coverart', function( e ) {
-	if ( $( e.target ).is( 'i' ) ) return
+	if ( $( e.target ).hasClass( 'coverart-remove' ) ) return
 	
-	$( '.coverart img' ).css( 'opacity', '' );
-	$( '.coverart-remove' ).remove();
+	if ( $( '.coverart-remove' ).length ) {
+		$( '.coverart img' ).css( 'opacity', '' );
+		$( '.coverart-remove' ).remove();
+		return
+	}
+	
 	mutationLibrary.observe( observerLibrary, observerOption ); // standard js - must be one on one element
 	GUI.dbscrolltop.coverart = $( window ).scrollTop();
 	$this = $( this );
