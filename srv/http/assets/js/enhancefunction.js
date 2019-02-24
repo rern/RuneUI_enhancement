@@ -257,9 +257,12 @@ function removeSplash() {
 			balbumB = b.split( '^^' ).shift();
 			return stripLeading( albumA ).localeCompare( stripLeading( balbumB ), undefined, { numeric: true } );
 		} );
-		const observer = lozad(); // lazy loads elements with default selector as '.lozad'
+		observerCoverart = lozad(); // lazy load coverarts
+		var perrow = $( 'body' )[ 0 ].clientWidth / 200;
+		var percolumn = window.innerHeight / 200;
+		var perpage = Math.ceil( perrow ) * Math.ceil( percolumn );
 		var coverartshtml = '';
-		data.forEach( function( cover ) {
+		$.each( data, function( i, cover ) {
 			var filename = cover.substring( cover.lastIndexOf( '/' ) + 1, cover.lastIndexOf( '.' ) );
 			var names = filename.replace( /\|/g, '/' ).split( '^^' );
 			var licue = names[ 2 ] ? '<a class="licue">'+ names[ 2 ] +'</a>' : '';
@@ -267,18 +270,25 @@ function removeSplash() {
 			var artist = names[ 1 ];
 			var lisort = stripLeading( album );
 			var coveruri = encodeURIComponent( cover );
+			// preload 1st page only
+			var clpreload = i < perpage ? ' clpreload' : '';
 			coverartshtml += '<div class="coverart">'
 								+ licue
 								+'<a class="lisort">'+ lisort +'</a>'
 								+'<a class="lipath">'+ album +'</a>'
 								+'<a class="liartist">'+ artist +'</a>'
-								+'<div><img class="lozad" data-src="/srv/http/assets/img/coverarts/'+ coveruri +'"></div>'
+								+'<div><img class="lozad'+ clpreload +'" data-src="/srv/http/assets/img/coverarts/'+ coveruri +'"></div>'
 								+'<span class="coverarttitle">'+ album +'<br>'
 									+'<gr>'+ artist +'</gr></span>'
 							+'</div>';
 		} );
  		$( '#divcoverarts' ).html( coverartshtml +'<p></p>' );
-		observer.observe();
+		observerCoverart.observe();
+		// preload coverart
+		$elpreload = document.querySelectorAll( '.clpreload' )
+		$elpreload.forEach( function( el ) {
+			observerCoverart.triggerLoad( el );
+		} );
 	}, 'json' );
 }
 function setPlaybackBlank() {
