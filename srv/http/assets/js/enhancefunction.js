@@ -84,6 +84,7 @@ function switchPage( page ) {
 		if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) {
 			renderLibrary();
 			$( 'html, body' ).scrollTop( 0 );
+			setTimeout( bookmarkScroll, 600 )
 		} else {
 			if ( GUI.display.coverfile ) {
 				if ( !$( '.licover' ).length ) $( '#db-currentpath a:last-child' ).click();
@@ -698,7 +699,7 @@ function bookmarkScroll() {
 	if ( GUI.local ) return
 	
 	GUI.local = 1;
-	setTimeout( function() { GUI.local = 0 }, 1000 );
+	setTimeout( function() { GUI.local = 0 }, 500 );
 	$( '.bklabel' )
 		.removeClass( 'bkscrollleft' )
 		.removeAttr( 'style' ); // fix - iOS needs whole style removed
