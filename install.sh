@@ -224,10 +224,8 @@ elif [[ $dfNAS ]]; then
 	[[ ${acl:0:2} == rw ]] && pathcoverarts=$mnt/coverarts
 fi
 mkdir -p $pathcoverarts
-pathlink=/srv/http/assets/img/coverarts
+pathlink=/srv/http/assets/img/
 ln -sf $pathcoverarts $pathlink
-chown -R http:http $pathcoverarts $pathlink
-chmod -R 666 $pathcoverarts $pathlink
 
 redis-cli set pathcoverarts $pathcoverarts &> /dev/null
 
