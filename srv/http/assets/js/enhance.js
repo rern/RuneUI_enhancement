@@ -13,6 +13,7 @@ var GUI = {
 	, dbscrolltop  : {}
 	, display      : {}
 	, imodedelay   : 0
+	, init         : 0
 	, list         : {}
 	, library      : 0
 	, libraryhome  : {}

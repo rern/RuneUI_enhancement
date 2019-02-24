@@ -84,7 +84,10 @@ function switchPage( page ) {
 		if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) {
 			renderLibrary();
 			$( 'html, body' ).scrollTop( 0 );
-			setTimeout( bookmarkScroll, 600 )
+			if ( !GUI.init ) {
+				GUI.init = 1;
+				setTimeout( bookmarkScroll, 600 );
+			}
 		} else {
 			if ( GUI.display.coverfile ) {
 				if ( !$( '.licover' ).length ) $( '#db-currentpath a:last-child' ).click();
@@ -719,8 +722,8 @@ function bookmarkScroll() {
 				} );
 		}
 	} );
-	$( '#bkscrollleft' ).remove();
-	if ( $( '.bkscrollleft' ).length ) {
+	//$( '#bkscrollleft' ).remove();
+	if ( !$( '#bkscrollleft' ).length ) {
 		cssKeyframes( 'bkscrollleft', 'transform : translateX( '+ bW +'px );', 'transform : translateX( calc( -100% + 10px ) );' );
 	}
 }
