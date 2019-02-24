@@ -83,11 +83,6 @@ function switchPage( page ) {
 	} else if ( GUI.library ) {
 		if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) {
 			renderLibrary();
-			$( 'html, body' ).scrollTop( 0 );
-			if ( !GUI.init ) {
-				GUI.init = 1;
-				setTimeout( bookmarkScroll, 600 );
-			}
 		} else {
 			if ( GUI.display.coverfile ) {
 				if ( !$( '.licover' ).length ) $( '#db-currentpath a:last-child' ).click();
@@ -702,7 +697,7 @@ function bookmarkScroll() {
 	if ( GUI.local ) return
 	
 	GUI.local = 1;
-	setTimeout( function() { GUI.local = 0 }, 500 );
+	setTimeout( function() { GUI.local = 0 }, 100 );
 	$( '.bklabel' )
 		.removeClass( 'bkscrollleft' )
 		.removeAttr( 'style' ); // fix - iOS needs whole style removed
@@ -722,7 +717,6 @@ function bookmarkScroll() {
 				} );
 		}
 	} );
-	//$( '#bkscrollleft' ).remove();
 	if ( !$( '#bkscrollleft' ).length ) {
 		cssKeyframes( 'bkscrollleft', 'transform : translateX( '+ bW +'px );', 'transform : translateX( calc( -100% + 10px ) );' );
 	}
@@ -797,6 +791,10 @@ function renderLibrary() {
 	}
 	displayTopBottom();
 	$( 'html, body' ).scrollTop( 0 );
+	if ( !GUI.init ) { // fix initial load
+		GUI.init = 1;
+		setTimeout( bookmarkScroll, 200 );
+	}
 }
 function infoNoData() {
 	$( '#loader' ).addClass( 'hide' );
