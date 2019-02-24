@@ -844,9 +844,10 @@ $( '#divcoverarts' ).on( 'tap', '.coverart', function( e ) {
 	mutationLibrary.observe( observerLibrary, observerOption ); // standard js - must be one on one element
 	GUI.dbscrolltop.coverart = $( window ).scrollTop();
 	$this = $( this );
-	if ( $this.find( '.licue' ).length ) {
+	$licue = $this.find( '.licue' );
+	if ( $licue.length ) {
 		getDB( {
-			  path       : $this.find( '.licue' ).text()
+			  path       : $licue.text()
 			, browsemode : 'file'
 		} );
 	} else {
