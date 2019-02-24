@@ -62,8 +62,13 @@
 <link rel="stylesheet" href="<?=$this->asset( '/css/roundslider.min.css' )?>">
 <link rel="stylesheet" href="<?=$this->asset( '/css/enhance.css' )?>">
 		<?php
-		if ( strpos( $_SERVER['HTTP_USER_AGENT'], 'Midori' ) !== false ) { ?> 
-<link rel="stylesheet" href="<?=$this->asset('/css/midori.css' )?>">
+		// fix - desktop coverart browsing with visible scrollbar
+		if ( stristr( $_SERVER[ 'HTTP_USER_AGENT' ], 'mobi' ) === false ) { ?> 
+<link rel="stylesheet" href="<?=$this->asset('/css/enhance-coverscrollbar.css' )?>">
+		<?php 
+		}
+		if ( strpos( $_SERVER[ 'HTTP_USER_AGENT' ], 'Midori' ) !== false ) { ?> 
+<link rel="stylesheet" href="<?=$this->asset('/css/enhance-midori.css' )?>">
 		<?php 
 		}
 		if ( $gpio ) { ?> 
