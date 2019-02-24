@@ -1,0 +1,18 @@
+.rs-outer:after { /* glossy overlay */
+	background: radial-gradient(200% 100% at 75% -50% ,hsla(0,0%,100%,.15) 50%,hsla(0,0%,100%,0) 50%);
+}
+#repeat, #overlay-social-open, #voldn {
+	background: radial-gradient(250% 90% at 85% -80% ,hsla(0,0%,100%,.3) 50%,hsla(0,0%,100%,0) 53%);
+	background-color: #34495e;
+}
+#random, #volmute {
+	background: linear-gradient(to bottom, hsla(0,0%,100%,.3) 0%, hsla(0,0%,100%,.3) 45%, rgba(0,0,0,0) 56%,rgba(0,0,0,0) 100%);
+	background-color: #34495e;
+}
+#single, #bio-open, #volup {
+	background: radial-gradient(500% 90% at 20% -205% ,hsla(0,0%,100%,.3) 50%,hsla(0,0%,100%,0) 51.5%);
+	background-color: #34495e;
+}
+#play-group, #share-group, #vol-group {
+	margin-top: 20px;
+}
