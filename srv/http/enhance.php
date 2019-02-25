@@ -185,9 +185,6 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	} else {
 		exec( 'mpc update Webradio' );
 	}
-} else if ( isset( $_POST[ 'getcoverarts' ] ) ) {
-	$data = array_slice( scandir( '/srv/http/assets/img/coverarts' ), 2 );
-	echo json_encode( $data ); 
 } else if ( isset( $_POST[ 'coverfile' ] ) ) {
 	$coverfile = '/srv/http/assets/img/coverarts/'.urldecode( $_POST[ 'coverfile' ] );
 	exec( '/usr/bin/sudo /usr/bin/rm "'.$coverfile.'"' );
