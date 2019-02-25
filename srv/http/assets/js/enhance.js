@@ -883,8 +883,8 @@ $( '#divcoverarts' ).on( 'tap', '.coverart', function( e ) {
 		} );
 	} else {
 		getDB( {
-			  path       : $this.find( '.lipath' ).text()
-			, artist     : $this.find( '.liartist' ).text()
+			  path       : $this.find( '.coverartalbum' ).text()
+			, artist     : $this.find( '.coverartartist' ).text()
 			, browsemode : 'coverart'
 		} );
 	}
