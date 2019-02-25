@@ -1898,42 +1898,15 @@ li.active .time {
 	height: 100%;
 	pointer-events: none;
 }
-@media(min-width: 2000px) {
-	.coverart { width: 200px }
-	.coverart div { height: 200px }
-}
-@media(max-width: 2000px) {
-	.coverart { width: calc( ( 100vw - 38px ) * 0.1 ) }
-	.coverart div { height: calc( ( 100vw - 38px ) * 0.1 ) }
-}
-@media(max-width: 1800px) {
-	.coverart { width: calc( ( 100vw - 38px ) * 0.111111111 ) }
-	.coverart div { height: calc( ( 100vw - 38px ) * 0.111111111 ) }
-}
-@media(max-width: 1600px) {
-	.coverart { width: calc( ( 100vw - 38px ) * 0.142857143 ) }
-	.coverart div { height: calc( ( 100vw - 38px ) * 0.142857143 ) }
-}
-@media(max-width: 1200px) {
-	.coverart { width: calc( ( 100vw - 38px ) * 0.166666667 ) }
-	.coverart div { height: calc( ( 100vw - 38px ) * 0.166666667 ) }
-}
-@media(max-width: 1000px) {
-	.coverart { width: calc( ( 100vw - 38px ) * 0.2 ) }
-	.coverart div { height: calc( ( 100vw - 38px ) * 0.2 ) }
-}
-@media(max-width: 800px)  {
-	.coverart { width: calc( ( 100vw - 38px ) * 0.25 ) }
-	.coverart div { height: calc( ( 100vw - 38px ) * 0.25 ) }
-}
-@media(max-width: 600px)  {
-	.coverart { width: calc( ( 100vw - 38px ) * 0.333333333 ) }
-	.coverart div { height: calc( ( 100vw - 38px ) * 0.333333333 ) }
-}
-@media(max-width: 400px)  {
-	.coverart { width: calc( ( 100vw - 38px ) * 0.5 ) }
-	.coverart div { height: calc( ( 100vw - 38px ) * 0.5 ) }
-}
+@media(min-width: 2000px) { .coverart { width: 200px } }
+@media(max-width: 2000px) { .coverart { width: calc( ( 100vw - 38px ) * 0.1 ) } }
+@media(max-width: 1800px) { .coverart { width: calc( ( 100vw - 38px ) * 0.111111111 ) } }
+@media(max-width: 1600px) { .coverart { width: calc( ( 100vw - 38px ) * 0.142857143 ) } }
+@media(max-width: 1200px) { .coverart { width: calc( ( 100vw - 38px ) * 0.166666667 ) } }
+@media(max-width: 1000px) { .coverart { width: calc( ( 100vw - 38px ) * 0.2 ) } }
+@media(max-width: 800px)  { .coverart { width: calc( ( 100vw - 38px ) * 0.25 ) } }
+@media(max-width: 600px)  { .coverart { width: calc( ( 100vw - 38px ) * 0.333333333 ) } }
+@media(max-width: 400px)  { .coverart { width: calc( ( 100vw - 38px ) * 0.5 ) } }
 
 @media (max-width: 900px) { .divblock { width: 20% } }
 @media (max-width: 700px) { .divblock { width: 25% } }
