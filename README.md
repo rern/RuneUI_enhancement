@@ -6,7 +6,7 @@ _Tested on RuneAudio 0.4b, 0.5_
 - Redesign
 	- Responsive layout
 	- Icons
-	- Time and Volume knobs
+	- Time and Volume knobs ( by [roundSlider](https://github.com/soundar24/roundSlider) )
 	- Coverart frame
 	- Buttons
 	- Menus
@@ -16,7 +16,7 @@ _Tested on RuneAudio 0.4b, 0.5_
 	- Show database updating as blinking icon (show as icon in Time knob while hidden)
 	
 ### New Features
-- Browse by CoverArt
+- Browse by CoverArt ( with [LazyLoad](https://github.com/verlok/lazyload) )
 - Coverart bookmarks
 - Coverart in album view
 - Index bar
@@ -30,6 +30,7 @@ _Tested on RuneAudio 0.4b, 0.5_
 	- Library labels
 - Switch between main pages
 	- Swipe left/right
+- Sortable Library items ( by [Sortable](https://github.com/SortableJS/Sortable) )
 
 Install
 ---
