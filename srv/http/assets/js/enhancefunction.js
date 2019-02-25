@@ -280,10 +280,7 @@ function removeSplash() {
 							+'</div>';
 		} );
  		$( '#divcoverarts' ).html( coverartshtml +'<p></p>' );
-		var lazyLoadcover = new LazyLoad( {
-			elements_selector: ".lazy"
-		// ... more custom settings?
-		} );
+		var lazyLoadcover = new LazyLoad( { elements_selector: '.lazy' } );
 	}, 'json' );
 }
 function setPlaybackBlank() {
