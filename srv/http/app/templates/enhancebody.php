@@ -32,25 +32,28 @@ function stripLeading( $array ) {
 	if ( in_array( strtolower( $first ), $leading ) ) return $rest.', '.$first;
 	return $array;
 }
-usort( $files, function( $a, $b ) {
-	return strnatcasecmp( stripLeading( $a ), stripLeading( $b ) );
-} );
-$coverarthtml = '';
 foreach( $files as $file ) {
 	$name = str_replace( '.jpg', '', $file );
 	$name = str_replace( '|', '/', $name );
 	$names = explode( '^^', $name );
-	$licue = isset( $names[ 2 ] ) ? '<a class="licue">'.$names[ 2 ].'</a>' : '';
 	$album = $names[ 0 ];
+	$sort = stripLeading( $album );
 	$artist = $names[ 1 ];
+	$cue = $names[ 2 ];
+	$lists[] = array( $sort, $album, $artist, $file, $cue );
+}
+usort( $lists, function( $a, $b ) {
+	return strnatcasecmp( $a[ 0 ], $b[ 0 ] );
+} );
+$coverarthtml = '';
+foreach( $lists as $list ) {
+	$licue = $list[ 4 ] ? '<a class="licue">'.$list[ 4 ].'</a>' : '';
 	$coverartshtml.= '<div class="coverart">'
 						.$licue
-						.'<a class="lisort">'.$lisort.'</a>'
-						.'<a class="lipath">'.$album.'</a>'
-						.'<a class="liartist">'.$artist.'</a>'
-						.'<div><img class="lazy" data-src="/srv/http/assets/img/coverarts/'.$file.'"></div>'
-						.'<span class="coverarttitle">'.$album.'<br>'
-							.'<gr>'.$artist.'</gr></span>'
+						.'<a class="lisort">'.$list[ 0 ].'</a>'
+						.'<div><img class="lazy" data-src="/srv/http/assets/img/coverarts/'.$list[ 3 ].'"></div>'
+						.'<span class="coverartalbum">'.$list[ 1 ].'</span>'
+						.'<gr class="coverartartist">'.$list[ 2 ].'</gr>'
 					.'</div>';
 }
 $coverarthtml = '<p></p>';
