@@ -247,41 +247,15 @@ function removeSplash() {
 	$( '#splash' ).remove();
 	$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
 	$( '#page-playback' ).removeClass( 'hide' );
-	$.post( 'enhance.php', { getcoverarts: 1 }, function( data ) {
-		if ( !data.length ) return
-		
-		var albumA, balbumB;
-		data.sort( function( a, b ) {
-			albumA = a.split( '^^' ).shift();
-			balbumB = b.split( '^^' ).shift();
-			return stripLeading( albumA ).localeCompare( stripLeading( balbumB ), undefined, { numeric: true } );
-		} );
-		// for load 1st page without lazy
-		var perrow = $( 'body' )[ 0 ].clientWidth / 200;
-		var percolumn = window.innerHeight / 200;
-		var perpage = Math.ceil( perrow ) * Math.ceil( percolumn );
-		var coverartshtml = '';
-		$.each( data, function( i, cover ) {
-			var filename = cover.substring( cover.lastIndexOf( '/' ) + 1, cover.lastIndexOf( '.' ) );
-			var names = filename.replace( /\|/g, '/' ).split( '^^' );
-			var licue = names[ 2 ] ? '<a class="licue">'+ names[ 2 ] +'</a>' : '';
-			var album = names[ 0 ];
-			var artist = names[ 1 ];
-			var lisort = stripLeading( album );
-			var coveruri = encodeURIComponent( cover );
-			coverartshtml += '<div class="coverart">'
-								+ licue
-								+'<a class="lisort">'+ lisort +'</a>'
-								+'<a class="lipath">'+ album +'</a>'
-								+'<a class="liartist">'+ artist +'</a>'
-								+'<div><img '+ ( i < perpage ? "" : 'class="lazy" data-' ) +'src="/srv/http/assets/img/coverarts/'+ coveruri +'"></div>'
-								+'<span class="coverarttitle">'+ album +'<br>'
-									+'<gr>'+ artist +'</gr></span>'
-							+'</div>';
-		} );
- 		$( '#divcoverarts' ).html( coverartshtml +'<p></p>' );
-		var lazyLoadcover = new LazyLoad( { elements_selector: '.lazy' } );
-	}, 'json' );
+	
+	var lazyLoadcover = new LazyLoad( { elements_selector: '.lazy' } );
+	// for load 1st page without lazy
+	var perrow = $( 'body' )[ 0 ].clientWidth / 200;
+	var percolumn = window.innerHeight / 200;
+	var perpage = Math.ceil( perrow ) * Math.ceil( percolumn );
+	for( i = 0; i < perpage; i++ ) {
+		lazyLoadcover.load( $( '.lazy' ).eq( i )[ 0 ], 'force' );
+	}
 }
 function setPlaybackBlank() {
 	$( '#playback-controls' ).addClass( 'hide' );
