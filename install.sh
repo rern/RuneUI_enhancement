@@ -123,6 +123,8 @@ if [[ $1 != u ]]; then # keep range: 0.5 - 3.0
         }'
 	)
 	redis-cli set zoomlevel $zoom &> /dev/null
+	# set AAC/ALAC support
+	redis-cli hset mpdconf ffmpeg $2 &> /dev/null
 else
 	zoom=$( redis-cli get zoomlevel )
 fi
@@ -200,10 +202,6 @@ redis-cli set mpddb "$albumartist $composer $genre" &> /dev/null
 # fix webradio permission
 chown -R http:http /mnt/MPD/Webradio
 
-# set AAC/ALAC support ..."
-if [[ $1 != u ]]; then
-	redis-cli hset mpdconf ffmpeg $2 &> /dev/null
-fi
 # disable USB drive auto scan database ..."
 redis-cli set usb_db_autorebuild 0 &> /dev/null
 # disable GB and DE locale ..."
