@@ -1356,7 +1356,8 @@ wh, gr { font-weight: 300; }
 	border-right: #000000 1px solid;
 	border-bottom: #000000 1px solid;
 }
-.coverartalbum, .coverartartist {
+.coverartalbum,
+.coverartartist {
 	display: block;
 	padding-top: 2px;
 	overflow: hidden;
@@ -1364,6 +1365,9 @@ wh, gr { font-weight: 300; }
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+}
+.coverartartist {
+	margin-bottom: 8px;
 }
 .licover {
 	height: 230px !important;
