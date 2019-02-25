@@ -1356,12 +1356,11 @@ wh, gr { font-weight: 300; }
 	border-right: #000000 1px solid;
 	border-bottom: #000000 1px solid;
 }
-.coverarttitle {
+.coverartalbum, .coverartartist {
 	display: block;
-	height: 35px;
 	padding-top: 2px;
 	overflow: hidden;
-	line-height: 16px;
+	line-height: 14px;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
