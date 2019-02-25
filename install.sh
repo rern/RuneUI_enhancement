@@ -124,7 +124,7 @@ if [[ $1 != u ]]; then # keep range: 0.5 - 3.0
 	)
 	redis-cli set zoomlevel $zoom &> /dev/null
 	# set AAC/ALAC support
-	redis-cli hset mpdconf ffmpeg $2 &> /dev/null
+	[[ $2 ]] && redis-cli hset mpdconf ffmpeg $2 &> /dev/null
 else
 	zoom=$( redis-cli get zoomlevel )
 fi
