@@ -48,10 +48,11 @@ usort( $lists, function( $a, $b ) {
 $coverarthtml = '';
 foreach( $lists as $list ) {
 	$licue = $list[ 4 ] ? '<a class="licue">'.$list[ 4 ].'</a>' : '';
+	$filename = str_replace( '#', '%23', $list[ 3 ] ); // '#' not allow in 'scr'
 	$coverartshtml.= '<div class="coverart">'
 						.$licue
 						.'<a class="lisort">'.$list[ 0 ].'</a>'
-						.'<div><img class="lazy" data-src="/srv/http/assets/img/coverarts/'.$list[ 3 ].'"></div>'
+						.'<div><img class="lazy" data-src="/srv/http/assets/img/coverarts/'.$filename.'"></div>'
 						.'<span class="coverartalbum">'.$list[ 1 ].'</span>'
 						.'<gr class="coverartartist">'.$list[ 2 ].'</gr>'
 					.'</div>';
