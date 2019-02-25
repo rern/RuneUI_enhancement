@@ -24,6 +24,36 @@ foreach( $blocks as $id => $value ) {
 	</div>
 		';
 }
+$files = array_slice( scandir( '/srv/http/assets/img/coverarts' ), 2 );
+function stripLeading( $array ) {
+	list( $first, $rest ) = explode( ' ', $array.' ', 2 );
+	// the extra space is to prevent "undefined offset" notices on single-word titles
+	$leading = array( 'a', 'an', 'the', '(', '[', '.', "'", '"', '\\' );
+	if ( in_array( strtolower( $first ), $leading ) ) return $rest.', '.$first;
+	return $array;
+}
+usort( $files, function( $a, $b ) {
+	return strnatcasecmp( stripLeading( $a ), stripLeading( $b ) );
+} );
+$coverarthtml = '';
+foreach( $files as $file ) {
+	$name = str_replace( '.jpg', '', $file );
+	$name = str_replace( '|', '/', $name );
+	$names = explode( '^^', $name );
+	$licue = isset( $names[ 2 ] ) ? '<a class="licue">'.$names[ 2 ].'</a>' : '';
+	$album = $names[ 0 ];
+	$artist = $names[ 1 ];
+	$coverartshtml.= '<div class="coverart">'
+						.$licue
+						.'<a class="lisort">'.$lisort.'</a>'
+						.'<a class="lipath">'.$album.'</a>'
+						.'<a class="liartist">'.$artist.'</a>'
+						.'<div><img class="lazy" data-src="/srv/http/assets/img/coverarts/'.$file.'"></div>'
+						.'<span class="coverarttitle">'.$album.'<br>'
+							.'<gr>'.$artist.'</gr></span>'
+					.'</div>';
+}
+$coverarthtml = '<p></p>';
 $indexarray = range( 'A', 'Z' );
 $li = '<li>#</li>';
 foreach( $indexarray as $i => $char ) {
@@ -313,7 +343,7 @@ $menu.= '</div>';
 		<ul id="db-index" class="index hide">
 			<?=$index?>
 		</ul>
-		<div id="divcoverarts" class="hide"></div>
+		<div id="divcoverarts" class="hide"><?=$coverartshtml ?></div>
 	</div>
 </div>
 <div id="page-playlist" class="page hide">
