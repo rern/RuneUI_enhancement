@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # $1-zoom
-# $2-local browser
+# $2-acc/alac support
 
 # change version number in RuneAudio_Addons/srv/http/addonslist.php
 
@@ -200,8 +200,10 @@ redis-cli set mpddb "$albumartist $composer $genre" &> /dev/null
 # fix webradio permission
 chown -R http:http /mnt/MPD/Webradio
 
-# disable AAC/ALAC support ..."
-redis-cli hset mpdconf ffmpeg no &> /dev/null
+# set AAC/ALAC support ..."
+if [[ $1 != u ]]; then
+	redis-cli hset mpdconf ffmpeg $2 &> /dev/null
+fi
 # disable USB drive auto scan database ..."
 redis-cli set usb_db_autorebuild 0 &> /dev/null
 # disable GB and DE locale ..."
