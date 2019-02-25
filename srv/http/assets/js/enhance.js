@@ -898,16 +898,18 @@ $( '#divcoverarts' ).on( 'tap', '.coverart', function( e ) {
 } );
 $( '#divcoverarts' ).on( 'tap', '.coverart-remove', function() {
 	var $this = $( this );
-	var img = $this.siblings( 'img' ).prop( 'src' );
+	var img = $this.prev().prop( 'src' );
+	var $album = $this.parent().next();
+	var album = $album.text();
+	var artist = $album.next().text();
 	var coverfile = img.split( '/' ).pop();
-	var name = decodeURIComponent( coverfile ).split( '^^' );
 	info( {
 		  icon    : 'minus-circle'
 		, title   : 'Remove Thumbnail'
 		, message : 'Remove?'
 					+'<br><img src="'+ img +'">'
-					+'<br><wh>'+ name[ 0 ] +'</wh>'
-					+'<br>'+ name[ 1 ].slice( 0, -4 )
+					+'<br><wh>'+ album +'</wh>'
+					+'<br>'+ artist
 		, cancel  : 1
 		, oklabel : 'Remove'
 		, ok      : function() {
