@@ -256,7 +256,7 @@ function removeSplash() {
 			balbumB = b.split( '^^' ).shift();
 			return stripLeading( albumA ).localeCompare( stripLeading( balbumB ), undefined, { numeric: true } );
 		} );
-		observerCoverart = lozad(); // lazy load coverarts
+		// for load 1st page without lazy
 		var perrow = $( 'body' )[ 0 ].clientWidth / 200;
 		var percolumn = window.innerHeight / 200;
 		var perpage = Math.ceil( perrow ) * Math.ceil( percolumn );
@@ -269,24 +269,20 @@ function removeSplash() {
 			var artist = names[ 1 ];
 			var lisort = stripLeading( album );
 			var coveruri = encodeURIComponent( cover );
-			// preload 1st page only
-			var clpreload = i < perpage ? ' clpreload' : '';
 			coverartshtml += '<div class="coverart">'
 								+ licue
 								+'<a class="lisort">'+ lisort +'</a>'
 								+'<a class="lipath">'+ album +'</a>'
 								+'<a class="liartist">'+ artist +'</a>'
-								+'<div><img class="lozad'+ clpreload +'" data-src="/srv/http/assets/img/coverarts/'+ coveruri +'"></div>'
+								+'<div><img '+ ( i < perpage ? "" : 'class="lazy" data-' ) +'src="/srv/http/assets/img/coverarts/'+ coveruri +'"></div>'
 								+'<span class="coverarttitle">'+ album +'<br>'
 									+'<gr>'+ artist +'</gr></span>'
 							+'</div>';
 		} );
  		$( '#divcoverarts' ).html( coverartshtml +'<p></p>' );
-		observerCoverart.observe();
-		// preload coverart
-		$elpreload = document.querySelectorAll( '.clpreload' )
-		$elpreload.forEach( function( el ) {
-			observerCoverart.triggerLoad( el );
+		var lazyLoadcover = new LazyLoad( {
+			elements_selector: ".lazy"
+		// ... more custom settings?
 		} );
 	}, 'json' );
 }
