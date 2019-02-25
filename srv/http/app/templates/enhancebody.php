@@ -48,13 +48,17 @@ usort( $lists, function( $a, $b ) {
 $coverarthtml = '';
 foreach( $lists as $list ) {
 	$licue = $list[ 4 ] ? '<a class="licue">'.$list[ 4 ].'</a>' : '';
-	$filename = str_replace( '#', '%23', $list[ 3 ] ); // '#' not allow in 'scr'
+	$replace = array(  // #,? not allow in 'scr'
+		  '/\#/' => '%23'
+		, '/\?/' => '%3F'
+	);
+	$filename = preg_replace( array_keys( $replace ), array_values( $replace ), $list[ 3 ] );
 	$coverartshtml.= '<div class="coverart">'
 						.$licue
 						.'<a class="lisort">'.$list[ 0 ].'</a>'
 						.'<div><img class="lazy" data-src="/srv/http/assets/img/coverarts/'.$filename.'"></div>'
 						.'<span class="coverartalbum">'.$list[ 1 ].'</span>'
-						.'<gr class="coverartartist">'.$list[ 2 ].'</gr>'
+						.'<gr class="coverartartist">'.( $list[ 2 ] ?: '&nbsp;' ).'</gr>'
 					.'</div>';
 }
 $coverarthtml = '<p></p>';
