@@ -273,9 +273,11 @@ $( '#tab-library' ).click( function() {
 	if ( !Object.keys( GUI.libraryhome ).length ) return // wait for mpc data
 	
 	GUI.dbbrowsemode = '';
-	$( '#divcoverarts' ).addClass( 'hide' );
-	$( '#home-blocks' ).removeClass( 'hide' );
 	$( '#db-search-close span' ).empty();
+	if ( GUI.library && !$( '#divcoverarts' ).hasClass( 'hide' ) ) {
+		$( '#divcoverarts' ).addClass( 'hide' );
+		$( '#home-blocks' ).removeClass( 'hide' );
+	}
 	if ( GUI.bookmarkedit ) {
 		GUI.bookmarkedit = 0;
 		renderLibrary();
