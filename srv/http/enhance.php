@@ -453,11 +453,13 @@ function pushstream( $channel, $data = 1 ) {
 	curl_close( $ch );
 }
 function getLibrary() {
+	$redis = new Redis();
+	$redis->pconnect( '127.0.0.1' );
 	$count = exec( '/srv/http/enhancecount.sh' );
 	$count = explode( ' ', $count );
 	$status = array(
 		  'artist'       => $count[ 0 ]
-		, 'album'        => isset( $count[ 11 ] ) ? $count[ 11 ] : $count[ 1 ]
+		, 'album'        => $count[ 1 ]
 		, 'song'         => $count[ 2 ]
 		, 'albumartist'  => $count[ 3 ]
 		, 'composer'     => $count[ 4 ]
@@ -465,8 +467,8 @@ function getLibrary() {
 		, 'nas'          => $count[ 6 ]
 		, 'usb'          => $count[ 7 ]
 		, 'webradio'     => $count[ 8 ]
-		, 'spotify'      => $count[ 9 ]
-		, 'activeplayer' => $count[ 10 ]
+		, 'spotify'      => $redis->hGet( 'spotify', 'enable' )
+		, 'activeplayer' => $redis->get( 'activePlayer' )
 	);
 	return $status;
 }
