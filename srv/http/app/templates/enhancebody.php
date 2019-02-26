@@ -15,15 +15,15 @@ function stripLeading( $array ) {
 $count = exec( '/srv/http/enhancecount.sh' );
 $count = explode( ' ', $count );
 $count = array(
-	  'artist'       => $count[ 0 ]
-	, 'album'        => $count[ 1 ]
-	, 'song'         => $count[ 2 ]
-	, 'albumartist'  => $count[ 3 ]
-	, 'composer'     => $count[ 4 ]
-	, 'genre'        => $count[ 5 ]
-	, 'network'      => $count[ 6 ]
-	, 'usbdrive'     => $count[ 7 ]
-	, 'webradio'     => $count[ 8 ]
+	  'artist'      => $count[ 0 ]
+	, 'album'       => $count[ 1 ]
+	, 'song'        => $count[ 2 ]
+	, 'albumartist' => $count[ 3 ]
+	, 'composer'    => $count[ 4 ]
+	, 'genre'       => $count[ 5 ]
+	, 'network'     => $count[ 6 ]
+	, 'usbdrive'    => $count[ 7 ]
+	, 'webradio'    => $count[ 8 ]
 );
 // bookmarks
 foreach( $bkmarks as $label => $path ) {
