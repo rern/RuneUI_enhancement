@@ -62,13 +62,13 @@ $blocks = array( // 'id' => array( 'path', 'icon', 'name' );
 foreach( $blocks as $id => $value ) {
 	$browsemode = in_array( $id, array( 'album', 'artist', 'albumartist', 'composer', 'genre', 'coverart' ) ) ? ' data-browsemode="'.$id.'"' : '';
 	$plugin = in_array( $id, array( 'spotify', 'dirble', 'jamendo' ) ) ? ' data-plugin="'.$value[ 0 ].'"' : '';
-	$countnum = $count[ $value[ 1 ] ] ? number_format( $count[ $value[ 1 ] ] ) : '';
+	$counthtml = $count[ $value[ 1 ] ] ? '<gr>'.number_format( $count[ $value[ 1 ] ] ).'</gr>' : '';
 	$blocks[ $id ] = '
 		<div class="divblock">
 			<div id="home-'.$id.'" class="home-block"'.$browsemode.$plugin.'>
 				<a class="lipath">'.$value[ 0 ].'</a>
 				<i class="fa fa-'.$value[ 1 ].'"></i>
-				<gr>'.$countnum.'</gr>
+				'.$counthtml.'
 				<wh>'.$value[ 2 ].'</wh>
 			</div>
 		</div>
