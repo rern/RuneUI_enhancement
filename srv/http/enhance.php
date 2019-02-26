@@ -455,10 +455,9 @@ function pushstream( $channel, $data = 1 ) {
 function getLibrary() {
 	$count = exec( '/srv/http/enhancecount.sh' );
 	$count = explode( ' ', $count );
-	$album = isset( $count[ 11 ] ) ? $count[ 11 ] : $count[ 1 ];
 	$status = array(
 		  'artist'       => $count[ 0 ]
-		, 'album'        => $count[ 11 ] ?: $count[ 1 ]
+		, 'album'        => isset( $count[ 11 ] ) ? $count[ 11 ] : $count[ 1 ]
 		, 'song'         => $count[ 2 ]
 		, 'albumartist'  => $count[ 3 ]
 		, 'composer'     => $count[ 4 ]
