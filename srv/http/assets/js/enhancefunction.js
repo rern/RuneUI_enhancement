@@ -233,9 +233,6 @@ function scrollLongText() {
 		if ( !$( '.scrollleft' ).length ) return
 		
 		// varied with only when scaled
-		if ( GUI.scale !== 1 ) {
-			cssKeyframes( 'scrollleft', 'transform : translateX( '+ Math.round( wW / GUI.scale ) +'px );', 'transform : translateX( -100% );' );
-		}
 		var cssanimate = ( wW + tWmax ) / GUI.scrollspeed +'s infinite scrollleft linear'; // calculate to same speed
 		$( '.scrollleft' ).css( {
 			  width               : tWmax +'px'
@@ -710,12 +707,18 @@ function renderLibrary() {
 		$( '#db-currentpath span' ).html( '<bl class="title">LIBRARY</bl></a>' );
 	}
 	$( '#page-library .btnlist-top, #home-blocks' ).removeClass( 'hide' );
-	$( '#home-spotify' ).parent().toggleClass( 'hide', !GUI.libraryhome.spotify );
-	$( '#divhomeblocks wh' ).toggle( GUI.display.label !== '' );
+	$( '.home-block' ).each( function() {
+		var name = this.id.replace( 'home-', '' );
+		$( this ).parent().toggleClass( 'hide', GUI.display[ name ] === '' );
+	} );
+	$( '#home-spotify' ).parent().toggleClass( 'hide', GUI.libraryhome.spotify === 0 );
+	$( '.home-block gr' ).toggleClass( 'hide', GUI.display.count === '' );
 	if ( GUI.display.label ) {
+		$( '#divhomeblocks wh' ).show();
 		$( '.home-block gr' ).css( 'color', '' );
 		$( '.home-block' ).css( 'padding', '' );
 	} else {
+		$( '#divhomeblocks wh' ).hide();
 		$( '.home-block gr' ).css( 'color', '#e0e7ee' );
 		$( '.home-block' ).css( 'padding-top', '35px' );
 		$( '.home-bookmark' ).css( 'padding', '20px 5px 5px 5px' );
@@ -723,6 +726,42 @@ function renderLibrary() {
 	displayTopBottom();
 	bookmarkScroll();
 	$( 'html, body' ).scrollTop( 0 );
+}
+function renderBookmark() {
+	$.post( 'enhance.php', { getbookmark: 1 }, function( bookmarks ) {
+		var content = '';
+		if ( bookmarks ) {
+			bookmarks.sort( function( a, b ) {
+				return stripLeading( a.name ).localeCompare( stripLeading( b.name ), undefined, { numeric: true } );
+			} );
+			$.each( bookmarks, function( i, bookmark ) {
+				var coverarthtml = bookmark.coverart ? '<img class="bkcoverart" src="'+ bookmark.coverart +'">' : '<i class="fa fa-bookmark"></i>';
+				var name = bookmark.name.replace( /\\/g, '' );
+				var id = name
+					.replace( / /g, '_' )
+					.replace( /[^A-Za-z0-9_-]+/g, '-' );
+				var namehtml = '<div class="divbklabel"><span class="bklabel'+ ( bookmark.coverart ? ' hide' : '' ) +'">'+ name +'</span></div>';
+				content += '<div class="divblock bookmark">'
+						  +'	<div id="home-bk-'+ id +'" class="home-block home-bookmark"><a class="lipath">'+ bookmark.path +'</a>'+ coverarthtml + namehtml +'</div>'
+						  +'</div>';
+			} );
+		}
+		$( '.bookmark' ).remove();
+		$( '#divhomeblocks' ).append( content ).promise().done( function() {
+			bookmarkScroll();
+		} );
+		var order = GUI.display.order
+		if ( !order ) return
+		
+		order = order.split( '^^' );
+		$.each( order, function( i, name ) {
+			var $block = $( '#home-'+ name ).parent();
+			if ( GUI.display.order ) {
+				$block.detach();
+				$( '#divhomeblocks' ).append( $block );
+			}
+		} );
+	}, 'json' );
 }
 function infoNoData() {
 	$( '#loader' ).addClass( 'hide' );
