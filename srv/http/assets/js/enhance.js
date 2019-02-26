@@ -683,6 +683,7 @@ $( '#dbsearchbtn' ).click( function() {
 	}
 } );
 $( '#db-search-close' ).click( function() {
+	GUI.keyword = '';
 	$( '#db-search-close, #db-search, #dbsearchbtn' ).addClass( 'hide' );
 	$( '#db-currentpath span, #db-searchbtn' ).removeClass( 'hide' );
 	$( '#db-currentpath' ).css( 'max-width', '' );

@@ -64,7 +64,11 @@ function switchPage( page ) {
 	clearInterval( GUI.intElapsed );
 	clearInterval( GUI.intElapsedPl );
 	if ( GUI.library && $( '#home-blocks' ).hasClass( 'hide' ) ) {
-		GUI.libraryscrolltop = GUI.currentpath ? $( window ).scrollTop() : 0;
+		if ( !$( '#divcoverarts' ).hasClass( 'hide' ) ) {
+			GUI.cvscrolltop = $( window ).scrollTop();
+		} else {
+			GUI.libraryscrolltop = GUI.currentpath ? $( window ).scrollTop() : 0;
+		}
 	} else if ( GUI.playlist && GUI.pleditor ) {
 		GUI.playlistscrolltop = $( window ).scrollTop();
 	}
@@ -89,7 +93,8 @@ function switchPage( page ) {
 			} else {
 				$( '.licover' ).remove();
 			}
-			$( 'html, body' ).scrollTop( GUI.libraryscrolltop );
+			var scrolltop = $( '#divcoverarts' ).hasClass( 'hide' ) ? GUI.libraryscrolltop : GUI.cvscrolltop;
+			$( 'html, body' ).scrollTop( scrolltop );
 		}
 	} else if ( GUI.playlist && GUI.pleditor ) {
 		$( 'html, body' ).scrollTop( GUI.playlistscrolltop );
@@ -767,10 +772,11 @@ function infoNoData() {
 	$( '#loader' ).addClass( 'hide' );
 	if ( GUI.plugin ) return
 	
+	var keyword = $( '#db-search-keyword' ).val();
 	info( {
 		  icon      : 'info-circle'
-		, message   : 'No data in this location.'
-		, autoclose : 4000
+		, message   : ( !keyword ? 'No data in this location.' : 'Nothing found for <wh>'+ keyword +'</wh>' )
+		, autoclose : 6000
 	} );
 }
 function getDB( options ) {
@@ -871,7 +877,13 @@ function getDB( options ) {
 			}
 		}
 		$.post( 'enhance.php', command[ mode ], function( data ) {
-			data ? dataSort( data, path ) : infoNoData();
+			if ( data ) {
+				dataSort( data, path );
+				GUI.keyword = keyword;
+			} else {
+				infoNoData();
+				$( '#db-search-keyword' ).val( GUI.keyword );
+			}
 		}, 'json' );
 		return
 	}
@@ -1090,9 +1102,8 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		$( '#db-entries p' ).css( 'min-height', window.innerHeight - ( GUI.bars ? 140 : 100 ) +'px' );
 		if ( !fileplaylist ) displayIndexBar();
 		$( '#loader, .menu, #divcoverarts' ).addClass( 'hide' );
-
 	} );
-	if ( $( '#db-search-btn' ).hasClass( 'hide' ) ) return
+//	if ( $( '#db-search-btn' ).hasClass( 'hide' ) ) return
 	
 	$( '#db-back' ).removeClass( 'hide' );
 // breadcrumb directory path link
@@ -1141,7 +1152,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		var folderRoot = folder[ 0 ];
 		if ( $( '#db-search-keyword' ).val() ) {
 		// search results
-			var results = ( data.length ) ? data.length : '0';
+			var results = data.length - 4;
 			$( '#db-currentpath' ).css( 'max-width', '40px' );
 			$( '#db-back, #db-index' ).addClass( 'hide' );
 			$( '#db-entries' ).css( 'width', '100%' );
