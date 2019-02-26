@@ -4,6 +4,7 @@ var GUI = {
 	, artistalbum  : ''
 	, bookmarkedit : 0
 	, browsemode   : ''
+	, cvscrolltop  : 0
 	, currentpage  : 'playback'
 	, currentpath  : ''
 	, dbback       : 0
@@ -19,7 +20,6 @@ var GUI = {
 	, libraryhome  : {}
 	, local        : 0
 	, lsplaylists  : []
-//	, midori       : navigator.userAgent.indexOf( 'Midori' ) !== -1
 	, playback     : 1
 	, playlist     : 0
 	, pleditor     : 0
@@ -102,53 +102,7 @@ $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-// PLAYBACK /////////////////////////////////////////////////////////////////////////////////////
-$( '.btn-cmd' ).click( function() {
-	var $this = $( this );
-	var cmd = this.id;
-	if ( $this.hasClass( 'btn-toggle' ) ) {
-		if ( cmd === 'random' && $this.hasClass( 'ashuffle' ) ) {
-			$.post( 'enhance.php', { bash: '/usr/bin/killall ashuffle &' } );
-			$this.removeClass( 'btn-primary ashuffle' );
-			return
-		}
-		
-		var onoff = GUI.status[ cmd ] ? 0 : 1;
-		GUI.status[ cmd ] = onoff;
-		command = 'mpc '+ cmd +' '+ onoff;
-	} else {
-		if ( GUI.status.ext === 'radio' && cmd === 'pause' ) cmd = 'stop';
-		if ( GUI.bars ) {
-			$( '#playback-controls .btn-cmd' ).removeClass( 'btn-primary' );
-			$this.addClass( 'btn-primary' );
-		}
-		if ( cmd === 'stop' ) {
-			command = 'mpc stop';
-			$( '#pl-entries .elapsed' ).empty();
-		} else if ( cmd === 'previous' || cmd === 'next' ) {
-			// enable previous / next while stop
-			var current = GUI.status.song + 1;
-			var last = GUI.status.playlistlength;
-			if ( GUI.status.random === 1 ) {
-				// improve: repeat pattern of mpd random
-				var pos = Math.floor( Math.random() * last ); // Math.floor( Math.random() * ( max - min + 1 ) ) + min;
-				if ( pos === current ) pos = ( pos === last ) ? pos - 1 : pos + 1; // avoid same pos ( no pos-- or pos++ in ternary )
-			} else {
-				if ( cmd === 'previous' ) {
-					var pos = current !== 1 ? current - 1 : last;
-				} else {
-					var pos = current !== last ? current + 1 : 1;
-				}
-			}
-			pos = pos || 1;
-			command = GUI.status.state === 'play' ? 'mpc play '+ pos : [ 'mpc play '+ pos, 'mpc stop' ];
-			if ( GUI.status.ext === 'radio' ) $( '#cover-art' ).attr( 'src', vustop )
-		} else {
-			command = ( GUI.status.ext === 'radio' && GUI.status.state === 'play' ) ? 'mpc stop' : 'mpc toggle';
-		}
-	}
-	$.post( 'enhance.php', { mpc: command } );
-} );
+// COMMON /////////////////////////////////////////////////////////////////////////////////////
 $( '#menu-settings, #badge' ).click( function() {
 	$( '#settings' )
 		.toggleClass( 'hide' )
@@ -272,9 +226,8 @@ $( '#turnoff' ).click( function() {
 $( '#tab-library' ).click( function() {
 	if ( !Object.keys( GUI.libraryhome ).length ) return // wait for mpc data
 	
-	GUI.dbbrowsemode = '';
 	$( '#db-search-close span' ).empty();
-	if ( GUI.library && !$( '#divcoverarts' ).hasClass( 'hide' ) ) {
+	if ( GUI.library ) {
 		$( '#divcoverarts' ).addClass( 'hide' );
 		$( '#home-blocks' ).removeClass( 'hide' );
 	}
@@ -336,6 +289,13 @@ $( '#page-library' ).click( function( e ) {
 $( '#page-library, #page-playback, #page-playlist' ).click( function( e ) {
 	if ( [ 'coverTR', 'timeTR' ].indexOf( e.target.id ) === -1 ) $( '#settings' ).addClass( 'hide' );
 } );
+$( '#menu-top, #menu-bottom, #settings' ).click( function( e ) {
+	if ( e.target.id !== 'menu-settings' && e.target.id !== 'badge' ) $( '#settings' ).addClass( 'hide' );
+	$( '.controls' ).addClass( 'hide' );
+	$( '.controls1, .rs-tooltip, #imode' ).removeClass( 'hide' );
+	$( '#swipebar' ).addClass( 'transparent' );
+} );
+// PLAYBACK /////////////////////////////////////////////////////////////////////////////////////
 $( '#song, #playlist-warning' ).on( 'click', 'i', function() {
 	$( '#tab-library' ).click();
 } );
@@ -584,11 +544,51 @@ $( '.timemap, .covermap, .volmap' ).click( function() {
 		$( '#'+ cmd ).click();
 	}
 } );
-$( '#menu-top, #menu-bottom, #settings' ).click( function( e ) {
-	if ( e.target.id !== 'menu-settings' && e.target.id !== 'badge' ) $( '#settings' ).addClass( 'hide' );
-	$( '.controls' ).addClass( 'hide' );
-	$( '.controls1, .rs-tooltip, #imode' ).removeClass( 'hide' );
-	$( '#swipebar' ).addClass( 'transparent' );
+$( '.btn-cmd' ).click( function() {
+	var $this = $( this );
+	var cmd = this.id;
+	if ( $this.hasClass( 'btn-toggle' ) ) {
+		if ( cmd === 'random' && $this.hasClass( 'ashuffle' ) ) {
+			$.post( 'enhance.php', { bash: '/usr/bin/killall ashuffle &' } );
+			$this.removeClass( 'btn-primary ashuffle' );
+			return
+		}
+		
+		var onoff = GUI.status[ cmd ] ? 0 : 1;
+		GUI.status[ cmd ] = onoff;
+		command = 'mpc '+ cmd +' '+ onoff;
+	} else {
+		if ( GUI.status.ext === 'radio' && cmd === 'pause' ) cmd = 'stop';
+		if ( GUI.bars ) {
+			$( '#playback-controls .btn-cmd' ).removeClass( 'btn-primary' );
+			$this.addClass( 'btn-primary' );
+		}
+		if ( cmd === 'stop' ) {
+			command = 'mpc stop';
+			$( '#pl-entries .elapsed' ).empty();
+		} else if ( cmd === 'previous' || cmd === 'next' ) {
+			// enable previous / next while stop
+			var current = GUI.status.song + 1;
+			var last = GUI.status.playlistlength;
+			if ( GUI.status.random === 1 ) {
+				// improve: repeat pattern of mpd random
+				var pos = Math.floor( Math.random() * last ); // Math.floor( Math.random() * ( max - min + 1 ) ) + min;
+				if ( pos === current ) pos = ( pos === last ) ? pos - 1 : pos + 1; // avoid same pos ( no pos-- or pos++ in ternary )
+			} else {
+				if ( cmd === 'previous' ) {
+					var pos = current !== 1 ? current - 1 : last;
+				} else {
+					var pos = current !== last ? current + 1 : 1;
+				}
+			}
+			pos = pos || 1;
+			command = GUI.status.state === 'play' ? 'mpc play '+ pos : [ 'mpc play '+ pos, 'mpc stop' ];
+			if ( GUI.status.ext === 'radio' ) $( '#cover-art' ).attr( 'src', vustop )
+		} else {
+			command = ( GUI.status.ext === 'radio' && GUI.status.state === 'play' ) ? 'mpc stop' : 'mpc toggle';
+		}
+	}
+	$.post( 'enhance.php', { mpc: command } );
 } );
 $( '#playsource-open' ).click( function() {
 	$( '#playsource li a' ).addClass( 'inactive' );
@@ -716,8 +716,12 @@ var observerOption = { childList: true };
 var observerLibrary = document.getElementById( 'db-entries' );
 var mutationLibrary = new MutationObserver( function() { // on observed target changed
 	var lipath = $( '#db-currentpath' ).find( '.lipath' ).text();
-	var scrollpos = GUI.dbscrolltop[ lipath ];
-	$( 'html, body' ).scrollTop( scrollpos ? scrollpos : 0 );
+	if ( !$( '#divcoverarts' ).hasClass( 'hide' ) ) {
+		$( 'html, body' ).scrollTop( GUI.cvscrolltop );
+	} else {
+		var scrollpos = GUI.dbscrolltop[ lipath ];
+		$( 'html, body' ).scrollTop( scrollpos ? scrollpos : 0 );
+	}
 	mutationLibrary.disconnect();
 } );
 $( '#db-back' ).click( function() {
@@ -731,14 +735,16 @@ $( '#db-back' ).click( function() {
 			$( '#db-currentpath a:nth-last-child( 2 )' ).click();
 		}
 		return
+		
 	} else if ( GUI.dbbrowsemode === 'coverart' ) {
 		var currentpath =  $( '#db-currentpath' ).find( '.lipath' ).text();
 		GUI.dbscrolltop[ currentpath ] = $( window ).scrollTop();
 		GUI.dbbackdata = [];
-		$( '#home-coverart' ).click();
+		$( '#divcoverarts' ).removeClass( 'hide' );
 		$( '#db-entries' ).empty();
 		return
 	}
+	
 	GUI.artistalbum = '';
 	GUI.dbbackdata.pop();
 	if ( !GUI.dbbackdata.length ) {
@@ -875,7 +881,7 @@ $( '#divcoverarts' ).on( 'tap', '.coverart', function( e ) {
 	}
 	
 	mutationLibrary.observe( observerLibrary, observerOption ); // standard js - must be one on one element
-	GUI.dbscrolltop.coverart = $( window ).scrollTop();
+	GUI.cvscrolltop = $( window ).scrollTop();
 	$this = $( this );
 	$licue = $this.find( '.licue' );
 	if ( $licue.length ) {
