@@ -145,14 +145,7 @@ $( '#displaylibrary' ).click( function() {
 			} );
 			cssContextIcon();
 			$.post( 'enhance.php', { setdisplay: GUI.display } );
-			if ( GUI.display.count ) {
-				$.post( 'enhance.php', { library: 1, data: 1 }, function( data ) {
-					GUI.libraryhome = data;
-					if ( !GUI.library ) $( '#tab-library' ).click();
-				}, 'json' );
-			} else {
-				if ( !GUI.library ) $( '#tab-library' ).click();
-			}
+			if ( !GUI.library ) $( '#tab-library' ).click();
 		}
 	} );
 } );
@@ -1501,7 +1494,7 @@ pushstreams.volume.onmessage = function( data ) {
 }
 pushstreams.library.onmessage = function( data ) {
 	GUI.libraryhome = data[ 0 ];
-	if ( !GUI.local && !$( '#home-blocks' ).hasClass( 'hide' ) ) renderLibrary();
+	if ( !GUI.local && !$( '#home-blocks' ).hasClass( 'hide' ) ) renderBookmarks();
 }
 pushstreams.count.onmessage = function( data ) {
 	var data = data[ 0 ].split( ' ' );
@@ -1560,7 +1553,7 @@ pushstreams.idle.onmessage = function( changed ) {
 	} else if ( changed === 'update' ) {
 		if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) {
 			$.post( 'enhance.php', { library: 1 } );
-			renderLibrary();
+			renderBookmarks();
 			return
 		}
 		if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) return;

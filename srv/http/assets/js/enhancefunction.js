@@ -727,7 +727,7 @@ function renderLibrary() {
 	bookmarkScroll();
 	$( 'html, body' ).scrollTop( 0 );
 }
-function renderBookmark() {
+function renderBookmarks() {
 	$.post( 'enhance.php', { getbookmark: 1 }, function( bookmarks ) {
 		var content = '';
 		if ( bookmarks ) {
@@ -760,6 +760,10 @@ function renderBookmark() {
 				$block.detach();
 				$( '#divhomeblocks' ).append( $block );
 			}
+		} );
+		$.each( GUI.libraryhome, function( name, val ) {
+			if ( name === 'activeplayer' || name === 'spotify' ) return
+			$( '#home-'+ name ).find( 'gr' ).text( val );
 		} );
 	}, 'json' );
 }
