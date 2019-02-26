@@ -30,8 +30,8 @@ function cssKeyframes( name, trx0, trx100 ) {
 				+'100% { '+ webkit100 +' }'
 			+'}'
 			+'@keyframes '+ name +' {'
-				+'0%   {'+ moz + moz100 + trx0 +'}'
-				+'100% {' + webkit + webkit100 + trx100 +'}'
+				+'0%   {'+ trx0 +'}'
+				+'100% {'+ trx100 +'}'
 			+'}'
 		+'</style>'
 	);
@@ -689,9 +689,6 @@ function bookmarkScroll() {
 				} );
 		}
 	} );
-	if ( !$( '#bkscrollleft' ).length ) {
-		cssKeyframes( 'bkscrollleft', 'transform : translateX( '+ bW +'px );', 'transform : translateX( calc( -100% + 10px ) );' );
-	}
 }
 function renderLibrary() {
 	GUI.dbbackdata = [];
