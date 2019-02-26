@@ -1,4 +1,33 @@
 <?php
+$redis = new Redis();
+$redis->pconnect( '127.0.0.1' );
+$bkmarks = $redis->hGetAll( 'bkmarks' );
+$order = $redis->hGet( 'display', 'order' );
+
+function stripLeading( $array ) {
+	list( $first, $rest ) = explode( ' ', $array.' ', 2 );
+	// the extra space is to prevent "undefined offset" notices on single-word titles
+	$leading = array( 'a', 'an', 'the', '(', '[', '.', "'", '"', '\\' );
+	if ( in_array( strtolower( $first ), $leading ) ) return $rest.', '.$first;
+	return $array;
+}
+foreach( $bkmarks as $label => $path ) {
+	$sort = stripLeading( $label );
+	$id = preg_replace( array( '/[^A-Za-z0-9_ ]+/', '/ /' ), array( '-', '_' ), $label );
+	$thumbfile = '/mnt/MPD/'.$path.'/thumbnail.jpg';
+	if ( file_exists( $thumbfile ) ) {
+		$thumbnail = file_get_contents( $thumbfile );
+		$coverart = 'data:image/jpg;base64,'.base64_encode( $thumbnail );
+	} else {
+		$coverart = '';
+	}
+	$bookmarks[] = array( $sort, $id, $label, $path, $coverart );
+}
+if ( !$order ) {
+	usort( $bookmarks, function( $a, $b ) {
+		return strnatcasecmp( stripLeading( $a[ 0 ] ), stripLeading( $b[ 0 ] ) );
+	} );
+}
 $blocks = array( // 'id' => array( 'path', 'icon', 'name' );
 	  'coverart'    => array( 'Coverart',     'coverart',     'CoverArt' )
 	, 'sd'          => array( 'LocalStorage', 'microsd',      'SD' )
@@ -14,24 +43,46 @@ $blocks = array( // 'id' => array( 'path', 'icon', 'name' );
 	, 'dirble'      => array( 'Dirble',       'dirble',       'Dirble' )
 	, 'jamendo'     => array( 'Jamendo',      'jamendo',      'Jamendo' )
 );
-$blockhtml = '';
 foreach( $blocks as $id => $value ) {
 	$browsemode = in_array( $id, array( 'album', 'artist', 'albumartist', 'composer', 'genre', 'coverart' ) ) ? ' data-browsemode="'.$id.'"' : '';
 	$plugin = in_array( $id, array( 'spotify', 'dirble', 'jamendo' ) ) ? ' data-plugin="'.$value[ 0 ].'"' : '';
-	$blockhtml.= '
-	<div class="divblock">
-		<div id="home-'.$id.'" class="home-block"'.$browsemode.$plugin.'><a class="lipath">'.$value[ 0 ].'</a><i class="fa fa-'.$value[ 1 ].'"></i><wh>'.$value[ 2 ].'</wh></div>
-	</div>
-		';
+	$blocks[ $id ] = '
+		<div class="divblock">
+			<div id="home-'.$id.'" class="home-block"'.$browsemode.$plugin.'>
+				<a class="lipath">'.$value[ 0 ].'</a>
+				<i class="fa fa-'.$value[ 1 ].'"></i><wh>'.$value[ 2 ].'</wh>
+			</div>
+		</div>
+	';
 }
+foreach( $bookmarks as $bookmark ) {
+	if ( $bookmark[ 4 ] ) {
+		$namehtml = '<img class="bkcoverart" src="'.$bookmark[ 4 ].'">';
+	} else {
+		$namehtml = '<i class="fa fa-bookmark"></i><div class="divbklabel"><span class="bklabel">'.$bookmark[ 2 ].'</span></div>';
+	}
+	$blocks[ 'bk-'.$bookmark[ 1 ] ] = '
+		<div class="divblock bookmark">
+			<div id="home-bk-'.$bookmark[ 1 ].'" class="home-block home-bookmark">
+				<a class="lipath">'.$bookmark[ 3 ].'</a>
+				'.$namehtml.'
+			</div>
+		</div>
+	';
+}
+
+if ( $order ) {
+	$order = explode( '^^', $order );
+	foreach( $order as $id ) {
+		$blockhtml.= $blocks[ $id ];
+	}
+} else {
+	foreach( $blocks as $id => $block) {
+		$blockhtml.= $block;
+	}
+}
+
 $files = array_slice( scandir( '/srv/http/assets/img/coverarts' ), 2 );
-function stripLeading( $array ) {
-	list( $first, $rest ) = explode( ' ', $array.' ', 2 );
-	// the extra space is to prevent "undefined offset" notices on single-word titles
-	$leading = array( 'a', 'an', 'the', '(', '[', '.', "'", '"', '\\' );
-	if ( in_array( strtolower( $first ), $leading ) ) return $rest.', '.$first;
-	return $array;
-}
 foreach( $files as $file ) {
 	$name = str_replace( '.jpg', '', $file );
 	$name = str_replace( '|', '/', $name );
