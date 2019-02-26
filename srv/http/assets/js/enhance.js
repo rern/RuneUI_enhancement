@@ -825,6 +825,7 @@ $( '#home-blocks' ).on( 'tap', '.home-block', function() {
 	if ( GUI.drag ) return
 	
 	GUI.bookmarkedit = 1;
+	GUI.bklabel = $( this ).find( '.bklabel' );
 	$( '.home-bookmark' )
 		.append( '<i class="home-block-edit fa fa-edit-circle"></i><i class="home-block-remove fa fa-minus-circle"></i>' )
 		.find( '.fa-bookmark, .bklabel, img' ).css( 'opacity', 0.2 );
