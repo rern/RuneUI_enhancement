@@ -515,6 +515,26 @@ wh, gr { font-weight: 300; }
 		transform         : translateX( -100% );
 	}
 }
+@-moz-keyframes bkscrollleft {
+	0%   { -moz-transform : translateX( calc( 100% - 10px ) ) }  /* move right 100% = block width */
+	100% { -moz-transform : translateX( -100% ) }                /* move left  100% = block width */
+}
+@-webkit-keyframes bkscrollleft {
+	0%   { -webkit-transform : translateX( calc( 100% - 10px ) ) }
+	100% { -webkit-transform : translateX( -100% ) }
+}
+@keyframes bkscrollleft {
+	0%   { 
+		-moz-transform    : translateX( calc( 100% - 10px ) ); /* Browser bug fix */
+		-webkit-transform : translateX( calc( 100% - 10px ) ); /* Browser bug fix */
+		transform         : translateX( calc( 100% - 10px ) );
+	}
+	100% {
+		-moz-transform    : translateX( -100% );
+		-webkit-transform : translateX( -100% );
+		transform         : translateX( -100% );
+	}
+}
 /* ---------------------- knobs, buttons ----------------------*/
 #playsource-open { display: none; }
 #playback-row {
