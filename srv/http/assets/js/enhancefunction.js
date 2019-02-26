@@ -674,7 +674,7 @@ function bookmarkScroll() {
 		.removeClass( 'bkscrollleft' )
 		.removeAttr( 'style' ); // fix - iOS needs whole style removed
 	var bW = $( '.divblock' ).width() - 10;
-	$( '.bklabel:not(.hide)' ).each( function() {
+	$( '.bklabel' ).each( function() {
 		var $this = $( this );
 		var tW = $this.width();
 		if ( tW > bW ) {
@@ -713,44 +713,6 @@ function renderLibrary() {
 		$( '#db-currentpath span' ).html( '<bl class="title">LIBRARY</bl></a>' );
 	}
 	$( '#page-library .btnlist-top, #home-blocks' ).removeClass( 'hide' );
-	var content = '';
-	var bookmarks = status.bookmark;
-	if ( bookmarks ) {
-		bookmarks.sort( function( a, b ) {
-			return stripLeading( a.name ).localeCompare( stripLeading( b.name ), undefined, { numeric: true } );
-		} );
-		$.each( bookmarks, function( i, bookmark ) {
-			var coverarthtml = bookmark.coverart ? '<img class="bkcoverart" src="'+ bookmark.coverart +'">' : '<i class="fa fa-bookmark"></i>';
-			var name = bookmark.name.replace( /\\/g, '' );
-			var id = name
-				.replace( / /g, '_' )
-				.replace( /[^A-Za-z0-9_-]+/g, '-' );
-			var namehtml = '<div class="divbklabel"><span class="bklabel'+ ( bookmark.coverart ? ' hide' : '' ) +'">'+ name +'</span></div>';
-			content += '<div class="divblock bookmark">'
-					  +'	<div id="home-bk-'+ id +'" class="home-block home-bookmark"><a class="lipath">'+ bookmark.path +'</a>'+ coverarthtml + namehtml +'</div>'
-					  +'</div>';
-		} );
-	}
-	$( '.bookmark' ).remove();
-	$( '#divhomeblocks' ).append( content ).promise().done( function() {
-		bookmarkScroll();
-	} );
-	var order = GUI.display.order || 'sd^^usb^^nas^^webradio^^coverart^^album^^artist^^albumartist^^composer^^genre^^dirble^^jamendo^^spotify';
-	order = order.split( '^^' );
-	$( '.home-bookmark' ).each( function() {
-		var id = this.id.replace( 'home-', '' );
-		if ( order.indexOf( id ) === -1 ) order.push( id );
-	} );
-	$( '.home-block' ).find( 'gr' ).remove();
-	$.each( order, function( i, name ) {
-		if ( GUI.display.count ) $( '#home-'+ name ).find( 'i' ).after( GUI.libraryhome[ name ] ? '<gr>'+ numFormat( GUI.libraryhome[ name ] ) +'</gr>' : '' );
-		var $block = $( '#home-'+ name ).parent();
-		$block.toggleClass( 'hide', GUI.display[ name ] === '' );
-		if ( GUI.display.order ) {
-			$block.detach();
-			$( '#divhomeblocks' ).append( $block );
-		}
-	} );
 	$( '#home-spotify' ).parent().toggleClass( 'hide', !GUI.libraryhome.spotify );
 	$( '#divhomeblocks wh' ).toggle( GUI.display.label !== '' );
 	if ( GUI.display.label ) {
@@ -762,11 +724,8 @@ function renderLibrary() {
 		$( '.home-bookmark' ).css( 'padding', '20px 5px 5px 5px' );
 	}
 	displayTopBottom();
+	bookmarkScroll();
 	$( 'html, body' ).scrollTop( 0 );
-	if ( !GUI.init ) { // fix initial load
-		GUI.init = 1;
-		setTimeout( bookmarkScroll, 200 );
-	}
 }
 function infoNoData() {
 	$( '#loader' ).addClass( 'hide' );

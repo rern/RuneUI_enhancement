@@ -14,7 +14,6 @@ var GUI = {
 	, dbscrolltop  : {}
 	, display      : {}
 	, imodedelay   : 0
-	, init         : 0
 	, list         : {}
 	, library      : 0
 	, libraryhome  : {}
@@ -101,6 +100,8 @@ $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 }, 'json' );
 
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+setTimeout( bookmarkScroll, 1000 ); // fix initial scroll on ios
 
 // COMMON /////////////////////////////////////////////////////////////////////////////////////
 $( '#menu-settings, #badge' ).click( function() {
