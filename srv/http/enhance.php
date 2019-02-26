@@ -453,33 +453,11 @@ function pushstream( $channel, $data = 1 ) {
 	curl_close( $ch );
 }
 function getLibrary() {
-	$redis = new Redis();
-	$redis->pconnect( '127.0.0.1' );
-	$rbkmarks = $redis->hGetAll( 'bkmarks' );
-	if ( $rbkmarks ) {
-		foreach ( $rbkmarks as $name => $path ) {
-			$thumbfile = '/mnt/MPD/'.$path.'/thumbnail.jpg';
-			if ( file_exists( $thumbfile ) ) {
-				$thumbnail = file_get_contents( $thumbfile );
-				$coverart = 'data:image/jpg;base64,'.base64_encode( $thumbnail );
-			} else {
-				$coverart = '';
-			}
-			$bookmarks[] = array(
-				  'name'     => $name
-				, 'path'     => $path
-				, 'coverart' => $coverart
-			);
-		}
-	} else {
-		$bookmarks = 0;
-	}
 	$count = exec( '/srv/http/enhancecount.sh' );
 	$count = explode( ' ', $count );
 	$album = isset( $count[ 11 ] ) ? $count[ 11 ] : $count[ 1 ];
 	$status = array(
-		  'bookmark'     => $bookmarks
-		, 'artist'       => $count[ 0 ]
+		  'artist'       => $count[ 0 ]
 		, 'album'        => $count[ 11 ] ?: $count[ 1 ]
 		, 'song'         => $count[ 2 ]
 		, 'albumartist'  => $count[ 3 ]
