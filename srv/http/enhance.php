@@ -287,6 +287,27 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$data = $_POST[ 'setdisplay' ];
 	$redis->hmSet( 'display', $data );
 	pushstream( 'display', $data );
+} else if ( isset( $_POST[ 'getbookmark' ] ) ) {
+	$rbkmarks = $redis->hGetAll( 'bkmarks' );
+	if ( $rbkmarks ) {
+		foreach ( $rbkmarks as $name => $path ) {
+			$thumbfile = '/mnt/MPD/'.$path.'/thumbnail.jpg';
+			if ( file_exists( $thumbfile ) ) {
+				$thumbnail = file_get_contents( $thumbfile );
+				$coverart = 'data:image/jpg;base64,'.base64_encode( $thumbnail );
+			} else {
+				$coverart = '';
+			}
+			$data[] = array(
+				  'name'     => $name
+				, 'path'     => $path
+				, 'coverart' => $coverart
+			);
+		}
+	} else {
+		$data = 0;
+	}
+	echo json_encode( $data );
 } else if ( isset( $_POST[ 'volume' ] ) ) {
 	$volume = $_POST[ 'volume' ];
 	$volumemute = $redis->hGet( 'display', 'volumemute' );
