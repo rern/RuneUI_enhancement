@@ -11,6 +11,21 @@ function stripLeading( $array ) {
 	if ( in_array( strtolower( $first ), $leading ) ) return $rest.', '.$first;
 	return $array;
 }
+// counts
+$count = exec( '/srv/http/enhancecount.sh' );
+$count = explode( ' ', $count );
+$count = array(
+	  'artist'       => $count[ 0 ]
+	, 'album'        => $count[ 1 ]
+	, 'song'         => $count[ 2 ]
+	, 'albumartist'  => $count[ 3 ]
+	, 'composer'     => $count[ 4 ]
+	, 'genre'        => $count[ 5 ]
+	, 'network'      => $count[ 6 ]
+	, 'usbdrive'     => $count[ 7 ]
+	, 'webradio'     => $count[ 8 ]
+);
+// bookmarks
 foreach( $bkmarks as $label => $path ) {
 	$sort = stripLeading( $label );
 	$id = preg_replace( array( '/[^A-Za-z0-9_ ]+/', '/ /' ), array( '-', '_' ), $label );
@@ -28,6 +43,7 @@ if ( !$order ) {
 		return strnatcasecmp( stripLeading( $a[ 0 ] ), stripLeading( $b[ 0 ] ) );
 	} );
 }
+// library home blocks
 $blocks = array( // 'id' => array( 'path', 'icon', 'name' );
 	  'coverart'    => array( 'Coverart',     'coverart',     'CoverArt' )
 	, 'sd'          => array( 'LocalStorage', 'microsd',      'SD' )
@@ -46,11 +62,14 @@ $blocks = array( // 'id' => array( 'path', 'icon', 'name' );
 foreach( $blocks as $id => $value ) {
 	$browsemode = in_array( $id, array( 'album', 'artist', 'albumartist', 'composer', 'genre', 'coverart' ) ) ? ' data-browsemode="'.$id.'"' : '';
 	$plugin = in_array( $id, array( 'spotify', 'dirble', 'jamendo' ) ) ? ' data-plugin="'.$value[ 0 ].'"' : '';
+	$countnum = $count[ $value[ 1 ] ] ? number_format( $count[ $value[ 1 ] ] ) : '';
 	$blocks[ $id ] = '
 		<div class="divblock">
 			<div id="home-'.$id.'" class="home-block"'.$browsemode.$plugin.'>
 				<a class="lipath">'.$value[ 0 ].'</a>
-				<i class="fa fa-'.$value[ 1 ].'"></i><wh>'.$value[ 2 ].'</wh>
+				<i class="fa fa-'.$value[ 1 ].'"></i>
+				<gr>'.$countnum.'</gr>
+				<wh>'.$value[ 2 ].'</wh>
 			</div>
 		</div>
 	';
