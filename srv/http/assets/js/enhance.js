@@ -867,6 +867,8 @@ $( '#home-coverart' ).tap( function() {
 		$( '#divcoverarts p' ).css( 'height', cH +'px' );
 	}, 50 );
 } ).taphold( function() {
+	if ( GUI.drag ) return
+	
 	info( {
 		  icon      : 'coverart'
 		, title     : 'Update Coverart Thumbnails'
