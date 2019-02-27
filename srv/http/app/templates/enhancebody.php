@@ -28,7 +28,7 @@ $count = array(
 // bookmarks
 foreach( $bkmarks as $label => $path ) {
 	$sort = stripLeading( $label );
-	$id = preg_replace( array( '/[^A-Za-z0-9_ ]+/', '/ /' ), array( '-', '_' ), $label );
+	$id = preg_replace( array( '/[^A-Za-z0-9_- ]+/', '/ /' ), array( '-', '_' ), $label );
 	$thumbfile = '/mnt/MPD/'.$path.'/thumbnail.jpg';
 	if ( file_exists( $thumbfile ) ) {
 		$thumbnail = file_get_contents( $thumbfile );
