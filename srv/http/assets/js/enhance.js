@@ -735,7 +735,7 @@ $( '#db-back' ).click( function() {
 		var currentpath =  $( '#db-currentpath' ).find( '.lipath' ).text();
 		GUI.dbscrolltop[ currentpath ] = $( window ).scrollTop();
 		GUI.dbbackdata = [];
-		$( '#divcoverarts' ).removeClass( 'hide' );
+		$( '#divcoverarts, #db-index' ).removeClass( 'hide' );
 		$( '#db-entries' ).empty();
 		return
 	}
