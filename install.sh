@@ -211,16 +211,14 @@ systemctl disable rune_shutdown
 #systemctl stop rune_shutdown
 
 # album coverarts directory
+pathcoverarts=/mnt/MPD/LocalStorage/coverarts
 df=$( df )
 dfUSB=$( echo "$df" | grep '/mnt/MPD/USB' | head -n1 )
 dfNAS=$( echo "$df" | grep '/mnt/MPD/NAS' | head -n1 )
-pathcoverarts=/mnt/MPD/LocalStorage/coverarts
-if [[ $dfUSB ]]; then
-	mnt=$( echo $dfUSB | awk '{ print $NF }' )
-	pathcoverarts=$mnt/coverarts
-elif [[ $dfNAS ]]; then
-	mnt=$( echo $dfNAS | awk '{ print $NF }' )
-	acl=$( getfacl $mnt | grep user | cut -d':' -f3 )
+if [[ $dfUSB || $dfNAS ]]; then
+	[[ $dfUSB ]] && mount=$dfUSB || mount=$dfNAS
+	mnt=$( echo $mount | awk '{ print $NF }' )
+	acl=$( getfacl -p $mnt | grep other | cut -d':' -f3 )
 	[[ ${acl:0:2} == rw ]] && pathcoverarts=$mnt/coverarts
 fi
 mkdir -p $pathcoverarts
