@@ -729,8 +729,9 @@ function renderLibrary() {
 }
 function renderBookmarks() {
 	$.post( 'enhance.php', { getbookmark: 1 }, function( bookmarks ) {
+		console.log(bookmarks)
 		var content = '';
-		if ( bookmarks ) {
+		if ( bookmarks.length ) {
 			bookmarks.sort( function( a, b ) {
 				return stripLeading( a.name ).localeCompare( stripLeading( b.name ), undefined, { numeric: true } );
 			} );
@@ -739,7 +740,7 @@ function renderBookmarks() {
 				var name = bookmark.name.replace( /\\/g, '' );
 				var id = name
 					.replace( / /g, '_' )
-					.replace( /[^A-Za-z0-9_- ]+/g, '-' );
+					.replace( /[^A-Za-z0-9_ -]+/g, '-' );
 				var namehtml = '<div class="divbklabel"><span class="bklabel'+ ( bookmark.coverart ? ' hide' : '' ) +'">'+ name +'</span></div>';
 				content += '<div class="divblock bookmark">'
 						  +'	<div id="home-bk-'+ id +'" class="home-block home-bookmark"><a class="lipath">'+ bookmark.path +'</a>'+ coverarthtml + namehtml +'</div>'
