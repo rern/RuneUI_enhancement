@@ -1114,7 +1114,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		, album         : [ '<i class="fa fa-album"></i>',       'ALBUM' ]
 		, artist        : [ '<i class="fa fa-artist"></i>',      'ARTIST' ]
 		, albumartist   : [ '<i class="fa fa-albumartist"></i>', 'ALBUM ARTIST' ]
-		, coverart      : [ '<i class="fa fa-coverart"></i>',        'COVERART' ]
+		, coverart      : [ '<i class="fa fa-coverart"></i>',    'COVERART' ]
 		, genre         : [ '<i class="fa fa-genre"></i>',       'GENRE' ]
 		, composer      : [ '<i class="fa fa-composer"></i>',    'COMPOSER' ]
 		, composeralbum : [ '<i class="fa fa-composer"></i>',    'COMPOSER' ]
@@ -1130,7 +1130,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		, composer      : 'Composer'
 		, composeralbum : 'Composer'
 	}
-	if ( GUI.browsemode !== 'file' ) {
+	if ( GUI.browsemode !== 'file' || GUI.dbbrowsemode === 'coverart' ) {
 		if ( GUI.browsemode !== 'album' && GUI.browsemode !== 'composeralbum' ) {
 			var dotpath = ( path === mode[ GUI.browsemode ] ) ? '' : '<a id="artistalbum"><gr> • </gr><span class="white">'+ path +'</span></a>';
 		} else {
@@ -1142,6 +1142,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		$( '#db-currentpath' ).addClass( 'noellipse' );
 		// fix: 1 li in genre list
 		if ( $( '.licover' ).length ) {
+			browsemode = browsemode || GUI.dbbrowsemode;
 			$( '#db-currentpath span' ).html( iconName[ browsemode ][ 0 ] +' <a>'+ iconName[ browsemode ][ 1 ] +'</a>' );
 		} else {
 			$( '#db-currentpath span' ).html( iconName[ GUI.browsemode ][ 0 ] +' <a id="rootpath" data-path="'+ mode[ GUI.browsemode ] +'">'+ iconName[ GUI.browsemode ][ 1 ] +'</a>'+ dotpath );
