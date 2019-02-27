@@ -855,7 +855,7 @@ var sortablelibrary = new Sortable( document.getElementById( 'divhomeblocks' ), 
 		$.post( 'enhance.php', { order: order } );
 	}
 } );
-$( '#home-coverart' ).click( function() {
+$( '#home-coverart' ).tap( function() {
 	GUI.dbbrowsemode = 'coverart';
 	$( '#db-currentpath span' ).html( '<i class="fa fa-coverart"></i> <a>COVERART</a>' );
 	$( '#db-currentpath .lipath' ).text( 'coverart' );
@@ -866,6 +866,23 @@ $( '#home-coverart' ).click( function() {
 		var cH = window.innerHeight - $( '.coverart' ).height() + 98;
 		$( '#divcoverarts p' ).css( 'height', cH +'px' );
 	}, 50 );
+} ).taphold( function() {
+	info( {
+		  icon      : 'coverart'
+		, title     : 'Update Coverart Thumbnails'
+		, message   : 'A lot of albums will take a lot of time.'
+					 +'<br>(±200 album/minute for initial scan)'
+					 +'<br>Continue?'
+		, cancel    : 1
+		, ok        : function() {
+			$( 'body' ).append(
+				'<form id="formtemp" action="addonsbash.php" method="post">'
+					+'<input type="hidden" name="alias" value="cove">'
+					+'<input type="hidden" name="type" value="scan">'
+				+'</form>' );
+			$( '#formtemp' ).submit();
+		}
+	} );
 } );
 $( '#divcoverarts' ).on( 'tap', '.coverart', function( e ) {
 	if ( $( e.target ).hasClass( 'coverart-remove' ) ) return
