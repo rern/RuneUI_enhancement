@@ -856,6 +856,11 @@ var sortablelibrary = new Sortable( document.getElementById( 'divhomeblocks' ), 
 	}
 } );
 $( '#home-coverart' ).tap( function() {
+	if ( !$( '#divcoverarts' ).html() ) {
+		$( this ).taphold();
+		return
+	}
+	
 	GUI.dbbrowsemode = 'coverart';
 	$( '#db-currentpath span' ).html( '<i class="fa fa-coverart"></i> <a>COVERART</a>' );
 	$( '#db-currentpath .lipath' ).text( 'coverart' );

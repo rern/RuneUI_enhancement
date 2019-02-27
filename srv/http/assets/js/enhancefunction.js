@@ -249,6 +249,7 @@ function removeSplash() {
 	$( '#splash' ).remove();
 	$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
 	$( '#page-playback' ).removeClass( 'hide' );
+	if ( !$( '#divcoverarts' ).html() ) return
 	
 	var lazyLoadcover = new LazyLoad( { elements_selector: '.lazy' } );
 	// for load 1st page without lazy
@@ -696,7 +697,6 @@ function renderLibrary() {
 	$( '#db-entries' ).empty();
 	$( '#db-search, #db-search-close, #db-index, #db-back, #db-webradio-new, #divcoverarts' ).addClass( 'hide' );
 	$( '#db-search-keyword' ).val( '' );
-	if ( !$( '#divcoverarts' ).children().length ) $( '#home-coverart' ).parent().hide();
 	if ( $( '#db-entries' ).hasClass( 'hide' ) ) return
 	
 	$( '#page-library .btnlist-top, db-entries' ).addClass( 'hide' );
