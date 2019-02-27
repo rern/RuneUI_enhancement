@@ -102,36 +102,40 @@ if ( $order ) {
 }
 
 $files = array_slice( scandir( '/srv/http/assets/img/coverarts' ), 2 );
-foreach( $files as $file ) {
-	$name = str_replace( '.jpg', '', $file );
-	$name = str_replace( '|', '/', $name );
-	$names = explode( '^^', $name );
-	$album = $names[ 0 ];
-	$sort = stripLeading( $album );
-	$artist = $names[ 1 ];
-	$cue = $names[ 2 ];
-	$lists[] = array( $sort, $album, $artist, $file, $cue );
+if ( count( $files ) ) {
+	foreach( $files as $file ) {
+		$name = str_replace( '.jpg', '', $file );
+		$name = str_replace( '|', '/', $name );
+		$names = explode( '^^', $name );
+		$album = $names[ 0 ];
+		$sort = stripLeading( $album );
+		$artist = $names[ 1 ];
+		$cue = $names[ 2 ];
+		$lists[] = array( $sort, $album, $artist, $file, $cue );
+	}
+	usort( $lists, function( $a, $b ) {
+		return strnatcmp( $a[ 0 ], $b[ 0 ] );
+	} );
+	$coverarthtml = '';
+	foreach( $lists as $list ) {
+		$licue = $list[ 4 ] ? '<a class="licue">'.$list[ 4 ].'</a>' : '';
+		$replace = array(  // #,? not allow in 'scr'
+			  '/\#/' => '%23'
+			, '/\?/' => '%3F'
+		);
+		$filename = preg_replace( array_keys( $replace ), array_values( $replace ), $list[ 3 ] );
+		$coverartshtml.= '<div class="coverart">'
+							.$licue
+							.'<a class="lisort">'.$list[ 0 ].'</a>'
+							.'<div><img class="lazy" data-src="/srv/http/assets/img/coverarts/'.$filename.'"></div>'
+							.'<span class="coverartalbum">'.$list[ 1 ].'</span>'
+							.'<gr class="coverartartist">'.( $list[ 2 ] ?: '&nbsp;' ).'</gr>'
+						.'</div>';
+	}
+	$coverarthtml = '<p></p>';
+} else {
+	$coverarthtml = '';
 }
-usort( $lists, function( $a, $b ) {
-	return strnatcmp( $a[ 0 ], $b[ 0 ] );
-} );
-$coverarthtml = '';
-foreach( $lists as $list ) {
-	$licue = $list[ 4 ] ? '<a class="licue">'.$list[ 4 ].'</a>' : '';
-	$replace = array(  // #,? not allow in 'scr'
-		  '/\#/' => '%23'
-		, '/\?/' => '%3F'
-	);
-	$filename = preg_replace( array_keys( $replace ), array_values( $replace ), $list[ 3 ] );
-	$coverartshtml.= '<div class="coverart">'
-						.$licue
-						.'<a class="lisort">'.$list[ 0 ].'</a>'
-						.'<div><img class="lazy" data-src="/srv/http/assets/img/coverarts/'.$filename.'"></div>'
-						.'<span class="coverartalbum">'.$list[ 1 ].'</span>'
-						.'<gr class="coverartartist">'.( $list[ 2 ] ?: '&nbsp;' ).'</gr>'
-					.'</div>';
-}
-$coverarthtml = '<p></p>';
 $indexarray = range( 'A', 'Z' );
 $li = '<li>#</li>';
 foreach( $indexarray as $i => $char ) {
