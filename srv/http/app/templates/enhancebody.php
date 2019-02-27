@@ -40,7 +40,7 @@ foreach( $bkmarks as $label => $path ) {
 }
 if ( !$order ) {
 	usort( $bookmarks, function( $a, $b ) {
-		return strnatcasecmp( stripLeading( $a[ 0 ] ), stripLeading( $b[ 0 ] ) );
+		return strnatcmp( stripLeading( $a[ 0 ] ), stripLeading( $b[ 0 ] ) );
 	} );
 }
 // library home blocks
@@ -113,7 +113,7 @@ foreach( $files as $file ) {
 	$lists[] = array( $sort, $album, $artist, $file, $cue );
 }
 usort( $lists, function( $a, $b ) {
-	return strnatcasecmp( $a[ 0 ], $b[ 0 ] );
+	return strnatcmp( $a[ 0 ], $b[ 0 ] );
 } );
 $coverarthtml = '';
 foreach( $lists as $list ) {
