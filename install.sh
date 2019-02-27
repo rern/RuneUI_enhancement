@@ -11,6 +11,7 @@ alias=enha
 . /srv/http/addonsedit.sh
 
 #0temp0
+rm -rf /srv/http/assets/img/coverarts/coverarts
 redis-cli hdel display library &> /dev/null
 #1temp1
 
