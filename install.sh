@@ -17,14 +17,6 @@ redis-cli hdel display library &> /dev/null
 
 installstart $@
 
-if [[ $( pacman -Ss 'imagemagick$' | head -n1 | cut -d' ' -f3 ) != '[installed]' ]]; then
-	echo -e "$bar Prefetch packages ..."
-	pacman -Syw --noconfirm imagemagick libpng zlib glibc
-	
-	echo -e "$bar Install ImageMagick for coverart resizing ..."
-	pacman -S --noconfirm imagemagick libpng zlib glibc
-fi
-
 mv /srv/http/index.php{,.backup}
 mv /srv/http/assets/js/vendor/pnotify.custom.min.js{,.backup}
 mv /srv/http/assets/js/vendor/pushstream.min.js{,.backup}
