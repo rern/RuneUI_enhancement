@@ -22,7 +22,7 @@ if [[ $( pacman -Ss 'imagemagick$' | head -n1 | awk '{print $NF}' ) != '[install
 	echo -e "$bar Prefetch packages ..."
 	pacman -Syw --noconfirm imagemagick libpng zlib glibc
 	
-	echo -e "$bar Install ImageMagick for coverart resizing ..."
+	echo -e "$bar Install ImageMagick for thumbnails creating ..."
 	pacman -S --noconfirm imagemagick libpng zlib glibc
 	
 	imagemagick=$( pacman -Ss '^imagemagick$' | head -n1 | awk '{print $NF}' )
