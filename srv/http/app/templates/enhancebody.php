@@ -40,7 +40,9 @@ foreach( $bkmarks as $label => $path ) {
 }
 if ( !$order ) {
 	usort( $bookmarks, function( $a, $b ) {
-		return strnatcmp( stripLeading( $a[ 0 ] ), stripLeading( $b[ 0 ] ) );
+		$aname = str_replace( '_', '-', $a[ 0 ] ); // fix '_' order last (first in js)
+		$bname = str_replace( '_', '-', $b[ 0 ] );
+		return strnatcmp( stripLeading( $aname ), stripLeading( $bname ) );
 	} );
 }
 // library home blocks
