@@ -25,9 +25,13 @@ if [[ $( pacman -Ss 'imagemagick$' | head -n1 | cut -d' ' -f3 ) != '[installed]'
 	echo -e "$bar Install ImageMagick for coverart resizing ..."
 	pacman -S --noconfirm imagemagick libpng zlib glibc
 	
-	if [[ $( pacman -Ss 'imagemagick$' | head -n1 | cut -d' ' -f3 ) != '[installed]' ]]; then
-		title "$info $( tcolor ImageMagick ) not installed properly."
-		echo "Install manually by SSH: pacman -Sy imagemagick libpng zlib glibc"
+	imagemagick=$( pacman -Ss '^imagemagick$' | head -n1 | awk '{print $NF}' )
+	libpng=$( pacman -Ss '^libpng$' | head -n1 | awk '{print $NF}' )
+	zlib=$( pacman -Ss '^zlib$' | head -n1 | awk '{print $NF}' )
+	glibc=$( pacman -Ss '^glibc$' | head -n1 | awk '{print $NF}' )
+	if [[ $imagemagick != '[installed]' || $libpng != '[installed]' || $zlib != '[installed]' || $glibc != '[installed]' ]]; then
+		title "$info $( tcolor ImageMagick ) and support packages not installed properly."
+		echo "Renstall manually by SSH: pacman -Sy imagemagick libpng zlib glibc"
 		title -nt "Then install / update again."
 		exit
 	fi
