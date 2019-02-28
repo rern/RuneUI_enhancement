@@ -774,6 +774,15 @@ function renderBookmarks() {
 		} );
 	}, 'json' );
 }
+function statusUpdate() {
+	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
+		if ( status.updating_db ) {
+			setTimeout( statusUpdate, 3000 );
+		} else {
+			info( 'Library update finised.' );
+		}
+	}, 'json' );
+}
 function infoNoData() {
 	$( '#loader' ).addClass( 'hide' );
 	if ( GUI.plugin ) return

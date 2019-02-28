@@ -889,12 +889,14 @@ $( '#home-coverart' ).tap( function() {
 		, title       : 'Coverart Thumbnails Update'
 		, message     : 'A lot of albums will take a lot of time.'
 					 +'<br>(±200 album/minute for initial scan)'
-					 +'<br><w>Changes need Library update</w> to take effect.'
-					 +'<br>Continue?'
-		, cancellabel : 'Update Library'
+					 +'<br><w>Changes need Library update first.</w>'
+					 +'<br>Select update:'
+		, cancellabel : 'Library'
 		, cancel      : function() {
 			$.post( 'enhance.php', { bash: '/srv/http/enhancecount.sh update &' } );
+			statusUpdate();
 		}
+		, oklabel     : 'Thumbnails'
 		, ok          : function() {
 			$( 'body' ).append(
 				'<form id="formtemp" action="addonsbash.php" method="post">'
