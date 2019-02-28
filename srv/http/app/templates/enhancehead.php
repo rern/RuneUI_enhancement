@@ -62,10 +62,6 @@
 <link rel="stylesheet" href="<?=$this->asset( '/css/roundslider.min.css' )?>">
 <link rel="stylesheet" href="<?=$this->asset( '/css/enhance.css' )?>">
 		<?php
-		if ( strpos( $_SERVER['HTTP_USER_AGENT'], 'Midori' ) !== false ) { ?> 
-<link rel="stylesheet" href="<?=$this->asset('/css/midori.css' )?>">
-		<?php 
-		}
 		if ( $gpio ) { ?> 
 <link rel="stylesheet" href="<?=$this->asset( '/css/gpio.css' )?>">
 		<?php 

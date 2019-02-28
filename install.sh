@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # $1-zoom
-# $2-local browser
+# $2-acc/alac support
 
 # change version number in RuneAudio_Addons/srv/http/addonslist.php
 
@@ -11,13 +11,21 @@ alias=enha
 . /srv/http/addonsedit.sh
 
 #0temp0
+rm -rf /srv/http/assets/img/coverarts/coverarts
 redis-cli hdel display library &> /dev/null
 #1temp1
 
 installstart $@
 
-echo -e "$bar Prefetch packages ..."
-pacman -Syw --noconfirm imagemagick libpng zlib glibc
+pkg=$( pacman -Ss '^imagemagick$' | head -n1 )
+installed=$( echo $pkg | cut -d' ' -f3 )
+if [[ $installed != '[installed]' ]]; then
+	echo -e "$bar Prefetch packages ..."
+	pacman -Syw --noconfirm imagemagick libpng zlib glibc
+	
+	echo -e "$bar Install ImageMagick for coverart resizing ..."
+	pacman -S --noconfirm imagemagick libpng zlib glibc
+fi
 
 mv /srv/http/index.php{,.backup}
 mv /srv/http/assets/js/vendor/pnotify.custom.min.js{,.backup}
@@ -25,13 +33,6 @@ mv /srv/http/assets/js/vendor/pushstream.min.js{,.backup}
 mv /srv/http/assets/js/vendor/Sortable.min.js{,.backup}
 mv /srv/http/command/airplay_toggle{,.backup}
 ln -sf /srv/http/assets/img/bootsplash.png /usr/share/bootsplash/start.png
-
-pkg=$( pacman -Ss '^imagemagick$' | head -n1 )
-installed=$( echo $pkg | cut -d' ' -f3 )
-if [[ $installed != '[installed]' ]]; then
-	echo -e "$bar Install ImageMagick for coverart resizing ..."
-	pacman -S --noconfirm imagemagick libpng zlib glibc
-fi
 
 getinstallzip
 
@@ -123,6 +124,8 @@ if [[ $1 != u ]]; then # keep range: 0.5 - 3.0
         }'
 	)
 	redis-cli set zoomlevel $zoom &> /dev/null
+	# set AAC/ALAC support
+	[[ $2 ]] && redis-cli hset mpdconf ffmpeg $2 &> /dev/null
 else
 	zoom=$( redis-cli get zoomlevel )
 fi
@@ -200,8 +203,6 @@ redis-cli set mpddb "$albumartist $composer $genre" &> /dev/null
 # fix webradio permission
 chown -R http:http /mnt/MPD/Webradio
 
-# disable AAC/ALAC support ..."
-redis-cli hset mpdconf ffmpeg no &> /dev/null
 # disable USB drive auto scan database ..."
 redis-cli set usb_db_autorebuild 0 &> /dev/null
 # disable GB and DE locale ..."
@@ -209,27 +210,6 @@ sed -i '/^de_DE.UTF-8\|^en_GB.UTF-8/ s/^/#/' /etc/locale.gen
 # disable default shutdown
 systemctl disable rune_shutdown
 #systemctl stop rune_shutdown
-
-# album coverarts directory
-df=$( df )
-dfUSB=$( echo "$df" | grep '/mnt/MPD/USB' | head -n1 )
-dfNAS=$( echo "$df" | grep '/mnt/MPD/NAS' | head -n1 )
-pathcoverarts=/mnt/MPD/LocalStorage/coverarts
-if [[ $dfUSB ]]; then
-	mnt=$( echo $dfUSB | awk '{ print $NF }' )
-	pathcoverarts=$mnt/coverarts
-elif [[ $dfNAS ]]; then
-	mnt=$( echo $dfNAS | awk '{ print $NF }' )
-	acl=$( getfacl $mnt | grep user | cut -d':' -f3 )
-	[[ ${acl:0:2} == rw ]] && pathcoverarts=$mnt/coverarts
-fi
-mkdir -p $pathcoverarts
-pathlink=/srv/http/assets/img/coverarts
-ln -sf $pathcoverarts $pathlink
-chown http:http $pathcoverarts $pathlink
-chmod 644 $pathcoverarts $pathlink
-
-redis-cli set pathcoverarts $pathcoverarts &> /dev/null
 
 installfinish $@
 

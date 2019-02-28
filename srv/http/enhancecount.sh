@@ -12,13 +12,15 @@ if (( $# > 0 )); then
 fi
 
 # spotify activePlayer artist album song composer genre nas usb webradio sd
-count=
 count="$count $( mpc stats | head -n3 | awk '{print $2,$4,$6}' )"
-count="$count $( redis-cli get mpddb )"
-count="$count $( df | grep '/mnt/MPD/NAS' | wc -l )"
-count="$count $( df | grep '/mnt/MPD/USB' | wc -l )"
-count="$count $( redis-cli hkeys webradios | sed '/(empty list or set)/ d' | awk NF | wc -l )"
-count="$count $( redis-cli hget spotify enable )"
-count="$count $( redis-cli get activePlayer )"
-count="$count $( redis-cli get countalbum )"
-echo $count
+artist=$( echo $count | cut -d' ' -f1 )
+album=$( echo $count | cut -d' ' -f2 )
+song=$( echo $count | cut -d' ' -f3 )
+countalbum=$( redis-cli get countalbum )
+[[ $countalbum ]] && album=$countalbum
+mpddb=$( redis-cli get mpddb )
+nas=$( df | grep '/mnt/MPD/NAS' | wc -l )
+usb=$( df | grep '/mnt/MPD/USB' | wc -l )
+webradio=$( redis-cli hkeys webradios | sed '/(empty list or set)/ d' | awk NF | wc -l )
+
+echo $artist $album $song $mpddb $nas $usb $webradio

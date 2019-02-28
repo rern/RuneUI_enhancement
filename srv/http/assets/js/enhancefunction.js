@@ -30,8 +30,8 @@ function cssKeyframes( name, trx0, trx100 ) {
 				+'100% { '+ webkit100 +' }'
 			+'}'
 			+'@keyframes '+ name +' {'
-				+'0%   {'+ moz + moz100 + trx0 +'}'
-				+'100% {' + webkit + webkit100 + trx100 +'}'
+				+'0%   {'+ trx0 +'}'
+				+'100% {'+ trx100 +'}'
 			+'}'
 		+'</style>'
 	);
@@ -64,7 +64,11 @@ function switchPage( page ) {
 	clearInterval( GUI.intElapsed );
 	clearInterval( GUI.intElapsedPl );
 	if ( GUI.library && $( '#home-blocks' ).hasClass( 'hide' ) ) {
-		GUI.libraryscrolltop = GUI.currentpath ? $( window ).scrollTop() : 0;
+		if ( !$( '#divcoverarts' ).hasClass( 'hide' ) ) {
+			GUI.cvscrolltop = $( window ).scrollTop();
+		} else {
+			GUI.libraryscrolltop = GUI.currentpath ? $( window ).scrollTop() : 0;
+		}
 	} else if ( GUI.playlist && GUI.pleditor ) {
 		GUI.playlistscrolltop = $( window ).scrollTop();
 	}
@@ -83,14 +87,14 @@ function switchPage( page ) {
 	} else if ( GUI.library ) {
 		if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) {
 			renderLibrary();
-			$( 'html, body' ).scrollTop( 0 );
 		} else {
 			if ( GUI.display.coverfile ) {
 				if ( !$( '.licover' ).length ) $( '#db-currentpath a:last-child' ).click();
 			} else {
 				$( '.licover' ).remove();
 			}
-			$( 'html, body' ).scrollTop( GUI.libraryscrolltop );
+			var scrolltop = $( '#divcoverarts' ).hasClass( 'hide' ) ? GUI.libraryscrolltop : GUI.cvscrolltop;
+			$( 'html, body' ).scrollTop( scrolltop );
 		}
 	} else if ( GUI.playlist && GUI.pleditor ) {
 		$( 'html, body' ).scrollTop( GUI.playlistscrolltop );
@@ -160,9 +164,13 @@ function setButtonUpdate() {
 				$( '#iupdate' ).removeClass( 'hide' );
 			}
 		}
+		GUI.intUpdate = setInterval( function() {
+			setButtonUpdate()
+		}, 10000 );
 	} else {
 		$( '#tab-library i, #db-home i' ).removeClass( 'blink' );
 		$( '#posupdate, #iupdate' ).addClass( 'hide' );
+		clearInterval( GUI.intUpdate );
 	}
 }
 function setButton() {
@@ -225,9 +233,6 @@ function scrollLongText() {
 		if ( !$( '.scrollleft' ).length ) return
 		
 		// varied with only when scaled
-		if ( GUI.scale !== 1 ) {
-			cssKeyframes( 'scrollleft', 'transform : translateX( '+ Math.round( wW / GUI.scale ) +'px );', 'transform : translateX( -100% );' );
-		}
 		var cssanimate = ( wW + tWmax ) / GUI.scrollspeed +'s infinite scrollleft linear'; // calculate to same speed
 		$( '.scrollleft' ).css( {
 			  width               : tWmax +'px'
@@ -244,26 +249,16 @@ function removeSplash() {
 	$( '#splash' ).remove();
 	$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
 	$( '#page-playback' ).removeClass( 'hide' );
-	$.post( 'enhance.php', { getcoverarts: 1 }, function( data ) {
-		data.sort( function( a, b ) {
-			return stripLeading( a ).localeCompare( stripLeading( b ), undefined, { numeric: true } );
-		} );
-		var coverartshtml = '';
-		data.forEach( function( cover ) {
-			var tag = cover.substring( cover.lastIndexOf( '/' ) + 1, cover.lastIndexOf( '.' ) );
-			var tags = tag.split( '^^' );
-			var album = tags[ 0 ];
-			var artist = tags[ 1 ];
-			var coveruri = encodeURIComponent( cover );
-			coverartshtml += '<div class="coverart">'
-								+'<a class="lipath">'+ album +'</a>'
-								+'<a class="liartist">'+ artist +'</a>'
-								+'<img src="/srv/http/assets/img/coverarts/'+ coveruri +'"><br>'
-								+'<span class="coverarttitle">'+ album +'<br><gr>'+ artist +'</gr></span>'
-							+'</div>';
-		} );
-		$( '#divcoverarts' ).html( coverartshtml );
-	}, 'json' );
+	if ( !$( '#divcoverarts' ).html() ) return
+	
+	var lazyLoadcover = new LazyLoad( { elements_selector: '.lazy' } );
+	// for load 1st page without lazy
+	var perrow = $( 'body' )[ 0 ].clientWidth / 200;
+	var percolumn = window.innerHeight / 200;
+	var perpage = Math.ceil( perrow ) * Math.ceil( percolumn );
+	for( i = 0; i < perpage; i++ ) {
+		lazyLoadcover.load( $( '.lazy' ).eq( i )[ 0 ], 'force' );
+	}
 }
 function setPlaybackBlank() {
 	$( '#playback-controls' ).addClass( 'hide' );
@@ -641,7 +636,8 @@ function displayIndexBar() {
 		var indexoffset = GUI.bars ? 160 : 80;
 		var indexline = wH < 500 ? 13 : 27;
 		$( '.half' ).toggleClass( 'hide', wH < 500 );
-		$index = ( GUI.library && GUI.dblist ) ? $( '#db-index' ) : $( '#pl-index' );
+		//$index = ( GUI.library && GUI.dblist ) ? $( '#db-index' ) : $( '#pl-index' );
+		$index = GUI.library ? $( '#db-index' ) : $( '#pl-index' );
 		$index.css( 'line-height', ( ( wH - indexoffset ) / indexline ) +'px' );
 	}, 50 );
 }
@@ -668,11 +664,15 @@ function displayCheckbox( checkboxes ) {
 	return html;
 }
 function bookmarkScroll() {
+	if ( GUI.local ) return
+	
+	GUI.local = 1;
+	setTimeout( function() { GUI.local = 0 }, 100 );
 	$( '.bklabel' )
 		.removeClass( 'bkscrollleft' )
 		.removeAttr( 'style' ); // fix - iOS needs whole style removed
-	var bW = $( '.home-block:eq( 0 )' ).width();
-	$( '.bklabel:not(.hide)' ).each( function() {
+	var bW = $( '.divblock' ).width() - 10;
+	$( '.bklabel' ).each( function() {
 		var $this = $( this );
 		var tW = $this.width();
 		if ( tW > bW ) {
@@ -687,10 +687,6 @@ function bookmarkScroll() {
 				} );
 		}
 	} );
-	$( '#bkscrollleft' ).remove();
-	if ( $( '.bkscrollleft' ).length ) {
-		cssKeyframes( 'bkscrollleft', 'transform : translateX( '+ bW +'px );', 'transform : translateX( calc( -100% + 10px ) );' );
-	}
 }
 function renderLibrary() {
 	GUI.dbbackdata = [];
@@ -701,7 +697,6 @@ function renderLibrary() {
 	$( '#db-entries' ).empty();
 	$( '#db-search, #db-search-close, #db-index, #db-back, #db-webradio-new, #divcoverarts' ).addClass( 'hide' );
 	$( '#db-search-keyword' ).val( '' );
-	if ( !$( '#divcoverarts' ).children().length ) $( '#home-coverart' ).parent().hide();
 	if ( $( '#db-entries' ).hasClass( 'hide' ) ) return
 	
 	$( '#page-library .btnlist-top, db-entries' ).addClass( 'hide' );
@@ -712,66 +707,89 @@ function renderLibrary() {
 		$( '#db-currentpath span' ).html( '<bl class="title">LIBRARY</bl></a>' );
 	}
 	$( '#page-library .btnlist-top, #home-blocks' ).removeClass( 'hide' );
-	var content = '';
-	var bookmarks = status.bookmark;
-	if ( bookmarks ) {
-		bookmarks.sort( function( a, b ) {
-			return stripLeading( a.name ).localeCompare( stripLeading( b.name ), undefined, { numeric: true } );
-		} );
-		var bookmarkL = bookmarks.length;
-		$.each( bookmarks, function( i, bookmark ) {
-			var coverarthtml = bookmark.coverart ? '<img class="bkcoverart" src="'+ bookmark.coverart +'">' : '<i class="fa fa-bookmark"></i>';
-			var name = bookmark.name.replace( /\\/g, '' );
-			var id = name
-				.replace( / /g, '_' )
-				.replace( /[^A-Za-z0-9_-]+/g, '-' );
-			var namehtml = '<div class="divbklabel"><span class="bklabel'+ ( bookmark.coverart ? ' hide' : '' ) +'">'+ name +'</span></div>';
-			content += '<div class="divblock bookmark">'
-					  +'	<div id="home-bk-'+ id +'" class="home-block home-bookmark"><a class="lipath">'+ bookmark.path +'</a>'+ coverarthtml + namehtml +'</div>'
-					  +'</div>';
-		} );
-	}
-	$( '.bookmark' ).remove();
-	$( '#divhomeblocks' ).append( content ).promise().done( function() {
-		bookmarkScroll();
+	$( '.home-block' ).each( function() {
+		var name = this.id.replace( 'home-', '' );
+		$( this ).parent().toggleClass( 'hide', GUI.display[ name ] === '' );
 	} );
-	var order = GUI.display.order || 'sd^^usb^^nas^^webradio^^coverart^^album^^artist^^albumartist^^composer^^genre^^dirble^^jamendo^^spotify';
-	order = order.split( '^^' );
-	$( '.home-bookmark' ).each( function() {
-		var id = this.id.replace( 'home-', '' );
-		if ( order.indexOf( id ) === -1 ) order.push( id );
-	} );
-	$( '.home-block' ).find( 'gr' ).remove();
-	$.each( order, function( i, name ) {
-		if ( GUI.display.count ) $( '#home-'+ name ).find( 'i' ).after( GUI.libraryhome[ name ] ? '<gr>'+ numFormat( GUI.libraryhome[ name ] ) +'</gr>' : '' );
-		var $block = $( '#home-'+ name ).parent();
-		$block.toggleClass( 'hide', GUI.display[ name ] === '' );
-		if ( GUI.display.order ) {
-			$block.detach();
-			$( '#divhomeblocks' ).append( $block );
-		}
-	} );
-	$( '#home-spotify' ).parent().toggleClass( 'hide', !GUI.libraryhome.spotify );
-	$( '#divhomeblocks wh' ).toggle( GUI.display.label !== '' );
+	$( '#home-spotify' ).parent().toggleClass( 'hide', GUI.libraryhome.spotify === 0 );
+	$( '.home-block gr' ).toggleClass( 'hide', GUI.display.count === '' );
 	if ( GUI.display.label ) {
+		$( '#divhomeblocks wh' ).show();
 		$( '.home-block gr' ).css( 'color', '' );
 		$( '.home-block' ).css( 'padding', '' );
 	} else {
+		$( '#divhomeblocks wh' ).hide();
 		$( '.home-block gr' ).css( 'color', '#e0e7ee' );
 		$( '.home-block' ).css( 'padding-top', '35px' );
 		$( '.home-bookmark' ).css( 'padding', '20px 5px 5px 5px' );
 	}
 	displayTopBottom();
+	bookmarkScroll();
 	$( 'html, body' ).scrollTop( 0 );
+}
+function renderBookmarks() {
+	if ( GUI.local ) return
+	
+	GUI.local = 1;
+	setTimeout( function() { GUI.local = 0 }, 5000 );
+	$.post( 'enhance.php', { getbookmark: 1 }, function( bookmarks ) {
+		var content = '';
+		if ( bookmarks.length ) {
+			bookmarks.sort( function( a, b ) {
+				return stripLeading( a.name ).localeCompare( stripLeading( b.name ), undefined, { numeric: true } );
+			} );
+			$.each( bookmarks, function( i, bookmark ) {
+				var coverarthtml = bookmark.coverart ? '<img class="bkcoverart" src="'+ bookmark.coverart +'">' : '<i class="fa fa-bookmark"></i>';
+				var name = bookmark.name.replace( /\\/g, '' );
+				var id = name
+					.replace( / /g, '_' )
+					.replace( /[^A-Za-z0-9_-]+/g, '-' );
+				var namehtml = '<div class="divbklabel"><span class="bklabel'+ ( bookmark.coverart ? ' hide' : '' ) +'">'+ name +'</span></div>';
+				content += '<div class="divblock bookmark">'
+						  +'	<div id="home-bk-'+ id +'" class="home-block home-bookmark"><a class="lipath">'+ bookmark.path +'</a>'+ coverarthtml + namehtml +'</div>'
+						  +'</div>';
+			} );
+		}
+		$( '.bookmark' ).remove();
+		$( '#divhomeblocks' ).append( content ).promise().done( function() {
+			bookmarkScroll();
+		} );
+		if ( !GUI.display.order ) return
+		
+		var order = GUI.display.order.split( '^^' );
+		$.each( order, function( i, name ) {
+			var $block = $( '#home-'+ name ).parent();
+			$block.detach();
+			$( '#divhomeblocks' ).append( $block );
+		} );
+		$.each( GUI.libraryhome, function( name, val ) {
+			if ( name === 'activeplayer' || name === 'spotify' ) return
+			$( '#home-'+ name ).find( 'gr' ).text( val );
+		} );
+	}, 'json' );
+}
+function statusUpdate() {
+	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
+		if ( status.updating_db ) {
+			GUI.status.updating_db = 1;
+			setTimeout( statusUpdate, 3000 );
+		} else {
+			GUI.status.updating_db = 0;
+			new PNotify( {
+				  title : 'Update Database'
+				, text  : 'Database updated.'
+			} );		}
+	}, 'json' );
 }
 function infoNoData() {
 	$( '#loader' ).addClass( 'hide' );
 	if ( GUI.plugin ) return
 	
+	var keyword = $( '#db-search-keyword' ).val();
 	info( {
 		  icon      : 'info-circle'
-		, message   : 'No data in this location.'
-		, autoclose : 4000
+		, message   : ( !keyword ? 'No data in this location.' : 'Nothing found for <wh>'+ keyword +'</wh>' )
+		, autoclose : 6000
 	} );
 }
 function getDB( options ) {
@@ -872,7 +890,13 @@ function getDB( options ) {
 			}
 		}
 		$.post( 'enhance.php', command[ mode ], function( data ) {
-			data ? dataSort( data, path ) : infoNoData();
+			if ( data ) {
+				dataSort( data, path );
+				GUI.keyword = keyword;
+			} else {
+				infoNoData();
+				$( '#db-search-keyword' ).val( GUI.keyword );
+			}
 		}, 'json' );
 		return
 	}
@@ -1052,9 +1076,9 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			data = ( querytype === 'tracks' ) ? data.tracks : data.playlists;
 			data.sort( function( a, b ) {
 				if ( path === 'Spotify' && querytype === '' ) {
-					return stripLeading( a[ 'name' ] ).localeCompare( stripLeading( b[ 'name' ] ), undefined, { numeric: true } )
+					return stripLeading( a.name ).localeCompare( stripLeading( b.name ), undefined, { numeric: true } )
 				} else if ( querytype === 'tracks' ) {
-					return stripLeading( a[ 'title' ]) .localeCompare( stripLeading( b[ 'title' ] ), undefined, { numeric: true } )
+					return stripLeading( a.title ) .localeCompare( stripLeading( b.title ), undefined, { numeric: true } )
 				} else {
 					return 0;
 				}
@@ -1066,9 +1090,9 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			} else {
 				data.sort( function( a, b ) {
 					if ( !querytype || querytype === 'childs' || querytype === 'categories' ) {
-						return stripLeading( a[ 'title' ] ).localeCompare( stripLeading( b[ 'title' ] ), undefined, { numeric: true } )
+						return stripLeading( a.title ).localeCompare( stripLeading( b.title ), undefined, { numeric: true } )
 					} else if ( querytype === 'childs-stations' || querytype === 'stations' ) {
-						return stripLeading( a[ 'name' ] ).localeCompare( stripLeading( b[ 'name' ] ), undefined, { numeric: true } )
+						return stripLeading( a.name ).localeCompare( stripLeading( b.name ), undefined, { numeric: true } )
 				   } else {
 						return 0;
 					}
@@ -1078,7 +1102,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		} else if ( plugin === 'Jamendo' ) {
 			data.sort( function( a, b ) {
 				if ( path === 'Jamendo' && querytype === '' ) {
-					return stripLeading( a[ 'dispname' ] ).localeCompare( stripLeading( b[ 'dispname' ] ), undefined, { numeric: true } )
+					return stripLeading( a.dispname ).localeCompare( stripLeading( b.dispname ), undefined, { numeric: true } )
 				} else {
 					return 0;
 				}
@@ -1091,9 +1115,8 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		$( '#db-entries p' ).css( 'min-height', window.innerHeight - ( GUI.bars ? 140 : 100 ) +'px' );
 		if ( !fileplaylist ) displayIndexBar();
 		$( '#loader, .menu, #divcoverarts' ).addClass( 'hide' );
-
 	} );
-	if ( $( '#db-search-btn' ).hasClass( 'hide' ) ) return
+//	if ( $( '#db-search-btn' ).hasClass( 'hide' ) ) return
 	
 	$( '#db-back' ).removeClass( 'hide' );
 // breadcrumb directory path link
@@ -1104,7 +1127,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		, album         : [ '<i class="fa fa-album"></i>',       'ALBUM' ]
 		, artist        : [ '<i class="fa fa-artist"></i>',      'ARTIST' ]
 		, albumartist   : [ '<i class="fa fa-albumartist"></i>', 'ALBUM ARTIST' ]
-		, coverart      : [ '<i class="fa fa-grid"></i>',        'COVERART' ]
+		, coverart      : [ '<i class="fa fa-coverart"></i>',    'COVERART' ]
 		, genre         : [ '<i class="fa fa-genre"></i>',       'GENRE' ]
 		, composer      : [ '<i class="fa fa-composer"></i>',    'COMPOSER' ]
 		, composeralbum : [ '<i class="fa fa-composer"></i>',    'COMPOSER' ]
@@ -1120,7 +1143,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		, composer      : 'Composer'
 		, composeralbum : 'Composer'
 	}
-	if ( GUI.browsemode !== 'file' ) {
+	if ( GUI.browsemode !== 'file' || GUI.dbbrowsemode === 'coverart' ) {
 		if ( GUI.browsemode !== 'album' && GUI.browsemode !== 'composeralbum' ) {
 			var dotpath = ( path === mode[ GUI.browsemode ] ) ? '' : '<a id="artistalbum"><gr> • </gr><span class="white">'+ path +'</span></a>';
 		} else {
@@ -1132,6 +1155,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		$( '#db-currentpath' ).addClass( 'noellipse' );
 		// fix: 1 li in genre list
 		if ( $( '.licover' ).length ) {
+			browsemode = browsemode || GUI.dbbrowsemode;
 			$( '#db-currentpath span' ).html( iconName[ browsemode ][ 0 ] +' <a>'+ iconName[ browsemode ][ 1 ] +'</a>' );
 		} else {
 			$( '#db-currentpath span' ).html( iconName[ GUI.browsemode ][ 0 ] +' <a id="rootpath" data-path="'+ mode[ GUI.browsemode ] +'">'+ iconName[ GUI.browsemode ][ 1 ] +'</a>'+ dotpath );
@@ -1142,7 +1166,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		var folderRoot = folder[ 0 ];
 		if ( $( '#db-search-keyword' ).val() ) {
 		// search results
-			var results = ( data.length ) ? data.length : '0';
+			var results = data.length - 4;
 			$( '#db-currentpath' ).css( 'max-width', '40px' );
 			$( '#db-back, #db-index' ).addClass( 'hide' );
 			$( '#db-entries' ).css( 'width', '100%' );

@@ -185,9 +185,9 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	} else {
 		exec( 'mpc update Webradio' );
 	}
-} else if ( isset( $_POST[ 'getcoverarts' ] ) ) {
-	$data = array_slice( scandir( '/srv/http/assets/img/coverarts' ), 2 );
-	echo json_encode( $data ); 
+} else if ( isset( $_POST[ 'coverfile' ] ) ) {
+	$coverfile = '/srv/http/assets/img/coverarts/'.urldecode( $_POST[ 'coverfile' ] );
+	exec( '/usr/bin/sudo /usr/bin/rm "'.$coverfile.'"' );
 } else if ( isset( $_POST[ 'getwebradios' ] ) ) {
 	$webradios = $redis->hGetAll( 'webradios' );
 	foreach( $webradios as $name => $url ) {
@@ -287,6 +287,27 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$data = $_POST[ 'setdisplay' ];
 	$redis->hmSet( 'display', $data );
 	pushstream( 'display', $data );
+} else if ( isset( $_POST[ 'getbookmark' ] ) ) {
+	$rbkmarks = $redis->hGetAll( 'bkmarks' );
+	if ( $rbkmarks ) {
+		foreach ( $rbkmarks as $name => $path ) {
+			$thumbfile = '/mnt/MPD/'.$path.'/thumbnail.jpg';
+			if ( file_exists( $thumbfile ) ) {
+				$thumbnail = file_get_contents( $thumbfile );
+				$coverart = 'data:image/jpg;base64,'.base64_encode( $thumbnail );
+			} else {
+				$coverart = '';
+			}
+			$data[] = array(
+				  'name'     => $name
+				, 'path'     => $path
+				, 'coverart' => $coverart
+			);
+		}
+	} else {
+		$data = 0;
+	}
+	echo json_encode( $data );
 } else if ( isset( $_POST[ 'volume' ] ) ) {
 	$volume = $_POST[ 'volume' ];
 	$volumemute = $redis->hGet( 'display', 'volumemute' );
@@ -455,32 +476,11 @@ function pushstream( $channel, $data = 1 ) {
 function getLibrary() {
 	$redis = new Redis();
 	$redis->pconnect( '127.0.0.1' );
-	$rbkmarks = $redis->hGetAll( 'bkmarks' );
-	if ( $rbkmarks ) {
-		foreach ( $rbkmarks as $name => $path ) {
-			$thumbfile = '/mnt/MPD/'.$path.'/thumbnail.jpg';
-			if ( file_exists( $thumbfile ) ) {
-				$thumbnail = file_get_contents( $thumbfile );
-				$coverart = 'data:image/jpg;base64,'.base64_encode( $thumbnail );
-			} else {
-				$coverart = '';
-			}
-			$bookmarks[] = array(
-				  'name'     => $name
-				, 'path'     => $path
-				, 'coverart' => $coverart
-			);
-		}
-	} else {
-		$bookmarks = 0;
-	}
 	$count = exec( '/srv/http/enhancecount.sh' );
 	$count = explode( ' ', $count );
-	$album = isset( $count[ 11 ] ) ? $count[ 11 ] : $count[ 1 ];
 	$status = array(
-		  'bookmark'     => $bookmarks
-		, 'artist'       => $count[ 0 ]
-		, 'album'        => $count[ 11 ] ?: $count[ 1 ]
+		  'artist'       => $count[ 0 ]
+		, 'album'        => $count[ 1 ]
 		, 'song'         => $count[ 2 ]
 		, 'albumartist'  => $count[ 3 ]
 		, 'composer'     => $count[ 4 ]
@@ -488,8 +488,8 @@ function getLibrary() {
 		, 'nas'          => $count[ 6 ]
 		, 'usb'          => $count[ 7 ]
 		, 'webradio'     => $count[ 8 ]
-		, 'spotify'      => $count[ 9 ]
-		, 'activeplayer' => $count[ 10 ]
+		, 'spotify'      => $redis->hGet( 'spotify', 'enable' )
+		, 'activeplayer' => $redis->get( 'activePlayer' )
 	);
 	return $status;
 }

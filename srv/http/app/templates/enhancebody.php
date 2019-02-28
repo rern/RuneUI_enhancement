@@ -1,6 +1,54 @@
 <?php
+$redis = new Redis();
+$redis->pconnect( '127.0.0.1' );
+$bkmarks = $redis->hGetAll( 'bkmarks' );
+$order = $redis->hGet( 'display', 'order' );
+
+function stripLeading( $array ) {
+	list( $first, $rest ) = explode( ' ', $array.' ', 2 );
+	// the extra space is to prevent "undefined offset" notices on single-word titles
+	$leading = array( 'a', 'an', 'the', '(', '[', '.', "'", '"', '\\' );
+	if ( in_array( strtolower( $first ), $leading ) ) return $rest.', '.$first;
+	return $array;
+}
+// counts
+$count = exec( '/srv/http/enhancecount.sh' );
+$count = explode( ' ', $count );
+$count = array(
+	  'artist'      => $count[ 0 ]
+	, 'album'       => $count[ 1 ]
+	, 'song'        => $count[ 2 ]
+	, 'albumartist' => $count[ 3 ]
+	, 'composer'    => $count[ 4 ]
+	, 'genre'       => $count[ 5 ]
+	, 'network'     => $count[ 6 ]
+	, 'usbdrive'    => $count[ 7 ]
+	, 'webradio'    => $count[ 8 ]
+);
+// bookmarks
+foreach( $bkmarks as $label => $path ) {
+	$sort = stripLeading( $label );
+	$id = preg_replace( array( '/ /', '/[^A-Za-z0-9_-]+/' ), array( '_', '-' ), $label );
+	$thumbfile = '/mnt/MPD/'.$path.'/thumbnail.jpg';
+	if ( file_exists( $thumbfile ) ) {
+		$thumbnail = file_get_contents( $thumbfile );
+		$coverart = 'data:image/jpg;base64,'.base64_encode( $thumbnail );
+	} else {
+		$coverart = '';
+	}
+	$bookmarks[] = array( $sort, $id, $label, $path, $coverart );
+}
+if ( !$order ) {
+	usort( $bookmarks, function( $a, $b ) {
+		$aname = str_replace( '_', '-', $a[ 0 ] ); // fix '_' order last (first in js)
+		$bname = str_replace( '_', '-', $b[ 0 ] );
+		return strnatcmp( stripLeading( $aname ), stripLeading( $bname ) );
+	} );
+}
+// library home blocks
 $blocks = array( // 'id' => array( 'path', 'icon', 'name' );
-	  'sd'          => array( 'LocalStorage', 'microsd',      'SD' )
+	  'coverart'    => array( 'Coverart',     'coverart',     'CoverArt' )
+	, 'sd'          => array( 'LocalStorage', 'microsd',      'SD' )
 	, 'usb'         => array( 'USB',          'usbdrive',     'USB' )
 	, 'nas'         => array( 'NAS',          'network',      'Network' )
 	, 'webradio'    => array( 'Webradio',     'webradio',     'Webradio' )
@@ -12,17 +60,83 @@ $blocks = array( // 'id' => array( 'path', 'icon', 'name' );
 	, 'spotify'     => array( 'Spotify',      'spotify',      'Spotify' )
 	, 'dirble'      => array( 'Dirble',       'dirble',       'Dirble' )
 	, 'jamendo'     => array( 'Jamendo',      'jamendo',      'Jamendo' )
-	, 'coverart'     => array( 'Coverart',    'grid',        'CoverArt' )
 );
-$blockhtml = '';
 foreach( $blocks as $id => $value ) {
 	$browsemode = in_array( $id, array( 'album', 'artist', 'albumartist', 'composer', 'genre', 'coverart' ) ) ? ' data-browsemode="'.$id.'"' : '';
 	$plugin = in_array( $id, array( 'spotify', 'dirble', 'jamendo' ) ) ? ' data-plugin="'.$value[ 0 ].'"' : '';
-	$blockhtml.= '
-	<div class="divblock">
-		<div id="home-'.$id.'" class="home-block"'.$browsemode.$plugin.'><a class="lipath">'.$value[ 0 ].'</a><i class="fa fa-'.$value[ 1 ].'"></i><wh>'.$value[ 2 ].'</wh></div>
-	</div>
-		';
+	$counthtml = $count[ $value[ 1 ] ] ? '<gr>'.number_format( $count[ $value[ 1 ] ] ).'</gr>' : '';
+	$blocks[ $id ] = '
+		<div class="divblock">
+			<div id="home-'.$id.'" class="home-block"'.$browsemode.$plugin.'>
+				<a class="lipath">'.$value[ 0 ].'</a>
+				<i class="fa fa-'.$value[ 1 ].'"></i>
+				'.$counthtml.'
+				<wh>'.$value[ 2 ].'</wh>
+			</div>
+		</div>
+	';
+}
+foreach( $bookmarks as $bookmark ) {
+	if ( $bookmark[ 4 ] ) {
+		$namehtml = '<img class="bkcoverart" src="'.$bookmark[ 4 ].'">';
+	} else {
+		$namehtml = '<i class="fa fa-bookmark"></i><div class="divbklabel"><span class="bklabel">'.$bookmark[ 2 ].'</span></div>';
+	}
+	$blocks[ 'bk-'.$bookmark[ 1 ] ] = '
+		<div class="divblock bookmark">
+			<div id="home-bk-'.$bookmark[ 1 ].'" class="home-block home-bookmark">
+				<a class="lipath">'.$bookmark[ 3 ].'</a>
+				'.$namehtml.'
+			</div>
+		</div>
+	';
+}
+
+if ( $order ) {
+	$order = explode( '^^', $order );
+	foreach( $order as $id ) {
+		$blockhtml.= $blocks[ $id ];
+	}
+} else {
+	foreach( $blocks as $id => $block) {
+		$blockhtml.= $block;
+	}
+}
+
+$files = array_slice( scandir( '/srv/http/assets/img/coverarts' ), 2 );
+if ( count( $files ) ) {
+	foreach( $files as $file ) {
+		$name = str_replace( '.jpg', '', $file );
+		$name = str_replace( '|', '/', $name );
+		$names = explode( '^^', $name );
+		$album = $names[ 0 ];
+		$sort = stripLeading( $album );
+		$artist = $names[ 1 ];
+		$cue = $names[ 2 ];
+		$lists[] = array( $sort, $album, $artist, $file, $cue );
+	}
+	usort( $lists, function( $a, $b ) {
+		return strnatcmp( $a[ 0 ], $b[ 0 ] );
+	} );
+	$coverarthtml = '';
+	foreach( $lists as $list ) {
+		$licue = $list[ 4 ] ? '<a class="licue">'.$list[ 4 ].'</a>' : '';
+		$replace = array(  // #,? not allow in 'scr'
+			  '/\#/' => '%23'
+			, '/\?/' => '%3F'
+		);
+		$filename = preg_replace( array_keys( $replace ), array_values( $replace ), $list[ 3 ] );
+		$coverartshtml.= '<div class="coverart">'
+							.$licue
+							.'<a class="lisort">'.$list[ 0 ].'</a>'
+							.'<div><img class="lazy" data-src="/srv/http/assets/img/coverarts/'.$filename.'"></div>'
+							.'<span class="coverartalbum">'.$list[ 1 ].'</span>'
+							.'<gr class="coverartartist">'.( $list[ 2 ] ?: '&nbsp;' ).'</gr>'
+						.'</div>';
+	}
+	$coverarthtml = '<p></p>';
+} else {
+	$coverarthtml = '';
 }
 $indexarray = range( 'A', 'Z' );
 $li = '<li>#</li>';
@@ -313,7 +427,7 @@ $menu.= '</div>';
 		<ul id="db-index" class="index hide">
 			<?=$index?>
 		</ul>
-		<div id="divcoverarts" class="hide"></div>
+		<div id="divcoverarts" class="hide"><?=$coverartshtml ?></div>
 	</div>
 </div>
 <div id="page-playlist" class="page hide">

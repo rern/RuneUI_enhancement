@@ -21,23 +21,17 @@ $( '.close-page' ).click( function() {
 if ( document.location.hostname === 'localhost' ) $( '.osk-trigger' ).onScreenKeyboard( { 'draggable': true } );
 $( '.selectpicker' ).selectpicker();
 
-var intUpdate = false;
 var path = location.pathname;
 if ( path.match( /\/sources\/*$/ ) ) {
 	function toggleUpdate() {
 		$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
 			if ( status.updating_db ) {
-				if ( !intUpdate ) {
-					$( '#update, #rescan' ).hide();
-					$( '#updating' ).show();
-					intUpdate = setInterval( function() { // fix: force status fetching
-						toggleUpdate();
-					}, 10000 );
-				}
+				$( '#update, #rescan' ).hide();
+				$( '#updating' ).show();
+				setTimeout( toggleUpdate, 10000 ); // fix: force update status fetching
 			} else {
 				$( '#update, #rescan' ).show();
 				$( '#updating' ).hide();
-				clearInterval( intUpdate );
 			}
 		}, 'json' );
 	}
@@ -52,7 +46,7 @@ if ( path.match( /\/sources\/*$/ ) ) {
 	pushstreamIdle.addChannel( 'idle' );
 	pushstreamIdle.connect();
 	$( '#update, #rescan' ).click( function() {
-		$.post( 'enhance.php', { mpc: '/srv/http/enhancecount.sh '+ this.id +' &' } );
+		$.post( 'enhance.php', { bash: '/srv/http/enhancecount.sh '+ this.id +' &' } );
 	} );
 } else if ( path.match( /\/sources\/add/ ) ) {
 	if ($('#mount-type').val() === 'nfs') {

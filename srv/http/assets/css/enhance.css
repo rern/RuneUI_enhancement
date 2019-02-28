@@ -73,6 +73,7 @@
 .fa-sliders:before { content: "\f50B" }
 .fa-code:before { content: "\f50C" }
 
+.fa-coverart:before { content: "\f55E" }
 .fa-bookmark:before { content: "\f550" }
 .fa-network:before { content: "\f551" }
 .fa-microsd:before { content: "\f552" }
@@ -85,7 +86,6 @@
 .fa-genre:before { content: "\f559" }
 .fa-dirble:before { content: "\f55A" }
 .fa-jamendo:before { content: "\f55B" }
-.fa-grid:before { content: "\f55E" }
 .fa-lastfm:before { content: "\f55C" }
 .fa-youtube:before { content: "\f55D" }
 
@@ -508,6 +508,26 @@ wh, gr { font-weight: 300; }
 		-moz-transform    : translateX( 100vw ); /* Browser bug fix */
 		-webkit-transform : translateX( 100vw ); /* Browser bug fix */
 		transform         : translateX( 100vw );
+	}
+	100% {
+		-moz-transform    : translateX( -100% );
+		-webkit-transform : translateX( -100% );
+		transform         : translateX( -100% );
+	}
+}
+@-moz-keyframes bkscrollleft {
+	0%   { -moz-transform : translateX( calc( 100% - 10px ) ) }  /* move right 100% = block width */
+	100% { -moz-transform : translateX( -100% ) }                /* move left  100% = block width */
+}
+@-webkit-keyframes bkscrollleft {
+	0%   { -webkit-transform : translateX( calc( 100% - 10px ) ) }
+	100% { -webkit-transform : translateX( -100% ) }
+}
+@keyframes bkscrollleft {
+	0%   { 
+		-moz-transform    : translateX( calc( 100% - 10px ) ); /* Browser bug fix */
+		-webkit-transform : translateX( calc( 100% - 10px ) ); /* Browser bug fix */
+		transform         : translateX( calc( 100% - 10px ) );
 	}
 	100% {
 		-moz-transform    : translateX( -100% );
@@ -1104,6 +1124,13 @@ wh, gr { font-weight: 300; }
 .divbklabel {
 	overflow: hidden;
 }
+.coverart div {
+	position: relative;
+}
+#infoMessage img {
+	margin: 10px;
+	width: 100px;
+}
 .bkcoverart {
 	position: absolute;
 	width: 100px;
@@ -1132,11 +1159,13 @@ wh, gr { font-weight: 300; }
 	outline: none;
 	color: #7795b4
 }
-.home-bookmark .fa-bookmark {
+.home-block .fa-coverart,
+.home-block .fa-bookmark {
 	color: #0095d8;
 }
 .home-block-edit,
-.home-block-remove {
+.home-block-remove,
+.coverart-remove {
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -1145,6 +1174,10 @@ wh, gr { font-weight: 300; }
 }
 .home-block-edit {
 	top: 35px;
+}
+.coverart-remove {
+	top: 15px;
+	right: 15px;
 }
 /* ---------------------- breadcrumb and index ---------------------- */
 .btnlist-top {
@@ -1343,19 +1376,18 @@ wh, gr { font-weight: 300; }
 	border-right: #000000 1px solid;
 	border-bottom: #000000 1px solid;
 }
-.coverart img {
-	width: 100%;
-	height: 100%;
-}
-.coverarttitle {
+.coverartalbum,
+.coverartartist {
 	display: block;
-	height: 35px;
 	padding-top: 2px;
 	overflow: hidden;
-	line-height: 16px;
+	line-height: 14px;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+}
+.coverartartist {
+	margin-bottom: 8px;
 }
 .licover {
 	height: 230px !important;
@@ -1397,7 +1429,7 @@ wh, gr { font-weight: 300; }
 #db-entries,
 #pl-editor {
 	float: left;
-	width: calc( 100% - 38px );
+	width: calc( 100vw - 38px );
 	padding-bottom: 80px;
 }
 #db-entries,
@@ -1460,6 +1492,7 @@ wh, gr { font-weight: 300; }
 .liname,
 .liindex,
 .lisort,
+.licue,
 .liartist,
 .db-action,
 .pl-action {
@@ -1877,21 +1910,33 @@ li.active .time {
 	width: 16.666666%;
 	padding: 3px;
 }
+
+.coverart div {
+	position: relative;
+	padding-bottom: 100%;
+}
+.coverart img {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+}
+@media(min-width: 2000px) { .coverart { width: 200px } }
+@media(max-width: 2000px) { .coverart { width: calc( ( 100vw - 38px ) * 0.1 ) } }
+@media(max-width: 1800px) { .coverart { width: calc( ( 100vw - 38px ) * 0.111111111 ) } }
+@media(max-width: 1600px) { .coverart { width: calc( ( 100vw - 38px ) * 0.142857143 ) } }
+@media(max-width: 1200px) { .coverart { width: calc( ( 100vw - 38px ) * 0.166666667 ) } }
+@media(max-width: 1000px) { .coverart { width: calc( ( 100vw - 38px ) * 0.2 ) } }
+@media(max-width: 800px)  { .coverart { width: calc( ( 100vw - 38px ) * 0.25 ) } }
+@media(max-width: 600px)  { .coverart { width: calc( ( 100vw - 38px ) * 0.333333333 ) } }
+@media(max-width: 400px)  { .coverart { width: calc( ( 100vw - 38px ) * 0.5 ) } }
+
 @media (max-width: 900px) { .divblock { width: 20% } }
 @media (max-width: 700px) { .divblock { width: 25% } }
 @media (max-width: 560px) { .divblock { width: 33.3333333% } }
 @media (max-width: 410px) { .divblock { width: 50% } }
 @media (max-width: 280px) { .divblock { width: 100% } }
 
-@media(min-width: 2000px) { .coverart { width: 200px;       height: 200px; } }
-@media(max-width: 2000px) { .coverart { width: 10%;         height: calc( 100vw * 0.1 ); } }
-@media(max-width: 1800px) { .coverart { width: 12.5%;       height: calc( 100vw * 0.125 ); } }
-@media(max-width: 1600px) { .coverart { width: 14.2857143%; height: calc( 100vw * 0.142857143 ); } }
-@media(max-width: 1200px) { .coverart { width: 16.6666667%; height: calc( 100vw * 0.166666667 ); } }
-@media(max-width: 1000px) { .coverart { width: 20%;         height: calc( 100vw * 0.2 ); } }
-@media(max-width: 800px)  { .coverart { width: 25%;         height: calc( 100vw * 0.25 ); } }
-@media(max-width: 600px)  { .coverart { width: 33.3333333%; height: calc( 100vw * 0.333333333 ); } }
-@media(max-width: 400px)  { .coverart { width: 50%;         height: calc( 100vw * 0.5 ); } }
 /* height */
 @media(max-height: 590px) {
 	#playback-row {

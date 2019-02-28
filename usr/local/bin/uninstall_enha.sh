@@ -12,11 +12,11 @@ echo -e "$bar Remove files ..."
 
 rm -v /srv/http/enhance*
 rm -v /srv/http/app/templates/enhance*
-rm -v /srv/http/assets/css/{enhance*,fontawesome.min,midori,pnotify.custom.min,roundslider.min,toggle-switch.min}.css
+rm -v /srv/http/assets/css/{enhance*,fontawesome.min,pnotify.custom.min,roundslider.min,toggle-switch.min}.css
 rm -v /srv/http/assets/fonts/enhance*
 rm -v /srv/http/assets/img/{bootsplash.png,controls*,cover.svg,runelogo.svg,vu*}
 rm -v /srv/http/assets/js/enhance*
-rm -v /srv/http/assets/js/vendor/roundslider.min.js
+rm -v /srv/http/assets/js/vendor/{lazyload,roundslider}.min.js
 # DO NOT remove - used by other addons
 # bootstrap.min.css, bootstrap-select.min.css
 
