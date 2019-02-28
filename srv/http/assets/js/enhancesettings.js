@@ -23,23 +23,15 @@ $( '.selectpicker' ).selectpicker();
 
 var path = location.pathname;
 if ( path.match( /\/sources\/*$/ ) ) {
-	if ( !intUpdate ) var intUpdate = false;
 	function toggleUpdate() {
 		$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
 			if ( status.updating_db ) {
-				if ( !intUpdate ) {
-					$( '#update, #rescan' ).hide();
-					$( '#updating' ).show();
-					var i = 0;
-					intUpdate = setInterval( function() { // fix: force status fetching
-						console.log( i++ );
-						toggleUpdate();
-					}, 10000 );
-				}
+				$( '#update, #rescan' ).hide();
+				$( '#updating' ).show();
+				setTimeout( toggleUpdate, 10000 ); // fix: force update status fetching
 			} else {
 				$( '#update, #rescan' ).show();
 				$( '#updating' ).hide();
-				clearInterval( intUpdate );
 			}
 		}, 'json' );
 	}
