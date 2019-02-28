@@ -62,7 +62,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	}
 } else if ( isset( $_POST[ 'coverartalbum' ] ) ) {
 	$album = $_POST[ 'coverartalbum' ];
-	$albums = shell_exec( 'mpc find -f "%album% - %albumartist%" album "'.$album.'" | awk \'!a[$0]++\'' );
+	$albums = shell_exec( 'mpc find -f "%album% - [%albumartist%|%artist%]" album "'.$album.'" | awk \'!a[$0]++\'' );
 	$count = count( explode( "\n", rtrim( $albums ) ) );
 	$cmd = 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" album "'.$album.'"';
 	if ( $count === 1 ) {
