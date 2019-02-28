@@ -17,8 +17,8 @@ redis-cli hdel display library &> /dev/null
 
 installstart $@
 
-# verify installed imagemagik
-if [[ $( pacman -Ss 'imagemagick$' | head -n1 | cut -d' ' -f3 ) != '[installed]' ]]; then
+# install and verify installed imagemagick
+if [[ $( pacman -Ss 'imagemagick$' | head -n1 | awk '{print $NF}' ) != '[installed]' ]]; then
 	echo -e "$bar Prefetch packages ..."
 	pacman -Syw --noconfirm imagemagick libpng zlib glibc
 	
