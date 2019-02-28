@@ -52,7 +52,7 @@ if ( path.match( /\/sources\/*$/ ) ) {
 	pushstreamIdle.addChannel( 'idle' );
 	pushstreamIdle.connect();
 	$( '#update, #rescan' ).click( function() {
-		$.post( 'enhance.php', { mpc: '/srv/http/enhancecount.sh '+ this.id +' &' } );
+		$.post( 'enhance.php', { bash: '/srv/http/enhancecount.sh '+ this.id +' &' } );
 	} );
 } else if ( path.match( /\/sources\/add/ ) ) {
 	if ($('#mount-type').val() === 'nfs') {

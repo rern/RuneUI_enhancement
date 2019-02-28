@@ -875,14 +875,17 @@ $( '#home-coverart' ).tap( function() {
 	if ( GUI.drag ) return
 	
 	info( {
-		  icon      : 'coverart'
-		, title     : 'Coverart Thumbnails Update'
-		, message   : 'A lot of albums will take a lot of time.'
+		  icon        : 'coverart'
+		, title       : 'Coverart Thumbnails Update'
+		, message     : 'A lot of albums will take a lot of time.'
 					 +'<br>(±200 album/minute for initial scan)'
 					 +'<br><w>Changes need Library update</w> to take effect.'
 					 +'<br>Continue?'
-		, cancel    : 1
-		, ok        : function() {
+		, cancellabel : 'Update Library'
+		, cancel      : function() {
+			$.post( 'enhance.php', { bash: '/srv/http/enhancecount.sh update &' } );
+		}
+		, ok          : function() {
 			$( 'body' ).append(
 				'<form id="formtemp" action="addonsbash.php" method="post">'
 					+'<input type="hidden" name="alias" value="cove">'
