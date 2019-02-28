@@ -879,6 +879,7 @@ $( '#home-coverart' ).tap( function() {
 		, title     : 'Update Coverart Thumbnails'
 		, message   : 'A lot of albums will take a lot of time.'
 					 +'<br>(±200 album/minute for initial scan)'
+					 +'<br><w>Library changes need update</w> to take effect.'
 					 +'<br>Continue?'
 		, cancel    : 1
 		, ok        : function() {
@@ -920,9 +921,8 @@ $( '#divcoverarts' ).on( 'tap', '.coverart', function( e ) {
 	GUI.bookmarkedit = 1;
 	$( '.coverart img' ).css( 'opacity', '' );
 	$( '.coverart-remove' ).remove();
-	$( this ).find( 'div' )
-		.append( '<i class="coverart-remove fa fa-minus-circle"></i>' )
-		.find( 'img' ).css( 'opacity', 0.4 );
+	$( '.coverart div' ).append( '<i class="coverart-remove fa fa-minus-circle"></i>' );
+	$( '.coverart img' ).css( 'opacity', 0.4 );
 } );
 $( '#divcoverarts' ).on( 'tap', '.coverart-remove', function() {
 	var $this = $( this );
