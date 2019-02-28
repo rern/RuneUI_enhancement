@@ -1597,21 +1597,7 @@ pushstreams.idle.onmessage = function( changed ) {
 		}
 		if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) return;
 		
-		clearTimeout( timeoutUpdate );
-		timeoutUpdate = setTimeout( function() { // skip on brief update
-			$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
-				if ( status.updating_db ) {
-					GUI.status.updating_db = 1;
-				} else {
-					GUI.status.updating_db = 0;
-					new PNotify( {
-						  title : 'Update Database'
-						, text  : 'Database updated.'
-					} );
-				}
-				setButtonUpdate();
-			}, 'json' );
-		}, 3000 );
+		statusUpdate();
 	} else if ( changed === 'database' ) { // on files changed (for webradio rename)
 		if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) $( '#home-webradio' ).tap();
 	}

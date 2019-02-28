@@ -777,10 +777,14 @@ function renderBookmarks() {
 function statusUpdate() {
 	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
 		if ( status.updating_db ) {
+			GUI.status.updating_db = 1;
 			setTimeout( statusUpdate, 3000 );
 		} else {
-			info( 'Library update finised.' );
-		}
+			GUI.status.updating_db = 0;
+			new PNotify( {
+				  title : 'Update Database'
+				, text  : 'Database updated.'
+			} );		}
 	}, 'json' );
 }
 function infoNoData() {
