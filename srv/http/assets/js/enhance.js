@@ -876,10 +876,10 @@ $( '#home-coverart' ).tap( function() {
 	
 	info( {
 		  icon      : 'coverart'
-		, title     : 'Update Coverart Thumbnails'
+		, title     : 'Coverart Thumbnails Update'
 		, message   : 'A lot of albums will take a lot of time.'
 					 +'<br>(±200 album/minute for initial scan)'
-					 +'<br><w>Library changes need update</w> to take effect.'
+					 +'<br><w>Changes need Library update</w> to take effect.'
 					 +'<br>Continue?'
 		, cancel    : 1
 		, ok        : function() {
