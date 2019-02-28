@@ -21,16 +21,18 @@ $( '.close-page' ).click( function() {
 if ( document.location.hostname === 'localhost' ) $( '.osk-trigger' ).onScreenKeyboard( { 'draggable': true } );
 $( '.selectpicker' ).selectpicker();
 
-var intUpdate = false;
 var path = location.pathname;
 if ( path.match( /\/sources\/*$/ ) ) {
+	if ( !intUpdate ) var intUpdate = false;
 	function toggleUpdate() {
 		$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
 			if ( status.updating_db ) {
 				if ( !intUpdate ) {
 					$( '#update, #rescan' ).hide();
 					$( '#updating' ).show();
+					var i = 0;
 					intUpdate = setInterval( function() { // fix: force status fetching
+						console.log( i++ );
 						toggleUpdate();
 					}, 10000 );
 				}
