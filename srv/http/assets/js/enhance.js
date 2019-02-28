@@ -874,6 +874,16 @@ $( '#home-coverart' ).tap( function() {
 } ).taphold( function() {
 	if ( GUI.drag ) return
 	
+	if ( GUI.status.updating_db ) {
+		info( {
+			  icon    : 'coverart'
+			, title   : 'Coverart Thumbnails Update'
+			, message : 'Library update is in progress ...'
+						+'<br>Please wait until finished.'
+		} );
+		return
+	}
+	
 	info( {
 		  icon        : 'coverart'
 		, title       : 'Coverart Thumbnails Update'

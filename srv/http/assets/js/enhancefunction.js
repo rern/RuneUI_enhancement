@@ -728,8 +728,20 @@ function renderLibrary() {
 	$( 'html, body' ).scrollTop( 0 );
 }
 function renderBookmarks() {
+	if ( GUI.local ) return
+	
+	GUI.local = 1;
+	setTimeout( function() { GUI.local = 0 }, 5000 );
 	$.post( 'enhance.php', { getbookmark: 1 }, function( bookmarks ) {
-		console.log(bookmarks)
+		var order;
+		if ( !GUI.display.order ) {
+			$( '.home-block' ).each( function() {
+				order += '^^'+ this.id.replace( 'home-', '' );
+			} );
+			GUI.display.order = order.replace( '^^', '' );
+		}
+		order = GUI.display.order.split( '^^' );
+		
 		var content = '';
 		if ( bookmarks.length ) {
 			bookmarks.sort( function( a, b ) {
@@ -751,16 +763,10 @@ function renderBookmarks() {
 		$( '#divhomeblocks' ).append( content ).promise().done( function() {
 			bookmarkScroll();
 		} );
-		var order = GUI.display.order
-		if ( !order ) return
-		
-		order = order.split( '^^' );
 		$.each( order, function( i, name ) {
 			var $block = $( '#home-'+ name ).parent();
-			if ( GUI.display.order ) {
-				$block.detach();
-				$( '#divhomeblocks' ).append( $block );
-			}
+			$block.detach();
+			$( '#divhomeblocks' ).append( $block );
 		} );
 		$.each( GUI.libraryhome, function( name, val ) {
 			if ( name === 'activeplayer' || name === 'spotify' ) return
