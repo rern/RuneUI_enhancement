@@ -753,7 +753,7 @@ $( '#home-blocks' ).contextmenu( function( e ) { // disable default image contex
 	e.preventDefault();
 } );
 $.event.special.tap.emitTapOnTaphold = false; // suppress tap on taphold
-$( '#home-blocks' ).on( 'tap', '.home-block', function() {
+$( '.home-block' ).click( function() {
 	var $this = $( this );
 	var id = this.id;
 	if ( GUI.local || $this.hasClass( 'home-bookmark' ) || id === 'home-coverart' ) return
@@ -786,7 +786,8 @@ $( '#home-blocks' ).on( 'tap', '.home-block', function() {
 			, plugin     : GUI.plugin
 		} );
 	}
-} ).on( 'tap', '.home-bookmark', function( e ) {
+} );
+$( '.home-bookmark' ).tap( function( e ) {
 	var $this = $( this );
 	var $target = $( e.target );
 	if ( $( '.home-block-edit' ).length
@@ -814,7 +815,7 @@ $( '#home-blocks' ).on( 'tap', '.home-block', function() {
 			, path       : path
 		} );
 	}
-} ).on( 'taphold', '.home-bookmark', function() {
+} ).taphold( function() {
 	if ( GUI.drag ) return
 	
 	GUI.bookmarkedit = 1;
@@ -855,7 +856,7 @@ var sortablelibrary = new Sortable( document.getElementById( 'divhomeblocks' ), 
 		$.post( 'enhance.php', { order: order } );
 	}
 } );
-$( '#home-coverart' ).tap( function() {
+$( '#home-coverart' ).click( function() { // fix - 'tap' also fire .coverart click here
 	if ( !$( '#divcoverarts' ).html() ) {
 		$( this ).taphold();
 		return
@@ -890,6 +891,7 @@ $( '#home-coverart' ).tap( function() {
 		, message : 'A lot of albums will take a lot of time.'
 					 +'<br>(±200 album/minute for initial scan)'
 					 +'<br>Continue?'
+		, cancel  : 1
 		, ok      : function() {
 			$( 'body' ).append(
 				'<form id="formtemp" action="addonsbash.php" method="post">'
@@ -900,7 +902,7 @@ $( '#home-coverart' ).tap( function() {
 		}
 	} );
 } );
-$( '#divcoverarts' ).on( 'tap', '.coverart', function( e ) {
+$( '.coverart' ).tap( function( e ) {
 	if ( $( e.target ).hasClass( 'coverart-remove' ) ) return
 	
 	if ( $( '.coverart-remove' ).length ) {
@@ -925,14 +927,14 @@ $( '#divcoverarts' ).on( 'tap', '.coverart', function( e ) {
 			, browsemode : 'coverart'
 		} );
 	}
-} ).on( 'taphold', '.coverart', function() {
+} ).taphold( function() {
 	GUI.bookmarkedit = 1;
 	$( '.coverart img' ).css( 'opacity', '' );
 	$( '.coverart-remove' ).remove();
 	$( '.coverart div' ).append( '<i class="coverart-remove fa fa-minus-circle"></i>' );
 	$( '.coverart img' ).css( 'opacity', 0.4 );
 } );
-$( '#divcoverarts' ).on( 'tap', '.coverart-remove', function() {
+$( '#divcoverarts' ).on( 'click', '.coverart-remove', function() {
 	var $this = $( this );
 	var img = $this.prev().prop( 'src' );
 	var $album = $this.parent().next();
