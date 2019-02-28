@@ -733,15 +733,6 @@ function renderBookmarks() {
 	GUI.local = 1;
 	setTimeout( function() { GUI.local = 0 }, 5000 );
 	$.post( 'enhance.php', { getbookmark: 1 }, function( bookmarks ) {
-		var order;
-		if ( !GUI.display.order ) {
-			$( '.home-block' ).each( function() {
-				order += '^^'+ this.id.replace( 'home-', '' );
-			} );
-			GUI.display.order = order.replace( '^^', '' );
-		}
-		order = GUI.display.order.split( '^^' );
-		
 		var content = '';
 		if ( bookmarks.length ) {
 			bookmarks.sort( function( a, b ) {
@@ -763,6 +754,9 @@ function renderBookmarks() {
 		$( '#divhomeblocks' ).append( content ).promise().done( function() {
 			bookmarkScroll();
 		} );
+		if ( !GUI.display.order ) return
+		
+		var order = GUI.display.order.split( '^^' );
 		$.each( order, function( i, name ) {
 			var $block = $( '#home-'+ name ).parent();
 			$block.detach();
