@@ -61,6 +61,7 @@
 <link rel="stylesheet" href="<?=$this->asset( '/css/addonsinfo.css' )?>">
 <link rel="stylesheet" href="<?=$this->asset( '/css/roundslider.min.css' )?>">
 <link rel="stylesheet" href="<?=$this->asset( '/css/enhance.css' )?>">
+<style id="csshomeblockwidth"></style>
 		<?php
 		if ( $gpio ) { ?> 
 <link rel="stylesheet" href="<?=$this->asset( '/css/gpio.css' )?>">
