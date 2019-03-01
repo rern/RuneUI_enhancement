@@ -685,10 +685,6 @@ function displayCheckbox( checkboxes ) {
 	return html;
 }
 function bookmarkScroll() {
-	if ( GUI.local ) return
-	
-	GUI.local = 1;
-	setTimeout( function() { GUI.local = 0 }, 100 );
 	$( '.bklabel' )
 		.removeClass( 'bkscrollleft' )
 		.removeAttr( 'style' ); // fix - iOS needs whole style removed

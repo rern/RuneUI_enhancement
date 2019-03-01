@@ -786,7 +786,7 @@ $( '.home-block' ).click( function() {
 		} );
 	}
 } );
-$( '.home-bookmark' ).tap( function( e ) {
+$( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - id changed on renamed
 	var $this = $( this );
 	var $target = $( e.target );
 	if ( $( '.home-block-edit' ).length
@@ -814,7 +814,7 @@ $( '.home-bookmark' ).tap( function( e ) {
 			, path       : path
 		} );
 	}
-} ).taphold( function() {
+} ).on( 'taphold', '.home-bookmark', function() {
 	if ( GUI.drag ) return
 	
 	GUI.bookmarkedit = 1;
