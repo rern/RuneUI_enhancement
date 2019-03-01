@@ -496,24 +496,16 @@ wh, gr { font-weight: 300; }
 	backface-visibility : hidden; /* for less flickering */
 }
 @-moz-keyframes scrollleft {
-	0%   { -moz-transform : translateX( 100vw ) } /* move right 100vw = viewport = visible text width */
-	100% { -moz-transform : translateX( -100% ) } /* move left  100%  = window   = full text width */
+	0%   { -moz-transform    : translateX( 100vw ) } /* move right 100vw = viewport = visible text width */
+	100% { -moz-transform    : translateX( -100% ) } /* move left  100%  = window   = full text width */
 }
 @-webkit-keyframes scrollleft {
 	0%   { -webkit-transform : translateX( 100vw ) }
 	100% { -webkit-transform : translateX( -100% ) }
 }
 @keyframes scrollleft {
-	0%   { 
-		-moz-transform    : translateX( 100vw );
-		-webkit-transform : translateX( 100vw );
-		transform         : translateX( 100vw );
-	}
-	100% {
-		-moz-transform    : translateX( -100% );
-		-webkit-transform : translateX( -100% );
-		transform         : translateX( -100% );
-	}
+	0%   { transform         : translateX( 100vw ) }
+	100% { transform         : translateX( -100% ) }
 }
 /* ---------------------- knobs, buttons ----------------------*/
 #playsource-open { display: none; }
