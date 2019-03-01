@@ -80,6 +80,7 @@ if ( navigator.userAgent.indexOf( 'Midori' ) !== -1 ) {
 		+'</style>'
 		);
 }
+cssHomeBlockWidth();
 // get display, status, library
 $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 	GUI.display = data;
@@ -100,8 +101,6 @@ $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 }, 'json' );
 
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-setTimeout( bookmarkScroll, 1000 ); // fix initial scroll on ios
 
 // COMMON /////////////////////////////////////////////////////////////////////////////////////
 $( '#menu-settings, #badge' ).click( function() {
@@ -1482,7 +1481,7 @@ window.addEventListener( 'orientationchange', function() {
 			$( 'html, body' ).scrollTop( scrollpos );
 		}, 300 );
 	} else if ( GUI.library && !$( '#home-blocks' ).hasClass( 'hide' ) ) {
-		setTimeout( bookmarkScroll, 100 );
+		setTimeout( cssHomeBlockWidth, 100 );
 	} else if ( GUI.dblist || GUI.pleditor  || !$( '#divcoverarts' ).hasClass( 'hide' ) ) {
 		displayIndexBar();
 	}

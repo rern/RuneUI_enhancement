@@ -1,3 +1,25 @@
+function cssHomeBlockWidth() {
+	var wW = window.innerWidth;
+	var divhomeW = wW - 10;
+	if ( 900 <= wW ) {
+		columnW = divhomeW * 0.16666666;
+	} else if ( 700 < wW && wW < 900 ) {
+		columnW = divhomeW * 0.2;
+	} else if ( 560 < wW && wW < 700 ) {
+		columnW = divhomeW * 0.25;
+	} else if ( 410 < wW && wW < 560 ) {
+		columnW = divhomeW * 0.333333333;
+	} else if ( 280 < wW && wW < 410 ) {
+		columnW = divhomeW * 0.5;
+	} else if ( wW < 280 ) {
+		columnW = divhomeW;
+	}
+	$( '#csshomeblockwidth' )
+		.empty()
+		.append( '.divblock { width: '+ columnW +'px }' );
+	GUI.columnW = columnW;
+	bookmarkScroll();
+}
 function cssNotify() {
 	if ( GUI.bars ) {
 		PNotify.prototype.options.stack.firstpos1 = 60;
@@ -229,7 +251,6 @@ function scrollLongText() {
 			}
 		} );
 		$el.css( 'visibility', 'visible' ); // from initial hidden
-		$( '#scrollleft' ).remove();
 		if ( !$( '.scrollleft' ).length ) return
 		
 		// varied with only when scaled
@@ -671,12 +692,12 @@ function bookmarkScroll() {
 	$( '.bklabel' )
 		.removeClass( 'bkscrollleft' )
 		.removeAttr( 'style' ); // fix - iOS needs whole style removed
-	var bW = $( '.divblock' ).width() - 10;
+	var labelW = Math.round( GUI.columnW - 16 );
 	$( '.bklabel' ).each( function() {
 		var $this = $( this );
-		var tW = $this.width();
-		if ( tW > bW ) {
-			var cssanimate = ( bW + tW ) / GUI.scrollspeed +'s infinite bkscrollleft linear'; // calculate to 	same speed
+		var tW = Math.round( $this.width() ); // available only when visible
+		if ( tW > labelW ) {
+			var cssanimate = Math.round( ( labelW + tW ) / GUI.scrollspeed ) +'s infinite bkscrollleft linear'; // calculate to 	same speed
 			$this
 				.addClass( 'bkscrollleft' )
 				.css( {
@@ -685,6 +706,20 @@ function bookmarkScroll() {
 					, '-moz-animation'    : cssanimate
 					, '-webkit-animation' : cssanimate
 				} );
+			$( '#csshomeblockwidth' ).append(
+				'@keyframes bkscrollleft {'
+					+'100% { transform         : translateX( -'+ tW +'px ) }'
+					+'0%   { transform         : translateX( '+ labelW +'px ) };'
+				+'}'
+				+'@-moz-keyframes bkscrollleft {'
+					+'100% { -moz-transform    : translateX( -'+ tW +'px ) }'
+					+'0%   { -moz-transform    : translateX( '+ labelW +'px ) }'
+				+'}'
+				+'@-webkit-keyframes bkscrollleft {'
+					+'100% { -webkit-transform : translateX( -'+ tW +'px ) }'
+					+'0%   { -webkit-transform : translateX( '+ labelW +'px ) }'
+				+'}'
+			);
 		}
 	} );
 }
