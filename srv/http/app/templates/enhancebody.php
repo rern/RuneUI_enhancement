@@ -4,12 +4,8 @@ $redis->pconnect( '127.0.0.1' );
 $bkmarks = $redis->hGetAll( 'bkmarks' );
 $order = $redis->hGet( 'display', 'order' );
 
-function stripLeading( $array ) {
-	list( $first, $rest ) = explode( ' ', $array.' ', 2 );
-	// the extra space is to prevent "undefined offset" notices on single-word titles
-	$leading = array( 'a', 'an', 'the', '(', '[', '.', "'", '"', '\\' );
-	if ( in_array( strtolower( $first ), $leading ) ) return $rest.', '.$first;
-	return $array;
+function stripLeading( $string ) {
+	return preg_replace( '/^A +|^An +|^The +|^\(\s*|^\[\s*|^\.\s*|^\'\s*|^\"\s*|\\//i', '', $string );
 }
 // counts
 $count = exec( '/srv/http/enhancecount.sh' );
@@ -110,8 +106,10 @@ if ( count( $files ) ) {
 		$name = str_replace( '|', '/', $name );
 		$names = explode( '^^', $name );
 		$album = $names[ 0 ];
-		$sort = stripLeading( $album );
 		$artist = $names[ 1 ];
+		$sortalbum = str_replace( ' ', '_', stripLeading( $album ) );
+		$sortartist = str_replace( ' ', '_', stripLeading( $artist ) );
+		$sort = $sortalbum.'-'.$sortartist;
 		$cue = $names[ 2 ];
 		$lists[] = array( $sort, $album, $artist, $file, $cue );
 	}
