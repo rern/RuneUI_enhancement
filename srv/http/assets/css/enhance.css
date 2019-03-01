@@ -505,29 +505,9 @@ wh, gr { font-weight: 300; }
 }
 @keyframes scrollleft {
 	0%   { 
-		-moz-transform    : translateX( 100vw ); /* Browser bug fix */
-		-webkit-transform : translateX( 100vw ); /* Browser bug fix */
+		-moz-transform    : translateX( 100vw );
+		-webkit-transform : translateX( 100vw );
 		transform         : translateX( 100vw );
-	}
-	100% {
-		-moz-transform    : translateX( -100% );
-		-webkit-transform : translateX( -100% );
-		transform         : translateX( -100% );
-	}
-}
-@-moz-keyframes bkscrollleft {
-	0%   { -moz-transform : translateX( calc( 100% - 10px ) ) }  /* move right 100% = block width */
-	100% { -moz-transform : translateX( -100% ) }                /* move left  100% = block width */
-}
-@-webkit-keyframes bkscrollleft {
-	0%   { -webkit-transform : translateX( calc( 100% - 10px ) ) }
-	100% { -webkit-transform : translateX( -100% ) }
-}
-@keyframes bkscrollleft {
-	0%   { 
-		-moz-transform    : translateX( calc( 100% - 10px ) ); /* Browser bug fix */
-		-webkit-transform : translateX( calc( 100% - 10px ) ); /* Browser bug fix */
-		transform         : translateX( calc( 100% - 10px ) );
 	}
 	100% {
 		-moz-transform    : translateX( -100% );
@@ -1085,6 +1065,11 @@ wh, gr { font-weight: 300; }
 #home-blocks {
 	margin: 0 5px 10px;
 	padding-top: 90px;
+}
+.divblock {
+	float: left;
+	width: 16.666666%;
+	padding: 3px;
 }
 .home-block {
 	position: relative;
@@ -1905,12 +1890,6 @@ li.active .time {
 }
 
 /* bootstrap column */
-.divblock {
-	float: left;
-	width: 16.666666%;
-	padding: 3px;
-}
-
 .coverart div {
 	position: relative;
 	padding-bottom: 100%;
@@ -1930,12 +1909,6 @@ li.active .time {
 @media(max-width: 800px)  { .coverart { width: calc( ( 100vw - 38px ) * 0.25 ) } }
 @media(max-width: 600px)  { .coverart { width: calc( ( 100vw - 38px ) * 0.333333333 ) } }
 @media(max-width: 400px)  { .coverart { width: calc( ( 100vw - 38px ) * 0.5 ) } }
-
-@media (max-width: 900px) { .divblock { width: 20% } }
-@media (max-width: 700px) { .divblock { width: 25% } }
-@media (max-width: 560px) { .divblock { width: 33.3333333% } }
-@media (max-width: 410px) { .divblock { width: 50% } }
-@media (max-width: 280px) { .divblock { width: 100% } }
 
 /* height */
 @media(max-height: 590px) {
