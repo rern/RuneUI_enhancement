@@ -13,7 +13,6 @@ $( '.contextmenu a' ).click( function() {
 		}
 		return
 	}
-	
 	$( '#db-entries li, #pl-entries li' ).removeClass( 'active' );
 	var mode = cmd.replace( /replaceplay|replace|addplay|add/, '' );
 	// get name
@@ -52,7 +51,7 @@ $( '.contextmenu a' ).click( function() {
 		} else {
 			var mpcCmd = 'mpc load "'+ name +'"';
 		}
-		cmd = cmd.replace( /album|artist|composer|genre|pl|wr/, '' );
+		if ( cmd !== 'wrrename' ) cmd = cmd.replace( /album|artist|composer|genre|pl|wr/, '' );
 	}
 	var addplaypos = GUI.status.playlistlength + 1;
 	var contextCommand = {
