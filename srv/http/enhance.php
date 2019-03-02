@@ -107,7 +107,10 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 			$redis->hSet( 'display', 'order', $order );
 			$data = $redis->hGetAll( 'display' );
 			$data[ 'volumempd' ] = $redis->get( 'volume' );
+			$data[ 'spotify' ] = $redis->hGet( 'spotify', 'enable' );
 			pushstream( 'display', $data );
+			$data = getBookmark();
+			pushstream( 'bookmark', $data );
 		}
 	} else {
 		$name = $data[ 0 ];
@@ -137,7 +140,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$dir = dirname( $thumbfile );
 		if ( file_exists( $thumbfile ) ) { // skip if already exists
 			$data = getBookmark();
-			pushstream( 'bookmark', json_encode( $data ) );
+			pushstream( 'bookmark', $data );
 			exit();
 		}
 		
@@ -146,7 +149,8 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 			$coverfile = $dir.'/'.$cover;
 			if ( file_exists( $coverfile ) ) {
 				exec( '/usr/bin/sudo /usr/bin/convert "'.$coverfile.'" -thumbnail 200x200 -unsharp 0x.5 "'.$thumbfile.'"' );
-				pushstream( 'bookmark', json_encode( $data ) );
+				$data = getBookmark();
+				pushstream( 'bookmark', $data );
 				exit();
 			}
 		}
@@ -175,7 +179,8 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 				break;
 			}
 		}
-		pushstream( 'bookmark', json_encode( $data ) );
+		$data = getBookmark();
+		pushstream( 'bookmark', $data );
 	} else {
 		exec( 'mpc update Webradio' );
 	}
