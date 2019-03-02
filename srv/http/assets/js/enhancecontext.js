@@ -193,7 +193,6 @@ function bookmarkVerify( name, path, oldname ) {
 			var data = oldname ? [ name, path, oldname ] : [ name, path ];
 			$.post( 'enhance.php', { bkmarks: data } );
 		} else {
-			console.log()
 			info( {
 				  icon        : 'warning'
 				, title       : oldname ? 'Rename Bookmark' :'Add Bookmark'

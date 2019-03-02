@@ -1492,9 +1492,16 @@ $.each( streams, function( i, stream ) {
 } );
 
 pushstreams.display.onmessage = function( data ) {
-	var current = GUI.display;
-	if ( typeof data[ 0 ] === 'object' ) GUI.display = data[ 0 ];
-	GUI.display.order = data.order ? data.order.split( ',' ) : '';
+	if ( typeof data[ 0 ] === 'object' ) {
+		var data = data[ 0 ];
+		$.each( data, function( key, val ) {
+			if ( key !== 'order' ) {
+				GUI.display[ key ] = val;
+			} else {
+				GUI.display.order = val.split( ',' );
+			}
+		} );
+	}
 	if ( GUI.local ) return
 	
 	if ( GUI.playback ) {
@@ -1526,32 +1533,32 @@ pushstreams.volume.onmessage = function( data ) {
 pushstreams.bookmark.onmessage = function( data ) {
 	var bookmarks = data[ 0 ];
 	var content = '';
-	if ( bookmarks.length ) {
-		bookmarks.sort( function( a, b ) {
-			return stripLeading( a.name ).localeCompare( stripLeading( b.name ), undefined, { numeric: true } );
-		} );
-		$.each( bookmarks, function( i, bookmark ) {
-			if ( bookmark.coverart ) {
-				var namehtml = '<img class="bkcoverart" src="'+ bookmark.coverart +'">';
-				var hidelabel = ' hide';
-			} else {
-				var namehtml = '<i class="fa fa-bookmark"></i>';
-				var hidelabel = '';
-			}
-			var name = bookmark.name.replace( /\\/g, '' );
-			var id = name
-				.replace( / /g, '_' )
-				.replace( /[^A-Za-z0-9_-]+/g, '-' ); // for order
-			content += '<div class="divblock bookmark">'
-						+'<div id="home-bk-'+ id +'" class="home-block home-bookmark">'
-							+'<a class="lipath">'+ bookmark.path +'</a>'
-							+ namehtml
-							+'<div class="divbklabel"><span class="bklabel'+ hidelabel +'">'+ bookmark.name +'</span></div>'
-						+'</div>'
-					  +'</div>';
-		} );
-	}
 	$( '.bookmark' ).remove();
+	if ( !bookmarks.length ) return
+	
+	bookmarks.sort( function( a, b ) {
+		return stripLeading( a.name ).localeCompare( stripLeading( b.name ), undefined, { numeric: true } );
+	} );
+	$.each( bookmarks, function( i, bookmark ) {
+		if ( bookmark.coverart ) {
+			var namehtml = '<img class="bkcoverart" src="'+ bookmark.coverart +'">';
+			var hidelabel = ' hide';
+		} else {
+			var namehtml = '<i class="fa fa-bookmark"></i>';
+			var hidelabel = '';
+		}
+		var name = bookmark.name.replace( /\\/g, '' );
+		var id = name
+			.replace( / /g, '_' )
+			.replace( /[^A-Za-z0-9_-]+/g, '-' ); // for order
+		content += '<div class="divblock bookmark">'
+					+'<div id="home-bk-'+ id +'" class="home-block home-bookmark">'
+						+'<a class="lipath">'+ bookmark.path +'</a>'
+						+ namehtml
+						+'<div class="divbklabel"><span class="bklabel'+ hidelabel +'">'+ bookmark.name +'</span></div>'
+					+'</div>'
+				  +'</div>';
+	} );
 	$( '#divhomeblocks' ).append( content ).promise().done( function() {
 		bookmarkScroll();
 	} );
