@@ -105,11 +105,11 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 			if ( $order ) {
 				$id = preg_replace( array( '/ /', '/[^A-Za-z0-9_-]+/' ), array( '_', '-' ), $name );
 				$order = explode( ',', $order ); // string to array
-				unset( $order[ $id ] );          // remove
+				unset( $order[ 'bk-'.$id ] );          // remove
 				$order = implode( ',', $order ); // array to string
 				$redis->hSet( 'display', 'order', $order );
+				pushstream( 'display', array( 'order' => $order ) );
 			}
-			pushstream( 'display', array( 'order' => $order ) );
 			$data = getBookmark();
 			pushstream( 'bookmark', $data );
 		}
@@ -140,12 +140,12 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 					$index = array_search( 'bk-'.$oldid, $order );
 					$order[ $index ] = 'bk-'.$id;       // replace
 				} else {
-					$order = array_push( $order, $id ); // append
+					array_push( $order, 'bk-'.$id ); // append
 				}
 				$order = implode( ',', $order );        // array to string
 				$redis->hSet( 'display', 'order', $order );
+				pushstream( 'display', array( 'order' => $order ) );
 			}
-			pushstream( 'display', array( 'order' => $order ) );
 			$data = getBookmark();
 			pushstream( 'bookmark', $data );
 		}
