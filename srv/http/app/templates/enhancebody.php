@@ -24,7 +24,7 @@ $count = array(
 // bookmarks
 foreach( $bkmarks as $label => $path ) {
 	$sort = stripLeading( $label );
-	$id = preg_replace( array( '/ /', '/[^A-Za-z0-9_-]+/' ), array( '_', '-' ), $label );
+	$id = preg_replace( array( '/ /', '/[^A-Za-z0-9_-]+/' ), array( '_', '-' ), $label ); // for order
 	$thumbfile = '/mnt/MPD/'.$path.'/thumbnail.jpg';
 	if ( file_exists( $thumbfile ) ) {
 		$thumbnail = file_get_contents( $thumbfile );
@@ -75,14 +75,17 @@ foreach( $blocks as $id => $value ) {
 foreach( $bookmarks as $bookmark ) {
 	if ( $bookmark[ 4 ] ) {
 		$namehtml = '<img class="bkcoverart" src="'.$bookmark[ 4 ].'">';
+		$hidelabel = ' hide';
 	} else {
-		$namehtml = '<i class="fa fa-bookmark"></i><div class="divbklabel"><span class="bklabel">'.$bookmark[ 2 ].'</span></div>';
+		$namehtml = '<i class="fa fa-bookmark"></i>';
+		$hidelabel = '';
 	}
 	$blocks[ 'bk-'.$bookmark[ 1 ] ] = '
 		<div class="divblock bookmark">
 			<div id="home-bk-'.$bookmark[ 1 ].'" class="home-block home-bookmark">
 				<a class="lipath">'.$bookmark[ 3 ].'</a>
 				'.$namehtml.'
+				<div class="divbklabel"><span class="bklabel'.$hidelabel.'">'.$bookmark[ 2 ].'</span></div>
 			</div>
 		</div>
 	';
