@@ -92,7 +92,7 @@ foreach( $bookmarks as $bookmark ) {
 }
 
 if ( $order ) {
-	$order = explode( '^^', $order );
+	$order = explode( ',', $order );
 	foreach( $order as $id ) {
 		$blockhtml.= $blocks[ $id ];
 	}
