@@ -80,9 +80,11 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$status = getLibraryCount();
 	echo json_encode( $status, JSON_NUMERIC_CHECK );
 } else if ( isset( $_POST[ 'order' ] ) ) {
-	$redis->hSet( 'display', 'order', htmlspecialchars( $_POST[ 'order' ] ) );
+	$order = implode( ',', $_POST[ 'order' ] );
+	$redis->hSet( 'display', 'order', $order );
 	$data = $redis->hGetAll( 'display' );
 	$data[ 'volumempd' ] = $redis->get( 'volume' );
+	$data[ 'spotify' ] = $redis->hGet( 'spotify', 'enable' );
 	pushstream( 'display', $data );
 } else if ( isset( $_POST[ 'bkmarks' ] ) || isset( $_POST[ 'webradios' ] ) ) {
 	if ( isset( $_POST[ 'bkmarks' ] ) ) {
@@ -99,39 +101,58 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 			$redis->hDel( 'sampling', $name );
 			unlink( '/mnt/MPD/Webradio/'.$data.'.pls' );
 		} else {
-			$bknew = 0;
 			$redis->hDel( 'bkmarks', $name );
+			$data = getBookmark();
+			pushstream( 'bookmark', $data );
+			
 			$order = $redis->hGet( 'display', 'order' );
-			$id = preg_replace( '/[^A-Za-z0-9_-]+/', '-', str_replace( ' ', '_', $name ) );
-			$order = str_replace( 'bk-'.$id.'^^', '', $order );
-			$redis->hSet( 'display', 'order', $order );
+			if ( $order ) {
+				$id = preg_replace( array( '/ /', '/[^A-Za-z0-9_-]+/' ), array( '_', '-' ), $name );
+				$order = explode( ',', $order );        // string to array
+				$order = array_diff( $order, [ $id ] ); // remove from array
+				$order = implode( ',', $order );        // array to string
+				$redis->hSet( 'display', 'order', $order );
+			}
 			$data = $redis->hGetAll( 'display' );
 			$data[ 'volumempd' ] = $redis->get( 'volume' );
 			$data[ 'spotify' ] = $redis->hGet( 'spotify', 'enable' );
 			pushstream( 'display', $data );
-			$data = getBookmark();
-			pushstream( 'bookmark', $data );
 		}
 	} else {
 		$name = $data[ 0 ];
 		$value = $data[ 1 ];
-		if ( count( $data ) === 3 ) {
+		if ( isset( $data[ 2 ] ) ) {
 			$oldname = $data[ 2 ];
 			$redis->hDel( $key, $oldname );
 			if ( $key === 'webradios' ) unlink( '/mnt/MPD/Webradio/'.$oldname.'.pls' );
+		} else {
+			$oldname = '';
 		}
-		$redis->hSet( $key, $name, $value );
 		if ( $key === 'webradios' ) {
+			$redis->hSet( $key, $name, $value );
 			$lines = "[playlist]\nNumberOfEntries=1\nFile1=".$value."\nTitle1=".$name;
 			$fopen = fopen( '/mnt/MPD/Webradio/'.$name.'.pls', 'w');
 			fwrite( $fopen, $lines );
 			fclose( $fopen );
 		} else {
+			$redis->hSet( $key, $name, $value );
 			$order = $redis->hGet( 'display', 'order' );
-			$id = str_replace( ' ', '_', $name );
-			$oldid = str_replace( ' ', '_', $oldname );
-			$order = str_replace( $oldid, $id, $order );
-			$redis->hSet( 'display', 'order', $order );
+			if ( $order ) {
+				// set allow characters for ids
+				$id = preg_replace( array( '/ /', '/[^A-Za-z0-9_-]+/' ), array( '_', '-' ), $name );
+				$oldid = preg_replace( array( '/ /', '/[^A-Za-z0-9_-]+/' ), array( '_', '-' ), $oldname );
+				$order = explode( ',', $order );               // string to array
+				if ( $oldname ) {
+					$index = array_search( $oldname, $order );
+					$order[ $index ] = $oldid;                 // remove from array
+				} else {
+					$order = array_push( $order, $id );        // append to array
+				}
+				$order = implode( ',', $order );               // array to string
+				$redis->hSet( 'display', 'order', $order );
+			}
+			$data = getBookmark();
+			pushstream( 'bookmark', $data );
 		}
 		$redis->hDel( 'webradiopl', $value );
 	}
