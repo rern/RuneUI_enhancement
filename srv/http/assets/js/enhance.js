@@ -1495,11 +1495,7 @@ pushstreams.display.onmessage = function( data ) {
 	if ( typeof data[ 0 ] === 'object' ) {
 		var data = data[ 0 ];
 		$.each( data, function( key, val ) {
-			if ( key !== 'order' ) {
-				GUI.display[ key ] = val;
-			} else {
-				GUI.display.order = val.split( ',' );
-			}
+			GUI.display[ key ] = key !== 'order' ? val : val.split( ',' );
 		} );
 	}
 	if ( GUI.local ) return
