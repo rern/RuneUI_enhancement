@@ -267,6 +267,7 @@ function removeSplash() {
 	if ( GUI.nosplash ) return
 	
 	GUI.nosplash = 1;
+	cssHomeBlockWidth();
 	$( '#splash' ).remove();
 	$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
 	$( '#page-playback' ).removeClass( 'hide' );
@@ -300,6 +301,10 @@ function setPlaybackBlank() {
 		.css( 'visibility', 'visible' );
 }
 function renderPlayback() {
+	if ( GUI.renderpb ) return
+	
+	GUI.renderpb = 1;
+	setTimeout( function() { GUI.renderpb = 0 }, 500 );
 	var status = GUI.status;
 	// song and album before update for song/album change detection
 	var previoussong = $( '#song' ).text();
