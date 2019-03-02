@@ -736,9 +736,8 @@ function renderLibrary() {
 	if ( $( '#db-entries' ).hasClass( 'hide' ) ) return
 	
 	$( '#page-library .btnlist-top, db-entries' ).addClass( 'hide' );
-	var status = GUI.libraryhome;
 	if ( GUI.display.count ) {
-		$( '#db-currentpath span' ).html( '<bl class="title">LIBRARY<gr>·</gr></bl><a id="li-count"><wh>'+ numFormat( status.song ) +'</wh> <i class="fa fa-music"></i></a>' );
+		$( '#db-currentpath span' ).html( '<bl class="title">LIBRARY<gr>·</gr></bl><a id="li-count"><wh>'+ numFormat( $( '#home-blocks' ).data( 'count' ) ) +'</wh> <i class="fa fa-music"></i></a>' );
 	} else {
 		$( '#db-currentpath span' ).html( '<bl class="title">LIBRARY</bl></a>' );
 	}
@@ -747,7 +746,7 @@ function renderLibrary() {
 		var name = this.id.replace( 'home-', '' );
 		$( this ).parent().toggleClass( 'hide', GUI.display[ name ] === '' );
 	} );
-	$( '#home-spotify' ).parent().toggleClass( 'hide', GUI.libraryhome.spotify === 0 );
+	$( '#home-spotify' ).parent().toggleClass( 'hide', GUI.display.spotify === 0 );
 	$( '.home-block gr' ).toggleClass( 'hide', GUI.display.count === '' );
 	if ( GUI.display.label ) {
 		$( '#divhomeblocks wh' ).show();
@@ -762,56 +761,6 @@ function renderLibrary() {
 	displayTopBottom();
 	bookmarkScroll();
 	$( 'html, body' ).scrollTop( 0 );
-}
-function renderBookmarks() {
-	if ( GUI.local ) return
-	
-	GUI.local = 1;
-	setTimeout( function() { GUI.local = 0 }, 5000 );
-	$.post( 'enhance.php', { getbookmark: 1 }, function( bookmarks ) {
-		var content = '';
-		if ( bookmarks.length ) {
-			bookmarks.sort( function( a, b ) {
-				return stripLeading( a.name ).localeCompare( stripLeading( b.name ), undefined, { numeric: true } );
-			} );
-			$.each( bookmarks, function( i, bookmark ) {
-				if ( bookmark.coverart ) {
-					var namehtml = '<img class="bkcoverart" src="'+ bookmark.coverart +'">';
-					var hidelabel = ' hide';
-				} else {
-					var namehtml = '<i class="fa fa-bookmark"></i>';
-					var hidelabel = '';
-				}
-				var name = bookmark.name.replace( /\\/g, '' );
-				var id = name
-					.replace( / /g, '_' )
-					.replace( /[^A-Za-z0-9_-]+/g, '-' ); // for order
-				content += '<div class="divblock bookmark">'
-							+'<div id="home-bk-'+ id +'" class="home-block home-bookmark">'
-								+'<a class="lipath">'+ bookmark.path +'</a>'
-								+ namehtml
-								+'<div class="divbklabel"><span class="bklabel'+ hidelabel +'">'+ bookmark.name +'</span></div>'
-							+'</div>'
-						  +'</div>';
-			} );
-		}
-		$( '.bookmark' ).remove();
-		$( '#divhomeblocks' ).append( content ).promise().done( function() {
-			bookmarkScroll();
-		} );
-		if ( !GUI.display.order ) return
-		
-		var order = GUI.display.order.split( '^^' );
-		$.each( order, function( i, name ) {
-			var $block = $( '#home-'+ name ).parent();
-			$block.detach();
-			$( '#divhomeblocks' ).append( $block );
-		} );
-		$.each( GUI.libraryhome, function( name, val ) {
-			if ( name === 'activeplayer' || name === 'spotify' ) return
-			$( '#home-'+ name ).find( 'gr' ).text( val );
-		} );
-	}, 'json' );
 }
 function statusUpdate() {
 	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {

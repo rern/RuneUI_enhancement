@@ -192,9 +192,7 @@ function bookmarkVerify( name, path, oldname ) {
 			}
 			if ( GUI.display.order ) GUI.display.order = GUI.display.order.replace( oldname , name );
 			var data = oldname ? [ name, path, oldname ] : [ name, path ];
-			$.post( 'enhance.php', { bkmarks: data }, function() {
-				renderBookmarks();
-			} );
+			$.post( 'enhance.php', { bkmarks: data } );
 		} else {
 			info( {
 				  icon        : 'warning'
@@ -215,9 +213,7 @@ function bookmarkVerify( name, path, oldname ) {
 					}
 					GUI.display.order = GUI.display.order.replace( oldname , name );
 					var data = oldname ? [ name, path, oldname ] : [ name, path ];
-					$.post( 'enhance.php', { bkmarks: data }, function() {
-						renderBookmarks();
-					} );
+					$.post( 'enhance.php', { bkmarks: data } );
 				}
 			} );
 		}

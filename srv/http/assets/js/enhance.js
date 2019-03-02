@@ -80,7 +80,6 @@ if ( navigator.userAgent.indexOf( 'Midori' ) !== -1 ) {
 		+'</style>'
 		);
 }
-cssHomeBlockWidth();
 // get display, status, library
 $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 	GUI.display = data;
@@ -93,10 +92,6 @@ $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 		renderPlayback();
 		displayPlayback();
 		setButton();
-		$( 'html, body' ).scrollTop( 0 );
-		$.post( 'enhance.php', { library: 1, data: 1 }, function( data ) {
-			GUI.libraryhome = data;
-		}, 'json' );
 	}, 'json' );
 }, 'json' );
 
@@ -217,8 +212,6 @@ $( '#turnoff' ).click( function() {
 	} );
 } );
 $( '#tab-library' ).click( function() {
-	if ( !Object.keys( GUI.libraryhome ).length ) return // wait for mpc data
-	
 	$( '#db-search-close span' ).empty();
 	if ( GUI.library ) {
 		$( '#divcoverarts' ).addClass( 'hide' );
@@ -758,13 +751,13 @@ $( '.home-block' ).click( function() {
 	if ( GUI.local || $this.hasClass( 'home-bookmark' ) || id === 'home-coverart' ) return
 	
 	var type = id.replace( 'home-', '' );
-	if ( type === 'usb' && !GUI.libraryhome.usb ) {
+	if ( type === 'usb' && !$( '#home-usb gr' ).length ) {
 		location.href = '/sources';
 		return
-	} else if ( type === 'nas' && !GUI.libraryhome.nas ) {
+	} else if ( type === 'nas' && !$( '#home-nas gr' ).length ) {
 		location.href = '/sources/add';
 		return
-	} else if ( type === 'webradio' && !GUI.libraryhome.webradio ) {
+	} else if ( type === 'webradio' && !$( '#home-webradio gr' ).length ) {
 		webRadioNew();
 		return
 	}
@@ -1492,7 +1485,7 @@ window.addEventListener( 'orientationchange', function() {
 } );
 
 var pushstreams = {};
-var streams = [ 'display', 'volume', 'library', 'count', 'playlist', 'idle', 'notify' ];
+var streams = [ 'display', 'volume', 'bookmark', 'playlist', 'idle', 'notify' ];
 $.each( streams, function( i, stream ) {
 	pushstreams[ stream ] = new PushStream( { modes: 'websocket' } );
 	pushstreams[ stream ].addChannel( stream );
@@ -1529,19 +1522,50 @@ pushstreams.volume.onmessage = function( data ) {
 	$volumehandle.rsRotate( - $volumeRS._handle1.angle );
 	volumemute ? muteColor( volumemute ) : unmuteColor();
 }
-pushstreams.library.onmessage = function( data ) {
-	GUI.libraryhome = data[ 0 ];
-	if ( !GUI.local && !$( '#home-blocks' ).hasClass( 'hide' ) ) renderBookmarks();
-}
-pushstreams.count.onmessage = function( data ) {
-	var data = data[ 0 ].split( ' ' );
-	GUI.libraryhome.artistalbum = data[ 0 ];
-	GUI.libraryhome.composer = data[ 1 ];
-	GUI.libraryhome.genre = data[ 2 ];
-	if ( GUI.library
-		&& !$( '#home-blocks' ).hasClass( 'hide' )
-		&& !GUI.bookmarkedit
-	) renderLibrary();
+pushstreams.bookmark.onmessage = function( data ) {
+	var bookmarks = data[ 0 ];
+	var content = '';
+	if ( bookmarks.length ) {
+		bookmarks.sort( function( a, b ) {
+			return stripLeading( a.name ).localeCompare( stripLeading( b.name ), undefined, { numeric: true } );
+		} );
+		$.each( bookmarks, function( i, bookmark ) {
+			if ( bookmark.coverart ) {
+				var namehtml = '<img class="bkcoverart" src="'+ bookmark.coverart +'">';
+				var hidelabel = ' hide';
+			} else {
+				var namehtml = '<i class="fa fa-bookmark"></i>';
+				var hidelabel = '';
+			}
+			var name = bookmark.name.replace( /\\/g, '' );
+			var id = name
+				.replace( / /g, '_' )
+				.replace( /[^A-Za-z0-9_-]+/g, '-' ); // for order
+			content += '<div class="divblock bookmark">'
+						+'<div id="home-bk-'+ id +'" class="home-block home-bookmark">'
+							+'<a class="lipath">'+ bookmark.path +'</a>'
+							+ namehtml
+							+'<div class="divbklabel"><span class="bklabel'+ hidelabel +'">'+ bookmark.name +'</span></div>'
+						+'</div>'
+					  +'</div>';
+		} );
+	}
+	$( '.bookmark' ).remove();
+	$( '#divhomeblocks' ).append( content ).promise().done( function() {
+		bookmarkScroll();
+	} );
+	if ( !GUI.display.order ) return
+	
+	var order = GUI.display.order.split( '^^' );
+	$.each( order, function( i, name ) {
+		var $block = $( '#home-'+ name ).parent();
+		$block.detach();
+		$( '#divhomeblocks' ).append( $block );
+	} );
+	$.each( GUI.libraryhome, function( name, val ) {
+		if ( name === 'activeplayer' || name === 'spotify' ) return
+		$( '#home-'+ name ).find( 'gr' ).text( val );
+	} );
 }
 pushstreams.playlist.onmessage = function( data ) {
 	GUI.lsplaylists = data[ 0 ] || [];
@@ -1589,8 +1613,14 @@ pushstreams.idle.onmessage = function( changed ) {
 		}, 'json' );
 	} else if ( changed === 'update' ) {
 		if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) {
-			$.post( 'enhance.php', { library: 1 } );
-			renderBookmarks();
+			$.post( 'enhance.php', { librarycount: 1 }, function( data ) {
+				$.post( 'enhance.php', { librarycount: 1 }, function( data ) {
+					$( '.home-block gr' ).remove();
+					$.each( data, function( id, val ) {
+						$( '#home-'+ id ).find( 'i' ).after( '<gr>'+ numFormat( val ) +'</gr>' );
+					} );
+				}, 'json' );
+			}, 'json' );
 			return
 		}
 		if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) return;
