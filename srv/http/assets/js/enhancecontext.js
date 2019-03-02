@@ -190,10 +190,10 @@ function bookmarkVerify( name, path, oldname ) {
 				GUI.local = 1;
 				setTimeout( function() { GUI.local = 0 }, 500 );
 			}
-			if ( GUI.display.order ) GUI.display.order = GUI.display.order.replace( oldname , name );
 			var data = oldname ? [ name, path, oldname ] : [ name, path ];
 			$.post( 'enhance.php', { bkmarks: data } );
 		} else {
+			console.log()
 			info( {
 				  icon        : 'warning'
 				, title       : oldname ? 'Rename Bookmark' :'Add Bookmark'
@@ -211,7 +211,6 @@ function bookmarkVerify( name, path, oldname ) {
 						GUI.local = 1;
 						setTimeout( function() { GUI.local = 0 }, 500 );
 					}
-					GUI.display.order = GUI.display.order.replace( oldname , name );
 					var data = oldname ? [ name, path, oldname ] : [ name, path ];
 					$.post( 'enhance.php', { bkmarks: data } );
 				}

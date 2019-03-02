@@ -83,6 +83,7 @@ if ( navigator.userAgent.indexOf( 'Midori' ) !== -1 ) {
 // get display, status, library
 $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 	GUI.display = data;
+	GUI.display.order = data.order ? data.order.split( ',' ) : '';
 	$.event.special.swipe.horizontalDistanceThreshold = 80; // pixel to swipe
 	$.event.special.tap.tapholdThreshold = 1000;
 	setSwipe();
@@ -843,11 +844,10 @@ var sortablelibrary = new Sortable( document.getElementById( 'divhomeblocks' ), 
 	  }
 	, onUpdate   : function () {
 		var $blocks = $( '.home-block' );
-		var order = '';
+		var order = [];
 		$blocks.each( function() {
-			order += this.id.replace( 'home-', '' ) +'^^';
+			order.push( this.id.replace( 'home-', '' ) );
 		} );
-		order = order.slice( 0, -2 );
 		GUI.display.order = order;
 		$.post( 'enhance.php', { order: order } );
 	}
@@ -1494,6 +1494,7 @@ $.each( streams, function( i, stream ) {
 pushstreams.display.onmessage = function( data ) {
 	var current = GUI.display;
 	if ( typeof data[ 0 ] === 'object' ) GUI.display = data[ 0 ];
+	GUI.display.order = data.order ? data.order.split( ',' ) : '';
 	if ( GUI.local ) return
 	
 	if ( GUI.playback ) {
@@ -1554,10 +1555,9 @@ pushstreams.bookmark.onmessage = function( data ) {
 	$( '#divhomeblocks' ).append( content ).promise().done( function() {
 		bookmarkScroll();
 	} );
-	if ( !GUI.display.order ) return
+	if ( !GUI.display.order.length ) return
 	
-	var order = GUI.display.order.split( '^^' );
-	$.each( order, function( i, name ) {
+	$.each( GUI.display.order, function( i, name ) {
 		var $block = $( '#home-'+ name ).parent();
 		$block.detach();
 		$( '#divhomeblocks' ).append( $block );

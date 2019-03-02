@@ -763,16 +763,20 @@ function renderLibrary() {
 	$( 'html, body' ).scrollTop( 0 );
 }
 function statusUpdate() {
+	if ( GUI.local ) return
+	
+	GUI.local = 1;
+	setTimeout( function() { GUI.local = 0 }, 500 );
 	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
 		if ( status.updating_db ) {
 			GUI.status.updating_db = 1;
-			setTimeout( statusUpdate, 3000 );
 		} else {
 			GUI.status.updating_db = 0;
 			new PNotify( {
 				  title : 'Update Database'
 				, text  : 'Database updated.'
-			} );		}
+			} );
+		}
 	}, 'json' );
 }
 function infoNoData() {
