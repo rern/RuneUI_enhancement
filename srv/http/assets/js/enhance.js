@@ -1612,17 +1612,12 @@ pushstreams.idle.onmessage = function( changed ) {
 			if ( GUI.playback ) setButtonToggle();
 		}, 'json' );
 	} else if ( changed === 'update' ) {
-		if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) {
-			$.post( 'enhance.php', { librarycount: 1 }, function( data ) {
-				$.post( 'enhance.php', { librarycount: 1 }, function( data ) {
-					$( '.home-block gr' ).remove();
-					$.each( data, function( id, val ) {
-						$( '#home-'+ id ).find( 'i' ).after( '<gr>'+ numFormat( val ) +'</gr>' );
-					} );
-				}, 'json' );
-			}, 'json' );
-			return
-		}
+		$.post( 'enhance.php', { librarycount: 1 }, function( data ) {
+			$( '.home-block gr' ).remove();
+			$.each( data, function( id, val ) {
+				if ( val ) $( '#home-'+ id ).find( 'i' ).after( '<gr>'+ numFormat( val ) +'</gr>' );
+			} );
+		}, 'json' );
 		if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) return;
 		
 		statusUpdate();

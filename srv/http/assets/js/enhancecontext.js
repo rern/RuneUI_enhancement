@@ -228,11 +228,8 @@ function bookmarkDelete( name, $block ) {
 		, cancel  : 1
 		, oklabel : 'Delete'
 		, ok      : function() {
-			$block.remove();
 			GUI.bookmarkedit = 1;
-			$.post( 'enhance.php', { bkmarks: name }, function() {
-				$( '#tab-library' ).click();
-			} );
+			$.post( 'enhance.php', { bkmarks: name } );
 		}
 	} );
 }
