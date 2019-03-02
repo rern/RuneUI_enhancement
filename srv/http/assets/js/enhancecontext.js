@@ -51,7 +51,7 @@ $( '.contextmenu a' ).click( function() {
 		} else {
 			var mpcCmd = 'mpc load "'+ name +'"';
 		}
-		if ( cmd !== 'wrrename' ) cmd = cmd.replace( /album|artist|composer|genre|pl|wr/, '' );
+		cmd = cmd.replace( /album|artist|composer|genre|pl|wr/, '' );
 	}
 	var addplaypos = GUI.status.playlistlength + 1;
 	var contextCommand = {
@@ -60,8 +60,8 @@ $( '.contextmenu a' ).click( function() {
 		, replace       : [ 'mpc clear', mpcCmd ]
 		, replaceplay   : [ 'mpc clear', mpcCmd, 'mpc play' ]
 		, radiosave     : webRadioNew
-		, wrrename      : webRadioRename
-		, wrdelete      : webRadioDelete
+		, rename        : webRadioRename
+		, delete        : webRadioDelete
 		, plrename      : playlistRename
 		, pldelete      : playlistDelete
 		, bookmark      : bookmarkNew
@@ -280,7 +280,6 @@ function webRadioRename() {
 	} );
 }
 function addWebradio( name, url, oldname ) {
-	if ( !oldname ) GUI.libraryhome.webradio++;
 	var name = name;
 	var oldname = oldname ? oldname : '';
 	var data = oldname ? [ name, url, oldname ] : [ name, url ];
@@ -291,6 +290,12 @@ function addWebradio( name, url, oldname ) {
 	$.post( 'enhance.php', { webradios: data }, function() {
 		if ( GUI.playlist ) $( '#tab-playlist' ).click();
 	} );
+	if ( !oldname ) {
+		GUI.libraryhome.webradio++;
+		var count = GUI.libraryhome.webradio ? numFormat ( GUI.libraryhome.webradio ) : '';
+		$( '#home-webradio gr' ).remove();
+		$( '#home-webradio i' ).after( '<gr>'+ count +'</gr>' );
+	}
 }
 function webRadioVerify( name, url, oldname ) {
 	if ( !name || !url ) {
@@ -348,7 +353,9 @@ function webRadioDelete() {
 		, ok      : function() {
 			$( '#db-entries li').eq( GUI.list.liindex ).remove();
 			GUI.libraryhome.webradio--;
-			
+			var count = GUI.libraryhome.webradio ? numFormat ( GUI.libraryhome.webradio ) : '';
+			$( '#home-webradio gr' ).remove();
+			if ( count ) $( '#home-webradio i' ).after( '<gr>'+ count +'</gr>' );
 			GUI.local = 1;
 			setTimeout( function() { GUI.local = 0 }, 500 );
 			
