@@ -694,7 +694,7 @@ function bookmarkScroll() {
 		.removeClass( 'bkscrollleft' )
 		.removeAttr( 'style' ); // fix - iOS needs whole style removed
 	var labelW = Math.round( GUI.columnW - 16 );
-	$( '.bklabel' ).each( function() {
+	$( '.bklabel:not( .hide )' ).each( function() {
 		var $this = $( this );
 		var tW = Math.round( $this.width() ); // available only when visible
 		if ( tW > labelW ) {
@@ -775,14 +775,23 @@ function renderBookmarks() {
 				return stripLeading( a.name ).localeCompare( stripLeading( b.name ), undefined, { numeric: true } );
 			} );
 			$.each( bookmarks, function( i, bookmark ) {
-				var coverarthtml = bookmark.coverart ? '<img class="bkcoverart" src="'+ bookmark.coverart +'">' : '<i class="fa fa-bookmark"></i>';
+				if ( bookmark.coverart ) {
+					var namehtml = '<img class="bkcoverart" src="'+ bookmark.coverart +'">';
+					var hidelabel = ' hide';
+				} else {
+					var namehtml = '<i class="fa fa-bookmark"></i>';
+					var hidelabel = '';
+				}
 				var name = bookmark.name.replace( /\\/g, '' );
 				var id = name
 					.replace( / /g, '_' )
-					.replace( /[^A-Za-z0-9_-]+/g, '-' );
-				var namehtml = '<div class="divbklabel"><span class="bklabel'+ ( bookmark.coverart ? ' hide' : '' ) +'">'+ name +'</span></div>';
+					.replace( /[^A-Za-z0-9_-]+/g, '-' ); // for order
 				content += '<div class="divblock bookmark">'
-						  +'	<div id="home-bk-'+ id +'" class="home-block home-bookmark"><a class="lipath">'+ bookmark.path +'</a>'+ coverarthtml + namehtml +'</div>'
+							+'<div id="home-bk-'+ id +'" class="home-block home-bookmark">'
+								+'<a class="lipath">'+ bookmark.path +'</a>'
+								+ namehtml
+								+'<div class="divbklabel"><span class="bklabel'+ hidelabel +'">'+ bookmark.name +'</span></div>'
+							+'</div>'
 						  +'</div>';
 			} );
 		}

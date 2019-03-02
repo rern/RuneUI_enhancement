@@ -819,9 +819,13 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 	
 	GUI.bookmarkedit = 1;
 	GUI.bklabel = $( this ).find( '.bklabel' );
-	$( '.home-bookmark' )
-		.append( '<i class="home-block-edit fa fa-edit-circle"></i><i class="home-block-remove fa fa-minus-circle"></i>' )
-		.find( '.fa-bookmark, .bklabel, img' ).css( 'opacity', 0.2 );
+	$( '.home-bookmark' ).each( function() {
+		$this = $( this );
+		var buttonhtml = '<i class="home-block-remove fa fa-minus-circle"></i>';
+		if ( !$this.find( 'img' ).length ) buttonhtml += '<i class="home-block-edit fa fa-edit-circle"></i>'
+		$this.append( buttonhtml )
+	} );
+	$( '.home-bookmark' ).find( '.fa-bookmark, .bklabel, img' ).css( 'opacity', 0.2 );
 } );
 var sortablelibrary = new Sortable( document.getElementById( 'divhomeblocks' ), {
 	  ghostClass : 'db-sortable-ghost'
