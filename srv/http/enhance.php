@@ -76,13 +76,9 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		if ( $cover ) $data[][ 'coverart' ] = $cover;
 	}
 	echo json_encode( $data );
-} else if ( isset( $_POST[ 'library' ] ) ) {
-	$status = getLibrary();
-	if ( isset( $_POST[ 'data' ] ) ) {
-		echo json_encode( $status, JSON_NUMERIC_CHECK );
-	} else {
-		pushstream( 'library', $status );
-	}
+} else if ( isset( $_POST[ 'librarycount' ] ) ) {
+	$status = getLibraryCount();
+	echo json_encode( $status, JSON_NUMERIC_CHECK );
 } else if ( isset( $_POST[ 'order' ] ) ) {
 	$redis->hSet( 'display', 'order', htmlspecialchars( $_POST[ 'order' ] ) );
 	$data = $redis->hGetAll( 'display' );
@@ -140,8 +136,8 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$thumbfile = '/mnt/MPD/'.$value.'/thumbnail.jpg';
 		$dir = dirname( $thumbfile );
 		if ( file_exists( $thumbfile ) ) { // skip if already exists
-			$status = getLibrary();
-			pushstream( 'library', $status );
+			$data = getBookmark();
+			pushstream( 'bookmark', json_encode( $data ) );
 			exit();
 		}
 		
@@ -150,8 +146,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 			$coverfile = $dir.'/'.$cover;
 			if ( file_exists( $coverfile ) ) {
 				exec( '/usr/bin/sudo /usr/bin/convert "'.$coverfile.'" -thumbnail 200x200 -unsharp 0x.5 "'.$thumbfile.'"' );
-				$status = getLibrary();
-				pushstream( 'library', $status );
+				pushstream( 'bookmark', json_encode( $data ) );
 				exit();
 			}
 		}
@@ -180,8 +175,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 				break;
 			}
 		}
-		$status = getLibrary();
-		pushstream( 'library', $status );
+		pushstream( 'bookmark', json_encode( $data ) );
 	} else {
 		exec( 'mpc update Webradio' );
 	}
@@ -278,6 +272,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	usleep( 100000 ); // !important - get data must wait connection start at least (0.05s)
 	$data = $redis->hGetAll( 'display' );
 	$data[ 'volumempd' ] = $redis->get( 'volume' );
+	$data[ 'spotify' ] = $redis->hGet( 'spotify', 'enable' );
 	if ( isset( $_POST[ 'data' ] ) ) {
 		echo json_encode( $data, JSON_NUMERIC_CHECK );
 	} else {
@@ -287,27 +282,6 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$data = $_POST[ 'setdisplay' ];
 	$redis->hmSet( 'display', $data );
 	pushstream( 'display', $data );
-} else if ( isset( $_POST[ 'getbookmark' ] ) ) {
-	$rbkmarks = $redis->hGetAll( 'bkmarks' );
-	if ( $rbkmarks ) {
-		foreach ( $rbkmarks as $name => $path ) {
-			$thumbfile = '/mnt/MPD/'.$path.'/thumbnail.jpg';
-			if ( file_exists( $thumbfile ) ) {
-				$thumbnail = file_get_contents( $thumbfile );
-				$coverart = 'data:image/jpg;base64,'.base64_encode( $thumbnail );
-			} else {
-				$coverart = '';
-			}
-			$data[] = array(
-				  'name'     => $name
-				, 'path'     => $path
-				, 'coverart' => $coverart
-			);
-		}
-	} else {
-		$data = 0;
-	}
-	echo json_encode( $data );
 } else if ( isset( $_POST[ 'volume' ] ) ) {
 	$volume = $_POST[ 'volume' ];
 	$volumemute = $redis->hGet( 'display', 'volumemute' );
@@ -473,7 +447,31 @@ function pushstream( $channel, $data = 1 ) {
 	curl_exec( $ch );
 	curl_close( $ch );
 }
-function getLibrary() {
+function getBookmark() {
+	$redis = new Redis();
+	$redis->pconnect( '127.0.0.1' );
+	$rbkmarks = $redis->hGetAll( 'bkmarks' );
+	if ( $rbkmarks ) {
+		foreach ( $rbkmarks as $name => $path ) {
+			$thumbfile = '/mnt/MPD/'.$path.'/thumbnail.jpg';
+			if ( file_exists( $thumbfile ) ) {
+				$thumbnail = file_get_contents( $thumbfile );
+				$coverart = 'data:image/jpg;base64,'.base64_encode( $thumbnail );
+			} else {
+				$coverart = '';
+			}
+			$data[] = array(
+				  'name'     => $name
+				, 'path'     => $path
+				, 'coverart' => $coverart
+			);
+		}
+	} else {
+		$data = 0;
+	}
+	return $data;
+}
+function getLibraryCount() {
 	$redis = new Redis();
 	$redis->pconnect( '127.0.0.1' );
 	$count = exec( '/srv/http/enhancecount.sh' );
@@ -488,8 +486,6 @@ function getLibrary() {
 		, 'nas'          => $count[ 6 ]
 		, 'usb'          => $count[ 7 ]
 		, 'webradio'     => $count[ 8 ]
-		, 'spotify'      => $redis->hGet( 'spotify', 'enable' )
-		, 'activeplayer' => $redis->get( 'activePlayer' )
 	);
 	return $status;
 }
