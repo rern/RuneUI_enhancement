@@ -96,27 +96,22 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	}
 	if ( !is_array( $data ) ) {
 		$name = $data;
+		$redis->hDel( $key, $name );
 		if ( $key === 'webradios' ) {
-			$redis->hDel( 'webradios', $name );
 			$redis->hDel( 'sampling', $name );
 			unlink( '/mnt/MPD/Webradio/'.$data.'.pls' );
 		} else {
-			$redis->hDel( 'bkmarks', $name );
-			$data = getBookmark();
-			pushstream( 'bookmark', $data );
-			
 			$order = $redis->hGet( 'display', 'order' );
 			if ( $order ) {
 				$id = preg_replace( array( '/ /', '/[^A-Za-z0-9_-]+/' ), array( '_', '-' ), $name );
-				$order = explode( ',', $order );        // string to array
-				$order = array_diff( $order, [ $id ] ); // remove from array
-				$order = implode( ',', $order );        // array to string
+				$order = explode( ',', $order ); // string to array
+				unset( $order[ $id ] );          // remove from array
+				$order = implode( ',', $order ); // array to string
 				$redis->hSet( 'display', 'order', $order );
 			}
-			$data = $redis->hGetAll( 'display' );
-			$data[ 'volumempd' ] = $redis->get( 'volume' );
-			$data[ 'spotify' ] = $redis->hGet( 'spotify', 'enable' );
-			pushstream( 'display', $data );
+			pushstream( 'display', array( 'order' => $order ) );
+			$data = getBookmark();
+			pushstream( 'bookmark', $data );
 		}
 	} else {
 		$name = $data[ 0 ];
@@ -128,29 +123,29 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		} else {
 			$oldname = '';
 		}
+		$redis->hSet( $key, $name, $value );
 		if ( $key === 'webradios' ) {
-			$redis->hSet( $key, $name, $value );
 			$lines = "[playlist]\nNumberOfEntries=1\nFile1=".$value."\nTitle1=".$name;
 			$fopen = fopen( '/mnt/MPD/Webradio/'.$name.'.pls', 'w');
 			fwrite( $fopen, $lines );
 			fclose( $fopen );
 		} else {
-			$redis->hSet( $key, $name, $value );
 			$order = $redis->hGet( 'display', 'order' );
 			if ( $order ) {
 				// set allow characters for ids
 				$id = preg_replace( array( '/ /', '/[^A-Za-z0-9_-]+/' ), array( '_', '-' ), $name );
-				$oldid = preg_replace( array( '/ /', '/[^A-Za-z0-9_-]+/' ), array( '_', '-' ), $oldname );
 				$order = explode( ',', $order );               // string to array
 				if ( $oldname ) {
-					$index = array_search( $oldname, $order );
-					$order[ $index ] = $oldid;                 // remove from array
+					$oldid = preg_replace( array( '/ /', '/[^A-Za-z0-9_-]+/' ), array( '_', '-' ), $oldname );
+					$index = array_search( 'bk-'.$oldid, $order );
+					$order[ $index ] = 'bk-'.$id;              // replace
 				} else {
 					$order = array_push( $order, $id );        // append to array
 				}
 				$order = implode( ',', $order );               // array to string
 				$redis->hSet( 'display', 'order', $order );
 			}
+			pushstream( 'display', array( 'order' => $order ) );
 			$data = getBookmark();
 			pushstream( 'bookmark', $data );
 		}
