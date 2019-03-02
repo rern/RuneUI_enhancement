@@ -418,7 +418,7 @@ $menu.= '</div>';
 		<button id="db-search-close" class="btn hide" type="button"><i class="fa fa-times sx"></i></button>
 		<i id="db-back" class="fa fa-arrow-left"></i>
 	</div>
-	<div id="home-blocks" class="row">
+	<div id="home-blocks" class="row" data-count="<?=$count[ 'song' ]?>">
 		<div id="divhomeblocks">
 			<?=$blockhtml?>
 		</div>
