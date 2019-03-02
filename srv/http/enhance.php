@@ -105,7 +105,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 			if ( $order ) {
 				$id = preg_replace( array( '/ /', '/[^A-Za-z0-9_-]+/' ), array( '_', '-' ), $name );
 				$order = explode( ',', $order ); // string to array
-				unset( $order[ $id ] );          // remove from array
+				unset( $order[ $id ] );          // remove
 				$order = implode( ',', $order ); // array to string
 				$redis->hSet( 'display', 'order', $order );
 			}
@@ -134,15 +134,15 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 			if ( $order ) {
 				// set allow characters for ids
 				$id = preg_replace( array( '/ /', '/[^A-Za-z0-9_-]+/' ), array( '_', '-' ), $name );
-				$order = explode( ',', $order );               // string to array
+				$order = explode( ',', $order );         // string to array
 				if ( $oldname ) {
 					$oldid = preg_replace( array( '/ /', '/[^A-Za-z0-9_-]+/' ), array( '_', '-' ), $oldname );
 					$index = array_search( 'bk-'.$oldid, $order );
-					$order[ $index ] = 'bk-'.$id;              // replace
+					$order[ $index ] = 'bk-'.$id;       // replace
 				} else {
-					$order = array_push( $order, $id );        // append to array
+					$order = array_push( $order, $id ); // append
 				}
-				$order = implode( ',', $order );               // array to string
+				$order = implode( ',', $order );        // array to string
 				$redis->hSet( 'display', 'order', $order );
 			}
 			pushstream( 'display', array( 'order' => $order ) );
