@@ -82,8 +82,8 @@ if ( navigator.userAgent.indexOf( 'Midori' ) !== -1 ) {
 }
 // get display, status, library
 $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
+	data.order = data.order ? data.order.split( ',' ) : '';
 	GUI.display = data;
-	GUI.display.order = data.order ? data.order.split( ',' ) : '';
 	$.event.special.swipe.horizontalDistanceThreshold = 80; // pixel to swipe
 	$.event.special.tap.tapholdThreshold = 1000;
 	setSwipe();
@@ -1493,7 +1493,7 @@ pushstreams.display.onmessage = function( data ) {
 	if ( typeof data[ 0 ] === 'object' ) {
 		var data = data[ 0 ];
 		$.each( data, function( key, val ) {
-			GUI.display[ key ] = key !== 'order' ? val : val.split( ',' );
+			GUI.display[ key ] = val;
 		} );
 	}
 	if ( GUI.local ) return
@@ -1530,9 +1530,11 @@ pushstreams.bookmark.onmessage = function( data ) {
 	$( '.bookmark' ).remove();
 	if ( !bookmarks.length ) return
 	
-	bookmarks.sort( function( a, b ) {
-		return stripLeading( a.name ).localeCompare( stripLeading( b.name ), undefined, { numeric: true } );
-	} );
+	if ( !GUI.display.order ) {
+		bookmarks.sort( function( a, b ) {
+			return stripLeading( a.name ).localeCompare( stripLeading( b.name ), undefined, { numeric: true } );
+		} );
+	}
 	$.each( bookmarks, function( i, bookmark ) {
 		if ( bookmark.coverart ) {
 			var namehtml = '<img class="bkcoverart" src="'+ bookmark.coverart +'">';
@@ -1541,10 +1543,7 @@ pushstreams.bookmark.onmessage = function( data ) {
 			var namehtml = '<i class="fa fa-bookmark"></i>';
 			var hidelabel = '';
 		}
-		var name = bookmark.name.replace( /\\/g, '' );
-		var id = name
-			.replace( / /g, '_' )
-			.replace( /[^A-Za-z0-9_-]+/g, '-' ); // for order
+		var id = bookmark.name.replace( / /g, '_' )
 		content += '<div class="divblock bookmark">'
 					+'<div id="home-bk-'+ id +'" class="home-block home-bookmark">'
 						+'<a class="lipath">'+ bookmark.path +'</a>'

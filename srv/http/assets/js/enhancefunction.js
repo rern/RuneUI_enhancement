@@ -691,11 +691,11 @@ function renderLibrary() {
 	$( '#home-spotify' ).parent().toggleClass( 'hide', GUI.display.spotify === 0 );
 	$( '.home-block gr' ).toggleClass( 'hide', GUI.display.count === '' );
 	if ( GUI.display.label ) {
-		$( '#divhomeblocks wh' ).show();
+		$( '#divhomeblocks .label' ).show();
 		$( '.home-block gr' ).css( 'color', '' );
 		$( '.home-block' ).css( 'padding', '' );
 	} else {
-		$( '#divhomeblocks wh' ).hide();
+		$( '#divhomeblocks .label' ).hide();
 		$( '.home-block gr' ).css( 'color', '#e0e7ee' );
 		$( '.home-block' ).css( 'padding-top', '35px' );
 		$( '.home-bookmark' ).css( 'padding', '20px 5px 5px 5px' );
