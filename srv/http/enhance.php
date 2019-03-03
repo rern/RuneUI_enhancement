@@ -106,9 +106,9 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 				$id = str_replace( ' ', '', $name );
 				$order = explode( ',', $order ); // string to array
 				unset( $order[ 'bk-'.$id ] );          // remove
+				pushstream( 'display', array( 'order' => $order ) );
 				$order = implode( ',', $order ); // array to string
 				$redis->hSet( 'display', 'order', $order );
-				pushstream( 'display', array( 'order' => $order ) );
 			}
 			$data = getBookmark();
 			pushstream( 'bookmark', $data );
@@ -142,9 +142,9 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 				} else {
 					array_push( $order, 'bk-'.$id ); // append
 				}
+				pushstream( 'display', array( 'order' => $order ) );
 				$order = implode( ',', $order );        // array to string
 				$redis->hSet( 'display', 'order', $order );
-				pushstream( 'display', array( 'order' => $order ) );
 			}
 			$data = getBookmark();
 			pushstream( 'bookmark', $data );
