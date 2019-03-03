@@ -176,8 +176,6 @@ function bookmarkVerify( name, path, oldname ) {
 				  title : 'Add Bookmark'
 				, text  : name
 			} );
-			GUI.local = 1;
-			setTimeout( function() { GUI.local = 0 }, 500 );
 		}
 		var data = oldname ? [ name, path, oldname ] : [ name, path ];
 		$.post( 'enhance.php', { bkmarks: data } );
@@ -195,10 +193,6 @@ function bookmarkVerify( name, path, oldname ) {
 			}
 			, oklabel     : 'Replace'
 			, ok          : function() {
-				if ( !oldname ) {
-					GUI.local = 1;
-					setTimeout( function() { GUI.local = 0 }, 500 );
-				}
 				var data = oldname ? [ name, path, oldname ] : [ name, path ];
 				$.post( 'enhance.php', { bkmarks: data } );
 			}

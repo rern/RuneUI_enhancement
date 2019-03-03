@@ -1525,16 +1525,21 @@ pushstreams.volume.onmessage = function( data ) {
 	volumemute ? muteColor( volumemute ) : unmuteColor();
 }
 pushstreams.bookmark.onmessage = function( data ) {
+	if ( GUI.local ) return
+	
+	GUI.local = 1;
+	setTimeout( function() { GUI.local = 0 }, 500 );
 	var bookmarks = data[ 0 ];
 	var content = '';
 	$( '.bookmark' ).remove();
 	if ( !bookmarks.length ) return
 	
-	if ( !GUI.display.order ) {
+	if ( !GUI.display.order.length ) {
 		bookmarks.sort( function( a, b ) {
 			return stripLeading( a.name ).localeCompare( stripLeading( b.name ), undefined, { numeric: true } );
 		} );
 	}
+	alert(JSON.stringify(data))
 	$.each( bookmarks, function( i, bookmark ) {
 		if ( bookmark.coverart ) {
 			var namehtml = '<img class="bkcoverart" src="'+ bookmark.coverart +'">';
@@ -1543,26 +1548,29 @@ pushstreams.bookmark.onmessage = function( data ) {
 			var namehtml = '<i class="fa fa-bookmark"></i>';
 			var hidelabel = '';
 		}
-		var id = bookmark.name.replace( / /g, '_' )
 		content += '<div class="divblock bookmark">'
-					+'<div id="home-bk-'+ id +'" class="home-block home-bookmark">'
+					+'<div class="home-block home-bookmark">'
 						+'<a class="lipath">'+ bookmark.path +'</a>'
 						+ namehtml
 						+'<div class="divbklabel"><span class="bklabel label'+ hidelabel +'">'+ bookmark.name +'</span></div>'
 					+'</div>'
 				  +'</div>';
 	} );
-	$( '#divhomeblocks' ).append( content );
-	if ( !GUI.display.order.length ) return
-	
-	$.each( GUI.display.order, function( i, name ) {
-		var $block = $( '#home-'+ name ).parent();
-		$block.detach();
-		$( '#divhomeblocks' ).append( $block );
-	} );
 	$.each( GUI.libraryhome, function( name, val ) {
 		if ( name === 'activeplayer' || name === 'spotify' ) return
 		$( '#home-'+ name ).find( 'gr' ).text( val );
+	} );
+	$( '#divhomeblocks' ).append( content ).promise().done( function() {
+		if ( GUI.display.order.length ) {
+			$.each( GUI.display.order, function( i, name ) {
+				var $divblock = $( '.divblock' ).filter( function() {
+					return $( this ).find( '.label' ).text() === name;
+				} );
+				$divblock.detach();
+				$( '#divhomeblocks' ).append( $divblock );
+			} );
+		}
+		renderLibrary()
 	} );
 }
 pushstreams.playlist.onmessage = function( data ) {
