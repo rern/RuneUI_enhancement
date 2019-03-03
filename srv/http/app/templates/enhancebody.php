@@ -23,7 +23,6 @@ $count = array(
 );
 // bookmarks
 foreach( $bkmarks as $label => $path ) {
-	$sort = stripLeading( $label );
 	$id = str_replace( ' ', '_', $label ); // for order
 	$thumbfile = '/mnt/MPD/'.$path.'/thumbnail.jpg';
 	if ( file_exists( $thumbfile ) ) {
@@ -32,12 +31,16 @@ foreach( $bkmarks as $label => $path ) {
 	} else {
 		$coverart = '';
 	}
-	$bookmarks[] = array( $sort, $id, $label, $path, $coverart );
+	if ( $order ) {
+		$bookmarks[] = array( $id, $label, $path, $coverart );
+	} else {
+		$sort = stripLeading( $label );
+		$sort = str_replace( '_', '-', $sort ); // fix '_' order last (first in js)
+		$bookmarks[] = array( $id, $label, $path, $coverart, $sort );
+	}
 }
 if ( !$order ) {
 	usort( $bookmarks, function( $a, $b ) {
-		$aname = str_replace( '_', '-', $a[ 0 ] ); // fix '_' order last (first in js)
-		$bname = str_replace( '_', '-', $b[ 0 ] );
 		return strnatcmp( stripLeading( $aname ), stripLeading( $bname ) );
 	} );
 }
@@ -73,19 +76,19 @@ foreach( $blocks as $id => $value ) {
 	';
 }
 foreach( $bookmarks as $bookmark ) {
-	if ( $bookmark[ 4 ] ) {
-		$namehtml = '<img class="bkcoverart" src="'.$bookmark[ 4 ].'">';
+	if ( $bookmark[ 3 ] ) {
+		$namehtml = '<img class="bkcoverart" src="'.$bookmark[ 3 ].'">';
 		$hidelabel = ' hide';
 	} else {
 		$namehtml = '<i class="fa fa-bookmark"></i>';
 		$hidelabel = '';
 	}
-	$blocks[ 'bk-'.$bookmark[ 1 ] ] = '
+	$blocks[ 'bk-'.$bookmark[ 0 ] ] = '
 		<div class="divblock bookmark">
-			<div id="home-bk-'.$bookmark[ 1 ].'" class="home-block home-bookmark">
-				<a class="lipath">'.$bookmark[ 3 ].'</a>
+			<div id="home-bk-'.$bookmark[ 0 ].'" class="home-block home-bookmark">
+				<a class="lipath">'.$bookmark[ 2 ].'</a>
 				'.$namehtml.'
-				<div class="divbklabel"><span class="bklabel'.$hidelabel.'">'.$bookmark[ 2 ].'</span></div>
+				<div class="divbklabel"><span class="bklabel'.$hidelabel.'">'.$bookmark[ 1 ].'</span></div>
 			</div>
 		</div>
 	';
@@ -97,9 +100,7 @@ if ( $order ) {
 		$blockhtml.= $blocks[ $id ];
 	}
 } else {
-	foreach( $blocks as $id => $block) {
-		$blockhtml.= $block;
-	}
+	$blockhtml = implode( $blocks );
 }
 
 $files = array_slice( scandir( '/srv/http/assets/img/coverarts' ), 2 );
