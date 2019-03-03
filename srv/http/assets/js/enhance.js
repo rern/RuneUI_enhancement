@@ -1093,7 +1093,7 @@ $( '#db-entries' ).on( 'click', '.db-action', function( e ) {
 		.removeClass( 'hide' );
 	var targetB = $menu.offset().top + $menu.height();
 	var wH = window.innerHeight;
-	if ( targetB > wH + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + ( GUI.bars ? 42 : 0 ) } );
+	if ( targetB > wH + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + 42 } );
 } );
 $( '#db-index li' ).click( function() {
 	var topoffset = GUI.bars ? 80 : 40;
@@ -1324,6 +1324,9 @@ $( '#pl-entries' ).on( 'click', '.pl-icon', function( e ) {
 	$contextmenu
 		.removeClass( 'hide' )
 		.css( 'top', menutop );
+	var targetB = $contextmenu.offset().top + $contextmenu.height();
+	var wH = window.innerHeight;
+	if ( targetB > wH + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + 42 } );
 } );
 $( '#pl-entries' ).on( 'click', '.pl-action', function() { // remove
 	var $this = $( this ).parent();
@@ -1423,7 +1426,7 @@ $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 		.css( 'top', ( $thisli.position().top + 49 ) +'px' );
 	var targetB = $( contextmenu ).offset().top + 246;
 	var wH = window.innerHeight;
-	if ( targetB > wH + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + ( GUI.bars ? 42 : 0 ) } );
+	if ( targetB > wH + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + 42 } );
 } );
 $( '#pl-index li' ).click( function() {
 	var indextext = $( this ).text();
