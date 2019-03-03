@@ -200,10 +200,13 @@ function bookmarkVerify( name, path, oldname ) {
 	}
 }
 function bookmarkDelete( name, $block ) {
+	var src = $block.find( 'img' ).attr( 'src' );
+	var coverart = src ? '<img src="'+ src +'">' : '';
 	info( {
 		  icon    : 'minus-circle'
-		, title   : 'Delete Bookmark'
-		, message : 'Delete?'
+		, title   : 'Remove Bookmark'
+		, message : 'Remove?'
+					+'<br>'+ coverart
 					+'<br><white>'+ name +'</white>'
 		, cancel  : 1
 		, oklabel : 'Delete'
