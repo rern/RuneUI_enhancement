@@ -80,12 +80,10 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$status = getLibraryCount();
 	echo json_encode( $status, JSON_NUMERIC_CHECK );
 } else if ( isset( $_POST[ 'order' ] ) ) {
-	$order = implode( ',', $_POST[ 'order' ] );
+	$order = $_POST[ 'order' ]; 
 	$redis->hSet( 'display', 'order', $order );
-	$data = $redis->hGetAll( 'display' );
-	$data[ 'volumempd' ] = $redis->get( 'volume' );
-	$data[ 'spotify' ] = $redis->hGet( 'spotify', 'enable' );
-	pushstream( 'display', $data );
+	$order = explode( '^^', $order );
+	pushstream( 'display', array( 'order' => $order ) );
 } else if ( isset( $_POST[ 'bkmarks' ] ) || isset( $_POST[ 'webradios' ] ) ) {
 	if ( isset( $_POST[ 'bkmarks' ] ) ) {
 		$key = 'bkmarks';
@@ -103,11 +101,11 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		} else {
 			$order = $redis->hGet( 'display', 'order' );
 			if ( $order ) {
-				$order = explode( ',', $order );            // string to array
+				$order = explode( '^^', $order );           // string to array
 				$index = array_search( $name, $order );     // get index
 				unset( $order[ $index ] );                  // remove
 				pushstream( 'display', array( 'order' => $order ) );
-				$order = implode( ',', $order );            // array to string
+				$order = implode( '^^', $order );            // array to string
 				$redis->hSet( 'display', 'order', $order ); // redis cannot save array
 			}
 			$data = getBookmark();
@@ -126,8 +124,8 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		} else {
 			$oldname = '';
 		}
-		$redis->hSet( $key, $name, $value );
 		if ( $key === 'webradios' ) {
+			$redis->hSet( $key, $name, $value );
 			$lines = "[playlist]\nNumberOfEntries=1\nFile1=".$value."\nTitle1=".$name;
 			$fopen = fopen( '/mnt/MPD/Webradio/'.$name.'.pls', 'w');
 			fwrite( $fopen, $lines );
@@ -136,9 +134,10 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 			exit();
 			
 		} else {
+			$redis->hSet( $key, $name, $value );
 			$order = $redis->hGet( 'display', 'order' );
 			if ( $order ) {
-				$order = explode( ',', $order );    // string to array
+				$order = explode( '^^', $order );   // string to array
 				if ( $oldname ) {
 					$index = array_search( $oldname, $order );
 					$order[ $index ] = $name;       // replace
@@ -146,7 +145,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 					array_push( $order, $name );    // append
 				}
 				pushstream( 'display', array( 'order' => $order ) );
-				$order = implode( ',', $order );    // array to string
+				$order = implode( '^^', $order );    // array to string
 				$redis->hSet( 'display', 'order', $order );
 			}
 			$data = getBookmark();
