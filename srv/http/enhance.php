@@ -95,7 +95,6 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$data = $_POST[ 'webradios' ];
 	}
 	if ( !is_array( $data ) ) {
-		$deleteonly = 1;
 		$name = $data;
 		$redis->hDel( $key, $name );
 		if ( $key === 'webradios' ) {
@@ -105,7 +104,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 			$order = $redis->hGet( 'display', 'order' );
 			if ( $order ) {
 				$order = explode( ',', $order );            // string to array
-				$index = array_search( $name, $order ); // get index
+				$index = array_search( $name, $order );     // get index
 				unset( $order[ $index ] );                  // remove
 				pushstream( 'display', array( 'order' => $order ) );
 				$order = implode( ',', $order );            // array to string
@@ -114,6 +113,9 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 			$data = getBookmark();
 			pushstream( 'bookmark', $data );
 		}
+		if ( $key === 'webradios' ) exec( 'mpc update Webradio &' );
+		exit();
+		
 	} else {
 		$name = $data[ 0 ];
 		$value = $data[ 1 ];
@@ -130,19 +132,21 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 			$fopen = fopen( '/mnt/MPD/Webradio/'.$name.'.pls', 'w');
 			fwrite( $fopen, $lines );
 			fclose( $fopen );
+			exec( 'mpc update Webradio &' );
+			exit();
+			
 		} else {
 			$order = $redis->hGet( 'display', 'order' );
 			if ( $order ) {
-				// set allow characters for ids
-				$order = explode( ',', $order );         // string to array
+				$order = explode( ',', $order );    // string to array
 				if ( $oldname ) {
 					$index = array_search( $oldname, $order );
 					$order[ $index ] = $name;       // replace
 				} else {
-					array_push( $order, $name ); // append
+					array_push( $order, $name );    // append
 				}
 				pushstream( 'display', array( 'order' => $order ) );
-				$order = implode( ',', $order );        // array to string
+				$order = implode( ',', $order );    // array to string
 				$redis->hSet( 'display', 'order', $order );
 			}
 			$data = getBookmark();
@@ -150,13 +154,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		}
 		$redis->hDel( 'webradiopl', $value );
 	}
-	if ( $key === 'webradios' ) {
-		exec( 'mpc update Webradio &' );
-		exit();
-	}
-	
-	if ( isset( $deleteonly ) ) exit();
-		
+	// coverart
 	$thumbfile = '/mnt/MPD/'.$value.'/thumbnail.jpg';
 	$dir = dirname( $thumbfile );
 	if ( file_exists( $thumbfile ) ) { // skip if already exists
