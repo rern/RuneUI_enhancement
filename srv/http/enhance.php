@@ -95,6 +95,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$data = $_POST[ 'webradios' ];
 	}
 	if ( !is_array( $data ) ) {
+		$deleteonly = 1;
 		$name = $data;
 		$redis->hDel( $key, $name );
 		if ( $key === 'webradios' ) {
@@ -103,7 +104,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		} else {
 			$order = $redis->hGet( 'display', 'order' );
 			if ( $order ) {
-				$id = str_replace( ' ', '', $name );
+				$id = str_replace( ' ', '_', $name );
 				$order = explode( ',', $order ); // string to array
 				unset( $order[ 'bk-'.$id ] );          // remove
 				pushstream( 'display', array( 'order' => $order ) );
@@ -133,10 +134,10 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 			$order = $redis->hGet( 'display', 'order' );
 			if ( $order ) {
 				// set allow characters for ids
-				$id = str_replace( ' ', '', $name );
+				$id = str_replace( ' ', '_', $name );
 				$order = explode( ',', $order );         // string to array
 				if ( $oldname ) {
-					$oldid = str_replace( ' ', '', $oldname );
+					$oldid = str_replace( ' ', '_', $oldname );
 					$index = array_search( 'bk-'.$oldid, $order );
 					$order[ $index ] = 'bk-'.$id;       // replace
 				} else {
@@ -151,55 +152,58 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		}
 		$redis->hDel( 'webradiopl', $value );
 	}
-	if ( $key === 'bkmarks' && count( $data ) === 2 ) {
-		$thumbfile = '/mnt/MPD/'.$value.'/thumbnail.jpg';
-		$dir = dirname( $thumbfile );
-		if ( file_exists( $thumbfile ) ) { // skip if already exists
+	if ( $key === 'webradios' ) {
+		exec( 'mpc update Webradio &' );
+		exit();
+	}
+	
+	if ( isset( $deleteonly ) ) exit();
+		
+	$thumbfile = '/mnt/MPD/'.$value.'/thumbnail.jpg';
+	$dir = dirname( $thumbfile );
+	if ( file_exists( $thumbfile ) ) { // skip if already exists
+		$data = getBookmark();
+		pushstream( 'bookmark', $data );
+		exit();
+	}
+	
+	// create thumbnail from coverart file
+	foreach( $coverfiles as $cover ) {
+		$coverfile = $dir.'/'.$cover;
+		if ( file_exists( $coverfile ) ) {
+			exec( '/usr/bin/sudo /usr/bin/convert "'.$coverfile.'" -thumbnail 200x200 -unsharp 0x.5 "'.$thumbfile.'"' );
 			$data = getBookmark();
 			pushstream( 'bookmark', $data );
 			exit();
 		}
-		
-		// create thumbnail from coverart file
-		foreach( $coverfiles as $cover ) {
-			$coverfile = $dir.'/'.$cover;
-			if ( file_exists( $coverfile ) ) {
-				exec( '/usr/bin/sudo /usr/bin/convert "'.$coverfile.'" -thumbnail 200x200 -unsharp 0x.5 "'.$thumbfile.'"' );
-				$data = getBookmark();
-				pushstream( 'bookmark', $data );
-				exit();
-			}
-		}
-		
-		// create thumbnail from embedded coverart
-		$files = array_slice( scandir( $dir ), 2 ); // remove ., ..
-		foreach( $files as $file ) {
-			$file = "$dir/$file";
-			if ( !is_file( $file ) ) continue;
-			
-			$mime = mime_content_type( $file );
-			if ( strpos( $mime, 'audio' ) === 0 ) { // only audio file
-				set_include_path( '/srv/http/app/libs/vendor/' );
-				require_once( 'getid3/audioinfo.class.php' );
-				$audioinfo = new AudioInfo();
-				$id3tag = $audioinfo->Info( $file );
-				if ( isset( $id3tag[ 'comments' ][ 'picture' ][ 0 ][ 'data' ] ) ) {
-					$id3cover = $id3tag[ 'comments' ][ 'picture' ][ 0 ];
-					$coverart = $id3cover[ 'data' ];
-					$coverext = str_replace( 'image/', '', $id3cover[ 'image_mime' ] );
-					$coverfile = "/srv/http/tmp/cover.$coverext";
-					file_put_contents( $coverfile, $coverart );
-					exec( '/usr/bin/sudo /usr/bin/convert "'.$coverfile.'" -thumbnail 200x200 -unsharp 0x.5 "'.$thumbfile.'"' );
-					unlink( $coverfile );
-				}
-				break;
-			}
-		}
-		$data = getBookmark();
-		pushstream( 'bookmark', $data );
-	} else {
-		exec( 'mpc update Webradio' );
 	}
+	
+	// create thumbnail from embedded coverart
+	$files = array_slice( scandir( $dir ), 2 ); // remove ., ..
+	foreach( $files as $file ) {
+		$file = "$dir/$file";
+		if ( !is_file( $file ) ) continue;
+		
+		$mime = mime_content_type( $file );
+		if ( strpos( $mime, 'audio' ) === 0 ) { // only audio file
+			set_include_path( '/srv/http/app/libs/vendor/' );
+			require_once( 'getid3/audioinfo.class.php' );
+			$audioinfo = new AudioInfo();
+			$id3tag = $audioinfo->Info( $file );
+			if ( isset( $id3tag[ 'comments' ][ 'picture' ][ 0 ][ 'data' ] ) ) {
+				$id3cover = $id3tag[ 'comments' ][ 'picture' ][ 0 ];
+				$coverart = $id3cover[ 'data' ];
+				$coverext = str_replace( 'image/', '', $id3cover[ 'image_mime' ] );
+				$coverfile = "/srv/http/tmp/cover.$coverext";
+				file_put_contents( $coverfile, $coverart );
+				exec( '/usr/bin/sudo /usr/bin/convert "'.$coverfile.'" -thumbnail 200x200 -unsharp 0x.5 "'.$thumbfile.'"' );
+				unlink( $coverfile );
+			}
+			break;
+		}
+	}
+	$data = getBookmark();
+	pushstream( 'bookmark', $data );
 } else if ( isset( $_POST[ 'coverfile' ] ) ) {
 	$coverfile = '/srv/http/assets/img/coverarts/'.urldecode( $_POST[ 'coverfile' ] );
 	exec( '/usr/bin/sudo /usr/bin/rm "'.$coverfile.'"' );
@@ -301,6 +305,8 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	}
 } else if ( isset( $_POST[ 'setdisplay' ] ) ) {
 	$data = $_POST[ 'setdisplay' ];
+	$order = $data[ 'order' ];
+	if ( is_array( $order ) ) $data[ 'order' ] = implode( ',', $order );
 	$redis->hmSet( 'display', $data );
 	pushstream( 'display', $data );
 } else if ( isset( $_POST[ 'volume' ] ) ) {
