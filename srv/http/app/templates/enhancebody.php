@@ -67,7 +67,7 @@ foreach( $blocks as $id => $value ) {
 				<a class="lipath">'.$value[ 0 ].'</a>
 				<i class="fa fa-'.$value[ 1 ].'"></i>
 				'.$counthtml.'
-				<label class="label">'.$value[ 2 ].'</label>
+				<a class="label">'.$value[ 2 ].'</a>
 			</div>
 		</div>
 	';
@@ -85,7 +85,7 @@ foreach( $bookmarks as $bookmark ) {
 			<div id="home-bk-'.$bookmark[ 1 ].'" class="home-block home-bookmark">
 				<a class="lipath">'.$bookmark[ 3 ].'</a>
 				'.$namehtml.'
-				<div class="divbklabel"><span class="bklabel label'.$hidelabel.'">'.$bookmark[ 2 ].'</span></div>
+				<div class="divbklabel"><span class="bklabel'.$hidelabel.'">'.$bookmark[ 2 ].'</span></div>
 			</div>
 		</div>
 	';
