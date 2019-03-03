@@ -1120,12 +1120,13 @@ wh, gr { font-weight: 300; }
 	box-shadow: #555555 0 0 2px 0;
 }
 .bklabel {
-	display: table; /* allow get width */
+	display: block;
 	font-size: 18px;
 	font-weight: 300;
 	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 	line-height: 40px;
-	margin: 0 auto;
 	color: #e0e7ee;
 }
 .home-block:hover,
