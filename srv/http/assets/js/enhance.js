@@ -1525,7 +1525,7 @@ pushstreams.volume.onmessage = function( data ) {
 	volumemute ? muteColor( volumemute ) : unmuteColor();
 }
 pushstreams.bookmark.onmessage = function( data ) {
-	if ( GUI.local ) return
+	if ( GUI.local || GUI.bookmarkedit ) return
 	
 	GUI.local = 1;
 	setTimeout( function() { GUI.local = 0 }, 500 );
