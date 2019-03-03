@@ -169,7 +169,9 @@ function bookmarkVerify( name, path, oldname ) {
 		} );
 		return;
 	}
-	$bllabel = $( '.home-block .label:contains('+ name +')' );
+	$bllabel = $( '.home-block' ).filter( function() {
+		return $( this ).find( '.label' ).text() === name;
+	} );
 	if ( !$bllabel.length ) {
 		if ( !oldname ) {
 			new PNotify( {
@@ -179,6 +181,9 @@ function bookmarkVerify( name, path, oldname ) {
 		}
 		var data = oldname ? [ name, path, oldname ] : [ name, path ];
 		$.post( 'enhance.php', { bkmarks: data } );
+		$( '.home-block' ).filter( function() {
+			return $( this ).find( '.label' ).text() === oldname;
+		} ).find( '.label' ).text( name );
 	} else {
 		info( {
 			  icon        : 'warning'
@@ -186,7 +191,7 @@ function bookmarkVerify( name, path, oldname ) {
 			, width       : 500
 			, message     : '<white>'+ name +'</white>'
 						+'<br>Already exists for:'
-						+'<br><w>'+ $bllabel.parent().prev().prev().text() +'</w>'
+						+'<br><w>'+ $bllabel.find( '.lipath' ).text() +'</w>'
 			, cancellabel : 'Back'
 			, cancel      : function() {
 				oldname ? bookmarkRename( name, path ) : bookmarkNew();
@@ -201,7 +206,7 @@ function bookmarkVerify( name, path, oldname ) {
 }
 function bookmarkDelete( name, $block ) {
 	var src = $block.find( 'img' ).attr( 'src' );
-	var coverart = src ? '<img src="'+ src +'">' : '';
+	var coverart = src ? '<img src="'+ src +'">' : '<i class="fa fa-bookmark fa-3x bl"></i>';
 	info( {
 		  icon    : 'minus-circle'
 		, title   : 'Remove Bookmark'
@@ -212,6 +217,7 @@ function bookmarkDelete( name, $block ) {
 		, oklabel : 'Delete'
 		, ok      : function() {
 			GUI.bookmarkedit = 1;
+			$block.parent().remove();
 			$.post( 'enhance.php', { bkmarks: name } );
 		}
 	} );
@@ -285,7 +291,9 @@ function webRadioVerify( name, url, oldname ) {
 		} );
 		return;
 	}
-	$liname = $( '.db-webradio .li1:contains('+ name +')' );
+	$liname = $( '.db-webradio' ).filter( function() {
+		return $( this ).find( '.li1' ).text() === name;
+	} );
 	if ( !$liname.length ) {
 		oldname ? addWebradio( name, url, oldname ) : addWebradio( name, url );
 	} else {
@@ -295,7 +303,7 @@ function webRadioVerify( name, url, oldname ) {
 			, width       : 500
 			, message     : '<white>'+ name +'</white>'
 						+'<br>Already exists for:'
-						+'<br><w>'+ $liname.next().text() +'</w>'
+						+'<br><w>'+ $liname.find( '.li2' ).text() +'</w>'
 			, cancellabel : 'Back'
 			, cancel      : function() {
 				webRadioNew( name, url );
