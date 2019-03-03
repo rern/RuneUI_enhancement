@@ -844,11 +844,12 @@ var sortablelibrary = new Sortable( document.getElementById( 'divhomeblocks' ), 
 	  }
 	, onUpdate   : function () {
 		var $blocks = $( '.home-block' );
-		var order = [];
+		var order = '';
 		$blocks.each( function() {
-			order.push( $( this ).find( '.label' ).text() );
+			order += $( this ).find( '.label' ).text() +'^^';
 		} );
-		GUI.display.order = order;
+		order = order.slice( 0, -2 );
+		GUI.display.order = order.split( '^^' );
 		$.post( 'enhance.php', { order: order } );
 	}
 } );
