@@ -90,8 +90,8 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 - Drag to rearrange home blocks
 - Show counts
 - Browse by CoverArt
-	- Create / update thumbnails with RuneUIe - Coverart Browsing addon
-	- Long-press for remove dialog
+	- Long-press `CoverArt` to create / update thumbnails
+	- Long-press thumbnail for remove
 - Show icon and breadcrumb heading while browsing
 - Show list in playlist files (\*.cue, \*.pls, \*.m3u)
 - Toggle search box
@@ -109,7 +109,6 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 - Show album heading with artist name (various artists album without album artist tag > 1st track artist)
 - Bookmarks and webradios can be renamed
 - Bookmarks and webradios can be named with " characters
-- Scroll long bookmark names
 - Show filenames or URL of saved webradio before played
 - Changes reflect to all clients
 
