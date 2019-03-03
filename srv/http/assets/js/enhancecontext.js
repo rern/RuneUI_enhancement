@@ -169,7 +169,8 @@ function bookmarkVerify( name, path, oldname ) {
 		} );
 		return;
 	}
-	if ( !$( '.home-block .label:contains('+ name +')' ).length ) {
+	$bllabel = $( '.home-block .label:contains('+ name +')' );
+	if ( !$bllabel.length ) {
 		if ( !oldname ) {
 			new PNotify( {
 				  title : 'Add Bookmark'
@@ -186,7 +187,8 @@ function bookmarkVerify( name, path, oldname ) {
 			, title       : oldname ? 'Rename Bookmark' :'Add Bookmark'
 			, width       : 500
 			, message     : '<white>'+ name +'</white>'
-						+'<br>Already exists.'
+						+'<br>Already exists for:'
+						+'<br><w>'+ $bllabel.parent().prev().prev().text() +'</w>'
 			, cancellabel : 'Back'
 			, cancel      : function() {
 				oldname ? bookmarkRename( name, path ) : bookmarkNew();
@@ -286,35 +288,27 @@ function webRadioVerify( name, url, oldname ) {
 		} );
 		return;
 	}
-	$.post( 'enhance.php', { bash: '/usr/bin/redis-cli hgetall webradios' }, function( data ) {
-		var data = data.split( '\n' );
-		var wrname = [];
-		var wrurl = [];
-		$.each( data, function( i, val ) {
-			i % 2 ? wrurl.push( val ) : wrname.push( val );
+	$liname = $( '.db-webradio .li1:contains('+ name +')' );
+	if ( !$liname.length ) {
+		oldname ? addWebradio( name, url, oldname ) : addWebradio( name, url );
+	} else {
+		info( {
+			  icon        : 'warning'
+			, title       : oldname ? 'Rename Webradio' : 'Add Webradio'
+			, width       : 500
+			, message     : '<white>'+ name +'</white>'
+						+'<br>Already exists for:'
+						+'<br><w>'+ $liname.next().text() +'</w>'
+			, cancellabel : 'Back'
+			, cancel      : function() {
+				webRadioNew( name, url );
+			}
+			, oklabel     : 'Replace'
+			, ok          : function() {
+				oldname ? addWebradio( name, url, oldname ) : addWebradio( name, url );
+			}
 		} );
-		var namei = wrname.indexOf( name );
-		if ( namei === -1 ) {
-			oldname ? addWebradio( name, url, oldname ) : addWebradio( name, url );
-		} else {
-			info( {
-				  icon        : 'warning'
-				, title       : oldname ? 'Rename Webradio' : 'Add Webradio'
-				, width       : 500
-				, message     : '<white>'+ name +'</white>'
-							+'<br>Already exists for:'
-							+'<br>'+ wrurl[ namei ]
-				, cancellabel : 'Back'
-				, cancel      : function() {
-					webRadioNew( name, url );
-				}
-				, oklabel     : 'Replace'
-				, ok          : function() {
-					oldname ? addWebradio( name, url, oldname ) : addWebradio( name, url );
-				}
-			} );
-		}
-	} );
+	}
 }
 function webRadioDelete() {
 	var name = GUI.list.name;
