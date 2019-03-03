@@ -421,7 +421,7 @@ function renderPlayback() {
 		GUI.intElapsed = setInterval( function() {
 			elapsed++;
 			elapsedhms = second2HMS( elapsed );
-			$( '#timepos' ).html( '&ensp;<i class="fa fa-play"></i>&ensp;<wh>'+ elapsedhms +'</wh> / '+ timehms );
+			$( '#timepos' ).html( '&ensp;<i class="fa fa-play"></i>&ensp;<w>'+ elapsedhms +'</w> / '+ timehms );
 		}, 1000 );
 	}
 
