@@ -136,7 +136,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 				$id = str_replace( ' ', '', $name );
 				$order = explode( ',', $order );         // string to array
 				if ( $oldname ) {
-					$oldid = preg_replace( array( '/ /', '/[^A-Za-z0-9_-]+/' ), array( '_', '-' ), $oldname );
+					$oldid = str_replace( ' ', '', $oldname );
 					$index = array_search( 'bk-'.$oldid, $order );
 					$order[ $index ] = 'bk-'.$id;       // replace
 				} else {
