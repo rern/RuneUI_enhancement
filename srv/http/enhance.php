@@ -104,9 +104,8 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		} else {
 			$order = $redis->hGet( 'display', 'order' );
 			if ( $order ) {
-				$id = str_replace( ' ', '_', $name );
 				$order = explode( ',', $order );            // string to array
-				$index = array_search( 'bk-'.$id, $order ); // get index
+				$index = array_search( $name, $order ); // get index
 				unset( $order[ $index ] );                  // remove
 				pushstream( 'display', array( 'order' => $order ) );
 				$order = implode( ',', $order );            // array to string
@@ -135,14 +134,12 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 			$order = $redis->hGet( 'display', 'order' );
 			if ( $order ) {
 				// set allow characters for ids
-				$id = str_replace( ' ', '_', $name );
 				$order = explode( ',', $order );         // string to array
 				if ( $oldname ) {
-					$oldid = str_replace( ' ', '_', $oldname );
-					$index = array_search( 'bk-'.$oldid, $order );
-					$order[ $index ] = 'bk-'.$id;       // replace
+					$index = array_search( $oldname, $order );
+					$order[ $index ] = $name;       // replace
 				} else {
-					array_push( $order, 'bk-'.$id ); // append
+					array_push( $order, $name ); // append
 				}
 				pushstream( 'display', array( 'order' => $order ) );
 				$order = implode( ',', $order );        // array to string
