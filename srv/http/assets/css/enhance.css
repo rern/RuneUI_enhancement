@@ -491,8 +491,7 @@ wh, gr { font-weight: 300; }
 	position: relative;
 	overflow: hidden;
 }
-.scrollleft,
-.bkscrollleft {
+.scrollleft {
 	backface-visibility : hidden; /* for less flickering */
 }
 @-moz-keyframes scrollleft {
@@ -1119,6 +1118,7 @@ wh, gr { font-weight: 300; }
 	-webkit-box-shadow: #555555 0 0 2px 0;
 	box-shadow: #555555 0 0 2px 0;
 }
+.label,
 .bklabel {
 	display: block;
 	font-size: 18px;
