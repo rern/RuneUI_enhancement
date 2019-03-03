@@ -23,7 +23,6 @@ $count = array(
 );
 // bookmarks
 foreach( $bkmarks as $label => $path ) {
-	$id = str_replace( ' ', '_', $label ); // for order
 	$thumbfile = '/mnt/MPD/'.$path.'/thumbnail.jpg';
 	if ( file_exists( $thumbfile ) ) {
 		$thumbnail = file_get_contents( $thumbfile );
@@ -32,16 +31,16 @@ foreach( $bkmarks as $label => $path ) {
 		$coverart = '';
 	}
 	if ( $order ) {
-		$bookmarks[] = array( $id, $label, $path, $coverart );
+		$bookmarks[] = array( $label, $path, $coverart );
 	} else {
 		$sort = stripLeading( $label );
 		$sort = str_replace( '_', '-', $sort ); // fix '_' order last (first in js)
-		$bookmarks[] = array( $id, $label, $path, $coverart, $sort );
+		$bookmarks[] = array( $label, $path, $coverart, $sort );
 	}
 }
 if ( !$order ) {
 	usort( $bookmarks, function( $a, $b ) {
-		return strnatcmp( stripLeading( $aname ), stripLeading( $bname ) );
+		return strnatcmp( stripLeading( $a[ 3 ] ), stripLeading( $b[ 3 ] ) );
 	} );
 }
 // library home blocks
@@ -64,7 +63,7 @@ foreach( $blocks as $id => $value ) {
 	$browsemode = in_array( $id, array( 'album', 'artist', 'albumartist', 'composer', 'genre', 'coverart' ) ) ? ' data-browsemode="'.$id.'"' : '';
 	$plugin = in_array( $id, array( 'spotify', 'dirble', 'jamendo' ) ) ? ' data-plugin="'.$value[ 0 ].'"' : '';
 	$counthtml = $count[ $value[ 1 ] ] ? '<gr>'.number_format( $count[ $value[ 1 ] ] ).'</gr>' : '';
-	$blocks[ $id ] = '
+	$divblocks[ $value[ 2 ] ] = '
 		<div class="divblock">
 			<div id="home-'.$id.'" class="home-block"'.$browsemode.$plugin.'>
 				<a class="lipath">'.$value[ 0 ].'</a>
@@ -76,19 +75,19 @@ foreach( $blocks as $id => $value ) {
 	';
 }
 foreach( $bookmarks as $bookmark ) {
-	if ( $bookmark[ 3 ] ) {
-		$namehtml = '<img class="bkcoverart" src="'.$bookmark[ 3 ].'">';
+	if ( $bookmark[ 2 ] ) {
+		$namehtml = '<img class="bkcoverart" src="'.$bookmark[ 2 ].'">';
 		$hidelabel = ' hide';
 	} else {
 		$namehtml = '<i class="fa fa-bookmark"></i>';
 		$hidelabel = '';
 	}
-	$blocks[ 'bk-'.$bookmark[ 0 ] ] = '
+	$divblocks[ $bookmark[ 0 ] ] = '
 		<div class="divblock bookmark">
-			<div id="home-bk-'.$bookmark[ 0 ].'" class="home-block home-bookmark">
-				<a class="lipath">'.$bookmark[ 2 ].'</a>
+			<div class="home-block home-bookmark">
+				<a class="lipath">'.$bookmark[ 1 ].'</a>
 				'.$namehtml.'
-				<div class="divbklabel"><span class="bklabel'.$hidelabel.'">'.$bookmark[ 1 ].'</span></div>
+				<div class="divbklabel"><span class="bklabel label'.$hidelabel.'">'.$bookmark[ 0 ].'</span></div>
 			</div>
 		</div>
 	';
@@ -96,11 +95,11 @@ foreach( $bookmarks as $bookmark ) {
 
 if ( $order ) {
 	$order = explode( ',', $order );
-	foreach( $order as $id ) {
-		$blockhtml.= $blocks[ $id ];
+	foreach( $order as $label ) {
+		$blockhtml.= $divblocks[ $label ];
 	}
 } else {
-	$blockhtml = implode( $blocks );
+	$blockhtml = implode( $divblocks );
 }
 
 $files = array_slice( scandir( '/srv/http/assets/img/coverarts' ), 2 );
