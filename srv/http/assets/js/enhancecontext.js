@@ -169,53 +169,39 @@ function bookmarkVerify( name, path, oldname ) {
 		} );
 		return;
 	}
-	$.post( 'enhance.php', { bash: '/usr/bin/redis-cli hgetall bkmarks' }, function( data ) {
-		if ( data ) {
-			var data = data.split( '\n' );
-			var bmname = [];
-			var bmpath = [];
-			$.each( data, function( i, val ) {
-				i % 2 ? bmpath.push( val ) : bmname.push( val );
+	if ( !$( '.home-block .label:contains('+ name +')' ).length ) {
+		if ( !oldname ) {
+			new PNotify( {
+				  title : 'Add Bookmark'
+				, text  : name
 			} );
-			var namei = bmname.indexOf( name );
-		} else {
-			var namei = -1;
+			GUI.local = 1;
+			setTimeout( function() { GUI.local = 0 }, 500 );
 		}
-		if ( namei === -1 ) {
-			if ( !oldname ) {
-				new PNotify( {
-					  title : 'Add Bookmark'
-					, text  : name
-				} );
-				GUI.local = 1;
-				setTimeout( function() { GUI.local = 0 }, 500 );
+		var data = oldname ? [ name, path, oldname ] : [ name, path ];
+		$.post( 'enhance.php', { bkmarks: data } );
+	} else {
+		info( {
+			  icon        : 'warning'
+			, title       : oldname ? 'Rename Bookmark' :'Add Bookmark'
+			, width       : 500
+			, message     : '<white>'+ name +'</white>'
+						+'<br>Already exists.'
+			, cancellabel : 'Back'
+			, cancel      : function() {
+				oldname ? bookmarkRename( name, path ) : bookmarkNew();
 			}
-			var data = oldname ? [ name, path, oldname ] : [ name, path ];
-			$.post( 'enhance.php', { bkmarks: data } );
-		} else {
-			info( {
-				  icon        : 'warning'
-				, title       : oldname ? 'Rename Bookmark' :'Add Bookmark'
-				, width       : 500
-				, message     : '<white>'+ name +'</white>'
-							+'<br>Already exists for:'
-							+'<br>'+ bmpath[ namei ]
-				, cancellabel : 'Back'
-				, cancel      : function() {
-					oldname ? bookmarkRename( name, path ) : bookmarkNew();
+			, oklabel     : 'Replace'
+			, ok          : function() {
+				if ( !oldname ) {
+					GUI.local = 1;
+					setTimeout( function() { GUI.local = 0 }, 500 );
 				}
-				, oklabel     : 'Replace'
-				, ok          : function() {
-					if ( !oldname ) {
-						GUI.local = 1;
-						setTimeout( function() { GUI.local = 0 }, 500 );
-					}
-					var data = oldname ? [ name, path, oldname ] : [ name, path ];
-					$.post( 'enhance.php', { bkmarks: data } );
-				}
-			} );
-		}
-	} );
+				var data = oldname ? [ name, path, oldname ] : [ name, path ];
+				$.post( 'enhance.php', { bkmarks: data } );
+			}
+		} );
+	}
 }
 function bookmarkDelete( name, $block ) {
 	info( {

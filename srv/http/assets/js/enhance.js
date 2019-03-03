@@ -846,7 +846,7 @@ var sortablelibrary = new Sortable( document.getElementById( 'divhomeblocks' ), 
 		var $blocks = $( '.home-block' );
 		var order = [];
 		$blocks.each( function() {
-			order.push( this.id.replace( 'home-', '' ) );
+			order.push( $( this ).find( '.label' ).text() );
 		} );
 		GUI.display.order = order;
 		$.post( 'enhance.php', { order: order } );
@@ -1548,7 +1548,7 @@ pushstreams.bookmark.onmessage = function( data ) {
 					+'<div id="home-bk-'+ id +'" class="home-block home-bookmark">'
 						+'<a class="lipath">'+ bookmark.path +'</a>'
 						+ namehtml
-						+'<div class="divbklabel"><span class="bklabel'+ hidelabel +'">'+ bookmark.name +'</span></div>'
+						+'<div class="divbklabel"><span class="bklabel label'+ hidelabel +'">'+ bookmark.name +'</span></div>'
 					+'</div>'
 				  +'</div>';
 	} );
