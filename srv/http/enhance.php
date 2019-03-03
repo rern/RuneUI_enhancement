@@ -105,11 +105,12 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 			$order = $redis->hGet( 'display', 'order' );
 			if ( $order ) {
 				$id = str_replace( ' ', '_', $name );
-				$order = explode( ',', $order ); // string to array
-				unset( $order[ 'bk-'.$id ] );          // remove
+				$order = explode( ',', $order );            // string to array
+				$index = array_search( 'bk-'.$id, $order ); // get index
+				unset( $order[ $index ] );                  // remove
 				pushstream( 'display', array( 'order' => $order ) );
-				$order = implode( ',', $order ); // array to string
-				$redis->hSet( 'display', 'order', $order );
+				$order = implode( ',', $order );            // array to string
+				$redis->hSet( 'display', 'order', $order ); // redis cannot save array
 			}
 			$data = getBookmark();
 			pushstream( 'bookmark', $data );
