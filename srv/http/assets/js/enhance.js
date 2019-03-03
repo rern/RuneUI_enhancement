@@ -1477,8 +1477,6 @@ window.addEventListener( 'orientationchange', function() {
 			var scrollpos = $( '#pl-entries li.active' ).offset().top - $( '#pl-entries' ).offset().top - ( 49 * 3 );
 			$( 'html, body' ).scrollTop( scrollpos );
 		}, 300 );
-	} else if ( GUI.library && !$( '#home-blocks' ).hasClass( 'hide' ) ) {
-		setTimeout( cssHomeBlockWidth, 100 );
 	} else if ( GUI.dblist || GUI.pleditor  || !$( '#divcoverarts' ).hasClass( 'hide' ) ) {
 		displayIndexBar();
 	}
@@ -1555,9 +1553,7 @@ pushstreams.bookmark.onmessage = function( data ) {
 					+'</div>'
 				  +'</div>';
 	} );
-	$( '#divhomeblocks' ).append( content ).promise().done( function() {
-		bookmarkScroll();
-	} );
+	$( '#divhomeblocks' ).append( content );
 	if ( !GUI.display.order.length ) return
 	
 	$.each( GUI.display.order, function( i, name ) {

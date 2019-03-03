@@ -1,25 +1,3 @@
-function cssHomeBlockWidth() {
-	var wW = window.innerWidth;
-	var divhomeW = wW - 10;
-	if ( 900 <= wW ) {
-		columnW = divhomeW * 0.16666666;
-	} else if ( 700 < wW && wW < 900 ) {
-		columnW = divhomeW * 0.2;
-	} else if ( 560 < wW && wW < 700 ) {
-		columnW = divhomeW * 0.25;
-	} else if ( 410 < wW && wW < 560 ) {
-		columnW = divhomeW * 0.333333333;
-	} else if ( 280 < wW && wW < 410 ) {
-		columnW = divhomeW * 0.5;
-	} else if ( wW < 280 ) {
-		columnW = divhomeW;
-	}
-	$( '#csshomeblockwidth' )
-		.empty()
-		.append( '.divblock { width: '+ columnW +'px }' );
-	GUI.columnW = columnW;
-	bookmarkScroll();
-}
 function cssNotify() {
 	if ( GUI.bars ) {
 		PNotify.prototype.options.stack.firstpos1 = 60;
@@ -267,7 +245,6 @@ function removeSplash() {
 	if ( GUI.nosplash ) return
 	
 	GUI.nosplash = 1;
-	cssHomeBlockWidth();
 	$( '#splash' ).remove();
 	$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
 	$( '#page-playback' ).removeClass( 'hide' );
@@ -689,41 +666,6 @@ function displayCheckbox( checkboxes ) {
 	} );
 	return html;
 }
-function bookmarkScroll() {
-	$( '.bklabel' )
-		.removeClass( 'bkscrollleft' )
-		.removeAttr( 'style' ); // fix - iOS needs whole style removed
-	var labelW = Math.round( GUI.columnW - 16 );
-	$( '.bklabel:not( .hide )' ).each( function() {
-		var $this = $( this );
-		var tW = Math.round( $this.width() ); // available only when visible
-		if ( tW > labelW ) {
-			var cssanimate = Math.round( ( labelW + tW ) / GUI.scrollspeed ) +'s infinite bkscrollleft linear'; // calculate to 	same speed
-			$this
-				.addClass( 'bkscrollleft' )
-				.css( {
-					  width               : tW +'px'
-					, animation           : cssanimate
-					, '-moz-animation'    : cssanimate
-					, '-webkit-animation' : cssanimate
-				} );
-			$( '#csshomeblockwidth' ).append(
-				'@keyframes bkscrollleft {'
-					+'100% { transform         : translateX( -'+ tW +'px ) }'
-					+'0%   { transform         : translateX( '+ labelW +'px ) };'
-				+'}'
-				+'@-moz-keyframes bkscrollleft {'
-					+'100% { -moz-transform    : translateX( -'+ tW +'px ) }'
-					+'0%   { -moz-transform    : translateX( '+ labelW +'px ) }'
-				+'}'
-				+'@-webkit-keyframes bkscrollleft {'
-					+'100% { -webkit-transform : translateX( -'+ tW +'px ) }'
-					+'0%   { -webkit-transform : translateX( '+ labelW +'px ) }'
-				+'}'
-			);
-		}
-	} );
-}
 function renderLibrary() {
 	GUI.dbbackdata = [];
 	GUI.plugin = '';
@@ -759,7 +701,6 @@ function renderLibrary() {
 		$( '.home-bookmark' ).css( 'padding', '20px 5px 5px 5px' );
 	}
 	displayTopBottom();
-	bookmarkScroll();
 	$( 'html, body' ).scrollTop( 0 );
 }
 function statusUpdate() {
