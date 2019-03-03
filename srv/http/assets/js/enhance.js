@@ -1539,7 +1539,6 @@ pushstreams.bookmark.onmessage = function( data ) {
 			return stripLeading( a.name ).localeCompare( stripLeading( b.name ), undefined, { numeric: true } );
 		} );
 	}
-	alert(JSON.stringify(data))
 	$.each( bookmarks, function( i, bookmark ) {
 		if ( bookmark.coverart ) {
 			var namehtml = '<img class="bkcoverart" src="'+ bookmark.coverart +'">';
