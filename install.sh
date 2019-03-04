@@ -40,10 +40,9 @@ getPackages() {
 		echo -e "$bar Retry #$i ..."
 		getPkg
 	elif (( $i == 3 )); then
-		title "$info $( tcolor ImageMagick ) and support packages download failed."
-		echo "Renstall manually by SSH: pacman -Sy imagemagick libpng zlib glibc"
-		title -nt "Then install / update again."
-		exit
+		wgetnc https://github.com/rern/_assets/raw/master/imagemagick.tar
+		bsdtar xf packages.tar -C /
+		rm imagemagick.tar
 	fi
 }
 if [[ $( pacman -Ss 'imagemagick$' | head -n1 | awk '{print $NF}' ) != '[installed]' ]]; then
