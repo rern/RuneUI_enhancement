@@ -319,14 +319,14 @@ function renderPlayback() {
 			var elapsed = status.elapsed;
 			if ( GUI.display.time ) {
 				$( '#timepos' ).empty();
-				if ( !GUI.display.radioelapsed ) {
-					$( '#total' ).empty();
-				} else {
+				if ( GUI.display.radioelapsed || GUI.localhost ) {
 					GUI.intElapsed = setInterval( function() {
 						elapsed++;
 						elapsedhms = second2HMS( elapsed );
 						$( '#total' ).text( elapsedhms ).css( 'color', '#7795b4' );
 					}, 1000 );
+				} else {
+					$( '#total' ).empty();
 				}
 			} else {
 				$( '#total' ).empty();

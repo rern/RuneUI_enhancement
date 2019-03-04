@@ -19,6 +19,7 @@ var GUI = {
 	, library      : 0
 	, libraryhome  : {}
 	, local        : 0
+	, localhost    : ( location.hostname === 'localhost' || location.hostname === '127.0.0.1' )
 	, lsplaylists  : []
 	, playback     : 1
 	, playlist     : 0
@@ -52,7 +53,11 @@ var csscontexticon =
 		+'.db-action, .pl-action { display: block }'
 		+'.duration-right { right: 60px }'
 	+'</style>';
-var blinkdot = '<a class="dot">·</a>&ensp;<a class="dot dot2">·</a>&ensp;<a class="dot dot3">·</a>';
+if ( GUI.localhost ) {
+	var blinkdot = '<a>·</a>&ensp;<a>·</a>&ensp;<a>·</a>';
+} else {
+	var blinkdot = '<a class="dot">·</a>&ensp;<a class="dot dot2">·</a>&ensp;<a class="dot dot3">·</a>';
+}
 // fix - desktop coverart browsing with visible scrollbar
 if ( navigator.userAgent.indexOf( 'mobi' ) === -1 ) {
 	$( 'head' ).append( 
