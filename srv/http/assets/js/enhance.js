@@ -84,6 +84,7 @@ if ( navigator.userAgent.indexOf( 'Midori' ) !== -1 ) {
 $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 	data.order = data.order ? data.order.split( ',' ) : '';
 	GUI.display = data;
+	$.event.special.tap.emitTapOnTaphold = false; // suppress tap on taphold
 	$.event.special.swipe.horizontalDistanceThreshold = 80; // pixel to swipe
 	$.event.special.tap.tapholdThreshold = 1000;
 	setSwipe();
@@ -252,11 +253,18 @@ $( '#tab-playlist' ).click( function() {
 		renderPlaylist();
 	}, 'json' );
 } );
-$( '#swipebar' ).click( function( e ) {
+$( '#swipebar' ).tap( function( e ) {
 	if ( !GUI.swipe && e.target.id !== 'swipeL' && e.target.id !== 'swipeR' ) $( '#menu-settings' ).click();
+} ).taphold( function() {
+	location.reload();
 } );
 $( '#swipeL' ).click( function() {
-	location.reload();
+	var page = GUI.playback ? 'library' : ( GUI.library ? 'playlist' : 'playback' );
+	$( '#tab-'+ page ).click();
+} );
+$( '#swipeR' ).click( function() {
+	var page = GUI.playback ? 'playlist' : ( GUI.library ? 'playback' : 'library' );
+	$( '#tab-'+ page ).click();
 } );
 $( '#page-playback' ).click( function( e ) {
 	if ( $( e.target ).is( '.controls, .timemap, .covermap, .volmap' ) ) return
@@ -748,7 +756,6 @@ $( '#db-back' ).click( function() {
 $( '#home-blocks' ).contextmenu( function( e ) { // disable default image context menu
 	e.preventDefault();
 } );
-$.event.special.tap.emitTapOnTaphold = false; // suppress tap on taphold
 $( '.home-block' ).click( function() {
 	var $this = $( this );
 	var id = this.id;
