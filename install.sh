@@ -19,10 +19,37 @@ redis-cli hdel display library &> /dev/null
 installstart $@
 
 # install and verify installed imagemagick
+getPackages() {
+	pacman -Syw --noconfirm imagemagick libpng zlib glibc
+	files=$( ls /var/cache/pacman/pkg )
+	readarray -t files <<<"$files"
+	names=(glibc imagemagick liblqr libmagick libpng libraqm zlib)
+	countname=${#names[@]}
+	countfile=
+	i=0
+	for file in "${files[@]}"; do
+		for name in "${names[@]}"; do
+			if [[ ${file%%-*} == $name ]]; then
+				(( countfile++ ))
+				echo $name
+			fi
+		done
+	done
+	if (( $countfile < $countname )) && (( $i < 3 )); then
+		(( i++ ))
+		echo -e "$bar Retry ..."
+		getPkg
+	elif (( $i == 3 )); then
+		title "$info $( tcolor ImageMagick ) and support packages not downloaded properly."
+		echo "Renstall manually by SSH: pacman -Sy imagemagick libpng zlib glibc"
+		title -nt "Then install / update again."
+		exit
+	fi
+}
 if [[ $( pacman -Ss 'imagemagick$' | head -n1 | awk '{print $NF}' ) != '[installed]' ]]; then
 	echo -e "$bar Prefetch packages ..."
-	pacman -Syw --noconfirm imagemagick libpng zlib glibc
-	
+	getPackages
+
 	echo -e "$bar Install ImageMagick for thumbnails creating ..."
 	pacman -S --noconfirm imagemagick libpng zlib glibc
 	
