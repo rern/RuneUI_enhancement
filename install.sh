@@ -40,7 +40,7 @@ getPackages() {
 		echo -e "$bar Retry #$i ..."
 		getPkg
 	elif (( $i == 3 )); then
-		title "$info $( tcolor ImageMagick ) and support packages not downloaded properly."
+		title "$info $( tcolor ImageMagick ) and support packages download failed."
 		echo "Renstall manually by SSH: pacman -Sy imagemagick libpng zlib glibc"
 		title -nt "Then install / update again."
 		exit
