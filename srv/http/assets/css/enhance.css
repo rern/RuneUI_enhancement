@@ -1164,15 +1164,15 @@ wh, gr { font-weight: 300; }
 	position: absolute;
 	top: 0;
 	right: 0;
+	width: 40px;
+	height: 40px;
+	line-height: 40px;
+	text-align: center;
 	font-size: 24px !important;
 	color: #e0e7ee !important;
 }
 .home-block-edit {
-	top: 35px;
-}
-.coverart-remove {
-	top: 15px;
-	right: 15px;
+	top: 40px;
 }
 /* ---------------------- breadcrumb and index ---------------------- */
 .btnlist-top {
