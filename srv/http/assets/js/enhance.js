@@ -417,7 +417,8 @@ $( '#volup, #voldn' ).click( function() {
 } );
 $( '#coverTL' ).click( function() {
 	if ( !$( '#controls-cover' ).hasClass( 'hide' ) ) {
-		$( '.controls, .controls1, .rs-tooltip, #imode' ).toggleClass( 'hide' );
+		$( '.controls' ).addClass( 'hide' );
+		$( '.controls1, .rs-tooltip, #imode' ).removeClass( 'hide' );
 		$( '#swipebar' ).toggleClass( 'transparent' );
 	}
 	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
