@@ -12,6 +12,7 @@ var GUI = {
 	, dbbrowsemode : ''
 	, dblist       : 0
 	, dbscrolltop  : {}
+	, debounce     : ''
 	, display      : {}
 	, imodedelay   : 0
 	, list         : {}

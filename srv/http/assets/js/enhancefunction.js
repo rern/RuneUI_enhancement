@@ -1,3 +1,7 @@
+function debounce( fn, ms ) {
+	clearTimeout( GUI.debounce );
+	GUI.debounce = setTimeout( fn, ms );
+}
 function cssNotify() {
 	if ( GUI.bars ) {
 		PNotify.prototype.options.stack.firstpos1 = 60;
@@ -81,7 +85,6 @@ function switchPage( page ) {
 	GUI.currentpage = page;
 	// restore page scroll
 	if ( GUI.playback ) {
-		renderPlayback();
 		if ( GUI.status.state === 'play' && GUI.status.ext !== 'radio' ) $( '#elapsed' ).empty(); // hide flashing
 		$( 'html, body' ).scrollTop( 0 );
 	} else if ( GUI.library ) {
@@ -278,10 +281,6 @@ function setPlaybackBlank() {
 		.css( 'visibility', 'visible' );
 }
 function renderPlayback() {
-	if ( GUI.renderpb ) return
-	
-	GUI.renderpb = 1;
-	setTimeout( function() { GUI.renderpb = 0 }, 500 );
 	var status = GUI.status;
 	// song and album before update for song/album change detection
 	var previoussong = $( '#song' ).text();
@@ -432,11 +431,6 @@ function renderPlayback() {
 	}
 }
 function getPlaybackStatus() {
-	if ( GUI.local ) return
-	
-	GUI.local = 1;
-	setTimeout( function() { GUI.local = 0 }, 200 );
-	
 	$.post( 'enhancestatus.php', { artist: $( '#artist' ).text(), album: $( '#album' ).text() }, function( status ) {
 		// 'gpio off' > audio output switched > restarts mpd which makes status briefly unavailable
 		if( typeof status !== 'object' ) return
