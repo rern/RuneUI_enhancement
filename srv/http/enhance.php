@@ -68,7 +68,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	if ( $count === 1 ) {
 		$result = shell_exec( $cmd );
 	} else {
-		$result = shell_exec( $cmd.' artist "'.$_POST[ 'artist' ].'"' );
+		$result = shell_exec( $cmd.' albumartist "'.$_POST[ 'artist' ].'"' );
 	}
 	$data = search2array( $result );
 	if ( $redis->hGet( 'display', 'coverfile' ) && !isPlaylist( $data ) && substr( $mpc, 0, 10 ) !== 'mpc search' ) {
