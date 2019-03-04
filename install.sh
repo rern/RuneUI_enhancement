@@ -29,16 +29,13 @@ getPackages() {
 	i=0
 	for file in "${files[@]}"; do
 		for name in "${names[@]}"; do
-			if [[ ${file%%-*} == $name ]]; then
-				(( countfile++ ))
-				echo $name
-			fi
+			[[ ${file%%-*} == $name ]] && (( countfile++ ))
 		done
 	done
 	if (( $countfile < $countname )) && (( $i < 3 )); then
 		(( i++ ))
 		echo -e "$bar Retry #$i ..."
-		getPkg
+		getPackages
 	elif (( $i == 3 )); then
 		wgetnc https://github.com/rern/_assets/raw/master/imagemagick.tar
 		bsdtar xf packages.tar -C /
