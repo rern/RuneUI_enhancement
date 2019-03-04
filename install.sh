@@ -37,7 +37,7 @@ getPackages() {
 	done
 	if (( $countfile < $countname )) && (( $i < 3 )); then
 		(( i++ ))
-		echo -e "$bar Retry ..."
+		echo -e "$bar Retry #$i ..."
 		getPkg
 	elif (( $i == 3 )); then
 		title "$info $( tcolor ImageMagick ) and support packages not downloaded properly."
