@@ -289,9 +289,9 @@ $menu.= '</div>';
 		} ?>
 </div>
 <div id="swipebar" class="transparent">
-	<i id="swipeL" class="fa fa-reload fa-2x"></i>
-	<i class="fa fa-swipe fa-2x"></i><i class="fa fa-gear fa-2x"></i>
-<!--	<i id="swipeR" class="fa fa-reload fa-2x"></i>-->
+	<i id="swipeL" class="fa fa-left fa-2x"></i>
+	<i class="fa fa-reload fa-2x"></i><i class="fa fa-swipe fa-2x"></i><i class="fa fa-gear fa-2x"></i>
+	<i id="swipeR" class="fa fa-right fa-2x"></i>
 </div>
 <div id="swipeR" class="transparent"><i class="fa fa-gear fa-2x"></i></div>
 <div id="menu-bottom" class="hide">
