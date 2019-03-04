@@ -288,7 +288,12 @@ $menu.= '</div>';
 		<?php 
 		} ?>
 </div>
-<div id="swipebar" class="transparent"><i class="fa fa-swipe fa-2x"></i><i class="fa fa-gear fa-2x"></i></div>
+<div id="swipebar" class="transparent">
+	<i id="swipeL" class="fa fa-reload fa-2x"></i>
+	<i class="fa fa-swipe fa-2x"></i><i class="fa fa-gear fa-2x"></i>
+<!--	<i id="swipeR" class="fa fa-reload fa-2x"></i>-->
+</div>
+<div id="swipeR" class="transparent"><i class="fa fa-gear fa-2x"></i></div>
 <div id="menu-bottom" class="hide">
 	<ul>
 		<li id="tab-library"><a><i class="fa fa-library"></i></a></li>
