@@ -252,8 +252,11 @@ $( '#tab-playlist' ).click( function() {
 		renderPlaylist();
 	}, 'json' );
 } );
-$( '#swipebar' ).click( function() {
-	if ( !GUI.swipe ) $( '#menu-settings' ).click();
+$( '#swipebar' ).click( function( e ) {
+	if ( !GUI.swipe && e.target.id !== 'swipeL' && e.target.id !== 'swipeR' ) $( '#menu-settings' ).click();
+} );
+$( '#swipeL' ).click( function() {
+	location.reload();
 } );
 $( '#page-playback' ).click( function( e ) {
 	if ( $( e.target ).is( '.controls, .timemap, .covermap, .volmap' ) ) return
