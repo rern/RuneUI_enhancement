@@ -13,15 +13,6 @@
 <script src="<?=$this->asset( '/js/enhancefunction.js' )?>"></script>
 <script src="<?=$this->asset( '/js/enhance.js' )?>"></script>
 <script src="<?=$this->asset( '/js/enhancecontext.js' )?>"></script>
-<script>
-	var coverrune = "<?=$this->asset('/img/cover.svg')?>";
-	var vustop = "<?=$this->asset('/img/vustop.gif')?>";
-	if ( location.hostname === 'localhost' || location.hostname === '127.0.0.1' ) {
-		var vu = "<?=$this->asset('/img/vustop.gif')?>";
-	} else {
-		var vu = "<?=$this->asset('/img/vu.gif')?>";
-	}
-</script>
 		<?php
 		if ( file_exists( '/srv/http/assets/js/addonsmenu.js' ) ) { ?> 
 <script src="<?=$this->asset( '/js/addonsmenu.js' )?>"></script>
