@@ -53,9 +53,14 @@ var csscontexticon =
 		+'.db-action, .pl-action { display: block }'
 		+'.duration-right { right: 60px }'
 	+'</style>';
+var hash = Date.now();
+var coverrune = '/assets/img/cover.'+ hash +'.svg';
+var vustop = '/assets/img/vustop.'+ hash +'.gif';
 if ( GUI.localhost ) {
+	var vu = '/assets/img/vustop.'+ hash +'.gif';
 	var blinkdot = '<a>·</a>&ensp;<a>·</a>&ensp;<a>·</a>';
 } else {
+	var vu = '/assets/img/vu.'+ hash +'.gif';
 	var blinkdot = '<a class="dot">·</a>&ensp;<a class="dot dot2">·</a>&ensp;<a class="dot dot3">·</a>';
 }
 // fix - desktop coverart browsing with visible scrollbar
