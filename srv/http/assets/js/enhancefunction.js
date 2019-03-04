@@ -1,7 +1,3 @@
-function debounce( fn, ms ) {
-	clearTimeout( GUI.debounce );
-	GUI.debounce = setTimeout( fn, ms );
-}
 function cssNotify() {
 	if ( GUI.bars ) {
 		PNotify.prototype.options.stack.firstpos1 = 60;
