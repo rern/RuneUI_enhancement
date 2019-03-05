@@ -888,7 +888,7 @@ $( '#home-coverart' ).click( function() { // fix - 'tap' also fire .coverart cli
 	$( '#divcoverarts, #db-back, #db-index' ).removeClass( 'hide' );
 	displayIndexBar();
 	setTimeout( function() {
-		var cH = window.innerHeight - $( '.coverart' ).height() + 98;
+		var cH = window.innerHeight - $( '.coverart' ).height() - 80;
 		$( '#divcoverarts p' ).css( 'height', cH +'px' );
 	}, 50 );
 } ).taphold( function() {
