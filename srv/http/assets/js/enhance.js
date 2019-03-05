@@ -230,7 +230,7 @@ $( '#tab-library' ).click( function() {
 		$( '#divcoverarts' ).addClass( 'hide' );
 		$( '#home-blocks' ).removeClass( 'hide' );
 	}
-	if ( GUI.bookmarkedit ) {
+	if ( GUI.library && GUI.bookmarkedit ) {
 		GUI.bookmarkedit = 0;
 		renderLibrary();
 	} else if ( GUI.library && GUI.dblist ) {
