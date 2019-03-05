@@ -625,7 +625,8 @@ function switchPlaysource( source ) {
 }
 function displayIndexBar() {
 	$( '#db-index li' ).not( ':eq( 0 )' ).css( 'color', '#000000' );
-	$( '#db-entries .lisort' ).each( function() {
+	var $lisort = $( '#divcoverarts' ).hasClass( 'hide' ) ? $( '#db-entries .lisort' ) : $( '#divcoverarts .lisort' );
+	$lisort.each( function() {
 		var init = this.innerText[ 0 ];
 		if ( init.match( /[A-Z]/ ) ) $( '#index-'+ init ).css( 'color', '' );
 	} );
