@@ -20,9 +20,9 @@ installstart $@
 
 if [[ $( pacman -Ss 'imagemagick$' | head -n1 | awk '{print $NF}' ) != '[installed]' ]]; then
 	pkgs='imagemagick libpng zlib glibc'
-	pkgfiles='glibc imagemagick liblqr libmagick libpng libraqm zlib'
-	pkgurl=https://github.com/rern/_assets/raw/master/imagemagick.tar
-	installPackages "$pkgs" "$pkgfiles" "$pkgurl"
+	checklist='glibc imagemagick liblqr libmagick libpng libraqm zlib'
+	fallbackurl=https://github.com/rern/_assets/raw/master/imagemagick.tar
+	installPackages "$pkgs" "$checklist" "$fallbackurl"
 fi
 
 mv /srv/http/index.php{,.backup}
