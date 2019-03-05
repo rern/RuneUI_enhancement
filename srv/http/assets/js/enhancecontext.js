@@ -129,6 +129,7 @@ function bookmarkNew() {
 		, message    : 'Bookmark'
 						+'<br><white>'+ path +'</white>'
 						+'<br>As:'
+		, msgalign   : 'center'
 		, textvalue  : name
 		, textalign  : 'center'
 		, boxwidth   : 'max'
@@ -147,6 +148,7 @@ function bookmarkRename( name, path ) {
 					+'<br><white>'+ name +'</white>'
 					+'<br>'+ path
 					+'<br>To:'
+		, msgalign  : 'center'
 		, textvalue : name
 		, textalign : 'center'
 		, boxwidth  : 'max'
@@ -192,6 +194,7 @@ function bookmarkVerify( name, path, oldname ) {
 			, message     : '<white>'+ name +'</white>'
 						+'<br>Already exists for:'
 						+'<br><w>'+ $bllabel.find( '.lipath' ).text() +'</w>'
+			, msgalign    : 'center'
 			, cancellabel : 'Back'
 			, cancel      : function() {
 				oldname ? bookmarkRename( name, path ) : bookmarkNew();
@@ -208,14 +211,15 @@ function bookmarkDelete( name, $block ) {
 	var src = $block.find( 'img' ).attr( 'src' );
 	var coverart = src ? '<img src="'+ src +'">' : '<i class="fa fa-bookmark fa-3x bl"></i>';
 	info( {
-		  icon    : 'minus-circle'
-		, title   : 'Remove Bookmark'
-		, message : 'Remove?'
+		  icon     : 'minus-circle'
+		, title    : 'Remove Bookmark'
+		, message  : 'Remove?'
 					+'<br>'+ coverart
 					+'<br><white>'+ name +'</white>'
-		, cancel  : 1
-		, oklabel : 'Delete'
-		, ok      : function() {
+		, msgalign : 'center'
+		, cancel   : 1
+		, oklabel  : 'Delete'
+		, ok       : function() {
 			GUI.bookmarkedit = 1;
 			$block.parent().remove();
 			$.post( 'enhance.php', { bkmarks: name } );
@@ -251,6 +255,7 @@ function webRadioRename() {
 					+'<br><white>'+ name +'</white>'
 					+'<br>'+ path
 					+'<br>To:'
+		, msgalign   : 'center'
 		, textvalue  : name
 		, textalign  : 'center'
 		, boxwidth   : 'max'
@@ -265,10 +270,6 @@ function addWebradio( name, url, oldname ) {
 	var name = name;
 	var oldname = oldname ? oldname : '';
 	var data = oldname ? [ name, url, oldname ] : [ name, url ];
-	
-	GUI.local = 1;
-	setTimeout( function() { GUI.local = 0 }, 500 );
-	
 	$.post( 'enhance.php', { webradios: data }, function() {
 		if ( GUI.playlist ) $( '#tab-playlist' ).click();
 	} );
@@ -304,6 +305,7 @@ function webRadioVerify( name, url, oldname ) {
 			, message     : '<white>'+ name +'</white>'
 						+'<br>Already exists for:'
 						+'<br><w>'+ $liname.find( '.li2' ).text() +'</w>'
+			, msgalign    : 'center'
 			, cancellabel : 'Back'
 			, cancel      : function() {
 				webRadioNew( name, url );
@@ -318,23 +320,21 @@ function webRadioVerify( name, url, oldname ) {
 function webRadioDelete() {
 	var name = GUI.list.name;
 	info( {
-		  icon    : 'minus-circle'
-		, title   : 'Delete Webradio'
-		, width   : 500
-		, message : 'Delete?'
+		  icon     : 'minus-circle'
+		, title    : 'Delete Webradio'
+		, width    : 500
+		, message  : 'Delete?'
 					+'<br><white>'+ name +'</white>'
 					+'<br>'+ GUI.list.path
-		, cancel  : 1
-		, oklabel : 'Delete'
-		, ok      : function() {
+		, msgalign : 'center'
+		, cancel   : 1
+		, oklabel  : 'Delete'
+		, ok       : function() {
 			$( '#db-entries li').eq( GUI.list.liindex ).remove();
 			GUI.libraryhome.webradio--;
 			var count = GUI.libraryhome.webradio ? numFormat ( GUI.libraryhome.webradio ) : '';
 			$( '#home-webradio gr' ).remove();
 			if ( count ) $( '#home-webradio i' ).after( '<gr>'+ count +'</gr>' );
-			GUI.local = 1;
-			setTimeout( function() { GUI.local = 0 }, 500 );
-			
 			$.post( 'enhance.php', { webradios: name } );
 		}
 	} );
@@ -361,6 +361,7 @@ function playlistRename() {
 		, message   : 'Rename:'
 					+'<br><white>'+ name +'</white>'
 					+'<br>To:'
+		, msgalign  : 'center'
 		, textvalue : name
 		, textalign : 'center'
 		, boxwidth  : 'max'
@@ -386,10 +387,6 @@ function addPlaylist( name, oldname ) {
 		} );
 		$( '#plopen' ).removeClass( 'disable' );
 		GUI.lsplaylists.push( name );
-		
-		GUI.local = 1;
-		setTimeout( function() { GUI.local = 0 }, 500 );
-		
 		$.post( 'enhance.php', { mpc: 'mpc save "'+ name.replace( /"/g, '\\"' ) +'"' } );
 	}
 }
@@ -414,6 +411,7 @@ function playlistVerify( name, oldname ) {
 				, title       : oldname ? 'Rename Playlist' : 'Add Playlist'
 				, message     : '<white>'+ name +'</white>'
 							+'<br>Already exists.'
+				, msgalign    : 'center'
 				, cancellabel : 'Back'
 				, cancel      : function() {
 					playlistNew();
@@ -428,21 +426,18 @@ function playlistVerify( name, oldname ) {
 }
 function playlistDelete() {
 	info( {
-		  icon    : 'minus-circle'
-		, title   : 'Delete Playlist'
-		, message : 'Delete?'
+		  icon     : 'minus-circle'
+		, title    : 'Delete Playlist'
+		, message  : 'Delete?'
 					+'<br><white>'+ GUI.list.name +'</white>'
-		, cancel  : 1
-		, oklabel : 'Delete'
-		, ok      : function() {
+		, msgalign : 'center'
+		, cancel   : 1
+		, oklabel  : 'Delete'
+		, ok       : function() {
 			var count = $( '#pls-count' ).text() - 1;
 			$( '#pls-count' ).text( numFormat( count ) );
 			if ( !count ) $( '#pl-currentpath' ).html( '<bl>&emsp;PLAYLISTS</bl>' );
 			GUI.list.li.remove();
-			
-			GUI.local = 1;
-			setTimeout( function() { GUI.local = 0 }, 500 );
-			
 			$.post( 'enhance.php', { mpc: 'mpc rm "'+ GUI.list.name.replace( /"/g, '\\"' ) +'"' } );
 		}
 	} );

@@ -31,6 +31,7 @@ var GUI = {
 	, screenS      : ( window.innerHeight < 590 || window.innerWidth < 500 )
 	, scrollspeed  : 80 // pixel/s
 	, status       : {}
+	, timeout      : ''
 };
 PNotify.prototype.options.delay = 3000;
 PNotify.prototype.options.styling = 'fontawesome';
@@ -407,10 +408,6 @@ $( '#volmute, #volM' ).click( function() {
 		unmuteColor();
 		GUI.display.volumemute = 0;
 	}
-	
-	GUI.local = 1;
-	setTimeout( function() { GUI.local = 0 }, 500 );
-	
 	$.post( 'enhance.php', { volume: 'setmute' } );
 } );
 $( '#volup, #voldn' ).click( function() {
@@ -420,10 +417,6 @@ $( '#volup, #voldn' ).click( function() {
 
 	vol = ( thisid === 'volup' ) ? vol + 1 : vol - 1;
 	$volumeRS.setValue( vol );
-	
-	GUI.local = 1;
-	setTimeout( function() { GUI.local = 0 }, 500 );
-	
 	$.post( 'enhance.php', { volume: vol } );
 } );
 $( '#coverTL' ).click( function() {
@@ -771,7 +764,7 @@ $( '#home-blocks' ).contextmenu( function( e ) { // disable default image contex
 $( '.home-block' ).click( function() {
 	var $this = $( this );
 	var id = this.id;
-	if ( GUI.local || $this.hasClass( 'home-bookmark' ) || id === 'home-coverart' ) return
+	if ( $this.hasClass( 'home-bookmark' ) || id === 'home-coverart' ) return
 	
 	var type = id.replace( 'home-', '' );
 	if ( type === 'usb' && !$( '#home-usb gr' ).length ) {
@@ -961,15 +954,16 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-remove', function() {
 	var artist = $album.next().text();
 	var coverfile = img.split( '/' ).pop();
 	info( {
-		  icon    : 'minus-circle'
-		, title   : 'Remove Thumbnail'
-		, message : 'Remove?'
+		  icon     : 'minus-circle'
+		, title    : 'Remove Thumbnail'
+		, message  : 'Remove?'
 					+'<br><img src="'+ img +'">'
 					+'<br><wh>'+ album +'</wh>'
 					+'<br>'+ artist
-		, cancel  : 1
-		, oklabel : 'Remove'
-		, ok      : function() {
+		, msgalign : 'center'
+		, cancel   : 1
+		, oklabel  : 'Remove'
+		, ok       : function() {
 			$this.parent().parent().remove();
 			$.post( 'enhance.php', { coverfile: coverfile } );
 		}
@@ -1377,10 +1371,6 @@ $( '#pl-entries' ).on( 'click', '.pl-action', function() { // remove
 	}
 	var songpos = $this.index() + 1;
 	$this.remove();
-	
-	GUI.local = 1;
-	setTimeout( function() { GUI.local = 0 }, 500 );
-	
 	if ( !$this.hasClass( 'webradio' ) ) {
 		$.post( 'enhance.php', { mpc: 'mpc del '+ songpos } );
 	} else {
@@ -1510,87 +1500,90 @@ $.each( streams, function( i, stream ) {
 } );
 
 pushstreams.display.onmessage = function( data ) {
-	if ( typeof data[ 0 ] === 'object' ) {
-		var data = data[ 0 ];
-		$.each( data, function( key, val ) {
-			GUI.display[ key ] = val;
-		} );
-	}
-	if ( GUI.local ) return
-	
-	if ( GUI.playback ) {
-		getPlaybackStatus();
-	} else if ( GUI.library ) {
-		if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) {
-			renderLibrary();
-		} else {
-			if ( GUI.display.coverfile ) {
-				if ( !$( '.licover' ).length ) $( '#db-currentpath a:last-child' ).click();
-			} else {
-				$( '.licover' ).remove();
-			}
-		}
-	} else {
-		displayTopBottom();
-	}
-}
-pushstreams.volume.onmessage = function( data ) {
-	if ( GUI.local ) return
+	if ( typeof data[ 0 ] !== 'object' ) return
 	
 	var data = data[ 0 ];
-	var vol = data[ 0 ];
-	var volumemute = data[ 1 ];
-	$volumeRS.setValue( vol );
-	$volumehandle.rsRotate( - $volumeRS._handle1.angle );
-	volumemute ? muteColor( volumemute ) : unmuteColor();
+	$.each( data, function( key, val ) {
+		GUI.display[ key ] = val;
+	} );
+	clearTimeout( GUI.timeout );
+	GUI.timeout = setTimeout( function() {
+		if ( GUI.playback ) {
+			getPlaybackStatus();
+		} else if ( GUI.library ) {
+			if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) {
+				renderLibrary();
+			} else {
+				if ( GUI.display.coverfile ) {
+					if ( !$( '.licover' ).length ) $( '#db-currentpath a:last-child' ).click();
+				} else {
+					$( '.licover' ).remove();
+				}
+			}
+		} else {
+			displayTopBottom();
+		}
+	}, 500 );
+}
+pushstreams.volume.onmessage = function( data ) {
+	var data = data[ 0 ];
+	clearTimeout( GUI.timeout );
+	GUI.timeout = setTimeout( function() {
+		var vol = data[ 0 ];
+		var volumemute = data[ 1 ];
+		$volumeRS.setValue( vol );
+		$volumehandle.rsRotate( - $volumeRS._handle1.angle );
+		volumemute ? muteColor( volumemute ) : unmuteColor();
+	}, 500 );
 }
 pushstreams.bookmark.onmessage = function( data ) {
-	if ( GUI.local || GUI.bookmarkedit ) return
-	
-	GUI.local = 1;
-	setTimeout( function() { GUI.local = 0 }, 500 );
+	if ( GUI.bookmarkedit ) return
+		
 	var bookmarks = data[ 0 ];
-	var content = '';
-	$( '.bookmark' ).remove();
-	if ( !bookmarks.length ) return
-	
-	if ( !GUI.display.order.length ) {
-		bookmarks.sort( function( a, b ) {
-			return stripLeading( a.name ).localeCompare( stripLeading( b.name ), undefined, { numeric: true } );
-		} );
-	}
-	$.each( bookmarks, function( i, bookmark ) {
-		if ( bookmark.coverart ) {
-			var namehtml = '<img class="bkcoverart" src="'+ bookmark.coverart +'">';
-			var hidelabel = ' hide';
-		} else {
-			var namehtml = '<i class="fa fa-bookmark"></i>';
-			var hidelabel = '';
-		}
-		content += '<div class="divblock bookmark">'
-					+'<div class="home-block home-bookmark">'
-						+'<a class="lipath">'+ bookmark.path +'</a>'
-						+ namehtml
-						+'<div class="divbklabel"><span class="bklabel label'+ hidelabel +'">'+ bookmark.name +'</span></div>'
-					+'</div>'
-				  +'</div>';
-	} );
-	$.each( GUI.libraryhome, function( name, val ) {
-		if ( name === 'activeplayer' || name === 'spotify' ) return
-		$( '#home-'+ name ).find( 'gr' ).text( val );
-	} );
-	$( '#divhomeblocks' ).append( content ).promise().done( function() {
-		if ( GUI.display.order.length ) {
-			$.each( GUI.display.order, function( i, name ) {
-				var $divblock = $( '.divblock' ).filter( function() {
-					return $( this ).find( '.label' ).text() === name;
-				} );
-				$divblock.detach();
-				$( '#divhomeblocks' ).append( $divblock );
+	clearTimeout( GUI.timeout );
+	GUI.timeout = setTimeout( function() {
+		var content = '';
+		$( '.bookmark' ).remove();
+		if ( !bookmarks.length ) return
+		
+		if ( !GUI.display.order.length ) {
+			bookmarks.sort( function( a, b ) {
+				return stripLeading( a.name ).localeCompare( stripLeading( b.name ), undefined, { numeric: true } );
 			} );
 		}
-		renderLibrary()
-	} );
+		$.each( bookmarks, function( i, bookmark ) {
+			if ( bookmark.coverart ) {
+				var namehtml = '<img class="bkcoverart" src="'+ bookmark.coverart +'">';
+				var hidelabel = ' hide';
+			} else {
+				var namehtml = '<i class="fa fa-bookmark"></i>';
+				var hidelabel = '';
+			}
+			content += '<div class="divblock bookmark">'
+						+'<div class="home-block home-bookmark">'
+							+'<a class="lipath">'+ bookmark.path +'</a>'
+							+ namehtml
+							+'<div class="divbklabel"><span class="bklabel label'+ hidelabel +'">'+ bookmark.name +'</span></div>'
+						+'</div>'
+					  +'</div>';
+		} );
+		$.each( GUI.libraryhome, function( name, val ) {
+			if ( name === 'activeplayer' || name === 'spotify' ) return
+			$( '#home-'+ name ).find( 'gr' ).text( val );
+		} );
+		$( '#divhomeblocks' ).append( content ).promise().done( function() {
+			if ( GUI.display.order.length ) {
+				$.each( GUI.display.order, function( i, name ) {
+					var $divblock = $( '.divblock' ).filter( function() {
+						return $( this ).find( '.label' ).text() === name;
+					} );
+					$divblock.detach();
+					$( '#divhomeblocks' ).append( $divblock );
+				} );
+			}
+			renderLibrary()
+		} );
+	}, 500 );
 }
 pushstreams.playlist.onmessage = function( data ) {
 	GUI.lsplaylists = data[ 0 ] || [];
@@ -1605,50 +1598,59 @@ pushstreams.playlist.onmessage = function( data ) {
 var timeoutUpdate;
 pushstreams.idle.onmessage = function( changed ) {
 	var changed = changed[ 0 ];
-	if ( changed === 'player' ) { // on track changed
-		getPlaybackStatus();
-		if ( GUI.playlist && !GUI.pleditor ) setPlaylistScroll();
-	} else if ( changed === 'playlist' ) { // on playlist changed
-		if ( GUI.pleditor || GUI.local ) return
-		
-		if ( GUI.playlist ) {
-			$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
-				if ( data.playlist.length ) {
-					GUI.status.playlistlength = data.playlist.length;
-					GUI.lsplaylists = data.lsplaylists || [];
-					GUI.pllist = data.playlist;
-				} else {
-					GUI.status.playlistlength = 0;
-				}
-				renderPlaylist();
+	clearTimeout( GUI.timeout );
+	GUI.timeout = setTimeout( function() {
+		if ( changed === 'player' ) { // on track changed
+				getPlaybackStatus();
+				if ( GUI.playlist && !GUI.pleditor ) setPlaylistScroll();
+		} else if ( changed === 'playlist' ) { // on playlist changed
+			if ( GUI.pleditor ) return
+			
+			if ( GUI.playlist ) {
+				$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
+					if ( data.playlist.length ) {
+						GUI.status.playlistlength = data.playlist.length;
+						GUI.lsplaylists = data.lsplaylists || [];
+						GUI.pllist = data.playlist;
+					} else {
+						GUI.status.playlistlength = 0;
+					}
+					renderPlaylist();
+				}, 'json' );
+			} else if ( GUI.playback ) {
+				getPlaybackStatus();
+			}
+		} else if ( changed === 'options' ) { // on mode toggled
+			$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
+				$.each( status, function( key, value ) {
+					GUI.status[ key ] = value;
+				} );
+				if ( GUI.playback ) setButtonToggle();
 			}, 'json' );
-		} else if ( GUI.playback ) {
-			getPlaybackStatus();
+		} else if ( changed === 'update' ) {
+			$.post( 'enhance.php', { librarycount: 1 }, function( data ) {
+				$( '.home-block gr' ).remove();
+				$.each( data, function( id, val ) {
+					if ( val ) $( '#home-'+ id ).find( 'i' ).after( '<gr>'+ numFormat( val ) +'</gr>' );
+				} );
+			}, 'json' );
+			if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) return;
+			
+			$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
+				if ( status.updating_db ) {
+					GUI.status.updating_db = 1;
+				} else {
+					GUI.status.updating_db = 0;
+					new PNotify( {
+						  title : 'Update Database'
+						, text  : 'Database updated.'
+					} );
+				}
+			}, 'json' );
+		} else if ( changed === 'database' ) { // on files changed (for webradio rename)
+			if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) $( '#home-webradio' ).tap();
 		}
-	} else if ( changed === 'options' ) { // on mode toggled
-		if ( GUI.local ) return // suppress 2nd 'repeat + single'
-		
-		GUI.local = 1;
-		setTimeout( function() { GUI.local = 0 }, 500 );
-		$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
-			$.each( status, function( key, value ) {
-				GUI.status[ key ] = value;
-			} );
-			if ( GUI.playback ) setButtonToggle();
-		}, 'json' );
-	} else if ( changed === 'update' ) {
-		$.post( 'enhance.php', { librarycount: 1 }, function( data ) {
-			$( '.home-block gr' ).remove();
-			$.each( data, function( id, val ) {
-				if ( val ) $( '#home-'+ id ).find( 'i' ).after( '<gr>'+ numFormat( val ) +'</gr>' );
-			} );
-		}, 'json' );
-		if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) return;
-		
-		statusUpdate();
-	} else if ( changed === 'database' ) { // on files changed (for webradio rename)
-		if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) $( '#home-webradio' ).tap();
-	}
+	}, 500 );
 }
 pushstreams.notify.onmessage = function( data ) {
 	var notify = data[ 0 ];
