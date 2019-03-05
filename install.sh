@@ -23,17 +23,6 @@ if [[ $( pacman -Ss 'imagemagick$' | head -n1 | awk '{print $NF}' ) != '[install
 	pkgfiles='glibc imagemagick liblqr libmagick libpng libraqm zlib'
 	pkgurl=https://github.com/rern/_assets/raw/master/imagemagick.tar
 	installPackages "$pkgs" "$pkgfiles" "$pkgurl"
-	
-	imagemagick=$( pacman -Ss '^imagemagick$' | head -n1 | awk '{print $NF}' )
-	libpng=$( pacman -Ss '^libpng$' | head -n1 | awk '{print $NF}' )
-	zlib=$( pacman -Ss '^zlib$' | head -n1 | awk '{print $NF}' )
-	glibc=$( pacman -Ss '^glibc$' | head -n1 | awk '{print $NF}' )
-	if [[ $imagemagick != '[installed]' || $libpng != '[installed]' || $zlib != '[installed]' || $glibc != '[installed]' ]]; then
-		title "$info $( tcolor ImageMagick ) and support packages not installed properly."
-		echo "Reinstall manually by SSH: pacman -Sy imagemagick libpng zlib glibc"
-		title -nt "Then install / update again."
-		exit
-	fi
 fi
 
 mv /srv/http/index.php{,.backup}
