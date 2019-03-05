@@ -624,6 +624,7 @@ function switchPlaysource( source ) {
 	} );
 }
 function displayIndexBar() {
+	$( '#db-index li' ).css( 'color', '' );
 	setTimeout( function() {
 		var wH = window.innerHeight;
 		var indexoffset = GUI.bars ? 160 : 80;
