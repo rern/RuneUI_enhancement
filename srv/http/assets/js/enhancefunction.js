@@ -624,7 +624,11 @@ function switchPlaysource( source ) {
 	} );
 }
 function displayIndexBar() {
-	$( '#db-index li' ).css( 'color', '' );
+	$( '#db-index li' ).not( ':eq( 0 )' ).css( 'color', '#000000' );
+	$( '#db-entries .lisort' ).each( function() {
+		var init = this.innerText[ 0 ];
+		if ( init.match( /[A-Z]/ ) ) $( '#index-'+ init ).css( 'color', '' );
+	} );
 	setTimeout( function() {
 		var wH = window.innerHeight;
 		var indexoffset = GUI.bars ? 160 : 80;
@@ -935,15 +939,15 @@ function dataSort( data, path, plugin, querytype, arg ) {
 				} else if ( value.albumartist ) {
 					albumartist = value.albumartist;
 				} else if ( value.directory ) {
-					value.lisort = stripLeading( value.directory.replace( /^.*\//, '' ) );
+					value.lisort = stripLeading( value.directory.replace( /^.*\//, '' ) ).toUpperCase();
 					arraydir.push( value );
 				} else if ( value.file ) {
-					value.lisort = stripLeading( value.file.replace( /^.*\//, '' ) );
+					value.lisort = stripLeading( value.file.replace( /^.*\//, '' ) ).toUpperCase();
 					arrayfile.push( value );
 					sec = HMS2Second( value.Time );
 					litime += sec;
 				} else if ( value.playlist ) {
-					value.lisort = stripLeading( value.playlist.replace( /^.*\//, '' ) );
+					value.lisort = stripLeading( value.playlist.replace( /^.*\//, '' ) ).toUpperCase();
 					arraypl.push( value );
 				}
 			} );
@@ -992,7 +996,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		} else {
 			$.each( data, function( index, value ) {
 				if ( value[ prop ] === undefined ) prop = mode[ GUI.browsemode ];
-				value.lisort = stripLeading( value[ prop ] );
+				value.lisort = stripLeading( value[ prop ] ).toUpperCase();
 			} );
 			data.sort( function( a, b ) {
 				return a[ 'lisort' ].localeCompare( b[ 'lisort' ], undefined, { numeric: true } );
@@ -1121,7 +1125,6 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			$( '#db-currentpath' ).find( 'span' ).html( folderCrumb );
 		}
 	}
-	$( '#db-index li' ).css( 'color', '' );
 	// hide index bar in directories with files only
 	var lieq = $( '#db-entries .licover' ).length ? 1 : 0;
 	if ( $( '#db-entries li:eq( '+ lieq +' ) i.db-icon' ).hasClass( 'fa-music' ) || fileplaylist ) {
@@ -1296,7 +1299,7 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 				if ( !inputArr.streams.length ) break; // Filter stations with no streams
 				
 				var liname = inputArr.name;
-				var lisort = stripLeading( liname );
+				var lisort = stripLeading( liname ).toUpperCase();
 				var url = inputArr.streams[ 0 ].stream
 				content = '<li mode="dirble">'
 						 +'<a class="lipath">'+ url +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ lisort +'</a>'

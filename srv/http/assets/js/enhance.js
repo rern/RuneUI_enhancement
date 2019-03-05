@@ -1125,21 +1125,15 @@ $( '#db-index li' ).click( function() {
 	var match = 0;
 	if ( indextext === '#' ) {
 		$( 'html, body' ).scrollTop( 0 );
-		if ( $( '#db-entries .lisort:eq( 0 )' ).text()[ 0 ] === 'A' ) $this.css( 'color', '#000000' );
 		return
 	}
 	var $el = $( '#divcoverarts' ).hasClass( 'hide' ) ? $( '#db-entries li' ) : $( '.coverart' );
 	$el.each( function() {
 		if ( $( this ).find( '.lisort' ).text()[ 0 ] === indextext ) {
 			$( 'html, body' ).scrollTop( this.offsetTop - topoffset );
-			match = 1;
 			return false
 		}
 	} );
-	if ( !match ) {
-		$this.css( 'color', '#000000' );
-		if ( $this.text() !== 'Z' ) $this.next().click();
-	}
 } );
 $( '#db-entries, #pl-entries, #pl-editor' ).on( 'click', 'p', function() {
 	$( '.menu' ).addClass( 'hide' );
