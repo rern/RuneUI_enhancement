@@ -953,7 +953,7 @@ $( '.coverart' ).tap( function( e ) {
 	$( '.coverart div' ).append( '<i class="coverart-remove fa fa-minus-circle"></i>' );
 	$( '.coverart img' ).css( 'opacity', 0.4 );
 } );
-$( '#divcoverarts' ).on( 'click', '.coverart-remove', function() {
+$( '#divcoverarts' ).on( 'tap', '.coverart-remove', function() {
 	var $this = $( this );
 	var img = $this.prev().prop( 'src' );
 	var $album = $this.parent().next();
