@@ -112,7 +112,7 @@ if ( count( $files ) ) {
 		$artist = $names[ 1 ];
 		$sortalbum = str_replace( ' ', '_', stripLeading( $album ) );
 		$sortartist = str_replace( ' ', '_', stripLeading( $artist ) );
-		$sort = $sortalbum.'-'.$sortartist;
+		$sort = strtoupper( $sortalbum.'-'.$sortartist );
 		$cue = $names[ 2 ];
 		$lists[] = array( $sort, $album, $artist, $file, $cue );
 	}
@@ -135,7 +135,7 @@ if ( count( $files ) ) {
 							.'<gr class="coverartartist">'.( $list[ 2 ] ?: '&nbsp;' ).'</gr>'
 						.'</div>';
 	}
-	$coverarthtml = '<p></p>';
+	$coverartshtml.= '<p></p>';
 } else {
 	$coverarthtml = '';
 }
