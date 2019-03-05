@@ -18,36 +18,11 @@ redis-cli hdel display library &> /dev/null
 
 installstart $@
 
-# install and verify installed imagemagick
-getPackages() {
-	pacman -Syw --noconfirm imagemagick libpng zlib glibc
-	files=$( ls /var/cache/pacman/pkg )
-	readarray -t files <<<"$files"
-	names=(glibc imagemagick liblqr libmagick libpng libraqm zlib)
-	countname=${#names[@]}
-	countfile=
-	i=0
-	for file in "${files[@]}"; do
-		for name in "${names[@]}"; do
-			[[ ${file%%-*} == $name ]] && (( countfile++ ))
-		done
-	done
-	if (( $countfile < $countname )) && (( $i < 3 )); then
-		(( i++ ))
-		echo -e "$bar Retry #$i ..."
-		getPackages
-	elif (( $i == 3 )); then
-		wgetnc https://github.com/rern/_assets/raw/master/imagemagick.tar
-		bsdtar xf packages.tar -C /
-		rm imagemagick.tar
-	fi
-}
 if [[ $( pacman -Ss 'imagemagick$' | head -n1 | awk '{print $NF}' ) != '[installed]' ]]; then
-	echo -e "$bar Prefetch packages ..."
-	getPackages
-
-	echo -e "$bar Install ImageMagick for thumbnails creating ..."
-	pacman -S --noconfirm imagemagick libpng zlib glibc
+	pkgs='imagemagick libpng zlib glibc'
+	pkgfiles='glibc imagemagick liblqr libmagick libpng libraqm zlib'
+	pkgurl=https://github.com/rern/_assets/raw/master/imagemagick.tar
+	installPackages "$pkgs" "$pkgfiles" "$pkgurl"
 	
 	imagemagick=$( pacman -Ss '^imagemagick$' | head -n1 | awk '{print $NF}' )
 	libpng=$( pacman -Ss '^libpng$' | head -n1 | awk '{print $NF}' )
@@ -55,7 +30,7 @@ if [[ $( pacman -Ss 'imagemagick$' | head -n1 | awk '{print $NF}' ) != '[install
 	glibc=$( pacman -Ss '^glibc$' | head -n1 | awk '{print $NF}' )
 	if [[ $imagemagick != '[installed]' || $libpng != '[installed]' || $zlib != '[installed]' || $glibc != '[installed]' ]]; then
 		title "$info $( tcolor ImageMagick ) and support packages not installed properly."
-		echo "Renstall manually by SSH: pacman -Sy imagemagick libpng zlib glibc"
+		echo "Reinstall manually by SSH: pacman -Sy imagemagick libpng zlib glibc"
 		title -nt "Then install / update again."
 		exit
 	fi
