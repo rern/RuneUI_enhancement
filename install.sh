@@ -21,7 +21,7 @@ installstart $@
 if [[ $( pacman -Ss 'imagemagick$' | head -n1 | awk '{print $NF}' ) != '[installed]' ]]; then
 	pkgs='imagemagick libpng zlib glibc'
 	checklist='glibc imagemagick liblqr libmagick libpng libraqm zlib'
-	fallbackurl=https://github.com/rern/_assets/raw/master/imagemagick.tar
+	fallbackurl=https://github.com/rern/_assets/raw/master/RuneUI_enhancement/imagemagick.tar
 	installPackages "$pkgs" "$checklist" "$fallbackurl"
 fi
 
