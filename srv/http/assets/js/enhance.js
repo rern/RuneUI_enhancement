@@ -246,12 +246,10 @@ $( '#tab-library' ).click( function() {
 		switchPage( 'library' );
 	}
 } );
-$( '#tab-playback' ).on( 'tap', function() {
+$( '#tab-playback' ).click( function() {
 	getPlaybackStatus();
 	switchPage( 'playback' );
-} ).taphold( function() {
-	location.reload();
-} );
+} )
 $( '#tab-playlist' ).click( function() {
 	if ( GUI.playlist && GUI.pleditor ) GUI.pleditor = 0;
 	if ( GUI.status.activePlayer === 'Airplay' ) {
@@ -279,6 +277,7 @@ $( '#swipeL' ).click( function() {
 } );
 $( '#swipeR' ).click( function() {
 	var page = GUI.playback ? 'playlist' : ( GUI.library ? 'playback' : 'library' );
+	console.log(page)
 	$( '#tab-'+ page ).click();
 } );
 $( '#page-playback' ).click( function( e ) {
@@ -307,6 +306,9 @@ $( '#menu-top, #menu-bottom, #settings' ).click( function( e ) {
 	$( '.controls' ).addClass( 'hide' );
 	$( '.controls1, .rs-tooltip, #imode' ).removeClass( 'hide' );
 	$( '#swipebar' ).addClass( 'transparent' );
+} );
+$( '#menu-bottom' ).taphold( function() {
+	location.reload();
 } );
 // PLAYBACK /////////////////////////////////////////////////////////////////////////////////////
 $( '#song, #playlist-warning' ).on( 'click', 'i', function() {
@@ -1534,7 +1536,7 @@ pushstreams.display.onmessage = function( data ) {
 		} else {
 			displayTopBottom();
 		}
-	}, timeoutms );
+	}, GUI.timeoutms );
 }
 pushstreams.volume.onmessage = function( data ) {
 	var data = data[ 0 ];
@@ -1545,7 +1547,7 @@ pushstreams.volume.onmessage = function( data ) {
 		$volumeRS.setValue( vol );
 		$volumehandle.rsRotate( - $volumeRS._handle1.angle );
 		volumemute ? muteColor( volumemute ) : unmuteColor();
-	}, timeoutms );
+	}, GUI.timeoutms );
 }
 pushstreams.bookmark.onmessage = function( data ) {
 	if ( GUI.bookmarkedit ) return
@@ -1594,7 +1596,7 @@ pushstreams.bookmark.onmessage = function( data ) {
 			}
 			renderLibrary()
 		} );
-	}, timeoutms );
+	}, GUI.timeoutms );
 }
 pushstreams.playlist.onmessage = function( data ) {
 	GUI.lsplaylists = data[ 0 ] || [];
@@ -1661,7 +1663,7 @@ pushstreams.idle.onmessage = function( changed ) {
 		} else if ( changed === 'database' ) { // on files changed (for webradio rename)
 			if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) $( '#home-webradio' ).tap();
 		}
-	}, timeoutms );
+	}, GUI.timeoutms );
 }
 pushstreams.notify.onmessage = function( data ) {
 	var notify = data[ 0 ];
