@@ -269,6 +269,8 @@ $( '#tab-playlist' ).click( function() {
 $( '#swipebar' ).tap( function( e ) {
 	if ( !GUI.swipe && e.target.id !== 'swipeL' && e.target.id !== 'swipeR' ) $( '#menu-settings' ).click();
 } ).taphold( function() {
+	if ( GUI.swipe ) return
+	
 	location.reload();
 } );
 $( '#swipeL' ).click( function() {
