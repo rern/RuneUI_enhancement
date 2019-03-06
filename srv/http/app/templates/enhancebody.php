@@ -143,9 +143,9 @@ $indexarray = range( 'A', 'Z' );
 $li = '<li>#</li>';
 foreach( $indexarray as $i => $char ) {
 if ( $i % 2 === 0 ) {
-	$li.= '<li id="index-'.$char.'">'.$char."</li>\n";
+	$li.= '<li class="index-'.$char.'">'.$char."</li>\n";
 } else {
-	$li.= '<li id="index-'.$char.'"class="half">'.$char."</li>\n";
+	$li.= '<li class="index-'.$char.' half">'.$char."</li>\n";
 }
 }
 $index = $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
