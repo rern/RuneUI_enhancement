@@ -246,9 +246,11 @@ $( '#tab-library' ).click( function() {
 		switchPage( 'library' );
 	}
 } );
-$( '#tab-playback' ).click( function() {
+$( '#tab-playback' ).on( 'tap', function() {
 	getPlaybackStatus();
 	switchPage( 'playback' );
+} ).taphold( function() {
+	location.reload();
 } );
 $( '#tab-playlist' ).click( function() {
 	if ( GUI.playlist && GUI.pleditor ) GUI.pleditor = 0;
