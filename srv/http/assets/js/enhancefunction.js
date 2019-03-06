@@ -994,7 +994,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			var arrayfileL = arrayfile.length;
 			for ( i = 0; i < arrayfileL; i++ ) content += data2html( arrayfile[ i ], i, 'db', path );
 		} else {
-			if ( value[ prop ] === undefined ) prop = mode[ GUI.browsemode ];
+			if ( data[ 0 ][ prop ] === undefined ) prop = mode[ GUI.browsemode ];
 			nameSort( data, prop );
 			var dataL = data.length;
 			for ( i = 0; i < dataL; i++ ) content += data2html( data[ i ], i, 'db', path );
