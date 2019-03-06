@@ -180,7 +180,7 @@ function setButton() {
 		$( '#'+ state ).addClass( 'btn-primary' );
 	}
 	if ( GUI.display.update ) {
-		if ( !GUI.bars ) $( '#badge' ).text( GUI.display.update ).removeClass( 'hide' );
+		if ( GUI.bars ) $( '#badge' ).text( GUI.display.update ).removeClass( 'hide' );
 	} else {
 		$( '#badge' ).empty().addClass( 'hide' );
 	}
