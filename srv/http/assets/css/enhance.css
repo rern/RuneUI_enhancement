@@ -437,6 +437,7 @@ wh, gr { font-weight: 300; }
 /* ---------------------- middle window ----------------------*/
 .page,
 #settings,
+#menu-bottom,
 #swipebar {
 	-webkit-touch-callout: none; /* iOS Safari */
 	-webkit-user-select: none;   /* Safari */
