@@ -879,6 +879,17 @@ $( '#home-coverart' ).click( function() { // fix - 'tap' also fire .coverart cli
 	$( '#db-currentpath .lipath' ).text( 'coverart' );
 	$( '#home-blocks' ).addClass( 'hide' );
 	$( '#divcoverarts, #db-back, #db-index' ).removeClass( 'hide' );
+	$( '#db-index li' ).not( ':eq( 0 )' ).css( 'color', '#456000' );
+	if ( !GUI.indexcoverart ) {
+		GUI.indexcoverart = [];
+		$( '.coverart .lisort').each( function( i, el ) {
+			index = $( el ).text()[ 0 ];
+			if ( index.match( /[A-Z]/ ) && GUI.indexcoverart.indexOf( index ) === -1 ) GUI.indexcoverart.push( index );
+		} );
+	}
+	GUI.indexcoverart.forEach( function( index ) {
+		$( '#db-index .index-'+ index ).css( 'color', '' );
+	} );
 	displayIndexBar();
 	setTimeout( function() {
 		var cH = window.innerHeight - $( '.coverart' ).height() - 94;
