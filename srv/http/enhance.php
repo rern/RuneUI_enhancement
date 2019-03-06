@@ -516,7 +516,7 @@ function lsPlaylists() {
 	if ( $lines ) {
 		$lists = explode( "\n", rtrim( $lines ) );
 		foreach( $lists as $list ) {
-			$lsplaylists[] = $list;
+			$lsplaylists[] = array( 'name' => $list );
 		}
 		return $lsplaylists;
 	} else {
