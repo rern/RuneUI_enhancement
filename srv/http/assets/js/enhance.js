@@ -32,6 +32,7 @@ var GUI = {
 	, scrollspeed  : 80 // pixel/s
 	, status       : {}
 	, timeout      : ''
+	, timeoutms    : 500
 };
 PNotify.prototype.options.delay = 3000;
 PNotify.prototype.options.styling = 'fontawesome';
@@ -378,9 +379,10 @@ $( '#volume' ).roundSlider( {
 		$( e.handle.element ).rsRotate( - e.handle.angle );
 		// value before 'change'
 		if ( e.preValue === 0 ) unmuteColor();
+		if ( GUI.local ) return
+		
 		GUI.local = 1;
 		setTimeout( function() { GUI.local = 0 }, 500 );
-		
 		$.post( 'enhance.php', { volume: e.value } );
 	}
 	, start           : function( e ) { // on 'start drag'
@@ -810,9 +812,7 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 	var path = $this.find( '.lipath' ).text();
 	var name = $this.find( '.bklabel' ).text();
 	if ( $target.is( '.home-block-edit' ) ) {
-		setTimeout( function() { // fix: info close icon appears too fast
-			bookmarkRename( name, path, $this );
-		}, 100 );
+		bookmarkRename( name, path, $this );
 	} else if ( $target.is( '.home-block-remove' ) ) {
 		bookmarkDelete( name, $this );
 	} else {
@@ -1170,7 +1170,7 @@ $( '#plopen' ).click( function() {
 	$( '#pl-currentpath, #pl-editor, #pl-index' ).removeClass( 'hide' );
 	nameSort( GUI.lsplaylists, 'name' );
 	var content = '';
-	$.each( GUI.lsplaylists, function( i, val ) {
+	GUI.lsplaylists.forEach( function( val ) {
 		content += '<li class="pl-folder">'
 						+'<i class="fa fa-list-ul pl-icon">'
 						+'<a class="liname">'+ val.name +'</a></i>'
@@ -1503,7 +1503,7 @@ window.addEventListener( 'orientationchange', function() {
 
 var pushstreams = {};
 var streams = [ 'display', 'volume', 'bookmark', 'playlist', 'idle', 'notify' ];
-$.each( streams, function( i, stream ) {
+streams.forEach( function( stream ) {
 	pushstreams[ stream ] = new PushStream( { modes: 'websocket' } );
 	pushstreams[ stream ].addChannel( stream );
 } );
@@ -1532,7 +1532,7 @@ pushstreams.display.onmessage = function( data ) {
 		} else {
 			displayTopBottom();
 		}
-	}, 500 );
+	}, timeoutms );
 }
 pushstreams.volume.onmessage = function( data ) {
 	var data = data[ 0 ];
@@ -1543,7 +1543,7 @@ pushstreams.volume.onmessage = function( data ) {
 		$volumeRS.setValue( vol );
 		$volumehandle.rsRotate( - $volumeRS._handle1.angle );
 		volumemute ? muteColor( volumemute ) : unmuteColor();
-	}, 500 );
+	}, timeoutms );
 }
 pushstreams.bookmark.onmessage = function( data ) {
 	if ( GUI.bookmarkedit ) return
@@ -1592,7 +1592,7 @@ pushstreams.bookmark.onmessage = function( data ) {
 			}
 			renderLibrary()
 		} );
-	}, 500 );
+	}, timeoutms );
 }
 pushstreams.playlist.onmessage = function( data ) {
 	GUI.lsplaylists = data[ 0 ] || [];
@@ -1659,7 +1659,7 @@ pushstreams.idle.onmessage = function( changed ) {
 		} else if ( changed === 'database' ) { // on files changed (for webradio rename)
 			if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) $( '#home-webradio' ).tap();
 		}
-	}, 500 );
+	}, timeoutms );
 }
 pushstreams.notify.onmessage = function( data ) {
 	var notify = data[ 0 ];
@@ -1669,6 +1669,6 @@ pushstreams.notify.onmessage = function( data ) {
 		, text        : notify.text
 	} );
 }
-$.each( streams, function( i, stream ) {
+streams.forEach( function( stream ) {
 	pushstreams[ stream ].connect();
 } );
