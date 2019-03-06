@@ -624,12 +624,6 @@ function switchPlaysource( source ) {
 	} );
 }
 function displayIndexBar() {
-	$( '#db-index li' ).not( ':eq( 0 )' ).css( 'color', '#000000' );
-	var $lisort = $( '#divcoverarts' ).hasClass( 'hide' ) ? $( '#db-entries .lisort' ) : $( '#divcoverarts .lisort' );
-	$lisort.each( function() {
-		var init = this.innerText[ 0 ];
-		if ( init.match( /[A-Z]/ ) ) $( '#index-'+ init ).css( 'color', '' );
-	} );
 	setTimeout( function() {
 		var wH = window.innerHeight;
 		var indexoffset = GUI.bars ? 160 : 80;
@@ -852,10 +846,32 @@ function getDB( options ) {
 		}, 'json' );
 	}
 }
-// strip leading A|An|The|(|[|.|'|"|\ (for sorting)
-function stripLeading( string ) {
-	if ( typeof string === 'number' ) string = string.toString();
-	return string.replace( /^A +|^An +|^The +|^\(\s*|^\[\s*|^\.\s*|^\'\s*|^\"\s*|\\/i, '' );
+function stripLeading( string ) { // strip leading A|An|The|(|[|.|'|"|\ (for sorting)
+	return string
+			.toString()
+			.toUpperCase()
+			.replace( /^A +|^AN +|^THE +|^\(\s*|^\[\s*|^\.\s*|^\'\s*|^\"\s*|\\/, '' );
+}
+function nameSort( data, name ) {
+	var index;
+	$.each( data, function( i, value ) {
+		value.lisort = stripLeading( value[ name ] );
+		index = value.lisort[ 0 ];
+		if ( index.match( /[A-Z]/ ) ) {
+			if ( GUI.library ) {
+				$( '#db-index .index-'+ index ).css( 'color', '' );
+			} else {
+				$( '#pl-index li' ).not( ':eq( 0 )' ).css( 'color', '#456000' );
+				$( '#pl-index .index-'+ index ).css( 'color', '' );
+			}
+		}
+	} );
+	liSort( data );
+}
+function liSort( data ) { // for arrays that already each looped
+	data.sort( function( a, b ) {
+		return a.lisort.localeCompare( b.lisort, undefined, { numeric: true } )
+	} );
 }
 function dataSort( data, path, plugin, querytype, arg ) {
 	var data = data,
@@ -875,7 +891,8 @@ function dataSort( data, path, plugin, querytype, arg ) {
 	GUI.albumartist = '';
 	GUI.currentpath = path;
 	$( '#home-blocks' ).addClass( 'hide' );
-
+	$( '#db-index li' ).not( ':eq( 0 )' ).css( 'color', '#456000' );
+	
 	if ( !plugin ) {
 		if ( !data.length ) return
 		
@@ -909,6 +926,8 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			var arraypl = [];
 			var litime = 0;
 			var sec = 0;
+			var name;
+			var index;
 			$.each( data, function( i, value ) {
 				if ( value.coverart ) {
 					coverart = value.coverart;
@@ -922,17 +941,20 @@ function dataSort( data, path, plugin, querytype, arg ) {
 					genre = value.genre;
 				} else if ( value.albumartist ) {
 					albumartist = value.albumartist;
-				} else if ( value.directory ) {
-					value.lisort = stripLeading( value.directory.replace( /^.*\//, '' ) ).toUpperCase();
-					arraydir.push( value );
-				} else if ( value.file ) {
-					value.lisort = stripLeading( value.file.replace( /^.*\//, '' ) ).toUpperCase();
-					arrayfile.push( value );
-					sec = HMS2Second( value.Time );
-					litime += sec;
-				} else if ( value.playlist ) {
-					value.lisort = stripLeading( value.playlist.replace( /^.*\//, '' ) ).toUpperCase();
-					arraypl.push( value );
+				} else if ( value.directory || value.file || value.playlist ) {
+					name = value.directory || value.file || value.playlist;
+					value.lisort = stripLeading( name.replace( /^.*\//, '' ) );
+					index = value.lisort[ 0 ];
+					index.match( /[A-Z]/ ) && $( '#db-index .index-'+ index ).css( 'color', '' );
+					if ( value.directory ) {
+						arraydir.push( value );
+					} else if ( value.file ) {
+						arrayfile.push( value );
+						sec = HMS2Second( value.Time );
+						litime += sec;
+					} else if ( value.playlist ) {
+						arraypl.push( value );
+					}
 				}
 			} );
 			if ( coverart ) {
@@ -953,14 +975,10 @@ function dataSort( data, path, plugin, querytype, arg ) {
 						  +'<i class="fa fa-bars db-action" data-target="#context-menu-'+ ( GUI.browsemode !== 'file' ? GUI.browsemode : 'folder' ) +'"></i>'
 						  +'</li>';
 			}
-			arraydir.sort( function( a, b ) {
-				return a[ 'lisort' ].localeCompare( b[ 'lisort' ], undefined, { numeric: true } );
-			} );
+			liSort( arraydir ); // already each looped
 			var arraydirL = arraydir.length;
 			for ( i = 0; i < arraydirL; i++ ) content += data2html( arraydir[ i ], i, 'db', path );
-			arraypl.sort( function( a, b ) {
-				return a[ 'lisort' ].localeCompare( b[ 'lisort' ], undefined, { numeric: true } );
-			} );
+			liSort( arraypl );
 			var filecue = [];
 			$.each( arraypl, function( i, val ) {
 				if ( val.filepl && val.filepl.slice( -3 ) === 'cue' ) filecue.push( val.filepl );
@@ -972,19 +990,12 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			
 			var arrayplL = arraypl.length;
 			for ( i = 0; i < arrayplL; i++ ) content += data2html( arraypl[ i ], i, 'db', path );
-			arrayfile.sort( function( a, b ) {
-				return a[ 'lisort' ].localeCompare( b[ 'lisort' ], undefined, { numeric: true } );
-			} );
+			liSort( arrayfile );
 			var arrayfileL = arrayfile.length;
 			for ( i = 0; i < arrayfileL; i++ ) content += data2html( arrayfile[ i ], i, 'db', path );
 		} else {
-			$.each( data, function( index, value ) {
-				if ( value[ prop ] === undefined ) prop = mode[ GUI.browsemode ];
-				value.lisort = stripLeading( value[ prop ] ).toUpperCase();
-			} );
-			data.sort( function( a, b ) {
-				return a[ 'lisort' ].localeCompare( b[ 'lisort' ], undefined, { numeric: true } );
-			} );
+			if ( value[ prop ] === undefined ) prop = mode[ GUI.browsemode ];
+			nameSort( data, prop );
 			var dataL = data.length;
 			for ( i = 0; i < dataL; i++ ) content += data2html( data[ i ], i, 'db', path );
 		}
@@ -992,39 +1003,25 @@ function dataSort( data, path, plugin, querytype, arg ) {
 	} else {
 		if ( plugin === 'Spotify' ) {
 			data = ( querytype === 'tracks' ) ? data.tracks : data.playlists;
-			data.sort( function( a, b ) {
-				if ( path === 'Spotify' && querytype === '' ) {
-					return stripLeading( a.name ).localeCompare( stripLeading( b.name ), undefined, { numeric: true } )
-				} else if ( querytype === 'tracks' ) {
-					return stripLeading( a.title ) .localeCompare( stripLeading( b.title ), undefined, { numeric: true } )
-				} else {
-					return 0;
-				}
-			} );
+			if ( path === 'Spotify' && querytype === '' ) {
+				nameSort( data, 'name' );
+			} else if ( querytype === 'tracks' ) {
+				nameSort( data, 'title' );
+			}
 			for ( i = 0; ( row = data[ i ] ); i++ ) content += data2html( row, i, 'Spotify', arg, querytype );
 		} else if ( plugin === 'Dirble' ) {
 			if ( querytype === 'childs-stations' ) {
 				content = $( '#db-entries' ).html();
 			} else {
-				data.sort( function( a, b ) {
 					if ( !querytype || querytype === 'childs' || querytype === 'categories' ) {
-						return stripLeading( a.title ).localeCompare( stripLeading( b.title ), undefined, { numeric: true } )
+						nameSort( data, 'title' );
 					} else if ( querytype === 'childs-stations' || querytype === 'stations' ) {
-						return stripLeading( a.name ).localeCompare( stripLeading( b.name ), undefined, { numeric: true } )
-				   } else {
-						return 0;
+						nameSort( data, 'name' );
 					}
-				} );
 				for ( i = 0; ( row = data[ i ] ); i++ ) content += data2html( row, i, 'Dirble', '', querytype );
 			}
 		} else if ( plugin === 'Jamendo' ) {
-			data.sort( function( a, b ) {
-				if ( path === 'Jamendo' && querytype === '' ) {
-					return stripLeading( a.dispname ).localeCompare( stripLeading( b.dispname ), undefined, { numeric: true } )
-				} else {
-					return 0;
-				}
-			} );
+			if ( path === 'Jamendo' && querytype === '' ) nameSort( data, 'dispname' );
 			for (i = 0; ( row = data[ i ] ); i++ ) content += data2html( row, i, 'Jamendo', '', querytype );
 		}
 	}
@@ -1273,20 +1270,18 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 		case 'Dirble':
 			if ( querytype === '' || querytype === 'childs' ) {
 				var liname = inputArr.title;
-				var lisort = stripLeading( liname );
 				var childClass = ( querytype === 'childs' ) ? ' db-dirble-child' : '';
 				content = '<li class="db-dirble'+ childClass +'" mode="dirble">'
-						 +'<a class="lipath">'+ inputArr.id +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ lisort +'</a>'
+						 +'<a class="lipath">'+ inputArr.id +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
 						 +'<i class="fa fa-genre db-icon"></i>'
 						 +'<span class="single">'+ liname +'</span>'
 			} else if ( [ 'search', 'stations', 'childs-stations' ].indexOf( querytype ) !== -1 ) {
 				if ( !inputArr.streams.length ) break; // Filter stations with no streams
 				
 				var liname = inputArr.name;
-				var lisort = stripLeading( liname ).toUpperCase();
 				var url = inputArr.streams[ 0 ].stream
 				content = '<li mode="dirble">'
-						 +'<a class="lipath">'+ url +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ lisort +'</a>'
+						 +'<a class="lipath">'+ url +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
 						 +'<i class="fa fa-webradio db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-radio"></i>'
 						 +'<span class="li1">'+ liname +'&ensp;<span>( '+ inputArr.country +' )</span></span>'
 						 +'<span class="li2">'+ url +'</span>'

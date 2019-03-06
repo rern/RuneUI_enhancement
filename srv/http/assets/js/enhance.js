@@ -1152,22 +1152,20 @@ $( '#plopen' ).click( function() {
 	$( '#context-menu-plaction' ).addClass( 'hide' );
 	$( '#loader' ).removeClass( 'hide' );
 	
-	var pl = GUI.lsplaylists;
-	var plL = pl.length;
+	var plL = GUI.lsplaylists.length;
 	var plcounthtml = '<wh><i class="fa fa-microsd"></i></wh><bl>PLAYLIST</bl>';
 	plcounthtml += plL ? '<gr>&ensp;·&emsp;</gr> <wh id="pls-count">'+ numFormat( plL ) +'</wh>&ensp;<i class="fa fa-list-ul"></i>' : '';
 	$( '#pl-currentpath' ).html( plcounthtml +'<i class="fa fa-arrow-left plsbackroot"></i>' );
 	$( '#pl-currentpath, #pl-editor, #pl-index' ).removeClass( 'hide' );
-	
-	pl.sort( function( a, b ) {
-		return stripLeading( a ).localeCompare( stripLeading( b ), undefined, { numeric: true } );
-	} );
+	nameSort( GUI.lsplaylists, 'name' );
 	var content = '';
-	$.each( pl, function( i, val ) {
+	$.each( GUI.lsplaylists, function( i, val ) {
 		content += '<li class="pl-folder">'
-				  +'	<i class="fa fa-list-ul pl-icon"><a class="liname">'+ val +'</a></i>'
-				  +'	<span class="plname">'+ val +'</span>'
-				  +'	<i class="fa fa-bars pl-action" data-target="#context-menu-playlist"></i>'
+						+'<i class="fa fa-list-ul pl-icon">'
+						+'<a class="liname">'+ val.name +'</a></i>'
+						+'<a class="lisort">'+ val.lisort +'</a></i>'
+						+'<span class="plname">'+ val.name +'</span>'
+						+'<i class="fa fa-bars pl-action" data-target="#context-menu-playlist"></i>'
 				  +'</li>';
 	} );
 	$( '#pl-editor' ).html( content +'<p></p>' ).promise().done( function() {
