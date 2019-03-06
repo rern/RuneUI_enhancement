@@ -31,8 +31,8 @@ var GUI = {
 	, screenS      : ( window.innerHeight < 590 || window.innerWidth < 500 )
 	, scrollspeed  : 80 // pixel/s
 	, status       : {}
-	, timeout      : ''
-	, timeoutms    : 500
+	, debounce      : ''
+	, debouncems    : 500
 };
 PNotify.prototype.options.delay = 3000;
 PNotify.prototype.options.styling = 'fontawesome';
@@ -1521,8 +1521,8 @@ pushstreams.display.onmessage = function( data ) {
 	$.each( data, function( key, val ) {
 		GUI.display[ key ] = val;
 	} );
-	clearTimeout( GUI.timeout );
-	GUI.timeout = setTimeout( function() {
+	clearTimeout( GUI.debounce );
+	GUI.debounce = setTimeout( function() {
 		if ( GUI.playback ) {
 			getPlaybackStatus();
 		} else if ( GUI.library ) {
@@ -1538,25 +1538,25 @@ pushstreams.display.onmessage = function( data ) {
 		} else {
 			displayTopBottom();
 		}
-	}, GUI.timeoutms );
+	}, GUI.debouncems );
 }
 pushstreams.volume.onmessage = function( data ) {
 	var data = data[ 0 ];
-	clearTimeout( GUI.timeout );
-	GUI.timeout = setTimeout( function() {
+	clearTimeout( GUI.debounce );
+	GUI.debounce = setTimeout( function() {
 		var vol = data[ 0 ];
 		var volumemute = data[ 1 ];
 		$volumeRS.setValue( vol );
 		$volumehandle.rsRotate( - $volumeRS._handle1.angle );
 		volumemute ? muteColor( volumemute ) : unmuteColor();
-	}, GUI.timeoutms );
+	}, GUI.debouncems );
 }
 pushstreams.bookmark.onmessage = function( data ) {
 	if ( GUI.bookmarkedit ) return
 		
 	var bookmarks = data[ 0 ];
-	clearTimeout( GUI.timeout );
-	GUI.timeout = setTimeout( function() {
+	clearTimeout( GUI.debounce );
+	GUI.debounce = setTimeout( function() {
 		var content = '';
 		$( '.bookmark' ).remove();
 		if ( !bookmarks.length ) return
@@ -1598,7 +1598,7 @@ pushstreams.bookmark.onmessage = function( data ) {
 			}
 			renderLibrary()
 		} );
-	}, GUI.timeoutms );
+	}, GUI.debouncems );
 }
 pushstreams.playlist.onmessage = function( data ) {
 	GUI.lsplaylists = data[ 0 ] || [];
@@ -1613,8 +1613,8 @@ pushstreams.playlist.onmessage = function( data ) {
 var timeoutUpdate;
 pushstreams.idle.onmessage = function( changed ) {
 	var changed = changed[ 0 ];
-	clearTimeout( GUI.timeout );
-	GUI.timeout = setTimeout( function() {
+	clearTimeout( GUI.debounce );
+	GUI.debounce = setTimeout( function() {
 		if ( changed === 'player' ) { // on track changed
 				getPlaybackStatus();
 				if ( GUI.playlist && !GUI.pleditor ) setPlaylistScroll();
@@ -1665,7 +1665,7 @@ pushstreams.idle.onmessage = function( changed ) {
 		} else if ( changed === 'database' ) { // on files changed (for webradio rename)
 			if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) $( '#home-webradio' ).tap();
 		}
-	}, GUI.timeoutms );
+	}, GUI.debouncems );
 }
 pushstreams.notify.onmessage = function( data ) {
 	var notify = data[ 0 ];
