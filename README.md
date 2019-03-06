@@ -92,6 +92,9 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 - Browse by CoverArt
 	- Long-press `CoverArt` to create / update thumbnails
 	- Long-press thumbnail for remove
+- Coverart bookmarks
+- Bookmarks and webradios can be renamed
+- Bookmarks and webradios can be named with " characters
 - Show icon and breadcrumb heading while browsing
 - Show list in playlist files (\*.cue, \*.pls, \*.m3u)
 - Toggle search box
@@ -107,8 +110,6 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 	- Composers > names > albums > songs
 	- Genres > names > artists > albums > songs
 - Show album heading with artist name (various artists album without album artist tag > 1st track artist)
-- Bookmarks and webradios can be renamed
-- Bookmarks and webradios can be named with " characters
 - Show filenames or URL of saved webradio before played
 - Changes reflect to all clients
 
