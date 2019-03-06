@@ -11,20 +11,18 @@ alias=enha
 . /srv/http/addonsedit.sh
 
 #0temp0
+redis-cli hdel display order &> /dev/null
 rm -rf /srv/http/assets/img/coverarts/coverarts
 redis-cli hdel display library &> /dev/null
 #1temp1
 
 installstart $@
 
-pkg=$( pacman -Ss '^imagemagick$' | head -n1 )
-installed=$( echo $pkg | cut -d' ' -f3 )
-if [[ $installed != '[installed]' ]]; then
-	echo -e "$bar Prefetch packages ..."
-	pacman -Syw --noconfirm imagemagick libpng zlib glibc
-	
-	echo -e "$bar Install ImageMagick for coverart resizing ..."
-	pacman -S --noconfirm imagemagick libpng zlib glibc
+if [[ $( pacman -Ss 'imagemagick$' | head -n1 | awk '{print $NF}' ) != '[installed]' ]]; then
+	pkgs='imagemagick libpng zlib glibc'
+	checklist='glibc imagemagick liblqr libmagick libpng libraqm zlib'
+	fallbackurl=https://github.com/rern/RuneAudio/raw/master/coverarts/imagemagick.tar
+	installPackages "$pkgs" "$checklist" "$fallbackurl"
 fi
 
 mv /srv/http/index.php{,.backup}

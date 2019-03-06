@@ -4,12 +4,8 @@ $redis->pconnect( '127.0.0.1' );
 $bkmarks = $redis->hGetAll( 'bkmarks' );
 $order = $redis->hGet( 'display', 'order' );
 
-function stripLeading( $array ) {
-	list( $first, $rest ) = explode( ' ', $array.' ', 2 );
-	// the extra space is to prevent "undefined offset" notices on single-word titles
-	$leading = array( 'a', 'an', 'the', '(', '[', '.', "'", '"', '\\' );
-	if ( in_array( strtolower( $first ), $leading ) ) return $rest.', '.$first;
-	return $array;
+function stripLeading( $string ) {
+	return preg_replace( '/^A +|^An +|^The +|^\(\s*|^\[\s*|^\.\s*|^\'\s*|^\"\s*|\\//i', '', $string );
 }
 // counts
 $count = exec( '/srv/http/enhancecount.sh' );
@@ -27,8 +23,6 @@ $count = array(
 );
 // bookmarks
 foreach( $bkmarks as $label => $path ) {
-	$sort = stripLeading( $label );
-	$id = preg_replace( array( '/ /', '/[^A-Za-z0-9_-]+/' ), array( '_', '-' ), $label );
 	$thumbfile = '/mnt/MPD/'.$path.'/thumbnail.jpg';
 	if ( file_exists( $thumbfile ) ) {
 		$thumbnail = file_get_contents( $thumbfile );
@@ -36,13 +30,17 @@ foreach( $bkmarks as $label => $path ) {
 	} else {
 		$coverart = '';
 	}
-	$bookmarks[] = array( $sort, $id, $label, $path, $coverart );
+	if ( $order ) {
+		$bookmarks[] = array( $label, $path, $coverart );
+	} else {
+		$sort = stripLeading( $label );
+		$sort = str_replace( '_', '-', $sort ); // fix '_' order last (first in js)
+		$bookmarks[] = array( $label, $path, $coverart, $sort );
+	}
 }
 if ( !$order ) {
 	usort( $bookmarks, function( $a, $b ) {
-		$aname = str_replace( '_', '-', $a[ 0 ] ); // fix '_' order last (first in js)
-		$bname = str_replace( '_', '-', $b[ 0 ] );
-		return strnatcmp( stripLeading( $aname ), stripLeading( $bname ) );
+		return strnatcmp( stripLeading( $a[ 3 ] ), stripLeading( $b[ 3 ] ) );
 	} );
 }
 // library home blocks
@@ -65,28 +63,31 @@ foreach( $blocks as $id => $value ) {
 	$browsemode = in_array( $id, array( 'album', 'artist', 'albumartist', 'composer', 'genre', 'coverart' ) ) ? ' data-browsemode="'.$id.'"' : '';
 	$plugin = in_array( $id, array( 'spotify', 'dirble', 'jamendo' ) ) ? ' data-plugin="'.$value[ 0 ].'"' : '';
 	$counthtml = $count[ $value[ 1 ] ] ? '<gr>'.number_format( $count[ $value[ 1 ] ] ).'</gr>' : '';
-	$blocks[ $id ] = '
+	$divblocks[ $value[ 2 ] ] = '
 		<div class="divblock">
 			<div id="home-'.$id.'" class="home-block"'.$browsemode.$plugin.'>
 				<a class="lipath">'.$value[ 0 ].'</a>
 				<i class="fa fa-'.$value[ 1 ].'"></i>
 				'.$counthtml.'
-				<wh>'.$value[ 2 ].'</wh>
+				<a class="label">'.$value[ 2 ].'</a>
 			</div>
 		</div>
 	';
 }
 foreach( $bookmarks as $bookmark ) {
-	if ( $bookmark[ 4 ] ) {
-		$namehtml = '<img class="bkcoverart" src="'.$bookmark[ 4 ].'">';
+	if ( $bookmark[ 2 ] ) {
+		$namehtml = '<img class="bkcoverart" src="'.$bookmark[ 2 ].'">';
+		$hidelabel = ' hide';
 	} else {
-		$namehtml = '<i class="fa fa-bookmark"></i><div class="divbklabel"><span class="bklabel">'.$bookmark[ 2 ].'</span></div>';
+		$namehtml = '<i class="fa fa-bookmark"></i>';
+		$hidelabel = '';
 	}
-	$blocks[ 'bk-'.$bookmark[ 1 ] ] = '
+	$divblocks[ $bookmark[ 0 ] ] = '
 		<div class="divblock bookmark">
-			<div id="home-bk-'.$bookmark[ 1 ].'" class="home-block home-bookmark">
-				<a class="lipath">'.$bookmark[ 3 ].'</a>
+			<div class="home-block home-bookmark">
+				<a class="lipath">'.$bookmark[ 1 ].'</a>
 				'.$namehtml.'
+				<div class="divbklabel"><span class="bklabel label'.$hidelabel.'">'.$bookmark[ 0 ].'</span></div>
 			</div>
 		</div>
 	';
@@ -94,13 +95,11 @@ foreach( $bookmarks as $bookmark ) {
 
 if ( $order ) {
 	$order = explode( '^^', $order );
-	foreach( $order as $id ) {
-		$blockhtml.= $blocks[ $id ];
+	foreach( $order as $label ) {
+		$blockhtml.= $divblocks[ $label ];
 	}
 } else {
-	foreach( $blocks as $id => $block) {
-		$blockhtml.= $block;
-	}
+	$blockhtml = implode( $divblocks );
 }
 
 $files = array_slice( scandir( '/srv/http/assets/img/coverarts' ), 2 );
@@ -110,8 +109,10 @@ if ( count( $files ) ) {
 		$name = str_replace( '|', '/', $name );
 		$names = explode( '^^', $name );
 		$album = $names[ 0 ];
-		$sort = stripLeading( $album );
 		$artist = $names[ 1 ];
+		$sortalbum = str_replace( ' ', '_', stripLeading( $album ) );
+		$sortartist = str_replace( ' ', '_', stripLeading( $artist ) );
+		$sort = strtoupper( $sortalbum.'-'.$sortartist );
 		$cue = $names[ 2 ];
 		$lists[] = array( $sort, $album, $artist, $file, $cue );
 	}
@@ -134,7 +135,7 @@ if ( count( $files ) ) {
 							.'<gr class="coverartartist">'.( $list[ 2 ] ?: '&nbsp;' ).'</gr>'
 						.'</div>';
 	}
-	$coverarthtml = '<p></p>';
+	$coverartshtml.= '<p></p>';
 } else {
 	$coverarthtml = '';
 }
@@ -142,9 +143,9 @@ $indexarray = range( 'A', 'Z' );
 $li = '<li>#</li>';
 foreach( $indexarray as $i => $char ) {
 if ( $i % 2 === 0 ) {
-	$li.= '<li>'.$char."</li>\n";
+	$li.= '<li class="index-'.$char.'">'.$char."</li>\n";
 } else {
-	$li.= '<li class="half">'.$char."</li>\n";
+	$li.= '<li class="index-'.$char.' half">'.$char."</li>\n";
 }
 }
 $index = $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
@@ -287,7 +288,12 @@ $menu.= '</div>';
 		<?php 
 		} ?>
 </div>
-<div id="swipebar" class="transparent"><i class="fa fa-swipe fa-2x"></i><i class="fa fa-gear fa-2x"></i></div>
+<div id="swipebar" class="transparent">
+	<i id="swipeL" class="fa fa-left fa-2x"></i>
+	<i class="fa fa-reload fa-2x"></i><i class="fa fa-swipe fa-2x"></i><i class="fa fa-gear fa-2x"></i>
+	<i id="swipeR" class="fa fa-right fa-2x"></i>
+</div>
+<div id="swipeR" class="transparent"><i class="fa fa-gear fa-2x"></i></div>
 <div id="menu-bottom" class="hide">
 	<ul>
 		<li id="tab-library"><a><i class="fa fa-library"></i></a></li>
@@ -417,7 +423,7 @@ $menu.= '</div>';
 		<button id="db-search-close" class="btn hide" type="button"><i class="fa fa-times sx"></i></button>
 		<i id="db-back" class="fa fa-arrow-left"></i>
 	</div>
-	<div id="home-blocks" class="row">
+	<div id="home-blocks" class="row" data-count="<?=$count[ 'song' ]?>">
 		<div id="divhomeblocks">
 			<?=$blockhtml?>
 		</div>

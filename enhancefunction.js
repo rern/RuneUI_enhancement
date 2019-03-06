@@ -81,6 +81,7 @@ function switchPage( page ) {
 	GUI.currentpage = page;
 	// restore page scroll
 	if ( GUI.playback ) {
+		renderPlayback();
 		if ( GUI.status.state === 'play' && GUI.status.ext !== 'radio' ) $( '#elapsed' ).empty(); // hide flashing
 		$( 'html, body' ).scrollTop( 0 );
 	} else if ( GUI.library ) {
@@ -277,6 +278,10 @@ function setPlaybackBlank() {
 		.css( 'visibility', 'visible' );
 }
 function renderPlayback() {
+	if ( GUI.renderpb ) return
+	
+	GUI.renderpb = 1;
+	setTimeout( function() { GUI.renderpb = 0 }, 500 );
 	var status = GUI.status;
 	// song and album before update for song/album change detection
 	var previoussong = $( '#song' ).text();
@@ -315,14 +320,14 @@ function renderPlayback() {
 			var elapsed = status.elapsed;
 			if ( GUI.display.time ) {
 				$( '#timepos' ).empty();
-				if ( GUI.display.radioelapsed || GUI.localhost ) {
+				if ( !GUI.display.radioelapsed ) {
+					$( '#total' ).empty();
+				} else {
 					GUI.intElapsed = setInterval( function() {
 						elapsed++;
 						elapsedhms = second2HMS( elapsed );
 						$( '#total' ).text( elapsedhms ).css( 'color', '#7795b4' );
 					}, 1000 );
-				} else {
-					$( '#total' ).empty();
 				}
 			} else {
 				$( '#total' ).empty();
@@ -416,7 +421,7 @@ function renderPlayback() {
 		GUI.intElapsed = setInterval( function() {
 			elapsed++;
 			elapsedhms = second2HMS( elapsed );
-			$( '#timepos' ).html( '&ensp;<i class="fa fa-play"></i>&ensp;<w>'+ elapsedhms +'</w> / '+ timehms );
+			$( '#timepos' ).html( '&ensp;<i class="fa fa-play"></i>&ensp;<wh>'+ elapsedhms +'</wh> / '+ timehms );
 		}, 1000 );
 	}
 
@@ -427,6 +432,11 @@ function renderPlayback() {
 	}
 }
 function getPlaybackStatus() {
+	if ( GUI.local ) return
+	
+	GUI.local = 1;
+	setTimeout( function() { GUI.local = 0 }, 200 );
+	
 	$.post( 'enhancestatus.php', { artist: $( '#artist' ).text(), album: $( '#album' ).text() }, function( status ) {
 		// 'gpio off' > audio output switched > restarts mpd which makes status briefly unavailable
 		if( typeof status !== 'object' ) return
@@ -693,6 +703,23 @@ function renderLibrary() {
 	displayTopBottom();
 	$( 'html, body' ).scrollTop( 0 );
 }
+function statusUpdate() {
+	if ( GUI.local ) return
+	
+	GUI.local = 1;
+	setTimeout( function() { GUI.local = 0 }, 500 );
+	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
+		if ( status.updating_db ) {
+			GUI.status.updating_db = 1;
+		} else {
+			GUI.status.updating_db = 0;
+			new PNotify( {
+				  title : 'Update Database'
+				, text  : 'Database updated.'
+			} );
+		}
+	}, 'json' );
+}
 function infoNoData() {
 	$( '#loader' ).addClass( 'hide' );
 	if ( GUI.plugin ) return
@@ -846,32 +873,10 @@ function getDB( options ) {
 		}, 'json' );
 	}
 }
-function stripLeading( string ) { // strip leading A|An|The|(|[|.|'|"|\ (for sorting)
-	return string
-			.toString()
-			.toUpperCase()
-			.replace( /^A +|^AN +|^THE +|^\(\s*|^\[\s*|^\.\s*|^\'\s*|^\"\s*|\\/, '' );
-}
-function nameSort( data, name ) {
-	var index;
-	$.each( data, function( i, value ) {
-		value.lisort = stripLeading( value[ name ] );
-		index = value.lisort[ 0 ];
-		if ( index.match( /[A-Z]/ ) ) {
-			if ( GUI.library ) {
-				$( '#db-index .index-'+ index ).css( 'color', '' );
-			} else {
-				$( '#pl-index li' ).not( ':eq( 0 )' ).css( 'color', '#456000' );
-				$( '#pl-index .index-'+ index ).css( 'color', '' );
-			}
-		}
-	} );
-	liSort( data );
-}
-function liSort( data ) { // for arrays that already each looped
-	data.sort( function( a, b ) {
-		return a.lisort.localeCompare( b.lisort, undefined, { numeric: true } )
-	} );
+// strip leading A|An|The|(|[|.|'|"|\ (for sorting)
+function stripLeading( string ) {
+	if ( typeof string === 'number' ) string = string.toString();
+	return string.replace( /^A +|^An +|^The +|^\(\s*|^\[\s*|^\.\s*|^\'\s*|^\"\s*|\\/i, '' );
 }
 function dataSort( data, path, plugin, querytype, arg ) {
 	var data = data,
@@ -891,8 +896,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 	GUI.albumartist = '';
 	GUI.currentpath = path;
 	$( '#home-blocks' ).addClass( 'hide' );
-	$( '#db-index li' ).not( ':eq( 0 )' ).css( 'color', '#456000' );
-	
+
 	if ( !plugin ) {
 		if ( !data.length ) return
 		
@@ -926,8 +930,6 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			var arraypl = [];
 			var litime = 0;
 			var sec = 0;
-			var name;
-			var index;
 			$.each( data, function( i, value ) {
 				if ( value.coverart ) {
 					coverart = value.coverart;
@@ -941,20 +943,17 @@ function dataSort( data, path, plugin, querytype, arg ) {
 					genre = value.genre;
 				} else if ( value.albumartist ) {
 					albumartist = value.albumartist;
-				} else if ( value.directory || value.file || value.playlist ) {
-					name = value.directory || value.file || value.playlist;
-					value.lisort = stripLeading( name.replace( /^.*\//, '' ) );
-					index = value.lisort[ 0 ];
-					index.match( /[A-Z]/ ) && $( '#db-index .index-'+ index ).css( 'color', '' );
-					if ( value.directory ) {
-						arraydir.push( value );
-					} else if ( value.file ) {
-						arrayfile.push( value );
-						sec = HMS2Second( value.Time );
-						litime += sec;
-					} else if ( value.playlist ) {
-						arraypl.push( value );
-					}
+				} else if ( value.directory ) {
+					value.lisort = stripLeading( value.directory.replace( /^.*\//, '' ) );
+					arraydir.push( value );
+				} else if ( value.file ) {
+					value.lisort = stripLeading( value.file.replace( /^.*\//, '' ) );
+					arrayfile.push( value );
+					sec = HMS2Second( value.Time );
+					litime += sec;
+				} else if ( value.playlist ) {
+					value.lisort = stripLeading( value.playlist.replace( /^.*\//, '' ) );
+					arraypl.push( value );
 				}
 			} );
 			if ( coverart ) {
@@ -975,10 +974,14 @@ function dataSort( data, path, plugin, querytype, arg ) {
 						  +'<i class="fa fa-bars db-action" data-target="#context-menu-'+ ( GUI.browsemode !== 'file' ? GUI.browsemode : 'folder' ) +'"></i>'
 						  +'</li>';
 			}
-			liSort( arraydir ); // already each looped
+			arraydir.sort( function( a, b ) {
+				return a[ 'lisort' ].localeCompare( b[ 'lisort' ], undefined, { numeric: true } );
+			} );
 			var arraydirL = arraydir.length;
 			for ( i = 0; i < arraydirL; i++ ) content += data2html( arraydir[ i ], i, 'db', path );
-			liSort( arraypl );
+			arraypl.sort( function( a, b ) {
+				return a[ 'lisort' ].localeCompare( b[ 'lisort' ], undefined, { numeric: true } );
+			} );
 			var filecue = [];
 			$.each( arraypl, function( i, val ) {
 				if ( val.filepl && val.filepl.slice( -3 ) === 'cue' ) filecue.push( val.filepl );
@@ -990,12 +993,19 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			
 			var arrayplL = arraypl.length;
 			for ( i = 0; i < arrayplL; i++ ) content += data2html( arraypl[ i ], i, 'db', path );
-			liSort( arrayfile );
+			arrayfile.sort( function( a, b ) {
+				return a[ 'lisort' ].localeCompare( b[ 'lisort' ], undefined, { numeric: true } );
+			} );
 			var arrayfileL = arrayfile.length;
 			for ( i = 0; i < arrayfileL; i++ ) content += data2html( arrayfile[ i ], i, 'db', path );
 		} else {
-			if ( data[ 0 ][ prop ] === undefined ) prop = mode[ GUI.browsemode ];
-			nameSort( data, prop );
+			$.each( data, function( index, value ) {
+				if ( value[ prop ] === undefined ) prop = mode[ GUI.browsemode ];
+				value.lisort = stripLeading( value[ prop ] );
+			} );
+			data.sort( function( a, b ) {
+				return a[ 'lisort' ].localeCompare( b[ 'lisort' ], undefined, { numeric: true } );
+			} );
 			var dataL = data.length;
 			for ( i = 0; i < dataL; i++ ) content += data2html( data[ i ], i, 'db', path );
 		}
@@ -1003,25 +1013,39 @@ function dataSort( data, path, plugin, querytype, arg ) {
 	} else {
 		if ( plugin === 'Spotify' ) {
 			data = ( querytype === 'tracks' ) ? data.tracks : data.playlists;
-			if ( path === 'Spotify' && querytype === '' ) {
-				nameSort( data, 'name' );
-			} else if ( querytype === 'tracks' ) {
-				nameSort( data, 'title' );
-			}
+			data.sort( function( a, b ) {
+				if ( path === 'Spotify' && querytype === '' ) {
+					return stripLeading( a.name ).localeCompare( stripLeading( b.name ), undefined, { numeric: true } )
+				} else if ( querytype === 'tracks' ) {
+					return stripLeading( a.title ) .localeCompare( stripLeading( b.title ), undefined, { numeric: true } )
+				} else {
+					return 0;
+				}
+			} );
 			for ( i = 0; ( row = data[ i ] ); i++ ) content += data2html( row, i, 'Spotify', arg, querytype );
 		} else if ( plugin === 'Dirble' ) {
 			if ( querytype === 'childs-stations' ) {
 				content = $( '#db-entries' ).html();
 			} else {
+				data.sort( function( a, b ) {
 					if ( !querytype || querytype === 'childs' || querytype === 'categories' ) {
-						nameSort( data, 'title' );
+						return stripLeading( a.title ).localeCompare( stripLeading( b.title ), undefined, { numeric: true } )
 					} else if ( querytype === 'childs-stations' || querytype === 'stations' ) {
-						nameSort( data, 'name' );
+						return stripLeading( a.name ).localeCompare( stripLeading( b.name ), undefined, { numeric: true } )
+				   } else {
+						return 0;
 					}
+				} );
 				for ( i = 0; ( row = data[ i ] ); i++ ) content += data2html( row, i, 'Dirble', '', querytype );
 			}
 		} else if ( plugin === 'Jamendo' ) {
-			if ( path === 'Jamendo' && querytype === '' ) nameSort( data, 'dispname' );
+			data.sort( function( a, b ) {
+				if ( path === 'Jamendo' && querytype === '' ) {
+					return stripLeading( a.dispname ).localeCompare( stripLeading( b.dispname ), undefined, { numeric: true } )
+				} else {
+					return 0;
+				}
+			} );
 			for (i = 0; ( row = data[ i ] ); i++ ) content += data2html( row, i, 'Jamendo', '', querytype );
 		}
 	}
@@ -1106,6 +1130,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			$( '#db-currentpath' ).find( 'span' ).html( folderCrumb );
 		}
 	}
+	$( '#db-index li' ).css( 'color', '' );
 	// hide index bar in directories with files only
 	var lieq = $( '#db-entries .licover' ).length ? 1 : 0;
 	if ( $( '#db-entries li:eq( '+ lieq +' ) i.db-icon' ).hasClass( 'fa-music' ) || fileplaylist ) {
@@ -1270,18 +1295,20 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 		case 'Dirble':
 			if ( querytype === '' || querytype === 'childs' ) {
 				var liname = inputArr.title;
+				var lisort = stripLeading( liname );
 				var childClass = ( querytype === 'childs' ) ? ' db-dirble-child' : '';
 				content = '<li class="db-dirble'+ childClass +'" mode="dirble">'
-						 +'<a class="lipath">'+ inputArr.id +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
+						 +'<a class="lipath">'+ inputArr.id +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ lisort +'</a>'
 						 +'<i class="fa fa-genre db-icon"></i>'
 						 +'<span class="single">'+ liname +'</span>'
 			} else if ( [ 'search', 'stations', 'childs-stations' ].indexOf( querytype ) !== -1 ) {
 				if ( !inputArr.streams.length ) break; // Filter stations with no streams
 				
 				var liname = inputArr.name;
+				var lisort = stripLeading( liname );
 				var url = inputArr.streams[ 0 ].stream
 				content = '<li mode="dirble">'
-						 +'<a class="lipath">'+ url +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
+						 +'<a class="lipath">'+ url +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ lisort +'</a>'
 						 +'<i class="fa fa-webradio db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-radio"></i>'
 						 +'<span class="li1">'+ liname +'&ensp;<span>( '+ inputArr.country +' )</span></span>'
 						 +'<span class="li2">'+ url +'</span>'
