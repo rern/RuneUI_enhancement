@@ -32,7 +32,7 @@ var GUI = {
 	, scrollspeed  : 80 // pixel/s
 	, status       : {}
 	, debounce      : ''
-	, debouncems    : 500
+	, debouncems    : 300
 };
 PNotify.prototype.options.delay = 3000;
 PNotify.prototype.options.styling = 'fontawesome';
