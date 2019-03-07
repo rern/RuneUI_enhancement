@@ -44,7 +44,7 @@ $status[ 'ext' ] = ( substr($status[ 'file' ], 0, 4 ) !== 'http' ) ? $ext : 'rad
 
 if ( $status[ 'ext' ] !== 'radio' ) {
 	// missing id3tags
-	if ( empty( $status[ 'Artist' ] ) ) $status[ 'Artist' ] = basename( $dir );
+	if ( empty( $status[ 'Artist' ] ) ) $status[ 'Artist' ] = end( explode( '/', $dir ) );
 	if ( empty( $status[ 'Title' ] ) ) $status[ 'Title' ] = $pathinfo[ 'filename' ];
 	if ( empty( $status[ 'Album' ] ) ) $status[ 'Album' ] = '';
 } else {
