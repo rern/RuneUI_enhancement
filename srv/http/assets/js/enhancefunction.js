@@ -41,8 +41,7 @@ function setSwipe() {
 		GUI.bars = 0;
 		$( '#swipebar, .page' ).on( 'swipeleft swiperight', function( e ) {
 			GUI.swipe = 1; // suppress tap
-			// skip if swipe to show remove in playlist
-			if ( !$( e.target ).parents( '#pl-entries li' ).length ) setPageSwipe( e.type );
+			setPageSwipe( e.type );
 		} ).on( 'vmouseup', function() {
 			setTimeout( function() { GUI.swipe = 0 }, 500 );
 		} );
