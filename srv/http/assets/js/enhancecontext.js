@@ -6,7 +6,8 @@ $( '.contextmenu a' ).click( function() {
 	var $this = $( this );
 	var cmd = $this.data( 'cmd' );
 	if ( cmd === 'thumbnail' ) {
-		var path = GUI.list.path;
+		// enclosed in single quotes + escape inside single quotes: 'path'"'"'file'
+		var path = '/mnt/MPD/'+ GUI.list.path.replace( /'/g, '\'"\'"\'' );
 		info( {
 			  icon     : 'coverart'
 			, title    : 'Coverart Thumbnails Update'
@@ -19,8 +20,11 @@ $( '.contextmenu a' ).click( function() {
 					'<form id="formtemp" action="addonsbash.php" method="post">'
 						+'<input type="hidden" name="alias" value="cove">'
 						+'<input type="hidden" name="type" value="scan">'
-						+'<input type="hidden" name="opt" value="\'/mnt/MPD/'+ path +'\'">'
+						+'<input type="hidden" name="opt">'
 					+'</form>' );
+				path = $( '#infoCheckBox input[ type=checkbox ]:checked' ).length ? "'"+ path +"' 1" : "'"+ path +"'";
+				console.log( path )
+				$( '#formtemp input[ name=opt ]' ).val( path );
 				$( '#formtemp' ).submit();
 			}
 		} );
