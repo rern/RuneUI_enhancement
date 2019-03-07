@@ -155,7 +155,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	}
 	// coverart
 	$thumbfile = '/mnt/MPD/'.$value.'/thumbnail.jpg';
-	$dir = dirname( $thumbfile );
+	$dir = pathinfo( $thumbfile, PATHINFO_DIRNAME );
 	if ( file_exists( $thumbfile ) ) { // skip if already exists
 		$data = getBookmark();
 		pushstream( 'bookmark', $data );
@@ -264,12 +264,12 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 } else if ( isset( $_POST[ 'playlist' ] ) ) {
 	$path = $_POST[ 'playlist' ];
 	if ( !is_array( $path ) ) {
-		$ext = substr( $path, -3 );
-		if ( $ext === 'm3u' ) {
-			$file = '/mnt/MPD/'.$path;
+		$file = '/mnt/MPD/'.$path;
+		$pathinfo = pathinfo( $file );
+		if ( $pathinfo[ 'extension' ] === 'm3u' ) {
 			exec( '/usr/bin/sudo /usr/bin/ln -s "'.$file.'" /var/lib/mpd/playlists/' );
-			$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%^^[%albumartist%|%artist%]^^%album%^^%genre%^^%composer%" playlist "'.basename( $file, '.m3u' ).'"' );
-			exec( '/usr/bin/sudo /usr/bin/rm "/var/lib/mpd/playlists/'.basename( $file ).'"' );
+			$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%^^[%albumartist%|%artist%]^^%album%^^%genre%^^%composer%" playlist "'.$pathinfo[ 'filename' ].'"' );
+			exec( '/usr/bin/sudo /usr/bin/rm "/var/lib/mpd/playlists/'.$pathinfo[ 'basename' ].'"' );
 		} else {
 			$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%^^[%albumartist%|%artist%]^^%album%^^%genre%^^%composer%" playlist "'.$path.'"' );
 		}
@@ -279,7 +279,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 			$cuefile = preg_replace( '/([&\[\]])/', '#$1', $cue ); // escape literal &, [, ] in %file% (operation characters)
 			$lines.= shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%+cue^^[%albumartist%|%artist%]^^%album%^^%genre%^^%composer%^^'.$cuefile.'" playlist "'.$cue.'"' );
 		}
-		$path = dirname( $path[ 0 ] );
+		$path = pathinfo( $path[ 0 ], PATHINFO_DIRNAME );
 	}
 	$data = list2array( $lines );
 	$data[][ 'path' ] = $path;
@@ -341,11 +341,12 @@ function search2array( $result, $playlist = '' ) {
 	$lists = explode( "\n", rtrim( $result ) );
 	$genre = $composer = $albumartist = '';
 	foreach( $lists as $list ) {
-		$root = substr( $list, 0, 4 );
-		if ( $root === 'USB/' || $root === 'NAS/' || substr( $list, 0, 13 ) === 'LocalStorage/' ) {
-			$ext = substr( $list, -4 );
-			if ( $ext === '.cue' || $ext === '.m3u' || $ext === '.pls' ) {
-				$li[ 'playlist' ] = basename( $list );
+		$root = strtok( $list, '/' );
+		if ( $root === 'USB' || $root === 'NAS' || $root === 'LocalStorage' ) {
+			$pathinfo = pathinfo( $list );
+			$ext = $pathinfo[ 'extension' ];
+			if ( $ext === 'cue' || $ext === 'm3u' || $ext === 'pls' ) {
+				$li[ 'playlist' ] = $pathinfo[ 'basename' ];
 				$li[ 'filepl' ] = $list;
 				$data[] = $li;
 				$li = '';
@@ -354,7 +355,7 @@ function search2array( $result, $playlist = '' ) {
 			}
 		} else {
 			$list = explode( '^^', rtrim( $list ) );
-			$li[ 'Title' ] = $list[ 0 ];
+			$li[ 'Title' ] = $list[ 0 ] ?: pathinfo( $list[ 4 ], PATHINFO_FILENAME );
 			$li[ 'Time' ] = $list[ 1 ];
 			$li[ 'Artist' ] = $list[ 2 ];
 			$li[ 'Album' ] = $list[ 3 ];
@@ -383,17 +384,16 @@ function list2array( $result, $webradioname = null ) {
 	foreach( $lists as $list ) {
 		$list = explode( '^^', rtrim( $list ) );
 		$li[ 'file' ] = $list[ 3 ];
+		$pathinfo = pathinfo( $li[ 'file' ] );
 		if ( $li[ 'file' ] !== $file ) {
 			$file = $li[ 'file' ];
 			$i = 1;
 		}
-		$li[ 'track' ] = $list[ 2 ] ?: dirname( $li[ 'file' ] );
-		if ( substr( $li[ 'track' ], 0, 4 ) === 'http' ) {
-			$li[ 'Title' ] = $li[ 'track' ] ? $webradioname[ $list[ 3 ] ] : basename( $li[ 'file' ] );
-		} else if ( $list[ 0 ] ) {
-			$li[ 'Title' ] = $list[ 0 ];
+		$li[ 'track' ] = $list[ 2 ] ?: $pathinfo[ 'dirname' ];
+		if ( strtok( $li[ 'track' ], ':' ) === 'http' ) {
+			$li[ 'Title' ] = $li[ 'track' ] ? $webradioname[ $list[ 3 ] ] : $pathinfo[ 'filename' ];
 		} else {
-			$li[ 'Title' ] = basename( $li[ 'file' ] );
+			$li[ 'Title' ] = $list[ 0 ] ?: $pathinfo[ 'filename' ];
 		}
 		$li[ 'Time' ] = $list[ 1 ];
 		$li[ 'index' ] = $i++;
@@ -442,7 +442,7 @@ function isPlaylist( $data ) {
 }
 function getCover( $coverfiles, $path ) {
 	$file = '/mnt/MPD/'.$path;
-	$dir = dirname( $file );
+	$dir = pathinfo( $file, PATHINFO_DIRNAME );
 	foreach( $coverfiles as $cover ) {
 		$coverfile = $dir.'/'.$cover;
 		if ( file_exists( $coverfile ) ) {
