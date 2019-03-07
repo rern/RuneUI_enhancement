@@ -5,6 +5,27 @@ $( '.contextmenu a' ).click( function() {
 	$( '.menu' ).addClass( 'hide' );
 	var $this = $( this );
 	var cmd = $this.data( 'cmd' );
+	if ( cmd === 'thumbnail' ) {
+		var path = GUI.list.path;
+		info( {
+			  icon    : 'coverart'
+			, title   : 'Coverart Thumbnails Update'
+			, message : 'Update thumbnails for Browse By CoverArt in:'
+					   +'<br><w>'+ path +'</w>'
+			, msgalign : 'center'
+			, cancel  : 1
+			, ok      : function() {
+				$( 'body' ).append(
+					'<form id="formtemp" action="addonsbash.php" method="post">'
+						+'<input type="hidden" name="alias" value="cove">'
+						+'<input type="hidden" name="type" value="scan">'
+						+'<input type="hidden" name="opt" value="\'/mnt/MPD/'+ path +'\'">'
+					+'</form>' );
+				$( '#formtemp' ).submit();
+			}
+		} );
+		return
+	}
 	if ( [ 'play', 'pause', 'stop', 'remove' ].indexOf( cmd ) !== -1 ) {
 		if ( cmd === 'remove' ) {
 			GUI.list.li.find( '.pl-action' ).click();
@@ -55,17 +76,17 @@ $( '.contextmenu a' ).click( function() {
 	}
 	var addplaypos = GUI.status.playlistlength + 1;
 	var contextCommand = {
-		  add           : mpcCmd
-		, addplay       : [ mpcCmd, 'mpc play '+ addplaypos ]
-		, replace       : [ 'mpc clear', mpcCmd ]
-		, replaceplay   : [ 'mpc clear', mpcCmd, 'mpc play' ]
-		, radiosave     : webRadioNew
-		, rename        : webRadioRename
-		, delete        : webRadioDelete
-		, plrename      : playlistRename
-		, pldelete      : playlistDelete
-		, bookmark      : bookmarkNew
-		, update        : 'mpc update "'+ GUI.list.path +'"'
+		  add         : mpcCmd
+		, addplay     : [ mpcCmd, 'mpc play '+ addplaypos ]
+		, replace     : [ 'mpc clear', mpcCmd ]
+		, replaceplay : [ 'mpc clear', mpcCmd, 'mpc play' ]
+		, radiosave   : webRadioNew
+		, rename      : webRadioRename
+		, delete      : webRadioDelete
+		, plrename    : playlistRename
+		, pldelete    : playlistDelete
+		, bookmark    : bookmarkNew
+		, update      : 'mpc update "'+ GUI.list.path +'"'
 	}
 	var command = contextCommand[ cmd ];
 	if ( typeof command !== 'undefined' ) {
