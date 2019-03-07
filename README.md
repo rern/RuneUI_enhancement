@@ -50,7 +50,7 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 	- Show sampling info while stop
 	- Working previous / next while stop
 	- Get sampling info directly with MPD on play
-	- Get sampling info from local database while stop (must be played once before available)
+	- Get sampling info from local database while stop (Webradios must be played once before available)
 	- Show song title in gray while pause
 	- Hide webradio song title while stop
 	- Scroll long names
