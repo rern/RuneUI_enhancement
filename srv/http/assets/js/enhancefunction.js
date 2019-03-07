@@ -857,7 +857,7 @@ function nameSort( data, name ) {
 	$.each( data, function( i, value ) {
 		value.lisort = stripLeading( value[ name ] );
 		index = value.lisort[ 0 ];
-		if ( index.match( /[A-Z]/ ) ) {
+		if ( GUI.A2Z.indexOf( index ) !== -1 ) {
 			if ( GUI.library ) {
 				$( '#db-index .index-'+ index ).css( 'color', '' );
 			} else {
@@ -945,7 +945,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 					name = value.directory || value.file || value.playlist;
 					value.lisort = stripLeading( name.replace( /^.*\//, '' ) );
 					index = value.lisort[ 0 ];
-					index.match( /[A-Z]/ ) && $( '#db-index .index-'+ index ).css( 'color', '' );
+					GUI.A2Z.indexOf( index ) !== -1 && $( '#db-index .index-'+ index ).css( 'color', '' );
 					if ( value.directory ) {
 						arraydir.push( value );
 					} else if ( value.file ) {

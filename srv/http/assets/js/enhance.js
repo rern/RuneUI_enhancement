@@ -31,8 +31,10 @@ var GUI = {
 	, screenS      : ( window.innerHeight < 590 || window.innerWidth < 500 )
 	, scrollspeed  : 80 // pixel/s
 	, status       : {}
-	, debounce      : ''
-	, debouncems    : 300
+	, debounce     : ''
+	, debouncems   : 300
+	, A2Z          : 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split( '' )
+
 };
 PNotify.prototype.options.delay = 3000;
 PNotify.prototype.options.styling = 'fontawesome';
@@ -881,7 +883,7 @@ $( '#home-coverart' ).click( function() { // fix - 'tap' also fire .coverart cli
 		GUI.indexcoverart = [];
 		$( '.coverart .lisort').each( function( i, el ) {
 			index = $( el ).text()[ 0 ];
-			if ( index.match( /[A-Z]/ ) && GUI.indexcoverart.indexOf( index ) === -1 ) GUI.indexcoverart.push( index );
+			if ( GUI.A2Z.indexOf( index ) !== -1 && GUI.indexcoverart.indexOf( index ) === -1 ) GUI.indexcoverart.push( index );
 		} );
 	}
 	GUI.indexcoverart.forEach( function( index ) {
