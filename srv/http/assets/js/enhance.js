@@ -1279,14 +1279,7 @@ var sortableplaylist = new Sortable( document.getElementById( 'pl-entries' ), {
 		$.post( 'enhance.php', { mpc: 'mpc move '+ ( e.oldIndex + 1 ) +' '+ ( e.newIndex + 1 ) } );
 	}
 } );
-$( '#pl-entries' ).on ( 'swipe', 'li', function( e ) {
-	GUI.swipe = 1;
-	setTimeout( function() { GUI.swipe = 0 }, 500 );
-	if ( GUI.display.contexticon ) return
-	
-	$( '#context-menu-plaction' ).addClass( 'hide' );
-	$( '#pl-entries .pl-action' ).toggle();
-} ).on( 'tap', 'li', function( e ) {
+$( '#pl-entries' ).on( 'click', 'li', function( e ) {
 	if ( GUI.swipe ) return
 	
 	var $this = $( this );
