@@ -8,13 +8,13 @@ $( '.contextmenu a' ).click( function() {
 	if ( cmd === 'thumbnail' ) {
 		var path = GUI.list.path;
 		info( {
-			  icon    : 'coverart'
-			, title   : 'Coverart Thumbnails Update'
-			, message : 'Update thumbnails for Browse By CoverArt in:'
-					   +'<br><w>'+ path +'</w>'
-			, msgalign : 'center'
-			, cancel  : 1
-			, ok      : function() {
+			  icon     : 'coverart'
+			, title    : 'Coverart Thumbnails Update'
+			, message  : 'Update thumbnails for Browse By CoverArt'
+			, checkbox : { 'Remove existings': 1 }
+			, checked  : 0
+			, cancel   : 1
+			, ok       : function() {
 				$( 'body' ).append(
 					'<form id="formtemp" action="addonsbash.php" method="post">'
 						+'<input type="hidden" name="alias" value="cove">'
