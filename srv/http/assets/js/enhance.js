@@ -254,24 +254,21 @@ $( '#tab-playlist' ).click( function() {
 	if ( GUI.playlist && GUI.pleditor ) GUI.pleditor = 0;
 	if ( GUI.status.activePlayer === 'Airplay' ) {
 		$( '#playsource' ).addClass( 'open' );
-		return
+	} else {
+		switchPage( 'playlist' );
+		if ( !GUI.pleditor ) {
+			$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
+				GUI.lsplaylists = data.lsplaylists || [];
+				GUI.pllist = data.playlist;
+				renderPlaylist();
+			}, 'json' );
+		}
 	}
-	
-	switchPage( 'playlist' );
-	if ( GUI.pleditor ) return
-	
-	$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
-		GUI.lsplaylists = data.lsplaylists || [];
-		GUI.pllist = data.playlist;
-		renderPlaylist();
-	}, 'json' );
 } );
 $( '#swipebar' ).tap( function( e ) {
 	if ( !GUI.swipe && e.target.id !== 'swipeL' && e.target.id !== 'swipeR' ) $( '#menu-settings' ).click();
 } ).taphold( function() {
-	if ( GUI.swipe ) return
-	
-	location.reload();
+	if ( !GUI.swipe ) location.reload();
 } );
 $( '#swipeL' ).click( function() {
 	var page = GUI.playback ? 'library' : ( GUI.library ? 'playlist' : 'playback' );
@@ -279,7 +276,6 @@ $( '#swipeL' ).click( function() {
 } );
 $( '#swipeR' ).click( function() {
 	var page = GUI.playback ? 'playlist' : ( GUI.library ? 'playback' : 'library' );
-	console.log(page)
 	$( '#tab-'+ page ).click();
 } );
 $( '#page-playback' ).click( function( e ) {

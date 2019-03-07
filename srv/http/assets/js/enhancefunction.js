@@ -40,10 +40,11 @@ function setSwipe() {
 	if ( !GUI.display.bars || ( GUI.screenS && !GUI.display.barsauto ) ) {
 		GUI.bars = 0;
 		$( '#swipebar, .page' ).on( 'swipeleft swiperight', function( e ) {
-			GUI.swipe = 1;
-			setTimeout( function() { GUI.swipe = 0 }, 500 );
+			GUI.swipe = 1; // suppress tap
 			// skip if swipe to show remove in playlist
 			if ( !$( e.target ).parents( '#pl-entries li' ).length ) setPageSwipe( e.type );
+		} ).on( 'vmouseup', function() {
+			setTimeout( function() { GUI.swipe = 0 }, 500 );
 		} );
 	} else {
 		GUI.bars = 1;
@@ -1132,22 +1133,13 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 				}
 				if ( ( inputArr.file && !inputArr.playlist ) || inpath === 'Webradio' ) {
 					if ( inpath !== 'Webradio' ) {
-						if ( 'Title' in inputArr ) {
-							var bl = $( '#db-search-keyword' ).val() ? inputArr.Artist +' - '+ inputArr.Album : inputArr.file.split( '/' ).pop();;
-							var liname = inputArr.Title
-							content = '<li class="file">'
-									 +'<a class="lipath">'+ inputArr.file +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
-									 +'<i class="fa fa-music db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-file"></i>'
-									 +'<span class="li1">'+ liname +'<span class="time">'+ inputArr.Time +'</span></span>'
-									 +'<span class="li2">'+ bl +'</span>'
-						} else {
-							var liname = inputArr.file.split( '/' ).pop(); // filename
-							content = '<li class="file">'
-									 +'<a class="lipath">'+ inputArr.file +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
-									 +'<i class="fa fa-music db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-file"></i>'
-									 +'<span class="li1">'+ liname +'<span class="time">' + second2HMS( inputArr.Time ) +'</span></span>'
-									 +'<span class="li2">'+ inpath +'</span>'
-						}
+						var bl = $( '#db-search-keyword' ).val() ? inputArr.Artist +' - '+ inputArr.Album : inputArr.file.split( '/' ).pop();
+						var liname = inputArr.Title
+						content = '<li class="file">'
+								 +'<a class="lipath">'+ inputArr.file +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
+								 +'<i class="fa fa-music db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-file"></i>'
+								 +'<span class="li1">'+ liname +'<span class="time">'+ inputArr.Time +'</span></span>'
+								 +'<span class="li2">'+ bl +'</span>'
 					} else { // Webradio
 						var liname = inputArr.playlist.replace( /Webradio\/|\\|.pls$/g, '' );
 						content = '<li class="db-webradio file" >'
