@@ -5,9 +5,12 @@ $bkmarks = $redis->hGetAll( 'bkmarks' );
 $order = $redis->hGet( 'display', 'order' );
 
 function stripLeading( $string ) {
-	$stripped = preg_replace( '/^A\s+|^AN\s+|^THE\s+|[^A-Z0-9 ]/', '', strtoupper( $string ) );
-	// fix - php strnatcmp ignores spaces
-	return str_replace( ' ', '-', $stripped );
+	// strip articles | non utf-8 normal alphanumerics , fix: php strnatcmp ignores spaces
+	return preg_replace(
+		  array( '/^A\s+|^AN\s+|^THE\s+|[^\w\p{L}\p{N}\p{Pd} ]/u', '/\s+/' )
+		, array( '', '-' )
+		, strtoupper( $string )
+	);
 }
 // counts
 $count = exec( '/srv/http/enhancecount.sh' );
