@@ -341,7 +341,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	exec( $cmd );
 }
 function stripLeading( $string ) {
-	return preg_replace( '/^A +|^AN +|^THE +|^\(\s*|^\[\s*|^\.\s*|^\'\s*|^\"\s*|\\//', '', strtoupper( $string ) );
+	return preg_replace( '/^A\s+|^AN\s+|^THE\s+|[^A-Z0-9 ]/', '', strtoupper( $string ) );
 }
 function search2array( $result, $playlist = '' ) {
 	$lists = explode( "\n", rtrim( $result ) );
