@@ -996,25 +996,14 @@ function dataSort( data, path, plugin, querytype, arg ) {
 	} else {
 		if ( plugin === 'Spotify' ) {
 			data = ( querytype === 'tracks' ) ? data.tracks : data.playlists;
-			if ( path === 'Spotify' && querytype === '' ) {
-				liSort( data, 'name' );
-			} else if ( querytype === 'tracks' ) {
-				liSort( data, 'title' );
-			}
 			for ( i = 0; ( row = data[ i ] ); i++ ) content += data2html( row, i, 'Spotify', arg, querytype );
 		} else if ( plugin === 'Dirble' ) {
 			if ( querytype === 'childs-stations' ) {
 				content = $( '#db-entries' ).html();
 			} else {
-					if ( !querytype || querytype === 'childs' || querytype === 'categories' ) {
-						liSort( data, 'title' );
-					} else if ( querytype === 'childs-stations' || querytype === 'stations' ) {
-						liSort( data, 'name' );
-					}
 				for ( i = 0; ( row = data[ i ] ); i++ ) content += data2html( row, i, 'Dirble', '', querytype );
 			}
 		} else if ( plugin === 'Jamendo' ) {
-			if ( path === 'Jamendo' && querytype === '' ) liSort( data, 'dispname' );
 			for (i = 0; ( row = data[ i ] ); i++ ) content += data2html( row, i, 'Jamendo', '', querytype );
 		}
 	}
@@ -1024,7 +1013,6 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		if ( !fileplaylist ) displayIndexBar();
 		$( '#loader, .menu, #divcoverarts' ).addClass( 'hide' );
 	} );
-//	if ( $( '#db-search-btn' ).hasClass( 'hide' ) ) return
 	
 	$( '#db-back' ).removeClass( 'hide' );
 // breadcrumb directory path link
