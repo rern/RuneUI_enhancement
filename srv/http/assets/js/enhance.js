@@ -142,12 +142,12 @@ var chklibrary = {
 $( '#displaylibrary' ).click( function() {
 	var coverfile = GUI.display.coverfile;
 	info( {
-		  icon         : 'library'
-		, title        : 'Libary Home Items'
-		, message      : 'Select items to show:'
-		, checkboxhtml : '<form id="displaysavelibrary">'+ displayCheckbox( chklibrary ) +'</form>'
-		, cancel       : 1
-		, ok           : function () {
+		  icon     : 'library'
+		, title    : 'Libary Home Items'
+		, message  : 'Select items to show:'
+		, checkbox : '<form id="displaysavelibrary">'+ displayCheckbox( chklibrary ) +'</form>'
+		, cancel   : 1
+		, ok       : function () {
 			$( '#displaysavelibrary input' ).each( function() {
 				var checked = this.checked;
 				GUI.display[ this.name ] = checked ? 'checked' : '';
@@ -173,12 +173,12 @@ var chkplayback = {
 }
 $( '#displayplayback' ).click( function() {
 	info( {
-		  icon         : 'play-circle'
-		, title        : 'Playback Items'
-		, message      : 'Select items to show:'
-		, checkboxhtml : '<form id="displaysaveplayback">'+ displayCheckbox( chkplayback ) +'</form>'
-		, cancel       : 1
-		, ok           : function () {
+		  icon     : 'play-circle'
+		, title    : 'Playback Items'
+		, message  : 'Select items to show:'
+		, checkbox : '<form id="displaysaveplayback">'+ displayCheckbox( chkplayback ) +'</form>'
+		, cancel   : 1
+		, ok       : function () {
 			// no: serializeArray() omit unchecked fields
 			$( '#displaysaveplayback input' ).each( function() {
 				GUI.display[ this.name ] = this.checked ? 'checked' : '';
