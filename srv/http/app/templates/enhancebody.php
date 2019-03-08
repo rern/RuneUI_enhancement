@@ -5,7 +5,7 @@ $bkmarks = $redis->hGetAll( 'bkmarks' );
 $order = $redis->hGet( 'display', 'order' );
 
 function stripLeading( $string ) {
-	return preg_replace( '/^A +|^AN +|^THE +|^\(\s*|^\[\s*|^\.\s*|^\'\s*|^\"\s*|\\//', '', strtoupper( $string ) );
+	return preg_replace( '/^A\s+|^AN\s+|^THE\s+|[^A-Z0-9 ]/', '', strtoupper( $string ) );
 }
 // counts
 $count = exec( '/srv/http/enhancecount.sh' );
