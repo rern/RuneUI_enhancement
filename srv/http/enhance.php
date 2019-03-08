@@ -238,15 +238,21 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	} else {
 		foreach( $lines as $line ) {
 			$list = explode( '^^', $line );
+			$album = $list[ 0 ];
+			$artist = $list[ 1 ];
 			if ( $name ) {
-				$li[ 'artistalbum' ] = $list[ 1 ].'<gr> • </gr>'.$list[ 0 ]; // album: artist - album
+				$artistalbum = $artist.'<gr> • </gr>'.$album;
+				$lisort = stripLeading( $artist.' - '.$album );
 			} else {
-				$li[ 'artistalbum' ] = $list[ 0 ].'<gr> • </gr>'.$list[ 1 ]; // genre: album - artist
+				$artistalbum = $album.'<gr> • </gr>'.$artist;
+				$lisort = stripLeading( $album.' - '.$artist );
 			}
-			$li[ 'album' ] = $list[ 0 ];
-			$li[ 'artist' ] = $list[ 1 ];
-			$data[] = $li;
-			$li = '';
+			$data[] = array(
+				  'artistalbum' => $artistalbum
+				, 'album'       => $album
+				, 'artist'      => $artist
+				, 'lisort'      => $lisort
+			);
 		}
 	}
 	echo json_encode( $data );
@@ -341,7 +347,12 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	exec( $cmd );
 }
 function stripLeading( $string ) {
-	return preg_replace( '/^A\s+|^AN\s+|^THE\s+|[^A-Z0-9 ]/', '', strtoupper( $string ) );
+	// strip articles | non utf-8 normal alphanumerics , spaces to space
+	return preg_replace(
+		  array( '/^A\s+|^AN\s+|^THE\s+|[^\w\p{L}\p{N}\p{Pd} ]/u', '/\s+/' )
+		, array( '', ' ' )
+		, strtoupper( $string )
+	);
 }
 function search2array( $result, $playlist = '' ) {
 	$lists = explode( "\n", rtrim( $result ) );
