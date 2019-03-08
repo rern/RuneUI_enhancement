@@ -671,7 +671,7 @@ $( '#db-currentpath' ).on( 'click', 'a', function() {
 		, Genre       : 'genre'
 		, Dirble      : 'Dirble'
 	}
-	getDB( { browsemode: path2mode[ path ], path: path } );
+	getDaTa( { browsemode: path2mode[ path ], path: path } );
 } );
 $( '#db-webradio-new' ).click( function() {
 	webRadioNew();
@@ -688,7 +688,7 @@ $( '#dbsearchbtn' ).click( function() {
 		$( '#db-search-close' ).click();
 	} else {
 		GUI.dblist = 1;
-		getDB( {
+		getDaTa( {
 			  cmd : 'search'
 			, arg : keyword
 		} );
@@ -717,7 +717,7 @@ $( '#db-search-close' ).click( function() {
 	} else {
 		var data = { path: path };
 	}
-	getDB( data );
+	getDaTa( data );
 	mutationLibrary.observe( observerLibrary, observerOption );
 } );
 $( '#db-search-keyword' ).keypress( function( e ) {
@@ -765,7 +765,7 @@ $( '#db-back' ).click( function() {
 		return
 	}
 	
-	getDB( GUI.dbbackdata.pop() );
+	getDaTa( GUI.dbbackdata.pop() );
 } );
 $( '#home-blocks' ).contextmenu( function( e ) { // disable default image context menu
 	e.preventDefault();
@@ -797,7 +797,7 @@ $( '.home-block' ).click( function() {
 		mutationLibrary.observe( observerLibrary, observerOption );
 		var browsemode = $this.data( 'browsemode' );
 		GUI.dbbrowsemode = browsemode ? browsemode : GUI.plugin ? GUI.plugin : 'file';
-		getDB( {
+		getDaTa( {
 			  browsemode : browsemode
 			, path       : path
 			, plugin     : GUI.plugin
@@ -825,7 +825,7 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 	} else {
 		GUI.dblist = 1;
 		GUI.dbbrowsemode = 'file';
-		getDB( {
+		getDaTa( {
 			  browsemode : 'file'
 			, path       : path
 		} );
@@ -946,12 +946,12 @@ $( '.coverart' ).tap( function( e ) {
 	$this = $( this );
 	$licue = $this.find( '.licue' );
 	if ( $licue.length ) {
-		getDB( {
+		getDaTa( {
 			  path       : $licue.text()
 			, browsemode : 'file'
 		} );
 	} else {
-		getDB( {
+		getDaTa( {
 			  path       : $this.find( '.coverartalbum' ).text()
 			, artist     : $this.find( '.coverartartist' ).text()
 			, browsemode : 'coverart'
@@ -1051,7 +1051,7 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	}
 	var mode = $this.attr( 'mode' );
 	if ( [ 'dirble', 'jamendo', 'spotify' ].indexOf( mode ) === -1 ) {
-		getDB( {
+		getDaTa( {
 			  path       : path
 			, artist     : artist
 			, browsemode : mode ? mode : 'file'
@@ -1060,7 +1060,7 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	}
 	
 	if ( $this.attr( 'mode' ) === 'spotify' ) {
-		getDB( {
+		getDaTa( {
 			  path      : GUI.currentpath +'/'+ $this.find( 'span' ).text()
 			, plugin    : 'Spotify'
 			, args      : path.toString()
@@ -1068,7 +1068,7 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 		} );
 		GUI.plugin = 'Spotify';
 	} else if ( $this.attr( 'mode' ) === 'dirble' ) {
-		getDB( {
+		getDaTa( {
 			  path      : GUI.currentpath +'/'+ $this.find( 'span' ).text()
 			, plugin    : 'Dirble'
 			, querytype : $this.hasClass( 'db-dirble-child' ) ? 'stations' : 'childs'
@@ -1076,7 +1076,7 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 		} );
 		GUI.plugin = 'Dirble';
 	} else if ( $this.attr( 'mode' ) === 'jamendo' ) {
-/*		getDB( {
+/*		getDaTa( {
 			  path      : GUI.currentpath +'/'+ $this.find( 'span' ).text()
 			, plugin    : 'Jamendo'
 			, querytype : 'radio'

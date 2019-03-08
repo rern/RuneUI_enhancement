@@ -704,7 +704,7 @@ function infoNoData() {
 		, autoclose : 6000
 	} );
 }
-function getDB( options ) {
+function getDaTa( options ) {
 	$( '#loader' ).removeClass( 'hide' );
 	if ( !Array.isArray( options.path ) ) {
 		var path = options.path ? options.path.toString().replace( /"/g, '\"' ) : '';
@@ -714,7 +714,7 @@ function getDB( options ) {
 			path.push( val.toString().replace( /"/g, '\"' ) );
 		} );
 		$.post( 'enhance.php', { playlist: path }, function( data ) {
-			data ? dataSort( data, path[ 0 ] ) : infoNoData();
+			data ? dataParse( data, path[ 0 ] ) : infoNoData();
 		}, 'json' );
 		return
 	}
@@ -771,7 +771,7 @@ function getDB( options ) {
 		if ( cmd === 'search' ) {
 			if ( path.match(/Dirble/)) {
 				$.post( '/db/?cmd=dirble', { querytype: 'search', args: keyword }, function( data ) {
-					dataSort( data, path, 'Dirble', 'search' );
+					dataParse( data, path, 'Dirble', 'search' );
 				}, 'json' );
 				return
 			} else {
@@ -803,7 +803,7 @@ function getDB( options ) {
 		}
 		$.post( 'enhance.php', command[ mode ], function( data ) {
 			if ( data ) {
-				dataSort( data, path );
+				dataParse( data, path );
 				GUI.keyword = keyword;
 			} else {
 				infoNoData();
@@ -815,19 +815,19 @@ function getDB( options ) {
 	
 	if ( plugin === 'Spotify' ) {
 		$.post( '/db/?cmd=spotify', { plid: args }, function( data ) {
-			dataSort( data, path, plugin, querytype, arg );
+			dataParse( data, path, plugin, querytype, arg );
 		}, 'json' );
 	} else if ( plugin === 'Dirble' ) {
 		if ( querytype === 'childs' ) {
 			$.post( '/db/?cmd=dirble', { querytype: 'childs', args: args }, function( data ) {
-				dataSort( data, path, plugin, 'childs' );
+				dataParse( data, path, plugin, 'childs' );
 			}, 'json' );
 			$.post( '/db/?cmd=dirble', { querytype: 'childs-stations', args: args }, function( data ) {
-				dataSort( data, path, plugin, 'childs-stations' );
+				dataParse( data, path, plugin, 'childs-stations' );
 			}, 'json' );            
 		} else {
 			$.post( '/db/?cmd=dirble', { querytype: querytype ? querytype : 'categories', args: args }, function( data ) {
-				dataSort( data, path, plugin, querytype );
+				dataParse( data, path, plugin, querytype );
 			}, 'json' );
 		}
 	} else if ( plugin === 'Jamendo' ) {
@@ -842,11 +842,11 @@ function getDB( options ) {
 				GUI.dbbackdata.pop();
 				return
 			}
-			dataSort( data.results, path, plugin, querytype );
+			dataParse( data.results, path, plugin, querytype );
 		}, 'json' );
 	}
 }
-function dataSort( data, path, plugin, querytype, arg ) {
+function dataParse( data, path, plugin, querytype, arg ) {
 	var data = data,
 		path = path || '',
 		plugin = plugin || '',
@@ -964,7 +964,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 					$.each( arraypl, function( i, val ) {
 						if ( val.filepl && cue ) filecue.push( val.filepl );
 					} );
-					getDB( { path: filecue } );
+					getDaTa( { path: filecue } );
 					return
 				}
 			}
