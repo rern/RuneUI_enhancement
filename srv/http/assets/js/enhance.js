@@ -1175,9 +1175,14 @@ $( '#plopen' ).click( function() {
 	plcounthtml += plL ? '<gr>&ensp;·&emsp;</gr> <wh id="pls-count">'+ numFormat( plL ) +'</wh>&ensp;<i class="fa fa-list-ul"></i>' : '';
 	$( '#pl-currentpath' ).html( plcounthtml +'<i class="fa fa-arrow-left plsbackroot"></i>' );
 	$( '#pl-currentpath, #pl-editor, #pl-index' ).removeClass( 'hide' );
-	liSort( GUI.lsplaylists, 'name' );
 	var content = '';
-	GUI.lsplaylists.forEach( function( val ) {
+	$.each( GUI.lsplaylists, function( key, val ) {
+		if ( val.index ) {
+			$( '#pl-index li' ).not( ':eq( 0 )' ).css( 'color', '#34495e' );
+			$.each( val.index, function( i, char ) {
+				$( '#pl-index .index-'+ char ).css( 'color', '' );
+			} );
+		} else {
 		content += '<li class="pl-folder">'
 						+'<i class="fa fa-list-ul pl-icon">'
 						+'<a class="liname">'+ val.name +'</a></i>'
@@ -1185,6 +1190,7 @@ $( '#plopen' ).click( function() {
 						+'<span class="plname">'+ val.name +'</span>'
 						+'<i class="fa fa-bars pl-action" data-target="#context-menu-playlist"></i>'
 				  +'</li>';
+		}
 	} );
 	$( '#pl-editor' ).html( content +'<p></p>' ).promise().done( function() {
 		GUI.pleditor = 1;
@@ -1224,6 +1230,11 @@ $( '#plclear' ).click( function() {
 				}
 			} );
 		} else {
+			if ( $( '#pl-entries .pl-action' ).is( ':visible' ) ) {
+				$( '#pl-entries .pl-action' ).hide();
+				return
+			}
+			
 			info( {
 				  title       : 'Clear Playlist'
 				, message     : 'Select single remove / clear all :'
@@ -1284,14 +1295,16 @@ var sortableplaylist = new Sortable( document.getElementById( 'pl-entries' ), {
 		$.post( 'enhance.php', { mpc: 'mpc move '+ ( e.oldIndex + 1 ) +' '+ ( e.newIndex + 1 ) } );
 	}
 } );
-$( '#pl-entries' ).on ( 'swipe', 'li', function( e ) {
+$( '#page-playlist' ).on( 'swipeleft', function( e ) {
 	GUI.swipe = 1;
 	setTimeout( function() { GUI.swipe = 0 }, 500 );
-	if ( GUI.display.contexticon ) return
-	
-	$( '#context-menu-plaction' ).addClass( 'hide' );
-	$( '#pl-entries .pl-action' ).toggle();
-} ).on( 'tap', 'li', function( e ) {
+	$( '#tab-library' ).click();
+} ).on( 'swiperight', function( e ) {
+	GUI.swipe = 1;
+	setTimeout( function() { GUI.swipe = 0 }, 500 );
+	$( '#tab-playback' ).click();
+} );
+$( '#pl-entries' ).on( 'click', 'li', function( e ) {
 	if ( GUI.swipe ) return
 	
 	var $this = $( this );
