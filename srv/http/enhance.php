@@ -8,8 +8,8 @@ $redis = new Redis();
 $redis->pconnect( '127.0.0.1' );
 
 $coverfiles = array(
-	  'cover.png', 'cover.jpg', 'folder.png', 'folder.jpg', 'front.png', 'front.jpg'
-	, 'Cover.png', 'Cover.jpg', 'Folder.png', 'Folder.jpg', 'Front.png', 'Front.jpg'
+	  'cover.jpg', 'cover.png', 'folder.jpg', 'folder.png', 'front.jpg', 'front.png'
+	, 'Cover.jpg', 'Cover.png', 'Folder.jpg', 'Folder.png', 'Front.jpg', 'Front.png'
 );
 
 if ( isset( $_POST[ 'mpc' ] ) ) {
@@ -54,16 +54,15 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 			$lists = explode( "\n", rtrim( $result ) );
 			foreach( $lists as $list ) {
 				$lisort = stripLeading( $list );
+				$init = strVal( $lisort )[ 0 ];
 				$data[] = array( 
 					  $type    => $list
-					, 'lisort' => $lisort
+					, 'sort'   => $lisort
+					, 'lisort' => $init
 				);
-				$index[].= $lisort[ 0 ];
+				$index[].= $init;
 			}
-			usort( $data, function( $a, $b ) {
-				return strnatcmp( $a[ 'lisort' ], $b[ 'lisort' ] );
-			} );
-			$data[][ 'index' ] = array_unique( $index );
+			$data = sortData( $data, $index );
 		}
 		echo json_encode( $data );
 	} else if ( isset( $_POST[ 'result' ] ) ) {
@@ -255,18 +254,17 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 				$artistalbum = $album.'<gr> • </gr>'.$artist;
 				$lisort = stripLeading( $album.' - '.$artist );
 			}
+			$init = strVal( $lisort )[ 0 ];
 			$data[] = array(
 				  'artistalbum' => $artistalbum
 				, 'album'       => $album
 				, 'artist'      => $artist
-				, 'lisort'      => $lisort
+				, 'sort'        => $lisort
+				, 'lisort'      => $init
 			);
-			$index[].= $lisort[ 0 ];
+			$index[].= $init;
 		}
-		usort( $data, function( $a, $b ) {
-			return strnatcmp( $a[ 'lisort' ], $b[ 'lisort' ] );
-		} );
-		$data[][ 'index' ] = array_unique( $index );
+		$data = sortData( $data, $index );
 	}
 	echo json_encode( $data );
 } else if ( isset( $_POST[ 'getplaylist' ] ) ) {
@@ -367,6 +365,14 @@ function stripLeading( $string ) {
 		, strtoupper( $string )
 	);
 }
+function sortData( $data, $index ) {
+	usort( $data, function( $a, $b ) {
+		return strnatcmp( $a[ 'sort' ], $b[ 'sort' ] );
+	} );
+	unset( $data[ 'sort' ] );
+	if ( $index ) $data[][ 'index' ] = array_unique( $index );
+	return $data;
+}
 function search2array( $result, $playlist = '' ) {
 	$lists = explode( "\n", rtrim( $result ) );
 	$genre = $composer = $albumartist = '';
@@ -381,11 +387,13 @@ function search2array( $result, $playlist = '' ) {
 				);
 			} else {
 				$lisort = stripLeading( basename( $list ) );
+				$init = strVal( $lisort )[ 0 ];
 				$data[] = array(
 					  'directory' => $list
-					, 'lisort'    => $lisort
+					, 'sort'      => $lisort
+					, 'lisort'    => $init
 				);
-				$index[].= $lisort[ 0 ];
+				$index[].= $init;
 			}
 		} else {
 			$list = explode( '^^', rtrim( $list ) );
@@ -396,6 +404,7 @@ function search2array( $result, $playlist = '' ) {
 				, 'Album'  => $list[ 3 ]
 				, 'file'   => $list[ 4 ]
 			);
+			$index = '';
 			if ( !$genre ) {
 				if ( $list[ 5 ] !== '' ) $genre = $list[ 5 ];
 			} else {
@@ -405,10 +414,7 @@ function search2array( $result, $playlist = '' ) {
 			if ( !$albumartist && $list[ 7 ] !== '' ) $albumartist = $list[ 7 ];
 		}
 	}
-	usort( $data, function( $a, $b ) {
-		return strnatcmp( $a[ 'lisort' ], $b[ 'lisort' ] );
-	} );
-	if ( isset( $index ) ) $data[][ 'index' ] = array_unique( $index );
+	$data = sortData( $data, $index );
 	$data[][ 'artist' ] = $data[ 0 ][ 'Artist' ];
 	$data[][ 'album' ] = $data[ 0 ][ 'Album' ];
 	$data[][ 'albumartist' ] = $albumartist ?: $data[ 0 ][ 'Artist' ];
@@ -421,21 +427,20 @@ function list2array( $result, $webradioname = null ) {
 	$artist = $album = $genre = $composer = $albumartist = $file = '';
 	foreach( $lists as $list ) {
 		$list = explode( '^^', rtrim( $list ) );
-		$li[ 'file' ] = $list[ 3 ];
-		if ( $li[ 'file' ] !== $file ) {
-			$file = $li[ 'file' ];
+		$file = $list[ 3 ];
+		if ( $file !== $prevfile ) {
+			$prevfile = $file;
 			$i = 1;
 		}
-		$li[ 'track' ] = $list[ 2 ] ?: dirname( $li[ 'file' ] );
-		if ( substr( $li[ 'track' ], 0, 4 ) === 'http' ) {
-			$li[ 'Title' ] = $li[ 'track' ] ? $webradioname[ $list[ 3 ] ] : basename( $li[ 'file' ] );
+		$track = $list[ 2 ] ?: dirname( $file );
+
+		if ( substr( $track, 0, 4 ) === 'http' ) {
+			$title = $track ? $webradioname[ $list[ 3 ] ] : basename( $file );
 		} else if ( $list[ 0 ] ) {
-			$li[ 'Title' ] = $list[ 0 ];
+			$title = $list[ 0 ];
 		} else {
-			$li[ 'Title' ] = basename( $li[ 'file' ] );
+			$title = basename( $file );
 		}
-		$li[ 'Time' ] = $list[ 1 ];
-		$li[ 'index' ] = $i++;
 		if ( !$artist && $list[ 4 ] !== '' ) $artist = $list[ 4 ];
 		if ( !$album && $list[ 5 ] !== '' ) $album = $list[ 5 ];
 		if ( !$genre ) {
@@ -444,9 +449,14 @@ function list2array( $result, $webradioname = null ) {
 			if ( $list[ 6 ] !== $genre ) $genre = -1;
 		}
 		if ( !$composer && $list[ 7 ] !== '' ) $composer = $list[ 7 ];
-		if ( isset( $list[ 8 ] ) ) $li[ 'cue' ] = $list[ 8 ];
-		$data[] = $li;
-		$li = '';
+		$data[] = array(
+			  'file'  => $file
+			, 'track' => $track
+			, 'Title' => $title
+			, 'Time'  => $list[ 1 ]
+			, 'index' => $i++
+			, 'cue'   => isset( $list[ 8 ] ) ? $list[ 8 ] : ''
+		);
 	}
 	if ( !$webradioname ) {
 		$data[][ 'artist' ] = $artist;
@@ -522,18 +532,17 @@ function getBookmark() {
 				$coverart = '';
 			}
 			$lisort = stripLeading( $name );
+			$init = strVal( $lisort )[ 0 ];
 			$data[] = array(
 				  'name'     => $name
 				, 'path'     => $path
 				, 'coverart' => $coverart
-				, 'lisort'   => $lisort
+				, 'sort'     => $lisort
+				, 'lisort'   => $init
 			);
-			$index = $lisort[ 0 ];
+			$index = $init;
 		}
-		usort( $data, function( $a, $b ) {
-			return strnatcmp( $a[ 'lisort' ], $b[ 'lisort' ] );
-		} );
-		$data[][ 'index' ] = array_unique( $index );
+		$data = sortData( $data, $index );
 	} else {
 		$data = 0;
 	}
@@ -563,16 +572,15 @@ function lsPlaylists() {
 		$lists = explode( "\n", rtrim( $lines ) );
 		foreach( $lists as $list ) {
 			$lisort = stripLeading( $list );
+			$init = strVal( $lisort )[ 0 ];
 			$data[] = array(
 				  'name'   => $list
-				, 'lisort' => $lisort
+				, 'sort'   => $lisort
+				, 'lisort' => $init
 			);
-			$index[].= $lisort[ 0 ];
+			$index[].= $init;
 		}
-		usort( $data, function( $a, $b ) {
-			return strnatcmp( $a[ 'lisort' ], $b[ 'lisort' ] );
-		} );
-		$data[][ 'index' ] = array_unique( $index );
+		$data = sortData( $data, $index );
 		return $data;
 	} else {
 		return 0;
