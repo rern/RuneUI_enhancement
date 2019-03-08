@@ -5,31 +5,6 @@ $( '.contextmenu a' ).click( function() {
 	$( '.menu' ).addClass( 'hide' );
 	var $this = $( this );
 	var cmd = $this.data( 'cmd' );
-	if ( cmd === 'thumbnail' ) {
-		// enclosed in single quotes + escape inside single quotes: 'path'"'"'file'
-		var path = '/mnt/MPD/'+ GUI.list.path.replace( /'/g, '\'"\'"\'' );
-		info( {
-			  icon     : 'coverart'
-			, title    : 'Coverart Thumbnails Update'
-			, message  : 'Update thumbnails for Browse By CoverArt'
-			, checkbox : { 'Remove existings': 1 }
-			, checked  : 0
-			, cancel   : 1
-			, ok       : function() {
-				$( 'body' ).append(
-					'<form id="formtemp" action="addonsbash.php" method="post">'
-						+'<input type="hidden" name="alias" value="cove">'
-						+'<input type="hidden" name="type" value="scan">'
-						+'<input type="hidden" name="opt">'
-					+'</form>' );
-				path = $( '#infoCheckBox input[ type=checkbox ]:checked' ).length ? "'"+ path +"' 1" : "'"+ path +"'";
-				console.log( path )
-				$( '#formtemp input[ name=opt ]' ).val( path );
-				$( '#formtemp' ).submit();
-			}
-		} );
-		return
-	}
 	if ( [ 'play', 'pause', 'stop', 'remove' ].indexOf( cmd ) !== -1 ) {
 		if ( cmd === 'remove' ) {
 			GUI.list.li.find( '.pl-action' ).click();
@@ -76,23 +51,24 @@ $( '.contextmenu a' ).click( function() {
 		} else {
 			var mpcCmd = 'mpc load "'+ name +'"';
 		}
-		cmd = cmd.replace( /album|artist|composer|genre|pl|wr/, '' );
+		cmd = cmd.replace( /album|artist|composer|genre/, '' );
 	}
 	var addplaypos = GUI.status.playlistlength + 1;
 	var contextCommand = {
-		  add         : mpcCmd
-		, addplay     : [ mpcCmd, 'mpc play '+ addplaypos ]
-		, replace     : [ 'mpc clear', mpcCmd ]
-		, replaceplay : [ 'mpc clear', mpcCmd, 'mpc play' ]
-		, radiosave   : webRadioNew
-		, rename      : webRadioRename
-		, delete      : webRadioDelete
-		, plrename    : playlistRename
-		, pldelete    : playlistDelete
-		, bookmark    : bookmarkNew
-		, update      : 'mpc update "'+ GUI.list.path +'"'
+		  add           : mpcCmd
+		, addplay       : [ mpcCmd, 'mpc play '+ addplaypos ]
+		, replace       : [ 'mpc clear', mpcCmd ]
+		, replaceplay   : [ 'mpc clear', mpcCmd, 'mpc play' ]
+		, radiosave     : webRadioNew
+		, wrrename      : webRadioRename
+		, wrdelete      : webRadioDelete
+		, plrename      : playlistRename
+		, pldelete      : playlistDelete
+		, bookmark      : bookmarkNew
+		, update        : 'mpc update "'+ GUI.list.path +'"'
 	}
 	var command = contextCommand[ cmd ];
+	console.log(cmd)
 	if ( typeof command !== 'undefined' ) {
 		if ( typeof command === 'function' ) {
 			cmd !== 'radiosave' ? command() : webRadioNew( GUI.list.name, GUI.list.path );
@@ -459,6 +435,7 @@ function playlistDelete() {
 		, cancel   : 1
 		, oklabel  : 'Delete'
 		, ok       : function() {
+			console.log(9)
 			var count = $( '#pls-count' ).text() - 1;
 			$( '#pls-count' ).text( numFormat( count ) );
 			if ( !count ) $( '#pl-currentpath' ).html( '<bl>&emsp;PLAYLISTS</bl>' );

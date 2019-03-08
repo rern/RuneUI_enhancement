@@ -31,10 +31,8 @@ var GUI = {
 	, screenS      : ( window.innerHeight < 590 || window.innerWidth < 500 )
 	, scrollspeed  : 80 // pixel/s
 	, status       : {}
-	, debounce     : ''
-	, debouncems   : 300
-	, A2Z          : 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split( '' )
-
+	, debounce      : ''
+	, debouncems    : 300
 };
 PNotify.prototype.options.delay = 3000;
 PNotify.prototype.options.styling = 'fontawesome';
@@ -47,6 +45,7 @@ PNotify.prototype.options.stack = {
 	, spacing1  : 10      // space between each
 	, spacing2  : 10      // space between column( or row if dir1: right/left )
 }
+var A2Z = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split( '' );
 var cssnotify = 
 	 '<style id="cssnotify">'
 		+'.ui-pnotify { bottom: 20px; }'
@@ -256,21 +255,24 @@ $( '#tab-playlist' ).click( function() {
 	if ( GUI.playlist && GUI.pleditor ) GUI.pleditor = 0;
 	if ( GUI.status.activePlayer === 'Airplay' ) {
 		$( '#playsource' ).addClass( 'open' );
-	} else {
-		switchPage( 'playlist' );
-		if ( !GUI.pleditor ) {
-			$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
-				GUI.lsplaylists = data.lsplaylists || [];
-				GUI.pllist = data.playlist;
-				renderPlaylist();
-			}, 'json' );
-		}
+		return
 	}
+	
+	switchPage( 'playlist' );
+	if ( GUI.pleditor ) return
+	
+	$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
+		GUI.lsplaylists = data.lsplaylists || [];
+		GUI.pllist = data.playlist;
+		renderPlaylist();
+	}, 'json' );
 } );
 $( '#swipebar' ).tap( function( e ) {
 	if ( !GUI.swipe && e.target.id !== 'swipeL' && e.target.id !== 'swipeR' ) $( '#menu-settings' ).click();
 } ).taphold( function() {
-	if ( !GUI.swipe ) location.reload();
+	if ( GUI.swipe ) return
+	
+	location.reload();
 } );
 $( '#swipeL' ).click( function() {
 	var page = GUI.playback ? 'library' : ( GUI.library ? 'playlist' : 'playback' );
@@ -278,6 +280,7 @@ $( '#swipeL' ).click( function() {
 } );
 $( '#swipeR' ).click( function() {
 	var page = GUI.playback ? 'playlist' : ( GUI.library ? 'playback' : 'library' );
+	console.log(page)
 	$( '#tab-'+ page ).click();
 } );
 $( '#page-playback' ).click( function( e ) {
@@ -383,6 +386,10 @@ $( '#volume' ).roundSlider( {
 		$( e.handle.element ).rsRotate( - e.handle.angle );
 		// value before 'change'
 		if ( e.preValue === 0 ) unmuteColor();
+		if ( GUI.local ) return
+		
+		GUI.local = 1;
+		setTimeout( function() { GUI.local = 0 }, 500 );
 		$.post( 'enhance.php', { volume: e.value } );
 	}
 	, start           : function( e ) { // on 'start drag'
@@ -390,7 +397,8 @@ $( '#volume' ).roundSlider( {
 		if ( e.value === 0 ) unmuteColor(); // value before 'start drag'
 	}
 	, drag            : function ( e ) { // drag with no transition by default
-		if ( e.value % 2 === 0 ) { // half firing
+		if ( e.value % 2 === 0 ) {
+			GUI.local = 1; // cleared by 'change'
 			$.post( 'enhance.php', { mpc: 'mpc volume '+ e.value } );
 			$( e.handle.element ).rsRotate( - e.handle.angle );
 		}
@@ -878,12 +886,12 @@ $( '#home-coverart' ).click( function() { // fix - 'tap' also fire .coverart cli
 	$( '#db-currentpath .lipath' ).text( 'coverart' );
 	$( '#home-blocks' ).addClass( 'hide' );
 	$( '#divcoverarts, #db-back, #db-index' ).removeClass( 'hide' );
-	$( '#db-index li' ).not( ':eq( 0 )' ).css( 'color', '#456000' );
+	$( '#db-index li' ).not( ':eq( 0 )' ).css( 'color', '#34495e' );
 	if ( !GUI.indexcoverart ) {
 		GUI.indexcoverart = [];
 		$( '.coverart .lisort').each( function( i, el ) {
 			index = $( el ).text()[ 0 ];
-			if ( GUI.A2Z.indexOf( index ) !== -1 && GUI.indexcoverart.indexOf( index ) === -1 ) GUI.indexcoverart.push( index );
+			if ( A2Z.indexOf( index ) !== -1 && GUI.indexcoverart.indexOf( index ) === -1 ) GUI.indexcoverart.push( index );
 		} );
 	}
 	GUI.indexcoverart.forEach( function( index ) {
@@ -1167,7 +1175,7 @@ $( '#plopen' ).click( function() {
 	plcounthtml += plL ? '<gr>&ensp;·&emsp;</gr> <wh id="pls-count">'+ numFormat( plL ) +'</wh>&ensp;<i class="fa fa-list-ul"></i>' : '';
 	$( '#pl-currentpath' ).html( plcounthtml +'<i class="fa fa-arrow-left plsbackroot"></i>' );
 	$( '#pl-currentpath, #pl-editor, #pl-index' ).removeClass( 'hide' );
-	nameSort( GUI.lsplaylists, 'name' );
+	liSort( GUI.lsplaylists, 'name' );
 	var content = '';
 	GUI.lsplaylists.forEach( function( val ) {
 		content += '<li class="pl-folder">'
@@ -1276,7 +1284,14 @@ var sortableplaylist = new Sortable( document.getElementById( 'pl-entries' ), {
 		$.post( 'enhance.php', { mpc: 'mpc move '+ ( e.oldIndex + 1 ) +' '+ ( e.newIndex + 1 ) } );
 	}
 } );
-$( '#pl-list' ).on( 'click', 'li', function( e ) {
+$( '#pl-entries' ).on ( 'swipe', 'li', function( e ) {
+	GUI.swipe = 1;
+	setTimeout( function() { GUI.swipe = 0 }, 500 );
+	if ( GUI.display.contexticon ) return
+	
+	$( '#context-menu-plaction' ).addClass( 'hide' );
+	$( '#pl-entries .pl-action' ).toggle();
+} ).on( 'tap', 'li', function( e ) {
 	if ( GUI.swipe ) return
 	
 	var $this = $( this );
@@ -1437,16 +1452,18 @@ $( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
 	if ( targetB > wH - ( GUI.bars ? 80 : 40 ) + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + 42 } );
 } );
 $( '#pl-index li' ).click( function() {
+	var topoffset = GUI.bars ? 80 : 40;
 	var indextext = $( this ).text();
 	if ( indextext === '#' ) {
 		$( 'html, body' ).scrollTop( 0 );
 		return
 	}
-	var matcharray = $( '#pl-editor li' ).filter( function() {
-		var name = stripLeading( $( this ).find( '.lipath' ).text() );
-		return name.match( new RegExp( '^'+ indextext, 'i' ) );
+	$( '#pl-editor li' ).each( function() {
+		if ( $( this ).find( '.lisort' ).text()[ 0 ] === indextext ) {
+			$( 'html, body' ).scrollTop( this.offsetTop - topoffset );
+			return false
+		}
 	} );
-	if ( matcharray.length ) $( 'html, body' ).scrollTop( matcharray[ 0 ].offsetTop - ( GUI.bars ? 80 : 40 ) );
 } );
 
 } ); // document ready end <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -1549,7 +1566,7 @@ pushstreams.bookmark.onmessage = function( data ) {
 		
 		if ( !GUI.display.order.length ) {
 			bookmarks.sort( function( a, b ) {
-				return stripLeading( a.name ).localeCompare( stripLeading( b.name ), undefined, { numeric: true } );
+				return a.lisort.localeCompare( b.lisort, undefined, { numeric: true } );
 			} );
 		}
 		$.each( bookmarks, function( i, bookmark ) {
