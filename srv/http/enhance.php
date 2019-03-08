@@ -53,7 +53,10 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		} else {
 			$lists = explode( "\n", rtrim( $result ) );
 			foreach( $lists as $list ) {
-				$data[] = array( $type => $list );
+				$data[] = array( 
+					  $type    => $list
+					, 'lisort' => stripLeading( $list )
+				);
 			}
 		}
 		echo json_encode( $data );
@@ -155,7 +158,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	}
 	// coverart
 	$thumbfile = '/mnt/MPD/'.$value.'/thumbnail.jpg';
-	$dir = pathinfo( $thumbfile, PATHINFO_DIRNAME );
+	$dir = dirname( $thumbfile );
 	if ( file_exists( $thumbfile ) ) { // skip if already exists
 		$data = getBookmark();
 		pushstream( 'bookmark', $data );
@@ -264,12 +267,12 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 } else if ( isset( $_POST[ 'playlist' ] ) ) {
 	$path = $_POST[ 'playlist' ];
 	if ( !is_array( $path ) ) {
-		$file = '/mnt/MPD/'.$path;
-		$pathinfo = pathinfo( $file );
-		if ( $pathinfo[ 'extension' ] === 'm3u' ) {
+		$ext = substr( $path, -3 );
+		if ( $ext === 'm3u' ) {
+			$file = '/mnt/MPD/'.$path;
 			exec( '/usr/bin/sudo /usr/bin/ln -s "'.$file.'" /var/lib/mpd/playlists/' );
-			$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%^^[%albumartist%|%artist%]^^%album%^^%genre%^^%composer%" playlist "'.$pathinfo[ 'filename' ].'"' );
-			exec( '/usr/bin/sudo /usr/bin/rm "/var/lib/mpd/playlists/'.$pathinfo[ 'basename' ].'"' );
+			$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%^^[%albumartist%|%artist%]^^%album%^^%genre%^^%composer%" playlist "'.basename( $file, '.m3u' ).'"' );
+			exec( '/usr/bin/sudo /usr/bin/rm "/var/lib/mpd/playlists/'.basename( $file ).'"' );
 		} else {
 			$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%^^[%albumartist%|%artist%]^^%album%^^%genre%^^%composer%" playlist "'.$path.'"' );
 		}
@@ -279,7 +282,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 			$cuefile = preg_replace( '/([&\[\]])/', '#$1', $cue ); // escape literal &, [, ] in %file% (operation characters)
 			$lines.= shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%+cue^^[%albumartist%|%artist%]^^%album%^^%genre%^^%composer%^^'.$cuefile.'" playlist "'.$cue.'"' );
 		}
-		$path = pathinfo( $path[ 0 ], PATHINFO_DIRNAME );
+		$path = dirname( $path[ 0 ] );
 	}
 	$data = list2array( $lines );
 	$data[][ 'path' ] = $path;
@@ -337,29 +340,36 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	}
 	exec( $cmd );
 }
+function stripLeading( $string ) {
+	return preg_replace( '/^A +|^AN +|^THE +|^\(\s*|^\[\s*|^\.\s*|^\'\s*|^\"\s*|\\//', '', strtoupper( $string ) );
+}
 function search2array( $result, $playlist = '' ) {
 	$lists = explode( "\n", rtrim( $result ) );
 	$genre = $composer = $albumartist = '';
 	foreach( $lists as $list ) {
-		$root = strtok( $list, '/' );
-		if ( $root === 'USB' || $root === 'NAS' || $root === 'LocalStorage' ) {
-			$pathinfo = pathinfo( $list );
-			$ext = $pathinfo[ 'extension' ];
-			if ( $ext === 'cue' || $ext === 'm3u' || $ext === 'pls' ) {
-				$li[ 'playlist' ] = $pathinfo[ 'basename' ];
-				$li[ 'filepl' ] = $list;
-				$data[] = $li;
-				$li = '';
+		$root = substr( $list, 0, 4 );
+		if ( $root === 'USB/' || $root === 'NAS/' || substr( $list, 0, 13 ) === 'LocalStorage/' ) {
+			$ext = substr( $list, -4 );
+			if ( $ext === '.cue' || $ext === '.m3u' || $ext === '.pls' ) {
+				$data[] = array(
+					  'playlist' => basename( $list )
+					, 'filepl'   => $list
+				);
 			} else {
-				$data[] = array( 'directory' => $list );
+				$data[] = array(
+					  'directory' => $list
+					, 'lisort'    => stripLeading( basename( $list ) )
+				);
 			}
 		} else {
 			$list = explode( '^^', rtrim( $list ) );
-			$li[ 'Title' ] = $list[ 0 ] ?: pathinfo( $list[ 4 ], PATHINFO_FILENAME );
-			$li[ 'Time' ] = $list[ 1 ];
-			$li[ 'Artist' ] = $list[ 2 ];
-			$li[ 'Album' ] = $list[ 3 ];
-			$li[ 'file' ] = $list[ 4 ];
+			$data[] = array(
+				  'Title'  => $list[ 0 ]
+				, 'Time'   => $list[ 1 ]
+				, 'Artist' => $list[ 2 ]
+				, 'Album'  => $list[ 3 ]
+				, 'file'   => $list[ 4 ]
+			);
 			if ( !$genre ) {
 				if ( $list[ 5 ] !== '' ) $genre = $list[ 5 ];
 			} else {
@@ -367,8 +377,6 @@ function search2array( $result, $playlist = '' ) {
 			}
 			if ( !$composer && $list[ 6 ] !== '' ) $composer = $list[ 6 ];
 			if ( !$albumartist && $list[ 7 ] !== '' ) $albumartist = $list[ 7 ];
-			$data[] = $li;
-			$li = '';
 		}
 	}
 	$data[][ 'artist' ] = $data[ 0 ][ 'Artist' ];
@@ -384,16 +392,17 @@ function list2array( $result, $webradioname = null ) {
 	foreach( $lists as $list ) {
 		$list = explode( '^^', rtrim( $list ) );
 		$li[ 'file' ] = $list[ 3 ];
-		$pathinfo = pathinfo( $li[ 'file' ] );
 		if ( $li[ 'file' ] !== $file ) {
 			$file = $li[ 'file' ];
 			$i = 1;
 		}
-		$li[ 'track' ] = $list[ 2 ] ?: $pathinfo[ 'dirname' ];
-		if ( strtok( $li[ 'track' ], ':' ) === 'http' ) {
-			$li[ 'Title' ] = $li[ 'track' ] ? $webradioname[ $list[ 3 ] ] : $pathinfo[ 'filename' ];
+		$li[ 'track' ] = $list[ 2 ] ?: dirname( $li[ 'file' ] );
+		if ( substr( $li[ 'track' ], 0, 4 ) === 'http' ) {
+			$li[ 'Title' ] = $li[ 'track' ] ? $webradioname[ $list[ 3 ] ] : basename( $li[ 'file' ] );
+		} else if ( $list[ 0 ] ) {
+			$li[ 'Title' ] = $list[ 0 ];
 		} else {
-			$li[ 'Title' ] = $list[ 0 ] ?: $pathinfo[ 'filename' ];
+			$li[ 'Title' ] = basename( $li[ 'file' ] );
 		}
 		$li[ 'Time' ] = $list[ 1 ];
 		$li[ 'index' ] = $i++;
@@ -442,7 +451,7 @@ function isPlaylist( $data ) {
 }
 function getCover( $coverfiles, $path ) {
 	$file = '/mnt/MPD/'.$path;
-	$dir = pathinfo( $file, PATHINFO_DIRNAME );
+	$dir = dirname( $file );
 	foreach( $coverfiles as $cover ) {
 		$coverfile = $dir.'/'.$cover;
 		if ( file_exists( $coverfile ) ) {
@@ -486,6 +495,7 @@ function getBookmark() {
 				  'name'     => $name
 				, 'path'     => $path
 				, 'coverart' => $coverart
+				, 'lisort'   => stripLeading( $name )
 			);
 		}
 	} else {
@@ -516,7 +526,10 @@ function lsPlaylists() {
 	if ( $lines ) {
 		$lists = explode( "\n", rtrim( $lines ) );
 		foreach( $lists as $list ) {
-			$lsplaylists[] = array( 'name' => $list );
+			$lsplaylists[] = array(
+				  'name'   => $list
+				, 'lisort' => stripLeading( $list )
+			);
 		}
 		return $lsplaylists;
 	} else {
