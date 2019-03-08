@@ -5,7 +5,9 @@ $bkmarks = $redis->hGetAll( 'bkmarks' );
 $order = $redis->hGet( 'display', 'order' );
 
 function stripLeading( $string ) {
-	return preg_replace( '/^A\s+|^AN\s+|^THE\s+|[^A-Z0-9 ]/', '', strtoupper( $string ) );
+	$stripped = preg_replace( '/^A\s+|^AN\s+|^THE\s+|[^A-Z0-9 ]/', '', strtoupper( $string ) );
+	// fix - php strnatcmp ignores spaces
+	return str_replace( ' ', '-', $stripped );
 }
 // counts
 $count = exec( '/srv/http/enhancecount.sh' );
@@ -30,18 +32,7 @@ foreach( $bkmarks as $label => $path ) {
 	} else {
 		$coverart = '';
 	}
-	if ( $order ) {
-		$bookmarks[] = array( $label, $path, $coverart );
-	} else {
-		$sort = stripLeading( $label );
-		$sort = str_replace( '_', '-', $sort ); // fix '_' order last (first in js)
-		$bookmarks[] = array( $label, $path, $coverart, $sort );
-	}
-}
-if ( !$order ) {
-	usort( $bookmarks, function( $a, $b ) {
-		return strnatcmp( stripLeading( $a[ 3 ] ), stripLeading( $b[ 3 ] ) );
-	} );
+	$bookmarks[] = array( $label, $path, $coverart, stripLeading( $label ) );
 }
 // library home blocks
 $blocks = array( // 'id' => array( 'path', 'icon', 'name' );
@@ -74,6 +65,11 @@ foreach( $blocks as $id => $value ) {
 		</div>
 	';
 }
+if ( !$order ) {
+	usort( $bookmarks, function( $a, $b ) {
+		return strnatcmp( $a[ 3 ], $b[ 3 ] );
+	} );
+}
 foreach( $bookmarks as $bookmark ) {
 	if ( $bookmark[ 2 ] ) {
 		$namehtml = '<img class="bkcoverart" src="'.$bookmark[ 2 ].'">';
@@ -92,14 +88,13 @@ foreach( $bookmarks as $bookmark ) {
 		</div>
 	';
 }
-
-if ( $order ) {
+if ( !$order ) {
+	$blockhtml = implode( $divblocks );
+} else {
 	$order = explode( '^^', $order );
 	foreach( $order as $label ) {
 		$blockhtml.= $divblocks[ $label ];
 	}
-} else {
-	$blockhtml = implode( $divblocks );
 }
 
 $files = array_slice( scandir( '/srv/http/assets/img/coverarts' ), 2 );
@@ -110,29 +105,32 @@ if ( count( $files ) ) {
 		$names = explode( '^^', $name );
 		$album = $names[ 0 ];
 		$artist = $names[ 1 ];
-		$sortalbum = str_replace( ' ', '_', stripLeading( $album ) );
-		$sortartist = str_replace( ' ', '_', stripLeading( $artist ) );
-		$sort = $sortalbum.'_-_'.$sortartist;
+		$sortalbum = stripLeading( $album );
+		$sortartist = stripLeading( $artist );
+//		$sort = $sortalbum.'-'.$sortartist;
 		$cue = $names[ 2 ];
-		$lists[] = array( $sort, $album, $artist, $file, $cue );
+		$lists[] = array( $sortalbum, $sortartist, $album, $artist, $file, $cue );
 	}
 	usort( $lists, function( $a, $b ) {
-		return strnatcmp( $a[ 0 ], $b[ 0 ] );
+		return strnatcmp( $a[ 0 ], $b[ 0 ] ) ?: strnatcmp( $a[ 1 ], $b[ 1 ] );
 	} );
+/*	usort( $lists, function( $a, $b ) {
+		return $a[ 0 ] - $b[ 0 ] ?: a[ 1 ] - $b[ 1 ];
+	});*/
 	$coverarthtml = '';
 	foreach( $lists as $list ) {
-		$licue = $list[ 4 ] ? '<a class="licue">'.$list[ 4 ].'</a>' : '';
+		$licue = $list[ 5 ] ? '<a class="licue">'.$list[ 5 ].'</a>' : '';
 		$replace = array(  // #,? not allow in 'scr'
 			  '/\#/' => '%23'
 			, '/\?/' => '%3F'
 		);
-		$filename = preg_replace( array_keys( $replace ), array_values( $replace ), $list[ 3 ] );
+		$filename = preg_replace( array_keys( $replace ), array_values( $replace ), $list[ 4 ] );
 		$coverartshtml.= '<div class="coverart">'
 							.$licue
 							.'<a class="lisort">'.$list[ 0 ].'</a>'
 							.'<div><img class="lazy" data-src="/srv/http/assets/img/coverarts/'.$filename.'"></div>'
-							.'<span class="coverartalbum">'.$list[ 1 ].'</span>'
-							.'<gr class="coverartartist">'.( $list[ 2 ] ?: '&nbsp;' ).'</gr>'
+							.'<span class="coverartalbum">'.$list[ 2 ].'</span>'
+							.'<gr class="coverartartist">'.( $list[ 3 ] ?: '&nbsp;' ).'</gr>'
 						.'</div>';
 	}
 	$coverartshtml.= '<p></p>';
