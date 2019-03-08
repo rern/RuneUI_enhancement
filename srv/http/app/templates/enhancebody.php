@@ -5,7 +5,7 @@ $bkmarks = $redis->hGetAll( 'bkmarks' );
 $order = $redis->hGet( 'display', 'order' );
 
 function stripLeading( $string ) {
-	return preg_replace( '/^A +|^An +|^The +|^\(\s*|^\[\s*|^\.\s*|^\'\s*|^\"\s*|\\//i', '', $string );
+	return preg_replace( '/^A +|^AN +|^THE +|^\(\s*|^\[\s*|^\.\s*|^\'\s*|^\"\s*|\\//', '', strtoupper( $string ) );
 }
 // counts
 $count = exec( '/srv/http/enhancecount.sh' );
@@ -112,7 +112,7 @@ if ( count( $files ) ) {
 		$artist = $names[ 1 ];
 		$sortalbum = str_replace( ' ', '_', stripLeading( $album ) );
 		$sortartist = str_replace( ' ', '_', stripLeading( $artist ) );
-		$sort = strtoupper( $sortalbum.'-'.$sortartist );
+		$sort = $sortalbum.'_-_'.$sortartist;
 		$cue = $names[ 2 ];
 		$lists[] = array( $sort, $album, $artist, $file, $cue );
 	}
@@ -193,9 +193,8 @@ $menu.= menudiv( 'plaction', $html );
 $menudiv = '';
 
 $html = $htmlcommon;
-$html.= menuli( 'bookmark',  'star',           'Bookmark' );
-$html.= menuli( 'update',    'folder-refresh', 'Update database' );
-$html.= menuli( 'thumbnail', 'coverart',       'Update thumbnails' );
+$html.= menuli( 'update',   'folder-refresh', 'Update' );
+$html.= menuli( 'bookmark', 'star',           'Bookmark' );
 $menu.= menudiv( 'folder', $html );
 $menudiv = '';
 $html = $htmlcommon;
