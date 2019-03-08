@@ -846,23 +846,6 @@ function getDB( options ) {
 		}, 'json' );
 	}
 }
-function liSort( data, name ) {
-	data.sort( function( a, b ) {
-		return a.lisort.localeCompare( b.lisort, undefined, { numeric: true } )
-	} );
-	var index;
-	$.each( data, function( i, value ) {
-		index = value.lisort[ 0 ];
-		if ( A2Z.indexOf( index ) !== -1 ) {
-			if ( GUI.library ) {
-				$( '#db-index .index-'+ index ).css( 'color', '' );
-			} else {
-				$( '#pl-index li' ).not( ':eq( 0 )' ).css( 'color', '#34495e' );
-				$( '#pl-index .index-'+ index ).css( 'color', '' );
-			}
-		}
-	} );
-}
 function dataSort( data, path, plugin, querytype, arg ) {
 	var data = data,
 		path = path || '',
@@ -931,6 +914,10 @@ function dataSort( data, path, plugin, querytype, arg ) {
 					genre = value.genre;
 				} else if ( value.albumartist ) {
 					albumartist = value.albumartist;
+				} else if ( value.index ) {
+					$.each( value.index, function( i, char ) {
+						$( '#db-index .index-'+ char ).css( 'color', '' );
+					} );
 				} else if ( value.directory || value.file || value.playlist ) {
 					name = value.directory || value.file || value.playlist;
 					if ( value.directory ) {
@@ -940,6 +927,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 						sec = HMS2Second( value.Time );
 						litime += sec;
 					} else if ( value.playlist ) {
+						//alert(JSON.stringify(data))
 						arraypl.push( value );
 					}
 				}
@@ -964,14 +952,12 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			}
 			var arraydirL = arraydir.length;
 			if ( arraydirL ) {
-				liSort( arraydir ); // already each looped
 				for ( i = 0; i < arraydirL; i++ ) content += data2html( arraydir[ i ], i, 'db', path );
 			}
 			var arrayplL = arraypl.length;
 			if ( arrayplL ) {
-				var cue = arraypl[ 0 ].filepl.slice( -3 ) === 'cue';
+				var cue = arraypl[ 0 ].filepl && arraypl[ 0 ].filepl.slice( -3 ) === 'cue';
 				if ( !cue ) {
-					liSort( arraypl );
 					for ( i = 0; i < arrayplL; i++ ) content += data2html( arraypl[ i ], i, 'db', path );
 				} else {
 					var filecue = [];
@@ -988,9 +974,16 @@ function dataSort( data, path, plugin, querytype, arg ) {
 			}
 		} else {
 			if ( data[ 0 ][ prop ] === undefined ) prop = mode[ GUI.browsemode ];
-			liSort( data, prop );
 			var dataL = data.length;
-			for ( i = 0; i < dataL; i++ ) content += data2html( data[ i ], i, 'db', path );
+			for ( i = 0; i < dataL; i++ ) {
+				if ( data[ i ].index ) {
+					$.each( data[ i ].index, function( i, char ) {
+						$( '#db-index .index-'+ char ).css( 'color', '' );
+					} );
+				} else {
+					content += data2html( data[ i ], i, 'db', path );
+				}
+			}
 		}
 		$( '#db-webradio-new' ).toggleClass( 'hide', path !== 'Webradio' );
 	} else {
