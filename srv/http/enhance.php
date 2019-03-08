@@ -53,11 +53,17 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		} else {
 			$lists = explode( "\n", rtrim( $result ) );
 			foreach( $lists as $list ) {
+				$lisort = stripLeading( $list );
 				$data[] = array( 
 					  $type    => $list
-					, 'lisort' => stripLeading( $list )
+					, 'lisort' => $lisort
 				);
+				$index[].= $lisort[ 0 ];
 			}
+			usort( $data, function( $a, $b ) {
+				return strnatcmp( $a[ 'lisort' ], $b[ 'lisort' ] );
+			} );
+			$data[][ 'index' ] = array_unique( $index );
 		}
 		echo json_encode( $data );
 	} else if ( isset( $_POST[ 'result' ] ) ) {
@@ -208,11 +214,13 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 } else if ( isset( $_POST[ 'getwebradios' ] ) ) {
 	$webradios = $redis->hGetAll( 'webradios' );
 	foreach( $webradios as $name => $url ) {
-		$li[ 'playlist' ] = 'Webradio/'.$name.'.pls';
-		$li[ 'url' ] = $url;
-		$data[] = $li;
-		$li = '';
+		$data[] = array(
+			  'playlist' => 'Webradio/'.$name.'.pls'
+			, 'url'      => $url
+		);
+		$index[].= $name[ 0 ];
 	}
+	$data[][ 'index' ] = array_unique( $index );
 	echo json_encode( $data );
 } else if ( isset( $_POST[ 'album' ] ) ) {
 	$albums = shell_exec( $_POST[ 'album' ] );
@@ -253,7 +261,12 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 				, 'artist'      => $artist
 				, 'lisort'      => $lisort
 			);
+			$index[].= $lisort[ 0 ];
 		}
+		usort( $data, function( $a, $b ) {
+			return strnatcmp( $a[ 'lisort' ], $b[ 'lisort' ] );
+		} );
+		$data[][ 'index' ] = array_unique( $index );
 	}
 	echo json_encode( $data );
 } else if ( isset( $_POST[ 'getplaylist' ] ) ) {
@@ -347,10 +360,10 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	exec( $cmd );
 }
 function stripLeading( $string ) {
-	// strip articles | non utf-8 normal alphanumerics , spaces to space
+	// strip articles | non utf-8 normal alphanumerics , fix: php strnatcmp ignores spaces
 	return preg_replace(
 		  array( '/^A\s+|^AN\s+|^THE\s+|[^\w\p{L}\p{N}\p{Pd} ]/u', '/\s+/' )
-		, array( '', ' ' )
+		, array( '', '-' )
 		, strtoupper( $string )
 	);
 }
@@ -367,10 +380,12 @@ function search2array( $result, $playlist = '' ) {
 					, 'filepl'   => $list
 				);
 			} else {
+				$lisort = stripLeading( basename( $list ) );
 				$data[] = array(
 					  'directory' => $list
-					, 'lisort'    => stripLeading( basename( $list ) )
+					, 'lisort'    => $lisort
 				);
+				$index[].= $lisort[ 0 ];
 			}
 		} else {
 			$list = explode( '^^', rtrim( $list ) );
@@ -390,6 +405,10 @@ function search2array( $result, $playlist = '' ) {
 			if ( !$albumartist && $list[ 7 ] !== '' ) $albumartist = $list[ 7 ];
 		}
 	}
+	usort( $data, function( $a, $b ) {
+		return strnatcmp( $a[ 'lisort' ], $b[ 'lisort' ] );
+	} );
+	if ( isset( $index ) ) $data[][ 'index' ] = array_unique( $index );
 	$data[][ 'artist' ] = $data[ 0 ][ 'Artist' ];
 	$data[][ 'album' ] = $data[ 0 ][ 'Album' ];
 	$data[][ 'albumartist' ] = $albumartist ?: $data[ 0 ][ 'Artist' ];
@@ -502,13 +521,19 @@ function getBookmark() {
 			} else {
 				$coverart = '';
 			}
+			$lisort = stripLeading( $name );
 			$data[] = array(
 				  'name'     => $name
 				, 'path'     => $path
 				, 'coverart' => $coverart
-				, 'lisort'   => stripLeading( $name )
+				, 'lisort'   => $lisort
 			);
+			$index = $lisort[ 0 ];
 		}
+		usort( $data, function( $a, $b ) {
+			return strnatcmp( $a[ 'lisort' ], $b[ 'lisort' ] );
+		} );
+		$data[][ 'index' ] = array_unique( $index );
 	} else {
 		$data = 0;
 	}
@@ -537,12 +562,18 @@ function lsPlaylists() {
 	if ( $lines ) {
 		$lists = explode( "\n", rtrim( $lines ) );
 		foreach( $lists as $list ) {
-			$lsplaylists[] = array(
+			$lisort = stripLeading( $list );
+			$data[] = array(
 				  'name'   => $list
-				, 'lisort' => stripLeading( $list )
+				, 'lisort' => $lisort
 			);
+			$index[].= $lisort[ 0 ];
 		}
-		return $lsplaylists;
+		usort( $data, function( $a, $b ) {
+			return strnatcmp( $a[ 'lisort' ], $b[ 'lisort' ] );
+		} );
+		$data[][ 'index' ] = array_unique( $index );
+		return $data;
 	} else {
 		return 0;
 	}
