@@ -365,7 +365,7 @@ function stripLeading( $string ) {
 		, array( '', '-' )
 		, $names
 	);
-	$init = mb_substr( $sort, 0, 1, 'UTF-8' );
+	$init = mb_substr( $stripped, 0, 1, 'UTF-8' );
 	return array( $stripped, $init );
 }
 function sortData( $data, $index ) {
