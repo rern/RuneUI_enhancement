@@ -704,7 +704,7 @@ function infoNoData() {
 		, autoclose : 6000
 	} );
 }
-function getDaTa( options ) {
+function getData( options ) {
 	$( '#loader' ).removeClass( 'hide' );
 	if ( !Array.isArray( options.path ) ) {
 		var path = options.path ? options.path.toString().replace( /"/g, '\"' ) : '';
@@ -964,7 +964,7 @@ function dataParse( data, path, plugin, querytype, arg ) {
 					$.each( arraypl, function( i, val ) {
 						if ( val.filepl && cue ) filecue.push( val.filepl );
 					} );
-					getDaTa( { path: filecue } );
+					getData( { path: filecue } );
 					return
 				}
 			}
