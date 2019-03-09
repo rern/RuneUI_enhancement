@@ -115,7 +115,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 				$order = implode( '^^', $order );            // array to string
 				$redis->hSet( 'display', 'order', $order ); // redis cannot save array
 			}
-			$data = getBookmark();
+			$data = getBookmark( $redis );
 			pushstream( 'bookmark', $data );
 		}
 		if ( $key === 'webradios' ) exec( 'mpc update Webradio &' );
@@ -155,7 +155,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 				$order = implode( '^^', $order );    // array to string
 				$redis->hSet( 'display', 'order', $order );
 			}
-			$data = getBookmark();
+			$data = getBookmark( $redis );
 			pushstream( 'bookmark', $data );
 		}
 		$redis->hDel( 'webradiopl', $value );
@@ -164,7 +164,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$thumbfile = '/mnt/MPD/'.$value.'/thumbnail.jpg';
 	$dir = dirname( $thumbfile );
 	if ( file_exists( $thumbfile ) ) { // skip if already exists
-		$data = getBookmark();
+		$data = getBookmark( $redis );
 		pushstream( 'bookmark', $data );
 		exit();
 	}
@@ -174,7 +174,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$coverfile = $dir.'/'.$cover;
 		if ( file_exists( $coverfile ) ) {
 			exec( '/usr/bin/sudo /usr/bin/convert "'.$coverfile.'" -thumbnail 200x200 -unsharp 0x.5 "'.$thumbfile.'"' );
-			$data = getBookmark();
+			$data = getBookmark( $redis );
 			pushstream( 'bookmark', $data );
 			exit();
 		}
@@ -204,7 +204,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 			break;
 		}
 	}
-	$data = getBookmark();
+	$data = getBookmark( $redis );
 	pushstream( 'bookmark', $data );
 } else if ( isset( $_POST[ 'getwebradios' ] ) ) {
 	$webradios = $redis->hGetAll( 'webradios' );
@@ -451,13 +451,14 @@ function list2array( $result, $webradioname = null ) {
 			if ( $list[ 6 ] !== $genre ) $genre = -1;
 		}
 		if ( !$composer && $list[ 7 ] !== '' ) $composer = $list[ 7 ];
+		$cue = isset( $list[ 8 ] ) ? $list[ 8 ] : '';
 		$data[] = array(
 			  'file'  => $file
 			, 'track' => $track
 			, 'Title' => $title
 			, 'Time'  => $list[ 1 ]
 			, 'index' => $i++
-			, 'cue'   => isset( $list[ 8 ] ) ? $list[ 8 ] : ''
+			, 'cue'   => $cue
 		);
 	}
 	if ( !$webradioname ) {
@@ -520,9 +521,7 @@ function pushstream( $channel, $data = 1 ) {
 	curl_exec( $ch );
 	curl_close( $ch );
 }
-function getBookmark() {
-	$redis = new Redis();
-	$redis->pconnect( '127.0.0.1' );
+function getBookmark( $redis ) {
 	$rbkmarks = $redis->hGetAll( 'bkmarks' );
 	if ( $rbkmarks ) {
 		foreach ( $rbkmarks as $name => $path ) {
