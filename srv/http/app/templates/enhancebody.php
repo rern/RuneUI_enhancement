@@ -6,10 +6,11 @@ $order = $redis->hGet( 'display', 'order' );
 
 function stripLeading( $string ) {
 	// strip articles | non utf-8 normal alphanumerics , fix: php strnatcmp ignores spaces
+	$names = strtoupper( strVal( $string ) );
 	return preg_replace(
 		  array( '/^A\s+|^AN\s+|^THE\s+|[^\w\p{L}\p{N}\p{Pd} ]/u', '/\s+/' )
 		, array( '', '-' )
-		, strtoupper( $string )
+		, $names
 	);
 }
 // counts
@@ -110,16 +111,14 @@ if ( count( $files ) ) {
 		$artist = $names[ 1 ];
 		$sortalbum = stripLeading( $album );
 		$sortartist = stripLeading( $artist );
-//		$sort = $sortalbum.'-'.$sortartist;
 		$cue = $names[ 2 ];
 		$lists[] = array( $sortalbum, $sortartist, $album, $artist, $file, $cue );
+		$index[].= mb_substr( $sortalbum, 0, 1, 'UTF-8' );
 	}
 	usort( $lists, function( $a, $b ) {
 		return strnatcmp( $a[ 0 ], $b[ 0 ] ) ?: strnatcmp( $a[ 1 ], $b[ 1 ] );
 	} );
-/*	usort( $lists, function( $a, $b ) {
-		return $a[ 0 ] - $b[ 0 ] ?: a[ 1 ] - $b[ 1 ];
-	});*/
+	$index = array_keys( array_flip( $index ) );
 	$coverarthtml = '';
 	foreach( $lists as $list ) {
 		$licue = $list[ 5 ] ? '<a class="licue">'.$list[ 5 ].'</a>' : '';
@@ -136,7 +135,7 @@ if ( count( $files ) ) {
 							.'<gr class="coverartartist">'.( $list[ 3 ] ?: '&nbsp;' ).'</gr>'
 						.'</div>';
 	}
-	$coverartshtml.= '<p></p>';
+	$coverartshtml.= '<a id="indexcover">'.implode( $index ).'</a><p></p>';
 } else {
 	$coverarthtml = '';
 }
