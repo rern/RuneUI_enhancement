@@ -80,7 +80,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$data = search2array( $result );
 	if ( $redis->hGet( 'display', 'coverfile' ) && !isPlaylist( $data ) && substr( $mpc, 0, 10 ) !== 'mpc search' ) {
 		$cover = getCover( $coverfiles, $data[ 0 ][ 'file' ] );
-		if ( $cover ) $data[][ 'coverart' ] = $cover;
+		$data[][ 'coverart' ] = $cover ?: '/assets/img/cover.svg';
 	}
 	echo json_encode( $data );
 } else if ( isset( $_POST[ 'librarycount' ] ) ) {
@@ -305,7 +305,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$data[][ 'path' ] = $path;
 	if ( $redis->hGet( 'display', 'coverfile' ) ) {
 		$cover = getCover( $coverfiles, $data[ 0 ][ 'file' ] );
-		if ( $cover ) $data[][ 'coverart' ] = $cover;
+		$data[][ 'coverart' ] = $cover ?: '/assets/img/cover.svg';
 	}
 	echo json_encode( $data );
 } else if ( isset( $_POST[ 'getdisplay' ] ) ) {
