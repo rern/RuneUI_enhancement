@@ -53,14 +53,13 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		} else {
 			$lists = explode( "\n", rtrim( $result ) );
 			foreach( $lists as $list ) {
-				$lisort = stripLeading( $list );
-				$init = strVal( $lisort )[ 0 ];
+				$sort = stripLeading( $list );
+				$index[].= $sort[ 1 ];
 				$data[] = array( 
 					  $type    => $list
-					, 'sort'   => $lisort
-					, 'lisort' => $init
+					, 'sort'   => $sort[ 0 ]
+					, 'lisort' => $sort[ 1 ]
 				);
-				$index[].= $init;
 			}
 			$data = sortData( $data, $index );
 		}
@@ -207,20 +206,22 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	}
 	$data = getBookmark();
 	pushstream( 'bookmark', $data );
-} else if ( isset( $_POST[ 'coverfile' ] ) ) {
-	$coverfile = '/srv/http/assets/img/coverarts/'.urldecode( $_POST[ 'coverfile' ] );
-	exec( '/usr/bin/sudo /usr/bin/rm "'.$coverfile.'"' );
 } else if ( isset( $_POST[ 'getwebradios' ] ) ) {
 	$webradios = $redis->hGetAll( 'webradios' );
 	foreach( $webradios as $name => $url ) {
+		$sort = stripLeading( $name );
+		$index[].= $sort[ 1 ];
 		$data[] = array(
 			  'playlist' => 'Webradio/'.$name.'.pls'
 			, 'url'      => $url
+			, 'sort'     => $sort[ 0 ]
 		);
-		$index[].= $name[ 0 ];
 	}
-	$data[][ 'index' ] = array_unique( $index );
+	$data = sortData( $data, $index );
 	echo json_encode( $data );
+} else if ( isset( $_POST[ 'coverfile' ] ) ) {
+	$coverfile = '/srv/http/assets/img/coverarts/'.urldecode( $_POST[ 'coverfile' ] );
+	exec( '/usr/bin/sudo /usr/bin/rm "'.$coverfile.'"' );
 } else if ( isset( $_POST[ 'album' ] ) ) {
 	$albums = shell_exec( $_POST[ 'album' ] );
 	$name = isset( $_POST[ 'albumname' ] ) ? $_POST[ 'albumname' ] : '';
@@ -249,20 +250,19 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 			$artist = $list[ 1 ];
 			if ( $name ) {
 				$artistalbum = $artist.'<gr> • </gr>'.$album;
-				$lisort = stripLeading( $artist.' - '.$album );
+				$sort = stripLeading( $artist.' - '.$album );
 			} else {
 				$artistalbum = $album.'<gr> • </gr>'.$artist;
-				$lisort = stripLeading( $album.' - '.$artist );
+				$sort = stripLeading( $album.' - '.$artist );
 			}
-			$init = strVal( $lisort )[ 0 ];
+			$index[].= $sort[ 1 ];
 			$data[] = array(
 				  'artistalbum' => $artistalbum
 				, 'album'       => $album
 				, 'artist'      => $artist
-				, 'sort'        => $lisort
-				, 'lisort'      => $init
+				, 'sort'        => $sort[ 0 ]
+				, 'lisort'      => $sort[ 1 ]
 			);
-			$index[].= $init;
 		}
 		$data = sortData( $data, $index );
 	}
@@ -359,21 +359,24 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 }
 function stripLeading( $string ) {
 	// strip articles | non utf-8 normal alphanumerics , fix: php strnatcmp ignores spaces
-	return preg_replace(
+	$names = strtoupper( strVal( $string ) );
+	$stripped = preg_replace(
 		  array( '/^A\s+|^AN\s+|^THE\s+|[^\w\p{L}\p{N}\p{Pd} ]/u', '/\s+/' )
 		, array( '', '-' )
-		, strtoupper( $string )
+		, $names
 	);
+	$init = mb_substr( $sort, 0, 1, 'UTF-8' );
+	return array( $stripped, $init );
 }
 function sortData( $data, $index ) {
 	usort( $data, function( $a, $b ) {
 		return strnatcmp( $a[ 'sort' ], $b[ 'sort' ] );
 	} );
 	unset( $data[ 'sort' ] );
-	if ( $index ) $data[][ 'index' ] = array_unique( $index );
+	$data[][ 'index' ] = array_keys( array_flip( $index ) ); // faster than array_unique
 	return $data;
 }
-function search2array( $result, $playlist = '' ) {
+function search2array( $result, $playlist = '' ) { // directories or files
 	$lists = explode( "\n", rtrim( $result ) );
 	$genre = $composer = $albumartist = '';
 	foreach( $lists as $list ) {
@@ -386,14 +389,13 @@ function search2array( $result, $playlist = '' ) {
 					, 'filepl'   => $list
 				);
 			} else {
-				$lisort = stripLeading( basename( $list ) );
-				$init = strVal( $lisort )[ 0 ];
+				$sort = stripLeading( basename( $list ) );
+				$index[].= $sort[ 1 ];
 				$data[] = array(
 					  'directory' => $list
-					, 'sort'      => $lisort
-					, 'lisort'    => $init
+					, 'sort'      => $sort[ 0 ]
+					, 'lisort'    => $sort[ 1 ]
 				);
-				$index[].= $init;
 			}
 		} else {
 			$list = explode( '^^', rtrim( $list ) );
@@ -404,7 +406,7 @@ function search2array( $result, $playlist = '' ) {
 				, 'Album'  => $list[ 3 ]
 				, 'file'   => $list[ 4 ]
 			);
-			$index = '';
+			$index = [];
 			if ( !$genre ) {
 				if ( $list[ 5 ] !== '' ) $genre = $list[ 5 ];
 			} else {
@@ -531,16 +533,15 @@ function getBookmark() {
 			} else {
 				$coverart = '';
 			}
-			$lisort = stripLeading( $name );
-			$init = strVal( $lisort )[ 0 ];
+			$sort = stripLeading( $name );
+			$index[].= $sort[ 1 ];
 			$data[] = array(
 				  'name'     => $name
 				, 'path'     => $path
 				, 'coverart' => $coverart
-				, 'sort'     => $lisort
-				, 'lisort'   => $init
+				, 'sort'     => $sort[ 0 ]
+				, 'lisort'   => $sort[ 1 ]
 			);
-			$index = $init;
 		}
 		$data = sortData( $data, $index );
 	} else {
@@ -571,14 +572,13 @@ function lsPlaylists() {
 	if ( $lines ) {
 		$lists = explode( "\n", rtrim( $lines ) );
 		foreach( $lists as $list ) {
-			$lisort = stripLeading( $list );
-			$init = strVal( $lisort )[ 0 ];
+			$sort = stripLeading( $list );
+			$index[].= $sort[ 1 ];
 			$data[] = array(
 				  'name'   => $list
-				, 'sort'   => $lisort
-				, 'lisort' => $init
+				, 'sort'   => $sort[ 0 ]
+				, 'lisort' => $sort[ 1 ]
 			);
-			$index[].= $init;
 		}
 		$data = sortData( $data, $index );
 		return $data;
