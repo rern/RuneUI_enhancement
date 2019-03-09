@@ -1421,7 +1421,7 @@ function htmlPlaylist( data ) {
 			content += '<li>'
 						 + actionhtml
 						 +'<span class="li1"><a class="name">'+ value.Title +'</a><span class="duration">'+ ( GUI.playlist && !GUI.pleditor ? '<a class="elapsed"></a>' : '' ) +'<a class="time" time="'+ sec +'">'+ value.Time +'</a></span></span>'
-						 +'<span class="li2">'+ ( GUI.playlist ? value.track : value.file ) +'</span>'
+						 +'<span class="li2">'+ ( GUI.playlist ? value.track : value.file.split( '/' ).pop() ) +'</span>'
 					 +'</li>';
 			countsong++;
 		}
