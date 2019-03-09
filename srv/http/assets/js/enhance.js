@@ -887,14 +887,8 @@ $( '#home-coverart' ).click( function() { // fix - 'tap' also fire .coverart cli
 	$( '#home-blocks' ).addClass( 'hide' );
 	$( '#divcoverarts, #db-back, #db-index' ).removeClass( 'hide' );
 	$( '#db-index li' ).not( ':eq( 0 )' ).css( 'color', '#34495e' );
-	if ( !GUI.indexcoverart ) {
-		GUI.indexcoverart = [];
-		$( '.coverart .lisort').each( function( i, el ) {
-			index = $( el ).text()[ 0 ];
-			if ( A2Z.indexOf( index ) !== -1 && GUI.indexcoverart.indexOf( index ) === -1 ) GUI.indexcoverart.push( index );
-		} );
-	}
-	GUI.indexcoverart.forEach( function( index ) {
+	var index = $( '#indexcover' ).text().split( '' );
+	index.forEach( function( index ) {
 		$( '#db-index .index-'+ index ).css( 'color', '' );
 	} );
 	displayIndexBar();
