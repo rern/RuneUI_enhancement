@@ -1466,7 +1466,7 @@ $( '#pl-index li' ).click( function() {
 		return
 	}
 	$( '#pl-editor li' ).each( function() {
-		if ( $( this ).find( '.lisort' )..charAt( 0 ) === indextext ) {
+		if ( $( this ).find( '.lisort' ).charAt( 0 ) === indextext ) {
 			$( 'html, body' ).scrollTop( this.offsetTop - topoffset );
 			return false
 		}
