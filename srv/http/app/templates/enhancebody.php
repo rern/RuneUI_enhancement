@@ -193,9 +193,9 @@ $menu.= menudiv( 'plaction', $html );
 $menudiv = '';
 
 $html = $htmlcommon;
-$html.= menuli( 'bookmark', 'star',           'Bookmark' );
-$html.= menuli( 'update',   'folder-refresh', 'Update database' );
-$html.= menuli( 'coverart', 'coverart',       'Update thumbnails' );
+$html.= menuli( 'bookmark',  'star',           'Bookmark' );
+$html.= menuli( 'update',    'folder-refresh', 'Update database' );
+$html.= menuli( 'thumbnail', 'coverart',       'Update thumbnails' );
 $menu.= menudiv( 'folder', $html );
 $menudiv = '';
 $html = $htmlcommon;
