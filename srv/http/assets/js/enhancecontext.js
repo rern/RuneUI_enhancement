@@ -12,7 +12,33 @@ $( '.contextmenu a' ).click( function() {
 			$( '#'+ cmd ).click();
 		}
 		return
+		
+	} else if ( cmd === 'thumbnail' ) {
+		// enclosed in single quotes + escape inside single quotes: 'path'"'"'file'
+		var path = '/mnt/MPD/'+ GUI.list.path.replace( /'/g, '\'"\'"\'' );
+		info( {
+			  icon     : 'coverart'
+			, title    : 'Coverart Thumbnails Update'
+			, message  : 'Update thumbnails for Browse By CoverArt'
+			, checkbox : { 'Remove existings': 1 }
+			, checked  : 0
+			, cancel   : 1
+			, ok       : function() {
+				$( 'body' ).append(
+					'<form id="formtemp" action="addonsbash.php" method="post">'
+						+'<input type="hidden" name="alias" value="cove">'
+						+'<input type="hidden" name="type" value="scan">'
+						+'<input type="hidden" name="opt">'
+					+'</form>' );
+				path = $( '#infoCheckBox input[ type=checkbox ]:checked' ).length ? "'"+ path +"' 1" : "'"+ path +"'";
+				console.log( path )
+				$( '#formtemp input[ name=opt ]' ).val( path );
+				$( '#formtemp' ).submit();
+			}
+		} );
+		return
 	}
+	
 	$( '#db-entries li, #pl-entries li' ).removeClass( 'active' );
 	var mode = cmd.replace( /replaceplay|replace|addplay|add/, '' );
 	// get name
@@ -68,7 +94,6 @@ $( '.contextmenu a' ).click( function() {
 		, update        : 'mpc update "'+ GUI.list.path +'"'
 	}
 	var command = contextCommand[ cmd ];
-	console.log(cmd)
 	if ( typeof command !== 'undefined' ) {
 		if ( typeof command === 'function' ) {
 			cmd !== 'radiosave' ? command() : webRadioNew( GUI.list.name, GUI.list.path );
