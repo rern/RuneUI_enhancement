@@ -927,7 +927,6 @@ function dataParse( data, path, plugin, querytype, arg ) {
 						sec = HMS2Second( value.Time );
 						litime += sec;
 					} else if ( value.playlist ) {
-						//alert(JSON.stringify(data))
 						arraypl.push( value );
 					}
 				}
