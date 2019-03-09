@@ -104,7 +104,7 @@ if ( !$order ) {
 $files = array_slice( scandir( '/srv/http/assets/img/coverarts' ), 2 );
 if ( count( $files ) ) {
 	foreach( $files as $file ) {
-		$name = str_replace( '.jpg', '', $file );
+		$name = substr( $file, 0, -4 );
 		$name = str_replace( '|', '/', $name );
 		$names = explode( '^^', $name );
 		$album = $names[ 0 ];
