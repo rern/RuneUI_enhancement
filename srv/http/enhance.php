@@ -380,8 +380,8 @@ function search2array( $result, $playlist = '' ) { // directories or files
 	$lists = explode( "\n", rtrim( $result ) );
 	$genre = $composer = $albumartist = '';
 	foreach( $lists as $list ) {
-		$root = explode( '/', $list )[ 0 ];
-		if ( in_array( $root, array( 'USB', 'NAS', 'LocalStorage' ) ) ) {
+		$root = in_array( explode( '/', $list )[ 0 ], [ 'USB', 'NAS', 'LocalStorage' ] );
+		if ( $root ) {
 			$ext = substr( $list, -4 );
 			if ( $ext === '.cue' || $ext === '.m3u' || $ext === '.pls' ) {
 				$data[] = array(
