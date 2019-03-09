@@ -197,7 +197,7 @@ function bookmarkVerify( name, path, oldname ) {
 		} );
 		return;
 	}
-	$bllabel = $( '.home-block' ).filter( function() {
+	var $bllabel = $( '.home-block' ).filter( function() {
 		return $( this ).find( '.label' ).text() === name;
 	} );
 	if ( !$bllabel.length ) {
@@ -297,7 +297,11 @@ function addWebradio( name, url, oldname ) {
 	var oldname = oldname ? oldname : '';
 	var data = oldname ? [ name, url, oldname ] : [ name, url ];
 	$.post( 'enhance.php', { webradios: data }, function() {
-		if ( GUI.playlist ) $( '#tab-playlist' ).click();
+		if ( GUI.library ) {
+			$( '#home-webradio' ).click();
+		} else {
+			$( '#tab-playlist' ).click();
+		}
 	} );
 	if ( !oldname ) {
 		GUI.libraryhome.webradio++;
@@ -318,7 +322,7 @@ function webRadioVerify( name, url, oldname ) {
 		} );
 		return;
 	}
-	$liname = $( '.db-webradio' ).filter( function() {
+	var $liname = $( '.db-webradio' ).filter( function() {
 		return $( this ).find( '.li1' ).text() === name;
 	} );
 	if ( !$liname.length ) {
