@@ -115,9 +115,15 @@ if ( count( $files ) ) {
 		$lists[] = array( $sortalbum, $sortartist, $album, $artist, $file, $cue );
 		$index[].= mb_substr( $sortalbum, 0, 1, 'UTF-8' );
 	}
-	usort( $lists, function( $a, $b ) {
-		return strnatcmp( $a[ 0 ], $b[ 0 ] ) ?: strnatcmp( $a[ 1 ], $b[ 1 ] );
-	} );
+	if ( $redis->hGet( 'display', 'thumbbyartist' ) ) {
+		usort( $lists, function( $a, $b ) {
+			return strnatcmp( $a[ 1 ], $b[ 1 ] ) ?: strnatcmp( $a[ 0 ], $b[ 0 ] );
+		} );
+	} else {
+		usort( $lists, function( $a, $b ) {
+			return strnatcmp( $a[ 0 ], $b[ 0 ] ) ?: strnatcmp( $a[ 1 ], $b[ 1 ] );
+		} );
+	}
 	$index = array_keys( array_flip( $index ) );
 	$coverarthtml = '';
 	foreach( $lists as $list ) {
