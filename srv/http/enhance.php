@@ -140,6 +140,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 			fclose( $fopen );
 			exec( 'mpc update Webradio &' );
 			pushstream( 'webradio', array( 'name' => $name, 'oldname' => $oldname ) );
+			$redis->hDel( 'webradiopl', $value ); // delete from unsaved list database
 			exit();
 			
 		} else {
@@ -157,10 +158,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 				$order = implode( '^^', $order );    // array to string
 				$redis->hSet( 'display', 'order', $order );
 			}
-			$data = getBookmark( $redis );
-			pushstream( 'bookmark', $data );
 		}
-		$redis->hDel( 'webradiopl', $value );
 	}
 	// coverart
 	$thumbfile = '/mnt/MPD/'.$value.'/thumbnail.jpg';
