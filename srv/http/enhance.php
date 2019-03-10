@@ -282,27 +282,14 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	}
 	echo json_encode( $data );
 } else if ( isset( $_POST[ 'playlist' ] ) ) {
-	$path = $_POST[ 'playlist' ];
-	if ( !is_array( $path ) ) {
-		$ext = substr( $path, -3 );
-		if ( $ext === 'm3u' ) {
-			$file = '/mnt/MPD/'.$path;
-			exec( '/usr/bin/sudo /usr/bin/ln -s "'.$file.'" /var/lib/mpd/playlists/' );
-			$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%^^[%albumartist%|%artist%]^^%album%^^%genre%^^%composer%" playlist "'.basename( $file, '.m3u' ).'"' );
-			exec( '/usr/bin/sudo /usr/bin/rm "/var/lib/mpd/playlists/'.basename( $file ).'"' );
-		} else {
-			$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%^^[%albumartist%|%artist%]^^%album%^^%genre%^^%composer%" playlist "'.$path.'"' );
-		}
-	} else {
-		$lines = '';
-		foreach( $path as $cue ) {
-			$cuefile = preg_replace( '/([&\[\]])/', '#$1', $cue ); // escape literal &, [, ] in %file% (operation characters)
-			$lines.= shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%+cue^^[%albumartist%|%artist%]^^%album%^^%genre%^^%composer%^^'.$cuefile.'" playlist "'.$cue.'"' );
-		}
-		$path = dirname( $path[ 0 ] );
+	$plfiles = $_POST[ 'playlist' ];
+	foreach( $plfiles as $file ) {
+		$ext = pathinfo( $file, PATHINFO_EXTENSION );
+		$plfile = preg_replace( '/([&\[\]])/', '#$1', $file ); // escape literal &, [, ] in %file% (operation characters)
+		$lines.= shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file% + '.$ext.'^^[%albumartist%|%artist%]^^%album%^^%genre%^^%composer%^^'.$plfile.'" playlist "'.$file.'"' );
 	}
 	$data = list2array( $lines );
-	$data[][ 'path' ] = $path;
+	$data[][ 'path' ] = dirname( $plfiles[ 0 ] );
 	if ( $redis->hGet( 'display', 'coverfile' ) ) {
 		$cover = getCover( $coverfiles, $data[ 0 ][ 'file' ] );
 		$data[][ 'coverart' ] = $cover ?: '/assets/img/cover.svg';
