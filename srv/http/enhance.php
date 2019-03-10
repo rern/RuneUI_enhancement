@@ -46,7 +46,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$type = $_POST[ 'list' ];
 		if ( $type === 'file' ) {
 			$data = search2array( $result );
-			if ( $redis->hGet( 'display', 'coverfile' ) && !isPlaylist( $data ) && substr( $mpc, 0, 10 ) !== 'mpc search' ) {
+			if ( $redis->hGet( 'display', 'coverfile' ) && !isset( $data[ 'playlist' ] ) && substr( $mpc, 0, 10 ) !== 'mpc search' ) {
 				$cover = getCover( $coverfiles, $data[ 0 ][ 'file' ] );
 				if ( $cover ) $data[][ 'coverart' ] = $cover;
 			}
@@ -78,7 +78,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$result = shell_exec( $cmd.' albumartist "'.$_POST[ 'artist' ].'"' );
 	}
 	$data = search2array( $result );
-	if ( $redis->hGet( 'display', 'coverfile' ) && !isPlaylist( $data ) && substr( $mpc, 0, 10 ) !== 'mpc search' ) {
+	if ( $redis->hGet( 'display', 'coverfile' ) && !isset( $data[ 'playlist' ] ) && substr( $mpc, 0, 10 ) !== 'mpc search' ) {
 		$cover = getCover( $coverfiles, $data[ 0 ][ 'file' ] );
 		$data[][ 'coverart' ] = $cover ?: '/assets/img/cover.svg';
 	}
@@ -239,7 +239,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	if ( $count === 1 ) {
 		$albums = shell_exec( 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" '.$type.' "'.$name.'"' );
 		$data = search2array( $albums );
-		if ( $redis->hGet( 'display', 'coverfile' ) && !isPlaylist( $data ) ) {
+		if ( $redis->hGet( 'display', 'coverfile' ) && !isset( $data[ 'playlist' ] ) ) {
 			$cover = getCover( $coverfiles, $data[ 0 ][ 'file' ] );
 			if ( $cover ) $data[][ 'coverart' ] = $cover;
 		}
@@ -470,13 +470,6 @@ function loadCue( $mpc ) { // 'mpc ls "path" | mpc add' from enhancecontext.js
 			shell_exec( 'mpc load "'.$cue.'" | mpc add' );
 		}
 		return 1;
-	}
-}
-function isPlaylist( $data ) {
-	foreach( $data as $list ) {
-		if ( array_key_exists( 'playlist', $list ) ) {
-			return 1;
-		}
 	}
 }
 function getCover( $coverfiles, $path ) {
