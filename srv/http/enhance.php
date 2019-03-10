@@ -105,6 +105,8 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		if ( $key === 'webradios' ) {
 			$redis->hDel( 'sampling', $name );
 			unlink( '/mnt/MPD/Webradio/'.$data.'.pls' );
+			exec( 'mpc update Webradio &' );
+			pushstream( 'webradio', array( 'name' => $name ) );
 		} else {
 			$order = $redis->hGet( 'display', 'order' );
 			if ( $order ) {
@@ -118,7 +120,6 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 			$data = getBookmark( $redis );
 			pushstream( 'bookmark', $data );
 		}
-		if ( $key === 'webradios' ) exec( 'mpc update Webradio &' );
 		exit();
 		
 	} else {
@@ -138,6 +139,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 			fwrite( $fopen, $lines );
 			fclose( $fopen );
 			exec( 'mpc update Webradio &' );
+			pushstream( 'webradio', array( 'name' => $name, 'oldname' => $oldname ) );
 			exit();
 			
 		} else {
