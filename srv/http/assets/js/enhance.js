@@ -1518,49 +1518,12 @@ window.addEventListener( 'orientationchange', function() {
 } );
 
 var pushstreams = {};
-var streams = [ 'display', 'volume', 'bookmark', 'playlist', 'idle', 'notify' ];
+var streams = [ 'bookmark', 'display', 'idle', 'notify', 'playlist', 'volume', 'webradio' ];
 streams.forEach( function( stream ) {
 	pushstreams[ stream ] = new PushStream( { modes: 'websocket' } );
 	pushstreams[ stream ].addChannel( stream );
 } );
 
-pushstreams.display.onmessage = function( data ) {
-	if ( typeof data[ 0 ] !== 'object' ) return
-	
-	var data = data[ 0 ];
-	$.each( data, function( key, val ) {
-		GUI.display[ key ] = val;
-	} );
-	clearTimeout( GUI.debounce );
-	GUI.debounce = setTimeout( function() {
-		if ( GUI.playback ) {
-			getPlaybackStatus();
-		} else if ( GUI.library ) {
-			if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) {
-				renderLibrary();
-			} else {
-				if ( GUI.display.coverfile ) {
-					if ( !$( '.licover' ).length ) $( '#db-currentpath a:last-child' ).click();
-				} else {
-					$( '.licover' ).remove();
-				}
-			}
-		} else {
-			displayTopBottom();
-		}
-	}, GUI.debouncems );
-}
-pushstreams.volume.onmessage = function( data ) {
-	var data = data[ 0 ];
-	clearTimeout( GUI.debounce );
-	GUI.debounce = setTimeout( function() {
-		var vol = data[ 0 ];
-		var volumemute = data[ 1 ];
-		$volumeRS.setValue( vol );
-		$volumehandle.rsRotate( - $volumeRS._handle1.angle );
-		volumemute ? muteColor( volumemute ) : unmuteColor();
-	}, GUI.debouncems );
-}
 pushstreams.bookmark.onmessage = function( data ) {
 	if ( GUI.bookmarkedit ) return
 		
@@ -1610,15 +1573,31 @@ pushstreams.bookmark.onmessage = function( data ) {
 		} );
 	}, GUI.debouncems );
 }
-pushstreams.playlist.onmessage = function( data ) {
-	GUI.lsplaylists = data[ 0 ] || [];
-	if ( !GUI.playlist ) return
+pushstreams.display.onmessage = function( data ) {
+	if ( typeof data[ 0 ] !== 'object' ) return
 	
-	if ( !$( '#pl-entries' ).hasClass( 'hide' ) || !GUI.lsplaylists.length ) {
-		renderPlaylist();
-	} else {
-		$( '#plopen' ).click();
-	}
+	var data = data[ 0 ];
+	$.each( data, function( key, val ) {
+		GUI.display[ key ] = val;
+	} );
+	clearTimeout( GUI.debounce );
+	GUI.debounce = setTimeout( function() {
+		if ( GUI.playback ) {
+			getPlaybackStatus();
+		} else if ( GUI.library ) {
+			if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) {
+				renderLibrary();
+			} else {
+				if ( GUI.display.coverfile ) {
+					if ( !$( '.licover' ).length ) $( '#db-currentpath a:last-child' ).click();
+				} else {
+					$( '.licover' ).remove();
+				}
+			}
+		} else {
+			displayTopBottom();
+		}
+	}, GUI.debouncems );
 }
 var timeoutUpdate;
 pushstreams.idle.onmessage = function( changed ) {
@@ -1684,6 +1663,38 @@ pushstreams.notify.onmessage = function( data ) {
 		, title       : notify.title || 'Info'
 		, text        : notify.text
 	} );
+}
+pushstreams.playlist.onmessage = function( data ) {
+	GUI.lsplaylists = data[ 0 ] || [];
+	if ( !GUI.playlist ) return
+	
+	if ( !$( '#pl-entries' ).hasClass( 'hide' ) || !GUI.lsplaylists.length ) {
+		renderPlaylist();
+	} else {
+		$( '#plopen' ).click();
+	}
+}
+pushstreams.volume.onmessage = function( data ) {
+	var data = data[ 0 ];
+	clearTimeout( GUI.debounce );
+	GUI.debounce = setTimeout( function() {
+		var vol = data[ 0 ];
+		var volumemute = data[ 1 ];
+		$volumeRS.setValue( vol );
+		$volumehandle.rsRotate( - $volumeRS._handle1.angle );
+		volumemute ? muteColor( volumemute ) : unmuteColor();
+	}, GUI.debouncems );
+}
+pushstreams.webradio.onmessage = function( data ) {
+	if ( $( '#db-currentpath i.fa-webradio' ).length ) {
+		$( '#home-webradio' ).click();
+	} else if ( GUI.playlist && !GUI.pleditor ) {
+		var data = data[ 0 ];
+		$( '#pl-entries li' ).filter( function() {
+			$this = $( this );
+			return $this.find( 'i.fa-webradio' ).length && $this.find( '.name' ).text() == data.oldname;
+		} ).find( '.name' ).text( data.name );
+	}
 }
 streams.forEach( function( stream ) {
 	pushstreams[ stream ].connect();

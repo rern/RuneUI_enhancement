@@ -296,13 +296,7 @@ function addWebradio( name, url, oldname ) {
 	var name = name;
 	var oldname = oldname ? oldname : '';
 	var data = oldname ? [ name, url, oldname ] : [ name, url ];
-	$.post( 'enhance.php', { webradios: data }, function() {
-		if ( GUI.library ) {
-			$( '#home-webradio' ).click();
-		} else {
-			$( '#tab-playlist' ).click();
-		}
-	} );
+	$.post( 'enhance.php', { webradios: data } );
 	if ( !oldname ) {
 		GUI.libraryhome.webradio++;
 		var count = GUI.libraryhome.webradio ? numFormat ( GUI.libraryhome.webradio ) : '';
