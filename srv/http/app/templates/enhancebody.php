@@ -5,13 +5,15 @@ $bkmarks = $redis->hGetAll( 'bkmarks' );
 $order = $redis->hGet( 'display', 'order' );
 
 function stripLeading( $string ) {
-	// strip articles | non utf-8 normal alphanumerics , fix: php strnatcmp ignores spaces
+	// strip articles | non utf-8 normal alphanumerics , fix: php strnatcmp ignores spaces + tilde for sort last
 	$names = strtoupper( strVal( $string ) );
-	return preg_replace(
-		  array( '/^A\s+|^AN\s+|^THE\s+|[^\w\p{L}\p{N}\p{Pd} ]/u', '/\s+/' )
+	$stripped = preg_replace(
+		  array( '/^A\s+|^AN\s+|^THE\s+|[^\w\p{L}\p{N}\p{Pd} ~]/u', '/\s+/' )
 		, array( '', '-' )
 		, $names
 	);
+	$init = mb_substr( $stripped, 0, 1, 'UTF-8' );
+	return array( $stripped, $init );
 }
 // counts
 $count = exec( '/srv/http/enhancecount.sh' );
@@ -36,7 +38,7 @@ foreach( $bkmarks as $label => $path ) {
 	} else {
 		$coverart = '';
 	}
-	$bookmarks[] = array( $label, $path, $coverart, stripLeading( $label ) );
+	$bookmarks[] = array( $label, $path, $coverart, stripLeading( $label )[ 0 ] );
 }
 // library home blocks
 $blocks = array( // 'id' => array( 'path', 'icon', 'name' );
@@ -103,27 +105,37 @@ if ( !$order ) {
 
 $files = array_slice( scandir( '/srv/http/assets/img/coverarts' ), 2 );
 if ( count( $files ) ) {
-	foreach( $files as $file ) {
-		$name = substr( $file, 0, -4 );
-		$name = str_replace( '|', '/', $name );
-		$names = explode( '^^', $name );
-		$album = $names[ 0 ];
-		$artist = $names[ 1 ];
-		$sortalbum = stripLeading( $album );
-		$sortartist = stripLeading( $artist );
-		$cue = $names[ 2 ];
-		$lists[] = array( $sortalbum, $sortartist, $album, $artist, $file, $cue );
-		$index[].= mb_substr( $sortalbum, 0, 1, 'UTF-8' );
-	}
-	if ( $redis->hGet( 'display', 'thumbbyartist' ) ) {
-		usort( $lists, function( $a, $b ) {
-			return strnatcmp( $a[ 1 ], $b[ 1 ] ) ?: strnatcmp( $a[ 0 ], $b[ 0 ] );
-		} );
+	$thumbbyartist = $redis->hGet( 'display', 'thumbbyartist' );
+	if ( $thumbbyartist ) {
+		foreach( $files as $file ) {
+			$name = substr( $file, 0, -4 );
+			$name = str_replace( '|', '/', $name );
+			$names = explode( '^^', $name );
+			$album = $names[ 0 ];
+			$artist = $names[ 1 ] ?: '~';
+			$sortalbum = stripLeading( $album );
+			$sortartist = stripLeading( $artist );
+			$cue = $names[ 2 ];
+			$lists[] = array( $sortartist[ 0 ], $sortalbum, $artist, $album, $file, $cue );
+			$index[] = $sortartist[ 1 ];
+		}
 	} else {
-		usort( $lists, function( $a, $b ) {
-			return strnatcmp( $a[ 0 ], $b[ 0 ] ) ?: strnatcmp( $a[ 1 ], $b[ 1 ] );
-		} );
+		foreach( $files as $file ) {
+			$name = substr( $file, 0, -4 );
+			$name = str_replace( '|', '/', $name );
+			$names = explode( '^^', $name );
+			$album = $names[ 0 ];
+			$artist = $names[ 1 ];
+			$sortalbum = stripLeading( $album );
+			$sortartist = stripLeading( $artist );
+			$cue = $names[ 2 ];
+			$lists[] = array( $sortalbum[ 0 ], $sortartist, $album, $artist, $file, $cue );
+			$index[] = $sortalbum[ 1 ];
+		}
 	}
+	usort( $lists, function( $a, $b ) {
+		return strnatcmp( $a[ 0 ], $b[ 0 ] ) ?: strnatcmp( $a[ 1 ], $b[ 1 ] );
+	} );
 	$index = array_keys( array_flip( $index ) );
 	$coverarthtml = '';
 	foreach( $lists as $list ) {
