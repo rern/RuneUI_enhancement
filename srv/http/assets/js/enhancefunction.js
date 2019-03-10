@@ -700,21 +700,21 @@ function infoNoData() {
 	var keyword = $( '#db-search-keyword' ).val();
 	info( {
 		  icon      : 'info-circle'
-		, message   : ( !keyword ? 'No data in this location.' : 'Nothing found for <wh>'+ keyword +'</wh>' )
-		, autoclose : 6000
+		, message   : ( !keyword ? 'No data in this location.<br>Update for changes then try again.' : 'Nothing found for <wh>'+ keyword +'</wh>' )
+		, autoclose : 8000
 	} );
 }
 function getData( options ) {
 	$( '#loader' ).removeClass( 'hide' );
 	if ( !Array.isArray( options.path ) ) {
 		var path = options.path ? options.path.toString().replace( /"/g, '\"' ) : '';
-	} else {
-		var path = [];
+	} else { // cue, m3u, m3u8, pls
+		var plfiles = [];
 		$.each( options.path, function( i, val ) {
-			path.push( val.toString().replace( /"/g, '\"' ) );
+			plfiles.push( val.toString().replace( /"/g, '\"' ) );
 		} );
-		$.post( 'enhance.php', { playlist: path }, function( data ) {
-			data ? dataParse( data, path[ 0 ] ) : infoNoData();
+		$.post( 'enhance.php', { playlist: plfiles }, function( data ) {
+			data ? dataParse( data, plfiles[ 0 ] ) : infoNoData();
 		}, 'json' );
 		return
 	}
@@ -891,6 +891,11 @@ function dataParse( data, path, plugin, querytype, arg ) {
 		if ( data[ 0 ].artistalbum ) prop = 'artistalbum'; // for common albums like 'Greatest Hits'
 		var fileplaylist = [ 'cue', 'm3u', 'pls' ].indexOf( path.slice( -3 ) ) !== -1;
 		if ( fileplaylist ) {
+			if ( !data[ 0 ].file ) {
+				infoNoData();
+				return
+			}
+			
 			var data = htmlPlaylist( data );
 			content = data.content;
 		} else if ( data[ 0 ].directory || data[ 0 ].file || data[ 0 ].playlist ) {

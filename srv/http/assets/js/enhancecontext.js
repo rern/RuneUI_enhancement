@@ -31,7 +31,6 @@ $( '.contextmenu a' ).click( function() {
 						+'<input type="hidden" name="opt">'
 					+'</form>' );
 				path = $( '#infoCheckBox input[ type=checkbox ]:checked' ).length ? "'"+ path +"' 1" : "'"+ path +"'";
-				console.log( path )
 				$( '#formtemp input[ name=opt ]' ).val( path );
 				$( '#formtemp' ).submit();
 			}
@@ -448,7 +447,6 @@ function playlistDelete() {
 		, cancel   : 1
 		, oklabel  : 'Delete'
 		, ok       : function() {
-			console.log(9)
 			var count = $( '#pls-count' ).text() - 1;
 			$( '#pls-count' ).text( numFormat( count ) );
 			if ( !count ) $( '#pl-currentpath' ).html( '<bl>&emsp;PLAYLISTS</bl>' );
