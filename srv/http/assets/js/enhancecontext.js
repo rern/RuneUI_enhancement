@@ -12,10 +12,6 @@ $( '.contextmenu a' ).click( function() {
 			$( '#'+ cmd ).click();
 		}
 		return
-		
-	} else if ( cmd === 'thumbnail' ) {
-		updateThumbnails();
-		return
 	}
 	
 	$( '#db-entries li, #pl-entries li' ).removeClass( 'active' );
@@ -48,7 +44,7 @@ $( '.contextmenu a' ).click( function() {
 		} else {
 			var mpcCmd = GUI.list.isfile ? 'mpc add "'+ name +'"' : 'mpc ls "'+ name +'" | mpc add';
 		}
-	} else {
+	} else if ( mode !== 'thumbnail' ) {
 		var artist = GUI.list.artist || $( '#artistalbum span' ).text();
 		artist = artist.replace( /"/g, '\\"' );
 		if ( [ 'album', 'artist', 'albumartist', 'composer', 'genre' ].indexOf( GUI.list.mode ) !== -1 ) {
@@ -58,10 +54,9 @@ $( '.contextmenu a' ).click( function() {
 		}
 		cmd = cmd.replace( /album|artist|composer|genre/, '' );
 	}
-	var addplaypos = GUI.status.playlistlength + 1;
 	var contextCommand = {
 		  add           : mpcCmd
-		, addplay       : [ mpcCmd, 'mpc play '+ addplaypos ]
+		, addplay       : [ mpcCmd, 'mpc play '+ ( GUI.status.playlistlength + 1 ) ]
 		, replace       : [ 'mpc clear', mpcCmd ]
 		, replaceplay   : [ 'mpc clear', mpcCmd, 'mpc play' ]
 		, radiosave     : webRadioNew
@@ -70,6 +65,7 @@ $( '.contextmenu a' ).click( function() {
 		, plrename      : playlistRename
 		, pldelete      : playlistDelete
 		, bookmark      : bookmarkNew
+		, thumbnail     : updateThumbnails
 		, update        : 'mpc update "'+ GUI.list.path +'"'
 	}
 	var command = contextCommand[ cmd ];
@@ -109,8 +105,8 @@ $( '.contextmenu a' ).click( function() {
 } );
 
 function updateThumbnails() {
-	// enclosed in single quotes + escape inside single quotes: 'path'"'"'file'
-	var path = '/mnt/MPD/'+ GUI.list.path.replace( /'/g, '\'"\'"\'' );
+	// enclosed in single quotes + escape inside single quotes: "'/path/file'\'"\'"\''s name'" <=> /path/file's name
+	var path = "'/mnt/MPD/"+ GUI.list.path.replace( /'/g, '\'"\'"\'' ) +"'";
 	info( {
 		  icon     : 'coverart'
 		, title    : 'Coverart Thumbnails Update'
@@ -124,7 +120,7 @@ function updateThumbnails() {
 					+'<input type="hidden" name="type" value="scan">'
 					+'<input type="hidden" name="opt">'
 				+'</form>' );
-			path = $( '#infoCheckBox input[ type=checkbox ]:checked' ).length ? "'"+ path +"' 1" : "'"+ path +"'";
+			if ( $( '#infoCheckBox input[ type=checkbox ]:checked' ).length ) path += ' 1';
 			$( '#formtemp input[ name=opt ]' ).val( path );
 			$( '#formtemp' ).submit();
 		}
