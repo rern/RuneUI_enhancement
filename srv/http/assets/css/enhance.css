@@ -1290,9 +1290,8 @@ wh, gr { font-weight: 300; }
 	display: inline-block;
 	width: 40px;
 	height: 40px;
-	line-height: 46px;
+	line-height: 40px;
 	text-align: center;
-	vertical-align: 0%;
 	background: #0095d8;
 }
 #pl-currentpath i {
