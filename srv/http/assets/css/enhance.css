@@ -1148,15 +1148,7 @@ wh, gr { font-weight: 300; }
 	color: #e0e7ee;
 }
 .label:hover {
-	color: #e0e7ee;
-}
-.home-block:hover,
-.home-block:focus {
-	cursor: pointer;
-	background: #374c62;
-	text-decoration: none;
-	outline: none;
-	color: #7795b4
+	color: inherit;
 }
 .home-block .fa-coverart,
 .home-block .fa-bookmark {
@@ -1304,10 +1296,6 @@ wh, gr { font-weight: 300; }
 #pl-currentpath .fa-webradio {
 	width: 30px;
 }
-#db-home:hover,
-#pl-home:hover {
-	background: #0072a5;
-}
 #db-search,
 #pl-search {
 	display: block;
@@ -1365,9 +1353,6 @@ wh, gr { font-weight: 300; }
 .index li {
 	text-align: center;
 	color: #e0e7ee;
-}
-.index li:hover {
-	background: #34495e;
 }
 .coverart {
 	display: inline-block;
@@ -1461,14 +1446,6 @@ wh, gr { font-weight: 300; }
 .pl-icon,
 #db-entries li span i {
 	margin-right: 10px;
-}
-#db-entries li:hover,
-#pl-entries li:hover,
-#pl-editor li:hover {
-	background: #374c62;
-}
-#db-entries .licover:hover {
-	background: #10161c
 }
 #db-entries span,
 #pl-entries .name,
@@ -1916,6 +1893,31 @@ li.active .time {
 	width: 100%;
 	height: 100%;
 	pointer-events: none;
+}
+@media ( hover:hover ) {
+	.home-block:hover,
+	.home-block:focus {
+		cursor: pointer;
+		background: #374c62;
+		text-decoration: none;
+		outline: none;
+		color: #7795b4
+	}
+	#db-home:hover,
+	#pl-home:hover {
+		background: #0072a5;
+	}
+	.index li:hover {
+		background: #34495e;
+	}
+	#db-entries li:hover,
+	#pl-entries li:hover,
+	#pl-editor li:hover {
+		background: #374c62;
+	}
+	#db-entries .licover:hover {
+		background: #10161c
+	}
 }
 @media(min-width: 2000px) { .coverart { width: 200px } }
 @media(max-width: 2000px) { .coverart { width: calc( ( 100vw - 38px ) * 0.1 ) } }
