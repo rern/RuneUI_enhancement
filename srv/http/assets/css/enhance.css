@@ -1468,6 +1468,9 @@ wh, gr { font-weight: 300; }
 #pl-editor li:hover {
 	background: #374c62;
 }
+#db-entries .licover:hover {
+	background: #10161c
+}
 #db-entries span,
 #pl-entries .name,
 #pl-entries .song,
