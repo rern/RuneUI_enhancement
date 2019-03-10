@@ -138,9 +138,11 @@ var chklibrary = {
 	, plclear        : 'Confirmation <gr>on clear Playlist</gr>'
 	, playbackswitch : 'Open Playback <gr>on</gr> <i class="fa fa-play-plus"></i>Add <gr>►</gr> Play'
 	, tapaddplay     : 'Single tap song <gr>=</gr> <i class="fa fa-play-plus"></i>Add <gr>►</gr> Play'
+	, thumbbyartist  : '<i class="fa fa-coverart"></i>Sort thumbnails by artist'
 }
 $( '#displaylibrary' ).click( function() {
 	var coverfile = GUI.display.coverfile;
+	var thumbbyartist = GUI.display.thumbbyartist;
 	info( {
 		  icon     : 'library'
 		, title    : 'Libary Home Items'
@@ -151,11 +153,13 @@ $( '#displaylibrary' ).click( function() {
 			$( '#displaysavelibrary input' ).each( function() {
 				var checked = this.checked;
 				GUI.display[ this.name ] = checked ? 'checked' : '';
-				if ( this.name === 'coverfile' ) GUI.coverfile = ( coverfile === 'checked' ) ? ( checked ? 0 : 1 ) : ( checked ? 1 : 0 );
 			} );
 			cssContextIcon();
-			$.post( 'enhance.php', { setdisplay: GUI.display } );
-			if ( !GUI.library ) $( '#tab-library' ).click();
+			$.post( 'enhance.php', { setdisplay: GUI.display }, function() {
+				if ( GUI.display.thumbbyartist !== thumbbyartist ) location.reload();
+				
+				if ( !GUI.library ) $( '#tab-library' ).click();
+			} );
 		}
 	} );
 } );
@@ -280,7 +284,6 @@ $( '#swipeL' ).click( function() {
 } );
 $( '#swipeR' ).click( function() {
 	var page = GUI.playback ? 'playlist' : ( GUI.library ? 'playback' : 'library' );
-	console.log(page)
 	$( '#tab-'+ page ).click();
 } );
 $( '#page-playback' ).click( function( e ) {
