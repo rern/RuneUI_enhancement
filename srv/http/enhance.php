@@ -345,10 +345,10 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	exec( $cmd );
 }
 function stripLeading( $string ) {
-	// strip articles | non utf-8 normal alphanumerics , fix: php strnatcmp ignores spaces
+	// strip articles | non utf-8 normal alphanumerics , fix: php strnatcmp ignores spaces + tilde for sort last
 	$names = strtoupper( strVal( $string ) );
 	$stripped = preg_replace(
-		  array( '/^A\s+|^AN\s+|^THE\s+|[^\w\p{L}\p{N}\p{Pd} ]/u', '/\s+/' )
+		  array( '/^A\s+|^AN\s+|^THE\s+|[^\w\p{L}\p{N}\p{Pd} ~]/u', '/\s+/' )
 		, array( '', '-' )
 		, $names
 	);
