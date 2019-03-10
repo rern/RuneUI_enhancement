@@ -20,6 +20,7 @@ _Tested on RuneAudio 0.4b, 0.5_
 - Coverart bookmarks
 - Coverart in album view
 - Index bar
+- Library sorting
 - Selectable show/hide
 	- Top-bottom bars
 	- Time Knob
@@ -106,7 +107,7 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 - Show index bar
 - Improved Back button
 - Maintain scroll position
-- Improved sorting and exclude leading A, An, The, ', ", ., (, \[
+- Improved sorting with articles, A/An/The, ignored
 - Modes
 	- Albums > names > songs
 	- Albums with duplicate name > album-artist > songs
