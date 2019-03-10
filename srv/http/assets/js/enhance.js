@@ -948,9 +948,16 @@ $( '.coverart' ).tap( function( e ) {
 			, browsemode : 'file'
 		} );
 	} else {
+		if ( GUI.display.thumbbyartist ) {
+			var album = $this.find( '.coverart2' ).text()
+			var artist = $this.find( '.coverart1' ).text()
+		} else {
+			var album = $this.find( '.coverart1' ).text()
+			var artist = $this.find( '.coverart2' ).text()
+		}
 		getData( {
-			  path       : $this.find( '.coverartalbum' ).text()
-			, artist     : $this.find( '.coverartartist' ).text()
+			  path       : album
+			, artist     : artist
 			, browsemode : 'coverart'
 		} );
 	}
