@@ -36,7 +36,8 @@ foreach( $bkmarks as $label => $path ) {
 	} else {
 		$coverart = '';
 	}
-	$bookmarks[] = array( $label, $path, $coverart, stripLeading( $label ) );
+	$sortbookmark = stripLeading( $label );
+	$bookmarks[] = array( $sortbookmark, $label, $path, $coverart );
 }
 // library home blocks
 $blocks = array( // 'id' => array( 'path', 'icon', 'name' );
@@ -71,23 +72,23 @@ foreach( $blocks as $id => $value ) {
 }
 if ( !$order ) {
 	usort( $bookmarks, function( $a, $b ) {
-		return strnatcmp( $a[ 3 ], $b[ 3 ] );
+		return strnatcmp( $a[ 0 ], $b[ 0 ] );
 	} );
 }
 foreach( $bookmarks as $bookmark ) {
-	if ( $bookmark[ 2 ] ) {
-		$namehtml = '<img class="bkcoverart" src="'.$bookmark[ 2 ].'">';
+	if ( $bookmark[ 3 ] ) {
+		$namehtml = '<img class="bkcoverart" src="'.$bookmark[ 3 ].'">';
 		$hidelabel = ' hide';
 	} else {
 		$namehtml = '<i class="fa fa-bookmark"></i>';
 		$hidelabel = '';
 	}
-	$divblocks[ $bookmark[ 0 ] ] = '
+	$divblocks[ $bookmark[ 1 ] ] = '
 		<div class="divblock bookmark">
 			<div class="home-block home-bookmark">
-				<a class="lipath">'.$bookmark[ 1 ].'</a>
+				<a class="lipath">'.$bookmark[ 2 ].'</a>
 				'.$namehtml.'
-				<div class="divbklabel"><span class="bklabel label'.$hidelabel.'">'.$bookmark[ 0 ].'</span></div>
+				<div class="divbklabel"><span class="bklabel label'.$hidelabel.'">'.$bookmark[ 1 ].'</span></div>
 			</div>
 		</div>
 	';
@@ -136,8 +137,8 @@ if ( count( $files ) ) {
 							.$licue
 							.'<a class="lisort">'.$list[ 0 ].'</a>'
 							.'<div><img class="lazy" data-src="/srv/http/assets/img/coverarts/'.$filename.'"></div>'
-							.'<span class="coverartalbum">'.$list[ 2 ].'</span>'
-							.'<gr class="coverartartist">'.( $list[ 3 ] ?: '&nbsp;' ).'</gr>'
+							.'<span class="coverart1">'.$list[ 2 ].'</span>'
+							.'<gr class="coverart2">'.( $list[ 3 ] ?: '&nbsp;' ).'</gr>'
 						.'</div>';
 	}
 	$coverartshtml.= '<a id="indexcover">'.implode( $index ).'</a><p></p>';
