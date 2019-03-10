@@ -1375,8 +1375,8 @@ wh, gr { font-weight: 300; }
 	border-right: #000000 1px solid;
 	border-bottom: #000000 1px solid;
 }
-.coverartalbum,
-.coverartartist {
+.coverart1,
+.coverart2 {
 	display: block;
 	padding-top: 2px;
 	overflow: hidden;
