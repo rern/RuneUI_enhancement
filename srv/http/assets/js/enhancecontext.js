@@ -297,12 +297,6 @@ function addWebradio( name, url, oldname ) {
 	var oldname = oldname ? oldname : '';
 	var data = oldname ? [ name, url, oldname ] : [ name, url ];
 	$.post( 'enhance.php', { webradios: data } );
-	if ( !oldname ) {
-		GUI.libraryhome.webradio++;
-		var count = GUI.libraryhome.webradio ? numFormat ( GUI.libraryhome.webradio ) : '';
-		$( '#home-webradio gr' ).remove();
-		$( '#home-webradio i' ).after( '<gr>'+ count +'</gr>' );
-	}
 }
 function webRadioVerify( name, url, oldname ) {
 	if ( !name || !url ) {
@@ -401,16 +395,12 @@ function addPlaylist( name, oldname ) {
 		var oldfile = ' "/var/lib/mpd/playlists/'+ oldname.replace( /"/g, '\\"' ) +'.m3u"';
 		var newfile = ' "/var/lib/mpd/playlists/'+ name.replace( /"/g, '\\"' ) +'.m3u"';
 		$.post( 'enhance.php', { bash: '/usr/bin/mv'+ oldfile + newfile } );
-		GUI.lsplaylists.splice( GUI.lsplaylists.indexOf( oldname ), 1 );
-		GUI.lsplaylists.push( name );
-		$( '#plopen' ).click();
 	} else {
 		new PNotify( {
 			  title : 'Playlist Saved'
 			, text  : name
 		} );
 		$( '#plopen' ).removeClass( 'disable' );
-		GUI.lsplaylists.push( name );
 		$.post( 'enhance.php', { mpc: 'mpc save "'+ name.replace( /"/g, '\\"' ) +'"' } );
 	}
 }

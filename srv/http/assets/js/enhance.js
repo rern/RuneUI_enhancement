@@ -1534,11 +1534,6 @@ pushstreams.bookmark.onmessage = function( data ) {
 		$( '.bookmark' ).remove();
 		if ( !bookmarks.length ) return
 		
-		if ( !GUI.display.order.length ) {
-			bookmarks.sort( function( a, b ) {
-				return a.lisort.localeCompare( b.lisort, undefined, { numeric: true } );
-			} );
-		}
 		$.each( bookmarks, function( i, bookmark ) {
 			if ( bookmark.coverart ) {
 				var namehtml = '<img class="bkcoverart" src="'+ bookmark.coverart +'">';
@@ -1694,6 +1689,12 @@ pushstreams.webradio.onmessage = function( data ) {
 			$this = $( this );
 			return $this.find( 'i.fa-webradio' ).length && $this.find( '.name' ).text() == data.oldname;
 		} ).find( '.name' ).text( data.name );
+		if ( !data.oldname ) {
+			GUI.libraryhome.webradio++;
+			var count = GUI.libraryhome.webradio ? numFormat ( GUI.libraryhome.webradio ) : '';
+			$( '#home-webradio gr' ).remove();
+			$( '#home-webradio i' ).after( '<gr>'+ count +'</gr>' );
+		}
 	}
 }
 streams.forEach( function( stream ) {

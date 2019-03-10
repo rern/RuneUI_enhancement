@@ -41,7 +41,7 @@ function setSwipe() {
 		GUI.bars = 0;
 		$( '#swipebar, .page' ).on( 'swipeleft swiperight', function( e ) {
 			GUI.swipe = 1;
-			setTimeout( function() { GUI.swipe = 0 }, 500 );
+			setTimeout( function() { GUI.swipe = 0 }, 1000 );
 			// skip if swipe to show remove in playlist
 			if ( !$( e.target ).parents( '#pl-entries li' ).length ) setPageSwipe( e.type );
 		} );
