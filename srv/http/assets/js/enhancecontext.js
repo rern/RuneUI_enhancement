@@ -14,27 +14,7 @@ $( '.contextmenu a' ).click( function() {
 		return
 		
 	} else if ( cmd === 'thumbnail' ) {
-		// enclosed in single quotes + escape inside single quotes: 'path'"'"'file'
-		var path = '/mnt/MPD/'+ GUI.list.path.replace( /'/g, '\'"\'"\'' );
-		info( {
-			  icon     : 'coverart'
-			, title    : 'Coverart Thumbnails Update'
-			, message  : 'Update thumbnails for Browse By CoverArt'
-			, checkbox : { 'Remove existings': 1 }
-			, checked  : 0
-			, cancel   : 1
-			, ok       : function() {
-				$( 'body' ).append(
-					'<form id="formtemp" action="addonsbash.php" method="post">'
-						+'<input type="hidden" name="alias" value="cove">'
-						+'<input type="hidden" name="type" value="scan">'
-						+'<input type="hidden" name="opt">'
-					+'</form>' );
-				path = $( '#infoCheckBox input[ type=checkbox ]:checked' ).length ? "'"+ path +"' 1" : "'"+ path +"'";
-				$( '#formtemp input[ name=opt ]' ).val( path );
-				$( '#formtemp' ).submit();
-			}
-		} );
+		updateThumbnails();
 		return
 	}
 	
@@ -128,6 +108,28 @@ $( '.contextmenu a' ).click( function() {
 	}
 } );
 
+function updateThumbnails() {
+	// enclosed in single quotes + escape inside single quotes: 'path'"'"'file'
+	var path = '/mnt/MPD/'+ GUI.list.path.replace( /'/g, '\'"\'"\'' );
+	info( {
+		  icon     : 'coverart'
+		, title    : 'Coverart Thumbnails Update'
+		, message  : 'Update thumbnails for Browse By CoverArt'
+		, checkbox : { 'Remove existings': 1 }
+		, cancel   : 1
+		, ok       : function() {
+			$( 'body' ).append(
+				'<form id="formtemp" action="addonsbash.php" method="post">'
+					+'<input type="hidden" name="alias" value="cove">'
+					+'<input type="hidden" name="type" value="scan">'
+					+'<input type="hidden" name="opt">'
+				+'</form>' );
+			path = $( '#infoCheckBox input[ type=checkbox ]:checked' ).length ? "'"+ path +"' 1" : "'"+ path +"'";
+			$( '#formtemp input[ name=opt ]' ).val( path );
+			$( '#formtemp' ).submit();
+		}
+	} );
+}
 function addReplace( mode, cmd, command, title ) {
 	$.post( 'enhance.php', { mpc: command }, function() {
 		if ( GUI.display.playbackswitch
