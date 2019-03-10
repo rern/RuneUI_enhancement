@@ -30,6 +30,10 @@ _Tested on RuneAudio 0.4b, 0.5_
 	- Library labels
 - Switch between main pages
 	- Swipe left/right
+- Swipe bar (screen bottom)
+	- Fallback for allow-swipe-only area
+- Refresh browser for fullscreen mode
+	- Long-press bottom bar / swipe bar
 - Sortable Library items ( by [Sortable](https://github.com/SortableJS/Sortable) )
 
 Install
@@ -92,6 +96,7 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 - Browse by CoverArt
 	- Long-press `CoverArt` to create / update thumbnails
 	- Long-press thumbnail for remove
+	- Directory context menu to partial update that directory
 - Coverart bookmarks
 - Bookmarks and webradios can be renamed
 - Bookmarks and webradios can be named with " characters
