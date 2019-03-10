@@ -54,7 +54,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 			$lists = explode( "\n", rtrim( $result ) );
 			foreach( $lists as $list ) {
 				$sort = stripLeading( $list );
-				$index[].= $sort[ 1 ];
+				$index[] = $sort[ 1 ];
 				$data[] = array( 
 					  $type    => $list
 					, 'sort'   => $sort[ 0 ]
@@ -210,7 +210,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$webradios = $redis->hGetAll( 'webradios' );
 	foreach( $webradios as $name => $url ) {
 		$sort = stripLeading( $name );
-		$index[].= $sort[ 1 ];
+		$index[] = $sort[ 1 ];
 		$data[] = array(
 			  'playlist' => 'Webradio/'.$name.'.pls'
 			, 'url'      => $url
@@ -255,7 +255,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 				$artistalbum = $album.'<gr> • </gr>'.$artist;
 				$sort = stripLeading( $album.' - '.$artist );
 			}
-			$index[].= $sort[ 1 ];
+			$index[] = $sort[ 1 ];
 			$data[] = array(
 				  'artistalbum' => $artistalbum
 				, 'album'       => $album
@@ -369,15 +369,15 @@ function search2array( $result, $playlist = '' ) { // directories or files
 	foreach( $lists as $list ) {
 		$root = in_array( explode( '/', $list )[ 0 ], [ 'USB', 'NAS', 'LocalStorage' ] );
 		if ( $root ) {
-			$ext = substr( $list, -4 );
-			if ( $ext === '.cue' || $ext === '.m3u' || $ext === '.pls' ) {
+			$ext = pathinfo( $list, PATHINFO_EXTENSION );
+			if ( in_array( $ext, [ 'cue', 'm3u', 'm3u8', 'pls' ] ) ) {
 				$data[] = array(
 					  'playlist' => basename( $list )
 					, 'filepl'   => $list
 				);
 			} else {
 				$sort = stripLeading( basename( $list ) );
-				$index[].= $sort[ 1 ];
+				$index[] = $sort[ 1 ];
 				$data[] = array(
 					  'directory' => $list
 					, 'sort'      => $sort[ 0 ]
@@ -520,7 +520,7 @@ function getBookmark( $redis ) {
 				$coverart = '';
 			}
 			$sort = stripLeading( $name );
-			$index[].= $sort[ 1 ];
+			$index[] = $sort[ 1 ];
 			$data[] = array(
 				  'name'     => $name
 				, 'path'     => $path
@@ -559,7 +559,7 @@ function lsPlaylists() {
 		$lists = explode( "\n", rtrim( $lines ) );
 		foreach( $lists as $list ) {
 			$sort = stripLeading( $list );
-			$index[].= $sort[ 1 ];
+			$index[] = $sort[ 1 ];
 			$data[] = array(
 				  'name'   => $list
 				, 'sort'   => $sort[ 0 ]
