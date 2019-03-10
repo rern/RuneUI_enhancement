@@ -1147,10 +1147,13 @@ wh, gr { font-weight: 300; }
 	line-height: 40px;
 	color: #e0e7ee;
 }
+.label:hover {
+	color: #e0e7ee;
+}
 .home-block:hover,
 .home-block:focus {
 	cursor: pointer;
-	background: #222f3d;
+	background: #374c62;
 	text-decoration: none;
 	outline: none;
 	color: #7795b4
@@ -1463,7 +1466,7 @@ wh, gr { font-weight: 300; }
 #db-entries li:hover,
 #pl-entries li:hover,
 #pl-editor li:hover {
-	background: #10161c
+	background: #374c62;
 }
 #db-entries span,
 #pl-entries .name,
