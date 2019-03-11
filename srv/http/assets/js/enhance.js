@@ -145,8 +145,8 @@ $( '#displaylibrary' ).click( function() {
 	var thumbbyartist = GUI.display.thumbbyartist;
 	info( {
 		  icon     : 'library'
-		, title    : 'Libary Home Items'
-		, message  : 'Select items to show:'
+		, title    : 'Library Options'
+		, message  : 'Select items / options:'
 		, checkbox : '<form id="displaysavelibrary">'+ displayCheckbox( chklibrary ) +'</form>'
 		, cancel   : 1
 		, ok       : function () {
@@ -178,8 +178,8 @@ var chkplayback = {
 $( '#displayplayback' ).click( function() {
 	info( {
 		  icon     : 'play-circle'
-		, title    : 'Playback Items'
-		, message  : 'Select items to show:'
+		, title    : 'Playback Options'
+		, message  : 'Select items / options:'
 		, checkbox : '<form id="displaysaveplayback">'+ displayCheckbox( chkplayback ) +'</form>'
 		, cancel   : 1
 		, ok       : function () {
