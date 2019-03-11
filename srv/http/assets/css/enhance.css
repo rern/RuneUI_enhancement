@@ -236,7 +236,6 @@ wh, gr { font-weight: 300; }
 	color: #e0e7ee;
 	background: #34495e;
 	border-top: 1px solid #222f3d;
-	cursor: pointer;
 }
 .menu a:nth-of-type( 1 ) {
 	border-top: none;
@@ -361,7 +360,6 @@ wh, gr { font-weight: 300; }
 	float: right;
 	font-size: 30px;
 	line-height: 40px;
-	cursor: pointer;
 }
 #badge {
 	position: absolute;
@@ -376,7 +374,6 @@ wh, gr { font-weight: 300; }
 	border-radius: 50%;
 	color: #e0e7ee;
 	background: red;
-	cursor: pointer;
 }
 #settings {
 	position: fixed;
@@ -858,18 +855,6 @@ wh, gr { font-weight: 300; }
 	float: right;
 	margin-top: 20px;
 }
-#menu-top li,
-#menu-bottom,
-.timemap,
-.covermap,
-.volmap,
-#info span,
-.biosimilar,
-.btnlist-top a,
-.btnlist-top i,
-.index li {
-	cursor: pointer;
-}
 
 /* ------------------- roundSlider ------------------- */
 .rs-container {
@@ -1020,7 +1005,6 @@ wh, gr { font-weight: 300; }
 	line-height: 40px;
 	font-size: 28px;
 	color: #0095d8;
-	cursor: pointer;
 }
 #biocontent span {
 	color: #7795b4;
@@ -1429,7 +1413,6 @@ wh, gr { font-weight: 300; }
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	cursor: pointer;
 }
 .db-icon,
 .pl-icon,
@@ -1684,7 +1667,6 @@ li.active .time {
 #playlist-warning i {
 	font-size: 30px;
 	color: #0095d8;
-	cursor: pointer;
 }
 #playlist-warning p {
 	margin-top: 27px;
@@ -1878,6 +1860,17 @@ li.active .time {
 	pointer-events: none;
 }
 @media ( hover:hover ) {
+	.menu a, #menu-settings, #badge, #menu-bottom,
+	#artist, #song, #album,
+	.timemap, .covermap, .volmap, .rs-container,
+	.biosimilar, .close-root,
+	#db-home, #pl-home, #db-currentpath a, #pl-manage i,
+	.fa-arrow-left, .fa-search,
+	.home-block, .coverart div,
+	#playlist-warning i,
+	li {
+		cursor: pointer;
+	}
 	.menu a:hover {
 		background: #222f3d;
 	}
@@ -1892,7 +1885,6 @@ li.active .time {
 	}
 	.home-block:hover,
 	.home-block:focus {
-		cursor: pointer;
 		background: #374c62;
 		text-decoration: none;
 		outline: none;
