@@ -72,32 +72,16 @@ if ( isset( $_POST[ 'statusonly' ] )
 // coverart
 if ( $status[ 'ext' ] !== 'radio' && $activePlayer === 'MPD' ) {
 	do {
-// 1. local coverart file
-		$coverfiles = array(
-			  'cover.png', 'cover.jpg', 'folder.png', 'folder.jpg', 'front.png', 'front.jpg'
-			, 'Cover.png', 'Cover.jpg', 'Folder.png', 'Folder.jpg', 'Front.png', 'Front.jpg'
-		);
-		foreach( $coverfiles as $cover ) {
-			$coverfile = $dir.'/'.$cover;
-			if ( file_exists( $coverfile ) ) {
-				$coverext = pathinfo( $cover, PATHINFO_EXTENSION );
-				$coverart = file_get_contents( $coverfile ) ;
-				$status[ 'coverart' ] = 'data:image/'. $coverext.';base64,'.base64_encode( $coverart );
-				break;
-			}
-		}
-		if ( isset( $status[ 'coverart' ] ) ) break;
-// 2. id3tag - for various albums in single directory
+		// local file or embedded
 		require_once( '/srv/http/enhancegetcover.php' );
-		$coverart = getID3cover( $file );
+		$coverart = getCoverart( $file );
 		if ( $coverart ) {
 			$status[ 'coverart' ] = $coverart;
 			break;
 		}
 		
-// 3. last.FM
-		// check internet connection, artist name
-		if ( !@fsockopen( 'ws.audioscrobbler.com', 80 ) || empty( $status[ 'Artist' ] ) ) {
+		// last.FM
+		if ( !@fsockopen( 'ws.audioscrobbler.com', 80 ) || empty( $status[ 'Artist' ] ) ) { // check internet connection || artist name
 			$status[ 'coverart' ] = '';
 			break;
 		}

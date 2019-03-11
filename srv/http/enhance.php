@@ -7,11 +7,6 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 $redis = new Redis();
 $redis->pconnect( '127.0.0.1' );
 
-$coverfiles = array(
-	  'cover.jpg', 'cover.png', 'folder.jpg', 'folder.png', 'front.jpg', 'front.png'
-	, 'Cover.jpg', 'Cover.png', 'Folder.jpg', 'Folder.png', 'Front.jpg', 'Front.png'
-);
-
 if ( isset( $_POST[ 'mpc' ] ) ) {
 	$mpc = $_POST[ 'mpc' ];
 	if ( !is_array( $mpc ) ) { // multiples commands is array
@@ -47,7 +42,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		if ( $type === 'file' ) {
 			$data = search2array( $result );
 			if ( $redis->hGet( 'display', 'coverfile' ) && !isset( $data[ 'playlist' ] ) && substr( $mpc, 0, 10 ) !== 'mpc search' ) {
-				$cover = getCover( $coverfiles, $data[ 0 ][ 'file' ] );
+				$cover = getCover( $data[ 0 ][ 'file' ] );
 				if ( $cover ) $data[][ 'coverart' ] = $cover;
 			}
 		} else {
@@ -79,7 +74,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	}
 	$data = search2array( $result );
 	if ( $redis->hGet( 'display', 'coverfile' ) && !isset( $data[ 'playlist' ] ) && substr( $mpc, 0, 10 ) !== 'mpc search' ) {
-		$cover = getCover( $coverfiles, $data[ 0 ][ 'file' ] );
+		$cover = getCover( $data[ 0 ][ 'file' ] );
 		$data[][ 'coverart' ] = $cover ?: '/assets/img/cover.svg';
 	}
 	echo json_encode( $data );
@@ -243,7 +238,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$albums = shell_exec( 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" '.$type.' "'.$name.'"' );
 		$data = search2array( $albums );
 		if ( $redis->hGet( 'display', 'coverfile' ) && !isset( $data[ 'playlist' ] ) ) {
-			$cover = getCover( $coverfiles, $data[ 0 ][ 'file' ] );
+			$cover = getCover( $data[ 0 ][ 'file' ] );
 			if ( $cover ) $data[][ 'coverart' ] = $cover;
 		}
 	} else {
@@ -294,7 +289,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$data = list2array( $lines );
 	$data[][ 'path' ] = dirname( $plfiles[ 0 ] );
 	if ( $redis->hGet( 'display', 'coverfile' ) ) {
-		$cover = getCover( $coverfiles, $data[ 0 ][ 'file' ] );
+		$cover = getCover( $data[ 0 ][ 'file' ] );
 		$data[][ 'coverart' ] = $cover ?: '/assets/img/cover.svg';
 	}
 	echo json_encode( $data );
@@ -475,19 +470,9 @@ function loadCue( $mpc ) { // 'mpc ls "path" | mpc add' from enhancecontext.js
 		return 1;
 	}
 }
-function getCover( $coverfiles, $path ) {
-	$file = '/mnt/MPD/'.$path;
-	$dir = dirname( $file );
-	foreach( $coverfiles as $cover ) {
-		$coverfile = $dir.'/'.$cover;
-		if ( file_exists( $coverfile ) ) {
-			$coverext = pathinfo( $cover, PATHINFO_EXTENSION );
-			$coverart = file_get_contents( $coverfile );
-			return 'data:image/'. $coverext.';base64,'.base64_encode( $coverart );
-		}
-	}
+function getCover( $file ) {
 	require_once( '/srv/http/enhancegetcover.php' );
-	getID3cover( $file );
+	return getCoverart( '/mnt/MPD/'.$file );
 }
 function pushstream( $channel, $data = 1 ) {
 	$ch = curl_init( 'http://localhost/pub?id='.$channel );
