@@ -358,12 +358,12 @@ function stripLeading( $string ) {
 	$init = mb_substr( $stripped, 0, 1, 'UTF-8' );
 	return array( $stripped, $init );
 }
-function sortData( $data, $index ) {
+function sortData( $data, $index = null ) {
 	usort( $data, function( $a, $b ) {
 		return strnatcmp( $a[ 'sort' ], $b[ 'sort' ] );
 	} );
 	unset( $data[ 'sort' ] );
-	$data[][ 'index' ] = array_keys( array_flip( $index ) ); // faster than array_unique
+	if ( $index ) $data[][ 'index' ] = array_keys( array_flip( $index ) ); // faster than array_unique
 	return $data;
 }
 function search2array( $result, $playlist = '' ) { // directories or files
@@ -525,7 +525,7 @@ function getBookmark( $redis ) {
 				, 'lisort'   => $sort[ 1 ]
 			);
 		}
-		$data = sortData( $data, $index );
+		$data = sortData( $data );
 	} else {
 		$data = 0;
 	}
