@@ -1299,11 +1299,11 @@ var sortableplaylist = new Sortable( document.getElementById( 'pl-entries' ), {
 		$.post( 'enhance.php', { mpc: 'mpc move '+ ( e.oldIndex + 1 ) +' '+ ( e.newIndex + 1 ) } );
 	}
 } );
-$( '#page-playlist' ).on( 'swipeleft', function( e ) {
+$( '#pl-list' ).on( 'swipeleft', 'li', function() {
 	GUI.swipe = 1;
 	setTimeout( function() { GUI.swipe = 0 }, 500 );
 	$( '#tab-library' ).click();
-} ).on( 'swiperight', function( e ) {
+} ).on( 'swiperight', 'li', function() {
 	GUI.swipe = 1;
 	setTimeout( function() { GUI.swipe = 0 }, 500 );
 	$( '#tab-playback' ).click();
