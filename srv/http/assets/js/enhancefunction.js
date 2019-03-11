@@ -669,7 +669,7 @@ function renderLibrary() {
 	
 	$( '#page-library .btnlist-top, db-entries' ).addClass( 'hide' );
 	if ( GUI.display.count ) {
-		$( '#db-currentpath span' ).html( '<bl class="title">LIBRARY<gr>·</gr></bl><a id="li-count"><wh>'+ numFormat( $( '#home-blocks' ).data( 'count' ) ) +'</wh> <i class="fa fa-music"></i></a>' );
+		$( '#db-currentpath span' ).html( '<bl class="title">LIBRARY<gr>·</gr></bl><span id="li-count"><wh>'+ numFormat( $( '#home-blocks' ).data( 'count' ) ) +'</wh> <i class="fa fa-music"></i></span>' );
 	} else {
 		$( '#db-currentpath span' ).html( '<bl class="title">LIBRARY</bl></a>' );
 	}
