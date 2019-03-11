@@ -30,6 +30,7 @@
 /* 'enhance' declared in <head> for cache busting */
 .fa {
 	font-family: enhance, addons;
+	vertical-align: baseline;
 }
 .fa-mpd:before { content: "\f522" }
 .fa-spotify:before { content: "\f523" }
@@ -1270,7 +1271,7 @@ wh, gr { font-weight: 300; }
 	display: inline-block;
 	width: 40px;
 	height: 40px;
-	line-height: 40px;
+	line-height: 44px;
 	text-align: center;
 	background: #0095d8;
 }
