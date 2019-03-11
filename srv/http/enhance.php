@@ -486,16 +486,8 @@ function getCover( $coverfiles, $path ) {
 			return 'data:image/'. $coverext.';base64,'.base64_encode( $coverart );
 		}
 	}
-	set_include_path( '/srv/http/app/libs/vendor/' );
-	require_once( 'getid3/audioinfo.class.php' );
-	$audioinfo = new AudioInfo();
-	$id3tag = $audioinfo->Info( $file );
-	if ( isset( $id3tag[ 'comments' ][ 'picture' ][ 0 ][ 'data' ] ) ) {
-		$id3cover = $id3tag[ 'comments' ][ 'picture' ][ 0 ];
-		$coverart = $id3cover[ 'data' ];
-		$coverext = str_replace( 'image/', '', $id3cover[ 'image_mime' ] );
-		return 'data:image/'. $coverext.';base64,'.base64_encode( $coverart );
-	}
+	require_once( '/srv/http/enhancegetcover.php' );
+	getID3cover( $file );
 }
 function pushstream( $channel, $data = 1 ) {
 	$ch = curl_init( 'http://localhost/pub?id='.$channel );

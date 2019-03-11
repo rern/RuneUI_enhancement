@@ -88,17 +88,13 @@ if ( $status[ 'ext' ] !== 'radio' && $activePlayer === 'MPD' ) {
 		}
 		if ( isset( $status[ 'coverart' ] ) ) break;
 // 2. id3tag - for various albums in single directory
-		set_include_path( '/srv/http/app/libs/vendor/' );
-		require_once( 'getid3/audioinfo.class.php' );
-		$audioinfo = new AudioInfo();
-		$id3tag = $audioinfo->Info( $file );
-		if ( isset( $id3tag[ 'comments' ][ 'picture' ][ 0 ][ 'data' ] ) ) {
-			$id3cover = $id3tag[ 'comments' ][ 'picture' ][ 0 ];
-			$coverart = $id3cover[ 'data' ];
-			$coverext = str_replace( 'image/', '', $id3cover[ 'image_mime' ] );
-			$status[ 'coverart' ] = 'data:image/'. $coverext.';base64,'.base64_encode( $coverart );
+		require_once( '/srv/http/enhancegetcover.php' );
+		$coverart = getID3cover( $file );
+		if ( $coverart ) {
+			$status[ 'coverart' ] = $coverart;
+			break;
 		}
-		if ( isset( $status[ 'coverart' ] ) ) break;
+		
 // 3. last.FM
 		// check internet connection, artist name
 		if ( !@fsockopen( 'ws.audioscrobbler.com', 80 ) || empty( $status[ 'Artist' ] ) ) {
