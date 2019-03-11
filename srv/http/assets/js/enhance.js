@@ -1543,8 +1543,6 @@ pushstreams.bookmark.onmessage = function( data ) {
 		var content = '';
 		$( '.bookmark' ).remove();
 		$.each( bookmarks, function( i, bookmark ) {
-			if( bookmark.index ) return
-			
 			if ( bookmark.coverart ) {
 				var namehtml = '<img class="bkcoverart" src="'+ bookmark.coverart +'">';
 				var hidelabel = ' hide';
