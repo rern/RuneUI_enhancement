@@ -240,9 +240,6 @@ wh, gr { font-weight: 300; }
 .menu a:nth-of-type( 1 ) {
 	border-top: none;
 }
-.menu a:hover {
-	background: #222f3d;
-}
 .menu i {
 	width: 40px;
 	line-height: 40px;
@@ -421,12 +418,6 @@ wh, gr { font-weight: 300; }
 }
 #menu-bottom li.active a {
 	background: #0095d8;
-}
-#menu-bottom li.active a:hover {
-	background-color: #0072a5;
-}
-#menu-bottom a:hover {
-	background-color: #222f3d;
 }
 #menu-bottom li a i {
 	margin: 0; /* fix wobble spin */
@@ -1030,9 +1021,6 @@ wh, gr { font-weight: 300; }
 	color: #0095d8;
 	cursor: pointer;
 }
-#biocontent a:hover {
-	color: #0095d8;
-}
 #biocontent span {
 	color: #7795b4;
 }
@@ -1490,14 +1478,8 @@ span.dbpath {
 	font-weight: normal;
 }
 #db-entries .active,
-#db-entries .active:hover,
-#db-entries .active:focus,
 #pl-entries .active,
-#pl-entries .active:hover,
-#pl-entries .active:focus,
-#pl-editor .active,
-#pl-editor .active:hover,
-#pl-editor .active:focus {
+#pl-editor .active {
 	color: #e0e7ee;
 	background: #0095d8
 }
@@ -1895,6 +1877,18 @@ li.active .time {
 	pointer-events: none;
 }
 @media ( hover:hover ) {
+	.menu a:hover {
+		background: #222f3d;
+	}
+	#menu-bottom li.active a:hover {
+		background-color: #0072a5;
+	}
+	#menu-bottom a:hover {
+		background-color: #222f3d;
+	}
+	#biocontent a:hover {
+		color: #0095d8;
+	}
 	.home-block:hover,
 	.home-block:focus {
 		cursor: pointer;
@@ -1917,6 +1911,15 @@ li.active .time {
 	}
 	#db-entries .licover:hover {
 		background: #10161c
+	}
+	#db-entries .active:hover,
+	#db-entries .active:focus,
+	#pl-entries .active:hover,
+	#pl-entries .active:focus,
+	#pl-editor .active:hover,
+	#pl-editor .active:focus {
+		color: #e0e7ee;
+		background: #0095d8
 	}
 }
 @media(min-width: 2000px) { .coverart { width: 200px } }
