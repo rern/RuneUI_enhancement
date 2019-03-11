@@ -5,7 +5,13 @@ $bkmarks = $redis->hGetAll( 'bkmarks' );
 $order = $redis->hGet( 'display', 'order' );
 
 function stripLeading( $string ) {
-	return preg_replace( '/^A +|^An +|^The +|^\(\s*|^\[\s*|^\.\s*|^\'\s*|^\"\s*|\\//i', '', $string );
+	// strip articles | non utf-8 normal alphanumerics , fix: php strnatcmp ignores spaces + tilde for sort last
+	$names = strtoupper( strVal( $string ) );
+	return preg_replace(
+		  array( '/^A\s+|^AN\s+|^THE\s+|[^\w\p{L}\p{N}\p{Pd} ~]/u', '/\s+/' )
+		, array( '', '-' )
+		, $names
+	);
 }
 // counts
 $count = exec( '/srv/http/enhancecount.sh' );
@@ -30,18 +36,8 @@ foreach( $bkmarks as $label => $path ) {
 	} else {
 		$coverart = '';
 	}
-	if ( $order ) {
-		$bookmarks[] = array( $label, $path, $coverart );
-	} else {
-		$sort = stripLeading( $label );
-		$sort = str_replace( '_', '-', $sort ); // fix '_' order last (first in js)
-		$bookmarks[] = array( $label, $path, $coverart, $sort );
-	}
-}
-if ( !$order ) {
-	usort( $bookmarks, function( $a, $b ) {
-		return strnatcmp( stripLeading( $a[ 3 ] ), stripLeading( $b[ 3 ] ) );
-	} );
+	$sortbookmark = stripLeading( $label );
+	$bookmarks[] = array( $sortbookmark, $label, $path, $coverart );
 }
 // library home blocks
 $blocks = array( // 'id' => array( 'path', 'icon', 'name' );
@@ -74,68 +70,78 @@ foreach( $blocks as $id => $value ) {
 		</div>
 	';
 }
+if ( !$order ) {
+	usort( $bookmarks, function( $a, $b ) {
+		return strnatcmp( $a[ 0 ], $b[ 0 ] );
+	} );
+}
 foreach( $bookmarks as $bookmark ) {
-	if ( $bookmark[ 2 ] ) {
-		$namehtml = '<img class="bkcoverart" src="'.$bookmark[ 2 ].'">';
+	if ( $bookmark[ 3 ] ) {
+		$namehtml = '<img class="bkcoverart" src="'.$bookmark[ 3 ].'">';
 		$hidelabel = ' hide';
 	} else {
 		$namehtml = '<i class="fa fa-bookmark"></i>';
 		$hidelabel = '';
 	}
-	$divblocks[ $bookmark[ 0 ] ] = '
+	$divblocks[ $bookmark[ 1 ] ] = '
 		<div class="divblock bookmark">
 			<div class="home-block home-bookmark">
-				<a class="lipath">'.$bookmark[ 1 ].'</a>
+				<a class="lipath">'.$bookmark[ 2 ].'</a>
 				'.$namehtml.'
-				<div class="divbklabel"><span class="bklabel label'.$hidelabel.'">'.$bookmark[ 0 ].'</span></div>
+				<div class="divbklabel"><span class="bklabel label'.$hidelabel.'">'.$bookmark[ 1 ].'</span></div>
 			</div>
 		</div>
 	';
 }
-
-if ( $order ) {
+if ( !$order ) {
+	$blockhtml = implode( $divblocks );
+} else {
 	$order = explode( '^^', $order );
 	foreach( $order as $label ) {
 		$blockhtml.= $divblocks[ $label ];
 	}
-} else {
-	$blockhtml = implode( $divblocks );
 }
 
 $files = array_slice( scandir( '/srv/http/assets/img/coverarts' ), 2 );
 if ( count( $files ) ) {
 	foreach( $files as $file ) {
-		$name = str_replace( '.jpg', '', $file );
+		$name = substr( $file, 0, -4 );
 		$name = str_replace( '|', '/', $name );
 		$names = explode( '^^', $name );
 		$album = $names[ 0 ];
-		$artist = $names[ 1 ];
-		$sortalbum = str_replace( ' ', '_', stripLeading( $album ) );
-		$sortartist = str_replace( ' ', '_', stripLeading( $artist ) );
-		$sort = strtoupper( $sortalbum.'-'.$sortartist );
+		$artist = $names[ 1 ] ?: '~';
+		$sortalbum = stripLeading( $album );
+		$sortartist = stripLeading( $artist );
 		$cue = $names[ 2 ];
-		$lists[] = array( $sort, $album, $artist, $file, $cue );
+		if ( $redis->hGet( 'display', 'thumbbyartist' ) ) {
+			$lists[] = array( $sortartist, $sortalbum, $artist, $album, $file, $cue );
+			$index[] = mb_substr( $sortartist, 0, 1, 'UTF-8' );
+		} else {
+			$lists[] = array( $sortalbum, $sortartist, $album, $artist, $file, $cue );
+			$index[] = mb_substr( $sortalbum, 0, 1, 'UTF-8' );
+		}
 	}
 	usort( $lists, function( $a, $b ) {
-		return strnatcmp( $a[ 0 ], $b[ 0 ] );
+		return strnatcmp( $a[ 0 ], $b[ 0 ] ) ?: strnatcmp( $a[ 1 ], $b[ 1 ] );
 	} );
+	$index = array_keys( array_flip( $index ) );
 	$coverarthtml = '';
 	foreach( $lists as $list ) {
-		$licue = $list[ 4 ] ? '<a class="licue">'.$list[ 4 ].'</a>' : '';
+		$licue = $list[ 5 ] ? '<a class="licue">'.$list[ 5 ].'</a>' : '';
 		$replace = array(  // #,? not allow in 'scr'
 			  '/\#/' => '%23'
 			, '/\?/' => '%3F'
 		);
-		$filename = preg_replace( array_keys( $replace ), array_values( $replace ), $list[ 3 ] );
+		$filename = preg_replace( array_keys( $replace ), array_values( $replace ), $list[ 4 ] );
 		$coverartshtml.= '<div class="coverart">'
 							.$licue
 							.'<a class="lisort">'.$list[ 0 ].'</a>'
 							.'<div><img class="lazy" data-src="/srv/http/assets/img/coverarts/'.$filename.'"></div>'
-							.'<span class="coverartalbum">'.$list[ 1 ].'</span>'
-							.'<gr class="coverartartist">'.( $list[ 2 ] ?: '&nbsp;' ).'</gr>'
+							.'<span class="coverart1">'.$list[ 2 ].'</span>'
+							.'<gr class="coverart2">'.( $list[ 3 ] ?: '&nbsp;' ).'</gr>'
 						.'</div>';
 	}
-	$coverartshtml.= '<p></p>';
+	$coverartshtml.= '<a id="indexcover">'.implode( $index ).'</a><p></p>';
 } else {
 	$coverarthtml = '';
 }
@@ -193,8 +199,9 @@ $menu.= menudiv( 'plaction', $html );
 $menudiv = '';
 
 $html = $htmlcommon;
-$html.= menuli( 'update',   'folder-refresh', 'Update' );
-$html.= menuli( 'bookmark', 'star',           'Bookmark' );
+$html.= menuli( 'bookmark',  'star',           'Bookmark' );
+$html.= menuli( 'update',    'folder-refresh', 'Update database' );
+$html.= menuli( 'thumbnail', 'coverart',       'Update thumbnails' );
 $menu.= menudiv( 'folder', $html );
 $menudiv = '';
 $html = $htmlcommon;

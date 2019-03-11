@@ -41,7 +41,7 @@ function setSwipe() {
 		GUI.bars = 0;
 		$( '#swipebar, .page' ).on( 'swipeleft swiperight', function( e ) {
 			GUI.swipe = 1;
-			setTimeout( function() { GUI.swipe = 0 }, 500 );
+			setTimeout( function() { GUI.swipe = 0 }, 1000 );
 			// skip if swipe to show remove in playlist
 			if ( !$( e.target ).parents( '#pl-entries li' ).length ) setPageSwipe( e.type );
 		} );
@@ -700,21 +700,21 @@ function infoNoData() {
 	var keyword = $( '#db-search-keyword' ).val();
 	info( {
 		  icon      : 'info-circle'
-		, message   : ( !keyword ? 'No data in this location.' : 'Nothing found for <wh>'+ keyword +'</wh>' )
-		, autoclose : 6000
+		, message   : ( !keyword ? 'No data in this location.<br>Update for changes then try again.' : 'Nothing found for <wh>'+ keyword +'</wh>' )
+		, autoclose : 8000
 	} );
 }
-function getDB( options ) {
+function getData( options ) {
 	$( '#loader' ).removeClass( 'hide' );
 	if ( !Array.isArray( options.path ) ) {
 		var path = options.path ? options.path.toString().replace( /"/g, '\"' ) : '';
-	} else {
-		var path = [];
+	} else { // cue, m3u, m3u8, pls
+		var plfiles = [];
 		$.each( options.path, function( i, val ) {
-			path.push( val.toString().replace( /"/g, '\"' ) );
+			plfiles.push( val.toString().replace( /"/g, '\"' ) );
 		} );
-		$.post( 'enhance.php', { playlist: path }, function( data ) {
-			data ? dataSort( data, path[ 0 ] ) : infoNoData();
+		$.post( 'enhance.php', { playlist: plfiles }, function( data ) {
+			data ? dataParse( data, plfiles[ 0 ] ) : infoNoData();
 		}, 'json' );
 		return
 	}
@@ -771,7 +771,7 @@ function getDB( options ) {
 		if ( cmd === 'search' ) {
 			if ( path.match(/Dirble/)) {
 				$.post( '/db/?cmd=dirble', { querytype: 'search', args: keyword }, function( data ) {
-					dataSort( data, path, 'Dirble', 'search' );
+					dataParse( data, path, 'Dirble', 'search' );
 				}, 'json' );
 				return
 			} else {
@@ -803,7 +803,7 @@ function getDB( options ) {
 		}
 		$.post( 'enhance.php', command[ mode ], function( data ) {
 			if ( data ) {
-				dataSort( data, path );
+				dataParse( data, path );
 				GUI.keyword = keyword;
 			} else {
 				infoNoData();
@@ -815,19 +815,19 @@ function getDB( options ) {
 	
 	if ( plugin === 'Spotify' ) {
 		$.post( '/db/?cmd=spotify', { plid: args }, function( data ) {
-			dataSort( data, path, plugin, querytype, arg );
+			dataParse( data, path, plugin, querytype, arg );
 		}, 'json' );
 	} else if ( plugin === 'Dirble' ) {
 		if ( querytype === 'childs' ) {
 			$.post( '/db/?cmd=dirble', { querytype: 'childs', args: args }, function( data ) {
-				dataSort( data, path, plugin, 'childs' );
+				dataParse( data, path, plugin, 'childs' );
 			}, 'json' );
 			$.post( '/db/?cmd=dirble', { querytype: 'childs-stations', args: args }, function( data ) {
-				dataSort( data, path, plugin, 'childs-stations' );
+				dataParse( data, path, plugin, 'childs-stations' );
 			}, 'json' );            
 		} else {
 			$.post( '/db/?cmd=dirble', { querytype: querytype ? querytype : 'categories', args: args }, function( data ) {
-				dataSort( data, path, plugin, querytype );
+				dataParse( data, path, plugin, querytype );
 			}, 'json' );
 		}
 	} else if ( plugin === 'Jamendo' ) {
@@ -842,38 +842,11 @@ function getDB( options ) {
 				GUI.dbbackdata.pop();
 				return
 			}
-			dataSort( data.results, path, plugin, querytype );
+			dataParse( data.results, path, plugin, querytype );
 		}, 'json' );
 	}
 }
-function stripLeading( string ) { // strip leading A|An|The|(|[|.|'|"|\ (for sorting)
-	return string
-			.toString()
-			.toUpperCase()
-			.replace( /^A +|^AN +|^THE +|^\(\s*|^\[\s*|^\.\s*|^\'\s*|^\"\s*|\\/, '' );
-}
-function nameSort( data, name ) {
-	var index;
-	$.each( data, function( i, value ) {
-		value.lisort = stripLeading( value[ name ] );
-		index = value.lisort[ 0 ];
-		if ( index.match( /[A-Z]/ ) ) {
-			if ( GUI.library ) {
-				$( '#db-index .index-'+ index ).css( 'color', '' );
-			} else {
-				$( '#pl-index li' ).not( ':eq( 0 )' ).css( 'color', '#456000' );
-				$( '#pl-index .index-'+ index ).css( 'color', '' );
-			}
-		}
-	} );
-	liSort( data );
-}
-function liSort( data ) { // for arrays that already each looped
-	data.sort( function( a, b ) {
-		return a.lisort.localeCompare( b.lisort, undefined, { numeric: true } )
-	} );
-}
-function dataSort( data, path, plugin, querytype, arg ) {
+function dataParse( data, path, plugin, querytype, arg ) {
 	var data = data,
 		path = path || '',
 		plugin = plugin || '',
@@ -891,7 +864,7 @@ function dataSort( data, path, plugin, querytype, arg ) {
 	GUI.albumartist = '';
 	GUI.currentpath = path;
 	$( '#home-blocks' ).addClass( 'hide' );
-	$( '#db-index li' ).not( ':eq( 0 )' ).css( 'color', '#456000' );
+	$( '#db-index li' ).not( ':eq( 0 )' ).css( 'color', '#34495e' );
 	
 	if ( !plugin ) {
 		if ( !data.length ) return
@@ -918,6 +891,11 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		if ( data[ 0 ].artistalbum ) prop = 'artistalbum'; // for common albums like 'Greatest Hits'
 		var fileplaylist = [ 'cue', 'm3u', 'pls' ].indexOf( path.slice( -3 ) ) !== -1;
 		if ( fileplaylist ) {
+			if ( !data[ 0 ].file ) {
+				infoNoData();
+				return
+			}
+			
 			var data = htmlPlaylist( data );
 			content = data.content;
 		} else if ( data[ 0 ].directory || data[ 0 ].file || data[ 0 ].playlist ) {
@@ -941,11 +919,12 @@ function dataSort( data, path, plugin, querytype, arg ) {
 					genre = value.genre;
 				} else if ( value.albumartist ) {
 					albumartist = value.albumartist;
+				} else if ( value.index ) {
+					$.each( value.index, function( i, char ) {
+						$( '#db-index .index-'+ char ).css( 'color', '' );
+					} );
 				} else if ( value.directory || value.file || value.playlist ) {
 					name = value.directory || value.file || value.playlist;
-					value.lisort = stripLeading( name.replace( /^.*\//, '' ) );
-					index = value.lisort[ 0 ];
-					index.match( /[A-Z]/ ) && $( '#db-index .index-'+ index ).css( 'color', '' );
 					if ( value.directory ) {
 						arraydir.push( value );
 					} else if ( value.file ) {
@@ -975,53 +954,53 @@ function dataSort( data, path, plugin, querytype, arg ) {
 						  +'<i class="fa fa-bars db-action" data-target="#context-menu-'+ ( GUI.browsemode !== 'file' ? GUI.browsemode : 'folder' ) +'"></i>'
 						  +'</li>';
 			}
-			liSort( arraydir ); // already each looped
 			var arraydirL = arraydir.length;
-			for ( i = 0; i < arraydirL; i++ ) content += data2html( arraydir[ i ], i, 'db', path );
-			liSort( arraypl );
-			var filecue = [];
-			$.each( arraypl, function( i, val ) {
-				if ( val.filepl && val.filepl.slice( -3 ) === 'cue' ) filecue.push( val.filepl );
-			} );
-			if ( filecue.length ) {
-				getDB( { path: filecue } );
-				return
+			if ( arraydirL ) {
+				for ( i = 0; i < arraydirL; i++ ) content += data2html( arraydir[ i ], i, 'db', path );
 			}
-			
 			var arrayplL = arraypl.length;
-			for ( i = 0; i < arrayplL; i++ ) content += data2html( arraypl[ i ], i, 'db', path );
-			liSort( arrayfile );
+			if ( arrayplL ) {
+				var cue = arraypl[ 0 ].filepl && arraypl[ 0 ].filepl.slice( -3 ) === 'cue';
+				if ( !cue ) {
+					for ( i = 0; i < arrayplL; i++ ) content += data2html( arraypl[ i ], i, 'db', path );
+				} else {
+					var filecue = [];
+					$.each( arraypl, function( i, val ) {
+						if ( val.filepl && cue ) filecue.push( val.filepl );
+					} );
+					getData( { path: filecue } );
+					return
+				}
+			}
 			var arrayfileL = arrayfile.length;
-			for ( i = 0; i < arrayfileL; i++ ) content += data2html( arrayfile[ i ], i, 'db', path );
+			if ( arrayfileL ) {
+				for ( i = 0; i < arrayfileL; i++ ) content += data2html( arrayfile[ i ], i, 'db', path );
+			}
 		} else {
 			if ( data[ 0 ][ prop ] === undefined ) prop = mode[ GUI.browsemode ];
-			nameSort( data, prop );
 			var dataL = data.length;
-			for ( i = 0; i < dataL; i++ ) content += data2html( data[ i ], i, 'db', path );
+			for ( i = 0; i < dataL; i++ ) {
+				if ( data[ i ].index ) {
+					$.each( data[ i ].index, function( i, char ) {
+						$( '#db-index .index-'+ char ).css( 'color', '' );
+					} );
+				} else {
+					content += data2html( data[ i ], i, 'db', path );
+				}
+			}
 		}
 		$( '#db-webradio-new' ).toggleClass( 'hide', path !== 'Webradio' );
 	} else {
 		if ( plugin === 'Spotify' ) {
 			data = ( querytype === 'tracks' ) ? data.tracks : data.playlists;
-			if ( path === 'Spotify' && querytype === '' ) {
-				nameSort( data, 'name' );
-			} else if ( querytype === 'tracks' ) {
-				nameSort( data, 'title' );
-			}
 			for ( i = 0; ( row = data[ i ] ); i++ ) content += data2html( row, i, 'Spotify', arg, querytype );
 		} else if ( plugin === 'Dirble' ) {
 			if ( querytype === 'childs-stations' ) {
 				content = $( '#db-entries' ).html();
 			} else {
-					if ( !querytype || querytype === 'childs' || querytype === 'categories' ) {
-						nameSort( data, 'title' );
-					} else if ( querytype === 'childs-stations' || querytype === 'stations' ) {
-						nameSort( data, 'name' );
-					}
 				for ( i = 0; ( row = data[ i ] ); i++ ) content += data2html( row, i, 'Dirble', '', querytype );
 			}
 		} else if ( plugin === 'Jamendo' ) {
-			if ( path === 'Jamendo' && querytype === '' ) nameSort( data, 'dispname' );
 			for (i = 0; ( row = data[ i ] ); i++ ) content += data2html( row, i, 'Jamendo', '', querytype );
 		}
 	}
@@ -1031,7 +1010,6 @@ function dataSort( data, path, plugin, querytype, arg ) {
 		if ( !fileplaylist ) displayIndexBar();
 		$( '#loader, .menu, #divcoverarts' ).addClass( 'hide' );
 	} );
-//	if ( $( '#db-search-btn' ).hasClass( 'hide' ) ) return
 	
 	$( '#db-back' ).removeClass( 'hide' );
 // breadcrumb directory path link
@@ -1447,7 +1425,7 @@ function htmlPlaylist( data ) {
 			content += '<li>'
 						 + actionhtml
 						 +'<span class="li1"><a class="name">'+ value.Title +'</a><span class="duration">'+ ( GUI.playlist && !GUI.pleditor ? '<a class="elapsed"></a>' : '' ) +'<a class="time" time="'+ sec +'">'+ value.Time +'</a></span></span>'
-						 +'<span class="li2">'+ ( GUI.playlist ? value.track : value.file ) +'</span>'
+						 +'<span class="li2">'+ ( GUI.playlist ? value.track : value.file.split( '/' ).pop() ) +'</span>'
 					 +'</li>';
 			countsong++;
 		}

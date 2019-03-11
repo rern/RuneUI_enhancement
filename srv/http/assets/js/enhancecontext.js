@@ -13,6 +13,7 @@ $( '.contextmenu a' ).click( function() {
 		}
 		return
 	}
+	
 	$( '#db-entries li, #pl-entries li' ).removeClass( 'active' );
 	var mode = cmd.replace( /replaceplay|replace|addplay|add/, '' );
 	// get name
@@ -43,7 +44,7 @@ $( '.contextmenu a' ).click( function() {
 		} else {
 			var mpcCmd = GUI.list.isfile ? 'mpc add "'+ name +'"' : 'mpc ls "'+ name +'" | mpc add';
 		}
-	} else {
+	} else if ( mode !== 'thumbnail' ) {
 		var artist = GUI.list.artist || $( '#artistalbum span' ).text();
 		artist = artist.replace( /"/g, '\\"' );
 		if ( [ 'album', 'artist', 'albumartist', 'composer', 'genre' ].indexOf( GUI.list.mode ) !== -1 ) {
@@ -51,20 +52,20 @@ $( '.contextmenu a' ).click( function() {
 		} else {
 			var mpcCmd = 'mpc load "'+ name +'"';
 		}
-		cmd = cmd.replace( /album|artist|composer|genre|pl|wr/, '' );
+		cmd = cmd.replace( /album|artist|composer|genre/, '' );
 	}
-	var addplaypos = GUI.status.playlistlength + 1;
 	var contextCommand = {
 		  add           : mpcCmd
-		, addplay       : [ mpcCmd, 'mpc play '+ addplaypos ]
+		, addplay       : [ mpcCmd, 'mpc play '+ ( GUI.status.playlistlength + 1 ) ]
 		, replace       : [ 'mpc clear', mpcCmd ]
 		, replaceplay   : [ 'mpc clear', mpcCmd, 'mpc play' ]
 		, radiosave     : webRadioNew
-		, rename        : webRadioRename
-		, delete        : webRadioDelete
+		, wrrename      : webRadioRename
+		, wrdelete      : webRadioDelete
 		, plrename      : playlistRename
 		, pldelete      : playlistDelete
 		, bookmark      : bookmarkNew
+		, thumbnail     : updateThumbnails
 		, update        : 'mpc update "'+ GUI.list.path +'"'
 	}
 	var command = contextCommand[ cmd ];
@@ -103,6 +104,28 @@ $( '.contextmenu a' ).click( function() {
 	}
 } );
 
+function updateThumbnails() {
+	// enclosed in single quotes + escape inside single quotes: "'/path/file'\'"\'"\''s name'" <=> /path/file's name
+	var path = "'/mnt/MPD/"+ GUI.list.path.replace( /'/g, '\'"\'"\'' ) +"'";
+	info( {
+		  icon     : 'coverart'
+		, title    : 'Coverart Thumbnails Update'
+		, message  : 'Update thumbnails for Browse By CoverArt'
+		, checkbox : { 'Remove existings': 1 }
+		, cancel   : 1
+		, ok       : function() {
+			$( 'body' ).append(
+				'<form id="formtemp" action="addonsbash.php" method="post">'
+					+'<input type="hidden" name="alias" value="cove">'
+					+'<input type="hidden" name="type" value="scan">'
+					+'<input type="hidden" name="opt">'
+				+'</form>' );
+			if ( $( '#infoCheckBox input[ type=checkbox ]:checked' ).length ) path += ' 1';
+			$( '#formtemp input[ name=opt ]' ).val( path );
+			$( '#formtemp' ).submit();
+		}
+	} );
+}
 function addReplace( mode, cmd, command, title ) {
 	$.post( 'enhance.php', { mpc: command }, function() {
 		if ( GUI.display.playbackswitch
@@ -171,7 +194,7 @@ function bookmarkVerify( name, path, oldname ) {
 		} );
 		return;
 	}
-	$bllabel = $( '.home-block' ).filter( function() {
+	var $bllabel = $( '.home-block' ).filter( function() {
 		return $( this ).find( '.label' ).text() === name;
 	} );
 	if ( !$bllabel.length ) {
@@ -180,12 +203,13 @@ function bookmarkVerify( name, path, oldname ) {
 				  title : 'Add Bookmark'
 				, text  : name
 			} );
+		} else {
+			$( '.home-block' ).filter( function() {
+				return $( this ).find( '.label' ).text() === oldname;
+			} ).find( '.label' ).text( name );
 		}
 		var data = oldname ? [ name, path, oldname ] : [ name, path ];
 		$.post( 'enhance.php', { bkmarks: data } );
-		$( '.home-block' ).filter( function() {
-			return $( this ).find( '.label' ).text() === oldname;
-		} ).find( '.label' ).text( name );
 	} else {
 		info( {
 			  icon        : 'warning'
@@ -217,12 +241,19 @@ function bookmarkDelete( name, $block ) {
 					+'<br>'+ coverart
 					+'<br><white>'+ name +'</white>'
 		, msgalign : 'center'
+		, checkbox : src ? { 'Keep thumbnail file': 1 } : ''
 		, cancel   : 1
 		, oklabel  : 'Delete'
 		, ok       : function() {
 			GUI.bookmarkedit = 1;
 			$block.parent().remove();
-			$.post( 'enhance.php', { bkmarks: name } );
+			if ( $( '#infoCheckBox input[ type=checkbox ]:checked' ).length ) {
+				var path = '';
+		
+			} else {
+				var path = $block.find( '.lipath' ).text().replace( /"/g, '\"' );
+			}
+			$.post( 'enhance.php', { bkmarks: name, thumbnail: path } );
 		}
 	} );
 }
@@ -270,15 +301,7 @@ function addWebradio( name, url, oldname ) {
 	var name = name;
 	var oldname = oldname ? oldname : '';
 	var data = oldname ? [ name, url, oldname ] : [ name, url ];
-	$.post( 'enhance.php', { webradios: data }, function() {
-		if ( GUI.playlist ) $( '#tab-playlist' ).click();
-	} );
-	if ( !oldname ) {
-		GUI.libraryhome.webradio++;
-		var count = GUI.libraryhome.webradio ? numFormat ( GUI.libraryhome.webradio ) : '';
-		$( '#home-webradio gr' ).remove();
-		$( '#home-webradio i' ).after( '<gr>'+ count +'</gr>' );
-	}
+	$.post( 'enhance.php', { webradios: data } );
 }
 function webRadioVerify( name, url, oldname ) {
 	if ( !name || !url ) {
@@ -292,7 +315,7 @@ function webRadioVerify( name, url, oldname ) {
 		} );
 		return;
 	}
-	$liname = $( '.db-webradio' ).filter( function() {
+	var $liname = $( '.db-webradio' ).filter( function() {
 		return $( this ).find( '.li1' ).text() === name;
 	} );
 	if ( !$liname.length ) {
@@ -377,16 +400,12 @@ function addPlaylist( name, oldname ) {
 		var oldfile = ' "/var/lib/mpd/playlists/'+ oldname.replace( /"/g, '\\"' ) +'.m3u"';
 		var newfile = ' "/var/lib/mpd/playlists/'+ name.replace( /"/g, '\\"' ) +'.m3u"';
 		$.post( 'enhance.php', { bash: '/usr/bin/mv'+ oldfile + newfile } );
-		GUI.lsplaylists.splice( GUI.lsplaylists.indexOf( oldname ), 1 );
-		GUI.lsplaylists.push( name );
-		$( '#plopen' ).click();
 	} else {
 		new PNotify( {
 			  title : 'Playlist Saved'
 			, text  : name
 		} );
 		$( '#plopen' ).removeClass( 'disable' );
-		GUI.lsplaylists.push( name );
 		$.post( 'enhance.php', { mpc: 'mpc save "'+ name.replace( /"/g, '\\"' ) +'"' } );
 	}
 }

@@ -12,7 +12,7 @@ _Tested on RuneAudio 0.4b, 0.5_
 	- Menus
 - Top-bottom bars
 	- Larger new icons
-	- Add apuse button
+	- Add pause button
 	- Show database updating as blinking icon (show as icon in Time knob while hidden)
 	
 ### New Features
@@ -55,7 +55,7 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 	- Show sampling info while stop
 	- Working previous / next while stop
 	- Get sampling info directly with MPD on play
-	- Get sampling info from local database while stop (must be played once before available)
+	- Get sampling info from local database while stop (Webradios must be played once before available)
 	- Show song title in gray while pause
 	- Hide webradio song title while stop
 	- Scroll long names
@@ -87,7 +87,11 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 	- Maintain pre-mute level across page refresh and clients
 - Buttons
 	- Show as icon in Time knob while hidden
-
+- Swipe bar - when top-bottom bars hidden (Tap coverart top to show guide)
+	- Swipe only zone for devices that have difficulty with page swipe
+	- Swipe or tap left/right to switch page
+- Swipe bar / bottom bar
+	- Long press to refresh browser when in fullscreen view
 
 ![library](https://github.com/rern/_assets/blob/master/RuneUI_enhancement/xtreme/library.gif)
 
@@ -97,14 +101,14 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 - Browse by CoverArt
 	- Long-press `CoverArt` to create / update thumbnails
 	- Long-press thumbnail for remove
-	- Directory context menu to partial update that directory
+	- Context menu in directory for partial update
 - Coverart bookmarks
 - Bookmarks and webradios can be renamed
 - Bookmarks and webradios can be named with " characters
 - Show icon and breadcrumb heading while browsing
 - Show list in playlist files (\*.cue, \*.pls, \*.m3u)
 - Toggle search box
-- Show index bar
+- Show index bar with filter mask
 - Improved Back button
 - Maintain scroll position
 - Improved sorting with articles, A/An/The, ignored

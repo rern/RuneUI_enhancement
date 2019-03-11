@@ -44,7 +44,7 @@ $status[ 'ext' ] = ( substr($status[ 'file' ], 0, 4 ) !== 'http' ) ? $ext : 'rad
 
 if ( $status[ 'ext' ] !== 'radio' ) {
 	// missing id3tags
-	if ( empty( $status[ 'Artist' ] ) ) $status[ 'Artist' ] = basename( $dir );
+	if ( empty( $status[ 'Artist' ] ) ) $status[ 'Artist' ] = end( explode( '/', $dir ) );
 	if ( empty( $status[ 'Title' ] ) ) $status[ 'Title' ] = $pathinfo[ 'filename' ];
 	if ( empty( $status[ 'Album' ] ) ) $status[ 'Album' ] = '';
 } else {
@@ -72,36 +72,16 @@ if ( isset( $_POST[ 'statusonly' ] )
 // coverart
 if ( $status[ 'ext' ] !== 'radio' && $activePlayer === 'MPD' ) {
 	do {
-// 1. local coverart file
-		$coverfiles = array(
-			  'cover.png', 'cover.jpg', 'folder.png', 'folder.jpg', 'front.png', 'front.jpg'
-			, 'Cover.png', 'Cover.jpg', 'Folder.png', 'Folder.jpg', 'Front.png', 'Front.jpg'
-		);
-		foreach( $coverfiles as $cover ) {
-			$coverfile = $dir.'/'.$cover;
-			if ( file_exists( $coverfile ) ) {
-				$coverext = pathinfo( $cover, PATHINFO_EXTENSION );
-				$coverart = file_get_contents( $coverfile ) ;
-				$status[ 'coverart' ] = 'data:image/'. $coverext.';base64,'.base64_encode( $coverart );
-				break;
-			}
+		// local file or embedded
+		require_once( '/srv/http/enhancegetcover.php' );
+		$coverart = getCoverart( $file );
+		if ( $coverart ) {
+			$status[ 'coverart' ] = $coverart;
+			break;
 		}
-		if ( isset( $status[ 'coverart' ] ) ) break;
-// 2. id3tag - for various albums in single directory
-		set_include_path( '/srv/http/app/libs/vendor/' );
-		require_once( 'getid3/audioinfo.class.php' );
-		$audioinfo = new AudioInfo();
-		$id3tag = $audioinfo->Info( $file );
-		if ( isset( $id3tag[ 'comments' ][ 'picture' ][ 0 ][ 'data' ] ) ) {
-			$id3cover = $id3tag[ 'comments' ][ 'picture' ][ 0 ];
-			$coverart = $id3cover[ 'data' ];
-			$coverext = str_replace( 'image/', '', $id3cover[ 'image_mime' ] );
-			$status[ 'coverart' ] = 'data:image/'. $coverext.';base64,'.base64_encode( $coverart );
-		}
-		if ( isset( $status[ 'coverart' ] ) ) break;
-// 3. last.FM
-		// check internet connection, artist name
-		if ( !@fsockopen( 'ws.audioscrobbler.com', 80 ) || empty( $status[ 'Artist' ] ) ) {
+		
+		// last.FM
+		if ( !@fsockopen( 'ws.audioscrobbler.com', 80 ) || empty( $status[ 'Artist' ] ) ) { // check internet connection || artist name
 			$status[ 'coverart' ] = '';
 			break;
 		}

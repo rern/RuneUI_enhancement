@@ -30,6 +30,7 @@
 /* 'enhance' declared in <head> for cache busting */
 .fa {
 	font-family: enhance, addons;
+	vertical-align: baseline;
 }
 .fa-mpd:before { content: "\f522" }
 .fa-spotify:before { content: "\f523" }
@@ -240,9 +241,6 @@ wh, gr { font-weight: 300; }
 .menu a:nth-of-type( 1 ) {
 	border-top: none;
 }
-.menu a:hover {
-	background: #222f3d;
-}
 .menu i {
 	width: 40px;
 	line-height: 40px;
@@ -421,12 +419,6 @@ wh, gr { font-weight: 300; }
 }
 #menu-bottom li.active a {
 	background: #0095d8;
-}
-#menu-bottom li.active a:hover {
-	background-color: #0072a5;
-}
-#menu-bottom a:hover {
-	background-color: #222f3d;
 }
 #menu-bottom li a i {
 	margin: 0; /* fix wobble spin */
@@ -1030,9 +1022,6 @@ wh, gr { font-weight: 300; }
 	color: #0095d8;
 	cursor: pointer;
 }
-#biocontent a:hover {
-	color: #0095d8;
-}
 #biocontent span {
 	color: #7795b4;
 }
@@ -1147,13 +1136,8 @@ wh, gr { font-weight: 300; }
 	line-height: 40px;
 	color: #e0e7ee;
 }
-.home-block:hover,
-.home-block:focus {
-	cursor: pointer;
-	background: #222f3d;
-	text-decoration: none;
-	outline: none;
-	color: #7795b4
+.label:hover {
+	color: inherit;
 }
 .home-block .fa-coverart,
 .home-block .fa-bookmark {
@@ -1287,9 +1271,8 @@ wh, gr { font-weight: 300; }
 	display: inline-block;
 	width: 40px;
 	height: 40px;
-	line-height: 46px;
+	line-height: 44px;
 	text-align: center;
-	vertical-align: 0%;
 	background: #0095d8;
 }
 #pl-currentpath i {
@@ -1301,10 +1284,6 @@ wh, gr { font-weight: 300; }
 #pl-currentpath .fa-music,
 #pl-currentpath .fa-webradio {
 	width: 30px;
-}
-#db-home:hover,
-#pl-home:hover {
-	background: #0072a5;
 }
 #db-search,
 #pl-search {
@@ -1364,16 +1343,13 @@ wh, gr { font-weight: 300; }
 	text-align: center;
 	color: #e0e7ee;
 }
-.index li:hover {
-	background: #34495e;
-}
 .coverart {
 	display: inline-block;
 	border-right: #000000 1px solid;
 	border-bottom: #000000 1px solid;
 }
-.coverartalbum,
-.coverartartist {
+.coverart1,
+.coverart2 {
 	display: block;
 	padding-top: 2px;
 	overflow: hidden;
@@ -1382,7 +1358,7 @@ wh, gr { font-weight: 300; }
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
-.coverartartist {
+.coverart2 {
 	margin-bottom: 8px;
 }
 .licover {
@@ -1460,11 +1436,6 @@ wh, gr { font-weight: 300; }
 #db-entries li span i {
 	margin-right: 10px;
 }
-#db-entries li:hover,
-#pl-entries li:hover,
-#pl-editor li:hover {
-	background: #10161c
-}
 #db-entries span,
 #pl-entries .name,
 #pl-entries .song,
@@ -1487,6 +1458,7 @@ wh, gr { font-weight: 300; }
 .lipath,
 .liname,
 .liindex,
+#indexcover,
 .lisort,
 .licue,
 .liartist,
@@ -1507,14 +1479,8 @@ span.dbpath {
 	font-weight: normal;
 }
 #db-entries .active,
-#db-entries .active:hover,
-#db-entries .active:focus,
 #pl-entries .active,
-#pl-entries .active:hover,
-#pl-entries .active:focus,
-#pl-editor .active,
-#pl-editor .active:hover,
-#pl-editor .active:focus {
+#pl-editor .active {
 	color: #e0e7ee;
 	background: #0095d8
 }
@@ -1910,6 +1876,52 @@ li.active .time {
 	width: 100%;
 	height: 100%;
 	pointer-events: none;
+}
+@media ( hover:hover ) {
+	.menu a:hover {
+		background: #222f3d;
+	}
+	#menu-bottom li.active a:hover {
+		background-color: #0072a5;
+	}
+	#menu-bottom a:hover {
+		background-color: #222f3d;
+	}
+	#biocontent a:hover {
+		color: #0095d8;
+	}
+	.home-block:hover,
+	.home-block:focus {
+		cursor: pointer;
+		background: #374c62;
+		text-decoration: none;
+		outline: none;
+		color: #7795b4
+	}
+	#db-home:hover,
+	#pl-home:hover {
+		background: #0072a5;
+	}
+	.index li:hover {
+		background: #34495e;
+	}
+	#db-entries li:hover,
+	#pl-entries li:hover,
+	#pl-editor li:hover {
+		background: #374c62;
+	}
+	#db-entries .licover:hover {
+		background: #10161c
+	}
+	#db-entries .active:hover,
+	#db-entries .active:focus,
+	#pl-entries .active:hover,
+	#pl-entries .active:focus,
+	#pl-editor .active:hover,
+	#pl-editor .active:focus {
+		color: #e0e7ee;
+		background: #0095d8
+	}
 }
 @media(min-width: 2000px) { .coverart { width: 200px } }
 @media(max-width: 2000px) { .coverart { width: calc( ( 100vw - 38px ) * 0.1 ) } }
