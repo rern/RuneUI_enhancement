@@ -102,6 +102,9 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	if ( !is_array( $data ) ) {
 		$name = $data;
 		$redis->hDel( $key, $name );
+		$path = $_POST[ 'thumbnail' ];
+		echo '/usr/bin/sudo /usr/bin/rm "/mnt/MPD/'.$path.'/thumbnail.jpg"';
+		if ( $path ) exec( '/usr/bin/sudo /usr/bin/rm "/mnt/MPD/'.$path.'/thumbnail.jpg"' );
 		if ( $key === 'webradios' ) {
 			$redis->hDel( 'sampling', $name );
 			unlink( '/mnt/MPD/Webradio/'.$data.'.pls' );
