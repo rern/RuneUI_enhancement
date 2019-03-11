@@ -225,10 +225,6 @@ $( '#turnoff' ).click( function() {
 			$.post( 'enhance.php', { power: 'reboot' } );
 			$( '#loader' ).removeClass( 'hide' );
 		}
-		, cancellabel : !localhost ? '' : 'Screen off'
-		, cancel      : !localhost ? '' : function() {
-			$.post( 'enhance.php', { power: 'screenoff' } );
-		}
 	} );
 } );
 $( '#tab-library' ).click( function() {
