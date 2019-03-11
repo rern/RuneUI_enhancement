@@ -134,11 +134,11 @@ var chklibrary = {
 	, contexticon    : '<i class="fa fa-bars"></i>Context icon'
 	, count          : '<gr>text</gr> Count_'
 	, label          : '<gr>text</gr> Label'
-	, coverfile      : 'Cover art <gr>in album/folder</gr>'
 	, plclear        : 'Confirmation <gr>on clear Playlist</gr>'
 	, playbackswitch : 'Open Playback <gr>on</gr> <i class="fa fa-play-plus"></i>Add <gr>►</gr> Play'
 	, tapaddplay     : 'Single tap song <gr>=</gr> <i class="fa fa-play-plus"></i>Add <gr>►</gr> Play'
-	, thumbbyartist  : '<i class="fa fa-coverart"></i>Sort thumbnails by artist'
+	, coverfile      : '<i class="fa fa-coverart"></i>Cover art <gr>in album/folder</gr>'
+	, thumbbyartist  : '<i class="fa fa-coverart"></i>Sort CoverArts by artist'
 }
 $( '#displaylibrary' ).click( function() {
 	var coverfile = GUI.display.coverfile;
@@ -1535,16 +1535,16 @@ streams.forEach( function( stream ) {
 } );
 
 pushstreams.bookmark.onmessage = function( data ) {
-	if ( GUI.bookmarkedit ) return
-		
 	var bookmarks = data[ 0 ];
+	if ( GUI.bookmarkedit || !bookmarks.length ) return
+		
 	clearTimeout( GUI.debounce );
 	GUI.debounce = setTimeout( function() {
 		var content = '';
 		$( '.bookmark' ).remove();
-		if ( !bookmarks.length ) return
-		
 		$.each( bookmarks, function( i, bookmark ) {
+			if( bookmark.index ) return
+			
 			if ( bookmark.coverart ) {
 				var namehtml = '<img class="bkcoverart" src="'+ bookmark.coverart +'">';
 				var hidelabel = ' hide';

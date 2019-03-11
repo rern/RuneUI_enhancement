@@ -203,12 +203,13 @@ function bookmarkVerify( name, path, oldname ) {
 				  title : 'Add Bookmark'
 				, text  : name
 			} );
+		} else {
+			$( '.home-block' ).filter( function() {
+				return $( this ).find( '.label' ).text() === oldname;
+			} ).find( '.label' ).text( name );
 		}
 		var data = oldname ? [ name, path, oldname ] : [ name, path ];
 		$.post( 'enhance.php', { bkmarks: data } );
-		$( '.home-block' ).filter( function() {
-			return $( this ).find( '.label' ).text() === oldname;
-		} ).find( '.label' ).text( name );
 	} else {
 		info( {
 			  icon        : 'warning'
@@ -240,12 +241,19 @@ function bookmarkDelete( name, $block ) {
 					+'<br>'+ coverart
 					+'<br><white>'+ name +'</white>'
 		, msgalign : 'center'
+		, checkbox : src ? { 'Keep thumbnail file': 1 } : ''
 		, cancel   : 1
 		, oklabel  : 'Delete'
 		, ok       : function() {
 			GUI.bookmarkedit = 1;
 			$block.parent().remove();
-			$.post( 'enhance.php', { bkmarks: name } );
+			if ( $( '#infoCheckBox input[ type=checkbox ]:checked' ).length ) {
+				var path = '';
+		
+			} else {
+				var path = $block.find( '.lipath' ).text().replace( /"/g, '\"' );
+			}
+			$.post( 'enhance.php', { bkmarks: name, thumbnail: path } );
 		}
 	} );
 }
