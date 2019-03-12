@@ -1611,6 +1611,9 @@ li.active gr,
 li.active .time {
 	color: #34495e !important;
 }
+.lifocus {
+	background: #374c62;
+}
 .liinfo .fa:not(.fa-music) {
 	color: #7795b4 !important;
 }
