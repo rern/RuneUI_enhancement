@@ -114,18 +114,19 @@ $( '#menu-settings, #badge' ).click( function() {
 		.css( 'top', ( GUI.bars ? '40px' : 0 ) );
 } );
 var chklibrary = {
-	  sd             : '<i class="fa fa-microsd"></i>SD_'
-	, usb            : '<i class="fa fa-usbdrive"></i>USB'
-	, nas            : '<i class="fa fa-network"></i>Network_'
-	, webradio       : '<i class="fa fa-webradio"></i>Webradio'
-	, album          : '<i class="fa fa-album"></i>Album_'
-	, artist         : '<i class="fa fa-artist"></i>Artist'
-	, composer       : '<i class="fa fa-composer"></i>Composer_'
-	, albumartist    : '<i class="fa fa-albumartist"></i>Album artist'
-	, genre          : '<i class="fa fa-genre"></i>Genre_'
-	, dirble         : '<i class="fa fa-dirble"></i>Dirble'
+	  coverart       : '_<i class="fa fa-coverart"></i>CoverArt'
+	, sd             : '<i class="fa fa-microsd"></i>SD'
+	, usb            : '_<i class="fa fa-usbdrive"></i>USB'
+	, nas            : '<i class="fa fa-network"></i>Network'
+	, webradio       : '_<i class="fa fa-webradio"></i>Webradio'
+	, album          : '<i class="fa fa-album"></i>Album'
+	, artist         : '_<i class="fa fa-artist"></i>Artist'
+	, composer       : '<i class="fa fa-composer"></i>Composer'
+	, albumartist    : '_<i class="fa fa-albumartist"></i>Album artist'
+	, genre          : '<i class="fa fa-genre"></i>Genre'
+	, dirble         : '_<i class="fa fa-dirble"></i>Dirble'
 	, jamendo        : '<i class="fa fa-jamendo"></i>Jamendo'
-	, count          : '<gr>text</gr> Count_'
+	, count          : '_<gr>text</gr> Count'
 	, label          : '<gr>text</gr> Label'
 	, plclear        : 'Confirm <gr>on clear Playlist</gr>'
 	, playbackswitch : 'Open Playback <gr>on</gr> <i class="fa fa-play-plus"></i>Add <gr>►</gr> Play'
@@ -160,7 +161,7 @@ var chkplayback = {
 	, barsauto     : 'Bars on small screen'
 	, time         : 'Time'
 	, radioelapsed : 'Webradio elapsed'
-	, coverart     : 'Cover art'
+	, cover        : 'Cover art'
 	, coverlarge   : 'Large Cover art'
 	, volume       : 'Volume'
 	, buttons      : 'Buttons'
@@ -519,11 +520,11 @@ var btnctrl = {
 }
 $( '.timemap, .covermap, .volmap' ).click( function() {
 	var cmd = btnctrl[ this.id ];
-	if ( GUI.display.coverart && $( this ).hasClass( 'timemap' ) || !cmd ) return
+	if ( GUI.display.cover && $( this ).hasClass( 'timemap' ) || !cmd ) return
 	
 	if ( cmd === 'guide' ) {
 		$( '#controls-cover, #controls-vol, .rs-tooltip, #imode' ).toggleClass( 'hide' );
-		if ( !GUI.display.coverart ) $( '#controls-time, .controls1' ).toggleClass( 'hide' );
+		if ( !GUI.display.cover ) $( '#controls-time, .controls1' ).toggleClass( 'hide' );
 		if ( !GUI.bars ) $( '#swipebar' ).toggleClass( 'transparent' );
 		return
 	} else if ( cmd === 'menu' ) {

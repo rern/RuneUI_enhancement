@@ -504,11 +504,11 @@ function displayTopBottom() {
 function displayPlayback() {
 	displayTopBottom();
 	$( '#time-knob, #play-group' ).toggleClass( 'hide', GUI.display.time === '' );
-	$( '#coverart, #share-group' ).toggleClass( 'hide', GUI.display.coverart === '' );
+	$( '#coverart, #share-group' ).toggleClass( 'hide', GUI.display.cover === '' );
 	var volume = ( GUI.display.volumempd && GUI.display.volume ) ? 1 : 0;
 	$( '#volume-knob, #vol-group' ).toggleClass( 'hide', !volume );
 	
-	var column = ( GUI.display.time ? 1 : 0 ) + ( GUI.display.coverart ? 1 : 0 ) + volume;
+	var column = ( GUI.display.time ? 1 : 0 ) + ( GUI.display.cover ? 1 : 0 ) + volume;
 	var $elements = $( '#time-knob, #coverart, #volume-knob, #play-group, #share-group, #vol-group' );
 	if ( column === 2 && window.innerWidth > 499 ) {
 		if ( volume ) {
@@ -641,10 +641,10 @@ function displayCheckbox( checkboxes ) {
 	var html = '';
 	var col,br;
 	$.each( checkboxes, function( key, val ) {
-		if ( val.slice( -1 ) === '_' ) {
+		if ( val[ 0 ] === '_' ) {
 			col = ' class="infocol"';
 			br = '';
-			val = val.replace( /_/, '' );
+			val = val.slice( 1 );
 		} else {
 			col = '';
 			br = '<br>';
