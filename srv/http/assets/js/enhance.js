@@ -888,10 +888,10 @@ $( '#home-coverart' ).click( function() { // fix - 'tap' also fire .coverart cli
 	$( '#db-currentpath .lipath' ).text( 'coverart' );
 	$( '#home-blocks' ).addClass( 'hide' );
 	$( '#divcoverarts, #db-back, #db-index' ).removeClass( 'hide' );
-	$( '#db-index li' ).not( ':eq( 0 )' ).css( 'color', '#34495e' );
+	$( '#db-index li' ).not( ':eq( 0 )' ).addClass( 'gr' );
 	var index = $( '#indexcover' ).text().split( '' );
 	index.forEach( function( index ) {
-		$( '#db-index .index-'+ index ).css( 'color', '' );
+		$( '#db-index .index-'+ index ).removeClass( 'gr' );
 	} );
 	displayIndexBar();
 	setTimeout( function() {
@@ -1181,9 +1181,9 @@ $( '#plopen' ).click( function() {
 	var content = '';
 	$.each( GUI.lsplaylists, function( key, val ) {
 		if ( val.index ) {
-			$( '#pl-index li' ).not( ':eq( 0 )' ).css( 'color', '#34495e' );
+			$( '#pl-index li' ).not( ':eq( 0 )' ).addClass( 'gr' );
 			$.each( val.index, function( i, char ) {
-				$( '#pl-index .index-'+ char ).css( 'color', '' );
+				$( '#pl-index .index-'+ char ).removeClass( 'gr' );
 			} );
 		} else {
 		content += '<li class="pl-folder">'

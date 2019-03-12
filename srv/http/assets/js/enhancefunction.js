@@ -866,7 +866,7 @@ function dataParse( data, path, plugin, querytype, arg ) {
 	GUI.albumartist = '';
 	GUI.currentpath = path;
 	$( '#home-blocks' ).addClass( 'hide' );
-	$( '#db-index li' ).not( ':eq( 0 )' ).css( 'color', '#34495e' );
+	$( '#db-index li' ).not( ':eq( 0 )' ).addClass( 'gr' );
 	
 	if ( !plugin ) {
 		if ( !data.length ) return
@@ -923,7 +923,7 @@ function dataParse( data, path, plugin, querytype, arg ) {
 					albumartist = value.albumartist;
 				} else if ( value.index ) {
 					$.each( value.index, function( i, char ) {
-						$( '#db-index .index-'+ char ).css( 'color', '' );
+						$( '#db-index .index-'+ char ).removeClass( 'gr' );
 					} );
 				} else if ( value.directory || value.file || value.playlist ) {
 					name = value.directory || value.file || value.playlist;
@@ -984,7 +984,7 @@ function dataParse( data, path, plugin, querytype, arg ) {
 			for ( i = 0; i < dataL; i++ ) {
 				if ( data[ i ].index ) {
 					$.each( data[ i ].index, function( i, char ) {
-						$( '#db-index .index-'+ char ).css( 'color', '' );
+						$( '#db-index .index-'+ char ).removeClass( 'gr' );
 					} );
 				} else {
 					content += data2html( data[ i ], i, 'db', path );
