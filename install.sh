@@ -183,8 +183,8 @@ if [[ ! $bkmarks ]]; then
 	fi
 fi
 
-playback="bars debug dev time coverart volume buttons"
-library="nas sd usb webradio album artist albumartist composer genre dirble jamendo"
+playback="bars debug dev time cover volume buttons"
+library="coverart nas sd usb webradio album artist albumartist composer genre dirble jamendo"
 miscel="count label contexticon coverfile plclear playbackswitch tapaddplay"
 for item in $playback $library $miscel; do
 	if [[ $( redis-cli hexists display $item ) == 0 ]]; then
