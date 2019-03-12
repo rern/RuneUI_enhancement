@@ -298,8 +298,10 @@ function renderPlayback() {
 	$( '.playback-controls' ).css( 'visibility', 'visible' );
 	$( '#artist, #song, #album' ).css( 'width', '' );
 	$( '#artist' ).html( status.Artist );
-	$( '#song' ).html( status.Title );
-	$( '#album' ).html( status.ext !== 'radio' ? status.Album : '<gr>'+ status.Album +'</gr>' ).promise().done( function() {
+	$( '#song' ).html( status.Title )
+	$( '#album' )
+		.toggleClass( 'albumradio', status.ext === 'radio' )
+		.html( status.Album ).promise().done( function() {
 		scrollLongText();
 	} );
 	

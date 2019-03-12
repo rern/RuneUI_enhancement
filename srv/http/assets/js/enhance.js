@@ -134,7 +134,7 @@ var chklibrary = {
 	, contexticon    : '<i class="fa fa-bars"></i>Context icon'
 	, count          : '<gr>text</gr> Count_'
 	, label          : '<gr>text</gr> Label'
-	, plclear        : 'Confirmation <gr>on clear Playlist</gr>'
+	, plclear        : 'Confirm <gr>on clear Playlist</gr>'
 	, playbackswitch : 'Open Playback <gr>on</gr> <i class="fa fa-play-plus"></i>Add <gr>►</gr> Play'
 	, tapaddplay     : 'Single tap song <gr>=</gr> <i class="fa fa-play-plus"></i>Add <gr>►</gr> Play'
 	, coverfile      : '<i class="fa fa-coverart"></i>Cover art <gr>in album/folder</gr>'
@@ -145,8 +145,8 @@ $( '#displaylibrary' ).click( function() {
 	var thumbbyartist = GUI.display.thumbbyartist;
 	info( {
 		  icon     : 'library'
-		, title    : 'Library Options'
-		, message  : 'Select items / options:'
+		, title    : 'Libary Tools'
+		, message  : 'Select items to show / options:'
 		, checkbox : '<form id="displaysavelibrary">'+ displayCheckbox( chklibrary ) +'</form>'
 		, cancel   : 1
 		, ok       : function () {
@@ -178,8 +178,8 @@ var chkplayback = {
 $( '#displayplayback' ).click( function() {
 	info( {
 		  icon     : 'play-circle'
-		, title    : 'Playback Options'
-		, message  : 'Select items / options:'
+		, title    : 'Playback Tools'
+		, message  : 'Select items to show / options:'
 		, checkbox : '<form id="displaysaveplayback">'+ displayCheckbox( chkplayback ) +'</form>'
 		, cancel   : 1
 		, ok       : function () {
@@ -330,7 +330,7 @@ $( '#artist, #bio-open' ).click( function() {
 	}
 } );
 $( '#album' ).click( function() {
-	if ( GUI.status.ext !== 'radio' || location.hostname !== 'localhost' ) window.open( 'https://www.last.fm/music/'+ GUI.status.Artist +'/'+ GUI.status.Album, '_blank' );
+	if ( GUI.status.ext !== 'radio'&& location.hostname !== 'localhost' ) window.open( 'https://www.last.fm/music/'+ GUI.status.Artist +'/'+ GUI.status.Album, '_blank' );
 } );
 $( '#time' ).roundSlider( {
 	  sliderType  : 'min-range'
