@@ -1889,9 +1889,9 @@ li.active .time {
 	.label:hover {
 		color: #e0e7ee;
 	}
-	#db-entries .active:hover,
-	#pl-entries .active:hover,
-	#pl-editor .active:hover {
+	#db-entries li.active:hover,
+	#pl-entries li.active:hover,
+	#pl-editor li.active:hover {
 		background: #0095d8;
 	}
 }
