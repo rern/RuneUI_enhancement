@@ -1124,21 +1124,25 @@ wh, gr { font-weight: 300; }
 .home-block .fa-bookmark {
 	color: #0095d8;
 }
-.home-block-edit,
-.home-block-remove,
-.coverart-remove {
+.edit {
 	position: absolute;
 	top: 0;
 	right: 0;
 	width: 40px;
-	height: 40px;
+	height: 35px;
 	line-height: 40px;
 	text-align: center;
 	font-size: 24px !important;
 	color: #e0e7ee !important;
 }
 .home-block-edit {
-	top: 40px;
+	top: 35px;
+}
+.home-block-cover {
+	top: 70px;
+}
+.coverart-cover {
+	top: 120px;
 }
 /* ---------------------- breadcrumb and index ---------------------- */
 .btnlist-top {
@@ -1857,7 +1861,7 @@ li.active .time {
 	.fa-arrow-left, .fa-search,
 	.home-block, .coverart div,
 	#playlist-warning i,
-	.li:not( .licover ),
+	li:not( .licover ),
 	.licover img,
 	.liinfo {
 		cursor: pointer;
