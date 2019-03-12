@@ -1522,7 +1522,7 @@ pushstreams.idle.onmessage = function( changed ) {
 				getPlaybackStatus();
 				if ( GUI.playlist && !GUI.pleditor ) setPlaylistScroll();
 		} else if ( changed === 'playlist' ) { // on playlist changed
-			if ( GUI.pleditor || $( '#pl-entries .pl-action' ).length ) return
+			if ( GUI.pleditor || GUI.contextmenu || $( '#pl-entries .pl-action' ).length ) return
 			
 			if ( GUI.playlist ) {
 				$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {

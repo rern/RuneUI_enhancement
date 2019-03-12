@@ -5,9 +5,10 @@ $( '.contextmenu a' ).click( function() {
 	$( '.menu' ).addClass( 'hide' );
 	var $this = $( this );
 	var cmd = $this.data( 'cmd' );
-	console.log( cmd )
 	if ( [ 'play', 'pause', 'stop', 'remove' ].indexOf( cmd ) !== -1 ) {
 		if ( cmd === 'remove' ) {
+			GUI.contextmenu = 1;
+			setTimeout( function() { GUI.contextmenu = 0 }, 500 );
 			removeFromPlaylist( GUI.list.li );
 		} else if ( cmd === 'play' ) {
 			if ( $( '#pl-entries li.active' ).index() === GUI.list.li.index() ) {
