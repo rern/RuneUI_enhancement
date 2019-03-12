@@ -148,7 +148,6 @@ label {
 .ui-pnotify-icon,
 .ui-pnotify-title {
 	color: #34495e !important;
-	text-transform: uppercase;
 }
 
 html {
