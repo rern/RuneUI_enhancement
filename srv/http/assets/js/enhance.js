@@ -36,7 +36,7 @@ var GUI = {
 };
 PNotify.prototype.options.delay = 3000;
 PNotify.prototype.options.styling = 'fontawesome';
-PNotify.prototype.options.icon = 'fa fa-check';
+PNotify.prototype.options.icon = '';
 PNotify.prototype.options.stack = {
 	  dir1      : 'up'    // stack up
 	, dir2      : 'right' // shift right when fill height
@@ -1573,7 +1573,7 @@ pushstreams.idle.onmessage = function( changed ) {
 pushstreams.notify.onmessage = function( data ) {
 	var notify = data[ 0 ];
 	new PNotify( {
-		  icon        : notify.icon || 'fa fa-check'
+		  icon        : notify.icon
 		, title       : notify.title || 'Info'
 		, text        : notify.text
 	} );

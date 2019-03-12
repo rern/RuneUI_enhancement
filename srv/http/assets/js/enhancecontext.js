@@ -5,6 +5,7 @@ $( '.contextmenu a' ).click( function() {
 	$( '.menu' ).addClass( 'hide' );
 	var $this = $( this );
 	var cmd = $this.data( 'cmd' );
+	// playback and update
 	if ( [ 'play', 'pause', 'stop', 'remove', 'update' ].indexOf( cmd ) !== -1 ) {
 		if ( cmd === 'remove' ) {
 			GUI.contextmenu = 1;
@@ -23,6 +24,7 @@ $( '.contextmenu a' ).click( function() {
 		}
 		return
 	}
+	// with dialogue box
 	var contextFunction = {
 		  radiosave     : webRadioNew // unsaved webradio (dirble)
 		, wrrename      : webRadioRename
@@ -37,8 +39,7 @@ $( '.contextmenu a' ).click( function() {
 		return
 	}
 	
-	$( '#db-entries li, #pl-entries li' ).removeClass( 'active' );
-	var mode = cmd.replace( /add|addplay|replace|replaceplay/g, '' );
+	$( '#db-entries li, #pl-editor li' ).removeClass( 'active' );
 	// get name
 	if ( GUI.playlist && $( '#pl-currentpath .lipath' ).length ) {
 		var name = GUI.list.li.find( '.lipath' ).text().replace( /"/g, '\\"' );
@@ -47,7 +48,9 @@ $( '.contextmenu a' ).click( function() {
 	}
 	// compose command
 	var mpcCmd;
-	if ( !mode ) { //  add|addplay|replace|replaceplay
+	// must keep order: replaceplay|replace|addplay|add (otherwise replaceplay > play )
+	var mode = cmd.replace( /replaceplay|replace|addplay|add/, '' );
+	if ( !mode ) {
 		var ext = GUI.list.path.slice( -3 ).toLowerCase();
 		if ( GUI.list.index ) {
 			var cuefile = GUI.list.path.replace( /"/g, '\\"' );
@@ -63,15 +66,16 @@ $( '.contextmenu a' ).click( function() {
 			mpcCmd = GUI.list.isfile ? 'mpc add "'+ name +'"' : 'mpc ls "'+ name +'" | mpc add';
 		}
 	} else if ( mode === 'wr' ) {
-		var radioname = GUI.list.name.replace( /"/g, '\\"' );
-		mpcCmd = 'mpc load "Webradio/'+ radioname +'.pls"';
+		cmd = cmd.slice( 2 );
+		mpcCmd = 'mpc load "Webradio/'+ GUI.list.name.replace( /"/g, '\\"' ) +'.pls"';
 	} else if ( mode === 'pl' ) {
+		cmd = cmd.slice( 2 );
 		mpcCmd = 'mpc load "'+ name +'"';
-	} else {
+	} else { // album|artist|composer|genre
 		var artist = GUI.list.artist || $( '#artistalbum span' ).text().replace( /"/g, '\\"' );
 		mpcCmd = 'mpc findadd '+ GUI.list.mode +' "'+ name +'"'+ ( artist ? ' artist "'+ artist +'"' : '' );
 	}
-	cmd = cmd.replace( /album|artist|composer|genre|wr|pl/, '' );
+	cmd = cmd.replace( /album|artist|composer|genre/, '' );
 	var contextCommand = {
 		  add           : mpcCmd
 		, addplay       : [ mpcCmd, 'mpc play '+ ( GUI.status.playlistlength + 1 ) ]
