@@ -62,6 +62,7 @@ $( '.contextmenu a' ).click( function() {
 		, radiosave     : webRadioNew
 		, wrrename      : webRadioRename
 		, wrdelete      : webRadioDelete
+		, pladd         : mpcCmd
 		, plrename      : playlistRename
 		, pldelete      : playlistDelete
 		, bookmark      : bookmarkNew
@@ -77,7 +78,7 @@ $( '.contextmenu a' ).click( function() {
 				if ( cmd.replace( 'wr', '' ).slice( 0, 3 ) === 'add' ) {
 					addReplace( mode, cmd, command, 'Add to Playlist' );
 				} else {
-					if ( GUI.display.plclear ) {
+					if ( GUI.display.plclear && GUI.status.playlistlength ) {
 						info( {
 							  title   : 'Replace Playlist'
 							, message : 'Replace current Playlist?'
