@@ -1857,7 +1857,9 @@ li.active .time {
 	.fa-arrow-left, .fa-search,
 	.home-block, .coverart div,
 	#playlist-warning i,
-	li {
+	.li:not( .licover ),
+	.licover img,
+	.liinfo *:not( .db-icon ) {
 		cursor: pointer;
 	}
 	.menu a:hover,
@@ -1872,7 +1874,7 @@ li.active .time {
 	.home-block:hover,
 	.home-block:focus,
 	.index li:not( .gr ):hover,
-	#db-entries li:hover,
+	#db-entries li:not( .licover ):hover,
 	#pl-entries li:hover,
 	#pl-editor li:hover {
 		background: #374c62;
