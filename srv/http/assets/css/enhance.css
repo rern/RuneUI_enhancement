@@ -1861,7 +1861,7 @@ li.active .time {
 }
 @media ( hover:hover ) {
 	.menu a, #menu-settings, #badge, #menu-bottom,
-	#artist, #song, #album,
+	#artist, #album:not( .albumradio ),
 	.timemap, .covermap, .volmap, .rs-container,
 	.biosimilar, .close-root,
 	#db-home, #pl-home, #db-currentpath a, #pl-manage i,
