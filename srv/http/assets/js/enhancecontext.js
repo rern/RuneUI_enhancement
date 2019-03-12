@@ -5,9 +5,16 @@ $( '.contextmenu a' ).click( function() {
 	$( '.menu' ).addClass( 'hide' );
 	var $this = $( this );
 	var cmd = $this.data( 'cmd' );
+	console.log( cmd )
 	if ( [ 'play', 'pause', 'stop', 'remove' ].indexOf( cmd ) !== -1 ) {
 		if ( cmd === 'remove' ) {
-			GUI.list.li.find( '.pl-action' ).click();
+			removeFromPlaylist( GUI.list.li );
+		} else if ( cmd === 'play' ) {
+			if ( $( '#pl-entries li.active' ).index() === GUI.list.li.index() ) {
+				$( '#play' ).click();
+			} else {
+				$( '#pl-entries li' ).eq( GUI.list.li.index() ).click();
+			}
 		} else {
 			$( '#'+ cmd ).click();
 		}

@@ -1380,6 +1380,7 @@ function setPlaylistScroll() {
 	clearInterval( GUI.intElapsedPl );
 	displayTopBottom();
 	$( '#context-menu-plaction' ).addClass( 'hide' );
+	$( '#pl-entries li' ).removeClass( 'lifocus' );
 	setNameWidth();
 	var $linotactive, $liactive, $name, $song, $elapsed, elapsedtxt;
 	$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
@@ -1550,6 +1551,48 @@ function renderPlaylist() {
 		$( '#pl-entries p' ).css( 'min-height', window.innerHeight - 140 +'px' );
 		setPlaylistScroll();
 	} );
+}
+function removeFromPlaylist( $li ) {
+	var $this = $li;
+	var webradio = $this.hasClass( 'webradio' );
+	var $elcount = webradio ? $( '#countradio' ) : $( '#countsong' );
+	var count = $elcount.attr( 'count' ) - 1;
+	$elcount.attr( 'count', count ).text( count );
+	var time = +$( '#pltime' ).attr( 'time' ) - $this.find( '.time' ).attr( 'time' );
+	if ( !webradio ) $( '#pltime' ).attr( 'time', time ).text( second2HMS( time ) );
+	if ( count === 0 ) {
+		$( '#pl-count' ).find( 'gr:contains(•)' ).remove();
+		$elcount.next().remove();
+		$elcount.remove();
+		if ( $elcount[ 0 ].id === 'countradio' ) {
+			$( '#pltime' ).css( 'color', '#e0e7ee' );
+		} else {
+			$( '#pltime' ).remove();
+		}
+	}
+	if ( $this.hasClass( 'active' ) ) {
+		if ( $this.index() + 1 < $this.siblings().length ) {
+			$this.next().addClass( 'active' );
+		} else {
+			$( '#pl-entries li:eq( 0 )' ).addClass( 'active' );
+			$( 'html, body' ).scrollTop( 0 );
+			if ( GUI.bars ) {
+				$( '#play, #pause' ).removeClass( 'btn-primary' );
+				$( '#stop' ).addClass( 'btn-primary' );
+			}
+		}
+	}
+	var songpos = $this.index() + 1;
+	$this.remove();
+	if ( !$this.hasClass( 'webradio' ) ) {
+		$.post( 'enhance.php', { mpc: 'mpc del '+ songpos } );
+	} else {
+		$.post( 'enhance.php', { mpc: [ 'mpc del '+ songpos, '/usr/bin/redis-cli hdel webradiopl "'+ $this.find( '.lipath' ).text() +'"' ] } );
+	}
+	if ( !$( '#countsong, #countradio' ).length ) {
+		GUI.status.playlistlength = 0;
+		renderPlaylist();
+	}
 }
 function clearPlaylist() {
 	GUI.status.playlistlength = 0;
