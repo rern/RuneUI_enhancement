@@ -1597,7 +1597,7 @@ function removeFromPlaylist( $li ) {
 function clearPlaylist() {
 	GUI.status.playlistlength = 0;
 	GUI.pllist = {};
-	$( '#tab-playback' ).click();
+	$.post( 'enhance.php', { mpc: [ 'mpc clear', '/usr/bin/redis-cli del webradiopl' ] } );
 }
 function renderLsPlaylists( lsplaylists ) {
 	var content = '';
@@ -1612,6 +1612,7 @@ function renderLsPlaylists( lsplaylists ) {
 						+'<i class="fa fa-list-ul pl-icon" data-target="#context-menu-playlist">'
 						+'<a class="liname">'+ val.name +'</a></i>'
 						+'<a class="lisort">'+ val.lisort +'</a></i>'
+						+'<a class="lipath">'+ val.name +'</a></i>'
 						+'<span class="plname">'+ val.name +'</span>'
 				  +'</li>';
 		}

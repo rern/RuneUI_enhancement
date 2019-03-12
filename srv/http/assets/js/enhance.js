@@ -1215,12 +1215,10 @@ $( '#plclear' ).click( function() {
 			, oklabel    : 'All'
 			, ok         : function() {
 				clearPlaylist();
-				$.post( 'enhance.php', { mpc: [ 'mpc clear', '/usr/bin/redis-cli del webradiopl' ] } );
 			}
 		} );
 	} else {
 		clearPlaylist();
-		$.post( 'enhance.php', { mpc: 'mpc clear' } );
 	}
 } );
 $( '#pl-filter' ).keyup( function() {

@@ -38,38 +38,40 @@ $( '.contextmenu a' ).click( function() {
 	}
 	
 	$( '#db-entries li, #pl-entries li' ).removeClass( 'active' );
-	var mode = cmd.replace( /add|addplay|replace|replaceplay/, '' );
+	var mode = cmd.replace( /add|addplay|replace|replaceplay/g, '' );
 	// get name
-	if ( mode === 'wr' ) {
-		var name = 'Webradio/'+ GUI.list.name.replace( /"/g, '\\"' ) +'.pls';
+	if ( GUI.playlist && $( '#pl-currentpath .lipath' ).length ) {
+		var name = GUI.list.li.find( '.lipath' ).text().replace( /"/g, '\\"' );
 	} else {
-		if ( GUI.playlist && $( '#pl-currentpath .lipath' ).length ) {
-			var name = GUI.list.li.find( '.lipath' ).text().replace( /"/g, '\\"' );
-		} else {
-			var name = GUI.list.path.replace( /"/g, '\\"' );
-		}
+		var name = GUI.list.path.replace( /"/g, '\\"' );
 	}
 	// compose command
+	var mpcCmd;
 	if ( !mode ) { //  add|addplay|replace|replaceplay
 		var ext = GUI.list.path.slice( -3 ).toLowerCase();
 		if ( GUI.list.index ) {
 			var cuefile = GUI.list.path.replace( /"/g, '\\"' );
-			var mpcCmd = '/srv/http/enhancecue.sh "'+ cuefile +'" '+ GUI.list.index;
+			mpcCmd = '/srv/http/enhancecue.sh "'+ cuefile +'" '+ GUI.list.index;
 		} else if ( ext === 'm3u' ) {
-			var mpcCmd = 'cat "/mnt/MPD/'+ GUI.list.path +'" | mpc add';
+			mpcCmd = 'cat "/mnt/MPD/'+ GUI.list.path +'" | mpc add';
 		} else if ( ext === 'cue' || ext === 'pls' ) {
-			var mpcCmd = 'mpc load "'+ name +'"';
+			mpcCmd = 'mpc load "'+ name +'"';
 		} else if ( GUI.plugin ) {
 			var radioname = GUI.list.name.replace( /"/g, '\\"' );
-			var mpcCmd = 'mpc add "'+ GUI.list.path +'"; /usr/bin/redis-cli hset webradiopl '+ GUI.list.path +' "*'+ radioname +'"';
+			mpcCmd = 'mpc add "'+ GUI.list.path +'"; /usr/bin/redis-cli hset webradiopl '+ GUI.list.path +' "*'+ radioname +'"';
 		} else {
-			var mpcCmd = GUI.list.isfile ? 'mpc add "'+ name +'"' : 'mpc ls "'+ name +'" | mpc add';
+			mpcCmd = GUI.list.isfile ? 'mpc add "'+ name +'"' : 'mpc ls "'+ name +'" | mpc add';
 		}
+	} else if ( mode === 'wr' ) {
+		var radioname = GUI.list.name.replace( /"/g, '\\"' );
+		mpcCmd = 'mpc load "Webradio/'+ radioname +'.pls"';
+	} else if ( mode === 'pl' ) {
+		mpcCmd = 'mpc load "'+ name +'"';
 	} else {
-			var artist = GUI.list.artist || $( '#artistalbum span' ).text().replace( /"/g, '\\"' );
-			var mpcCmd = 'mpc findadd '+ GUI.list.mode +' "'+ name +'"'+ ( artist ? ' artist "'+ artist +'"' : '' );
-		cmd = cmd.replace( /album|artist|composer|genre|wr/, '' );
+		var artist = GUI.list.artist || $( '#artistalbum span' ).text().replace( /"/g, '\\"' );
+		mpcCmd = 'mpc findadd '+ GUI.list.mode +' "'+ name +'"'+ ( artist ? ' artist "'+ artist +'"' : '' );
 	}
+	cmd = cmd.replace( /album|artist|composer|genre|wr|pl/, '' );
 	var contextCommand = {
 		  add           : mpcCmd
 		, addplay       : [ mpcCmd, 'mpc play '+ ( GUI.status.playlistlength + 1 ) ]
