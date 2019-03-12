@@ -1352,9 +1352,6 @@ wh, gr { font-weight: 300; }
 	margin: 0 15px 0 40px;
 	box-shadow: #555555 0 0 4px 0;
 }
-.licover .db-action {
-	margin-top: 184px !important;
-}
 .licover.active {
 	background: linear-gradient( #0000 189px, #0095d8 41px ) !important;
 }
@@ -1444,9 +1441,7 @@ wh, gr { font-weight: 300; }
 #indexcover,
 .lisort,
 .licue,
-.liartist,
-.db-action,
-.pl-action {
+.liartist {
 	display: none;
 }
 span.dbpath {
@@ -1467,22 +1462,16 @@ span.dbpath {
 	color: #e0e7ee;
 	background: #0095d8
 }
-#db-entries .db-action,
-#pl-entries .pl-action,
-#pl-editor .pl-action {
+#pl-entries .pl-action {
 	float: right;
 	position: relative;
 	width: 50px;
 	margin: 0;
-	line-height: 49px;
-	font-size: 18px;
-	text-align: center;
-	z-index: 1;
-}
-#pl-entries .pl-action {
 	font-size: 24px;
 	line-height: 45px;
+	text-align: center;
 	background: #000000;
+	z-index: 1;
 }
 #pl-entries li.active .pl-action {
 	background: #0095d8;
@@ -2043,10 +2032,6 @@ li.active .time {
 	}
 }
 @media(max-width: 480px) {
-	.db-action,
-	#pl-editor .pl-action { /* toggle */
-		display: none;
-	}
 	#pl-count span,
 	#pl-count a:first-child,
 	#pl-count a:last-child {
