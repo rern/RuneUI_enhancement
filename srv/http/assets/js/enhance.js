@@ -51,11 +51,6 @@ var cssnotify =
 		+'.ui-pnotify { bottom: 20px; }'
 		+'.pnotify_custom { top: 20px !important; }'
 	+'</style>';
-var csscontexticon = 
-	 '<style id="csscontexticon">'
-		+'.db-action, .pl-action { display: block }'
-		+'.duration-right { right: 60px }'
-	+'</style>';
 var hash = Date.now();
 var coverrune = '/assets/img/cover.'+ hash +'.svg';
 var vustop = '/assets/img/vustop.'+ hash +'.gif';
@@ -102,7 +97,6 @@ $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 	$.event.special.swipe.horizontalDistanceThreshold = 80; // pixel to swipe
 	$.event.special.tap.tapholdThreshold = 1000;
 	setSwipe();
-	cssContextIcon();
 	$.post( 'enhancestatus.php', function( status ) {
 		GUI.status = status;
 		renderPlayback();
@@ -130,8 +124,7 @@ var chklibrary = {
 	, albumartist    : '<i class="fa fa-albumartist"></i>Album artist'
 	, genre          : '<i class="fa fa-genre"></i>Genre_'
 	, dirble         : '<i class="fa fa-dirble"></i>Dirble'
-	, jamendo        : '<i class="fa fa-jamendo"></i>Jamendo_'
-	, contexticon    : '<i class="fa fa-bars"></i>Context icon'
+	, jamendo        : '<i class="fa fa-jamendo"></i>Jamendo'
 	, count          : '<gr>text</gr> Count_'
 	, label          : '<gr>text</gr> Label'
 	, plclear        : 'Confirm <gr>on clear Playlist</gr>'
@@ -154,7 +147,6 @@ $( '#displaylibrary' ).click( function() {
 				var checked = this.checked;
 				GUI.display[ this.name ] = checked ? 'checked' : '';
 			} );
-			cssContextIcon();
 			$.post( 'enhance.php', { setdisplay: GUI.display }, function() {
 				if ( GUI.display.thumbbyartist !== thumbbyartist ) location.reload();
 				
@@ -1001,7 +993,7 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 		window.open( 'https://www.last.fm/music/'+ $this.find( '.bioartist' ).text() +'/'+ $this.find( '.lialbum' ).text(), '_blank' );
 		return
 	} else if ( $target.hasClass( 'db-icon' ) ) {
-		$this.find( '.db-action' ).click();
+		dbContextmenu( $this );
 		return
 	}
 	
@@ -1018,7 +1010,7 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	}
 	if ( $this.find( '.fa-music' ).length || $this.find( '.fa-webradio' ).length ) {
 		if ( !GUI.display.tapaddplay || $this.hasClass( 'licover' ) ) {
-			$this.find( 'i.db-action' ).click();
+			dbContextmenu( $this );
 		} else {
 			$thisli = $this;
 			if ( $thisli.hasClass( 'licover' ) || !$thisli.find( '.fa-music, .fa-webradio' ).length ) return
@@ -1026,7 +1018,7 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 			GUI.list.path = $thisli.find( '.lipath' ).text();
 			GUI.list.name = $thisli.find( '.liname' ).text();
 			GUI.list.index = $thisli.find( '.liindex' ).text() || '';  // cue - in contextmenu
-			var contextmenu = $thisli.find( '.db-action' ).data( 'target' );
+			var contextmenu = $thisli.data( 'target' );
 			$( contextmenu ).find( 'a:eq( 1 )' ).click();
 			setTimeout( function() {
 				$thisli.removeClass( 'active' );
@@ -1087,72 +1079,26 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 		} );*/
 	}
 } );
-$( '#db-entries' ).on( 'click', '.db-action', function( e ) {
-	e.stopPropagation();
-	var $this = $( this );
-	var $thisli = $this.parent();
-	// *.cue, *.m3u
-	if ( $thisli.hasClass( 'licover' ) && $( '#db-entries li i.fa-list-ul' ).length ) $thisli = $thisli.next();
-	$( '.menu' ).addClass( 'hide' );
-	if ( $thisli.hasClass( 'active' ) ) {
-		$thisli.removeClass( 'active' );
-		return
-	}
-	
-	GUI.list = {};
-	if ( $thisli.hasClass( 'licover' ) ) {
-		GUI.list.mode = 'album'
-	} else {
-		GUI.list.mode = $thisli.find( '.db-icon' ).prop( 'class' ).replace( /fa fa-| db-icon/g, '' );
-	}
-	GUI.list.path = $thisli.find( '.lipath' ).text() || '';
-	GUI.list.name = $thisli.find( '.liname' ).text() || '';
-	GUI.list.bioartist = $thisli.find( '.bioartist' ).text() || '';
-	GUI.list.artist = $thisli.find( '.liartist' ).text() || '';
-	GUI.list.isfile = $thisli.hasClass( 'file' );              // file/dirble - in contextmenu
-	GUI.list.index = $thisli.find( '.liindex' ).text() || '';  // cue - in contextmenu
-	GUI.list.liindex = $( '#db-entries li' ).index( $thisli ); // for webradio delete - in contextmenu
-	if ( $( '#db-currentpath' ).find( '.lipath' ).text() === 'Webradio' ) GUI.list.url = $thisli.find( '.bl' ).text();
-	var $menu = $( $this.data( 'target' ) );
-	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
-	$( '.update' ).toggleClass( 'hide', GUI.status.updating_db !== 0 );
-	$( '.lastfm' ).toggleClass( 'hide', GUI.list.name.slice( -4, -3 ) === '.' );
-	var contextnum = $menu.find( 'a:not(.hide)' ).length;
-	$( '.menushadow' ).css( 'height', contextnum * 41 - 1 );
-	$( '#db-entries li' ).removeClass( 'active' );
-	$thisli.addClass( 'active' );
-	if ( $thisli.hasClass( 'licover' ) ) {
-		var menutop = GUI.bars ? '310px' : '270px';
-	} else {
-		var menutop = ( $thisli.position().top + 49 ) +'px';
-	}
-	$menu
-		.css( 'top',  menutop )
-		.removeClass( 'hide' );
-	var targetB = $menu.offset().top + $menu.height();
-	var wH = window.innerHeight;
-	if ( targetB > wH - ( GUI.bars ? 80 : 40 ) + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + 42 } );
-} );
 $( '#db-index li' ).click( function() {
-	var topoffset = GUI.bars ? 80 : 40;
-	var indextext = $( this ).text();
 	var $this = $( this );
-	var match = 0;
-	if ( indextext === '#' ) {
+	if ( $this.hasClass( 'gr' ) ) return
+	
+	var index = $this.text();
+	if ( index === '#' ) {
 		$( 'html, body' ).scrollTop( 0 );
 		return
 	}
+	
 	var $el = $( '#divcoverarts' ).hasClass( 'hide' ) ? $( '#db-entries li' ) : $( '.coverart' );
 	$el.each( function() {
-		if ( $( this ).find( '.lisort' ).text().charAt( 0 ) === indextext ) {
-			$( 'html, body' ).scrollTop( this.offsetTop - topoffset );
+		if ( $( this ).find( '.lisort' ).text().charAt( 0 ) === index ) {
+			$( 'html, body' ).scrollTop( this.offsetTop - ( GUI.bars ? 80 : 40 ) );
 			return false
 		}
 	} );
 } );
 $( '#db-entries, #pl-entries, #pl-editor' ).on( 'click', 'p', function() {
 	$( '.menu' ).addClass( 'hide' );
-	if ( !GUI.display.contexticon ) $( '#pl-entries .pl-action' ).hide();
 	$( '#db-entries li, #pl-editor li' ).removeClass( 'active' );
 } );
 // PLAYLIST /////////////////////////////////////////////////////////////////////////////////////
@@ -1178,32 +1124,7 @@ $( '#plopen' ).click( function() {
 	plcounthtml += plL ? '<gr>&ensp;·&emsp;</gr> <wh id="pls-count">'+ numFormat( plL ) +'</wh>&ensp;<i class="fa fa-list-ul"></i>' : '';
 	$( '#pl-currentpath' ).html( plcounthtml +'<i class="fa fa-arrow-left plsbackroot"></i>' );
 	$( '#pl-currentpath, #pl-editor, #pl-index' ).removeClass( 'hide' );
-	var content = '';
-	$.each( GUI.lsplaylists, function( key, val ) {
-		if ( val.index ) {
-			$( '#pl-index li' ).not( ':eq( 0 )' ).addClass( 'gr' );
-			$.each( val.index, function( i, char ) {
-				$( '#pl-index .index-'+ char ).removeClass( 'gr' );
-			} );
-		} else {
-		content += '<li class="pl-folder">'
-						+'<i class="fa fa-list-ul pl-icon">'
-						+'<a class="liname">'+ val.name +'</a></i>'
-						+'<a class="lisort">'+ val.lisort +'</a></i>'
-						+'<span class="plname">'+ val.name +'</span>'
-						+'<i class="fa fa-bars pl-action" data-target="#context-menu-playlist"></i>'
-				  +'</li>';
-		}
-	} );
-	$( '#pl-editor' ).html( content +'<p></p>' ).promise().done( function() {
-		GUI.pleditor = 1;
-		// fill bottom of list to mave last li movable to top
-		$( '#pl-editor p' ).css( 'min-height', window.innerHeight - ( GUI.bars ? 140 : 100 ) +'px' );
-		$( '#pl-editor' ).css( 'width', '' );
-		$( '#loader' ).addClass( 'hide' );
-		$( 'html, body' ).scrollTop( GUI.plscrolltop );
-		displayIndexBar();
-	} );
+	renderLsPlaylists( GUI.lsplaylists );
 } );
 $( '#plsave' ).click( function() {
 	if ( !GUI.status.playlistlength ) return
@@ -1222,36 +1143,24 @@ $( '#plcrop' ).click( function() {
 } );
 $( '#plclear' ).click( function() {
 	if ( GUI.display.plclear ) {
-		if ( GUI.display.contexticon ) {
-			info( {
-				  title   : 'Clear Playlist'
-				, message : 'Clear this playlist?'
-				, cancel  : 1
-				, ok      : function() {
-					clearPlaylist();
-					$.post( 'enhance.php', { mpc: 'mpc clear' } );
-				}
-			} );
-		} else {
-			if ( $( '#pl-entries .pl-action' ).is( ':visible' ) ) {
-				$( '#pl-entries .pl-action' ).hide();
-				return
-			}
-			
-			info( {
-				  title       : 'Clear Playlist'
-				, message     : 'Select single remove / clear all :'
-				, cancellabel : 'Single'
-				, cancel  : function() {
-					$( '#pl-entries .pl-action' ).show();
-				}
-				, oklabel    : 'All'
-				, ok         : function() {
-					clearPlaylist();
-					$.post( 'enhance.php', { mpc: [ 'mpc clear', '/usr/bin/redis-cli del webradiopl' ] } );
-				}
-			} );
+		if ( $( '#pl-entries .pl-action' ).length ) {
+			$( '#pl-entries .pl-action' ).remove();
+			return
 		}
+		
+		info( {
+			  title       : 'Clear Playlist'
+			, message     : 'Select single remove / clear all :'
+			, cancellabel : 'Single'
+			, cancel  : function() {
+				$( '#pl-entries .li1' ).before( '<i class="fa fa-minus-circle pl-action"></i>' );
+			}
+			, oklabel    : 'All'
+			, ok         : function() {
+				clearPlaylist();
+				$.post( 'enhance.php', { mpc: [ 'mpc clear', '/usr/bin/redis-cli del webradiopl' ] } );
+			}
+		} );
 	} else {
 		clearPlaylist();
 		$.post( 'enhance.php', { mpc: 'mpc clear' } );
@@ -1298,37 +1207,44 @@ var sortableplaylist = new Sortable( document.getElementById( 'pl-entries' ), {
 		$.post( 'enhance.php', { mpc: 'mpc move '+ ( e.oldIndex + 1 ) +' '+ ( e.newIndex + 1 ) } );
 	}
 } );
-$( '#pl-list' ).on( 'swipeleft', 'li', function() {
+$( '#pl-entries, #pl-editor' ).on( 'swipeleft', 'li', function() {
 	GUI.swipe = 1;
-	setTimeout( function() { GUI.swipe = 0 }, 500 );
+	GUI.swipepl = 1; // suppress .page swipe
+	setTimeout( function() {
+		GUI.swipe = 0;
+		GUI.swipepl = 0;
+	}, 500 );
 	$( '#tab-library' ).click();
 } ).on( 'swiperight', 'li', function() {
 	GUI.swipe = 1;
-	setTimeout( function() { GUI.swipe = 0 }, 500 );
+	GUI.swipepl = 1;
+	setTimeout( function() {
+		GUI.swipe = 0;
+		GUI.swipepl = 0;
+	}, 500 );
 	$( '#tab-playback' ).click();
 } );
 $( '#pl-entries' ).on( 'click', 'li', function( e ) {
-	if ( GUI.swipe ) return
+	if ( GUI.swipe
+		|| $( e.target ).hasClass( 'pl-icon' )
+		|| $( e.target ).hasClass( 'pl-action' )
+	) return
 	
 	var $this = $( this );
-	if ( $( e.target ).hasClass( 'pl-icon' ) ) return
-
 	var songpos = $this.index() + 1;
 	$( '#context-menu-plaction' ).addClass( 'hide' );
-	if ( !$( e.target ).hasClass( 'pl-action' ) ) {
-		var state = GUI.status.state;
-		if ( state == 'stop' ) {
-			$.post( 'enhance.php', { mpc: 'mpc play '+ songpos } );
-		} else {
-			if ( $this.hasClass( 'active' ) ) {
-				if ( state == 'play' ) {
-					$this.hasClass( 'webradio' ) ? $( '#stop' ).click() : $( '#play' ).click();
-				} else {
-					$( '#play' ).click();
-				}
+	var state = GUI.status.state;
+	if ( state == 'stop' ) {
+		$.post( 'enhance.php', { mpc: 'mpc play '+ songpos } );
+	} else {
+		if ( $this.hasClass( 'active' ) ) {
+			if ( state == 'play' ) {
+				$this.hasClass( 'webradio' ) ? $( '#stop' ).click() : $( '#play' ).click();
 			} else {
-				$.post( 'enhance.php', { mpc: 'mpc play '+ songpos } );
+				$( '#play' ).click();
 			}
+		} else {
+			$.post( 'enhance.php', { mpc: 'mpc play '+ songpos } );
 		}
 	}
 } );
@@ -1371,7 +1287,7 @@ $( '#pl-entries' ).on( 'click', '.pl-icon', function( e ) {
 	var wH = window.innerHeight;
 	if ( targetB > wH - ( GUI.bars ? 80 : 40 ) + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + 42 } );
 } );
-$( '#pl-entries' ).on( 'click', '.pl-action', function() { // remove
+$( '#pl-entries' ).on( 'click', '.pl-action', function() { // remove from playlist
 	var $this = $( this ).parent();
 	var webradio = $this.hasClass( 'webradio' );
 	var $elcount = webradio ? $( '#countradio' ) : $( '#countsong' );
@@ -1414,11 +1330,13 @@ $( '#pl-entries' ).on( 'click', '.pl-action', function() { // remove
 	}
 } );
 $( '#pl-editor' ).on( 'click', 'li', function( e ) {
+	if ( GUI.swipe ) return
+	
 	// in saved playlist
 	var $thisli = $( this );
 	if ( $thisli.find( '.fa-music' ).length || $thisli.find( '.fa-webradio' ).length ) {
 		if ( !GUI.display.tapaddplay || $( e.target ).hasClass( 'pl-icon' ) ) {
-			$thisli.find( '.pl-action' ).click();
+			plContextmenu( $thisli );
 		} else {
 			GUI.list = {};
 			GUI.list.li = $thisli; // for contextmenu
@@ -1435,48 +1353,24 @@ $( '#pl-editor' ).on( 'click', 'li', function( e ) {
 	}
 	
 	if ( $( e.target ).hasClass( 'pl-icon' ) ) {
-		$thisli.find( '.pl-action' ).click();
+		plContextmenu( $thisli );
 	} else {
 		renderSavedPlaylist( $( this ).find( 'span' ).text() );
 	}
 } );
-$( '#pl-editor' ).on( 'click', '.pl-action', function( e ) {
-	e.stopPropagation();
-	var $this = $( this );
-	var $thisli = $this.parent();
-	GUI.list = {};
-	GUI.list.li = $thisli; // for contextmenu
-	GUI.list.name = $thisli.find( '.liname' ).text();
-	GUI.list.path = $thisli.find( '.lipath' ).text() || GUI.list.name;
-	GUI.list.isfile = $thisli.find( '.fa-music' ).length; // used in contextmenu
-	$( '.menu' ).addClass( 'hide' );
-	if ( $thisli.hasClass( 'active' ) ) {
-		$thisli.removeClass( 'active' );
-		return
-	}
-	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
-	var contextmenu = $thisli.find( '.pl-action' ).data( 'target' );
-	var contextnum = $( contextmenu ).find( 'a:not(.hide)' ).length;
-	$( '.menushadow' ).css( 'height', contextnum * 41 - 1 );
-	$( '#pl-editor li' ).removeClass( 'active' );
-	$thisli.addClass( 'active' );
-	$( contextmenu )
-		.removeClass( 'hide' )
-		.css( 'top', ( $thisli.position().top + 49 ) +'px' );
-	var targetB = $( contextmenu ).offset().top + 246;
-	var wH = window.innerHeight;
-	if ( targetB > wH - ( GUI.bars ? 80 : 40 ) + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + 42 } );
-} );
 $( '#pl-index li' ).click( function() {
-	var topoffset = GUI.bars ? 80 : 40;
-	var indextext = $( this ).text();
-	if ( indextext === '#' ) {
+	var $this = $( this );
+	if ( $this.hasClass( 'gr' ) ) return
+	
+	var index = $this.text();
+	if ( index === '#' ) {
 		$( 'html, body' ).scrollTop( 0 );
 		return
 	}
+	
 	$( '#pl-editor li' ).each( function() {
-		if ( $( this ).find( '.lisort' ).charAt( 0 ) === indextext ) {
-			$( 'html, body' ).scrollTop( this.offsetTop - topoffset );
+		if ( $( this ).find( '.lisort' ).text().charAt( 0 ) === index ) {
+			$( 'html, body' ).scrollTop( this.offsetTop - ( GUI.bars ? 80 : 40 ) );
 			return false
 		}
 	} );
@@ -1610,7 +1504,7 @@ pushstreams.idle.onmessage = function( changed ) {
 				getPlaybackStatus();
 				if ( GUI.playlist && !GUI.pleditor ) setPlaylistScroll();
 		} else if ( changed === 'playlist' ) { // on playlist changed
-			if ( GUI.pleditor ) return
+			if ( GUI.pleditor || $( '#pl-entries .pl-action' ).length ) return
 			
 			if ( GUI.playlist ) {
 				$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
