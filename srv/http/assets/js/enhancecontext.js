@@ -23,9 +23,8 @@ $( '.contextmenu a' ).click( function() {
 		}
 		return
 	}
-	
 	var contextFunction = {
-		  radiosave     : webRadioNew
+		  radiosave     : webRadioNew // unsaved webradio (dirble)
 		, wrrename      : webRadioRename
 		, wrdelete      : webRadioDelete
 		, plrename      : playlistRename
@@ -34,12 +33,12 @@ $( '.contextmenu a' ).click( function() {
 		, thumbnail     : updateThumbnails
 	}
 	if ( cmd in contextFunction ) {
-		contextFunction[ cmd ];
+		contextFunction[ cmd ]();
 		return
 	}
 	
 	$( '#db-entries li, #pl-entries li' ).removeClass( 'active' );
-	var mode = cmd.replace( /replaceplay|replace|addplay|add/, '' );
+	var mode = cmd.replace( /add|addplay|replace|replaceplay/, '' );
 	// get name
 	if ( mode === 'wr' ) {
 		var name = 'Webradio/'+ GUI.list.name.replace( /"/g, '\\"' ) +'.pls';
@@ -51,7 +50,7 @@ $( '.contextmenu a' ).click( function() {
 		}
 	}
 	// compose command
-	if ( !mode ) { //  replaceplay|replace|addplay|add
+	if ( !mode ) { //  add|addplay|replace|replaceplay
 		var ext = GUI.list.path.slice( -3 ).toLowerCase();
 		if ( GUI.list.index ) {
 			var cuefile = GUI.list.path.replace( /"/g, '\\"' );
@@ -358,11 +357,6 @@ function webRadioDelete() {
 		, cancel   : 1
 		, oklabel  : 'Delete'
 		, ok       : function() {
-			$( '#db-entries li').eq( GUI.list.liindex ).remove();
-			GUI.libraryhome.webradio--;
-			var count = GUI.libraryhome.webradio ? numFormat ( GUI.libraryhome.webradio ) : '';
-			$( '#home-webradio gr' ).remove();
-			if ( count ) $( '#home-webradio i' ).after( '<gr>'+ count +'</gr>' );
 			$.post( 'enhance.php', { webradios: name } );
 		}
 	} );

@@ -295,7 +295,8 @@ $( '#page-library' ).click( function( e ) {
 		$( '.edit' ).remove();
 		$( '.home-bookmark' ).find( '.fa-bookmark, .bklabel, img' ).css( 'opacity', '' );
 		$( '.coverart img' ).css( 'opacity', '' );
-	}} );
+	}
+} );
 $( '#page-library, #page-playback, #page-playlist' ).click( function( e ) {
 	if ( [ 'coverTR', 'timeTR' ].indexOf( e.target.id ) === -1 ) $( '#settings' ).addClass( 'hide' );
 } );
@@ -307,6 +308,11 @@ $( '#menu-top, #menu-bottom, #settings' ).click( function( e ) {
 } );
 $( '#menu-bottom' ).taphold( function() {
 	location.reload();
+} );
+$( '#db-entries, #pl-entries, #pl-editor' ).on( 'click', 'p', function() {
+	$( '.menu' ).addClass( 'hide' );
+	$( '#db-entries li, #pl-editor li' ).removeClass( 'active' );
+	$( '#pl-entries li' ).removeClass( 'lifocus' );
 } );
 // PLAYBACK /////////////////////////////////////////////////////////////////////////////////////
 $( '#song, #playlist-warning' ).on( 'click', 'i', function() {
@@ -1152,10 +1158,6 @@ $( '#db-index li' ).click( function() {
 		}
 	} );
 } );
-$( '#db-entries, #pl-entries, #pl-editor' ).on( 'click', 'p', function() {
-	$( '.menu' ).addClass( 'hide' );
-	$( '#db-entries li, #pl-editor li' ).removeClass( 'active' );
-} );
 // PLAYLIST /////////////////////////////////////////////////////////////////////////////////////
 $( '#pl-home' ).click( function() {
 	$( '#tab-playlist' ).click();
@@ -1604,16 +1606,18 @@ pushstreams.webradio.onmessage = function( data ) {
 		$( '#home-webradio' ).click();
 	} else if ( GUI.playlist && !GUI.pleditor ) {
 		var data = data[ 0 ];
+		var count = Number( $( '#home-webradio gr' ).text() );
+		$( '#home-webradio gr' ).remove(); // remove space if 0
+		if ( !data.oldname ) {
+			count = count + 1;
+			$( '#home-webradio i' ).after( '<gr>'+ numFormat( count + 1 ) +'</gr>' );
+		} else if ( count > 1 ) {
+			$( '#home-webradio i' ).after( '<gr>'+ numFormat( count - 1 ) +'</gr>' );
+		}
 		$( '#pl-entries li' ).filter( function() {
 			$this = $( this );
 			return $this.find( 'i.fa-webradio' ).length && $this.find( '.name' ).text() == data.oldname;
 		} ).find( '.name' ).text( data.name );
-		if ( !data.oldname ) {
-			GUI.libraryhome.webradio++;
-			var count = GUI.libraryhome.webradio ? numFormat ( GUI.libraryhome.webradio ) : '';
-			$( '#home-webradio gr' ).remove();
-			$( '#home-webradio i' ).after( '<gr>'+ count +'</gr>' );
-		}
 	}
 }
 streams.forEach( function( stream ) {
