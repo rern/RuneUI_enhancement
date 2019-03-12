@@ -1417,7 +1417,8 @@ function htmlPlaylist( data ) {
 			if ( GUI.playlist && !GUI.pleditor ) {
 				var actionhtml = '<i class="fa fa-music pl-icon"></i><i class="fa fa-minus-circle pl-action"></i>';
 			} else {
-				var actionhtml = '<i class="fa fa-music db-icon"></i><i class="fa fa-bars db-action" data-target="#context-menu-file"></i>'
+				var dbpl = GUI.library ? 'db' : 'pl';
+				var actionhtml = '<i class="fa fa-music '+ dbpl +'-icon"></i><i class="fa fa-bars '+ dbpl +'-action" data-target="#context-menu-file"></i>'
 								+'<a class="lipath">'+ ( value.cue || value.file ) +'</a>'
 								+'<a class="liname">'+ value.Title +'</a>'
 								+'<a class="liindex">'+ value.index +'</a>';
