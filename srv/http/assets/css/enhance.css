@@ -1859,7 +1859,7 @@ li.active .time {
 	#playlist-warning i,
 	.li:not( .licover ),
 	.licover img,
-	.liinfo *:not( .db-icon ) {
+	.liinfo {
 		cursor: pointer;
 	}
 	.menu a:hover,
