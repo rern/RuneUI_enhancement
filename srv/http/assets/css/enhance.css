@@ -1120,9 +1120,6 @@ wh, gr { font-weight: 300; }
 	line-height: 40px;
 	color: #e0e7ee;
 }
-.label:hover {
-	color: inherit;
-}
 .home-block .fa-coverart,
 .home-block .fa-bookmark {
 	color: #0095d8;
@@ -1326,6 +1323,9 @@ wh, gr { font-weight: 300; }
 .index li {
 	text-align: center;
 	color: #e0e7ee;
+}
+.index .gr {
+	color: #34495e;
 }
 .coverart {
 	display: inline-block;
@@ -1871,48 +1871,30 @@ li.active .time {
 	li {
 		cursor: pointer;
 	}
-	.menu a:hover {
+	.menu a:hover,
+	#menu-bottom a:hover {
 		background: #222f3d;
 	}
-	#menu-bottom li.active a:hover {
-		background-color: #0072a5;
-	}
-	#menu-bottom a:hover {
-		background-color: #222f3d;
-	}
-	#biocontent a:hover {
-		color: #0095d8;
-	}
-	.home-block:hover,
-	.home-block:focus {
-		background: #374c62;
-		text-decoration: none;
-		outline: none;
-		color: #7795b4
-	}
+	#menu-bottom li.active a:hover,
 	#db-home:hover,
 	#pl-home:hover {
-		background: #0072a5;
+		background-color: #0072a5;
 	}
-	.index li:hover {
-		background: #34495e;
-	}
+	.home-block:hover,
+	.home-block:focus,
+	.index li:not( .gr ):hover,
 	#db-entries li:hover,
 	#pl-entries li:hover,
 	#pl-editor li:hover {
 		background: #374c62;
 	}
-	#db-entries .licover:hover {
-		background: #10161c
+	.label:hover {
+		color: #e0e7ee;
 	}
 	#db-entries .active:hover,
-	#db-entries .active:focus,
 	#pl-entries .active:hover,
-	#pl-entries .active:focus,
-	#pl-editor .active:hover,
-	#pl-editor .active:focus {
-		color: #e0e7ee;
-		background: #0095d8
+	#pl-editor .active:hover {
+		background: #0095d8;
 	}
 }
 @media(min-width: 2000px) { .coverart { width: 200px } }
