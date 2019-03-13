@@ -1200,27 +1200,23 @@ $( '#plcrop' ).click( function() {
 	} );
 } );
 $( '#plclear' ).click( function() {
-	if ( GUI.display.plclear ) {
-		if ( $( '#pl-entries .pl-remove' ).length ) {
-			$( '#pl-entries .pl-remove' ).remove();
-			return
-		}
-		
-		info( {
-			  title       : 'Remove From Playlist'
-			, message     : 'Selective remove / Clear all :'
-			, cancellabel : 'Select'
-			, cancel  : function() {
-				$( '#pl-entries .li1' ).before( '<i class="fa fa-minus-circle pl-remove"></i>' );
-			}
-			, oklabel    : 'All'
-			, ok         : function() {
-				clearPlaylist();
-			}
-		} );
-	} else {
-		clearPlaylist();
+	if ( $( '#pl-entries .pl-remove' ).length ) {
+		$( '#pl-entries .pl-remove' ).remove();
+		return
 	}
+	
+	info( {
+		  title       : 'Remove From Playlist'
+		, message     : 'Selective remove / Clear all :'
+		, cancellabel : 'Select'
+		, cancel  : function() {
+			$( '#pl-entries .li1' ).before( '<i class="fa fa-minus-circle pl-remove"></i>' );
+		}
+		, oklabel    : 'All'
+		, ok         : function() {
+			clearPlaylist();
+		}
+	} );
 } );
 $( '#pl-filter' ).keyup( function() {
 	var keyword = $( this ).val();
