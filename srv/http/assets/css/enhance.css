@@ -148,7 +148,6 @@ label {
 .ui-pnotify-icon,
 .ui-pnotify-title {
 	color: #34495e !important;
-	text-transform: uppercase;
 }
 
 html {
@@ -236,7 +235,6 @@ wh, gr { font-weight: 300; }
 	color: #e0e7ee;
 	background: #34495e;
 	border-top: 1px solid #222f3d;
-	cursor: pointer;
 }
 .menu a:nth-of-type( 1 ) {
 	border-top: none;
@@ -361,7 +359,6 @@ wh, gr { font-weight: 300; }
 	float: right;
 	font-size: 30px;
 	line-height: 40px;
-	cursor: pointer;
 }
 #badge {
 	position: absolute;
@@ -376,7 +373,6 @@ wh, gr { font-weight: 300; }
 	border-radius: 50%;
 	color: #e0e7ee;
 	background: red;
-	cursor: pointer;
 }
 #settings {
 	position: fixed;
@@ -858,18 +854,6 @@ wh, gr { font-weight: 300; }
 	float: right;
 	margin-top: 20px;
 }
-#menu-top li,
-#menu-bottom,
-.timemap,
-.covermap,
-.volmap,
-#info span,
-.biosimilar,
-.btnlist-top a,
-.btnlist-top i,
-.index li {
-	cursor: pointer;
-}
 
 /* ------------------- roundSlider ------------------- */
 .rs-container {
@@ -1020,7 +1004,6 @@ wh, gr { font-weight: 300; }
 	line-height: 40px;
 	font-size: 28px;
 	color: #0095d8;
-	cursor: pointer;
 }
 #biocontent span {
 	color: #7795b4;
@@ -1136,28 +1119,29 @@ wh, gr { font-weight: 300; }
 	line-height: 40px;
 	color: #e0e7ee;
 }
-.label:hover {
-	color: inherit;
-}
 .home-block .fa-coverart,
 .home-block .fa-bookmark {
 	color: #0095d8;
 }
-.home-block-edit,
-.home-block-remove,
-.coverart-remove {
+.edit {
 	position: absolute;
 	top: 0;
 	right: 0;
 	width: 40px;
-	height: 40px;
+	height: 35px;
 	line-height: 40px;
 	text-align: center;
 	font-size: 24px !important;
 	color: #e0e7ee !important;
 }
 .home-block-edit {
-	top: 40px;
+	top: 35px;
+}
+.home-block-cover {
+	top: 70px;
+}
+.coverart-cover {
+	top: 120px;
 }
 /* ---------------------- breadcrumb and index ---------------------- */
 .btnlist-top {
@@ -1343,6 +1327,9 @@ wh, gr { font-weight: 300; }
 	text-align: center;
 	color: #e0e7ee;
 }
+.index .gr {
+	color: #34495e;
+}
 .coverart {
 	display: inline-block;
 	border-right: #000000 1px solid;
@@ -1367,9 +1354,6 @@ wh, gr { font-weight: 300; }
 .licover .coversmall {
 	margin: 0 15px 0 40px;
 	box-shadow: #555555 0 0 4px 0;
-}
-.licover .db-action {
-	margin-top: 184px !important;
 }
 .licover.active {
 	background: linear-gradient( #0000 189px, #0095d8 41px ) !important;
@@ -1429,7 +1413,6 @@ wh, gr { font-weight: 300; }
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	cursor: pointer;
 }
 .db-icon,
 .pl-icon,
@@ -1461,9 +1444,7 @@ wh, gr { font-weight: 300; }
 #indexcover,
 .lisort,
 .licue,
-.liartist,
-.db-action,
-.pl-action {
+.liartist {
 	display: none;
 }
 span.dbpath {
@@ -1484,24 +1465,19 @@ span.dbpath {
 	color: #e0e7ee;
 	background: #0095d8
 }
-#db-entries .db-action,
-#pl-entries .pl-action,
-#pl-editor .pl-action {
+#pl-entries .pl-remove {
 	float: right;
 	position: relative;
-	width: 50px;
+	width: 49px;
+	height: 49px;
 	margin: 0;
-	line-height: 49px;
-	font-size: 18px;
-	text-align: center;
-	z-index: 1;
-}
-#pl-entries .pl-action {
 	font-size: 24px;
 	line-height: 45px;
+	text-align: center;
 	background: #000000;
+	z-index: 1;
 }
-#pl-entries li.active .pl-action {
+#pl-entries li.active .pl-remove {
 	background: #0095d8;
 }
 .db-icon,
@@ -1635,6 +1611,9 @@ li.active gr,
 li.active .time {
 	color: #34495e !important;
 }
+.lifocus {
+	background: #374c62;
+}
 .liinfo .fa:not(.fa-music) {
 	color: #7795b4 !important;
 }
@@ -1684,7 +1663,6 @@ li.active .time {
 #playlist-warning i {
 	font-size: 30px;
 	color: #0095d8;
-	cursor: pointer;
 }
 #playlist-warning p {
 	margin-top: 27px;
@@ -1878,49 +1856,44 @@ li.active .time {
 	pointer-events: none;
 }
 @media ( hover:hover ) {
-	.menu a:hover {
+	.menu a, #menu-settings, #badge, #menu-bottom,
+	#artist, #album:not( .albumradio ),
+	.timemap, .covermap, .volmap, .rs-container,
+	.biosimilar, .close-root,
+	#db-home, #pl-home, #db-currentpath a, #pl-manage i,
+	.fa-arrow-left, .fa-search,
+	.home-block, .coverart div,
+	#playlist-warning i,
+	li:not( .licover ),
+	.licover img,
+	.liinfo {
+		cursor: pointer;
+	}
+	.menu a:hover,
+	#menu-bottom a:hover {
 		background: #222f3d;
 	}
-	#menu-bottom li.active a:hover {
-		background-color: #0072a5;
-	}
-	#menu-bottom a:hover {
-		background-color: #222f3d;
-	}
-	#biocontent a:hover {
-		color: #0095d8;
-	}
-	.home-block:hover,
-	.home-block:focus {
-		cursor: pointer;
-		background: #374c62;
-		text-decoration: none;
-		outline: none;
-		color: #7795b4
-	}
+	#menu-bottom li.active a:hover,
 	#db-home:hover,
 	#pl-home:hover {
-		background: #0072a5;
+		background-color: #0072a5;
 	}
-	.index li:hover {
-		background: #34495e;
-	}
-	#db-entries li:hover,
+	.home-block:hover,
+	.home-block:focus,
+	.index li:not( .gr ):hover,
+	#db-entries li:not( .licover ):hover,
 	#pl-entries li:hover,
+	#pl-entries li:not( .active ):hover .pl-remove,
 	#pl-editor li:hover {
 		background: #374c62;
 	}
-	#db-entries .licover:hover {
-		background: #10161c
-	}
-	#db-entries .active:hover,
-	#db-entries .active:focus,
-	#pl-entries .active:hover,
-	#pl-entries .active:focus,
-	#pl-editor .active:hover,
-	#pl-editor .active:focus {
+	.label:hover {
 		color: #e0e7ee;
-		background: #0095d8
+	}
+	#db-entries li.active:hover,
+	#pl-entries li.active:hover,
+	#pl-editor li.active:hover {
+		background: #0095d8;
 	}
 }
 @media(min-width: 2000px) { .coverart { width: 200px } }
@@ -2069,10 +2042,6 @@ li.active .time {
 	}
 }
 @media(max-width: 480px) {
-	.db-action,
-	#pl-editor .pl-action { /* toggle */
-		display: none;
-	}
 	#pl-count span,
 	#pl-count a:first-child,
 	#pl-count a:last-child {
