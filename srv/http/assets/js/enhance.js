@@ -313,6 +313,7 @@ $( '#db-entries, #pl-entries, #pl-editor' ).on( 'click', 'p', function() {
 	$( '.menu' ).addClass( 'hide' );
 	$( '#db-entries li, #pl-editor li' ).removeClass( 'active' );
 	$( '#pl-entries li' ).removeClass( 'lifocus' );
+	$( '.pl-remove' ).remove();
 } );
 // PLAYBACK /////////////////////////////////////////////////////////////////////////////////////
 $( '#song, #playlist-warning' ).on( 'click', 'i', function() {
@@ -1200,8 +1201,8 @@ $( '#plcrop' ).click( function() {
 } );
 $( '#plclear' ).click( function() {
 	if ( GUI.display.plclear ) {
-		if ( $( '#pl-entries .pl-action' ).length ) {
-			$( '#pl-entries .pl-action' ).remove();
+		if ( $( '#pl-entries .pl-remove' ).length ) {
+			$( '#pl-entries .pl-remove' ).remove();
 			return
 		}
 		
@@ -1210,7 +1211,7 @@ $( '#plclear' ).click( function() {
 			, message     : 'Selective remove / Clear all :'
 			, cancellabel : 'Select'
 			, cancel  : function() {
-				$( '#pl-entries .li1' ).before( '<i class="fa fa-minus-circle pl-action"></i>' );
+				$( '#pl-entries .li1' ).before( '<i class="fa fa-minus-circle pl-remove"></i>' );
 			}
 			, oklabel    : 'All'
 			, ok         : function() {
@@ -1280,9 +1281,14 @@ $( '#pl-entries, #pl-editor' ).on( 'swipeleft', 'li', function() {
 	$( '#tab-playback' ).click();
 } );
 $( '#pl-entries' ).on( 'click', 'li', function( e ) {
+	if ( $( '.pl-remove' ).length ) {
+		$( '.pl-remove' ).remove();
+		return
+	}
+	
 	if ( GUI.swipe
 		|| $( e.target ).hasClass( 'pl-icon' )
-		|| $( e.target ).hasClass( 'pl-action' )
+		|| $( e.target ).hasClass( 'pl-remove' )
 	) return
 	
 	var $this = $( this );
@@ -1344,7 +1350,7 @@ $( '#pl-entries' ).on( 'click', '.pl-icon', function( e ) {
 	var wH = window.innerHeight;
 	if ( targetB > wH - ( GUI.bars ? 80 : 40 ) + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + 42 } );
 } );
-$( '#pl-entries' ).on( 'click', '.pl-action', function() { // remove from playlist
+$( '#pl-entries' ).on( 'click', '.pl-remove', function() { // remove from playlist
 	removeFromPlaylist( $( this ).parent() );
 } );
 $( '#pl-editor' ).on( 'click', 'li', function( e ) {
@@ -1360,7 +1366,7 @@ $( '#pl-editor' ).on( 'click', 'li', function( e ) {
 			GUI.list.li = $thisli; // for contextmenu
 			GUI.list.name = $thisli.find( '.liname' ).text();
 			GUI.list.path = $thisli.find( '.lipath' ).text();
-			var contextmenu = $thisli.find( '.pl-action' ).data( 'target' );
+			var contextmenu = $thisli.find( '.pl-remove' ).data( 'target' );
 			$( contextmenu ).find( 'a:eq( 1 )' ).click();
 			setTimeout( function() {
 				$thisli.removeClass( 'active' );
@@ -1522,7 +1528,7 @@ pushstreams.idle.onmessage = function( changed ) {
 				getPlaybackStatus();
 				if ( GUI.playlist && !GUI.pleditor ) setPlaylistScroll();
 		} else if ( changed === 'playlist' ) { // on playlist changed
-			if ( GUI.pleditor || GUI.contextmenu || $( '#pl-entries .pl-action' ).length ) return
+			if ( GUI.pleditor || GUI.contextmenu || $( '#pl-entries .pl-remove' ).length ) return
 			
 			if ( GUI.playlist ) {
 				$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
