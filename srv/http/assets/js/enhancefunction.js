@@ -957,23 +957,19 @@ function dataParse( data, path, plugin, querytype, arg ) {
 			}
 			var arrayplL = arraypl.length;
 			if ( arrayplL ) {
-				var filepl = arraypl[ 0 ].filepl;
-				var ext = filepl ? filepl.split( '.' ).pop() : '';
-				if ( [ 'cue', 'm3u', 'm3u8' ].indexOf( ext ) !== -1 ) {
+				if ( arraypl[ 0 ].playlist.split( '.' ).pop() === 'pls' ) {
+					for ( i = 0; i < arrayplL; i++ ) content += data2html( arraypl[ i ], i, 'db', path );
+				} else {
 					var cuem3u = [];
 					$.each( arraypl, function( i, val ) {
 						if ( val.filepl ) cuem3u.push( val.filepl );
 					} );
 					getData( { path: cuem3u } );
 					return
-				} else {
-					for ( i = 0; i < arrayplL; i++ ) content += data2html( arraypl[ i ], i, 'db', path );
 				}
 			}
 			var arrayfileL = arrayfile.length;
-			if ( arrayfileL ) {
-				for ( i = 0; i < arrayfileL; i++ ) content += data2html( arrayfile[ i ], i, 'db', path );
-			}
+			if ( arrayfileL ) for ( i = 0; i < arrayfileL; i++ ) content += data2html( arrayfile[ i ], i, 'db', path );
 		} else {
 			if ( data[ 0 ][ prop ] === undefined ) prop = mode[ GUI.browsemode ];
 			var dataL = data.length;
@@ -1071,9 +1067,11 @@ function dataParse( data, path, plugin, querytype, arg ) {
 		} else {
 			var folderCrumb = iconName[ folderRoot ];
 			var folderPath = '';
+			var ext = '';
 			var ilength = folder.length;
 			for ( i = 0; i < ilength; i++ ) {
-				if ( folder[ i ].slice( -3 ) === 'cue' ) continue
+				ext = folder[ i ].split( '.' ).pop();
+				if ( [ 'cue', 'm3u', 'mu8' ].indexOf( ext ) !== -1 ) continue
 				
 				folderPath += ( i > 0 ? '/' : '' ) + folder[ i ];
 				folderCrumb += ' <a>'+ ( i > 0 ? '<w> / </w>' : '' ) + folder[ i ] +'<span class="lipath">'+ folderPath +'</span></a>';
