@@ -957,13 +957,14 @@ function dataParse( data, path, plugin, querytype, arg ) {
 			}
 			var arrayplL = arraypl.length;
 			if ( arrayplL ) {
-				var ext = arraypl[ 0 ].filepl.split( '.' ).pop().toLowerCase();
+				var filepl = arraypl[ 0 ].filepl;
+				var ext = filepl ? filepl.split( '.' ).pop() : '';
 				if ( [ 'cue', 'm3u', 'm3u8' ].indexOf( ext ) !== -1 ) {
-					var filecue = [];
+					var cuem3u = [];
 					$.each( arraypl, function( i, val ) {
-						if ( val.filepl ) filecue.push( val.filepl );
+						if ( val.filepl ) cuem3u.push( val.filepl );
 					} );
-					getData( { path: filecue } );
+					getData( { path: cuem3u } );
 					return
 				} else {
 					for ( i = 0; i < arrayplL; i++ ) content += data2html( arraypl[ i ], i, 'db', path );
