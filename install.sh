@@ -188,7 +188,7 @@ library="order coverart nas sd usb webradio album artist albumartist composer ge
 miscel="count label coverfile plclear playbackswitch tapaddplay"
 for item in $playback $library $miscel; do
 	if [[ $( redis-cli hexists display $item ) == 0 ]]; then
-		[[ $item == order || $item == debug || $item == dev || $item == tapaddplay ]] && chk='' || chk=checked
+		echo order debug dev tapaddplay | grep -qw $item && chk='' || chk=checked
 		redis-cli hset display $item "$chk" &> /dev/null
 	fi
 done
