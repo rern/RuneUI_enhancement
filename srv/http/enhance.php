@@ -417,9 +417,9 @@ function list2array( $result, $webradioname = null ) {
 	$artist = $album = $genre = $composer = $albumartist = $file = '';
 	foreach( $lists as $list ) {
 		$list = explode( '^^', rtrim( $list ) );
-		$cue = isset( $list[ 8 ] ) ? $list[ 8 ] : '';
-		if ( $cue !== $prevcue ) {
-			$prevcue = $cue;
+		$cuem3u = isset( $list[ 8 ] ) ? $list[ 8 ] : '';
+		if ( $cuem3u !== $prevcue ) {
+			$prevcue = $cuem3u;
 			$i = 1;
 		}
 		$file = $list[ 3 ];
@@ -445,7 +445,7 @@ function list2array( $result, $webradioname = null ) {
 			, 'Title' => $title
 			, 'Time'  => $list[ 1 ]
 			, 'index' => $i++
-			, 'cue'   => $cue
+			, 'cuem3u'   => $cuem3u
 		);
 	}
 	if ( !$webradioname ) {
