@@ -863,7 +863,7 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 	$( '.home-bookmark' ).each( function() {
 		$this = $( this );
 		var buttonhtml = '<i class="edit home-block-remove fa fa-minus-circle"></i>'
-//						+'<i class="edit home-block-cover fa fa-coverart"></i>';
+						+'<i class="edit home-block-cover fa fa-coverart"></i>';
 		if ( !$this.find( 'img' ).length ) buttonhtml += '<i class="edit home-block-edit fa fa-edit-circle"></i>'
 		$this.append( buttonhtml )
 	} );
@@ -990,7 +990,7 @@ $( '.coverart' ).tap( function( e ) {
 	$( '.edit' ).remove();
 	$( '.coverart div' ).append(
 		 '<i class="edit coverart-remove fa fa-minus-circle"></i>'
-//		+'<i class="edit coverart-cover fa fa-coverart"></i>'
+		+'<i class="edit coverart-cover fa fa-coverart"></i>'
 	);
 	$( '.coverart img' ).css( 'opacity', 0.4 );
 } );
@@ -1080,7 +1080,7 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 			GUI.list.path = $thisli.find( '.lipath' ).text();
 			GUI.list.name = $thisli.find( '.liname' ).text();
 			GUI.list.index = $thisli.find( '.liindex' ).text() || '';  // cue - in contextmenu
-			var contextmenu = $thisli.data( 'target' );
+			var contextmenu = $thisli.find( '.db-icon' ).data( 'target' );
 			$( contextmenu ).find( 'a:eq( 1 )' ).click();
 			setTimeout( function() {
 				$thisli.removeClass( 'active' );
@@ -1362,7 +1362,8 @@ $( '#pl-editor' ).on( 'click', 'li', function( e ) {
 			GUI.list.li = $thisli; // for contextmenu
 			GUI.list.name = $thisli.find( '.liname' ).text();
 			GUI.list.path = $thisli.find( '.lipath' ).text();
-			var contextmenu = $thisli.find( '.pl-remove' ).data( 'target' );
+			var contextmenu = $thisli.find( '.pl-icon' ).data( 'target' );
+			console.log(contextmenu)
 			$( contextmenu ).find( 'a:eq( 1 )' ).click();
 			setTimeout( function() {
 				$thisli.removeClass( 'active' );
