@@ -417,13 +417,13 @@ function list2array( $result, $webradioname = null ) {
 	$artist = $album = $genre = $composer = $albumartist = $file = '';
 	foreach( $lists as $list ) {
 		$list = explode( '^^', rtrim( $list ) );
-		$file = $list[ 3 ];
-		if ( $file !== $prevfile ) {
-			$prevfile = $file;
+		$cue = isset( $list[ 8 ] ) ? $list[ 8 ] : '';
+		if ( $cue !== $prevcue ) {
+			$prevcue = $cue;
 			$i = 1;
 		}
+		$file = $list[ 3 ];
 		$track = $list[ 2 ] ?: dirname( $file );
-
 		if ( substr( $track, 0, 4 ) === 'http' ) {
 			$title = $track ? $webradioname[ $list[ 3 ] ] : basename( $file );
 		} else if ( $list[ 0 ] ) {
@@ -439,7 +439,6 @@ function list2array( $result, $webradioname = null ) {
 			if ( $list[ 6 ] !== $genre ) $genre = -1;
 		}
 		if ( !$composer && $list[ 7 ] !== '' ) $composer = $list[ 7 ];
-		$cue = isset( $list[ 8 ] ) ? $list[ 8 ] : '';
 		$data[] = array(
 			  'file'  => $file
 			, 'track' => $track
