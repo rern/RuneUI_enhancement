@@ -692,6 +692,7 @@ function renderLibrary() {
 }
 function infoNoData() {
 	$( '#loader' ).addClass( 'hide' );
+	$( '#db-entries li' ).removeClass( 'active' );
 	if ( GUI.plugin ) return
 	
 	var keyword = $( '#db-search-keyword' ).val();
