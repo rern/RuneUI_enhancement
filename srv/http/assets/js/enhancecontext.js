@@ -18,7 +18,6 @@ $( '.contextmenu a' ).click( function() {
 				$( '#pl-entries li' ).eq( GUI.list.li.index() ).click();
 			}
 		} else if ( cmd === 'update' ) {
-			console.log('mpc update "'+ GUI.list.path +'"')
 			$.post( 'enhance.php', { mpc: 'mpc update "'+ GUI.list.path +'"' } );
 		} else {
 			$( '#'+ cmd ).click();
@@ -55,8 +54,7 @@ $( '.contextmenu a' ).click( function() {
 		if ( GUI.list.index ) { // cue, m3u
 			var plfile = GUI.list.path.replace( /"/g, '\\"' );
 			mpcCmd = '/srv/http/enhance1cuem3u.sh "'+ plfile +'" '+ GUI.list.index;
-			console.log(mpcCmd)
-		} else if ( name.slice( -3 ) === 'pls' ) {
+		} else if ( name.split( '.').pop() === 'pls' ) {
 			mpcCmd = 'mpc load "'+ name +'"';
 		} else if ( GUI.plugin ) {
 			var radioname = GUI.list.name.replace( /"/g, '\\"' );
@@ -132,7 +130,6 @@ function updateThumbnails() {
 	} );
 }
 function addReplace( mode, cmd, command, title ) {
-	console.log(command)
 	$.post( 'enhance.php', { mpc: command }, function() {
 		if ( GUI.display.playbackswitch
 			&& ( cmd === 'addplay' || cmd === 'replaceplay' ) 

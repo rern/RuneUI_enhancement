@@ -763,7 +763,6 @@ function getData( options ) {
 			, type          : { mpc   : 'mpc list '+ browsemode +' | awk NF', list: browsemode }
 			, search        : { mpc   : 'mpc search -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" any "'+ keyword +'"', list: 'file' }
 			, Webradio      : { getwebradios  : 1 }
-			, playlist      : { playlist      : path }
 			, coverart      : { coverartalbum : path, artist: artist }
 		}
 		if ( cmd === 'search' ) {
@@ -788,8 +787,6 @@ function getData( options ) {
 				|| ( browsemode === 'genre' && currentpath !== 'Genre' && artist )
 			) {
 				mode = 'artistalbum';
-			} else if ( Array.isArray( path ) || [ 'm3u', 'pls' ].indexOf( path.slice( -3 ) ) !== -1 ) {
-				mode = 'playlist';
 			} else {
 				if ( composer ) {
 					mode = 'composeralbum';
@@ -1295,7 +1292,6 @@ function dbContextmenu( $li ) {
 	var $menu = $( $li.find( '.db-icon' ).data( 'target' ) );
 	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
 	$( '.update' ).toggleClass( 'hide', GUI.status.updating_db !== 0 );
-	$( '.lastfm' ).toggleClass( 'hide', GUI.list.name.slice( -4, -3 ) === '.' );
 	var contextnum = $menu.find( 'a:not(.hide)' ).length;
 	$( '.menushadow' ).css( 'height', contextnum * 41 - 1 );
 	$( '#db-entries li' ).removeClass( 'active' );
