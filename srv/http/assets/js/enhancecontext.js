@@ -5,7 +5,7 @@ $( '.contextmenu a' ).click( function() {
 	$( '.menu' ).addClass( 'hide' );
 	var $this = $( this );
 	var cmd = $this.data( 'cmd' );
-	// playback and update
+	// playback and update //////////////////////////////////////////
 	if ( [ 'play', 'pause', 'stop', 'remove', 'update' ].indexOf( cmd ) !== -1 ) {
 		if ( cmd === 'remove' ) {
 			GUI.contextmenu = 1;
@@ -18,13 +18,14 @@ $( '.contextmenu a' ).click( function() {
 				$( '#pl-entries li' ).eq( GUI.list.li.index() ).click();
 			}
 		} else if ( cmd === 'update' ) {
+			console.log('mpc update "'+ GUI.list.path +'"')
 			$.post( 'enhance.php', { mpc: 'mpc update "'+ GUI.list.path +'"' } );
 		} else {
 			$( '#'+ cmd ).click();
 		}
 		return
 	}
-	// with dialogue box
+	// functions with dialogue box ////////////////////////////////////////////
 	var contextFunction = {
 		  radiosave     : webRadioNew // unsaved webradio (dirble)
 		, wrrename      : webRadioRename
@@ -38,7 +39,7 @@ $( '.contextmenu a' ).click( function() {
 		contextFunction[ cmd ]();
 		return
 	}
-	
+	// replaceplay|replace|addplay|add //////////////////////////////////////////
 	$( '#db-entries li, #pl-editor li' ).removeClass( 'active' );
 	// get name
 	if ( GUI.playlist && $( '#pl-currentpath .lipath' ).length ) {
@@ -48,16 +49,14 @@ $( '.contextmenu a' ).click( function() {
 	}
 	// compose command
 	var mpcCmd;
-	// must keep order: replaceplay|replace|addplay|add (otherwise replaceplay > play )
+	// must keep order otherwise replaceplay -> play, addplay -> play
 	var mode = cmd.replace( /replaceplay|replace|addplay|add/, '' );
 	if ( !mode ) {
-		var ext = GUI.list.path.slice( -3 ).toLowerCase();
-		if ( GUI.list.index ) {
-			var cuefile = GUI.list.path.replace( /"/g, '\\"' );
-			mpcCmd = '/srv/http/enhancecue.sh "'+ cuefile +'" '+ GUI.list.index;
-		} else if ( ext === 'm3u' ) {
-			mpcCmd = 'cat "/mnt/MPD/'+ GUI.list.path +'" | mpc add';
-		} else if ( ext === 'cue' || ext === 'pls' ) {
+		if ( GUI.list.index ) { // cue, m3u
+			var plfile = GUI.list.path.replace( /"/g, '\\"' );
+			mpcCmd = '/srv/http/enhance1cuem3u.sh "'+ plfile +'" '+ GUI.list.index;
+			console.log(mpcCmd)
+		} else if ( name.slice( -3 ) === 'pls' ) {
 			mpcCmd = 'mpc load "'+ name +'"';
 		} else if ( GUI.plugin ) {
 			var radioname = GUI.list.name.replace( /"/g, '\\"' );
@@ -84,25 +83,21 @@ $( '.contextmenu a' ).click( function() {
 	}
 	if ( cmd in contextCommand ) {
 		var command = contextCommand[ cmd ];
-		if ( cmd !== 'update' ) {
-			if ( cmd.replace( 'wr', '' ).slice( 0, 3 ) === 'add' ) {
-				addReplace( mode, cmd, command, 'Add to Playlist' );
-			} else {
-				if ( GUI.display.plclear && GUI.status.playlistlength ) {
-					info( {
-						  title   : 'Replace Playlist'
-						, message : 'Replace current Playlist?'
-						, cancel  : 1
-						, ok      : function() {
-							addReplace( mode, cmd, command, 'Playlist replaced' );
-						}
-					} );
-				} else {
-					addReplace( mode, cmd, command, 'Playlist replaced' );
-				}
-			}
+		if ( cmd === 'add' || cmd === 'addplay' ) {
+			addReplace( mode, cmd, command, 'Add to Playlist' );
 		} else {
-			$.post( 'enhance.php', { mpc: command } );
+			if ( GUI.display.plclear && GUI.status.playlistlength ) {
+				info( {
+					  title   : 'Replace Playlist'
+					, message : 'Replace current Playlist?'
+					, cancel  : 1
+					, ok      : function() {
+						addReplace( mode, cmd, command, 'Playlist replaced' );
+					}
+				} );
+			} else {
+				addReplace( mode, cmd, command, 'Playlist replaced' );
+			}
 		}
 	} else if ( cmd === 'plashuffle' ) {
 		$.post( '/db/?cmd=pl-ashuffle', { playlist: name } );
@@ -137,6 +132,7 @@ function updateThumbnails() {
 	} );
 }
 function addReplace( mode, cmd, command, title ) {
+	console.log(command)
 	$.post( 'enhance.php', { mpc: command }, function() {
 		if ( GUI.display.playbackswitch
 			&& ( cmd === 'addplay' || cmd === 'replaceplay' ) 

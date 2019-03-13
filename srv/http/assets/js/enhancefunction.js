@@ -886,7 +886,7 @@ function dataParse( data, path, plugin, querytype, arg ) {
 		// undefined type are directory names
 		prop = type[ path ] ? type[ path ] : 'directory';
 		if ( data[ 0 ].artistalbum ) prop = 'artistalbum'; // for common albums like 'Greatest Hits'
-		var fileplaylist = [ 'cue', 'm3u', 'pls' ].indexOf( path.slice( -3 ) ) !== -1;
+		var fileplaylist = [ 'cue', 'm3u', 'm3u8', 'pls' ].indexOf( path.split( '.' ).pop() ) !== -1;
 		if ( fileplaylist ) {
 			if ( !data[ 0 ].file ) {
 				infoNoData();
@@ -956,16 +956,16 @@ function dataParse( data, path, plugin, querytype, arg ) {
 			}
 			var arrayplL = arraypl.length;
 			if ( arrayplL ) {
-				var cue = arraypl[ 0 ].filepl && arraypl[ 0 ].filepl.slice( -3 ) === 'cue';
-				if ( !cue ) {
-					for ( i = 0; i < arrayplL; i++ ) content += data2html( arraypl[ i ], i, 'db', path );
-				} else {
+				var ext = arraypl[ 0 ].filepl.split( '.' ).pop().toLowerCase();
+				if ( [ 'cue', 'm3u', 'm3u8' ].indexOf( ext ) !== -1 ) {
 					var filecue = [];
 					$.each( arraypl, function( i, val ) {
-						if ( val.filepl && cue ) filecue.push( val.filepl );
+						if ( val.filepl ) filecue.push( val.filepl );
 					} );
 					getData( { path: filecue } );
 					return
+				} else {
+					for ( i = 0; i < arrayplL; i++ ) content += data2html( arraypl[ i ], i, 'db', path );
 				}
 			}
 			var arrayfileL = arrayfile.length;
@@ -1481,7 +1481,7 @@ function htmlPlaylist( data ) {
 			} else {
 				var dbpl = GUI.library ? 'db' : 'pl';
 				var actionhtml = '<i class="fa fa-music '+ dbpl +'-icon" data-target="#context-menu-file"></i>'
-								+'<a class="lipath">'+ ( value.cue || value.file ) +'</a>'
+								+'<a class="lipath">'+ ( value.cuem3u || value.file ) +'</a>'
 								+'<a class="liname">'+ value.Title +'</a>'
 								+'<a class="liindex">'+ value.index +'</a>';
 			}

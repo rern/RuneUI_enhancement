@@ -1206,9 +1206,9 @@ $( '#plclear' ).click( function() {
 		}
 		
 		info( {
-			  title       : 'Clear Playlist'
-			, message     : 'Select single remove / clear all :'
-			, cancellabel : 'Single'
+			  title       : 'Remove From Playlist'
+			, message     : 'Selective remove / Clear all :'
+			, cancellabel : 'Select'
 			, cancel  : function() {
 				$( '#pl-entries .li1' ).before( '<i class="fa fa-minus-circle pl-action"></i>' );
 			}
