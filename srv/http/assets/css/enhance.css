@@ -1465,10 +1465,11 @@ span.dbpath {
 	color: #e0e7ee;
 	background: #0095d8
 }
-#pl-entries .pl-action {
+#pl-entries .pl-remove {
 	float: right;
 	position: relative;
-	width: 50px;
+	width: 49px;
+	height: 49px;
 	margin: 0;
 	font-size: 24px;
 	line-height: 45px;
@@ -1476,7 +1477,7 @@ span.dbpath {
 	background: #000000;
 	z-index: 1;
 }
-#pl-entries li.active .pl-action {
+#pl-entries li.active .pl-remove {
 	background: #0095d8;
 }
 .db-icon,
@@ -1882,6 +1883,7 @@ li.active .time {
 	.index li:not( .gr ):hover,
 	#db-entries li:not( .licover ):hover,
 	#pl-entries li:hover,
+	#pl-entries li:not( .active ):hover .pl-remove,
 	#pl-editor li:hover {
 		background: #374c62;
 	}
