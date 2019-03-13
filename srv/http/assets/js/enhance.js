@@ -807,7 +807,7 @@ $( '.home-block' ).click( function() {
 	}
 } );
 $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - id changed on renamed
-	if ( $( '.edit' ).length ) {
+	if ( $( '.edit' ).length && !$( e.target ).hasClass( 'edit' )  ) {
 		$( '.edit' ).remove();
 		$( '.home-bookmark' ).find( '.fa-bookmark, .bklabel, img' ).css( 'opacity', '' );
 		return
