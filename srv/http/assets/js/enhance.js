@@ -823,10 +823,13 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 	if ( $target.is( '.home-block-edit' ) ) {
 		bookmarkRename( name, path, $this );
 	} else if ( $target.is( '.home-block-cover' ) ) {
+		var icon = $this.find( 'img' ).length ? '<img src="'+ $this.find( 'img' ).prop( 'src' ) +'">' : '<i class="fa fa-bookmark fa-3x bl"></i>';
 		info( {
 			  icon      : 'bookmark'
-			, title     : 'Image Bookmark'
-			, message   : 'Select image to use instead of star icon:'
+			, title     : 'Bookmark Icon'
+			, message   : 'Replace:'
+						 +'<br>'+ icon
+			, msgalign  : 'center'
 			, filelabel : 'Ok'
 			, filetype  : '.jpg,.png,.tif,.gif,.svg'
 			, ok        : function() {
@@ -1024,7 +1027,7 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-cover', function() {
 	info( {
 		  icon      : 'coverart'
 		, title     : 'Change Thumbnail'
-		, message   : 'Select image to use:'
+		, message   : 'Replace current thumbnail with:'
 		, filelabel : 'Ok'
 		, filetype  : '.jpg,.png,.tif,.gif,.svg'
 		, ok        : function() {
