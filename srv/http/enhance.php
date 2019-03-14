@@ -387,12 +387,13 @@ function search2array( $result, $playlist = '' ) { // directories or files
 			}
 		} else {
 			$list = explode( '^^', rtrim( $list ) );
+			$file = $list[ 4 ];
 			$data[] = array(
-				  'Title'  => $list[ 0 ]
+				  'Title'  => $list[ 0 ] ?: '<gr>*</gr>'.pathinfo( $file, PATHINFO_FILENAME )
 				, 'Time'   => $list[ 1 ]
 				, 'Artist' => $list[ 2 ]
 				, 'Album'  => $list[ 3 ]
-				, 'file'   => $list[ 4 ]
+				, 'file'   => $file
 			);
 			$index = [];
 			if ( !$genre ) {

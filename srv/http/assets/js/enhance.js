@@ -755,7 +755,10 @@ $( '#db-back' ).click( function() {
 		var currentpath =  $( '#db-currentpath' ).find( '.lipath' ).text();
 		GUI.dbscrolltop[ currentpath ] = $( window ).scrollTop();
 		GUI.dbbackdata = [];
-		$( '#divcoverarts, #db-index' ).removeClass( 'hide' );
+		var index = $( '#indexcover' ).text().split( '' );
+		index.forEach( function( index ) {
+			$( '#db-index .index-'+ index ).removeClass( 'gr' );
+		} );		$( '#divcoverarts, #db-index' ).removeClass( 'hide' );
 		$( '#db-entries' ).empty();
 		return
 	}
@@ -820,10 +823,13 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 	if ( $target.is( '.home-block-edit' ) ) {
 		bookmarkRename( name, path, $this );
 	} else if ( $target.is( '.home-block-cover' ) ) {
+		var icon = $this.find( 'img' ).length ? '<img src="'+ $this.find( 'img' ).prop( 'src' ) +'">' : '<i class="fa fa-bookmark fa-3x bl"></i>';
 		info( {
 			  icon      : 'bookmark'
-			, title     : 'Image Bookmark'
-			, message   : 'Select image to use instead of star icon:'
+			, title     : 'Bookmark Icon'
+			, message   : 'Replace:'
+						 +'<br>'+ icon
+			, msgalign  : 'center'
 			, filelabel : 'Ok'
 			, filetype  : '.jpg,.png,.tif,.gif,.svg'
 			, ok        : function() {
@@ -996,16 +1002,16 @@ $( '.coverart' ).tap( function( e ) {
 } );
 $( '#divcoverarts' ).on( 'tap', '.coverart-remove', function() {
 	var $this = $( this );
-	var img = $this.prev().prop( 'src' );
+	var imgsrc = $this.parent().find( 'img' ).prop( 'src' );
 	var $album = $this.parent().next();
 	var album = $album.text();
 	var artist = $album.next().text();
-	var coverfile = img.split( '/' ).pop();
+	var coverfile = imgsrc.split( '/' ).pop();
 	info( {
 		  icon     : 'minus-circle'
 		, title    : 'Remove Thumbnail'
 		, message  : 'Remove?'
-					+'<br><img src="'+ img +'">'
+					+'<br><img src="'+ imgsrc +'">'
 					+'<br><wh>'+ album +'</wh>'
 					+'<br>'+ artist
 		, msgalign : 'center'
@@ -1018,10 +1024,13 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-remove', function() {
 	} );
 } );
 $( '#divcoverarts' ).on( 'tap', '.coverart-cover', function() {
+	var imgsrc = $( this ).parent().find( 'img' ).prop( 'src' );
 	info( {
 		  icon      : 'coverart'
 		, title     : 'Change Thumbnail'
-		, message   : 'Select image to use:'
+		, message   : 'Replace:'
+					 +'<br><img src="'+ imgsrc +'">'
+		, msgalign : 'center'
 		, filelabel : 'Ok'
 		, filetype  : '.jpg,.png,.tif,.gif,.svg'
 		, ok        : function() {
@@ -1080,7 +1089,7 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 			GUI.list.path = $thisli.find( '.lipath' ).text();
 			GUI.list.name = $thisli.find( '.liname' ).text();
 			GUI.list.index = $thisli.find( '.liindex' ).text() || '';  // cue - in contextmenu
-			var contextmenu = $thisli.data( 'target' );
+			var contextmenu = $thisli.find( '.db-icon' ).data( 'target' );
 			$( contextmenu ).find( 'a:eq( 1 )' ).click();
 			setTimeout( function() {
 				$thisli.removeClass( 'active' );
@@ -1362,7 +1371,8 @@ $( '#pl-editor' ).on( 'click', 'li', function( e ) {
 			GUI.list.li = $thisli; // for contextmenu
 			GUI.list.name = $thisli.find( '.liname' ).text();
 			GUI.list.path = $thisli.find( '.lipath' ).text();
-			var contextmenu = $thisli.find( '.pl-remove' ).data( 'target' );
+			var contextmenu = $thisli.find( '.pl-icon' ).data( 'target' );
+			console.log(contextmenu)
 			$( contextmenu ).find( 'a:eq( 1 )' ).click();
 			setTimeout( function() {
 				$thisli.removeClass( 'active' );
