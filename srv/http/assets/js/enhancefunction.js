@@ -1097,11 +1097,11 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 	switch ( respType ) {
 		case 'db':
 			if ( GUI.browsemode === 'file' ) {
-				if ( inpath === '' && inputArr.file ) {
+				if ( inpath === '' && 'file' in inputArr ) {
 					var file = inputArr.file
-					inpath = file.slice( 0, file.lastIndexOf( '/' ) );
+					inpath = file.split( '/' ).pop();
 				}
-				if ( ( inputArr.file && !inputArr.playlist ) || inpath === 'Webradio' ) {
+				if ( 'file' in inputArr || inpath === 'Webradio' ) {
 					if ( inpath !== 'Webradio' ) {
 						if ( 'Title' in inputArr ) {
 							var bl = $( '#db-search-keyword' ).val() ? inputArr.Artist +' - '+ inputArr.Album : inputArr.file.split( '/' ).pop();;
@@ -1127,12 +1127,6 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 								 +'<span class="li1">'+ liname +'</span>'
 								 +'<span class="li2">'+ inputArr.url +'</span>'
 					}
-				} else if ( 'playlist' in inputArr ) {
-					var liname = inputArr.playlist;
-					content = '<li class="playlist">'
-							 +'<a class="lipath">'+ inputArr.filepl +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
-							 +'<i class="fa fa-list-ul db-icon" data-target="#context-menu-filepl"></i>'
-							 +'<span class="single">'+ liname +'</span>'
 				} else {
 					var liname = inputArr.directory.replace( inpath +'/', '' );
 					content = '<li>'
@@ -1442,6 +1436,7 @@ function htmlPlaylist( data ) {
 		composer = '',
 		genre = '',
 		path = '';
+		li2 = '';
 	content = pl = iconhtml = topline = bottomline = '';
 	countradio = countsong = pltime = sec = 0;
 	$.each( data, function( i, value ) {
@@ -1481,10 +1476,17 @@ function htmlPlaylist( data ) {
 								+'<a class="liname">'+ value.Title +'</a>'
 								+'<a class="liindex">'+ value.index +'</a>';
 			}
+			if ( GUI.playlist ) {
+				li2 = value.track;
+			} else if ( $( '#db-currentpath a:last' ).text() === 'COVERART' ) {
+				li2 = value.file;
+			} else {
+				li2 = value.file.split( '/' ).pop();
+			}
 			content += '<li>'
 						 + actionhtml
 						 +'<span class="li1"><a class="name">'+ value.Title +'</a><span class="duration">'+ ( GUI.playlist && !GUI.pleditor ? '<a class="elapsed"></a>' : '' ) +'<a class="time" time="'+ sec +'">'+ value.Time +'</a></span></span>'
-						 +'<span class="li2">'+ ( GUI.playlist ? value.track : value.file.split( '/' ).pop() ) +'</span>'
+						 +'<span class="li2">'+ li2 +'</span>'
 					 +'</li>';
 			countsong++;
 		}
