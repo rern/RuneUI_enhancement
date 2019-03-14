@@ -1002,16 +1002,16 @@ $( '.coverart' ).tap( function( e ) {
 } );
 $( '#divcoverarts' ).on( 'tap', '.coverart-remove', function() {
 	var $this = $( this );
-	var img = $this.prev().prop( 'src' );
+	var imgsrc = $this.parent().find( 'img' ).prop( 'src' );
 	var $album = $this.parent().next();
 	var album = $album.text();
 	var artist = $album.next().text();
-	var coverfile = img.split( '/' ).pop();
+	var coverfile = imgsrc.split( '/' ).pop();
 	info( {
 		  icon     : 'minus-circle'
 		, title    : 'Remove Thumbnail'
 		, message  : 'Remove?'
-					+'<br><img src="'+ img +'">'
+					+'<br><img src="'+ imgsrc +'">'
 					+'<br><wh>'+ album +'</wh>'
 					+'<br>'+ artist
 		, msgalign : 'center'
@@ -1024,10 +1024,13 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-remove', function() {
 	} );
 } );
 $( '#divcoverarts' ).on( 'tap', '.coverart-cover', function() {
+	var imgsrc = $( this ).parent().find( 'img' ).prop( 'src' );
 	info( {
 		  icon      : 'coverart'
 		, title     : 'Change Thumbnail'
-		, message   : 'Replace current thumbnail with:'
+		, message   : 'Replace:'
+					 +'<br><img src="'+ imgsrc +'">'
+		, msgalign : 'center'
 		, filelabel : 'Ok'
 		, filetype  : '.jpg,.png,.tif,.gif,.svg'
 		, ok        : function() {
