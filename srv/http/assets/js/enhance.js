@@ -755,7 +755,10 @@ $( '#db-back' ).click( function() {
 		var currentpath =  $( '#db-currentpath' ).find( '.lipath' ).text();
 		GUI.dbscrolltop[ currentpath ] = $( window ).scrollTop();
 		GUI.dbbackdata = [];
-		$( '#divcoverarts, #db-index' ).removeClass( 'hide' );
+		var index = $( '#indexcover' ).text().split( '' );
+		index.forEach( function( index ) {
+			$( '#db-index .index-'+ index ).removeClass( 'gr' );
+		} );		$( '#divcoverarts, #db-index' ).removeClass( 'hide' );
 		$( '#db-entries' ).empty();
 		return
 	}
