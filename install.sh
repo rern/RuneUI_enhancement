@@ -193,11 +193,11 @@ if [[ $dfUSB || $dfNAS ]]; then
 	pathbookmarks="$mnt/bookmarks"
 	mkdir "$pathbookmarks"
 	if [[ $? != 0 ]]; then
-		$pathbookmarks = /mnt/MPD/LocalStorage/bookmarks
+		$pathbookmarks=/mnt/MPD/LocalStorage/bookmarks
 		mkdir $pathbookmarks
 	fi
 else
-	$pathbookmarks = /mnt/MPD/LocalStorage/bookmarks
+	$pathbookmarks=/mnt/MPD/LocalStorage/bookmarks
 	mkdir $pathbookmarks
 fi
 redis-cli set pathbookmarks "$pathbookmarks" &> /dev/null
