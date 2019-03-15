@@ -182,6 +182,27 @@ if [[ ! $bkmarks ]]; then
 	fi
 fi
 
+echo -e "$bar Create bookmarks directory ..."
+
+df=$( df )
+dfUSB=$( echo "$df" | grep '/mnt/MPD/USB' | head -n1 )
+dfNAS=$( echo "$df" | grep '/mnt/MPD/NAS' | head -n1 )
+if [[ $dfUSB || $dfNAS ]]; then
+	[[ $dfUSB ]] && mount=$dfUSB || mount=$dfNAS
+	mnt=$( echo $mount | awk '{ print $NF }' )
+	pathbookmarks="$mnt/bookmarks"
+	mkdir "$pathbookmarks"
+	if [[ $? != 0 ]]; then
+		$pathbookmarks = /mnt/MPD/LocalStorage/bookmarks
+		mkdir $pathbookmarks
+	fi
+else
+	$pathbookmarks = /mnt/MPD/LocalStorage/bookmarks
+	mkdir $pathbookmarks
+fi
+redis-cli set pathbookmarks "$pathbookmarks" &> /dev/null
+ln -sf "$pathbookmarks" /srv/http/assets/img/
+
 playback="bars debug dev time cover volume buttons"
 library="order coverart nas sd usb webradio album artist albumartist composer genre dirble jamendo"
 miscel="count label coverfile plclear playbackswitch tapaddplay"
