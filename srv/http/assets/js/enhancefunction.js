@@ -813,18 +813,10 @@ function getData( options ) {
 			dataParse( data, path, plugin, querytype, arg );
 		}, 'json' );
 	} else if ( plugin === 'Dirble' ) {
-		if ( querytype === 'childs' ) {
-			$.post( '/db/?cmd=dirble', { querytype: 'childs', args: args }, function( data ) {
-				dataParse( data, path, plugin, 'childs' );
-			}, 'json' );
-			$.post( '/db/?cmd=dirble', { querytype: 'childs-stations', args: args }, function( data ) {
-				dataParse( data, path, plugin, 'childs-stations' );
-			}, 'json' );            
-		} else {
-			$.post( '/db/?cmd=dirble', { querytype: querytype ? querytype : 'categories', args: args }, function( data ) {
-				dataParse( data, path, plugin, querytype );
-			}, 'json' );
-		}
+		$.post( 'enhance.php', { dirble: ( querytype || 'categories' ), args: args }, function( data ) {
+			console.log(data)
+			dataParse( data, path, plugin, querytype );
+		}, 'json' );
 	} else if ( plugin === 'Jamendo' ) {
 		$.post( '/db/?cmd=jamendo', { querytype: querytype ? querytype : 'radio', args: args }, function( data ) {
 			if ( !data ) {
