@@ -488,7 +488,7 @@ function getCover( $file ) {
 	require_once( '/srv/http/enhancegetcover.php' );
 	return getCoverart( '/mnt/MPD/'.$file );
 }
-function pushstream( $channel, $data = 1 ) {
+function pushstream( $channel, $data ) {
 	$ch = curl_init( 'http://localhost/pub?id='.$channel );
 	curl_setopt( $ch, CURLOPT_HTTPHEADER, array( 'Content-Type:application/json' ) );
 	curl_setopt( $ch, CURLOPT_POSTFIELDS, json_encode( $data, JSON_NUMERIC_CHECK ) );
