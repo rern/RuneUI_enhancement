@@ -31,7 +31,6 @@ function getCoverart( $file, $thumbnail = 0 ) {
 		} else {
 			$coverfile = "/srv/http/tmp/cover.$coverext";
 			file_put_contents( $coverfile, $coverdata );
-			return $coverfile;
 		}
 	} else if ( !$thumbnail ) {
 		return 0;
