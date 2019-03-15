@@ -354,7 +354,33 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	} else if ( $querytype === 'stations' ) {
 		$query = '/category/'.$args.'/stations';
 	}
-	echo curlGet( 'http://api.dirble.com/v2'.$query.'?all=1&token='.$redis->hGet('dirble', 'apikey') );
+	$data = curlGet( 'http://api.dirble.com/v2'.$query.'?all=1&token='.$redis->hGet('dirble', 'apikey') );
+//	echo $data;
+	$array = json_decode( $data, true );
+	$aL = count( $array );
+	for( $i = 0; $i < $aL; $i++ ) {
+		$name = $array[ $i ][ 'title' ] ?: $array[ $i ][ 'name' ];
+		$sort = stripLeading( $name );
+		$index[] = $sort[ 1 ];
+		$array[ $i ][ 'sort' ] = $sort[ 0 ];
+		$array[ $i ][ 'lisort' ] = $sort[ 1 ];
+	}
+	$data = sortData( $array, $index );
+	echo json_encode( $data );
+} else if ( isset( $_POST[ 'jamendo' ] ) ) {
+	$apikey = $redis->hGet( 'jamendo', 'clientid' );
+	$args = $_POST[ 'jamendo' ];
+	if ( $args ) {
+		echo curlGet( 'http://api.jamendo.com/v3.0/radios/stream?client_id='.$apikey.'&format=json&name='.$args );
+		exit();
+	}
+	
+	$jam_channels = json_decode( curlGet('http://api.jamendo.com/v3.0/radios/?client_id='.$apikey.'&format=json&limit=200' ) );
+	foreach ( $jam_channels->results as $station ) {
+		$channel = json_decode( curlGet('http://api.jamendo.com/v3.0/radios/stream?client_id='.$apikey.'&format=json&name='.$station->name ) );
+		$station->stream = $channel->results[ 0 ]->stream;
+	}
+	echo json_encode( $jam_channels );
 }
 function stripLeading( $string ) {
 	// strip articles | non utf-8 normal alphanumerics , fix: php strnatcmp ignores spaces + tilde for sort last
