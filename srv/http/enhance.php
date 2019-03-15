@@ -344,6 +344,17 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$cmd.= $sudo.'umount -f -a -t cifs nfs -l;';
 	$cmd.= $sudo.'shutdown '.( $mode === 'reboot' ? '-r' : '-h' ).' now';
 	exec( $cmd );
+} else if ( isset( $_POST[ 'dirble' ] ) ) {
+	$querytype = $_POST[ 'dirble' ];
+	$args = isset( $_POST[ 'args' ] ) ? $_POST[ 'args' ] : '';
+	if ( $querytype === 'categories' ) {
+		$query = '/categories/primary';
+	} else if ( $querytype === 'childs' ) {
+		$query = '/category/'.$args.'/childs';
+	} else if ( $querytype === 'stations' ) {
+		$query = '/category/'.$args.'/stations';
+	}
+	echo curlGet( 'http://api.dirble.com/v2'.$query.'?all=1&token='.$redis->hGet('dirble', 'apikey') );
 }
 function stripLeading( $string ) {
 	// strip articles | non utf-8 normal alphanumerics , fix: php strnatcmp ignores spaces + tilde for sort last
@@ -483,6 +494,16 @@ function pushstream( $channel, $data = 1 ) {
 	curl_setopt( $ch, CURLOPT_POSTFIELDS, json_encode( $data, JSON_NUMERIC_CHECK ) );
 	curl_exec( $ch );
 	curl_close( $ch );
+}
+function curlGet( $url ) {
+	$ch = curl_init( $url );
+	curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT_MS, 400 );
+	curl_setopt( $ch, CURLOPT_TIMEOUT, 10 );
+	curl_setopt( $ch, CURLOPT_HEADER, 0 );
+	curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
+	$response = curl_exec( $ch );
+	curl_close( $ch );
+	return $response;
 }
 function getBookmark( $redis ) {
 	$rbkmarks = $redis->hGetAll( 'bkmarks' );
