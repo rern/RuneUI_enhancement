@@ -907,7 +907,7 @@ function dataParse( data, path, plugin, querytype, arg ) {
 				} else if ( value.albumartist ) {
 					albumartist = value.albumartist;
 				} else if ( value.index ) {
-					$.each( value.index, function( i, char ) {
+					value.index.forEach( function( char ) {
 						$( '#db-index .index-'+ char ).removeClass( 'gr' );
 					} );
 				} else if ( value.directory || value.file || value.playlist ) {
@@ -964,7 +964,7 @@ function dataParse( data, path, plugin, querytype, arg ) {
 			var dataL = data.length;
 			for ( i = 0; i < dataL; i++ ) {
 				if ( data[ i ].index ) {
-					$.each( data[ i ].index, function( i, char ) {
+					data[ i ].index.forEach( function( char ) {
 						$( '#db-index .index-'+ char ).removeClass( 'gr' );
 					} );
 				} else {
@@ -1225,7 +1225,11 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 			}
 			break;
 		case 'Dirble':
-			if ( querytype === '' || querytype === 'childs' ) {
+			if ( inputArr.index ) {
+				inputArr.index.forEach( function( char ) {
+					$( '#db-index .index-'+ char ).removeClass( 'gr' );
+				} );
+			} else if ( querytype === '' || querytype === 'childs' ) {
 				var liname = inputArr.title;
 				var childClass = ( querytype === 'childs' ) ? ' db-dirble-child' : '';
 				content = '<li class="db-dirble'+ childClass +'" mode="dirble">'

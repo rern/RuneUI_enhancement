@@ -755,7 +755,7 @@ $( '#db-back' ).click( function() {
 		var currentpath =  $( '#db-currentpath' ).find( '.lipath' ).text();
 		GUI.dbscrolltop[ currentpath ] = $( window ).scrollTop();
 		GUI.dbbackdata = [];
-		var index = $( '#indexcover' ).text().split( '' );
+		var index = $( '#indexcover' ).data().index;
 		index.forEach( function( index ) {
 			$( '#db-index .index-'+ index ).removeClass( 'gr' );
 		} );		$( '#divcoverarts, #db-index' ).removeClass( 'hide' );
@@ -831,22 +831,23 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 						 +'<br>'+ icon
 			, msgalign  : 'center'
 			, filelabel : 'Ok'
-			, filetype  : '.jpg,.png,.tif,.gif,.svg'
 			, ok        : function() {
 				var file = $( '#infoFileBox' )[ 0 ].files[ 0 ];
 				var fd = new FormData();
 				fd.append( 'file', file );
+				fd.append( 'bookmarkpath', path );
 				var xhr = new XMLHttpRequest();
-				xhr.open( 'POST', 'addonsdl.php', true );
+				xhr.open( 'POST', 'enhancecover.php', true );
 				xhr.send( fd );
 				xhr.onreadystatechange = function() {
+					console.log(xhr)
 					if ( xhr.readyState == 4 && xhr.status == 200 ) {
-						if ( xhr.responseText ) {
-							//opt += "'"+ file.name +"' ";
-							//sendcommand();
-						} else {
-							info( 'Upload image failed.' );
-						}
+						$this.find( '.fa-bookmark' ).remove();
+						$this.find( '.bklabel' )
+							.addClass( 'hide' )
+							.before( '<img src="'+  +'">' );
+					} else {
+						info( 'Upload image failed.' );
 					}
 				}
 			}
@@ -869,7 +870,7 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 	$( '.home-bookmark' ).each( function() {
 		$this = $( this );
 		var buttonhtml = '<i class="edit home-block-remove fa fa-minus-circle"></i>'
-//						+'<i class="edit home-block-cover fa fa-coverart"></i>';
+						+'<i class="edit home-block-cover fa fa-coverart"></i>';
 		if ( !$this.find( 'img' ).length ) buttonhtml += '<i class="edit home-block-edit fa fa-edit-circle"></i>'
 		$this.append( buttonhtml )
 	} );
@@ -919,7 +920,7 @@ $( '#home-coverart' ).click( function() { // fix - 'tap' also fire .coverart cli
 	$( '#home-blocks' ).addClass( 'hide' );
 	$( '#divcoverarts, #db-back, #db-index' ).removeClass( 'hide' );
 	$( '#db-index li' ).not( ':eq( 0 )' ).addClass( 'gr' );
-	var index = $( '#indexcover' ).text().split( '' );
+	var index = $( '#indexcover' ).data().index;
 	index.forEach( function( index ) {
 		$( '#db-index .index-'+ index ).removeClass( 'gr' );
 	} );
@@ -996,7 +997,7 @@ $( '.coverart' ).tap( function( e ) {
 	$( '.edit' ).remove();
 	$( '.coverart div' ).append(
 		 '<i class="edit coverart-remove fa fa-minus-circle"></i>'
-//		+'<i class="edit coverart-cover fa fa-coverart"></i>'
+		+'<i class="edit coverart-cover fa fa-coverart"></i>'
 	);
 	$( '.coverart img' ).css( 'opacity', 0.4 );
 } );
@@ -1032,7 +1033,6 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-cover', function() {
 					 +'<br><img src="'+ imgsrc +'">'
 		, msgalign : 'center'
 		, filelabel : 'Ok'
-		, filetype  : '.jpg,.png,.tif,.gif,.svg'
 		, ok        : function() {
 			var file = $( '#infoFileBox' )[ 0 ].files[ 0 ];
 			var fd = new FormData();
