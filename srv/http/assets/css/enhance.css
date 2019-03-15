@@ -1125,7 +1125,6 @@ wh, gr { font-weight: 300; }
 }
 .edit {
 	position: absolute;
-	top: 0;
 	right: 0;
 	width: 40px;
 	height: 35px;
@@ -1134,14 +1133,18 @@ wh, gr { font-weight: 300; }
 	font-size: 24px !important;
 	color: #e0e7ee !important;
 }
+.home-block-remove,
+.coverart-remove {
+	top: 0;
+}
 .home-block-edit {
 	top: 35px;
 }
 .home-block-cover {
-	top: 70px;
+	bottom: 0;
 }
 .coverart-cover {
-	top: 120px;
+	bottom: 5px;
 }
 /* ---------------------- breadcrumb and index ---------------------- */
 .btnlist-top {
