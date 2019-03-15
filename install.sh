@@ -18,11 +18,10 @@ redis-cli hdel display library &> /dev/null
 
 installstart $@
 
-if [[ $( pacman -Ss 'imagemagick$' | head -n1 | awk '{print $NF}' ) != '[installed]' ]]; then
-	pkgs='imagemagick libpng zlib glibc'
-	checklist='glibc imagemagick liblqr libmagick libpng libraqm zlib'
-	fallbackurl=https://github.com/rern/RuneAudio/raw/master/coverarts/imagemagick.tar
-	installPackages "$pkgs" "$checklist" "$fallbackurl"
+if ! pacman -Q imagemagick &> /dev/null; then
+	wgetnc https://github.com/rern/RuneAudio/raw/master/coverarts/imagemagick.tar
+	bsdtar xf imagemagick.tar -C /
+	pacman -S imagemagick libpng zlib glibc
 fi
 
 mv /srv/http/index.php{,.backup}
