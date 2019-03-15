@@ -814,11 +814,10 @@ function getData( options ) {
 		}, 'json' );
 	} else if ( plugin === 'Dirble' ) {
 		$.post( 'enhance.php', { dirble: ( querytype || 'categories' ), args: args }, function( data ) {
-			console.log(data)
 			dataParse( data, path, plugin, querytype );
 		}, 'json' );
 	} else if ( plugin === 'Jamendo' ) {
-		$.post( '/db/?cmd=jamendo', { querytype: querytype ? querytype : 'radio', args: args }, function( data ) {
+		$.post( 'enhance.php', { jamendo: args || '' }, function( data ) {
 			if ( !data ) {
 				$( '#oader' ).addClass( 'hide' );
 				info( {
