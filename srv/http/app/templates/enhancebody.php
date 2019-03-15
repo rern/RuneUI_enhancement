@@ -141,7 +141,7 @@ if ( count( $files ) ) {
 							.'<gr class="coverart2">'.( $list[ 3 ] ?: '&nbsp;' ).'</gr>'
 						.'</div>';
 	}
-	$coverartshtml.= '<a id="indexcover">'.implode( $index ).'</a><p></p>';
+	$coverartshtml.= '<a id="indexcover" data-index=\''.json_encode( $index ).'\'></a><p></p>';
 } else {
 	$coverarthtml = '';
 }
