@@ -814,20 +814,21 @@ $( '#infoFileBox' ).change( function() {
 	var filename = this.files[ 0 ].name;
 	var reader = new FileReader();    // create filereader
 	reader.onload = function ( e ) {  // prepare onload callback
-		var base64 = e.target.result;
+		var base64img = e.target.result;
 		var img = new Image();
-		img.src = base64;
+		img.src = base64img;
 		img.onload = function () {
 			var imgW = img.width;
 			var imgH = img.height;
+			var imgWHhtml = '<div class="imagewh"><span></span><span>'+ imgW +' x '+ imgH +'</span></div>';
 			$( '#infoFilename' ).empty();
 			$( '.newimg, .imagewh' ).remove();
-			$( '#infoMessage' ).append( '<img class="newimg" src="'+ base64 +'">' );
-			$( '#infoMessage' ).append( '<div class="imagewh"><span></span><span>'+ imgW +' x '+ imgH +'</span></div>' );
-			var bookmark = !$( '#home-blocks' ).hasClass( 'hide' );
-			if ( bookmark || ( !bookmark && imgW > 1000 ) ) {
+			if ( imgW === 200 && imgH === 200 ) {
+				$( '#infoMessage' ).append( '<img class="newimg" src="'+ base64img +'">'+ imgWHhtml );
+				GUI.newimg = base64img.replace( 'data:image/jpeg;base64,', '' ); // remove data:image/jpeg;base64 for php
+			} else {
 				var picacanvas = document.createElement( 'canvas' ); // create canvas object
-				picacanvas.width = picacanvas.height = bookmark ? 200 : 1000; // size of resized image
+				picacanvas.width = picacanvas.height = 200; // size of resized image
 				var picaOption = { // pica.js scaling: img to canvas
 					  unsharpAmount: 100  // 0...500 Default = 0 (try 50-100)
 					, unsharpThreshold: 5 // 0...100 Default = 0 (try 10)
@@ -836,10 +837,10 @@ $( '#infoFileBox' ).change( function() {
 				//	, alpha: true         // Default = false (black crop background)
 				};
 				window.pica.resizeCanvas( img, picacanvas, picaOption, function() {
-					var newimg = picacanvas.toDataURL( 'image/jpeg', 0.9 ); // canvas -> data:image/jpeg;base64 (jpg, qualtity)
+					var resizedimg = picacanvas.toDataURL( 'image/jpeg', 0.9 ); // canvas -> base64 (jpg, qualtity)
+					$( '#infoMessage' ).append( '<img class="newimg" src="'+ resizedimg +'">'+ imgWHhtml );
+					GUI.newimg = resizedimg.replace( 'data:image/jpeg;base64,', '' );
 				} );
-			} else {
-				var newimg = base64;
 			}
 		}
 	}
@@ -859,7 +860,7 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 	if ( $target.is( '.home-block-edit' ) ) {
 		bookmarkRename( name, path, $this );
 	} else if ( $target.is( '.home-block-cover' ) ) {
-		var icon = $this.find( 'img' ).length ? '<img src="'+ $this.find( 'img' ).prop( 'src' ) +'">' : '<i class="fa fa-bookmark fa-3x bl"></i>';
+		var icon = $this.find( 'img' ).length ? '<img src="'+ $this.find( 'img' ).prop( 'src' ) +'">' : '<i class="fa fa-bookmark fa-3x bl" style="width: 100px; margin: 10px; background: ;"></i>';
 		info( {
 			  icon      : 'bookmark'
 			, title     : 'Bookmark Icon'
@@ -869,24 +870,14 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 			, filelabel : 'Ok'
 			, ok        : function() {
 				var bookmarkfile = path.replace( /\//g, '|' ) +'.jpg';
-				var file = $( '#infoFileBox' )[ 0 ].files[ 0 ];
-				var fd = new FormData();
-				fd.append( 'file', file );
-				fd.append( 'bookmarkfile', bookmarkfile );
-				var xhr = new XMLHttpRequest();
-				xhr.open( 'POST', 'enhancecover.php', true );
-				xhr.send( fd );
-				xhr.onreadystatechange = function() {
-					console.log(xhr)
-					if ( xhr.readyState == 4 && xhr.status == 200 ) {
-						$this.find( '.fa-bookmark' ).remove();
-						$this.find( '.bklabel' )
-							.addClass( 'hide' )
-							.before( '<img src="/assets/img/bookmarks/'+ bookmarkfile +'">' );
-					} else {
-						info( 'Upload image failed.' );
-					}
-				}
+				$.post( 'enhance.php', { bookmarkfile: bookmarkfile, imgstream: GUI.newimg }, function() {
+					$this.find( '.fa-bookmark' ).remove();
+					$this.find( 'img' ).remove();
+					$this.find( '.bklabel' )
+						.addClass( 'hide' )
+						.before( '<img src="/assets/img/bookmarks/'+ bookmarkfile +'">' );
+					GUI.newimg = '';
+				} );
 			}
 		} );
 	} else if ( $target.is( '.home-block-remove' ) ) {
@@ -1062,7 +1053,9 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-remove', function() {
 	} );
 } );
 $( '#divcoverarts' ).on( 'tap', '.coverart-cover', function() {
-	var imgsrc = $( this ).parent().find( 'img' ).prop( 'src' );
+	var $this = $( this );
+	var $img = $this.parent().find( 'img' );
+	var imgsrc = $img.prop( 'src' );
 	info( {
 		  icon      : 'coverart'
 		, title     : 'Change Thumbnail'
@@ -1071,22 +1064,10 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-cover', function() {
 		, msgalign : 'center'
 		, filelabel : 'Ok'
 		, ok        : function() {
-			var file = $( '#infoFileBox' )[ 0 ].files[ 0 ];
-			var fd = new FormData();
-			fd.append( 'file', file );
-			var xhr = new XMLHttpRequest();
-			xhr.open( 'POST', 'addonsdl.php', true );
-			xhr.send( fd );
-			xhr.onreadystatechange = function() {
-				if ( xhr.readyState == 4 && xhr.status == 200 ) {
-					if ( xhr.responseText ) {
-						//opt += "'"+ file.name +"' ";
-						//sendcommand();
-					} else {
-						info( 'Upload image failed.' );
-					}
-				}
-			}
+			$.post( 'enhance.php', { thumbnailfile: imgsrc, imgstream: GUI.newimg }, function() {
+				$img.attr( 'src', thumbnailfile );
+				GUI.newimg = '';
+			} );
 		}
 	} );
 } );
