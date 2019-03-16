@@ -825,7 +825,7 @@ $( '#infoFileBox' ).change( function() {
 			$( '.newimg, .imagewh' ).remove();
 			if ( imgW === 200 && imgH === 200 ) {
 				$( '#infoMessage' ).append( '<img class="newimg" src="'+ base64img +'">'+ imgWHhtml );
-				GUI.newimg = base64img;
+				GUI.newimg = base64img.replace( 'data:image/jpeg;base64,', '' ); // remove data:image/jpeg;base64 for php
 			} else {
 				var picacanvas = document.createElement( 'canvas' ); // create canvas object
 				picacanvas.width = picacanvas.height = 200; // size of resized image
@@ -839,7 +839,7 @@ $( '#infoFileBox' ).change( function() {
 				window.pica.resizeCanvas( img, picacanvas, picaOption, function() {
 					var resizedimg = picacanvas.toDataURL( 'image/jpeg', 0.9 ); // canvas -> base64 (jpg, qualtity)
 					$( '#infoMessage' ).append( '<img class="newimg" src="'+ resizedimg +'">'+ imgWHhtml );
-					GUI.newimg = resizedimg;
+					GUI.newimg = resizedimg.replace( 'data:image/jpeg;base64,', '' );
 				} );
 			}
 		}
@@ -874,16 +874,14 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 			, fileoklabel : 'Replace'
 			, cancel      : 1
 			, ok          : function() {
-				var bookmarkfile = '/mnt/MPD/'+ path +'/thumbnail.jpg';
-				$.post( 'enhance.php'
-					, { thumbfile : bookmarkfile, base64 : GUI.newimg }
-					, function() {*/
-						$this.find( '.fa-bookmark' ).remove();
-						$this.find( 'img' ).remove();
-						$this.find( '.bklabel' )
-							.addClass( 'hide' )
-							.before( '<img class="bkcoverart" src="'+ GUI.newimg +'">' );
-						GUI.newimg = '';
+				var bookmarkfile = path.replace( /\//g, '|' ) +'.jpg';
+				$.post( 'enhance.php', { bookmarkfile: bookmarkfile, imgstream: GUI.newimg }, function() {
+					$this.find( '.fa-bookmark' ).remove();
+					$this.find( 'img' ).remove();
+					$this.find( '.bklabel' )
+						.addClass( 'hide' )
+						.before( '<img src="/assets/img/bookmarks/'+ bookmarkfile +'">' );
+					GUI.newimg = '';
 				} );
 			}
 		} );
@@ -1062,10 +1060,7 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-remove', function() {
 $( '#divcoverarts' ).on( 'tap', '.coverart-cover', function() {
 	var $this = $( this );
 	var $img = $this.parent().find( 'img' );
-	var imgsrc = $img.prop( 'src' ); // already fullpath
-	var $a = document.createElement( 'a' );
-	$a.href = imgsrc;
-	var thumbfile = decodeURIComponent( $a.pathname );
+	var imgsrc = $img.prop( 'src' );
 	info( {
 		  icon        : 'coverart'
 		, title       : 'Change Thumbnail'
@@ -1075,12 +1070,9 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-cover', function() {
 		, fileoklabel : 'Replace'
 		, cancel      : 1
 		, ok          : function() {
-			$.post( 'enhance.php'
-				, { thumbfile: thumbfile, base64: GUI.newimg }
-				, function() {
-					$img.removeAttr( 'data-src' ); // lazyload 'data-src'
-					$img.attr( 'src', GUI.newimg );
-					GUI.newimg = '';
+			$.post( 'enhance.php', { thumbnailfile: imgsrc, imgstream: GUI.newimg }, function() {
+				$img.attr( 'src', thumbnailfile );
+				GUI.newimg = '';
 			} );
 		}
 	} );
@@ -1181,10 +1173,6 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 			, args      : path
 		} );*/
 	}
-} );
-$( '#db-entries' ).on( 'taphold', '.licover img',  function() {
-	//alert($( this ).prop('src'))
-	$( this ).next( '<i class="edit coverart-cover fa fa-coverart"></i>' );
 } );
 $( '#db-index li' ).click( function() {
 	var $this = $( this );
