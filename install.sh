@@ -164,45 +164,6 @@ file=/srv/http/app/templates/enhanceplayback.php  # for rune youtube
 # correct version number
 [[ $( redis-cli get buildversion ) == 'beta-20160313' ]] && redis-cli set release 0.3 &> /dev/null
 
-# convert bookmarks
-bkmarks=$( redis-cli keys bkmarks )
-if [[ ! $bkmarks ]]; then
-	bookmarks=$( redis-cli hgetall bookmarks | tr -d '"{}\\' )
-	if [[ $bookmarks ]]; then
-		readarray -t bookmarks <<<"$bookmarks"
-		ilength=${#bookmarks[*]}
-		for (( i=0; i < ilength; i++ )); do
-			if (( i % 2 )); then
-				kv=${bookmarks[ $i ]}
-				k=$( echo $kv | cut -d',' -f1 )
-				v=$( echo $kv | cut -d',' -f2 )
-				redis-cli hset bkmarks "${k/name:}" "${v/path:}" &> /dev/null
-			fi
-		done
-	fi
-fi
-
-echo -e "$bar Create bookmarks directory ..."
-
-df=$( df )
-dfUSB=$( echo "$df" | grep '/mnt/MPD/USB' | head -n1 )
-dfNAS=$( echo "$df" | grep '/mnt/MPD/NAS' | head -n1 )
-if [[ $dfUSB || $dfNAS ]]; then
-	[[ $dfUSB ]] && mount=$dfUSB || mount=$dfNAS
-	mnt=$( echo $mount | awk '{ print $NF }' )
-	pathbookmarks="$mnt/bookmarks"
-	mkdir "$pathbookmarks"
-	if [[ $? != 0 ]]; then
-		$pathbookmarks=/mnt/MPD/LocalStorage/bookmarks
-		mkdir $pathbookmarks
-	fi
-else
-	$pathbookmarks=/mnt/MPD/LocalStorage/bookmarks
-	mkdir $pathbookmarks
-fi
-redis-cli set pathbookmarks "$pathbookmarks" &> /dev/null
-ln -sf "$pathbookmarks" /srv/http/assets/img/
-
 playback="bars debug dev time cover volume buttons"
 library="order coverart nas sd usb webradio album artist albumartist composer genre dirble jamendo"
 miscel="count label coverfile plclear playbackswitch tapaddplay"
