@@ -818,16 +818,9 @@ $( '#infoFileBox' ).change( function() {
 		var img = new Image();
 		img.src = base64;
 		img.onload = function () {
-			var imgW = this.width;
-			var imgH = this.height;
-			var oldcanvas = document.createElement( 'canvas' );
-			oldcanvas.width = imgW; // set canvas size to image size
-			oldcanvas.height = imgH;
-			var context2d = oldcanvas.getContext( '2d' );
-			context2d.drawImage( img, 0, 0 );
-			var newcanvas = document.createElement( 'canvas' ); // create canvas object
-			newcanvas.width = newcanvas.height = 200; // set image size
-			// pica.js scaling
+			var picacanvas = document.createElement( 'canvas' ); // create canvas object
+			picacanvas.width = picacanvas.height = 200; // size of resized image
+			// pica.js scaling: img to canvas
 			var picaOption = {
 				  unsharpAmount: 100  // 0...500 Default = 0 (try 50-100)
 				, unsharpThreshold: 5 // 0...100 Default = 0 (try 10)
@@ -835,12 +828,12 @@ $( '#infoFileBox' ).change( function() {
 			//	, quality: 3          // 0...3 Default = 3 (Lanczos win=3)
 			//	, alpha: true         // Default = false (black crop background)
 			};
-			window.pica.resizeCanvas( oldcanvas, newcanvas, picaOption, function() { // resize
-				var resizedimg = newcanvas.toDataURL( 'image/jpeg', 0.9 ); // canvas -> data:image/jpeg;base64 (jpg, qualtity)
+			window.pica.resizeCanvas( img, picacanvas, picaOption, function() {
+				var resizedimg = picacanvas.toDataURL( 'image/jpeg', 0.9 ); // canvas -> data:image/jpeg;base64 (jpg, qualtity)
 				$( '#infoFilename' ).empty();
 				$( '.newimg, .imagewh' ).remove();
 				$( '#infoMessage' ).append( '<img class="newimg" src="'+ resizedimg +'">' );
-				$( '#infoMessage' ).append( '<div class="imagewh"><span></span><span>'+ imgW +' x '+ imgH +'</span></div>' );
+				$( '#infoMessage' ).append( '<div class="imagewh"><span></span><span>'+ img.width +' x '+ img.height +'</span></div>' );
 			} );
 		}
 	}
