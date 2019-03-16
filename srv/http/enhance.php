@@ -327,10 +327,11 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$redis->hSet( 'display', 'volumemute', $currentvol );
 	exec( 'mpc volume '.$vol );
 	pushstream( 'volume', array( $vol, $currentvol ) );
-} else if ( isset( $_POST[ 'bookmarkfile' ] ) ) {
-	file_put_contents( '/srv/http/assets/img/bookmarks/'.$_POST[ 'bookmarkfile' ], base64_decode( $_POST[ 'imgstream' ] ) );
-} else if ( isset( $_POST[ 'thumbnailfile' ] ) ) {
-	file_put_contents( $_POST[ 'thumbnailfile' ], base64_decode( $_POST[ 'imgstream' ] ) );
+} else if ( isset( $_POST[ 'thumbfile' ] ) ) {
+	$tmpfile = '/srv/http/tmp/thumbnail.jpg';
+	$base64 = str_replace( 'data:image/jpeg;base64,', '', $_POST[ 'base64' ] ); // strip header
+	file_put_contents( $tmpfile, base64_decode( $base64 ) );
+	exec( '/usr/bin/sudo /usr/bin/mv -f '.$tmpfile.' "'.$_POST[ 'thumbfile' ].'"' );
 } else if ( isset( $_POST[ 'power' ] ) ) {
 	$mode = $_POST[ 'power' ];
 	if ( $mode === 'screenoff' ) {
