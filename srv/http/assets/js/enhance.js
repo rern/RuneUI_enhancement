@@ -866,14 +866,14 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 			var icon = '<div class="infobookmark"><i class="fa fa-bookmark fa-3x bl"></i><br><w>'+ $this.find( '.bklabel' ).text() +'</w></div>';
 		}
 		info( {
-			  icon      : 'bookmark'
-			, title     : 'Bookmark Icon'
-			, message   : 'Replace:'
-						 +'<br>'+ icon
-			, msgalign  : 'center'
-			, filelabel : 'Ok'
-			, cancel    : 1
-			, ok        : function() {
+			  icon        : 'bookmark'
+			, title       : 'Bookmark Icon'
+			, message     : 'Replace:'
+						   +'<br>'+ icon
+			, msgalign    : 'center'
+			, fileoklabel : 'Replace'
+			, cancel      : 1
+			, ok          : function() {
 				var bookmarkfile = path.replace( /\//g, '|' ) +'.jpg';
 				$.post( 'enhance.php', { bookmarkfile: bookmarkfile, imgstream: GUI.newimg }, function() {
 					$this.find( '.fa-bookmark' ).remove();
@@ -1062,14 +1062,14 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-cover', function() {
 	var $img = $this.parent().find( 'img' );
 	var imgsrc = $img.prop( 'src' );
 	info( {
-		  icon      : 'coverart'
-		, title     : 'Change Thumbnail'
-		, message   : 'Replace:'
-					 +'<br><img src="'+ imgsrc +'">'
-		, msgalign : 'center'
-		, filelabel : 'Ok'
-		, cancel    : 1
-		, ok        : function() {
+		  icon        : 'coverart'
+		, title       : 'Change Thumbnail'
+		, message     : 'Replace:'
+					   +'<br><img src="'+ imgsrc +'">'
+		, msgalign    : 'center'
+		, fileoklabel : 'Replace'
+		, cancel      : 1
+		, ok          : function() {
 			$.post( 'enhance.php', { thumbnailfile: imgsrc, imgstream: GUI.newimg }, function() {
 				$img.attr( 'src', thumbnailfile );
 				GUI.newimg = '';
