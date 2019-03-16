@@ -175,6 +175,17 @@ wh, gr { font-weight: 300; }
 .infocol {
 	width: 150px;
 }
+.infobookmark {
+	float: left;
+	width: 100px;
+	height: 100px;
+	margin: 10px 10px 0 10px;
+	padding-top: 20px;
+}
+.infobookmark w {
+	font-size: 18px;
+	font-weight: 300;
+}
 #album gr {
 	font-weight: normal;
  }
