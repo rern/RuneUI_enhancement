@@ -820,7 +820,7 @@ $( '#infoFileBox' ).change( function() {
 		img.onload = function () {
 			var imgW = img.width;
 			var imgH = img.height;
-			var imgWHhtml = '<div class="imagewh"><span></span><span>'+ imgW +' x '+ imgH +'</span></div>';
+			var imgWHhtml = '<div class="imagewh"><span>Current</span><span>'+ imgW +' x '+ imgH +'</span></div><span>(Resized to 200 x 200 px)</span>';
 			$( '#infoFilename' ).empty();
 			$( '.newimg, .imagewh' ).remove();
 			if ( imgW === 200 && imgH === 200 ) {
