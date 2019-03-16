@@ -818,23 +818,29 @@ $( '#infoFileBox' ).change( function() {
 		var img = new Image();
 		img.src = base64;
 		img.onload = function () {
-			var picacanvas = document.createElement( 'canvas' ); // create canvas object
-			picacanvas.width = picacanvas.height = 200; // size of resized image
-			// pica.js scaling: img to canvas
-			var picaOption = {
-				  unsharpAmount: 100  // 0...500 Default = 0 (try 50-100)
-				, unsharpThreshold: 5 // 0...100 Default = 0 (try 10)
-				, unsharpRadius: 0.6
-			//	, quality: 3          // 0...3 Default = 3 (Lanczos win=3)
-			//	, alpha: true         // Default = false (black crop background)
-			};
-			window.pica.resizeCanvas( img, picacanvas, picaOption, function() {
-				var resizedimg = picacanvas.toDataURL( 'image/jpeg', 0.9 ); // canvas -> data:image/jpeg;base64 (jpg, qualtity)
-				$( '#infoFilename' ).empty();
-				$( '.newimg, .imagewh' ).remove();
-				$( '#infoMessage' ).append( '<img class="newimg" src="'+ resizedimg +'">' );
-				$( '#infoMessage' ).append( '<div class="imagewh"><span></span><span>'+ img.width +' x '+ img.height +'</span></div>' );
-			} );
+			var imgW = img.width;
+			var imgH = img.height;
+			$( '#infoFilename' ).empty();
+			$( '.newimg, .imagewh' ).remove();
+			$( '#infoMessage' ).append( '<img class="newimg" src="'+ base64 +'">' );
+			$( '#infoMessage' ).append( '<div class="imagewh"><span></span><span>'+ imgW +' x '+ imgH +'</span></div>' );
+			var bookmark = !$( '#home-blocks' ).hasClass( 'hide' );
+			if ( bookmark || ( !bookmark && imgW > 1000 ) ) {
+				var picacanvas = document.createElement( 'canvas' ); // create canvas object
+				picacanvas.width = picacanvas.height = bookmark ? 200 : 1000; // size of resized image
+				var picaOption = { // pica.js scaling: img to canvas
+					  unsharpAmount: 100  // 0...500 Default = 0 (try 50-100)
+					, unsharpThreshold: 5 // 0...100 Default = 0 (try 10)
+					, unsharpRadius: 0.6
+				//	, quality: 3          // 0...3 Default = 3 (Lanczos win=3)
+				//	, alpha: true         // Default = false (black crop background)
+				};
+				window.pica.resizeCanvas( img, picacanvas, picaOption, function() {
+					var newimg = picacanvas.toDataURL( 'image/jpeg', 0.9 ); // canvas -> data:image/jpeg;base64 (jpg, qualtity)
+				} );
+			} else {
+				var newimg = base64;
+			}
 		}
 	}
 	reader.readAsDataURL( this.files[ 0 ] ); // load filereader
