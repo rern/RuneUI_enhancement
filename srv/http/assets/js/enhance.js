@@ -809,6 +809,43 @@ $( '.home-block' ).click( function() {
 		} );
 	}
 } );
+
+$( '#infoFileBox' ).change( function() {
+	var filename = this.files[ 0 ].name;
+	var reader = new FileReader();    // create filereader
+	reader.onload = function ( e ) {  // prepare onload callback
+		var base64 = e.target.result;
+		var img = new Image();
+		img.src = base64;
+		img.onload = function () {
+			var imgW = this.width;
+			var imgH = this.height;
+			var oldcanvas = document.createElement( 'canvas' );
+			oldcanvas.width = imgW; // set canvas size to image size
+			oldcanvas.height = imgH;
+			var context2d = oldcanvas.getContext( '2d' );
+			context2d.drawImage( img, 0, 0 );
+			var newcanvas = document.createElement( 'canvas' ); // create canvas object
+			newcanvas.width = newcanvas.height = 200; // set image size
+			// pica.js scaling
+			var picaOption = {
+				  unsharpAmount: 100  // 0...500 Default = 0 (try 50-100)
+				, unsharpThreshold: 5 // 0...100 Default = 0 (try 10)
+				, unsharpRadius: 0.6
+			//	, quality: 3          // 0...3 Default = 3 (Lanczos win=3)
+			//	, alpha: true         // Default = false (black crop background)
+			};
+			window.pica.resizeCanvas( oldcanvas, newcanvas, picaOption, function() { // resize
+				var resizedimg = newcanvas.toDataURL( 'image/jpeg', 0.9 ); // canvas -> data:image/jpeg;base64 (jpg, qualtity)
+				$( '#infoFilename' ).empty();
+				$( '.newimg, .imagewh' ).remove();
+				$( '#infoMessage' ).append( '<img class="newimg" src="'+ resizedimg +'">' );
+				$( '#infoMessage' ).append( '<div class="imagewh"><span></span><span>'+ imgW +' x '+ imgH +'</span></div>' );
+			} );
+		}
+	}
+	reader.readAsDataURL( this.files[ 0 ] ); // load filereader
+} );
 $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - id changed on renamed
 	if ( $( '.edit' ).length && !$( e.target ).hasClass( 'edit' )  ) {
 		$( '.edit' ).remove();
@@ -832,10 +869,11 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 			, msgalign  : 'center'
 			, filelabel : 'Ok'
 			, ok        : function() {
+				var bookmarkfile = path.replace( /\//g, '|' ) +'.jpg';
 				var file = $( '#infoFileBox' )[ 0 ].files[ 0 ];
 				var fd = new FormData();
 				fd.append( 'file', file );
-				fd.append( 'bookmarkpath', path );
+				fd.append( 'bookmarkfile', bookmarkfile );
 				var xhr = new XMLHttpRequest();
 				xhr.open( 'POST', 'enhancecover.php', true );
 				xhr.send( fd );
@@ -845,7 +883,7 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 						$this.find( '.fa-bookmark' ).remove();
 						$this.find( '.bklabel' )
 							.addClass( 'hide' )
-							.before( '<img src="'+  +'">' );
+							.before( '<img src="/assets/img/bookmarks/'+ bookmarkfile +'">' );
 					} else {
 						info( 'Upload image failed.' );
 					}
@@ -870,7 +908,7 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 	$( '.home-bookmark' ).each( function() {
 		$this = $( this );
 		var buttonhtml = '<i class="edit home-block-remove fa fa-minus-circle"></i>'
-//						+'<i class="edit home-block-cover fa fa-coverart"></i>';
+						+'<i class="edit home-block-cover fa fa-coverart"></i>';
 		if ( !$this.find( 'img' ).length ) buttonhtml += '<i class="edit home-block-edit fa fa-edit-circle"></i>'
 		$this.append( buttonhtml )
 	} );
@@ -997,7 +1035,7 @@ $( '.coverart' ).tap( function( e ) {
 	$( '.edit' ).remove();
 	$( '.coverart div' ).append(
 		 '<i class="edit coverart-remove fa fa-minus-circle"></i>'
-//		+'<i class="edit coverart-cover fa fa-coverart"></i>'
+		+'<i class="edit coverart-cover fa fa-coverart"></i>'
 	);
 	$( '.coverart img' ).css( 'opacity', 0.4 );
 } );
@@ -1372,7 +1410,6 @@ $( '#pl-editor' ).on( 'click', 'li', function( e ) {
 			GUI.list.name = $thisli.find( '.liname' ).text();
 			GUI.list.path = $thisli.find( '.lipath' ).text();
 			var contextmenu = $thisli.find( '.pl-icon' ).data( 'target' );
-			console.log(contextmenu)
 			$( contextmenu ).find( 'a:eq( 1 )' ).click();
 			setTimeout( function() {
 				$thisli.removeClass( 'active' );
