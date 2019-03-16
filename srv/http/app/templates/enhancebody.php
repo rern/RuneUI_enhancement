@@ -1,18 +1,7 @@
 <?php
 $redis = new Redis();
 $redis->pconnect( '127.0.0.1' );
-$bkmarks = $redis->hGetAll( 'bkmarks' );
-$order = $redis->hGet( 'display', 'order' );
 
-function stripLeading( $string ) {
-	// strip articles | non utf-8 normal alphanumerics , fix: php strnatcmp ignores spaces + tilde for sort last
-	$names = strtoupper( strVal( $string ) );
-	return preg_replace(
-		  array( '/^A\s+|^AN\s+|^THE\s+|[^\w\p{L}\p{N}\p{Pd} ~]/u', '/\s+/' )
-		, array( '', '-' )
-		, $names
-	);
-}
 // counts
 $count = exec( '/srv/http/enhancecount.sh' );
 $count = explode( ' ', $count );
@@ -59,6 +48,8 @@ foreach( $blocks as $id => $value ) {
 	';
 }
 // bookmarks
+$bkmarks = $redis->hGetAll( 'bkmarks' );
+$order = $redis->hGet( 'display', 'order' );
 if ( count( $bkmarks ) ) {
 	foreach( $bkmarks as $label => $path ) {
 		$thumbfile = '/mnt/MPD/'.$path.'/thumbnail.jpg';
@@ -160,6 +151,15 @@ if ( $i % 2 === 0 ) {
 }
 $index = $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 
+function stripLeading( $string ) {
+	// strip articles | non utf-8 normal alphanumerics , fix: php strnatcmp ignores spaces + tilde for sort last
+	$names = strtoupper( strVal( $string ) );
+	return preg_replace(
+		  array( '/^A\s+|^AN\s+|^THE\s+|[^\w\p{L}\p{N}\p{Pd} ~]/u', '/\s+/' )
+		, array( '', '-' )
+		, $names
+	);
+}
 // context menus
 function menuli( $command, $icon, $label, $type = '' ) {
 	$type = $type ? ' data-type="'.$type.'"' : '';
