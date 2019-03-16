@@ -872,6 +872,7 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 						 +'<br>'+ icon
 			, msgalign  : 'center'
 			, filelabel : 'Ok'
+			, cancel    : 1
 			, ok        : function() {
 				var bookmarkfile = path.replace( /\//g, '|' ) +'.jpg';
 				$.post( 'enhance.php', { bookmarkfile: bookmarkfile, imgstream: GUI.newimg }, function() {
@@ -1067,6 +1068,7 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-cover', function() {
 					 +'<br><img src="'+ imgsrc +'">'
 		, msgalign : 'center'
 		, filelabel : 'Ok'
+		, cancel    : 1
 		, ok        : function() {
 			$.post( 'enhance.php', { thumbnailfile: imgsrc, imgstream: GUI.newimg }, function() {
 				$img.attr( 'src', thumbnailfile );
