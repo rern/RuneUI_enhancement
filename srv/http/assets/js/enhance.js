@@ -860,7 +860,11 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 	if ( $target.is( '.home-block-edit' ) ) {
 		bookmarkRename( name, path, $this );
 	} else if ( $target.is( '.home-block-cover' ) ) {
-		var icon = $this.find( 'img' ).length ? '<img src="'+ $this.find( 'img' ).prop( 'src' ) +'">' : '<i class="fa fa-bookmark fa-3x bl" style="width: 100px; margin: 10px; background: ;"></i>';
+		if ( $this.find( 'img' ).length ) {
+			var icon = '<img src="'+ $this.find( 'img' ).prop( 'src' ) +'">';
+		} else {
+			var icon = '<div class="infobookmark"><i class="fa fa-bookmark fa-3x bl"></i><br><w>'+ $this.find( '.bklabel' ).text() +'</w></div>';
+		}
 		info( {
 			  icon      : 'bookmark'
 			, title     : 'Bookmark Icon'
