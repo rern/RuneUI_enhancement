@@ -27,18 +27,6 @@ $count = array(
 	, 'usbdrive'    => $count[ 7 ]
 	, 'webradio'    => $count[ 8 ]
 );
-// bookmarks
-foreach( $bkmarks as $label => $path ) {
-	$thumbfile = '/mnt/MPD/'.$path.'/thumbnail.jpg';
-	if ( file_exists( $thumbfile ) ) {
-		$thumbnail = file_get_contents( $thumbfile );
-		$coverart = 'data:image/jpg;base64,'.base64_encode( $thumbnail );
-	} else {
-		$coverart = '';
-	}
-	$sortbookmark = stripLeading( $label );
-	$bookmarks[] = array( $sortbookmark, $label, $path, $coverart );
-}
 // library home blocks
 $blocks = array( // 'id' => array( 'path', 'icon', 'name' );
 	  'coverart'    => array( 'Coverart',     'coverart',     'CoverArt' )
@@ -70,28 +58,42 @@ foreach( $blocks as $id => $value ) {
 		</div>
 	';
 }
-if ( !$order ) {
-	usort( $bookmarks, function( $a, $b ) {
-		return strnatcmp( $a[ 0 ], $b[ 0 ] );
-	} );
-}
-foreach( $bookmarks as $bookmark ) {
-	if ( $bookmark[ 3 ] ) {
-		$namehtml = '<img class="bkcoverart" src="'.$bookmark[ 3 ].'">';
-		$hidelabel = ' hide';
-	} else {
-		$namehtml = '<i class="fa fa-bookmark"></i>';
-		$hidelabel = '';
+// bookmarks
+if ( count( $bkmarks ) ) {
+	foreach( $bkmarks as $label => $path ) {
+		$thumbfile = '/mnt/MPD/'.$path.'/thumbnail.jpg';
+		if ( file_exists( $thumbfile ) ) {
+			$thumbnail = file_get_contents( $thumbfile );
+			$coverart = 'data:image/jpg;base64,'.base64_encode( $thumbnail );
+		} else {
+			$coverart = '';
+		}
+		$sortbookmark = stripLeading( $label );
+		$bookmarks[] = array( $sortbookmark, $label, $path, $coverart );
 	}
-	$divblocks[ $bookmark[ 1 ] ] = '
-		<div class="divblock bookmark">
-			<div class="home-block home-bookmark">
-				<a class="lipath">'.$bookmark[ 2 ].'</a>
-				'.$namehtml.'
-				<div class="divbklabel"><span class="bklabel label'.$hidelabel.'">'.$bookmark[ 1 ].'</span></div>
+	if ( !$order ) {
+		usort( $bookmarks, function( $a, $b ) {
+			return strnatcmp( $a[ 0 ], $b[ 0 ] );
+		} );
+	}
+	foreach( $bookmarks as $bookmark ) {
+		if ( $bookmark[ 3 ] ) {
+			$namehtml = '<img class="bkcoverart" src="'.$bookmark[ 3 ].'">';
+			$hidelabel = ' hide';
+		} else {
+			$namehtml = '<i class="fa fa-bookmark"></i>';
+			$hidelabel = '';
+		}
+		$divblocks[ $bookmark[ 1 ] ] = '
+			<div class="divblock bookmark">
+				<div class="home-block home-bookmark">
+					<a class="lipath">'.$bookmark[ 2 ].'</a>
+					'.$namehtml.'
+					<div class="divbklabel"><span class="bklabel label'.$hidelabel.'">'.$bookmark[ 1 ].'</span></div>
+				</div>
 			</div>
-		</div>
-	';
+		';
+	}
 }
 if ( !$order ) {
 	$blockhtml = implode( $divblocks );
@@ -101,7 +103,7 @@ if ( !$order ) {
 		$blockhtml.= $divblocks[ $label ];
 	}
 }
-
+// browse by coverart
 $files = array_slice( scandir( '/srv/http/assets/img/coverarts' ), 2 );
 if ( count( $files ) ) {
 	foreach( $files as $file ) {
@@ -126,11 +128,13 @@ if ( count( $files ) ) {
 	} );
 	$index = array_keys( array_flip( $index ) );
 	$coverarthtml = '';
+	$time = time();
 	foreach( $lists as $list ) {
 		$licue = $list[ 5 ] ? '<a class="licue">'.$list[ 5 ].'</a>' : '';
 		$replace = array(  // #,? not allow in 'scr'
-			  '/\#/' => '%23'
-			, '/\?/' => '%3F'
+			  '/\#/'   => '%23'
+			, '/\?/'   => '%3F'
+			, '/jpg$/' => $time.'.jpg'
 		);
 		$filename = preg_replace( array_keys( $replace ), array_values( $replace ), $list[ 4 ] );
 		$coverartshtml.= '<div class="coverart">'
