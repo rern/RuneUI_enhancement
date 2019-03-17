@@ -608,7 +608,7 @@ function displayAirPlay() {
 		$( '#coverart, #share-group' ).css( 'width', '90%' );
 	}
 }
-function windowopen( url ) {
+function windowopen( url ) { // share this track
 	window.open = (
 		  url
 		, 'menubar=no'
