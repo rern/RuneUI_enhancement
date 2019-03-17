@@ -362,7 +362,6 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$query = '/category/'.$args.'/stations';
 	}
 	$data = curlGet( 'http://api.dirble.com/v2'.$query.'?all=1&token='.$redis->hGet('dirble', 'apikey') );
-//	echo $data;
 	$array = json_decode( $data, true );
 	$aL = count( $array );
 	for( $i = 0; $i < $aL; $i++ ) {
