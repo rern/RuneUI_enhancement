@@ -360,6 +360,8 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$query = '/category/'.$args.'/childs';
 	} else if ( $querytype === 'stations' ) {
 		$query = '/category/'.$args.'/stations';
+//	} else if ( $querytype === 'search' ) { // get data like lastfm
+//		$query = '/search/'.urlencode( $args );
 	}
 	$data = curlGet( 'http://api.dirble.com/v2'.$query.'?all=1&token='.$redis->hGet('dirble', 'apikey') );
 	$array = json_decode( $data, true );
