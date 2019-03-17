@@ -1062,10 +1062,8 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-remove', function() {
 $( '#divcoverarts' ).on( 'tap', '.coverart-cover', function() {
 	var $this = $( this );
 	var $img = $this.parent().find( 'img' );
-	var imgsrc = $img.prop( 'src' ); // already fullpath
-	var $a = document.createElement( 'a' );
-	$a.href = imgsrc;
-	var thumbfile = decodeURIComponent( $a.pathname );
+	var imgsrc = $img.data( 'src' );
+	var thumbfile = imgsrc.slice( 0, -14 ) + imgsrc.slice( -3 ); // remove cache busting timestamp
 	info( {
 		  icon        : 'coverart'
 		, title       : 'Change Thumbnail'
