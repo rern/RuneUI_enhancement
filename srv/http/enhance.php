@@ -327,6 +327,13 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$redis->hSet( 'display', 'volumemute', $currentvol );
 	exec( 'mpc volume '.$vol );
 	pushstream( 'volume', array( $vol, $currentvol ) );
+} else if ( isset( $_POST[ 'thumbfile' ] ) ) {
+	$thumbfile = $_POST[ 'thumbfile' ];
+	$base64 = str_replace( 'data:image/jpeg;base64,', '', $_POST[ 'base64' ] ); // strip header
+	$tmpfile = '/srv/http/tmp/thumbnail.jpg';
+	$newfile = str_replace( 'svg', 'jpg', $thumbfile ); // if current is svg
+	file_put_contents( $tmpfile, base64_decode( $base64 ) );
+	exec( '/usr/bin/sudo /usr/bin/rm "'.$thumbfile.'"; /usr/bin/sudo /usr/bin/cp '.$tmpfile.' "'.$newfile.'"' );
 } else if ( isset( $_POST[ 'power' ] ) ) {
 	$mode = $_POST[ 'power' ];
 	if ( $mode === 'screenoff' ) {
@@ -344,6 +351,44 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$cmd.= $sudo.'umount -f -a -t cifs nfs -l;';
 	$cmd.= $sudo.'shutdown '.( $mode === 'reboot' ? '-r' : '-h' ).' now';
 	exec( $cmd );
+} else if ( isset( $_POST[ 'dirble' ] ) ) {
+	$querytype = $_POST[ 'dirble' ];
+	$args = isset( $_POST[ 'args' ] ) ? $_POST[ 'args' ] : '';
+	if ( $querytype === 'categories' ) {
+		$query = '/categories/primary';
+	} else if ( $querytype === 'childs' ) {
+		$query = '/category/'.$args.'/childs';
+	} else if ( $querytype === 'stations' ) {
+		$query = '/category/'.$args.'/stations';
+//	} else if ( $querytype === 'search' ) { // get data like lastfm
+//		$query = '/search/'.urlencode( $args );
+	}
+	$data = curlGet( 'http://api.dirble.com/v2'.$query.'?all=1&token='.$redis->hGet('dirble', 'apikey') );
+	$array = json_decode( $data, true );
+	$aL = count( $array );
+	for( $i = 0; $i < $aL; $i++ ) {
+		$name = $array[ $i ][ 'title' ] ?: $array[ $i ][ 'name' ];
+		$sort = stripLeading( $name );
+		$index[] = $sort[ 1 ];
+		$array[ $i ][ 'sort' ] = $sort[ 0 ];
+		$array[ $i ][ 'lisort' ] = $sort[ 1 ];
+	}
+	$data = sortData( $array, $index );
+	echo json_encode( $data );
+} else if ( isset( $_POST[ 'jamendo' ] ) ) {
+	$apikey = $redis->hGet( 'jamendo', 'clientid' );
+	$args = $_POST[ 'jamendo' ];
+	if ( $args ) {
+		echo curlGet( 'http://api.jamendo.com/v3.0/radios/stream?client_id='.$apikey.'&format=json&name='.$args );
+		exit();
+	}
+	
+	$jam_channels = json_decode( curlGet('http://api.jamendo.com/v3.0/radios/?client_id='.$apikey.'&format=json&limit=200' ) );
+	foreach ( $jam_channels->results as $station ) {
+		$channel = json_decode( curlGet('http://api.jamendo.com/v3.0/radios/stream?client_id='.$apikey.'&format=json&name='.$station->name ) );
+		$station->stream = $channel->results[ 0 ]->stream;
+	}
+	echo json_encode( $jam_channels );
 }
 function stripLeading( $string ) {
 	// strip articles | non utf-8 normal alphanumerics , fix: php strnatcmp ignores spaces + tilde for sort last
@@ -477,12 +522,22 @@ function getCover( $file ) {
 	require_once( '/srv/http/enhancegetcover.php' );
 	return getCoverart( '/mnt/MPD/'.$file );
 }
-function pushstream( $channel, $data = 1 ) {
+function pushstream( $channel, $data ) {
 	$ch = curl_init( 'http://localhost/pub?id='.$channel );
 	curl_setopt( $ch, CURLOPT_HTTPHEADER, array( 'Content-Type:application/json' ) );
 	curl_setopt( $ch, CURLOPT_POSTFIELDS, json_encode( $data, JSON_NUMERIC_CHECK ) );
 	curl_exec( $ch );
 	curl_close( $ch );
+}
+function curlGet( $url ) {
+	$ch = curl_init( $url );
+	curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT_MS, 400 );
+	curl_setopt( $ch, CURLOPT_TIMEOUT, 10 );
+	curl_setopt( $ch, CURLOPT_HEADER, 0 );
+	curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
+	$response = curl_exec( $ch );
+	curl_close( $ch );
+	return $response;
 }
 function getBookmark( $redis ) {
 	$rbkmarks = $redis->hGetAll( 'bkmarks' );

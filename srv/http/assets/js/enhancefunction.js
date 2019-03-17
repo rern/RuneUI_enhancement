@@ -596,8 +596,6 @@ function displayAirPlay() {
 	$( '#playback-row' ).removeClass( 'hide' );
 	$( '#time-knob' ).toggleClass( 'hide', GUI.display.time === '' );
 	$( '#irandom, #irepeat, #posrandom, #posrepeat, #coverartoverlay, #volume-knob, #play-group, #share-group, #vol-group' ).addClass( 'hide' );
-	$( '#playsource-mpd' ).addClass( 'inactive' );
-	$( '#playsource-airplay' ).removeClass( 'inactive' );
 	if ( GUI.display.time ) {
 		$( '#time-knob, #play-group, #coverart, #share-group' ).css( 'width', '45%' );
 		clearInterval( GUI.intKnob );
@@ -610,15 +608,16 @@ function displayAirPlay() {
 		$( '#coverart, #share-group' ).css( 'width', '90%' );
 	}
 }
-function switchPlaysource( source ) {
-	$.get( '/command/?switchplayer='+ source, function() {
-		setTimeout( function() {
-			$( '#tab-playback' ).click();
-			$( '#playsource li a' ).addClass( 'inactive' );
-			$( '#playsource-'+ source.toLowerCase() ).removeClass( 'inactive' )
-			$( '#playsource-close' ).click();
-		}, 2000 );
-	} );
+function windowopen( url ) { // share this track
+	window.open = (
+		  url
+		, 'menubar=no'
+		, 'toolbar=no'
+		, 'resizable=yes'
+		, 'scrollbars=yes'
+		, 'height=600'
+		, 'width=600'
+	);
 }
 function displayIndexBar() {
 	setTimeout( function() {
@@ -718,7 +717,6 @@ function getData( options ) {
 	}
 	var cmd = options.cmd || 'browse',
 		browsemode = options.browsemode || 'file',
-		plugin = options.plugin || '',
 		querytype = options.querytype || '',
 		args = options.args || '',
 		artist = options.artist ? options.artist.toString().replace( /"/g, '\"' ) : '',
@@ -731,7 +729,6 @@ function getData( options ) {
 		GUI.dbbackdata.push( {
 			  path       : path
 			, browsemode : browsemode
-			, plugin     : plugin
 			, args       : args
 			, querytype  : querytype
 		} );
@@ -750,7 +747,7 @@ function getData( options ) {
 	var keyword = $( '#db-search-keyword' ).val();
 	keyword = keyword ? keyword.toString().replace( /"/g, '\"' ) : '';
 	GUI.browsemode = browsemode;
-	if ( !plugin ) {
+	if ( !GUI.plugin ) {
 		var command = {
 			  file          : { mpc   : 'mpc ls -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" "'+ path +'" 2> /dev/null', list: 'file' }
 			, artistalbum   : { mpc   : 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%"'+ ( artist ? ' artist "'+ artist +'"' : '' ) +' album "'+ path +'"', list: 'file', name: path }
@@ -766,14 +763,7 @@ function getData( options ) {
 			, coverart      : { coverartalbum : path, artist: artist }
 		}
 		if ( cmd === 'search' ) {
-			if ( path.match(/Dirble/)) {
-				$.post( '/db/?cmd=dirble', { querytype: 'search', args: keyword }, function( data ) {
-					dataParse( data, path, 'Dirble', 'search' );
-				}, 'json' );
-				return
-			} else {
-				mode = 'search';
-			}
+			mode = 'search';
 		} else if ( cmd === 'browse' ) {
 			if ( [ 'Album', 'Artist', 'AlbumArtist', 'Composer', 'Genre' ].indexOf( path ) !== -1 ) {
 				mode = 'type';
@@ -808,25 +798,17 @@ function getData( options ) {
 		return
 	}
 	
-	if ( plugin === 'Spotify' ) {
+	$( '#db-searchbtn' ).addClass( 'hide' );
+	if ( GUI.plugin === 'Spotify' ) {
 		$.post( '/db/?cmd=spotify', { plid: args }, function( data ) {
-			dataParse( data, path, plugin, querytype, arg );
+			dataParse( data, path, querytype, arg );
 		}, 'json' );
-	} else if ( plugin === 'Dirble' ) {
-		if ( querytype === 'childs' ) {
-			$.post( '/db/?cmd=dirble', { querytype: 'childs', args: args }, function( data ) {
-				dataParse( data, path, plugin, 'childs' );
-			}, 'json' );
-			$.post( '/db/?cmd=dirble', { querytype: 'childs-stations', args: args }, function( data ) {
-				dataParse( data, path, plugin, 'childs-stations' );
-			}, 'json' );            
-		} else {
-			$.post( '/db/?cmd=dirble', { querytype: querytype ? querytype : 'categories', args: args }, function( data ) {
-				dataParse( data, path, plugin, querytype );
-			}, 'json' );
-		}
-	} else if ( plugin === 'Jamendo' ) {
-		$.post( '/db/?cmd=jamendo', { querytype: querytype ? querytype : 'radio', args: args }, function( data ) {
+	} else if ( GUI.plugin === 'Dirble' ) {
+		$.post( 'enhance.php', { dirble: ( querytype || 'categories' ), args: args }, function( data ) {
+			dataParse( data, path, querytype );
+		}, 'json' );
+	} else if ( GUI.plugin === 'Jamendo' ) {
+		$.post( 'enhance.php', { jamendo: args || '' }, function( data ) {
 			if ( !data ) {
 				$( '#oader' ).addClass( 'hide' );
 				info( {
@@ -837,14 +819,13 @@ function getData( options ) {
 				GUI.dbbackdata.pop();
 				return
 			}
-			dataParse( data.results, path, plugin, querytype );
+			dataParse( data.results, path, querytype );
 		}, 'json' );
 	}
 }
-function dataParse( data, path, plugin, querytype, arg ) {
+function dataParse( data, path, querytype, arg ) {
 	var data = data,
 		path = path || '',
-		plugin = plugin || '',
 		querytype = querytype || '',
 		args = args || '',
 		content = '',
@@ -861,7 +842,7 @@ function dataParse( data, path, plugin, querytype, arg ) {
 	$( '#home-blocks' ).addClass( 'hide' );
 	$( '#db-index li' ).not( ':eq( 0 )' ).addClass( 'gr' );
 	
-	if ( !plugin ) {
+	if ( !GUI.plugin ) {
 		if ( !data.length ) return
 		
 		var type = {
@@ -915,7 +896,7 @@ function dataParse( data, path, plugin, querytype, arg ) {
 				} else if ( value.albumartist ) {
 					albumartist = value.albumartist;
 				} else if ( value.index ) {
-					$.each( value.index, function( i, char ) {
+					value.index.forEach( function( char ) {
 						$( '#db-index .index-'+ char ).removeClass( 'gr' );
 					} );
 				} else if ( value.directory || value.file || value.playlist ) {
@@ -938,7 +919,7 @@ function dataParse( data, path, plugin, querytype, arg ) {
 				var genrehtml = genre && genre !== -1 ? '<span><i class="fa fa-genre"></i>'+ genre +'</span><br>' : '';
 				content += '<li class="licover">'
 						  +'<a class="lipath">'+ path +'</a><a class="liname">'+ path.replace(/^.*\//, '') +'</a>'
-						  +'<img src="'+ coverart +'" class="coversmall">'
+						  +'<div class="licoverimg"><img src="'+ coverart +'" class="coversmall"></div>'
 						  +'<span class="liinfo">'
 							  +'<bl class="lialbum">'+ album +'</bl><br>'
 							  + composerhtml
@@ -972,7 +953,7 @@ function dataParse( data, path, plugin, querytype, arg ) {
 			var dataL = data.length;
 			for ( i = 0; i < dataL; i++ ) {
 				if ( data[ i ].index ) {
-					$.each( data[ i ].index, function( i, char ) {
+					data[ i ].index.forEach( function( char ) {
 						$( '#db-index .index-'+ char ).removeClass( 'gr' );
 					} );
 				} else {
@@ -982,16 +963,16 @@ function dataParse( data, path, plugin, querytype, arg ) {
 		}
 		$( '#db-webradio-new' ).toggleClass( 'hide', path !== 'Webradio' );
 	} else {
-		if ( plugin === 'Spotify' ) {
+		if ( GUI.plugin === 'Spotify' ) {
 			data = ( querytype === 'tracks' ) ? data.tracks : data.playlists;
 			for ( i = 0; ( row = data[ i ] ); i++ ) content += data2html( row, i, 'Spotify', arg, querytype );
-		} else if ( plugin === 'Dirble' ) {
+		} else if ( GUI.plugin === 'Dirble' ) {
 			if ( querytype === 'childs-stations' ) {
 				content = $( '#db-entries' ).html();
 			} else {
 				for ( i = 0; ( row = data[ i ] ); i++ ) content += data2html( row, i, 'Dirble', '', querytype );
 			}
-		} else if ( plugin === 'Jamendo' ) {
+		} else if ( GUI.plugin === 'Jamendo' ) {
 			for (i = 0; ( row = data[ i ] ); i++ ) content += data2html( row, i, 'Jamendo', '', querytype );
 		}
 	}
@@ -1233,7 +1214,11 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 			}
 			break;
 		case 'Dirble':
-			if ( querytype === '' || querytype === 'childs' ) {
+			if ( inputArr.index ) {
+				inputArr.index.forEach( function( char ) {
+					$( '#db-index .index-'+ char ).removeClass( 'gr' );
+				} );
+			} else if ( querytype === '' || querytype === 'childs' ) {
 				var liname = inputArr.title;
 				var childClass = ( querytype === 'childs' ) ? ' db-dirble-child' : '';
 				content = '<li class="db-dirble'+ childClass +'" mode="dirble">'
@@ -1245,9 +1230,15 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 				
 				var liname = inputArr.name;
 				var url = inputArr.streams[ 0 ].stream
+				var thumb = inputArr.image.thumb.url;
+				if ( thumb ) {
+					var iconhtml = '<img class="radiothumb db-icon" src="'+ thumb +'"  data-target="#context-menu-radio">'
+				} else {
+					var iconhtml = '<i class="fa fa-webradio db-icon" data-target="#context-menu-radio"></i>';
+				}
 				content = '<li mode="dirble">'
 						 +'<a class="lipath">'+ url +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
-						 +'<i class="fa fa-webradio db-icon" data-target="#context-menu-radio"></i>'
+						 + iconhtml
 						 +'<span class="li1">'+ liname +'&ensp;<span>( '+ inputArr.country +' )</span></span>'
 						 +'<span class="li2">'+ url +'</span>'
 			}
@@ -1256,7 +1247,7 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 			var liname = inputArr.dispname;
 			content = '<li mode="jamendo">'
 					 +'<a class="lipath">'+ inputArr.stream +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
-					 +'<img class="jamendo-cover db-icon" src="'+ inputArr.image +'"  data-target="#context-menu-radio">'
+					 +'<img class="radiothumb db-icon" src="'+ inputArr.image +'"  data-target="#context-menu-radio">'
 					 +'<span class="single">'+ liname +'</span>'
 			break;
 	}
@@ -1497,7 +1488,7 @@ function htmlPlaylist( data ) {
 		var genrehtml = genre && genre !== -1 ? '<span><i class="fa fa-genre"></i>'+ genre +'</span><br>' : '';
 		var licover = '<li class="licover">'
 						 +'<a class="lipath">'+ path +'</a><a class="liname">'+ path.replace(/^.*\//, '') +'</a>'
-						 +'<img src="'+ coverart +'" class="coversmall">'
+						 +'<div class="licoverimg"><img src="'+ coverart +'" class="coversmall"></div>'
 						 +'<span class="liinfo">'
 							+'<bl class="lialbum">'+ album +'</bl><br>'
 							+ composerhtml

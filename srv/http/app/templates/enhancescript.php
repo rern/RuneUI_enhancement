@@ -10,6 +10,7 @@
 <script src="<?=$this->asset( '/js/addonsinfo.js' )?>"></script>
 <script src="<?=$this->asset( '/js/vendor/roundslider.min.js' )?>"></script>
 <script src="<?=$this->asset( '/js/vendor/lazyload.min.js' )?>"></script>
+<script src="<?=$this->asset( '/js/vendor/pica.min.js' )?>"></script>
 <script src="<?=$this->asset( '/js/enhancefunction.js' )?>"></script>
 <script src="<?=$this->asset( '/js/enhance.js' )?>"></script>
 <script src="<?=$this->asset( '/js/enhancecontext.js' )?>"></script>

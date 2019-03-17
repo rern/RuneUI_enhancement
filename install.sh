@@ -18,11 +18,10 @@ redis-cli hdel display library &> /dev/null
 
 installstart $@
 
-if [[ $( pacman -Ss 'imagemagick$' | head -n1 | awk '{print $NF}' ) != '[installed]' ]]; then
-	pkgs='imagemagick libpng zlib glibc'
-	checklist='glibc imagemagick liblqr libmagick libpng libraqm zlib'
-	fallbackurl=https://github.com/rern/RuneAudio/raw/master/coverarts/imagemagick.tar
-	installPackages "$pkgs" "$checklist" "$fallbackurl"
+if ! pacman -Q imagemagick &> /dev/null; then
+	wgetnc https://github.com/rern/RuneAudio/raw/master/coverarts/imagemagick.tar
+	bsdtar xf imagemagick.tar -C /
+	pacman -S imagemagick libpng zlib glibc
 fi
 
 mv /srv/http/index.php{,.backup}
@@ -164,24 +163,6 @@ file=/srv/http/app/templates/enhanceplayback.php  # for rune youtube
 #----------------------------------------------------------------------------------
 # correct version number
 [[ $( redis-cli get buildversion ) == 'beta-20160313' ]] && redis-cli set release 0.3 &> /dev/null
-
-# convert bookmarks
-bkmarks=$( redis-cli keys bkmarks )
-if [[ ! $bkmarks ]]; then
-	bookmarks=$( redis-cli hgetall bookmarks | tr -d '"{}\\' )
-	if [[ $bookmarks ]]; then
-		readarray -t bookmarks <<<"$bookmarks"
-		ilength=${#bookmarks[*]}
-		for (( i=0; i < ilength; i++ )); do
-			if (( i % 2 )); then
-				kv=${bookmarks[ $i ]}
-				k=$( echo $kv | cut -d',' -f1 )
-				v=$( echo $kv | cut -d',' -f2 )
-				redis-cli hset bkmarks "${k/name:}" "${v/path:}" &> /dev/null
-			fi
-		done
-	fi
-fi
 
 playback="bars debug dev time cover volume buttons"
 library="order coverart nas sd usb webradio album artist albumartist composer genre dirble jamendo"

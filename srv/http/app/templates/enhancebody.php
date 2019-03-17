@@ -1,18 +1,7 @@
 <?php
 $redis = new Redis();
 $redis->pconnect( '127.0.0.1' );
-$bkmarks = $redis->hGetAll( 'bkmarks' );
-$order = $redis->hGet( 'display', 'order' );
 
-function stripLeading( $string ) {
-	// strip articles | non utf-8 normal alphanumerics , fix: php strnatcmp ignores spaces + tilde for sort last
-	$names = strtoupper( strVal( $string ) );
-	return preg_replace(
-		  array( '/^A\s+|^AN\s+|^THE\s+|[^\w\p{L}\p{N}\p{Pd} ~]/u', '/\s+/' )
-		, array( '', '-' )
-		, $names
-	);
-}
 // counts
 $count = exec( '/srv/http/enhancecount.sh' );
 $count = explode( ' ', $count );
@@ -27,18 +16,6 @@ $count = array(
 	, 'usbdrive'    => $count[ 7 ]
 	, 'webradio'    => $count[ 8 ]
 );
-// bookmarks
-foreach( $bkmarks as $label => $path ) {
-	$thumbfile = '/mnt/MPD/'.$path.'/thumbnail.jpg';
-	if ( file_exists( $thumbfile ) ) {
-		$thumbnail = file_get_contents( $thumbfile );
-		$coverart = 'data:image/jpg;base64,'.base64_encode( $thumbnail );
-	} else {
-		$coverart = '';
-	}
-	$sortbookmark = stripLeading( $label );
-	$bookmarks[] = array( $sortbookmark, $label, $path, $coverart );
-}
 // library home blocks
 $blocks = array( // 'id' => array( 'path', 'icon', 'name' );
 	  'coverart'    => array( 'Coverart',     'coverart',     'CoverArt' )
@@ -70,28 +47,44 @@ foreach( $blocks as $id => $value ) {
 		</div>
 	';
 }
-if ( !$order ) {
-	usort( $bookmarks, function( $a, $b ) {
-		return strnatcmp( $a[ 0 ], $b[ 0 ] );
-	} );
-}
-foreach( $bookmarks as $bookmark ) {
-	if ( $bookmark[ 3 ] ) {
-		$namehtml = '<img class="bkcoverart" src="'.$bookmark[ 3 ].'">';
-		$hidelabel = ' hide';
-	} else {
-		$namehtml = '<i class="fa fa-bookmark"></i>';
-		$hidelabel = '';
+// bookmarks
+$bkmarks = $redis->hGetAll( 'bkmarks' );
+$order = $redis->hGet( 'display', 'order' );
+if ( count( $bkmarks ) ) {
+	foreach( $bkmarks as $label => $path ) {
+		$thumbfile = '/mnt/MPD/'.$path.'/thumbnail.jpg';
+		if ( file_exists( $thumbfile ) ) {
+			$thumbnail = file_get_contents( $thumbfile );
+			$coverart = 'data:image/jpg;base64,'.base64_encode( $thumbnail );
+		} else {
+			$coverart = '';
+		}
+		$sortbookmark = stripLeading( $label );
+		$bookmarks[] = array( $sortbookmark, $label, $path, $coverart );
 	}
-	$divblocks[ $bookmark[ 1 ] ] = '
-		<div class="divblock bookmark">
-			<div class="home-block home-bookmark">
-				<a class="lipath">'.$bookmark[ 2 ].'</a>
-				'.$namehtml.'
-				<div class="divbklabel"><span class="bklabel label'.$hidelabel.'">'.$bookmark[ 1 ].'</span></div>
+	if ( !$order ) {
+		usort( $bookmarks, function( $a, $b ) {
+			return strnatcmp( $a[ 0 ], $b[ 0 ] );
+		} );
+	}
+	foreach( $bookmarks as $bookmark ) {
+		if ( $bookmark[ 3 ] ) {
+			$namehtml = '<img class="bkcoverart" src="'.$bookmark[ 3 ].'">';
+			$hidelabel = ' hide';
+		} else {
+			$namehtml = '<i class="fa fa-bookmark"></i>';
+			$hidelabel = '';
+		}
+		$divblocks[ $bookmark[ 1 ] ] = '
+			<div class="divblock bookmark">
+				<div class="home-block home-bookmark">
+					<a class="lipath">'.$bookmark[ 2 ].'</a>
+					'.$namehtml.'
+					<div class="divbklabel"><span class="bklabel label'.$hidelabel.'">'.$bookmark[ 1 ].'</span></div>
+				</div>
 			</div>
-		</div>
-	';
+		';
+	}
 }
 if ( !$order ) {
 	$blockhtml = implode( $divblocks );
@@ -101,7 +94,7 @@ if ( !$order ) {
 		$blockhtml.= $divblocks[ $label ];
 	}
 }
-
+// browse by coverart
 $files = array_slice( scandir( '/srv/http/assets/img/coverarts' ), 2 );
 if ( count( $files ) ) {
 	foreach( $files as $file ) {
@@ -126,11 +119,14 @@ if ( count( $files ) ) {
 	} );
 	$index = array_keys( array_flip( $index ) );
 	$coverarthtml = '';
+	$time = time();
 	foreach( $lists as $list ) {
 		$licue = $list[ 5 ] ? '<a class="licue">'.$list[ 5 ].'</a>' : '';
 		$replace = array(  // #,? not allow in 'scr'
-			  '/\#/' => '%23'
-			, '/\?/' => '%3F'
+			  '/\#/'   => '%23'
+			, '/\?/'   => '%3F'
+			, '/jpg$/' => $time.'.jpg'
+			, '/svg$/' => $time.'.svg'
 		);
 		$filename = preg_replace( array_keys( $replace ), array_values( $replace ), $list[ 4 ] );
 		$coverartshtml.= '<div class="coverart">'
@@ -141,7 +137,7 @@ if ( count( $files ) ) {
 							.'<gr class="coverart2">'.( $list[ 3 ] ?: '&nbsp;' ).'</gr>'
 						.'</div>';
 	}
-	$coverartshtml.= '<a id="indexcover">'.implode( $index ).'</a><p></p>';
+	$coverartshtml.= '<a id="indexcover" data-index=\''.json_encode( $index ).'\'></a><p></p>';
 } else {
 	$coverarthtml = '';
 }
@@ -156,6 +152,15 @@ if ( $i % 2 === 0 ) {
 }
 $index = $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 
+function stripLeading( $string ) {
+	// strip articles | non utf-8 normal alphanumerics , fix: php strnatcmp ignores spaces + tilde for sort last
+	$names = strtoupper( strVal( $string ) );
+	return preg_replace(
+		  array( '/^A\s+|^AN\s+|^THE\s+|[^\w\p{L}\p{N}\p{Pd} ~]/u', '/\s+/' )
+		, array( '', '-' )
+		, $names
+	);
+}
 // context menus
 function menuli( $command, $icon, $label, $type = '' ) {
 	$type = $type ? ' data-type="'.$type.'"' : '';
@@ -253,8 +258,8 @@ $menudiv = '';
 $html = menucommon( 'genreadd', 'genreaddplay', 'genrereplace', 'genrereplaceplay' );
 $menu.= menudiv( 'genre', $html );
 $menu.= '</div>';
+?>
 
-	if ( empty( $this->uri(1) ) ) { ?>
 <div id="menu-top" class="hide">
 	<i id="menu-settings" class="fa fa-gear"></i><span id="badge" class="hide"></span>
 	<div id="playback-controls">
@@ -308,11 +313,6 @@ $menu.= '</div>';
 		<li id="tab-playlist"><a><i class="fa fa-list-ul"></i></a></li>
 	</ul>
 </div>
-<div id="splash"><img src="<?=$this->asset( '/img/runelogo.svg' )?>"></div>
-<div id="loader" class="hide"><img src="<?=$this->asset( '/img/runelogo.svg' )?>"></div>
-	<?php 
-	if ( file_exists('/srv/http/assets/js/lyrics.js') ) include 'lyricscontainer.php';
-	} ?>
 
 <div id="page-playback" class="page hide">
 	<div id="info">
@@ -342,7 +342,6 @@ $menu.= '</div>';
 	<div class="row" id="playback-row">
 		<div id="time-knob" class="playback-block">
 			<div id="time"></div>
-			<button id="playsource-open" class="btn btn-default btn-xs">MPD</button>
 			<div id="imode">
 				<i id="iaddons" class="fa fa-addons hide"></i>
 				<i id="iupdate" class="fa fa-library blink hide"></i>
@@ -389,7 +388,7 @@ $menu.= '</div>';
 		</div>
 		<div id="share-group">
 			<div class="btn-group">
-				<button id="overlay-social-open" class="btn btn-default btn-lg" type="button"><i class="fa fa-share"></i></button>
+				<button id="share" class="btn btn-default btn-lg" type="button"><i class="fa fa-share"></i></button>
 				<button id="bio-open" class="btn btn-default" type="button"><i class="fa fa-bio"></i></button>
 			</div>
 		</div>
@@ -411,6 +410,7 @@ $menu.= '</div>';
 		</div>
 	</div>
 </div>
+
 <div id="page-library" class="page hide">
 	<div class="btnlist btnlist-top">
 		<i id="db-searchbtn" class="fa fa-search"></i>
@@ -443,6 +443,7 @@ $menu.= '</div>';
 		<div id="divcoverarts" class="hide"><?=$coverartshtml ?></div>
 	</div>
 </div>
+
 <div id="page-playlist" class="page hide">
 	<div class="btnlist btnlist-top">
 		<div id="pl-home"><i class="fa fa-list-ul sx"></i></div>
@@ -489,28 +490,9 @@ $menu.= '</div>';
 		</div>
 	</div>
 </div>
-<?=$menu?>
-<div id="overlay-social" class="overlay-scale">
-    <nav>
-        <ul>
-            <li><span>Share This Track</span></li>
-            <li><a id="urlTwitter" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;" class="btn btn-default btn-lg btn-block share-twitter"><i class="fa fa-twitter sx"></i> Share on Twitter</a></li>
-            <li><a onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;" class="btn btn-default btn-lg btn-block share-facebook" href="https://www.facebook.com/sharer.php?u=http%3A%2F%2Fwww.runeaudio.com%2F&display=popup"><i class="fa fa-facebook sx"></i> Share on Facebook</a></li>
-            <li><a onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;" class="btn btn-default btn-lg btn-block share-google-plus" href="https://plus.google.com/share?url=http%3A%2F%2Fwww.runeaudio.com%2F"><i class="fa fa-google-plus sx"></i> Share on Google+</a></li>
-            <li><a class="btn btn-default btn-lg btn-block" href="http://www.runeaudio.com/support-us/" target="_blank"><i class="fa fa-heart sx"></i> Support RuneAudio</a></li>
-            <li><button id="overlay-social-close" class="btn btn-link" type="button"><i class="fa fa-times"></i> Close</button></li>
-        </ul>
-    </nav>
-</div>
-<div id="playsource" class="overlay-scale">
-    <nav>
-        <ul>
-            <li><span>Playback Source</span></li>
-			<li><a id="playsource-mpd" class="btn btn-default btn-lg btn-block"><i class="fa fa-mpd sx"></i> MPD</a></li>
-			<li><a id="playsource-spotify" class="btn btn-default btn-lg btn-block inactive"><i class="fa fa-spotify sx"></i> <span>spop</span> Spotify</a></li>
-			<li><a id="playsource-airplay" class="btn btn-default btn-lg btn-block inactive"><i class="fa fa-airplay sx"></i> <span>ShairPort</span> Airplay</a></li>
-			<li><a id="playsource-dlna" class="btn btn-default btn-lg btn-block inactive"><i class="fa fa-dlna sx"></i> <span>upmpdcli</span> DLNA</a></li>
-            <li><button id="playsource-close" class="btn btn-link" type="button"><i class="fa fa-times"></i> Close</button></li>
-        </ul>
-    </nav>
-</div>
+<div id="splash"><img src="<?=$this->asset( '/img/runelogo.svg' )?>"></div>
+<div id="loader" class="hide"><img src="<?=$this->asset( '/img/runelogo.svg' )?>"></div>
+<?php 
+if ( file_exists('/srv/http/assets/js/lyrics.js') ) include 'lyricscontainer.php';
+echo $menu;
+?>

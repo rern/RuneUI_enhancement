@@ -81,10 +81,10 @@ if ( navigator.userAgent.indexOf( 'Midori' ) !== -1 ) {
 	$( 'head' ).append( 
 		 '<style>'
 			+'.rs-outer:after { background: radial-gradient(200% 100% at 75% -50% ,hsla(0,0%,100%,.15) 50%,hsla(0,0%,100%,0) 50%) }'
-			+'#repeat, #overlay-social-open, #voldn { background: radial-gradient(250% 90% at 85% -80% ,hsla(0,0%,100%,.3) 50%,hsla(0,0%,100%,0) 53%) }'
+			+'#repeat, #voldn { background: radial-gradient(250% 90% at 85% -80% ,hsla(0,0%,100%,.3) 50%,hsla(0,0%,100%,0) 53%) }'
 			+'#random, #volmute { background: linear-gradient(to bottom, hsla(0,0%,100%,.3) 0%, hsla(0,0%,100%,.3) 45%, rgba(0,0,0,0) 56%,rgba(0,0,0,0) 100%) }'
 			+'#single, #bio-open, #volup { background: radial-gradient(500% 90% at 20% -205% ,hsla(0,0%,100%,.3) 50%,hsla(0,0%,100%,0) 51.5%) }'
-			+'#repeat, #overlay-social-open, #voldn, #random, #volmute, #single, #bio-open, #volup { background-color: #34495e }'
+			+'#repeat, #voldn, #random, #volmute, #single, #bio-open, #volup { background-color: #34495e }'
 			+'#play-group, #share-group, #vol-group { margin-top: 20px }'
 		+'</style>'
 		);
@@ -238,7 +238,7 @@ $( '#tab-library' ).click( function() {
 		GUI.dbbackdata = [];
 		renderLibrary();
 	} else if ( GUI.status.activePlayer === 'Airplay' ) {
-		$( '#playsource' ).addClass( 'open' );
+		$( '#timeTL' ).click();
 	} else {
 		switchPage( 'library' );
 	}
@@ -250,7 +250,7 @@ $( '#tab-playback' ).click( function() {
 $( '#tab-playlist' ).click( function() {
 	if ( GUI.playlist && GUI.pleditor ) GUI.pleditor = 0;
 	if ( GUI.status.activePlayer === 'Airplay' ) {
-		$( '#playsource' ).addClass( 'open' );
+		$( '#timeTL' ).click();
 		return
 	}
 	
@@ -314,6 +314,9 @@ $( '#db-entries, #pl-entries, #pl-editor' ).on( 'click', 'p', function() {
 	$( '#db-entries li, #pl-editor li' ).removeClass( 'active' );
 	$( '#pl-entries li' ).removeClass( 'lifocus' );
 	$( '.pl-remove' ).remove();
+} );
+$( '.home-block, #db-entries' ).click( function() {
+	$( '#db-search-close' ).click();
 } );
 // PLAYBACK /////////////////////////////////////////////////////////////////////////////////////
 $( '#song, #playlist-warning' ).on( 'click', 'i', function() {
@@ -501,8 +504,8 @@ $( '#coverTL' ).click( function() {
 	}, 'json' );
 } );
 var btnctrl = {
-	  timeTL : 'playsource-open'
-	, timeT   : 'guide'
+//	  timeTL  : ''
+	  timeT   : 'guide'
 	, timeTR  : 'menu'
 	, timeL   : 'previous'
 	, timeM   : 'play'
@@ -604,36 +607,51 @@ $( '.btn-cmd' ).click( function() {
 	}
 	$.post( 'enhance.php', { mpc: command } );
 } );
-$( '#playsource-open' ).click( function() {
-	$( '#playsource li a' ).addClass( 'inactive' );
-	$( '#playsource-'+ GUI.status.activePlayer.toLowerCase() ).removeClass( 'inactive' )
-	$( '#playsource' ).addClass( 'open' );
+$( '#timeTL' ).click( function() {
+	var active = GUI.status.activePlayer;
+	info( {
+		  icon    : 'source'
+		, title   : 'Playback Source'
+		, radio   : {
+			  '<i class="fa fa-mpd"></i>MPD'         : 'mpd'
+			, '<i class="fa fa-spotify"></i>Spotify' : 'spotify'
+			, '<i class="fa fa-airplay"></i>Airplay' : 'airplay'
+			, '<i class="fa fa-dlna"></i>DLNA'       : 'dlna'
+		}
+		, checked : active === 'MPD' ? 0 : ( active === 'spotify' ? 1 : ( active === 'airplay' ? 2 : 3 ) )
+		, cancel  : 1
+		, ok      : function() {
+			var source = $( '#infoRadio input[ type=radio ]:checked' ).val();
+			if ( source === 'mpd' ) {
+				$.post( 'enhance.php', { bash: '/usr/bin/systemctl restart shairport' } );
+			} else if ( source === 'spotify' ) {
+				$.post( 'enhance.php', { bash: '/usr/bin/redis-cli hget spotify enable' }, function( data ) {
+					if ( !data ) {
+						new PNotify( {
+							  icon  : 'fa fa-exclamation-circle'
+							, title : 'Spotify not enabled'
+							, text  : 'Enable in Settings menu'
+						} );
+					}
+				} );
+			}
+		}
+	} );
 } );
-$( '#playsource-close' ).click( function() {
-	$( '#playsource' ).removeClass( 'open' );
-} );
-$( '#overlay-social-open' ).click( function() {
-	$( '#overlay-social' ).addClass( 'open' );
-	var urlTwitter = 'https://twitter.com/home?status=Listening+to+' + GUI.status.Title.replace( /\s+/g, '+' ) +'+by+'+ GUI.status.Artist.replace( /\s+/g, '+' ) +'+on+%40RuneAudio+http%3A%2F%2Fwww.runeaudio.com%2F+%23nowplaying';
-	$( '#urlTwitter' ).attr( 'href', urlTwitter );
-} );
-$( '#overlay-social-close' ).click( function() {
-	$( '#overlay-social' ).removeClass( 'open' );
-} );
-$( '#playsource-mpd' ).click( function() {
-	$.post( 'enhance.php', { bash: '/usr/bin/systemctl restart shairport' } );
-	if ( GUI.status.activePlayer !== 'MPD' ) switchPlaysource( 'MPD' );
-} );
-$( '#playsource-spotify' ).click( function() {
-	$.post( 'enhance.php', { bash: '/usr/bin/redis-cli hget spotify enable' }, function( data ) {
-		if ( data ) {
-			switchPlaysource( 'Spotify' );
-		} else {
-			new PNotify( {
-				  icon  : 'fa fa-exclamation-circle'
-				, title : 'Spotify not enabled'
-				, text  : 'Enable in Settings menu'
-			} );
+$( '#share' ).click( function() {
+	info( {
+		  icon        : 'share'
+		, title       : 'Sharing'
+		, message     : 'Share this track:'
+		, buttonwidth : 1
+		, cancellabel : '<i class="fa fa-facebook"></i>Facebook'
+		, cancelcolor : '#4267b2'
+		, cancel  : function() {
+			windowopen( 'https://www.facebook.com/sharer.php?u=http%3A%2F%2Fwww.runeaudio.com%2F&display=popup' );
+		}
+		, oklabel     : '<i class="fa fa-twitter"></i>Twitter'
+		, ok          : function() {
+			windowopen( 'https://twitter.com/home?status=Listening+to+' + GUI.status.Title.replace( /\s+/g, '+' ) +'+by+'+ GUI.status.Artist.replace( /\s+/g, '+' ) +'+on+%40RuneAudio+http%3A%2F%2Fwww.runeaudio.com%2F+%23nowplaying' );
 		}
 	} );
 } );
@@ -678,13 +696,13 @@ $( '#db-currentpath' ).on( 'click', 'a', function() {
 $( '#db-webradio-new' ).click( function() {
 	webRadioNew();
 } );
-$( '#db-searchbtn' ).click( function() {
+$( '#db-searchbtn' ).click( function() { // icon
 	$( '#db-currentpath span, #db-back, #db-searchbtn' ).addClass( 'hide' );
 	$( '#db-search-close, #db-search, #dbsearchbtn' ).removeClass( 'hide' );
 	$( '#db-currentpath' ).css( 'max-width', '40px' );
 	$( '#db-search-keyword' ).focus();
 } );
-$( '#dbsearchbtn' ).click( function() {
+$( '#dbsearchbtn' ).click( function() { // search
 	var keyword = $( '#db-search-keyword' ).val();
 	if ( !keyword ) {
 		$( '#db-search-close' ).click();
@@ -755,7 +773,7 @@ $( '#db-back' ).click( function() {
 		var currentpath =  $( '#db-currentpath' ).find( '.lipath' ).text();
 		GUI.dbscrolltop[ currentpath ] = $( window ).scrollTop();
 		GUI.dbbackdata = [];
-		var index = $( '#indexcover' ).text().split( '' );
+		var index = $( '#indexcover' ).data().index;
 		index.forEach( function( index ) {
 			$( '#db-index .index-'+ index ).removeClass( 'gr' );
 		} );		$( '#divcoverarts, #db-index' ).removeClass( 'hide' );
@@ -796,7 +814,7 @@ $( '.home-block' ).click( function() {
 	var name = $this.find( '.bklabel' ).text();
 	GUI.plugin = $this.data( 'plugin' );
 	if ( id === 'home-spotify' && GUI.status.activePlayer !== 'Spotify' ) {
-		$( '#playsource' ).addClass( 'open' );
+		$( '#timeTL' ).click();
 	} else {
 		GUI.dblist = 1;
 		mutationLibrary.observe( observerLibrary, observerOption );
@@ -808,6 +826,49 @@ $( '.home-block' ).click( function() {
 			, plugin     : GUI.plugin
 		} );
 	}
+} );
+
+$( '#infoFileBox' ).change( function() {
+	var filename = this.files[ 0 ].name;
+	var reader = new FileReader();    // create filereader
+	reader.onload = function ( e ) {  // prepare onload callback
+		var base64img = e.target.result;
+		var img = new Image();
+		img.src = base64img;
+		img.onload = function () {
+			var imgW = img.width;
+			var imgH = img.height;
+			var coverart = $( '#db-entries li' ).length;
+			var imgWHhtml = '<div class="imagewh"><span>Current</span><span>'+ imgW +' x '+ imgH +'</span></div>';
+			$( '#infoFilename' ).empty();
+			$( '.newimg, .imagewh' ).remove();
+			if ( !coverart ) {
+				var px = 200;
+			} else {
+				if ( imgW > 1000 || imgH > 1000 ) {
+					var px = 1000;
+				} else {
+					var px = imgW < imgH ? imgW : imgH;
+				}
+			}
+			imgWHhtml += '<span>(Resized to '+ px +' x '+ px +' px)</span>';
+			var picacanvas = document.createElement( 'canvas' ); // create canvas object
+			picacanvas.width = picacanvas.height = px; // size of resized image
+			var picaOption = { // pica.js scaling: img to canvas
+				  unsharpAmount: 100  // 0...500 Default = 0 (try 50-100)
+				, unsharpThreshold: 5 // 0...100 Default = 0 (try 10)
+				, unsharpRadius: 0.6
+			//	, quality: 3          // 0...3 Default = 3 (Lanczos win=3)
+			//	, alpha: true         // Default = false (black crop background)
+			};
+			window.pica.resizeCanvas( img, picacanvas, picaOption, function() {
+				var resizedimg = picacanvas.toDataURL( 'image/jpeg', 0.9 ); // canvas -> base64 (jpg, qualtity)
+				$( '#infoMessage' ).append( '<img class="newimg" src="'+ resizedimg +'">'+ imgWHhtml );
+				GUI.newimg = resizedimg;
+			} );
+		}
+	}
+	reader.readAsDataURL( this.files[ 0 ] ); // load filereader
 } );
 $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - id changed on renamed
 	if ( $( '.edit' ).length && !$( e.target ).hasClass( 'edit' )  ) {
@@ -823,32 +884,31 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 	if ( $target.is( '.home-block-edit' ) ) {
 		bookmarkRename( name, path, $this );
 	} else if ( $target.is( '.home-block-cover' ) ) {
-		var icon = $this.find( 'img' ).length ? '<img src="'+ $this.find( 'img' ).prop( 'src' ) +'">' : '<i class="fa fa-bookmark fa-3x bl"></i>';
+		if ( $this.find( 'img' ).length ) {
+			var icon = '<img src="'+ $this.find( 'img' ).prop( 'src' ) +'">';
+		} else {
+			var icon = '<div class="infobookmark"><i class="fa fa-bookmark fa-3x bl"></i><br><span class="bklabel">'+ $this.find( '.bklabel' ).text() +'</span></div>';
+		}
 		info( {
-			  icon      : 'bookmark'
-			, title     : 'Bookmark Icon'
-			, message   : 'Replace:'
-						 +'<br>'+ icon
-			, msgalign  : 'center'
-			, filelabel : 'Ok'
-			, filetype  : '.jpg,.png,.tif,.gif,.svg'
-			, ok        : function() {
-				var file = $( '#infoFileBox' )[ 0 ].files[ 0 ];
-				var fd = new FormData();
-				fd.append( 'file', file );
-				var xhr = new XMLHttpRequest();
-				xhr.open( 'POST', 'addonsdl.php', true );
-				xhr.send( fd );
-				xhr.onreadystatechange = function() {
-					if ( xhr.readyState == 4 && xhr.status == 200 ) {
-						if ( xhr.responseText ) {
-							//opt += "'"+ file.name +"' ";
-							//sendcommand();
-						} else {
-							info( 'Upload image failed.' );
-						}
-					}
-				}
+			  icon        : 'bookmark'
+			, title       : 'Change Bookmark Icon'
+			, message     : 'Replace:'
+						   +'<br>'+ icon
+			, msgalign    : 'center'
+			, fileoklabel : 'Replace'
+			, cancel      : 1
+			, ok          : function() {
+				var bookmarkfile = '/mnt/MPD/'+ path +'/thumbnail.jpg';
+				$.post( 'enhance.php'
+					, { thumbfile : bookmarkfile, base64 : GUI.newimg }
+					, function() {
+						$this.find( '.fa-bookmark' ).remove();
+						$this.find( 'img' ).remove();
+						$this.find( '.bklabel' )
+							.addClass( 'hide' )
+							.before( '<img class="bkcoverart" src="'+ GUI.newimg +'">' );
+						GUI.newimg = '';
+				} );
 			}
 		} );
 	} else if ( $target.is( '.home-block-remove' ) ) {
@@ -919,7 +979,7 @@ $( '#home-coverart' ).click( function() { // fix - 'tap' also fire .coverart cli
 	$( '#home-blocks' ).addClass( 'hide' );
 	$( '#divcoverarts, #db-back, #db-index' ).removeClass( 'hide' );
 	$( '#db-index li' ).not( ':eq( 0 )' ).addClass( 'gr' );
-	var index = $( '#indexcover' ).text().split( '' );
+	var index = $( '#indexcover' ).data().index;
 	index.forEach( function( index ) {
 		$( '#db-index .index-'+ index ).removeClass( 'gr' );
 	} );
@@ -941,12 +1001,20 @@ $( '#home-coverart' ).click( function() { // fix - 'tap' also fire .coverart cli
 		return
 	}
 	
+	if ( !$( '#divcoverarts' ).html() ) {
+		var title = 'Create Coverart Thumbnails'
+		var message = 'A lot of albums will take a lot of time.'
+				 +'<br>(±200 album/minute)'
+				 +'<br>Continue?';
+	} else {
+		var title = 'Coverart Thumbnails Update'
+		var message = 'Find coverarts and update thumbnails?'
+					 +'<br>(skip existing thumbnails)'
+	}
 	info( {
 		  icon    : 'coverart'
-		, title   : 'Coverart Thumbnails Update'
-		, message : 'A lot of albums will take a lot of time.'
-					 +'<br>(±200 album/minute for initial scan)'
-					 +'<br>Continue?'
+		, title   : title
+		, message : message
 		, cancel  : 1
 		, ok      : function() {
 			$( 'body' ).append(
@@ -1024,38 +1092,67 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-remove', function() {
 	} );
 } );
 $( '#divcoverarts' ).on( 'tap', '.coverart-cover', function() {
-	var imgsrc = $( this ).parent().find( 'img' ).prop( 'src' );
+	var $this = $( this );
+	var $img = $this.parent().find( 'img' );
+	var imgsrc = $img.data( 'src' );
+	var thumbfile = imgsrc.slice( 0, -14 ) + imgsrc.slice( -3 ); // remove cache busting timestamp
 	info( {
-		  icon      : 'coverart'
-		, title     : 'Change Thumbnail'
-		, message   : 'Replace:'
-					 +'<br><img src="'+ imgsrc +'">'
-		, msgalign : 'center'
-		, filelabel : 'Ok'
-		, filetype  : '.jpg,.png,.tif,.gif,.svg'
-		, ok        : function() {
-			var file = $( '#infoFileBox' )[ 0 ].files[ 0 ];
-			var fd = new FormData();
-			fd.append( 'file', file );
-			var xhr = new XMLHttpRequest();
-			xhr.open( 'POST', 'addonsdl.php', true );
-			xhr.send( fd );
-			xhr.onreadystatechange = function() {
-				if ( xhr.readyState == 4 && xhr.status == 200 ) {
-					if ( xhr.responseText ) {
-						//opt += "'"+ file.name +"' ";
-						//sendcommand();
-					} else {
-						info( 'Upload image failed.' );
-					}
-				}
-			}
+		  icon        : 'coverart'
+		, title       : 'Change Thumbnail'
+		, message     : 'Replace:'
+					   +'<br><img src="'+ imgsrc +'">'
+		, msgalign    : 'center'
+		, fileoklabel : 'Replace'
+		, cancel      : 1
+		, ok          : function() {
+			$.post( 'enhance.php'
+				, { thumbfile: thumbfile, base64: GUI.newimg }
+				, function() {
+					$img.removeAttr( 'data-src' ); // lazyload 'data-src'
+					$img.attr( 'src', GUI.newimg );
+					GUI.newimg = '';
+			} );
 		}
 	} );
 } );
-$( '#db-entries' ).on( 'click', 'li', function( e ) {
+$( '#db-entries' ).on( 'tap', '.licover-cover',  function() {
 	var $this = $( this );
+	var $img = $this.prev();
+	var $thisli = $this.parent().parent();
+	var path = $thisli.next().find( '.lipath' ).text();
+	var coverfile = '/mnt/MPD/'+ path.substr( 0, path.lastIndexOf( '/' ) ) +'/cover.jpg';
+	info( {
+		  icon        : 'coverart'
+		, title       : 'Album Coverart'
+		, message     : 'Replace coverart of this album:'
+					   +'<br><img src="'+ $img.prop( 'src' ) +'">'
+		, msgalign    : 'center'
+		, fileoklabel : 'Replace'
+		, cancel      : function() {
+			$( '.licover-cover' ).remove();
+			$img.css( 'opacity', '' );
+		}
+		, ok          : function() {
+			$.post( 'enhance.php'
+				, { thumbfile: coverfile, base64: GUI.newimg }
+				, function() {
+					$img.attr( 'src', GUI.newimg );
+					GUI.newimg = '';
+					$( '.licover-cover' ).remove();
+					$img.css( 'opacity', '' );
+			} );
+		}
+	} );
+} );
+$( '#db-entries' ).on( 'taphold', '.licoverimg',  function() {
+	$this = $( this );
+//	$this.append( '<i class="licover-cover fa fa-coverart"></i>' );
+//	$this.find( 'img' ).css( 'opacity', '0.2' );
+} ).on( 'tap', 'li', function( e ) {
 	var $target = $( e.target )
+	if ( $target.hasClass( 'licover-cover' ) ) return
+	
+	var $this = $( this );
 	if ( $this.index() === 0 && $target.is( '.bioartist, .fa-artist, .fa-albumartist, .biocomposer, .fa-composer' ) ) {
 		var name = ( $target.is( '.biocomposer, .fa-composer' ) ) ? $this.find( '.biocomposer' ).text() : $this.find( '.bioartist' ).text();
 		getBio( name );
@@ -1128,7 +1225,6 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	if ( $this.attr( 'mode' ) === 'spotify' ) {
 		getData( {
 			  path      : GUI.currentpath +'/'+ $this.find( 'span' ).text()
-			, plugin    : 'Spotify'
 			, args      : path.toString()
 			, querytype : 'tracks'
 		} );
@@ -1136,7 +1232,6 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	} else if ( $this.attr( 'mode' ) === 'dirble' ) {
 		getData( {
 			  path      : GUI.currentpath +'/'+ $this.find( 'span' ).text()
-			, plugin    : 'Dirble'
 			, querytype : $this.hasClass( 'db-dirble-child' ) ? 'stations' : 'childs'
 			, args      : path
 		} );
@@ -1144,7 +1239,6 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 	} else if ( $this.attr( 'mode' ) === 'jamendo' ) {
 /*		getData( {
 			  path      : GUI.currentpath +'/'+ $this.find( 'span' ).text()
-			, plugin    : 'Jamendo'
 			, querytype : 'radio'
 			, args      : path
 		} );*/
@@ -1372,7 +1466,6 @@ $( '#pl-editor' ).on( 'click', 'li', function( e ) {
 			GUI.list.name = $thisli.find( '.liname' ).text();
 			GUI.list.path = $thisli.find( '.lipath' ).text();
 			var contextmenu = $thisli.find( '.pl-icon' ).data( 'target' );
-			console.log(contextmenu)
 			$( contextmenu ).find( 'a:eq( 1 )' ).click();
 			setTimeout( function() {
 				$thisli.removeClass( 'active' );
