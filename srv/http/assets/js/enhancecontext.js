@@ -236,13 +236,19 @@ function bookmarkVerify( name, path, oldname ) {
 }
 function bookmarkDelete( name, $block ) {
 	var src = $block.find( 'img' ).attr( 'src' );
-	var coverart = src ? '<img src="'+ src +'">' : '<i class="fa fa-bookmark fa-3x bl"></i>';
+	if ( src ) {
+		var icon = '<img src="'+ src +'">'
+				  +'<br>'+ name
+				  +'<br>&nbsp';
+	} else {
+		var icon = '<div class="infobookmark"><i class="fa fa-bookmark"></i><br><span class="bklabel">'+ $block.find( '.bklabel' ).text() +'</span></div>'
+				  +'<br>&nbsp';
+	}
 	info( {
 		  icon     : 'minus-circle'
 		, title    : 'Remove Bookmark'
 		, message  : 'Remove?'
-					+'<br>'+ coverart
-					+'<br><white>'+ name +'</white>'
+					+'<br>'+ icon
 		, msgalign : 'center'
 		, checkbox : src ? { 'Keep thumbnail file': 1 } : ''
 		, cancel   : 1
