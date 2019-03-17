@@ -624,12 +624,9 @@ $( '#timeTL' ).click( function() {
 			var source = $( '#infoRadio input[ type=radio ]:checked' ).val();
 			if ( source === 'mpd' ) {
 				$.post( 'enhance.php', { bash: '/usr/bin/systemctl restart shairport' } );
-				if ( GUI.status.activePlayer !== 'MPD' ) switchPlaysource( 'MPD' );
 			} else if ( source === 'spotify' ) {
 				$.post( 'enhance.php', { bash: '/usr/bin/redis-cli hget spotify enable' }, function( data ) {
-					if ( data ) {
-						switchPlaysource( 'Spotify' );
-					} else {
+					if ( !data ) {
 						new PNotify( {
 							  icon  : 'fa fa-exclamation-circle'
 							, title : 'Spotify not enabled'

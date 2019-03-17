@@ -608,13 +608,6 @@ function displayAirPlay() {
 		$( '#coverart, #share-group' ).css( 'width', '90%' );
 	}
 }
-function switchPlaysource( source ) {
-	$.get( '/command/?switchplayer='+ source, function() {
-		setTimeout( function() {
-			$( '#tab-playback' ).click();
-		}, 2000 );
-	} );
-}
 function windowopen( url ) {
 	window.open = (
 		  url
