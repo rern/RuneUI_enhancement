@@ -1230,9 +1230,15 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 				
 				var liname = inputArr.name;
 				var url = inputArr.streams[ 0 ].stream
+				var thumb = inputArr.image.thumb.url;
+				if ( thumb ) {
+					var iconhtml = '<img class="radiothumb db-icon" src="'+ thumb +'"  data-target="#context-menu-radio">'
+				} else {
+					var iconhtml = '<i class="fa fa-webradio db-icon" data-target="#context-menu-radio"></i>';
+				}
 				content = '<li mode="dirble">'
 						 +'<a class="lipath">'+ url +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
-						 +'<i class="fa fa-webradio db-icon" data-target="#context-menu-radio"></i>'
+						 + iconhtml
 						 +'<span class="li1">'+ liname +'&ensp;<span>( '+ inputArr.country +' )</span></span>'
 						 +'<span class="li2">'+ url +'</span>'
 			}
@@ -1241,7 +1247,7 @@ function data2html( inputArr, i, respType, inpath, querytype ) {
 			var liname = inputArr.dispname;
 			content = '<li mode="jamendo">'
 					 +'<a class="lipath">'+ inputArr.stream +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ inputArr.lisort +'</a>'
-					 +'<img class="jamendo-cover db-icon" src="'+ inputArr.image +'"  data-target="#context-menu-radio">'
+					 +'<img class="radiothumb db-icon" src="'+ inputArr.image +'"  data-target="#context-menu-radio">'
 					 +'<span class="single">'+ liname +'</span>'
 			break;
 	}
