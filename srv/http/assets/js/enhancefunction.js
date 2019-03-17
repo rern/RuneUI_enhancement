@@ -805,6 +805,7 @@ function getData( options ) {
 		return
 	}
 	
+	$( '#db-searchbtn' ).addClass( 'hide' );
 	if ( GUI.plugin === 'Spotify' ) {
 		$.post( '/db/?cmd=spotify', { plid: args }, function( data ) {
 			dataParse( data, path, querytype, arg );
