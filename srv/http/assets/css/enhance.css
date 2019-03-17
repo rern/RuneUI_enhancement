@@ -89,6 +89,8 @@
 .fa-jamendo:before { content: "\f55B" }
 .fa-lastfm:before { content: "\f55C" }
 .fa-youtube:before { content: "\f55D" }
+.fa-twitter:before { content: "\f52C" }
+.fa-facebook:before { content: "\f52D" }
 
 .fa-folder:before { content: "\f540" }
 .fa-folder-open:before { content: "\f541" }
