@@ -1371,6 +1371,16 @@ wh, gr { font-weight: 300; }
 .licover.active {
 	background: linear-gradient( #0000 189px, #0095d8 41px ) !important;
 }
+.licoverimg {
+	display: inline-block;
+	position: relative;
+}
+.licover-cover {
+	position: absolute;
+	bottom: 0;
+	right: 15px;
+	color: #e0e7ee !important;
+}
 .liinfo {
 	display: inline-block;
 	vertical-align: bottom;
