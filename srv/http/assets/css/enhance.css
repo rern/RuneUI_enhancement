@@ -521,7 +521,6 @@ wh, gr { font-weight: 300; }
 	100% { transform         : translateX( -100% ) }
 }
 /* ---------------------- knobs, buttons ----------------------*/
-#playsource-open { display: none; }
 #playback-row {
 	display: flex;
 	flex-flow: row wrap;
@@ -665,13 +664,9 @@ wh, gr { font-weight: 300; }
 #iupdate {
 	font-size: 14px;
 }
-#playsource-open,
 #elapsed,
 #total {
 	z-index: 5;
-}
-#playsource {
-	z-index: 10;
 }
 #elapsed,
 #volume {
@@ -824,10 +819,6 @@ wh, gr { font-weight: 300; }
 #share-group .btn-group:before {
 	width: 80px;
 }
-#overlay-social {
-	z-index: 15;
-}
-
 #repeat.btn-default.btn-primary,
 #random.btn-default.btn-primary,
 #single.btn-default.btn-primary,
@@ -836,7 +827,7 @@ wh, gr { font-weight: 300; }
 }
 /* glossy highlight */
 #repeat, 
-#overlay-social-open,
+#share,
 #voldn {
 	background: -webkit-radial-gradient(100% -50%, 300% 190%, hsla(0,0%,100%,.3) 50%, hsla(0,0%,100%,0) 53%); /* button highlight - last % for anti-alias edge*/
 	background: radial-gradient(225% 90% at 100% 0% ,hsla(0,0%,100%,.3) 50%,hsla(0,0%,100%,0) 55%); /* (Width% Heigth% at H-center_offset% V-center_offset%, hsla(0,0%,100%,1st-T) 1st-area%, hsla(0,0%,100%,2nd-T) 2nd-area%)) */
@@ -1692,178 +1683,6 @@ li.active .time {
 }
 .menu a.active {
 	background: #0095d8;
-}
-
-/* overlay menus */
-#overlay-social,
-#playsource {
-	position: fixed;
-	width: 100%;
-	height: 100%;
-	top: 0;
-	left: 0;
-	background: #10161c;
-}
-#overlay-social nav,
-#playsource nav {
-	text-align: center;
-	position: relative;
-	top: 50%;
-	height: 60%;
-	-webkit-transform: translateY(-50%);
-	transform: translateY(-50%);
-}
-#overlay-social ul,
-#playsource ul {
-	list-style: none;
-	padding: 0;
-	margin: 0 auto;
-	display: inline-block;
-	height: 340px;
-	position: relative;
-}
-#overlay-social ul li,
-#playsource ul li {
-	display: block;
-	height: 50px;
-	line-height: 60px;
-	margin: 0;
-	padding: 0;
-	-webkit-backface-visibility: hidden;
-	backface-visibility: hidden;
-}
-#overlay-social ul li span,
-#playsource ul li span {
-	font-size: 30px;
-	font-weight: 300;
-}
-#overlay-social ul li:last-child,
-#playsource ul li:last-child {
-	height: 20px;
-	line-height: 20px;
-}
-#overlay-social ul li a,
-#playsource ul li a {
-	font-size: 16px;
-	text-align: right;
-	border: 0;
-}
-#overlay-social ul li a.share-twitter,
-#playsource ul li a.share-twitter {
-	background: #55acee;
-}
-#overlay-social ul li a.share-twitter:hover,
-#playsource ul li a.share-twitter:hover,
-#overlay-social ul li a.share-twitter:focus,
-#playsource ul li a.share-twitter:focus {
-	background: #2795e9;
-}
-#overlay-social ul li a.share-facebook,
-#playsource ul li a.share-facebook {
-	background: #3B5998;
-}
-#overlay-social ul li a.share-facebook:hover,
-#playsource ul li a.share-facebook:hover,
-#overlay-social ul li a.share-facebook:focus,
-#playsource ul li a.share-facebook:focus {
-	background: #2d4373;
-}
-#overlay-social ul li a.share-google-plus,
-#playsource ul li a.share-google-plus {
-	background: #DD4B39;
-}
-#overlay-social ul li a.share-google-plus:hover,
-#playsource ul li a.share-google-plus:hover,
-#overlay-social ul li a.share-google-plus:focus,
-#playsource ul li a.share-google-plus:focus {
-	background: #c23321;
-}
-#overlay-social ul li a i,
-#playsource ul li a i {
-	display: block;
-	float: left;
-	margin: -1px 20px 0 -5px;
-	font-size: 26px;
-	text-align: center;
-}
-#overlay-social ul li a span,
-#playsource ul li a span {
-	padding-right: 5px;
-	font-size: 12px;
-}
-#overlay-social ul li a.inactive span,
-#playsource ul li a.inactive span {
-	color: #e0e7ee;
-}
-.overlay-scale {
-	visibility: hidden;
-	opacity: 0;
-}
-.overlay-scale.open {
-	visibility: visible;
-	opacity: 1;
-}
-.overlay-scale .btn-link:hover,
-.overlay-scale .btn-link:focus {
-	text-decoration: none;
-}
-#playsource-airplay {
-	background: #666;
-	outline: none;
-}
-#playsource-airplay:hover,
-#playsource-airplay:focus {
-	background: #4d4d4d;
-	cursor: default;
-}
-#playsource-dlna {
-	background: #4ca943;
-	outline: none;
-}
-#playsource-dlna:hover,
-#playsource-dlna:focus {
-	background: #3c8435;
-	cursor: default;
-}
-#playsource-mpd {
-	background: #003d88;
-}
-#playsource-mpd:hover,
-#playsource-mpd.inactive:hover,
-#playsource-mpd:focus {
-	background: #002655;
-}
-#playsource-spotify {
-	background: #81b900;
-}
-#playsource-spotify:hover,
-#playsource-spotify.inactive:hover,
-#playsource-spotify:focus {
-	background: #5d8600;
-}
-#playsource-airplay.inactive,
-#playsource-dlna.inactive,
-#playsource-mpd.inactive,
-#playsource-spotify.inactive {
-	opacity: 0.5;
-	background: #222f3d;
-}
-#playsource-mpd.inactive,
-#playsource-spotify.inactive {
-	opacity: 0.5;
-	background: #222f3d;
-}
-#playsource-mpd.inactive:hover,
-#playsource-spotify.inactive:hover {
-	opacity: 1;
-}
-#playsource-mpd.inactive:hover span,
-#playsource-spotify.inactive:hover span {
-	color: #e0e7ee;
-}
-#player-airplay.inactive:hover,
-#player-dlna.inactive:hover {
-	cursor: default;
 }
 
 /* bootstrap column */
