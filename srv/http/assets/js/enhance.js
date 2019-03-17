@@ -891,7 +891,7 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 		}
 		info( {
 			  icon        : 'bookmark'
-			, title       : 'Bookmark Icon'
+			, title       : 'Change Bookmark Icon'
 			, message     : 'Replace:'
 						   +'<br>'+ icon
 			, msgalign    : 'center'
@@ -1001,12 +1001,20 @@ $( '#home-coverart' ).click( function() { // fix - 'tap' also fire .coverart cli
 		return
 	}
 	
+	if ( !$( '#divcoverarts' ).html() ) {
+		var title = 'Create Coverart Thumbnails'
+		var message = 'A lot of albums will take a lot of time.'
+				 +'<br>(±200 album/minute)'
+				 +'<br>Continue?';
+	} else {
+		var title = 'Coverart Thumbnails Update'
+		var message = 'Find coverarts and update thumbnails?'
+					 +'<br>(skip existing thumbnails)'
+	}
 	info( {
 		  icon    : 'coverart'
-		, title   : 'Coverart Thumbnails Update'
-		, message : 'A lot of albums will take a lot of time.'
-					 +'<br>(±200 album/minute for initial scan)'
-					 +'<br>Continue?'
+		, title   : title
+		, message : message
 		, cancel  : 1
 		, ok      : function() {
 			$( 'body' ).append(
@@ -1113,10 +1121,9 @@ $( '#db-entries' ).on( 'tap', '.licover-cover',  function() {
 	var $thisli = $this.parent().parent();
 	var path = $thisli.next().find( '.lipath' ).text();
 	var coverfile = '/mnt/MPD/'+ path.substr( 0, path.lastIndexOf( '/' ) ) +'/cover.jpg';
-	console.log(coverfile)
 	info( {
 		  icon        : 'coverart'
-		, title       : 'Change Album Coverart'
+		, title       : 'Album Coverart'
 		, message     : 'Replace coverart of this album:'
 					   +'<br><img src="'+ $img.prop( 'src' ) +'">'
 		, msgalign    : 'center'
