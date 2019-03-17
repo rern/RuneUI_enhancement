@@ -185,6 +185,11 @@ wh, gr { font-weight: 300; }
 	margin: 10px 10px 0 10px;
 	padding-top: 20px;
 }
+.infobookmark i {
+	font-size: 3em;
+	color: #0095d8;
+	text-shadow: 2px 2px 4px #000000;
+}
 #album gr {
 	font-weight: normal;
  }
@@ -1376,6 +1381,9 @@ wh, gr { font-weight: 300; }
 .licoverimg {
 	display: inline-block;
 	position: relative;
+}
+.licoverimg img {
+	pointer-events: none;
 }
 .licover-cover {
 	position: absolute;
