@@ -258,8 +258,8 @@ $menudiv = '';
 $html = menucommon( 'genreadd', 'genreaddplay', 'genrereplace', 'genrereplaceplay' );
 $menu.= menudiv( 'genre', $html );
 $menu.= '</div>';
+?>
 
-	if ( empty( $this->uri(1) ) ) { ?>
 <div id="menu-top" class="hide">
 	<i id="menu-settings" class="fa fa-gear"></i><span id="badge" class="hide"></span>
 	<div id="playback-controls">
@@ -313,11 +313,6 @@ $menu.= '</div>';
 		<li id="tab-playlist"><a><i class="fa fa-list-ul"></i></a></li>
 	</ul>
 </div>
-<div id="splash"><img src="<?=$this->asset( '/img/runelogo.svg' )?>"></div>
-<div id="loader" class="hide"><img src="<?=$this->asset( '/img/runelogo.svg' )?>"></div>
-	<?php 
-	if ( file_exists('/srv/http/assets/js/lyrics.js') ) include 'lyricscontainer.php';
-	} ?>
 
 <div id="page-playback" class="page hide">
 	<div id="info">
@@ -416,6 +411,7 @@ $menu.= '</div>';
 		</div>
 	</div>
 </div>
+
 <div id="page-library" class="page hide">
 	<div class="btnlist btnlist-top">
 		<i id="db-searchbtn" class="fa fa-search"></i>
@@ -448,6 +444,7 @@ $menu.= '</div>';
 		<div id="divcoverarts" class="hide"><?=$coverartshtml ?></div>
 	</div>
 </div>
+
 <div id="page-playlist" class="page hide">
 	<div class="btnlist btnlist-top">
 		<div id="pl-home"><i class="fa fa-list-ul sx"></i></div>
@@ -494,7 +491,12 @@ $menu.= '</div>';
 		</div>
 	</div>
 </div>
-<?=$menu?>
+<div id="splash"><img src="<?=$this->asset( '/img/runelogo.svg' )?>"></div>
+<div id="loader" class="hide"><img src="<?=$this->asset( '/img/runelogo.svg' )?>"></div>
+	<?php 
+		if ( file_exists('/srv/http/assets/js/lyrics.js') ) include 'lyricscontainer.php';
+		echo $menu;
+	?>
 <div id="overlay-social" class="overlay-scale">
     <nav>
         <ul>
