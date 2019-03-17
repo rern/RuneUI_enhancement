@@ -863,7 +863,7 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 		if ( $this.find( 'img' ).length ) {
 			var icon = '<img src="'+ $this.find( 'img' ).prop( 'src' ) +'">';
 		} else {
-			var icon = '<div class="infobookmark"><i class="fa fa-bookmark fa-3x bl"></i><br><w>'+ $this.find( '.bklabel' ).text() +'</w></div>';
+			var icon = '<div class="infobookmark"><i class="fa fa-bookmark fa-3x bl"></i><br><span class="bklabel">'+ $this.find( '.bklabel' ).text() +'</span></div>';
 		}
 		info( {
 			  icon        : 'bookmark'
