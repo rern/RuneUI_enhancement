@@ -342,7 +342,6 @@ $menu.= '</div>';
 	<div class="row" id="playback-row">
 		<div id="time-knob" class="playback-block">
 			<div id="time"></div>
-			<button id="playsource-open" class="btn btn-default btn-xs">MPD</button>
 			<div id="imode">
 				<i id="iaddons" class="fa fa-addons hide"></i>
 				<i id="iupdate" class="fa fa-library blink hide"></i>
@@ -389,7 +388,7 @@ $menu.= '</div>';
 		</div>
 		<div id="share-group">
 			<div class="btn-group">
-				<button id="overlay-social-open" class="btn btn-default btn-lg" type="button"><i class="fa fa-share"></i></button>
+				<button id="share" class="btn btn-default btn-lg" type="button"><i class="fa fa-share"></i></button>
 				<button id="bio-open" class="btn btn-default" type="button"><i class="fa fa-bio"></i></button>
 			</div>
 		</div>
@@ -493,31 +492,7 @@ $menu.= '</div>';
 </div>
 <div id="splash"><img src="<?=$this->asset( '/img/runelogo.svg' )?>"></div>
 <div id="loader" class="hide"><img src="<?=$this->asset( '/img/runelogo.svg' )?>"></div>
-	<?php 
-		if ( file_exists('/srv/http/assets/js/lyrics.js') ) include 'lyricscontainer.php';
-		echo $menu;
-	?>
-<div id="overlay-social" class="overlay-scale">
-    <nav>
-        <ul>
-            <li><span>Share This Track</span></li>
-            <li><a id="urlTwitter" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;" class="btn btn-default btn-lg btn-block share-twitter"><i class="fa fa-twitter sx"></i> Share on Twitter</a></li>
-            <li><a onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;" class="btn btn-default btn-lg btn-block share-facebook" href="https://www.facebook.com/sharer.php?u=http%3A%2F%2Fwww.runeaudio.com%2F&display=popup"><i class="fa fa-facebook sx"></i> Share on Facebook</a></li>
-            <li><a onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;" class="btn btn-default btn-lg btn-block share-google-plus" href="https://plus.google.com/share?url=http%3A%2F%2Fwww.runeaudio.com%2F"><i class="fa fa-google-plus sx"></i> Share on Google+</a></li>
-            <li><a class="btn btn-default btn-lg btn-block" href="http://www.runeaudio.com/support-us/" target="_blank"><i class="fa fa-heart sx"></i> Support RuneAudio</a></li>
-            <li><button id="overlay-social-close" class="btn btn-link" type="button"><i class="fa fa-times"></i> Close</button></li>
-        </ul>
-    </nav>
-</div>
-<div id="playsource" class="overlay-scale">
-    <nav>
-        <ul>
-            <li><span>Playback Source</span></li>
-			<li><a id="playsource-mpd" class="btn btn-default btn-lg btn-block"><i class="fa fa-mpd sx"></i> MPD</a></li>
-			<li><a id="playsource-spotify" class="btn btn-default btn-lg btn-block inactive"><i class="fa fa-spotify sx"></i> <span>spop</span> Spotify</a></li>
-			<li><a id="playsource-airplay" class="btn btn-default btn-lg btn-block inactive"><i class="fa fa-airplay sx"></i> <span>ShairPort</span> Airplay</a></li>
-			<li><a id="playsource-dlna" class="btn btn-default btn-lg btn-block inactive"><i class="fa fa-dlna sx"></i> <span>upmpdcli</span> DLNA</a></li>
-            <li><button id="playsource-close" class="btn btn-link" type="button"><i class="fa fa-times"></i> Close</button></li>
-        </ul>
-    </nav>
-</div>
+<?php 
+if ( file_exists('/srv/http/assets/js/lyrics.js') ) include 'lyricscontainer.php';
+echo $menu;
+?>
