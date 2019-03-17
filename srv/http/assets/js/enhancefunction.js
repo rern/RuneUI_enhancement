@@ -596,8 +596,6 @@ function displayAirPlay() {
 	$( '#playback-row' ).removeClass( 'hide' );
 	$( '#time-knob' ).toggleClass( 'hide', GUI.display.time === '' );
 	$( '#irandom, #irepeat, #posrandom, #posrepeat, #coverartoverlay, #volume-knob, #play-group, #share-group, #vol-group' ).addClass( 'hide' );
-	$( '#playsource-mpd' ).addClass( 'inactive' );
-	$( '#playsource-airplay' ).removeClass( 'inactive' );
 	if ( GUI.display.time ) {
 		$( '#time-knob, #play-group, #coverart, #share-group' ).css( 'width', '45%' );
 		clearInterval( GUI.intKnob );
@@ -614,11 +612,19 @@ function switchPlaysource( source ) {
 	$.get( '/command/?switchplayer='+ source, function() {
 		setTimeout( function() {
 			$( '#tab-playback' ).click();
-			$( '#playsource li a' ).addClass( 'inactive' );
-			$( '#playsource-'+ source.toLowerCase() ).removeClass( 'inactive' )
-			$( '#playsource-close' ).click();
 		}, 2000 );
 	} );
+}
+function windowopen( url ) {
+	window.open = (
+		  url
+		, 'menubar=no'
+		, 'toolbar=no'
+		, 'resizable=yes'
+		, 'scrollbars=yes'
+		, 'height=600'
+		, 'width=600'
+	);
 }
 function displayIndexBar() {
 	setTimeout( function() {

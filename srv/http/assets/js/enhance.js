@@ -81,10 +81,10 @@ if ( navigator.userAgent.indexOf( 'Midori' ) !== -1 ) {
 	$( 'head' ).append( 
 		 '<style>'
 			+'.rs-outer:after { background: radial-gradient(200% 100% at 75% -50% ,hsla(0,0%,100%,.15) 50%,hsla(0,0%,100%,0) 50%) }'
-			+'#repeat, #overlay-social-open, #voldn { background: radial-gradient(250% 90% at 85% -80% ,hsla(0,0%,100%,.3) 50%,hsla(0,0%,100%,0) 53%) }'
+			+'#repeat, #voldn { background: radial-gradient(250% 90% at 85% -80% ,hsla(0,0%,100%,.3) 50%,hsla(0,0%,100%,0) 53%) }'
 			+'#random, #volmute { background: linear-gradient(to bottom, hsla(0,0%,100%,.3) 0%, hsla(0,0%,100%,.3) 45%, rgba(0,0,0,0) 56%,rgba(0,0,0,0) 100%) }'
 			+'#single, #bio-open, #volup { background: radial-gradient(500% 90% at 20% -205% ,hsla(0,0%,100%,.3) 50%,hsla(0,0%,100%,0) 51.5%) }'
-			+'#repeat, #overlay-social-open, #voldn, #random, #volmute, #single, #bio-open, #volup { background-color: #34495e }'
+			+'#repeat, #voldn, #random, #volmute, #single, #bio-open, #volup { background-color: #34495e }'
 			+'#play-group, #share-group, #vol-group { margin-top: 20px }'
 		+'</style>'
 		);
@@ -238,7 +238,7 @@ $( '#tab-library' ).click( function() {
 		GUI.dbbackdata = [];
 		renderLibrary();
 	} else if ( GUI.status.activePlayer === 'Airplay' ) {
-		$( '#playsource' ).addClass( 'open' );
+		$( '#timeTL' ).click();
 	} else {
 		switchPage( 'library' );
 	}
@@ -250,7 +250,7 @@ $( '#tab-playback' ).click( function() {
 $( '#tab-playlist' ).click( function() {
 	if ( GUI.playlist && GUI.pleditor ) GUI.pleditor = 0;
 	if ( GUI.status.activePlayer === 'Airplay' ) {
-		$( '#playsource' ).addClass( 'open' );
+		$( '#timeTL' ).click();
 		return
 	}
 	
@@ -501,8 +501,8 @@ $( '#coverTL' ).click( function() {
 	}, 'json' );
 } );
 var btnctrl = {
-	  timeTL : 'playsource-open'
-	, timeT   : 'guide'
+//	  timeTL  : ''
+	  timeT   : 'guide'
 	, timeTR  : 'menu'
 	, timeL   : 'previous'
 	, timeM   : 'play'
@@ -604,36 +604,59 @@ $( '.btn-cmd' ).click( function() {
 	}
 	$.post( 'enhance.php', { mpc: command } );
 } );
-$( '#playsource-open' ).click( function() {
-	$( '#playsource li a' ).addClass( 'inactive' );
-	$( '#playsource-'+ GUI.status.activePlayer.toLowerCase() ).removeClass( 'inactive' )
-	$( '#playsource' ).addClass( 'open' );
+$( '#timeTL' ).click( function() {
+	var active = GUI.status.activePlayer;
+	info( {
+		  icon    : 'source'
+		, title   : 'Playback Source'
+		, radio   : {
+			  '<i class="fa fa-mpd"></i>MPD'         : 'mpd'
+			, '<i class="fa fa-spotify"></i>Spotify' : 'spotify'
+			, '<i class="fa fa-airplay"></i>Airplay' : 'airplay'
+			, '<i class="fa fa-dlna"></i>DLNA'       : 'dlna'
+		}
+		, checked : active === 'MPD' ? 0 : ( active === 'spotify' ? 1 : ( active === 'airplay' ? 2 : 3 ) )
+		, cancel  : 1
+		, ok      : function() {
+			var source = $( '#infoRadio input[ type=radio ]:checked' ).val();
+			if ( source === 'mpd' ) {
+				$.post( 'enhance.php', { bash: '/usr/bin/systemctl restart shairport' } );
+				if ( GUI.status.activePlayer !== 'MPD' ) switchPlaysource( 'MPD' );
+			} else if ( source === 'spotify' ) {
+				$.post( 'enhance.php', { bash: '/usr/bin/redis-cli hget spotify enable' }, function( data ) {
+					if ( data ) {
+						switchPlaysource( 'Spotify' );
+					} else {
+						new PNotify( {
+							  icon  : 'fa fa-exclamation-circle'
+							, title : 'Spotify not enabled'
+							, text  : 'Enable in Settings menu'
+						} );
+					}
+				} );
+			}
+		}
+	} );
 } );
-$( '#playsource-close' ).click( function() {
-	$( '#playsource' ).removeClass( 'open' );
-} );
-$( '#overlay-social-open' ).click( function() {
-	$( '#overlay-social' ).addClass( 'open' );
-	var urlTwitter = 'https://twitter.com/home?status=Listening+to+' + GUI.status.Title.replace( /\s+/g, '+' ) +'+by+'+ GUI.status.Artist.replace( /\s+/g, '+' ) +'+on+%40RuneAudio+http%3A%2F%2Fwww.runeaudio.com%2F+%23nowplaying';
-	$( '#urlTwitter' ).attr( 'href', urlTwitter );
-} );
-$( '#overlay-social-close' ).click( function() {
-	$( '#overlay-social' ).removeClass( 'open' );
-} );
-$( '#playsource-mpd' ).click( function() {
-	$.post( 'enhance.php', { bash: '/usr/bin/systemctl restart shairport' } );
-	if ( GUI.status.activePlayer !== 'MPD' ) switchPlaysource( 'MPD' );
-} );
-$( '#playsource-spotify' ).click( function() {
-	$.post( 'enhance.php', { bash: '/usr/bin/redis-cli hget spotify enable' }, function( data ) {
-		if ( data ) {
-			switchPlaysource( 'Spotify' );
-		} else {
-			new PNotify( {
-				  icon  : 'fa fa-exclamation-circle'
-				, title : 'Spotify not enabled'
-				, text  : 'Enable in Settings menu'
-			} );
+$( '#share' ).click( function() {
+	info( {
+		  icon    : 'share'
+		, title   : 'Sharing'
+		, radio   : {
+			  '<i class="fa fa-twitter"></i>Twitter'   : 'twitter'
+			, '<i class="fa fa-facebook"></i>Facebook' : 'facebook'
+			, '<i class="fa fa-google"></i>Google+'    : 'google'
+		}
+		, cancel  : 1
+		, ok      : function() {
+			var source = $( '#infoRadio input[ type=radio ]:checked' ).val();
+			if ( source === 'twitter' ) {
+				windowopen( 'https://twitter.com/home?status=Listening+to+' + GUI.status.Title.replace( /\s+/g, '+' ) +'+by+'+ GUI.status.Artist.replace( /\s+/g, '+' ) +'+on+%40RuneAudio+http%3A%2F%2Fwww.runeaudio.com%2F+%23nowplaying' );
+			} else if ( source === 'facebook' ) {
+				windowopen( 'https://www.facebook.com/sharer.php?u=http%3A%2F%2Fwww.runeaudio.com%2F&display=popup' );
+			} else if ( source === 'google' ) {
+				windowopen( 'https://plus.google.com/share?url=http%3A%2F%2Fwww.runeaudio.com%2F' );
+			}
 		}
 	} );
 } );
@@ -796,7 +819,7 @@ $( '.home-block' ).click( function() {
 	var name = $this.find( '.bklabel' ).text();
 	GUI.plugin = $this.data( 'plugin' );
 	if ( id === 'home-spotify' && GUI.status.activePlayer !== 'Spotify' ) {
-		$( '#playsource' ).addClass( 'open' );
+		$( '#timeTL' ).click();
 	} else {
 		GUI.dblist = 1;
 		mutationLibrary.observe( observerLibrary, observerOption );
