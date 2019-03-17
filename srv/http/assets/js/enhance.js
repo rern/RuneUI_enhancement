@@ -643,13 +643,15 @@ $( '#share' ).click( function() {
 		  icon        : 'share'
 		, title       : 'Sharing'
 		, message     : 'Share this track:'
-		, cancellabel : '<i class="fa fa-twitter"></i>Twitter'
+		, buttonwidth : 1
+		, cancellabel : '<i class="fa fa-facebook"></i>Facebook'
+		, cancelcolor : '#4267b2'
 		, cancel  : function() {
-			windowopen( 'https://twitter.com/home?status=Listening+to+' + GUI.status.Title.replace( /\s+/g, '+' ) +'+by+'+ GUI.status.Artist.replace( /\s+/g, '+' ) +'+on+%40RuneAudio+http%3A%2F%2Fwww.runeaudio.com%2F+%23nowplaying' );
-		}
-		, oklabel     : '<i class="fa fa-facebook"></i>Facebook'
-		, ok          : function() {
 			windowopen( 'https://www.facebook.com/sharer.php?u=http%3A%2F%2Fwww.runeaudio.com%2F&display=popup' );
+		}
+		, oklabel     : '<i class="fa fa-twitter"></i>Twitter'
+		, ok          : function() {
+			windowopen( 'https://twitter.com/home?status=Listening+to+' + GUI.status.Title.replace( /\s+/g, '+' ) +'+by+'+ GUI.status.Artist.replace( /\s+/g, '+' ) +'+on+%40RuneAudio+http%3A%2F%2Fwww.runeaudio.com%2F+%23nowplaying' );
 		}
 	} );
 } );
