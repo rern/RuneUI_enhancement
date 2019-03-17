@@ -935,7 +935,7 @@ function dataParse( data, path, plugin, querytype, arg ) {
 				var genrehtml = genre && genre !== -1 ? '<span><i class="fa fa-genre"></i>'+ genre +'</span><br>' : '';
 				content += '<li class="licover">'
 						  +'<a class="lipath">'+ path +'</a><a class="liname">'+ path.replace(/^.*\//, '') +'</a>'
-						  +'<img src="'+ coverart +'" class="coversmall">'
+						  +'<div class="licoverimg"><img src="'+ coverart +'" class="coversmall"></div>'
 						  +'<span class="liinfo">'
 							  +'<bl class="lialbum">'+ album +'</bl><br>'
 							  + composerhtml
@@ -1498,7 +1498,7 @@ function htmlPlaylist( data ) {
 		var genrehtml = genre && genre !== -1 ? '<span><i class="fa fa-genre"></i>'+ genre +'</span><br>' : '';
 		var licover = '<li class="licover">'
 						 +'<a class="lipath">'+ path +'</a><a class="liname">'+ path.replace(/^.*\//, '') +'</a>'
-						 +'<img src="'+ coverart +'" class="coversmall">'
+						 +'<div class="licoverimg"><img src="'+ coverart +'" class="coversmall"></div>'
 						 +'<span class="liinfo">'
 							+'<bl class="lialbum">'+ album +'</bl><br>'
 							+ composerhtml

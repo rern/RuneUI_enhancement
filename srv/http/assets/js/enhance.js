@@ -1106,9 +1106,41 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-cover', function() {
 		}
 	} );
 } );
-$( '#db-entries' ).on( 'click', 'li', function( e ) {
+$( '#db-entries' ).on( 'tap', '.licover-cover',  function() {
 	var $this = $( this );
+	var $img = $this.prev();
+	var $thisli = $this.parent().parent();
+	var path = $thisli.next().find( '.lipath' ).text();
+	var coverfile = '/mnt/MPD/'+ path.substr( 0, path.lastIndexOf( '/' ) ) +'/cover.jpg';
+	console.log(coverfile)
+	info( {
+		  icon        : 'coverart'
+		, title       : 'Change Album Coverart'
+		, message     : 'Replace coverart of this album:'
+					   +'<br><img src="'+ $img.prop( 'src' ) +'">'
+		, msgalign    : 'center'
+		, fileoklabel : 'Replace'
+		, cancel      : function() {
+			$( '.licover-cover' ).remove();
+		}
+		, ok          : function() {
+			$.post( 'enhance.php'
+				, { thumbfile: coverfile, base64: GUI.newimg }
+				, function() {
+					$img.attr( 'src', GUI.newimg );
+					GUI.newimg = '';
+					$( '.licover-cover' ).remove();
+			} );
+		}
+	} );
+} );
+$( '#db-entries' ).on( 'taphold', '.licoverimg',  function() {
+	$( this ).append( '<i class="licover-cover fa fa-coverart"></i>' );
+} ).on( 'tap', 'li', function( e ) {
 	var $target = $( e.target )
+	if ( $target.hasClass( 'licover-cover' ) ) return
+	
+	var $this = $( this );
 	if ( $this.index() === 0 && $target.is( '.bioartist, .fa-artist, .fa-albumartist, .biocomposer, .fa-composer' ) ) {
 		var name = ( $target.is( '.biocomposer, .fa-composer' ) ) ? $this.find( '.biocomposer' ).text() : $this.find( '.bioartist' ).text();
 		getBio( name );
@@ -1202,10 +1234,6 @@ $( '#db-entries' ).on( 'click', 'li', function( e ) {
 			, args      : path
 		} );*/
 	}
-} );
-$( '#db-entries' ).on( 'taphold', '.licover img',  function() {
-	//alert($( this ).prop('src'))
-	$( this ).next( '<i class="edit coverart-cover fa fa-coverart"></i>' );
 } );
 $( '#db-index li' ).click( function() {
 	var $this = $( this );
