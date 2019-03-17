@@ -640,23 +640,16 @@ $( '#timeTL' ).click( function() {
 } );
 $( '#share' ).click( function() {
 	info( {
-		  icon    : 'share'
-		, title   : 'Sharing'
-		, radio   : {
-			  '<i class="fa fa-twitter"></i>Twitter'   : 'twitter'
-			, '<i class="fa fa-facebook"></i>Facebook' : 'facebook'
-			, '<i class="fa fa-google"></i>Google+'    : 'google'
+		  icon        : 'share'
+		, title       : 'Sharing'
+		, message     : 'Share this track:'
+		, cancellabel : '<i class="fa fa-twitter"></i>Twitter'
+		, cancel  : function() {
+			windowopen( 'https://twitter.com/home?status=Listening+to+' + GUI.status.Title.replace( /\s+/g, '+' ) +'+by+'+ GUI.status.Artist.replace( /\s+/g, '+' ) +'+on+%40RuneAudio+http%3A%2F%2Fwww.runeaudio.com%2F+%23nowplaying' );
 		}
-		, cancel  : 1
-		, ok      : function() {
-			var source = $( '#infoRadio input[ type=radio ]:checked' ).val();
-			if ( source === 'twitter' ) {
-				windowopen( 'https://twitter.com/home?status=Listening+to+' + GUI.status.Title.replace( /\s+/g, '+' ) +'+by+'+ GUI.status.Artist.replace( /\s+/g, '+' ) +'+on+%40RuneAudio+http%3A%2F%2Fwww.runeaudio.com%2F+%23nowplaying' );
-			} else if ( source === 'facebook' ) {
-				windowopen( 'https://www.facebook.com/sharer.php?u=http%3A%2F%2Fwww.runeaudio.com%2F&display=popup' );
-			} else if ( source === 'google' ) {
-				windowopen( 'https://plus.google.com/share?url=http%3A%2F%2Fwww.runeaudio.com%2F' );
-			}
+		, oklabel     : '<i class="fa fa-facebook"></i>Facebook'
+		, ok          : function() {
+			windowopen( 'https://www.facebook.com/sharer.php?u=http%3A%2F%2Fwww.runeaudio.com%2F&display=popup' );
 		}
 	} );
 } );
