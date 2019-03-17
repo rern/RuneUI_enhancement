@@ -126,6 +126,7 @@ if ( count( $files ) ) {
 			  '/\#/'   => '%23'
 			, '/\?/'   => '%3F'
 			, '/jpg$/' => $time.'.jpg'
+			, '/svg$/' => $time.'.svg'
 		);
 		$filename = preg_replace( array_keys( $replace ), array_values( $replace ), $list[ 4 ] );
 		$coverartshtml.= '<div class="coverart">'
