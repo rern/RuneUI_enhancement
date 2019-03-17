@@ -315,6 +315,9 @@ $( '#db-entries, #pl-entries, #pl-editor' ).on( 'click', 'p', function() {
 	$( '#pl-entries li' ).removeClass( 'lifocus' );
 	$( '.pl-remove' ).remove();
 } );
+$( '.home-block, #db-entries' ).click( function() {
+	$( '#db-search-close' ).click();
+} );
 // PLAYBACK /////////////////////////////////////////////////////////////////////////////////////
 $( '#song, #playlist-warning' ).on( 'click', 'i', function() {
 	$( '#tab-library' ).click();
@@ -696,13 +699,13 @@ $( '#db-currentpath' ).on( 'click', 'a', function() {
 $( '#db-webradio-new' ).click( function() {
 	webRadioNew();
 } );
-$( '#db-searchbtn' ).click( function() {
+$( '#db-searchbtn' ).click( function() { // icon
 	$( '#db-currentpath span, #db-back, #db-searchbtn' ).addClass( 'hide' );
 	$( '#db-search-close, #db-search, #dbsearchbtn' ).removeClass( 'hide' );
 	$( '#db-currentpath' ).css( 'max-width', '40px' );
 	$( '#db-search-keyword' ).focus();
 } );
-$( '#dbsearchbtn' ).click( function() {
+$( '#dbsearchbtn' ).click( function() { // search
 	var keyword = $( '#db-search-keyword' ).val();
 	if ( !keyword ) {
 		$( '#db-search-close' ).click();
@@ -1225,7 +1228,6 @@ $( '#db-entries' ).on( 'taphold', '.licoverimg',  function() {
 	if ( $this.attr( 'mode' ) === 'spotify' ) {
 		getData( {
 			  path      : GUI.currentpath +'/'+ $this.find( 'span' ).text()
-			, plugin    : 'Spotify'
 			, args      : path.toString()
 			, querytype : 'tracks'
 		} );
@@ -1233,7 +1235,6 @@ $( '#db-entries' ).on( 'taphold', '.licoverimg',  function() {
 	} else if ( $this.attr( 'mode' ) === 'dirble' ) {
 		getData( {
 			  path      : GUI.currentpath +'/'+ $this.find( 'span' ).text()
-			, plugin    : 'Dirble'
 			, querytype : $this.hasClass( 'db-dirble-child' ) ? 'stations' : 'childs'
 			, args      : path
 		} );
@@ -1241,7 +1242,6 @@ $( '#db-entries' ).on( 'taphold', '.licoverimg',  function() {
 	} else if ( $this.attr( 'mode' ) === 'jamendo' ) {
 /*		getData( {
 			  path      : GUI.currentpath +'/'+ $this.find( 'span' ).text()
-			, plugin    : 'Jamendo'
 			, querytype : 'radio'
 			, args      : path
 		} );*/

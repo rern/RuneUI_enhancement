@@ -724,7 +724,6 @@ function getData( options ) {
 	}
 	var cmd = options.cmd || 'browse',
 		browsemode = options.browsemode || 'file',
-		plugin = options.plugin || '',
 		querytype = options.querytype || '',
 		args = options.args || '',
 		artist = options.artist ? options.artist.toString().replace( /"/g, '\"' ) : '',
@@ -737,7 +736,6 @@ function getData( options ) {
 		GUI.dbbackdata.push( {
 			  path       : path
 			, browsemode : browsemode
-			, plugin     : plugin
 			, args       : args
 			, querytype  : querytype
 		} );
@@ -756,7 +754,7 @@ function getData( options ) {
 	var keyword = $( '#db-search-keyword' ).val();
 	keyword = keyword ? keyword.toString().replace( /"/g, '\"' ) : '';
 	GUI.browsemode = browsemode;
-	if ( !plugin ) {
+	if ( !GUI.plugin ) {
 		var command = {
 			  file          : { mpc   : 'mpc ls -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" "'+ path +'" 2> /dev/null', list: 'file' }
 			, artistalbum   : { mpc   : 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%"'+ ( artist ? ' artist "'+ artist +'"' : '' ) +' album "'+ path +'"', list: 'file', name: path }
@@ -772,14 +770,7 @@ function getData( options ) {
 			, coverart      : { coverartalbum : path, artist: artist }
 		}
 		if ( cmd === 'search' ) {
-			if ( path.match(/Dirble/)) {
-				$.post( '/db/?cmd=dirble', { querytype: 'search', args: keyword }, function( data ) {
-					dataParse( data, path, 'Dirble', 'search' );
-				}, 'json' );
-				return
-			} else {
-				mode = 'search';
-			}
+			mode = 'search';
 		} else if ( cmd === 'browse' ) {
 			if ( [ 'Album', 'Artist', 'AlbumArtist', 'Composer', 'Genre' ].indexOf( path ) !== -1 ) {
 				mode = 'type';
@@ -814,15 +805,15 @@ function getData( options ) {
 		return
 	}
 	
-	if ( plugin === 'Spotify' ) {
+	if ( GUI.plugin === 'Spotify' ) {
 		$.post( '/db/?cmd=spotify', { plid: args }, function( data ) {
-			dataParse( data, path, plugin, querytype, arg );
+			dataParse( data, path, querytype, arg );
 		}, 'json' );
-	} else if ( plugin === 'Dirble' ) {
+	} else if ( GUI.plugin === 'Dirble' ) {
 		$.post( 'enhance.php', { dirble: ( querytype || 'categories' ), args: args }, function( data ) {
-			dataParse( data, path, plugin, querytype );
+			dataParse( data, path, querytype );
 		}, 'json' );
-	} else if ( plugin === 'Jamendo' ) {
+	} else if ( GUI.plugin === 'Jamendo' ) {
 		$.post( 'enhance.php', { jamendo: args || '' }, function( data ) {
 			if ( !data ) {
 				$( '#oader' ).addClass( 'hide' );
@@ -834,14 +825,13 @@ function getData( options ) {
 				GUI.dbbackdata.pop();
 				return
 			}
-			dataParse( data.results, path, plugin, querytype );
+			dataParse( data.results, path, querytype );
 		}, 'json' );
 	}
 }
-function dataParse( data, path, plugin, querytype, arg ) {
+function dataParse( data, path, querytype, arg ) {
 	var data = data,
 		path = path || '',
-		plugin = plugin || '',
 		querytype = querytype || '',
 		args = args || '',
 		content = '',
@@ -858,7 +848,7 @@ function dataParse( data, path, plugin, querytype, arg ) {
 	$( '#home-blocks' ).addClass( 'hide' );
 	$( '#db-index li' ).not( ':eq( 0 )' ).addClass( 'gr' );
 	
-	if ( !plugin ) {
+	if ( !GUI.plugin ) {
 		if ( !data.length ) return
 		
 		var type = {
@@ -979,16 +969,16 @@ function dataParse( data, path, plugin, querytype, arg ) {
 		}
 		$( '#db-webradio-new' ).toggleClass( 'hide', path !== 'Webradio' );
 	} else {
-		if ( plugin === 'Spotify' ) {
+		if ( GUI.plugin === 'Spotify' ) {
 			data = ( querytype === 'tracks' ) ? data.tracks : data.playlists;
 			for ( i = 0; ( row = data[ i ] ); i++ ) content += data2html( row, i, 'Spotify', arg, querytype );
-		} else if ( plugin === 'Dirble' ) {
+		} else if ( GUI.plugin === 'Dirble' ) {
 			if ( querytype === 'childs-stations' ) {
 				content = $( '#db-entries' ).html();
 			} else {
 				for ( i = 0; ( row = data[ i ] ); i++ ) content += data2html( row, i, 'Dirble', '', querytype );
 			}
-		} else if ( plugin === 'Jamendo' ) {
+		} else if ( GUI.plugin === 'Jamendo' ) {
 			for (i = 0; ( row = data[ i ] ); i++ ) content += data2html( row, i, 'Jamendo', '', querytype );
 		}
 	}
