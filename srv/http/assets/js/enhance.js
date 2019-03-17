@@ -836,28 +836,34 @@ $( '#infoFileBox' ).change( function() {
 		img.onload = function () {
 			var imgW = img.width;
 			var imgH = img.height;
-			var imgWHhtml = '<div class="imagewh"><span>Current</span><span>'+ imgW +' x '+ imgH +'</span></div><span>(Resized to 200 x 200 px)</span>';
+			var coverart = $( '#db-entries li' ).length;
+			var imgWHhtml = '<div class="imagewh"><span>Current</span><span>'+ imgW +' x '+ imgH +'</span></div>';
 			$( '#infoFilename' ).empty();
 			$( '.newimg, .imagewh' ).remove();
-			if ( imgW === 200 && imgH === 200 ) {
-				$( '#infoMessage' ).append( '<img class="newimg" src="'+ base64img +'">'+ imgWHhtml );
-				GUI.newimg = base64img;
+			if ( !coverart ) {
+				var px = 200;
 			} else {
-				var picacanvas = document.createElement( 'canvas' ); // create canvas object
-				picacanvas.width = picacanvas.height = 200; // size of resized image
-				var picaOption = { // pica.js scaling: img to canvas
-					  unsharpAmount: 100  // 0...500 Default = 0 (try 50-100)
-					, unsharpThreshold: 5 // 0...100 Default = 0 (try 10)
-					, unsharpRadius: 0.6
-				//	, quality: 3          // 0...3 Default = 3 (Lanczos win=3)
-				//	, alpha: true         // Default = false (black crop background)
-				};
-				window.pica.resizeCanvas( img, picacanvas, picaOption, function() {
-					var resizedimg = picacanvas.toDataURL( 'image/jpeg', 0.9 ); // canvas -> base64 (jpg, qualtity)
-					$( '#infoMessage' ).append( '<img class="newimg" src="'+ resizedimg +'">'+ imgWHhtml );
-					GUI.newimg = resizedimg;
-				} );
+				if ( imgW > 1000 || imgH > 1000 ) {
+					var px = 1000;
+				} else {
+					var px = imgW < imgH ? imgW : imgH;
+				}
 			}
+			imgWHhtml += '<span>(Resized to '+ px +' x '+ px +' px)</span>';
+			var picacanvas = document.createElement( 'canvas' ); // create canvas object
+			picacanvas.width = picacanvas.height = px; // size of resized image
+			var picaOption = { // pica.js scaling: img to canvas
+				  unsharpAmount: 100  // 0...500 Default = 0 (try 50-100)
+				, unsharpThreshold: 5 // 0...100 Default = 0 (try 10)
+				, unsharpRadius: 0.6
+			//	, quality: 3          // 0...3 Default = 3 (Lanczos win=3)
+			//	, alpha: true         // Default = false (black crop background)
+			};
+			window.pica.resizeCanvas( img, picacanvas, picaOption, function() {
+				var resizedimg = picacanvas.toDataURL( 'image/jpeg', 0.9 ); // canvas -> base64 (jpg, qualtity)
+				$( '#infoMessage' ).append( '<img class="newimg" src="'+ resizedimg +'">'+ imgWHhtml );
+				GUI.newimg = resizedimg;
+			} );
 		}
 	}
 	reader.readAsDataURL( this.files[ 0 ] ); // load filereader
@@ -1115,6 +1121,7 @@ $( '#db-entries' ).on( 'tap', '.licover-cover',  function() {
 		, fileoklabel : 'Replace'
 		, cancel      : function() {
 			$( '.licover-cover' ).remove();
+			$img.css( 'opacity', '' );
 		}
 		, ok          : function() {
 			$.post( 'enhance.php'
@@ -1123,12 +1130,15 @@ $( '#db-entries' ).on( 'tap', '.licover-cover',  function() {
 					$img.attr( 'src', GUI.newimg );
 					GUI.newimg = '';
 					$( '.licover-cover' ).remove();
+					$img.css( 'opacity', '' );
 			} );
 		}
 	} );
 } );
 $( '#db-entries' ).on( 'taphold', '.licoverimg',  function() {
-	$( this ).append( '<i class="licover-cover fa fa-coverart"></i>' );
+	$this = $( this );
+	$this.append( '<i class="licover-cover fa fa-coverart"></i>' );
+	$this.find( 'img' ).css( 'opacity', '0.2' );
 } ).on( 'tap', 'li', function( e ) {
 	var $target = $( e.target )
 	if ( $target.hasClass( 'licover-cover' ) ) return
