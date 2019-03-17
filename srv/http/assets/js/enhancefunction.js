@@ -630,11 +630,11 @@ function displayIndexBar() {
 		$index.css( 'line-height', ( ( wH - indexoffset ) / indexline ) +'px' );
 	}, 50 );
 }
-function setToggleButton( name, append ) {
+function setToggleButton( name, enable, check ) {
 	$( 'input[name="'+ name +'"]' )
-		.prop( 'disabled', true )
-		.parent().css( 'color', '#7795b4' )
-		.append( append ? ' '+ append : ' (auto hide)' );
+		.prop( 'disabled', ( enable ? false : true ) )
+		.prop( 'checked', ( check ? true : false ) )
+		.parent().css( 'color', ( enable ? '' : '#7795b4' ) );
 }
 function displayCheckbox( checkboxes ) {
 	var html = '';

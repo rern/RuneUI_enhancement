@@ -190,14 +190,13 @@ $( '#displayplayback' ).click( function() {
 		}
 	} );
 	// disable by bars hide
-	if ( !GUI.display.bars ) setToggleButton( 'barsauto', '(auto)' );
+	if ( !GUI.display.bars ) setToggleButton( 'barsauto' );
 	// disable by mpd volume
-	if ( !GUI.display.volumempd ) setToggleButton( 'volume', '(disabled)' );
+	if ( !GUI.display.volumempd ) setToggleButton( 'volume' );
 	// disable by autohide
 	if ( !GUI.display.time && !GUI.display.volume ) {
-		setToggleButton( 'coverart', '(auto)' );
-		setToggleButton( 'coverlarge', '(auto)' );
-		setToggleButton( 'buttons', '(auto)' );
+		setToggleButton( 'coverart' );
+		setToggleButton( 'buttons' );
 	}
 } );
 $( '#turnoff' ).click( function() {
@@ -317,6 +316,28 @@ $( '#db-entries, #pl-entries, #pl-editor' ).on( 'click', 'p', function() {
 } );
 $( '.home-block, #db-entries' ).click( function() {
 	$( '#db-search-close' ).click();
+} );
+$( '#infoCheckBox' ).on( 'click', 'label', function() { // playback tools
+	var $time = $( '#infoCheckBox input[name=time]' );
+	var $volume = $( '#infoCheckBox input[name=volume]' );
+	var $coverlarge = $( '#infoCheckBox input[name=coverlarge]' );
+	var name = $( this ).find( 'input' ).prop( 'name' );
+	if ( name === 'time' || name === 'volume' ) {
+		if ( !$time.is( ':checked' ) && !$volume.is( ':checked' ) ) {
+			$coverlarge.prop( 'checked', true );
+			setToggleButton( 'buttons', 0, 0 );
+		} else if ( $time.is( ':checked' ) && $volume.is( ':checked' ) ) {
+			$coverlarge.prop( 'checked', false );
+		} else if ( $time.is( ':checked' ) || $volume.is( ':checked' ) ) {
+			setToggleButton( 'buttons', 1 );
+		}
+	} else if ( name === 'bars' ) {
+		if ( $( '#infoCheckBox input[name=bars]' ).prop( 'checked' ) === true ) {
+			setToggleButton( 'barsauto', 1 );
+		} else {
+			setToggleButton( 'barsauto', 0, 0 );
+		}
+	}
 } );
 // PLAYBACK /////////////////////////////////////////////////////////////////////////////////////
 $( '#song, #playlist-warning' ).on( 'click', 'i', function() {
@@ -887,7 +908,7 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 		if ( $this.find( 'img' ).length ) {
 			var icon = '<img src="'+ $this.find( 'img' ).prop( 'src' ) +'">';
 		} else {
-			var icon = '<div class="infobookmark"><i class="fa fa-bookmark fa-3x bl"></i><br><span class="bklabel">'+ $this.find( '.bklabel' ).text() +'</span></div>';
+			var icon = '<div class="infobookmark"><i class="fa fa-bookmark"></i><br><span class="bklabel">'+ $this.find( '.bklabel' ).text() +'</span></div>';
 		}
 		info( {
 			  icon        : 'bookmark'
@@ -929,7 +950,7 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 	$( '.home-bookmark' ).each( function() {
 		$this = $( this );
 		var buttonhtml = '<i class="edit home-block-remove fa fa-minus-circle"></i>'
-//						+'<i class="edit home-block-cover fa fa-coverart"></i>';
+						+'<i class="edit home-block-cover fa fa-coverart"></i>';
 		if ( !$this.find( 'img' ).length ) buttonhtml += '<i class="edit home-block-edit fa fa-edit-circle"></i>'
 		$this.append( buttonhtml )
 	} );
@@ -1064,7 +1085,7 @@ $( '.coverart' ).tap( function( e ) {
 	$( '.edit' ).remove();
 	$( '.coverart div' ).append(
 		 '<i class="edit coverart-remove fa fa-minus-circle"></i>'
-//		+'<i class="edit coverart-cover fa fa-coverart"></i>'
+		+'<i class="edit coverart-cover fa fa-coverart"></i>'
 	);
 	$( '.coverart img' ).css( 'opacity', 0.4 );
 } );
@@ -1146,8 +1167,8 @@ $( '#db-entries' ).on( 'tap', '.licover-cover',  function() {
 } );
 $( '#db-entries' ).on( 'taphold', '.licoverimg',  function() {
 	$this = $( this );
-//	$this.append( '<i class="licover-cover fa fa-coverart"></i>' );
-//	$this.find( 'img' ).css( 'opacity', '0.2' );
+	$this.append( '<i class="licover-cover fa fa-coverart"></i>' );
+	$this.find( 'img' ).css( 'opacity', '0.2' );
 } ).on( 'tap', 'li', function( e ) {
 	var $target = $( e.target )
 	if ( $target.hasClass( 'licover-cover' ) ) return
