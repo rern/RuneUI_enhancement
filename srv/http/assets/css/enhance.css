@@ -37,6 +37,7 @@
 .fa-airplay:before { content: "\f524" }
 .fa-dlna:before { content: "\f525" }
 .fa-rune:before { content: "\f526" }
+.fa-source:before { content: "\f52A" }
 .fa-output:before { content: "\f52B" }
 
 .fa-step-backward:before { content: "\f501" }
@@ -165,7 +166,7 @@ bl, .bl { color: #0095d8; }
 gr, .gr { color: #7795b4; }
 wh, gr { font-weight: 300; }
 #timepos wh,
-#displaysavelibrary i {
+.infocontent i {
 	width: 25px;
 	margin-right: 5px;
 	text-align: center;
