@@ -100,11 +100,11 @@ $( '.contextmenu a' ).click( function() {
 	} else if ( cmd === 'plashuffle' ) {
 		$.post( '/db/?cmd=pl-ashuffle', { playlist: name } );
 		$( '#random' ).addClass( 'btn-primary ashuffle' );
-	} else {
+	}/* else {
 		$.post( '/db/?cmd='+ cmd, { path: name }, function() {
 			if ( !GUI.status.playlistlength ) getPlaybackStatus();
 		} );
-	}
+	}*/
 } );
 
 function updateThumbnails() {
