@@ -236,9 +236,9 @@ function scrollLongText() {
 	}, 50 );
 }
 function removeSplash() {
-	if ( GUI.nosplash ) return
+	if ( !GUI.init ) return
 	
-	GUI.nosplash = 1;
+	GUI.init = 0;
 	$( '#splash' ).remove();
 	$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
 	$( '#page-playback' ).removeClass( 'hide' );
@@ -337,27 +337,39 @@ function renderPlayback() {
 			$( '#song' ).html( '·&ensp;·&ensp;·' );
 			$( '#elapsed, #total, #timepos' ).empty();
 		}
-		$( '#cover-art' )
-			.attr( 'src', GUI.coverurl || ( status.state === 'play' ? vu : vustop ) )
-			.on( 'load', removeSplash );
-		$( '#cover-art' ).css( 'border-radius', '18px' );
-		$( '#coverartoverlay' ).removeClass( 'hide' );
+		if ( GUI.init ) { // initial load only
+			$( '#cover-art' )
+				.attr( 'src', coverrune )
+				.on( 'load', removeSplash );
+		}
 		// dirble coverart
-		$.each( GUI.pllist, function( i, list ) {
-			if ( list[ 'file' ] === GUI.status.file ) {
-				var url = list[ 'Title' ];
-				if ( url.slice( -4 ) !== '</x>' ) return
+		var noid = 0;
+		var plL = GUI.pllist.length;
+		for ( i = 0; i < plL; i++ ) {
+			if ( GUI.pllist[ i ][ 'file' ] === GUI.status.file ) {
+				var url = GUI.pllist[ i ][ 'Title' ];
+				if ( url.slice( -4 ) !== '</x>' ) noid = 1;
 				
 				var stationid = url.split( '<x>' ).pop().slice( 0, -4 );
 				$.post( 'enhance.php', { dirble: 'coverurl', args: stationid }, function( url ) {
-					$( '#cover-art' )
-						.attr( 'src', url )
-						.css( 'border-radius', '' )
-					$( '#coverartoverlay' ).addClass( 'hide' );
+					if ( url ) {
+						$( '#cover-art' )
+							.attr( 'src', url )
+							.css( 'border-radius', '' )
+						$( '#coverartoverlay' ).addClass( 'hide' );
+						return
+					}
 				} );
+
+			}
+			if ( noid || i === plL ) {
+				$( '#cover-art' )
+					.attr( 'src', GUI.coverurl || ( status.state === 'play' ? vu : vustop ) )
+					.css( 'border-radius', '18px' )
+				$( '#coverartoverlay' ).removeClass( 'hide' );
 				return
 			}
-		} );
+		}
 		return
 	}
 	
@@ -1237,6 +1249,7 @@ function radio2html( list, source, querytype, plid ) {
 				var thumb = list.image.thumb.url;
 				if ( thumb ) {
 					var iconhtml = '<img class="radiothumb db-icon lazy" data-src="'+ thumb +'"  data-target="#context-menu-radio">'
+								  +'<a class="liid">'+ list.id +'</a>'
 				} else {
 					var iconhtml = '<i class="fa fa-webradio db-icon" data-target="#context-menu-radio"></i>';
 				}
@@ -1280,11 +1293,21 @@ function dbContextmenu( $li ) {
 	GUI.list.name = $li.find( '.liname' ).text() || '';
 	GUI.list.bioartist = $li.find( '.bioartist' ).text() || '';
 	GUI.list.artist = $li.find( '.liartist' ).text() || '';
-	GUI.list.isfile = $li.hasClass( 'file' );              // file/dirble - in contextmenu
+	GUI.list.isfile = $li.hasClass( 'file' );              // file/dirble save in contextmenu
+	GUI.list.id = $li.find( '.liid' ).text() || '';        // dirble coverart
 	GUI.list.index = $li.find( '.liindex' ).text() || '';  // cue - in contextmenu
 	GUI.list.liindex = $( '#db-entries li' ).index( $li ); // for webradio delete - in contextmenu
 	if ( $( '#db-currentpath' ).find( '.lipath' ).text() === 'Webradio' ) GUI.list.url = $li.find( '.bl' ).text();
 	var $menu = $( $li.find( '.db-icon' ).data( 'target' ) );
+	if ( GUI.display.tapaddplay && !$this.hasClass( 'licover' ) ) {
+		$menu.find( 'a:eq( 1 )' ).click();
+		setTimeout( function() {
+			$thisli.removeClass( 'active' );
+			$( contextmenu ).addClass( 'hide' );
+		}, 0 );
+		return
+	}
+	
 	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
 	$( '.update' ).toggleClass( 'hide', GUI.status.updating_db !== 0 );
 	var contextnum = $menu.find( 'a:not(.hide)' ).length;

@@ -15,6 +15,7 @@ var GUI = {
 	, debounce     : ''
 	, display      : {}
 	, imodedelay   : 0
+	, init         : 1
 	, list         : {}
 	, library      : 0
 	, libraryhome  : {}
@@ -624,7 +625,7 @@ $( '.btn-cmd' ).click( function() {
 			}
 			pos = pos || 1;
 			command = GUI.status.state === 'play' ? 'mpc play '+ pos : [ 'mpc play '+ pos, 'mpc stop' ];
-			if ( GUI.status.ext === 'radio' ) $( '#cover-art' ).attr( 'src', vustop )
+			if ( GUI.status.ext === 'radio' && $( '#cover-art' ).attr( 'src' ) === vu ) $( '#cover-art' ).attr( 'src', vustop )
 		} else {
 			command = ( GUI.status.ext === 'radio' && GUI.status.state === 'play' ) ? 'mpc stop' : 'mpc toggle';
 		}
@@ -1178,6 +1179,11 @@ $( '#db-entries' ).on( 'taphold', '.licoverimg',  function() {
 	if ( $target.hasClass( 'licover-cover' ) ) return
 	
 	var $this = $( this );
+	if ( $this.find( '.fa-music' ).length || $this.find( '.fa-webradio' ).length || $this.find( '.radiothumb' ).length ) {
+		dbContextmenu( $this );
+		return
+	}
+	
 	if ( $this.index() === 0 && $target.is( '.bioartist, .fa-artist, .fa-albumartist, .biocomposer, .fa-composer' ) ) {
 		var name = ( $target.is( '.biocomposer, .fa-composer' ) ) ? $this.find( '.biocomposer' ).text() : $this.find( '.bioartist' ).text();
 		getBio( name );
@@ -1201,28 +1207,6 @@ $( '#db-entries' ).on( 'taphold', '.licoverimg',  function() {
 			} );
 		}
 	}
-	if ( $this.find( '.fa-music' ).length
-		|| $this.find( '.fa-webradio' ).length
-		|| $this.find( '.radiothumb' ).length
-	) {
-		if ( !GUI.display.tapaddplay || $this.hasClass( 'licover' ) ) {
-			dbContextmenu( $this );
-		} else {
-			$thisli = $this;
-			GUI.list = {};
-			GUI.list.path = $thisli.find( '.lipath' ).text();
-			GUI.list.name = $thisli.find( '.liname' ).text();
-			GUI.list.index = $thisli.find( '.liindex' ).text() || '';  // cue - in contextmenu
-			var contextmenu = $thisli.find( '.db-icon' ).data( 'target' );
-			$( contextmenu ).find( 'a:eq( 1 )' ).click();
-			setTimeout( function() {
-				$thisli.removeClass( 'active' );
-				$( contextmenu ).addClass( 'hide' );
-			}, 0 );
-		}
-		return
-	}
-	
 	var path = $this.find( '.lipath' ).text();
 	// get scroll position for back navigation
 	var currentpath = $( '#db-currentpath' ).find( '.lipath' ).text();
