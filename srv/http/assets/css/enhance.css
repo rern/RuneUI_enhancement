@@ -1536,9 +1536,9 @@ span.dbpath {
 	margin: 0 15px;
 }
 .radiothumb {
-	width: 33px;
-	height: 33px;
-	margin: 7px 10px 7px 7px;
+	width: 40px;
+	height: 40px;
+	margin-top: 3px;
 }
 #pl-entries li.radio {
 	margin: 0;
