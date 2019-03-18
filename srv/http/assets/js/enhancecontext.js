@@ -54,11 +54,11 @@ $( '.contextmenu a' ).click( function() {
 		if ( GUI.list.index ) { // cue, m3u
 			var plfile = GUI.list.path.replace( /"/g, '\\"' );
 			mpcCmd = '/srv/http/enhance1cuem3u.sh "'+ plfile +'" '+ GUI.list.index;
-		} else if ( name.split( '.').pop() === 'pls' ) {
+		} else if ( name.split( '.' ).pop() === 'pls' ) {
 			mpcCmd = 'mpc load "'+ name +'"';
 		} else if ( GUI.plugin ) {
 			var radioname = GUI.list.name.replace( /"/g, '\\"' );
-			mpcCmd = 'mpc add "'+ GUI.list.path +'"; /usr/bin/redis-cli hset webradiopl '+ GUI.list.path +' "*'+ radioname +'"';
+			mpcCmd = 'mpc add "'+ GUI.list.path +'"; /usr/bin/redis-cli hset webradiopl '+ GUI.list.path +' "*'+ radioname +'<x>'+ GUI.list.id +'</x>"';
 		} else {
 			mpcCmd = GUI.list.isfile ? 'mpc add "'+ name +'"' : 'mpc ls "'+ name +'" | mpc add';
 		}
