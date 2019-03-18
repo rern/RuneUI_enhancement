@@ -1198,12 +1198,14 @@ $( '#db-entries' ).on( 'taphold', '.licoverimg',  function() {
 			} );
 		}
 	}
-	if ( $this.find( '.fa-music' ).length || $this.find( '.fa-webradio' ).length ) {
+	if ( $this.find( '.fa-music' ).length
+		|| $this.find( '.fa-webradio' ).length
+		|| $this.find( '.radiothumb' ).length
+	) {
 		if ( !GUI.display.tapaddplay || $this.hasClass( 'licover' ) ) {
 			dbContextmenu( $this );
 		} else {
 			$thisli = $this;
-			if ( $thisli.hasClass( 'licover' ) || !$thisli.find( '.fa-music, .fa-webradio' ).length ) return
 			GUI.list = {};
 			GUI.list.path = $thisli.find( '.lipath' ).text();
 			GUI.list.name = $thisli.find( '.liname' ).text();
