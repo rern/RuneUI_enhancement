@@ -16,7 +16,7 @@ rm -v /srv/http/assets/css/{enhance*,fontawesome.min,pnotify.custom.min,roundsli
 rm -v /srv/http/assets/fonts/enhance*
 rm -v /srv/http/assets/img/{bootsplash.png,controls*,cover.svg,runelogo.svg,vu*}
 rm -v /srv/http/assets/js/enhance*
-rm -v /srv/http/assets/js/vendor/{lazyload,roundslider}.min.js
+rm -v /srv/http/assets/js/vendor/{lazyload,pica,roundslider}.min.js
 # DO NOT remove - used by other addons
 # bootstrap.min.css, bootstrap-select.min.css
 
