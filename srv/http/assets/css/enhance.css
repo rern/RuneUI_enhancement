@@ -1471,11 +1471,12 @@ wh, gr { font-weight: 300; }
 	line-height: 48px;
 	vertical-align: 5%;
 }
+#indexcover,
 .lipath,
 .liname,
 .liindex,
-#indexcover,
 .lisort,
+.licoverurl,
 .licue,
 .liartist {
 	display: none;
