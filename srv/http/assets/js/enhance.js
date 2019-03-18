@@ -689,7 +689,8 @@ $( '#db-home' ).click( function() {
 	$( '.menu' ).addClass( 'hide' );
 } );
 $( '#db-currentpath' ).on( 'click', 'a', function() {
-	if ( $( '#db-currentpath span a' ).length === 1 ) return
+	if ( $( '#db-currentpath span a' ).length === 1 || GUI.plugin ) return
+	
 	var rootpath = this.id === 'rootpath';
 	if ( [ 'album', 'artist', 'albumartist', 'composer', 'genre' ].indexOf( GUI.browsemode ) !== -1 && !rootpath ) return
 	
