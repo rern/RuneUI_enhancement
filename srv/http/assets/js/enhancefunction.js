@@ -338,10 +338,26 @@ function renderPlayback() {
 			$( '#elapsed, #total, #timepos' ).empty();
 		}
 		$( '#cover-art' )
-			.attr( 'src', status.state === 'play' ? vu : vustop )
+			.attr( 'src', GUI.coverurl || ( status.state === 'play' ? vu : vustop ) )
 			.on( 'load', removeSplash );
 		$( '#cover-art' ).css( 'border-radius', '18px' );
 		$( '#coverartoverlay' ).removeClass( 'hide' );
+		// dirble coverart
+		$.each( GUI.pllist, function( i, list ) {
+			if ( list[ 'file' ] === GUI.status.file ) {
+				var url = list[ 'Title' ];
+				if ( url.slice( -4 ) !== '</x>' ) return
+				
+				var stationid = url.split( '<x>' ).pop().slice( 0, -4 );
+				$.post( 'enhance.php', { dirble: 'coverurl', args: stationid }, function( url ) {
+					$( '#cover-art' )
+						.attr( 'src', url )
+						.css( 'border-radius', '' )
+					$( '#coverartoverlay' ).addClass( 'hide' );
+				} );
+				return
+			}
+		} );
 		return
 	}
 	

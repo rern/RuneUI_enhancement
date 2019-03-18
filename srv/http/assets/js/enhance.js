@@ -89,7 +89,10 @@ if ( navigator.userAgent.indexOf( 'Midori' ) !== -1 ) {
 		+'</style>'
 		);
 }
-// get display, status, library
+// get playlist display, status, library
+$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
+	GUI.pllist = data.playlist; // for dirble coverart
+}, 'json' );
 $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 	data.order = data.order ? data.order.split( ',' ) : '';
 	GUI.display = data;
@@ -1404,15 +1407,14 @@ $( '#pl-entries, #pl-editor' ).on( 'swipeleft', 'li', function() {
 	$( '#tab-playback' ).click();
 } );
 $( '#pl-entries' ).on( 'click', 'li', function( e ) {
-	if ( $( '.pl-remove' ).length ) {
+	$target = $( e.target );
+	$plremove = $target.hasClass( 'pl-remove' );
+	if ( !$plremove && $( '.pl-remove' ).length ) {
 		$( '.pl-remove' ).remove();
 		return
 	}
 	
-	if ( GUI.swipe
-		|| $( e.target ).hasClass( 'pl-icon' )
-		|| $( e.target ).hasClass( 'pl-remove' )
-	) return
+	if ( GUI.swipe || $target.hasClass( 'pl-icon' ) || $plremove ) return
 	
 	var $this = $( this );
 	var songpos = $this.index() + 1;
