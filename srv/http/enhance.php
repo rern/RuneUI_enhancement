@@ -383,12 +383,21 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		exit();
 	}
 	
-	$jam_channels = json_decode( curlGet('http://api.jamendo.com/v3.0/radios/?client_id='.$apikey.'&format=json&limit=200' ) );
-	foreach ( $jam_channels->results as $station ) {
+	$array = json_decode( curlGet('http://api.jamendo.com/v3.0/radios/?client_id='.$apikey.'&format=json&limit=200' ) );
+	foreach ( $array->results as $station ) {
 		$channel = json_decode( curlGet('http://api.jamendo.com/v3.0/radios/stream?client_id='.$apikey.'&format=json&name='.$station->name ) );
 		$station->stream = $channel->results[ 0 ]->stream;
+		$sort = stripLeading( $station->dispname );
+		$index[] = $sort[ 1 ];
+		$station->sort = $sort[ 0 ];;
+		$station->lisort = $sort[ 1 ];;
 	}
-	echo json_encode( $jam_channels );
+	usort( $array->results, function( $a, $b ) {
+		return strnatcmp( $a->sort, $b->sort );
+	} );
+	$result = $array->results;
+	$result[] = array( 'index' => $index );
+	echo json_encode( $result );
 }
 function stripLeading( $string ) {
 	// strip articles | non utf-8 normal alphanumerics , fix: php strnatcmp ignores spaces + tilde for sort last
