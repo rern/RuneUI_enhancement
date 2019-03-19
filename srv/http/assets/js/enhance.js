@@ -869,7 +869,7 @@ $( '#infoFileBox' ).change( function() {
 			var imgW = img.width;
 			var imgH = img.height;
 			var coverart = $( '#db-entries li' ).length;
-			var imgWHhtml = '<div class="imagewh"><span>Current</span><span>'+ imgW +' x '+ imgH +'</span></div>';
+			var imgWHhtml = '<div class="imagewh"><span>Current</span><span>'+ imgW +' x '+ imgH +'</span>';
 			$( '#infoFilename' ).empty();
 			$( '.newimg, .imagewh' ).remove();
 			if ( !coverart ) {
@@ -881,7 +881,8 @@ $( '#infoFileBox' ).change( function() {
 					var px = imgW < imgH ? imgW : imgH;
 				}
 			}
-			imgWHhtml += '<span>(Resized to '+ px +' x '+ px +' px)</span>';
+			if ( imgW !== px || imgH !== px ) imgWHhtml += '<div>(Resized to '+ px +' x '+ px +' px)</div>';
+			imgWHhtml += '</div>';
 			var picacanvas = document.createElement( 'canvas' ); // create canvas object
 			picacanvas.width = picacanvas.height = px; // size of resized image
 			var picaOption = { // pica.js scaling: img to canvas
@@ -930,9 +931,7 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 			, cancel      : 1
 			, ok          : function() {
 				var bookmarkfile = '/mnt/MPD/'+ path +'/thumbnail.jpg';
-				$.post( 'enhance.php'
-					, { thumbfile : bookmarkfile, base64 : GUI.newimg }
-					, function() {
+				$.post( 'enhance.php', { imagefile: bookmarkfile, base64: GUI.newimg }, function() {
 						$this.find( '.fa-bookmark' ).remove();
 						$this.find( 'img' ).remove();
 						$this.find( '.bklabel' )
@@ -1105,7 +1104,8 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-remove', function() {
 	var $album = $this.parent().next();
 	var album = $album.text();
 	var artist = $album.next().text();
-	var coverfile = imgsrc.split( '/' ).pop();
+	var file = decodeURIComponent( imgsrc.split( '/' ).pop() );
+	var thumbfile = file.slice( 0, -14 ) + file.slice( -3 ); // remove timestamp
 	info( {
 		  icon     : 'minus-circle'
 		, title    : 'Remove Thumbnail'
@@ -1118,7 +1118,10 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-remove', function() {
 		, oklabel  : 'Remove'
 		, ok       : function() {
 			$this.parent().parent().remove();
-			$.post( 'enhance.php', { coverfile: coverfile } );
+			console.log(thumbfile)
+			$.post( 'enhance.php', { thumbfile: thumbfile }, function( data ) {
+				console.log(data)
+			} );
 		}
 	} );
 } );
@@ -1137,7 +1140,7 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-cover', function() {
 		, cancel      : 1
 		, ok          : function() {
 			$.post( 'enhance.php'
-				, { thumbfile: thumbfile, base64: GUI.newimg }
+				, { imagefile: thumbfile, base64: GUI.newimg }
 				, function() {
 					$img.removeAttr( 'data-src' ); // lazyload 'data-src'
 					$img.attr( 'src', GUI.newimg );
@@ -1165,7 +1168,7 @@ $( '#db-entries' ).on( 'tap', '.licover-cover',  function() {
 		}
 		, ok          : function() {
 			$.post( 'enhance.php'
-				, { thumbfile: coverfile, base64: GUI.newimg }
+				, { imagefile: coverfile, base64: GUI.newimg }
 				, function() {
 					$img.attr( 'src', GUI.newimg );
 					GUI.newimg = '';
