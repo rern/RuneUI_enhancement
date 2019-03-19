@@ -1728,7 +1728,7 @@ li.active .time {
 	.home-block, .coverart div,
 	#playlist-warning i,
 	li:not( .licover ),
-	.licover img,
+	.licoverimg,
 	.liinfo {
 		cursor: pointer;
 	}
