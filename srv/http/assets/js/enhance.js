@@ -231,6 +231,9 @@ $( '#tab-library' ).click( function() {
 	if ( GUI.library ) {
 		$( '#divcoverarts' ).addClass( 'hide' );
 		$( '#home-blocks' ).removeClass( 'hide' );
+		$( '.home-bookmark' ).children()
+			.add( '.coverart img' ).css( 'opacity', '' );
+		$( '.edit' ).remove();
 	}
 	if ( GUI.library && GUI.bookmarkedit ) {
 		GUI.bookmarkedit = 0;
@@ -963,7 +966,7 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 		if ( !$this.find( 'img' ).length ) buttonhtml += '<i class="edit home-block-edit fa fa-edit-circle"></i>'
 		$this.append( buttonhtml )
 	} );
-	$( '.home-bookmark' ).find( '.fa-bookmark, .bklabel, img' ).css( 'opacity', 0.2 );
+	$( '.home-bookmark' ).find( '.fa-bookmark, .bklabel, img' ).css( 'opacity', 0.33 );
 } );
 var sortablelibrary = new Sortable( document.getElementById( 'divhomeblocks' ), {
 	  ghostClass : 'db-sortable-ghost'
@@ -1118,7 +1121,7 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-remove', function() {
 		, oklabel  : 'Remove'
 		, ok       : function() {
 			$this.parent().parent().remove();
-			$.post( 'enhance.php', { thumbfile: thumbfile } );
+			$.post( 'enhance.php', { deleteimagefile: thumbfile } );
 		}
 	} );
 } );
@@ -1146,45 +1149,63 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-cover', function() {
 		}
 	} );
 } );
-$( '#db-entries' ).on( 'tap', '.licover-cover',  function() {
+$( '#db-entries' ).on( 'tap', '.edit',  function() {
 	var $this = $( this );
-	var $img = $this.prev();
+	var $img = $this.siblings( 'img' );
 	var $thisli = $this.parent().parent();
 	var path = $thisli.next().find( '.lipath' ).text();
 	var coverfile = '/mnt/MPD/'+ path.substr( 0, path.lastIndexOf( '/' ) ) +'/cover.jpg';
-	info( {
-		  icon        : 'coverart'
-		, title       : 'Album Coverart'
-		, message     : 'Replace coverart of this album:'
-					   +'<br><img src="'+ $img.prop( 'src' ) +'">'
-		, msgalign    : 'center'
-		, fileoklabel : 'Replace'
-		, cancel      : function() {
-			$( '.licover-cover' ).remove();
-			$img.css( 'opacity', '' );
-		}
-		, ok          : function() {
-			$.post( 'enhance.php'
-				, { imagefile: coverfile, base64: GUI.newimg }
-				, function() {
-					$img.attr( 'src', GUI.newimg );
-					GUI.newimg = '';
-					$( '.licover-cover' ).remove();
-					$img.css( 'opacity', '' );
-			} );
-		}
-	} );
+	if ( $this.hasClass( 'licover-remove' ) ) {
+		info( {
+			  icon        : 'coverart'
+			, title       : 'Delete Coverart'
+			, message     : 'Delete <code>cover.jpg</code> file of this album:'
+						   +'<br><img src="'+ $img.prop( 'src' ) +'">'
+			, msgalign    : 'center'
+			, oklabel     : 'Delete'
+			, cancel      : 1
+			, ok          : function() {
+				$.post( 'enhance.php', { deleteimagefile: coverfile }, function() {
+						$img.attr( 'src', coverrune );
+						$( '.edit' ).remove();
+						$img.css( 'opacity', '' );
+				} );
+			}
+		} );
+	} else {
+		info( {
+			  icon        : 'coverart'
+			, title       : 'Album Coverart'
+			, message     : 'Replace coverart of this album:'
+						   +'<br><img src="'+ $img.prop( 'src' ) +'">'
+			, msgalign    : 'center'
+			, fileoklabel : 'Replace'
+			, cancel      : 1
+			, ok          : function() {
+				$.post( 'enhance.php'
+					, { imagefile: coverfile, base64: GUI.newimg }
+					, function() {
+						$img.attr( 'src', GUI.newimg );
+						GUI.newimg = '';
+						$( '.edit' ).remove();
+						$img.css( 'opacity', '' );
+				} );
+			}
+		} );
+	}
 } );
 $( '#db-entries' ).on( 'taphold', '.licoverimg',  function() {
 	$this = $( this );
-	$this.append( '<i class="licover-cover fa fa-coverart"></i>' );
-	$this.find( 'img' ).css( 'opacity', '0.2' );
+	$this.append(
+		 '<i class="edit licover-remove fa fa-minus-circle"></i>'
+		+'<i class="edit licover-cover fa fa-coverart"></i>' );
+	$this.find( 'img' ).css( 'opacity', '0.33' );
 } ).on( 'tap', 'li', function( e ) {
 	var $target = $( e.target )
-	if ( $target.hasClass( 'licover-cover' ) ) return
+	if ( $target.hasClass( 'edit' ) ) return
 	
-	if ( $( '.licover-cover' ).length ) {
-		$( '.licover-cover' ).remove();
+	if ( $( '.edit' ).length ) {
+		$( '.edit' ).remove();
 		$( '.licoverimg img' ).css( 'opacity', '' );
 		
 		if ( $( this ).is( '.licover' ) ) return
