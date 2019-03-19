@@ -41,7 +41,10 @@ _Tested on RuneAudio 0.4b, 0.5_
 	- Fallback for allow-swipe-only area
 - Refresh browser for fullscreen mode
 	- Long-press bottom bar / swipe bar
-- Reorder Library items ( by [Sortable](https://github.com/SortableJS/Sortable) )
+- Movable Library items ( by [Sortable](https://github.com/SortableJS/Sortable) )
+- Context menu
+	- Icon on the right removed
+	- Use icon on the left instead
 
 Install
 ---
@@ -148,7 +151,9 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 - Tap elapsed or time to stop
 - Improve drag to rearrange
 - Show track numbers
-- Show webradio name
+- Webradio
+	- Show saved station names while stop / streaming names while playing
+	- Unsaved station icon in white - tap to save
 - Crop button to keep only current playing song
 - Saved playlists can be named with " characters
 - Saved playlists can be renamed
