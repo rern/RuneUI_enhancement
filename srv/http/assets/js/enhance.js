@@ -911,7 +911,8 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 		bookmarkRename( name, path, $this );
 	} else if ( $target.is( '.home-block-cover' ) ) {
 		if ( $this.find( 'img' ).length ) {
-			var icon = '<img src="'+ $this.find( 'img' ).prop( 'src' ) +'">';
+			var icon = '<img src="'+ $this.find( 'img' ).prop( 'src' ) +'">'
+					  +'<br>'+ name;
 		} else {
 			var icon = '<div class="infobookmark"><i class="fa fa-bookmark"></i><br><span class="bklabel">'+ $this.find( '.bklabel' ).text() +'</span></div>';
 		}
