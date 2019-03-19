@@ -325,7 +325,6 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	exec( 'mpc volume '.$vol );
 	pushstream( 'volume', array( $vol, $currentvol ) );
 } else if ( isset( $_POST[ 'thumbfile' ] ) ) { // browse by coverart
-	echo '/usr/bin/sudo /usr/bin/rm "/srv/http/assets/img/coverarts/'.$_POST[ 'thumbfile' ].'"';
 	exec( '/usr/bin/sudo /usr/bin/rm "/srv/http/assets/img/coverarts/'.$_POST[ 'thumbfile' ].'"' );
 } else if ( isset( $_POST[ 'imagefile' ] ) ) { // coverart and thumnail.jpg
 	$thumbfile = $_POST[ 'imagefile' ];
