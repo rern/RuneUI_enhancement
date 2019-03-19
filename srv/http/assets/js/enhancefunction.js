@@ -1285,15 +1285,15 @@ function dbContextmenu( $li, $target ) {
 	} else {
 		GUI.list.mode = $li.find( '.db-icon' ).prop( 'class' ).replace( /fa fa-| db-icon/g, '' );
 	}
-	GUI.list.path = $li.find( '.lipath' ).text() || '';
-	GUI.list.name = $li.find( '.liname' ).text() || '';
-	GUI.list.bioartist = $li.find( '.bioartist' ).text() || '';
-	GUI.list.artist = $li.find( '.liartist' ).text() || '';
+	GUI.list.path = $li.find( '.lipath' ).text().trim() || '';
+	GUI.list.name = $li.find( '.liname' ).text().trim() || '';
+	GUI.list.bioartist = $li.find( '.bioartist' ).text().trim() || '';
+	GUI.list.artist = $li.find( '.liartist' ).text().trim() || '';
 	GUI.list.isfile = $li.hasClass( 'file' );              // file/dirble save in contextmenu
 	GUI.list.id = $li.find( '.liid' ).text() || '';        // dirble coverart
 	GUI.list.index = $li.find( '.liindex' ).text() || '';  // cue - in contextmenu
 	GUI.list.liindex = $( '#db-entries li' ).index( $li ); // for webradio delete - in contextmenu
-	if ( $( '#db-currentpath' ).find( '.lipath' ).text() === 'Webradio' ) GUI.list.url = $li.find( '.bl' ).text();
+	if ( $( '#db-currentpath' ).find( '.lipath' ).text() === 'Webradio' ) GUI.list.url = $li.find( '.bl' ).text().trim();
 	var $menu = $( $li.find( '.db-icon' ).data( 'target' ) );
 	if ( GUI.display.tapaddplay
 		&& !$target.hasClass( 'db-icon' )
@@ -1325,8 +1325,8 @@ function dbContextmenu( $li, $target ) {
 function plContextmenu( $li ) {
 	GUI.list = {};
 	GUI.list.li = $li; // for contextmenu
-	GUI.list.name = $li.find( '.liname' ).text();
-	GUI.list.path = $li.find( '.lipath' ).text() || GUI.list.name;
+	GUI.list.name = $li.find( '.liname' ).text().trim();
+	GUI.list.path = $li.find( '.lipath' ).text().trim() || GUI.list.name;
 	GUI.list.isfile = $li.find( '.fa-music' ).length; // used in contextmenu
 	$( '.menu' ).addClass( 'hide' );
 	if ( $li.hasClass( 'active' ) ) {

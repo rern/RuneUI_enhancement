@@ -1473,8 +1473,8 @@ $( '#pl-entries' ).on( 'click', '.pl-icon', function( e ) {
 		$contextlist.eq( 1 ).add( $contextlist.eq( 2 ) ).addClass( 'hide' );
 	}
 	if ( $this.hasClass( 'fa-webradio' ) && $thisli.find( '.unsaved' ).length ) {
-		GUI.list.name = $thisli.find( '.name' ).html().split( '<x>' )[ 0 ];
-		GUI.list.path = $thisli.find( '.lipath' ).text();
+		GUI.list.name = $thisli.find( '.name' ).html().split( '<x>' )[ 0 ].trim();
+		GUI.list.path = $thisli.find( '.lipath' ).text().trim();
 		$contextlist.eq( 3 ).removeClass( 'hide' );
 	} else {
 		$contextlist.eq( 3 ).addClass( 'hide' );
@@ -1502,8 +1502,8 @@ $( '#pl-editor' ).on( 'click', 'li', function( e ) {
 		} else {
 			GUI.list = {};
 			GUI.list.li = $thisli; // for contextmenu
-			GUI.list.name = $thisli.find( '.liname' ).text();
-			GUI.list.path = $thisli.find( '.lipath' ).text();
+			GUI.list.name = $thisli.find( '.liname' ).text().trim();
+			GUI.list.path = $thisli.find( '.lipath' ).text().trim();
 			var contextmenu = $thisli.find( '.pl-icon' ).data( 'target' );
 			$( contextmenu ).find( 'a:eq( 1 )' ).click();
 			setTimeout( function() {

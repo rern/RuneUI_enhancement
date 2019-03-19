@@ -170,7 +170,7 @@ function bookmarkNew() {
 		, boxwidth   : 'max'
 		, cancel     : 1
 		, ok         : function() {
-			bookmarkVerify( $( '#infoTextBox' ).val().trim(), path );
+			bookmarkVerify( $( '#infoTextBox' ).val(), path );
 		}
 	} );
 }
@@ -190,7 +190,7 @@ function bookmarkRename( name, path ) {
 		, cancel    : 1
 		, oklabel   : 'Rename'
 		, ok        : function() {
-			bookmarkVerify( $( '#infoTextBox' ).val().trim(), path, name );
+			bookmarkVerify( $( '#infoTextBox' ).val(), path, name );
 		}
 	} );
 }
@@ -289,7 +289,7 @@ function webRadioNew( name, url ) {
 		, boxwidth   : 'max'
 		, cancel     : 1
 		, ok         : function() {
-			webRadioVerify( $( '#infoTextBox' ).val().trim(), $( '#infoTextBox2' ).val().trim() );
+			webRadioVerify( $( '#infoTextBox' ).val(), $( '#infoTextBox2' ).val() );
 		}
 	} );
 }
@@ -311,7 +311,7 @@ function webRadioRename() {
 		, cancel     : 1
 		, oklabel    : 'Rename'
 		, ok         : function() {
-			webRadioVerify( $( '#infoTextBox' ).val().trim(), path, name );
+			webRadioVerify( $( '#infoTextBox' ).val(), path, name );
 		}
 	} );
 }
@@ -385,7 +385,7 @@ function playlistNew() {
 		, boxwidth  : 'max'
 		, cancel    : 1
 		, ok        : function() {
-			playlistVerify( $( '#infoTextBox' ).val().trim() );
+			playlistVerify( $( '#infoTextBox' ).val() );
 		}
 	} );
 }
@@ -404,7 +404,7 @@ function playlistRename() {
 		, cancel    : 1
 		, oklabel   : 'Rename'
 		, ok        : function() {
-			playlistVerify( $( '#infoTextBox' ).val().trim(), name );
+			playlistVerify( $( '#infoTextBox' ).val(), name );
 		}
 	} );
 }
