@@ -288,8 +288,9 @@ $( '#page-playback' ).click( function( e ) {
 	$( '.controls1, .rs-tooltip, #imode' ).removeClass( 'hide' );
 	$( '#swipebar' ).addClass( 'transparent' );
 } );
-$( '#page-library' ).click( function( e ) {
+$( '#page-library' ).tap( function( e ) {
 	var $target = $( e.target );
+	console.log( GUI.bookmarkedit +' && '+ !$target.closest( '.home-bookmark' ).length +' && '+ !$target.closest( '.coverart' ).length )
 	if ( GUI.bookmarkedit
 		&& !$target.closest( '.home-bookmark' ).length
 		&& !$target.closest( '.coverart' ).length
@@ -1177,6 +1178,13 @@ $( '#db-entries' ).on( 'taphold', '.licoverimg',  function() {
 } ).on( 'tap', 'li', function( e ) {
 	var $target = $( e.target )
 	if ( $target.hasClass( 'licover-cover' ) ) return
+	
+	if ( $( '.licover-cover' ).length ) {
+		$( '.licover-cover' ).remove();
+		$( '.licoverimg img' ).css( 'opacity', '' );
+		
+		if ( $( this ).is( '.licover' ) ) return
+	}
 	
 	var $this = $( this );
 	if ( $this.find( '.fa-music' ).length || $this.find( '.fa-webradio' ).length || $this.find( '.radiothumb' ).length ) {
