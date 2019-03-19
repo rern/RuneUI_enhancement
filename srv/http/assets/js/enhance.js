@@ -1118,10 +1118,7 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-remove', function() {
 		, oklabel  : 'Remove'
 		, ok       : function() {
 			$this.parent().parent().remove();
-			console.log(thumbfile)
-			$.post( 'enhance.php', { thumbfile: thumbfile }, function( data ) {
-				console.log(data)
-			} );
+			$.post( 'enhance.php', { thumbfile: thumbfile } );
 		}
 	} );
 } );
