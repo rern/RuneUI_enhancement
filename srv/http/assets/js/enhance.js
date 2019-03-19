@@ -290,7 +290,6 @@ $( '#page-playback' ).click( function( e ) {
 } );
 $( '#page-library' ).tap( function( e ) {
 	var $target = $( e.target );
-	console.log( GUI.bookmarkedit +' && '+ !$target.closest( '.home-bookmark' ).length +' && '+ !$target.closest( '.coverart' ).length )
 	if ( GUI.bookmarkedit
 		&& !$target.closest( '.home-bookmark' ).length
 		&& !$target.closest( '.coverart' ).length
