@@ -213,6 +213,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 			  'playlist' => 'Webradio/'.$name.'.pls'
 			, 'url'      => $url
 			, 'sort'     => $sort[ 0 ]
+			, 'lisort'   => $sort[ 1 ]
 		);
 	}
 	$data = sortData( $data, $index );
