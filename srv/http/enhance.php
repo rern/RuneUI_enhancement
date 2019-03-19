@@ -365,7 +365,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 //	} else if ( $querytype === 'search' ) { // get data like lastfm
 //		$query = '/search/'.urlencode( $args );
 	}
-	$data = curlGet( 'http://api.dirble.com/v2/'.$query.'?all=1&token='.$redis->hGet('dirble', 'apikey') );
+	$data = curlGet( 'http://api.dirble.com/v2/'.$query.'?token='.$redis->hGet('dirble', 'apikey') );
 	$array = json_decode( $data, true );
 	if ( $querytype === 'coverurl' ) {
 		echo $array[ 'image' ][ 'url' ];
