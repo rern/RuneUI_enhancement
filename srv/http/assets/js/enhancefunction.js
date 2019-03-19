@@ -1272,7 +1272,7 @@ function flag( iso ) { // from: https://stackoverflow.com/a/11119265
 	var iso1 = ( iso.toLowerCase().charCodeAt( 1 ) - 97 ) * -20;
 	return iso1 +'px '+ iso0 +'px';
 }
-function dbContextmenu( $li, dbicon ) { // dbicon - suppress single tap add+play
+function dbContextmenu( $li, $target ) {
 	$( '.menu' ).addClass( 'hide' );
 	if ( $li.hasClass( 'active' ) ) {
 		$li.removeClass( 'active' );
@@ -1295,7 +1295,10 @@ function dbContextmenu( $li, dbicon ) { // dbicon - suppress single tap add+play
 	GUI.list.liindex = $( '#db-entries li' ).index( $li ); // for webradio delete - in contextmenu
 	if ( $( '#db-currentpath' ).find( '.lipath' ).text() === 'Webradio' ) GUI.list.url = $li.find( '.bl' ).text();
 	var $menu = $( $li.find( '.db-icon' ).data( 'target' ) );
-	if (  GUI.display.tapaddplay && !dbicon && !$li.hasClass( 'licover' ) ) {
+	if ( GUI.display.tapaddplay
+		&& !$target.hasClass( 'db-icon' )
+		&& !$li.hasClass( 'licover' )
+	) {
 		$menu.find( 'a:eq( 1 )' ).click();
 		return
 	}
@@ -1306,6 +1309,7 @@ function dbContextmenu( $li, dbicon ) { // dbicon - suppress single tap add+play
 	$( '.menushadow' ).css( 'height', contextnum * 41 - 1 );
 	$( '#db-entries li' ).removeClass( 'active' );
 	$li.addClass( 'active' );
+	
 	if ( $li.hasClass( 'licover' ) ) {
 		var menutop = GUI.bars ? '310px' : '270px';
 	} else {

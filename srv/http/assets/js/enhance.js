@@ -1201,6 +1201,7 @@ $( '#db-entries' ).on( 'taphold', '.licoverimg',  function() {
 		+'<i class="edit licover-cover fa fa-coverart"></i>' );
 	$this.find( 'img' ).css( 'opacity', '0.33' );
 } ).on( 'tap', 'li', function( e ) {
+	var $this = $( this );
 	var $target = $( e.target )
 	if ( $target.hasClass( 'edit' ) ) return
 	
@@ -1210,7 +1211,7 @@ $( '#db-entries' ).on( 'taphold', '.licoverimg',  function() {
 		if ( $( this ).is( '.licover' ) ) return
 	}
 	
-	var $this = $( this );
+	var islast = $this.find( '.fa-music' ).length + $this.find( '.fa-webradio' ).length + $this.find( '.radiothumb' ).length;
 	if ( $this.index() === 0 && $target.is( '.bioartist, .fa-artist, .fa-albumartist, .biocomposer, .fa-composer' ) ) {
 		var name = ( $target.is( '.biocomposer, .fa-composer' ) ) ? $this.find( '.biocomposer' ).text() : $this.find( '.bioartist' ).text();
 		getBio( name );
@@ -1218,11 +1219,8 @@ $( '#db-entries' ).on( 'taphold', '.licoverimg',  function() {
 	} else if ( $target.hasClass( 'lialbum' ) ) {
 		window.open( 'https://www.last.fm/music/'+ $this.find( '.bioartist' ).text() +'/'+ $this.find( '.lialbum' ).text(), '_blank' );
 		return
-	} else if ( $target.hasClass( 'db-icon' ) ) {
-		dbContextmenu( $this, 'dbicon' ); // dbicon - suppress single tap add+play
-		return
-	} else 	if ( $this.find( '.fa-music' ).length || $this.find( '.fa-webradio' ).length || $this.find( '.radiothumb' ).length ) {
-		dbContextmenu( $this );
+	} else if ( islast || $target.data( 'target' ) ) {
+		dbContextmenu( $this, $target );
 		return
 	}
 	
@@ -1475,7 +1473,7 @@ $( '#pl-entries' ).on( 'click', '.pl-icon', function( e ) {
 		$contextlist.eq( 1 ).add( $contextlist.eq( 2 ) ).addClass( 'hide' );
 	}
 	if ( $this.hasClass( 'fa-webradio' ) && $thisli.find( '.unsaved' ).length ) {
-		GUI.list.name = $thisli.find( '.name' ).text();
+		GUI.list.name = $thisli.find( '.name' ).html().split( '<x>' )[ 0 ];
 		GUI.list.path = $thisli.find( '.lipath' ).text();
 		$contextlist.eq( 3 ).removeClass( 'hide' );
 	} else {

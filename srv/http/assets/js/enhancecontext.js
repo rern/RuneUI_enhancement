@@ -35,7 +35,11 @@ $( '.contextmenu a' ).click( function() {
 		, thumbnail     : updateThumbnails
 	}
 	if ( cmd in contextFunction ) {
-		contextFunction[ cmd ]();
+		if ( cmd === 'radiosave' ) {
+			webRadioNew( GUI.list.name, GUI.list.path );
+		} else {
+			contextFunction[ cmd ]();
+		}
 		return
 	}
 	// replaceplay|replace|addplay|add //////////////////////////////////////////
