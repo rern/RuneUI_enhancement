@@ -988,6 +988,7 @@ function dataParse( data, path, querytype, plid ) {
 			var dataL = data.length;
 			for ( i = 0; i < dataL; i++ ) content += radio2html( data[ i ], 'Spotify', querytype, plid );
 		} else if ( GUI.plugin === 'Dirble' ) {
+			console.log(data)
 			var dataL = data.length;
 			for ( i = 0; i < dataL; i++ ) content += radio2html( data[ i ], 'Dirble', querytype );
 		} else if ( GUI.plugin === 'Jamendo' ) {
@@ -1258,7 +1259,7 @@ function radio2html( list, source, querytype, plid ) {
 				content = '<li mode="dirble">'
 						 +'<a class="lipath">'+ url +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ list.lisort +'</a>'
 						 + iconhtml
-						 +'<span class="li1">'+ liname +'&ensp;<span>( '+ list.country +' )</span></span>'
+						 +'<span class="li1">'+ liname +'&ensp;<gr>'+ list.country +'</gr><a class="flag"><f style="background-position: '+ flag( list.country ) +'"></f></a></span>'
 						 +'<span class="li2">'+ url +'</span>'
 			}
 			break;
@@ -1277,6 +1278,11 @@ function radio2html( list, source, querytype, plid ) {
 			break;
 	}
 	return content +'</li>';
+}
+function flag( iso ) { // from: https://stackoverflow.com/a/11119265
+	var iso0 = ( iso.toLowerCase().charCodeAt( 0 ) - 97 ) * -15;
+	var iso1 = ( iso.toLowerCase().charCodeAt( 1 ) - 97 ) * -20;
+	return iso1 +'px '+ iso0 +'px';
 }
 function dbContextmenu( $li ) {
 	$( '.menu' ).addClass( 'hide' );
