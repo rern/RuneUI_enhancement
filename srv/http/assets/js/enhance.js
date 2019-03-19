@@ -1235,24 +1235,25 @@ $( '#db-entries' ).on( 'taphold', '.licoverimg',  function() {
 	
 	if ( $this.attr( 'mode' ) === 'spotify' ) {
 		getData( {
-			  path      : GUI.currentpath +'/'+ $this.find( 'span' ).text()
+			  querytype : 'tracks'
+			, path      : GUI.currentpath +'/'+ $this.find( 'span' ).text()
 			, args      : path.toString()
-			, querytype : 'tracks'
 		} );
 		GUI.plugin = 'Spotify';
 	} else if ( $this.attr( 'mode' ) === 'dirble' ) {
 		getData( {
-			  path      : GUI.currentpath +'/'+ $this.find( 'span' ).text()
-			, querytype : $this.hasClass( 'db-dirble-child' ) ? 'stations' : 'childs'
+			  querytype : $this.hasClass( 'db-dirble-child' ) ? 'stations' : 'childs'
+			, path      : GUI.currentpath +'/'+ $this.find( 'span' ).text() // for d--currentpath
 			, args      : path
 		} );
 		GUI.plugin = 'Dirble';
 	} else if ( $this.attr( 'mode' ) === 'jamendo' ) {
 /*		getData( {
-			  path      : GUI.currentpath +'/'+ $this.find( 'span' ).text()
-			, querytype : 'radio'
+			  querytype : 'radio'
+			, path      : GUI.currentpath +'/'+ $this.find( 'span' ).text()
 			, args      : path
-		} );*/
+		} );
+		GUI.plugin = 'Jamendo';*/
 	}
 } );
 $( '#db-index li' ).click( function() {
