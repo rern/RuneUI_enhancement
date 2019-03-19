@@ -625,7 +625,7 @@ $( '.btn-cmd' ).click( function() {
 			}
 			pos = pos || 1;
 			command = GUI.status.state === 'play' ? 'mpc play '+ pos : [ 'mpc play '+ pos, 'mpc stop' ];
-			if ( GUI.status.ext === 'radio' && $( '#cover-art' ).attr( 'src' ) === vu ) $( '#cover-art' ).attr( 'src', vustop )
+			if ( GUI.status.ext === 'radio' ) $( '#cover-art' ).attr( 'src', GUI.status.state === 'play' ? vu : vustop )
 		} else {
 			command = ( GUI.status.ext === 'radio' && GUI.status.state === 'play' ) ? 'mpc stop' : 'mpc toggle';
 		}

@@ -339,7 +339,8 @@ function renderPlayback() {
 		}
 		if ( GUI.init ) { // initial load only
 			$( '#cover-art' )
-				.attr( 'src', coverrune )
+				.attr( 'src', status.state === 'play' ? vu : vustop )
+				.css( 'border-radius', '18px' )
 				.on( 'load', removeSplash );
 		}
 		// dirble coverart
@@ -348,19 +349,20 @@ function renderPlayback() {
 		for ( i = 0; i < plL; i++ ) {
 			if ( GUI.pllist[ i ][ 'file' ] === GUI.status.file ) {
 				var url = GUI.pllist[ i ][ 'Title' ];
-				if ( url.slice( -4 ) !== '</x>' ) noid = 1;
-				
-				var stationid = url.split( '<x>' ).pop().slice( 0, -4 );
-				$.post( 'enhance.php', { dirble: 'coverurl', args: stationid }, function( url ) {
-					if ( url ) {
-						$( '#cover-art' )
-							.attr( 'src', url )
-							.css( 'border-radius', '' )
-						$( '#coverartoverlay' ).addClass( 'hide' );
-						return
-					}
-				} );
-
+				if ( url.slice( -4 ) !== '</x>' ) {
+					noid = 1;
+				} else {
+					var stationid = url.split( '<x>' ).pop().slice( 0, -4 );
+					$.post( 'enhance.php', { dirble: 'coverurl', args: stationid }, function( url ) {
+						if ( url ) {
+							$( '#cover-art' )
+								.attr( 'src', url )
+								.css( 'border-radius', '' )
+							$( '#coverartoverlay' ).addClass( 'hide' );
+							return
+						}
+					} );
+				}
 			}
 			if ( noid || i === plL ) {
 				$( '#cover-art' )
@@ -379,9 +381,9 @@ function renderPlayback() {
 		var coverart = status.coverart || coverrune;
 		$( '#cover-art' )
 			.attr( 'src', coverart )
-			.css( 'border-radius', 0 )
+			.css( 'border-radius', '' )
 			.one( 'load', removeSplash );
-		// in case too long to get coverart 
+		// force remove in case too long to get coverart 
 		setTimeout( removeSplash, 2000 );
 	}
 	// time
