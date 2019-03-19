@@ -1301,12 +1301,8 @@ function dbContextmenu( $li ) {
 	GUI.list.liindex = $( '#db-entries li' ).index( $li ); // for webradio delete - in contextmenu
 	if ( $( '#db-currentpath' ).find( '.lipath' ).text() === 'Webradio' ) GUI.list.url = $li.find( '.bl' ).text();
 	var $menu = $( $li.find( '.db-icon' ).data( 'target' ) );
-	if ( GUI.display.tapaddplay && !$this.hasClass( 'licover' ) ) {
+	if ( GUI.display.tapaddplay && !$li.hasClass( 'licover' ) ) {
 		$menu.find( 'a:eq( 1 )' ).click();
-		setTimeout( function() {
-			$thisli.removeClass( 'active' );
-			$( contextmenu ).addClass( 'hide' );
-		}, 0 );
 		return
 	}
 	
