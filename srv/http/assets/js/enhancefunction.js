@@ -344,33 +344,22 @@ function renderPlayback() {
 				.on( 'load', removeSplash );
 		}
 		// dirble coverart
-		var noid = 0;
-		var plL = GUI.pllist.length;
-		for ( i = 0; i < plL; i++ ) {
-			if ( GUI.pllist[ i ][ 'file' ] === GUI.status.file ) {
-				var url = GUI.pllist[ i ][ 'Title' ];
-				if ( url.slice( -4 ) !== '</x>' ) {
-					noid = 1;
+		var title = GUI.pllist[ status.song ].Title;
+		if ( title.slice( -4 ) === '</x>' ) {
+			var stationid = title.split( '<x>' ).pop().slice( 0, -4 );
+			$.post( 'enhance.php', { dirble: 'coverurl', args: stationid }, function( url ) {
+				if ( url ) {
+					$( '#cover-art' )
+						.attr( 'src', url )
+						.css( 'border-radius', '' )
+					$( '#coverartoverlay' ).addClass( 'hide' );
 				} else {
-					var stationid = url.split( '<x>' ).pop().slice( 0, -4 );
-					$.post( 'enhance.php', { dirble: 'coverurl', args: stationid }, function( url ) {
-						if ( url ) {
-							$( '#cover-art' )
-								.attr( 'src', url )
-								.css( 'border-radius', '' )
-							$( '#coverartoverlay' ).addClass( 'hide' );
-							return
-						}
-					} );
+					$( '#cover-art' )
+						.attr( 'src', status.state === 'play' ? vu : vustop )
+						.css( 'border-radius', '18px' )
+					$( '#coverartoverlay' ).removeClass( 'hide' );
 				}
-			}
-			if ( noid || i === plL ) {
-				$( '#cover-art' )
-					.attr( 'src', GUI.coverurl || ( status.state === 'play' ? vu : vustop ) )
-					.css( 'border-radius', '18px' )
-				$( '#coverartoverlay' ).removeClass( 'hide' );
-				return
-			}
+			} );
 		}
 		return
 	}
@@ -988,7 +977,6 @@ function dataParse( data, path, querytype, plid ) {
 			var dataL = data.length;
 			for ( i = 0; i < dataL; i++ ) content += radio2html( data[ i ], 'Spotify', querytype, plid );
 		} else if ( GUI.plugin === 'Dirble' ) {
-			console.log(data)
 			var dataL = data.length;
 			for ( i = 0; i < dataL; i++ ) content += radio2html( data[ i ], 'Dirble', querytype );
 		} else if ( GUI.plugin === 'Jamendo' ) {
