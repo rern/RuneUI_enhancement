@@ -1125,6 +1125,7 @@ wh, gr { font-weight: 300; }
 .home-block .fa-bookmark {
 	color: #0095d8;
 }
+/* coverart edit icons */
 .edit {
 	position: absolute;
 	right: 0;
@@ -1136,7 +1137,8 @@ wh, gr { font-weight: 300; }
 	color: #e0e7ee !important;
 }
 .home-block-remove,
-.coverart-remove {
+.coverart-remove,
+.licover-remove {
 	top: 0;
 }
 .home-block-edit {
@@ -1148,6 +1150,15 @@ wh, gr { font-weight: 300; }
 .coverart-cover {
 	bottom: 5px;
 }
+.licover-remove,
+.licover-cover {
+	height: 40px;
+	right: 15px;
+}
+.licover-cover {
+	bottom: 0;
+}
+
 #infoMessage img {
 	margin: 10px 10px 0 10px;
 	width: 100px;
@@ -1384,12 +1395,6 @@ wh, gr { font-weight: 300; }
 }
 .licoverimg img {
 	pointer-events: none;
-}
-.licover-cover {
-	position: absolute;
-	bottom: 0;
-	right: 15px;
-	color: #e0e7ee !important;
 }
 .liinfo {
 	display: inline-block;
