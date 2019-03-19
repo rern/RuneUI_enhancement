@@ -217,9 +217,6 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	}
 	$data = sortData( $data, $index );
 	echo json_encode( $data );
-} else if ( isset( $_POST[ 'coverfile' ] ) ) {
-	$coverfile = '/srv/http/assets/img/coverarts/'.urldecode( $_POST[ 'coverfile' ] );
-	exec( '/usr/bin/sudo /usr/bin/rm "'.$coverfile.'"' );
 } else if ( isset( $_POST[ 'album' ] ) ) {
 	$albums = shell_exec( $_POST[ 'album' ] );
 	$name = isset( $_POST[ 'albumname' ] ) ? $_POST[ 'albumname' ] : '';
@@ -327,8 +324,11 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$redis->hSet( 'display', 'volumemute', $currentvol );
 	exec( 'mpc volume '.$vol );
 	pushstream( 'volume', array( $vol, $currentvol ) );
-} else if ( isset( $_POST[ 'thumbfile' ] ) ) {
-	$thumbfile = $_POST[ 'thumbfile' ];
+} else if ( isset( $_POST[ 'thumbfile' ] ) ) { // browse by coverart
+	echo '/usr/bin/sudo /usr/bin/rm "/srv/http/assets/img/coverarts/'.$_POST[ 'thumbfile' ].'"';
+	exec( '/usr/bin/sudo /usr/bin/rm "/srv/http/assets/img/coverarts/'.$_POST[ 'thumbfile' ].'"' );
+} else if ( isset( $_POST[ 'imagefile' ] ) ) { // coverart and thumnail.jpg
+	$thumbfile = $_POST[ 'imagefile' ];
 	$base64 = str_replace( 'data:image/jpeg;base64,', '', $_POST[ 'base64' ] ); // strip header
 	$tmpfile = '/srv/http/tmp/thumbnail.jpg';
 	$newfile = str_replace( 'svg', 'jpg', $thumbfile ); // if current is svg
