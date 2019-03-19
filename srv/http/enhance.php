@@ -324,8 +324,8 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$redis->hSet( 'display', 'volumemute', $currentvol );
 	exec( 'mpc volume '.$vol );
 	pushstream( 'volume', array( $vol, $currentvol ) );
-} else if ( isset( $_POST[ 'thumbfile' ] ) ) { // browse by coverart
-	exec( '/usr/bin/sudo /usr/bin/rm "/srv/http/assets/img/coverarts/'.$_POST[ 'thumbfile' ].'"' );
+} else if ( isset( $_POST[ 'deleteimagefile' ] ) ) { // browse by coverart
+	exec( '/usr/bin/sudo /usr/bin/rm "/srv/http/assets/img/coverarts/'.$_POST[ 'deleteimagefile' ].'"' );
 } else if ( isset( $_POST[ 'imagefile' ] ) ) { // coverart and thumnail.jpg
 	$thumbfile = $_POST[ 'imagefile' ];
 	$base64 = str_replace( 'data:image/jpeg;base64,', '', $_POST[ 'base64' ] ); // strip header
