@@ -1711,7 +1711,16 @@ li.active .time {
 .menu a.active {
 	background: #0095d8;
 }
-
+/* flags */
+.flag {
+	margin-left: 5px;
+}
+.flag f {
+	background: url( /assets/img/flags.png ) no-repeat;
+	display: inline-block;
+	width: 16px;
+	height: 12px;
+}
 /* bootstrap column */
 .coverart div {
 	position: relative;
