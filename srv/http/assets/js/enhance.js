@@ -1207,16 +1207,10 @@ $( '#db-entries' ).on( 'taphold', '.licoverimg',  function() {
 	if ( $( '.edit' ).length ) {
 		$( '.edit' ).remove();
 		$( '.licoverimg img' ).css( 'opacity', '' );
-		
 		if ( $( this ).is( '.licover' ) ) return
 	}
 	
 	var $this = $( this );
-	if ( $this.find( '.fa-music' ).length || $this.find( '.fa-webradio' ).length || $this.find( '.radiothumb' ).length ) {
-		dbContextmenu( $this );
-		return
-	}
-	
 	if ( $this.index() === 0 && $target.is( '.bioartist, .fa-artist, .fa-albumartist, .biocomposer, .fa-composer' ) ) {
 		var name = ( $target.is( '.biocomposer, .fa-composer' ) ) ? $this.find( '.biocomposer' ).text() : $this.find( '.bioartist' ).text();
 		getBio( name );
@@ -1225,6 +1219,9 @@ $( '#db-entries' ).on( 'taphold', '.licoverimg',  function() {
 		window.open( 'https://www.last.fm/music/'+ $this.find( '.bioartist' ).text() +'/'+ $this.find( '.lialbum' ).text(), '_blank' );
 		return
 	} else if ( $target.hasClass( 'db-icon' ) ) {
+		dbContextmenu( $this, 'dbicon' ); // dbicon - suppress single tap add+play
+		return
+	} else 	if ( $this.find( '.fa-music' ).length || $this.find( '.fa-webradio' ).length || $this.find( '.radiothumb' ).length ) {
 		dbContextmenu( $this );
 		return
 	}
