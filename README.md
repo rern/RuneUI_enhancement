@@ -14,12 +14,18 @@ _Tested on RuneAudio 0.4b, 0.5_
 	- Larger new icons
 	- Add pause button
 	- Show database updating as blinking icon (show as icon in Time knob while hidden)
+- Performance
 	
 ### New Features
-- Browse by CoverArt ( with [LazyLoad](https://github.com/verlok/lazyload) )
-- Coverart bookmarks
-- Coverart in album view
+- Coverarts
+	- Browse by CoverArt ( with [LazyLoad](https://github.com/verlok/lazyload) )
+	- Coverart bookmarks
+	- Coverart in album view
+	- Replace / remove
+	- Image from each Dirble stations
+	- VU meter for Webradio
 - Index bar
+	- Mask available indexes
 - Library sorting
 - Selectable show/hide
 	- Top-bottom bars
@@ -35,7 +41,7 @@ _Tested on RuneAudio 0.4b, 0.5_
 	- Fallback for allow-swipe-only area
 - Refresh browser for fullscreen mode
 	- Long-press bottom bar / swipe bar
-- Sortable Library items ( by [Sortable](https://github.com/SortableJS/Sortable) )
+- Reorder Library items ( by [Sortable](https://github.com/SortableJS/Sortable) )
 
 Install
 ---
@@ -100,19 +106,27 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 - Show counts
 - Browse by CoverArt
 	- Long-press `CoverArt` to create / update thumbnails
-	- Long-press thumbnail for remove
+	- Long-press thumbnail for replace / remove
 	- Context menu in directory for partial update
+	- Sort by album or by artist
 - Coverart bookmarks
+	- Long-press for replace / remove
+- Coverart in album view / album directory
+	- Long-press for replace / remove
 - Bookmarks and webradios can be renamed
 - Bookmarks and webradios can be named with " characters
 - Show icon and breadcrumb heading while browsing
-- Show list in playlist files (\*.cue, \*.pls, \*.m3u)
+- Show list in playlist files `*.cue` `*.pls` `*.m3u`
 - Toggle search box
-- Show index bar with filter mask
+- Index bar
+	- Unavailable indexes masked
+	- Compressed for limited height screen
 - Improved Back button
 - Maintain scroll position
-- Improved sorting with articles, A/An/The, ignored
+- Improved sorting
+	- Ignore leading `A` `An` `The` `(` `[` `{` `.`
 - Modes
+	- Coverarts > albums > songs
 	- Albums > names > songs
 	- Albums with duplicate name > album-artist > songs
 	- Artists > names > albums > songs
