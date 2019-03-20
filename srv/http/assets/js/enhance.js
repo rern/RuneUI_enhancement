@@ -1667,20 +1667,20 @@ pushstreams.idle.onmessage = function( changed ) {
 		} else if ( changed === 'playlist' ) { // on playlist changed
 			if ( GUI.pleditor || GUI.contextmenu || $( '#pl-entries .pl-remove' ).length ) return
 			
-			if ( GUI.playlist ) {
-				$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
-					if ( data.playlist.length ) {
-						GUI.status.playlistlength = data.playlist.length;
-						GUI.lsplaylists = data.lsplaylists || [];
-						GUI.pllist = data.playlist;
-					} else {
-						GUI.status.playlistlength = 0;
-					}
+			$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
+				if ( data.playlist.length ) {
+					GUI.status.playlistlength = data.playlist.length;
+					GUI.lsplaylists = data.lsplaylists || [];
+					GUI.pllist = data.playlist;
+				} else {
+					GUI.status.playlistlength = 0;
+				}
+				if ( GUI.playlist ) {
 					renderPlaylist();
-				}, 'json' );
-			} else if ( GUI.playback ) {
-				getPlaybackStatus();
-			}
+				} else if ( GUI.playback ) {
+					getPlaybackStatus();
+				}
+			}, 'json' );
 		} else if ( changed === 'options' ) { // on mode toggled
 			$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
 				$.each( status, function( key, value ) {

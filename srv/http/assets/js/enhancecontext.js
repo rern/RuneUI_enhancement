@@ -89,9 +89,6 @@ $( '.contextmenu a' ).click( function() {
 			addReplace( mode, cmd, command, 'Add to Playlist' );
 		} else if ( cmd === 'addplay' ) {
 			addReplace( mode, cmd, command, 'Add to Playlist + Play' );
-			$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
-				GUI.pllist = data.playlist; // for dirble coverart
-			}, 'json' );
 		} else {
 			if ( GUI.display.plclear && GUI.status.playlistlength ) {
 				info( {
