@@ -307,8 +307,8 @@ function webRadioSave( name, url ) {
 		var stationimg = '';
 	}
 	info( {
-		  icon       : 'microsd'
-		, title      : 'Save Webradio'
+		  icon       : 'save'
+		, title      : 'Save In Webradio'
 		, width      : 500
 		, message    : 'Save URL:'
 					  +'<br><w>'+ url +'</w>'
