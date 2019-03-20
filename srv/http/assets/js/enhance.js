@@ -1668,7 +1668,7 @@ pushstreams.bookmark.onmessage = function( data ) {
 					$( '#divhomeblocks' ).append( $divblock );
 				} );
 			}
-			renderLibrary()
+			if ( GUI.library && !$( '#home-blocks' ).hasClass( 'hide' ) ) renderLibrary()
 		} );
 	}, GUI.debouncems );
 }
