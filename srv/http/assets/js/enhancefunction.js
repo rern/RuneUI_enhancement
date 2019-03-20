@@ -337,29 +337,21 @@ function renderPlayback() {
 			$( '#song' ).html( '·&ensp;·&ensp;·' );
 			$( '#elapsed, #total, #timepos' ).empty();
 		}
-		if ( GUI.init ) { // initial load only
-			$( '#cover-art' )
-				.attr( 'src', status.state === 'play' ? vu : vustop )
-				.css( 'border-radius', '18px' )
-				.on( 'load', removeSplash );
-		}
+		$( '#cover-art' )
+			.attr( 'src', status.state === 'play' ? vu : vustop )
+			.css( 'border-radius', '18px' )
+			.on( 'load', removeSplash );
+		$( '#coverartoverlay' ).removeClass( 'hide' );
 		// dirble coverart
 		var title = GUI.pllist[ status.song ].Title;
 		if ( title.slice( -4 ) === '</x>' ) {
-			var stationid = title.split( '<x>' ).pop().slice( 0, -4 );
-			$.post( 'enhance.php', { dirble: 'coverurl', args: stationid }, function( url ) {
-				if ( url ) {
-					$( '#cover-art' )
-						.attr( 'src', url )
-						.css( 'border-radius', '' )
-					$( '#coverartoverlay' ).addClass( 'hide' );
-				} else {
-					$( '#cover-art' )
-						.attr( 'src', status.state === 'play' ? vu : vustop )
-						.css( 'border-radius', '18px' )
-					$( '#coverartoverlay' ).removeClass( 'hide' );
-				}
-			} );
+			var url = title.split( '<x>' ).pop().slice( 0, -4 );
+			if ( url ) {
+				$( '#cover-art' )
+					.attr( 'src', url )
+					.css( 'border-radius', '' )
+				$( '#coverartoverlay' ).addClass( 'hide' );
+			}
 		}
 		return
 	}
@@ -1239,8 +1231,8 @@ function radio2html( list, source, querytype, plid ) {
 				var url = list.streams[ 0 ].stream
 				var thumb = list.image.thumb.url;
 				if ( thumb ) {
-					var iconhtml = '<img class="radiothumb db-icon lazy" data-src="'+ thumb +'"  data-target="#context-menu-radio">'
-								  +'<a class="liid">'+ list.id +'</a>'
+					var iconhtml = '<img class="radiothumb db-icon lazy" data-src="'+ thumb +'" onerror="imgError(this);" data-target="#context-menu-radio">'
+								  +'<a class="liimg">'+ list.image.url +'</a>'
 				} else {
 					var iconhtml = '<i class="fa fa-webradio db-icon" data-target="#context-menu-radio"></i>';
 				}
@@ -1272,6 +1264,11 @@ function flag( iso ) { // from: https://stackoverflow.com/a/11119265
 	var iso1 = ( iso.toLowerCase().charCodeAt( 1 ) - 97 ) * -20;
 	return iso1 +'px '+ iso0 +'px';
 }
+function imgError( image ) {
+	image.onerror = '';
+	image.src = coverrune;
+	return true;
+}
 function dbContextmenu( $li, $target ) {
 	$( '.menu' ).addClass( 'hide' );
 	if ( $li.hasClass( 'active' ) ) {
@@ -1290,7 +1287,7 @@ function dbContextmenu( $li, $target ) {
 	GUI.list.bioartist = $li.find( '.bioartist' ).text().trim() || '';
 	GUI.list.artist = $li.find( '.liartist' ).text().trim() || '';
 	GUI.list.isfile = $li.hasClass( 'file' );              // file/dirble save in contextmenu
-	GUI.list.id = $li.find( '.liid' ).text() || '';        // dirble coverart
+	GUI.list.img = $li.find( '.liimg' ).text() || '';      // dirble coverart
 	GUI.list.index = $li.find( '.liindex' ).text() || '';  // cue - in contextmenu
 	GUI.list.liindex = $( '#db-entries li' ).index( $li ); // for webradio delete - in contextmenu
 	if ( $( '#db-currentpath' ).find( '.lipath' ).text() === 'Webradio' ) GUI.list.url = $li.find( '.bl' ).text().trim();

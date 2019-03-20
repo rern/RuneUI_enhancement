@@ -363,6 +363,21 @@ $( '#artist, #bio-open' ).click( function() {
 $( '#album' ).click( function() {
 	if ( GUI.status.ext !== 'radio'&& location.hostname !== 'localhost' ) window.open( 'https://www.last.fm/music/'+ GUI.status.Artist +'/'+ GUI.status.Album, '_blank' );
 } );
+$( '#cover-art' ).on( 'error', function() {
+	var $this = $( this );
+	$this.unbind( 'error' );
+	if ( GUI.status.ext === 'radio' ) {
+		$this
+			.attr( 'src', status.state === 'play' ? vu : vustop )
+			.css( 'border-radius', '18px' )
+		$( '#coverartoverlay' ).removeClass( 'hide' );
+	} else {
+		$this
+			.attr( 'src', url )
+			.css( 'border-radius', '' );
+		$( '#coverartoverlay' ).addClass( 'hide' );
+	}
+} );
 $( '#time' ).roundSlider( {
 	  sliderType  : 'min-range'
 	, max         : 1000
