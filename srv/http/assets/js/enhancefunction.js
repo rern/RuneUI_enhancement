@@ -1286,10 +1286,12 @@ function dbContextmenu( $li, $target ) {
 	GUI.list.name = $li.find( '.liname' ).text().trim() || '';
 	GUI.list.bioartist = $li.find( '.bioartist' ).text().trim() || '';
 	GUI.list.artist = $li.find( '.liartist' ).text().trim() || '';
-	GUI.list.isfile = $li.hasClass( 'file' );              // file/dirble save in contextmenu
-	GUI.list.img = $li.find( '.liimg' ).text() || '';      // dirble coverart
 	GUI.list.index = $li.find( '.liindex' ).text() || '';  // cue - in contextmenu
 	GUI.list.liindex = $( '#db-entries li' ).index( $li ); // for webradio delete - in contextmenu
+	GUI.list.isfile = $li.hasClass( 'file' );              // file/dirble save in contextmenu
+	var liimg = $li.find( '.liimg' ).text();
+	var validsrc = $li.find( 'img' ).prop( 'src' ).split( '/' ).pop() !== coverrune.split( '/' ).pop();
+	GUI.list.img = ( liimg && validsrc ) ? liimg : ''; // dirble coverart
 	if ( $( '#db-currentpath' ).find( '.lipath' ).text() === 'Webradio' ) GUI.list.url = $li.find( '.bl' ).text().trim();
 	var $menu = $( $li.find( '.db-icon' ).data( 'target' ) );
 	if ( GUI.display.tapaddplay
