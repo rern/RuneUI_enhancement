@@ -960,8 +960,8 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 						} else {
 							$this.find( '.bklabel' )
 								.addClass( 'hide' )
-								.parent().before( '<img class="bkcoverart" src="'+ GUI.newimg +'">' )
-								.css( 'opacity', 0.33 );
+								.parent().before( '<img class="bkcoverart" src="'+ GUI.newimg +'">' );
+							$( '.home-bookmark img' ).css( 'opacity', 0.33 );
 						}
 						GUI.newimg = '';
 					} else if ( std == 13 ) {
