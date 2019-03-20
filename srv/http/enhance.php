@@ -360,18 +360,9 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$query = 'category/'.$args.'/childs';
 	} else if ( $querytype === 'stations' ) {
 		$query = 'category/'.$args.'/stations';
-	} else if ( $querytype === 'coverurl' ) {
-		$query = 'station/'.$args;
-//	} else if ( $querytype === 'search' ) { // get data like lastfm
-//		$query = '/search/'.urlencode( $args );
 	}
 	$data = curlGet( 'http://api.dirble.com/v2/'.$query.'?token='.$redis->hGet('dirble', 'apikey') );
 	$array = json_decode( $data, true );
-	if ( $querytype === 'coverurl' ) {
-		echo $array[ 'image' ][ 'url' ];
-		exit();
-	}
-	
 	$aL = count( $array );
 	for( $i = 0; $i < $aL; $i++ ) {
 		$name = $array[ $i ][ 'title' ] ?: $array[ $i ][ 'name' ];
