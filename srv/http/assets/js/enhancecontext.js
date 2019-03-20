@@ -62,8 +62,7 @@ $( '.contextmenu a' ).click( function() {
 			mpcCmd = 'mpc load "'+ name +'"';
 		} else if ( GUI.plugin ) {
 			var radioname = GUI.list.name.replace( /"/g, '\\"' );
-			var imghtml = GUI.list.img ? '<x>'+ GUI.list.img +'</x>' : '';
-			mpcCmd = 'mpc add "'+ GUI.list.path +'"; /usr/bin/redis-cli hset webradiopl '+ GUI.list.path +' "*'+ radioname + imghtml +'"';
+			mpcCmd = 'mpc add "'+ GUI.list.path +'"; /usr/bin/redis-cli hset webradiopl '+ GUI.list.path +' "*'+ radioname +'<x>'+ GUI.list.img +'</x>"';
 		} else {
 			mpcCmd = GUI.list.isfile ? 'mpc add "'+ name +'"' : 'mpc ls "'+ name +'" | mpc add';
 		}
@@ -281,7 +280,6 @@ function bookmarkDelete( name, $block ) {
 	} );
 }
 function webRadioNew( name, url ) {
-	console.log('webRadioNew')
 	info( {
 		  icon       : 'edit-circle'
 		, title      : 'Add Webradio'
@@ -300,7 +298,6 @@ function webRadioNew( name, url ) {
 	} );
 }
 function webRadioSave( name, url ) {
-	console.log('webRadioSave')
 	info( {
 		  icon       : 'microsd'
 		, title      : 'Save Webradio'

@@ -237,8 +237,8 @@ function scrollLongText() {
 }
 function removeSplash() {
 	$( '#splash' ).remove();
+	$( '#cover-art' ).removeClass( 'hide' );
 	$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
-	$( '#page-playback' ).removeClass( 'hide' );
 	if ( !$( '#divcoverarts' ).html() ) return
 	
 	lazyLoad = new LazyLoad( { elements_selector: '.lazy' } );
@@ -1284,10 +1284,7 @@ function dbContextmenu( $li, $target ) {
 	GUI.list.index = $li.find( '.liindex' ).text() || '';  // cue - in contextmenu
 	GUI.list.liindex = $( '#db-entries li' ).index( $li ); // for webradio delete - in contextmenu
 	GUI.list.isfile = $li.hasClass( 'file' );              // file/dirble save in contextmenu
-	var liimg = $li.find( '.liimg' ).text();
-	var validsrc = $li.find( 'img' ).prop( 'src' ).split( '/' ).pop() !== coverrune.split( '/' ).pop();
-	GUI.list.img = ( liimg && validsrc ) ? liimg : ''; // dirble coverart
-	if ( $( '#db-currentpath' ).find( '.lipath' ).text() === 'Webradio' ) GUI.list.url = $li.find( '.bl' ).text().trim();
+	GUI.list.img = $li.find( '.liimg' ).text() || '';      // dirble coverart
 	var $menu = $( $li.find( '.db-icon' ).data( 'target' ) );
 	if ( GUI.display.tapaddplay
 		&& !$target.hasClass( 'db-icon' )
