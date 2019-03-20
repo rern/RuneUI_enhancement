@@ -15,6 +15,8 @@ _Tested on RuneAudio 0.4b, 0.5_
 	- Add pause button
 	- Show database updating as blinking icon (show as icon in Time knob while hidden)
 - Performance
+	- Loading
+	- Running
 	
 ### New Features
 - Coverarts
@@ -23,7 +25,7 @@ _Tested on RuneAudio 0.4b, 0.5_
 	- Coverart in album view
 	- Replace / remove
 	- Image from each Dirble stations
-	- VU meter for Webradio
+	- VU meter for Webradio (animated gif)
 - Index bar
 	- Mask available indexes
 - Library sorting
@@ -90,7 +92,7 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 		- With embedded ID3 cover art
 			- Single artist + single album : override embedded ones by placing 1 cover art file in the directory
 			- Various : existing embedded ones
-	- Show VU meter in webradio - animated while play
+	- Show VU meter in webradio - animated while playing
 - Volume
 	- Show pre-mute level instead of 0 on mute
 	- Maintain pre-mute level across page refresh and clients
