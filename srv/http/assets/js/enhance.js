@@ -951,13 +951,21 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 			, cancel      : 1
 			, ok          : function() {
 				var bookmarkfile = '/mnt/MPD/'+ path +'/thumbnail.jpg';
-				$.post( 'enhance.php', { imagefile: bookmarkfile, base64: GUI.newimg }, function() {
+				$.post( 'enhance.php', { imagefile: bookmarkfile, base64: GUI.newimg }, function( std ) {
+					if ( std === 0 ) {
 						$this.find( '.fa-bookmark' ).remove();
 						$this.find( 'img' ).remove();
 						$this.find( '.bklabel' )
 							.addClass( 'hide' )
 							.before( '<img class="bkcoverart" src="'+ GUI.newimg +'">' );
 						GUI.newimg = '';
+					} else if ( std === 13 ) {
+						info( {
+							  icon    : 'warning'
+							, message : 'Replace file permission denied.'
+									   +'Set directory+file permission and try again.'
+						} );
+					}
 				} );
 			}
 		} );
@@ -1138,7 +1146,15 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-remove', function() {
 		, oklabel  : 'Remove'
 		, ok       : function() {
 			$this.parent().parent().remove();
-			$.post( 'enhance.php', { deleteimagefile: thumbfile } );
+			$.post( 'enhance.php', { deleteimagefile: thumbfile }, function( std ) {
+				if ( std === 13 ) {
+					info( {
+						  icon    : 'warning'
+						, message : 'Delete file permission denied.'
+								   +'Set directory+file permission and try again.'
+					} );
+				}
+			} );
 		}
 	} );
 } );
@@ -1156,12 +1172,18 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-cover', function() {
 		, fileoklabel : 'Replace'
 		, cancel      : 1
 		, ok          : function() {
-			$.post( 'enhance.php'
-				, { imagefile: thumbfile, base64: GUI.newimg }
-				, function() {
+			$.post( 'enhance.php', { imagefile: thumbfile, base64: GUI.newimg }, function( std ) {
+				if ( std === 0 ) {
 					$img.removeAttr( 'data-src' ); // lazyload 'data-src'
 					$img.attr( 'src', GUI.newimg );
 					GUI.newimg = '';
+				} else if ( std === 13 ) {
+					info( {
+						  icon    : 'warning'
+						, message : 'Replace file permission denied.'
+								   +'Set directory+file permission and try again.'
+					} );
+				}
 			} );
 		}
 	} );
@@ -1182,10 +1204,18 @@ $( '#db-entries' ).on( 'tap', '.edit',  function() {
 			, oklabel     : 'Delete'
 			, cancel      : 1
 			, ok          : function() {
-				$.post( 'enhance.php', { deleteimagefile: coverfile }, function() {
+				$.post( 'enhance.php', { deleteimagefile: coverfile }, function( std ) {
+					if ( std === 0 ) {
 						$img.attr( 'src', coverrune );
 						$( '.edit' ).remove();
 						$img.css( 'opacity', '' );
+					} else if ( std === 13 ) {
+						info( {
+							  icon    : 'warning'
+							, message : 'Delete file permission denied.'
+									   +'Set directory+file permission and try again.'
+						} );
+					}
 				} );
 			}
 		} );
@@ -1199,13 +1229,19 @@ $( '#db-entries' ).on( 'tap', '.edit',  function() {
 			, fileoklabel : 'Replace'
 			, cancel      : 1
 			, ok          : function() {
-				$.post( 'enhance.php'
-					, { imagefile: coverfile, base64: GUI.newimg }
-					, function() {
+				$.post( 'enhance.php', { imagefile: coverfile, base64: GUI.newimg }, function( std ) {
+					if ( std === 0 ) {
 						$img.attr( 'src', GUI.newimg );
 						GUI.newimg = '';
 						$( '.edit' ).remove();
 						$img.css( 'opacity', '' );
+					} else if ( std === 13 ) {
+						info( {
+							  icon    : 'warning'
+							, message : 'Replace file permission denied.'
+									   +'Set directory+file permission and try again.'
+						} );
+					}
 				} );
 			}
 		} );
