@@ -891,7 +891,7 @@ $( '#infoFileBox' ).change( function() {
 			var coverart = $( '#db-entries li' ).length;
 			var imgWHhtml = '<div class="imagewh"><span>Current</span><span>'+ imgW +' x '+ imgH +'</span>';
 			$( '#infoFilename' ).empty();
-			$( '.newimg, .imagewh' ).remove();
+			$( '.newimg, .imagewh, .bkname' ).remove();
 			if ( !coverart ) {
 				var px = 200;
 			} else {
@@ -937,13 +937,13 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 	} else if ( $target.is( '.home-block-cover' ) ) {
 		if ( $this.find( 'img' ).length ) {
 			var icon = '<img src="'+ $this.find( 'img' ).prop( 'src' ) +'">'
-					  +'<br>'+ name;
+					  +'<span class="bkname"><br>'+ name +'<span>';
 		} else {
 			var icon = '<div class="infobookmark"><i class="fa fa-bookmark"></i><br><span class="bklabel">'+ $this.find( '.bklabel' ).text() +'</span></div>';
 		}
 		info( {
 			  icon        : 'bookmark'
-			, title       : 'Change Bookmark Icon'
+			, title       : 'Change Bookmark Thumbnail'
 			, message     : 'Replace:'
 						   +'<br>'+ icon
 			, msgalign    : 'center'
@@ -952,13 +952,17 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 			, ok          : function() {
 				var bookmarkfile = '/mnt/MPD/'+ path +'/thumbnail.jpg';
 				$.post( 'enhance.php', { imagefile: bookmarkfile, base64: GUI.newimg }, function( std ) {
-					console.log(std)
 					if ( std == 0 ) {
 						$this.find( '.fa-bookmark' ).remove();
-						$this.find( 'img' ).remove();
-						$this.find( '.bklabel' )
-							.addClass( 'hide' )
-							.before( '<img class="bkcoverart" src="'+ GUI.newimg +'">' );
+						var $img = $this.find( 'img' );
+						if ( $img.length ) {
+							$img.attr( 'src', GUI.newimg  );
+						} else {
+							$this.find( '.bklabel' )
+								.addClass( 'hide' )
+								.parent().before( '<img class="bkcoverart" src="'+ GUI.newimg +'">' )
+								.css( 'opacity', 0.33 );
+						}
 						GUI.newimg = '';
 					} else if ( std == 13 ) {
 						info( {
@@ -1174,10 +1178,10 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-cover', function() {
 		, cancel      : 1
 		, ok          : function() {
 			$.post( 'enhance.php', { imagefile: thumbfile, base64: GUI.newimg }, function( std ) {
-					console.log(std == 0)
 				if ( std == 0 ) {
-					$img.removeAttr( 'data-src' ); // lazyload 'data-src'
-					$img.attr( 'src', GUI.newimg );
+					$img
+						.removeAttr( 'data-src' ) // lazyload 'data-src'
+						.attr( 'src', GUI.newimg );
 					GUI.newimg = '';
 				} else if ( std == 13 ) {
 					info( {
