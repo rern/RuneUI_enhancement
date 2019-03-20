@@ -298,6 +298,7 @@ function webRadioNew( name, url ) {
 	} );
 }
 function webRadioSave( name, url ) {
+	var nameimg = name.split( '<x>' );
 	info( {
 		  icon       : 'microsd'
 		, title      : 'Save Webradio'
@@ -306,12 +307,12 @@ function webRadioSave( name, url ) {
 					  +'<br><w>'+ url +'</w>'
 		, msgalign   : 'center'
 		, textlabel  : 'As'
-		, textvalue  : name
+		, textvalue  : nameimg[ 0 ]
 		, textalign  : 'center'
 		, boxwidth   : 'max'
 		, cancel     : 1
 		, ok         : function() {
-			webRadioVerify( $( '#infoTextBox' ).val(), url, '', 'save' );
+		webRadioVerify( $( '#infoTextBox' ).val() + '<x>'+ nameimg[ 1 ], url, '', 'save' );
 		}
 	} );
 }
