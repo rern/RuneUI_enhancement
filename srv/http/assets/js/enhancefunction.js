@@ -355,9 +355,8 @@ function renderPlayback() {
 	$( '#cover-art' ).css( 'border-radius', '' );
 	$( '#coverartoverlay' ).addClass( 'hide' );
 	if ( status.Title !== previoussong || status.Album !== previousalbum || !status.Album ) {
-		var coverart = status.coverart || coverrune;
 		$( '#cover-art' )
-			.attr( 'src', coverart )
+			.attr( 'src', status.coverart || coverrune )
 			.css( 'border-radius', '' )
 		if ( !status.coverart ) {
 			// lastfm coverart
