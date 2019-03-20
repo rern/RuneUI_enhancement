@@ -1601,10 +1601,10 @@ function removeFromPlaylist( $li ) {
 	}
 	var songpos = $this.index() + 1;
 	$this.remove();
-	if ( !$this.hasClass( 'webradio' ) ) {
-		$.post( 'enhance.php', { mpc: 'mpc del '+ songpos } );
-	} else {
+	if ( $this.hasClass( 'webradio' ) || $this.find( '.pl-icon' ).hasClass( 'unsaved' ) ) {
 		$.post( 'enhance.php', { mpc: [ 'mpc del '+ songpos, '/usr/bin/redis-cli hdel webradiopl "'+ $this.find( '.lipath' ).text() +'"' ] } );
+	} else {
+		$.post( 'enhance.php', { mpc: 'mpc del '+ songpos } );
 	}
 	if ( !$( '#countsong, #countradio' ).length ) {
 		GUI.status.playlistlength = 0;
