@@ -298,7 +298,14 @@ function webRadioNew( name, url ) {
 	} );
 }
 function webRadioSave( name, url ) {
-	var nameimg = name.split( '<x>' );
+	if ( name.slice( -4 ) === '</x>' ) {
+		var nameimg = name.split( '<x>' );
+		var stationname = nameimg[ 0 ];
+		var stationimg = '<x>'+ nameimg[ 1 ];
+	} else {
+		var stationname = name;
+		var stationimg = '';
+	}
 	info( {
 		  icon       : 'microsd'
 		, title      : 'Save Webradio'
@@ -307,12 +314,12 @@ function webRadioSave( name, url ) {
 					  +'<br><w>'+ url +'</w>'
 		, msgalign   : 'center'
 		, textlabel  : 'As'
-		, textvalue  : nameimg[ 0 ]
+		, textvalue  : stationname
 		, textalign  : 'center'
 		, boxwidth   : 'max'
 		, cancel     : 1
 		, ok         : function() {
-		webRadioVerify( $( '#infoTextBox' ).val() + '<x>'+ nameimg[ 1 ], url, '', 'save' );
+		webRadioVerify( $( '#infoTextBox' ).val() + stationimg, url, '', 'save' );
 		}
 	} );
 }
