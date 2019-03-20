@@ -359,38 +359,36 @@ function renderPlayback() {
 		$( '#cover-art' )
 			.attr( 'src', coverart )
 			.css( 'border-radius', '' )
-			.on( 'load', function() {
-				if ( !status.coverart ) {
-					// lastfm coverart
-					var queryjson = {
-						  type     : 'post'
-						, url      : 'http://ws.audioscrobbler.com/2.0/'
-						, dataType : 'json'
-						, data     : { 
-							  api_key     : $( '#lastfmapikey' ).text()
-							, autocorrect : 1
-							, format      : 'json'
-							, method      : 'album.getinfo'
-							, artist      : status.Artist
-							, album       : status.Album
-						}
-						, success  : function( data ) {
-							var coverurl = data.album.image[ 3 ][ '#text' ];
-							if ( coverurl ) {
-								$( '#cover-art' ).attr( 'src', coverurl );
-							} else {
-								delete queryjson.data.album;
-								queryjson.success = function( data ) {
-									coverurl = data.album.image[ 3 ][ '#text' ];
-									if ( coverurl ) $( '#cover-art' ).attr( 'src', coverurl );
-								}
-								$.ajax( queryjson );
-							}
-						}
-					}
-					$.ajax( queryjson );
+		if ( !status.coverart ) {
+			// lastfm coverart
+			var queryjson = {
+				  type     : 'post'
+				, url      : 'http://ws.audioscrobbler.com/2.0/'
+				, dataType : 'json'
+				, data     : { 
+					  api_key     : $( '#lastfmapikey' ).text()
+					, autocorrect : 1
+					, format      : 'json'
+					, method      : 'album.getinfo'
+					, artist      : status.Artist
+					, album       : status.Album
 				}
-			} );
+				, success  : function( data ) {
+					var coverurl = data.album.image[ 3 ][ '#text' ];
+					if ( coverurl ) {
+						$( '#cover-art' ).attr( 'src', coverurl );
+					} else {
+						delete queryjson.data.album;
+						queryjson.success = function( data ) {
+							coverurl = data.album.image[ 3 ][ '#text' ];
+							if ( coverurl ) $( '#cover-art' ).attr( 'src', coverurl );
+						}
+						$.ajax( queryjson );
+					}
+				}
+			}
+			$.ajax( queryjson );
+		}
 	}
 	// time
 	time = status.Time;
