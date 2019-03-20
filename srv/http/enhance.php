@@ -326,14 +326,16 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	exec( 'mpc volume '.$vol );
 	pushstream( 'volume', array( $vol, $currentvol ) );
 } else if ( isset( $_POST[ 'deleteimagefile' ] ) ) { // browse by coverart
-	exec( '/usr/bin/sudo /usr/bin/rm "/srv/http/assets/img/coverarts/'.$_POST[ 'deleteimagefile' ].'"' );
+	exec( '/usr/bin/sudo /usr/bin/rm "/srv/http/assets/img/coverarts/'.$_POST[ 'deleteimagefile' ].'"', $output, $std );
+	echo $std;
 } else if ( isset( $_POST[ 'imagefile' ] ) ) { // coverart and thumnail.jpg
 	$thumbfile = $_POST[ 'imagefile' ];
 	$base64 = str_replace( 'data:image/jpeg;base64,', '', $_POST[ 'base64' ] ); // strip header
 	$tmpfile = '/srv/http/tmp/thumbnail.jpg';
 	$newfile = str_replace( 'svg', 'jpg', $thumbfile ); // if current is svg
 	file_put_contents( $tmpfile, base64_decode( $base64 ) );
-	exec( '/usr/bin/sudo /usr/bin/rm "'.$thumbfile.'"; /usr/bin/sudo /usr/bin/cp '.$tmpfile.' "'.$newfile.'"' );
+	exec( '/usr/bin/sudo /usr/bin/rm "'.$thumbfile.'"; /usr/bin/sudo /usr/bin/cp '.$tmpfile.' "'.$newfile.'"', $output, $std );
+	echo $std;
 } else if ( isset( $_POST[ 'power' ] ) ) {
 	$mode = $_POST[ 'power' ];
 	if ( $mode === 'screenoff' ) {
