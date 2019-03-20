@@ -377,6 +377,8 @@ $( '#cover-art' ).on( 'error', function() {
 			.css( 'border-radius', '' );
 		$( '#coverartoverlay' ).addClass( 'hide' );
 	}
+} ).one( 'load', function() {
+	removeSplash();
 } );
 $( '#time' ).roundSlider( {
 	  sliderType  : 'min-range'

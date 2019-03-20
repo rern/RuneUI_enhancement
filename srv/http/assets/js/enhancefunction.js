@@ -236,9 +236,6 @@ function scrollLongText() {
 	}, 50 );
 }
 function removeSplash() {
-	if ( !GUI.init ) return
-	
-	GUI.init = 0;
 	$( '#splash' ).remove();
 	$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
 	$( '#page-playback' ).removeClass( 'hide' );
@@ -264,8 +261,7 @@ function setPlaybackBlank() {
 	$( '#coverartoverlay' ).addClass( 'hide' );
 	$( '#cover-art' )
 		.attr( 'src', coverrune )
-		.css( 'border-radius', 0 )
-		.on( 'load', removeSplash );
+		.css( 'border-radius', '' );
 	$( '#artist, #song, #album' )
 		.removeClass( 'scrollleft' )
 		.removeAttr( 'style' )
@@ -337,11 +333,6 @@ function renderPlayback() {
 			$( '#song' ).html( '·&ensp;·&ensp;·' );
 			$( '#elapsed, #total, #timepos' ).empty();
 		}
-		$( '#cover-art' )
-			.attr( 'src', status.state === 'play' ? vu : vustop )
-			.css( 'border-radius', '18px' )
-			.on( 'load', removeSplash );
-		$( '#coverartoverlay' ).removeClass( 'hide' );
 		// dirble coverart
 		var title = GUI.pllist[ status.song ].Title;
 		if ( title.slice( -4 ) === '</x>' ) {
@@ -349,9 +340,14 @@ function renderPlayback() {
 			if ( url ) {
 				$( '#cover-art' )
 					.attr( 'src', url )
-					.css( 'border-radius', '' )
+					.css( 'border-radius', '' );
 				$( '#coverartoverlay' ).addClass( 'hide' );
 			}
+		} else {
+			$( '#cover-art' )
+				.attr( 'src', status.state === 'play' ? vu : vustop )
+				.css( 'border-radius', '18px' )
+			$( '#coverartoverlay' ).removeClass( 'hide' );
 		}
 		return
 	}
@@ -362,8 +358,7 @@ function renderPlayback() {
 		var coverart = status.coverart || coverrune;
 		$( '#cover-art' )
 			.attr( 'src', coverart )
-			.css( 'border-radius', '' )
-			.one( 'load', removeSplash );
+			.css( 'border-radius', '' );
 		// force remove in case too long to get coverart 
 		setTimeout( removeSplash, 2000 );
 	}
