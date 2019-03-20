@@ -299,7 +299,7 @@ function renderPlayback() {
 	$( '#songposition' ).text( ( +status.song + 1 ) +'/'+ status.playlistlength );
 	var ext = ( status.ext !== 'radio' ) ? '<wh> • </wh>' + status.ext : '';
 	var dot = GUI.display.time ? '<wh id="dot0"> • </wh>' : '';
-	$( '#format-bitrate' ).html( dot + status.sampling + ext );
+	$( '#format-bitrate' ).html( dot + status.sampling + ext )
 	if ( status.ext === 'radio' ) {
 		$( '#time' ).roundSlider( 'setValue', 0 );
 		if ( status.state === 'play' ) {
@@ -358,9 +358,39 @@ function renderPlayback() {
 		var coverart = status.coverart || coverrune;
 		$( '#cover-art' )
 			.attr( 'src', coverart )
-			.css( 'border-radius', '' );
-		// force remove in case too long to get coverart 
-		setTimeout( removeSplash, 2000 );
+			.css( 'border-radius', '' )
+			.on( 'load', function() {
+				if ( !status.coverart ) {
+					// lastfm coverart
+					var queryjson = {
+						  type     : 'post'
+						, url      : 'http://ws.audioscrobbler.com/2.0/'
+						, dataType : 'json'
+						, data     : { 
+							  api_key     : $( '#lastfmapikey' ).text()
+							, autocorrect : 1
+							, format      : 'json'
+							, method      : 'album.getinfo'
+							, artist      : status.Artist
+							, album       : status.Album
+						}
+						, success  : function( data ) {
+							var coverurl = data.album.image[ 3 ][ '#text' ];
+							if ( coverurl ) {
+								$( '#cover-art' ).attr( 'src', coverurl );
+							} else {
+								delete queryjson.data.album;
+								queryjson.success = function( data ) {
+									coverurl = data.album.image[ 3 ][ '#text' ];
+									if ( coverurl ) $( '#cover-art' ).attr( 'src', coverurl );
+								}
+								$.ajax( queryjson );
+							}
+						}
+					}
+					$.ajax( queryjson );
+				}
+			} );
 	}
 	// time
 	time = status.Time;
