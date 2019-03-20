@@ -360,7 +360,7 @@ function renderPlayback() {
 			.css( 'border-radius', '' )
 		if ( !status.coverart ) {
 			// lastfm coverart
-			var queryjson = {
+			var apijson = {
 				  type     : 'post'
 				, url      : 'http://ws.audioscrobbler.com/2.0/'
 				, dataType : 'json'
@@ -377,16 +377,16 @@ function renderPlayback() {
 					if ( coverurl ) {
 						$( '#cover-art' ).attr( 'src', coverurl );
 					} else {
-						delete queryjson.data.album;
-						queryjson.success = function( data ) {
+						delete apijson.data.album;
+						apijson.success = function( data ) {
 							coverurl = data.album.image[ 3 ][ '#text' ];
 							if ( coverurl ) $( '#cover-art' ).attr( 'src', coverurl );
 						}
-						$.ajax( queryjson );
+						$.ajax( apijson );
 					}
 				}
 			}
-			$.ajax( queryjson );
+			$.ajax( apijson );
 		}
 	}
 	// time
