@@ -289,7 +289,7 @@ function renderPlayback() {
 	$( '.playback-controls' ).css( 'visibility', 'visible' );
 	$( '#artist, #song, #album' ).css( 'width', '' );
 	$( '#artist' ).html( status.Artist );
-	$( '#song' ).html( status.Title )
+	$( '#song' ).html( status.Title );
 	$( '#album' )
 		.toggleClass( 'albumradio', status.ext === 'radio' )
 		.html( status.Album ).promise().done( function() {
@@ -940,9 +940,10 @@ function dataParse( data, path, querytype, plid ) {
 				var artistmode = [ 'artist', 'composer', 'genre' ].indexOf( browsemode ) !== -1 ? 1 : 0;
 				var composerhtml = ( composer && browsemode === 'composer' ) ? '<i class="fa fa-composer"></i><span class="biocomposer">'+ composer +'</span><br>' : '';
 				var genrehtml = genre && genre !== -1 ? '<span><i class="fa fa-genre"></i>'+ genre +'</span><br>' : '';
+				var nocover = coverart === '/assets/img/cover.svg' ? ' nocover' : '';
 				content += '<li class="licover">'
 						  +'<a class="lipath">'+ path +'</a><a class="liname">'+ path.replace(/^.*\//, '') +'</a>'
-						  +'<div class="licoverimg"><img src="'+ coverart +'" class="coversmall"></div>'
+						  +'<div class="licoverimg'+ nocover +'"><img src="'+ coverart +'" class="coversmall"></div>'
 						  +'<span class="liinfo">'
 							  +'<bl class="lialbum">'+ album +'</bl><br>'
 							  + composerhtml

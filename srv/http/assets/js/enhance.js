@@ -1250,9 +1250,9 @@ $( '#db-entries' ).on( 'tap', '.edit',  function() {
 } );
 $( '#db-entries' ).on( 'taphold', '.licoverimg',  function() {
 	$this = $( this );
-	$this.append(
-		 '<i class="edit licover-remove fa fa-minus-circle"></i>'
-		+'<i class="edit licover-cover fa fa-coverart"></i>' );
+	var btnhtml = '<i class="edit licover-cover fa fa-coverart"></i>';
+	if ( !$this.hasClass( 'nocover' ) ) btnhtml += '<i class="edit licover-remove fa fa-minus-circle"></i>';
+	$this.append( btnhtml );
 	$this.find( 'img' ).css( 'opacity', '0.33' );
 } ).on( 'tap', 'li', function( e ) {
 	var $this = $( this );
