@@ -483,6 +483,9 @@ wh, gr { font-weight: 300; }
 #album {
 	font-size: 18px
 }
+.albumradio {
+	color: #7795b4;
+}
 #sampling {
 	height: 40px;
 	text-align: center;
