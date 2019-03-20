@@ -111,6 +111,23 @@ $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+$( '#cover-art' ).on( 'error', function() {
+	var $this = $( this );
+	$this.unbind( 'error' );
+	if ( GUI.status.ext === 'radio' ) {
+		$this
+			.attr( 'src', status.state === 'play' ? vu : vustop )
+			.css( 'border-radius', '18px' )
+		$( '#coverartoverlay' ).removeClass( 'hide' );
+	} else {
+		$this
+			.attr( 'src', url )
+			.css( 'border-radius', '' );
+		$( '#coverartoverlay' ).addClass( 'hide' );
+	}
+} ).one( 'load', function() {
+	removeSplash();
+} );
 // COMMON /////////////////////////////////////////////////////////////////////////////////////
 $( '#menu-settings, #badge' ).click( function() {
 	$( '#settings' )
@@ -362,23 +379,6 @@ $( '#artist, #bio-open' ).click( function() {
 } );
 $( '#album' ).click( function() {
 	if ( GUI.status.ext !== 'radio'&& location.hostname !== 'localhost' ) window.open( 'https://www.last.fm/music/'+ GUI.status.Artist +'/'+ GUI.status.Album, '_blank' );
-} );
-$( '#cover-art' ).on( 'error', function() {
-	var $this = $( this );
-	$this.unbind( 'error' );
-	if ( GUI.status.ext === 'radio' ) {
-		$this
-			.attr( 'src', status.state === 'play' ? vu : vustop )
-			.css( 'border-radius', '18px' )
-		$( '#coverartoverlay' ).removeClass( 'hide' );
-	} else {
-		$this
-			.attr( 'src', url )
-			.css( 'border-radius', '' );
-		$( '#coverartoverlay' ).addClass( 'hide' );
-	}
-} ).one( 'load', function() {
-	removeSplash();
 } );
 $( '#time' ).roundSlider( {
 	  sliderType  : 'min-range'
@@ -1511,30 +1511,12 @@ $( '#pl-entries' ).on( 'click', '.pl-remove', function() { // remove from playli
 $( '#pl-editor' ).on( 'click', 'li', function( e ) {
 	if ( GUI.swipe ) return
 	
-	// in saved playlist
-	var $thisli = $( this );
-	if ( $thisli.find( '.fa-music' ).length || $thisli.find( '.fa-webradio' ).length ) {
-		if ( !GUI.display.tapaddplay || $( e.target ).hasClass( 'pl-icon' ) ) {
-			plContextmenu( $thisli );
-		} else {
-			GUI.list = {};
-			GUI.list.li = $thisli; // for contextmenu
-			GUI.list.name = $thisli.find( '.liname' ).text().trim();
-			GUI.list.path = $thisli.find( '.lipath' ).text().trim();
-			var contextmenu = $thisli.find( '.pl-icon' ).data( 'target' );
-			$( contextmenu ).find( 'a:eq( 1 )' ).click();
-			setTimeout( function() {
-				$thisli.removeClass( 'active' );
-				$( contextmenu ).addClass( 'hide' );
-			}, 0 );
-		}
-		return
-	}
-	
-	if ( $( e.target ).hasClass( 'pl-icon' ) ) {
-		plContextmenu( $thisli );
+	var $this = $( this );
+	var $target = $( e.target );
+	if ( $target.hasClass( 'pl-icon' ) || !$this.find( '.fa-list-ul' ).length ) {
+		plContextmenu( $this, $target );
 	} else {
-		renderSavedPlaylist( $( this ).find( 'span' ).text() );
+		renderSavedPlaylist( $this.find( 'span' ).text() );
 	}
 } );
 $( '#pl-index li' ).click( function() {

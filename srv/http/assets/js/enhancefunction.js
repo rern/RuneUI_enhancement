@@ -237,7 +237,7 @@ function scrollLongText() {
 }
 function removeSplash() {
 	$( '#splash' ).remove();
-	$( '#cover-art' ).removeClass( 'hide' );
+	$( '#cover-art, .btn-group' ).removeClass( 'hide' );
 	$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
 	if ( !$( '#divcoverarts' ).html() ) return
 	
@@ -1313,27 +1313,35 @@ function dbContextmenu( $li, $target ) {
 	var wH = window.innerHeight;
 	if ( targetB > wH - ( GUI.bars ? 80 : 40 ) + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + 42 } );
 }
-function plContextmenu( $li ) {
-	GUI.list = {};
-	GUI.list.li = $li; // for contextmenu
-	GUI.list.name = $li.find( '.liname' ).text().trim();
-	GUI.list.path = $li.find( '.lipath' ).text().trim() || GUI.list.name;
-	GUI.list.isfile = $li.find( '.fa-music' ).length; // used in contextmenu
+function plContextmenu( $li, $target ) {
 	$( '.menu' ).addClass( 'hide' );
 	if ( $li.hasClass( 'active' ) ) {
 		$li.removeClass( 'active' );
 		return
 	}
+	
+	GUI.list = {};
+	GUI.list.li = $li; // for contextmenu
+	GUI.list.name = $li.find( '.liname' ).text().trim();
+	GUI.list.path = $li.find( '.lipath' ).text().trim() || GUI.list.name;
+	GUI.list.isfile = $li.find( '.fa-music' ).length; // used in contextmenu
 	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
-	var contextmenu = $li.find( '.pl-icon' ).data( 'target' );
-	var contextnum = $( contextmenu ).find( 'a:not(.hide)' ).length;
+	var $menu = $( $li.find( '.pl-icon' ).data( 'target' ) );
+	if ( GUI.display.tapaddplay
+		&& !$target.hasClass( 'pl-icon' )
+	) {
+		$menu.find( 'a:eq( 1 )' ).click();
+		return
+	}
+	
+	var contextnum = $menu.find( 'a:not(.hide)' ).length;
 	$( '.menushadow' ).css( 'height', contextnum * 41 - 1 );
 	$( '#pl-editor li' ).removeClass( 'active' );
 	$li.addClass( 'active' );
-	$( contextmenu )
+	$menu
 		.removeClass( 'hide' )
 		.css( 'top', ( $li.position().top + 49 ) +'px' );
-	var targetB = $( contextmenu ).offset().top + 246;
+	var targetB = $menu.offset().top + 246;
 	var wH = window.innerHeight;
 	if ( targetB > wH - ( GUI.bars ? 80 : 40 ) + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + 42 } );
 }
