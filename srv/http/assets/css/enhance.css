@@ -186,6 +186,7 @@ wh, gr { font-weight: 300; }
 	padding-top: 20px;
 }
 .infobookmark i {
+	width: 100px;
 	font-size: 3em;
 	color: #0095d8;
 	text-shadow: 2px 2px 4px #000000;
