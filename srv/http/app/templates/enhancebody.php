@@ -364,7 +364,7 @@ $menu.= '</div>';
 			<div id="timeBR" class="timemap"></div>
 		</div>
 		<div id="play-group">
-			<div class="btn-group">
+			<div class="btn-group hide">
 				<button id="repeat" class="btn btn-default btn-lg btn-cmd btn-toggle" type="button"><i class="fa fa-repeat"></i></button>
 				<button id="random" class="btn btn-default btn-lg btn-cmd btn-toggle" type="button"><i class="fa fa-random"></i></button>
 				<button id="single" class="btn btn-default btn-lg btn-cmd btn-toggle" type="button"><i class="fa fa-single"></i></button>
@@ -387,7 +387,7 @@ $menu.= '</div>';
 			</div>
 		</div>
 		<div id="share-group">
-			<div class="btn-group">
+			<div class="btn-group hide">
 				<button id="share" class="btn btn-default btn-lg" type="button"><i class="fa fa-share"></i></button>
 				<button id="bio-open" class="btn btn-default" type="button"><i class="fa fa-bio"></i></button>
 			</div>
@@ -402,7 +402,7 @@ $menu.= '</div>';
 			<img id="controls-vol" class="controls hide" src="<?=$this->asset('/img/controls-vol.svg')?>">
 		</div>
 		<div id="vol-group">
-			<div class="btn-group">
+			<div class="btn-group hide">
 				<button id="voldn" class="btn btn-default btn-lg" type="button"><i class="fa fa-minus"></i></button>
 				<button id="volmute" class="btn btn-default btn-lg" type="button"><i class="fa fa-volume"></i></button>
 				<button id="volup" class="btn btn-default btn-lg" type="button"><i class="fa fa-plus"></i></button>
