@@ -314,7 +314,7 @@ $menu.= '</div>';
 	</ul>
 </div>
 
-<div id="page-playback" class="page hide">
+<div id="page-playback" class="page">
 	<div id="info">
 		<div id="divartist">
 			<span id="artist"></span>
@@ -372,7 +372,7 @@ $menu.= '</div>';
 		</div>
 		<div id="coverart" class="playback-block">
 			<div id="divcover">
-			<img id="cover-art">
+			<img id="cover-art" class="hide">
 			<div id="coverartoverlay" class="hide"></div>
 			<img id="controls-cover" class="controls hide" src="<?=$this->asset('/img/controls.svg')?>">
 			<div id="coverTL" class="covermap r1 c1 ws hs"></div>
