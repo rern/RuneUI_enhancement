@@ -965,8 +965,8 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 					} else if ( std == 13 ) {
 						info( {
 							  icon    : 'bookmark'
-							, message : '<i class="fa fa-warning"></i>Replace file permission denied.'
-									   +'Set directory+file permission and try again.'
+							, message : '<i class="fa fa-warning"></i>Replace file denied.'
+									   +'Set directory+file <w>permission</w> and try again.'
 						} );
 					}
 				} );
@@ -1152,8 +1152,8 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-remove', function() {
 				if ( std == 13 ) {
 					info( {
 						  icon    : 'coverart'
-						, message : '<i class="fa fa-warning"></i>Delete file permission denied.'
-								   +'Set directory+file permission and try again.'
+						, message : '<i class="fa fa-warning"></i>Delete file denied.'
+								   +'Set directory+file <w>permission</w> and try again.'
 					} );
 				}
 			} );
@@ -1183,8 +1183,8 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-cover', function() {
 				} else if ( std == 13 ) {
 					info( {
 						  icon    : 'coverart'
-						, message : '<i class="fa fa-warning"></i>Replace file permission denied.'
-								   +'Set directory+file permission and try again.'
+						, message : '<i class="fa fa-warning"></i>Replace file denied.'
+								   +'Set directory+file <w>permission</w> and try again.'
 					} );
 				}
 			} );
@@ -1200,7 +1200,7 @@ $( '#db-entries' ).on( 'tap', '.edit',  function() {
 	var lipath = $thisli.next().find( '.lipath' ).text();
 	var path = '/mnt/MPD/'+ lipath.substr( 0, lipath.lastIndexOf( '/' ) );
 	var coverfile = '/mnt/MPD/'+ path +'/cover.jpg';
-	$.post( 'enhance.php', { bash: '/usr/bin/ls "'+ path +'" | grep -iE "cover.jpg|cover.png|folder.jpg|folder.png|front.jpg|front.png"' }, function( file ) {
+	$.post( 'enhance.php', { bash: '/usr/bin/ls "'+ path +'" | grep -iE "^cover.jpg$|^cover.png$|^folder.jpg$|^folder.png$|^front.jpg$|^front.png$"' }, function( file ) {
 		var file = file.slice( 0, -1 ); // less last '\n'
 		var count = file.split( '\n' ).length;
 		if ( count > 1 ) {
@@ -1208,7 +1208,7 @@ $( '#db-entries' ).on( 'tap', '.edit',  function() {
 				  icon    : 'coverart'
 				, title   : 'Remove Album Coverart'
 				, message : 'More than 1 coverart files found:'
-						   +'<br><w>'+ file.replace( '\n', '<br>' ) +'</w>'
+						   +'<br><w>'+ file.replace( /\n/g, '<br>' ) +'</w>'
 						   +'<br>No files removed.'
 			} );
 			return
@@ -1218,7 +1218,7 @@ $( '#db-entries' ).on( 'tap', '.edit',  function() {
 			info( {
 				  icon     : 'coverart'
 				, title    : 'Remove Album Coverart'
-				, message  : 'Remove <code>'+ file +'</code> of this album:'
+				, message  : 'Remove coverart of this album:'
 							   +'<br><img src="'+ $img.prop( 'src' ) +'">'
 							   +'<br><w>'+ album +'</w>'
 							   +'<br>'+ artist
@@ -1237,7 +1237,7 @@ $( '#db-entries' ).on( 'tap', '.edit',  function() {
 								  icon    : 'coverart'
 								, title   : '<i class="fa fa-warning"></i>Remove Album Coverart'
 								, message : 'Remove file denied.'
-										   +'<br>Set directory+file permission and try again.'
+										   +'<br>Set directory+file <w>permission</w> and try again.'
 							} );
 						}
 					} );
@@ -1266,7 +1266,7 @@ $( '#db-entries' ).on( 'tap', '.edit',  function() {
 								  icon    : 'coverart'
 								, title   : '<i class="fa fa-warning"></i>Replace Album Coverart'
 								, message : 'Replace file denied.'
-										   +'<br>Set directory+file permission and try again.'
+										   +'<br>Set directory+file <w>permission</w> and try again.'
 							} );
 						} else if ( std == -1 ) {
 							info( {
