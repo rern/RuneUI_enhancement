@@ -964,8 +964,8 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 						GUI.newimg = '';
 					} else if ( std == 13 ) {
 						info( {
-							  icon    : 'warning'
-							, message : 'Replace file permission denied.'
+							  icon    : 'bookmark'
+							, message : '<i class="fa fa-warning"></i>Replace file permission denied.'
 									   +'Set directory+file permission and try again.'
 						} );
 					}
@@ -1137,7 +1137,7 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-remove', function() {
 	var artist = $album.next().text();
 	var thumbfile = '/srv/http/img/coverarts/'+ album +'^^'+ artist +'.jpg'
 	info( {
-		  icon     : 'minus-circle'
+		  icon     : 'coverart'
 		, title    : 'Remove Thumbnail'
 		, message  : 'Remove?'
 					+'<br><img src="'+ imgsrc +'">'
@@ -1151,8 +1151,8 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-remove', function() {
 			$.post( 'enhance.php', { imagefile: thumbfile }, function( std ) {
 				if ( std == 13 ) {
 					info( {
-						  icon    : 'warning'
-						, message : 'Delete file permission denied.'
+						  icon    : 'coverart'
+						, message : '<i class="fa fa-warning"></i>Delete file permission denied.'
 								   +'Set directory+file permission and try again.'
 					} );
 				}
@@ -1182,8 +1182,8 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-cover', function() {
 					GUI.newimg = '';
 				} else if ( std == 13 ) {
 					info( {
-						  icon    : 'warning'
-						, message : 'Replace file permission denied.'
+						  icon    : 'coverart'
+						, message : '<i class="fa fa-warning"></i>Replace file permission denied.'
 								   +'Set directory+file permission and try again.'
 					} );
 				}
@@ -1234,8 +1234,8 @@ $( '#db-entries' ).on( 'tap', '.edit',  function() {
 							$img.css( 'opacity', '' );
 						} else if ( std == 13 ) {
 							info( {
-								  icon    : 'warning'
-								, title   : 'Remove Album Coverart'
+								  icon    : 'coverart'
+								, title   : '<i class="fa fa-warning"></i>Remove Album Coverart'
 								, message : 'Remove file denied.'
 										   +'<br>Set directory+file permission and try again.'
 							} );
