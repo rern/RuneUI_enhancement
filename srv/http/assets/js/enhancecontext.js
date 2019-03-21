@@ -154,13 +154,14 @@ function addReplace( mode, cmd, command, title ) {
 function bookmarkNew() {
 	var path = GUI.list.path;
 	var name = path.split( '/' ).pop();
-	$.post( 'enhancegetcover.php', { path: path }, function( base64 ) {
+	$.post( 'enhancegetcover.php', { path: path }, function( base64img ) {
+		var $img = base64img ? '<br><img src="'+ base64img +'">' : '';
 		info( {
 			  icon      : 'bookmark'
 			, title     : 'Add Bookmark'
 			, width     : 500
 			, message   : 'Bookmark'
-						 + ( base64 ? '<br><img src="'+ base64 +'">' : '<br><white>'+ path +'</white>' )
+						 + ( $img || '<br><white>'+ path +'</white>' )
 						 +'<br>As:'
 			, msgalign  : 'center'
 			, textvalue : name
@@ -210,6 +211,7 @@ function bookmarkVerify( name, path, oldname ) {
 	var $bllabel = $( '.home-block' ).filter( function() {
 		return $( this ).find( '.label' ).text() === name;
 	} );
+	var base64 = $( '#infoMessage img' ).attr( 'src' ) || '';
 	if ( !$bllabel.length ) {
 		if ( !oldname ) {
 			new PNotify( {
@@ -222,7 +224,7 @@ function bookmarkVerify( name, path, oldname ) {
 			} ).find( '.label' ).text( name );
 		}
 		var data = oldname ? [ name, path, oldname ] : [ name, path ];
-		$.post( 'enhance.php', { bkmarks: data } );
+		$.post( 'enhance.php', { bkmarks: data, base64: base64 } );
 	} else {
 		info( {
 			  icon        : 'bookmark'
@@ -241,7 +243,7 @@ function bookmarkVerify( name, path, oldname ) {
 			, oklabel     : 'Replace'
 			, ok          : function() {
 				var data = oldname ? [ name, path, oldname ] : [ name, path ];
-				$.post( 'enhance.php', { bkmarks: data } );
+				$.post( 'enhance.php', { bkmarks: data, base64: base64 } );
 			}
 		} );
 	}
