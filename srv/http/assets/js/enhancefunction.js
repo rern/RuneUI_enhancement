@@ -907,9 +907,7 @@ function dataParse( data, path, querytype, plid ) {
 			var name;
 			var index;
 			$.each( data, function( i, value ) {
-				if ( value.coverart ) {
-					coverart = value.coverart;
-				} else if ( value.album ) {
+				if ( value.album ) {
 					album = value.album;
 				} else if ( value.artist ) {
 					artist = value.artist;
@@ -934,17 +932,20 @@ function dataParse( data, path, querytype, plid ) {
 					} else if ( value.playlist ) {
 						arraypl.push( value );
 					}
+				} else if ( value.coverart ) {
+					coverart = value.coverart;
 				}
 			} );
-			if ( coverart ) {
+			if ( coverart || !data[ 0 ].directory ) {
+				var coversrc = coverart || coverrune;
 				var browsemode = GUI.dbbackdata.length ? GUI.dbbackdata[ 0 ].browsemode : '';
 				var artistmode = [ 'artist', 'composer', 'genre' ].indexOf( browsemode ) !== -1 ? 1 : 0;
 				var composerhtml = ( composer && browsemode === 'composer' ) ? '<i class="fa fa-composer"></i><span class="biocomposer">'+ composer +'</span><br>' : '';
 				var genrehtml = genre && genre !== -1 ? '<span><i class="fa fa-genre"></i>'+ genre +'</span><br>' : '';
-				var nocover = coverart === '/assets/img/cover.svg' ? ' nocover' : '';
+				var nocover = !coverart ? ' nocover' : '';
 				content += '<li class="licover">'
 						  +'<a class="lipath">'+ path +'</a><a class="liname">'+ path.replace(/^.*\//, '') +'</a>'
-						  +'<div class="licoverimg'+ nocover +'"><img src="'+ coverart +'" class="coversmall"></div>'
+						  +'<div class="licoverimg'+ nocover +'"><img src="'+ coversrc +'" class="coversmall"></div>'
 						  +'<span class="liinfo">'
 							  +'<bl class="lialbum">'+ album +'</bl><br>'
 							  + composerhtml

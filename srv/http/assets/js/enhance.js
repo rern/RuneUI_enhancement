@@ -1204,7 +1204,7 @@ $( '#db-entries' ).on( 'tap', '.edit',  function() {
 			info( {
 				  icon    : 'coverart'
 				, title   : 'Remove Album Coverart'
-				, message : 'More than 1 coverarts found:'
+				, message : 'More than 1 coverart files found:'
 						   +'<br><w>'+ file.replace( '\n', '<br>' ) +'</w>'
 						   +'<br>No files removed.'
 			} );
@@ -1213,17 +1213,17 @@ $( '#db-entries' ).on( 'tap', '.edit',  function() {
 		
 		if ( $this.hasClass( 'licover-remove' ) ) {
 			info( {
-				  icon        : 'coverart'
-				, title       : 'Remove Album Coverart'
-				, message     : 'Remove <code>'+ file +'</code> of this album:'
+				  icon     : 'coverart'
+				, title    : 'Remove Album Coverart'
+				, message  : 'Remove <code>'+ file +'</code> of this album:'
 							   +'<br><img src="'+ $img.prop( 'src' ) +'">'
 							   +'<br><w>'+ album +'</w>'
 							   +'<br>'+ artist
 							   +'<br><br><code>'+ file +'</code> > <code>'+ file +'.backup</code>'
-				, msgalign    : 'center'
-				, oklabel     : 'Remove'
-				, cancel      : 1
-				, ok          : function() {
+				, msgalign : 'center'
+				, oklabel  : 'Remove'
+				, cancel   : 1
+				, ok       : function() {
 					$.post( 'enhance.php', { imagefile: '/mnt/MPD/'+ path +'/'+ file, coverfile: 1 }, function( std ) {
 						if ( std == 0 ) {
 							$img.attr( 'src', coverrune );
@@ -1232,6 +1232,7 @@ $( '#db-entries' ).on( 'tap', '.edit',  function() {
 						} else if ( std == 13 ) {
 							info( {
 								  icon    : 'warning'
+								, title   : 'Remove Album Coverart'
 								, message : 'Remove file denied.'
 										   +'<br>Set directory+file permission and try again.'
 							} );
@@ -1260,6 +1261,7 @@ $( '#db-entries' ).on( 'tap', '.edit',  function() {
 						} else if ( std == 13 ) {
 							info( {
 								  icon    : 'warning'
+								, title   : 'Replace Album Coverart'
 								, message : 'Replace file denied.'
 										   +'<br>Set directory+file permission and try again.'
 							} );
