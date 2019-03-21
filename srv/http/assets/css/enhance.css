@@ -182,7 +182,7 @@ wh, gr { font-weight: 300; }
 	float: left;
 	width: 100px;
 	height: 100px;
-	margin: 10px 10px 0 10px;
+	margin: 10px;
 	padding-top: 20px;
 }
 .infobookmark i {
@@ -1165,7 +1165,7 @@ wh, gr { font-weight: 300; }
 }
 
 #infoMessage img {
-	margin: 10px 10px 0 10px;
+	margin: 10px;
 	width: 100px;
 	height: 100px;
 }
