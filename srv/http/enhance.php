@@ -166,9 +166,9 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		file_put_contents( $tmpfile, base64_decode( $base64 ) );
 		$thumbfile = '/mnt/MPD/'.$value.'/thumbnail.jpg';
 		exec( '/usr/bin/sudo /usr/bin/mv -f "'.$tmpfile.'" "'.$thumbfile.'"' );
-		$data = getBookmark( $redis );
-		pushstream( 'bookmark', $data );
 	}
+	$data = getBookmark( $redis );
+	pushstream( 'bookmark', $data );
 } else if ( isset( $_POST[ 'getwebradios' ] ) ) {
 	$webradios = $redis->hGetAll( 'webradios' );
 	foreach( $webradios as $name => $url ) {
