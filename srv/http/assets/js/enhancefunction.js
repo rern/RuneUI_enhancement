@@ -363,9 +363,10 @@ function renderPlayback() {
 			var apijson = {
 				  type     : 'post'
 				, url      : 'http://ws.audioscrobbler.com/2.0/'
+				, timeout  : 3000
 				, dataType : 'json'
 				, data     : { 
-					  api_key     : $( '#lastfmapikey' ).text()
+					  api_key     : lastfmapikey
 					, autocorrect : 1
 					, format      : 'json'
 					, method      : 'album.getinfo'

@@ -15,7 +15,6 @@ var GUI = {
 	, debounce     : ''
 	, display      : {}
 	, imodedelay   : 0
-	, init         : 1
 	, list         : {}
 	, library      : 0
 	, libraryhome  : {}
