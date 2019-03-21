@@ -363,8 +363,6 @@ function renderPlayback() {
 			var apijson = {
 				  type     : 'post'
 				, url      : 'http://ws.audioscrobbler.com/2.0/'
-				, timeout  : 3000
-				, dataType : 'json'
 				, data     : { 
 					  api_key     : lastfmapikey
 					, autocorrect : 1
@@ -373,6 +371,8 @@ function renderPlayback() {
 					, artist      : status.Artist
 					, album       : status.Album
 				}
+				, timeout  : 5000
+				, dataType : 'json'
 				, success  : function( data ) {
 					var coverurl = data.album.image[ 3 ][ '#text' ];
 					if ( coverurl ) {

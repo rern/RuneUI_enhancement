@@ -245,14 +245,13 @@ function bookmarkVerify( name, path, oldname ) {
 	}
 }
 function bookmarkDelete( name, $block ) {
-	var src = $block.find( 'img' ).attr( 'src' );
+	var $img = $block.find( 'img' );
+	var src = $img.attr( 'src' );
 	if ( src ) {
 		var icon = '<img src="'+ src +'">'
 				  +'<br>'+ name
-				  +'<br>&nbsp';
 	} else {
-		var icon = '<div class="infobookmark"><i class="fa fa-bookmark"></i><br><span class="bklabel">'+ $block.find( '.bklabel' ).text() +'</span></div>'
-				  +'<br>&nbsp';
+		var icon = '<div class="infobookmark"><i class="fa fa-bookmark"></i><span class="bklabel">'+ $block.find( '.bklabel' ).text() +'</span></div>'
 	}
 	info( {
 		  icon     : 'minus-circle'
@@ -260,19 +259,23 @@ function bookmarkDelete( name, $block ) {
 		, message  : 'Remove?'
 					+'<br>'+ icon
 		, msgalign : 'center'
-		, checkbox : src ? { 'Keep thumbnail file': 1 } : ''
+		, checkbox : src ? { 'Keep bookmark - remove thumbnail': 1 } : ''
 		, cancel   : 1
-		, oklabel  : 'Delete'
+		, oklabel  : 'Remove'
 		, ok       : function() {
 			GUI.bookmarkedit = 1;
-			$block.parent().remove();
 			if ( $( '#infoCheckBox input[ type=checkbox ]:checked' ).length ) {
-				var path = '';
-		
-			} else {
 				var path = $block.find( '.lipath' ).text().replace( /"/g, '\"' );
+				$.post( 'enhance.php', { bash: '/usr/bin/rm "/mnt/MPD/' + path +'/thumbnail.jpg"' } );
+				$img
+					.after( '<i class="fa fa-bookmark"></i>' )
+					.remove();
+				$( '.bklabel' ).removeClass( 'hide' )
+				$( '.fa-bookmark' ).css( 'opacity', 0.33 );
+			} else {
+				$.post( 'enhance.php', { bkmarks: name } );
+				$block.parent().remove();
 			}
-			$.post( 'enhance.php', { bkmarks: name, thumbnail: path } );
 		}
 	} );
 }

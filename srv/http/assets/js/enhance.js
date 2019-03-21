@@ -1259,15 +1259,15 @@ $( '#db-entries' ).on( 'tap', '.edit',  function() {
 							$img.css( 'opacity', '' );
 						} else if ( std == 13 ) {
 							info( {
-								  icon    : 'warning'
-								, title   : 'Replace Album Coverart'
+								  icon    : 'coverart'
+								, title   : '<i class="fa fa-warning"></i>Replace Album Coverart'
 								, message : 'Replace file denied.'
 										   +'<br>Set directory+file permission and try again.'
 							} );
 						} else if ( std == -1 ) {
 							info( {
-								  icon    : 'warning'
-								, message : 'Upload image failed.'
+								  icon    : 'coverart'
+								, message : '<i class="fa fa-warning"></i>Upload image failed.'
 							} );
 						}
 					} );
