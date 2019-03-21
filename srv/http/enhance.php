@@ -94,10 +94,12 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	}
 	if ( !is_array( $data ) ) {
 		$name = $data;
+		if ( $key === 'bkmarks' ) {
+			$file = '/mnt/MPD/'.$redis->hGet( $key, $name ).'/thumbnail.jpg';
+			echo '/usr/bin/sudo /usr/bin/rm -f "'.$file.'"';
+			exec( '/usr/bin/sudo /usr/bin/rm -f "'.$file.'"' );
+		}
 		$redis->hDel( $key, $name );
-		$path = $_POST[ 'thumbnail' ];
-		echo '/usr/bin/sudo /usr/bin/rm "/mnt/MPD/'.$path.'/thumbnail.jpg"';
-		if ( $path ) exec( '/usr/bin/sudo /usr/bin/rm "/mnt/MPD/'.$path.'/thumbnail.jpg"' );
 		if ( $key === 'webradios' ) {
 			$redis->hDel( 'sampling', $name );
 			unlink( '/mnt/MPD/Webradio/'.$data.'.pls' );
@@ -166,6 +168,10 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	}
 	
 	// create thumbnail from coverart file
+	$coverfiles = array(
+		  'cover.jpg', 'cover.png', 'folder.jpg', 'folder.png', 'front.jpg', 'front.png'
+		, 'Cover.jpg', 'Cover.png', 'Folder.jpg', 'Folder.png', 'Front.jpg', 'Front.png'
+	);
 	foreach( $coverfiles as $cover ) {
 		$coverfile = $dir.'/'.$cover;
 		if ( file_exists( $coverfile ) ) {
@@ -336,7 +342,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$base64 = str_replace( 'data:image/jpeg;base64,', '', $_POST[ 'base64' ] ); // strip header
 	$tmpfile = '/srv/http/tmp/tmp.jpg';
 	file_put_contents( $tmpfile, base64_decode( $base64 ) ) || exit( '-1' );
-	$newfile = substr( $imagefile, 0, -3 ).'.jpg'; // for existing 'cover.svg' name
+	$newfile = substr( $imagefile, 0, -3 ).'jpg'; // for existing 'cover.svg' name
 	if ( $coverfile ) { // backup coverart in album dir
 		$remove = '/usr/bin/sudo /usr/bin/mv -f "'.$imagefile.'"{,.backup}';
 	} else { // coverart thumbnail
