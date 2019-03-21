@@ -1,4 +1,18 @@
 <?php
+if ( isset( $_POST[ 'path' ] ) ) {
+	$dir = '/mnt/MPD/'.$_POST[ 'path' ];
+	$files = array_slice( scandir( $dir ), 2 ); // remove ., ..
+	foreach( $files as $file ) {
+		$file = "$dir/$file";
+		if ( !is_file( $file ) ) continue;
+		
+		$mime = mime_content_type( $file );
+		if ( strpos( $mime, 'audio' ) === 0 ) { // only audio file
+			echo getCoverart( $file );
+			break;
+		}
+	}
+}
 // create thumbnail from embedded coverart in file
 function getCoverart( $file, $thumbnail = 0 ) {
 // 1. local coverart file
