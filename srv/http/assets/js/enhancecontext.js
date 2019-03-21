@@ -156,7 +156,7 @@ function bookmarkNew() {
 	var name = path.split( '/' ).pop();
 	$.post( 'enhancegetcover.php', { path: path }, function( base64 ) {
 		info( {
-			  icon      : 'edit-circle'
+			  icon      : 'bookmark'
 			, title     : 'Add Bookmark'
 			, width     : 500
 			, message   : 'Bookmark'
@@ -175,7 +175,7 @@ function bookmarkNew() {
 }
 function bookmarkRename( name, path ) {
 	info( {
-		  icon      : 'edit-circle'
+		  icon      : 'bookmark'
 		, title     : 'Rename Bookmark'
 		, width     : 500
 		, message   : 'Rename'
@@ -196,9 +196,9 @@ function bookmarkRename( name, path ) {
 function bookmarkVerify( name, path, oldname ) {
 	if ( !name ) {
 		info( {
-			  icon    : 'warning'
+			  icon    : 'bookmark'
 			, title   : oldname ? 'Rename Bookmark' :'Add Bookmark'
-			, message : '<white>Name</white> cannot be blank.'
+			, message : '<i class="fa fa-warning"></i><white>Name</white> cannot be blank.'
 			, ok      : function() {
 				setTimeout( function() {
 					oldname ? bookmarkRename( oldname, path ) : bookmarkNew( path );
@@ -225,10 +225,10 @@ function bookmarkVerify( name, path, oldname ) {
 		$.post( 'enhance.php', { bkmarks: data } );
 	} else {
 		info( {
-			  icon        : 'warning'
+			  icon        : 'bookmark'
 			, title       : oldname ? 'Rename Bookmark' :'Add Bookmark'
 			, width       : 500
-			, message     : '<white>'+ name +'</white>'
+			, message     : '<i class="fa fa-warning"></i><white>'+ name +'</white>'
 						+'<br>Already exists for:'
 						+'<br><w>'+ $bllabel.find( '.lipath' ).text() +'</w>'
 			, msgalign    : 'center'
@@ -256,7 +256,7 @@ function bookmarkDelete( name, $block ) {
 		var icon = '<div class="infobookmark"><i class="fa fa-bookmark"></i><span class="bklabel">'+ $block.find( '.bklabel' ).text() +'</span></div>'
 	}
 	info( {
-		  icon     : 'minus-circle'
+		  icon     : 'bookmark'
 		, title    : 'Remove Bookmark'
 		, message  : 'Remove?'
 					+'<br>'+ icon
@@ -283,7 +283,7 @@ function bookmarkDelete( name, $block ) {
 }
 function webRadioNew( name, url ) {
 	info( {
-		  icon       : 'edit-circle'
+		  icon       : 'webradio'
 		, title      : 'Add Webradio'
 		, width      : 500
 		, message    : 'Add new Webradio:'
@@ -309,7 +309,7 @@ function webRadioSave( name, url ) {
 		var stationimg = '';
 	}
 	info( {
-		  icon       : 'save'
+		  icon       : 'webradio'
 		, title      : 'Save In Webradio'
 		, width      : 500
 		, message    : 'Save URL:'
@@ -329,7 +329,7 @@ function webRadioRename() {
 	var name = GUI.list.name;
 	var path = GUI.list.path;
 	info( {
-		  icon       : 'edit-circle'
+		  icon       : 'webradio'
 		, title      : 'Rename Webradio'
 		, width      : 500
 		, message    : 'Rename:'
@@ -356,9 +356,9 @@ function addWebradio( name, url, oldname ) {
 function webRadioVerify( name, url, oldname, save ) {
 	if ( !name || !url ) {
 		info( {
-			  icon    : 'warning'
+			  icon    : 'webradio'
 			, title   : oldname ? 'Rename Webradio' : 'Add Webradio'
-			, message : '</white>Name</white> and <white>URL</white> cannot be blank.'
+			, message : '<i class="fa fa-warning"></i></white>Name</white> and <white>URL</white> cannot be blank.'
 			, ok      : function() {
 				webRadioNew( name, url );
 			}
@@ -374,10 +374,10 @@ function webRadioVerify( name, url, oldname, save ) {
 			var dbname = list.playlist.replace( /Webradio\/|\\|.pls$/g, '' );
 			if ( dbname === name ) {
 				info( {
-					  icon        : 'warning'
+					  icon        : 'webradio'
 					, title       : oldname ? 'Rename Webradio' : 'Add Webradio'
 					, width       : 500
-					, message     : '<white>'+ name +'</white>'
+					, message     : '<i class="fa fa-warning"></i><white>'+ name +'</white>'
 								+'<br>Already exists for:'
 								+'<br><w>'+ list.url +'</w>'
 					, msgalign    : 'center'
@@ -403,7 +403,7 @@ function webRadioVerify( name, url, oldname, save ) {
 function webRadioDelete() {
 	var name = GUI.list.name;
 	info( {
-		  icon     : 'minus-circle'
+		  icon     : 'webradio'
 		, title    : 'Delete Webradio'
 		, width    : 500
 		, message  : 'Delete?'
@@ -419,7 +419,7 @@ function webRadioDelete() {
 }
 function playlistNew() {
 	info( {
-		  icon      : 'save'
+		  icon      : 'list-ul'
 		, title     : 'Add Playlist'
 		, message   : 'Save current playlist as:'
 		, textlabel : 'Name'
@@ -434,7 +434,7 @@ function playlistNew() {
 function playlistRename() {
 	var name = GUI.list.name;
 	info( {
-		  icon      : 'edit-circle'
+		  icon      : 'list-ul'
 		, title     : 'Rename Playlist'
 		, message   : 'Rename:'
 					+'<br><white>'+ name +'</white>'
@@ -467,9 +467,9 @@ function addPlaylist( name, oldname ) {
 function playlistVerify( name, oldname ) {
 	if ( !name ) {
 		info( {
-			  icon    : 'warning'
+			  icon    : 'list-ul'
 			, title   : oldname ? 'Rename Playlist' : 'Add Playlist'
-			, message : '<white>Name</white> cannot be blank.'
+			, message : '<i class="fa fa-warning"></i><white>Name</white> cannot be blank.'
 			, ok      : function() {
 				playlistNew();
 			}
@@ -482,9 +482,9 @@ function playlistVerify( name, oldname ) {
 			oldname ? addPlaylist( name, oldname ) : addPlaylist( name );
 		} else {
 			info( {
-				  icon        : 'warning'
+				  icon        : 'list-ul'
 				, title       : oldname ? 'Rename Playlist' : 'Add Playlist'
-				, message     : '<white>'+ name +'</white>'
+				, message     : '<i class="fa fa-warning"></i><white>'+ name +'</white>'
 							+'<br>Already exists.'
 				, msgalign    : 'center'
 				, cancellabel : 'Back'
@@ -501,7 +501,7 @@ function playlistVerify( name, oldname ) {
 }
 function playlistDelete() {
 	info( {
-		  icon     : 'minus-circle'
+		  icon     : 'list-ul'
 		, title    : 'Delete Playlist'
 		, message  : 'Delete?'
 					+'<br><white>'+ GUI.list.name +'</white>'
