@@ -2,7 +2,6 @@
 $redis = new Redis();
 $redis->pconnect( '127.0.0.1' );
 
-$lastfmapikey = $redis->hGet( 'lastfm', 'apikey' );
 // counts
 $count = exec( '/srv/http/enhancecount.sh' );
 $count = explode( ' ', $count );
@@ -493,7 +492,7 @@ $menu.= '</div>';
 </div>
 <div id="splash"><img src="<?=$this->asset( '/img/runelogo.svg' )?>"></div>
 <div id="loader" class="hide"><img src="<?=$this->asset( '/img/runelogo.svg' )?>"></div>
-<a id="lastfmapikey" class="hide"><?=$lastfmapikey?></a>
+<script>var lastfmapikey = "<?=$redis->hGet( 'lastfm', 'apikey' )?>"</script>
 <?php 
 if ( file_exists('/srv/http/assets/js/lyrics.js') ) include 'lyricscontainer.php';
 echo $menu;
