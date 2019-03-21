@@ -92,7 +92,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$key = 'webradios';
 		$data = $_POST[ 'webradios' ];
 	}
-	if ( !is_array( $data ) ) {
+	if ( !is_array( $data ) ) { // delete
 		$name = $data;
 		if ( $key === 'bkmarks' ) {
 			$file = '/mnt/MPD/'.$redis->hGet( $key, $name ).'/thumbnail.jpg';
@@ -159,55 +159,16 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		}
 	}
 	// coverart
-	$thumbfile = '/mnt/MPD/'.$value.'/thumbnail.jpg';
-	$dir = dirname( $thumbfile );
-	if ( file_exists( $thumbfile ) ) { // skip if already exists
+	$base64 = $_POST[ 'base64' ];
+	if ( $base64 ) {
+		$base64 = str_replace( 'data:image/jpeg;base64,', '', $base64 ); // strip header
+		$tmpfile = '/srv/http/tmp/tmp.jpg';
+		file_put_contents( $tmpfile, base64_decode( $base64 ) );
+		$thumbfile = '/mnt/MPD/'.$value.'/thumbnail.jpg';
+		exec( '/usr/bin/sudo /usr/bin/mv -f "'.$tmpfile.'" "'.$thumbfile.'"' );
 		$data = getBookmark( $redis );
 		pushstream( 'bookmark', $data );
-		exit();
 	}
-	
-	// create thumbnail from coverart file
-	$coverfiles = array(
-		  'cover.jpg', 'cover.png', 'folder.jpg', 'folder.png', 'front.jpg', 'front.png'
-		, 'Cover.jpg', 'Cover.png', 'Folder.jpg', 'Folder.png', 'Front.jpg', 'Front.png'
-	);
-	foreach( $coverfiles as $cover ) {
-		$coverfile = $dir.'/'.$cover;
-		if ( file_exists( $coverfile ) ) {
-			exec( '/usr/bin/sudo /usr/bin/convert "'.$coverfile.'" -thumbnail 200x200 -unsharp 0x.5 "'.$thumbfile.'"' );
-			$data = getBookmark( $redis );
-			pushstream( 'bookmark', $data );
-			exit();
-		}
-	}
-	
-	// create thumbnail from embedded coverart
-	$files = array_slice( scandir( $dir ), 2 ); // remove ., ..
-	foreach( $files as $file ) {
-		$file = "$dir/$file";
-		if ( !is_file( $file ) ) continue;
-		
-		$mime = mime_content_type( $file );
-		if ( strpos( $mime, 'audio' ) === 0 ) { // only audio file
-			set_include_path( '/srv/http/app/libs/vendor/' );
-			require_once( 'getid3/audioinfo.class.php' );
-			$audioinfo = new AudioInfo();
-			$id3tag = $audioinfo->Info( $file );
-			if ( isset( $id3tag[ 'comments' ][ 'picture' ][ 0 ][ 'data' ] ) ) {
-				$id3cover = $id3tag[ 'comments' ][ 'picture' ][ 0 ];
-				$coverart = $id3cover[ 'data' ];
-				$coverext = str_replace( 'image/', '', $id3cover[ 'image_mime' ] );
-				$coverfile = "/srv/http/tmp/cover.$coverext";
-				file_put_contents( $coverfile, $coverart );
-				exec( '/usr/bin/sudo /usr/bin/convert "'.$coverfile.'" -thumbnail 200x200 -unsharp 0x.5 "'.$thumbfile.'"' );
-				unlink( $coverfile );
-			}
-			break;
-		}
-	}
-	$data = getBookmark( $redis );
-	pushstream( 'bookmark', $data );
 } else if ( isset( $_POST[ 'getwebradios' ] ) ) {
 	$webradios = $redis->hGetAll( 'webradios' );
 	foreach( $webradios as $name => $url ) {
