@@ -1696,12 +1696,14 @@ pushstreams.bookmark.onmessage = function( data ) {
 	}, GUI.debouncems );
 }
 pushstreams.display.onmessage = function( data ) {
-	if ( typeof data[ 0 ] !== 'object' ) return
-	
 	var data = data[ 0 ];
+	if ( typeof data !== 'object' ) return
+	
 	$.each( data, function( key, val ) {
 		GUI.display[ key ] = val;
 	} );
+	if ( data.order && $( '#home-blocks' ).hasClass( 'hide' ) ) return
+	
 	clearTimeout( GUI.debounce );
 	GUI.debounce = setTimeout( function() {
 		if ( GUI.playback ) {
