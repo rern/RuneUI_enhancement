@@ -1132,7 +1132,6 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-remove', function() {
 	var album = $album.text();
 	var artist = $album.next().text();
 	var thumbfile = '/srv/http/img/coverarts/'+ album +'^^'+ artist +'.jpg'
-	console.log(thumbfile)
 	info( {
 		  icon     : 'minus-circle'
 		, title    : 'Remove Thumbnail'
