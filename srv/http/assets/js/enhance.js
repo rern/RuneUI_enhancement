@@ -45,6 +45,13 @@ PNotify.prototype.options.stack = {
 	, spacing1  : 10      // space between each
 	, spacing2  : 10      // space between column( or row if dir1: right/left )
 }
+var picaOption = { // pica.js scaling: img to canvas
+	  unsharpAmount: 100  // 0...500 Default = 0 (try 50-100)
+	, unsharpThreshold: 5 // 0...100 Default = 0 (try 10)
+	, unsharpRadius: 0.6
+//	, quality: 3          // 0...3 Default = 3 (Lanczos win=3)
+//	, alpha: true         // Default = false (black crop background)
+};
 var A2Z = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split( '' );
 var cssnotify = 
 	 '<style id="cssnotify">'
@@ -895,22 +902,19 @@ $( '#infoFileBox' ).change( function() {
 					var px = imgW < imgH ? imgW : imgH;
 				}
 			}
-			if ( imgW !== px || imgH !== px ) imgWHhtml += '<div>(Resized to '+ px +' x '+ px +' px)</div>';
-			imgWHhtml += '</div>';
-			var picacanvas = document.createElement( 'canvas' ); // create canvas object
-			picacanvas.width = picacanvas.height = px; // size of resized image
-			var picaOption = { // pica.js scaling: img to canvas
-				  unsharpAmount: 100  // 0...500 Default = 0 (try 50-100)
-				, unsharpThreshold: 5 // 0...100 Default = 0 (try 10)
-				, unsharpRadius: 0.6
-			//	, quality: 3          // 0...3 Default = 3 (Lanczos win=3)
-			//	, alpha: true         // Default = false (black crop background)
-			};
-			window.pica.resizeCanvas( img, picacanvas, picaOption, function() {
-				var resizedimg = picacanvas.toDataURL( 'image/jpeg', 0.9 ); // canvas -> base64 (jpg, qualtity)
-				$( '#infoMessage' ).append( '<img class="newimg" src="'+ resizedimg +'">'+ imgWHhtml );
-				GUI.newimg = resizedimg;
-			} );
+			if ( imgW === px && imgH === px ) {
+				$( '#infoMessage' ).append( '<img class="newimg" src="'+ base64img +'">'+ imgWHhtml +'</div>' );
+				GUI.newimg = base64img;
+			} else {
+				imgWHhtml += '<div>(Resized to '+ px +' x '+ px +' px)</div></div>';
+				var picacanvas = document.createElement( 'canvas' ); // create canvas object
+				picacanvas.width = picacanvas.height = px; // size of resized image
+				window.pica.resizeCanvas( img, picacanvas, picaOption, function() {
+					var resizedimg = picacanvas.toDataURL( 'image/jpeg', 0.9 ); // canvas -> base64 (jpg, qualtity)
+					$( '#infoMessage' ).append( '<img class="newimg" src="'+ resizedimg +'">'+ imgWHhtml );
+					GUI.newimg = resizedimg;
+				} );
+			}
 		}
 	}
 	reader.readAsDataURL( this.files[ 0 ] ); // load filereader
