@@ -262,8 +262,9 @@ function bookmarkDelete( name, $block ) {
 		, title    : 'Remove Bookmark'
 		, message  : 'Remove?'
 					+'<br>'+ icon
+					+'<br>&nbsp;'
 		, msgalign : 'center'
-		, checkbox : src ? { 'Keep bookmark - remove thumbnail': 1 } : ''
+		, checkbox : src ? { 'Remove thumbnail - Keep bookmark': 1 } : ''
 		, cancel   : 1
 		, oklabel  : 'Remove'
 		, ok       : function() {
@@ -274,8 +275,8 @@ function bookmarkDelete( name, $block ) {
 				$img
 					.after( '<i class="fa fa-bookmark"></i>' )
 					.remove();
-				$( '.bklabel' ).removeClass( 'hide' )
-				$( '.fa-bookmark' ).css( 'opacity', 0.33 );
+				$block.find( '.fa-bookmark' ).css( 'opacity', 0.33 );
+				$block.find( '.bklabel' ).removeClass( 'hide' )
 			} else {
 				$.post( 'enhance.php', { bkmarks: name } );
 				$block.parent().remove();
