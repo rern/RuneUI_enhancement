@@ -191,6 +191,9 @@ wh, gr { font-weight: 300; }
 	color: #0095d8;
 	text-shadow: 2px 2px 4px #000000;
 }
+.imagewh {
+	font-size: 14px;
+}
 #album gr {
 	font-weight: normal;
  }
