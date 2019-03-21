@@ -325,16 +325,28 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$redis->hSet( 'display', 'volumemute', $currentvol );
 	exec( 'mpc volume '.$vol );
 	pushstream( 'volume', array( $vol, $currentvol ) );
-} else if ( isset( $_POST[ 'deleteimagefile' ] ) ) { // browse by coverart
-	exec( '/usr/bin/sudo /usr/bin/rm "/srv/http/assets/img/coverarts/'.$_POST[ 'deleteimagefile' ].'"', $output, $std );
-	echo $std;
-} else if ( isset( $_POST[ 'imagefile' ] ) ) { // coverart and thumnail.jpg
-	$thumbfile = $_POST[ 'imagefile' ];
+} else if ( isset( $_POST[ 'imagefile' ] ) ) { // bookmarks icon remove in isset( $_POST[ 'bkmarks' ] )
+	$imagefile = $_POST[ 'imagefile' ];
+	$coverfile = isset( $_POST[ 'coverfile' ] );
+	if ( !isset( $_POST[ 'base64' ] ) ) {
+		if ( $coverfile ) { // backup coverart in album dir
+			exec( '/usr/bin/sudo /usr/bin/mv -f "'.$imagefile.'"{,.backup}', $output, $std );
+		} else { // coverart thumbnail
+			exec( '/usr/bin/sudo /usr/bin/rm -f "'.$imagefile, $output, $std );
+		}
+		exit( $std );
+	}
+	
 	$base64 = str_replace( 'data:image/jpeg;base64,', '', $_POST[ 'base64' ] ); // strip header
-	$tmpfile = '/srv/http/tmp/thumbnail.jpg';
-	$newfile = str_replace( 'svg', 'jpg', $thumbfile ); // if current is svg
-	file_put_contents( $tmpfile, base64_decode( $base64 ) );
-	exec( '/usr/bin/sudo /usr/bin/rm "'.$thumbfile.'"; /usr/bin/sudo /usr/bin/cp '.$tmpfile.' "'.$newfile.'"', $output, $std );
+	$tmpfile = '/srv/http/tmp/tmp.jpg';
+	file_put_contents( $tmpfile, base64_decode( $base64 ) ) || exit( '-1' );
+	$newfile = substr( $imagefile, 0, -3 ).'.jpg'; // for existing 'cover.svg' name
+	if ( $coverfile ) { // backup coverart in album dir
+		$remove = '/usr/bin/sudo /usr/bin/mv -f "'.$imagefile.'"{,.backup}';
+	} else { // coverart thumbnail
+		$remove = '/usr/bin/sudo /usr/bin/rm -f "'.$imagefile.'"';
+	}
+	exec( $remove.'; /usr/bin/sudo /usr/bin/cp '.$tmpfile.' "'.$newfile.'"', $output, $std );
 	echo $std;
 } else if ( isset( $_POST[ 'power' ] ) ) {
 	$mode = $_POST[ 'power' ];
