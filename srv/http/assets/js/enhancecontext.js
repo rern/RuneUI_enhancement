@@ -154,21 +154,23 @@ function addReplace( mode, cmd, command, title ) {
 function bookmarkNew() {
 	var path = GUI.list.path;
 	var name = path.split( '/' ).pop();
-	info( {
-		  icon       : 'edit-circle'
-		, title      : 'Add Bookmark'
-		, width      : 500
-		, message    : 'Bookmark'
-						+'<br><white>'+ path +'</white>'
-						+'<br>As:'
-		, msgalign   : 'center'
-		, textvalue  : name
-		, textalign  : 'center'
-		, boxwidth   : 'max'
-		, cancel     : 1
-		, ok         : function() {
-			bookmarkVerify( $( '#infoTextBox' ).val(), path );
-		}
+	$.post( 'enhancegetcover.php', { path: path }, function( base64 ) {
+		info( {
+			  icon      : 'edit-circle'
+			, title     : 'Add Bookmark'
+			, width     : 500
+			, message   : 'Bookmark'
+						 + ( base64 ? '<br><img src="'+ base64 +'">' : '<br><white>'+ path +'</white>' )
+						 +'<br>As:'
+			, msgalign  : 'center'
+			, textvalue : name
+			, textalign : 'center'
+			, boxwidth  : 'max'
+			, cancel    : 1
+			, ok        : function() {
+				bookmarkVerify( $( '#infoTextBox' ).val(), path );
+			}
+		} );
 	} );
 }
 function bookmarkRename( name, path ) {
