@@ -310,12 +310,13 @@ function webRadioSave( name, url ) {
 	}
 	info( {
 		  icon       : 'webradio'
-		, title      : 'Save In Webradio'
+		, title      : 'Save Webradio'
 		, width      : 500
 		, message    : 'Save URL:'
 					  +'<br><w>'+ url +'</w>'
+					  +'<br>As:'
 		, msgalign   : 'center'
-		, textlabel  : 'As'
+		, textlabel  : ''
 		, textvalue  : stationname
 		, textalign  : 'center'
 		, boxwidth   : 'max'
