@@ -1131,8 +1131,8 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-remove', function() {
 	var $album = $this.parent().next();
 	var album = $album.text();
 	var artist = $album.next().text();
-	var file = decodeURIComponent( imgsrc.split( '/' ).pop() );
-	var thumbfile = file.slice( 0, -14 ) + file.slice( -3 ); // remove timestamp
+	var thumbfile = '/srv/http/img/coverarts/'+ album +'^^'+ artist +'.jpg'
+	console.log(thumbfile)
 	info( {
 		  icon     : 'minus-circle'
 		, title    : 'Remove Thumbnail'
@@ -1145,7 +1145,7 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-remove', function() {
 		, oklabel  : 'Remove'
 		, ok       : function() {
 			$this.parent().parent().remove();
-			$.post( 'enhance.php', { deleteimagefile: thumbfile }, function( std ) {
+			$.post( 'enhance.php', { imagefile: thumbfile }, function( std ) {
 				if ( std == 13 ) {
 					info( {
 						  icon    : 'warning'
@@ -1192,60 +1192,88 @@ $( '#db-entries' ).on( 'tap', '.edit',  function() {
 	var $this = $( this );
 	var $img = $this.siblings( 'img' );
 	var $thisli = $this.parent().parent();
-	var path = $thisli.next().find( '.lipath' ).text();
-	var coverfile = '/mnt/MPD/'+ path.substr( 0, path.lastIndexOf( '/' ) ) +'/cover.jpg';
-	if ( $this.hasClass( 'licover-remove' ) ) {
-		info( {
-			  icon        : 'coverart'
-			, title       : 'Delete Coverart'
-			, message     : 'Delete <code>cover.jpg</code> file of this album:'
-						   +'<br><img src="'+ $img.prop( 'src' ) +'">'
-			, msgalign    : 'center'
-			, oklabel     : 'Delete'
-			, cancel      : 1
-			, ok          : function() {
-				$.post( 'enhance.php', { deleteimagefile: coverfile }, function( std ) {
-					if ( std == 0 ) {
-						$img.attr( 'src', coverrune );
-						$( '.edit' ).remove();
-						$img.css( 'opacity', '' );
-					} else if ( std == 13 ) {
-						info( {
-							  icon    : 'warning'
-							, message : 'Delete file permission denied.'
-									   +'Set directory+file permission and try again.'
-						} );
-					}
-				} );
-			}
-		} );
-	} else {
-		info( {
-			  icon        : 'coverart'
-			, title       : 'Album Coverart'
-			, message     : 'Replace coverart of this album:'
-						   +'<br><img src="'+ $img.prop( 'src' ) +'">'
-			, msgalign    : 'center'
-			, fileoklabel : 'Replace'
-			, cancel      : 1
-			, ok          : function() {
-				$.post( 'enhance.php', { imagefile: coverfile, base64: GUI.newimg }, function( std ) {
-					if ( std == 0 ) {
-						$img.attr( 'src', GUI.newimg );
-						GUI.newimg = '';
-						$( '.edit' ).remove();
-						$img.css( 'opacity', '' );
-					} else if ( std == 13 ) {
-						info( {
-							  icon    : 'warning'
-							, message : 'Replace file permission denied.'
-									   +'Set directory+file permission and try again.'
-						} );
-					}
-				} );
-			}
-		} );
-	}
+	var album = $thisli.find( '.lialbum' ).text();
+	var artist = $thisli.find( '.bioartist' ).text();
+	var lipath = $thisli.next().find( '.lipath' ).text();
+	var path = '/mnt/MPD/'+ lipath.substr( 0, lipath.lastIndexOf( '/' ) );
+	var coverfile = '/mnt/MPD/'+ path +'/cover.jpg';
+	$.post( 'enhance.php', { bash: '/usr/bin/ls "'+ path +'" | grep -iE "cover.jpg|cover.png|folder.jpg|folder.png|front.jpg|front.png"' }, function( file ) {
+		var file = file.slice( 0, -1 ); // less last '\n'
+		var count = file.split( '\n' ).length;
+		if ( count > 1 ) {
+			info( {
+				  icon    : 'coverart'
+				, title   : 'Remove Album Coverart'
+				, message : 'More than 1 coverarts found:'
+						   +'<br><w>'+ file.replace( '\n', '<br>' ) +'</w>'
+						   +'<br>No files removed.'
+			} );
+			return
+		}
+		
+		if ( $this.hasClass( 'licover-remove' ) ) {
+			info( {
+				  icon        : 'coverart'
+				, title       : 'Remove Album Coverart'
+				, message     : 'Remove <code>'+ file +'</code> of this album:'
+							   +'<br><img src="'+ $img.prop( 'src' ) +'">'
+							   +'<br><w>'+ album +'</w>'
+							   +'<br>'+ artist
+							   +'<br><br><code>'+ file +'</code> > <code>'+ file +'.backup</code>'
+				, msgalign    : 'center'
+				, oklabel     : 'Remove'
+				, cancel      : 1
+				, ok          : function() {
+					$.post( 'enhance.php', { imagefile: '/mnt/MPD/'+ path +'/'+ file, coverfile: 1 }, function( std ) {
+						if ( std == 0 ) {
+							$img.attr( 'src', coverrune );
+							$( '.edit' ).remove();
+							$img.css( 'opacity', '' );
+						} else if ( std == 13 ) {
+							info( {
+								  icon    : 'warning'
+								, message : 'Remove file denied.'
+										   +'<br>Set directory+file permission and try again.'
+							} );
+						}
+					} );
+				}
+			} );
+		} else {
+			info( {
+				  icon        : 'coverart'
+				, title       : 'Replace Album Coverart'
+				, message     : 'Replace coverart of this album:'
+							   +'<br><img src="'+ $img.prop( 'src' ) +'">'
+							   +'<br><w>'+ album +'</w>'
+							   +'<br>'+ artist
+				, msgalign    : 'center'
+				, fileoklabel : 'Replace'
+				, cancel      : 1
+				, ok          : function() {
+					$.post( 'enhance.php', { imagefile: coverfile, base64: GUI.newimg, coverfile: 1 }, function( std ) {
+						if ( std == 0 ) {
+							$img.attr( 'src', GUI.newimg );
+							GUI.newimg = '';
+							$( '.edit' ).remove();
+							$img.css( 'opacity', '' );
+						} else if ( std == 13 ) {
+							info( {
+								  icon    : 'warning'
+								, message : 'Replace file denied.'
+										   +'<br>Set directory+file permission and try again.'
+							} );
+						} else if ( std == -1 ) {
+							info( {
+								  icon    : 'warning'
+								, message : 'Upload image failed.'
+							} );
+						}
+					} );
+				}
+			} );
+		}
+	} );
 } );
 $( '#db-entries' ).on( 'taphold', '.licoverimg',  function() {
 	$this = $( this );
