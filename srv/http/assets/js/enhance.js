@@ -904,7 +904,6 @@ $( '#infoFileBox' ).change( function() {
 			}
 			if ( imgW === px && imgH === px ) {
 				$( '#infoMessage' ).append( '<img class="newimg" src="'+ base64img +'">'+ imgWHhtml +'</div>' );
-				GUI.newimg = base64img;
 			} else {
 				imgWHhtml += '<div>(Resized to '+ px +' x '+ px +' px)</div></div>';
 				var picacanvas = document.createElement( 'canvas' ); // create canvas object
@@ -912,7 +911,6 @@ $( '#infoFileBox' ).change( function() {
 				window.pica.resizeCanvas( img, picacanvas, picaOption, function() {
 					var resizedimg = picacanvas.toDataURL( 'image/jpeg', 0.9 ); // canvas -> base64 (jpg, qualtity)
 					$( '#infoMessage' ).append( '<img class="newimg" src="'+ resizedimg +'">'+ imgWHhtml );
-					GUI.newimg = resizedimg;
 				} );
 			}
 		}
@@ -949,19 +947,19 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 			, cancel      : 1
 			, ok          : function() {
 				var bookmarkfile = '/mnt/MPD/'+ path +'/thumbnail.jpg';
-				$.post( 'enhance.php', { imagefile: bookmarkfile, base64: GUI.newimg }, function( std ) {
+				var newimg = $( '#infoMessage .newimg' ).attr( 'src' );
+				$.post( 'enhance.php', { imagefile: bookmarkfile, base64: newimg }, function( std ) {
 					if ( std == 0 ) {
 						$this.find( '.fa-bookmark' ).remove();
 						var $img = $this.find( 'img' );
 						if ( $img.length ) {
-							$img.attr( 'src', GUI.newimg  );
+							$img.attr( 'src', newimg  );
 						} else {
 							$this.find( '.bklabel' )
 								.addClass( 'hide' )
-								.parent().before( '<img class="bkcoverart" src="'+ GUI.newimg +'">' );
+								.parent().before( '<img class="bkcoverart" src="'+ newimg +'">' );
 							$( '.home-bookmark img' ).css( 'opacity', 0.33 );
 						}
-						GUI.newimg = '';
 					} else if ( std == 13 ) {
 						info( {
 							  icon    : 'bookmark'
@@ -1174,12 +1172,12 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-cover', function() {
 		, fileoklabel : 'Replace'
 		, cancel      : 1
 		, ok          : function() {
-			$.post( 'enhance.php', { imagefile: thumbfile, base64: GUI.newimg }, function( std ) {
+			var newimg = $( '#infoMessage .newimg' ).attr( 'src' );
+			$.post( 'enhance.php', { imagefile: thumbfile, base64: newimg }, function( std ) {
 				if ( std == 0 ) {
 					$img
 						.removeAttr( 'data-src' ) // lazyload 'data-src'
-						.attr( 'src', GUI.newimg );
-					GUI.newimg = '';
+						.attr( 'src', newimg );
 				} else if ( std == 13 ) {
 					info( {
 						  icon    : 'coverart'
@@ -1199,7 +1197,7 @@ $( '#db-entries' ).on( 'tap', '.edit',  function() {
 	var artist = $thisli.find( '.bioartist' ).text();
 	var lipath = $thisli.next().find( '.lipath' ).text();
 	var path = '/mnt/MPD/'+ lipath.substr( 0, lipath.lastIndexOf( '/' ) );
-	var coverfile = '/mnt/MPD/'+ path +'/cover.jpg';
+	var coverfile = path +'/cover.jpg';
 	$.post( 'enhance.php', { bash: '/usr/bin/ls "'+ path +'" | grep -iE "^cover.jpg$|^cover.png$|^folder.jpg$|^folder.png$|^front.jpg$|^front.png$"' }, function( file ) {
 		var file = file.slice( 0, -1 ); // less last '\n'
 		var count = file.split( '\n' ).length;
@@ -1213,7 +1211,6 @@ $( '#db-entries' ).on( 'tap', '.edit',  function() {
 			} );
 			return
 		}
-		
 		if ( $this.hasClass( 'licover-remove' ) ) {
 			info( {
 				  icon     : 'coverart'
@@ -1227,7 +1224,7 @@ $( '#db-entries' ).on( 'tap', '.edit',  function() {
 				, oklabel  : 'Remove'
 				, cancel   : 1
 				, ok       : function() {
-					$.post( 'enhance.php', { imagefile: '/mnt/MPD/'+ path +'/'+ file, coverfile: 1 }, function( std ) {
+					$.post( 'enhance.php', { imagefile: coverfile, coverfile: 1 }, function( std ) {
 						if ( std == 0 ) {
 							$img.attr( 'src', coverrune );
 							$( '.edit' ).remove();
@@ -1249,16 +1246,16 @@ $( '#db-entries' ).on( 'tap', '.edit',  function() {
 				, title       : 'Replace Album Coverart'
 				, message     : 'Replace coverart of this album:'
 							   +'<br><img src="'+ $img.prop( 'src' ) +'">'
-							   +'<br><w>'+ album +'</w>'
-							   +'<br>'+ artist
+							   +'<span class="bkname"><br><w>'+ album +'</w>'
+							   +'<br>'+ artist +'<span>'
 				, msgalign    : 'center'
 				, fileoklabel : 'Replace'
 				, cancel      : 1
 				, ok          : function() {
-					$.post( 'enhance.php', { imagefile: coverfile, base64: GUI.newimg, coverfile: 1 }, function( std ) {
+					var newimg = $( '#infoMessage .newimg' ).attr( 'src' );
+					$.post( 'enhance.php', { imagefile: coverfile, base64: newimg, coverfile: 1 }, function( std ) {
 						if ( std == 0 ) {
-							$img.attr( 'src', GUI.newimg );
-							GUI.newimg = '';
+							$img.attr( 'src', newimg );
 							$( '.edit' ).remove();
 							$img.css( 'opacity', '' );
 						} else if ( std == 13 ) {
