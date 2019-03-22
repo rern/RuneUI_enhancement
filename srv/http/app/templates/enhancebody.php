@@ -2,6 +2,7 @@
 $redis = new Redis();
 $redis->pconnect( '127.0.0.1' );
 
+$time = time();
 // counts
 $count = exec( '/srv/http/enhancecount.sh' );
 $count = explode( ' ', $count );
@@ -36,7 +37,7 @@ foreach( $blocks as $id => $value ) {
 	$browsemode = in_array( $id, array( 'album', 'artist', 'albumartist', 'composer', 'genre', 'coverart' ) ) ? ' data-browsemode="'.$id.'"' : '';
 	$plugin = in_array( $id, array( 'spotify', 'dirble', 'jamendo' ) ) ? ' data-plugin="'.$value[ 0 ].'"' : '';
 	$counthtml = $count[ $value[ 1 ] ] ? '<gr>'.number_format( $count[ $value[ 1 ] ] ).'</gr>' : '';
-	$divblocks[ $value[ 2 ] ] = '
+	$divblocks[ $value[ 0 ] ] = '
 		<div class="divblock">
 			<div id="home-'.$id.'" class="home-block"'.$browsemode.$plugin.'>
 				<a class="lipath">'.$value[ 0 ].'</a>
@@ -48,50 +49,41 @@ foreach( $blocks as $id => $value ) {
 	';
 }
 // bookmarks
-$bkmarks = $redis->hGetAll( 'bkmarks' );
-$order = $redis->hGet( 'display', 'order' );
-if ( count( $bkmarks ) ) {
-	foreach( $bkmarks as $label => $path ) {
-		$thumbfile = '/mnt/MPD/'.$path.'/thumbnail.jpg';
-		if ( file_exists( $thumbfile ) ) {
-			$thumbnail = file_get_contents( $thumbfile );
-			$coverart = 'data:image/jpg;base64,'.base64_encode( $thumbnail );
+$dir = '/srv/http/assets/img/bookmarks';
+$files = array_slice( scandir( $dir ), 2 ); // remove ., ..
+if ( count( $files ) ) {
+	foreach( $files as $file ) {
+		$isjpg = substr( $file, -4 ) === '.jpg';
+		if ( $isjpg ) {
+			$path = substr( $file, 0, -4 );
+			$coverart = "$dir/$path.$time.jpg";
+			$iconhtml = '<img class="bkcoverart" src="'.$coverart.'">';
 		} else {
+			$pathname = explode( '^^', $file );
+			$name = $pathname[ 1 ];
+			$path = $pathname[ 0 ];
 			$coverart = '';
+			$iconhtml = '<i class="fa fa-bookmark"></i>'
+					   .'<div class="divbklabel"><span class="bklabel label">'.$name.'</span></div>';
 		}
-		$sortbookmark = stripLeading( $label );
-		$bookmarks[] = array( $sortbookmark, $label, $path, $coverart );
-	}
-	if ( !$order ) {
-		usort( $bookmarks, function( $a, $b ) {
-			return strnatcmp( $a[ 0 ], $b[ 0 ] );
-		} );
-	}
-	foreach( $bookmarks as $bookmark ) {
-		if ( $bookmark[ 3 ] ) {
-			$namehtml = '<img class="bkcoverart" src="'.$bookmark[ 3 ].'">';
-			$hidelabel = ' hide';
-		} else {
-			$namehtml = '<i class="fa fa-bookmark"></i>';
-			$hidelabel = '';
-		}
-		$divblocks[ $bookmark[ 1 ] ] = '
+		$path = str_replace( '|', '/', $path );
+		$divblocks[ $path ] = '
 			<div class="divblock bookmark">
 				<div class="home-block home-bookmark">
-					<a class="lipath">'.$bookmark[ 2 ].'</a>
-					'.$namehtml.'
-					<div class="divbklabel"><span class="bklabel label'.$hidelabel.'">'.$bookmark[ 1 ].'</span></div>
+					<a class="lipath">'.$path.'</a>
+					'.$iconhtml.'
 				</div>
 			</div>
 		';
 	}
 }
+$order = $redis->hGet( 'display', 'order' );
 if ( !$order ) {
 	$blockhtml = implode( $divblocks );
 } else {
 	$order = explode( '^^', $order );
-	foreach( $order as $label ) {
-		$blockhtml.= $divblocks[ $label ];
+	foreach( $order as $path ) {
+		$blockhtml.= $divblocks[ $path ];
 	}
 }
 // browse by coverart
@@ -119,7 +111,6 @@ if ( count( $files ) ) {
 	} );
 	$index = array_keys( array_flip( $index ) );
 	$coverarthtml = '';
-	$time = time();
 	foreach( $lists as $list ) {
 		$licue = $list[ 5 ] ? '<a class="licue">'.$list[ 5 ].'</a>' : '';
 		$replace = array(  // #,? not allow in 'scr'
@@ -129,13 +120,15 @@ if ( count( $files ) ) {
 			, '/svg$/' => $time.'.svg'
 		);
 		$filename = preg_replace( array_keys( $replace ), array_values( $replace ), $list[ 4 ] );
-		$coverartshtml.= '<div class="coverart">'
-							.$licue
-							.'<a class="lisort">'.$list[ 0 ].'</a>'
-							.'<div><img class="lazy" data-src="/srv/http/assets/img/coverarts/'.$filename.'"></div>'
-							.'<span class="coverart1">'.$list[ 2 ].'</span>'
-							.'<gr class="coverart2">'.( $list[ 3 ] ?: '&nbsp;' ).'</gr>'
-						.'</div>';
+		$coverartshtml.= '
+			<div class="coverart">
+				'.$licue.'
+				<a class="lisort">'.$list[ 0 ].'</a>
+				<div><img class="lazy" data-src="/srv/http/assets/img/coverarts/'.$filename.'"></div>
+					<span class="coverart1">'.$list[ 2 ].'</span>
+					<gr class="coverart2">'.( $list[ 3 ] ?: '&nbsp;' ).'</gr>
+			</div>
+		';
 	}
 	$coverartshtml.= '<a id="indexcover" data-index=\''.json_encode( $index ).'\'></a><p></p>';
 } else {
