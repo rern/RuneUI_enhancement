@@ -29,6 +29,7 @@ if [[ ! -e $dir && $lines ]]; then
 			touch "${newfile%.jpg}"
 		fi
 	done
+	chown -R http:http $dir
 fi
 redis-cli del bkmarks &> /dev/null
 EOF
