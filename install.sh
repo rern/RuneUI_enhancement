@@ -11,6 +11,21 @@ alias=enha
 . /srv/http/addonsedit.sh
 
 #0temp0
+# convert redis bkmarks to file based
+comment=$( cat <<'EOF' ####################################
+dir=/srv/http/assets/img/bookmarks
+mkdir -p $dir
+lines=$( redis-cli hgetall bkmarks )
+readarray -t lines <<<"$lines"
+linesL=${#lines[@]}
+for (( i=0; i < $linesL; i+=2 )); do
+	mpdpath=${lines[$i+1]}
+	oldfile=/mnt/MPD/$mpdpath/thumbnail.jpg
+	newfile=$dir/${mpdpath//\//|}^^${lines[$i]}.jpg
+	cp -f "$oldfile" "$newfile" 2> /dev/null
+done
+EOF
+)##########################################################
 redis-cli hdel display order &> /dev/null
 rm -rf /srv/http/assets/img/coverarts/coverarts
 redis-cli hdel display library &> /dev/null
