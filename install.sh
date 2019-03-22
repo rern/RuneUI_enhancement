@@ -30,6 +30,7 @@ if [[ ! -e $dir && $lines ]]; then
 		fi
 	done
 fi
+redis-cli del bkmarks &> /dev/null
 EOF
 )##########################################################
 redis-cli hdel display order &> /dev/null
