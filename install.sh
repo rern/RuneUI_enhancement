@@ -16,20 +16,20 @@ comment=$( cat <<'EOF' ####################################
 dir=/srv/http/assets/img/bookmarks
 lines=$( redis-cli hgetall bkmarks )
 if [[ ! -e $dir && $lines ]]; then
-	mkdir -p $dir
-	readarray -t lines <<<"$lines"
-	linesL=${#lines[@]}
-	for (( i=0; i < $linesL; i+=2 )); do
-		mpdpath=${lines[$i+1]}
-		oldfile=/mnt/MPD/$mpdpath/thumbnail.jpg
-		newfile=$dir/${mpdpath//\//|}^^${lines[$i]}.jpg
-		if [[ -e "$oldfile" ]]; then
-			cp -f "$oldfile" "$newfile" 2> /dev/null
-		else
-			touch "${newfile%.jpg}"
-		fi
-	done
-	chown -R http:http $dir
+    mkdir -p $dir
+    readarray -t lines <<<"$lines"
+    linesL=${#lines[@]}
+    for (( i=0; i < $linesL; i+=2 )); do
+        mpdpath=${lines[$i+1]}
+        oldfile=/mnt/MPD/$mpdpath/thumbnail.jpg
+        newfile=$dir/${mpdpath//\//|}^^${lines[$i]}.jpg
+        if [[ -e "$oldfile" ]]; then
+            cp -f "$oldfile" "$dir/${mpdpath//\//|}.jpg" 2> /dev/null
+        else
+            touch "$dir/${mpdpath//\//|}^^${lines[$i]}"
+        fi
+    done
+    chown -R http:http $dir
 fi
 redis-cli del bkmarks &> /dev/null
 EOF
