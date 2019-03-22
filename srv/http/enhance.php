@@ -7,6 +7,9 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 $redis = new Redis();
 $redis->pconnect( '127.0.0.1' );
 
+$sudo = '/usr/bin/sudo /usr/bin/';
+$sudosrv = '/usr/bin/sudo /srv/http/';
+
 if ( isset( $_POST[ 'mpc' ] ) ) {
 	$mpc = $_POST[ 'mpc' ];
 	if ( !is_array( $mpc ) ) { // multiples commands is array
@@ -88,87 +91,112 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	if ( isset( $_POST[ 'bkmarks' ] ) ) {
 		$key = 'bkmarks';
 		$data = $_POST[ 'bkmarks' ];
-	} else {
-		$key = 'webradios';
-		$data = $_POST[ 'webradios' ];
-	}
-	if ( !is_array( $data ) ) { // delete
-		$name = $data;
-		if ( $key === 'bkmarks' ) {
-			$file = '/mnt/MPD/'.$redis->hGet( $key, $name ).'/thumbnail.jpg';
-			echo '/usr/bin/sudo /usr/bin/rm -f "'.$file.'"';
-			exec( '/usr/bin/sudo /usr/bin/rm -f "'.$file.'"' );
-		}
-		$redis->hDel( $key, $name );
-		if ( $key === 'webradios' ) {
-			$redis->hDel( 'sampling', $name );
-			unlink( '/mnt/MPD/Webradio/'.$data.'.pls' );
-			exec( 'mpc update Webradio &' );
-			pushstream( 'webradio', array( 'name' => $name ) );
-		} else {
+		if ( isset( $_POST[ 'ordername' ] ) ) { //delete
+			$name = $data;
+			unlink( "/srv/http/assets/img/bookmarks/$name" );
 			$order = $redis->hGet( 'display', 'order' );
 			if ( $order ) {
-				$order = explode( '^^', $order );           // string to array
-				$index = array_search( $name, $order );     // get index
-				unset( $order[ $index ] );                  // remove
+				$order = explode( '^^', $order );                       // string to array
+				$index = array_search( $_POST[ 'ordername' ], $order ); // get index
+				if ( $index !== false ) unset( $order[ $index ] );      // remove
 				pushstream( 'display', array( 'order' => $order ) );
-				$order = implode( '^^', $order );            // array to string
-				$redis->hSet( 'display', 'order', $order ); // redis cannot save array
+				$order = implode( '^^', $order );                       // array to string
+				$redis->hSet( 'display', 'order', $order );             // redis cannot save array
 			}
 			$data = getBookmark( $redis );
 			pushstream( 'bookmark', $data );
+			exit;
 		}
+	} else {
+		$key = 'webradios';
+		$data = $_POST[ 'webradios' ];
+		if ( !is_array( $data ) ) { // delete
+			$name = $data;
+			$redis->hDel( 'webradios', $name );
+			$redis->hDel( 'sampling', $name );
+			unlink( "/mnt/MPD/Webradio/$name.pls" );
+			exec( 'mpc update Webradio &' );
+			pushstream( 'webradio', array( 'name' => $name ) );
+			exit;
+		}
+	}
+	
+	$oldname = isset( $data[ 2 ] ) ? $data[ 2 ] : '';
+	if ( $key === 'webradios' ) {
+		if ( $oldname ) {
+			$redis->hDel( $key, $oldname );
+			unlink( '/mnt/MPD/Webradio/'.$oldname.'.pls' );
+		}
+		$name = $data[ 0 ];
+		$url = $data[ 1 ];
+		$redis->hSet( $key, $name, $url );
+		$lines = "[playlist]\nNumberOfEntries=1\nFile1=".$url."\nTitle1=".$name;
+		$fopen = fopen( '/mnt/MPD/Webradio/'.$name.'.pls', 'w');
+		fwrite( $fopen, $lines );
+		fclose( $fopen );
+		exec( 'mpc update Webradio &' );
+		pushstream( 'webradio', array( 'name' => $name, 'oldname' => $oldname ) );
+		$redis->hDel( 'webradiopl', $url ); // delete from unsaved list database
 		exit();
 		
 	} else {
-		$name = $data[ 0 ];
-		$value = $data[ 1 ];
-		if ( isset( $data[ 2 ] ) ) {
-			$oldname = $data[ 2 ];
-			$redis->hDel( $key, $oldname );
-			if ( $key === 'webradios' ) unlink( '/mnt/MPD/Webradio/'.$oldname.'.pls' );
-		} else {
-			$oldname = '';
-		}
-		if ( $key === 'webradios' ) {
-			$redis->hSet( $key, $name, $value );
-			$lines = "[playlist]\nNumberOfEntries=1\nFile1=".$value."\nTitle1=".$name;
-			$fopen = fopen( '/mnt/MPD/Webradio/'.$name.'.pls', 'w');
-			fwrite( $fopen, $lines );
-			fclose( $fopen );
-			exec( 'mpc update Webradio &' );
-			pushstream( 'webradio', array( 'name' => $name, 'oldname' => $oldname ) );
-			$redis->hDel( 'webradiopl', $value ); // delete from unsaved list database
-			exit();
-			
-		} else {
-			$redis->hSet( $key, $name, $value );
-			$order = $redis->hGet( 'display', 'order' );
-			if ( $order ) {
-				$order = explode( '^^', $order );   // string to array
-				if ( $oldname ) {
-					$index = array_search( $oldname, $order );
-					$order[ $index ] = $name;       // replace
-				} else {
-					array_push( $order, $name );    // append
-				}
-				pushstream( 'display', array( 'order' => $order ) );
-				$order = implode( '^^', $order );    // array to string
-				$redis->hSet( 'display', 'order', $order );
+		$path = $data[ 0 ];
+		$name = $data[ 1 ];
+		$order = $redis->hGet( 'display', 'order' );
+		if ( $order ) {
+			$order = explode( '^^', $order );   // string to array
+			if ( $oldname ) {
+				$index = array_search( $oldname, $order );
+				$order[ $index ] = $path;       // replace
+			} else {
+				array_push( $order, $path );    // append
 			}
+			pushstream( 'display', array( 'order' => $order ) );
+			$order = implode( '^^', $order );    // array to string
+			$redis->hSet( 'display', 'order', $order );
 		}
 	}
-	// coverart
-	$base64 = $_POST[ 'base64' ];
-	if ( $base64 ) {
-		$base64 = str_replace( 'data:image/jpeg;base64,', '', $base64 ); // strip header
-		$tmpfile = '/srv/http/tmp/tmp.jpg';
-		file_put_contents( $tmpfile, base64_decode( $base64 ) );
-		$thumbfile = '/mnt/MPD/'.$value.'/thumbnail.jpg';
-		exec( '/usr/bin/sudo /usr/bin/mv -f "'.$tmpfile.'" "'.$thumbfile.'"' );
+	// create file
+	$pathbookmarks = '/srv/http/assets/img/bookmarks';
+	$pathname = str_replace( '/', '|', $path );
+	$filename = "$pathbookmarks/$pathname";
+	if ( isset( $_POST[ 'base64' ] ) ) {
+		$base64 = str_replace( 'data:image/jpeg;base64,', '', $_POST[ 'base64' ] ); // strip header
+		file_put_contents( "$filename.jpg", base64_decode( $base64 ) );
+	} else {
+		if ( $oldname ) unlink( "$filename^^$oldname" );
+		touch( "$filename^^$name" );
 	}
 	$data = getBookmark( $redis );
 	pushstream( 'bookmark', $data );
+} else if ( isset( $_POST[ 'imagefile' ] ) ) { // bookmark icon remove - in isset( $_POST[ 'bkmarks' ] )
+	$imagefile = $_POST[ 'imagefile' ];
+	if ( isset( $_POST[ 'name' ] ) ) {         // bookmark icon replace
+		$name = $_POST[ 'name' ];
+		$filename = '/srv/http/assets/img/bookmarks/'.str_replace( '/', '|', $imagefile );
+		$base64 = str_replace( 'data:image/jpeg;base64,', '', $_POST[ 'base64' ] ); // strip header
+		if ( $name ) unlink( "$filename^^$name" );
+		file_put_contents( "$filename.jpg", base64_decode( $base64 ) );
+		exit;
+	}
+	
+	$coverfile = isset( $_POST[ 'coverfile' ] );
+	if ( $coverfile ) { // backup coverart in album dir
+		$remove = "$sudo/mv -f \"$imagefile\"{,.backup}";
+	} else { // coverart thumbnail
+		$remove = "$sudo/rm -f \"$imagefile\"";
+	}
+	if ( !isset( $_POST[ 'base64' ] ) ) {
+		exec( $remove,  $output, $std );
+		exit( $std );
+	}
+	
+	$base64 = str_replace( 'data:image/jpeg;base64,', '', $_POST[ 'base64' ] ); // strip header
+	$tmpfile = '/srv/http/tmp/tmp.jpg';
+	file_put_contents( $tmpfile, base64_decode( $base64 ) ) || exit( '-1' );
+	$newfile = substr( $imagefile, 0, -3 ).'jpg'; // for existing 'cover.svg' name
+	exec( "$remove; $sudo/cp $tmpfile \"$newfile\"", $output, $std );
+	echo $std;
 } else if ( isset( $_POST[ 'getwebradios' ] ) ) {
 	$webradios = $redis->hGetAll( 'webradios' );
 	foreach( $webradios as $name => $url ) {
@@ -288,29 +316,6 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$redis->hSet( 'display', 'volumemute', $currentvol );
 	exec( 'mpc volume '.$vol );
 	pushstream( 'volume', array( $vol, $currentvol ) );
-} else if ( isset( $_POST[ 'imagefile' ] ) ) { // bookmarks icon remove in isset( $_POST[ 'bkmarks' ] )
-	$imagefile = $_POST[ 'imagefile' ];
-	$coverfile = isset( $_POST[ 'coverfile' ] );
-	if ( !isset( $_POST[ 'base64' ] ) ) {
-		if ( $coverfile ) { // backup coverart in album dir
-			exec( '/usr/bin/sudo /usr/bin/mv -f "'.$imagefile.'"{,.backup}', $output, $std );
-		} else { // coverart thumbnail
-			exec( '/usr/bin/sudo /usr/bin/rm -f "'.$imagefile, $output, $std );
-		}
-		exit( $std );
-	}
-	
-	$base64 = str_replace( 'data:image/jpeg;base64,', '', $_POST[ 'base64' ] ); // strip header
-	$tmpfile = '/srv/http/tmp/tmp.jpg';
-	file_put_contents( $tmpfile, base64_decode( $base64 ) ) || exit( '-1' );
-	$newfile = substr( $imagefile, 0, -3 ).'jpg'; // for existing 'cover.svg' name
-	if ( $coverfile ) { // backup coverart in album dir
-		$remove = '/usr/bin/sudo /usr/bin/mv -f "'.$imagefile.'"{,.backup}';
-	} else { // coverart thumbnail
-		$remove = '/usr/bin/sudo /usr/bin/rm -f "'.$imagefile.'"';
-	}
-	exec( $remove.'; /usr/bin/sudo /usr/bin/cp '.$tmpfile.' "'.$newfile.'"', $output, $std );
-	echo $std;
 } else if ( isset( $_POST[ 'power' ] ) ) {
 	$mode = $_POST[ 'power' ];
 	if ( $mode === 'screenoff' ) {
@@ -318,8 +323,6 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		exit();
 	}
 	
-	$sudo = '/usr/bin/sudo /usr/bin/';
-	$sudosrv = '/usr/bin/sudo /srv/http/';
 	// dual boot
 	exec( $sudo.'mount | /usr/bin/grep -q mmcblk0p8 && /usr/bin/echo 8 > /sys/module/bcm2709/parameters/reboot_part' );
 	
@@ -523,30 +526,29 @@ function curlGet( $url ) {
 	curl_close( $ch );
 	return $response;
 }
-function getBookmark( $redis ) {
-	$rbkmarks = $redis->hGetAll( 'bkmarks' );
-	if ( $rbkmarks ) {
-		foreach ( $rbkmarks as $name => $path ) {
-			$thumbfile = '/mnt/MPD/'.$path.'/thumbnail.jpg';
-			if ( file_exists( $thumbfile ) ) {
-				$thumbnail = file_get_contents( $thumbfile );
-				$coverart = 'data:image/jpg;base64,'.base64_encode( $thumbnail );
-			} else {
-				$coverart = '';
-			}
-			$sort = stripLeading( $name );
-			$index[] = $sort[ 1 ];
-			$data[] = array(
-				  'name'     => $name
-				, 'path'     => $path
-				, 'coverart' => $coverart
-				, 'sort'     => $sort[ 0 ]
-				, 'lisort'   => $sort[ 1 ]
-			);
+function getBookmark() {
+	$dir = '/srv/http/assets/img/bookmarks';
+	$files = array_slice( scandir( $dir ), 2 ); // remove ., ..
+	if ( !count( $files ) ) return 0;
+	
+	$time = time();
+	foreach( $files as $file ) {
+		$isjpg = substr( $file, -4 ) === '.jpg';
+		if ( $isjpg ) {
+			$name = '';
+			$path = substr( $file, 0, -4 );
+			$coverart = "$dir/$path.$time.jpg";
+		} else {
+			$pathname = explode( '^^', $file );
+			$name = $pathname[ 1 ];
+			$path = $pathname[ 0 ];
+			$coverart = '';
 		}
-		$data = sortData( $data );
-	} else {
-		$data = 0;
+		$data[] = array(
+			  'name'     => $name
+			, 'path'     => str_replace( '|', '/', $path )
+			, 'coverart' => $coverart
+		);
 	}
 	return $data;
 }
