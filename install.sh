@@ -23,7 +23,11 @@ if [[ ! -e $dir && $lines ]]; then
 		mpdpath=${lines[$i+1]}
 		oldfile=/mnt/MPD/$mpdpath/thumbnail.jpg
 		newfile=$dir/${mpdpath//\//|}^^${lines[$i]}.jpg
-		cp -f "$oldfile" "$newfile" 2> /dev/null
+		if [[ -e "$oldfile" ]]; then
+			cp -f "$oldfile" "$newfile" 2> /dev/null
+		else
+			touch "${newfile%.jpg}"
+		fi
 	done
 fi
 EOF
