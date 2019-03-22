@@ -14,9 +14,9 @@ alias=enha
 # convert redis bkmarks to file based
 comment=$( cat <<'EOF' ####################################
 dir=/srv/http/assets/img/bookmarks
-if [[ ! -e $dir ]]; then
+lines=$( redis-cli hgetall bkmarks )
+if [[ ! -e $dir && $lines ]]; then
 	mkdir -p $dir
-	lines=$( redis-cli hgetall bkmarks )
 	readarray -t lines <<<"$lines"
 	linesL=${#lines[@]}
 	for (( i=0; i < $linesL; i+=2 )); do
