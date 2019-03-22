@@ -11,29 +11,6 @@ alias=enha
 . /srv/http/addonsedit.sh
 
 #0temp0
-# convert redis bkmarks to file based
-comment=$( cat <<'EOF' ####################################
-dir=/srv/http/assets/img/bookmarks
-lines=$( redis-cli hgetall bkmarks )
-if [[ ! -e $dir && $lines ]]; then
-    mkdir -p $dir
-    readarray -t lines <<<"$lines"
-    linesL=${#lines[@]}
-    for (( i=0; i < $linesL; i+=2 )); do
-        mpdpath=${lines[$i+1]}
-        oldfile=/mnt/MPD/$mpdpath/thumbnail.jpg
-        newfile=$dir/${mpdpath//\//|}^^${lines[$i]}.jpg
-        if [[ -e "$oldfile" ]]; then
-            cp -f "$oldfile" "$dir/${mpdpath//\//|}.jpg" 2> /dev/null
-        else
-            touch "$dir/${mpdpath//\//|}^^${lines[$i]}"
-        fi
-    done
-    chown -R http:http $dir
-fi
-redis-cli del bkmarks &> /dev/null
-EOF
-)##########################################################
 redis-cli hdel display order &> /dev/null
 rm -rf /srv/http/assets/img/coverarts/coverarts
 redis-cli hdel display library &> /dev/null
@@ -204,6 +181,27 @@ redis-cli set mpddb "$albumartist $composer $genre" &> /dev/null
 
 # fix webradio permission
 chown -R http:http /mnt/MPD/Webradio
+
+# convert redis bkmarks to file based
+dir=/srv/http/assets/img/bookmarks
+lines=$( redis-cli hgetall bkmarks )
+if [[ ! -e $dir && $lines ]]; then
+    mkdir -p $dir
+    readarray -t lines <<<"$lines"
+    linesL=${#lines[@]}
+    for (( i=0; i < $linesL; i+=2 )); do
+        mpdpath=${lines[$i+1]}
+        oldfile=/mnt/MPD/$mpdpath/thumbnail.jpg
+        newfile=$dir/${mpdpath//\//|}^^${lines[$i]}.jpg
+        if [[ -e "$oldfile" ]]; then
+            cp -f "$oldfile" "$dir/${mpdpath//\//|}.jpg" 2> /dev/null
+        else
+            touch "$dir/${mpdpath//\//|}^^${lines[$i]}"
+        fi
+    done
+    chown -R http:http $dir
+fi
+redis-cli del bkmarks &> /dev/null
 
 # disable USB drive auto scan database ..."
 redis-cli set usb_db_autorebuild 0 &> /dev/null
