@@ -927,7 +927,7 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 	var $target = $( e.target );
 	var $this = $( this );
 	var path = $this.find( '.lipath' ).text();
-	var name = $this.find( '.bklabel' ).text();
+	var name = $this.find( '.bklabel' ).text() || '';
 	if ( $target.is( '.home-block-edit' ) ) {
 		bookmarkRename( name, path, $this );
 	} else if ( $target.is( '.home-block-cover' ) ) {
@@ -946,32 +946,23 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 			, fileoklabel : 'Replace'
 			, cancel      : 1
 			, ok          : function() {
-				var bookmarkfile = '/mnt/MPD/'+ path +'/thumbnail.jpg';
+				var bookmarkfile = path.replace( /\//g, '|' ) +'.jpg';
 				var newimg = $( '#infoMessage .newimg' ).attr( 'src' );
-				$.post( 'enhance.php', { imagefile: bookmarkfile, base64: newimg }, function( std ) {
-					if ( std == 0 ) {
+				$.post( 'enhance.php', { imagefile: path, name: name, base64: newimg }, function() {
+					var $img = $this.find( 'img' );
+					if ( $img.length ) {
+						$img.attr( 'src', newimg  );
+					} else {
 						$this.find( '.fa-bookmark' ).remove();
-						var $img = $this.find( 'img' );
-						if ( $img.length ) {
-							$img.attr( 'src', newimg  );
-						} else {
-							$this.find( '.bklabel' )
-								.addClass( 'hide' )
-								.parent().before( '<img class="bkcoverart" src="'+ newimg +'">' );
-							$( '.home-bookmark img' ).css( 'opacity', 0.33 );
-						}
-					} else if ( std == 13 ) {
-						info( {
-							  icon    : 'bookmark'
-							, message : '<i class="fa fa-warning"></i>Replace file denied.'
-									   +'Set directory+file <w>permission</w> and try again.'
-						} );
+						$this.find( '.divbklabel' ).remove();
+						$this.find( '.lipath' ).after( '<img class="bkcoverart" src="'+ newimg +'">' );
+						$( '.home-bookmark img' ).css( 'opacity', 0.33 );
 					}
 				} );
 			}
 		} );
 	} else if ( $target.is( '.home-block-remove' ) ) {
-		bookmarkDelete( name, $this );
+		bookmarkDelete( path, name, $this );
 	} else {
 		GUI.dblist = 1;
 		GUI.dbbrowsemode = 'file';
@@ -1019,7 +1010,7 @@ var sortablelibrary = new Sortable( document.getElementById( 'divhomeblocks' ), 
 		var $blocks = $( '.home-block' );
 		var order = '';
 		$blocks.each( function() {
-			order += $( this ).find( '.label' ).text() +'^^';
+			order += $( this ).find( '.lipath' ).text() +'^^';
 		} );
 		order = order.slice( 0, -2 );
 		GUI.display.order = order.split( '^^' );
@@ -1664,17 +1655,15 @@ pushstreams.bookmark.onmessage = function( data ) {
 		$( '.bookmark' ).remove();
 		$.each( bookmarks, function( i, bookmark ) {
 			if ( bookmark.coverart ) {
-				var namehtml = '<img class="bkcoverart" src="'+ bookmark.coverart +'">';
-				var hidelabel = ' hide';
+				var iconhtml = '<img class="bkcoverart" src="'+ bookmark.coverart +'">';
 			} else {
-				var namehtml = '<i class="fa fa-bookmark"></i>';
-				var hidelabel = '';
+				var iconhtml = '<i class="fa fa-bookmark"></i>'
+							  +'<div class="divbklabel"><span class="bklabel label">'+ bookmark.name +'</span></div>';
 			}
 			content += '<div class="divblock bookmark">'
 						+'<div class="home-block home-bookmark">'
 							+'<a class="lipath">'+ bookmark.path +'</a>'
-							+ namehtml
-							+'<div class="divbklabel"><span class="bklabel label'+ hidelabel +'">'+ bookmark.name +'</span></div>'
+							+ iconhtml
 						+'</div>'
 					  +'</div>';
 		} );
@@ -1686,7 +1675,7 @@ pushstreams.bookmark.onmessage = function( data ) {
 			if ( GUI.display.order.length ) {
 				$.each( GUI.display.order, function( i, name ) {
 					var $divblock = $( '.divblock' ).filter( function() {
-						return $( this ).find( '.label' ).text() === name;
+						return $( this ).find( '.lipath' ).text() === name;
 					} );
 					$divblock.detach();
 					$( '#divhomeblocks' ).append( $divblock );

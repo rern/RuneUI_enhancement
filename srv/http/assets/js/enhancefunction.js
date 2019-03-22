@@ -14,18 +14,9 @@ function cssKeyframes( name, trx0, trx100 ) {
 	var webkit100 = '-webkit-'+ trx100;
 	$( 'head' ).append(
 		 '<style id="'+ name +'">'
-			+'@-moz-keyframes '+ name +' {'
-				+'0%   { '+ moz +' }'
-				+'100% { '+ moz100 +' }'
-			+'}'
-			+'@-webkit-keyframes '+ name +' {'
-				+'0%   { '+ webkit +' }'
-				+'100% { '+ webkit100 +' }'
-			+'}'
-			+'@keyframes '+ name +' {'
-				+'0%   {'+ trx0 +'}'
-				+'100% {'+ trx100 +'}'
-			+'}'
+			+'@-moz-keyframes '+    name +' { 0% { '+ moz +' }    100% { '+ moz100 +' } }'
+			+'@-webkit-keyframes '+ name +' { 0% { '+ webkit +' } 100% { '+ webkit100 +' } }'
+			+'@keyframes '+         name +' { 0% { '+ trx0 +'}    100% { '+ trx100 +'} }'
 		+'</style>'
 	);
 }

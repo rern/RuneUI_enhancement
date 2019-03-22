@@ -155,26 +155,35 @@ function bookmarkNew() {
 	var path = GUI.list.path;
 	var name = path.split( '/' ).pop();
 	$.post( 'enhancegetcover.php', { path: path }, function( base64img ) {
-		var $img = base64img ? '<br><img src="'+ base64img +'">' : '';
-		info( {
+		var $img = '<br><img src="'+ base64img +'">';
+		var infodata = {
 			  icon      : 'bookmark'
 			, title     : 'Add Bookmark'
 			, width     : 500
 			, message   : 'Bookmark'
-						 + ( $img || '<br><white>'+ path +'</white>' )
-						 +'<br>As:'
+						 +'<br><img src="'+ base64img +'">'
 			, msgalign  : 'center'
-			, textvalue : name
 			, textalign : 'center'
 			, boxwidth  : 'max'
 			, cancel    : 1
 			, ok        : function() {
-				bookmarkVerify( $( '#infoTextBox' ).val(), path );
+				$.post( 'enhance.php', { bkmarks: [ path, '' ], base64: base64 } );
 			}
-		} );
+		}
+		if ( !base64img ) {
+			infodata.message   = 'Bookmark'
+							+'<br><white>'+ path +'</white>'
+							+'<br>As:';
+			infodata.textvalue = name;
+			infodata.textalign = 'center';
+			infodata.ok        =  function() {
+				$.post( 'enhance.php', { bkmarks: [ path, $( '#infoTextBox' ).val() ] } );
+			}
+		}
+		info( infodata );
 	} );
 }
-function bookmarkRename( name, path ) {
+function bookmarkRename( name, path, $block ) {
 	info( {
 		  icon      : 'bookmark'
 		, title     : 'Rename Bookmark'
@@ -190,97 +199,37 @@ function bookmarkRename( name, path ) {
 		, cancel    : 1
 		, oklabel   : 'Rename'
 		, ok        : function() {
-			bookmarkVerify( $( '#infoTextBox' ).val(), path, name );
+			var newname = $( '#infoTextBox' ).val();
+			$.post( 'enhance.php', { bkmarks: [ path, newname, name ] } );
+			$block.find( '.bklabel' ).text( newname );
 		}
 	} );
 }
-function bookmarkVerify( name, path, oldname ) {
-	if ( !name ) {
-		info( {
-			  icon    : 'bookmark'
-			, title   : oldname ? 'Rename Bookmark' :'Add Bookmark'
-			, message : '<i class="fa fa-warning"></i><white>Name</white> cannot be blank.'
-			, ok      : function() {
-				setTimeout( function() {
-					oldname ? bookmarkRename( oldname, path ) : bookmarkNew( path );
-				}, 300 );
-			}
-		} );
-		return;
-	}
-	var $bllabel = $( '.home-block' ).filter( function() {
-		return $( this ).find( '.label' ).text() === name;
-	} );
-	var base64 = $( '#infoMessage img' ).attr( 'src' ) || '';
-	if ( !$bllabel.length ) {
-		if ( !oldname ) {
-			new PNotify( {
-				  title : 'Add Bookmark'
-				, text  : name
-			} );
-		} else {
-			$( '.home-block' ).filter( function() {
-				return $( this ).find( '.label' ).text() === oldname;
-			} ).find( '.label' ).text( name );
-		}
-		var data = oldname ? [ name, path, oldname ] : [ name, path ];
-		$.post( 'enhance.php', { bkmarks: data, base64: base64 } );
-	} else {
-		info( {
-			  icon        : 'bookmark'
-			, title       : oldname ? 'Rename Bookmark' :'Add Bookmark'
-			, width       : 500
-			, message     : '<i class="fa fa-warning"></i><white>'+ name +'</white>'
-						+'<br>Already exists for:'
-						+'<br><w>'+ $bllabel.find( '.lipath' ).text() +'</w>'
-			, msgalign    : 'center'
-			, cancellabel : 'Back'
-			, cancel      : function() {
-				setTimeout( function() {
-					oldname ? bookmarkRename( name, path ) : bookmarkNew();
-				}, 300 );
-			}
-			, oklabel     : 'Replace'
-			, ok          : function() {
-				var data = oldname ? [ name, path, oldname ] : [ name, path ];
-				$.post( 'enhance.php', { bkmarks: data, base64: base64 } );
-			}
-		} );
-	}
-}
-function bookmarkDelete( name, $block ) {
+function bookmarkDelete( path, name, $block ) {
 	var $img = $block.find( 'img' );
 	var src = $img.attr( 'src' );
+	var namepath = path.replace( /\//g, '|' );
 	if ( src ) {
 		var icon = '<img src="'+ src +'">'
-				  +'<br>'+ name
+		bookmarkfile = namepath +'.jpg';
 	} else {
-		var icon = '<div class="infobookmark"><i class="fa fa-bookmark"></i><span class="bklabel">'+ $block.find( '.bklabel' ).text() +'</span></div>'
+		var icon = '<div class="infobookmark">'
+					+'<i class="fa fa-bookmark"></i><span class="bklabel">'+ name +'</span>'
+				  +'</div>'
+		bookmarkfile = namepath +'^^'+ name;
 	}
 	info( {
 		  icon     : 'bookmark'
 		, title    : 'Remove Bookmark'
 		, message  : 'Remove?'
 					+'<br>'+ icon
-					+'<br>&nbsp;'
 		, msgalign : 'center'
-		, checkbox : src ? { 'Remove thumbnail - Keep bookmark': 1 } : ''
 		, cancel   : 1
 		, oklabel  : 'Remove'
 		, ok       : function() {
 			GUI.bookmarkedit = 1;
-			if ( $( '#infoCheckBox input[ type=checkbox ]:checked' ).length ) {
-				var path = $block.find( '.lipath' ).text().replace( /"/g, '\"' );
-				$.post( 'enhance.php', { bash: '/usr/bin/rm "/mnt/MPD/' + path +'/thumbnail.jpg"' } );
-				$img
-					.after( '<i class="fa fa-bookmark"></i>' )
-					.remove();
-				$block.find( '.fa-bookmark' ).css( 'opacity', 0.33 );
-				$block.find( '.bklabel' ).removeClass( 'hide' )
-			} else {
-				$.post( 'enhance.php', { bkmarks: name } );
-				$block.parent().remove();
-			}
+			$.post( 'enhance.php', { bkmarks: bookmarkfile, ordername: path } );
+			$block.parent().remove();
 		}
 	} );
 }
