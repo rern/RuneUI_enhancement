@@ -180,7 +180,12 @@ genre=$( mpc list genre | awk NF | wc -l )
 redis-cli set mpddb "$albumartist $composer $genre" &> /dev/null
 
 # fix webradio permission
-chown -R http:http /mnt/MPD/Webradio
+#chown -R http:http /mnt/MPD/Webradio
+
+# dirble temp dir
+dir=/srv/http/assets/img/webradiopl
+mkdir -p $dir
+chown -R http:http $dir
 
 # convert redis webradio to file based
 dir=/srv/http/assets/img/webradios
