@@ -26,6 +26,7 @@ _Tested on RuneAudio 0.4b, 0.5_
 	- Replace / remove
 	- Image from each Dirble stations
 	- VU meter for Webradio (animated gif)
+	- Custom Webradio coverarts
 - Index bar
 	- Mask available indexes
 - Library sorting
@@ -109,15 +110,18 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 ### Library:
 - Drag to rearrange home blocks
 - Show counts
-- Browse by CoverArt
-	- Long-press `CoverArt` to create / update thumbnails
-	- Long-press thumbnail for replace / remove
-	- Context menu in directory for partial update
-	- Sort by album or by artist
-- Coverart bookmarks
-	- Long-press for replace / remove
-- Coverart in album view / album directory
-	- Long-press for replace / remove
+- Coverarts:
+	- Browse by CoverArt
+		- Long-press `CoverArt` to create / update thumbnails
+		- Long-press thumbnail for replace / remove
+		- Context menu in directory for partial update
+		- Sort by album or by artist
+	- Coverart bookmarks
+		- Long-press for replace / remove
+	- Coverart in album view / album directory
+		- Long-press for replace / remove
+	- Webradio coverarts
+		- Tap Webradio icon in list view
 - Bookmarks and webradios can be renamed
 - Bookmarks and webradios can be named with " characters
 - Show icon and breadcrumb heading while browsing
