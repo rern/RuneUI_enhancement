@@ -60,15 +60,16 @@ $( '.contextmenu a' ).click( function() {
 			mpcCmd = '/srv/http/enhance1cuem3u.sh "'+ plfile +'" '+ GUI.list.index;
 		} else if ( name.split( '.' ).pop() === 'pls' ) {
 			mpcCmd = 'mpc load "'+ name +'"';
-		} else if ( GUI.plugin ) {
-			var radioname = GUI.list.name.replace( /"/g, '\\"' );
-			mpcCmd = 'mpc add "'+ GUI.list.path +'"; /usr/bin/redis-cli hset webradiopl '+ GUI.list.path +' "*'+ radioname +'<x>'+ GUI.list.img +'</x>"';
+		} else if ( GUI.plugin ) { // unsaved dirble ( * in front of name for class indicator)
+			var pathname = GUI.list.path.replace( /\//g, '|' );
+			mpcCmd = 'mpc add "'+ GUI.list.path +'"'
+					+'; /usr/bin/echo -e "*'+ GUI.list.name +'\n'+ GUI.list.img +'" > "/srv/http/assets/img/webradiopl/'+ pathname +'"';
 		} else {
 			mpcCmd = GUI.list.isfile ? 'mpc add "'+ name +'"' : 'mpc ls "'+ name +'" | mpc add';
 		}
 	} else if ( mode === 'wr' ) {
 		cmd = cmd.slice( 2 );
-		mpcCmd = 'mpc add "'+ GUI.list.name.replace( /"/g, '\\"' ) +'"';
+		mpcCmd = 'mpc add "'+ GUI.list.path.replace( /"/g, '\\"' ) +'"';
 	} else if ( mode === 'pl' ) {
 		cmd = cmd.slice( 2 );
 		mpcCmd = 'mpc load "'+ name +'"';
@@ -262,7 +263,7 @@ function webRadioSave( name, url ) {
 	if ( name.slice( -4 ) === '</x>' ) {
 		var nameimg = name.split( '<x>' );
 		var stationname = nameimg[ 0 ];
-		var stationimg = '<x>'+ nameimg[ 1 ];
+		var stationimg = '<x>'+ nameimg[ 1 ]; // <x>http://stationimg/url</x>
 	} else {
 		var stationname = name;
 		var stationimg = '';

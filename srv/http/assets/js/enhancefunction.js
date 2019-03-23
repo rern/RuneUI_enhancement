@@ -325,15 +325,11 @@ function renderPlayback() {
 			$( '#elapsed, #total, #timepos' ).empty();
 		}
 		// dirble coverart
-		var title = GUI.pllist[ status.song ].Title;
-		if ( title.slice( -4 ) === '</x>' ) {
-			var url = title.split( '<x>' ).pop().slice( 0, -4 );
-			if ( url ) {
-				$( '#cover-art' )
-					.attr( 'src', url )
-					.css( 'border-radius', '' );
-				$( '#coverartoverlay' ).addClass( 'hide' );
-			}
+		if ( status.coverart ) {
+			$( '#cover-art' )
+				.attr( 'src', status.coverart )
+				.css( 'border-radius', '' );
+			$( '#coverartoverlay' ).addClass( 'hide' );
 		} else {
 			$( '#cover-art' )
 				.attr( 'src', status.state === 'play' ? vu : vustop )
@@ -1656,12 +1652,14 @@ function removeFromPlaylist( $li ) {
 		}
 	}
 	var songpos = $this.index() + 1;
+	var isunsaved = $this.find( '.pl-icon' ).hasClass( 'unsaved' );
 	$this.remove();
-	if ( $this.hasClass( 'webradio' ) || $this.find( '.pl-icon' ).hasClass( 'unsaved' ) ) {
-		$.post( 'enhance.php', { mpc: [ 'mpc del '+ songpos, '/usr/bin/redis-cli hdel webradiopl "'+ $this.find( '.lipath' ).text() +'"' ] } );
-	} else {
-		$.post( 'enhance.php', { mpc: 'mpc del '+ songpos } );
+	var cmd = 'mpc del '+ songpos;
+	if ( $this.find( '.pl-icon' ).hasClass( 'unsaved' ) ) {
+		var pathname = $this.find( '.lipath' ).text().replace( /\//g, '|' );
+		cmd += '; /usr/bin/rm -f "/srv/http/assets/img/webradiopl/'+ pathname +'"';
 	}
+	$.post( 'enhance.php', { mpc: cmd } );
 	if ( !$( '#countsong, #countradio' ).length ) {
 		GUI.status.playlistlength = 0;
 		renderPlaylist();
@@ -1670,7 +1668,7 @@ function removeFromPlaylist( $li ) {
 function clearPlaylist() {
 	GUI.status.playlistlength = 0;
 	GUI.pllist = {};
-	$.post( 'enhance.php', { mpc: [ 'mpc clear', '/usr/bin/redis-cli del webradiopl' ] } );
+	$.post( 'enhance.php', { mpc: [ 'mpc clear', '/usr/bin/rm -f "/srv/http/assets/img/webradiopl/*' ] } );
 }
 function renderLsPlaylists( lsplaylists ) {
 	var content = '';
