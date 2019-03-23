@@ -189,9 +189,9 @@ chown -R http:http $dir
 
 # convert redis webradio to file based
 dir=/srv/http/assets/img/webradios
+lines=$( redis-cli hgetall webradios )
 if [[ ! -e $dir && $lines ]]; then
 	mkdir -p $dir
-	lines=$( redis-cli hgetall webradios )
 	readarray -t lines <<<"$lines"
 	linesL=${#lines[@]}
 	for (( i=0; i < $linesL; i+=2 )); do
