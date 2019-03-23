@@ -183,7 +183,7 @@ redis-cli set mpddb "$albumartist $composer $genre" &> /dev/null
 #chown -R http:http /mnt/MPD/Webradio
 
 # dirble temp dir
-dir=/srv/http/assets/img/webradiopl
+dir=/srv/http/assets/img/{webradiopl,webradiocoverarts}
 mkdir -p $dir
 chown -R http:http $dir
 
