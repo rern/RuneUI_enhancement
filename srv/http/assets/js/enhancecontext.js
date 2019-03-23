@@ -28,6 +28,7 @@ $( '.contextmenu a' ).click( function() {
 	var contextFunction = {
 		  radiosave     : webRadioNew // unsaved webradio (dirble)
 		, wrrename      : webRadioRename
+		, wrcoverart    : webRadioCoverart
 		, wrdelete      : webRadioDelete
 		, plrename      : playlistRename
 		, pldelete      : playlistDelete
@@ -239,6 +240,35 @@ function bookmarkDelete( path, name, $block ) {
 			$.post( 'enhance.php', { bkmarks: [ path, '', name ] } );
 			$block.parent().remove();
 		}
+	} );
+}
+function webRadioCoverart() {
+	var name = GUI.list.name;
+	var path = GUI.list.path;
+	var pathname = path.replace( /\//g, '|' );
+	var webradiopath = '/srv/http/assets/img/webradios';
+	$.post( 'enhance.php', { bash: '/usr/bin/cat "'+ webradiopath +'/'+ pathname +'"' }, function( data ) {
+		var stationimg = data.split( "\n" )[ 1 ];
+		if ( stationimg ) {
+			var $img = '<img src="'+ stationimg +'">';
+		} else {
+			var $img = '<img src="'+ vu +'" style="border-radius: 9px">';
+		}
+		info( {
+			  icon        : 'webradio'
+			, title       : 'Change Coverart'
+			, message     : 'Replace:'
+						   +'<br>'+ $img
+						   +'<span class="bkname"><br>'+ name +'<span>'
+			, msgalign    : 'center'
+			, fileoklabel : 'Replace'
+			, cancel      : 1
+			, ok          : function() {
+				var webradiofile = '/srv/http/asset/img/webradiocoverarts/'+ path.replace( /\//g, '|' ) +'.jpg';
+				var newimg = $( '#infoMessage .newimg' ).attr( 'src' );
+				$.post( 'enhance.php', { imagefile: webradiofile, name: name, base64: newimg } );
+			}
+		} );
 	} );
 }
 function webRadioNew( name, url ) {
