@@ -92,18 +92,16 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$url = $data[ 0 ];
 	$name = $data[ 1 ];
 	$oldname = $data[ 2 ];
-	$pathwebradios = '/srv/http/assets/webradios';
 	$urlname = str_replace( '/', '|', $data[ 0 ] );
-	$oldurlname = $urlname.'^^'.$oldname;
+	$file = "/srv/http/assets/webradios/$urlname";
 	if ( !$name ) { //delete
-		unlink( "$pathwebradios/$oldurlname" );
-		pushstream( 'webradio', array( 'name' => $oldurlname ) );
-		$redis->hDel( 'sampling', $oldurlname );
+		unlink( $file );
+		pushstream( 'webradio', array( 'name' => $oldname ) );
+		$redis->hDel( 'sampling', $url );
 	} else {
-		if ( $oldname ) unlink( "$pathwebradios/$oldurlname" );
-		touch( "$pathwebradios/$urlname^^$name" );
+		if ( isset( $_POST[ 'stationimg' ] ) ) $name.= "\n".$_POST[ 'stationimg' ];
+		file_put_contents( $file, $name );
 		pushstream( 'webradio', array( 'name' => $name, 'oldname' => $oldname ) );
-		$redis->hDel( 'webradiopl', $data[ 0 ] ); // unsaved list
 	}
 } else if ( isset( $_POST[ 'bkmarks' ] ) ) {
 	$data = $_POST[ 'bkmarks' ];
@@ -201,16 +199,15 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	if ( !count( $files ) ) exit;
 	
 	foreach( $files as $file ) {
-		$urlname = explode( '^^', $file );
-		$url = str_replace( '|', '/', $urlname[ 0 ] );
-		$name = $urlname[ 1 ];
-		$id = $urlname[ 2 ] ?: '';
+		$nameimg = explode( "\n", file_get_contents( "/srv/http/assets/img/webradios/$file" ) );
+		$name = $nameimg[ 0 ];
+		$img = $nameimg[ 1 ] ?: '';
 		$sort = stripLeading( $name );
 		$index[] = $sort[ 1 ];
 		$data[] = array(
 			  'webradio' => $name
-			, 'url'      => $url
-			, 'id'       => $id
+			, 'url'      => str_replace( '|', '/', $file )
+			, 'img'      => $img
 			, 'sort'     => $sort[ 0 ]
 			, 'lisort'   => $sort[ 1 ]
 		);
@@ -221,22 +218,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$name = isset( $_POST[ 'name' ] ) ? '"'.$_POST[ 'name' ].'"' : '';
 	if ( !$name ) $data[ 'lsplaylists' ] = lsplaylists();
 	$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%^^[%albumartist%|%artist%]^^%album%^^%genre%^^%composer%" playlist '.$name );
-	if ( !$lines ) {
-		$data[ 'playlist' ] = '';
-	} else {
-		$webradioname = $redis->hGetAll( 'webradiopl' );
-		$files = array_slice( scandir( '/srv/http/assets/img/webradios' ), 2 );
-		if ( count( $files ) ) {
-			foreach( $files as $file ) {
-				$urlname = explode( '^^', $file );
-				$url = str_replace( '|', '/', $urlname[ 0 ] );
-				$name = $urlname[ 1 ];
-				$webradioname[ $url ] = $name;
-			}
-		}
-		$playlist = list2array( $lines, $webradioname );
-		$data[ 'playlist' ] = $playlist;
-	}
+	$data[ 'playlist' ] = $lines ? list2array( $lines ) : '';
 	echo json_encode( $data );
 } else if ( isset( $_POST[ 'playlist' ] ) ) {
 	$plfiles = $_POST[ 'playlist' ];
@@ -442,7 +424,7 @@ function search2array( $result, $playlist = '' ) { // directories or files
 	if ( $composer ) $data[][ 'composer' ] = $composer;
 	return $data;
 }
-function list2array( $result, $webradioname = null ) {
+function list2array( $result ) {
 	$lists = explode( "\n", rtrim( $result ) );
 	$artist = $album = $genre = $composer = $albumartist = $file = '';
 	foreach( $lists as $list ) {
@@ -455,7 +437,10 @@ function list2array( $result, $webradioname = null ) {
 		$file = $list[ 3 ];
 		$track = $list[ 2 ] ?: dirname( $file );
 		if ( substr( $track, 0, 4 ) === 'http' ) {
-			$title = $track ? $webradioname[ $list[ 3 ] ] : basename( $file );
+			$urlname = str_replace( '/', '|', $file );
+			$plfile = "/srv/http/assets/img/webradios/$urlname";
+			if ( !file_exists( $plfile ) ) $plfile = "/srv/http/assets/img/webradiopl/$urlname";
+			$title = file_exists( $plfile ) ? explode( "\n", file_get_contents( $plfile ) )[ 0 ] : $file;
 		} else if ( $list[ 0 ] ) {
 			$title = $list[ 0 ];
 		} else {
