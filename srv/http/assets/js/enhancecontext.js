@@ -264,9 +264,21 @@ function webRadioCoverart() {
 			, fileoklabel : 'Replace'
 			, cancel      : 1
 			, ok          : function() {
-				var webradiofile = '/srv/http/asset/img/webradiocoverarts/'+ path.replace( /\//g, '|' ) +'.jpg';
+				var webradiofile = '/srv/http/assets/img/webradiocoverarts/'+ path.replace( /\//g, '|' ) +'.jpg';
 				var newimg = $( '#infoMessage .newimg' ).attr( 'src' );
-				$.post( 'enhance.php', { imagefile: webradiofile, name: name, base64: newimg } );
+				$.post( 'enhance.php', { imagefile: webradiofile, base64: newimg, url: path }, function( std ) {
+					if ( std == 0 ) {
+						new PNotify( {
+							  title : 'Coverart Changed'
+							, text  : name
+						} );
+					} else if ( std == -1 ) {
+						info( {
+							  icon    : 'webradio'
+							, message : '<i class="fa fa-warning"></i>Upload image failed.'
+						} );
+					}
+				} );
 			}
 		} );
 	} );
