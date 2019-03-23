@@ -180,9 +180,8 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$std = 0;
 	}
 	echo $std;
-	if ( $std === 0 && isset( $_POST[ 'url' ] ) ) {
-		$urlname = str_replace( '/', '|', $_POST[ 'url' ] );
-		$file = '/srv/http/assets/img/webradios/'.$urlname;
+	if ( $std === 0 && isset( $_POST[ 'urlname' ] ) ) {
+		$file = '/srv/http/assets/img/webradios/'.$_POST[ 'urlname' ];
 		$name = explode( "\n", file_get_contents( $file ) )[ 0 ];
 		file_put_contents( $file, $name."\n".$imagefile );
 	}
