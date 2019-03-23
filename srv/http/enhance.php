@@ -7,8 +7,8 @@ if ( isset( $_POST[ 'bash' ] ) ) {
 $redis = new Redis();
 $redis->pconnect( '127.0.0.1' );
 
-$sudo = '/usr/bin/sudo /usr/bin/';
-$sudosrv = '/usr/bin/sudo /srv/http/';
+$sudo = '/usr/bin/sudo /usr/bin';
+$sudosrv = '/usr/bin/sudo /srv/http';
 
 if ( isset( $_POST[ 'mpc' ] ) ) {
 	$mpc = $_POST[ 'mpc' ];
@@ -96,6 +96,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$file = "/srv/http/assets/webradios/$urlname";
 	if ( !$name ) { //delete
 		unlink( $file );
+		@unlink( "/srv/http/assets/webradiocoverarts/$urlname.jpg" );
 		pushstream( 'webradio', array( 'name' => $oldname ) );
 		$redis->hDel( 'sampling', $url );
 	} else {
@@ -159,27 +160,31 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	}
 	
 	$coverfile = isset( $_POST[ 'coverfile' ] );
-	if ( $coverfile ) { // backup coverart in album dir
-		$remove = "$sudo/mv -f \"$imagefile\"{,.backup}";
-	} else { // coverart thumbnail
-		$remove = "$sudo/rm -f \"$imagefile\"";
-	}
 	if ( !isset( $_POST[ 'base64' ] ) ) {
-		exec( $remove,  $output, $std );
-		exit( $std );
+		if ( $coverfile ) { // backup coverart in album dir
+			exec( "$sudo/mv -f \"$imagefile\"{,.backup}", $output, $std );
+		} else {
+			@unlink( $imagefile );
+		}
+		exit;
 	}
 	
 	$base64 = explode( ',', $_POST[ 'base64' ] )[ 1 ];
-	$tmpfile = '/srv/http/tmp/tmp.jpg';
-	file_put_contents( $tmpfile, base64_decode( $base64 ) ) || exit( '-1' );
-	$newfile = substr( $imagefile, 0, -3 ).'jpg'; // for existing 'cover.svg' name
-	exec( "$remove; $sudo/cp $tmpfile \"$newfile\"", $output, $std );
+	if ( $coverfile ) {
+		$tmpfile = '/srv/http/tmp/tmp.jpg';
+		file_put_contents( $tmpfile, base64_decode( $base64 ) ) || exit( '-1' );
+		exec( "$sudo/cp $tmpfile \"$newfile\"", $output, $std );
+	} else {
+		$newfile = substr( $imagefile, 0, -3 ).'jpg'; // for existing 'cover.svg' name
+		file_put_contents( $imagefile, base64_decode( $base64 ) ) || exit( '-1' );
+		$std = 0;
+	}
 	echo $std;
-	$pathinfo = pathinfo( $imagefile );
-	if ( $pathinfo[ 'dirname' ] === '/srv/http/assets/img/webradiocoverarts' ) {
-		$fopen = fopen( '/srv/http/assets/img/webradios/'.$pathinfo[ 'basename' ], 'a' );
-		fwrite( $fopen, "\n". $imagefile );
-		fclose( $fopen );
+	if ( $std === 0 && isset( $_POST[ 'url' ] ) ) {
+		$urlname = str_replace( '/', '|', $_POST[ 'url' ] );
+		$file = '/srv/http/assets/img/webradios/'.$urlname;
+		$name = explode( "\n", file_get_contents( $file ) )[ 0 ];
+		file_put_contents( $file, $name."\n".$imagefile );
 	}
 } else if ( isset( $_POST[ 'setdisplay' ] ) ) {
 	$data = $_POST[ 'setdisplay' ];
@@ -309,12 +314,12 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	}
 	
 	// dual boot
-	exec( $sudo.'mount | /usr/bin/grep -q mmcblk0p8 && /usr/bin/echo 8 > /sys/module/bcm2709/parameters/reboot_part' );
+	exec( "$sudo/mount | /usr/bin/grep -q mmcblk0p8 && /usr/bin/echo 8 > /sys/module/bcm2709/parameters/reboot_part" );
 	
-	if ( file_exists( '/srv/http/gpio/gpiooff.py' ) ) $cmd.= $sudosrv.'gpio/gpiooff.py;';
-	if ( $redis->get( local_browser ) === '1' ) $cmd .= $sudo.'killall Xorg; /usr/local/bin/ply-image /srv/http/assets/img/bootsplash.png;';
-	$cmd.= $sudo.'umount -f -a -t cifs nfs -l;';
-	$cmd.= $sudo.'shutdown '.( $mode === 'reboot' ? '-r' : '-h' ).' now';
+	if ( file_exists( '/srv/http/gpio/gpiooff.py' ) ) $cmd.= "$sudosrv/gpio/gpiooff.py;";
+	if ( $redis->get( local_browser ) === '1' ) $cmd .= "$sudo/killall Xorg; /usr/local/bin/ply-image /srv/http/assets/img/bootsplash.png;";
+	$cmd.= "$sudo/umount -f -a -t cifs nfs -l;";
+	$cmd.= "$sudo/shutdown ".( $mode === 'reboot' ? '-r' : '-h' ).' now';
 	exec( $cmd );
 } else if ( isset( $_POST[ 'dirble' ] ) ) {
 	$querytype = $_POST[ 'dirble' ];
