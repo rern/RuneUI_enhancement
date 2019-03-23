@@ -175,6 +175,12 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$newfile = substr( $imagefile, 0, -3 ).'jpg'; // for existing 'cover.svg' name
 	exec( "$remove; $sudo/cp $tmpfile \"$newfile\"", $output, $std );
 	echo $std;
+	$pathinfo = pathinfo( $imagefile );
+	if ( $pathinfo[ 'dirname' ] === '/srv/http/assets/img/webradiocoverarts' ) {
+		$fopen = fopen( '/srv/http/assets/img/webradios/'.$pathinfo[ 'basename' ], 'a' );
+		fwrite( $fopen, "\n". $imagefile );
+		fclose( $fopen );
+	}
 } else if ( isset( $_POST[ 'setdisplay' ] ) ) {
 	$data = $_POST[ 'setdisplay' ];
 	$order = $data[ 'order' ];
