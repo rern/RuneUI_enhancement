@@ -182,6 +182,23 @@ redis-cli set mpddb "$albumartist $composer $genre" &> /dev/null
 # fix webradio permission
 chown -R http:http /mnt/MPD/Webradio
 
+# convert redis webradio to file based
+dir=/srv/http/assets/img/webradios
+if [[ ! -e $dir && $lines ]]; then
+	mkdir -p $dir
+	lines=$( redis-cli hgetall webradios )
+	readarray -t lines <<<"$lines"
+	linesL=${#lines[@]}
+	for (( i=0; i < $linesL; i+=2 )); do
+		name=${lines[ $i ]}
+		url=${lines[ $i + 1 ]}
+		urlname="$url^^$name"
+		filename=${urlname//\//|}
+		touch "$dir/$filename"
+	done
+	chown -R http:http $dir
+fi
+
 # convert redis bkmarks to file based
 dir=/srv/http/assets/img/bookmarks
 lines=$( redis-cli hgetall bkmarks )
