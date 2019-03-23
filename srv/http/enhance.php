@@ -87,82 +87,62 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$redis->hSet( 'display', 'order', $order );
 	$order = explode( '^^', $order );
 	pushstream( 'display', array( 'order' => $order ) );
-} else if ( isset( $_POST[ 'bkmarks' ] ) || isset( $_POST[ 'webradios' ] ) ) {
-	if ( isset( $_POST[ 'bkmarks' ] ) ) {
-		$key = 'bkmarks';
-		$data = $_POST[ 'bkmarks' ];
-		if ( isset( $_POST[ 'ordername' ] ) ) { //delete
-			$name = $data;
-			unlink( "/srv/http/assets/img/bookmarks/$name" );
-			$order = $redis->hGet( 'display', 'order' );
-			if ( $order ) {
-				$order = explode( '^^', $order );                       // string to array
-				$index = array_search( $_POST[ 'ordername' ], $order ); // get index
-				if ( $index !== false ) unset( $order[ $index ] );      // remove
-				pushstream( 'display', array( 'order' => $order ) );
-				$order = implode( '^^', $order );                       // array to string
-				$redis->hSet( 'display', 'order', $order );             // redis cannot save array
-			}
-			$data = getBookmark( $redis );
-			pushstream( 'bookmark', $data );
-			exit;
-		}
+} else if ( isset( $_POST[ 'webradios' ] ) ) {
+	$data = $_POST[ 'webradios' ];
+	$url = $data[ 0 ];
+	$name = $data[ 1 ];
+	$oldname = $data[ 2 ];
+	$pathwebradios = '/srv/http/assets/webradios';
+	$urlname = str_replace( '/', '|', $data[ 0 ] );
+	$oldurlname = $urlname.'^^'.$oldname;
+	if ( !$name ) { //delete
+		unlink( "$pathwebradios/$oldurlname" );
+		pushstream( 'webradio', array( 'name' => $oldurlname ) );
+		$redis->hDel( 'sampling', $oldurlname );
 	} else {
-		$key = 'webradios';
-		$data = $_POST[ 'webradios' ];
-		if ( !is_array( $data ) ) { // delete
-			$name = $data;
-			$redis->hDel( 'webradios', $name );
-			$redis->hDel( 'sampling', $name );
-			unlink( "/mnt/MPD/Webradio/$name.pls" );
-			exec( 'mpc update Webradio &' );
-			pushstream( 'webradio', array( 'name' => $name ) );
-			exit;
-		}
-	}
-	
-	$oldname = isset( $data[ 2 ] ) ? $data[ 2 ] : '';
-	if ( $key === 'webradios' ) {
-		if ( $oldname ) {
-			$redis->hDel( $key, $oldname );
-			unlink( '/mnt/MPD/Webradio/'.$oldname.'.pls' );
-		}
-		$name = $data[ 0 ];
-		$url = $data[ 1 ];
-		$redis->hSet( $key, $name, $url );
-		$lines = "[playlist]\nNumberOfEntries=1\nFile1=".$url."\nTitle1=".$name;
-		$fopen = fopen( '/mnt/MPD/Webradio/'.$name.'.pls', 'w');
-		fwrite( $fopen, $lines );
-		fclose( $fopen );
-		exec( 'mpc update Webradio &' );
+		if ( $oldname ) unlink( "$pathwebradios/$oldurlname" );
+		touch( "$pathwebradios/$urlname^^$name" );
 		pushstream( 'webradio', array( 'name' => $name, 'oldname' => $oldname ) );
-		$redis->hDel( 'webradiopl', $url ); // delete from unsaved list database
-		exit();
-		
-	} else {
-		$path = $data[ 0 ];
-		$name = $data[ 1 ];
+		$redis->hDel( 'webradiopl', $data[ 0 ] ); // unsaved list
+	}
+} else if ( isset( $_POST[ 'bkmarks' ] ) ) {
+	$data = $_POST[ 'bkmarks' ];
+	$path = $data[ 0 ];
+	$name = $data[ 1 ];
+	$oldname = $data[ 2 ];
+	$pathbookmarks = '/srv/http/assets/img/bookmarks';
+	$pathname = str_replace( '/', '|', $data[ 0 ] );
+	if ( !$name ) { //delete
+		unlink( "$pathbookmarks/$pathname.jpg" );
+		unlink( "$pathbookmarks/$pathname^^$oldname" );
 		$order = $redis->hGet( 'display', 'order' );
 		if ( $order ) {
-			$order = explode( '^^', $order );   // string to array
-			if ( $oldname ) {
-				$index = array_search( $oldname, $order );
-				$order[ $index ] = $path;       // replace
-			} else {
-				array_push( $order, $path );    // append
-			}
+			$order = explode( '^^', $order );             // string to array
+			$index = array_search( $path, $order );       // get index
+			if ( $index !== false ) unset( $order[ $index ] );   // remove
 			pushstream( 'display', array( 'order' => $order ) );
-			$order = implode( '^^', $order );    // array to string
-			$redis->hSet( 'display', 'order', $order );
+			$order = implode( '^^', $order );                    // array to string
+			$redis->hSet( 'display', 'order', $order );          // redis cannot save array
 		}
+		$data = getBookmark( $redis );
+		pushstream( 'bookmark', $data );
+		exit;
+	}
+	
+	$order = $redis->hGet( 'display', 'order' );
+	if ( $order ) {
+		$order = explode( '^^', $order );   // string to array
+		if ( !$oldname ) array_push( $order, $path );    // append
+		pushstream( 'display', array( 'order' => $order ) );
+		$order = implode( '^^', $order );   // array to string
+		$redis->hSet( 'display', 'order', $order );
 	}
 	// create file
-	$pathbookmarks = '/srv/http/assets/img/bookmarks';
-	$pathname = str_replace( '/', '|', $path );
 	$filename = "$pathbookmarks/$pathname";
 	if ( isset( $_POST[ 'base64' ] ) ) {
-		$base64 = str_replace( 'data:image/jpeg;base64,', '', $_POST[ 'base64' ] ); // strip header
+		$base64 = explode( ',', $_POST[ 'base64' ] )[ 1 ];
 		file_put_contents( "$filename.jpg", base64_decode( $base64 ) );
+		echo "$filename.jpg";
 	} else {
 		if ( $oldname ) unlink( "$filename^^$oldname" );
 		touch( "$filename^^$name" );
@@ -174,7 +154,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	if ( isset( $_POST[ 'name' ] ) ) {         // bookmark icon replace
 		$name = $_POST[ 'name' ];
 		$filename = '/srv/http/assets/img/bookmarks/'.str_replace( '/', '|', $imagefile );
-		$base64 = str_replace( 'data:image/jpeg;base64,', '', $_POST[ 'base64' ] ); // strip header
+		$base64 = explode( ',', $_POST[ 'base64' ] )[ 1 ];
 		if ( $name ) unlink( "$filename^^$name" );
 		file_put_contents( "$filename.jpg", base64_decode( $base64 ) );
 		exit;
@@ -191,25 +171,85 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		exit( $std );
 	}
 	
-	$base64 = str_replace( 'data:image/jpeg;base64,', '', $_POST[ 'base64' ] ); // strip header
+	$base64 = explode( ',', $_POST[ 'base64' ] )[ 1 ];
 	$tmpfile = '/srv/http/tmp/tmp.jpg';
 	file_put_contents( $tmpfile, base64_decode( $base64 ) ) || exit( '-1' );
 	$newfile = substr( $imagefile, 0, -3 ).'jpg'; // for existing 'cover.svg' name
 	exec( "$remove; $sudo/cp $tmpfile \"$newfile\"", $output, $std );
 	echo $std;
+} else if ( isset( $_POST[ 'setdisplay' ] ) ) {
+	$data = $_POST[ 'setdisplay' ];
+	$order = $data[ 'order' ];
+	if ( is_array( $order ) ) $data[ 'order' ] = implode( ',', $order );
+	$redis->hmSet( 'display', $data );
+	pushstream( 'display', $data );
+} else if ( isset( $_POST[ 'getdisplay' ] ) ) {
+	usleep( 100000 ); // !important - get data must wait connection start at least (0.05s)
+	$data = $redis->hGetAll( 'display' );
+	$data[ 'volumempd' ] = $redis->get( 'volume' );
+	$data[ 'spotify' ] = $redis->hGet( 'spotify', 'enable' );
+	if ( isset( $_POST[ 'data' ] ) ) {
+		echo json_encode( $data, JSON_NUMERIC_CHECK );
+	} else {
+		pushstream( 'display', $data );
+	}
+} else if ( isset( $_POST[ 'getbookmarks' ] ) ) {
+	$data = getBookmark( $redis );
+	echo json_encode( $data );
 } else if ( isset( $_POST[ 'getwebradios' ] ) ) {
-	$webradios = $redis->hGetAll( 'webradios' );
-	foreach( $webradios as $name => $url ) {
+	$files = array_slice( scandir( '/srv/http/assets/img/webradios' ), 2 ); // remove ., ..
+	if ( !count( $files ) ) exit;
+	
+	foreach( $files as $file ) {
+		$urlname = explode( '^^', $file );
+		$url = str_replace( '|', '/', $urlname[ 0 ] );
+		$name = $urlname[ 1 ];
+		$id = $urlname[ 2 ] ?: '';
 		$sort = stripLeading( $name );
 		$index[] = $sort[ 1 ];
 		$data[] = array(
-			  'playlist' => 'Webradio/'.$name.'.pls'
+			  'webradio' => $name
 			, 'url'      => $url
+			, 'id'       => $id
 			, 'sort'     => $sort[ 0 ]
 			, 'lisort'   => $sort[ 1 ]
 		);
 	}
 	$data = sortData( $data, $index );
+	echo json_encode( $data );
+} else if ( isset( $_POST[ 'getplaylist' ] ) ) {
+	$name = isset( $_POST[ 'name' ] ) ? '"'.$_POST[ 'name' ].'"' : '';
+	if ( !$name ) $data[ 'lsplaylists' ] = lsplaylists();
+	$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%^^[%albumartist%|%artist%]^^%album%^^%genre%^^%composer%" playlist '.$name );
+	if ( !$lines ) {
+		$data[ 'playlist' ] = '';
+	} else {
+		$webradioname = $redis->hGetAll( 'webradiopl' );
+		$files = array_slice( scandir( '/srv/http/assets/img/webradios' ), 2 );
+		if ( count( $files ) ) {
+			foreach( $files as $file ) {
+				$urlname = explode( '^^', $file );
+				$url = str_replace( '|', '/', $urlname[ 0 ] );
+				$name = $urlname[ 1 ];
+				$webradioname[ $url ] = $name;
+			}
+		}
+		$playlist = list2array( $lines, $webradioname );
+		$data[ 'playlist' ] = $playlist;
+	}
+	echo json_encode( $data );
+} else if ( isset( $_POST[ 'playlist' ] ) ) {
+	$plfiles = $_POST[ 'playlist' ];
+	foreach( $plfiles as $file ) {
+		$ext = pathinfo( $file, PATHINFO_EXTENSION );
+		$plfile = preg_replace( '/([&\[\]])/', '#$1', $file ); // escape literal &, [, ] in %file% (operation characters)
+		$lines.= shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file% + '.$ext.'^^[%albumartist%|%artist%]^^%album%^^%genre%^^%composer%^^'.$plfile.'" playlist "'.$file.'"' );
+	}
+	$data = list2array( $lines );
+	$data[][ 'path' ] = dirname( $plfiles[ 0 ] );
+	if ( $redis->hGet( 'display', 'coverfile' ) ) {
+		$data[][ 'coverart' ] = getCover( $data[ 0 ][ 'file' ] );
+	}
 	echo json_encode( $data );
 } else if ( isset( $_POST[ 'album' ] ) ) {
 	$albums = shell_exec( $_POST[ 'album' ] );
@@ -255,49 +295,6 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$data = sortData( $data, $index );
 	}
 	echo json_encode( $data );
-} else if ( isset( $_POST[ 'getplaylist' ] ) ) {
-	$name = isset( $_POST[ 'name' ] ) ? '"'.$_POST[ 'name' ].'"' : '';
-	if ( !$name ) $data[ 'lsplaylists' ] = lsplaylists();
-	$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%^^[%albumartist%|%artist%]^^%album%^^%genre%^^%composer%" playlist '.$name );
-	if ( !$lines ) {
-		$data[ 'playlist' ] = '';
-	} else {
-		$webradios = array_flip( $redis->hGetAll( 'webradios' ) );
-		$webradiopl = $redis->hGetAll( 'webradiopl' );
-		$webradioname = array_merge( $webradiopl, $webradios );
-		$playlist = list2array( $lines, $webradioname );
-		$data[ 'playlist' ] = $playlist;
-	}
-	echo json_encode( $data );
-} else if ( isset( $_POST[ 'playlist' ] ) ) {
-	$plfiles = $_POST[ 'playlist' ];
-	foreach( $plfiles as $file ) {
-		$ext = pathinfo( $file, PATHINFO_EXTENSION );
-		$plfile = preg_replace( '/([&\[\]])/', '#$1', $file ); // escape literal &, [, ] in %file% (operation characters)
-		$lines.= shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file% + '.$ext.'^^[%albumartist%|%artist%]^^%album%^^%genre%^^%composer%^^'.$plfile.'" playlist "'.$file.'"' );
-	}
-	$data = list2array( $lines );
-	$data[][ 'path' ] = dirname( $plfiles[ 0 ] );
-	if ( $redis->hGet( 'display', 'coverfile' ) ) {
-		$data[][ 'coverart' ] = getCover( $data[ 0 ][ 'file' ] );
-	}
-	echo json_encode( $data );
-} else if ( isset( $_POST[ 'getdisplay' ] ) ) {
-	usleep( 100000 ); // !important - get data must wait connection start at least (0.05s)
-	$data = $redis->hGetAll( 'display' );
-	$data[ 'volumempd' ] = $redis->get( 'volume' );
-	$data[ 'spotify' ] = $redis->hGet( 'spotify', 'enable' );
-	if ( isset( $_POST[ 'data' ] ) ) {
-		echo json_encode( $data, JSON_NUMERIC_CHECK );
-	} else {
-		pushstream( 'display', $data );
-	}
-} else if ( isset( $_POST[ 'setdisplay' ] ) ) {
-	$data = $_POST[ 'setdisplay' ];
-	$order = $data[ 'order' ];
-	if ( is_array( $order ) ) $data[ 'order' ] = implode( ',', $order );
-	$redis->hmSet( 'display', $data );
-	pushstream( 'display', $data );
 } else if ( isset( $_POST[ 'volume' ] ) ) {
 	$volume = $_POST[ 'volume' ];
 	$volumemute = $redis->hGet( 'display', 'volumemute' );
