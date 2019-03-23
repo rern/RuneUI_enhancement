@@ -245,9 +245,9 @@ function bookmarkDelete( path, name, $block ) {
 function webRadioCoverart() {
 	var name = GUI.list.name;
 	var path = GUI.list.path;
-	var pathname = path.replace( /\//g, '|' );
+	var urlname = path.replace( /\//g, '|' );
 	var webradiopath = '/srv/http/assets/img/webradios';
-	$.post( 'enhance.php', { bash: '/usr/bin/cat "'+ webradiopath +'/'+ pathname +'"' }, function( data ) {
+	$.post( 'enhance.php', { bash: '/usr/bin/cat "'+ webradiopath +'/'+ urlname +'"' }, function( data ) {
 		var stationimg = data.split( "\n" )[ 1 ];
 		if ( stationimg ) {
 			var $img = '<img src="'+ stationimg +'">';
@@ -266,7 +266,7 @@ function webRadioCoverart() {
 			, ok          : function() {
 				var webradiofile = '/srv/http/assets/img/webradiocoverarts/'+ path.replace( /\//g, '|' ) +'.jpg';
 				var newimg = $( '#infoMessage .newimg' ).attr( 'src' );
-				$.post( 'enhance.php', { imagefile: webradiofile, base64: newimg, url: path }, function( std ) {
+				$.post( 'enhance.php', { imagefile: webradiofile, base64: newimg, urlname: urlname }, function( std ) {
 					if ( std == 0 ) {
 						new PNotify( {
 							  title : 'Coverart Changed'
@@ -275,6 +275,7 @@ function webRadioCoverart() {
 					} else if ( std == -1 ) {
 						info( {
 							  icon    : 'webradio'
+							, title   : 'Change Coverart'
 							, message : '<i class="fa fa-warning"></i>Upload image failed.'
 						} );
 					}

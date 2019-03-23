@@ -1258,6 +1258,7 @@ $( '#db-entries' ).on( 'tap', '.edit',  function() {
 						} else if ( std == -1 ) {
 							info( {
 								  icon    : 'coverart'
+								, title   : 'Replace Album Coverart'
 								, message : '<i class="fa fa-warning"></i>Upload image failed.'
 							} );
 						}
