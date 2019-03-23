@@ -220,8 +220,9 @@ $html = menucommonsp( 'spotify-track' );
 $menu.= menudiv( 'spotify', $html );
 $menudiv = '';
 $html = menucommon( 'wradd', 'wraddplay', 'wrreplace', 'wrreplaceplay' );
-$html.= menuli( 'wrrename', 'edit-circle',  'Rename' );
-$html.= menuli( 'wrdelete', 'minus-circle', 'Delete' );
+$html.= menuli( 'wrrename',   'edit-circle',  'Rename' );
+$html.= menuli( 'wrcoverart', 'coverart',     'Change coverart' );
+$html.= menuli( 'wrdelete',   'minus-circle', 'Delete' );
 $menu.= menudiv( 'webradio', $html );
 $menudiv = '';
 
