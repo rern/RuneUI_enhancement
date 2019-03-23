@@ -677,6 +677,36 @@ function displayCheckbox( checkboxes ) {
 	} );
 	return html;
 }
+function renderLibraryBlocks( bookmarks ) {
+	var content = '';
+	$( '.bookmark' ).remove();
+	$.each( bookmarks, function( i, bookmark ) {
+		if ( bookmark.coverart ) {
+			var iconhtml = '<img class="bkcoverart" src="'+ bookmark.coverart +'">';
+		} else {
+			var iconhtml = '<i class="fa fa-bookmark"></i>'
+						  +'<div class="divbklabel"><span class="bklabel label">'+ bookmark.name +'</span></div>';
+		}
+		content += '<div class="divblock bookmark">'
+					+'<div class="home-block home-bookmark">'
+						+'<a class="lipath">'+ bookmark.path +'</a>'
+						+ iconhtml
+					+'</div>'
+				  +'</div>';
+	} );
+	$( '#divhomeblocks' ).append( content ).promise().done( function() {
+		if ( GUI.display.order.length ) {
+			GUI.display.order.forEach( function( name ) {
+				var $divblock = $( '.divblock' ).filter( function() {
+					return $( this ).find( '.lipath' ).text() === name;
+				} );
+				$divblock.detach();
+				$( '#divhomeblocks' ).append( $divblock );
+			} );
+		}
+		if ( GUI.library && !$( '#home-blocks' ).hasClass( 'hide' ) ) renderLibrary()
+	} );
+}
 function renderLibrary() {
 	GUI.dbbackdata = [];
 	GUI.plugin = '';
@@ -889,6 +919,11 @@ function dataParse( data, path, querytype, plid ) {
 			
 			var data = htmlPlaylist( data );
 			content = data.content;
+		} else if ( data[ 0 ].webradio ) {
+			var dataL = data.length - 1; // last one is index
+			for ( i = 0; i < dataL; i++ ) {
+				content += data2html( data[ i ], path );
+			}
 		} else if ( data[ 0 ].directory || data[ 0 ].file || data[ 0 ].playlist ) {
 			var arraydir = [];
 			var arrayfile = [];
@@ -1112,7 +1147,7 @@ function data2html( list, path ) {
 							 +'<span class="li2">'+ path +'</span>'
 				}
 			} else { // Webradio
-				var liname = list.playlist.replace( /Webradio\/|\\|.pls$/g, '' );
+				var liname = list.webradio
 				content = '<li class="db-webradio file" >'
 						 +'<a class="lipath">'+ list.url +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ list.lisort +'</a>'
 						 +'<i class="fa fa-webradio db-icon db-radio" data-target="#context-menu-webradio"></i>'

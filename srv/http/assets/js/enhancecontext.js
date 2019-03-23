@@ -68,7 +68,7 @@ $( '.contextmenu a' ).click( function() {
 		}
 	} else if ( mode === 'wr' ) {
 		cmd = cmd.slice( 2 );
-		mpcCmd = 'mpc load "Webradio/'+ GUI.list.name.replace( /"/g, '\\"' ) +'.pls"';
+		mpcCmd = 'mpc add "'+ GUI.list.name.replace( /"/g, '\\"' ) +'"';
 	} else if ( mode === 'pl' ) {
 		cmd = cmd.slice( 2 );
 		mpcCmd = 'mpc load "'+ name +'"';
@@ -167,7 +167,13 @@ function bookmarkNew() {
 			, boxwidth  : 'max'
 			, cancel    : 1
 			, ok        : function() {
-				$.post( 'enhance.php', { bkmarks: [ path, '' ], base64: base64 } );
+				$.post( 'enhance.php', { bkmarks: [ path, 1 ], base64: base64img }, function( data ) {
+					console.log(data)
+				} );
+				new PNotify( {
+					  title : 'Add Bookmark'
+					, text  : path
+				} );
 			}
 		}
 		if ( !base64img ) {
@@ -178,6 +184,10 @@ function bookmarkNew() {
 			infodata.textalign = 'center';
 			infodata.ok        =  function() {
 				$.post( 'enhance.php', { bkmarks: [ path, $( '#infoTextBox' ).val() ] } );
+				new PNotify( {
+					  title : 'Add Bookmark'
+					, text  : path
+				} );
 			}
 		}
 		info( infodata );
@@ -208,15 +218,12 @@ function bookmarkRename( name, path, $block ) {
 function bookmarkDelete( path, name, $block ) {
 	var $img = $block.find( 'img' );
 	var src = $img.attr( 'src' );
-	var namepath = path.replace( /\//g, '|' );
 	if ( src ) {
 		var icon = '<img src="'+ src +'">'
-		bookmarkfile = namepath +'.jpg';
 	} else {
 		var icon = '<div class="infobookmark">'
 					+'<i class="fa fa-bookmark"></i><span class="bklabel">'+ name +'</span>'
 				  +'</div>'
-		bookmarkfile = namepath +'^^'+ name;
 	}
 	info( {
 		  icon     : 'bookmark'
@@ -228,7 +235,7 @@ function bookmarkDelete( path, name, $block ) {
 		, oklabel  : 'Remove'
 		, ok       : function() {
 			GUI.bookmarkedit = 1;
-			$.post( 'enhance.php', { bkmarks: bookmarkfile, ordername: path } );
+			$.post( 'enhance.php', { bkmarks: [ path, '', name ] } );
 			$block.parent().remove();
 		}
 	} );
@@ -300,12 +307,6 @@ function webRadioRename() {
 		}
 	} );
 }
-function addWebradio( name, url, oldname ) {
-	var name = name;
-	var oldname = oldname ? oldname : '';
-	var data = oldname ? [ name, url, oldname ] : [ name, url ];
-	$.post( 'enhance.php', { webradios: data } );
-}
 function webRadioVerify( name, url, oldname, save ) {
 	if ( !name || !url ) {
 		info( {
@@ -319,20 +320,17 @@ function webRadioVerify( name, url, oldname, save ) {
 		return;
 	}
 	$.post( 'enhance.php', { getwebradios: 1 }, function( data ) {
-		var dataL = data.length;
+		var dataL = data.length - 1; // last one is index
 		for ( i = 0; i < dataL; i++ ) {
 			list = data[ i ];
-			if ( list.index ) continue
-			
-			var dbname = list.playlist.replace( /Webradio\/|\\|.pls$/g, '' );
-			if ( dbname === name ) {
+			if ( list.url === url ) {
 				info( {
 					  icon        : 'webradio'
 					, title       : oldname ? 'Rename Webradio' : 'Add Webradio'
 					, width       : 500
-					, message     : '<i class="fa fa-warning"></i><white>'+ name +'</white>'
-								+'<br>Already exists for:'
-								+'<br><w>'+ list.url +'</w>'
+					, message     : '<i class="fa fa-warning"></i><w>'+ url +'</w>'
+								   +'<br>Already exists as:'
+								   +'<br><w>'+ list.webradio +'</w>'
 					, msgalign    : 'center'
 					, cancellabel : 'Back'
 					, cancel      : function() {
@@ -342,31 +340,30 @@ function webRadioVerify( name, url, oldname, save ) {
 					}
 					, oklabel     : 'Replace'
 					, ok          : function() {
-						oldname ? addWebradio( name, url, oldname ) : addWebradio( name, url )
+						$.post( 'enhance.php', { webradios: [ url, name, ( oldname ? oldname : '' ) ] } );
 					}
 				} );
-				var exist = 1;
 				return
 			}
-			
-			if ( i === dataL ) oldname ? addWebradio( name, url, oldname ) : addWebradio( name, url );
+			if ( i === dataL ) $.post( 'enhance.php', { webradios: [ url, name, ( oldname ? oldname : '' ) ] } );
 		}
 	}, 'json' );
 }
 function webRadioDelete() {
 	var name = GUI.list.name;
+	var path = GUI.list.path;
 	info( {
 		  icon     : 'webradio'
 		, title    : 'Delete Webradio'
 		, width    : 500
 		, message  : 'Delete?'
 					+'<br><white>'+ name +'</white>'
-					+'<br>'+ GUI.list.path
+					+'<br>'+ path
 		, msgalign : 'center'
 		, cancel   : 1
 		, oklabel  : 'Delete'
 		, ok       : function() {
-			$.post( 'enhance.php', { webradios: name } );
+			$.post( 'enhance.php', { webradios: [ path, '', name ] } );
 		}
 	} );
 }

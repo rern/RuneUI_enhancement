@@ -17,7 +17,6 @@ var GUI = {
 	, imodedelay   : 0
 	, list         : {}
 	, library      : 0
-	, libraryhome  : {}
 	, local        : 0
 	, localhost    : ( location.hostname === 'localhost' || location.hostname === '127.0.0.1' )
 	, lsplaylists  : []
@@ -101,7 +100,7 @@ $.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
 	GUI.pllist = data.playlist; // for dirble coverart
 }, 'json' );
 $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
-	data.order = data.order ? data.order.split( ',' ) : '';
+	data.order = data.order ? data.order.split( '^^' ) : '';
 	GUI.display = data;
 	$.event.special.tap.emitTapOnTaphold = false; // suppress tap on taphold
 	$.event.special.swipe.horizontalDistanceThreshold = 80; // pixel to swipe
@@ -1602,6 +1601,13 @@ document.addEventListener( 'visibilitychange', function() {
 		clearInterval( GUI.intElapsed );
 		clearInterval( GUI.intElapsedPl );
 	} else {
+		$.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
+			data.order = data.order ? data.order.split( '^^' ) : '';
+			GUI.display = data;
+			$.post( 'enhance.php', { getbookmarks: 1 }, function( bookmarks ) {
+				renderLibraryBlocks( bookmarks );
+			}, 'json' );
+		}, 'json' );
 		if ( GUI.playback ) {
 			getPlaybackStatus();
 		} else if ( GUI.library ) {
@@ -1651,38 +1657,7 @@ pushstreams.bookmark.onmessage = function( data ) {
 		
 	clearTimeout( GUI.debounce );
 	GUI.debounce = setTimeout( function() {
-		var content = '';
-		$( '.bookmark' ).remove();
-		$.each( bookmarks, function( i, bookmark ) {
-			if ( bookmark.coverart ) {
-				var iconhtml = '<img class="bkcoverart" src="'+ bookmark.coverart +'">';
-			} else {
-				var iconhtml = '<i class="fa fa-bookmark"></i>'
-							  +'<div class="divbklabel"><span class="bklabel label">'+ bookmark.name +'</span></div>';
-			}
-			content += '<div class="divblock bookmark">'
-						+'<div class="home-block home-bookmark">'
-							+'<a class="lipath">'+ bookmark.path +'</a>'
-							+ iconhtml
-						+'</div>'
-					  +'</div>';
-		} );
-		$.each( GUI.libraryhome, function( name, val ) {
-			if ( name === 'activeplayer' || name === 'spotify' ) return
-			$( '#home-'+ name ).find( 'gr' ).text( val );
-		} );
-		$( '#divhomeblocks' ).append( content ).promise().done( function() {
-			if ( GUI.display.order.length ) {
-				$.each( GUI.display.order, function( i, name ) {
-					var $divblock = $( '.divblock' ).filter( function() {
-						return $( this ).find( '.lipath' ).text() === name;
-					} );
-					$divblock.detach();
-					$( '#divhomeblocks' ).append( $divblock );
-				} );
-			}
-			if ( GUI.library && !$( '#home-blocks' ).hasClass( 'hide' ) ) renderLibrary()
-		} );
+		renderLibraryBlocks( bookmarks );
 	}, GUI.debouncems );
 }
 pushstreams.display.onmessage = function( data ) {
