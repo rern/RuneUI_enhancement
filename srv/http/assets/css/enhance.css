@@ -1491,8 +1491,7 @@ wh, gr { font-weight: 300; }
 .lisort,
 .licue,
 .liartist,
-.liimg,
-x {
+.liimg {
 	display: none;
 }
 span.dbpath {
