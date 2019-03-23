@@ -197,9 +197,8 @@ if [[ ! -e $dir && $lines ]]; then
 	for (( i=0; i < $linesL; i+=2 )); do
 		name=${lines[ $i ]}
 		url=${lines[ $i + 1 ]}
-		urlname="$url^^$name"
-		filename=${urlname//\//|}
-		touch "$dir/$filename"
+		filename=${url//\//|}
+		echo $name > "$dir/$filename"
 	done
 	chown -R http:http $dir
 fi
