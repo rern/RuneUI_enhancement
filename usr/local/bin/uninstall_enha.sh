@@ -46,6 +46,28 @@ files="
 "
 restorefile $files
 
+# convert file based webradios back to redis
+dir=/srv/http/assets/img/webradios
+files=( $dir/* )
+for file in ${files[@]}; do
+	name=$( head -n1 $file )
+	url=$( basename $file )
+	string=$( cat <<EOF
+[playlist]
+NumberOfEntries=1
+File1=$url
+Title1=$name
+EOF
+)
+	echo "$string" > "/mnt/MPD/Webradio/$name.pls"
+done
+
+# convert file based bookmarks back to redis
+dir=/srv/http/assets/img/bookmarks
+files=( $dir/* )
+
+mpc update Webradio &> /dev/null
+
 systemctl restart rune_PL_wrk
 if [[ $1 != u ]]; then
 	redis-cli del display sampling mpddb &> /dev/null
