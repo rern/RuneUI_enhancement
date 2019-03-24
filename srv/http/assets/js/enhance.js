@@ -1660,7 +1660,7 @@ pushstreams.bookmark.onmessage = function( data ) {
 		
 	clearTimeout( GUI.debounce );
 	GUI.debounce = setTimeout( function() {
-		renderLibraryBlocks( bookmarks );
+		renderLibraryBlocks( bookmarks, 'refresh' );
 	}, GUI.debouncems );
 }
 pushstreams.display.onmessage = function( data ) {
