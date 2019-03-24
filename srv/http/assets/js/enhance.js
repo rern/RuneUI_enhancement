@@ -100,7 +100,6 @@ $.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
 	GUI.pllist = data.playlist; // for dirble coverart
 }, 'json' );
 $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
-	data.order = data.order ? data.order.split( '^^' ) : '';
 	GUI.display = data;
 	$.event.special.tap.emitTapOnTaphold = false; // suppress tap on taphold
 	$.event.special.swipe.horizontalDistanceThreshold = 80; // pixel to swipe
@@ -170,11 +169,13 @@ $( '#displaylibrary' ).click( function() {
 		, checkbox : '<form id="displaysavelibrary">'+ displayCheckbox( chklibrary ) +'</form>'
 		, cancel   : 1
 		, ok       : function () {
+			var data = {};
 			$( '#displaysavelibrary input' ).each( function() {
-				var checked = this.checked;
-				GUI.display[ this.name ] = checked ? 'checked' : '';
+				var checked = this.checked ? 'checked' : '';
+				GUI.display[ this.name ] = checked;
+				data[ this.name ] = checked;
 			} );
-			$.post( 'enhance.php', { setdisplay: GUI.display }, function() {
+			$.post( 'enhance.php', { setdisplay: data }, function() {
 				if ( GUI.display.thumbbyartist !== thumbbyartist ) location.reload();
 				
 				if ( !GUI.library ) $( '#tab-library' ).click();
@@ -203,8 +204,11 @@ $( '#displayplayback' ).click( function() {
 		, cancel   : 1
 		, ok       : function () {
 			// no: serializeArray() omit unchecked fields
+			var data = {};
 			$( '#displaysaveplayback input' ).each( function() {
-				GUI.display[ this.name ] = this.checked ? 'checked' : '';
+				var checked = this.checked ? 'checked' : '';
+				GUI.display[ this.name ] = checked;
+				data[ this.name ] = checked;
 			} );
 			$.post( 'enhance.php', { setdisplay: GUI.display }, function() {
 				displayPlayback();
@@ -1667,7 +1671,6 @@ pushstreams.display.onmessage = function( data ) {
 	var data = data[ 0 ];
 	if ( typeof data !== 'object' ) return
 	
-	data.order = data.order ? data.order.split( '^^' ) : [];
 	$.each( data, function( key, val ) {
 		GUI.display[ key ] = val;
 	} );

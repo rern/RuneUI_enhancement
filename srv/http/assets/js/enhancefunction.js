@@ -1148,21 +1148,20 @@ function data2html( list, path ) {
 							 +'<a class="lipath">'+ list.file +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ list.lisort +'</a>'
 							 +'<i class="fa fa-music db-icon" data-target="#context-menu-file"></i>'
 							 +'<span class="li1">'+ liname +'<span class="time">'+ list.Time +'</span></span>'
-							 +'<span class="li2">'+ bl +'</span>'
+							 +'<span class="li2">'+ bl +'</span>';
 				} else {
 					var liname = list.file.split( '/' ).pop(); // filename
 					content = '<li class="file">'
 							 +'<a class="lipath">'+ list.file +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ list.lisort +'</a>'
 							 +'<i class="fa fa-music db-icon" data-target="#context-menu-file"></i>'
 							 +'<span class="li1">'+ liname +'<span class="time">' + second2HMS( list.Time ) +'</span></span>'
-							 +'<span class="li2">'+ path +'</span>'
+							 +'<span class="li2">'+ path +'</span>';
 				}
 			} else { // Webradio
 				var liname = list.webradio
 				var thumb = list.thumb;
 				if ( thumb ) {
-					var iconhtml = '<img class="radiothumb db-icon lazy" data-src="'+ thumb +'" onerror="imgError(this);" data-target="#context-menu-webradio">'
-								  +'<a class="liimg">'+ list.img +'</a>'
+					var iconhtml = '<img class="radiothumb db-icon lazy" data-src="'+ thumb +'" onerror="imgError(this);" data-target="#context-menu-webradio">';
 				} else {
 					var iconhtml = '<i class="fa fa-webradio db-icon" data-target="#context-menu-webradio"></i>';
 				}
@@ -1170,14 +1169,14 @@ function data2html( list, path ) {
 						 +'<a class="lipath">'+ list.url +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ list.lisort +'</a>'
 						 + iconhtml
 						 +'<span class="li1">'+ liname +'</span>'
-						 +'<span class="li2">'+ list.url +'</span>'
+						 +'<span class="li2">'+ list.url +'</span>';
 			}
 		} else {
 			var liname = list.directory.replace( path +'/', '' );
 			content = '<li>'
 					 +'<a class="lipath">'+ list.directory +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ list.lisort +'</a>'
 					 +'<i class="fa fa-folder db-icon" data-target="#context-menu-folder"></i>'
-					 +'<span class="single">'+ liname +'</span>'
+					 +'<span class="single">'+ liname +'</span>';
 		}
 	} else if ( GUI.browsemode === 'album' ) {
 		if ( 'file' in list ) {
@@ -1186,7 +1185,7 @@ function data2html( list, path ) {
 					 +'<a class="lipath">'+ list.file +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ list.lisort +'</a>'
 					 +'<i class="fa fa-music db-icon" data-target="#context-menu-file"></i>'
 					 +'<span class="li1">'+ liname +'<span class="time">'+ list.Time +'</span></span>'
-					 +'<span class="li2">'+ list.file +'</span>'
+					 +'<span class="li2">'+ list.file +'</span>';
 			var artist = list.Artist;
 			if ( !GUI.albumartist ) GUI.albumartist = list.Album +'<gr> • </gr>'+ artist;
 		} else {
@@ -1202,7 +1201,7 @@ function data2html( list, path ) {
 			content = '<li mode="album">'
 					 +'<a class="lipath">'+ list.album +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ list.lisort +'</a>'+ dataartist
 					 +'<i class="fa fa-album db-icon" data-target="#context-menu-album"></i>'
-					 +'<span class="single">'+ lialbum +'</span>'
+					 +'<span class="single">'+ lialbum +'</span>';
 		}
 	} else if ( GUI.browsemode === 'artist' || GUI.browsemode === 'composeralbum' ) {
 		if ( 'album' in list ) {
@@ -1210,13 +1209,13 @@ function data2html( list, path ) {
 			content = '<li mode="album">'
 					 +'<a class="lipath">'+ list.album +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ list.lisort +'</a>'
 					 +'<i class="fa fa-album db-icon" data-target="#context-menu-album"></i>'
-					 +'<span class="single">'+ liname +'</span>'
+					 +'<span class="single">'+ liname +'</span>';
 		} else {
 			var liname = list.artist;
 			content = '<li mode="artist">'
 					 +'<a class="lipath">'+ list.artist +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ list.lisort +'</a>'
 					 +'<i class="fa fa-artist db-icon" data-target="#context-menu-artist"></i>'
-					 +'<span class="single">'+ liname +'</span>'
+					 +'<span class="single">'+ liname +'</span>';
 		}
 	} else if ( GUI.browsemode === 'albumartist' ) {
 		if ( 'album' in list ) {
@@ -1224,40 +1223,40 @@ function data2html( list, path ) {
 			content = '<li mode="album">'
 					 +'<a class="lipath">'+ list.album +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ list.lisort +'</a>'
 					 +'<i class="fa fa-album db-icon" data-target="#context-menu-album"></i>'
-					 +'<span class="single">'+ liname +'</span>'
+					 +'<span class="single">'+ liname +'</span>';
 		} else {
 			var liname = list.albumartist;
 			content = '<li mode="albumartist">'
 					 +'<a class="lipath">'+ list.albumartist +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ list.lisort +'</a>'
 					 +'<i class="fa fa-albumartist db-icon" data-target="#context-menu-artist"></i>'
-					 +'<span class="single">'+ liname +'</span>'
+					 +'<span class="single">'+ liname +'</span>';
 		}
 	} else if ( GUI.browsemode === 'composer' ) {
 		var liname = list.composer;
 		content = '<li mode="composer">'
 				 +'<a class="lipath">'+ list.composer +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ list.lisort +'</a>'
 				 +'<i class="fa fa-composer db-icon" data-target="#context-menu-composer"></i>'
-				 +'<span class="single">'+ list.composer +'</span>'
+				 +'<span class="single">'+ list.composer +'</span>';
 	} else if ( GUI.browsemode === 'genre' ) {
 		if ( 'album' in list ) {
 			var liname = list.artistalbum;
 			content = '<li mode="album">'
 					 +'<a class="lipath">'+ list.album +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ list.lisort +'</a><a class="liartist">'+ list.artist +'</a>'
 					 +'<i class="fa fa-album db-icon" data-target="#context-menu-album"></i>'
-					 +'<span class="single">'+ liname +'</span>'
+					 +'<span class="single">'+ liname +'</span>';
 		} else if ( 'file' in list ) {
 			var liname = list.Title;
 			content = '<li>'
 					 +'<a class="lipath">'+ list.file +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ list.lisort +'</a>'
 					 +'<i class="fa fa-music db-icon" data-target="#context-menu-file"></i>'
 					 +'<span class="li1">'+ liname +'<span class="time">'+ list.Time +'</span></span>'
-					 +'<span class="li2">'+ list.Artist +' - '+ list.Album +'</span>'
+					 +'<span class="li2">'+ list.Artist +' - '+ list.Album +'</span>';
 		} else {
 			var liname = list.genre ;
 			content = '<li mode="genre">'
 					 +'<a class="lipath">'+ list.genre +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ list.lisort +'</a>'
 					 +'<i class="fa fa-genre db-icon" data-target="#context-menu-genre"></i>'
-					 +'<span class="single">'+ liname;+'</span>'
+					 +'<span class="single">'+ liname;+'</span>';
 		}
 	}
 	return content +'</li>';
@@ -1271,14 +1270,14 @@ function radio2html( list, source, querytype, plid ) {
 				content = '<li mode="spotify">'
 						 +'<a class="lipath">'+ list.index +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ list.lisort +'</a>'
 						 +'<i class="fa fa-genre db-icon" data-target="#context-menu-spotify-pl"></i>'
-						 +'<span class="single">'+ liname +' ( '+ list.tracks +' )</span>'
+						 +'<span class="single">'+ liname +' ( '+ list.tracks +' )</span>';
 			} else if ( querytype === 'tracks' ) {
 				var liname = list.Title;
 				content = '<li data-plid="'+ plid +'" data-type="spotify-track" mode="spotify">'
 						 +'<a class="lipath">'+ list.index +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ list.lisort +'</a>'
 						 +'<i class="fa fa-spotify db-icon" data-target="#context-menu-spotify"></i>'
 						 +'<span class="li1">'+ liname +'<span class="time">'+ second2HMS( list.duration / 1000 ) +'</span></span>'
-						 +'<span class="li2">'+ list.artist +' - '+ list.album +'</span>'
+						 +'<span class="li2">'+ list.artist +' - '+ list.album +'</span>';
 			}
 			break;
 		case 'Dirble':
@@ -1292,7 +1291,7 @@ function radio2html( list, source, querytype, plid ) {
 				content = '<li class="db-dirble'+ childClass +'" mode="dirble">'
 						 +'<a class="lipath">'+ list.id +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ list.lisort +'</a>'
 						 +'<i class="fa fa-genre db-icon"></i>'
-						 +'<span class="single">'+ liname +'</span>'
+						 +'<span class="single">'+ liname +'</span>';
 			} else if ( querytype === 'stations' || querytype === 'childs-stations' ) {
 				if ( !list.streams.length ) break; // skip stations with streams = []
 				
@@ -1309,7 +1308,7 @@ function radio2html( list, source, querytype, plid ) {
 						 +'<a class="lipath">'+ url +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ list.lisort +'</a>'
 						 + iconhtml
 						 +'<span class="li1">'+ liname +'&ensp;<gr>'+ list.country +'</gr><a class="flag"><f style="background-position: '+ flag( list.country ) +'"></f></a></span>'
-						 +'<span class="li2">'+ url +'</span>'
+						 +'<span class="li2">'+ url +'</span>';
 			}
 			break;
 		case 'Jamendo':
@@ -1322,7 +1321,7 @@ function radio2html( list, source, querytype, plid ) {
 				content = '<li mode="jamendo">'
 						 +'<a class="lipath">'+ list.stream +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ list.lisort +'</a>'
 						 +'<img class="radiothumb db-icon lazy" data-src="'+ list.image +'"  data-target="#context-menu-radio">'
-						 +'<span class="single">'+ liname +'</span>'
+						 +'<span class="single">'+ liname +'</span>';
 			}
 			break;
 	}

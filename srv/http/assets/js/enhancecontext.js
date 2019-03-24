@@ -266,19 +266,28 @@ function webRadioCoverart() {
 			, ok          : function() {
 				var webradiofile = '/srv/http/assets/img/webradiocoverarts/'+ path.replace( /\//g, '|' ) +'.jpg';
 				var newimg = $( '#infoMessage .newimg' ).attr( 'src' );
-				$.post( 'enhance.php', { imagefile: webradiofile, base64: newimg, urlname: urlname }, function( std ) {
-					if ( std == 0 ) {
-						new PNotify( {
-							  title : 'Coverart Changed'
-							, text  : name
-						} );
-					} else if ( std == -1 ) {
-						info( {
-							  icon    : 'webradio'
-							, title   : 'Change Coverart'
-							, message : '<i class="fa fa-warning"></i>Upload image failed.'
-						} );
-					}
+				$.post( 
+					  'enhance.php'
+					, { imagefile: webradiofile, base64: newimg, urlname: urlname }
+					, function( std ) {
+						if ( std == 0 ) {
+							new PNotify( {
+								  title : 'Coverart Changed'
+								, text  : name
+							} );
+							var $img = $( '#db-entries li.active img' );
+							if ( $img.length ) {
+								$img.attr( 'src', newimg );
+							} else {
+								$( '#db-entries li.active .db-icon' ).remove();
+							}
+						} else if ( std == -1 ) {
+							info( {
+								  icon    : 'webradio'
+								, title   : 'Change Coverart'
+								, message : '<i class="fa fa-warning"></i>Upload image failed.'
+							} );
+						}
 				} );
 			}
 		} );
