@@ -37,7 +37,7 @@ foreach( $blocks as $id => $value ) {
 	$browsemode = in_array( $id, array( 'album', 'artist', 'albumartist', 'composer', 'genre', 'coverart' ) ) ? ' data-browsemode="'.$id.'"' : '';
 	$plugin = in_array( $id, array( 'spotify', 'dirble', 'jamendo' ) ) ? ' data-plugin="'.$value[ 0 ].'"' : '';
 	$counthtml = $count[ $value[ 1 ] ] ? '<gr>'.number_format( $count[ $value[ 1 ] ] ).'</gr>' : '';
-	$divblocks[ $value[ 0 ] ] = '
+	$blockhtml.= '
 		<div class="divblock">
 			<div id="home-'.$id.'" class="home-block"'.$browsemode.$plugin.'>
 				<a class="lipath">'.$value[ 0 ].'</a>
@@ -67,7 +67,7 @@ if ( count( $files ) ) {
 					   .'<div class="divbklabel"><span class="bklabel label">'.$name.'</span></div>';
 		}
 		$path = str_replace( '|', '/', $path );
-		$divblocks[ $path ] = '
+		$blockhtml.= '
 			<div class="divblock bookmark">
 				<div class="home-block home-bookmark">
 					<a class="lipath">'.$path.'</a>
@@ -75,15 +75,6 @@ if ( count( $files ) ) {
 				</div>
 			</div>
 		';
-	}
-}
-$order = $redis->hGet( 'display', 'order' );
-if ( !$order ) {
-	$blockhtml = implode( $divblocks );
-} else {
-	$order = explode( '^^', $order );
-	foreach( $order as $path ) {
-		$blockhtml.= $divblocks[ $path ];
 	}
 }
 // browse by coverart
