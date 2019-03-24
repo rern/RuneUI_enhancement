@@ -195,7 +195,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	usleep( 100000 ); // !important - get data must wait connection start at least (0.05s)
 	$data = $redis->hGetAll( 'display' );
 	$data[ 'volumempd' ] = $redis->get( 'volume' );
-	$data[ 'spotify' ] = $redis->hGet( 'spotify', 'enable' );
+	$data[ 'spotify' ] = $redis->hGet( 'spotify', 'enable' ) == 1 ? 'checked' : '';
 	if ( isset( $_POST[ 'data' ] ) ) {
 		echo json_encode( $data, JSON_NUMERIC_CHECK );
 	} else {
