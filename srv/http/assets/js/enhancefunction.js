@@ -673,7 +673,7 @@ function displayCheckbox( checkboxes ) {
 	} );
 	return html;
 }
-function renderLibraryBlocks( bookmarks ) {
+function renderLibraryBlocks( bookmarks ) { // on visible
 	var content = '';
 	$( '.bookmark' ).remove();
 	$.each( bookmarks, function( i, bookmark ) {
@@ -691,17 +691,20 @@ function renderLibraryBlocks( bookmarks ) {
 				  +'</div>';
 	} );
 	$( '#divhomeblocks' ).append( content ).promise().done( function() {
-		if ( GUI.display.order.length ) {
-			GUI.display.order.forEach( function( name ) {
-				var $divblock = $( '.divblock' ).filter( function() {
-					return $( this ).find( '.lipath' ).text() === name;
-				} );
-				$divblock.detach();
-				$( '#divhomeblocks' ).append( $divblock );
-			} );
-		}
+		orderLibrary();
 		if ( GUI.library && !$( '#home-blocks' ).hasClass( 'hide' ) ) renderLibrary()
 	} );
+}
+function orderLibrary() {
+	if ( GUI.display.order.length ) {
+		GUI.display.order.forEach( function( name ) {
+			var $divblock = $( '.divblock' ).filter( function() {
+				return $( this ).find( '.lipath' ).text() === name;
+			} );
+			$divblock.detach();
+			$( '#divhomeblocks' ).append( $divblock );
+		} );
+	}
 }
 function renderLibrary() {
 	GUI.dbbackdata = [];
@@ -721,11 +724,10 @@ function renderLibrary() {
 		$( '#db-currentpath span' ).html( '<bl class="title">LIBRARY</bl></a>' );
 	}
 	$( '#page-library .btnlist-top, #home-blocks' ).removeClass( 'hide' );
-	$( '.home-block' ).each( function() {
+	$( '.home-block:not(.home-bookmark)' ).each( function() {
 		var name = this.id.replace( 'home-', '' );
 		$( this ).parent().toggleClass( 'hide', GUI.display[ name ] === '' );
 	} );
-	$( '#home-spotify' ).parent().toggleClass( 'hide', GUI.display.spotify === 0 );
 	$( '.home-block gr' ).toggleClass( 'hide', GUI.display.count === '' );
 	if ( GUI.display.label ) {
 		$( '#divhomeblocks a.label' ).show();
@@ -737,6 +739,7 @@ function renderLibrary() {
 		$( '.home-block' ).css( 'padding-top', '35px' );
 		$( '.home-bookmark' ).css( 'padding', '20px 5px 5px 5px' );
 	}
+	orderLibrary();
 	displayTopBottom();
 	$( 'html, body' ).scrollTop( 0 );
 }
