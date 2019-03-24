@@ -61,12 +61,25 @@ EOF
 )
 	echo "$string" > "/mnt/MPD/Webradio/$name.pls"
 done
+mpc update Webradio &> /dev/null
 
 # convert file based bookmarks back to redis
 dir=/srv/http/assets/img/bookmarks
 files=( $dir/* )
-
-mpc update Webradio &> /dev/null
+for file in "${files[@]}"; do
+	pathname="${file##*/}"
+	if [[ $pathname == *^^* ]]; then
+		path=$( echo $pathname | cut -d'^' -f1 )
+		path=${path//|/\/}
+		name=$( echo $pathname | cut -d'^' -f3 )
+	else
+		pathname="${pathname##*/}"
+		pathname="${pathname%.*}"
+		path=${pathname//|/\/}
+		name="${path##*/}"
+	fi
+	redis-cli hset bookmarks "$name" "$path" &> /dev/null
+done
 
 systemctl restart rune_PL_wrk
 if [[ $1 != u ]]; then
