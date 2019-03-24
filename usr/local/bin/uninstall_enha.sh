@@ -64,6 +64,7 @@ done
 mpc update Webradio &> /dev/null
 
 # convert file based bookmarks back to redis
+idx = redis-cli get bookmarksidx
 dir=/srv/http/assets/img/bookmarks
 files=( $dir/* )
 for file in "${files[@]}"; do
@@ -78,7 +79,8 @@ for file in "${files[@]}"; do
 		path=${pathname//|/\/}
 		name="${path##*/}"
 	fi
-	redis-cli hset bookmarks "name:$name" "path:$path" &> /dev/null
+	(( idx++ ))
+	redis-cli hset bookmarks $idx "{\"name\":\"$name\",\"path\":\"$path\"}" &> /dev/null
 done
 
 systemctl restart rune_PL_wrk
