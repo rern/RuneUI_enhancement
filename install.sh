@@ -179,20 +179,20 @@ composer=$( mpc list composer | awk NF | wc -l )
 genre=$( mpc list genre | awk NF | wc -l )
 redis-cli set mpddb "$albumartist $composer $genre" &> /dev/null
 
-# fix webradio permission
-#chown -R http:http /mnt/MPD/Webradio
-
-# dirble temp and webradio coverart dir
-dir=/srv/http/assets/img/{webradiopl,webradiocoverarts}
+# dirble temp
+dir=/srv/http/assets/img/webradiopl
 mkdir -p $dir
-chown -R http:http $dir
+chown http:http $dir
 
-# convert redis webradio to file based
+makeDirLink webradiocoverarts
+
+# convert webradios
 dir=/srv/http/assets/img/webradios
-lines=$( redis-cli hgetall webradios )
-if [[ ! -e $dir && $lines ]]; then
-	mkdir -p $dir
-	readarray -t lines <<<"$lines"
+makeDirLink webradios
+
+webradios=$( redis-cli hgetall webradios )
+if [[ $webradios ]]; then
+	readarray -t lines <<<"$webradios"
 	linesL=${#lines[@]}
 	for (( i=0; i < $linesL; i+=2 )); do
 		name=${lines[ $i ]}
@@ -200,29 +200,43 @@ if [[ ! -e $dir && $lines ]]; then
 		filename=${url//\//|}
 		echo $name > "$dir/$filename"
 	done
-	chown -R http:http $dir
 fi
+chown -R http:http $dir
 
-# convert redis bkmarks to file based
+# convert old bookmarks
 dir=/srv/http/assets/img/bookmarks
-lines=$( redis-cli hgetall bkmarks )
-if [[ ! -e $dir && $lines ]]; then
-    mkdir -p $dir
-    readarray -t lines <<<"$lines"
-    linesL=${#lines[@]}
-    for (( i=0; i < $linesL; i+=2 )); do
-        mpdpath=${lines[$i+1]}
-        oldfile=/mnt/MPD/$mpdpath/thumbnail.jpg
-        newfile=$dir/${mpdpath//\//|}^^${lines[$i]}.jpg
-        if [[ -e "$oldfile" ]]; then
-            cp -f "$oldfile" "$dir/${mpdpath//\//|}.jpg" 2> /dev/null
-        else
-            touch "$dir/${mpdpath//\//|}^^${lines[$i]}"
-        fi
-    done
-    chown -R http:http $dir
+makeDirLink bookmarks
+
+bookmarks=$( redis-cli hgetall bookmarks | tr -d '"{}\\' )
+if [[ $bookmarks ]]; then
+	readarray -t lines <<<"$bookmarks"
+	linesL=${#lines[@]}
+	for (( i=1; i < linesL; i+=2 )); do
+		namepath=${lines[ $i ]}
+		name=$( echo $namepath | cut -d',' -f1 )
+		path=$( echo $namepath | cut -d',' -f2 )
+		path=${path/path:}
+		touch > "$dir/${path//\//|}^^${name/name:}"
+	done
 fi
-redis-cli del bkmarks &> /dev/null
+# convert new bookmarks (to be removed in next version)
+bkmarks=$( redis-cli hgetall bkmarks )
+if [[ $bkmarks ]]; then
+	readarray -t lines <<<"$bkmarks"
+	linesL=${#lines[@]}
+	for (( i=0; i < $linesL; i+=2 )); do
+		mpdpath=${lines[$i+1]}
+		oldfile=/mnt/MPD/$mpdpath/thumbnail.jpg
+		newfile=$dir/${mpdpath//\//|}^^${lines[$i]}.jpg
+		if [[ -e "$oldfile" ]]; then
+			cp -f "$oldfile" "$dir/${mpdpath//\//|}.jpg" 2> /dev/null
+		else
+			touch "$dir/${mpdpath//\//|}^^${lines[$i]}"
+		fi
+	done
+	redis-cli del bkmarks &> /dev/null
+fi
+chown -R http:http $dir
 
 # disable USB drive auto scan database ..."
 redis-cli set usb_db_autorebuild 0 &> /dev/null
