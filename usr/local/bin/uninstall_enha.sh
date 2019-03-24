@@ -78,7 +78,7 @@ for file in "${files[@]}"; do
 		path=${pathname//|/\/}
 		name="${path##*/}"
 	fi
-	redis-cli hset bookmarks "$name" "$path" &> /dev/null
+	redis-cli hset bookmarks "name:$name" "path:$path" &> /dev/null
 done
 
 systemctl restart rune_PL_wrk
