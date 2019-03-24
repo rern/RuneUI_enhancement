@@ -193,7 +193,10 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	echo json_encode( $data );
 } else if ( isset( $_POST[ 'getwebradios' ] ) ) {
 	$files = array_slice( scandir( '/srv/http/assets/img/webradios' ), 2 ); // remove ., ..
-	if ( !count( $files ) ) exit;
+	if ( !count( $files ) ) {
+		echo 0;
+		exit;
+	}
 	
 	foreach( $files as $file ) {
 		$content = file_get_contents( "/srv/http/assets/img/webradios/$file" );
