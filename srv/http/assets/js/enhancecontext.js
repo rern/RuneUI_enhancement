@@ -248,7 +248,7 @@ function webRadioCoverart() {
 	$.post( 'enhance.php', { bash: '/usr/bin/cat "'+ webradiopath +'/'+ urlname +'"' }, function( data ) {
 		var stationimg = data.split( "\n" )[ 1 ];
 		if ( stationimg ) {
-			var $img = '<img src="'+ stationimg.slice( 0, -3 ) + timestamp +'.jpg">';
+			var $img = '<img src="'+ stationimg.slice( 0, -3 ) + hash +'.jpg">';
 		} else {
 			var $img = '<img src="'+ vu +'" style="border-radius: 9px">';
 		}

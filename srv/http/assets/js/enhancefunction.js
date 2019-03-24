@@ -328,7 +328,7 @@ function renderPlayback() {
 		// webradio coverart
 		if ( status.coverart ) {
 			var coverart = status.coverart;
-			coverart = coverart.slice( 0, -3 ) + timestamp + coverart.slice( -4 );
+			coverart = coverart.slice( 0, -3 ) + hash + coverart.slice( -4 );
 			$( '#cover-art' )
 				.attr( 'src', coverart )
 				.css( 'border-radius', '' );
@@ -1163,7 +1163,7 @@ function data2html( list, path ) {
 				var liname = list.webradio
 				var thumb = list.thumb;
 				if ( thumb ) {
-					thumb = thumb.slice( 0, -3 ) + timestamp + thumb.slice( -4 );
+					thumb = thumb.slice( 0, -3 ) + hash + thumb.slice( -4 );
 					var iconhtml = '<img class="radiothumb db-icon lazy" data-src="'+ thumb +'" onerror="imgError(this);" data-target="#context-menu-webradio">';
 				} else {
 					var iconhtml = '<i class="fa fa-webradio db-icon" data-target="#context-menu-webradio"></i>';
@@ -1302,7 +1302,7 @@ function radio2html( list, source, querytype, plid ) {
 				var url = list.streams[ 0 ].stream
 				var thumb = list.image.thumb.url;
 				if ( thumb ) {
-					thumb = thumb.slice( 0, -3 ) + timestamp + thumb.slice( -4 );
+					thumb = thumb.slice( 0, -3 ) + hash + thumb.slice( -4 );
 					var iconhtml = '<img class="radiothumb db-icon lazy" data-src="'+ thumb +'" onerror="imgError(this);" data-target="#context-menu-radio">'
 								  +'<a class="liimg">'+ list.image.url +'</a>'
 				} else {
