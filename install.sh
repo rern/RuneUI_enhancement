@@ -184,6 +184,7 @@ dir=/srv/http/assets/img/webradiopl
 mkdir -p $dir
 chown http:http $dir
 
+# existing directories to keep: webradios, webradiocoverarts, bookmarks
 makeDirLink webradiocoverarts
 
 # convert webradios
