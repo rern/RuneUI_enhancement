@@ -719,7 +719,6 @@ function orderLibrary() {
 	}
 }
 function renderLibrary() {
-	console.log(9)
 	GUI.dbbackdata = [];
 	GUI.plugin = '';
 	$( '#db-currentpath' ).css( 'max-width', '' );
@@ -1162,10 +1161,10 @@ function data2html( list, path ) {
 				var liname = list.webradio
 				var thumb = list.thumb;
 				if ( thumb ) {
-					var iconhtml = '<img class="radiothumb db-icon lazy" data-src="'+ thumb +'" onerror="imgError(this);" data-target="#context-menu-radio">'
+					var iconhtml = '<img class="radiothumb db-icon lazy" data-src="'+ thumb +'" onerror="imgError(this);" data-target="#context-menu-webradio">'
 								  +'<a class="liimg">'+ list.img +'</a>'
 				} else {
-					var iconhtml = '<i class="fa fa-webradio db-icon" data-target="#context-menu-radio"></i>';
+					var iconhtml = '<i class="fa fa-webradio db-icon" data-target="#context-menu-webradio"></i>';
 				}
 				content = '<li class="db-webradio file" >'
 						 +'<a class="lipath">'+ list.url +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ list.lisort +'</a>'
