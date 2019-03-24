@@ -225,6 +225,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$data = $redis->hGetAll( 'display' );
 	$data[ 'volumempd' ] = $redis->get( 'volume' );
 	$data[ 'spotify' ] = $redis->hGet( 'spotify', 'enable' ) == 1 ? 'checked' : '';
+	$data[ 'order' ] = explode( '^^', $data[ 'order' ] );
 	if ( isset( $_POST[ 'data' ] ) ) {
 		echo json_encode( $data, JSON_NUMERIC_CHECK );
 	} else {
@@ -232,9 +233,9 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	}
 } else if ( isset( $_POST[ 'setdisplay' ] ) ) {
 	$data = $_POST[ 'setdisplay' ];
-	$order = $data[ 'order' ];
-	if ( is_array( $order ) ) $data[ 'order' ] = implode( ',', $order );
-	$redis->hmSet( 'display', $data );
+	foreach( $data as $key => $value ) {
+		$redis->hSet( 'display', $key, $value );
+	}
 	pushstream( 'display', $data );
 } else if ( isset( $_POST[ 'playlist' ] ) ) {
 	$plfiles = $_POST[ 'playlist' ];
