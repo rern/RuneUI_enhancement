@@ -17,6 +17,7 @@ rm -v /srv/http/assets/fonts/enhance*
 rm -v /srv/http/assets/img/{bootsplash.png,controls*,cover.svg,runelogo.svg,vu*}
 rm -v /srv/http/assets/js/enhance*
 rm -v /srv/http/assets/js/vendor/{lazyload,pica,roundslider}.min.js
+rm -r /srv/http/assets/img/webradiopl
 # DO NOT remove - used by other addons
 # bootstrap.min.css, bootstrap-select.min.css
 
@@ -61,6 +62,7 @@ EOF
 )
 	echo "$string" > "/mnt/MPD/Webradio/$name.pls"
 done
+rm -r $dir
 mpc update Webradio &> /dev/null
 
 # convert file based bookmarks back to redis
@@ -82,6 +84,7 @@ for file in "${files[@]}"; do
 	(( idx++ ))
 	redis-cli hset bookmarks $idx "{\"name\":\"$name\",\"path\":\"$path\"}" &> /dev/null
 done
+rm -r $dir
 
 systemctl restart rune_PL_wrk
 if [[ $1 != u ]]; then
