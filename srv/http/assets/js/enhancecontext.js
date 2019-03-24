@@ -273,15 +273,6 @@ function webRadioCoverart() {
 								  title : 'Coverart Changed'
 								, text  : name
 							} );
-							var $img = $( '#db-entries li.active img' );
-							if ( $img.length ) {
-								$img.attr( 'src', newimg );
-							} else {
-								$( '#db-entries li.active' )
-									.find( '.db-icon' ).remove()
-									.find( '.lisort' ).after( '<img class="radiothumb db-icon" src="'+ newimg +'" data-target="#context-menu-radio">' );
-							}
-							$( '#db-entries li' ).removeClass( 'active' );
 						} else if ( std == -1 ) {
 							info( {
 								  icon    : 'webradio'
@@ -290,6 +281,16 @@ function webRadioCoverart() {
 							} );
 						}
 				} );
+				var $img = $( '#db-entries li.active img' );
+				if ( $img.length ) {
+					$img.attr( 'src', newimg );
+				} else {
+					$( '#db-entries li.active' )
+						.find( '.db-icon' ).remove()
+						.find( '.lisort' ).after( '<img class="radiothumb db-icon" src="'+ newimg +'" data-target="#context-menu-radio">' );
+				}
+				$( '#db-entries li' ).removeClass( 'active' );
+				if ( path === GUI.status.file) GUI.status.coverart = newimg;
 			}
 		} );
 	} );
