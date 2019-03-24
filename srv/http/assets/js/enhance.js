@@ -484,6 +484,8 @@ $( '#volup, #voldn' ).click( function() {
 	$.post( 'enhance.php', { volume: vol } );
 } );
 $( '#coverTL' ).click( function() {
+	if ( $( '#cover-art' ).hasClass( 'vu' ) ) return
+	
 	if ( !$( '#controls-cover' ).hasClass( 'hide' ) ) {
 		$( '.controls' ).addClass( 'hide' );
 		$( '.controls1, .rs-tooltip, #imode' ).removeClass( 'hide' );

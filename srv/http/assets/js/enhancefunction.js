@@ -279,6 +279,7 @@ function renderPlayback() {
 	
 	$( '.playback-controls' ).css( 'visibility', 'visible' );
 	$( '#artist, #song, #album' ).css( 'width', '' );
+	$( '#cover-art' ).removeClass( 'vu' );
 	$( '#artist' ).html( status.Artist );
 	$( '#song' ).html( status.Title );
 	$( '#album' )
@@ -334,6 +335,7 @@ function renderPlayback() {
 			$( '#cover-art' )
 				.attr( 'src', status.state === 'play' ? vu : vustop )
 				.css( 'border-radius', '18px' )
+				.addClass( 'vu' );
 			$( '#coverartoverlay' ).removeClass( 'hide' );
 		}
 		return
@@ -554,17 +556,27 @@ function displayPlayback() {
 		if ( GUI.display.time ) $( '#iplayer' ).attr( 'class', GUI.status.activePlayer === 'MPD' ? 'fa hide' : 'fa fa-'+ GUI.status.activePlayer.toLowerCase() );
 	}
 	// no scaling for webradio vu meter
-	if ( ( GUI.display.coverlarge || ( !GUI.display.time && !GUI.display.volume ) )
-		&& $( '#album' ).text().slice( 0, 4 ) !== 'http'
+	if ( $( '#cover-art' ).hasClass( 'vu' )
+		&& ( GUI.display.coverlarge || ( !GUI.display.time && !GUI.display.volume ) )
 	) {
 		$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).removeClass( 'coversmall' );
 		var maxW = GUI.bars ? '45vh' : '55vh';
-		$( '#divcover, #cover-art' ).css( { 'max-width': maxW, 'max-height': maxW } );
+		$( '#divcover, #cover-art' ).css( {
+			  width        : ''
+			, height       : ''
+			, 'max-width'  : maxW
+			, 'max-height' : maxW
+		} );
 		if ( wW < 500 ) $( '#format-bitrate' ).css( 'display', GUI.display.time ? 'inline' : 'block' );
 		if ( !GUI.display.time && !GUI.display.volume ) $( '#share-group' ).addClass( 'hide' );
 	} else {
 		$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).addClass( 'coversmall' );
-		$( '#divcover, #cover-art' ).css( { 'max-width': '', 'max-height': '' } );
+		$( '#divcover, #cover-art' ).css( {
+			  width        : '100%'
+			, height       : '100%'
+			, 'max-width'  : ''
+			, 'max-height' : ''
+		} );
 	}
 	if ( GUI.display.time ) {
 		$( '#divpos' ).css( 'font-size', '' );
