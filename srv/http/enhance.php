@@ -184,22 +184,9 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$file = '/srv/http/assets/img/webradios/'.$_POST[ 'urlname' ];
 		$name = explode( "\n", file_get_contents( $file ) )[ 0 ];
 		file_put_contents( $file, $name."\n".$imagefile );
-	}
-} else if ( isset( $_POST[ 'setdisplay' ] ) ) {
-	$data = $_POST[ 'setdisplay' ];
-	$order = $data[ 'order' ];
-	if ( is_array( $order ) ) $data[ 'order' ] = implode( ',', $order );
-	$redis->hmSet( 'display', $data );
-	pushstream( 'display', $data );
-} else if ( isset( $_POST[ 'getdisplay' ] ) ) {
-	usleep( 100000 ); // !important - get data must wait connection start at least (0.05s)
-	$data = $redis->hGetAll( 'display' );
-	$data[ 'volumempd' ] = $redis->get( 'volume' );
-	$data[ 'spotify' ] = $redis->hGet( 'spotify', 'enable' ) == 1 ? 'checked' : '';
-	if ( isset( $_POST[ 'data' ] ) ) {
-		echo json_encode( $data, JSON_NUMERIC_CHECK );
-	} else {
-		pushstream( 'display', $data );
+		// 100x100 thumbnail
+		$thumbfile = substr( $imagefile, 0, -4 ).'-100px.jpg';
+		exec( '/usr/bin/sudo /usr/bin/convert "'.$imagefile.'" -thumbnail 100x100 -unsharp 0x.5 "'.$thumbfile.'"' );
 	}
 } else if ( isset( $_POST[ 'getbookmarks' ] ) ) {
 	$data = getBookmark( $redis );
@@ -209,15 +196,18 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	if ( !count( $files ) ) exit;
 	
 	foreach( $files as $file ) {
-		$nameimg = explode( "\n", file_get_contents( "/srv/http/assets/img/webradios/$file" ) );
+		$content = file_get_contents( "/srv/http/assets/img/webradios/$file" );
+		$nameimg = explode( "\n", rtrim( $content ) );
 		$name = $nameimg[ 0 ];
 		$img = $nameimg[ 1 ] ?: '';
+		$thumb = $img ? substr( $img, 0, -4 ).'-100px.jpg' : '';
 		$sort = stripLeading( $name );
 		$index[] = $sort[ 1 ];
 		$data[] = array(
 			  'webradio' => $name
 			, 'url'      => str_replace( '|', '/', $file )
 			, 'img'      => $img
+			, 'thumb'    => $thumb
 			, 'sort'     => $sort[ 0 ]
 			, 'lisort'   => $sort[ 1 ]
 		);
@@ -230,6 +220,22 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%^^[%albumartist%|%artist%]^^%album%^^%genre%^^%composer%" playlist '.$name );
 	$data[ 'playlist' ] = $lines ? list2array( $lines ) : '';
 	echo json_encode( $data );
+} else if ( isset( $_POST[ 'getdisplay' ] ) ) {
+	usleep( 100000 ); // !important - get data must wait connection start at least (0.05s)
+	$data = $redis->hGetAll( 'display' );
+	$data[ 'volumempd' ] = $redis->get( 'volume' );
+	$data[ 'spotify' ] = $redis->hGet( 'spotify', 'enable' ) == 1 ? 'checked' : '';
+	if ( isset( $_POST[ 'data' ] ) ) {
+		echo json_encode( $data, JSON_NUMERIC_CHECK );
+	} else {
+		pushstream( 'display', $data );
+	}
+} else if ( isset( $_POST[ 'setdisplay' ] ) ) {
+	$data = $_POST[ 'setdisplay' ];
+	$order = $data[ 'order' ];
+	if ( is_array( $order ) ) $data[ 'order' ] = implode( ',', $order );
+	$redis->hmSet( 'display', $data );
+	pushstream( 'display', $data );
 } else if ( isset( $_POST[ 'playlist' ] ) ) {
 	$plfiles = $_POST[ 'playlist' ];
 	foreach( $plfiles as $file ) {
