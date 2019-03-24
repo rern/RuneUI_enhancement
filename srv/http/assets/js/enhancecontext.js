@@ -169,9 +169,7 @@ function bookmarkNew() {
 			, boxwidth  : 'max'
 			, cancel    : 1
 			, ok        : function() {
-				$.post( 'enhance.php', { bkmarks: [ path, 1 ], base64: base64img }, function( data ) {
-					console.log(data)
-				} );
+				$.post( 'enhance.php', { bkmarks: [ path, 1 ], base64: base64img } );
 				new PNotify( {
 					  title : 'Add Bookmark'
 					, text  : path
@@ -250,7 +248,7 @@ function webRadioCoverart() {
 	$.post( 'enhance.php', { bash: '/usr/bin/cat "'+ webradiopath +'/'+ urlname +'"' }, function( data ) {
 		var stationimg = data.split( "\n" )[ 1 ];
 		if ( stationimg ) {
-			var $img = '<img src="'+ stationimg +'">';
+			var $img = '<img src="'+ stationimg.slice( 0, -3 ) + timestamp +'.jpg">';
 		} else {
 			var $img = '<img src="'+ vu +'" style="border-radius: 9px">';
 		}
@@ -279,8 +277,11 @@ function webRadioCoverart() {
 							if ( $img.length ) {
 								$img.attr( 'src', newimg );
 							} else {
-								$( '#db-entries li.active .db-icon' ).remove();
+								$( '#db-entries li.active' )
+									.find( '.db-icon' ).remove()
+									.find( '.lisort' ).after( '<img class="radiothumb db-icon" src="'+ newimg +'" data-target="#context-menu-radio">' );
 							}
+							$( '#db-entries li' ).removeClass( 'active' );
 						} else if ( std == -1 ) {
 							info( {
 								  icon    : 'webradio'

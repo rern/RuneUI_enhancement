@@ -57,9 +57,10 @@ var cssnotify =
 		+'.ui-pnotify { bottom: 20px; }'
 		+'.pnotify_custom { top: 20px !important; }'
 	+'</style>';
-var hash = Date.now();
+var hash = timestamp;
 var coverrune = '/assets/img/cover.'+ hash +'.svg';
 var vustop = '/assets/img/vustop.'+ hash +'.gif';
+var timestamp = Date.now();
 if ( GUI.localhost ) {
 	var vu = '/assets/img/vustop.'+ hash +'.gif';
 	var blinkdot = '<a>·</a>&ensp;<a>·</a>&ensp;<a>·</a>';
