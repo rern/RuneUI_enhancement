@@ -1031,7 +1031,7 @@ function dataParse( data, path, querytype, plid ) {
 		$( '#db-entries p' ).css( 'min-height', window.innerHeight - ( GUI.bars ? 140 : 100 ) +'px' );
 		if ( !fileplaylist ) displayIndexBar();
 		$( '#loader, .menu, #divcoverarts' ).addClass( 'hide' );
-		if ( GUI.plugin === 'Dirble' || GUI.plugin === 'Jamendo' ) lazyLoad.update();
+		if ( GUI.status.ext = 'radio' ) lazyLoad.update();
 	} );
 	
 	$( '#db-back' ).removeClass( 'hide' );
@@ -1147,9 +1147,16 @@ function data2html( list, path ) {
 				}
 			} else { // Webradio
 				var liname = list.webradio
+				var thumb = list.thumb;
+				if ( thumb ) {
+					var iconhtml = '<img class="radiothumb db-icon lazy" data-src="'+ thumb +'" onerror="imgError(this);" data-target="#context-menu-radio">'
+								  +'<a class="liimg">'+ list.img +'</a>'
+				} else {
+					var iconhtml = '<i class="fa fa-webradio db-icon" data-target="#context-menu-radio"></i>';
+				}
 				content = '<li class="db-webradio file" >'
 						 +'<a class="lipath">'+ list.url +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ list.lisort +'</a>'
-						 +'<i class="fa fa-webradio db-icon db-radio" data-target="#context-menu-webradio"></i>'
+						 + iconhtml
 						 +'<span class="li1">'+ liname +'</span>'
 						 +'<span class="li2">'+ list.url +'</span>'
 			}

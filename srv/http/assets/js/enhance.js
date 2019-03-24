@@ -1603,7 +1603,7 @@ document.addEventListener( 'visibilitychange', function() {
 		clearInterval( GUI.intElapsedPl );
 	} else {
 		$.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
-			data.order = data.order ? data.order.split( '^^' ) : '';
+			data.order = data.order ? data.order.split( '^^' ) : [];
 			GUI.display = data;
 			$.post( 'enhance.php', { getbookmarks: 1 }, function( bookmarks ) {
 				renderLibraryBlocks( bookmarks );
@@ -1665,6 +1665,7 @@ pushstreams.display.onmessage = function( data ) {
 	var data = data[ 0 ];
 	if ( typeof data !== 'object' ) return
 	
+	data.order = data.order ? data.order.split( '^^' ) : [];
 	$.each( data, function( key, val ) {
 		GUI.display[ key ] = val;
 	} );
