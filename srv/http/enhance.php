@@ -192,7 +192,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$data = getBookmark( $redis );
 	echo json_encode( $data );
 } else if ( isset( $_POST[ 'getwebradios' ] ) ) {
-	$files = array_slice( scandir( '/srv/http/assets/img/webradios' ), 2 ); // remove ., ..
+	$files = array_slice( scandir( '/srv/http/assets/img/webradios' ), 2 );
 	if ( !count( $files ) ) {
 		echo 0;
 		exit;
