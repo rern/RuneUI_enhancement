@@ -246,7 +246,8 @@ function webRadioCoverart() {
 	var urlname = ( path ).replace( /\//g, '|' );
 	var webradiopath = '/srv/http/assets/img/webradios';
 	$.post( 'enhance.php', { bash: '/usr/bin/cat "/srv/http/assets/img/webradios/'+ urlname +'"' }, function( data ) {
-		var data = data.split( '^^' )[ 1 ]; // NAME^^COVERART^^THUMBNAIL
+		var data = data.split( '^^' ); // NAME^^COVERART^^THUMBNAIL
+		data = data.length > 1 ? data[ 1 ] : data[ 0 ];
 		if ( data.slice( 0, 4 ) === 'http' ) {
 			var $img = '<img src="'+ data.slice( 0, -3 ) + hash +'.jpg">';
 		} else if ( data.slice( 0, 10 ) === 'data:image' ) {
@@ -265,20 +266,13 @@ function webRadioCoverart() {
 			, cancel      : 1
 			, ok          : function() {
 				var newimg = $( '#infoMessage .newimg' ).attr( 'src' );
-				
-				var img = new Image();
-				img.src = data;
-				img.onload = function () {
-					var picacanvas = document.createElement( 'canvas' );
-						picacanvas.width = picacanvas.height = 80;
-						window.pica.resizeCanvas( img, picacanvas, picaOption, function() {
-						newimg += '^^'+ picacanvas.toDataURL( 'image/jpeg', 0.9 );
-					} );
-				}
-				$.post( 
-					  'enhance.php'
-					, { webradiocoverart: path, base64: newimg }
-					, function( result ) {
+				var img = $( '#infoMessage img' )[ 0 ];
+				var picacanvas = document.createElement( 'canvas' );
+					picacanvas.width = picacanvas.height = 80;
+					window.pica.resizeCanvas( img, picacanvas, picaOption, function() {
+					newimg += '^^'+ picacanvas.toDataURL( 'image/jpeg', 0.9 );
+				} );
+				$.post( 'enhance.php', { webradiocoverart: path, base64: newimg }, function( result ) {
 						if ( result ) {
 							new PNotify( {
 								  title : 'Coverart Changed'
