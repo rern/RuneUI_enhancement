@@ -88,37 +88,47 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$order = explode( '^^', $order );
 	pushstream( 'display', array( 'order' => $order ) );
 } else if ( isset( $_POST[ 'webradios' ] ) ) {
-	$name = $_POST[ 'webradios' ];
 	$dir = '/srv/http/assets/img/webradios';
 	if ( isset( $_POST[ 'delete' ] ) ) {
-		unlink( "$dir/$name" );
-		pushstream( 'webradio', array( 'delete' => $name ) );
-		$url = str_replace( '|', '/', explode( '^^', $name ) );
+		$url = $_POST[ 'delete' ];
+		$urlname = str_replace( '|', '/', $url );
+		unlink( "$dir/$urlname" );
+		pushstream( 'webradio', array( 'delete' => 1 ) );
 		$redis->hDel( 'sampling', $url );
 	} else {
+		$name = $_POST[ 'webradios' ];
+		$url = $_POST[ 'url' ];
 		$rename = isset( $_POST[ 'rename' ] ) ? $_POST[ 'rename' ] : '';
-		unlink( "$dir/$rename" );
-		if ( isset( $_POST[ 'stationimg' ] ) ) {
-			file_put_contents( "$dir/$name", $_POST[ 'stationimg' ] );
-		} else {
-			touch( "$dir/$name" );
+		$urlname = str_replace( '|', '/', $url );
+		// dirble coverart
+		$plfile = "/srv/http/assets/img/webradiopl/$urlname";
+		if ( file_exists( $plfile ) ) {
+			$coverart = file_get_contents( $plfile );
+			if ( $coverart ) $name.= '^^'.$coverart;
+			unlink( $plfile );
 		}
+		file_put_contents( "$dir/$urlname", $name ); // NAME^^COVERART^^THUMBNAIL
 		if ( $rename ) {
-			pushstream( 'webradio', array( 'rename' => $name, oldname => $rename ) );
+			pushstream( 'webradio', array( 'rename' => 1 ) );
 		} else {
-			pushstream( 'webradio', array( 'new' => $name ) );
+			pushstream( 'webradio', 1 );
 		}
 	}
+} else if ( isset( $_POST[ 'webradiocoverart' ] ) ) {
+	$urlname = str_replace( '/', '|', $_POST[ 'webradiocoverart' ] );
+	$webradiofile = "/srv/http/assets/img/webradiopl/$urlname";
+	file_put_contents( $webradiofile, $_POST[ 'base64' ] ) || exit( '-1' );
+	echo 1;
 } else if ( isset( $_POST[ 'bookmarks' ] ) ) {
 	$data = $_POST[ 'bookmarks' ];
 	$path = $data[ 0 ];
+	$name = $data[ 1 ];
+	$oldname = $data[ 2 ];
 	$pathname = str_replace( '/', '|', $data[ 0 ] );
-	$name = str_replace( '/', '|', $data[ 1 ] );
-	$oldname = str_replace( '/', '|', $data[ 2 ] );
-	$pathbookmarks = '/srv/http/assets/img/bookmarks';
+	$dir = '/srv/http/assets/img/bookmarks';
 	$order = $redis->hGet( 'display', 'order' );
 	$order = explode( '^^', $order );
-	unlink( "$pathbookmarks/$pathname^^$oldname" );
+	unlink( "$dir/$pathname" );
 	if ( $order ) {
 		if ( !$name ) {
 			$index = array_search( $path, $order );
@@ -134,11 +144,11 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$data = getBookmark( $redis );
 		pushstream( 'bookmark', $data );
 	} else { // create file
-		$newfile = "$pathbookmarks/$pathname^^$name";
+		$newfile = "$dir/$pathname";
 		if ( isset( $_POST[ 'base64' ] ) ) {
 			file_put_contents( "$newfile", $_POST[ 'base64' ] );
 		} else {
-			touch( "$newfile" );
+			file_put_contents( "$newfile", $name );
 		}
 		$data = getBookmark( $redis );
 		pushstream( 'bookmark', $data );
@@ -190,18 +200,18 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		exit;
 	}
 	
+	$dir = '/srv/http/assets/img/webradios';
 	foreach( $files as $file ) {
-		$nameimg = explode( '^^', str_replace( '|', '/', $file ) );
-		$url = $nameimg[ 0 ];
-		$name = $nameimg[ 1 ];
-		$thumbfile = "/srv/http/assets/img/webradiothumbnails/$file.jpg";
-		$thumb = file_exists( $thumbfile ) ? $thumbfile : '';
+		$content = file_get_contents( "$dir/$file" ); // name^^base64image^^base64thumbnail
+		$nameimg = explode( '^^', $content );
+		$name = $nameimg[ 0 ];
+		$thumb = $nameimg[ 2 ];
 		$sort = stripLeading( $name );
 		$index[] = $sort[ 1 ];
 		$data[] = array(
-			  'webradio' => $name
-			, 'url'      => $url
-			, 'thumb'    => $thumb
+			  'webradio' => $nameimg[ 0 ]
+			, 'url'      => str_replace( '|', '/', $file )
+			, 'thumb'    => $nameimg[ 2 ]
 			, 'sort'     => $sort[ 0 ]
 			, 'lisort'   => $sort[ 1 ]
 		);
@@ -450,11 +460,10 @@ function list2array( $result ) {
 		$webradio = substr( $track, 0, 4 ) === 'http';
 		if ( $webradio ) {
 			$filename = str_replace( '/', '|', $file );
-			$webradiofile = new GlobIterator( "/srv/http/assets/img/webradios/$filename*" );
-			if ( !count( $webradiofile ) ) $webradiofile = new GlobIterator( "/srv/http/assets/img/webradiopl/$filename*" );
-			if ( count( $webradiofile ) ) {
-				$urlname = str_replace( '/', '|', $webradiofile );
-				$title = explode( '^^', $urlname )[ 1 ];
+			$webradiofile = "/srv/http/assets/img/webradios/$filename";
+			if ( !file_exists( $webradiofile ) ) $webradiofile = "/srv/http/assets/img/webradiopl/$filename";
+			if ( file_exists( $webradiofile ) ) {
+				$title = file_get_contents( $webradiofile );
 			} else {
 				$title = $file;
 			}
@@ -532,19 +541,18 @@ function getBookmark() {
 	
 	$time = time();
 	foreach( $files as $file ) {
-		if ( filesize( $file ) ) {
+		$content = file_get_contents( "$dir/$file" );
+		$isimage = substr( $content, 0, 10 ) === 'data:image';
+		if ( $isimage ) {
 			$name = '';
-			$path = '';
-			$coverart = file_get_contents( "$dir/$file" );
+			$coverart = $content;
 		} else {
-			$pathname = explode( '^^', $file );
-			$name = str_replace( '|', '/', $pathname[ 1 ] );
-			$path = str_replace( '|', '/', $pathname[ 0 ] );
+			$name = $content;
 			$coverart = '';
 		}
 		$data[] = array(
 			  'name'     => $name
-			, 'path'     => $path
+			, 'path'     => str_replace( '|', '/', $file )
 			, 'coverart' => $coverart
 		);
 	}
