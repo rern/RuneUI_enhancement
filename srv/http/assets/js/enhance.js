@@ -951,9 +951,9 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 			, fileoklabel : 'Replace'
 			, cancel      : 1
 			, ok          : function() {
-				var bookmarkfile = path.replace( /\//g, '|' ) +'.jpg';
+				var bookmarkfile = ( path +'^^'+ name ).replace( /\//g, '|' );
 				var newimg = $( '#infoMessage .newimg' ).attr( 'src' );
-				$.post( 'enhance.php', { imagefile: path, name: name, base64: newimg }, function() {
+				$.post( 'enhance.php', { imagefile: path, bookmarkbase64: newimg }, function() {
 					var $img = $this.find( 'img' );
 					if ( $img.length ) {
 						$img.attr( 'src', newimg  );
@@ -1019,7 +1019,7 @@ var sortablelibrary = new Sortable( document.getElementById( 'divhomeblocks' ), 
 		} );
 		order = order.slice( 0, -2 );
 		GUI.display.order = order.split( '^^' );
-		$.post( 'enhance.php', { order: order } );
+		$.post( 'enhance.php', { setorder: order } );
 	}
 } );
 $( '#home-coverart' ).click( function() { // fix - 'tap' also fire .coverart click here
@@ -1728,7 +1728,7 @@ pushstreams.idle.onmessage = function( changed ) {
 				if ( GUI.playback ) setButtonToggle();
 			}, 'json' );
 		} else if ( changed === 'update' ) {
-			$.post( 'enhance.php', { librarycount: 1 }, function( data ) {
+			$.post( 'enhance.php', { getcount: 1 }, function( data ) {
 				$( '.home-block gr' ).remove();
 				$.each( data, function( id, val ) {
 					if ( val ) $( '#home-'+ id ).find( 'i' ).after( '<gr>'+ numFormat( val ) +'</gr>' );
@@ -1782,22 +1782,22 @@ pushstreams.volume.onmessage = function( data ) {
 	}, GUI.debouncems );
 }
 pushstreams.webradio.onmessage = function( data ) {
-	if ( $( '#db-currentpath i.fa-webradio' ).length ) {
-		$( '#home-webradio' ).click();
-	} else if ( GUI.playlist && !GUI.pleditor ) {
-		var data = data[ 0 ];
-		var count = Number( $( '#home-webradio gr' ).text() );
-		$( '#home-webradio gr' ).remove(); // remove space if 0
-		if ( !data.oldname ) {
-			count = count + 1;
-			$( '#home-webradio i' ).after( '<gr>'+ numFormat( count + 1 ) +'</gr>' );
-		} else if ( count > 1 ) {
-			$( '#home-webradio i' ).after( '<gr>'+ numFormat( count - 1 ) +'</gr>' );
+	if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) $( '#home-webradio' ).click();
+	var data = data[ 0 ];
+	var count = Number( $( '#home-webradio gr' ).text() );
+	if ( data.new ) {
+		var urlname = data.urlname.replace( /\|/g, '/' );
+		urlname = urlname.split( '^^' );
+		if ( !count ) $( '#home-webradio i' ).after( '<gr></gr>' );
+		$( '#home-webradio gr' ).text( numFormat( count + 1 ) );
+	} else if ( data.delete ) {
+		if ( count > 1 ) {
+			$( '#home-webradio gr' ).text( numFormat( count - 1 ) );
+		} else {
+			$( '#home-webradio gr' ).remove();
 		}
-		$( '#pl-entries li' ).filter( function() {
-			$this = $( this );
-			return $this.find( 'i.fa-webradio' ).length && $this.find( '.name' ).text() == data.oldname;
-		} ).find( '.name' ).text( data.name );
+	} else if ( data.rename ) {
+		if ( GUI.playlist && !GUI.pleditor ) $( '#tab-playlist' ).click();
 	}
 }
 streams.forEach( function( stream ) {
