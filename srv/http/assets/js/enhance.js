@@ -1782,12 +1782,9 @@ pushstreams.volume.onmessage = function( data ) {
 	}, GUI.debouncems );
 }
 pushstreams.webradio.onmessage = function( data ) {
-	if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) $( '#home-webradio' ).click();
 	var data = data[ 0 ];
 	var count = Number( $( '#home-webradio gr' ).text() );
 	if ( data.new ) {
-		var urlname = data.urlname.replace( /\|/g, '/' );
-		urlname = urlname.split( '^^' );
 		if ( !count ) $( '#home-webradio i' ).after( '<gr></gr>' );
 		$( '#home-webradio gr' ).text( numFormat( count + 1 ) );
 	} else if ( data.delete ) {
@@ -1796,8 +1793,11 @@ pushstreams.webradio.onmessage = function( data ) {
 		} else {
 			$( '#home-webradio gr' ).remove();
 		}
-	} else if ( data.rename ) {
-		if ( GUI.playlist && !GUI.pleditor ) $( '#tab-playlist' ).click();
+	}
+	if ( GUI.library ) {
+		if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) $( '#home-webradio' ).click();
+	} else if ( GUI.playlist ) {
+		if ( !GUI.pleditor ) $( '#tab-playlist' ).click();
 	}
 }
 streams.forEach( function( stream ) {
