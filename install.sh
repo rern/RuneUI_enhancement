@@ -235,6 +235,7 @@ makeDirLink webradiocoverarts
 
 # convert webradios
 makeDirLink webradios
+
 dir=/srv/http/assets/img/webradios
 webradios=$( redis-cli hgetall webradios )
 if [[ $webradios ]]; then
@@ -249,8 +250,8 @@ if [[ $webradios ]]; then
 fi
 chown -R http:http $dir
 
-# convert old bookmarks
 makeDirLink bookmarks
+# convert old bookmarks
 dir=/srv/http/assets/img/bookmarks
 bookmarks=$( redis-cli hgetall bookmarks | tr -d '"{}\\' )
 if [[ $bookmarks ]]; then
@@ -261,7 +262,8 @@ if [[ $bookmarks ]]; then
 		name=$( echo $namepath | cut -d',' -f1 )
 		path=$( echo $namepath | cut -d',' -f2 )
 		path=${path/path:}
-		touch "$dir/${path//\//|}^^${name/name:}"
+		name=${name/name:}
+		touch "$dir/${path//\//|}^^${name//\//|}"
 	done
 fi
 # convert new bookmarks (to be removed in next version)
@@ -271,11 +273,13 @@ if [[ $bkmarks ]]; then
 	linesL=${#lines[@]}
 	for (( i=0; i < $linesL; i+=2 )); do
 		mpdpath=${lines[$i+1]}
-		oldfile=/mnt/MPD/$mpdpath/thumbnail.jpg
-		if [[ -e "$oldfile" ]]; then
-			cp -f "$oldfile" "$dir/${mpdpath//\//|}.jpg"
+		name=${lines[$i]}
+		thumbnail=/mnt/MPD/$mpdpath/thumbnail.jpg
+		newfile=$dir/${mpdpath//\//|}^^${name//\//|}
+		if [[ -e "$thumbnail" ]]; then
+			echo "data:image/jpeg;base64,$( base64 -w 0 $thumbnail )" > "$newfile"
 		else
-			touch "$dir/${mpdpath//\//|}^^${lines[$i]}"
+			touch "$newfile"
 		fi
 	done
 	redis-cli del bkmarks &> /dev/null
