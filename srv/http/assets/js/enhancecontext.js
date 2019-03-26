@@ -169,11 +169,9 @@ function bookmarkNew() {
 			, message   : 'Bookmark'
 						 +'<br><img src="'+ base64img +'">'
 			, msgalign  : 'center'
-			, textalign : 'center'
-			, boxwidth  : 'max'
 			, cancel    : 1
 			, ok        : function() {
-				$.post( 'enhance.php', { bookmarks: [ path, 1 ], base64: base64img } );
+				$.post( 'enhance.php', { bookmarks: 1, path: path, base64: base64img, new: 1 } );
 				new PNotify( {
 					  title : 'Add Bookmark'
 					, text  : path
@@ -181,14 +179,15 @@ function bookmarkNew() {
 			}
 		}
 		if ( !base64img ) {
-			infodata.message   = 'Bookmark'
-							+'<br><white>'+ path +'</white>'
-							+'<br>As:';
+			infodata.message      = 'Bookmark'
+								   +'<br><white>'+ path +'</white>'
+								   +'<br>As:';
 			infodata.textvalue    = name;
 			infodata.textrequired = 1;
+			infodata.boxwidth     = 'max';
 			infodata.textalign    = 'center';
 			infodata.ok           =  function() {
-				$.post( 'enhance.php', { bookmarks: [ path, $( '#infoTextBox' ).val() ] } );
+				$.post( 'enhance.php', { bookmarks: $( '#infoTextBox' ).val(), path: path, new: 1 } );
 				new PNotify( {
 					  title : 'Add Bookmark'
 					, text  : path
@@ -216,7 +215,7 @@ function bookmarkRename( name, path, $block ) {
 		, oklabel      : 'Rename'
 		, ok           : function() {
 			var newname = $( '#infoTextBox' ).val();
-			$.post( 'enhance.php', { bookmarks: [ path, newname, name ] } );
+			$.post( 'enhance.php', { bookmarks: newname, path: path, rename: 1 } );
 			$block.find( '.bklabel' ).text( newname );
 		}
 	} );
@@ -241,7 +240,7 @@ function bookmarkDelete( path, name, $block ) {
 		, oklabel  : 'Remove'
 		, ok       : function() {
 			GUI.bookmarkedit = 1;
-			$.post( 'enhance.php', { bookmarks: [ path ] } );
+			$.post( 'enhance.php', { bookmarks: name, path: path, delete: 1 } );
 			$block.parent().remove();
 		}
 	} );
