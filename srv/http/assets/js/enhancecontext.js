@@ -246,11 +246,16 @@ function bookmarkDelete( path, name, $block ) {
 	} );
 }
 function webRadioSave( name, url ) {
+	var urlname = url.replace( /\//g, '|' );
+	$.post( 'enhance.php', { bash: '/usr/bin/cat "/srv/http/assets/img/webradiopl/'+ urlname +'"' }, function( data ) {
+		var base64 = data.split( '^^' )[ 2 ];
+		var $img = '<br><img src="'+ base64 +'">';
 	info( {
 		  icon         : 'webradio'
 		, title        : 'Save Webradio'
 		, width        : 500
-		, message      : 'Save URL:'
+		, message      : 'Save:'
+						+ $img
 						+'<br><w>'+ url +'</w>'
 						+'<br>As:'
 		, msgalign     : 'center'
@@ -280,11 +285,12 @@ function webRadioSave( name, url ) {
 			} );
 		}
 	} );
+	} );
 }
 function webRadioCoverart() {
 	var name = GUI.list.name;
 	var path = GUI.list.path;
-	var urlname = ( path ).replace( /\//g, '|' );
+	var urlname = path.replace( /\//g, '|' );
 	var webradiopath = '/srv/http/assets/img/webradios';
 	$.post( 'enhance.php', { bash: '/usr/bin/cat "/srv/http/assets/img/webradios/'+ urlname +'"' }, function( data ) {
 		var data = data.split( '^^' ); // NAME^^COVERART^^THUMBNAIL
