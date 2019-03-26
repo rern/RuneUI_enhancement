@@ -204,12 +204,19 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	foreach( $files as $file ) {
 		$content = file_get_contents( "$dir/$file" ); // name^^base64thumbnail^^base64image
 		$nameimg = explode( '^^', $content );
+		if ( count( $nameimg ) > 1 ) {
+			$name = $nameimg[ 0 ];
+			$thumb = $nameimg[ 1 ];
+		} else {
+			$name = $content;
+			$thumb = '';
+		}
 		$sort = stripLeading( $name );
-		$index[] = $sort[ 1 ];
+		$index[] = $name[ 0 ];
 		$data[] = array(
-			  'webradio' => $nameimg[ 0 ]
+			  'webradio' => $name
 			, 'url'      => str_replace( '|', '/', $file )
-			, 'thumb'    => $nameimg[ 1 ]
+			, 'thumb'    => $thumb
 			, 'sort'     => $sort[ 0 ]
 			, 'lisort'   => $sort[ 1 ]
 		);
