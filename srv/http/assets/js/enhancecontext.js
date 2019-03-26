@@ -244,6 +244,25 @@ function bookmarkDelete( path, name, $block ) {
 		}
 	} );
 }
+function webRadioSave( name, url, '', 'save' ) {
+	info( {
+		  icon       : 'webradio'
+		, title      : 'Save Webradio'
+		, width      : 500
+		, message    : 'Save URL:'
+					  +'<br><w>'+ url +'</w>'
+					  +'<br>As:'
+		, msgalign   : 'center'
+		, textlabel  : ''
+		, textvalue  : name
+		, textalign  : 'center'
+		, boxwidth   : 'max'
+		, cancel     : 1
+		, ok         : function() {
+			webRadioVerify( $( '#infoTextBox' ).val(), url );
+		}
+	} );
+}
 function webRadioCoverart() {
 	var name = GUI.list.name;
 	var path = GUI.list.path;
@@ -322,25 +341,6 @@ function webRadioNew( name, url ) {
 		}
 	} );
 }
-function webRadioSave( name, url ) {
-	info( {
-		  icon       : 'webradio'
-		, title      : 'Save Webradio'
-		, width      : 500
-		, message    : 'Save URL:'
-					  +'<br><w>'+ url +'</w>'
-					  +'<br>As:'
-		, msgalign   : 'center'
-		, textlabel  : ''
-		, textvalue  : name
-		, textalign  : 'center'
-		, boxwidth   : 'max'
-		, cancel     : 1
-		, ok         : function() {
-		webRadioVerify( $( '#infoTextBox' ).val(), url );
-		}
-	} );
-}
 function webRadioRename() {
 	var name = GUI.list.name;
 	var url = GUI.list.path;
@@ -363,7 +363,7 @@ function webRadioRename() {
 		}
 	} );
 }
-function webRadioVerify( name, url, oldname ) {
+function webRadioVerify( name, url, oldname, save ) {
 	if ( !name || !url ) {
 		info( {
 			  icon    : 'webradio'
@@ -379,6 +379,7 @@ function webRadioVerify( name, url, oldname ) {
 	var newname = $( '#infoTextBox' ).val();
 	var data = { webradios: newname, url: url }
 	if ( oldname ) data.rename = oldname;
+	if ( save ) data.save = 1;
 	$.post( 'enhance.php', { getwebradios: 1 }, function( data ) {
 		if ( data ) {
 			var dataL = data.length - 1; // last one is index
