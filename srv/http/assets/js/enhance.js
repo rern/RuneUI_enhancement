@@ -1646,7 +1646,7 @@ window.addEventListener( 'orientationchange', function() {
 } );
 
 var pushstreams = {};
-var streams = [ 'bookmark', 'display', 'idle', 'notify', 'playlist', 'volume', 'webradio' ];
+var streams = [ 'bookmark', 'display', 'idle', 'playlist', 'volume', 'webradio' ];
 streams.forEach( function( stream ) {
 	pushstreams[ stream ] = new PushStream( { modes: 'websocket' } );
 	pushstreams[ stream ].addChannel( stream );
@@ -1742,14 +1742,6 @@ pushstreams.idle.onmessage = function( changed ) {
 			if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) $( '#home-webradio' ).tap();
 		}
 	}, GUI.debouncems );
-}
-pushstreams.notify.onmessage = function( data ) {
-	var notify = data[ 0 ];
-	new PNotify( {
-		  icon        : notify.icon
-		, title       : notify.title || 'Info'
-		, text        : notify.text
-	} );
 }
 pushstreams.playlist.onmessage = function( data ) {
 	GUI.lsplaylists = data[ 0 ] || [];
