@@ -129,12 +129,15 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		if ( file_exists( $file ) ) exit( 1 );
 		
 		file_put_contents( "$dir/$urlname", $name );
+		$count = 1;
 	} else if ( isset( $_POST[ 'rename' ] ) ) {
 		$content = explode( '^^', file_get_contents( $file ) );
 		if ( count( $content ) > 1 ) $name.= '^^'.$content[ 1 ].'^^'.$content[ 2 ];
 		file_put_contents( "$dir/$urlname", $name ); // name^^thumbnail^^coverart
+		$count = 0;
 	} else if ( isset( $_POST[ 'delete' ] ) ) {
 		unlink( $file );
+		$count = -1;
 	} else if ( isset( $_POST[ 'save' ] ) ) {
 		if ( file_exists( $file ) ) exit( 1 );
 		
@@ -142,8 +145,9 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$content = file_get_contents( $plfile );
 		file_put_contents( $file, substr( $content, 1 ) );
 		unlink( $plfile );
+		$count = 1;
 	}
-	pushstream( 'webradio', 1 );
+	pushstream( 'webradio', $count );
 } else if ( isset( $_POST[ 'webradiocoverart' ] ) ) {
 	$urlname = str_replace( '/', '|', $_POST[ 'webradiocoverart' ] );
 	$file = "/srv/http/assets/img/webradiopl/$urlname";
