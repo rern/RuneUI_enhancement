@@ -931,10 +931,15 @@ function dataParse( data, path, querytype, plid ) {
 			var data = htmlPlaylist( data );
 			content = data.content;
 		} else if ( data[ 0 ].webradio ) {
-			var dataL = data.length - 1; // last one is index
-			for ( i = 0; i < dataL; i++ ) {
-				content += data2html( data[ i ], path );
-			}
+			$.each( data, function( i, value ) {
+				if ( value.webradio ) {
+					content += data2html( value, path );
+				} else if ( value.index ) {
+					value.index.forEach( function( char ) {
+						$( '#db-index .index-'+ char ).removeClass( 'gr' );
+					} );
+				}
+			} );
 		} else if ( data[ 0 ].directory || data[ 0 ].file || data[ 0 ].playlist ) {
 			var arraydir = [];
 			var arrayfile = [];
