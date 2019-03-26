@@ -326,7 +326,6 @@ function webRadioSave( name, url ) {
 			, cancel       : 1
 			, ok           : function() {
 				var newname = $( '#infoTextBox' ).val();
-				console.log(newname +' - '+ url)
 				$.post( 'enhance.php', { webradios: newname, url: url, save: 1 }, function( existurl ) {
 					if ( existurl ) {
 						info( {

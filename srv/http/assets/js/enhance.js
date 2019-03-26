@@ -1784,15 +1784,12 @@ pushstreams.volume.onmessage = function( data ) {
 pushstreams.webradio.onmessage = function( data ) {
 	var data = data[ 0 ];
 	var count = Number( $( '#home-webradio gr' ).text() );
-	if ( data.new ) {
-		if ( !count ) $( '#home-webradio i' ).after( '<gr></gr>' );
-		$( '#home-webradio gr' ).text( numFormat( count + 1 ) );
-	} else if ( data.delete ) {
-		if ( count > 1 ) {
-			$( '#home-webradio gr' ).text( numFormat( count - 1 ) );
-		} else {
-			$( '#home-webradio gr' ).remove();
-		}
+	count = count + data;
+	if ( !count )  {
+		$( '#home-webradio gr' ).remove();
+	} else {
+		if ( !$( '#home-webradio gr' ).length ) $( '#home-webradio i' ).after( '<gr></gr>' );
+		$( '#home-webradio gr' ).text( numFormat( count ) );
 	}
 	if ( GUI.library ) {
 		if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) $( '#home-webradio' ).click();
