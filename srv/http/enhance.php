@@ -87,6 +87,11 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$redis->hSet( 'display', 'order', $order );
 	$order = explode( '^^', $order );
 	pushstream( 'display', array( 'order' => $order ) );
+} else if ( isset( $_POST[ 'webradiocoverart' ] ) ) {
+	$urlname = str_replace( '/', '|', $_POST[ 'webradiocoverart' ] );
+	$file = "/srv/http/assets/img/webradiopl/$urlname";
+	file_put_contents( $file, $_POST[ 'base64' ], FILE_APPEND ) || exit( '-1' );
+	echo 1;
 } else if ( isset( $_POST[ 'webradios' ] ) ) {
 	$dir = '/srv/http/assets/img/webradios';
 	$name = $_POST[ 'webradios' ];
@@ -110,21 +115,14 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		rename( "/srv/http/assets/img/webradiopl/$urlname", $file );
 	}
 	pushstream( 'webradio', 1 );
-} else if ( isset( $_POST[ 'webradiocoverart' ] ) ) {
-	$urlname = str_replace( '/', '|', $_POST[ 'webradiocoverart' ] );
-	$file = "/srv/http/assets/img/webradiopl/$urlname";
-	file_put_contents( $file, $_POST[ 'base64' ], FILE_APPEND ) || exit( '-1' );
-	echo 1;
 } else if ( isset( $_POST[ 'bookmarks' ] ) ) {
-	$data = $_POST[ 'bookmarks' ];
-	$path = $data[ 0 ];
-	$name = $data[ 1 ];
-	$oldname = $data[ 2 ];
-	$pathname = str_replace( '/', '|', $data[ 0 ] );
+	$name = $_POST[ 'bookmarks' ];
+	$path = $_POST[ 'path' ];
+	$pathname = str_replace( '/', '|', $path );
 	$dir = '/srv/http/assets/img/bookmarks';
+	$file = "$dir/$pathname";
 	$order = $redis->hGet( 'display', 'order' );
 	$order = explode( '^^', $order );
-	unlink( "$dir/$pathname" );
 	if ( $order ) {
 		if ( !$name ) {
 			$index = array_search( $path, $order );
@@ -136,19 +134,19 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$order = implode( '^^', $order );
 		$redis->hSet( 'display', 'order', $order );
 	}
-	if ( !$name ) { // delete
-		$data = getBookmark( $redis );
-		pushstream( 'bookmark', $data );
-	} else { // create file
-		$newfile = "$dir/$pathname";
+	if ( isset( $_POST[ 'new' ] ) ) {
 		if ( isset( $_POST[ 'base64' ] ) ) {
-			file_put_contents( "$newfile", $_POST[ 'base64' ] );
+			file_put_contents( "$file", $_POST[ 'base64' ] );
 		} else {
-			file_put_contents( "$newfile", $name );
+			file_put_contents( "$file", $name );
 		}
-		$data = getBookmark( $redis );
-		pushstream( 'bookmark', $data );
+	} else if ( isset( $_POST[ 'rename' ] ) ) {
+		file_put_contents( "$file", $name );
+	} else if ( isset( $_POST[ 'delete' ] ) ) {
+		unlink( $file );
 	}
+	$data = getBookmark( $redis );
+	pushstream( 'bookmark', $data );
 } else if ( isset( $_POST[ 'imagefile' ] ) ) {
 	$imagefile = $_POST[ 'imagefile' ];
 	if ( isset( $_POST[ 'bookmarkbase64' ] ) ) {
