@@ -87,34 +87,6 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$redis->hSet( 'display', 'order', $order );
 	$order = explode( '^^', $order );
 	pushstream( 'display', array( 'order' => $order ) );
-} else if ( isset( $_POST[ 'webradiocoverart' ] ) ) {
-	$urlname = str_replace( '/', '|', $_POST[ 'webradiocoverart' ] );
-	$file = "/srv/http/assets/img/webradiopl/$urlname";
-	file_put_contents( $file, $_POST[ 'base64' ], FILE_APPEND ) || exit( '-1' );
-	echo 1;
-} else if ( isset( $_POST[ 'webradios' ] ) ) {
-	$dir = '/srv/http/assets/img/webradios';
-	$name = $_POST[ 'webradios' ];
-	$url = $_POST[ 'url' ];
-	$rename = isset( $_POST[ 'rename' ] ) ? $_POST[ 'rename' ] : '';
-	$urlname = str_replace( '|', '/', $url );
-	$file = "/srv/http/assets/img/webradios/$urlname";
-	if ( isset( $_POST[ 'new' ] ) ) {
-		if ( file_exists( $file ) ) exit( 1 );
-		
-		file_put_contents( "$dir/$urlname", $name );
-	} else if ( isset( $_POST[ 'rename' ] ) ) {
-		$content = explode( '^^', file_get_contents( $file ) );
-		if ( count( $content ) > 1 ) $name.= '^^'.$content[ 1 ].'^^'.$content[ 2 ];
-		file_put_contents( "$dir/$urlname", $name ); // name^^thumbnail^^coverart
-	} else if ( isset( $_POST[ 'delete' ] ) ) {
-		unlink( $file );
-	} else if ( isset( $_POST[ 'save' ] ) ) {
-		if ( file_exists( $file ) ) exit( 1 );
-		
-		rename( "/srv/http/assets/img/webradiopl/$urlname", $file );
-	}
-	pushstream( 'webradio', 1 );
 } else if ( isset( $_POST[ 'bookmarks' ] ) ) {
 	$name = $_POST[ 'bookmarks' ];
 	$path = $_POST[ 'path' ];
@@ -147,6 +119,36 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	}
 	$data = getBookmark( $redis );
 	pushstream( 'bookmark', $data );
+} else if ( isset( $_POST[ 'webradios' ] ) ) {
+	$name = $_POST[ 'webradios' ];
+	$url = $_POST[ 'url' ];
+	$urlname = str_replace( '/', '|', $url );
+	$dir = '/srv/http/assets/img/webradios';
+	$file = "/srv/http/assets/img/webradios/$urlname";
+	if ( isset( $_POST[ 'new' ] ) ) {
+		if ( file_exists( $file ) ) exit( 1 );
+		
+		file_put_contents( "$dir/$urlname", $name );
+	} else if ( isset( $_POST[ 'rename' ] ) ) {
+		$content = explode( '^^', file_get_contents( $file ) );
+		if ( count( $content ) > 1 ) $name.= '^^'.$content[ 1 ].'^^'.$content[ 2 ];
+		file_put_contents( "$dir/$urlname", $name ); // name^^thumbnail^^coverart
+	} else if ( isset( $_POST[ 'delete' ] ) ) {
+		unlink( $file );
+	} else if ( isset( $_POST[ 'save' ] ) ) {
+		if ( file_exists( $file ) ) exit( 1 );
+		
+		$plfile = "/srv/http/assets/img/webradiopl/$urlname";
+		$content = file_get_contents( $plfile );
+		file_put_contents( $file, substr( $content, 1 ) );
+		unlink( $plfile );
+	}
+	pushstream( 'webradio', 1 );
+} else if ( isset( $_POST[ 'webradiocoverart' ] ) ) {
+	$urlname = str_replace( '/', '|', $_POST[ 'webradiocoverart' ] );
+	$file = "/srv/http/assets/img/webradiopl/$urlname";
+	file_put_contents( $file, $_POST[ 'base64' ], FILE_APPEND ) || exit( '-1' );
+	echo 1;
 } else if ( isset( $_POST[ 'imagefile' ] ) ) {
 	$imagefile = $_POST[ 'imagefile' ];
 	if ( isset( $_POST[ 'bookmarkbase64' ] ) ) {
