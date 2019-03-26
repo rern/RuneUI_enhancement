@@ -1,3 +1,10 @@
+function notify( title, message, icon ) {
+	new PNotify( {
+		  icon  : icon || 'fa fa-check'
+		, title : title
+		, text  : message
+	} );
+}
 function cssNotify() {
 	if ( GUI.bars ) {
 		PNotify.prototype.options.stack.firstpos1 = 60;

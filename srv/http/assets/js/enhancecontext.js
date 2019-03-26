@@ -112,10 +112,7 @@ $( '.contextmenu a' ).click( function() {
 	} else if ( cmd === 'plashuffle' ) {
 		$.post( 'enhance.php', { bash: '/usr/local/bin/ashuffle -f /var/lib/mpd/playlists/'+ name +'.m3u &' } );
 		$( '#random' ).addClass( 'btn-primary ashuffle' );
-		new PNotify( {
-			  title : 'Random Play'
-			, text  : name
-		} );
+		notify( 'Random Play', name );
 	}
 } );
 
@@ -152,10 +149,8 @@ function addReplace( mode, cmd, command, title ) {
 		}
 	} );
 	var artist = $( '#artistalbum span' ).text();
-	new PNotify( {
-		  title : title
-		, text  : GUI.list.name + ( artist ? ' • '+ artist : '' )
-	} );
+	var msg = GUI.list.name + ( artist ? ' • '+ artist : '' );
+	notify( title, msg );
 }
 function bookmarkNew() {
 	var path = GUI.list.path;
@@ -172,10 +167,7 @@ function bookmarkNew() {
 			, cancel    : 1
 			, ok        : function() {
 				$.post( 'enhance.php', { bookmarks: 1, path: path, base64: base64img, new: 1 } );
-				new PNotify( {
-					  title : 'Add Bookmark'
-					, text  : path
-				} );
+				notify( 'Add Bookmark', path );
 			}
 		}
 		if ( !base64img ) {
@@ -188,10 +180,7 @@ function bookmarkNew() {
 			infodata.textalign    = 'center';
 			infodata.ok           =  function() {
 				$.post( 'enhance.php', { bookmarks: $( '#infoTextBox' ).val(), path: path, new: 1 } );
-				new PNotify( {
-					  title : 'Add Bookmark'
-					, text  : path
-				} );
+				notify( 'Add Bookmark', path );
 			}
 		}
 		info( infodata );
@@ -278,10 +267,7 @@ function webRadioCoverart() {
 				} );
 				$.post( 'enhance.php', { webradiocoverart: path, base64: newimg }, function( result ) {
 						if ( result ) {
-							new PNotify( {
-								  title : 'Coverart Changed'
-								, text  : name
-							} );
+							notify( 'Coverart Changed', name );
 						} else if ( std == -1 ) {
 							info( {
 								  icon    : 'webradio'
@@ -336,10 +322,7 @@ function webRadioSave( name, url ) {
 									   +'<br><w>'+ existurl +'</w>'
 						} );
 					} else {
-						new PNotify( {
-							  title : 'Webradio saved'
-							, text  : newname
-						} );
+						notify( 'Webradio saved', newname );
 					}
 				} );
 			}
@@ -463,10 +446,7 @@ function addPlaylist( name, oldname ) {
 		$.post( 'enhance.php', { bash: '/usr/bin/mv'+ oldfile + newfile } );
 	} else {
 		$.post( 'enhance.php', { mpc: 'mpc save "'+ name.replace( /"/g, '\\"' ) +'"' } );
-		new PNotify( {
-			  title : 'Playlist Saved'
-			, text  : name
-		} );
+		notify( 'Playlist Saved', name );
 		$( '#plopen' ).removeClass( 'disable' );
 	}
 }

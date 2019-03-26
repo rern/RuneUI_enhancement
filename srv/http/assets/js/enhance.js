@@ -681,13 +681,7 @@ $( '#timeTL' ).click( function() {
 				$.post( 'enhance.php', { bash: '/usr/bin/systemctl restart shairport' } );
 			} else if ( source === 'spotify' ) {
 				$.post( 'enhance.php', { bash: '/usr/bin/redis-cli hget spotify enable' }, function( data ) {
-					if ( !data ) {
-						new PNotify( {
-							  icon  : 'fa fa-exclamation-circle'
-							, title : 'Spotify not enabled'
-							, text  : 'Enable in Settings menu'
-						} );
-					}
+					if ( !data ) notify( 'Spotify not enabled', 'Enable in Settings menu', 'fa fa-warning' );
 				} );
 			}
 		}
@@ -1741,10 +1735,7 @@ pushstreams.idle.onmessage = function( changed ) {
 					GUI.status.updating_db = 1;
 				} else {
 					GUI.status.updating_db = 0;
-					new PNotify( {
-						  title : 'Update Database'
-						, text  : 'Database updated.'
-					} );
+					notify( 'Update Database', 'Database updated.' );
 				}
 			}, 'json' );
 		} else if ( changed === 'database' ) { // on files changed (for webradio rename)
