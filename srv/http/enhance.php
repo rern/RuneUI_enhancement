@@ -101,13 +101,15 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$rename = isset( $_POST[ 'rename' ] ) ? $_POST[ 'rename' ] : '';
 		$urlname = str_replace( '|', '/', $url );
 		$file = "/srv/http/assets/img/webradios/$urlname";
-		if ( !file_exists( $file ) ) $file = "/srv/http/assets/img/webradiopl/$urlname"; // dirble coverart
-		if ( file_exists( $file ) ) {
-			$content = explode( '^^', file_get_contents( $file ) );
-			if ( count( $content ) > 1 ) $name.= '^^'.$content[ 1 ].'^^'.$content[ 2 ];
-			unlink( $file );
+		if ( isset( $_POST[ 'save' ] ) ) {
+			rename( "/srv/http/assets/img/webradiopl/$urlname", $file );
+		} else {
+			if ( file_exists( $file ) ) {
+				$content = explode( '^^', file_get_contents( $file ) );
+				if ( count( $content ) > 1 ) $name.= '^^'.$content[ 1 ].'^^'.$content[ 2 ];
+			}
+			file_put_contents( "$dir/$urlname", $name ); // name^^thumbnail^^coverart
 		}
-		file_put_contents( "$dir/$urlname", $name ); // NAME^^COVERART^^THUMBNAIL
 		if ( $rename ) {
 			pushstream( 'webradio', array( 'rename' => 1 ) );
 		} else {
