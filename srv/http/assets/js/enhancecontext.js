@@ -47,10 +47,11 @@ $( '.contextmenu a' ).click( function() {
 	$( '#db-entries li, #pl-editor li' ).removeClass( 'active' );
 	// get name
 	if ( GUI.playlist && $( '#pl-currentpath .lipath' ).length ) {
-		var name = GUI.list.li.find( '.lipath' ).text().replace( /"/g, '\\"' );
+		var name = GUI.list.li.find( '.lipath' ).text();
 	} else {
-		var name = GUI.list.path.replace( /"/g, '\\"' );
+		var name = GUI.list.path;
 	}
+	name = name.replace( /"/g, '\\"' );
 	// compose command
 	var mpcCmd;
 	// must keep order otherwise replaceplay -> play, addplay -> play
@@ -63,8 +64,11 @@ $( '.contextmenu a' ).click( function() {
 			mpcCmd = 'mpc load "'+ name +'"';
 		} else if ( GUI.plugin ) { // unsaved dirble ( * in front of name for class indicator)
 			var pathname = GUI.list.path.replace( /\//g, '|' );
+			pathname = pathname.replace( /"/g, '\\"' );
+			var namepl = GUI.list.name.replace( /"/g, '\\"' );
+			if ( GUI.list.img ) namepl += '^^'+ GUI.list.thumb +'^^'+ GUI.list.img;
 			mpcCmd = 'mpc add "'+ GUI.list.path +'"'
-					+'; /usr/bin/echo -e "*'+ GUI.list.name +'\n'+ GUI.list.img +'" > "/srv/http/assets/img/webradiopl/'+ pathname +'"';
+					+'; /usr/bin/echo "*'+ namepl +'" > "/srv/http/assets/img/webradiopl/'+ pathname +'"';
 		} else {
 			mpcCmd = GUI.list.isfile ? 'mpc add "'+ name +'"' : 'mpc ls "'+ name +'" | mpc add';
 		}
