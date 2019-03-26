@@ -461,7 +461,13 @@ function list2array( $result ) {
 			$webradiofile = "/srv/http/assets/img/webradios/$filename";
 			if ( !file_exists( $webradiofile ) ) $webradiofile = "/srv/http/assets/img/webradiopl/$filename";
 			if ( file_exists( $webradiofile ) ) {
-				$title = file_get_contents( $webradiofile );
+				$content = file_get_contents( $webradiofile );
+				$nameimg = explode( '^^', $content );
+				if ( count( $nameimg ) > 1 ) {
+					$title = $nameimg[ 0 ];
+				} else {
+					$title = $content;
+				}
 			} else {
 				$title = $file;
 			}
