@@ -230,9 +230,6 @@ makeDirLink() { # $1-directory name
 	fi
 }
 
-# existing directories to keep: webradios, webradiocoverarts, bookmarks
-makeDirLink webradiocoverarts
-
 # convert webradios
 # filename: http:||webradio|url
 # content:
