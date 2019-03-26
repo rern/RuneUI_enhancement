@@ -244,7 +244,7 @@ function bookmarkDelete( path, name, $block ) {
 		}
 	} );
 }
-function webRadioSave( name, url, '', 'save' ) {
+function webRadioSave( name, url ) {
 	info( {
 		  icon       : 'webradio'
 		, title      : 'Save Webradio'
@@ -259,7 +259,7 @@ function webRadioSave( name, url, '', 'save' ) {
 		, boxwidth   : 'max'
 		, cancel     : 1
 		, ok         : function() {
-			webRadioVerify( $( '#infoTextBox' ).val(), url );
+			webRadioVerify( $( '#infoTextBox' ).val(), url, '', 'save' );
 		}
 	} );
 }
