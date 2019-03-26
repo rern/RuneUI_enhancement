@@ -100,12 +100,12 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$url = $_POST[ 'url' ];
 		$rename = isset( $_POST[ 'rename' ] ) ? $_POST[ 'rename' ] : '';
 		$urlname = str_replace( '|', '/', $url );
-		// dirble coverart
-		$plfile = "/srv/http/assets/img/webradiopl/$urlname";
-		if ( file_exists( $plfile ) ) {
-			$coverart = file_get_contents( $plfile );
-			if ( $coverart ) $name.= '^^'.$coverart;
-			unlink( $plfile );
+		$file = "/srv/http/assets/img/webradios/$urlname";
+		if ( !file_exists( $file ) ) $file = "/srv/http/assets/img/webradiopl/$urlname"; // dirble coverart
+		if ( file_exists( $file ) ) {
+			$content = explode( '^^', file_get_contents( $file ) );
+			if ( count( $content ) > 1 ) $name.= '^^'.$content[ 1 ].'^^'.$content[ 2 ];
+			unlink( $file );
 		}
 		file_put_contents( "$dir/$urlname", $name ); // NAME^^COVERART^^THUMBNAIL
 		if ( $rename ) {
@@ -194,24 +194,22 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$data = getBookmark( $redis );
 	echo json_encode( $data );
 } else if ( isset( $_POST[ 'getwebradios' ] ) ) {
-	$files = array_slice( scandir( '/srv/http/assets/img/webradios' ), 2 );
+	$dir = '/srv/http/assets/img/webradios';
+	$files = array_slice( scandir( $dir ), 2 );
 	if ( !count( $files ) ) {
 		echo 0;
 		exit;
 	}
 	
-	$dir = '/srv/http/assets/img/webradios';
 	foreach( $files as $file ) {
-		$content = file_get_contents( "$dir/$file" ); // name^^base64image^^base64thumbnail
+		$content = file_get_contents( "$dir/$file" ); // name^^base64thumbnail^^base64image
 		$nameimg = explode( '^^', $content );
-		$name = $nameimg[ 0 ];
-		$thumb = $nameimg[ 2 ];
 		$sort = stripLeading( $name );
 		$index[] = $sort[ 1 ];
 		$data[] = array(
 			  'webradio' => $nameimg[ 0 ]
 			, 'url'      => str_replace( '|', '/', $file )
-			, 'thumb'    => $nameimg[ 2 ]
+			, 'thumb'    => $nameimg[ 1 ]
 			, 'sort'     => $sort[ 0 ]
 			, 'lisort'   => $sort[ 1 ]
 		);

@@ -72,13 +72,16 @@ if ( isset( $_POST[ 'statusonly' ] )
 // coverart
 if ( $status[ 'ext' ] !== 'radio' && $activePlayer === 'MPD' ) {
 	require_once( '/srv/http/enhancegetcover.php' );
-	$coverart = getCoverart( $file );
-	$status[ 'coverart' ] = $coverart ?: '';
+	$status[ 'coverart' ] = getCoverart( $file );
 } else if ( $status[ 'ext' ] === 'radio' ) {
-	$urlname = str_replace( '/', '|', $status[ 'file' ] );
-	$plfile = "/srv/http/assets/img/webradiopl/$urlname";
-	if ( !file_exists( $plfile ) ) $plfile = "/srv/http/assets/img/webradios/$urlname";
-	$status[ 'coverart' ] = file_exists( $plfile ) ? explode( "\n", file_get_contents( $plfile ) )[ 1 ] : '';
+	$status[ 'coverart' ] = 0;
+	$filename = str_replace( '/', '|', $status[ 'file' ] );
+	$file = "/srv/http/assets/img/webradios/$filename";
+	if ( !file_exists( $file ) ) $file = "/srv/http/assets/img/webradiopl/$filename";
+	if ( file_exists( $file ) ) {
+		$content = explode( '^^', file_get_contents( $file ) );
+		if ( count( $content ) > 1 ) $status[ 'coverart' ] = $content[ 2 ];
+	}
 } else if ( $activePlayer === 'Spotify' ) {
 	include '/srv/http/app/libs/runeaudio.php';
 	$spop = openSpopSocket( 'localhost', 6602, 1 );
