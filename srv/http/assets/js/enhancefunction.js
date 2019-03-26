@@ -327,10 +327,8 @@ function renderPlayback() {
 		}
 		// webradio coverart
 		if ( status.coverart ) {
-			var coverart = status.coverart;
-			coverart = coverart.slice( 0, -3 ) + hash + coverart.slice( -4 );
 			$( '#cover-art' )
-				.attr( 'src', coverart )
+				.attr( 'src', status.coverart )
 				.css( 'border-radius', '' );
 			$( '#coverartoverlay' ).addClass( 'hide' );
 		} else {
