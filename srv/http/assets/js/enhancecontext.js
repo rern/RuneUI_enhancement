@@ -262,11 +262,11 @@ function webRadioCoverart() {
 				var picacanvas = document.createElement( 'canvas' );
 					picacanvas.width = picacanvas.height = 80;
 					window.pica.resizeCanvas( img, picacanvas, picaOption, function() {
-					newimg = '\n'+ picacanvas.toDataURL( 'image/jpeg', 0.9 ) +'\n'+ newimg;
+					newthumb = picacanvas.toDataURL( 'image/jpeg', 0.9 );
 				} );
 				var webradioname = path.replace( /\//g, '|' );
-				$.post( 'enhance.php', { imagefile: webradioname, base64webradio: newimg }, function( result ) {
-						if ( result != -1 ) {
+				$.post( 'enhance.php', { imagefile: webradioname, base64webradio: name +'"\n"'+ newthumb +'"\n"'+ newimg }, function( result ) {
+						if ( result !== -1 ) {
 							notify( 'Coverart Changed', name );
 						} else {
 							info( {
