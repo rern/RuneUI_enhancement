@@ -849,13 +849,13 @@ $( '.home-block' ).click( function() {
 	if ( $this.hasClass( 'home-bookmark' ) || id === 'home-coverart' ) return
 	
 	var type = id.replace( 'home-', '' );
-	if ( type === 'usb' && !$( '#home-usb gr' ).length ) {
+	if ( type === 'usb' && !$( '#home-usb gr' ).text() ) {
 		location.href = '/sources';
 		return
-	} else if ( type === 'nas' && !$( '#home-nas gr' ).length ) {
+	} else if ( type === 'nas' && !$( '#home-nas gr' ).text() ) {
 		location.href = '/sources/add';
 		return
-	} else if ( type === 'webradio' && !$( '#home-webradio gr' ).length ) {
+	} else if ( type === 'webradio' && !$( '#home-webradio gr' ).text() ) {
 		webRadioNew();
 		return
 	}
