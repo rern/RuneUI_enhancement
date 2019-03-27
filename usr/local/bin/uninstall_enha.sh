@@ -51,7 +51,7 @@ files=( /srv/http/assets/img/webradios/* )
 for file in ${files[@]}; do
 	url=$( basename $file )
 	url=${url//|/\/}
-	name=$( cat $file | cut -d'^^' -f1 )
+	name=$( head -n1 $file )
 	string=$( cat <<EOF
 [playlist]
 NumberOfEntries=1
