@@ -937,16 +937,6 @@ function dataParse( data, path, querytype, plid ) {
 			
 			var data = htmlPlaylist( data );
 			content = data.content;
-		} else if ( data[ 0 ].webradio ) {
-			$.each( data, function( i, value ) {
-				if ( value.webradio ) {
-					content += data2html( value, path );
-				} else if ( value.index ) {
-					value.index.forEach( function( char ) {
-						$( '#db-index .index-'+ char ).removeClass( 'gr' );
-					} );
-				}
-			} );
 		} else if ( data[ 0 ].directory || data[ 0 ].file || data[ 0 ].playlist ) {
 			var arraydir = [];
 			var arrayfile = [];
@@ -956,20 +946,27 @@ function dataParse( data, path, querytype, plid ) {
 			var name;
 			var index;
 			$.each( data, function( i, value ) {
-				if ( value.album ) {
-					album = value.album;
-				} else if ( value.artist ) {
-					artist = value.artist;
-				} else if ( value.composer ) {
-					composer = value.composer;
-				} else if ( value.genre ) {
-					genre = value.genre;
-				} else if ( value.albumartist ) {
-					albumartist = value.albumartist;
-				} else if ( value.index ) {
-					value.index.forEach( function( char ) {
-						$( '#db-index .index-'+ char ).removeClass( 'gr' );
-					} );
+				if ( value.coverart ) {
+					coverart = value.coverart;
+					var coversrc = coverart || coverrune;
+					var browsemode = GUI.dbbackdata.length ? GUI.dbbackdata[ 0 ].browsemode : '';
+					var artistmode = [ 'artist', 'composer', 'genre' ].indexOf( browsemode ) !== -1 ? 1 : 0;
+					var composerhtml = ( composer && browsemode === 'composer' ) ? '<i class="fa fa-composer"></i><span class="biocomposer">'+ composer +'</span><br>' : '';
+					var genrehtml = genre && genre !== -1 ? '<span><i class="fa fa-genre"></i>'+ genre +'</span><br>' : '';
+					var nocover = !coverart ? ' nocover' : '';
+					content += '<li class="licover">'
+							  +'<a class="lipath">'+ path +'</a><a class="liname">'+ path.replace(/^.*\//, '') +'</a>'
+							  +'<div class="licoverimg'+ nocover +'"><img src="'+ coversrc +'" class="coversmall"></div>'
+							  +'<span class="liinfo">'
+								  +'<bl class="lialbum">'+ album +'</bl><br>'
+								  + composerhtml
+								  +'<i class="fa fa-'+ ( artistmode ? 'artist' : 'albumartist' ) +'"></i><span class="bioartist">'+ ( artistmode ? artist : albumartist ) +'</span><br>'
+								  + genrehtml
+								  +'<i class="fa fa-music db-icon" data-target="#context-menu-'+ ( GUI.browsemode !== 'file' ? GUI.browsemode : 'folder' ) +'"></i>'+ arrayfile.length +'<gr> • </gr>'+ second2HMS( litime )
+							  +'</span>'
+							  +'</li>';
+				} else if ( value.webradio ) {
+					content += data2html( value, path );
 				} else if ( value.directory || value.file || value.playlist ) {
 					name = value.directory || value.file || value.playlist;
 					if ( value.directory ) {
@@ -981,29 +978,22 @@ function dataParse( data, path, querytype, plid ) {
 					} else if ( value.playlist ) {
 						arraypl.push( value );
 					}
-				} else if ( value.coverart ) {
-					coverart = value.coverart;
+				} else if ( value.index ) {
+					value.index.forEach( function( char ) {
+						$( '#db-index .index-'+ char ).removeClass( 'gr' );
+					} );
+				} else if ( value.album ) {
+					album = value.album;
+				} else if ( value.artist ) {
+					artist = value.artist;
+				} else if ( value.composer ) {
+					composer = value.composer;
+				} else if ( value.genre ) {
+					genre = value.genre;
+				} else if ( value.albumartist ) {
+					albumartist = value.albumartist;
 				}
 			} );
-			if ( coverart || !data[ 0 ].directory ) {
-				var coversrc = coverart || coverrune;
-				var browsemode = GUI.dbbackdata.length ? GUI.dbbackdata[ 0 ].browsemode : '';
-				var artistmode = [ 'artist', 'composer', 'genre' ].indexOf( browsemode ) !== -1 ? 1 : 0;
-				var composerhtml = ( composer && browsemode === 'composer' ) ? '<i class="fa fa-composer"></i><span class="biocomposer">'+ composer +'</span><br>' : '';
-				var genrehtml = genre && genre !== -1 ? '<span><i class="fa fa-genre"></i>'+ genre +'</span><br>' : '';
-				var nocover = !coverart ? ' nocover' : '';
-				content += '<li class="licover">'
-						  +'<a class="lipath">'+ path +'</a><a class="liname">'+ path.replace(/^.*\//, '') +'</a>'
-						  +'<div class="licoverimg'+ nocover +'"><img src="'+ coversrc +'" class="coversmall"></div>'
-						  +'<span class="liinfo">'
-							  +'<bl class="lialbum">'+ album +'</bl><br>'
-							  + composerhtml
-							  +'<i class="fa fa-'+ ( artistmode ? 'artist' : 'albumartist' ) +'"></i><span class="bioartist">'+ ( artistmode ? artist : albumartist ) +'</span><br>'
-							  + genrehtml
-							  +'<i class="fa fa-music db-icon" data-target="#context-menu-'+ ( GUI.browsemode !== 'file' ? GUI.browsemode : 'folder' ) +'"></i>'+ arrayfile.length +'<gr> • </gr>'+ second2HMS( litime )
-						  +'</span>'
-						  +'</li>';
-			}
 			var arraydirL = arraydir.length;
 			if ( arraydirL ) {
 				for ( i = 0; i < arraydirL; i++ ) content += data2html( arraydir[ i ], path );

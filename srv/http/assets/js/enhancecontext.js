@@ -66,9 +66,9 @@ $( '.contextmenu a' ).click( function() {
 			var pathname = GUI.list.path.replace( /\//g, '|' );
 			pathname = pathname.replace( /"/g, '\\"' );
 			var namepl = GUI.list.name.replace( /"/g, '\\"' );
-			if ( GUI.list.img ) namepl += '^^'+ GUI.list.thumb +'^^'+ GUI.list.img;
+			if ( GUI.list.img ) namepl += '\n'+ GUI.list.thumb +'\n'+ GUI.list.img;
 			mpcCmd = 'mpc add "'+ GUI.list.path +'"'
-					+'; /usr/bin/echo "*'+ namepl +'" > "/srv/http/assets/img/webradiopl/'+ pathname +'"';
+					+'; /usr/bin/echo -en "*'+ namepl +'" > "/srv/http/assets/img/webradiopl/'+ pathname +'"';
 		} else {
 			mpcCmd = GUI.list.isfile ? 'mpc add "'+ name +'"' : 'mpc ls "'+ name +'" | mpc add';
 		}
@@ -293,7 +293,7 @@ function webRadioCoverart() {
 function webRadioSave( name, url ) {
 	var urlname = url.replace( /\//g, '|' );
 	$.post( 'enhance.php', { bash: '/usr/bin/cat "/srv/http/assets/img/webradiopl/'+ urlname +'"' }, function( data ) {
-		var base64 = data.split( '^^' )[ 2 ];
+		var base64 = data.split( '\n' )[ 2 ];
 		var $img = '<br><img src="'+ base64 +'">';
 		info( {
 			  icon         : 'webradio'
