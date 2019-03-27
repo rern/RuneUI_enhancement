@@ -151,12 +151,12 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 } else if ( isset( $_POST[ 'imagefile' ] ) ) {
 	$imagefile = $_POST[ 'imagefile' ];
 	if ( isset( $_POST[ 'base64bookmark' ] ) ) {
-		$filename = '/srv/http/assets/img/bookmarks/'.$imagefile;
-		file_put_contents( $filename, $_POST[ 'base64bookmark' ] );
+		$file = '/srv/http/assets/img/bookmarks/'.$imagefile;
+		file_put_contents( $file, $_POST[ 'base64bookmark' ] );
 		exit;
 	} else if ( isset( $_POST[ 'base64webradio' ] ) ) {
-		$filename = '/srv/http/assets/img/webradios/'.$imagefile;
-		file_put_contents( $filename, $_POST[ 'base64webradio' ] ) || echo -1;
+		$file = '/srv/http/assets/img/webradios/'.$imagefile;
+		file_put_contents( $file, $_POST[ 'base64webradio' ] ) || exit( -1 );
 		exit;
 	}
 	
