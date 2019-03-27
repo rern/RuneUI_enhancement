@@ -163,6 +163,7 @@ function bookmarkNew() {
 			, width     : 500
 			, message   : 'Bookmark'
 						 +'<br><img src="'+ base64img +'">'
+						 +'<br><w>'+ path +'</w>'
 			, msgalign  : 'center'
 			, cancel    : 1
 			, ok        : function() {
@@ -172,7 +173,7 @@ function bookmarkNew() {
 		}
 		if ( !base64img ) {
 			infodata.message      = 'Bookmark'
-								   +'<br><white>'+ path +'</white>'
+								   +'<br><w>'+ path +'</w>'
 								   +'<br>As:';
 			infodata.textvalue    = name;
 			infodata.textrequired = 1;
@@ -192,7 +193,7 @@ function bookmarkRename( name, path, $block ) {
 		, title        : 'Rename Bookmark'
 		, width        : 500
 		, message      : 'Rename'
-						+'<br><white>'+ name +'</white>'
+						+'<br><w>'+ name +'</w>'
 						+'<br>'+ path
 						+'<br>To:'
 		, msgalign     : 'center'
@@ -369,7 +370,7 @@ function webRadioRename() {
 		, title        : 'Rename Webradio'
 		, width        : 500
 		, message      : 'Rename:'
-						+'<br><white>'+ name +'</white>'
+						+'<br><w>'+ name +'</w>'
 						+'<br>'+ url
 						+'<br>To:'
 		, msgalign     : 'center'
@@ -393,7 +394,7 @@ function webRadioDelete() {
 		, title    : 'Delete Webradio'
 		, width    : 500
 		, message  : 'Delete?'
-					+'<br><white>'+ name +'</white>'
+					+'<br><w>'+ name +'</w>'
 					+'<br>'+ url
 		, msgalign : 'center'
 		, cancel   : 1
@@ -424,7 +425,7 @@ function playlistRename() {
 		  icon         : 'list-ul'
 		, title        : 'Rename Playlist'
 		, message      : 'Rename:'
-						+'<br><white>'+ name +'</white>'
+						+'<br><w>'+ name +'</w>'
 						+'<br>To:'
 		, msgalign     : 'center'
 		, textvalue    : name
@@ -454,7 +455,7 @@ function playlistVerify( name, oldname ) {
 		info( {
 			  icon    : 'list-ul'
 			, title   : oldname ? 'Rename Playlist' : 'Add Playlist'
-			, message : '<i class="fa fa-warning"></i><white>Name</white> cannot be blank.'
+			, message : '<i class="fa fa-warning"></i><w>Name</w> cannot be blank.'
 			, ok      : function() {
 				playlistNew();
 			}
@@ -469,7 +470,7 @@ function playlistVerify( name, oldname ) {
 			info( {
 				  icon        : 'list-ul'
 				, title       : oldname ? 'Rename Playlist' : 'Add Playlist'
-				, message     : '<i class="fa fa-warning"></i><white>'+ name +'</white>'
+				, message     : '<i class="fa fa-warning"></i><w>'+ name +'</w>'
 							+'<br>Already exists.'
 				, msgalign    : 'center'
 				, cancellabel : 'Back'
@@ -489,7 +490,7 @@ function playlistDelete() {
 		  icon     : 'list-ul'
 		, title    : 'Delete Playlist'
 		, message  : 'Delete?'
-					+'<br><white>'+ GUI.list.name +'</white>'
+					+'<br><w>'+ GUI.list.name +'</w>'
 		, msgalign : 'center'
 		, cancel   : 1
 		, oklabel  : 'Delete'

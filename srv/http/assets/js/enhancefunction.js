@@ -692,7 +692,7 @@ function displayCheckbox( checkboxes ) {
 	} );
 	return html;
 }
-function renderLibraryBlocks( bookmarks, refresh ) { // on visible
+function renderLibraryBlocks( bookmarks ) { // on visible
 	var content = '';
 	$( '.bookmark' ).remove();
 	$.each( bookmarks, function( i, bookmark ) {
@@ -711,7 +711,6 @@ function renderLibraryBlocks( bookmarks, refresh ) { // on visible
 	} );
 	$( '#divhomeblocks' ).append( content ).promise().done( function() {
 		orderLibrary();
-		if ( refresh ) renderLibrary();
 	} );
 }
 function orderLibrary() {
