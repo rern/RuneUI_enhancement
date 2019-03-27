@@ -185,10 +185,11 @@ mkdir -p $dir
 chown http:http $dir
 
 # convert webradios
+echo -e "$bar Convert Webradios data ..."
 # filename: http:||webradio|url
 # content:
 #	name only  - name
-#	with image - name^^base64thumbnail^^base64image
+#	with image - name\nbase64thumbnail\nbase64image
 makeDirLink webradios
 dir=/srv/http/assets/img/webradios
 webradios=$( redis-cli hgetall webradios )
@@ -199,11 +200,13 @@ if [[ $webradios ]]; then
 		name=${lines[ $i ]}
 		url=${lines[ $i + 1 ]}
 		echo $name > "$dir/${url//\//|}"
+		echo $name - $url
 	done
 fi
 chown -R http:http $dir
 
 # convert old bookmarks
+echo -e "$bar Convert Bookmarks data ..."
 # filename: path|to|bookmark
 # content:
 #	name  - name
@@ -221,6 +224,7 @@ if [[ $bookmarks ]]; then
 		name=${name/name:}
 		path=${path/path:}
 		echo $name > "$dir/${path//\//|}"
+		echo $path
 	done
 fi
 # convert new bookmarks (to be removed in next version)
@@ -236,6 +240,7 @@ if [[ $bkmarks ]]; then
 		else
 			echo ${lines[$i]} > "$dir/${mpdpath//\//|}"
 		fi
+		echo $mpdpath
 	done
 	redis-cli del bkmarks &> /dev/null
 fi
