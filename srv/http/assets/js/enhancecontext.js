@@ -238,9 +238,8 @@ function webRadioCoverart() {
 	var name = GUI.list.name;
 	var path = GUI.list.path;
 	var urlname = path.replace( /\//g, '|' );
-	var webradiopath = '/srv/http/assets/img/webradios';
 	$.post( 'enhance.php', { bash: '/usr/bin/cat "/srv/http/assets/img/webradios/'+ urlname +'"' }, function( data ) {
-		var data = data.split( '^^' ); // NAME^^COVERART^^THUMBNAIL
+		var data = data.split( '\n' );
 		if ( data.length > 1 ) {
 			var name = data[ 0 ];
 			var $img = '<img src="'+ data[ 2 ] +'">';
@@ -263,12 +262,13 @@ function webRadioCoverart() {
 				var picacanvas = document.createElement( 'canvas' );
 					picacanvas.width = picacanvas.height = 80;
 					window.pica.resizeCanvas( img, picacanvas, picaOption, function() {
-					newimg = '^^'+ picacanvas.toDataURL( 'image/jpeg', 0.9 ) +'^^'+ newimg;
+					newimg = '\n'+ picacanvas.toDataURL( 'image/jpeg', 0.9 ) +'\n'+ newimg;
 				} );
-				$.post( 'enhance.php', { webradiocoverart: path, base64: newimg }, function( result ) {
-						if ( result ) {
+				var webradioname = path.replace( /\//g, '|' );
+				$.post( 'enhance.php', { imagefile: webradioname, base64webradio: newimg }, function( result ) {
+						if ( result != -1 ) {
 							notify( 'Coverart Changed', name );
-						} else if ( std == -1 ) {
+						} else {
 							info( {
 								  icon    : 'webradio'
 								, title   : 'Change Coverart'

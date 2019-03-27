@@ -945,9 +945,9 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 			, fileoklabel : 'Replace'
 			, cancel      : 1
 			, ok          : function() {
-				var bookmarkfile = ( path +'^^'+ name ).replace( /\//g, '|' );
+				var bookmarkname = path.replace( /\//g, '|' );
 				var newimg = $( '#infoMessage .newimg' ).attr( 'src' );
-				$.post( 'enhance.php', { imagefile: path, bookmarkbase64: newimg }, function() {
+				$.post( 'enhance.php', { imagefile: bookmarkname, base64bookmark: newimg }, function() {
 					var $img = $this.find( 'img' );
 					if ( $img.length ) {
 						$img.attr( 'src', newimg  );
