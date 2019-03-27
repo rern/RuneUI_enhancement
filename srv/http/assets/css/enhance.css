@@ -1077,7 +1077,7 @@ wh, gr { font-weight: 300; }
 }
 .home-block i {
 	display: inline-block;
-	width: 40px;
+	width: 60px;
 	height: 40px;
 	line-height: 40px;
 	font-size: 48px;
@@ -1086,7 +1086,6 @@ wh, gr { font-weight: 300; }
 	text-shadow: 2px 2px 4px #000000;
 }
 #home-blocks gr {
-	margin-left: 14px;
 	font-size: 18px;
 	line-height: 18px;
 }
