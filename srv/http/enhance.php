@@ -148,21 +148,22 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$count = 1;
 	}
 	pushstream( 'webradio', $count );
-} else if ( isset( $_POST[ 'webradiocoverart' ] ) ) {
-	$urlname = str_replace( '/', '|', $_POST[ 'webradiocoverart' ] );
-	$file = "/srv/http/assets/img/webradiopl/$urlname";
-	file_put_contents( $file, $_POST[ 'base64' ], FILE_APPEND ) || exit( '-1' );
-	echo 1;
 } else if ( isset( $_POST[ 'imagefile' ] ) ) {
 	$imagefile = $_POST[ 'imagefile' ];
-	if ( isset( $_POST[ 'bookmarkbase64' ] ) ) {
+	if ( isset( $_POST[ 'base64bookmark' ] ) ) {
 		$filename = '/srv/http/assets/img/bookmarks/'.$imagefile;
-		file_put_contents( $filename, $_POST[ 'bookmarkbase64' ] );
+		file_put_contents( $filename, $_POST[ 'base64bookmark' ] );
+		exit;
+	} else if ( isset( $_POST[ 'base64webradio' ] ) ) {
+		$filename = '/srv/http/assets/img/webradios/'.$imagefile;
+		file_put_contents( $filename, $_POST[ 'base64webradio' ], FILE_APPEND ) || exit( '-1' );
+		echo 1;
 		exit;
 	}
 	
+	// coverart or thumbnail
 	$coverfile = isset( $_POST[ 'coverfile' ] );
-	if ( !isset( $_POST[ 'base64' ] ) ) {
+	if ( !isset( $_POST[ 'base64' ] ) ) { // delete
 		if ( $coverfile ) { // backup coverart in album dir
 			exec( "$sudo/mv -f \"$imagefile\"{,.backup}", $output, $std );
 		} else {
@@ -182,14 +183,6 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$std = 0;
 	}
 	echo $std;
-	if ( $std === 0 && isset( $_POST[ 'urlname' ] ) ) {
-		$file = '/srv/http/assets/img/webradios/'.$_POST[ 'urlname' ];
-		$name = explode( "\n", file_get_contents( $file ) )[ 0 ];
-		file_put_contents( $file, $name."\n".$imagefile );
-		// 100x100 thumbnail
-		$thumbfile = substr( $imagefile, 0, -4 ).'-100px.jpg';
-		exec( '/usr/bin/sudo /usr/bin/convert "'.$imagefile.'" -thumbnail 100x100 -unsharp 0x.5 "'.$thumbfile.'"' );
-	}
 } else if ( isset( $_POST[ 'getbookmarks' ] ) ) {
 	$data = getBookmark( $redis );
 	echo json_encode( $data );
@@ -202,7 +195,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	}
 	
 	foreach( $files as $file ) {
-		$content = file_get_contents( "$dir/$file" ); // name, base64thumbnail, base64image
+		$content = trim( file_get_contents( "$dir/$file" ) ); // name, base64thumbnail, base64image
 		$nameimg = explode( "\n", $content );
 		if ( count( $nameimg ) > 1 ) {
 			$name = $nameimg[ 0 ];
@@ -468,7 +461,7 @@ function list2array( $result ) {
 			$webradiofile = "/srv/http/assets/img/webradios/$filename";
 			if ( !file_exists( $webradiofile ) ) $webradiofile = "/srv/http/assets/img/webradiopl/$filename";
 			if ( file_exists( $webradiofile ) ) {
-				$content = file_get_contents( $webradiofile );
+				$content = trim( file_get_contents( $webradiofile ) );
 				$nameimg = explode( "\n", $content );
 				if ( count( $nameimg ) > 1 ) {
 					$title = $nameimg[ 0 ];
