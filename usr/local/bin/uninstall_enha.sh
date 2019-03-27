@@ -70,7 +70,7 @@ files=( /srv/http/assets/img/bookmarks/* )
 for file in "${files[@]}"; do
 	path=$( basename $file )
 	path=${path//|/\/}
-	name=$( cat $file | cut -d'^^' -f1 )
+	name=$( head -n1 $file )
 	(( idx++ ))
 	redis-cli hset bookmarks $idx "{\"name\":\"$name\",\"path\":\"$path\"}" &> /dev/null
 done
