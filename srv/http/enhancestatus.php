@@ -79,7 +79,7 @@ if ( $status[ 'ext' ] !== 'radio' && $activePlayer === 'MPD' ) {
 	$file = "/srv/http/assets/img/webradios/$filename";
 	if ( !file_exists( $file ) ) $file = "/srv/http/assets/img/webradiopl/$filename";
 	if ( file_exists( $file ) ) {
-		$content = explode( '^^', file_get_contents( $file ) );
+		$content = explode( "\n", file_get_contents( $file ) );
 		if ( count( $content ) > 1 ) $status[ 'coverart' ] = $content[ 2 ];
 	}
 } else if ( $activePlayer === 'Spotify' ) {
