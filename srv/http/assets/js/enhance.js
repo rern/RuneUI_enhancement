@@ -845,7 +845,7 @@ $( '#home-blocks' ).contextmenu( function( e ) { // disable default image contex
 } );
 $( '.home-block' ).click( function() {
 	var id = this.id;
-	if ( id === 'home-coverart' ) return
+	if ( id === 'home-coverart' || $( this ).hasClass( 'home-bookmark' ) ) return
 	
 	if ( id === 'home-usb' && !$( '#home-usb gr' ).text() ) {
 		location.href = '/sources';
@@ -916,6 +916,7 @@ $( '#infoFileBox' ).change( function() {
 	reader.readAsDataURL( this.files[ 0 ] ); // load filereader
 } );
 $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - id changed on renamed
+console.log('tap')
 	if ( $( '.edit' ).length && !$( e.target ).hasClass( 'edit' )  ) {
 		$( '.edit' ).remove();
 		$( '.home-bookmark' ).find( '.fa-bookmark, .bklabel, img' ).css( 'opacity', '' );
@@ -970,6 +971,7 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 		} );
 	}
 } ).on( 'taphold', '.home-bookmark', function() {
+console.log('taphold')
 	if ( GUI.drag ) return
 	
 	GUI.bookmarkedit = 1;
