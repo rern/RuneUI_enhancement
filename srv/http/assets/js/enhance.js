@@ -844,22 +844,21 @@ $( '#home-blocks' ).contextmenu( function( e ) { // disable default image contex
 	e.preventDefault();
 } );
 $( '.home-block' ).click( function() {
-	var $this = $( this );
 	var id = this.id;
-	if ( $this.hasClass( 'home-bookmark' ) || id === 'home-coverart' ) return
+	if ( id === 'home-coverart' ) return
 	
-	var type = id.replace( 'home-', '' );
-	if ( type === 'usb' && !$( '#home-usb gr' ).text() ) {
+	if ( id === 'home-usb' && !$( '#home-usb gr' ).text() ) {
 		location.href = '/sources';
 		return
-	} else if ( type === 'nas' && !$( '#home-nas gr' ).text() ) {
+	} else if ( id === 'home-nas' && !$( '#home-nas gr' ).text() ) {
 		location.href = '/sources/add';
 		return
-	} else if ( type === 'webradio' && !$( '#home-webradio gr' ).text() ) {
+	} else if ( id === 'home-webradio' && !$( '#home-webradio gr' ).text() ) {
 		webRadioNew();
 		return
 	}
 	
+	var $this = $( this );
 	var path = $this.find( '.lipath' ).text();
 	var name = $this.find( '.bklabel' ).text();
 	GUI.plugin = $this.data( 'plugin' );
