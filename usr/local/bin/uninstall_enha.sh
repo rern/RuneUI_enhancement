@@ -49,7 +49,7 @@ restorefile $files
 # convert file based webradios back to redis
 files=( /srv/http/assets/img/webradios/* )
 for file in ${files[@]}; do
-	url=$( basename $file )
+	url=$( basename "$file" )
 	url=${url//|/\/}
 	name=$( head -n1 $file )
 	string=$( cat <<EOF
@@ -68,9 +68,9 @@ mpc update Webradio &> /dev/null
 idx=$( redis-cli get bookmarksidx )
 files=( /srv/http/assets/img/bookmarks/* )
 for file in "${files[@]}"; do
-	path=$( basename $file )
+	path=$( basename "$file" )
 	path=${path//|/\/}
-	name=$( basename $path )
+	name=$( basename "$path" )
 	(( idx++ ))
 	redis-cli hset bookmarks $idx "{\"name\":\"$name\",\"path\":\"$path\"}" &> /dev/null
 done
