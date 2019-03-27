@@ -53,24 +53,17 @@ $dir = '/srv/http/assets/img/bookmarks';
 $files = array_slice( scandir( $dir ), 2 ); // remove ., ..
 if ( count( $files ) ) {
 	foreach( $files as $file ) {
-		$isjpg = substr( $file, -4 ) === '.jpg';
-		if ( $isjpg ) {
-			$path = substr( $file, 0, -4 );
-			$coverart = "$dir/$path.$time.jpg";
-			$iconhtml = '<img class="bkcoverart" src="'.$coverart.'">';
+		$content = file_get_contents( "$dir/$file" );
+		if ( substr( $content, 0, 10 ) === 'data:image' ) {
+			$iconhtml = '<img class="bkcoverart" src="'.$content.'">';
 		} else {
-			$pathname = explode( '^^', $file );
-			$name = $pathname[ 1 ];
-			$path = $pathname[ 0 ];
-			$coverart = '';
 			$iconhtml = '<i class="fa fa-bookmark"></i>'
-					   .'<div class="divbklabel"><span class="bklabel label">'.$name.'</span></div>';
+					   .'<div class="divbklabel"><span class="bklabel label">'.$content.'</span></div>';
 		}
-		$path = str_replace( '|', '/', $path );
 		$blockhtml.= '
 			<div class="divblock bookmark">
 				<div class="home-block home-bookmark">
-					<a class="lipath">'.$path.'</a>
+					<a class="lipath">'.str_replace( '|', '/', $file ).'</a>
 					'.$iconhtml.'
 				</div>
 			</div>
