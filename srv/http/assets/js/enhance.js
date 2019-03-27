@@ -1768,12 +1768,7 @@ pushstreams.webradio.onmessage = function( data ) {
 	var data = data[ 0 ];
 	var count = Number( $( '#home-webradio gr' ).text() );
 	count = count + data;
-	if ( !count )  {
-		$( '#home-webradio gr' ).remove();
-	} else {
-		if ( !$( '#home-webradio gr' ).length ) $( '#home-webradio i' ).after( '<gr></gr>' );
-		$( '#home-webradio gr' ).text( numFormat( count ) );
-	}
+	$( '#home-webradio gr' ).text( count ? numFormat( count ) : '' );
 	if ( GUI.library ) {
 		if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) $( '#home-webradio' ).click();
 	} else if ( GUI.playlist ) {
