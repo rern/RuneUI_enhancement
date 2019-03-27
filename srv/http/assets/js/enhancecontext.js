@@ -196,7 +196,6 @@ function bookmarkRename( name, path, $block ) {
 		, message      : 'Rename'
 						+'<br><i class="fa fa-bookmark fa-3x"></i>'
 						+'<br><w>'+ name +'</w>'
-						+'<br>'+ path
 						+'<br>To:'
 		, msgalign     : 'center'
 		, textvalue    : name
@@ -226,7 +225,6 @@ function bookmarkDelete( path, name, $block ) {
 		, title    : 'Remove Bookmark'
 		, message  : 'Remove?'
 					+'<br>'+ icon
-					+'<br>'+ path
 		, msgalign : 'center'
 		, cancel   : 1
 		, oklabel  : 'Remove'
