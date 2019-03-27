@@ -156,8 +156,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		exit;
 	} else if ( isset( $_POST[ 'base64webradio' ] ) ) {
 		$filename = '/srv/http/assets/img/webradios/'.$imagefile;
-		file_put_contents( $filename, $_POST[ 'base64webradio' ], FILE_APPEND ) || exit( '-1' );
-		echo 1;
+		file_put_contents( $filename, $_POST[ 'base64webradio' ] ) || echo -1;
 		exit;
 	}
 	
