@@ -6,7 +6,7 @@ $time = time();
 // counts
 $count = exec( '/srv/http/enhancecount.sh' );
 $count = explode( ' ', $count );
-$count = array(
+$counts = array(
 	  'artist'      => $count[ 0 ]
 	, 'album'       => $count[ 1 ]
 	, 'song'        => $count[ 2 ]
@@ -36,13 +36,13 @@ $blocks = array( // 'id' => array( 'path', 'icon', 'name' );
 foreach( $blocks as $id => $value ) {
 	$browsemode = in_array( $id, array( 'album', 'artist', 'albumartist', 'composer', 'genre', 'coverart' ) ) ? ' data-browsemode="'.$id.'"' : '';
 	$plugin = in_array( $id, array( 'spotify', 'dirble', 'jamendo' ) ) ? ' data-plugin="'.$value[ 0 ].'"' : '';
-	$counthtml = $count[ $value[ 1 ] ] ? '<gr>'.number_format( $count[ $value[ 1 ] ] ).'</gr>' : '';
+	$count = $counts[ $value[ 1 ] ] ? number_format( $counts[ $value[ 1 ] ] ) : '';
 	$blockhtml.= '
 		<div class="divblock">
 			<div id="home-'.$id.'" class="home-block"'.$browsemode.$plugin.'>
 				<a class="lipath">'.$value[ 0 ].'</a>
 				<i class="fa fa-'.$value[ 1 ].'"></i>
-				'.$counthtml.'
+				<gr>'.$count.'</gr>
 				<a class="label">'.$value[ 2 ].'</a>
 			</div>
 		</div>
