@@ -258,23 +258,22 @@ function webRadioCoverart() {
 			, cancel      : 1
 			, ok          : function() {
 				var newimg = $( '#infoMessage .newimg' ).attr( 'src' );
-				var img = $( '#infoMessage img' )[ 0 ];
 				var picacanvas = document.createElement( 'canvas' );
-					picacanvas.width = picacanvas.height = 80;
-					window.pica.resizeCanvas( img, picacanvas, picaOption, function() {
-					newthumb = picacanvas.toDataURL( 'image/jpeg', 0.9 );
-				} );
-				var webradioname = path.replace( /\//g, '|' );
-				$.post( 'enhance.php', { imagefile: webradioname, base64webradio: name +'"\n"'+ newthumb +'"\n"'+ newimg }, function( result ) {
-						if ( result !== -1 ) {
-							notify( 'Coverart Changed', name );
-						} else {
-							info( {
-								  icon    : 'webradio'
-								, title   : 'Change Coverart'
-								, message : '<i class="fa fa-warning"></i>Upload image failed.'
-							} );
-						}
+				picacanvas.width = picacanvas.height = 80;
+				window.pica.resizeCanvas( $( '#infoMessage .newimg' )[ 0 ], picacanvas, picaOption, function() {
+					var newthumb = picacanvas.toDataURL( 'image/jpeg', 0.9 );
+					var webradioname = path.replace( /\//g, '|' );
+					$.post( 'enhance.php', { imagefile: webradioname, base64webradio: name +'\n'+ newthumb +'\n'+ newimg }, function( result ) {
+							if ( result != -1 ) {
+								notify( 'Coverart Changed', name );
+							} else {
+								info( {
+									  icon    : 'webradio'
+									, title   : 'Change Coverart'
+									, message : '<i class="fa fa-warning"></i>Upload image failed.'
+								} );
+							}
+					} );
 				} );
 				var $img = $( '#db-entries li.active img' );
 				if ( $img.length ) {
