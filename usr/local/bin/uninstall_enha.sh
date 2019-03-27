@@ -47,6 +47,7 @@ files="
 restorefile $files
 
 # convert file based webradios back to redis
+echo -e "$bar Convert Webradios data ..."
 files=( /srv/http/assets/img/webradios/* )
 for file in ${files[@]}; do
 	url=$( basename "$file" )
@@ -60,6 +61,7 @@ Title1=$name
 EOF
 )
 	echo "$string" > "/mnt/MPD/Webradio/$name.pls"
+	echo $name - $url
 done
 
 mpc update Webradio &> /dev/null
@@ -73,6 +75,7 @@ for file in "${files[@]}"; do
 	name=$( basename "$path" )
 	(( idx++ ))
 	redis-cli hset bookmarks $idx "{\"name\":\"$name\",\"path\":\"$path\"}" &> /dev/null
+	echo $path
 done
 
 systemctl restart rune_PL_wrk
