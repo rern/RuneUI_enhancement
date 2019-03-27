@@ -173,6 +173,7 @@ function bookmarkNew() {
 		}
 		if ( !base64img ) {
 			infodata.message      = 'Bookmark'
+								   +'<br><i class="fa fa-bookmark fa-3x"></i>'
 								   +'<br><w>'+ path +'</w>'
 								   +'<br>As:';
 			infodata.textvalue    = name;
@@ -193,6 +194,7 @@ function bookmarkRename( name, path, $block ) {
 		, title        : 'Rename Bookmark'
 		, width        : 500
 		, message      : 'Rename'
+						+'<br><i class="fa fa-bookmark fa-3x"></i>'
 						+'<br><w>'+ name +'</w>'
 						+'<br>'+ path
 						+'<br>To:'
@@ -216,15 +218,15 @@ function bookmarkDelete( path, name, $block ) {
 	if ( src ) {
 		var icon = '<img src="'+ src +'">'
 	} else {
-		var icon = '<div class="infobookmark">'
-					+'<i class="fa fa-bookmark"></i><span class="bklabel">'+ name +'</span>'
-				  +'</div>'
+		var icon = '<i class="fa fa-bookmark fa-3x"></i>'
+				  +'<br><span class="bklabel">'+ name +'</span>'
 	}
 	info( {
 		  icon     : 'bookmark'
 		, title    : 'Remove Bookmark'
 		, message  : 'Remove?'
 					+'<br>'+ icon
+					+'<br>'+ path
 		, msgalign : 'center'
 		, cancel   : 1
 		, oklabel  : 'Remove'

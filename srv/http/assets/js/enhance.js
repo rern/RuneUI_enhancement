@@ -916,7 +916,6 @@ $( '#infoFileBox' ).change( function() {
 	reader.readAsDataURL( this.files[ 0 ] ); // load filereader
 } );
 $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - id changed on renamed
-console.log('tap')
 	if ( $( '.edit' ).length && !$( e.target ).hasClass( 'edit' )  ) {
 		$( '.edit' ).remove();
 		$( '.home-bookmark' ).find( '.fa-bookmark, .bklabel, img' ).css( 'opacity', '' );
@@ -971,7 +970,6 @@ console.log('tap')
 		} );
 	}
 } ).on( 'taphold', '.home-bookmark', function() {
-console.log('taphold')
 	if ( GUI.drag ) return
 	
 	GUI.bookmarkedit = 1;
