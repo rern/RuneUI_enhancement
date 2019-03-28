@@ -85,9 +85,9 @@ $( '.contextmenu a' ).click( function() {
 	cmd = cmd.replace( /album|artist|composer|genre/, '' );
 	var contextCommand = {
 		  add           : mpcCmd
-		, addplay       : [ mpcCmd, 'mpc play '+ ( GUI.status.playlistlength + 1 ) ]
+		, addplay       : [ mpcCmd, 'sleep 0.5', 'mpc play '+ ( GUI.status.playlistlength + 1 ) ]
 		, replace       : [ 'mpc clear', mpcCmd ]
-		, replaceplay   : [ 'mpc clear', mpcCmd, 'mpc play' ]
+		, replaceplay   : [ 'mpc clear', mpcCmd, 'sleep 0.5', 'mpc play' ]
 	}
 	if ( cmd in contextCommand ) {
 		var command = contextCommand[ cmd ];
