@@ -372,6 +372,40 @@ $( '#infoCheckBox' ).on( 'click', 'label', function() { // playback tools
 		}
 	}
 } );
+// keyboard space,  up, down, left, enter
+$( document ).keydown( function( e ) {
+	e.preventDefault();
+	if ( e.key === ' ' ) {
+		$( '#play' ).click();
+		return
+	}
+	
+	if ( !GUI.library || !$( '#home-blocks' ).hasClass( 'hide' ) ) return
+	
+	if ( e.key === 'ArrowLeft' ) $( '#db-back' ).click();
+	if ( !$( '.licover' ).length ) return
+	
+	if ( $( '#db-entries li.active' ).length ) {
+		GUI.i = $( '#db-entries li.active' ).index();
+	} else {
+		$( '.licover' ).addClass( 'active' );
+		GUI.i = 0;
+		return
+	}
+	
+	if ( e.key === 'ArrowUp' ) {
+		GUI.i -= 1;
+		$( '.db-icon' ).eq( GUI.i ).tap();
+	} else if ( e.key ===  'ArrowDown' ) {
+		GUI.i += 1;
+		$( '.db-icon' ).eq( GUI.i ).tap();
+	} else if ( e.key === 'Enter' ) {
+		var menu = $( '#db-entries li.active .db-icon' ).data( 'target' );
+		$( menu ).find( 'a:eq( 1 )' ).click();
+	}
+	$( '.contextmenu' ).addClass( 'hide' );
+} );
+
 // PLAYBACK /////////////////////////////////////////////////////////////////////////////////////
 $( '#song, #playlist-warning' ).on( 'click', 'i', function() {
 	$( '#tab-library' ).click();
@@ -1602,7 +1636,6 @@ document.addEventListener( 'visibilitychange', function() {
 		clearInterval( GUI.intElapsedPl );
 	} else {
 		$.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
-			data.order = data.order ? data.order.split( '^^' ) : [];
 			GUI.display = data;
 			$.post( 'enhance.php', { getbookmarks: 1 }, function( bookmarks ) {
 				renderLibraryBlocks( bookmarks );
