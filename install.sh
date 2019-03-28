@@ -182,7 +182,7 @@ redis-cli set mpddb "$albumartist $composer $genre" &> /dev/null
 # dirble temp
 dir=/srv/http/assets/img/webradiopl
 mkdir -p $dir
-chown http:http $dir
+chown -R http:http $dir
 
 # convert webradios
 echo -e "$bar Convert Webradios data ..."
