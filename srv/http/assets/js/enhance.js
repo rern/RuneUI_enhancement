@@ -1163,6 +1163,7 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-cover', function() {
 		, ok          : function() {
 			var newimg = $( '#infoMessage .newimg' ).attr( 'src' );
 			$.post( 'enhance.php', { imagefile: thumbfile, base64: newimg }, function( std ) {
+			console.log(std)
 				if ( std == 0 ) {
 					$img
 						.removeAttr( 'data-src' ) // lazyload 'data-src'
@@ -1645,7 +1646,7 @@ window.addEventListener( 'orientationchange', function() {
 } );
 
 var pushstreams = {};
-var streams = [ 'bookmark', 'display', 'idle', 'playlist', 'volume', 'webradio' ];
+var streams = [ 'bookmark', 'display', 'idle', 'notify', 'playlist', 'volume', 'webradio' ];
 streams.forEach( function( stream ) {
 	pushstreams[ stream ] = new PushStream( { modes: 'websocket' } );
 	pushstreams[ stream ].addChannel( stream );
@@ -1742,7 +1743,14 @@ pushstreams.idle.onmessage = function( changed ) {
 		}
 	}, GUI.debouncems );
 }
-pushstreams.playlist.onmessage = function( data ) {
+pushstreams.notify.onmessage = function( data ) {
+	var notify = data[ 0 ];
+	new PNotify( {
+		  icon        : notify.icon
+		, title       : notify.title || 'Info'
+		, text        : notify.text
+	} );
+}pushstreams.playlist.onmessage = function( data ) {
 	GUI.lsplaylists = data[ 0 ] || [];
 	if ( !GUI.playlist ) return
 	
