@@ -374,9 +374,9 @@ $( '#infoCheckBox' ).on( 'click', 'label', function() { // playback tools
 } );
 // keyboard space,  up, down, left, enter
 $( document ).keydown( function( e ) {
-	e.preventDefault();
 	if ( e.key === ' ' ) {
 		$( '#play' ).click();
+		e.preventDefault();
 		return
 	}
 	
@@ -385,8 +385,9 @@ $( document ).keydown( function( e ) {
 	if ( e.key === 'ArrowLeft' ) $( '#db-back' ).click();
 	if ( !$( '.licover' ).length ) return
 	
-	if ( $( '#db-entries li.active' ).length ) {
-		GUI.i = $( '#db-entries li.active' ).index();
+	$liactive = $( '#db-entries li.active' );
+	if ( $liactive.length ) {
+		GUI.i = $liactive.index();
 	} else {
 		$( '.licover' ).addClass( 'active' );
 		GUI.i = 0;
@@ -400,7 +401,7 @@ $( document ).keydown( function( e ) {
 		GUI.i += 1;
 		$( '.db-icon' ).eq( GUI.i ).tap();
 	} else if ( e.key === 'Enter' ) {
-		var menu = $( '#db-entries li.active .db-icon' ).data( 'target' );
+		var menu = $liactive.find( '.db-icon' ).data( 'target' );
 		$( menu ).find( 'a:eq( 1 )' ).click();
 	}
 	$( '.contextmenu' ).addClass( 'hide' );
