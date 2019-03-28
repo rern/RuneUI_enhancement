@@ -237,7 +237,7 @@ if [[ $bkmarks ]]; then
 		mpdpath=${lines[$i+1]}
 		oldfile=/mnt/MPD/$mpdpath/thumbnail.jpg
 		if [[ -e "$oldfile" ]]; then
-			base64 -w 0 "data:image/jpg;base64,$oldfile" > "$dir/${mpdpath//\//|}"
+			base64 -w 0 "data:image/jpeg;base64,$oldfile" > "$dir/${mpdpath//\//|}"
 		else
 			echo ${lines[$i]} > "$dir/${mpdpath//\//|}"
 		fi
