@@ -374,7 +374,8 @@ $( '#infoCheckBox' ).on( 'click', 'label', function() { // playback tools
 } );
 // keyboard space,  up, down, left, enter
 $( document ).keydown( function( e ) {
-	if ( e.key === ' ' ) {
+	console.log( e.target.localName )
+	if ( e.key === ' ' && e.target.localName !== 'input' ) {
 		$( '#play' ).click();
 		e.preventDefault();
 		return
