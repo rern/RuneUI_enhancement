@@ -204,7 +204,7 @@ if [[ $webradios ]]; then
 	done
 fi
 dirtarget=$( readlink -f $dir )
-chown -R http:http "$dirtarget"
+chown -R http:http "$dirtarget" $dir
 
 # convert old bookmarks
 echo -e "$bar Convert Bookmarks data ..."
@@ -246,7 +246,7 @@ if [[ $bkmarks ]]; then
 	redis-cli del bkmarks &> /dev/null
 fi
 dirtarget=$( readlink -f $dir )
-chown -R http:http "$dirtarget"
+chown -R http:http "$dirtarget" $dir
 
 # disable USB drive auto scan database ..."
 redis-cli set usb_db_autorebuild 0 &> /dev/null
