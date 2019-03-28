@@ -1163,7 +1163,6 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-cover', function() {
 		, ok          : function() {
 			var newimg = $( '#infoMessage .newimg' ).attr( 'src' );
 			$.post( 'enhance.php', { imagefile: thumbfile, base64: newimg }, function( std ) {
-			console.log(std)
 				if ( std == 0 ) {
 					$img
 						.removeAttr( 'data-src' ) // lazyload 'data-src'
@@ -1750,7 +1749,8 @@ pushstreams.notify.onmessage = function( data ) {
 		, title       : notify.title || 'Info'
 		, text        : notify.text
 	} );
-}pushstreams.playlist.onmessage = function( data ) {
+}
+pushstreams.playlist.onmessage = function( data ) {
 	GUI.lsplaylists = data[ 0 ] || [];
 	if ( !GUI.playlist ) return
 	
