@@ -563,7 +563,7 @@ function displayPlayback() {
 		if ( GUI.display.time ) $( '#iplayer' ).attr( 'class', GUI.status.activePlayer === 'MPD' ? 'fa hide' : 'fa fa-'+ GUI.status.activePlayer.toLowerCase() );
 	}
 	// no scaling for webradio vu meter
-	if ( $( '#cover-art' ).hasClass( 'vu' )
+	if ( !$( '#cover-art' ).hasClass( 'vu' )
 		&& ( GUI.display.coverlarge || ( !GUI.display.time && !GUI.display.volume ) )
 	) {
 		$( '#divcover, #cover-art, #coverartoverlay, #controls-cover' ).removeClass( 'coversmall' );
