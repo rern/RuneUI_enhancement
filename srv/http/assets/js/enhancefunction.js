@@ -943,16 +943,14 @@ function dataParse( data, path, querytype, plid ) {
 			var litime = 0;
 			var sec = 0;
 			$.each( data, function( i, value ) {
-				if ( value.directory || value.file || value.playlist ) {
-					if ( 'directory' in value ) {
-						arraydir.push( value );
-					} else if ( 'file' in value ) {
-						arrayfile.push( value );
-						sec = HMS2Second( value.Time );
-						litime += sec;
-					} else if ( 'playlist' in value ) {
-						arraypl.push( value );
-					}
+				if ( 'directory' in value ) {
+					arraydir.push( value );
+				} else if ( 'file' in value ) {
+					arrayfile.push( value );
+					sec = HMS2Second( value.Time );
+					litime += sec;
+				} else if ( 'playlist' in value ) {
+					arraypl.push( value );
 				} else if ( 'coverart' in value && !arraydir.length ) {
 					coverart = value.coverart;
 					var coversrc = coverart ? coverart : coverrune;
@@ -972,12 +970,6 @@ function dataParse( data, path, querytype, plid ) {
 								  +'<i class="fa fa-music db-icon" data-target="#context-menu-'+ ( GUI.browsemode !== 'file' ? GUI.browsemode : 'folder' ) +'"></i>'+ arrayfile.length +'<gr> • </gr>'+ second2HMS( litime )
 							  +'</span>'
 							  +'</li>';
-				} else if ( 'index' in value ) {
-					value.index.forEach( function( char ) {
-						$( '#db-index .index-'+ char ).removeClass( 'gr' );
-					} );
-				} else if ( 'webradio' in value ) {
-					content += data2html( value, path );
 				} else if ( 'album' in value ) {
 					album = value.album;
 				} else if ( 'artist' in value ) {
@@ -988,6 +980,12 @@ function dataParse( data, path, querytype, plid ) {
 					genre = value.genre;
 				} else if ( 'albumartist' in value ) {
 					albumartist = value.albumartist;
+				} else if ( 'webradio' in value ) {
+					content += data2html( value, path );
+				} else if ( 'index' in value ) {
+					value.index.forEach( function( char ) {
+						$( '#db-index .index-'+ char ).removeClass( 'gr' );
+					} );
 				}
 			} );
 			var arraydirL = arraydir.length;
