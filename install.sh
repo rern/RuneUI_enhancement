@@ -199,7 +199,7 @@ if [[ $1 != u ]]; then
 	#	name only  - name
 	#	with image - name\nbase64thumbnail\nbase64image
 	dir=/srv/http/assets/img/webradios
-	if [[ $( find $dir -prune -empty 2>/dev/null ) ]]: then
+	if [[ -z $( ls -A $dir ) ]]; then
 		webradios=$( redis-cli hgetall webradios )
 		if [[ $webradios ]]; then
 			echo -e "$bar Convert Webradios data ..."
@@ -224,7 +224,7 @@ if [[ $1 != u ]]; then
 	#	name  - name
 	#	image - base64image
 	dir=/srv/http/assets/img/bookmarks
-	if [[ $( find $dir -prune -empty 2>/dev/null ) ]]: then
+	if [[ -z $( ls -A $dir ) ]]; then
 		bookmarks=$( redis-cli hgetall bookmarks | tr -d '"{}\\' )
 		if [[ $bookmarks ]]; then
 			echo -e "$bar Convert Bookmarks data ..."
