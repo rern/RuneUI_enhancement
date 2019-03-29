@@ -46,48 +46,47 @@ files="
 "
 restorefile $files
 
-# convert file based webradios back to redis
-dir=/srv/http/assets/img/webradios
-if [[ ! -z $( ls -A $dir ) ]]; then
-	echo -e "$bar Convert Webradios data ..."
-	files=( $dir/* )
-	for file in ${files[@]}; do
-		url=$( basename "$file" )
-		url=${url//|/\/}
-		name=$( head -n1 $file )
-		string=$( cat <<EOF
+if [[ $1 != u ]]; then
+	# convert file based webradios back to redis
+	dir=/srv/http/assets/img/webradios
+	if [[ ! -z $( ls -A $dir ) ]]; then
+		echo -e "$bar Convert Webradios data ..."
+		files=( $dir/* )
+		for file in ${files[@]}; do
+			url=$( basename "$file" )
+			url=${url//|/\/}
+			name=$( head -n1 $file )
+			string=$( cat <<EOF
 [playlist]
 NumberOfEntries=1
 File1=$url
 Title1=$name
 EOF
 )
-		echo "$string" > "/mnt/MPD/Webradio/$name.pls"
-		echo $name - $url
-	done
+			echo "$string" > "/mnt/MPD/Webradio/$name.pls"
+			echo $name - $url
+		done
 
-	mpc update Webradio &> /dev/null
-fi
+		mpc update Webradio &> /dev/null
+	fi
 
-# convert file based bookmarks back to redis
-dir=/srv/http/assets/img/bookmarks
-if [[ ! -z $( ls -A $dir ) ]]; then
-	echo -e "$bar Convert bookmarks data ..."
-	files=( $dir/* )
-	idx=0
-	for file in "${files[@]}"; do
-		path=$( basename "$file" )
-		path=${path//|/\/}
-		name=$( basename "$path" )
-		(( idx++ ))
-		redis-cli hset bookmarks $idx "{\"name\":\"$name\",\"path\":\"$path\"}" &> /dev/null
-		echo $path
-	done
-	redis-cli set bookmarksidx $idx &> /dev/null
-fi
+	# convert file based bookmarks back to redis
+	dir=/srv/http/assets/img/bookmarks
+	if [[ ! -z $( ls -A $dir ) ]]; then
+		echo -e "$bar Convert bookmarks data ..."
+		files=( $dir/* )
+		idx=0
+		for file in "${files[@]}"; do
+			path=$( basename "$file" )
+			path=${path//|/\/}
+			name=$( basename "$path" )
+			(( idx++ ))
+			redis-cli hset bookmarks $idx "{\"name\":\"$name\",\"path\":\"$path\"}" &> /dev/null
+			echo $path
+		done
+		redis-cli set bookmarksidx $idx &> /dev/null
+	fi
 
-systemctl restart rune_PL_wrk
-if [[ $1 != u ]]; then
 	redis-cli del display sampling mpddb &> /dev/null
 	rm /srv/http/assets/img/{bookmarks,coverarts,webradios}
 	rm -r /srv/http/assets/img/webradiopl
@@ -95,7 +94,7 @@ if [[ $1 != u ]]; then
 	systemctl start rune_shutdown
 fi
 
-chown -R mpd:audio /mnt/MPD/Webradio
+systemctl restart rune_PL_wrk
 
 uninstallfinish $@
 
