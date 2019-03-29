@@ -235,8 +235,7 @@ if [[ $bookmarks ]]; then
 		fi
 		echo $path
 	done
-	redis-cli del bookmarks
-	redis-cli del bookmarksidx
+	redis-cli del bookmarks bookmarksidx &> /dev/null
 fi
 # convert new bookmarks (to be removed in next version)
 bkmarks=$( redis-cli hgetall bkmarks )
