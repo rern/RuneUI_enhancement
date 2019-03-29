@@ -108,24 +108,118 @@ EOF
 )
 insertH '<h2>Network mounts'
 #----------------------------------------------------------------------------------
-if [[ $1 != u ]]; then # keep range: 0.5 - 3.0
-	z=$1;
-	zoom=$( echo "0.5 $z 3" \
-      | awk '{
-          if (( $1 < $2 && $2 < $3 ))
-            print $2
-          else if (( $2 < $1 ))
-            print $1
-          else
-            print $3
-        }'
-	)
-	redis-cli set zoomlevel $zoom &> /dev/null
-	# set AAC/ALAC support
-	[[ $2 ]] && redis-cli hset mpdconf ffmpeg $2 &> /dev/null
-else
-	zoom=$( redis-cli get zoomlevel )
+
+########## to be moved after [[ $1 == u ]] ###################################################################
+# dirble temp
+dir=/srv/http/assets/img/webradiopl
+mkdir -p $dir
+chown -R http:http $dir
+
+makeDirLink webradios
+# convert webradios
+# filename: http:||webradio|url
+# content:
+#	name only  - name
+#	with image - name\nbase64thumbnail\nbase64image
+dir=/srv/http/assets/img/webradios
+if [[ -z $( ls -A $dir ) ]]; then
+	webradios=$( redis-cli hgetall webradios )
+	if [[ $webradios ]]; then
+		echo -e "$bar Convert Webradios data ..."
+
+		readarray -t lines <<<"$webradios"
+		linesL=${#lines[@]}
+		for (( i=0; i < $linesL; i+=2 )); do
+			name=${lines[ $i ]}
+			url=${lines[ $i + 1 ]}
+			echo $name > "$dir/${url//\//|}"
+			echo $name - $url
+		done
+	fi
+	dirtarget=$( readlink -f $dir )
+	chown -R http:http "$dirtarget" $dir
 fi
+
+makeDirLink bookmarks
+# convert old bookmarks
+# filename: path|to|bookmark
+# content:
+#	name  - name
+#	image - base64image
+dir=/srv/http/assets/img/bookmarks
+if [[ -z $( ls -A $dir ) ]]; then
+	bookmarks=$( redis-cli hgetall bookmarks | tr -d '"{}\\' )
+	if [[ $bookmarks ]]; then
+		echo -e "$bar Convert Bookmarks data ..."
+
+		readarray -t lines <<<"$bookmarks"
+		linesL=${#lines[@]}
+		for (( i=1; i < linesL; i+=2 )); do
+			namepath=${lines[ $i ]}
+			name=$( echo $namepath | cut -d',' -f1 )
+			path=$( echo $namepath | cut -d',' -f2 )
+			name=${name/name:}
+			path=${path/path:}
+			mpdpath=${path//\\/}
+			oldfile=/mnt/MPD/$mpdpath/thumbnail.jpg
+			newfile="$dir/${mpdpath//\//|}"
+			if [[ -e "$oldfile" ]]; then
+				base64data=$( base64 -w 0 "$oldfile" )
+				echo "data:image/jpeg;base64,$base64data" > "$newfile"
+			else
+				echo $name > "$newfile"
+			fi
+			echo $path
+		done
+		redis-cli del bookmarks bookmarksidx &> /dev/null
+	fi
+	# convert new bookmarks (to be removed in next version)
+	bkmarks=$( redis-cli hgetall bkmarks )
+	if [[ $bkmarks ]]; then
+		readarray -t lines <<<"$bkmarks"
+		linesL=${#lines[@]}
+		for (( i=0; i < $linesL; i+=2 )); do
+			mpdpath=${lines[$i+1]}
+			oldfile=/mnt/MPD/$mpdpath/thumbnail.jpg
+			newfile="$dir/${mpdpath//\//|}"
+			if [[ -e "$oldfile" ]]; then
+				base64data=$( base64 -w 0 "$oldfile" )
+				echo "data:image/jpeg;base64,$base64data" > "$newfile"
+			else
+				echo ${lines[$i]} > "$newfile"
+			fi
+			echo $mpdpath
+		done
+		redis-cli del bkmarks &> /dev/null
+	fi
+	dirtarget=$( readlink -f $dir )
+	chown -R http:http "$dirtarget" $dir
+fi
+##############################################################################################################
+
+if [[ $1 == u ]]; then
+	installfinish $@
+	restartlocalbrowser
+	reinitsystem
+	exit
+fi
+
+# zoom - keep range: 0.5 - 3.0
+z=$1;
+zoom=$( echo "0.5 $z 3" \
+  | awk '{
+	  if (( $1 < $2 && $2 < $3 ))
+		print $2
+	  else if (( $2 < $1 ))
+		print $1
+	  else
+		print $3
+	}'
+)
+redis-cli set zoomlevel $zoom &> /dev/null
+# set AAC/ALAC support
+[[ $2 ]] && redis-cli hset mpdconf ffmpeg $2 &> /dev/null
+
 
 #----------------------------------------------------------------------------------
 file=/root/.config/midori/config
@@ -185,94 +279,6 @@ sed -i '/^de_DE.UTF-8\|^en_GB.UTF-8/ s/^/#/' /etc/locale.gen
 # disable default shutdown
 systemctl disable rune_shutdown
 #systemctl stop rune_shutdown
-
-if [[ $1 != u ]]; then
-	# dirble temp
-	dir=/srv/http/assets/img/webradiopl
-	mkdir -p $dir
-	chown -R http:http $dir
-
-	makeDirLink webradios
-	# convert webradios
-	# filename: http:||webradio|url
-	# content:
-	#	name only  - name
-	#	with image - name\nbase64thumbnail\nbase64image
-	dir=/srv/http/assets/img/webradios
-	if [[ -z $( ls -A $dir ) ]]; then
-		webradios=$( redis-cli hgetall webradios )
-		if [[ $webradios ]]; then
-			echo -e "$bar Convert Webradios data ..."
-
-			readarray -t lines <<<"$webradios"
-			linesL=${#lines[@]}
-			for (( i=0; i < $linesL; i+=2 )); do
-				name=${lines[ $i ]}
-				url=${lines[ $i + 1 ]}
-				echo $name > "$dir/${url//\//|}"
-				echo $name - $url
-			done
-		fi
-		dirtarget=$( readlink -f $dir )
-		chown -R http:http "$dirtarget" $dir
-	fi
-
-	makeDirLink bookmarks
-	# convert old bookmarks
-	# filename: path|to|bookmark
-	# content:
-	#	name  - name
-	#	image - base64image
-	dir=/srv/http/assets/img/bookmarks
-	if [[ -z $( ls -A $dir ) ]]; then
-		bookmarks=$( redis-cli hgetall bookmarks | tr -d '"{}\\' )
-		if [[ $bookmarks ]]; then
-			echo -e "$bar Convert Bookmarks data ..."
-
-			readarray -t lines <<<"$bookmarks"
-			linesL=${#lines[@]}
-			for (( i=1; i < linesL; i+=2 )); do
-				namepath=${lines[ $i ]}
-				name=$( echo $namepath | cut -d',' -f1 )
-				path=$( echo $namepath | cut -d',' -f2 )
-				name=${name/name:}
-				path=${path/path:}
-				mpdpath=${path//\\/}
-				oldfile=/mnt/MPD/$mpdpath/thumbnail.jpg
-				newfile="$dir/${mpdpath//\//|}"
-				if [[ -e "$oldfile" ]]; then
-					base64data=$( base64 -w 0 "$oldfile" )
-					echo "data:image/jpeg;base64,$base64data" > "$newfile"
-				else
-					echo $name > "$newfile"
-				fi
-				echo $path
-			done
-			redis-cli del bookmarks bookmarksidx &> /dev/null
-		fi
-		# convert new bookmarks (to be removed in next version)
-		bkmarks=$( redis-cli hgetall bkmarks )
-		if [[ $bkmarks ]]; then
-			readarray -t lines <<<"$bkmarks"
-			linesL=${#lines[@]}
-			for (( i=0; i < $linesL; i+=2 )); do
-				mpdpath=${lines[$i+1]}
-				oldfile=/mnt/MPD/$mpdpath/thumbnail.jpg
-				newfile="$dir/${mpdpath//\//|}"
-				if [[ -e "$oldfile" ]]; then
-					base64data=$( base64 -w 0 "$oldfile" )
-					echo "data:image/jpeg;base64,$base64data" > "$newfile"
-				else
-					echo ${lines[$i]} > "$newfile"
-				fi
-				echo $mpdpath
-			done
-			redis-cli del bkmarks &> /dev/null
-		fi
-		dirtarget=$( readlink -f $dir )
-		chown -R http:http "$dirtarget" $dir
-	fi
-fi
 
 installfinish $@
 
