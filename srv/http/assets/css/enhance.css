@@ -1459,6 +1459,12 @@ wh, gr { font-weight: 300; }
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
+#pl-entries li.updn {
+	background: #374c62;
+}
+#pl-entries li.active.updn {
+	background: #0095d8;
+}
 .db-icon,
 .pl-icon,
 #db-entries li span i {
