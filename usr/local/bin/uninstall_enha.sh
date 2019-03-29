@@ -56,12 +56,12 @@ if [[ ! -z $( ls -A $dir ) ]]; then
 		url=${url//|/\/}
 		name=$( head -n1 $file )
 		string=$( cat <<EOF
-	[playlist]
-	NumberOfEntries=1
-	File1=$url
-	Title1=$name
-	EOF
-	)
+[playlist]
+NumberOfEntries=1
+File1=$url
+Title1=$name
+EOF
+)
 		echo "$string" > "/mnt/MPD/Webradio/$name.pls"
 		echo $name - $url
 	done
