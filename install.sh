@@ -184,80 +184,86 @@ dir=/srv/http/assets/img/webradiopl
 mkdir -p $dir
 chown -R http:http $dir
 
+makeDirLink webradios
 # convert webradios
-echo -e "$bar Convert Webradios data ..."
 # filename: http:||webradio|url
 # content:
 #	name only  - name
 #	with image - name\nbase64thumbnail\nbase64image
-makeDirLink webradios
 dir=/srv/http/assets/img/webradios
-webradios=$( redis-cli hgetall webradios )
-if [[ $webradios ]]; then
-	readarray -t lines <<<"$webradios"
-	linesL=${#lines[@]}
-	for (( i=0; i < $linesL; i+=2 )); do
-		name=${lines[ $i ]}
-		url=${lines[ $i + 1 ]}
-		echo $name > "$dir/${url//\//|}"
-		echo $name - $url
-	done
+if [[ $( find $dir -prune -empty 2>/dev/null ) ]]: then
+	webradios=$( redis-cli hgetall webradios )
+	if [[ $webradios ]]; then
+		echo -e "$bar Convert Webradios data ..."
+		
+		readarray -t lines <<<"$webradios"
+		linesL=${#lines[@]}
+		for (( i=0; i < $linesL; i+=2 )); do
+			name=${lines[ $i ]}
+			url=${lines[ $i + 1 ]}
+			echo $name > "$dir/${url//\//|}"
+			echo $name - $url
+		done
+	fi
+	dirtarget=$( readlink -f $dir )
+	chown -R http:http "$dirtarget" $dir
 fi
-dirtarget=$( readlink -f $dir )
-chown -R http:http "$dirtarget" $dir
 
+makeDirLink bookmarks
 # convert old bookmarks
-echo -e "$bar Convert Bookmarks data ..."
 # filename: path|to|bookmark
 # content:
 #	name  - name
 #	image - base64image
-makeDirLink bookmarks
 dir=/srv/http/assets/img/bookmarks
-bookmarks=$( redis-cli hgetall bookmarks | tr -d '"{}\\' )
-if [[ $bookmarks ]]; then
-	readarray -t lines <<<"$bookmarks"
-	linesL=${#lines[@]}
-	for (( i=1; i < linesL; i+=2 )); do
-		namepath=${lines[ $i ]}
-		name=$( echo $namepath | cut -d',' -f1 )
-		path=$( echo $namepath | cut -d',' -f2 )
-		name=${name/name:}
-		path=${path/path:}
-		mpdpath=${path//\\/}
-		oldfile=/mnt/MPD/$mpdpath/thumbnail.jpg
-		newfile="$dir/${mpdpath//\//|}"
-		if [[ -e "$oldfile" ]]; then
-			base64data=$( base64 -w 0 "$oldfile" )
-			echo "data:image/jpeg;base64,$base64data" > "$newfile"
-		else
-			echo $name > "$newfile"
-		fi
-		echo $path
-	done
-	redis-cli del bookmarks bookmarksidx &> /dev/null
+if [[ $( find $dir -prune -empty 2>/dev/null ) ]]: then
+	bookmarks=$( redis-cli hgetall bookmarks | tr -d '"{}\\' )
+	if [[ $bookmarks ]]; then
+		echo -e "$bar Convert Bookmarks data ..."
+		
+		readarray -t lines <<<"$bookmarks"
+		linesL=${#lines[@]}
+		for (( i=1; i < linesL; i+=2 )); do
+			namepath=${lines[ $i ]}
+			name=$( echo $namepath | cut -d',' -f1 )
+			path=$( echo $namepath | cut -d',' -f2 )
+			name=${name/name:}
+			path=${path/path:}
+			mpdpath=${path//\\/}
+			oldfile=/mnt/MPD/$mpdpath/thumbnail.jpg
+			newfile="$dir/${mpdpath//\//|}"
+			if [[ -e "$oldfile" ]]; then
+				base64data=$( base64 -w 0 "$oldfile" )
+				echo "data:image/jpeg;base64,$base64data" > "$newfile"
+			else
+				echo $name > "$newfile"
+			fi
+			echo $path
+		done
+		redis-cli del bookmarks bookmarksidx &> /dev/null
+	fi
+	# convert new bookmarks (to be removed in next version)
+	bkmarks=$( redis-cli hgetall bkmarks )
+	if [[ $bkmarks ]]; then
+		readarray -t lines <<<"$bkmarks"
+		linesL=${#lines[@]}
+		for (( i=0; i < $linesL; i+=2 )); do
+			mpdpath=${lines[$i+1]}
+			oldfile=/mnt/MPD/$mpdpath/thumbnail.jpg
+			newfile="$dir/${mpdpath//\//|}"
+			if [[ -e "$oldfile" ]]; then
+				base64data=$( base64 -w 0 "$oldfile" )
+				echo "data:image/jpeg;base64,$base64data" > "$newfile"
+			else
+				echo ${lines[$i]} > "$newfile"
+			fi
+			echo $mpdpath
+		done
+		redis-cli del bkmarks &> /dev/null
+	fi
+	dirtarget=$( readlink -f $dir )
+	chown -R http:http "$dirtarget" $dir
 fi
-# convert new bookmarks (to be removed in next version)
-bkmarks=$( redis-cli hgetall bkmarks )
-if [[ $bkmarks ]]; then
-	readarray -t lines <<<"$bkmarks"
-	linesL=${#lines[@]}
-	for (( i=0; i < $linesL; i+=2 )); do
-		mpdpath=${lines[$i+1]}
-		oldfile=/mnt/MPD/$mpdpath/thumbnail.jpg
-		newfile="$dir/${mpdpath//\//|}"
-		if [[ -e "$oldfile" ]]; then
-			base64data=$( base64 -w 0 "$oldfile" )
-			echo "data:image/jpeg;base64,$base64data" > "$newfile"
-		else
-			echo ${lines[$i]} > "$newfile"
-		fi
-		echo $mpdpath
-	done
-	redis-cli del bkmarks &> /dev/null
-fi
-dirtarget=$( readlink -f $dir )
-chown -R http:http "$dirtarget" $dir
 
 # disable USB drive auto scan database ..."
 redis-cli set usb_db_autorebuild 0 &> /dev/null
