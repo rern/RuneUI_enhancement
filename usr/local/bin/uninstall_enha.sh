@@ -82,6 +82,8 @@ redis-cli set bookmarksidx $idx &> /dev/null
 systemctl restart rune_PL_wrk
 if [[ $1 != u ]]; then
 	redis-cli del display sampling mpddb &> /dev/null
+	rm /srv/http/assets/img/{bookmarks,coverarts,webradios}
+	rm -r /srv/http/assets/img/webradiopl
 	systemctl enable rune_shutdown
 	systemctl start rune_shutdown
 fi
