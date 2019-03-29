@@ -115,6 +115,8 @@ dir=/srv/http/assets/img/webradiopl
 mkdir -p $dir
 chown -R http:http $dir
 
+makeDirLink coverarts
+
 makeDirLink webradios
 # convert webradios
 # filename: http:||webradio|url
