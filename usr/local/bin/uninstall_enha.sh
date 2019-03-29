@@ -54,6 +54,8 @@ if [[ $1 == u ]]; then
 	exit
 fi
 
+########## if not update ############################################################
+
 # convert file based webradios back to redis
 dir=/srv/http/assets/img/webradios
 if [[ ! -z $( ls -A $dir ) ]]; then
