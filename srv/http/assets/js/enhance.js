@@ -117,59 +117,59 @@ $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 // keyboard controls
 $( document ).keydown( function( e ) {
-	if ( e.key === ' ' && e.target.localName !== 'input' ) {
+	var key = e.key;
+	if ( key === ' ' && e.target.localName !== 'input' ) {
 		$( '#play' ).click();
 		e.preventDefault();
-		return
+	} else if ( key === 'MediaPlay' || key === 'MediaPlayPause' ) {
+		$( '#play' ).click();
+	} else if ( key === 'MediaPause' ) {
+		$( '#pause' ).click();
+	} else if ( key === 'MediaStop' ) {
+		$( '#stop' ).click();
 	}
+	if ( key === ' ' || key.slice( 5 ) === 'Media' ) return
+	
 	if ( GUI.playback ) {
-		if ( e.key === 'ArrowLeft' ) {
+		if ( key === 'ArrowLeft' ) {
 			$( '#previous' ).click();
-		} else if ( e.key === 'ArrowRight' ) {
+		} else if ( key === 'ArrowRight' ) {
 			$( '#next' ).click();
-		} else if ( e.key === 'ArrowUp' ) {
+		} else if ( key === 'ArrowUp' ) {
 			$( '#volup' ).click();
-		} else if ( e.key === 'ArrowDown' ) {
+		} else if ( key === 'ArrowDown' ) {
 			$( '#voldn' ).click();
 		}
-		return
-	} else if ( GUI.library ) {
-		if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) return
-	
-		if ( e.key === 'ArrowLeft' ) $( '#db-back' ).click();
-		if ( !$( '.licover' ).length ) return
-		
-		$liactive = $( '#db-entries li.active' );
-		if ( $liactive.length ) {
-			var i = $liactive.index();
-		} else {
-			$( '.licover' ).addClass( 'active' );
-			var i = 0;
-			return
-		}
-		
-		if ( e.key === 'ArrowUp' ) {
-			$( '.db-icon' ).eq( i - 1 ).tap();
-		} else if ( e.key ===  'ArrowDown' ) {
-			$( '.db-icon' ).eq( i + 1 ).tap();
-		} else if ( e.key === 'Enter' ) {
-			var menu = $liactive.find( '.db-icon' ).data( 'target' );
-			$( menu ).find( 'a:eq( 1 )' ).click();
-		}
-		$( '.contextmenu' ).addClass( 'hide' );
-	} else if ( GUI.playlist ) {
-		if ( !$( '#pl-entries' ).hasClass( 'hide' ) ) {
-			var i = $( '#pl-entries li.updn' ).length ? $( '#pl-entries li.updn' ).index() : $( '#pl-entries li.active' ).index();
-			if ( e.key === 'ArrowUp' || e.key ===  'ArrowDown' ) {
-				i = e.key === 'ArrowUp' ? i - 1 : i + 1;
-				$( '#pl-entries li' ).removeClass( 'updn' );
-				$( '#pl-entries li' ).eq( i ).addClass( 'updn' );
-			} else if ( e.key === 'Enter' ) {
-				$( '#pl-entries li.updn' ).click();
-				$( '#pl-entries li' ).removeClass( 'updn' );
+	} else if ( GUI.library && $( '#home-blocks' ).hasClass( 'hide' ) ) {
+		if ( key === 'ArrowLeft' ) $( '#db-back' ).click();
+		if ( $( '.licover' ).length ) {
+			$liactive = $( '#db-entries li.active' );
+			if ( $liactive.length ) {
+				var i = $liactive.index();
+				if ( key === 'ArrowUp' || key ===  'ArrowDown' ) {
+					i = key === 'ArrowUp' ? i - 1 : i + 1;
+					$( '.db-icon' ).eq( i ).tap();
+				} else if ( key === 'Enter' ) {
+					var menu = $liactive.find( '.db-icon' ).data( 'target' );
+					$( menu ).find( 'a:eq( 1 )' ).click();
+				}
+				$( '.contextmenu' ).addClass( 'hide' );
+			} else {
+				$( '.licover' ).addClass( 'active' );
 			}
-		} else {
-			
+		}
+	} else if ( GUI.playlist ) {
+		$li = $( '#pl-entries li' );
+		if ( !$( '#pl-entries' ).hasClass( 'hide' ) ) {
+			var i = $li.find( '.updn' ).length ? $li.find( '.updn' ).index() : $li.find( '.active' ).index();
+			if ( key === 'ArrowUp' || key ===  'ArrowDown' ) {
+				i = key === 'ArrowUp' ? i - 1 : i + 1;
+				$li.removeClass( 'updn' );
+				$li.eq( i ).addClass( 'updn' );
+			} else if ( key === 'Enter' ) {
+				$li.find( '.updn' ).click();
+				$li.removeClass( 'updn' );
+			}
 		}
 	}
 } );
