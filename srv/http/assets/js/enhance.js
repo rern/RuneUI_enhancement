@@ -115,6 +115,64 @@ $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+// keyboard controls
+$( document ).keydown( function( e ) {
+	if ( e.key === ' ' && e.target.localName !== 'input' ) {
+		$( '#play' ).click();
+		e.preventDefault();
+		return
+	}
+	if ( GUI.playback ) {
+		if ( e.key === 'ArrowLeft' ) {
+			$( '#previous' ).click();
+		} else if ( e.key === 'ArrowRight' ) {
+			$( '#next' ).click();
+		} else if ( e.key === 'ArrowUp' ) {
+			$( '#volup' ).click();
+		} else if ( e.key === 'ArrowDown' ) {
+			$( '#voldn' ).click();
+		}
+		return
+	} else if ( GUI.library ) {
+		if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) return
+	
+		if ( e.key === 'ArrowLeft' ) $( '#db-back' ).click();
+		if ( !$( '.licover' ).length ) return
+		
+		$liactive = $( '#db-entries li.active' );
+		if ( $liactive.length ) {
+			var i = $liactive.index();
+		} else {
+			$( '.licover' ).addClass( 'active' );
+			var i = 0;
+			return
+		}
+		
+		if ( e.key === 'ArrowUp' ) {
+			$( '.db-icon' ).eq( i - 1 ).tap();
+		} else if ( e.key ===  'ArrowDown' ) {
+			$( '.db-icon' ).eq( i + 1 ).tap();
+		} else if ( e.key === 'Enter' ) {
+			var menu = $liactive.find( '.db-icon' ).data( 'target' );
+			$( menu ).find( 'a:eq( 1 )' ).click();
+		}
+		$( '.contextmenu' ).addClass( 'hide' );
+	} else if ( GUI.playlist ) {
+		if ( !$( '#pl-entries' ).hasClass( 'hide' ) ) {
+			var i = $( '#pl-entries li.updn' ).length ? $( '#pl-entries li.updn' ).index() : $( '#pl-entries li.active' ).index();
+			if ( e.key === 'ArrowUp' || e.key ===  'ArrowDown' ) {
+				i = e.key === 'ArrowUp' ? i - 1 : i + 1;
+				$( '#pl-entries li' ).removeClass( 'updn' );
+				$( '#pl-entries li' ).eq( i ).addClass( 'updn' );
+			} else if ( e.key === 'Enter' ) {
+				$( '#pl-entries li.updn' ).click();
+				$( '#pl-entries li' ).removeClass( 'updn' );
+			}
+		} else {
+			
+		}
+	}
+} );
 $( '#cover-art' ).on( 'error', function() {
 	var $this = $( this );
 	$this.unbind( 'error' );
@@ -372,42 +430,6 @@ $( '#infoCheckBox' ).on( 'click', 'label', function() { // playback tools
 		}
 	}
 } );
-// keyboard space,  up, down, left, enter
-$( document ).keydown( function( e ) {
-	console.log( e.target.localName )
-	if ( e.key === ' ' && e.target.localName !== 'input' ) {
-		$( '#play' ).click();
-		e.preventDefault();
-		return
-	}
-	
-	if ( !GUI.library || !$( '#home-blocks' ).hasClass( 'hide' ) ) return
-	
-	if ( e.key === 'ArrowLeft' ) $( '#db-back' ).click();
-	if ( !$( '.licover' ).length ) return
-	
-	$liactive = $( '#db-entries li.active' );
-	if ( $liactive.length ) {
-		GUI.i = $liactive.index();
-	} else {
-		$( '.licover' ).addClass( 'active' );
-		GUI.i = 0;
-		return
-	}
-	
-	if ( e.key === 'ArrowUp' ) {
-		GUI.i -= 1;
-		$( '.db-icon' ).eq( GUI.i ).tap();
-	} else if ( e.key ===  'ArrowDown' ) {
-		GUI.i += 1;
-		$( '.db-icon' ).eq( GUI.i ).tap();
-	} else if ( e.key === 'Enter' ) {
-		var menu = $liactive.find( '.db-icon' ).data( 'target' );
-		$( menu ).find( 'a:eq( 1 )' ).click();
-	}
-	$( '.contextmenu' ).addClass( 'hide' );
-} );
-
 // PLAYBACK /////////////////////////////////////////////////////////////////////////////////////
 $( '#song, #playlist-warning' ).on( 'click', 'i', function() {
 	$( '#tab-library' ).click();
