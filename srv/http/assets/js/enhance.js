@@ -129,7 +129,7 @@ $( document ).keydown( function( e ) {
 		$( '#stop' ).click();
 	}
 	if ( key === ' ' || key.slice( 5 ) === 'Media' ) return
-	
+
 	if ( GUI.playback ) {
 		if ( key === 'ArrowLeft' ) {
 			$( '#previous' ).click();
@@ -141,8 +141,9 @@ $( document ).keydown( function( e ) {
 			$( '#voldn' ).click();
 		}
 	} else if ( GUI.library && $( '#home-blocks' ).hasClass( 'hide' ) ) {
-		if ( key === 'ArrowLeft' ) $( '#db-back' ).click();
-		if ( $( '.licover' ).length ) {
+		if ( key === 'ArrowLeft' ) {
+			$( '#db-back' ).click();
+		} else if ( $( '.licover' ).length || $( '#db-entries li.db-webradio' ).length ) {
 			$liactive = $( '#db-entries li.active' );
 			if ( $liactive.length ) {
 				var i = $liactive.index();
@@ -155,7 +156,10 @@ $( document ).keydown( function( e ) {
 				}
 				$( '.contextmenu' ).addClass( 'hide' );
 			} else {
-				$( '.licover' ).addClass( 'active' );
+				$( '#db-entries li:eq( 0 )' ).addClass( 'active' );
+				setTimeout( function() {
+					$( 'html, body' ).scrollTop( 0 );
+				}, 300 );
 			}
 		}
 	} else if ( GUI.playlist ) {
