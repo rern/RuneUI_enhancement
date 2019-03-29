@@ -67,7 +67,8 @@ done
 mpc update Webradio &> /dev/null
 
 # convert file based bookmarks back to redis
-idx=$( redis-cli get bookmarksidx )
+redis-cli del bookmarksidx
+idx=0
 files=( /srv/http/assets/img/bookmarks/* )
 for file in "${files[@]}"; do
 	path=$( basename "$file" )
