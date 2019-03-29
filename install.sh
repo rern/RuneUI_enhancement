@@ -224,7 +224,15 @@ if [[ $bookmarks ]]; then
 		path=$( echo $namepath | cut -d',' -f2 )
 		name=${name/name:}
 		path=${path/path:}
-		echo $name > "$dir/${path//\//|}"
+		mpdpath=${path//\\/}
+		oldfile=/mnt/MPD/$mpdpath/thumbnail.jpg
+		newfile="$dir/${mpdpath//\//|}"
+		if [[ -e "$oldfile" ]]; then
+			base64data=$( base64 -w 0 "$oldfile" )
+			echo "data:image/jpeg;base64,$base64data" > "$newfile"
+		else
+			echo $name > "$newfile"
+		fi
 		echo $path
 	done
 fi
@@ -236,11 +244,12 @@ if [[ $bkmarks ]]; then
 	for (( i=0; i < $linesL; i+=2 )); do
 		mpdpath=${lines[$i+1]}
 		oldfile=/mnt/MPD/$mpdpath/thumbnail.jpg
+		newfile="$dir/${mpdpath//\//|}"
 		if [[ -e "$oldfile" ]]; then
 			base64data=$( base64 -w 0 "$oldfile" )
-			echo "data:image/jpeg;base64,$base64data" > "$dir/${mpdpath//\//|}"
+			echo "data:image/jpeg;base64,$base64data" > "$newfile"
 		else
-			echo ${lines[$i]} > "$dir/${mpdpath//\//|}"
+			echo ${lines[$i]} > "$newfile"
 		fi
 		echo $mpdpath
 	done
