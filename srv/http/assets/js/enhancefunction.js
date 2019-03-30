@@ -1040,6 +1040,7 @@ function dataParse( data, path, querytype, plid ) {
 		if ( !fileplaylist ) displayIndexBar();
 		$( '#loader, .menu, #divcoverarts' ).addClass( 'hide' );
 		if ( GUI.status.ext = 'radio' ) lazyLoad.update();
+		$( 'html, body' ).scrollTop( 0 );
 	} );
 	
 	$( '#db-back' ).removeClass( 'hide' );

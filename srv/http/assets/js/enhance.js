@@ -67,34 +67,7 @@ if ( GUI.localhost ) {
 	var vu = '/assets/img/vu.'+ hash +'.gif';
 	var blinkdot = '<a class="dot">·</a>&ensp;<a class="dot dot2">·</a>&ensp;<a class="dot dot3">·</a>';
 }
-// fix - desktop coverart browsing with visible scrollbar
-/*if ( navigator.userAgent.indexOf( 'mobi' ) === -1 ) {
-	$( 'head' ).append( 
-		 '<style>'
-			+'@media(max-width: 2000px) { .coverart { width: calc( ( 100% - 38px ) * 0.1 ) } }'
-			+'@media(max-width: 1800px) { .coverart { width: calc( ( 100% - 38px ) * 0.111111111 ) } }'
-			+'@media(max-width: 1600px) { .coverart { width: calc( ( 100% - 38px ) * 0.142857143 ) } }'
-			+'@media(max-width: 1200px) { .coverart { width: calc( ( 100% - 38px ) * 0.166666667 ) } }'
-			+'@media(max-width: 1000px) { .coverart { width: calc( ( 100% - 38px ) * 0.2 ) } }'
-			+'@media(max-width: 800px)  { .coverart { width: calc( ( 100% - 38px ) * 0.25 ) } }'
-			+'@media(max-width: 600px)  { .coverart { width: calc( ( 100% - 38px ) * 0.333333333 ) } }'
-			+'@media(max-width: 400px)  { .coverart { width: calc( ( 100% - 38px ) * 0.5 ) } }'
-		+'</style>'
-		);
-}
-// fix - midori glossy
-if ( navigator.userAgent.indexOf( 'Midori' ) !== -1 ) {
-	$( 'head' ).append( 
-		 '<style>'
-			+'.rs-outer:after { background: radial-gradient(200% 100% at 75% -50% ,hsla(0,0%,100%,.15) 50%,hsla(0,0%,100%,0) 50%) }'
-			+'#repeat, #voldn { background: radial-gradient(250% 90% at 85% -80% ,hsla(0,0%,100%,.3) 50%,hsla(0,0%,100%,0) 53%) }'
-			+'#random, #volmute { background: linear-gradient(to bottom, hsla(0,0%,100%,.3) 0%, hsla(0,0%,100%,.3) 45%, rgba(0,0,0,0) 56%,rgba(0,0,0,0) 100%) }'
-			+'#single, #bio-open, #volup { background: radial-gradient(500% 90% at 20% -205% ,hsla(0,0%,100%,.3) 50%,hsla(0,0%,100%,0) 51.5%) }'
-			+'#repeat, #voldn, #random, #volmute, #single, #bio-open, #volup { background-color: #34495e }'
-			+'#play-group, #share-group, #vol-group { margin-top: 20px }'
-		+'</style>'
-		);
-}*/
+
 // get playlist display, status, library
 $.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
 	GUI.pllist = data.playlist; // for dirble coverart
