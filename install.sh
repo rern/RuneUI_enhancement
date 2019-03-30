@@ -116,6 +116,8 @@ mkdir -p $dir
 chown -R http:http $dir
 
 makeDirLink coverarts
+target=$( readlink -f /srv/http/assets/img/coverarts )
+redis-cli set pathcoverarts $target &> /dev/null
 
 makeDirLink webradios
 # convert webradios
