@@ -104,14 +104,14 @@ if ( count( $files ) ) {
 			, '/svg$/' => $time.'.svg'
 		);
 		$filename = preg_replace( array_keys( $replace ), array_values( $replace ), $list[ 4 ] );
-		$coverartshtml.= // leding + trailing quotes in the same line avoid spaces between divs
-			'<div class="coverart">
-				'.$licue.'
-				<a class="lisort">'.$list[ 0 ].'</a>
-				<div><img class="lazy" data-src="/srv/http/assets/img/coverarts/'.$filename.'"></div>
-					<span class="coverart1">'.$list[ 2 ].'</span>
-					<gr class="coverart2">'.( $list[ 3 ] ?: '&nbsp;' ).'</gr>
-			</div>';
+		// leading + trailing quotes in the same line avoid spaces between divs
+		$coverartshtml.= '<div class="coverart">
+							'.$licue.'
+							<a class="lisort">'.$list[ 0 ].'</a>
+							<div><img class="lazy" data-src="/srv/http/assets/img/coverarts/'.$filename.'"></div>
+							<span class="coverart1">'.$list[ 2 ].'</span>
+							<gr class="coverart2">'.( $list[ 3 ] ?: '&nbsp;' ).'</gr>
+						</div>';
 	}
 	$coverartshtml.= '<a id="indexcover" data-index=\''.json_encode( $index ).'\'></a><p></p>';
 } else {
