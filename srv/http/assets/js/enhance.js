@@ -68,7 +68,7 @@ if ( GUI.localhost ) {
 	var blinkdot = '<a class="dot">·</a>&ensp;<a class="dot dot2">·</a>&ensp;<a class="dot dot3">·</a>';
 }
 // fix - desktop coverart browsing with visible scrollbar
-if ( navigator.userAgent.indexOf( 'mobi' ) === -1 ) {
+/*if ( navigator.userAgent.indexOf( 'mobi' ) === -1 ) {
 	$( 'head' ).append( 
 		 '<style>'
 			+'@media(max-width: 2000px) { .coverart { width: calc( ( 100% - 38px ) * 0.1 ) } }'
@@ -94,7 +94,7 @@ if ( navigator.userAgent.indexOf( 'Midori' ) !== -1 ) {
 			+'#play-group, #share-group, #vol-group { margin-top: 20px }'
 		+'</style>'
 		);
-}
+}*/
 // get playlist display, status, library
 $.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
 	GUI.pllist = data.playlist; // for dirble coverart
