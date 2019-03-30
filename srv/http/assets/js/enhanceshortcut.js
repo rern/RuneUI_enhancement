@@ -10,6 +10,10 @@ $( document ).keydown( function( e ) {
 		$( '#pause' ).click();
 	} else if ( key === 'MediaStop' ) {
 		$( '#stop' ).click();
+	} else if ( key === 'MediaTrackPrevious' || key === 'MediaPreviousTrack' ) {
+		$( '#previous' ).click();
+	} else if ( key === 'MediaTrackNext' || key === 'MediaNextTrack' ) {
+		$( '#next' ).click();
 	} else if ( key === 'Tab' ) {
 		if ( GUI.library ) {
 			$( '#tab-playback' ).click();
