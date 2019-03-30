@@ -263,11 +263,11 @@ file=/srv/http/app/templates/enhanceplayback.php  # for rune youtube
 [[ $( redis-cli get buildversion ) == 'beta-20160313' ]] && redis-cli set release 0.3 &> /dev/null
 
 playback="bars debug dev time cover volume buttons"
-library="order coverart nas sd usb webradio album artist albumartist composer genre spotify dirble jamendo"
+library="coverart nas sd usb webradio album artist albumartist composer genre spotify dirble jamendo"
 miscel="count label coverfile plclear playbackswitch tapaddplay"
 for item in $playback $library $miscel; do
 	if [[ $( redis-cli hexists display $item ) == 0 ]]; then
-		echo order jamendo spotify debug dev tapaddplay | grep -qw $item && chk='' || chk=checked
+		echo jamendo spotify debug dev tapaddplay | grep -qw $item && chk='' || chk=checked
 		redis-cli hset display $item "$chk" &> /dev/null
 	fi
 done
