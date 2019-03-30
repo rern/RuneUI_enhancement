@@ -266,10 +266,8 @@ playback="bars debug dev time cover volume buttons"
 library="coverart nas sd usb webradio album artist albumartist composer genre spotify dirble jamendo"
 miscel="count label coverfile plclear playbackswitch tapaddplay"
 for item in $playback $library $miscel; do
-	if [[ $( redis-cli hexists display $item ) == 0 ]]; then
-		echo jamendo spotify debug dev tapaddplay | grep -qw $item && chk='' || chk=checked
-		redis-cli hset display $item "$chk" &> /dev/null
-	fi
+	echo debug dev jamendo spotify tapaddplay | grep -qw $item && chk='' || chk=checked
+	redis-cli hset display $item "$chk" &> /dev/null
 done
 # pre-count albumartist, composer, genre
 albumartist=$( mpc list albumartist | awk NF | wc -l )
