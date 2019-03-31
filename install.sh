@@ -11,9 +11,8 @@ alias=enha
 . /srv/http/addonsedit.sh
 
 #0temp0
-redis-cli hdel display order &> /dev/null
+[[ $( redis-cli hget addons enha ) < 20190318 ]] && redis-cli hdel display order &> /dev/null
 rm -rf /srv/http/assets/img/coverarts/coverarts
-redis-cli hdel display library &> /dev/null
 #1temp1
 
 installstart $@
