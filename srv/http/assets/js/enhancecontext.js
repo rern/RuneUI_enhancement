@@ -155,37 +155,62 @@ function addReplace( mode, cmd, command, title ) {
 function bookmarkNew() {
 	var path = GUI.list.path;
 	var name = path.split( '/' ).pop();
-	$.post( 'enhancegetcover.php', { path: path }, function( base64img ) {
-		var $img = '<br><img src="'+ base64img +'">';
-		var infodata = {
-			  icon      : 'bookmark'
-			, title     : 'Add Bookmark'
-			, width     : 500
-			, message   : 'Bookmark'
-						 +'<br><img src="'+ base64img +'">'
-						 +'<br><w>'+ path +'</w>'
-			, msgalign  : 'center'
-			, cancel    : 1
-			, ok        : function() {
-				$.post( 'enhance.php', { bookmarks: 1, path: path, base64: base64img, new: 1 } );
-				notify( 'Add Bookmark', path );
+	var $el = $( '.home-bookmark' );
+	var i = $el.length;
+	$el.each( function() {
+		var $this = $( this );
+		if ( $this.find( '.lipath' ).text() === path ) {
+			var $img = $this.find( 'img' );
+			if ( $img.length ) {
+				var iconhtml = '<img src="'+ $img.attr( 'src' ) +'">';
+			} else {
+				var iconhtml = '<div class="infobookmark">'
+								+'<i class="fa fa-bookmark"></i>'
+								+'<br><a class="bklabel">'+ $this.find( '.bklabel' ).text() +'</a>'
+							  +'</div>';
 			}
+			info( {
+				  icon     : 'bookmark'
+				, title    : 'Add Bookmark'
+				, message  : iconhtml
+						   +'<br>Already exists.'
+				, msgalign : 'center'
+			} );
+			return false
 		}
-		if ( !base64img ) {
-			infodata.message      = 'Bookmark'
-								   +'<br><i class="fa fa-bookmark fa-3x"></i>'
-								   +'<br><w>'+ path +'</w>'
-								   +'<br>As:';
-			infodata.textvalue    = name;
-			infodata.textrequired = 1;
-			infodata.boxwidth     = 'max';
-			infodata.textalign    = 'center';
-			infodata.ok           =  function() {
-				$.post( 'enhance.php', { bookmarks: $( '#infoTextBox' ).val(), path: path, new: 1 } );
-				notify( 'Add Bookmark', path );
-			}
+		i--;
+		if ( !i ) {
+			$.post( 'enhancegetcover.php', { path: path }, function( base64img ) {
+				var infodata = {
+					  icon      : 'bookmark'
+					, title     : 'Add Bookmark'
+					, width     : 500
+					, message   : 'Bookmark'
+								 +'<br><img src="'+ base64img +'">'
+								 +'<br><w>'+ path +'</w>'
+					, msgalign  : 'center'
+					, cancel    : 1
+					, ok        : function() {
+						$.post( 'enhance.php', { bookmarks: 1, path: path, base64: base64img, new: 1 } );
+						notify( 'Add Bookmark', path );
+					}
+				}
+				if ( !base64img ) {
+					infodata.message      = 'Bookmark'
+										   +'<br><w>'+ path +'</w>'
+										   +'<br>As:';
+					infodata.textvalue    = name;
+					infodata.textrequired = 1;
+					infodata.boxwidth     = 'max';
+					infodata.textalign    = 'center';
+					infodata.ok           =  function() {
+						$.post( 'enhance.php', { bookmarks: $( '#infoTextBox' ).val(), path: path, new: 1 } );
+						notify( 'Add Bookmark', path );
+					}
+				}
+				info( infodata );
+			} );
 		}
-		info( infodata );
 	} );
 }
 function bookmarkRename( name, path, $block ) {
@@ -194,8 +219,10 @@ function bookmarkRename( name, path, $block ) {
 		, title        : 'Rename Bookmark'
 		, width        : 500
 		, message      : 'Rename'
-						+'<br><i class="fa fa-bookmark fa-3x"></i>'
-						+'<br><w>'+ name +'</w>'
+						+'<br><div class="infobookmark">'
+							+'<i class="fa fa-bookmark"></i>'
+							+'<br><a class="bklabel">'+ name +'</a>'
+						+'</div>'
 						+'<br>To:'
 		, msgalign     : 'center'
 		, textvalue    : name
@@ -217,8 +244,10 @@ function bookmarkDelete( path, name, $block ) {
 	if ( src ) {
 		var icon = '<img src="'+ src +'">'
 	} else {
-		var icon = '<i class="fa fa-bookmark fa-3x"></i>'
-				  +'<br><span class="bklabel">'+ name +'</span>'
+		var icon = '<div class="infobookmark">'
+					+'<i class="fa fa-bookmark"></i>'
+					+'<br><a class="bklabel">'+ name +'</a>'
+				  +'</div>'
 	}
 	info( {
 		  icon     : 'bookmark'
@@ -312,14 +341,14 @@ function webRadioSave( name, url ) {
 			, cancel       : 1
 			, ok           : function() {
 				var newname = $( '#infoTextBox' ).val();
-				$.post( 'enhance.php', { webradios: newname, url: url, save: 1 }, function( existurl ) {
-					if ( existurl ) {
+				$.post( 'enhance.php', { webradios: newname, url: url, save: 1 }, function( existname ) {
+					if ( existname ) {
 						info( {
 							  icon    : 'webradio'
 							, title   : 'Save Webradio'
 							, message : '<w>'+ url +'</w>'
 									   +'<br>Already exists as:'
-									   +'<br><w>'+ existurl +'</w>'
+									   +'<br><w>'+ existname +'</w>'
 						} );
 					} else {
 						notify( 'Webradio saved', newname );
