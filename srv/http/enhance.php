@@ -125,13 +125,19 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$urlname = str_replace( '/', '|', $url );
 	$dir = '/srv/http/assets/img/webradios';
 	$file = "/srv/http/assets/img/webradios/$urlname";
+	if ( ( isset( $_POST[ 'new' ] ) || isset( $_POST[ 'save' ] ) ) 
+		&& file_exists( $file )
+	) {
+		$content = file( $file, FILE_IGNORE_NEW_LINES ); // without "\n"
+		echo $content[ 0 ];
+		exit;
+	}
+	
 	if ( isset( $_POST[ 'new' ] ) ) {
-		if ( file_exists( $file ) ) exit( 1 );
-		
 		file_put_contents( "$dir/$urlname", $name );
 		$count = 1;
 	} else if ( isset( $_POST[ 'rename' ] ) ) {
-		$content = explode( "\n", file_get_contents( $file ) );
+		$content = file( $file, FILE_IGNORE_NEW_LINES );
 		if ( count( $content ) > 1 ) $name.= "\n".$content[ 1 ]."\n".$content[ 2 ];
 		file_put_contents( "$dir/$urlname", $name ); // name, thumbnail, coverart
 		$count = 0;
@@ -139,11 +145,9 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		unlink( $file );
 		$count = -1;
 	} else if ( isset( $_POST[ 'save' ] ) ) {
-		if ( file_exists( $file ) ) exit( 1 );
-		
 		$plfile = "/srv/http/assets/img/webradiopl/$urlname";
 		$content = file_get_contents( $plfile );
-		file_put_contents( $file, substr( $content, 1 ) );
+		file_put_contents( $file, substr( $content, 1 ) ); // remove 1st * marking
 		unlink( $plfile );
 		$count = 1;
 	}
@@ -194,15 +198,9 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	}
 	
 	foreach( $files as $file ) {
-		$content = trim( file_get_contents( "$dir/$file" ) ); // name, base64thumbnail, base64image
-		$nameimg = explode( "\n", $content );
-		if ( count( $nameimg ) > 1 ) {
-			$name = $nameimg[ 0 ];
-			$thumb = $nameimg[ 1 ];
-		} else {
-			$name = $content;
-			$thumb = '';
-		}
+		$nameimg = file( "$dir/$file", FILE_IGNORE_NEW_LINES ); // name, base64thumbnail, base64image
+		$name = $nameimg[ 0 ];
+		$thumb = count( $nameimg ) > 1 ? $nameimg[ 1 ] : '';
 		$sort = stripLeading( $name );
 		$index[] = $name[ 0 ];
 		$data[] = array(
