@@ -320,43 +320,49 @@ function webRadioCoverart() {
 	} );
 }
 function webRadioSave( name, url ) {
-	var urlname = url.replace( /\//g, '|' );
-	$.post( 'enhance.php', { bash: '/usr/bin/cat "/srv/http/assets/img/webradiopl/'+ urlname +'"' }, function( data ) {
-		var base64 = data.split( '\n' )[ 2 ];
-		var $img = '<br><img src="'+ base64 +'">';
-		info( {
-			  icon         : 'webradio'
-			, title        : 'Save Webradio'
-			, width        : 500
-			, message      : 'Save:'
-							+ $img
-							+'<br><w>'+ url +'</w>'
-							+'<br>As:'
-			, msgalign     : 'center'
-			, textlabel    : ''
-			, textvalue    : name
-			, textrequired : 1
-			, textalign    : 'center'
-			, boxwidth     : 'max'
-			, cancel       : 1
-			, ok           : function() {
-				var newname = $( '#infoTextBox' ).val();
-				$.post( 'enhance.php', { webradios: newname, url: url, save: 1 }, function( existname ) {
-					if ( existname ) {
-						info( {
-							  icon    : 'webradio'
-							, title   : 'Save Webradio'
-							, message : '<w>'+ url +'</w>'
-									   +'<br>Already exists as:'
-									   +'<br><w>'+ existname +'</w>'
-						} );
-					} else {
+	console.log(url)
+	$.post( 'enhance.php', { getwebradios: 1 }, function( data ) {
+		console.log(data)
+		var iL = data.length;
+		$.each( data, function( i, list ) {
+			if ( list.url === url ) {
+				info( {
+					  icon     : 'webradio'
+					, title    : 'Save Webradio'
+					, message  : '<w>'+ url +'</w>'
+								+'<br>Already exists as:'
+								+ ( list.thumb ? '<br><img src="'+ list.thumb +'">' : '<br><i class="fa fa-webradio bookmark"></i>' )
+								+'<br><w>'+ list.webradio +'</w>'
+					, msgalign : 'center'
+				} );
+				return false
+			}
+			i--;
+			if ( !i ) {
+				var urlname = url.replace( /\//g, '|' );
+				info( {
+					  icon         : 'webradio'
+					, title        : 'Save Webradio'
+					, width        : 500
+					, message      : ( GUI.list.img ? '<br><img src="'+ GUI.list.img +'">' : '<br><i class="fa fa-webradio bookmark"></i>' )
+									+'<br><w>'+ url +'</w>'
+									+'<br>As:'
+					, msgalign     : 'center'
+					, textlabel    : ''
+					, textvalue    : name
+					, textrequired : 1
+					, textalign    : 'center'
+					, boxwidth     : 'max'
+					, cancel       : 1
+					, ok           : function() {
+						var newname = $( '#infoTextBox' ).val();
+						$.post( 'enhance.php', { webradios: newname, url: url, save: 1 } );
 						notify( 'Webradio saved', newname );
 					}
 				} );
 			}
 		} );
-	} );
+	}, 'json' );
 }
 function webRadioNew( name, url ) {
 	info( {

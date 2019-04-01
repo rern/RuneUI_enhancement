@@ -1502,7 +1502,8 @@ $( '#pl-entries' ).on( 'click', '.pl-icon', function( e ) {
 		$contextmenu.addClass( 'hide' );
 		return
 	}
-	
+	var $liimg = $thisli.find( '.liimg' );
+	$liimg.length ? GUI.list.img = $liimg.text() : delete( GUI.list.img );
 	var state = GUI.status.state;
 	$thisli.addClass( 'lifocus' );
 	$contextlist.removeClass( 'hide' );
