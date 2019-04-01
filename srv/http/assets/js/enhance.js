@@ -1750,7 +1750,7 @@ pushstreams.webradio.onmessage = function( data ) {
 	count = count + data;
 	$( '#home-webradio gr' ).text( count ? numFormat( count ) : '' );
 	if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) $( '#home-webradio' ).click();
-	if ( !GUI.pleditor ) $( '#tab-playlist' ).click();
+	if ( GUI.playlist && !GUI.pleditor ) $( '#tab-playlist' ).click();
 }
 streams.forEach( function( stream ) {
 	pushstreams[ stream ].connect();
