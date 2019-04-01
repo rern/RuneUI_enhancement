@@ -1159,7 +1159,8 @@ function data2html( list, path ) {
 				var liname = list.webradio
 				var thumb = list.thumb;
 				if ( thumb ) {
-					var iconhtml = '<img class="radiothumb db-icon lazy" data-src="'+ thumb +'" onerror="imgError(this);" data-target="#context-menu-webradio">';
+					var iconhtml = '<img class="radiothumb db-icon lazy" data-src="'+ thumb +'" onerror="imgError(this);" data-target="#context-menu-webradio">'
+								  +'<a class="liimg">'+ list.img +'</a>';
 				} else {
 					var iconhtml = '<i class="fa fa-webradio db-icon" data-target="#context-menu-webradio"></i>';
 				}
@@ -1385,7 +1386,7 @@ function dbContextmenu( $li, $target ) {
 	var wH = window.innerHeight;
 	if ( targetB > wH - ( GUI.bars ? 80 : 40 ) + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + 42 } );
 }
-function plContextmenu( $li, $target ) {
+function plContextmenu( $li, $target ) { // saved playlists
 	$( '.menu' ).addClass( 'hide' );
 	if ( $li.hasClass( 'active' ) ) {
 		$li.removeClass( 'active' );
@@ -1546,11 +1547,12 @@ function htmlPlaylist( data ) {
 		} else if ( 'path' in value ) {
 			path = value.path;
 		} else if ( 'track' in value && value.track.slice( 0, 4 ) === 'http' ) {
-			var title = value.Title && value.Title || '';
+			var title = value.Title || '';
 			var name = title.toString().replace( '*', '' );
 			content += '<li>'
 						  +'<i class="fa fa-webradio pl-icon'+ ( title[ 0 ] === '*' || !title ? ' unsaved' : '' ) +'" data-target="#context-menu-webradiopl"></i>'
 						  +'<a class="lipath">'+ value.file +'</a>'
+						  + ( value.thumb ? '<a class="lithumb">'+ value.thumb +'</a>' : '' )
 						  + ( value.img ? '<a class="liimg">'+ value.img +'</a>' : '' )
 						  +'<span class="li1"><a class="name">'+ name +'</a><a class="song"></a><span class="duration"><a class="elapsed"></a></span></span>'
 						  +'<span class="li2">'+ ( name ? name +' • ' : '' ) + value.file +'</span>'

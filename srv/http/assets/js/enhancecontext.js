@@ -344,7 +344,7 @@ function webRadioSave( name, url ) {
 					  icon         : 'webradio'
 					, title        : 'Save Webradio'
 					, width        : 500
-					, message      : ( GUI.list.img ? '<br><img src="'+ GUI.list.img +'">' : '<br><i class="fa fa-webradio bookmark"></i>' )
+					, message      : ( GUI.list.img ? '<img src="'+ GUI.list.img +'">' : '<i class="fa fa-webradio bookmark"></i>' )
 									+'<br><w>'+ url +'</w>'
 									+'<br>As:'
 					, msgalign     : 'center'
@@ -353,11 +353,15 @@ function webRadioSave( name, url ) {
 					, textrequired : 1
 					, textalign    : 'center'
 					, boxwidth     : 'max'
-					, cancel       : 1
+					, cancel       : function() {
+						GUI.library && $( '#db-entries li.active' ).removeClass( 'active' );
+						GUI.playlist && $( '#pl-entries li.updn' ).removeClass( 'updn' );
+					}
 					, ok           : function() {
 						var newname = $( '#infoTextBox' ).val();
-						$.post( 'enhance.php', { webradios: newname, url: url, save: 1 } );
 						notify( 'Webradio saved', newname );
+						if ( GUI.list.thumb ) newname += "\n"+ GUI.list.thumb +"\n"+ GUI.list.img
+						$.post( 'enhance.php', { webradios: newname, url: url, save: 1 } );
 					}
 				} );
 			}
@@ -404,7 +408,7 @@ function webRadioRename() {
 		  icon         : 'webradio'
 		, title        : 'Rename Webradio'
 		, width        : 500
-		, message      : 'Rename:'
+		, message      : ( GUI.list.img ? '<img src="'+ GUI.list.img +'">' : '<i class="fa fa-webradio bookmark"></i>' )
 						+'<br><w>'+ name +'</w>'
 						+'<br>'+ url
 						+'<br>To:'
@@ -413,7 +417,9 @@ function webRadioRename() {
 		, textrequired : 1
 		, textalign    : 'center'
 		, boxwidth     : 'max'
-		, cancel       : 1
+		, cancel       : function() {
+			$( '#db-entries li.active' ).removeClass( 'active' );
+		}
 		, oklabel      : 'Rename'
 		, ok           : function() {
 			var newname = $( '#infoTextBox' ).val();
@@ -428,11 +434,13 @@ function webRadioDelete() {
 		  icon     : 'webradio'
 		, title    : 'Delete Webradio'
 		, width    : 500
-		, message  : 'Delete?'
+		, message  : ( GUI.list.img ? '<img src="'+ GUI.list.img +'">' : '<i class="fa fa-webradio bookmark"></i>' )
 					+'<br><w>'+ name +'</w>'
 					+'<br>'+ url
 		, msgalign : 'center'
-		, cancel   : 1
+		, cancel       : function() {
+			$( '#db-entries li.active' ).removeClass( 'active' );
+		}
 		, oklabel  : 'Delete'
 		, ok       : function() {
 			$.post( 'enhance.php', { webradios: name, url: url, delete: 1 } );

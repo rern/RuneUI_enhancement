@@ -1491,6 +1491,7 @@ $( '#pl-entries' ).on( 'click', 'li', function( e ) {
 $( '#pl-entries' ).on( 'click', '.pl-icon', function( e ) {
 	var $this = $( this );
 	var $thisli = $this.parent();
+	GUI.list = {};
 	GUI.list.li = $thisli;
 	var menutop = ( $thisli.position().top + 49 ) +'px';
 	var $contextmenu = $( '#context-menu-plaction' );
@@ -1502,8 +1503,7 @@ $( '#pl-entries' ).on( 'click', '.pl-icon', function( e ) {
 		$contextmenu.addClass( 'hide' );
 		return
 	}
-	var $liimg = $thisli.find( '.liimg' );
-	$liimg.length ? GUI.list.img = $liimg.text() : delete( GUI.list.img );
+	
 	var state = GUI.status.state;
 	$thisli.addClass( 'lifocus' );
 	$contextlist.removeClass( 'hide' );
@@ -1517,6 +1517,10 @@ $( '#pl-entries' ).on( 'click', '.pl-icon', function( e ) {
 	if ( $this.hasClass( 'fa-webradio' ) && $thisli.find( '.unsaved' ).length ) {
 		GUI.list.name = $thisli.find( '.name' ).html().trim();
 		GUI.list.path = $thisli.find( '.lipath' ).text().trim();
+		var $lithumb = $thisli.find( '.lithumb' );
+		var $liimg = $thisli.find( '.liimg' );
+		GUI.list.thumb = $lithumb.length ? $lithumb.text() : '';
+		GUI.list.img = $liimg.length ? $liimg.text() : '';
 		$contextlist.eq( 3 ).removeClass( 'hide' );
 	} else {
 		$contextlist.eq( 3 ).addClass( 'hide' );
@@ -1745,11 +1749,8 @@ pushstreams.webradio.onmessage = function( data ) {
 	var count = Number( $( '#home-webradio gr' ).text() );
 	count = count + data;
 	$( '#home-webradio gr' ).text( count ? numFormat( count ) : '' );
-	if ( GUI.library ) {
-		if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) $( '#home-webradio' ).click();
-	} else if ( GUI.playlist ) {
-		if ( !GUI.pleditor ) $( '#tab-playlist' ).click();
-	}
+	if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) $( '#home-webradio' ).click();
+	if ( !GUI.pleditor ) $( '#tab-playlist' ).click();
 }
 streams.forEach( function( stream ) {
 	pushstreams[ stream ].connect();
