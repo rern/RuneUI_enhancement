@@ -382,15 +382,19 @@ function webRadioNew( name, url ) {
 		, cancel       : 1
 		, ok           : function() {
 			var newname = $( '#infoTextBox' ).val();
-			$.post( 'enhance.php', { webradios: newname, url: url, new: 1 }, function( existname ) {
-				if ( existname ) {
+			var url = $( '#infoTextBox2' ).val();
+			$.post( 'enhance.php', { webradios: newname, url: url, new: 1 }, function( exist ) {
+				if ( exist ) {
+					var nameimg = exist.split( "\n" );
 					info( {
-						  icon       : 'webradio'
-						, title      : 'Add Webradio'
-						, message    : '<w>'+ url +'</w>'
-									  +'<br>Already exists as:'
-									  +'<br><w>'+ existname +'</w>'
-						, ok         : function() {
+						  icon     : 'webradio'
+						, title    : 'Add Webradio'
+						, message  : ( nameimg[ 2 ] ? '<img src="'+ nameimg[ 2 ] +'">' : '<i class="fa fa-webradio bookmark"></i>' )
+									+'<br><w>'+ nameimg[ 0 ] +'</w>'
+									+'<br>'+ url
+									+'<br>Already exists.'
+						, msgalign : 'center'
+						, ok       : function() {
 							webRadioNew( newname, url );
 						}
 					} );
