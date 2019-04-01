@@ -128,8 +128,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	if ( ( isset( $_POST[ 'new' ] ) || isset( $_POST[ 'save' ] ) ) 
 		&& file_exists( $file )
 	) {
-		$content = file( $file, FILE_IGNORE_NEW_LINES ); // without "\n"
-		echo $content[ 0 ];
+		echo file_get_contents( $file );
 		exit;
 	}
 	
