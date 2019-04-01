@@ -197,20 +197,13 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	foreach( $files as $file ) {
 		$nameimg = file( "$dir/$file", FILE_IGNORE_NEW_LINES ); // name, base64thumbnail, base64image
 		$name = $nameimg[ 0 ];
-		if ( count( $nameimg ) > 1 ) {
-			$thumb = $nameimg[ 1 ];
-			$img = $nameimg[ 2 ];
-		} else {
-			$thumb = '';
-			$img = '';
-		}
+		$thumb = $nameimg[ 1 ] ? $nameimg[ 1 ] : '';
 		$sort = stripLeading( $name );
 		$index[] = $name[ 0 ];
 		$data[] = array(
 			  'webradio' => $name
 			, 'url'      => str_replace( '|', '/', $file )
 			, 'thumb'    => $thumb
-			, 'img'      => $img
 			, 'sort'     => $sort[ 0 ]
 			, 'lisort'   => $sort[ 1 ]
 		);
@@ -467,11 +460,9 @@ function list2array( $result ) {
 				if ( count( $nameimg ) > 1 ) {
 					$title = $nameimg[ 0 ];
 					$thumb = substr( $nameimg[ 1 ], 0, 4 ) === 'http' ? $nameimg[ 1 ] : '';
-					$img = substr( $nameimg[ 2 ], 0, 4 ) === 'http' ? $nameimg[ 2 ] : '';
 				} else {
 					$title = $content;
 					$thumb = '';
-					$img = '';
 				}
 			} else {
 				$title = $file;
@@ -498,7 +489,6 @@ function list2array( $result ) {
 			, 'cuem3u' => $cuem3u
 		);
 		if ( $thumb ) $li[ 'thumb' ] = $thumb;
-		if ( $img ) $li[ 'img' ] = $img;
 		$data[] = $li;
 	}
 	if ( !$webradio ) {
