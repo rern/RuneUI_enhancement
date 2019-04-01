@@ -162,18 +162,16 @@ function bookmarkNew() {
 		if ( $this.find( '.lipath' ).text() === path ) {
 			var $img = $this.find( 'img' );
 			if ( $img.length ) {
-				var iconhtml = '<img src="'+ $img.attr( 'src' ) +'">';
+				var iconhtml = '<img src="'+ $img.attr( 'src' ) +'"><br>';
 			} else {
-				var iconhtml = '<div class="infobookmark">'
-								+'<i class="fa fa-bookmark"></i>'
+				var iconhtml = '<i class="fa fa-bookmark bookmark"></i>'
 								+'<br><a class="bklabel">'+ $this.find( '.bklabel' ).text() +'</a>'
-							  +'</div>';
 			}
 			info( {
 				  icon     : 'bookmark'
 				, title    : 'Add Bookmark'
 				, message  : iconhtml
-						   +'<br>Already exists.'
+						   +'Already exists.'
 				, msgalign : 'center'
 			} );
 			return false
@@ -181,34 +179,40 @@ function bookmarkNew() {
 		i--;
 		if ( !i ) {
 			$.post( 'enhancegetcover.php', { path: path }, function( base64img ) {
-				var infodata = {
-					  icon      : 'bookmark'
-					, title     : 'Add Bookmark'
-					, width     : 500
-					, message   : 'Bookmark'
-								 +'<br><img src="'+ base64img +'">'
-								 +'<br><w>'+ path +'</w>'
-					, msgalign  : 'center'
-					, cancel    : 1
-					, ok        : function() {
-						$.post( 'enhance.php', { bookmarks: 1, path: path, base64: base64img, new: 1 } );
-						notify( 'Add Bookmark', path );
-					}
+				if ( base64img ) {
+					info( {
+						  icon      : 'bookmark'
+						, title     : 'Add Bookmark'
+						, message   : '<img src="'+ base64img +'">'
+									 +'<br><w>'+ path +'</w>'
+						, msgalign  : 'center'
+						, cancel    : 1
+						, ok        : function() {
+							$.post( 'enhance.php', { bookmarks: 1, path: path, base64: base64img, new: 1 } );
+							notify( 'Add Bookmark', path );
+						}
+					} );
+				} else {
+					info( {
+						  icon         : 'bookmark'
+						, title        : 'Add Bookmark'
+						, width        : 500
+						, message      : '<i class="fa fa-bookmark bookmark"></i>'
+										+'<br>'
+										+'<br><w>'+ path +'</w>'
+										+'<br>As:'
+						, msgalign     : 'center'
+						, textvalue    : name
+						, textrequired : 1
+						, boxwidth     : 'max'
+						, textalign    : 'center'
+						, cancel       : 1
+						, ok           : function() {
+							$.post( 'enhance.php', { bookmarks: $( '#infoTextBox' ).val(), path: path, new: 1 } );
+							notify( 'Add Bookmark', path );
+						}
+					} );
 				}
-				if ( !base64img ) {
-					infodata.message      = 'Bookmark'
-										   +'<br><w>'+ path +'</w>'
-										   +'<br>As:';
-					infodata.textvalue    = name;
-					infodata.textrequired = 1;
-					infodata.boxwidth     = 'max';
-					infodata.textalign    = 'center';
-					infodata.ok           =  function() {
-						$.post( 'enhance.php', { bookmarks: $( '#infoTextBox' ).val(), path: path, new: 1 } );
-						notify( 'Add Bookmark', path );
-					}
-				}
-				info( infodata );
 			} );
 		}
 	} );
@@ -218,12 +222,9 @@ function bookmarkRename( name, path, $block ) {
 		  icon         : 'bookmark'
 		, title        : 'Rename Bookmark'
 		, width        : 500
-		, message      : 'Rename'
-						+'<br><div class="infobookmark">'
-							+'<i class="fa fa-bookmark"></i>'
-							+'<br><a class="bklabel">'+ name +'</a>'
-						+'</div>'
-						+'<br>To:'
+		, message      : '<i class="fa fa-bookmark bookmark"></i>'
+						+'<br><a class="bklabel">'+ name +'</a>'
+						+'To:'
 		, msgalign     : 'center'
 		, textvalue    : name
 		, textrequired : 1
@@ -244,16 +245,13 @@ function bookmarkDelete( path, name, $block ) {
 	if ( src ) {
 		var icon = '<img src="'+ src +'">'
 	} else {
-		var icon = '<div class="infobookmark">'
-					+'<i class="fa fa-bookmark"></i>'
-					+'<br><a class="bklabel">'+ name +'</a>'
-				  +'</div>'
+		var icon = '<i class="fa fa-bookmark bookmark"></i>'
+				  +'<br><a class="bklabel">'+ name +'</a>'
 	}
 	info( {
 		  icon     : 'bookmark'
 		, title    : 'Remove Bookmark'
-		, message  : 'Remove?'
-					+'<br>'+ icon
+		, message  : icon
 		, msgalign : 'center'
 		, cancel   : 1
 		, oklabel  : 'Remove'

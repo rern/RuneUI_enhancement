@@ -237,6 +237,7 @@ function removeSplash() {
 	$( '#splash' ).remove();
 	$( '#cover-art, .btn-group' ).removeClass( 'hide' );
 	$( '.rs-animation .rs-transition' ).css( 'transition-property', '' ); // restore animation after load
+	$( 'html, body' ).scrollTop( 0 );
 	if ( !$( '#divcoverarts' ).html() ) return
 	
 	lazyLoad = new LazyLoad( { elements_selector: '.lazy' } );

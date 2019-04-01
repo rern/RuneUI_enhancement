@@ -911,8 +911,7 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 		info( {
 			  icon        : 'bookmark'
 			, title       : 'Change Bookmark Thumbnail'
-			, message     : 'Replace:'
-						   +'<br>'+ icon
+			, message     : icon
 			, msgalign    : 'center'
 			, fileoklabel : 'Replace'
 			, cancel      : 1
@@ -1099,8 +1098,7 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-remove', function() {
 	info( {
 		  icon     : 'coverart'
 		, title    : 'Remove Thumbnail'
-		, message  : 'Remove?'
-					+'<br><img src="'+ imgsrc +'">'
+		, message  : '<img src="'+ imgsrc +'">'
 					+'<br><wh>'+ album +'</wh>'
 					+'<br>'+ artist
 		, msgalign : 'center'
@@ -1128,8 +1126,7 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-cover', function() {
 	info( {
 		  icon        : 'coverart'
 		, title       : 'Change Thumbnail'
-		, message     : 'Replace:'
-					   +'<br><img src="'+ imgsrc +'">'
+		, message     : '<img src="'+ imgsrc +'">'
 		, msgalign    : 'center'
 		, fileoklabel : 'Replace'
 		, cancel      : 1
@@ -1177,11 +1174,10 @@ $( '#db-entries' ).on( 'tap', '.edit',  function() {
 			info( {
 				  icon     : 'coverart'
 				, title    : 'Remove Album Coverart'
-				, message  : 'Remove coverart of this album:'
-							   +'<br><img src="'+ $img.prop( 'src' ) +'">'
-							   +'<br><w>'+ album +'</w>'
-							   +'<br>'+ artist
-							   +'<br><br><code>'+ file +'</code> > <code>'+ file +'.backup</code>'
+				, message  : '<img src="'+ $img.prop( 'src' ) +'">'
+							+'<br><w>'+ album +'</w>'
+							+'<br>'+ artist
+							+'<br><br><code>'+ file +'</code> > <code>'+ file +'.backup</code>'
 				, msgalign : 'center'
 				, oklabel  : 'Remove'
 				, cancel   : 1
@@ -1206,8 +1202,7 @@ $( '#db-entries' ).on( 'tap', '.edit',  function() {
 			info( {
 				  icon        : 'coverart'
 				, title       : 'Replace Album Coverart'
-				, message     : 'Replace coverart of this album:'
-							   +'<br><img src="'+ $img.prop( 'src' ) +'">'
+				, message     : '<img src="'+ $img.prop( 'src' ) +'">'
 							   +'<span class="bkname"><br><w>'+ album +'</w>'
 							   +'<br>'+ artist +'<span>'
 				, msgalign    : 'center'
@@ -1574,16 +1569,17 @@ document.addEventListener( 'visibilitychange', function() {
 		clearInterval( GUI.intElapsed );
 		clearInterval( GUI.intElapsedPl );
 	} else {
+		var libraryhome = $( '#home-blocks' ).hasClass( 'hide' );
 		$.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 			GUI.display = data;
 			$.post( 'enhance.php', { getbookmarks: 1 }, function( bookmarks ) {
-				renderLibraryBlocks( bookmarks );
+				if ( !libraryhome ) renderLibraryBlocks( bookmarks );
 			}, 'json' );
 		}, 'json' );
 		if ( GUI.playback ) {
 			getPlaybackStatus();
 		} else if ( GUI.library ) {
-			if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) renderLibrary();
+			if ( !libraryhome ) renderLibrary();
 		} else {
 			displayTopBottom();
 			if ( GUI.pleditor ) {
