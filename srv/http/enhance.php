@@ -145,11 +145,8 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		unlink( $file );
 		$count = -1;
 	} else if ( isset( $_POST[ 'save' ] ) ) {
-		$plfile = "/srv/http/assets/img/webradiopl/$urlname";
-		$content = file( $plfile, FILE_IGNORE_NEW_LINES );
-		if ( count( $content ) > 1 ) $name.= "\n".$content[ 1 ]."\n".$content[ 2 ];
 		file_put_contents( $file, $name );
-		unlink( $plfile );
+		unlink( "/srv/http/assets/img/webradiopl/$urlname" );
 		$count = 1;
 	}
 	pushstream( 'webradio', $count );
