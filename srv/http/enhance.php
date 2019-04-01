@@ -462,8 +462,10 @@ function list2array( $result ) {
 				$nameimg = explode( "\n", $content );
 				if ( count( $nameimg ) > 1 ) {
 					$title = $nameimg[ 0 ];
+					$img = substr( $nameimg[ 2 ], 0, 4 ) === 'http' ? $nameimg[ 2 ] : '';
 				} else {
 					$title = $content;
+					$img = '';
 				}
 			} else {
 				$title = $file;
@@ -481,14 +483,16 @@ function list2array( $result ) {
 			if ( $list[ 6 ] !== $genre ) $genre = -1;
 		}
 		if ( !$composer && $list[ 7 ] !== '' ) $composer = $list[ 7 ];
-		$data[] = array(
-			  'file'  => $file
-			, 'track' => $track
-			, 'Title' => $title
-			, 'Time'  => $list[ 1 ]
-			, 'index' => $i++
-			, 'cuem3u'   => $cuem3u
+		$li = array(
+			  'file'   => $file
+			, 'track'  => $track
+			, 'Title'  => $title
+			, 'Time'   => $list[ 1 ]
+			, 'index'  => $i++
+			, 'cuem3u' => $cuem3u
 		);
+		if ( $img ) $li[ 'img' ] = $img;
+		$data[] = $li;
 	}
 	if ( !$webradio ) {
 		$data[][ 'artist' ] = $artist;
