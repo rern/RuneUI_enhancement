@@ -320,9 +320,7 @@ function webRadioCoverart() {
 	} );
 }
 function webRadioSave( name, url ) {
-	console.log(url)
 	$.post( 'enhance.php', { getwebradios: 1 }, function( data ) {
-		console.log(data)
 		var iL = data.length;
 		$.each( data, function( i, list ) {
 			if ( list.url === url ) {
