@@ -185,6 +185,7 @@ wh, gr { font-weight: 300; }
 	margin: 10px;
 	padding-top: 20px;
 }
+i.bookmark,
 .infobookmark i {
 	width: 100px;
 	font-size: 3em;
