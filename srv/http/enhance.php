@@ -453,19 +453,18 @@ function list2array( $result ) {
 		if ( $webradio ) {
 			$filename = str_replace( '/', '|', $file );
 			$webradiofile = "/srv/http/assets/img/webradios/$filename";
-			if ( !file_exists( $webradiofile ) ) $webradiofile = "/srv/http/assets/img/webradiopl/$filename";
 			if ( file_exists( $webradiofile ) ) {
-				$content = trim( file_get_contents( $webradiofile ) );
-				$nameimg = explode( "\n", $content );
-				if ( count( $nameimg ) > 1 ) {
-					$title = $nameimg[ 0 ];
-					$thumb = substr( $nameimg[ 1 ], 0, 4 ) === 'http' ? $nameimg[ 1 ] : '';
-				} else {
-					$title = $content;
-					$thumb = '';
-				}
+				$title = file( $webradiofile, FILE_IGNORE_NEW_LINES )[ 0 ];
 			} else {
-				$title = $file;
+				$webradiofile = "/srv/http/assets/img/webradiopl/$filename";
+				if ( file_exists( $webradiofile ) ) {
+					$nameimg = file( $webradiofile, FILE_IGNORE_NEW_LINES );
+					$title = $nameimg[ 0 ];
+					$thumb = $nameimg[ 1 ];
+					$img = $nameimg[ 2 ];
+				} else {
+					$title = $file;
+				}
 			}
 		} else if ( $list[ 0 ] ) {
 			$title = $list[ 0 ];
@@ -489,6 +488,7 @@ function list2array( $result ) {
 			, 'cuem3u' => $cuem3u
 		);
 		if ( $thumb ) $li[ 'thumb' ] = $thumb;
+		if ( $img ) $li[ 'img' ] = $img;
 		$data[] = $li;
 	}
 	if ( !$webradio ) {
