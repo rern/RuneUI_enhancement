@@ -1746,47 +1746,6 @@ li.active .time {
 	height: 100%;
 	pointer-events: none;
 }
-@media ( hover:hover ) {
-	.menu a, #menu-settings, #badge, #menu-bottom,
-	#artist, #album:not( .albumradio ),
-	.timemap, .covermap, .volmap, .rs-container,
-	.biosimilar, .close-root,
-	#db-home, #pl-home, #db-currentpath a, #pl-manage i,
-	.fa-arrow-left, .fa-search,
-	.home-block, .coverart div,
-	#playlist-warning i,
-	li:not( .licover ),
-	.licoverimg,
-	.liinfo {
-		cursor: pointer;
-	}
-	.menu a:hover,
-	#menu-bottom a:hover {
-		background: #222f3d;
-	}
-	#menu-bottom li.active a:hover,
-	#db-home:hover,
-	#pl-home:hover {
-		background-color: #0072a5;
-	}
-	.home-block:hover,
-	.home-block:focus,
-	.index li:not( .gr ):hover,
-	#db-entries li:not( .licover ):hover,
-	#pl-entries li:hover,
-	#pl-entries li:not( .active ):hover .pl-remove,
-	#pl-editor li:hover {
-		background: #374c62;
-	}
-	.label:hover {
-		color: #e0e7ee;
-	}
-	#db-entries li.active:hover,
-	#pl-entries li.active:hover,
-	#pl-editor li.active:hover {
-		background: #0095d8;
-	}
-}
 @media(min-width: 2000px) { .coverart { width: 200px } }
 @media(max-width: 2000px) { .coverart { width: calc( ( 100vw - 38px ) * 0.1 ) } }
 @media(max-width: 1800px) { .coverart { width: calc( ( 100vw - 38px ) * 0.111111111 ) } }
