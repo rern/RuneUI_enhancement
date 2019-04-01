@@ -1,5 +1,7 @@
 // keyboard controls
 $( document ).keydown( function( e ) {
+	if ( $( '#infoOverlay' ).css( 'display' ) === 'block' ) return
+		
 	var key = e.key;
 	if ( key === ' ' && e.target.localName !== 'input' ) {
 		$( '#play' ).click();
@@ -14,7 +16,7 @@ $( document ).keydown( function( e ) {
 		$( '#previous' ).click();
 	} else if ( key === 'MediaTrackNext' || key === 'MediaNextTrack' ) {
 		$( '#next' ).click();
-	} else if ( key === 'Tab' && $( '#infoOverlay' ).css( 'display' ) !== 'block' ) {
+	} else if ( key === 'Tab' ) {
 		if ( GUI.library ) {
 			$( '#tab-playback' ).click();
 		} else if ( GUI.playback ) {
