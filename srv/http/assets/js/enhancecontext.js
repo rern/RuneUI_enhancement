@@ -162,16 +162,18 @@ function bookmarkNew() {
 		if ( $this.find( '.lipath' ).text() === path ) {
 			var $img = $this.find( 'img' );
 			if ( $img.length ) {
-				var iconhtml = '<img src="'+ $img.attr( 'src' ) +'"><br>';
+				var iconhtml = '<img src="'+ $img.attr( 'src' ) +'">'
+							  +'<br>'+ path;
 			} else {
 				var iconhtml = '<i class="fa fa-bookmark bookmark"></i>'
-								+'<br><a class="bklabel">'+ $this.find( '.bklabel' ).text() +'</a>'
+							  +'<br><a class="bklabel">'+ $this.find( '.bklabel' ).text() +'</a>'
+							  + path;
 			}
 			info( {
 				  icon     : 'bookmark'
 				, title    : 'Add Bookmark'
 				, message  : iconhtml
-						   +'Already exists.'
+						   +'<br><br>Already exists.'
 				, msgalign : 'center'
 			} );
 			return false
