@@ -14,7 +14,7 @@ $( document ).keydown( function( e ) {
 		$( '#previous' ).click();
 	} else if ( key === 'MediaTrackNext' || key === 'MediaNextTrack' ) {
 		$( '#next' ).click();
-	} else if ( key === 'Tab' ) {
+	} else if ( key === 'Tab' && $( '#infoOverlay' ).css( 'display' ) !== 'block' ) {
 		if ( GUI.library ) {
 			$( '#tab-playback' ).click();
 		} else if ( GUI.playback ) {
