@@ -1298,6 +1298,7 @@ function radio2html( list, source, querytype, plid ) {
 				var thumb = list.image.thumb.url;
 				if ( thumb ) {
 					var iconhtml = '<img class="radiothumb db-icon lazy" data-src="'+ thumb +'" onerror="imgError(this);" data-target="#context-menu-radio">'
+								  +'<a class="lithumb">'+ thumb +'</a>'
 								  +'<a class="liimg">'+ list.image.url +'</a>'
 				} else {
 					var iconhtml = '<i class="fa fa-webradio db-icon" data-target="#context-menu-radio"></i>';
@@ -1355,8 +1356,8 @@ function dbContextmenu( $li, $target ) {
 	GUI.list.index = $li.find( '.liindex' ).text() || '';  // cue - in contextmenu
 	GUI.list.liindex = $( '#db-entries li' ).index( $li ); // for webradio delete - in contextmenu
 	GUI.list.isfile = $li.hasClass( 'file' );              // file/dirble save in contextmenu
-	GUI.list.thumb = $li.find( '.radiothumb' ).data( 'src' ) || ''; // dirble thumbnail
-	GUI.list.img = $li.find( '.liimg' ).text() || '';               // dirble coverart
+	GUI.list.thumb = $li.find( '.lithumb' ).text() || '';  // dirble save in contextmenu
+	GUI.list.img = $li.find( '.liimg' ).text() || '';      // dirble save in contextmenu
 	var $menu = $( $li.find( '.db-icon' ).data( 'target' ) );
 	if ( GUI.display.tapaddplay
 		&& !$target.hasClass( 'db-icon' )
@@ -1552,6 +1553,7 @@ function htmlPlaylist( data ) {
 						  +'<i class="fa fa-webradio pl-icon'+ ( title[ 0 ] === '*' || !title ? ' unsaved' : '' ) +'" data-target="#context-menu-webradiopl"></i>'
 						  +'<a class="lipath">'+ value.file +'</a>'
 						  + ( value.thumb ? '<a class="lithumb">'+ value.thumb +'</a>' : '' )
+						  + ( value.img ? '<a class="liimg">'+ value.img +'</a>' : '' )
 						  +'<span class="li1"><a class="name">'+ name +'</a><a class="song"></a><span class="duration"><a class="elapsed"></a></span></span>'
 						  +'<span class="li2">'+ ( name ? name +' • ' : '' ) + value.file +'</span>'
 					  +'</li>';

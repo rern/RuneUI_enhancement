@@ -1493,6 +1493,8 @@ $( '#pl-entries' ).on( 'click', '.pl-icon', function( e ) {
 	var $thisli = $this.parent();
 	GUI.list = {};
 	GUI.list.li = $thisli;
+	GUI.list.thumb = $thisli.find( '.lithumb' ).text() || '';  // dirble save in contextmenu
+	GUI.list.img = $thisli.find( '.liimg' ).text() || '';      // dirble save in contextmenu
 	var menutop = ( $thisli.position().top + 49 ) +'px';
 	var $contextmenu = $( '#context-menu-plaction' );
 	var $contextlist = $( '#context-menu-plaction a' );
@@ -1517,10 +1519,6 @@ $( '#pl-entries' ).on( 'click', '.pl-icon', function( e ) {
 	if ( $this.hasClass( 'fa-webradio' ) && $thisli.find( '.unsaved' ).length ) {
 		GUI.list.name = $thisli.find( '.name' ).html().trim();
 		GUI.list.path = $thisli.find( '.lipath' ).text().trim();
-		var $lithumb = $thisli.find( '.lithumb' );
-		var $liimg = $thisli.find( '.liimg' );
-		GUI.list.thumb = $lithumb.length ? $lithumb.text() : '';
-		GUI.list.img = $liimg.length ? $liimg.text() : '';
 		$contextlist.eq( 3 ).removeClass( 'hide' );
 	} else {
 		$contextlist.eq( 3 ).addClass( 'hide' );

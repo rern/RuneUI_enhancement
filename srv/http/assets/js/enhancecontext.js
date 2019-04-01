@@ -279,7 +279,9 @@ function webRadioCoverart() {
 						   +'<span class="bkname"><br>'+ name +'<span>'
 			, msgalign    : 'center'
 			, fileoklabel : 'Replace'
-			, cancel      : 1
+			, cancel      : function() {
+				$( '#db-entries li' ).removeClass( 'active' );
+			}
 			, ok          : function() {
 				var newimg = $( '#infoMessage .newimg' ).attr( 'src' );
 				var picacanvas = document.createElement( 'canvas' );
@@ -298,7 +300,7 @@ function webRadioCoverart() {
 								} );
 							}
 					} );
-					$( '#db-entries li.active' ).find( '.db-icon' ).remove()
+					$( '#db-entries li.active' ).find( '.db-icon' ).remove();
 					$( '#db-entries li.active' ).find( '.lisort' ).after( '<img class="radiothumb db-icon" src="'+ newthumb +'" data-target="#context-menu-radio">' );
 					$( '#db-entries li' ).removeClass( 'active' );
 					if ( path === GUI.status.file) GUI.status.coverart = newimg;
@@ -323,31 +325,33 @@ function webRadioSave( name, url ) {
 			} );
 			$( '#db-entries li.active' ).removeClass( 'active' );
 			return false
-		} else {
-			info( {
-				  icon         : 'webradio'
-				, title        : 'Save Webradio'
-				, width        : 500
-				, message      : ( GUI.list.img ? '<img src="'+ GUI.list.img +'">' : '<i class="fa fa-webradio bookmark"></i>' )
-								+'<br><w>'+ url +'</w>'
-								+'<br>As:'
-				, msgalign     : 'center'
-				, textlabel    : ''
-				, textvalue    : name
-				, textrequired : 1
-				, textalign    : 'center'
-				, boxwidth     : 'max'
-				, cancel       : function() {
-					GUI.library && $( '#db-entries li.active' ).removeClass( 'active' );
-					GUI.playlist && $( '#pl-entries li.updn' ).removeClass( 'updn' );
-				}
-				, ok           : function() {
-					var newname = $( '#infoTextBox' ).val();
-					notify( 'Webradio saved', newname );
-					if ( GUI.list.thumb ) newname += "\n"+ GUI.list.thumb +"\n"+ GUI.list.img
-					$.post( 'enhance.php', { webradios: newname, url: url, save: 1 } );
-				}
-			} );
+		}
+	} );
+	var $li = GUI.library ? $( '#db-entries li.active' ) : $( '#pl-entries li.active' );
+	var thumb = GUI.list.thumb;
+	var img = GUI.list.img;
+	info( {
+		  icon         : 'webradio'
+		, title        : 'Save Webradio'
+		, width        : 500
+		, message      : ( img ? '<br><img src="'+ img +'">' : '<br><i class="fa fa-webradio bookmark"></i>' )
+						+'<br><w>'+ url +'</w>'
+						+'<br>As:'
+		, msgalign     : 'center'
+		, textlabel    : ''
+		, textvalue    : name
+		, textrequired : 1
+		, textalign    : 'center'
+		, boxwidth     : 'max'
+		, cancel       : function() {
+			GUI.library && $( '#db-entries li.active' ).removeClass( 'active' );
+			GUI.playlist && $( '#pl-entries li.updn' ).removeClass( 'updn' );
+		}
+		, ok           : function() {
+			var newname = $( '#infoTextBox' ).val();
+			notify( 'Webradio saved', newname );
+			if ( thumb ) newname += "\n"+ thumb +"\n"+ img;
+			$.post( 'enhance.php', { webradios: newname, url: url, save: 1 } );
 		}
 	} );
 }
@@ -391,47 +395,55 @@ function webRadioNew( name, url ) {
 function webRadioRename() {
 	var name = GUI.list.name;
 	var url = GUI.list.path;
-	info( {
-		  icon         : 'webradio'
-		, title        : 'Rename Webradio'
-		, width        : 500
-		, message      : ( GUI.list.img ? '<img src="'+ GUI.list.img +'">' : '<i class="fa fa-webradio bookmark"></i>' )
-						+'<br><w>'+ name +'</w>'
-						+'<br>'+ url
-						+'<br>To:'
-		, msgalign     : 'center'
-		, textvalue    : name
-		, textrequired : 1
-		, textalign    : 'center'
-		, boxwidth     : 'max'
-		, cancel       : function() {
-			$( '#db-entries li.active' ).removeClass( 'active' );
-		}
-		, oklabel      : 'Rename'
-		, ok           : function() {
-			var newname = $( '#infoTextBox' ).val();
-			$.post( 'enhance.php', { webradios: newname, url: url, rename: 1 } );
-		}
+	var urlname = url.replace( /\//g, '|' );
+	$.post( 'enhance.php', { bash: '/usr/bin/cat "/srv/http/assets/img/webradios/'+ urlname +'"' }, function( data ) {
+		var nameimg = data.split( "\n" );
+		info( {
+			  icon         : 'webradio'
+			, title        : 'Rename Webradio'
+			, width        : 500
+			, message      : ( nameimg[ 2 ] ? '<br><img src="'+ nameimg[ 2 ] +'">' : '<br><i class="fa fa-webradio bookmark"></i>' )
+							+'<br><w>'+ nameimg[ 0 ] +'</w>'
+							+'<br>'+ url
+							+'<br>To:'
+			, msgalign     : 'center'
+			, textvalue    : name
+			, textrequired : 1
+			, textalign    : 'center'
+			, boxwidth     : 'max'
+			, cancel       : function() {
+				$( '#db-entries li.active' ).removeClass( 'active' );
+			}
+			, oklabel      : 'Rename'
+			, ok           : function() {
+				var newname = $( '#infoTextBox' ).val();
+				$.post( 'enhance.php', { webradios: newname, url: url, rename: 1 } );
+			}
+		} );
 	} );
 }
 function webRadioDelete() {
 	var name = GUI.list.name;
 	var url = GUI.list.path;
-	info( {
-		  icon     : 'webradio'
-		, title    : 'Delete Webradio'
-		, width    : 500
-		, message  : ( GUI.list.img ? '<img src="'+ GUI.list.img +'">' : '<i class="fa fa-webradio bookmark"></i>' )
-					+'<br><w>'+ name +'</w>'
-					+'<br>'+ url
-		, msgalign : 'center'
-		, cancel       : function() {
-			$( '#db-entries li.active' ).removeClass( 'active' );
-		}
-		, oklabel  : 'Delete'
-		, ok       : function() {
-			$.post( 'enhance.php', { webradios: name, url: url, delete: 1 } );
-		}
+	var urlname = url.replace( /\//g, '|' );
+	$.post( 'enhance.php', { bash: '/usr/bin/cat "/srv/http/assets/img/webradios/'+ urlname +'"' }, function( data ) {
+		var nameimg = data.split( "\n" );
+		info( {
+			  icon     : 'webradio'
+			, title    : 'Delete Webradio'
+			, width    : 500
+			, message  : ( nameimg[ 2 ] ? '<br><img src="'+ nameimg[ 2 ] +'">' : '<br><i class="fa fa-webradio bookmark"></i>' )
+						+'<br><w>'+ nameimg[ 0 ] +'</w>'
+						+'<br>'+ url
+			, msgalign : 'center'
+			, cancel       : function() {
+				$( '#db-entries li.active' ).removeClass( 'active' );
+			}
+			, oklabel  : 'Delete'
+			, ok       : function() {
+				$.post( 'enhance.php', { webradios: name, url: url, delete: 1 } );
+			}
+		} );
 	} );
 }
 function playlistNew() {
