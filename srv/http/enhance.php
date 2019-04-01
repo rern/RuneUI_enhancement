@@ -146,8 +146,9 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$count = -1;
 	} else if ( isset( $_POST[ 'save' ] ) ) {
 		$plfile = "/srv/http/assets/img/webradiopl/$urlname";
-		$content = file_get_contents( $plfile );
-		file_put_contents( $file, substr( $content, 1 ) ); // remove 1st * marking
+		$content = file( $plfile, FILE_IGNORE_NEW_LINES );
+		if ( count( $content ) > 1 ) $name.= "\n".$content[ 1 ]."\n".$content[ 2 ];
+		file_put_contents( $file, $name );
 		unlink( $plfile );
 		$count = 1;
 	}
