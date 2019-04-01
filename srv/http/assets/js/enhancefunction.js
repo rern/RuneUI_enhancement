@@ -1159,8 +1159,7 @@ function data2html( list, path ) {
 				var liname = list.webradio
 				var thumb = list.thumb;
 				if ( thumb ) {
-					var iconhtml = '<img class="radiothumb db-icon lazy" data-src="'+ thumb +'" onerror="imgError(this);" data-target="#context-menu-webradio">'
-								  +'<a class="liimg">'+ list.img +'</a>';
+					var iconhtml = '<img class="radiothumb db-icon lazy" data-src="'+ thumb +'" onerror="imgError(this);" data-target="#context-menu-webradio">';
 				} else {
 					var iconhtml = '<i class="fa fa-webradio db-icon" data-target="#context-menu-webradio"></i>';
 				}
@@ -1553,7 +1552,6 @@ function htmlPlaylist( data ) {
 						  +'<i class="fa fa-webradio pl-icon'+ ( title[ 0 ] === '*' || !title ? ' unsaved' : '' ) +'" data-target="#context-menu-webradiopl"></i>'
 						  +'<a class="lipath">'+ value.file +'</a>'
 						  + ( value.thumb ? '<a class="lithumb">'+ value.thumb +'</a>' : '' )
-						  + ( value.img ? '<a class="liimg">'+ value.img +'</a>' : '' )
 						  +'<span class="li1"><a class="name">'+ name +'</a><a class="song"></a><span class="duration"><a class="elapsed"></a></span></span>'
 						  +'<span class="li2">'+ ( name ? name +' • ' : '' ) + value.file +'</span>'
 					  +'</li>';

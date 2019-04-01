@@ -269,19 +269,13 @@ function webRadioCoverart() {
 	var path = GUI.list.path;
 	var urlname = path.replace( /\//g, '|' );
 	$.post( 'enhance.php', { bash: '/usr/bin/cat "/srv/http/assets/img/webradios/'+ urlname +'"' }, function( data ) {
-		var data = data.split( '\n' );
-		if ( data.length > 1 ) {
-			var name = data[ 0 ];
-			var $img = '<img src="'+ data[ 2 ] +'">';
-		} else {
-			var name = data;
-			var $img = '<img src="'+ vu +'" style="border-radius: 9px">';
-		}
+		var nameimg = data.split( "\n" );
+		var name = nameimg[ 0 ];
+		var $img = nameimg[ 2 ] ? '<img src="'+ nameimg[ 2 ] +'">' : '<img src="'+ vu +'" style="border-radius: 9px">';
 		info( {
 			  icon        : 'webradio'
 			, title       : 'Change Coverart'
-			, message     : 'Replace:'
-						   +'<br>'+ $img
+			, message     : ( nameimg[ 2 ] ? '<img src="'+ nameimg[ 2 ] +'">' : '<img src="'+ vu +'" style="border-radius: 9px">' )
 						   +'<span class="bkname"><br>'+ name +'<span>'
 			, msgalign    : 'center'
 			, fileoklabel : 'Replace'
@@ -304,67 +298,58 @@ function webRadioCoverart() {
 								} );
 							}
 					} );
+					$( '#db-entries li.active' ).find( '.db-icon' ).remove()
+					$( '#db-entries li.active' ).find( '.lisort' ).after( '<img class="radiothumb db-icon" src="'+ newthumb +'" data-target="#context-menu-radio">' );
+					$( '#db-entries li' ).removeClass( 'active' );
+					if ( path === GUI.status.file) GUI.status.coverart = newimg;
 				} );
-				var $img = $( '#db-entries li.active img' );
-				if ( $img.length ) {
-					$img.attr( 'src', newimg );
-				} else {
-					$( '#db-entries li.active' )
-						.find( '.db-icon' ).remove()
-						.find( '.lisort' ).after( '<img class="radiothumb db-icon" src="'+ newimg +'" data-target="#context-menu-radio">' );
-				}
-				$( '#db-entries li' ).removeClass( 'active' );
-				if ( path === GUI.status.file) GUI.status.coverart = newimg;
 			}
 		} );
 	} );
 }
 function webRadioSave( name, url ) {
-	$.post( 'enhance.php', { getwebradios: 1 }, function( data ) {
-		var iL = data.length;
-		$.each( data, function( i, list ) {
-			if ( list.url === url ) {
-				info( {
-					  icon     : 'webradio'
-					, title    : 'Save Webradio'
-					, message  : '<w>'+ url +'</w>'
-								+'<br>Already exists as:'
-								+ ( list.thumb ? '<br><img src="'+ list.thumb +'">' : '<br><i class="fa fa-webradio bookmark"></i>' )
-								+'<br><w>'+ list.webradio +'</w>'
-					, msgalign : 'center'
-				} );
-				return false
-			}
-			i--;
-			if ( !i ) {
-				var urlname = url.replace( /\//g, '|' );
-				info( {
-					  icon         : 'webradio'
-					, title        : 'Save Webradio'
-					, width        : 500
-					, message      : ( GUI.list.img ? '<img src="'+ GUI.list.img +'">' : '<i class="fa fa-webradio bookmark"></i>' )
-									+'<br><w>'+ url +'</w>'
-									+'<br>As:'
-					, msgalign     : 'center'
-					, textlabel    : ''
-					, textvalue    : name
-					, textrequired : 1
-					, textalign    : 'center'
-					, boxwidth     : 'max'
-					, cancel       : function() {
-						GUI.library && $( '#db-entries li.active' ).removeClass( 'active' );
-						GUI.playlist && $( '#pl-entries li.updn' ).removeClass( 'updn' );
-					}
-					, ok           : function() {
-						var newname = $( '#infoTextBox' ).val();
-						notify( 'Webradio saved', newname );
-						if ( GUI.list.thumb ) newname += "\n"+ GUI.list.thumb +"\n"+ GUI.list.img
-						$.post( 'enhance.php', { webradios: newname, url: url, save: 1 } );
-					}
-				} );
-			}
-		} );
-	}, 'json' );
+	var urlname = url.replace( /\//g, '|' );
+	$.post( 'enhance.php', { bash: '/usr/bin/cat "/srv/http/assets/img/webradios/'+ urlname +'"' }, function( data ) {
+		if ( data ) {
+			var nameimg = data.split( "\n" );
+			info( {
+				  icon     : 'webradio'
+				, title    : 'Save Webradio'
+				, message  : ( nameimg[ 2 ] ? '<br><img src="'+ nameimg[ 2 ] +'">' : '<br><i class="fa fa-webradio bookmark"></i>' )
+							+'<br><w>'+ nameimg[ 0 ] +'</w>'
+							+'<br>'+ url
+							+'<br>Already exists.'
+				, msgalign : 'center'
+			} );
+			$( '#db-entries li.active' ).removeClass( 'active' );
+			return false
+		} else {
+			info( {
+				  icon         : 'webradio'
+				, title        : 'Save Webradio'
+				, width        : 500
+				, message      : ( GUI.list.img ? '<img src="'+ GUI.list.img +'">' : '<i class="fa fa-webradio bookmark"></i>' )
+								+'<br><w>'+ url +'</w>'
+								+'<br>As:'
+				, msgalign     : 'center'
+				, textlabel    : ''
+				, textvalue    : name
+				, textrequired : 1
+				, textalign    : 'center'
+				, boxwidth     : 'max'
+				, cancel       : function() {
+					GUI.library && $( '#db-entries li.active' ).removeClass( 'active' );
+					GUI.playlist && $( '#pl-entries li.updn' ).removeClass( 'updn' );
+				}
+				, ok           : function() {
+					var newname = $( '#infoTextBox' ).val();
+					notify( 'Webradio saved', newname );
+					if ( GUI.list.thumb ) newname += "\n"+ GUI.list.thumb +"\n"+ GUI.list.img
+					$.post( 'enhance.php', { webradios: newname, url: url, save: 1 } );
+				}
+			} );
+		}
+	} );
 }
 function webRadioNew( name, url ) {
 	info( {
