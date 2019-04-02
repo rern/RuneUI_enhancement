@@ -62,6 +62,14 @@
 <link rel="stylesheet" href="<?=$this->asset( '/css/roundslider.min.css' )?>">
 <link rel="stylesheet" href="<?=$this->asset( '/css/enhance.css' )?>">
 		<?php
+		if ( !strpos( 'mobi', $_SERVER['HTTP_USER_AGENT'] ) ) { ?>
+<link rel="stylesheet" href="<?=$this->asset( '/css/enhancedesktop.css' )?>">
+		<?php
+		}
+		if ( strpos( 'Midori', $_SERVER['HTTP_USER_AGENT'] ) ) { ?>
+<link rel="stylesheet" href="<?=$this->asset( '/css/enhancemidori.css' )?>">
+		<?php
+		}
 		if ( $gpio ) { ?> 
 <link rel="stylesheet" href="<?=$this->asset( '/css/gpio.css' )?>">
 		<?php 

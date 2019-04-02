@@ -15,6 +15,10 @@
 <script src="<?=$this->asset( '/js/enhance.js' )?>"></script>
 <script src="<?=$this->asset( '/js/enhancecontext.js' )?>"></script>
 		<?php
+		if ( strpos( 'mobi', $_SERVER['HTTP_USER_AGENT'] ) === false ) { ?> 
+<script src="<?=$this->asset( '/js/enhanceshortcut.js' )?>"></script>
+		<?php
+		}
 		if ( file_exists( '/srv/http/assets/js/addonsmenu.js' ) ) { ?> 
 <script src="<?=$this->asset( '/js/addonsmenu.js' )?>"></script>
 		<?php

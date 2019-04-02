@@ -16,7 +16,7 @@ rm -v /srv/http/assets/css/{enhance*,fontawesome.min,pnotify.custom.min,roundsli
 rm -v /srv/http/assets/fonts/enhance*
 rm -v /srv/http/assets/img/{bootsplash.png,controls*,cover.svg,runelogo.svg,vu*}
 rm -v /srv/http/assets/js/enhance*
-rm -v /srv/http/assets/js/vendor/{lazyload,roundslider}.min.js
+rm -v /srv/http/assets/js/vendor/{lazyload,pica,roundslider}.min.js
 # DO NOT remove - used by other addons
 # bootstrap.min.css, bootstrap-select.min.css
 
@@ -46,14 +46,63 @@ files="
 "
 restorefile $files
 
-systemctl restart rune_PL_wrk
-if [[ $1 != u ]]; then
-	redis-cli del display sampling mpddb &> /dev/null
-	systemctl enable rune_shutdown
-	systemctl start rune_shutdown
+if [[ $1 == u ]]; then
+	systemctl restart rune_PL_wrk
+	uninstallfinish $@
+	restartlocalbrowser
+	reinitsystem
+	exit
 fi
 
-chown -R mpd:audio /mnt/MPD/Webradio
+########## if not update ############################################################
+
+# convert file based webradios back to redis
+dir=/srv/http/assets/img/webradios
+if [[ ! -z $( ls -A $dir ) ]]; then
+	echo -e "$bar Convert Webradios data ..."
+	files=( $dir/* )
+	for file in ${files[@]}; do
+		url=$( basename "$file" )
+		url=${url//|/\/}
+		name=$( head -n1 $file )
+		string=$( cat <<EOF
+[playlist]
+NumberOfEntries=1
+File1=$url
+Title1=$name
+EOF
+)
+		echo "$string" > "/mnt/MPD/Webradio/$name.pls"
+		echo $name - $url
+	done
+
+	mpc update Webradio &> /dev/null
+fi
+
+# convert file based bookmarks back to redis
+dir=/srv/http/assets/img/bookmarks
+if [[ ! -z $( ls -A $dir ) ]]; then
+	echo -e "$bar Convert bookmarks data ..."
+	files=( $dir/* )
+	idx=0
+	for file in "${files[@]}"; do
+		path=$( basename "$file" )
+		path=${path//|/\/}
+		name=$( basename "$path" )
+		(( idx++ ))
+		redis-cli hset bookmarks $idx "{\"name\":\"$name\",\"path\":\"$path\"}" &> /dev/null
+		echo $path
+	done
+	redis-cli set bookmarksidx $idx &> /dev/null
+fi
+
+redis-cli del display sampling mpddb &> /dev/null
+rm /srv/http/assets/img/{bookmarks,coverarts,webradios}
+rm -r /srv/http/assets/img/webradiopl
+systemctl enable rune_shutdown
+systemctl start rune_shutdown
+
+systemctl restart rune_PL_wrk
 
 uninstallfinish $@
 

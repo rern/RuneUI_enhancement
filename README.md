@@ -14,12 +14,21 @@ _Tested on RuneAudio 0.4b, 0.5_
 	- Larger new icons
 	- Add pause button
 	- Show database updating as blinking icon (show as icon in Time knob while hidden)
+- Performance
+	- Loading
+	- Running
 	
 ### New Features
-- Browse by CoverArt ( with [LazyLoad](https://github.com/verlok/lazyload) )
-- Coverart bookmarks
-- Coverart in album view
+- Coverarts
+	- Browse by CoverArt ( with [LazyLoad](https://github.com/verlok/lazyload) )
+	- Coverart bookmarks
+	- Coverart in album view
+	- Replace / remove
+	- Image from each Dirble stations
+	- VU meter for Webradio (animated gif)
+	- Custom Webradio coverarts
 - Index bar
+	- Mask available indexes
 - Library sorting
 - Selectable show/hide
 	- Top-bottom bars
@@ -35,7 +44,10 @@ _Tested on RuneAudio 0.4b, 0.5_
 	- Fallback for allow-swipe-only area
 - Refresh browser for fullscreen mode
 	- Long-press bottom bar / swipe bar
-- Sortable Library items ( by [Sortable](https://github.com/SortableJS/Sortable) )
+- Movable Library items ( by [Sortable](https://github.com/SortableJS/Sortable) )
+- Context menu
+	- Icon on the right removed
+	- Use icon on the left instead
 
 Install
 ---
@@ -81,7 +93,7 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 		- With embedded ID3 cover art
 			- Single artist + single album : override embedded ones by placing 1 cover art file in the directory
 			- Various : existing embedded ones
-	- Show VU meter in webradio - animated while play
+	- Show VU meter in webradio - animated while playing
 - Volume
 	- Show pre-mute level instead of 0 on mute
 	- Maintain pre-mute level across page refresh and clients
@@ -98,21 +110,32 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 ### Library:
 - Drag to rearrange home blocks
 - Show counts
-- Browse by CoverArt
-	- Long-press `CoverArt` to create / update thumbnails
-	- Long-press thumbnail for remove
-	- Context menu in directory for partial update
-- Coverart bookmarks
+- Coverarts:
+	- Browse by CoverArt
+		- Long-press `CoverArt` to create / update thumbnails
+		- Long-press thumbnail for replace / remove
+		- Context menu in directory for partial update
+		- Sort by album or by artist
+	- Coverart bookmarks
+		- Long-press for replace / remove
+	- Coverart in album view / album directory
+		- Long-press for replace / remove
+	- Webradio coverarts
+		- Tap Webradio icon in list view
 - Bookmarks and webradios can be renamed
 - Bookmarks and webradios can be named with " characters
 - Show icon and breadcrumb heading while browsing
-- Show list in playlist files (\*.cue, \*.pls, \*.m3u)
+- Show list in playlist files `*.cue` `*.pls` `*.m3u`
 - Toggle search box
-- Show index bar with filter mask
+- Index bar
+	- Unavailable indexes masked
+	- Compressed for limited height screen
 - Improved Back button
 - Maintain scroll position
-- Improved sorting with articles, A/An/The, ignored
+- Improved sorting
+	- Ignore leading `A` `An` `The` `(` `[` `{` `.`
 - Modes
+	- Coverarts > albums > songs
 	- Albums > names > songs
 	- Albums with duplicate name > album-artist > songs
 	- Artists > names > albums > songs
@@ -134,7 +157,9 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 - Tap elapsed or time to stop
 - Improve drag to rearrange
 - Show track numbers
-- Show webradio name
+- Webradio
+	- Show saved station names while stop / streaming names while playing
+	- Unsaved station icon in white - tap to save
 - Crop button to keep only current playing song
 - Saved playlists can be named with " characters
 - Saved playlists can be renamed

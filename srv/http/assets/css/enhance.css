@@ -182,13 +182,18 @@ wh, gr { font-weight: 300; }
 	float: left;
 	width: 100px;
 	height: 100px;
-	margin: 10px 10px 0 10px;
+	margin: 10px;
 	padding-top: 20px;
 }
+i.bookmark,
 .infobookmark i {
+	width: 100px;
 	font-size: 3em;
 	color: #0095d8;
 	text-shadow: 2px 2px 4px #000000;
+}
+.imagewh {
+	font-size: 14px;
 }
 #album gr {
 	font-weight: normal;
@@ -482,6 +487,10 @@ wh, gr { font-weight: 300; }
 #artist,
 #album {
 	font-size: 18px
+}
+.albumradio {
+	color: #2f4052;
+	font-weight: 300;
 }
 #sampling {
 	height: 40px;
@@ -1069,7 +1078,7 @@ wh, gr { font-weight: 300; }
 }
 .home-block i {
 	display: inline-block;
-	width: 40px;
+	width: 60px;
 	height: 40px;
 	line-height: 40px;
 	font-size: 48px;
@@ -1078,7 +1087,6 @@ wh, gr { font-weight: 300; }
 	text-shadow: 2px 2px 4px #000000;
 }
 #home-blocks gr {
-	margin-left: 14px;
 	font-size: 18px;
 	line-height: 18px;
 }
@@ -1125,10 +1133,11 @@ wh, gr { font-weight: 300; }
 .home-block .fa-bookmark {
 	color: #0095d8;
 }
+/* coverart edit icons */
 .edit {
 	position: absolute;
 	right: 0;
-	width: 40px;
+	width: 40px !important;
 	height: 35px;
 	line-height: 40px;
 	text-align: center;
@@ -1136,7 +1145,8 @@ wh, gr { font-weight: 300; }
 	color: #e0e7ee !important;
 }
 .home-block-remove,
-.coverart-remove {
+.coverart-remove,
+.licover-remove {
 	top: 0;
 }
 .home-block-edit {
@@ -1148,8 +1158,17 @@ wh, gr { font-weight: 300; }
 .coverart-cover {
 	bottom: 5px;
 }
+.licover-remove,
+.licover-cover {
+	height: 40px;
+	right: 15px;
+}
+.licover-cover {
+	bottom: 0;
+}
+
 #infoMessage img {
-	margin: 10px 10px 0 10px;
+	margin: 10px;
 	width: 100px;
 	height: 100px;
 }
@@ -1385,12 +1404,6 @@ wh, gr { font-weight: 300; }
 .licoverimg img {
 	pointer-events: none;
 }
-.licover-cover {
-	position: absolute;
-	bottom: 0;
-	right: 15px;
-	color: #e0e7ee !important;
-}
 .liinfo {
 	display: inline-block;
 	vertical-align: bottom;
@@ -1447,6 +1460,12 @@ wh, gr { font-weight: 300; }
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
+#pl-entries li.updn {
+	background: #374c62;
+}
+#pl-entries li.active.updn {
+	background: #0095d8;
+}
 .db-icon,
 .pl-icon,
 #db-entries li span i {
@@ -1471,13 +1490,15 @@ wh, gr { font-weight: 300; }
 	line-height: 48px;
 	vertical-align: 5%;
 }
+#indexcover,
 .lipath,
 .liname,
 .liindex,
-#indexcover,
 .lisort,
 .licue,
-.liartist {
+.liartist,
+.lithumb,
+.liimg {
 	display: none;
 }
 span.dbpath {
@@ -1536,9 +1557,9 @@ span.dbpath {
 	margin: 0 15px;
 }
 .radiothumb {
-	width: 33px;
-	height: 33px;
-	margin: 7px 10px 7px 7px;
+	width: 40px;
+	height: 40px;
+	margin-top: 3px;
 }
 #pl-entries li.radio {
 	margin: 0;
@@ -1704,7 +1725,16 @@ li.active .time {
 .menu a.active {
 	background: #0095d8;
 }
-
+/* flags */
+.flag {
+	margin-left: 5px;
+}
+.flag f {
+	background: url( /assets/img/flags.png ) no-repeat;
+	display: inline-block;
+	width: 16px;
+	height: 12px;
+}
 /* bootstrap column */
 .coverart div {
 	position: relative;
@@ -1715,47 +1745,6 @@ li.active .time {
 	width: 100%;
 	height: 100%;
 	pointer-events: none;
-}
-@media ( hover:hover ) {
-	.menu a, #menu-settings, #badge, #menu-bottom,
-	#artist, #album:not( .albumradio ),
-	.timemap, .covermap, .volmap, .rs-container,
-	.biosimilar, .close-root,
-	#db-home, #pl-home, #db-currentpath a, #pl-manage i,
-	.fa-arrow-left, .fa-search,
-	.home-block, .coverart div,
-	#playlist-warning i,
-	li:not( .licover ),
-	.licover img,
-	.liinfo {
-		cursor: pointer;
-	}
-	.menu a:hover,
-	#menu-bottom a:hover {
-		background: #222f3d;
-	}
-	#menu-bottom li.active a:hover,
-	#db-home:hover,
-	#pl-home:hover {
-		background-color: #0072a5;
-	}
-	.home-block:hover,
-	.home-block:focus,
-	.index li:not( .gr ):hover,
-	#db-entries li:not( .licover ):hover,
-	#pl-entries li:hover,
-	#pl-entries li:not( .active ):hover .pl-remove,
-	#pl-editor li:hover {
-		background: #374c62;
-	}
-	.label:hover {
-		color: #e0e7ee;
-	}
-	#db-entries li.active:hover,
-	#pl-entries li.active:hover,
-	#pl-editor li.active:hover {
-		background: #0095d8;
-	}
 }
 @media(min-width: 2000px) { .coverart { width: 200px } }
 @media(max-width: 2000px) { .coverart { width: calc( ( 100vw - 38px ) * 0.1 ) } }

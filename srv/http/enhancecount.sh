@@ -21,6 +21,6 @@ countalbum=$( redis-cli get countalbum )
 mpddb=$( redis-cli get mpddb )
 nas=$( df | grep '/mnt/MPD/NAS' | wc -l )
 usb=$( df | grep '/mnt/MPD/USB' | wc -l )
-webradio=$( redis-cli hkeys webradios | sed '/(empty list or set)/ d' | awk NF | wc -l )
+webradio=$( ls -U /srv/http/assets/img/webradios/* 2> /dev/null | wc -l )
 
 echo $artist $album $song $mpddb $nas $usb $webradio

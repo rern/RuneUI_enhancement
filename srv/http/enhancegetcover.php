@@ -1,6 +1,28 @@
 <?php
+if ( isset( $_POST[ 'path' ] ) ) {
+	$dir = '/mnt/MPD/'.$_POST[ 'path' ];
+	$files = array_slice( scandir( $dir ), 2 ); // remove ., ..
+	foreach( $files as $file ) {
+		$file = "$dir/$file";
+		if ( !is_file( $file ) ) continue;
+		
+		$mime = substr( mime_content_type( $file ), 0, 5 );
+		$ext = substr( $file, -3 );
+		if ( $mime === 'audio' || $ext === 'dsf' || $ext === 'dff' ) { // only audio file
+			$coverfile = getCoverart( $file, 0, 1 );
+			if ( !$coverfile ) continue;
+			
+			$coverext = substr( $coverfile, -3 );
+			$thumbfile = '/srv/http/tmp/tmp.jpg';
+			exec( '/usr/bin/sudo /usr/bin/convert "'.$coverfile.'" -thumbnail 200x200 -unsharp 0x.5 "'.$thumbfile.'"' );
+			$coverart = file_get_contents( $thumbfile );
+			echo 'data:image/'. $coverext.';base64,'.base64_encode( $coverart );
+			exit;
+		}
+	}
+}
 // create thumbnail from embedded coverart in file
-function getCoverart( $file, $thumbnail = 0 ) {
+function getCoverart( $file, $thumbnail = 0, $asfile = 0 ) {
 // 1. local coverart file
 	if ( !$thumbnail ) {
 		$dir = dirname( $file );
@@ -12,6 +34,8 @@ function getCoverart( $file, $thumbnail = 0 ) {
 			$coverfile = $dir.'/'.$cover;
 			if ( file_exists( $coverfile ) ) {
 				$coverext = pathinfo( $cover, PATHINFO_EXTENSION );
+				if ( $asfile ) return $coverfile;
+				
 				$coverart = file_get_contents( $coverfile );
 				return 'data:image/'. $coverext.';base64,'.base64_encode( $coverart );
 			}
@@ -26,7 +50,7 @@ function getCoverart( $file, $thumbnail = 0 ) {
 		$id3cover = $id3tag[ 'comments' ][ 'picture' ][ 0 ];
 		$coverdata = $id3cover[ 'data' ];
 		$coverext = str_replace( 'image/', '', $id3cover[ 'image_mime' ] );
-		if ( !$thumbnail ) {
+		if ( !$thumbnail && !$asfile ) {
 			return 'data:image/'. $coverext.';base64,'.base64_encode( $coverdata );
 		} else {
 			$coverfile = "/srv/http/tmp/cover.$coverext";

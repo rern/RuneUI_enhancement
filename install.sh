@@ -11,9 +11,8 @@ alias=enha
 . /srv/http/addonsedit.sh
 
 #0temp0
-redis-cli hdel display order &> /dev/null
+[[ $( redis-cli hget addons enha ) < 20190318 ]] && redis-cli hdel display order &> /dev/null
 rm -rf /srv/http/assets/img/coverarts/coverarts
-redis-cli hdel display library &> /dev/null
 #1temp1
 
 installstart $@
@@ -108,24 +107,122 @@ EOF
 )
 insertH '<h2>Network mounts'
 #----------------------------------------------------------------------------------
-if [[ $1 != u ]]; then # keep range: 0.5 - 3.0
-	z=$1;
-	zoom=$( echo "0.5 $z 3" \
-      | awk '{
-          if (( $1 < $2 && $2 < $3 ))
-            print $2
-          else if (( $2 < $1 ))
-            print $1
-          else
-            print $3
-        }'
-	)
-	redis-cli set zoomlevel $zoom &> /dev/null
-	# set AAC/ALAC support
-	[[ $2 ]] && redis-cli hset mpdconf ffmpeg $2 &> /dev/null
-else
-	zoom=$( redis-cli get zoomlevel )
+
+########## to be moved after 'if not update' ###################################################################
+# dirble temp
+dir=/srv/http/assets/img/webradiopl
+mkdir -p $dir
+chown -R http:http $dir
+
+makeDirLink coverarts
+
+makeDirLink webradios
+# convert webradios
+# filename: http:||webradio|url
+# content:
+#	name only  - name
+#	with image - name\nbase64thumbnail\nbase64image
+dir=/srv/http/assets/img/webradios
+if [[ -z $( ls -A $dir ) ]]; then
+	webradios=$( redis-cli hgetall webradios )
+	if [[ $webradios ]]; then
+		echo -e "$bar Convert Webradios data ..."
+
+		readarray -t lines <<<"$webradios"
+		linesL=${#lines[@]}
+		for (( i=0; i < $linesL; i+=2 )); do
+			name=${lines[ $i ]}
+			url=${lines[ $i + 1 ]}
+			echo $name > "$dir/${url//\//|}"
+			echo $name - $url
+		done
+	fi
+	dirtarget=$( readlink -f $dir )
+	chown -R http:http "$dirtarget" $dir
 fi
+
+makeDirLink bookmarks
+# convert old bookmarks
+# filename: path|to|bookmark
+# content:
+#	name  - name
+#	image - base64image
+dir=/srv/http/assets/img/bookmarks
+if [[ -z $( ls -A $dir ) ]]; then
+	bookmarks=$( redis-cli hgetall bookmarks | tr -d '"{}\\' )
+	if [[ $bookmarks ]]; then
+		echo -e "$bar Convert Bookmarks data ..."
+
+		readarray -t lines <<<"$bookmarks"
+		linesL=${#lines[@]}
+		for (( i=1; i < linesL; i+=2 )); do
+			namepath=${lines[ $i ]}
+			name=$( echo $namepath | cut -d',' -f1 )
+			path=$( echo $namepath | cut -d',' -f2 )
+			name=${name/name:}
+			path=${path/path:}
+			mpdpath=${path//\\/}
+			oldfile=/mnt/MPD/$mpdpath/thumbnail.jpg
+			newfile="$dir/${mpdpath//\//|}"
+			if [[ -e "$oldfile" ]]; then
+				base64data=$( base64 -w 0 "$oldfile" )
+				echo "data:image/jpeg;base64,$base64data" > "$newfile"
+			else
+				echo $name > "$newfile"
+			fi
+			echo $path
+		done
+		redis-cli del bookmarks bookmarksidx &> /dev/null
+	fi
+	# convert new bookmarks (to be removed in next version)
+	bkmarks=$( redis-cli hgetall bkmarks )
+	if [[ $bkmarks ]]; then
+		readarray -t lines <<<"$bkmarks"
+		linesL=${#lines[@]}
+		for (( i=0; i < $linesL; i+=2 )); do
+			mpdpath=${lines[$i+1]}
+			oldfile=/mnt/MPD/$mpdpath/thumbnail.jpg
+			newfile="$dir/${mpdpath//\//|}"
+			if [[ -e "$oldfile" ]]; then
+				base64data=$( base64 -w 0 "$oldfile" )
+				echo "data:image/jpeg;base64,$base64data" > "$newfile"
+			else
+				echo ${lines[$i]} > "$newfile"
+			fi
+			echo $mpdpath
+		done
+		redis-cli del bkmarks &> /dev/null
+	fi
+	dirtarget=$( readlink -f $dir )
+	chown -R http:http "$dirtarget" $dir
+fi
+##############################################################################################################
+
+if [[ $1 == u ]]; then
+	installfinish $@
+	restartlocalbrowser
+	reinitsystem
+	exit
+fi
+
+########## if not update ############################################################
+
+# zoom - keep range: 0.5 - 3.0
+z=$1;
+zoom=$( echo "0.5 $z 3" \
+  | awk '{
+	  if (( $1 < $2 && $2 < $3 ))
+		print $2
+	  else if (( $2 < $1 ))
+		print $1
+	  else
+		print $3
+	}'
+)
+redis-cli set zoomlevel $zoom &> /dev/null
+# set AAC/ALAC support
+[[ $2 ]] && redis-cli hset mpdconf ffmpeg $2 &> /dev/null
+
 
 #----------------------------------------------------------------------------------
 file=/root/.config/midori/config
@@ -165,23 +262,17 @@ file=/srv/http/app/templates/enhanceplayback.php  # for rune youtube
 [[ $( redis-cli get buildversion ) == 'beta-20160313' ]] && redis-cli set release 0.3 &> /dev/null
 
 playback="bars debug dev time cover volume buttons"
-library="order coverart nas sd usb webradio album artist albumartist composer genre dirble jamendo"
+library="coverart nas sd usb webradio album artist albumartist composer genre spotify dirble jamendo"
 miscel="count label coverfile plclear playbackswitch tapaddplay"
 for item in $playback $library $miscel; do
-	if [[ $( redis-cli hexists display $item ) == 0 ]]; then
-		echo order debug dev tapaddplay | grep -qw $item && chk='' || chk=checked
-		redis-cli hset display $item "$chk" &> /dev/null
-	fi
+	echo debug dev jamendo spotify tapaddplay | grep -qw $item && chk='' || chk=checked
+	redis-cli hset display $item "$chk" &> /dev/null
 done
 # pre-count albumartist, composer, genre
 albumartist=$( mpc list albumartist | awk NF | wc -l )
 composer=$( mpc list composer | awk NF | wc -l )
 genre=$( mpc list genre | awk NF | wc -l )
 redis-cli set mpddb "$albumartist $composer $genre" &> /dev/null
-
-# fix webradio permission
-chown -R http:http /mnt/MPD/Webradio
-
 # disable USB drive auto scan database ..."
 redis-cli set usb_db_autorebuild 0 &> /dev/null
 # disable GB and DE locale ..."
