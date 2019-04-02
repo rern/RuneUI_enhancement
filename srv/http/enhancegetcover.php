@@ -23,7 +23,7 @@ if ( isset( $_POST[ 'path' ] ) ) {
 }
 // create thumbnail from embedded coverart in file
 function getCoverart( $file, $thumbnail = 0, $asfile = 0 ) {
-// 1. local coverart file
+// local coverart file
 	if ( !$thumbnail ) {
 		$dir = dirname( $file );
 		$coverfiles = array(
@@ -41,12 +41,11 @@ function getCoverart( $file, $thumbnail = 0, $asfile = 0 ) {
 			}
 		}
 	}
-// 2. id3tag
-	set_include_path( '/srv/http/app/libs/vendor/' );
-	require_once( 'getid3/audioinfo.class.php' );
+// id3tag
+	require_once('/srv/http/app/libs/vendor/getid3/getid3.php');
 	$id3 = new getID3;
-	$id3info= $id3->analyze( $file );
-	$id3picture = $id3->info[ 'comments' ][ 'picture' ][ 0 ];
+	$id3tag = $id3->analyze( $file );
+	$id3picture = $id3tag[ 'comments' ][ 'picture' ][ 0 ];
 	if ( isset( $id3picture[ 'data' ] ) ) {
 		$coverdata = $id3picture[ 'data' ];
 		$coverext = str_replace( 'image/', '', $id3picture[ 'image_mime' ] );
