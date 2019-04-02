@@ -177,6 +177,7 @@ wh, gr { font-weight: 300; }
 }
 .infocol {
 	width: 150px;
+	margin-right: 5px;
 }
 .infobookmark {
 	float: left;
