@@ -263,9 +263,9 @@ file=/srv/http/app/templates/enhanceplayback.php  # for rune youtube
 
 playback="bars debug dev time cover volume buttons"
 library="coverart nas sd usb webradio album artist albumartist composer genre spotify dirble jamendo"
-miscel="count label coverfile plclear playbackswitch tapaddplay"
+miscel="count label coverfile plclear playbackswitch tapaddplay thumbbyartist"
 for item in $playback $library $miscel; do
-	echo debug dev jamendo spotify tapaddplay | grep -qw $item && chk='' || chk=checked
+	echo debug dev jamendo spotify tapaddplay thumbbyartist | grep -qw $item && chk='' || chk=checked
 	redis-cli hset display $item "$chk" &> /dev/null
 done
 # pre-count albumartist, composer, genre
