@@ -23,7 +23,7 @@ if ( isset( $_POST[ 'path' ] ) ) {
 }
 // create thumbnail from embedded coverart in file
 function getCoverart( $file, $thumbnail = 0, $asfile = 0 ) {
-// local coverart file
+// local file
 	if ( !$thumbnail ) {
 		$dir = dirname( $file );
 		$coverfiles = array(
@@ -41,7 +41,7 @@ function getCoverart( $file, $thumbnail = 0, $asfile = 0 ) {
 			}
 		}
 	}
-// id3tag
+// id3tag embedded
 	require_once( '/srv/http/app/libs/vendor/getid3/getid3.php' );
 	$id3 = new getID3;
 	$id3tag = $id3->analyze( $file );
