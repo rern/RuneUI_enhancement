@@ -42,7 +42,7 @@ function getCoverart( $file, $thumbnail = 0, $asfile = 0 ) {
 		}
 	}
 // id3tag
-	require_once('/srv/http/app/libs/vendor/getid3/getid3.php');
+	require_once( '/srv/http/app/libs/vendor/getid3/getid3.php' );
 	$id3 = new getID3;
 	$id3tag = $id3->analyze( $file );
 	$id3picture = $id3tag[ 'comments' ][ 'picture' ][ 0 ];
