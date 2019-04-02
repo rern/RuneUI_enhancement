@@ -44,12 +44,12 @@ function getCoverart( $file, $thumbnail = 0, $asfile = 0 ) {
 // 2. id3tag
 	set_include_path( '/srv/http/app/libs/vendor/' );
 	require_once( 'getid3/audioinfo.class.php' );
-	$audioinfo = new AudioInfo();
-	$id3tag = $audioinfo->Info( $file );
-	if ( isset( $id3tag[ 'comments' ][ 'picture' ][ 0 ][ 'data' ] ) ) {
-		$id3cover = $id3tag[ 'comments' ][ 'picture' ][ 0 ];
-		$coverdata = $id3cover[ 'data' ];
-		$coverext = str_replace( 'image/', '', $id3cover[ 'image_mime' ] );
+	$id3 = new getID3;
+	$id3info= $id3->analyze( $file );
+	$id3picture = $id3->info[ 'comments' ][ 'picture' ][ 0 ];
+	if ( isset( $id3picture[ 'data' ] ) ) {
+		$coverdata = $id3picture[ 'data' ];
+		$coverext = str_replace( 'image/', '', $id3picture[ 'image_mime' ] );
 		if ( !$thumbnail && !$asfile ) {
 			return 'data:image/'. $coverext.';base64,'.base64_encode( $coverdata );
 		} else {
