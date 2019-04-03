@@ -563,10 +563,8 @@ function getBookmark() {
 			  'name'     => $name
 			, 'path'     => str_replace( '|', '/', $file )
 			, 'coverart' => $coverart
-			, 'sort'     => ( $name ? stripLeading( $name )[ 0 ] : 'z' )
 		);
 	}
-	$data = sortData( $data );
 	return $data;
 }
 function getLibraryCount() {
