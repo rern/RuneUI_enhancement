@@ -370,11 +370,18 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	echo json_encode( $result );
 }
 function stripLeading( $string ) {
-	// strip articles | non utf-8 normal alphanumerics , fix: php strnatcmp ignores spaces + tilde for sort last
 	$names = strtoupper( strVal( $string ) );
 	$stripped = preg_replace(
-		  array( '/^A\s+|^AN\s+|^THE\s+|[^\w\p{L}\p{N}\p{Pd} ~]/u', '/\s+/' )
-		, array( '', '-' )
+		  array(
+			'/^A\s+|^AN\s+|^THE\s+|[^\w\p{L}\p{N}\p{Pd} ~]/u',
+			'/\s+/',
+			'/_/'
+		)
+		, array(
+			'',  // strip articles | non utf-8 normal alphanumerics | tilde(blank data)
+			'-', // fix: php strnatcmp ignores spaces
+			'0'  // fix: sort underscore last > first
+		)
 		, $names
 	);
 	$init = mb_substr( $stripped, 0, 1, 'UTF-8' );
