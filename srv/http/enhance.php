@@ -380,7 +380,7 @@ function stripLeading( $string ) {
 		, array(
 			'',  // strip articles | non utf-8 normal alphanumerics | tilde(blank data)
 			'-', // fix: php strnatcmp ignores spaces
-			'0'  // fix: sort underscore last > first
+			' '  // fix: sort underscore last > first
 		)
 		, $names
 	);
