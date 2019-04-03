@@ -582,6 +582,7 @@ function getLibraryCount() {
 		, 'nas'          => $count[ 6 ]
 		, 'usb'          => $count[ 7 ]
 		, 'webradio'     => $count[ 8 ]
+		, 'sd'           => $count[ 9 ]
 	);
 	return $status;
 }
