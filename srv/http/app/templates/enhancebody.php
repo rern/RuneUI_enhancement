@@ -134,12 +134,12 @@ function stripLeading( $string ) {
 		  array(
 			'/^A\s+|^AN\s+|^THE\s+|[^\w\p{L}\p{N}\p{Pd} ~]/u',
 			'/\s+/',
-			'/_/'
+			'/^_/'
 		)
 		, array(
 			'',  // strip articles | non utf-8 normal alphanumerics | tilde(blank data)
 			'-', // fix: php strnatcmp ignores spaces
-			' '  // fix: sort underscore last > first
+			'0 ' // fix: sort underscore to before 0
 		)
 		, $names
 	);
