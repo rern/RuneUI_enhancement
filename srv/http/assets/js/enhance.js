@@ -801,7 +801,8 @@ $( '#db-back' ).click( function() {
 		var index = $( '#indexcover' ).data().index;
 		index.forEach( function( index ) {
 			$( '#db-index .index-'+ index ).removeClass( 'gr' );
-		} );		$( '#divcoverarts, #db-index' ).removeClass( 'hide' );
+		} );
+		$( '#divcoverarts, #db-index' ).removeClass( 'hide' );
 		$( '#db-entries' ).empty();
 		return
 	}
