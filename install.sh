@@ -88,7 +88,7 @@ commentH -n -1 'for="localSStime">' -n +5 'for="localSStime">'
 
 commentH -n -1 'for="remoteSStime">' -n +5 'for="remoteSStime">'
 
-commentH -b -1 'Display album cover' -n +8 'Display album cover'
+commentH -n -1 'Display album cover' -n +8 'Display album cover'
 #----------------------------------------------------------------------------------
 file=/srv/http/app/templates/sources.php
 echo $file
