@@ -757,8 +757,7 @@ function renderLibrary() {
 	} else {
 		$( '#divhomeblocks a.label' ).hide();
 		$( '.home-block gr' ).css( 'color', '#e0e7ee' );
-		$( '.home-block' ).css( 'padding-top', '35px' );
-		$( '.home-bookmark' ).css( 'padding', '20px 5px 5px 5px' );
+		$( '.home-block:not( .home-bookmark )' ).css( 'padding-top', '35px' );
 	}
 	orderLibrary();
 	displayTopBottom();
