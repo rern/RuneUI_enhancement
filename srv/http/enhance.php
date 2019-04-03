@@ -94,8 +94,8 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$dir = '/srv/http/assets/img/bookmarks';
 	$file = "$dir/$pathname";
 	$order = $redis->hGet( 'display', 'order' );
-	$order = explode( '^^', $order );
 	if ( $order ) {
+		$order = explode( '^^', $order );
 		if ( !$name ) {
 			$index = array_search( $path, $order );
 			if ( $index !== false ) unset( $order[ $index ] );
