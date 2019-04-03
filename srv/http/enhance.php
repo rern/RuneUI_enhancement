@@ -391,7 +391,8 @@ function sortData( $data, $index = null ) {
 	usort( $data, function( $a, $b ) {
 		return strnatcmp( $a[ 'sort' ], $b[ 'sort' ] );
 	} );
-	unset( $data[ 'sort' ] );
+	$dataL = count( $data );
+	for( $i = 0; $i < $dataL; $i++ ) unset( $data[ $i ][ 'sort' ] );
 	if ( $index ) $data[][ 'index' ] = array_keys( array_flip( $index ) ); // faster than array_unique
 	return $data;
 }
@@ -562,8 +563,10 @@ function getBookmark() {
 			  'name'     => $name
 			, 'path'     => str_replace( '|', '/', $file )
 			, 'coverart' => $coverart
+			, 'sort'     => ( $name ? stripLeading( $name )[ 0 ] : 'z' )
 		);
 	}
+	$data = sortData( $data );
 	return $data;
 }
 function getLibraryCount() {
