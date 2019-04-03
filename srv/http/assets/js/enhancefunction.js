@@ -456,6 +456,7 @@ function renderPlayback() {
 }
 function getPlaybackStatus() {
 	$.post( 'enhancestatus.php', { artist: $( '#artist' ).text(), album: $( '#album' ).text() }, function( status ) {
+		console.log(status)
 		// 'gpio off' > audio output switched > restarts mpd which makes status briefly unavailable
 		if( typeof status !== 'object' ) return
 		
@@ -671,7 +672,7 @@ function displayIndexBar() {
 		$index.css( 'line-height', ( ( wH - indexoffset ) / indexline ) +'px' );
 	}, 50 );
 }
-function setToggleButton( name, enable, check ) {
+function disableCheckbox( name, enable, check ) {
 	$( 'input[name="'+ name +'"]' )
 		.prop( 'disabled', ( enable ? false : true ) )
 		.prop( 'checked', ( check ? true : false ) )
@@ -743,9 +744,10 @@ function renderLibrary() {
 		$( '#db-currentpath span' ).html( '<bl class="title">LIBRARY</bl></a>' );
 	}
 	$( '#page-library .btnlist-top, #home-blocks' ).removeClass( 'hide' );
-	$( '.home-block:not(.home-bookmark)' ).each( function() {
+	$( '.home-block:not( .home-bookmark )' ).each( function() {
 		var name = this.id.replace( 'home-', '' );
 		$( this ).parent().toggleClass( 'hide', GUI.display[ name ] === '' );
+		if ( name === 'sd' || name ==='nas' ) $( this ).parent().toggleClass( 'hide', !$( this ).find( 'gr' ).text() );
 	} );
 	$( '.home-block gr' ).toggleClass( 'hide', GUI.display.count === '' );
 	if ( GUI.display.label ) {
