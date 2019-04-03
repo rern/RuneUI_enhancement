@@ -48,8 +48,15 @@ if ( $status[ 'ext' ] !== 'radio' ) {
 	if ( empty( $status[ 'Title' ] ) ) $status[ 'Title' ] = $pathinfo[ 'filename' ];
 	if ( empty( $status[ 'Album' ] ) ) $status[ 'Album' ] = '';
 } else {
-	// before webradios play: no 'Name:' - use 'Title:' value instead
-	$status[ 'Artist' ] = isset( $status[ 'Name' ] ) ? $status[ 'Name' ] : $status[ 'Title' ];
+	// before webradios play: no 'Name:' - use station name from file instead
+	if ( isset( $status[ 'Name' ] ) ) {
+		$status[ 'Artist' ] = $status[ 'Name' ];
+	} else {
+		$urlname = str_replace( '/', '|', $file );
+		$webradiofile = "/srv/http/assets/img/webradios/$urlname";
+		if ( !file_exists( $webradiofile ) ) $webradiofile = "/srv/http/assets/img/webradiopl/$urlname";
+		$status[ 'Artist' ] = file( $webradiofile )[ 0 ];
+	}
 	$status[ 'Title' ] = ( $status[ 'state' ] === 'stop' ) ? '' : $status[ 'Title' ];
 	$status[ 'Album' ] = $status[ 'file' ];
 	$status[ 'time' ] = '';
