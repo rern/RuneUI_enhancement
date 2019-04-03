@@ -18,9 +18,7 @@ rm -rf /srv/http/assets/img/coverarts/coverarts
 installstart $@
 
 if ! pacman -Q imagemagick &> /dev/null; then
-	wgetnc https://github.com/rern/RuneAudio/raw/master/coverarts/imagemagick.tar
-	bsdtar xf imagemagick.tar -C /
-	pacman -S imagemagick libpng zlib glibc
+	pacman -Sy imagemagick libpng zlib glibc
 fi
 
 mv /srv/http/index.php{,.backup}
