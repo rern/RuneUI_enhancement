@@ -667,8 +667,7 @@ function displayIndexBar() {
 		var indexoffset = GUI.bars ? 160 : 80;
 		var indexline = wH < 500 ? 13 : 27;
 		$( '.half' ).toggleClass( 'hide', wH < 500 );
-		//$index = ( GUI.library && GUI.dblist ) ? $( '#db-index' ) : $( '#pl-index' );
-		$index = GUI.library ? $( '#db-index' ) : $( '#pl-index' );
+		var $index = GUI.library ? $( '#db-index' ) : $( '#pl-index' );
 		$index.css( 'line-height', ( ( wH - indexoffset ) / indexline ) +'px' );
 	}, 50 );
 }
