@@ -82,8 +82,9 @@ $( document ).keydown( function( e ) {
 				}
 				$li.eq( i ).addClass( 'updn' );
 			} else if ( key === 'Enter' ) {
-				$li.find( '.updn' ).click();
-				$li.removeClass( 'updn' );
+				$( '#pl-entries li.updn' )
+					.click()
+					.removeClass( 'updn' );
 			}
 			return
 		}
