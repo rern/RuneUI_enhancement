@@ -109,6 +109,17 @@ insertH '<h2>Network mounts'
 #----------------------------------------------------------------------------------
 
 ########## to be moved after 'if not update' ###################################################################
+# mpd db
+makeDirLink mpd
+dirtarget=$( readlink -f /srv/http/assets/img/mpd )
+dir=/var/lib/mpd
+if [[ -z $( ls -A $dirtarget ) ]]; then
+	mv -r $dir/* $dirtarget
+fi
+rm -r $dir
+ln -sf $dirtarget /var/lib
+chown -R mpd:mpd "$dirtarget" $dir
+
 # dirble temp
 dir=/srv/http/assets/img/webradiopl
 mkdir -p $dir
