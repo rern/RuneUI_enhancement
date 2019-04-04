@@ -128,6 +128,13 @@ rm -r $dir
 ln -sf "$dirredis" /var/lib
 chown -R redis:redis "$dirredist" $dir
 
+dir=/etc/netctl
+dirnetctl="$dirtarget/netctl"
+mkdir -p "$dirnetctl"
+[[ -z $( ls -A "$dirnetctl" ) ]] && mv -r $dir/* "$dirnetctl"
+rm -r $dir
+ln -sf "$dirnetctl" /etc
+
 # dirble temp
 dir=/srv/http/assets/img/webradiopl
 mkdir -p $dir
