@@ -114,25 +114,19 @@ makeDirLink settings
 dirtarget=$( readlink -f /srv/http/assets/img/settings )
 dir=/var/lib/mpd
 dirmpd="$dirtarget/mpd"
-mkdir -p "$dirmpd"
-[[ -z $( ls -A "$dirmpd" ) ]] && mv -r $dir/* "$dirmpd"
-rm -r $dir
+[[ ! -e "$dirmpd" ) ]] && mv -r $dir "$dirtarget"
 ln -sf "$dirmpd" /var/lib
 chown -R mpd:mpd "$dirmpd" $dir
 
 dir=/var/lib/redis
 dirredis="$dirtarget/redis"
-mkdir -p "$dirredis"
-[[ -z $( ls -A "$dirredis" ) ]] && mv -r $dir/* "$dirredis"
-rm -r $dir
+[[ ! -e "$dirredis" ) ]] && mv -r $dir "$dirtarget"
 ln -sf "$dirredis" /var/lib
-chown -R redis:redis "$dirredist" $dir
+chown -R redis:redis "$dirredis" $dir
 
 dir=/etc/netctl
 dirnetctl="$dirtarget/netctl"
-mkdir -p "$dirnetctl"
-[[ -z $( ls -A "$dirnetctl" ) ]] && mv -r $dir/* "$dirnetctl"
-rm -r $dir
+[[ ! -e "$dirnetctl" ) ]] && mv -r $dir "$dirtarget"
 ln -sf "$dirnetctl" /etc
 
 # dirble temp
