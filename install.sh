@@ -109,16 +109,24 @@ insertH '<h2>Network mounts'
 #----------------------------------------------------------------------------------
 
 ########## to be moved after 'if not update' ###################################################################
-# mpd db
-makeDirLink mpd
-dirtarget=$( readlink -f /srv/http/assets/img/mpd )
+# persistent settings
+makeDirLink settings
+dirtarget=$( readlink -f /srv/http/assets/img/settings )
 dir=/var/lib/mpd
-if [[ -z $( ls -A $dirtarget ) ]]; then
-	mv -r $dir/* $dirtarget
-fi
+dirmpd="$dirtarget/mpd"
+mkdir -p "$dirmpd"
+[[ -z $( ls -A "$dirmpd" ) ]] && mv -r $dir/* "$dirmpd"
 rm -r $dir
-ln -sf $dirtarget /var/lib
-chown -R mpd:mpd "$dirtarget" $dir
+ln -sf "$dirmpd" /var/lib
+chown -R mpd:mpd "$dirmpd" $dir
+
+dir=/var/lib/redis
+dirredis="$dirtarget/redis"
+mkdir -p "$dirredis"
+[[ -z $( ls -A "$dirredis" ) ]] && mv -r $dir/* "$dirredis"
+rm -r $dir
+ln -sf "$dirredis" /var/lib
+chown -R redis:redis "$dirredist" $dir
 
 # dirble temp
 dir=/srv/http/assets/img/webradiopl
