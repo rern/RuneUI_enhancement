@@ -116,7 +116,7 @@ dir=/var/lib/mpd
 dirmpd="$dirtarget/mpd"
 [[ ! -e "$dirmpd" ]] && mv $dir "$dirtarget"
 ln -sf "$dirmpd" /var/lib
-chown -R mpd:mpd "$dirmpd" $dir
+chown -R mpd:audio "$dirmpd" $dir
 
 dir=/var/lib/redis
 dirredis="$dirtarget/redis"
