@@ -111,23 +111,26 @@ insertH '<h2>Network mounts'
 ########## to be moved after 'if not update' ###################################################################
 # persistent settings
 makeDirLink settings
-dirtarget=$( readlink -f /srv/http/assets/img/settings )
+dirsettings=$( readlink -f /srv/http/assets/img/settings )
 dir=/var/lib/mpd
-dirmpd="$dirtarget/mpd"
-[[ ! -e "$dirmpd" ]] && mv $dir "$dirtarget"
+dirmpd="$dirsettings/mpd"
+[[ ! -e "$dirmpd" ]] && mv $dir "$dirsettings"
 ln -sf "$dirmpd" /var/lib
 chown -R mpd:audio "$dirmpd" $dir
 
 dir=/var/lib/redis
-dirredis="$dirtarget/redis"
-[[ ! -e "$dirredis" ]] && mv $dir "$dirtarget"
+dirredis="$dirsettings/redis"
+[[ ! -e "$dirredis" ]] && mv $dir "$dirsettings"
 ln -sf "$dirredis" /var/lib
 chown -R redis:redis "$dirredis" $dir
 
 dir=/etc/netctl
-dirnetctl="$dirtarget/netctl"
-[[ ! -e "$dirnetctl" ]] && mv $dir "$dirtarget"
+dirnetctl="$dirsettings/netctl"
+[[ ! -e "$dirnetctl" ]] && mv $dir "$dirsettings"
 ln -sf "$dirnetctl" /etc
+
+[[ ! -e "$dirsettings/mpd.conf" ]] && mv /etc/mpd.conf "$dirsettings"
+ln -sf "$dirsettings/mpd.conf" /etc
 
 # dirble temp
 dir=/srv/http/assets/img/webradiopl
