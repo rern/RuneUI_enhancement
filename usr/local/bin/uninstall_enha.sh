@@ -98,11 +98,11 @@ fi
 
 dir=/srv/http/assets/img/settings
 dirsettings=$( readlink -f $dir )
-rm -r $dir
-cp -r $dirsettings/mpd /ver/lib
-cp -r $dirsettings/redis/* /ver/lib
+rm -r $dir /var/lib/mpd /var/lib/redis /etc/netctl
+cp -r $dirsettings/mpd /var/lib
+cp -r $dirsettings/redis /var/lib
 cp -r $dirsettings/netctl /etc
-chown -R mpd:mpd /var/lib/mpd
+chown -R mpd:audio /var/lib/mpd
 chown -R redis:redis /var/lib/redis
 
 redis-cli del display sampling mpddb &> /dev/null
