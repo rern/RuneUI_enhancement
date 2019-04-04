@@ -156,9 +156,7 @@ function setButtonUpdate() {
 				$( '#iupdate' ).removeClass( 'hide' );
 			}
 		}
-		GUI.intUpdate = setInterval( function() {
-			setButtonUpdate()
-		}, 10000 );
+		GUI.intUpdate = setInterval( setButtonUpdate, 10000 );
 	} else {
 		$( '#tab-library i, #db-home i' ).removeClass( 'blink' );
 		$( '#posupdate, #iupdate' ).addClass( 'hide' );
@@ -456,7 +454,6 @@ function renderPlayback() {
 }
 function getPlaybackStatus() {
 	$.post( 'enhancestatus.php', { artist: $( '#artist' ).text(), album: $( '#album' ).text() }, function( status ) {
-		console.log(status)
 		// 'gpio off' > audio output switched > restarts mpd which makes status briefly unavailable
 		if( typeof status !== 'object' ) return
 		
