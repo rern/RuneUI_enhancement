@@ -98,7 +98,7 @@ fi
 
 dir=/srv/http/assets/img/settings
 dirsettings=$( readlink -f $dir )
-rm -r $dir /var/lib/mpd /var/lib/redis /etc/netctl
+rm -r $dir /var/lib/mpd /var/lib/redis /etc/netctl /etc/mpd.conf
 cp -r $dirsettings/mpd /var/lib
 cp -r $dirsettings/redis /var/lib
 cp -r $dirsettings/netctl /etc
