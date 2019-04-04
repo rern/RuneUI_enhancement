@@ -96,6 +96,15 @@ if [[ ! -z $( ls -A $dir ) ]]; then
 	redis-cli set bookmarksidx $idx &> /dev/null
 fi
 
+dir=/srv/http/assets/img/settings
+dirsettings=$( readlink -f $dir )
+rm -r $dir
+cp -r $dirsettings/mpd /ver/lib
+cp -r $dirsettings/redis/* /ver/lib
+cp -r $dirsettings/netctl /etc
+chown -R mpd:mpd /var/lib/mpd
+chown -R redis:redis /var/lib/redis
+
 redis-cli del display sampling mpddb &> /dev/null
 rm /srv/http/assets/img/{bookmarks,coverarts,webradios}
 rm -r /srv/http/assets/img/webradiopl
