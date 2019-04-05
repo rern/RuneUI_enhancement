@@ -155,7 +155,7 @@ if [[ ! -e $imgsettings ]]; then
 	[[ ! -e "$dirsettings/mpd.conf" ]] && mv $file "$dirsettings"
 	rm -f $file
 	ln -sf "$dirsettings/mpd.conf" /etc
-	chown root:root "$dirsettings/mpd.conf" "$file"
+	chown mpd:audio "$dirsettings/mpd.conf" "$file"
 fi
 
 # dirble temp
