@@ -56,6 +56,8 @@ fi
 
 ########## if not update ############################################################
 # restore from persistent settings
+echo -e "$bar Restore settings from persistent storage ..."
+
 dir=/srv/http/assets/img/settings
 dirsettings=$( readlink -f $dir )
 rm -r $dir /var/lib/mpd /var/lib/redis /etc/netctl /etc/mpd.conf
