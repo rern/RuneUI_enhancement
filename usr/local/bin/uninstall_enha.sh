@@ -55,18 +55,6 @@ if [[ $1 == u ]]; then
 fi
 
 ########## if not update ############################################################
-# restore from persistent settings
-echo -e "$bar Restore settings from persistent storage ..."
-
-dir=/srv/http/assets/img/settings
-dirsettings=$( readlink -f $dir )
-rm -r $dir /var/lib/mpd /var/lib/redis /etc/netctl /etc/mpd.conf
-cp -r $dirsettings/mpd /var/lib
-cp -r $dirsettings/redis /var/lib
-cp -r $dirsettings/netctl /etc
-cp -f $dirsettings/mpd.conf /etc
-chown -R mpd:audio /var/lib/mpd
-chown -R redis:redis /var/lib/redis
 
 # convert file based webradios back to redis
 dir=/srv/http/assets/img/webradios
