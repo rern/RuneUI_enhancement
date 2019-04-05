@@ -55,6 +55,16 @@ if [[ $1 == u ]]; then
 fi
 
 ########## if not update ############################################################
+# restore from persistent settings
+dir=/srv/http/assets/img/settings
+dirsettings=$( readlink -f $dir )
+rm -r $dir /var/lib/mpd /var/lib/redis /etc/netctl /etc/mpd.conf
+cp -r $dirsettings/mpd /var/lib
+cp -r $dirsettings/redis /var/lib
+cp -r $dirsettings/netctl /etc
+cp -f $dirsettings/mpd.conf /etc
+chown -R mpd:audio /var/lib/mpd
+chown -R redis:redis /var/lib/redis
 
 # convert file based webradios back to redis
 dir=/srv/http/assets/img/webradios
@@ -95,16 +105,6 @@ if [[ ! -z $( ls -A $dir ) ]]; then
 	done
 	redis-cli set bookmarksidx $idx &> /dev/null
 fi
-
-dir=/srv/http/assets/img/settings
-dirsettings=$( readlink -f $dir )
-rm -r $dir /var/lib/mpd /var/lib/redis /etc/netctl /etc/mpd.conf
-cp -r $dirsettings/mpd /var/lib
-cp -r $dirsettings/redis /var/lib
-cp -r $dirsettings/netctl /etc
-cp -f $dirsettings/mpd.conf /etc
-chown -R mpd:audio /var/lib/mpd
-chown -R redis:redis /var/lib/redis
 
 redis-cli del display sampling mpddb &> /dev/null
 rm /srv/http/assets/img/{bookmarks,coverarts,webradios}
