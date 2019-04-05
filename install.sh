@@ -20,6 +20,12 @@ installstart $@
 if ! pacman -Q imagemagick &> /dev/null; then
 	pacman -Sy imagemagick libpng zlib glibc
 fi
+if ! pacman -Q imagemagick &> /dev/null; then
+	title "$info $( tcolor ImageMagick ) install failed."
+	echo "Manually install with command: pacman -Sy imagemagick libpng zlib glibc
+	title -nt "Then try again."
+	exit
+fi
 
 mv /srv/http/index.php{,.backup}
 mv /srv/http/assets/js/vendor/pnotify.custom.min.js{,.backup}
