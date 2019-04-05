@@ -110,32 +110,35 @@ insertH '<h2>Network mounts'
 
 ########## to be moved after 'if not update' ###################################################################
 # persistent settings
-makeDirLink settings
-dirsettings=$( readlink -f /srv/http/assets/img/settings )
-direxist=/var/lib/mpd
-dirmove="$dirsettings/mpd"
-[[ ! -e "$dirmove" ]] && mv "$direxist" "$dirsettings"
-rm -rf "$direxist"
-ln -sf "$dirmove" /var/lib
-chown -R mpd:audio "$dirmove" "$direxist"
+imgsettings=/srv/http/assets/img/settings
+if [[ ! -e $imgsettings ]]; then
+	makeDirLink settings
+	dirsettings=$( readlink -f $imgsettings )
+	direxist=/var/lib/mpd
+	dirmove="$dirsettings/mpd"
+	[[ ! -e "$dirmove" ]] && mv "$direxist" "$dirsettings"
+	rm -rf "$direxist"
+	ln -sf "$dirmove" /var/lib
+	chown -R mpd:audio "$dirmove" "$direxist"
 
-direxist=/var/lib/redis
-dirmove="$dirsettings/redis"
-[[ ! -e "$dirmove" ]] && mv "$direxist" "$dirsettings"
-rm -rf "$direxist"
-ln -sf "$dirmove" /var/lib
-chown -R mpd:audio "$dirmove" "$direxist"
+	direxist=/var/lib/redis
+	dirmove="$dirsettings/redis"
+	[[ ! -e "$dirmove" ]] && mv "$direxist" "$dirsettings"
+	rm -rf "$direxist"
+	ln -sf "$dirmove" /var/lib
+	chown -R mpd:audio "$dirmove" "$direxist"
 
-direxist=/etc/netctl
-dirmove="$dirsettings/netctl"
-[[ ! -e "$dirmove" ]] && mv "$direxist" "$dirsettings"
-rm -rf "$direxist"
-ln -sf "$dirmove" /etc
+	direxist=/etc/netctl
+	dirmove="$dirsettings/netctl"
+	[[ ! -e "$dirmove" ]] && mv "$direxist" "$dirsettings"
+	rm -rf "$direxist"
+	ln -sf "$dirmove" /etc
 
-file=/etc/mpd.conf
-[[ ! -e "$dirsettings/mpd.conf" ]] && mv $file "$dirsettings"
-rm -f $file
-ln -sf "$dirsettings/mpd.conf" /etc
+	file=/etc/mpd.conf
+	[[ ! -e "$dirsettings/mpd.conf" ]] && mv $file "$dirsettings"
+	rm -f $file
+	ln -sf "$dirsettings/mpd.conf" /etc
+fi
 
 # dirble temp
 dir=/srv/http/assets/img/webradiopl
@@ -151,7 +154,7 @@ makeDirLink webradios
 #	name only  - name
 #	with image - name\nbase64thumbnail\nbase64image
 dir=/srv/http/assets/img/webradios
-if [[ -z $( ls -A $dir ) ]]; then
+if [[ -z $( ls -A $dir ) ]]; then # convert only when none found 
 	webradios=$( redis-cli hgetall webradios )
 	if [[ $webradios ]]; then
 		echo -e "$bar Convert Webradios data ..."
@@ -176,7 +179,7 @@ makeDirLink bookmarks
 #	name  - name
 #	image - base64image
 dir=/srv/http/assets/img/bookmarks
-if [[ -z $( ls -A $dir ) ]]; then
+if [[ -z $( ls -A $dir ) ]]; then # convert only when none found
 	bookmarks=$( redis-cli hgetall bookmarks | tr -d '"{}\\' )
 	if [[ $bookmarks ]]; then
 		echo -e "$bar Convert Bookmarks data ..."
