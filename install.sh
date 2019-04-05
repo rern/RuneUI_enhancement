@@ -23,7 +23,7 @@ if ! pacman -Q imagemagick &> /dev/null; then
 	bsdtar xf imagemagick.tar
 	
 	echo -e "$bar Install ImageMagick ..."
-	pacman -U \
+	pacman -U --noconfirm \
 	fribidi-1.0.5-1-armv7h.pkg.tar.xz \
 	glibc-2.28-5-armv7h.pkg.tar.xz \
 	imagemagick-7.0.8.36-1-armv7h.pkg.tar.xz \
