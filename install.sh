@@ -149,11 +149,13 @@ if [[ ! -e $imgsettings ]]; then
 	[[ ! -e "$dirmove" ]] && mv "$direxist" "$dirsettings"
 	rm -rf "$direxist"
 	ln -sf "$dirmove" /etc
+	chown -R root:root "$dirmove" "$direxist"
 
 	file=/etc/mpd.conf
 	[[ ! -e "$dirsettings/mpd.conf" ]] && mv $file "$dirsettings"
 	rm -f $file
 	ln -sf "$dirsettings/mpd.conf" /etc
+	chown root:root "$dirsettings/mpd.conf" "$file"
 fi
 
 # dirble temp
