@@ -18,7 +18,7 @@ rm -rf /srv/http/assets/img/coverarts/coverarts
 installstart $@
 
 if ! pacman -Q imagemagick &> /dev/null; then
-	pacman -Sy imagemagick libpng zlib glibc
+	pacman -Sy --noconfirm imagemagick libpng zlib glibc
 fi
 
 mv /srv/http/index.php{,.backup}
