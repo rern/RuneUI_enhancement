@@ -52,7 +52,7 @@ if ( $status[ 'ext' ] !== 'radio' ) {
 	if ( isset( $status[ 'Name' ] ) ) {
 		$status[ 'Artist' ] = $status[ 'Name' ];
 	} else {
-		$urlname = str_replace( '/', '|', $file );
+		$urlname = str_replace( '/', '|', $status[ 'file' ] );
 		$webradiofile = "/srv/http/assets/img/webradios/$urlname";
 		if ( !file_exists( $webradiofile ) ) $webradiofile = "/srv/http/assets/img/webradiopl/$urlname";
 		$status[ 'Artist' ] = file( $webradiofile )[ 0 ];
