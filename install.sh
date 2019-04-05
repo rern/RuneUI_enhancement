@@ -112,24 +112,29 @@ insertH '<h2>Network mounts'
 # persistent settings
 makeDirLink settings
 dirsettings=$( readlink -f /srv/http/assets/img/settings )
-dir=/var/lib/mpd
-dirmpd="$dirsettings/mpd"
-[[ ! -e "$dirmpd" ]] && mv $dir "$dirsettings"
-ln -sf "$dirmpd" /var/lib
-chown -R mpd:audio "$dirmpd" $dir
+direxist=/var/lib/mpd
+dirmove="$dirsettings/mpd"
+[[ ! -e "$dirmove" ]] && mv "$direxist" "$dirsettings"
+rm -rf "$direxist"
+ln -sf "$dirmove" /var/lib
+chown -R mpd:audio "$dirmove" "$direxist"
 
-dir=/var/lib/redis
-dirredis="$dirsettings/redis"
-[[ ! -e "$dirredis" ]] && mv $dir "$dirsettings"
-ln -sf "$dirredis" /var/lib
-chown -R redis:redis "$dirredis" $dir
+direxist=/var/lib/redis
+dirmove="$dirsettings/redis"
+[[ ! -e "$dirmove" ]] && mv "$direxist" "$dirsettings"
+rm -rf "$direxist"
+ln -sf "$dirmove" /var/lib
+chown -R mpd:audio "$dirmove" "$direxist"
 
-dir=/etc/netctl
-dirnetctl="$dirsettings/netctl"
-[[ ! -e "$dirnetctl" ]] && mv $dir "$dirsettings"
-ln -sf "$dirnetctl" /etc
+direxist=/etc/netctl
+dirmove="$dirsettings/netctl"
+[[ ! -e "$dirmove" ]] && mv "$direxist" "$dirsettings"
+rm -rf "$direxist"
+ln -sf "$dirmove" /etc
 
-[[ ! -e "$dirsettings/mpd.conf" ]] && mv /etc/mpd.conf "$dirsettings"
+file=/etc/mpd.conf
+[[ ! -e "$dirsettings/mpd.conf" ]] && mv $file "$dirsettings"
+rm -f $file
 ln -sf "$dirsettings/mpd.conf" /etc
 
 # dirble temp
