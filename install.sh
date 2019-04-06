@@ -22,6 +22,8 @@ if ! pacman -Q imagemagick &> /dev/null; then
 	echo -e "$bar Get ImageMagick package set files ..."
 	wgetnc https://github.com/rern/_assets/raw/master/imagemagick.tar
 	bsdtar xf imagemagick.tar
+	# disable GB and DE locale before upgrade glibc
+	sed -i '/^de_DE.UTF-8\|^en_GB.UTF-8/ s/^/#/' /etc/locale.gen
 	
 	echo -e "$bar Install ImageMagick ..."
 	pacman -U --noconfirm \
@@ -293,8 +295,6 @@ genre=$( mpc list genre | awk NF | wc -l )
 redis-cli set mpddb "$albumartist $composer $genre" &> /dev/null
 # disable USB drive auto scan database ..."
 redis-cli set usb_db_autorebuild 0 &> /dev/null
-# disable GB and DE locale ..."
-sed -i '/^de_DE.UTF-8\|^en_GB.UTF-8/ s/^/#/' /etc/locale.gen
 # disable default shutdown
 systemctl disable rune_shutdown
 #systemctl stop rune_shutdown
