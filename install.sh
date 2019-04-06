@@ -157,8 +157,12 @@ if [[ -z $( ls -A $dir ) ]]; then # convert only when none found
 			echo $name - $url
 		done
 	fi
-	dirtarget=$( readlink -f $dir )
-	chown -R http:http "$dirtarget" $dir
+	if [[ -L $dir ]]; then
+		dirtarget=$( readlink -f $dir )
+		chown -R http:http "$dirtarget" $dir
+	else
+		chown -R http:http $dir
+	fi
 fi
 
 makeDirLink bookmarks
@@ -213,8 +217,12 @@ if [[ -z $( ls -A $dir ) ]]; then # convert only when none found
 		done
 		redis-cli del bkmarks &> /dev/null
 	fi
-	dirtarget=$( readlink -f $dir )
-	chown -R http:http "$dirtarget" $dir
+	if [[ -L $dir ]]; then
+		dirtarget=$( readlink -f $dir )
+		chown -R http:http "$dirtarget" $dir
+	else
+		chown -R http:http $dir
+	fi
 fi
 ##############################################################################################################
 
