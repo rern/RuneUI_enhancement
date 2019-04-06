@@ -1,7 +1,6 @@
 <?php
 $redis = new Redis();
 $redis->pconnect( '127.0.0.1' );
-
 $time = time();
 // counts
 $count = exec( '/srv/http/enhancecount.sh' );
@@ -123,7 +122,6 @@ foreach( $indexarray as $i => $char ) {
 	}
 }
 $index = $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
-
 function stripLeading( $string ) {
 	$names = strtoupper( strVal( $string ) );
 	return preg_replace(
@@ -172,7 +170,6 @@ function menucommonsp( $type ) {
 }
 $menu = '<div>';
 $htmlcommon = menucommon( 'add', 'addplay', 'replace', 'replaceplay' );
-
 $html = '<span class="menushadow"></span>';
 $html.= menuli( 'play',      'play',         'Play' );
 $html.= menuli( 'pause',     'pause',        'Pause' );
@@ -181,7 +178,6 @@ $html.= menuli( 'radiosave', 'save',         'Save in Webradio' );
 $html.= menuli( 'remove',    'minus-circle', 'Remove' );
 $menu.= menudiv( 'plaction', $html );
 $menudiv = '';
-
 $html = $htmlcommon;
 $html.= menuli( 'bookmark',  'star',           'Bookmark' );
 $html.= menuli( 'update',    'folder-refresh', 'Update database' );
@@ -211,11 +207,9 @@ $html.= menuli( 'wrcoverart', 'coverart',     'Change coverart' );
 $html.= menuli( 'wrdelete',   'minus-circle', 'Delete' );
 $menu.= menudiv( 'webradio', $html );
 $menudiv = '';
-
 $html = menucommon( 'wradd', 'wraddplay', 'wrreplace', 'wrreplaceplay' );
 $menu.= menudiv( 'webradiopl', $html );
 $menudiv = '';
-
 $html = '<span class="menushadow"></span>';
 $html.= menuli( 'pladd',         'plus-o',            'Add' );
 $html.= menuli( 'pladdplay',     'play-plus',       'Add ► Play' );
