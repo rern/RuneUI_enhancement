@@ -163,12 +163,9 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	
 	// coverart or thumbnail
 	$coverfile = isset( $_POST[ 'coverfile' ] );
+	if ( $coverfile ) exec( "$sudo/mv -f \"$imagefile\"{,.backup}", $output, $std );
 	if ( !isset( $_POST[ 'base64' ] ) ) { // delete
-		if ( $coverfile ) { // backup coverart in album dir
-			exec( "$sudo/mv -f \"$imagefile\"{,.backup}", $output, $std );
-		} else {
-			unlink( $imagefile );
-		}
+		unlink( $imagefile );
 		exit;
 	}
 	
@@ -176,7 +173,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	if ( $coverfile ) {
 		$tmpfile = '/srv/http/tmp/tmp.jpg';
 		file_put_contents( $tmpfile, base64_decode( $base64 ) ) || exit( '-1' );
-		exec( "$sudo/cp $tmpfile \"$newfile\"", $output, $std );
+		exec( "$sudo/mv -f $tmpfile \"$imagefile\"", $output, $std );
 	} else {
 		$newfile = substr( $imagefile, 0, -3 ).'jpg'; // if existing is 'cover.svg'
 		file_put_contents( $imagefile, base64_decode( $base64 ) ) || exit( '-1' );
