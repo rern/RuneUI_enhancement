@@ -11,6 +11,7 @@ alias=enha
 . /srv/http/addonsedit.sh
 
 #0temp0
+rm -rf /srv/http/assets/img/{bookmarks,coverarts,webradios}
 [[ $( redis-cli hget addons enha ) < 20190318 ]] && redis-cli hdel display order &> /dev/null
 rm -rf /srv/http/assets/img/coverarts/coverarts
 #1temp1
@@ -18,7 +19,25 @@ rm -rf /srv/http/assets/img/coverarts/coverarts
 installstart $@
 
 if ! pacman -Q imagemagick &> /dev/null; then
-	pacman -Sy --noconfirm imagemagick libpng zlib glibc
+	echo -e "$bar Get ImageMagick package set files ..."
+	wgetnc https://github.com/rern/_assets/raw/master/imagemagick.tar
+	bsdtar xf imagemagick.tar
+	# disable GB and DE locale before upgrade glibc
+	sed -i '/^de_DE.UTF-8\|^en_GB.UTF-8/ s/^/#/' /etc/locale.gen
+	
+	echo -e "$bar Install ImageMagick ..."
+	pacman -U --noconfirm \
+	fribidi-1.0.5-1-armv7h.pkg.tar.xz \
+	glibc-2.28-5-armv7h.pkg.tar.xz \
+	imagemagick-7.0.8.36-1-armv7h.pkg.tar.xz \
+	liblqr-0.4.2-2-armv7h.pkg.tar.xz \
+	libmagick-7.0.8.36-1-armv7h.pkg.tar.xz \
+	libpng-1.6.36-1-armv7h.pkg.tar.xz \
+	libraqm-0.5.0-1-armv7h.pkg.tar.xz \
+	linux-api-headers-4.17.11-1-any.pkg.tar.xz \
+	zlib-1\:1.2.11-3-armv7h.pkg.tar.xz
+
+	rm imagemagick.tar *.xz
 fi
 
 mv /srv/http/index.php{,.backup}
@@ -87,6 +106,8 @@ echo $file
 commentH -n -1 'for="localSStime">' -n +5 'for="localSStime">'
 
 commentH -n -1 'for="remoteSStime">' -n +5 'for="remoteSStime">'
+
+commentH -n -1 'Display album cover' -n +8 'Display album cover'
 #----------------------------------------------------------------------------------
 file=/srv/http/app/templates/sources.php
 echo $file
@@ -107,6 +128,7 @@ insertH '<h2>Network mounts'
 #----------------------------------------------------------------------------------
 
 ########## to be moved after 'if not update' ###################################################################
+
 # dirble temp
 dir=/srv/http/assets/img/webradiopl
 mkdir -p $dir
@@ -121,7 +143,7 @@ makeDirLink webradios
 #	name only  - name
 #	with image - name\nbase64thumbnail\nbase64image
 dir=/srv/http/assets/img/webradios
-if [[ -z $( ls -A $dir ) ]]; then
+if [[ -z $( ls -A $dir ) ]]; then # convert only when none found 
 	webradios=$( redis-cli hgetall webradios )
 	if [[ $webradios ]]; then
 		echo -e "$bar Convert Webradios data ..."
@@ -135,8 +157,12 @@ if [[ -z $( ls -A $dir ) ]]; then
 			echo $name - $url
 		done
 	fi
-	dirtarget=$( readlink -f $dir )
-	chown -R http:http "$dirtarget" $dir
+	if [[ -L $dir ]]; then
+		dirtarget=$( readlink -f $dir )
+		chown -R http:http "$dirtarget" $dir
+	else
+		chown -R http:http $dir
+	fi
 fi
 
 makeDirLink bookmarks
@@ -146,7 +172,7 @@ makeDirLink bookmarks
 #	name  - name
 #	image - base64image
 dir=/srv/http/assets/img/bookmarks
-if [[ -z $( ls -A $dir ) ]]; then
+if [[ -z $( ls -A $dir ) ]]; then # convert only when none found
 	bookmarks=$( redis-cli hgetall bookmarks | tr -d '"{}\\' )
 	if [[ $bookmarks ]]; then
 		echo -e "$bar Convert Bookmarks data ..."
@@ -191,8 +217,12 @@ if [[ -z $( ls -A $dir ) ]]; then
 		done
 		redis-cli del bkmarks &> /dev/null
 	fi
-	dirtarget=$( readlink -f $dir )
-	chown -R http:http "$dirtarget" $dir
+	if [[ -L $dir ]]; then
+		dirtarget=$( readlink -f $dir )
+		chown -R http:http "$dirtarget" $dir
+	else
+		chown -R http:http $dir
+	fi
 fi
 ##############################################################################################################
 
@@ -273,8 +303,6 @@ genre=$( mpc list genre | awk NF | wc -l )
 redis-cli set mpddb "$albumartist $composer $genre" &> /dev/null
 # disable USB drive auto scan database ..."
 redis-cli set usb_db_autorebuild 0 &> /dev/null
-# disable GB and DE locale ..."
-sed -i '/^de_DE.UTF-8\|^en_GB.UTF-8/ s/^/#/' /etc/locale.gen
 # disable default shutdown
 systemctl disable rune_shutdown
 #systemctl stop rune_shutdown

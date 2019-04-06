@@ -156,9 +156,7 @@ function setButtonUpdate() {
 				$( '#iupdate' ).removeClass( 'hide' );
 			}
 		}
-		GUI.intUpdate = setInterval( function() {
-			setButtonUpdate()
-		}, 10000 );
+		GUI.intUpdate = setInterval( setButtonUpdate, 10000 );
 	} else {
 		$( '#tab-library i, #db-home i' ).removeClass( 'blink' );
 		$( '#posupdate, #iupdate' ).addClass( 'hide' );
@@ -666,12 +664,11 @@ function displayIndexBar() {
 		var indexoffset = GUI.bars ? 160 : 80;
 		var indexline = wH < 500 ? 13 : 27;
 		$( '.half' ).toggleClass( 'hide', wH < 500 );
-		//$index = ( GUI.library && GUI.dblist ) ? $( '#db-index' ) : $( '#pl-index' );
-		$index = GUI.library ? $( '#db-index' ) : $( '#pl-index' );
+		var $index = GUI.library ? $( '#db-index' ) : $( '#pl-index' );
 		$index.css( 'line-height', ( ( wH - indexoffset ) / indexline ) +'px' );
 	}, 50 );
 }
-function setToggleButton( name, enable, check ) {
+function disableCheckbox( name, enable, check ) {
 	$( 'input[name="'+ name +'"]' )
 		.prop( 'disabled', ( enable ? false : true ) )
 		.prop( 'checked', ( check ? true : false ) )
@@ -743,9 +740,10 @@ function renderLibrary() {
 		$( '#db-currentpath span' ).html( '<bl class="title">LIBRARY</bl></a>' );
 	}
 	$( '#page-library .btnlist-top, #home-blocks' ).removeClass( 'hide' );
-	$( '.home-block:not(.home-bookmark)' ).each( function() {
+	$( '.home-block:not( .home-bookmark )' ).each( function() {
 		var name = this.id.replace( 'home-', '' );
 		$( this ).parent().toggleClass( 'hide', GUI.display[ name ] === '' );
+		if ( name === 'sd' || name ==='nas' ) $( this ).parent().toggleClass( 'hide', !$( this ).find( 'gr' ).text() );
 	} );
 	$( '.home-block gr' ).toggleClass( 'hide', GUI.display.count === '' );
 	if ( GUI.display.label ) {
@@ -755,8 +753,7 @@ function renderLibrary() {
 	} else {
 		$( '#divhomeblocks a.label' ).hide();
 		$( '.home-block gr' ).css( 'color', '#e0e7ee' );
-		$( '.home-block' ).css( 'padding-top', '35px' );
-		$( '.home-bookmark' ).css( 'padding', '20px 5px 5px 5px' );
+		$( '.home-block:not( .home-bookmark )' ).css( 'padding-top', '35px' );
 	}
 	orderLibrary();
 	displayTopBottom();

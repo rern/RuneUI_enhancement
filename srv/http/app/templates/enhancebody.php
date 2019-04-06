@@ -74,7 +74,10 @@ $files = array_slice( scandir( '/srv/http/assets/img/coverarts' ), 2 );
 if ( count( $files ) ) {
 	foreach( $files as $file ) {
 		$name = substr( $file, 0, -4 );
-		$name = str_replace( '|', '/', $name );
+		$ext = substr( $file, -3 );
+		$filename = "$name.$time.$ext";
+		// restore /, #, ? replaced by scan.sh
+		$name = preg_replace( array( '/\|/', '/{/', '/}/' ), array( '/', '#', '?' ), $name );
 		$names = explode( '^^', $name );
 		$album = $names[ 0 ];
 		$artist = $names[ 1 ] ?: '~';
@@ -82,10 +85,10 @@ if ( count( $files ) ) {
 		$sortartist = stripLeading( $artist );
 		$cue = $names[ 2 ];
 		if ( $redis->hGet( 'display', 'thumbbyartist' ) ) {
-			$lists[] = array( $sortartist, $sortalbum, $artist, $album, $file, $cue );
+			$lists[] = array( $sortartist, $sortalbum, $artist, $album, $filename, $cue );
 			$index[] = mb_substr( $sortartist, 0, 1, 'UTF-8' );
 		} else {
-			$lists[] = array( $sortalbum, $sortartist, $album, $artist, $file, $cue );
+			$lists[] = array( $sortalbum, $sortartist, $album, $artist, $filename, $cue );
 			$index[] = mb_substr( $sortalbum, 0, 1, 'UTF-8' );
 		}
 	}
@@ -96,18 +99,11 @@ if ( count( $files ) ) {
 	$coverarthtml = '';
 	foreach( $lists as $list ) {
 		$licue = $list[ 5 ] ? '<a class="licue">'.$list[ 5 ].'</a>' : '';
-		$replace = array(  // #,? not allow in 'scr'
-			  '/\#/'   => '%23'
-			, '/\?/'   => '%3F'
-			, '/jpg$/' => $time.'.jpg'
-			, '/svg$/' => $time.'.svg'
-		);
-		$filename = preg_replace( array_keys( $replace ), array_values( $replace ), $list[ 4 ] );
 		// leading + trailing quotes in the same line avoid spaces between divs
 		$coverartshtml.= '<div class="coverart">
 							'.$licue.'
 							<a class="lisort">'.$list[ 0 ].'</a>
-							<div><img class="lazy" data-src="/srv/http/assets/img/coverarts/'.$filename.'"></div>
+							<div><img class="lazy" data-src="/srv/http/assets/img/coverarts/'.$list[ 4 ].'"></div>
 							<span class="coverart1">'.$list[ 2 ].'</span>
 							<gr class="coverart2">'.( $list[ 3 ] ?: '&nbsp;' ).'</gr>
 						</div>';
@@ -119,19 +115,26 @@ if ( count( $files ) ) {
 $indexarray = range( 'A', 'Z' );
 $li = '<li>#</li>';
 foreach( $indexarray as $i => $char ) {
-if ( $i % 2 === 0 ) {
-	$li.= '<li class="index-'.$char.'">'.$char."</li>\n";
-} else {
-	$li.= '<li class="index-'.$char.' half">'.$char."</li>\n";
-}
+	if ( $i % 2 === 0 ) {
+		$li.= '<li class="index-'.$char.'">'.$char."</li>\n";
+	} else {
+		$li.= '<li class="index-'.$char.' half">'.$char."</li>\n";
+	}
 }
 $index = $li.str_repeat( "<li>&nbsp;</li>\n", 5 );
 function stripLeading( $string ) {
-	// strip articles | non utf-8 normal alphanumerics , fix: php strnatcmp ignores spaces + tilde for sort last
 	$names = strtoupper( strVal( $string ) );
 	return preg_replace(
-		  array( '/^A\s+|^AN\s+|^THE\s+|[^\w\p{L}\p{N}\p{Pd} ~]/u', '/\s+/' )
-		, array( '', '-' )
+		  array(
+			'/^A\s+|^AN\s+|^THE\s+|[^\w\p{L}\p{N}\p{Pd} ~]/u',
+			'/\s+/',
+			'/^_/'
+		)
+		, array(
+			'',  // strip articles | non utf-8 normal alphanumerics | tilde(blank data)
+			'-', // fix: php strnatcmp ignores spaces
+			'0 ' // fix: sort underscore to before 0
+		)
 		, $names
 	);
 }

@@ -11,7 +11,7 @@ if (( $# > 0 )); then
 	exit
 fi
 
-# spotify activePlayer artist album song composer genre nas usb webradio sd
+# artist album song composer genre nas usb webradio sd
 count="$count $( mpc stats | head -n3 | awk '{print $2,$4,$6}' )"
 artist=$( echo $count | cut -d' ' -f1 )
 album=$( echo $count | cut -d' ' -f2 )
@@ -22,5 +22,6 @@ mpddb=$( redis-cli get mpddb )
 nas=$( df | grep '/mnt/MPD/NAS' | wc -l )
 usb=$( df | grep '/mnt/MPD/USB' | wc -l )
 webradio=$( ls -U /srv/http/assets/img/webradios/* 2> /dev/null | wc -l )
+sd=$( mpc listall LocalStorage 2> /dev/null | wc -l )
 
-echo $artist $album $song $mpddb $nas $usb $webradio
+echo $artist $album $song $mpddb $nas $usb $webradio $sd

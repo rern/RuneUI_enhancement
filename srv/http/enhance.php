@@ -94,8 +94,8 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$dir = '/srv/http/assets/img/bookmarks';
 	$file = "$dir/$pathname";
 	$order = $redis->hGet( 'display', 'order' );
-	$order = explode( '^^', $order );
 	if ( $order ) {
+		$order = explode( '^^', $order );
 		if ( !$name ) {
 			$index = array_search( $path, $order );
 			if ( $index !== false ) unset( $order[ $index ] );
@@ -163,12 +163,9 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	
 	// coverart or thumbnail
 	$coverfile = isset( $_POST[ 'coverfile' ] );
+	if ( $coverfile ) exec( "$sudo/mv -f \"$imagefile\"{,.backup}", $output, $std );
 	if ( !isset( $_POST[ 'base64' ] ) ) { // delete
-		if ( $coverfile ) { // backup coverart in album dir
-			exec( "$sudo/mv -f \"$imagefile\"{,.backup}", $output, $std );
-		} else {
-			unlink( $imagefile );
-		}
+		unlink( $imagefile );
 		exit;
 	}
 	
@@ -176,7 +173,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	if ( $coverfile ) {
 		$tmpfile = '/srv/http/tmp/tmp.jpg';
 		file_put_contents( $tmpfile, base64_decode( $base64 ) ) || exit( '-1' );
-		exec( "$sudo/cp $tmpfile \"$newfile\"", $output, $std );
+		exec( "$sudo/mv -f $tmpfile \"$imagefile\"", $output, $std );
 	} else {
 		$newfile = substr( $imagefile, 0, -3 ).'jpg'; // if existing is 'cover.svg'
 		file_put_contents( $imagefile, base64_decode( $base64 ) ) || exit( '-1' );
@@ -370,11 +367,18 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	echo json_encode( $result );
 }
 function stripLeading( $string ) {
-	// strip articles | non utf-8 normal alphanumerics , fix: php strnatcmp ignores spaces + tilde for sort last
 	$names = strtoupper( strVal( $string ) );
 	$stripped = preg_replace(
-		  array( '/^A\s+|^AN\s+|^THE\s+|[^\w\p{L}\p{N}\p{Pd} ~]/u', '/\s+/' )
-		, array( '', '-' )
+		  array(
+			'/^A\s+|^AN\s+|^THE\s+|[^\w\p{L}\p{N}\p{Pd} ~]/u',
+			'/\s+/',
+			'/^_/'
+		)
+		, array(
+			'',  // strip articles | non utf-8 normal alphanumerics | tilde(blank data)
+			'-', // fix: php strnatcmp ignores spaces
+			'0 ' // fix: sort underscore to before 0
+		)
 		, $names
 	);
 	$init = mb_substr( $stripped, 0, 1, 'UTF-8' );
@@ -384,7 +388,8 @@ function sortData( $data, $index = null ) {
 	usort( $data, function( $a, $b ) {
 		return strnatcmp( $a[ 'sort' ], $b[ 'sort' ] );
 	} );
-	unset( $data[ 'sort' ] );
+	$dataL = count( $data );
+	for( $i = 0; $i < $dataL; $i++ ) unset( $data[ $i ][ 'sort' ] );
 	if ( $index ) $data[][ 'index' ] = array_keys( array_flip( $index ) ); // faster than array_unique
 	return $data;
 }
@@ -574,6 +579,7 @@ function getLibraryCount() {
 		, 'nas'          => $count[ 6 ]
 		, 'usb'          => $count[ 7 ]
 		, 'webradio'     => $count[ 8 ]
+		, 'sd'           => $count[ 9 ]
 	);
 	return $status;
 }
