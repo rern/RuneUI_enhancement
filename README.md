@@ -177,15 +177,18 @@ All pages
 - `previous` previous track
 - `next` next track
 - `tap` switch pages
+
 Playback
 - `arrow-left` previous
 - `arrow-right` next
 - `arrow-up` volume +
 - `arrow-down` volume -
+
 Library home
 - `arrow-left` select previous item
 - `arrow-right` select next item
 - `enter` tap active item
+
 Library / Playlist
 - `arrow-left` back button
 - `arrow-down` select next item
