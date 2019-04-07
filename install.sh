@@ -199,25 +199,6 @@ if [[ -z $( ls -A $dir ) ]]; then # convert only when none found
 		done
 		redis-cli del bookmarks bookmarksidx &> /dev/null
 	fi
-	# convert new bookmarks (to be removed in next version)
-	bkmarks=$( redis-cli hgetall bkmarks )
-	if [[ $bkmarks ]]; then
-		readarray -t lines <<<"$bkmarks"
-		linesL=${#lines[@]}
-		for (( i=0; i < $linesL; i+=2 )); do
-			mpdpath=${lines[$i+1]}
-			oldfile=/mnt/MPD/$mpdpath/thumbnail.jpg
-			newfile="$dir/${mpdpath//\//|}"
-			if [[ -e "$oldfile" ]]; then
-				base64data=$( base64 -w 0 "$oldfile" )
-				echo "data:image/jpeg;base64,$base64data" > "$newfile"
-			else
-				echo ${lines[$i]} > "$newfile"
-			fi
-			echo $mpdpath
-		done
-		redis-cli del bkmarks &> /dev/null
-	fi
 	if [[ -L $dir ]]; then
 		dirtarget=$( readlink -f $dir )
 		chown -R http:http "$dirtarget" $dir
