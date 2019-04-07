@@ -97,8 +97,7 @@ if [[ ! -z $( ls -A $dir ) ]]; then
 fi
 
 redis-cli del display sampling mpddb &> /dev/null
-rm /srv/http/assets/img/{bookmarks,coverarts,webradios}
-rm -r /srv/http/assets/img/webradiopl
+rm -r /srv/http/assets/img/{bookmarks,coverarts,webradios,webradiopl}
 systemctl enable rune_shutdown
 systemctl start rune_shutdown
 
