@@ -1359,7 +1359,7 @@ $( '#plopen' ).click( function() {
 	$( '#context-menu-plaction' ).addClass( 'hide' );
 	$( '#loader' ).removeClass( 'hide' );
 	
-	var plL = GUI.lsplaylists.length;
+	var plL = GUI.lsplaylists.length - 1; // less index
 	var plcounthtml = '<wh><i class="fa fa-microsd"></i></wh><bl>PLAYLIST</bl>';
 	plcounthtml += plL ? '<gr>&ensp;·&emsp;</gr> <wh id="pls-count">'+ numFormat( plL ) +'</wh>&ensp;<i class="fa fa-list-ul"></i>' : '';
 	$( '#pl-currentpath' ).html( plcounthtml +'<i class="fa fa-arrow-left plsbackroot"></i>' );
