@@ -48,6 +48,7 @@ _Tested on RuneAudio 0.4b, 0.5_
 - Context menu
 	- Icon on the right removed
 	- Use icon on the left instead
+- Keyboard navigation
 
 Install
 ---
@@ -166,3 +167,27 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 - Each saved playlist can be viewed
 - Maintain scroll position
 - Changes reflects to all clients
+
+### Keyboard Navigation
+All pages
+- `space` play / pause
+- `play` play / pause
+- `pause` pause
+- `stop` stop
+- `previous` previous track
+- `next` next track
+- `tap` switch pages
+Playback
+- `arrow-left` previous
+- `arrow-right` next
+- `arrow-up` volume +
+- `arrow-down` volume -
+Library home
+- `arrow-left` select previous item
+- `arrow-right` select next item
+- `enter` tap active item
+Library / Playlist
+- `arrow-left` back button
+- `arrow-down` select next item
+- `arrow-up` select previous item
+- `enter` tap active item / add + play
