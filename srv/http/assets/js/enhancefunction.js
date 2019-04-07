@@ -1711,11 +1711,13 @@ function renderLsPlaylists( lsplaylists ) {
 	} );
 	$( '#pl-editor' ).html( content +'<p></p>' ).promise().done( function() {
 		GUI.pleditor = 1;
-		// fill bottom of list to mave last li movable to top
+		// fill bottom of list to make last li movable to top
 		$( '#pl-editor p' ).css( 'min-height', window.innerHeight - ( GUI.bars ? 140 : 100 ) +'px' );
 		$( '#pl-editor' ).css( 'width', '' );
 		$( '#loader' ).addClass( 'hide' );
-		$( 'html, body' ).scrollTop( GUI.plscrolltop );
+		setTimeout( function() {
+			$( 'html, body' ).scrollTop( GUI.plscrolltop );
+		}, 300 );
 		displayIndexBar();
 	} );
 }
