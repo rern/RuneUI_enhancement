@@ -64,6 +64,13 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	} else if ( isset( $_POST[ 'result' ] ) ) {
 		echo $result;
 	}
+} else if ( isset( $_POST[ 'plappend' ] ) ) {
+	$plfile = '/var/lib/mpd/playlists/'.$_POST[ 'plfile' ].'.m3u';
+	$content = file_get_contents( $plfile );
+	$content.= $_POST[ 'plappend' ]."\n";
+	$tmpfile = '/srv/http/tmp/tmp.m3u';
+	file_put_contents( $tmpfile, $content );
+	exec( "$sudo/mv -f $tmpfile \"$plfile\"", $result, $std );
 } else if ( isset( $_POST[ 'coverartalbum' ] ) ) {
 	$album = $_POST[ 'coverartalbum' ];
 	$albums = shell_exec( 'mpc find -f "%album% - [%albumartist%|%artist%]" album "'.$album.'" | awk \'!a[$0]++\'' );
