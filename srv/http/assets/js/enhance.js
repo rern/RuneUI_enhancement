@@ -255,6 +255,7 @@ $( '#tab-playback' ).click( function() {
 	switchPage( 'playback' );
 } )
 $( '#tab-playlist' ).click( function() {
+	GUI.plappend = '';
 	if ( GUI.playlist && GUI.pleditor ) GUI.pleditor = 0;
 	if ( GUI.status.activePlayer === 'Airplay' ) {
 		$( '#timeTL' ).click();
@@ -1440,6 +1441,19 @@ var sortableplaylist = new Sortable( document.getElementById( 'pl-entries' ), {
 		$.post( 'enhance.php', { mpc: 'mpc move '+ ( e.oldIndex + 1 ) +' '+ ( e.newIndex + 1 ) } );
 	}
 } );
+var sortableplaylist = new Sortable( document.getElementById( 'pl-editor' ), {
+	  ghostClass : 'pl-sortable-ghost'
+	, delay      : 400
+	, onUpdate   : function ( e ) {
+		if ( !$( '#pl-currentpath .lipath' ).length ) return
+		GUI.sortable = 1;
+		setTimeout( function() { GUI.sortable = 0 }, 500 );
+		
+		var plname = $( '#pl-currentpath .lipath' ).text();
+		var newindex = e.oldIndex > e.newIndex ? e.newIndex : e.newIndex + 1;
+		$.post( 'enhance.php', { bash: '/usr/bin/printf "%s\n" "'+ ( e.oldIndex + 1 ) +'m'+ newindex +'" "wq" | /usr/bin/ex -s "/var/lib/mpd/playlists/'+ plname +'.m3u"' } );
+	}
+} );
 $( '#pl-entries, #pl-editor' ).on( 'swipeleft', 'li', function() {
 	GUI.swipe = 1;
 	GUI.swipepl = 1; // suppress .page swipe
@@ -1490,6 +1504,8 @@ $( '#pl-entries' ).on( 'click', '.pl-icon', function( e ) {
 	var $thisli = $this.parent();
 	GUI.list = {};
 	GUI.list.li = $thisli;
+	GUI.list.path = $thisli.find( '.lipath' ).text().trim();
+	GUI.list.name = $thisli.find( '.name' ).html().trim();
 	GUI.list.thumb = $thisli.find( '.lithumb' ).text() || '';  // dirble save in contextmenu
 	GUI.list.img = $thisli.find( '.liimg' ).text() || '';      // dirble save in contextmenu
 	var menutop = ( $thisli.position().top + 49 ) +'px';
@@ -1514,8 +1530,6 @@ $( '#pl-entries' ).on( 'click', '.pl-icon', function( e ) {
 		$contextlist.eq( 1 ).add( $contextlist.eq( 2 ) ).addClass( 'hide' );
 	}
 	if ( $this.hasClass( 'fa-webradio' ) && $thisli.find( '.unsaved' ).length ) {
-		GUI.list.name = $thisli.find( '.name' ).html().trim();
-		GUI.list.path = $thisli.find( '.lipath' ).text().trim();
 		$contextlist.eq( 3 ).removeClass( 'hide' );
 	} else {
 		$contextlist.eq( 3 ).addClass( 'hide' );
@@ -1536,6 +1550,15 @@ $( '#pl-editor' ).on( 'click', 'li', function( e ) {
 	if ( GUI.swipe ) return
 	
 	var $this = $( this );
+	if ( GUI.plappend ) {
+		$.post( 'enhance.php', { plappend: GUI.plappend, plfile: $this.find( '.lipath' ).text() }, function() {
+			renderSavedPlaylist( $this.find( 'span' ).text() );
+			$( 'html, body' ).animate( { scrollTop: window.innerHeight / 2 } );
+			GUI.plappend = '';
+		} );
+		return
+	}
+	
 	var $target = $( e.target );
 	if ( $target.hasClass( 'pl-icon' ) || !$this.find( '.fa-list-ul' ).length ) {
 		plContextmenu( $this, $target );

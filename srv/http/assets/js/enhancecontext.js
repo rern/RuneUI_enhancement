@@ -5,29 +5,56 @@ $( '.contextmenu a' ).click( function() {
 	$( '.menu' ).addClass( 'hide' );
 	var $this = $( this );
 	var cmd = $this.data( 'cmd' );
-	// playback and update //////////////////////////////////////////
-	if ( [ 'play', 'pause', 'stop', 'remove', 'update' ].indexOf( cmd ) !== -1 ) {
-		if ( cmd === 'remove' ) {
-			GUI.contextmenu = 1;
-			setTimeout( function() { GUI.contextmenu = 0 }, 500 );
-			removeFromPlaylist( GUI.list.li );
-		} else if ( cmd === 'play' ) {
+	// playback //////////////////////////////////////////////////////////////
+	if ( [ 'play', 'pause', 'stop' ].indexOf( cmd ) !== -1 ) {
+		if ( cmd === 'play' ) {
 			if ( $( '#pl-entries li.active' ).index() === GUI.list.li.index() ) {
 				$( '#play' ).click();
 			} else {
 				$( '#pl-entries li' ).eq( GUI.list.li.index() ).click();
 			}
-		} else if ( cmd === 'update' ) {
-			$.post( 'enhance.php', { mpc: 'mpc update "'+ GUI.list.path +'"' } );
 		} else {
 			$( '#'+ cmd ).click();
 		}
 		return
 	}
+	
+	if ( [ 'radiosave', 'update', 'remove', 'savedpladd', 'savedplremove' ].indexOf( cmd ) !== -1 ) {
+		if ( cmd === 'radiosave' ) { // unsaved webradio (dirble)
+			webRadioSave( GUI.list.name, GUI.list.path );
+		} else if ( cmd === 'update' ) {
+			$.post( 'enhance.php', { mpc: 'mpc update "'+ GUI.list.path +'"' } );
+		} else if ( cmd === 'remove' ) {
+			GUI.contextmenu = 1;
+			setTimeout( function() { GUI.contextmenu = 0 }, 500 );
+			removeFromPlaylist( GUI.list.li );
+		} else if ( cmd === 'savedpladd' ) {
+			GUI.plappend = GUI.list.path;
+			info( {
+				  icon     : 'list-ul'
+				, title    : 'Add to playlist'
+				, message  : 'Select playlist to add:'
+							+'<br><w>'+ GUI.list.name +'</w>'
+				, msgalign : 'center'
+				, cancel   : function() {
+					GUI.plappend = '';
+				}
+				, ok       : function() {
+					$( '#plopen' ).click();
+				}
+			} );
+		} else if ( cmd === 'savedplremove' ) {
+			var plline = GUI.list.li.index() + 1;
+			var plname = $( '#pl-currentpath .lipath' ).text();
+			$.post( 'enhance.php', { bash: '/usr/bin/sed -i "'+ plline +' d" "/var/lib/mpd/playlists/'+ plname +'.m3u"' } );
+			GUI.list.li.remove();
+		}
+		return
+	}
+	
 	// functions with dialogue box ////////////////////////////////////////////
 	var contextFunction = {
-		  radiosave     : webRadioNew // unsaved webradio (dirble)
-		, wrrename      : webRadioRename
+		  wrrename      : webRadioRename
 		, wrcoverart    : webRadioCoverart
 		, wrdelete      : webRadioDelete
 		, plrename      : playlistRename
@@ -36,13 +63,10 @@ $( '.contextmenu a' ).click( function() {
 		, thumbnail     : updateThumbnails
 	}
 	if ( cmd in contextFunction ) {
-		if ( cmd === 'radiosave' ) {
-			webRadioSave( GUI.list.name, GUI.list.path );
-		} else {
-			contextFunction[ cmd ]();
-		}
+		contextFunction[ cmd ]();
 		return
 	}
+	
 	// replaceplay|replace|addplay|add //////////////////////////////////////////
 	$( '#db-entries li, #pl-editor li' ).removeClass( 'active' );
 	// get name

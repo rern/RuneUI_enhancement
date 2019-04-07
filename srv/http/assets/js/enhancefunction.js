@@ -1559,10 +1559,11 @@ function htmlPlaylist( data ) {
 			sec = value.Time ? HMS2Second( value.Time ) : 0;
 			pltime += sec;
 			if ( GUI.playlist && !GUI.pleditor ) {
-				var actionhtml = '<i class="fa fa-music pl-icon"></i>';
+				var actionhtml = '<i class="fa fa-music pl-icon"></i>'
+								+'<a class="lipath">'+ value.file +'</a>';
 			} else {
 				var dbpl = GUI.library ? 'db' : 'pl';
-				var actionhtml = '<i class="fa fa-music '+ dbpl +'-icon" data-target="#context-menu-file"></i>'
+				var actionhtml = '<i class="fa fa-music '+ dbpl +'-icon" data-target="#context-menu-filesavedpl"></i>'
 								+'<a class="lipath">'+ ( value.cuem3u || value.file ) +'</a>'
 								+'<a class="liname">'+ value.Title +'</a>'
 								+'<a class="liindex">'+ value.index +'</a>';
