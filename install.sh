@@ -13,7 +13,6 @@ alias=enha
 #0temp0
 rm -rf /srv/http/assets/img/{bookmarks,coverarts,webradios,webradiopl}
 [[ $( redis-cli hget addons enha ) < 20190318 ]] && redis-cli hdel display order &> /dev/null
-rm -rf /srv/http/assets/img/coverarts/coverarts
 #1temp1
 
 installstart $@
