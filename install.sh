@@ -128,7 +128,7 @@ insertH '<h2>Network mounts'
 #----------------------------------------------------------------------------------
 
 ########## to be moved after 'if not update' ###################################################################
-chmod -R 775 /var/lib/mpd
+chmod -R 775 /var/lib/mpd # for editable saved playlists
 
 # dirble temp
 dir=/srv/http/assets/img/webradiopl
