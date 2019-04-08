@@ -511,7 +511,8 @@ function addPlaylist( name, oldname ) {
 		var newfile = ' "/var/lib/mpd/playlists/'+ name.replace( /"/g, '\\"' ) +'.m3u"';
 		$.post( 'enhance.php', { bash: '/usr/bin/mv'+ oldfile + newfile } );
 	} else {
-		$.post( 'enhance.php', { mpc: 'mpc save "'+ name.replace( /"/g, '\\"' ) +'"' } );
+		var name = name.replace( /"/g, '\\"' );
+		$.post( 'enhance.php', { mpc: 'mpc save "'+ name +'"; /usr/bin/sudo /usr/bin/chmod 775 "/var/lib/mpd/playlists/'+ name + '.m3u"' } );
 		notify( 'Playlist Saved', name );
 		$( '#plopen' ).removeClass( 'disable' );
 	}

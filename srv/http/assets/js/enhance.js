@@ -1451,7 +1451,8 @@ var sortableplaylist = new Sortable( document.getElementById( 'pl-editor' ), {
 		
 		var plname = $( '#pl-currentpath .lipath' ).text();
 		var newindex = e.oldIndex > e.newIndex ? e.newIndex : e.newIndex + 1;
-		$.post( 'enhance.php', { bash: '/usr/bin/printf "%s\n" "'+ ( e.oldIndex + 1 ) +'m'+ newindex +'" "wq" | /usr/bin/ex -s "/var/lib/mpd/playlists/'+ plname +'.m3u"' } );
+		console.log('/usr/bin/printf "%s\n" "'+ ( e.oldIndex + 1 ) +'m'+ newindex +'" "wq" | /usr/bin/ex -s "/var/lib/mpd/playlists/'+ plname +'.m3u"')
+		$.post( 'enhance.php', { bash: '/usr/bin/printf "%s\n" "'+ ( e.oldIndex + 1 ) +'m'+ newindex +'" "wq" | /usr/bin/sudo /usr/bin/ex -s "/var/lib/mpd/playlists/'+ plname +'.m3u"' } );
 	}
 } );
 $( '#pl-entries, #pl-editor' ).on( 'swipeleft', 'li', function() {
