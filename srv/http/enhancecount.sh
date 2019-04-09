@@ -19,8 +19,8 @@ song=$( echo $count | cut -d' ' -f3 )
 countalbum=$( redis-cli get countalbum )
 [[ $countalbum ]] && album=$countalbum
 mpddb=$( redis-cli get mpddb )
-nas=$( df | grep '/mnt/MPD/NAS' | wc -l )
-usb=$( df | grep '/mnt/MPD/USB' | wc -l )
+nas=$( mount | grep '/mnt/MPD/NAS' | wc -l )
+usb=$( mount | grep '/mnt/MPD/USB' | wc -l )
 webradio=$( ls -U /srv/http/assets/img/webradios/* 2> /dev/null | wc -l )
 sd=$( mpc listall LocalStorage 2> /dev/null | wc -l )
 
