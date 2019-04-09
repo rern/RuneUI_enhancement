@@ -58,7 +58,7 @@ fi
 
 # convert file based webradios back to redis
 dir=/srv/http/assets/img/webradios
-if [[ ! -z $( ls -A $dir ) ]]; then
+if [[ ! -z $( ls -A $dir 2> /dev/null ) ]]; then
 	echo -e "$bar Convert Webradios data ..."
 	files=( $dir/* )
 	for file in ${files[@]}; do
@@ -81,7 +81,7 @@ fi
 
 # convert file based bookmarks back to redis
 dir=/srv/http/assets/img/bookmarks
-if [[ ! -z $( ls -A $dir ) ]]; then
+if [[ ! -z $( ls -A $dir 2> /dev/null ) ]]; then
 	echo -e "$bar Convert bookmarks data ..."
 	files=( $dir/* )
 	idx=0
@@ -97,7 +97,7 @@ if [[ ! -z $( ls -A $dir ) ]]; then
 fi
 
 redis-cli del display sampling mpddb &> /dev/null
-rm -r /srv/http/assets/img/{bookmarks,coverarts,webradios,webradiopl}
+rm -rf /srv/http/assets/img/{bookmarks,coverarts,webradios,webradiopl}
 systemctl enable rune_shutdown
 systemctl start rune_shutdown
 
