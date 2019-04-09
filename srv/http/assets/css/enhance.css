@@ -1299,6 +1299,9 @@ i.bookmark,
 	text-align: center;
 	background: #0095d8;
 }
+#pl-home {
+	line-height: 46px;
+}
 #pl-currentpath i {
 	width: 40px;
 	line-height: 40px;
