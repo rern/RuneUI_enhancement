@@ -1454,7 +1454,7 @@ function setTitleWidth() {
 	$( '.duration-right' ).css( 'right', '' );
 }
 function setPlaylistScroll() {
-	if ( GUI.sortable ) return // 'skip for Sortable'
+	if ( !GUI.status.playlistlength || GUI.sortable ) return // skip if empty or Sortable
 	
 	clearInterval( GUI.intElapsedPl );
 	displayTopBottom();
