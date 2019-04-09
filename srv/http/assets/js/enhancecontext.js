@@ -512,7 +512,10 @@ function addPlaylist( name, oldname ) {
 		$.post( 'enhance.php', { bash: '/usr/bin/mv'+ oldfile + newfile } );
 	} else {
 		var name = name.replace( /"/g, '\\"' );
-		$.post( 'enhance.php', { mpc: 'mpc save "'+ name +'"; /usr/bin/sudo /usr/bin/chmod 775 "/var/lib/mpd/playlists/'+ name + '.m3u"' } );
+		$.post( 'enhance.php', {
+			mpc: 'mpc save "'+ name +'"; '
+				+'/usr/bin/sudo /usr/bin/chmod 775 "/var/lib/mpd/playlists/'+ name + '.m3u"'
+		} );
 		notify( 'Playlist Saved', name );
 		$( '#plopen' ).removeClass( 'disable' );
 	}
