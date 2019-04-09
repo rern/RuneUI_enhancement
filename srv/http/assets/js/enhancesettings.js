@@ -24,7 +24,7 @@ $( '.selectpicker' ).selectpicker();
 var path = location.pathname;
 if ( path.match( /\/sources\/*$/ ) ) {
 	function toggleUpdate() {
-		$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
+		$.post( '../enhancestatus.php', { statusonly: 1 }, function( status ) {
 			if ( status.updating_db ) {
 				$( '#update, #rescan' ).hide();
 				$( '#updating' ).show();
@@ -46,7 +46,7 @@ if ( path.match( /\/sources\/*$/ ) ) {
 	pushstreamIdle.addChannel( 'idle' );
 	pushstreamIdle.connect();
 	$( '#update, #rescan' ).click( function() {
-		$.post( 'enhance.php', { bash: '/srv/http/enhancecount.sh '+ this.id +' &' } );
+		$.post( '../enhance.php', { bash: '/srv/http/enhancecount.sh '+ this.id +' &' } );
 	} );
 } else if ( path.match( /\/sources\/add/ ) ) {
 	if ($('#mount-type').val() === 'nfs') {

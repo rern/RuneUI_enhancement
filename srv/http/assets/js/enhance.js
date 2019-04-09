@@ -1727,6 +1727,7 @@ pushstreams.idle.onmessage = function( changed ) {
 				if ( status.updating_db ) {
 					GUI.status.updating_db = 1;
 				} else {
+					clearInterval( GUI.intUpdate );
 					GUI.status.updating_db = 0;
 					notify( 'Update Database', 'Database updated.' );
 				}
