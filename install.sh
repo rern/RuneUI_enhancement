@@ -125,6 +125,14 @@ EOF
 )
 insertH '<h2>Network mounts'
 #----------------------------------------------------------------------------------
+file=/srv/http/app/templates/sources_edit.php
+echo $file
+
+string=$( cat <<'EOF'
+<?php include( '/app/libs/runeaudio.php' );?>
+EOF
+)
+insertH '1'
 
 ########## to be moved after 'if not update' ###################################################################
 
