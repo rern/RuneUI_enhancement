@@ -741,7 +741,7 @@ function renderLibrary() {
 	$( '.home-block:not( .home-bookmark )' ).each( function() {
 		var name = this.id.replace( 'home-', '' );
 		$( this ).parent().toggleClass( 'hide', GUI.display[ name ] === '' );
-		if ( name === 'sd' || name ==='nas' ) $( this ).parent().toggleClass( 'hide', !$( this ).find( 'gr' ).text() );
+//		if ( [ 'sd', 'usb', 'nas' ].indexOf( name ) !== -1 ) $( this ).parent().toggleClass( 'hide', !$( this ).find( 'gr' ).text() );
 	} );
 	$( '.home-block gr' ).toggleClass( 'hide', GUI.display.count === '' );
 	if ( GUI.display.label ) {

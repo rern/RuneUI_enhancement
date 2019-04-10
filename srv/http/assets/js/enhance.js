@@ -155,8 +155,6 @@ $( '#displaylibrary' ).click( function() {
 			} );
 		}
 	} );
-	if ( !$( '#home-sd gr' ).text() ) disableCheckbox( 'sd' );
-	if ( !$( '#home-nas gr' ).text() ) disableCheckbox( 'nas' );
 } );
 var chkplayback = {
 	  bars         : 'Top-Bottom bars'
