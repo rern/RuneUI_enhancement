@@ -238,13 +238,15 @@ function removeSplash() {
 	$( 'html, body' ).scrollTop( 0 );
 	if ( !$( '#divcoverarts' ).html() ) return
 	
-	lazyLoad = new LazyLoad( { elements_selector: '.lazy' } );
-	// for load 1st page without lazy
-	var perrow = $( 'body' )[ 0 ].clientWidth / 200;
-	var percolumn = window.innerHeight / 200;
-	var perpage = Math.ceil( perrow ) * Math.ceil( percolumn );
-	for( i = 0; i < perpage; i++ ) {
-		lazyLoad.load( $( '.lazy' ).eq( i )[ 0 ], 'force' );
+	if ( $( '.lazy' ).length ) {
+		lazyLoad = new LazyLoad( { elements_selector: '.lazy' } );
+		// for load 1st page without lazy
+		var perrow = $( 'body' )[ 0 ].clientWidth / 200;
+		var percolumn = window.innerHeight / 200;
+		var perpage = Math.ceil( perrow ) * Math.ceil( percolumn );
+		for( i = 0; i < perpage; i++ ) {
+			lazyLoad.load( $( '.lazy' ).eq( i )[ 0 ], 'force' );
+		}
 	}
 }
 function setPlaybackBlank() {
@@ -1030,15 +1032,6 @@ function dataParse( data, path, querytype, plid ) {
 			for (i = 0; i < dataL; i++ ) content += radio2html( data[ i ], 'Jamendo', querytype );
 		}
 	}
-	$( '#db-entries' ).html( content +'<p></p>' ).promise().done( function() {
-		// fill bottom of list to mave last li movable to top
-		$( '#db-entries p' ).css( 'min-height', window.innerHeight - ( GUI.bars ? 140 : 100 ) +'px' );
-		if ( !fileplaylist ) displayIndexBar();
-		$( '#loader, .menu, #divcoverarts' ).addClass( 'hide' );
-		$( 'html, body' ).scrollTop( 0 );
-		if ( GUI.status.ext === 'radio' ) lazyLoad.update();
-	} );
-	
 	$( '#db-back' ).removeClass( 'hide' );
 // breadcrumb directory path link
 	var iconName = {
@@ -1114,6 +1107,14 @@ function dataParse( data, path, querytype, plid ) {
 			$( '#db-currentpath' ).find( 'span' ).html( folderCrumb );
 		}
 	}
+	$( '#db-entries' ).html( content +'<p></p>' ).promise().done( function() {
+		// fill bottom of list to mave last li movable to top
+		$( '#db-entries p' ).css( 'min-height', window.innerHeight - ( GUI.bars ? 140 : 100 ) +'px' );
+		if ( !fileplaylist ) displayIndexBar();
+		$( '#loader, .menu, #divcoverarts' ).addClass( 'hide' );
+		$( 'html, body' ).scrollTop( 0 );
+		if ( $( '.lazy' ).length && $( '#db-currentpath .lipath' ).text() === 'Webradio' ) lazyLoad.update();
+	} );
 	// hide index bar in directories with files only
 	var lieq = $( '#db-entries .licover' ).length ? 1 : 0;
 	if ( $( '#db-entries li:eq( '+ lieq +' ) i.db-icon' ).hasClass( 'fa-music' ) || fileplaylist ) {
