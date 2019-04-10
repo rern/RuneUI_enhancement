@@ -820,11 +820,17 @@ $( '.home-block' ).click( function() {
 	var id = this.id;
 	if ( id === 'home-coverart' || $( this ).hasClass( 'home-bookmark' ) ) return
 	
-	if ( id === 'home-webradio' && !$( '#home-webradio gr' ).text() ) {
+	if ( id === 'home-usb' && !$( '#home-usb gr' ).text() ) {
+		location.href = '/sources';
+		return
+	} else if ( id === 'home-nas' && !$( '#home-nas gr' ).text() ) {
+		location.href = '/sources/add';
+		return
+	} else if ( id === 'home-webradio' && !$( '#home-webradio gr' ).text() ) {
 		webRadioNew();
 		return
 	}
-	
+
 	var $this = $( this );
 	var path = $this.find( '.lipath' ).text();
 	var name = $this.find( '.bklabel' ).text();
