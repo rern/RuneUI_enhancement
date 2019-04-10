@@ -524,8 +524,6 @@ function displayTopBottom() {
 		$( '#home-blocks' ).css( 'padding-top', '' );
 	}
 	cssNotify();
-	$( '#debug' ).toggleClass( 'hide', GUI.display.debug === '' );
-	$( '#dev' ).toggleClass( 'hide', GUI.display.dev === '' );
 	var menuH = ( $( '#settings a' ).length - $( '#settings a.hide' ).length ) * 41 - 1;
 	$( '#settings .menushadow' ).css( 'height', menuH +'px' );
 	$( '.menu' ).addClass( 'hide' );
@@ -1454,7 +1452,7 @@ function setTitleWidth() {
 	$( '.duration-right' ).css( 'right', '' );
 }
 function setPlaylistScroll() {
-	if ( GUI.sortable ) return // 'skip for Sortable'
+	if ( !GUI.status.playlistlength || GUI.sortable ) return // skip if empty or Sortable
 	
 	clearInterval( GUI.intElapsedPl );
 	displayTopBottom();
@@ -1559,10 +1557,11 @@ function htmlPlaylist( data ) {
 			sec = value.Time ? HMS2Second( value.Time ) : 0;
 			pltime += sec;
 			if ( GUI.playlist && !GUI.pleditor ) {
-				var actionhtml = '<i class="fa fa-music pl-icon"></i>';
+				var actionhtml = '<i class="fa fa-music pl-icon"></i>'
+								+'<a class="lipath">'+ value.file +'</a>';
 			} else {
 				var dbpl = GUI.library ? 'db' : 'pl';
-				var actionhtml = '<i class="fa fa-music '+ dbpl +'-icon" data-target="#context-menu-file"></i>'
+				var actionhtml = '<i class="fa fa-music '+ dbpl +'-icon" data-target="#context-menu-filesavedpl"></i>'
 								+'<a class="lipath">'+ ( value.cuem3u || value.file ) +'</a>'
 								+'<a class="liname">'+ value.Title +'</a>'
 								+'<a class="liindex">'+ value.index +'</a>';
@@ -1576,7 +1575,10 @@ function htmlPlaylist( data ) {
 			}
 			content += '<li>'
 						 + actionhtml
-						 +'<span class="li1"><a class="name">'+ value.Title +'</a><span class="duration">'+ ( GUI.playlist && !GUI.pleditor ? '<a class="elapsed"></a>' : '' ) +'<a class="time" time="'+ sec +'">'+ value.Time +'</a></span></span>'
+						 +'<span class="li1"><a class="name">'+ value.Title +'</a>'
+							 +'<span class="duration"><a class="elapsed"></a>'
+							 +'<a class="time" time="'+ sec +'">'+ value.Time +'</a></span>'
+						 +'</span>'
 						 +'<span class="li2">'+ li2 +'</span>'
 					 +'</li>';
 			countsong++;
@@ -1710,11 +1712,13 @@ function renderLsPlaylists( lsplaylists ) {
 	} );
 	$( '#pl-editor' ).html( content +'<p></p>' ).promise().done( function() {
 		GUI.pleditor = 1;
-		// fill bottom of list to mave last li movable to top
+		// fill bottom of list to make last li movable to top
 		$( '#pl-editor p' ).css( 'min-height', window.innerHeight - ( GUI.bars ? 140 : 100 ) +'px' );
 		$( '#pl-editor' ).css( 'width', '' );
 		$( '#loader' ).addClass( 'hide' );
-		$( 'html, body' ).scrollTop( GUI.plscrolltop );
+		setTimeout( function() {
+			$( 'html, body' ).scrollTop( GUI.plscrolltop );
+		}, 300 );
 		displayIndexBar();
 	} );
 }

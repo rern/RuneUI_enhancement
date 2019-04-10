@@ -167,8 +167,6 @@ var chkplayback = {
 	, coverlarge   : 'Large Cover art'
 	, volume       : 'Volume'
 	, buttons      : 'Buttons'
-	, debug        : '<gr>menu</gr> Debug'
-	, dev          : '<gr>menu</gr> Development'
 }
 $( '#displayplayback' ).click( function() {
 	info( {
