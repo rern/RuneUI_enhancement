@@ -77,12 +77,6 @@ systemctl restart rune_PL_wrk
 file=/srv/http/app/templates/dev.php
 echo $file
 
-string=$( cat <<'EOF'
-<?php $this->dev = '1';?>
-EOF
-)
-insertH '1'
-
 if [[ $( redis-cli get buildversion ) > 20170229 ]]; then
 	commentH -n -2 'PlayerID' -n +6 'Check FS permissions'
 	commentH -n -2 'Player name in Menu' -n +11 'Player name in Menu'
@@ -91,6 +85,12 @@ else
 	commentH -n -2 'DevTeam functions' -n -3 'System commands'
 	commentH -n -1 'Update RuneUI' -n +5 'Update RuneUI'
 fi
+
+string=$( cat <<'EOF'
+<?php $this->dev = '1';?>
+EOF
+)
+insertH '1'
 #----------------------------------------------------------------------------------
 file=/srv/http/app/templates/mpd.php
 echo $file
