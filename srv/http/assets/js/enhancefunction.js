@@ -1107,14 +1107,6 @@ function dataParse( data, path, querytype, plid ) {
 			$( '#db-currentpath' ).find( 'span' ).html( folderCrumb );
 		}
 	}
-	$( '#db-entries' ).html( content +'<p></p>' ).promise().done( function() {
-		// fill bottom of list to mave last li movable to top
-		$( '#db-entries p' ).css( 'min-height', window.innerHeight - ( GUI.bars ? 140 : 100 ) +'px' );
-		if ( !fileplaylist ) displayIndexBar();
-		$( '#loader, .menu, #divcoverarts' ).addClass( 'hide' );
-		$( 'html, body' ).scrollTop( 0 );
-		if ( $( '.lazy' ).length && $( '#db-currentpath .lipath' ).text() === 'Webradio' ) lazyLoad.update();
-	} );
 	// hide index bar in directories with files only
 	var lieq = $( '#db-entries .licover' ).length ? 1 : 0;
 	if ( $( '#db-entries li:eq( '+ lieq +' ) i.db-icon' ).hasClass( 'fa-music' ) || fileplaylist ) {
@@ -1124,6 +1116,14 @@ function dataParse( data, path, querytype, plid ) {
 		$( '#db-index' ).removeClass( 'hide' );
 		$( '#db-entries' ).css( 'width', '' );
 	}
+	$( '#db-entries' ).html( content +'<p></p>' ).promise().done( function() {
+		// fill bottom of list to mave last li movable to top
+		$( '#db-entries p' ).css( 'min-height', window.innerHeight - ( GUI.bars ? 140 : 100 ) +'px' );
+		if ( !fileplaylist ) displayIndexBar();
+		$( '#loader, .menu, #divcoverarts' ).addClass( 'hide' );
+		$( 'html, body' ).scrollTop( 0 );
+		if ( $( '.lazy' ).length && $( '#db-currentpath .lipath' ).text() === 'Webradio' ) lazyLoad.update();
+	} );
 }
 // set path, name, artist as text to avoid double quote escape
 function data2html( list, path ) {
