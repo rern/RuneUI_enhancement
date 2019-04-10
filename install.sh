@@ -80,6 +80,12 @@ echo $file
 commentH -n -2 'DevTeam functions' -n -3 'System commands'
 
 commentH -n -1 'Update RuneUI' -n +5 'Update RuneUI'
+
+string=$( cat <<'EOF'
+<?php $this->dev = '1';?>
+EOF
+)
+insertH -n -2 'System commands'
 #----------------------------------------------------------------------------------
 file=/srv/http/app/templates/mpd.php
 echo $file
