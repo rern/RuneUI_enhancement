@@ -612,7 +612,7 @@ function displayPlayback() {
 		var compact = GUI.bars || !GUI.screenS;
 		$( '#page-playback, #info, #playback-row' ).removeAttr( 'style' );
 		$( '#page-playback' ).css( 'padding-top', compact ? '' : '40px' );
-		$( '#playback-row' ).css( 'margin-top', compact ? '' : 0 )
+		$( '#playback-row' ).css( 'margin-top', compact ? '' : '20px' )
 		$( '#csskeyframesS' ).remove();
 	}
 }
@@ -1035,8 +1035,8 @@ function dataParse( data, path, querytype, plid ) {
 		$( '#db-entries p' ).css( 'min-height', window.innerHeight - ( GUI.bars ? 140 : 100 ) +'px' );
 		if ( !fileplaylist ) displayIndexBar();
 		$( '#loader, .menu, #divcoverarts' ).addClass( 'hide' );
-		if ( GUI.status.ext === 'radio' ) lazyLoad.update();
 		$( 'html, body' ).scrollTop( 0 );
+		if ( GUI.status.ext === 'radio' ) lazyLoad.update();
 	} );
 	
 	$( '#db-back' ).removeClass( 'hide' );
