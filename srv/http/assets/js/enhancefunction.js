@@ -1037,7 +1037,7 @@ function dataParse( data, path, querytype, plid ) {
 		$( '#db-entries p' ).css( 'min-height', window.innerHeight - ( GUI.bars ? 140 : 100 ) +'px' );
 		if ( !fileplaylist ) displayIndexBar();
 		$( '#loader, .menu, #divcoverarts' ).addClass( 'hide' );
-		if ( GUI.status.ext === 'radio' && lazyload !== 'undefined' ) lazyLoad.update();
+		if ( GUI.status.ext === 'radio' ) lazyLoad.update();
 		$( 'html, body' ).scrollTop( 0 );
 	} );
 	
