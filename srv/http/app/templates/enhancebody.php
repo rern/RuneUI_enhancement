@@ -171,11 +171,12 @@ function menucommonsp( $type ) {
 $menu = '<div>';
 $htmlcommon = menucommon( 'add', 'addplay', 'replace', 'replaceplay' );
 $html = '<span class="menushadow"></span>';
-$html.= menuli( 'play',      'play',         'Play' );
-$html.= menuli( 'pause',     'pause',        'Pause' );
-$html.= menuli( 'stop',      'stop',         'Stop' );
-$html.= menuli( 'radiosave', 'save',         'Save in Webradio' );
-$html.= menuli( 'remove',    'minus-circle', 'Remove' );
+$html.= menuli( 'play',       'play',         'Play' );
+$html.= menuli( 'pause',      'pause',        'Pause' );
+$html.= menuli( 'stop',       'stop',         'Stop' );
+$html.= menuli( 'radiosave',  'save',         'Save in Webradio' );
+$html.= menuli( 'savedpladd', 'plus',         'Add to a playlist' );
+$html.= menuli( 'remove',     'minus-circle', 'Remove' );
 $menu.= menudiv( 'plaction', $html );
 $menudiv = '';
 $html = $htmlcommon;
@@ -190,6 +191,11 @@ $menu.= menudiv( 'file', $html );
 $menudiv = '';
 $html = $htmlcommon;
 $menu.= menudiv( 'filepl', $html );
+$menudiv = '';
+$html = $htmlcommon;
+$html.= menuli( 'lastfmreplaceplay', 'lastfm',       'Last.fm playlist' );
+$html.= menuli( 'savedplremove',     'minus-circle', 'Remove' );
+$menu.= menudiv( 'filesavedpl', $html );
 $menudiv = '';
 $html = menucommon( 'add', 'addplay', 'replace', 'replaceplay' );
 $html.= menuli( 'radiosave', 'save', 'Save in Webradio' );
@@ -212,8 +218,8 @@ $menu.= menudiv( 'webradiopl', $html );
 $menudiv = '';
 $html = '<span class="menushadow"></span>';
 $html.= menuli( 'pladd',         'plus-o',            'Add' );
-$html.= menuli( 'pladdplay',     'play-plus',       'Add ► Play' );
-$html.= menuli( 'plashuffle',    'play-random',    '+Random ► Play' );
+$html.= menuli( 'pladdplay',     'play-plus',         'Add ► Play' );
+$html.= menuli( 'plashuffle',    'play-random',       '+Random ► Play' );
 $html.= menuli( 'plreplace',     'plus-refresh',      'Replace' );
 $html.= menuli( 'plreplaceplay', 'play-plus-refresh', 'Replace ► Play' );
 $html.= menuli( 'plrename',      'edit-circle',       'Rename' );
@@ -254,8 +260,6 @@ $menu.= '</div>';
 	<a href="settings"><i class="fa fa-sliders"></i>Settings</a>
 	<a href="network"><i class="fa fa-network"></i>Network</a>
 	<a href="credits"><i class="fa fa-rune"></i>Credits</a>
-	<a id="debug" href="debug"><i class="fa fa-code"></i>Debug</a>
-	<a id="dev" href="dev"><i class="fa fa-gears"></i>Development</a>
 	<a id="turnoff"><i class="fa fa-power"></i>Power</a>
 		<?php 
 		if ( $this->pwd_protection ) { ?>

@@ -45,9 +45,11 @@ _Tested on RuneAudio 0.4b, 0.5_
 - Refresh browser for fullscreen mode
 	- Long-press bottom bar / swipe bar
 - Movable Library items ( by [Sortable](https://github.com/SortableJS/Sortable) )
+- Movable/ editable saved playlists
 - Context menu
 	- Icon on the right removed
 	- Use icon on the left instead
+- Keyboard navigation
 
 Install
 ---
@@ -161,8 +163,39 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 	- Show saved station names while stop / streaming names while playing
 	- Unsaved station icon in white - tap to save
 - Crop button to keep only current playing song
-- Saved playlists can be named with " characters
-- Saved playlists can be renamed
-- Each saved playlist can be viewed
+- Each item can be append to saved playlists
 - Maintain scroll position
 - Changes reflects to all clients
+- Saved playlists
+	- Show content
+	- Drag to rearrange
+	- Remove individual items
+	- Can be named with " characters
+	- Can be renamed
+
+### Keyboard Navigation
+All pages
+- `space` play / pause
+- `play` play / pause
+- `pause` pause
+- `stop` stop
+- `previous` previous track
+- `next` next track
+- `tap` switch pages
+
+Playback
+- `arrow-left` previous
+- `arrow-right` next
+- `arrow-up` volume +
+- `arrow-down` volume -
+
+Library home
+- `arrow-left` select previous item
+- `arrow-right` select next item
+- `enter` tap active item
+
+Library / Playlist
+- `arrow-left` back button
+- `arrow-down` select next item
+- `arrow-up` select previous item
+- `enter` tap active item / add + play

@@ -11,9 +11,8 @@ alias=enha
 . /srv/http/addonsedit.sh
 
 #0temp0
-rm -rf /srv/http/assets/img/{bookmarks,coverarts,webradios}
+rm -rf /srv/http/assets/img/{bookmarks,coverarts,webradios,webradiopl}
 [[ $( redis-cli hget addons enha ) < 20190318 ]] && redis-cli hdel display order &> /dev/null
-rm -rf /srv/http/assets/img/coverarts/coverarts
 #1temp1
 
 installstart $@
@@ -78,9 +77,20 @@ systemctl restart rune_PL_wrk
 file=/srv/http/app/templates/dev.php
 echo $file
 
-commentH -n -2 'DevTeam functions' -n -3 'System commands'
+if [[ $( redis-cli get buildversion ) > 20170229 ]]; then
+	commentH -n -2 'PlayerID' -n +6 'Check FS permissions'
+	commentH -n -2 'Player name in Menu' -n +11 'Player name in Menu'
+	commentH -n -2 'Update RuneUI' -n +8 'Update RuneUI'
+else
+	commentH -n -2 'DevTeam functions' -n -3 'System commands'
+	commentH -n -1 'Update RuneUI' -n +5 'Update RuneUI'
+fi
 
-commentH -n -1 'Update RuneUI' -n +5 'Update RuneUI'
+string=$( cat <<'EOF'
+<?php $this->dev = '1';?>
+EOF
+)
+insertH '1'
 #----------------------------------------------------------------------------------
 file=/srv/http/app/templates/mpd.php
 echo $file
@@ -126,6 +136,14 @@ EOF
 )
 insertH '<h2>Network mounts'
 #----------------------------------------------------------------------------------
+file=/srv/http/app/templates/sources_edit.php
+echo $file
+
+string=$( cat <<'EOF'
+<?php include( '/app/libs/runeaudio.php' );?>
+EOF
+)
+insertH '1'
 
 ########## to be moved after 'if not update' ###################################################################
 
@@ -197,25 +215,6 @@ if [[ -z $( ls -A $dir ) ]]; then # convert only when none found
 			echo $path
 		done
 		redis-cli del bookmarks bookmarksidx &> /dev/null
-	fi
-	# convert new bookmarks (to be removed in next version)
-	bkmarks=$( redis-cli hgetall bkmarks )
-	if [[ $bkmarks ]]; then
-		readarray -t lines <<<"$bkmarks"
-		linesL=${#lines[@]}
-		for (( i=0; i < $linesL; i+=2 )); do
-			mpdpath=${lines[$i+1]}
-			oldfile=/mnt/MPD/$mpdpath/thumbnail.jpg
-			newfile="$dir/${mpdpath//\//|}"
-			if [[ -e "$oldfile" ]]; then
-				base64data=$( base64 -w 0 "$oldfile" )
-				echo "data:image/jpeg;base64,$base64data" > "$newfile"
-			else
-				echo ${lines[$i]} > "$newfile"
-			fi
-			echo $mpdpath
-		done
-		redis-cli del bkmarks &> /dev/null
 	fi
 	if [[ -L $dir ]]; then
 		dirtarget=$( readlink -f $dir )
