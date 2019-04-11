@@ -888,7 +888,7 @@ $( '#infoFileBox' ).change( function() {
 		img.onload = function () {
 			var imgW = img.width;
 			var imgH = img.height;
-			var coverart = $( '#db-entries li' ).length;
+			var coverart = GUI.playback || $( '#db-entries li' ).length;
 			var imgWHhtml = '<div class="imagewh"><span>Current</span><span>'+ imgW +' x '+ imgH +'</span>';
 			$( '#infoFilename' ).empty();
 			$( '.newimg, .imagewh, .bkname' ).remove();
