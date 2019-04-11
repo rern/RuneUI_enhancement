@@ -1122,7 +1122,9 @@ function dataParse( data, path, querytype, plid ) {
 		if ( !fileplaylist ) displayIndexBar();
 		$( '#loader, .menu, #divcoverarts' ).addClass( 'hide' );
 		$( 'html, body' ).scrollTop( 0 );
-		if ( $( '.lazy' ).length && $( '#db-currentpath .lipath' ).text() === 'Webradio' ) lazyLoad.update();
+		if ( $( '.lazy' ).length
+			&& ( $( '#db-currentpath .lipath' ).text() === 'Webradio' || GUI.dbbrowsemode === 'Dirble' )
+		) lazyLoad.update();
 	} );
 }
 // set path, name, artist as text to avoid double quote escape
