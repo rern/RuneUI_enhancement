@@ -1322,6 +1322,85 @@ function radio2html( list, source, querytype, plid ) {
 	}
 	return content +'</li>';
 }
+function removeCoverart( $img, album, artist, path ) {
+	$.post( 'enhance.php', { bash: '/usr/bin/ls "'+ path +'" | grep -iE "^cover.jpg$|^cover.png$|^folder.jpg$|^folder.png$|^front.jpg$|^front.png$"' }, function( file ) {
+		var file = file.slice( 0, -1 ); // less last '\n'
+		var count = file.split( '\n' ).length;
+		if ( count > 1 ) {
+			info( {
+				  icon    : 'coverart'
+				, title   : 'Remove Album Coverart'
+				, message : 'More than 1 coverart files found:'
+						   +'<br><w>'+ file.replace( /\n/g, '<br>' ) +'</w>'
+						   +'<br>No files removed.'
+			} );
+			return
+		}
+		
+		info( {
+			  icon     : 'coverart'
+			, title    : 'Remove Album Coverart'
+			, message  : '<img src="'+ $img.prop( 'src' ) +'">'
+						+'<br><w>'+ album +'</w>'
+						+'<br>'+ artist
+						+'<br><br><code>'+ file +'</code> > <code>'+ file +'.backup</code>'
+			, msgalign : 'center'
+			, oklabel  : 'Remove'
+			, cancel   : 1
+			, ok       : function() {
+				$.post( 'enhance.php', { imagefile: path +'/cover.jpg', coverfile: 1 }, function( std ) {
+					if ( std == 0 ) {
+						$img.attr( 'src', coverrune );
+						$( '.edit' ).remove();
+						$img.css( 'opacity', '' );
+					} else if ( std == 13 ) {
+						info( {
+							  icon    : 'coverart'
+							, title   : '<i class="fa fa-warning"></i>Remove Album Coverart'
+							, message : 'Remove file denied.'
+									   +'<br>Set directory+file <w>permission</w> and try again.'
+						} );
+					}
+				} );
+			}
+		} );
+	} );
+}
+function replaceCoverart( $img, album, artist, path ) {
+	info( {
+		  icon        : 'coverart'
+		, title       : 'Replace Album Coverart'
+		, message     : '<img src="'+ $img.prop( 'src' ) +'">'
+					   +'<span class="bkname"><br><w>'+ album +'</w>'
+					   +'<br>'+ artist +'<span>'
+		, msgalign    : 'center'
+		, fileoklabel : 'Replace'
+		, cancel      : 1
+		, ok          : function() {
+			var newimg = $( '#infoMessage .newimg' ).attr( 'src' );
+			$.post( 'enhance.php', { imagefile: path +'/cover.jpg', base64: newimg, coverfile: 1 }, function( std ) {
+				if ( std == 0 ) {
+					$img.attr( 'src', newimg );
+					$( '.edit' ).remove();
+					$img.css( 'opacity', '' );
+				} else if ( std == 13 ) {
+					info( {
+						  icon    : 'coverart'
+						, title   : '<i class="fa fa-warning"></i>Replace Album Coverart'
+						, message : 'Replace file denied.'
+								   +'<br>Set directory+file <w>permission</w> and try again.'
+					} );
+				} else if ( std == -1 ) {
+					info( {
+						  icon    : 'coverart'
+						, title   : 'Replace Album Coverart'
+						, message : '<i class="fa fa-warning"></i>Upload image failed.'
+					} );
+				}
+			} );
+		}
+	} );
+}
 function flag( iso ) { // from: https://stackoverflow.com/a/11119265
 	var iso0 = ( iso.toLowerCase().charCodeAt( 0 ) - 97 ) * -15;
 	var iso1 = ( iso.toLowerCase().charCodeAt( 1 ) - 97 ) * -20;

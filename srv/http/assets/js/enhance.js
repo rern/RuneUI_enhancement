@@ -282,7 +282,13 @@ $( '#swipeR' ).click( function() {
 	var page = GUI.playback ? 'playlist' : ( GUI.library ? 'playback' : 'library' );
 	$( '#tab-'+ page ).click();
 } );
-$( '#page-playback' ).click( function( e ) {
+$( '#page-playback' ).tap( function( e ) {
+	if ( $( '.edit' ).length ) {
+		$( '.edit' ).remove();
+		$( '#cover-art' ).css( 'opacity', '' );
+		return
+	}
+	
 	if ( $( e.target ).is( '.controls, .timemap, .covermap, .volmap' ) ) return
 	
 	$( '.controls' ).addClass( 'hide' );
@@ -556,9 +562,17 @@ var btnctrl = {
 	, volR    : 'volup'
 	, volB    : 'voldn'
 }
-$( '.timemap, .covermap, .volmap' ).click( function() {
+$( '.covermap' ).taphold( function( e ) {
+	$( '#cover-art' )
+		.css( 'opacity', 0.33 )
+		.after(
+			 '<i class="edit coverart-remove fa fa-minus-circle"></i>'
+			+'<i class="edit coverart-cover fa fa-coverart"></i>'
+		);
+} );
+$( '.timemap, .covermap, .volmap' ).tap( function() {
 	var cmd = btnctrl[ this.id ];
-	if ( GUI.display.cover && $( this ).hasClass( 'timemap' ) || !cmd ) return
+	if ( GUI.display.cover && $( this ).hasClass( 'timemap' ) || !cmd || $( '.edit' ).length ) return
 	
 	if ( cmd === 'guide' ) {
 		$( '#controls-cover, #controls-vol, .rs-tooltip, #imode' ).toggleClass( 'hide' );
@@ -1086,7 +1100,7 @@ $( '.coverart' ).tap( function( e ) {
 		 '<i class="edit coverart-remove fa fa-minus-circle"></i>'
 		+'<i class="edit coverart-cover fa fa-coverart"></i>'
 	);
-	$( '.coverart img' ).css( 'opacity', 0.4 );
+	$( '.coverart img' ).css( 'opacity', 0.33 );
 } );
 $( '#divcoverarts' ).on( 'tap', '.coverart-remove', function() {
 	var $this = $( this );
@@ -1156,86 +1170,12 @@ $( '#db-entries' ).on( 'tap', '.edit',  function() {
 	var artist = $thisli.find( '.bioartist' ).text();
 	var lipath = $thisli.next().find( '.lipath' ).text();
 	var path = '/mnt/MPD/'+ lipath.substr( 0, lipath.lastIndexOf( '/' ) );
-	var coverfile = path +'/cover.jpg';
-	$.post( 'enhance.php', { bash: '/usr/bin/ls "'+ path +'" | grep -iE "^cover.jpg$|^cover.png$|^folder.jpg$|^folder.png$|^front.jpg$|^front.png$"' }, function( file ) {
-		var file = file.slice( 0, -1 ); // less last '\n'
-		var count = file.split( '\n' ).length;
-		if ( count > 1 ) {
-			info( {
-				  icon    : 'coverart'
-				, title   : 'Remove Album Coverart'
-				, message : 'More than 1 coverart files found:'
-						   +'<br><w>'+ file.replace( /\n/g, '<br>' ) +'</w>'
-						   +'<br>No files removed.'
-			} );
-			return
-		}
-		if ( $this.hasClass( 'licover-remove' ) ) {
-			info( {
-				  icon     : 'coverart'
-				, title    : 'Remove Album Coverart'
-				, message  : '<img src="'+ $img.prop( 'src' ) +'">'
-							+'<br><w>'+ album +'</w>'
-							+'<br>'+ artist
-							+'<br><br><code>'+ file +'</code> > <code>'+ file +'.backup</code>'
-				, msgalign : 'center'
-				, oklabel  : 'Remove'
-				, cancel   : 1
-				, ok       : function() {
-					$.post( 'enhance.php', { imagefile: coverfile, coverfile: 1 }, function( std ) {
-						if ( std == 0 ) {
-							$img.attr( 'src', coverrune );
-							$( '.edit' ).remove();
-							$img.css( 'opacity', '' );
-						} else if ( std == 13 ) {
-							info( {
-								  icon    : 'coverart'
-								, title   : '<i class="fa fa-warning"></i>Remove Album Coverart'
-								, message : 'Remove file denied.'
-										   +'<br>Set directory+file <w>permission</w> and try again.'
-							} );
-						}
-					} );
-				}
-			} );
-		} else {
-			info( {
-				  icon        : 'coverart'
-				, title       : 'Replace Album Coverart'
-				, message     : '<img src="'+ $img.prop( 'src' ) +'">'
-							   +'<span class="bkname"><br><w>'+ album +'</w>'
-							   +'<br>'+ artist +'<span>'
-				, msgalign    : 'center'
-				, fileoklabel : 'Replace'
-				, cancel      : 1
-				, ok          : function() {
-					var newimg = $( '#infoMessage .newimg' ).attr( 'src' );
-					$.post( 'enhance.php', { imagefile: coverfile, base64: newimg, coverfile: 1 }, function( std ) {
-						if ( std == 0 ) {
-							$img.attr( 'src', newimg );
-							$( '.edit' ).remove();
-							$img.css( 'opacity', '' );
-						} else if ( std == 13 ) {
-							info( {
-								  icon    : 'coverart'
-								, title   : '<i class="fa fa-warning"></i>Replace Album Coverart'
-								, message : 'Replace file denied.'
-										   +'<br>Set directory+file <w>permission</w> and try again.'
-							} );
-						} else if ( std == -1 ) {
-							info( {
-								  icon    : 'coverart'
-								, title   : 'Replace Album Coverart'
-								, message : '<i class="fa fa-warning"></i>Upload image failed.'
-							} );
-						}
-					} );
-				}
-			} );
-		}
-	} );
+	var fn = $this.hasClass( 'licover-remove' ) ? removeCoverart : replaceCoverart;
+	fn( $img, album, artist, path );
 } );
 $( '#db-entries' ).on( 'taphold', '.licoverimg',  function() {
+	$( this ).parent().removeClass( 'active' );
+	$( '#context-menu-album' ).addClass( 'hide' );
 	$this = $( this );
 	var btnhtml = '<i class="edit licover-cover fa fa-coverart"></i>';
 	if ( !$this.hasClass( 'nocover' ) ) btnhtml += '<i class="edit licover-remove fa fa-minus-circle"></i>';
