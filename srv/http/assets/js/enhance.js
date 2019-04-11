@@ -284,6 +284,8 @@ $( '#swipeR' ).click( function() {
 } );
 $( '#page-playback' ).tap( function( e ) {
 	if ( $( '.edit' ).length ) {
+		if ( $( e.target ).hasClass( 'edit' ) ) return
+		
 		$( '.edit' ).remove();
 		$( '#cover-art' ).css( 'opacity', '' );
 		return
@@ -566,13 +568,25 @@ $( '.covermap' ).taphold( function( e ) {
 	$( '#cover-art' )
 		.css( 'opacity', 0.33 )
 		.after(
-			 '<i class="edit coverart-remove fa fa-minus-circle"></i>'
-			+'<i class="edit coverart-cover fa fa-coverart"></i>'
+			 '<i class="edit licover-remove fa fa-minus-circle"></i>'
+			+'<i class="edit licover-cover fa fa-coverart"></i>'
 		);
+} );
+$( '#divcover' ).on( 'click', '.edit', function() {
+	var $img = $( '#cover-art' );
+	var album = GUI.status.Album;
+	var artist = GUI.status.Artist;
+	var path = '/mnt/MPD/'+ GUI.status.file.substr( 0, GUI.status.file.lastIndexOf( '/' ) );
+	var fn = $( this ).hasClass( 'licover-remove' ) ? removeCoverart : replaceCoverart;
+	fn( $img, album, artist, path );
 } );
 $( '.timemap, .covermap, .volmap' ).tap( function() {
 	var cmd = btnctrl[ this.id ];
-	if ( GUI.display.cover && $( this ).hasClass( 'timemap' ) || !cmd || $( '.edit' ).length ) return
+	if ( GUI.display.cover
+		&& $( this ).hasClass( 'timemap' )
+		|| !cmd
+		|| $( '.edit' ).length
+	) return
 	
 	if ( cmd === 'guide' ) {
 		$( '#controls-cover, #controls-vol, .rs-tooltip, #imode' ).toggleClass( 'hide' );
