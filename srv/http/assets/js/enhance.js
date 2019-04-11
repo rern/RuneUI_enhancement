@@ -137,7 +137,7 @@ $( '#displaylibrary' ).click( function() {
 	var thumbbyartist = GUI.display.thumbbyartist;
 	info( {
 		  icon     : 'library'
-		, title    : 'Libary Tools'
+		, title    : 'Library Tools'
 		, message  : 'Select items to show / options:'
 		, checkbox : '<form id="displaysavelibrary">'+ displayCheckbox( chklibrary ) +'</form>'
 		, cancel   : 1
