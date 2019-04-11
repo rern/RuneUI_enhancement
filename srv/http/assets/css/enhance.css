@@ -1167,6 +1167,10 @@ i.bookmark,
 .licover-cover {
 	bottom: 0;
 }
+#divcover .edit {
+	right: 0;
+	z-index: 15
+}
 
 #infoMessage img {
 	margin: 10px;
