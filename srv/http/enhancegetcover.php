@@ -9,7 +9,7 @@ if ( isset( $_POST[ 'path' ] ) ) {
 		$mime = substr( mime_content_type( $file ), 0, 5 );
 		$ext = substr( $file, -3 );
 		if ( $mime === 'audio' || $ext === 'dsf' || $ext === 'dff' ) { // only audio file
-			$coverfile = getCoverart( $file, 0, 1 );
+			$coverfile = getCoverart( $file, 1 );
 			if ( !$coverfile ) continue;
 			
 			$coverext = substr( $coverfile, -3 );
@@ -22,9 +22,9 @@ if ( isset( $_POST[ 'path' ] ) ) {
 	}
 }
 // create thumbnail from embedded coverart in file
-function getCoverart( $file, $thumbnail = 0, $asfile = 0 ) {
+function getCoverart( $file, $id3only = 0, $asfile = 0 ) {
 // local file
-	if ( !$thumbnail ) {
+	if ( !$id3only ) {
 		$dir = dirname( $file );
 		$coverfiles = array(
 			  'cover.jpg', 'cover.png', 'folder.jpg', 'folder.png', 'front.jpg', 'front.png'
@@ -49,14 +49,12 @@ function getCoverart( $file, $thumbnail = 0, $asfile = 0 ) {
 	if ( isset( $id3picture[ 'data' ] ) ) {
 		$coverdata = $id3picture[ 'data' ];
 		$coverext = str_replace( 'image/', '', $id3picture[ 'image_mime' ] );
-		if ( !$thumbnail && !$asfile ) {
-			return 'data:image/'. $coverext.';base64,'.base64_encode( $coverdata );
-		} else {
-			$coverfile = "/srv/http/tmp/cover.$coverext";
-			file_put_contents( $coverfile, $coverdata );
-			return $coverfile;
-		}
-	} else if ( !$thumbnail ) {
+		if ( !$asfile ) return 'data:image/'. $coverext.';base64,'.base64_encode( $coverdata );
+		
+		$coverfile = "/srv/http/tmp/cover.$coverext";
+		file_put_contents( $coverfile, $coverdata );
+		return $coverfile;
+	} else {
 		return 0;
 	}
 }
