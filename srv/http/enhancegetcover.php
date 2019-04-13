@@ -2,7 +2,7 @@
 if ( isset( $_POST[ 'path' ] ) ) { 
 	getThumbnail( '/mnt/MPD/'.$_POST[ 'path' ] );
 }
-function getThumbnail( $dir ) {
+function getThumbnail( $dir, $scancover = 0 ) {
 	$files = array_slice( scandir( $dir ), 2 ); // remove ., ..
 	foreach( $files as $file ) {
 		$file = "$dir/$file";
@@ -14,6 +14,11 @@ function getThumbnail( $dir ) {
 			$coverfile = getCoverart( $file, 'asfile' );
 			if ( !$coverfile ) continue;
 			
+			if ( $scancover ) {
+				echo $coverfile;
+				exit;
+			}
+			
 			$coverext = substr( $coverfile, -3 );
 			$thumbfile = '/srv/http/tmp/tmp.jpg';
 			exec( '/usr/bin/sudo /usr/bin/convert "'.$coverfile.'" -thumbnail 200x200 -unsharp 0x.5 "'.$thumbfile.'"' );
@@ -22,6 +27,7 @@ function getThumbnail( $dir ) {
 			exit;
 		}
 	}
+	echo 0;
 }
 // create thumbnail from embedded coverart in file
 function getCoverart( $file, $asfile = 0 ) {
