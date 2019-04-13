@@ -187,7 +187,7 @@ function bookmarkNew() {
 			var $img = $this.find( 'img' );
 			if ( $img.length ) {
 				var iconhtml = '<img src="'+ $img.attr( 'src' ) +'">'
-							  +'<br>'+ path;
+							  +'<br><w>'+ path +'</w>';
 			} else {
 				var iconhtml = '<i class="fa fa-bookmark bookmark"></i>'
 							  +'<br><a class="bklabel">'+ $this.find( '.bklabel' ).text() +'</a>'
@@ -212,7 +212,9 @@ function bookmarkNew() {
 						, message   : '<img src="'+ base64img +'">'
 									 +'<br><w>'+ path +'</w>'
 						, msgalign  : 'center'
-						, cancel    : 1
+						, cancel    : function() {
+							$( '#db-entries li' ).removeClass( 'active' );
+						}
 						, ok        : function() {
 							$.post( 'enhance.php', { bookmarks: 1, path: path, base64: base64img, new: 1 } );
 							notify( 'Add Bookmark', path );
@@ -232,7 +234,9 @@ function bookmarkNew() {
 						, textrequired : 1
 						, boxwidth     : 'max'
 						, textalign    : 'center'
-						, cancel       : 1
+						, cancel    : function() {
+							$( '#db-entries li' ).removeClass( 'active' );
+						}
 						, ok           : function() {
 							$.post( 'enhance.php', { bookmarks: $( '#infoTextBox' ).val(), path: path, new: 1 } );
 							notify( 'Add Bookmark', path );
