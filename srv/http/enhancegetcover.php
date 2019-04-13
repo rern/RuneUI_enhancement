@@ -1,6 +1,8 @@
 <?php
-if ( isset( $_POST[ 'path' ] ) ) {
-	$dir = '/mnt/MPD/'.$_POST[ 'path' ];
+if ( isset( $_POST[ 'path' ] ) ) { 
+	getThumbnail( '/mnt/MPD/'.$_POST[ 'path' ] );
+}
+function getThumbnail( $dir ) {
 	$files = array_slice( scandir( $dir ), 2 ); // remove ., ..
 	foreach( $files as $file ) {
 		$file = "$dir/$file";
@@ -9,7 +11,7 @@ if ( isset( $_POST[ 'path' ] ) ) {
 		$mime = substr( mime_content_type( $file ), 0, 5 );
 		$ext = substr( $file, -3 );
 		if ( $mime === 'audio' || $ext === 'dsf' || $ext === 'dff' ) { // only audio file
-			$coverfile = getCoverart( $file, 1 );
+			$coverfile = getCoverart( $file, 'asfile' );
 			if ( !$coverfile ) continue;
 			
 			$coverext = substr( $coverfile, -3 );
@@ -22,23 +24,21 @@ if ( isset( $_POST[ 'path' ] ) ) {
 	}
 }
 // create thumbnail from embedded coverart in file
-function getCoverart( $file, $id3only = 0, $asfile = 0 ) {
+function getCoverart( $file, $asfile = 0 ) {
 // local file
-	if ( !$id3only ) {
-		$dir = dirname( $file );
-		$coverfiles = array(
-			  'cover.jpg', 'cover.png', 'folder.jpg', 'folder.png', 'front.jpg', 'front.png'
-			, 'Cover.jpg', 'Cover.png', 'Folder.jpg', 'Folder.png', 'Front.jpg', 'Front.png'
-		);
-		foreach( $coverfiles as $cover ) {
-			$coverfile = $dir.'/'.$cover;
-			if ( file_exists( $coverfile ) ) {
-				$coverext = pathinfo( $cover, PATHINFO_EXTENSION );
-				if ( $asfile ) return $coverfile;
-				
-				$coverart = file_get_contents( $coverfile );
-				return 'data:image/'. $coverext.';base64,'.base64_encode( $coverart );
-			}
+	$isdir = is_dir( $file );
+	$dir = $isdir ? $file : dirname( $file );
+	$coverfiles = array(
+		  'cover.jpg', 'cover.png', 'folder.jpg', 'folder.png', 'front.jpg', 'front.png'
+		, 'Cover.jpg', 'Cover.png', 'Folder.jpg', 'Folder.png', 'Front.jpg', 'Front.png'
+	);
+	foreach( $coverfiles as $cover ) {
+		$coverfile = $dir.'/'.$cover;
+		if ( file_exists( $coverfile ) ) {
+			$coverext = pathinfo( $cover, PATHINFO_EXTENSION );
+			if ( !$asfile ) return 'data:image/'. $coverext.';base64,'.base64_encode( file_get_contents( $coverfile ) );
+			
+			return $coverfile;
 		}
 	}
 // id3tag embedded
