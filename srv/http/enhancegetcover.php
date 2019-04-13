@@ -2,7 +2,7 @@
 if ( isset( $_POST[ 'path' ] ) ) { 
 	getThumbnail( '/mnt/MPD/'.$_POST[ 'path' ] );
 }
-function getThumbnail( $dir, $scancover = 0 ) {
+function getThumbnail( $dir, $scancover = 0 ) { // for new bookmarks and scancover
 	$files = array_slice( scandir( $dir ), 2 ); // remove ., ..
 	foreach( $files as $file ) {
 		$file = "$dir/$file";
@@ -27,7 +27,6 @@ function getThumbnail( $dir, $scancover = 0 ) {
 			exit;
 		}
 	}
-	echo 0;
 }
 // create thumbnail from embedded coverart in file
 function getCoverart( $file, $asfile = 0 ) {
