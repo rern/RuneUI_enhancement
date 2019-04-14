@@ -147,14 +147,10 @@ insertH '1'
 
 ########## to be moved after 'if not update' ###################################################################
 
-# dirble temp
-dir=/srv/http/assets/img/webradiopl
-mkdir -p $dir
-chown -R http:http $dir
-
+makeDirLink webradiopl
 makeDirLink coverarts
-
 makeDirLink webradios
+
 # convert webradios
 # filename: http:||webradio|url
 # content:
