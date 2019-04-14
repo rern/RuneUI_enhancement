@@ -99,8 +99,7 @@ fi
 
 redis-cli del display sampling mpddb &> /dev/null
 
-dirtarget=$( readlink -f /srv/http/assets/img/webradiopl )
-rm -rf "$dirtarget" "$( dirname "$dirtarget" )/tmp"
+rm -rf "$( readlink -f /srv/http/assets/img/webradiopl )"
 rm -rf /srv/http/assets/img/{bookmarks,coverarts,webradios,webradiopl}
 
 systemctl enable rune_shutdown
