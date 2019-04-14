@@ -1086,12 +1086,13 @@ $( '.coverart' ).tap( function( e ) {
 	mutationLibrary.observe( observerLibrary, observerOption ); // standard js - must be one on one element
 	GUI.cvscrolltop = $( window ).scrollTop();
 	$this = $( this );
-	$licue = $this.find( '.lipath' );
-	if ( $licue.length ) {
+	$lipath = $this.find( '.lipath' );
+	alert($lipath.text())
+	if ( $lipath.length ) {
 		GUI.dbbrowsemode = 'file';
 		getData( {
 			  browsemode : 'file'
-			, path       : $licue.text()
+			, path       : $lipath.text()
 		} );
 	} else {
 		if ( GUI.display.thumbbyartist ) {
