@@ -147,6 +147,7 @@ insertH '1'
 
 ########## to be moved after 'if not update' ###################################################################
 
+makeDirLink tmp
 makeDirLink webradiopl
 makeDirLink coverarts
 makeDirLink webradios
