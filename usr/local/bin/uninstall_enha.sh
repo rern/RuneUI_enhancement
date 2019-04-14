@@ -98,7 +98,11 @@ if [[ ! -z $( ls -A $dir 2> /dev/null ) ]]; then
 fi
 
 redis-cli del display sampling mpddb &> /dev/null
+
+dirtarget=$( readlink -f /srv/http/assets/img/webradiopl )
+rm -rf "$dirtarget" "$( dirname "$dirtarget" )/tmp"
 rm -rf /srv/http/assets/img/{bookmarks,coverarts,webradios,webradiopl}
+
 systemctl enable rune_shutdown
 systemctl start rune_shutdown
 systemctl restart rune_PL_wrk
