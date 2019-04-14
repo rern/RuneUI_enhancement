@@ -22,7 +22,7 @@ function getCoverFile( $dir, $scancover = 0 ) { // for new bookmarks and scancov
 			}
 			
 			$coverext = substr( $coverfile, -3 );
-			$thumbfile = '/srv/http/tmp/tmp.jpg';
+			$thumbfile = '/srv/http/assets/img/tmp/tmp.jpg';
 			exec( '/usr/bin/sudo /usr/bin/convert "'.$coverfile.'" -thumbnail 200x200 -unsharp 0x.5 "'.$thumbfile.'"' );
 			$coverart = file_get_contents( $thumbfile );
 			echo 'data:image/'. $coverext.';base64,'.base64_encode( $coverart );
@@ -61,7 +61,7 @@ function getCoverart( $file, $asfile = 0, $scancover = 0 ) {
 		$coverext = str_replace( 'image/', '', $id3picture[ 'image_mime' ] );
 		if ( !$asfile ) return 'data:image/'. $coverext.';base64,'.base64_encode( $coverdata );
 		
-		$coverfile = "/srv/http/tmp/cover.$coverext";
+		$coverfile = "/srv/http/assets/img/tmp/cover.$coverext";
 		file_put_contents( $coverfile, $coverdata );
 		return $coverfile;
 	} else {
