@@ -99,6 +99,7 @@ fi
 
 redis-cli del display sampling mpddb &> /dev/null
 
+rm -rf "$( readlink -f /srv/http/assets/img/tmp )"
 rm -rf "$( readlink -f /srv/http/assets/img/webradiopl )"
 rm -rf /srv/http/assets/img/{bookmarks,coverarts,webradios,webradiopl}
 
