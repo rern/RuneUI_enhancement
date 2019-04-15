@@ -146,13 +146,16 @@ function updateThumbnails() {
 	info( {
 		  icon     : 'coverart'
 		, title    : 'Coverart Thumbnails Update'
-		, message  : 'Update thumbnails for Browse By CoverArt'
+		, message  : 'Update thumbnails in:'
+					+'<br><w>'+ GUI.list.path +'</w>'
+					+'<br>&nbsp;'
+		, msgalign : 'center'
 		, checkbox : { 'Remove existings': 1 }
 		, cancel   : 1
 		, ok       : function() {
 			$( 'body' ).append(
 				'<form id="formtemp" action="addonsbash.php" method="post">'
-					+'<input type="hidden" name="alias" value="cove">'
+					+'<input type="hidden" name="alias" value="covd">'
 					+'<input type="hidden" name="type" value="scan">'
 					+'<input type="hidden" name="opt">'
 				+'</form>' );

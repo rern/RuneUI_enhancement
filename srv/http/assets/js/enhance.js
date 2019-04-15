@@ -1067,7 +1067,7 @@ $( '#home-coverart' ).click( function() { // fix - 'tap' also fire .coverart cli
 		, ok      : function() {
 			$( 'body' ).append(
 				'<form id="formtemp" action="addonsbash.php" method="post">'
-					+'<input type="hidden" name="alias" value="cove">'
+					+'<input type="hidden" name="alias" value="covd">'
 					+'<input type="hidden" name="type" value="scan">'
 				+'</form>' );
 			$( '#formtemp' ).submit();
