@@ -327,7 +327,7 @@ $( '#db-entries, #pl-entries, #pl-editor' ).on( 'click', 'p', function() {
 	$( '#pl-entries li' ).removeClass( 'lifocus' );
 	$( '.pl-remove' ).remove();
 } );
-$( '.home-block, #db-entries' ).click( function() {
+$( '.home-block' ).click( function() {
 	$( '#db-search-close' ).click();
 } );
 $( '#infoCheckBox' ).on( 'click', 'label', function() { // playback tools
@@ -790,8 +790,8 @@ $( '#db-search-close' ).click( function() {
 	getData( data );
 	mutationLibrary.observe( observerLibrary, observerOption );
 } );
-$( '#db-search-keyword' ).keypress( function( e ) {
-	if ( e.which === 13 ) $( '#dbsearchbtn' ).click();
+$( '#db-search-keyword' ).keydown( function( e ) {
+	if ( e.key === 'Enter' ) $( '#dbsearchbtn' ).click();
 } );
 // MutationObserver - watch for '#db-entries' content changed then scroll to previous position
 var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
