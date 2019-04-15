@@ -1087,7 +1087,6 @@ $( '.coverart' ).tap( function( e ) {
 	GUI.cvscrolltop = $( window ).scrollTop();
 	$this = $( this );
 	$lipath = $this.find( '.lipath' );
-	alert($lipath.text())
 	if ( $lipath.length ) {
 		GUI.dbbrowsemode = 'file';
 		getData( {
