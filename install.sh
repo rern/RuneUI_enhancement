@@ -247,7 +247,8 @@ zoom=$( echo "0.5 $z 3" \
 )
 redis-cli set zoomlevel $zoom &> /dev/null
 
-redis-cli hset mpdconf ffmpeg $2 &> /dev/null
+[[ $2 == 1 ]] && ffmpeg=yes || ffmpeg=no
+redis-cli hset mpdconf ffmpeg $ffmpeg &> /dev/null
 redis-cli hset AccessPoint enabled $3 &> /dev/null
 redis-cli set local_browser $4 &> /dev/null
 redis-cli hset air[lay $5 &> /dev/null
