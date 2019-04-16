@@ -758,6 +758,7 @@ function renderLibrary() {
 	orderLibrary();
 	displayTopBottom();
 	$( 'html, body' ).scrollTop( 0 );
+	$( '#home-coverart .fa-coverart' ).css( 'color', $( '#divcoverarts' ).html() ? '' : '#7795b4' );
 }
 function infoNoData() {
 	$( '#loader' ).addClass( 'hide' );
