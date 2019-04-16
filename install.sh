@@ -4,6 +4,8 @@
 # $2-acc/alac support
 # $3-access point
 # $4-local browser
+# $5-airplay
+# $6-dlna
 
 # change version number in RuneAudio_Addons/srv/http/addonslist.php
 
@@ -251,7 +253,7 @@ redis-cli set zoomlevel $zoom &> /dev/null
 redis-cli hset mpdconf ffmpeg $ffmpeg &> /dev/null
 redis-cli hset AccessPoint enabled $3 &> /dev/null
 redis-cli set local_browser $4 &> /dev/null
-redis-cli hset air[lay $5 &> /dev/null
+redis-cli hset airplay $5 &> /dev/null
 redis-cli hset dlna $6 &> /dev/null
 disableStop() {
 	systemctl disable $1 &> /dev/null
