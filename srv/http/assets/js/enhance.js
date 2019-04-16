@@ -1017,7 +1017,14 @@ var sortablelibrary = new Sortable( document.getElementById( 'divhomeblocks' ), 
 } );
 $( '#home-coverart' ).click( function() { // fix - 'tap' also fire .coverart click here
 	if ( !$( '#divcoverarts' ).html() ) {
-		$( this ).taphold();
+		info( {
+			  icon     : 'coverart'
+			, title    : 'Browse By CoverArt'
+			, message  : 'Create thumbnails before use:<br>'
+						+'<br><i class="fa fa-usbdrive"></i>or <i class="fa fa-network"></i> <w>></w>'
+						+'&ensp;<i class="fa fa-folder"></i> <w>></w>'
+						+'&ensp;<i class="fa fa-coverart"></i>Update thumbnails'
+		} );
 		return
 	}
 	
@@ -1036,43 +1043,6 @@ $( '#home-coverart' ).click( function() { // fix - 'tap' also fire .coverart cli
 		var cH = window.innerHeight - $( '.coverart' ).height() - 94;
 		$( '#divcoverarts p' ).css( 'height', cH +'px' );
 	}, 50 );
-} ).taphold( function() {
-	if ( GUI.drag ) return
-	
-	if ( GUI.status.updating_db ) {
-		info( {
-			  icon    : 'coverart'
-			, title   : 'Coverart Thumbnails Update'
-			, message : 'Library update is in progress ...'
-						+'<br>Please wait until finished.'
-		} );
-		return
-	}
-	
-	if ( !$( '#divcoverarts' ).html() ) {
-		var title = 'Create Coverart Thumbnails'
-		var message = 'A lot of albums will take a lot of time.'
-				 +'<br>(±200 album/minute)'
-				 +'<br>Continue?';
-	} else {
-		var title = 'Coverart Thumbnails Update'
-		var message = 'Find coverarts and update thumbnails?'
-					 +'<br>(skip existing thumbnails)'
-	}
-	info( {
-		  icon    : 'coverart'
-		, title   : title
-		, message : message
-		, cancel  : 1
-		, ok      : function() {
-			$( 'body' ).append(
-				'<form id="formtemp" action="addonsbash.php" method="post">'
-					+'<input type="hidden" name="alias" value="covd">'
-					+'<input type="hidden" name="type" value="scan">'
-				+'</form>' );
-			$( '#formtemp' ).submit();
-		}
-	} );
 } );
 $( '.coverart' ).tap( function( e ) {
 	if ( $( e.target ).hasClass( 'edit' ) ) return
