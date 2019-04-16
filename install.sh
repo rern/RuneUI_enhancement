@@ -256,8 +256,8 @@ redis-cli set local_browser $4 &> /dev/null
 redis-cli hset airplay enable $5 &> /dev/null
 redis-cli hset dlna enable $6 &> /dev/null
 disableStop() {
-	systemctl disable $1 &> /dev/null
-	systemctl stop $1 &> /dev/null
+	systemctl disable $1
+	systemctl stop $1
 }
 [[ $3 != 1 ]] && disableStop hostapd
 [[ $4 != 1 ]] && killall Xorg &> /dev/null
