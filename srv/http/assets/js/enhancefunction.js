@@ -248,9 +248,7 @@ function removeSplash() {
 		var perpage = Math.ceil( perrow ) * Math.ceil( percolumn );
 		if ( perpage > lazyL ) perpage = lazyL;
 		var lazy = document.getElementsByClassName( 'lazy' );
-		for( i = 0; i < perpage; i++ ) {
-			lazyLoad.load( lazy[ i ], 'force' );
-		}
+		for( i = 0; i < perpage; i++ ) lazyLoad.load( lazy[ i ], 'force' );
 	}
 }
 function setPlaybackBlank() {
