@@ -238,16 +238,18 @@ function removeSplash() {
 	$( 'html, body' ).scrollTop( 0 );
 	if ( !$( '#divcoverarts' ).html() ) return
 	
-	if ( $( '.lazy' ).length ) {
+	var $coverartlazy = $( '#divcoverarts .lazy' );
+	var lazyL = $coverartlazy.length;;
+	if ( lazyL ) {
 		lazyLoad = new LazyLoad( { elements_selector: '.lazy' } );
 		// for load 1st page without lazy
 		var perrow = $( 'body' )[ 0 ].clientWidth / 200;
 		var percolumn = window.innerHeight / 200;
 		var perpage = Math.ceil( perrow ) * Math.ceil( percolumn );
-		var $coverartlazy = $( '#divcoverarts .lazy' );
-		if ( perrow * percolumn > $coverartlazy.length ) perpage = $coverartlazy.length;
+		if ( perpage > lazyL ) perpage = lazyL;
+		var lazy = document.getElementsByClassName( 'lazy' );
 		for( i = 0; i < perpage; i++ ) {
-			lazyLoad.load( $coverartlazy.eq( i )[ 0 ], 'force' );
+			lazyLoad.load( lazy[ i ], 'force' );
 		}
 	}
 }
