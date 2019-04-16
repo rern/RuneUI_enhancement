@@ -2,6 +2,8 @@
 
 # $1-zoom
 # $2-acc/alac support
+# $3-access point
+# $4-local browser
 
 # change version number in RuneAudio_Addons/srv/http/addonslist.php
 
@@ -244,9 +246,12 @@ zoom=$( echo "0.5 $z 3" \
 	}'
 )
 redis-cli set zoomlevel $zoom &> /dev/null
-# set AAC/ALAC support
-[[ $2 ]] && redis-cli hset mpdconf ffmpeg $2 &> /dev/null
 
+redis-cli hset mpdconf ffmpeg $2 &> /dev/null
+redis-cli hset AccessPoint enabled $3 &> /dev/null
+redis-cli set local_browser $4 &> /dev/null
+[[ $3 != 1 ]] && systemctl stop hostapd
+[[ $4 != 1 ]] && killall Xorg &> /dev/null
 
 #----------------------------------------------------------------------------------
 file=/root/.config/midori/config
