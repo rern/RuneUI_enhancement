@@ -250,9 +250,16 @@ redis-cli set zoomlevel $zoom &> /dev/null
 redis-cli hset mpdconf ffmpeg $2 &> /dev/null
 redis-cli hset AccessPoint enabled $3 &> /dev/null
 redis-cli set local_browser $4 &> /dev/null
-[[ $3 != 1 ]] && systemctl stop hostapd
+redis-cli hset air[lay $5 &> /dev/null
+redis-cli hset dlna $6 &> /dev/null
+disableStop() {
+	systemctl disable $1 &> /dev/null
+	systemctl stop $1 &> /dev/null
+}
+[[ $3 != 1 ]] && disableStop hostapd
 [[ $4 != 1 ]] && killall Xorg &> /dev/null
-
+[[ $5 != 1 ]] && disableStop shairport shairport-sync
+[[ $6 != 1 ]] && disableStop upmpdcli
 #----------------------------------------------------------------------------------
 file=/root/.config/midori/config
 if [[ -e $file ]] && ! grep '^chromium' $file &> /dev/null; then
