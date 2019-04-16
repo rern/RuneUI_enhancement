@@ -1023,7 +1023,7 @@ $( '#home-coverart' ).click( function() { // fix - 'tap' also fire .coverart cli
 			, message  : 'Create thumbnails before use:<br>'
 						+'<br><i class="fa fa-usbdrive"></i>or <i class="fa fa-network"></i> <w>></w>'
 						+'&ensp;<i class="fa fa-folder"></i> <w>></w>'
-						+'&ensp;<i class="fa fa-coverart"></i>Update thumbnails'
+						+'&ensp;<i class="fa fa-coverart"></i><w>Update thumbnails</w>'
 		} );
 		return
 	}

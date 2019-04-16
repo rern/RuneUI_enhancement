@@ -244,8 +244,10 @@ function removeSplash() {
 		var perrow = $( 'body' )[ 0 ].clientWidth / 200;
 		var percolumn = window.innerHeight / 200;
 		var perpage = Math.ceil( perrow ) * Math.ceil( percolumn );
+		var $coverartlazy = $( '#divcoverarts .lazy' );
+		if ( perrow * percolumn > $coverartlazy.length ) perpage = $coverartlazy.length;
 		for( i = 0; i < perpage; i++ ) {
-			lazyLoad.load( $( '.lazy' ).eq( i )[ 0 ], 'force' );
+			lazyLoad.load( $coverartlazy.eq( i )[ 0 ], 'force' );
 		}
 	}
 }
