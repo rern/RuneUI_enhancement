@@ -44,7 +44,6 @@ if ! pacman -Q imagemagick &> /dev/null; then
 fi
 
 mv /srv/http/index.php{,.backup}
-mv /srv/http/assets/js/vendor/pnotify.custom.min.js{,.backup}
 mv /srv/http/assets/js/vendor/pushstream.min.js{,.backup}
 mv /srv/http/assets/js/vendor/Sortable.min.js{,.backup}
 mv /srv/http/command/airplay_toggle{,.backup}
