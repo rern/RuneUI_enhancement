@@ -255,14 +255,19 @@ redis-cli hset AccessPoint enabled $3 &> /dev/null
 redis-cli set local_browser $4 &> /dev/null
 redis-cli hset airplay enable $5 &> /dev/null
 redis-cli hset dlna enable $6 &> /dev/null
-disableStop() {
-	systemctl disable $1
-	systemctl stop $1
+startStop() {
+	if [[ -z $2 ]]; then
+		systemctl disable $1
+		systemctl stop $1
+	else
+		systemctl enable $1
+		systemctl start $1	
+	fi
 }
-[[ $3 != 1 ]] && disableStop hostapd
+[[ $3 != 1 ]] && startStop hostapd || startStop hostapd start
 [[ $4 != 1 ]] && killall Xorg &> /dev/null
-[[ $5 != 1 ]] && disableStop shairport shairport-sync
-[[ $6 != 1 ]] && disableStop upmpdcli
+[[ $5 != 1 ]] && startStop "shairport shairport-sync" || startStop "shairport shairport-sync" start
+[[ $6 != 1 ]] && startStop upmpdcli || startStop upmpdcli start
 #----------------------------------------------------------------------------------
 file=/root/.config/midori/config
 if [[ -e $file ]] && ! grep '^chromium' $file &> /dev/null; then
