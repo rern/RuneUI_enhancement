@@ -127,32 +127,6 @@
 label {
 	font-weight: normal;
 }
-/* pnotify mod */
-.ui-pnotify {
-	top: auto;
-	bottom: 60px;
-	left: 0;
-}
-.ui-pnotify-shadow {
-	box-shadow: 4px 4px 10px #000000 !important;
-}
-.ui-pnotify .alert {
-	border: 0;
-	-webkit-border-radius: 0;
-	-moz-border-radius: 0;
-	border-radius: 0;
-	color: #e0e7ee;
-	background: #0095d8;
-	text-shadow: none
-}
-.ui-pnotify-icon {
-	font-size: 1.3em;
-}
-.ui-pnotify-icon,
-.ui-pnotify-title {
-	color: #34495e !important;
-}
-
 html {
 	padding: env( safe-area-inset ); /* disable iPhone X rounded corner padding */
 }
@@ -202,6 +176,21 @@ i.bookmark,
  }
 .disable {
 	color: #7795b4;
+}
+#infoNotify {
+	display: none;
+	position: fixed;
+	min-width: 230px;
+	bottom: 50px;
+	padding: 10px 30px 10px 10px;
+	text-align: left;
+	background: #0095d8;
+	z-index: 100000;
+	box-shadow: 4px 4px 10px #000000;
+}
+#infoNotifyTitle {
+	font-size: 18px;
+	color: #10161c;
 }
 @keyframes blinkopaque {
 	50% { opacity: 0; }
