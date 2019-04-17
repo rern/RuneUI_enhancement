@@ -96,7 +96,7 @@ if ( path.match( /\/sources\/*$/ ) ) {
 	
 } else if ( path.match( /\/mpd/ ) ) {
 	$('#audio-output-interface').change(function(){
-		notify( 'Switching audio output', 'Please wait for the config update...', 'gear fa-spin', 5000 );
+		notify( 'Switching audio output', 'Please wait for the config update...', 'gear fa-spin' );
 		var output = $(this).val();
 		$.ajax({
 			type: 'POST',

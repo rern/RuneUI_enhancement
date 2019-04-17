@@ -1,12 +1,3 @@
-function notify( title, message, icon, delay ) {
-	var titlehtml = '<i class="fa fa-'+ ( icon || 'check' ) +'"></i> '+ ( title || 'Info' );
-	$( '#infoNotifyTitle' ).html( titlehtml );
-	$( '#infoNotifyMessage' ).html( message );
-	$( '#infoNotify' ).show();
-	setTimeout( function() {
-		$( '#infoNotify' ).hide();
-	}, delay || 3000 );
-}
 function cssKeyframes( name, trx0, trx100 ) {
 	var moz = '-moz-'+ trx0;
 	var moz100 = '-moz-'+ trx100;
