@@ -810,16 +810,7 @@ var mutationLibrary = new MutationObserver( function() { // on observed target c
 $( '#db-back' ).click( function() {
 	$( '.menu' ).addClass( 'hide' );
 	mutationLibrary.observe( observerLibrary, observerOption ); // standard js - must be one on one element
-	// topmost of path
-	if ( GUI.dbbrowsemode === 'file' || !GUI.dbbackdata.length ) {
-		if ( $( '#db-currentpath span a' ).length === 1 ) {
-			renderLibrary();
-		} else {
-			$( '#db-currentpath a:nth-last-child( 2 )' ).click();
-		}
-		return
-		
-	} else if ( GUI.dbbrowsemode === 'coverart' ) {
+	if ( GUI.dbbrowsemode === 'coverart' ) {
 		var currentpath =  $( '#db-currentpath' ).find( '.lipath' ).text();
 		GUI.dbscrolltop[ currentpath ] = $( window ).scrollTop();
 		GUI.dbbackdata = [];
@@ -829,6 +820,15 @@ $( '#db-back' ).click( function() {
 		} );
 		$( '#divcoverarts, #db-index' ).removeClass( 'hide' );
 		$( '#db-entries' ).empty();
+		return
+	}
+	// topmost of path
+	if ( GUI.dbbrowsemode === 'file' || !GUI.dbbackdata.length ) {
+		if ( $( '#db-currentpath span a' ).length === 1 ) {
+			renderLibrary();
+		} else {
+			$( '#db-currentpath a:nth-last-child( 2 )' ).click();
+		}
 		return
 	}
 	
@@ -1062,6 +1062,7 @@ $( '.coverart' ).tap( function( e ) {
 		getData( {
 			  browsemode : 'file'
 			, path       : $lipath.text()
+			, coverart   : 1
 		} );
 	} else {
 		if ( GUI.display.thumbbyartist ) {
