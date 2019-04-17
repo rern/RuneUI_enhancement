@@ -793,6 +793,7 @@ function getData( options ) {
 		querytype = options.querytype || '',
 		args = options.args || '',
 		artist = options.artist ? options.artist.toString().replace( /"/g, '\"' ) : '',
+		coverart = options.coverart || '',
 		mode,
 		command;
 	var currentpath = $( '#db-currentpath .lipath:last' ).text();
@@ -840,9 +841,6 @@ function getData( options ) {
 		} else if ( cmd === 'browse' ) {
 			if ( [ 'Album', 'Artist', 'AlbumArtist', 'Composer', 'Genre' ].indexOf( path ) !== -1 ) {
 				mode = 'type';
-			} else if ( browsemode === 'coverart' ) {
-				mode = 'coverart';
-				GUI.browsemode = 'album';
 			} else if ( path === 'Webradio' ) {
 				mode = 'Webradio';
 			} else if ( // <li> in 'Album' and 'Genre'
@@ -863,6 +861,7 @@ function getData( options ) {
 			if ( data ) {
 				dataParse( data, path );
 				GUI.keyword = keyword;
+				if ( coverart ) GUI.dbbrowsemode = 'coverart';
 			} else {
 				infoNoData();
 				$( '#db-search-keyword' ).val( GUI.keyword );

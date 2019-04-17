@@ -811,6 +811,13 @@ $( '#db-back' ).click( function() {
 	$( '.menu' ).addClass( 'hide' );
 	mutationLibrary.observe( observerLibrary, observerOption ); // standard js - must be one on one element
 	if ( GUI.dbbrowsemode === 'coverart' ) {
+		if ( $( '#db-currentpath span' ).text() === ' COVERART' ) {
+			$( '#db-home' ).click();
+			return
+		}
+		
+		$( '#db-currentpath span' ).html( '<i class="fa fa-coverart"></i> <a>COVERART</a>' );
+		$( '#db-currentpath .lipath' ).text( 'coverart' );
 		var currentpath =  $( '#db-currentpath' ).find( '.lipath' ).text();
 		GUI.dbscrolltop[ currentpath ] = $( window ).scrollTop();
 		GUI.dbbackdata = [];
