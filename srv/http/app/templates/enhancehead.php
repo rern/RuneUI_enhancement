@@ -85,3 +85,4 @@
 <link rel="stylesheet" href="<?=$this->asset( '/css/enhancesettings.css' )?>">
 	<?php 
 	} ?>
+	
