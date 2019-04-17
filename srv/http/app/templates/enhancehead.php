@@ -81,3 +81,20 @@
 <link rel="stylesheet" href="<?=$this->asset( '/css/enhancesettings.css' )?>">
 	<?php 
 	} ?>
+<style>
+	#infoNotify {
+		display: none;
+		position: fixed;
+		min-width: 230px;
+		bottom: 50px;
+		padding: 10px 30px 10px 10px;
+		text-align: left;
+		background: #0095d8;
+		z-index: 100000;
+		box-shadow: 4px 4px 10px #000000;
+	}
+	#infoNotifyTitle {
+		font-size: 18px;
+		color: #10161c;
+	}
+</style>

@@ -5,6 +5,7 @@
 <script src="<?=$this->asset( '/js/vendor/pushstream.min.js' )?>"></script>
 <script src="<?=$this->asset( '/js/vendor/bootstrap.min.js' )?>"></script>
 <script src="<?=$this->asset( '/js/vendor/Sortable.min.js' )?>"></script>
+<script src="<?=$this->asset( '/js/vendor/pnotify.custom.min.js' )?>"></script>
 <script src="<?=$this->asset( '/js/vendor/openwebapp.js' )?>"></script>
 <script src="<?=$this->asset( '/js/addonsinfo.js' )?>"></script>
 <script src="<?=$this->asset( '/js/vendor/roundslider.min.js' )?>"></script>
@@ -34,11 +35,7 @@
 		if ( $this->uri(1) === 'sources' || $this->uri(1) === 'network' ) { ?>
 <script src="<?=$this->asset( '/js/vendor/pushstream.min.js' )?>"></script>
 		<?php 
-		} else if ( $this->uri(1) === 'mpd' ) { ?>
-<script src="<?=$this->asset( '/js/vendor/pnotify.custom.min.js' )?>"></script>
-		<?php 
 		} else if ( $this->uri(1) === 'debug' ) { ?>
-<script src="<?=$this->asset( '/js/vendor/pnotify.custom.min.js' )?>"></script>
 <script src="<?=$this->asset('/js/vendor/ZeroClipboard.min.js' )?>"></script>
 		<?php 
 		} ?>
@@ -48,3 +45,19 @@
 <script src="<?=$this->asset( '/js/enhancesettings.js' )?>"></script>
 	<?php 
 	} ?>
+	
+<div id="infoNotify">
+	<div id="infoNotifyTitle"></div>
+	<div id="infoNotifyMessage"></div>
+</div>
+<script>
+function notify( title, message, icon, delay ) {
+	var titlehtml = '<i class="fa fa-'+ ( icon || 'check' ) +'"></i> '+ ( title || 'Info' );
+	$( '#infoNotifyTitle' ).html( titlehtml );
+	$( '#infoNotifyMessage' ).html( message );
+	$( '#infoNotify' ).show();
+	setTimeout( function() {
+		$( '#infoNotify' ).hide();
+	}, delay || 3000 );
+}
+</script>

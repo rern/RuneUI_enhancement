@@ -238,10 +238,6 @@ $menu.= menudiv( 'genre', $html );
 $menu.= '</div>';
 ?>
 
-<div id="infoNotify">
-	<div id="infoNotifyTitle"></div>
-	<div id="infoNotifyMessage"></div>
-</div>
 <div id="menu-top" class="hide">
 	<i id="menu-settings" class="fa fa-gear"></i><span id="badge" class="hide"></span>
 	<div id="playback-controls">
