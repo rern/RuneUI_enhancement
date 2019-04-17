@@ -33,17 +33,6 @@ var GUI = {
 	, debounce      : ''
 	, debouncems    : 300
 };
-PNotify.prototype.options.delay = 3000;
-PNotify.prototype.options.styling = 'fontawesome';
-PNotify.prototype.options.icon = '';
-PNotify.prototype.options.stack = {
-	  dir1      : 'up'    // stack up
-	, dir2      : 'right' // shift right when fill height
-	, firstpos1 : 60      // top offset from border H
-	, firstpos2 : 0       // left offset from border V
-	, spacing1  : 10      // space between each
-	, spacing2  : 10      // space between column( or row if dir1: right/left )
-}
 var picaOption = { // pica.js scaling: img to canvas
 	  unsharpAmount: 100  // 0...500 Default = 0 (try 50-100)
 	, unsharpThreshold: 5 // 0...100 Default = 0 (try 10)
@@ -52,11 +41,6 @@ var picaOption = { // pica.js scaling: img to canvas
 //	, alpha: true         // Default = false (black crop background)
 };
 var A2Z = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split( '' );
-var cssnotify = 
-	 '<style id="cssnotify">'
-		+'.ui-pnotify { bottom: 20px; }'
-		+'.pnotify_custom { top: 20px !important; }'
-	+'</style>';
 var hash = Date.now();
 var coverrune = '/assets/img/cover.'+ hash +'.svg';
 var vustop = '/assets/img/vustop.'+ hash +'.gif';
@@ -681,7 +665,7 @@ $( '#timeTL' ).click( function() {
 				$.post( 'enhance.php', { bash: '/usr/bin/systemctl restart shairport' } );
 			} else if ( source === 'spotify' ) {
 				$.post( 'enhance.php', { bash: '/usr/bin/redis-cli hget spotify enable' }, function( data ) {
-					if ( !data ) notify( 'Spotify not enabled', 'Enable in Settings menu', 'fa fa-warning' );
+					if ( !data ) notify( 'Spotify not enabled', 'Enable in Settings menu', 'warning' );
 				} );
 			}
 		}
@@ -1674,11 +1658,7 @@ pushstreams.idle.onmessage = function( changed ) {
 }
 pushstreams.notify.onmessage = function( data ) {
 	var notify = data[ 0 ];
-	new PNotify( {
-		  icon        : notify.icon
-		, title       : notify.title || 'Info'
-		, text        : notify.text
-	} );
+	notify( notify.title, notify.text, notify.icon );
 }
 pushstreams.playlist.onmessage = function( data ) {
 	GUI.lsplaylists = data[ 0 ] || [];

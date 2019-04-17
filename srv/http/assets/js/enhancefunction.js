@@ -1,18 +1,11 @@
-function notify( title, message, icon ) {
-	new PNotify( {
-		  icon  : icon || 'fa fa-check'
-		, title : title
-		, text  : message
-	} );
-}
-function cssNotify() {
-	if ( GUI.bars ) {
-		PNotify.prototype.options.stack.firstpos1 = 60;
-		$( '#cssnotify' ).remove();
-	} else {
-		PNotify.prototype.options.stack.firstpos1 = 20;
-		if ( !$( '#cssnotify' ).length ) $( 'head' ).append( cssnotify );
-	}
+function notify( title, message, icon, delay ) {
+	var titlehtml = '<i class="fa fa-'+ ( icon || 'check' ) +'"></i> '+ ( title || 'Info' );
+	$( '#infoNotifyTitle' ).html( titlehtml );
+	$( '#infoNotifyMessage' ).html( message );
+	$( '#infoNotify' ).show();
+	setTimeout( function() {
+		$( '#infoNotify' ).hide();
+	}, delay || 3000 );
 }
 function cssKeyframes( name, trx0, trx100 ) {
 	var moz = '-moz-'+ trx0;
@@ -527,7 +520,6 @@ function displayTopBottom() {
 		$( '.btnlist-top' ).css( 'top', '40px' );
 		$( '#home-blocks' ).css( 'padding-top', '' );
 	}
-	cssNotify();
 	var menuH = ( $( '#settings a' ).length - $( '#settings a.hide' ).length ) * 41 - 1;
 	$( '#settings .menushadow' ).css( 'height', menuH +'px' );
 	$( '.menu' ).addClass( 'hide' );

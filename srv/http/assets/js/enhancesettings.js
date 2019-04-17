@@ -96,13 +96,7 @@ if ( path.match( /\/sources\/*$/ ) ) {
 	
 } else if ( path.match( /\/mpd/ ) ) {
 	$('#audio-output-interface').change(function(){
-		new PNotify( {
-			  icon  : 'fa fa-cog fa-spin'
-			, title : 'Switching audio output'
-			, text  : 'Please wait for the config update...'
-			, delay : 5000
-			, styling : 'fontawesome'
-		} );
+		notify( 'Switching audio output', 'Please wait for the config update...', 'gear fa-spin', 5000 );
 		var output = $(this).val();
 		$.ajax({
 			type: 'POST',
@@ -300,11 +294,7 @@ if ( path.match( /\/sources\/*$/ ) ) {
 	var client = new ZeroClipboard(document.getElementById('copy-to-clipboard'));
 	client.on('ready', function(readyEvent){
 		client.on('aftercopy', function(event){
-			new PNotify({
-				  title   : 'Copied to clipboard'
-				, text    : 'The debug output was copied successfully in your clipboard.'
-				, styling : 'fontawesome'
-			});
+			notify( 'Copied to clipboard', 'The debug output was copied successfully in your clipboard.' );
 		});
 	});
 }
