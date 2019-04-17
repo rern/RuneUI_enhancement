@@ -1657,8 +1657,8 @@ pushstreams.idle.onmessage = function( changed ) {
 	}, GUI.debouncems );
 }
 pushstreams.notify.onmessage = function( data ) {
-	var notify = data[ 0 ];
-	notify( notify.title, notify.text, notify.icon );
+	var data = data[ 0 ];
+	notify( data.title, data.text, data.icon );
 }
 pushstreams.playlist.onmessage = function( data ) {
 	GUI.lsplaylists = data[ 0 ] || [];
