@@ -579,7 +579,7 @@ $( '.timemap, .covermap, .volmap' ).tap( function() {
 	} else if ( cmd === 'menu' ) {
 		setTimeout( function() { // fix: settings fired on showed
 			$( '#menu-settings' ).click();
-		}, 300 );
+		}, 50 );
 	} else if ( cmd === 'random' ) {
 		$( '#random' ).click();
 	} else if ( cmd === 'repeat' ) {
