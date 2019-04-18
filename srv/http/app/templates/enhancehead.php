@@ -52,7 +52,32 @@
 		$fontface = $addons ? fontface( 'addons', $this ) : '';
 		$fontface.= fontface( 'enhance', $this );
 	?>
-<style><?=$fontface?></style>
+<style>
+	<?=$fontface?>
+	#banner {
+		display: none;
+		position: fixed;
+		min-width: 230px;
+		max-width: 100%;
+		bottom: 50px;
+		padding: 10px 80px 10px 15px;
+		background: -moz-linear-gradient(left, rgba(0,149,216,1) 0%, rgba(0,149,216,1) 75%, rgba(125,185,232,0) 100%);
+		background: -webkit-linear-gradient(left, rgba(0,149,216,1) 0%,rgba(0,149,216,1) 75%,rgba(125,185,232,0) 100%);
+		background: linear-gradient(to right, rgba(0,149,216,1) 0%,rgba(0,149,216,1) 75%,rgba(125,185,232,0) 100%);
+		box-shadow: 4px 4px 10px #000000;
+		z-index: 100000;
+	}
+	#bannerTitle,
+	#bannerMessage {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	#bannerTitle {
+		font-size: 18px;
+		color: #10161c;
+	}
+</style>
 <link rel="stylesheet" href="<?=$this->asset( '/css/fontawesome.min.css' )?>">
 <link rel="stylesheet" href="<?=$this->asset( '/css/addonsinfo.css' )?>">
 <link rel="stylesheet" href="<?=$this->asset( '/css/roundslider.min.css' )?>">
@@ -81,20 +106,3 @@
 <link rel="stylesheet" href="<?=$this->asset( '/css/enhancesettings.css' )?>">
 	<?php 
 	} ?>
-<style>
-	#infoNotify {
-		display: none;
-		position: fixed;
-		min-width: 230px;
-		bottom: 50px;
-		padding: 10px 30px 10px 10px;
-		text-align: left;
-		background: #0095d8;
-		z-index: 100000;
-		box-shadow: 4px 4px 10px #000000;
-	}
-	#infoNotifyTitle {
-		font-size: 18px;
-		color: #10161c;
-	}
-</style>

@@ -45,18 +45,21 @@
 	<?php 
 	} ?>
 	
-<div id="infoNotify">
-	<div id="infoNotifyTitle"></div>
-	<div id="infoNotifyMessage"></div>
+<div id="banner">
+	<div id="bannerTitle"></div>
+	<div id="bannerMessage"></div>
 </div>
 <script>
+$( '#banner' ).click( bannerHide );
+function bannerHide() {
+	$( '#banner' ).hide();
+	$( '#bannerTitle, #bannerMessage' ).empty();
+}
 function notify( title, message, icon, delay ) {
-	var titlehtml = '<i class="fa fa-'+ ( icon || 'check' ) +'"></i> '+ ( title || 'Info' );
-	$( '#infoNotifyTitle' ).html( titlehtml );
-	$( '#infoNotifyMessage' ).html( message );
-	$( '#infoNotify' ).show();
-	setTimeout( function() {
-		$( '#infoNotify' ).hide();
-	}, delay || 3000 );
+	var iconhtml = icon ? '<i class="fa fa-'+ ( icon || 'check' ) +'"></i> ' : '';
+	$( '#bannerTitle' ).html( iconhtml + title );
+	$( '#bannerMessage' ).html( message );
+	$( '#banner' ).show();
+	setTimeout( bannerHide, delay || 3000 );
 }
 </script>
