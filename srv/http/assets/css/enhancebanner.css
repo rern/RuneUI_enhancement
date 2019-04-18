@@ -15,9 +15,10 @@
 }
 #bannerTitle {
 	font-size: 18px;
-	color: #34495e;
+	color: #000000;
 }
 #bannerTitle i {
 	width: 20px;
+	margin-right: 5px;
 	text-align: center;
 }
