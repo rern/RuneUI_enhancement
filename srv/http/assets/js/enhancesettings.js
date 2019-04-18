@@ -111,8 +111,11 @@ if ( path.match( /\/sources\/*$/ ) ) {
 		$('#mpdconf_editor').removeClass('hide');
 		$('#manual-edit-warning').addClass('hide');
 	});
-	$( 'button[ name=save ]' ).click( function() {
-		notify( 'Volume Control', $( '#mixer-type option:selected' ).text(), 'mpd' );
+	$( 'button[ name=save ]:eq( 0 )' ).click( function() {
+		notify( 'Volume Control', $( '#mixer-type option:selected' ).text(), 'mpd', 5000 );
+	} );
+	$( 'button[ name=save ]:eq( 1 )' ).click( function() {
+		notify( 'MPD Options', 'Set options', 'mpd', 5000 );
 	} );
 } else if ( path.match( /\/settings/ ) ) {
 	$('#airplay').change(function(){
