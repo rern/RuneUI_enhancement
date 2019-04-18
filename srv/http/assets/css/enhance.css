@@ -599,7 +599,7 @@ i.bookmark,
 	margin: 0 auto;
 	background-size: 100% 100%;
 	border: none;
-	-webkit-box-shadow: #555555 0 0 4px 0;
+	-webkit-box-shadow: #555555 0 0 1px 0;
 	box-shadow: #555555 0 0 4px 0;
 }
 #coverartoverlay {
