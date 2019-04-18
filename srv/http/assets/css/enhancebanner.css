@@ -5,9 +5,6 @@
 	max-width: 100%;
 	bottom: 50px;
 	padding: 10px 80px 10px 15px;
-	background: -moz-linear-gradient(left, rgba(0,149,216,1) 0%, rgba(0,149,216,1) 75%, rgba(125,185,232,0) 100%);
-	background: -webkit-linear-gradient(left, rgba(0,149,216,1) 0%,rgba(0,149,216,1) 75%,rgba(125,185,232,0) 100%);
-	background: linear-gradient(to right, rgba(0,149,216,1) 0%,rgba(0,149,216,1) 75%,rgba(125,185,232,0) 100%);
 	z-index: 100000;
 }
 #bannerTitle,
