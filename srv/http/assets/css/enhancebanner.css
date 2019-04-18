@@ -17,3 +17,7 @@
 	font-size: 18px;
 	color: #34495e;
 }
+#bannerTitle i {
+	width: 20px;
+	text-align: center;
+}
