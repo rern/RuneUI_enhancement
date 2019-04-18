@@ -1,4 +1,5 @@
 <script src="<?=$this->asset( '/js/vendor/jquery-2.1.0.min.js' )?>"></script>
+<script src="<?=$this->asset( '/js/enhancebanner.js' )?>"></script>
 	<?php 
 	if ( empty( $this->uri(1) ) ) { ?>
 <script src="<?=$this->asset( '/js/vendor/jquery.mobile.custom.min.js' )?>"></script>
@@ -10,9 +11,9 @@
 <script src="<?=$this->asset( '/js/vendor/roundslider.min.js' )?>"></script>
 <script src="<?=$this->asset( '/js/vendor/lazyload.min.js' )?>"></script>
 <script src="<?=$this->asset( '/js/vendor/pica.min.js' )?>"></script>
-<script src="<?=$this->asset( '/js/enhancefunction.js' )?>"></script>
 <script src="<?=$this->asset( '/js/enhance.js' )?>"></script>
 <script src="<?=$this->asset( '/js/enhancecontext.js' )?>"></script>
+<script src="<?=$this->asset( '/js/enhancefunction.js' )?>"></script>
 		<?php
 		if ( strpos( 'mobi', $_SERVER['HTTP_USER_AGENT'] ) === false ) { ?> 
 <script src="<?=$this->asset( '/js/enhanceshortcut.js' )?>"></script>
@@ -44,22 +45,3 @@
 <script src="<?=$this->asset( '/js/enhancesettings.js' )?>"></script>
 	<?php 
 	} ?>
-	
-<div id="banner">
-	<div id="bannerTitle"></div>
-	<div id="bannerMessage"></div>
-</div>
-<script>
-$( '#banner' ).click( bannerHide );
-function bannerHide() {
-	$( '#banner' ).hide();
-	$( '#bannerTitle, #bannerMessage' ).empty();
-}
-function notify( title, message, icon, delay ) {
-	var iconhtml = icon ? '<i class="fa fa-'+ ( icon || 'check' ) +'"></i> ' : '';
-	$( '#bannerTitle' ).html( iconhtml + title );
-	$( '#bannerMessage' ).html( message );
-	$( '#banner' ).show();
-	setTimeout( bannerHide, delay || 3000 );
-}
-</script>

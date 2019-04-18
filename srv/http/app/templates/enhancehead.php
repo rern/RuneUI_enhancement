@@ -36,6 +36,7 @@
 	} ?>
 <link rel="shortcut icon" href="<?=$this->asset( '/img/favicon.ico' )?>">
 <link rel="stylesheet" href="<?=$this->asset( '/css/bootstrap.min.css' )?>">
+<link rel="stylesheet" href="<?=$this->asset( '/css/enhancebanner.css' )?>">
 	<?php 
 	function fontface( $name, $_this ) {
 		$woff = $_this->asset( "/fonts/$name.woff" );
@@ -52,32 +53,7 @@
 		$fontface = $addons ? fontface( 'addons', $this ) : '';
 		$fontface.= fontface( 'enhance', $this );
 	?>
-<style>
-	<?=$fontface?>
-	#banner {
-		display: none;
-		position: fixed;
-		min-width: 230px;
-		max-width: 100%;
-		bottom: 50px;
-		padding: 10px 80px 10px 15px;
-		background: -moz-linear-gradient(left, rgba(0,149,216,1) 0%, rgba(0,149,216,1) 75%, rgba(125,185,232,0) 100%);
-		background: -webkit-linear-gradient(left, rgba(0,149,216,1) 0%,rgba(0,149,216,1) 75%,rgba(125,185,232,0) 100%);
-		background: linear-gradient(to right, rgba(0,149,216,1) 0%,rgba(0,149,216,1) 75%,rgba(125,185,232,0) 100%);
-		box-shadow: 4px 4px 10px #000000;
-		z-index: 100000;
-	}
-	#bannerTitle,
-	#bannerMessage {
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
-	}
-	#bannerTitle {
-		font-size: 18px;
-		color: #10161c;
-	}
-</style>
+<style><?=$fontface?></style>
 <link rel="stylesheet" href="<?=$this->asset( '/css/fontawesome.min.css' )?>">
 <link rel="stylesheet" href="<?=$this->asset( '/css/addonsinfo.css' )?>">
 <link rel="stylesheet" href="<?=$this->asset( '/css/roundslider.min.css' )?>">
