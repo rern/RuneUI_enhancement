@@ -136,7 +136,7 @@ $( '.contextmenu a' ).click( function() {
 	} else if ( cmd === 'plashuffle' ) {
 		$.post( 'enhance.php', { bash: '/usr/local/bin/ashuffle -f /var/lib/mpd/playlists/'+ name +'.m3u &' } );
 		$( '#random' ).addClass( 'btn-primary ashuffle' );
-		notify( 'Random Play', name );
+		notify( 'Random Play', name, 'random' );
 	}
 } );
 
@@ -178,7 +178,7 @@ function addReplace( mode, cmd, command, title ) {
 	} );
 	var artist = $( '#artistalbum span' ).text();
 	var msg = GUI.list.name + ( artist ? ' • '+ artist : '' );
-	notify( title, msg );
+	notify( title, msg, 'list-ul' );
 }
 function bookmarkNew() {
 	var path = GUI.list.path;
@@ -221,7 +221,7 @@ function bookmarkNew() {
 						}
 						, ok        : function() {
 							$.post( 'enhance.php', { bookmarks: 1, path: path, base64: base64img, new: 1 } );
-							notify( 'Add Bookmark', path );
+							notify( 'Add Bookmark', path, 'bookmark' );
 						}
 					} );
 				} else {
@@ -243,7 +243,7 @@ function bookmarkNew() {
 						}
 						, ok           : function() {
 							$.post( 'enhance.php', { bookmarks: $( '#infoTextBox' ).val(), path: path, new: 1 } );
-							notify( 'Add Bookmark', path );
+							notify( 'Add Bookmark', path, 'bookmark' );
 						}
 					} );
 				}
@@ -323,7 +323,7 @@ function webRadioCoverart() {
 					var webradioname = path.replace( /\//g, '|' );
 					$.post( 'enhance.php', { imagefile: webradioname, base64webradio: name +'\n'+ newthumb +'\n'+ newimg }, function( result ) {
 							if ( result != -1 ) {
-								notify( 'Coverart Changed', name );
+								notify( 'Coverart Changed', name, 'coverart' );
 							} else {
 								info( {
 									  icon    : 'webradio'
@@ -381,7 +381,7 @@ function webRadioSave( name, url ) {
 		}
 		, ok           : function() {
 			var newname = $( '#infoTextBox' ).val();
-			notify( 'Webradio saved', newname );
+			notify( 'Webradio saved', newname, 'webradio' );
 			if ( thumb ) newname += "\n"+ thumb +"\n"+ img;
 			$.post( 'enhance.php', { webradios: newname, url: url, save: 1 } );
 		}
@@ -524,7 +524,7 @@ function addPlaylist( name, oldname ) {
 			mpc: 'mpc save "'+ name +'"; '
 				+'/usr/bin/sudo /usr/bin/chmod 775 "/var/lib/mpd/playlists/'+ name + '.m3u"'
 		} );
-		notify( 'Playlist Saved', name );
+		notify( 'Playlist Saved', name, 'list-ul' );
 		$( '#plopen' ).removeClass( 'disable' );
 	}
 }

@@ -144,7 +144,7 @@ function setButtonUpdate() {
 	} else {
 		$( '#tab-library i, #db-home i' ).removeClass( 'blink' );
 		$( '#posupdate, #iupdate' ).addClass( 'hide' );
-		if ( GUI.intUpdate ) notify( 'Update Database', 'Database updated.' );
+		if ( GUI.intUpdate ) notify( 'Library Database', 'Database updated.', 'library' );
 		clearInterval( GUI.intUpdate );
 	}
 }

@@ -294,7 +294,7 @@ if ( path.match( /\/sources\/*$/ ) ) {
 	var client = new ZeroClipboard(document.getElementById('copy-to-clipboard'));
 	client.on('ready', function(readyEvent){
 		client.on('aftercopy', function(event){
-			notify( 'Copied to clipboard', 'The debug output was copied successfully in your clipboard.' );
+			notify( 'Copied to clipboard', 'The debug output was copied successfully in your clipboard.', 'bug' );
 		});
 	});
 }

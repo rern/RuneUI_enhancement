@@ -666,7 +666,7 @@ $( '#timeTL' ).click( function() {
 				$.post( 'enhance.php', { bash: '/usr/bin/systemctl restart shairport' } );
 			} else if ( source === 'spotify' ) {
 				$.post( 'enhance.php', { bash: '/usr/bin/redis-cli hget spotify enable' }, function( data ) {
-					if ( !data ) notify( 'Spotify not enabled', 'Enable in Settings menu', 'warning' );
+					if ( !data ) notify( 'Spotify not enabled', 'Enable in Settings menu', 'spotify' );
 				} );
 			}
 		}
