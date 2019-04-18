@@ -450,12 +450,12 @@ function getPlaybackStatus() {
 			displayAirPlay();
 			return
 		}
-		
+		var playlistlength = GUI.status.playlistlength;
 		$.each( status, function( key, value ) {
 			GUI.status[ key ] = value;
 		} );
 		setButton();
-		if ( GUI.playback ) {
+		if ( GUI.playback || !playlistlength ) {
 			renderPlayback();
 			// imodedelay fix imode flashing on audio output switched
 			if ( !GUI.imodedelay ) displayPlayback();
@@ -1751,6 +1751,7 @@ function removeFromPlaylist( $li ) {
 	$.post( 'enhance.php', { mpc: cmd } );
 	if ( !$( '#countsong, #countradio' ).length ) {
 		GUI.status.playlistlength = 0;
+		GUI.pllist = [];
 		renderPlaylist();
 	}
 }
