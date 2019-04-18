@@ -96,7 +96,7 @@ if ( path.match( /\/sources\/*$/ ) ) {
 	
 } else if ( path.match( /\/mpd/ ) ) {
 	$('#audio-output-interface').change(function(){
-		notify( 'Switching audio output', 'Please wait for the config update...', 'gear fa-spin' );
+		notify( 'Switch Audio Output', $( '#audio-output-interface option:selected' ).text(), 'mpd' );
 		var output = $(this).val();
 		$.ajax({
 			type: 'POST',
@@ -111,7 +111,9 @@ if ( path.match( /\/sources\/*$/ ) ) {
 		$('#mpdconf_editor').removeClass('hide');
 		$('#manual-edit-warning').addClass('hide');
 	});
-	
+	$( 'button[ name=save ]' ).click( function() {
+		notify( 'Volume Control', $( '#mixer-type option:selected' ).text(), 'mpd' );
+	} );
 } else if ( path.match( /\/settings/ ) ) {
 	$('#airplay').change(function(){
 		if ($(this).prop('checked')) {
