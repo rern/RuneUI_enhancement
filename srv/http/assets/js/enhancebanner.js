@@ -12,7 +12,7 @@ function bannerHide() {
 	$( '#bannerTitle, #bannerMessage' ).empty();
 }
 function notify( title, message, icon, delay ) {
-	var iconhtml = icon ? '<i class="fa fa-'+ ( icon || 'check' ) +'"></i> ' : '';
+	var iconhtml = icon ? '<i class="fa fa-'+ ( icon || 'check' ) +' wh"></i>' : '';
 	$( '#bannerTitle' ).html( iconhtml + title );
 	$( '#bannerMessage' ).html( message );
 	var $banner = $( '#banner' );
