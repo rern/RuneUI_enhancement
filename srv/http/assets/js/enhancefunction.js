@@ -1065,14 +1065,13 @@ function dataParse( data, path, querytype, plid ) {
 		var folderRoot = folder[ 0 ];
 		if ( $( '#db-search-keyword' ).val() ) {
 		// search results
-			var results = data.length - 4;
 			$( '#db-currentpath' ).css( 'max-width', '40px' );
 			$( '#db-back, #db-index' ).addClass( 'hide' );
 			$( '#db-entries' ).css( 'width', '100%' );
 			$( '#db-search-close' )
 				.removeClass( 'hide' )
 				.html( '<i class="fa fa-times sx"></i><span class="visible-xs-inline"></span>\
-					<span>' + results + ' <a>of</a> </span>' );
+					<span>' + arrayfileL + ' <a>of</a> </span>' );
 		} else if ( folderRoot === 'Webradio' ) {
 			$( '#db-currentpath .lipath' ).text( 'Webradio' );
 			$( '#db-currentpath span' ).html( '<i class="fa fa-webradio"></i> <a>WEBRADIOS</a>' );
