@@ -169,7 +169,6 @@ $( '#displayplayback' ).click( function() {
 				displayPlayback();
 				$( '#swipebar, .page' ).off( 'swipeleft swiperight' );
 				setSwipe();
-				cssNotify();
 			} );
 			if ( !GUI.playback ) $( '#tab-playback' ).click();
 		}
