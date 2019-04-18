@@ -577,7 +577,9 @@ $( '.timemap, .covermap, .volmap' ).tap( function() {
 		if ( !GUI.bars ) $( '#swipebar' ).toggleClass( 'transparent' );
 		return
 	} else if ( cmd === 'menu' ) {
-		$( '#menu-settings' ).click();
+		setTimeout( function() { // fix: settings fired on showed
+			$( '#menu-settings' ).click();
+		}, 300 );
 	} else if ( cmd === 'random' ) {
 		$( '#random' ).click();
 	} else if ( cmd === 'repeat' ) {
