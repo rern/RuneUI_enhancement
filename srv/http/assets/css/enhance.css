@@ -1091,8 +1091,8 @@ i.bookmark,
 	margin-left: -50px;
 	top: 50%;
 	left: 50%;
-	-webkit-box-shadow: #555555 0 0 2px 0;
-	box-shadow: #555555 0 0 2px 0;
+	-webkit-box-shadow: #555555 0 0 1px 0;
+	box-shadow: #555555 0 0 1px 0;
 }
 .label,
 .bklabel {
@@ -1159,8 +1159,8 @@ i.bookmark,
 	font-size: 14px;
 }
 #infoMessage img {
-	-webkit-box-shadow: #555555 0 0 2px 0;
-	box-shadow: #555555 0 0 2px 0;
+	-webkit-box-shadow: #555555 0 0 1px 0;
+	box-shadow: #555555 0 0 1px 0;
 }
 /* ---------------------- breadcrumb and index ---------------------- */
 .btnlist-top {
@@ -1375,7 +1375,7 @@ i.bookmark,
 }
 .licover .coversmall {
 	margin: 0 15px 0 40px;
-	box-shadow: #555555 0 0 4px 0;
+	box-shadow: #555555 0 0 1px 0;
 }
 .licover.active {
 	background: linear-gradient( #0000 189px, #0095d8 41px ) !important;
