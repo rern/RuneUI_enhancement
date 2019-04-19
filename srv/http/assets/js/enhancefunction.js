@@ -777,9 +777,9 @@ function getData( options ) {
 		querytype = options.querytype || '',
 		args = options.args || '',
 		artist = options.artist ? options.artist.toString().replace( /"/g, '\"' ) : '',
-		coverart = options.coverart || '',
 		mode,
 		command;
+	if ( options.coverart ) GUI.dbbrowsemode = 'coverart';
 	var currentpath = $( '#db-currentpath .lipath:last' ).text();
 	var composer = $( '#rootpath' ).data( 'path' ) === 'Composer' ? $( '#artistalbum span' ).text() : '';
 	currentpath = currentpath ? currentpath.toString().replace( /"/g, '\"' ) : '';
@@ -845,7 +845,6 @@ function getData( options ) {
 			if ( data ) {
 				dataParse( data, path );
 				GUI.keyword = keyword;
-				if ( coverart ) GUI.dbbrowsemode = 'coverart';
 			} else {
 				infoNoData();
 				$( '#db-search-keyword' ).val( GUI.keyword );
@@ -1043,7 +1042,9 @@ function dataParse( data, path, querytype, plid ) {
 		, composer      : 'Composer'
 		, composeralbum : 'Composer'
 	}
-	if ( GUI.browsemode !== 'file' || GUI.dbbrowsemode === 'coverart' ) {
+/*	if ( GUI.dbbrowsemode === 'coverart' ) {
+		$( '#db-currentpath span' ).html( '<i class="fa fa-coverart"></i> <a>COVERART</a>' );
+	} else */if ( GUI.browsemode !== 'file' ) {
 		if ( GUI.browsemode !== 'album' && GUI.browsemode !== 'composeralbum' ) {
 			var dotpath = ( path === mode[ GUI.browsemode ] ) ? '' : '<a id="artistalbum"><gr> • </gr><span class="white">'+ path +'</span></a>';
 		} else {

@@ -702,6 +702,7 @@ $( '#db-home' ).click( function() {
 	$( '.menu' ).addClass( 'hide' );
 } );
 $( '#db-currentpath' ).on( 'click', 'a', function() {
+	GUI.dbbrowsemode = 'file';
 	if ( $( '#db-currentpath span a' ).length === 1 || GUI.plugin ) return
 	
 	var rootpath = this.id === 'rootpath';
@@ -1654,6 +1655,7 @@ pushstreams.idle.onmessage = function( changed ) {
 }
 pushstreams.notify.onmessage = function( data ) {
 	var data = data[ 0 ];
+	console.log(data)
 	notify( data.title, data.text, data.icon );
 }
 pushstreams.playlist.onmessage = function( data ) {
