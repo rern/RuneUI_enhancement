@@ -1011,12 +1011,20 @@ var sortablelibrary = new Sortable( document.getElementById( 'divhomeblocks' ), 
 $( '#home-coverart' ).click( function() { // fix - 'tap' also fire .coverart click here
 	if ( !$( '#divcoverarts' ).html() ) {
 		info( {
-			  icon     : 'coverart'
-			, title    : 'Browse By CoverArt'
-			, message  : 'Create thumbnails before use:<br>'
-						+'<br><i class="fa fa-usbdrive"></i>or <i class="fa fa-network"></i> <w>></w>'
-						+'&ensp;<i class="fa fa-folder"></i> <w>></w>'
-						+'&ensp;<i class="fa fa-coverart"></i><w>Update thumbnails</w>'
+			  icon    : 'coverart'
+			, title   : 'Coverart Thumbnails'
+			, message : 'A lot of albums will take a lot of time.'
+					 +'<br>(±200 album/minute)'
+					 +'<br>Continue?'
+			, cancel  : 1
+			, ok      : function() {
+				$( 'body' ).append(
+					'<form id="formtemp" action="addonsbash.php" method="post">'
+						+'<input type="hidden" name="alias" value="covd">'
+						+'<input type="hidden" name="type" value="scan">'
+					+'</form>' );
+				$( '#formtemp' ).submit();
+			}
 		} );
 		return
 	}
