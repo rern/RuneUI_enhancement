@@ -148,7 +148,6 @@ function updateThumbnails() {
 		, title    : 'Coverart Thumbnails Update'
 		, message  : 'Update thumbnails in:'
 					+'<br><w>'+ GUI.list.path +'</w>'
-					+'<br>(±200 album/min)'
 					+'<br>&nbsp;'
 		, msgalign : 'center'
 		, checkbox : { 'Remove existings': 1 }
