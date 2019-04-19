@@ -1751,8 +1751,9 @@ function removeFromPlaylist( $li ) {
 	$.post( 'enhance.php', { mpc: cmd } );
 	if ( !$( '#countsong, #countradio' ).length ) {
 		GUI.status.playlistlength = 0;
-		GUI.pllist = [];
+		GUI.pllist = {};
 		renderPlaylist();
+		setPlaybackBlank();
 	}
 }
 function clearPlaylist() {
