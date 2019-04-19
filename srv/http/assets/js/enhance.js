@@ -1055,7 +1055,6 @@ $( '.coverart' ).tap( function( e ) {
 		getData( {
 			  browsemode : 'file'
 			, path       : $lipath.text()
-			, coverart   : 1
 		} );
 	} else {
 		if ( GUI.display.thumbbyartist ) {

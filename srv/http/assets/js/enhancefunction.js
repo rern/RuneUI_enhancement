@@ -779,7 +779,6 @@ function getData( options ) {
 		artist = options.artist ? options.artist.toString().replace( /"/g, '\"' ) : '',
 		mode,
 		command;
-	if ( options.coverart ) GUI.dbbrowsemode = 'coverart';
 	var currentpath = $( '#db-currentpath .lipath:last' ).text();
 	var composer = $( '#rootpath' ).data( 'path' ) === 'Composer' ? $( '#artistalbum span' ).text() : '';
 	currentpath = currentpath ? currentpath.toString().replace( /"/g, '\"' ) : '';
@@ -1116,7 +1115,7 @@ function dataParse( data, path, querytype, plid ) {
 // set path, name, artist as text to avoid double quote escape
 function data2html( list, path ) {
 	var content = '';
-	if ( GUI.browsemode === 'file' ) {
+	if ( GUI.browsemode === 'file' || GUI.browsemode === 'coverart' ) {
 		if ( path === '' && 'file' in list ) {
 			var file = list.file
 			path = file.split( '/' ).pop();
