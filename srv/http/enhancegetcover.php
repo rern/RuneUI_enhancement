@@ -7,10 +7,10 @@ function getCoverFile( $dir, $scancover = 0 ) { // for new bookmarks and scancov
 	$files = array_slice( scandir( $dir ), 2 ); // remove ., ..
 	foreach( $files as $file ) {
 		$file = "$dir/$file";
-		if ( !is_file( $file ) ) continue;
+		$ext = substr( $file, -3 );
+		if ( !is_file( $file ) || $ext === 'wav' ) continue;
 		
 		$mime = substr( mime_content_type( $file ), 0, 5 );
-		$ext = substr( $file, -3 );
 		if ( $mime === 'audio' || $ext === 'dsf' || $ext === 'dff' ) { // only audio file
 			$audiofound = 1;
 			$coverfile = getCoverart( $file, 'asfile', $scancover );
