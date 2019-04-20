@@ -703,7 +703,7 @@ $( '#db-home' ).click( function() {
 } );
 $( '#db-currentpath' ).on( 'click', 'a', function() {
 	var id = this.id;
-	if ( [ 'coverart', 'album', 'artist', 'albumartist', 'composer', 'genre' ].indexOf( GUI.browsemode ) !== -1
+	if ( [ 'coverart', 'album', 'artist', 'albumartist', 'composer', 'genre' ].indexOf( GUI.dbbrowsemode ) !== -1
 		&& id === 'rootpath'
 	) {
 		$( '#db-back' ).click();
@@ -802,7 +802,7 @@ $( '#db-back' ).click( function() {
 	$( '.menu' ).addClass( 'hide' );
 	mutationLibrary.observe( observerLibrary, observerOption ); // standard js - must be one on one element
 	if ( GUI.dbbrowsemode === 'coverart' ) {
-		if ( $( '#db-currentpath span' ).text() === ' COVERART' ) {
+		if ( !$( '#db-entries li' ).length ) {
 			$( '#db-home' ).click();
 			return
 		}
@@ -829,7 +829,6 @@ $( '#db-back' ).click( function() {
 		}
 		return
 	}
-	
 	GUI.artistalbum = '';
 	GUI.dbbackdata.pop();
 	if ( !GUI.dbbackdata.length ) {
@@ -1061,6 +1060,7 @@ $( '.coverart' ).tap( function( e ) {
 			  browsemode : 'file'
 			, path       : $lipath.text()
 		} );
+		GUI.dbbrowsemode = 'coverart';
 	} else {
 		if ( GUI.display.thumbbyartist ) {
 			var album = $this.find( '.coverart2' ).text()
