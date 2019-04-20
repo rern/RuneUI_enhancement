@@ -16,6 +16,7 @@ function getCoverFile( $dir, $scancover = 0 ) { // for new bookmarks and scancov
 		
 		$mime = substr( mime_content_type( $file ), 0, 5 );
 		if ( $mime === 'audio' || $ext === 'dsf' || $ext === 'dff' ) { // only audio file
+			$audiofile = 1;
 			$coverfile = getCoverart( $file, 'asfile', $scancover );
 			if ( !$coverfile ) continue;
 			
@@ -32,7 +33,13 @@ function getCoverFile( $dir, $scancover = 0 ) { // for new bookmarks and scancov
 			exit;
 		}
 	}
-	if ( $scancover ) echo ( $wavefile ? 'wavefile' : 'noaudiofile' );
+	if ( $scancover ) {
+		if ( $wavefile || $audiofile ) {
+			echo 'No coverart found.';
+		} else {
+			echo 'No audio file found.';
+		}
+	}
 }
 // create thumbnail from embedded coverart in file
 function getCoverart( $file, $asfile = 0, $scancover = 0 ) {
