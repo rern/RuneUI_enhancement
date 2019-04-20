@@ -1040,10 +1040,9 @@ function dataParse( data, path, querytype, plid ) {
 		, genre         : 'Genre'
 		, composer      : 'Composer'
 		, composeralbum : 'Composer'
+		, coverart      : 'coverart'
 	}
-/*	if ( GUI.dbbrowsemode === 'coverart' ) {
-		$( '#db-currentpath span' ).html( '<i class="fa fa-coverart"></i> <a>COVERART</a>' );
-	} else */if ( GUI.browsemode !== 'file' ) {
+	if ( GUI.browsemode !== 'file' ) {
 		if ( GUI.browsemode !== 'album' && GUI.browsemode !== 'composeralbum' ) {
 			var dotpath = ( path === mode[ GUI.browsemode ] ) ? '' : '<a id="artistalbum"><gr> • </gr><span class="white">'+ path +'</span></a>';
 		} else {
