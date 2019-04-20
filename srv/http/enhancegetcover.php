@@ -3,16 +3,16 @@ if ( isset( $_POST[ 'path' ] ) ) {
 	getCoverFile( '/mnt/MPD/'.$_POST[ 'path' ] );
 }
 function getCoverFile( $dir, $scancover = 0 ) { // for new bookmarks and scancover
-	$audiofound = 0;
 	$files = array_slice( scandir( $dir ), 2 ); // remove ., ..
 	foreach( $files as $file ) {
 		$file = "$dir/$file";
 		$ext = substr( $file, -3 );
-		if ( !is_file( $file ) || $ext === 'wav' ) continue;
+		if ( !is_file( $file ) ) continue;
+		
+		if ( $ext === 'wav' ) break;
 		
 		$mime = substr( mime_content_type( $file ), 0, 5 );
 		if ( $mime === 'audio' || $ext === 'dsf' || $ext === 'dff' ) { // only audio file
-			$audiofound = 1;
 			$coverfile = getCoverart( $file, 'asfile', $scancover );
 			if ( !$coverfile ) continue;
 			
@@ -29,7 +29,7 @@ function getCoverFile( $dir, $scancover = 0 ) { // for new bookmarks and scancov
 			exit;
 		}
 	}
-	if ( !$audiofound && $scancover ) echo 'noaudiofile';
+	if ( $scancover ) echo ( $ext === 'wav' ? 'wavefile' : 'noaudiofile' );
 }
 // create thumbnail from embedded coverart in file
 function getCoverart( $file, $asfile = 0, $scancover = 0 ) {
