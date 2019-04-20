@@ -150,15 +150,21 @@ function updateThumbnails() {
 					+'<br><w>'+ GUI.list.path +'</w>'
 					+'<br>&nbsp;'
 		, msgalign : 'center'
-		, checkbox : { 'Remove existings': 1 }
+		, checkbox : {
+			  'Remove existings'        : 1
+			, 'Update Library database' : 1
+		}
 		, cancel   : 1
 		, ok       : function() {
 			$( 'body' ).append(
 				'<form id="formtemp" action="addonsbash.php" method="post">'
-					+'<input type="hidden" name="alias" value="covd">'
+					+'<input type="hidden" name="alias" value="cove">'
 					+'<input type="hidden" name="type" value="scan">'
 					+'<input type="hidden" name="opt">'
 				+'</form>' );
+			$( '#infoCheckBox input' ).each( function() {
+				path += $( this ).prop( 'checked' ) ? ' 1' : ' 0';
+			} );
 			if ( $( '#infoCheckBox input[ type=checkbox ]:checked' ).length ) path += ' 1';
 			$( '#formtemp input[ name=opt ]' ).val( path );
 			$( '#formtemp' ).submit();
