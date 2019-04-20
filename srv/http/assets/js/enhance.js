@@ -702,13 +702,18 @@ $( '#db-home' ).click( function() {
 	$( '.menu' ).addClass( 'hide' );
 } );
 $( '#db-currentpath' ).on( 'click', 'a', function() {
+	var id = this.id;
+	if ( [ 'coverart', 'album', 'artist', 'albumartist', 'composer', 'genre' ].indexOf( GUI.browsemode ) !== -1
+		&& id === 'rootpath'
+	) {
+		$( '#db-back' ).click();
+		return
+	}
+	
 	GUI.dbbrowsemode = 'file';
 	if ( $( '#db-currentpath span a' ).length === 1 || GUI.plugin ) return
 	
-	var rootpath = this.id === 'rootpath';
-	if ( [ 'album', 'artist', 'albumartist', 'composer', 'genre' ].indexOf( GUI.browsemode ) !== -1 && !rootpath ) return
-	
-	if ( rootpath ) {
+	if ( id === 'rootpath' ) {
 		GUI.dbbackdata = [];
 		var path = $( this ).data( 'path' );
 	} else {
