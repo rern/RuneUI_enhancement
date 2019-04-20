@@ -702,18 +702,15 @@ $( '#db-home' ).click( function() {
 	$( '.menu' ).addClass( 'hide' );
 } );
 $( '#db-currentpath' ).on( 'click', 'a', function() {
-	var id = this.id;
-	if ( [ 'coverart', 'album', 'artist', 'albumartist', 'composer', 'genre' ].indexOf( GUI.dbbrowsemode ) !== -1
-		&& id === 'rootpath'
-	) {
-		$( '#db-back' ).click();
+	if ( [ 'coverart', 'album', 'artist', 'albumartist', 'composer', 'genre' ].indexOf( GUI.dbbrowsemode ) !== -1 ) {
+		if ( GUI.dbbackdata.length > 1 ) $( '#db-back' ).click();
 		return
 	}
 	
 	GUI.dbbrowsemode = 'file';
 	if ( $( '#db-currentpath span a' ).length === 1 || GUI.plugin ) return
 	
-	if ( id === 'rootpath' ) {
+	if ( this.id === 'rootpath' ) {
 		GUI.dbbackdata = [];
 		var path = $( this ).data( 'path' );
 	} else {
@@ -833,10 +830,9 @@ $( '#db-back' ).click( function() {
 	GUI.dbbackdata.pop();
 	if ( !GUI.dbbackdata.length ) {
 		renderLibrary();
-		return
+	} else {
+		getData( GUI.dbbackdata.pop() );
 	}
-	
-	getData( GUI.dbbackdata.pop() );
 } );
 $( '#home-blocks' ).contextmenu( function( e ) { // disable default image context menu
 	e.preventDefault();
@@ -1025,6 +1021,7 @@ $( '#home-coverart' ).click( function() { // fix - 'tap' also fire .coverart cli
 		return
 	}
 	
+	GUI.dbbackdata.push( 'coverart' );
 	GUI.dbbrowsemode = 'coverart';
 	$( '#db-currentpath span' ).html( '<i class="fa fa-coverart"></i> <a>COVERART</a>' );
 	$( '#db-currentpath .lipath' ).text( 'coverart' );
