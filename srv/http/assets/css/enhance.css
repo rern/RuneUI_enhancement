@@ -1362,13 +1362,13 @@ i.bookmark,
 	display: block;
 	padding-top: 2px;
 	overflow: hidden;
-	line-height: 14px;
+	line-height: 15px;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
 .coverart2 {
-	margin-bottom: 8px;
+	margin-bottom: 5px;
 }
 .licover {
 	height: 230px !important;
