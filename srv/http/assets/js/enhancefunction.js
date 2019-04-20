@@ -1063,7 +1063,9 @@ function dataParse( data, path, querytype, plid ) {
 	} else {
 		var folder = path.split( '/' );
 		var folderRoot = folder[ 0 ];
-		if ( $( '#db-search-keyword' ).val() ) {
+		if ( GUI.dbbrowsemode === 'coverart' ) {
+			$( '#db-currentpath span' ).html( '<i class="fa fa-coverart"></i> <a id="rootpath" data-path="coverart">COVERART</a>' );
+		} else if ( $( '#db-search-keyword' ).val() ) {
 		// search results
 			$( '#db-currentpath' ).css( 'max-width', '40px' );
 			$( '#db-back, #db-index' ).addClass( 'hide' );
@@ -1091,15 +1093,6 @@ function dataParse( data, path, querytype, plid ) {
 			$( '#db-currentpath' ).find( 'span' ).html( folderCrumb );
 		}
 	}
-	// hide index bar in directories with files only
-	var lieq = $( '#db-entries .licover' ).length ? 1 : 0;
-	if ( $( '#db-entries li:eq( '+ lieq +' ) i.db-icon' ).hasClass( 'fa-music' ) || fileplaylist ) {
-		$( '#db-index' ).addClass( 'hide' );
-		$( '#db-entries' ).css( 'width', '100%' );
-	} else {
-		$( '#db-index' ).removeClass( 'hide' );
-		$( '#db-entries' ).css( 'width', '' );
-	}
 	$( '#db-entries' ).html( content +'<p></p>' ).promise().done( function() {
 		// fill bottom of list to mave last li movable to top
 		$( '#db-entries p' ).css( 'min-height', window.innerHeight - ( GUI.bars ? 140 : 100 ) +'px' );
@@ -1109,6 +1102,15 @@ function dataParse( data, path, querytype, plid ) {
 		if ( $( '.lazy' ).length
 			&& ( $( '#db-currentpath .lipath' ).text() === 'Webradio' || GUI.dbbrowsemode === 'Dirble' )
 		) lazyLoad.update();
+		// hide index bar in directories with files only
+		var lieq = $( '#db-entries .licover' ).length ? 1 : 0;
+		if ( $( '#db-entries li:eq( '+ lieq +' ) i.db-icon' ).hasClass( 'fa-music' ) || fileplaylist ) {
+			$( '#db-index' ).addClass( 'hide' );
+			$( '#db-entries' ).css( 'width', '100%' );
+		} else {
+			$( '#db-index' ).removeClass( 'hide' );
+			$( '#db-entries' ).css( 'width', '' );
+		}
 	} );
 }
 // set path, name, artist as text to avoid double quote escape
