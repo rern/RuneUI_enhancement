@@ -309,10 +309,10 @@ function webRadioCoverart() {
 		var nameimg = data.split( "\n" );
 		var name = nameimg[ 0 ];
 		var $img = nameimg[ 2 ] ? '<img src="'+ nameimg[ 2 ] +'">' : '<img src="'+ vu +'" style="border-radius: 9px">';
-		info( {
+		var infojson = {
 			  icon        : 'webradio'
 			, title       : 'Change Coverart'
-			, message     : ( nameimg[ 2 ] ? '<img src="'+ nameimg[ 2 ] +'">' : '<img src="'+ $( '#cover-art' ).attr( 'src' ) +'" style="border-radius: 9px">' )
+			, message     : $img
 						   +'<span class="bkname"><br><w>'+ name +'</w><span>'
 			, msgalign    : 'center'
 			, fileoklabel : 'Replace'
@@ -347,7 +347,26 @@ function webRadioCoverart() {
 					if ( path === GUI.status.file) GUI.status.coverart = newimg;
 				} );
 			}
-		} );
+		}
+		if ( !$( '#cover-art' ).hasClass( 'vu' ) ) {
+			infojson.buttoncolor = '#0095d8'
+			infojson.buttonlabel = 'Remove';
+			infojson.button      = function() {
+				info( {
+					  icon     : 'webradio'
+					, title    : 'Remove Coverart'
+					, message  : $img
+								+'<br><w>'+ name +'</w>'
+					, msgalign : 'center'
+					, ok       : function() {
+						$.post( 'enhance.php', { bash: '/usr/bin/echo "'+ name +'" > "/srv/http/assets/img/webradios/'+ urlname +'"' }, function() {
+							getPlaybackStatus();
+						} );
+					}
+				} );
+			}
+		}
+		info( infojson );
 	} );
 }
 function webRadioSave( name, url ) {

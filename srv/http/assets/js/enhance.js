@@ -549,7 +549,7 @@ $( '.covermap' ).taphold( function( e ) {
 	$( '#cover-art' )
 		.css( 'opacity', 0.33 )
 		.after(
-			 ( $( '#cover-art' ).hasClass( 'vu' ) ? '' : '<i class="edit licover-remove fa fa-minus-circle"></i>' )
+			 ( GUI.status.ext === 'radio' ? '' : '<i class="edit licover-remove fa fa-minus-circle"></i>' )
 			+'<i class="edit licover-cover fa fa-coverart"></i>'
 		);
 } );
@@ -573,21 +573,7 @@ $( '#divcover' ).on( 'click', '.edit', function() {
 				return false
 			}
 		} );
-		if ( $( this ).hasClass( 'licover-remove' ) ) {
-			info( {
-				  icon    : 'coverart'
-				, title   : 'Remove Coverart'
-				, message : '<img src="'+ $( '#cover-art' ).attr( 'src' ) +'">'
-						   +'<br><w>'+ GUI.list.name +'</w>'
-				, ok      : function() {
-					var urlname = GUI.list.path.replace( /\//g, '|' );
-					$.post( 'enhance.php', { bash: '/usr/bin/echo "'+ GUI.list.name +'" > "/srv/http/assets/img/webradios/'+ urlname +'"' } );
-					$( '#cover-art' ).attr( 'src', GUI.status.state === 'play' ? vu : vustop );
-				}
-			} );
-		} else {
-			webRadioCoverart();
-		}
+		webRadioCoverart();
 	}
 } );
 $( '.timemap, .covermap, .volmap' ).tap( function() {
@@ -935,6 +921,7 @@ $( '#infoFileBox' ).change( function() {
 		}
 	}
 	reader.readAsDataURL( this.files[ 0 ] ); // load filereader
+	$( '#infoButton' ).hide();
 } );
 $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - id changed on renamed
 	if ( $( '.edit' ).length && !$( e.target ).hasClass( 'edit' )  ) {
