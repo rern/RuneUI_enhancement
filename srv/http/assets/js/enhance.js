@@ -549,17 +549,46 @@ $( '.covermap' ).taphold( function( e ) {
 	$( '#cover-art' )
 		.css( 'opacity', 0.33 )
 		.after(
-			 '<i class="edit licover-remove fa fa-minus-circle"></i>'
+			 ( $( '#cover-art' ).hasClass( 'vu' ) ? '' : '<i class="edit licover-remove fa fa-minus-circle"></i>' )
 			+'<i class="edit licover-cover fa fa-coverart"></i>'
 		);
 } );
 $( '#divcover' ).on( 'click', '.edit', function() {
-	var $img = $( '#cover-art' );
-	var album = GUI.status.Album;
-	var artist = GUI.status.Artist;
-	var path = '/mnt/MPD/'+ GUI.status.file.substr( 0, GUI.status.file.lastIndexOf( '/' ) );
-	var fn = $( this ).hasClass( 'licover-remove' ) ? removeCoverart : replaceCoverart;
-	fn( $img, album, artist, path );
+	if ( GUI.status.ext !== 'radio' ) {
+		var $img = $( '#cover-art' );
+		var album = GUI.status.Album;
+		var artist = GUI.status.Artist;
+		var path = '/mnt/MPD/'+ GUI.status.file.substr( 0, GUI.status.file.lastIndexOf( '/' ) );
+		if ( $( this ).hasClass( 'licover-remove' ) ) {
+			removeCoverart( $img, album, artist, path );
+		} else {
+			replaceCoverart( $img, album, artist, path );
+		}
+	} else {
+		GUI.list = {};
+		GUI.list.path = GUI.status.file;
+		$.each( GUI.pllist, function( i, val ) {
+			if ( val.file === GUI.list.path ) {
+				GUI.list.name = val.Title;
+				return false
+			}
+		} );
+		if ( $( this ).hasClass( 'licover-remove' ) ) {
+			info( {
+				  icon    : 'coverart'
+				, title   : 'Remove Coverart'
+				, message : '<img src="'+ $( '#cover-art' ).attr( 'src' ) +'">'
+						   +'<br><w>'+ GUI.list.name +'</w>'
+				, ok      : function() {
+					var urlname = GUI.list.path.replace( /\//g, '|' );
+					$.post( 'enhance.php', { bash: '/usr/bin/echo "'+ GUI.list.name +'" > "/srv/http/assets/img/webradios/'+ urlname +'"' } );
+					$( '#cover-art' ).attr( 'src', GUI.status.state === 'play' ? vu : vustop );
+				}
+			} );
+		} else {
+			webRadioCoverart();
+		}
+	}
 } );
 $( '.timemap, .covermap, .volmap' ).tap( function() {
 	var cmd = btnctrl[ this.id ];

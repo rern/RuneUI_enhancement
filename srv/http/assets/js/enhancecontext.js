@@ -312,8 +312,8 @@ function webRadioCoverart() {
 		info( {
 			  icon        : 'webradio'
 			, title       : 'Change Coverart'
-			, message     : ( nameimg[ 2 ] ? '<img src="'+ nameimg[ 2 ] +'">' : '<img src="'+ vu +'" style="border-radius: 9px">' )
-						   +'<span class="bkname"><br>'+ name +'<span>'
+			, message     : ( nameimg[ 2 ] ? '<img src="'+ nameimg[ 2 ] +'">' : '<img src="'+ $( '#cover-art' ).attr( 'src' ) +'" style="border-radius: 9px">' )
+						   +'<span class="bkname"><br><w>'+ name +'</w><span>'
 			, msgalign    : 'center'
 			, fileoklabel : 'Replace'
 			, cancel      : function() {
@@ -328,7 +328,11 @@ function webRadioCoverart() {
 					var webradioname = path.replace( /\//g, '|' );
 					$.post( 'enhance.php', { imagefile: webradioname, base64webradio: name +'\n'+ newthumb +'\n'+ newimg }, function( result ) {
 							if ( result != -1 ) {
-								notify( 'Coverart Changed', name, 'coverart' );
+								if ( GUI.playback ) {
+									getPlaybackStatus();
+								} else {
+									notify( 'Coverart Changed', name, 'coverart' );
+								}
 							} else {
 								info( {
 									  icon    : 'webradio'
