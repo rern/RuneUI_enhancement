@@ -79,8 +79,8 @@ if ( count( $files ) ) {
 		// restore /, #, ? replaced by scan.sh
 		$name = preg_replace( array( '/\|/', '/{/', '/}/' ), array( '/', '#', '?' ), $name );
 		$names = explode( '^^', $name );
-		$album = $names[ 0 ];
-		$artist = $names[ 1 ] ?: '~';
+		$album = $names[ 0 ] ?: '_';
+		$artist = $names[ 1 ] ?: '_';
 		$sortalbum = stripLeading( $album );
 		$sortartist = stripLeading( $artist );
 		$path = $names[ 2 ];
