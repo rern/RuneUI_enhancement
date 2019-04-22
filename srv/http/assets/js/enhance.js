@@ -113,11 +113,9 @@ var chklibrary = {
 	, plclear        : 'Confirm <gr>on clear Playlist</gr>'
 	, playbackswitch : 'Open Playback <gr>on</gr> <i class="fa fa-play-plus"></i>Add <gr>►</gr> Play'
 	, tapaddplay     : 'Single tap song <gr>=</gr> <i class="fa fa-play-plus"></i>Add <gr>►</gr> Play'
-	, coverfile      : '<i class="fa fa-coverart"></i>Cover art <gr>in album/folder</gr>'
 	, thumbbyartist  : '<i class="fa fa-coverart"></i>Sort CoverArts by artist'
 }
 $( '#displaylibrary' ).click( function() {
-	var coverfile = GUI.display.coverfile;
 	var thumbbyartist = GUI.display.thumbbyartist;
 	info( {
 		  icon     : 'library'
@@ -1645,15 +1643,7 @@ pushstreams.display.onmessage = function( data ) {
 		if ( GUI.playback ) {
 			getPlaybackStatus();
 		} else if ( GUI.library ) {
-			if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) {
-				renderLibrary();
-			} else {
-				if ( GUI.display.coverfile ) {
-					if ( !$( '.licover' ).length ) $( '#db-currentpath a:last-child' ).click();
-				} else {
-					$( '.licover' ).remove();
-				}
-			}
+			if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) renderLibrary();
 		} else {
 			displayTopBottom();
 		}
