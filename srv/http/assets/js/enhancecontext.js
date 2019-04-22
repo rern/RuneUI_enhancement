@@ -151,7 +151,7 @@ function updateThumbnails() {
 					+'<br>&nbsp;'
 		, msgalign : 'center'
 		, checkbox : {
-			  'Remove existings'        : 1
+			  'Replace existings'       : 1
 			, 'Update Library database' : 1
 		}
 		, cancel   : 1
@@ -165,9 +165,9 @@ function updateThumbnails() {
 			$( '#infoCheckBox input' ).each( function() {
 				path += $( this ).prop( 'checked' ) ? ' 1' : ' 0';
 			} );
-			if ( $( '#infoCheckBox input[ type=checkbox ]:checked' ).length ) path += ' 1';
-			$( '#formtemp input[ name=opt ]' ).val( path );
-			$( '#formtemp' ).submit();
+			$( '#formtemp' )
+				.append( '<input type="hidden" name="opt" value="'+ path +'">' )
+				.submit();
 		}
 	} );
 }

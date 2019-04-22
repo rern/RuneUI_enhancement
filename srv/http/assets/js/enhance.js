@@ -1010,14 +1010,7 @@ var sortablelibrary = new Sortable( document.getElementById( 'divhomeblocks' ), 
 } );
 $( '#home-coverart' ).click( function() { // fix - 'tap' also fire .coverart click here
 	if ( !$( '#divcoverarts' ).html() ) {
-		info( {
-			  icon     : 'coverart'
-			, title    : 'Browse By CoverArt'
-			, message  : 'Create thumbnails before use:<br>'
-						+'<br><i class="fa fa-usbdrive"></i>or <i class="fa fa-network"></i> <w>></w>'
-						+'&ensp;<i class="fa fa-folder"></i> <w>></w>'
-						+'&ensp;<i class="fa fa-coverart"></i><w>Update thumbnails</w>'
-		} );
+		$( this ).taphold();
 		return
 	}
 	
@@ -1037,6 +1030,68 @@ $( '#home-coverart' ).click( function() { // fix - 'tap' also fire .coverart cli
 		var cH = window.innerHeight - $( '.coverart' ).height() - 94;
 		$( '#divcoverarts p' ).css( 'height', cH +'px' );
 	}, 50 );
+} ).taphold( function() {
+	if ( GUI.drag ) return
+	
+	if ( GUI.status.updating_db ) {
+		info( {
+			  icon    : 'coverart'
+			, title   : 'Coverart Thumbnails Update'
+			, message : 'Library update is in progress ...'
+					   +'<br>Please wait until finished.'
+		} );
+		return
+	}
+	
+	if ( !$( '#divcoverarts' ).html() ) {
+		var albumcount = Number( $( '#home-album gr' ).text().replace( /,/g, '' ) );
+		var perminute = Math.ceil( albumcount / 150 );
+		info( {
+			  icon     : 'coverart'
+			, title    : 'Create Coverart Thumbnails'
+			, message  : 'Find coverarts and create thumbnails.'
+						 +'<br>( ±'+ perminute +' minutes for '+ albumcount +' albums)'
+						 +'<br>&nbsp;'
+			, msgalign : 'center'
+			, cancel   : 1
+			, ok       : function() {
+				$( 'body' ).append(
+					'<form id="formtemp" action="addonsbash.php" method="post">'
+						+'<input type="hidden" name="alias" value="cove">'
+						+'<input type="hidden" name="type" value="scan">'
+						+'<input type="hidden" name="opt" value="/mnt/MPD">'
+					+'</form>' );
+				$( '#formtemp' ).submit();
+			}
+		} );
+	} else {
+		info( {
+			  icon     : 'coverart'
+			, title    : 'Coverart Thumbnails Update'
+			, message  : 'Find coverarts and update thumbnails.'
+						+'<br>&nbsp;'
+			, msgalign : 'center'
+			, checkbox : {
+				  'Replace existings'       : 1
+				, 'Update Library database' : 1
+			}
+			, cancel   : 1
+			, ok       : function() {
+				$( 'body' ).append(
+					'<form id="formtemp" action="addonsbash.php" method="post">'
+						+'<input type="hidden" name="alias" value="cove">'
+						+'<input type="hidden" name="type" value="scan">'
+					+'</form>' );
+				var opt = '/mnt/MPD';
+				$( '#infoCheckBox input' ).each( function() {
+					opt += $( this ).prop( 'checked' ) ? ' 1' : ' 0';
+				} );
+				$( '#formtemp' )
+					.append( '<input type="hidden" name="opt" value="'+ opt +'">' )
+					.submit();
+			}
+		} );
+	}
 } );
 $( '.coverart' ).tap( function( e ) {
 	if ( $( e.target ).hasClass( 'edit' ) ) return
