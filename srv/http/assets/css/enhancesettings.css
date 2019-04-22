@@ -32,6 +32,7 @@
 .fa-plus:before { content: "\f519" }
 .fa-check:before { content: "\f51B" }
 .fa-library:before { content: "\f506" }
+.fa-mpd:before { content: "\f522" }
 
 #update, #rescan {
 	margin-right: 5px;

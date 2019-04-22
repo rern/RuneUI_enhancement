@@ -96,13 +96,7 @@ if ( path.match( /\/sources\/*$/ ) ) {
 	
 } else if ( path.match( /\/mpd/ ) ) {
 	$('#audio-output-interface').change(function(){
-		new PNotify( {
-			  icon  : 'fa fa-cog fa-spin'
-			, title : 'Switching audio output'
-			, text  : 'Please wait for the config update...'
-			, delay : 5000
-			, styling : 'fontawesome'
-		} );
+		notify( 'Switch Audio Output', $( '#audio-output-interface option:selected' ).text(), 'mpd' );
 		var output = $(this).val();
 		$.ajax({
 			type: 'POST',
@@ -117,7 +111,12 @@ if ( path.match( /\/sources\/*$/ ) ) {
 		$('#mpdconf_editor').removeClass('hide');
 		$('#manual-edit-warning').addClass('hide');
 	});
-	
+	$( 'button[ name=save ]:eq( 0 )' ).click( function() {
+		notify( 'Volume Control', $( '#mixer-type option:selected' ).text(), 'mpd', 5000 );
+	} );
+	$( 'button[ name=save ]:eq( 1 )' ).click( function() {
+		notify( 'MPD Options', 'Set options', 'mpd', 5000 );
+	} );
 } else if ( path.match( /\/settings/ ) ) {
 	$('#airplay').change(function(){
 		if ($(this).prop('checked')) {
@@ -300,11 +299,7 @@ if ( path.match( /\/sources\/*$/ ) ) {
 	var client = new ZeroClipboard(document.getElementById('copy-to-clipboard'));
 	client.on('ready', function(readyEvent){
 		client.on('aftercopy', function(event){
-			new PNotify({
-				  title   : 'Copied to clipboard'
-				, text    : 'The debug output was copied successfully in your clipboard.'
-				, styling : 'fontawesome'
-			});
+			notify( 'Copied to clipboard', 'The debug output was copied successfully in your clipboard.', 'bug' );
 		});
 	});
 }

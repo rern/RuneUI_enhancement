@@ -36,11 +36,8 @@
 	} ?>
 <link rel="shortcut icon" href="<?=$this->asset( '/img/favicon.ico' )?>">
 <link rel="stylesheet" href="<?=$this->asset( '/css/bootstrap.min.css' )?>">
+<link rel="stylesheet" href="<?=$this->asset( '/css/enhancebanner.css' )?>">
 	<?php 
-	if ( $root || $this->uri(1) === 'mpd' || $this->uri(1) === 'debug' ) { ?>
-<link rel="stylesheet" href="<?=$this->asset( '/css/pnotify.custom.min.css' )?>">
-	<?php
-	}
 	function fontface( $name, $_this ) {
 		$woff = $_this->asset( "/fonts/$name.woff" );
 		$ttf = $_this->asset( "/fonts/$name.ttf" );

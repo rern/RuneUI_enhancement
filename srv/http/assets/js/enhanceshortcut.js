@@ -39,6 +39,8 @@ $( document ).keydown( function( e ) {
 			$( '#voldn' ).click();
 		}
 	} else if ( GUI.library ) {
+		if ( !$( '#db-search' ).hasClass( 'hide' ) ) return
+		
 		// home /////////////////////////////////////////
 		if ( !$( '#home-blocks' ).hasClass( 'hide' ) ) {
 			var $blupdn = $( '.divblock.updn' );

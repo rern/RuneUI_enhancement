@@ -1,31 +1,52 @@
 <?php
-if ( isset( $_POST[ 'path' ] ) ) {
-	$dir = '/mnt/MPD/'.$_POST[ 'path' ];
+if ( isset( $_POST[ 'path' ] ) ) { 
+	getCoverFile( '/mnt/MPD/'.$_POST[ 'path' ] );
+}
+function getCoverFile( $dir, $scancover = 0 ) { // for new bookmarks and scancover
 	$files = array_slice( scandir( $dir ), 2 ); // remove ., ..
 	foreach( $files as $file ) {
 		$file = "$dir/$file";
+		$ext = substr( $file, -3 );
 		if ( !is_file( $file ) ) continue;
 		
+		if ( $ext === 'wav' ) {
+			$wavefile = 1;
+			continue;
+		}
+		
 		$mime = substr( mime_content_type( $file ), 0, 5 );
-		$ext = substr( $file, -3 );
 		if ( $mime === 'audio' || $ext === 'dsf' || $ext === 'dff' ) { // only audio file
-			$coverfile = getCoverart( $file, 0, 1 );
+			$audiofile = 1;
+			$coverfile = getCoverart( $file, 'asfile', $scancover );
 			if ( !$coverfile ) continue;
 			
+			if ( $scancover ) {
+				echo $coverfile;
+				exit;
+			}
+			
 			$coverext = substr( $coverfile, -3 );
-			$thumbfile = '/srv/http/tmp/tmp.jpg';
+			$thumbfile = '/srv/http/assets/img/tmp/tmp.jpg';
 			exec( '/usr/bin/sudo /usr/bin/convert "'.$coverfile.'" -thumbnail 200x200 -unsharp 0x.5 "'.$thumbfile.'"' );
 			$coverart = file_get_contents( $thumbfile );
 			echo 'data:image/'. $coverext.';base64,'.base64_encode( $coverart );
 			exit;
 		}
 	}
+	if ( $scancover ) {
+		if ( $wavefile || $audiofile ) {
+			echo 'No coverart found.';
+		} else {
+			echo 'No audio file found.';
+		}
+	}
 }
 // create thumbnail from embedded coverart in file
-function getCoverart( $file, $thumbnail = 0, $asfile = 0 ) {
+function getCoverart( $file, $asfile = 0, $scancover = 0 ) {
 // local file
-	if ( !$thumbnail ) {
-		$dir = dirname( $file );
+	$isdir = is_dir( $file );
+	$dir = $isdir ? $file : dirname( $file );
+	if ( !$scancover ) { // scancover.sh already done this
 		$coverfiles = array(
 			  'cover.jpg', 'cover.png', 'folder.jpg', 'folder.png', 'front.jpg', 'front.png'
 			, 'Cover.jpg', 'Cover.png', 'Folder.jpg', 'Folder.png', 'Front.jpg', 'Front.png'
@@ -34,10 +55,9 @@ function getCoverart( $file, $thumbnail = 0, $asfile = 0 ) {
 			$coverfile = $dir.'/'.$cover;
 			if ( file_exists( $coverfile ) ) {
 				$coverext = pathinfo( $cover, PATHINFO_EXTENSION );
-				if ( $asfile ) return $coverfile;
+				if ( !$asfile ) return 'data:image/'. $coverext.';base64,'.base64_encode( file_get_contents( $coverfile ) );
 				
-				$coverart = file_get_contents( $coverfile );
-				return 'data:image/'. $coverext.';base64,'.base64_encode( $coverart );
+				return $coverfile;
 			}
 		}
 	}
@@ -49,14 +69,12 @@ function getCoverart( $file, $thumbnail = 0, $asfile = 0 ) {
 	if ( isset( $id3picture[ 'data' ] ) ) {
 		$coverdata = $id3picture[ 'data' ];
 		$coverext = str_replace( 'image/', '', $id3picture[ 'image_mime' ] );
-		if ( !$thumbnail && !$asfile ) {
-			return 'data:image/'. $coverext.';base64,'.base64_encode( $coverdata );
-		} else {
-			$coverfile = "/srv/http/tmp/cover.$coverext";
-			file_put_contents( $coverfile, $coverdata );
-			return $coverfile;
-		}
-	} else if ( !$thumbnail ) {
+		if ( !$asfile ) return 'data:image/'. $coverext.';base64,'.base64_encode( $coverdata );
+		
+		$coverfile = "/srv/http/assets/img/tmp/cover.$coverext";
+		file_put_contents( $coverfile, $coverdata );
+		return $coverfile;
+	} else {
 		return 0;
 	}
 }

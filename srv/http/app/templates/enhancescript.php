@@ -1,19 +1,19 @@
 <script src="<?=$this->asset( '/js/vendor/jquery-2.1.0.min.js' )?>"></script>
+<script src="<?=$this->asset( '/js/enhancebanner.js' )?>"></script>
 	<?php 
 	if ( empty( $this->uri(1) ) ) { ?>
 <script src="<?=$this->asset( '/js/vendor/jquery.mobile.custom.min.js' )?>"></script>
 <script src="<?=$this->asset( '/js/vendor/pushstream.min.js' )?>"></script>
 <script src="<?=$this->asset( '/js/vendor/bootstrap.min.js' )?>"></script>
 <script src="<?=$this->asset( '/js/vendor/Sortable.min.js' )?>"></script>
-<script src="<?=$this->asset( '/js/vendor/pnotify.custom.min.js' )?>"></script>
 <script src="<?=$this->asset( '/js/vendor/openwebapp.js' )?>"></script>
 <script src="<?=$this->asset( '/js/addonsinfo.js' )?>"></script>
 <script src="<?=$this->asset( '/js/vendor/roundslider.min.js' )?>"></script>
 <script src="<?=$this->asset( '/js/vendor/lazyload.min.js' )?>"></script>
 <script src="<?=$this->asset( '/js/vendor/pica.min.js' )?>"></script>
-<script src="<?=$this->asset( '/js/enhancefunction.js' )?>"></script>
 <script src="<?=$this->asset( '/js/enhance.js' )?>"></script>
 <script src="<?=$this->asset( '/js/enhancecontext.js' )?>"></script>
+<script src="<?=$this->asset( '/js/enhancefunction.js' )?>"></script>
 		<?php
 		if ( strpos( 'mobi', $_SERVER['HTTP_USER_AGENT'] ) === false ) { ?> 
 <script src="<?=$this->asset( '/js/enhanceshortcut.js' )?>"></script>
@@ -35,11 +35,7 @@
 		if ( $this->uri(1) === 'sources' || $this->uri(1) === 'network' ) { ?>
 <script src="<?=$this->asset( '/js/vendor/pushstream.min.js' )?>"></script>
 		<?php 
-		} else if ( $this->uri(1) === 'mpd' ) { ?>
-<script src="<?=$this->asset( '/js/vendor/pnotify.custom.min.js' )?>"></script>
-		<?php 
 		} else if ( $this->uri(1) === 'debug' ) { ?>
-<script src="<?=$this->asset( '/js/vendor/pnotify.custom.min.js' )?>"></script>
 <script src="<?=$this->asset('/js/vendor/ZeroClipboard.min.js' )?>"></script>
 		<?php 
 		} ?>

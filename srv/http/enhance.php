@@ -68,7 +68,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$plfile = '/var/lib/mpd/playlists/'.$_POST[ 'plfile' ].'.m3u';
 	$content = file_get_contents( $plfile );
 	$content.= $_POST[ 'plappend' ]."\n";
-	$tmpfile = '/srv/http/tmp/tmp.m3u';
+	$tmpfile = '/srv/http/assets/img/tmp/tmp.m3u';
 	file_put_contents( $tmpfile, $content );
 	exec( "$sudo/mv -f $tmpfile \"$plfile\"", $result, $std );
 } else if ( isset( $_POST[ 'coverartalbum' ] ) ) {
@@ -178,7 +178,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	
 	$base64 = explode( ',', $_POST[ 'base64' ] )[ 1 ];
 	if ( $coverfile ) {
-		$tmpfile = '/srv/http/tmp/tmp.jpg';
+		$tmpfile = '/srv/http/assets/img/tmp/tmp.jpg';
 		file_put_contents( $tmpfile, base64_decode( $base64 ) ) || exit( '-1' );
 		exec( "$sudo/mv -f $tmpfile \"$imagefile\"", $output, $std );
 	} else {
@@ -378,13 +378,11 @@ function stripLeading( $string ) {
 	$stripped = preg_replace(
 		  array(
 			'/^A\s+|^AN\s+|^THE\s+|[^\w\p{L}\p{N}\p{Pd} ~]/u',
-			'/\s+/',
-			'/^_/'
+			'/\s+|^_/'
 		)
 		, array(
 			'',  // strip articles | non utf-8 normal alphanumerics | tilde(blank data)
-			'-', // fix: php strnatcmp ignores spaces
-			'0 ' // fix: sort underscore to before 0
+			'-'  // fix: php strnatcmp ignores spaces | sort underscore to before 0
 		)
 		, $names
 	);

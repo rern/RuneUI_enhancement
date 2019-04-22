@@ -127,32 +127,6 @@
 label {
 	font-weight: normal;
 }
-/* pnotify mod */
-.ui-pnotify {
-	top: auto;
-	bottom: 60px;
-	left: 0;
-}
-.ui-pnotify-shadow {
-	box-shadow: 4px 4px 10px #000000 !important;
-}
-.ui-pnotify .alert {
-	border: 0;
-	-webkit-border-radius: 0;
-	-moz-border-radius: 0;
-	border-radius: 0;
-	color: #e0e7ee;
-	background: #0095d8;
-	text-shadow: none
-}
-.ui-pnotify-icon {
-	font-size: 1.3em;
-}
-.ui-pnotify-icon,
-.ui-pnotify-title {
-	color: #34495e !important;
-}
-
 html {
 	padding: env( safe-area-inset ); /* disable iPhone X rounded corner padding */
 }
@@ -164,6 +138,7 @@ a:hover {
 	text-decoration: none;
 }
 w, wh, .wh { color: #e0e7ee; }
+#infoMessage .fa-coverart { color: #e0e7ee; }
 bl, .bl { color: #0095d8; }
 gr, .gr { color: #7795b4; }
 wh, gr { font-weight: 300; }
@@ -490,7 +465,7 @@ i.bookmark,
 	font-size: 18px
 }
 .albumradio {
-	color: #2f4052;
+	color: #415871;
 	font-weight: 300;
 }
 #sampling {
@@ -624,7 +599,7 @@ i.bookmark,
 	margin: 0 auto;
 	background-size: 100% 100%;
 	border: none;
-	-webkit-box-shadow: #555555 0 0 4px 0;
+	-webkit-box-shadow: #555555 0 0 1px 0;
 	box-shadow: #555555 0 0 4px 0;
 }
 #coverartoverlay {
@@ -1116,8 +1091,8 @@ i.bookmark,
 	margin-left: -50px;
 	top: 50%;
 	left: 50%;
-	-webkit-box-shadow: #555555 0 0 2px 0;
-	box-shadow: #555555 0 0 2px 0;
+	-webkit-box-shadow: #555555 0 0 1px 0;
+	box-shadow: #555555 0 0 1px 0;
 }
 .label,
 .bklabel {
@@ -1167,6 +1142,10 @@ i.bookmark,
 .licover-cover {
 	bottom: 0;
 }
+#divcover .edit {
+	right: 0;
+	z-index: 15
+}
 
 #infoMessage img {
 	margin: 10px;
@@ -1180,8 +1159,8 @@ i.bookmark,
 	font-size: 14px;
 }
 #infoMessage img {
-	-webkit-box-shadow: #555555 0 0 2px 0;
-	box-shadow: #555555 0 0 2px 0;
+	-webkit-box-shadow: #555555 0 0 1px 0;
+	box-shadow: #555555 0 0 1px 0;
 }
 /* ---------------------- breadcrumb and index ---------------------- */
 .btnlist-top {
@@ -1383,20 +1362,20 @@ i.bookmark,
 	display: block;
 	padding-top: 2px;
 	overflow: hidden;
-	line-height: 14px;
+	line-height: 15px;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
 .coverart2 {
-	margin-bottom: 8px;
+	margin-bottom: 5px;
 }
 .licover {
 	height: 230px !important;
 }
 .licover .coversmall {
 	margin: 0 15px 0 40px;
-	box-shadow: #555555 0 0 4px 0;
+	box-shadow: #555555 0 0 1px 0;
 }
 .licover.active {
 	background: linear-gradient( #0000 189px, #0095d8 41px ) !important;
@@ -1761,12 +1740,14 @@ li.active .time {
 @media(max-width: 600px)  { .coverart { width: calc( ( 100vw - 38px ) * 0.333333333 ) } }
 @media(max-width: 400px)  { .coverart { width: calc( ( 100vw - 38px ) * 0.5 ) } }
 
+@media (max-width: 2000px) { .divblock { width: 12.5% } }
+@media (max-width: 1600px) { .divblock { width: 14.285714% } }
 @media (max-width: 1200px) { .divblock { width: 16.666666% } }
-@media (max-width: 940px) { .divblock { width: 20% } }
-@media (max-width: 740px) { .divblock { width: 25% } }
-@media (max-width: 560px) { .divblock { width: 33.3333333% } }
-@media (max-width: 410px) { .divblock { width: 50% } }
-@media (max-width: 280px) { .divblock { width: 100% } }
+@media (max-width: 940px)  { .divblock { width: 20% } }
+@media (max-width: 740px)  { .divblock { width: 25% } }
+@media (max-width: 560px)  { .divblock { width: 33.3333333% } }
+@media (max-width: 410px)  { .divblock { width: 50% } }
+@media (max-width: 280px)  { .divblock { width: 100% } }
 
 /* height */
 @media(max-height: 590px) {

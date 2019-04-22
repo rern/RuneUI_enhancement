@@ -2,6 +2,10 @@
 
 # $1-zoom
 # $2-acc/alac support
+# $3-access point
+# $4-local browser
+# $5-airplay
+# $6-dlna
 
 # change version number in RuneAudio_Addons/srv/http/addonslist.php
 
@@ -40,7 +44,6 @@ if ! pacman -Q imagemagick &> /dev/null; then
 fi
 
 mv /srv/http/index.php{,.backup}
-mv /srv/http/assets/js/vendor/pnotify.custom.min.js{,.backup}
 mv /srv/http/assets/js/vendor/pushstream.min.js{,.backup}
 mv /srv/http/assets/js/vendor/Sortable.min.js{,.backup}
 mv /srv/http/command/airplay_toggle{,.backup}
@@ -147,14 +150,11 @@ insertH '1'
 
 ########## to be moved after 'if not update' ###################################################################
 
-# dirble temp
-dir=/srv/http/assets/img/webradiopl
-mkdir -p $dir
-chown -R http:http $dir
-
+makeDirLink tmp
+makeDirLink webradiopl
 makeDirLink coverarts
-
 makeDirLink webradios
+
 # convert webradios
 # filename: http:||webradio|url
 # content:
@@ -247,10 +247,26 @@ zoom=$( echo "0.5 $z 3" \
 	}'
 )
 redis-cli set zoomlevel $zoom &> /dev/null
-# set AAC/ALAC support
-[[ $2 ]] && redis-cli hset mpdconf ffmpeg $2 &> /dev/null
 
-
+[[ $2 == 1 ]] && ffmpeg=yes || ffmpeg=no
+redis-cli hset mpdconf ffmpeg $ffmpeg &> /dev/null
+redis-cli hset AccessPoint enabled $3 &> /dev/null
+redis-cli set local_browser $4 &> /dev/null
+redis-cli hset airplay enable $5 &> /dev/null
+redis-cli hset dlna enable $6 &> /dev/null
+startStop() {
+	if [[ -z $2 ]]; then
+		systemctl disable $1
+		systemctl stop $1
+	else
+		systemctl enable $1
+		systemctl start $1	
+	fi
+}
+[[ $3 != 1 ]] && startStop hostapd || startStop hostapd start
+[[ $4 != 1 ]] && killall Xorg &> /dev/null
+[[ $5 != 1 ]] && startStop "shairport shairport-sync" || startStop "shairport shairport-sync" start
+[[ $6 != 1 ]] && startStop upmpdcli || startStop upmpdcli start
 #----------------------------------------------------------------------------------
 file=/root/.config/midori/config
 if [[ -e $file ]] && ! grep '^chromium' $file &> /dev/null; then

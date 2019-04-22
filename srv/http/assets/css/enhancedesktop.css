@@ -18,7 +18,8 @@
 	#playlist-warning i,
 	li:not( .licover ),
 	.licoverimg,
-	.liinfo {
+	.liinfo,
+	.edit {
 		cursor: pointer;
 	}
 	.menu a:hover,

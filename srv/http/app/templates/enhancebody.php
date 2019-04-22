@@ -83,12 +83,12 @@ if ( count( $files ) ) {
 		$artist = $names[ 1 ] ?: '~';
 		$sortalbum = stripLeading( $album );
 		$sortartist = stripLeading( $artist );
-		$cue = $names[ 2 ];
+		$path = $names[ 2 ];
 		if ( $redis->hGet( 'display', 'thumbbyartist' ) ) {
-			$lists[] = array( $sortartist, $sortalbum, $artist, $album, $filename, $cue );
+			$lists[] = array( $sortartist, $sortalbum, $artist, $album, $filename, $path );
 			$index[] = mb_substr( $sortartist, 0, 1, 'UTF-8' );
 		} else {
-			$lists[] = array( $sortalbum, $sortartist, $album, $artist, $filename, $cue );
+			$lists[] = array( $sortalbum, $sortartist, $album, $artist, $filename, $path );
 			$index[] = mb_substr( $sortalbum, 0, 1, 'UTF-8' );
 		}
 	}
@@ -98,10 +98,10 @@ if ( count( $files ) ) {
 	$index = array_keys( array_flip( $index ) );
 	$coverarthtml = '';
 	foreach( $lists as $list ) {
-		$licue = $list[ 5 ] ? '<a class="licue">'.$list[ 5 ].'</a>' : '';
+		$lipath = $list[ 5 ] ? '<a class="lipath">'.$list[ 5 ].'</a>' : '';
 		// leading + trailing quotes in the same line avoid spaces between divs
 		$coverartshtml.= '<div class="coverart">
-							'.$licue.'
+							'.$lipath.'
 							<a class="lisort">'.$list[ 0 ].'</a>
 							<div><img class="lazy" data-src="/srv/http/assets/img/coverarts/'.$list[ 4 ].'"></div>
 							<span class="coverart1">'.$list[ 2 ].'</span>
@@ -127,13 +127,11 @@ function stripLeading( $string ) {
 	return preg_replace(
 		  array(
 			'/^A\s+|^AN\s+|^THE\s+|[^\w\p{L}\p{N}\p{Pd} ~]/u',
-			'/\s+/',
-			'/^_/'
+			'/\s+|^_/'
 		)
 		, array(
 			'',  // strip articles | non utf-8 normal alphanumerics | tilde(blank data)
-			'-', // fix: php strnatcmp ignores spaces
-			'0 ' // fix: sort underscore to before 0
+			'-'  // fix: php strnatcmp ignores spaces | sort underscore to before 0
 		)
 		, $names
 	);
