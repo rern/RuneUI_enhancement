@@ -949,7 +949,7 @@ function dataParse( data, path, querytype, plid ) {
 								  + composerhtml
 								  +'<i class="fa fa-'+ ( artistmode ? 'artist' : 'albumartist' ) +'"></i><span class="bioartist">'+ ( artistmode ? artist : albumartist ) +'</span><br>'
 								  + genrehtml
-								  +'<i class="fa fa-music db-icon" data-target="#context-menu-folder"></i>'+ arrayfile.length +'<gr> • </gr>'+ second2HMS( litime )
+								  +'<i class="fa fa-music db-icon" data-target="#context-menu-'+ ( GUI.browsemode === 'coverart' ? 'folder' : GUI.browsemode ) +'"></i>'+ arrayfile.length +'<gr> • </gr>'+ second2HMS( litime )
 							  +'</span>'
 							  +'</li>';
 				} else if ( 'album' in value ) {
