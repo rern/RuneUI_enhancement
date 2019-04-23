@@ -178,12 +178,12 @@ function addReplace( mode, cmd, command, title ) {
 		) {
 			$( '#tab-playback' ).click();
 		} else {
+			var artist = $( '#artistalbum span' ).text();
+			var msg = GUI.list.name + ( artist ? ' • '+ artist : '' );
+			notify( title, msg, 'list-ul' );
 			getPlaybackStatus();
 		}
 	} );
-	var artist = $( '#artistalbum span' ).text();
-	var msg = GUI.list.name + ( artist ? ' • '+ artist : '' );
-	notify( title, msg, 'list-ul' );
 }
 function bookmarkNew() {
 	var path = GUI.list.path;
@@ -309,11 +309,11 @@ function webRadioCoverart() {
 		var nameimg = data.split( "\n" );
 		var name = nameimg[ 0 ];
 		var $img = nameimg[ 2 ] ? '<img src="'+ nameimg[ 2 ] +'">' : '<img src="'+ vu +'" style="border-radius: 9px">';
-		var infojson = {
+		info( {
 			  icon        : 'webradio'
 			, title       : 'Change Coverart'
-			, message     : $img
-						   +'<span class="bkname"><br><w>'+ name +'</w><span>'
+			, message     : ( nameimg[ 2 ] ? '<img src="'+ nameimg[ 2 ] +'">' : '<img src="'+ vu +'" style="border-radius: 9px">' )
+						   +'<span class="bkname"><br>'+ name +'<span>'
 			, msgalign    : 'center'
 			, fileoklabel : 'Replace'
 			, cancel      : function() {
@@ -328,11 +328,7 @@ function webRadioCoverart() {
 					var webradioname = path.replace( /\//g, '|' );
 					$.post( 'enhance.php', { imagefile: webradioname, base64webradio: name +'\n'+ newthumb +'\n'+ newimg }, function( result ) {
 							if ( result != -1 ) {
-								if ( GUI.playback ) {
-									getPlaybackStatus();
-								} else {
-									notify( 'Coverart Changed', name, 'coverart' );
-								}
+								notify( 'Coverart Changed', name, 'coverart' );
 							} else {
 								info( {
 									  icon    : 'webradio'
@@ -347,26 +343,7 @@ function webRadioCoverart() {
 					if ( path === GUI.status.file) GUI.status.coverart = newimg;
 				} );
 			}
-		}
-		if ( !$( '#cover-art' ).hasClass( 'vu' ) ) {
-			infojson.buttoncolor = '#0095d8'
-			infojson.buttonlabel = 'Remove';
-			infojson.button      = function() {
-				info( {
-					  icon     : 'webradio'
-					, title    : 'Remove Coverart'
-					, message  : $img
-								+'<br><w>'+ name +'</w>'
-					, msgalign : 'center'
-					, ok       : function() {
-						$.post( 'enhance.php', { bash: '/usr/bin/echo "'+ name +'" > "/srv/http/assets/img/webradios/'+ urlname +'"' }, function() {
-							getPlaybackStatus();
-						} );
-					}
-				} );
-			}
-		}
-		info( infojson );
+		} );
 	} );
 }
 function webRadioSave( name, url ) {
