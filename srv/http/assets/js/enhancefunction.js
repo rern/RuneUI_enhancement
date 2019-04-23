@@ -1713,7 +1713,7 @@ function renderPlaylist() {
 }
 function removeFromPlaylist( $li ) {
 	var $this = $li;
-	var webradio = $this.hasClass( 'webradio' );
+	var webradio = $this.find( '.fa-webradio' ).length;
 	var $elcount = webradio ? $( '#countradio' ) : $( '#countsong' );
 	var count = $elcount.attr( 'count' ) - 1;
 	$elcount.attr( 'count', count ).text( count );
