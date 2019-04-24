@@ -189,68 +189,66 @@ function bookmarkNew() {
 	var path = GUI.list.path;
 	var name = path.split( '/' ).pop();
 	var $el = $( '.home-bookmark' );
-	var i = $el.length;
-	$el.each( function() {
-		var $this = $( this );
-		if ( $this.find( '.lipath' ).text() === path ) {
-			var $img = $this.find( 'img' );
-			if ( $img.length ) {
-				var iconhtml = '<img src="'+ $img.attr( 'src' ) +'">'
-							  +'<br><w>'+ path +'</w>';
-			} else {
-				var iconhtml = '<i class="fa fa-bookmark bookmark"></i>'
-							  +'<br><a class="bklabel">'+ $this.find( '.bklabel' ).text() +'</a>'
-							  + path;
-			}
-			info( {
-				  icon     : 'bookmark'
-				, title    : 'Add Bookmark'
-				, message  : iconhtml
-						   +'<br><br>Already exists.'
-				, msgalign : 'center'
-			} );
-			return false
-		}
-		i--;
-		if ( !i ) {
-			$.post( 'enhancegetcover.php', { path: path }, function( base64img ) {
-				if ( base64img ) {
-					info( {
-						  icon      : 'bookmark'
-						, title     : 'Add Bookmark'
-						, message   : '<img src="'+ base64img +'">'
-									 +'<br><w>'+ path +'</w>'
-						, msgalign  : 'center'
-						, cancel    : function() {
-							$( '#db-entries li' ).removeClass( 'active' );
-						}
-						, ok        : function() {
-							$.post( 'enhance.php', { bookmarks: 1, path: path, base64: base64img, new: 1 } );
-							notify( 'Add Bookmark', path, 'bookmark' );
-						}
-					} );
+	if ( $el.length ) {
+		$el.each( function() {
+			var $this = $( this );
+			if ( $this.find( '.lipath' ).text() === path ) {
+				var $img = $this.find( 'img' );
+				if ( $img.length ) {
+					var iconhtml = '<img src="'+ $img.attr( 'src' ) +'">'
+								  +'<br><w>'+ path +'</w>';
 				} else {
-					info( {
-						  icon         : 'bookmark'
-						, title        : 'Add Bookmark'
-						, width        : 500
-						, message      : '<i class="fa fa-bookmark bookmark"></i>'
-										+'<br>'
-										+'<br><w>'+ path +'</w>'
-										+'<br>As:'
-						, msgalign     : 'center'
-						, textvalue    : name
-						, textrequired : 1
-						, boxwidth     : 'max'
-						, textalign    : 'center'
-						, cancel    : function() {
-							$( '#db-entries li' ).removeClass( 'active' );
-						}
-						, ok           : function() {
-							$.post( 'enhance.php', { bookmarks: $( '#infoTextBox' ).val(), path: path, new: 1 } );
-							notify( 'Add Bookmark', path, 'bookmark' );
-						}
-					} );
+					var iconhtml = '<i class="fa fa-bookmark bookmark"></i>'
+								  +'<br><a class="bklabel">'+ $this.find( '.bklabel' ).text() +'</a>'
+								  + path;
+				}
+				info( {
+					  icon     : 'bookmark'
+					, title    : 'Add Bookmark'
+					, message  : iconhtml
+							   +'<br><br>Already exists.'
+					, msgalign : 'center'
+				} );
+				return false
+			}
+		} );
+	}
+	$.post( 'enhancegetcover.php', { path: path }, function( base64img ) {
+		if ( base64img ) {
+			info( {
+				  icon      : 'bookmark'
+				, title     : 'Add Bookmark'
+				, message   : '<img src="'+ base64img +'">'
+							 +'<br><w>'+ path +'</w>'
+				, msgalign  : 'center'
+				, cancel    : function() {
+					$( '#db-entries li' ).removeClass( 'active' );
+				}
+				, ok        : function() {
+					$.post( 'enhance.php', { bookmarks: 1, path: path, base64: base64img, new: 1 } );
+					notify( 'Add Bookmark', path, 'bookmark' );
+				}
+			} );
+		} else {
+			info( {
+				  icon         : 'bookmark'
+				, title        : 'Add Bookmark'
+				, width        : 500
+				, message      : '<i class="fa fa-bookmark bookmark"></i>'
+								+'<br>'
+								+'<br><w>'+ path +'</w>'
+								+'<br>As:'
+				, msgalign     : 'center'
+				, textvalue    : name
+				, textrequired : 1
+				, boxwidth     : 'max'
+				, textalign    : 'center'
+				, cancel    : function() {
+					$( '#db-entries li' ).removeClass( 'active' );
+				}
+				, ok           : function() {
+					$.post( 'enhance.php', { bookmarks: $( '#infoTextBox' ).val(), path: path, new: 1 } );
+					notify( 'Add Bookmark', path, 'bookmark' );
 				}
 			} );
 		}
