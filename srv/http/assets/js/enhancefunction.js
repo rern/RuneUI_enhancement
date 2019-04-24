@@ -146,6 +146,7 @@ function setButtonUpdate() {
 		$( '#posupdate, #iupdate' ).addClass( 'hide' );
 		if ( GUI.intUpdate ) notify( 'Library Database', 'Database updated.', 'library' );
 		clearInterval( GUI.intUpdate );
+		GUI.intUpdate = false;
 	}
 }
 function setButton() {
