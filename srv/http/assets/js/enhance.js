@@ -406,10 +406,11 @@ $( '#volume' ).roundSlider( {
 		$( e.handle.element ).rsRotate( - e.handle.angle );
 		// value before 'change'
 		if ( e.preValue === 0 ) unmuteColor();
-		if ( GUI.local ) return
+		if ( GUI.drag ) {
+			GUI.drag = 0;
+			return
+		}
 		
-		GUI.local = 1;
-		setTimeout( function() { GUI.local = 0 }, 500 );
 		$.post( 'enhance.php', { volume: e.value } );
 	}
 	, start           : function( e ) { // on 'start drag'
@@ -418,7 +419,7 @@ $( '#volume' ).roundSlider( {
 	}
 	, drag            : function ( e ) { // drag with no transition by default
 		if ( e.value % 2 === 0 ) {
-			GUI.local = 1; // cleared by 'change'
+			GUI.drag = 1; // cleared by 'change'
 			$.post( 'enhance.php', { mpc: 'mpc volume '+ e.value } );
 			$( e.handle.element ).rsRotate( - e.handle.angle );
 		}
