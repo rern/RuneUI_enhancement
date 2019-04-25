@@ -21,12 +21,12 @@ _Tested on RuneAudio 0.4b, 0.5_
 ### New Features
 - Coverarts
 	- Browse by CoverArt ( with [LazyLoad](https://github.com/verlok/lazyload) )
-	- Coverart bookmarks
+	- Coverart bookmarks ( need `ext*` formatted drive )
 	- Coverart in album view
 	- Replace / remove
-	- Image from each Dirble stations
 	- VU meter for Webradio (animated gif)
-	- Custom Webradio coverarts
+	- Image from each Dirble stations ( need `ext*` formatted drive )
+	- Custom Webradio coverarts ( need `ext*` formatted drive )
 - Index bar
 	- Mask available indexes
 - Library sorting
@@ -113,16 +113,16 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 - Drag to rearrange home blocks
 - Show counts
 - Coverarts:
-	- Browse by CoverArt
+	- Coverart in album view / album directory
+		- Long-press for replace / remove
+	- Browse by CoverArt ( need `ext*` formatted drive )
 		- Long-press `CoverArt` to create / update thumbnails
 		- Long-press thumbnail for replace / remove
 		- Context menu in directory for partial update
 		- Sort by album or by artist
-	- Coverart bookmarks
+	- Coverart bookmarks ( need `ext*` formatted drive )
 		- Long-press for replace / remove
-	- Coverart in album view / album directory
-		- Long-press for replace / remove
-	- Webradio coverarts
+	- Webradio coverarts ( need `ext*` formatted drive )
 		- Tap Webradio icon in list view
 - Bookmarks and webradios can be renamed
 - Bookmarks and webradios can be named with " characters
