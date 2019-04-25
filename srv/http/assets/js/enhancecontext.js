@@ -311,9 +311,21 @@ function webRadioCoverart() {
 			  icon        : 'webradio'
 			, title       : 'Change Coverart'
 			, message     : ( nameimg[ 2 ] ? '<img src="'+ nameimg[ 2 ] +'">' : '<img src="'+ vu +'" style="border-radius: 9px">' )
-						   +'<span class="bkname"><br>'+ name +'<span>'
+						   +'<span class="bkname"><br><w>'+ name +'</w><span>'
 			, msgalign    : 'center'
 			, fileoklabel : 'Replace'
+			, buttonlabel : 'Remove'
+			, buttoncolor : '#0095d8'
+			, button      : function() {
+				$.post( 'enhance.php', { bash: '/usr/bin/echo "'+ name +'" > "/srv/http/assets/img/webradios/'+ urlname +'"' } );
+				if ( GUI.playback ) {
+					$( '#cover-art' ).attr( 'src', GUI.status.state === 'play' ? vu : vustop );
+				} else {
+					$( '#db-entries li.active' ).find( 'img' ).remove();
+					$( '#db-entries li.active' ).find( '.lisort' ).after( '<i class="fa fa-webradio db-icon" data-target="#context-menu-webradio"></i>' );
+					$( '#db-entries li' ).removeClass( 'active' );
+				}
+			}
 			, cancel      : function() {
 				$( '#db-entries li' ).removeClass( 'active' );
 			}
@@ -325,23 +337,26 @@ function webRadioCoverart() {
 					var newthumb = picacanvas.toDataURL( 'image/jpeg', 0.9 );
 					var webradioname = path.replace( /\//g, '|' );
 					$.post( 'enhance.php', { imagefile: webradioname, base64webradio: name +'\n'+ newthumb +'\n'+ newimg }, function( result ) {
-							if ( result != -1 ) {
-								notify( 'Coverart Changed', name, 'coverart' );
+						if ( result != -1 ) {
+							if ( GUI.playback ) {
+								$( '#cover-art' ).attr( 'src', newimg );
 							} else {
-								info( {
-									  icon    : 'webradio'
-									, title   : 'Change Coverart'
-									, message : '<i class="fa fa-warning"></i>Upload image failed.'
-								} );
+								$( '#db-entries li.active' ).find( '.db-icon' ).remove();
+								$( '#db-entries li.active' ).find( '.lisort' ).after( '<img class="radiothumb db-icon" src="'+ newthumb +'" data-target="#context-menu-radio">' );
+								$( '#db-entries li' ).removeClass( 'active' );
 							}
+						} else {
+							info( {
+								  icon    : 'webradio'
+								, title   : 'Change Coverart'
+								, message : '<i class="fa fa-warning"></i>Upload image failed.'
+							} );
+						}
 					} );
-					$( '#db-entries li.active' ).find( '.db-icon' ).remove();
-					$( '#db-entries li.active' ).find( '.lisort' ).after( '<img class="radiothumb db-icon" src="'+ newthumb +'" data-target="#context-menu-radio">' );
-					$( '#db-entries li' ).removeClass( 'active' );
-					if ( path === GUI.status.file) GUI.status.coverart = newimg;
 				} );
 			}
 		} );
+		if ( $( '#infoMessage img' ).attr( 'src' ) === vu ) $( '#infoButton' ).hide();
 	} );
 }
 function webRadioSave( name, url ) {
