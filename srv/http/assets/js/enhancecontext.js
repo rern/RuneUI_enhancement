@@ -321,7 +321,7 @@ function webRadioCoverart() {
 				var newimg = $( '#infoMessage .newimg' ).attr( 'src' );
 				var picacanvas = document.createElement( 'canvas' );
 				picacanvas.width = picacanvas.height = 80;
-				window.pica.resizeCanvas( $( '#infoMessage .newimg' )[ 0 ], picacanvas, picaOption, function() {
+				pica.resize( $( '#infoMessage .newimg' )[ 0 ], picacanvas, picaOption ).then( function() {
 					var newthumb = picacanvas.toDataURL( 'image/jpeg', 0.9 );
 					var webradioname = path.replace( /\//g, '|' );
 					$.post( 'enhance.php', { imagefile: webradioname, base64webradio: name +'\n'+ newthumb +'\n'+ newimg }, function( result ) {

@@ -914,7 +914,7 @@ $( '#infoFileBox' ).change( function() {
 				imgWHhtml += '<div>(Resized to '+ px +' x '+ px +' px)</div></div>';
 				var picacanvas = document.createElement( 'canvas' ); // create canvas object
 				picacanvas.width = picacanvas.height = px; // size of resized image
-				window.pica.resizeCanvas( img, picacanvas, picaOption, function() {
+				pica.resize( img, picacanvas, picaOption ).then( function() {
 					var resizedimg = picacanvas.toDataURL( 'image/jpeg', 0.9 ); // canvas -> base64 (jpg, qualtity)
 					$( '#infoMessage' ).append( '<img class="newimg" src="'+ resizedimg +'">'+ imgWHhtml );
 				} );
