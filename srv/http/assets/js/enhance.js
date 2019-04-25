@@ -23,22 +23,22 @@ var GUI = {
 	, playback     : 1
 	, playlist     : 0
 	, pleditor     : 0
-	, pllist     : {}
+	, pllist       : {}
 	, plscrolltop  : 0
 	, plugin       : ''
 	, scale        : 1
 	, screenS      : ( window.innerHeight < 590 || window.innerWidth < 500 )
 	, scrollspeed  : 80 // pixel/s
 	, status       : {}
-	, debounce      : ''
-	, debouncems    : 300
+	, debounce     : ''
+	, debouncems   : 300
 };
-var picaOption = { // pica.js scaling: img to canvas
-	  unsharpAmount: 100  // 0...500 Default = 0 (try 50-100)
-	, unsharpThreshold: 5 // 0...100 Default = 0 (try 10)
-	, unsharpRadius: 0.6
-//	, quality: 3          // 0...3 Default = 3 (Lanczos win=3)
-//	, alpha: true         // Default = false (black crop background)
+var picaOption = { // pica.js
+	  unsharpAmount    : 100  // 0...500 Default = 0 (try 50-100)
+	, unsharpThreshold : 5    // 0...100 Default = 0 (try 10)
+	, unsharpRadius    : 0.6
+//	, quality          : 3    // 0...3 Default = 3 (Lanczos win=3)
+//	, alpha            : true // Default = false (black crop background)
 };
 var A2Z = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split( '' );
 var hash = Date.now();
@@ -386,7 +386,7 @@ $( '#time' ).roundSlider( {
 	}
 } );
 $( '#volume' ).roundSlider( {
-	  sliderType: 'default'
+	  sliderType      : 'default'
 	, radius          : 115
 	, width           : 50
 	, handleSize      : '-25'
