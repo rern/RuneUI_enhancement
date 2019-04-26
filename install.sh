@@ -147,14 +147,7 @@ EOF
 )
 insertH '1'
 
-if [[ $1 == u ]]; then
-	installfinish $@
-	restartlocalbrowser
-	reinitsystem
-	exit
-fi
-
-########## if not update ############################################################
+# to be moved after 'if not update ##########################################
 makeDirLink tmp
 makeDirLink webradiopl
 makeDirLink coverarts
@@ -228,6 +221,15 @@ if [[ -z $( ls -A $dir ) ]]; then # convert only when none found
 		chown -R http:http $dir
 	fi
 fi
+############################################################################
+if [[ $1 == u ]]; then
+	installfinish $@
+	restartlocalbrowser
+	reinitsystem
+	exit
+fi
+
+########## if not update ############################################################
 
 # zoom - keep range: 0.5 - 3.0
 z=$1;
