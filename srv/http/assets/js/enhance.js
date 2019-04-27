@@ -1710,6 +1710,7 @@ pushstreams.idle.onmessage = function( changed ) {
 			$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
 				GUI.status.updating_db = status.updating_db ? 1 : 0;
 				setButtonUpdate();
+				if ( !status.updating_db ) notify( 'Library Database', 'Database updated.', 'library' );
 			}, 'json' );
 		} else if ( changed === 'database' ) { // on files changed (for webradio rename)
 			if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) $( '#home-webradio' ).tap();

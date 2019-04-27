@@ -129,6 +129,7 @@ function setButtonToggle() {
 	}
 }
 function setButtonUpdate() {
+	console.log( GUI.status.updating_db )
 	if ( GUI.status.updating_db ) {
 		$( '#tab-library i, #db-home i' ).addClass( 'blink' );
 		if ( GUI.playback && !GUI.bars ) {
@@ -144,7 +145,6 @@ function setButtonUpdate() {
 	} else {
 		$( '#tab-library i, #db-home i' ).removeClass( 'blink' );
 		$( '#posupdate, #iupdate' ).addClass( 'hide' );
-		if ( GUI.intUpdate ) notify( 'Library Database', 'Database updated.', 'library' );
 		clearInterval( GUI.intUpdate );
 		GUI.intUpdate = false;
 	}
@@ -943,8 +943,9 @@ function dataParse( data, path, querytype, plid ) {
 					var composerhtml = ( composer && browsemode === 'composer' ) ? '<i class="fa fa-composer"></i><span class="licomposer">'+ composer +'</span><br>' : '';
 					var genrehtml = genre && genre !== -1 ? '<span><i class="fa fa-genre"></i>'+ genre +'</span><br>' : '';
 					var nocover = !coverart ? ' nocover' : '';
+					var file = data[ 0 ].file;
 					content += '<li class="licover">'
-							  +'<a class="lipath">'+ path +'</a><a class="liname">'+ path.replace(/^.*\//, '') +'</a>'
+							  +'<a class="lipath">'+ file.substring( 0, file.lastIndexOf( '/' ) ) +'</a><a class="liname">'+ path +'</a>'
 							  +'<div class="licoverimg'+ nocover +'"><img src="'+ coversrc +'" class="coversmall"></div>'
 							  +'<span class="liinfo">'
 								  +'<bl class="lialbum">'+ album +'</bl><br>'
