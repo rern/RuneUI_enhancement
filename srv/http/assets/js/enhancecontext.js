@@ -80,7 +80,10 @@ $( '.contextmenu a' ).click( function() {
 	var mpcCmd;
 	// must keep order otherwise replaceplay -> play, addplay -> play
 	var mode = cmd.replace( /replaceplay|replace|addplay|add/, '' );
-	if ( !mode ) {
+	if ( [ 'album', 'artist', 'composer', 'genre' ].indexOf( GUI.list.mode ) !== -1 ) {
+		var artist = GUI.list.artist;
+		mpcCmd = 'mpc findadd '+ GUI.list.mode +' "'+ name +'"'+ ( artist ? ' artist "'+ artist +'"' : '' );
+	} else if ( !mode ) {
 		if ( GUI.list.index ) { // cue, m3u
 			var plfile = GUI.list.path.replace( /"/g, '\\"' );
 			mpcCmd = '/srv/http/enhance1cuem3u.sh "'+ plfile +'" '+ GUI.list.index;
@@ -102,9 +105,6 @@ $( '.contextmenu a' ).click( function() {
 	} else if ( mode === 'pl' ) {
 		cmd = cmd.slice( 2 );
 		mpcCmd = 'mpc load "'+ name +'"';
-	} else { // album|artist|composer|genre
-		var artist = GUI.list.artist;
-		mpcCmd = 'mpc findadd '+ GUI.list.mode +' "'+ name +'"'+ ( artist ? ' artist "'+ artist +'"' : '' );
 	}
 	cmd = cmd.replace( /album|artist|composer|genre/, '' );
 	var contextCommand = {
@@ -172,6 +172,7 @@ function updateThumbnails() {
 	} );
 }
 function addReplace( mode, cmd, command, title ) {
+	console.log(command)
 	$.post( 'enhance.php', { mpc: command }, function() {
 		if ( GUI.display.playbackswitch
 			&& ( cmd === 'addplay' || cmd === 'replaceplay' ) 
