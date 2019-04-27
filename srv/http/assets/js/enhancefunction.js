@@ -1411,8 +1411,9 @@ function dbContextmenu( $li, $target ) {
 	} else {
 		GUI.list.mode = $li.find( '.db-icon' ).prop( 'class' ).replace( /fa fa-| db-icon/g, '' );
 	}
+	GUI.list.path = $li.find( '.lipath' ).text().trim() || '';
 	GUI.list.name = $li.find( '.liname' ).text().trim() || '';
-	GUI.list.path = GUI.browsemode === 'coverart' ? GUI.list.name : $li.find( '.lipath' ).text().trim() || '';
+//	GUI.list.path = GUI.browsemode === 'coverart' ? GUI.list.name : $li.find( '.lipath' ).text().trim() || '';
 	GUI.list.artist = $li.find( '.liartist' ).text().trim() || '';
 	GUI.list.index = $li.find( '.liindex' ).text() || '';  // cue - in contextmenu
 	GUI.list.liindex = $( '#db-entries li' ).index( $li ); // for webradio delete - in contextmenu
