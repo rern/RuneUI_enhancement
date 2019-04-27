@@ -951,7 +951,7 @@ function dataParse( data, path, querytype, plid ) {
 								  + composerhtml
 								  +'<i class="fa fa-'+ ( artistmode ? 'artist' : 'albumartist' ) +'"></i><span class="liartist">'+ ( artistmode ? artist : albumartist ) +'</span><br>'
 								  + genrehtml
-								  +'<i class="fa fa-music db-icon" data-target="#context-menu-'+ ( GUI.browsemode === 'coverart' ? 'folder' : GUI.browsemode ) +'"></i>'+ arrayfile.length +'<gr> • </gr>'+ second2HMS( litime )
+								  +'<i class="fa fa-music db-icon" data-target="#context-menu-folder"></i>'+ arrayfile.length +'<gr> • </gr>'+ second2HMS( litime )
 							  +'</span>'
 							  +'</li>';
 				} else if ( 'album' in value ) {
@@ -1413,7 +1413,6 @@ function dbContextmenu( $li, $target ) {
 	}
 	GUI.list.path = $li.find( '.lipath' ).text().trim() || '';
 	GUI.list.name = $li.find( '.liname' ).text().trim() || '';
-//	GUI.list.path = GUI.browsemode === 'coverart' ? GUI.list.name : $li.find( '.lipath' ).text().trim() || '';
 	GUI.list.artist = $li.find( '.liartist' ).text().trim() || '';
 	GUI.list.index = $li.find( '.liindex' ).text() || '';  // cue - in contextmenu
 	GUI.list.liindex = $( '#db-entries li' ).index( $li ); // for webradio delete - in contextmenu

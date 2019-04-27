@@ -69,9 +69,6 @@ $( '.contextmenu a' ).click( function() {
 	
 	// replaceplay|replace|addplay|add //////////////////////////////////////////
 	$( '#db-entries li, #pl-editor li' ).removeClass( 'active' );
-	// get name
-//	if ( GUI.playlist && $( '#pl-currentpath .lipath' ).length ) {
-//		var name = GUI.list.li.find( '.lipath' ).text();
 	if ( GUI.browsemode === 'coverart' ) {
 		var name = GUI.list.name;
 	} else {
