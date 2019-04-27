@@ -456,7 +456,8 @@ function getPlaybackStatus() {
 			GUI.status[ key ] = value;
 		} );
 		setButton();
-		if ( GUI.playback || !playlistlength ) {
+		if ( GUI.playback || !playlistlength || GUI.plreplace ) {
+			GUI.plreplace = 0;
 			renderPlayback();
 			// imodedelay fix imode flashing on audio output switched
 			if ( !GUI.imodedelay ) displayPlayback();

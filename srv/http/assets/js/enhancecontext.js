@@ -181,6 +181,7 @@ function addReplace( mode, cmd, command, title ) {
 			var artist = $( '#artistalbum span' ).text();
 			var msg = GUI.list.name + ( artist ? ' • '+ artist : '' );
 			notify( title, msg, 'list-ul' );
+			if ( cmd === 'replace' ) GUI.plreplace = 1;
 			getPlaybackStatus();
 		}
 	} );
