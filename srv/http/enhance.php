@@ -72,7 +72,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	file_put_contents( $tmpfile, $content );
 	exec( "$sudo/mv -f $tmpfile \"$plfile\"", $result, $std );
 } else if ( isset( $_POST[ 'coverartalbum' ] ) ) {
-	$album = $_POST[ 'coverartalbum' ];
+	$album = str_replace( '"', '\"', $_POST[ 'coverartalbum' ] );
 	$albums = shell_exec( 'mpc find -f "%album% - [%albumartist%|%artist%]" album "'.$album.'" | awk \'!a[$0]++\'' );
 	$count = count( explode( "\n", rtrim( $albums ) ) );
 	$cmd = 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" album "'.$album.'"';
