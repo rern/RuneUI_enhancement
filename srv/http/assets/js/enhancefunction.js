@@ -129,7 +129,6 @@ function setButtonToggle() {
 	}
 }
 function setButtonUpdate() {
-	console.log( GUI.status.updating_db )
 	if ( GUI.status.updating_db ) {
 		$( '#tab-library i, #db-home i' ).addClass( 'blink' );
 		if ( GUI.playback && !GUI.bars ) {
