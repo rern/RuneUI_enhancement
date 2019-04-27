@@ -172,7 +172,6 @@ function updateThumbnails() {
 	} );
 }
 function addReplace( mode, cmd, command, title ) {
-	console.log(command)
 	$.post( 'enhance.php', { mpc: command }, function() {
 		if ( GUI.display.playbackswitch
 			&& ( cmd === 'addplay' || cmd === 'replaceplay' ) 
