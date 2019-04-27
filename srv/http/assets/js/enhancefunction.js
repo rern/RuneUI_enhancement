@@ -939,7 +939,7 @@ function dataParse( data, path, querytype, plid ) {
 					var coversrc = coverart ? coverart : coverrune;
 					var browsemode = GUI.dbbackdata.length ? GUI.dbbackdata[ 0 ].browsemode : '';
 					var artistmode = [ 'artist', 'composer', 'genre' ].indexOf( browsemode ) !== -1 ? 1 : 0;
-					var composerhtml = ( composer && browsemode === 'composer' ) ? '<i class="fa fa-composer"></i><span class="biocomposer">'+ composer +'</span><br>' : '';
+					var composerhtml = ( composer && browsemode === 'composer' ) ? '<i class="fa fa-composer"></i><span class="licomposer">'+ composer +'</span><br>' : '';
 					var genrehtml = genre && genre !== -1 ? '<span><i class="fa fa-genre"></i>'+ genre +'</span><br>' : '';
 					var nocover = !coverart ? ' nocover' : '';
 					content += '<li class="licover">'
@@ -948,7 +948,7 @@ function dataParse( data, path, querytype, plid ) {
 							  +'<span class="liinfo">'
 								  +'<bl class="lialbum">'+ album +'</bl><br>'
 								  + composerhtml
-								  +'<i class="fa fa-'+ ( artistmode ? 'artist' : 'albumartist' ) +'"></i><span class="bioartist">'+ ( artistmode ? artist : albumartist ) +'</span><br>'
+								  +'<i class="fa fa-'+ ( artistmode ? 'artist' : 'albumartist' ) +'"></i><span class="liartist">'+ ( artistmode ? artist : albumartist ) +'</span><br>'
 								  + genrehtml
 								  +'<i class="fa fa-music db-icon" data-target="#context-menu-'+ ( GUI.browsemode === 'coverart' ? 'folder' : GUI.browsemode ) +'"></i>'+ arrayfile.length +'<gr> • </gr>'+ second2HMS( litime )
 							  +'</span>'
@@ -1044,12 +1044,9 @@ function dataParse( data, path, querytype, plid ) {
 		, coverart      : 'coverart'
 	}
 	if ( GUI.browsemode !== 'file' ) {
-		if ( GUI.browsemode !== 'album' && GUI.browsemode !== 'composeralbum' ) {
-			var dotpath = ( path === mode[ GUI.browsemode ] ) ? '' : '<a id="artistalbum"><gr> • </gr><span class="white">'+ path +'</span></a>';
-		} else {
+		if ( GUI.browsemode === 'album' || GUI.browsemode === 'composeralbum' ) {
 			var albumpath = path === 'Album' ? '' : path;
 			var albumtext = GUI.albumartist ? GUI.albumartist : albumpath;
-			var dotpath = albumtext ? '<a id="artistalbum"><gr> • </gr><span class="white">'+ albumtext +'</span></a>' : '';
 		}
 		$( '#db-currentpath .lipath' ).text( path ); // for back navigation
 		$( '#db-currentpath' ).addClass( 'noellipse' );
@@ -1058,7 +1055,7 @@ function dataParse( data, path, querytype, plid ) {
 			var browsemode = browsemode || GUI.dbbrowsemode;
 			$( '#db-currentpath span' ).html( iconName[ browsemode ][ 0 ] +' <a>'+ iconName[ browsemode ][ 1 ] +'</a>' );
 		} else {
-			$( '#db-currentpath span' ).html( iconName[ GUI.browsemode ][ 0 ] +' <a id="rootpath" data-path="'+ mode[ GUI.browsemode ] +'">'+ iconName[ GUI.browsemode ][ 1 ] +'</a>'+ dotpath );
+			$( '#db-currentpath span' ).html( iconName[ GUI.browsemode ][ 0 ] +' <a id="rootpath" data-path="'+ mode[ GUI.browsemode ] +'">'+ iconName[ GUI.browsemode ][ 1 ] +'</a>' );
 		}
 		$( '#artistalbum' ).toggleClass( 'hide', coverart !== '' );
 	} else {
@@ -1415,7 +1412,6 @@ function dbContextmenu( $li, $target ) {
 	}
 	GUI.list.path = $li.find( '.lipath' ).text().trim() || '';
 	GUI.list.name = $li.find( '.liname' ).text().trim() || '';
-	GUI.list.bioartist = $li.find( '.bioartist' ).text().trim() || '';
 	GUI.list.artist = $li.find( '.liartist' ).text().trim() || '';
 	GUI.list.index = $li.find( '.liindex' ).text() || '';  // cue - in contextmenu
 	GUI.list.liindex = $( '#db-entries li' ).index( $li ); // for webradio delete - in contextmenu
@@ -1655,7 +1651,7 @@ function htmlPlaylist( data ) {
 	} );
 	if ( coverart ) {
 		var browsemode = GUI.dbbackdata.length ? GUI.dbbackdata[ 0 ].browsemode : '';
-		var composerhtml = ( composer && browsemode == 'composer' ) ? '<i class="fa fa-composer"></i><spanspan class="biocomposer">'+ composer +'</span><br>' : '';
+		var composerhtml = ( composer && browsemode == 'composer' ) ? '<i class="fa fa-composer"></i><spanspan class="licomposer">'+ composer +'</span><br>' : '';
 		var genrehtml = genre && genre !== -1 ? '<span><i class="fa fa-genre"></i>'+ genre +'</span><br>' : '';
 		var licover = '<li class="licover">'
 						 +'<a class="lipath">'+ path +'</a><a class="liname">'+ path.replace(/^.*\//, '') +'</a>'
@@ -1663,7 +1659,7 @@ function htmlPlaylist( data ) {
 						 +'<span class="liinfo">'
 							+'<bl class="lialbum">'+ album +'</bl><br>'
 							+ composerhtml
-							+'<i class="fa fa-albumartist"></i><span class="bioartist">'+ artist +'</span><br>'
+							+'<i class="fa fa-albumartist"></i><span class="liartist">'+ artist +'</span><br>'
 							+ genrehtml
 							+'<i class="fa fa-music db-icon" data-target="#context-menu-folder"></i>'+ countsong +'<gr> • </gr>'+ second2HMS( pltime )
 						 +'</span>'

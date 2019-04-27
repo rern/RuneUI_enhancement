@@ -1217,7 +1217,7 @@ $( '#db-entries' ).on( 'tap', '.edit',  function() {
 	var $img = $this.siblings( 'img' );
 	var $thisli = $this.parent().parent();
 	var album = $thisli.find( '.lialbum' ).text();
-	var artist = $thisli.find( '.bioartist' ).text();
+	var artist = $thisli.find( '.liartist' ).text();
 	var lipath = $thisli.next().find( '.lipath' ).text();
 	var path = '/mnt/MPD/'+ lipath.substr( 0, lipath.lastIndexOf( '/' ) );
 	var fn = $this.hasClass( 'licover-remove' ) ? removeCoverart : replaceCoverart;
@@ -1243,12 +1243,12 @@ $( '#db-entries' ).on( 'taphold', '.licoverimg',  function() {
 	}
 	
 	var islast = $this.find( '.fa-music' ).length + $this.find( '.fa-webradio' ).length + $this.find( '.radiothumb' ).length;
-	if ( $this.index() === 0 && $target.is( '.bioartist, .fa-artist, .fa-albumartist, .biocomposer, .fa-composer' ) ) {
-		var name = ( $target.is( '.biocomposer, .fa-composer' ) ) ? $this.find( '.biocomposer' ).text() : $this.find( '.bioartist' ).text();
+	if ( $this.index() === 0 && $target.is( '.liartist, .fa-artist, .fa-albumartist, .licomposer, .fa-composer' ) ) {
+		var name = ( $target.is( '.licomposer, .fa-composer' ) ) ? $this.find( '.licomposer' ).text() : $this.find( '.liartist' ).text();
 		getBio( name );
 		return
 	} else if ( $target.hasClass( 'lialbum' ) ) {
-		window.open( 'https://www.last.fm/music/'+ $this.find( '.bioartist' ).text() +'/'+ $this.find( '.lialbum' ).text(), '_blank' );
+		window.open( 'https://www.last.fm/music/'+ $this.find( '.liartist' ).text() +'/'+ $this.find( '.lialbum' ).text(), '_blank' );
 		return
 	} else if ( islast || $target.data( 'target' ) ) {
 		dbContextmenu( $this, $target );

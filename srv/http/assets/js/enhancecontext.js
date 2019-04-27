@@ -103,7 +103,7 @@ $( '.contextmenu a' ).click( function() {
 		cmd = cmd.slice( 2 );
 		mpcCmd = 'mpc load "'+ name +'"';
 	} else { // album|artist|composer|genre
-		var artist = GUI.list.artist || $( '#artistalbum span' ).text().replace( /"/g, '\\"' );
+		var artist = GUI.list.artist;
 		mpcCmd = 'mpc findadd '+ GUI.list.mode +' "'+ name +'"'+ ( artist ? ' artist "'+ artist +'"' : '' );
 	}
 	cmd = cmd.replace( /album|artist|composer|genre/, '' );
