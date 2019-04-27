@@ -1485,6 +1485,9 @@ i.bookmark,
 .liimg {
 	display: none;
 }
+.licover .liartist {
+	display: inline;
+}
 span.dbpath {
 	vertical-align: 15%;
 }
