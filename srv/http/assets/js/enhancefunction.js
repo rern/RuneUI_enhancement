@@ -1406,7 +1406,7 @@ function dbContextmenu( $li, $target ) {
 	}
 	
 	GUI.list = {};
-	if ( $li.hasClass( 'licover' ) ) {
+	if ( $li.hasClass( 'licover' ) && GUI.browsemode === 'coverart' ) {
 		GUI.list.mode = 'album'
 	} else {
 		GUI.list.mode = $li.find( '.db-icon' ).prop( 'class' ).replace( /fa fa-| db-icon/g, '' );
