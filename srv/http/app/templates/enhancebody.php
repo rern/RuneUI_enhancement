@@ -99,11 +99,12 @@ if ( count( $files ) ) {
 	$coverarthtml = '';
 	foreach( $lists as $list ) {
 		$lipath = $list[ 5 ] ? '<a class="lipath">'.$list[ 5 ].'</a>' : '';
+		$coverfile = str_replace( '"', '%22', $list[ 4 ] );
 		// leading + trailing quotes in the same line avoid spaces between divs
 		$coverartshtml.= '<div class="coverart">
 							'.$lipath.'
 							<a class="lisort">'.$list[ 0 ].'</a>
-							<div><img class="lazy" data-src="/srv/http/assets/img/coverarts/'.$list[ 4 ].'"></div>
+							<div><img class="lazy" data-src="/srv/http/assets/img/coverarts/'.$coverfile.'"></div>
 							<span class="coverart1">'.$list[ 2 ].'</span>
 							<gr class="coverart2">'.( $list[ 3 ] ?: '&nbsp;' ).'</gr>
 						</div>';
