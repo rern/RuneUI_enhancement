@@ -1374,6 +1374,11 @@ $( '#plcrop' ).click( function() {
 		}
 	} );
 } );
+$( '#plconsume' ).click( function() {
+	GUI.status.consume = GUI.status.consume ? 0 : 1;
+	$( this ).css( 'color', GUI.status.consume ? '#0095d8' : '' );
+	$.post( 'enhance.php', { mpc: 'mpc consume' } );
+} );
 $( '#plclear' ).click( function() {
 	if ( $( '#pl-entries .pl-remove' ).length ) {
 		$( '#pl-entries .pl-remove' ).remove();
