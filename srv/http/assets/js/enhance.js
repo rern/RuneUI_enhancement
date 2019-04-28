@@ -658,8 +658,10 @@ $( '.btn-cmd' ).click( function() {
 		} else {
 			command = ( GUI.status.ext === 'radio' && GUI.status.state === 'play' ) ? 'mpc stop' : 'mpc toggle';
 		}
+		GUI.status.state = cmd;
 	}
 	$.post( 'enhance.php', { mpc: command } );
+	setButtonToggle();
 } );
 $( '#timeTL' ).click( function() {
 	var active = GUI.status.activePlayer;
@@ -1375,8 +1377,7 @@ $( '#plcrop' ).click( function() {
 	} );
 } );
 $( '#plconsume' ).click( function() {
-	GUI.status.consume = GUI.status.consume ? 0 : 1;
-	$( this ).css( 'color', GUI.status.consume ? '#0095d8' : '' );
+	$( this ).css( 'color', GUI.status.consume ? '' : '#0095d8' );
 	$.post( 'enhance.php', { mpc: 'mpc consume' } );
 } );
 $( '#plclear' ).click( function() {
@@ -1703,6 +1704,7 @@ pushstreams.idle.onmessage = function( changed ) {
 					GUI.status[ key ] = value;
 				} );
 				if ( GUI.playback ) setButtonToggle();
+				$( '#plconsume' ).css( 'color', GUI.status.consume ? '#0095d8' : '' );
 			}, 'json' );
 		} else if ( changed === 'update' ) {
 			$.post( 'enhance.php', { getcount: 1 }, function( data ) {
