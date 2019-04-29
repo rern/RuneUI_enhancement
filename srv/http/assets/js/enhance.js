@@ -132,8 +132,10 @@ $( '#displaylibrary' ).click( function() {
 			} );
 			$.post( 'enhance.php', { setdisplay: data }, function() {
 				if ( GUI.display.thumbbyartist !== thumbbyartist ) location.reload();
-				
-				if ( !GUI.library ) $( '#tab-library' ).click();
+				if ( !GUI.library ) {
+					renderLibrary();
+					$( '#tab-library' ).click();
+				}
 			} );
 		}
 	} );
