@@ -15,7 +15,6 @@ alias=enha
 . /srv/http/addonsedit.sh
 
 #0temp0
-rm -rf /srv/http/assets/img/{bookmarks,coverarts,webradios,webradiopl}
 [[ $( redis-cli hget addons enha ) < 20190318 ]] && redis-cli hdel display order &> /dev/null
 #1temp1
 
@@ -148,8 +147,7 @@ EOF
 )
 insertH '1'
 
-########## to be moved after 'if not update' ###################################################################
-
+# to be moved after 'if not update ##########################################
 makeDirLink tmp
 makeDirLink webradiopl
 makeDirLink coverarts
@@ -223,8 +221,7 @@ if [[ -z $( ls -A $dir ) ]]; then # convert only when none found
 		chown -R http:http $dir
 	fi
 fi
-##############################################################################################################
-
+############################################################################
 if [[ $1 == u ]]; then
 	installfinish $@
 	restartlocalbrowser
@@ -318,6 +315,8 @@ genre=$( mpc list genre | awk NF | wc -l )
 redis-cli set mpddb "$albumartist $composer $genre" &> /dev/null
 # disable USB drive auto scan database ..."
 redis-cli set usb_db_autorebuild 0 &> /dev/null
+# reset notify delay
+redis-cli hset settings notify 3 &> /dev/null
 # disable default shutdown
 systemctl disable rune_shutdown
 #systemctl stop rune_shutdown

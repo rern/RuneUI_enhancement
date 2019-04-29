@@ -69,9 +69,8 @@ $( '.contextmenu a' ).click( function() {
 	
 	// replaceplay|replace|addplay|add //////////////////////////////////////////
 	$( '#db-entries li, #pl-editor li' ).removeClass( 'active' );
-	// get name
-	if ( GUI.playlist && $( '#pl-currentpath .lipath' ).length ) {
-		var name = GUI.list.li.find( '.lipath' ).text();
+	if ( GUI.browsemode === 'coverart' ) {
+		var name = GUI.list.name;
 	} else {
 		var name = GUI.list.path;
 	}
@@ -80,7 +79,10 @@ $( '.contextmenu a' ).click( function() {
 	var mpcCmd;
 	// must keep order otherwise replaceplay -> play, addplay -> play
 	var mode = cmd.replace( /replaceplay|replace|addplay|add/, '' );
-	if ( !mode ) {
+	if ( [ 'album', 'artist', 'composer', 'genre' ].indexOf( GUI.list.mode ) !== -1 ) {
+		var artist = GUI.list.artist;
+		mpcCmd = 'mpc findadd '+ GUI.list.mode +' "'+ name +'"'+ ( artist ? ' artist "'+ artist +'"' : '' );
+	} else if ( !mode ) {
 		if ( GUI.list.index ) { // cue, m3u
 			var plfile = GUI.list.path.replace( /"/g, '\\"' );
 			mpcCmd = '/srv/http/enhance1cuem3u.sh "'+ plfile +'" '+ GUI.list.index;
@@ -102,9 +104,6 @@ $( '.contextmenu a' ).click( function() {
 	} else if ( mode === 'pl' ) {
 		cmd = cmd.slice( 2 );
 		mpcCmd = 'mpc load "'+ name +'"';
-	} else { // album|artist|composer|genre
-		var artist = GUI.list.artist || $( '#artistalbum span' ).text().replace( /"/g, '\\"' );
-		mpcCmd = 'mpc findadd '+ GUI.list.mode +' "'+ name +'"'+ ( artist ? ' artist "'+ artist +'"' : '' );
 	}
 	cmd = cmd.replace( /album|artist|composer|genre/, '' );
 	var contextCommand = {
@@ -178,79 +177,78 @@ function addReplace( mode, cmd, command, title ) {
 		) {
 			$( '#tab-playback' ).click();
 		} else {
+			var artist = $( '#artistalbum span' ).text();
+			var msg = GUI.list.name + ( artist ? ' • '+ artist : '' );
+			notify( title, msg, 'list-ul' );
+			if ( cmd === 'replace' ) GUI.plreplace = 1;
 			getPlaybackStatus();
 		}
 	} );
-	var artist = $( '#artistalbum span' ).text();
-	var msg = GUI.list.name + ( artist ? ' • '+ artist : '' );
-	notify( title, msg, 'list-ul' );
 }
 function bookmarkNew() {
 	var path = GUI.list.path;
 	var name = path.split( '/' ).pop();
 	var $el = $( '.home-bookmark' );
-	var i = $el.length;
-	$el.each( function() {
-		var $this = $( this );
-		if ( $this.find( '.lipath' ).text() === path ) {
-			var $img = $this.find( 'img' );
-			if ( $img.length ) {
-				var iconhtml = '<img src="'+ $img.attr( 'src' ) +'">'
-							  +'<br><w>'+ path +'</w>';
-			} else {
-				var iconhtml = '<i class="fa fa-bookmark bookmark"></i>'
-							  +'<br><a class="bklabel">'+ $this.find( '.bklabel' ).text() +'</a>'
-							  + path;
-			}
-			info( {
-				  icon     : 'bookmark'
-				, title    : 'Add Bookmark'
-				, message  : iconhtml
-						   +'<br><br>Already exists.'
-				, msgalign : 'center'
-			} );
-			return false
-		}
-		i--;
-		if ( !i ) {
-			$.post( 'enhancegetcover.php', { path: path }, function( base64img ) {
-				if ( base64img ) {
-					info( {
-						  icon      : 'bookmark'
-						, title     : 'Add Bookmark'
-						, message   : '<img src="'+ base64img +'">'
-									 +'<br><w>'+ path +'</w>'
-						, msgalign  : 'center'
-						, cancel    : function() {
-							$( '#db-entries li' ).removeClass( 'active' );
-						}
-						, ok        : function() {
-							$.post( 'enhance.php', { bookmarks: 1, path: path, base64: base64img, new: 1 } );
-							notify( 'Add Bookmark', path, 'bookmark' );
-						}
-					} );
+	if ( $el.length ) {
+		$el.each( function() {
+			var $this = $( this );
+			if ( $this.find( '.lipath' ).text() === path ) {
+				var $img = $this.find( 'img' );
+				if ( $img.length ) {
+					var iconhtml = '<img src="'+ $img.attr( 'src' ) +'">'
+								  +'<br><w>'+ path +'</w>';
 				} else {
-					info( {
-						  icon         : 'bookmark'
-						, title        : 'Add Bookmark'
-						, width        : 500
-						, message      : '<i class="fa fa-bookmark bookmark"></i>'
-										+'<br>'
-										+'<br><w>'+ path +'</w>'
-										+'<br>As:'
-						, msgalign     : 'center'
-						, textvalue    : name
-						, textrequired : 1
-						, boxwidth     : 'max'
-						, textalign    : 'center'
-						, cancel    : function() {
-							$( '#db-entries li' ).removeClass( 'active' );
-						}
-						, ok           : function() {
-							$.post( 'enhance.php', { bookmarks: $( '#infoTextBox' ).val(), path: path, new: 1 } );
-							notify( 'Add Bookmark', path, 'bookmark' );
-						}
-					} );
+					var iconhtml = '<i class="fa fa-bookmark bookmark"></i>'
+								  +'<br><a class="bklabel">'+ $this.find( '.bklabel' ).text() +'</a>'
+								  + path;
+				}
+				info( {
+					  icon     : 'bookmark'
+					, title    : 'Add Bookmark'
+					, message  : iconhtml
+							   +'<br><br>Already exists.'
+					, msgalign : 'center'
+				} );
+				return false
+			}
+		} );
+	}
+	$.post( 'enhancegetcover.php', { path: path }, function( base64img ) {
+		if ( base64img ) {
+			info( {
+				  icon      : 'bookmark'
+				, title     : 'Add Bookmark'
+				, message   : '<img src="'+ base64img +'">'
+							 +'<br><w>'+ path +'</w>'
+				, msgalign  : 'center'
+				, cancel    : function() {
+					$( '#db-entries li' ).removeClass( 'active' );
+				}
+				, ok        : function() {
+					$.post( 'enhance.php', { bookmarks: 1, path: path, base64: base64img, new: 1 } );
+					notify( 'Add Bookmark', path, 'bookmark' );
+				}
+			} );
+		} else {
+			info( {
+				  icon         : 'bookmark'
+				, title        : 'Add Bookmark'
+				, width        : 500
+				, message      : '<i class="fa fa-bookmark bookmark"></i>'
+								+'<br>'
+								+'<br><w>'+ path +'</w>'
+								+'<br>As:'
+				, msgalign     : 'center'
+				, textvalue    : name
+				, textrequired : 1
+				, boxwidth     : 'max'
+				, textalign    : 'center'
+				, cancel    : function() {
+					$( '#db-entries li' ).removeClass( 'active' );
+				}
+				, ok           : function() {
+					$.post( 'enhance.php', { bookmarks: $( '#infoTextBox' ).val(), path: path, new: 1 } );
+					notify( 'Add Bookmark', path, 'bookmark' );
 				}
 			} );
 		}
@@ -313,9 +311,21 @@ function webRadioCoverart() {
 			  icon        : 'webradio'
 			, title       : 'Change Coverart'
 			, message     : ( nameimg[ 2 ] ? '<img src="'+ nameimg[ 2 ] +'">' : '<img src="'+ vu +'" style="border-radius: 9px">' )
-						   +'<span class="bkname"><br>'+ name +'<span>'
+						   +'<span class="bkname"><br><w>'+ name +'</w><span>'
 			, msgalign    : 'center'
 			, fileoklabel : 'Replace'
+			, buttonlabel : 'Remove'
+			, buttoncolor : '#0095d8'
+			, button      : function() {
+				$.post( 'enhance.php', { bash: '/usr/bin/echo "'+ name +'" > "/srv/http/assets/img/webradios/'+ urlname +'"' } );
+				if ( GUI.playback ) {
+					$( '#cover-art' ).attr( 'src', GUI.status.state === 'play' ? vu : vustop );
+				} else {
+					$( '#db-entries li.active' ).find( 'img' ).remove();
+					$( '#db-entries li.active' ).find( '.lisort' ).after( '<i class="fa fa-webradio db-icon" data-target="#context-menu-webradio"></i>' );
+					$( '#db-entries li' ).removeClass( 'active' );
+				}
+			}
 			, cancel      : function() {
 				$( '#db-entries li' ).removeClass( 'active' );
 			}
@@ -323,27 +333,30 @@ function webRadioCoverart() {
 				var newimg = $( '#infoMessage .newimg' ).attr( 'src' );
 				var picacanvas = document.createElement( 'canvas' );
 				picacanvas.width = picacanvas.height = 80;
-				window.pica.resizeCanvas( $( '#infoMessage .newimg' )[ 0 ], picacanvas, picaOption, function() {
+				pica.resize( $( '#infoMessage .newimg' )[ 0 ], picacanvas, picaOption ).then( function() {
 					var newthumb = picacanvas.toDataURL( 'image/jpeg', 0.9 );
 					var webradioname = path.replace( /\//g, '|' );
 					$.post( 'enhance.php', { imagefile: webradioname, base64webradio: name +'\n'+ newthumb +'\n'+ newimg }, function( result ) {
-							if ( result != -1 ) {
-								notify( 'Coverart Changed', name, 'coverart' );
+						if ( result != -1 ) {
+							if ( GUI.playback ) {
+								$( '#cover-art' ).attr( 'src', newimg );
 							} else {
-								info( {
-									  icon    : 'webradio'
-									, title   : 'Change Coverart'
-									, message : '<i class="fa fa-warning"></i>Upload image failed.'
-								} );
+								$( '#db-entries li.active' ).find( '.db-icon' ).remove();
+								$( '#db-entries li.active' ).find( '.lisort' ).after( '<img class="radiothumb db-icon" src="'+ newthumb +'" data-target="#context-menu-radio">' );
+								$( '#db-entries li' ).removeClass( 'active' );
 							}
+						} else {
+							info( {
+								  icon    : 'webradio'
+								, title   : 'Change Coverart'
+								, message : '<i class="fa fa-warning"></i>Upload image failed.'
+							} );
+						}
 					} );
-					$( '#db-entries li.active' ).find( '.db-icon' ).remove();
-					$( '#db-entries li.active' ).find( '.lisort' ).after( '<img class="radiothumb db-icon" src="'+ newthumb +'" data-target="#context-menu-radio">' );
-					$( '#db-entries li' ).removeClass( 'active' );
-					if ( path === GUI.status.file) GUI.status.coverart = newimg;
 				} );
 			}
 		} );
+		if ( $( '#infoMessage img' ).attr( 'src' ) === vu ) $( '#infoButton' ).hide();
 	} );
 }
 function webRadioSave( name, url ) {

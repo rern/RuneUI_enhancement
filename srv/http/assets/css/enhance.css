@@ -57,6 +57,7 @@
 .fa-repeat-single:before { content: "\f510" }
 .fa-repeat:before { content: "\f511" }
 .fa-random:before { content: "\f512" }
+.fa-flash:before { content: "\f51E" }
 .fa-single:before { content: "\f513" }
 .fa-share:before { content: "\f514" }
 .fa-bio:before { content: "\f515" }
@@ -1484,6 +1485,9 @@ i.bookmark,
 .lithumb,
 .liimg {
 	display: none;
+}
+.licover .liartist {
+	display: inline;
 }
 span.dbpath {
 	vertical-align: 15%;

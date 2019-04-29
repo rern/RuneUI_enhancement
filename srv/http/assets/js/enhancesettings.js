@@ -48,7 +48,7 @@ if ( path.match( /\/sources\/*$/ ) ) {
 	$( '#update, #rescan' ).click( function() {
 		$.post( '../enhance.php', { bash: '/srv/http/enhancecount.sh '+ this.id +' &' } );
 	} );
-} else if ( path.match( /\/sources\/add/ ) ) {
+} else if ( path.match( /\/sources\/.*/ ) ) {
 	if ($('#mount-type').val() === 'nfs') {
 		$('#mount-cifs').addClass('disabled').children('.disabler').removeClass('hide');
 	}
