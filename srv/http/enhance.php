@@ -72,10 +72,19 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	file_put_contents( $tmpfile, $content );
 	exec( "$sudo/mv -f $tmpfile \"$plfile\"", $result, $std );
 } else if ( isset( $_POST[ 'coverartalbum' ] ) ) {
-	$album = str_replace( '"', '\"', $_POST[ 'coverartalbum' ] );
-	$albums = shell_exec( 'mpc find -f "%album% - [%albumartist%|%artist%]" album "'.$album.'" | awk \'!a[$0]++\'' );
-	$count = count( explode( "\n", rtrim( $albums ) ) );
-	$cmd = 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" album "'.$album.'"';
+	$album = $_POST[ 'coverartalbum' ];
+	$mpcformat = '%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%';
+	if ( !strpos( $album, '"' ) ) {
+		$albums = shell_exec( 'mpc find -f "%album% - [%albumartist%|%artist%]" album "'.$album.'" | awk \'!a[$0]++\'' );
+		$count = count( explode( "\n", rtrim( $albums ) ) );
+		$cmd = 'mpc find -f "'.$mpcformat.'" album "'.$album.'"';
+	} else { // fix - not found albums with double quotes in flac tag(vorbis comment) 
+		$cmd = 'mpc search -f "'.$mpcformat.'"';
+		$albums = explode( '"', $album );
+		foreach( $albums as $album ) {
+			$cmd.= ' album "'.$album.'"';
+		}
+	}
 	if ( $count === 1 ) {
 		$result = shell_exec( $cmd );
 	} else {
