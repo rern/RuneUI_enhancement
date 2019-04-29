@@ -942,7 +942,7 @@ function dataParse( data, path, querytype, plid ) {
 					var composerhtml = ( composer && browsemode === 'composer' ) ? '<i class="fa fa-composer"></i><span class="licomposer">'+ composer +'</span><br>' : '';
 					var genrehtml = genre && genre !== -1 ? '<span><i class="fa fa-genre"></i>'+ genre +'</span><br>' : '';
 					var nocover = !coverart ? ' nocover' : '';
-					var file = data[ 0 ].file;
+					var file = data[ 0 ].file || data[ 0 ].filepl;
 					content += '<li class="licover">'
 							  +'<a class="lipath">'+ file.substring( 0, file.lastIndexOf( '/' ) ) +'</a><a class="liname">'+ path +'</a>'
 							  +'<div class="licoverimg'+ nocover +'"><img src="'+ coversrc +'" class="coversmall"></div>'
