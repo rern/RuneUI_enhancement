@@ -1379,7 +1379,7 @@ $( '#plcrop' ).click( function() {
 $( '#plconsume' ).click( function() {
 	$( this ).css( 'color', GUI.status.consume ? '' : '#0095d8' );
 	$.post( 'enhance.php', { mpc: 'mpc consume' } );
-	notify( 'Consume Mode', GUI.status.consume ? 'On - Remove each song after played.' : 'Off', 'list-ul' );
+	notify( 'Consume Mode', GUI.status.consume ? 'Off' : 'On - Remove each song after played.', 'list-ul' );
 } );
 $( '#plclear' ).click( function() {
 	if ( $( '#pl-entries .pl-remove' ).length ) {
