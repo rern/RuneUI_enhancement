@@ -444,7 +444,10 @@ function renderPlayback() {
 function getPlaybackStatus() {
 	$.post( 'enhancestatus.php', { artist: $( '#artist' ).text(), album: $( '#album' ).text() }, function( status ) {
 		// 'gpio off' > audio output switched > restarts mpd which makes status briefly unavailable
-		if( typeof status !== 'object' ) return
+		if ( 'playlistlength' in status === false ) {
+			setTimeout( getPlaybackStatus, 1000 );
+			return
+		}
 		
 		if ( status.activePlayer === 'Airplay' ) {
 			displayAirPlay();
