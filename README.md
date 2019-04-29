@@ -21,12 +21,12 @@ _Tested on RuneAudio 0.4b, 0.5_
 ### New Features
 - Coverarts
 	- Browse by CoverArt ( with [LazyLoad](https://github.com/verlok/lazyload) )
-	- Coverart bookmarks ( need `ext*` formatted drive )
+	- Coverart bookmarks
 	- Coverart in album view
 	- Replace / remove
 	- VU meter for Webradio (animated gif)
-	- Image from each Dirble stations ( need `ext*` formatted drive )
-	- Custom Webradio coverarts ( need `ext*` formatted drive )
+	- Image from each Dirble stations
+	- Custom Webradio coverarts
 - Index bar
 	- Mask available indexes
 - Library sorting
@@ -49,6 +49,8 @@ _Tested on RuneAudio 0.4b, 0.5_
 - Context menu
 	- Icon on the right removed
 	- Use icon on the left instead
+- Crop Playlist
+- Consume mode
 - Keyboard navigation
 
 Install
