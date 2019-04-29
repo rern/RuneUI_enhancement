@@ -1643,8 +1643,8 @@ var streams = [ 'bookmark', 'display', 'idle', 'notify', 'playlist', 'volume', '
 streams.forEach( function( stream ) {
 	pushstreams[ stream ] = new PushStream( { modes: 'websocket' } );
 	pushstreams[ stream ].addChannel( stream );
+	pushstreams[ stream ].connect();
 } );
-
 pushstreams.bookmark.onmessage = function( data ) {
 	var bookmarks = data[ 0 ];
 	if ( GUI.bookmarkedit || !bookmarks.length ) return
@@ -1674,7 +1674,6 @@ pushstreams.display.onmessage = function( data ) {
 		}
 	}, GUI.debouncems );
 }
-var timeoutUpdate;
 pushstreams.idle.onmessage = function( changed ) {
 	var changed = changed[ 0 ];
 	clearTimeout( GUI.debounce );
@@ -1761,6 +1760,3 @@ pushstreams.webradio.onmessage = function( data ) {
 	if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) $( '#home-webradio' ).click();
 	if ( GUI.playlist && !GUI.pleditor ) $( '#tab-playlist' ).click();
 }
-streams.forEach( function( stream ) {
-	pushstreams[ stream ].connect();
-} );
