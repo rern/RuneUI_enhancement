@@ -1379,6 +1379,7 @@ $( '#plcrop' ).click( function() {
 $( '#plconsume' ).click( function() {
 	$( this ).css( 'color', GUI.status.consume ? '' : '#0095d8' );
 	$.post( 'enhance.php', { mpc: 'mpc consume' } );
+	notify( 'Consume Mode', GUI.status.consume ? 'On - Remove each song after played.' : 'Off', 'flash' );
 } );
 $( '#plclear' ).click( function() {
 	if ( $( '#pl-entries .pl-remove' ).length ) {
@@ -1691,6 +1692,8 @@ pushstreams.idle.onmessage = function( changed ) {
 					GUI.pllist = data.playlist;
 				} else {
 					GUI.status.playlistlength = 0;
+					GUI.pllist = {};
+					getPlaybackStatus();
 				}
 				if ( GUI.playlist ) {
 					renderPlaylist();
