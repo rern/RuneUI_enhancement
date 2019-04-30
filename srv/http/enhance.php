@@ -8,7 +8,6 @@ $redis = new Redis();
 $redis->pconnect( '127.0.0.1' );
 
 $sudo = '/usr/bin/sudo /usr/bin';
-$sudosrv = '/usr/bin/sudo /srv/http';
 
 if ( isset( $_POST[ 'mpc' ] ) ) {
 	$mpc = $_POST[ 'mpc' ];
@@ -72,19 +71,10 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	file_put_contents( $tmpfile, $content );
 	exec( "$sudo/mv -f $tmpfile \"$plfile\"", $result, $std );
 } else if ( isset( $_POST[ 'coverartalbum' ] ) ) {
-	$album = $_POST[ 'coverartalbum' ];
-	$mpcformat = '%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%';
-	if ( !strpos( $album, '"' ) ) {
-		$albums = shell_exec( 'mpc find -f "%album% - [%albumartist%|%artist%]" album "'.$album.'" | awk \'!a[$0]++\'' );
-		$count = count( explode( "\n", rtrim( $albums ) ) );
-		$cmd = 'mpc find -f "'.$mpcformat.'" album "'.$album.'"';
-	} else { // fix - not found albums with double quotes in flac tag(vorbis comment) 
-		$cmd = 'mpc search -f "'.$mpcformat.'"';
-		$albums = explode( '"', $album );
-		foreach( $albums as $album ) {
-			$cmd.= ' album "'.$album.'"';
-		}
-	}
+	$album = str_replace( '"', '\"', $_POST[ 'coverartalbum' ] );
+	$albums = shell_exec( 'mpc find -f "%album% - [%albumartist%|%artist%]" album "'.$album.'" | awk \'!a[$0]++\'' );
+	$count = count( explode( "\n", rtrim( $albums ) ) );
+	$cmd = 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" album "'.$album.'"';
 	if ( $count === 1 ) {
 		$result = shell_exec( $cmd );
 	} else {
@@ -331,8 +321,9 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	// dual boot
 	exec( "$sudo/mount | /usr/bin/grep -q mmcblk0p8 && /usr/bin/echo 8 > /sys/module/bcm2709/parameters/reboot_part" );
 	
-	if ( file_exists( '/srv/http/gpio/gpiooff.py' ) ) $cmd.= "$sudosrv/gpio/gpiooff.py;";
+	if ( file_exists( '/root/gpiooff.py' ) ) $cmd.= '/usr/bin/sudo /root/gpiooff.py;';
 	if ( $redis->get( local_browser ) === '1' ) $cmd .= "$sudo/killall Xorg; /usr/local/bin/ply-image /srv/http/assets/img/bootsplash.png;";
+	$cmd.= "$sudo/redis-cli save;";
 	$cmd.= "$sudo/umount -f -a -t cifs nfs -l;";
 	$cmd.= "$sudo/shutdown ".( $mode === 'reboot' ? '-r' : '-h' ).' now';
 	exec( $cmd );
