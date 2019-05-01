@@ -549,10 +549,17 @@ var btnctrl = {
 	, volB    : 'voldn'
 }
 $( '.covermap' ).taphold( function( e ) {
+	if ( !GUI.status.playlistlength ) return
+	
+	if ( [ vu, vustop ].indexOf( $( '#cover-art' ).attr( 'src' ) ) !== -1 ) {
+		var iconremove = '';
+	} else {
+		var iconremove = '<i class="edit licover-remove fa fa-minus-circle"></i>';
+	}
 	$( '#cover-art' )
 		.css( 'opacity', 0.33 )
 		.after(
-			 ( GUI.status.ext === 'radio' ? '' : '<i class="edit licover-remove fa fa-minus-circle"></i>' )
+			 iconremove
 			+'<i class="edit licover-cover fa fa-coverart"></i>'
 		);
 } );
@@ -888,45 +895,28 @@ $( '.home-block' ).click( function() {
 		} );
 	}
 } );
-
+$( '#infoMessage' ).on( 'click', '.newimg', function( e ) {
+	var img = new Image();
+	img.src = $( this ).attr( 'src' );
+	var cW = picacanvas.width;
+	var cWtr = cW / 2;
+	var canvas = document.createElement( 'canvas' ); // create canvas object
+	canvas.width = canvas.height = cW;
+	var ctx = canvas.getContext( '2d' );
+	ctx.translate( cWtr, cWtr );
+	ctx.rotate( Math.PI / 2 );
+	ctx.translate( -cWtr, -cWtr );
+	ctx.drawImage( img, 0, 0, cW, cW );
+	$( this ).attr( 'src', canvas.toDataURL( 'image/jpeg' ) );
+} );
 $( '#infoFileBox' ).change( function() {
-	var filename = this.files[ 0 ].name;
-	var reader = new FileReader();    // create filereader
-	reader.onload = function ( e ) {  // prepare onload callback
-		var base64img = e.target.result;
-		var img = new Image();
-		img.src = base64img;
-		img.onload = function () {
-			var imgW = img.width;
-			var imgH = img.height;
-			var coverart = GUI.playback || $( '#db-entries li' ).length;
-			var imgWHhtml = '<div class="imagewh"><span>Current</span><span>'+ imgW +' x '+ imgH +'</span>';
-			$( '#infoFilename' ).empty();
-			$( '.newimg, .imagewh, .bkname' ).remove();
-			if ( !coverart ) {
-				var px = 200;
-			} else {
-				if ( imgW > 1000 || imgH > 1000 ) {
-					var px = 1000;
-				} else {
-					var px = imgW < imgH ? imgW : imgH;
-				}
-			}
-			if ( imgW === px && imgH === px ) {
-				$( '#infoMessage' ).append( '<img class="newimg" src="'+ base64img +'">'+ imgWHhtml +'</div>' );
-			} else {
-				imgWHhtml += '<div>(Resized to '+ px +' x '+ px +' px)</div></div>';
-				var picacanvas = document.createElement( 'canvas' ); // create canvas object
-				picacanvas.width = picacanvas.height = px; // size of resized image
-				pica.resize( img, picacanvas, picaOption ).then( function() {
-					var resizedimg = picacanvas.toDataURL( 'image/jpeg', 0.9 ); // canvas -> base64 (jpg, qualtity)
-					$( '#infoMessage' ).append( '<img class="newimg" src="'+ resizedimg +'">'+ imgWHhtml );
-				} );
-			}
-		}
-	}
-	reader.readAsDataURL( this.files[ 0 ] ); // load filereader
+	var file = this.files[ 0 ];
 	$( '#infoButton' ).hide();
+	getOrientation( file, function( ori ) {
+		resetOrientation( file, ori, function( canvas, imgW, imgH ) {
+			setImage( canvas, imgW, imgH );
+		} );
+	});
 } );
 $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - id changed on renamed
 	if ( $( '.edit' ).length && !$( e.target ).hasClass( 'edit' )  ) {

@@ -444,10 +444,7 @@ function renderPlayback() {
 function getPlaybackStatus() {
 	$.post( 'enhancestatus.php', { artist: $( '#artist' ).text(), album: $( '#album' ).text() }, function( status ) {
 		// 'gpio off' > audio output switched > restarts mpd which makes status briefly unavailable
-		if ( 'playlistlength' in status === false ) {
-			setTimeout( getPlaybackStatus, 1000 );
-			return
-		}
+		if( typeof status !== 'object' ) return
 		
 		if ( status.activePlayer === 'Airplay' ) {
 			displayAirPlay();
@@ -1820,4 +1817,106 @@ function renderSavedPlaylist( name ) {
 			$( 'html, body' ).scrollTop( GUI.plscrolltop );
 		} );
 	}, 'json' );
+}
+function setImage( canvas, imgW, imgH ) {
+	$( '#infoFilename' ).empty();
+	$( '.newimg, .imagewh, .bkname' ).remove();
+	if ( !GUI.playback && !$( '#db-entries .licover' ).length ) {
+		var px = 200;
+	} else {
+		if ( imgW > 1000 || imgH > 1000 ) {
+			var px = 1000;
+		} else {
+			var px = imgW < imgH ? imgW : imgH;
+		}
+	}
+	var imgWHhtml = '<div class="imagewh"><span>Current</span><span>'+ px +' x '+ px +'</span>';
+	if ( imgW === px && imgH === px ) {
+		$( '#infoMessage' ).append( '<img class="newimg" src="'+ base64img +'">'+ imgWHhtml +'</div>' );
+	} else {
+		imgWHhtml += '<div>(Resized from '+ imgW +' x '+ imgH +' px)'
+					+'<br>Tap to rotate.'
+					+'</div></div>';
+		picacanvas = document.createElement( 'canvas' );
+		picacanvas.width = picacanvas.height = px; // size of resized image
+		pica.resize( canvas, picacanvas, picaOption ).then( function() {
+			var resizedimg = picacanvas.toDataURL( 'image/jpeg' ); // canvas -> base64
+			$( '#infoMessage' ).append( '<img class="newimg" src="'+ resizedimg +'">'+ imgWHhtml );
+		} );
+	}
+}
+function resetOrientation( file, ori, callback ) {
+	if ( ori === -1 ) {
+		info( 'Not a valid image file.' );
+		return
+	}
+	
+	var reader = new FileReader();
+	reader.onload = function( e ) {
+		var img = new Image();
+		img.src = e.target.result;
+		img.onload = function() {
+			var imgW = img.width,
+				imgH = img.height,
+				canvas = document.createElement( 'canvas' ),
+				ctx = canvas.getContext( '2d' );
+			// set proper canvas dimensions before transform
+			if ( 4 < ori && ori < 9 ) {
+				canvas.width = imgH;
+				canvas.height = imgW;
+			} else {
+				canvas.width = imgW;
+				canvas.height = imgH;
+			}
+			// transform context before drawing image
+			switch ( ori ) {
+				case 2: ctx.transform( -1, 0, 0, 1, imgW, 0 ); break;
+				case 3: ctx.transform( -1, 0, 0, -1, imgW, imgH ); break;
+				case 4: ctx.transform( 1, 0, 0, -1, 0, imgH ); break;
+				case 5: ctx.transform( 0, 1, 1, 0, 0, 0 ); break;
+				case 6: ctx.transform( 0, 1, -1, 0, imgH, 0 ); break;
+				case 7: ctx.transform( 0, -1, -1, 0, imgH, imgW ); break;
+				case 8: ctx.transform( 0, -1, 1, 0, 0, imgW ); break;
+				default: break;
+			}
+			ctx.drawImage( img, 0, 0 );
+			callback( canvas, imgW, imgH );
+		}
+	}
+	reader.readAsDataURL( file );
+};
+function getOrientation( file, callback ) {
+	var reader = new FileReader();
+	reader.onload = function( e ) {
+		var view = new DataView( e.target.result );
+		if ( view.getUint16( 0, false ) != 0xFFD8 ) return callback( -1 );
+		
+		var length = view.byteLength, offset = 2;
+		while ( offset < length ) {
+			if ( view.getUint16( offset + 2, false ) <= 8 ) return callback( -1 );
+			
+			var marker = view.getUint16( offset, false );
+			offset += 2;
+			if ( marker == 0xFFE1 ) {
+				if ( view.getUint32( offset += 2, false ) != 0x45786966 ) return callback( -1 );
+				
+				var little = view.getUint16( offset += 6, false ) == 0x4949;
+				offset += view.getUint32( offset + 4, little );
+				var tags = view.getUint16( offset, little );
+				offset += 2;
+				for ( var i = 0; i < tags; i++ ) {
+					if ( view.getUint16( offset + ( i * 12 ), little ) == 0x0112 ) {
+						var ori = view.getUint16( offset + ( i * 12 ) + 8, little );
+						return callback( ori );
+					}
+				}
+			} else if ( ( marker & 0xFF00 ) != 0xFF00 ) {
+				break;
+			} else { 
+				offset += view.getUint16( offset, false );
+			}
+		}
+		return callback( -1 );
+	};
+	reader.readAsArrayBuffer( file.slice( 0, 64 * 1024 ) );
 }
