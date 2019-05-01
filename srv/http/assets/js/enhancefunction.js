@@ -941,12 +941,11 @@ function dataParse( data, path, querytype, plid ) {
 					var artistmode = [ 'artist', 'composer', 'genre' ].indexOf( browsemode ) !== -1 ? 1 : 0;
 					var composerhtml = ( composer && browsemode === 'composer' ) ? '<i class="fa fa-composer"></i><span class="licomposer">'+ composer +'</span><br>' : '';
 					var genrehtml = genre && genre !== -1 ? '<span><i class="fa fa-genre"></i>'+ genre +'</span><br>' : '';
-					var nocover = !coverart ? ' nocover' : '';
 					var file = data[ 0 ].file || data[ 0 ].filepl;
 					var dir = file.substring( 0, file.lastIndexOf( '/' ) );
 					content += '<li class="licover">'
 							  +'<a class="lipath">'+ dir +'</a><a class="liname">'+ path +'</a>'
-							  +'<div class="licoverimg'+ nocover +'"><img src="'+ coversrc +'" class="coversmall"></div>'
+							  +'<div class="licoverimg'+ ( coverart ? '' : ' nocover' ) +'"><img src="'+ coversrc +'" class="coversmall"></div>'
 							  +'<span class="liinfo">'
 								  +'<bl class="lialbum">'+ album +'</bl><br>'
 								  + composerhtml
@@ -1659,7 +1658,7 @@ function htmlPlaylist( data ) {
 		var genrehtml = genre && genre !== -1 ? '<span><i class="fa fa-genre"></i>'+ genre +'</span><br>' : '';
 		var licover = '<li class="licover">'
 						 +'<a class="lipath">'+ path +'</a><a class="liname">'+ path.replace(/^.*\//, '') +'</a>'
-						 +'<div class="licoverimg"><img src="'+ coversrc +'" class="coversmall"></div>'
+						 +'<div class="licoverimg'+ ( coverart ? '' : ' nocover' ) +'"><img src="'+ coversrc +'" class="coversmall"></div>'
 						 +'<span class="liinfo">'
 							+'<bl class="lialbum">'+ album +'</bl><br>'
 							+ composerhtml
