@@ -1412,6 +1412,10 @@ i.bookmark,
 	line-height: 33px !important;
 	vertical-align: -10%;
 }
+.lidir {
+	margin-left: 37px;
+	color: #7795b4;
+}
 #db-entries,
 #pl-editor {
 	float: left;
