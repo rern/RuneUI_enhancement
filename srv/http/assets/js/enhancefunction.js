@@ -952,7 +952,7 @@ function dataParse( data, path, querytype, plid ) {
 								  + composerhtml
 								  +'<i class="fa fa-'+ ( artistmode ? 'artist' : 'albumartist' ) +'"></i><span class="liartist">'+ ( artistmode ? artist : albumartist ) +'</span><br>'
 								  + genrehtml
-								  + ( GUI.browsemode === 'file' ? '' : '<gr>'+ dir +'</gr><br>' )
+								  + ( GUI.browsemode === 'file' ? '' : '<a class="lidir">'+ dir +'</a><br>' )
 								  +'<i class="fa fa-music db-icon" data-target="#context-menu-folder"></i>'+ arrayfile.length +'<gr> • </gr>'+ second2HMS( litime )
 							  +'</span>'
 							  +'</li>';
