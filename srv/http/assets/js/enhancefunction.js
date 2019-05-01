@@ -1864,13 +1864,13 @@ function resetOrientation( file, ori, callback ) {
 			// transform context before drawing image
 			switch ( ori ) {
 				// transform( Hscale, Hskew, Vscale, Vskew, Hmove, Vmove )
-				case 2: ctx.transform( -1, 0, 0, 1, imgW, 0 ); break;     // mirror up
-				case 3: ctx.transform( -1, 0, 0, -1, imgW, imgH ); break; // down
-				case 4: ctx.transform( 1, 0, 0, -1, 0, imgH ); break;     // mirror down
-				case 5: ctx.transform( 0, 1, 1, 0, 0, 0 ); break;         // mirror on left side
-				case 6: ctx.transform( 0, 1, -1, 0, imgH, 0 ); break;     // on left side
-				case 7: ctx.transform( 0, -1, -1, 0, imgH, imgW ); break; // mirror on right side
-				case 8: ctx.transform( 0, -1, 1, 0, 0, imgW ); break;     // on right side
+				case 2: ctx.transform( -1,  0,  0,  1, imgW,    0 ); break; // mirror up
+				case 3: ctx.transform( -1,  0,  0, -1, imgW, imgH ); break; // down
+				case 4: ctx.transform(  1,  0,  0, -1,    0, imgH ); break; // mirror down
+				case 5: ctx.transform(  0,  1,  1,  0,    0,    0 ); break; // mirror on left side
+				case 6: ctx.transform(  0,  1, -1,  0, imgH,    0 ); break; // on left side
+				case 7: ctx.transform(  0, -1, -1,  0, imgH, imgW ); break; // mirror on right side
+				case 8: ctx.transform(  0, -1,  1,  0,    0, imgW ); break; // on right side
 				default: break;
 			}
 			ctx.drawImage( img, 0, 0 );

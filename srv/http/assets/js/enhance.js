@@ -899,12 +899,12 @@ $( '#infoMessage' ).on( 'click', '.newimg', function( e ) {
 	var img = new Image();
 	img.src = $( this ).attr( 'src' );
 	var cW = picacanvas.width;
-	var canvas = document.createElement( 'canvas' );  // create canvas object
-	canvas.width = canvas.height = cW;                // set width and height
-	var ctx = canvas.getContext( '2d' );              // get context
-	ctx.transform( 0, 1, -1, 0, cW, 0 );              // rotate with scale + skew
-	ctx.drawImage( img, 0, 0, cW, cW );               // put image to context
-	$( this ).attr( 'src', canvas.toDataURL( 'image/jpeg' ) );
+	var canvas = document.createElement( 'canvas' );           // create canvas object
+	canvas.width = canvas.height = cW;                         // set width and height
+	var ctx = canvas.getContext( '2d' );                       // get context
+	ctx.transform( 0, 1, -1, 0, cW, 0 );                       // rotate with scale + skew
+	ctx.drawImage( img, 0, 0, cW, cW );                        // put image to context
+	$( this ).attr( 'src', canvas.toDataURL( 'image/jpeg' ) ); // convert context to base64
 } );
 $( '#infoFileBox' ).change( function() {
 	var file = this.files[ 0 ];
