@@ -1823,22 +1823,20 @@ function setImage( canvas, imgW, imgH ) {
 	$( '.newimg, .imagewh, .bkname' ).remove();
 	if ( !GUI.playback && !$( '#db-entries .licover' ).length ) {
 		var px = 200;
+	} else if ( imgW > 1000 || imgH > 1000 ) {
+		var px = 1000;
 	} else {
-		if ( imgW > 1000 || imgH > 1000 ) {
-			var px = 1000;
-		} else {
-			var px = imgW < imgH ? imgW : imgH;
-		}
+		var px = imgW < imgH ? imgW : imgH;
 	}
+	picacanvas = document.createElement( 'canvas' );
+	picacanvas.width = picacanvas.height = px; // size of resized image
 	var imgWHhtml = '<div class="imagewh"><span>Current</span><span>'+ px +' x '+ px +'</span>';
 	if ( imgW === px && imgH === px ) {
-		$( '#infoMessage' ).append( '<img class="newimg" src="'+ base64img +'">'+ imgWHhtml +'</div>' );
+		$( '#infoMessage' ).append( '<img class="newimg" src="'+ canvas.toDataURL( 'image/jpeg' ) +'">'+ imgWHhtml +'</div>' );
 	} else {
 		imgWHhtml += '<div>(Resized from '+ imgW +' x '+ imgH +' px)'
 					+'<br>Tap to rotate.'
 					+'</div></div>';
-		picacanvas = document.createElement( 'canvas' );
-		picacanvas.width = picacanvas.height = px; // size of resized image
 		pica.resize( canvas, picacanvas, picaOption ).then( function() {
 			var resizedimg = picacanvas.toDataURL( 'image/jpeg' ); // canvas -> base64
 			$( '#infoMessage' ).append( '<img class="newimg" src="'+ resizedimg +'">'+ imgWHhtml );
@@ -1846,11 +1844,6 @@ function setImage( canvas, imgW, imgH ) {
 	}
 }
 function resetOrientation( file, ori, callback ) {
-	if ( ori === -1 ) {
-		info( 'Not a valid image file.' );
-		return
-	}
-	
 	var reader = new FileReader();
 	reader.onload = function( e ) {
 		var img = new Image();
@@ -1886,20 +1879,20 @@ function resetOrientation( file, ori, callback ) {
 	}
 	reader.readAsDataURL( file );
 };
-function getOrientation( file, callback ) {
+function getOrientation( file, callback ) { // return: 1 - undefined
 	var reader = new FileReader();
 	reader.onload = function( e ) {
 		var view = new DataView( e.target.result );
-		if ( view.getUint16( 0, false ) != 0xFFD8 ) return callback( -1 );
+		if ( view.getUint16( 0, false ) != 0xFFD8 ) return callback( 1 ); // not jpeg
 		
 		var length = view.byteLength, offset = 2;
 		while ( offset < length ) {
-			if ( view.getUint16( offset + 2, false ) <= 8 ) return callback( -1 );
+			if ( view.getUint16( offset + 2, false ) <= 8 ) return callback( 1 );
 			
 			var marker = view.getUint16( offset, false );
 			offset += 2;
 			if ( marker == 0xFFE1 ) {
-				if ( view.getUint32( offset += 2, false ) != 0x45786966 ) return callback( -1 );
+				if ( view.getUint32( offset += 2, false ) != 0x45786966 ) return callback( 1 );
 				
 				var little = view.getUint16( offset += 6, false ) == 0x4949;
 				offset += view.getUint32( offset + 4, little );
@@ -1917,7 +1910,7 @@ function getOrientation( file, callback ) {
 				offset += view.getUint16( offset, false );
 			}
 		}
-		return callback( -1 );
+		return callback( 1 );
 	};
 	reader.readAsArrayBuffer( file.slice( 0, 64 * 1024 ) );
 }

@@ -903,9 +903,7 @@ $( '#infoMessage' ).on( 'click', '.newimg', function( e ) {
 	var canvas = document.createElement( 'canvas' );  // create canvas object
 	canvas.width = canvas.height = cW;                // set width and height
 	var ctx = canvas.getContext( '2d' );              // get context
-	ctx.translate( cWtr, cWtr );                      // move origin of rotation to center
-	ctx.rotate( Math.PI / 2 );                        // rotate conetxt ( PI = 180 degrees )
-	ctx.translate( -cWtr, -cWtr );                    // move origin back
+	ctx.transform( 0, 1, -1, 0, cW, 0 );              // rotate with scale + skew
 	ctx.drawImage( img, 0, 0, cW, cW );               // put image to context
 	var base64img = canvas.toDataURL( 'image/jpeg' ); // get image data from canvas
 	$( this ).attr( 'src', base64img );
