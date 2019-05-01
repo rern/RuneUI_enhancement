@@ -900,14 +900,15 @@ $( '#infoMessage' ).on( 'click', '.newimg', function( e ) {
 	img.src = $( this ).attr( 'src' );
 	var cW = picacanvas.width;
 	var cWtr = cW / 2;
-	var canvas = document.createElement( 'canvas' ); // create canvas object
-	canvas.width = canvas.height = cW;
-	var ctx = canvas.getContext( '2d' );
-	ctx.translate( cWtr, cWtr );
-	ctx.rotate( Math.PI / 2 );
-	ctx.translate( -cWtr, -cWtr );
-	ctx.drawImage( img, 0, 0, cW, cW );
-	$( this ).attr( 'src', canvas.toDataURL( 'image/jpeg' ) );
+	var canvas = document.createElement( 'canvas' );  // create canvas object
+	canvas.width = canvas.height = cW;                // set width and height
+	var ctx = canvas.getContext( '2d' );              // get context
+	ctx.translate( cWtr, cWtr );                      // move origin of rotation to center
+	ctx.rotate( Math.PI / 2 );                        // rotate conetxt ( PI = 180 degrees )
+	ctx.translate( -cWtr, -cWtr );                    // move origin back
+	ctx.drawImage( img, 0, 0, cW, cW );               // put image to context
+	var base64img = canvas.toDataURL( 'image/jpeg' ); // get image data from canvas
+	$( this ).attr( 'src', base64img );
 } );
 $( '#infoFileBox' ).change( function() {
 	var file = this.files[ 0 ];
