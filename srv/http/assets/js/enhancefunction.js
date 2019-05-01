@@ -224,7 +224,7 @@ function removeSplash() {
 	if ( !$( '#divcoverarts' ).html() ) return
 	
 	var $coverartlazy = $( '#divcoverarts .lazy' );
-	var lazyL = $coverartlazy.length;;
+	var lazyL = $coverartlazy.length;
 	if ( lazyL ) {
 		lazyLoad = new LazyLoad( { elements_selector: '.lazy' } );
 		// for load 1st page without lazy
@@ -943,14 +943,16 @@ function dataParse( data, path, querytype, plid ) {
 					var genrehtml = genre && genre !== -1 ? '<span><i class="fa fa-genre"></i>'+ genre +'</span><br>' : '';
 					var nocover = !coverart ? ' nocover' : '';
 					var file = data[ 0 ].file || data[ 0 ].filepl;
+					var dir = file.substring( 0, file.lastIndexOf( '/' ) );
 					content += '<li class="licover">'
-							  +'<a class="lipath">'+ file.substring( 0, file.lastIndexOf( '/' ) ) +'</a><a class="liname">'+ path +'</a>'
+							  +'<a class="lipath">'+ dir +'</a><a class="liname">'+ path +'</a>'
 							  +'<div class="licoverimg'+ nocover +'"><img src="'+ coversrc +'" class="coversmall"></div>'
 							  +'<span class="liinfo">'
 								  +'<bl class="lialbum">'+ album +'</bl><br>'
 								  + composerhtml
 								  +'<i class="fa fa-'+ ( artistmode ? 'artist' : 'albumartist' ) +'"></i><span class="liartist">'+ ( artistmode ? artist : albumartist ) +'</span><br>'
 								  + genrehtml
+								  + ( GUI.browsemode === 'file' ? '' : '<gr>'+ dir +'</gr><br>' )
 								  +'<i class="fa fa-music db-icon" data-target="#context-menu-folder"></i>'+ arrayfile.length +'<gr> • </gr>'+ second2HMS( litime )
 							  +'</span>'
 							  +'</li>';
@@ -1123,7 +1125,7 @@ function data2html( list, path ) {
 		if ( 'file' in list || path === 'Webradio' ) {
 			if ( path !== 'Webradio' ) {
 				if ( 'Title' in list ) {
-					var bl = $( '#db-search-keyword' ).val() ? list.Artist +' - '+ list.Album : list.file.split( '/' ).pop();;
+					var bl = $( '#db-search-keyword' ).val() ? list.Artist +' - '+ list.Album : list.file.split( '/' ).pop();
 					var liname = list.Title
 					content = '<li class="file">'
 							 +'<a class="lipath">'+ list.file +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ list.lisort +'</a>'
@@ -1166,7 +1168,7 @@ function data2html( list, path ) {
 					 +'<a class="lipath">'+ list.file +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ list.lisort +'</a>'
 					 +'<i class="fa fa-music db-icon" data-target="#context-menu-file"></i>'
 					 +'<span class="li1">'+ liname +'<span class="time">'+ list.Time +'</span></span>'
-					 +'<span class="li2">'+ list.file +'</span>';
+					 +'<span class="li2">'+ list.file.split( '/' ).pop() +'</span>';
 			var artist = list.Artist;
 			if ( !GUI.albumartist ) GUI.albumartist = list.Album +'<gr> • </gr>'+ artist;
 		} else {
