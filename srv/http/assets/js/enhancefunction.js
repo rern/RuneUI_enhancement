@@ -1652,13 +1652,14 @@ function htmlPlaylist( data ) {
 			countsong++;
 		}
 	} );
-	if ( coverart ) {
+	if ( coverart || coverart === 0 ) {
+		var coversrc = coverart ? coverart : coverrune;
 		var browsemode = GUI.dbbackdata.length ? GUI.dbbackdata[ 0 ].browsemode : '';
 		var composerhtml = ( composer && browsemode == 'composer' ) ? '<i class="fa fa-composer"></i><spanspan class="licomposer">'+ composer +'</span><br>' : '';
 		var genrehtml = genre && genre !== -1 ? '<span><i class="fa fa-genre"></i>'+ genre +'</span><br>' : '';
 		var licover = '<li class="licover">'
 						 +'<a class="lipath">'+ path +'</a><a class="liname">'+ path.replace(/^.*\//, '') +'</a>'
-						 +'<div class="licoverimg"><img src="'+ coverart +'" class="coversmall"></div>'
+						 +'<div class="licoverimg"><img src="'+ coversrc +'" class="coversmall"></div>'
 						 +'<span class="liinfo">'
 							+'<bl class="lialbum">'+ album +'</bl><br>'
 							+ composerhtml
