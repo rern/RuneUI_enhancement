@@ -140,12 +140,9 @@ function setButtonUpdate() {
 				$( '#iupdate' ).removeClass( 'hide' );
 			}
 		}
-		GUI.intUpdate = setInterval( setButtonUpdate, 10000 );
 	} else {
 		$( '#tab-library i, #db-home i' ).removeClass( 'blink' );
 		$( '#posupdate, #iupdate' ).addClass( 'hide' );
-		clearInterval( GUI.intUpdate );
-		GUI.intUpdate = false;
 	}
 }
 function getUpdateStatus() {
@@ -162,7 +159,13 @@ function getUpdateStatus() {
 		$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
 			GUI.status.updating_db = status.updating_db ? 1 : 0;
 			setButtonUpdate();
-			if ( !status.updating_db ) notify( 'Library Database', 'Database updated.', 'library' );
+			if ( status.updating_db ) {
+				GUI.intUpdate = setInterval( getUpdateStatus, 5000 );
+			} else {
+				clearInterval( GUI.intUpdate );
+				GUI.intUpdate = false;
+				notify( 'Library Database', 'Database updated.', 'library' );
+			}
 		}, 'json' );
 	}, GUI.debouncems );
 }
