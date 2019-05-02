@@ -69,11 +69,7 @@ $( '.contextmenu a' ).click( function() {
 	
 	// replaceplay|replace|addplay|add //////////////////////////////////////////
 	$( '#db-entries li, #pl-editor li' ).removeClass( 'active' );
-	if ( GUI.browsemode === 'coverart' ) {
-		var name = GUI.list.name;
-	} else {
-		var name = GUI.list.path;
-	}
+	var name = ( GUI.browsemode === 'coverart' && !GUI.list.isfile ) ? GUI.list.name : GUI.list.path;
 	name = name.replace( /"/g, '\\"' );
 	// compose command
 	var mpcCmd;
