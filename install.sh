@@ -257,12 +257,13 @@ startStop() {
 		systemctl stop $1
 	else
 		systemctl enable $1
-		systemctl start $1	
+		systemctl start $1
 	fi
 }
 [[ $3 != 1 ]] && startStop hostapd || startStop hostapd start
 [[ $4 != 1 ]] && killall Xorg &> /dev/null
-[[ $5 != 1 ]] && startStop "shairport shairport-sync" || startStop "shairport shairport-sync" start
+[[ -e /usr/lib/systemd/system/shairport.service ]] && shairport=shairport || shairport=shairport-sync
+[[ $5 != 1 ]] && startStop $shairport || startStop $shairport start
 [[ $6 != 1 ]] && startStop upmpdcli || startStop upmpdcli start
 #----------------------------------------------------------------------------------
 file=/root/.config/midori/config
