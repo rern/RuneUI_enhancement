@@ -146,6 +146,7 @@ function setButtonUpdate() {
 	}
 }
 function getUpdateStatus() {
+	clearInterval( GUI.intUpdate );
 	clearTimeout( GUI.debounce );
 	GUI.debounce = setTimeout( function() {
 		$.post( 'enhance.php', { getcount: 1 }, function( data ) {
