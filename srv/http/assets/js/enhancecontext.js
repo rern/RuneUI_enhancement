@@ -23,7 +23,7 @@ $( '.contextmenu a' ).click( function() {
 		if ( cmd === 'radiosave' ) { // unsaved webradio (dirble)
 			webRadioSave( GUI.list.name, GUI.list.path );
 		} else if ( cmd === 'update' ) {
-			$.post( 'enhance.php', { mpc: 'mpc update "'+ GUI.list.path +'"' } );
+			$.post( 'enhance.php', { mpc: 'mpc update "'+ GUI.list.path +'"' }, getUpdateStatus );
 		} else if ( cmd === 'remove' ) {
 			GUI.contextmenu = 1;
 			setTimeout( function() { GUI.contextmenu = 0 }, 500 );

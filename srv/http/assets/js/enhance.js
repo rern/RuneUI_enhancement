@@ -1698,22 +1698,7 @@ pushstreams.idle.onmessage = function( changed ) {
 				$( '#plconsume' ).css( 'color', GUI.status.consume ? '#0095d8' : '' );
 			}, 'json' );
 		} else if ( changed === 'update' ) {
-			$.post( 'enhance.php', { getcount: 1 }, function( data ) {
-				$( '.home-block gr' ).remove();
-				$.each( data, function( id, val ) {
-					if ( val ) $( '#home-'+ id ).find( 'i' ).after( '<gr>'+ numFormat( val ) +'</gr>' );
-				} );
-			}, 'json' );
-			if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) return;
-			
-			$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
-				clearTimeout( GUI.debounce );
-				GUI.debounce = setTimeout( function() {
-					GUI.status.updating_db = status.updating_db ? 1 : 0;
-					setButtonUpdate();
-					if ( !status.updating_db ) notify( 'Library Database', 'Database updated.', 'library' );
-				}, GUI.debouncems );
-			}, 'json' );
+			getUpdateStatus();
 		} else if ( changed === 'database' ) { // on files changed (for webradio rename)
 			if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) $( '#home-webradio' ).tap();
 		}

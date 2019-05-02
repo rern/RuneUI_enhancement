@@ -148,6 +148,24 @@ function setButtonUpdate() {
 		GUI.intUpdate = false;
 	}
 }
+function getUpdateStatus() {
+	clearTimeout( GUI.debounce );
+	GUI.debounce = setTimeout( function() {
+		$.post( 'enhance.php', { getcount: 1 }, function( data ) {
+			$( '.home-block gr' ).remove();
+			$.each( data, function( id, val ) {
+				if ( val ) $( '#home-'+ id ).find( 'i' ).after( '<gr>'+ numFormat( val ) +'</gr>' );
+			} );
+		}, 'json' );
+		if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) return;
+		
+		$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
+			GUI.status.updating_db = status.updating_db ? 1 : 0;
+			setButtonUpdate();
+			if ( !status.updating_db ) notify( 'Library Database', 'Database updated.', 'library' );
+		}, 'json' );
+	}, GUI.debouncems );
+}
 function setButton() {
 	$( '#playback-controls' ).toggleClass( 'hide', GUI.status.playlistlength === 0 );
 	var state = GUI.status.state;
