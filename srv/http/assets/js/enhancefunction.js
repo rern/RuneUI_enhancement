@@ -1453,7 +1453,8 @@ function dbContextmenu( $li, $target ) {
 	
 	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
 	$( '.update' ).toggleClass( 'hide', GUI.status.updating_db !== 0 );
-	$( '.tag' ).toggleClass( 'hide', GUI.list.mode !== 'music' || $li.next().find( '.lipath' ).text().split( '.' ).pop() === 'cue' );
+	var ext = $li.hasClass( 'licover' ) ? $li.next().find( '.lipath' ).text().split( '.' ).pop() : GUI.list.path.split( '.' ).pop()
+	$( '.tag' ).toggleClass( 'hide', GUI.list.mode !== 'music' || [ 'flac', 'mp3' ].indexOf( ext ) === -1 );
 	var contextnum = $menu.find( 'a:not(.hide)' ).length;
 	$( '.menushadow' ).css( 'height', contextnum * 41 - 1 );
 	$( '#db-entries li' ).removeClass( 'active' );

@@ -29,11 +29,6 @@ $( '.contextmenu a' ).click( function() {
 				var tags = data.slice( 0, -1 ).split( '^^' );
 				var file = tags[ 7 ].replace( /"/g, '\"' );
 				var ext = file.split( '.' ).pop();
-				if ( [ 'flac', 'mp3' ].indexOf( ext ) === -1 ) {
-					info( '<w>*.'+ ext +'</w> file not supported.' );
-					return
-				}
-				
 				var path = file.substr( 0, file.lastIndexOf( '/' ) );
 				if ( GUI.list.isfile ) {
 					var labels = [ 'Artist', 'AlbumArtist', 'Album', 'Composer', 'Genre', 'Title', 'Track' ];
