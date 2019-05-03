@@ -139,7 +139,7 @@ a,
 a:hover {
 	text-decoration: none;
 }
-w, wh, .wh { color: #e0e7ee; }
+w, wh, .wh { color: #e0e7ee !important; }
 #infoMessage .fa-coverart { color: #e0e7ee; }
 bl, .bl { color: #0095d8; }
 gr, .gr { color: #7795b4; }
