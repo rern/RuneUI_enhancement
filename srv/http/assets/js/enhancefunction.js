@@ -1453,6 +1453,7 @@ function dbContextmenu( $li, $target ) {
 	
 	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
 	$( '.update' ).toggleClass( 'hide', GUI.status.updating_db !== 0 );
+	$( '.tag' ).toggleClass( 'hide', GUI.list.mode !== 'music' || $li.next().find( '.lipath' ).text().split( '.' ).pop() === 'cue' );
 	var contextnum = $menu.find( 'a:not(.hide)' ).length;
 	$( '.menushadow' ).css( 'height', contextnum * 41 - 1 );
 	$( '#db-entries li' ).removeClass( 'active' );
@@ -1937,4 +1938,35 @@ function getOrientation( file, callback ) { // return: 1 - undefined
 		return callback( 1 );
 	};
 	reader.readAsArrayBuffer( file.slice( 0, 64 * 1024 ) );
+}
+function setFlacTag( list, file ) {
+	var names = [ 'ARTIST', 'ALBUMARTIST', 'ALBUM', 'COMPOSER', 'GENRE', 'TITLE', 'TRACKNUMBER' ];
+	var name = '';
+	var val = '';
+	var tags = '';
+	var iL = list.length;
+	for ( i = 0; i < iL; i++ ) {
+		val = list[ i ];
+		if ( val ) {
+			name = names[ i ];
+			tags += ' --remove-tag='+ name +' --set-tag='+ name +'="'+ val +'"';
+		}
+	}
+	$.post( 'enhanch.php', { bash: '/usr/bin/metaflac --preserve-modtime'+ tags + file } );
+}
+function setID3Tag( list, file ) {
+	var names = [ 'artist', 'TPE2', 'album', 'TCOM', 'genre', 'song', 'track' ];
+	var name = '';
+	var val = '';
+	var tags = '';
+	var iL = list.length;
+	for ( i = 0; i < iL; i++ ) {
+		val = list[ i ];
+		if ( val ) {
+			name = names[ i ];
+			tags += ' --'+ name +'="'+ val +'"';
+		}
+	}
+	console.log('/usr/bin/mid3v2'+ tags + file)
+	//$.post( 'enhanch.php', { bash: '/usr/bin/mid3v2'+ tags + file } );
 }
