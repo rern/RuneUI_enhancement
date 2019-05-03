@@ -144,6 +144,8 @@ function menuli( $command, $icon, $label, $type = '' ) {
 		$class = ' class="update"';
 	} else if ( substr( $icon, -7 ) === 'refresh' ) {
 		$class = ' class="replace"';
+	} else if ( $icon === 'tag' ) {
+		$class = ' class="tag"';
 	} else if ( $icon === 'lastfm' ) {
 		$class = ' class="lastfm"';
 	}
@@ -181,11 +183,13 @@ $menudiv = '';
 $html = $htmlcommon;
 $html.= menuli( 'bookmark',  'star',           'Bookmark' );
 $html.= menuli( 'update',    'folder-refresh', 'Update database' );
+$html.= menuli( 'tag',       'tag',            'Change metadata' );
 $html.= menuli( 'thumbnail', 'coverart',       'Update thumbnails' );
 $menu.= menudiv( 'folder', $html );
 $menudiv = '';
 $html = $htmlcommon;
 $html.= menuli( 'lastfmreplaceplay', 'lastfm', 'Last.fm playlist' );
+$html.= menuli( 'tag',               'tag',    'Change metadata' );
 $menu.= menudiv( 'file', $html );
 $menudiv = '';
 $html = $htmlcommon;
