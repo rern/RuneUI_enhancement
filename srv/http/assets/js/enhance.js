@@ -184,8 +184,7 @@ $( '#displayplayback' ).click( function() {
 	}
 } );
 $( '#turnoff' ).click( function() {
-	var localhost = document.location.hostname === 'localhost';
-	info( {
+	var infojson = {
 		  icon        : 'power'
 		, title       : 'Power'
 		, message     : 'Select mode:'
@@ -195,16 +194,21 @@ $( '#turnoff' ).click( function() {
 			$.post( 'enhance.php', { power: 'shutdown' } );
 			$( '#loader' ).removeClass( 'hide' );
 		}
-		, buttonlabel : 'Reboot'
-		, buttoncolor : '#de810e'
-		, button      : function() {
+		, buttonlabel : [ 'Reboot' ]
+		, buttoncolor : [ '#de810e' ]
+		, button      : [ function() {
 			$.post( 'enhance.php', { power: 'reboot' } );
 			$( '#loader' ).removeClass( 'hide' );
-		}
-		, cancellabel : !localhost ? '' : 'Screen off'
-		, cancel      : !localhost ? '' : function() {
+		} ]
+	}
+	if ( document.location.hostname === 'localhost' ) {
+		infojson.buttonlabel.unshift( 'ScreenOff' );
+		infojson.buttoncolor.unshift( '' );
+		infojson.button.unshift( function() {
 			$.post( 'enhance.php', { power: 'screenoff' } );
-		}	} );
+		} );
+	}
+	info( infojson );
 } );
 $( '#tab-library' ).click( function() {
 	$( '#db-search-close span' ).empty();
