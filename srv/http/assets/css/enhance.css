@@ -113,6 +113,7 @@
 .fa-right:before { content: "\f56B" }
 .fa-crop:before { content: "\f56C" }
 .fa-search:before { content: "\f56D" }
+.fa-tag:before { content: "\f545" }
 
 .fa-times:before { content: "\f51A" }
 .fa-question-circle:before { content: "\f560" }
