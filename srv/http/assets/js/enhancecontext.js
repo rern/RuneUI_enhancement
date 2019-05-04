@@ -180,8 +180,8 @@ $( '.contextmenu a' ).click( function() {
 } );
 
 function updateThumbnails() {
-	// enclosed in single quotes + escape inside single quotes: "'/path/file'\'"\'"\''s name'" <=> /path/file's name
-	var path = "'/mnt/MPD/"+ GUI.list.path.replace( /'/g, '\'"\'"\'' ) +"'";
+	// enclosed in double quotes entity &quot;
+	var path = '&quot;/mnt/MPD/'+ GUI.list.path.replace( /"/g, '\"' ) +'&quot;';
 	info( {
 		  icon     : 'coverart'
 		, title    : 'Coverart Thumbnails Update'
@@ -199,10 +199,9 @@ function updateThumbnails() {
 				'<form id="formtemp" action="addonsbash.php" method="post">'
 					+'<input type="hidden" name="alias" value="cove">'
 					+'<input type="hidden" name="type" value="scan">'
-					+'<input type="hidden" name="opt">'
 				+'</form>' );
 			$( '#infoCheckBox input' ).each( function() {
-				path += $( this ).prop( 'checked' ) ? ' 1' : ' 0';
+				path += $( this ).prop( 'checked' ) ? ' 1': ' 0';
 			} );
 			$( '#formtemp' )
 				.append( '<input type="hidden" name="opt" value="'+ path +'">' )
