@@ -251,6 +251,7 @@ redis-cli hset AccessPoint enabled $3 &> /dev/null
 redis-cli set local_browser $4 &> /dev/null
 redis-cli hset airplay enable $5 &> /dev/null
 redis-cli hset dlna enable $6 &> /dev/null
+redis-cli hset samba enable $7 &> /dev/null
 startStop() {
 	if [[ -z $2 ]]; then
 		systemctl disable $1
@@ -265,6 +266,7 @@ startStop() {
 [[ -e /usr/lib/systemd/system/shairport.service ]] && shairport=shairport || shairport=shairport-sync
 [[ $5 != 1 ]] && startStop $shairport || startStop $shairport start
 [[ $6 != 1 ]] && startStop upmpdcli || startStop upmpdcli start
+[[ $7 != 1 ]] && startStop nmbd smbd || startStop nmbd smbd start
 #----------------------------------------------------------------------------------
 file=/root/.config/midori/config
 if [[ -e $file ]] && ! grep '^chromium' $file &> /dev/null; then
