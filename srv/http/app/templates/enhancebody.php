@@ -169,6 +169,7 @@ function menucommonsp( $type ) {
 	$htmlcommon.= menuli( 'spreplaceplay', 'play-plus-refresh', 'Replace ► Play', $type );
 	return $htmlcommon;
 }
+$kid3 = file_exists( '/usr/bin/kid3-cli' );
 $menu = '<div>';
 $htmlcommon = menucommon( 'add', 'addplay', 'replace', 'replaceplay' );
 $html = '<span class="menushadow"></span>';
@@ -183,13 +184,13 @@ $menudiv = '';
 $html = $htmlcommon;
 $html.= menuli( 'bookmark',  'star',           'Bookmark' );
 $html.= menuli( 'update',    'folder-refresh', 'Update database' );
-$html.= menuli( 'tag',       'tag',            'Change metadata' );
+if ( $kid3 ) $html.= menuli( 'tag',       'tag',            'Change metadata' );
 $html.= menuli( 'thumbnail', 'coverart',       'Update thumbnails' );
 $menu.= menudiv( 'folder', $html );
 $menudiv = '';
 $html = $htmlcommon;
 $html.= menuli( 'lastfmreplaceplay', 'lastfm', 'Last.fm playlist' );
-$html.= menuli( 'tag',               'tag',    'Change metadata' );
+if ( $kid3 ) $html.= menuli( 'tag',               'tag',    'Change metadata' );
 $menu.= menudiv( 'file', $html );
 $menudiv = '';
 $html = $htmlcommon;
