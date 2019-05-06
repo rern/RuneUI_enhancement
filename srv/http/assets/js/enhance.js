@@ -1148,13 +1148,18 @@ $( '.coverart' ).tap( function( e ) {
 	$( '.coverart img' ).css( 'opacity', 0.33 );
 } );
 $( '#divcoverarts' ).on( 'tap', '.coverart-remove', function() {
-	var $this = $( this );
-	var imgsrc = $this.parent().find( 'img' ).prop( 'src' );
-	var $album = $this.parent().next();
+	var $thisparent = $( this ).parent();
+	var imgsrc = $thisparent.find( 'img' ).prop( 'src' );
+	var $album = $thisparent.next();
 	var album = $album.text();
 	var artist = $album.next().text();
 	var thumbname = GUI.display.thumbbyartist ? artist +'^^'+ album : album +'^^'+ artist;
+	var $thisdiv = $thisparent.parent();
+	var path = $thisdiv.find( '.lipath' ).text() || '';
+	if ( path ) thumbname += '^^'+ path;
+	thumbname = thumbname.replace( /\//g, '|' ).replace( /#/g, '{' ).replace( /\?/g, '}' );
 	var thumbfile = '/srv/http/assets/img/coverarts/'+ thumbname + imgsrc.slice( -4 );
+	console.log(thumbfile)
 	info( {
 		  icon     : 'coverart'
 		, title    : 'Remove Thumbnail'
@@ -1165,7 +1170,7 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-remove', function() {
 		, cancel   : 1
 		, oklabel  : 'Remove'
 		, ok       : function() {
-			$this.parent().parent().remove();
+			$thisdiv.remove();
 			$.post( 'enhance.php', { imagefile: thumbfile }, function( std ) {
 				if ( std == 13 ) {
 					info( {
@@ -1179,8 +1184,7 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-remove', function() {
 	} );
 } );
 $( '#divcoverarts' ).on( 'tap', '.coverart-cover', function() {
-	var $this = $( this );
-	var $img = $this.parent().find( 'img' );
+	var $img = $( this ).parent().find( 'img' );
 	var imgsrc = $img.data( 'src' );
 	var thumbfile = imgsrc.slice( 0, -14 ) + imgsrc.slice( -3 ); // remove cache busting timestamp
 	info( {
