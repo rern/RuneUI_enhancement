@@ -913,6 +913,8 @@ $( '#infoMessage' ).on( 'click', '.newimg', function( e ) {
 $( '#infoFileBox' ).change( function() {
 	var file = this.files[ 0 ];
 	$( '#infoButton' ).hide();
+	if ( !file ) return
+	
 	getOrientation( file, function( ori ) {
 		resetOrientation( file, ori, function( canvas, imgW, imgH ) {
 			setImage( canvas, imgW, imgH );
