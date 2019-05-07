@@ -961,8 +961,8 @@ function dataParse( data, path, querytype, plid ) {
 					var coversrc = coverart ? coverart : coverrune;
 					var browsemode = GUI.dbbackdata.length ? GUI.dbbackdata[ 0 ].browsemode : '';
 					var artistmode = [ 'artist', 'composer', 'genre' ].indexOf( browsemode ) !== -1 ? 1 : 0;
-					var composerhtml = ( composer && browsemode === 'composer' ) ? '<i class="fa fa-composer"></i><span class="licomposer">'+ composer +'</span><br>' : '';
-					var genrehtml = genre && genre !== -1 ? '<i class="fa fa-genre"></i><span class="ligenre">'+ genre +'</span><br>' : '';
+					var composerhtml = ( composer ) ? '<i class="fa fa-composer"></i><span class="licomposer">'+ composer +'</span><br>' : '';
+					var genrehtml = genre ? '<i class="fa fa-genre"></i><span class="ligenre">'+ genre +'</span><br>' : '';
 					var file = data[ 0 ].file || data[ 0 ].filepl;
 					var dir = file.substring( 0, file.lastIndexOf( '/' ) );
 					content += '<li class="licover">'
@@ -1677,8 +1677,8 @@ function htmlPlaylist( data ) {
 	if ( coverart || coverart === 0 ) {
 		var coversrc = coverart ? coverart : coverrune;
 		var browsemode = GUI.dbbackdata.length ? GUI.dbbackdata[ 0 ].browsemode : '';
-		var composerhtml = ( composer && browsemode == 'composer' ) ? '<i class="fa fa-composer"></i><spanspan class="licomposer">'+ composer +'</span><br>' : '';
-		var genrehtml = genre && genre !== -1 ? '<i class="fa fa-genre"></i><span class="ligenre">'+ genre +'</span><br>' : '';
+		var composerhtml = ( composer ) ? '<i class="fa fa-composer"></i><spanspan class="licomposer">'+ composer +'</span><br>' : '';
+		var genrehtml = genre ? '<i class="fa fa-genre"></i><span class="ligenre">'+ genre +'</span><br>' : '';
 		var licover = '<li class="licover">'
 						 +'<a class="lipath">'+ path +'</a><a class="liname">'+ path.replace(/^.*\//, '') +'</a>'
 						 +'<div class="licoverimg'+ ( coverart ? '' : ' nocover' ) +'"><img src="'+ coversrc +'" class="coversmall"></div>'
@@ -2011,9 +2011,8 @@ function setTag() {
 				}
 					i++;
 				} );
-				$.post( 'enhance.php', { bash: '/usr/bin/kid3-cli '+ tags + pathfile +'; mpc update "'+ path +'"' }, function() {
-					//$( '#db-back' ).click();
-				} );
+				$( '#db-entries li' ).removeClass( 'active' );
+				$.post( 'enhance.php', { bash: '/usr/bin/kid3-cli '+ tags + pathfile +'; mpc update "'+ path +'"' } );
 			}
 		} );
 	} );
