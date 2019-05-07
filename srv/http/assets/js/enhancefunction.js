@@ -1451,8 +1451,8 @@ function dbContextmenu( $li, $target ) {
 	
 	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
 	$( '.update' ).toggleClass( 'hide', GUI.status.updating_db !== 0 );
-	$( '.tag' ).toggleClass( 'hide', $( '.licover' ).length === 0 );
-	var ext = $( '#db-entries .lipath:eq( 1 )' ).text().split( '.' ).pop();
+	var cuem3u = [ 'cue', 'm3u' ].indexOf( $( '#db-entries .lipath:eq( 1 )' ).text().split( '.' ).pop() ) !== -1;
+	$( '.tag' ).toggleClass( 'hide', $( '.licover' ).length === 0 || cuem3u );
 	var contextnum = $menu.find( 'a:not(.hide)' ).length;
 	$( '.menushadow' ).css( 'height', contextnum * 41 - 1 );
 	$( '#db-entries li' ).removeClass( 'active' );
@@ -1649,8 +1649,7 @@ function htmlPlaylist( data ) {
 				var actionhtml = '<i class="fa fa-music pl-icon"></i>'
 								+'<a class="lipath">'+ value.file +'</a>';
 			} else {
-				var dbpl = GUI.library ? 'db' : 'pl';
-				var actionhtml = '<i class="fa fa-music '+ dbpl +'-icon" data-target="#context-menu-filesavedpl"></i>'
+				var actionhtml = '<i class="fa fa-music '+ ( GUI.library ? 'db' : 'pl' ) +'-icon" data-target="#context-menu-'+ ( GUI.library ? 'file' : 'filesavedpl' ) +'"></i>'
 								+'<a class="lipath">'+ ( value.cuem3u || value.file ) +'</a>'
 								+'<a class="liname">'+ value.Title +'</a>'
 								+'<a class="liindex">'+ value.index +'</a>';
