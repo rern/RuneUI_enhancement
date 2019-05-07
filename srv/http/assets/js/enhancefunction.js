@@ -962,7 +962,7 @@ function dataParse( data, path, querytype, plid ) {
 					var browsemode = GUI.dbbackdata.length ? GUI.dbbackdata[ 0 ].browsemode : '';
 					var artistmode = [ 'artist', 'composer', 'genre' ].indexOf( browsemode ) !== -1 ? 1 : 0;
 					var composerhtml = ( composer && browsemode === 'composer' ) ? '<i class="fa fa-composer"></i><span class="licomposer">'+ composer +'</span><br>' : '';
-					var genrehtml = genre && genre !== -1 ? '<span><i class="fa fa-genre"></i>'+ genre +'</span><br>' : '';
+					var genrehtml = genre && genre !== -1 ? '<i class="fa fa-genre"></i><span class="ligenre">'+ genre +'</span><br>' : '';
 					var file = data[ 0 ].file || data[ 0 ].filepl;
 					var dir = file.substring( 0, file.lastIndexOf( '/' ) );
 					content += '<li class="licover">'
@@ -1151,7 +1151,7 @@ function data2html( list, path ) {
 					content = '<li class="file">'
 							 +'<a class="lipath">'+ list.file +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ list.lisort +'</a>'
 							 +'<i class="fa fa-music db-icon" data-target="#context-menu-file"></i>'
-							 +'<span class="li1">'+ liname +'<span class="time">'+ list.Time +'</span></span>'
+							 +'<span class="li1"><a>'+ liname +'</a><span class="time">'+ list.Time +'</span></span>'
 							 +'<span class="li2">'+ bl +'</span>';
 				} else {
 					var liname = list.file.split( '/' ).pop(); // filename
@@ -1678,7 +1678,7 @@ function htmlPlaylist( data ) {
 		var coversrc = coverart ? coverart : coverrune;
 		var browsemode = GUI.dbbackdata.length ? GUI.dbbackdata[ 0 ].browsemode : '';
 		var composerhtml = ( composer && browsemode == 'composer' ) ? '<i class="fa fa-composer"></i><spanspan class="licomposer">'+ composer +'</span><br>' : '';
-		var genrehtml = genre && genre !== -1 ? '<span><i class="fa fa-genre"></i>'+ genre +'</span><br>' : '';
+		var genrehtml = genre && genre !== -1 ? '<i class="fa fa-genre"></i><span class="ligenre">'+ genre +'</span><br>' : '';
 		var licover = '<li class="licover">'
 						 +'<a class="lipath">'+ path +'</a><a class="liname">'+ path.replace(/^.*\//, '') +'</a>'
 						 +'<div class="licoverimg'+ ( coverart ? '' : ' nocover' ) +'"><img src="'+ coversrc +'" class="coversmall"></div>'
@@ -1969,15 +1969,50 @@ function setTag() {
 				$( '#db-entries li' ).removeClass( 'active' );
 			}
 			, ok        : function() {
-				$( '#db-entries li' ).removeClass( 'active' );
 				var tags = '';
 				var i = 0;
 				$( '.infotextbox .infoinput' ).each( function() {
-					tags += "-c \"set "+ names[ i ] +" '"+ this.value.replace( /(["'])/g, '\\$1' ) +'\'" ';
+					var value = this.value;
+					tags += "-c \"set "+ names[ i ] +" '"+ value.toString().replace( /(["'])/g, '\\$1' ) +'\'" ';
+					if ( GUI.list.isfile ) {
+						if ( i === 5 ) $( '#db-entries li.active .li1 a' ).text( value );
+					} else {
+						if ( i === 0 ) $( '.liartist' ).text( value );
+						if ( i === 1 ) $( '.liartist' ).text( value );
+						if ( i === 2 ) $( '.lialbum' ).text( value );
+						if ( i === 3 ) {
+							var $el = $( '.licomposer' );
+							if ( !value ) {
+								$el.prev().remove();
+								$el.next().remove();
+								$el.remove();
+							} else {
+								if ( $el.length ) {
+									$el.text( value );
+								} else {
+									$( '.liartist' ).after( '<br><i class="fa fa-composer"></i><span class="licomposer">'+ value +'</span>' );
+								}
+							}
+						}
+						if ( i === 4 ) {
+							var $el = $( '.ligenre' );
+							if ( !value ) {
+								$el.prev().remove();
+								$el.next().remove();
+								$el.remove();
+							} else {
+								if ( $el.length ) {
+									$el.text( value );
+								} else {
+									$( '.liinfo .db-icon' ).before( '<i class="fa fa-genre"></i><span class="ligenre">'+ value +'</span><br>' );
+								}
+							}
+						}
+				}
 					i++;
 				} );
 				$.post( 'enhance.php', { bash: '/usr/bin/kid3-cli '+ tags + pathfile +'; mpc update "'+ path +'"' }, function() {
-					$( '#db-back' ).click();
+					//$( '#db-back' ).click();
 				} );
 			}
 		} );
