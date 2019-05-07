@@ -1978,7 +1978,7 @@ function setTag() {
 						if ( i === 5 ) $( '#db-entries li.active .li1 a' ).text( value );
 					} else {
 						if ( i === 0 ) $( '.liartist' ).text( value );
-						if ( i === 1 ) $( '.liartist' ).text( value );
+						if ( i === 1 && value ) $( '.liartist' ).text( value );
 						if ( i === 2 ) $( '.lialbum' ).text( value );
 						if ( i === 3 ) {
 							var $el = $( '.licomposer' );
