@@ -184,13 +184,15 @@ $menudiv = '';
 $html = $htmlcommon;
 $html.= menuli( 'bookmark',  'star',           'Bookmark' );
 $html.= menuli( 'update',    'folder-refresh', 'Update database' );
-if ( $kid3 ) $html.= menuli( 'tag',       'tag',            'Change metadata' );
 $html.= menuli( 'thumbnail', 'coverart',       'Update thumbnails' );
+if ( $kid3 )
+$html.= menuli( 'tag',       'tag',            'Change metadata' );
 $menu.= menudiv( 'folder', $html );
 $menudiv = '';
 $html = $htmlcommon;
 $html.= menuli( 'lastfmreplaceplay', 'lastfm', 'Last.fm playlist' );
-if ( $kid3 ) $html.= menuli( 'tag',               'tag',    'Change metadata' );
+if ( $kid3 )
+$html.= menuli( 'tag',       'tag',            'Change metadata' );
 $menu.= menudiv( 'file', $html );
 $menudiv = '';
 $html = $htmlcommon;
