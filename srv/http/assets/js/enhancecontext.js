@@ -25,49 +25,7 @@ $( '.contextmenu a' ).click( function() {
 		} else if ( cmd === 'update' ) {
 			$.post( 'enhance.php', { mpc: 'mpc update "'+ GUI.list.path +'"' }, getUpdateStatus );
 		} else if ( cmd === 'tag' ) {
-			$.post( 'enhance.php', { bash: '/usr/bin/mpc ls  -f "%artist%^^%albumartist%^^%album%^^%composer%^^%genre%^^%title%^^%track%^^%file%" "'+ GUI.list.path +'" 2> /dev/null | head -1' }, function( data ) {
-				var tags = data.slice( 0, -1 ).split( '^^' );
-				var file = tags[ 7 ].replace( /"/g, '\"' );
-				var ext = file.split( '.' ).pop();
-				var path = file.substr( 0, file.lastIndexOf( '/' ) );
-				if ( GUI.list.isfile ) {
-					var labels = [ 'Artist', 'AlbumArtist', 'Album', 'Composer', 'Genre', 'Title', 'Track' ];
-					var values = [ tags[ 0 ], tags[ 1 ], tags[ 2 ], tags[ 3 ], tags[ 4 ], tags[ 5 ], tags[ 6 ] ];
-				} else {
-					var labels = [ 'Artist', 'AlbumArtist', 'Album', 'Composer', 'Genre' ];
-					var values = [ tags[ 0 ], tags[ 1 ], tags[ 2 ], tags[ 3 ], tags[ 4 ] ];
-				}
-				var icon = GUI.list.isfile ? 'music' : 'folder';
-				info( {
-					  icon      : 'tag'
-					, title     : 'Change Metadata'
-					, width     : 500
-					, message   : '<i class="fa fa-'+ icon +' wh"></i> '+ GUI.list.path +'<br>&nbsp;'
-					, boxwidth  : 'max'
-					, textlabel : labels
-					, textvalue : values
-					, cancel    : function() {
-						$( '#db-entries li' ).removeClass( 'active' );
-					}
-					, ok        : function() {
-						$( '#db-entries li' ).removeClass( 'active' );
-						var list = [];
-						$( '.infotextbox .infoinput' ).each( function() {
-							list.push( this.value.replace( /"/g, '\"' ) );
-						} );
-						if ( GUI.list.isfile ) {
-							var pathfile = ' "/mnt/MPD/'+ file +'"';
-						} else {
-							var pathfile = ' "/mnt/MPD/'+ path +'/"*.'+ ext;
-						}
-						if ( ext === 'flac' ) {
-							setFlacTag( list, pathfile );
-						} else {
-							setID3Tag( list, pathfile );
-						}
-					}
-				} );
-			} );
+			setTag();
 		} else if ( cmd === 'remove' ) {
 			GUI.contextmenu = 1;
 			setTimeout( function() { GUI.contextmenu = 0 }, 500 );

@@ -1161,7 +1161,6 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-remove', function() {
 	if ( path ) thumbname += '^^'+ path;
 	thumbname = thumbname.replace( /\//g, '|' ).replace( /#/g, '{' ).replace( /\?/g, '}' );
 	var thumbfile = '/srv/http/assets/img/coverarts/'+ thumbname + imgsrc.slice( -4 );
-	console.log(thumbfile)
 	info( {
 		  icon     : 'coverart'
 		, title    : 'Remove Thumbnail'

@@ -1454,7 +1454,6 @@ function dbContextmenu( $li, $target ) {
 	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
 	$( '.update' ).toggleClass( 'hide', GUI.status.updating_db !== 0 );
 	var ext = $( '#db-entries .lipath:eq( 1 )' ).text().split( '.' ).pop();
-	$( '.tag' ).toggleClass( 'hide', GUI.list.mode !== 'music' || [ 'flac', 'mp3' ].indexOf( ext ) === -1 );
 	var contextnum = $menu.find( 'a:not(.hide)' ).length;
 	$( '.menushadow' ).css( 'height', contextnum * 41 - 1 );
 	$( '#db-entries li' ).removeClass( 'active' );
@@ -1940,34 +1939,47 @@ function getOrientation( file, callback ) { // return: 1 - undefined
 	};
 	reader.readAsArrayBuffer( file.slice( 0, 64 * 1024 ) );
 }
-function setFlacTag( list, file ) {
-	var names = [ 'ARTIST', 'ALBUMARTIST', 'ALBUM', 'COMPOSER', 'GENRE', 'TITLE', 'TRACKNUMBER' ];
-	var name = '';
-	var val = '';
-	var tags = '';
-	var iL = list.length;
-	for ( i = 0; i < iL; i++ ) {
-		val = list[ i ];
-		if ( val ) {
-			name = names[ i ];
-			tags += ' --remove-tag='+ name +' --set-tag='+ name +'="'+ val +'"';
+function setTag() {
+	$.post( 'enhance.php', { bash: '/usr/bin/mpc ls  -f "%artist%^^%albumartist%^^%album%^^%composer%^^%genre%^^%title%^^%track%^^%file%" "'+ GUI.list.path +'" 2> /dev/null | head -1' }, function( data ) {
+		var tags = data.slice( 0, -1 ).split( '^^' );
+		var file = tags[ 7 ].replace( /"/g, '\"' );
+		var ext = file.split( '.' ).pop();
+		var path = file.substr( 0, file.lastIndexOf( '/' ) );
+		var labels = [ 'Artist', 'AlbumArtist', 'Album', 'Composer', 'Genre' ];
+		var values = [ tags[ 0 ], tags[ 1 ], tags[ 2 ], tags[ 3 ], tags[ 4 ] ];
+		if ( GUI.list.isfile ) {
+			labels.push( 'Title', 'Track' );
+			values.push( tags[ 5 ], tags[ 6 ] );
+			var message = '<i class="fa fa-music wh"></i> '+ file +'<br>&nbsp;'
+			var pathfile = '"/mnt/MPD/'+ file +'"';
+		} else {
+			var message = '<i class="fa fa-folder wh"></i> '+ path +'<br>&nbsp;'
+			var pathfile = '"/mnt/MPD/'+ path +'/"*.'+ ext;
 		}
-	}
-	$.post( 'enhanch.php', { bash: '/usr/bin/metaflac --preserve-modtime'+ tags + file } );
-}
-function setID3Tag( list, file ) {
-	var names = [ 'artist', 'TPE2', 'album', 'TCOM', 'genre', 'song', 'track' ];
-	var name = '';
-	var val = '';
-	var tags = '';
-	var iL = list.length;
-	for ( i = 0; i < iL; i++ ) {
-		val = list[ i ];
-		if ( val ) {
-			name = names[ i ];
-			tags += ' --'+ name +'="'+ val +'"';
-		}
-	}
-	console.log('/usr/bin/mid3v2'+ tags + file)
-	//$.post( 'enhanch.php', { bash: '/usr/bin/mid3v2'+ tags + file } );
+		var names = [ 'artist', 'albumartist', 'album', 'composer', 'genre', 'title', 'tracknumber' ];
+		info( {
+			  icon      : 'tag'
+			, title     : 'Change Metadata'
+			, width     : 500
+			, message   : message
+			, textlabel : labels
+			, textvalue : values
+			, boxwidth  : 'max'
+			, cancel    : function() {
+				$( '#db-entries li' ).removeClass( 'active' );
+			}
+			, ok        : function() {
+				$( '#db-entries li' ).removeClass( 'active' );
+				var tags = '';
+				var i = 0;
+				$( '.infotextbox .infoinput' ).each( function() {
+					tags += "-c \"set "+ names[ i ] +" '"+ this.value.replace( /(["'])/g, '\\$1' ) +'\'" ';
+					i++;
+				} );
+				$.post( 'enhance.php', { bash: '/usr/bin/kid3-cli '+ tags + pathfile +'; mpc update "'+ path +'"' }, function() {
+					$( '#db-back' ).click();
+				} );
+			}
+		} );
+	} );
 }
