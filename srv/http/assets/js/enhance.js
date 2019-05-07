@@ -122,7 +122,6 @@ $( '#displaylibrary' ).click( function() {
 		, title    : 'Library Tools'
 		, message  : 'Select items to show / options:'
 		, checkbox : '<form id="displaysavelibrary">'+ displayCheckbox( chklibrary ) +'</form>'
-		, cancel   : 1
 		, ok       : function () {
 			var data = {};
 			$( '#displaysavelibrary input' ).each( function() {
@@ -156,7 +155,6 @@ $( '#displayplayback' ).click( function() {
 		, title    : 'Playback Tools'
 		, message  : 'Select items to show / options:'
 		, checkbox : '<form id="displaysaveplayback">'+ displayCheckbox( chkplayback ) +'</form>'
-		, cancel   : 1
 		, ok       : function () {
 			// no: serializeArray() omit unchecked fields
 			var data = {};
@@ -688,7 +686,6 @@ $( '#timeTL' ).click( function() {
 			, '<i class="fa fa-dlna"></i>DLNA'       : 'dlna'
 		}
 		, checked : active === 'MPD' ? 0 : ( active === 'spotify' ? 1 : ( active === 'airplay' ? 2 : 3 ) )
-		, cancel  : 1
 		, ok      : function() {
 			var source = $( '#infoRadio input[ type=radio ]:checked' ).val();
 			if ( source === 'mpd' ) {
@@ -707,9 +704,9 @@ $( '#share' ).click( function() {
 		, title       : 'Sharing'
 		, message     : 'Share this track:'
 		, buttonwidth : 1
-		, cancellabel : '<i class="fa fa-facebook"></i>Facebook'
-		, cancelcolor : '#4267b2'
-		, cancel  : function() {
+		, buttonlabel : '<i class="fa fa-facebook"></i>Facebook'
+		, buttoncolor : '#4267b2'
+		, button       : function() {
 			windowopen( 'https://www.facebook.com/sharer.php?u=http%3A%2F%2Fwww.runeaudio.com%2F&display=popup' );
 		}
 		, oklabel     : '<i class="fa fa-twitter"></i>Twitter'
@@ -947,7 +944,6 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 			, message     : icon
 			, msgalign    : 'center'
 			, fileoklabel : 'Replace'
-			, cancel      : 1
 			, ok          : function() {
 				var bookmarkname = path.replace( /\//g, '|' );
 				var newimg = $( '#infoMessage .newimg' ).attr( 'src' );
@@ -1065,7 +1061,6 @@ $( '#home-coverart' ).click( function() { // fix - 'tap' also fire .coverart cli
 						 +'<br>( ±'+ perminute +' minutes for '+ albumcount +' albums)'
 						 +'<br>&nbsp;'
 			, msgalign : 'center'
-			, cancel   : 1
 			, ok       : function() {
 				$( 'body' ).append(
 					'<form id="formtemp" action="addonsbash.php" method="post">'
@@ -1087,7 +1082,6 @@ $( '#home-coverart' ).click( function() { // fix - 'tap' also fire .coverart cli
 				  'Replace existings'       : 1
 				, 'Update Library database' : 1
 			}
-			, cancel   : 1
 			, ok       : function() {
 				$( 'body' ).append(
 					'<form id="formtemp" action="addonsbash.php" method="post">'
@@ -1168,7 +1162,6 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-remove', function() {
 					+'<br><wh>'+ album +'</wh>'
 					+'<br>'+ artist
 		, msgalign : 'center'
-		, cancel   : 1
 		, oklabel  : 'Remove'
 		, ok       : function() {
 			$thisdiv.remove();
@@ -1194,7 +1187,6 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-cover', function() {
 		, message     : '<img src="'+ imgsrc +'">'
 		, msgalign    : 'center'
 		, fileoklabel : 'Replace'
-		, cancel      : 1
 		, ok          : function() {
 			var newimg = $( '#infoMessage .newimg' ).attr( 'src' );
 			$.post( 'enhance.php', { imagefile: thumbfile, base64: newimg }, function( std ) {
@@ -1366,9 +1358,8 @@ $( '#plsave' ).click( function() {
 } );
 $( '#plcrop' ).click( function() {
 	info( {
-		   title   : 'Crop Playlist'
-		 , message : 'Clear this playlist except current song?'
-		, cancel   : 1
+		  title   : 'Crop Playlist'
+		, message : 'Clear this playlist except current song?'
 		, ok       : function() {
 			$.post( 'enhance.php', { mpc: GUI.status.state === 'stop' ? 'mpc play; mpc crop; mpc stop' : 'mpc crop' } );
 		}
@@ -1388,8 +1379,8 @@ $( '#plclear' ).click( function() {
 	info( {
 		  title       : 'Remove From Playlist'
 		, message     : 'Selective remove / Clear all :'
-		, cancellabel : 'Select'
-		, cancel  : function() {
+		, buttonlabel : 'Select'
+		, button      : function() {
 			$( '#pl-entries .li1' ).before( '<i class="fa fa-minus-circle pl-remove"></i>' );
 		}
 		, oklabel    : 'All'

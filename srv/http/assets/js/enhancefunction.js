@@ -1356,7 +1356,6 @@ function removeCoverart( $img, album, artist, path ) {
 						+'<br><br><code>'+ file +'</code> > <code>'+ file +'.backup</code>'
 			, msgalign : 'center'
 			, oklabel  : 'Remove'
-			, cancel   : 1
 			, ok       : function() {
 				$.post( 'enhance.php', { imagefile: path +'/cover.jpg', coverfile: 1 }, function( std ) {
 					if ( std == 0 ) {
@@ -1385,7 +1384,6 @@ function replaceCoverart( $img, album, artist, path ) {
 					   +'<br>'+ artist +'<span>'
 		, msgalign    : 'center'
 		, fileoklabel : 'Replace'
-		, cancel      : 1
 		, ok          : function() {
 			var newimg = $( '#infoMessage .newimg' ).attr( 'src' );
 			$.post( 'enhance.php', { imagefile: path +'/cover.jpg', base64: newimg, coverfile: 1 }, function( std ) {

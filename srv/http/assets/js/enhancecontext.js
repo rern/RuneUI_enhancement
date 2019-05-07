@@ -121,7 +121,6 @@ $( '.contextmenu a' ).click( function() {
 				info( {
 					  title   : 'Replace Playlist'
 					, message : 'Replace current Playlist?'
-					, cancel  : 1
 					, ok      : function() {
 						addReplace( mode, cmd, command, 'Playlist replaced' );
 					}
@@ -151,7 +150,6 @@ function updateThumbnails() {
 			  'Replace existings'       : 1
 			, 'Update Library database' : 1
 		}
-		, cancel   : 1
 		, ok       : function() {
 			$( 'body' ).append(
 				'<form id="formtemp" action="addonsbash.php" method="post">'
@@ -264,7 +262,6 @@ function bookmarkRename( name, path, $block ) {
 		, textrequired : 0
 		, textalign    : 'center'
 		, boxwidth     : 'max'
-		, cancel       : 1
 		, oklabel      : 'Rename'
 		, ok           : function() {
 			var newname = $( '#infoTextBox' ).val();
@@ -287,7 +284,6 @@ function bookmarkDelete( path, name, $block ) {
 		, title    : 'Remove Bookmark'
 		, message  : icon
 		, msgalign : 'center'
-		, cancel   : 1
 		, oklabel  : 'Remove'
 		, ok       : function() {
 			GUI.bookmarkedit = 1;
@@ -413,7 +409,6 @@ function webRadioNew( name, url ) {
 		, textrequired : [ 0, 1 ]
 		, textalign    : 'center'
 		, boxwidth     : 'max'
-		, cancel       : 1
 		, ok           : function() {
 			var newname = $( '#infoTextBox' ).val();
 			var url = $( '#infoTextBox2' ).val();
@@ -500,7 +495,6 @@ function playlistNew() {
 		, textrequired : 0
 		, textalign    : 'center'
 		, boxwidth     : 'max'
-		, cancel       : 1
 		, ok           : function() {
 			playlistVerify( $( '#infoTextBox' ).val() );
 		}
@@ -519,10 +513,11 @@ function playlistRename() {
 		, textrequired : 0
 		, textalign    : 'center'
 		, boxwidth     : 'max'
-		, cancel       : 1
 		, oklabel      : 'Rename'
 		, ok           : function() {
-			playlistVerify( $( '#infoTextBox' ).val(), name );
+			var newname = $( '#infoTextBox' ).val();
+			playlistVerify( newname, name );
+			GUI.list.li.find( '.plname' ).text( newname );
 		}
 	} );
 }
@@ -547,9 +542,7 @@ function playlistVerify( name, oldname ) {
 			  icon    : 'list-ul'
 			, title   : oldname ? 'Rename Playlist' : 'Add Playlist'
 			, message : '<i class="fa fa-warning"></i><w>Name</w> cannot be blank.'
-			, ok      : function() {
-				playlistNew();
-			}
+			, ok      : playlistNew
 		} );
 		return;
 	}
@@ -564,10 +557,8 @@ function playlistVerify( name, oldname ) {
 				, message     : '<i class="fa fa-warning"></i><w>'+ name +'</w>'
 							+'<br>Already exists.'
 				, msgalign    : 'center'
-				, cancellabel : 'Back'
-				, cancel      : function() {
-					playlistNew();
-				}
+				, buttonlabel : 'Back'
+				, button      : playlistNew
 				, oklabel     : 'Replace'
 				, ok          : function() {
 					oldname ? addPlaylist( name, oldname ) : addPlaylist( name );
@@ -583,7 +574,6 @@ function playlistDelete() {
 		, message  : 'Delete?'
 					+'<br><w>'+ GUI.list.name +'</w>'
 		, msgalign : 'center'
-		, cancel   : 1
 		, oklabel  : 'Delete'
 		, ok       : function() {
 			var count = $( '#pls-count' ).text() - 1;
