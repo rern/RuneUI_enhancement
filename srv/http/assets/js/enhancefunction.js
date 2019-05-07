@@ -1453,6 +1453,7 @@ function dbContextmenu( $li, $target ) {
 	
 	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
 	$( '.update' ).toggleClass( 'hide', GUI.status.updating_db !== 0 );
+	$( '.tag' ).toggleClass( 'hide', $( '.licover' ).length === 0 );
 	var ext = $( '#db-entries .lipath:eq( 1 )' ).text().split( '.' ).pop();
 	var contextnum = $menu.find( 'a:not(.hide)' ).length;
 	$( '.menushadow' ).css( 'height', contextnum * 41 - 1 );
