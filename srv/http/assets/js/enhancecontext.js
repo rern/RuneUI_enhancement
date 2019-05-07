@@ -237,7 +237,7 @@ function bookmarkNew() {
 								+'<br>As:'
 				, msgalign     : 'center'
 				, textvalue    : name
-				, textrequired : 1
+				, textrequired : 0
 				, boxwidth     : 'max'
 				, textalign    : 'center'
 				, cancel    : function() {
@@ -261,7 +261,7 @@ function bookmarkRename( name, path, $block ) {
 						+'To:'
 		, msgalign     : 'center'
 		, textvalue    : name
-		, textrequired : 1
+		, textrequired : 0
 		, textalign    : 'center'
 		, boxwidth     : 'max'
 		, cancel       : 1
@@ -387,7 +387,7 @@ function webRadioSave( name, url ) {
 		, msgalign     : 'center'
 		, textlabel    : ''
 		, textvalue    : name
-		, textrequired : 1
+		, textrequired : 0
 		, textalign    : 'center'
 		, boxwidth     : 'max'
 		, cancel       : function() {
@@ -408,11 +408,9 @@ function webRadioNew( name, url ) {
 		, title        : 'Add Webradio'
 		, width        : 500
 		, message      : 'Add new Webradio:'
-		, textlabel    : 'Name'
-		, textvalue    : name || ''
-		, textlabel2   : 'URL'
-		, textvalue2   : url || ''
-		, textrequired : 1
+		, textlabel    : [ 'Name', 'URL' ]
+		, textvalue    : [ ( name || '' ), ( url || '' ) ]
+		, textrequired : [ 0, 1 ]
 		, textalign    : 'center'
 		, boxwidth     : 'max'
 		, cancel       : 1
@@ -455,7 +453,7 @@ function webRadioRename() {
 							+'<br>To:'
 			, msgalign     : 'center'
 			, textvalue    : name
-			, textrequired : 1
+			, textrequired : 0
 			, textalign    : 'center'
 			, boxwidth     : 'max'
 			, cancel       : function() {
@@ -499,7 +497,7 @@ function playlistNew() {
 		, title        : 'Add Playlist'
 		, message      : 'Save current playlist as:'
 		, textlabel    : 'Name'
-		, textrequired : 1
+		, textrequired : 0
 		, textalign    : 'center'
 		, boxwidth     : 'max'
 		, cancel       : 1
@@ -518,7 +516,7 @@ function playlistRename() {
 						+'<br>To:'
 		, msgalign     : 'center'
 		, textvalue    : name
-		, textrequired : 1
+		, textrequired : 0
 		, textalign    : 'center'
 		, boxwidth     : 'max'
 		, cancel       : 1
