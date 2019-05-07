@@ -27,7 +27,7 @@ _Tested on RuneAudio 0.4b, 0.5_
 	- VU meter for Webradio (animated gif)
 	- Image from each Dirble stations
 	- Custom Webradio coverarts
-- Metadata tag editor
+- Metadata tag editor ( by [Kid3](https://kid3.sourceforge.io) )
 - Index bar
 	- Mask available indexes
 - Library sorting
@@ -127,7 +127,7 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 		- Long-press for replace / remove
 	- Webradio coverarts ( need `ext*` formatted drive )
 		- Tap Webradio icon in list view
-- Metadata tag editor
+- Metadata tag editor (Install RuneUIe Metadata Editor addon to enable.)
 	- Album view:
 		- Album tags - Coverart context menu > Change Metadata
 		- Individual tags - List context menu > Change Metadata
