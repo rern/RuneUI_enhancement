@@ -1348,15 +1348,14 @@ function removeCoverart( $img, album, artist, path ) {
 		}
 		
 		info( {
-			  icon     : 'coverart'
-			, title    : 'Remove Album Coverart'
-			, message  : '<img src="'+ $img.prop( 'src' ) +'">'
-						+'<br><w>'+ album +'</w>'
-						+'<br>'+ artist
-						+'<br><br><code>'+ file +'</code> > <code>'+ file +'.backup</code>'
-			, msgalign : 'center'
-			, oklabel  : 'Remove'
-			, ok       : function() {
+			  icon    : 'coverart'
+			, title   : 'Remove Album Coverart'
+			, message : '<img src="'+ $img.prop( 'src' ) +'">'
+					   +'<br><w>'+ album +'</w>'
+					   +'<br>'+ artist
+					   +'<br><br><code>'+ file +'</code> > <code>'+ file +'.backup</code>'
+			, oklabel : 'Remove'
+			, ok      : function() {
 				$.post( 'enhance.php', { imagefile: path +'/cover.jpg', coverfile: 1 }, function( std ) {
 					if ( std == 0 ) {
 						$img.attr( 'src', coverrune );
@@ -1382,7 +1381,6 @@ function replaceCoverart( $img, album, artist, path ) {
 		, message     : '<img src="'+ $img.prop( 'src' ) +'">'
 					   +'<span class="bkname"><br><w>'+ album +'</w>'
 					   +'<br>'+ artist +'<span>'
-		, msgalign    : 'center'
 		, fileoklabel : 'Replace'
 		, ok          : function() {
 			var newimg = $( '#infoMessage .newimg' ).attr( 'src' );

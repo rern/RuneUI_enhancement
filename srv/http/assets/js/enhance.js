@@ -706,7 +706,7 @@ $( '#share' ).click( function() {
 		, buttonwidth : 1
 		, buttonlabel : '<i class="fa fa-facebook"></i>Facebook'
 		, buttoncolor : '#4267b2'
-		, button       : function() {
+		, button      : function() {
 			windowopen( 'https://www.facebook.com/sharer.php?u=http%3A%2F%2Fwww.runeaudio.com%2F&display=popup' );
 		}
 		, oklabel     : '<i class="fa fa-twitter"></i>Twitter'
@@ -942,7 +942,6 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 			  icon        : 'bookmark'
 			, title       : 'Change Bookmark Thumbnail'
 			, message     : icon
-			, msgalign    : 'center'
 			, fileoklabel : 'Replace'
 			, ok          : function() {
 				var bookmarkname = path.replace( /\//g, '|' );
@@ -1055,13 +1054,12 @@ $( '#home-coverart' ).click( function() { // fix - 'tap' also fire .coverart cli
 		var albumcount = Number( $( '#home-album gr' ).text().replace( /,/g, '' ) );
 		var perminute = Math.ceil( albumcount / 150 );
 		info( {
-			  icon     : 'coverart'
-			, title    : 'Create Coverart Thumbnails'
-			, message  : 'Find coverarts and create thumbnails.'
-						 +'<br>( ±'+ perminute +' minutes for '+ albumcount +' albums)'
-						 +'<br>&nbsp;'
-			, msgalign : 'center'
-			, ok       : function() {
+			  icon    : 'coverart'
+			, title   : 'Create Coverart Thumbnails'
+			, message : 'Find coverarts and create thumbnails.'
+					   +'<br>( ±'+ perminute +' minutes for '+ albumcount +' albums)'
+					   +'<br>&nbsp;'
+			, ok      : function() {
 				$( 'body' ).append(
 					'<form id="formtemp" action="addonsbash.php" method="post">'
 						+'<input type="hidden" name="alias" value="cove">'
@@ -1077,7 +1075,6 @@ $( '#home-coverart' ).click( function() { // fix - 'tap' also fire .coverart cli
 			, title    : 'Coverart Thumbnails Update'
 			, message  : 'Find coverarts and update thumbnails.'
 						+'<br>&nbsp;'
-			, msgalign : 'center'
 			, checkbox : {
 				  'Replace existings'       : 1
 				, 'Update Library database' : 1
@@ -1156,14 +1153,13 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-remove', function() {
 	thumbname = thumbname.replace( /\//g, '|' ).replace( /#/g, '{' ).replace( /\?/g, '}' );
 	var thumbfile = '/srv/http/assets/img/coverarts/'+ thumbname + imgsrc.slice( -4 );
 	info( {
-		  icon     : 'coverart'
-		, title    : 'Remove Thumbnail'
-		, message  : '<img src="'+ imgsrc +'">'
-					+'<br><wh>'+ album +'</wh>'
-					+'<br>'+ artist
-		, msgalign : 'center'
-		, oklabel  : 'Remove'
-		, ok       : function() {
+		  icon    : 'coverart'
+		, title   : 'Remove Thumbnail'
+		, message : '<img src="'+ imgsrc +'">'
+				   +'<br><wh>'+ album +'</wh>'
+				   +'<br>'+ artist
+		, oklabel : 'Remove'
+		, ok      : function() {
 			$thisdiv.remove();
 			$.post( 'enhance.php', { imagefile: thumbfile }, function( std ) {
 				if ( std == 13 ) {
@@ -1185,7 +1181,6 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-cover', function() {
 		  icon        : 'coverart'
 		, title       : 'Change Thumbnail'
 		, message     : '<img src="'+ imgsrc +'">'
-		, msgalign    : 'center'
 		, fileoklabel : 'Replace'
 		, ok          : function() {
 			var newimg = $( '#infoMessage .newimg' ).attr( 'src' );

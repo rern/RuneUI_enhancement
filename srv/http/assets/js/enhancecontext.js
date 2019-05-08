@@ -33,15 +33,14 @@ $( '.contextmenu a' ).click( function() {
 		} else if ( cmd === 'savedpladd' ) {
 			GUI.plappend = GUI.list.path;
 			info( {
-				  icon     : 'list-ul'
-				, title    : 'Add to playlist'
-				, message  : 'Select playlist to add:'
-							+'<br><w>'+ GUI.list.name +'</w>'
-				, msgalign : 'center'
-				, cancel   : function() {
+				  icon    : 'list-ul'
+				, title   : 'Add to playlist'
+				, message : 'Select playlist to add:'
+						   +'<br><w>'+ GUI.list.name +'</w>'
+				, cancel  : function() {
 					GUI.plappend = '';
 				}
-				, ok       : function() {
+				, ok      : function() {
 					$( '#plopen' ).click();
 				}
 			} );
@@ -145,7 +144,6 @@ function updateThumbnails() {
 		, message  : 'Update thumbnails in:'
 					+'<br><w>'+ GUI.list.path +'</w>'
 					+'<br>&nbsp;'
-		, msgalign : 'center'
 		, checkbox : {
 			  'Replace existings'       : 1
 			, 'Update Library database' : 1
@@ -198,11 +196,10 @@ function bookmarkNew() {
 								  + path;
 				}
 				info( {
-					  icon     : 'bookmark'
-					, title    : 'Add Bookmark'
-					, message  : iconhtml
+					  icon    : 'bookmark'
+					, title   : 'Add Bookmark'
+					, message : iconhtml
 							   +'<br><br>Already exists.'
-					, msgalign : 'center'
 				} );
 				return false
 			}
@@ -211,15 +208,14 @@ function bookmarkNew() {
 	$.post( 'enhancegetcover.php', { path: path }, function( base64img ) {
 		if ( base64img ) {
 			info( {
-				  icon      : 'bookmark'
-				, title     : 'Add Bookmark'
-				, message   : '<img src="'+ base64img +'">'
-							 +'<br><w>'+ path +'</w>'
-				, msgalign  : 'center'
-				, cancel    : function() {
+				  icon    : 'bookmark'
+				, title   : 'Add Bookmark'
+				, message : '<img src="'+ base64img +'">'
+						   +'<br><w>'+ path +'</w>'
+				, cancel  : function() {
 					$( '#db-entries li' ).removeClass( 'active' );
 				}
-				, ok        : function() {
+				, ok      : function() {
 					$.post( 'enhance.php', { bookmarks: 1, path: path, base64: base64img, new: 1 } );
 					notify( 'Add Bookmark', path, 'bookmark' );
 				}
@@ -233,7 +229,6 @@ function bookmarkNew() {
 								+'<br>'
 								+'<br><w>'+ path +'</w>'
 								+'<br>As:'
-				, msgalign     : 'center'
 				, textvalue    : name
 				, textrequired : 0
 				, boxwidth     : 'max'
@@ -257,7 +252,6 @@ function bookmarkRename( name, path, $block ) {
 		, message      : '<i class="fa fa-bookmark bookmark"></i>'
 						+'<br><a class="bklabel">'+ name +'</a>'
 						+'To:'
-		, msgalign     : 'center'
 		, textvalue    : name
 		, textrequired : 0
 		, textalign    : 'center'
@@ -280,12 +274,11 @@ function bookmarkDelete( path, name, $block ) {
 				  +'<br><a class="bklabel">'+ name +'</a>'
 	}
 	info( {
-		  icon     : 'bookmark'
-		, title    : 'Remove Bookmark'
-		, message  : icon
-		, msgalign : 'center'
-		, oklabel  : 'Remove'
-		, ok       : function() {
+		  icon    : 'bookmark'
+		, title   : 'Remove Bookmark'
+		, message : icon
+		, oklabel : 'Remove'
+		, ok      : function() {
 			GUI.bookmarkedit = 1;
 			$.post( 'enhance.php', { bookmarks: name, path: path, delete: 1 } );
 			$block.parent().remove();
@@ -305,7 +298,6 @@ function webRadioCoverart() {
 			, title       : 'Change Coverart'
 			, message     : ( nameimg[ 2 ] ? '<img src="'+ nameimg[ 2 ] +'">' : '<img src="'+ vu +'" style="border-radius: 9px">' )
 						   +'<span class="bkname"><br><w>'+ name +'</w><span>'
-			, msgalign    : 'center'
 			, fileoklabel : 'Replace'
 			, buttonlabel : 'Remove'
 			, buttoncolor : '#0095d8'
@@ -319,10 +311,10 @@ function webRadioCoverart() {
 					$( '#db-entries li' ).removeClass( 'active' );
 				}
 			}
-			, cancel      : function() {
+			, cancel     : function() {
 				$( '#db-entries li' ).removeClass( 'active' );
 			}
-			, ok          : function() {
+			, ok         : function() {
 				var newimg = $( '#infoMessage .newimg' ).attr( 'src' );
 				var picacanvas = document.createElement( 'canvas' );
 				picacanvas.width = picacanvas.height = 80;
@@ -358,13 +350,12 @@ function webRadioSave( name, url ) {
 		if ( data ) {
 			var nameimg = data.split( "\n" );
 			info( {
-				  icon     : 'webradio'
-				, title    : 'Save Webradio'
-				, message  : ( nameimg[ 2 ] ? '<br><img src="'+ nameimg[ 2 ] +'">' : '<br><i class="fa fa-webradio bookmark"></i>' )
-							+'<br><w>'+ nameimg[ 0 ] +'</w>'
-							+'<br>'+ url
-							+'<br>Already exists.'
-				, msgalign : 'center'
+				  icon    : 'webradio'
+				, title   : 'Save Webradio'
+				, message : ( nameimg[ 2 ] ? '<br><img src="'+ nameimg[ 2 ] +'">' : '<br><i class="fa fa-webradio bookmark"></i>' )
+						   +'<br><w>'+ nameimg[ 0 ] +'</w>'
+						   +'<br>'+ url
+						   +'<br>Already exists.'
 			} );
 			$( '#db-entries li.active' ).removeClass( 'active' );
 			return false
@@ -380,7 +371,6 @@ function webRadioSave( name, url ) {
 		, message      : ( img ? '<br><img src="'+ img +'">' : '<br><i class="fa fa-webradio bookmark"></i>' )
 						+'<br><w>'+ url +'</w>'
 						+'<br>As:'
-		, msgalign     : 'center'
 		, textlabel    : ''
 		, textvalue    : name
 		, textrequired : 0
@@ -416,14 +406,13 @@ function webRadioNew( name, url ) {
 				if ( exist ) {
 					var nameimg = exist.split( "\n" );
 					info( {
-						  icon     : 'webradio'
-						, title    : 'Add Webradio'
-						, message  : ( nameimg[ 2 ] ? '<img src="'+ nameimg[ 2 ] +'">' : '<i class="fa fa-webradio bookmark"></i>' )
-									+'<br><w>'+ nameimg[ 0 ] +'</w>'
-									+'<br>'+ url
-									+'<br>Already exists.'
-						, msgalign : 'center'
-						, ok       : function() {
+						  icon    : 'webradio'
+						, title   : 'Add Webradio'
+						, message : ( nameimg[ 2 ] ? '<img src="'+ nameimg[ 2 ] +'">' : '<i class="fa fa-webradio bookmark"></i>' )
+								   +'<br><w>'+ nameimg[ 0 ] +'</w>'
+								   +'<br>'+ url
+								   +'<br>Already exists.'
+						, ok      : function() {
 							webRadioNew( newname, url );
 						}
 					} );
@@ -446,7 +435,6 @@ function webRadioRename() {
 							+'<br><w>'+ nameimg[ 0 ] +'</w>'
 							+'<br>'+ url
 							+'<br>To:'
-			, msgalign     : 'center'
 			, textvalue    : name
 			, textrequired : 0
 			, textalign    : 'center'
@@ -469,18 +457,17 @@ function webRadioDelete() {
 	$.post( 'enhance.php', { bash: '/usr/bin/cat "/srv/http/assets/img/webradios/'+ urlname +'"' }, function( data ) {
 		var nameimg = data.split( "\n" );
 		info( {
-			  icon     : 'webradio'
-			, title    : 'Delete Webradio'
-			, width    : 500
-			, message  : ( nameimg[ 2 ] ? '<br><img src="'+ nameimg[ 2 ] +'">' : '<br><i class="fa fa-webradio bookmark"></i>' )
-						+'<br><w>'+ nameimg[ 0 ] +'</w>'
-						+'<br>'+ url
-			, msgalign : 'center'
-			, cancel       : function() {
+			  icon    : 'webradio'
+			, title   : 'Delete Webradio'
+			, width   : 500
+			, message : ( nameimg[ 2 ] ? '<br><img src="'+ nameimg[ 2 ] +'">' : '<br><i class="fa fa-webradio bookmark"></i>' )
+					   +'<br><w>'+ nameimg[ 0 ] +'</w>'
+					   +'<br>'+ url
+			, cancel  : function() {
 				$( '#db-entries li.active' ).removeClass( 'active' );
 			}
-			, oklabel  : 'Delete'
-			, ok       : function() {
+			, oklabel : 'Delete'
+			, ok      : function() {
 				$.post( 'enhance.php', { webradios: name, url: url, delete: 1 } );
 			}
 		} );
@@ -508,7 +495,6 @@ function playlistRename() {
 		, message      : 'Rename:'
 						+'<br><w>'+ name +'</w>'
 						+'<br>To:'
-		, msgalign     : 'center'
 		, textvalue    : name
 		, textrequired : 0
 		, textalign    : 'center'
@@ -555,8 +541,7 @@ function playlistVerify( name, oldname ) {
 				  icon        : 'list-ul'
 				, title       : oldname ? 'Rename Playlist' : 'Add Playlist'
 				, message     : '<i class="fa fa-warning"></i><w>'+ name +'</w>'
-							+'<br>Already exists.'
-				, msgalign    : 'center'
+							   +'<br>Already exists.'
 				, buttonlabel : 'Back'
 				, button      : playlistNew
 				, oklabel     : 'Replace'
@@ -569,13 +554,12 @@ function playlistVerify( name, oldname ) {
 }
 function playlistDelete() {
 	info( {
-		  icon     : 'list-ul'
-		, title    : 'Delete Playlist'
-		, message  : 'Delete?'
-					+'<br><w>'+ GUI.list.name +'</w>'
-		, msgalign : 'center'
-		, oklabel  : 'Delete'
-		, ok       : function() {
+		  icon    : 'list-ul'
+		, title   : 'Delete Playlist'
+		, message : 'Delete?'
+				   +'<br><w>'+ GUI.list.name +'</w>'
+		, oklabel : 'Delete'
+		, ok      : function() {
 			var count = $( '#pls-count' ).text() - 1;
 			$( '#pls-count' ).text( numFormat( count ) );
 			if ( !count ) $( '#pl-currentpath' ).html( '<bl>&emsp;PLAYLISTS</bl>' );
