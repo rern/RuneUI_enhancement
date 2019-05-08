@@ -24,7 +24,10 @@ _Tested on RuneAudio 0.4b, 0.5_
 	- Coverart bookmarks
 	- Coverart in album view
 	- Replace / remove
-	- VU meter for Webradio (animated gif)
+	- Webradio coverart
+	- Default
+		- RuneAudio
+		- Webradio - VU meter (animated gif)
 	- Image from each Dirble stations
 	- Custom Webradio coverarts
 - Metadata tag editor ( by [Kid3](https://kid3.sourceforge.io) )
@@ -130,7 +133,7 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 - Metadata tag editor (Install RuneUIe Metadata Editor addon to enable.)
 	- Album view:
 		- Album tags - Coverart context menu > Change Metadata
-		- Individual tags - List context menu > Change Metadata
+		- Song tags - List context menu > Change Metadata
 - Bookmarks and webradios can be renamed
 - Bookmarks and webradios can be named with " characters
 - Show icon and breadcrumb heading while browsing
