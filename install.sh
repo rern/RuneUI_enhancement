@@ -15,7 +15,6 @@ alias=enha
 . /srv/http/addonsedit.sh
 
 #0temp0
-# remove from this repo after Addons update released: addons*.js lyrics.js addonsinfo.css
 redis-cli hset settings notify 3 &> /dev/null
 [[ $( redis-cli hget addons enha ) < 20190318 ]] && redis-cli hdel display order &> /dev/null
 #1temp1
