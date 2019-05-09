@@ -316,8 +316,6 @@ genre=$( mpc list genre | awk NF | wc -l )
 redis-cli set mpddb "$albumartist $composer $genre" &> /dev/null
 # disable USB drive auto scan database ..."
 redis-cli set usb_db_autorebuild 0 &> /dev/null
-# reset notify delay
-redis-cli hset settings notify 3 &> /dev/null
 # disable default shutdown
 systemctl disable rune_shutdown
 #systemctl stop rune_shutdown
