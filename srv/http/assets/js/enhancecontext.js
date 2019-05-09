@@ -23,6 +23,7 @@ $( '.contextmenu a' ).click( function() {
 		if ( cmd === 'radiosave' ) { // unsaved webradio (dirble)
 			webRadioSave( GUI.list.name, GUI.list.path );
 		} else if ( cmd === 'update' ) {
+			$( '#db-entries li.active .db-icon' ).addClass( 'blink' );
 			$.post( 'enhance.php', { mpc: 'mpc update "'+ GUI.list.path +'"' }, getUpdateStatus );
 		} else if ( cmd === 'tag' ) {
 			setTag();

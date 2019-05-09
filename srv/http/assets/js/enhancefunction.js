@@ -163,6 +163,7 @@ function getUpdateStatus() {
 			if ( status.updating_db ) {
 				GUI.intUpdate = setInterval( getUpdateStatus, 5000 );
 			} else {
+				$( '#db-entries li.active .db-icon' ).removeClass( 'blink' );
 				clearInterval( GUI.intUpdate );
 				GUI.intUpdate = false;
 				notify( 'Library Database', 'Database updated.', 'library' );
