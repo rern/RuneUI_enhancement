@@ -96,7 +96,7 @@ if ( path.match( /\/sources\/*$/ ) ) {
 	
 } else if ( path.match( /\/mpd/ ) ) {
 	$('#audio-output-interface').change(function(){
-		notify( 'Switch Audio Output', $( '#audio-output-interface option:selected' ).text(), 'mpd' );
+		notify( 'Switch Audio Output', $( '#audio-output-interface option:selected' ).text(), 'output' );
 		var output = $(this).val();
 		$.ajax({
 			type: 'POST',
