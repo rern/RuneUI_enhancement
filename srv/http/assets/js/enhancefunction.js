@@ -163,7 +163,6 @@ function getUpdateStatus() {
 			if ( status.updating_db ) {
 				GUI.intUpdate = setInterval( getUpdateStatus, 5000 );
 			} else {
-				$( '#db-entries li.active .db-icon' ).removeClass( 'blink' );
 				clearInterval( GUI.intUpdate );
 				GUI.intUpdate = false;
 				notify( 'Library Database', 'Database updated.', 'library' );
@@ -1942,15 +1941,15 @@ function setTag() {
 		var file = tags[ 7 ].replace( /"/g, '\"' );
 		var ext = file.split( '.' ).pop();
 		var path = file.substr( 0, file.lastIndexOf( '/' ) );
-		var labels = [ 'Artist', 'AlbumArtist', 'Album', 'Composer', 'Genre' ];
+		var labels = [ '<i class="fa fa-artist wh"></i>', '<i class="fa fa-albumartist wh"></i>', '<i class="fa fa-album wh"></i>', '<i class="fa fa-composer wh"></i>', '<i class="fa fa-genre wh"></i>' ];
 		var values = [ tags[ 0 ], tags[ 1 ], tags[ 2 ], tags[ 3 ], tags[ 4 ] ];
 		if ( GUI.list.isfile ) {
-			labels.push( 'Title', 'Track' );
+			labels.push( '<i class="fa fa-music wh"></i>', '<i class="fa fa-hash wh"></i>' );
 			values.push( tags[ 5 ], tags[ 6 ] );
-			var message = '<i class="fa fa-music wh"></i> '+ file +'<br>&nbsp;'
+			var message = '<i class="fa fa-folder wh"></i> '+ file +'<br>&nbsp;'
 			var pathfile = '"/mnt/MPD/'+ file +'"';
 		} else {
-			var message = '<i class="fa fa-folder wh"></i> '+ path +'<br>&nbsp;'
+			var message = '<img src="'+ $( '.licoverimg img' ).attr( 'src' ) +'"><br>'+ path +'<br>&nbsp;'
 			var pathfile = '"/mnt/MPD/'+ path +'/"*.'+ ext;
 		}
 		var names = [ 'artist', 'albumartist', 'album', 'composer', 'genre', 'title', 'tracknumber' ];
