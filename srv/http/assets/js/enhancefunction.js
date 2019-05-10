@@ -1949,13 +1949,13 @@ function setTag() {
 			var message = '<i class="fa fa-folder wh"></i> '+ file +'<br>&nbsp;'
 			var pathfile = '"/mnt/MPD/'+ file +'"';
 		} else {
-			var message = '<img src="'+ $( '.licoverimg img' ).attr( 'src' ) +'"><br>'+ path +'<br>&nbsp;'
+			var message = '<img src="'+ $( '.licoverimg img' ).attr( 'src' ) +'" style="width: 50px; height: 50px;"><br>'+ path +'<br>&nbsp;'
 			var pathfile = '"/mnt/MPD/'+ path +'/"*.'+ ext;
 		}
 		var names = [ 'artist', 'albumartist', 'album', 'composer', 'genre', 'title', 'tracknumber' ];
 		info( {
 			  icon      : 'tag'
-			, title     : 'Change Metadata'
+			, title     : 'Tags Editor'
 			, width     : 500
 			, message   : message
 			, textlabel : labels
