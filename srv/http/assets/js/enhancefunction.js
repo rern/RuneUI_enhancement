@@ -1955,7 +1955,7 @@ function setTag() {
 		var names = [ 'artist', 'albumartist', 'album', 'composer', 'genre', 'title', 'tracknumber' ];
 		info( {
 			  icon      : 'tag'
-			, title     : 'Tags Editor'
+			, title     : 'Tag Editor'
 			, width     : 500
 			, message   : message
 			, textlabel : labels
@@ -2004,7 +2004,7 @@ function setTag() {
 								}
 							}
 						}
-				}
+					}
 					i++;
 				} );
 				$( '#db-entries li' ).removeClass( 'active' );
