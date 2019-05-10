@@ -141,7 +141,7 @@ function setButtonUpdate() {
 			}
 		}
 	} else {
-		$( '#tab-library i, #db-home i' ).removeClass( 'blink' );
+		$( '#tab-library i, #db-home i, .db-icon' ).removeClass( 'blink' );
 		$( '#posupdate, #iupdate' ).addClass( 'hide' );
 	}
 }
