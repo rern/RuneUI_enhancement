@@ -144,6 +144,8 @@ function menuli( $command, $icon, $label, $type = '' ) {
 		$class = ' class="update"';
 	} else if ( substr( $icon, -7 ) === 'refresh' ) {
 		$class = ' class="replace"';
+	} else if ( $icon === 'tag' ) {
+		$class = ' class="tag"';
 	} else if ( $icon === 'lastfm' ) {
 		$class = ' class="lastfm"';
 	}
@@ -167,6 +169,7 @@ function menucommonsp( $type ) {
 	$htmlcommon.= menuli( 'spreplaceplay', 'play-plus-refresh', 'Replace ► Play', $type );
 	return $htmlcommon;
 }
+$kid3 = file_exists( '/usr/bin/kid3-cli' );
 $menu = '<div>';
 $htmlcommon = menucommon( 'add', 'addplay', 'replace', 'replaceplay' );
 $html = '<span class="menushadow"></span>';
@@ -182,10 +185,14 @@ $html = $htmlcommon;
 $html.= menuli( 'bookmark',  'star',           'Bookmark' );
 $html.= menuli( 'update',    'folder-refresh', 'Update database' );
 $html.= menuli( 'thumbnail', 'coverart',       'Update thumbnails' );
+if ( $kid3 )
+$html.= menuli( 'tag',       'tag',            'Tags' );
 $menu.= menudiv( 'folder', $html );
 $menudiv = '';
 $html = $htmlcommon;
 $html.= menuli( 'lastfmreplaceplay', 'lastfm', 'Last.fm playlist' );
+if ( $kid3 )
+$html.= menuli( 'tag',       'tag',            'Tags' );
 $menu.= menudiv( 'file', $html );
 $menudiv = '';
 $html = $htmlcommon;

@@ -122,7 +122,6 @@ $( '#displaylibrary' ).click( function() {
 		, title    : 'Library Tools'
 		, message  : 'Select items to show / options:'
 		, checkbox : '<form id="displaysavelibrary">'+ displayCheckbox( chklibrary ) +'</form>'
-		, cancel   : 1
 		, ok       : function () {
 			var data = {};
 			$( '#displaysavelibrary input' ).each( function() {
@@ -132,8 +131,10 @@ $( '#displaylibrary' ).click( function() {
 			} );
 			$.post( 'enhance.php', { setdisplay: data }, function() {
 				if ( GUI.display.thumbbyartist !== thumbbyartist ) location.reload();
-				
-				if ( !GUI.library ) $( '#tab-library' ).click();
+				if ( !GUI.library ) {
+					renderLibrary();
+					$( '#tab-library' ).click();
+				}
 			} );
 		}
 	} );
@@ -154,7 +155,6 @@ $( '#displayplayback' ).click( function() {
 		, title    : 'Playback Tools'
 		, message  : 'Select items to show / options:'
 		, checkbox : '<form id="displaysaveplayback">'+ displayCheckbox( chkplayback ) +'</form>'
-		, cancel   : 1
 		, ok       : function () {
 			// no: serializeArray() omit unchecked fields
 			var data = {};
@@ -182,8 +182,7 @@ $( '#displayplayback' ).click( function() {
 	}
 } );
 $( '#turnoff' ).click( function() {
-	var localhost = document.location.hostname === 'localhost';
-	info( {
+	var infojson = {
 		  icon        : 'power'
 		, title       : 'Power'
 		, message     : 'Select mode:'
@@ -193,16 +192,21 @@ $( '#turnoff' ).click( function() {
 			$.post( 'enhance.php', { power: 'shutdown' } );
 			$( '#loader' ).removeClass( 'hide' );
 		}
-		, buttonlabel : 'Reboot'
-		, buttoncolor : '#de810e'
-		, button      : function() {
+		, buttonlabel : [ 'Reboot' ]
+		, buttoncolor : [ '#de810e' ]
+		, button      : [ function() {
 			$.post( 'enhance.php', { power: 'reboot' } );
 			$( '#loader' ).removeClass( 'hide' );
-		}
-		, cancellabel : !localhost ? '' : 'Screen off'
-		, cancel      : !localhost ? '' : function() {
+		} ]
+	}
+	if ( document.location.hostname === 'localhost' ) {
+		infojson.buttonlabel.unshift( 'ScreenOff' );
+		infojson.buttoncolor.unshift( '' );
+		infojson.button.unshift( function() {
 			$.post( 'enhance.php', { power: 'screenoff' } );
-		}	} );
+		} );
+	}
+	info( infojson );
 } );
 $( '#tab-library' ).click( function() {
 	$( '#db-search-close span' ).empty();
@@ -547,10 +551,17 @@ var btnctrl = {
 	, volB    : 'voldn'
 }
 $( '.covermap' ).taphold( function( e ) {
+	if ( !GUI.status.playlistlength ) return
+	
+	if ( [ vu, vustop ].indexOf( $( '#cover-art' ).attr( 'src' ) ) !== -1 ) {
+		var iconremove = '';
+	} else {
+		var iconremove = '<i class="edit licover-remove fa fa-minus-circle"></i>';
+	}
 	$( '#cover-art' )
 		.css( 'opacity', 0.33 )
 		.after(
-			 ( GUI.status.ext === 'radio' ? '' : '<i class="edit licover-remove fa fa-minus-circle"></i>' )
+			 iconremove
 			+'<i class="edit licover-cover fa fa-coverart"></i>'
 		);
 } );
@@ -675,7 +686,6 @@ $( '#timeTL' ).click( function() {
 			, '<i class="fa fa-dlna"></i>DLNA'       : 'dlna'
 		}
 		, checked : active === 'MPD' ? 0 : ( active === 'spotify' ? 1 : ( active === 'airplay' ? 2 : 3 ) )
-		, cancel  : 1
 		, ok      : function() {
 			var source = $( '#infoRadio input[ type=radio ]:checked' ).val();
 			if ( source === 'mpd' ) {
@@ -694,9 +704,9 @@ $( '#share' ).click( function() {
 		, title       : 'Sharing'
 		, message     : 'Share this track:'
 		, buttonwidth : 1
-		, cancellabel : '<i class="fa fa-facebook"></i>Facebook'
-		, cancelcolor : '#4267b2'
-		, cancel  : function() {
+		, buttonlabel : '<i class="fa fa-facebook"></i>Facebook'
+		, buttoncolor : '#4267b2'
+		, button      : function() {
 			windowopen( 'https://www.facebook.com/sharer.php?u=http%3A%2F%2Fwww.runeaudio.com%2F&display=popup' );
 		}
 		, oklabel     : '<i class="fa fa-twitter"></i>Twitter'
@@ -886,45 +896,27 @@ $( '.home-block' ).click( function() {
 		} );
 	}
 } );
-
+$( '#infoMessage' ).on( 'click', '.newimg', function( e ) {
+	var img = new Image();
+	img.src = $( this ).attr( 'src' );
+	var cW = picacanvas.width;
+	var canvas = document.createElement( 'canvas' );           // create canvas object
+	canvas.width = canvas.height = cW;                         // set width and height
+	var ctx = canvas.getContext( '2d' );                       // get context
+	ctx.transform( 0, 1, -1, 0, cW, 0 );                       // rotate with scale + skew
+	ctx.drawImage( img, 0, 0, cW, cW );                        // put image to context
+	$( this ).attr( 'src', canvas.toDataURL( 'image/jpeg' ) ); // convert context to base64
+} );
 $( '#infoFileBox' ).change( function() {
-	var filename = this.files[ 0 ].name;
-	var reader = new FileReader();    // create filereader
-	reader.onload = function ( e ) {  // prepare onload callback
-		var base64img = e.target.result;
-		var img = new Image();
-		img.src = base64img;
-		img.onload = function () {
-			var imgW = img.width;
-			var imgH = img.height;
-			var coverart = GUI.playback || $( '#db-entries li' ).length;
-			var imgWHhtml = '<div class="imagewh"><span>Current</span><span>'+ imgW +' x '+ imgH +'</span>';
-			$( '#infoFilename' ).empty();
-			$( '.newimg, .imagewh, .bkname' ).remove();
-			if ( !coverart ) {
-				var px = 200;
-			} else {
-				if ( imgW > 1000 || imgH > 1000 ) {
-					var px = 1000;
-				} else {
-					var px = imgW < imgH ? imgW : imgH;
-				}
-			}
-			if ( imgW === px && imgH === px ) {
-				$( '#infoMessage' ).append( '<img class="newimg" src="'+ base64img +'">'+ imgWHhtml +'</div>' );
-			} else {
-				imgWHhtml += '<div>(Resized to '+ px +' x '+ px +' px)</div></div>';
-				var picacanvas = document.createElement( 'canvas' ); // create canvas object
-				picacanvas.width = picacanvas.height = px; // size of resized image
-				pica.resize( img, picacanvas, picaOption ).then( function() {
-					var resizedimg = picacanvas.toDataURL( 'image/jpeg', 0.9 ); // canvas -> base64 (jpg, qualtity)
-					$( '#infoMessage' ).append( '<img class="newimg" src="'+ resizedimg +'">'+ imgWHhtml );
-				} );
-			}
-		}
-	}
-	reader.readAsDataURL( this.files[ 0 ] ); // load filereader
+	var file = this.files[ 0 ];
 	$( '#infoButton' ).hide();
+	if ( !file ) return
+	
+	getOrientation( file, function( ori ) {
+		resetOrientation( file, ori, function( canvas, imgW, imgH ) {
+			setImage( canvas, imgW, imgH );
+		} );
+	});
 } );
 $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - id changed on renamed
 	if ( $( '.edit' ).length && !$( e.target ).hasClass( 'edit' )  ) {
@@ -950,9 +942,7 @@ $( '#home-blocks' ).on( 'tap', '.home-bookmark', function( e ) { // delegate - i
 			  icon        : 'bookmark'
 			, title       : 'Change Bookmark Thumbnail'
 			, message     : icon
-			, msgalign    : 'center'
 			, fileoklabel : 'Replace'
-			, cancel      : 1
 			, ok          : function() {
 				var bookmarkname = path.replace( /\//g, '|' );
 				var newimg = $( '#infoMessage .newimg' ).attr( 'src' );
@@ -1064,14 +1054,12 @@ $( '#home-coverart' ).click( function() { // fix - 'tap' also fire .coverart cli
 		var albumcount = Number( $( '#home-album gr' ).text().replace( /,/g, '' ) );
 		var perminute = Math.ceil( albumcount / 150 );
 		info( {
-			  icon     : 'coverart'
-			, title    : 'Create Coverart Thumbnails'
-			, message  : 'Find coverarts and create thumbnails.'
-						 +'<br>( ±'+ perminute +' minutes for '+ albumcount +' albums)'
-						 +'<br>&nbsp;'
-			, msgalign : 'center'
-			, cancel   : 1
-			, ok       : function() {
+			  icon    : 'coverart'
+			, title   : 'Create Coverart Thumbnails'
+			, message : 'Find coverarts and create thumbnails.'
+					   +'<br>( ±'+ perminute +' minutes for '+ albumcount +' albums)'
+					   +'<br>&nbsp;'
+			, ok      : function() {
 				$( 'body' ).append(
 					'<form id="formtemp" action="addonsbash.php" method="post">'
 						+'<input type="hidden" name="alias" value="cove">'
@@ -1087,12 +1075,10 @@ $( '#home-coverart' ).click( function() { // fix - 'tap' also fire .coverart cli
 			, title    : 'Coverart Thumbnails Update'
 			, message  : 'Find coverarts and update thumbnails.'
 						+'<br>&nbsp;'
-			, msgalign : 'center'
 			, checkbox : {
 				  'Replace existings'       : 1
 				, 'Update Library database' : 1
 			}
-			, cancel   : 1
 			, ok       : function() {
 				$( 'body' ).append(
 					'<form id="formtemp" action="addonsbash.php" method="post">'
@@ -1155,24 +1141,26 @@ $( '.coverart' ).tap( function( e ) {
 	$( '.coverart img' ).css( 'opacity', 0.33 );
 } );
 $( '#divcoverarts' ).on( 'tap', '.coverart-remove', function() {
-	var $this = $( this );
-	var imgsrc = $this.parent().find( 'img' ).prop( 'src' );
-	var $album = $this.parent().next();
+	var $thisparent = $( this ).parent();
+	var imgsrc = $thisparent.find( 'img' ).prop( 'src' );
+	var $album = $thisparent.next();
 	var album = $album.text();
 	var artist = $album.next().text();
 	var thumbname = GUI.display.thumbbyartist ? artist +'^^'+ album : album +'^^'+ artist;
+	var $thisdiv = $thisparent.parent();
+	var path = $thisdiv.find( '.lipath' ).text() || '';
+	if ( path ) thumbname += '^^'+ path;
+	thumbname = thumbname.replace( /\//g, '|' ).replace( /#/g, '{' ).replace( /\?/g, '}' );
 	var thumbfile = '/srv/http/assets/img/coverarts/'+ thumbname + imgsrc.slice( -4 );
 	info( {
-		  icon     : 'coverart'
-		, title    : 'Remove Thumbnail'
-		, message  : '<img src="'+ imgsrc +'">'
-					+'<br><wh>'+ album +'</wh>'
-					+'<br>'+ artist
-		, msgalign : 'center'
-		, cancel   : 1
-		, oklabel  : 'Remove'
-		, ok       : function() {
-			$this.parent().parent().remove();
+		  icon    : 'coverart'
+		, title   : 'Remove Thumbnail'
+		, message : '<img src="'+ imgsrc +'">'
+				   +'<br><wh>'+ album +'</wh>'
+				   +'<br>'+ artist
+		, oklabel : 'Remove'
+		, ok      : function() {
+			$thisdiv.remove();
 			$.post( 'enhance.php', { imagefile: thumbfile }, function( std ) {
 				if ( std == 13 ) {
 					info( {
@@ -1186,17 +1174,14 @@ $( '#divcoverarts' ).on( 'tap', '.coverart-remove', function() {
 	} );
 } );
 $( '#divcoverarts' ).on( 'tap', '.coverart-cover', function() {
-	var $this = $( this );
-	var $img = $this.parent().find( 'img' );
+	var $img = $( this ).parent().find( 'img' );
 	var imgsrc = $img.data( 'src' );
 	var thumbfile = imgsrc.slice( 0, -14 ) + imgsrc.slice( -3 ); // remove cache busting timestamp
 	info( {
 		  icon        : 'coverart'
 		, title       : 'Change Thumbnail'
 		, message     : '<img src="'+ imgsrc +'">'
-		, msgalign    : 'center'
 		, fileoklabel : 'Replace'
-		, cancel      : 1
 		, ok          : function() {
 			var newimg = $( '#infoMessage .newimg' ).attr( 'src' );
 			$.post( 'enhance.php', { imagefile: thumbfile, base64: newimg }, function( std ) {
@@ -1368,9 +1353,8 @@ $( '#plsave' ).click( function() {
 } );
 $( '#plcrop' ).click( function() {
 	info( {
-		   title   : 'Crop Playlist'
-		 , message : 'Clear this playlist except current song?'
-		, cancel   : 1
+		  title   : 'Crop Playlist'
+		, message : 'Clear this playlist except current song?'
 		, ok       : function() {
 			$.post( 'enhance.php', { mpc: GUI.status.state === 'stop' ? 'mpc play; mpc crop; mpc stop' : 'mpc crop' } );
 		}
@@ -1379,7 +1363,7 @@ $( '#plcrop' ).click( function() {
 $( '#plconsume' ).click( function() {
 	$( this ).css( 'color', GUI.status.consume ? '' : '#0095d8' );
 	$.post( 'enhance.php', { mpc: 'mpc consume' } );
-	notify( 'Consume Mode', GUI.status.consume ? 'On - Remove each song after played.' : 'Off', 'list-ul' );
+	notify( 'Consume Mode', GUI.status.consume ? 'Off' : 'On - Remove each song after played.', 'list-ul' );
 } );
 $( '#plclear' ).click( function() {
 	if ( $( '#pl-entries .pl-remove' ).length ) {
@@ -1390,8 +1374,8 @@ $( '#plclear' ).click( function() {
 	info( {
 		  title       : 'Remove From Playlist'
 		, message     : 'Selective remove / Clear all :'
-		, cancellabel : 'Select'
-		, cancel  : function() {
+		, buttonlabel : 'Select'
+		, button      : function() {
 			$( '#pl-entries .li1' ).before( '<i class="fa fa-minus-circle pl-remove"></i>' );
 		}
 		, oklabel    : 'All'
@@ -1709,19 +1693,7 @@ pushstreams.idle.onmessage = function( changed ) {
 				$( '#plconsume' ).css( 'color', GUI.status.consume ? '#0095d8' : '' );
 			}, 'json' );
 		} else if ( changed === 'update' ) {
-			$.post( 'enhance.php', { getcount: 1 }, function( data ) {
-				$( '.home-block gr' ).remove();
-				$.each( data, function( id, val ) {
-					if ( val ) $( '#home-'+ id ).find( 'i' ).after( '<gr>'+ numFormat( val ) +'</gr>' );
-				} );
-			}, 'json' );
-			if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) return;
-			
-			$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
-				GUI.status.updating_db = status.updating_db ? 1 : 0;
-				setButtonUpdate();
-				if ( !status.updating_db ) notify( 'Library Database', 'Database updated.', 'library' );
-			}, 'json' );
+			getUpdateStatus();
 		} else if ( changed === 'database' ) { // on files changed (for webradio rename)
 			if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) $( '#home-webradio' ).tap();
 		}

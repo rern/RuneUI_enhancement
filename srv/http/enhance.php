@@ -8,7 +8,6 @@ $redis = new Redis();
 $redis->pconnect( '127.0.0.1' );
 
 $sudo = '/usr/bin/sudo /usr/bin';
-$sudosrv = '/usr/bin/sudo /srv/http';
 
 if ( isset( $_POST[ 'mpc' ] ) ) {
 	$mpc = $_POST[ 'mpc' ];
@@ -322,8 +321,9 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	// dual boot
 	exec( "$sudo/mount | /usr/bin/grep -q mmcblk0p8 && /usr/bin/echo 8 > /sys/module/bcm2709/parameters/reboot_part" );
 	
-	if ( file_exists( '/srv/http/gpio/gpiooff.py' ) ) $cmd.= "$sudosrv/gpio/gpiooff.py;";
+	if ( file_exists( '/root/gpiooff.py' ) ) $cmd.= '/usr/bin/sudo /root/gpiooff.py;';
 	if ( $redis->get( local_browser ) === '1' ) $cmd .= "$sudo/killall Xorg; /usr/local/bin/ply-image /srv/http/assets/img/bootsplash.png;";
+	$cmd.= "$sudo/redis-cli save;";
 	$cmd.= "$sudo/umount -f -a -t cifs nfs -l;";
 	$cmd.= "$sudo/shutdown ".( $mode === 'reboot' ? '-r' : '-h' ).' now';
 	exec( $cmd );

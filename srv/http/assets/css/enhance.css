@@ -74,6 +74,7 @@
 .fa-gears:before { content: "\f50A" }
 .fa-sliders:before { content: "\f50B" }
 .fa-code:before { content: "\f50C" }
+.fa-hash:before { content: "\f50D" }
 
 .fa-coverart:before { content: "\f55E" }
 .fa-bookmark:before { content: "\f550" }
@@ -113,6 +114,7 @@
 .fa-right:before { content: "\f56B" }
 .fa-crop:before { content: "\f56C" }
 .fa-search:before { content: "\f56D" }
+.fa-tag:before { content: "\f545" }
 
 .fa-times:before { content: "\f51A" }
 .fa-question-circle:before { content: "\f560" }
@@ -138,7 +140,7 @@ a,
 a:hover {
 	text-decoration: none;
 }
-w, wh, .wh { color: #e0e7ee; }
+w, wh, .wh { color: #e0e7ee !important; }
 #infoMessage .fa-coverart { color: #e0e7ee; }
 bl, .bl { color: #0095d8; }
 gr, .gr { color: #7795b4; }
@@ -1411,6 +1413,10 @@ i.bookmark,
 	width: 28px !important;
 	line-height: 33px !important;
 	vertical-align: -10%;
+}
+.lidir {
+	margin-left: 37px;
+	color: #7795b4;
 }
 #db-entries,
 #pl-editor {

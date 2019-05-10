@@ -140,13 +140,35 @@ function setButtonUpdate() {
 				$( '#iupdate' ).removeClass( 'hide' );
 			}
 		}
-		GUI.intUpdate = setInterval( setButtonUpdate, 10000 );
 	} else {
-		$( '#tab-library i, #db-home i' ).removeClass( 'blink' );
+		$( '#tab-library i, #db-home i, .db-icon' ).removeClass( 'blink' );
 		$( '#posupdate, #iupdate' ).addClass( 'hide' );
-		clearInterval( GUI.intUpdate );
-		GUI.intUpdate = false;
 	}
+}
+function getUpdateStatus() {
+	clearInterval( GUI.intUpdate );
+	clearTimeout( GUI.debounce );
+	GUI.debounce = setTimeout( function() {
+		$.post( 'enhance.php', { getcount: 1 }, function( data ) {
+			$( '.home-block gr' ).remove();
+			$.each( data, function( id, val ) {
+				if ( val ) $( '#home-'+ id ).find( 'i' ).after( '<gr>'+ numFormat( val ) +'</gr>' );
+			} );
+		}, 'json' );
+		if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) return;
+		
+		$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
+			GUI.status.updating_db = status.updating_db ? 1 : 0;
+			setButtonUpdate();
+			if ( status.updating_db ) {
+				GUI.intUpdate = setInterval( getUpdateStatus, 5000 );
+			} else {
+				clearInterval( GUI.intUpdate );
+				GUI.intUpdate = false;
+				notify( 'Library Database', 'Database updated.', 'library' );
+			}
+		}, 'json' );
+	}, GUI.debouncems );
 }
 function setButton() {
 	$( '#playback-controls' ).toggleClass( 'hide', GUI.status.playlistlength === 0 );
@@ -224,7 +246,7 @@ function removeSplash() {
 	if ( !$( '#divcoverarts' ).html() ) return
 	
 	var $coverartlazy = $( '#divcoverarts .lazy' );
-	var lazyL = $coverartlazy.length;;
+	var lazyL = $coverartlazy.length;
 	if ( lazyL ) {
 		lazyLoad = new LazyLoad( { elements_selector: '.lazy' } );
 		// for load 1st page without lazy
@@ -939,18 +961,19 @@ function dataParse( data, path, querytype, plid ) {
 					var coversrc = coverart ? coverart : coverrune;
 					var browsemode = GUI.dbbackdata.length ? GUI.dbbackdata[ 0 ].browsemode : '';
 					var artistmode = [ 'artist', 'composer', 'genre' ].indexOf( browsemode ) !== -1 ? 1 : 0;
-					var composerhtml = ( composer && browsemode === 'composer' ) ? '<i class="fa fa-composer"></i><span class="licomposer">'+ composer +'</span><br>' : '';
-					var genrehtml = genre && genre !== -1 ? '<span><i class="fa fa-genre"></i>'+ genre +'</span><br>' : '';
-					var nocover = !coverart ? ' nocover' : '';
+					var composerhtml = ( composer ) ? '<i class="fa fa-composer"></i><span class="licomposer">'+ composer +'</span><br>' : '';
+					var genrehtml = genre ? '<i class="fa fa-genre"></i><span class="ligenre">'+ genre +'</span><br>' : '';
 					var file = data[ 0 ].file || data[ 0 ].filepl;
+					var dir = file.substring( 0, file.lastIndexOf( '/' ) );
 					content += '<li class="licover">'
-							  +'<a class="lipath">'+ file.substring( 0, file.lastIndexOf( '/' ) ) +'</a><a class="liname">'+ path +'</a>'
-							  +'<div class="licoverimg'+ nocover +'"><img src="'+ coversrc +'" class="coversmall"></div>'
+							  +'<a class="lipath">'+ dir +'</a><a class="liname">'+ path +'</a>'
+							  +'<div class="licoverimg'+ ( coverart ? '' : ' nocover' ) +'"><img src="'+ coversrc +'" class="coversmall"></div>'
 							  +'<span class="liinfo">'
 								  +'<bl class="lialbum">'+ album +'</bl><br>'
 								  + composerhtml
 								  +'<i class="fa fa-'+ ( artistmode ? 'artist' : 'albumartist' ) +'"></i><span class="liartist">'+ ( artistmode ? artist : albumartist ) +'</span><br>'
 								  + genrehtml
+								  + ( GUI.browsemode === 'file' ? '' : '<a class="lidir">'+ dir +'</a><br>' )
 								  +'<i class="fa fa-music db-icon" data-target="#context-menu-folder"></i>'+ arrayfile.length +'<gr> • </gr>'+ second2HMS( litime )
 							  +'</span>'
 							  +'</li>';
@@ -1123,12 +1146,12 @@ function data2html( list, path ) {
 		if ( 'file' in list || path === 'Webradio' ) {
 			if ( path !== 'Webradio' ) {
 				if ( 'Title' in list ) {
-					var bl = $( '#db-search-keyword' ).val() ? list.Artist +' - '+ list.Album : list.file.split( '/' ).pop();;
+					var bl = $( '#db-search-keyword' ).val() ? list.Artist +' - '+ list.Album : list.file.split( '/' ).pop();
 					var liname = list.Title
 					content = '<li class="file">'
 							 +'<a class="lipath">'+ list.file +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ list.lisort +'</a>'
 							 +'<i class="fa fa-music db-icon" data-target="#context-menu-file"></i>'
-							 +'<span class="li1">'+ liname +'<span class="time">'+ list.Time +'</span></span>'
+							 +'<span class="li1"><a>'+ liname +'</a><span class="time">'+ list.Time +'</span></span>'
 							 +'<span class="li2">'+ bl +'</span>';
 				} else {
 					var liname = list.file.split( '/' ).pop(); // filename
@@ -1166,7 +1189,7 @@ function data2html( list, path ) {
 					 +'<a class="lipath">'+ list.file +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ list.lisort +'</a>'
 					 +'<i class="fa fa-music db-icon" data-target="#context-menu-file"></i>'
 					 +'<span class="li1">'+ liname +'<span class="time">'+ list.Time +'</span></span>'
-					 +'<span class="li2">'+ list.file +'</span>';
+					 +'<span class="li2">'+ list.file.split( '/' ).pop() +'</span>';
 			var artist = list.Artist;
 			if ( !GUI.albumartist ) GUI.albumartist = list.Album +'<gr> • </gr>'+ artist;
 		} else {
@@ -1325,16 +1348,14 @@ function removeCoverart( $img, album, artist, path ) {
 		}
 		
 		info( {
-			  icon     : 'coverart'
-			, title    : 'Remove Album Coverart'
-			, message  : '<img src="'+ $img.prop( 'src' ) +'">'
-						+'<br><w>'+ album +'</w>'
-						+'<br>'+ artist
-						+'<br><br><code>'+ file +'</code> > <code>'+ file +'.backup</code>'
-			, msgalign : 'center'
-			, oklabel  : 'Remove'
-			, cancel   : 1
-			, ok       : function() {
+			  icon    : 'coverart'
+			, title   : 'Remove Album Coverart'
+			, message : '<img src="'+ $img.prop( 'src' ) +'">'
+					   +'<br><w>'+ album +'</w>'
+					   +'<br>'+ artist
+					   +'<br><br><code>'+ file +'</code> > <code>'+ file +'.backup</code>'
+			, oklabel : 'Remove'
+			, ok      : function() {
 				$.post( 'enhance.php', { imagefile: path +'/cover.jpg', coverfile: 1 }, function( std ) {
 					if ( std == 0 ) {
 						$img.attr( 'src', coverrune );
@@ -1360,9 +1381,7 @@ function replaceCoverart( $img, album, artist, path ) {
 		, message     : '<img src="'+ $img.prop( 'src' ) +'">'
 					   +'<span class="bkname"><br><w>'+ album +'</w>'
 					   +'<br>'+ artist +'<span>'
-		, msgalign    : 'center'
 		, fileoklabel : 'Replace'
-		, cancel      : 1
 		, ok          : function() {
 			var newimg = $( '#infoMessage .newimg' ).attr( 'src' );
 			$.post( 'enhance.php', { imagefile: path +'/cover.jpg', base64: newimg, coverfile: 1 }, function( std ) {
@@ -1430,6 +1449,8 @@ function dbContextmenu( $li, $target ) {
 	
 	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
 	$( '.update' ).toggleClass( 'hide', GUI.status.updating_db !== 0 );
+	var cuem3u = [ 'cue', 'm3u' ].indexOf( $( '#db-entries .lipath:eq( 1 )' ).text().split( '.' ).pop() ) !== -1;
+	$( '.tag' ).toggleClass( 'hide', $( '.licover' ).length === 0 || cuem3u );
 	var contextnum = $menu.find( 'a:not(.hide)' ).length;
 	$( '.menushadow' ).css( 'height', contextnum * 41 - 1 );
 	$( '#db-entries li' ).removeClass( 'active' );
@@ -1626,8 +1647,7 @@ function htmlPlaylist( data ) {
 				var actionhtml = '<i class="fa fa-music pl-icon"></i>'
 								+'<a class="lipath">'+ value.file +'</a>';
 			} else {
-				var dbpl = GUI.library ? 'db' : 'pl';
-				var actionhtml = '<i class="fa fa-music '+ dbpl +'-icon" data-target="#context-menu-filesavedpl"></i>'
+				var actionhtml = '<i class="fa fa-music '+ ( GUI.library ? 'db' : 'pl' ) +'-icon" data-target="#context-menu-'+ ( GUI.library ? 'file' : 'filesavedpl' ) +'"></i>'
 								+'<a class="lipath">'+ ( value.cuem3u || value.file ) +'</a>'
 								+'<a class="liname">'+ value.Title +'</a>'
 								+'<a class="liindex">'+ value.index +'</a>';
@@ -1650,13 +1670,14 @@ function htmlPlaylist( data ) {
 			countsong++;
 		}
 	} );
-	if ( coverart ) {
+	if ( coverart || coverart === 0 ) {
+		var coversrc = coverart ? coverart : coverrune;
 		var browsemode = GUI.dbbackdata.length ? GUI.dbbackdata[ 0 ].browsemode : '';
-		var composerhtml = ( composer && browsemode == 'composer' ) ? '<i class="fa fa-composer"></i><spanspan class="licomposer">'+ composer +'</span><br>' : '';
-		var genrehtml = genre && genre !== -1 ? '<span><i class="fa fa-genre"></i>'+ genre +'</span><br>' : '';
+		var composerhtml = ( composer ) ? '<i class="fa fa-composer"></i><spanspan class="licomposer">'+ composer +'</span><br>' : '';
+		var genrehtml = genre ? '<i class="fa fa-genre"></i><span class="ligenre">'+ genre +'</span><br>' : '';
 		var licover = '<li class="licover">'
 						 +'<a class="lipath">'+ path +'</a><a class="liname">'+ path.replace(/^.*\//, '') +'</a>'
-						 +'<div class="licoverimg"><img src="'+ coverart +'" class="coversmall"></div>'
+						 +'<div class="licoverimg'+ ( coverart ? '' : ' nocover' ) +'"><img src="'+ coversrc +'" class="coversmall"></div>'
 						 +'<span class="liinfo">'
 							+'<bl class="lialbum">'+ album +'</bl><br>'
 							+ composerhtml
@@ -1817,4 +1838,178 @@ function renderSavedPlaylist( name ) {
 			$( 'html, body' ).scrollTop( GUI.plscrolltop );
 		} );
 	}, 'json' );
+}
+function setImage( canvas, imgW, imgH ) {
+	$( '#infoFilename' ).empty();
+	$( '.newimg, .imagewh, .bkname' ).remove();
+	if ( !GUI.playback && !$( '#db-entries .licover' ).length ) {
+		var px = 200;
+	} else if ( imgW > 1000 || imgH > 1000 ) {
+		var px = 1000;
+	} else {
+		var px = imgW < imgH ? imgW : imgH;
+	}
+	picacanvas = document.createElement( 'canvas' );
+	picacanvas.width = picacanvas.height = px; // size of resized image
+	var imgWHhtml = '<div class="imagewh"><span>Current</span><span>'+ px +' x '+ px +'</span>';
+	if ( imgW === px && imgH === px ) {
+		$( '#infoMessage' ).append( '<img class="newimg" src="'+ canvas.toDataURL( 'image/jpeg' ) +'">'+ imgWHhtml +'</div>' );
+	} else {
+		imgWHhtml += '<div>(Resized from '+ imgW +' x '+ imgH +' px)'
+					+'<br>Tap to rotate.'
+					+'</div></div>';
+		pica.resize( canvas, picacanvas, picaOption ).then( function() {
+			var resizedimg = picacanvas.toDataURL( 'image/jpeg' ); // canvas -> base64
+			$( '#infoMessage' ).append( '<img class="newimg" src="'+ resizedimg +'">'+ imgWHhtml );
+		} );
+	}
+}
+function resetOrientation( file, ori, callback ) {
+	var reader = new FileReader();
+	reader.onload = function( e ) {
+		var img = new Image();
+		img.src = e.target.result;
+		img.onload = function() {
+			var imgW = img.width,
+				imgH = img.height,
+				canvas = document.createElement( 'canvas' ),
+				ctx = canvas.getContext( '2d' );
+			// set proper canvas dimensions before transform
+			if ( 4 < ori && ori < 9 ) {
+				canvas.width = imgH;
+				canvas.height = imgW;
+			} else {
+				canvas.width = imgW;
+				canvas.height = imgH;
+			}
+			// transform context before drawing image
+			switch ( ori ) {
+				// transform( Hscale, Hskew, Vscale, Vskew, Hmove, Vmove )
+				case 2: ctx.transform( -1,  0,  0,  1, imgW,    0 ); break; // mirror up
+				case 3: ctx.transform( -1,  0,  0, -1, imgW, imgH ); break; // down
+				case 4: ctx.transform(  1,  0,  0, -1,    0, imgH ); break; // mirror down
+				case 5: ctx.transform(  0,  1,  1,  0,    0,    0 ); break; // mirror on left side
+				case 6: ctx.transform(  0,  1, -1,  0, imgH,    0 ); break; // on left side
+				case 7: ctx.transform(  0, -1, -1,  0, imgH, imgW ); break; // mirror on right side
+				case 8: ctx.transform(  0, -1,  1,  0,    0, imgW ); break; // on right side
+				default: break;
+			}
+			ctx.drawImage( img, 0, 0 );
+			callback( canvas, imgW, imgH );
+		}
+	}
+	reader.readAsDataURL( file );
+};
+function getOrientation( file, callback ) { // return: 1 - undefined
+	var reader = new FileReader();
+	reader.onload = function( e ) {
+		var view = new DataView( e.target.result );
+		if ( view.getUint16( 0, false ) != 0xFFD8 ) return callback( 1 ); // not jpeg
+		
+		var length = view.byteLength, offset = 2;
+		while ( offset < length ) {
+			if ( view.getUint16( offset + 2, false ) <= 8 ) return callback( 1 );
+			
+			var marker = view.getUint16( offset, false );
+			offset += 2;
+			if ( marker == 0xFFE1 ) {
+				if ( view.getUint32( offset += 2, false ) != 0x45786966 ) return callback( 1 );
+				
+				var little = view.getUint16( offset += 6, false ) == 0x4949;
+				offset += view.getUint32( offset + 4, little );
+				var tags = view.getUint16( offset, little );
+				offset += 2;
+				for ( var i = 0; i < tags; i++ ) {
+					if ( view.getUint16( offset + ( i * 12 ), little ) == 0x0112 ) {
+						var ori = view.getUint16( offset + ( i * 12 ) + 8, little );
+						return callback( ori );
+					}
+				}
+			} else if ( ( marker & 0xFF00 ) != 0xFF00 ) {
+				break;
+			} else { 
+				offset += view.getUint16( offset, false );
+			}
+		}
+		return callback( 1 );
+	};
+	reader.readAsArrayBuffer( file.slice( 0, 64 * 1024 ) );
+}
+function setTag() {
+	$.post( 'enhance.php', { bash: '/usr/bin/mpc ls  -f "%artist%^^%albumartist%^^%album%^^%composer%^^%genre%^^%title%^^%track%^^%file%" "'+ GUI.list.path +'" 2> /dev/null | head -1' }, function( data ) {
+		var tags = data.slice( 0, -1 ).split( '^^' );
+		var file = tags[ 7 ].replace( /"/g, '\"' );
+		var ext = file.split( '.' ).pop();
+		var path = file.substr( 0, file.lastIndexOf( '/' ) );
+		var labels = [ '<i class="fa fa-artist wh"></i>', '<i class="fa fa-albumartist wh"></i>', '<i class="fa fa-album wh"></i>', '<i class="fa fa-composer wh"></i>', '<i class="fa fa-genre wh"></i>' ];
+		var values = [ tags[ 0 ], tags[ 1 ], tags[ 2 ], tags[ 3 ], tags[ 4 ] ];
+		if ( GUI.list.isfile ) {
+			labels.push( '<i class="fa fa-music wh"></i>', '<i class="fa fa-hash wh"></i>' );
+			values.push( tags[ 5 ], tags[ 6 ] );
+			var message = '<i class="fa fa-folder wh"></i> '+ file +'<br>&nbsp;'
+			var pathfile = '"/mnt/MPD/'+ file +'"';
+		} else {
+			var message = '<img src="'+ $( '.licoverimg img' ).attr( 'src' ) +'" style="width: 50px; height: 50px;"><br>'+ path +'<br>&nbsp;'
+			var pathfile = '"/mnt/MPD/'+ path +'/"*.'+ ext;
+		}
+		var names = [ 'artist', 'albumartist', 'album', 'composer', 'genre', 'title', 'tracknumber' ];
+		info( {
+			  icon      : 'tag'
+			, title     : 'Tag Editor'
+			, width     : 500
+			, message   : message
+			, textlabel : labels
+			, textvalue : values
+			, boxwidth  : 'max'
+			, cancel    : function() {
+				$( '#db-entries li' ).removeClass( 'active' );
+			}
+			, ok        : function() {
+				var tags = '';
+				var i = 0;
+				$( '.infotextbox .infoinput' ).each( function() {
+					var value = this.value;
+					tags += "-c \"set "+ names[ i ] +" '"+ value.toString().replace( /(["'])/g, '\\$1' ) +'\'" ';
+					if ( GUI.list.isfile ) {
+						if ( i === 5 ) $( '#db-entries li.active .li1 a' ).text( value );
+					} else {
+						if ( i === 0 ) $( '.liartist' ).text( value );
+						if ( i === 1 && value ) $( '.liartist' ).text( value );
+						if ( i === 2 ) $( '.lialbum' ).text( value );
+						if ( i === 3 ) {
+							var $el = $( '.licomposer' );
+							if ( !value ) {
+								$el.prev().remove();
+								$el.next().remove();
+								$el.remove();
+							} else {
+								if ( $el.length ) {
+									$el.text( value );
+								} else {
+									$( '.liartist' ).after( '<br><i class="fa fa-composer"></i><span class="licomposer">'+ value +'</span>' );
+								}
+							}
+						}
+						if ( i === 4 ) {
+							var $el = $( '.ligenre' );
+							if ( !value ) {
+								$el.prev().remove();
+								$el.next().remove();
+								$el.remove();
+							} else {
+								if ( $el.length ) {
+									$el.text( value );
+								} else {
+									$( '.liinfo .db-icon' ).before( '<i class="fa fa-genre"></i><span class="ligenre">'+ value +'</span><br>' );
+								}
+							}
+						}
+					}
+					i++;
+				} );
+				$( '#db-entries li' ).removeClass( 'active' );
+				$.post( 'enhance.php', { bash: '/usr/bin/kid3-cli '+ tags + pathfile +'; mpc update "'+ path +'"' } );
+			}
+		} );
+	} );
 }
