@@ -14,10 +14,6 @@ alias=enha
 . /srv/http/addonstitle.sh
 . /srv/http/addonsedit.sh
 
-#0temp0
-[[ $( redis-cli hget addons enha ) < 20190318 ]] && redis-cli hdel display order &> /dev/null
-#1temp1
-
 installstart $@
 
 if ! pacman -Q imagemagick &> /dev/null; then
