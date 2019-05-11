@@ -264,7 +264,6 @@ function setPlaybackBlank() {
 	$( '#song' ).html( '<i class="fa fa-plus-circle" style="width: 40px"></i>' );
 	$( '#divpos i' ).addClass( 'hide' );
 	$( '#artist, #album, #songposition, #timepos, #elapsed, #total' ).empty();
-	$( '#format-bitrate' ).text( 'Add music from Library' );
 	if ( GUI.display.time ) $( '#time' ).roundSlider( 'setValue', 0 );
 	$( '#coverartoverlay' ).addClass( 'hide' );
 	$( '#cover-art' )
