@@ -461,8 +461,7 @@ $menu.= '</div>';
 			<?=$index?>
 		</ul>
 		<div id="playlist-warning" class="playlist hide">
-			<i class="fa fa-plus-circle"></i><br>
-			<p>Add music from Library</p>
+			<i class="fa fa-plus-circle"></i>
 		</div>
 	</div>
 </div>
