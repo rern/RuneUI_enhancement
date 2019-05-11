@@ -338,8 +338,8 @@ $( '#infoCheckBox' ).on( 'click', 'label', function() { // playback tools
 	}
 } );
 // PLAYBACK /////////////////////////////////////////////////////////////////////////////////////
-$( '#song, #playlist-warning' ).on( 'click', 'i', function() {
-	$( '#tab-library' ).click();
+$( '#song, #playlist-empty' ).click( function( e ) {
+	if ( $( e.target ).hasClass( 'fa' ) ) $( '#tab-library' ).click();
 } );
 $( '#artist, #bio-open' ).click( function() {
 	if ( GUI.status.ext === 'radio' ) return

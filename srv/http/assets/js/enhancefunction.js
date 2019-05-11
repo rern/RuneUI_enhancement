@@ -1704,7 +1704,7 @@ function renderPlaylist() {
 		$( '#plsave, #plcrop, #plclear, #pl-searchbtn' ).addClass( 'disable' );
 		$( '#pl-entries' ).empty();
 		$( '.playlist' ).removeClass( 'hide' );
-		$( '#playlist-warning' ).css( 'margin-top', ( GUI.bars ? 27 : 47 ) +'px' );
+		$( '#playlist-empty' ).css( 'margin-top', ( GUI.bars ? 27 : 67 ) +'px' );
 		$( 'html, body' ).scrollTop( 0 );
 		return
 	}
@@ -1721,7 +1721,7 @@ function renderPlaylist() {
 		counthtml += countradiohtml;
 	}
 	$( '.playlist' ).removeClass( 'hide' );
-	$( '#playlist-warning' ).addClass( 'hide' );
+	$( '#playlist-empty' ).addClass( 'hide' );
 	$( '#pl-count' ).html( counthtml );
 	$( '#plsave, #plclear, #pl-searchbtn' ).removeClass( 'disable' );
 	$( '#plcrop' ).toggleClass( 'disable', GUI.pllist.length < 2 );
