@@ -452,6 +452,9 @@ i.bookmark,
 	font-size: 30px;
 	color: #0095d8;
 }
+#song i {
+	color: #e0e7ee;
+}
 #divartist,
 #divalbum {
 	height: 25px;
@@ -1710,7 +1713,6 @@ li.active .time {
 }
 #playlist-warning i {
 	font-size: 30px;
-	color: #0095d8;
 }
 #playlist-warning p {
 	margin-top: 27px;
