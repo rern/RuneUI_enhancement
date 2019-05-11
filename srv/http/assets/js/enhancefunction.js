@@ -261,7 +261,7 @@ function removeSplash() {
 function setPlaybackBlank() {
 	$( '#playback-controls' ).addClass( 'hide' );
 	$( '#divartist, #divsong, #divalbum' ).removeClass( 'scroll-left' );
-	$( '#song' ).html( '<i class="fa fa-plus-circle"></i>' );
+	$( '#song' ).html( '<i class="fa fa-plus-circle" style="width: 40px"></i>' );
 	$( '#divpos i' ).addClass( 'hide' );
 	$( '#artist, #album, #songposition, #timepos, #elapsed, #total' ).empty();
 	$( '#format-bitrate' ).text( 'Add music from Library' );
