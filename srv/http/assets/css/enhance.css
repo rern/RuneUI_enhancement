@@ -1709,14 +1709,9 @@ li.active .time {
 	color: #e0e7ee;
 }
 #playlist-warning {
+	width: 100%;
 	text-align: center;
-}
-#playlist-warning i {
 	font-size: 30px;
-}
-#playlist-warning p {
-	margin-top: 27px;
-	color: #7795b4;
 }
 .menu a.active {
 	background: #0095d8;
