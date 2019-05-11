@@ -1708,7 +1708,7 @@ li.active .time {
 	text-align: center;
 	color: #e0e7ee;
 }
-#playlist-warning {
+#playlist-empty {
 	width: 100%;
 	text-align: center;
 	font-size: 30px;

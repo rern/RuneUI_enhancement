@@ -15,7 +15,7 @@
 	#db-home, #pl-home, #db-currentpath a, #pl-manage i,
 	.fa-arrow-left, .fa-search,
 	.home-block, .coverart div,
-	#playlist-warning i,
+	#playlist-empty,
 	li:not( .licover ),
 	.licoverimg,
 	.liinfo,
