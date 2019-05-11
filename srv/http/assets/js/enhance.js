@@ -1356,6 +1356,7 @@ $( '#plcrop' ).click( function() {
 		  title   : 'Crop Playlist'
 		, message : 'Clear this playlist except current song?'
 		, ok       : function() {
+			$( '#pl-entries li:not( .active )' ).remove();
 			$.post( 'enhance.php', { mpc: GUI.status.state === 'stop' ? 'mpc play; mpc crop; mpc stop' : 'mpc crop' } );
 		}
 	} );
