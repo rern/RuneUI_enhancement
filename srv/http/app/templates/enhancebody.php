@@ -454,8 +454,7 @@ $menu.= '</div>';
 		<ul id="pl-entries" class="playlist"></ul>
 		<ul id="pl-editor" class="hide"></ul>
 		<ul id="pl-index" class="index hide"><?=$index?></ul>
-		<br>
-		<i id="playlist-warning" class="fa fa-plus-circle playlist hide"></i>
+		<i id="playlist-empty" class="fa fa-plus-circle playlist hide"></i>
 	</div>
 </div>
 
