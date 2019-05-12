@@ -1199,6 +1199,9 @@ i.bookmark,
 .btnlist-top .form-inline i {
 	font-size: 18px;
 }
+.btnlist-top i {
+	text-shadow: 2px 2px 4px #000000;
+}
 #db-search-close {
 	float: right;
 }
