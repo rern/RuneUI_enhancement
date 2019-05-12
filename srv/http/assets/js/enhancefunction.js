@@ -53,6 +53,7 @@ function switchPage( page ) {
 	$( '.page, .menu' ).addClass( 'hide' );
 	$( '#page-'+ page ).removeClass( 'hide' );
 	$( '#tab-'+ page ).addClass( 'active' );
+	$( '#pl-search-close, #pl-search-close' ).addClass( 'hide' );
 	GUI.library = GUI.playback = GUI.playlist = 0;
 	GUI[ page ] = 1;
 	GUI.currentpage = page;
