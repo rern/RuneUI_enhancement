@@ -264,7 +264,7 @@ function setPlaybackBlank() {
 	$( '#divartist, #divsong, #divalbum' ).removeClass( 'scroll-left' );
 	$( '#song' ).html( '<i class="fa fa-plus-circle" style="width: 40px"></i>' );
 	$( '#divpos i' ).addClass( 'hide' );
-	$( '#artist, #album, #songposition, #timepos, #elapsed, #total' ).empty();
+	$( '#artist, #album, #songposition, #format-bitrate, #timepos, #elapsed, #total' ).empty();
 	if ( GUI.display.time ) $( '#time' ).roundSlider( 'setValue', 0 );
 	$( '#coverartoverlay' ).addClass( 'hide' );
 	$( '#cover-art' )
