@@ -569,11 +569,11 @@ $( '#divcover' ).on( 'click', '.edit', function( e ) {
 	var $this = $( e.target );
 	if ( GUI.status.ext !== 'radio' ) {
 		if ( $this.hasClass( 'licover-remove' ) ) {
-			removeCoverart( $img, path );
+			removeCoverart();
 		} else if ( $this.hasClass( 'licover-edit' ) ) {
-			replaceCoverart( $img, path );
+			replaceCoverart();
 		} else {
-			saveCoverart( $img, path );
+			saveCoverart();
 		}
 	} else {
 		GUI.list = {};
