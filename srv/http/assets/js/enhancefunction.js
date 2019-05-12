@@ -383,7 +383,7 @@ function renderPlayback() {
 				, timeout  : 5000
 				, dataType : 'json'
 				, success  : function( data ) {
-					var coverurl = data.album.image[ 3 ][ '#text' ];
+					var coverurl = data.album.image[ 4 ][ '#text' ] || data.album.image[ 3 ][ '#text' ];
 					if ( coverurl ) {
 						GUI.coversave = 1;
 						$( '#cover-art' )
@@ -392,7 +392,7 @@ function renderPlayback() {
 					} else {
 						delete apijson.data.album;
 						apijson.success = function( data ) {
-							coverurl = data.album.image[ 3 ][ '#text' ];
+							coverurl = data.album.image[ 4 ][ '#text' ] || data.album.image[ 3 ][ '#text' ];
 							if ( coverurl )
 								GUI.coversave = 1;
 								$( '#cover-art' )
