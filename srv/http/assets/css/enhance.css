@@ -1136,8 +1136,13 @@ i.bookmark,
 	top: 35px;
 }
 .licover-save {
-	left: 0;
-	bottom: 10px;
+	left: 5px;
+	bottom: 5px;
+	width: 30px !important;
+	height: 30px;
+	line-height: 30px;
+	border-radius: 15px;
+	background: #0095d8;
 }
 .home-block-cover {
 	bottom: 0;
