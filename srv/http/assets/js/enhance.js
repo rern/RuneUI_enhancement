@@ -566,8 +566,8 @@ $( '.covermap' ).taphold( function( e ) {
 		);
 } );
 $( '#divcover' ).on( 'click', '.edit', function( e ) {
+	var $this = $( e.target );
 	if ( GUI.status.ext !== 'radio' ) {
-		var $this = $( e.target );
 		if ( $this.hasClass( 'licover-remove' ) ) {
 			removeCoverart( $img, path );
 		} else if ( $this.hasClass( 'licover-edit' ) ) {
@@ -584,7 +584,11 @@ $( '#divcover' ).on( 'click', '.edit', function( e ) {
 				return false
 			}
 		} );
-		webRadioCoverart();
+		if ( $this.hasClass( 'licover-remove' ) ) {
+			removeRadioCoverart();
+		} else {
+			webRadioCoverart();
+		}
 	}
 } );
 $( '.timemap, .covermap, .volmap' ).tap( function() {
