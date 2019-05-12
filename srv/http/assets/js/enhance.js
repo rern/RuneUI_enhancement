@@ -271,7 +271,7 @@ $( '#page-playback' ).tap( function( e ) {
 	if ( $( '.edit' ).length ) {
 		if ( $( e.target ).hasClass( 'edit' ) ) return
 		
-		$( '.edit' ).remove();
+		$( '.licover-remove, .licover-cover' ).remove();
 		$( '#cover-art' ).css( 'opacity', '' );
 		return
 	}
@@ -553,7 +553,7 @@ var btnctrl = {
 $( '.covermap' ).taphold( function( e ) {
 	if ( !GUI.status.playlistlength ) return
 	
-	if ( [ vu, vustop ].indexOf( $( '#cover-art' ).attr( 'src' ) ) !== -1 ) {
+	if ( [ vu, vustop ].indexOf( $( '#cover-art' ).attr( 'src' ) ) !== -1 || GUI.coversave ) {
 		var iconremove = '';
 	} else {
 		var iconremove = '<i class="edit licover-remove fa fa-minus-circle"></i>';
