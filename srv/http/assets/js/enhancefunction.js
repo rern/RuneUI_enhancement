@@ -1396,18 +1396,26 @@ function replaceCoverart() {
 		}
 	} );
 }
+function toDataURL( url ) {
+	return fetch( url ).then( ( response ) => {
+		return response.blob();
+	} ).then( blob => {
+	return URL.createObjectURL( blob );
+	} );
+}
 function saveCoverart() {
-	var img = $( '#cover-art' ).prop( 'src' );
+	var src = $( '#cover-art' ).prop( 'src' );
 	var file = GUI.status.file;
 	var path = '/mnt/MPD/'+ file.substr( 0, file.lastIndexOf( '/' ) );
+	var ext = file.split( '.' ).pop();
 	info( {
-		  icon        : 'coverart'
-		, title       : 'Save Album Coverart'
-		, message     : '<img src="'+ img +'">'
+		  icon    : 'coverart'
+		, title   : 'Save Album Coverart'
+		, message : '<img src="'+ src +'">'
 					   +'<span class="bkname"><br><w>'+ GUI.status.Album +'</w>'
 					   +'<br>'+ GUI.status.Artist +'<span>'
-		, ok          : function() {
-			$.post( 'enhance.php', { imagefile: path +'/cover.jpg', base64: img, coverfile: 1 }, function( std ) {
+		, ok      : function() {
+			$.post( 'enhance.php', { bash: '/usr/bin/wget '+ scr +' -O '+ path +'/cover.'+ ext }, function( std ) {
 				infoCoverart( std, fn, 'Save' );
 			} );
 		}
