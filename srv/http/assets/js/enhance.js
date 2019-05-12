@@ -565,16 +565,15 @@ $( '.covermap' ).taphold( function( e ) {
 			+'<i class="edit licover-cover fa fa-coverart"></i>'
 		);
 } );
-$( '#divcover' ).on( 'click', '.edit', function() {
+$( '#divcover' ).on( 'click', '.edit', function( e ) {
 	if ( GUI.status.ext !== 'radio' ) {
-		var $img = $( '#cover-art' );
-		var album = GUI.status.Album;
-		var artist = GUI.status.Artist;
-		var path = '/mnt/MPD/'+ GUI.status.file.substr( 0, GUI.status.file.lastIndexOf( '/' ) );
-		if ( $( this ).hasClass( 'licover-remove' ) ) {
-			removeCoverart( $img, album, artist, path );
+		var $this = $( e.target );
+		if ( $this.hasClass( 'licover-remove' ) ) {
+			removeCoverart( $img, path );
+		} else if ( $this.hasClass( 'licover-edit' ) ) {
+			replaceCoverart( $img, path );
 		} else {
-			replaceCoverart( $img, album, artist, path );
+			saveCoverart( $img, path );
 		}
 	} else {
 		GUI.list = {};

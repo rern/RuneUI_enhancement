@@ -296,6 +296,7 @@ function renderPlayback() {
 	$( '.playback-controls' ).css( 'visibility', 'visible' );
 	$( '#artist, #song, #album' ).css( 'width', '' );
 	$( '#cover-art' ).removeClass( 'vu' );
+	$( '.licover-save' ).remove();
 	$( '#artist' ).html( status.Artist );
 	$( '#song' ).html( status.Title );
 	$( '#album' )
@@ -386,7 +387,10 @@ function renderPlayback() {
 						delete apijson.data.album;
 						apijson.success = function( data ) {
 							coverurl = data.album.image[ 3 ][ '#text' ];
-							if ( coverurl ) $( '#cover-art' ).attr( 'src', coverurl );
+							if ( coverurl )
+								$( '#cover-art' )
+									.attr( 'src', coverurl )
+									.after( '<i class="edit licover-save fa fa-save"></i>' );
 						}
 						$.ajax( apijson );
 					}
@@ -465,7 +469,7 @@ function renderPlayback() {
 function getPlaybackStatus() {
 	$.post( 'enhancestatus.php', { artist: $( '#artist' ).text(), album: $( '#album' ).text() }, function( status ) {
 		// 'gpio off' > audio output switched > restarts mpd which makes status briefly unavailable
-		if( typeof status !== 'object' ) return
+		if ( typeof status !== 'object' ) return
 		
 		if ( status.activePlayer === 'Airplay' ) {
 			displayAirPlay();
@@ -1331,7 +1335,10 @@ function radio2html( list, source, querytype, plid ) {
 	}
 	return content +'</li>';
 }
-function removeCoverart( $img, album, artist, path ) {
+function removeCoverart() {
+	var $img = $( '#cover-art' );
+	var file = GUI.status.file;
+	var path = '/mnt/MPD/'+ file.substr( 0, file.lastIndexOf( '/' ) );
 	$.post( 'enhance.php', { bash: '/usr/bin/ls "'+ path +'" | grep -iE "^cover.jpg$|^cover.png$|^folder.jpg$|^folder.png$|^front.jpg$|^front.png$"' }, function( file ) {
 		var file = file.slice( 0, -1 ); // less last '\n'
 		var count = file.split( '\n' ).length;
@@ -1350,61 +1357,80 @@ function removeCoverart( $img, album, artist, path ) {
 			  icon    : 'coverart'
 			, title   : 'Remove Album Coverart'
 			, message : '<img src="'+ $img.prop( 'src' ) +'">'
-					   +'<br><w>'+ album +'</w>'
-					   +'<br>'+ artist
+					   +'<br><w>'+ GUI.status.Album +'</w>'
+					   +'<br>'+ GUI.status.Artist
 					   +'<br><br><code>'+ file +'</code> > <code>'+ file +'.backup</code>'
 			, oklabel : 'Remove'
 			, ok      : function() {
 				$.post( 'enhance.php', { imagefile: path +'/cover.jpg', coverfile: 1 }, function( std ) {
-					if ( std == 0 ) {
+					var fn = function() {
 						$img.attr( 'src', coverrune );
-						$( '.edit' ).remove();
 						$img.css( 'opacity', '' );
-					} else if ( std == 13 ) {
-						info( {
-							  icon    : 'coverart'
-							, title   : '<i class="fa fa-warning"></i>Remove Album Coverart'
-							, message : 'Remove file denied.'
-									   +'<br>Set directory+file <w>permission</w> and try again.'
-						} );
 					}
+					infoCoverart( std, fn, 'Remove' );
 				} );
 			}
 		} );
 	} );
 }
-function replaceCoverart( $img, album, artist, path ) {
+function replaceCoverart() {
+	var $img = $( '#cover-art' );
+	var file = GUI.status.file;
+	var path = '/mnt/MPD/'+ file.substr( 0, file.lastIndexOf( '/' ) );
 	info( {
 		  icon        : 'coverart'
 		, title       : 'Replace Album Coverart'
 		, message     : '<img src="'+ $img.prop( 'src' ) +'">'
-					   +'<span class="bkname"><br><w>'+ album +'</w>'
-					   +'<br>'+ artist +'<span>'
+					   +'<span class="bkname"><br><w>'+ GUI.status.Album +'</w>'
+					   +'<br>'+ GUI.status.Artist +'<span>'
 		, fileoklabel : 'Replace'
 		, ok          : function() {
 			var newimg = $( '#infoMessage .newimg' ).attr( 'src' );
 			$.post( 'enhance.php', { imagefile: path +'/cover.jpg', base64: newimg, coverfile: 1 }, function( std ) {
-				if ( std == 0 ) {
+				var fn = function() {
 					$img.attr( 'src', newimg );
-					$( '.edit' ).remove();
 					$img.css( 'opacity', '' );
-				} else if ( std == 13 ) {
-					info( {
-						  icon    : 'coverart'
-						, title   : '<i class="fa fa-warning"></i>Replace Album Coverart'
-						, message : 'Replace file denied.'
-								   +'<br>Set directory+file <w>permission</w> and try again.'
-					} );
-				} else if ( std == -1 ) {
-					info( {
-						  icon    : 'coverart'
-						, title   : 'Replace Album Coverart'
-						, message : '<i class="fa fa-warning"></i>Upload image failed.'
-					} );
 				}
+				infoCoverart( std, fn, 'Replace' );
 			} );
 		}
 	} );
+}
+function saveCoverart() {
+	var img = $( '#cover-art' ).prop( 'src' );
+	var file = GUI.status.file;
+	var path = '/mnt/MPD/'+ file.substr( 0, file.lastIndexOf( '/' ) );
+	info( {
+		  icon        : 'coverart'
+		, title       : 'Save Album Coverart'
+		, message     : '<img src="'+ img +'">'
+					   +'<span class="bkname"><br><w>'+ GUI.status.Album +'</w>'
+					   +'<br>'+ GUI.status.Artist +'<span>'
+		, ok          : function() {
+			$.post( 'enhance.php', { imagefile: path +'/cover.jpg', base64: img, coverfile: 1 }, function( std ) {
+				infoCoverart( std, fn, 'Save' );
+			} );
+		}
+	} );
+}
+function infoCoverart( std, fn, title ) {
+	if ( std == 0 ) {
+		$( '.edit' ).remove();
+		fn || ''
+	} else if ( std == 13 ) {
+		info( {
+			  icon    : 'coverart'
+			, title   : '<i class="fa fa-warning"></i>'+ title +' Album Coverart'
+			, message : 'Save file denied.'
+					   +'<br>Set directory+file <w>permission</w> and try again.'
+		} );
+	} else if ( std == -1 ) {
+		info( {
+			  icon    : 'coverart'
+			, title   : title +' Album Coverart'
+			, message : '<i class="fa fa-warning"></i>Upload image failed.'
+		} );
+	}
 }
 function flag( iso ) { // from: https://stackoverflow.com/a/11119265
 	var iso0 = ( iso.toLowerCase().charCodeAt( 0 ) - 97 ) * -15;
