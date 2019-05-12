@@ -1431,6 +1431,7 @@ function infoCoverart( title, src, std ) {
 		} );
 	} else {
 		if ( title === 'Save' ) {
+			GUI.coversave = 0;
 			notify( 'Album Coverart', 'Saved.', 'coverart' );
 		} else {
 			$( '#cover-art' ).prop( 'src', src );
