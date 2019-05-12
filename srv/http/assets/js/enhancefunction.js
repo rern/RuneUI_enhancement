@@ -382,7 +382,9 @@ function renderPlayback() {
 				, success  : function( data ) {
 					var coverurl = data.album.image[ 3 ][ '#text' ];
 					if ( coverurl ) {
-						$( '#cover-art' ).attr( 'src', coverurl );
+						$( '#cover-art' )
+							.attr( 'src', coverurl )
+							.after( '<i class="edit licover-save fa fa-save"></i>' );
 					} else {
 						delete apijson.data.album;
 						apijson.success = function( data ) {
@@ -1336,7 +1338,7 @@ function radio2html( list, source, querytype, plid ) {
 	return content +'</li>';
 }
 function removeCoverart() {
-	var $img = $( '#cover-art' );
+	var src = $( '#cover-art' ).prop( 'src' );
 	var file = GUI.status.file;
 	var path = '/mnt/MPD/'+ file.substr( 0, file.lastIndexOf( '/' ) );
 	$.post( 'enhance.php', { bash: '/usr/bin/ls "'+ path +'" | grep -iE "^cover.jpg$|^cover.png$|^folder.jpg$|^folder.png$|^front.jpg$|^front.png$"' }, function( file ) {
@@ -1356,42 +1358,34 @@ function removeCoverart() {
 		info( {
 			  icon    : 'coverart'
 			, title   : 'Remove Album Coverart'
-			, message : '<img src="'+ $img.prop( 'src' ) +'">'
+			, message : '<img src="'+ src +'">'
 					   +'<br><w>'+ GUI.status.Album +'</w>'
 					   +'<br>'+ GUI.status.Artist
 					   +'<br><br><code>'+ file +'</code> > <code>'+ file +'.backup</code>'
 			, oklabel : 'Remove'
 			, ok      : function() {
-				$.post( 'enhance.php', { imagefile: path +'/cover.jpg', coverfile: 1 }, function( std ) {
-					var fn = function() {
-						$img.attr( 'src', coverrune );
-						$img.css( 'opacity', '' );
-					}
-					infoCoverart( std, fn, 'Remove' );
+				$.post( 'enhance.php', { imagefile: path +'/'+ file, coverfile: 1 }, function( std ) {
+					infoCoverart( 'Remove', coverrune, std );
 				} );
 			}
 		} );
 	} );
 }
 function replaceCoverart() {
-	var $img = $( '#cover-art' );
+	var src = $( '#cover-art' ).prop( 'src' );
 	var file = GUI.status.file;
 	var path = '/mnt/MPD/'+ file.substr( 0, file.lastIndexOf( '/' ) );
 	info( {
 		  icon        : 'coverart'
 		, title       : 'Replace Album Coverart'
-		, message     : '<img src="'+ $img.prop( 'src' ) +'">'
+		, message     : '<img src="'+ src +'">'
 					   +'<span class="bkname"><br><w>'+ GUI.status.Album +'</w>'
 					   +'<br>'+ GUI.status.Artist +'<span>'
 		, fileoklabel : 'Replace'
 		, ok          : function() {
 			var newimg = $( '#infoMessage .newimg' ).attr( 'src' );
 			$.post( 'enhance.php', { imagefile: path +'/cover.jpg', base64: newimg, coverfile: 1 }, function( std ) {
-				var fn = function() {
-					$img.attr( 'src', newimg );
-					$img.css( 'opacity', '' );
-				}
-				infoCoverart( std, fn, 'Replace' );
+				infoCoverart( 'Replace', newimg, std );
 			} );
 		}
 	} );
@@ -1400,7 +1394,8 @@ function saveCoverart() {
 	var src = $( '#cover-art' ).prop( 'src' );
 	var file = GUI.status.file;
 	var path = '/mnt/MPD/'+ file.substr( 0, file.lastIndexOf( '/' ) );
-	var ext = file.split( '.' ).pop();
+	var ext = src.split( '.' ).pop();
+	var coverfile = path.replace( /"/g, '\"' ) +'/cover.'+ ext;
 	info( {
 		  icon    : 'coverart'
 		, title   : 'Save Album Coverart'
@@ -1408,17 +1403,16 @@ function saveCoverart() {
 					   +'<span class="bkname"><br><w>'+ GUI.status.Album +'</w>'
 					   +'<br>'+ GUI.status.Artist +'<span>'
 		, ok      : function() {
-			$.post( 'enhance.php', { bash: '/usr/bin/wget '+ scr +' -O '+ path +'/cover.'+ ext }, function( std ) {
-				infoCoverart( std, fn, 'Save' );
+			$.post( 'enhance.php', { bash: '/usr/bin/wget '+ src +' -O "'+ coverfile +'"' }, function( std ) {
+				infoCoverart( 'Save' );
 			} );
 		}
 	} );
 }
-function infoCoverart( std, fn, title ) {
-	if ( std == 0 ) {
-		$( '.edit' ).remove();
-		fn || ''
-	} else if ( std == 13 ) {
+function infoCoverart( title, src, std ) {
+	$( '.edit' ).remove();
+	$( '#cover-art' ).css( 'opacity', '' );
+	if ( std == 13 ) {
 		info( {
 			  icon    : 'coverart'
 			, title   : '<i class="fa fa-warning"></i>'+ title +' Album Coverart'
@@ -1432,6 +1426,7 @@ function infoCoverart( std, fn, title ) {
 			, message : '<i class="fa fa-warning"></i>Upload image failed.'
 		} );
 	}
+	if ( title !== 'Save' && std != 13 && std != -1 ) $( '#cover-art' ).prop( 'src', src );
 }
 function flag( iso ) { // from: https://stackoverflow.com/a/11119265
 	var iso0 = ( iso.toLowerCase().charCodeAt( 0 ) - 97 ) * -15;
