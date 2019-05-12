@@ -296,7 +296,7 @@ function renderPlayback() {
 	$( '.playback-controls' ).css( 'visibility', 'visible' );
 	$( '#artist, #song, #album' ).css( 'width', '' );
 	$( '#cover-art' ).removeClass( 'vu' );
-	$( '.licover-save' ).remove();
+	if ( !GUI.coversave ) $( '.licover-save' ).remove();
 	$( '#artist' ).html( status.Artist );
 	$( '#song' ).html( status.Title );
 	$( '#album' )
@@ -364,7 +364,9 @@ function renderPlayback() {
 		$( '#cover-art' )
 			.attr( 'src', status.coverart || coverrune )
 			.css( 'border-radius', '' )
-		if ( !status.coverart ) {
+		if ( status.coverart ) {
+			GUI.coversave = 0;
+		} else {
 			// lastfm coverart
 			var apijson = {
 				  type     : 'post'
@@ -382,6 +384,7 @@ function renderPlayback() {
 				, success  : function( data ) {
 					var coverurl = data.album.image[ 3 ][ '#text' ];
 					if ( coverurl ) {
+						GUI.coversave = 1;
 						$( '#cover-art' )
 							.attr( 'src', coverurl )
 							.after( '<i class="edit licover-save fa fa-save"></i>' );
@@ -390,6 +393,7 @@ function renderPlayback() {
 						apijson.success = function( data ) {
 							coverurl = data.album.image[ 3 ][ '#text' ];
 							if ( coverurl )
+								GUI.coversave = 1;
 								$( '#cover-art' )
 									.attr( 'src', coverurl )
 									.after( '<i class="edit licover-save fa fa-save"></i>' );
