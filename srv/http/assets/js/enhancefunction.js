@@ -1396,13 +1396,6 @@ function replaceCoverart() {
 		}
 	} );
 }
-function toDataURL( url ) {
-	return fetch( url ).then( ( response ) => {
-		return response.blob();
-	} ).then( blob => {
-	return URL.createObjectURL( blob );
-	} );
-}
 function saveCoverart() {
 	var src = $( '#cover-art' ).prop( 'src' );
 	var file = GUI.status.file;
