@@ -209,7 +209,7 @@ $( '#turnoff' ).click( function() {
 	info( infojson );
 } );
 $( '#tab-library' ).click( function() {
-	$( '#db-search-close span' ).empty();
+	if ( !$( '#db-search-keyword' ).val() ) $( '#db-search-close' ).empty();
 	if ( GUI.library ) {
 		$( '#divcoverarts' ).addClass( 'hide' );
 		$( '#home-blocks' ).removeClass( 'hide' );
@@ -786,7 +786,7 @@ $( '#db-search-close' ).click( function() {
 	$( '#db-search-close, #db-search, #dbsearchbtn' ).addClass( 'hide' );
 	$( '#db-currentpath span, #db-searchbtn' ).removeClass( 'hide' );
 	$( '#db-currentpath' ).css( 'max-width', '' );
-	$( '#db-search-close span' ).empty();
+	$( '#db-search-close' ).empty();
 	if ( $( '#db-currentpath .lipath').text() ) $( '#db-back' ).removeClass( 'hide' );
 	if ( !$( '#db-search-keyword' ).val() ) return
 	
