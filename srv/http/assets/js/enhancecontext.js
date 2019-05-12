@@ -286,32 +286,33 @@ function bookmarkDelete( path, name, $block ) {
 		}
 	} );
 }
-function webRadioCoverart() {
+function removeRadioCoverart() {
 	var name = GUI.list.name;
-	var path = GUI.list.path;
-	var urlname = path.replace( /\//g, '|' );
+	var urlname = GUI.list.path.replace( /\//g, '|' );
+	info( {
+		  icon        : 'webradio'
+		, title       : 'Remove Coverart'
+		, message     : '<img src="'+ $( '#cover-art' ).prop( 'src' ) +'">'
+					   +'<span class="bkname"><br><w>'+ name +'</w><span>'
+		, ok          : function() {
+			$.post( 'enhance.php', { bash: '/usr/bin/echo "'+ name +'" > "/srv/http/assets/img/webradios/'+ urlname +'"' } );
+			$( '#cover-art' ).attr( 'src', GUI.status.state === 'play' ? vu : vustop );
+		}
+	} );
+}
+function webRadioCoverart() {
+	var urlname = GUI.list.path.replace( /\//g, '|' );
 	$.post( 'enhance.php', { bash: '/usr/bin/cat "/srv/http/assets/img/webradios/'+ urlname +'"' }, function( data ) {
 		var nameimg = data.split( "\n" );
 		var name = nameimg[ 0 ];
-		var $img = nameimg[ 2 ] ? '<img src="'+ nameimg[ 2 ] +'">' : '<img src="'+ vu +'" style="border-radius: 9px">';
-		info( {
+		var img = nameimg[ 2 ];
+		var $img = img ? '<img src="'+ img +'">' : '<img src="'+ vu +'" style="border-radius: 9px">';
+		var infojson = {
 			  icon        : 'webradio'
 			, title       : 'Change Coverart'
-			, message     : ( nameimg[ 2 ] ? '<img src="'+ nameimg[ 2 ] +'">' : '<img src="'+ vu +'" style="border-radius: 9px">' )
+			, message     : ( img ? '<img src="'+ img +'">' : '<img src="'+ vu +'" style="border-radius: 9px">' )
 						   +'<span class="bkname"><br><w>'+ name +'</w><span>'
 			, fileoklabel : 'Replace'
-			, buttonlabel : 'Remove'
-			, buttoncolor : '#0095d8'
-			, button      : function() {
-				$.post( 'enhance.php', { bash: '/usr/bin/echo "'+ name +'" > "/srv/http/assets/img/webradios/'+ urlname +'"' } );
-				if ( GUI.playback ) {
-					$( '#cover-art' ).attr( 'src', GUI.status.state === 'play' ? vu : vustop );
-				} else {
-					$( '#db-entries li.active' ).find( 'img' ).remove();
-					$( '#db-entries li.active' ).find( '.lisort' ).after( '<i class="fa fa-webradio db-icon" data-target="#context-menu-webradio"></i>' );
-					$( '#db-entries li' ).removeClass( 'active' );
-				}
-			}
 			, cancel     : function() {
 				$( '#db-entries li' ).removeClass( 'active' );
 			}
@@ -321,8 +322,7 @@ function webRadioCoverart() {
 				picacanvas.width = picacanvas.height = 80;
 				pica.resize( $( '#infoMessage .newimg' )[ 0 ], picacanvas, picaOption ).then( function() {
 					var newthumb = picacanvas.toDataURL( 'image/jpeg', 0.9 );
-					var webradioname = path.replace( /\//g, '|' );
-					$.post( 'enhance.php', { imagefile: webradioname, base64webradio: name +'\n'+ newthumb +'\n'+ newimg }, function( result ) {
+					$.post( 'enhance.php', { imagefile: urlname, base64webradio: name +'\n'+ newthumb +'\n'+ newimg }, function( result ) {
 						if ( result != -1 ) {
 							if ( GUI.playback ) {
 								$( '#cover-art' ).attr( 'src', newimg );
@@ -341,8 +341,22 @@ function webRadioCoverart() {
 					} );
 				} );
 			}
-		} );
-		if ( $( '#infoMessage img' ).attr( 'src' ) === vu ) $( '#infoButton' ).hide();
+		}
+		if ( img ) {
+			infojson.buttonlabel = 'Remove'
+			infojson.buttoncolor = '#0095d8'
+			infojson.button      = function() {
+				$.post( 'enhance.php', { bash: '/usr/bin/echo "'+ name +'" > "/srv/http/assets/img/webradios/'+ urlname +'"' } );
+				if ( GUI.playback ) {
+					$( '#cover-art' ).attr( 'src', GUI.status.state === 'play' ? vu : vustop );
+				} else {
+					$( '#db-entries li.active' ).find( 'img' ).remove();
+					$( '#db-entries li.active' ).find( '.lisort' ).after( '<i class="fa fa-webradio db-icon" data-target="#context-menu-webradio"></i>' );
+					$( '#db-entries li' ).removeClass( 'active' );
+				}
+			}
+		}
+		info( infojson );
 	} );
 }
 function webRadioSave( name, url ) {
