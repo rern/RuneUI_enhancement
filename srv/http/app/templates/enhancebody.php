@@ -411,7 +411,7 @@ $menu.= '</div>';
 			<div id="db-home"><i class="fa fa-library"></i></div><span></span>
 			<i id="db-webradio-new" class="fa fa-plus-circle hide"></i>
 		</div>
-		<button id="db-search-close" class="btn hide" type="button"><i class="fa fa-times sx"></i></button>
+		<button id="db-search-close" class="btn hide" type="button"></button>
 		<i id="db-back" class="fa fa-arrow-left"></i>
 	</div>
 	<div id="home-blocks" class="row" data-count="<?=$counts[ 'song' ]?>">
