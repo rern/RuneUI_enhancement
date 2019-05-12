@@ -1429,8 +1429,13 @@ function infoCoverart( title, src, std ) {
 			, title   : title +' Album Coverart'
 			, message : '<i class="fa fa-warning"></i>Upload image failed.'
 		} );
+	} else {
+		if ( title === 'Save' ) {
+			notify( 'Album Coverart', 'Saved.', 'coverart' );
+		} else {
+			$( '#cover-art' ).prop( 'src', src );
+		}
 	}
-	if ( title !== 'Save' && std != 13 && std != -1 ) $( '#cover-art' ).prop( 'src', src );
 }
 function flag( iso ) { // from: https://stackoverflow.com/a/11119265
 	var iso0 = ( iso.toLowerCase().charCodeAt( 0 ) - 97 ) * -15;
