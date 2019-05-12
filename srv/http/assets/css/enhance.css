@@ -1116,6 +1116,7 @@ i.bookmark,
 	color: #0095d8;
 }
 /* coverart edit icons */
+.licover-save,
 .edit {
 	position: absolute;
 	right: 0;
@@ -1133,6 +1134,10 @@ i.bookmark,
 }
 .home-block-edit {
 	top: 35px;
+}
+.licover-save {
+	left: 0;
+	bottom: 10px;
 }
 .home-block-cover {
 	bottom: 0;
