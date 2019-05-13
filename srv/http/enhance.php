@@ -217,7 +217,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$name = isset( $_POST[ 'name' ] ) ? '"'.$_POST[ 'name' ].'"' : '';
 	if ( !$name ) $data[ 'lsplaylists' ] = lsplaylists();
 	$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%^^[%albumartist%|%artist%]^^%album%^^%genre%^^%composer%" playlist '.$name );
-	$data[ 'playlist' ] = $lines ? list2array( $lines ) : '';
+	$data[ 'playlist' ] = $lines ? list2array( $lines, $name ) : '';
 	echo json_encode( $data );
 } else if ( isset( $_POST[ 'getdisplay' ] ) ) {
 	usleep( 100000 ); // !important - get data must wait connection start at least (0.05s)
@@ -447,7 +447,7 @@ function search2array( $result, $playlist = '' ) { // directories or files
 	if ( $composer ) $data[][ 'composer' ] = $composer;
 	return $data;
 }
-function list2array( $result ) {
+function list2array( $result, $name = '' ) { // $name is playlist
 	$lists = explode( "\n", rtrim( $result ) );
 	$artist = $album = $genre = $composer = $albumartist = $file = '';
 	foreach( $lists as $list ) {
@@ -501,7 +501,7 @@ function list2array( $result ) {
 		if ( $img ) $li[ 'img' ] = $img;
 		$data[] = $li;
 	}
-	if ( !$webradio ) {
+	if ( !$webradio && $name ) {
 		$data[][ 'artist' ] = $artist;
 		$data[][ 'album' ] = $album;
 		$data[][ 'albumartist' ] = $albumartist ?: $data[ 0 ][ 'Artist' ];
