@@ -24,6 +24,7 @@ _Tested on RuneAudio 0.4b, 0.5_
 	- Coverart bookmarks
 	- Coverart in album view
 	- Replace / remove
+	- Save coverart fetched from online
 	- Webradio coverart
 	- Default
 		- RuneAudio
@@ -68,6 +69,7 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 - Coverart / Time knob as playback controls
 	- Can be used as a replacement while hide top-bottom bars and buttons
 	- Show overlay guides by tapping center-top of Coverart / Time 
+	- Show save button for online fetched
 - Artist
 	- Improved artists' bio
 	- Show similar artists with images and linked
@@ -130,7 +132,7 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 		- Long-press for replace / remove
 	- Webradio coverarts ( need `ext*` formatted drive )
 		- Tap Webradio icon in list view
-- Metadata tag editor (Install RuneUIe Metadata Editor addon to enable.)
+- Metadata tag editor (Install RuneUIe Metadata Editor addon to enable)
 	- Album view:
 		- Album tags - Coverart context menu > Change Metadata
 		- Song tags - List context menu > Change Metadata
