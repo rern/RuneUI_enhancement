@@ -53,6 +53,7 @@ function switchPage( page ) {
 	$( '.page, .menu' ).addClass( 'hide' );
 	$( '#page-'+ page ).removeClass( 'hide' );
 	$( '#tab-'+ page ).addClass( 'active' );
+	$( '#pl-search-close, #pl-search-close' ).addClass( 'hide' );
 	GUI.library = GUI.playback = GUI.playlist = 0;
 	GUI[ page ] = 1;
 	GUI.currentpage = page;
@@ -261,10 +262,9 @@ function removeSplash() {
 function setPlaybackBlank() {
 	$( '#playback-controls' ).addClass( 'hide' );
 	$( '#divartist, #divsong, #divalbum' ).removeClass( 'scroll-left' );
-	$( '#song' ).html( '<i class="fa fa-plus-circle"></i>' );
+	$( '#song' ).html( '<i class="fa fa-plus-circle" style="width: 40px"></i>' );
 	$( '#divpos i' ).addClass( 'hide' );
-	$( '#artist, #album, #songposition, #timepos, #elapsed, #total' ).empty();
-	$( '#format-bitrate' ).text( 'Add music from Library' );
+	$( '#artist, #album, #songposition, #format-bitrate, #timepos, #elapsed, #total' ).empty();
 	if ( GUI.display.time ) $( '#time' ).roundSlider( 'setValue', 0 );
 	$( '#coverartoverlay' ).addClass( 'hide' );
 	$( '#cover-art' )
@@ -297,6 +297,7 @@ function renderPlayback() {
 	$( '.playback-controls' ).css( 'visibility', 'visible' );
 	$( '#artist, #song, #album' ).css( 'width', '' );
 	$( '#cover-art' ).removeClass( 'vu' );
+	if ( !GUI.coversave ) $( '.licover-save' ).remove();
 	$( '#artist' ).html( status.Artist );
 	$( '#song' ).html( status.Title );
 	$( '#album' )
@@ -364,7 +365,9 @@ function renderPlayback() {
 		$( '#cover-art' )
 			.attr( 'src', status.coverart || coverrune )
 			.css( 'border-radius', '' )
-		if ( !status.coverart ) {
+		if ( status.coverart ) {
+			GUI.coversave = 0;
+		} else {
 			// lastfm coverart
 			var apijson = {
 				  type     : 'post'
@@ -380,14 +383,21 @@ function renderPlayback() {
 				, timeout  : 5000
 				, dataType : 'json'
 				, success  : function( data ) {
-					var coverurl = data.album.image[ 3 ][ '#text' ];
+					var coverurl = data.album.image[ 4 ][ '#text' ] || data.album.image[ 3 ][ '#text' ];
 					if ( coverurl ) {
-						$( '#cover-art' ).attr( 'src', coverurl );
+						GUI.coversave = 1;
+						$( '#cover-art' )
+							.attr( 'src', coverurl )
+							.after( '<i class="edit licover-save fa fa-save"></i>' );
 					} else {
 						delete apijson.data.album;
 						apijson.success = function( data ) {
-							coverurl = data.album.image[ 3 ][ '#text' ];
-							if ( coverurl ) $( '#cover-art' ).attr( 'src', coverurl );
+							coverurl = data.album.image[ 4 ][ '#text' ] || data.album.image[ 3 ][ '#text' ];
+							if ( coverurl )
+								GUI.coversave = 1;
+								$( '#cover-art' )
+									.attr( 'src', coverurl )
+									.after( '<i class="edit licover-save fa fa-save"></i>' );
 						}
 						$.ajax( apijson );
 					}
@@ -466,7 +476,7 @@ function renderPlayback() {
 function getPlaybackStatus() {
 	$.post( 'enhancestatus.php', { artist: $( '#artist' ).text(), album: $( '#album' ).text() }, function( status ) {
 		// 'gpio off' > audio output switched > restarts mpd which makes status briefly unavailable
-		if( typeof status !== 'object' ) return
+		if ( typeof status !== 'object' ) return
 		
 		if ( status.activePlayer === 'Airplay' ) {
 			displayAirPlay();
@@ -1332,7 +1342,10 @@ function radio2html( list, source, querytype, plid ) {
 	}
 	return content +'</li>';
 }
-function removeCoverart( $img, album, artist, path ) {
+function removeCoverart() {
+	var src = $( '#cover-art' ).prop( 'src' );
+	var file = GUI.status.file;
+	var path = '/mnt/MPD/'+ file.substr( 0, file.lastIndexOf( '/' ) );
 	$.post( 'enhance.php', { bash: '/usr/bin/ls "'+ path +'" | grep -iE "^cover.jpg$|^cover.png$|^folder.jpg$|^folder.png$|^front.jpg$|^front.png$"' }, function( file ) {
 		var file = file.slice( 0, -1 ); // less last '\n'
 		var count = file.split( '\n' ).length;
@@ -1350,62 +1363,81 @@ function removeCoverart( $img, album, artist, path ) {
 		info( {
 			  icon    : 'coverart'
 			, title   : 'Remove Album Coverart'
-			, message : '<img src="'+ $img.prop( 'src' ) +'">'
-					   +'<br><w>'+ album +'</w>'
-					   +'<br>'+ artist
+			, message : '<img src="'+ src +'">'
+					   +'<br><w>'+ GUI.status.Album +'</w>'
+					   +'<br>'+ GUI.status.Artist
 					   +'<br><br><code>'+ file +'</code> > <code>'+ file +'.backup</code>'
 			, oklabel : 'Remove'
 			, ok      : function() {
-				$.post( 'enhance.php', { imagefile: path +'/cover.jpg', coverfile: 1 }, function( std ) {
-					if ( std == 0 ) {
-						$img.attr( 'src', coverrune );
-						$( '.edit' ).remove();
-						$img.css( 'opacity', '' );
-					} else if ( std == 13 ) {
-						info( {
-							  icon    : 'coverart'
-							, title   : '<i class="fa fa-warning"></i>Remove Album Coverart'
-							, message : 'Remove file denied.'
-									   +'<br>Set directory+file <w>permission</w> and try again.'
-						} );
-					}
+				$.post( 'enhance.php', { imagefile: path +'/'+ file, coverfile: 1 }, function( std ) {
+					infoCoverart( 'Remove', coverrune, std );
 				} );
 			}
 		} );
 	} );
 }
-function replaceCoverart( $img, album, artist, path ) {
+function replaceCoverart() {
+	var src = $( '#cover-art' ).prop( 'src' );
+	var file = GUI.status.file;
+	var path = '/mnt/MPD/'+ file.substr( 0, file.lastIndexOf( '/' ) );
 	info( {
 		  icon        : 'coverart'
 		, title       : 'Replace Album Coverart'
-		, message     : '<img src="'+ $img.prop( 'src' ) +'">'
-					   +'<span class="bkname"><br><w>'+ album +'</w>'
-					   +'<br>'+ artist +'<span>'
+		, message     : '<img src="'+ src +'">'
+					   +'<span class="bkname"><br><w>'+ GUI.status.Album +'</w>'
+					   +'<br>'+ GUI.status.Artist +'<span>'
 		, fileoklabel : 'Replace'
 		, ok          : function() {
 			var newimg = $( '#infoMessage .newimg' ).attr( 'src' );
 			$.post( 'enhance.php', { imagefile: path +'/cover.jpg', base64: newimg, coverfile: 1 }, function( std ) {
-				if ( std == 0 ) {
-					$img.attr( 'src', newimg );
-					$( '.edit' ).remove();
-					$img.css( 'opacity', '' );
-				} else if ( std == 13 ) {
-					info( {
-						  icon    : 'coverart'
-						, title   : '<i class="fa fa-warning"></i>Replace Album Coverart'
-						, message : 'Replace file denied.'
-								   +'<br>Set directory+file <w>permission</w> and try again.'
-					} );
-				} else if ( std == -1 ) {
-					info( {
-						  icon    : 'coverart'
-						, title   : 'Replace Album Coverart'
-						, message : '<i class="fa fa-warning"></i>Upload image failed.'
-					} );
-				}
+				infoCoverart( 'Replace', newimg, std );
 			} );
 		}
 	} );
+}
+function saveCoverart() {
+	var src = $( '#cover-art' ).prop( 'src' );
+	var file = GUI.status.file;
+	var path = '/mnt/MPD/'+ file.substr( 0, file.lastIndexOf( '/' ) );
+	var ext = src.split( '.' ).pop();
+	var coverfile = path.replace( /"/g, '\"' ) +'/cover.'+ ext;
+	info( {
+		  icon    : 'coverart'
+		, title   : 'Save Album Coverart'
+		, message : '<img src="'+ src +'">'
+					   +'<span class="bkname"><br><w>'+ GUI.status.Album +'</w>'
+					   +'<br>'+ GUI.status.Artist +'<span>'
+		, ok      : function() {
+			$.post( 'enhance.php', { bash: '/usr/bin/wget '+ src +' -O "'+ coverfile +'"' }, function( std ) {
+				infoCoverart( 'Save' );
+			} );
+		}
+	} );
+}
+function infoCoverart( title, src, std ) {
+	$( '.edit' ).remove();
+	$( '#cover-art' ).css( 'opacity', '' );
+	if ( std == 13 ) {
+		info( {
+			  icon    : 'coverart'
+			, title   : '<i class="fa fa-warning"></i>'+ title +' Album Coverart'
+			, message : 'Save file denied.'
+					   +'<br>Set directory+file <w>permission</w> and try again.'
+		} );
+	} else if ( std == -1 ) {
+		info( {
+			  icon    : 'coverart'
+			, title   : title +' Album Coverart'
+			, message : '<i class="fa fa-warning"></i>Upload image failed.'
+		} );
+	} else {
+		if ( title === 'Save' ) {
+			GUI.coversave = 0;
+			notify( 'Album Coverart', 'Saved.', 'coverart' );
+		} else {
+			$( '#cover-art' ).prop( 'src', src );
+		}
+	}
 }
 function flag( iso ) { // from: https://stackoverflow.com/a/11119265
 	var iso0 = ( iso.toLowerCase().charCodeAt( 0 ) - 97 ) * -15;
@@ -1705,7 +1737,7 @@ function renderPlaylist() {
 		$( '#plsave, #plcrop, #plclear, #pl-searchbtn' ).addClass( 'disable' );
 		$( '#pl-entries' ).empty();
 		$( '.playlist' ).removeClass( 'hide' );
-		$( '#playlist-warning' ).css( 'margin-top', ( GUI.bars ? 27 : 47 ) +'px' );
+		$( '#playlist-empty' ).css( 'margin-top', ( GUI.bars ? 27 : 67 ) +'px' );
 		$( 'html, body' ).scrollTop( 0 );
 		return
 	}
@@ -1722,7 +1754,7 @@ function renderPlaylist() {
 		counthtml += countradiohtml;
 	}
 	$( '.playlist' ).removeClass( 'hide' );
-	$( '#playlist-warning' ).addClass( 'hide' );
+	$( '#playlist-empty' ).addClass( 'hide' );
 	$( '#pl-count' ).html( counthtml );
 	$( '#plsave, #plclear, #pl-searchbtn' ).removeClass( 'disable' );
 	$( '#plcrop' ).toggleClass( 'disable', GUI.pllist.length < 2 );

@@ -452,6 +452,9 @@ i.bookmark,
 	font-size: 30px;
 	color: #0095d8;
 }
+#song i {
+	color: #e0e7ee;
+}
 #divartist,
 #divalbum {
 	height: 25px;
@@ -1113,6 +1116,7 @@ i.bookmark,
 	color: #0095d8;
 }
 /* coverart edit icons */
+.licover-save,
 .edit {
 	position: absolute;
 	right: 0;
@@ -1130,6 +1134,15 @@ i.bookmark,
 }
 .home-block-edit {
 	top: 35px;
+}
+.licover-save {
+	left: 5px;
+	bottom: 5px;
+	width: 30px !important;
+	height: 30px;
+	line-height: 30px;
+	border-radius: 15px;
+	background: #0095d8;
 }
 .home-block-cover {
 	bottom: 0;
@@ -1185,6 +1198,9 @@ i.bookmark,
 }
 .btnlist-top .form-inline i {
 	font-size: 18px;
+}
+.btnlist-top i {
+	text-shadow: 2px 2px 4px #000000;
 }
 #db-search-close {
 	float: right;
@@ -1705,16 +1721,10 @@ li.active .time {
 	text-align: center;
 	color: #e0e7ee;
 }
-#playlist-warning {
+#playlist-empty {
+	width: 100%;
 	text-align: center;
-}
-#playlist-warning i {
 	font-size: 30px;
-	color: #0095d8;
-}
-#playlist-warning p {
-	margin-top: 27px;
-	color: #7795b4;
 }
 .menu a.active {
 	background: #0095d8;

@@ -209,7 +209,7 @@ $( '#turnoff' ).click( function() {
 	info( infojson );
 } );
 $( '#tab-library' ).click( function() {
-	$( '#db-search-close span' ).empty();
+	if ( !$( '#db-search-keyword' ).val() ) $( '#db-search-close' ).empty();
 	if ( GUI.library ) {
 		$( '#divcoverarts' ).addClass( 'hide' );
 		$( '#home-blocks' ).removeClass( 'hide' );
@@ -271,7 +271,7 @@ $( '#page-playback' ).tap( function( e ) {
 	if ( $( '.edit' ).length ) {
 		if ( $( e.target ).hasClass( 'edit' ) ) return
 		
-		$( '.edit' ).remove();
+		$( '.licover-remove, .licover-cover' ).remove();
 		$( '#cover-art' ).css( 'opacity', '' );
 		return
 	}
@@ -338,8 +338,8 @@ $( '#infoCheckBox' ).on( 'click', 'label', function() { // playback tools
 	}
 } );
 // PLAYBACK /////////////////////////////////////////////////////////////////////////////////////
-$( '#song, #playlist-warning' ).on( 'click', 'i', function() {
-	$( '#tab-library' ).click();
+$( '#song, #playlist-empty' ).click( function( e ) {
+	if ( $( e.target ).hasClass( 'fa' ) ) $( '#tab-library' ).click();
 } );
 $( '#artist, #bio-open' ).click( function() {
 	if ( GUI.status.ext === 'radio' ) return
@@ -553,7 +553,7 @@ var btnctrl = {
 $( '.covermap' ).taphold( function( e ) {
 	if ( !GUI.status.playlistlength ) return
 	
-	if ( [ vu, vustop ].indexOf( $( '#cover-art' ).attr( 'src' ) ) !== -1 ) {
+	if ( [ vu, vustop ].indexOf( $( '#cover-art' ).attr( 'src' ) ) !== -1 || GUI.coversave ) {
 		var iconremove = '';
 	} else {
 		var iconremove = '<i class="edit licover-remove fa fa-minus-circle"></i>';
@@ -565,16 +565,15 @@ $( '.covermap' ).taphold( function( e ) {
 			+'<i class="edit licover-cover fa fa-coverart"></i>'
 		);
 } );
-$( '#divcover' ).on( 'click', '.edit', function() {
+$( '#divcover' ).on( 'click', '.edit', function( e ) {
+	var $this = $( e.target );
 	if ( GUI.status.ext !== 'radio' ) {
-		var $img = $( '#cover-art' );
-		var album = GUI.status.Album;
-		var artist = GUI.status.Artist;
-		var path = '/mnt/MPD/'+ GUI.status.file.substr( 0, GUI.status.file.lastIndexOf( '/' ) );
-		if ( $( this ).hasClass( 'licover-remove' ) ) {
-			removeCoverart( $img, album, artist, path );
+		if ( $this.hasClass( 'licover-remove' ) ) {
+			removeCoverart();
+		} else if ( $this.hasClass( 'licover-edit' ) ) {
+			replaceCoverart();
 		} else {
-			replaceCoverart( $img, album, artist, path );
+			saveCoverart();
 		}
 	} else {
 		GUI.list = {};
@@ -585,7 +584,11 @@ $( '#divcover' ).on( 'click', '.edit', function() {
 				return false
 			}
 		} );
-		webRadioCoverart();
+		if ( $this.hasClass( 'licover-remove' ) ) {
+			removeRadioCoverart();
+		} else {
+			webRadioCoverart();
+		}
 	}
 } );
 $( '.timemap, .covermap, .volmap' ).tap( function() {
@@ -783,7 +786,7 @@ $( '#db-search-close' ).click( function() {
 	$( '#db-search-close, #db-search, #dbsearchbtn' ).addClass( 'hide' );
 	$( '#db-currentpath span, #db-searchbtn' ).removeClass( 'hide' );
 	$( '#db-currentpath' ).css( 'max-width', '' );
-	$( '#db-search-close span' ).empty();
+	$( '#db-search-close' ).empty();
 	if ( $( '#db-currentpath .lipath').text() ) $( '#db-back' ).removeClass( 'hide' );
 	if ( !$( '#db-search-keyword' ).val() ) return
 	
@@ -1356,6 +1359,7 @@ $( '#plcrop' ).click( function() {
 		  title   : 'Crop Playlist'
 		, message : 'Clear this playlist except current song?'
 		, ok       : function() {
+			$( '#pl-entries li:not( .active )' ).remove();
 			$.post( 'enhance.php', { mpc: GUI.status.state === 'stop' ? 'mpc play; mpc crop; mpc stop' : 'mpc crop' } );
 		}
 	} );

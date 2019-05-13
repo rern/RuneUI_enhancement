@@ -411,19 +411,15 @@ $menu.= '</div>';
 			<div id="db-home"><i class="fa fa-library"></i></div><span></span>
 			<i id="db-webradio-new" class="fa fa-plus-circle hide"></i>
 		</div>
-		<button id="db-search-close" class="btn hide" type="button"><i class="fa fa-times sx"></i></button>
+		<button id="db-search-close" class="btn hide" type="button"></button>
 		<i id="db-back" class="fa fa-arrow-left"></i>
 	</div>
 	<div id="home-blocks" class="row" data-count="<?=$counts[ 'song' ]?>">
-		<div id="divhomeblocks">
-			<?=$blockhtml?>
-		</div>
+		<div id="divhomeblocks"><?=$blockhtml?></div>
 	</div>
 	<div id="db-list">
 		<ul id="db-entries" class="database"></ul>
-		<ul id="db-index" class="index hide">
-			<?=$index?>
-		</ul>
+		<ul id="db-index" class="index hide"><?=$index?></ul>
 		<div id="divcoverarts" class="hide"><?=$coverartshtml ?></div>
 	</div>
 </div>
@@ -457,13 +453,8 @@ $menu.= '</div>';
 	<div id="pl-list">
 		<ul id="pl-entries" class="playlist"></ul>
 		<ul id="pl-editor" class="hide"></ul>
-		<ul id="pl-index" class="index hide">
-			<?=$index?>
-		</ul>
-		<div id="playlist-warning" class="playlist hide">
-			<i class="fa fa-plus-circle"></i><br>
-			<p>Add music from Library</p>
-		</div>
+		<ul id="pl-index" class="index hide"><?=$index?></ul>
+		<i id="playlist-empty" class="fa fa-plus-circle playlist hide"></i>
 	</div>
 </div>
 

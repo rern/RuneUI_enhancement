@@ -14,10 +14,6 @@ alias=enha
 . /srv/http/addonstitle.sh
 . /srv/http/addonsedit.sh
 
-#0temp0
-[[ $( redis-cli hget addons enha ) < 20190318 ]] && redis-cli hdel display order &> /dev/null
-#1temp1
-
 installstart $@
 
 if ! pacman -Q imagemagick &> /dev/null; then
@@ -147,7 +143,15 @@ EOF
 )
 insertH '1'
 
-# to be moved after 'if not update ##########################################
+############################################################################
+if [[ $1 == u ]]; then
+	installfinish $@
+	restartlocalbrowser
+	reinitsystem
+	exit
+fi
+
+########## if not update ############################################################
 makeDirLink tmp
 makeDirLink webradiopl
 makeDirLink coverarts
@@ -157,22 +161,19 @@ makeDirLink webradios
 # filename: http:||webradio|url
 # content:
 #	name only  - name
-#	with image - name\nbase64thumbnail\nbase64image
+#	with image - name\nbase64thumbnail\nbase64image (created with RuneUIe only)
 dir=/srv/http/assets/img/webradios
-if [[ -z $( ls -A $dir ) ]]; then # convert only when none found 
-	webradios=$( redis-cli hgetall webradios )
-	if [[ $webradios ]]; then
-		echo -e "$bar Convert Webradios data ..."
-
-		readarray -t lines <<<"$webradios"
-		linesL=${#lines[@]}
-		for (( i=0; i < $linesL; i+=2 )); do
-			name=${lines[ $i ]}
-			url=${lines[ $i + 1 ]}
-			echo $name > "$dir/${url//\//|}"
-			echo $name - $url
-		done
-	fi
+olddir=/mnt/MPD/Webradio
+if [[ -z $( ls -A $dir ) && -n $( ls -A $olddir ) ]]; then # convert if none found
+	echo -e "$bar Convert Webradios data ..."
+	
+	files=( $olddir/* )
+	for file in "${files[@]}"; do
+		name=$( grep '^Title' "$file" | cut -d'=' -f2 )
+		url=$( grep '^File' "$file" | cut -d'=' -f2 )
+		echo $name > "$dir/${url//\//|}"
+		echo $name - $url
+	done
 	if [[ -L $dir ]]; then
 		dirtarget=$( readlink -f $dir )
 		chown -R http:http "$dirtarget" $dir
@@ -186,7 +187,7 @@ makeDirLink bookmarks
 # filename: path|to|bookmark
 # content:
 #	name  - name
-#	image - base64image
+#	image - base64image (created with RuneUIe only)
 dir=/srv/http/assets/img/bookmarks
 if [[ -z $( ls -A $dir ) ]]; then # convert only when none found
 	bookmarks=$( redis-cli hgetall bookmarks | tr -d '"{}\\' )
@@ -221,15 +222,6 @@ if [[ -z $( ls -A $dir ) ]]; then # convert only when none found
 		chown -R http:http $dir
 	fi
 fi
-############################################################################
-if [[ $1 == u ]]; then
-	installfinish $@
-	restartlocalbrowser
-	reinitsystem
-	exit
-fi
-
-########## if not update ############################################################
 
 # zoom - keep range: 0.5 - 3.0
 z=$1;
