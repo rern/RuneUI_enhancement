@@ -57,6 +57,24 @@ fi
 
 ########## if not update ############################################################
 
+# convert playlists back to default
+dir=/srv/http/assets/img/playlists
+if [[ -n $( ls -A $dir ) ]]; then
+	echo -e "$bar Convert playlists data ..."
+	
+	plfiles=( $dir/* )
+	for plfile in "${plfiles[@]}"; do
+		lines=
+		readarray files < "$plfile"
+		for file in "${files[@]}"; do
+			data=${file//^^/^}
+			lines="$lines $( echo $data | cut -d'^' -f4 )\n"
+		done
+		name=$( basename $plfile )
+		echo -e "$lines" > "/var/lib/mpd/playlists/$name.m3u"
+	done
+fi
+
 # convert file based webradios back to redis
 dir=/srv/http/assets/img/webradios
 if [[ ! -z $( ls -A $dir 2> /dev/null ) ]]; then
