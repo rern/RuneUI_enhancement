@@ -152,9 +152,10 @@ if [[ $1 == u ]]; then
 fi
 
 ########## if not update ############################################################
+makeDirLink coverarts
+makeDirLink playlists
 makeDirLink tmp
 makeDirLink webradiopl
-makeDirLink coverarts
 makeDirLink webradios
 
 # convert webradios
