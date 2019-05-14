@@ -607,3 +607,39 @@ function lsPlaylists() {
 		return 0;
 	}
 }
+function savePlaylist( $name ) { // fix -  mpd unable to save cue/m3u properly
+	$playlistinfo = shell_exec( '{ sleep 0.05; echo playlistinfo; sleep 0.05; } | telnet localhost 6600 | grep "^file\|^Range\|^Track"' );
+	$content = preg_replace( '/\nfile:/', "\n^^file:", $playlistinfo );
+	$lines = explode( '^^', $content );
+	$iL = count( $lines );
+	for ( $i = 0; $i < $iL; $i++ ) {
+		$line = explode( "\n", rtrim( $lines[ $i ] ) );
+		$jL = count( $line );
+		$list = '';
+		for ( $j = 0; $j < $jL; $j++ ) {
+			$pair = explode( ': ', $line[ $j ], 2 );
+			$key = $pair[ 0 ];
+			if ( $j === 1 && $key !== 'Range' ) {
+				$j = $jL;
+			} else {
+				$list[ $key ] = $pair[ 1 ];
+			}
+		}
+		$data[] = $list;
+	}
+	file_put_contents( "/srv/http/assets/img/playlists/$name", serialize( $data ) );
+}
+function loadPlaylist( $name ) { // fix -  mpd unable to save cue/m3u properly
+	$playlistinfo = unserialize( file_get_contents( "/srv/http/assets/img/playlists/$name" ) );
+	foreach( $playlistinfo as $list ) {
+		$file = $list[ 'file' ];
+		if ( array_key_exists( 'Track', $list ) ) {
+			$filenoext = preg_replace( '/.[^.]*$/', '', $file );
+			$plfile = "$filenoext.cue";
+			if ( !file_exists( "/mnt/MPD/$plfile" ) ) $plfile = "$filenoext.m3u";
+			exec( '/srv/http/enhance1cuem3u.sh "'.$plfile.'" '.$list[ 'Track' ] );
+		} else {
+			exec( 'mpc add "'.$file.'"' );
+		}
+	}
+}
