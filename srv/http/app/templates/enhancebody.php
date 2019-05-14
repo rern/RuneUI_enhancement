@@ -146,6 +146,8 @@ function menuli( $command, $icon, $label, $type = '' ) {
 		$class = ' class="replace"';
 	} else if ( $icon === 'tag' ) {
 		$class = ' class="tag"';
+	} else if ( $icon === 'minus-circle' ) {
+		$class = ' class="remove"';
 	} else if ( $icon === 'lastfm' ) {
 		$class = ' class="lastfm"';
 	}
@@ -157,7 +159,7 @@ function menudiv( $id, $html ) {
 function menucommon( $add, $addplay, $replace, $replaceplay ) {
 	$htmlcommon = '<span class="menushadow"></span>';
 	$htmlcommon.= menuli( $add,         'plus-o',            'Add' );
-	$htmlcommon.= menuli( $addplay,     'play-plus',       'Add ► Play' );
+	$htmlcommon.= menuli( $addplay,     'play-plus',         'Add ► Play' );
 	$htmlcommon.= menuli( $replace,     'plus-refresh',      'Replace' );
 	$htmlcommon.= menuli( $replaceplay, 'play-plus-refresh', 'Replace ► Play' );
 	return $htmlcommon;
@@ -165,7 +167,7 @@ function menucommon( $add, $addplay, $replace, $replaceplay ) {
 function menucommonsp( $type ) {
 	$htmlcommon = '<span class="menushadow"></span>';
 	$htmlcommon.= menuli( 'spadd',         'plus-o',            'Add',            $type );
-	$htmlcommon.= menuli( 'spaddplay',     'play-plus',       'Add ► Play',     $type );
+	$htmlcommon.= menuli( 'spaddplay',     'play-plus',         'Add ► Play',     $type );
 	$htmlcommon.= menuli( 'spreplaceplay', 'play-plus-refresh', 'Replace ► Play', $type );
 	return $htmlcommon;
 }
@@ -191,6 +193,7 @@ $menu.= menudiv( 'folder', $html );
 $menudiv = '';
 $html = $htmlcommon;
 $html.= menuli( 'lastfmreplaceplay', 'lastfm', 'Last.fm playlist' );
+$html.= menuli( 'remove',    'minus-circle',   'Remove' );
 if ( $kid3 )
 $html.= menuli( 'tag',       'tag',            'Tags' );
 $menu.= menudiv( 'file', $html );
