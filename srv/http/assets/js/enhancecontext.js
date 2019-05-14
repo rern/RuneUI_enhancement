@@ -171,6 +171,7 @@ function updateThumbnails() {
 	} );
 }
 function addReplace( mode, cmd, command, title ) {
+	console.log(command)
 	$.post( 'enhance.php', { mpc: command }, function() {
 		if ( GUI.display.playbackswitch
 			&& ( cmd === 'addplay' || cmd === 'replaceplay' ) 
@@ -585,10 +586,11 @@ function playlistDelete() {
 		, oklabel : 'Delete'
 		, ok      : function() {
 			var count = $( '#pls-count' ).text() - 1;
-			$( '#pls-count' ).text( numFormat( count ) );
-			if ( !count ) $( '#pl-currentpath' ).html( '<bl>&emsp;PLAYLISTS</bl>' );
+			if ( count ) $( '#pls-count' ).text( numFormat( count ) );
 			GUI.list.li.remove();
-			$.post( 'enhance.php', { bash: '/usr/bin/rm "/srv/http/assets/img/playlists/'+ GUI.list.name.replace( /"/g, '\\"' ) +'"' } );
+			$.post( 'enhance.php', { bash: '/usr/bin/rm "/srv/http/assets/img/playlists/'+ GUI.list.name.replace( /"/g, '\\"' ) +'"' }, function() {
+				if ( !count ) $( '#pl-home' ).click();
+			} );
 		}
 	} );
 }

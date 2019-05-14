@@ -208,7 +208,7 @@ function second2HMS( second ) {
 	hh = hh ? hh +':' : '';
 	mm = hh ? ( mm > 9 ? mm +':' : '0'+ mm +':' ) : ( mm ? mm +':' : '' );
 	ss = mm ? ( ss > 9 ? ss : '0'+ ss ) : ss;
-	return ss ? hh + mm + ss : '';
+	return hh + mm + ss;
 }
 function scrollLongText() {
 	var $el = $( '#artist, #song, #album' );
@@ -1462,11 +1462,12 @@ function dbContextmenu( $li, $target ) {
 	} else {
 		GUI.list.mode = $li.find( '.db-icon' ).prop( 'class' ).replace( /fa fa-| db-icon/g, '' );
 	}
+	var dbpl = GUI.library ? 'db' : 'pl';
 	GUI.list.path = $li.find( '.lipath' ).text().trim() || '';
 	GUI.list.name = $li.find( '.liname' ).text().trim() || '';
 	GUI.list.artist = $li.find( '.liartist' ).text().trim() || '';
 	GUI.list.index = $li.find( '.liindex' ).text() || '';  // cue - in contextmenu
-	GUI.list.liindex = $( '#db-entries li' ).index( $li ); // for webradio delete - in contextmenu
+	GUI.list.liindex = $( '#'+ dbpl +'-entries li' ).index( $li ); // for webradio delete - in contextmenu
 	GUI.list.isfile = $li.hasClass( 'file' );              // file/dirble save in contextmenu
 	GUI.list.thumb = $li.find( '.lithumb' ).text() || '';  // dirble save in contextmenu
 	GUI.list.img = $li.find( '.liimg' ).text() || '';      // dirble save in contextmenu
@@ -1480,12 +1481,13 @@ function dbContextmenu( $li, $target ) {
 	}
 	
 	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
+	$( '.remove' ).addClass( 'hide' );
 	$( '.update' ).toggleClass( 'hide', GUI.status.updating_db !== 0 );
-	var cuem3u = [ 'cue', 'm3u' ].indexOf( $( '#db-entries .lipath:eq( 1 )' ).text().split( '.' ).pop() ) !== -1;
+	var cuem3u = [ 'cue', 'm3u' ].indexOf( $( '#'+ dbpl +'-entries .lipath:eq( 1 )' ).text().split( '.' ).pop() ) !== -1;
 	$( '.tag' ).toggleClass( 'hide', $( '.licover' ).length === 0 || cuem3u );
 	var contextnum = $menu.find( 'a:not(.hide)' ).length;
 	$( '.menushadow' ).css( 'height', contextnum * 41 - 1 );
-	$( '#db-entries li' ).removeClass( 'active' );
+	$( '#'+ dbpl +'-entries li' ).removeClass( 'active' );
 	$li.addClass( 'active' );
 	
 	if ( $li.hasClass( 'licover' ) ) {
@@ -1513,7 +1515,10 @@ function plContextmenu( $li, $target ) { // saved playlists
 	GUI.list.path = $li.find( '.lipath' ).text().trim() || GUI.list.name;
 	GUI.list.isfile = $li.find( '.fa-music' ).length; // used in contextmenu
 	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
-	var $menu = $( $li.find( '.pl-icon' ).data( 'target' ) );
+	$( '.remove' ).removeClass( 'hide' );
+	$( '.tag' ).addClass( 'hide' );
+	var dbpl = $li.find( '.pl-icon' ).length ? '.pl' : '.db';
+	var $menu = $( $li.find( dbpl +'-icon' ).data( 'target' ) );
 	if ( GUI.display.tapaddplay
 		&& !$target.hasClass( 'pl-icon' )
 	) {
@@ -1633,6 +1638,7 @@ function setPlaylistScroll() {
 	}, 'json' );
 }
 function htmlPlaylist( data ) {
+	console.log(data)
 	var content, pl, iconhtml, topline, bottomline, countradio, countsong, pltime, sec;
 	var licover = '',
 		coverart = '',
@@ -1679,11 +1685,17 @@ function htmlPlaylist( data ) {
 				var actionhtml = '<i class="fa fa-music pl-icon"></i>'
 								+'<a class="lipath">'+ value.file +'</a>';
 			} else {
-				var actionhtml = '<i class="fa fa-music '+ ( GUI.library ? 'db' : 'pl' ) +'-icon" data-target="#context-menu-'+ ( GUI.library ? 'file' : 'filesavedpl' ) +'"></i>'
+				if ( GUI.library || 'cuetrack' in value ) {
+					var menu = 'file';
+					var dbpl = 'db';
+				} else {
+					var menu = 'filesavedpl';
+					var dbpl = 'pl';
+				}
+				var actionhtml = '<i class="fa fa-music '+ dbpl +'-icon" data-target="#context-menu-'+ menu +'"></i>'
 								+'<a class="lipath">'+ ( value.cuem3u || value.file ) +'</a>'
 								+'<a class="liname">'+ value.Title +'</a>'
 								+'<a class="liindex">'+ value.index +'</a>';
-				if ( 'cuetrack' in value ) actionhtml += '<a class="litrack hide">'+ value.cuetrack +'</a>';
 			}
 			if ( GUI.playlist ) {
 				li2 = value.track;

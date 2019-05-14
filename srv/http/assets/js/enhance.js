@@ -1552,8 +1552,12 @@ $( '#pl-editor' ).on( 'click', 'li', function( e ) {
 	}
 	
 	var $target = $( e.target );
-	if ( $target.hasClass( 'pl-icon' ) || !$this.find( '.fa-list-ul' ).length ) {
-		plContextmenu( $this, $target );
+	if ( $target.hasClass( 'pl-icon' ) || $target.hasClass( 'db-icon' ) || !$this.find( '.fa-list-ul' ).length ) {
+		if ( $target.data( 'target' ) === '#context-menu-file' ) {
+			dbContextmenu( $this, $target );
+		} else {
+			plContextmenu( $this, $target );
+		}
 	} else {
 		renderSavedPlaylist( $this.find( 'span' ).text() );
 	}
