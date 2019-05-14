@@ -1683,6 +1683,7 @@ function htmlPlaylist( data ) {
 								+'<a class="lipath">'+ ( value.cuem3u || value.file ) +'</a>'
 								+'<a class="liname">'+ value.Title +'</a>'
 								+'<a class="liindex">'+ value.index +'</a>';
+				if ( 'cuetrack' in value ) actionhtml += '<a class="litrack hide">'+ value.cuetrack +'</a>';
 			}
 			if ( GUI.playlist ) {
 				li2 = value.track;

@@ -1336,18 +1336,19 @@ $( '#pl-currentpath' ).on( 'click', '.plsbackroot', function() {
 	$( '#tab-playlist' ).click();
 } );
 $( '#plopen' ).click( function() {
-	if ( !GUI.lsplaylists.length ) return
-	
-	$( '.playlist, #pl-searchbtn, #context-menu-plaction' ).addClass( 'hide' );
-	$( '#context-menu-plaction' ).addClass( 'hide' );
-	$( '#loader' ).removeClass( 'hide' );
-	
-	var plL = GUI.lsplaylists.length - 1; // less index
-	var plcounthtml = '<wh><i class="fa fa-microsd"></i></wh><bl>PLAYLIST</bl>';
-	plcounthtml += plL ? '<gr>&ensp;·&emsp;</gr> <wh id="pls-count">'+ numFormat( plL ) +'</wh>&ensp;<i class="fa fa-list-ul"></i>' : '';
-	$( '#pl-currentpath' ).html( plcounthtml +'<i class="fa fa-arrow-left plsbackroot"></i>' );
-	$( '#pl-currentpath, #pl-editor, #pl-index' ).removeClass( 'hide' );
-	renderLsPlaylists( GUI.lsplaylists );
+	$.post( 'enhance.php', { getplaylist: 1, lsplaylists: 1 }, function( data ) {
+		GUI.lsplaylists = data;
+		$( '.playlist, #pl-searchbtn, #context-menu-plaction' ).addClass( 'hide' );
+		$( '#context-menu-plaction' ).addClass( 'hide' );
+		$( '#loader' ).removeClass( 'hide' );
+		
+		var plL = GUI.lsplaylists.length - 1; // less index
+		var plcounthtml = '<wh><i class="fa fa-microsd"></i></wh><bl>PLAYLIST</bl>';
+		plcounthtml += plL ? '<gr>&ensp;·&emsp;</gr> <wh id="pls-count">'+ numFormat( plL ) +'</wh>&ensp;<i class="fa fa-list-ul"></i>' : '';
+		$( '#pl-currentpath' ).html( plcounthtml +'<i class="fa fa-arrow-left plsbackroot"></i>' );
+		$( '#pl-currentpath, #pl-editor, #pl-index' ).removeClass( 'hide' );
+		renderLsPlaylists( GUI.lsplaylists );
+	}, 'json' );
 } );
 $( '#plsave' ).click( function() {
 	if ( !GUI.status.playlistlength ) return
