@@ -629,6 +629,7 @@ function savePlaylist( $name ) { // fix -  mpd unable to save cue/m3u properly
 	$lines = explode( '^^', $content );
 	$iL = count( $lines );
 	$list = '';
+	$listfile = '';
 	for ( $i = 0; $i < $iL; $i++ ) {
 		$line = $lines[ $i ];
 		$range = preg_match( '\nRange', $line );
@@ -655,6 +656,7 @@ function savePlaylist( $name ) { // fix -  mpd unable to save cue/m3u properly
 		$list.= "^^$Album^^^^^^^^";
 		$list.= $Range ? $Track : '';
 		$list.= "\n";
+		$listfile.= "file\n";
 	}
 	file_put_contents( "/srv/http/assets/img/playlists/$name", $list );
 }
