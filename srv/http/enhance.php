@@ -512,9 +512,9 @@ function list2array( $result, $name = '' ) { // $name is playlist
 			, 'Time'   => $list[ 1 ]
 			, 'index'  => $i++
 		);
-		if ( $cum3u ) $li[ 'cuem3u' ] = $cuem3u;
 		if ( $thumb ) $li[ 'thumb' ] = $thumb;
 		if ( $img ) $li[ 'img' ] = $img;
+		if ( $list[ 8 ] ) $li[ 'cuem3u' ] = $list[ 8 ];
 		if ( $list[ 9 ] ) $li[ 'cuetrack' ] = $list[ 9 ];
 		$data[] = $li;
 	}
@@ -623,6 +623,19 @@ function lsPlaylists() {
 		return 0;
 	}
 }
+function second2HMS( $second ) {
+	if ( $second <= 0 ) return 0;
+	
+	$second = round( $second );
+	$hh = floor( $second / 3600 );
+	$mm = floor( ( $second % 3600 ) / 60 );
+	$ss = $second % 60;
+	
+	$hh = $hh ? $hh.':' : '';
+	$mm = $hh ? ( $mm > 9 ? $mm.':' : '0'.$mm.':' ) : ( $mm ? $mm.':' : '' );
+	$ss = $mm ? ( $ss > 9 ? $ss : '0'.$ss ) : $ss;
+	return $hh.$mm.$ss;
+}
 function savePlaylist( $name ) { // fix -  mpd unable to save cue/m3u properly
 	$playlistinfo = shell_exec( '{ sleep 0.05; echo playlistinfo; sleep 0.05; } | telnet localhost 6600 | grep "^file\|^Range\|^AlbumArtist:\|^Title\|^Album\|^Artist\|^Track\|^Time"' );
 	$content = preg_replace( '/\nfile:/', "\n^^file:", $playlistinfo );
@@ -644,8 +657,12 @@ function savePlaylist( $name ) { // fix -  mpd unable to save cue/m3u properly
 				case 'Album': $Album = $pair[ 1 ]; break;
 				case 'Artist': $Artist = $pair[ 1 ]; break;
 				case 'Track': $Track = intval( $pair[ 1 ] ); break;
-				case 'Time': $Time = $pair[ 1 ]; break;
+				case 'Time': $Time = second2HMS( $pair[ 1 ] ); break;
 			}
+		}
+		if ( $Range ) {
+			$pathinfo = pathinfo( $file );
+			$cuem3u = $pathinfo[ 'dirname' ].'/'.$pathinfo[ 'filename' ].'.cue';
 		}
 		$list.= "$Title^^$Time^^";
 		$list.= $Track ? "#$Track • " : '';
@@ -653,8 +670,8 @@ function savePlaylist( $name ) { // fix -  mpd unable to save cue/m3u properly
 		$list.= $Album ? " • $Album" : '';
 		$list.= "^^$file^^";
 		$list.= $Albumartist ?: $Artist;
-		$list.= "^^$Album^^^^^^^^";
-		$list.= $Range ? $Track : '';
+		$list.= "^^$Album^^^^^^";
+		$list.= $Range ? "$cuem3u^^$Track" : '^^';
 		$list.= "\n";
 		$listfile.= "file\n";
 	}
