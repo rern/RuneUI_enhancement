@@ -163,7 +163,7 @@ $( '#displayplayback' ).click( function() {
 				GUI.display[ this.name ] = checked;
 				data[ this.name ] = checked;
 			} );
-			$.post( 'enhance.php', { setdisplay: GUI.display }, function() {
+			$.post( 'enhance.php', { setdisplay: data }, function() {
 				displayPlayback();
 				$( '#swipebar, .page' ).off( 'swipeleft swiperight' );
 				setSwipe();
