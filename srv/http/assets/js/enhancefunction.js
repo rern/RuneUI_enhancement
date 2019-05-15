@@ -1680,11 +1680,11 @@ function htmlPlaylist( data ) {
 		} else {
 			sec = value.Time ? HMS2Second( value.Time ) : 0;
 			pltime += sec;
-			if ( GUI.playlist && !GUI.pleditor ) {
+			if ( GUI.playlist && !GUI.pleditor && !value.cuem3u ) {
 				var actionhtml = '<i class="fa fa-music pl-icon"></i>'
 								+'<a class="lipath">'+ value.file +'</a>';
 			} else {
-				if ( GUI.library || 'cuetrack' in value ) {
+				if ( GUI.library && 'cuetrack' in value ) {
 					var menu = 'file';
 					var dbpl = 'db';
 				} else {

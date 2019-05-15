@@ -1543,7 +1543,15 @@ $( '#pl-editor' ).on( 'click', 'li', function( e ) {
 	
 	var $this = $( this );
 	if ( GUI.plappend ) {
-		$.post( 'enhance.php', { plappend: GUI.plappend, plfile: $this.find( '.lipath' ).text() }, function() {
+		var plname = $this.find( '.lipath' ).text();
+		var list = '';
+		if ( GUI.list.path.slice( -3 ) === 'cue' ) {
+			list += GUI.list.name +'^^'+ GUI.list.li.find( '.time' ).text() +'^^'; // title^^time^^
+			list += GUI.list.li.find( '.li2' ).text(); // track artist album
+			list += '^^^^^^^^^^^^';
+			list += GUI.list.path +'^^'+ GUI.list.li.find( '.liindex' ); // cuem3u track
+		}
+		$.post( 'enhance.php', { plappend: GUI.plappend, plname: plname, list: list }, function() {
 			renderSavedPlaylist( $this.find( 'span' ).text() );
 			$( 'html, body' ).animate( { scrollTop: window.innerHeight / 2 } );
 			GUI.plappend = '';
