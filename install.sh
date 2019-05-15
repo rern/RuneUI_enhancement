@@ -143,25 +143,8 @@ EOF
 )
 insertH '1'
 
-############################################################################
-if [[ $1 == u ]]; then
-	installfinish $@
-	restartlocalbrowser
-	reinitsystem
-	exit
-fi
-
-########## if not update ############################################################
-makeDirLink coverarts
+# to be moved after 'if not update ##############################################
 makeDirLink playlists
-makeDirLink tmp
-makeDirLink webradiopl
-makeDirLink webradios
-
-setown() {
-	chown -R http:http $1
-	[[ -L $1 ]] && chown -R http:http $( readlink -f $1 )
-}
 # convert playlists
 dir=/srv/http/assets/img/playlists
 olddir=/var/lib/mpd/playlists
@@ -186,6 +169,25 @@ if [[ -z $( ls -A $dir ) && -n $( ls -A $olddir ) ]]; then # convert if none fou
     done
 	setown $dir
 fi
+
+############################################################################
+if [[ $1 == u ]]; then
+	installfinish $@
+	restartlocalbrowser
+	reinitsystem
+	exit
+fi
+
+########## if not update ############################################################
+makeDirLink coverarts
+makeDirLink tmp
+makeDirLink webradiopl
+makeDirLink webradios
+
+setown() {
+	chown -R http:http $1
+	[[ -L $1 ]] && chown -R http:http $( readlink -f $1 )
+}
 
 # convert webradios
 # filename: http:||webradio|url
