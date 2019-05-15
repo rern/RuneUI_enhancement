@@ -245,7 +245,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$file = "/srv/http/assets/img/playlists/$name";
 		$lines = file_get_contents( $file );
 	}
-	$data[ 'playlist' ] = $lines ? list2array( $lines, $name ) : '';
+	$data[ 'playlist' ] = $lines ? list2array( $lines, 'playlist' ) : '';
 	echo json_encode( $data );
 } else if ( isset( $_POST[ 'saveplaylist' ] ) ) {
 	savePlaylist( $_POST[ 'saveplaylist' ] );
@@ -464,7 +464,7 @@ function search2array( $result, $playlist = '' ) { // directories or files
 	if ( $composer ) $data[][ 'composer' ] = $composer;
 	return $data;
 }
-function list2array( $result, $name = '' ) { // $name is playlist
+function list2array( $result, $playlist = '' ) {
 // 0-title, 1-time, 2-track, 3-file, 4-artist, 5-album, 6-genre, 7-composer, 8-cuem3u, 9-cuetrack
 	$artist = $album = $genre = $composer = $albumartist = $file = '';
 	$lists = explode( "\n", rtrim( $result ) );
@@ -520,7 +520,7 @@ function list2array( $result, $name = '' ) { // $name is playlist
 		if ( $list[ 9 ] ) $li[ 'cuetrack' ] = $list[ 9 ];
 		$data[] = $li;
 	}
-	if ( !$webradio && $name ) {
+	if ( !$webradio && !$playlist ) {
 		$data[][ 'artist' ] = $artist;
 		$data[][ 'album' ] = $album;
 		$data[][ 'albumartist' ] = $albumartist ?: $data[ 0 ][ 'Artist' ];
