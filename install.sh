@@ -165,6 +165,7 @@ if [[ -z $( ls -A $dir ) && -n $( ls -A $olddir ) ]]; then # convert if none fou
             fi
         done
         name=$( basename "$plfile" .m3u )
+		echo $name
         printf "$lines" > "$dir/$name"
     done
 	setown $dir
