@@ -1638,7 +1638,6 @@ function setPlaylistScroll() {
 	}, 'json' );
 }
 function htmlPlaylist( data ) {
-	console.log(data)
 	var content, pl, iconhtml, topline, bottomline, countradio, countsong, pltime, sec;
 	var licover = '',
 		coverart = '',

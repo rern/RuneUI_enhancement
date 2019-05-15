@@ -107,6 +107,7 @@ $( '.contextmenu a' ).click( function() {
 			var play = cmd.slice( -1 ) === 'y' ? 1 : 0;
 			var replace = cmd.slice( 0, 1 ) === 'r' ? 1 : 0;
 			$.post( 'enhance.php', { loadplaylist: name, play: play, replace: replace } );
+			return
 		}
 	}
 	cmd = cmd.replace( /album|artist|composer|genre/, '' );
@@ -171,7 +172,6 @@ function updateThumbnails() {
 	} );
 }
 function addReplace( mode, cmd, command, title ) {
-	console.log(command)
 	$.post( 'enhance.php', { mpc: command }, function() {
 		if ( GUI.display.playbackswitch
 			&& ( cmd === 'addplay' || cmd === 'replaceplay' ) 
