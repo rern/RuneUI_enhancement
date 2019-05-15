@@ -64,13 +64,9 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		echo $result;
 	}
 } else if ( isset( $_POST[ 'plappend' ] ) ) {
-	if ( $_POST[ 'list' ] ) {
-		$data = $_POST[ 'list' ];
-	} else {
-		$data = exec( 'mpc ls -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%^^[%albumartist%|%artist%]^^%album%^^%genre%^^%composer%" "'.$_POST[ 'plappend' ].'"' );
-	}
-	$content = file_get_contents( '/srv/http/assets/img/playlists/'.$_POST[ 'plname' ] );
-	$content.= $data."\n";
+	$plfile = '/srv/http/assets/img/playlists/'.$_POST[ 'plappend' ];
+	$content = file_get_contents( $plfile );
+	$content.= $_POST[ 'list' ]."\n";
 	file_put_contents( $plfile, $content );
 } else if ( isset( $_POST[ 'coverartalbum' ] ) ) {
 	$album = str_replace( '"', '\"', $_POST[ 'coverartalbum' ] );
