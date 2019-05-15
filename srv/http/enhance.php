@@ -660,17 +660,15 @@ function playlistInfo() { // fix -  mpd unable to save cue/m3u properly
 		if ( $Range ) {
 			$pathinfo = pathinfo( $file );
 			$cuem3u = $pathinfo[ 'dirname' ].'/'.$pathinfo[ 'filename' ].'.cue';
-			$file = '';
+			$list = "$Title^^$Time^^";
+			$list.= $Track ? "#$Track • " : '';
+			$list.= $AlbumArtist ?: ( $Artist ?: '' );
+			$list.= $Album ? " • $Album" : '';
+			$list.= '^^^^^^^^^^^^';
+			$list.= "$cuem3u^^$Track\n";
+		} else {
+			$list = "^^^^^^$file\n";
 		}
-		$list.= "$Title^^$Time^^";
-		$list.= $Track ? "#$Track • " : '';
-		$list.= $Artist ?: '';
-		$list.= $Album ? " • $Album" : '';
-		$list.= $Range ? '^^^^' : "^^$file^^";
-		$list.= $Range ? '' : ( $Albumartist ?: $Artist );
-		$list.= $Range ? '^^^^^^^^' : "^^$Album^^^^^^";
-		$list.= $Range ? "$cuem3u^^$Track" : '^^';
-		$list.= "\n";
 	}
 	return $list;
 }
