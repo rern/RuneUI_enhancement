@@ -243,11 +243,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%^^[%albumartist%|%artist%]^^%album%^^%genre%^^%composer%" playlist' );
 	} else {
 		$file = "/srv/http/assets/img/playlists/$name";
-		if ( file_exists( "$file.m3u" ) ) {
-			$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%^^[%albumartist%|%artist%]^^%album%^^%genre%^^%composer%" playlist '.$name );
-		} else {
-			$lines = file_get_contents( $file );
-		}
+		$lines = file_get_contents( $file );
 	}
 	$data[ 'playlist' ] = $lines ? list2array( $lines, $name ) : '';
 	echo json_encode( $data );
