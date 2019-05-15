@@ -1715,6 +1715,8 @@ function htmlPlaylist( data ) {
 		}
 	} );
 	if ( coverart || coverart === 0 ) {
+		var cuem3u = data[ 0 ][ 'cuem3u' ];
+		var cue = cuem3u ? '<gr>&ensp;'+ cuem3u.slice( -3 ) +'</gr>' : '';
 		var coversrc = coverart ? coverart : coverrune;
 		var browsemode = GUI.dbbackdata.length ? GUI.dbbackdata[ 0 ].browsemode : '';
 		var composerhtml = ( composer ) ? '<i class="fa fa-composer"></i><spanspan class="licomposer">'+ composer +'</span><br>' : '';
@@ -1727,7 +1729,7 @@ function htmlPlaylist( data ) {
 							+ composerhtml
 							+'<i class="fa fa-albumartist"></i><span class="liartist">'+ artist +'</span><br>'
 							+ genrehtml
-							+'<i class="fa fa-music db-icon" data-target="#context-menu-folder"></i>'+ countsong +'<gr> • </gr>'+ second2HMS( pltime )
+							+'<i class="fa fa-music db-icon" data-target="#context-menu-folder"></i>'+ countsong +'<gr> • </gr>'+ second2HMS( pltime ) + cue
 						 +'</span>'
 					 +'</li>';
 	}
