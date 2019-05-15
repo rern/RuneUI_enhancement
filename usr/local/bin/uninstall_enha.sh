@@ -59,20 +59,19 @@ fi
 
 # convert playlists back to default
 dir=/srv/http/assets/img/playlists
+olddir=/var/lib/mpd/playlists
 if [[ -n $( ls -A $dir ) ]]; then
-	echo -e "$bar Convert playlists data ..."
-	
-	plfiles=( $dir/* )
-	for plfile in "${plfiles[@]}"; do
-		lines=
-		readarray files < "$plfile"
-		for file in "${files[@]}"; do
-			data=${file//^^/^}
-			lines="$lines $( echo $data | cut -d'^' -f4 )\n"
+	mv -f $dir/* $olddir
+	if [[ -n $( ls -A $dir ) ]]; then
+		echo -e "$bar Convert playlists data ..."
+		
+		plfiles=( $dir/* )
+		for plfile in "${plfiles[@]}"; do
+			sed '/\^\^/ d' "$plfile"
+			mv -f "$plfile"{,.m3u}
 		done
-		name=$( basename $plfile )
-		echo -e "$lines" > "/var/lib/mpd/playlists/$name.m3u"
-	done
+		mv -f $dir/* $olddir
+	fi
 fi
 
 # convert file based webradios back to redis
