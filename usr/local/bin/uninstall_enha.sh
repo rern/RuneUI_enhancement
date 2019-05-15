@@ -65,13 +65,13 @@ if [[ -n $( ls -A $dir ) ]]; then
 	plfiles=( $dir/* )
 	for plfile in "${plfiles[@]}"; do
 		lines=
-		readarray files < "$plfile"
-		for file in "${files[@]}"; do
-			data=${file//^^/^}
-			[[ -z $( echo $data | cut -d'^' -f10 ) ]] && lines="$lines $( echo $data | cut -d'^' -f4 )\n"
+		readarray lists < "$plfile"
+		for list in "${lists[@]}"; do
+			data=${list//^^/^}
+			[[ -z $( echo $data | cut -d'^' -f10 ) ]] && lines="$lines$( echo $data | cut -d'^' -f4 )\n"
 		done
 		name=$( basename $plfile )
-		echo -e "$lines" > "/var/lib/mpd/playlists/$name.m3u"
+		printf "$lines" > "/var/lib/mpd/playlists/$name.m3u"
 	done
 fi
 
