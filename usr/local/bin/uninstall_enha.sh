@@ -61,7 +61,7 @@ fi
 dir=/srv/http/assets/img/playlists
 olddir=/var/lib/mpd/playlists
 if [[ -n $( ls -A $dir ) ]]; then
-	mv -f $dir/* $olddir
+	mv -f $dir/*.m3u $olddir
 	if [[ -n $( ls -A $dir ) ]]; then
 		echo -e "$bar Convert playlists data ..."
 		
