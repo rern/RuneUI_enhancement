@@ -57,21 +57,22 @@ fi
 
 ########## if not update ############################################################
 
-# convert playlists back to default
+# convert playlists back to default (omit cue)
 dir=/srv/http/assets/img/playlists
-olddir=/var/lib/mpd/playlists
 if [[ -n $( ls -A $dir ) ]]; then
-	mv -f $dir/*.m3u $olddir
-	if [[ -n $( ls -A $dir ) ]]; then
-		echo -e "$bar Trim cue data from playlists ..."
-		
-		plfiles=( $dir/* )
-		for plfile in "${plfiles[@]}"; do
-			sed '/\^\^/ d' "$plfile"
-			mv -f "$plfile"{,.m3u}
+	echo -e "$bar Convert playlists data ..."
+	
+	plfiles=( $dir/* )
+	for plfile in "${plfiles[@]}"; do
+		lines=
+		readarray files < "$plfile"
+		for file in "${files[@]}"; do
+			data=${file//^^/^}
+			[[ -z $( echo $data | cut -d'^' -f10 ) ]] && lines="$lines $( echo $data | cut -d'^' -f4 )\n"
 		done
-		mv -f $dir/* $olddir
-	fi
+		name=$( basename $plfile )
+		echo -e "$lines" > "/var/lib/mpd/playlists/$name.m3u"
+	done
 fi
 
 # convert file based webradios back to redis
