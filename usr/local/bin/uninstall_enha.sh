@@ -63,7 +63,7 @@ olddir=/var/lib/mpd/playlists
 if [[ -n $( ls -A $dir ) ]]; then
 	mv -f $dir/*.m3u $olddir
 	if [[ -n $( ls -A $dir ) ]]; then
-		echo -e "$bar Convert playlists data ..."
+		echo -e "$bar Trim cue data from playlists ..."
 		
 		plfiles=( $dir/* )
 		for plfile in "${plfiles[@]}"; do
