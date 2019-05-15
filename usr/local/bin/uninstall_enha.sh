@@ -71,6 +71,7 @@ if [[ -n $( ls -A $dir ) ]]; then
 			[[ -z $( echo $data | cut -d'^' -f10 ) ]] && lines="$lines$( echo $data | cut -d'^' -f4 )\n"
 		done
 		name=$( basename $plfile )
+		echo $name
 		printf "$lines" > "/var/lib/mpd/playlists/$name.m3u"
 	done
 fi
