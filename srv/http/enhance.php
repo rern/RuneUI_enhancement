@@ -64,9 +64,12 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		echo $result;
 	}
 } else if ( isset( $_POST[ 'plappend' ] ) ) {
-	$plfile = '/srv/http/assets/img/playlists/'.$_POST[ 'plfile' ];
-	$data = exec( 'mpc ls -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%^^[%albumartist%|%artist%]^^%album%^^%genre%^^%composer%" "'.$_POST[ 'plappend' ].'"' );
-	$content = file_get_contents( $plfile );
+	if ( $_POST[ 'list' ] ) {
+		$data = $_POST[ 'list' ];
+	} else {
+		$data = exec( 'mpc ls -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%^^[%albumartist%|%artist%]^^%album%^^%genre%^^%composer%" "'.$_POST[ 'plappend' ].'"' );
+	}
+	$content = file_get_contents( '/srv/http/assets/img/playlists/'.$_POST[ 'plname' ] );
 	$content.= $data."\n";
 	file_put_contents( $plfile, $content );
 } else if ( isset( $_POST[ 'coverartalbum' ] ) ) {
@@ -239,7 +242,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$name = isset( $_POST[ 'name' ] ) ? $_POST[ 'name' ] : '';
 	if ( !$name ) {
 		$data[ 'lsplaylists' ] = lsPlaylists();
-		$lines = shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%^^[%albumartist%|%artist%]^^%album%^^%genre%^^%composer%" playlist' );
+		$lines = playlistInfo();
 	} else {
 		$file = "/srv/http/assets/img/playlists/$name";
 		$lines = file_get_contents( $file );
@@ -637,7 +640,7 @@ function second2HMS( $second ) {
 	$ss = $mm ? ( $ss > 9 ? $ss : '0'.$ss ) : $ss;
 	return $hh.$mm.$ss;
 }
-function savePlaylist( $name ) { // fix -  mpd unable to save cue/m3u properly
+function playlistInfo() { // fix -  mpd unable to save cue/m3u properly
 	$playlistinfo = shell_exec( '{ sleep 0.05; echo playlistinfo; sleep 0.05; } | telnet localhost 6600 | grep "^file\|^Range\|^AlbumArtist:\|^Title\|^Album\|^Artist\|^Track\|^Time"' );
 	$content = preg_replace( '/\nfile:/', "\n^^file:", $playlistinfo );
 	$lines = explode( '^^', $content );
@@ -661,17 +664,22 @@ function savePlaylist( $name ) { // fix -  mpd unable to save cue/m3u properly
 		if ( $Range ) {
 			$pathinfo = pathinfo( $file );
 			$cuem3u = $pathinfo[ 'dirname' ].'/'.$pathinfo[ 'filename' ].'.cue';
+			$file = '';
 		}
 		$list.= "$Title^^$Time^^";
 		$list.= $Track ? "#$Track • " : '';
 		$list.= $Artist ?: '';
 		$list.= $Album ? " • $Album" : '';
-		$list.= "^^$file^^";
-		$list.= $Albumartist ?: $Artist;
-		$list.= "^^$Album^^^^^^";
+		$list.= $Range ? '^^^^' : "^^$file^^";
+		$list.= $Range ? '' : ( $Albumartist ?: $Artist );
+		$list.= $Range ? '^^^^^^^^' : "^^$Album^^^^^^";
 		$list.= $Range ? "$cuem3u^^$Track" : '^^';
 		$list.= "\n";
 	}
+	return $list;
+}
+function savePlaylist( $name ) {
+	$list = playlistInfo();
 	file_put_contents( "/srv/http/assets/img/playlists/$name", $list );
 }
 function loadPlaylist( $name ) { // fix -  mpd unable to save cue properly
