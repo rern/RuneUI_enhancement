@@ -64,12 +64,11 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		echo $result;
 	}
 } else if ( isset( $_POST[ 'plappend' ] ) ) {
-	$plfile = '/var/lib/mpd/playlists/'.$_POST[ 'plfile' ].'.m3u';
+	$plfile = '/srv/http/assets/img/playlists/'.$_POST[ 'plfile' ];
+	$data = exec( 'mpc ls -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%^^[%albumartist%|%artist%]^^%album%^^%genre%^^%composer%" "'.$_POST[ 'plappend' ].'"' );
 	$content = file_get_contents( $plfile );
-	$content.= $_POST[ 'plappend' ]."\n";
-	$tmpfile = '/srv/http/assets/img/tmp/tmp.m3u';
-	file_put_contents( $tmpfile, $content );
-	exec( "$sudo/mv -f $tmpfile \"$plfile\"", $result, $std );
+	$content.= $data."\n";
+	file_put_contents( $plfile, $content );
 } else if ( isset( $_POST[ 'coverartalbum' ] ) ) {
 	$album = str_replace( '"', '\"', $_POST[ 'coverartalbum' ] );
 	$albums = shell_exec( 'mpc find -f "%album% - [%albumartist%|%artist%]" album "'.$album.'" | awk \'!a[$0]++\'' );
