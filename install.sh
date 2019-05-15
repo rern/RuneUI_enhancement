@@ -158,10 +158,24 @@ makeDirLink tmp
 makeDirLink webradiopl
 makeDirLink webradios
 
-# copy playlists
+# convert playlists
 dir=/srv/http/assets/img/playlists
 olddir=/var/lib/mpd/playlists
-[[ -z $( ls -A $dir ) && -n $( ls -A $olddir ) ]] && cp -rf $olddir $dir
+if [[ -z $( ls -A $dir ) && -n $( ls -A $olddir ) ]]; then # convert if none found
+	echo -e "$bar Convert playlists data ..."
+	
+	plfiles=( $olddir/* )
+	for plfile in "${plfiles[@]}"; do
+		lines=
+		readarray files < "$plfile"
+		for file in "${files[@]}"; do
+			data=$( mpc ls -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file%^^[%albumartist%|%artist%]^^%album%^^%genre%^^%composer%" "$file" )
+			lines="$lines $data\n"
+		done
+		name=$( basename $file .m3u )
+		echo -e "$lines" > "$dir/$name"
+	done
+fi
 
 # convert webradios
 # filename: http:||webradio|url
