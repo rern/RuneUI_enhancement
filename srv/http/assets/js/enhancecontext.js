@@ -48,7 +48,7 @@ $( '.contextmenu a' ).click( function() {
 		} else if ( cmd === 'savedplremove' ) {
 			var plline = GUI.list.li.index() + 1;
 			var plname = $( '#pl-currentpath .lipath' ).text();
-			$.post( 'enhance.php', { bash: '/usr/bin/sed -i "'+ plline +' d" "/srv/http/playlists/'+ plname } );
+			$.post( 'enhance.php', { bash: '/usr/bin/sed -i "'+ plline +' d" "/srv/http/assets/img/playlists/'+ plname +'"' } );
 			GUI.list.li.remove();
 		}
 		return
