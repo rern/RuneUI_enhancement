@@ -223,6 +223,7 @@ $html.= menuli( 'wrdelete',   'minus-circle', 'Delete' );
 $menu.= menudiv( 'webradio', $html );
 $menudiv = '';
 $html = menucommon( 'wradd', 'wraddplay', 'wrreplace', 'wrreplaceplay' );
+$html.= menuli( 'remove',    'minus-circle',   'Remove' );
 $menu.= menudiv( 'webradiopl', $html );
 $menudiv = '';
 $html = '<span class="menushadow"></span>';
