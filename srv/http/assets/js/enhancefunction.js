@@ -1481,15 +1481,14 @@ function dbContextmenu( $li, $target ) {
 	}
 	
 	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
-	$( '.remove' ).addClass( 'hide' );
+	$( '.remove' ).toggleClass( 'hide', !GUI.playlist && !GUI.pleditor );
 	$( '.update' ).toggleClass( 'hide', GUI.status.updating_db !== 0 );
 	var cuem3u = [ 'cue', 'm3u' ].indexOf( $( '#'+ dbpl +'-entries .lipath:eq( 1 )' ).text().split( '.' ).pop() ) !== -1;
 	$( '.tag' ).toggleClass( 'hide', $( '.licover' ).length === 0 || cuem3u );
 	var contextnum = $menu.find( 'a:not(.hide)' ).length;
 	$( '.menushadow' ).css( 'height', contextnum * 41 - 1 );
-	$( '#'+ dbpl +'-entries li' ).removeClass( 'active' );
+	$( '#'+ dbpl +'-entries li, #pl-editor li' ).removeClass( 'active' );
 	$li.addClass( 'active' );
-	
 	if ( $li.hasClass( 'licover' ) ) {
 		var menutop = GUI.bars ? '310px' : '270px';
 	} else {
@@ -1666,7 +1665,7 @@ function htmlPlaylist( data ) {
 			genre = value.genre;
 		} else if ( 'path' in value ) {
 			path = value.path;
-		} else if ( 'track' in value && value.track.slice( 0, 4 ) === 'http' ) {
+		} else if ( value.file.slice( 0, 4 ) === 'http' ) {
 			var title = value.Title || '';
 			var name = title.toString().replace( '*', '' );
 			content += '<li>'
@@ -1685,10 +1684,10 @@ function htmlPlaylist( data ) {
 				var actionhtml = '<i class="fa fa-music pl-icon"></i>'
 								+'<a class="lipath">'+ value.file +'</a>';
 			} else {
-				if ( GUI.library && 'cuetrack' in value ) {
+				if ( GUI.library || GUI.pleditor ) {
 					var menu = 'file';
 					var dbpl = 'db';
-				} else {
+				} else if ( 'cuetrack' in value ) {
 					var menu = 'filesavedpl';
 					var dbpl = 'pl';
 				}
