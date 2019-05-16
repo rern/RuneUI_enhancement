@@ -638,10 +638,13 @@ function second2HMS( $second ) {
 }
 function playlistInfo() { // fix -  mpd unable to save cue/m3u properly
 	$playlistinfo = shell_exec( '{ sleep 0.05; echo playlistinfo; sleep 0.05; } | telnet localhost 6600 | grep "^file\|^Range\|^AlbumArtist:\|^Title\|^Album\|^Artist\|^Track\|^Time"' );
+	if ( !$playlistinfo ) return '';
+	
 	$content = preg_replace( '/\nfile:/', "\n^^file:", $playlistinfo );
 	$lines = explode( '^^', $content );
 	$list = '';
 	foreach( $lines as $line ) {
+		$file = $Range = $AlbumArtist = $Title = $Album = $Artist = $Track = $Time = '';
 		$data = strtok( $line, "\n" );
 		while ( $data !== false ) {
 			$pair = explode( ': ', $data );
@@ -657,18 +660,12 @@ function playlistInfo() { // fix -  mpd unable to save cue/m3u properly
 			}
 			$data = strtok( "\n" );
 		}
-		if ( $Range ) {
-			$pathinfo = pathinfo( $file );
-			$cuem3u = $pathinfo[ 'dirname' ].'/'.$pathinfo[ 'filename' ].'.cue';
-			$file = '';
-		}
 		$list.= $Range ? '' : $file;
 		$list.= "^^$Title^^$Time^^";
 		$list.= $Track ? "#$Track • " : '';
-		$list.= $Artist ?: '';
+		$list.= $AlbumArtist ?: ( $Artist ?: '' );
 		$list.= $Album ? " • $Album" : '';
-		$list.= '^^^^^^^^^^';
-		$list.= $Range ? "$cuem3u^^$Track" : '^^';
+		if ( $Range ) $list.= '^^^^^^^^^^'.preg_replace( '/(.*)\..*/', '$1', $file ).".cue^^$Track";
 		$list.= "\n";
 	}
 	return $list;
@@ -682,7 +679,7 @@ function loadPlaylist( $name ) { // fix -  mpd unable to save cue properly
 	$lines = explode( "\n", rtrim( $playlistinfo ) );
 	foreach( $lines as $line ) {
 		$list = explode( '^^', $line );
-		$file = $list[ 3 ];
+		$file = $list[ 0 ];
 		$cuetrack = $list[ 9 ];
 		if ( $track ) {
 			$cuefile = preg_replace( '/.[^.]*$/', '', $file ).'.cue';
