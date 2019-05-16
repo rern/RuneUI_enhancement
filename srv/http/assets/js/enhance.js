@@ -1500,6 +1500,7 @@ $( '#pl-entries' ).on( 'click', '.pl-icon', function( e ) {
 	GUI.list.name = $thisli.find( '.name' ).html().trim();
 	GUI.list.thumb = $thisli.find( '.lithumb' ).text() || '';  // dirble save in contextmenu
 	GUI.list.img = $thisli.find( '.liimg' ).text() || '';      // dirble save in contextmenu
+	if ( GUI.list.path.slice( -3 ) === 'cue' ) GUI.list.index = $thisli.find( '.liindex' ).text() || '';
 	var menutop = ( $thisli.position().top + 49 ) +'px';
 	var $contextmenu = $( '#context-menu-plaction' );
 	var $contextlist = $( '#context-menu-plaction a' );
@@ -1543,16 +1544,18 @@ $( '#pl-editor' ).on( 'click', 'li', function( e ) {
 	
 	var $this = $( this );
 	if ( GUI.plappend ) {
-		var path = GUI.list.path;
-		var cue = path.slice( -3 ) !== 'cue';
+		var path = GUI.plappend.file;
+		var cue = path.slice( -3 ) === 'cue';
 		var list = cue ? '' : path;                                                  // file
 		list += '^^'+ GUI.list.name +'^^'+ GUI.list.li.find( '.time' ).text() +'^^'; // ^^title^^time^^
-		list += GUI.list.li.find( '.li2' ).text() +'^^';                             // #track • artist album^^
-		if ( cue ) list = path +'^^'+ GUI.list.li.find( '.liindex' );                // ^^cuem3u^^track
+		list += GUI.list.li.find( '.li2' ).text();                             // #track • artist album^^
+		if ( cue ) list += '^^^^^^^^^^'+ path.slice( 0, -3 ) +'.cue^^'+ GUI.plappend.index;                // ^^^^^^^^^^cuem3u^^track
 		var plname = $this.find( '.lipath' ).text();
 		$.post( 'enhance.php', { plappend: plname, list: list }, function() {
 			renderSavedPlaylist( $this.find( 'span' ).text() );
-			$( 'html, body' ).animate( { scrollTop: window.innerHeight / 2 } );
+			setTimeout( function() {
+				$( 'html, body' ).animate( { scrollTop: ( $( '#pl-editor li' ).length - 3 ) * 49 } );
+			}, 300 );
 			GUI.plappend = '';
 		} );
 		return

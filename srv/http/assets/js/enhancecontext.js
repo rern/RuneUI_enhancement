@@ -32,7 +32,10 @@ $( '.contextmenu a' ).click( function() {
 			setTimeout( function() { GUI.contextmenu = 0 }, 500 );
 			removeFromPlaylist( GUI.list.li );
 		} else if ( cmd === 'savedpladd' ) {
-			GUI.plappend = GUI.list.path;
+			GUI.plappend = {
+				  file  : GUI.list.path
+				, index : GUI.list.index
+			}
 			info( {
 				  icon    : 'list-ul'
 				, title   : 'Add to playlist'
