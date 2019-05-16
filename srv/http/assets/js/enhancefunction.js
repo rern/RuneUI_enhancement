@@ -1671,6 +1671,7 @@ function htmlPlaylist( data ) {
 			content += '<li>'
 						  +'<i class="fa fa-webradio pl-icon'+ ( title[ 0 ] === '*' || !title ? ' unsaved' : '' ) +'" data-target="#context-menu-webradiopl"></i>'
 						  +'<a class="lipath">'+ value.file +'</a>'
+						  +'<a class="liname">'+ name +'</a>'
 						  + ( value.thumb ? '<a class="lithumb">'+ value.thumb +'</a>' : '' )
 						  + ( value.img ? '<a class="liimg">'+ value.img +'</a>' : '' )
 						  +'<span class="li1"><a class="name">'+ name +'</a><a class="song"></a><span class="duration"><a class="elapsed"></a></span></span>'
