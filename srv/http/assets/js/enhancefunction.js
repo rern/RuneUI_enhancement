@@ -1483,8 +1483,8 @@ function dbContextmenu( $li, $target ) {
 	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
 	$( '.remove' ).toggleClass( 'hide', !GUI.playlist && !GUI.pleditor );
 	$( '.update' ).toggleClass( 'hide', GUI.status.updating_db !== 0 );
-	var cuem3u = [ 'cue', 'm3u' ].indexOf( $( '#'+ dbpl +'-entries .lipath:eq( 1 )' ).text().split( '.' ).pop() ) !== -1;
-	$( '.tag' ).toggleClass( 'hide', $( '.licover' ).length === 0 || cuem3u );
+	var cuem3u = [ 'cue', 'm3u' ].indexOf( $( '.liinfo gr:eq( 1 )' ).text() ) !== -1 ? 1 : 0;
+	$( '.tag' ).toggleClass( 'hide', ( $( '.licover' ).length === 0 || cuem3u || GUI.playlist ) === 1 );
 	var contextnum = $menu.find( 'a:not(.hide)' ).length;
 	$( '.menushadow' ).css( 'height', contextnum * 41 - 1 );
 	$( '#'+ dbpl +'-entries li, #pl-editor li' ).removeClass( 'active' );
@@ -1691,8 +1691,9 @@ function htmlPlaylist( data ) {
 					var menu = 'filesavedpl';
 					var dbpl = 'pl';
 				}
+				var path = ( 'cuem3u' in value && value.cuem3u.slice( -3 ) === 'cue' ) ? value.cuem3u : value.file;
 				var actionhtml = '<i class="fa fa-music '+ dbpl +'-icon" data-target="#context-menu-'+ menu +'"></i>'
-								+'<a class="lipath">'+ ( value.cuem3u || value.file ) +'</a>'
+								+'<a class="lipath">'+ path +'</a>'
 								+'<a class="liname">'+ value.Title +'</a>'
 								+'<a class="liindex">'+ value.index +'</a>';
 			}
@@ -1716,7 +1717,7 @@ function htmlPlaylist( data ) {
 	} );
 	if ( coverart || coverart === 0 ) {
 		var cuem3u = data[ 0 ][ 'cuem3u' ];
-		var cue = cuem3u ? '<gr>&ensp;'+ cuem3u.slice( -3 ) +'</gr>' : '';
+		var cue = cuem3u ? '&ensp;<gr>'+ cuem3u.slice( -3 ) +'</gr>' : '';
 		var coversrc = coverart ? coverart : coverrune;
 		var browsemode = GUI.dbbackdata.length ? GUI.dbbackdata[ 0 ].browsemode : '';
 		var composerhtml = ( composer ) ? '<i class="fa fa-composer"></i><spanspan class="licomposer">'+ composer +'</span><br>' : '';

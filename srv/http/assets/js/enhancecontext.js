@@ -81,7 +81,7 @@ $( '.contextmenu a' ).click( function() {
 		var artist = GUI.list.artist;
 		mpcCmd = 'mpc findadd '+ GUI.list.mode +' "'+ name +'"'+ ( artist ? ' artist "'+ artist +'"' : '' );
 	} else if ( !mode ) {
-		if ( GUI.list.index ) { // cue, m3u
+		if ( GUI.list.path.slice( -3 ) === 'cue' ) { // cue
 			var plfile = GUI.list.path.replace( /"/g, '\\"' );
 			mpcCmd = '/srv/http/enhance1cuem3u.sh "'+ plfile +'" '+ GUI.list.index;
 		} else if ( name.split( '.' ).pop() === 'pls' ) {
