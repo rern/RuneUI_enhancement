@@ -256,7 +256,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	foreach( $plfiles as $file ) {
 		$ext = pathinfo( $file, PATHINFO_EXTENSION );
 		$plfile = preg_replace( '/([&\[\]])/', '#$1', $file ); // escape literal &, [, ] in %file% (operation characters)
-		$lines.= shell_exec( 'mpc -f "%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^%file% + '.$ext.'^^[%albumartist%|%artist%]^^%album%^^%genre%^^%composer%^^'.$plfile.'" playlist "'.$file.'"' );
+		$lines.= shell_exec( 'mpc -f "%file% + '.$ext.'^^%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^[%albumartist%|%artist%]^^%album%^^%genre%^^%composer%^^'.$plfile.'" playlist "'.$file.'"' );
 	}
 	$data = list2array( $lines );
 	$data[][ 'path' ] = dirname( $plfiles[ 0 ] );
@@ -463,7 +463,7 @@ function search2array( $result, $playlist = '' ) { // directories or files
 	return $data;
 }
 function list2array( $result, $playlist = '' ) {
-// 0-title, 1-time, 2-track, 3-file, 4-artist, 5-album, 6-genre, 7-composer, 8-cuem3u, 9-cuetrack
+// 0-file, 1-title, 2-time, 3-track, 4-artist, 5-album, 6-genre, 7-composer, 8-cuem3u, 9-cuetrack
 	$artist = $album = $genre = $composer = $albumartist = $file = '';
 	$lists = explode( "\n", rtrim( $result ) );
 	foreach( $lists as $list ) {
@@ -473,8 +473,8 @@ function list2array( $result, $playlist = '' ) {
 			$prevcue = $cuem3u;
 			$i = 1;
 		}
-		$file = $list[ 3 ];
-		$track = $list[ 2 ] ?: dirname( $file );
+		$file = $list[ 0 ];
+		$track = $list[ 3 ] ?: dirname( $file );
 		$webradio = substr( $track, 0, 4 ) === 'http';
 		if ( $webradio ) {
 			$filename = str_replace( '/', '|', $file );
@@ -492,8 +492,8 @@ function list2array( $result, $playlist = '' ) {
 					$title = $file;
 				}
 			}
-		} else if ( $list[ 0 ] ) {
-			$title = $list[ 0 ];
+		} else if ( $list[ 1 ] ) {
+			$title = $list[ 1 ];
 		} else {
 			$title = basename( $file );
 		}
@@ -509,7 +509,7 @@ function list2array( $result, $playlist = '' ) {
 			  'file'   => $file
 			, 'track'  => $track
 			, 'Title'  => $title
-			, 'Time'   => $list[ 1 ]
+			, 'Time'   => $list[ 2 ]
 			, 'index'  => $i++
 		);
 		if ( $thumb ) $li[ 'thumb' ] = $thumb;
@@ -662,11 +662,11 @@ function playlistInfo() { // fix -  mpd unable to save cue/m3u properly
 			$cuem3u = $pathinfo[ 'dirname' ].'/'.$pathinfo[ 'filename' ].'.cue';
 			$file = '';
 		}
-		$list.= "$Title^^$Time^^";
+		$list.= $Range ? '' : $file;
+		$list.= "^^$Title^^$Time^^";
 		$list.= $Track ? "#$Track • " : '';
 		$list.= $Artist ?: '';
 		$list.= $Album ? " • $Album" : '';
-		$list.= $Range ? '^^' : "^^$file";
 		$list.= '^^^^^^^^^^';
 		$list.= $Range ? "$cuem3u^^$Track" : '^^';
 		$list.= "\n";
