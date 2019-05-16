@@ -120,9 +120,9 @@ $( '.contextmenu a' ).click( function() {
 	if ( cmd in contextCommand ) {
 		var command = contextCommand[ cmd ];
 		if ( cmd === 'add' ) {
-			addReplace( mode, cmd, command, 'Add to Playlist' );
+			addReplace( mode, cmd, command, 'Added to Playlist' );
 		} else if ( cmd === 'addplay' ) {
-			addReplace( mode, cmd, command, 'Add to Playlist + Play' );
+			addReplace( mode, cmd, command, 'Added to Playlist + Play' );
 		} else {
 			if ( GUI.display.plclear && GUI.status.playlistlength ) {
 				info( {
@@ -139,7 +139,7 @@ $( '.contextmenu a' ).click( function() {
 	} else if ( cmd === 'plashuffle' ) {
 		$.post( 'enhance.php', { bash: '/usr/local/bin/ashuffle -f /var/lib/mpd/playlists/'+ name +'.m3u &' } );
 		$( '#random' ).addClass( 'btn-primary ashuffle' );
-		notify( 'Random Play', name, 'random' );
+		notify( 'Random Play Enabled', name, 'random' );
 	}
 } );
 
@@ -225,7 +225,7 @@ function bookmarkNew() {
 				}
 				, ok      : function() {
 					$.post( 'enhance.php', { bookmarks: 1, path: path, base64: base64img, new: 1 } );
-					notify( 'Add Bookmark', path, 'bookmark' );
+					notify( 'Bookmark Added', path, 'bookmark' );
 				}
 			} );
 		} else {
@@ -246,7 +246,7 @@ function bookmarkNew() {
 				}
 				, ok           : function() {
 					$.post( 'enhance.php', { bookmarks: $( '#infoTextBox' ).val(), path: path, new: 1 } );
-					notify( 'Add Bookmark', path, 'bookmark' );
+					notify( 'Bookmark Added', path, 'bookmark' );
 				}
 			} );
 		}
