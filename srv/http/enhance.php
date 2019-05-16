@@ -464,7 +464,7 @@ function search2array( $result, $playlist = '' ) { // directories or files
 }
 function list2array( $result, $playlist = '' ) {
 // 0-file, 1-title, 2-time, 3-track, 4-artist, 5-album, 6-genre, 7-composer, 8-cuem3u, 9-cuetrack
-	$artist = $album = $genre = $composer = $albumartist = $file = '';
+	$artist = $album = $genre = $composer = '';
 	$lists = explode( "\n", rtrim( $result ) );
 	foreach( $lists as $list ) {
 		$list = explode( '^^', rtrim( $list ) );
@@ -472,30 +472,6 @@ function list2array( $result, $playlist = '' ) {
 		if ( $cuem3u !== $prevcue ) {
 			$prevcue = $cuem3u;
 			$i = 1;
-		}
-		$file = $list[ 0 ];
-		$track = $list[ 3 ] ?: dirname( $file );
-		$webradio = substr( $track, 0, 4 ) === 'http';
-		if ( $webradio ) {
-			$filename = str_replace( '/', '|', $file );
-			$webradiofile = "/srv/http/assets/img/webradios/$filename";
-			if ( file_exists( $webradiofile ) ) {
-				$title = file( $webradiofile, FILE_IGNORE_NEW_LINES )[ 0 ];
-			} else {
-				$webradiofile = "/srv/http/assets/img/webradiopl/$filename";
-				if ( file_exists( $webradiofile ) ) {
-					$nameimg = file( $webradiofile, FILE_IGNORE_NEW_LINES );
-					$title = $nameimg[ 0 ];
-					$thumb = $nameimg[ 1 ];
-					$img = $nameimg[ 2 ];
-				} else {
-					$title = $file;
-				}
-			}
-		} else if ( $list[ 1 ] ) {
-			$title = $list[ 1 ];
-		} else {
-			$title = basename( $file );
 		}
 		if ( !$artist && $list[ 4 ] !== '' ) $artist = $list[ 4 ];
 		if ( !$album && $list[ 5 ] !== '' ) $album = $list[ 5 ];
@@ -506,16 +482,16 @@ function list2array( $result, $playlist = '' ) {
 		}
 		if ( !$composer && $list[ 7 ] !== '' ) $composer = $list[ 7 ];
 		$li = array(
-			  'file'   => $file
-			, 'track'  => $track
-			, 'Title'  => $title
+			  'file'   => $list[ 0 ]
+			, 'Title'  => $list[ 1 ]
 			, 'Time'   => $list[ 2 ]
+			, 'track'  => $list[ 3 ]
 			, 'index'  => $i++
 		);
-		if ( $thumb ) $li[ 'thumb' ] = $thumb;
-		if ( $img ) $li[ 'img' ] = $img;
 		if ( $list[ 8 ] ) $li[ 'cuem3u' ] = $list[ 8 ];
 		if ( $list[ 9 ] ) $li[ 'cuetrack' ] = $list[ 9 ];
+		if ( $list[ 10 ] ) $li[ 'thumb' ] = $list[ 10 ];
+		if ( $list[ 11 ] ) $li[ 'img' ] = $list[ 11 ];
 		$data[] = $li;
 	}
 	if ( !$webradio && !$playlist ) {
@@ -636,7 +612,7 @@ function second2HMS( $second ) {
 	$ss = $mm ? ( $ss > 9 ? $ss : '0'.$ss ) : $ss;
 	return $hh.$mm.$ss;
 }
-function playlistInfo() { // fix -  mpd unable to save cue/m3u properly
+function playlistInfo( $save = '' ) { // fix -  mpd unable to save cue/m3u properly
 	$playlistinfo = shell_exec( '{ sleep 0.05; echo playlistinfo; sleep 0.05; } | telnet localhost 6600 | grep "^file\|^Range\|^AlbumArtist:\|^Title\|^Album\|^Artist\|^Track\|^Time"' );
 	if ( !$playlistinfo ) return '';
 	
@@ -644,7 +620,7 @@ function playlistInfo() { // fix -  mpd unable to save cue/m3u properly
 	$lines = explode( '^^', $content );
 	$list = '';
 	foreach( $lines as $line ) {
-		$file = $Range = $AlbumArtist = $Title = $Album = $Artist = $Track = $Time = '';
+		$file = $Range = $AlbumArtist = $Title = $Album = $Artist = $Track = $Time = $webradio = $thumb = $img = '';
 		$data = strtok( $line, "\n" );
 		while ( $data !== false ) {
 			$pair = explode( ': ', $data );
@@ -660,18 +636,39 @@ function playlistInfo() { // fix -  mpd unable to save cue/m3u properly
 			}
 			$data = strtok( "\n" );
 		}
-		$list.= $Range ? '' : $file;
-		$list.= "^^$Title^^$Time^^";
-		$list.= $Track ? "#$Track • " : '';
-		$list.= $AlbumArtist ?: ( $Artist ?: '' );
-		$list.= $Album ? " • $Album" : '';
-		if ( $Range ) $list.= '^^^^^^^^^^'.preg_replace( '/(.*)\..*/', '$1', $file ).".cue^^$Track";
+		$webradio = substr( $file, 0, 4 ) === 'http';
+		if ( $webradio ) {
+			$filename = str_replace( '/', '|', $file );
+			$webradiofile = "/srv/http/assets/img/webradios/$filename";
+			if ( !file_exists( $webradiofile ) ) $webradiofile = "/srv/http/assets/img/webradiopl/$filename";
+			if ( file_exists( $webradiofile ) ) {
+				$nameimg = file( $webradiofile, FILE_IGNORE_NEW_LINES );
+				$Title = $nameimg[ 0 ];
+				$thumb = $nameimg[ 1 ];
+				$img = $nameimg[ 2 ];
+			}
+		}
+		if ( $save && $webradio ) {
+			$list.= "$file^^$Title";
+		} else {
+			$list.= $Range ? '' : $file;
+			$list.= '^^'.( $Title ?: $file )."^^$Time^^";
+			if ( $webradio ) {
+				$list.= $file;
+			} else {
+				$list.= $Track ? "#$Track • " : '';
+				$list.= $AlbumArtist ?: ( $Artist ?: '' );
+				$list.= $Album ? " • $Album" : '';
+			}
+			if ( $Range ) $list.= '^^^^^^^^^^'.preg_replace( '/(.*)\..*/', '$1', $file ).".cue^^$Track";
+			$list.= "^^$thumb^^$img";
+		}
 		$list.= "\n";
 	}
 	return $list;
 }
 function savePlaylist( $name ) {
-	$list = playlistInfo();
+	$list = playlistInfo( 'save' );
 	file_put_contents( "/srv/http/assets/img/playlists/$name", $list );
 }
 function loadPlaylist( $name ) { // fix -  mpd unable to save cue properly
