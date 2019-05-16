@@ -1513,6 +1513,7 @@ function plContextmenu( $li, $target ) { // saved playlists
 	GUI.list.li = $li; // for contextmenu
 	GUI.list.name = $li.find( '.liname' ).text().trim();
 	GUI.list.path = $li.find( '.lipath' ).text().trim() || GUI.list.name;
+	if ( GUI.list.path.slice( -3 ) === 'cue' ) GUI.list.index = $li.find( '.liindex' ).text() || '';
 	GUI.list.isfile = $li.find( '.fa-music' ).length; // used in contextmenu
 	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
 	$( '.remove' ).removeClass( 'hide' );

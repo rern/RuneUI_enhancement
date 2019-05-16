@@ -1544,15 +1544,12 @@ $( '#pl-editor' ).on( 'click', 'li', function( e ) {
 	var $this = $( this );
 	if ( GUI.plappend ) {
 		var path = GUI.list.path;
-		var list = GUI.list.name +'^^'+ GUI.list.li.find( '.time' ).text() +'^^'; // title^^time^^
-		list += GUI.list.li.find( '.li2' ).text() +'^^';                          // #track • artist album^^
-		if ( path.slice( -3 ) !== 'cue' ) {
-			list += path +'^^^^^^^^^^^^';                                         // file^^^^^^^^^^^^
-		} else {
-			list += '^^^^^^^^^^'+ path +'^^'+ GUI.list.li.find( '.liindex' );     // ^^^^^^^^^^cuem3u^^track
-		}
+		var cue = path.slice( -3 ) !== 'cue';
+		var list = cue ? '' : path;                                                  // file
+		list += '^^'+ GUI.list.name +'^^'+ GUI.list.li.find( '.time' ).text() +'^^'; // ^^title^^time^^
+		list += GUI.list.li.find( '.li2' ).text() +'^^';                             // #track • artist album^^
+		if ( cue ) list = path +'^^'+ GUI.list.li.find( '.liindex' );                // ^^cuem3u^^track
 		var plname = $this.find( '.lipath' ).text();
-		console.log(plname +' - '+ list)
 		$.post( 'enhance.php', { plappend: plname, list: list }, function() {
 			renderSavedPlaylist( $this.find( 'span' ).text() );
 			$( 'html, body' ).animate( { scrollTop: window.innerHeight / 2 } );
