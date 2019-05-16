@@ -158,7 +158,7 @@ if [[ -z $( ls -A $dir ) && -n $( ls -A $olddir ) ]]; then # convert if none fou
         for file in "${files[@]}"; do
             file=$( echo $file | tr -d '\n' )
             if [[ ${file:0:4} == http ]]; then
-                lines="$lines^^^^^^$file\n"
+                lines="$lines$file^^(unnamed)\n"
             else
                 data=$( mpc ls -f "%file%^^%title%^^%time%^^[##%track% • ][%artist%][ • %album%]" "$file" )
                 lines="$lines$data\n"
