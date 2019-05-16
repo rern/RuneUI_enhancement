@@ -160,7 +160,7 @@ if [[ -z $( ls -A $dir ) && -n $( ls -A $olddir ) ]]; then # convert if none fou
             if [[ ${file:0:4} == http ]]; then
                 lines="$lines^^^^^^$file\n"
             else
-                data=$( mpc ls -f "%file%^^%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^[%albumartist%|%artist%]^^%album%^^%genre%^^%composer%" "$file" )
+                data=$( mpc ls -f "%file%^^%title%^^%time%^^[##%track% • ][%artist%][ • %album%]" "$file" )
                 lines="$lines$data\n"
             fi
         done
