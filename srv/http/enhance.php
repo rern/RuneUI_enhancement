@@ -254,9 +254,9 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 } else if ( isset( $_POST[ 'playlist' ] ) ) { //cue, m3u, pls
 	$plfiles = $_POST[ 'playlist' ];
 	foreach( $plfiles as $file ) {
-		$ext = pathinfo( $file, PATHINFO_EXTENSION );
+		$ext = pathinfo( $file, PATHINFO_EXTENSION ) === 'cue' ? ' + cue' : '';
 		$plfile = preg_replace( '/([&\[\]])/', '#$1', $file ); // escape literal &, [, ] in %file% (operation characters)
-		$lines.= shell_exec( 'mpc -f "%file% + '.$ext.'^^%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^[%albumartist%|%artist%]^^%album%^^%genre%^^%composer%^^'.$plfile.'" playlist "'.$file.'"' );
+		$lines.= shell_exec( 'mpc -f "%file%'.$ext.'^^%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^[%albumartist%|%artist%]^^%album%^^%genre%^^%composer%^^'.$plfile.'" playlist "'.$file.'"' );
 	}
 	$data = list2array( $lines );
 	$data[][ 'path' ] = dirname( $plfiles[ 0 ] );
