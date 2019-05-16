@@ -68,7 +68,7 @@ if [[ -n $( ls -A $dir ) ]]; then
 		readarray lists < "$plfile"
 		for list in "${lists[@]}"; do
 			data=${list//^^/^}
-			[[ -z $( echo $data | cut -d'^' -f10 ) ]] && lines="$lines$( echo $data | cut -d'^' -f4 )\n"
+			[[ -z $( echo $data | cut -d'^' -f10 ) ]] && lines="$lines${data%%^*}\n"
 		done
 		name=$( basename $plfile )
 		echo $name
