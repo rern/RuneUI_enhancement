@@ -322,9 +322,13 @@ if [[ $( redis-cli exists display ) == 0 ]]; then
 	library="coverart nas sd usb webradio album artist albumartist composer genre spotify dirble jamendo"
 	miscel="count label coverfile plclear playbackswitch tapaddplay thumbbyartist"
 	for item in $playback $library $miscel; do
-		echo debug dev jamendo spotify tapaddplay thumbbyartist | grep -qw $item && chk='' || chk=checked
-		redis-cli hset display $item "$chk" &> /dev/null
+		redis-cli hset display $item checked &> /dev/null
 	done
+	
+	unchecked="debug dev jamendo spotify tapaddplay thumbbyartist"
+	for item in $unchecked; do
+		redis-cli hset display $item "" &> /dev/null
+	fi
 fi
 # pre-count albumartist, composer, genre
 albumartist=$( mpc list albumartist | awk NF | wc -l )
