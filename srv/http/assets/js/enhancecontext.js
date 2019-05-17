@@ -86,7 +86,7 @@ $( '.contextmenu a' ).click( function() {
 	} else if ( !mode ) {
 		if ( GUI.list.path.slice( -3 ) === 'cue' ) { // cue
 			var plfile = GUI.list.path.replace( /"/g, '\\"' );
-			mpcCmd = '/srv/http/enhance1cuem3u.sh "'+ plfile +'" '+ GUI.list.index;
+			mpcCmd = '/srv/http/enhance1cue.sh "'+ plfile +'" '+ GUI.list.index;
 		} else if ( name.split( '.' ).pop() === 'pls' ) {
 			mpcCmd = 'mpc load "'+ name +'"';
 		} else if ( GUI.plugin ) { // unsaved dirble ( * in front of name for class indicator)
