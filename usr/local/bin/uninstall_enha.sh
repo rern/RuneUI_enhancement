@@ -114,7 +114,7 @@ if [[ ! -z $( ls -A $dir 2> /dev/null ) ]]; then
 	redis-cli set bookmarksidx $idx &> /dev/null
 fi
 
-redis-cli del display sampling mpddb &> /dev/null
+redis-cli del sampling mpddb &> /dev/null
 
 rm -rf "$( readlink -f /srv/http/assets/img/tmp )"
 rm -rf "$( readlink -f /srv/http/assets/img/webradiopl )"
