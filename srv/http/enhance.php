@@ -680,7 +680,7 @@ function loadPlaylist( $name ) { // fix -  mpd unable to save cue properly
 		$cuetrack = $list[ 9 ];
 		if ( $cuetrack ) {
 			$cuefile = preg_replace( '/.[^.]*$/', '', $file ).'.cue';
-			exec( '/srv/http/enhance1cuem3u.sh "'.$cuefile.'" '.$cuetrack );
+			exec( '/srv/http/enhance1cue.sh "'.$cuefile.'" '.$cuetrack );
 		} else {
 			exec( 'mpc add "'.$file.'"' );
 		}
