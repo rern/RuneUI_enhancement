@@ -328,7 +328,7 @@ if [[ $( redis-cli exists display ) == 0 ]]; then
 	unchecked="debug dev jamendo spotify tapaddplay thumbbyartist"
 	for item in $unchecked; do
 		redis-cli hset display $item "" &> /dev/null
-	fi
+	done
 fi
 # pre-count albumartist, composer, genre
 albumartist=$( mpc list albumartist | awk NF | wc -l )
