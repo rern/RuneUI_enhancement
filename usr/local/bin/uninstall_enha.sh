@@ -92,8 +92,8 @@ File1=$url
 Title1=$name
 EOF
 		echo $name - $url
+		redis-cli hset webradios "$name" "$url" &> /dev/null
 	done
-	redis-cli hset webradios "$name" "$url" &> /dev/null
 	mpc update Webradio &> /dev/null
 fi
 
