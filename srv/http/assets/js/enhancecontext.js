@@ -599,3 +599,81 @@ function playlistDelete() {
 		}
 	} );
 }
+function setTag() {
+	$.post( 'enhance.php', { bash: '/usr/bin/mpc ls -f "%artist%^^%albumartist%^^%album%^^%composer%^^%genre%^^%title%^^%track%^^%file%" "'+ GUI.list.path +'" 2> /dev/null | head -1' }, function( data ) {
+		var tags = data.slice( 0, -1 ).split( '^^' );
+		var file = tags[ 7 ].replace( /"/g, '\"' );
+		var ext = file.split( '.' ).pop();
+		var path = file.substr( 0, file.lastIndexOf( '/' ) );
+		var labels = [ '<i class="fa fa-artist wh"></i>', '<i class="fa fa-albumartist wh"></i>', '<i class="fa fa-album wh"></i>', '<i class="fa fa-composer wh"></i>', '<i class="fa fa-genre wh"></i>' ];
+		var values = [ tags[ 0 ], tags[ 1 ], tags[ 2 ], tags[ 3 ], tags[ 4 ] ];
+		if ( GUI.list.isfile ) {
+			labels.push( '<i class="fa fa-music wh"></i>', '<i class="fa fa-hash wh"></i>' );
+			values.push( tags[ 5 ], tags[ 6 ] );
+			var message = '<i class="fa fa-folder wh"></i> '+ file +'<br>&nbsp;'
+			var pathfile = '"/mnt/MPD/'+ file +'"';
+		} else {
+			var message = '<img src="'+ $( '.licoverimg img' ).attr( 'src' ) +'" style="width: 50px; height: 50px;"><br>'+ path +'<br>&nbsp;'
+			var pathfile = '"/mnt/MPD/'+ path +'/"*.'+ ext;
+		}
+		var names = [ 'artist', 'albumartist', 'album', 'composer', 'genre', 'title', 'tracknumber' ];
+		info( {
+			  icon      : 'tag'
+			, title     : 'Tag Editor'
+			, width     : 500
+			, message   : message
+			, textlabel : labels
+			, textvalue : values
+			, boxwidth  : 'max'
+			, cancel    : function() {
+				$( '#db-entries li' ).removeClass( 'active' );
+			}
+			, ok        : function() {
+				var tags = '';
+				var i = 0;
+				$( '.infotextbox .infoinput' ).each( function() {
+					var value = this.value;
+					tags += "-c \"set "+ names[ i ] +" '"+ value.toString().replace( /(["'])/g, '\\$1' ) +'\'" ';
+					if ( GUI.list.isfile ) {
+						if ( i === 5 ) $( '#db-entries li.active .li1 a' ).text( value );
+					} else {
+						if ( i === 0 ) $( '.liartist' ).text( value );
+						if ( i === 1 && value ) $( '.liartist' ).text( value );
+						if ( i === 2 ) $( '.lialbum' ).text( value );
+						if ( i === 3 ) {
+							var $el = $( '.licomposer' );
+							if ( !value ) {
+								$el.prev().remove();
+								$el.next().remove();
+								$el.remove();
+							} else {
+								if ( $el.length ) {
+									$el.text( value );
+								} else {
+									$( '.liartist' ).after( '<br><i class="fa fa-composer"></i><span class="licomposer">'+ value +'</span>' );
+								}
+							}
+						}
+						if ( i === 4 ) {
+							var $el = $( '.ligenre' );
+							if ( !value ) {
+								$el.prev().remove();
+								$el.next().remove();
+								$el.remove();
+							} else {
+								if ( $el.length ) {
+									$el.text( value );
+								} else {
+									$( '.liinfo .db-icon' ).before( '<i class="fa fa-genre"></i><span class="ligenre">'+ value +'</span><br>' );
+								}
+							}
+						}
+					}
+					i++;
+				} );
+				$( '#db-entries li' ).removeClass( 'active' );
+				$.post( 'enhance.php', { bash: '/usr/bin/kid3-cli '+ tags + pathfile +'; mpc update "'+ path +'"' } );
+			}
+		} );
+	} );
+}
