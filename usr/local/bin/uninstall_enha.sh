@@ -95,7 +95,7 @@ EOF
 		echo "$string" > "/mnt/MPD/Webradio/$name.pls"
 		echo $name - $url
 	done
-
+	redis-cli hset webradios "$name" "$url" &> /dev/null
 	mpc update Webradio &> /dev/null
 fi
 
