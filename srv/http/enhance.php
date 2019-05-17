@@ -661,7 +661,7 @@ function playlistInfo( $save = '' ) { // fix -  mpd unable to save cue/m3u prope
 				$list.= $Album ? " • $Album" : '';
 			}
 			if ( $Range ) $list.= '^^^^^^^^^^'.preg_replace( '/(.*)\..*/', '$1', $file ).".cue^^$Track";
-			$list.= "^^$thumb^^$img";
+			if ( $thumb ) $list.= "^^$thumb^^$img";
 		}
 		$list.= "\n";
 	}
@@ -678,7 +678,7 @@ function loadPlaylist( $name ) { // fix -  mpd unable to save cue properly
 		$list = explode( '^^', $line );
 		$file = $list[ 0 ];
 		$cuetrack = $list[ 9 ];
-		if ( $track ) {
+		if ( $cuetrack ) {
 			$cuefile = preg_replace( '/.[^.]*$/', '', $file ).'.cue';
 			exec( '/srv/http/enhance1cuem3u.sh "'.$cuefile.'" '.$cuetrack );
 		} else {
