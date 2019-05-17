@@ -35,6 +35,7 @@ _Tested on RuneAudio 0.4b, 0.5_
 - Index bar
 	- Mask available indexes
 - Library sorting
+- Single files with \*.cue behave like individual files
 - Selectable show/hide
 	- Top-bottom bars
 	- Time Knob
@@ -49,8 +50,11 @@ _Tested on RuneAudio 0.4b, 0.5_
 	- Fallback for allow-swipe-only area
 - Refresh browser for fullscreen mode
 	- Long-press bottom bar / swipe bar
-- Movable Library items ( by [Sortable](https://github.com/SortableJS/Sortable) )
-- Movable/ editable saved playlists
+- Movable items ( by [Sortable](https://github.com/SortableJS/Sortable) )
+	- Library home
+	- Playlists
+	- Saved playlists
+- Editable saved playlist
 - Context menu
 	- Icon on the right removed
 	- Use icon on the left instead
@@ -181,9 +185,10 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 - Saved playlists
 	- Show content
 	- Drag to rearrange
-	- Remove individual items
+	- Add/Remove individual items
 	- Can be named with " characters
 	- Can be renamed
+	- Save tracks with \*.cue correctly
 
 ### Keyboard Navigation
 All pages
