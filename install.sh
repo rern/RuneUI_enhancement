@@ -317,13 +317,15 @@ file=/srv/http/app/templates/enhanceplayback.php  # for rune youtube
 # correct version number
 [[ $( redis-cli get buildversion ) == 'beta-20160313' ]] && redis-cli set release 0.3 &> /dev/null
 
-playback="bars debug dev time cover volume buttons"
-library="coverart nas sd usb webradio album artist albumartist composer genre spotify dirble jamendo"
-miscel="count label coverfile plclear playbackswitch tapaddplay thumbbyartist"
-for item in $playback $library $miscel; do
-	echo debug dev jamendo spotify tapaddplay thumbbyartist | grep -qw $item && chk='' || chk=checked
-	redis-cli hset display $item "$chk" &> /dev/null
-done
+if [[ $( redis-cli exists display ) == 0 ]]; then
+	playback="bars debug dev time cover volume buttons"
+	library="coverart nas sd usb webradio album artist albumartist composer genre spotify dirble jamendo"
+	miscel="count label coverfile plclear playbackswitch tapaddplay thumbbyartist"
+	for item in $playback $library $miscel; do
+		echo debug dev jamendo spotify tapaddplay thumbbyartist | grep -qw $item && chk='' || chk=checked
+		redis-cli hset display $item "$chk" &> /dev/null
+	done
+fi
 # pre-count albumartist, composer, genre
 albumartist=$( mpc list albumartist | awk NF | wc -l )
 composer=$( mpc list composer | awk NF | wc -l )
