@@ -85,14 +85,12 @@ if [[ ! -z $( ls -A $dir 2> /dev/null ) ]]; then
 		url=$( basename "$file" )
 		url=${url//|/\/}
 		name=$( head -n1 $file )
-		string=$( cat <<EOF
+		cat << EOF > "/mnt/MPD/Webradio/$name.pls"
 [playlist]
 NumberOfEntries=1
 File1=$url
 Title1=$name
 EOF
-)
-		echo "$string" > "/mnt/MPD/Webradio/$name.pls"
 		echo $name - $url
 	done
 	redis-cli hset webradios "$name" "$url" &> /dev/null
