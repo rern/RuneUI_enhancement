@@ -109,7 +109,9 @@ $( '.contextmenu a' ).click( function() {
 		} else { // saved playlist
 			var play = cmd.slice( -1 ) === 'y' ? 1 : 0;
 			var replace = cmd.slice( 0, 1 ) === 'r' ? 1 : 0;
-			$.post( 'enhance.php', { loadplaylist: name, play: play, replace: replace } );
+			$.post( 'enhance.php', { loadplaylist: name, play: play, replace: replace }, function() {
+				notify( ( replace ? 'Playlist Replaced' : 'Playlist Added' ), name, 'list-ul' );
+			} );
 			return
 		}
 	}
