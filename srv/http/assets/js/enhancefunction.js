@@ -1481,7 +1481,7 @@ function dbContextmenu( $li, $target ) {
 	}
 	
 	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
-	$( '.remove' ).toggleClass( 'hide', !GUI.playlist && !GUI.pleditor );
+	$( '.remove' ).toggleClass( 'hide', !GUI.playlist || !GUI.pleditor );
 	$( '.update' ).toggleClass( 'hide', GUI.status.updating_db !== 0 );
 	var cue = $( '.liinfo gr:eq( 1 )' ).text() === 'cue';
 	$( '.tag' ).toggleClass( 'hide', ( $( '.licover' ).length === 0 || cue || GUI.playlist ) === true );
@@ -1686,7 +1686,7 @@ function htmlPlaylist( data ) {
 								+'<a class="lipath">'+ value.file +'</a>';
 			} else {
 				if ( GUI.library || GUI.pleditor ) {
-					var menu = 'file';
+					var menu = value.index ? 'filesavedpl' : 'file';
 					var dbpl = 'db';
 				} else if ( 'cuetrack' in value ) {
 					var menu = 'filesavedpl';
