@@ -1116,7 +1116,7 @@ function dataParse( data, path, querytype, plid ) {
 			var ilength = folder.length;
 			for ( i = 0; i < ilength; i++ ) {
 				ext = folder[ i ].split( '.' ).pop();
-				if ( [ 'cue', 'm3u', 'mu8' ].indexOf( ext ) !== -1 ) continue
+				if ( [ 'cue', 'm3u', 'm3u8' ].indexOf( ext ) !== -1 ) continue
 				
 				folderPath += ( i > 0 ? '/' : '' ) + folder[ i ];
 				folderCrumb += ' <a>'+ ( i > 0 ? '<w> / </w>' : '' ) + folder[ i ] +'<span class="lipath">'+ folderPath +'</span></a>';
