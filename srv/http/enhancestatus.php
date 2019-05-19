@@ -35,11 +35,13 @@ while ( $line !== false ) {
 	$line = strtok( "\n" );
 }
 
-$file = $status[ 'file' ];
-if ( $file ) {
-	$pathinfo = pathinfo( "/mnt/MPD/$file" );
+
+if ( $status[ 'file' ] ) {
+	$statusfile = $status[ 'file' ];
+	$file = '/mnt/MPD/'.$statusfile;
+	$pathinfo = pathinfo( $file );
 	$ext = strtoupper( $pathinfo[ 'extension' ] );
-	$status[ 'ext' ] = ( substr($file, 0, 4 ) !== 'http' ) ? $ext : 'radio';
+	$status[ 'ext' ] = ( substr( $statusfile, 0, 4 ) !== 'http' ) ? $ext : 'radio';
 	if ( $status[ 'ext' ] !== 'radio' ) {
 		// missing id3tags
 		if ( empty( $status[ 'Artist' ] ) ) $status[ 'Artist' ] = end( explode( '/', $pathinfo[ 'dirname' ] ) );
@@ -50,13 +52,13 @@ if ( $file ) {
 		if ( isset( $status[ 'Name' ] ) ) {
 			$status[ 'Artist' ] = $status[ 'Name' ];
 		} else {
-			$urlname = str_replace( '/', '|', $file );
+			$urlname = str_replace( '/', '|', $statusfile );
 			$webradiofile = "/srv/http/assets/img/webradios/$urlname";
 			if ( !file_exists( $webradiofile ) ) $webradiofile = "/srv/http/assets/img/webradiopl/$urlname";
 			$status[ 'Artist' ] = file( $webradiofile )[ 0 ];
 		}
 		$status[ 'Title' ] = ( $status[ 'state' ] === 'stop' ) ? '' : $status[ 'Title' ];
-		$status[ 'Album' ] = $file;
+		$status[ 'Album' ] = $statusfile;
 		$status[ 'time' ] = '';
 	}
 }
@@ -81,7 +83,7 @@ if ( $status[ 'ext' ] !== 'radio' && $activePlayer === 'MPD' ) {
 	$status[ 'coverart' ] = getCoverart( $file );
 } else if ( $status[ 'ext' ] === 'radio' ) {
 	$status[ 'coverart' ] = 0;
-	$filename = str_replace( '/', '|', $file );
+	$filename = str_replace( '/', '|', $statusfile );
 	$file = "/srv/http/assets/img/webradios/$filename";
 	if ( !file_exists( $file ) ) $file = "/srv/http/assets/img/webradiopl/$filename";
 	if ( file_exists( $file ) ) {
