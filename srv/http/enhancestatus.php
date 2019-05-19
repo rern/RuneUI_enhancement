@@ -34,7 +34,9 @@ while ( $line !== false ) {
 	}
 	$line = strtok( "\n" );
 }
-
+$status[ 'song' ] = $status[ 'song' ] ?: 0;
+$status[ 'updating_db' ] = $status[ 'updating_db' ] ? 1 : 0;
+if ( exec( 'pidof ashuffle' ) ) $status[ 'random' ] = 1;
 
 if ( $status[ 'file' ] ) {
 	$statusfile = $status[ 'file' ];
@@ -62,9 +64,6 @@ if ( $status[ 'file' ] ) {
 		$status[ 'time' ] = '';
 	}
 }
-$status[ 'song' ] = $status[ 'song' ] ?: 0;
-$status[ 'updating_db' ] = $status[ 'updating_db' ] ? 1 : 0;
-if ( exec( 'pidof ashuffle' ) ) $status[ 'random' ] = 1;
 
 $previousartist = isset( $_POST[ 'artist' ] ) ? $_POST[ 'artist' ] : '';
 $previousalbum = isset( $_POST[ 'album' ] ) ? $_POST[ 'album' ] : '';
