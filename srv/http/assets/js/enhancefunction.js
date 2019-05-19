@@ -1481,7 +1481,7 @@ function dbContextmenu( $li, $target ) {
 	}
 	
 	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
-	$( '.remove' ).toggleClass( 'hide', !GUI.playlist || !GUI.pleditor );
+	$( '.remove' ).toggleClass( 'hide', $( '.licover' ).length > 0 );
 	$( '.update' ).toggleClass( 'hide', GUI.status.updating_db !== 0 );
 	var cue = $( '.liinfo gr:eq( 1 )' ).text() === 'cue';
 	$( '.tag' ).toggleClass( 'hide', ( $( '.licover' ).length === 0 || cue || GUI.playlist ) === true );
