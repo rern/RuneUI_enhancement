@@ -676,13 +676,11 @@ function loadPlaylist( $name ) { // fix -  mpd unable to save cue properly
 	$lines = explode( "\n", rtrim( $playlistinfo ) );
 	foreach( $lines as $line ) {
 		$list = explode( '^^', $line );
-		$file = $list[ 0 ];
 		$cuetrack = $list[ 9 ];
 		if ( $cuetrack ) {
-			$cuefile = preg_replace( '/.[^.]*$/', '', $file ).'.cue';
-			exec( '/srv/http/enhance1cue.sh "'.$cuefile.'" '.$cuetrack );
+			exec( '/srv/http/enhance1cue.sh "'.$list[ 8 ].'" '.$cuetrack );
 		} else {
-			exec( 'mpc add "'.$file.'"' );
+			exec( 'mpc add "'.$list[ 0 ].'"' );
 		}
 	}
 }
