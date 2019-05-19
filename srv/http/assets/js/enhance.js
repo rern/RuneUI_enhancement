@@ -1549,7 +1549,7 @@ $( '#pl-editor' ).on( 'click', 'li', function( e ) {
 		var list = cue ? '' : path;                                                  // file
 		list += '^^'+ GUI.list.name +'^^'+ GUI.list.li.find( '.time' ).text() +'^^'; // ^^title^^time^^
 		list += GUI.list.li.find( '.li2' ).text();                             // #track • artist album^^
-		if ( cue ) list += '^^^^^^^^^^'+ path.slice( 0, -3 ) +'.cue^^'+ GUI.plappend.index;                // ^^^^^^^^^^cuem3u^^track
+		if ( cue ) list += '^^^^^^^^^^'+ path.slice( 0, -3 ) +'cue^^'+ GUI.plappend.index;                // ^^^^^^^^^^cuem3u^^track
 		var plname = $this.find( '.lipath' ).text();
 		$.post( 'enhance.php', { plappend: plname, list: list }, function() {
 			renderSavedPlaylist( $this.find( 'span' ).text() );
