@@ -600,9 +600,19 @@ function playlistDelete() {
 	} );
 }
 function setTag() {
-	var cmd = '/usr/bin/mpc -f "%artist%^^%albumartist%^^%album%^^%composer%^^%genre%^^%title%^^%track%^^%file%" ';
 	var cuem3u = GUI.list.path.split( '.' ).pop();
 	if ( [ 'cue', 'm3u', 'm3u8' ].indexOf( cuem3u ) === -1 ) {
+		$.post( 'enhance.php', { bash: '/usr/bin/mpc -f "%artist%" ls "'+ GUI.list.path +'" 2> /dev/null | awk \'!a[$0]++\' | wc -l' }, function( artists ) {
+			tag( cuem3u, artists );
+		} );
+	} else {
+		tag( cuem3u, 0 );
+	}
+}
+function tag( cuem3u, artists ) {
+	var cmd = '/usr/bin/mpc -f "%artist%^^%albumartist%^^%album%^^%composer%^^%genre%^^%title%^^%track%^^%file%" ';
+	if ( [ 'cue', 'm3u', 'm3u8' ].indexOf( cuem3u ) === -1 ) {
+		var cuefile = 1;
 		cmd += 'ls "'+ GUI.list.path +'" 2> /dev/null | head -1';
 	} else {
 		cmd += 'playlist "'+ GUI.list.path +'"';
@@ -619,14 +629,15 @@ function setTag() {
 		var file = tags[ 7 ].replace( /"/g, '\"' );
 		var ext = file.split( '.' ).pop();
 		var path = file.substr( 0, file.lastIndexOf( '/' ) );
-		var labels = [
-			  '<i class="fa fa-artist wh"></i>'
-			, '<i class="fa fa-albumartist wh"></i>'
+		var labels = artists > 1 ? [] : [ '<i class="fa fa-artist wh"></i>' ];
+		labels.push(
+			  '<i class="fa fa-albumartist wh"></i>'
 			, '<i class="fa fa-album wh"></i>'
 			, '<i class="fa fa-composer wh"></i>'
 			, '<i class="fa fa-genre wh"></i>'
-		];
-		var values = [ tags[ 0 ], tags[ 1 ], tags[ 2 ], tags[ 3 ], tags[ 4 ] ];
+		);
+		var values = artists > 1 ? [] : [ tags[ 0 ] ];
+		values.push( tags[ 1 ], tags[ 2 ], tags[ 3 ], tags[ 4 ] );
 		if ( GUI.list.isfile ) {
 			labels.push(
 				  '<i class="fa fa-music wh"></i>'
@@ -659,9 +670,7 @@ function setTag() {
 				if ( cuem3u !== 'cue' ) {
 					var vL = val.length;
 					var cmd = '/usr/bin/kid3-cli ';
-					for ( i = 0; i < vL; i++ ) {
-						cmd += "-c \"set "+ names[ i ] +" '"+ val[ i ].toString().replace( /(["'])/g, '\\$1' ) +'\'" ';
-					}
+					for ( i = 0; i < vL; i++ ) cmd += "-c \"set "+ names[ i ] +" '"+ val[ i ].toString().replace( /(["'])/g, '\\$1' ) +'\'" ';
 					cmd += pathfile +'; mpc update "'+ path +'"';
 				} else {
 					var cmd = '/usr/bin/sed -i'
