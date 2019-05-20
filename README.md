@@ -36,7 +36,7 @@ _Tested on RuneAudio 0.4b, 0.5_
 - Library sorting
 - Metadata tag editor
 	- `*.cue`
-	- Others ( by [Kid3](https://kid3.sourceforge.io) )
+	- Others by [Kid3](https://kid3.sourceforge.io)
 - Single files with`*.cue` behave like individual files
 - Selectable show/hide
 	- Top-bottom bars
