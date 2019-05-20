@@ -652,56 +652,71 @@ function setTag() {
 				$( '#db-entries li' ).removeClass( 'active' );
 			}
 			, ok        : function() {
-				var tags = '';
-				var i = 0;
+				var val = [];
 				$( '.infotextbox .infoinput' ).each( function() {
-					var value = this.value;
-					tags += "-c \"set "+ names[ i ] +" '"+ value.toString().replace( /(["'])/g, '\\$1' ) +'\'" ';
-					if ( GUI.list.isfile ) {
-						if ( i === 5 ) $( '#db-entries li.active .li1 a' ).text( value );
+					val.push( this.value );
+				} );
+				if ( cuem3u !== 'cue' ) {
+					var vL = val.length;
+					var cmd = '/usr/bin/kid3-cli ';
+					for ( i = 0; i < vL; i++ ) {
+						cmd += "-c \"set "+ names[ i ] +" '"+ val[ i ].toString().replace( /(["'])/g, '\\$1' ) +'\'" ';
+					}
+					cmd += pathfile +'; mpc update "'+ path +'"';
+				} else {
+					var cmd = '/usr/bin/sed -i'
+						+' -e \'s/^PERFORMER.*/PERFORMER "'+ val[ 1 ] +'"/\''
+						+' -e \'s/^TITLE.*/TITLE "'+ val[ 2 ] +'"/\''
+						+' -e \'s/^REM COMPOSER.*/REM COMPOSER '+ val[ 3 ] +'/\''
+						+' -e \'s/^REM GENRE.*/REM GENRE '+ val[ 4 ] +'/\'';
+					if ( !GUI.list.isfile ) {
+						cmd += ' -e \'s/^\\s\\+PERFORMER.*/    PERFORMER "'+ val[ 0 ] +'"/\''
 					} else {
-						if ( i === 0 ) $( '.liartist' ).text( value );
-						if ( i === 1 && value ) $( '.liartist' ).text( value );
-						if ( i === 2 ) $( '.lialbum' ).text( value );
-						if ( i === 3 ) {
-							var $el = $( '.licomposer' );
-							if ( !value ) {
-								$el.prev().remove();
-								$el.next().remove();
-								$el.remove();
-							} else {
-								if ( $el.length ) {
-									$el.text( value );
-								} else {
-									$( '.liartist' ).after( '<br><i class="fa fa-composer"></i><span class="licomposer">'+ value +'</span>' );
-								}
-							}
-						}
-						if ( i === 4 ) {
-							var $el = $( '.ligenre' );
-							if ( !value ) {
-								$el.prev().remove();
-								$el.next().remove();
-								$el.remove();
-							} else {
-								if ( $el.length ) {
-									$el.text( value );
-								} else {
-									$( '.liinfo .db-icon' ).before( '<i class="fa fa-genre"></i><span class="ligenre">'+ value +'</span><br>' );
-								}
-							}
+						cmd += ' -e \'/^\\s\\+TRACK '+ track +'/ {'
+							  +'s/^\\s\\+TRACK '+ track +' .*/  TRACK '+ val[ 6 ] +' AUDIO/'
+							  +'n;s/^\\s\\+TITLE.*/    TITLE "'+ val[ 5 ] +'"/'
+							  +'n;s/^\\s\\+PERFORMER.*/    PERFORMER "'+ val[ 0 ] +'"/'
+							  +'}\''
+					}
+					cmd += ' "/mnt/MPD/'+ GUI.list.path +'"'
+						  +'; mpc update "'+ GUI.list.path.substr( 0, file.lastIndexOf( '/' ) ) +'"';
+				}
+				$.post( 'enhance.php', { bash: cmd } );
+				// local fields update
+				if ( GUI.list.isfile ) {
+					$( '#db-entries li.active .li1 a' ).text( val[ 5 ] );
+				} else {
+					$( '.liartist' ).text( val[ 0 ] );
+					$( '.liartist' ).text( val[ 1 ] );
+					$( '.lialbum' ).text( val[ 2 ] );
+					var $el = $( '.licomposer' );
+					var composer = val[ 3 ];
+					if ( !composer ) {
+						$el.prev().remove();
+						$el.next().remove();
+						$el.remove();
+					} else {
+						if ( $el.length ) {
+							$el.text( composer );
+						} else {
+							$( '.liartist' ).after( '<br><i class="fa fa-composer"></i><span class="licomposer">'+ composer +'</span>' );
 						}
 					}
-					i++;
-				} );
-				$( '#db-entries li' ).removeClass( 'active' );
-				if ( cuem3u === 'cue' ) {
-					
-				} else if ( cuem3u === 'm3u' || cuem3u === 'm3u8' ) {
-					
-				} else {
-					$.post( 'enhance.php', { bash: '/usr/bin/kid3-cli '+ tags + pathfile +'; mpc update "'+ path +'"' } );
+					var $el = $( '.ligenre' );
+					var genre = val[ 4 ];
+					if ( !genre ) {
+						$el.prev().remove();
+						$el.next().remove();
+						$el.remove();
+					} else {
+						if ( $el.length ) {
+							$el.text( genre );
+						} else {
+							$( '.liinfo .db-icon' ).before( '<i class="fa fa-genre"></i><span class="ligenre">'+ genre +'</span><br>' );
+						}
+					}
 				}
+				$( '#db-entries li' ).removeClass( 'active' );
 			}
 		} );
 	} );
