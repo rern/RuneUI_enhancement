@@ -31,11 +31,13 @@ _Tested on RuneAudio 0.4b, 0.5_
 		- Webradio - VU meter (animated gif)
 	- Image from each Dirble stations
 	- Custom Webradio coverarts
-- Metadata tag editor ( by [Kid3](https://kid3.sourceforge.io) )
 - Index bar
 	- Mask available indexes
 - Library sorting
-- Single files with \*.cue behave like individual files
+- Metadata tag editor
+	- `*.cue`
+	- Others ( by [Kid3](https://kid3.sourceforge.io) )
+- Single files with`*.cue` behave like individual files
 - Selectable show/hide
 	- Top-bottom bars
 	- Time Knob
@@ -143,7 +145,7 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 - Bookmarks and webradios can be renamed
 - Bookmarks and webradios can be named with " characters
 - Show icon and breadcrumb heading while browsing
-- Show list in playlist files `*.cue` `*.pls` `*.m3u`
+- Show list in playlist files, `*.cue` `*.pls` `*.m3u`
 - Toggle search box
 - Index bar
 	- Unavailable indexes masked
@@ -188,7 +190,7 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 	- Add/Remove individual items
 	- Can be named with " characters
 	- Can be renamed
-	- Save tracks with \*.cue correctly
+	- Save tracks with `*.cue` correctly as individual tracks
 
 ### Keyboard Navigation
 All pages
