@@ -629,15 +629,14 @@ function tag( cuem3u, artists ) {
 		var file = tags[ 7 ].replace( /"/g, '\"' );
 		var ext = file.split( '.' ).pop();
 		var path = file.substr( 0, file.lastIndexOf( '/' ) );
-		var labels = artists > 1 ? [] : [ '<i class="fa fa-artist wh"></i>' ];
-		labels.push(
-			  '<i class="fa fa-albumartist wh"></i>'
+		var labels = [
+			  '<i class="fa fa-artist wh"></i>'
+			, '<i class="fa fa-albumartist wh"></i>'
 			, '<i class="fa fa-album wh"></i>'
 			, '<i class="fa fa-composer wh"></i>'
 			, '<i class="fa fa-genre wh"></i>'
-		);
-		var values = artists > 1 ? [] : [ tags[ 0 ] ];
-		values.push( tags[ 1 ], tags[ 2 ], tags[ 3 ], tags[ 4 ] );
+		];
+		var values = [ tags[ 0 ], tags[ 1 ], tags[ 2 ], tags[ 3 ], tags[ 4 ] ];
 		if ( GUI.list.isfile ) {
 			labels.push(
 				  '<i class="fa fa-music wh"></i>'
@@ -728,5 +727,8 @@ function tag( cuem3u, artists ) {
 				$( '#db-entries li' ).removeClass( 'active' );
 			}
 		} );
+		setTimeout( function() {
+			$( '#infoTextLabel, #infoTextBox' ).toggleClass( 'hide', ( !GUI.list.isfile && artists > 1 ) );
+		}, 0 );
 	} );
 }
