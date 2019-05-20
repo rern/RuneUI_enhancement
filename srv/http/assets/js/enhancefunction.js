@@ -1455,7 +1455,6 @@ function dbContextmenu( $li, $target ) {
 		$li.removeClass( 'active' );
 		return
 	}
-	
 	GUI.list = {};
 	if ( $li.hasClass( 'licover' ) && GUI.browsemode === 'coverart' ) {
 		GUI.list.mode = 'album'
@@ -1483,8 +1482,7 @@ function dbContextmenu( $li, $target ) {
 	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
 	$( '.remove' ).toggleClass( 'hide', $( '.licover' ).length > 0 );
 	$( '.update' ).toggleClass( 'hide', GUI.status.updating_db !== 0 );
-	var cue = $( '.liinfo gr:eq( 1 )' ).text() === 'cue';
-	$( '.tag' ).toggleClass( 'hide', ( $( '.licover' ).length === 0 || cue || GUI.playlist ) === true );
+	$( '.tag' ).toggleClass( 'hide', ( $( '.licover' ).length === 0 || GUI.playlist ) === true );
 	var contextnum = $menu.find( 'a:not(.hide)' ).length;
 	$( '.menushadow' ).css( 'height', contextnum * 41 - 1 );
 	$( '#'+ dbpl +'-entries li, #pl-editor li' ).removeClass( 'active' );
@@ -1717,8 +1715,8 @@ function htmlPlaylist( data ) {
 		}
 	} );
 	if ( coverart || coverart === 0 ) {
-		var cuem3u = data[ 0 ][ 'cuem3u' ];
-		var cue = cuem3u ? '&ensp;<gr>'+ cuem3u.slice( -3 ) +'</gr>' : '';
+		var cuem3u = path.slice( -3 );
+		var cue = [ 'cue', 'm3u', 'm3u8' ].indexOf( cuem3u ) !== -1 ? '&ensp;<gr>'+ cuem3u +'</gr>' : '';
 		var coversrc = coverart ? coverart : coverrune;
 		var browsemode = GUI.dbbackdata.length ? GUI.dbbackdata[ 0 ].browsemode : '';
 		var composerhtml = ( composer ) ? '<i class="fa fa-composer"></i><spanspan class="licomposer">'+ composer +'</span><br>' : '';

@@ -600,15 +600,38 @@ function playlistDelete() {
 	} );
 }
 function setTag() {
-	$.post( 'enhance.php', { bash: '/usr/bin/mpc ls -f "%artist%^^%albumartist%^^%album%^^%composer%^^%genre%^^%title%^^%track%^^%file%" "'+ GUI.list.path +'" 2> /dev/null | head -1' }, function( data ) {
+	var cmd = '/usr/bin/mpc -f "%artist%^^%albumartist%^^%album%^^%composer%^^%genre%^^%title%^^%track%^^%file%" ';
+	var cuem3u = GUI.list.path.split( '.' ).pop();
+	if ( [ 'cue', 'm3u', 'm3u8' ].indexOf( cuem3u ) === -1 ) {
+		cmd += 'ls "'+ GUI.list.path +'" 2> /dev/null | head -1';
+	} else {
+		cmd += 'playlist "'+ GUI.list.path +'"';
+		var track = GUI.list.index;
+		if ( track ) {
+			if ( track < 10 ) track = '0'+ track; 
+			cmd += ' | grep "\\^\\^'+ track +'\\^\\^"';
+		} else {
+			cmd += ' 2> /dev/null | head -1';
+		}
+	}
+	$.post( 'enhance.php', { bash: cmd }, function( data ) {
 		var tags = data.slice( 0, -1 ).split( '^^' );
 		var file = tags[ 7 ].replace( /"/g, '\"' );
 		var ext = file.split( '.' ).pop();
 		var path = file.substr( 0, file.lastIndexOf( '/' ) );
-		var labels = [ '<i class="fa fa-artist wh"></i>', '<i class="fa fa-albumartist wh"></i>', '<i class="fa fa-album wh"></i>', '<i class="fa fa-composer wh"></i>', '<i class="fa fa-genre wh"></i>' ];
+		var labels = [
+			  '<i class="fa fa-artist wh"></i>'
+			, '<i class="fa fa-albumartist wh"></i>'
+			, '<i class="fa fa-album wh"></i>'
+			, '<i class="fa fa-composer wh"></i>'
+			, '<i class="fa fa-genre wh"></i>'
+		];
 		var values = [ tags[ 0 ], tags[ 1 ], tags[ 2 ], tags[ 3 ], tags[ 4 ] ];
 		if ( GUI.list.isfile ) {
-			labels.push( '<i class="fa fa-music wh"></i>', '<i class="fa fa-hash wh"></i>' );
+			labels.push(
+				  '<i class="fa fa-music wh"></i>'
+				, '<i class="fa fa-hash wh"></i>'
+			);
 			values.push( tags[ 5 ], tags[ 6 ] );
 			var message = '<i class="fa fa-folder wh"></i> '+ file +'<br>&nbsp;'
 			var pathfile = '"/mnt/MPD/'+ file +'"';
@@ -672,7 +695,13 @@ function setTag() {
 					i++;
 				} );
 				$( '#db-entries li' ).removeClass( 'active' );
-				$.post( 'enhance.php', { bash: '/usr/bin/kid3-cli '+ tags + pathfile +'; mpc update "'+ path +'"' } );
+				if ( cuem3u === 'cue' ) {
+					
+				} else if ( cuem3u === 'm3u' || cuem3u === 'm3u8' ) {
+					
+				} else {
+					$.post( 'enhance.php', { bash: '/usr/bin/kid3-cli '+ tags + pathfile +'; mpc update "'+ path +'"' } );
+				}
 			}
 		} );
 	} );
