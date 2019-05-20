@@ -259,7 +259,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$lines.= shell_exec( 'mpc -f "%file%'.$ext.'^^%title%^^%time%^^[##%track% • ][%artist%][ • %album%]^^[%albumartist%|%artist%]^^%album%^^%genre%^^%composer%^^'.$plfile.'" playlist "'.$file.'"' );
 	}
 	$data = list2array( $lines );
-	$data[][ 'path' ] = dirname( $plfiles[ 0 ] );
+	$data[][ 'path' ] = $plfiles[ 0 ];
 	if ( $redis->hGet( 'display', 'coverfile' ) ) {
 		$data[][ 'coverart' ] = getCover( $data[ 0 ][ 'file' ] );
 	}
@@ -512,9 +512,7 @@ function loadCue( $mpc ) { // 'mpc ls "path" | mpc add' from enhancecontext.js
 	$cuefiles = preg_grep( '/.cue$/', $lists );
 	if ( count( $cuefiles ) ) {
 		asort( $cuefiles );
-		foreach( $cuefiles as $cue ) {
-			shell_exec( 'mpc load "'.$cue.'" | mpc add' );
-		}
+		foreach( $cuefiles as $cue ) shell_exec( 'mpc load "'.$cue.'"' );
 		return 1;
 	}
 }
