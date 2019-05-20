@@ -204,6 +204,7 @@ $menudiv = '';
 $html = $htmlcommon;
 $html.= menuli( 'lastfmreplaceplay', 'lastfm',       'Last.fm playlist' );
 $html.= menuli( 'savedplremove',     'minus-circle', 'Remove' );
+$html.= menuli( 'tag',   'tag', 'Tags' );
 $menu.= menudiv( 'filesavedpl',      $html );
 $menudiv = '';
 $html = menucommon( 'add',   'addplay', 'replace', 'replaceplay' );
