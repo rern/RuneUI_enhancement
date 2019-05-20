@@ -601,15 +601,6 @@ function playlistDelete() {
 }
 function setTag() {
 	var cuem3u = GUI.list.path.split( '.' ).pop();
-	if ( [ 'cue', 'm3u', 'm3u8' ].indexOf( cuem3u ) === -1 ) {
-		$.post( 'enhance.php', { bash: '/usr/bin/mpc -f "%artist%" ls "'+ GUI.list.path +'" 2> /dev/null | awk \'!a[$0]++\' | wc -l' }, function( artists ) {
-			tag( cuem3u, artists );
-		} );
-	} else {
-		tag( cuem3u, 0 );
-	}
-}
-function tag( cuem3u, artists ) {
 	var cmd = '/usr/bin/mpc -f "%artist%^^%albumartist%^^%album%^^%composer%^^%genre%^^%title%^^%track%^^%file%" ';
 	if ( [ 'cue', 'm3u', 'm3u8' ].indexOf( cuem3u ) === -1 ) {
 		var cuefile = 1;
@@ -727,8 +718,11 @@ function tag( cuem3u, artists ) {
 				$( '#db-entries li' ).removeClass( 'active' );
 			}
 		} );
-		setTimeout( function() {
-			$( '#infoTextLabel, #infoTextBox' ).toggleClass( 'hide', ( !GUI.list.isfile && artists > 1 ) );
-		}, 0 );
+		if ( [ 'cue', 'm3u', 'm3u8' ].indexOf( cuem3u ) !== -1 ) return
+		
+		$.post( 'enhance.php', { bash: '/usr/bin/mpc -f "%artist%" ls "'+ GUI.list.path +'" 2> /dev/null | awk \'!a[$0]++\' | wc -l' }, function( artists ) {
+			$( '#infoTextLabel, #infoTextBox' ).toggleClass( 'hide', ( !GUI.list.isfile && artists > 1 ) )
+			.next().toggleClass( 'hide', ( !GUI.list.isfile && artists > 1 ) );
+		} );
 	} );
 }
