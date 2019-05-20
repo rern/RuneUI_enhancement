@@ -18,6 +18,7 @@ rm -v /srv/http/assets/img/{bootsplash.png,controls*,cover.svg,runelogo.svg,vu*}
 rm -v /srv/http/assets/js/enhance*
 rm -v /srv/http/assets/js/vendor/{lazyload,roundslider}.min.js
 rm -v /srv/http/assets/js/vendor/pica.js
+
 # DO NOT remove - used by other addons
 # bootstrap.min.css, bootstrap-select.min.css
 
@@ -46,6 +47,10 @@ files="
 /root/.xinitrc
 "
 restorefile $files
+
+# back button to left
+rm -f /usr/local/bin/uninstall_bbtn.sh
+redis-cli del bbtn &> /dev/null
 
 if [[ $1 == u ]]; then
 	systemctl restart rune_PL_wrk
