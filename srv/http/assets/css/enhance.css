@@ -1284,7 +1284,7 @@ i.bookmark,
 }
 .plsbackroot,
 .plsback {
-	margin-left: 20px;
+	width: 60px !important;
 	font-size: 28px !important;
 }
 #db-home,
