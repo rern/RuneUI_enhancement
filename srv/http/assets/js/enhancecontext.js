@@ -684,7 +684,7 @@ function setTag() {
 				$.post( 'enhance.php', { bash: cmd } );
 				// local fields update
 				if ( GUI.list.isfile ) {
-					$( '#db-entries li.active .li1 a' ).text( val[ 5 ] );
+					$( '#db-entries li.active .name' ).text( val[ 5 ] );
 				} else {
 					$( '.liartist' ).text( val[ 0 ] );
 					$( '.liartist' ).text( val[ 1 ] );
