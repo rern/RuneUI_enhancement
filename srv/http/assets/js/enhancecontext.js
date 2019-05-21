@@ -683,55 +683,47 @@ function tag( counts ) {
 					}
 					cmd += pathfile +'; mpc update "'+ path +'"';
 				} else {
+					var artist = val[ 0 ];
+					var albumartist = val[ 1 ];
+					var album = val[ 2 ];
+					var composer = val[ 3 ];
+					var genre = val[ 4 ];
+					var title = val[ 5 ];
 					var cmd = '/usr/bin/sed -i'
-					if ( val[ 0 ] !== various ) cmd += ' -e \'s/^\\s\\+PERFORMER.*/    PERFORMER "'+ val[ 0 ] +'"/\''
-												cmd += ' -e \'s/^PERFORMER.*/PERFORMER "'+ val[ 1 ] +'"/\''
-												cmd += ' -e \'s/^TITLE.*/TITLE "'+ val[ 2 ] +'"/\''
-					if ( val[ 3 ] !== various ) cmd += ' -e \'s/^REM COMPOSER.*/REM COMPOSER '+ val[ 3 ] +'/\''
-					if ( val[ 4 ] !== various ) cmd += ' -e \'s/^REM GENRE.*/REM GENRE '+ val[ 4 ] +'/\'';
-					if ( GUI.list.isfile ) {
-												cmd += ' -e \'/^\\s\\+TRACK '+ track +'/ {'
-													  +'n;s/^\\s\\+TITLE.*/    TITLE "'+ val[ 5 ] +'"/'
-													  +';n;s/^\\s\\+PERFORMER.*/    PERFORMER "'+ val[ 0 ] +'"/'
-													  +'}\''
-					}
+					cmd += ' -e \'/^PERFORMER/ d\'';
+					cmd += ' -e \'/^REM COMPOSER/ d\'';
+					cmd += ' -e \'/^REM GENRE/ d\'';
+					if ( artist !== various )
+						cmd += ' -e \'s/^\\s\\+PERFORMER.*/    PERFORMER "'+ artist +'"/\'';
+					if ( albumartist )
+						cmd += ' -e \'/^TITLE/ i\\PERFORMER "'+ albumartist +'"\''
+					if ( album )
+						cmd += ' -e \'s/^TITLE.*/TITLE "'+ album +'"/\''
+					if ( composer && composer !== various )
+						cmd += ' -e \'1 i\\REM COMPOSER "'+ composer +'"\''
+					if ( genre && genre !== various )
+						cmd += ' -e \'1 a\\REM GENRE "'+ genre +'"\'';
+					if ( GUI.list.isfile )
+						cmd += ' -e \'/^\\s\\+TRACK '+ track +'/ {'
+							  +'n;s/^\\s\\+TITLE.*/    TITLE "'+ title +'"/'
+							  +';n;s/^\\s\\+PERFORMER.*/    PERFORMER "'+ artist +'"/'
+							  +'}\''
 					cmd += ' "/mnt/MPD/'+ GUI.list.path +'"'
 						  +'; mpc update "'+ GUI.list.path.substr( 0, file.lastIndexOf( '/' ) ) +'"';
 				}
-			$.post( 'enhance.php', { bash: cmd } );
+				$.post( 'enhance.php', { bash: cmd } );
 				// local fields update
 				if ( GUI.list.isfile ) {
 					$( '#db-entries li.active .name' ).text( val[ 5 ] );
 				} else {
-					$( '.liartist' ).text( val[ 0 ] );
-					$( '.liartist' ).text( val[ 1 ] );
-					$( '.lialbum' ).text( val[ 2 ] );
-					var $el = $( '.licomposer' );
-					var composer = val[ 3 ];
-					if ( !composer ) {
-						$el.prev().remove();
-						$el.next().remove();
-						$el.remove();
-					} else {
-						if ( $el.length ) {
-							$el.text( composer );
-						} else {
-							$( '.liartist' ).after( '<br><i class="fa fa-composer"></i><span class="licomposer">'+ composer +'</span>' );
-						}
-					}
-					var $el = $( '.ligenre' );
-					var genre = val[ 4 ];
-					if ( !genre ) {
-						$el.prev().remove();
-						$el.next().remove();
-						$el.remove();
-					} else {
-						if ( $el.length ) {
-							$el.text( genre );
-						} else {
-							$( '.liinfo .db-icon' ).before( '<i class="fa fa-genre"></i><span class="ligenre">'+ genre +'</span><br>' );
-						}
-					}
+					$( '.liartist' ).text( albumartist || artist );
+					$( '.lialbum' ).text( album );
+					[ '.licomposer', '.ligenre' ].forEach( function( el ) {
+						$( el ).prev().remove();
+						$( el ).next().andSelf().remove();
+					} );
+					if ( composer ) $( '.liartist' ).after( '<br><i class="fa fa-composer"></i><span class="licomposer">'+ composer +'</span>' );
+					if ( genre ) $( '.liinfo .db-icon' ).before( '<i class="fa fa-genre"></i><span class="ligenre">'+ genre +'</span><br>' );
 				}
 				$( '#db-entries li' ).removeClass( 'active' );
 			}
