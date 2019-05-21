@@ -642,13 +642,14 @@ function tag( counts ) {
 				, '<i class="fa fa-hash wh"></i>'
 			);
 			values.push( tags[ 5 ], tags[ 6 ] );
-			var message = '<i class="fa fa-folder wh"></i> '+ file +'<br>&nbsp;'
+			var message = '<i class="fa fa-folder wh"></i> '+ ( cue ? GUI.list.path : file ) +'<br>&nbsp;'
 			var pathfile = '"/mnt/MPD/'+ file +'"';
 		} else {
-			var message = '<img src="'+ $( '.licoverimg img' ).attr( 'src' ) +'" style="width: 50px; height: 50px;"><br>'+ path +'<br>&nbsp;'
+			var message = '<img src="'+ $( '.licoverimg img' ).attr( 'src' ) +'" style="width: 50px; height: 50px;"><br>'+ ( cue ? GUI.list.path : path ) +'<br>&nbsp;'
 			var pathfile = '"/mnt/MPD/'+ path +'/"*.'+ ext;
 		}
 		var names = [ 'artist', 'albumartist', 'album', 'composer', 'genre', 'title', 'tracknumber' ];
+		var various = '***various***';
 		info( {
 			  icon      : 'tag'
 			, title     : 'Tag Editor'
@@ -658,10 +659,10 @@ function tag( counts ) {
 			, textvalue : values
 			, boxwidth  : 'max'
 			, preshow   : function() {
-				if ( counts.artists > 1 ) $( '#infoTextBox' ).val( '***' );
-				if ( counts.composer > 1 ) $( '#infoTextBox3' ).val( '***' );
-				if ( counts.genres > 1 ) $( '#infoTextBox4' ).val( '***' );
-				if ( $( '.cuem3u' ).length ) {
+				if ( counts.artists > 1 ) $( '#infoTextBox' ).val( various );
+				if ( counts.composer > 1 ) $( '#infoTextBox3' ).val( various );
+				if ( counts.genres > 1 ) $( '#infoTextBox4' ).val( various );
+				if ( cue ) {
 					if ( GUI.list.isfile ) {
 						for ( i = 1; i < 7; i++ ) if ( i !== 5 ) $( '#infoTextLabel'+ i +', #infoTextBox'+ i ).next().andSelf().addClass( 'hide' );
 						$( '#infoTextLabel6, #infoTextBox6' ).next().andSelf().addClass( 'hide' );
@@ -674,7 +675,6 @@ function tag( counts ) {
 				$( '#db-entries li' ).removeClass( 'active' );
 			}
 			, ok        : function() {
-				var various = '***';
 				var val = [];
 				$( '.infotextbox .infoinput' ).each( function() {
 					val.push( this.value );
