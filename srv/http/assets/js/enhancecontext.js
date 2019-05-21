@@ -662,13 +662,9 @@ function tag( counts ) {
 				if ( counts.artists > 1 ) $( '#infoTextBox' ).val( various );
 				if ( counts.composer > 1 ) $( '#infoTextBox3' ).val( various );
 				if ( counts.genres > 1 ) $( '#infoTextBox4' ).val( various );
-				if ( cue ) {
-					if ( GUI.list.isfile ) {
-						for ( i = 1; i < 7; i++ ) if ( i !== 5 ) $( '#infoTextLabel'+ i +', #infoTextBox'+ i ).next().andSelf().addClass( 'hide' );
-						$( '#infoTextLabel6, #infoTextBox6' ).next().andSelf().addClass( 'hide' );
-					} else {
-						$( '#infoTextLabel, #infoTextBox' ).next().andSelf().addClass( 'hide' );
-					}
+				if ( cue && GUI.list.isfile ) {
+					for ( i = 1; i < 7; i++ ) if ( i !== 5 ) $( '#infoTextLabel'+ i +', #infoTextBox'+ i ).next().andSelf().addClass( 'hide' );
+					$( '#infoTextLabel6, #infoTextBox6' ).next().andSelf().addClass( 'hide' );
 				}
 			}
 			, cancel    : function() {
