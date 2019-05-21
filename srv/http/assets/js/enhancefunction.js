@@ -1716,7 +1716,7 @@ function htmlPlaylist( data ) {
 	} );
 	if ( coverart || coverart === 0 ) {
 		var cuem3u = path.split( '.' ).pop();
-		var cue = [ 'cue', 'm3u', 'm3u8' ].indexOf( cuem3u ) !== -1 ? '&ensp;<gr class="cuem3u">'+ cuem3u +'</gr>' : '';
+		var cue = [ 'cue', 'm3u', 'm3u8' ].indexOf( cuem3u ) !== -1 ? '&ensp;<i class="fa fa-list-ul cuem3u"></i>' : '';
 		var coversrc = coverart ? coverart : coverrune;
 		var browsemode = GUI.dbbackdata.length ? GUI.dbbackdata[ 0 ].browsemode : '';
 		var composerhtml = ( composer ) ? '<i class="fa fa-composer"></i><spanspan class="licomposer">'+ composer +'</span><br>' : '';
