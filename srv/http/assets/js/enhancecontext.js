@@ -600,19 +600,18 @@ function playlistDelete() {
 	} );
 }
 function setTag() {
-	var cuem3u = GUI.list.path.split( '.' ).pop();
-	if ( [ 'cue', 'm3u', 'm3u8' ].indexOf( cuem3u ) === -1 ) {
-		$.post( 'enhance.php', { bash: '/usr/bin/mpc -f "%artist%" ls "'+ GUI.list.path +'" 2> /dev/null | awk \'!a[$0]++\' | wc -l' }, function( artists ) {
-			tag( cuem3u, artists );
-		} );
+	if ( !$( '.cuem3u' ).length ) {
+		$.post( 'enhance.php', { counttag: GUI.list.path }, function( counts ) {
+			tag( counts );
+		}, 'json' );
 	} else {
-		tag( cuem3u, 0 )
+		tag( 0 );
 	}
 }
-function tag( cuem3u, artists ) {
+function tag( counts ) {
+	var cue = GUI.list.path.split( '.' ).pop() === 'cue';
 	var cmd = '/usr/bin/mpc -f "%artist%^^%albumartist%^^%album%^^%composer%^^%genre%^^%title%^^%track%^^%file%" ';
-	if ( [ 'cue', 'm3u', 'm3u8' ].indexOf( cuem3u ) === -1 ) {
-		var cuefile = 1;
+	if ( !cue ) {
 		cmd += 'ls "'+ GUI.list.path +'" 2> /dev/null | head -1';
 	} else {
 		cmd += 'playlist "'+ GUI.list.path +'"';
@@ -659,30 +658,43 @@ function tag( cuem3u, artists ) {
 			, textvalue : values
 			, boxwidth  : 'max'
 			, preshow   : function() {
-				$( '#infoTextLabel, #infoTextBox' ).next().andSelf().toggleClass( 'hide', ( !GUI.list.isfile && artists > 1 ) );
+				if ( $( '.cuem3u' ).length ) {
+					if ( GUI.list.isfile ) {
+						for ( i = 1; i < 7; i++ ) if ( i !== 5 ) $( '#infoTextLabel'+ i +', #infoTextBox'+ i ).next().andSelf().addClass( 'hide' );
+						$( '#infoTextLabel6, #infoTextBox6' ).next().andSelf().addClass( 'hide' );
+					} else {
+						$( '#infoTextLabel, #infoTextBox' ).next().andSelf().addClass( 'hide' );
+					}
+				} else {
+					if ( counts.artists > 1 ) $( '#infoTextBox' ).val( '***' );
+					if ( counts.composer > 1 ) $( '#infoTextBox3' ).val( '***' );
+					if ( counts.genres > 1 ) $( '#infoTextBox4' ).val( '***' );
+				}
 			}
 			, cancel    : function() {
 				$( '#db-entries li' ).removeClass( 'active' );
 			}
 			, ok        : function() {
+				var various = '***';
 				var val = [];
 				$( '.infotextbox .infoinput' ).each( function() {
 					val.push( this.value );
 				} );
-				if ( cuem3u !== 'cue' ) {
+				if ( !cue ) {
 					var vL = val.length;
 					var cmd = '/usr/bin/kid3-cli ';
-					for ( i = 0; i < vL; i++ ) cmd += "-c \"set "+ names[ i ] +" '"+ val[ i ].toString().replace( /(["'])/g, '\\$1' ) +'\'" ';
+					for ( i = 0; i < vL; i++ ) {
+						if ( val[ i ] !== various ) cmd += "-c \"set "+ names[ i ] +" '"+ val[ i ].toString().replace( /(["'])/g, '\\$1' ) +'\'" ';
+					}
 					cmd += pathfile +'; mpc update "'+ path +'"';
 				} else {
 					var cmd = '/usr/bin/sed -i'
+					if ( val[ 0 ] !== various ) cmd += ' -e \'s/^\\s\\+PERFORMER.*/    PERFORMER "'+ val[ 0 ] +'"/\''
 						+' -e \'s/^PERFORMER.*/PERFORMER "'+ val[ 1 ] +'"/\''
 						+' -e \'s/^TITLE.*/TITLE "'+ val[ 2 ] +'"/\''
-						+' -e \'s/^REM COMPOSER.*/REM COMPOSER '+ val[ 3 ] +'/\''
-						+' -e \'s/^REM GENRE.*/REM GENRE '+ val[ 4 ] +'/\'';
-					if ( !GUI.list.isfile ) {
-						cmd += ' -e \'s/^\\s\\+PERFORMER.*/    PERFORMER "'+ val[ 0 ] +'"/\''
-					} else {
+					if ( val[ 3 ] !== various ) cmd += ' -e \'s/^REM COMPOSER.*/REM COMPOSER '+ val[ 3 ] +'/\''
+					if ( val[ 4 ] !== various ) cmd += ' -e \'s/^REM GENRE.*/REM GENRE '+ val[ 4 ] +'/\'';
+					if ( GUI.list.isfile ) {
 						cmd += ' -e \'/^\\s\\+TRACK '+ track +'/ {'
 							  +'s/^\\s\\+TRACK '+ track +' .*/  TRACK '+ val[ 6 ] +' AUDIO/'
 							  +'n;s/^\\s\\+TITLE.*/    TITLE "'+ val[ 5 ] +'"/'

@@ -1715,12 +1715,13 @@ function htmlPlaylist( data ) {
 		}
 	} );
 	if ( coverart || coverart === 0 ) {
-		var cuem3u = path.slice( -3 );
-		var cue = [ 'cue', 'm3u', 'm3u8' ].indexOf( cuem3u ) !== -1 ? '&ensp;<gr>'+ cuem3u +'</gr>' : '';
+		var cuem3u = path.split( '.' ).pop();
+		var cue = [ 'cue', 'm3u', 'm3u8' ].indexOf( cuem3u ) !== -1 ? '&ensp;<gr class="cuem3u">'+ cuem3u +'</gr>' : '';
 		var coversrc = coverart ? coverart : coverrune;
 		var browsemode = GUI.dbbackdata.length ? GUI.dbbackdata[ 0 ].browsemode : '';
 		var composerhtml = ( composer ) ? '<i class="fa fa-composer"></i><spanspan class="licomposer">'+ composer +'</span><br>' : '';
 		var genrehtml = genre ? '<i class="fa fa-genre"></i><span class="ligenre">'+ genre +'</span><br>' : '';
+		if ( cuem3u === 'm3u' || cuem3u === 'm3u8' ) path = path.substr( 0, path.lastIndexOf( '/' ) );
 		var licover = '<li class="licover">'
 						 +'<a class="lipath">'+ path +'</a><a class="liname">'+ path.replace(/^.*\//, '') +'</a>'
 						 +'<div class="licoverimg'+ ( coverart ? '' : ' nocover' ) +'"><img src="'+ coversrc +'" class="coversmall"></div>'
