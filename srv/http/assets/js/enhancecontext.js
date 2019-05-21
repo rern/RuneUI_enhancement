@@ -658,6 +658,9 @@ function tag( counts ) {
 			, textvalue : values
 			, boxwidth  : 'max'
 			, preshow   : function() {
+				if ( counts.artists > 1 ) $( '#infoTextBox' ).val( '***' );
+				if ( counts.composer > 1 ) $( '#infoTextBox3' ).val( '***' );
+				if ( counts.genres > 1 ) $( '#infoTextBox4' ).val( '***' );
 				if ( $( '.cuem3u' ).length ) {
 					if ( GUI.list.isfile ) {
 						for ( i = 1; i < 7; i++ ) if ( i !== 5 ) $( '#infoTextLabel'+ i +', #infoTextBox'+ i ).next().andSelf().addClass( 'hide' );
@@ -665,10 +668,6 @@ function tag( counts ) {
 					} else {
 						$( '#infoTextLabel, #infoTextBox' ).next().andSelf().addClass( 'hide' );
 					}
-				} else {
-					if ( counts.artists > 1 ) $( '#infoTextBox' ).val( '***' );
-					if ( counts.composer > 1 ) $( '#infoTextBox3' ).val( '***' );
-					if ( counts.genres > 1 ) $( '#infoTextBox4' ).val( '***' );
 				}
 			}
 			, cancel    : function() {
@@ -690,16 +689,15 @@ function tag( counts ) {
 				} else {
 					var cmd = '/usr/bin/sed -i'
 					if ( val[ 0 ] !== various ) cmd += ' -e \'s/^\\s\\+PERFORMER.*/    PERFORMER "'+ val[ 0 ] +'"/\''
-						+' -e \'s/^PERFORMER.*/PERFORMER "'+ val[ 1 ] +'"/\''
-						+' -e \'s/^TITLE.*/TITLE "'+ val[ 2 ] +'"/\''
+												cmd += ' -e \'s/^PERFORMER.*/PERFORMER "'+ val[ 1 ] +'"/\''
+												cmd += ' -e \'s/^TITLE.*/TITLE "'+ val[ 2 ] +'"/\''
 					if ( val[ 3 ] !== various ) cmd += ' -e \'s/^REM COMPOSER.*/REM COMPOSER '+ val[ 3 ] +'/\''
 					if ( val[ 4 ] !== various ) cmd += ' -e \'s/^REM GENRE.*/REM GENRE '+ val[ 4 ] +'/\'';
 					if ( GUI.list.isfile ) {
-						cmd += ' -e \'/^\\s\\+TRACK '+ track +'/ {'
-							  +'s/^\\s\\+TRACK '+ track +' .*/  TRACK '+ val[ 6 ] +' AUDIO/'
-							  +'n;s/^\\s\\+TITLE.*/    TITLE "'+ val[ 5 ] +'"/'
-							  +'n;s/^\\s\\+PERFORMER.*/    PERFORMER "'+ val[ 0 ] +'"/'
-							  +'}\''
+												cmd += ' -e \'/^\\s\\+TRACK '+ track +'/ {'
+													  +'n;s/^\\s\\+TITLE.*/    TITLE "'+ val[ 5 ] +'"/'
+													  +'n;s/^\\s\\+PERFORMER.*/    PERFORMER "'+ val[ 0 ] +'"/'
+													  +'}\''
 					}
 					cmd += ' "/mnt/MPD/'+ GUI.list.path +'"'
 						  +'; mpc update "'+ GUI.list.path.substr( 0, file.lastIndexOf( '/' ) ) +'"';
