@@ -718,12 +718,9 @@ function tag( counts ) {
 				} else {
 					$( '.liartist' ).text( albumartist || artist );
 					$( '.lialbum' ).text( album );
-					[ '.licomposer', '.ligenre' ].forEach( function( el ) {
-						$( el ).prev().remove();
-						$( el ).next().andSelf().remove();
-					} );
-					if ( composer ) $( '.liartist' ).after( '<br><i class="fa fa-composer"></i><span class="licomposer">'+ composer +'</span>' );
-					if ( genre ) $( '.liinfo .db-icon' ).before( '<i class="fa fa-genre"></i><span class="ligenre">'+ genre +'</span><br>' );
+					$( '.licomposer, .ligenre' ).next().remove();
+					if ( composer ) $( '.liartist' ).after( '<div class="licomposer"><i class="fa fa-composer"></i>'+ composer +'</div>' );
+					if ( genre ) $( '.liinfo .db-icon' ).before( '<div class="ligenre"><i class="fa fa-genre"></i>'+ genre +'</div>' );
 				}
 				$( '#db-entries li' ).removeClass( 'active' );
 			}

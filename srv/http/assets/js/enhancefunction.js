@@ -971,8 +971,8 @@ function dataParse( data, path, querytype, plid ) {
 					var coversrc = coverart ? coverart : coverrune;
 					var browsemode = GUI.dbbackdata.length ? GUI.dbbackdata[ 0 ].browsemode : '';
 					var artistmode = [ 'artist', 'composer', 'genre' ].indexOf( browsemode ) !== -1 ? 1 : 0;
-					var composerhtml = ( composer ) ? '<i class="fa fa-composer"></i><span class="licomposer">'+ composer +'</span><br>' : '';
-					var genrehtml = genre ? '<i class="fa fa-genre"></i><span class="ligenre">'+ genre +'</span><br>' : '';
+					var composerhtml = ( composer ) ? '<span class="licomposer"><i class="fa fa-composer"></i>'+ composer +'</span><br>' : '';
+					var genrehtml = genre ? '<span class="ligenre"><i class="fa fa-genre"></i>'+ genre +'</span><br>' : '';
 					var file = data[ 0 ].file || data[ 0 ].filepl;
 					var dir = file.substring( 0, file.lastIndexOf( '/' ) );
 					content += '<li class="licover">'
@@ -1719,8 +1719,8 @@ function htmlPlaylist( data ) {
 		var cue = [ 'cue', 'm3u', 'm3u8' ].indexOf( cuem3u ) !== -1 ? '&ensp;<i class="fa fa-list-ul cuem3u"></i>' : '';
 		var coversrc = coverart ? coverart : coverrune;
 		var browsemode = GUI.dbbackdata.length ? GUI.dbbackdata[ 0 ].browsemode : '';
-		var composerhtml = ( composer ) ? '<i class="fa fa-composer"></i><spanspan class="licomposer">'+ composer +'</span><br>' : '';
-		var genrehtml = genre ? '<i class="fa fa-genre"></i><span class="ligenre">'+ genre +'</span><br>' : '';
+		var composerhtml = ( composer ) ? '<span class="licomposer"><i class="fa fa-composer"></i>'+ composer +'</span><br>' : '';
+		var genrehtml = genre ? '<span class="ligenre"><i class="fa fa-genre"></i>'+ genre +'</span><br>' : '';
 		if ( cuem3u === 'm3u' || cuem3u === 'm3u8' ) path = path.substr( 0, path.lastIndexOf( '/' ) );
 		var licover = '<li class="licover">'
 						 +'<a class="lipath">'+ path +'</a><a class="liname">'+ path.replace(/^.*\//, '') +'</a>'
