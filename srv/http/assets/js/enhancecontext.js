@@ -696,13 +696,13 @@ function tag( counts ) {
 					if ( GUI.list.isfile ) {
 												cmd += ' -e \'/^\\s\\+TRACK '+ track +'/ {'
 													  +'n;s/^\\s\\+TITLE.*/    TITLE "'+ val[ 5 ] +'"/'
-													  +'n;s/^\\s\\+PERFORMER.*/    PERFORMER "'+ val[ 0 ] +'"/'
+													  +';n;s/^\\s\\+PERFORMER.*/    PERFORMER "'+ val[ 0 ] +'"/'
 													  +'}\''
 					}
 					cmd += ' "/mnt/MPD/'+ GUI.list.path +'"'
 						  +'; mpc update "'+ GUI.list.path.substr( 0, file.lastIndexOf( '/' ) ) +'"';
 				}
-				$.post( 'enhance.php', { bash: cmd } );
+			$.post( 'enhance.php', { bash: cmd } );
 				// local fields update
 				if ( GUI.list.isfile ) {
 					$( '#db-entries li.active .name' ).text( val[ 5 ] );
