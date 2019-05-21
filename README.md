@@ -34,9 +34,8 @@ _Tested on RuneAudio 0.4b, 0.5_
 - Index bar
 	- Mask available indexes
 - Library sorting
-- Metadata tag editor
-	- `*.cue`
-	- Others by [Kid3](https://kid3.sourceforge.io)
+- Metadata tag editor ( with [Kid3](https://kid3.sourceforge.io) )
+	- Editable `*.cue`
 - Single files with`*.cue` behave like individual files
 - Selectable show/hide
 	- Top-bottom bars
@@ -56,7 +55,7 @@ _Tested on RuneAudio 0.4b, 0.5_
 	- Library home
 	- Playlists
 	- Saved playlists
-- Editable saved playlist
+- Editable saved playlists
 - Context menu
 	- Icon on the right removed
 	- Use icon on the left instead
