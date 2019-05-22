@@ -980,8 +980,8 @@ function dataParse( data, path, querytype, plid ) {
 							  +'<div class="licoverimg'+ ( coverart ? '' : ' nocover' ) +'"><img src="'+ coversrc +'" class="coversmall"></div>'
 							  +'<span class="liinfo">'
 								  +'<bl class="lialbum">'+ album +'</bl><br>'
-								  + composerhtml
 								  +'<i class="fa fa-'+ ( artistmode ? 'artist' : 'albumartist' ) +'"></i><span class="liartist">'+ ( artistmode ? artist : albumartist ) +'</span><br>'
+								  + composerhtml
 								  + genrehtml
 								  + ( GUI.browsemode === 'file' ? '' : '<a class="lidir">'+ dir +'</a><br>' )
 								  +'<i class="fa fa-music db-icon" data-target="#context-menu-folder"></i>'+ arrayfile.length +'<gr> • </gr>'+ second2HMS( litime )
@@ -1727,8 +1727,8 @@ function htmlPlaylist( data ) {
 						 +'<div class="licoverimg'+ ( coverart ? '' : ' nocover' ) +'"><img src="'+ coversrc +'" class="coversmall"></div>'
 						 +'<span class="liinfo">'
 							+'<bl class="lialbum">'+ album +'</bl><br>'
-							+ composerhtml
 							+'<i class="fa fa-albumartist"></i><span class="liartist">'+ artist +'</span><br>'
+							+ composerhtml
 							+ genrehtml
 							+'<i class="fa fa-music db-icon" data-target="#context-menu-folder"></i>'+ countsong +'<gr> • </gr>'+ second2HMS( pltime ) + cue
 						 +'</span>'
