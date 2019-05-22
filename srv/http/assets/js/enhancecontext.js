@@ -661,7 +661,7 @@ function tag( counts ) {
 					for ( i = 0; i < vL; i++ ) {
 						if ( val[ i ] !== various ) cmd += "-c \"set "+ names[ i ] +" '"+ val[ i ].toString().replace( /(["'])/g, '\\$1' ) +'\'" ';
 					}
-					cmd += pathfile +'; mpc update "'+ path +'"';
+					cmd += pathfile +'; mpc update "'+ path +'"; /srv/http/enhancecount.sh 1';
 				} else {
 					var                         cmd  = "/usr/bin/sed -i"
 													  +" -e '/^PERFORMER/ d'"
@@ -679,7 +679,8 @@ function tag( counts ) {
 													  +"}'";
 												
 												cmd += ' "/mnt/MPD/'+ GUI.list.path +'"'
-													  +'; mpc update "'+ GUI.list.path.substr( 0, file.lastIndexOf( '/' ) ) +'"';
+													  +'; mpc update "'+ GUI.list.path.substr( 0, file.lastIndexOf( '/' ) ) +'"'
+													  +'; /srv/http/enhancecount.sh 1';
 				}
 				$.post( 'enhance.php', { bash: cmd } );
 				// local fields update
