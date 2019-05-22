@@ -2,11 +2,11 @@
 // example: mpc save "abc's \"xyz\"" << name.replace( /"/g, '\\"' )
 
 $( '.contextmenu a' ).click( function() {
-	$( '.menu' ).addClass( 'hide' );
-	$( 'li.active' ).removeClass( 'active' );
-	$( 'li.updn' ).removeClass( 'updn' );
 	var $this = $( this );
 	var cmd = $this.data( 'cmd' );
+	$( '.menu' ).addClass( 'hide' );
+	if ( cmd !== 'update' ) $( 'li.active' ).removeClass( 'active' );
+	$( 'li.updn' ).removeClass( 'updn' );
 	// playback //////////////////////////////////////////////////////////////
 	if ( [ 'play', 'pause', 'stop' ].indexOf( cmd ) !== -1 ) {
 		if ( cmd === 'play' ) {

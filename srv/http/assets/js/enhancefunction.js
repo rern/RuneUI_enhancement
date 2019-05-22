@@ -166,6 +166,7 @@ function getUpdateStatus() {
 			} else {
 				clearInterval( GUI.intUpdate );
 				GUI.intUpdate = false;
+				$( '#db-entries li.active' ).removeClass( 'active' );
 				notify( 'Library Database', 'Database updated.', 'library' );
 			}
 		}, 'json' );
