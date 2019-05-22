@@ -3,6 +3,7 @@
 
 $( '.contextmenu a' ).click( function() {
 	$( '.menu' ).addClass( 'hide' );
+	$( 'li.active' ).removeClass( 'active' );
 	var $this = $( this );
 	var cmd = $this.data( 'cmd' );
 	// playback //////////////////////////////////////////////////////////////
@@ -73,7 +74,6 @@ $( '.contextmenu a' ).click( function() {
 	}
 	
 	// replaceplay|replace|addplay|add //////////////////////////////////////////
-	$( '#db-entries li, #pl-editor li' ).removeClass( 'active' );
 	var name = ( GUI.browsemode === 'coverart' && !GUI.list.isfile ) ? GUI.list.name : GUI.list.path;
 	name = name.replace( /"/g, '\\"' );
 	// compose command
@@ -225,9 +225,6 @@ function bookmarkNew() {
 				, title   : 'Add Bookmark'
 				, message : '<img src="'+ base64img +'">'
 						   +'<br><w>'+ path +'</w>'
-				, cancel  : function() {
-					$( '#db-entries li' ).removeClass( 'active' );
-				}
 				, ok      : function() {
 					$.post( 'enhance.php', { bookmarks: 1, path: path, base64: base64img, new: 1 } );
 					notify( 'Bookmark Added', path, 'bookmark' );
@@ -246,9 +243,6 @@ function bookmarkNew() {
 				, textrequired : 0
 				, boxwidth     : 'max'
 				, textalign    : 'center'
-				, cancel    : function() {
-					$( '#db-entries li' ).removeClass( 'active' );
-				}
 				, ok           : function() {
 					$.post( 'enhance.php', { bookmarks: $( '#infoTextBox' ).val(), path: path, new: 1 } );
 					notify( 'Bookmark Added', path, 'bookmark' );
@@ -325,9 +319,6 @@ function webRadioCoverart() {
 			, message     : ( img ? '<img src="'+ img +'">' : '<img src="'+ vu +'" style="border-radius: 9px">' )
 						   +'<span class="bkname"><br><w>'+ name +'</w><span>'
 			, fileoklabel : 'Replace'
-			, cancel     : function() {
-				$( '#db-entries li' ).removeClass( 'active' );
-			}
 			, ok         : function() {
 				var newimg = $( '#infoMessage .newimg' ).attr( 'src' );
 				var picacanvas = document.createElement( 'canvas' );
@@ -341,7 +332,6 @@ function webRadioCoverart() {
 							} else {
 								$( '#db-entries li.active' ).find( '.db-icon' ).remove();
 								$( '#db-entries li.active' ).find( '.lisort' ).after( '<img class="radiothumb db-icon" src="'+ newthumb +'" data-target="#context-menu-radio">' );
-								$( '#db-entries li' ).removeClass( 'active' );
 							}
 						} else {
 							info( {
@@ -364,7 +354,6 @@ function webRadioCoverart() {
 				} else {
 					$( '#db-entries li.active' ).find( 'img' ).remove();
 					$( '#db-entries li.active' ).find( '.lisort' ).after( '<i class="fa fa-webradio db-icon" data-target="#context-menu-webradio"></i>' );
-					$( '#db-entries li' ).removeClass( 'active' );
 				}
 			}
 		}
@@ -384,7 +373,6 @@ function webRadioSave( name, url ) {
 						   +'<br>'+ url
 						   +'<br>Already exists.'
 			} );
-			$( '#db-entries li.active' ).removeClass( 'active' );
 			return false
 		}
 	} );
@@ -404,8 +392,7 @@ function webRadioSave( name, url ) {
 		, textalign    : 'center'
 		, boxwidth     : 'max'
 		, cancel       : function() {
-			GUI.library && $( '#db-entries li.active' ).removeClass( 'active' );
-			GUI.playlist && $( '#pl-entries li.updn' ).removeClass( 'updn' );
+			$( '#pl-entries li.updn' ).removeClass( 'updn' );
 		}
 		, ok           : function() {
 			var newname = $( '#infoTextBox' ).val();
@@ -466,9 +453,6 @@ function webRadioRename() {
 			, textrequired : 0
 			, textalign    : 'center'
 			, boxwidth     : 'max'
-			, cancel       : function() {
-				$( '#db-entries li.active' ).removeClass( 'active' );
-			}
 			, oklabel      : 'Rename'
 			, ok           : function() {
 				var newname = $( '#infoTextBox' ).val();
@@ -490,9 +474,6 @@ function webRadioDelete() {
 			, message : ( nameimg[ 2 ] ? '<br><img src="'+ nameimg[ 2 ] +'">' : '<br><i class="fa fa-webradio bookmark"></i>' )
 					   +'<br><w>'+ nameimg[ 0 ] +'</w>'
 					   +'<br>'+ url
-			, cancel  : function() {
-				$( '#db-entries li.active' ).removeClass( 'active' );
-			}
 			, oklabel : 'Delete'
 			, ok      : function() {
 				$.post( 'enhance.php', { webradios: name, url: url, delete: 1 } );
@@ -600,13 +581,9 @@ function playlistDelete() {
 	} );
 }
 function setTag() {
-	if ( !$( '.cuem3u' ).length ) {
-		$.post( 'enhance.php', { counttag: GUI.list.path }, function( counts ) {
-			tag( counts );
-		}, 'json' );
-	} else {
-		tag( 0 );
-	}
+	$.post( 'enhance.php', { counttag: GUI.list.path }, function( counts ) {
+		tag( counts );
+	}, 'json' );
 }
 function tag( counts ) {
 	var cue = GUI.list.path.split( '.' ).pop() === 'cue';
@@ -659,16 +636,13 @@ function tag( counts ) {
 			, textvalue : values
 			, boxwidth  : 'max'
 			, preshow   : function() {
-				if ( counts.artists > 1 ) $( '#infoTextBox' ).val( various );
+				if ( counts.artist > 1 ) $( '#infoTextBox' ).val( various );
 				if ( counts.composer > 1 ) $( '#infoTextBox3' ).val( various );
-				if ( counts.genres > 1 ) $( '#infoTextBox4' ).val( various );
+				if ( counts.genre > 1 ) $( '#infoTextBox4' ).val( various );
 				if ( cue && GUI.list.isfile ) {
 					for ( i = 1; i < 7; i++ ) if ( i !== 5 ) $( '#infoTextLabel'+ i +', #infoTextBox'+ i ).next().andSelf().addClass( 'hide' );
 					$( '#infoTextLabel6, #infoTextBox6' ).next().andSelf().addClass( 'hide' );
 				}
-			}
-			, cancel    : function() {
-				$( '#db-entries li' ).removeClass( 'active' );
 			}
 			, ok        : function() {
 				var val = [];
@@ -722,7 +696,6 @@ function tag( counts ) {
 					if ( composer ) $( '.liartist' ).after( '<div class="licomposer"><i class="fa fa-composer"></i>'+ composer +'</div>' );
 					if ( genre ) $( '.liinfo .db-icon' ).before( '<div class="ligenre"><i class="fa fa-genre"></i>'+ genre +'</div>' );
 				}
-				$( '#db-entries li' ).removeClass( 'active' );
 			}
 		} );
 	} );
