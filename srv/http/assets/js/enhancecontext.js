@@ -4,6 +4,7 @@
 $( '.contextmenu a' ).click( function() {
 	$( '.menu' ).addClass( 'hide' );
 	$( 'li.active' ).removeClass( 'active' );
+	$( 'li.updn' ).removeClass( 'updn' );
 	var $this = $( this );
 	var cmd = $this.data( 'cmd' );
 	// playback //////////////////////////////////////////////////////////////
@@ -391,9 +392,6 @@ function webRadioSave( name, url ) {
 		, textrequired : 0
 		, textalign    : 'center'
 		, boxwidth     : 'max'
-		, cancel       : function() {
-			$( '#pl-entries li.updn' ).removeClass( 'updn' );
-		}
 		, ok           : function() {
 			var newname = $( '#infoTextBox' ).val();
 			notify( 'Webradio saved', newname, 'webradio' );
