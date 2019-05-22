@@ -175,56 +175,66 @@ $kid3 = file_exists( '/usr/bin/kid3-cli' );
 $menu = '<div>';
 $htmlcommon = menucommon( 'add', 'addplay', 'replace', 'replaceplay' );
 $html = '<span class="menushadow"></span>';
+
 $html.= menuli( 'play',       'play',         'Play' );
 $html.= menuli( 'pause',      'pause',        'Pause' );
 $html.= menuli( 'stop',       'stop',         'Stop' );
 $html.= menuli( 'radiosave',  'save',         'Save in Webradio' );
 $html.= menuli( 'savedpladd', 'plus',         'Add to a playlist' );
 $html.= menuli( 'remove',     'minus-circle', 'Remove' );
-$menu.= menudiv( 'plaction',  $html );
+$menu.= menudiv( 'plaction', $html );
+
 $menudiv = '';
 $html = $htmlcommon;
 $html.= menuli( 'bookmark',  'star',           'Bookmark' );
 $html.= menuli( 'update',    'folder-refresh', 'Update database' );
 $html.= menuli( 'thumbnail', 'coverart',       'Update thumbnails' );
 if ( $kid3 )
-$html.= menuli( 'tag',     'tag', 'Tags' );
+$html.= menuli( 'tag',       'tag',            'Tags' );
 $menu.= menudiv( 'folder', $html );
+
 $menudiv = '';
 $html = $htmlcommon;
-$html.= menuli( 'lastfmreplaceplay', 'lastfm',       'Last.fm playlist' );
+$html.= menuli( 'lastfmreplaceplay', 'lastfm', 'Last.fm playlist' );
 if ( $kid3 )
-$html.= menuli( 'tag',   'tag', 'Tags' );
+$html.= menuli( 'tag',               'tag',    'Tags' );
 $menu.= menudiv( 'file', $html );
+
 $menudiv = '';
 $html = $htmlcommon;
 $menu.= menudiv( 'filepl', $html );
+
 $menudiv = '';
 $html = $htmlcommon;
 $html.= menuli( 'lastfmreplaceplay', 'lastfm',       'Last.fm playlist' );
 $html.= menuli( 'savedplremove',     'minus-circle', 'Remove' );
-$html.= menuli( 'tag',   'tag', 'Tags' );
-$menu.= menudiv( 'filesavedpl',      $html );
+$html.= menuli( 'tag',               'tag',          'Tags' );
+$menu.= menudiv( 'filesavedpl', $html );
+
 $menudiv = '';
 $html = menucommon( 'add',   'addplay', 'replace', 'replaceplay' );
 $html.= menuli( 'radiosave', 'save',    'Save in Webradio' );
-$menu.= menudiv( 'radio',    $html );
+$menu.= menudiv( 'radio', $html );
+
 $menudiv = '';
 $html = menucommonsp( 'spotify-playlist' );
 $menu.= menudiv( 'spotify-pl', $html );
 $menudiv = '';
 $html = menucommonsp( 'spotify-track' );
 $menu.= menudiv( 'spotify', $html );
+
 $menudiv = '';
 $html = menucommon( 'wradd',  'wraddplay',    'wrreplace', 'wrreplaceplay' );
 $html.= menuli( 'wrrename',   'edit-circle',  'Rename' );
 $html.= menuli( 'wrcoverart', 'coverart',     'Change coverart' );
 $html.= menuli( 'wrdelete',   'minus-circle', 'Delete' );
 $menu.= menudiv( 'webradio', $html );
+
 $menudiv = '';
 $html = menucommon( 'wradd',     'wraddplay',    'wrreplace', 'wrreplaceplay' );
 $html.= menuli( 'savedplremove', 'minus-circle', 'Remove' );
 $menu.= menudiv( 'webradiopl', $html );
+
 $menudiv = '';
 $html = '<span class="menushadow"></span>';
 $html.= menuli( 'pladd',         'plus-o',            'Add' );
@@ -234,19 +244,24 @@ $html.= menuli( 'plreplace',     'plus-refresh',      'Replace' );
 $html.= menuli( 'plreplaceplay', 'play-plus-refresh', 'Replace ► Play' );
 $html.= menuli( 'plrename',      'edit-circle',       'Rename' );
 $html.= menuli( 'pldelete',      'minus-circle',      'Delete' );
-$menu.= menudiv( 'playlist',     $html );
+$menu.= menudiv( 'playlist', $html );
+
 $menudiv = '';
 $html = menucommon( 'albumadd', 'albumaddplay', 'albumreplace', 'albumreplaceplay' );
-$menu.= menudiv( 'album',       $html );
+$menu.= menudiv( 'album', $html );
+
 $menudiv = '';
 $html = menucommon( 'artistadd', 'artistaddplay', 'artistreplace', 'artistreplaceplay' );
-$menu.= menudiv( 'artist',       $html );
+$menu.= menudiv( 'artist', $html );
+
 $menudiv = '';
 $html = menucommon( 'composeradd', 'composeraddplay', 'composerreplace', 'composerreplaceplay' );
-$menu.= menudiv( 'composer',       $html );
+$menu.= menudiv( 'composer', $html );
+
 $menudiv = '';
 $html = menucommon( 'genreadd', 'genreaddplay', 'genrereplace', 'genrereplaceplay' );
-$menu.= menudiv( 'genre',       $html );
+$menu.= menudiv( 'genre', $html );
+
 $menu.= '</div>';
 ?>
 
