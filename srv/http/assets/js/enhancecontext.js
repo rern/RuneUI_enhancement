@@ -625,7 +625,6 @@ function tag( counts ) {
 			var message = '<img src="'+ $( '.licoverimg img' ).attr( 'src' ) +'" style="width: 50px; height: 50px;"><br>'+ ( cue ? GUI.list.path : path ) +'<br>&nbsp;'
 			var pathfile = '"/mnt/MPD/'+ path +'/"*.'+ ext;
 		}
-		var names = [ 'artist', 'albumartist', 'album', 'composer', 'genre', 'title', 'tracknumber' ];
 		var various = '***various***';
 		info( {
 			  icon      : 'tag'
@@ -656,6 +655,7 @@ function tag( counts ) {
 				var genre       = val[ 4 ];
 				var title       = val[ 5 ];
 				if ( !cue ) {
+					var names = [ 'artist', 'albumartist', 'album', 'composer', 'genre', 'title', 'tracknumber' ];
 					var vL = val.length;
 					var cmd = '/usr/bin/kid3-cli ';
 					for ( i = 0; i < vL; i++ ) {
