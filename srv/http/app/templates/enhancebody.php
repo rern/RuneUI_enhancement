@@ -193,7 +193,6 @@ $menu.= menudiv( 'folder', $html );
 $menudiv = '';
 $html = $htmlcommon;
 $html.= menuli( 'lastfmreplaceplay', 'lastfm',       'Last.fm playlist' );
-$html.= menuli( 'remove',            'minus-circle', 'Remove' );
 if ( $kid3 )
 $html.= menuli( 'tag',   'tag', 'Tags' );
 $menu.= menudiv( 'file', $html );
