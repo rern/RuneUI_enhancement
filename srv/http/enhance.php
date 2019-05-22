@@ -264,6 +264,16 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$data[][ 'coverart' ] = getCover( $data[ 0 ][ 'file' ] );
 	}
 	echo json_encode( $data );
+} else if ( isset( $_POST[ 'counttag' ] ) ) {
+	$path = $_POST[ 'counttag' ];
+	$cmd = substr( $path, -3 ) === 'cue' ? 'playlist' : 'ls';
+	$cmd.= ' "'.$path.'" | awk \'!a[$0]++\' | wc -l';
+	$data = array( 
+		  'artist'   => exec( 'mpc -f "%artist%" '.$cmd )
+		, 'composer' => exec( 'mpc -f "%composer%" '.$cmd )
+		, 'genre'    => exec( 'mpc -f "%genre%" '.$cmd )
+	);
+	echo json_encode( $data, JSON_NUMERIC_CHECK );
 } else if ( isset( $_POST[ 'album' ] ) ) {
 	$albums = shell_exec( $_POST[ 'album' ] );
 	$name = isset( $_POST[ 'albumname' ] ) ? $_POST[ 'albumname' ] : '';
