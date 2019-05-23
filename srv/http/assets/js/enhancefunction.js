@@ -1689,7 +1689,7 @@ function htmlPlaylist( data ) {
 								+'<a class="lipath">'+ value.file +'</a>';
 			} else {
 				if ( GUI.library || GUI.pleditor ) {
-					var menu = value.index ? 'filesavedpl' : 'file';
+					var menu = value.index && GUI.playlist ? 'filesavedpl' : 'file';
 					var dbpl = 'db';
 				} else if ( 'cuetrack' in value ) {
 					var menu = 'filesavedpl';
