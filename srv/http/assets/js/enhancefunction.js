@@ -1196,7 +1196,7 @@ function data2html( list, path ) {
 	} else if ( GUI.browsemode === 'album' ) {
 		if ( 'file' in list ) {
 			var liname = list.Title;
-			content = '<li>'
+			content = '<li class="file">'
 					 +'<a class="lipath">'+ list.file +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ list.lisort +'</a>'
 					 +'<i class="fa fa-music db-icon" data-target="#context-menu-file"></i>'
 					 +'<span class="li1">'+ liname +'<span class="time">'+ list.Time +'</span></span>'
@@ -1261,7 +1261,7 @@ function data2html( list, path ) {
 					 +'<span class="single">'+ liname +'</span>';
 		} else if ( 'file' in list ) {
 			var liname = list.Title;
-			content = '<li>'
+			content = '<li class="file">'
 					 +'<a class="lipath">'+ list.file +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ list.lisort +'</a>'
 					 +'<i class="fa fa-music db-icon" data-target="#context-menu-file"></i>'
 					 +'<span class="li1">'+ liname +'<span class="time">'+ list.Time +'</span></span>'
@@ -1482,11 +1482,12 @@ function dbContextmenu( $li, $target ) {
 	
 	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
 	$( '.update' ).toggleClass( 'hide', GUI.status.updating_db !== 0 );
-	$( '.tag' ).toggleClass( 'hide', 
-		!GUI.list.isfile
-		&& $( '.licover' ).length === 0
-		|| ( GUI.browsemode !== 'file' && GUI.browsemode !== 'coverart' )
-	);
+	$( '.tag' ).addClass( 'hide' );
+	if ( GUI.list.isfile ) {
+		$( '.tag' ).removeClass( 'hide' );
+	} else if ( $( '.licover' ).length ) {
+		if ( GUI.browsemode === 'file' || GUI.browsemode === 'coverart' ) $( '.tag' ).removeClass( 'hide' );
+	}
 	var contextnum = $menu.find( 'a:not(.hide)' ).length;
 	$( '.menushadow' ).css( 'height', contextnum * 41 - 1 );
 	$( '#'+ dbpl +'-entries li, #pl-editor li' ).removeClass( 'active' );
