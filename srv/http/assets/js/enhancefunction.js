@@ -1481,9 +1481,12 @@ function dbContextmenu( $li, $target ) {
 	}
 	
 	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
-	$( '.remove' ).toggleClass( 'hide', $( '.licover' ).length > 0 );
 	$( '.update' ).toggleClass( 'hide', GUI.status.updating_db !== 0 );
-	$( '.tag' ).toggleClass( 'hide', $( '.licover' ).length === 0 || GUI.browsemode !== 'file' );
+	$( '.tag' ).toggleClass( 'hide', 
+		!GUI.list.isfile
+		&& $( '.licover' ).length === 0
+		|| ( GUI.browsemode !== 'file' && GUI.browsemode !== 'coverart' )
+	);
 	var contextnum = $menu.find( 'a:not(.hide)' ).length;
 	$( '.menushadow' ).css( 'height', contextnum * 41 - 1 );
 	$( '#'+ dbpl +'-entries li, #pl-editor li' ).removeClass( 'active' );
