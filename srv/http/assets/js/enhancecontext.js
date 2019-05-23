@@ -617,10 +617,11 @@ function tag( counts ) {
 				, '<i class="fa fa-hash wh"></i>'
 			);
 			values.push( tags[ 5 ], tags[ 6 ] );
-			var message = '<i class="fa fa-folder wh"></i> '+ ( cue ? GUI.list.path : file ) +'<br>&nbsp;'
+			var message = '<i class="fa fa-file-music wh"></i> '+ ( cue ? GUI.list.path : file ) +'<br>&nbsp;'
 			var pathfile = '"/mnt/MPD/'+ file +'"';
 		} else {
-			var message = '<img src="'+ $( '.licoverimg img' ).attr( 'src' ) +'" style="width: 50px; height: 50px;"><br>'+ ( cue ? GUI.list.path : path ) +'<br>&nbsp;'
+			var message = '<img src="'+ $( '.licoverimg img' ).attr( 'src' ) +'" style="width: 50px; height: 50px;">'
+						 +'<br><i class="fa fa-folder wh"></i>'+ ( cue ? GUI.list.path : path ) +'<br>&nbsp;'
 			var pathfile = '"/mnt/MPD/'+ path +'/"*.'+ ext;
 		}
 		var various = '***various***';
