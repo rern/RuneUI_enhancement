@@ -455,11 +455,7 @@ function search2array( $result, $playlist = '' ) { // directories or files
 				, 'file'   => $file
 			);
 			$index = [];
-			if ( !$genre ) {
-				if ( $list[ 5 ] !== '' ) $genre = $list[ 5 ];
-			} else {
-				if ( $list[ 5 ] !== $genre ) $genre = -1;
-			}
+			if ( !$genre && $list[ 5 ] !== '' ) $genre = $list[ 5 ];
 			if ( !$composer && $list[ 6 ] !== '' ) $composer = $list[ 6 ];
 			if ( !$albumartist && $list[ 7 ] !== '' ) $albumartist = $list[ 7 ];
 		}
