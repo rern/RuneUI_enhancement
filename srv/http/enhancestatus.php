@@ -11,6 +11,7 @@ if ( !isset( $_POST[ 'statusonly' ] ) ) {
 	}
 }
 
+// grep cannot be used here
 $mpdtelnet = ' | telnet localhost 6600 | sed "/^Trying\|^Connected\|^Escape\|^OK\|^Connection\|^Date\|^Last-Modified\|^mixrampdb\|^nextsong\|^nextsongid/ d"';
 $lines = shell_exec( '{ sleep 0.05; echo clearerror; echo status; echo currentsong; sleep 0.05; }'.$mpdtelnet );
 // fix: initially add song without play - currentsong = (blank)

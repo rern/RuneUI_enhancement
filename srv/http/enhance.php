@@ -617,7 +617,8 @@ function second2HMS( $second ) {
 	return $hh.$mm.$ss;
 }
 function playlistInfo( $save = '' ) { // fix -  mpd unable to save cue/m3u properly
-	$playlistinfo = shell_exec( '{ sleep 0.05; echo playlistinfo; sleep 0.05; } | telnet localhost 6600 | grep "^file\|^Range\|^AlbumArtist:\|^Title\|^Album\|^Artist\|^Track\|^Time"' );
+	// grep cannot be used here
+	$playlistinfo = shell_exec( '{ sleep 0.05; echo playlistinfo; sleep 0.05; } | telnet localhost 6600 | sed -n "/^file\|^Range\|^AlbumArtist:\|^Title\|^Album\|^Artist\|^Track\|^Time/ p"' );
 	if ( !$playlistinfo ) return '';
 	
 	$content = preg_replace( '/\nfile:/', "\n^^file:", $playlistinfo );
