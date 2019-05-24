@@ -384,21 +384,20 @@ function renderPlayback() {
 				, timeout  : 5000
 				, dataType : 'json'
 				, success  : function( data ) {
-					var coverurl = data.album.image[ 4 ][ '#text' ] || data.album.image[ 3 ][ '#text' ];
-					if ( coverurl ) {
+					if ( 'error' in data === false ) {
 						GUI.coversave = 1;
 						$( '#cover-art' )
-							.attr( 'src', coverurl )
+							.attr( 'src', data.album.image[ 4 ][ '#text' ] || data.album.image[ 3 ][ '#text' ] )
 							.after( '<i class="edit licover-save fa fa-save"></i>' );
 					} else {
 						delete apijson.data.album;
 						apijson.success = function( data ) {
-							coverurl = data.album.image[ 4 ][ '#text' ] || data.album.image[ 3 ][ '#text' ];
-							if ( coverurl )
+							if ( 'error' in data === false ) {
 								GUI.coversave = 1;
 								$( '#cover-art' )
-									.attr( 'src', coverurl )
+									.attr( 'src', data.album.image[ 4 ][ '#text' ] || data.album.image[ 3 ][ '#text' ] )
 									.after( '<i class="edit licover-save fa fa-save"></i>' );
+							}
 						}
 						$.ajax( apijson );
 					}
