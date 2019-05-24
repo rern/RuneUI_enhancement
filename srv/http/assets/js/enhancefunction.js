@@ -276,6 +276,12 @@ function setPlaybackBlank() {
 		.removeAttr( 'style' )
 		.css( 'visibility', 'visible' );
 }
+function setCoverart( data ) {
+	GUI.coversave = 1;
+	$( '#cover-art' )
+		.attr( 'src', data.album.image[ 4 ][ '#text' ] || data.album.image[ 3 ][ '#text' ] )
+		.after( '<i class="edit licover-save fa fa-save"></i>' );
+}
 function renderPlayback() {
 	var status = GUI.status;
 	// song and album before update for song/album change detection
@@ -385,19 +391,12 @@ function renderPlayback() {
 				, dataType : 'json'
 				, success  : function( data ) {
 					if ( 'error' in data === false ) {
-						GUI.coversave = 1;
-						$( '#cover-art' )
-							.attr( 'src', data.album.image[ 4 ][ '#text' ] || data.album.image[ 3 ][ '#text' ] )
-							.after( '<i class="edit licover-save fa fa-save"></i>' );
+						setCoverart( data );
 					} else {
+						// get with artist only
 						delete apijson.data.album;
 						apijson.success = function( data ) {
-							if ( 'error' in data === false ) {
-								GUI.coversave = 1;
-								$( '#cover-art' )
-									.attr( 'src', data.album.image[ 4 ][ '#text' ] || data.album.image[ 3 ][ '#text' ] )
-									.after( '<i class="edit licover-save fa fa-save"></i>' );
-							}
+							if ( 'error' in data === false ) setCoverart( data );
 						}
 						$.ajax( apijson );
 					}
