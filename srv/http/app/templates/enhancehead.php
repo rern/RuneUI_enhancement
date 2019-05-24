@@ -1,15 +1,26 @@
+	<?php 
+	$root = empty( $this->uri(1) );
+	$title = $root ? 'RuneUIe' : 'Rune Settings';
+	$addons = file_exists( '/srv/http/assets/fonts/addons.ttf' );
+	$gpio = file_exists( '/srv/http/assets/css/gpio.css' );
+	function fontface( $name, $_this ) {
+		$woff = $_this->asset( "/fonts/$name.woff" );
+		$ttf = $_this->asset( "/fonts/$name.ttf" );
+		return "
+			@font-face {
+				font-family: $name;
+				src        : url( '$woff' ) format( 'woff' ), url( '$ttf' ) format( 'truetype' );
+				font-weight: normal;
+				font-style : normal;
+			}";
+	}
+	?>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="msapplication-tap-highlight" content="no" />
-	<?php 
-	$root = empty( $this->uri(1) );
-	$title = $root ? 'RuneUIe' : 'Rune Settings';
-	$addons = file_exists( '/srv/http/assets/fonts/addons.ttf' );
-	$gpio = file_exists( '/srv/http/assets/css/gpio.css' );
-	?>
 <title><?=$title?></title>
 <link rel="apple-touch-icon" sizes="152x152" href="<?=$this->asset( '/img/apple-touch-icon-152x152.png' )?>">
 <link rel="apple-touch-icon" sizes="167x167" href="<?=$this->asset( '/img/apple-touch-icon-167x167.png' )?>">
@@ -23,17 +34,6 @@
 <link rel="stylesheet" href="<?=$this->asset( '/css/bootstrap.min.css' )?>">
 <link rel="stylesheet" href="<?=$this->asset( '/css/enhancebanner.css' )?>">
 	<?php 
-	function fontface( $name, $_this ) {
-		$woff = $_this->asset( "/fonts/$name.woff" );
-		$ttf = $_this->asset( "/fonts/$name.ttf" );
-		return "
-			@font-face {
-				font-family: $name;
-				src        : url( '$woff' ) format( 'woff' ), url( '$ttf' ) format( 'truetype' );
-				font-weight: normal;
-				font-style : normal;
-			}";
-	}
 	if ( $root ) {
 		$fontface = $addons ? fontface( 'addons', $this ) : '';
 		$fontface.= fontface( 'enhance', $this );
