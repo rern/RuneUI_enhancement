@@ -35,8 +35,9 @@ _Tested on RuneAudio 0.4b, 0.5_
 	- Mask available indexes
 - Library sorting
 - Metadata tag editor ( with [Kid3](https://kid3.sourceforge.io) )
-	- Editable `*.cue`
 - Single files with`*.cue` behave like individual files
+	- Listed and saved as individual tracks
+	- Editable metadata
 - Selectable show/hide
 	- Top-bottom bars
 	- Time Knob
@@ -138,9 +139,8 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 	- Webradio coverarts ( need `ext*` formatted drive )
 		- Tap Webradio icon in list view
 - Metadata tag editor (Install RuneUIe Metadata Editor addon to enable)
-	- Album view:
-		- Album tags - Coverart context menu > Change Metadata
-		- Song tags - List context menu > Change Metadata
+	- Album tags - Coverart context menu > Tags (browse by directory/bookmark/coverart only)
+	- Song tags - File context menu > Tags
 - Bookmarks and webradios can be renamed
 - Bookmarks and webradios can be named with " characters
 - Show icon and breadcrumb heading while browsing
