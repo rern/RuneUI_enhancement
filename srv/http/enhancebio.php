@@ -14,7 +14,6 @@ $data = preg_replace( '/\\\\n/', '<br>', $data );
 $data = preg_replace( '/\\\\"/', '&quot;', $data );
 
 $data = json_decode( $data, True );
-print_r($data['album']);
 $data = $data[ 'artist' ];
 $image = $data[ 'image' ][ 5 ][ '#text' ];
 $genre = ucwords( $data[ 'tags' ][ 'tag' ][ 0 ][ 'name' ] );
