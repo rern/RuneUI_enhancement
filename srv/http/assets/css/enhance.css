@@ -995,6 +995,7 @@ i.bookmark,
 	display: inline-block;
 	margin: 0;
 	font-weight: 300;
+	color: #7795b4;
 }
 .close-root {
 	float: right;
