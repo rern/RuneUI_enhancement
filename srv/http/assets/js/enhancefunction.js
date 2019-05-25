@@ -1455,6 +1455,7 @@ function dbContextmenu( $li, $target ) {
 		return
 	}
 	GUI.list = {};
+	GUI.list.li = $li; // for contextmenu
 	if ( $li.hasClass( 'licover' ) && GUI.browsemode === 'coverart' ) {
 		GUI.list.mode = 'album'
 	} else {
@@ -1744,14 +1745,6 @@ function htmlPlaylist( data ) {
 		, countsong  : countsong
 	}
 }
-function setPlaylistBlank() {
-	$( '#pl-count' ).html( '<bl class="title">PLAYLIST</bl>' );
-	$( '#plsave, #plcrop, #plclear, #pl-searchbtn' ).addClass( 'disable' );
-	$( '#pl-entries' ).empty();
-	$( '.playlist' ).removeClass( 'hide' );
-	$( '#playlist-empty' ).css( 'margin-top', ( GUI.bars ? 27 : 67 ) +'px' );
-	$( 'html, body' ).scrollTop( 0 );
-}
 function renderPlaylist() {
 	$( '#pl-filter' ).val( '' );
 	$( '#pl-currentpath, #pl-editor, #pl-index, #pl-search' ).addClass( 'hide' );
@@ -1759,7 +1752,12 @@ function renderPlaylist() {
 	$( '#plopen' ).toggleClass( 'disable', !GUI.lsplaylists.length );
 	$( '#plconsume' ).css( 'color', GUI.status.consume ? '#0095d8' : '' );
 	if ( !GUI.pllist.length ) {
-		setPlaylistBlank();
+		$( '#pl-count' ).html( '<bl class="title">PLAYLIST</bl>' );
+		$( '#plsave, #plcrop, #plclear, #pl-searchbtn' ).addClass( 'disable' );
+		$( '#pl-entries' ).empty();
+		$( '.playlist' ).removeClass( 'hide' );
+		$( '#playlist-empty' ).css( 'margin-top', ( GUI.bars ? 27 : 67 ) +'px' );
+		$( 'html, body' ).scrollTop( 0 );
 		return
 	}
 	
@@ -1834,7 +1832,6 @@ function clearPlaylist() {
 	GUI.status.playlistlength = 0;
 	GUI.pllist = {};
 	$.post( 'enhance.php', { mpc: [ 'mpc clear', '/usr/bin/rm -f "/srv/http/assets/img/webradiopl/*' ] } );
-	setPlaylistBlank();
 	setPlaybackBlank();
 }
 function renderLsPlaylists( lsplaylists ) {

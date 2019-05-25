@@ -10,7 +10,7 @@ $( '.contextmenu a' ).click( function() {
 	// playback //////////////////////////////////////////////////////////////
 	if ( [ 'play', 'pause', 'stop' ].indexOf( cmd ) !== -1 ) {
 		if ( cmd === 'play' ) {
-			if ( $( '#pl-entries li.active' ).index() === GUI.list.li.index() ) {
+			if ( GUI.list.li.index() === GUI.list.li.index() ) {
 				$( '#play' ).click();
 			} else {
 				$( '#pl-entries li' ).eq( GUI.list.li.index() ).click();
@@ -25,7 +25,7 @@ $( '.contextmenu a' ).click( function() {
 		if ( cmd === 'radiosave' ) { // unsaved webradio (dirble)
 			webRadioSave( GUI.list.name, GUI.list.path );
 		} else if ( cmd === 'update' ) {
-			$( '#db-entries li.active .db-icon' ).addClass( 'blink' );
+			GUI.list.li.find( '.db-icon' ).addClass( 'blink' );
 			$.post( 'enhance.php', { mpc: 'mpc update "'+ GUI.list.path +'"' }, getUpdateStatus );
 		} else if ( cmd === 'tag' ) {
 			setTag();
@@ -185,8 +185,11 @@ function addReplace( mode, cmd, command, title ) {
 		) {
 			$( '#tab-playback' ).click();
 		} else {
-			var artist = $( '#artistalbum span' ).text();
-			var msg = GUI.list.name + ( artist ? ' • '+ artist : '' );
+			if ( GUI.list.li.hasClass( 'licover' ) ) {
+				var msg = GUI.list.li.find( '.lialbum' ).text();
+			} else {
+				var msg = GUI.list.name;
+			}
 			notify( title, msg, 'list-ul' );
 			if ( cmd === 'replace' ) GUI.plreplace = 1;
 			getPlaybackStatus();
@@ -332,8 +335,8 @@ function webRadioCoverart() {
 							if ( GUI.playback ) {
 								$( '#cover-art' ).attr( 'src', newimg );
 							} else {
-								$( '#db-entries li.active' ).find( '.db-icon' ).remove();
-								$( '#db-entries li.active' ).find( '.lisort' ).after( '<img class="radiothumb db-icon" src="'+ newthumb +'" data-target="#context-menu-radio">' );
+								GUI.list.li.find( '.db-icon' ).remove();
+								GUI.list.li.find( '.lisort' ).after( '<img class="radiothumb db-icon" src="'+ newthumb +'" data-target="#context-menu-radio">' );
 							}
 						} else {
 							info( {
@@ -354,8 +357,8 @@ function webRadioCoverart() {
 				if ( GUI.playback ) {
 					$( '#cover-art' ).attr( 'src', GUI.status.state === 'play' ? vu : vustop );
 				} else {
-					$( '#db-entries li.active' ).find( 'img' ).remove();
-					$( '#db-entries li.active' ).find( '.lisort' ).after( '<i class="fa fa-webradio db-icon" data-target="#context-menu-webradio"></i>' );
+					GUI.list.li.find( 'img' ).remove();
+					GUI.list.li.find( '.lisort' ).after( '<i class="fa fa-webradio db-icon" data-target="#context-menu-webradio"></i>' );
 				}
 			}
 		}
@@ -378,7 +381,6 @@ function webRadioSave( name, url ) {
 			return false
 		}
 	} );
-	var $li = GUI.library ? $( '#db-entries li.active' ) : $( '#pl-entries li.active' );
 	var thumb = GUI.list.thumb;
 	var img = GUI.list.img;
 	info( {
@@ -685,7 +687,7 @@ function tag( counts ) {
 				$.post( 'enhance.php', { bash: cmd } );
 				// local fields update
 				if ( GUI.list.isfile ) {
-					$( '#db-entries li.active .name' ).text( title );
+					GUI.list.li.find( '.name' ).text( title );
 				} else {
 					$( '.liartist' ).text( albumartist || artist );
 					$( '.lialbum' ).text( album );
