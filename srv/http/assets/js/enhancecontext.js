@@ -5,7 +5,7 @@ $( '.contextmenu a' ).click( function() {
 	var $this = $( this );
 	var cmd = $this.data( 'cmd' );
 	$( '.menu' ).addClass( 'hide' );
-	if ( cmd !== 'update' ) $( 'li.active' ).removeClass( 'active' );
+	if ( cmd !== 'update' ) $( '#db-entries li, #pl-entries li' ).removeClass( 'active' );
 	$( 'li.updn' ).removeClass( 'updn' );
 	// playback //////////////////////////////////////////////////////////////
 	if ( [ 'play', 'pause', 'stop' ].indexOf( cmd ) !== -1 ) {
@@ -85,10 +85,11 @@ $( '.contextmenu a' ).click( function() {
 		var artist = GUI.list.artist;
 		mpcCmd = 'mpc findadd '+ GUI.list.mode +' "'+ name +'"'+ ( artist ? ' artist "'+ artist +'"' : '' );
 	} else if ( !mode ) {
-		if ( GUI.list.path.slice( -3 ) === 'cue' ) { // cue
+		var ext = name.split( '.' ).pop();
+		if ( ext === 'cue' && GUI.list.index ) { // cue
 			var plfile = GUI.list.path.replace( /"/g, '\\"' );
 			mpcCmd = '/srv/http/enhance1cue.sh "'+ plfile +'" '+ GUI.list.index;
-		} else if ( name.split( '.' ).pop() === 'pls' ) {
+		} else if ( ext === 'cue' || ext === 'pls' ) {
 			mpcCmd = 'mpc load "'+ name +'"';
 		} else if ( GUI.plugin ) { // unsaved dirble ( * in front of name for class indicator)
 			var pathname = GUI.list.path.replace( /\//g, '|' );
