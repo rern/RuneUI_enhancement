@@ -163,7 +163,7 @@ $( '#displayplayback' ).click( function() {
 				GUI.display[ this.name ] = checked;
 				data[ this.name ] = checked;
 			} );
-			$.post( 'enhance.php', { setdisplay: GUI.display }, function() {
+			$.post( 'enhance.php', { setdisplay: data }, function() {
 				displayPlayback();
 				$( '#swipebar, .page' ).off( 'swipeleft swiperight' );
 				setSwipe();
@@ -1336,18 +1336,19 @@ $( '#pl-currentpath' ).on( 'click', '.plsbackroot', function() {
 	$( '#tab-playlist' ).click();
 } );
 $( '#plopen' ).click( function() {
-	if ( !GUI.lsplaylists.length ) return
-	
-	$( '.playlist, #pl-searchbtn, #context-menu-plaction' ).addClass( 'hide' );
-	$( '#context-menu-plaction' ).addClass( 'hide' );
-	$( '#loader' ).removeClass( 'hide' );
-	
-	var plL = GUI.lsplaylists.length - 1; // less index
-	var plcounthtml = '<wh><i class="fa fa-microsd"></i></wh><bl>PLAYLIST</bl>';
-	plcounthtml += plL ? '<gr>&ensp;·&emsp;</gr> <wh id="pls-count">'+ numFormat( plL ) +'</wh>&ensp;<i class="fa fa-list-ul"></i>' : '';
-	$( '#pl-currentpath' ).html( plcounthtml +'<i class="fa fa-arrow-left plsbackroot"></i>' );
-	$( '#pl-currentpath, #pl-editor, #pl-index' ).removeClass( 'hide' );
-	renderLsPlaylists( GUI.lsplaylists );
+	$.post( 'enhance.php', { getplaylist: 1, lsplaylists: 1 }, function( data ) {
+		GUI.lsplaylists = data;
+		$( '.playlist, #pl-searchbtn, #context-menu-plaction' ).addClass( 'hide' );
+		$( '#context-menu-plaction' ).addClass( 'hide' );
+		$( '#loader' ).removeClass( 'hide' );
+		
+		var plL = GUI.lsplaylists.length - 1; // less index
+		var plcounthtml = '<wh><i class="fa fa-microsd"></i></wh><bl>PLAYLIST</bl>';
+		plcounthtml += plL ? '<gr>&ensp;·&emsp;</gr> <wh id="pls-count">'+ numFormat( plL ) +'</wh>&ensp;<i class="fa fa-list-ul"></i>' : '';
+		$( '#pl-currentpath' ).html( plcounthtml +'<i class="fa fa-arrow-left plsbackroot"></i>' );
+		$( '#pl-currentpath, #pl-editor, #pl-index' ).removeClass( 'hide' );
+		renderLsPlaylists( GUI.lsplaylists );
+	}, 'json' );
 } );
 $( '#plsave' ).click( function() {
 	if ( !GUI.status.playlistlength ) return
@@ -1441,7 +1442,7 @@ var sortableplaylist = new Sortable( document.getElementById( 'pl-editor' ), {
 		var newindex = e.oldIndex > e.newIndex ? e.newIndex : e.newIndex + 1;
 		$.post( 'enhance.php', {
 			bash: '/usr/bin/printf "%s\n" "'+ ( e.oldIndex + 1 ) +'m'+ newindex +'" "wq" '
-				 +'| /usr/bin/sudo /usr/bin/ex -s "/var/lib/mpd/playlists/'+ plname +'.m3u"'
+				 +'| /usr/bin/ex -s "/srv/http/assets/img/playlists/'+ plname +'"'
 		} );
 	}
 } );
@@ -1499,6 +1500,7 @@ $( '#pl-entries' ).on( 'click', '.pl-icon', function( e ) {
 	GUI.list.name = $thisli.find( '.name' ).html().trim();
 	GUI.list.thumb = $thisli.find( '.lithumb' ).text() || '';  // dirble save in contextmenu
 	GUI.list.img = $thisli.find( '.liimg' ).text() || '';      // dirble save in contextmenu
+	if ( GUI.list.path.slice( -3 ) === 'cue' ) GUI.list.index = $thisli.find( '.liindex' ).text() || '';
 	var menutop = ( $thisli.position().top + 49 ) +'px';
 	var $contextmenu = $( '#context-menu-plaction' );
 	var $contextlist = $( '#context-menu-plaction a' );
@@ -1542,17 +1544,30 @@ $( '#pl-editor' ).on( 'click', 'li', function( e ) {
 	
 	var $this = $( this );
 	if ( GUI.plappend ) {
-		$.post( 'enhance.php', { plappend: GUI.plappend, plfile: $this.find( '.lipath' ).text() }, function() {
+		var path = GUI.plappend.file;
+		var cue = path.slice( -3 ) === 'cue';
+		var list = cue ? '' : path;                                                  // file
+		list += '^^'+ GUI.list.name +'^^'+ GUI.list.li.find( '.time' ).text() +'^^'; // ^^title^^time^^
+		list += GUI.list.li.find( '.li2' ).text();                             // #track • artist album^^
+		if ( cue ) list += '^^^^^^^^^^'+ path.slice( 0, -3 ) +'cue^^'+ GUI.plappend.index;                // ^^^^^^^^^^cuem3u^^track
+		var plname = $this.find( '.lipath' ).text();
+		$.post( 'enhance.php', { plappend: plname, list: list }, function() {
 			renderSavedPlaylist( $this.find( 'span' ).text() );
-			$( 'html, body' ).animate( { scrollTop: window.innerHeight / 2 } );
+			setTimeout( function() {
+				$( 'html, body' ).animate( { scrollTop: ( $( '#pl-editor li' ).length - 3 ) * 49 } );
+			}, 300 );
 			GUI.plappend = '';
 		} );
 		return
 	}
 	
 	var $target = $( e.target );
-	if ( $target.hasClass( 'pl-icon' ) || !$this.find( '.fa-list-ul' ).length ) {
-		plContextmenu( $this, $target );
+	if ( $target.hasClass( 'pl-icon' ) || $target.hasClass( 'db-icon' ) || !$this.find( '.fa-list-ul' ).length ) {
+		if ( $target.data( 'target' ) === '#context-menu-file' ) {
+			dbContextmenu( $this, $target );
+		} else {
+			plContextmenu( $this, $target );
+		}
 	} else {
 		renderSavedPlaylist( $this.find( 'span' ).text() );
 	}

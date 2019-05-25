@@ -2,9 +2,11 @@
 // example: mpc save "abc's \"xyz\"" << name.replace( /"/g, '\\"' )
 
 $( '.contextmenu a' ).click( function() {
-	$( '.menu' ).addClass( 'hide' );
 	var $this = $( this );
 	var cmd = $this.data( 'cmd' );
+	$( '.menu' ).addClass( 'hide' );
+	if ( cmd !== 'update' ) $( 'li.active' ).removeClass( 'active' );
+	$( 'li.updn' ).removeClass( 'updn' );
 	// playback //////////////////////////////////////////////////////////////
 	if ( [ 'play', 'pause', 'stop' ].indexOf( cmd ) !== -1 ) {
 		if ( cmd === 'play' ) {
@@ -32,7 +34,10 @@ $( '.contextmenu a' ).click( function() {
 			setTimeout( function() { GUI.contextmenu = 0 }, 500 );
 			removeFromPlaylist( GUI.list.li );
 		} else if ( cmd === 'savedpladd' ) {
-			GUI.plappend = GUI.list.path;
+			GUI.plappend = {
+				  file  : GUI.list.path
+				, index : GUI.list.index
+			}
 			info( {
 				  icon    : 'list-ul'
 				, title   : 'Add to playlist'
@@ -48,7 +53,7 @@ $( '.contextmenu a' ).click( function() {
 		} else if ( cmd === 'savedplremove' ) {
 			var plline = GUI.list.li.index() + 1;
 			var plname = $( '#pl-currentpath .lipath' ).text();
-			$.post( 'enhance.php', { bash: '/usr/bin/sed -i "'+ plline +' d" "/var/lib/mpd/playlists/'+ plname +'.m3u"' } );
+			$.post( 'enhance.php', { bash: '/usr/bin/sed -i "'+ plline +' d" "/srv/http/assets/img/playlists/'+ plname +'"' } );
 			GUI.list.li.remove();
 		}
 		return
@@ -70,7 +75,6 @@ $( '.contextmenu a' ).click( function() {
 	}
 	
 	// replaceplay|replace|addplay|add //////////////////////////////////////////
-	$( '#db-entries li, #pl-editor li' ).removeClass( 'active' );
 	var name = ( GUI.browsemode === 'coverart' && !GUI.list.isfile ) ? GUI.list.name : GUI.list.path;
 	name = name.replace( /"/g, '\\"' );
 	// compose command
@@ -81,9 +85,9 @@ $( '.contextmenu a' ).click( function() {
 		var artist = GUI.list.artist;
 		mpcCmd = 'mpc findadd '+ GUI.list.mode +' "'+ name +'"'+ ( artist ? ' artist "'+ artist +'"' : '' );
 	} else if ( !mode ) {
-		if ( GUI.list.index ) { // cue, m3u
+		if ( GUI.list.path.slice( -3 ) === 'cue' ) { // cue
 			var plfile = GUI.list.path.replace( /"/g, '\\"' );
-			mpcCmd = '/srv/http/enhance1cuem3u.sh "'+ plfile +'" '+ GUI.list.index;
+			mpcCmd = '/srv/http/enhance1cue.sh "'+ plfile +'" '+ GUI.list.index;
 		} else if ( name.split( '.' ).pop() === 'pls' ) {
 			mpcCmd = 'mpc load "'+ name +'"';
 		} else if ( GUI.plugin ) { // unsaved dirble ( * in front of name for class indicator)
@@ -101,7 +105,16 @@ $( '.contextmenu a' ).click( function() {
 		mpcCmd = 'mpc add "'+ GUI.list.path.replace( /"/g, '\\"' ) +'"';
 	} else if ( mode === 'pl' ) {
 		cmd = cmd.slice( 2 );
-		mpcCmd = 'mpc load "'+ name +'"';
+		if ( GUI.library ) {
+			mpcCmd = 'mpc load "'+ name +'"';
+		} else { // saved playlist
+			var play = cmd.slice( -1 ) === 'y' ? 1 : 0;
+			var replace = cmd.slice( 0, 1 ) === 'r' ? 1 : 0;
+			$.post( 'enhance.php', { loadplaylist: name, play: play, replace: replace }, function() {
+				notify( ( replace ? 'Playlist Replaced' : 'Playlist Added' ), name, 'list-ul' );
+			} );
+			return
+		}
 	}
 	cmd = cmd.replace( /album|artist|composer|genre/, '' );
 	var contextCommand = {
@@ -113,9 +126,9 @@ $( '.contextmenu a' ).click( function() {
 	if ( cmd in contextCommand ) {
 		var command = contextCommand[ cmd ];
 		if ( cmd === 'add' ) {
-			addReplace( mode, cmd, command, 'Add to Playlist' );
+			addReplace( mode, cmd, command, 'Added to Playlist' );
 		} else if ( cmd === 'addplay' ) {
-			addReplace( mode, cmd, command, 'Add to Playlist + Play' );
+			addReplace( mode, cmd, command, 'Added to Playlist + Play' );
 		} else {
 			if ( GUI.display.plclear && GUI.status.playlistlength ) {
 				info( {
@@ -132,7 +145,7 @@ $( '.contextmenu a' ).click( function() {
 	} else if ( cmd === 'plashuffle' ) {
 		$.post( 'enhance.php', { bash: '/usr/local/bin/ashuffle -f /var/lib/mpd/playlists/'+ name +'.m3u &' } );
 		$( '#random' ).addClass( 'btn-primary ashuffle' );
-		notify( 'Random Play', name, 'random' );
+		notify( 'Random Play Enabled', name, 'random' );
 	}
 } );
 
@@ -213,12 +226,9 @@ function bookmarkNew() {
 				, title   : 'Add Bookmark'
 				, message : '<img src="'+ base64img +'">'
 						   +'<br><w>'+ path +'</w>'
-				, cancel  : function() {
-					$( '#db-entries li' ).removeClass( 'active' );
-				}
 				, ok      : function() {
 					$.post( 'enhance.php', { bookmarks: 1, path: path, base64: base64img, new: 1 } );
-					notify( 'Add Bookmark', path, 'bookmark' );
+					notify( 'Bookmark Added', path, 'bookmark' );
 				}
 			} );
 		} else {
@@ -234,12 +244,9 @@ function bookmarkNew() {
 				, textrequired : 0
 				, boxwidth     : 'max'
 				, textalign    : 'center'
-				, cancel    : function() {
-					$( '#db-entries li' ).removeClass( 'active' );
-				}
 				, ok           : function() {
 					$.post( 'enhance.php', { bookmarks: $( '#infoTextBox' ).val(), path: path, new: 1 } );
-					notify( 'Add Bookmark', path, 'bookmark' );
+					notify( 'Bookmark Added', path, 'bookmark' );
 				}
 			} );
 		}
@@ -313,9 +320,6 @@ function webRadioCoverart() {
 			, message     : ( img ? '<img src="'+ img +'">' : '<img src="'+ vu +'" style="border-radius: 9px">' )
 						   +'<span class="bkname"><br><w>'+ name +'</w><span>'
 			, fileoklabel : 'Replace'
-			, cancel     : function() {
-				$( '#db-entries li' ).removeClass( 'active' );
-			}
 			, ok         : function() {
 				var newimg = $( '#infoMessage .newimg' ).attr( 'src' );
 				var picacanvas = document.createElement( 'canvas' );
@@ -329,7 +333,6 @@ function webRadioCoverart() {
 							} else {
 								$( '#db-entries li.active' ).find( '.db-icon' ).remove();
 								$( '#db-entries li.active' ).find( '.lisort' ).after( '<img class="radiothumb db-icon" src="'+ newthumb +'" data-target="#context-menu-radio">' );
-								$( '#db-entries li' ).removeClass( 'active' );
 							}
 						} else {
 							info( {
@@ -352,7 +355,6 @@ function webRadioCoverart() {
 				} else {
 					$( '#db-entries li.active' ).find( 'img' ).remove();
 					$( '#db-entries li.active' ).find( '.lisort' ).after( '<i class="fa fa-webradio db-icon" data-target="#context-menu-webradio"></i>' );
-					$( '#db-entries li' ).removeClass( 'active' );
 				}
 			}
 		}
@@ -372,7 +374,6 @@ function webRadioSave( name, url ) {
 						   +'<br>'+ url
 						   +'<br>Already exists.'
 			} );
-			$( '#db-entries li.active' ).removeClass( 'active' );
 			return false
 		}
 	} );
@@ -391,10 +392,6 @@ function webRadioSave( name, url ) {
 		, textrequired : 0
 		, textalign    : 'center'
 		, boxwidth     : 'max'
-		, cancel       : function() {
-			GUI.library && $( '#db-entries li.active' ).removeClass( 'active' );
-			GUI.playlist && $( '#pl-entries li.updn' ).removeClass( 'updn' );
-		}
 		, ok           : function() {
 			var newname = $( '#infoTextBox' ).val();
 			notify( 'Webradio saved', newname, 'webradio' );
@@ -454,9 +451,6 @@ function webRadioRename() {
 			, textrequired : 0
 			, textalign    : 'center'
 			, boxwidth     : 'max'
-			, cancel       : function() {
-				$( '#db-entries li.active' ).removeClass( 'active' );
-			}
 			, oklabel      : 'Rename'
 			, ok           : function() {
 				var newname = $( '#infoTextBox' ).val();
@@ -478,9 +472,6 @@ function webRadioDelete() {
 			, message : ( nameimg[ 2 ] ? '<br><img src="'+ nameimg[ 2 ] +'">' : '<br><i class="fa fa-webradio bookmark"></i>' )
 					   +'<br><w>'+ nameimg[ 0 ] +'</w>'
 					   +'<br>'+ url
-			, cancel  : function() {
-				$( '#db-entries li.active' ).removeClass( 'active' );
-			}
 			, oklabel : 'Delete'
 			, ok      : function() {
 				$.post( 'enhance.php', { webradios: name, url: url, delete: 1 } );
@@ -524,15 +515,12 @@ function playlistRename() {
 }
 function addPlaylist( name, oldname ) {
 	if ( oldname ) {
-		var oldfile = ' "/var/lib/mpd/playlists/'+ oldname.replace( /"/g, '\\"' ) +'.m3u"';
-		var newfile = ' "/var/lib/mpd/playlists/'+ name.replace( /"/g, '\\"' ) +'.m3u"';
-		$.post( 'enhance.php', { bash: '/usr/bin/mv'+ oldfile + newfile } );
+		var path = '/srv/http/assets/img/playlists/'
+		var oldfile = path + oldname.replace( /"/g, '\\"' );
+		var newfile = path + name.replace( /"/g, '\\"' );
+		$.post( 'enhance.php', { bash: '/usr/bin/mv "'+ oldfile +'" "'+ newfile +'"' } );
 	} else {
-		var name = name.replace( /"/g, '\\"' );
-		$.post( 'enhance.php', {
-			mpc: 'mpc save "'+ name +'"; '
-				+'/usr/bin/sudo /usr/bin/chmod 775 "/var/lib/mpd/playlists/'+ name + '.m3u"'
-		} );
+		$.post( 'enhance.php', { saveplaylist: name.replace( /"/g, '\\"' ) } );
 		notify( 'Playlist Saved', name, 'list-ul' );
 		$( '#plopen' ).removeClass( 'disable' );
 	}
@@ -547,9 +535,15 @@ function playlistVerify( name, oldname ) {
 		} );
 		return;
 	}
-	$.post( 'enhance.php', { mpc: 'mpc lsplaylists', result: 1 }, function( data ) {
-		
-		if ( !data || data.split( '\n' ).indexOf( name ) === -1 ) {
+	$.post( 'enhance.php', { getplaylist: 1, lsplaylists: 1 }, function( data ) {
+		var exist = 0;
+		$.each( data, function( i, value ) {
+			if ( value.name === name ) {
+				exist = 1;
+				return false
+			}
+		} );
+		if ( !exist ) {
 			oldname ? addPlaylist( name, oldname ) : addPlaylist( name );
 		} else {
 			info( {
@@ -565,7 +559,7 @@ function playlistVerify( name, oldname ) {
 				}
 			} );
 		}
-	} );
+	}, 'json' );
 }
 function playlistDelete() {
 	info( {
@@ -576,10 +570,129 @@ function playlistDelete() {
 		, oklabel : 'Delete'
 		, ok      : function() {
 			var count = $( '#pls-count' ).text() - 1;
-			$( '#pls-count' ).text( numFormat( count ) );
-			if ( !count ) $( '#pl-currentpath' ).html( '<bl>&emsp;PLAYLISTS</bl>' );
+			if ( count ) $( '#pls-count' ).text( numFormat( count ) );
 			GUI.list.li.remove();
-			$.post( 'enhance.php', { mpc: 'mpc rm "'+ GUI.list.name.replace( /"/g, '\\"' ) +'"' } );
+			$.post( 'enhance.php', { bash: '/usr/bin/rm "/srv/http/assets/img/playlists/'+ GUI.list.name.replace( /"/g, '\\"' ) +'"' }, function() {
+				if ( !count ) $( '#pl-home' ).click();
+			} );
 		}
+	} );
+}
+function setTag() {
+	$.post( 'enhance.php', { counttag: GUI.list.path }, function( counts ) {
+		tag( counts );
+	}, 'json' );
+}
+function tag( counts ) {
+	var cue = GUI.list.path.split( '.' ).pop() === 'cue';
+	var cmd = '/usr/bin/mpc -f "%artist%^^%albumartist%^^%album%^^%composer%^^%genre%^^%title%^^%track%^^%file%" ';
+	if ( !cue ) {
+		cmd += 'ls "'+ GUI.list.path +'" 2> /dev/null | head -1';
+	} else {
+		cmd += 'playlist "'+ GUI.list.path +'"';
+		var track = GUI.list.index;
+		if ( track ) {
+			if ( track < 10 ) track = '0'+ track; 
+			cmd += ' | grep "\\^\\^'+ track +'\\^\\^"';
+		} else {
+			cmd += ' 2> /dev/null | head -1';
+		}
+	}
+	$.post( 'enhance.php', { bash: cmd }, function( data ) {
+		var tags = data.slice( 0, -1 ).split( '^^' );
+		var file = tags[ 7 ].replace( /"/g, '\"' );
+		var ext = file.split( '.' ).pop();
+		var path = file.substr( 0, file.lastIndexOf( '/' ) );
+		var labels = [
+			  '<i class="fa fa-artist wh"></i>'
+			, '<i class="fa fa-albumartist wh"></i>'
+			, '<i class="fa fa-album wh"></i>'
+			, '<i class="fa fa-composer wh"></i>'
+			, '<i class="fa fa-genre wh"></i>'
+		];
+		var values = [ tags[ 0 ], tags[ 1 ], tags[ 2 ], tags[ 3 ], tags[ 4 ] ];
+		if ( GUI.list.isfile ) {
+			labels.push(
+				  '<i class="fa fa-music wh"></i>'
+				, '<i class="fa fa-hash wh"></i>'
+			);
+			values.push( tags[ 5 ], tags[ 6 ] );
+			var message = '<i class="fa fa-file-music wh"></i> '+ ( cue ? GUI.list.path : file ) +'<br>&nbsp;'
+			var pathfile = '"/mnt/MPD/'+ file +'"';
+		} else {
+			var message = '<img src="'+ $( '.licoverimg img' ).attr( 'src' ) +'" style="width: 50px; height: 50px;">'
+						 +'<br><i class="fa fa-folder wh"></i>'+ ( cue ? GUI.list.path : path ) +'<br>&nbsp;'
+			var pathfile = '"/mnt/MPD/'+ path +'/"*.'+ ext;
+		}
+		var various = '***various***';
+		info( {
+			  icon      : 'tag'
+			, title     : 'Tag Editor'
+			, width     : 500
+			, message   : message
+			, textlabel : labels
+			, textvalue : values
+			, boxwidth  : 'max'
+			, preshow   : function() {
+				if ( counts.artist > 1 ) $( '#infoTextBox' ).val( various );
+				if ( counts.composer > 1 ) $( '#infoTextBox3' ).val( various );
+				if ( counts.genre > 1 ) $( '#infoTextBox4' ).val( various );
+				if ( cue && GUI.list.isfile ) {
+					for ( i = 1; i < 7; i++ ) if ( i !== 5 ) $( '#infoTextLabel'+ i +', #infoTextBox'+ i ).next().andSelf().addClass( 'hide' );
+					$( '#infoTextLabel6, #infoTextBox6' ).next().andSelf().addClass( 'hide' );
+				}
+			}
+			, ok        : function() {
+				var val = [];
+				$( '.infotextbox .infoinput' ).each( function() {
+					val.push( this.value );
+				} );
+				var artist      = val[ 0 ];
+				var albumartist = val[ 1 ];
+				var album       = val[ 2 ];
+				var composer    = val[ 3 ];
+				var genre       = val[ 4 ];
+				var title       = val[ 5 ];
+				if ( !cue ) {
+					var names = [ 'artist', 'albumartist', 'album', 'composer', 'genre', 'title', 'tracknumber' ];
+					var vL = val.length;
+					var cmd = '/usr/bin/kid3-cli ';
+					for ( i = 0; i < vL; i++ ) {
+						if ( val[ i ] !== various ) cmd += "-c \"set "+ names[ i ] +" '"+ val[ i ].toString().replace( /(["'])/g, '\\$1' ) +'\'" ';
+					}
+					cmd += pathfile +'; mpc update "'+ path +'"; /srv/http/enhancecount.sh 1';
+				} else {
+					var                         cmd  = "/usr/bin/sed -i"
+													  +" -e '/^PERFORMER/ d'"
+													  +" -e '/^REM COMPOSER/ d'"
+													  +" -e '/^REM GENRE/ d'";
+					if ( artist !== various )   cmd += " -e 's/^\\s\\+PERFORMER.*/    PERFORMER \""+ artist +"\"/'";
+					if ( albumartist )          cmd += " -e '/^TITLE/ i\\PERFORMER \""+ albumartist +"\"'";
+					if ( album )                cmd += " -e 's/^TITLE.*/TITLE \""+ album +"\"/'";
+					if ( composer !== various ) cmd += " -e '1 i\\REM COMPOSER \""+ composer +"\"'";
+					if ( genre !== various )    cmd += " -e '1 a\\REM GENRE \""+ genre +"\"'";
+					
+					if ( GUI.list.isfile )      cmd += " -e '/^\\s\\+TRACK "+ track +"/ {"
+													  +' n;  s/^\\s\\+TITLE.*/    TITLE "'+ title +'"/'
+													  +';n;  s/^\\s\\+PERFORMER.*/    PERFORMER "'+ artist +'"/'
+													  +"}'";
+												
+												cmd += ' "/mnt/MPD/'+ GUI.list.path +'"'
+													  +'; mpc update "'+ GUI.list.path.substr( 0, file.lastIndexOf( '/' ) ) +'"'
+													  +'; /srv/http/enhancecount.sh 1';
+				}
+				$.post( 'enhance.php', { bash: cmd } );
+				// local fields update
+				if ( GUI.list.isfile ) {
+					$( '#db-entries li.active .name' ).text( title );
+				} else {
+					$( '.liartist' ).text( albumartist || artist );
+					$( '.lialbum' ).text( album );
+					$( '.licomposer, .ligenre' ).next().andSelf().remove();
+					if ( composer ) $( '.liartist' ).next().after( '<span class="licomposer"><i class="fa fa-composer"></i>'+ composer +'</span><br>' );
+					if ( genre ) $( '.liinfo .db-icon' ).before( '<span class="ligenre"><i class="fa fa-genre"></i>'+ genre +'</span><br>' );
+				}
+			}
+		} );
 	} );
 }

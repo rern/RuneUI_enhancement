@@ -11,7 +11,8 @@ if ( !isset( $_POST[ 'statusonly' ] ) ) {
 	}
 }
 
-$mpdtelnet = ' | telnet localhost 6600 | grep -v "^Trying\|^Connected\|^Escape\|^OK\|^Connection\|^Date\|^Last-Modified\|^mixrampdb\|^nextsong\|^nextsongid/"';
+// grep cannot be used here
+$mpdtelnet = ' | telnet localhost 6600 | sed "/^Trying\|^Connected\|^Escape\|^OK\|^Connection\|^Date\|^Last-Modified\|^mixrampdb\|^nextsong\|^nextsongid/ d"';
 $lines = shell_exec( '{ sleep 0.05; echo clearerror; echo status; echo currentsong; sleep 0.05; }'.$mpdtelnet );
 // fix: initially add song without play - currentsong = (blank)
 if ( strpos( $lines, 'file:' ) === false ) $lines = shell_exec( '{ sleep 0.05; echo status; echo playlistinfo 0; sleep 0.05; }'.$mpdtelnet );
@@ -34,36 +35,36 @@ while ( $line !== false ) {
 	}
 	$line = strtok( "\n" );
 }
-
-$status[ 'updating_db' ] = array_key_exists( 'updating_db', $status ) ? 1 : 0;
-$file = '/mnt/MPD/'.$status[ 'file' ];
-$pathinfo = pathinfo( $file );
-$dir = $pathinfo[ 'dirname' ];
-$ext = strtoupper( $pathinfo[ 'extension' ] );
-$status[ 'ext' ] = ( substr($status[ 'file' ], 0, 4 ) !== 'http' ) ? $ext : 'radio';
-
-if ( $status[ 'ext' ] !== 'radio' ) {
-	// missing id3tags
-	if ( empty( $status[ 'Artist' ] ) ) $status[ 'Artist' ] = end( explode( '/', $dir ) );
-	if ( empty( $status[ 'Title' ] ) ) $status[ 'Title' ] = $pathinfo[ 'filename' ];
-	if ( empty( $status[ 'Album' ] ) ) $status[ 'Album' ] = '';
-} else {
-	// before webradios play: no 'Name:' - use station name from file instead
-	if ( isset( $status[ 'Name' ] ) ) {
-		$status[ 'Artist' ] = $status[ 'Name' ];
-	} else {
-		$urlname = str_replace( '/', '|', $status[ 'file' ] );
-		$webradiofile = "/srv/http/assets/img/webradios/$urlname";
-		if ( !file_exists( $webradiofile ) ) $webradiofile = "/srv/http/assets/img/webradiopl/$urlname";
-		$status[ 'Artist' ] = file( $webradiofile )[ 0 ];
-	}
-	$status[ 'Title' ] = ( $status[ 'state' ] === 'stop' ) ? '' : $status[ 'Title' ];
-	$status[ 'Album' ] = $status[ 'file' ];
-	$status[ 'time' ] = '';
-}
-
+$status[ 'song' ] = $status[ 'song' ] ?: 0;
+$status[ 'updating_db' ] = $status[ 'updating_db' ] ? 1 : 0;
 if ( exec( 'pidof ashuffle' ) ) $status[ 'random' ] = 1;
-if ( !array_key_exists( 'song', $status ) ) $status[ 'song' ] = 0;
+
+if ( $status[ 'file' ] ) {
+	$statusfile = $status[ 'file' ];
+	$file = '/mnt/MPD/'.$statusfile;
+	$pathinfo = pathinfo( $file );
+	$ext = strtoupper( $pathinfo[ 'extension' ] );
+	$status[ 'ext' ] = ( substr( $statusfile, 0, 4 ) !== 'http' ) ? $ext : 'radio';
+	if ( $status[ 'ext' ] !== 'radio' ) {
+		// missing id3tags
+		if ( empty( $status[ 'Artist' ] ) ) $status[ 'Artist' ] = end( explode( '/', $pathinfo[ 'dirname' ] ) );
+		if ( empty( $status[ 'Title' ] ) ) $status[ 'Title' ] = $pathinfo[ 'filename' ];
+		if ( empty( $status[ 'Album' ] ) ) $status[ 'Album' ] = '';
+	} else {
+		// before webradios play: no 'Name:' - use station name from file instead
+		if ( isset( $status[ 'Name' ] ) ) {
+			$status[ 'Artist' ] = $status[ 'Name' ];
+		} else {
+			$urlname = str_replace( '/', '|', $statusfile );
+			$webradiofile = "/srv/http/assets/img/webradios/$urlname";
+			if ( !file_exists( $webradiofile ) ) $webradiofile = "/srv/http/assets/img/webradiopl/$urlname";
+			$status[ 'Artist' ] = file( $webradiofile )[ 0 ];
+		}
+		$status[ 'Title' ] = ( $status[ 'state' ] === 'stop' ) ? '' : $status[ 'Title' ];
+		$status[ 'Album' ] = $statusfile;
+		$status[ 'time' ] = '';
+	}
+}
 
 $previousartist = isset( $_POST[ 'artist' ] ) ? $_POST[ 'artist' ] : '';
 $previousalbum = isset( $_POST[ 'album' ] ) ? $_POST[ 'album' ] : '';
@@ -82,7 +83,7 @@ if ( $status[ 'ext' ] !== 'radio' && $activePlayer === 'MPD' ) {
 	$status[ 'coverart' ] = getCoverart( $file );
 } else if ( $status[ 'ext' ] === 'radio' ) {
 	$status[ 'coverart' ] = 0;
-	$filename = str_replace( '/', '|', $status[ 'file' ] );
+	$filename = str_replace( '/', '|', $statusfile );
 	$file = "/srv/http/assets/img/webradios/$filename";
 	if ( !file_exists( $file ) ) $file = "/srv/http/assets/img/webradiopl/$filename";
 	if ( file_exists( $file ) ) {
@@ -108,9 +109,7 @@ if ( $status[ 'ext' ] !== 'radio' && $activePlayer === 'MPD' ) {
 	}
 }
 
-$webradios = $redis->hGetAll( 'webradios' );
-$webradioname = array_flip( $webradios );
-$name = $webradioname[ $status[ 'file' ] ];
+$name = $status[ 'Artist' ]; // webradioname
 if ( $status[ 'state' ] === 'play' ) {
 	// lossless - no bitdepth
 	$bitdepth = ( $status[ 'ext' ] === 'radio' ) ? '' : $status[ 'bitdepth' ];

@@ -143,6 +143,34 @@ EOF
 )
 insertH '1'
 
+# to be moved after 'if not update ##############################################
+makeDirLink playlists
+# convert playlists
+dir=/srv/http/assets/img/playlists
+olddir=/var/lib/mpd/playlists
+if [[ -z $( ls -A $dir ) && -n $( ls -A $olddir ) ]]; then # convert if none found
+    echo -e "$bar Convert playlists data ..."
+    
+    plfiles=( $olddir/* )
+    for plfile in "${plfiles[@]}"; do
+        lines=
+        readarray files < "$plfile"
+        for file in "${files[@]}"; do
+            file=$( echo $file | tr -d '\n' )
+            if [[ ${file:0:4} == http ]]; then
+                lines="$lines$file^^(unnamed)\n"
+            else
+                data=$( mpc ls -f "%file%^^%title%^^%time%^^[##%track% • ][%artist%][ • %album%]" "$file" )
+                lines="$lines$data\n"
+            fi
+        done
+        name=$( basename "$plfile" .m3u )
+		echo $name
+        printf "$lines" > "$dir/$name"
+    done
+	setown $dir
+fi
+
 ############################################################################
 if [[ $1 == u ]]; then
 	installfinish $@
@@ -152,10 +180,15 @@ if [[ $1 == u ]]; then
 fi
 
 ########## if not update ############################################################
+makeDirLink coverarts
 makeDirLink tmp
 makeDirLink webradiopl
-makeDirLink coverarts
 makeDirLink webradios
+
+setown() {
+	chown -R http:http $1
+	[[ -L $1 ]] && chown -R http:http $( readlink -f $1 )
+}
 
 # convert webradios
 # filename: http:||webradio|url
@@ -174,12 +207,7 @@ if [[ -z $( ls -A $dir ) && -n $( ls -A $olddir ) ]]; then # convert if none fou
 		echo $name > "$dir/${url//\//|}"
 		echo $name - $url
 	done
-	if [[ -L $dir ]]; then
-		dirtarget=$( readlink -f $dir )
-		chown -R http:http "$dirtarget" $dir
-	else
-		chown -R http:http $dir
-	fi
+	setown $dir
 fi
 
 makeDirLink bookmarks
@@ -215,12 +243,7 @@ if [[ -z $( ls -A $dir ) ]]; then # convert only when none found
 		done
 		redis-cli del bookmarks bookmarksidx &> /dev/null
 	fi
-	if [[ -L $dir ]]; then
-		dirtarget=$( readlink -f $dir )
-		chown -R http:http "$dirtarget" $dir
-	else
-		chown -R http:http $dir
-	fi
+	setown $dir
 fi
 
 # zoom - keep range: 0.5 - 3.0
@@ -294,13 +317,19 @@ file=/srv/http/app/templates/enhanceplayback.php  # for rune youtube
 # correct version number
 [[ $( redis-cli get buildversion ) == 'beta-20160313' ]] && redis-cli set release 0.3 &> /dev/null
 
-playback="bars debug dev time cover volume buttons"
-library="coverart nas sd usb webradio album artist albumartist composer genre spotify dirble jamendo"
-miscel="count label coverfile plclear playbackswitch tapaddplay thumbbyartist"
-for item in $playback $library $miscel; do
-	echo debug dev jamendo spotify tapaddplay thumbbyartist | grep -qw $item && chk='' || chk=checked
-	redis-cli hset display $item "$chk" &> /dev/null
-done
+if [[ $( redis-cli exists display ) == 0 ]]; then
+	playback="bars debug dev time cover volume buttons"
+	library="coverart nas sd usb webradio album artist albumartist composer genre spotify dirble jamendo"
+	miscel="count label coverfile plclear playbackswitch tapaddplay thumbbyartist"
+	for item in $playback $library $miscel; do
+		redis-cli hset display $item checked &> /dev/null
+	done
+	
+	unchecked="debug dev jamendo spotify tapaddplay thumbbyartist"
+	for item in $unchecked; do
+		redis-cli hset display $item "" &> /dev/null
+	done
+fi
 # pre-count albumartist, composer, genre
 albumartist=$( mpc list albumartist | awk NF | wc -l )
 composer=$( mpc list composer | awk NF | wc -l )

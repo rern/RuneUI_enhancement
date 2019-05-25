@@ -31,10 +31,13 @@ _Tested on RuneAudio 0.4b, 0.5_
 		- Webradio - VU meter (animated gif)
 	- Image from each Dirble stations
 	- Custom Webradio coverarts
-- Metadata tag editor ( by [Kid3](https://kid3.sourceforge.io) )
 - Index bar
 	- Mask available indexes
 - Library sorting
+- Metadata tag editor ( with [Kid3](https://kid3.sourceforge.io) )
+- Single files with`*.cue` behave like individual files
+	- Listed and saved as individual tracks
+	- Editable metadata
 - Selectable show/hide
 	- Top-bottom bars
 	- Time Knob
@@ -49,8 +52,11 @@ _Tested on RuneAudio 0.4b, 0.5_
 	- Fallback for allow-swipe-only area
 - Refresh browser for fullscreen mode
 	- Long-press bottom bar / swipe bar
-- Movable Library items ( by [Sortable](https://github.com/SortableJS/Sortable) )
-- Movable/ editable saved playlists
+- Movable items ( by [Sortable](https://github.com/SortableJS/Sortable) )
+	- Library home
+	- Playlists
+	- Saved playlists
+- Editable saved playlists
 - Context menu
 	- Icon on the right removed
 	- Use icon on the left instead
@@ -133,13 +139,12 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 	- Webradio coverarts ( need `ext*` formatted drive )
 		- Tap Webradio icon in list view
 - Metadata tag editor (Install RuneUIe Metadata Editor addon to enable)
-	- Album view:
-		- Album tags - Coverart context menu > Change Metadata
-		- Song tags - List context menu > Change Metadata
+	- Album tags - Coverart context menu > Tags (browse by directory/bookmark/coverart only)
+	- Song tags - File context menu > Tags
 - Bookmarks and webradios can be renamed
 - Bookmarks and webradios can be named with " characters
 - Show icon and breadcrumb heading while browsing
-- Show list in playlist files `*.cue` `*.pls` `*.m3u`
+- Show list in playlist files, `*.cue` `*.pls` `*.m3u`
 - Toggle search box
 - Index bar
 	- Unavailable indexes masked
@@ -181,9 +186,10 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 - Saved playlists
 	- Show content
 	- Drag to rearrange
-	- Remove individual items
+	- Add/Remove individual items
 	- Can be named with " characters
 	- Can be renamed
+	- Save tracks with `*.cue` correctly as individual tracks
 
 ### Keyboard Navigation
 All pages

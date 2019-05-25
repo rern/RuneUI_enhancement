@@ -166,6 +166,7 @@ function getUpdateStatus() {
 			} else {
 				clearInterval( GUI.intUpdate );
 				GUI.intUpdate = false;
+				$( '#db-entries li.active' ).removeClass( 'active' );
 				notify( 'Library Database', 'Database updated.', 'library' );
 			}
 		}, 'json' );
@@ -208,7 +209,7 @@ function second2HMS( second ) {
 	hh = hh ? hh +':' : '';
 	mm = hh ? ( mm > 9 ? mm +':' : '0'+ mm +':' ) : ( mm ? mm +':' : '' );
 	ss = mm ? ( ss > 9 ? ss : '0'+ ss ) : ss;
-	return ss ? hh + mm + ss : '';
+	return hh + mm + ss;
 }
 function scrollLongText() {
 	var $el = $( '#artist, #song, #album' );
@@ -274,6 +275,12 @@ function setPlaybackBlank() {
 		.removeClass( 'scrollleft' )
 		.removeAttr( 'style' )
 		.css( 'visibility', 'visible' );
+}
+function setCoverart( data ) {
+	GUI.coversave = 1;
+	$( '#cover-art' )
+		.attr( 'src', data.album.image[ 4 ][ '#text' ] || data.album.image[ 3 ][ '#text' ] )
+		.after( '<i class="edit licover-save fa fa-save"></i>' );
 }
 function renderPlayback() {
 	var status = GUI.status;
@@ -383,21 +390,13 @@ function renderPlayback() {
 				, timeout  : 5000
 				, dataType : 'json'
 				, success  : function( data ) {
-					var coverurl = data.album.image[ 4 ][ '#text' ] || data.album.image[ 3 ][ '#text' ];
-					if ( coverurl ) {
-						GUI.coversave = 1;
-						$( '#cover-art' )
-							.attr( 'src', coverurl )
-							.after( '<i class="edit licover-save fa fa-save"></i>' );
+					if ( 'error' in data === false ) {
+						setCoverart( data );
 					} else {
+						// get with artist only
 						delete apijson.data.album;
 						apijson.success = function( data ) {
-							coverurl = data.album.image[ 4 ][ '#text' ] || data.album.image[ 3 ][ '#text' ];
-							if ( coverurl )
-								GUI.coversave = 1;
-								$( '#cover-art' )
-									.attr( 'src', coverurl )
-									.after( '<i class="edit licover-save fa fa-save"></i>' );
+							if ( 'error' in data === false ) setCoverart( data );
 						}
 						$.ajax( apijson );
 					}
@@ -971,8 +970,8 @@ function dataParse( data, path, querytype, plid ) {
 					var coversrc = coverart ? coverart : coverrune;
 					var browsemode = GUI.dbbackdata.length ? GUI.dbbackdata[ 0 ].browsemode : '';
 					var artistmode = [ 'artist', 'composer', 'genre' ].indexOf( browsemode ) !== -1 ? 1 : 0;
-					var composerhtml = ( composer ) ? '<i class="fa fa-composer"></i><span class="licomposer">'+ composer +'</span><br>' : '';
-					var genrehtml = genre ? '<i class="fa fa-genre"></i><span class="ligenre">'+ genre +'</span><br>' : '';
+					var composerhtml = ( composer ) ? '<span class="licomposer"><i class="fa fa-composer"></i>'+ composer +'</span><br>' : '';
+					var genrehtml = genre ? '<span class="ligenre"><i class="fa fa-genre"></i>'+ genre +'</span><br>' : '';
 					var file = data[ 0 ].file || data[ 0 ].filepl;
 					var dir = file.substring( 0, file.lastIndexOf( '/' ) );
 					content += '<li class="licover">'
@@ -980,8 +979,8 @@ function dataParse( data, path, querytype, plid ) {
 							  +'<div class="licoverimg'+ ( coverart ? '' : ' nocover' ) +'"><img src="'+ coversrc +'" class="coversmall"></div>'
 							  +'<span class="liinfo">'
 								  +'<bl class="lialbum">'+ album +'</bl><br>'
-								  + composerhtml
 								  +'<i class="fa fa-'+ ( artistmode ? 'artist' : 'albumartist' ) +'"></i><span class="liartist">'+ ( artistmode ? artist : albumartist ) +'</span><br>'
+								  + composerhtml
 								  + genrehtml
 								  + ( GUI.browsemode === 'file' ? '' : '<a class="lidir">'+ dir +'</a><br>' )
 								  +'<i class="fa fa-music db-icon" data-target="#context-menu-folder"></i>'+ arrayfile.length +'<gr> • </gr>'+ second2HMS( litime )
@@ -1116,7 +1115,7 @@ function dataParse( data, path, querytype, plid ) {
 			var ilength = folder.length;
 			for ( i = 0; i < ilength; i++ ) {
 				ext = folder[ i ].split( '.' ).pop();
-				if ( [ 'cue', 'm3u', 'mu8' ].indexOf( ext ) !== -1 ) continue
+				if ( [ 'cue', 'm3u', 'm3u8' ].indexOf( ext ) !== -1 ) continue
 				
 				folderPath += ( i > 0 ? '/' : '' ) + folder[ i ];
 				folderCrumb += ' <a>'+ ( i > 0 ? '<w> / </w>' : '' ) + folder[ i ] +'<span class="lipath">'+ folderPath +'</span></a>';
@@ -1195,7 +1194,7 @@ function data2html( list, path ) {
 	} else if ( GUI.browsemode === 'album' ) {
 		if ( 'file' in list ) {
 			var liname = list.Title;
-			content = '<li>'
+			content = '<li class="file">'
 					 +'<a class="lipath">'+ list.file +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ list.lisort +'</a>'
 					 +'<i class="fa fa-music db-icon" data-target="#context-menu-file"></i>'
 					 +'<span class="li1">'+ liname +'<span class="time">'+ list.Time +'</span></span>'
@@ -1260,7 +1259,7 @@ function data2html( list, path ) {
 					 +'<span class="single">'+ liname +'</span>';
 		} else if ( 'file' in list ) {
 			var liname = list.Title;
-			content = '<li>'
+			content = '<li class="file">'
 					 +'<a class="lipath">'+ list.file +'</a><a class="liname">'+ liname +'</a><a class="lisort">'+ list.lisort +'</a>'
 					 +'<i class="fa fa-music db-icon" data-target="#context-menu-file"></i>'
 					 +'<span class="li1">'+ liname +'<span class="time">'+ list.Time +'</span></span>'
@@ -1455,18 +1454,18 @@ function dbContextmenu( $li, $target ) {
 		$li.removeClass( 'active' );
 		return
 	}
-	
 	GUI.list = {};
 	if ( $li.hasClass( 'licover' ) && GUI.browsemode === 'coverart' ) {
 		GUI.list.mode = 'album'
 	} else {
 		GUI.list.mode = $li.find( '.db-icon' ).prop( 'class' ).replace( /fa fa-| db-icon/g, '' );
 	}
+	var dbpl = GUI.library ? 'db' : 'pl';
 	GUI.list.path = $li.find( '.lipath' ).text().trim() || '';
 	GUI.list.name = $li.find( '.liname' ).text().trim() || '';
 	GUI.list.artist = $li.find( '.liartist' ).text().trim() || '';
 	GUI.list.index = $li.find( '.liindex' ).text() || '';  // cue - in contextmenu
-	GUI.list.liindex = $( '#db-entries li' ).index( $li ); // for webradio delete - in contextmenu
+	GUI.list.liindex = $( '#'+ dbpl +'-entries li' ).index( $li ); // for webradio delete - in contextmenu
 	GUI.list.isfile = $li.hasClass( 'file' );              // file/dirble save in contextmenu
 	GUI.list.thumb = $li.find( '.lithumb' ).text() || '';  // dirble save in contextmenu
 	GUI.list.img = $li.find( '.liimg' ).text() || '';      // dirble save in contextmenu
@@ -1481,13 +1480,16 @@ function dbContextmenu( $li, $target ) {
 	
 	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
 	$( '.update' ).toggleClass( 'hide', GUI.status.updating_db !== 0 );
-	var cuem3u = [ 'cue', 'm3u' ].indexOf( $( '#db-entries .lipath:eq( 1 )' ).text().split( '.' ).pop() ) !== -1;
-	$( '.tag' ).toggleClass( 'hide', $( '.licover' ).length === 0 || cuem3u );
+	$( '.tag' ).addClass( 'hide' );
+	if ( GUI.list.isfile ) {
+		$( '.tag' ).removeClass( 'hide' );
+	} else if ( $( '.licover' ).length ) {
+		if ( GUI.browsemode === 'file' || GUI.browsemode === 'coverart' ) $( '.tag' ).removeClass( 'hide' );
+	}
 	var contextnum = $menu.find( 'a:not(.hide)' ).length;
 	$( '.menushadow' ).css( 'height', contextnum * 41 - 1 );
-	$( '#db-entries li' ).removeClass( 'active' );
+	$( '#'+ dbpl +'-entries li, #pl-editor li' ).removeClass( 'active' );
 	$li.addClass( 'active' );
-	
 	if ( $li.hasClass( 'licover' ) ) {
 		var menutop = GUI.bars ? '310px' : '270px';
 	} else {
@@ -1511,9 +1513,13 @@ function plContextmenu( $li, $target ) { // saved playlists
 	GUI.list.li = $li; // for contextmenu
 	GUI.list.name = $li.find( '.liname' ).text().trim();
 	GUI.list.path = $li.find( '.lipath' ).text().trim() || GUI.list.name;
+	if ( GUI.list.path.slice( -3 ) === 'cue' ) GUI.list.index = $li.find( '.liindex' ).text() || '';
 	GUI.list.isfile = $li.find( '.fa-music' ).length; // used in contextmenu
 	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
-	var $menu = $( $li.find( '.pl-icon' ).data( 'target' ) );
+	$( '.remove' ).removeClass( 'hide' );
+	$( '.tag' ).addClass( 'hide' );
+	var dbpl = $li.find( '.pl-icon' ).length ? '.pl' : '.db';
+	var $menu = $( $li.find( dbpl +'-icon' ).data( 'target' ) );
 	if ( GUI.display.tapaddplay
 		&& !$target.hasClass( 'pl-icon' )
 	) {
@@ -1660,12 +1666,13 @@ function htmlPlaylist( data ) {
 			genre = value.genre;
 		} else if ( 'path' in value ) {
 			path = value.path;
-		} else if ( 'track' in value && value.track.slice( 0, 4 ) === 'http' ) {
+		} else if ( value.file.slice( 0, 4 ) === 'http' ) {
 			var title = value.Title || '';
 			var name = title.toString().replace( '*', '' );
 			content += '<li>'
 						  +'<i class="fa fa-webradio pl-icon'+ ( title[ 0 ] === '*' || !title ? ' unsaved' : '' ) +'" data-target="#context-menu-webradiopl"></i>'
 						  +'<a class="lipath">'+ value.file +'</a>'
+						  +'<a class="liname">'+ name +'</a>'
 						  + ( value.thumb ? '<a class="lithumb">'+ value.thumb +'</a>' : '' )
 						  + ( value.img ? '<a class="liimg">'+ value.img +'</a>' : '' )
 						  +'<span class="li1"><a class="name">'+ name +'</a><a class="song"></a><span class="duration"><a class="elapsed"></a></span></span>'
@@ -1675,12 +1682,20 @@ function htmlPlaylist( data ) {
 		} else {
 			sec = value.Time ? HMS2Second( value.Time ) : 0;
 			pltime += sec;
-			if ( GUI.playlist && !GUI.pleditor ) {
+			if ( GUI.playlist && !GUI.pleditor && !value.cuem3u ) {
 				var actionhtml = '<i class="fa fa-music pl-icon"></i>'
 								+'<a class="lipath">'+ value.file +'</a>';
 			} else {
-				var actionhtml = '<i class="fa fa-music '+ ( GUI.library ? 'db' : 'pl' ) +'-icon" data-target="#context-menu-'+ ( GUI.library ? 'file' : 'filesavedpl' ) +'"></i>'
-								+'<a class="lipath">'+ ( value.cuem3u || value.file ) +'</a>'
+				if ( GUI.library || GUI.pleditor ) {
+					var menu = value.index && GUI.playlist ? 'filesavedpl' : 'file';
+					var dbpl = 'db';
+				} else if ( 'cuetrack' in value ) {
+					var menu = 'filesavedpl';
+					var dbpl = 'pl';
+				}
+				var cuepath = ( 'cuem3u' in value && value.cuem3u.slice( -3 ) === 'cue' ) ? value.cuem3u : value.file;
+				var actionhtml = '<i class="fa fa-music '+ dbpl +'-icon" data-target="#context-menu-'+ menu +'"></i>'
+								+'<a class="lipath">'+ cuepath +'</a>'
 								+'<a class="liname">'+ value.Title +'</a>'
 								+'<a class="liindex">'+ value.index +'</a>';
 			}
@@ -1691,7 +1706,7 @@ function htmlPlaylist( data ) {
 			} else {
 				li2 = value.file.split( '/' ).pop();
 			}
-			content += '<li>'
+			content += '<li class="file">'
 						 + actionhtml
 						 +'<span class="li1"><a class="name">'+ value.Title +'</a>'
 							 +'<span class="duration"><a class="elapsed"></a>'
@@ -1703,19 +1718,22 @@ function htmlPlaylist( data ) {
 		}
 	} );
 	if ( coverart || coverart === 0 ) {
+		var cuem3u = path.split( '.' ).pop();
+		var cue = [ 'cue', 'm3u', 'm3u8' ].indexOf( cuem3u ) !== -1 ? '&ensp;<i class="fa fa-list-ul cuem3u"></i>' : '';
 		var coversrc = coverart ? coverart : coverrune;
 		var browsemode = GUI.dbbackdata.length ? GUI.dbbackdata[ 0 ].browsemode : '';
-		var composerhtml = ( composer ) ? '<i class="fa fa-composer"></i><spanspan class="licomposer">'+ composer +'</span><br>' : '';
-		var genrehtml = genre ? '<i class="fa fa-genre"></i><span class="ligenre">'+ genre +'</span><br>' : '';
+		var composerhtml = ( composer ) ? '<span class="licomposer"><i class="fa fa-composer"></i>'+ composer +'</span><br>' : '';
+		var genrehtml = genre ? '<span class="ligenre"><i class="fa fa-genre"></i>'+ genre +'</span><br>' : '';
+		if ( cuem3u === 'm3u' || cuem3u === 'm3u8' ) path = path.substr( 0, path.lastIndexOf( '/' ) );
 		var licover = '<li class="licover">'
 						 +'<a class="lipath">'+ path +'</a><a class="liname">'+ path.replace(/^.*\//, '') +'</a>'
 						 +'<div class="licoverimg'+ ( coverart ? '' : ' nocover' ) +'"><img src="'+ coversrc +'" class="coversmall"></div>'
 						 +'<span class="liinfo">'
 							+'<bl class="lialbum">'+ album +'</bl><br>'
-							+ composerhtml
 							+'<i class="fa fa-albumartist"></i><span class="liartist">'+ artist +'</span><br>'
+							+ composerhtml
 							+ genrehtml
-							+'<i class="fa fa-music db-icon" data-target="#context-menu-folder"></i>'+ countsong +'<gr> • </gr>'+ second2HMS( pltime )
+							+'<i class="fa fa-music db-icon" data-target="#context-menu-folder"></i>'+ countsong +'<gr> • </gr>'+ second2HMS( pltime ) + cue
 						 +'</span>'
 					 +'</li>';
 	}
@@ -1966,82 +1984,4 @@ function getOrientation( file, callback ) { // return: 1 - undefined
 		return callback( 1 );
 	};
 	reader.readAsArrayBuffer( file.slice( 0, 64 * 1024 ) );
-}
-function setTag() {
-	$.post( 'enhance.php', { bash: '/usr/bin/mpc ls  -f "%artist%^^%albumartist%^^%album%^^%composer%^^%genre%^^%title%^^%track%^^%file%" "'+ GUI.list.path +'" 2> /dev/null | head -1' }, function( data ) {
-		var tags = data.slice( 0, -1 ).split( '^^' );
-		var file = tags[ 7 ].replace( /"/g, '\"' );
-		var ext = file.split( '.' ).pop();
-		var path = file.substr( 0, file.lastIndexOf( '/' ) );
-		var labels = [ '<i class="fa fa-artist wh"></i>', '<i class="fa fa-albumartist wh"></i>', '<i class="fa fa-album wh"></i>', '<i class="fa fa-composer wh"></i>', '<i class="fa fa-genre wh"></i>' ];
-		var values = [ tags[ 0 ], tags[ 1 ], tags[ 2 ], tags[ 3 ], tags[ 4 ] ];
-		if ( GUI.list.isfile ) {
-			labels.push( '<i class="fa fa-music wh"></i>', '<i class="fa fa-hash wh"></i>' );
-			values.push( tags[ 5 ], tags[ 6 ] );
-			var message = '<i class="fa fa-folder wh"></i> '+ file +'<br>&nbsp;'
-			var pathfile = '"/mnt/MPD/'+ file +'"';
-		} else {
-			var message = '<img src="'+ $( '.licoverimg img' ).attr( 'src' ) +'" style="width: 50px; height: 50px;"><br>'+ path +'<br>&nbsp;'
-			var pathfile = '"/mnt/MPD/'+ path +'/"*.'+ ext;
-		}
-		var names = [ 'artist', 'albumartist', 'album', 'composer', 'genre', 'title', 'tracknumber' ];
-		info( {
-			  icon      : 'tag'
-			, title     : 'Tag Editor'
-			, width     : 500
-			, message   : message
-			, textlabel : labels
-			, textvalue : values
-			, boxwidth  : 'max'
-			, cancel    : function() {
-				$( '#db-entries li' ).removeClass( 'active' );
-			}
-			, ok        : function() {
-				var tags = '';
-				var i = 0;
-				$( '.infotextbox .infoinput' ).each( function() {
-					var value = this.value;
-					tags += "-c \"set "+ names[ i ] +" '"+ value.toString().replace( /(["'])/g, '\\$1' ) +'\'" ';
-					if ( GUI.list.isfile ) {
-						if ( i === 5 ) $( '#db-entries li.active .li1 a' ).text( value );
-					} else {
-						if ( i === 0 ) $( '.liartist' ).text( value );
-						if ( i === 1 && value ) $( '.liartist' ).text( value );
-						if ( i === 2 ) $( '.lialbum' ).text( value );
-						if ( i === 3 ) {
-							var $el = $( '.licomposer' );
-							if ( !value ) {
-								$el.prev().remove();
-								$el.next().remove();
-								$el.remove();
-							} else {
-								if ( $el.length ) {
-									$el.text( value );
-								} else {
-									$( '.liartist' ).after( '<br><i class="fa fa-composer"></i><span class="licomposer">'+ value +'</span>' );
-								}
-							}
-						}
-						if ( i === 4 ) {
-							var $el = $( '.ligenre' );
-							if ( !value ) {
-								$el.prev().remove();
-								$el.next().remove();
-								$el.remove();
-							} else {
-								if ( $el.length ) {
-									$el.text( value );
-								} else {
-									$( '.liinfo .db-icon' ).before( '<i class="fa fa-genre"></i><span class="ligenre">'+ value +'</span><br>' );
-								}
-							}
-						}
-					}
-					i++;
-				} );
-				$( '#db-entries li' ).removeClass( 'active' );
-				$.post( 'enhance.php', { bash: '/usr/bin/kid3-cli '+ tags + pathfile +'; mpc update "'+ path +'"' } );
-			}
-		} );
-	} );
 }

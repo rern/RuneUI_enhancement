@@ -18,6 +18,7 @@ rm -v /srv/http/assets/img/{bootsplash.png,controls*,cover.svg,runelogo.svg,vu*}
 rm -v /srv/http/assets/js/enhance*
 rm -v /srv/http/assets/js/vendor/{lazyload,roundslider}.min.js
 rm -v /srv/http/assets/js/vendor/pica.js
+
 # DO NOT remove - used by other addons
 # bootstrap.min.css, bootstrap-select.min.css
 
@@ -47,6 +48,10 @@ files="
 "
 restorefile $files
 
+# back button to left
+rm -f /usr/local/bin/uninstall_bbtn.sh
+redis-cli del bbtn &> /dev/null
+
 if [[ $1 == u ]]; then
 	systemctl restart rune_PL_wrk
 	uninstallfinish $@
@@ -57,6 +62,25 @@ fi
 
 ########## if not update ############################################################
 
+# convert playlists back to default (omit cue)
+dir=/srv/http/assets/img/playlists
+if [[ -n $( ls -A $dir ) ]]; then
+	echo -e "$bar Convert playlists data ..."
+	
+	plfiles=( $dir/* )
+	for plfile in "${plfiles[@]}"; do
+		lines=
+		readarray lists < "$plfile"
+		for list in "${lists[@]}"; do
+			data=${list//^^/^}
+			[[ -z $( echo $data | cut -d'^' -f10 ) ]] && lines="$lines${data%%^*}\n"
+		done
+		name=$( basename $plfile )
+		echo $name
+		printf "$lines" > "/var/lib/mpd/playlists/$name.m3u"
+	done
+fi
+
 # convert file based webradios back to redis
 dir=/srv/http/assets/img/webradios
 if [[ ! -z $( ls -A $dir 2> /dev/null ) ]]; then
@@ -66,17 +90,15 @@ if [[ ! -z $( ls -A $dir 2> /dev/null ) ]]; then
 		url=$( basename "$file" )
 		url=${url//|/\/}
 		name=$( head -n1 $file )
-		string=$( cat <<EOF
+		cat << EOF > "/mnt/MPD/Webradio/$name.pls"
 [playlist]
 NumberOfEntries=1
 File1=$url
 Title1=$name
 EOF
-)
-		echo "$string" > "/mnt/MPD/Webradio/$name.pls"
 		echo $name - $url
+		redis-cli hset webradios "$name" "$url" &> /dev/null
 	done
-
 	mpc update Webradio &> /dev/null
 fi
 
@@ -97,11 +119,11 @@ if [[ ! -z $( ls -A $dir 2> /dev/null ) ]]; then
 	redis-cli set bookmarksidx $idx &> /dev/null
 fi
 
-redis-cli del display sampling mpddb &> /dev/null
+redis-cli del sampling mpddb &> /dev/null
 
 rm -rf "$( readlink -f /srv/http/assets/img/tmp )"
 rm -rf "$( readlink -f /srv/http/assets/img/webradiopl )"
-rm -rf /srv/http/assets/img/{bookmarks,coverarts,webradios,webradiopl}
+rm -rf /srv/http/assets/img/{bookmarks,coverarts,playlists,webradios,webradiopl}
 
 systemctl enable rune_shutdown
 systemctl start rune_shutdown
