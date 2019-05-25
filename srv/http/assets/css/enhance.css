@@ -1003,10 +1003,12 @@ i.bookmark,
 	font-size: 28px;
 	color: #0095d8;
 }
+#biocontent {
+	font-size: 16px;
+}
 #biocontent span {
 	color: #7795b4;
 }
-
 #bioimg {
 	float: left;
 	margin: 0 20px 20px 0;
