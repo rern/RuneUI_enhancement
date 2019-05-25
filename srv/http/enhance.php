@@ -662,7 +662,7 @@ function playlistInfo( $save = '' ) { // fix -  mpd unable to save cue/m3u prope
 				$list.= $file;
 			} else {
 				$list.= $Track ? "#$Track • " : '';
-				$list.= $AlbumArtist ?: ( $Artist ?: '' );
+				$list.= $Artist ?: ( $AlbumArtist ?: '' );
 				$list.= $Album ? " • $Album" : '';
 			}
 			if ( $Range ) $list.= '^^^^^^^^^^'.preg_replace( '/(.*)\..*/', '$1', $file ).".cue^^$Track";
