@@ -192,7 +192,7 @@ function addReplace( mode, cmd, command, title ) {
 				var msg = GUI.list.li.find( '.li1' )[ 0 ].outerHTML
 						+ GUI.list.li.find( '.li2' )[ 0 ].outerHTML;
 			}
-			notify( title, msg, 'list-ul', 100000 );
+			notify( title, msg, 'list-ul' );
 			if ( cmd === 'replace' ) GUI.plreplace = 1;
 			getPlaybackStatus();
 		}
