@@ -14,11 +14,24 @@
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
-#bannerTitle {
-	color: #000000;
+#bannerTitle,
+#banner .li2 {
+	color: #34495e;
 }
 #bannerTitle i {
 	width: 20px;
 	margin-right: 5px;
 	text-align: center;
+}
+#banner .time {
+	margin-left: 10px;
+	color: #34495e !important;
+}
+#banner .li1,
+#banner .li2 {
+	display: block;
+}
+#banner .li2 {
+	font-size: 12px;
+	color: #34495e;
 }
