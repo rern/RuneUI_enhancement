@@ -186,11 +186,13 @@ function addReplace( mode, cmd, command, title ) {
 			$( '#tab-playback' ).click();
 		} else {
 			if ( GUI.list.li.hasClass( 'licover' ) ) {
-				var msg = GUI.list.li.find( '.lialbum' ).text();
+				var msg = GUI.list.li.find( '.lialbum' ).text()
+						+'<a class="li2">'+ GUI.list.li.find( '.liartist' ).text() +'</a>';
 			} else {
-				var msg = GUI.list.name;
+				var msg = GUI.list.li.find( '.li1' )[ 0 ].outerHTML
+						+ GUI.list.li.find( '.li2' )[ 0 ].outerHTML;
 			}
-			notify( title, msg, 'list-ul' );
+			notify( title, msg, 'list-ul', 100000 );
 			if ( cmd === 'replace' ) GUI.plreplace = 1;
 			getPlaybackStatus();
 		}
