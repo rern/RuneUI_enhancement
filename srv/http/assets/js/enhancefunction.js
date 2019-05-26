@@ -276,12 +276,6 @@ function setPlaybackBlank() {
 		.removeAttr( 'style' )
 		.css( 'visibility', 'visible' );
 }
-function setCoverart( data ) {
-	GUI.coversave = 1;
-	$( '#cover-art' )
-		.attr( 'src', data.album.image[ 4 ][ '#text' ] || data.album.image[ 3 ][ '#text' ] )
-		.after( '<i class="edit licover-save fa fa-save"></i>' );
-}
 function renderPlayback() {
 	var status = GUI.status;
 	// song and album before update for song/album change detection
@@ -371,12 +365,12 @@ function renderPlayback() {
 	if ( status.Title !== previoussong || status.Album !== previousalbum || !status.Album ) {
 		$( '#cover-art' )
 			.attr( 'src', status.coverart || coverrune )
-			.css( 'border-radius', '' )
+			.css( 'border-radius', '' );
 		if ( status.coverart ) {
 			GUI.coversave = 0;
 		} else {
-			// lastfm coverart
-			var apijson = {
+			// get mbid from lastfm > get coverart from coverartarchive.org
+			$.ajax( {
 				  type     : 'post'
 				, url      : 'http://ws.audioscrobbler.com/2.0/'
 				, data     : { 
@@ -390,19 +384,24 @@ function renderPlayback() {
 				, timeout  : 5000
 				, dataType : 'json'
 				, success  : function( data ) {
-					if ( 'error' in data === false ) {
-						setCoverart( data );
-					} else {
-						// get with artist only
-						delete apijson.data.album;
-						apijson.success = function( data ) {
-							if ( 'error' in data === false ) setCoverart( data );
-						}
-						$.ajax( apijson );
+					if ( data.album.mbid ) {
+						$.ajax( {
+							  type     : 'post'
+							, url      : 'http://coverartarchive.org/release/'+ data.album.mbid
+							, success  : function( data ) {
+								if ( data.images ) {
+									GUI.coversave = 1;
+									$( '#cover-art' )
+										.attr( 'src', data.images[ 0 ][ 'image' ] )
+										.load( function() {
+											$( this ).after( '<i class="edit licover-save fa fa-save"></i>' );
+										} );
+								}
+							}
+						} );
 					}
 				}
-			}
-			$.ajax( apijson );
+			} );
 		}
 	}
 	// time
