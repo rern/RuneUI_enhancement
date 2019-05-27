@@ -498,12 +498,18 @@ function getBio( artist ) {
 	$.get( 'enhancebio.php', { artist: artist }, function( data ) {
 		$( '#biocontent' ).html( data.html ).promise().done( function() {
 			$( '#bio' ).scrollTop( 0 );
-			$( '#bioimg' )
-				.attr( 'src', data.img )
-				.load( function() {
-					$( '#menu-top, #menu-bottom, #loader' ).addClass( 'hide' );
-					$( '#bio' ).removeClass( 'hide' );
-				} );
+			if ( data.img ) {
+				$( '#bioimg' )
+					.attr( 'src', data.img )
+					.load( function() {
+						$( '#menu-top, #menu-bottom, #loader' ).addClass( 'hide' );
+						$( '#bio' ).removeClass( 'hide' );
+					} );
+			} else {
+				$( '#biocontent p' ).css( 'text-indent', '-20px' );
+				$( '#menu-top, #menu-bottom, #loader' ).addClass( 'hide' );
+				$( '#bio' ).removeClass( 'hide' );
+			}
 		} );
 	}, 'json' );
 }
