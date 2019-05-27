@@ -1038,11 +1038,6 @@ p.hrbl {
 	text-overflow: ellipsis;
 	font-weight: 300;
 }
-.biosimilar,
-.biosimilar img,
-.biosimilar p {
-	max-width: 170px;
-}
 @media(max-width: 540px) {
 	#bio .container {
 		padding : 20px 10px 20px 15px;
