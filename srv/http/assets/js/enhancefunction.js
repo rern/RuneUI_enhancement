@@ -1168,7 +1168,7 @@ function data2html( list, path ) {
 							 +'<a class="liname">'+ liname +'</a>'
 							 +'<a class="lisort">'+ list.lisort +'</a>'
 							 +'<i class="fa fa-music db-icon" data-target="#context-menu-file"></i>'
-							 +'<span class="li1"><a>'+ liname +'</a><span class="time">'+ list.Time +'</span></span>'
+							 +'<span class="li1"><a class="name">'+ liname +'</a><span class="time">'+ list.Time +'</span></span>'
 							 +'<span class="li2">'+ bl +'</span>';
 				} else {
 					var liname = list.file.split( '/' ).pop(); // filename
@@ -1211,7 +1211,7 @@ function data2html( list, path ) {
 					 +'<a class="liname">'+ liname +'</a>'
 					 +'<a class="lisort">'+ list.lisort +'</a>'
 					 +'<i class="fa fa-music db-icon" data-target="#context-menu-file"></i>'
-					 +'<span class="li1">'+ liname +'<span class="time">'+ list.Time +'</span></span>'
+					 +'<span class="li1"><a class="name">'+ liname +'</a><span class="time">'+ list.Time +'</span></span>'
 					 +'<span class="li2">'+ list.file.split( '/' ).pop() +'</span>';
 			var artist = list.Artist;
 			if ( !GUI.albumartist ) GUI.albumartist = list.Album +'<gr> • </gr>'+ artist;
@@ -1294,7 +1294,7 @@ function data2html( list, path ) {
 					 +'<a class="liname">'+ liname +'</a>'
 					 +'<a class="lisort">'+ list.lisort +'</a>'
 					 +'<i class="fa fa-music db-icon" data-target="#context-menu-file"></i>'
-					 +'<span class="li1">'+ liname +'<span class="time">'+ list.Time +'</span></span>'
+					 +'<span class="li1"><a class="name">'+ liname +'</a><span class="time">'+ list.Time +'</span></span>'
 					 +'<span class="li2">'+ list.Artist +' - '+ list.Album +'</span>';
 		} else {
 			var liname = list.genre ;
