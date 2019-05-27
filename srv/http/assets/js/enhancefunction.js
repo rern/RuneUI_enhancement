@@ -495,16 +495,17 @@ function getPlaybackStatus() {
 }
 function getBio( artist ) {
 	$( '#loader' ).removeClass( 'hide' );
-	$.get( 'enhancebio.php',
-		{ artist: artist },
-		function( data ) {
-			$( '#biocontent' ).html( data ).promise().done( function() {
-				$( '#bio' ).scrollTop( 0 );
-				$( '#menu-top, #menu-bottom, #loader' ).addClass( 'hide' );
-				$( '#bio' ).removeClass( 'hide' );
-			} );
-		}
-	);
+	$.get( 'enhancebio.php', { artist: artist }, function( data ) {
+		$( '#biocontent' ).html( data.html ).promise().done( function() {
+			$( '#bio' ).scrollTop( 0 );
+			$( '#bioimg' )
+				.attr( 'src', data.img )
+				.load( function() {
+					$( '#menu-top, #menu-bottom, #loader' ).addClass( 'hide' );
+					$( '#bio' ).removeClass( 'hide' );
+				} );
+		} );
+	}, 'json' );
 }
 function mpdSeek( seekto ) {
 	if ( GUI.status.state !== 'stop' ) {
