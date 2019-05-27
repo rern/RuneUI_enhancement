@@ -34,21 +34,23 @@ foreach ( $similar as $name ) {
 	$similars.= '<a class="biosimilar">'.$name[ 'name' ].'</a>,&ensp;';
 }
 $similars = substr( $similars, 0, -7 );
-echo '
-	<form class="form-horizontal">
-		<img id="bioimg" src="'.str_replace( '/fanart/', '/preview/', $image ).'">
-		<p><a class="artist">'.$artist.'</a><br>
-			'.$content.'
-		</p>
-		<div style="clear: both;"></div>
-		<br>
-		<span>Genre: </span>'.$genre.'<span style="float: right;">Text: last.fm<br>Image: fanart.tv</span><br>
-		<br>
-		Similar Artists: <span>(click for links)</span><br>
-		'.$similars.'
-		<br><br>
-	</form>
-';
+$data = array(
+	  'html' => '<form class="form-horizontal">
+					<img id="bioimg">
+					<p><a class="artist">'.$artist.'</a><br>
+						'.$content.'
+					</p>
+					<div style="clear: both;"></div>
+					<br>
+					<span>Genre: </span>'.$genre.'<span style="float: right;">Text: last.fm<br>Image: fanart.tv</span><br>
+					<br>
+					Similar Artists: <span>(click for links)</span><br>
+					'.$similars.'
+					<br><br>
+				</form>'
+	, 'img'  => str_replace( '/fanart/', '/preview/', $image )
+);
+echo json_encode( $data );
 
 function curlGet( $url ) {
 	$ch = curl_init( $url );
