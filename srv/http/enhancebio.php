@@ -48,7 +48,7 @@ $data = array(
 					'.$similars.'
 					<br><br>
 				</form>'
-	, 'img'  => str_replace( '/fanart/', '/preview/', $image )
+	, 'img'  => $image ? str_replace( '/fanart/', '/preview/', $image ) : ''
 );
 echo json_encode( $data );
 
