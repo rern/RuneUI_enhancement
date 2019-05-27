@@ -31,26 +31,22 @@ $image = $data[ 'artistthumb' ][ 0 ][ 'url' ];
 
 $similars = '';
 foreach ( $similar as $name ) {
-	$similars.= '
-		<div class="biosimilar">
-			<p>'.$name[ 'name' ].'</p>
-		</div>
-	';
+	$similars.= '<a class="biosimilar">'.$name[ 'name' ].'</a>,&ensp;';
 }
+$similars = substr( $similars, 0, -7 );
 echo '
-	<legend>'.$artist.'</legend>
 	<form class="form-horizontal">
 		<img id="bioimg" src="'.str_replace( '/fanart/', '/preview/', $image ).'">
-		<p>
+		<p><a class="artist">'.$artist.'</a><br>
 			'.$content.'
 		</p>
 		<div style="clear: both;"></div>
 		<br>
-		<a>Genre: </a>'.$genre.'<span style="float: right;">Source: last.fm<br>Images: fanart.tv</span><br>
+		<span>Genre: </span>'.$genre.'<span style="float: right;">Text: last.fm<br>Image: fanart.tv</span><br>
 		<br>
-		<a>Similar Artists:</a> <span>(click for bio of artists)</span><br>
-		<br>
+		Similar Artists: <span>(click for links)</span><br>
 		'.$similars.'
+		<br><br>
 	</form>
 ';
 
