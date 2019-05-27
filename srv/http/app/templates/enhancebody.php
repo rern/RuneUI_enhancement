@@ -480,9 +480,8 @@ $menu.= '</div>';
 <div id="bio" class="hide">
 	<div class="container">
 		<h1>BIO</h1><a id="closebio"><i class="fa fa-times close-root"></i></a>
-		<div id="biocontent">
-			<div class="biosimilar"></div>
-		</div>
+		<p class="hrbl"></p>
+		<div id="biocontent"></div>
 	</div>
 </div>
 <div id="splash"><img src="<?=$this->asset( '/img/runelogo.svg' )?>"></div>
