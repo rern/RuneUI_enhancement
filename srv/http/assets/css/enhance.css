@@ -1004,15 +1004,27 @@ i.bookmark,
 	font-size: 28px;
 	color: #0095d8;
 }
+p.hrbl {
+	margin: 20px 0 10px 0;
+	border-bottom: 1px solid #34495e;
+}
 #biocontent {
 	font-size: 16px;
+}
+#biocontent .artist {
+	font-size: 30px;
+	font-weight: 300;
+	color: #e0e7ee;
+}
+#biocontent p {
+	color: #aaaaaa;
 }
 #biocontent span {
 	color: #7795b4;
 }
 #bioimg {
 	float: left;
-	margin: 0 20px 20px 0;
+	margin: 8px 20px 10px 0;
 	max-width: 100%;
 }
 .biosimilar {
