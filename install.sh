@@ -18,24 +18,18 @@ installstart $@
 
 if ! pacman -Q imagemagick &> /dev/null; then
 	echo -e "$bar Get ImageMagick package set files ..."
+	
 	wgetnc https://github.com/rern/_assets/raw/master/imagemagick.tar
-	bsdtar xf imagemagick.tar
+	mkdir pkg
+	bsdtar xvf imagemagick.tar -C pkg
 	# disable GB and DE locale before upgrade glibc
 	sed -i '/^de_DE.UTF-8\|^en_GB.UTF-8/ s/^/#/' /etc/locale.gen
 	
 	echo -e "$bar Install ImageMagick ..."
-	pacman -U --noconfirm \
-	fribidi-1.0.5-1-armv7h.pkg.tar.xz \
-	glibc-2.28-5-armv7h.pkg.tar.xz \
-	imagemagick-7.0.8.36-1-armv7h.pkg.tar.xz \
-	liblqr-0.4.2-2-armv7h.pkg.tar.xz \
-	libmagick-7.0.8.36-1-armv7h.pkg.tar.xz \
-	libpng-1.6.36-1-armv7h.pkg.tar.xz \
-	libraqm-0.5.0-1-armv7h.pkg.tar.xz \
-	linux-api-headers-4.17.11-1-any.pkg.tar.xz \
-	zlib-1\:1.2.11-3-armv7h.pkg.tar.xz
+	
+	pacman -U --noconfirm pkg/*
 
-	rm imagemagick.tar *.xz
+	rm -rf imagemagick.tar pkg
 fi
 
 mv /srv/http/index.php{,.backup}
