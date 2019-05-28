@@ -51,7 +51,9 @@ if [[ ! -e /usr/bin/kid3-cli ]]; then
 	bsdtar xvf kid3pkg2.tar -C pkg
 	mv pkg/{pcre*,harfbuzz*,freetype2*} pkg4
 	mv pkg/{gstreamer*,orc*} pkg5
-
+	
+	echo -e "$bar Install Kid3 ..."
+	
 	if [[ $( redis-cli get release ) == 0.4b ]]; then
 		pacman -U --noconfirm pkg4/*
 	else
