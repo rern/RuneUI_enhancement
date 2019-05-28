@@ -17,7 +17,7 @@ alias=enha
 installstart $@
 
 if ! pacman -Q imagemagick &> /dev/null; then
-	echo -e "$bar Get ImageMagick package set files ..."
+	echo -e "$bar Get ImageMagick package files ..."
 	
 	wgetnc https://github.com/rern/_assets/raw/master/imagemagick.tar
 	mkdir pkg
