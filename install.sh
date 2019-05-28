@@ -31,7 +31,7 @@ if ! pacman -Q imagemagick &> /dev/null; then
 
 	rm -rf imagemagick.tar pkg
 fi
-fi [[ ! -e /usr/bin/kid3-cli ]]; then
+if [[ ! -e /usr/bin/kid3-cli ]]; then
 	echo -e "$bar Get Kid3 package files ..."
 
 	wgetnc https://github.com/rern/_assets/raw/master/kid3lib.tar.xz
