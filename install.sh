@@ -311,7 +311,7 @@ file=/srv/http/app/templates/enhanceplayback.php  # for rune youtube
 # correct version number
 [[ $( redis-cli get buildversion ) == 'beta-20160313' ]] && redis-cli set release 0.3 &> /dev/null
 
-if [[ $( redis-cli exists display ) == 0 ]]; then
+if [[ $( redis-cli hexists display bars ) == 0 ]]; then
 	playback="bars debug dev time cover volume buttons"
 	library="coverart nas sd usb webradio album artist albumartist composer genre spotify dirble jamendo"
 	miscel="count label coverfile plclear playbackswitch tapaddplay thumbbyartist"
