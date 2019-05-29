@@ -310,20 +310,6 @@ file=/srv/http/app/templates/enhanceplayback.php  # for rune youtube
 #----------------------------------------------------------------------------------
 # correct 0.3 version number
 [[ $( redis-cli get buildversion ) == 'beta-20160313' ]] && redis-cli set release 0.3 &> /dev/null
-# fix - 0.5 bugs
-if [[ $( redis-cli get release ) == '0.5' ]]; then
-	# missing output data
-	[[ -z $( redis-cli hgetall acards ) ]] && /srv/http/command/refresh_ao &> /dev/null
-	# /srv/http permission change
-	pattern="^\s*sysCmd('find /srv/http/ -type f -exec chmod"
-	file=/srv/http/app/libs/runeaudio.php
-	comment "$pattern"
-	files="/srv/http/command/convert_dos_files_to_unix_script.sh /srv/http/command/mpd_update.sh /srv/http/command/restore.sh"
-	for f in $files; do
-		file=$f
-		commentS "$pattern"
-	done
-fi
 
 if [[ $( redis-cli hexists display bars ) == 0 ]]; then
 	playback="bars debug dev time cover volume buttons"
