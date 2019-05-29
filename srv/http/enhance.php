@@ -43,7 +43,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$type = $_POST[ 'list' ];
 		if ( $type === 'file' ) {
 			$data = search2array( $result );
-			if ( $redis->hGet( 'display', 'coverfile' ) && !isset( $data[ 'playlist' ] ) && substr( $mpc, 0, 10 ) !== 'mpc search' ) {
+			if ( !isset( $data[ 'playlist' ] ) && substr( $mpc, 0, 10 ) !== 'mpc search' ) {
 				$data[][ 'coverart' ] = getCover( $data[ 0 ][ 'file' ] );
 			}
 		} else {
@@ -79,7 +79,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$result = shell_exec( $cmd.' albumartist "'.$_POST[ 'artist' ].'"' );
 	}
 	$data = search2array( $result );
-	if ( $redis->hGet( 'display', 'coverfile' ) && !isset( $data[ 'playlist' ] ) && substr( $mpc, 0, 10 ) !== 'mpc search' ) {
+	if ( !isset( $data[ 'playlist' ] ) && substr( $mpc, 0, 10 ) !== 'mpc search' ) {
 		$data[][ 'coverart' ] = getCover( $data[ 0 ][ 'file' ] );
 	}
 	echo json_encode( $data );
@@ -260,9 +260,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	}
 	$data = list2array( $lines );
 	$data[][ 'path' ] = $plfiles[ 0 ];
-	if ( $redis->hGet( 'display', 'coverfile' ) ) {
-		$data[][ 'coverart' ] = getCover( $data[ 0 ][ 'file' ] );
-	}
+	$data[][ 'coverart' ] = getCover( $data[ 0 ][ 'file' ] );
 	echo json_encode( $data );
 } else if ( isset( $_POST[ 'counttag' ] ) ) {
 	$path = $_POST[ 'counttag' ];
@@ -291,7 +289,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	if ( $count === 1 ) {
 		$albums = shell_exec( 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" '.$type.' "'.$name.'"' );
 		$data = search2array( $albums );
-		if ( $redis->hGet( 'display', 'coverfile' ) && !isset( $data[ 'playlist' ] ) ) {
+		if ( !isset( $data[ 'playlist' ] ) ) {
 			$data[][ 'coverart' ] = getCover( $data[ 0 ][ 'file' ] );
 		}
 	} else {

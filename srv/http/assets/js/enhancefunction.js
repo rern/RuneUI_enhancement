@@ -276,12 +276,6 @@ function setPlaybackBlank() {
 		.removeAttr( 'style' )
 		.css( 'visibility', 'visible' );
 }
-function setCoverart( data ) {
-	GUI.coversave = 1;
-	$( '#cover-art' )
-		.attr( 'src', data.album.image[ 4 ][ '#text' ] || data.album.image[ 3 ][ '#text' ] )
-		.after( '<i class="edit licover-save fa fa-save"></i>' );
-}
 function renderPlayback() {
 	var status = GUI.status;
 	// song and album before update for song/album change detection
@@ -371,12 +365,12 @@ function renderPlayback() {
 	if ( status.Title !== previoussong || status.Album !== previousalbum || !status.Album ) {
 		$( '#cover-art' )
 			.attr( 'src', status.coverart || coverrune )
-			.css( 'border-radius', '' )
+			.css( 'border-radius', '' );
 		if ( status.coverart ) {
 			GUI.coversave = 0;
 		} else {
-			// lastfm coverart
-			var apijson = {
+			// get mbid from lastfm > get coverart from coverartarchive.org
+			$.ajax( {
 				  type     : 'post'
 				, url      : 'http://ws.audioscrobbler.com/2.0/'
 				, data     : { 
@@ -390,19 +384,24 @@ function renderPlayback() {
 				, timeout  : 5000
 				, dataType : 'json'
 				, success  : function( data ) {
-					if ( 'error' in data === false ) {
-						setCoverart( data );
-					} else {
-						// get with artist only
-						delete apijson.data.album;
-						apijson.success = function( data ) {
-							if ( 'error' in data === false ) setCoverart( data );
-						}
-						$.ajax( apijson );
+					if ( data.album.mbid ) {
+						$.ajax( {
+							  type     : 'post'
+							, url      : 'http://coverartarchive.org/release/'+ data.album.mbid
+							, success  : function( data ) {
+								if ( data.images ) {
+									GUI.coversave = 1;
+									$( '#cover-art' )
+										.attr( 'src', data.images[ 0 ][ 'image' ] )
+										.load( function() {
+											$( this ).after( '<i class="edit licover-save fa fa-save"></i>' );
+										} );
+								}
+							}
+						} );
 					}
 				}
-			}
-			$.ajax( apijson );
+			} );
 		}
 	}
 	// time
@@ -496,16 +495,23 @@ function getPlaybackStatus() {
 }
 function getBio( artist ) {
 	$( '#loader' ).removeClass( 'hide' );
-	$.get( 'enhancebio.php',
-		{ artist: artist },
-		function( data ) {
-			$( '#biocontent' ).html( data ).promise().done( function() {
-				$( '#bio' ).scrollTop( 0 );
+	$.get( 'enhancebio.php', { artist: artist }, function( data ) {
+		$( '#biocontent' ).html( data.html ).promise().done( function() {
+			$( '#bio' ).scrollTop( 0 );
+			if ( data.img ) {
+				$( '#bioimg' )
+					.attr( 'src', data.img )
+					.load( function() {
+						$( '#menu-top, #menu-bottom, #loader' ).addClass( 'hide' );
+						$( '#bio' ).removeClass( 'hide' );
+					} );
+			} else {
+				$( '#biocontent p' ).css( 'text-indent', '-20px' );
 				$( '#menu-top, #menu-bottom, #loader' ).addClass( 'hide' );
 				$( '#bio' ).removeClass( 'hide' );
-			} );
-		}
-	);
+			}
+		} );
+	}, 'json' );
 }
 function mpdSeek( seekto ) {
 	if ( GUI.status.state !== 'stop' ) {
@@ -1162,7 +1168,7 @@ function data2html( list, path ) {
 							 +'<a class="liname">'+ liname +'</a>'
 							 +'<a class="lisort">'+ list.lisort +'</a>'
 							 +'<i class="fa fa-music db-icon" data-target="#context-menu-file"></i>'
-							 +'<span class="li1"><a>'+ liname +'</a><span class="time">'+ list.Time +'</span></span>'
+							 +'<span class="li1"><a class="name">'+ liname +'</a><span class="time">'+ list.Time +'</span></span>'
 							 +'<span class="li2">'+ bl +'</span>';
 				} else {
 					var liname = list.file.split( '/' ).pop(); // filename
@@ -1205,7 +1211,7 @@ function data2html( list, path ) {
 					 +'<a class="liname">'+ liname +'</a>'
 					 +'<a class="lisort">'+ list.lisort +'</a>'
 					 +'<i class="fa fa-music db-icon" data-target="#context-menu-file"></i>'
-					 +'<span class="li1">'+ liname +'<span class="time">'+ list.Time +'</span></span>'
+					 +'<span class="li1"><a class="name">'+ liname +'</a><span class="time">'+ list.Time +'</span></span>'
 					 +'<span class="li2">'+ list.file.split( '/' ).pop() +'</span>';
 			var artist = list.Artist;
 			if ( !GUI.albumartist ) GUI.albumartist = list.Album +'<gr> • </gr>'+ artist;
@@ -1288,7 +1294,7 @@ function data2html( list, path ) {
 					 +'<a class="liname">'+ liname +'</a>'
 					 +'<a class="lisort">'+ list.lisort +'</a>'
 					 +'<i class="fa fa-music db-icon" data-target="#context-menu-file"></i>'
-					 +'<span class="li1">'+ liname +'<span class="time">'+ list.Time +'</span></span>'
+					 +'<span class="li1"><a class="name">'+ liname +'</a><span class="time">'+ list.Time +'</span></span>'
 					 +'<span class="li2">'+ list.Artist +' - '+ list.Album +'</span>';
 		} else {
 			var liname = list.genre ;

@@ -718,8 +718,8 @@ $( '#share' ).click( function() {
 		}
 	} );
 } );
-$( '#biocontent' ).delegate( '.biosimilar', 'click', function() {
-	getBio( $( this ).find( 'p' ).text() )
+$( '#biocontent' ).on( 'click', '.biosimilar', function() {
+	getBio( $( this ).text() );
 } );
 $( '#closebio' ).click( function() {
 	$( '#bio' ).addClass( 'hide' );

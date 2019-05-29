@@ -188,9 +188,11 @@ function addReplace( mode, cmd, command, title ) {
 			if ( GUI.list.li.hasClass( 'licover' ) ) {
 				var msg = GUI.list.li.find( '.lialbum' ).text()
 						+'<a class="li2">'+ GUI.list.li.find( '.liartist' ).text() +'</a>';
-			} else {
+			} else if ( GUI.list.li.find( '.li1' ).length ) {
 				var msg = GUI.list.li.find( '.li1' )[ 0 ].outerHTML
 						+ GUI.list.li.find( '.li2' )[ 0 ].outerHTML;
+			} else {
+				var msg = GUI.list.li.find( '.lipath' ).text();
 			}
 			notify( title, msg, 'list-ul' );
 			if ( cmd === 'replace' ) GUI.plreplace = 1;

@@ -15,17 +15,19 @@
 	text-overflow: ellipsis;
 }
 #bannerTitle,
+#banner .li2,
+#banner .time,
 #banner .li2 {
-	color: #34495e;
+	color: #34495e !important;
 }
 #bannerTitle i {
 	width: 20px;
 	margin-right: 5px;
 	text-align: center;
+	color: #e0e7ee;
 }
 #banner .time {
 	margin-left: 10px;
-	color: #34495e !important;
 }
 #banner .li1,
 #banner .li2 {
@@ -33,5 +35,4 @@
 }
 #banner .li2 {
 	font-size: 12px;
-	color: #34495e;
 }
