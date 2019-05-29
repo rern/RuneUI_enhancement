@@ -424,7 +424,7 @@ $( '#volume' ).roundSlider( {
 	, drag            : function ( e ) { // drag with no transition by default
 		if ( e.value % 2 === 0 ) {
 			GUI.drag = 1; // cleared by 'change'
-			$.post( 'enhance.php', { mpc: 'mpc volume '+ e.value } );
+			$.post( 'enhance.php', { volume: e.value } );
 			$( e.handle.element ).rsRotate( - e.handle.angle );
 		}
 	}
