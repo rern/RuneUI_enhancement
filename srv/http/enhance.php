@@ -43,7 +43,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$type = $_POST[ 'list' ];
 		if ( $type === 'file' ) {
 			$data = search2array( $result );
-			if ( $redis->hGet( 'display', 'coverfile' ) && !isset( $data[ 'playlist' ] ) && substr( $mpc, 0, 10 ) !== 'mpc search' ) {
+			if ( !isset( $data[ 'playlist' ] ) && substr( $mpc, 0, 10 ) !== 'mpc search' ) {
 				$data[][ 'coverart' ] = getCover( $data[ 0 ][ 'file' ] );
 			}
 		} else {
