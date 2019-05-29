@@ -58,7 +58,10 @@ echo $file
 
 comment 'ui_update('
 
-[[ $( redis-cli get release ) == '0.5' ]] && comment '// set the mpd volume if' -n -2 '// idle LOOP'
+if [[ $( redis-cli get release ) == '0.5' ]]; then
+	comment -n +1 'ui_update('
+	comment '// set the mpd volume if' -n -2 '// idle LOOP'
+fi
 
 string=$( cat <<'EOF'
                     ui_render( 'idle', json_encode( $status[ 'changed' ] ) );
