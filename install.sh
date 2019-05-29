@@ -315,12 +315,13 @@ if [[ $( redis-cli get release ) == '0.5' ]]; then
 	# missing output data
 	[[ -z $( redis-cli hgetall acards ) ]] && /srv/http/command/refresh_ao &> /dev/null
 	# /srv/http permission change
+	pattern="^\s*sysCmd('find /srv/http/ -type f -exec chmod"
 	file=/srv/http/app/libs/runeaudio.php
-	comment '/srv/http/ -type f -exec chmod'
+	comment "$pattern"
 	files="/srv/http/command/convert_dos_files_to_unix_script.sh /srv/http/command/mpd_update.sh /srv/http/command/restore.sh"
 	for f in $files; do
 		file=$f
-		commentS '/srv/http/ -type f -exec chmod'
+		commentS "$pattern"
 	done
 fi
 
