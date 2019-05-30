@@ -44,7 +44,7 @@ $data = array(
 					<br>
 					<span>Genre: </span>'.$genre.'<span style="float: right;">Text: last.fm<br>Image: fanart.tv</span><br>
 					<br>
-					Similar Artists: <span>(click for links)</span><br>
+					Similar Artists: <i class="fa fa-external-link gr"></i><br>
 					'.$similars.'
 					<br><br>
 				</form>'
