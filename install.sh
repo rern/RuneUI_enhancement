@@ -52,6 +52,12 @@ string=$( cat <<'EOF'
 EOF
 )
 append 'status..changed'
+
+string=$( cat <<'EOF'
+    return false;
+EOF
+)
+append -n +1 'function runelog'
 #----------------------------------------------------------------------------------
 file=/srv/http/command/rune_PL_wrk
 echo $file
