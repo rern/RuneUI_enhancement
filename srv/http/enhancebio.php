@@ -42,9 +42,8 @@ $data = array(
 					</p>
 					<div style="clear: both;"></div>
 					<br>
-					<span>Genre: </span>'.$genre.'<span style="float: right;">Text: last.fm<br>Image: fanart.tv</span><br>
-					<br>
-					Similar Artists: <i class="fa fa-external-link gr"></i><br>
+					<p><span>Genre: </span>'.$genre.'<span style="float: right;">Text: last.fm<br>Image: fanart.tv</span></p>
+					<p>Similar Artists: <i class="fa fa-external-link gr"></i><p>
 					'.$similars.'
 					<br><br>
 				</form>'
