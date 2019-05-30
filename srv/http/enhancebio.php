@@ -29,11 +29,11 @@ $data = curlGet( 'https://webservice.fanart.tv/v3/music/'
 $data = json_decode( $data, True );
 $image = $data[ 'artistthumb' ][ 0 ][ 'url' ];
 
-$similars = '';
+$similars = '<span>';
 foreach ( $similar as $name ) {
 	$similars.= '<a class="biosimilar">'.$name[ 'name' ].'</a>,&ensp;';
 }
-$similars = substr( $similars, 0, -7 );
+$similars = substr( $similars, 0, -7 ).'</span>';
 $data = array(
 	  'html' => '<form class="form-horizontal">
 					<img id="bioimg">
