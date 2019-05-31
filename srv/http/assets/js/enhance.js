@@ -72,6 +72,9 @@ $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+$( '#splash' ).click( function() {
+	$( this ).remove();
+} );
 $( '#cover-art' ).on( 'error', function() {
 	var $this = $( this );
 	$this.unbind( 'error' );
