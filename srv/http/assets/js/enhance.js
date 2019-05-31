@@ -151,8 +151,6 @@ var chkplayback = {
 	, coverlarge   : 'Large Cover art'
 	, volume       : 'Volume'
 	, buttons      : 'Buttons'
-	, network      : '<gr>menu</gr> Network'
-	, credits      : '<gr>menu</gr> Credits'
 }
 $( '#displayplayback' ).click( function() {
 	info( {
