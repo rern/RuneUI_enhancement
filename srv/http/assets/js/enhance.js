@@ -151,6 +151,8 @@ var chkplayback = {
 	, coverlarge   : 'Large Cover art'
 	, volume       : 'Volume'
 	, buttons      : 'Buttons'
+	, network      : '<gr>menu</gr> Network'
+	, credits      : '<gr>menu</gr> Credits'
 }
 $( '#displayplayback' ).click( function() {
 	info( {
@@ -1627,7 +1629,9 @@ window.addEventListener( 'orientationchange', function() {
 		$( '#playback-row' ).addClass( 'hide' );
 		setTimeout( function() {
 			if ( $( '.playback-block.hide' ).length && window.innerHeight > 420 ) $( '#page-playback, #playback-row' ).removeAttr( 'style' );
-			displayPlayback()
+			renderPlayback();
+			displayPlayback();
+			setButton();
 			scrollLongText();
 			$( '#playback-row' ).removeClass( 'hide' );
 		}, 300 );
