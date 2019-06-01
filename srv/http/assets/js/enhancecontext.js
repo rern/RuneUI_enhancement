@@ -80,7 +80,7 @@ $( '.contextmenu a' ).click( function() {
 	// compose command
 	var mpcCmd;
 	// must keep order otherwise replaceplay -> play, addplay -> play
-	var mode = cmd.replace( /replaceplay|replace|addplay|add/, '' );
+	var mode = cmd.replace( /replaceplay|replace|addplay|add|ashuffle/, '' );
 	if ( [ 'album', 'artist', 'composer', 'genre' ].indexOf( GUI.list.mode ) !== -1 ) {
 		var artist = GUI.list.artist;
 		mpcCmd = 'mpc findadd '+ GUI.list.mode +' "'+ name +'"'+ ( artist ? ' artist "'+ artist +'"' : '' );
@@ -109,9 +109,10 @@ $( '.contextmenu a' ).click( function() {
 		if ( GUI.library ) {
 			mpcCmd = 'mpc load "'+ name +'"';
 		} else { // saved playlist
-			var play = cmd.slice( -1 ) === 'y' ? 1 : 0;
+			var shuffle = cmd === 'ashuffle' ? 1 : 0;
+			var play = cmd.slice( -1 ) === 'y' || shuffle ? 1 : 0;
 			var replace = cmd.slice( 0, 1 ) === 'r' ? 1 : 0;
-			$.post( 'enhance.php', { loadplaylist: name, play: play, replace: replace }, function() {
+			$.post( 'enhance.php', { loadplaylist: name, play: play, replace: replace, shuffle: shuffle }, function() {
 				notify( ( replace ? 'Playlist Replaced' : 'Playlist Added' ), name, 'list-ul' );
 			} );
 			return
@@ -143,10 +144,6 @@ $( '.contextmenu a' ).click( function() {
 				addReplace( mode, cmd, command, 'Playlist replaced' );
 			}
 		}
-	} else if ( cmd === 'plashuffle' ) {
-		$.post( 'enhance.php', { bash: '/usr/local/bin/ashuffle -f /var/lib/mpd/playlists/'+ name +'.m3u &' } );
-		$( '#random' ).addClass( 'btn-primary ashuffle' );
-		notify( 'Random Play Enabled', name, 'random' );
 	}
 } );
 
