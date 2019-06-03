@@ -127,21 +127,21 @@ $( '.contextmenu a' ).click( function() {
 	}
 	if ( cmd in contextCommand ) {
 		var command = contextCommand[ cmd ];
-		if ( cmd === 'add' ) {
-			addReplace( mode, cmd, command, 'Added to Playlist' );
-		} else if ( cmd === 'addplay' ) {
-			addReplace( mode, cmd, command, 'Added to Playlist + Play' );
+		if ( cmd === 'add' || cmd === 'addplay' ) {
+			var msg = 'Added to Playlist'+ ( cmd === 'add' ? '' : ' <i class="fa fa-play gr"></i>Play' )
+			addReplace( mode, cmd, command, msg );
 		} else {
+			var msg = 'Playlist replaced'+ ( cmd === 'replace' ? '' : ' <i class="fa fa-play gr"></i>Play' )
 			if ( GUI.display.plclear && GUI.status.playlistlength ) {
 				info( {
 					  title   : 'Replace Playlist'
 					, message : 'Replace current Playlist?'
 					, ok      : function() {
-						addReplace( mode, cmd, command, 'Playlist replaced' );
+						addReplace( mode, cmd, command, msg );
 					}
 				} );
 			} else {
-				addReplace( mode, cmd, command, 'Playlist replaced' );
+				addReplace( mode, cmd, command, msg );
 			}
 		}
 	}
@@ -177,25 +177,25 @@ function updateThumbnails() {
 }
 function addReplace( mode, cmd, command, title ) {
 	$.post( 'enhance.php', { mpc: command }, function() {
-		if ( GUI.display.playbackswitch
-			&& ( cmd === 'addplay' || cmd === 'replaceplay' ) 
-		) {
-			$( '#tab-playback' ).click();
-		} else {
-			if ( GUI.list.li.hasClass( 'licover' ) ) {
-				var msg = GUI.list.li.find( '.lialbum' ).text()
-						+'<a class="li2">'+ GUI.list.li.find( '.liartist' ).text() +'</a>';
-			} else if ( GUI.list.li.find( '.li1' ).length ) {
-				var msg = GUI.list.li.find( '.li1' )[ 0 ].outerHTML
-						+ GUI.list.li.find( '.li2' )[ 0 ].outerHTML;
-			} else {
-				var msg = GUI.list.li.find( '.lipath' ).text();
-			}
-			notify( title, msg, 'list-ul' );
-			if ( cmd === 'replace' ) GUI.plreplace = 1;
-			getPlaybackStatus();
-		}
+		getPlaybackStatus();
 	} );
+	if ( GUI.display.playbackswitch
+		&& ( cmd === 'addplay' || cmd === 'replaceplay' ) 
+	) {
+		$( '#tab-playback' ).click();
+	} else {
+		if ( GUI.list.li.hasClass( 'licover' ) ) {
+			var msg = GUI.list.li.find( '.lialbum' ).text()
+					+'<a class="li2">'+ GUI.list.li.find( '.liartist' ).text() +'</a>';
+		} else if ( GUI.list.li.find( '.li1' ).length ) {
+			var msg = GUI.list.li.find( '.li1' )[ 0 ].outerHTML
+					+ GUI.list.li.find( '.li2' )[ 0 ].outerHTML;
+		} else {
+			var msg = GUI.list.li.find( '.lipath' ).text();
+		}
+		notify( title, msg, 'list-ul' );
+		if ( cmd === 'replace' ) GUI.plreplace = 1;
+	}
 }
 function bookmarkNew() {
 	var path = GUI.list.path;
