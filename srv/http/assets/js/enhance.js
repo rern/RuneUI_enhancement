@@ -72,6 +72,9 @@ $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+$( '#splash' ).click( function() {
+	$( this ).remove();
+} );
 $( '#cover-art' ).on( 'error', function() {
 	var $this = $( this );
 	$this.unbind( 'error' );
@@ -104,7 +107,7 @@ var chklibrary = {
 	, album          : '<i class="fa fa-album"></i>Album'
 	, artist         : '_<i class="fa fa-artist"></i>Artist'
 	, composer       : '<i class="fa fa-composer"></i>Composer'
-	, albumartist    : '_<i class="fa fa-albumartist"></i>Album artist'
+	, albumartist    : '_<i class="fa fa-albumartist"></i>Album Artist'
 	, genre          : '<i class="fa fa-genre"></i>Genre'
 	, dirble         : '_<i class="fa fa-dirble"></i>Dirble'
 	, jamendo        : '<i class="fa fa-jamendo"></i>Jamendo'
@@ -1624,7 +1627,9 @@ window.addEventListener( 'orientationchange', function() {
 		$( '#playback-row' ).addClass( 'hide' );
 		setTimeout( function() {
 			if ( $( '.playback-block.hide' ).length && window.innerHeight > 420 ) $( '#page-playback, #playback-row' ).removeAttr( 'style' );
-			displayPlayback()
+			renderPlayback();
+			displayPlayback();
+			setButton();
 			scrollLongText();
 			$( '#playback-row' ).removeClass( 'hide' );
 		}, 300 );

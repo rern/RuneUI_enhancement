@@ -26,6 +26,9 @@
 	text-align: center;
 	color: #e0e7ee;
 }
+#bannerTitle i.gr {
+	color: #34495e !important;
+}
 #banner .time {
 	margin-left: 10px;
 }

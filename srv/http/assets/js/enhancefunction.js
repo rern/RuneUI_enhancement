@@ -484,13 +484,11 @@ function getPlaybackStatus() {
 		$.each( status, function( key, value ) {
 			GUI.status[ key ] = value;
 		} );
+		GUI.plreplace = 0;
+		renderPlayback();
 		setButton();
-		if ( GUI.playback || !playlistlength || GUI.plreplace ) {
-			GUI.plreplace = 0;
-			renderPlayback();
-			// imodedelay fix imode flashing on audio output switched
-			if ( !GUI.imodedelay ) displayPlayback();
-		}
+		// imodedelay fix imode flashing on audio output switched
+		if ( !GUI.imodedelay ) displayPlayback();
 	}, 'json' );
 }
 function getBio( artist ) {

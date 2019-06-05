@@ -124,6 +124,7 @@
 .fa-warning:before { content: "\f562" }
 .fa-reload:before { content: "\f539" }
 .fa-refresh:before { content: "\f53A" }
+.fa-external-link:before { content: "\f565" }
 /* bootstrap mod */
 .page {
 	height: 100vh;
@@ -155,7 +156,7 @@ wh, gr { font-weight: 300; }
 	color: #7795b4;
 }
 .infocol {
-	width: 150px;
+	width: 155px;
 	margin-right: 10px;
 }
 .infobookmark {

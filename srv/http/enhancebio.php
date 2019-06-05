@@ -29,11 +29,11 @@ $data = curlGet( 'https://webservice.fanart.tv/v3/music/'
 $data = json_decode( $data, True );
 $image = $data[ 'artistthumb' ][ 0 ][ 'url' ];
 
-$similars = '';
+$similars = '<span>';
 foreach ( $similar as $name ) {
 	$similars.= '<a class="biosimilar">'.$name[ 'name' ].'</a>,&ensp;';
 }
-$similars = substr( $similars, 0, -7 );
+$similars = substr( $similars, 0, -7 ).'</span>';
 $data = array(
 	  'html' => '<form class="form-horizontal">
 					<img id="bioimg">
@@ -42,9 +42,8 @@ $data = array(
 					</p>
 					<div style="clear: both;"></div>
 					<br>
-					<span>Genre: </span>'.$genre.'<span style="float: right;">Text: last.fm<br>Image: fanart.tv</span><br>
-					<br>
-					Similar Artists: <span>(click for links)</span><br>
+					<p><span>Genre: </span>'.$genre.'<span style="float: right;">Text: last.fm<br>Image: fanart.tv</span></p>
+					<p>Similar Artists: <i class="fa fa-external-link gr"></i><p>
 					'.$similars.'
 					<br><br>
 				</form>'
