@@ -112,7 +112,13 @@ if ( $status[ 'ext' ] !== 'radio' && $activePlayer === 'MPD' ) {
 $name = $status[ 'Artist' ]; // webradioname
 if ( $status[ 'state' ] === 'play' ) {
 	// lossless - no bitdepth
-	$bitdepth = ( $status[ 'ext' ] === 'radio' ) ? '' : $status[ 'bitdepth' ];
+	if ( $status[ 'ext' ] === 'radio' ) {
+		$bitdepth = '';
+	} else if ( $ext === 'DSF' || $ext === 'DFF' ) {
+		$bitdepth = 'dsd';
+	} else {
+		$bitdepth = $status[ 'bitdepth' ];
+	}
 	$sampling = samplingline( $bitdepth, $status[ 'samplerate' ], $status[ 'bitrate' ] );
 	$status[ 'sampling' ] = $sampling;
 	echo json_encode( $status, JSON_NUMERIC_CHECK );
