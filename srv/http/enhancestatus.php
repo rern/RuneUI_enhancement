@@ -111,7 +111,6 @@ if ( $status[ 'ext' ] !== 'radio' && $activePlayer === 'MPD' ) {
 
 $name = $status[ 'Artist' ]; // webradioname
 if ( $status[ 'state' ] === 'play' ) {
-	// lossless - no bitdepth
 	if ( $status[ 'ext' ] === 'radio' ) {
 		$bitdepth = '';
 	} else if ( $ext === 'DSF' || $ext === 'DFF' ) {
@@ -168,7 +167,7 @@ function samplingline( $bitdepth, $samplerate, $bitrate ) {
 			$dsd = round( $bitrate / 44100 );
 			$bitrate = round( $bitrate / 1000000, 2 );
 			return 'DSD'.$dsd.' • '.$bitrate.' Mbit/s';
-		} else if ( $ext === 'MP3' || $ext === 'AAC' ) {
+		} else if ( $ext === 'MP3' || $ext === 'AAC' ) { // lossy has no bitdepth
 			$bitdepth = '';
 		} else {
 			$bitdepth = $bitdepth ? $bitdepth.' bit ' : '';
