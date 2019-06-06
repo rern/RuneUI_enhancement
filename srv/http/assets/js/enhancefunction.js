@@ -1792,10 +1792,9 @@ function renderPlaylist() {
 	$( '#pl-currentpath, #pl-editor, #pl-index, #pl-search' ).addClass( 'hide' );
 	$( '#db-currentpath>span, #pl-searchbtn' ).removeClass( 'hide' );
 	$( '#plopen' ).toggleClass( 'disable', !GUI.lsplaylists.length );
-	$( '#plconsume' ).css( 'color', GUI.status.consume ? '#0095d8' : '' );
 	if ( !GUI.pllist.length ) {
 		$( '#pl-count' ).html( '<bl class="title">PLAYLIST</bl>' );
-		$( '#plsave, #plcrop, #plclear, #pl-searchbtn' ).addClass( 'disable' );
+		$( '#plsave, #plcrop, #plconsume, #plclear, #pl-searchbtn' ).addClass( 'disable' );
 		$( '#pl-entries' ).empty();
 		$( '.playlist' ).removeClass( 'hide' );
 		$( '#playlist-empty' ).css( 'margin-top', ( GUI.bars ? 27 : 67 ) +'px' );
@@ -1819,6 +1818,7 @@ function renderPlaylist() {
 	$( '#pl-count' ).html( counthtml );
 	$( '#plsave, #plclear, #pl-searchbtn' ).removeClass( 'disable' );
 	$( '#plcrop' ).toggleClass( 'disable', GUI.pllist.length < 2 );
+	$( '#plconsume' ).css( 'color', GUI.status.consume ? '#0095d8' : '' );
 	$( '#pl-entries' ).html( data.content +'<p></p>' ).promise().done( function() {
 		$( '#pl-entries p' ).css( 'min-height', window.innerHeight - 140 +'px' );
 		setPlaylistScroll();
