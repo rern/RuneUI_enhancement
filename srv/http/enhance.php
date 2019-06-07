@@ -678,13 +678,16 @@ function loadPlaylist( $name, $shuffle = '' ) { // fix -  mpd unable to save cue
 	$playlistinfo = file_get_contents( "/srv/http/assets/img/playlists/$name" );
 	$lines = explode( "\n", rtrim( $playlistinfo ) );
 	if ( $shuffle ) shuffle( $lines );
+	$cmd = '';
 	foreach( $lines as $line ) {
 		$list = explode( '^^', $line );
 		$cuetrack = $list[ 9 ];
 		if ( $cuetrack ) {
-			exec( '/srv/http/enhance1cue.sh "'.$list[ 8 ].'" '.$cuetrack );
+			$cmd.= '/srv/http/enhance1cue.sh "'.$list[ 8 ].'" '.$cuetrack.'; ';
 		} else {
-			exec( 'mpc add "'.$list[ 0 ].'"' );
+			$cmd.= 'mpc add "'.$list[ 0 ].'"; ';
 		}
 	}
+	if ( $shuffle ) $cmd.= "sleep 1; mpc play $shuffle";
+	exec( $cmd );
 }
