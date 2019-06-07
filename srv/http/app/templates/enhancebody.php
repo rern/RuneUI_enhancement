@@ -140,26 +140,18 @@ function stripLeading( $string ) {
 // context menus
 function menuli( $command, $icon, $label, $type = '' ) {
 	$type = $type ? ' data-type="'.$type.'"' : '';
-	if ( $icon === 'folder-refresh' ) {
-		$class = ' class="update"';
-	} else if ( substr( $icon, -7 ) === 'refresh' ) {
-		$class = ' class="replace"';
-	} else if ( $icon === 'tag' ) {
-		$class = ' class="tag"';
-	} else if ( $icon === 'minus-circle' ) {
-		$class = ' class="remove"';
-	} else if ( $icon === 'lastfm' ) {
-		$class = ' class="lastfm"';
-	}
+	$iconclass = array( 'folder-refresh', 'plus-refresh', 'play-plus-refresh', 'play-random', 'tag', 'minus-circle', 'lastfm' );
+	if ( in_array( $icon, $iconclass ) ) $class = ' class="'.$icon.'"';
 	return '<a data-cmd="'.$command.'"'.$type.$class.'><i class="fa fa-'.$icon.'"></i>'.$label.'</a>';
 }
 function menudiv( $id, $html ) {
 	return '<div id="context-menu-'.$id.'" class="menu contextmenu hide">'.$html.'</div>';
 }
-function menucommon( $add, $addplay, $replace, $replaceplay ) {
+function menucommon( $add, $addplay, $shuffle, $replace, $replaceplay ) {
 	$htmlcommon = '<span class="menushadow"></span>';
 	$htmlcommon.= menuli( $add,         'plus-o',            'Add' );
 	$htmlcommon.= menuli( $addplay,     'play-plus',         'Add ► Play' );
+	$htmlcommon.= menuli( $shuffle,     'play-random',       '+Random ► Play' );
 	$htmlcommon.= menuli( $replace,     'plus-refresh',      'Replace' );
 	$htmlcommon.= menuli( $replaceplay, 'play-plus-refresh', 'Replace ► Play' );
 	return $htmlcommon;
@@ -173,7 +165,7 @@ function menucommonsp( $type ) {
 }
 $kid3 = file_exists( '/usr/bin/kid3-cli' );
 $menu = '<div>';
-$htmlcommon = menucommon( 'add', 'addplay', 'replace', 'replaceplay' );
+$htmlcommon = menucommon( 'add', 'addplay', 'shuffle', 'replace', 'replaceplay' );
 $html = '<span class="menushadow"></span>';
 
 $html.= menuli( 'play',       'play',         'Play' );
@@ -239,7 +231,7 @@ $menudiv = '';
 $html = '<span class="menushadow"></span>';
 $html.= menuli( 'pladd',         'plus-o',            'Add' );
 $html.= menuli( 'pladdplay',     'play-plus',         'Add ► Play' );
-$html.= menuli( 'plashuffle',    'play-random',       '+Random ► Play' );
+$html.= menuli( 'plshuffle',     'play-random',       '+Random ► Play' );
 $html.= menuli( 'plreplace',     'plus-refresh',      'Replace' );
 $html.= menuli( 'plreplaceplay', 'play-plus-refresh', 'Replace ► Play' );
 $html.= menuli( 'plrename',      'edit-circle',       'Rename' );
