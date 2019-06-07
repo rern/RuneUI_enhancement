@@ -1521,8 +1521,9 @@ function dbContextmenu( $li, $target ) {
 		return
 	}
 	
-	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
-	$( '.update' ).toggleClass( 'hide', GUI.status.updating_db !== 0 );
+	$( '.play-random' ).toggleClass( 'hide', GUI.list.isfile );
+	$( '.plus-refresh, .play-plus-refresh' ).toggleClass( 'hide', !GUI.status.playlistlength );
+	$( '.folder-refresh' ).toggleClass( 'hide', GUI.status.updating_db !== 0 );
 	$( '.tag' ).addClass( 'hide' );
 	if ( GUI.list.isfile ) {
 		$( '.tag' ).removeClass( 'hide' );
@@ -1558,8 +1559,8 @@ function plContextmenu( $li, $target ) { // saved playlists
 	GUI.list.path = $li.find( '.lipath' ).text().trim() || GUI.list.name;
 	if ( GUI.list.path.slice( -3 ) === 'cue' ) GUI.list.index = $li.find( '.liindex' ).text() || '';
 	GUI.list.isfile = $li.find( '.fa-music' ).length; // used in contextmenu
-	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
-	$( '.remove' ).removeClass( 'hide' );
+	$( '.plus-refresh, .play-plus-refresh' ).toggleClass( 'hide', !GUI.status.playlistlength );
+	$( '.minus-circle' ).removeClass( 'hide' );
 	$( '.tag' ).addClass( 'hide' );
 	var dbpl = $li.find( '.pl-icon' ).length ? '.pl' : '.db';
 	var $menu = $( $li.find( dbpl +'-icon' ).data( 'target' ) );

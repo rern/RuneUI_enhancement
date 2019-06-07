@@ -80,7 +80,7 @@ $( '.contextmenu a' ).click( function() {
 	// compose command
 	var mpcCmd;
 	// must keep order otherwise replaceplay -> play, addplay -> play
-	var mode = cmd.replace( /replaceplay|replace|addplay|add|ashuffle/, '' );
+	var mode = cmd.replace( /replaceplay|replace|addplay|add|shuffle/, '' );
 	if ( [ 'album', 'artist', 'composer', 'genre' ].indexOf( GUI.list.mode ) !== -1 ) {
 		var artist = GUI.list.artist;
 		mpcCmd = 'mpc findadd '+ GUI.list.mode +' "'+ name +'"'+ ( artist ? ' artist "'+ artist +'"' : '' );
@@ -98,6 +98,8 @@ $( '.contextmenu a' ).click( function() {
 			if ( GUI.list.img ) namepl += '\n'+ GUI.list.thumb +'\n'+ GUI.list.img;
 			mpcCmd = 'mpc add "'+ GUI.list.path +'"'
 					+'; /usr/bin/echo -en "*'+ namepl +'" > "/srv/http/assets/img/webradiopl/'+ pathname +'"';
+		} else if ( cmd === 'shuffle' ) {
+			mpcCmd = 'mpc ls "'+ name +'" | shuf | mpc add';
 		} else {
 			mpcCmd = GUI.list.isfile ? 'mpc add "'+ name +'"' : 'mpc ls "'+ name +'" | mpc add';
 		}
@@ -109,39 +111,43 @@ $( '.contextmenu a' ).click( function() {
 		if ( GUI.library ) {
 			mpcCmd = 'mpc load "'+ name +'"';
 		} else { // saved playlist
-			var shuffle = cmd === 'ashuffle' ? 1 : 0;
+			var shuffle = cmd === 'shuffle' ? ( GUI.status.playlistlength + 1 ) : 0;
 			var play = cmd.slice( -1 ) === 'y' || shuffle ? 1 : 0;
 			var replace = cmd.slice( 0, 1 ) === 'r' ? 1 : 0;
+			var title = replace ? 'Playlist Replaced' : ( shuffle ? 'Playlist +Random' : 'Playlist Added' );
+			notify( title, '<span class="blink">Processing ...</span><br><span class="li2">Please wait.</span>', 'list-ul', -1 );
+			$( '#db-entries li, #pl-editor li' ).removeClass( 'active' );
 			$.post( 'enhance.php', { loadplaylist: name, play: play, replace: replace, shuffle: shuffle }, function() {
-				notify( ( replace ? 'Playlist Replaced' : 'Playlist Added' ), name, 'list-ul' );
+				notify( title, name, 'list-ul' );
 			} );
 			return
 		}
 	}
 	cmd = cmd.replace( /album|artist|composer|genre/, '' );
 	var contextCommand = {
-		  add           : mpcCmd
-		, addplay       : [ mpcCmd, 'sleep 1', 'mpc play '+ ( GUI.status.playlistlength + 1 ) ]
-		, replace       : [ 'mpc clear', mpcCmd ]
-		, replaceplay   : [ 'mpc clear', mpcCmd, 'sleep 1', 'mpc play' ]
+		  add         : mpcCmd
+		, addplay     : [ mpcCmd, 'sleep 1', 'mpc play '+ ( GUI.status.playlistlength + 1 ) ]
+		, shuffle     : [ mpcCmd, 'sleep 1', 'mpc play '+ ( GUI.status.playlistlength + 1 ) ]
+		, replace     : [ 'mpc clear', mpcCmd ]
+		, replaceplay : [ 'mpc clear', mpcCmd, 'sleep 1', 'mpc play' ]
 	}
 	if ( cmd in contextCommand ) {
 		var command = contextCommand[ cmd ];
-		if ( cmd === 'add' || cmd === 'addplay' ) {
-			var msg = 'Added to Playlist'+ ( cmd === 'add' ? '' : ' <i class="fa fa-play gr"></i>Play' )
-			addReplace( mode, cmd, command, msg );
+		if ( [ 'add', 'addplay', 'shuffle' ].indexOf( cmd ) !== -1 ) {
+			var msg = 'Added to Playlist'+ ( cmd === 'add' ? '' : ' ► Play' )
+			addReplace( cmd, command, msg );
 		} else {
-			var msg = 'Playlist replaced'+ ( cmd === 'replace' ? '' : ' <i class="fa fa-play gr"></i>Play' )
+			var msg = 'Playlist replaced'+ ( cmd === 'replace' ? '' : ' ► Play' )
 			if ( GUI.display.plclear && GUI.status.playlistlength ) {
 				info( {
 					  title   : 'Replace Playlist'
 					, message : 'Replace current Playlist?'
 					, ok      : function() {
-						addReplace( mode, cmd, command, msg );
+						addReplace( cmd, command, msg );
 					}
 				} );
 			} else {
-				addReplace( mode, cmd, command, msg );
+				addReplace( cmd, command, msg );
 			}
 		}
 	}
@@ -175,13 +181,13 @@ function updateThumbnails() {
 		}
 	} );
 }
-function addReplace( mode, cmd, command, title ) {
+function addReplace( cmd, command, title ) {
+	var playbackswitch = GUI.display.playbackswitch && ( cmd === 'addplay' || cmd === 'replaceplay' );
 	$.post( 'enhance.php', { mpc: command }, function() {
 		getPlaybackStatus();
+		if ( !playbackswitch ) notify( title, msg, 'list-ul' );
 	} );
-	if ( GUI.display.playbackswitch
-		&& ( cmd === 'addplay' || cmd === 'replaceplay' ) 
-	) {
+	if ( playbackswitch ) {
 		$( '#tab-playback' ).click();
 	} else {
 		if ( GUI.list.li.hasClass( 'licover' ) ) {
@@ -193,7 +199,7 @@ function addReplace( mode, cmd, command, title ) {
 		} else {
 			var msg = GUI.list.li.find( '.lipath' ).text();
 		}
-		notify( title, msg, 'list-ul' );
+		notify( title, '<span class="blink">Processing ...</span><br><span class="li2">Please wait.</span>', 'list-ul', -1 );
 		if ( cmd === 'replace' ) GUI.plreplace = 1;
 	}
 }
