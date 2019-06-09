@@ -84,7 +84,7 @@ $( '.contextmenu a' ).click( function( e ) {
 	// compose command
 	var mpcCmd;
 	// must keep order otherwise replaceplay -> play, addplay -> play
-	var mode = cmd.replace( /replaceplay|replace|addplay|add|shuffle/, '' );
+	var mode = cmd.replace( /replaceplay|replace|addplay|add/, '' );
 	if ( [ 'album', 'artist', 'composer', 'genre' ].indexOf( GUI.list.mode ) !== -1 ) {
 		var artist = GUI.list.artist;
 		mpcCmd = 'mpc findadd '+ GUI.list.mode +' "'+ name +'"'+ ( artist ? ' artist "'+ artist +'"' : '' );
@@ -102,8 +102,6 @@ $( '.contextmenu a' ).click( function( e ) {
 			if ( GUI.list.img ) namepl += '\n'+ GUI.list.thumb +'\n'+ GUI.list.img;
 			mpcCmd = 'mpc add "'+ GUI.list.path +'"'
 					+'; /usr/bin/echo -en "*'+ namepl +'" > "/srv/http/assets/img/webradiopl/'+ pathname +'"';
-		} else if ( cmd === 'shuffle' ) {
-			mpcCmd = 'mpc ls "'+ name +'" | shuf | mpc add';
 		} else {
 			mpcCmd = GUI.list.isfile ? 'mpc add "'+ name +'"' : 'mpc ls "'+ name +'" | mpc add';
 		}
@@ -115,13 +113,12 @@ $( '.contextmenu a' ).click( function( e ) {
 		if ( GUI.library ) {
 			mpcCmd = 'mpc load "'+ name +'"';
 		} else { // saved playlist
-			var shuffle = cmd === 'shuffle' ? ( GUI.status.playlistlength + 1 ) : 0;
-			var play = cmd.slice( -1 ) === 'y' || shuffle ? 1 : 0;
+			var play = cmd.slice( -1 ) === 'y' ? 1 : 0;
 			var replace = cmd.slice( 0, 1 ) === 'r' ? 1 : 0;
-			var title = replace ? 'Playlist Replaced' : ( shuffle ? 'Playlist +Random' : 'Playlist Added' );
+			var title = replace ? 'Playlist Replaced' : 'Playlist Added';
 			notify( title, '<span class="blink">Processing ...</span><br><span class="li2">Please wait.</span>', 'list-ul', -1 );
 			$( '#db-entries li, #pl-editor li' ).removeClass( 'active' );
-			$.post( 'enhance.php', { loadplaylist: name, play: play, replace: replace, shuffle: shuffle }, function() {
+			$.post( 'enhance.php', { loadplaylist: name, play: play, replace: replace }, function() {
 				notify( title, name, 'list-ul' );
 			} );
 			return
@@ -131,20 +128,19 @@ $( '.contextmenu a' ).click( function( e ) {
 	var contextCommand = {
 		  add         : mpcCmd
 		, addplay     : [ mpcCmd, 'sleep 1', 'mpc play '+ ( GUI.status.playlistlength + 1 ) ]
-		, shuffle     : [ mpcCmd, 'sleep 1', 'mpc play '+ ( GUI.status.playlistlength + 1 ) ]
 		, replace     : [ 'mpc clear', mpcCmd ]
 		, replaceplay : [ 'mpc clear', mpcCmd, 'sleep 1', 'mpc play' ]
 	}
 	if ( cmd in contextCommand ) {
 		var command = contextCommand[ cmd ];
-		if ( [ 'add', 'addplay', 'shuffle' ].indexOf( cmd ) !== -1 ) {
-			var msg = 'Added to Playlist'+ ( cmd === 'add' ? '' : ' ► Play' )
+		if ( [ 'add', 'addplay' ].indexOf( cmd ) !== -1 ) {
+			var msg = 'Added to Playlist'+ ( cmd === 'add' ? '' : ' and played' )
 			addReplace( cmd, command, msg );
 		} else {
-			var msg = 'Playlist replaced'+ ( cmd === 'replace' ? '' : ' ► Play' )
+			var msg = 'Playlist replaced'+ ( cmd === 'replace' ? '' : ' and played' )
 			if ( GUI.display.plclear && GUI.status.playlistlength ) {
 				info( {
-					  title   : 'Replace Playlist'
+					  title   : 'Playlist'
 					, message : 'Replace current Playlist?'
 					, ok      : function() {
 						addReplace( cmd, command, msg );

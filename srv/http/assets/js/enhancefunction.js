@@ -1521,8 +1521,7 @@ function dbContextmenu( $li, $target ) {
 		return
 	}
 	
-	$( '.play-random' ).toggleClass( 'hide', GUI.list.isfile );
-	$( '.plus-refresh, .play-plus-refresh' ).toggleClass( 'hide', !GUI.status.playlistlength );
+	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
 	$( '.folder-refresh' ).toggleClass( 'hide', GUI.status.updating_db !== 0 );
 	$( '.tag' ).addClass( 'hide' );
 	if ( GUI.list.isfile ) {
