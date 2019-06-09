@@ -1,8 +1,12 @@
 // single quotes in mpc name arguments - enclosed with double quotes + escape double quotes
 // example: mpc save "abc's \"xyz\"" << name.replace( /"/g, '\\"' )
 
-$( '.contextmenu a' ).click( function() {
-	var $this = $( this );
+$( '.contextmenu a' ).click( function( e ) {
+	if ( $( e.target ).hasClass( 'addplay' ) ) {
+		var $this = $( e.target );
+	} else {
+		var $this = $( this );
+	}
 	var cmd = $this.data( 'cmd' );
 	$( '.menu' ).addClass( 'hide' );
 	if ( cmd !== 'update' ) $( '#db-entries li, #pl-entries li' ).removeClass( 'active' );
