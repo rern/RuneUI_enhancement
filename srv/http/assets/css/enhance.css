@@ -247,6 +247,12 @@ i.bookmark,
 	text-align: center;
 	font-size: 22px;
 }
+.menu .addplay {
+	float: right;
+	width: 41px;
+	height: 41px;
+	border-left: 1px solid #222f3d;
+}
 #settings .gr {
 	font-size: 20px;
 }
