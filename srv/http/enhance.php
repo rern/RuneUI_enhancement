@@ -249,7 +249,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	savePlaylist( $_POST[ 'saveplaylist' ] );
 } else if ( isset( $_POST[ 'loadplaylist' ] ) ) {
 	if ( $_POST[ 'replace' ] ) exec( 'mpc clear' );
-	loadPlaylist( $_POST[ 'loadplaylist' ], $_POST[ 'shuffle' ] );
+	loadPlaylist( $_POST[ 'loadplaylist' ] );
 	if ( $_POST[ 'play' ] ) exec( 'sleep 1; mpc play' );
 } else if ( isset( $_POST[ 'playlist' ] ) ) { //cue, m3u, pls
 	$plfiles = $_POST[ 'playlist' ];
@@ -674,10 +674,9 @@ function savePlaylist( $name ) {
 	$list = playlistInfo( 'save' );
 	file_put_contents( "/srv/http/assets/img/playlists/$name", $list );
 }
-function loadPlaylist( $name, $shuffle = '' ) { // fix -  mpd unable to save cue properly
+function loadPlaylist( $name ) { // fix -  mpd unable to save cue properly
 	$playlistinfo = file_get_contents( "/srv/http/assets/img/playlists/$name" );
 	$lines = explode( "\n", rtrim( $playlistinfo ) );
-	if ( $shuffle ) shuffle( $lines );
 	$cmd = '';
 	foreach( $lines as $line ) {
 		$list = explode( '^^', $line );
@@ -688,6 +687,5 @@ function loadPlaylist( $name, $shuffle = '' ) { // fix -  mpd unable to save cue
 			$cmd.= 'mpc add "'.$list[ 0 ].'"; ';
 		}
 	}
-	if ( $shuffle ) $cmd.= "sleep 1; mpc play $shuffle";
 	exec( $cmd );
 }
