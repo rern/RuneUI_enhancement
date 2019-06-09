@@ -142,32 +142,25 @@ function menuli( $command, $icon, $label, $type = '' ) {
 	$type = $type ? ' data-type="'.$type.'"' : '';
 	$iconclass = array( 'folder-refresh', 'plus-refresh', 'play-plus-refresh', 'play-random', 'tag', 'minus-circle', 'lastfm' );
 	if ( in_array( $icon, $iconclass ) ) $class = ' class="'.$icon.'"';
-	return '<a data-cmd="'.$command.'"'.$type.$class.'><i class="fa fa-'.$icon.'"></i>'.$label.'</a>';
+	if ( in_array( $label, array( 'Add', 'Random', 'Replace' ) ) ) $addplay = '<i class="fa fa-play-plus addplay"></i>';
+	return '<a data-cmd="'.$command.'"'.$type.$class.'><i class="fa fa-'.$icon.'"></i>'.$label.$addplay.'</a>';
 }
 function menudiv( $id, $html ) {
 	return '<div id="context-menu-'.$id.'" class="menu contextmenu hide">'.$html.'</div>';
 }
-function menucommon( $add, $addplay, $shuffle, $replace, $replaceplay ) {
+function menucommon( $add, $shuffle, $replace, $type ) {
 	$htmlcommon = '<span class="menushadow"></span>';
-	$htmlcommon.= menuli( $add,         'plus-o',            'Add' );
-	$htmlcommon.= menuli( $addplay,     'play-plus',         'Add ► Play' );
-	$htmlcommon.= menuli( $shuffle,     'play-random',       '+Random ► Play' );
-	$htmlcommon.= menuli( $replace,     'plus-refresh',      'Replace' );
-	$htmlcommon.= menuli( $replaceplay, 'play-plus-refresh', 'Replace ► Play' );
+	$htmlcommon.= '<a data-cmd="'.$add.'"><i class="fa fa-plus-o"></i>Add<i class="fa fa-play-plus addplay" data-cmd="'.$add.'play"></i></a>';
+//	if ( $shuffle ) $htmlcommon.= '<a data-cmd="'.$shuffle.'"><i class="fa fa-play-random"></i>Random<i class="fa fa-play-plus addplay" data-cmd="'.$shuffle.'play"></i></a>';
+	$htmlcommon.= '<a data-cmd="'.$replace.'"><i class="fa fa-plus-refresh"></i>Replace<i class="fa fa-play-plus-refresh addplay" data-cmd="'.$replace.'play"></i></a>';
 	return $htmlcommon;
 }
-function menucommonsp( $type ) {
-	$htmlcommon = '<span class="menushadow"></span>';
-	$htmlcommon.= menuli( 'spadd',         'plus-o',            'Add',            $type );
-	$htmlcommon.= menuli( 'spaddplay',     'play-plus',         'Add ► Play',     $type );
-	$htmlcommon.= menuli( 'spreplaceplay', 'play-plus-refresh', 'Replace ► Play', $type );
-	return $htmlcommon;
-}
+
 $kid3 = file_exists( '/usr/bin/kid3-cli' );
 $menu = '<div>';
-$htmlcommon = menucommon( 'add', 'addplay', 'shuffle', 'replace', 'replaceplay' );
-$html = '<span class="menushadow"></span>';
+$htmlcommon = menucommon( 'add', 'shuffle', 'replace' );
 
+$html = '<span class="menushadow"></span>';
 $html.= menuli( 'play',       'play',         'Play' );
 $html.= menuli( 'pause',      'pause',        'Pause' );
 $html.= menuli( 'stop',       'stop',         'Stop' );
@@ -186,7 +179,7 @@ $html.= menuli( 'tag',       'tag',            'Tags' );
 $menu.= menudiv( 'folder', $html );
 
 $menudiv = '';
-$html = $htmlcommon;
+$html = menucommon( 'add', '', 'replace' );
 $html.= menuli( 'lastfmreplaceplay', 'lastfm', 'Last.fm playlist' );
 if ( $kid3 )
 $html.= menuli( 'tag',               'tag',    'Tags' );
@@ -200,59 +193,63 @@ $menudiv = '';
 $html = $htmlcommon;
 $html.= menuli( 'lastfmreplaceplay', 'lastfm',       'Last.fm playlist' );
 $html.= menuli( 'savedplremove',     'minus-circle', 'Remove' );
+if ( $kid3 )
 $html.= menuli( 'tag',               'tag',          'Tags' );
 $menu.= menudiv( 'filesavedpl', $html );
 
 $menudiv = '';
-$html = menucommon( 'add',   'addplay', 'replace', 'replaceplay' );
-$html.= menuli( 'radiosave', 'save',    'Save in Webradio' );
+$html = menucommon( 'add', '', 'replace' );
+$html.= menuli( 'radiosave', 'save', 'Save in Webradio' );
 $menu.= menudiv( 'radio', $html );
 
 $menudiv = '';
-$html = menucommonsp( 'spotify-playlist' );
-$menu.= menudiv( 'spotify-pl', $html );
-$menudiv = '';
-$html = menucommonsp( 'spotify-track' );
-$menu.= menudiv( 'spotify', $html );
-
-$menudiv = '';
-$html = menucommon( 'wradd',  'wraddplay',    'wrreplace', 'wrreplaceplay' );
+$html = menucommon( 'wradd', '', 'wrreplace' );
 $html.= menuli( 'wrrename',   'edit-circle',  'Rename' );
 $html.= menuli( 'wrcoverart', 'coverart',     'Change coverart' );
 $html.= menuli( 'wrdelete',   'minus-circle', 'Delete' );
 $menu.= menudiv( 'webradio', $html );
 
 $menudiv = '';
-$html = menucommon( 'wradd',     'wraddplay',    'wrreplace', 'wrreplaceplay' );
+$html = menucommon( 'wradd', '', 'wrreplace' );
 $html.= menuli( 'savedplremove', 'minus-circle', 'Remove' );
 $menu.= menudiv( 'webradiopl', $html );
 
 $menudiv = '';
 $html = '<span class="menushadow"></span>';
-$html.= menuli( 'pladd',         'plus-o',            'Add' );
-$html.= menuli( 'pladdplay',     'play-plus',         'Add ► Play' );
-$html.= menuli( 'plshuffle',     'play-random',       '+Random ► Play' );
-$html.= menuli( 'plreplace',     'plus-refresh',      'Replace' );
-$html.= menuli( 'plreplaceplay', 'play-plus-refresh', 'Replace ► Play' );
-$html.= menuli( 'plrename',      'edit-circle',       'Rename' );
-$html.= menuli( 'pldelete',      'minus-circle',      'Delete' );
+$html.= menucommon( 'pladd', 'plshuffle', 'plreplace' );
+$html.= menuli( 'plrename', 'edit-circle',  'Rename' );
+$html.= menuli( 'pldelete', 'minus-circle', 'Delete' );
 $menu.= menudiv( 'playlist', $html );
 
 $menudiv = '';
-$html = menucommon( 'albumadd', 'albumaddplay', 'albumreplace', 'albumreplaceplay' );
+$html = menucommon( 'albumadd', 'albumshuffle', 'albumreplace' );
 $menu.= menudiv( 'album', $html );
 
 $menudiv = '';
-$html = menucommon( 'artistadd', 'artistaddplay', 'artistreplace', 'artistreplaceplay' );
+$html = menucommon( 'artistadd', 'artistshuffle', 'artistreplace' );
 $menu.= menudiv( 'artist', $html );
 
 $menudiv = '';
-$html = menucommon( 'composeradd', 'composeraddplay', 'composerreplace', 'composerreplaceplay' );
+$html = menucommon( 'composeradd', 'composershuffle', 'composerreplace' );
 $menu.= menudiv( 'composer', $html );
 
 $menudiv = '';
-$html = menucommon( 'genreadd', 'genreaddplay', 'genrereplace', 'genrereplaceplay' );
+$html = menucommon( 'genreadd', 'genreshuffle', 'genrereplace' );
 $menu.= menudiv( 'genre', $html );
+
+function menucommonsp( $type ) {
+	$html = '<span class="menushadow"></span>';
+	$html.= menuli( 'spadd',     'plus-o',       'Add',     $type );
+	$html.= menuli( 'spreplace', 'plus-refresh', 'Replace', $type );
+	return $html;
+}
+$menudiv = '';
+$html = menucommonsp( 'spotify-playlist' );
+$menu.= menudiv( 'spotify-pl', $html );
+
+$menudiv = '';
+$html = menucommonsp( 'spotify-track' );
+$menu.= menudiv( 'spotify', $html );
 
 $menu.= '</div>';
 ?>
