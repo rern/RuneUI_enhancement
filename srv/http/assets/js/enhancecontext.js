@@ -2,7 +2,7 @@
 // example: mpc save "abc's \"xyz\"" << name.replace( /"/g, '\\"' )
 
 $( '.contextmenu a' ).click( function( e ) {
-	if ( $( e.target ).hasClass( 'addplay' ) ) {
+	if ( $( e.target ).hasClass( 'submenu' ) ) {
 		var $this = $( e.target );
 	} else {
 		var $this = $( this );
