@@ -841,17 +841,18 @@ function getData( options ) {
 	keyword = keyword ? keyword.toString().replace( /"/g, '\"' ) : '';
 	GUI.browsemode = browsemode;
 	if ( !GUI.plugin ) {
+		var format = '"%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%"';
 		var command = {
-			  file          : { mpc   : 'mpc ls -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" "'+ path +'" 2> /dev/null', list: 'file' }
-			, artistalbum   : { mpc   : 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%"'+ ( artist ? ' artist "'+ artist +'"' : '' ) +' album "'+ path +'"', list: 'file', name: path }
-			, composeralbum : { mpc   : 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" composer "'+ composer +'" album "'+ path +'"', list: 'file' }
+			  file          : { mpc   : 'mpc ls -f '+ format +' "'+ path +'" 2> /dev/null', list: 'file' }
+			, artistalbum   : { mpc   : 'mpc find -f '+ format + ( artist ? ' artist "'+ artist +'"' : '' ) +' album "'+ path +'"', list: 'file', name: path }
+			, composeralbum : { mpc   : 'mpc find -f '+ format +' composer "'+ composer +'" album "'+ path +'"', list: 'file' }
 			, album         : { album : 'mpc find -f "%album%^^[%albumartist%|%artist%]" album "'+ path +'" | awk \'!a[$0]++\'', albumname: path }
 			, genre         : { album : 'mpc find -f "%album%^^%artist%" genre "'+ path +'" | awk \'!a[$0]++\'', genrename: path }
 			, artist        : { mpc   : 'mpc list album artist "'+ path +'" | awk NF', list: 'album' }
 			, albumartist   : { mpc   : 'mpc list album albumartist "'+ path +'" | awk NF', list: 'album' }
 			, composer      : { mpc   : 'mpc list album composer "'+ path +'" | awk NF', list: 'album' }
 			, type          : { mpc   : 'mpc list '+ browsemode +' | awk NF', list: browsemode }
-			, search        : { mpc   : 'mpc search -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" any "'+ keyword +'"', list: 'file' }
+			, search        : { mpc   : 'mpc search -f '+ format +' any "'+ keyword +'"', list: 'file' }
 			, Webradio      : { getwebradios  : 1 }
 			, coverart      : { coverartalbum : path, artist: artist }
 		}

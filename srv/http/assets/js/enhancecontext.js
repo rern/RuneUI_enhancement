@@ -21,43 +21,68 @@ $( '.contextmenu a' ).click( function( e ) {
 		return
 	}
 	
-	if ( [ 'radiosave', 'update', 'tag', 'remove', 'savedpladd', 'savedplremove' ].indexOf( cmd ) !== -1 ) {
-		if ( cmd === 'radiosave' ) { // unsaved webradio (dirble)
-			webRadioSave( GUI.list.name, GUI.list.path );
-		} else if ( cmd === 'update' ) {
-			GUI.list.li.find( '.db-icon' ).addClass( 'blink' );
-			$.post( 'enhance.php', { mpc: 'mpc update "'+ GUI.list.path +'"' }, getUpdateStatus );
-		} else if ( cmd === 'tag' ) {
-			setTag();
-		} else if ( cmd === 'remove' ) {
-			GUI.contextmenu = 1;
-			setTimeout( function() { GUI.contextmenu = 0 }, 500 );
-			removeFromPlaylist( GUI.list.li );
-		} else if ( cmd === 'savedpladd' ) {
-			GUI.plappend = {
-				  file  : GUI.list.path
-				, index : GUI.list.index
-			}
-			info( {
-				  icon    : 'list-ul'
-				, title   : 'Add to playlist'
-				, message : 'Select playlist to add:'
-						   +'<br><w>'+ GUI.list.name +'</w>'
-				, cancel  : function() {
-					GUI.plappend = '';
-				}
-				, ok      : function() {
-					$( '#plopen' ).click();
-				}
-			} );
-		} else if ( cmd === 'savedplremove' ) {
-			var plline = GUI.list.li.index() + 1;
-			var plname = $( '#pl-currentpath .lipath' ).text();
-			$.post( 'enhance.php', { bash: '/usr/bin/sed -i "'+ plline +' d" "/srv/http/assets/img/playlists/'+ plname +'"' } );
-			GUI.list.li.remove();
+	if ( cmd === 'radiosave' ) { // unsaved webradio (dirble)
+		webRadioSave( GUI.list.name, GUI.list.path );
+	} else if ( cmd === 'update' ) {
+		GUI.list.li.find( '.db-icon' ).addClass( 'blink' );
+		$.post( 'enhance.php', { mpc: 'mpc update "'+ GUI.list.path +'"' }, getUpdateStatus );
+	} else if ( cmd === 'tag' ) {
+		setTag();
+	} else if ( cmd === 'remove' ) {
+		GUI.contextmenu = 1;
+		setTimeout( function() { GUI.contextmenu = 0 }, 500 );
+		removeFromPlaylist( GUI.list.li );
+	} else if ( cmd === 'savedpladd' ) {
+		GUI.plappend = {
+			  file  : GUI.list.path
+			, index : GUI.list.index
 		}
-		return
+		info( {
+			  icon    : 'list-ul'
+			, title   : 'Add to playlist'
+			, message : 'Select playlist to add:'
+					   +'<br><w>'+ GUI.list.name +'</w>'
+			, cancel  : function() {
+				GUI.plappend = '';
+			}
+			, ok      : function() {
+				$( '#plopen' ).click();
+			}
+		} );
+	} else if ( cmd === 'savedplremove' ) {
+		var plline = GUI.list.li.index() + 1;
+		var plname = $( '#pl-currentpath .lipath' ).text();
+		$.post( 'enhance.php', { bash: '/usr/bin/sed -i "'+ plline +' d" "/srv/http/assets/img/playlists/'+ plname +'"' } );
+		GUI.list.li.remove();
+	} else if ( cmd === 'lastfmsimilar' ) {
+		notify( 'Playlist Add With Similar', '<span class="blink">Processing ...</span><br><span class="li2">Please wait.</span>', 'list-ul', -1 );
+		$.ajax( {
+			  type     : 'post'
+			, url      : 'http://ws.audioscrobbler.com/2.0/'
+			, data     : { 
+				  api_key     : lastfmapikey
+				, autocorrect : 1
+				, format      : 'json'
+				, method      : 'track.getsimilar'
+				, artist      : GUI.status.Artist
+				, track       : GUI.status.Title
+			}
+			, timeout  : 5000
+			, dataType : 'json'
+			, success  : function( data ) {
+				if ( !data || !data.similartracks.track.length ) {
+					notify( 'Playlist Add With Similar', 'Data not available.', 'list-ul' );
+					return
+				}
+				
+				$.each( data.similartracks.track, function( i, val ) {
+					$.post( 'enhance.php', { mpc   : 'mpc find artist "'+ val.artist.name +'" title "'+ val.name +'" | mpc add &> /dev/null' } );
+				} );
+				notify( 'Playlist Add With Similar', 'Playlist added', 'list-ul' );
+			}
+		} );
 	}
+	if ( [ 'radiosave', 'update', 'tag', 'remove', 'savedpladd', 'savedplremove', 'lastfmsimilar' ].indexOf( cmd ) !== -1 ) return
 	
 	// functions with dialogue box ////////////////////////////////////////////
 	var contextFunction = {
