@@ -29,6 +29,7 @@ var GUI = {
 	, scale        : 1
 	, screenS      : ( window.innerHeight < 590 || window.innerWidth < 500 )
 	, scrollspeed  : 80 // pixel/s
+	, similarpl    : -1
 	, status       : {}
 	, debounce     : ''
 	, debouncems   : 300
@@ -1694,9 +1695,9 @@ pushstreams.idle.onmessage = function( changed ) {
 			if ( GUI.pleditor || GUI.contextmenu || $( '#pl-entries .pl-remove' ).length ) return
 			$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
 				var playlistlength = data.playlist.length;
-				if ( GUI.similarpl ) {
-					notify( 'Playlist Add Similar', playlistlength - GUI.similarpl +' tracks added', 'list-ul' );
-					GUI.similarpl = 0;
+				if ( GUI.similarpl !== -1 ) {
+					notify( 'Playlist Add Similar', ( playlistlength - GUI.similarpl ) +' tracks added', 'list-ul' );
+					GUI.similarpl = -1;
 				}
 				if ( playlistlength ) {
 					GUI.status.playlistlength = playlistlength;
@@ -1722,7 +1723,7 @@ pushstreams.idle.onmessage = function( changed ) {
 		} else if ( changed === 'database' ) { // on files changed (for webradio rename)
 			if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) $( '#home-webradio' ).tap();
 		}
-	}, changed === 'playlist' ? 1000 : GUI.debouncems );
+	}, changed === 'playlist' ? 1200 : GUI.debouncems );
 }
 pushstreams.notify.onmessage = function( data ) {
 	var data = data[ 0 ];

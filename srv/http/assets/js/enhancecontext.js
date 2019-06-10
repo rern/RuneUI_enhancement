@@ -56,7 +56,7 @@ $( '.contextmenu a' ).click( function( e ) {
 		$.post( 'enhance.php', { bash: '/usr/bin/sed -i "'+ plline +' d" "/srv/http/assets/img/playlists/'+ plname +'"' } );
 		GUI.list.li.remove();
 	} else if ( cmd === 'similar' ) {
-		notify( 'Playlist Add Similar', '<span class="blink">Processing ...</span><br><span class="li2">Please wait.</span>', 'list-ul', -1 );
+		notify( 'Playlist Add Similar', '<span class="blink">Fetcthing list...</span><br><span class="li2">Please wait.</span>', 'list-ul', -1 );
 		$.ajax( {
 			  type     : 'post'
 			, url      : 'http://ws.audioscrobbler.com/2.0/'
@@ -67,19 +67,23 @@ $( '.contextmenu a' ).click( function( e ) {
 				, method      : 'track.getsimilar'
 				, artist      : GUI.list.artist
 				, track       : GUI.list.name
+				, limit       : 1000
 			}
 			, timeout  : 5000
 			, dataType : 'json'
 			, success  : function( data ) {
 				var similartracks = data.similartracks.track;
-				if ( !data || !similartracks.length ) {
+				var tracklength = similartracks.length;
+				if ( !data || !tracklength ) {
 					notify( 'Playlist Add Similar', 'Data not available.', 'list-ul' );
 					return
 				}
 				
 				GUI.similarpl = GUI.status.playlistlength;
 				$.each( similartracks, function( i, val ) {
-					$.post( 'enhance.php', { mpc : 'mpc findadd artist "'+ val.artist.name +'" title "'+ val.name +'"' } );
+					$.post( 'enhance.php', { mpc : 'mpc findadd artist "'+ val.artist.name +'" title "'+ val.name +'"' }, function() {
+						$( '#bannerMessage' ).html( 'Find '+ ( i + 1 ) +'/'+ tracklength +' in Library ...' );
+					} );
 				} );
 				if ( submenu ) $.post( 'enhance.php', { mpc : 'mpc play' } );
 			}
