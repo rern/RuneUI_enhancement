@@ -1385,7 +1385,11 @@ $( '#plclear' ).click( function() {
 		}
 		, oklabel    : 'All'
 		, ok         : function() {
-			clearPlaylist();
+			GUI.status.playlistlength = 0;
+			GUI.pllist = {};
+			setPlaybackBlank();
+			renderPlaylist();
+			$.post( 'enhance.php', { mpc: [ 'mpc clear', '/usr/bin/rm -f "/srv/http/assets/img/webradiopl/*' ] } );
 		}
 	} );
 } );
@@ -1688,10 +1692,14 @@ pushstreams.idle.onmessage = function( changed ) {
 				if ( GUI.playlist && !GUI.pleditor ) setPlaylistScroll();
 		} else if ( changed === 'playlist' ) { // on playlist changed
 			if ( GUI.pleditor || GUI.contextmenu || $( '#pl-entries .pl-remove' ).length ) return
-			
 			$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
-				if ( data.playlist.length ) {
-					GUI.status.playlistlength = data.playlist.length;
+				var playlistlength = data.playlist.length;
+				if ( GUI.similarpl ) {
+					notify( 'Playlist Add Similar', playlistlength - GUI.similarpl +' tracks added', 'list-ul' );
+					GUI.similarpl = 0;
+				}
+				if ( playlistlength ) {
+					GUI.status.playlistlength = playlistlength;
 					GUI.lsplaylists = data.lsplaylists || [];
 					GUI.pllist = data.playlist;
 				} else {

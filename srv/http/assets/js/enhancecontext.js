@@ -71,16 +71,17 @@ $( '.contextmenu a' ).click( function( e ) {
 			, timeout  : 5000
 			, dataType : 'json'
 			, success  : function( data ) {
-				if ( !data || !data.similartracks.track.length ) {
+				var similartracks = data.similartracks.track;
+				if ( !data || !similartracks.length ) {
 					notify( 'Playlist Add Similar', 'Data not available.', 'list-ul' );
 					return
 				}
 				
-				$.each( data.similartracks.track, function( i, val ) {
+				GUI.similarpl = GUI.status.playlistlength;
+				$.each( similartracks, function( i, val ) {
 					$.post( 'enhance.php', { mpc : 'mpc findadd artist "'+ val.artist.name +'" title "'+ val.name +'"' } );
 				} );
 				if ( submenu ) $.post( 'enhance.php', { mpc : 'mpc play' } );
-				notify( 'Playlist Add Similar', 'Playlist added', 'list-ul' );
 			}
 		} );
 	}

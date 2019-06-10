@@ -1874,12 +1874,6 @@ function removeFromPlaylist( $li ) {
 		setPlaybackBlank();
 	}
 }
-function clearPlaylist() {
-	GUI.status.playlistlength = 0;
-	GUI.pllist = {};
-	$.post( 'enhance.php', { mpc: [ 'mpc clear', '/usr/bin/rm -f "/srv/http/assets/img/webradiopl/*' ] } );
-	setPlaybackBlank();
-}
 function renderLsPlaylists( lsplaylists ) {
 	var content = '';
 	$.each( lsplaylists, function( key, val ) {
