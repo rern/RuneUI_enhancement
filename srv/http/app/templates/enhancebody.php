@@ -183,9 +183,9 @@ $menu.= menudiv( 'folder', $html );
 
 $menudiv = '';
 $html = menucommon( 'add', 'replace' );
-$html.= menuli( 'lastfmreplaceplay', 'lastfm', 'Last.fm playlist' );
+$html.= menuli( 'lastfmsimilar', 'lastfm', 'Add with similar' );
 if ( $kid3 )
-$html.= menuli( 'tag',               'tag',    'Tags' );
+$html.= menuli( 'tag',           'tag',    'Tags' );
 $menu.= menudiv( 'file', $html );
 
 $menudiv = '';
@@ -194,8 +194,8 @@ $menu.= menudiv( 'filepl', $html );
 
 $menudiv = '';
 $html = $htmlcommon;
-$html.= menuli( 'lastfmreplaceplay', 'lastfm',       'Last.fm playlist' );
-$html.= menuli( 'savedplremove',     'minus-circle', 'Remove' );
+$html.= menuli( 'lastfmsimilar', 'lastfm',       'Add with similar' );
+$html.= menuli( 'savedplremove', 'minus-circle', 'Remove' );
 if ( $kid3 )
 $html.= menuli( 'tag',               'tag',          'Tags' );
 $menu.= menudiv( 'filesavedpl', $html );
