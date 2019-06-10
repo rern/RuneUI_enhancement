@@ -841,17 +841,18 @@ function getData( options ) {
 	keyword = keyword ? keyword.toString().replace( /"/g, '\"' ) : '';
 	GUI.browsemode = browsemode;
 	if ( !GUI.plugin ) {
+		var format = '"%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%"';
 		var command = {
-			  file          : { mpc   : 'mpc ls -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" "'+ path +'" 2> /dev/null', list: 'file' }
-			, artistalbum   : { mpc   : 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%"'+ ( artist ? ' artist "'+ artist +'"' : '' ) +' album "'+ path +'"', list: 'file', name: path }
-			, composeralbum : { mpc   : 'mpc find -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" composer "'+ composer +'" album "'+ path +'"', list: 'file' }
+			  file          : { mpc   : 'mpc ls -f '+ format +' "'+ path +'" 2> /dev/null', list: 'file' }
+			, artistalbum   : { mpc   : 'mpc find -f '+ format + ( artist ? ' artist "'+ artist +'"' : '' ) +' album "'+ path +'"', list: 'file', name: path }
+			, composeralbum : { mpc   : 'mpc find -f '+ format +' composer "'+ composer +'" album "'+ path +'"', list: 'file' }
 			, album         : { album : 'mpc find -f "%album%^^[%albumartist%|%artist%]" album "'+ path +'" | awk \'!a[$0]++\'', albumname: path }
 			, genre         : { album : 'mpc find -f "%album%^^%artist%" genre "'+ path +'" | awk \'!a[$0]++\'', genrename: path }
 			, artist        : { mpc   : 'mpc list album artist "'+ path +'" | awk NF', list: 'album' }
 			, albumartist   : { mpc   : 'mpc list album albumartist "'+ path +'" | awk NF', list: 'album' }
 			, composer      : { mpc   : 'mpc list album composer "'+ path +'" | awk NF', list: 'album' }
 			, type          : { mpc   : 'mpc list '+ browsemode +' | awk NF', list: browsemode }
-			, search        : { mpc   : 'mpc search -f "%title%^^%time%^^%artist%^^%album%^^%file%^^%genre%^^%composer%^^%albumartist%" any "'+ keyword +'"', list: 'file' }
+			, search        : { mpc   : 'mpc search -f '+ format +' any "'+ keyword +'"', list: 'file' }
 			, Webradio      : { getwebradios  : 1 }
 			, coverart      : { coverartalbum : path, artist: artist }
 		}
@@ -1163,6 +1164,7 @@ function data2html( list, path ) {
 					var liname = list.Title
 					content = '<li class="file">'
 							 +'<a class="lipath">'+ list.file +'</a>'
+							 +'<a class="liartist">'+ list.Artist +'</a>'
 							 +'<a class="liname">'+ liname +'</a>'
 							 +'<a class="lisort">'+ list.lisort +'</a>'
 							 +'<i class="fa fa-music db-icon" data-target="#context-menu-file"></i>'
@@ -1206,6 +1208,7 @@ function data2html( list, path ) {
 			var liname = list.Title;
 			content = '<li class="file">'
 					 +'<a class="lipath">'+ list.file +'</a>'
+					 +'<a class="liartist">'+ list.Artist +'</a>'
 					 +'<a class="liname">'+ liname +'</a>'
 					 +'<a class="lisort">'+ list.lisort +'</a>'
 					 +'<i class="fa fa-music db-icon" data-target="#context-menu-file"></i>'
@@ -1289,6 +1292,7 @@ function data2html( list, path ) {
 			var liname = list.Title;
 			content = '<li class="file">'
 					 +'<a class="lipath">'+ list.file +'</a>'
+					 +'<a class="liartist">'+ list.Artist +'</a>'
 					 +'<a class="liname">'+ liname +'</a>'
 					 +'<a class="lisort">'+ list.lisort +'</a>'
 					 +'<i class="fa fa-music db-icon" data-target="#context-menu-file"></i>'
@@ -1517,12 +1521,12 @@ function dbContextmenu( $li, $target ) {
 		&& !$target.hasClass( 'db-icon' )
 		&& !$li.hasClass( 'licover' )
 	) {
-		$menu.find( 'a:eq( 1 )' ).click();
+		$menu.find( 'a:eq( 0 ) .submenu' ).click();
 		return
 	}
 	
 	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
-	$( '.update' ).toggleClass( 'hide', GUI.status.updating_db !== 0 );
+	$( '.folder-refresh' ).toggleClass( 'hide', GUI.status.updating_db !== 0 );
 	$( '.tag' ).addClass( 'hide' );
 	if ( GUI.list.isfile ) {
 		$( '.tag' ).removeClass( 'hide' );
@@ -1558,15 +1562,15 @@ function plContextmenu( $li, $target ) { // saved playlists
 	GUI.list.path = $li.find( '.lipath' ).text().trim() || GUI.list.name;
 	if ( GUI.list.path.slice( -3 ) === 'cue' ) GUI.list.index = $li.find( '.liindex' ).text() || '';
 	GUI.list.isfile = $li.find( '.fa-music' ).length; // used in contextmenu
-	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
-	$( '.remove' ).removeClass( 'hide' );
+	$( '.plus-refresh, .play-plus-refresh' ).toggleClass( 'hide', !GUI.status.playlistlength );
+	$( '.minus-circle' ).removeClass( 'hide' );
 	$( '.tag' ).addClass( 'hide' );
 	var dbpl = $li.find( '.pl-icon' ).length ? '.pl' : '.db';
 	var $menu = $( $li.find( dbpl +'-icon' ).data( 'target' ) );
 	if ( GUI.display.tapaddplay
 		&& !$target.hasClass( 'pl-icon' )
 	) {
-		$menu.find( 'a:eq( 1 )' ).click();
+		$menu.find( 'a:eq( 0 ) .submenu' ).click();
 		return
 	}
 	
@@ -1739,6 +1743,7 @@ function htmlPlaylist( data ) {
 				var cuepath = ( 'cuem3u' in value && value.cuem3u.slice( -3 ) === 'cue' ) ? value.cuem3u : value.file;
 				var actionhtml = '<i class="fa fa-music '+ dbpl +'-icon" data-target="#context-menu-'+ menu +'"></i>'
 								+'<a class="lipath">'+ cuepath +'</a>'
+								+'<a class="liartist">'+ value.Artist +'</a>'
 								+'<a class="liname">'+ value.Title +'</a>'
 								+'<a class="liindex">'+ value.index +'</a>'
 			}
@@ -1792,10 +1797,9 @@ function renderPlaylist() {
 	$( '#pl-currentpath, #pl-editor, #pl-index, #pl-search' ).addClass( 'hide' );
 	$( '#db-currentpath>span, #pl-searchbtn' ).removeClass( 'hide' );
 	$( '#plopen' ).toggleClass( 'disable', !GUI.lsplaylists.length );
-	$( '#plconsume' ).css( 'color', GUI.status.consume ? '#0095d8' : '' );
 	if ( !GUI.pllist.length ) {
 		$( '#pl-count' ).html( '<bl class="title">PLAYLIST</bl>' );
-		$( '#plsave, #plcrop, #plclear, #pl-searchbtn' ).addClass( 'disable' );
+		$( '#plsave, #plcrop, #plconsume, #plclear, #pl-searchbtn' ).addClass( 'disable' );
 		$( '#pl-entries' ).empty();
 		$( '.playlist' ).removeClass( 'hide' );
 		$( '#playlist-empty' ).css( 'margin-top', ( GUI.bars ? 27 : 67 ) +'px' );
@@ -1819,6 +1823,7 @@ function renderPlaylist() {
 	$( '#pl-count' ).html( counthtml );
 	$( '#plsave, #plclear, #pl-searchbtn' ).removeClass( 'disable' );
 	$( '#plcrop' ).toggleClass( 'disable', GUI.pllist.length < 2 );
+	$( '#plconsume' ).css( 'color', GUI.status.consume ? '#0095d8' : '' );
 	$( '#pl-entries' ).html( data.content +'<p></p>' ).promise().done( function() {
 		$( '#pl-entries p' ).css( 'min-height', window.innerHeight - 140 +'px' );
 		setPlaylistScroll();
@@ -1869,12 +1874,6 @@ function removeFromPlaylist( $li ) {
 		renderPlaylist();
 		setPlaybackBlank();
 	}
-}
-function clearPlaylist() {
-	GUI.status.playlistlength = 0;
-	GUI.pllist = {};
-	$.post( 'enhance.php', { mpc: [ 'mpc clear', '/usr/bin/rm -f "/srv/http/assets/img/webradiopl/*' ] } );
-	setPlaybackBlank();
 }
 function renderLsPlaylists( lsplaylists ) {
 	var content = '';

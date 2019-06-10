@@ -29,6 +29,7 @@ var GUI = {
 	, scale        : 1
 	, screenS      : ( window.innerHeight < 590 || window.innerWidth < 500 )
 	, scrollspeed  : 80 // pixel/s
+	, similarpl    : -1
 	, status       : {}
 	, debounce     : ''
 	, debouncems   : 300
@@ -114,8 +115,8 @@ var chklibrary = {
 	, count          : '_<gr>text</gr> Count'
 	, label          : '<gr>text</gr> Label'
 	, plclear        : 'Confirm <gr>on clear Playlist</gr>'
-	, playbackswitch : 'Open Playback <gr>on</gr> <i class="fa fa-play-plus"></i>Add <gr>►</gr> Play'
-	, tapaddplay     : 'Single tap song <gr>=</gr> <i class="fa fa-play-plus"></i>Add <gr>►</gr> Play'
+	, playbackswitch : 'Open Playback <gr>on</gr> <i class="fa fa-play-plus"></i>Add + Play'
+	, tapaddplay     : 'Single tap song&ensp;<gr>=</gr>&ensp;<i class="fa fa-play-plus"></i>Add + Play'
 	, thumbbyartist  : '<i class="fa fa-coverart"></i>Sort CoverArts by artist'
 }
 $( '#displaylibrary' ).click( function() {
@@ -184,8 +185,13 @@ $( '#displayplayback' ).click( function() {
 		disableCheckbox( 'buttons' );
 	}
 } );
-$( '#turnoff' ).click( function() {
-	var infojson = {
+$( '#turnoff' ).click( function( e ) {
+	if ( $( e.target ).hasClass( 'submenu' ) ) {
+		$.post( 'enhance.php', { power: GUI.localhost ? 'screenoff' : 'reboot' } );
+		return
+	}
+	
+	info( {
 		  icon        : 'power'
 		, title       : 'Power'
 		, message     : 'Select mode:'
@@ -201,15 +207,7 @@ $( '#turnoff' ).click( function() {
 			$.post( 'enhance.php', { power: 'reboot' } );
 			$( '#loader' ).removeClass( 'hide' );
 		} ]
-	}
-	if ( document.location.hostname === 'localhost' ) {
-		infojson.buttonlabel.unshift( 'ScreenOff' );
-		infojson.buttoncolor.unshift( '' );
-		infojson.button.unshift( function() {
-			$.post( 'enhance.php', { power: 'screenoff' } );
-		} );
-	}
-	info( infojson );
+	} );
 } );
 $( '#tab-library' ).click( function() {
 	if ( !$( '#db-search-keyword' ).val() ) $( '#db-search-close' ).empty();
@@ -355,7 +353,7 @@ $( '#artist, #bio-open' ).click( function() {
 	}
 } );
 $( '#album' ).click( function() {
-	if ( GUI.status.ext !== 'radio'&& location.hostname !== 'localhost' ) window.open( 'https://www.last.fm/music/'+ GUI.status.Artist +'/'+ GUI.status.Album, '_blank' );
+	if ( GUI.status.ext !== 'radio'&& !GUI.localhost ) window.open( 'https://www.last.fm/music/'+ GUI.status.Artist +'/'+ GUI.status.Album, '_blank' );
 } );
 $( '#time' ).roundSlider( {
 	  sliderType  : 'min-range'
@@ -1388,7 +1386,11 @@ $( '#plclear' ).click( function() {
 		}
 		, oklabel    : 'All'
 		, ok         : function() {
-			clearPlaylist();
+			GUI.status.playlistlength = 0;
+			GUI.pllist = {};
+			setPlaybackBlank();
+			renderPlaylist();
+			$.post( 'enhance.php', { mpc: [ 'mpc clear', '/usr/bin/rm -f "/srv/http/assets/img/webradiopl/*' ] } );
 		}
 	} );
 } );
@@ -1691,22 +1693,22 @@ pushstreams.idle.onmessage = function( changed ) {
 				if ( GUI.playlist && !GUI.pleditor ) setPlaylistScroll();
 		} else if ( changed === 'playlist' ) { // on playlist changed
 			if ( GUI.pleditor || GUI.contextmenu || $( '#pl-entries .pl-remove' ).length ) return
-			
 			$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
-				if ( data.playlist.length ) {
-					GUI.status.playlistlength = data.playlist.length;
+				var playlistlength = data.playlist.length;
+				if ( GUI.similarpl !== -1 ) {
+					notify( 'Playlist Add Similar', ( playlistlength - GUI.similarpl ) +' tracks added', 'list-ul' );
+					GUI.similarpl = -1;
+				}
+				if ( playlistlength ) {
+					GUI.status.playlistlength = playlistlength;
 					GUI.lsplaylists = data.lsplaylists || [];
 					GUI.pllist = data.playlist;
 				} else {
 					GUI.status.playlistlength = 0;
 					GUI.pllist = {};
-					getPlaybackStatus();
 				}
-				if ( GUI.playlist ) {
-					renderPlaylist();
-				} else if ( GUI.playback ) {
-					getPlaybackStatus();
-				}
+				renderPlaylist();
+				getPlaybackStatus();
 			}, 'json' );
 		} else if ( changed === 'options' ) { // on mode toggled
 			$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
@@ -1721,7 +1723,7 @@ pushstreams.idle.onmessage = function( changed ) {
 		} else if ( changed === 'database' ) { // on files changed (for webradio rename)
 			if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) $( '#home-webradio' ).tap();
 		}
-	}, GUI.debouncems );
+	}, changed === 'playlist' ? 1200 : GUI.debouncems );
 }
 pushstreams.notify.onmessage = function( data ) {
 	var data = data[ 0 ];
