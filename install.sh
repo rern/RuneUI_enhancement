@@ -14,6 +14,12 @@ alias=enha
 . /srv/http/addonstitle.sh
 . /srv/http/addonsedit.sh
 
+# temp
+if [[ $( redis-cli get release ) == '0.5' && $( redis-cli type local_browser ) == string ]]; then
+	redis-cli hmset local_browser enable '' zoomfactor '1.8' rotate NORMAL 'mouse_cursor' 0 'disable-splash' 1
+fi
+# temp
+
 installstart $@
 
 if ! pacman -Q imagemagick &> /dev/null; then
@@ -265,10 +271,10 @@ redis-cli set zoomlevel $zoom &> /dev/null
 [[ $2 == 1 ]] && ffmpeg=yes || ffmpeg=no
 redis-cli hset mpdconf ffmpeg $ffmpeg &> /dev/null
 redis-cli hset AccessPoint enabled $3 &> /dev/null
-if [[  ]]; then
-	redis-cli set local_browser $4 &> /dev/null
-else
+if [[ $( redis-cli get release ) == '0.5' ]]; then
 	redis-cli hset local_browser enable $4 &> /dev/null
+else
+	redis-cli set local_browser $4 &> /dev/null
 fi
 redis-cli hset airplay enable $5 &> /dev/null
 redis-cli hset dlna enable $6 &> /dev/null
@@ -320,8 +326,6 @@ appendS '$'
 file=/srv/http/app/templates/enhanceplayback.php  # for rune youtube
 [[ -e /usr/local/bin/uninstall_RuneYoutube.sh ]] && sed -i '/id="pl-import-youtube"/ {s/<!--//; s/-->//}' $file
 #----------------------------------------------------------------------------------
-# correct 0.3 version number
-[[ $( redis-cli get buildversion ) == 'beta-20160313' ]] && redis-cli set release 0.3 &> /dev/null
 
 if [[ $( redis-cli hexists display bars ) == 0 ]]; then
 	playback="bars debug dev time cover volume buttons"
