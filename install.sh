@@ -265,7 +265,11 @@ redis-cli set zoomlevel $zoom &> /dev/null
 [[ $2 == 1 ]] && ffmpeg=yes || ffmpeg=no
 redis-cli hset mpdconf ffmpeg $ffmpeg &> /dev/null
 redis-cli hset AccessPoint enabled $3 &> /dev/null
-redis-cli set local_browser $4 &> /dev/null
+if [[  ]]; then
+	redis-cli set local_browser $4 &> /dev/null
+else
+	redis-cli hset local_browser enable $4 &> /dev/null
+fi
 redis-cli hset airplay enable $5 &> /dev/null
 redis-cli hset dlna enable $6 &> /dev/null
 startStop() {
