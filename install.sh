@@ -16,6 +16,7 @@ alias=enha
 
 # temp
 if [[ $( redis-cli get release ) == '0.5' && $( redis-cli type local_browser ) == string ]]; then
+	redis-cli del local_browser
 	redis-cli hmset local_browser enable '' zoomfactor '1.8' rotate NORMAL 'mouse_cursor' 0 'disable-splash' 1
 fi
 # temp
