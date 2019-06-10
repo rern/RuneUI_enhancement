@@ -1697,13 +1697,9 @@ pushstreams.idle.onmessage = function( changed ) {
 				} else {
 					GUI.status.playlistlength = 0;
 					GUI.pllist = {};
-					getPlaybackStatus();
 				}
-				if ( GUI.playlist ) {
-					renderPlaylist();
-				} else if ( GUI.playback ) {
-					getPlaybackStatus();
-				}
+				renderPlaylist();
+				getPlaybackStatus();
 			}, 'json' );
 		} else if ( changed === 'options' ) { // on mode toggled
 			$.post( 'enhancestatus.php', { statusonly: 1 }, function( status ) {
