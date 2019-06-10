@@ -184,8 +184,13 @@ $( '#displayplayback' ).click( function() {
 		disableCheckbox( 'buttons' );
 	}
 } );
-$( '#turnoff' ).click( function() {
-	var infojson = {
+$( '#turnoff' ).click( function( e ) {
+	if ( $( e.target ).hasClass( 'submenu' ) ) {
+		$.post( 'enhance.php', { power: GUI.localhost ? 'screenoff' : 'reboot' } );
+		return
+	}
+	
+	info( {
 		  icon        : 'power'
 		, title       : 'Power'
 		, message     : 'Select mode:'
@@ -201,15 +206,7 @@ $( '#turnoff' ).click( function() {
 			$.post( 'enhance.php', { power: 'reboot' } );
 			$( '#loader' ).removeClass( 'hide' );
 		} ]
-	}
-	if ( document.location.hostname === 'localhost' ) {
-		infojson.buttonlabel.unshift( 'ScreenOff' );
-		infojson.buttoncolor.unshift( '' );
-		infojson.button.unshift( function() {
-			$.post( 'enhance.php', { power: 'screenoff' } );
-		} );
-	}
-	info( infojson );
+	} );
 } );
 $( '#tab-library' ).click( function() {
 	if ( !$( '#db-search-keyword' ).val() ) $( '#db-search-close' ).empty();
@@ -355,7 +352,7 @@ $( '#artist, #bio-open' ).click( function() {
 	}
 } );
 $( '#album' ).click( function() {
-	if ( GUI.status.ext !== 'radio'&& location.hostname !== 'localhost' ) window.open( 'https://www.last.fm/music/'+ GUI.status.Artist +'/'+ GUI.status.Album, '_blank' );
+	if ( GUI.status.ext !== 'radio'&& !GUI.localhost ) window.open( 'https://www.last.fm/music/'+ GUI.status.Artist +'/'+ GUI.status.Album, '_blank' );
 } );
 $( '#time' ).roundSlider( {
 	  sliderType  : 'min-range'
