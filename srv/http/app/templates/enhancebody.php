@@ -1,4 +1,9 @@
 <?php
+if ( in_array( $_SERVER[ 'REMOTE_ADDR' ], array( '127.0.0.1', '::1' ) ) ) {
+	$submenu = '<i class="fa fa-screenoff submenu"></i>';
+} else {
+	$submenu = '<i class="fa fa-reboot submenu"></i>';
+}
 $redis = new Redis();
 $redis->pconnect( '127.0.0.1' );
 $time = time();
@@ -272,7 +277,7 @@ $menu.= '</div>';
 	<a href="settings"><i class="fa fa-sliders"></i>Settings</a>
 	<a href="network"><i class="fa fa-network"></i>Network</a>
 	<a href="credits"><i class="fa fa-rune"></i>Credits</a>
-	<a id="turnoff"><i class="fa fa-power"></i>Power</a>
+	<a id="turnoff"><i class="fa fa-power"></i>Power<?=$submenu ?></a>
 		<?php 
 		if ( $this->pwd_protection ) { ?>
 	<a href="logout.php"><i class="fa fa-sign-out"></i>Logout</a>
