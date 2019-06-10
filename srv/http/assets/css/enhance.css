@@ -52,7 +52,7 @@
 .fa-play-plus:before { content: "\f532" }
 .fa-play-plus-refresh:before { content: "\f533" }
 .fa-folder-refresh:before { content: "\f534" }
-.fa-play-random:before { content: "\f535" }
+.fa-screenoff:before { content: "\f535" }
 
 .fa-repeat-single:before { content: "\f510" }
 .fa-repeat:before { content: "\f511" }
