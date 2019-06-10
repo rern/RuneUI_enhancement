@@ -9,16 +9,12 @@ $( '.contextmenu a' ).click( function( e ) {
 	}
 	var cmd = $this.data( 'cmd' );
 	$( '.menu' ).addClass( 'hide' );
-	if ( cmd !== 'update' ) $( '#db-entries li, #pl-entries li' ).removeClass( 'active' );
+	if ( cmd !== 'update' ) $( '#db-entries li, #pl-editor li' ).removeClass( 'active' );
 	$( 'li.updn' ).removeClass( 'updn' );
 	// playback //////////////////////////////////////////////////////////////
 	if ( [ 'play', 'pause', 'stop' ].indexOf( cmd ) !== -1 ) {
 		if ( cmd === 'play' ) {
-			if ( GUI.list.li.index() === GUI.list.li.index() ) {
-				$( '#play' ).click();
-			} else {
-				$( '#pl-entries li' ).eq( GUI.list.li.index() ).click();
-			}
+			$( '#pl-entries li' ).eq( GUI.list.li.index() ).click();
 		} else {
 			$( '#'+ cmd ).click();
 		}
