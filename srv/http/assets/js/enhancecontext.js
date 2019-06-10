@@ -111,15 +111,29 @@ $( '.contextmenu a' ).click( function( e ) {
 		} else { // saved playlist
 			var play = cmd.slice( -1 ) === 'y' ? 1 : 0;
 			var replace = cmd.slice( 0, 1 ) === 'r' ? 1 : 0;
-			var title = replace ? 'Playlist Replaced' : 'Playlist Added';
-			notify( title, '<span class="blink">Processing ...</span><br><span class="li2">Please wait.</span>', 'list-ul', -1 );
-			$( '#db-entries li, #pl-editor li' ).removeClass( 'active' );
-			$.post( 'enhance.php', { loadplaylist: name, play: play, replace: replace }, function() {
-				notify( title, name, 'list-ul' );
-			} );
+			if ( replace && GUI.display.plclear && GUI.status.playlistlength ) {
+				info( {
+					  icon    : 'list-ul'
+					, title   : 'Playlist Replace'
+					, message : 'Replace current playlist?'
+					, ok      : function() {
+						notify( 'Saved Playlist', '<span class="blink">Processing ...</span><br><span class="li2">Please wait.</span>', 'list-ul', -1 );
+						$.post( 'enhance.php', { loadplaylist: name, play: play, replace: replace }, function() {
+							notify( 'Playlist Replaced', name, 'list-ul' );
+						} );
+					}
+				} );
+			} else {
+				notify( 'Saved Playlist', '<span class="blink">Processing ...</span><br><span class="li2">Please wait.</span>', 'list-ul', -1 );
+				$( '#db-entries li, #pl-editor li' ).removeClass( 'active' );
+				$.post( 'enhance.php', { loadplaylist: name, play: play, replace: replace }, function() {
+					notify( ( replace ? 'Playlist Replaced' : 'Playlist Addd' ), name, 'list-ul' );
+				} );
+			}
 			return
 		}
 	}
+	
 	cmd = cmd.replace( /album|artist|composer|genre/, '' );
 	var contextCommand = {
 		  add         : mpcCmd
