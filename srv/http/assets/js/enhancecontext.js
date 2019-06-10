@@ -54,7 +54,7 @@ $( '.contextmenu a' ).click( function( e ) {
 		var plname = $( '#pl-currentpath .lipath' ).text();
 		$.post( 'enhance.php', { bash: '/usr/bin/sed -i "'+ plline +' d" "/srv/http/assets/img/playlists/'+ plname +'"' } );
 		GUI.list.li.remove();
-	} else if ( cmd === 'lastfmsimilar' ) {
+	} else if ( cmd === 'similar' ) {
 		notify( 'Playlist Add With Similar', '<span class="blink">Processing ...</span><br><span class="li2">Please wait.</span>', 'list-ul', -1 );
 		$.ajax( {
 			  type     : 'post'
@@ -82,7 +82,7 @@ $( '.contextmenu a' ).click( function( e ) {
 			}
 		} );
 	}
-	if ( [ 'radiosave', 'update', 'tag', 'remove', 'savedpladd', 'savedplremove', 'lastfmsimilar' ].indexOf( cmd ) !== -1 ) return
+	if ( [ 'radiosave', 'update', 'tag', 'remove', 'savedpladd', 'savedplremove', 'similar' ].indexOf( cmd ) !== -1 ) return
 	
 	// functions with dialogue box ////////////////////////////////////////////
 	var contextFunction = {
