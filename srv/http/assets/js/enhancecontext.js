@@ -76,7 +76,7 @@ $( '.contextmenu a' ).click( function( e ) {
 				}
 				
 				$.each( data.similartracks.track, function( i, val ) {
-					$.post( 'enhance.php', { mpc   : 'mpc find artist "'+ val.artist.name +'" title "'+ val.name +'" | mpc add &> /dev/null' } );
+					$.post( 'enhance.php', { mpc   : 'mpc findadd artist "'+ val.artist.name +'" title "'+ val.name +'"' } );
 				} );
 				notify( 'Playlist Add With Similar', 'Playlist added', 'list-ul' );
 			}
