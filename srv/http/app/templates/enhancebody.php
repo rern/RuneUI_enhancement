@@ -155,13 +155,14 @@ function menudiv( $id, $html ) {
 function menucommon( $add, $replace ) {
 	$htmlcommon = '<span class="menushadow"></span>';
 	$htmlcommon.= '<a data-cmd="'.$add.'"><i class="fa fa-plus-o"></i>Add<i class="fa fa-play-plus submenu" data-cmd="'.$add.'play"></i></a>';
-	$htmlcommon.= '<a data-cmd="'.$replace.'" class="replace"><i class="fa fa-plus-refresh"></i>Replace<i class="fa fa-play-plus-refresh submenu" data-cmd="'.$replace.'play"></i></a>';
+	$htmlcommon.= '<a data-cmd="'.$replace.'" class="replace"><i class="fa fa-replace"></i>Replace<i class="fa fa-play-replace submenu" data-cmd="'.$replace.'play"></i></a>';
 	return $htmlcommon;
 }
 
 $kid3 = file_exists( '/usr/bin/kid3-cli' );
 $menu = '<div>';
 $htmlcommon = menucommon( 'add', 'replace' );
+$htmlsimilar.= '<a data-cmd="similar"><i class="fa fa-lastfm"></i>Add similar<i class="fa fa-play-plus submenu" data-cmd="similar"></i></a>';
 
 $html = '<span class="menushadow"></span>';
 $html.= menuli( 'play',       'play',         'Play' );
@@ -183,7 +184,8 @@ $menu.= menudiv( 'folder', $html );
 
 $menudiv = '';
 $html = menucommon( 'add', 'replace' );
-$html.= menuli( 'similar', 'lastfm', 'Add with similar' );
+$html.= $htmlsimilar;
+
 if ( $kid3 )
 $html.= menuli( 'tag',     'tag',    'Tags' );
 $menu.= menudiv( 'file', $html );
@@ -194,7 +196,7 @@ $menu.= menudiv( 'filepl', $html );
 
 $menudiv = '';
 $html = $htmlcommon;
-$html.= menuli( 'similar',       'lastfm',       'Add with similar' );
+$html.= $htmlsimilar;
 $html.= menuli( 'savedplremove', 'minus-circle', 'Remove' );
 if ( $kid3 )
 $html.= menuli( 'tag',               'tag',          'Tags' );
