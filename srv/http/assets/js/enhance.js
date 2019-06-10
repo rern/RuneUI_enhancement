@@ -1718,7 +1718,7 @@ pushstreams.idle.onmessage = function( changed ) {
 		} else if ( changed === 'database' ) { // on files changed (for webradio rename)
 			if ( $( '#db-currentpath .lipath' ).text() === 'Webradio' ) $( '#home-webradio' ).tap();
 		}
-	}, GUI.debouncems );
+	}, changed === 'playlist' ? 1000 : GUI.debouncems );
 }
 pushstreams.notify.onmessage = function( data ) {
 	var data = data[ 0 ];
