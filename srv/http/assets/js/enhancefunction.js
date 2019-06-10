@@ -1743,6 +1743,7 @@ function htmlPlaylist( data ) {
 				var cuepath = ( 'cuem3u' in value && value.cuem3u.slice( -3 ) === 'cue' ) ? value.cuem3u : value.file;
 				var actionhtml = '<i class="fa fa-music '+ dbpl +'-icon" data-target="#context-menu-'+ menu +'"></i>'
 								+'<a class="lipath">'+ cuepath +'</a>'
+								+'<a class="liartist">'+ value.Artist +'</a>'
 								+'<a class="liname">'+ value.Title +'</a>'
 								+'<a class="liindex">'+ value.index +'</a>'
 			}
