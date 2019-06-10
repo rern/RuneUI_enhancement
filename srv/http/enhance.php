@@ -490,6 +490,7 @@ function list2array( $result, $playlist = '' ) {
 			, 'Title'  => $list[ 1 ]
 			, 'Time'   => $list[ 2 ]
 			, 'track'  => $list[ 3 ]
+			, 'Artist' => $list[ 4 ]
 			, 'index'  => $i++
 		);
 		if ( $list[ 8 ] ) $li[ 'cuem3u' ] = $list[ 8 ];
