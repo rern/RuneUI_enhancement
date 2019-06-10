@@ -1521,7 +1521,7 @@ function dbContextmenu( $li, $target ) {
 		&& !$target.hasClass( 'db-icon' )
 		&& !$li.hasClass( 'licover' )
 	) {
-		$menu.find( 'a:eq( 1 )' ).click();
+		$menu.find( 'a:eq( 0 ) .submenu' ).click();
 		return
 	}
 	
