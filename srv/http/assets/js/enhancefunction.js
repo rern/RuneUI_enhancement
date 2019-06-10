@@ -1164,6 +1164,7 @@ function data2html( list, path ) {
 					var liname = list.Title
 					content = '<li class="file">'
 							 +'<a class="lipath">'+ list.file +'</a>'
+							 +'<a class="liartist">'+ list.Artist +'</a>'
 							 +'<a class="liname">'+ liname +'</a>'
 							 +'<a class="lisort">'+ list.lisort +'</a>'
 							 +'<i class="fa fa-music db-icon" data-target="#context-menu-file"></i>'
@@ -1207,6 +1208,7 @@ function data2html( list, path ) {
 			var liname = list.Title;
 			content = '<li class="file">'
 					 +'<a class="lipath">'+ list.file +'</a>'
+					 +'<a class="liartist">'+ list.Artist +'</a>'
 					 +'<a class="liname">'+ liname +'</a>'
 					 +'<a class="lisort">'+ list.lisort +'</a>'
 					 +'<i class="fa fa-music db-icon" data-target="#context-menu-file"></i>'
@@ -1290,6 +1292,7 @@ function data2html( list, path ) {
 			var liname = list.Title;
 			content = '<li class="file">'
 					 +'<a class="lipath">'+ list.file +'</a>'
+					 +'<a class="liartist">'+ list.Artist +'</a>'
 					 +'<a class="liname">'+ liname +'</a>'
 					 +'<a class="lisort">'+ list.lisort +'</a>'
 					 +'<i class="fa fa-music db-icon" data-target="#context-menu-file"></i>'
