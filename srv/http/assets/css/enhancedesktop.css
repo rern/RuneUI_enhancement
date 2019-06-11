@@ -29,7 +29,7 @@
 	#menu-bottom li.active a:hover,
 	#db-home:hover,
 	#pl-home:hover {
-		background-color: #0072a5;
+		background-color: #0072a5/*ch*/;
 	}
 	.home-block:hover,
 	.home-block:focus,

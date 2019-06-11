@@ -64,7 +64,7 @@
 	-moz-border-radius: 0;
 	border-radius: 0;
 	color: #e0e7ee;
-	background: #0095d8;
+	background: #0095d8/*c*/;
 	text-shadow: none;
 }
 .ui-pnotify .alert h4 {
@@ -72,7 +72,7 @@
 	font-weight: bold;
 	text-transform: uppercase;
 }
-.bl { color: #0095d8; }
+.bl { color: #0095d8/*c*/; }
 #splash {
 	display: none;
 }
@@ -86,7 +86,7 @@ body {
 .close-page {
 	float: right;
 	margin-top: 20px;
-	color: #0095d8;
+	color: #0095d8/*c*/;
 	cursor: pointer;
 }
 .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn){
@@ -157,7 +157,7 @@ select.mobile-device {
 	float: left;
 }
 .keyword {
-	color: #0095d8;
+	color: #0095d8/*c*/;
 }
 .sortable-ghost {
 	background: #222f3d;
@@ -294,7 +294,7 @@ select.mobile-device {
 }
 .bootstrap-select .dropdown-menu>li>a:hover,
 .bootstrap-select .dropdown-menu>li>a:focus {
-	background-color: #0095d8;
+	background-color: #0095d8/*c*/;
 	color: #e0e7ee;
 }
 .bootstrap-select .dropdown-menu>li.selected>a {
