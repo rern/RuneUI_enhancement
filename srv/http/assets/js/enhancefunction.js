@@ -1570,7 +1570,7 @@ function plContextmenu( $li, $target ) { // saved playlists
 	if ( GUI.display.tapaddplay
 		&& !$target.hasClass( 'pl-icon' )
 	) {
-		$menu.find( 'a:eq( 1 )' ).click();
+		$menu.find( 'a:eq( 0 ) .submenu' ).click();
 		return
 	}
 	
