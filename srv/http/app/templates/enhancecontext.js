@@ -2,8 +2,7 @@
 // example: mpc save "abc's \"xyz\"" << name.replace( /"/g, '\\"' )
 
 $( '.contextmenu a' ).click( function( e ) {
-	var submenu = $( e.target ).hasClass( 'submenu' );
-	if ( submenu ) {
+	if ( $( e.target ).hasClass( 'submenu' ) ) {
 		var $this = $( e.target );
 	} else {
 		var $this = $( this );
@@ -56,7 +55,7 @@ $( '.contextmenu a' ).click( function( e ) {
 		$.post( 'enhance.php', { bash: '/usr/bin/sed -i "'+ plline +' d" "/srv/http/assets/img/playlists/'+ plname +'"' } );
 		GUI.list.li.remove();
 	} else if ( cmd === 'similar' ) {
-		notify( 'Playlist Add Similar', '<span class="blink">Fetcthing list...</span><br><span class="li2">Please wait.</span>', 'list-ul', -1 );
+		notify( 'Playlist Add With Similar', '<span class="blink">Processing ...</span><br><span class="li2">Please wait.</span>', 'list-ul', -1 );
 		$.ajax( {
 			  type     : 'post'
 			, url      : 'http://ws.audioscrobbler.com/2.0/'
@@ -65,27 +64,21 @@ $( '.contextmenu a' ).click( function( e ) {
 				, autocorrect : 1
 				, format      : 'json'
 				, method      : 'track.getsimilar'
-				, artist      : GUI.list.artist
-				, track       : GUI.list.name
-				, limit       : 1000
+				, artist      : GUI.status.Artist
+				, track       : GUI.status.Title
 			}
 			, timeout  : 5000
 			, dataType : 'json'
 			, success  : function( data ) {
-				var similartracks = data.similartracks.track;
-				var tracklength = similartracks.length;
-				if ( !data || !tracklength ) {
-					notify( 'Playlist Add Similar', 'Data not available.', 'list-ul' );
+				if ( !data || !data.similartracks.track.length ) {
+					notify( 'Playlist Add With Similar', 'Data not available.', 'list-ul' );
 					return
 				}
 				
-				GUI.similarpl = GUI.status.playlistlength;
-				$.each( similartracks, function( i, val ) {
-					$.post( 'enhance.php', { mpc : 'mpc findadd artist "'+ val.artist.name +'" title "'+ val.name +'"' }, function() {
-						$( '#bannerMessage' ).html( 'Find '+ ( i + 1 ) +'/'+ tracklength +' in Library ...' );
-					} );
+				$.each( data.similartracks.track, function( i, val ) {
+					$.post( 'enhance.php', { mpc   : 'mpc findadd artist "'+ val.artist.name +'" title "'+ val.name +'"' } );
 				} );
-				if ( submenu ) $.post( 'enhance.php', { mpc : 'mpc play' } );
+				notify( 'Playlist Add With Similar', 'Playlist added', 'list-ul' );
 			}
 		} );
 	}

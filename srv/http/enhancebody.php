@@ -1,9 +1,4 @@
 <?php
-if ( in_array( $_SERVER[ 'REMOTE_ADDR' ], array( '127.0.0.1', '::1' ) ) ) {
-	$submenu = '<i class="fa fa-screenoff submenu"></i>';
-} else {
-	$submenu = '<i class="fa fa-reboot submenu"></i>';
-}
 $redis = new Redis();
 $redis->pconnect( '127.0.0.1' );
 $time = time();
@@ -144,25 +139,26 @@ function stripLeading( $string ) {
 }
 // context menus
 function menuli( $command, $icon, $label, $type = '' ) {
-	$iconclass = array( 'folder-refresh', 'tag', 'minus-circle', 'lastfm' );
+	$type = $type ? ' data-type="'.$type.'"' : '';
+	$iconclass = array( 'folder-refresh', 'plus-refresh', 'play-plus-refresh', 'play-random', 'tag', 'minus-circle', 'lastfm' );
 	if ( in_array( $icon, $iconclass ) ) $class = ' class="'.$icon.'"';
 	if ( in_array( $label, array( 'Add', 'Random', 'Replace' ) ) ) $submenu = '<i class="fa fa-play-plus submenu"></i>';
-	return '<a data-cmd="'.$command.'"'.$class.'><i class="fa fa-'.$icon.'"></i>'.$label.$submenu.'</a>';
+	return '<a data-cmd="'.$command.'"'.$type.$class.'><i class="fa fa-'.$icon.'"></i>'.$label.$submenu.'</a>';
 }
 function menudiv( $id, $html ) {
 	return '<div id="context-menu-'.$id.'" class="menu contextmenu hide">'.$html.'</div>';
 }
-function menucommon( $add, $replace ) {
+function menucommon( $add, $shuffle, $replace, $type ) {
 	$htmlcommon = '<span class="menushadow"></span>';
 	$htmlcommon.= '<a data-cmd="'.$add.'"><i class="fa fa-plus-o"></i>Add<i class="fa fa-play-plus submenu" data-cmd="'.$add.'play"></i></a>';
-	$htmlcommon.= '<a data-cmd="'.$replace.'" class="replace"><i class="fa fa-replace"></i>Replace<i class="fa fa-play-replace submenu" data-cmd="'.$replace.'play"></i></a>';
+//	if ( $shuffle ) $htmlcommon.= '<a data-cmd="'.$shuffle.'"><i class="fa fa-play-random"></i>Random<i class="fa fa-play-plus submenu" data-cmd="'.$shuffle.'play"></i></a>';
+	$htmlcommon.= '<a data-cmd="'.$replace.'"><i class="fa fa-plus-refresh"></i>Replace<i class="fa fa-play-plus-refresh submenu" data-cmd="'.$replace.'play"></i></a>';
 	return $htmlcommon;
 }
 
 $kid3 = file_exists( '/usr/bin/kid3-cli' );
 $menu = '<div>';
-$htmlcommon = menucommon( 'add', 'replace' );
-$htmlsimilar.= '<a data-cmd="similar"><i class="fa fa-lastfm"></i>Add similar<i class="fa fa-play-plus submenu" data-cmd="similar"></i></a>';
+$htmlcommon = menucommon( 'add', 'shuffle', 'replace' );
 
 $html = '<span class="menushadow"></span>';
 $html.= menuli( 'play',       'play',         'Play' );
@@ -183,11 +179,10 @@ $html.= menuli( 'tag',       'tag',            'Tags' );
 $menu.= menudiv( 'folder', $html );
 
 $menudiv = '';
-$html = menucommon( 'add', 'replace' );
-$html.= $htmlsimilar;
-
+$html = menucommon( 'add', '', 'replace' );
+$html.= menuli( 'lastfmreplaceplay', 'lastfm', 'Last.fm playlist' );
 if ( $kid3 )
-$html.= menuli( 'tag',     'tag',    'Tags' );
+$html.= menuli( 'tag',               'tag',    'Tags' );
 $menu.= menudiv( 'file', $html );
 
 $menudiv = '';
@@ -196,56 +191,56 @@ $menu.= menudiv( 'filepl', $html );
 
 $menudiv = '';
 $html = $htmlcommon;
-$html.= $htmlsimilar;
-$html.= menuli( 'savedplremove', 'minus-circle', 'Remove' );
+$html.= menuli( 'lastfmreplaceplay', 'lastfm',       'Last.fm playlist' );
+$html.= menuli( 'savedplremove',     'minus-circle', 'Remove' );
 if ( $kid3 )
 $html.= menuli( 'tag',               'tag',          'Tags' );
 $menu.= menudiv( 'filesavedpl', $html );
 
 $menudiv = '';
-$html = menucommon( 'add', 'replace' );
+$html = menucommon( 'add', '', 'replace' );
 $html.= menuli( 'radiosave', 'save', 'Save in Webradio' );
 $menu.= menudiv( 'radio', $html );
 
 $menudiv = '';
-$html = menucommon( 'wradd', 'wrreplace' );
+$html = menucommon( 'wradd', '', 'wrreplace' );
 $html.= menuli( 'wrrename',   'edit-circle',  'Rename' );
 $html.= menuli( 'wrcoverart', 'coverart',     'Change coverart' );
 $html.= menuli( 'wrdelete',   'minus-circle', 'Delete' );
 $menu.= menudiv( 'webradio', $html );
 
 $menudiv = '';
-$html = menucommon( 'wradd', 'wrreplace' );
+$html = menucommon( 'wradd', '', 'wrreplace' );
 $html.= menuli( 'savedplremove', 'minus-circle', 'Remove' );
 $menu.= menudiv( 'webradiopl', $html );
 
 $menudiv = '';
 $html = '<span class="menushadow"></span>';
-$html.= menucommon( 'pladd', 'plreplace' );
+$html.= menucommon( 'pladd', 'plshuffle', 'plreplace' );
 $html.= menuli( 'plrename', 'edit-circle',  'Rename' );
 $html.= menuli( 'pldelete', 'minus-circle', 'Delete' );
 $menu.= menudiv( 'playlist', $html );
 
 $menudiv = '';
-$html = menucommon( 'albumadd', 'albumreplace' );
+$html = menucommon( 'albumadd', 'albumshuffle', 'albumreplace' );
 $menu.= menudiv( 'album', $html );
 
 $menudiv = '';
-$html = menucommon( 'artistadd', 'artistreplace' );
+$html = menucommon( 'artistadd', 'artistshuffle', 'artistreplace' );
 $menu.= menudiv( 'artist', $html );
 
 $menudiv = '';
-$html = menucommon( 'composeradd', 'composerreplace' );
+$html = menucommon( 'composeradd', 'composershuffle', 'composerreplace' );
 $menu.= menudiv( 'composer', $html );
 
 $menudiv = '';
-$html = menucommon( 'genreadd', 'genrereplace' );
+$html = menucommon( 'genreadd', 'genreshuffle', 'genrereplace' );
 $menu.= menudiv( 'genre', $html );
 
 function menucommonsp( $type ) {
 	$html = '<span class="menushadow"></span>';
-	$html.= '<a data-cmd="spadd" data-type="'.$type.'"><i class="fa fa-plus-o"></i>Add</a>';
-	$html.= '<a data-cmd="spreplace" data-type="'.$type.'"><i class="fa fa-plus-refresh"></i>Replace</a>';
+	$html.= menuli( 'spadd',     'plus-o',       'Add',     $type );
+	$html.= menuli( 'spreplace', 'plus-refresh', 'Replace', $type );
 	return $html;
 }
 $menudiv = '';
@@ -279,7 +274,7 @@ $menu.= '</div>';
 	<a href="settings"><i class="fa fa-sliders"></i>Settings</a>
 	<a href="network"><i class="fa fa-network"></i>Network</a>
 	<a href="credits"><i class="fa fa-rune"></i>Credits</a>
-	<a id="turnoff"><i class="fa fa-power"></i>Power<?=$submenu ?></a>
+	<a id="turnoff"><i class="fa fa-power"></i>Power</a>
 		<?php 
 		if ( $this->pwd_protection ) { ?>
 	<a href="logout.php"><i class="fa fa-sign-out"></i>Logout</a>

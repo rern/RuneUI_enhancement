@@ -188,8 +188,15 @@ $( '#displayplayback' ).click( function() {
 $( '#turnoff' ).click( function( e ) {
 	if ( $( e.target ).hasClass( 'submenu' ) ) {
 		$.post( 'enhance.php', { power: GUI.localhost ? 'screenoff' : 'reboot' } );
+		$( '#loader' ).removeClass( 'hide' );
 		return
 	}
+	
+/*	if ( !GUI.localhost ) {
+		$.post( 'enhance.php', { power: 'shutdown' } );
+		$( '#loader' ).removeClass( 'hide' );
+		return
+	}*/
 	
 	info( {
 		  icon        : 'power'

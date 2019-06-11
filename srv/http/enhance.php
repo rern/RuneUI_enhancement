@@ -249,7 +249,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	savePlaylist( $_POST[ 'saveplaylist' ] );
 } else if ( isset( $_POST[ 'loadplaylist' ] ) ) {
 	if ( $_POST[ 'replace' ] ) exec( 'mpc clear' );
-	loadPlaylist( $_POST[ 'loadplaylist' ], $_POST[ 'shuffle' ] );
+	loadPlaylist( $_POST[ 'loadplaylist' ] );
 	if ( $_POST[ 'play' ] ) exec( 'sleep 1; mpc play' );
 } else if ( isset( $_POST[ 'playlist' ] ) ) { //cue, m3u, pls
 	$plfiles = $_POST[ 'playlist' ];
@@ -490,6 +490,7 @@ function list2array( $result, $playlist = '' ) {
 			, 'Title'  => $list[ 1 ]
 			, 'Time'   => $list[ 2 ]
 			, 'track'  => $list[ 3 ]
+			, 'Artist' => $list[ 4 ]
 			, 'index'  => $i++
 		);
 		if ( $list[ 8 ] ) $li[ 'cuem3u' ] = $list[ 8 ];
@@ -674,17 +675,18 @@ function savePlaylist( $name ) {
 	$list = playlistInfo( 'save' );
 	file_put_contents( "/srv/http/assets/img/playlists/$name", $list );
 }
-function loadPlaylist( $name, $shuffle = '' ) { // fix -  mpd unable to save cue properly
+function loadPlaylist( $name ) { // fix -  mpd unable to save cue properly
 	$playlistinfo = file_get_contents( "/srv/http/assets/img/playlists/$name" );
 	$lines = explode( "\n", rtrim( $playlistinfo ) );
-	if ( $shuffle ) shuffle( $lines );
+	$cmd = '';
 	foreach( $lines as $line ) {
 		$list = explode( '^^', $line );
 		$cuetrack = $list[ 9 ];
 		if ( $cuetrack ) {
-			exec( '/srv/http/enhance1cue.sh "'.$list[ 8 ].'" '.$cuetrack );
+			$cmd.= '/srv/http/enhance1cue.sh "'.$list[ 8 ].'" '.$cuetrack.'; ';
 		} else {
-			exec( 'mpc add "'.$list[ 0 ].'"' );
+			$cmd.= 'mpc add "'.$list[ 0 ].'"; ';
 		}
 	}
+	exec( $cmd );
 }
