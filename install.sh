@@ -32,7 +32,7 @@ if ! pacman -Q imagemagick &> /dev/null; then
 	
 	echo -e "$bar Install ImageMagick ..."
 	
-	pacman -U --noconfirm pkg/*
+	pacman -U --needed --noconfirm pkg/*
 
 	rm -rf imagemagick.tar pkg
 fi
