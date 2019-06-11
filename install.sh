@@ -29,8 +29,6 @@ if ! pacman -Q imagemagick &> /dev/null; then
 	wgetnc https://github.com/rern/_assets/raw/master/imagemagick.tar
 	mkdir pkg
 	bsdtar xvf imagemagick.tar -C pkg
-	# disable GB and DE locale before upgrade glibc
-	sed -i '/^de_DE.UTF-8\|^en_GB.UTF-8/ s/^/#/' /etc/locale.gen
 	
 	echo -e "$bar Install ImageMagick ..."
 	
