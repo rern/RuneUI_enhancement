@@ -291,7 +291,7 @@ $menu.= '</div>';
 		} ?>
 	<a id="displaylibrary"><i class="fa fa-library gr"></i>Library Tools</a>
 	<a id="displayplayback"><i class="fa fa-play-circle gr"></i>Playback Tools</a>
-	<a id="displaycolor"><i class="fa fa-gear gr"></i>Color</a>
+	<a id="displaycolor"><i class="fa fa-gear gr"></i>Color<i class="fa fa-replace submenu"></i></a>
 		<?php
 		if ( file_exists( '/srv/http/assets/fonts/addons.ttf' ) ) { ?> 
 	<a id="addons"><i class="fa fa-addons"></i>Addons</a>
