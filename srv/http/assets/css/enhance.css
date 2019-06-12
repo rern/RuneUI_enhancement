@@ -98,6 +98,8 @@
 .fa-folder-open:before { content: "\f541" }
 .fa-folder-open-cascade:before { content: "\f521" }
 .fa-file-music:before { content: "\f54B" }
+.fa-brush:before { content: "\f54C" }
+.fa-brush-undo:before { content: "\f54D" }
 .fa-music:before { content: "\f543" }
 .fa-webradio:before { content: "\f554" }
 .fa-save:before { content: "\f542"}
@@ -254,7 +256,7 @@ i.bookmark,
 	border-left: 1px solid #222f3d;
 }
 #settings .gr {
-	font-size: 20px;
+	font-size: 22px;
 }
 .menushadow {
 	position: absolute;
