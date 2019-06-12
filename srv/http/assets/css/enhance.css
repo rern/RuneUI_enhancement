@@ -1797,13 +1797,13 @@ li.active .time,
 	position: absolute;
 	top: 370px;
 	margin-left: 125px;
-	width: 40px;
-	height: 40px;
+	width: 36px;
+	height: 36px;
+	line-height: 36px;
 	border-radius: 50%;
-	line-height: 40px;
-	font-size: 28px;
 	background: #34495e;
 	cursor: pointer;
+	text-shadow: 2px 2px 4px #000000;
 }
 @media(min-width: 2000px) { .coverart { width: 200px } }
 @media(max-width: 2000px) { .coverart { width: calc( ( 100vw - 38px ) * 0.1 ) } }
