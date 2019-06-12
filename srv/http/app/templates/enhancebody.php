@@ -3,7 +3,7 @@ $redis = new Redis();
 $redis->pconnect( '127.0.0.1' );
 
 $time = time();
-$submenucolor = $redis->hGet( 'display', 'color' ) === '#0095d8' ? '' : '<i class="fa fa-brush-undo submenu"></i>';
+$submenucolor = $redis->hGet( 'display', 'color' ) === '#0095d8' ? '' : '<i class="fa fa-brush-undo submenu gr"></i>';
 if ( in_array( $_SERVER[ 'REMOTE_ADDR' ], array( '127.0.0.1', '::1' ) ) ) {
 	$submenupower = '<i class="fa fa-screenoff submenu"></i>';
 } else {
@@ -477,7 +477,7 @@ $menu.= '</div>';
 <div id="divcolorpicker" class="hide">
 	<canvas id="colorpicker"></canvas>
 	<br>
-	<i id="colorcancel" class="fa fa-times"></i>
+	<i id="colorcancel" class="fa fa-times fa-2x bl"></i>
 	<a id="colorok" class="btn btn-primary">OK</a>
 </div>
 <div id="bio" class="hide">
