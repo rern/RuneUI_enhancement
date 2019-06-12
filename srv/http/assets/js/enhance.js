@@ -1602,6 +1602,40 @@ $( '#pl-index li' ).click( function() {
 	} );
 } );
 
+// color
+colorpicker = new KellyColorPicker( {
+	  place  : 'colorpicker'
+	, size   : 230
+	, color  : $( '#db-home' ).css( 'background-color' )
+	, userEvents : {
+		change : function( e ) {
+			if ( !GUI.library ) return
+			
+			var hex = e.getCurColorHex();
+			$( '#db-home, #db-entries li.active, #tab-library a, #colorok' ).css( 'background', hex );
+			$( '#rootpath, #db-back, .lialbum' ).css( 'color', hex );
+		}
+	}
+} );
+$( '#displaycolor' ).click( function() {
+	$( '#tab-library' ).click();
+	$( '#home-album' ).click();
+	setTimeout( function() {
+		$( '#db-entries li:eq( 0 )' ).tap();
+		setTimeout( function() {
+			$( '#db-entries .db-icon:eq(1)' ).tap();
+			$( '#divcolorpicker' ).removeClass( 'hide' );
+		}, 300 );
+	}, 300 );
+} );
+$( '#colorok, #colorcancel' ).click( function() {
+	var color = this.id === 'colorok' ? colorpicker.getCurColorHex() : '';
+	$( '#db-home, li.active, #tab-library a, #colorok' ).css( 'background', color );
+	$( '#rootpath, #db-back, .lialbum' ).css( 'color', color );
+	$( '#divcolorpicker' ).addClass( 'hide' );
+//	if ( color ) $.post( 'enhance.php', { bash: '/usr/bin/sed -i "s|#......\(/\*c\*/\)|'+ color +'\1|" $( grep -ril "\/\*c\*\/" /srv/http/assets/css ); /usr/bin/redis-cli hset display color '+ color } );
+} );
+
 } ); // document ready end <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 document.addEventListener( 'visibilitychange', function() {
