@@ -29,7 +29,8 @@
 	#menu-bottom li.active a:hover,
 	#db-home:hover,
 	#pl-home:hover {
-		background-color: #0072a5/*ch*/;
+		background-color: #0095d8/*c*/;
+		opacity: 0.85;
 	}
 	.home-block:hover,
 	.home-block:focus,
@@ -46,6 +47,7 @@
 	#db-entries li.active:hover,
 	#pl-entries li.active:hover,
 	#pl-editor li.active:hover {
-		background: #0095d8;
+		background: #0095d8/*c*/;
+		opacity: 0.85;
 	}
 }
