@@ -1630,10 +1630,13 @@ $( '#displaycolor' ).click( function() {
 } );
 $( '#colorok, #colorcancel' ).click( function() {
 	var color = this.id === 'colorok' ? colorpicker.getCurColorHex() : '';
-	$( '#db-home, li.active, #tab-library a, #colorok' ).css( 'background', color );
+	$( '#db-home, #db-entries li.active, #tab-library a, #colorok' ).css( 'background', color );
 	$( '#rootpath, #db-back, .lialbum' ).css( 'color', color );
 	$( '#divcolorpicker' ).addClass( 'hide' );
-//	if ( color ) $.post( 'enhance.php', { bash: '/usr/bin/sed -i "s|#......\(/\*c\*/\)|'+ color +'\1|" $( grep -ril "\/\*c\*\/" /srv/http/assets/css ); /usr/bin/redis-cli hset display color '+ color } );
+	if ( color ) $.post( 'enhance.php', { 
+		bash: '/usr/bin/sed -i "s|#......\\\(/\\\*c\\\*/\\\)|'+ color +'\\1|g" $( grep -ril "\\\/\\\*c\\\*\\\/" /srv/http/assets/css );'
+			 +'/usr/bin/redis-cli hset display color "'+ color +'"'
+	} );
 } );
 
 } ); // document ready end <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
