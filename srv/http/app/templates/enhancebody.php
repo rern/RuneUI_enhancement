@@ -1,12 +1,14 @@
 <?php
-if ( in_array( $_SERVER[ 'REMOTE_ADDR' ], array( '127.0.0.1', '::1' ) ) ) {
-	$submenu = '<i class="fa fa-screenoff submenu"></i>';
-} else {
-	$submenu = '<i class="fa fa-reboot submenu"></i>';
-}
 $redis = new Redis();
 $redis->pconnect( '127.0.0.1' );
+
 $time = time();
+$submenucolor = $redis->hGet( 'display', 'color' ) === '#0095d8' ? '' : '<i class="fa fa-brush-undo submenu"></i>';
+if ( in_array( $_SERVER[ 'REMOTE_ADDR' ], array( '127.0.0.1', '::1' ) ) ) {
+	$submenupower = '<i class="fa fa-screenoff submenu"></i>';
+} else {
+	$submenupower = '<i class="fa fa-reboot submenu"></i>';
+}
 // counts
 $count = exec( '/srv/http/enhancecount.sh' );
 $count = explode( ' ', $count );
@@ -279,7 +281,7 @@ $menu.= '</div>';
 	<a href="settings"><i class="fa fa-sliders"></i>Settings</a>
 	<a href="network"><i class="fa fa-network"></i>Network</a>
 	<a href="credits"><i class="fa fa-rune"></i>Credits</a>
-	<a id="turnoff"><i class="fa fa-power"></i>Power<?=$submenu ?></a>
+	<a id="turnoff"><i class="fa fa-power"></i>Power<?=$submenupower ?></a>
 		<?php 
 		if ( $this->pwd_protection ) { ?>
 	<a href="logout.php"><i class="fa fa-sign-out"></i>Logout</a>
@@ -291,7 +293,7 @@ $menu.= '</div>';
 		} ?>
 	<a id="displaylibrary"><i class="fa fa-library gr"></i>Library Tools</a>
 	<a id="displayplayback"><i class="fa fa-play-circle gr"></i>Playback Tools</a>
-	<a id="displaycolor"><i class="fa fa-gear gr"></i>Color<i class="fa fa-replace submenu"></i></a>
+	<a id="displaycolor"><i class="fa fa-brush gr"></i>Color<?=$submenucolor ?></a>
 		<?php
 		if ( file_exists( '/srv/http/assets/fonts/addons.ttf' ) ) { ?> 
 	<a id="addons"><i class="fa fa-addons"></i>Addons</a>
