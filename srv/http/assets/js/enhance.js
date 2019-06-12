@@ -1623,7 +1623,7 @@ $( '#displaycolor' ).click( function( e ) {
 		return
 	}
 	
-	$( '#tab-library' ).click();
+	if ( !GUI.library ) $( '#tab-library' ).click();
 	$( '#home-album' ).click();
 	setTimeout( function() {
 		$( '#db-entries li:eq( 0 )' ).tap();
