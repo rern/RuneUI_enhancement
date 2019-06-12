@@ -19,7 +19,7 @@ function notify( title, message, icon, delay ) {
 	$banner.show();
 	// keep gradient width at 80px when width varies
 	var bW = $banner.outerWidth();
-	$banner.css( 'background', 'linear-gradient( to right, rgba( 0,149,216,1 ) 0%,rgba( 0,149,216,1 ) '+ Math.round( ( bW - 80 ) / bW * 100 ) +'%,rgba( 125,185,232,0 ) 100% )' )
+	$banner.css( 'background', 'linear-gradient( to right, #d8a000/*c*//*c*//*c*//*c*/ 0%, #d8a000/*c*//*c*//*c*//*c*/ '+ Math.round( ( bW - 80 ) / bW * 100 ) +'%, #000000 100% )' )
 	
 	if ( delay !== -1 ) setTimeout( bannerHide, delay || 3000 );
 }

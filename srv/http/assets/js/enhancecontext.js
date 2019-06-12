@@ -400,7 +400,7 @@ function webRadioCoverart() {
 		}
 		if ( img ) {
 			infojson.buttonlabel = 'Remove'
-			infojson.buttoncolor = '#0095d8'
+			infojson.buttoncolor = '#d8a000/*c*//*c*//*c*//*c*/'
 			infojson.button      = function() {
 				$.post( 'enhance.php', { bash: '/usr/bin/echo "'+ name +'" > "/srv/http/assets/img/webradios/'+ urlname +'"' } );
 				if ( GUI.playback ) {
