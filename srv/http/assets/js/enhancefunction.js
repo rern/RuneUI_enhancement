@@ -2027,3 +2027,11 @@ function getOrientation( file, callback ) { // return: 1 - undefined
 	};
 	reader.readAsArrayBuffer( file.slice( 0, 64 * 1024 ) );
 }
+function setColor( color ) {
+	$.post( 'enhance.php', { 
+		bash: '/usr/bin/sed -i "s|#......\\\(/\\\*c\\\*/\\\)|'+ color +'\\1|g" $( grep -ril "\\\/\\\*c\\\*\\\/" /srv/http/assets/css );'
+			 +'/usr/bin/redis-cli hset display color "'+ color +'"'
+	}, function() {
+		location.reload();
+	} );
+}
