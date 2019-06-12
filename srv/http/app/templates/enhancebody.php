@@ -291,6 +291,7 @@ $menu.= '</div>';
 		} ?>
 	<a id="displaylibrary"><i class="fa fa-library gr"></i>Library Tools</a>
 	<a id="displayplayback"><i class="fa fa-play-circle gr"></i>Playback Tools</a>
+	<a id="displaycolor"><i class="fa fa-gear gr"></i>Color</a>
 		<?php
 		if ( file_exists( '/srv/http/assets/fonts/addons.ttf' ) ) { ?> 
 	<a id="addons"><i class="fa fa-addons"></i>Addons</a>
@@ -471,6 +472,10 @@ $menu.= '</div>';
 	</div>
 </div>
 
+<div id="divcolorpicker" class="hide">
+	<canvas id="colorpicker"></canvas>
+	<br><a id="colorcancel" class="btn btn-default">Cancel</a>&emsp;<a id="colorok" class="btn btn-primary">OK</a>
+</div>
 <div id="bio" class="hide">
 	<div class="container">
 		<h1>BIO</h1><a id="closebio"><i class="fa fa-times close-root"></i></a>
