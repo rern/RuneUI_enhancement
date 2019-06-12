@@ -432,7 +432,7 @@ function renderPlayback() {
 		if ( GUI.display.time ) {
 			$( '#time' ).roundSlider( 'setValue', position );
 			$( '#elapsed' ).text( elapsedhms );
-			$( '#elapsed' ).css( 'color', '#d8a000/*c*//*c*//*c*/' );
+			$( '#elapsed' ).css( 'color', '#0095d8/*c*//*c*//*c*/' );
 			$( '#total' ).css( 'color', '#e0e7ee' );
 			$( '#timepos' ).empty();
 		} else {
@@ -521,7 +521,7 @@ function mpdSeek( seekto ) {
 	}
 }
 function muteColor( volumemute ) {
-	$volumetooltip.text( volumemute ).css( 'color', '#d8a000/*c*//*c*//*c*/' );
+	$volumetooltip.text( volumemute ).css( 'color', '#0095d8/*c*//*c*//*c*/' );
 	$volumehandle.css( 'background', '#7795b4' );
 	$( '#volmute' ).addClass( 'btn-primary' )
 		.find( 'i' ).removeClass( 'fa-volume' ).addClass( 'fa-mute' );
@@ -1823,7 +1823,7 @@ function renderPlaylist() {
 	$( '#pl-count' ).html( counthtml );
 	$( '#plsave, #plclear, #pl-searchbtn' ).removeClass( 'disable' );
 	$( '#plcrop' ).toggleClass( 'disable', GUI.pllist.length < 2 );
-	$( '#plconsume' ).css( 'color', GUI.status.consume ? '#d8a000/*c*//*c*//*c*/' : '' );
+	$( '#plconsume' ).css( 'color', GUI.status.consume ? '#0095d8/*c*//*c*//*c*/' : '' );
 	$( '#pl-entries' ).html( data.content +'<p></p>' ).promise().done( function() {
 		$( '#pl-entries p' ).css( 'min-height', window.innerHeight - 140 +'px' );
 		setPlaylistScroll();
