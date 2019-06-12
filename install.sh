@@ -339,6 +339,11 @@ if [[ $( redis-cli hexists display bars ) == 0 ]]; then
 		redis-cli hset display $item "" &> /dev/null
 	done
 fi
+# set color
+color=$( redis-cli hget display color )
+if [[ -n $color ]]; then
+	sed -i "s|#......\(/\*c\*/\)|$color\1|g" $( grep -ril "\/\*c\*\/" /srv/http/assets/css )
+fi
 # pre-count albumartist, composer, genre
 albumartist=$( mpc list albumartist | awk NF | wc -l )
 composer=$( mpc list composer | awk NF | wc -l )
