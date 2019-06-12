@@ -476,7 +476,9 @@ $menu.= '</div>';
 
 <div id="divcolorpicker" class="hide">
 	<canvas id="colorpicker"></canvas>
-	<br><a id="colorcancel" class="btn btn-default">Cancel</a>&emsp;<a id="colorok" class="btn btn-primary">OK</a>
+	<br>
+	<i id="colorcancel" class="fa fa-times"></i>
+	<a id="colorok" class="btn btn-primary">OK</a>
 </div>
 <div id="bio" class="hide">
 	<div class="container">
