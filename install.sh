@@ -178,6 +178,10 @@ if [[ -z $( ls -A $dir ) && -n $( ls -A $olddir ) ]]; then # convert if none fou
 	setown $dir
 fi
 
+# set color
+color=$( redis-cli hget display color )
+[[ -n $color ]] && sed -i "s|#......\(/\*c\*/\)|$color\1|g" $( grep -ril "\/\*c\*\/" /srv/http/assets/{css,js} )
+
 ############################################################################
 if [[ $1 == u ]]; then
 	installfinish $@
@@ -339,9 +343,6 @@ if [[ $( redis-cli hexists display bars ) == 0 ]]; then
 		redis-cli hset display $item "" &> /dev/null
 	done
 fi
-# set color
-color=$( redis-cli hget display color )
-[[ -n $color ]] && sed -i "s|#......\(/\*c\*/\)|$color\1|g" $( grep -ril "\/\*c\*\/" /srv/http/assets/{css,js} )
 
 # pre-count albumartist, composer, genre
 albumartist=$( mpc list albumartist | awk NF | wc -l )
