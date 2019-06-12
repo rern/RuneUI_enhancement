@@ -1782,18 +1782,29 @@ li.active .time,
 	z-index: 1001;
 }
 #colorpicker {
-	margin: 360px auto 20px;
+	margin: 360px auto 10px;
 	background: #000000;
 	border-radius: 50%;
-	box-shadow: 0 0 15px 10px #000000;
+	box-shadow: 0 0 15px 5px #000000;
 }
-#divcolorpicker .btn {
+#colorok {
 	width: 70px;
 	height: 36px;
 	line-height: 25px;
 	box-shadow: 0 0 5px 10px #000000;
 }
-
+#colorcancel {
+	position: absolute;
+	top: 370px;
+	margin-left: 125px;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	line-height: 40px;
+	font-size: 28px;
+	background: #34495e;
+	cursor: pointer;
+}
 @media(min-width: 2000px) { .coverart { width: 200px } }
 @media(max-width: 2000px) { .coverart { width: calc( ( 100vw - 38px ) * 0.1 ) } }
 @media(max-width: 1800px) { .coverart { width: calc( ( 100vw - 38px ) * 0.111111111 ) } }
