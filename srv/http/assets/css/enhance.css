@@ -1785,13 +1785,13 @@ li.active .time,
 	margin: 360px auto 20px;
 	background: #000000;
 	border-radius: 50%;
-	box-shadow: 0 0 10px 5px #000000;
+	box-shadow: 0 0 15px 10px #000000;
 }
 #divcolorpicker .btn {
 	width: 70px;
 	height: 36px;
 	line-height: 25px;
-	box-shadow: 0 0 20px 5px #000000;
+	box-shadow: 0 0 5px 10px #000000;
 }
 
 @media(min-width: 2000px) { .coverart { width: 200px } }
