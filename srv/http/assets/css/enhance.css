@@ -146,7 +146,7 @@ a:hover {
 }
 w, wh, .wh { color: #e0e7ee !important; }
 #infoMessage .fa-coverart { color: #e0e7ee; }
-bl, .bl { color: #0095d8/*c*/; }
+bl, .bl { color: #0095d8/*c*//*c*//*c*//*c*/; }
 gr, .gr { color: #7795b4; }
 wh, gr { font-weight: 300; }
 #timepos wh,
@@ -172,7 +172,7 @@ i.bookmark,
 .infobookmark i {
 	width: 100px;
 	font-size: 3em;
-	color: #0095d8/*c*/;
+	color: #0095d8/*c*//*c*//*c*//*c*/;
 	text-shadow: 2px 2px 4px #000000;
 }
 .imagewh {
@@ -423,7 +423,7 @@ i.bookmark,
 	padding: 0;
 }
 #menu-bottom li.active a {
-	background: #0095d8/*c*/;
+	background: #0095d8/*c*//*c*//*c*//*c*/;
 }
 #menu-bottom li a i {
 	margin: 0; /* fix wobble spin */
@@ -460,7 +460,7 @@ i.bookmark,
 	height: 34px;
 	line-height: 34px;
 	font-size: 30px;
-	color: #0095d8/*c*/;
+	color: #0095d8/*c*//*c*//*c*//*c*/;
 }
 #song i {
 	color: #e0e7ee;
@@ -504,7 +504,7 @@ i.bookmark,
 #posrepeat,
 #posgpio {
 	width: 25px;
-	color: #0095d8/*c*/;
+	color: #0095d8/*c*//*c*//*c*//*c*/;
 }
 /* ---------------------- info scrolling ----------------------*/
 #divartist,
@@ -667,7 +667,7 @@ i.bookmark,
 #imode i {
 	width: 20px;
 	font-size: 16px;
-	color: #0095d8/*c*/;
+	color: #0095d8/*c*//*c*//*c*//*c*/;
 }
 #iupdate {
 	font-size: 14px;
@@ -831,7 +831,7 @@ i.bookmark,
 #random.btn-default.btn-primary,
 #single.btn-default.btn-primary,
 #volmute.btn-default.btn-primary {
-	background-color: #0095d8/*c*/;
+	background-color: #0095d8/*c*//*c*//*c*//*c*/;
 }
 /* glossy highlight */
 #repeat, 
@@ -887,7 +887,7 @@ i.bookmark,
 	color: #e0e7ee;
 }
 #time .rs-range-color {
-	background: #0095d8/*c*/ !important;
+	background: #0095d8/*c*//*c*//*c*//*c*/ !important;
 }
 #time .rs-handle {
 	opacity: 0;
@@ -897,7 +897,7 @@ i.bookmark,
 }
 #volume .rs-handle {
 	border: 1px solid #333333;
-	background: #0095d8/*c*/;
+	background: #0095d8/*c*//*c*//*c*//*c*/;
 	box-shadow: inset #34495e 0 5px 5px;
 }
 .rs-outer {
@@ -1011,7 +1011,7 @@ i.bookmark,
 	margin-top: 0;
 	line-height: 40px;
 	font-size: 28px;
-	color: #0095d8/*c*/;
+	color: #0095d8/*c*//*c*//*c*//*c*/;
 }
 p.hrbl {
 	margin: 20px 0 10px 0;
@@ -1133,7 +1133,7 @@ p.hrbl {
 }
 .home-block .fa-coverart,
 .home-block .fa-bookmark {
-	color: #0095d8/*c*/;
+	color: #0095d8/*c*//*c*//*c*//*c*/;
 }
 /* coverart edit icons */
 .licover-save,
@@ -1162,7 +1162,7 @@ p.hrbl {
 	height: 30px;
 	line-height: 30px;
 	border-radius: 15px;
-	background: #0095d8/*c*/;
+	background: #0095d8/*c*//*c*//*c*//*c*/;
 }
 .home-block-cover {
 	bottom: 0;
@@ -1261,7 +1261,7 @@ p.hrbl {
 	line-height: 40px;
 	text-align: center;
 	font-size: 28px;
-	color: #0095d8/*c*/;
+	color: #0095d8/*c*//*c*//*c*//*c*/;
 }
 #db-currentpath {
 	float: left;
@@ -1300,7 +1300,7 @@ p.hrbl {
 .plsbackroot,
 .plsback,
 #db-currentpath a:first-of-type {
-	color: #0095d8/*c*/;
+	color: #0095d8/*c*//*c*//*c*//*c*/;
 }
 .plsbackroot,
 .plsback {
@@ -1315,7 +1315,7 @@ p.hrbl {
 	height: 40px;
 	line-height: 44px;
 	text-align: center;
-	background: #0095d8/*c*/;
+	background: #0095d8/*c*//*c*//*c*//*c*/;
 }
 #pl-home {
 	line-height: 46px;
@@ -1359,7 +1359,7 @@ p.hrbl {
 }
 #db-search-close i,
 #pl-search-close i {
-	color: #0095d8/*c*/;
+	color: #0095d8/*c*//*c*//*c*//*c*/;
 }
 #db-search-close span a,
 #pl-search-close span a {
@@ -1417,7 +1417,7 @@ p.hrbl {
 	box-shadow: #555555 0 0 1px 0;
 }
 .licover.active {
-	background: linear-gradient( #0000 189px, #0095d8/*c*/ 41px ) !important;
+	background: linear-gradient( #0000 189px, #0095d8/*c*//*c*//*c*//*c*/ 41px ) !important;
 }
 .licoverimg {
 	display: inline-block;
@@ -1491,7 +1491,7 @@ p.hrbl {
 	background: #374c62;
 }
 #pl-entries li.active.updn {
-	background: #0095d8/*c*/;
+	background: #0095d8/*c*//*c*//*c*//*c*/;
 }
 .db-icon,
 .pl-icon,
@@ -1547,7 +1547,7 @@ span.dbpath {
 #pl-entries .active,
 #pl-editor .active {
 	color: #e0e7ee;
-	background: #0095d8/*c*/
+	background: #0095d8/*c*//*c*//*c*//*c*/
 }
 #pl-entries .pl-remove {
 	float: right;
@@ -1562,7 +1562,7 @@ span.dbpath {
 	z-index: 1;
 }
 #pl-entries li.active .pl-remove {
-	background: #0095d8/*c*/;
+	background: #0095d8/*c*//*c*//*c*//*c*/;
 }
 .db-icon,
 .pl-icon,
@@ -1748,7 +1748,7 @@ li.active .time,
 	font-size: 30px;
 }
 .menu a.active {
-	background: #0095d8/*c*/;
+	background: #0095d8/*c*//*c*//*c*//*c*/;
 }
 /* flags */
 .flag {
