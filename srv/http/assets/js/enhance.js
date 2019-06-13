@@ -217,6 +217,14 @@ $( '#turnoff' ).click( function( e ) {
 	} );
 } );
 $( '#displaycolor' ).click( function( e ) {
+	if ( $( '#home-album gr' ).text() == 0 ) {
+		info( {
+			  icon    : 'brush'
+			, title   : 'Color Editor'
+			, message : 'No albums in Library.'
+		} );
+		return
+	}
 	if ( $( e.target ).hasClass( 'submenu' ) ) {
 		setColor( '#0095d8' );
 		return
