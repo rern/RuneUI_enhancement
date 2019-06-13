@@ -221,3 +221,4 @@ All pages
 	- `arrow-down` select next menu
 	- `arrow-up` select previous menu
 	- `arrow-right` select submenu
+	- `enter` tap active menu
