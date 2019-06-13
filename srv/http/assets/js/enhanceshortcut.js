@@ -1,8 +1,15 @@
 // keyboard controls
 $( document ).keydown( function( e ) {
+	var key = e.key;
+	if ( key === 'Escape' ) {
+		infoReset();
+		$( '.menu' ).addClass( 'hide' );
+		$( '#colorcancel' ).click();
+		return
+	}
+	
 	if ( $( '#infoOverlay' ).css( 'display' ) === 'block' || !$( '#divcolorpicker' ).hasClass( 'hide' ) ) return
 		
-	var key = e.key;
 	if ( key === ' ' && e.target.localName !== 'input' ) {
 		$( '#play' ).click();
 		e.preventDefault();
