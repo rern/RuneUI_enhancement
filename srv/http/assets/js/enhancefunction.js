@@ -1497,9 +1497,9 @@ function imgError( image ) {
 function dbContextmenu( $li, $target ) {
 	$( '.menu' ).addClass( 'hide' );
 	var $menu = $( $li.find( '.db-icon' ).data( 'target' ) );
-	if ( $li.hasClass( 'active' ) || $menu.find( '.submenu' ).hasClass( 'active' ) ) {
+	if ( $li.hasClass( 'active' ) ) {
 		$li.removeClass( 'active' );
-		$menu.find( '.submenu' ).removeClass( 'active' );
+		$menu.find( 'a, i' ).removeClass( 'active' );
 		return
 	}
 	
@@ -1553,10 +1553,11 @@ function dbContextmenu( $li, $target ) {
 }
 function plContextmenu( $li, $target ) { // saved playlists
 	$( '.menu' ).addClass( 'hide' );
+	var dbpl = $li.find( '.pl-icon' ).length ? '.pl' : '.db';
 	var $menu = $( $li.find( dbpl +'-icon' ).data( 'target' ) );
-	if ( $li.hasClass( 'active' ) || $menu.find( '.submenu' ).hasClass( 'active' ) ) {
+	if ( $li.hasClass( 'active' ) || $li.hasClass( 'updn' ) ) {
 		$li.removeClass( 'active' );
-		$menu.find( '.submenu' ).removeClass( 'active' );
+		$menu.find( 'a, i' ).removeClass( 'active' );
 		return
 	}
 	
@@ -1569,7 +1570,6 @@ function plContextmenu( $li, $target ) { // saved playlists
 	$( '.plus-refresh, .play-plus-refresh' ).toggleClass( 'hide', !GUI.status.playlistlength );
 	$( '.minus-circle' ).removeClass( 'hide' );
 	$( '.tag' ).addClass( 'hide' );
-	var dbpl = $li.find( '.pl-icon' ).length ? '.pl' : '.db';
 	if ( GUI.display.tapaddplay
 		&& !$target.hasClass( 'pl-icon' )
 	) {

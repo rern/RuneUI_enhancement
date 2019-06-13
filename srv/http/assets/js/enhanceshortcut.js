@@ -34,7 +34,58 @@ $( document ).keydown( function( e ) {
 		}
 	}
 	if ( key === ' ' || key === 'Tab' || key.slice( 5 ) === 'Media' ) return
-
+	
+	// context menu
+	var $contextmenu = $( '.contextmenu:not( .hide )' );
+	if ( $contextmenu.length ) {
+		if ( GUI.library ) {
+			var $liactive = $( '#db-entries li.active' );
+		} else if ( GUI.playlist ) {
+			if ( !GUI.pleditor ) {
+				var $liactive = $( '#pl-entries li.updn' );
+				if ( !$liactive.length ) $liactive = $( '#pl-entries li.active' );
+			} else {
+				var $liactive = $( '#pl-editor li.active' );
+			}
+		}
+		var $menu = $contextmenu.find( 'a.active' );
+		var $menuactive = $menu.length ? $menu : $contextmenu.find( '.submenu.active' ).parent();
+		var $menufirst = $contextmenu.find( 'a:not( .hide )' ).first();
+		var $menulast = $contextmenu.find( 'a:not( .hide )' ).last();
+		if ( key === 'ArrowLeft' ) {
+			$( '.menu' ).addClass( 'hide' )
+			$menuactive.removeClass( 'active' );
+			$( '.submenu' ).removeClass( 'active' );
+		} else if ( key === 'ArrowRight' ) {
+			$menuactive.removeClass( 'active' );
+			$menuactive.find( '.submenu' ).addClass( 'active' );
+		} else if ( key === 'ArrowUp' || key === 'ArrowDown' ) {
+			if ( !$menuactive.length ) {
+				$menufirst.addClass( 'active' );
+			} else {
+				$menuactive.removeClass( 'active' );
+				$( '.submenu' ).removeClass( 'active' );
+				if ( key === 'ArrowDown' ) {
+					if ( $menuactive.is( $menulast ) ) {
+						$menufirst.addClass( 'active' );
+					} else {
+						$menuactive.nextAll( 'a' ).not( '.hide' ).first().addClass( 'active' );
+					}
+				} else {
+					if ( $menuactive.is( $menufirst ) ) {
+						$menulast.addClass( 'active' );
+					} else {
+						$menuactive.prevAll( 'a' ).not( '.hide' ).first().addClass( 'active' );
+					}
+				}
+			}
+		} else if ( key === 'Enter' ) {
+			$contextmenu.find( 'a.active' ).click();
+			$contextmenu.find( '.submenu.active' ).click();
+		}
+		return
+	}
+	
 	if ( GUI.playback ) {
 		if ( key === 'ArrowLeft' ) {
 			$( '#previous' ).click();
@@ -71,48 +122,7 @@ $( document ).keydown( function( e ) {
 			}
 			return
 		}
-		var contextmenu = $( '#db-entries li.active .db-icon' ).data( 'target' );
-		if ( $( '#db-entries li.active' ).length && !$( contextmenu ).hasClass( 'hide' ) ) {
-			var $menu = $( contextmenu ).find( 'a.active' );
-			var $menuactive = $menu.length ? $menu : $( contextmenu ).find( '.submenu.active' ).parent();
-			var $menu0 = $( contextmenu ).find( 'a:eq( 0 )' );
-			if ( key === 'ArrowLeft' ) {
-				$( '.menu' ).addClass( 'hide' )
-				$menuactive.removeClass( 'active' );
-				$( '.submenu' ).removeClass( 'active' );
-			} else if ( key === 'ArrowRight' ) {
-				if ( $menuactive.length ) {
-					$menuactive.removeClass( 'active' );
-					$menuactive.find( '.submenu' ).addClass( 'active' );
-				} else {
-					$( '#db-entries li.active .db-icon' ).tap().tap();
-				}
-			} else if ( key === 'ArrowUp' || key === 'ArrowDown' ) {
-				if ( !$menuactive.length ) {
-					$menu0.addClass( 'active' );
-				} else {
-					$menuactive.removeClass( 'active' );
-					$( '.submenu' ).removeClass( 'active' );
-					if ( key === 'ArrowDown' ) {
-						if ( $menuactive.is( ':last-child' ) ) {
-							$menu0.addClass( 'active' );
-						} else {
-							$menuactive.next().addClass( 'active' );
-						}
-					} else {
-						if ( $menuactive.is( ':first-of-type' ) ) {
-							$( contextmenu ).find( 'a:last-child' ).addClass( 'active' );
-						} else {
-							$menuactive.prev().addClass( 'active' );
-						}
-					}
-				}
-			} else if ( key === 'Enter' ) {
-				$( contextmenu ).find( 'a.active' ).click();
-				$( contextmenu ).find( '.submenu.active' ).click();
-			}
-			return
-		}
+		
 		// back button //////////////////////////////////
 		if ( key === 'ArrowLeft' ) {
 			$( '#db-back' ).click();
@@ -125,7 +135,7 @@ $( document ).keydown( function( e ) {
 		// list ///////////////////////////////////////
 		var $liactive = $( '#db-entries li.active' );
 		if ( !$liactive.length ) {
-			$( '#db-entries li' ).first().addClass( 'active' );
+			$( '#db-entries li:eq( 0 )' ).addClass( 'active' );
 			setTimeout( function() {
 				$( 'html, body' ).scrollTop( 0 );
 			}, 300 );
@@ -133,18 +143,18 @@ $( document ).keydown( function( e ) {
 		}
 		
 		if ( key === 'ArrowUp' ) {
-			var $dbicon = $liactive.prev().find( '.db-icon' );
-			if ( !$dbicon.length ) $dbicon = $( '.db-icon' ).last();
-			$dbicon.tap();
+			var $icon = $liactive.prev().find( '.db-icon' );
+			if ( !$icon.length ) $icon = $( '#db-entries .db-icon' ).last();
+			$icon.tap();
 		} else if ( key === 'ArrowDown' ) {
-			var $dbicon = $liactive.next().find( '.db-icon' );
-			if ( !$dbicon.length ) {
-				$dbicon = $( '.db-icon' ).first();
+			var $icon = $liactive.next().find( '.db-icon' );
+			if ( !$icon.length ) {
+				$icon = $( '#db-entries .db-icon:eq( 0 )' );
 				setTimeout( function() {
 					$( 'html, body' ).scrollTop( 0 );
 				}, 300 );
 			}
-			$dbicon.tap();
+			$icon.tap();
 		} else if ( key === 'Enter' ) {
 			if ( $( '.licover' ).length || $( '#db-entries li.db-webradio' ).length ) {
 				var menu = $liactive.find( '.db-icon' ).data( 'target' );
@@ -155,9 +165,9 @@ $( document ).keydown( function( e ) {
 		}
 		$( '.contextmenu' ).addClass( 'hide' );
 	} else if ( GUI.playlist ) {
-		// playlist //////////////////////////////////
-		if ( !$( '#pl-entries' ).hasClass( 'hide' ) ) {
-			var $liupdn = $( '#pl-entries li.updn' ).length ? $( '#pl-entries li.updn' ) : $( '#pl-entries li.active' );
+		if ( !GUI.pleditor ) {
+			var $liupdn = $( '#pl-entries li.updn' );
+			if ( !$liupdn.length ) $liupdn = $( '#pl-entries li.active' );
 			if ( key === 'ArrowUp' ) {
 				var $li = $liupdn.prev( 'li' );
 				$( '#pl-entries li' ).removeClass( 'updn' );
@@ -173,6 +183,9 @@ $( document ).keydown( function( e ) {
 					}, 300 );
 				}
 				$li.addClass( 'updn' );
+			} else if ( key === 'ArrowRight' ) {
+				$( '#pl-entries li.active' ).find( '.pl-icon' ).click();
+				$( '#pl-entries li.updn' ).find( '.pl-icon' ).click();
 			} else if ( key === 'Enter' ) {
 				$( '#pl-entries li.updn' )
 					.click()
@@ -184,7 +197,11 @@ $( document ).keydown( function( e ) {
 		if ( key === 'ArrowLeft' ) {
 			$( '.plsbackroot, .plsback' ).click();
 			return
+		} else if ( key === 'ArrowRight' ) {
+			$( '#pl-editor li.active i' ).click().click();
+			return
 		}
+		
 		// saved playlist //////////////////////////////////
 		var $liactive = $( '#pl-editor li.active' );
 		if ( !$liactive.length ) {
@@ -196,21 +213,21 @@ $( document ).keydown( function( e ) {
 		}
 		
 		if ( key === 'ArrowUp' ) {
-			var $plicon = $liactive.prev( 'li' ).find( '.pl-icon' );
-			if ( !$plicon.length ) $plicon = $( '#pl-editor li .pl-icon' ).last();
-			$plicon.click();
+			var $icon = $liactive.prev().find( 'i' );
+			if ( !$icon.length ) $icon = $( '#pl-editor i' ).last();
+			$icon.click();
 		} else if ( key === 'ArrowDown' ) {
-			var $plicon = $liactive.next( 'li' ).find( '.pl-icon' );
-			if ( !$plicon.length ) {
-				$plicon = $( '#pl-editor li .pl-icon' ).first();
+			var $icon = $liactive.next().find( 'i' );
+			if ( !$icon.length ) {
+				$icon = $( '#pl-editor i:eq( 0 )' );
 				setTimeout( function() {
 					$( 'html, body' ).scrollTop( 0 );
 				}, 300 );
 			}
-			$plicon.click();
+			$icon.click();
 		} else if ( key === 'Enter' ) {
 			if ( !$( '#pl-editor li.pl-folder' ).length ) {
-				var menu = $liactive.find( '.pl-icon' ).data( 'target' );
+				var menu = $liactive.find( 'i' ).data( 'target' );
 				$( menu ).find( 'a:eq( 1 )' ).click();
 			} else {
 				$liactive.click();
