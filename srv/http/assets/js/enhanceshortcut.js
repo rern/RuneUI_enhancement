@@ -1,6 +1,6 @@
 // keyboard controls
 $( document ).keydown( function( e ) {
-	if ( $( '#infoOverlay' ).css( 'display' ) === 'block' ) return
+	if ( $( '#infoOverlay' ).css( 'display' ) === 'block' || !$( '#divcolorpicker' ).hasClass( 'hide' ) ) return
 		
 	var key = e.key;
 	if ( key === ' ' && e.target.localName !== 'input' ) {
