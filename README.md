@@ -221,4 +221,5 @@ All pages
 	- `arrow-down` select next menu
 	- `arrow-up` select previous menu
 	- `arrow-right` select submenu
+	- `arrow-left` hide context menu
 	- `enter` tap active menu
