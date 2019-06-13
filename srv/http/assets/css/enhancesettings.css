@@ -35,6 +35,10 @@
 .fa-mpd:before { content: "\f522" }
 .fa-output:before { content: "\f52B" }
 
+.btn-primary:hover {
+	background: #0095d8/*c*/;
+	opacity: 0.85;
+}
 #update, #rescan {
 	margin-right: 5px;
 }
