@@ -223,9 +223,11 @@ colorpicker = new KellyColorPicker( {
 	, color  : $( '#db-home' ).css( 'background-color' )
 	, userEvents : {
 		change : function( e ) {
+			if ( !GUI.library ) return
+			
 			var hex = e.getCurColorHex();
-			$( '#db-home, #db-entries li.active, #tab-library a, #colorok' ).css( 'background', hex );
-			$( '#rootpath, #db-back, .lialbum' ).css( 'color', hex );
+			$( '#playback-controls .btn-primary, #tab-library a, #db-home, #db-entries li.active, #colorok' ).css( 'background', hex );
+			$( '#rootpath, #db-back, .lialbum, #colorcancel' ).css( 'color', hex );
 		}
 	}
 } );
@@ -235,6 +237,8 @@ $( '#displaycolor' ).click( function( e ) {
 		return
 	}
 	
+	$( '#divcolorpicker' ).css( 'background', '#000000' ).removeClass( 'hide' );
+	$( '#loader' ).css( 'visibility', 'hidden' );
 	$( '#tab-library' ).click();
 	$( '#home-album' ).click();
 	setTimeout( function() {
@@ -242,8 +246,9 @@ $( '#displaycolor' ).click( function( e ) {
 		setTimeout( function() {
 			$( '#db-entries .db-icon:eq(1)' ).tap();
 			colorpicker.setColorByHex( $( '#db-home' ).css( 'background-color' ) )
-			$( '#divcolorpicker' ).removeClass( 'hide' );
-		}, 300 );
+			$( '#divcolorpicker' ).css( 'background', '' );
+			$( '#loader' ).css( 'visibility', '' );
+		}, 600 );
 	}, 300 );
 } );
 $( '#colorok, #colorcancel' ).click( function() {
@@ -252,8 +257,8 @@ $( '#colorok, #colorcancel' ).click( function() {
 	} else {
 		var color = '';
 	}
-	$( '#db-home, #db-entries li.active, #tab-library a, #colorok' ).css( 'background', color );
-	$( '#rootpath, #db-back, .lialbum' ).css( 'color', color );
+	$( '#playback-controls .btn-primary, #tab-library a, #db-home, #db-entries li.active, #colorok' ).css( 'background', color );
+	$( '#rootpath, #db-back, .lialbum, #colorcancel' ).css( 'color', color );
 	$( '#divcolorpicker' ).addClass( 'hide' );
 	if ( color ) setColor( color )
 } );
