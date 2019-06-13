@@ -218,8 +218,10 @@ All pages
 - `enter` tap active item / add + play
 - `arrow-left` back button
 - `arrow-right` context menu
-	- `arrow-down` select next menu
-	- `arrow-up` select previous menu
-	- `arrow-right` select submenu
-	- `arrow-left` hide context menu
-	- `enter` tap active menu
+
+**Context menu**
+- `arrow-down` select next menu
+- `arrow-up` select previous menu
+- `arrow-right` select submenu
+- `arrow-left` hide context menu
+- `enter` tap active menu
