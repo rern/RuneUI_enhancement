@@ -47,4 +47,10 @@
 		background: #0095d8/*c*/;
 		opacity: 0.85;
 	}
+	.menu a.active .submenu {
+		background: #34495e;
+	}
+	.submenu.active {
+		background: #0095d8/*c*/;
+	}
 }
