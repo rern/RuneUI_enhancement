@@ -201,19 +201,23 @@ All pages
 - `next` next track
 - `tap` switch pages
 
-Playback
+**Playback**
 - `arrow-left` previous
 - `arrow-right` next
 - `arrow-up` volume +
 - `arrow-down` volume -
 
-Library home
+**Library home**
 - `arrow-left` select previous item
 - `arrow-right` select next item
 - `enter` tap active item
 
-Library / Playlist
-- `arrow-left` back button
+**Library / Playlist**
 - `arrow-down` select next item
 - `arrow-up` select previous item
 - `enter` tap active item / add + play
+- `arrow-left` back button
+- `arrow-right` context menu
+	- `arrow-down` select next menu
+	- `arrow-up` select previous menu
+	- `arrow-right` select submenu
