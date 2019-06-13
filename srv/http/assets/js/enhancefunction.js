@@ -1496,10 +1496,13 @@ function imgError( image ) {
 }
 function dbContextmenu( $li, $target ) {
 	$( '.menu' ).addClass( 'hide' );
-	if ( $li.hasClass( 'active' ) ) {
+	var $menu = $( $li.find( '.db-icon' ).data( 'target' ) );
+	if ( $li.hasClass( 'active' ) || $menu.find( '.submenu' ).hasClass( 'active' ) ) {
 		$li.removeClass( 'active' );
+		$menu.find( '.submenu' ).removeClass( 'active' );
 		return
 	}
+	
 	GUI.list = {};
 	GUI.list.li = $li; // for contextmenu
 	if ( $li.hasClass( 'licover' ) && GUI.browsemode === 'coverart' ) {
@@ -1516,7 +1519,6 @@ function dbContextmenu( $li, $target ) {
 	GUI.list.isfile = $li.hasClass( 'file' );              // file/dirble save in contextmenu
 	GUI.list.thumb = $li.find( '.lithumb' ).text() || '';  // dirble save in contextmenu
 	GUI.list.img = $li.find( '.liimg' ).text() || '';      // dirble save in contextmenu
-	var $menu = $( $li.find( '.db-icon' ).data( 'target' ) );
 	if ( GUI.display.tapaddplay
 		&& !$target.hasClass( 'db-icon' )
 		&& !$li.hasClass( 'licover' )
@@ -1551,8 +1553,10 @@ function dbContextmenu( $li, $target ) {
 }
 function plContextmenu( $li, $target ) { // saved playlists
 	$( '.menu' ).addClass( 'hide' );
-	if ( $li.hasClass( 'active' ) ) {
+	var $menu = $( $li.find( dbpl +'-icon' ).data( 'target' ) );
+	if ( $li.hasClass( 'active' ) || $menu.find( '.submenu' ).hasClass( 'active' ) ) {
 		$li.removeClass( 'active' );
+		$menu.find( '.submenu' ).removeClass( 'active' );
 		return
 	}
 	
@@ -1566,7 +1570,6 @@ function plContextmenu( $li, $target ) { // saved playlists
 	$( '.minus-circle' ).removeClass( 'hide' );
 	$( '.tag' ).addClass( 'hide' );
 	var dbpl = $li.find( '.pl-icon' ).length ? '.pl' : '.db';
-	var $menu = $( $li.find( dbpl +'-icon' ).data( 'target' ) );
 	if ( GUI.display.tapaddplay
 		&& !$target.hasClass( 'pl-icon' )
 	) {
