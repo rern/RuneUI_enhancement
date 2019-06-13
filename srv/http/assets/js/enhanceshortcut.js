@@ -2,7 +2,6 @@
 $( document ).keydown( function( e ) {
 	var key = e.key;
 	if ( key === 'Escape' ) {
-		infoReset();
 		$( '.menu' ).addClass( 'hide' );
 		$( '#colorcancel' ).click();
 		return
