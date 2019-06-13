@@ -475,8 +475,6 @@ $menu.= '</div>';
 </div>
 
 <div id="divcolorpicker" class="hide">
-	<canvas id="colorpicker"></canvas>
-	<br>
 	<i id="colorcancel" class="fa fa-times fa-2x"></i>
 	<a id="colorok" class="btn btn-primary">OK</a>
 </div>
