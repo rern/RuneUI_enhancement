@@ -216,38 +216,37 @@ $( '#turnoff' ).click( function( e ) {
 		} ]
 	} );
 } );
-// color
-colorpicker = new KellyColorPicker( {
-	  place  : 'colorpicker'
-	, size   : 230
-	, color  : $( '#db-home' ).css( 'background-color' )
-	, userEvents : {
-		change : function( e ) {
-			if ( !GUI.library ) return
-			
-			var hex = e.getCurColorHex();
-			$( '#playback-controls .btn-primary, #tab-library a, #db-home, #db-entries li.active, #colorok' ).css( 'background', hex );
-			$( '#rootpath, #db-back, .lialbum, #colorcancel' ).css( 'color', hex );
-		}
-	}
-} );
 $( '#displaycolor' ).click( function( e ) {
 	if ( $( e.target ).hasClass( 'submenu' ) ) {
 		setColor( '#0095d8' );
 		return
 	}
 	
-	$( '#divcolorpicker' ).css( 'background', '#000000' ).removeClass( 'hide' );
-	$( '#loader' ).css( 'visibility', 'hidden' );
+	$( '#loader' ).removeClass( 'hide' );
 	$( '#tab-library' ).click();
 	$( '#home-album' ).click();
 	setTimeout( function() {
 		$( '#db-entries li:eq( 0 )' ).tap();
 		setTimeout( function() {
 			$( '#db-entries .db-icon:eq(1)' ).tap();
-			colorpicker.setColorByHex( $( '#db-home' ).css( 'background-color' ) )
-			$( '#divcolorpicker' ).css( 'background', '' );
-			$( '#loader' ).css( 'visibility', '' );
+			$( '#colorok' ).before( '<canvas id="colorpicker"></canvas>' );
+			colorpicker = new KellyColorPicker( {
+				  place  : 'colorpicker'
+				, size   : 230
+				, color  : $( '#db-home' ).css( 'background-color' )
+				, userEvents : {
+					change : function( e ) {
+						var hex = e.getCurColorHex();
+						$( '#playback-controls .btn-primary, #tab-library a, #db-home, #db-entries li.active, #colorok' ).css( 'background', hex );
+						$( '#rootpath, #db-back, .lialbum' ).css( 'color', hex );
+					}
+				}
+			} );
+			var top = $( '#db-entries li:eq( 1 )' ).offset().top;
+			$( '#colorpicker' ).css( 'margin-top', top );
+			$( '#colorcancel' ).css( 'top', ( top + 20 ) +'px' );
+			$( '#divcolorpicker' ).removeClass( 'hide' );
+			$( '#loader' ).addClass( 'hide' )
 		}, 600 );
 	}, 300 );
 } );
@@ -258,9 +257,10 @@ $( '#colorok, #colorcancel' ).click( function() {
 		var color = '';
 	}
 	$( '#playback-controls .btn-primary, #tab-library a, #db-home, #db-entries li.active, #colorok' ).css( 'background', color );
-	$( '#rootpath, #db-back, .lialbum, #colorcancel' ).css( 'color', color );
+	$( '#rootpath, #db-back, .lialbum' ).css( 'color', color );
 	$( '#divcolorpicker' ).addClass( 'hide' );
 	if ( color ) setColor( color )
+	colorpicker.destroy();
 } );
 
 $( '#tab-library' ).click( function() {
