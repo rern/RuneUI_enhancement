@@ -2023,7 +2023,7 @@ function rgb2hex( rgb ) {
 }
 function setColor( color ) {
 	$.post( 'enhance.php', { 
-		  bash       : '/usr/bin/sed -i "s|#......\\\(/\\\*c\\\*/\\\)|'+ color +'\\1|g" $( grep -ril "\\\/\\\*c\\\*\\\/" /srv/http/assets/{css,js} );'
+		  bash       : '/usr/bin/sed -i "s|#......\\\(/\\\*c\\\*/\\\)|'+ color +'\\1|g" $( grep -ril "\\\/\\\*c\\\*\\\/" /srv/http/assets/{css,js} ) /srv/http/assets/img/runelogo.svg;'
 					  +'/usr/bin/redis-cli hset display color "'+ color +'"'
 		, pushstream : 'color'
 	}, function() {
