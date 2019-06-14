@@ -98,6 +98,7 @@ $( '#menu-settings, #badge' ).click( function() {
 	$( '#settings' )
 		.toggleClass( 'hide' )
 		.css( 'top', ( GUI.bars ? '40px' : 0 ) );
+	$( '.contextmenu' ).addClass( 'hide' );
 } );
 var chklibrary = {
 	  coverart       : '_<i class="fa fa-coverart"></i>CoverArt'
