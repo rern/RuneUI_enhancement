@@ -53,7 +53,10 @@
 	.menu a.active .submenu {
 		background: #34495e;
 	}
+	.menu .active i:first-of-type {
+		color: #e0e7ee;
+	}
 	.submenu.active {
-		background: #0095d8/*c*/;
+		background: #0095d8/*c*/ !important;
 	}
 }
