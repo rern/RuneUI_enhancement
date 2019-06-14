@@ -41,6 +41,7 @@
 	.menu a.active:hover,
 	#menu-bottom a.active:hover,
 	#menu-bottom li.active a:hover,
+	.btn-primary:hover,
 	#db-home:hover,
 	#pl-home:hover,
 	#db-entries li.active:hover,
