@@ -142,6 +142,7 @@ $( document ).keydown( function( e ) {
 			return
 		}
 		
+		$( '#db-entries li' ).removeClass( 'active' );
 		if ( key === 'ArrowUp' ) {
 			var $icon = $liactive.prev().find( '.db-icon' );
 			if ( !$icon.length ) $icon = $( '#db-entries .db-icon' ).last();

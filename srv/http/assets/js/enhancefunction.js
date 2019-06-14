@@ -49,7 +49,8 @@ function switchPage( page ) {
 	} else if ( GUI.playlist && GUI.pleditor ) {
 		GUI.playlistscrolltop = $( window ).scrollTop();
 	}
-	$( '#menu-bottom li, #db-entries li, #pl-editor li' ).removeClass( 'active' );
+//liactive	$( '#menu-bottom li, #db-entries li, #pl-editor li' ).removeClass( 'active' );
+	$( '#menu-bottom li' ).removeClass( 'active' );
 	$( '.page, .menu' ).addClass( 'hide' );
 	$( '#page-'+ page ).removeClass( 'hide' );
 	$( '#tab-'+ page ).addClass( 'active' );
@@ -166,7 +167,7 @@ function getUpdateStatus() {
 			} else {
 				clearInterval( GUI.intUpdate );
 				GUI.intUpdate = false;
-				$( '#db-entries li.active' ).removeClass( 'active' );
+//liactive				$( '#db-entries li.active' ).removeClass( 'active' );
 				notify( 'Library Database', 'Database updated.', 'library' );
 			}
 		}, 'json' );
@@ -784,7 +785,7 @@ function renderLibrary() {
 }
 function infoNoData() {
 	$( '#loader' ).addClass( 'hide' );
-	$( '#db-entries li' ).removeClass( 'active' );
+//liactive	$( '#db-entries li' ).removeClass( 'active' );
 	if ( GUI.plugin ) return
 	
 	var keyword = $( '#db-search-keyword' ).val();
@@ -1497,11 +1498,11 @@ function imgError( image ) {
 function dbContextmenu( $li, $target ) {
 	$( '.menu' ).addClass( 'hide' );
 	var $menu = $( $li.find( '.db-icon' ).data( 'target' ) );
-	if ( $li.hasClass( 'active' ) ) {
-		$li.removeClass( 'active' );
+/*	if ( $li.hasClass( 'active' ) ) {
+//liactive		$li.removeClass( 'active' );
 		$menu.find( 'a, i' ).removeClass( 'active' );
 		return
-	}
+	}*/
 	
 	GUI.list = {};
 	GUI.list.li = $li; // for contextmenu
@@ -1537,7 +1538,7 @@ function dbContextmenu( $li, $target ) {
 	}
 	var contextnum = $menu.find( 'a:not(.hide)' ).length;
 	$( '.menushadow' ).css( 'height', contextnum * 41 - 1 );
-	$( '#'+ dbpl +'-entries li, #pl-editor li' ).removeClass( 'active' );
+//liactive	$( '#'+ dbpl +'-entries li, #pl-editor li' ).removeClass( 'active' );
 	$li.addClass( 'active' );
 	if ( $li.hasClass( 'licover' ) ) {
 		var menutop = GUI.bars ? '310px' : '270px';
@@ -1556,7 +1557,7 @@ function plContextmenu( $li, $target ) { // saved playlists
 	var dbpl = $li.find( '.pl-icon' ).length ? '.pl' : '.db';
 	var $menu = $( $li.find( dbpl +'-icon' ).data( 'target' ) );
 	if ( $li.hasClass( 'active' ) || $li.hasClass( 'updn' ) ) {
-		$li.removeClass( 'active' );
+//liactive		$li.removeClass( 'active' );
 		$menu.find( 'a, i' ).removeClass( 'active' );
 		return
 	}

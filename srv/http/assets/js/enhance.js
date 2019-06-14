@@ -1284,7 +1284,14 @@ $( '#db-entries' ).on( 'taphold', '.licoverimg',  function() {
 	$this.find( 'img' ).css( 'opacity', '0.33' );
 } ).on( 'tap', 'li', function( e ) {
 	var $this = $( this );
-	var $target = $( e.target )
+	var $target = $( e.target );
+	if ( $this.hasClass( 'active' ) && $( '.contextmenu:not( .hide )' ).length ) {
+		$( '.contextmenu' ).addClass( 'hide' );
+		return
+	}
+	
+	$( '#db-entries li' ).removeClass( 'active' );
+	$( '.contextmenu' ).addClass( 'hide' );
 	if ( $target.hasClass( 'edit' ) ) return
 	
 	if ( $( '.edit' ).length ) {
@@ -1322,7 +1329,7 @@ $( '#db-entries' ).on( 'taphold', '.licoverimg',  function() {
 	var currentpath = $( '#db-currentpath' ).find( '.lipath' ).text();
 	GUI.dbscrolltop[ currentpath ] = $( window ).scrollTop();
 	mutationLibrary.observe( observerLibrary, observerOption );
-	$( '#db-entries li' ).removeClass( 'active' );
+//liactive	$( '#db-entries li' ).removeClass( 'active' );
 	$this.addClass( 'active' );
 	if ( ( GUI.browsemode === 'artist' && currentpath !== 'Artist' )
 		|| ( GUI.browsemode === 'albumartist' && currentpath !== 'AlbumArtist' )
@@ -1626,6 +1633,12 @@ $( '#pl-editor' ).on( 'click', 'li', function( e ) {
 	}
 	
 	var $target = $( e.target );
+	if ( $this.hasClass( 'active' ) && $( '.contextmenu:not( .hide )' ).length ) {
+		$( '.contextmenu' ).addClass( 'hide' );
+		return
+	}
+	
+	$( '.contextmenu' ).addClass( 'hide' );
 	if ( $target.hasClass( 'pl-icon' ) || $target.hasClass( 'db-icon' ) || !$this.find( '.fa-list-ul' ).length ) {
 		if ( $target.data( 'target' ) === '#context-menu-file' ) {
 			dbContextmenu( $this, $target );
