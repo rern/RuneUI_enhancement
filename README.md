@@ -220,7 +220,7 @@ All pages
 - `arrow-right` context menu
 - `enter` tap active item / add + play
 
-**Context menu**
+**Menu and Context menu**
 - `arrow-down` select next menu
 - `arrow-up` select previous menu
 - `arrow-right` select submenu
