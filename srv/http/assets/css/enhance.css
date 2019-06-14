@@ -357,6 +357,10 @@ i.bookmark,
 #playback-controls button {
 	margin: 0 10px;
 }
+#playback-controls button:focus,
+#playback-controls button:active {
+	background: #0095d8/*c*/
+}
 #playback-controls i {
 	font-size:24px;
 	line-height: 40px;
