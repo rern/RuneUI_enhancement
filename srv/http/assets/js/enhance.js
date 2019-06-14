@@ -238,10 +238,11 @@ $( '#displaycolor' ).click( function( e ) {
 		setTimeout( function() {
 			$( '#db-entries .db-icon:eq(1)' ).tap();
 			$( '#colorok' ).before( '<canvas id="colorpicker"></canvas>' );
+			GUI.color = rgb2hex( $( '#db-home' ).css( 'background-color' ) );
 			colorpicker = new KellyColorPicker( {
 				  place  : 'colorpicker'
 				, size   : 230
-				, color  : $( '#db-home' ).css( 'background-color' )
+				, color  : GUI.color
 				, userEvents : {
 					change : function( e ) {
 						var hex = e.getCurColorHex();
@@ -259,15 +260,11 @@ $( '#displaycolor' ).click( function( e ) {
 	}, 300 );
 } );
 $( '#colorok, #colorcancel' ).click( function() {
-	if ( this.id === 'colorok' ) {
-		var color = colorpicker.getCurColorHex();
-	} else {
-		var color = '';
-	}
+	var color = this.id === 'colorok' ? colorpicker.getCurColorHex() : '';
 	$( '#playback-controls .btn-primary, #tab-library a, #db-home, #db-entries li.active, #colorok' ).css( 'background', color );
 	$( '#rootpath, #db-back, .lialbum' ).css( 'color', color );
 	$( '#divcolorpicker' ).addClass( 'hide' );
-	if ( color ) setColor( color )
+	if ( color && color !== GUI.color ) setColor( color );
 	colorpicker.destroy();
 } );
 
