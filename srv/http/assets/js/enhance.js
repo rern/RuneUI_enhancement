@@ -1433,7 +1433,7 @@ $( '#plcrop' ).click( function() {
 	} );
 } );
 $( '#plconsume' ).click( function() {
-	$( this ).css( 'color', GUI.status.consume ? '' : '#0095d8/*c*/' );
+	$( this ).css( 'color', GUI.status.consume ? '' : '#d86000/*c*/' );
 	$.post( 'enhance.php', { mpc: 'mpc consume' } );
 	notify( 'Consume Mode', GUI.status.consume ? 'Off' : 'On - Remove each song after played.', 'list-ul' );
 } );
@@ -1721,7 +1721,7 @@ window.addEventListener( 'orientationchange', function() {
 } );
 
 var pushstreams = {};
-var streams = [ 'bookmark', 'display', 'idle', 'notify', 'playlist', 'volume', 'webradio' ];
+var streams = [ 'bookmark', 'display', 'idle', 'notify', 'playlist', 'volume', 'webradio', 'color' ];
 streams.forEach( function( stream ) {
 	pushstreams[ stream ] = new PushStream( { modes: 'websocket' } );
 	pushstreams[ stream ].addChannel( stream );
@@ -1735,6 +1735,9 @@ pushstreams.bookmark.onmessage = function( data ) {
 	GUI.debounce = setTimeout( function() {
 		renderLibraryBlocks( bookmarks );
 	}, GUI.debouncems );
+}
+pushstreams.color.onmessage = function() {
+	location.reload();
 }
 pushstreams.display.onmessage = function( data ) {
 	var data = data[ 0 ];
@@ -1788,7 +1791,7 @@ pushstreams.idle.onmessage = function( changed ) {
 					GUI.status[ key ] = value;
 				} );
 				if ( GUI.playback ) setButtonToggle();
-				$( '#plconsume' ).css( 'color', GUI.status.consume ? '#0095d8/*c*/' : '' );
+				$( '#plconsume' ).css( 'color', GUI.status.consume ? '#d86000/*c*/' : '' );
 			}, 'json' );
 		} else if ( changed === 'update' ) {
 			getUpdateStatus();
