@@ -1329,7 +1329,6 @@ $( '#db-entries' ).on( 'taphold', '.licoverimg',  function() {
 	var currentpath = $( '#db-currentpath' ).find( '.lipath' ).text();
 	GUI.dbscrolltop[ currentpath ] = $( window ).scrollTop();
 	mutationLibrary.observe( observerLibrary, observerOption );
-//liactive	$( '#db-entries li' ).removeClass( 'active' );
 	$this.addClass( 'active' );
 	if ( ( GUI.browsemode === 'artist' && currentpath !== 'Artist' )
 		|| ( GUI.browsemode === 'albumartist' && currentpath !== 'AlbumArtist' )

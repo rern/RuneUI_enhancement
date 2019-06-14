@@ -132,7 +132,7 @@ $( document ).keydown( function( e ) {
 			$( '#db-back' ).click();
 			return
 		} else if ( key === 'ArrowRight' ) {
-			$( '#db-entries li.active .db-icon' ).tap().tap();
+			$( '#db-entries li.active .db-icon' ).tap();
 			return
 		}
 		
@@ -203,7 +203,7 @@ $( document ).keydown( function( e ) {
 			$( '.plsbackroot, .plsback' ).click();
 			return
 		} else if ( key === 'ArrowRight' ) {
-			$( '#pl-editor li.active i' ).click().click();
+			$( '#pl-editor li.active i' ).click();
 			return
 		}
 		

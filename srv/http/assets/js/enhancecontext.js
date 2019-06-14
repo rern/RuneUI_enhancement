@@ -10,7 +10,6 @@ $( '.contextmenu a' ).click( function( e ) {
 	}
 	var cmd = $this.data( 'cmd' );
 	$( '.menu' ).addClass( 'hide' );
-//liactive	if ( cmd !== 'update' ) $( '#db-entries li, #pl-editor li' ).removeClass( 'active' );
 	$( 'li.updn' ).removeClass( 'updn' );
 	// playback //////////////////////////////////////////////////////////////
 	if ( [ 'play', 'pause', 'stop' ].indexOf( cmd ) !== -1 ) {
@@ -157,7 +156,6 @@ $( '.contextmenu a' ).click( function( e ) {
 				} );
 			} else {
 				notify( 'Saved Playlist', '<span class="blink">Processing ...</span><br><span class="li2">Please wait.</span>', 'list-ul', -1 );
-//liactive				$( '#db-entries li, #pl-editor li' ).removeClass( 'active' );
 				$.post( 'enhance.php', { loadplaylist: name, play: play, replace: replace }, function() {
 					notify( ( replace ? 'Playlist Replaced' : 'Playlist Addd' ), name, 'list-ul' );
 				} );
