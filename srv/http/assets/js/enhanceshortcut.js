@@ -4,7 +4,7 @@ $( document ).keydown( function( e ) {
 	if ( [ 'ArrowUp', 'ArrowDown' ].indexOf( key ) !== -1 ) e.preventDefault();
 	if ( key === 'Escape' ) {
 		$( '.menu' ).addClass( 'hide' );
-		$( '#colorcancel' ).click();
+		if ( typeof colorpicker !== 'undefined' ) $( '#colorcancel' ).click();
 		return
 	}
 	
@@ -37,6 +37,7 @@ $( document ).keydown( function( e ) {
 	
 	// context menu
 	var $contextmenu = $( '.contextmenu:not( .hide )' );
+	if ( !$contextmenu.length ) $contextmenu = $( '#settings:not( .hide )' );
 	if ( $contextmenu.length ) {
 		if ( GUI.library ) {
 			var $liactive = $( '#db-entries li.active' );
@@ -57,8 +58,11 @@ $( document ).keydown( function( e ) {
 			$menuactive.removeClass( 'active' );
 			$( '.submenu' ).removeClass( 'active' );
 		} else if ( key === 'ArrowRight' ) {
-			$menuactive.removeClass( 'active' );
-			$menuactive.find( '.submenu' ).addClass( 'active' );
+			var $submenu = $menuactive.find( '.submenu' );
+			if ( $submenu.length ) {
+				$menuactive.removeClass( 'active' );
+				$submenu.addClass( 'active' );
+			}
 		} else if ( key === 'ArrowUp' || key === 'ArrowDown' ) {
 			if ( !$menuactive.length ) {
 				$menufirst.addClass( 'active' );
