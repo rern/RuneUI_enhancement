@@ -221,7 +221,7 @@ $( '#displaycolor' ).click( function( e ) {
 		info( {
 			  icon    : 'brush'
 			, title   : 'Color Editor'
-			, message : 'No albums in Library.'
+			, message : 'Need at least 1 album in Library.'
 		} );
 		return
 	}
