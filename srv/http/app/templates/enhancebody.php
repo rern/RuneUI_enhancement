@@ -476,7 +476,7 @@ $menu.= '</div>';
 
 <div id="divcolorpicker" class="hide">
 	<i id="colorcancel" class="fa fa-times fa-2x"></i>
-	<a id="colorok" class="btn btn-primary">OK</a>
+	<a id="colorok" class="btn btn-primary">Set</a>
 </div>
 <div id="bio" class="hide">
 	<div class="container">
