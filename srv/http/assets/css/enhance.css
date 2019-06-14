@@ -827,6 +827,7 @@ i.bookmark,
 #share-group .btn-group:before {
 	width: 80px;
 }
+.btn-primary,
 #repeat.btn-default.btn-primary,
 #random.btn-default.btn-primary,
 #single.btn-default.btn-primary,
