@@ -219,27 +219,25 @@ function scrollLongText() {
 		.removeAttr( 'style' ); // fix - iOS needs whole style removed
 	var wW = window.innerWidth;
 	var tWmax = 0;
-	setTimeout( function() {
-		$el.each( function() {
-			var $this = $( this );
-			var tW = $this.width() * GUI.scale;
-			if ( tW > wW * 0.98 ) {
-				if ( tW > tWmax ) tWmax = tW; // same width > scroll together (same speed)
-				$this.addClass( 'scrollleft' );
-			}
-		} );
-		$el.css( 'visibility', 'visible' ); // from initial hidden
-		if ( !$( '.scrollleft' ).length ) return
-		
-		// varied with only when scaled
-		var cssanimate = ( wW + tWmax ) / GUI.scrollspeed +'s infinite scrollleft linear'; // calculate to same speed
-		$( '.scrollleft' ).css( {
-			  width               : tWmax +'px'
-			, animation           : cssanimate
-			, '-moz-animation'    : cssanimate
-			, '-webkit-animation' : cssanimate
-		} )
-	}, 50 );
+	$el.each( function() {
+		var $this = $( this );
+		var tW = $this.width() * GUI.scale;
+		if ( tW > wW * 0.98 ) {
+			if ( tW > tWmax ) tWmax = tW; // same width > scroll together (same speed)
+			$this.addClass( 'scrollleft' );
+		}
+	} );
+	$el.css( 'visibility', 'visible' ); // from initial hidden
+	if ( !$( '.scrollleft' ).length ) return
+	
+	// varied with only when scaled
+	var cssanimate = ( wW + tWmax ) / GUI.scrollspeed +'s infinite scrollleft linear'; // calculate to same speed
+	$( '.scrollleft' ).css( {
+		  width               : tWmax +'px'
+		, animation           : cssanimate
+		, '-moz-animation'    : cssanimate
+		, '-webkit-animation' : cssanimate
+	} )
 }
 function removeSplash() {
 	$( '#splash' ).remove();
