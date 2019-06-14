@@ -216,9 +216,9 @@ All pages
 **Library / Playlist**
 - `arrow-down` select next item
 - `arrow-up` select previous item
-- `enter` tap active item / add + play
 - `arrow-left` back button
 - `arrow-right` context menu
+- `enter` tap active item / add + play
 
 **Context menu**
 - `arrow-down` select next menu
