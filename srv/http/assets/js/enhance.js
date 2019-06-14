@@ -247,7 +247,7 @@ $( '#displaycolor' ).click( function( e ) {
 				, userEvents : {
 					change : function( e ) {
 						var hex = e.getCurColorHex();
-						$( '#playback-controls .btn-primary, #tab-library a, #db-home, #db-entries li.active, #colorok' ).css( 'background', hex );
+						$( '#playback-controls .active, #tab-library a, #db-home, #db-entries li.active, #colorok' ).css( 'background', hex );
 						$( '#rootpath, #db-back, .lialbum' ).css( 'color', hex );
 					}
 				}
@@ -262,7 +262,7 @@ $( '#displaycolor' ).click( function( e ) {
 } );
 $( '#colorok, #colorcancel' ).click( function() {
 	var color = this.id === 'colorok' ? colorpicker.getCurColorHex() : '';
-	$( '#playback-controls .btn-primary, #tab-library a, #db-home, #db-entries li.active, #colorok' ).css( 'background', color );
+	$( '#playback-controls .active, #tab-library a, #db-home, #db-entries li.active, #colorok' ).css( 'background', color );
 	$( '#rootpath, #db-back, .lialbum' ).css( 'color', color );
 	$( '#divcolorpicker' ).addClass( 'hide' );
 	if ( color && color !== GUI.color ) setColor( color );
@@ -697,7 +697,7 @@ $( '.btn-cmd' ).click( function() {
 	if ( $this.hasClass( 'btn-toggle' ) ) {
 		if ( cmd === 'random' && $this.hasClass( 'ashuffle' ) ) {
 			$.post( 'enhance.php', { bash: '/usr/bin/killall ashuffle &' } );
-			$this.removeClass( 'btn-primary ashuffle' );
+			$this.removeClass( 'active ashuffle' );
 			return
 		}
 		
@@ -707,8 +707,8 @@ $( '.btn-cmd' ).click( function() {
 	} else {
 		if ( GUI.status.ext === 'radio' && cmd === 'pause' ) cmd = 'stop';
 		if ( GUI.bars ) {
-			$( '#playback-controls .btn-cmd' ).removeClass( 'btn-primary' );
-			$this.addClass( 'btn-primary' );
+			$( '#playback-controls .btn-cmd' ).removeClass( 'active' );
+			$this.addClass( 'active' );
 		}
 		if ( cmd === 'stop' ) {
 			command = 'mpc stop';

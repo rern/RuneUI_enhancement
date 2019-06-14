@@ -86,9 +86,9 @@ function setButtonToggle() {
 			$( '#posrandom' ).toggleClass( 'hide', GUI.status.random === 0 );
 			$( '#posrepeat' ).attr( 'class', GUI.status.repeat ? ( GUI.status.single ? 'fa fa-repeat-single' : 'fa fa-repeat' ) : 'fa hide' );
 		} else {
-			$( '#random' ).toggleClass( 'btn-primary', GUI.status.random === 1 );
-			$( '#repeat' ).toggleClass( 'btn-primary', GUI.status.repeat === 1 );
-			$( '#single' ).toggleClass( 'btn-primary', GUI.status.single === 1 );
+			$( '#random' ).toggleClass( 'active', GUI.status.random === 1 );
+			$( '#repeat' ).toggleClass( 'active', GUI.status.repeat === 1 );
+			$( '#single' ).toggleClass( 'active', GUI.status.single === 1 );
 			$( '#posrandom' ).addClass( 'hide' );
 			$( '#posrepeat' ).attr( 'class', 'fa hide' );
 		}
@@ -175,8 +175,8 @@ function setButton() {
 	$( '#playback-controls' ).toggleClass( 'hide', GUI.status.playlistlength === 0 );
 	var state = GUI.status.state;
 	if ( GUI.bars ) {
-		$( '#playback-controls button' ).removeClass( 'btn-primary' );
-		$( '#'+ state ).addClass( 'btn-primary' );
+		$( '#playback-controls button' ).removeClass( 'active' );
+		$( '#'+ state ).addClass( 'active' );
 	}
 	if ( GUI.display.update ) {
 		if ( GUI.bars ) $( '#badge' ).text( GUI.display.update ).removeClass( 'hide' );
@@ -520,13 +520,13 @@ function mpdSeek( seekto ) {
 function muteColor( volumemute ) {
 	$volumetooltip.text( volumemute ).css( 'color', '#0095d8/*c*//*c*//*c*/' );
 	$volumehandle.css( 'background', '#7795b4' );
-	$( '#volmute' ).addClass( 'btn-primary' )
+	$( '#volmute' ).addClass( 'active' )
 		.find( 'i' ).removeClass( 'fa-volume' ).addClass( 'fa-mute' );
 }
 function unmuteColor() {
 	$volumetooltip.css( 'color', '' );
 	$volumehandle.css( 'background', '' );
-	$( '#volmute' ).removeClass( 'btn-primary' )
+	$( '#volmute' ).removeClass( 'active' )
 		.find( 'i' ).removeClass( 'fa-mute' ).addClass( 'fa-volume' );
 }
 function displayTopBottom() {
@@ -1514,6 +1514,7 @@ function dbContextmenu( $li, $target ) {
 		&& !$li.hasClass( 'licover' )
 	) {
 		$menu.find( 'a:eq( 0 ) .submenu' ).click();
+		$li.addClass( 'active' );
 		return
 	}
 	
@@ -1840,8 +1841,8 @@ function removeFromPlaylist( $li ) {
 			$( '#pl-entries li:eq( 0 )' ).addClass( 'active' );
 			$( 'html, body' ).scrollTop( 0 );
 			if ( GUI.bars ) {
-				$( '#play, #pause' ).removeClass( 'btn-primary' );
-				$( '#stop' ).addClass( 'btn-primary' );
+				$( '#play, #pause' ).removeClass( 'active' );
+				$( '#stop' ).addClass( 'active' );
 			}
 		}
 	}
