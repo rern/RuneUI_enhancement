@@ -180,13 +180,7 @@ fi
 
 # set color
 color=$( redis-cli hget display color )
-if [[ -n $color && $color != '#0095d8' ]]; then
-	sed -i "s|#......\(/\*c\*/\)|$color\1|g
-			s|#......\(/\*cd\*/\)|#282828\1|g
-			s|#......\(/\*cg\*/\)|#464646\1|g
-			s|#......\(/\*cl\*/\)|#787878\1|g
-	" $( grep -ril "\/\*c\*\/" /srv/http/assets/{css,js} )
-fi
+[[ -n $color && $color != '#0095d8' ]] && sed -i "s|#......\(/\*c\*/\)|$color\1|g" $( grep -ril "\/\*c\*\/" /srv/http/assets/{css,js} )
 
 ############################################################################
 if [[ $1 == u ]]; then
