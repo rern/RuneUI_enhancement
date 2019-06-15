@@ -15,19 +15,17 @@
 	text-overflow: ellipsis;
 }
 #bannerTitle,
+#bannerTitle i.gr,
 #banner .li2,
 #banner .time,
 #banner .li2 {
-	color: #34495e !important;
+	color: #34495e/*cg*/ !important;
 }
 #bannerTitle i {
 	width: 20px;
 	margin-right: 5px;
 	text-align: center;
 	color: #e0e7ee;
-}
-#bannerTitle i.gr {
-	color: #34495e !important;
 }
 #banner .time {
 	margin-left: 10px;
