@@ -66,14 +66,8 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	}
 } else if ( isset( $_POST[ 'color' ] ) ) {
 	$color = $_POST[ 'color' ];
-	$cmd = '/usr/bin/sed -i "s|#......\(/\*c\*/\)|'.$color.'\1|g;';
-	if ( $color === '#0095d8' ) {
-		$cmd.= 's|#......\(/\*cd\*/\)|#1e2935\1|g; s|#......\(/\*cg\*/\)|#34495e\1|g; s|#......\(/\*cl\*/\)|#7795b4\1|g"';
-	} else {
-		$cmd.= 's|#......\(/\*cd\*/\)|#202020\1|g; s|#......\(/\*cg\*/\)|#303030\1|g; s|#......\(/\*cl\*/\)|#808080\1|g"';
-	}
-	$cmd.= ' $( grep -ril "\/\*c\*\/" /srv/http/assets/{css,js} ); /usr/bin/redis-cli hset display color "'.$color.'"';
-	exec( "/usr/bin/sudo $cmd" );
+	$cmd = '/usr/bin/sed -i "s|#......\(/\*c\*/\)|'.$color.'\1|g; $( grep -ril "\/\*c\*\/" /srv/http/assets/{css,js} )';
+	exec( '/usr/bin/sudo /usr/bin/sed -i "s|#......\(/\*c\*/\)|'.$color.'\1|g" $( grep -ril "\/\*c\*\/" /srv/http/assets/{css,js} )' );
 	pushstream( 'color', 1 );
 	$redis->hSet( 'display', 'color', $color );
 } else if ( isset( $_POST[ 'plappend' ] ) ) {
