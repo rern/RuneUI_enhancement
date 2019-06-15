@@ -2022,11 +2022,7 @@ function rgb2hex( rgb ) {
 	return '#'+ hex( rgb[ 1 ] ) + hex( rgb[ 2 ] ) + hex( rgb[ 3 ] );
 }
 function setColor( color ) {
-	$.post( 'enhance.php', { 
-		  bash       : '/usr/bin/sed -i "s|#......\\\(/\\\*c\\\*/\\\)|'+ color +'\\1|g" $( grep -ril "\\\/\\\*c\\\*\\\/" /srv/http/assets/{css,js} );'
-					  +'/usr/bin/redis-cli hset display color "'+ color +'"'
-		, pushstream : 'color'
-	}, function() {
+	$.post( 'enhance.php', { color : color }, function() {
 		location.reload();
 	} );
 }
