@@ -260,7 +260,7 @@ $( '#displaycolor' ).click( function( e ) {
 			$( '#loader' ).addClass( 'hide' )
 			
 			$( '.btnlist-top, #tab-playback a' ).css( 'background', '#202020' );
-			$( '#menu-top, #playback-controls button:not( .active ), #tab-playlist a, .menu a' ).css( 'background', '#404040' );
+			$( '#menu-top, #playback-controls button:not( .active ), #tab-playlist a, .menu a' ).css( 'background', '#303030' );
 			$( '#db-entries i, li .time, li .li2, .lidir, gr' ).css( 'cssText', 'color: #808080 !important' );
 			$( '#db-entries li.active i, li.active .time, li.active .li2' ).css( 'cssText', 'color: #202020 !important' );
 			$( 'li, .menu a, .submenu' ).css( 'border-color', '#202020' );
