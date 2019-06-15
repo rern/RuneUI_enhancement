@@ -259,11 +259,11 @@ $( '#displaycolor' ).click( function( e ) {
 			$( '#divcolorpicker' ).removeClass( 'hide' );
 			$( '#loader' ).addClass( 'hide' )
 			
-			$( '.btnlist-top, #tab-playback a' ).css( 'background', '#282828' );
-			$( '#menu-top, #playback-controls button:not( .active ), #tab-playlist a, .menu a' ).css( 'background', '#464646' );
-			$( '#db-entries i, li .time, li .li2, .lidir, gr' ).css( 'cssText', 'color: #787878 !important' );
-			$( '#db-entries li.active i, li.active .time, li.active .li2' ).css( 'cssText', 'color: #282828 !important' );
-			$( 'li, .menu a, .submenu' ).css( 'border-color', '#282828' );
+			$( '.btnlist-top, #tab-playback a' ).css( 'background', '#303030' );
+			$( '#menu-top, #playback-controls button:not( .active ), #tab-playlist a, .menu a' ).css( 'background', '#505050' );
+			$( '#db-entries i, li .time, li .li2, .lidir, gr' ).css( 'cssText', 'color: #808080 !important' );
+			$( '#db-entries li.active i, li.active .time, li.active .li2' ).css( 'cssText', 'color: #303030 !important' );
+			$( 'li, .menu a, .submenu' ).css( 'border-color', '#303030' );
 		}, 600 );
 	}, 300 );
 } );
@@ -1449,7 +1449,7 @@ $( '#plcrop' ).click( function() {
 	} );
 } );
 $( '#plconsume' ).click( function() {
-	$( this ).css( 'color', GUI.status.consume ? '' : '#0095d8/*c*/' );
+	$( this ).css( 'color', GUI.status.consume ? '' : '#d38553/*c*/' );
 	$.post( 'enhance.php', { mpc: 'mpc consume' } );
 	notify( 'Consume Mode', GUI.status.consume ? 'Off' : 'On - Remove each song after played.', 'list-ul' );
 } );
@@ -1807,7 +1807,7 @@ pushstreams.idle.onmessage = function( changed ) {
 					GUI.status[ key ] = value;
 				} );
 				if ( GUI.playback ) setButtonToggle();
-				$( '#plconsume' ).css( 'color', GUI.status.consume ? '#0095d8/*c*/' : '' );
+				$( '#plconsume' ).css( 'color', GUI.status.consume ? '#d38553/*c*/' : '' );
 			}, 'json' );
 		} else if ( changed === 'update' ) {
 			getUpdateStatus();
