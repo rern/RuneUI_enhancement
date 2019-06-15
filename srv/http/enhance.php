@@ -75,6 +75,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$cmd.= ' $( grep -ril "\/\*c\*\/" /srv/http/assets/{css,js} ); /usr/bin/redis-cli hset display color "'.$color.'"';
 	exec( "/usr/bin/sudo $cmd" );
 	pushstream( 'color', 1 );
+	$redis->hSet( 'display', 'color', $color );
 } else if ( isset( $_POST[ 'plappend' ] ) ) {
 	$plfile = '/srv/http/assets/img/playlists/'.$_POST[ 'plappend' ];
 	$content = file_get_contents( $plfile );
