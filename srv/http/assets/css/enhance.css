@@ -1406,14 +1406,14 @@ p.hrbl {
 	height: 100%;
 	padding: 20px 0 0 0;
 	list-style: none;
-	background: #172029;
+	background: #303030/*cg*/;
 }
 .index li {
 	text-align: center;
 	color: #e0e7ee;
 }
 .index .gr {
-	color: #303030/*cg*/;
+	color: #202020/*cd*/;
 }
 .coverart {
 	display: inline-block;
