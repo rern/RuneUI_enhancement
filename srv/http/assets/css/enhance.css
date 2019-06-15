@@ -383,7 +383,6 @@ svg path.st1 {
 	outline: none;
 }
 #settings .fa-gpio {
-	vertical-align: -10%;
 	color: #7795b4/*cl*/;
 }
 #settings a.on .fa-gpio {
