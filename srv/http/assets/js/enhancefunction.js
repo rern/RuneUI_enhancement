@@ -320,7 +320,7 @@ function renderPlayback() {
 					GUI.intElapsed = setInterval( function() {
 						elapsed++;
 						elapsedhms = second2HMS( elapsed );
-						$( '#total' ).text( elapsedhms ).css( 'color', '#7795b4/*cl*/' );
+						$( '#total' ).text( elapsedhms ).css( 'color', '#808080/*cl*/' );
 					}, 1000 );
 				} else {
 					$( '#total' ).empty();
@@ -410,7 +410,7 @@ function renderPlayback() {
 		$( '#song' ).css( 'color', '' );
 		if ( GUI.display.time ) {
 			$( '#time' ).roundSlider( 'setValue', 0 );
-			$( '#elapsed' ).text( timehms ).css( 'color', '#7795b4/*cl*/' );
+			$( '#elapsed' ).text( timehms ).css( 'color', '#808080/*cl*/' );
 			$( '#total, #timepos' ).empty();
 		} else {
 			$( '#timepos' ).html( '&ensp;<i class="fa fa-stop"></i>&ensp;'+ timehms );
@@ -419,7 +419,7 @@ function renderPlayback() {
 	}
 	
 	$( '#elapsed, #total' ).css( 'color', '' );
-	$( '#song' ).css( 'color', status.state === 'pause' ? '#7795b4/*cl*/' : '' );
+	$( '#song' ).css( 'color', status.state === 'pause' ? '#808080/*cl*/' : '' );
 	var elapsed = status.elapsed || 0;
 	var elapsedhms = second2HMS( elapsed );
 	if ( !elapsedhms ) $( '#elapsed' ).empty();
@@ -519,7 +519,7 @@ function mpdSeek( seekto ) {
 }
 function muteColor( volumemute ) {
 	$volumetooltip.text( volumemute ).css( 'color', '#0095d8/*c*/' );
-	$volumehandle.css( 'background', '#7795b4/*cl*/' );
+	$volumehandle.css( 'background', '#808080/*cl*/' );
 	$( '#volmute' ).addClass( 'active' )
 		.find( 'i' ).removeClass( 'fa-volume' ).addClass( 'fa-mute' );
 }
@@ -691,7 +691,7 @@ function disableCheckbox( name, enable, check ) {
 	$( 'input[name="'+ name +'"]' )
 		.prop( 'disabled', ( enable ? false : true ) )
 		.prop( 'checked', ( check ? true : false ) )
-		.parent().css( 'color', ( enable ? '' : '#7795b4/*cl*/' ) );
+		.parent().css( 'color', ( enable ? '' : '#808080/*cl*/' ) );
 }
 function displayCheckbox( checkboxes ) {
 	var html = '';
@@ -777,7 +777,7 @@ function renderLibrary() {
 	orderLibrary();
 	displayTopBottom();
 	$( 'html, body' ).scrollTop( 0 );
-	$( '#home-coverart .fa-coverart' ).css( 'color', $( '#divcoverarts' ).html() ? '' : '#7795b4/*cl*/' );
+	$( '#home-coverart .fa-coverart' ).css( 'color', $( '#divcoverarts' ).html() ? '' : '#808080/*cl*/' );
 }
 function infoNoData() {
 	$( '#loader' ).addClass( 'hide' );

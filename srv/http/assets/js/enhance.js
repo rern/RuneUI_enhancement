@@ -258,12 +258,6 @@ $( '#displaycolor' ).click( function( e ) {
 			$( '#colorcancel' ).css( 'top', ( top + 20 ) +'px' );
 			$( '#divcolorpicker' ).removeClass( 'hide' );
 			$( '#loader' ).addClass( 'hide' )
-			
-			$( '.btnlist-top, #tab-playback a' ).css( 'background', '#202020' );
-			$( '#menu-top, #playback-controls button:not( .active ), #tab-playlist a, .menu a' ).css( 'background', '#303030' );
-			$( '#db-entries i, li .time, li .li2, .lidir, gr' ).css( 'cssText', 'color: #808080 !important' );
-			$( '#db-entries li.active i, li.active .time, li.active .li2' ).css( 'cssText', 'color: #202020 !important' );
-			$( 'li, .menu a, .submenu' ).css( 'border-color', '#202020' );
 		}, 600 );
 	}, 300 );
 } );
@@ -273,15 +267,7 @@ $( '#colorok, #colorcancel' ).click( function() {
 	$( '#rootpath, #db-back, .lialbum' ).css( 'color', color );
 	$( '.logo path.st0' ).css( 'fill', color )
 	$( '#divcolorpicker' ).addClass( 'hide' );
-	if ( color && color !== GUI.color ) {
-		setColor( color );
-	} else {
-		$( '.btnlist-top, #tab-playback a' ).css( 'background', '' );
-		$( '#menu-top, #playback-controls button:not( .active ), #tab-playlist a, .menu a' ).css( 'background', '' );
-		$( '#db-entries i, li .time, li .li2, .lidir, gr' ).css( 'cssText', '' );
-		$( '#db-entries li.active i, li.active .time, li.active .li2' ).css( 'cssText', '' );
-		$( 'li, .menu a, .submenu' ).css( 'border-color', '' );
-	}
+	if ( color && color !== GUI.color ) setColor( color );
 	colorpicker.destroy();
 } );
 
