@@ -64,6 +64,17 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	} else if ( isset( $_POST[ 'result' ] ) ) {
 		echo $result;
 	}
+} else if ( isset( $_POST[ 'color' ] ) ) {
+	$color = $_POST[ 'color' ];
+	$cmd = '/usr/bin/sed -i "s|#......\(/\*c\*/\)|'.$color.'\1|g;';
+	if ( $color === '#0095d8' ) {
+		$cmd.= 's|#......\(/\*cd\*/\)|#1e2935\1|g; s|#......\(/\*cg\*/\)|#34495e\1|g; s|#......\(/\*cl\*/\)|#7795b4\1|g"';
+	} else {
+		$cmd.= 's|#......\(/\*cd\*/\)|#282828\1|g; s|#......\(/\*cg\*/\)|#464646\1|g; s|#......\(/\*cl\*/\)|#787878\1|g"';
+	}
+	$cmd.= ' $( grep -ril "\/\*c\*\/" /srv/http/assets/{css,js} ); /usr/bin/redis-cli hset display color "'.$color.'"';
+	exec( "/usr/bin/sudo $cmd" );
+	pushstream( 'color', 1 );
 } else if ( isset( $_POST[ 'plappend' ] ) ) {
 	$plfile = '/srv/http/assets/img/playlists/'.$_POST[ 'plappend' ];
 	$content = file_get_contents( $plfile );
