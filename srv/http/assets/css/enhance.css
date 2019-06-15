@@ -190,6 +190,16 @@ i.bookmark,
 .blink {
 	animation: blinkopaque 1.5s linear infinite;
 }
+.logo {
+	height: 35px;
+	margin: 2px 20px 10px 0;
+}
+svg path.st0 {
+	fill: #0095d8/*c*/;
+}
+svg path.st1 {
+	fill: #e0e7ee;
+}
 #splash,
 #loader {
 	position: fixed;
@@ -316,16 +326,6 @@ i.bookmark,
 }
 .transparent {
 	opacity: 0;
-}
-.logo {
-	height: 35px;
-	margin: 2px 20px 10px 0;
-}
-svg path.st0 {
-	fill: #0095d8/*c*/;
-}
-svg path.st1 {
-	fill: #e0e7ee;
 }
 #menu-top {
 	padding: 0 20px 0 30px;
