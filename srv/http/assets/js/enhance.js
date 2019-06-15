@@ -100,6 +100,12 @@ $( '#menu-settings, #badge' ).click( function() {
 		.css( 'top', ( GUI.bars ? '40px' : 0 ) );
 	$( '.contextmenu' ).addClass( 'hide' );
 } );
+$( '#sourcesmenu' ).click( function( e ) {
+	location.href = $( e.target ).hasClass( 'submenu' ) ? '/network' : '/sources';
+} );
+$( '#settingsmenu' ).click( function( e ) {
+	location.href = $( e.target ).hasClass( 'submenu' ) ? '/credits' : '/settings';
+} );
 var chklibrary = {
 	  coverart       : '_<i class="fa fa-coverart"></i>CoverArt'
 	, sd             : '<i class="fa fa-microsd"></i>SD'
