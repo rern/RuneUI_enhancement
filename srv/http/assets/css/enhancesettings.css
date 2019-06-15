@@ -220,7 +220,7 @@ select.mobile-device {
 	padding-right: 30px;
 	font-weight: normal;
 	text-align: right;
-	color: #7795b4/*cl*/;
+	color: #808080/*cl*/;
 }
 .info-table td {
 	font-size: 16px;
@@ -230,7 +230,7 @@ select.mobile-device {
 	background: #1a1a1a;
 	font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
 	font-size: 15px;
-	color: #7795b4/*cl*/;
+	color: #808080/*cl*/;
 }
 .fa.fa-wifi {
 	display: inline-block;
@@ -248,7 +248,7 @@ select.mobile-device {
 	margin: 6px 0;
 }
 #modal-sysinfo p {
-	color: #7795b4/*cl*/;
+	color: #808080/*cl*/;
 }
 .container.help,
 .container.credits {
@@ -265,7 +265,7 @@ select.mobile-device {
 #license {
 	line-height: 20px;
 	font-size: 13px;
-	color: #7795b4/*cl*/;
+	color: #808080/*cl*/;
 }
 #form-paypal {
 	text-align: center;
@@ -288,7 +288,7 @@ select.mobile-device {
 	margin-bottom: 10px;
 }
 .bootstrap-select .dropdown-menu {
-	background: #34495e/*cg*/;
+	background: #303030/*cg*/;
 	overflow-y: scroll;
 	-webkit-overflow-scrolling: touch;
 }
@@ -307,7 +307,7 @@ select.mobile-device {
 }
 .has-switch {
 	border-radius: 6px;
-	border: 2px solid #34495e/*cg*/;
+	border: 2px solid #303030/*cg*/;
 	overflow: hidden;
 }
 .has-switch span.switch-left {
@@ -467,7 +467,7 @@ label {
 	font-weight: normal;
 }
 .form-control {
-	border: 2px solid #34495e/*cg*/;
+	border: 2px solid #303030/*cg*/;
 	border-radius: 6px;
 	-webkit-box-shadow: none;
 	box-shadow: none;
@@ -483,16 +483,15 @@ fieldset[disabled] .form-control {
 }
 .help-block,
 .help-inline {
-	color: #7795b4/*cl*/;
+	color: #808080/*cl*/;
 	font-size: 13px;
 }
 .help-block strong,
 .help-inline strong {
-	color: #7795b4/*cl*/;
+	color: #808080/*cl*/;
 }
 .modal-content {
-	border: 5px solid #2b3c4e;
-	border: 5px solid #34495e/*cg*/;
+	border: 5px solid #303030/*cg*/;
 	-webkit-box-shadow: none;
 	box-shadow: none;
 	-webkit-box-shadow: none, 0 0 0 rgba(0, 0, 0, 0), 0 0 0 rgba(0, 0, 0, 0);
@@ -505,7 +504,7 @@ fieldset[disabled] .form-control {
 }
 .modal-header .close {
 	font-size: 35px;
-	color: #34495e/*cg*/;
+	color: #303030/*cg*/;
 	text-shadow: none;
 	opacity: 1;
 	filter: alpha(opacity=100);

@@ -51,7 +51,7 @@
 		opacity: 0.85;
 	}
 	.menu a.active .submenu {
-		background: #34495e/*cg*/;
+		background: #303030/*cg*/;
 	}
 	.menu .active i:first-of-type {
 		color: #e0e7ee;
