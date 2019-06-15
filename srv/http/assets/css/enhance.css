@@ -253,7 +253,7 @@ svg path.st1 {
 	line-height: 40px;
 	color: #e0e7ee;
 	background: #34495e/*cg*/;
-	border-top: 1px solid #222f3d;
+	border-top: 1px solid #1e2935/*cd*/;
 }
 .menu a:nth-of-type( 1 ) {
 	border-top: none;
@@ -269,7 +269,7 @@ svg path.st1 {
 	float: right;
 	width: 41px;
 	height: 41px;
-	border-left: 1px solid #222f3d;
+	border-left: 1px solid #1e2935/*cd*/;
 }
 #settings .gr {
 	font-size: 22px;
@@ -365,6 +365,7 @@ svg path.st1 {
 }
 #playback-controls button {
 	margin: 0 10px;
+	background: #34495e/*cg*/;
 }
 #playback-controls button.active {
 	background: #0095d8/*c*/;
@@ -381,8 +382,12 @@ svg path.st1 {
 .btn.active.focus {
 	outline: none;
 }
-#gpio .fa-lg {
+#settings .fa-gpio {
 	vertical-align: -10%;
+	color: #7795b4/*cl*/;
+}
+#settings a.on .fa-gpio {
+	color: #0f0 !important;
 }
 #menu-settings {
 	float: right;
@@ -1822,7 +1827,7 @@ li.active .time,
 	height: 36px;
 	line-height: 36px;
 	border-radius: 50%;
-	background: #34495e/*cg*/;
+	background: #464646;
 	cursor: pointer;
 	text-shadow: 2px 2px 4px #000000;
 	box-shadow: 0 0 10px 7px #000000;
