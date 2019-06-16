@@ -39,6 +39,9 @@
 	.label:hover {
 		color: #e0e7ee;
 	}
+	#page-playback .btn-group button:hover {
+		opacity: 0.85;
+	}
 	.menu a.active:hover,
 	#menu-bottom a.active:hover,
 	#menu-bottom li.active a:hover,
