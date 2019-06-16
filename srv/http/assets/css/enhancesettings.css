@@ -538,11 +538,19 @@ ul.parsley-error-list {
 ul.parsley-error-list li {
 	line-height: 16px;
 }
+.boxed,
+.alert,
+.boxed-group {
+	background: #222222/*cd*/;
+}
 .btn,
+.switch-light,
+.progress,
 .input-lg {
 	border-radius: 4px;
 }
 input {
+	background-color: #000000 !important;
 	border: 1px solid #444444/*cg*/ !important;
 }
 .dropdown-menu {
@@ -559,6 +567,7 @@ input {
 }
 .btn-default,
 .switch-light,
+.progress,
 .open>.dropdown-toggle.btn-default {
 	background: #444444/*cg*/ !important;
 }
@@ -578,7 +587,8 @@ input {
 	background: #888888/*cl*/ !important;
 	outline: none !important;
 }
-.btn-primary {
+.btn-primary,
+.progress-bar {
 	background: #0095d8/*c*/;
 	border: none;
 }
