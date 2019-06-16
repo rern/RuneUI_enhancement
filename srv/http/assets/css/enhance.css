@@ -381,10 +381,10 @@ svg path.st1 {
 .btn {
 	outline: none !important;
 }
-.btn:active:focus,
+.btn:active,
 .btn-default,
 .btn-default:hover {
-	background: #444444/*cg*/;
+	background: #444444/*cg*/ !important;
 }
 #settings .fa-gpio {
 	color: #888888/*cl*/;
