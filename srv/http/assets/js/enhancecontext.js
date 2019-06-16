@@ -234,7 +234,7 @@ function addReplace( cmd, command, title ) {
 		$( '#tab-playback' ).click();
 	} else {
 		if ( cmd === 'replace' ) GUI.plreplace = 1;
-		notify( title, '<i class="fa fa-gear fa-spin"></i> Processing ...', 'list-ul', -1 );
+		notify( title, '<i class="fa fa-gear fa-spin"></i> Processing ...', 'list-ul' );
 	}
 }
 function bookmarkNew() {
