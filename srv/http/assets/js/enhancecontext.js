@@ -223,12 +223,12 @@ function updateThumbnails() {
 }
 function addReplace( cmd, command, title ) {
 	var playbackswitch = GUI.display.playbackswitch && ( cmd === 'addplay' || cmd === 'replaceplay' );
-	$.post( 'enhance.php', { mpc: command }, function() {
-		getPlaybackStatus();
+	$.post( 'enhance.php', { mpc: command }, function( data ) {
 		clearTimeout( GUI.debounce );
 		GUI.debounce = setTimeout( function() {
 			bannerHide();
 		}, GUI.debouncems );
+		getPlaybackStatus();
 	} );
 	if ( playbackswitch ) {
 		$( '#tab-playback' ).click();
