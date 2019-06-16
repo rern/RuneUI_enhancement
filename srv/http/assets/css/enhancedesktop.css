@@ -23,9 +23,10 @@
 		cursor: pointer;
 	}
 	.menu a:hover,
-	#menu-bottom a:hover {
-		background: #222f3d;
+	.menu a.active .submenu {
+		background: #333333;
 	}
+	#menu-bottom a:hover,
 	.home-block:hover,
 	.home-block:focus,
 	.index li:not( .gr ):hover,
@@ -33,7 +34,7 @@
 	#pl-entries li:hover,
 	#pl-entries li:not( .active ):hover .pl-remove,
 	#pl-editor li:hover {
-		background: #374c62;
+		background: #333333;
 	}
 	.label:hover {
 		color: #e0e7ee;
@@ -49,9 +50,6 @@
 	#pl-editor li.active:hover {
 		background: #0095d8/*c*/;
 		opacity: 0.85;
-	}
-	.menu a.active .submenu {
-		background: #444444/*cg*/;
 	}
 	.menu .active i:first-of-type {
 		color: #e0e7ee;
