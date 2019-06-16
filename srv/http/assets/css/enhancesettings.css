@@ -558,8 +558,9 @@ input {
 	outline: none;
 }
 .btn-default,
+.switch-light,
 .open>.dropdown-toggle.btn-default {
-	background: #444444/*cd*/;
+	background: #444444/*cg*/ !important;
 }
 .dropdown-menu > li > a:hover,
 .dropdown-menu > li.selected a:hover {
