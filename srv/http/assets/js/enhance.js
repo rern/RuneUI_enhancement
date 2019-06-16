@@ -71,6 +71,11 @@ $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 	}, 'json' );
 }, 'json' );
 
+// MutationObserver - watch for '#db-entries' content changed then scroll to previous position
+var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+var observerOption = { childList: true };
+var observerLibrary = document.getElementById( 'db-entries' );
+
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 $( '#splash' ).click( function() {
@@ -237,12 +242,13 @@ $( '#displaycolor' ).click( function( e ) {
 		return
 	}
 	
-	$( '#loader' ).removeClass( 'hide' );
 	$( '#tab-library' ).click();
 	$( '#home-album' ).click();
-	setTimeout( function() {
-		$( '#db-entries li:eq( 0 )' ).tap();
-		setTimeout( function() {
+	
+	var mutationAlbum = new MutationObserver( function() {
+		if ( !$( '.licover' ).length ) {
+			$( '#db-entries li:eq( 0 )' ).tap();
+		} else {
 			$( '#db-entries .db-icon:eq(1)' ).tap();
 			$( '#colorok' ).before( '<canvas id="colorpicker"></canvas>' );
 			GUI.color = rgb2hex( $( '#db-home' ).css( 'background-color' ) );
@@ -263,9 +269,11 @@ $( '#displaycolor' ).click( function( e ) {
 			$( '#colorpicker' ).css( 'margin-top', top );
 			$( '#colorcancel' ).css( 'top', ( top + 20 ) +'px' );
 			$( '#divcolorpicker' ).removeClass( 'hide' );
-			$( '#loader' ).addClass( 'hide' )
-		}, 600 );
-	}, 300 );
+			$( 'body' ).css( 'overflow', 'hidden' );
+			mutationAlbum.disconnect();
+		}
+	} );
+	mutationAlbum.observe( observerLibrary, observerOption );
 } );
 $( '#colorok, #colorcancel' ).click( function() {
 	var color = this.id === 'colorok' ? colorpicker.getCurColorHex() : '';
@@ -275,6 +283,7 @@ $( '#colorok, #colorcancel' ).click( function() {
 	$( '#divcolorpicker' ).addClass( 'hide' );
 	if ( color && color !== GUI.color ) setColor( color );
 	colorpicker.destroy();
+	$( 'body' ).css( 'overflow', '' );
 } );
 
 $( '#tab-library' ).click( function() {
@@ -879,10 +888,6 @@ $( '#db-search-close' ).click( function() {
 $( '#db-search-keyword' ).keydown( function( e ) {
 	if ( e.key === 'Enter' ) $( '#dbsearchbtn' ).click();
 } );
-// MutationObserver - watch for '#db-entries' content changed then scroll to previous position
-var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
-var observerOption = { childList: true };
-var observerLibrary = document.getElementById( 'db-entries' );
 var mutationLibrary = new MutationObserver( function() { // on observed target changed
 	var lipath = $( '#db-currentpath' ).find( '.lipath' ).text();
 	if ( !$( '#divcoverarts' ).hasClass( 'hide' ) ) {
