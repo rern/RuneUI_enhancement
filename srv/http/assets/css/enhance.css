@@ -374,8 +374,9 @@ svg path.st1 {
 	font-size:24px;
 	line-height: 40px;
 }
-.menu a:active {
-	background: #222222/*cd*/;
+.menu a:active,
+#colorok:active {
+	background: #222222/*cd*/ !important;
 }
 .btn.focus,
 .btn:active.focus,
