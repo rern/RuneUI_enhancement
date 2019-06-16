@@ -62,6 +62,8 @@ fi
 
 ########## if not update ############################################################
 
+sed -i 's/>On</>ON</; s/>Off</>OFF</' /srv/http/app/templates/settings.php
+
 # convert playlists back to default (omit cue)
 dir=/srv/http/assets/img/playlists
 if [[ -n $( ls -A $dir ) ]]; then
