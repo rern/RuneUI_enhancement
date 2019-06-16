@@ -124,6 +124,17 @@ commentH -n -1 'for="remoteSStime">' -n +5 'for="remoteSStime">'
 
 commentH -n -1 'Display album cover' -n +8 'Display album cover'
 #----------------------------------------------------------------------------------
+file=/srv/http/app/templates/network_edit.php
+echo $file
+
+commentH -n -1 'wifiProfiles' 'wifiProfilesBox'
+
+string=$( cat <<'EOF'
+            <div id="wifiProfilesBox">
+EOF
+)
+appendH 'wifiProfilesBox'
+#----------------------------------------------------------------------------------
 file=/srv/http/app/templates/sources.php
 echo $file
 
