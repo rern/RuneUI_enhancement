@@ -225,8 +225,6 @@ function addReplace( cmd, command, title ) {
 	var playbackswitch = GUI.display.playbackswitch && ( cmd === 'addplay' || cmd === 'replaceplay' );
 	$.post( 'enhance.php', { mpc: command }, function() {
 		getPlaybackStatus();
-		if ( playbackswitch ) return
-		
 		clearTimeout( GUI.debounce );
 		GUI.debounce = setTimeout( function() {
 			bannerHide();
