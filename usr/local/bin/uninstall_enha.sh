@@ -33,7 +33,7 @@ echo -e "$bar Restore modified files ..."
 
 files="
 /boot/config.txt
-/srv/http/app/network_edit.php
+/srv/http/app/templates/network_edit.php
 /srv/http/app/settings_ctl.php
 /srv/http/app/libs/runeaudio.php
 /srv/http/app/templates/dev.php
