@@ -562,6 +562,9 @@ input {
 .open>.dropdown-toggle.btn-default {
 	background: #444444/*cg*/ !important;
 }
+.switch-light {
+	width: 100px;
+}
 .dropdown-menu > li > a:hover,
 .dropdown-menu > li.selected a:hover {
 	background: #222222/*cd*/ !important;
@@ -583,6 +586,9 @@ input {
 .dropdown-menu > li.selected > a,
 .open>.dropdown-toggle.btn-default:hover {
 	background: #333333;
+}
+.parsley-errors-list {
+	margin-bottom: 0;
 }
 @media (min-width: 480px) {
 	.form-control {
