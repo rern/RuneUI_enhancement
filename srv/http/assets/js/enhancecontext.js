@@ -174,10 +174,10 @@ $( '.contextmenu a' ).click( function( e ) {
 	if ( cmd in contextCommand ) {
 		var command = contextCommand[ cmd ];
 		if ( [ 'add', 'addplay' ].indexOf( cmd ) !== -1 ) {
-			var msg = 'Added to Playlist'+ ( cmd === 'add' ? '' : ' and played' )
+			var msg = 'Add to Playlist'+ ( cmd === 'add' ? '' : ' and play' )
 			addReplace( cmd, command, msg );
 		} else {
-			var msg = 'Playlist replaced'+ ( cmd === 'replace' ? '' : ' and played' )
+			var msg = 'Playlist replace'+ ( cmd === 'replace' ? '' : ' and play' )
 			if ( GUI.display.plclear && GUI.status.playlistlength ) {
 				info( {
 					  title   : 'Playlist'
@@ -223,12 +223,8 @@ function updateThumbnails() {
 }
 function addReplace( cmd, command, title ) {
 	var playbackswitch = GUI.display.playbackswitch && ( cmd === 'addplay' || cmd === 'replaceplay' );
-	$.post( 'enhance.php', { mpc: command }, function( data ) {
-		clearTimeout( GUI.debounce );
-		GUI.debounce = setTimeout( function() {
-			bannerHide();
-		}, GUI.debouncems );
-		getPlaybackStatus();
+	$.post( 'enhance.php', { mpc: command }, function() {
+		if ( !playbackswitch ) bannerHide();
 	} );
 	if ( playbackswitch ) {
 		$( '#tab-playback' ).click();
