@@ -269,7 +269,7 @@ $( '#displaycolor' ).click( function( e ) {
 			$( '#colorpicker' ).css( 'margin-top', top );
 			$( '#colorcancel' ).css( 'top', ( top + 20 ) +'px' );
 			$( '#divcolorpicker' ).removeClass( 'hide' );
-			$( 'body' ).css( 'overflow', 'hidden' );
+			$( 'body' ).addClass( 'disablescroll' );
 			mutationAlbum.disconnect();
 		}
 	} );
@@ -283,7 +283,7 @@ $( '#colorok, #colorcancel' ).click( function() {
 	$( '#divcolorpicker' ).addClass( 'hide' );
 	if ( color && color !== GUI.color ) setColor( color );
 	colorpicker.destroy();
-	$( 'body' ).css( 'overflow', '' );
+	$( 'body' ).removeClass( 'disablescroll' );
 } );
 
 $( '#tab-library' ).click( function() {
