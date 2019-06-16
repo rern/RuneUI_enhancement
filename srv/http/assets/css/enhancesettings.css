@@ -93,6 +93,9 @@ body {
 	color: #0095d8/*c*/;
 	cursor: pointer;
 }
+legend {
+	border-bottom: 1px solid #444444/*cg*/;
+}
 .bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn){
 	width: auto;
 	min-width:220px;
@@ -295,15 +298,6 @@ select.mobile-device {
 .bootstrap-select .dropdown-menu>li>a {
 	padding: 8px 20px;
 	color: #e0e7ee;
-}
-.bootstrap-select .dropdown-menu>li>a:hover,
-.bootstrap-select .dropdown-menu>li>a:focus {
-	background-color: #0095d8/*c*/;
-	color: #e0e7ee;
-}
-.bootstrap-select .dropdown-menu>li.selected>a {
-	background-color: #222f3d;
-	outline: none;
 }
 .has-switch {
 	border-radius: 6px;
@@ -543,6 +537,51 @@ ul.parsley-error-list {
 }
 ul.parsley-error-list li {
 	line-height: 16px;
+}
+.btn,
+.input-lg {
+	border-radius: 4px;
+}
+input {
+	border: 1px solid #444444/*cg*/ !important;
+}
+.dropdown-menu {
+	background: #444444/*cg*/;
+	box-shadow: 4px 4px 10px #000000;
+}
+.dropdown-menu > li > a {
+	line-height: 31px;
+	color: #e0e7ee;
+}
+.dropdown-menu > li.selected a {
+	color: #e0e7ee;
+	outline: none;
+}
+.btn-default,
+.open>.dropdown-toggle.btn-default {
+	background: #444444/*cd*/;
+}
+.dropdown-menu > li > a:hover,
+.dropdown-menu > li.selected a:hover {
+	background: #222222/*cd*/ !important;
+}
+.btn-default:active,
+.dropdown-toggle.btn-default:active {
+	background: #888888/*cl*/ !important;
+}
+.btn-default:focus,
+.dropdown-toggle.btn-default:focus {
+	background: #888888/*cl*/ !important;
+	outline: none !important;
+}
+.btn-primary {
+	background: #0095d8/*c*/;
+	border: none;
+}
+.btn-default:hover,
+.dropdown-menu > li.selected > a,
+.open>.dropdown-toggle.btn-default:hover {
+	background: #333333;
 }
 @media (min-width: 480px) {
 	.form-control {
