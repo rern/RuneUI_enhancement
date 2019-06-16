@@ -378,10 +378,13 @@ svg path.st1 {
 #colorok:active {
 	background: #222222/*cd*/ !important;
 }
-.btn.focus,
-.btn:active.focus,
-.btn.active.focus {
-	outline: none;
+.btn {
+	outline: none !important;
+}
+.btn:active:focus,
+.btn-default,
+.btn-default:hover {
+	background: #444444/*cg*/;
 }
 #settings .fa-gpio {
 	color: #888888/*cl*/;
@@ -1369,6 +1372,7 @@ p.hrbl {
 	display: inline-block;
 	height: 32px;
 	margin: 0;
+	border: 1px solid #444444/*cg*/;
 	border-bottom-right-radius: 0;
 	border-top-right-radius: 0
 }
