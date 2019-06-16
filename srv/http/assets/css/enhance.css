@@ -1801,11 +1801,16 @@ li.active .time,
 	pointer-events: none;
 }
 /* color */
+.disablescroll {
+	position : fixed;
+	width    : 100%;
+	overflow : hidden;
+}
 #divcolorpicker {
 	position: absolute;
 	top: 0;
 	width: 100%;
-	height: 200%;
+	height: 100%;
 	padding-top: 20px;
 	text-align: center;
 	overflow: hidden;
