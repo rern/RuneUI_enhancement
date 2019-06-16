@@ -55,7 +55,7 @@ $( '.contextmenu a' ).click( function( e ) {
 		$.post( 'enhance.php', { bash: '/usr/bin/sed -i "'+ plline +' d" "/srv/http/assets/img/playlists/'+ plname +'"' } );
 		GUI.list.li.remove();
 	} else if ( cmd === 'similar' ) {
-		notify( 'Playlist Add Similar', '<span class="blink">Fetcthing list...</span><br><span class="li2">Please wait.</span>', 'list-ul', -1 );
+		notify( 'Playlist Add Similar', '<span class="blink">Fetcthing list...</span>', 'list-ul', -1 );
 		$.ajax( {
 			  type     : 'post'
 			, url      : 'http://ws.audioscrobbler.com/2.0/'
@@ -148,16 +148,16 @@ $( '.contextmenu a' ).click( function( e ) {
 					, title   : 'Playlist Replace'
 					, message : 'Replace current playlist?'
 					, ok      : function() {
-						notify( 'Saved Playlist', '<span class="blink">Processing ...</span><br><span class="li2">Please wait.</span>', 'list-ul', -1 );
+						notify( 'Saved Playlist', '<i class="fa fa-gear fa-spin"></i> Processing ...', 'list-ul', -1 );
 						$.post( 'enhance.php', { loadplaylist: name, play: play, replace: replace }, function() {
 							notify( 'Playlist Replaced', name, 'list-ul' );
 						} );
 					}
 				} );
 			} else {
-				notify( 'Saved Playlist', '<span class="blink">Processing ...</span><br><span class="li2">Please wait.</span>', 'list-ul', -1 );
+				notify( 'Saved Playlist', '<i class="fa fa-gear fa-spin"></i> Processing ...', 'list-ul', -1 );
 				$.post( 'enhance.php', { loadplaylist: name, play: play, replace: replace }, function() {
-					notify( ( replace ? 'Playlist Replaced' : 'Playlist Addd' ), name, 'list-ul' );
+					notify( ( replace ? 'Playlist Replaced' : 'Playlist Added' ), 'Done', 'list-ul' );
 				} );
 			}
 			return
@@ -225,22 +225,18 @@ function addReplace( cmd, command, title ) {
 	var playbackswitch = GUI.display.playbackswitch && ( cmd === 'addplay' || cmd === 'replaceplay' );
 	$.post( 'enhance.php', { mpc: command }, function() {
 		getPlaybackStatus();
-		if ( !playbackswitch ) notify( title, msg, 'list-ul' );
+		if ( playbackswitch ) return
+		
+		clearTimeout( GUI.debounce );
+		GUI.debounce = setTimeout( function() {
+			bannerHide();
+		}, GUI.debouncems );
 	} );
 	if ( playbackswitch ) {
 		$( '#tab-playback' ).click();
 	} else {
-		if ( GUI.list.li.hasClass( 'licover' ) ) {
-			var msg = GUI.list.li.find( '.lialbum' ).text()
-					+'<a class="li2">'+ GUI.list.li.find( '.liartist' ).text() +'</a>';
-		} else if ( GUI.list.li.find( '.li1' ).length ) {
-			var msg = GUI.list.li.find( '.li1' )[ 0 ].outerHTML
-					+ GUI.list.li.find( '.li2' )[ 0 ].outerHTML;
-		} else {
-			var msg = GUI.list.li.find( '.lipath' ).text();
-		}
-		notify( title, '<span class="blink">Processing ...</span><br><span class="li2">Please wait.</span>', 'list-ul', -1 );
 		if ( cmd === 'replace' ) GUI.plreplace = 1;
+		notify( title, '<i class="fa fa-gear fa-spin"></i> Processing ...', 'list-ul', -1 );
 	}
 }
 function bookmarkNew() {
