@@ -368,7 +368,7 @@ svg path.st1 {
 	background: #444444/*cg*/;
 }
 #playback-controls button.active {
-	background: #0095d8/*c*/ !important;
+	background-color: #0095d8/*c*/;
 }
 #playback-controls i {
 	font-size:24px;
@@ -381,9 +381,8 @@ svg path.st1 {
 .btn {
 	outline: none !important;
 }
-.btn:active,
 .btn-default {
-	background-color: #444444/*cg*/ !important;
+	background-color: #444444/*cg*/;
 }
 #settings .fa-gpio {
 	color: #888888/*cl*/;
