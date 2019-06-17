@@ -165,11 +165,12 @@ $( '.contextmenu a' ).click( function( e ) {
 	}
 	
 	cmd = cmd.replace( /album|artist|composer|genre/, '' );
+	var sleep = GUI.status.ext === 'radio' ? ' sleep 1;' : '';
 	var contextCommand = {
 		  add         : mpcCmd
-		, addplay     : [ mpcCmd, 'sleep 1', 'mpc play '+ ( GUI.status.playlistlength + 1 ) ]
+		, addplay     : 'pos=$( mpc playlist | wc -l ); '+ mpcCmd +';'+ sleep +' mpc play $(( pos + 1 ))'
 		, replace     : [ 'mpc clear', mpcCmd ]
-		, replaceplay : [ 'mpc clear', mpcCmd, 'sleep 1', 'mpc play' ]
+		, replaceplay : [ 'mpc clear', mpcCmd, sleep, 'mpc play' ]
 	}
 	if ( cmd in contextCommand ) {
 		var command = contextCommand[ cmd ];
@@ -177,7 +178,7 @@ $( '.contextmenu a' ).click( function( e ) {
 			var msg = 'Add to Playlist'+ ( cmd === 'add' ? '' : ' and play' )
 			addReplace( cmd, command, msg );
 		} else {
-			var msg = 'Playlist replace'+ ( cmd === 'replace' ? '' : ' and play' )
+			var msg = 'Replace playlist'+ ( cmd === 'replace' ? '' : ' and play' )
 			if ( GUI.display.plclear && GUI.status.playlistlength ) {
 				info( {
 					  title   : 'Playlist'
@@ -224,14 +225,22 @@ function updateThumbnails() {
 function addReplace( cmd, command, title ) {
 	var playbackswitch = GUI.display.playbackswitch && ( cmd === 'addplay' || cmd === 'replaceplay' );
 	$.post( 'enhance.php', { mpc: command }, function() {
-		if ( !playbackswitch ) bannerHide();
+		if ( playbackswitch ) {
+			$( '#tab-playback' ).click();
+		} else {
+			if ( cmd === 'replace' ) GUI.plreplace = 1;
+			if ( GUI.list.li.hasClass( 'licover' ) ) {
+				var msg = GUI.list.li.find( '.lialbum' ).text()
+						+'<a class="li2">'+ GUI.list.li.find( '.liartist' ).text() +'</a>';
+			} else if ( GUI.list.li.find( '.li1' ).length ) {
+				var msg = GUI.list.li.find( '.li1' )[ 0 ].outerHTML
+						+ GUI.list.li.find( '.li2' )[ 0 ].outerHTML;
+			} else {
+				var msg = GUI.list.li.find( '.lipath' ).text();
+			}
+			notify( title, msg, 'list-ul' );
+		}
 	} );
-	if ( playbackswitch ) {
-		$( '#tab-playback' ).click();
-	} else {
-		if ( cmd === 'replace' ) GUI.plreplace = 1;
-		notify( title, '<i class="fa fa-gear fa-spin"></i> Processing ...', 'list-ul' );
-	}
 }
 function bookmarkNew() {
 	var path = GUI.list.path;
