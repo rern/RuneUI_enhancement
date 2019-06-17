@@ -1781,6 +1781,7 @@ pushstreams.idle.onmessage = function( changed ) {
 				if ( GUI.playlist && !GUI.pleditor ) setPlaylistScroll();
 		} else if ( changed === 'playlist' ) { // on playlist changed
 			if ( GUI.pleditor || GUI.contextmenu || $( '#pl-entries .pl-remove' ).length ) return
+			
 			$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
 				var playlistlength = data.playlist.length;
 				if ( GUI.similarpl !== -1 ) {
@@ -1795,7 +1796,7 @@ pushstreams.idle.onmessage = function( changed ) {
 					GUI.status.playlistlength = 0;
 					GUI.pllist = {};
 				}
-				renderPlaylist();
+				if ( GUI.playlist ) renderPlaylist();
 				getPlaybackStatus();
 			}, 'json' );
 		} else if ( changed === 'options' ) { // on mode toggled
