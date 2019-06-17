@@ -2014,15 +2014,19 @@ function getOrientation( file, callback ) { // return: 1 - undefined
 	};
 	reader.readAsArrayBuffer( file.slice( 0, 64 * 1024 ) );
 }
-function rgb2hex( rgb ) {
-	rgb = rgb.match( /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/ );
-	function hex( x ) {
-		return ( '0'+ parseInt( x ).toString( 16 ) ).slice( -2 );
-	}
-	return '#'+ hex( rgb[ 1 ] ) + hex( rgb[ 2 ] ) + hex( rgb[ 3 ] );
-}
 function setColor( color ) {
-	$.post( 'enhance.php', { color : color }, function() {
+	$.post( 'enhance.php', { color : [ color, shadeColor( color, 10 ) , shadeColor( color, -20 ) ] }, function() {
 		location.reload();
 	} );
+}
+function shadeColor( hex, percent ) {
+	var hex = hex.slice( 1 );
+	var rgb = '', c, i;
+	for ( i = 0; i < 3; i++ ) {
+		c = parseInt( hex.substr( i * 2, 2 ), 16 );
+		c = parseInt( c * ( 100 + percent ) / 100 );
+		c = c < 255 ? c.toString( 16 ) : 'ff';
+		rgb += ( '00'+ c ).slice( -2 );
+	}
+	return '#'+ rgb
 }

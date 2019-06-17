@@ -251,7 +251,7 @@ $( '#displaycolor' ).click( function( e ) {
 		} else {
 			$( '#db-entries .db-icon:eq(1)' ).tap();
 			$( '#colorok' ).before( '<canvas id="colorpicker"></canvas>' );
-			GUI.color = rgb2hex( $( '#db-home' ).css( 'background-color' ) );
+			GUI.color = $( '#db-home' ).css( 'background-color' );
 			colorpicker = new KellyColorPicker( {
 				  place  : 'colorpicker'
 				, size   : 230
@@ -281,7 +281,7 @@ $( '#colorok, #colorcancel' ).click( function() {
 	$( '#rootpath, #db-back, .lialbum' ).css( 'color', color );
 	$( '.logo path.st0' ).css( 'fill', color )
 	$( '#divcolorpicker' ).addClass( 'hide' );
-	if ( color && color !== GUI.color ) setColor( color );
+	if ( color && colorpicker.getCurColorRgb() !== GUI.color ) setColor( color );
 	colorpicker.destroy();
 	$( 'body' ).removeClass( 'disablescroll' );
 } );
