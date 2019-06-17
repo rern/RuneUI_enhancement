@@ -190,8 +190,12 @@ if [[ -z $( ls -A $dir ) && -n $( ls -A $olddir ) ]]; then # convert if none fou
 fi
 
 # set color
-color=$( redis-cli hget display color )
-[[ -n $color && $color != '#0095d8' ]] && sed -i "s|#......\(/\*c\*/\)|$color\1|g" $( grep -ril "\/\*c\*\/" /srv/http/assets/{css,js} )
+colors=$( redis-cli hget display color )
+$color=${color:0:7}
+if [[ -n $color && $color != '#0095d8' ]]; then
+	sed -i "s|#......\(/\*c\*/\)|$color\1|g" $( grep -ril "\/\*c\*\/" /srv/http/assets/{css,js} )
+	sed -i "s|#......\(/\*ch\*/\)|${color:8:7}\1|g;s|#......\(/\*ca\*/\)|${color:16:7}\1|g" /srv/http/assets/css/enhancedesktop.css
+fi
 
 ############################################################################
 if [[ $1 == u ]]; then
