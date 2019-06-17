@@ -368,7 +368,7 @@ svg path.st1 {
 	background: #444444/*cg*/;
 }
 #playback-controls button.active {
-	background: #0095d8/*c*/;
+	background: #0095d8/*c*/ !important;
 }
 #playback-controls i {
 	font-size:24px;
@@ -382,9 +382,8 @@ svg path.st1 {
 	outline: none !important;
 }
 .btn:active,
-.btn-default,
-.btn-default:hover {
-	background: #444444/*cg*/ !important;
+.btn-default {
+	background-color: #444444/*cg*/ !important;
 }
 #settings .fa-gpio {
 	color: #888888/*cl*/;
@@ -681,7 +680,7 @@ svg path.st1 {
 	margin-left: -115px;
 }
 .btn {
-	border: none !important;
+	border: none;
 	border-radius: 4px;
 }
 #imode {
@@ -860,7 +859,7 @@ svg path.st1 {
 #random.btn-default.active,
 #single.btn-default.active,
 #volmute.btn-default.active {
-	background-color: #0095d8/*c*/;
+	background-color: #0095d8/*c*/ !important;
 }
 /* glossy highlight */
 #repeat, 

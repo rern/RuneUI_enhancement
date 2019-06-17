@@ -27,6 +27,7 @@
 		background: #333333;
 	}
 	#menu-bottom a:hover,
+	#playback-controls button:not( .active ):hover,
 	.home-block:hover,
 	.home-block:focus,
 	.index li:not( .gr ):hover,
@@ -34,11 +35,12 @@
 	#pl-entries li:hover,
 	#pl-entries li:not( .active ):hover .pl-remove,
 	#pl-editor li:hover {
-		background: #333333;
+		background: #333333 !important;
 	}
 	.label:hover {
 		color: #e0e7ee;
 	}
+	.btn-default:hover,
 	#colorcancel:hover,
 	#page-playback .btn-group button:hover {
 		opacity: 0.85;
