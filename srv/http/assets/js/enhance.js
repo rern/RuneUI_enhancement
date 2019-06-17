@@ -1691,11 +1691,16 @@ document.addEventListener( 'visibilitychange', function() {
 		clearInterval( GUI.intElapsedPl );
 	} else {
 		var libraryhome = $( '#home-blocks' ).hasClass( 'hide' );
+		var color = GUI.display.color;
 		$.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 			GUI.display = data;
-			$.post( 'enhance.php', { getbookmarks: 1 }, function( bookmarks ) {
-				if ( !libraryhome ) renderLibraryBlocks( bookmarks );
-			}, 'json' );
+			if ( GUI.display.color === color ) {
+				$.post( 'enhance.php', { getbookmarks: 1 }, function( bookmarks ) {
+					if ( !libraryhome ) renderLibraryBlocks( bookmarks );
+				}, 'json' );
+			} else {
+				location.href = '/';
+			}
 		}, 'json' );
 		if ( GUI.playback ) {
 			getPlaybackStatus();
