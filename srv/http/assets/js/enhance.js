@@ -259,7 +259,7 @@ $( '#displaycolor' ).click( function( e ) {
 				, userEvents : {
 					change : function( e ) {
 						var hex = e.getCurColorHex();
-						$( '#playback-controls .active, #tab-library a, #db-home, #db-entries li.active, #colorok' ).css( 'background', hex );
+						$( '#playback-controls .active, #tab-library a, #db-home, #db-entries li.active, #colorok' ).css( 'background-color', hex );
 						$( '#rootpath, #db-back, .lialbum' ).css( 'color', hex );
 						$( '.logo path.st0' ).css( 'fill', hex )
 					}
@@ -277,7 +277,7 @@ $( '#displaycolor' ).click( function( e ) {
 } );
 $( '#colorok, #colorcancel' ).click( function() {
 	var color = this.id === 'colorok' ? colorpicker.getCurColorHex() : '';
-	$( '#playback-controls .active, #tab-library a, #db-home, #db-entries li.active, #colorok' ).css( 'background', color );
+	$( '#playback-controls .active, #tab-library a, #db-home, #db-entries li.active, #colorok' ).css( 'background-color', color );
 	$( '#rootpath, #db-back, .lialbum' ).css( 'color', color );
 	$( '.logo path.st0' ).css( 'fill', color )
 	$( '#divcolorpicker' ).addClass( 'hide' );
@@ -1448,7 +1448,7 @@ $( '#plcrop' ).click( function() {
 	} );
 } );
 $( '#plconsume' ).click( function() {
-	$( this ).css( 'color', GUI.status.consume ? '' : '#0095d8/*c*/' );
+	$( this ).css( 'color', GUI.status.consume ? '' : '#aa7464/*c*/' );
 	$.post( 'enhance.php', { mpc: 'mpc consume' } );
 	notify( 'Consume Mode', GUI.status.consume ? 'Off' : 'On - Remove each song after played.', 'list-ul' );
 } );
@@ -1807,7 +1807,7 @@ pushstreams.idle.onmessage = function( changed ) {
 					GUI.status[ key ] = value;
 				} );
 				if ( GUI.playback ) setButtonToggle();
-				$( '#plconsume' ).css( 'color', GUI.status.consume ? '#0095d8/*c*/' : '' );
+				$( '#plconsume' ).css( 'color', GUI.status.consume ? '#aa7464/*c*/' : '' );
 			}, 'json' );
 		} else if ( changed === 'update' ) {
 			getUpdateStatus();
