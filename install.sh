@@ -194,7 +194,7 @@ colors=$( redis-cli hget display color )
 color=${colors:0:7}
 if [[ -n $color && $color != '#0095d8' ]]; then
 	sed -i "s|#......\(/\*c\*/\)|$color\1|g" $( grep -ril "\/\*c\*\/" /srv/http/assets/{css,js} )
-	sed -i "s|#......\(/\*ch\*/\)|${colors:8:7}\1|g;s|#......\(/\*ca\*/\)|${colors:16:7}\1|g" /srv/http/assets/css/enhancedesktop.css
+	sed -i "s|#......\(/\*ch\*/\)|${colors:8:7}\1|g;s|#......\(/\*ca\*/\)|${colors:16:7}\1|g" $( grep -ril "\/\*ch\*\/" /srv/http/assets/css )
 fi
 
 ############################################################################
