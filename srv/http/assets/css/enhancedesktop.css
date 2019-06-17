@@ -22,11 +22,11 @@
 	.edit {
 		cursor: pointer;
 	}
+	#menu-bottom li:not( .active ) a:hover,
 	.menu a:hover,
 	.menu a.active .submenu {
 		background: #333333;
 	}
-	#menu-bottom a:hover,
 	#playback-controls button:not( .active ):hover,
 	.home-block:hover,
 	.home-block:focus,
@@ -40,6 +40,7 @@
 	.label:hover {
 		color: #e0e7ee;
 	}
+	#menu-bottom li.active a:hover,
 	.btn-default:hover,
 	#colorcancel:hover,
 	#page-playback .btn-group button:hover {
