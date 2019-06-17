@@ -39,6 +39,7 @@
 	.label:hover {
 		color: #e0e7ee;
 	}
+	#colorcancel:hover,
 	#page-playback .btn-group button:hover {
 		opacity: 0.85;
 	}

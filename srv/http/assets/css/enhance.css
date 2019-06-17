@@ -681,7 +681,8 @@ svg path.st1 {
 	margin-left: -115px;
 }
 .btn {
-	border: medium none
+	border: none !important;
+	border-radius: 4px;
 }
 #imode {
 	position: absolute;
@@ -1819,7 +1820,7 @@ li.active .time,
 #colorpicker {
 	background: #000000;
 	border-radius: 50%;
-	box-shadow: 0 0 10px 5px #000000;
+	box-shadow: 0 0 8px 3px #000000;
 }
 #colorok {
 	display: block;
@@ -1827,7 +1828,6 @@ li.active .time,
 	width: 70px;
 	height: 36px;
 	line-height: 25px;
-	box-shadow: 0 0 5px 10px #000000;
 }
 #colorcancel {
 	position: absolute;
@@ -1836,10 +1836,10 @@ li.active .time,
 	height: 36px;
 	line-height: 36px;
 	border-radius: 50%;
-	background: #464646;
+	background: #444444/*cg*/;
 	cursor: pointer;
 	text-shadow: 2px 2px 4px #000000;
-	box-shadow: 0 0 10px 7px #000000;
+	box-shadow: 0 0 6px 5px #000000;
 }
 @media(min-width: 2000px) { .coverart { width: 200px } }
 @media(max-width: 2000px) { .coverart { width: calc( ( 100vw - 38px ) * 0.1 ) } }
