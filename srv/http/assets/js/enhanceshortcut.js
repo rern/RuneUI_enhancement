@@ -2,8 +2,18 @@
 $( document ).keydown( function( e ) {
 	var key = e.key;
 	if ( [ 'ArrowUp', 'ArrowDown' ].indexOf( key ) !== -1 ) e.preventDefault();
+	
+	if ( !$( '#settings' ).hasClass( 'hide' ) && key === 'Enter' ) {
+		var $menu = $( '#settings' ).find( 'a.active' );
+		if ( !$menu.length ) $menu = $( '#settings' ).find( '.submenu.active' );
+		var href = $menu.prop( 'href' );
+		href ? location.href = href : $menu.click();
+		return
+	}
+	
 	if ( key === 'Escape' ) {
-		$( '.menu' ).addClass( 'hide' );
+		$( '.contextmenu' ).addClass( 'hide' );
+		$( '#menu-settings' ).click();
 		if ( typeof colorpicker !== 'undefined' ) $( '#colorcancel' ).click();
 		return
 	}
@@ -122,7 +132,7 @@ $( document ).keydown( function( e ) {
 				if ( !$div.length ) $div = $( '.divblock:not( .hide )' ).first();
 				$div.addClass( 'updn' );
 			} else if ( key === 'Enter' ) {
-				$( '.divblock.updn .home-block' ).click();
+				$( '.divblock.updn .home-block' ).tap();
 			}
 			return
 		}
