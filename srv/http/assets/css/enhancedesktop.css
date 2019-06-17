@@ -1,10 +1,10 @@
 /* default colors */
-/* main:hover  hsla(200, 100%, 50%, 1)/*ch*/
-/* gray:hover  hsla(0, 0%, 40%, 1)/*cgh*/
-/* dark:hover  hsla(0, 0%, 20%, 1)/*cdh*/
-/* main:active  hsla(200, 100%, 30%, 1)/*ca*/
-/* gray:active  hsla(0, 0%, 20%, 1)/*cga*/
-/* dark:active  hsla(0, 0%, 10%, 1)/*cda*/
+/* main:hover  #00a3ed /*ch*/
+/* gray:hover  #666666 /*cgh*/
+/* dark:hover  #333333 /*cdh*/
+/* main:active  #0077ac /*ca*/
+/* gray:active  #333333 /*cga*/
+/* dark:active  #111111 /*cda*/
 
 /* fix - desktop coverart browsing with visible scrollbar */
 @media(max-width: 2000px) { .coverart { width: calc( ( 100% - 38px ) * 0.1 ) } }
@@ -33,10 +33,10 @@
 	#pl-home:hover,
 	#playback-controls button.active:hover,
 	#playback-row .btn.active:hover {
-		background-color: hsla(200, 100%, 50%, 1)/*ch*/ !important;
+		background-color: #00a3ed/*ch*/ !important;
 	}
 	.licover.active:hover {
-		background: linear-gradient( #000000 189px, hsla(200, 100%, 50%, 1)/*ch*/ 41px ) !important;
+		background: linear-gradient( #000000 189px, #00a3ed/*ch*/ 41px ) !important;
 	}
 	.index li:hover,
 	.fa-arrow-left:hover,
@@ -50,14 +50,14 @@
 	#pl-searchbtn:hover,
 	#playback-controls button:hover,
 	#playback-row .btn:hover {
-		background-color: hsla(0, 0%, 40%, 1)/*cgh*/ !important;
+		background-color: #666666/*cgh*/ !important;
 	}
 	.divblock.updn .home-block,
 	.home-block:hover,
 	#db-entries li:hover,
 	#pl-editor li:hover,
 	#pl-entries li:hover {
-		background-color: hsla(0, 0%, 20%, 1)/*cdh*/ !important;
+		background-color: #333333/*cdh*/ !important;
 	}
 	/* :active *********************************************************/
 	.menu a.active:active,
@@ -68,10 +68,10 @@
 	#pl-entries li.active:active,
 	#playback-controls button.active:active,
 	#playback-row .btn.active:active {
-		background-color: hsla(200, 100%, 30%, 1)/*ca*/ !important;
+		background-color: #0077ac/*ca*/ !important;
 	}
 	.licover.active:active {
-		background: linear-gradient( #000000 189px, hsla(200, 100%, 30%, 1)/*ca*/ 41px ) !important;
+		background: linear-gradient( #000000 189px, #0077ac/*ca*/ 41px ) !important;
 	}
 	.index li:active,
 	.fa-arrow-left:active,
@@ -86,12 +86,12 @@
 	#pl-searchbtn:active,
 	#playback-controls button:active,
 	#playback-row .btn:active {
-		background-color: hsla(0, 0%, 20%, 1)/*cga*/ !important;
+		background-color: #333333/*cga*/ !important;
 	}
 	#db-entries li:active,
 	#pl-editor li:active,
 	#pl-entries li:active {
-		background-color: hsla(0, 0%, 10%, 1)/*cda*/ !important;
+		background-color: #111111/*cda*/ !important;
 	}
 	/* cursor *********************************************************/
 	#artist,
