@@ -1,5 +1,5 @@
 /* default colors */
-/* main:  #aa7464/*c*/
+/* main:  #0095d8/*c*/
 /* gray:  #444444/*cg*/
 /* dark:  #222222/*cd*/
 /* light: #888888/*cl*/
@@ -152,7 +152,7 @@ a:hover {
 }
 w, wh, .wh { color: #e0e7ee !important; }
 #infoMessage .fa-coverart { color: #e0e7ee; }
-bl, .bl { color: #aa7464/*c*/; }
+bl, .bl { color: #0095d8/*c*/; }
 gr, .gr { color: #888888/*cl*/; }
 wh, gr { font-weight: 300; }
 #timepos wh,
@@ -178,7 +178,7 @@ i.bookmark,
 .infobookmark i {
 	width: 100px;
 	font-size: 3em;
-	color: #aa7464/*c*/;
+	color: #0095d8/*c*/;
 	text-shadow: 2px 2px 4px #000000;
 }
 .imagewh {
@@ -201,7 +201,7 @@ i.bookmark,
 	margin: 2px 20px 10px 0;
 }
 svg path.st0 {
-	fill: #aa7464/*c*/;
+	fill: #0095d8/*c*/;
 }
 svg path.st1 {
 	fill: #e0e7ee;
@@ -368,7 +368,7 @@ svg path.st1 {
 	background: #444444/*cg*/;
 }
 #playback-controls button.active {
-	background-color: #aa7464/*c*/;
+	background-color: #0095d8/*c*/;
 }
 #playback-controls i {
 	font-size:24px;
@@ -449,7 +449,7 @@ svg path.st1 {
 	padding: 0;
 }
 #menu-bottom li.active a {
-	background: #aa7464/*c*/;
+	background: #0095d8/*c*/;
 }
 #menu-bottom li a i {
 	margin: 0; /* fix wobble spin */
@@ -486,7 +486,7 @@ svg path.st1 {
 	height: 34px;
 	line-height: 34px;
 	font-size: 30px;
-	color: #aa7464/*c*/;
+	color: #0095d8/*c*/;
 }
 #song i {
 	color: #e0e7ee;
@@ -530,7 +530,7 @@ svg path.st1 {
 #posrepeat,
 #posgpio {
 	width: 25px;
-	color: #aa7464/*c*/;
+	color: #0095d8/*c*/;
 }
 /* ---------------------- info scrolling ----------------------*/
 #divartist,
@@ -694,7 +694,7 @@ svg path.st1 {
 #imode i {
 	width: 20px;
 	font-size: 16px;
-	color: #aa7464/*c*/;
+	color: #0095d8/*c*/;
 }
 #iupdate {
 	font-size: 14px;
@@ -858,7 +858,7 @@ svg path.st1 {
 #random.btn-default.active,
 #single.btn-default.active,
 #volmute.btn-default.active {
-	background-color: #aa7464/*c*/ !important;
+	background-color: #0095d8/*c*/ !important;
 }
 /* glossy highlight */
 #repeat, 
@@ -915,7 +915,7 @@ svg path.st1 {
 	color: #e0e7ee;
 }
 #time .rs-range-color {
-	background: #aa7464/*c*/ !important;
+	background: #0095d8/*c*/ !important;
 }
 #time .rs-handle {
 	opacity: 0;
@@ -925,7 +925,7 @@ svg path.st1 {
 }
 #volume .rs-handle {
 	border: 1px solid #333333;
-	background: #aa7464/*c*/;
+	background: #0095d8/*c*/;
 	box-shadow: inset #333333 0 5px 5px;
 }
 .rs-outer {
@@ -1039,7 +1039,7 @@ svg path.st1 {
 	margin-top: 0;
 	line-height: 40px;
 	font-size: 28px;
-	color: #aa7464/*c*/;
+	color: #0095d8/*c*/;
 }
 p.hrbl {
 	margin: 20px 0 10px 0;
@@ -1161,7 +1161,7 @@ p.hrbl {
 }
 .home-block .fa-coverart,
 .home-block .fa-bookmark {
-	color: #aa7464/*c*/;
+	color: #0095d8/*c*/;
 }
 /* coverart edit icons */
 .licover-save,
@@ -1190,7 +1190,7 @@ p.hrbl {
 	height: 30px;
 	line-height: 30px;
 	border-radius: 15px;
-	background: #aa7464/*c*/;
+	background: #0095d8/*c*/;
 }
 .home-block-cover {
 	bottom: 0;
@@ -1289,7 +1289,7 @@ p.hrbl {
 	line-height: 40px;
 	text-align: center;
 	font-size: 28px;
-	color: #aa7464/*c*/;
+	color: #0095d8/*c*/;
 }
 #db-currentpath {
 	float: left;
@@ -1328,7 +1328,7 @@ p.hrbl {
 .plsbackroot,
 .plsback,
 #db-currentpath a:first-of-type {
-	color: #aa7464/*c*/;
+	color: #0095d8/*c*/;
 }
 .plsbackroot,
 .plsback {
@@ -1343,7 +1343,7 @@ p.hrbl {
 	height: 40px;
 	line-height: 44px;
 	text-align: center;
-	background: #aa7464/*c*/;
+	background: #0095d8/*c*/;
 }
 #pl-home {
 	line-height: 46px;
@@ -1388,7 +1388,7 @@ p.hrbl {
 }
 #db-search-close i,
 #pl-search-close i {
-	color: #aa7464/*c*/;
+	color: #0095d8/*c*/;
 }
 #db-search-close span a,
 #pl-search-close span a {
@@ -1446,7 +1446,7 @@ p.hrbl {
 	box-shadow: #555555 0 0 1px 0;
 }
 .licover.active {
-	background: linear-gradient( #0000 189px, #aa7464/*c*/ 41px ) !important;
+	background: linear-gradient( #0000 189px, #0095d8/*c*/ 41px ) !important;
 }
 .licoverimg {
 	display: inline-block;
@@ -1520,7 +1520,7 @@ p.hrbl {
 	background: #374c62;
 }
 #pl-entries li.active.updn {
-	background: #aa7464/*c*/;
+	background: #0095d8/*c*/;
 }
 .db-icon,
 .pl-icon,
@@ -1576,7 +1576,7 @@ span.dbpath {
 #pl-entries .active,
 #pl-editor .active {
 	color: #e0e7ee;
-	background: #aa7464/*c*/
+	background: #0095d8/*c*/
 }
 #pl-entries .pl-remove {
 	float: right;
@@ -1591,7 +1591,7 @@ span.dbpath {
 	z-index: 1;
 }
 #pl-entries li.active .pl-remove {
-	background: #aa7464/*c*/;
+	background: #0095d8/*c*/;
 }
 .db-icon,
 .pl-icon,
@@ -1777,7 +1777,7 @@ li.active .time,
 	font-size: 30px;
 }
 .menu a.active {
-	background: #aa7464/*c*/;
+	background: #0095d8/*c*/;
 }
 /* flags */
 .flag {
