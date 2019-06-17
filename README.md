@@ -201,6 +201,7 @@ All pages
 - `previous` previous track
 - `next` next track
 - `tap` switch pages
+- `escape` menu toggle
 
 **Playback**
 - `arrow-left` previous
@@ -226,3 +227,6 @@ All pages
 - `arrow-right` select submenu
 - `arrow-left` hide context menu
 - `enter` tap active menu
+
+**Setting pages**
+- `escape` close
