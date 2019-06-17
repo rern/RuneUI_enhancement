@@ -1,3 +1,11 @@
+/* default colors */
+/* main:hover  hsla(200, 100%, 50%, 1)/*ch*/
+/* gray:hover  hsla(0, 0%, 40%, 1)/*cgh*/
+/* dark:hover  hsla(0, 0%, 20%, 1)/*cdh*/
+/* main:active  hsla(200, 100%, 30%, 1)/*ca*/
+/* gray:active  hsla(0, 0%, 20%, 1)/*cga*/
+/* dark:active  hsla(0, 0%, 10%, 1)/*cda*/
+
 /* fix - desktop coverart browsing with visible scrollbar */
 @media(max-width: 2000px) { .coverart { width: calc( ( 100% - 38px ) * 0.1 ) } }
 @media(max-width: 1800px) { .coverart { width: calc( ( 100% - 38px ) * 0.111111111 ) } }
@@ -8,60 +16,109 @@
 @media(max-width: 600px)  { .coverart { width: calc( ( 100% - 38px ) * 0.333333333 ) } }
 @media(max-width: 400px)  { .coverart { width: calc( ( 100% - 38px ) * 0.5 ) } }
 @media ( hover:hover ) {
-	.menu a, #menu-settings, #badge, #menu-bottom,
-	#artist, #album:not( .albumradio ),
-	.timemap, .covermap, .volmap, .rs-container,
-	.biosimilar, .close-root,
-	#db-home, #pl-home, #db-currentpath a, #pl-manage i,
-	.fa-arrow-left, .fa-search,
-	.home-block, .coverart div,
-	#playlist-empty,
-	li:not( .licover ),
-	.licoverimg,
-	.liinfo,
-	.edit {
-		cursor: pointer;
-	}
-	#menu-bottom li:not( .active ) a:hover,
-	.menu a:hover,
-	.menu a.active .submenu {
-		background: #333333;
-	}
-	#playback-controls button:not( .active ):hover,
-	.home-block:hover,
-	.home-block:focus,
-	.index li:not( .gr ):hover,
-	#db-entries li:not( .licover ):hover,
-	#pl-entries li:hover,
-	#pl-entries li:not( .active ):hover .pl-remove,
-	#pl-editor li:hover {
-		background: #333333 !important;
-	}
-	.label:hover {
-		color: #e0e7ee;
-	}
-	#menu-bottom li.active a:hover,
-	.btn-default:hover,
-	#colorcancel:hover,
-	#page-playback .btn-group button:hover {
-		opacity: 0.85;
-	}
-	.menu a.active:hover,
-	#menu-bottom a.active:hover,
-	#menu-bottom li.active a:hover,
-	.btn-primary:hover,
-	#db-home:hover,
-	#pl-home:hover,
-	#db-entries li.active:hover,
-	#pl-entries li.active:hover,
-	#pl-editor li.active:hover {
-		background: #0095d8/*c*/;
-		opacity: 0.85;
-	}
-	.menu .active i:first-of-type {
-		color: #e0e7ee;
+	.menu .active i {
+		color: #e0e7ee !important;
 	}
 	.submenu.active {
-		background: #0095d8/*c*/ !important;
+		background: #0095d8/*c*/;
+	}
+	/* :hover *********************************************************/
+	.menu a.active:hover,
+	.submenu.active:hover,
+	#db-entries li.active:hover,
+	#db-home:hover,
+	#menu-bottom li.active a:hover,
+	#pl-editor li.active:hover,
+	#pl-entries li.active:hover,
+	#pl-home:hover,
+	#playback-controls button.active:hover,
+	#playback-row .btn.active:hover {
+		background-color: hsla(200, 100%, 50%, 1)/*ch*/ !important;
+	}
+	.licover.active:hover {
+		background: linear-gradient( #000000 189px, hsla(200, 100%, 50%, 1)/*ch*/ 41px ) !important;
+	}
+	.index li:hover,
+	.fa-arrow-left:hover,
+	.menu a:hover,
+	.submenu:hover,
+	#db-searchbtn:hover,
+	#dbsearchbtn:hover,
+	#menu-bottom a:hover,
+	#menu-settings:hover,
+	#pl-manage i:hover,
+	#pl-searchbtn:hover,
+	#playback-controls button:hover,
+	#playback-row .btn:hover {
+		background-color: hsla(0, 0%, 40%, 1)/*cgh*/ !important;
+	}
+	.divblock.updn .home-block,
+	.home-block:hover,
+	#db-entries li:hover,
+	#pl-editor li:hover,
+	#pl-entries li:hover {
+		background-color: hsla(0, 0%, 20%, 1)/*cdh*/ !important;
+	}
+	/* :active *********************************************************/
+	.menu a.active:active,
+	.submenu.active:active,
+	#db-entries li.active:active,
+	#menu-bottom li.active a:active:active,
+	#pl-editor li.active:active,
+	#pl-entries li.active:active,
+	#playback-controls button.active:active,
+	#playback-row .btn.active:active {
+		background-color: hsla(200, 100%, 30%, 1)/*ca*/ !important;
+	}
+	.licover.active:active {
+		background: linear-gradient( #000000 189px, hsla(200, 100%, 30%, 1)/*ca*/ 41px ) !important;
+	}
+	.index li:active,
+	.fa-arrow-left:active,
+	.menu a:active,
+	.submenu:active,
+	#db-entries li:active,
+	#db-searchbtn:active,
+	#dbsearchbtn:active,
+	#menu-bottom a:active,
+	#menu-settings:active,
+	#pl-manage i:active,
+	#pl-searchbtn:active,
+	#playback-controls button:active,
+	#playback-row .btn:active {
+		background-color: hsla(0, 0%, 20%, 1)/*cga*/ !important;
+	}
+	#db-entries li:active,
+	#pl-editor li:active,
+	#pl-entries li:active {
+		background-color: hsla(0, 0%, 10%, 1)/*cda*/ !important;
+	}
+	/* cursor *********************************************************/
+	#artist,
+	#album:not( .albumradio ),
+	#badge,
+	#db-home,
+	#menu-settings,
+	#menu-bottom,
+	#pl-home,
+	#db-currentpath a,
+	#pl-manage i,
+	#playlist-empty,
+	li:not( .licover ),
+	.biosimilar,
+	.close-root,
+	.coverart div,
+	.covermap,
+	.edit,
+	.fa-arrow-left,
+	.fa-search,
+	.home-block,
+	.licoverimg,
+	.liinfo,
+	.menu a,
+	.timemap,
+	.volmap,
+	.rs-container {
+		cursor: pointer;
 	}
 }

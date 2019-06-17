@@ -147,8 +147,7 @@ body {
 	overscroll-behavior: none; /* disable android pull-down refresh */
 }
 a,
-a:hover {
-	text-decoration: none;
+a:hover {	text-decoration: none !important;
 }
 w, wh, .wh { color: #e0e7ee !important; }
 #infoMessage .fa-coverart { color: #e0e7ee; }
@@ -265,10 +264,11 @@ svg path.st1 {
 	text-align: center;
 	font-size: 22px;
 }
-.menu .submenu {
+.submenu {
 	float: right;
 	width: 41px;
 	height: 41px;
+	background: #444444/*cg*/;
 	border-left: 1px solid #222222/*cd*/;
 }
 #settings .gr {
@@ -392,8 +392,10 @@ svg path.st1 {
 }
 #menu-settings {
 	float: right;
+	width: 40px;
 	font-size: 30px;
 	line-height: 40px;
+	text-align: center;
 }
 #badge {
 	position: absolute;
@@ -1358,6 +1360,9 @@ p.hrbl {
 #pl-currentpath .fa-webradio {
 	width: 30px;
 }
+#pl-currentpath .fa-arrow-left {
+	width: 40px !important;
+}
 #db-search,
 #pl-search {
 	display: block;
@@ -1446,7 +1451,7 @@ p.hrbl {
 	box-shadow: #555555 0 0 1px 0;
 }
 .licover.active {
-	background: linear-gradient( #0000 189px, #0095d8/*c*/ 41px ) !important;
+	background: linear-gradient( #000000 189px, #0095d8/*c*/ 41px ) !important;
 }
 .licoverimg {
 	display: inline-block;
