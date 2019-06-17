@@ -285,7 +285,9 @@ $( '#colorok, #colorcancel' ).click( function() {
 	colorpicker.destroy();
 	$( 'body' ).removeClass( 'disablescroll' );
 } );
-
+$( '#divcolorpicker' ).click( function( e ) {
+	if ( e.target.id === 'divcolorpicker' ) $( '#colorcancel' ).click();
+} );
 $( '#tab-library' ).click( function() {
 	if ( !$( '#db-search-keyword' ).val() ) $( '#db-search-close' ).empty();
 	if ( GUI.library ) {
