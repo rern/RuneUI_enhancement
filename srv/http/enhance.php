@@ -69,7 +69,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$l = ltrim( explode( '%', $c )[ 1 ], ',' );
 	$ch = preg_replace( '/%,.*%/', '%,'.( $l + 10 ).'%', $c );
 	$ca = preg_replace( '/%,.*%/', '%,'.( $l - 20 ).'%', $c );
-	$cmd = '/usr/bin/sudo /usr/bin/sed -i "'
+	$cmd = '/usr/bin/sudo /usr/bin/sed -i "';
 	$cmd.= 's| hsl.*\(/\*c\*/\)|'.$c.'\1|g; s| hsl.*\(/\*ch\*/\)|'.$ch.'\1|g; s| hsl.*\(/\*ca\*/\)|'.$ca.'\1|g';
 	$cmd.= '" $( grep -ril "\/\*c" /srv/http/assets/{css,js} )';
 	exec( $cmd );
