@@ -1387,7 +1387,8 @@ p.hrbl {
 	margin: 0;
 	border: 1px solid hsl(0,0%,30%)/*cg*/;
 	border-bottom-right-radius: 0;
-	border-top-right-radius: 0
+	border-top-right-radius: 0;
+	background-color: #000000;
 }
 #db-search-close,
 #pl-search-close {
