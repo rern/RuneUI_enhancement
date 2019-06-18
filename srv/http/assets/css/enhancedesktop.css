@@ -3,8 +3,8 @@
 /* main:active  hsl(200,100%,20%)/*ca*/
 /* gray:hover   hsl(0,0%,40%) /*cgh*/
 /* gray:active  hsl(0,0%,20%) /*cga*/
-/* dark:hover   hsl(0,0%,25%) /*cdh*/
-/* dark:active  hsl(0,0%,5%) /*cda*/
+/* dark:hover   hsl(0,0%,30%) /*cdh*/
+/* dark:active  hsl(0,0%,10%) /*cda*/
 
 /* fix - desktop coverart browsing with visible scrollbar */
 @media(max-width: 2000px) { .coverart { width: calc( ( 100% - 38px ) * 0.1 ) } }
@@ -40,26 +40,35 @@
 		background: linear-gradient( #000000 189px,     hsl(200,100%,50%)/*ch*/ 41px ) !important;
 	}
 	.index li:hover,
-	.fa-arrow-left:hover,
 	.menu a:hover,
 	.submenu:hover,
 	#menu-bottom a:hover,
 	#menu-settings:hover,
-	#playback-controls button:hover,
+	#playback-controls button:hover
 	#playback-row .btn:hover {
 		background-color: hsl(0,0%,40%)/*cgh*/ !important;
 	}
 	.divblock.updn .home-block,
+	.fa-arrow-left:hover,
 	.home-block:hover,
+	.lifocus:hover
 	#db-searchbtn:hover,
 	#dbsearchbtn:hover,
-	#db-entries li:hover,
-	#pl-editor li:hover,
-	#pl-entries li:hover,
 	#pl-manage i:hover,
 	#pl-searchbtn:hover,
 	#plsearchbtn:hover {
-		background-color: hsl(0,0%,25%)/*cdh*/ !important;
+		background-color: hsl(0,0%,30%)/*cdh*/ !important;
+	}
+	.lifocus {
+		background-color: hsl(0,0%,20%)/*bf*/ !important;
+	}
+	li.active.lifocus {
+		background-color: hsl(200,100%,40%)/*c*/ !important;
+	}
+	#db-entries li:hover,
+	#pl-editor li:hover,
+	#pl-entries li:hover {
+		background-color: hsl(0,0%,10%)/*bh*/ !important;
 	}
 	/* :active *********************************************************/
 	.menu a.active:active,
@@ -93,7 +102,7 @@
 	#db-entries li:active,
 	#pl-editor li:active,
 	#pl-entries li:active {
-		background-color: hsl(0,0%,5%)/*cda*/ !important;
+		background-color: hsl(0,0%,10%)/*cda*/ !important;
 	}
 	/* cursor *********************************************************/
 	#artist,

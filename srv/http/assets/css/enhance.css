@@ -1,5 +1,5 @@
 /* default colors */
-/* main:  hsl(200,100%,40%)/*c*/
+/* main:  hsl(200,100%,40%) /*c*/
 /* gray:  hsl(0,0%,30%) /*cg*/
 /* dark:  hsl(0,0%,15%) /*cd*/
 /* light: hsl(0,0%,50%) /*cl*/
@@ -256,7 +256,7 @@ svg path.st1 {
 	line-height: 40px;
 	color: #e0e7ee;
 	background: hsl(0,0%,30%)/*cg*/;
-	border-top: 1px solid hsl(0,0%,15%)/*cd*/;
+	border-top: 1px solid hsl(0,0%,20%)/*cd*/;
 }
 .menu a:nth-of-type( 1 ) {
 	border-top: none;
@@ -273,7 +273,7 @@ svg path.st1 {
 	width: 41px;
 	height: 41px;
 	background: hsl(0,0%,30%)/*cg*/;
-	border-left: 1px solid hsl(0,0%,15%)/*cd*/;
+	border-left: 1px solid hsl(0,0%,20%)/*cd*/;
 }
 #settings .gr {
 	font-size: 22px;
@@ -384,7 +384,7 @@ svg path.st1 {
 }
 .menu a:active,
 #colorok:active {
-	background: hsl(0,0%,15%)/*cd*/ !important;
+	background: hsl(0,0%,20%)/*cd*/ !important;
 }
 .btn {
 	outline: none !important;
@@ -451,7 +451,7 @@ svg path.st1 {
 }
 #tab-playback a {
 	width: 34%;
-	background: hsl(0,0%,15%)/*cd*/;
+	background: hsl(0,0%,20%)/*cd*/;
 }
 #menu-bottom ul,
 #menu-bottom li {
@@ -1111,7 +1111,7 @@ p.hrbl {
 	position: relative;
 	height: 110px;
 	padding: 25px 5px 10px 5px;
-	background: hsl(0,0%,15%)/*cd*/;
+	background: hsl(0,0%,20%)/*cd*/;
 	border-radius: 10px;
 	color: hsl(0,0%,50%)/*cl*/;
 	text-align: center;
@@ -1240,7 +1240,7 @@ p.hrbl {
 	position: fixed;
 	width: 100%;
 	height: 40px;
-	background: hsl(0,0%,15%)/*cd*/;
+	background: hsl(0,0%,20%)/*cd*/;
 	top: 0;
 	padding-right: 10px;
 	box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.6);
@@ -1430,7 +1430,7 @@ p.hrbl {
 	color: #e0e7ee;
 }
 .index .gr {
-	color: hsl(0,0%,15%)/*cd*/;
+	color: hsl(0,0%,20%)/*cd*/;
 }
 .coverart {
 	display: inline-block;
@@ -1736,9 +1736,6 @@ li.active gr,
 li.active .time,
 .licover.active i.fa-list-ul {
 	color: hsl(0,0%,30%)/*cg*/ !important;
-}
-.lifocus {
-	background: #374c62;
 }
 .liinfo .fa:not(.fa-music) {
 	color: hsl(0,0%,50%)/*cl*/ !important;
