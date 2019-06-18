@@ -42,22 +42,22 @@
 	.fa-arrow-left:hover,
 	.menu a:hover,
 	.submenu:hover,
-	#db-searchbtn:hover,
-	#dbsearchbtn:hover,
 	#menu-bottom a:hover,
 	#menu-settings:hover,
-	#pl-manage i:hover,
 	#pl-searchbtn:hover,
 	#playback-controls button:hover,
 	#playback-row .btn:hover {
-		background-color: #555555/*cgh*/ !important;
+		background-color: hsl(0,0%,40%)/*cgh*/ !important;
 	}
 	.divblock.updn .home-block,
 	.home-block:hover,
+	#db-searchbtn:hover,
+	#dbsearchbtn:hover,
 	#db-entries li:hover,
 	#pl-editor li:hover,
-	#pl-entries li:hover {
-		background-color: #333333/*cdh*/ !important;
+	#pl-entries li:hover,
+	#pl-manage i:hover {
+		background-color: hsl(0,0%,25%)/*cdh*/ !important;
 	}
 	/* :active *********************************************************/
 	.menu a.active:active,
@@ -86,12 +86,12 @@
 	#pl-searchbtn:active,
 	#playback-controls button:active,
 	#playback-row .btn:active {
-		background-color: #333333/*cga*/ !important;
+		background-color: hsl(0,0%,20%)/*cga*/ !important;
 	}
 	#db-entries li:active,
 	#pl-editor li:active,
 	#pl-entries li:active {
-		background-color: #111111/*cda*/ !important;
+		background-color: hsl(0,0%,5%)/*cda*/ !important;
 	}
 	/* cursor *********************************************************/
 	#artist,
