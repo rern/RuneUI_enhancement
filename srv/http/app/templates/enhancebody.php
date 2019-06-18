@@ -336,7 +336,8 @@ $logo = '
 <div id="settings" class="menu hide">
 	<span class="menushadow"></span>
 	<a href="mpd"><i class="fa fa-mpd"></i>MPD</a>
-	<a id="sourcesmenu"><i class="fa fa-folder-open-cascade"></i>Sources<i class="fa fa-network submenu"></i></a>
+	<a href="sources"><i class="fa fa-folder-open-cascade"></i>Sources</a>
+	<a href="network"><i class="fa fa-network"></i>Network</a>
 	<a id="settingsmenu"><i class="fa fa-sliders"></i>Settings<i class="fa fa-rune submenu"></i></a>
 	<a id="turnoff"><i class="fa fa-power"></i>Power<?=$submenupower ?></a>
 		<?php 
