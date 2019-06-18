@@ -3,8 +3,7 @@ $redis = new Redis();
 $redis->pconnect( '127.0.0.1' );
 
 $time = time();
-$color = explode( '^', $redis->hGet( 'display', 'color' ) );
-$submenucolor = $color[ 0 ] === '#0095d8' ? '' : '<i class="fa fa-brush-undo submenu gr"></i>';
+$submenucolor = substr( $redis->hGet( 'display', 'color' ), 0, 7 ) === '#0095d8' ? '' : '<i class="fa fa-brush-undo submenu gr"></i>';
 if ( in_array( $_SERVER[ 'REMOTE_ADDR' ], array( '127.0.0.1', '::1' ) ) ) {
 	$submenupower = '<i class="fa fa-screenoff submenu"></i>';
 } else {
