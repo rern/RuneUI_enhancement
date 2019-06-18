@@ -191,7 +191,7 @@ fi
 
 # set color
 c=$( redis-cli hget display color )
-if [[ -n $c && $c != 'hsl(199,100%,42%)' ]]; then
+if [[ -n $c && $c != 'hsl(200,100%,40%)' ]]; then
 	l=$( echo $c | cut -d'%' -f2 | tr -d ',' )
 	ch=$( echo $c | sed "s/%.*%/%,$(( l + 10 ))%/" )
 	ca=$( echo $c | sed "s/%.*%/%,$(( l - 20 ))%/" )
