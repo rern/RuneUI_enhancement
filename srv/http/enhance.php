@@ -65,14 +65,13 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		echo $result;
 	}
 } else if ( isset( $_POST[ 'color' ] ) ) {
-	$color = $_POST[ 'color' ];
-	$c = substr( $color, 0, 7 );
-	$ch = substr( $color, 7, 7 );
-	$ca = substr( $color, 14, 7 );
-	$cmd = '/usr/bin/sudo /usr/bin/sed -i "s|#......\(/\*c\*/\)|'.$c.'\1|g';
-	$cmd.= '" $( grep -ril "\/\*c\*\/" /srv/http/assets/{css,js} );';
-	$cmd.= '/usr/bin/sed -i "s|#......\(/\*ch\*/\)|'.$ch.'\1|g;s|#......\(/\*ca\*/\)|'.$ca.'\1|g';
-	$cmd.= '" /srv/http/assets/css/enhancedesktop.css';
+	$c = $_POST[ 'color' ];
+	$l = ltrim( explode( '%', $c )[ 1 ], ',' );
+	$ch = preg_replace( '/%,.*%/', '%,'.( $l + 10 ).'%', $c );
+	$ca = preg_replace( '/%,.*%/', '%,'.( $l - 20 ).'%', $c );
+	$cmd = '/usr/bin/sudo /usr/bin/sed -i "'
+	$cmd.= 's| hsl.*\(/\*c\*/\)|'.$c.'\1|g; s| hsl.*\(/\*ch\*/\)|'.$ch.'\1|g; s| hsl.*\(/\*ca\*/\)|'.$ca.'\1|g';
+	$cmd.= '" $( grep -ril "\/\*c" /srv/http/assets/{css,js} )';
 	exec( $cmd );
 	pushstream( 'color', 1 );
 	$redis->hSet( 'display', 'color', "$color" );
