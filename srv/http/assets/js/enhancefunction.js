@@ -2015,7 +2015,7 @@ function getOrientation( file, callback ) { // return: 1 - undefined
 	reader.readAsArrayBuffer( file.slice( 0, 64 * 1024 ) );
 }
 function setColor( color ) {
-	$.post( 'enhance.php', { color : [ color, shadeColor( color, 10 ) , shadeColor( color, -20 ) ] }, function() {
+	$.post( 'enhance.php', { color : ( color + shadeColor( color, 10 ) + shadeColor( color, -20 ) ) }, function() {
 		location.reload();
 	} );
 }
