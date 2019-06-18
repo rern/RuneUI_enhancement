@@ -1,8 +1,8 @@
 /* default colors */
-/* main: hsl(200,100%,40%)/*c*/
-/* gray:  #444444 /*cg*/
-/* dark:  #222222 /*cd*/
-/* light: #888888 /*cl*/
+/* main:  hsl(200,100%,40%)/*c*/
+/* gray:  hsl(0,0%,30%) /*cg*/
+/* dark:  hsl(0,0%,15%) /*cd*/
+/* light: hsl(0,0%,50%) /*cl*/
 
 @font-face {
 	font-family: Lato;
@@ -1451,7 +1451,7 @@ p.hrbl {
 	box-shadow: #555555 0 0 1px 0;
 }
 .licover.active {
-	background: linear-gradient( #000000 189px,hsl(200,100%,40%)/*c*/ 41px ) !important;
+	background: linear-gradient( #000000 189px, hsl(200,100%,40%)/*c*/ 41px ) !important;
 }
 .licoverimg {
 	display: inline-block;

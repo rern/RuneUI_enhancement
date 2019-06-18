@@ -1,10 +1,10 @@
 /* default colors */
-/* main:hoverhsl(200,100%,50%)/*ch*/
-/* gray:hover  #555555 /*cgh*/
-/* dark:hover  #333333 /*cdh*/
-/* main:activehsl(200,100%,20%)/*ca*/
-/* gray:active  #333333 /*cga*/
-/* dark:active  #111111 /*cda*/
+/* main:hover   hsl(200,100%,50%)/*ch*/
+/* main:active  hsl(200,100%,20%)/*ca*/
+/* gray:hover   hsl(0,0%,40%) /*cgh*/
+/* gray:active  hsl(0,0%,20%) /*cga*/
+/* dark:hover   hsl(0,0%,25%) /*cdh*/
+/* dark:active  hsl(0,0%,5%) /*cda*/
 
 /* fix - desktop coverart browsing with visible scrollbar */
 @media(max-width: 2000px) { .coverart { width: calc( ( 100% - 38px ) * 0.1 ) } }
@@ -36,7 +36,7 @@
 		background-color: hsl(200,100%,50%)/*ch*/ !important;
 	}
 	.licover.active:hover {
-		background: linear-gradient( #000000 189px,hsl(200,100%,50%)/*ch*/ 41px ) !important;
+		background: linear-gradient( #000000 189px, hsl(200,100%,50%)/*ch*/ 41px ) !important;
 	}
 	.index li:hover,
 	.fa-arrow-left:hover,
@@ -71,7 +71,7 @@
 		background-color: hsl(200,100%,20%)/*ca*/ !important;
 	}
 	.licover.active:active {
-		background: linear-gradient( #000000 189px,hsl(200,100%,20%)/*ca*/ 41px ) !important;
+		background: linear-gradient( #000000 189px, hsl(200,100%,20%)/*ca*/ 41px ) !important;
 	}
 	.index li:active,
 	.fa-arrow-left:active,
