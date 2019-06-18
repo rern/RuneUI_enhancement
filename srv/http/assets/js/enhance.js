@@ -238,7 +238,7 @@ $( '#displaycolor' ).click( function( e ) {
 		return
 	}
 	if ( $( e.target ).hasClass( 'submenu' ) ) {
-		setColor( '#0095d8' );
+		setColor( 'hsl(200,100%,40%)' );
 		return
 	}
 	
