@@ -2014,19 +2014,25 @@ function getOrientation( file, callback ) { // return: 1 - undefined
 	};
 	reader.readAsArrayBuffer( file.slice( 0, 64 * 1024 ) );
 }
+function hsv2hsl( hsv ) { // hsv = { h: 0.55, s: 1, v: 0.84 }
+	var s = hsv.s;
+	var v = hsv.v;
+	var l = ( 2 - s ) * v / 2;
+	if ( l === 0 ) return 'hsl(0,0%,0%,1)'
+	
+	if ( l === 1 ) {
+		s = 0;
+	} else if ( l < 0.5 ) {
+		s = s * v / ( l * 2 );
+	} else {
+		s = s * v / ( 2 - l * 2 );
+	}
+	return 'hsl('+ Math.round( 360 * hsv.h ) +','+ Math.round( s * 100 ) +'%,'+ Math.round( l * 100 ) +'%)';
+}
 function setColor( color ) {
-	$.post( 'enhance.php', { color : ( color + shadeColor( color, 10 ) + shadeColor( color, -20 ) ) }, function() {
+	console.log(hsv2hsl( color ))
+	return
+	$.post( 'enhance.php', { color : hsv2hsl( color ) }, function() {
 		location.reload();
 	} );
-}
-function shadeColor( hex, percent ) {
-	var hex = hex.slice( 1 );
-	var rgb = '', c, i;
-	for ( i = 0; i < 3; i++ ) {
-		c = parseInt( hex.substr( i * 2, 2 ), 16 );
-		c = parseInt( c * ( 100 + percent ) / 100 );
-		c = c < 255 ? c.toString( 16 ) : 'ff';
-		rgb += ( '00'+ c ).slice( -2 );
-	}
-	return '#'+ rgb
 }
