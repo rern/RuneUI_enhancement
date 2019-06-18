@@ -66,13 +66,16 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	}
 } else if ( isset( $_POST[ 'color' ] ) ) {
 	$color = $_POST[ 'color' ];
-	$cmd = '/usr/bin/sudo /usr/bin/sed -i "s|#......\(/\*c\*/\)|'.$color[ 0 ].'\1|g';
+	$c = substr( $color, 0, 7 );
+	$ch = substr( $color, 7, 7 );
+	$ca = substr( $color, 14, 7 );
+	$cmd = '/usr/bin/sudo /usr/bin/sed -i "s|#......\(/\*c\*/\)|'.$c.'\1|g';
 	$cmd.= '" $( grep -ril "\/\*c\*\/" /srv/http/assets/{css,js} );';
-	$cmd.= '/usr/bin/sed -i "s|#......\(/\*ch\*/\)|'.$color[ 1 ].'\1|g;s|#......\(/\*ca\*/\)|'.$color[ 2 ].'\1|g';
+	$cmd.= '/usr/bin/sed -i "s|#......\(/\*ch\*/\)|'.$ch.'\1|g;s|#......\(/\*ca\*/\)|'.$ca.'\1|g';
 	$cmd.= '" /srv/http/assets/css/enhancedesktop.css';
 	exec( $cmd );
 	pushstream( 'color', 1 );
-	$redis->hSet( 'display', 'color', $color[ 0 ].'^'.$color[ 1 ].'^'.$color[ 2 ] );
+	$redis->hSet( 'display', 'color', "$color" );
 } else if ( isset( $_POST[ 'plappend' ] ) ) {
 	$plfile = '/srv/http/assets/img/playlists/'.$_POST[ 'plappend' ];
 	$content = file_get_contents( $plfile );
