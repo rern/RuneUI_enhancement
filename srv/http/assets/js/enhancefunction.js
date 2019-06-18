@@ -2014,15 +2014,17 @@ function getOrientation( file, callback ) { // return: 1 - undefined
 	};
 	reader.readAsArrayBuffer( file.slice( 0, 64 * 1024 ) );
 }
-function hsv2hsl( hsv ) { // hsv = { h: 0.55, s: 1, v: 0.84 }
+function hsv2hsl( hsv ) { // hsv = { h: N, s: N, v: N } N = 0-1
 	var s = hsv.s;
 	var v = hsv.v;
 	var l = ( 2 - s ) * v / 2;
-	if ( l === 0 ) return 'hsl(0,0%,0%,1)'
+	if ( l === 0 ) {
+		return 'hsl(0,0%,0%)'   // black
+	} else if ( l === 1 ) {
+		return 'hsl(0,0%,100%)' // white
+	}
 	
-	if ( l === 1 ) {
-		s = 0;
-	} else if ( l < 0.5 ) {
+	if ( l < 0.5 ) {
 		s = s * v / ( l * 2 );
 	} else {
 		s = s * v / ( 2 - l * 2 );
