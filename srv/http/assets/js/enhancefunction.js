@@ -2031,6 +2031,3 @@ function hsv2hsl( hsv ) { // hsv = { h: N, s: N, v: N } N = 0-1
 	}
 	return 'hsl('+ Math.round( 360 * hsv.h ) +','+ Math.round( s * 100 ) +'%,'+ Math.round( l * 100 ) +'%)';
 }
-function setColor( color ) {
-	$.post( 'enhance.php', { color : typeof color === 'string' ? color : hsv2hsl( color ) } );
-}

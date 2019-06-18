@@ -235,7 +235,7 @@ $( '#displaycolor' ).click( function( e ) {
 		return
 	}
 	if ( $( e.target ).hasClass( 'submenu' ) ) {
-		setColor( 'hsl(200,100%,40%)' );
+		$.post( 'enhance.php', { color : 'hsl(200,100%,40%)' } );
 		return
 	}
 	
@@ -273,7 +273,7 @@ $( '#displaycolor' ).click( function( e ) {
 	mutationAlbum.observe( observerLibrary, observerOption );
 } );
 $( '#colorok' ).click( function() {
-	if ( colorpicker.getCurColorRgb() !== GUI.color ) setColor( colorpicker.getCurColorHsv() );
+	if ( colorpicker.getCurColorRgb() !== GUI.color ) $.post( 'enhance.php', { color : hsv2hsl( colorpicker.getCurColorHsv() ) } );
 } );
 $( '#colorcancel' ).click( function() {
 	colorpicker.destroy();
