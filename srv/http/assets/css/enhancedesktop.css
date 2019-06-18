@@ -42,7 +42,7 @@
 		background-color: hsl(200,100%,50%)/*ch*/ !important;
 	}
 	.licover.active:hover {
-		background: linear-gradient( #000000 189px,     hsl(200,100%,50%)/*ch*/ 41px ) !important;
+		background: linear-gradient( #000000 189px, hsl(200,100%,50%)/*ch*/ 41px ) !important;
 	}
 	.index li:hover,
 	.menu a:hover,
@@ -82,7 +82,7 @@
 		background-color: hsl(200,100%,20%)/*ca*/ !important;
 	}
 	.licover.active:active {
-		background: linear-gradient( #000000 189px,     hsl(200,100%,20%)/*ca*/ 41px ) !important;
+		background: linear-gradient( #000000 189px, hsl(200,100%,20%)/*ca*/ 41px ) !important;
 	}
 	.index li:active,
 	.fa-arrow-left:active,
