@@ -105,9 +105,6 @@ $( '#menu-settings, #badge' ).click( function() {
 		.css( 'top', ( GUI.bars ? '40px' : 0 ) );
 	$( '.contextmenu' ).addClass( 'hide' );
 } );
-$( '#sourcesmenu' ).click( function( e ) {
-	location.href = $( e.target ).hasClass( 'submenu' ) ? '/network' : '/sources';
-} );
 $( '#settingsmenu' ).click( function( e ) {
 	location.href = $( e.target ).hasClass( 'submenu' ) ? '/credits' : '/settings';
 } );
