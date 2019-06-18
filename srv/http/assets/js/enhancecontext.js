@@ -397,7 +397,7 @@ function webRadioCoverart() {
 		}
 		if ( img ) {
 			infojson.buttonlabel = 'Remove'
-			infojson.buttoncolor = '#0095d8/*c*/'
+			infojson.buttoncolor = 'hsl(200,100%,40%)/*c*/'
 			infojson.button      = function() {
 				$.post( 'enhance.php', { bash: '/usr/bin/echo "'+ name +'" > "/srv/http/assets/img/webradios/'+ urlname +'"' } );
 				if ( GUI.playback ) {
