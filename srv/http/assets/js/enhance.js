@@ -273,7 +273,27 @@ $( '#displaycolor' ).click( function( e ) {
 	mutationAlbum.observe( observerLibrary, observerOption );
 } );
 $( '#colorok' ).click( function() {
-	if ( colorpicker.getCurColorRgb() !== GUI.color ) $.post( 'enhance.php', { color : hsv2hsl( colorpicker.getCurColorHsv() ) } );
+	var rgb = colorpicker.getCurColorRgb();
+	if ( 'rgb('+ rgb.r +', '+ rgb.g +', '+ rgb.b +')' === GUI.color ) {
+		$( '#colorcancel' ).click();
+		return
+	}
+	
+	var hsv = colorpicker.getCurColorHsv(); // hsv = { h: N, s: N, v: N } N = 0-1
+	var s = hsv.s;
+	var v = hsv.v;
+	var l = ( 2 - s ) * v / 2;
+	if ( l === 0 ) {
+		var hsl = 'hsl(0,0%,0%)'   // black
+	} else if ( l === 1 ) {
+		var hsl = 'hsl(0,0%,100%)' // white
+	} else if ( l < 0.5 ) {
+		s = s * v / ( l * 2 );
+	} else {
+		s = s * v / ( 2 - l * 2 );
+	}
+	if ( l > 0 || l < 1 ) var hsl = 'hsl('+ Math.round( 360 * hsv.h ) +','+ Math.round( s * 100 ) +'%,'+ Math.round( l * 100 ) +'%)';
+	$.post( 'enhance.php', { color : hsl } );
 } );
 $( '#colorcancel' ).click( function() {
 	colorpicker.destroy();
