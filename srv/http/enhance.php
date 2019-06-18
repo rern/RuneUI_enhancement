@@ -74,7 +74,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	$cmd.= '" $( grep -ril "\/\*c" /srv/http/assets/{css,js} )';
 	exec( $cmd );
 	pushstream( 'color', 1 );
-	$redis->hSet( 'display', 'color', "$color" );
+	$redis->hSet( 'display', 'color', $c );
 } else if ( isset( $_POST[ 'plappend' ] ) ) {
 	$plfile = '/srv/http/assets/img/playlists/'.$_POST[ 'plappend' ];
 	$content = file_get_contents( $plfile );
