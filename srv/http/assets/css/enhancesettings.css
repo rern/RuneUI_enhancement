@@ -36,7 +36,7 @@
 .fa-output:before { content: "\f52B" }
 
 .btn-primary:hover {
-	background: #0095d8/*c*/;
+	background:hsl(200,100%,40%)/*c*/;
 	opacity: 0.85;
 }
 #update, #rescan {
@@ -68,7 +68,7 @@
 	-moz-border-radius: 0;
 	border-radius: 0;
 	color: #e0e7ee;
-	background: #0095d8/*c*/;
+	background:hsl(200,100%,40%)/*c*/;
 	text-shadow: none;
 }
 .ui-pnotify .alert h4 {
@@ -76,7 +76,7 @@
 	font-weight: bold;
 	text-transform: uppercase;
 }
-.bl { color: #0095d8/*c*/; }
+.bl { color:hsl(200,100%,40%)/*c*/; }
 #splash {
 	display: none;
 }
@@ -90,7 +90,7 @@ body {
 .close-page {
 	float: right;
 	margin-top: 20px;
-	color: #0095d8/*c*/;
+	color:hsl(200,100%,40%)/*c*/;
 	cursor: pointer;
 }
 legend {
@@ -164,7 +164,7 @@ select.mobile-device {
 	float: left;
 }
 .keyword {
-	color: #0095d8/*c*/;
+	color:hsl(200,100%,40%)/*c*/;
 }
 .sortable-ghost {
 	background: #222f3d;
@@ -589,7 +589,7 @@ input {
 }
 .btn-primary,
 .progress-bar {
-	background: #0095d8/*c*/;
+	background:hsl(200,100%,40%)/*c*/;
 	border: none;
 }
 .btn-default:hover,

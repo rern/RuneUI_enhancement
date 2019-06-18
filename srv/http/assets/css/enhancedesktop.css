@@ -1,8 +1,8 @@
 /* default colors */
-/* main:hover  #00a3ed /*ch*/
+/* main:hover  hsl(200,100%,50%) /*ch*/
 /* gray:hover  #555555 /*cgh*/
 /* dark:hover  #333333 /*cdh*/
-/* main:active  #0077ac /*ca*/
+/* main:active  hsl(200,100%,20%) /*ca*/
 /* gray:active  #333333 /*cga*/
 /* dark:active  #111111 /*cda*/
 
@@ -20,7 +20,7 @@
 		color: #e0e7ee !important;
 	}
 	.submenu.active {
-		background: #0095d8/*c*/;
+		background:hsl(200,100%,40%)/*c*/;
 	}
 	/* :hover *********************************************************/
 	.menu a.active:hover,
@@ -33,10 +33,10 @@
 	#pl-home:hover,
 	#playback-controls button.active:hover,
 	#playback-row .btn.active:hover {
-		background-color: #00a3ed/*ch*/ !important;
+		background-color:hsl(200,100%,50%)/*ch*/ !important;
 	}
 	.licover.active:hover {
-		background: linear-gradient( #000000 189px, #00a3ed/*ch*/ 41px ) !important;
+		background: linear-gradient( #000000 189px,hsl(200,100%,50%)/*ch*/ 41px ) !important;
 	}
 	.index li:hover,
 	.fa-arrow-left:hover,
@@ -68,10 +68,10 @@
 	#pl-entries li.active:active,
 	#playback-controls button.active:active,
 	#playback-row .btn.active:active {
-		background-color: #0077ac/*ca*/ !important;
+		background-color:hsl(200,100%,20%)/*ca*/ !important;
 	}
 	.licover.active:active {
-		background: linear-gradient( #000000 189px, #0077ac/*ca*/ 41px ) !important;
+		background: linear-gradient( #000000 189px,hsl(200,100%,20%)/*ca*/ 41px ) !important;
 	}
 	.index li:active,
 	.fa-arrow-left:active,
