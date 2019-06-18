@@ -1466,7 +1466,7 @@ $( '#plcrop' ).click( function() {
 	} );
 } );
 $( '#plconsume' ).click( function() {
-	$( this ).css( 'color', GUI.status.consume ? '' : '#0095d8/*c*/' );
+	$( this ).css( 'color', GUI.status.consume ? '' : 'hsl(200,100%,40%)/*c*/' );
 	$.post( 'enhance.php', { mpc: 'mpc consume' } );
 	notify( 'Consume Mode', GUI.status.consume ? 'Off' : 'On - Remove each song after played.', 'list-ul' );
 } );
@@ -1830,7 +1830,7 @@ pushstreams.idle.onmessage = function( changed ) {
 					GUI.status[ key ] = value;
 				} );
 				if ( GUI.playback ) setButtonToggle();
-				$( '#plconsume' ).css( 'color', GUI.status.consume ? '#0095d8/*c*/' : '' );
+				$( '#plconsume' ).css( 'color', GUI.status.consume ? 'hsl(200,100%,40%)/*c*/' : '' );
 			}, 'json' );
 		} else if ( changed === 'update' ) {
 			getUpdateStatus();

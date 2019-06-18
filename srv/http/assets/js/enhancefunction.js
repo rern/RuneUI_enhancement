@@ -320,7 +320,7 @@ function renderPlayback() {
 					GUI.intElapsed = setInterval( function() {
 						elapsed++;
 						elapsedhms = second2HMS( elapsed );
-						$( '#total' ).text( elapsedhms ).css( 'color', '#888888/*cl*/' );
+						$( '#total' ).text( elapsedhms ).css( 'color', 'hsl(0,0%,50%)/*cl*/' );
 					}, 1000 );
 				} else {
 					$( '#total' ).empty();
@@ -410,7 +410,7 @@ function renderPlayback() {
 		$( '#song' ).css( 'color', '' );
 		if ( GUI.display.time ) {
 			$( '#time' ).roundSlider( 'setValue', 0 );
-			$( '#elapsed' ).text( timehms ).css( 'color', '#888888/*cl*/' );
+			$( '#elapsed' ).text( timehms ).css( 'color', 'hsl(0,0%,50%)/*cl*/' );
 			$( '#total, #timepos' ).empty();
 		} else {
 			$( '#timepos' ).html( '&ensp;<i class="fa fa-stop"></i>&ensp;'+ timehms );
@@ -419,7 +419,7 @@ function renderPlayback() {
 	}
 	
 	$( '#elapsed, #total' ).css( 'color', '' );
-	$( '#song' ).css( 'color', status.state === 'pause' ? '#888888/*cl*/' : '' );
+	$( '#song' ).css( 'color', status.state === 'pause' ? 'hsl(0,0%,50%)/*cl*/' : '' );
 	var elapsed = status.elapsed || 0;
 	var elapsedhms = second2HMS( elapsed );
 	if ( !elapsedhms ) $( '#elapsed' ).empty();
@@ -429,7 +429,7 @@ function renderPlayback() {
 		if ( GUI.display.time ) {
 			$( '#time' ).roundSlider( 'setValue', position );
 			$( '#elapsed' ).text( elapsedhms );
-			$( '#elapsed' ).css( 'color', '#0095d8/*c*/' );
+			$( '#elapsed' ).css( 'color', 'hsl(200,100%,40%)/*c*/' );
 			$( '#total' ).css( 'color', '#e0e7ee' );
 			$( '#timepos' ).empty();
 		} else {
@@ -518,8 +518,8 @@ function mpdSeek( seekto ) {
 	}
 }
 function muteColor( volumemute ) {
-	$volumetooltip.text( volumemute ).css( 'color', '#0095d8/*c*/' );
-	$volumehandle.css( 'background', '#888888/*cl*/' );
+	$volumetooltip.text( volumemute ).css( 'color', 'hsl(200,100%,40%)/*c*/' );
+	$volumehandle.css( 'background', 'hsl(0,0%,50%)/*cl*/' );
 	$( '#volmute' ).addClass( 'active' )
 		.find( 'i' ).removeClass( 'fa-volume' ).addClass( 'fa-mute' );
 }
@@ -691,7 +691,7 @@ function disableCheckbox( name, enable, check ) {
 	$( 'input[name="'+ name +'"]' )
 		.prop( 'disabled', ( enable ? false : true ) )
 		.prop( 'checked', ( check ? true : false ) )
-		.parent().css( 'color', ( enable ? '' : '#888888/*cl*/' ) );
+		.parent().css( 'color', ( enable ? '' : 'hsl(0,0%,50%)/*cl*/' ) );
 }
 function displayCheckbox( checkboxes ) {
 	var html = '';
@@ -777,7 +777,7 @@ function renderLibrary() {
 	orderLibrary();
 	displayTopBottom();
 	$( 'html, body' ).scrollTop( 0 );
-	$( '#home-coverart .fa-coverart' ).css( 'color', $( '#divcoverarts' ).html() ? '' : '#888888/*cl*/' );
+	$( '#home-coverart .fa-coverart' ).css( 'color', $( '#divcoverarts' ).html() ? '' : 'hsl(0,0%,50%)/*cl*/' );
 }
 function infoNoData() {
 	$( '#loader' ).addClass( 'hide' );
@@ -1810,7 +1810,7 @@ function renderPlaylist() {
 	$( '#pl-count' ).html( counthtml );
 	$( '#plsave, #plclear, #pl-searchbtn' ).removeClass( 'disable' );
 	$( '#plcrop' ).toggleClass( 'disable', GUI.pllist.length < 2 );
-	$( '#plconsume' ).css( 'color', GUI.status.consume ? '#0095d8/*c*/' : '' );
+	$( '#plconsume' ).css( 'color', GUI.status.consume ? 'hsl(200,100%,40%)/*c*/' : '' );
 	$( '#pl-entries' ).html( data.content +'<p></p>' ).promise().done( function() {
 		$( '#pl-entries p' ).css( 'min-height', window.innerHeight - 140 +'px' );
 		setPlaylistScroll();
