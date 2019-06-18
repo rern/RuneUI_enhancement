@@ -1,6 +1,6 @@
 /* default colors */
 /* main:hover  #00a3ed /*ch*/
-/* gray:hover  #666666 /*cgh*/
+/* gray:hover  #555555 /*cgh*/
 /* dark:hover  #333333 /*cdh*/
 /* main:active  #0077ac /*ca*/
 /* gray:active  #333333 /*cga*/
@@ -10,12 +10,12 @@
 @media(max-width: 2000px) { .coverart { width: calc( ( 100% - 38px ) * 0.1 ) } }
 @media(max-width: 1800px) { .coverart { width: calc( ( 100% - 38px ) * 0.111111111 ) } }
 @media(max-width: 1600px) { .coverart { width: calc( ( 100% - 38px ) * 0.142857143 ) } }
-@media(max-width: 1200px) { .coverart { width: calc( ( 100% - 38px ) * 0.166666667 ) } }
+@media(max-width: 1200px) { .coverart { width: calc( ( 100% - 38px ) * 0.155555567 ) } }
 @media(max-width: 1000px) { .coverart { width: calc( ( 100% - 38px ) * 0.2 ) } }
 @media(max-width: 800px)  { .coverart { width: calc( ( 100% - 38px ) * 0.25 ) } }
 @media(max-width: 600px)  { .coverart { width: calc( ( 100% - 38px ) * 0.333333333 ) } }
 @media(max-width: 400px)  { .coverart { width: calc( ( 100% - 38px ) * 0.5 ) } }
-@media ( hover:hover ) {
+@media( hover:hover ) {
 	.menu .active i {
 		color: #e0e7ee !important;
 	}
@@ -50,7 +50,7 @@
 	#pl-searchbtn:hover,
 	#playback-controls button:hover,
 	#playback-row .btn:hover {
-		background-color: #666666/*cgh*/ !important;
+		background-color: #555555/*cgh*/ !important;
 	}
 	.divblock.updn .home-block,
 	.home-block:hover,
