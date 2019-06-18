@@ -1,6 +1,6 @@
 /* default colors */
-/* main:hover   hsl(200,100%,50%)/*ch*/
-/* main:active  hsl(200,100%,20%)/*ca*/
+/* main:hover       hsl(200,100%,50%)/*ch*/
+/* main:active      hsl(200,100%,20%)/*ca*/
 /* gray:hover   hsl(0,0%,40%) /*cgh*/
 /* gray:active  hsl(0,0%,20%) /*cga*/
 /* dark:hover   hsl(0,0%,25%) /*cdh*/
@@ -20,7 +20,7 @@
 		color: #e0e7ee !important;
 	}
 	.submenu.active {
-		background: hsl(200,100%,40%)/*c*/;
+		background:     hsl(200,100%,40%)/*c*/;
 	}
 	/* :hover *********************************************************/
 	.menu a.active:hover,
@@ -33,10 +33,10 @@
 	#pl-home:hover,
 	#playback-controls button.active:hover,
 	#playback-row .btn.active:hover {
-		background-color: hsl(200,100%,50%)/*ch*/ !important;
+		background-color:     hsl(200,100%,50%)/*ch*/ !important;
 	}
 	.licover.active:hover {
-		background: linear-gradient( #000000 189px, hsl(200,100%,50%)/*ch*/ 41px ) !important;
+		background: linear-gradient( #000000 189px,     hsl(200,100%,50%)/*ch*/ 41px ) !important;
 	}
 	.index li:hover,
 	.fa-arrow-left:hover,
@@ -44,7 +44,6 @@
 	.submenu:hover,
 	#menu-bottom a:hover,
 	#menu-settings:hover,
-	#pl-searchbtn:hover,
 	#playback-controls button:hover,
 	#playback-row .btn:hover {
 		background-color: hsl(0,0%,40%)/*cgh*/ !important;
@@ -56,7 +55,9 @@
 	#db-entries li:hover,
 	#pl-editor li:hover,
 	#pl-entries li:hover,
-	#pl-manage i:hover {
+	#pl-manage i:hover,
+	#pl-searchbtn:hover,
+	#plsearchbtn:hover {
 		background-color: hsl(0,0%,25%)/*cdh*/ !important;
 	}
 	/* :active *********************************************************/
@@ -68,10 +69,10 @@
 	#pl-entries li.active:active,
 	#playback-controls button.active:active,
 	#playback-row .btn.active:active {
-		background-color: hsl(200,100%,20%)/*ca*/ !important;
+		background-color:     hsl(200,100%,20%)/*ca*/ !important;
 	}
 	.licover.active:active {
-		background: linear-gradient( #000000 189px, hsl(200,100%,20%)/*ca*/ 41px ) !important;
+		background: linear-gradient( #000000 189px,     hsl(200,100%,20%)/*ca*/ 41px ) !important;
 	}
 	.index li:active,
 	.fa-arrow-left:active,
