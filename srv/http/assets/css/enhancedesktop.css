@@ -24,6 +24,11 @@
 		background: hsl(0,0%,40%)/*cgh*/;
 	}
 	/* :hover *********************************************************/
+	#db-entries li:hover,
+	#pl-editor li:hover,
+	#pl-entries li:hover {
+		background-color: hsl(0,0%,10%)/*bh*/;
+	}
 	.menu a.active:hover,
 	.submenu.active:hover,
 	#db-entries li.active:hover,
@@ -51,7 +56,7 @@
 	.divblock.updn .home-block,
 	.fa-arrow-left:hover,
 	.home-block:hover,
-	.lifocus:hover
+	.lifocus:hover,
 	#db-searchbtn:hover,
 	#dbsearchbtn:hover,
 	#pl-manage i:hover,
@@ -64,11 +69,6 @@
 	}
 	li.active.lifocus {
 		background-color: hsl(200,100%,40%)/*c*/ !important;
-	}
-	#db-entries li:hover,
-	#pl-editor li:hover,
-	#pl-entries li:hover {
-		background-color: hsl(0,0%,10%)/*bh*/ !important;
 	}
 	/* :active *********************************************************/
 	.menu a.active:active,
