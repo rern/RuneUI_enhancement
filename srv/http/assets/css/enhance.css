@@ -1,5 +1,5 @@
 /* default colors */
-/* main:  hsl(200,100%,40%) /*c*/
+/* main: hsl(200,100%,40%)/*c*/
 /* gray:  #444444 /*cg*/
 /* dark:  #222222 /*cd*/
 /* light: #888888 /*cl*/
@@ -151,7 +151,7 @@ a:hover {	text-decoration: none !important;
 }
 w, wh, .wh { color: #e0e7ee !important; }
 #infoMessage .fa-coverart { color: #e0e7ee; }
-bl, .bl { color:hsl(200,100%,40%)/*c*/; }
+bl, .bl { color: hsl(200,100%,40%)/*c*/; }
 gr, .gr { color: #888888/*cl*/; }
 wh, gr { font-weight: 300; }
 #timepos wh,
@@ -177,7 +177,7 @@ i.bookmark,
 .infobookmark i {
 	width: 100px;
 	font-size: 3em;
-	color:hsl(200,100%,40%)/*c*/;
+	color: hsl(200,100%,40%)/*c*/;
 	text-shadow: 2px 2px 4px #000000;
 }
 .imagewh {
@@ -200,7 +200,7 @@ i.bookmark,
 	margin: 2px 20px 10px 0;
 }
 svg path.st0 {
-	fill:hsl(200,100%,40%)/*c*/;
+	fill: hsl(200,100%,40%)/*c*/;
 }
 svg path.st1 {
 	fill: #e0e7ee;
@@ -368,7 +368,7 @@ svg path.st1 {
 	background: #444444/*cg*/;
 }
 #playback-controls button.active {
-	background-color:hsl(200,100%,40%)/*c*/;
+	background-color: hsl(200,100%,40%)/*c*/;
 }
 #playback-controls i {
 	font-size:24px;
@@ -451,7 +451,7 @@ svg path.st1 {
 	padding: 0;
 }
 #menu-bottom li.active a {
-	background:hsl(200,100%,40%)/*c*/;
+	background: hsl(200,100%,40%)/*c*/;
 }
 #menu-bottom li a i {
 	margin: 0; /* fix wobble spin */
@@ -488,7 +488,7 @@ svg path.st1 {
 	height: 34px;
 	line-height: 34px;
 	font-size: 30px;
-	color:hsl(200,100%,40%)/*c*/;
+	color: hsl(200,100%,40%)/*c*/;
 }
 #song i {
 	color: #e0e7ee;
@@ -532,7 +532,7 @@ svg path.st1 {
 #posrepeat,
 #posgpio {
 	width: 25px;
-	color:hsl(200,100%,40%)/*c*/;
+	color: hsl(200,100%,40%)/*c*/;
 }
 /* ---------------------- info scrolling ----------------------*/
 #divartist,
@@ -696,7 +696,7 @@ svg path.st1 {
 #imode i {
 	width: 20px;
 	font-size: 16px;
-	color:hsl(200,100%,40%)/*c*/;
+	color: hsl(200,100%,40%)/*c*/;
 }
 #iupdate {
 	font-size: 14px;
@@ -860,7 +860,7 @@ svg path.st1 {
 #random.btn-default.active,
 #single.btn-default.active,
 #volmute.btn-default.active {
-	background-color:hsl(200,100%,40%)/*c*/ !important;
+	background-color: hsl(200,100%,40%)/*c*/ !important;
 }
 /* glossy highlight */
 #repeat, 
@@ -917,7 +917,7 @@ svg path.st1 {
 	color: #e0e7ee;
 }
 #time .rs-range-color {
-	background:hsl(200,100%,40%)/*c*/ !important;
+	background: hsl(200,100%,40%)/*c*/ !important;
 }
 #time .rs-handle {
 	opacity: 0;
@@ -927,7 +927,7 @@ svg path.st1 {
 }
 #volume .rs-handle {
 	border: 1px solid #333333;
-	background:hsl(200,100%,40%)/*c*/;
+	background: hsl(200,100%,40%)/*c*/;
 	box-shadow: inset #333333 0 5px 5px;
 }
 .rs-outer {
@@ -1041,7 +1041,7 @@ svg path.st1 {
 	margin-top: 0;
 	line-height: 40px;
 	font-size: 28px;
-	color:hsl(200,100%,40%)/*c*/;
+	color: hsl(200,100%,40%)/*c*/;
 }
 p.hrbl {
 	margin: 20px 0 10px 0;
@@ -1163,7 +1163,7 @@ p.hrbl {
 }
 .home-block .fa-coverart,
 .home-block .fa-bookmark {
-	color:hsl(200,100%,40%)/*c*/;
+	color: hsl(200,100%,40%)/*c*/;
 }
 /* coverart edit icons */
 .licover-save,
@@ -1192,7 +1192,7 @@ p.hrbl {
 	height: 30px;
 	line-height: 30px;
 	border-radius: 15px;
-	background:hsl(200,100%,40%)/*c*/;
+	background: hsl(200,100%,40%)/*c*/;
 }
 .home-block-cover {
 	bottom: 0;
@@ -1291,7 +1291,7 @@ p.hrbl {
 	line-height: 40px;
 	text-align: center;
 	font-size: 28px;
-	color:hsl(200,100%,40%)/*c*/;
+	color: hsl(200,100%,40%)/*c*/;
 }
 #db-currentpath {
 	float: left;
@@ -1330,7 +1330,7 @@ p.hrbl {
 .plsbackroot,
 .plsback,
 #db-currentpath a:first-of-type {
-	color:hsl(200,100%,40%)/*c*/;
+	color: hsl(200,100%,40%)/*c*/;
 }
 .plsbackroot,
 .plsback {
@@ -1345,7 +1345,7 @@ p.hrbl {
 	height: 40px;
 	line-height: 44px;
 	text-align: center;
-	background:hsl(200,100%,40%)/*c*/;
+	background: hsl(200,100%,40%)/*c*/;
 }
 #pl-home {
 	line-height: 46px;
@@ -1393,7 +1393,7 @@ p.hrbl {
 }
 #db-search-close i,
 #pl-search-close i {
-	color:hsl(200,100%,40%)/*c*/;
+	color: hsl(200,100%,40%)/*c*/;
 }
 #db-search-close span a,
 #pl-search-close span a {
@@ -1525,7 +1525,7 @@ p.hrbl {
 	background: #374c62;
 }
 #pl-entries li.active.updn {
-	background:hsl(200,100%,40%)/*c*/;
+	background: hsl(200,100%,40%)/*c*/;
 }
 .db-icon,
 .pl-icon,
@@ -1581,7 +1581,7 @@ span.dbpath {
 #pl-entries .active,
 #pl-editor .active {
 	color: #e0e7ee;
-	background:hsl(200,100%,40%)/*c*/
+	background: hsl(200,100%,40%)/*c*/
 }
 #pl-entries .pl-remove {
 	float: right;
@@ -1596,7 +1596,7 @@ span.dbpath {
 	z-index: 1;
 }
 #pl-entries li.active .pl-remove {
-	background:hsl(200,100%,40%)/*c*/;
+	background: hsl(200,100%,40%)/*c*/;
 }
 .db-icon,
 .pl-icon,
@@ -1782,7 +1782,7 @@ li.active .time,
 	font-size: 30px;
 }
 .menu a.active {
-	background:hsl(200,100%,40%)/*c*/;
+	background: hsl(200,100%,40%)/*c*/;
 }
 /* flags */
 .flag {
