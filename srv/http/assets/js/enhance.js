@@ -275,14 +275,15 @@ $( '#displaycolor' ).click( function( e ) {
 	} );
 	mutationAlbum.observe( observerLibrary, observerOption );
 } );
-$( '#colorok, #colorcancel' ).click( function() {
-	var color = this.id === 'colorok' ? colorpicker.getCurColorHex() : '';
-	$( '#playback-controls .active, #tab-library a, #db-home, #db-entries li.active, #colorok' ).css( 'background-color', color );
-	$( '#rootpath, #db-back, .lialbum' ).css( 'color', color );
-	$( '.logo path.st0' ).css( 'fill', color )
-	$( '#divcolorpicker' ).addClass( 'hide' );
-	if ( color && colorpicker.getCurColorRgb() !== GUI.color ) setColor( color );
+$( '#colorok' ).click( function() {
+	if ( colorpicker.getCurColorRgb() !== GUI.color ) setColor( colorpicker.getCurColorHsv() );
+} );
+$( '#colorcancel' ).click( function() {
 	colorpicker.destroy();
+	$( '#divcolorpicker' ).addClass( 'hide' );
+	$( '#playback-controls .active, #tab-library a, #db-home, #db-entries li.active, #colorok' ).css( 'background-color', '' );
+	$( '#rootpath, #db-back, .lialbum' ).css( 'color', '' );
+	$( '.logo path.st0' ).css( 'fill', '' )
 	$( 'body' ).removeClass( 'disablescroll' );
 } );
 $( '#divcolorpicker' ).click( function( e ) {
