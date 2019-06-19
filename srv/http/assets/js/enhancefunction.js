@@ -382,18 +382,14 @@ function renderPlayback() {
 				, dataType : 'json'
 				, success  : function( data ) {
 					if ( data.album.mbid ) {
-						$.ajax( {
-							  type     : 'post'
-							, url      : 'http://coverartarchive.org/release/'+ data.album.mbid
-							, success  : function( data ) {
-								if ( data.images ) {
-									GUI.coversave = 1;
-									$( '#cover-art' )
-										.attr( 'src', data.images[ 0 ][ 'image' ] )
-										.load( function() {
-											$( this ).after( '<i class="edit licover-save fa fa-save"></i>' );
-										} );
-								}
+						$.post( 'http://coverartarchive.org/release/'+ data.album.mbid, function( data ) {
+							if ( data.images ) {
+								GUI.coversave = 1;
+								$( '#cover-art' )
+									.attr( 'src', data.images[ 0 ][ 'image' ] )
+									.load( function() {
+										$( this ).after( '<i class="edit licover-save fa fa-save"></i>' );
+									} );
 							}
 						} );
 					}
@@ -501,17 +497,14 @@ function getBio( artist ) {
 		}
 		
 		$( '#biocontent' ).html( data.html ).promise().done( function() {
+			$( '#menu-top, #menu-bottom, #loader' ).addClass( 'hide' );
+			$( '#bio' ).removeClass( 'hide' );
 			$( '#bio' ).scrollTop( 0 );
-			if ( data.img ) {
-				$( '#bioimg' )
-					.attr( 'src', data.img )
-					.load( function() {
-						$( '#menu-top, #menu-bottom, #loader' ).addClass( 'hide' );
-						$( '#bio' ).removeClass( 'hide' );
-					} );
-			} else {
-				$( '#menu-top, #menu-bottom, #loader' ).addClass( 'hide' );
-				$( '#bio' ).removeClass( 'hide' );
+			if ( data.imgurl ) {
+				$.get( data.imgurl, function( data ) {
+					var src = data.artistthumb[ 0 ].url;
+					$( '#bioimg' ).attr( 'src', src || '' )
+				} );
 			}
 		} );
 	}, 'json' );
