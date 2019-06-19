@@ -282,17 +282,13 @@ $( '#colorok' ).click( function() {
 	var hsv = colorpicker.getCurColorHsv(); // hsv = { h: N, s: N, v: N } N = 0-1
 	var s = hsv.s;
 	var v = hsv.v;
-	var l = ( 2 - s ) * v / 2;
-	if ( l === 0 ) {
-		var hsl = 'hsl(0,0%,0%)'   // black
-	} else if ( l === 1 ) {
-		var hsl = 'hsl(0,0%,100%)' // white
-	} else if ( l < 0.5 ) {
-		s = s * v / ( l * 2 );
+	var L = ( 2 - s ) * v / 2;
+	if ( L > 0 && L < 1 ) {
+		S = L < 0.5 ? s * v / ( L * 2 ) : s * v / ( 2 - L * 2 );
+		var hsl = 'hsl('+ Math.round( 360 * hsv.h ) +','+ Math.round( S * 100 ) +'%,'+ Math.round( L * 100 ) +'%)';
 	} else {
-		s = s * v / ( 2 - l * 2 );
+		var hsl = 'hsl(0,0%,'+ L * 100 +'%)'
 	}
-	if ( l > 0 || l < 1 ) var hsl = 'hsl('+ Math.round( 360 * hsv.h ) +','+ Math.round( s * 100 ) +'%,'+ Math.round( l * 100 ) +'%)';
 	$.post( 'enhance.php', { color : hsl } );
 } );
 $( '#colorcancel' ).click( function() {
