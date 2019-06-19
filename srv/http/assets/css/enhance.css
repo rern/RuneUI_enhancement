@@ -267,6 +267,7 @@ svg path.st1 {
 	text-align: center;
 	font-size: 22px;
 	color: #e0e7ee !important;
+	text-shadow: 1px 1px 2px #000000;
 }
 .menu i.gr {
 	color: hsl(0,0%,60%)/*cl*/ !important;
@@ -850,6 +851,7 @@ svg path.st1 {
 	top: 8px;
 	left: 0;
 	width: 40px;
+	text-shadow: 1px 1px 2px #000000;
 }
 /* button shadow */
 #page-playback .btn-group {
