@@ -690,7 +690,7 @@ $( '.timemap, .covermap, .volmap' ).tap( function() {
 	if ( GUI.display.cover
 		&& $( this ).hasClass( 'timemap' )
 		|| !cmd
-		|| $( '.edit' ).length
+		|| $( '.licover-cover' ).length
 	) return
 	
 	if ( cmd === 'guide' ) {

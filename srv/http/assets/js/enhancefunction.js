@@ -275,6 +275,7 @@ function setPlaybackBlank() {
 }
 function renderPlayback() {
 	var status = GUI.status;
+	$( '.licover-save' ).remove();
 	// song and album before update for song/album change detection
 	var previoussong = $( '#song' ).text();
 	var previousalbum = $( '#album' ).text();
@@ -387,9 +388,7 @@ function renderPlayback() {
 								GUI.coversave = 1;
 								$( '#cover-art' )
 									.attr( 'src', data.images[ 0 ][ 'image' ] )
-									.load( function() {
-										$( this ).after( '<i class="edit licover-save fa fa-save"></i>' );
-									} );
+									.after( '<i class="edit licover-save fa fa-save"></i>' );
 							}
 						} );
 					}
@@ -486,8 +485,9 @@ function getPlaybackStatus() {
 }
 function getBio( artist ) {
 	$( '#loader' ).removeClass( 'hide' );
-	$.get( 'enhancebio.php', { artist: artist }, function( data ) {
-		if ( data == 0 ) {
+	$.post( 'http://ws.audioscrobbler.com/2.0/?autocorrect=1&format=json&method=artist.getinfo&api_key='+ lastfmapikey +'&artist='+ encodeURI( artist ), function( data ) {
+		var data = data.artist;
+		if ( !data.bio.content ) {
 			info( {
 				  icon    : 'bio'
 				, title   : 'Bio'
@@ -496,18 +496,36 @@ function getBio( artist ) {
 			return
 		}
 		
-		$( '#biocontent' ).html( data.html ).promise().done( function() {
+		var content = data.bio.content.replace( /\n/g, '<br>' );
+		var genre = data.tags.tag[ 0 ].name;
+		if ( genre ) genre = '<i class="fa fa-genre fa-lg gr"></i>&ensp;'+ genre;
+		var similar =  data.similar.artist;
+		if ( similar ) {
+			similars = '<br><p><i class="fa fa-artist fa-lg gr"></i>&ensp;Similar Artists: <i class="fa fa-external-link gr"></i><p><span>';
+			similar.forEach( function( artist ) {
+				similars += '<a class="biosimilar">'+ artist.name +'</a>,&ensp;';
+			} );
+			similars += '</span>';
+		}
+		var html = '<form class="form-horizontal">'
+						+'<a class="artist">'+ artist +'</a>'
+						+'<p>'+ content +'</p>'
+						+'<div style="clear: both;"></div><br>'
+						+'<p>'+ genre +'<span style="float: right;">Text: last.fm<br>Image: fanart.tv</span></p>'
+						+ similars
+						+'<br><br>'
+				  +'</form>';
+		$( '#biocontent' ).html( html ).promise().done( function() {
 			$( '#menu-top, #menu-bottom, #loader' ).addClass( 'hide' );
 			$( '#bio' ).removeClass( 'hide' );
 			$( '#bio' ).scrollTop( 0 );
-			if ( data.imgurl ) {
-				$.get( data.imgurl, function( data ) {
-					var src = data.artistthumb[ 0 ].url;
-					$( '#bioimg' ).attr( 'src', src || '' )
-				} );
-			}
+
+			$.get( 'https://webservice.fanart.tv/v3/music/'+ data.mbid +'&?api_key=06f56465de874e4c75a2e9f0cc284fa3', function( data ) {
+				var src = data.artistthumb[ 0 ].url;
+				if ( src ) $( '#biocontent form' ).prepend( '<img id="bioimg" src="'+ src +'">' );
+			} );
 		} );
-	}, 'json' );
+	} );
 }
 function mpdSeek( seekto ) {
 	if ( GUI.status.state !== 'stop' ) {
