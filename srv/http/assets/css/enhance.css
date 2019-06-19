@@ -147,7 +147,9 @@ body {
 	overscroll-behavior: none; /* disable android pull-down refresh */
 }
 a,
-a:hover {	text-decoration: none !important;
+a:hover {
+	color: #e0e7ee;
+	text-decoration: none !important;
 }
 w, wh, .wh { color: #e0e7ee !important; }
 #infoMessage .fa-coverart { color: #e0e7ee; }

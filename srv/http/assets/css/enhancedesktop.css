@@ -1,10 +1,10 @@
 /* default colors */
-/* main:hover   hsl(200,100%,50%)/*ch*/
-/* main:active  hsl(200,100%,20%)/*ca*/
-/* gray:hover   hsl(0,0%,40%) /*cgh*/
-/* gray:active  hsl(0,0%,20%) /*cga*/
-/* dark:hover   hsl(0,0%,30%) /*cdh*/
-/* dark:active  hsl(0,0%,10%) /*cda*/
+/* main:hover hsl(200,100%,45%)/*ch*/
+/* main:active hsl(200,100%,30%)/*ca*/
+/* gray:hover hsl(0,0%,40%) /*cgh*/
+/* gray:active hsl(0,0%,20%) /*cga*/
+/* dark:hover hsl(0,0%,30%) /*cdh*/
+/* dark:active hsl(0,0%,10%) /*cda*/
 
 /* fix - desktop coverart browsing with visible scrollbar */
 @media(max-width: 2000px) { .coverart { width: calc( ( 100% - 38px ) * 0.1 ) } }
@@ -27,7 +27,7 @@
 	#db-entries li:hover,
 	#pl-editor li:hover,
 	#pl-entries li:hover {
-		background-color: hsl(0,0%,10%)/*bh*/;
+		background-color: hsl(0,0%,15%)/*bh*/;
 	}
 	.menu a.active:hover,
 	.submenu.active:hover,
@@ -39,17 +39,17 @@
 	#pl-home:hover,
 	#playback-controls button.active:hover,
 	#playback-row .btn.active:hover {
-		background-color: hsl(200,100%,50%)/*ch*/ !important;
+		background-color: hsl(200,100%,45%)/*ch*/ !important;
 	}
 	.licover.active:hover {
-		background: linear-gradient( #000000 189px, hsl(200,100%,50%)/*ch*/ 41px ) !important;
+		background: linear-gradient( #000000 189px, hsl(200,100%,45%)/*ch*/ 41px ) !important;
 	}
 	.index li:hover,
 	.menu a:hover,
 	.submenu:hover,
 	#menu-bottom a:hover,
 	#menu-settings:hover,
-	#playback-controls button:hover
+	#playback-controls button:hover,
 	#playback-row .btn:hover {
 		background-color: hsl(0,0%,40%)/*cgh*/ !important;
 	}
@@ -79,10 +79,10 @@
 	#pl-entries li.active:active,
 	#playback-controls button.active:active,
 	#playback-row .btn.active:active {
-		background-color: hsl(200,100%,20%)/*ca*/ !important;
+		background-color: hsl(200,100%,30%)/*ca*/ !important;
 	}
 	.licover.active:active {
-		background: linear-gradient( #000000 189px, hsl(200,100%,20%)/*ca*/ 41px ) !important;
+		background: linear-gradient( #000000 189px, hsl(200,100%,30%)/*ca*/ 41px ) !important;
 	}
 	.index li:active,
 	.fa-arrow-left:active,

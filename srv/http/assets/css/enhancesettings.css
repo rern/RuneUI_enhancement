@@ -541,7 +541,7 @@ ul.parsley-error-list li {
 .boxed,
 .alert,
 .boxed-group {
-	background: hsl(0,0%,15%)/*cd*/;
+	background: hsl(0,0%,20%)/*cd*/;
 }
 .btn,
 .switch-light,
@@ -576,7 +576,7 @@ input {
 }
 .dropdown-menu > li > a:hover,
 .dropdown-menu > li.selected a:hover {
-	background: hsl(0,0%,15%)/*cd*/ !important;
+	background: hsl(0,0%,20%)/*cd*/ !important;
 }
 .btn-default:active,
 .dropdown-toggle.btn-default:active {
