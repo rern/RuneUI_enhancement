@@ -15,25 +15,27 @@ $data = preg_replace(
 $data = json_decode( $data, True );
 
 $data = $data[ 'artist' ];
-$genre = ucwords( $data[ 'tags' ][ 'tag' ][ 0 ][ 'name' ] );
+$content = $data[ 'bio' ][ 'content' ];
+if ( !$content ) die( 0 );
+
 $content = preg_replace(
 	  array( '/^<br><br>/', '/^<br>/', '/ <a.*Read more on Last.fm.*/' )
 	, array( '',            '',        '' )
-	, $data[ 'bio' ][ 'content' ]
+	, $content
 );
+$genre = ucwords( $data[ 'tags' ][ 'tag' ][ 0 ][ 'name' ] );
+if ( $genre ) $genre = '<i class="fa fa-genre fa-lg gr"></i>&ensp;'.$genre;
 $similar =  $data[ 'similar' ][ 'artist' ];
-
-
-$data = curlGet( 'https://webservice.fanart.tv/v3/music/'
-	.$data[ 'mbid' ].'&?api_key='.$apikey_f );
+if ( $similar ) {
+	$similars = '<br><p><i class="fa fa-artist fa-lg gr"></i>&ensp;Similar Artists: <i class="fa fa-external-link gr"></i><p><span>';
+	foreach ( $similar as $name ) {
+		$similars.= '<a class="biosimilar">'.$name[ 'name' ].'</a>,&ensp;';
+	}
+	$similars = substr( $similars, 0, -7 ).'</span>';
+}
+$data = curlGet( 'https://webservice.fanart.tv/v3/music/'.$data[ 'mbid' ].'&?api_key='.$apikey_f );
 $data = json_decode( $data, True );
 $image = $data[ 'artistthumb' ][ 0 ][ 'url' ];
-
-$similars = '<span>';
-foreach ( $similar as $name ) {
-	$similars.= '<a class="biosimilar">'.$name[ 'name' ].'</a>,&ensp;';
-}
-$similars = substr( $similars, 0, -7 ).'</span>';
 $data = array(
 	  'html' => '<form class="form-horizontal">
 					<img id="bioimg">
@@ -42,8 +44,7 @@ $data = array(
 					</p>
 					<div style="clear: both;"></div>
 					<br>
-					<p><span>Genre: </span>'.$genre.'<span style="float: right;">Text: last.fm<br>Image: fanart.tv</span></p>
-					<p>Similar Artists: <i class="fa fa-external-link gr"></i><p>
+					<p>'.$genre.'<span style="float: right;">Text: last.fm'.( $image ? '<br>Image: fanart.tv</span>' : '' ).'</p>
 					'.$similars.'
 					<br><br>
 				</form>'
