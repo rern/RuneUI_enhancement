@@ -67,8 +67,8 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 } else if ( isset( $_POST[ 'color' ] ) ) {
 	$c = $_POST[ 'color' ];
 	$l = ltrim( explode( '%', $c )[ 1 ], ',' );
-	$ch = preg_replace( '/%,.*%/', '%,'.( $l + 10 ).'%', $c );
-	$ca = preg_replace( '/%,.*%/', '%,'.( $l - 20 ).'%', $c );
+	$ch = preg_replace( '/%,.*%/', '%,'.( $l + 5 ).'%', $c );
+	$ca = preg_replace( '/%,.*%/', '%,'.( $l - 10 ).'%', $c );
 	$cmd = '/usr/bin/sudo /usr/bin/sed -i "';
 	$cmd.= 's|hsl.*\(/\*c\*/\)|'.$c.'\1|g; s|hsl.*\(/\*ch\*/\)|'.$ch.'\1|g; s|hsl.*\(/\*ca\*/\)|'.$ca.'\1|g';
 	$cmd.= '" $( grep -ril "\/\*c" /srv/http/assets/{css,js} )';
