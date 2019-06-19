@@ -271,6 +271,9 @@ svg path.st1 {
 	font-size: 22px;
 	color: #e0e7ee !important;
 }
+.menu i.gr {
+	color: hsl(0,0%,60%)/*cl*/ !important;
+}
 .submenu {
 	float: right;
 	width: 41px;
