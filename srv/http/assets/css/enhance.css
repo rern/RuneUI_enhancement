@@ -269,6 +269,7 @@ svg path.st1 {
 	vertical-align: -5%;
 	text-align: center;
 	font-size: 22px;
+	color: #e0e7ee !important;
 }
 .submenu {
 	float: right;
@@ -276,6 +277,10 @@ svg path.st1 {
 	height: 41px;
 	background: hsl(0,0%,30%)/*cg*/;
 	border-left: 1px solid hsl(0,0%,20%)/*cd*/;
+}
+.menu a.active,
+.submenu.active {
+	background: hsl(0,0%,40%)/*cgh*/;
 }
 #settings .gr {
 	font-size: 22px;
@@ -383,10 +388,6 @@ svg path.st1 {
 #playback-controls i {
 	font-size:24px;
 	line-height: 40px;
-}
-.menu a:active,
-#colorok:active {
-	background: hsl(0,0%,20%)/*cd*/ !important;
 }
 .btn {
 	outline: none !important;
@@ -2060,4 +2061,37 @@ li.active .time,
 	.infocol {
 		width: 140px;
 	}
+}
+/* :active:hover *********************************************************/
+#colorok:active:hover,
+#db-entries li.active:active:hover,
+#menu-bottom li.active a:active:hover:active:hover,
+#pl-editor li.active:active:hover,
+#pl-entries li.active:active:hover,
+#playback-controls button.active:active:hover,
+#playback-row .btn.active:active:hover {
+	background-color: hsl(200,100%,30%)/*ca*/ !important;
+}
+.licover.active:active:hover {
+	background: linear-gradient( #000000 189px, hsl(200,100%,30%)/*ca*/ 41px ) !important;
+}
+.index li:active:hover,
+.fa-arrow-left:active:hover,
+.menu a:active:hover,
+.submenu:active:hover,
+#db-entries li:active:hover,
+#db-searchbtn:active:hover,
+#dbsearchbtn:active:hover,
+#menu-bottom a:active:hover,
+#menu-settings:active:hover,
+#pl-manage i:active:hover,
+#pl-searchbtn:active:hover,
+#playback-controls button:active:hover,
+#playback-row .btn:active:hover {
+	background-color: hsl(0,0%,20%)/*cga*/ !important;
+}
+#db-entries li:active:hover,
+#pl-editor li:active:hover,
+#pl-entries li:active:hover {
+	background-color: hsl(0,0%,10%)/*cda*/ !important;
 }
