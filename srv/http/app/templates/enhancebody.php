@@ -3,7 +3,7 @@ $redis = new Redis();
 $redis->pconnect( '127.0.0.1' );
 
 $time = time();
-$submenucolor = $redis->hGet( 'display', 'color' ) === 'hsl(200,100%,40%)' ? '' : '<i class="fa fa-brush-undo submenu gr"></i>';
+$submenucolor = $redis->hGet( 'display', 'color' ) === 'hsl(200,100%,40%)' ? '' : '<i class="fa fa-brush-undo gr submenu"></i>';
 if ( in_array( $_SERVER[ 'REMOTE_ADDR' ], array( '127.0.0.1', '::1' ) ) ) {
 	$submenupower = '<i class="fa fa-screenoff submenu"></i>';
 } else {
@@ -346,7 +346,7 @@ $logo = '
 		<?php 
 		}
 		if ( file_exists( '/srv/http/assets/css/gpio.css' ) ) { ?>
-	<a id="gpio"><i class="fa fa-gpio"></i>GPIO<i class="fa fa-gear submenu"></i></a>
+	<a id="gpio"><i class="fa fa-gpio gr"></i>GPIO<i class="fa fa-gear gr submenu"></i></a>
 		<?php 
 		} ?>
 	<a id="displaylibrary"><i class="fa fa-library gr"></i>Library Tools</a>
@@ -354,7 +354,7 @@ $logo = '
 	<a id="displaycolor"><i class="fa fa-brush gr"></i>Color<?=$submenucolor ?></a>
 		<?php
 		if ( file_exists( '/srv/http/assets/fonts/addons.ttf' ) ) { ?> 
-	<a id="addons"><i class="fa fa-addons"></i>Addons</a>
+	<a id="addons"><i class="fa fa-addons gr"></i>Addons</a>
 		<?php 
 		} ?>
 </div>
