@@ -505,7 +505,7 @@ function getBio( artist ) {
 			similar.forEach( function( artist ) {
 				similars += '<a class="biosimilar">'+ artist.name +'</a>,&ensp;';
 			} );
-			similars += '</span>';
+			similars = similars.slice( 0, -7 ) +'</span>';
 		}
 		var html = '<form class="form-horizontal">'
 						+'<a class="artist">'+ artist +'</a>'
