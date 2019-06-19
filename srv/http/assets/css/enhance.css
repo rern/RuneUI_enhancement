@@ -845,6 +845,12 @@ svg path.st1 {
 	width: 40px;
 	font-size:24px;
 }
+#page-playback .btn-group button i {
+	position: absolute;
+	top: 8px;
+	left: 0;
+	width: 40px;
+}
 /* button shadow */
 #page-playback .btn-group {
 	position: relative;
