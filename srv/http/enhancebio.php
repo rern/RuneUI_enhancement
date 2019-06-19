@@ -33,22 +33,18 @@ if ( $similar ) {
 	}
 	$similars = substr( $similars, 0, -7 ).'</span>';
 }
-$data = curlGet( 'https://webservice.fanart.tv/v3/music/'.$data[ 'mbid' ].'&?api_key='.$apikey_f );
-$data = json_decode( $data, True );
-$image = $data[ 'artistthumb' ][ 0 ][ 'url' ];
 $data = array(
 	  'html' => '<form class="form-horizontal">
 					<img id="bioimg">
-					<p><a class="artist">'.$artist.'</a><br>
-						'.$content.'
-					</p>
+					<a class="artist">'.$artist.'</a>
+					<p>'.$content.'</p>
 					<div style="clear: both;"></div>
 					<br>
 					<p>'.$genre.'<span style="float: right;">Text: last.fm'.( $image ? '<br>Image: fanart.tv</span>' : '' ).'</p>
 					'.$similars.'
 					<br><br>
 				</form>'
-	, 'img'  => $image ? str_replace( '/fanart/', '/preview/', $image ) : ''
+	, 'imgurl' => 'https://webservice.fanart.tv/v3/music/'.$data[ 'mbid' ].'&?api_key='.$apikey_f
 );
 echo json_encode( $data );
 
