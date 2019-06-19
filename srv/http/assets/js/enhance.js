@@ -283,7 +283,7 @@ $( '#colorok' ).click( function() {
 	var s = hsv.s;
 	var v = hsv.v;
 	var L = ( 2 - s ) * v / 2;
-	if ( L > 0 && L < 1 ) {
+	if ( L && L < 1 ) {
 		S = L < 0.5 ? s * v / ( L * 2 ) : s * v / ( 2 - L * 2 );
 		var hsl = 'hsl('+ Math.round( 360 * hsv.h ) +','+ Math.round( S * 100 ) +'%,'+ Math.round( L * 100 ) +'%)';
 	} else {
