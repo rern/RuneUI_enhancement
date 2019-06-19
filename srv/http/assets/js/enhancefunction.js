@@ -496,7 +496,7 @@ function getBio( artist ) {
 			return
 		}
 		
-		var content = data.bio.content.replace( /\n/g, '<br>' );
+		var content = data.bio.content.replace( /\n/g, '<br>' ).replace( /Read more on Last.fm.*/, '' );
 		var genre = data.tags.tag[ 0 ].name;
 		if ( genre ) genre = '<i class="fa fa-genre fa-lg gr"></i>&ensp;'+ genre;
 		var similar =  data.similar.artist;
