@@ -275,7 +275,7 @@ function setPlaybackBlank() {
 }
 function renderPlayback() {
 	var status = GUI.status;
-	$( '.licover-save' ).remove();
+	if ( status.coverart ) $( '.licover-save' ).remove();
 	// song and album before update for song/album change detection
 	var previoussong = $( '#song' ).text();
 	var previousalbum = $( '#album' ).text();
@@ -384,11 +384,15 @@ function renderPlayback() {
 				, success  : function( data ) {
 					if ( data.album.mbid ) {
 						$.post( 'http://coverartarchive.org/release/'+ data.album.mbid, function( data ) {
-							if ( data.images ) {
+							var src = data.images[ 0 ][ 'image' ];
+							if ( src ) {
 								GUI.coversave = 1;
 								$( '#cover-art' )
-									.attr( 'src', data.images[ 0 ][ 'image' ] )
-									.after( '<i class="edit licover-save fa fa-save"></i>' );
+									.attr( 'src', src )
+									.load( function() {
+										if ( $( '#cover-art' ).attr( 'src' ) === src )
+										$( this ).after( '<i class="edit licover-save fa fa-save"></i>' );
+									} );
 							}
 						} );
 					}
