@@ -861,7 +861,7 @@ svg path.st1 {
 	width: 120px;
 	height: 40px;
 	border-radius: 6px;
-	box-shadow: 0 0 1px 1px #444444;
+	box-shadow: 0 0 1px 1px hsl(0,0%,20%)/*cga*/;
 	z-index: -10;
 }
 #share-group .btn-group:before {
@@ -887,7 +887,7 @@ svg path.st1 {
 	background: -webkit-linear-gradient(top, hsla(0,0%,100%,.3) 0%, hsla(0,0%,100%,.3) 45%,rgba(0,0,0,0) 50%, rgba(0,0,0,0) 100%);
 	background: linear-gradient(to bottom, hsla(0,0%,100%,.3) 0%, hsla(0,0%,100%,.3) 45%, rgba(0,0,0,0) 50%,rgba(0,0,0,0) 100%);
 	background-color: hsl(0,0%,30%)/*cg*/;
-	border-left: 1px solid #444444;
+	border-left: 1px solid hsl(0,0%,20%)/*cga*/;
 }
 #single,
 #bio-open,
@@ -895,7 +895,7 @@ svg path.st1 {
 	background: -webkit-radial-gradient(0% -50%, 400% 190%, hsla(0,0%,100%,.3) 50%, hsla(0,0%,100%,0) 53%); 
 	background: radial-gradient(300% 90% at 0% 0% ,hsla(0,0%,100%,.3) 50%,hsla(0,0%,100%,0) 55%);
 	background-color: hsl(0,0%,30%)/*cg*/;
-	border-left: 1px solid #444444;
+	border-left: 1px solid hsl(0,0%,20%)/*cga*/;
 }
 
 .close-root {
@@ -934,12 +934,12 @@ svg path.st1 {
 	opacity: 0;
 }
 #volume .rs-path-color {
-	background: linear-gradient( #333333, #000000 );
+	background: linear-gradient( hsl(0,0%,30%)/*cg*/, #000000 );
 }
 #volume .rs-handle {
-	border: 1px solid #333333;
+	border: 1px solid hsl(0,0%,20%)/*cga*/;
 	background: hsl(200,100%,40%)/*c*/;
-	box-shadow: inset #333333 0 5px 5px;
+	box-shadow: inset hsl(0,0%,20%)/*cga*/ 0 5px 5px;
 }
 .rs-outer {
 	position: relative; /* overlay */
@@ -983,7 +983,7 @@ svg path.st1 {
 }
 #time .rs-inner {
 	position: relative;
-	background: linear-gradient( #333333, #000000 );
+	background: linear-gradient( hsl(0,0%,30%)/*cg*/, #000000 );
 }
 #time .rs-animation,
 #time .rs-transition { /* fix: flickering on iOS */
@@ -1056,7 +1056,7 @@ svg path.st1 {
 }
 p.hrbl {
 	margin: 20px 0 10px 0;
-	border-bottom: 1px solid #333333;
+	border-bottom: 1px solid hsl(0,0%,20%)/*cga*/;
 }
 #biocontent {
 	font-size: 16px;
@@ -1283,7 +1283,7 @@ p.hrbl {
 	font-size: 22px;
 }
 .form-control:focus {
-	border: 2px solid #333333;
+	border: 2px solid hsl(0,0%,20%)/*cga*/;
 	border-radius: 6px;
 	-webkit-box-shadow: none;
 	box-shadow: none;
