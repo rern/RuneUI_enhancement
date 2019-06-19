@@ -491,6 +491,15 @@ function getPlaybackStatus() {
 function getBio( artist ) {
 	$( '#loader' ).removeClass( 'hide' );
 	$.get( 'enhancebio.php', { artist: artist }, function( data ) {
+		if ( data == 0 ) {
+			info( {
+				  icon    : 'bio'
+				, title   : 'Bio'
+				, message : 'No data available.'
+			} );
+			return
+		}
+		
 		$( '#biocontent' ).html( data.html ).promise().done( function() {
 			$( '#bio' ).scrollTop( 0 );
 			if ( data.img ) {
@@ -501,7 +510,6 @@ function getBio( artist ) {
 						$( '#bio' ).removeClass( 'hide' );
 					} );
 			} else {
-				$( '#biocontent p' ).css( 'text-indent', '-20px' );
 				$( '#menu-top, #menu-bottom, #loader' ).addClass( 'hide' );
 				$( '#bio' ).removeClass( 'hide' );
 			}
