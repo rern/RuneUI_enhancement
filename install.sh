@@ -189,15 +189,7 @@ if [[ -z $( ls -A $dir ) && -n $( ls -A $olddir ) ]]; then # convert if none fou
 	setown $dir
 fi
 
-# set color
-c=$( redis-cli hget display color )
-if [[ -n $c && $c != 'hsl(200,100%,40%)' ]]; then
-	l=$( echo $c | cut -d'%' -f2 | tr -d ',' )
-	ch=$( echo $c | sed "s/%.*%/%,$(( l + 5 ))%/" )
-	ca=$( echo $c | sed "s/%.*%/%,$(( l - 10 ))%/" )
-	sed -i "s|hsl(*\(/\*c\*/\)|$c\1|g; s|hsl(.*\(/\*ch\*/\)|$ch\1|g; s|hsl(.*\(/\*ca\*/\)|$ca\1|g
-	" $( grep -ril '\/\*c' /srv/http/assets/{css,js} )
-fi
+setColor
 
 ############################################################################
 if [[ $1 == u ]]; then
