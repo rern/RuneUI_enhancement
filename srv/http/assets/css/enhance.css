@@ -1065,13 +1065,9 @@ p.hrbl {
 	font-size: 16px;
 }
 #biocontent .artist {
-	margin-left: 20px;
 	font-size: 30px;
 	font-weight: 300;
 	color: #e0e7ee;
-}
-#biocontent p:first-of-type {
-	text-indent: -20px;
 }
 #biocontent p {
 	color: #aaaaaa;
@@ -1082,7 +1078,7 @@ p.hrbl {
 #bioimg {
 	float: left;
 	margin: 8px 20px 10px 0;
-	max-width: 100%;
+	max-width: 50%;
 }
 .biosimilar {
 	display: inline-block;
@@ -1975,6 +1971,9 @@ li.active .time,
 	}
 	#pltime {
 		display: none;
+	}
+	#bioimg {
+		max-width: 100%;
 	}
 }
 @media(max-width: 500px) {
