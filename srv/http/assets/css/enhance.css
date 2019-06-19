@@ -34,10 +34,7 @@
 }
 /* ---------------------- fontawesome mod ---------------------- */
 /* 'enhance' declared in <head> for cache busting */
-.fa {
-	font-family: enhance, addons;
-	vertical-align: baseline;
-}
+.fa { font-family: enhance, addons }
 .fa-mpd:before { content: "\f522" }
 .fa-spotify:before { content: "\f523" }
 .fa-airplay:before { content: "\f524" }
@@ -847,10 +844,6 @@ svg path.st1 {
 	height: 40px;
 	width: 40px;
 	font-size:24px;
-	outline: none;
-}
-#page-playback .btn-group button i {
-	vertical-align: 5%;
 }
 /* button shadow */
 #page-playback .btn-group {
