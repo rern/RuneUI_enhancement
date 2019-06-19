@@ -223,7 +223,7 @@ select.mobile-device {
 	padding-right: 30px;
 	font-weight: normal;
 	text-align: right;
-	color: hsl(0,0%,50%)/*cl*/;
+	color: hsl(0,0%,60%)/*cl*/;
 }
 .info-table td {
 	font-size: 16px;
@@ -233,7 +233,7 @@ select.mobile-device {
 	background: #1a1a1a;
 	font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
 	font-size: 15px;
-	color: hsl(0,0%,50%)/*cl*/;
+	color: hsl(0,0%,60%)/*cl*/;
 }
 .fa.fa-wifi {
 	display: inline-block;
@@ -251,7 +251,7 @@ select.mobile-device {
 	margin: 6px 0;
 }
 #modal-sysinfo p {
-	color: hsl(0,0%,50%)/*cl*/;
+	color: hsl(0,0%,60%)/*cl*/;
 }
 .container.help,
 .container.credits {
@@ -268,7 +268,7 @@ select.mobile-device {
 #license {
 	line-height: 20px;
 	font-size: 13px;
-	color: hsl(0,0%,50%)/*cl*/;
+	color: hsl(0,0%,60%)/*cl*/;
 }
 #form-paypal {
 	text-align: center;
@@ -477,12 +477,12 @@ fieldset[disabled] .form-control {
 }
 .help-block,
 .help-inline {
-	color: hsl(0,0%,50%)/*cl*/;
+	color: hsl(0,0%,60%)/*cl*/;
 	font-size: 13px;
 }
 .help-block strong,
 .help-inline strong {
-	color: hsl(0,0%,50%)/*cl*/;
+	color: hsl(0,0%,60%)/*cl*/;
 }
 .modal-content {
 	border: 5px solid hsl(0,0%,30%)/*cg*/;
@@ -580,11 +580,11 @@ input {
 }
 .btn-default:active,
 .dropdown-toggle.btn-default:active {
-	background: hsl(0,0%,50%)/*cl*/ !important;
+	background: hsl(0,0%,60%)/*cl*/ !important;
 }
 .btn-default:focus,
 .dropdown-toggle.btn-default:focus {
-	background: hsl(0,0%,50%)/*cl*/ !important;
+	background: hsl(0,0%,60%)/*cl*/ !important;
 	outline: none !important;
 }
 .btn-primary,
