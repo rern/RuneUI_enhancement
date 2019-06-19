@@ -44,7 +44,7 @@
 <link rel="stylesheet" href="<?=$this->asset( '/css/roundslider.min.css' )?>">
 <link rel="stylesheet" href="<?=$this->asset( '/css/enhance.css' )?>">
 		<?php
-		if ( !strpos( 'mobi', $_SERVER['HTTP_USER_AGENT'] ) ) { ?>
+		if ( !preg_match( '/(Mobile|Android|Tablet|GoBrowser|[0-9]x[0-9]*|uZardWeb\/|Mini|Doris\/|Skyfire\/|iPhone|Fennec\/|Maemo|Iris\/|CLDC\-|Mobi\/)/uis', $_SERVER['HTTP_USER_AGENT'] ) ) { ?>
 <link rel="stylesheet" href="<?=$this->asset( '/css/enhancedesktop.css' )?>">
 		<?php
 		}
