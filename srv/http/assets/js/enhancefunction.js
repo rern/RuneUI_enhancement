@@ -384,10 +384,10 @@ function renderPlayback() {
 				, success  : function( data ) {
 					if ( data.album.mbid ) {
 						$.post( 'http://coverartarchive.org/release/'+ data.album.mbid, function( data ) {
-							var src = data.images[ 0 ][ 'image' ];
-							if ( src ) {
+							var image = data.images[ 0 ][ 'image' ];
+							if ( image ) {
 								var img = new Image();
-								img.src = src;
+								img.src = image;
 								img.setAttribute( 'crossOrigin', 'anonymous' );
 								img.onload = function() {
 									var canvas = document.createElement( 'canvas' );
@@ -1469,16 +1469,15 @@ function saveCoverart() {
 	var src = $( '#cover-art' ).prop( 'src' );
 	var file = GUI.status.file;
 	var path = '/mnt/MPD/'+ file.substr( 0, file.lastIndexOf( '/' ) );
-	var ext = src.split( '.' ).pop();
-	var coverfile = path.replace( /"/g, '\"' ) +'/cover.'+ ext;
+	var coverfile = path.replace( /"/g, '\"' ) +'/cover.jpg';
 	info( {
 		  icon    : 'coverart'
 		, title   : 'Save Album Coverart'
 		, message : '<img src="'+ src +'">'
 					   +'<span class="bkname"><br><w>'+ GUI.status.Album +'</w>'
 					   +'<br>'+ GUI.status.Artist +'<span>'
-		, ok      : function() {
-			$.post( 'enhance.php', { bash: '/usr/bin/wget '+ src +' -O "'+ coverfile +'"' }, function( std ) {
+		, ok      : function() { 
+			$.post( 'enhance.php', { coversave: coverfile, base64: src }, function( std ) {
 				infoCoverart( 'Save' );
 			} );
 		}
