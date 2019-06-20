@@ -1541,7 +1541,7 @@ p.hrbl {
 	display: block;
 	height: 49px;
 	line-height: 20px;
-	border-bottom: 1px solid #172029;
+	border-bottom: 1px solid hsl(200,5%,20%)/*cd*/;
 	font-size: 15px;
 	background: #10161c
 	-webkit-user-select: none;
