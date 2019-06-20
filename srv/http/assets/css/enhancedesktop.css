@@ -1,10 +1,10 @@
 /* default colors */
 /* main:hover hsl(200,100%,45%)/*ch*/
 /* main:active hsl(200,100%,30%)/*ca*/
-/* gray:hover hsl(0,0%,40%) /*cgh*/
-/* gray:active hsl(0,0%,20%) /*cga*/
-/* dark:hover hsl(0,0%,30%) /*cdh*/
-/* dark:active hsl(0,0%,10%) /*cda*/
+/* gray:hover hsl(200,5%,40%) /*cgh*/
+/* gray:active hsl(200,5%,20%) /*cga*/
+/* dark:hover hsl(200,5%,30%) /*cdh*/
+/* dark:active hsl(200,5%,10%) /*cda*/
 
 /* fix - desktop coverart browsing with visible scrollbar */
 @media(max-width: 2000px) { .coverart { width: calc( ( 100% - 38px ) * 0.1 ) } }
@@ -41,7 +41,7 @@
 #menu-settings:hover,
 #playback-controls button:hover,
 #playback-row .btn:hover {
-	background-color: hsl(0,0%,40%)/*cgh*/ !important;
+	background-color: hsl(200,5%,40%)/*cgh*/ !important;
 }
 .divblock.updn .home-block,
 .fa-arrow-left:hover,
@@ -52,7 +52,7 @@
 #pl-manage i:hover,
 #pl-searchbtn:hover,
 #plsearchbtn:hover {
-	background-color: hsl(0,0%,30%)/*cdh*/ !important;
+	background-color: hsl(200,5%,30%)/*cdh*/ !important;
 }
 .lifocus {
 	background-color: hsl(0,0%,20%)/*bf*/ !important;
