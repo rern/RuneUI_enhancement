@@ -263,6 +263,8 @@ $( '#displaycolor' ).click( function( e ) {
 						$( '.btnlist-top, #tab-playback a' ).css( 'background', 'hsl('+ h +',5%,20%)' );
 						$( '.licover i, .lidir, .db-icon, .gr' ).css( 'cssText', 'color: hsl('+ h +',5%,60%) !important');
 						$( '#tab-playback, #db-entries li.active i, #db-entries li.active .time, #db-entries li.active .li2' ).css( 'color', 'hsl('+ h +',5%,30%)' );
+						$( '.menu a' ).css( 'border-top', '1px solid hsl('+ h +',5%,20%)' );
+						$( '#db-entries li' ).css( 'border-bottom', '1px solid hsl('+ h +',5%,20%)' );
 						$( '#playback-controls .active, #tab-library a, #db-home, #db-entries li.active, #colorok' ).css( 'background-color', hex );
 						$( '#rootpath, #db-back, .lialbum' ).css( 'color', hex );
 						$( '.logo path.st0' ).css( 'fill', hex )
@@ -317,6 +319,8 @@ $( '#colorcancel' ).click( function() {
 	$( '#rootpath, #db-back, .lialbum, .licover i, .lidir, .db-icon, .gr, #tab-playback, \
 		#db-entries li.active i, #db-entries li.active .time, #db-entries li.active .li2' ).css( 'color', '' );
 	$( '.logo path.st0' ).css( 'fill', '' )
+	$( '.menu a' ).css( 'border-top', '' );
+	$( '#db-entries li' ).css( 'border-bottom', '' );
 	$( 'body' ).removeClass( 'disablescroll' );
 } );
 $( '#divcolorpicker' ).click( function( e ) {
