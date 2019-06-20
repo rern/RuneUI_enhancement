@@ -423,9 +423,9 @@ $logo = '
 		</div>
 		<div id="play-group">
 			<div class="btn-group hide">
-				<button id="repeat" class="btn btn-default btn-lg btn-cmd btn-toggle" type="button"><i class="fa fa-repeat"></i></button>
-				<button id="random" class="btn btn-default btn-lg btn-cmd btn-toggle" type="button"><i class="fa fa-random"></i></button>
-				<button id="single" class="btn btn-default btn-lg btn-cmd btn-toggle" type="button"><i class="fa fa-single"></i></button>
+				<button id="repeat" class="btn btn-default btn-cmd btn-toggle" type="button"><i class="fa fa-repeat"></i></button>
+				<button id="random" class="btn btn-default btn-cmd btn-toggle" type="button"><i class="fa fa-random"></i></button>
+				<button id="single" class="btn btn-default btn-cmd btn-toggle" type="button"><i class="fa fa-single"></i></button>
 			</div>
 		</div>
 		<div id="coverart" class="playback-block">
@@ -446,7 +446,7 @@ $logo = '
 		</div>
 		<div id="share-group">
 			<div class="btn-group hide">
-				<button id="share" class="btn btn-default btn-lg" type="button"><i class="fa fa-share"></i></button>
+				<button id="share" class="btn btn-default" type="button"><i class="fa fa-share"></i></button>
 				<button id="bio-open" class="btn btn-default" type="button"><i class="fa fa-bio"></i></button>
 			</div>
 		</div>
@@ -461,9 +461,9 @@ $logo = '
 		</div>
 		<div id="vol-group">
 			<div class="btn-group hide">
-				<button id="voldn" class="btn btn-default btn-lg" type="button"><i class="fa fa-minus"></i></button>
-				<button id="volmute" class="btn btn-default btn-lg" type="button"><i class="fa fa-volume"></i></button>
-				<button id="volup" class="btn btn-default btn-lg" type="button"><i class="fa fa-plus"></i></button>
+				<button id="voldn" class="btn btn-default" type="button"><i class="fa fa-minus"></i></button>
+				<button id="volmute" class="btn btn-default" type="button"><i class="fa fa-volume"></i></button>
+				<button id="volup" class="btn btn-default" type="button"><i class="fa fa-plus"></i></button>
 			</div>
 		</div>
 	</div>
@@ -542,6 +542,10 @@ $logo = '
 		<p class="hrbl"></p>
 		<div id="biocontent"></div>
 	</div>
+</div>
+<div id="banner">
+	<div id="bannerTitle"></div>
+	<div id="bannerMessage"></div>
 </div>
 <div id="splash"><svg viewBox="0 0 480.2 144.2"><?=$logo ?></svg></div>
 <div id="loader" class="hide"><svg viewBox="0 0 480.2 144.2"><?=$logo ?></svg></div>

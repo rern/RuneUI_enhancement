@@ -32,7 +32,6 @@
 <meta name="msapplication-config" content="<?=$this->asset( '/img/browserconfig.xml' )?>">
 <meta name="application-name" content="RuneAudio">
 <link rel="stylesheet" href="<?=$this->asset( '/css/bootstrap.min.css' )?>">
-<link rel="stylesheet" href="<?=$this->asset( '/css/enhancebanner.css' )?>">
 	<?php 
 	if ( $root ) {
 		$fontface = $addons ? fontface( 'addons', $this ) : '';
