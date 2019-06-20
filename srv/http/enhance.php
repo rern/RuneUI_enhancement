@@ -64,17 +64,28 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	} else if ( isset( $_POST[ 'result' ] ) ) {
 		echo $result;
 	}
-} else if ( isset( $_POST[ 'color' ] ) ) {
-	$c = $_POST[ 'color' ];
-	$l = ltrim( explode( '%', $c )[ 1 ], ',' );
-	$ch = preg_replace( '/%,.*%/', '%,'.( $l + 5 ).'%', $c );
-	$ca = preg_replace( '/%,.*%/', '%,'.( $l - 10 ).'%', $c );
+} else if ( isset( $_POST[ 'color' ] ) ) { // hsl(360,100%,100%)
+	$hsl = $_POST[ 'color' ];
+	$h = $hsl[ 0 ];
+	$s = $hsl[ 1 ];
+	$l = $hsl[ 2 ];
 	$cmd = '/usr/bin/sudo /usr/bin/sed -i "';
-	$cmd.= 's|hsl.*\(/\*c\*/\)|'.$c.'\1|g; s|hsl.*\(/\*ch\*/\)|'.$ch.'\1|g; s|hsl.*\(/\*ca\*/\)|'.$ca.'\1|g';
+	$cmd.= '
+s|\(hsl(\).*\()/\*ch\*/\)|\1'."$h,$s%,".( $l + 5 ).'%\2|g
+s|\(hsl(\).*\()/\*c\*/\)|\1'."$h,$s%,$l%".'\2|g
+s|\(hsl(\).*\()/\*ca\*/\)|\1'."$h,$s%,".( $l - 10 ).'%\2|g
+s|\(hsl(\).*\()/\*cgh\*/\)|\1'.$h.',5%,40%\2|g
+s|\(hsl(\).*\()/\*cg\*/\)|\1'.$h.',5%,30%\2|g
+s|\(hsl(\).*\()/\*cga\*/\)|\1'.$h.',5%,20%\2|g
+s|\(hsl(\).*\()/\*cdh\*/\)|\1'.$h.',5%,30%\2|g
+s|\(hsl(\).*\()/\*cd\*/\)|\1'.$h.',5%,20%\2|g
+s|\(hsl(\).*\()/\*cda\*/\)|\1'.$h.',5%,10%\2|g
+s|\(hsl(\).*\()/\*cgl\*/\)|\1'.$h.',5%,60%\2|g
+	';
 	$cmd.= '" $( grep -ril "\/\*c" /srv/http/assets/{css,js} )';
 	exec( $cmd );
 	pushstream( 'color', 1 );
-	$redis->hSet( 'display', 'color', $c );
+	$redis->hSet( 'display', 'color', "hsl($h,$s%,$l%)" );
 } else if ( isset( $_POST[ 'plappend' ] ) ) {
 	$plfile = '/srv/http/assets/img/playlists/'.$_POST[ 'plappend' ];
 	$content = file_get_contents( $plfile );
