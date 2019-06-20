@@ -35,7 +35,7 @@ _Tested on RuneAudio 0.4b, 0.5_
 	- Mask available indexes
 - Library sorting
 - Metadata tag editor ( with [Kid3](https://kid3.sourceforge.io) )
-- UI color editor ( with [HTML5-Color-Picker](https://github.com/NC22/HTML5-Color-Picker) )
+- UI color picker ( with [HTML5-Color-Picker](https://github.com/NC22/HTML5-Color-Picker) )
 - Single files with`*.cue` behave like individual files
 	- Listed and saved as individual tracks
 	- Editable metadata
