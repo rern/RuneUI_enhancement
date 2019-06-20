@@ -1601,14 +1601,14 @@ $( '#pl-entries' ).on( 'click', '.pl-icon', function( e ) {
 	GUI.list.thumb = $thisli.find( '.lithumb' ).text() || '';  // dirble save in contextmenu
 	GUI.list.img = $thisli.find( '.liimg' ).text() || '';      // dirble save in contextmenu
 	if ( GUI.list.path.slice( -3 ) === 'cue' ) GUI.list.index = $thisli.find( '.liindex' ).text() || '';
-	var menutop = ( $thisli.position().top + 49 ) +'px';
-	var $contextmenu = $( '#context-menu-plaction' );
+	var menutop = ( $thisli.position().top + 48 ) +'px';
+	var $menu = $( '#context-menu-plaction' );
 	var $contextlist = $( '#context-menu-plaction a' );
 	$( '#pl-entries li' ).removeClass( 'lifocus' );
-	if ( !$contextmenu.hasClass( 'hide' ) 
-		&& $contextmenu.css( 'top' ) === menutop
+	if ( !$menu.hasClass( 'hide' ) 
+		&& $menu.css( 'top' ) === menutop
 	) {
-		$contextmenu.addClass( 'hide' );
+		$menu.addClass( 'hide' );
 		return
 	}
 	
@@ -1627,12 +1627,12 @@ $( '#pl-entries' ).on( 'click', '.pl-icon', function( e ) {
 	} else {
 		$contextlist.eq( 3 ).addClass( 'hide' );
 	}
-	var contextnum = $contextmenu.find( 'a:not(.hide)' ).length;
-	$( '.menushadow' ).css( 'height', contextnum * 41 - 1 );
-	$contextmenu
+	var contextnum = $menu.find( 'a:not(.hide)' ).length;
+	$( '.menushadow' ).css( 'height', contextnum * 42 - 1 );
+	$menu
 		.removeClass( 'hide' )
 		.css( 'top', menutop );
-	var targetB = $contextmenu.offset().top + $contextmenu.height();
+	var targetB = $menu.offset().top + $menu.height();
 	var wH = window.innerHeight;
 	if ( targetB > wH - ( GUI.bars ? 80 : 40 ) + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + 42 } );
 } );

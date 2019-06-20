@@ -502,22 +502,23 @@ function getBio( artist ) {
 		
 		var content = data.bio.content.replace( /\n/g, '<br>' ).replace( /Read more on Last.fm.*/, '' );
 		var genre = data.tags.tag[ 0 ].name;
-		if ( genre ) genre = '<i class="fa fa-genre fa-lg gr"></i>&ensp;'+ genre;
+		if ( genre ) genre = '<p class="genre"><i class="fa fa-genre fa-lg"></i>&ensp;'+ genre +'</p>';
 		var similar =  data.similar.artist;
 		if ( similar ) {
-			similars = '<br><p><i class="fa fa-artist fa-lg gr"></i>&ensp;Similar Artists: <i class="fa fa-external-link gr"></i><p><span>';
+			similars = '<br><p><i class="fa fa-artist fa-lg"></i>&ensp;Similar Artists: <i class="fa fa-external-link gr"></i><p><span>';
 			similar.forEach( function( artist ) {
 				similars += '<a class="biosimilar">'+ artist.name +'</a>,&ensp;';
 			} );
 			similars = similars.slice( 0, -7 ) +'</span>';
 		}
 		var html = '<form class="form-horizontal">'
-						+'<a class="artist">'+ artist +'</a>'
+						+'<p class="artist">'+ artist +'</p>'
+						+ genre
 						+'<p>'+ content +'</p>'
-						+'<div style="clear: both;"></div><br>'
-						+'<p>'+ genre +'<span style="float: right;">Text: last.fm<br>Image: fanart.tv</span></p>'
+						+'<div style="clear: both;"></div>'
 						+ similars
 						+'<br><br>'
+						+'<p><span style="float: right;">Text: last.fm,&ensp;Image: fanart.tv</span></p>'
 				  +'</form>';
 		$( '#biocontent' ).html( html ).promise().done( function() {
 			$( '#menu-top, #menu-bottom, #loader' ).addClass( 'hide' );
@@ -1550,12 +1551,12 @@ function dbContextmenu( $li, $target ) {
 		if ( GUI.browsemode === 'file' || GUI.browsemode === 'coverart' ) $( '.tag' ).removeClass( 'hide' );
 	}
 	var contextnum = $menu.find( 'a:not(.hide)' ).length;
-	$( '.menushadow' ).css( 'height', contextnum * 41 - 1 );
+	$( '.menushadow' ).css( 'height', contextnum * 42 - 1 );
 	$li.addClass( 'active' );
 	if ( $li.hasClass( 'licover' ) ) {
 		var menutop = GUI.bars ? '310px' : '270px';
 	} else {
-		var menutop = ( $li.position().top + 49 ) +'px';
+		var menutop = ( $li.position().top + 48 ) +'px';
 	}
 	$menu
 		.css( 'top',  menutop )
@@ -1585,13 +1586,13 @@ function plContextmenu( $li, $target ) { // saved playlists
 	}
 	
 	var contextnum = $menu.find( 'a:not(.hide)' ).length;
-	$( '.menushadow' ).css( 'height', contextnum * 41 - 1 );
+	$( '.menushadow' ).css( 'height', contextnum * 42 - 1 );
 	$( '#pl-editor li' ).removeClass( 'active' );
 	$li.addClass( 'active' );
 	$menu
 		.removeClass( 'hide' )
-		.css( 'top', ( $li.position().top + 49 ) +'px' );
-	var targetB = $menu.offset().top + 246;
+		.css( 'top', ( $li.position().top + 48 ) +'px' );
+	var targetB = $menu.offset().top + $menu.height();
 	var wH = window.innerHeight;
 	if ( targetB > wH - ( GUI.bars ? 80 : 40 ) + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + 42 } );
 }
