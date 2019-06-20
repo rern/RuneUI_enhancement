@@ -1048,7 +1048,6 @@ svg path.st1 {
 	display: inline-block;
 	margin: 0;
 	font-weight: 300;
-	color: hsl(0,0%,60%)/*cl*/;
 }
 .close-root {
 	float: right;
@@ -1067,10 +1066,16 @@ p.hrbl {
 #biocontent .artist {
 	font-size: 30px;
 	font-weight: 300;
-	color: #e0e7ee;
+	color: hsl(200,100%,40%)/*c*/;
+}
+#biocontent .genre {
+	text-transform: capitalize;
 }
 #biocontent p {
 	color: #e0e7ee;
+}
+#biocontent i {
+	color: hsl(0,0%,40%)/*cgh*/;
 }
 #biocontent span {
 	color: hsl(0,0%,60%)/*cl*/;
@@ -1971,9 +1976,6 @@ li.active .time,
 	}
 	#pltime {
 		display: none;
-	}
-	#bioimg {
-		max-width: 100%;
 	}
 }
 @media(max-width: 500px) {
