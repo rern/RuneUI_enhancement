@@ -386,13 +386,19 @@ function renderPlayback() {
 						$.post( 'http://coverartarchive.org/release/'+ data.album.mbid, function( data ) {
 							var src = data.images[ 0 ][ 'image' ];
 							if ( src ) {
-								GUI.coversave = 1;
-								$( '#cover-art' )
-									.attr( 'src', src )
-									.load( function() {
-										if ( $( '#cover-art' ).attr( 'src' ) === src )
-										$( this ).after( '<i class="edit licover-save fa fa-save"></i>' );
-									} );
+								var img = new Image();
+								img.src = src;
+								img.setAttribute( 'crossOrigin', 'anonymous' );
+								img.onload = function() {
+									var canvas = document.createElement( 'canvas' );
+									canvas.width = this.width;
+									canvas.height = this.height;
+									canvas.getContext( '2d' ).drawImage( this, 0, 0 );
+									$( '#cover-art' )
+										.attr( 'src', canvas.toDataURL( 'image/jpeg' ) )
+										.after( '<i class="edit licover-save fa fa-save"></i>' );
+									GUI.coversave = 1;
+								}
 							}
 						} );
 					}
