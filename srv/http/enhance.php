@@ -176,6 +176,11 @@ s|\(hsl(\).*\()/\*cgl\*/\)|\1'.$h.',5%,60%\2|g
 		$count = 1;
 	}
 	pushstream( 'webradio', $count );
+} else if ( isset( $_POST[ 'coversave' ] ) ) {
+	$base64 = explode( ',', $_POST[ 'base64' ] )[ 1 ];
+	$tmpfile = '/srv/http/assets/img/tmp/tmp.jpg';
+	file_put_contents( $tmpfile, base64_decode( $base64 ) );
+	exec( $sudo.'/mv -f '.$tmpfile.' "'.$_POST[ 'coversave' ].'"' );
 } else if ( isset( $_POST[ 'imagefile' ] ) ) {
 	$imagefile = $_POST[ 'imagefile' ];
 	if ( isset( $_POST[ 'base64bookmark' ] ) ) {
