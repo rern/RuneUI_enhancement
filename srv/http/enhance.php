@@ -82,7 +82,7 @@ s|\(hsl(\).*\()/\*cd\*/\)|\1'.$h.',5%,20%\2|g
 s|\(hsl(\).*\()/\*cda\*/\)|\1'.$h.',5%,10%\2|g
 s|\(hsl(\).*\()/\*cgl\*/\)|\1'.$h.',5%,60%\2|g
 	';
-	$cmd.= '" $( grep -ril "\/\*c" /srv/http/assets/{css,js} )';
+	$cmd.= '" $( grep -ril "\/\*c" /srv/http/assets/css )';
 	exec( $cmd );
 	pushstream( 'color', 1 );
 	$redis->hSet( 'display', 'color', "hsl($h,$s%,$l%)" );
