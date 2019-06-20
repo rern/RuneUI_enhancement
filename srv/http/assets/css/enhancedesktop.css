@@ -1,10 +1,17 @@
 /* default colors */
-/* main:hover hsl(200,100%,45%)/*ch*/
+/* main:hover  hsl(200,100%,45%)/*ch*/
+/* main:       hsl(200,100%,40%)/*c*/
 /* main:active hsl(200,100%,30%)/*ca*/
-/* gray:hover hsl(200,5%,40%) /*cgh*/
-/* gray:active hsl(200,5%,20%) /*cga*/
-/* dark:hover hsl(200,5%,30%) /*cdh*/
-/* dark:active hsl(200,5%,10%) /*cda*/
+
+/* gray:hover  hsl(200,5%,40%)/*cgh*/
+/* gray:       hsl(200,5%,30%)/*cg*/
+/* gray:active hsl(200,5%,20%)/*cga*/
+
+/* dark:hover  hsl(200,5%,30%)/*cdh*/
+/* dark:       hsl(200,5%,20%)/*cd*/
+/* dark:active hsl(200,5%,10%)/*cda*/
+
+/* light:      hsl(200,5%,60%)/*cgl*/
 
 /* fix - desktop coverart browsing with visible scrollbar */
 @media(max-width: 2000px) { .coverart { width: calc( ( 100% - 38px ) * 0.1 ) } }

@@ -1,9 +1,3 @@
-/* default colors */
-/* main: hsl(200,100%,40%)/*c*/
-/* gray: hsl(200,5%,30%)/*cg*/
-/* dark: hsl(200,5%,15%)/*cd*/
-/* light: hsl(200,5%,60%)/*cgl*/
-
 @font-face {
 	font-family: Lato;
 	src: url( '/fonts/lato/lato-regular-webfont.woff' ) format( 'woff' ),
