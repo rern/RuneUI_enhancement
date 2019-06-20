@@ -2037,3 +2037,16 @@ function getOrientation( file, callback ) { // return: 1 - undefined
 	};
 	reader.readAsArrayBuffer( file.slice( 0, 64 * 1024 ) );
 }
+function bannerHide() {
+	$( '#banner' )
+		.hide()
+		.removeAttr( 'style' );
+	$( '#bannerTitle, #bannerMessage' ).empty();
+}
+function notify( title, message, icon, delay ) {
+	var iconhtml = icon ? '<i class="fa fa-'+ ( icon || 'check' ) +' wh"></i>' : '';
+	$( '#bannerTitle' ).html( iconhtml + title );
+	$( '#bannerMessage' ).html( message );
+	$( '#banner' ).show();
+	if ( delay !== -1 ) setTimeout( bannerHide, delay || 3000 );
+}

@@ -81,6 +81,8 @@ $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 $( '#splash' ).click( function() {
 	$( this ).remove();
 } );
+$( '#banner' ).click( bannerHide );
+
 $( '#cover-art' ).on( 'error', function() {
 	var $this = $( this );
 	$this.unbind( 'error' );
