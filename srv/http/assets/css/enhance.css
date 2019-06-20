@@ -13,8 +13,6 @@
 
 /* light:      hsl(200,5%,60%)/*cgl*/
 
-/* js files with 'color': enhancebanner.js */
-
 @font-face {
 	font-family: Lato;
 	src: url( '/fonts/lato/lato-regular-webfont.woff' ) format( 'woff' ),
@@ -1876,6 +1874,47 @@ li.active .time,
 	text-shadow: 2px 2px 4px #000000;
 	box-shadow: 0 0 6px 5px #000000;
 }
+#banner {
+	display: none;
+	position: fixed;
+	min-width: 230px;
+	max-width: 100%;
+	bottom: 50px;
+	padding: 10px 100px 10px 15px;
+	font-size: 18px;
+	z-index: 100000;
+	background: linear-gradient( to right, hsl(200,100%,40%)/*c*/ calc( 100% - 100px ), rgba( 0,0,0,0 ) 100% );
+}
+#bannerTitle,
+#bannerMessage {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+#bannerTitle,
+#bannerTitle i.gr,
+#banner .li2,
+#banner .time,
+#banner .li2 {
+	color: hsl(200,5%,30%)/*cg*/ !important;
+}
+#bannerTitle i {
+	width: 20px;
+	margin-right: 5px;
+	text-align: center;
+	color: #e0e7ee;
+}
+#banner .time {
+	margin-left: 10px;
+}
+#banner .li1,
+#banner .li2 {
+	display: block;
+}
+#banner .li2 {
+	font-size: 12px;
+}
+
 @media(min-width: 2000px) { .coverart { width: 200px } }
 @media(max-width: 2000px) { .coverart { width: calc( ( 100vw - 38px ) * 0.1 ) } }
 @media(max-width: 1800px) { .coverart { width: calc( ( 100vw - 38px ) * 0.111111111 ) } }
