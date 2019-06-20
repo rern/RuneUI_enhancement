@@ -321,7 +321,7 @@ function renderPlayback() {
 					GUI.intElapsed = setInterval( function() {
 						elapsed++;
 						elapsedhms = second2HMS( elapsed );
-						$( '#total' ).text( elapsedhms ).css( 'color', 'hsl(0,0%,60%)/*cl*/' );
+						$( '#total' ).text( elapsedhms ).addClass( 'gr' );
 					}, 1000 );
 				} else {
 					$( '#total' ).empty();
@@ -406,10 +406,10 @@ function renderPlayback() {
 	$( '#total' ).text( timehms );
 	// stop <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	if ( status.state === 'stop' ) {
-		$( '#song' ).css( 'color', '' );
+		$( '#song' ).removeClass( 'gr' );
 		if ( GUI.display.time ) {
 			$( '#time' ).roundSlider( 'setValue', 0 );
-			$( '#elapsed' ).text( timehms ).css( 'color', 'hsl(0,0%,60%)/*cl*/' );
+			$( '#elapsed' ).text( timehms ).addClass( 'gr' );
 			$( '#total, #timepos' ).empty();
 		} else {
 			$( '#timepos' ).html( '&ensp;<i class="fa fa-stop"></i>&ensp;'+ timehms );
@@ -417,8 +417,8 @@ function renderPlayback() {
 		return
 	}
 	
-	$( '#elapsed, #total' ).css( 'color', '' );
-	$( '#song' ).css( 'color', status.state === 'pause' ? 'hsl(0,0%,60%)/*cl*/' : '' );
+	$( '#elapsed, #total' ).removeClass( 'bl gr wh' );
+	$( '#song' ).toggleClass( 'gr', status.state === 'pause' );
 	var elapsed = status.elapsed || 0;
 	var elapsedhms = second2HMS( elapsed );
 	if ( !elapsedhms ) $( '#elapsed' ).empty();
@@ -428,8 +428,8 @@ function renderPlayback() {
 		if ( GUI.display.time ) {
 			$( '#time' ).roundSlider( 'setValue', position );
 			$( '#elapsed' ).text( elapsedhms );
-			$( '#elapsed' ).css( 'color', 'hsl(200,100%,40%)/*c*/' );
-			$( '#total' ).css( 'color', '#e0e7ee' );
+			$( '#elapsed' ).addClass( 'bl' );
+			$( '#total' ).addClass( 'wh' );
 			$( '#timepos' ).empty();
 		} else {
 			$( '#timepos' ).html( '&ensp;<i class="fa fa-pause"></i>&ensp;<bl>'+ elapsedhms +'</bl> / '+ timehms );
@@ -437,7 +437,6 @@ function renderPlayback() {
 		return
 	}
 	
-	$( '#elapsed, #total' ).css( 'color', '' );
 	if ( GUI.display.time ) {
 		GUI.intElapsed = setInterval( function() {
 			elapsed++;
@@ -542,14 +541,14 @@ function mpdSeek( seekto ) {
 	}
 }
 function muteColor( volumemute ) {
-	$volumetooltip.text( volumemute ).css( 'color', 'hsl(200,100%,40%)/*c*/' );
-	$volumehandle.css( 'background', 'hsl(0,0%,60%)/*cl*/' );
+	$volumetooltip.text( volumemute ).addClass( 'bl' );
+	$volumehandle.addClass( 'bgr' );
 	$( '#volmute' ).addClass( 'active' )
 		.find( 'i' ).removeClass( 'fa-volume' ).addClass( 'fa-mute' );
 }
 function unmuteColor() {
-	$volumetooltip.css( 'color', '' );
-	$volumehandle.css( 'background', '' );
+	$volumetooltip.removeClass( 'bl' );
+	$volumehandle.removeClass( 'bgr' );
 	$( '#volmute' ).removeClass( 'active' )
 		.find( 'i' ).removeClass( 'fa-mute' ).addClass( 'fa-volume' );
 }
@@ -715,7 +714,7 @@ function disableCheckbox( name, enable, check ) {
 	$( 'input[name="'+ name +'"]' )
 		.prop( 'disabled', ( enable ? false : true ) )
 		.prop( 'checked', ( check ? true : false ) )
-		.parent().css( 'color', ( enable ? '' : 'hsl(0,0%,60%)/*cl*/' ) );
+		.parent().toggleClass( 'gr', enable === 1 );
 }
 function displayCheckbox( checkboxes ) {
 	var html = '';
@@ -801,7 +800,7 @@ function renderLibrary() {
 	orderLibrary();
 	displayTopBottom();
 	$( 'html, body' ).scrollTop( 0 );
-	$( '#home-coverart .fa-coverart' ).css( 'color', $( '#divcoverarts' ).html() ? '' : 'hsl(0,0%,60%)/*cl*/' );
+	$( '#home-coverart .fa-coverart' ).addClass( 'bl', $( '#divcoverarts' ).is( 'not:empty' ) );
 }
 function infoNoData() {
 	$( '#loader' ).addClass( 'hide' );
@@ -1834,7 +1833,7 @@ function renderPlaylist() {
 	$( '#pl-count' ).html( counthtml );
 	$( '#plsave, #plclear, #pl-searchbtn' ).removeClass( 'disable' );
 	$( '#plcrop' ).toggleClass( 'disable', GUI.pllist.length < 2 );
-	$( '#plconsume' ).css( 'color', GUI.status.consume ? 'hsl(200,100%,40%)/*c*/' : '' );
+	$( '#plconsume' ).toggleClass( 'bl', GUI.status.consume === 1 );
 	$( '#pl-entries' ).html( data.content +'<p></p>' ).promise().done( function() {
 		$( '#pl-entries p' ).css( 'min-height', window.innerHeight - 140 +'px' );
 		setPlaylistScroll();

@@ -235,7 +235,7 @@ $( '#displaycolor' ).click( function( e ) {
 		return
 	}
 	if ( $( e.target ).hasClass( 'submenu' ) ) {
-		$.post( 'enhance.php', { color : 'hsl(200,100%,40%)' } );
+		$.post( 'enhance.php', { color : [ 200, 100, 40 ] } );
 		return
 	}
 	
@@ -285,9 +285,9 @@ $( '#colorok' ).click( function() {
 	var L = ( 2 - s ) * v / 2;
 	if ( L && L < 1 ) {
 		S = L < 0.5 ? s * v / ( L * 2 ) : s * v / ( 2 - L * 2 );
-		var hsl = 'hsl('+ Math.round( 360 * hsv.h ) +','+ Math.round( S * 100 ) +'%,'+ Math.round( L * 100 ) +'%)';
+		var hsl = [ Math.round( 360 * hsv.h ), Math.round( S * 100 ), Math.round( L * 100 ) ];
 	} else {
-		var hsl = 'hsl(0,0%,'+ L * 100 +'%)'
+		var hsl = [ 0, 0, L * 100 ];
 	}
 	$.post( 'enhance.php', { color : hsl } );
 } );
@@ -1462,9 +1462,9 @@ $( '#plcrop' ).click( function() {
 	} );
 } );
 $( '#plconsume' ).click( function() {
-	$( this ).css( 'color', GUI.status.consume ? '' : 'hsl(200,100%,40%)/*c*/' );
-	$.post( 'enhance.php', { mpc: 'mpc consume' } );
+	$( this ).toggleClass( 'bl', GUI.status.consume === 0 );
 	notify( 'Consume Mode', GUI.status.consume ? 'Off' : 'On - Remove each song after played.', 'list-ul' );
+	$.post( 'enhance.php', { mpc: 'mpc consume' } );
 } );
 $( '#plclear' ).click( function() {
 	if ( $( '#pl-entries .pl-remove' ).length ) {
@@ -1826,7 +1826,8 @@ pushstreams.idle.onmessage = function( changed ) {
 					GUI.status[ key ] = value;
 				} );
 				if ( GUI.playback ) setButtonToggle();
-				$( '#plconsume' ).css( 'color', GUI.status.consume ? 'hsl(200,100%,40%)/*c*/' : '' );
+				console.log( GUI.status.consume )
+				$( '#plconsume' ).toggleClass( 'bl', GUI.status.consume === 1 );
 			}, 'json' );
 		} else if ( changed === 'update' ) {
 			getUpdateStatus();
