@@ -144,8 +144,9 @@ a:hover {
 }
 w, wh, .wh { color: #e0e7ee !important; }
 #infoMessage .fa-coverart { color: #e0e7ee; }
-bl, .bl { color: hsl(200,100%,40%)/*c*/; }
-gr, .gr { color: hsl(200,5%,60%)/*cgl*/; }
+bl, .bl { color: hsl(200,100%,40%)/*c*/ !important; }
+gr, .gr { color: hsl(200,5%,60%)/*cgl*/ !important; }
+.bgr { background-color: hsl(200,5%,60%)/*cgl*/ !important; }
 wh, gr { font-weight: 300; }
 #timepos wh,
 .infocontent i {

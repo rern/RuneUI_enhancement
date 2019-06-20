@@ -19,7 +19,7 @@
 #banner .li2,
 #banner .time,
 #banner .li2 {
-	color: hsl(0,0%,30%)/*cg*/ !important;
+	color: hsl(200,5%,30%)/*cg*/ !important;
 }
 #bannerTitle i {
 	width: 20px;

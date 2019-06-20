@@ -2,5 +2,5 @@
 #repeat, #voldn { background: radial-gradient(250% 90% at 85% -80% ,hsla(0,0%,100%,.3) 50%,hsla(0,0%,100%,0) 53%) }
 #random, #volmute { background: linear-gradient(to bottom, hsla(0,0%,100%,.3) 0%, hsla(0,0%,100%,.3) 45%, rgba(0,0,0,0) 56%,rgba(0,0,0,0) 100%) }
 #single, #bio-open, #volup { background: radial-gradient(500% 90% at 20% -205% ,hsla(0,0%,100%,.3) 50%,hsla(0,0%,100%,0) 51.5%) }
-#repeat, #voldn, #random, #volmute, #single, #bio-open, #volup { background-color: hsl(0,0%,30%)/*cg*/ }
+#repeat, #voldn, #random, #volmute, #single, #bio-open, #volup { background-color: hsl(200,5%,30%)/*cg*/ }
 #play-group, #share-group, #vol-group { margin-top: 20px }
