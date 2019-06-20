@@ -258,6 +258,11 @@ $( '#displaycolor' ).click( function( e ) {
 				, userEvents : {
 					change : function( e ) {
 						var hex = e.getCurColorHex();
+						var h = Math.round( 360 * e.getCurColorHsv().h );
+						$( '#menu-top, #playback-controls button, #tab-playlist a, .menu a, .submenu' ).css( 'background', 'hsl('+ h +',5%,30%)' );
+						$( '.btnlist-top, #tab-playback a' ).css( 'background', 'hsl('+ h +',5%,20%)' );
+						$( '.licover i, .lidir, .db-icon, .gr' ).css( 'cssText', 'color: hsl('+ h +',5%,60%) !important');
+						$( '#tab-playback, #db-entries li.active i, #db-entries li.active .time, #db-entries li.active .li2' ).css( 'color', 'hsl('+ h +',5%,30%)' );
 						$( '#playback-controls .active, #tab-library a, #db-home, #db-entries li.active, #colorok' ).css( 'background-color', hex );
 						$( '#rootpath, #db-back, .lialbum' ).css( 'color', hex );
 						$( '.logo path.st0' ).css( 'fill', hex )
@@ -274,6 +279,17 @@ $( '#displaycolor' ).click( function( e ) {
 	} );
 	mutationAlbum.observe( observerLibrary, observerOption );
 } );
+function hsv2hsl( hsv ) {
+	var s = hsv.s;
+	var v = hsv.v;
+	var L = ( 2 - s ) * v / 2;
+	if ( L && L < 1 ) {
+		S = L < 0.5 ? s * v / ( L * 2 ) : s * v / ( 2 - L * 2 );
+		return [ Math.round( 360 * hsv.h ), Math.round( S * 100 ), Math.round( L * 100 ) ];
+	} else {
+		return [ 0, 0, L * 100 ];
+	}
+}
 $( '#colorok' ).click( function() {
 	var rgb = colorpicker.getCurColorRgb();
 	if ( 'rgb('+ rgb.r +', '+ rgb.g +', '+ rgb.b +')' === GUI.color ) {
@@ -296,8 +312,10 @@ $( '#colorok' ).click( function() {
 $( '#colorcancel' ).click( function() {
 	colorpicker.destroy();
 	$( '#divcolorpicker' ).addClass( 'hide' );
-	$( '#playback-controls .active, #tab-library a, #db-home, #db-entries li.active, #colorok' ).css( 'background-color', '' );
-	$( '#rootpath, #db-back, .lialbum' ).css( 'color', '' );
+	$( '#playback-controls button, #tab-library a, #db-home, #db-entries li.active, #colorok, \
+		#menu-top, #tab-playlist a, .menu a, .submenu, .btnlist-top, #tab-playback a' ).css( 'background-color', '' );
+	$( '#rootpath, #db-back, .lialbum, .licover i, .lidir, .db-icon, .gr, #tab-playback, \
+		#db-entries li.active i, #db-entries li.active .time, #db-entries li.active .li2' ).css( 'color', '' );
 	$( '.logo path.st0' ).css( 'fill', '' )
 	$( 'body' ).removeClass( 'disablescroll' );
 } );
