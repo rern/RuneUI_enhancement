@@ -15,11 +15,6 @@ function notify( title, message, icon, delay ) {
 	var iconhtml = icon ? '<i class="fa fa-'+ ( icon || 'check' ) +' wh"></i>' : '';
 	$( '#bannerTitle' ).html( iconhtml + title );
 	$( '#bannerMessage' ).html( message );
-	var $banner = $( '#banner' );
-	$banner.show();
-	// keep gradient width at 80px when width varies
-	var bW = $banner.outerWidth();
-	$banner.css( 'background', 'linear-gradient( to right, hsl(200,100%,40%)/*c*/ '+ Math.round( ( bW - 80 ) / bW * 100 ) +'%, rgba( 0,0,0,0 ) 100% )' );
-	
+	$( '#banner' ).show();
 	if ( delay !== -1 ) setTimeout( bannerHide, delay || 3000 );
 }
