@@ -31,8 +31,8 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		}
 		if ( isset( $loadCue ) ) exit();
 	}
-	$cmdpl = explode( ' ', $cmd )[ 1 ];
-	if ( $cmdpl === 'save' || $cmdpl === 'rm' ) {
+	$mpccmd = explode( ' ', $cmd )[ 1 ];
+	if ( $mpccmd === 'save' || $mpccmd === 'rm' ) {
 		$data = lsPlaylists();
 		pushstream( 'playlist', $data );
 	}
@@ -44,7 +44,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$type = $_POST[ 'list' ];
 		if ( $type === 'file' ) {
 			$data = search2array( $result );
-			if ( !isset( $data[ 'playlist' ] ) && substr( $mpc, 0, 10 ) !== 'mpc search' ) {
+			if ( !isset( $data[ 'playlist' ] ) && $mpccmd !== 'search' ) {
 				$data[][ 'coverart' ] = getCover( $data[ 0 ][ 'file' ] );
 			}
 		} else {
