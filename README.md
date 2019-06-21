@@ -61,6 +61,7 @@ _Tested on RuneAudio 0.4b, 0.5_
 - Context menu
 	- Icon on the right removed
 	- Use icon on the left instead
+- Highlight search keyword in result
 - Crop Playlist
 - Consume mode
 - Keyboard navigation
