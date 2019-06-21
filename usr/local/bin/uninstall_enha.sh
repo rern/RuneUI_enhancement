@@ -62,6 +62,8 @@ if [[ $1 == u ]]; then
 fi
 
 ########## if not update ############################################################
+# set color to default
+setColor 1
 
 # convert playlists back to default (omit cue)
 dir=/srv/http/assets/img/playlists
