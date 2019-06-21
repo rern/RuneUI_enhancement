@@ -905,10 +905,12 @@ function getData( options ) {
 		$.post( 'enhance.php', command[ mode ], function( data ) {
 			if ( data ) {
 				if ( cmd === 'search' ) {
+					var regex = new RegExp( keyword, 'ig' );
 					$.each( data, function( i, v ) {
-						var regex = new RegExp( keyword, 'ig' );
-						if ( 'Title' in v ) data[ i ][ 'Title' ] = v.Title.replace( regex, function( match ) {
+						[ 'Title', 'Album', 'Artist' ].forEach( function( key ) {
+							if ( key in v ) data[ i ][ key ] = v[ key ].replace( regex, function( match ) {
 						return '<bl>'+ match +'</bl>' } );
+						} );
 					} );
 				}
 				dataParse( data, path );
