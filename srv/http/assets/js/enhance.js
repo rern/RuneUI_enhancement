@@ -1541,6 +1541,9 @@ $( '#pl-search-close, #plsearchbtn' ).click( function() {
 	$( '#pl-search-close, #pl-search, #plsearchbtn' ).addClass( 'hide' );
 	$( '#pl-count, #pl-manage, #pl-searchbtn, #pl-entries li' ).removeClass( 'hide' );
 	$( '#pl-filter' ).val( '' );
+	$( '#pl-entries' ).html( function() {
+		return $( this ).html().replace( /<bl>|<\/bl>/g, '' );
+	} )
 } );
 $( '#pl-searchbtn' ).click( function() {
 	$( '#pl-search-close, #pl-search, #plsearchbtn' ).removeClass( 'hide' );
