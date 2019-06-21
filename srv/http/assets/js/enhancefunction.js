@@ -277,6 +277,7 @@ function renderPlayback() {
 	var status = GUI.status;
 	if ( status.coverart ) $( '.licover-save' ).remove();
 	// song and album before update for song/album change detection
+	var previousartist = $( '#artist' ).text();
 	var previoussong = $( '#song' ).text();
 	var previousalbum = $( '#album' ).text();
 	// volume
@@ -360,7 +361,7 @@ function renderPlayback() {
 	
 	$( '#cover-art' ).css( 'border-radius', '' );
 	$( '#coverartoverlay' ).addClass( 'hide' );
-	if ( status.Title !== previoussong || status.Album !== previousalbum || !status.Album ) {
+	if ( status.Artist !== previousartist || status.Album !== previousalbum ) {
 		$( '#cover-art' )
 			.attr( 'src', status.coverart || coverrune )
 			.css( 'border-radius', '' );
