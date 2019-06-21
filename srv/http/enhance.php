@@ -656,7 +656,7 @@ function playlistInfo( $save = '' ) { // fix -  mpd unable to save cue/m3u prope
 		$file = $Range = $AlbumArtist = $Title = $Album = $Artist = $Track = $Time = $webradio = $thumb = $img = '';
 		$data = strtok( $line, "\n" );
 		while ( $data !== false ) {
-			$pair = explode( ': ', $data );
+			$pair = explode( ': ', $data, 2 );
 			switch( $pair[ 0 ] ) {
 				case 'file': $file = $pair[ 1 ]; break;
 				case 'Range': $Range = $pair[ 1 ]; break;
