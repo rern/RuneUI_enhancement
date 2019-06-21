@@ -397,7 +397,7 @@ function renderPlayback() {
 									canvas.getContext( '2d' ).drawImage( this, 0, 0 );
 									$( '#cover-art' )
 										.attr( 'src', canvas.toDataURL( 'image/jpeg' ) )
-										.after( '<i class="edit licover-save fa fa-save"></i>' );
+										.after( '<div class="edit licover-save"><i class="fa fa-save"></i></div>' );
 									GUI.coversave = 1;
 								}
 							}
