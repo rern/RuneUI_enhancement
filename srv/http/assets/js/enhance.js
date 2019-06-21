@@ -259,12 +259,13 @@ $( '#displaycolor' ).click( function( e ) {
 					change : function( e ) {
 						var hex = e.getCurColorHex();
 						var h = Math.round( 360 * e.getCurColorHsv().h );
-						$( '#menu-top, #playback-controls button, #tab-playlist a, .menu a, .submenu' ).css( 'background', 'hsl('+ h +',5%,30%)' );
-						$( '.btnlist-top, #tab-playback a' ).css( 'background', 'hsl('+ h +',5%,20%)' );
-						$( '.licover i, .lidir, .db-icon, .gr' ).css( 'cssText', 'color: hsl('+ h +',5%,60%) !important');
-						$( '#tab-playback, #db-entries li.active i, #db-entries li.active .time, #db-entries li.active .li2' ).css( 'color', 'hsl('+ h +',5%,30%)' );
-						$( '.menu a' ).css( 'border-top', '1px solid hsl('+ h +',5%,20%)' );
-						$( '#db-entries li' ).css( 'border-bottom', '1px solid hsl('+ h +',5%,20%)' );
+						var hsg = 'hsl('+ h +',3%,';
+						$( '#menu-top, #playback-controls button, #tab-playlist a, .menu a, .submenu, #colorcancel' ).css( 'background', hsg +'30%)' );
+						$( '.btnlist-top, #tab-playback a' ).css( 'background', hsg +'20%)' );
+						$( '.licover i, .lidir, .db-icon, gr' ).css( 'cssText', 'color: '+ hsg +'60%) !important;' );
+						$( '#tab-playback, #db-entries li.active i, #db-entries li.active .time, #db-entries li.active .li2' ).css( 'color', hsg +'30%)' );
+						$( '.menu a' ).css( 'border-top', '1px solid '+ hsg +'20%)' );
+						$( '#db-entries li' ).css( 'border-bottom', '1px solid '+ hsg +'20%)' );
 						$( '#playback-controls .active, #tab-library a, #db-home, #db-entries li.active, #colorok' ).css( 'background-color', hex );
 						$( '#rootpath, #db-back, .lialbum' ).css( 'color', hex );
 						$( '.logo path.st0' ).css( 'fill', hex )
@@ -314,9 +315,9 @@ $( '#colorok' ).click( function() {
 $( '#colorcancel' ).click( function() {
 	colorpicker.destroy();
 	$( '#divcolorpicker' ).addClass( 'hide' );
-	$( '#playback-controls button, #tab-library a, #db-home, #db-entries li.active, #colorok, \
+	$( '#playback-controls button, #tab-library a, #db-home, #db-entries li.active, #colorok, #colorcancel, \
 		#menu-top, #tab-playlist a, .menu a, .submenu, .btnlist-top, #tab-playback a' ).css( 'background-color', '' );
-	$( '#rootpath, #db-back, .lialbum, .licover i, .lidir, .db-icon, .gr, #tab-playback, \
+	$( '#rootpath, #db-back, .lialbum, .licover i, .lidir, .db-icon, gr, #tab-playback, \
 		#db-entries li.active i, #db-entries li.active .time, #db-entries li.active .li2' ).css( 'color', '' );
 	$( '.logo path.st0' ).css( 'fill', '' )
 	$( '.menu a' ).css( 'border-top', '' );
