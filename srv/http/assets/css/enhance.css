@@ -3,15 +3,15 @@
 /* main:       hsl(200,100%,40%)/*c*/
 /* main:active hsl(200,100%,30%)/*ca*/
 
-/* gray:hover  hsl(200,5%,40%)/*cgh*/
-/* gray:       hsl(200,5%,30%)/*cg*/
-/* gray:active hsl(200,5%,20%)/*cga*/
+/* gray:hover  hsl(200,3%,40%)/*cgh*/
+/* gray:       hsl(200,3%,30%)/*cg*/
+/* gray:active hsl(200,3%,20%)/*cga*/
 
-/* dark:hover  hsl(200,5%,30%)/*cdh*/
-/* dark:       hsl(200,5%,20%)/*cd*/
-/* dark:active hsl(200,5%,10%)/*cda*/
+/* dark:hover  hsl(200,3%,30%)/*cdh*/
+/* dark:       hsl(200,3%,20%)/*cd*/
+/* dark:active hsl(200,3%,10%)/*cda*/
 
-/* light:      hsl(200,5%,60%)/*cgl*/
+/* light:      hsl(200,3%,60%)/*cgl*/
 
 @font-face {
 	font-family: Lato;
@@ -160,8 +160,8 @@ a:hover {
 w, wh, .wh { color: #e0e7ee !important; }
 #infoMessage .fa-coverart { color: #e0e7ee; }
 bl, .bl { color: hsl(200,100%,40%)/*c*/ !important; }
-gr, .gr { color: hsl(200,5%,60%)/*cgl*/ !important; }
-.bgr { background-color: hsl(200,5%,60%)/*cgl*/ !important; }
+gr, .gr { color: hsl(200,3%,60%)/*cgl*/ !important; }
+.bgr { background-color: hsl(200,3%,60%)/*cgl*/ !important; }
 wh, gr { font-weight: 300; }
 #timepos wh,
 .infocontent i {
@@ -169,7 +169,7 @@ wh, gr { font-weight: 300; }
 	margin-right: 5px;
 	text-align: center;
 	font-size: 22px;
-	color: hsl(200,5%,60%)/*cgl*/;
+	color: hsl(200,3%,60%)/*cgl*/;
 }
 .infocol {
 	width: 155px;
@@ -196,7 +196,7 @@ i.bookmark,
 	font-weight: normal;
  }
 .disable {
-	color: hsl(200,5%,60%)/*cgl*/;
+	color: hsl(200,3%,60%)/*cgl*/;
 }
 @keyframes blinkopaque {
 	50% { opacity: 0; }
@@ -264,8 +264,8 @@ svg path.st1 {
 	font-size: 16px;
 	line-height: 40px;
 	color: #e0e7ee;
-	background: hsl(200,5%,30%)/*cg*/;
-	border-top: 1px solid hsl(200,5%,20%)/*cd*/ !important;
+	background: hsl(200,3%,30%)/*cg*/;
+	border-top: 1px solid hsl(200,3%,20%)/*cd*/ !important;
 }
 .menu a:nth-of-type( 1 ) {
 	border-top: none;
@@ -280,18 +280,18 @@ svg path.st1 {
 	text-shadow: 1px 1px 2px #000000;
 }
 .menu i.gr {
-	color: hsl(200,5%,60%)/*cgl*/ !important;
+	color: hsl(200,3%,60%)/*cgl*/ !important;
 }
 .submenu {
 	float: right;
 	width: 41px;
 	height: 41px;
-	background: hsl(200,5%,30%)/*cg*/;
-	border-left: 1px solid hsl(200,5%,20%)/*cd*/;
+	background: hsl(200,3%,30%)/*cg*/;
+	border-left: 1px solid hsl(200,3%,20%)/*cd*/;
 }
 .menu a.active,
 .submenu.active {
-	background: hsl(200,5%,40%)/*cgh*/;
+	background: hsl(200,3%,40%)/*cgh*/;
 }
 #settings .gr {
 	font-size: 22px;
@@ -316,7 +316,7 @@ svg path.st1 {
 	position: fixed;
 	width: 100%;
 	height: 40px;
-	background: hsl(200,5%,30%)/*cg*/;
+	background: hsl(200,3%,30%)/*cg*/;
 	z-index: 1000;
 }
 #menu-top {
@@ -391,7 +391,7 @@ svg path.st1 {
 }
 #playback-controls button {
 	margin: 0 10px;
-	background: hsl(200,5%,30%)/*cg*/;
+	background: hsl(200,3%,30%)/*cg*/;
 }
 #playback-controls button.active {
 	background-color: hsl(200,100%,40%)/*c*/;
@@ -404,10 +404,10 @@ svg path.st1 {
 	outline: none !important;
 }
 .btn-default {
-	background-color: hsl(200,5%,30%)/*cg*/;
+	background-color: hsl(200,3%,30%)/*cg*/;
 }
 #settings .fa-gpio {
-	color: hsl(200,5%,60%)/*cgl*/;
+	color: hsl(200,3%,60%)/*cgl*/;
 }
 #settings a.on .fa-gpio {
 	color: #0f0 !important;
@@ -458,14 +458,14 @@ svg path.st1 {
 	width: 33%;
 	margin: 0;
 	padding: 0;
-	background: hsl(200,5%,30%)/*cg*/;
+	background: hsl(200,3%,30%)/*cg*/;
 	font-size: 30px;
 	text-align: center;
 	color: #e0e7ee;
 }
 #tab-playback a {
 	width: 34%;
-	background: hsl(200,5%,20%)/*cd*/;
+	background: hsl(200,3%,20%)/*cd*/;
 }
 #menu-bottom ul,
 #menu-bottom li {
@@ -531,13 +531,13 @@ svg path.st1 {
 	font-size: 18px
 }
 .albumradio {
-	color: hsl(200,5%,40%)/*cgh*/;
+	color: hsl(200,3%,40%)/*cgh*/;
 	font-weight: 300;
 }
 #sampling {
 	height: 40px;
 	text-align: center;
-	color: hsl(200,5%,60%)/*cgl*/
+	color: hsl(200,3%,60%)/*cgl*/
 }
 #sampling span {
 	padding: 0;
@@ -747,7 +747,7 @@ svg path.st1 {
 }
 #total {
 	top: 136px;
-	color: hsl(200,5%,60%)/*cgl*/;
+	color: hsl(200,3%,60%)/*cgl*/;
 }
 #volume,
 #total {
@@ -875,7 +875,7 @@ svg path.st1 {
 	width: 120px;
 	height: 40px;
 	border-radius: 6px;
-	box-shadow: 0 0 1px 1px hsl(200,5%,20%)/*cga*/;
+	box-shadow: 0 0 1px 1px hsl(200,3%,20%)/*cga*/;
 	z-index: -10;
 }
 #share-group .btn-group:before {
@@ -893,22 +893,22 @@ svg path.st1 {
 #voldn {
 	background: -webkit-radial-gradient(100% -50%, 300% 190%, hsla(0,0%,100%,.3) 50%, hsla(0,0%,100%,0) 53%); /* button highlight - last % for anti-alias edge*/
 	background: radial-gradient(225% 90% at 100% 0% ,hsla(0,0%,100%,.3) 50%,hsla(0,0%,100%,0) 55%); /* (Width% Heigth% at H-center_offset% V-center_offset%, hsla(0,0%,100%,1st-T) 1st-area%, hsla(0,0%,100%,2nd-T) 2nd-area%)) */
-	background-color: hsl(200,5%,30%)/*cg*/;
+	background-color: hsl(200,3%,30%)/*cg*/;
 }
 #random,
 #volmute {
 	background: -webkit-linear-gradient(top, hsla(0,0%,100%,.3) 0%, hsla(0,0%,100%,.3) 45%,rgba(0,0,0,0) 50%, rgba(0,0,0,0) 100%);
 	background: linear-gradient(to bottom, hsla(0,0%,100%,.3) 0%, hsla(0,0%,100%,.3) 45%, rgba(0,0,0,0) 50%,rgba(0,0,0,0) 100%);
-	background-color: hsl(200,5%,30%)/*cg*/;
-	border-left: 1px solid hsl(200,5%,20%)/*cga*/;
+	background-color: hsl(200,3%,30%)/*cg*/;
+	border-left: 1px solid hsl(200,3%,20%)/*cga*/;
 }
 #single,
 #bio-open,
 #volup {
 	background: -webkit-radial-gradient(0% -50%, 400% 190%, hsla(0,0%,100%,.3) 50%, hsla(0,0%,100%,0) 53%); 
 	background: radial-gradient(300% 90% at 0% 0% ,hsla(0,0%,100%,.3) 50%,hsla(0,0%,100%,0) 55%);
-	background-color: hsl(200,5%,30%)/*cg*/;
-	border-left: 1px solid hsl(200,5%,20%)/*cga*/;
+	background-color: hsl(200,3%,30%)/*cg*/;
+	border-left: 1px solid hsl(200,3%,20%)/*cga*/;
 }
 
 .close-root {
@@ -926,7 +926,7 @@ svg path.st1 {
 }
 .rs-range-color,
 #time .rs-path-color {
-	background: hsl(200,5%,30%)/*cg*/;
+	background: hsl(200,3%,30%)/*cg*/;
 }
 .rs-tooltip {
 	top: 40% !important;
@@ -947,12 +947,12 @@ svg path.st1 {
 	opacity: 0;
 }
 #volume .rs-path-color {
-	background: linear-gradient( hsl(200,5%,30%)/*cg*/, #000000 );
+	background: linear-gradient( hsl(200,3%,30%)/*cg*/, #000000 );
 }
 #volume .rs-handle {
-	border: 1px solid hsl(200,5%,20%)/*cga*/;
+	border: 1px solid hsl(200,3%,20%)/*cga*/;
 	background: hsl(200,100%,40%)/*c*/;
-	box-shadow: inset hsl(200,5%,20%)/*cga*/ 0 5px 5px;
+	box-shadow: inset hsl(200,3%,20%)/*cga*/ 0 5px 5px;
 }
 .rs-outer {
 	position: relative; /* overlay */
@@ -996,7 +996,7 @@ svg path.st1 {
 }
 #time .rs-inner {
 	position: relative;
-	background: linear-gradient( hsl(200,5%,30%)/*cg*/, #000000 );
+	background: linear-gradient( hsl(200,3%,30%)/*cg*/, #000000 );
 }
 #time .rs-animation,
 #time .rs-transition { /* fix: flickering on iOS */
@@ -1068,7 +1068,7 @@ svg path.st1 {
 }
 p.hrbl {
 	margin: 20px 0 10px 0;
-	border-bottom: 1px solid hsl(200,5%,20%)/*cga*/;
+	border-bottom: 1px solid hsl(200,3%,20%)/*cga*/;
 }
 #biocontent {
 	font-size: 16px;
@@ -1085,10 +1085,10 @@ p.hrbl {
 	color: #e0e7ee;
 }
 #biocontent i {
-	color: hsl(200,5%,40%)/*cgh*/;
+	color: hsl(200,3%,40%)/*cgh*/;
 }
 #biocontent span {
-	color: hsl(200,5%,60%)/*cgl*/;
+	color: hsl(200,3%,60%)/*cgl*/;
 }
 #bioimg {
 	float: left;
@@ -1135,9 +1135,9 @@ p.hrbl {
 	position: relative;
 	height: 110px;
 	padding: 25px 5px 10px 5px;
-	background: hsl(200,5%,20%)/*cd*/;
+	background: hsl(200,3%,20%)/*cd*/;
 	border-radius: 10px;
-	color: hsl(200,5%,60%)/*cgl*/;
+	color: hsl(200,3%,60%)/*cgl*/;
 	text-align: center;
 }
 .home-block i {
@@ -1147,7 +1147,7 @@ p.hrbl {
 	line-height: 40px;
 	font-size: 48px;
 	text-align: center;
-	color: hsl(200,5%,60%)/*cgl*/;
+	color: hsl(200,3%,60%)/*cgl*/;
 }
 #home-blocks gr {
 	font-size: 18px;
@@ -1264,7 +1264,7 @@ p.hrbl {
 	position: fixed;
 	width: 100%;
 	height: 40px;
-	background: hsl(200,5%,20%)/*cd*/;
+	background: hsl(200,3%,20%)/*cd*/;
 	top: 0;
 	padding-right: 10px;
 	box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.6);
@@ -1304,7 +1304,7 @@ p.hrbl {
 	font-size: 22px;
 }
 .form-control:focus {
-	border: 2px solid hsl(200,5%,20%)/*cga*/;
+	border: 2px solid hsl(200,3%,20%)/*cga*/;
 	border-radius: 6px;
 	-webkit-box-shadow: none;
 	box-shadow: none;
@@ -1410,7 +1410,7 @@ p.hrbl {
 	display: inline-block;
 	height: 32px;
 	margin: 0;
-	border: 1px solid hsl(200,5%,30%)/*cg*/;
+	border: 1px solid hsl(200,3%,30%)/*cg*/;
 	border-bottom-right-radius: 0;
 	border-top-right-radius: 0;
 	background-color: #000000;
@@ -1431,7 +1431,7 @@ p.hrbl {
 }
 #db-search-close span a,
 #pl-search-close span a {
-	color: hsl(200,5%,60%)/*cgl*/;
+	color: hsl(200,3%,60%)/*cgl*/;
 }
 #db-currentpath span i {
 	margin: 0 10px;
@@ -1450,14 +1450,14 @@ p.hrbl {
 	height: 100%;
 	padding: 20px 0 0 0;
 	list-style: none;
-	background: hsl(200,5%,30%)/*cg*/;
+	background: hsl(200,3%,30%)/*cg*/;
 }
 .index li {
 	text-align: center;
 	color: #e0e7ee;
 }
 .index .gr {
-	color: hsl(200,5%,20%)/*cd*/;
+	color: hsl(200,3%,20%)/*cd*/;
 }
 .coverart {
 	display: inline-block;
@@ -1520,7 +1520,7 @@ p.hrbl {
 }
 .lidir {
 	margin-left: 37px;
-	color: hsl(200,5%,60%)/*cgl*/;
+	color: hsl(200,3%,60%)/*cgl*/;
 }
 #db-entries,
 #pl-editor {
@@ -1542,7 +1542,7 @@ p.hrbl {
 	display: block;
 	height: 49px;
 	line-height: 20px;
-	border-bottom: 1px solid hsl(200,5%,20%)/*cd*/;
+	border-bottom: 1px solid hsl(200,3%,20%)/*cd*/;
 	font-size: 15px;
 	background: #10161c
 	-webkit-user-select: none;
@@ -1643,7 +1643,7 @@ span.dbpath {
 	font-size: 26px;
 	line-height: 40px;
 	text-align: center;
-	color: hsl(200,5%,60%)/*cgl*/;
+	color: hsl(200,3%,60%)/*cgl*/;
 }
 .db-icon,
 .pl-icon {
@@ -1674,7 +1674,7 @@ span.dbpath {
 }
 #li-count,
 #li-count i {
-	color: hsl(200,5%,60%)/*cgl*/ !important;
+	color: hsl(200,3%,60%)/*cgl*/ !important;
 }
 #li-count span {
 	color: #e0e7ee;
@@ -1685,7 +1685,7 @@ span.dbpath {
 	height: 40px;
 	line-height: 40px;
 	font-size: 18px;
-	color: hsl(200,5%,60%)/*cgl*/;
+	color: hsl(200,3%,60%)/*cgl*/;
 }
 #countsong,
 #pltime,
@@ -1704,7 +1704,7 @@ span.dbpath {
 #db-entries li,
 #pl-entries li {
 	font-size: 18px;
-	color: hsl(200,5%,60%)/*cgl*/;
+	color: hsl(200,3%,60%)/*cgl*/;
 }
 #db-entries li span,
 .li1,
@@ -1744,7 +1744,7 @@ w {
 	margin: 0 3px 0 7px;
 }
 .time {
-	color: hsl(200,5%,60%)/*cgl*/ !important;
+	color: hsl(200,3%,60%)/*cgl*/ !important;
 }
 #db-entries .li2,
 #pl-entries .li2,
@@ -1752,7 +1752,7 @@ w {
 	display: block;
 	max-width: calc( 100vw - 60px );
 	font-size: 12px;
-	color: hsl(200,5%,60%)/*cgl*/
+	color: hsl(200,3%,60%)/*cgl*/
 }
 #pl-entries .unsaved {
 	color: #e0e7ee;
@@ -1762,10 +1762,10 @@ li.active .li2,
 li.active gr,
 li.active .time,
 .licover.active i.fa-list-ul {
-	color: hsl(200,5%,30%)/*cg*/ !important;
+	color: hsl(200,3%,30%)/*cg*/ !important;
 }
 .liinfo .fa:not(.fa-music) {
-	color: hsl(200,5%,60%)/*cgl*/ !important;
+	color: hsl(200,3%,60%)/*cgl*/ !important;
 }
 #pl-entries.playlist-spotify li:before {
 	content: "\f1bc";
@@ -1782,20 +1782,20 @@ li.active .time,
 	color: #e0e7ee;
 }
 .db-sortable-ghost .home-block {
-	background: hsl(200,5%,60%)/*cgl*/;
+	background: hsl(200,3%,60%)/*cgl*/;
 }
 .db-sortable-ghost .home-block > * {
 	opacity: 0.5;
 }
 .pl-sortable-ghost {
-	background: hsl(200,5%,60%)/*cgl*/;
+	background: hsl(200,3%,60%)/*cgl*/;
 }
 .pl-sortable-ghost .pl-icon {
 	visibility: hidden;
 }
 .pl-sortable-ghost a,
 .pl-sortable-ghost .li2 {
-	color: hsl(200,5%,30%)/*cg*/ !important;
+	color: hsl(200,3%,30%)/*cg*/ !important;
 }
 .pl-sortable-ghost:before {
 	position: absolute;
@@ -1870,7 +1870,7 @@ li.active .time,
 	height: 36px;
 	line-height: 36px;
 	border-radius: 50%;
-	background: hsl(200,5%,30%)/*cg*/;
+	background: hsl(200,3%,30%)/*cg*/;
 	cursor: pointer;
 	text-shadow: 2px 2px 4px #000000;
 	box-shadow: 0 0 6px 5px #000000;
@@ -1897,7 +1897,7 @@ li.active .time,
 #banner .li2,
 #banner .time,
 #banner .li2 {
-	color: hsl(200,5%,30%)/*cg*/ !important;
+	color: hsl(200,3%,30%)/*cg*/ !important;
 }
 #bannerTitle i {
 	width: 20px;
@@ -2153,10 +2153,10 @@ li.active .time,
 #pl-searchbtn:active:hover,
 #playback-controls button:active:hover,
 #playback-row .btn:active:hover {
-	background-color: hsl(200,5%,20%)/*cga*/ !important;
+	background-color: hsl(200,3%,20%)/*cga*/ !important;
 }
 #db-entries li:active:hover,
 #pl-editor li:active:hover,
 #pl-entries li:active:hover {
-	background-color: hsl(200,5%,10%)/*cda*/ !important;
+	background-color: hsl(200,3%,10%)/*cda*/ !important;
 }

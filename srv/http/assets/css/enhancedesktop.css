@@ -33,7 +33,7 @@
 #menu-settings:hover,
 #playback-controls button:hover,
 #playback-row .btn:hover {
-	background-color: hsl(200,5%,40%)/*cgh*/ !important;
+	background-color: hsl(200,3%,40%)/*cgh*/ !important;
 }
 .divblock.updn .home-block,
 .fa-arrow-left:hover,
@@ -44,7 +44,7 @@
 #pl-manage i:hover,
 #pl-searchbtn:hover,
 #plsearchbtn:hover {
-	background-color: hsl(200,5%,30%)/*cdh*/ !important;
+	background-color: hsl(200,3%,30%)/*cdh*/ !important;
 }
 .lifocus {
 	background-color: hsl(0,0%,20%)/*bf*/ !important;
