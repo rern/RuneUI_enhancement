@@ -387,8 +387,8 @@ function renderPlayback() {
 							var image = data.images[ 0 ][ 'image' ];
 							if ( image ) {
 								var img = new Image();
+								img.crossOrigin = 'anonymous';
 								img.src = image;
-								img.setAttribute( 'crossOrigin', 'anonymous' );
 								img.onload = function() {
 									var canvas = document.createElement( 'canvas' );
 									canvas.width = this.width;
