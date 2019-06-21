@@ -1516,13 +1516,21 @@ $( '#plclear' ).click( function() {
 } );
 $( '#pl-filter' ).keyup( function() {
 	var keyword = $( this ).val();
+	var regex = new RegExp( keyword, 'i' );
 	var count = 0;
 	$( '#pl-entries li' ).each( function() {
 		var $this = $( this );
-		var match = ( $this.text().search( new RegExp( keyword, 'i' ) ) !== -1 ) ? true : false;
+		var match = ( $this.text().search( regex ) !== -1 ) ? 1 : 0;
 		count = match ? ( count + 1 ) : count;
 		$this.toggleClass( 'hide', !match );
+		if ( !$this.hasClass( 'hide' ) ) {
+			var name = $this.find( '.name' ).text().replace( regex, function( match ) { return '<bl>'+ match +'</bl>' } );
+			var li2 = $this.find( '.li2' ).text().replace( regex, function( match ) { return '<bl>'+ match +'</bl>' } );
+			$this.find( '.name' ).html( name );
+			$this.find( '.li2' ).html( li2 );
+		}
 	} );
+	$( 'html, body' ).scrollTop( 0 );
 	if ( keyword ) {
 		$( '#pl-search-close span' ).html( count +' <a>of</a> ' );
 	} else {
