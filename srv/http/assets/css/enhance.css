@@ -531,7 +531,7 @@ svg path.st1 {
 	font-size: 18px
 }
 .albumradio {
-	color: #415871;
+	color: hsl(40,5%,40%)/*cgh*/
 	font-weight: 300;
 }
 #sampling {
