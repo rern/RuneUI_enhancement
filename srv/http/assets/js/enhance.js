@@ -71,11 +71,18 @@ $.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 	}, 'json' );
 }, 'json' );
 
+// MutationObserver - watch for '#db-entries' content changed then scroll to previous position
+var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+var observerOption = { childList: true };
+var observerLibrary = document.getElementById( 'db-entries' );
+
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 $( '#splash' ).click( function() {
 	$( this ).remove();
 } );
+$( '#banner' ).click( bannerHide );
+
 $( '#cover-art' ).on( 'error', function() {
 	var $this = $( this );
 	$this.unbind( 'error' );
@@ -98,6 +105,10 @@ $( '#menu-settings, #badge' ).click( function() {
 	$( '#settings' )
 		.toggleClass( 'hide' )
 		.css( 'top', ( GUI.bars ? '40px' : 0 ) );
+	$( '.contextmenu' ).addClass( 'hide' );
+} );
+$( '#settingsmenu' ).click( function( e ) {
+	location.href = $( e.target ).hasClass( 'submenu' ) ? '/credits' : '/settings';
 } );
 var chklibrary = {
 	  coverart       : '_<i class="fa fa-coverart"></i>CoverArt'
@@ -215,6 +226,106 @@ $( '#turnoff' ).click( function( e ) {
 			$( '#loader' ).removeClass( 'hide' );
 		} ]
 	} );
+} );
+$( '#displaycolor' ).click( function( e ) {
+	if ( $( '#home-album gr' ).text() == 0 ) {
+		info( {
+			  icon    : 'brush'
+			, title   : 'Color Editor'
+			, message : 'Need at least 1 album in Library.'
+		} );
+		return
+	}
+	if ( $( e.target ).hasClass( 'submenu' ) ) {
+		$.post( 'enhance.php', { color : [ 200, 100, 40 ] } );
+		return
+	}
+	
+	$( '#tab-library' ).click();
+	$( '#home-album' ).click();
+	
+	var mutationAlbum = new MutationObserver( function() {
+		if ( !$( '.licover' ).length ) {
+			$( '#db-entries li:eq( 0 )' ).tap();
+		} else {
+			$( '#db-entries .db-icon:eq(1)' ).tap();
+			$( '#colorok' ).before( '<canvas id="colorpicker"></canvas>' );
+			GUI.color = $( '#db-home' ).css( 'background-color' );
+			colorpicker = new KellyColorPicker( {
+				  place  : 'colorpicker'
+				, size   : 230
+				, color  : GUI.color
+				, userEvents : {
+					change : function( e ) {
+						var hex = e.getCurColorHex();
+						var h = Math.round( 360 * e.getCurColorHsv().h );
+						var hsg = 'hsl('+ h +',3%,';
+						$( '#menu-top, #playback-controls button, #tab-playlist a, .menu a, .submenu, #colorcancel' ).css( 'background', hsg +'30%)' );
+						$( '.btnlist-top, #tab-playback a' ).css( 'background', hsg +'20%)' );
+						$( '.licover i, .lidir, .db-icon, gr' ).css( 'cssText', 'color: '+ hsg +'60%) !important;' );
+						$( '#tab-playback, #db-entries li.active i, #db-entries li.active .time, #db-entries li.active .li2' ).css( 'color', hsg +'30%)' );
+						$( '.menu a' ).css( 'border-top', '1px solid '+ hsg +'20%)' );
+						$( '#db-entries li' ).css( 'border-bottom', '1px solid '+ hsg +'20%)' );
+						$( '#playback-controls .active, #tab-library a, #db-home, #db-entries li.active, #colorok' ).css( 'background-color', hex );
+						$( '#rootpath, #db-back, .lialbum' ).css( 'color', hex );
+						$( '.logo path.st0' ).css( 'fill', hex )
+					}
+				}
+			} );
+			var top = $( '#db-entries li:eq( 1 )' ).offset().top;
+			$( '#colorpicker' ).css( 'margin-top', top );
+			$( '#colorcancel' ).css( 'top', ( top + 20 ) +'px' );
+			$( '#divcolorpicker' ).removeClass( 'hide' );
+			$( 'body' ).addClass( 'disablescroll' );
+			mutationAlbum.disconnect();
+		}
+	} );
+	mutationAlbum.observe( observerLibrary, observerOption );
+} );
+function hsv2hsl( hsv ) {
+	var s = hsv.s;
+	var v = hsv.v;
+	var L = ( 2 - s ) * v / 2;
+	if ( L && L < 1 ) {
+		S = L < 0.5 ? s * v / ( L * 2 ) : s * v / ( 2 - L * 2 );
+		return [ Math.round( 360 * hsv.h ), Math.round( S * 100 ), Math.round( L * 100 ) ];
+	} else {
+		return [ 0, 0, L * 100 ];
+	}
+}
+$( '#colorok' ).click( function() {
+	var rgb = colorpicker.getCurColorRgb();
+	if ( 'rgb('+ rgb.r +', '+ rgb.g +', '+ rgb.b +')' === GUI.color ) {
+		$( '#colorcancel' ).click();
+		return
+	}
+	
+	var hsv = colorpicker.getCurColorHsv(); // hsv = { h: N, s: N, v: N } N = 0-1
+	var s = hsv.s;
+	var v = hsv.v;
+	var L = ( 2 - s ) * v / 2;
+	if ( L && L < 1 ) {
+		S = L < 0.5 ? s * v / ( L * 2 ) : s * v / ( 2 - L * 2 );
+		var hsl = [ Math.round( 360 * hsv.h ), Math.round( S * 100 ), Math.round( L * 100 ) ];
+	} else {
+		var hsl = [ 0, 0, L * 100 ];
+	}
+	$.post( 'enhance.php', { color : hsl } );
+} );
+$( '#colorcancel' ).click( function() {
+	colorpicker.destroy();
+	$( '#divcolorpicker' ).addClass( 'hide' );
+	$( '#playback-controls button, #tab-library a, #db-home, #db-entries li.active, #colorok, #colorcancel, \
+		#menu-top, #tab-playlist a, .menu a, .submenu, .btnlist-top, #tab-playback a' ).css( 'background-color', '' );
+	$( '#rootpath, #db-back, .lialbum, .licover i, .lidir, .db-icon, gr, #tab-playback, \
+		#db-entries li.active i, #db-entries li.active .time, #db-entries li.active .li2' ).css( 'color', '' );
+	$( '.logo path.st0' ).css( 'fill', '' )
+	$( '.menu a' ).css( 'border-top', '' );
+	$( '#db-entries li' ).css( 'border-bottom', '' );
+	$( 'body' ).removeClass( 'disablescroll' );
+} );
+$( '#divcolorpicker' ).click( function( e ) {
+	if ( e.target.id === 'divcolorpicker' ) $( '#colorcancel' ).click();
 } );
 $( '#tab-library' ).click( function() {
 	if ( !$( '#db-search-keyword' ).val() ) $( '#db-search-close' ).empty();
@@ -604,7 +715,7 @@ $( '.timemap, .covermap, .volmap' ).tap( function() {
 	if ( GUI.display.cover
 		&& $( this ).hasClass( 'timemap' )
 		|| !cmd
-		|| $( '.edit' ).length
+		|| $( '.licover-cover' ).length
 	) return
 	
 	if ( cmd === 'guide' ) {
@@ -644,7 +755,7 @@ $( '.btn-cmd' ).click( function() {
 	if ( $this.hasClass( 'btn-toggle' ) ) {
 		if ( cmd === 'random' && $this.hasClass( 'ashuffle' ) ) {
 			$.post( 'enhance.php', { bash: '/usr/bin/killall ashuffle &' } );
-			$this.removeClass( 'btn-primary ashuffle' );
+			$this.removeClass( 'active ashuffle' );
 			return
 		}
 		
@@ -654,8 +765,8 @@ $( '.btn-cmd' ).click( function() {
 	} else {
 		if ( GUI.status.ext === 'radio' && cmd === 'pause' ) cmd = 'stop';
 		if ( GUI.bars ) {
-			$( '#playback-controls .btn-cmd' ).removeClass( 'btn-primary' );
-			$this.addClass( 'btn-primary' );
+			$( '#playback-controls .btn-cmd' ).removeClass( 'active' );
+			$this.addClass( 'active' );
 		}
 		if ( cmd === 'stop' ) {
 			command = 'mpc stop';
@@ -818,10 +929,6 @@ $( '#db-search-close' ).click( function() {
 $( '#db-search-keyword' ).keydown( function( e ) {
 	if ( e.key === 'Enter' ) $( '#dbsearchbtn' ).click();
 } );
-// MutationObserver - watch for '#db-entries' content changed then scroll to previous position
-var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
-var observerOption = { childList: true };
-var observerLibrary = document.getElementById( 'db-entries' );
 var mutationLibrary = new MutationObserver( function() { // on observed target changed
 	var lipath = $( '#db-currentpath' ).find( '.lipath' ).text();
 	if ( !$( '#divcoverarts' ).hasClass( 'hide' ) ) {
@@ -1232,7 +1339,14 @@ $( '#db-entries' ).on( 'taphold', '.licoverimg',  function() {
 	$this.find( 'img' ).css( 'opacity', '0.33' );
 } ).on( 'tap', 'li', function( e ) {
 	var $this = $( this );
-	var $target = $( e.target )
+	var $target = $( e.target );
+	if ( $this.hasClass( 'active' ) && $( '.contextmenu:not( .hide )' ).length ) {
+		$( '.contextmenu' ).addClass( 'hide' );
+		return
+	}
+	
+	$( '#db-entries li' ).removeClass( 'active' );
+	$( '.contextmenu' ).addClass( 'hide' );
 	if ( $target.hasClass( 'edit' ) ) return
 	
 	if ( $( '.edit' ).length ) {
@@ -1270,7 +1384,6 @@ $( '#db-entries' ).on( 'taphold', '.licoverimg',  function() {
 	var currentpath = $( '#db-currentpath' ).find( '.lipath' ).text();
 	GUI.dbscrolltop[ currentpath ] = $( window ).scrollTop();
 	mutationLibrary.observe( observerLibrary, observerOption );
-	$( '#db-entries li' ).removeClass( 'active' );
 	$this.addClass( 'active' );
 	if ( ( GUI.browsemode === 'artist' && currentpath !== 'Artist' )
 		|| ( GUI.browsemode === 'albumartist' && currentpath !== 'AlbumArtist' )
@@ -1374,9 +1487,9 @@ $( '#plcrop' ).click( function() {
 	} );
 } );
 $( '#plconsume' ).click( function() {
-	$( this ).css( 'color', GUI.status.consume ? '' : '#0095d8' );
-	$.post( 'enhance.php', { mpc: 'mpc consume' } );
+	$( this ).toggleClass( 'bl', GUI.status.consume === 0 );
 	notify( 'Consume Mode', GUI.status.consume ? 'Off' : 'On - Remove each song after played.', 'list-ul' );
+	$.post( 'enhance.php', { mpc: 'mpc consume' } );
 } );
 $( '#plclear' ).click( function() {
 	if ( $( '#pl-entries .pl-remove' ).length ) {
@@ -1403,13 +1516,21 @@ $( '#plclear' ).click( function() {
 } );
 $( '#pl-filter' ).keyup( function() {
 	var keyword = $( this ).val();
+	var regex = new RegExp( keyword, 'i' );
 	var count = 0;
 	$( '#pl-entries li' ).each( function() {
 		var $this = $( this );
-		var match = ( $this.text().search( new RegExp( keyword, 'i' ) ) !== -1 ) ? true : false;
+		var match = ( $this.text().search( regex ) !== -1 ) ? 1 : 0;
 		count = match ? ( count + 1 ) : count;
 		$this.toggleClass( 'hide', !match );
+		if ( !$this.hasClass( 'hide' ) ) {
+			var name = $this.find( '.name' ).text().replace( regex, function( match ) { return '<bl>'+ match +'</bl>' } );
+			var li2 = $this.find( '.li2' ).text().replace( regex, function( match ) { return '<bl>'+ match +'</bl>' } );
+			$this.find( '.name' ).html( name );
+			$this.find( '.li2' ).html( li2 );
+		}
 	} );
+	$( 'html, body' ).scrollTop( 0 );
 	if ( keyword ) {
 		$( '#pl-search-close span' ).html( count +' <a>of</a> ' );
 	} else {
@@ -1420,6 +1541,9 @@ $( '#pl-search-close, #plsearchbtn' ).click( function() {
 	$( '#pl-search-close, #pl-search, #plsearchbtn' ).addClass( 'hide' );
 	$( '#pl-count, #pl-manage, #pl-searchbtn, #pl-entries li' ).removeClass( 'hide' );
 	$( '#pl-filter' ).val( '' );
+	$( '#pl-entries' ).html( function() {
+		return $( this ).html().replace( /<bl>|<\/bl>/g, '' );
+	} )
 } );
 $( '#pl-searchbtn' ).click( function() {
 	$( '#pl-search-close, #pl-search, #plsearchbtn' ).removeClass( 'hide' );
@@ -1513,14 +1637,14 @@ $( '#pl-entries' ).on( 'click', '.pl-icon', function( e ) {
 	GUI.list.thumb = $thisli.find( '.lithumb' ).text() || '';  // dirble save in contextmenu
 	GUI.list.img = $thisli.find( '.liimg' ).text() || '';      // dirble save in contextmenu
 	if ( GUI.list.path.slice( -3 ) === 'cue' ) GUI.list.index = $thisli.find( '.liindex' ).text() || '';
-	var menutop = ( $thisli.position().top + 49 ) +'px';
-	var $contextmenu = $( '#context-menu-plaction' );
+	var menutop = ( $thisli.position().top + 48 ) +'px';
+	var $menu = $( '#context-menu-plaction' );
 	var $contextlist = $( '#context-menu-plaction a' );
 	$( '#pl-entries li' ).removeClass( 'lifocus' );
-	if ( !$contextmenu.hasClass( 'hide' ) 
-		&& $contextmenu.css( 'top' ) === menutop
+	if ( !$menu.hasClass( 'hide' ) 
+		&& $menu.css( 'top' ) === menutop
 	) {
-		$contextmenu.addClass( 'hide' );
+		$menu.addClass( 'hide' );
 		return
 	}
 	
@@ -1539,12 +1663,12 @@ $( '#pl-entries' ).on( 'click', '.pl-icon', function( e ) {
 	} else {
 		$contextlist.eq( 3 ).addClass( 'hide' );
 	}
-	var contextnum = $contextmenu.find( 'a:not(.hide)' ).length;
-	$( '.menushadow' ).css( 'height', contextnum * 41 - 1 );
-	$contextmenu
+	var contextnum = $menu.find( 'a:not(.hide)' ).length;
+	$( '.menushadow' ).css( 'height', contextnum * 42 - 1 );
+	$menu
 		.removeClass( 'hide' )
 		.css( 'top', menutop );
-	var targetB = $contextmenu.offset().top + $contextmenu.height();
+	var targetB = $menu.offset().top + $menu.height();
 	var wH = window.innerHeight;
 	if ( targetB > wH - ( GUI.bars ? 80 : 40 ) + $( window ).scrollTop() ) $( 'html, body' ).animate( { scrollTop: targetB - wH + 42 } );
 } );
@@ -1574,6 +1698,12 @@ $( '#pl-editor' ).on( 'click', 'li', function( e ) {
 	}
 	
 	var $target = $( e.target );
+	if ( $this.hasClass( 'active' ) && $( '.contextmenu:not( .hide )' ).length ) {
+		$( '.contextmenu' ).addClass( 'hide' );
+		return
+	}
+	
+	$( '.contextmenu' ).addClass( 'hide' );
 	if ( $target.hasClass( 'pl-icon' ) || $target.hasClass( 'db-icon' ) || !$this.find( '.fa-list-ul' ).length ) {
 		if ( $target.data( 'target' ) === '#context-menu-file' ) {
 			dbContextmenu( $this, $target );
@@ -1611,11 +1741,16 @@ document.addEventListener( 'visibilitychange', function() {
 		clearInterval( GUI.intElapsedPl );
 	} else {
 		var libraryhome = $( '#home-blocks' ).hasClass( 'hide' );
+		var color = GUI.display.color;
 		$.post( 'enhance.php', { getdisplay: 1, data: 1 }, function( data ) {
 			GUI.display = data;
-			$.post( 'enhance.php', { getbookmarks: 1 }, function( bookmarks ) {
-				if ( !libraryhome ) renderLibraryBlocks( bookmarks );
-			}, 'json' );
+			if ( GUI.display.color === color ) {
+				$.post( 'enhance.php', { getbookmarks: 1 }, function( bookmarks ) {
+					if ( !libraryhome ) renderLibraryBlocks( bookmarks );
+				}, 'json' );
+			} else {
+				location.href = '/';
+			}
 		}, 'json' );
 		if ( GUI.playback ) {
 			getPlaybackStatus();
@@ -1656,7 +1791,7 @@ window.addEventListener( 'orientationchange', function() {
 } );
 
 var pushstreams = {};
-var streams = [ 'bookmark', 'display', 'idle', 'notify', 'playlist', 'volume', 'webradio' ];
+var streams = [ 'bookmark', 'display', 'idle', 'notify', 'playlist', 'volume', 'webradio', 'color' ];
 streams.forEach( function( stream ) {
 	pushstreams[ stream ] = new PushStream( { modes: 'websocket' } );
 	pushstreams[ stream ].addChannel( stream );
@@ -1670,6 +1805,9 @@ pushstreams.bookmark.onmessage = function( data ) {
 	GUI.debounce = setTimeout( function() {
 		renderLibraryBlocks( bookmarks );
 	}, GUI.debouncems );
+}
+pushstreams.color.onmessage = function() {
+	location.reload();
 }
 pushstreams.display.onmessage = function( data ) {
 	var data = data[ 0 ];
@@ -1700,6 +1838,7 @@ pushstreams.idle.onmessage = function( changed ) {
 				if ( GUI.playlist && !GUI.pleditor ) setPlaylistScroll();
 		} else if ( changed === 'playlist' ) { // on playlist changed
 			if ( GUI.pleditor || GUI.contextmenu || $( '#pl-entries .pl-remove' ).length ) return
+			
 			$.post( 'enhance.php', { getplaylist: 1 }, function( data ) {
 				var playlistlength = data.playlist.length;
 				if ( GUI.similarpl !== -1 ) {
@@ -1714,7 +1853,7 @@ pushstreams.idle.onmessage = function( changed ) {
 					GUI.status.playlistlength = 0;
 					GUI.pllist = {};
 				}
-				renderPlaylist();
+				if ( GUI.playlist ) renderPlaylist();
 				getPlaybackStatus();
 			}, 'json' );
 		} else if ( changed === 'options' ) { // on mode toggled
@@ -1723,7 +1862,8 @@ pushstreams.idle.onmessage = function( changed ) {
 					GUI.status[ key ] = value;
 				} );
 				if ( GUI.playback ) setButtonToggle();
-				$( '#plconsume' ).css( 'color', GUI.status.consume ? '#0095d8' : '' );
+				console.log( GUI.status.consume )
+				$( '#plconsume' ).toggleClass( 'bl', GUI.status.consume === 1 );
 			}, 'json' );
 		} else if ( changed === 'update' ) {
 			getUpdateStatus();

@@ -35,6 +35,7 @@ _Tested on RuneAudio 0.4b, 0.5_
 	- Mask available indexes
 - Library sorting
 - Metadata tag editor ( with [Kid3](https://kid3.sourceforge.io) )
+- UI color picker ( with [HTML5-Color-Picker](https://github.com/NC22/HTML5-Color-Picker) )
 - Single files with`*.cue` behave like individual files
 	- Listed and saved as individual tracks
 	- Editable metadata
@@ -60,6 +61,7 @@ _Tested on RuneAudio 0.4b, 0.5_
 - Context menu
 	- Icon on the right removed
 	- Use icon on the left instead
+- Highlight search keyword in result
 - Crop Playlist
 - Consume mode
 - Keyboard navigation
@@ -200,20 +202,32 @@ All pages
 - `previous` previous track
 - `next` next track
 - `tap` switch pages
+- `escape` menu toggle
 
-Playback
+**Playback**
 - `arrow-left` previous
 - `arrow-right` next
 - `arrow-up` volume +
 - `arrow-down` volume -
 
-Library home
+**Library home**
 - `arrow-left` select previous item
 - `arrow-right` select next item
 - `enter` tap active item
 
-Library / Playlist
-- `arrow-left` back button
+**Library / Playlist**
 - `arrow-down` select next item
 - `arrow-up` select previous item
+- `arrow-left` back button
+- `arrow-right` context menu
 - `enter` tap active item / add + play
+
+**Menu and Context menu**
+- `arrow-down` select next menu
+- `arrow-up` select previous menu
+- `arrow-right` select submenu
+- `arrow-left` hide context menu
+- `enter` tap active menu
+
+**Setting pages**
+- `escape` close

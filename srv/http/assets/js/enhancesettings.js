@@ -1,5 +1,8 @@
 $( function() { // document ready start >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+$( document ).keydown( function( e ) {
+	if ( e.key === 'Escape' ) $( '.close-page' ).click();
+} );
 $( 'div.container' )
 	.css( 'padding-top', '0' )
 	.find( 'h1' ).before( '<i class="close-page fa fa-times fa-2x"></i>' );

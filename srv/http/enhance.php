@@ -1,6 +1,7 @@
 <?php
 if ( isset( $_POST[ 'bash' ] ) ) {
 	echo shell_exec( '/usr/bin/sudo '.$_POST[ 'bash' ] );
+	if ( isset( $_POST[ 'pushstream' ] ) ) pushstream( $_POST[ 'pushstream' ], 1 );
 	exit();
 }
 // with redis
@@ -30,8 +31,8 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		}
 		if ( isset( $loadCue ) ) exit();
 	}
-	$cmdpl = explode( ' ', $cmd )[ 1 ];
-	if ( $cmdpl === 'save' || $cmdpl === 'rm' ) {
+	$mpccmd = explode( ' ', $cmd )[ 1 ];
+	if ( $mpccmd === 'save' || $mpccmd === 'rm' ) {
 		$data = lsPlaylists();
 		pushstream( 'playlist', $data );
 	}
@@ -43,7 +44,7 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$type = $_POST[ 'list' ];
 		if ( $type === 'file' ) {
 			$data = search2array( $result );
-			if ( !isset( $data[ 'playlist' ] ) && substr( $mpc, 0, 10 ) !== 'mpc search' ) {
+			if ( !isset( $data[ 'playlist' ] ) && $mpccmd !== 'search' ) {
 				$data[][ 'coverart' ] = getCover( $data[ 0 ][ 'file' ] );
 			}
 		} else {
@@ -63,6 +64,29 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 	} else if ( isset( $_POST[ 'result' ] ) ) {
 		echo $result;
 	}
+} else if ( isset( $_POST[ 'color' ] ) ) { // hsl(360,100%,100%)
+	$hsl = $_POST[ 'color' ];
+	$h = $hsl[ 0 ];
+	$s = $hsl[ 1 ];
+	$l = $hsl[ 2 ];
+	$hsg = "$h,3%,";
+	$cmd = '/usr/bin/sudo /usr/bin/sed -i "';
+	$cmd.= '
+s|\(hsl(\).*\()/\*ch\*/\)|\1'."$h,$s%,".( $l + 5 ).'%\2|g
+s|\(hsl(\).*\()/\*c\*/\)|\1'."$h,$s%,$l%".'\2|g
+s|\(hsl(\).*\()/\*ca\*/\)|\1'."$h,$s%,".( $l - 10 ).'%\2|g
+s|\(hsl(\).*\()/\*cgh\*/\)|\1'.$hsg.'40%\2|g
+s|\(hsl(\).*\()/\*cg\*/\)|\1'.$hsg.'30%\2|g
+s|\(hsl(\).*\()/\*cga\*/\)|\1'.$hsg.'20%\2|g
+s|\(hsl(\).*\()/\*cdh\*/\)|\1'.$hsg.'30%\2|g
+s|\(hsl(\).*\()/\*cd\*/\)|\1'.$hsg.'20%\2|g
+s|\(hsl(\).*\()/\*cda\*/\)|\1'.$hsg.'10%\2|g
+s|\(hsl(\).*\()/\*cgl\*/\)|\1'.$hsg.'60%\2|g
+	';
+	$cmd.= '" $( grep -ril "\/\*c" /srv/http/assets/css )';
+	exec( $cmd );
+	pushstream( 'color', 1 );
+	$redis->hSet( 'display', 'color', "hsl($h,$s%,$l%)" );
 } else if ( isset( $_POST[ 'plappend' ] ) ) {
 	$plfile = '/srv/http/assets/img/playlists/'.$_POST[ 'plappend' ];
 	$content = file_get_contents( $plfile );
@@ -153,6 +177,11 @@ if ( isset( $_POST[ 'mpc' ] ) ) {
 		$count = 1;
 	}
 	pushstream( 'webradio', $count );
+} else if ( isset( $_POST[ 'coversave' ] ) ) {
+	$base64 = explode( ',', $_POST[ 'base64' ] )[ 1 ];
+	$tmpfile = '/srv/http/assets/img/tmp/tmp.jpg';
+	file_put_contents( $tmpfile, base64_decode( $base64 ) );
+	exec( $sudo.'/mv -f '.$tmpfile.' "'.$_POST[ 'coversave' ].'"' );
 } else if ( isset( $_POST[ 'imagefile' ] ) ) {
 	$imagefile = $_POST[ 'imagefile' ];
 	if ( isset( $_POST[ 'base64bookmark' ] ) ) {
@@ -627,7 +656,7 @@ function playlistInfo( $save = '' ) { // fix -  mpd unable to save cue/m3u prope
 		$file = $Range = $AlbumArtist = $Title = $Album = $Artist = $Track = $Time = $webradio = $thumb = $img = '';
 		$data = strtok( $line, "\n" );
 		while ( $data !== false ) {
-			$pair = explode( ': ', $data );
+			$pair = explode( ': ', $data, 2 );
 			switch( $pair[ 0 ] ) {
 				case 'file': $file = $pair[ 1 ]; break;
 				case 'Range': $Range = $pair[ 1 ]; break;

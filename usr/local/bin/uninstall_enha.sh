@@ -37,6 +37,7 @@ files="
 /srv/http/app/libs/runeaudio.php
 /srv/http/app/templates/dev.php
 /srv/http/app/templates/mpd.php
+/srv/http/app/templates/network_edit.php
 /srv/http/app/templates/settings.php
 /srv/http/app/templates/sources.php
 /srv/http/app/templates/sources_edit.php
@@ -61,6 +62,8 @@ if [[ $1 == u ]]; then
 fi
 
 ########## if not update ############################################################
+# set color to default
+setColor 1
 
 # convert playlists back to default (omit cue)
 dir=/srv/http/assets/img/playlists

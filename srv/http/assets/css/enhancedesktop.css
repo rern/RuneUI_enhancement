@@ -2,50 +2,81 @@
 @media(max-width: 2000px) { .coverart { width: calc( ( 100% - 38px ) * 0.1 ) } }
 @media(max-width: 1800px) { .coverart { width: calc( ( 100% - 38px ) * 0.111111111 ) } }
 @media(max-width: 1600px) { .coverart { width: calc( ( 100% - 38px ) * 0.142857143 ) } }
-@media(max-width: 1200px) { .coverart { width: calc( ( 100% - 38px ) * 0.166666667 ) } }
+@media(max-width: 1200px) { .coverart { width: calc( ( 100% - 38px ) * 0.155555567 ) } }
 @media(max-width: 1000px) { .coverart { width: calc( ( 100% - 38px ) * 0.2 ) } }
 @media(max-width: 800px)  { .coverart { width: calc( ( 100% - 38px ) * 0.25 ) } }
 @media(max-width: 600px)  { .coverart { width: calc( ( 100% - 38px ) * 0.333333333 ) } }
 @media(max-width: 400px)  { .coverart { width: calc( ( 100% - 38px ) * 0.5 ) } }
-@media ( hover:hover ) {
-	.menu a, #menu-settings, #badge, #menu-bottom,
-	#artist, #album:not( .albumradio ),
-	.timemap, .covermap, .volmap, .rs-container,
-	.biosimilar, .close-root,
-	#db-home, #pl-home, #db-currentpath a, #pl-manage i,
-	.fa-arrow-left, .fa-search,
-	.home-block, .coverart div,
-	#playlist-empty,
-	li:not( .licover ),
-	.licoverimg,
-	.liinfo,
-	.edit {
-		cursor: pointer;
-	}
-	.menu a:hover,
-	#menu-bottom a:hover {
-		background: #222f3d;
-	}
-	#menu-bottom li.active a:hover,
-	#db-home:hover,
-	#pl-home:hover {
-		background-color: #0072a5/*ch*/;
-	}
-	.home-block:hover,
-	.home-block:focus,
-	.index li:not( .gr ):hover,
-	#db-entries li:not( .licover ):hover,
-	#pl-entries li:hover,
-	#pl-entries li:not( .active ):hover .pl-remove,
-	#pl-editor li:hover {
-		background: #374c62;
-	}
-	.label:hover {
-		color: #e0e7ee;
-	}
-	#db-entries li.active:hover,
-	#pl-entries li.active:hover,
-	#pl-editor li.active:hover {
-		background: #0095d8;
-	}
+/* :hover *********************************************************/
+#db-entries li:hover,
+#pl-editor li:hover,
+#pl-entries li:hover {
+	background-color: hsl(0,0%,15%)/*bh*/;
+}
+#db-entries li.active:hover,
+#db-home:hover,
+#menu-bottom li.active a:hover,
+#pl-editor li.active:hover,
+#pl-entries li.active:hover,
+#pl-home:hover,
+#playback-controls button.active:hover,
+#playback-row .btn.active:hover {
+	background-color: hsl(200,100%,45%)/*ch*/ !important;
+}
+.licover.active:hover {
+	background: linear-gradient( #000000 189px, hsl(200,100%,45%)/*ch*/ 41px ) !important;
+}
+.index li:hover,
+.menu a:hover,
+.submenu:hover,
+#menu-bottom a:hover,
+#menu-settings:hover,
+#playback-controls button:hover,
+#playback-row .btn:hover {
+	background-color: hsl(200,3%,40%)/*cgh*/ !important;
+}
+.divblock.updn .home-block,
+.fa-arrow-left:hover,
+.home-block:hover,
+.lifocus:hover,
+#db-searchbtn:hover,
+#dbsearchbtn:hover,
+#pl-manage i:hover,
+#pl-searchbtn:hover,
+#plsearchbtn:hover {
+	background-color: hsl(200,3%,30%)/*cdh*/ !important;
+}
+.lifocus {
+	background-color: hsl(0,0%,20%)/*bf*/ !important;
+}
+li.active.lifocus {
+	background-color: hsl(200,100%,40%)/*c*/ !important;
+}
+/* cursor *********************************************************/
+#artist,
+#album:not( .albumradio ),
+#badge,
+#db-home,
+#menu-settings,
+#menu-bottom,
+#pl-home,
+#db-currentpath a,
+#pl-manage i,
+#playlist-empty,
+li:not( .licover ),
+.biosimilar,
+.close-root,
+.coverart div,
+.covermap,
+.edit,
+.fa-arrow-left,
+.fa-search,
+.home-block,
+.licoverimg,
+.liinfo,
+.menu a,
+.timemap,
+.volmap,
+.rs-container {
+	cursor: pointer;
 }

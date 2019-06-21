@@ -1,5 +1,4 @@
 <script src="<?=$this->asset( '/js/vendor/jquery-2.1.0.min.js' )?>"></script>
-<script src="<?=$this->asset( '/js/enhancebanner.js' )?>"></script>
 	<?php 
 	if ( empty( $this->uri(1) ) ) { ?>
 <script src="<?=$this->asset( '/js/vendor/jquery.mobile.custom.min.js' )?>"></script>
@@ -11,11 +10,12 @@
 <script src="<?=$this->asset( '/js/vendor/roundslider.min.js' )?>"></script>
 <script src="<?=$this->asset( '/js/vendor/lazyload.min.js' )?>"></script>
 <script src="<?=$this->asset( '/js/vendor/pica.js' )?>"></script>
+<script src="<?=$this->asset( '/js/vendor/html5kellycolorpicker.min.js' )?>"></script>
 <script src="<?=$this->asset( '/js/enhance.js' )?>"></script>
 <script src="<?=$this->asset( '/js/enhancecontext.js' )?>"></script>
 <script src="<?=$this->asset( '/js/enhancefunction.js' )?>"></script>
 		<?php
-		if ( strpos( 'mobi', $_SERVER['HTTP_USER_AGENT'] ) === false ) { ?> 
+		if ( !preg_match( '/(Mobile|Android|Tablet|GoBrowser|[0-9]x[0-9]*|uZardWeb\/|Mini|Doris\/|Skyfire\/|iPhone|Fennec\/|Maemo|Iris\/|CLDC\-|Mobi\/)/uis', $_SERVER['HTTP_USER_AGENT'] ) ) { ?>
 <script src="<?=$this->asset( '/js/enhanceshortcut.js' )?>"></script>
 		<?php
 		}

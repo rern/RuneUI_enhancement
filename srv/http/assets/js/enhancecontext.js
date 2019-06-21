@@ -10,7 +10,6 @@ $( '.contextmenu a' ).click( function( e ) {
 	}
 	var cmd = $this.data( 'cmd' );
 	$( '.menu' ).addClass( 'hide' );
-	if ( cmd !== 'update' ) $( '#db-entries li, #pl-editor li' ).removeClass( 'active' );
 	$( 'li.updn' ).removeClass( 'updn' );
 	// playback //////////////////////////////////////////////////////////////
 	if ( [ 'play', 'pause', 'stop' ].indexOf( cmd ) !== -1 ) {
@@ -56,7 +55,7 @@ $( '.contextmenu a' ).click( function( e ) {
 		$.post( 'enhance.php', { bash: '/usr/bin/sed -i "'+ plline +' d" "/srv/http/assets/img/playlists/'+ plname +'"' } );
 		GUI.list.li.remove();
 	} else if ( cmd === 'similar' ) {
-		notify( 'Playlist Add Similar', '<span class="blink">Fetcthing list...</span><br><span class="li2">Please wait.</span>', 'list-ul', -1 );
+		notify( 'Playlist Add Similar', '<span class="blink">Fetcthing list...</span>', 'list-ul', -1 );
 		$.ajax( {
 			  type     : 'post'
 			, url      : 'http://ws.audioscrobbler.com/2.0/'
@@ -149,17 +148,16 @@ $( '.contextmenu a' ).click( function( e ) {
 					, title   : 'Playlist Replace'
 					, message : 'Replace current playlist?'
 					, ok      : function() {
-						notify( 'Saved Playlist', '<span class="blink">Processing ...</span><br><span class="li2">Please wait.</span>', 'list-ul', -1 );
+						notify( 'Saved Playlist', '<i class="fa fa-gear fa-spin"></i> Processing ...', 'list-ul', -1 );
 						$.post( 'enhance.php', { loadplaylist: name, play: play, replace: replace }, function() {
 							notify( 'Playlist Replaced', name, 'list-ul' );
 						} );
 					}
 				} );
 			} else {
-				notify( 'Saved Playlist', '<span class="blink">Processing ...</span><br><span class="li2">Please wait.</span>', 'list-ul', -1 );
-				$( '#db-entries li, #pl-editor li' ).removeClass( 'active' );
+				notify( 'Saved Playlist', '<i class="fa fa-gear fa-spin"></i> Processing ...', 'list-ul', -1 );
 				$.post( 'enhance.php', { loadplaylist: name, play: play, replace: replace }, function() {
-					notify( ( replace ? 'Playlist Replaced' : 'Playlist Addd' ), name, 'list-ul' );
+					notify( ( replace ? 'Playlist Replaced' : 'Playlist Added' ), 'Done', 'list-ul' );
 				} );
 			}
 			return
@@ -167,19 +165,20 @@ $( '.contextmenu a' ).click( function( e ) {
 	}
 	
 	cmd = cmd.replace( /album|artist|composer|genre/, '' );
+	var sleep = GUI.list.path.slice( 0, 4 ) === 'http' ? ' sleep 1;' : '';
 	var contextCommand = {
 		  add         : mpcCmd
-		, addplay     : [ mpcCmd, 'sleep 1', 'mpc play '+ ( GUI.status.playlistlength + 1 ) ]
+		, addplay     : 'pos=$( mpc playlist | wc -l ); '+ mpcCmd +';'+ sleep +' mpc play $(( pos + 1 ))'
 		, replace     : [ 'mpc clear', mpcCmd ]
-		, replaceplay : [ 'mpc clear', mpcCmd, 'sleep 1', 'mpc play' ]
+		, replaceplay : [ 'mpc clear', mpcCmd, sleep, 'mpc play' ]
 	}
 	if ( cmd in contextCommand ) {
 		var command = contextCommand[ cmd ];
 		if ( [ 'add', 'addplay' ].indexOf( cmd ) !== -1 ) {
-			var msg = 'Added to Playlist'+ ( cmd === 'add' ? '' : ' and played' )
+			var msg = 'Add to Playlist'+ ( cmd === 'add' ? '' : ' and play' )
 			addReplace( cmd, command, msg );
 		} else {
-			var msg = 'Playlist replaced'+ ( cmd === 'replace' ? '' : ' and played' )
+			var msg = 'Replace playlist'+ ( cmd === 'replace' ? '' : ' and play' )
 			if ( GUI.display.plclear && GUI.status.playlistlength ) {
 				info( {
 					  title   : 'Playlist'
@@ -226,24 +225,22 @@ function updateThumbnails() {
 function addReplace( cmd, command, title ) {
 	var playbackswitch = GUI.display.playbackswitch && ( cmd === 'addplay' || cmd === 'replaceplay' );
 	$.post( 'enhance.php', { mpc: command }, function() {
-		getPlaybackStatus();
-		if ( !playbackswitch ) notify( title, msg, 'list-ul' );
-	} );
-	if ( playbackswitch ) {
-		$( '#tab-playback' ).click();
-	} else {
-		if ( GUI.list.li.hasClass( 'licover' ) ) {
-			var msg = GUI.list.li.find( '.lialbum' ).text()
-					+'<a class="li2">'+ GUI.list.li.find( '.liartist' ).text() +'</a>';
-		} else if ( GUI.list.li.find( '.li1' ).length ) {
-			var msg = GUI.list.li.find( '.li1' )[ 0 ].outerHTML
-					+ GUI.list.li.find( '.li2' )[ 0 ].outerHTML;
+		if ( playbackswitch ) {
+			$( '#tab-playback' ).click();
 		} else {
-			var msg = GUI.list.li.find( '.lipath' ).text();
+			if ( cmd === 'replace' ) GUI.plreplace = 1;
+			if ( GUI.list.li.hasClass( 'licover' ) ) {
+				var msg = GUI.list.li.find( '.lialbum' ).text()
+						+'<a class="li2">'+ GUI.list.li.find( '.liartist' ).text() +'</a>';
+			} else if ( GUI.list.li.find( '.li1' ).length ) {
+				var msg = GUI.list.li.find( '.li1' )[ 0 ].outerHTML
+						+ GUI.list.li.find( '.li2' )[ 0 ].outerHTML;
+			} else {
+				var msg = GUI.list.li.find( '.lipath' ).text();
+			}
+			notify( title, msg, 'list-ul' );
 		}
-		notify( title, '<span class="blink">Processing ...</span><br><span class="li2">Please wait.</span>', 'list-ul', -1 );
-		if ( cmd === 'replace' ) GUI.plreplace = 1;
-	}
+	} );
 }
 function bookmarkNew() {
 	var path = GUI.list.path;
@@ -400,7 +397,6 @@ function webRadioCoverart() {
 		}
 		if ( img ) {
 			infojson.buttonlabel = 'Remove'
-			infojson.buttoncolor = '#0095d8'
 			infojson.button      = function() {
 				$.post( 'enhance.php', { bash: '/usr/bin/echo "'+ name +'" > "/srv/http/assets/img/webradios/'+ urlname +'"' } );
 				if ( GUI.playback ) {

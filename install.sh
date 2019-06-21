@@ -124,6 +124,17 @@ commentH -n -1 'for="remoteSStime">' -n +5 'for="remoteSStime">'
 
 commentH -n -1 'Display album cover' -n +8 'Display album cover'
 #----------------------------------------------------------------------------------
+file=/srv/http/app/templates/network_edit.php
+echo $file
+
+commentH -n -1 '"wifiProfiles"' 'wifiProfilesBox'
+
+string=$( cat <<'EOF'
+            <div id="wifiProfilesBox">
+EOF
+)
+appendH 'wifiProfilesBox'
+#----------------------------------------------------------------------------------
 file=/srv/http/app/templates/sources.php
 echo $file
 
@@ -177,6 +188,8 @@ if [[ -z $( ls -A $dir ) && -n $( ls -A $olddir ) ]]; then # convert if none fou
     done
 	setown $dir
 fi
+
+setColor
 
 ############################################################################
 if [[ $1 == u ]]; then
@@ -339,6 +352,7 @@ if [[ $( redis-cli hexists display bars ) == 0 ]]; then
 		redis-cli hset display $item "" &> /dev/null
 	done
 fi
+
 # pre-count albumartist, composer, genre
 albumartist=$( mpc list albumartist | awk NF | wc -l )
 composer=$( mpc list composer | awk NF | wc -l )
