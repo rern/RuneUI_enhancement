@@ -1764,6 +1764,12 @@ li.active .time,
 .licover.active i.fa-list-ul {
 	color: hsl(200,3%,30%)/*cg*/ !important;
 }
+li.active .name bl {
+	color: hsl(200,3%,30%)/*cg*/ !important;
+}
+li.active .li2 bl {
+	color: #e0e7ee !important;
+}
 .liinfo .fa:not(.fa-music) {
 	color: hsl(200,3%,60%)/*cgl*/ !important;
 }
