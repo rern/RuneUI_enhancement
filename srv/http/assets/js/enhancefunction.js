@@ -1008,7 +1008,7 @@ function dataParse( data, path, querytype, plid ) {
 							  +'<a class="lipath">'+ dir +'</a><a class="liname">'+ path +'</a>'
 							  +'<div class="licoverimg'+ ( coverart ? '' : ' nocover' ) +'"><img src="'+ coversrc +'" class="coversmall"></div>'
 							  +'<span class="liinfo">'
-								  +'<bl class="lialbum">'+ album +'</bl><br>'
+								  +'<a class="lialbum">'+ album +'</a><br>'
 								  +'<i class="fa fa-'+ ( artistmode ? 'artist' : 'albumartist' ) +'"></i><span class="liartist">'+ ( artistmode ? artist : albumartist ) +'</span><br>'
 								  + composerhtml
 								  + genrehtml
@@ -1792,7 +1792,7 @@ function htmlPlaylist( data ) {
 						 +'<a class="lipath">'+ path +'</a><a class="liname">'+ path.replace(/^.*\//, '') +'</a>'
 						 +'<div class="licoverimg'+ ( coverart ? '' : ' nocover' ) +'"><img src="'+ coversrc +'" class="coversmall"></div>'
 						 +'<span class="liinfo">'
-							+'<bl class="lialbum">'+ album +'</bl><br>'
+							+'<a class="lialbum">'+ album +'</a><br>'
 							+'<i class="fa fa-albumartist"></i><span class="liartist">'+ artist +'</span><br>'
 							+ composerhtml
 							+ genrehtml
