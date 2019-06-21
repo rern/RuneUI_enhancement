@@ -127,7 +127,7 @@ commentH -n -1 'Display album cover' -n +8 'Display album cover'
 file=/srv/http/app/templates/network_edit.php
 echo $file
 
-commentH -n -1 'wifiProfiles' 'wifiProfilesBox'
+commentH -n -1 '"wifiProfiles"' 'wifiProfilesBox'
 
 string=$( cat <<'EOF'
             <div id="wifiProfilesBox">
