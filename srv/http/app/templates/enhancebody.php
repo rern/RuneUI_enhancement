@@ -543,10 +543,6 @@ $logo = '
 		<div id="biocontent"></div>
 	</div>
 </div>
-<div id="banner">
-	<div id="bannerTitle"></div>
-	<div id="bannerMessage"></div>
-</div>
 <div id="splash"><svg viewBox="0 0 480.2 144.2"><?=$logo ?></svg></div>
 <div id="loader" class="hide"><svg viewBox="0 0 480.2 144.2"><?=$logo ?></svg></div>
 <script>var lastfmapikey = "<?=$redis->hGet( 'lastfm', 'apikey' )?>"</script>

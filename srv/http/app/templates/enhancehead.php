@@ -42,6 +42,7 @@
 <link rel="stylesheet" href="<?=$this->asset( '/css/addonsinfo.css' )?>">
 <link rel="stylesheet" href="<?=$this->asset( '/css/roundslider.min.css' )?>">
 <link rel="stylesheet" href="<?=$this->asset( '/css/enhance.css' )?>">
+<link rel="stylesheet" href="<?=$this->asset( '/css/enhancebanner.css' )?>">
 		<?php
 		if ( !preg_match( '/(Mobile|Android|Tablet|GoBrowser|[0-9]x[0-9]*|uZardWeb\/|Mini|Doris\/|Skyfire\/|iPhone|Fennec\/|Maemo|Iris\/|CLDC\-|Mobi\/)/uis', $_SERVER['HTTP_USER_AGENT'] ) ) { ?>
 <link rel="stylesheet" href="<?=$this->asset( '/css/enhancedesktop.css' )?>">
@@ -64,6 +65,7 @@
 <link rel="stylesheet" href="<?=$this->asset( '/css/bootstrap-select.min.css' )?>">
 <link rel="stylesheet" href="<?=$this->asset( '/css/toggle-switch.min.css' )?>">
 <link rel="stylesheet" href="<?=$this->asset( '/css/enhancesettings.css' )?>">
+<link rel="stylesheet" href="<?=$this->asset( '/css/enhancebanner.css' )?>">
 	<?php 
 	} ?>
 	
