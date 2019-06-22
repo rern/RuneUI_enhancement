@@ -248,6 +248,7 @@ $( '#displaycolor' ).click( function( e ) {
 		if ( !$( '.licover' ).length ) {
 			$( '#db-entries li:eq( 0 )' ).tap();
 		} else {
+			$( '.licover' ).toggleClass( 'hide', window.innerHeight < 590 );
 			$( '#db-entries .db-icon:eq(1)' ).tap();
 			$( '#colorok' ).before( '<canvas id="colorpicker"></canvas>' );
 			GUI.color = $( '#db-home' ).css( 'background-color' );
@@ -272,9 +273,10 @@ $( '#displaycolor' ).click( function( e ) {
 					}
 				}
 			} );
-			var top = $( '#db-entries li:eq( 1 )' ).offset().top;
-			$( '#colorpicker' ).css( 'margin-top', top );
-			$( '#colorcancel' ).css( 'top', ( top + 20 ) +'px' );
+			$( '#divcolorpicker' ).css( 'padding-top', window.innerHeight < 590 ? 200 : $( '.licover' ).offset().top + 260 );
+//			var top = $( '#db-entries li:eq( 1 )' ).offset().top;
+//			$( '#colorpicker' ).css( 'margin-top', top );
+//			$( '#colorcancel' ).css( 'top', ( top + 20 ) +'px' );
 			$( '#divcolorpicker' ).removeClass( 'hide' );
 			$( 'body' ).addClass( 'disablescroll' );
 			mutationAlbum.disconnect();
@@ -282,17 +284,6 @@ $( '#displaycolor' ).click( function( e ) {
 	} );
 	mutationAlbum.observe( observerLibrary, observerOption );
 } );
-function hsv2hsl( hsv ) {
-	var s = hsv.s;
-	var v = hsv.v;
-	var L = ( 2 - s ) * v / 2;
-	if ( L && L < 1 ) {
-		S = L < 0.5 ? s * v / ( L * 2 ) : s * v / ( 2 - L * 2 );
-		return [ Math.round( 360 * hsv.h ), Math.round( S * 100 ), Math.round( L * 100 ) ];
-	} else {
-		return [ 0, 0, L * 100 ];
-	}
-}
 $( '#colorok' ).click( function() {
 	var rgb = colorpicker.getCurColorRgb();
 	if ( 'rgb('+ rgb.r +', '+ rgb.g +', '+ rgb.b +')' === GUI.color ) {
@@ -314,7 +305,8 @@ $( '#colorok' ).click( function() {
 } );
 $( '#colorcancel' ).click( function() {
 	colorpicker.destroy();
-	$( '#divcolorpicker' ).addClass( 'hide' );
+	$( '.licover' ).removeClass( 'hide' );
+	$( '#divcolorpicker, .menu' ).addClass( 'hide' );
 	$( '#playback-controls button, #tab-library a, #db-home, #db-entries li.active, #colorok, #colorcancel, \
 		#menu-top, #tab-playlist a, .menu a, .submenu, .btnlist-top, #tab-playback a' ).css( 'background-color', '' );
 	$( '#rootpath, #db-back, .lialbum, .licover i, .lidir, .db-icon, gr, #tab-playback, \
