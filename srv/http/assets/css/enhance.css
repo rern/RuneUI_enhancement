@@ -1197,6 +1197,7 @@ p.hrbl {
 	color: hsl(25,60%,64%)/*c*/;
 }
 /* coverart edit icons */
+.licover-save,
 .edit {
 	position: absolute;
 	right: 0;
@@ -1216,23 +1217,12 @@ p.hrbl {
 	top: 35px;
 }
 .licover-save {
-	position: absolute;
-	left: 0;
-	bottom: 0;
-	width: 40px !important;
-	height: 40px;
-	line-height: 40px;
-	text-align: center;
-}
-.licover-save i {
 	left: 5px;
 	bottom: 5px;
 	width: 30px !important;
 	height: 30px;
-	font-size: 24px !important;
 	line-height: 30px;
 	border-radius: 15px;
-	color: #e0e7ee !important;
 	background: hsl(25,60%,64%)/*c*/;
 }
 .home-block-cover {
@@ -1467,7 +1457,7 @@ p.hrbl {
 	color: #e0e7ee;
 }
 .index .gr {
-	color: hsl(25,3%,20%)/*cd*/;
+	color: hsl(25,3%,10%)/*cdh*/ !important;
 }
 .coverart {
 	display: inline-block;
@@ -1860,6 +1850,7 @@ li.active .li2 bl {
 	top: 0;
 	width: 100%;
 	height: 100%;
+	padding-top: 20px;
 	text-align: center;
 	overflow: hidden;
 	z-index: 1001;
@@ -1868,7 +1859,6 @@ li.active .li2 bl {
 	background: #000000;
 	border-radius: 50%;
 	box-shadow: 0 0 8px 5px #000000;
-	touch-action: none;
 }
 #colorok {
 	display: block;
@@ -1876,10 +1866,9 @@ li.active .li2 bl {
 	width: 70px;
 	height: 36px;
 	line-height: 25px;
-	background: -webkit-radial-gradient(50% -50%, 160% 200%, hsla(0,0%,100%,.3) 50%, hsla(0,0%,100%,0) 55%);
-	background: radial-gradient(160% 100% at 50% 0% ,hsla(0,0%,100%,.3) 50%,hsla(0,0%,100%,0) 55%);
-	box-shadow: 0 0 6px 10px #000000;
-}
+	background: -webkit-radial-gradient(50% -50%, 160% 200%, hsla(0,0%,100%,.3) 50%, hsla(0,0%,100%,0) 55%); /* button highlight - last % for anti-alias edge*/
+	background: radial-gradient(160% 100% at 50% 0% ,hsla(0,0%,100%,.3) 50%,hsla(0,0%,100%,0) 55%); /* (Width% Heigth% at H-center_offset% V-center_offset%, hsla(0,0%,100%,1st-T) 1st-area%, hsla(0,0%,100%,2nd-T) 2nd-area%)) */
+	box-shadow: 2px 2px 3px 1px rgba(0,0,0,0.5);  /*  V-offfset, H-Offset, Blur width, Shadow width , Color */}
 #colorcancel {
 	position: absolute;
 	margin-left: 200px;
