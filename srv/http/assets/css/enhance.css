@@ -1197,7 +1197,6 @@ p.hrbl {
 	color: hsl(25,60%,64%)/*c*/;
 }
 /* coverart edit icons */
-.licover-save,
 .edit {
 	position: absolute;
 	right: 0;
@@ -1217,12 +1216,22 @@ p.hrbl {
 	top: 35px;
 }
 .licover-save {
-	left: 5px;
-	bottom: 5px;
-	width: 30px !important;
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	width: 40px;
+	height: 40px;
+	padding-top: 5px;
+	text-align: center;
+	z-index: 11;
+}
+.licover-save i {
+	width: 30px;
 	height: 30px;
+	font-size: 24px;
 	line-height: 30px;
 	border-radius: 15px;
+	color: #e0e7ee;
 	background: hsl(25,60%,64%)/*c*/;
 }
 .home-block-cover {
