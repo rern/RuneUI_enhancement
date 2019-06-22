@@ -461,7 +461,8 @@ function webRadioNew( name, url ) {
 		, boxwidth     : 'max'
 		, ok           : function() {
 			var newname = $( '#infoTextBox' ).val();
-			var url = $( '#infoTextBox2' ).val();
+			var url = $( '#infoTextBox1' ).val();
+			alert( newname +' '+ url )
 			$.post( 'enhance.php', { webradios: newname, url: url, new: 1 }, function( exist ) {
 				if ( exist ) {
 					var nameimg = exist.split( "\n" );
