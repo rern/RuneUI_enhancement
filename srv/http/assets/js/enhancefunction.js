@@ -275,7 +275,6 @@ function setPlaybackBlank() {
 }
 function renderPlayback() {
 	var status = GUI.status;
-	if ( status.coverart ) $( '.licover-save' ).remove();
 	// song and album before update for song/album change detection
 	var previousartist = $( '#artist' ).text();
 	var previoussong = $( '#song' ).text();
@@ -359,15 +358,17 @@ function renderPlayback() {
 		return
 	}
 	
-	$( '#cover-art' ).css( 'border-radius', '' );
 	$( '#coverartoverlay' ).addClass( 'hide' );
+	if ( status.coverart ) {
+		$( '.licover-save' ).remove();
+		$( '#cover-art' ).attr( 'src', status.coverart );
+	}
+	$( '#cover-art' ).css( 'border-radius', '' );
 	if ( status.Artist !== previousartist || status.Album !== previousalbum ) {
-		$( '#cover-art' )
-			.attr( 'src', status.coverart || coverrune )
-			.css( 'border-radius', '' );
 		if ( status.coverart ) {
 			GUI.coversave = 0;
 		} else {
+			$( '#cover-art' ).attr( 'src', coverrune );
 			// get mbid from lastfm > get coverart from coverartarchive.org
 			$.ajax( {
 				  type     : 'post'
