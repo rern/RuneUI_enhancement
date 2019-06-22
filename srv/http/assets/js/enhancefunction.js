@@ -386,7 +386,7 @@ function renderPlayback() {
 					if ( data.album.mbid ) {
 						$.post( 'http://coverartarchive.org/release/'+ data.album.mbid, function( data ) {
 							var image = data.images[ 0 ][ 'image' ];
-							if ( image ) {
+							if ( image && !GUI.coverart ) { // fix: already changed track
 								var img = new Image();
 								img.crossOrigin = 'anonymous';
 								img.src = image;
@@ -397,7 +397,7 @@ function renderPlayback() {
 									canvas.getContext( '2d' ).drawImage( this, 0, 0 );
 									$( '#cover-art' )
 										.attr( 'src', canvas.toDataURL( 'image/jpeg' ) )
-										.after( '<div class="edit licover-save"><i class="fa fa-save"></i></div>' );
+										.after( '<div class="licover-save"><i class="fa fa-save"></i></div>' );
 									GUI.coversave = 1;
 								}
 							}
@@ -1489,6 +1489,7 @@ function saveCoverart() {
 		, ok      : function() { 
 			$.post( 'enhance.php', { coversave: coverfile, base64: src }, function( std ) {
 				infoCoverart( 'Save' );
+				$( '.licover-save' ).remove();
 			} );
 		}
 	} );
