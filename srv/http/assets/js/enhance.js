@@ -248,7 +248,8 @@ $( '#displaycolor' ).click( function( e ) {
 		if ( !$( '.licover' ).length ) {
 			$( '#db-entries li:eq( 0 )' ).tap();
 		} else {
-			$( '.licover' ).toggleClass( 'hide', window.innerHeight < 590 );
+			var shortscreen = window.innerHeight < 590;
+			$( '.licover' ).toggleClass( 'hide', shortscreen );
 			$( '#db-entries .db-icon:eq(1)' ).tap();
 			$( '#colorok' ).before( '<canvas id="colorpicker"></canvas>' );
 			GUI.color = $( '#db-home' ).css( 'background-color' );
@@ -273,10 +274,7 @@ $( '#displaycolor' ).click( function( e ) {
 					}
 				}
 			} );
-			$( '#divcolorpicker' ).css( 'padding-top', window.innerHeight < 590 ? 200 : $( '.licover' ).offset().top + 260 );
-//			var top = $( '#db-entries li:eq( 1 )' ).offset().top;
-//			$( '#colorpicker' ).css( 'margin-top', top );
-//			$( '#colorcancel' ).css( 'top', ( top + 20 ) +'px' );
+			$( '#divcolorpicker' ).css( 'padding-top', shortscreen ? 200 : $( '.licover' ).offset().top + 260 );
 			$( '#divcolorpicker' ).removeClass( 'hide' );
 			$( 'body' ).addClass( 'disablescroll' );
 			mutationAlbum.disconnect();
@@ -305,8 +303,7 @@ $( '#colorok' ).click( function() {
 } );
 $( '#colorcancel' ).click( function() {
 	colorpicker.destroy();
-	$( '.licover' ).removeClass( 'hide' );
-	$( '#divcolorpicker, .menu' ).addClass( 'hide' );
+	$( '#divcolorpicker' ).addClass( 'hide' );
 	$( '#playback-controls button, #tab-library a, #db-home, #db-entries li.active, #colorok, #colorcancel, \
 		#menu-top, #tab-playlist a, .menu a, .submenu, .btnlist-top, #tab-playback a' ).css( 'background-color', '' );
 	$( '#rootpath, #db-back, .lialbum, .licover i, .lidir, .db-icon, gr, #tab-playback, \
@@ -315,6 +312,10 @@ $( '#colorcancel' ).click( function() {
 	$( '.menu a' ).css( 'border-top', '' );
 	$( '#db-entries li' ).css( 'border-bottom', '' );
 	$( 'body' ).removeClass( 'disablescroll' );
+	if ( window.innerHeight < 590 ) {
+		$( '.licover' ).removeClass( 'hide' );
+		$( '.menu' ).addClass( 'hide' );
+	}
 } );
 $( '#divcolorpicker' ).click( function( e ) {
 	if ( e.target.id === 'divcolorpicker' ) $( '#colorcancel' ).click();
