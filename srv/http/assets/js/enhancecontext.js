@@ -155,7 +155,7 @@ $( '.contextmenu a' ).click( function( e ) {
 					}
 				} );
 			} else {
-				notify( 'Saved Playlist', '<i class="fa fa-gear fa-spin"></i> Processing ...', 'list-ul', -1 );
+				notify( 'Saved Playlist', '<i class="fa fa-gear fa-spin"></i> Loading ...', 'list-ul', -1 );
 				$.post( 'enhance.php', { loadplaylist: name, play: play, replace: replace }, function() {
 					notify( ( replace ? 'Playlist Replaced' : 'Playlist Added' ), 'Done', 'list-ul' );
 				} );
