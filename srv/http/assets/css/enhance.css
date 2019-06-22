@@ -1197,6 +1197,7 @@ p.hrbl {
 	color: hsl(200,100%,40%)/*c*/;
 }
 /* coverart edit icons */
+.licover-save,
 .edit {
 	position: absolute;
 	right: 0;
@@ -1216,22 +1217,12 @@ p.hrbl {
 	top: 35px;
 }
 .licover-save {
-	position: absolute;
-	left: 0;
-	bottom: 0;
-	width: 40px;
-	height: 40px;
-	padding-top: 5px;
-	text-align: center;
-	z-index: 11;
-}
-.licover-save i {
-	width: 30px;
+	left: 5px;
+	bottom: 5px;
+	width: 30px !important;
 	height: 30px;
-	font-size: 24px;
 	line-height: 30px;
 	border-radius: 15px;
-	color: #e0e7ee;
 	background: hsl(200,100%,40%)/*c*/;
 }
 .home-block-cover {
@@ -1466,7 +1457,7 @@ p.hrbl {
 	color: #e0e7ee;
 }
 .index .gr {
-	color: hsl(200,3%,30%)/*cdh*/ !important;
+	color: hsl(200,3%,20%)/*cd*/;
 }
 .coverart {
 	display: inline-block;
@@ -1868,7 +1859,6 @@ li.active .li2 bl {
 	background: #000000;
 	border-radius: 50%;
 	box-shadow: 0 0 8px 5px #000000;
-	touch-action: none;
 }
 #colorok {
 	display: block;
@@ -1876,10 +1866,9 @@ li.active .li2 bl {
 	width: 70px;
 	height: 36px;
 	line-height: 25px;
-	background: -webkit-radial-gradient(50% -50%, 160% 200%, hsla(0,0%,100%,.3) 50%, hsla(0,0%,100%,0) 55%);
-	background: radial-gradient(160% 100% at 50% 0% ,hsla(0,0%,100%,.3) 50%,hsla(0,0%,100%,0) 55%);
-	box-shadow: 0 0 6px 10px #000000;
-}
+	background: -webkit-radial-gradient(50% -50%, 160% 200%, hsla(0,0%,100%,.3) 50%, hsla(0,0%,100%,0) 55%); /* button highlight - last % for anti-alias edge*/
+	background: radial-gradient(160% 100% at 50% 0% ,hsla(0,0%,100%,.3) 50%,hsla(0,0%,100%,0) 55%); /* (Width% Heigth% at H-center_offset% V-center_offset%, hsla(0,0%,100%,1st-T) 1st-area%, hsla(0,0%,100%,2nd-T) 2nd-area%)) */
+	box-shadow: 2px 2px 3px 1px rgba(0,0,0,0.5);  /*  V-offfset, H-Offset, Blur width, Shadow width , Color */}
 #colorcancel {
 	position: absolute;
 	margin-left: 200px;
@@ -1891,46 +1880,6 @@ li.active .li2 bl {
 	cursor: pointer;
 	text-shadow: 2px 2px 4px #000000;
 	box-shadow: 0 0 6px 5px #000000;
-}
-#banner {
-	display: none;
-	position: fixed;
-	min-width: 230px;
-	max-width: 100%;
-	bottom: 50px;
-	padding: 10px 100px 10px 15px;
-	font-size: 18px;
-	z-index: 100000;
-	background: linear-gradient( to right, hsl(200,100%,40%)/*c*/ calc( 100% - 100px ), rgba( 0,0,0,0 ) 100% );
-}
-#bannerTitle,
-#bannerMessage {
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
-#bannerTitle,
-#bannerTitle i.gr,
-#banner .li2,
-#banner .time,
-#banner .li2 {
-	color: hsl(200,3%,30%)/*cg*/ !important;
-}
-#bannerTitle i {
-	width: 20px;
-	margin-right: 5px;
-	text-align: center;
-	color: #e0e7ee;
-}
-#banner .time {
-	margin-left: 10px;
-}
-#banner .li1,
-#banner .li2 {
-	display: block;
-}
-#banner .li2 {
-	font-size: 12px;
 }
 
 @media(min-width: 2000px) { .coverart { width: 200px } }
