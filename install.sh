@@ -203,6 +203,8 @@ if [[ -z $( ls -A $dir ) && -n $( ls -A $olddir ) ]]; then # convert if none fou
                 lines="$lines$data\n"
             fi
         done
+		[[ -n $lines ]] && continue
+		
         name=$( basename "$plfile" .m3u )
 		echo $name
         printf "$lines" > "$dir/$name"
