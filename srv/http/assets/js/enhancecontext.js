@@ -165,10 +165,10 @@ $( '.contextmenu a' ).click( function( e ) {
 	}
 	
 	cmd = cmd.replace( /album|artist|composer|genre/, '' );
-	var sleep = GUI.list.path.slice( 0, 4 ) === 'http' ? ' sleep 1;' : 'sleep 0.05';
+	var sleep = GUI.list.path.slice( 0, 4 ) === 'http' ? '; sleep 1' : '; sleep 0.1';
 	var contextCommand = {
 		  add         : mpcCmd
-		, addplay     : 'pos=$( mpc playlist | wc -l ); '+ mpcCmd +';'+ sleep +' mpc play $(( pos + 1 ))'
+		, addplay     : 'pos=$( mpc playlist | wc -l ); '+ mpcCmd + sleep +'; mpc play $(( pos + 1 ))'
 		, replace     : [ 'mpc clear', mpcCmd ]
 		, replaceplay : [ 'mpc clear', mpcCmd, sleep, 'mpc play' ]
 	}
@@ -462,7 +462,6 @@ function webRadioNew( name, url ) {
 		, ok           : function() {
 			var newname = $( '#infoTextBox' ).val();
 			var url = $( '#infoTextBox1' ).val();
-			alert( newname +' '+ url )
 			$.post( 'enhance.php', { webradios: newname, url: url, new: 1 }, function( exist ) {
 				if ( exist ) {
 					var nameimg = exist.split( "\n" );
