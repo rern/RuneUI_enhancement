@@ -161,6 +161,7 @@ EOF
 )
 insertH '1'
 
+setColor
 ############################################################################
 if [[ $1 == u ]]; then
 	installfinish $@
@@ -170,8 +171,6 @@ if [[ $1 == u ]]; then
 fi
 
 ########## if not update ############################################################
-setColor
-
 setown() {
 	chown -R http:http $1
 	[[ -L $1 ]] && chown -R http:http $( readlink -f $1 )
