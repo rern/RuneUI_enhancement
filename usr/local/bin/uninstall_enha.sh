@@ -75,12 +75,14 @@ if [[ -n $( ls -A $dir ) ]]; then
 		lines=
 		readarray lists < "$plfile"
 		for list in "${lists[@]}"; do
-			data=${list//^^/^}
-			[[ -z $( echo $data | cut -d'^' -f10 ) ]] && lines="$lines${data%%^*}\n"
+			data=${list%%^*}
+			[[ -n $data ]] && lines="$lines$data\n"
 		done
-		name=$( basename $plfile )
-		echo $name
-		printf "$lines" > "/var/lib/mpd/playlists/$name.m3u"
+		if [[ -n $lines ]]; then
+			name=$( basename $plfile )
+			echo $name
+			printf "$lines" > "/var/lib/mpd/playlists/$name.m3u"
+		fi
 	done
 fi
 
@@ -114,6 +116,8 @@ if [[ ! -z $( ls -A $dir 2> /dev/null ) ]]; then
 	for file in "${files[@]}"; do
 		path=$( basename "$file" )
 		path=${path//|/\/}
+		[[ ! -d "/mnt/MPD/$path ]] && continue
+		
 		name=$( basename "$path" )
 		(( idx++ ))
 		redis-cli hset bookmarks $idx "{\"name\":\"$name\",\"path\":\"$path\"}" &> /dev/null
