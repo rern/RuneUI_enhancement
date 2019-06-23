@@ -116,7 +116,7 @@ if [[ ! -z $( ls -A $dir 2> /dev/null ) ]]; then
 	for file in "${files[@]}"; do
 		path=$( basename "$file" )
 		path=${path//|/\/}
-		[[ ! -d "/mnt/MPD/$path ]] && continue
+		[[ ! -d "/mnt/MPD/$path" ]] && continue
 		
 		name=$( basename "$path" )
 		(( idx++ ))
