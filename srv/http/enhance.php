@@ -646,7 +646,7 @@ function second2HMS( $second ) {
 }
 function playlistInfo( $save = '' ) { // fix -  mpd unable to save cue/m3u properly
 	// grep cannot be used here
-	$playlistinfo = shell_exec( '{ sleep 0.05; echo playlistinfo; sleep 0.05; } | telnet localhost 6600 | sed -n "/^file\|^Range\|^AlbumArtist:\|^Title\|^Album\|^Artist\|^Track\|^Time/ p"' );
+	$playlistinfo = shell_exec( '{ sleep 0.05; echo playlistinfo; sleep 0.3; } | telnet localhost 6600 | sed -n "/^file\|^Range\|^AlbumArtist:\|^Title\|^Album\|^Artist\|^Track\|^Time/ p"' );
 	if ( !$playlistinfo ) return '';
 	
 	$content = preg_replace( '/\nfile:/', "\n^^file:", $playlistinfo );
@@ -708,6 +708,7 @@ function loadPlaylist( $name ) { // fix -  mpd unable to save cue properly
 	$playlistinfo = file_get_contents( "/srv/http/assets/img/playlists/$name" );
 	$lines = explode( "\n", rtrim( $playlistinfo ) );
 	$cmd = '';
+	$i = 0;
 	foreach( $lines as $line ) {
 		$list = explode( '^^', $line );
 		$cuetrack = $list[ 9 ];
@@ -716,6 +717,12 @@ function loadPlaylist( $name ) { // fix -  mpd unable to save cue properly
 		} else {
 			$cmd.= 'mpc add "'.$list[ 0 ].'"; ';
 		}
+		$i++;
+		if ( $i === 200 ) { // limit each command length to avoid errors
+			exec( $cmd );
+			$cmd = '';
+			$i = 0;
+		}
 	}
-	exec( $cmd );
+	if( $cmd ) exec( $cmd );
 }

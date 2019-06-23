@@ -14,7 +14,7 @@ rm -v /srv/http/enhance*
 rm -v /srv/http/app/templates/enhance*
 rm -v /srv/http/assets/css/{enhance*,fontawesome.min,roundslider.min,toggle-switch.min}.css
 rm -v /srv/http/assets/fonts/enhance*
-rm -v /srv/http/assets/img/{bootsplash.png,controls*,cover.svg,runelogo.svg,vu*}
+rm -v /srv/http/assets/img/{bootsplash.png,controls*,cover.svg,vu*}
 rm -v /srv/http/assets/js/enhance*
 rm -v /srv/http/assets/js/vendor/{lazyload,roundslider}.min.js
 rm -v /srv/http/assets/js/vendor/pica.js
@@ -75,9 +75,11 @@ if [[ -n $( ls -A $dir ) ]]; then
 		lines=
 		readarray lists < "$plfile"
 		for list in "${lists[@]}"; do
-			data=${list//^^/^}
-			[[ -z $( echo $data | cut -d'^' -f10 ) ]] && lines="$lines${data%%^*}\n"
+			data=${list%%^*}
+			[[ -n $data ]] && lines="$lines$data\n"
 		done
+		[[ -z $lines ]] && continue
+		
 		name=$( basename $plfile )
 		echo $name
 		printf "$lines" > "/var/lib/mpd/playlists/$name.m3u"
@@ -114,6 +116,8 @@ if [[ ! -z $( ls -A $dir 2> /dev/null ) ]]; then
 	for file in "${files[@]}"; do
 		path=$( basename "$file" )
 		path=${path//|/\/}
+		[[ ! -d "/mnt/MPD/$path" ]] && continue
+		
 		name=$( basename "$path" )
 		(( idx++ ))
 		redis-cli hset bookmarks $idx "{\"name\":\"$name\",\"path\":\"$path\"}" &> /dev/null

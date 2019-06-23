@@ -12,6 +12,7 @@
 <script src="<?=$this->asset( '/js/vendor/pica.js' )?>"></script>
 <script src="<?=$this->asset( '/js/vendor/html5kellycolorpicker.min.js' )?>"></script>
 <script src="<?=$this->asset( '/js/enhance.js' )?>"></script>
+<script src="<?=$this->asset( '/js/enhancebanner.js' )?>"></script>
 <script src="<?=$this->asset( '/js/enhancecontext.js' )?>"></script>
 <script src="<?=$this->asset( '/js/enhancefunction.js' )?>"></script>
 		<?php
@@ -43,5 +44,6 @@
 <script src="<?=$this->asset( '/js/vendor/bootstrap-select.min.js' )?>"></script>
 <script src="<?=$this->asset( '/js/vendor/parsley.min.js' )?>"></script>
 <script src="<?=$this->asset( '/js/enhancesettings.js' )?>"></script>
+<script src="<?=$this->asset( '/js/enhancebanner.js' )?>"></script>
 	<?php 
 	} ?>

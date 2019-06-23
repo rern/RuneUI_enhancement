@@ -155,7 +155,7 @@ $( '.contextmenu a' ).click( function( e ) {
 					}
 				} );
 			} else {
-				notify( 'Saved Playlist', '<i class="fa fa-gear fa-spin"></i> Processing ...', 'list-ul', -1 );
+				notify( 'Saved Playlist', '<i class="fa fa-gear fa-spin"></i> Loading ...', 'list-ul', -1 );
 				$.post( 'enhance.php', { loadplaylist: name, play: play, replace: replace }, function() {
 					notify( ( replace ? 'Playlist Replaced' : 'Playlist Added' ), 'Done', 'list-ul' );
 				} );
@@ -165,10 +165,10 @@ $( '.contextmenu a' ).click( function( e ) {
 	}
 	
 	cmd = cmd.replace( /album|artist|composer|genre/, '' );
-	var sleep = GUI.list.path.slice( 0, 4 ) === 'http' ? ' sleep 1;' : '';
+	var sleep = GUI.list.path.slice( 0, 4 ) === 'http' ? '; sleep 1' : '; sleep 0.1';
 	var contextCommand = {
 		  add         : mpcCmd
-		, addplay     : 'pos=$( mpc playlist | wc -l ); '+ mpcCmd +';'+ sleep +' mpc play $(( pos + 1 ))'
+		, addplay     : 'pos=$( mpc playlist | wc -l ); '+ mpcCmd + sleep +'; mpc play $(( pos + 1 ))'
 		, replace     : [ 'mpc clear', mpcCmd ]
 		, replaceplay : [ 'mpc clear', mpcCmd, sleep, 'mpc play' ]
 	}
@@ -461,7 +461,7 @@ function webRadioNew( name, url ) {
 		, boxwidth     : 'max'
 		, ok           : function() {
 			var newname = $( '#infoTextBox' ).val();
-			var url = $( '#infoTextBox2' ).val();
+			var url = $( '#infoTextBox1' ).val();
 			$.post( 'enhance.php', { webradios: newname, url: url, new: 1 }, function( exist ) {
 				if ( exist ) {
 					var nameimg = exist.split( "\n" );

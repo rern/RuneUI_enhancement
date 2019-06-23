@@ -161,36 +161,7 @@ EOF
 )
 insertH '1'
 
-# to be moved after 'if not update ##############################################
-makeDirLink playlists
-# convert playlists
-dir=/srv/http/assets/img/playlists
-olddir=/var/lib/mpd/playlists
-if [[ -z $( ls -A $dir ) && -n $( ls -A $olddir ) ]]; then # convert if none found
-    echo -e "$bar Convert playlists data ..."
-    
-    plfiles=( $olddir/* )
-    for plfile in "${plfiles[@]}"; do
-        lines=
-        readarray files < "$plfile"
-        for file in "${files[@]}"; do
-            file=$( echo $file | tr -d '\n' )
-            if [[ ${file:0:4} == http ]]; then
-                lines="$lines$file^^(unnamed)\n"
-            else
-                data=$( mpc ls -f "%file%^^%title%^^%time%^^[##%track% • ][%artist%][ • %album%]" "$file" )
-                lines="$lines$data\n"
-            fi
-        done
-        name=$( basename "$plfile" .m3u )
-		echo $name
-        printf "$lines" > "$dir/$name"
-    done
-	setown $dir
-fi
-
 setColor
-
 ############################################################################
 if [[ $1 == u ]]; then
 	installfinish $@
@@ -200,16 +171,48 @@ if [[ $1 == u ]]; then
 fi
 
 ########## if not update ############################################################
-makeDirLink coverarts
-makeDirLink tmp
-makeDirLink webradiopl
-makeDirLink webradios
-
 setown() {
 	chown -R http:http $1
 	[[ -L $1 ]] && chown -R http:http $( readlink -f $1 )
 }
 
+makeDirLink coverarts
+makeDirLink tmp
+makeDirLink webradiopl
+
+makeDirLink playlists
+# convert playlists
+dir=/srv/http/assets/img/playlists
+olddir=/var/lib/mpd/playlists
+if [[ -z $( ls -A $dir ) && -n $( ls -A $olddir ) ]]; then # convert if none found
+    echo -e "$bar Convert playlists data ..."
+    
+    plfiles=( $olddir/* )
+    for plfile in "${plfiles[@]}"; do
+	    readarray -t files <<<"$plfile"
+	    for file in "${files[@]}"; do
+	        readarray -t lists <<< $( cat "$file" )
+	        lines=
+	        for list in "${lists[@]}"; do
+	            echo $list
+	            if [[ ${list:0:4} == http ]]; then
+	                lines="$lines$list^^(unnamed)\n"
+	            else 
+	                data=$( mpc ls -f "%file%^^%title%^^%time%^^[##%track% • ][%artist%][ • %album%]" "$list" )
+	                lines="$lines$data\n"
+	            fi
+	        done
+	        [[ -z $lines ]] && continue
+	        
+	        name=$( basename "$plfile" .m3u )
+	        echo $name
+	        printf "$lines" > "$dir/$name"
+	    done
+	done
+	setown $dir
+fi
+
+makeDirLink webradios
 # convert webradios
 # filename: http:||webradio|url
 # content:
@@ -250,9 +253,10 @@ if [[ -z $( ls -A $dir ) ]]; then # convert only when none found
 			path=$( echo $namepath | cut -d',' -f2 )
 			name=${name/name:}
 			path=${path/path:}
-			mpdpath=${path//\\/}
-			oldfile=/mnt/MPD/$mpdpath/thumbnail.jpg
-			newfile="$dir/${mpdpath//\//|}"
+			[[ ! -d $path ]] && continue
+			
+			oldfile=/mnt/MPD/$path/thumbnail.jpg
+			newfile="$dir/${path//\//|}"
 			if [[ -e "$oldfile" ]]; then
 				base64data=$( base64 -w 0 "$oldfile" )
 				echo "data:image/jpeg;base64,$base64data" > "$newfile"

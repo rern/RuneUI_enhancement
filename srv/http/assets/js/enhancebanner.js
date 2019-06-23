@@ -1,4 +1,4 @@
-$( 'body' ).prepend( 
+$( 'body' ).prepend(
 '<div id="banner">\
 	<div id="bannerTitle"></div>\
 	<div id="bannerMessage"></div>\

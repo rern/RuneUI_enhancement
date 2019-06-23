@@ -273,9 +273,23 @@ function setPlaybackBlank() {
 		.removeAttr( 'style' )
 		.css( 'visibility', 'visible' );
 }
+function loadCoverart( image ) {
+	var img = new Image();
+	img.crossOrigin = 'anonymous';
+	img.src = image;
+	img.onload = function() {
+		var canvas = document.createElement( 'canvas' );
+		canvas.width = this.width;
+		canvas.height = this.height;
+		canvas.getContext( '2d' ).drawImage( this, 0, 0 );
+		$( '#cover-art' )
+			.attr( 'src', canvas.toDataURL( 'image/jpeg' ) )
+			.after( '<div class="licover-save"><i class="fa fa-save"></i></div>' );
+		GUI.coversave = 1;
+	}
+}
 function renderPlayback() {
 	var status = GUI.status;
-	if ( status.coverart ) $( '.licover-save' ).remove();
 	// song and album before update for song/album change detection
 	var previousartist = $( '#artist' ).text();
 	var previoussong = $( '#song' ).text();
@@ -297,6 +311,7 @@ function renderPlayback() {
 	$( '.playback-controls' ).css( 'visibility', 'visible' );
 	$( '#artist, #song, #album' ).css( 'width', '' );
 	$( '#cover-art' ).removeClass( 'vu' );
+	$( '#coverartoverlay' ).addClass( 'hide' );
 	if ( !GUI.coversave ) $( '.licover-save' ).remove();
 	$( '#artist' ).html( status.Artist );
 	$( '#song' ).html( status.Title );
@@ -348,27 +363,25 @@ function renderPlayback() {
 			$( '#cover-art' )
 				.attr( 'src', status.coverart )
 				.css( 'border-radius', '' );
-			$( '#coverartoverlay' ).addClass( 'hide' );
 		} else {
 			$( '#cover-art' )
 				.attr( 'src', status.state === 'play' ? vu : vustop )
 				.css( 'border-radius', '18px' )
 				.addClass( 'vu' );
-			$( '#coverartoverlay' ).removeClass( 'hide' );
 		}
 		return
 	}
 	
 	$( '#cover-art' ).css( 'border-radius', '' );
-	$( '#coverartoverlay' ).addClass( 'hide' );
 	if ( status.Artist !== previousartist || status.Album !== previousalbum ) {
-		$( '#cover-art' )
-			.attr( 'src', status.coverart || coverrune )
-			.css( 'border-radius', '' );
 		if ( status.coverart ) {
 			GUI.coversave = 0;
+			$( '#cover-art' ).attr( 'src', status.coverart );
+			$( '.licover-save' ).remove();
 		} else {
-			// get mbid from lastfm > get coverart from coverartarchive.org
+			$( '#cover-art' ).attr( 'src', coverrune );
+			$( '.licover-save' ).remove();
+			
 			$.ajax( {
 				  type     : 'post'
 				, url      : 'http://ws.audioscrobbler.com/2.0/'
@@ -383,24 +396,13 @@ function renderPlayback() {
 				, timeout  : 5000
 				, dataType : 'json'
 				, success  : function( data ) {
-					if ( data.album.mbid ) {
+					var image = data.album.image[ 3 ][ '#text' ];
+					if ( image ) {
+						loadCoverart( image );
+					} else if ( data.album.mbid ) {
 						$.post( 'http://coverartarchive.org/release/'+ data.album.mbid, function( data ) {
 							var image = data.images[ 0 ][ 'image' ];
-							if ( image ) {
-								var img = new Image();
-								img.crossOrigin = 'anonymous';
-								img.src = image;
-								img.onload = function() {
-									var canvas = document.createElement( 'canvas' );
-									canvas.width = this.width;
-									canvas.height = this.height;
-									canvas.getContext( '2d' ).drawImage( this, 0, 0 );
-									$( '#cover-art' )
-										.attr( 'src', canvas.toDataURL( 'image/jpeg' ) )
-										.after( '<div class="edit licover-save"><i class="fa fa-save"></i></div>' );
-									GUI.coversave = 1;
-								}
-							}
+							if ( image ) loadCoverart( image );
 						} );
 					}
 				}
@@ -1489,6 +1491,7 @@ function saveCoverart() {
 		, ok      : function() { 
 			$.post( 'enhance.php', { coversave: coverfile, base64: src }, function( std ) {
 				infoCoverart( 'Save' );
+				$( '.licover-save' ).remove();
 			} );
 		}
 	} );
@@ -2051,17 +2054,4 @@ function getOrientation( file, callback ) { // return: 1 - undefined
 		return callback( 1 );
 	};
 	reader.readAsArrayBuffer( file.slice( 0, 64 * 1024 ) );
-}
-function bannerHide() {
-	$( '#banner' )
-		.hide()
-		.removeAttr( 'style' );
-	$( '#bannerTitle, #bannerMessage' ).empty();
-}
-function notify( title, message, icon, delay ) {
-	var iconhtml = icon ? '<i class="fa fa-'+ ( icon || 'check' ) +' wh"></i>' : '';
-	$( '#bannerTitle' ).html( iconhtml + title );
-	$( '#bannerMessage' ).html( message );
-	$( '#banner' ).show();
-	if ( delay !== -1 ) setTimeout( bannerHide, delay || 3000 );
 }
