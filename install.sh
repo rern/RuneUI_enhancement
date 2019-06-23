@@ -190,28 +190,28 @@ if [[ -z $( ls -A $dir ) && -n $( ls -A $olddir ) ]]; then # convert if none fou
     
     plfiles=( $olddir/* )
     for plfile in "${plfiles[@]}"; do
-        lines=
-        readarray files < "$plfile"
-        for file in "${files[@]}"; do
-            file=$( echo $file | tr -d '\n' )
-            if [[ ${file:0:4} == http ]]; then
-                lines="$lines$file^^(unnamed)\n"
-            else
-                [[ ! -e $file ]] && continue
-				
-                data=$( mpc ls -f "%file%^^%title%^^%time%^^[##%track% • ][%artist%][ • %album%]" "$file" )
-                lines="$lines$data\n"
-            fi
-        done
-		[[ -n $lines ]] && continue
-		
-        name=$( basename "$plfile" .m3u )
-		echo $name
-        printf "$lines" > "$dir/$name"
-    done
+	    readarray -t files <<<"$plfile"
+	    for file in "${files[@]}"; do
+	        readarray -t lists <<< $( cat "$file" )
+	        lines=
+	        for list in "${lists[@]}"; do
+	            echo $list
+	            if [[ ${list:0:4} == http ]]; then
+	                lines="$lines$list^^(unnamed)\n"
+	            else 
+	                data=$( mpc ls -f "%file%^^%title%^^%time%^^[##%track% • ][%artist%][ • %album%]" "$list" )
+	                lines="$lines$data\n"
+	            fi
+	        done
+	        [[ -z $lines ]] && continue
+	        
+	        name=$( basename "$plfile" .m3u )
+	        echo $name
+	        printf "$lines" > "$dir/$name"
+	    done
+	done
 	setown $dir
 fi
-
 
 makeDirLink webradios
 # convert webradios
