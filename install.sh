@@ -161,7 +161,26 @@ EOF
 )
 insertH '1'
 
-# to be moved after 'if not update ##############################################
+############################################################################
+if [[ $1 == u ]]; then
+	installfinish $@
+	restartlocalbrowser
+	reinitsystem
+	exit
+fi
+
+########## if not update ############################################################
+setColor
+
+setown() {
+	chown -R http:http $1
+	[[ -L $1 ]] && chown -R http:http $( readlink -f $1 )
+}
+
+makeDirLink coverarts
+makeDirLink tmp
+makeDirLink webradiopl
+
 makeDirLink playlists
 # convert playlists
 dir=/srv/http/assets/img/playlists
@@ -178,6 +197,8 @@ if [[ -z $( ls -A $dir ) && -n $( ls -A $olddir ) ]]; then # convert if none fou
             if [[ ${file:0:4} == http ]]; then
                 lines="$lines$file^^(unnamed)\n"
             else
+                [[ ! -e $file ]] && continue
+				
                 data=$( mpc ls -f "%file%^^%title%^^%time%^^[##%track% • ][%artist%][ • %album%]" "$file" )
                 lines="$lines$data\n"
             fi
@@ -189,27 +210,8 @@ if [[ -z $( ls -A $dir ) && -n $( ls -A $olddir ) ]]; then # convert if none fou
 	setown $dir
 fi
 
-setColor
 
-############################################################################
-if [[ $1 == u ]]; then
-	installfinish $@
-	restartlocalbrowser
-	reinitsystem
-	exit
-fi
-
-########## if not update ############################################################
-makeDirLink coverarts
-makeDirLink tmp
-makeDirLink webradiopl
 makeDirLink webradios
-
-setown() {
-	chown -R http:http $1
-	[[ -L $1 ]] && chown -R http:http $( readlink -f $1 )
-}
-
 # convert webradios
 # filename: http:||webradio|url
 # content:
@@ -250,9 +252,10 @@ if [[ -z $( ls -A $dir ) ]]; then # convert only when none found
 			path=$( echo $namepath | cut -d',' -f2 )
 			name=${name/name:}
 			path=${path/path:}
-			mpdpath=${path//\\/}
-			oldfile=/mnt/MPD/$mpdpath/thumbnail.jpg
-			newfile="$dir/${mpdpath//\//|}"
+			[[ ! -d $path ]] && continue
+			
+			oldfile=/mnt/MPD/$path/thumbnail.jpg
+			newfile="$dir/${path//\//|}"
 			if [[ -e "$oldfile" ]]; then
 				base64data=$( base64 -w 0 "$oldfile" )
 				echo "data:image/jpeg;base64,$base64data" > "$newfile"
