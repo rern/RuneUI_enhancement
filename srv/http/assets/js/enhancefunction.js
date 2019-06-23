@@ -273,6 +273,21 @@ function setPlaybackBlank() {
 		.removeAttr( 'style' )
 		.css( 'visibility', 'visible' );
 }
+function loadCoverart( image ) {
+	var img = new Image();
+	img.crossOrigin = 'anonymous';
+	img.src = image;
+	img.onload = function() {
+		var canvas = document.createElement( 'canvas' );
+		canvas.width = this.width;
+		canvas.height = this.height;
+		canvas.getContext( '2d' ).drawImage( this, 0, 0 );
+		$( '#cover-art' )
+			.attr( 'src', canvas.toDataURL( 'image/jpeg' ) )
+			.after( '<div class="licover-save"><i class="fa fa-save"></i></div>' );
+		GUI.coversave = 1;
+	}
+}
 function renderPlayback() {
 	var status = GUI.status;
 	// song and album before update for song/album change detection
@@ -366,7 +381,8 @@ function renderPlayback() {
 		} else {
 			$( '#cover-art' ).attr( 'src', coverrune );
 			$( '.licover-save' ).remove();
-			$.ajax( { // get mbid from lastfm > get coverart from coverartarchive.org
+			
+			$.ajax( {
 				  type     : 'post'
 				, url      : 'http://ws.audioscrobbler.com/2.0/'
 				, data     : { 
@@ -380,24 +396,13 @@ function renderPlayback() {
 				, timeout  : 5000
 				, dataType : 'json'
 				, success  : function( data ) {
-					if ( data.album.mbid ) {
+					var image = data.album.image[ 3 ][ '#text' ];
+					if ( image ) {
+						loadCoverart( image );
+					} else if ( data.album.mbid ) {
 						$.post( 'http://coverartarchive.org/release/'+ data.album.mbid, function( data ) {
 							var image = data.images[ 0 ][ 'image' ];
-							if ( image && !GUI.coverart ) { // fix: already changed track
-								var img = new Image();
-								img.crossOrigin = 'anonymous';
-								img.src = image;
-								img.onload = function() {
-									var canvas = document.createElement( 'canvas' );
-									canvas.width = this.width;
-									canvas.height = this.height;
-									canvas.getContext( '2d' ).drawImage( this, 0, 0 );
-									$( '#cover-art' )
-										.attr( 'src', canvas.toDataURL( 'image/jpeg' ) )
-										.after( '<div class="licover-save"><i class="fa fa-save"></i></div>' );
-									GUI.coversave = 1;
-								}
-							}
+							if ( image ) loadCoverart( image );
 						} );
 					}
 				}
