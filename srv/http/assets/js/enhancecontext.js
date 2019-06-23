@@ -165,7 +165,7 @@ $( '.contextmenu a' ).click( function( e ) {
 	}
 	
 	cmd = cmd.replace( /album|artist|composer|genre/, '' );
-	var sleep = GUI.list.path.slice( 0, 4 ) === 'http' ? ' sleep 1;' : '';
+	var sleep = GUI.list.path.slice( 0, 4 ) === 'http' ? ' sleep 1;' : 'sleep 0.05';
 	var contextCommand = {
 		  add         : mpcCmd
 		, addplay     : 'pos=$( mpc playlist | wc -l ); '+ mpcCmd +';'+ sleep +' mpc play $(( pos + 1 ))'
