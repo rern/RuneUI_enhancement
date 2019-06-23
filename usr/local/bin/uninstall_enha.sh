@@ -78,11 +78,11 @@ if [[ -n $( ls -A $dir ) ]]; then
 			data=${list%%^*}
 			[[ -n $data ]] && lines="$lines$data\n"
 		done
-		if [[ -n $lines ]]; then
-			name=$( basename $plfile )
-			echo $name
-			printf "$lines" > "/var/lib/mpd/playlists/$name.m3u"
-		fi
+		[[ -z $lines ]] && continue
+		
+		name=$( basename $plfile )
+		echo $name
+		printf "$lines" > "/var/lib/mpd/playlists/$name.m3u"
 	done
 fi
 
