@@ -680,6 +680,15 @@ function playlistInfo( $save = '' ) { // fix -  mpd unable to save cue/m3u prope
 				$thumb = $nameimg[ 1 ];
 				$img = $nameimg[ 2 ];
 			}
+/*			$content.= '<li>
+						<i class="fa fa-webradio pl-icon'.( substr( $Title, 0, 1 ) === '*' || !$Title ? ' unsaved' : '' ).'" data-target="#context-menu-webradiopl"></i>
+						  <a class="lipath">'.$filename.'</a>
+						  <a class="liname">'.$Title.'</a>'
+						  .( $thumb ? '<a class="lithumb">'.$thumb.'</a>' : '' )
+						  .( $img ? '<a class="liimg">'.$img.'</a>' : '' ).'
+						  <span class="li1"><a class="name">'.$Title.'</a><a class="song"></a><span class="duration"><a class="elapsed"></a></span></span>
+						  <span class="li2">'.( $Title ? $Title.' • ' : '' ).$filename.'</span>
+					</li>';*/
 		}
 		if ( $save && $webradio ) {
 			$list.= "$file^^$Title";
@@ -707,22 +716,28 @@ function savePlaylist( $name ) {
 function loadPlaylist( $name ) { // fix -  mpd unable to save cue properly
 	$playlistinfo = file_get_contents( "/srv/http/assets/img/playlists/$name" );
 	$lines = explode( "\n", rtrim( $playlistinfo ) );
-	$cmd = '';
+	$list = '';
 	$i = 0;
 	foreach( $lines as $line ) {
-		$list = explode( '^^', $line );
-		$cuetrack = $list[ 9 ];
+		$data = explode( '^^', $line );
+		$cuetrack = $data[ 9 ];
 		if ( $cuetrack ) {
-			$cmd.= '/srv/http/enhance1cue.sh "'.$list[ 8 ].'" '.$cuetrack.'; ';
-		} else {
-			$cmd.= 'mpc add "'.$list[ 0 ].'"; ';
+			if ( $list ) {
+				exec( 'echo -e "'.rtrim( $list, '\n' ).'" | mpc add' );
+				$list = '';
+				$i = 0;
+			}
+			$list.= '/srv/http/enhance1cue.sh "'.$data[ 8 ].'" '.$cuetrack.'; ';
+			continue;
 		}
+		
+		$list.= $data[ 0 ].'\n';
 		$i++;
-		if ( $i === 200 ) { // limit each command length to avoid errors
-			exec( $cmd );
-			$cmd = '';
+		if ( $i === 500 ) { // limit list length to avoid errors
+			exec( 'echo -e "'.rtrim( $list, '\n' ).'" | mpc add' );
+			$list = '';
 			$i = 0;
 		}
 	}
-	if( $cmd ) exec( $cmd );
+	if( $list ) exec( 'echo -e "'.rtrim( $list, '\n' ).'" | mpc add' );
 }
