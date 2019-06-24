@@ -1602,6 +1602,7 @@ function plContextmenu( $li, $target ) { // saved playlists
 		return
 	}
 	
+	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
 	var contextnum = $menu.find( 'a:not(.hide)' ).length;
 	$( '.menushadow' ).css( 'height', contextnum * 42 - 1 );
 	$( '#pl-editor li' ).removeClass( 'active' );
