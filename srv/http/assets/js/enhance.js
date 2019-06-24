@@ -1502,6 +1502,7 @@ $( '#plclear' ).click( function() {
 			GUI.pllist = {};
 			setPlaybackBlank();
 			renderPlaylist();
+			$( '.licover-save' ).remove();
 			$.post( 'enhance.php', { mpc: [ 'mpc clear', '/usr/bin/rm -f "/srv/http/assets/img/webradiopl/*' ] } );
 		}
 	} );
