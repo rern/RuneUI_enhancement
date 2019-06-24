@@ -716,22 +716,20 @@ function savePlaylist( $name ) {
 function loadPlaylist( $name ) { // fix -  mpd unable to save cue properly
 	$playlistinfo = file_get_contents( "/srv/http/assets/img/playlists/$name" );
 	$lines = explode( "\n", rtrim( $playlistinfo ) );
-	$list = '';
 	$i = 0;
 	foreach( $lines as $line ) {
 		$data = explode( '^^', $line );
-		$cuetrack = $data[ 9 ];
-		if ( $cuetrack ) {
+		$file = $data[ 0 ];
+		if ( !$file ) { // cue === ''
 			if ( $list ) {
 				exec( 'echo -e "'.rtrim( $list, '\n' ).'" | mpc add' );
 				$list = '';
 				$i = 0;
 			}
-			$list.= '/srv/http/enhance1cue.sh "'.$data[ 8 ].'" '.$cuetrack.'; ';
+			exec( '/srv/http/enhance1cue.sh "'.$data[ 8 ].'" '.$data[ 9 ] );
 			continue;
 		}
-		
-		$list.= $data[ 0 ].'\n';
+		$list.= $file.'\n';
 		$i++;
 		if ( $i === 500 ) { // limit list length to avoid errors
 			exec( 'echo -e "'.rtrim( $list, '\n' ).'" | mpc add' );
