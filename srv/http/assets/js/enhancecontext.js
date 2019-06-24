@@ -148,7 +148,7 @@ $( '.contextmenu a' ).click( function( e ) {
 					, title   : 'Playlist Replace'
 					, message : 'Replace current playlist?'
 					, ok      : function() {
-						notify( 'Saved Playlist', '<i class="fa fa-gear fa-spin"></i> Processing ...', 'list-ul', -1 );
+						notify( 'Saved Playlist', '<i class="fa fa-gear fa-spin"></i> Loading ...', 'list-ul', -1 );
 						$.post( 'enhance.php', { loadplaylist: name, play: play, replace: replace }, function() {
 							notify( 'Playlist Replaced', name, 'list-ul' );
 						} );
