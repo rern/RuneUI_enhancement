@@ -23,6 +23,19 @@ fi
 
 installstart $@
 
+packagestatus mpc # $version, $installed
+
+if [[ !$installed ]]; then
+	wgetnc https://github.com/rern/_assets/raw/master/mpc.tar
+	mkdir pkg
+	bsdtar xvf mpc.tar -C pkg
+	
+	echo -e "$bar Upgrade mpc ..."
+	
+	pacman -U --needed --noconfirm pkg/*
+
+	rm -rf mpc.tar pkg
+fi
 if ! pacman -Q imagemagick &> /dev/null; then
 	echo -e "$bar Get ImageMagick package files ..."
 	
