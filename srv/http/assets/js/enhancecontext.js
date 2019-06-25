@@ -119,7 +119,7 @@ $( '.contextmenu a' ).click( function( e ) {
 		var ext = name.split( '.' ).pop();
 		if ( ext === 'cue' && GUI.list.index ) { // cue
 			var plfile = GUI.list.path.replace( /"/g, '\\"' );
-			mpcCmd = '/srv/http/enhance1cue.sh "'+ plfile +'" '+ GUI.list.index;
+			mpcCmd = 'mpc --range='+ ( GUI.list.index - 1 ) +':'+ GUI.list.index +' load "'+ plfile +'"';
 		} else if ( ext === 'cue' || ext === 'pls' ) {
 			mpcCmd = 'mpc load "'+ name +'"';
 		} else if ( GUI.plugin ) { // unsaved dirble ( * in front of name for class indicator)
