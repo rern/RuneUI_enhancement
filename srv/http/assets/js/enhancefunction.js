@@ -488,6 +488,7 @@ function getPlaybackStatus() {
 		$.each( status, function( key, value ) {
 			GUI.status[ key ] = value;
 		} );
+		GUI.status.AlbumArtist = status.AlbumArtist || '';
 		GUI.plreplace = 0;
 		renderPlayback();
 		setButton();
@@ -1459,19 +1460,27 @@ function removeCoverart() {
 	} );
 }
 function replaceCoverart() {
-	var src = $( '#cover-art' ).prop( 'src' );
-	var file = GUI.status.file;
-	var path = '/mnt/MPD/'+ file.substr( 0, file.lastIndexOf( '/' ) );
+	if ( GUI.playback ) {
+		var src = $( '#cover-art' ).prop( 'src' );
+		var path = GUI.status.file.substr( 0, GUI.status.file.lastIndexOf( '/' ) );
+		var album = GUI.status.Album;
+		var artist = GUI.status.AlbumArtist || GUI.status.Artist;
+	} else {
+		var src = $( '.licoverimg img' ).prop( 'src' );
+		var path = $( '.licover .lipath' ).text();
+		var album = $( '.licover .lialbum' ).text();
+		var artist = $( '.licover .liartist' ).text();
+	}
 	info( {
 		  icon        : 'coverart'
 		, title       : 'Replace Album Coverart'
 		, message     : '<img src="'+ src +'">'
-					   +'<span class="bkname"><br><w>'+ GUI.status.Album +'</w>'
-					   +'<br>'+ GUI.status.Artist +'<span>'
+					   +'<span class="bkname"><br><w>'+ album +'</w>'
+					   +'<br>'+ artist +'<span>'
 		, fileoklabel : 'Replace'
 		, ok          : function() {
 			var newimg = $( '#infoMessage .newimg' ).attr( 'src' );
-			$.post( 'enhance.php', { imagefile: path +'/cover.jpg', base64: newimg, coverfile: 1 }, function( std ) {
+			$.post( 'enhance.php', { imagefile: '/mnt/MPD/'+ path +'/cover.jpg', base64: newimg, coverfile: 1 }, function( std ) {
 				infoCoverart( 'Replace', newimg, std );
 			} );
 		}
@@ -1482,12 +1491,13 @@ function saveCoverart() {
 	var file = GUI.status.file;
 	var path = '/mnt/MPD/'+ file.substr( 0, file.lastIndexOf( '/' ) );
 	var coverfile = path.replace( /"/g, '\"' ) +'/cover.jpg';
+	var artist = GUI.status.AlbumArtist || GUI.status.Artist;
 	info( {
 		  icon    : 'coverart'
 		, title   : 'Save Album Coverart'
 		, message : '<img src="'+ src +'">'
 					   +'<span class="bkname"><br><w>'+ GUI.status.Album +'</w>'
-					   +'<br>'+ GUI.status.Artist +'<span>'
+					   +'<br>'+ artist +'<span>'
 		, ok      : function() { 
 			$.post( 'enhance.php', { coversave: coverfile, base64: src }, function( std ) {
 				infoCoverart( 'Save' );

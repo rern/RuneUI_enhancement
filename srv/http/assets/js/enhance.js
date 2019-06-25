@@ -662,7 +662,10 @@ var btnctrl = {
 	, volB    : 'voldn'
 }
 $( '.covermap' ).taphold( function( e ) {
-	if ( !GUI.status.playlistlength ) return
+	if ( !GUI.status.playlistlength
+		|| $( '.licover-save' ).length
+		|| $( '#cover-art' ).attr( 'src' ) === coverrune
+	) return
 	
 	if ( [ vu, vustop ].indexOf( $( '#cover-art' ).attr( 'src' ) ) !== -1 || GUI.coversave ) {
 		var iconremove = '';
@@ -681,7 +684,7 @@ $( '#divcover' ).on( 'click', '.edit, .licover-save', function( e ) {
 	if ( GUI.status.ext !== 'radio' ) {
 		if ( $this.hasClass( 'licover-remove' ) ) {
 			removeCoverart();
-		} else if ( $this.hasClass( 'licover-edit' ) ) {
+		} else if ( $this.hasClass( 'licover-cover' ) ) {
 			replaceCoverart();
 		} else {
 			saveCoverart();
