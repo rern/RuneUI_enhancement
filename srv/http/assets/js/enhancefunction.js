@@ -1426,10 +1426,18 @@ function radio2html( list, source, querytype, plid ) {
 	return content +'</li>';
 }
 function removeCoverart() {
-	var src = $( '#cover-art' ).prop( 'src' );
-	var file = GUI.status.file;
-	var path = '/mnt/MPD/'+ file.substr( 0, file.lastIndexOf( '/' ) );
-	$.post( 'enhance.php', { bash: '/usr/bin/ls "'+ path +'" | grep -iE "^cover.jpg$|^cover.png$|^folder.jpg$|^folder.png$|^front.jpg$|^front.png$"' }, function( file ) {
+	if ( GUI.playback ) {
+		var src = $( '#cover-art' ).prop( 'src' );
+		var path = GUI.status.file.substr( 0, GUI.status.file.lastIndexOf( '/' ) );
+		var album = GUI.status.Album;
+		var artist = GUI.status.AlbumArtist || GUI.status.Artist;
+	} else {
+		var src = $( '.licoverimg img' ).prop( 'src' );
+		var path = $( '.licover .lipath' ).text();
+		var album = $( '.licover .lialbum' ).text();
+		var artist = $( '.licover .liartist' ).text();
+	}
+	$.post( 'enhance.php', { bash: '/usr/bin/ls "/mnt/MPD/'+ path +'" | grep -iE "^cover.jpg$|^cover.png$|^folder.jpg$|^folder.png$|^front.jpg$|^front.png$"' }, function( file ) {
 		var file = file.slice( 0, -1 ); // less last '\n'
 		var count = file.split( '\n' ).length;
 		if ( count > 1 ) {
@@ -1447,12 +1455,12 @@ function removeCoverart() {
 			  icon    : 'coverart'
 			, title   : 'Remove Album Coverart'
 			, message : '<img src="'+ src +'">'
-					   +'<br><w>'+ GUI.status.Album +'</w>'
-					   +'<br>'+ GUI.status.Artist
+					   +'<br><w>'+ album +'</w>'
+					   +'<br>'+ artist
 					   +'<br><br><code>'+ file +'</code> > <code>'+ file +'.backup</code>'
 			, oklabel : 'Remove'
 			, ok      : function() {
-				$.post( 'enhance.php', { imagefile: path +'/'+ file, coverfile: 1 }, function( std ) {
+				$.post( 'enhance.php', { imagefile: '/mnt/MPD/'+ path +'/'+ file, coverfile: 1 }, function( std ) {
 					infoCoverart( 'Remove', coverrune, std );
 				} );
 			}

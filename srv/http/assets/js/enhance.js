@@ -662,10 +662,7 @@ var btnctrl = {
 	, volB    : 'voldn'
 }
 $( '.covermap' ).taphold( function( e ) {
-	if ( !GUI.status.playlistlength
-		|| $( '.licover-save' ).length
-		|| $( '#cover-art' ).attr( 'src' ) === coverrune
-	) return
+	if ( !GUI.status.playlistlength ) return
 	
 	if ( [ vu, vustop ].indexOf( $( '#cover-art' ).attr( 'src' ) ) !== -1 || GUI.coversave ) {
 		var iconremove = '';
