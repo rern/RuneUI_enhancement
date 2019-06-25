@@ -726,7 +726,7 @@ function loadPlaylist( $name ) { // fix -  mpd unable to save cue properly
 				$list = '';
 				$i = 0;
 			}
-			exec( '/srv/http/enhance1cue.sh "'.$data[ 8 ].'" '.$data[ 9 ] );
+			exec( 'mpc --range='.( $data[ 9 ] - 1 ).':'.$data[ 9 ].' load "'.$data[ 8 ].'"' );
 			continue;
 		}
 		$list.= $file.'\n';
