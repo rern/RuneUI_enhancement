@@ -400,10 +400,10 @@ function renderPlayback() {
 					if ( image ) {
 						loadCoverart( image );
 					} else if ( data.album.mbid ) {
-						$.post( 'http://coverartarchive.org/release/'+ data.album.mbid, function( data ) {
+						$.post( 'https://coverartarchive.org/release/'+ data.album.mbid, function( data ) {
 							var image = data.images[ 0 ][ 'image' ];
 							if ( image ) loadCoverart( image );
-						} );
+						}, 'json' );
 					}
 				}
 			} );
