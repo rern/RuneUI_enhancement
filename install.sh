@@ -25,29 +25,16 @@ installstart $@
 
 packagestatus mpc # $version, $installed
 
-if [[ !$installed ]]; then
-	wgetnc https://github.com/rern/_assets/raw/master/mpc.tar
+if [[ !$installed || ! -e /usr/bin/convert ]]; then
+	wgetnc https://github.com/rern/_assets/raw/master/imagemagick-mpc.tar
 	mkdir pkg
-	bsdtar xvf mpc.tar -C pkg
+	bsdtar xvf imagemagick-mpc.tar -C pkg
 	
-	echo -e "$bar Upgrade mpc ..."
+	echo -e "$bar Install ImageMagick and Upgrade mpc ..."
 	
 	pacman -U --needed --noconfirm pkg/*
 
-	rm -rf mpc.tar pkg
-fi
-if ! pacman -Q imagemagick &> /dev/null; then
-	echo -e "$bar Get ImageMagick package files ..."
-	
-	wgetnc https://github.com/rern/_assets/raw/master/imagemagick.tar
-	mkdir pkg
-	bsdtar xvf imagemagick.tar -C pkg
-	
-	echo -e "$bar Install ImageMagick ..."
-	
-	pacman -U --needed --noconfirm pkg/*
-
-	rm -rf imagemagick.tar pkg
+	rm -rf imagemagick-mpc.tar pkg
 fi
 
 mv /srv/http/index.php{,.backup}
