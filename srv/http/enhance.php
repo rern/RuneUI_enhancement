@@ -717,25 +717,41 @@ function loadPlaylist( $name ) { // fix -  mpd unable to save cue properly
 	$playlistinfo = file_get_contents( "/srv/http/assets/img/playlists/$name" );
 	$lines = explode( "\n", rtrim( $playlistinfo ) );
 	$i = 0;
+	$j = 0;
 	foreach( $lines as $line ) {
 		$data = explode( '^^', $line );
 		$file = $data[ 0 ];
-		if ( !$file ) { // cue === ''
+		if ( !$file ) { // cue: ''
 			if ( $list ) {
 				exec( 'echo -e "'.rtrim( $list, '\n' ).'" | mpc add' );
 				$list = '';
 				$i = 0;
 			}
-			exec( 'mpc --range='.( $data[ 9 ] - 1 ).':'.$data[ 9 ].' load "'.$data[ 8 ].'"' );
-			continue;
-		}
-		$list.= $file.'\n';
-		$i++;
-		if ( $i === 500 ) { // limit list length to avoid errors
-			exec( 'echo -e "'.rtrim( $list, '\n' ).'" | mpc add' );
-			$list = '';
-			$i = 0;
+			$range.= 'mpc --range='.( $data[ 9 ] - 1 ).':'.$data[ 9 ].' load "'.$data[ 8 ].'";';
+			$j++;
+			if ( $j === 100 ) { // limit list length to avoid errors
+				exec( $range );
+				$range = '';
+				$j = 0;
+			}
+		} else {
+			if ( $range ) {
+				exec( $range );
+				$range = '';
+				$j = 0;
+			}
+			$list.= $file.'\n';
+			$i++;
+			if ( $i === 500 ) { // limit list length to avoid errors
+				exec( 'echo -e "'.rtrim( $list, '\n' ).'" | mpc add' );
+				$list = '';
+				$i = 0;
+			}
 		}
 	}
-	if( $list ) exec( 'echo -e "'.rtrim( $list, '\n' ).'" | mpc add' );
+	if( $list ) {
+		exec( 'echo -e "'.rtrim( $list, '\n' ).'" | mpc add' );
+	} else if ( $range ) {
+		exec( $range );
+	}
 }
