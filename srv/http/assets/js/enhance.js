@@ -32,6 +32,7 @@ var GUI = {
 	, similarpl    : -1
 	, status       : {}
 	, debounce     : ''
+	, debouncevol  : ''
 	, debouncems   : 300
 };
 var picaOption = { // pica.js
@@ -1880,8 +1881,8 @@ pushstreams.playlist.onmessage = function( data ) {
 }
 pushstreams.volume.onmessage = function( data ) {
 	var data = data[ 0 ];
-	clearTimeout( GUI.debounce );
-	GUI.debounce = setTimeout( function() {
+	clearTimeout( GUI.debouncevol );
+	GUI.debouncevol = setTimeout( function() {
 		var vol = data[ 0 ];
 		var volumemute = data[ 1 ];
 		$volumeRS.setValue( vol );
