@@ -727,17 +727,30 @@ function loadPlaylist( $name ) { // fix -  mpd unable to save cue properly
 				$list = '';
 				$i = 0;
 			}
-			$range.= 'mpc --range='.( $data[ 9 ] - 1 ).':'.$data[ 9 ].' load "'.$data[ 8 ].'";';
+			$track = $data[ 9 ];
+			$file = $data[ 8 ];
+			if ( +$track === $trackprev + 1 && $file === $fileprev ) {
+				$track0 = $track0prev;
+				$ranges = explode( ';', $range );
+				array_pop( $ranges );
+				$range = implode( ';', $ranges );
+			} else {
+				$track0 = $track - 1;
+			}
+			$range.= ";mpc --range=$track0:$track load \"$file\"";
+			$track0prev = $track0;
+			$trackprev = $track;
+			$fileprev = $file;
 			$j++;
 			if ( $j === 100 ) { // limit list length to avoid errors
-				exec( $range );
-				$range = '';
+				exec( ltrim( $range, ';' ) );
+				$range = $track0prev = $trackprev = $fileprev = '';
 				$j = 0;
 			}
 		} else {
 			if ( $range ) {
-				exec( $range );
-				$range = '';
+				exec( ltrim( $range, ';' ) );
+				$range = $track0prev = $trackprev = $fileprev = '';
 				$j = 0;
 			}
 			$list.= $file.'\n';
@@ -752,6 +765,6 @@ function loadPlaylist( $name ) { // fix -  mpd unable to save cue properly
 	if( $list ) {
 		exec( 'echo -e "'.rtrim( $list, '\n' ).'" | mpc add' );
 	} else if ( $range ) {
-		exec( $range );
+		exec( ltrim( $range, ';' ) );
 	}
 }
