@@ -198,34 +198,50 @@ $( '#displayplayback' ).click( function() {
 } );
 $( '#turnoff' ).click( function( e ) {
 	if ( $( e.target ).hasClass( 'submenu' ) ) {
-		$.post( 'enhance.php', { power: GUI.localhost ? 'screenoff' : 'reboot' } );
-		$( '#loader' ).removeClass( 'hide' );
+		if ( GUI.localhost ) {
+			$.post( 'enhance.php', { power: 'screenoff' } );
+			$( '#loader' ).removeClass( 'hide' );
+		} else {
+			info( {
+				  icon        : 'reboot'
+				, title       : 'Reboot'
+				, message     : 'Reboot?'
+				, ok          : function() {
+					$.post( 'enhance.php', { power: 'reboot' } );
+				}
+			} );
+		}
 		return
 	}
 	
-/*	if ( !GUI.localhost ) {
-		$.post( 'enhance.php', { power: 'shutdown' } );
-		$( '#loader' ).removeClass( 'hide' );
-		return
-	}*/
-	
-	info( {
-		  icon        : 'power'
-		, title       : 'Power'
-		, message     : 'Select mode:'
-		, oklabel     : 'Off'
-		, okcolor     : '#bb2828'
-		, ok          : function() {
-			$.post( 'enhance.php', { power: 'shutdown' } );
-			$( '#loader' ).removeClass( 'hide' );
-		}
-		, buttonlabel : [ 'Reboot' ]
-		, buttoncolor : [ '#de810e' ]
-		, button      : [ function() {
-			$.post( 'enhance.php', { power: 'reboot' } );
-			$( '#loader' ).removeClass( 'hide' );
-		} ]
-	} );
+	if ( GUI.localhost ) {
+		info( {
+			  icon        : 'power'
+			, title       : 'Power'
+			, message     : 'Select mode:'
+			, oklabel     : 'Off'
+			, okcolor     : '#bb2828'
+			, ok          : function() {
+				$.post( 'enhance.php', { power: 'shutdown' } );
+				$( '#loader' ).removeClass( 'hide' );
+			}
+			, buttonlabel : [ 'Reboot' ]
+			, buttoncolor : [ '#de810e' ]
+			, button      : [ function() {
+				$.post( 'enhance.php', { power: 'reboot' } );
+				$( '#loader' ).removeClass( 'hide' );
+			} ]
+		} );
+	} else {
+		info( {
+			  icon        : 'power'
+			, title       : 'Power Off'
+			, message     : 'Power off?'
+			, ok          : function() {
+				$.post( 'enhance.php', { power: 'shutdown' } );
+			}
+		} );
+	}
 } );
 $( '#displaycolor' ).click( function( e ) {
 	if ( $( '#home-album gr' ).text() == 0 ) {
