@@ -1333,7 +1333,9 @@ $( '#db-entries' ).on( 'taphold', '.licoverimg',  function() {
 } ).on( 'tap', 'li', function( e ) {
 	var $this = $( this );
 	var $target = $( e.target );
-	if ( $target.hasClass( 'db-icon' ) && $( '.contextmenu:not( .hide )' ).length ) {
+	if ( $this.hasClass( 'active' )
+			&& $target.hasClass( 'db-icon' )
+			&& $( '.contextmenu:not( .hide )' ).length ) {
 		$( '.menu' ).addClass( 'hide' );
 		return
 	}
@@ -1691,7 +1693,9 @@ $( '#pl-editor' ).on( 'click', 'li', function( e ) {
 	}
 	
 	var $target = $( e.target );
-	if ( $target.hasClass( 'pl-icon' ) && $( '.contextmenu:not( .hide )' ).length ) {
+	if ( $this.hasClass( 'active' )
+			&& ( $target.hasClass( 'pl-icon' ) || $target.hasClass( 'db-icon' ) )
+			&& $( '.contextmenu:not( .hide )' ).length ) {
 		$( '.menu' ).addClass( 'hide' );
 		return
 	}
