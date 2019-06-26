@@ -1466,7 +1466,7 @@ p.hrbl {
 	color: #e0e7ee;
 }
 .index .gr {
-	color: hsl(200,3%,30%)/*cdh*/ !important;
+	color: hsl(200,3%,10%)/*cda*/ !important;
 }
 .coverart {
 	display: inline-block;
