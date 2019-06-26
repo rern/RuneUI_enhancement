@@ -7,7 +7,7 @@ $submenucolor = $redis->hGet( 'display', 'color' ) === 'hsl(200,100%,40%)' ? '' 
 if ( in_array( $_SERVER[ 'REMOTE_ADDR' ], array( '127.0.0.1', '::1' ) ) ) {
 	$submenupower = '<i class="fa fa-screenoff submenu"></i>';
 } else {
-	$submenupower = '<i class="fa fa-reboot submenu"></i>';
+	$submenupower = '';
 }
 // counts
 $count = exec( '/srv/http/enhancecount.sh' );
