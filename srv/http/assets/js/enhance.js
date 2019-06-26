@@ -1333,13 +1333,13 @@ $( '#db-entries' ).on( 'taphold', '.licoverimg',  function() {
 } ).on( 'tap', 'li', function( e ) {
 	var $this = $( this );
 	var $target = $( e.target );
-	if ( $this.hasClass( 'active' ) && $( '.contextmenu:not( .hide )' ).length ) {
-		$( '.contextmenu' ).addClass( 'hide' );
+	if ( $target.hasClass( 'db-icon' ) && $( '.contextmenu:not( .hide )' ).length ) {
+		$( '.menu' ).addClass( 'hide' );
 		return
 	}
 	
+	$( '.menu' ).addClass( 'hide' );
 	$( '#db-entries li' ).removeClass( 'active' );
-	$( '.contextmenu' ).addClass( 'hide' );
 	if ( $target.hasClass( 'edit' ) ) return
 	
 	if ( $( '.edit' ).length ) {
@@ -1361,7 +1361,6 @@ $( '#db-entries' ).on( 'taphold', '.licoverimg',  function() {
 		return
 	}
 	
-	$( '.menu' ).addClass( 'hide' );
 	// get file list in 'artist', 'composer', 'genre' mode (non-album)
 	if ( $this.hasClass( 'licover' ) && GUI.dbbackdata.length ) {
 		if ( [ 'artist', 'composer', 'genre' ].indexOf( GUI.dbbackdata[ 0 ].browsemode ) !== -1 ) {
@@ -1676,10 +1675,10 @@ $( '#pl-editor' ).on( 'click', 'li', function( e ) {
 	if ( GUI.plappend ) {
 		var path = GUI.plappend.file;
 		var cue = path.slice( -3 ) === 'cue';
-		var list = cue ? '' : path;                                                  // file
-		list += '^^'+ GUI.list.name +'^^'+ GUI.list.li.find( '.time' ).text() +'^^'; // ^^title^^time^^
-		list += GUI.list.li.find( '.li2' ).text();                             // #track • artist album^^
-		if ( cue ) list += '^^^^^^^^^^'+ path.slice( 0, -3 ) +'cue^^'+ GUI.plappend.index;                // ^^^^^^^^^^cuem3u^^track
+		var list = cue ? '' : path;                                                        // file
+		list += '^^'+ GUI.list.name +'^^'+ GUI.list.li.find( '.time' ).text() +'^^';       // ^^title^^time^^
+		list += GUI.list.li.find( '.li2' ).text();                                         // #track • artist album^^
+		if ( cue ) list += '^^^^^^^^^^'+ path.slice( 0, -3 ) +'cue^^'+ GUI.plappend.index; // ^^^^^^^^^^cuem3u^^track
 		var plname = $this.find( '.lipath' ).text();
 		$.post( 'enhance.php', { plappend: plname, list: list }, function() {
 			renderSavedPlaylist( $this.find( 'span' ).text() );
@@ -1692,12 +1691,12 @@ $( '#pl-editor' ).on( 'click', 'li', function( e ) {
 	}
 	
 	var $target = $( e.target );
-	if ( $this.hasClass( 'active' ) && $( '.contextmenu:not( .hide )' ).length ) {
-		$( '.contextmenu' ).addClass( 'hide' );
+	if ( $target.hasClass( 'pl-icon' ) && $( '.contextmenu:not( .hide )' ).length ) {
+		$( '.menu' ).addClass( 'hide' );
 		return
 	}
 	
-	$( '.contextmenu' ).addClass( 'hide' );
+	$( '.menu' ).addClass( 'hide' );
 	if ( $target.hasClass( 'pl-icon' ) || $target.hasClass( 'db-icon' ) || !$this.find( '.fa-list-ul' ).length ) {
 		if ( $target.data( 'target' ) === '#context-menu-file' ) {
 			dbContextmenu( $this, $target );
