@@ -713,7 +713,7 @@ function savePlaylist( $name ) {
 	$list = playlistInfo( 'save' );
 	file_put_contents( "/srv/http/assets/img/playlists/$name", $list );
 }
-function loadPlaylist( $name ) { // fix -  mpd unable to save cue properly
+function loadPlaylist( $name ) { // custom format playlist -  mpd unable to save cue properly
 	$playlistinfo = file_get_contents( "/srv/http/assets/img/playlists/$name" );
 	$lines = explode( "\n", rtrim( $playlistinfo ) );
 	$i = 0;
