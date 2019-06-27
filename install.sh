@@ -29,11 +29,17 @@ if [[ !$installed || ! -e /usr/bin/convert ]]; then
 	wgetnc https://github.com/rern/_assets/raw/master/imagemagick-mpc.tar
 	mkdir pkg
 	bsdtar xvf imagemagick-mpc.tar -C pkg
+	# to be removed ##########################################################################
+	if [[ -e /usr/bin/convert ]]; then
+		echo -e "$bar Upgrade mpc ..."
 	
-	echo -e "$bar Install ImageMagick and Upgrade mpc ..."
+		pacman -U --noconfirm pkg/mpc-0.31-1-armv7h.pkg.tar.xz /pkg/libmpdclient-2.16-1-armv7h.pkg.tar.xz
+	else
+	############################################################################################
+		echo -e "$bar Install ImageMagick and Upgrade mpc ..."
 	
-	pacman -U --needed --noconfirm pkg/*
-
+		pacman -U --needed --noconfirm pkg/*
+	fi
 	rm -rf imagemagick-mpc.tar pkg
 fi
 
