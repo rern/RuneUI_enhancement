@@ -106,7 +106,7 @@ if ( count( $files ) ) {
 	$coverarthtml = '';
 	foreach( $lists as $list ) {
 		$lipath = $list[ 5 ] ? '<a class="lipath">'.$list[ 5 ].'</a>' : '';
-		$coverfile = str_replace( '"', '%22', $list[ 4 ] );
+		$coverfile = preg_replace( array( '/%/', '/"/', '/#/' ), array( '%25', '%22', '%23' ), $list[ 4 ] );
 		// leading + trailing quotes in the same line avoid spaces between divs
 		$coverartshtml.= '<div class="coverart">
 							'.$lipath.'
