@@ -19,7 +19,7 @@ _Tested on RuneAudio 0.4b, 0.5_
 	- Running
 	
 ### New Features
-- Coverarts ( resize with [ImageMagick](https://imagemagick.org), [pica](https://github.com/nodeca/pica) )
+- Coverarts ( resize with server-side:[ImageMagick](https://imagemagick.org), client-side:[pica](https://github.com/nodeca/pica) )
 	- Browse by CoverArt ( load on scroll with [LazyLoad](https://github.com/verlok/lazyload) )
 	- Coverart bookmarks
 	- Coverart in album view
