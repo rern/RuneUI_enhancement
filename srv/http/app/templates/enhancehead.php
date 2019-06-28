@@ -3,17 +3,6 @@
 	$title = $root ? 'RuneUIe' : 'Rune Settings';
 	$addons = file_exists( '/srv/http/assets/fonts/addons.ttf' );
 	$gpio = file_exists( '/srv/http/assets/css/gpio.css' );
-	function fontface( $name, $_this ) {
-		$woff = $_this->asset( "/fonts/$name.woff" );
-		$ttf = $_this->asset( "/fonts/$name.ttf" );
-		return "
-			@font-face {
-				font-family: $name;
-				src        : url( '$woff' ) format( 'woff' ), url( '$ttf' ) format( 'truetype' );
-				font-weight: normal;
-				font-style : normal;
-			}";
-	}
 	?>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -34,10 +23,15 @@
 <link rel="stylesheet" href="<?=$this->asset( '/css/bootstrap.min.css' )?>">
 	<?php 
 	if ( $root ) {
-		$fontface = $addons ? fontface( 'addons', $this ) : '';
-		$fontface.= fontface( 'enhance', $this );
 	?>
-<style><?=$fontface?></style>
+<style>
+	@font-face {
+		font-family: enhance;
+		src        : url( "<?=$this->asset( '/fonts/addons.woff' )?>" ) format( 'woff' ), url( "<?=$this->asset( '/fonts/addons.ttf' )?>" ) format( 'truetype' );
+		font-weight: normal;
+		font-style : normal;
+	}
+</style>
 <link rel="stylesheet" href="<?=$this->asset( '/css/fontawesome.min.css' )?>">
 <link rel="stylesheet" href="<?=$this->asset( '/css/addonsinfo.css' )?>">
 <link rel="stylesheet" href="<?=$this->asset( '/css/roundslider.min.css' )?>">
