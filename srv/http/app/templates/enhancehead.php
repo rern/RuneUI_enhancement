@@ -27,7 +27,8 @@
 <style>
 	@font-face {
 		font-family: enhance;
-		src        : url( "<?=$this->asset( '/fonts/addons.woff' )?>" ) format( 'woff' ), url( "<?=$this->asset( '/fonts/addons.ttf' )?>" ) format( 'truetype' );
+		src        : url( "<?=$this->asset( '/fonts/enhance.woff' )?>" ) format( 'woff' ),
+		             url( "<?=$this->asset( '/fonts/enhance.ttf' )?>" ) format( 'truetype' );
 		font-weight: normal;
 		font-style : normal;
 	}
