@@ -108,7 +108,20 @@ s|\(hsl(\).*\()/\*cgl\*/\)|\1'.$hsg.'60%\2|g
 	}
 	echo json_encode( $data );
 } else if ( isset( $_POST[ 'getcount' ] ) ) {
-	$status = getLibraryCount();
+	$count = exec( '/srv/http/enhancecount.sh' );
+	$count = explode( ' ', $count );
+	$status = array(
+		  'artist'       => $count[ 0 ]
+		, 'album'        => $count[ 1 ]
+		, 'song'         => $count[ 2 ]
+		, 'albumartist'  => $count[ 3 ]
+		, 'composer'     => $count[ 4 ]
+		, 'genre'        => $count[ 5 ]
+		, 'nas'          => $count[ 6 ]
+		, 'usb'          => $count[ 7 ]
+		, 'webradio'     => $count[ 8 ]
+		, 'sd'           => $count[ 9 ]
+	);
 	echo json_encode( $status, JSON_NUMERIC_CHECK );
 } else if ( isset( $_POST[ 'setorder' ] ) ) {
 	$order = $_POST[ 'setorder' ]; 
@@ -593,25 +606,6 @@ function getBookmark() {
 		);
 	}
 	return $data;
-}
-function getLibraryCount() {
-	$redis = new Redis();
-	$redis->pconnect( '127.0.0.1' );
-	$count = exec( '/srv/http/enhancecount.sh' );
-	$count = explode( ' ', $count );
-	$status = array(
-		  'artist'       => $count[ 0 ]
-		, 'album'        => $count[ 1 ]
-		, 'song'         => $count[ 2 ]
-		, 'albumartist'  => $count[ 3 ]
-		, 'composer'     => $count[ 4 ]
-		, 'genre'        => $count[ 5 ]
-		, 'nas'          => $count[ 6 ]
-		, 'usb'          => $count[ 7 ]
-		, 'webradio'     => $count[ 8 ]
-		, 'sd'           => $count[ 9 ]
-	);
-	return $status;
 }
 function lsPlaylists() {
 	$lines = array_slice( scandir( '/srv/http/assets/img/playlists' ), 2 );
