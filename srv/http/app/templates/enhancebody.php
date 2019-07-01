@@ -340,7 +340,7 @@ $logo = '
 	<a href="sources"><i class="fa fa-folder-open-cascade"></i>Sources</a>
 	<a href="network"><i class="fa fa-network"></i>Network</a>
 	<a id="settingsmenu"><i class="fa fa-sliders"></i>Settings<i class="fa fa-rune submenu"></i></a>
-	<a id="turnoff"><i class="fa fa-power"></i>Power<?=$submenupower ?></a>
+	<a id="power"><i class="fa fa-power"></i>Power<?=$submenupower ?></a>
 		<?php 
 		if ( $this->pwd_protection ) { ?>
 	<a href="logout.php"><i class="fa fa-sign-out"></i>Logout</a>
