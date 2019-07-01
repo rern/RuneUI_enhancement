@@ -207,18 +207,19 @@ $( '#turnoff' ).click( function( e ) {
 		  icon        : 'power'
 		, title       : 'Power'
 		, message     : 'Select mode:'
-		, oklabel     : 'Off'
+		, oklabel     : '<i class="fa fa-power"></i>Off'
 		, okcolor     : '#bb2828'
 		, ok          : function() {
 			$.post( 'enhance.php', { power: 'shutdown' } );
 			$( '#loader' ).removeClass( 'hide' );
 		}
-		, buttonlabel : [ 'Reboot' ]
-		, buttoncolor : [ '#de810e' ]
-		, button      : [ function() {
+		, buttonlabel : '<i class="fa fa-reboot"></i>Reboot'
+		, buttoncolor : '#de810e'
+		, button      : function() {
 			$.post( 'enhance.php', { power: 'reboot' } );
 			$( '#loader' ).removeClass( 'hide' );
-		} ]
+		}
+		, buttonwidth : 1
 	} );
 } );
 $( '#displaycolor' ).click( function( e ) {
