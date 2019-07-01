@@ -196,7 +196,7 @@ $( '#displayplayback' ).click( function() {
 		disableCheckbox( 'buttons' );
 	}
 } );
-$( '#turnoff' ).click( function( e ) {
+$( '#power' ).click( function( e ) {
 	if ( $( e.target ).hasClass( 'submenu' ) ) {
 		$.post( 'enhance.php', { power: 'screenoff' } );
 		$( '#loader' ).removeClass( 'hide' );
