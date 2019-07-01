@@ -198,8 +198,8 @@ $( '#displayplayback' ).click( function() {
 } );
 $( '#power' ).click( function( e ) {
 	if ( $( e.target ).hasClass( 'submenu' ) ) {
-		$.post( 'enhance.php', { power: 'screenoff' } );
 		$( '#loader' ).removeClass( 'hide' );
+		$.post( 'enhance.php', { power: 'screenoff' } );
 		return
 	}
 	
@@ -210,14 +210,14 @@ $( '#power' ).click( function( e ) {
 		, oklabel     : '<i class="fa fa-power"></i>Off'
 		, okcolor     : '#bb2828'
 		, ok          : function() {
-			$.post( 'enhance.php', { power: 'shutdown' } );
 			$( '#loader' ).removeClass( 'hide' );
+			$.post( 'enhance.php', { power: 'shutdown' } );
 		}
 		, buttonlabel : '<i class="fa fa-reboot"></i>Reboot'
 		, buttoncolor : '#de810e'
 		, button      : function() {
-			$.post( 'enhance.php', { power: 'reboot' } );
 			$( '#loader' ).removeClass( 'hide' );
+			$.post( 'enhance.php', { power: 'reboot' } );
 		}
 		, buttonwidth : 1
 	} );
