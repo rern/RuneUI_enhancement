@@ -222,10 +222,7 @@ $( '#power' ).click( function( e ) {
 		, button      : function() {
 			$.post( 'enhance.php', { power: 'reboot' } );
 			setTimeout( function() {
-				$( '#loader' )
-					.css( 'background', '#000000' )
-					.removeClass( 'hide' )
-					.find( 'svg' ).css( 'animation', 'unset' );
+				$( '#loader' ).removeClass( 'hide' );
 			}, 100 );
 		}
 		, buttonwidth : 1
@@ -1792,12 +1789,15 @@ window.addEventListener( 'orientationchange', function() {
 } );
 
 var pushstreams = {};
-var streams = [ 'bookmark', 'display', 'idle', 'notify', 'playlist', 'volume', 'webradio', 'color' ];
+var streams = [ 'bookmark', 'color', 'display', 'idle', 'notify', 'playlist', 'volume', 'webradio' ];
 streams.forEach( function( stream ) {
 	pushstreams[ stream ] = new PushStream( { modes: 'websocket' } );
 	pushstreams[ stream ].addChannel( stream );
 	pushstreams[ stream ].connect();
 } );
+pushstreams.display.onstatuschange = function( status ) {
+	$( '#loader' ).toggleClass( 'hide', status === 2 );
+}
 pushstreams.bookmark.onmessage = function( data ) {
 	var bookmarks = data[ 0 ];
 	if ( GUI.bookmarkedit || !bookmarks.length ) return
