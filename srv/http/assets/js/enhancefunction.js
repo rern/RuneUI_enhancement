@@ -151,6 +151,7 @@ function getUpdateStatus() {
 	clearTimeout( GUI.debounce );
 	GUI.debounce = setTimeout( function() {
 		$.post( 'enhance.php', { getcount: 1 }, function( data ) {
+			if ( data[ 2 ] ) $( '#li-count wh' ).text( numFormat( data[ 2 ] ) );
 			$( '.home-block gr' ).remove();
 			$.each( data, function( id, val ) {
 				if ( val ) $( '#home-'+ id ).find( 'i' ).after( '<gr>'+ numFormat( val ) +'</gr>' );
