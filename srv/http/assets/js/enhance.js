@@ -202,7 +202,7 @@ $( '#power' ).click( function( e ) {
 		return
 	}
 	
-	info( {
+	info( { // toggle splash screen by pushstream.onstatuschange
 		  icon        : 'power'
 		, title       : 'Power'
 		, message     : 'Select mode:'
@@ -210,20 +210,14 @@ $( '#power' ).click( function( e ) {
 		, okcolor     : '#bb2828'
 		, ok          : function() {
 			$.post( 'enhance.php', { power: 'shutdown' } );
-			setTimeout( function() {
-				$( '#loader' )
-					.css( 'background', '#000000' )
-					.removeClass( 'hide' )
-					.find( 'svg' ).css( 'animation', 'unset' );
-			}, 100 );
+			$( '#loader' )
+				.css( 'background', '#000000' )
+				.find( 'svg' ).css( 'animation', 'unset' );
 		}
 		, buttonlabel : '<i class="fa fa-reboot"></i>Reboot'
 		, buttoncolor : '#de810e'
 		, button      : function() {
 			$.post( 'enhance.php', { power: 'reboot' } );
-			setTimeout( function() {
-				$( '#loader' ).removeClass( 'hide' );
-			}, 100 );
 		}
 		, buttonwidth : 1
 	} );
