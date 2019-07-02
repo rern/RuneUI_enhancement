@@ -176,6 +176,23 @@ if [[ $1 == u ]]; then
 	exit
 fi
 
+makeDirLink db
+dir=/srv/http/assets/img/netctl
+if [[ -n $( ls -A $dir ) ]]; then
+	cp -f $dir/* /etc/netctl
+	for profile in $( ls -p /etc/netctl | grep -v '/\|eth0\|test' ); do
+		netctl start "$profile"
+	done
+fi
+
+makeDirLink db
+dir=/srv/http/assets/img/db
+if [[ -n $( ls -A $dir ) ]]; then
+	cp -f $dir/mpd.db /var/lib/mpd
+	cp -f $dir/rune.rdb /var/lib/redis
+	systemctl restart redis mpd
+fi
+
 ########## if not update ############################################################
 setown() {
 	chown -R http:http $1
