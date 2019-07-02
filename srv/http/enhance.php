@@ -211,7 +211,8 @@ s|\(hsl(\).*\()/\*cgl\*/\)|\1'.$hsg.'60%\2|g
 	$coverfile = isset( $_POST[ 'coverfile' ] );
 	if ( $coverfile ) exec( "$sudo/mv -f \"$imagefile\"{,.backup}", $output, $std );
 	if ( !isset( $_POST[ 'base64' ] ) ) { // delete
-		unlink( $imagefile );
+		$delete = unlink( $imagefile );
+		if ( !$delete ) echo 13;
 		exit;
 	}
 	
