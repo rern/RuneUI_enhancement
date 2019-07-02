@@ -176,7 +176,7 @@ if [[ $1 == u ]]; then
 	exit
 fi
 
-makeDirLink db
+makeDirLink netctl
 dir=/srv/http/assets/img/netctl
 if [[ -n $( ls -A $dir ) ]]; then
 	cp -f $dir/* /etc/netctl
