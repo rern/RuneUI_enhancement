@@ -361,7 +361,7 @@ if [[ $( redis-cli hexists display bars ) == 0 ]]; then
 
 	unchecked="barsauto debug radioelapsed coverlarge dev jamendo spotify tapaddplay backonleft thumbbyartist"
 	for item in $unchecked; do
-		redis-cli hmset display $item '' &> /dev/null
+		redis-cli hset display $item '' &> /dev/null
 	done
 fi
 
