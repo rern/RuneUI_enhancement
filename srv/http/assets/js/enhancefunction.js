@@ -796,7 +796,6 @@ function renderLibrary() {
 	$( '.home-block:not( .home-bookmark )' ).each( function() {
 		var name = this.id.replace( 'home-', '' );
 		$( this ).parent().toggleClass( 'hide', GUI.display[ name ] === '' );
-//		if ( [ 'sd', 'usb', 'nas' ].indexOf( name ) !== -1 ) $( this ).parent().toggleClass( 'hide', !$( this ).find( 'gr' ).text() );
 	} );
 	$( '.home-block gr' ).toggleClass( 'hide', GUI.display.count === '' );
 	if ( GUI.display.label ) {
@@ -808,6 +807,7 @@ function renderLibrary() {
 		$( '.home-block gr' ).css( 'color', '#e0e7ee' );
 		$( '.home-block:not( .home-bookmark )' ).css( 'padding-top', '35px' );
 	}
+	$( '#db-back' ).toggleClass( 'db-back-left', GUI.display.backonleft === 'checked' );
 	orderLibrary();
 	displayTopBottom();
 	$( 'html, body' ).scrollTop( 0 );
@@ -1842,7 +1842,7 @@ function htmlPlaylist( data ) {
 }
 function renderPlaylist() {
 	$( '#pl-filter' ).val( '' );
-	$( '#pl-currentpath, #pl-editor, #pl-index, #pl-search' ).addClass( 'hide' );
+	$( '#pl-currentpath, #pl-back, #pl-editor, #pl-index, #pl-search' ).addClass( 'hide' );
 	$( '#db-currentpath>span, #pl-searchbtn' ).removeClass( 'hide' );
 	$( '#plopen' ).toggleClass( 'disable', !GUI.lsplaylists.length );
 	if ( !GUI.pllist.length ) {
@@ -1941,6 +1941,7 @@ function renderLsPlaylists( lsplaylists ) {
 				  +'</li>';
 		}
 	} );
+	$( '#pl-back' ).css( 'float', GUI.display.backonleft === 'checked' ? 'left' : '' );
 	$( '#pl-editor' ).html( content +'<p></p>' ).promise().done( function() {
 		GUI.pleditor = 1;
 		// fill bottom of list to make last li movable to top
@@ -1966,8 +1967,9 @@ function renderSavedPlaylist( name ) {
 		} else {
 			counthtml += countradiohtml;
 		}
-		$( '#pl-currentpath' ).html( '<a class="lipath">'+ name +'</a></ul>'+ counthtml +'<i class="fa fa-arrow-left plsback"></i>' );
-		$( '#pl-currentpath, #pl-editor' ).removeClass( 'hide' );
+		$( '#pl-back' ).css( 'float', GUI.display.backonleft === 'checked' ? 'left' : '' );
+		$( '#pl-currentpath' ).html( '<a class="lipath">'+ name +'</a></ul>'+ counthtml );
+		$( '#pl-currentpath, #pl-back, #pl-editor' ).removeClass( 'hide' );
 		$( '#pl-currentpath bl' ).removeClass( 'title' );
 		$( '#pl-editor' ).html( data.content +'<p></p>' ).promise().done( function() {
 			GUI.pleditor = 1;

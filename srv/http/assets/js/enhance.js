@@ -128,6 +128,7 @@ var chklibrary = {
 	, plclear        : 'Confirm <gr>on clear Playlist</gr>'
 	, playbackswitch : 'Open Playback <gr>on</gr> <i class="fa fa-play-plus"></i>Add + Play'
 	, tapaddplay     : 'Single tap song&ensp;<gr>=</gr>&ensp;<i class="fa fa-play-plus"></i>Add + Play'
+	, backonleft     : '<i class="fa fa-arrow-left"></i>Back button on the left'
 	, thumbbyartist  : '<i class="fa fa-coverart"></i>Sort CoverArts by artist'
 }
 $( '#displaylibrary' ).click( function() {
@@ -146,10 +147,8 @@ $( '#displaylibrary' ).click( function() {
 			} );
 			$.post( 'enhance.php', { setdisplay: data }, function() {
 				if ( GUI.display.thumbbyartist !== thumbbyartist ) location.reload();
-				if ( !GUI.library ) {
-					renderLibrary();
-					$( '#tab-library' ).click();
-				}
+				renderLibrary();
+				renderPlaylist();
 			} );
 		}
 	} );
@@ -183,7 +182,6 @@ $( '#displayplayback' ).click( function() {
 				$( '#swipebar, .page' ).off( 'swipeleft swiperight' );
 				setSwipe();
 			} );
-			if ( !GUI.playback ) $( '#tab-playback' ).click();
 		}
 	} );
 	// disable by bars hide
@@ -1438,12 +1436,14 @@ $( '#db-index li' ).click( function() {
 $( '#pl-home' ).click( function() {
 	$( '#tab-playlist' ).click();
 } );
-$( '#pl-currentpath' ).on( 'click', '.plsback', function() {
+$( '#pl-back' ).click( function() {
+	console.log(( $( '#pl-currentpath i:eq( 0 )' ).hasClass( 'fa-list-ul' ) ))
 	$( '.menu' ).addClass( 'hide' );
-	$( '#plopen' ).click();
-} );
-$( '#pl-currentpath' ).on( 'click', '.plsbackroot', function() {
-	$( '#tab-playlist' ).click();
+	if ( $( '#pl-currentpath i:eq( 0 )' ).hasClass( 'fa-list-ul' ) ) {
+		$( '#plopen' ).click();
+	} else {
+		$( '#tab-playlist' ).click();
+	}
 } );
 $( '#plopen' ).click( function() {
 	$.post( 'enhance.php', { getplaylist: 1, lsplaylists: 1 }, function( data ) {
@@ -1455,8 +1455,8 @@ $( '#plopen' ).click( function() {
 		var plL = GUI.lsplaylists.length - 1; // less index
 		var plcounthtml = '<wh><i class="fa fa-microsd"></i></wh><bl>PLAYLIST</bl>';
 		plcounthtml += plL ? '<gr>&ensp;·&emsp;</gr> <wh id="pls-count">'+ numFormat( plL ) +'</wh>&ensp;<i class="fa fa-list-ul"></i>' : '';
-		$( '#pl-currentpath' ).html( plcounthtml +'<i class="fa fa-arrow-left plsbackroot"></i>' );
-		$( '#pl-currentpath, #pl-editor, #pl-index' ).removeClass( 'hide' );
+		$( '#pl-currentpath' ).html( plcounthtml );
+		$( '#pl-currentpath, #pl-back, #pl-editor, #pl-index' ).removeClass( 'hide' );
 		renderLsPlaylists( GUI.lsplaylists );
 	}, 'json' );
 } );
