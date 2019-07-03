@@ -353,12 +353,12 @@ file=/srv/http/app/templates/enhanceplayback.php  # for rune youtube
 if [[ $( redis-cli hexists display bars ) == 0 ]]; then
 	playback="bars debug dev time cover volume buttons"
 	library="coverart nas sd usb webradio album artist albumartist composer genre spotify dirble jamendo"
-	miscel="count label coverfile plclear playbackswitch tapaddplay backonleft thumbbyartist"
+	miscel="count label coverfile plclear playbackswitch"
 	for item in $playback $library $miscel; do
 		redis-cli hset display $item checked &> /dev/null
 	done
 	
-	unchecked="debug dev jamendo spotify tapaddplay thumbbyartist"
+	unchecked="debug dev jamendo spotify tapaddplay backonleft thumbbyartist"
 	for item in $unchecked; do
 		redis-cli hset display $item "" &> /dev/null
 	done
