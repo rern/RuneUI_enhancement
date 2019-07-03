@@ -25,7 +25,7 @@ installstart $@
 
 packagestatus mpc # $version, $installed
 
-if [[ !$installed || ! -e /usr/bin/convert ]]; then
+if [[ ! $installed || ! -e /usr/bin/convert ]]; then
 	wgetnc https://github.com/rern/_assets/raw/master/imagemagick-mpc.tar
 	mkdir pkg
 	bsdtar xvf imagemagick-mpc.tar -C pkg
