@@ -1322,6 +1322,8 @@ p.hrbl {
 }
 #db-back {
 	float: right;
+	position: absolute;
+	right: 50px;
 	width: 40px;
 	margin: 0 5px 0 0;
 	padding: 0;
@@ -1329,6 +1331,10 @@ p.hrbl {
 	text-align: center;
 	font-size: 28px;
 	color: hsl(200,100%,40%)/*c*/;
+}
+.db-back-left {
+	float: none !important;
+	position: inherit !important;
 }
 #db-currentpath {
 	float: left;
@@ -1365,14 +1371,15 @@ p.hrbl {
 	margin: 0;
 }
 .lialbum,
-.plsbackroot,
-.plsback,
+#pl-back,
 #db-currentpath a:first-of-type {
 	color: hsl(200,100%,40%)/*c*/;
 }
-.plsbackroot,
-.plsback {
-	width: 60px !important;
+#pl-back {
+	float: right;
+	width: 40px;
+	line-height: 40px;
+	text-align: center;
 	font-size: 28px !important;
 }
 #db-home,
