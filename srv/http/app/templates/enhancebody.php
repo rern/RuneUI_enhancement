@@ -483,11 +483,11 @@ $logo = '
 		</div>
 		<div id="db-currentpath">
 			<a class="lipath"></a>
+			<i id="db-back" class="fa fa-arrow-left"></i>
 			<div id="db-home"><i class="fa fa-library"></i></div><span></span>
 			<i id="db-webradio-new" class="fa fa-plus-circle hide"></i>
 		</div>
 		<button id="db-search-close" class="btn hide" type="button"></button>
-		<i id="db-back" class="fa fa-arrow-left"></i>
 	</div>
 	<div id="home-blocks" class="row" data-count="<?=$counts[ 'song' ]?>">
 		<div id="divhomeblocks"><?=$blockhtml?></div>
@@ -502,6 +502,7 @@ $logo = '
 <div id="page-playlist" class="page hide">
 	<div class="btnlist btnlist-top">
 		<div id="pl-home"><i class="fa fa-list-ul sx"></i></div>
+		<i id="pl-back" class="fa fa-arrow-left hide"></i>
 		<span id="pl-currentpath" class="hide"></span>
 		<span id="pl-count" class="playlist hide"></span>
 		<i id="pl-searchbtn" class="fa fa-search"></i>
