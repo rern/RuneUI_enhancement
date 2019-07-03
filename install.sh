@@ -30,14 +30,14 @@ if [[ !$installed || ! -e /usr/bin/convert ]]; then
 	mkdir pkg
 	bsdtar xvf imagemagick-mpc.tar -C pkg
 	# to be removed ##########################################################################
-	if [[ -e /usr/bin/convert ]]; then
+	if [[ !$installed ]]; then
 		echo -e "$bar Upgrade mpc ..."
 	
 		pacman -U --noconfirm pkg/mpc-0.31-1-armv7h.pkg.tar.xz pkg/libmpdclient-2.16-1-armv7h.pkg.tar.xz
 	fi
 	############################################################################################
-	if [[ !$installed ]]; then
-		echo -e "$bar Install ImageMagick and Upgrade mpc ..."
+	if [[ ! -e /usr/bin/convert ]]; then
+		echo -e "$bar Install ImageMagick ..."
 	
 		pacman -U --needed --noconfirm pkg/*
 	fi
