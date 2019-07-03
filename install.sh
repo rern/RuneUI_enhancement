@@ -23,18 +23,24 @@ fi
 
 installstart $@
 
-if ! pacman -Q imagemagick &> /dev/null; then
-	echo -e "$bar Get ImageMagick package files ..."
-	
-	wgetnc https://github.com/rern/_assets/raw/master/imagemagick.tar
-	mkdir pkg
-	bsdtar xvf imagemagick.tar -C pkg
-	
-	echo -e "$bar Install ImageMagick ..."
-	
-	pacman -U --needed --noconfirm pkg/*
+packagestatus mpc # $version, $installed
 
-	rm -rf imagemagick.tar pkg
+if [[ !$installed || ! -e /usr/bin/convert ]]; then
+	wgetnc https://github.com/rern/_assets/raw/master/imagemagick-mpc.tar
+	mkdir pkg
+	bsdtar xvf imagemagick-mpc.tar -C pkg
+	# to be removed ##########################################################################
+	if [[ -e /usr/bin/convert ]]; then
+		echo -e "$bar Upgrade mpc ..."
+	
+		pacman -U --noconfirm pkg/mpc-0.31-1-armv7h.pkg.tar.xz pkg/libmpdclient-2.16-1-armv7h.pkg.tar.xz
+	else
+	############################################################################################
+		echo -e "$bar Install ImageMagick and Upgrade mpc ..."
+	
+		pacman -U --needed --noconfirm pkg/*
+	fi
+	rm -rf imagemagick-mpc.tar pkg
 fi
 
 mv /srv/http/index.php{,.backup}
@@ -168,6 +174,14 @@ if [[ $1 == u ]]; then
 	restartlocalbrowser
 	reinitsystem
 	exit
+fi
+
+makeDirLink db
+dir=/srv/http/assets/img/db
+if [[ -n $( ls -A $dir ) ]]; then
+	cp -f $dir/mpd.db /var/lib/mpd
+	cp -f $dir/rune.rdb /var/lib/redis
+	systemctl restart redis mpd
 fi
 
 ########## if not update ############################################################

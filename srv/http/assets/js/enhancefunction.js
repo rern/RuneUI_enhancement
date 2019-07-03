@@ -151,6 +151,7 @@ function getUpdateStatus() {
 	clearTimeout( GUI.debounce );
 	GUI.debounce = setTimeout( function() {
 		$.post( 'enhance.php', { getcount: 1 }, function( data ) {
+			if ( data[ 2 ] ) $( '#li-count wh' ).text( numFormat( data[ 2 ] ) );
 			$( '.home-block gr' ).remove();
 			$.each( data, function( id, val ) {
 				if ( val ) $( '#home-'+ id ).find( 'i' ).after( '<gr>'+ numFormat( val ) +'</gr>' );
@@ -400,10 +401,10 @@ function renderPlayback() {
 					if ( image ) {
 						loadCoverart( image );
 					} else if ( data.album.mbid ) {
-						$.post( 'http://coverartarchive.org/release/'+ data.album.mbid, function( data ) {
+						$.post( 'https://coverartarchive.org/release/'+ data.album.mbid, function( data ) {
 							var image = data.images[ 0 ][ 'image' ];
 							if ( image ) loadCoverart( image );
-						} );
+						}, 'json' );
 					}
 				}
 			} );
@@ -488,6 +489,7 @@ function getPlaybackStatus() {
 		$.each( status, function( key, value ) {
 			GUI.status[ key ] = value;
 		} );
+		GUI.status.AlbumArtist = status.AlbumArtist || '';
 		GUI.plreplace = 0;
 		renderPlayback();
 		setButton();
@@ -1425,10 +1427,18 @@ function radio2html( list, source, querytype, plid ) {
 	return content +'</li>';
 }
 function removeCoverart() {
-	var src = $( '#cover-art' ).prop( 'src' );
-	var file = GUI.status.file;
-	var path = '/mnt/MPD/'+ file.substr( 0, file.lastIndexOf( '/' ) );
-	$.post( 'enhance.php', { bash: '/usr/bin/ls "'+ path +'" | grep -iE "^cover.jpg$|^cover.png$|^folder.jpg$|^folder.png$|^front.jpg$|^front.png$"' }, function( file ) {
+	if ( GUI.playback ) {
+		var src = $( '#cover-art' ).prop( 'src' );
+		var path = GUI.status.file.substr( 0, GUI.status.file.lastIndexOf( '/' ) );
+		var album = GUI.status.Album;
+		var artist = GUI.status.AlbumArtist || GUI.status.Artist;
+	} else {
+		var src = $( '.licoverimg img' ).prop( 'src' );
+		var path = $( '.licover .lipath' ).text();
+		var album = $( '.licover .lialbum' ).text();
+		var artist = $( '.licover .liartist' ).text();
+	}
+	$.post( 'enhance.php', { bash: '/usr/bin/ls "/mnt/MPD/'+ path +'" | grep -iE "^cover.jpg$|^cover.png$|^folder.jpg$|^folder.png$|^front.jpg$|^front.png$"' }, function( file ) {
 		var file = file.slice( 0, -1 ); // less last '\n'
 		var count = file.split( '\n' ).length;
 		if ( count > 1 ) {
@@ -1446,12 +1456,12 @@ function removeCoverart() {
 			  icon    : 'coverart'
 			, title   : 'Remove Album Coverart'
 			, message : '<img src="'+ src +'">'
-					   +'<br><w>'+ GUI.status.Album +'</w>'
-					   +'<br>'+ GUI.status.Artist
+					   +'<br><w>'+ album +'</w>'
+					   +'<br>'+ artist
 					   +'<br><br><code>'+ file +'</code> > <code>'+ file +'.backup</code>'
 			, oklabel : 'Remove'
 			, ok      : function() {
-				$.post( 'enhance.php', { imagefile: path +'/'+ file, coverfile: 1 }, function( std ) {
+				$.post( 'enhance.php', { imagefile: '/mnt/MPD/'+ path +'/'+ file, coverfile: 1 }, function( std ) {
 					infoCoverart( 'Remove', coverrune, std );
 				} );
 			}
@@ -1459,19 +1469,27 @@ function removeCoverart() {
 	} );
 }
 function replaceCoverart() {
-	var src = $( '#cover-art' ).prop( 'src' );
-	var file = GUI.status.file;
-	var path = '/mnt/MPD/'+ file.substr( 0, file.lastIndexOf( '/' ) );
+	if ( GUI.playback ) {
+		var src = $( '#cover-art' ).prop( 'src' );
+		var path = GUI.status.file.substr( 0, GUI.status.file.lastIndexOf( '/' ) );
+		var album = GUI.status.Album;
+		var artist = GUI.status.AlbumArtist || GUI.status.Artist;
+	} else {
+		var src = $( '.licoverimg img' ).prop( 'src' );
+		var path = $( '.licover .lipath' ).text();
+		var album = $( '.licover .lialbum' ).text();
+		var artist = $( '.licover .liartist' ).text();
+	}
 	info( {
 		  icon        : 'coverart'
 		, title       : 'Replace Album Coverart'
 		, message     : '<img src="'+ src +'">'
-					   +'<span class="bkname"><br><w>'+ GUI.status.Album +'</w>'
-					   +'<br>'+ GUI.status.Artist +'<span>'
+					   +'<span class="bkname"><br><w>'+ album +'</w>'
+					   +'<br>'+ artist +'<span>'
 		, fileoklabel : 'Replace'
 		, ok          : function() {
 			var newimg = $( '#infoMessage .newimg' ).attr( 'src' );
-			$.post( 'enhance.php', { imagefile: path +'/cover.jpg', base64: newimg, coverfile: 1 }, function( std ) {
+			$.post( 'enhance.php', { imagefile: '/mnt/MPD/'+ path +'/cover.jpg', base64: newimg, coverfile: 1 }, function( std ) {
 				infoCoverart( 'Replace', newimg, std );
 			} );
 		}
@@ -1482,12 +1500,13 @@ function saveCoverart() {
 	var file = GUI.status.file;
 	var path = '/mnt/MPD/'+ file.substr( 0, file.lastIndexOf( '/' ) );
 	var coverfile = path.replace( /"/g, '\"' ) +'/cover.jpg';
+	var artist = GUI.status.AlbumArtist || GUI.status.Artist;
 	info( {
 		  icon    : 'coverart'
 		, title   : 'Save Album Coverart'
 		, message : '<img src="'+ src +'">'
 					   +'<span class="bkname"><br><w>'+ GUI.status.Album +'</w>'
-					   +'<br>'+ GUI.status.Artist +'<span>'
+					   +'<br>'+ artist +'<span>'
 		, ok      : function() { 
 			$.post( 'enhance.php', { coversave: coverfile, base64: src }, function( std ) {
 				infoCoverart( 'Save' );
@@ -1602,6 +1621,7 @@ function plContextmenu( $li, $target ) { // saved playlists
 		return
 	}
 	
+	$( '.replace' ).toggleClass( 'hide', !GUI.status.playlistlength );
 	var contextnum = $menu.find( 'a:not(.hide)' ).length;
 	$( '.menushadow' ).css( 'height', contextnum * 42 - 1 );
 	$( '#pl-editor li' ).removeClass( 'active' );

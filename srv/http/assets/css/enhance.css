@@ -43,102 +43,98 @@
 }
 /* ---------------------- fontawesome mod ---------------------- */
 /* 'enhance' declared in <head> for cache busting */
-.fa { font-family: enhance, addons }
-.fa-mpd:before { content: "\f522" }
-.fa-spotify:before { content: "\f523" }
+.fa { font-family: enhance }
+.fa-addons:before {
+	font-family: enhance;
+	content: "\f520";
+}
 .fa-airplay:before { content: "\f524" }
-.fa-dlna:before { content: "\f525" }
-.fa-rune:before { content: "\f526" }
-.fa-source:before { content: "\f52A" }
-.fa-output:before { content: "\f52B" }
-
-.fa-step-backward:before { content: "\f501" }
-.fa-stop:before { content: "\f502" }
-.fa-play:before { content: "\f503" }
-.fa-pause:before { content: "\f504" }
-.fa-step-forward:before { content: "\f505" }
-
-.fa-minus-circle:before { content: "\f51C" }
-.fa-plus-o:before { content: "\f530" }
-.fa-replace:before { content: "\f531" }
-.fa-play-plus:before { content: "\f532" }
-.fa-play-replace:before { content: "\f533" }
-.fa-folder-refresh:before { content: "\f534" }
-.fa-screenoff:before { content: "\f535" }
-
-.fa-repeat-single:before { content: "\f510" }
-.fa-repeat:before { content: "\f511" }
-.fa-random:before { content: "\f512" }
-.fa-flash:before { content: "\f51E" }
-.fa-single:before { content: "\f513" }
-.fa-share:before { content: "\f514" }
-.fa-bio:before { content: "\f515" }
-.fa-minus:before { content: "\f518" }
-.fa-volume:before { content: "\f516" }
-.fa-mute:before { content: "\f517" }
-.fa-plus:before { content: "\f519" }
-
-.fa-library:before { content: "\f506" }
-.fa-play-circle:before { content: "\f507" }
-.fa-list-ul:before { content: "\f508"; }
-.fa-swipe:before { content: "\f54A" }
-.fa-gear:before { content: "\f509" }
-.fa-gears:before { content: "\f50A" }
-.fa-sliders:before { content: "\f50B" }
-.fa-code:before { content: "\f50C" }
-.fa-hash:before { content: "\f50D" }
-
-.fa-coverart:before { content: "\f55E" }
-.fa-bookmark:before { content: "\f550" }
-.fa-network:before { content: "\f551" }
-.fa-microsd:before { content: "\f552" }
-.fa-usbdrive:before { content: "\f553" }
-.fa-webradio:before { content: "\f554" }
 .fa-album:before { content: "\f555" }
-.fa-artist:before { content: "\f556" }
 .fa-albumartist:before { content: "\f557" }
+.fa-arrow-left:before { content: "\f544" }
+.fa-artist:before { content: "\f556" }
+.fa-bars:before { content: "\f53B" }
+.fa-bio:before { content: "\f515" }
+.fa-bookmark:before { content: "\f550" }
+.fa-brush:before { content: "\f54C" }
+.fa-brush-undo:before { content: "\f54D" }
+.fa-check:before { content: "\f51B" }
+.fa-code:before { content: "\f50C" }
 .fa-composer:before { content: "\f558" }
-.fa-genre:before { content: "\f559" }
+.fa-coverart:before { content: "\f55E" }
+.fa-crop:before { content: "\f56C" }
 .fa-dirble:before { content: "\f55A" }
-.fa-jamendo:before { content: "\f55B" }
-.fa-lastfm:before { content: "\f55C" }
-.fa-youtube:before { content: "\f55D" }
-.fa-twitter:before { content: "\f52C" }
+.fa-dlna:before { content: "\f525" }
+.fa-edit:before { content: "\f536" }
+.fa-edit-circle:before { content: "\f537" }
+.fa-external-link:before { content: "\f565" }
 .fa-facebook:before { content: "\f52D" }
-
+.fa-file-music:before { content: "\f54B" }
+.fa-flash:before { content: "\f51E" }
 .fa-folder:before { content: "\f540" }
 .fa-folder-open:before { content: "\f541" }
 .fa-folder-open-cascade:before { content: "\f521" }
-.fa-file-music:before { content: "\f54B" }
-.fa-brush:before { content: "\f54C" }
-.fa-brush-undo:before { content: "\f54D" }
-.fa-music:before { content: "\f543" }
-.fa-webradio:before { content: "\f554" }
-.fa-save:before { content: "\f542"}
-.fa-star:before { content: "\f550" }
-.fa-plus-circle:before { content: "\f51D" }
-.fa-minus-circle:before { content: "\f51C" }
-.fa-power:before { content: "\f527" }
-.fa-reboot:before { content: "\f528" }
-.fa-arrow-left:before { content: "\f544" }
-.fa-edit:before { content: "\f536" }
-.fa-edit-circle:before { content: "\f537" }
-.fa-undo:before { content: "\f538" }
-.fa-bars:before { content: "\f53B" }
-.fa-left:before { content: "\f56A" }
-.fa-right:before { content: "\f56B" }
-.fa-crop:before { content: "\f56C" }
-.fa-search:before { content: "\f56D" }
-.fa-tag:before { content: "\f545" }
-
-.fa-times:before { content: "\f51A" }
-.fa-question-circle:before { content: "\f560" }
+.fa-folder-refresh:before { content: "\f534" }
+.fa-gear:before { content: "\f509" }
+.fa-gears:before { content: "\f50A" }
+.fa-genre:before { content: "\f559" }
+.fa-hash:before { content: "\f50D" }
 .fa-info-circle:before { content: "\f561" }
-.fa-check:before { content: "\f51B" }
-.fa-warning:before { content: "\f562" }
-.fa-reload:before { content: "\f539" }
+.fa-jamendo:before { content: "\f55B" }
+.fa-lastfm:before { content: "\f55C" }
+.fa-left:before { content: "\f56A" }
+.fa-library:before { content: "\f506" }
+.fa-list-ul:before { content: "\f508"; }
+.fa-microsd:before { content: "\f552" }
+.fa-minus:before { content: "\f518" }
+.fa-minus-circle:before { content: "\f51C" }
+.fa-mpd:before { content: "\f522" }
+.fa-music:before { content: "\f543" }
+.fa-mute:before { content: "\f517" }
+.fa-network:before { content: "\f551" }
+.fa-output:before { content: "\f52B" }
+.fa-pause:before { content: "\f504" }
+.fa-play:before { content: "\f503" }
+.fa-play-circle:before { content: "\f507" }
+.fa-play-plus:before { content: "\f532" }
+.fa-play-replace:before { content: "\f533" }
+.fa-plus:before { content: "\f519" }
+.fa-plus-circle:before { content: "\f51D" }
+.fa-plus-o:before { content: "\f530" }
+.fa-power:before { content: "\f527" }
+.fa-question-circle:before { content: "\f560" }
+.fa-random:before { content: "\f512" }
+.fa-reboot:before { content: "\f528" }
 .fa-refresh:before { content: "\f53A" }
-.fa-external-link:before { content: "\f565" }
+.fa-reload:before { content: "\f539" }
+.fa-repeat:before { content: "\f511" }
+.fa-repeat-single:before { content: "\f510" }
+.fa-replace:before { content: "\f531" }
+.fa-right:before { content: "\f56B" }
+.fa-rune:before { content: "\f526" }
+.fa-save:before { content: "\f542"}
+.fa-screenoff:before { content: "\f535" }
+.fa-search:before { content: "\f56D" }
+.fa-share:before { content: "\f514" }
+.fa-single:before { content: "\f513" }
+.fa-sliders:before { content: "\f50B" }
+.fa-source:before { content: "\f52A" }
+.fa-spotify:before { content: "\f523" }
+.fa-star:before { content: "\f550" }
+.fa-step-backward:before { content: "\f501" }
+.fa-step-forward:before { content: "\f505" }
+.fa-stop:before { content: "\f502" }
+.fa-swipe:before { content: "\f54A" }
+.fa-tag:before { content: "\f545" }
+.fa-times:before { content: "\f51A" }
+.fa-twitter:before { content: "\f52C" }
+.fa-undo:before { content: "\f538" }
+.fa-usbdrive:before { content: "\f553" }
+.fa-volume:before { content: "\f516" }
+.fa-warning:before { content: "\f562" }
+.fa-webradio:before { content: "\f554" }
+.fa-youtube:before { content: "\f55D" }
+
 /* bootstrap mod */
 .page {
 	height: 100vh;
@@ -1466,7 +1462,7 @@ p.hrbl {
 	color: #e0e7ee;
 }
 .index .gr {
-	color: hsl(200,3%,30%)/*cdh*/ !important;
+	color: hsl(200,3%,10%)/*cda*/ !important;
 }
 .coverart {
 	display: inline-block;

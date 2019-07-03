@@ -3,11 +3,12 @@ $redis = new Redis();
 $redis->pconnect( '127.0.0.1' );
 
 $time = time();
-$submenucolor = $redis->hGet( 'display', 'color' ) === 'hsl(200,100%,40%)' ? '' : '<i class="fa fa-brush-undo gr submenu"></i>';
+$color = $redis->hGet( 'display', 'color' );
+$submenucolor = ( !$color || $color === 'hsl(200,100%,40%)' ) ? '' : '<i class="fa fa-brush-undo gr submenu"></i>';
 if ( in_array( $_SERVER[ 'REMOTE_ADDR' ], array( '127.0.0.1', '::1' ) ) ) {
 	$submenupower = '<i class="fa fa-screenoff submenu"></i>';
 } else {
-	$submenupower = '<i class="fa fa-reboot submenu"></i>';
+	$submenupower = '';
 }
 // counts
 $count = exec( '/srv/http/enhancecount.sh' );
@@ -106,7 +107,7 @@ if ( count( $files ) ) {
 	$coverarthtml = '';
 	foreach( $lists as $list ) {
 		$lipath = $list[ 5 ] ? '<a class="lipath">'.$list[ 5 ].'</a>' : '';
-		$coverfile = str_replace( '"', '%22', $list[ 4 ] );
+		$coverfile = preg_replace( array( '/%/', '/"/', '/#/' ), array( '%25', '%22', '%23' ), $list[ 4 ] );
 		// leading + trailing quotes in the same line avoid spaces between divs
 		$coverartshtml.= '<div class="coverart">
 							'.$lipath.'
@@ -339,7 +340,7 @@ $logo = '
 	<a href="sources"><i class="fa fa-folder-open-cascade"></i>Sources</a>
 	<a href="network"><i class="fa fa-network"></i>Network</a>
 	<a id="settingsmenu"><i class="fa fa-sliders"></i>Settings<i class="fa fa-rune submenu"></i></a>
-	<a id="turnoff"><i class="fa fa-power"></i>Power<?=$submenupower ?></a>
+	<a id="power"><i class="fa fa-power"></i>Power<?=$submenupower ?></a>
 		<?php 
 		if ( $this->pwd_protection ) { ?>
 	<a href="logout.php"><i class="fa fa-sign-out"></i>Logout</a>

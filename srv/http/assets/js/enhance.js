@@ -32,6 +32,7 @@ var GUI = {
 	, similarpl    : -1
 	, status       : {}
 	, debounce     : ''
+	, debouncevol  : ''
 	, debouncems   : 300
 };
 var picaOption = { // pica.js
@@ -195,35 +196,30 @@ $( '#displayplayback' ).click( function() {
 		disableCheckbox( 'buttons' );
 	}
 } );
-$( '#turnoff' ).click( function( e ) {
+$( '#power' ).click( function( e ) {
 	if ( $( e.target ).hasClass( 'submenu' ) ) {
-		$.post( 'enhance.php', { power: GUI.localhost ? 'screenoff' : 'reboot' } );
-		$( '#loader' ).removeClass( 'hide' );
+		$.post( 'enhance.php', { power: 'screenoff' } );
 		return
 	}
 	
-/*	if ( !GUI.localhost ) {
-		$.post( 'enhance.php', { power: 'shutdown' } );
-		$( '#loader' ).removeClass( 'hide' );
-		return
-	}*/
-	
-	info( {
+	info( { // toggle splash screen by pushstream.onstatuschange
 		  icon        : 'power'
 		, title       : 'Power'
 		, message     : 'Select mode:'
-		, oklabel     : 'Off'
+		, oklabel     : '<i class="fa fa-power"></i>Off'
 		, okcolor     : '#bb2828'
 		, ok          : function() {
 			$.post( 'enhance.php', { power: 'shutdown' } );
-			$( '#loader' ).removeClass( 'hide' );
+			$( '#loader' )
+				.css( 'background', '#000000' )
+				.find( 'svg' ).css( 'animation', 'unset' );
 		}
-		, buttonlabel : [ 'Reboot' ]
-		, buttoncolor : [ '#de810e' ]
-		, button      : [ function() {
+		, buttonlabel : '<i class="fa fa-reboot"></i>Reboot'
+		, buttoncolor : '#de810e'
+		, button      : function() {
 			$.post( 'enhance.php', { power: 'reboot' } );
-			$( '#loader' ).removeClass( 'hide' );
-		} ]
+		}
+		, buttonwidth : 1
 	} );
 } );
 $( '#displaycolor' ).click( function( e ) {
@@ -681,7 +677,7 @@ $( '#divcover' ).on( 'click', '.edit, .licover-save', function( e ) {
 	if ( GUI.status.ext !== 'radio' ) {
 		if ( $this.hasClass( 'licover-remove' ) ) {
 			removeCoverart();
-		} else if ( $this.hasClass( 'licover-edit' ) ) {
+		} else if ( $this.hasClass( 'licover-cover' ) ) {
 			replaceCoverart();
 		} else {
 			saveCoverart();
@@ -1332,13 +1328,15 @@ $( '#db-entries' ).on( 'taphold', '.licoverimg',  function() {
 } ).on( 'tap', 'li', function( e ) {
 	var $this = $( this );
 	var $target = $( e.target );
-	if ( $this.hasClass( 'active' ) && $( '.contextmenu:not( .hide )' ).length ) {
-		$( '.contextmenu' ).addClass( 'hide' );
+	if ( $this.hasClass( 'active' )
+			&& $target.hasClass( 'db-icon' )
+			&& $( '.contextmenu:not( .hide )' ).length ) {
+		$( '.menu' ).addClass( 'hide' );
 		return
 	}
 	
+	$( '.menu' ).addClass( 'hide' );
 	$( '#db-entries li' ).removeClass( 'active' );
-	$( '.contextmenu' ).addClass( 'hide' );
 	if ( $target.hasClass( 'edit' ) ) return
 	
 	if ( $( '.edit' ).length ) {
@@ -1360,7 +1358,6 @@ $( '#db-entries' ).on( 'taphold', '.licoverimg',  function() {
 		return
 	}
 	
-	$( '.menu' ).addClass( 'hide' );
 	// get file list in 'artist', 'composer', 'genre' mode (non-album)
 	if ( $this.hasClass( 'licover' ) && GUI.dbbackdata.length ) {
 		if ( [ 'artist', 'composer', 'genre' ].indexOf( GUI.dbbackdata[ 0 ].browsemode ) !== -1 ) {
@@ -1502,6 +1499,7 @@ $( '#plclear' ).click( function() {
 			GUI.pllist = {};
 			setPlaybackBlank();
 			renderPlaylist();
+			$( '.licover-save' ).remove();
 			$.post( 'enhance.php', { mpc: [ 'mpc clear', '/usr/bin/rm -f "/srv/http/assets/img/webradiopl/*' ] } );
 		}
 	} );
@@ -1674,10 +1672,10 @@ $( '#pl-editor' ).on( 'click', 'li', function( e ) {
 	if ( GUI.plappend ) {
 		var path = GUI.plappend.file;
 		var cue = path.slice( -3 ) === 'cue';
-		var list = cue ? '' : path;                                                  // file
-		list += '^^'+ GUI.list.name +'^^'+ GUI.list.li.find( '.time' ).text() +'^^'; // ^^title^^time^^
-		list += GUI.list.li.find( '.li2' ).text();                             // #track • artist album^^
-		if ( cue ) list += '^^^^^^^^^^'+ path.slice( 0, -3 ) +'cue^^'+ GUI.plappend.index;                // ^^^^^^^^^^cuem3u^^track
+		var list = cue ? '' : path;                                                        // file
+		list += '^^'+ GUI.list.name +'^^'+ GUI.list.li.find( '.time' ).text() +'^^';       // ^^title^^time^^
+		list += GUI.list.li.find( '.li2' ).text();                                         // #track • artist album^^
+		if ( cue ) list += '^^^^^^^^^^'+ path.slice( 0, -3 ) +'cue^^'+ GUI.plappend.index; // ^^^^^^^^^^cuem3u^^track
 		var plname = $this.find( '.lipath' ).text();
 		$.post( 'enhance.php', { plappend: plname, list: list }, function() {
 			renderSavedPlaylist( $this.find( 'span' ).text() );
@@ -1690,12 +1688,14 @@ $( '#pl-editor' ).on( 'click', 'li', function( e ) {
 	}
 	
 	var $target = $( e.target );
-	if ( $this.hasClass( 'active' ) && $( '.contextmenu:not( .hide )' ).length ) {
-		$( '.contextmenu' ).addClass( 'hide' );
+	if ( $this.hasClass( 'active' )
+			&& ( $target.hasClass( 'pl-icon' ) || $target.hasClass( 'db-icon' ) )
+			&& $( '.contextmenu:not( .hide )' ).length ) {
+		$( '.menu' ).addClass( 'hide' );
 		return
 	}
 	
-	$( '.contextmenu' ).addClass( 'hide' );
+	$( '.menu' ).addClass( 'hide' );
 	if ( $target.hasClass( 'pl-icon' ) || $target.hasClass( 'db-icon' ) || !$this.find( '.fa-list-ul' ).length ) {
 		if ( $target.data( 'target' ) === '#context-menu-file' ) {
 			dbContextmenu( $this, $target );
@@ -1783,12 +1783,15 @@ window.addEventListener( 'orientationchange', function() {
 } );
 
 var pushstreams = {};
-var streams = [ 'bookmark', 'display', 'idle', 'notify', 'playlist', 'volume', 'webradio', 'color' ];
+var streams = [ 'bookmark', 'color', 'display', 'idle', 'notify', 'playlist', 'volume', 'webradio' ];
 streams.forEach( function( stream ) {
 	pushstreams[ stream ] = new PushStream( { modes: 'websocket' } );
 	pushstreams[ stream ].addChannel( stream );
 	pushstreams[ stream ].connect();
 } );
+pushstreams.display.onstatuschange = function( status ) {
+	$( '#loader' ).toggleClass( 'hide', status === 2 );
+}
 pushstreams.bookmark.onmessage = function( data ) {
 	var bookmarks = data[ 0 ];
 	if ( GUI.bookmarkedit || !bookmarks.length ) return
@@ -1879,8 +1882,8 @@ pushstreams.playlist.onmessage = function( data ) {
 }
 pushstreams.volume.onmessage = function( data ) {
 	var data = data[ 0 ];
-	clearTimeout( GUI.debounce );
-	GUI.debounce = setTimeout( function() {
+	clearTimeout( GUI.debouncevol );
+	GUI.debouncevol = setTimeout( function() {
 		var vol = data[ 0 ];
 		var volumemute = data[ 1 ];
 		$volumeRS.setValue( vol );

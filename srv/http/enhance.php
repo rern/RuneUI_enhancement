@@ -108,7 +108,20 @@ s|\(hsl(\).*\()/\*cgl\*/\)|\1'.$hsg.'60%\2|g
 	}
 	echo json_encode( $data );
 } else if ( isset( $_POST[ 'getcount' ] ) ) {
-	$status = getLibraryCount();
+	$count = exec( '/srv/http/enhancecount.sh' );
+	$count = explode( ' ', $count );
+	$status = array(
+		  'artist'       => $count[ 0 ]
+		, 'album'        => $count[ 1 ]
+		, 'song'         => $count[ 2 ]
+		, 'albumartist'  => $count[ 3 ]
+		, 'composer'     => $count[ 4 ]
+		, 'genre'        => $count[ 5 ]
+		, 'nas'          => $count[ 6 ]
+		, 'usb'          => $count[ 7 ]
+		, 'webradio'     => $count[ 8 ]
+		, 'sd'           => $count[ 9 ]
+	);
 	echo json_encode( $status, JSON_NUMERIC_CHECK );
 } else if ( isset( $_POST[ 'setorder' ] ) ) {
 	$order = $_POST[ 'setorder' ]; 
@@ -198,7 +211,8 @@ s|\(hsl(\).*\()/\*cgl\*/\)|\1'.$hsg.'60%\2|g
 	$coverfile = isset( $_POST[ 'coverfile' ] );
 	if ( $coverfile ) exec( "$sudo/mv -f \"$imagefile\"{,.backup}", $output, $std );
 	if ( !isset( $_POST[ 'base64' ] ) ) { // delete
-		unlink( $imagefile );
+		$delete = unlink( $imagefile );
+		if ( !$delete ) echo 13;
 		exit;
 	}
 	
@@ -594,25 +608,6 @@ function getBookmark() {
 	}
 	return $data;
 }
-function getLibraryCount() {
-	$redis = new Redis();
-	$redis->pconnect( '127.0.0.1' );
-	$count = exec( '/srv/http/enhancecount.sh' );
-	$count = explode( ' ', $count );
-	$status = array(
-		  'artist'       => $count[ 0 ]
-		, 'album'        => $count[ 1 ]
-		, 'song'         => $count[ 2 ]
-		, 'albumartist'  => $count[ 3 ]
-		, 'composer'     => $count[ 4 ]
-		, 'genre'        => $count[ 5 ]
-		, 'nas'          => $count[ 6 ]
-		, 'usb'          => $count[ 7 ]
-		, 'webradio'     => $count[ 8 ]
-		, 'sd'           => $count[ 9 ]
-	);
-	return $status;
-}
 function lsPlaylists() {
 	$lines = array_slice( scandir( '/srv/http/assets/img/playlists' ), 2 );
 	if ( count( $lines ) ) {
@@ -645,8 +640,8 @@ function second2HMS( $second ) {
 	return $hh.$mm.$ss;
 }
 function playlistInfo( $save = '' ) { // fix -  mpd unable to save cue/m3u properly
-	// grep cannot be used here
-	$playlistinfo = shell_exec( '{ sleep 0.05; echo playlistinfo; sleep 0.3; } | telnet localhost 6600 | sed -n "/^file\|^Range\|^AlbumArtist:\|^Title\|^Album\|^Artist\|^Track\|^Time/ p"' );
+	// 2nd sleep: varied with length, 1000track/0.1s
+	$playlistinfo = shell_exec( '{ sleep 0.05; echo playlistinfo; sleep $( awk "BEGIN { printf \"%.1f\n\", $( mpc playlist | wc -l ) / 10000 + 0.1 }" ); } | telnet localhost 6600 | sed -n "/^file\|^Range\|^AlbumArtist:\|^Title\|^Album\|^Artist\|^Track\|^Time/ p"' ); // grep cannot be used here
 	if ( !$playlistinfo ) return '';
 	
 	$content = preg_replace( '/\nfile:/', "\n^^file:", $playlistinfo );
@@ -680,6 +675,15 @@ function playlistInfo( $save = '' ) { // fix -  mpd unable to save cue/m3u prope
 				$thumb = $nameimg[ 1 ];
 				$img = $nameimg[ 2 ];
 			}
+/*			$content.= '<li>
+						<i class="fa fa-webradio pl-icon'.( substr( $Title, 0, 1 ) === '*' || !$Title ? ' unsaved' : '' ).'" data-target="#context-menu-webradiopl"></i>
+						  <a class="lipath">'.$filename.'</a>
+						  <a class="liname">'.$Title.'</a>'
+						  .( $thumb ? '<a class="lithumb">'.$thumb.'</a>' : '' )
+						  .( $img ? '<a class="liimg">'.$img.'</a>' : '' ).'
+						  <span class="li1"><a class="name">'.$Title.'</a><a class="song"></a><span class="duration"><a class="elapsed"></a></span></span>
+						  <span class="li2">'.( $Title ? $Title.' • ' : '' ).$filename.'</span>
+					</li>';*/
 		}
 		if ( $save && $webradio ) {
 			$list.= "$file^^$Title";
@@ -704,25 +708,58 @@ function savePlaylist( $name ) {
 	$list = playlistInfo( 'save' );
 	file_put_contents( "/srv/http/assets/img/playlists/$name", $list );
 }
-function loadPlaylist( $name ) { // fix -  mpd unable to save cue properly
+function loadPlaylist( $name ) { // custom format playlist -  mpd unable to save cue properly
 	$playlistinfo = file_get_contents( "/srv/http/assets/img/playlists/$name" );
 	$lines = explode( "\n", rtrim( $playlistinfo ) );
-	$cmd = '';
 	$i = 0;
+	$j = 0;
 	foreach( $lines as $line ) {
-		$list = explode( '^^', $line );
-		$cuetrack = $list[ 9 ];
-		if ( $cuetrack ) {
-			$cmd.= '/srv/http/enhance1cue.sh "'.$list[ 8 ].'" '.$cuetrack.'; ';
+		$data = explode( '^^', $line );
+		$file = $data[ 0 ];
+		if ( !$file ) { // cue: ''
+			if ( $list ) {
+				exec( 'echo -e "'.rtrim( $list, '\n' ).'" | mpc add' );
+				$list = '';
+				$i = 0;
+			}
+			$track = $data[ 9 ];
+			$file = $data[ 8 ];
+			if ( +$track === $trackprev + 1 && $file === $fileprev ) {
+				$track0 = $track0prev;
+				$ranges = explode( ';', $range );
+				array_pop( $ranges );
+				$range = implode( ';', $ranges );
+			} else {
+				$track0 = $track - 1;
+			}
+			$range.= ";mpc --range=$track0:$track load \"$file\"";
+			$track0prev = $track0;
+			$trackprev = $track;
+			$fileprev = $file;
+			$j++;
+			if ( $j === 100 ) { // limit list length to avoid errors
+				exec( ltrim( $range, ';' ) );
+				$range = $track0prev = $trackprev = $fileprev = '';
+				$j = 0;
+			}
 		} else {
-			$cmd.= 'mpc add "'.$list[ 0 ].'"; ';
-		}
-		$i++;
-		if ( $i === 200 ) { // limit each command length to avoid errors
-			exec( $cmd );
-			$cmd = '';
-			$i = 0;
+			if ( $range ) {
+				exec( ltrim( $range, ';' ) );
+				$range = $track0prev = $trackprev = $fileprev = '';
+				$j = 0;
+			}
+			$list.= $file.'\n';
+			$i++;
+			if ( $i === 500 ) { // limit list length to avoid errors
+				exec( 'echo -e "'.rtrim( $list, '\n' ).'" | mpc add' );
+				$list = '';
+				$i = 0;
+			}
 		}
 	}
-	if( $cmd ) exec( $cmd );
+	if( $list ) {
+		exec( 'echo -e "'.rtrim( $list, '\n' ).'" | mpc add' );
+	} else if ( $range ) {
+		exec( ltrim( $range, ';' ) );
+	}
 }

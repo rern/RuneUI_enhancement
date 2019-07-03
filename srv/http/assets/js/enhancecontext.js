@@ -119,7 +119,7 @@ $( '.contextmenu a' ).click( function( e ) {
 		var ext = name.split( '.' ).pop();
 		if ( ext === 'cue' && GUI.list.index ) { // cue
 			var plfile = GUI.list.path.replace( /"/g, '\\"' );
-			mpcCmd = '/srv/http/enhance1cue.sh "'+ plfile +'" '+ GUI.list.index;
+			mpcCmd = 'mpc --range='+ ( GUI.list.index - 1 ) +':'+ GUI.list.index +' load "'+ plfile +'"';
 		} else if ( ext === 'cue' || ext === 'pls' ) {
 			mpcCmd = 'mpc load "'+ name +'"';
 		} else if ( GUI.plugin ) { // unsaved dirble ( * in front of name for class indicator)
@@ -148,7 +148,7 @@ $( '.contextmenu a' ).click( function( e ) {
 					, title   : 'Playlist Replace'
 					, message : 'Replace current playlist?'
 					, ok      : function() {
-						notify( 'Saved Playlist', '<i class="fa fa-gear fa-spin"></i> Processing ...', 'list-ul', -1 );
+						notify( 'Saved Playlist', '<i class="fa fa-gear fa-spin"></i> Loading ...', 'list-ul', -1 );
 						$.post( 'enhance.php', { loadplaylist: name, play: play, replace: replace }, function() {
 							notify( 'Playlist Replaced', name, 'list-ul' );
 						} );
@@ -165,7 +165,7 @@ $( '.contextmenu a' ).click( function( e ) {
 	}
 	
 	cmd = cmd.replace( /album|artist|composer|genre/, '' );
-	var sleep = GUI.list.path.slice( 0, 4 ) === 'http' ? '; sleep 1' : '; sleep 0.1';
+	var sleep = GUI.list.path.slice( 0, 4 ) === 'http' ? '; sleep 1' : '; sleep 0.2';
 	var contextCommand = {
 		  add         : mpcCmd
 		, addplay     : 'pos=$( mpc playlist | wc -l ); '+ mpcCmd + sleep +'; mpc play $(( pos + 1 ))'
