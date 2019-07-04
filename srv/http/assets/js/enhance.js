@@ -136,7 +136,7 @@ $( '#displaylibrary' ).click( function() {
 	info( {
 		  icon     : 'library'
 		, title    : 'Library Tools'
-		, message  : 'Select items to show / options:'
+		, message  : 'Show / enable selected items:'
 		, checkbox : '<form id="displaysavelibrary">'+ displayCheckbox( chklibrary ) +'</form>'
 		, ok       : function () {
 			var data = {};
@@ -167,7 +167,7 @@ $( '#displayplayback' ).click( function() {
 	info( {
 		  icon     : 'play-circle'
 		, title    : 'Playback Tools'
-		, message  : 'Select items to show:'
+		, message  : 'Show selected items:'
 		, checkbox : '<form id="displaysaveplayback">'+ displayCheckbox( chkplayback ) +'</form>'
 		, ok       : function () {
 			// no: serializeArray() omit unchecked fields
