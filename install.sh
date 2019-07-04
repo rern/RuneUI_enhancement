@@ -24,24 +24,14 @@ fi
 installstart $@
 
 packagestatus mpc # $version, $installed
-
-if [[ ! $installed || ! -e /usr/bin/convert ]]; then
-	wgetnc https://github.com/rern/_assets/raw/master/imagemagick-mpc.tar
-	mkdir pkg
-	bsdtar xvf imagemagick-mpc.tar -C pkg
-	# to be removed ##########################################################################
-	if [[ ! $installed ]]; then
-		echo -e "$bar Upgrade mpc ..."
-	
-		pacman -U --needed --noconfirm pkg/mpc-0.31-1-armv7h.pkg.tar.xz pkg/libmpdclient-2.16-1-armv7h.pkg.tar.xz
-	fi
-	############################################################################################
-	if [[ ! -e /usr/bin/convert ]]; then
-		echo -e "$bar Install ImageMagick ..."
-	
-		pacman -U --needed --noconfirm pkg/*
-	fi
-	rm -rf imagemagick-mpc.tar pkg
+if [[ ! $installed ]]; then
+	rankmirrors
+	pacman -S --needed --noconfirm mpc libmpdclient
+fi
+packagestatus imagemagick
+if [[ ! $installed ]]; then
+	rankmirrors
+	pacman -S --needed --noconfirm imagemagick harfbuzz
 fi
 
 mv /srv/http/index.php{,.backup}
