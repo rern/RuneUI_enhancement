@@ -14,7 +14,9 @@ var GUI = {
 	, dbscrolltop  : {}
 	, debounce     : ''
 	, display      : {}
+	, fanartapikey : '06f56465de874e4c75a2e9f0cc284fa3'
 	, imodedelay   : 0
+	, lastfmapikey : 'ba8ad00468a50732a3860832eaed0882'
 	, list         : {}
 	, library      : 0
 	, local        : 0

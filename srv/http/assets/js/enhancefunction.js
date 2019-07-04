@@ -387,7 +387,7 @@ function renderPlayback() {
 				  type     : 'post'
 				, url      : 'http://ws.audioscrobbler.com/2.0/'
 				, data     : { 
-					  api_key     : lastfmapikey
+					  api_key     : GUI.lastfmapikey
 					, autocorrect : 1
 					, format      : 'json'
 					, method      : 'album.getinfo'
@@ -499,7 +499,7 @@ function getPlaybackStatus() {
 }
 function getBio( artist ) {
 	$( '#loader' ).removeClass( 'hide' );
-	$.post( 'http://ws.audioscrobbler.com/2.0/?autocorrect=1&format=json&method=artist.getinfo&api_key='+ lastfmapikey +'&artist='+ encodeURI( artist ), function( data ) {
+	$.post( 'http://ws.audioscrobbler.com/2.0/?autocorrect=1&format=json&method=artist.getinfo&api_key='+ GUI.lastfmapikey +'&artist='+ encodeURI( artist ), function( data ) {
 		var data = data.artist;
 		if ( !data.bio.content ) {
 			info( {
@@ -535,7 +535,7 @@ function getBio( artist ) {
 			$( '#bio' ).removeClass( 'hide' );
 			$( '#bio' ).scrollTop( 0 );
 
-			$.get( 'https://webservice.fanart.tv/v3/music/'+ data.mbid +'&?api_key=06f56465de874e4c75a2e9f0cc284fa3', function( data ) {
+			$.get( 'https://webservice.fanart.tv/v3/music/'+ data.mbid +'&?api_key='+ GUI.fanartapikey, function( data ) {
 				var src = data.artistthumb[ 0 ].url;
 				if ( src ) $( '#biocontent form' ).prepend( '<img id="bioimg" src="'+ src +'">' );
 			} );
