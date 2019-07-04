@@ -85,7 +85,7 @@ s|\(hsl(\).*\()/\*cgl\*/\)|\1'.$hsg.'60%\2|g
 	';
 	$cmd.= '" $( grep -ril "\/\*c" /srv/http/assets/css )';
 	exec( $cmd );
-	pushstream( 'color', 1 );
+	pushstream( 'reload', 1 );
 	$redis->hSet( 'display', 'color', "hsl($h,$s%,$l%)" );
 } else if ( isset( $_POST[ 'plappend' ] ) ) {
 	$plfile = '/srv/http/assets/img/playlists/'.$_POST[ 'plappend' ];
