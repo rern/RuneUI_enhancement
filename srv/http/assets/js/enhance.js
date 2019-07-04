@@ -167,7 +167,7 @@ $( '#displayplayback' ).click( function() {
 	info( {
 		  icon     : 'play-circle'
 		, title    : 'Playback Tools'
-		, message  : 'Select items to show / options:'
+		, message  : 'Select items to show:'
 		, checkbox : '<form id="displaysaveplayback">'+ displayCheckbox( chkplayback ) +'</form>'
 		, ok       : function () {
 			// no: serializeArray() omit unchecked fields
