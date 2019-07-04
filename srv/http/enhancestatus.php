@@ -173,11 +173,12 @@ function samplingline( $bitdepth, $samplerate, $bitrate ) {
 			$bitdepth = $bitdepth ? $bitdepth.' bit ' : '';
 		}
 	}
-	$samplerate = round( $samplerate / 1000, 1 ).' kHz ';
+	if ( !$bitrate ) $bitrate = 2 * $bitdepth * $samplerate;
 	if ( $bitrate < 1000000 ) {
 		$bitrate = round( $bitrate / 1000 ).' kbit/s';
 	} else {
 		$bitrate = round( $bitrate / 1000000, 2 ).' Mbit/s';
 	}
+	$samplerate = round( $samplerate / 1000, 1 ).' kHz ';
 	return $bitdepth.$samplerate.$bitrate;
 }
