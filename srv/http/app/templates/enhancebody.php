@@ -547,7 +547,6 @@ $logo = '
 </div>
 <div id="splash"><svg viewBox="0 0 480.2 144.2"><?=$logo ?></svg></div>
 <div id="loader" class="hide"><svg viewBox="0 0 480.2 144.2"><?=$logo ?></svg></div>
-<script>var lastfmapikey = "<?=$redis->hGet( 'lastfm', 'apikey' )?>"</script>
 <?php 
 if ( file_exists('/srv/http/assets/js/lyrics.js') ) include 'lyricscontainer.php';
 echo $menu;
