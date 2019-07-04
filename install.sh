@@ -33,7 +33,7 @@ if [[ ! $installed || ! -e /usr/bin/convert ]]; then
 	if [[ ! $installed ]]; then
 		echo -e "$bar Upgrade mpc ..."
 	
-		pacman -U --noconfirm pkg/mpc-0.31-1-armv7h.pkg.tar.xz pkg/libmpdclient-2.16-1-armv7h.pkg.tar.xz
+		pacman -U --needed --noconfirm pkg/mpc-0.31-1-armv7h.pkg.tar.xz pkg/libmpdclient-2.16-1-armv7h.pkg.tar.xz
 	fi
 	############################################################################################
 	if [[ ! -e /usr/bin/convert ]]; then
