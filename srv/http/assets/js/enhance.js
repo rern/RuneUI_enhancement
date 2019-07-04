@@ -1785,7 +1785,7 @@ window.addEventListener( 'orientationchange', function() {
 } );
 
 var pushstreams = {};
-var streams = [ 'bookmark', 'color', 'display', 'idle', 'notify', 'playlist', 'volume', 'webradio' ];
+var streams = [ 'bookmark', 'display', 'idle', 'notify', 'playlist', 'reload', 'volume', 'webradio' ];
 streams.forEach( function( stream ) {
 	pushstreams[ stream ] = new PushStream( { modes: 'websocket' } );
 	pushstreams[ stream ].addChannel( stream );
@@ -1802,9 +1802,6 @@ pushstreams.bookmark.onmessage = function( data ) {
 	GUI.debounce = setTimeout( function() {
 		renderLibraryBlocks( bookmarks );
 	}, GUI.debouncems );
-}
-pushstreams.color.onmessage = function() {
-	location.reload();
 }
 pushstreams.display.onmessage = function( data ) {
 	var data = data[ 0 ];
@@ -1881,6 +1878,9 @@ pushstreams.playlist.onmessage = function( data ) {
 	} else {
 		$( '#plopen' ).click();
 	}
+}
+pushstreams.reload.onmessage = function() {
+	location.reload();
 }
 pushstreams.volume.onmessage = function( data ) {
 	var data = data[ 0 ];
