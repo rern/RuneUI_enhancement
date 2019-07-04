@@ -34,6 +34,7 @@ if [[ ! $installed ]]; then
 	pacman -S --needed --noconfirm imagemagick harfbuzz
 fi
 
+mv /etc/nginx/html/50x.html{,.backup}
 mv /srv/http/index.php{,.backup}
 mv /srv/http/assets/js/vendor/pushstream.min.js{,.backup}
 mv /srv/http/assets/js/vendor/Sortable.min.js{,.backup}
