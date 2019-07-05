@@ -43,6 +43,8 @@ ln -sf /srv/http/assets/img/bootsplash.png /usr/share/bootsplash/start.png
 
 getinstallzip
 
+[[ -e /etc/nginx/html/50x.html ]] && wgetnc https://github.com/rern/RuneAudio/raw/master/nginx/50x.html -O /etc/nginx/html/50x.html
+
 echo -e "$bar Modify files ..."
 #----------------------------------------------------------------------------------
 file=/srv/http/app/libs/runeaudio.php
