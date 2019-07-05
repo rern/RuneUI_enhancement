@@ -297,7 +297,6 @@ if ( path.match( /\/sources\/*$/ ) ) {
 		$('#dhcp-option-router').val($('#ip-address').val());
 	});
 	$( '.btn-primary:eq( 2 )' ).click( function() {
-		alert( '/usr/bin/systemctl '+ ( $( '#accesspointSettings' ).hasClass( 'hide' ) ? 'stop' : 'start' ) +' hostapd dnsmasq' )
 		$.post( '../enhance.php', { bash: '/usr/bin/systemctl '+ ( $( '#accesspointSettings' ).hasClass( 'hide' ) ? 'stop' : 'start' ) +' hostapd dnsmasq' } );
 	} );
 	
