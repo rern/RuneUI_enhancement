@@ -1880,7 +1880,7 @@ pushstreams.playlist.onmessage = function( data ) {
 	}
 }
 pushstreams.reload.onmessage = function() {
-	location.reload();
+	location.href= '/';
 }
 pushstreams.volume.onmessage = function( data ) {
 	var data = data[ 0 ];
