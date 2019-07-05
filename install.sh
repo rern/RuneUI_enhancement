@@ -120,6 +120,7 @@ echo $file
 
 commentH 'class="checkbox"'
 string=$( cat <<'EOF'
+                    <br><br>
                     <div class="checkbox hide">
 EOF
 )
