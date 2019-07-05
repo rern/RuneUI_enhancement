@@ -296,6 +296,10 @@ if ( path.match( /\/sources\/*$/ ) ) {
 		$('#dhcp-option-dns').val($('#ip-address').val());
 		$('#dhcp-option-router').val($('#ip-address').val());
 	});
+	$( '.btn-primary:eq( 2 )' ).click( function() {
+		alert( '/usr/bin/systemctl '+ ( $( '#accesspointSettings' ).hasClass( 'hide' ) ? 'stop' : 'start' ) +' hostapd dnsmasq' )
+		$.post( '../enhance.php', { bash: '/usr/bin/systemctl '+ ( $( '#accesspointSettings' ).hasClass( 'hide' ) ? 'stop' : 'start' ) +' hostapd dnsmasq' } );
+	} );
 	
 } else if ( path.match( /\/debug/ ) ) { // *** Important! ZeroClipboard will freeze if run while in browser DevTools mode ***
 	ZeroClipboard.config({swfPath: '/assets/js/vendor/ZeroClipboard.swf'});
