@@ -279,13 +279,7 @@ if ( path.match( /\/sources\/*$/ ) ) {
 	
 } else if ( path.match( /\/accesspoint/ ) ) {
 	$('#accesspoint').change(function(){
-		if ($(this).prop('checked')) {
-			$('#accesspointSettings').removeClass('hide');
-			$('#accesspointBox').addClass('boxed-group');
-		} else {
-			$('#accesspointSettings').addClass('hide');
-			$('#accesspointBox').removeClass('boxed-group');
-		}
+		$( '#accesspointSettings, .form-actions, fieldset' ).toggleClass( 'hide', !$( this ).prop( 'checked' ) );
 	});
 	$('#ip-address').change(function(){
 		var parts = $('#ip-address').val().split('.');
