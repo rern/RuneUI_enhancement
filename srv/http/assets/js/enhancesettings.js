@@ -43,7 +43,9 @@ if ( path.match( /\/sources\/*$/ ) ) {
 	} );
 	toggleUpdate();
 	$( '#update, #rescan' ).click( function() {
-		$.post( '../enhance.php', { bash: '/srv/http/enhancecount.sh '+ this.id +' &' } );
+		$( '#update, #rescan' ).hide();
+		$( '#updating' ).show();
+		$.post( '../enhance.php', { bash: '/srv/http/enhancecount.sh '+ this.id +' > /dev/null &' } );
 	} );
 } else if ( path.match( /\/sources\/.*/ ) ) {
 	if ($('#mount-type').val() === 'nfs') {
