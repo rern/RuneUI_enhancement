@@ -272,6 +272,10 @@ if ( path.match( /\/sources\/*$/ ) ) {
 			$('#wifiProfilesBox').removeClass('hide');
 		}
 	});
+	// fix: not connect / not show new connection
+	$( '.btn-primary:eq( 1 )' ).click( function() {
+		$.post( '../../../enhance.php', { bash: '/usr/bin/ip link set dev wlan0 down; /usr/bin/systemctl restart netctl-auto@wlan0' } );
+	} );
 	
 } else if ( path.match( /\/accesspoint/ ) ) {
 	$('#accesspoint').change(function(){
