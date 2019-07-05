@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if (( $# > 0 )); then
-	[[ $1 == update || $1 == rescan ]] && { sleep 0.05; echo $1; sleep 0.05; } | telnet localhost 6600
+	[[ $1 == update || $1 == rescan ]] && mpc $1 --wait
 	albumartist=$( mpc list albumartist | awk NF | wc -l )
 	composer=$( mpc list composer | awk NF | wc -l )
 	genre=$( mpc list genre | awk NF | wc -l )
