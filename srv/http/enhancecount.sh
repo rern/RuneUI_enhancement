@@ -1,7 +1,8 @@
 #!/bin/bash
 
 if (( $# > 0 )); then
-	[[ $1 == update || $1 == rescan ]] && mpc $1 --wait
+	[[ $1 == update || $1 == rescan ]] && mpc $1
+	mpc idle update
 	albumartist=$( mpc list albumartist | awk NF | wc -l )
 	composer=$( mpc list composer | awk NF | wc -l )
 	genre=$( mpc list genre | awk NF | wc -l )
