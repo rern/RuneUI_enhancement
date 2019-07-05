@@ -124,6 +124,16 @@ commentH -n -1 'for="remoteSStime">' -n +5 'for="remoteSStime">'
 
 commentH -n -1 'Display album cover' -n +8 'Display album cover'
 #----------------------------------------------------------------------------------
+file=/srv/http/app/templates/accesspoint.php
+echo $file
+
+commentH 'class="checkbox"'
+string=$( cat <<'EOF'
+                    <div class="checkbox hide">
+EOF
+)
+appendH 'class="checkbox"'
+#----------------------------------------------------------------------------------
 file=/srv/http/app/templates/network_edit.php
 echo $file
 
