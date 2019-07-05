@@ -118,12 +118,29 @@ append '$'
 file=/srv/http/app/templates/accesspoint.php
 echo $file
 
+commentH 'form-actions'
+
 commentH 'class="checkbox"' -n +2 'Save settings'
+
+commentH '<fieldset>'
+
+string=$( cat <<'EOF'
+            <div class="form-group form-actions<?=( $this->enabled == 0 ? ' hide' : '' )?>">
+EOF
+)
+appendH 'form-actions'
+
 string=$( cat <<'EOF'
                     <br><br>
 EOF
 )
 insertH 'class="checkbox"'
+
+string=$( cat <<'EOF'
+    <fieldset<?=( $this->enabled == 0 ? ' class="hide"' : '' )?>>
+EOF
+)
+appendH '<fieldset>'
 #----------------------------------------------------------------------------------
 file=/srv/http/app/templates/network_edit.php
 echo $file
