@@ -141,7 +141,7 @@ insertH 'class="checkbox"'
 
 commentH '<fieldset>'
 string=$( cat <<'EOF'
-    <fieldset<?=( $this->enabled == 0 ? ' class="hide"' : '' )?>>
+    <fieldset class="<?=( $this->enabled == 0 ? 'hide' : 'on' )?>">
 EOF
 )
 appendH '<fieldset>'
