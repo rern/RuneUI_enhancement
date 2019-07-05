@@ -39,6 +39,7 @@ files="
 /srv/http/app/templates/mpd.php
 /srv/http/app/templates/accesspoint.php
 /srv/http/app/templates/network_edit.php
+/srv/http/app/templates/network_wlan.php
 /srv/http/app/templates/settings.php
 /srv/http/app/templates/sources.php
 /srv/http/app/templates/sources_edit.php
