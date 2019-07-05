@@ -136,6 +136,17 @@ EOF
 )
 appendH 'wifiProfilesBox'
 #----------------------------------------------------------------------------------
+file=/srv/http/app/templates/network_wlan.php
+echo $file
+
+commentH 'Reboot'
+
+string=$( cat <<'EOF'
+                <br><br>
+EOF
+)
+appendH 'Reboot'
+#----------------------------------------------------------------------------------
 file=/srv/http/app/templates/settings.php
 echo $file
 
