@@ -42,12 +42,6 @@ if ( path.match( /\/sources\/*$/ ) ) {
 		if ( !document.hidden ) toggleUpdate();
 	} );
 	toggleUpdate();
-	var pushstreamIdle = new PushStream( { modes: 'websocket' } );
-	pushstreamIdle.onmessage = function( data ) {
-		if ( data[ 0 ] === 'update' ) toggleUpdate();
-	}
-	pushstreamIdle.addChannel( 'idle' );
-	pushstreamIdle.connect();
 	$( '#update, #rescan' ).click( function() {
 		$.post( '../enhance.php', { bash: '/srv/http/enhancecount.sh '+ this.id +' &' } );
 	} );
