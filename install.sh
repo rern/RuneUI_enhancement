@@ -115,15 +115,6 @@ EOF
 )
 append '$'
 #----------------------------------------------------------------------------------
-file=/srv/http/app/templates/settings.php
-echo $file
-
-commentH -n -1 'for="localSStime">' -n +5 'for="localSStime">'
-
-commentH -n -1 'for="remoteSStime">' -n +5 'for="remoteSStime">'
-
-commentH -n -1 'Display album cover' -n +8 'Display album cover'
-#----------------------------------------------------------------------------------
 file=/srv/http/app/templates/accesspoint.php
 echo $file
 
@@ -144,6 +135,15 @@ string=$( cat <<'EOF'
 EOF
 )
 appendH 'wifiProfilesBox'
+#----------------------------------------------------------------------------------
+file=/srv/http/app/templates/settings.php
+echo $file
+
+commentH -n -1 'for="localSStime">' -n +5 'for="localSStime">'
+
+commentH -n -1 'for="remoteSStime">' -n +5 'for="remoteSStime">'
+
+commentH -n -1 'Display album cover' -n +8 'Display album cover'
 #----------------------------------------------------------------------------------
 file=/srv/http/app/templates/sources.php
 echo $file
