@@ -118,13 +118,12 @@ append '$'
 file=/srv/http/app/templates/accesspoint.php
 echo $file
 
-commentH 'class="checkbox"'
+commentH 'class="checkbox"' -n +2 'Save settings'
 string=$( cat <<'EOF'
                     <br><br>
-                    <div class="checkbox hide">
 EOF
 )
-appendH 'class="checkbox"'
+insertH 'class="checkbox"'
 #----------------------------------------------------------------------------------
 file=/srv/http/app/templates/network_edit.php
 echo $file
