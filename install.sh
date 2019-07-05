@@ -118,24 +118,28 @@ append '$'
 file=/srv/http/app/templates/accesspoint.php
 echo $file
 
+commentH 'accesspointBox'
+string=$( cat <<'EOF'
+    <div class="boxed-group" id="accesspointBox">
+EOF
+)
+appendH 'accesspointBox'
+
 commentH 'form-actions'
-
-commentH 'class="checkbox"' -n +2 'Save settings'
-
-commentH '<fieldset>'
-
 string=$( cat <<'EOF'
             <div class="form-group form-actions<?=( $this->enabled == 0 ? ' hide' : '' )?>">
 EOF
 )
 appendH 'form-actions'
 
+commentH 'class="checkbox"' -n +2 'Save settings'
 string=$( cat <<'EOF'
                     <br><br>
 EOF
 )
 insertH 'class="checkbox"'
 
+commentH '<fieldset>'
 string=$( cat <<'EOF'
     <fieldset<?=( $this->enabled == 0 ? ' class="hide"' : '' )?>>
 EOF
