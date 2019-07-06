@@ -273,8 +273,8 @@ if ( path.match( /\/sources\/*$/ ) ) {
 		}
 	});
 	// fix: not connect / not show new connection
-	$( '.btn-primary:eq( 1 )' ).click( function() {
-		$.post( '../../../enhance.php', { bash: '/usr/bin/ip link set dev wlan0 down; /usr/bin/systemctl restart netctl-auto@wlan0' } );
+	$( '.btn-primary' ).click( function() {
+		if ( $( this ).text() = 'Connect' ) $.post( '../../../enhance.php', { bash: '{ /usr/bin/ip link set dev wlan0 down; /usr/bin/systemctl restart netctl-auto@wlan0; }' } );
 	} );
 	
 } else if ( path.match( /\/accesspoint/ ) ) {
@@ -291,8 +291,16 @@ if ( path.match( /\/sources\/*$/ ) ) {
 		$('#dhcp-option-dns').val($('#ip-address').val());
 		$('#dhcp-option-router').val($('#ip-address').val());
 	});
-	$( '.btn-primary:eq( 2 )' ).click( function() {
-		$.post( '../enhance.php', { bash: '/usr/bin/systemctl '+ ( $( '#accesspointSettings' ).hasClass( 'hide' ) ? 'stop' : 'start' ) +' hostapd dnsmasq' } );
+	$( '.btn-primary' ).click( function() {
+		if ( $( this ).text() !== 'Save and apply' ) return
+		
+		if ( $( '#accesspointSettings' ).hasClass( 'hide' ) ) {
+			$.post( '../enhance.php', { bash: '/usr/bin/systemctl stop hostapd dnsmasq' } );
+		} else {
+			$.post( '../enhance.php', { bash: '/usr/bin/pgrep wpa && /usr/bin/killall wpa_supplicant' }, function() {
+				$.post( '../enhance.php', { bash: '/usr/bin/systemctl restart hostapd dnsmasq' } );
+			} );
+		}
 	} );
 	
 } else if ( path.match( /\/debug/ ) ) { // *** Important! ZeroClipboard will freeze if run while in browser DevTools mode ***
