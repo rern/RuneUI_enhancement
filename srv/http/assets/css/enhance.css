@@ -1335,6 +1335,7 @@ p.hrbl {
 .db-back-left {
 	float: none !important;
 	position: inherit !important;
+	margin-left: 5px !important;
 }
 #db-currentpath {
 	float: left;
@@ -1381,6 +1382,7 @@ p.hrbl {
 	line-height: 40px;
 	text-align: center;
 	font-size: 28px !important;
+	margin-left: 5px;
 }
 #db-home,
 #pl-home {
