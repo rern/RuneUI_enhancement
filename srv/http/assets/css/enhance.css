@@ -1277,6 +1277,7 @@ p.hrbl {
 }
 .btnlist a {
 	font-size: 18px;
+	vertical-align: 8%;
 	color: #e0e7ee;
 }
 .btnlist-top i {
