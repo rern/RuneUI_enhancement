@@ -43,8 +43,19 @@
 <link rel="stylesheet" href="<?=$this->asset( '/css/enhancedesktop.css' )?>">
 		<?php
 		}
-		if ( strpos( $_SERVER['HTTP_USER_AGENT'], 'Midori' ) ) { ?>
+		if ( strpos( $_SERVER['HTTP_USER_AGENT'], 'Midori' ) ) {
+			if ( file_exists( '/usr/bin/chromium' ) ) {
+				$chromiumfile = '/etc/X11/xinit/start_chromium.sh';
+				$chromiumfile = file_exists( $chromiumfile ) ? $chromiumfile : '/root/.xinitrc';
+				$zoom = exec( "/usr/bin/sudo /usr/bin/grep 'chromium --' $chromiumfile | /usr/bin/sed 's/.*=\\(.*\\)/\\1/'" );
+			} else {
+				$zoom = exec( "/usr/bin/sudo /usr/bin/grep '^zoom' /root/.config/midori/config | /usr/bin/sed 's/.*=\\(.*\\)/\\1/'" );
+			}
+		?>
 <link rel="stylesheet" href="<?=$this->asset( '/css/enhancemidori.css' )?>">
+<style>
+	#splash svg, #loader svg { margin-top: <?=( 40 / $zoom / 8 )?>vh }
+</style>
 		<?php
 		}
 		if ( $gpio ) { ?> 
