@@ -453,15 +453,27 @@ function renderPlayback() {
 			elapsedhms = second2HMS( elapsed );
 			$( '#elapsed' ).text( elapsedhms );
 		}, 1000 );
-		GUI.intKnob = setInterval( function() {
-			position++;
-			if ( position === 1000 ) {
-				clearInterval( GUI.intKnob );
-				clearInterval( GUI.intElapsed );
-				$( '#elapsed' ).empty();
-			}
-			$( '#time' ).roundSlider( 'setValue', position );
-		}, time );
+		if ( GUI.localhost ) { // fix: midori high cpu - interval each 1 sec
+			GUI.intKnob = setInterval( function() {
+				position = Math.round( elapsed / time * 1000 );
+				if ( position === 1000 ) {
+					clearInterval( GUI.intKnob );
+					clearInterval( GUI.intElapsed );
+					$( '#elapsed' ).empty();
+				}
+				$( '#time' ).roundSlider( 'setValue', position );
+			}, 1000 );
+		} else {
+			GUI.intKnob = setInterval( function() {
+				position++;
+				if ( position === 1000 ) {
+					clearInterval( GUI.intKnob );
+					clearInterval( GUI.intElapsed );
+					$( '#elapsed' ).empty();
+				}
+				$( '#time' ).roundSlider( 'setValue', position );
+			}, time );
+		}
 	} else {
 		GUI.intElapsed = setInterval( function() {
 			elapsed++;
