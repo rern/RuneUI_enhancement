@@ -4,3 +4,4 @@
 #single, #bio-open, #volup { background: radial-gradient(500% 90% at 20% -205% ,hsla(0,0%,100%,.3) 50%,hsla(0,0%,100%,0) 51.5%) }
 #repeat, #voldn, #random, #volmute, #single, #bio-open, #volup { background-color: hsl(200,3%,30%)/*cg*/ }
 #play-group, #share-group, #vol-group { margin-top: 20px }
+#splash svg, #loader svg { margin-top: 0 }
