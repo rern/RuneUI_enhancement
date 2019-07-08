@@ -176,13 +176,6 @@ commentH -n -1 'for="localSStime">' -n +5 'for="localSStime">'
 commentH -n -1 'for="remoteSStime">' -n +5 'for="remoteSStime">'
 
 commentH -n -1 'Display album cover' -n +8 'Display album cover'
-
-commentH 'local_browserName'
-
-string=$( cat <<'EOF'
-                <div class="hide" id="local_browserName">
-EOF
-insertH 'local_browserName'
 #----------------------------------------------------------------------------------
 file=/srv/http/app/templates/sources.php
 echo $file
