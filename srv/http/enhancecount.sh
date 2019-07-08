@@ -8,7 +8,7 @@ if (( $# > 0 )); then
 	genre=$( mpc list genre | awk NF | wc -l )
 	count="$albumartist $composer $genre"
 	redis-cli set mpddb "$count"
-	curl -s -v -X POST 'http://localhost/pub?id=reload' -d 1
+	curl --silent -s -X POST 'http://localhost/pub?id=reload' -d 1
 	exit
 fi
 
