@@ -34,7 +34,6 @@ if [[ ! $installed ]]; then
 	pacman -S --needed --noconfirm imagemagick harfbuzz
 fi
 
-mv /etc/nginx/html/50x.html{,.backup}
 mv /srv/http/index.php{,.backup}
 mv /srv/http/assets/js/vendor/pushstream.min.js{,.backup}
 mv /srv/http/assets/js/vendor/Sortable.min.js{,.backup}
@@ -43,7 +42,11 @@ ln -sf /srv/http/assets/img/bootsplash.png /usr/share/bootsplash/start.png
 
 getinstallzip
 
-[[ -e /etc/nginx/html/50x.html ]] && wgetnc https://github.com/rern/RuneAudio/raw/master/nginx/50x.html -O /etc/nginx/html/50x.html
+file=/etc/nginx/html/50x.html
+if [[ -e $file ]]; then
+	mv $file{,.backup}
+	wgetnc https://github.com/rern/RuneAudio/raw/master/nginx/50x.html -O /etc/nginx/html
+fi
 
 echo -e "$bar Modify files ..."
 #----------------------------------------------------------------------------------
