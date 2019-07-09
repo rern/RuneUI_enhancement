@@ -22,6 +22,7 @@ rm -v /srv/http/assets/js/vendor/pica.js
 # DO NOT remove - used by other addons
 # bootstrap.min.css, bootstrap-select.min.css
 
+mv -f /etc/nginx/html/50x.html{.backup,} 2> /dev/null
 mv -f /srv/http/index.php{.backup,}
 mv -f /srv/http/assets/js/vendor/pushstream.min.js{.backup,}
 mv -f /srv/http/assets/js/vendor/Sortable.min.js{.backup,}
