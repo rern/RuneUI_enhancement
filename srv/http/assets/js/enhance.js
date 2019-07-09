@@ -14,7 +14,9 @@ var GUI = {
 	, dbscrolltop  : {}
 	, debounce     : ''
 	, display      : {}
+	, fanartapikey : '06f56465de874e4c75a2e9f0cc284fa3'
 	, imodedelay   : 0
+	, lastfmapikey : 'ba8ad00468a50732a3860832eaed0882'
 	, list         : {}
 	, library      : 0
 	, local        : 0
@@ -136,7 +138,7 @@ $( '#displaylibrary' ).click( function() {
 	info( {
 		  icon     : 'library'
 		, title    : 'Library Tools'
-		, message  : 'Select items to show / options:'
+		, message  : 'Show / enable selected items:'
 		, checkbox : '<form id="displaysavelibrary">'+ displayCheckbox( chklibrary ) +'</form>'
 		, ok       : function () {
 			var data = {};
@@ -167,7 +169,7 @@ $( '#displayplayback' ).click( function() {
 	info( {
 		  icon     : 'play-circle'
 		, title    : 'Playback Tools'
-		, message  : 'Select items to show / options:'
+		, message  : 'Show selected items:'
 		, checkbox : '<form id="displaysaveplayback">'+ displayCheckbox( chkplayback ) +'</form>'
 		, ok       : function () {
 			// no: serializeArray() omit unchecked fields
@@ -1783,7 +1785,7 @@ window.addEventListener( 'orientationchange', function() {
 } );
 
 var pushstreams = {};
-var streams = [ 'bookmark', 'color', 'display', 'idle', 'notify', 'playlist', 'volume', 'webradio' ];
+var streams = [ 'bookmark', 'display', 'idle', 'notify', 'playlist', 'reload', 'volume', 'webradio' ];
 streams.forEach( function( stream ) {
 	pushstreams[ stream ] = new PushStream( { modes: 'websocket' } );
 	pushstreams[ stream ].addChannel( stream );
@@ -1800,9 +1802,6 @@ pushstreams.bookmark.onmessage = function( data ) {
 	GUI.debounce = setTimeout( function() {
 		renderLibraryBlocks( bookmarks );
 	}, GUI.debouncems );
-}
-pushstreams.color.onmessage = function() {
-	location.reload();
 }
 pushstreams.display.onmessage = function( data ) {
 	var data = data[ 0 ];
@@ -1879,6 +1878,9 @@ pushstreams.playlist.onmessage = function( data ) {
 	} else {
 		$( '#plopen' ).click();
 	}
+}
+pushstreams.reload.onmessage = function() {
+	location.href= '/';
 }
 pushstreams.volume.onmessage = function( data ) {
 	var data = data[ 0 ];

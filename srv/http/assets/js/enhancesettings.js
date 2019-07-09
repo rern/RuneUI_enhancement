@@ -42,14 +42,10 @@ if ( path.match( /\/sources\/*$/ ) ) {
 		if ( !document.hidden ) toggleUpdate();
 	} );
 	toggleUpdate();
-	var pushstreamIdle = new PushStream( { modes: 'websocket' } );
-	pushstreamIdle.onmessage = function( data ) {
-		if ( data[ 0 ] === 'update' ) toggleUpdate();
-	}
-	pushstreamIdle.addChannel( 'idle' );
-	pushstreamIdle.connect();
 	$( '#update, #rescan' ).click( function() {
-		$.post( '../enhance.php', { bash: '/srv/http/enhancecount.sh '+ this.id +' &' } );
+		$( '#update, #rescan' ).hide();
+		$( '#updating' ).show();
+		$.post( '../enhance.php', { bash: '/srv/http/enhancecount.sh '+ this.id +' > /dev/null &' } );
 	} );
 } else if ( path.match( /\/sources\/.*/ ) ) {
 	if ($('#mount-type').val() === 'nfs') {
@@ -276,16 +272,15 @@ if ( path.match( /\/sources\/*$/ ) ) {
 			$('#wifiProfilesBox').removeClass('hide');
 		}
 	});
+	// fix: not connect / not show new connection
+	$( '.btn-primary' ).click( function() {
+		if ( $( this ).text() = 'Connect' ) $.post( '../../../enhance.php', { bash: '{ /usr/bin/ip link set dev wlan0 down; /usr/bin/systemctl restart netctl-auto@wlan0; }' } );
+	} );
 	
 } else if ( path.match( /\/accesspoint/ ) ) {
 	$('#accesspoint').change(function(){
-		if ($(this).prop('checked')) {
-			$('#accesspointSettings').removeClass('hide');
-			$('#accesspointBox').addClass('boxed-group');
-		} else {
-			$('#accesspointSettings').addClass('hide');
-			$('#accesspointBox').removeClass('boxed-group');
-		}
+		$( '#accesspointSettings, fieldset' ).toggleClass( 'hide', !$( this ).prop( 'checked' ) );
+		$( '.form-actions' ).toggleClass( 'hide', !$( this ).prop( 'checked' ) && !$( 'fieldset' ).hasClass( 'on' ) );
 	});
 	$('#ip-address').change(function(){
 		var parts = $('#ip-address').val().split('.');
@@ -296,6 +291,17 @@ if ( path.match( /\/sources\/*$/ ) ) {
 		$('#dhcp-option-dns').val($('#ip-address').val());
 		$('#dhcp-option-router').val($('#ip-address').val());
 	});
+	$( '.btn-primary' ).click( function() {
+		if ( $( this ).text() !== 'Save and apply' ) return
+		
+		if ( $( '#accesspointSettings' ).hasClass( 'hide' ) ) {
+			$.post( '../enhance.php', { bash: '/usr/bin/systemctl stop hostapd dnsmasq' } );
+		} else {
+			$.post( '../enhance.php', { bash: '/usr/bin/pgrep wpa && /usr/bin/killall wpa_supplicant' }, function() {
+				$.post( '../enhance.php', { bash: '/usr/bin/systemctl restart hostapd dnsmasq' } );
+			} );
+		}
+	} );
 	
 } else if ( path.match( /\/debug/ ) ) { // *** Important! ZeroClipboard will freeze if run while in browser DevTools mode ***
 	ZeroClipboard.config({swfPath: '/assets/js/vendor/ZeroClipboard.swf'});

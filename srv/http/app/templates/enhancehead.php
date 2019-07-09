@@ -43,7 +43,7 @@
 <link rel="stylesheet" href="<?=$this->asset( '/css/enhancedesktop.css' )?>">
 		<?php
 		}
-		if ( strpos( 'Midori', $_SERVER['HTTP_USER_AGENT'] ) ) { ?>
+		if ( strpos( $_SERVER['HTTP_USER_AGENT'], 'Midori' ) ) { ?>
 <link rel="stylesheet" href="<?=$this->asset( '/css/enhancemidori.css' )?>">
 		<?php
 		}
@@ -63,4 +63,3 @@
 <link rel="stylesheet" href="<?=$this->asset( '/css/enhancebanner.css' )?>">
 	<?php 
 	} ?>
-	

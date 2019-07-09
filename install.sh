@@ -24,26 +24,17 @@ fi
 installstart $@
 
 packagestatus mpc # $version, $installed
-
-if [[ ! $installed || ! -e /usr/bin/convert ]]; then
-	wgetnc https://github.com/rern/_assets/raw/master/imagemagick-mpc.tar
-	mkdir pkg
-	bsdtar xvf imagemagick-mpc.tar -C pkg
-	# to be removed ##########################################################################
-	if [[ ! $installed ]]; then
-		echo -e "$bar Upgrade mpc ..."
-	
-		pacman -U --needed --noconfirm pkg/mpc-0.31-1-armv7h.pkg.tar.xz pkg/libmpdclient-2.16-1-armv7h.pkg.tar.xz
-	fi
-	############################################################################################
-	if [[ ! -e /usr/bin/convert ]]; then
-		echo -e "$bar Install ImageMagick ..."
-	
-		pacman -U --needed --noconfirm pkg/*
-	fi
-	rm -rf imagemagick-mpc.tar pkg
+if [[ ! $installed ]]; then
+	rankmirrors
+	pacman -S --needed --noconfirm mpc libmpdclient
+fi
+packagestatus imagemagick
+if [[ ! $installed ]]; then
+	rankmirrors
+	pacman -S --needed --noconfirm imagemagick harfbuzz
 fi
 
+mv /etc/nginx/html/50x.html{,.backup}
 mv /srv/http/index.php{,.backup}
 mv /srv/http/assets/js/vendor/pushstream.min.js{,.backup}
 mv /srv/http/assets/js/vendor/Sortable.min.js{,.backup}
@@ -51,6 +42,8 @@ mv /srv/http/command/airplay_toggle{,.backup}
 ln -sf /srv/http/assets/img/bootsplash.png /usr/share/bootsplash/start.png
 
 getinstallzip
+
+[[ -e /etc/nginx/html/50x.html ]] && wgetnc https://github.com/rern/RuneAudio/raw/master/nginx/50x.html -O /etc/nginx/html/50x.html
 
 echo -e "$bar Modify files ..."
 #----------------------------------------------------------------------------------
@@ -114,22 +107,44 @@ echo $file
 
 string=$( cat <<'EOF'
 if ( $template->local_browser ) {
-    exec( '/usr/bin/sudo /usr/bin/xinit &> /dev/null &' );
+    exec( '/usr/bin/systemctl start local-browser' );
 } else {
-    exec( '/usr/bin/sudo /usr/bin/killall Xorg' );
+    exec( '/usr/bin/systemctl stop local-browser' );
 }
 EOF
 )
 append '$'
 #----------------------------------------------------------------------------------
-file=/srv/http/app/templates/settings.php
+file=/srv/http/app/templates/accesspoint.php
 echo $file
 
-commentH -n -1 'for="localSStime">' -n +5 'for="localSStime">'
+commentH 'accesspointBox'
+string=$( cat <<'EOF'
+    <div class="boxed-group" id="accesspointBox">
+EOF
+)
+appendH 'accesspointBox'
 
-commentH -n -1 'for="remoteSStime">' -n +5 'for="remoteSStime">'
+commentH 'form-actions'
+string=$( cat <<'EOF'
+            <div class="form-group form-actions<?=( $this->enabled == 0 ? ' hide' : '' )?>">
+EOF
+)
+appendH 'form-actions'
 
-commentH -n -1 'Display album cover' -n +8 'Display album cover'
+commentH 'class="checkbox"' -n +2 'Save settings'
+string=$( cat <<'EOF'
+                    <br><br>
+EOF
+)
+insertH 'class="checkbox"'
+
+commentH '<fieldset>'
+string=$( cat <<'EOF'
+    <fieldset class="<?=( $this->enabled == 0 ? 'hide' : 'on' )?>">
+EOF
+)
+appendH '<fieldset>'
 #----------------------------------------------------------------------------------
 file=/srv/http/app/templates/network_edit.php
 echo $file
@@ -141,6 +156,26 @@ string=$( cat <<'EOF'
 EOF
 )
 appendH 'wifiProfilesBox'
+#----------------------------------------------------------------------------------
+file=/srv/http/app/templates/network_wlan.php
+echo $file
+
+commentH 'Reboot'
+
+string=$( cat <<'EOF'
+                <br><br>
+EOF
+)
+appendH 'Reboot'
+#----------------------------------------------------------------------------------
+file=/srv/http/app/templates/settings.php
+echo $file
+
+commentH -n -1 'for="localSStime">' -n +5 'for="localSStime">'
+
+commentH -n -1 'for="remoteSStime">' -n +5 'for="remoteSStime">'
+
+commentH -n -1 'Display album cover' -n +8 'Display album cover'
 #----------------------------------------------------------------------------------
 file=/srv/http/app/templates/sources.php
 echo $file
