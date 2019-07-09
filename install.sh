@@ -26,7 +26,7 @@ installstart $@
 packagestatus mpc # $version, $installed
 if [[ ! $installed ]]; then
 	rankmirrors
-	pacman -S --needed --noconfirm mpc libmpdclient
+	pacman -S --needed --noconfirm mpc libmpdclient glibc
 fi
 packagestatus imagemagick
 if [[ ! $installed ]]; then
