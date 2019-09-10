@@ -1,6 +1,6 @@
 RuneUI enhancement
 ---
-_Tested on RuneAudio 0.4b, 0.5_   
+As of 20190822, this has been integrated to [**RuneAudio+R e1**](https://github.com/rern/RuneAudio-Re1).
 
 ### Improvements:
 - Redesign
