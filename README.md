@@ -23,8 +23,8 @@ As of 20190822, this has been integrated to [**RuneAudio+R e1**](https://github.
 	- Browse by CoverArt ( load on scroll with [LazyLoad](https://github.com/verlok/lazyload) )
 	- Coverart bookmarks
 	- Coverart in album view
-	- Replace / remove - file permission: 775
-	- Save coverart fetched from online - directory permission: 775
+	- Replace / remove
+	- Save coverart fetched from online
 	- Webradio coverart
 	- Default
 		- RuneAudio
@@ -34,7 +34,7 @@ As of 20190822, this has been integrated to [**RuneAudio+R e1**](https://github.
 - Index bar
 	- Mask available indexes
 - Library sorting
-- Metadata tag editor - file permission: 775 ( with [Kid3](https://kid3.sourceforge.io) )
+- Metadata tag editor ( with [Kid3](https://kid3.sourceforge.io) )
 - UI color picker ( with [HTML5-Color-Picker](https://github.com/NC22/HTML5-Color-Picker) )
 - Single files with`*.cue` behave like individual files
 	- Listed and saved as individual tracks
@@ -111,7 +111,7 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 		- With embedded ID3 cover art
 			- Single artist + single album : override embedded ones by placing 1 cover art file in the directory
 			- Various : existing embedded ones
-	- Long-press for replace / remove - file permission: 775
+	- Long-press for replace / remove
 	- Show VU meter in webradio - animated while playing
 - Volume
 	- Show pre-mute level instead of 0 on mute
@@ -131,7 +131,7 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 - Show counts
 - Coverarts:
 	- Coverart in album view / album directory
-		- Long-press for replace / remove - file permission: 775
+		- Long-press for replace / remove
 	- Browse by CoverArt ( need `ext*` formatted drive )
 		- Long-press `CoverArt` to create / update thumbnails
 		- Long-press thumbnail for replace / remove
@@ -141,7 +141,7 @@ from [**Addons Menu**](https://github.com/rern/RuneAudio_Addons)
 		- Long-press for replace / remove
 	- Webradio coverarts ( need `ext*` formatted drive )
 		- Tap Webradio icon in list view
-- Metadata tag editor - file permission: 775 (Install RuneUIe Metadata Editor addon to enable)
+- Metadata tag editor (Install RuneUIe Metadata Editor addon to enable)
 	- Album tags - Coverart context menu > Tags (browse by directory/bookmark/coverart only)
 	- Song tags - File context menu > Tags
 - Bookmarks and webradios can be renamed
@@ -233,9 +233,7 @@ All pages
 **Setting pages**
 - `escape` close
 
-**Write permission for files / directories** - 775 (group rw)
-- Edit coverart / metadata
-	- new coverart - directory
-	- existing coverart - file
-	- metadata / embedded coverart- file
-- Exclude directories from Library - parent directory
+**Write permission for files / directories** - 755 (owner: rw)
+- Edit coverart
+- Edit metadata
+- Exclude directories from Library
