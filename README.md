@@ -65,6 +65,10 @@ As of 20190822, this has been integrated to [**RuneAudio+R e1**](https://github.
 - Crop Playlist
 - Consume mode
 - Keyboard navigation
+- Addons
+	- Updates
+	- Additional features
+	- Notification badge when available
 
 Install
 ---
